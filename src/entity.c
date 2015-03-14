@@ -27,61 +27,226 @@ const u8 heightmap[4][16] = {
 s16 gravity = 0x50 >> 1, waterGravity = 0x28 >> 1,
 	jumpGravity = 0x20 >> 1, waterJumpGravity = 0x10 >> 1;
 
-void entity_update(Entity *e);
+// List functions
+void list_clear(Entity *first);
+Entity *list_get_prev(Entity *e, Entity *list);
+
+Entity *entity_update(Entity *e);
+Entity *entity_update_inactive(Entity *e);
 bool collide_stage_leftwall(Entity *e);
 bool collide_stage_rightwall(Entity *e);
 bool collide_stage_floor(Entity *e);
 bool collide_stage_floor_grounded(Entity *e);
 bool collide_stage_cieling(Entity *e);
 
+void list_clear(Entity *first) {
+	Entity *e;
+	while(first != NULL) {
+		e = first->next;
+		MEM_free(first);
+		first = e;
+	}
+}
+
+Entity *list_get_prev(Entity *e, Entity *list) {
+	while(list->next != NULL) {
+		if(list->next == e) return list;
+		list = list->next;
+	}
+	return NULL;
+}
+
 void entities_clear() {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		entities[i].active = false;
-		//if(entities[i].sprite != SPRITE_NONE) sprite_delete(entities[i].sprite);
+	list_clear(entityList);
+	list_clear(inactiveList);
+	// Might not be needed
+	entityList = NULL;
+	inactiveList = NULL;
+}
+
+void entity_deactivate(Entity *e) {
+	Entity *next = e->next;
+	Entity *prev = list_get_prev(e, entityList);
+	e->next = inactiveList;
+	inactiveList = e;
+	if(prev == NULL) {
+		entityList = next;
+	} else {
+		prev->next = next;
+	}
+}
+
+void entity_reactivate(Entity *e) {
+	Entity *next = e->next;
+	Entity *prev = list_get_prev(e, inactiveList);
+	e->next = entityList;
+	entityList = e;
+	if(prev == NULL) {
+		inactiveList = next;
+	} else {
+		prev->next = next;
 	}
 }
 
 void entities_clear_id(u16 id) {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(entities[i].active && entities[i].id == id) {
-			entities[i].active = false;
-			if(entities[i].sprite != SPRITE_NONE) sprite_delete(entities[i].sprite);
+	Entity *e, *temp;
+	// First active element
+	while(entityList->id == id) {
+		temp = entityList->next;
+		MEM_free(entityList);
+		entityList = temp;
+	}
+	// Other active elements
+	e = entityList;
+	while(e->next != NULL) {
+		if(e->next->id == id) {
+			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
 		}
+		else e = e->next;
+	}
+
+	// First inactive element
+	while(inactiveList->id == id) {
+		temp = inactiveList->next;
+		MEM_free(inactiveList);
+		inactiveList = temp;
+	}
+	// Other inactive elements
+	e = inactiveList;
+	while(e->next != NULL) {
+		if(e->next->id == id) {
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
+		}
+		else e = e->next;
 	}
 }
 
 void entities_clear_event(u16 event) {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(entities[i].active && entities[i].event == event) {
-			entities[i].active = false;
-			if(entities[i].sprite != SPRITE_NONE) sprite_delete(entities[i].sprite);
-			if(entities[i].flags&NPC_DISABLEONFLAG)
-				system_set_flag(entities[i].id, true);
+	Entity *e, *temp;
+	// First active element
+	while(entityList->event == event) {
+		temp = entityList->next;
+		MEM_free(entityList);
+		entityList = temp;
+	}
+	// Other active elements
+	e = entityList;
+	while(e->next != NULL) {
+		if(e->next->event == event) {
+			if(e->next->flags & NPC_DISABLEONFLAG) system_set_flag(e->next->id, true);
+			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
 		}
+		else e = e->next;
+	}
+
+	// First inactive element
+	while(inactiveList->event == event) {
+		temp = inactiveList->next;
+		MEM_free(inactiveList);
+		inactiveList = temp;
+	}
+	// Other inactive elements
+	e = inactiveList;
+	while(e->next != NULL) {
+		if(e->next->event == event) {
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
+		}
+		else e = e->next;
 	}
 }
 
 void entities_clear_type(u16 type) {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(entities[i].active && entities[i].type == type) {
-			entities[i].active = false;
-			if(entities[i].sprite != SPRITE_NONE) sprite_delete(entities[i].sprite);
+	Entity *e, *temp;
+	// First active element
+	while(entityList->type == type) {
+		temp = entityList->next;
+		MEM_free(entityList);
+		entityList = temp;
+	}
+	// Other active elements
+	e = entityList;
+	while(e->next != NULL) {
+		if(e->next->type == type) {
+			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
 		}
+		else e = e->next;
+	}
+	// First inactive element
+	while(inactiveList->type == type) {
+		temp = inactiveList->next;
+		MEM_free(inactiveList);
+		inactiveList = temp;
+	}
+	// Other inactive elements
+	e = inactiveList;
+	while(e->next != NULL) {
+		if(e->next->type == type) {
+			temp = e->next->next;
+			MEM_free(e->next);
+			e->next = temp;
+		}
+		else e = e->next;
 	}
 }
 
-u8 entities_count() {
-	u8 count = 0;
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(entities[i].active) count++;
+u16 entities_count_active() {
+	u16 count = 0;
+	Entity *e = entityList;
+	while(e != NULL) {
+		count++;
+		e = e->next;
 	}
 	return count;
 }
 
+u16 entities_count_inactive() {
+	u16 count = 0;
+	Entity *e = inactiveList;
+	while(e != NULL) {
+		count++;
+		e = e->next;
+	}
+	return count;
+}
+
+u16 entities_count() {
+	return entities_count_active() + entities_count_inactive();
+}
+
 void entities_update() {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(!entities[i].active) continue;
-		entity_update(&entities[i]);
+	//if(inactiveList != NULL) {
+	//	Entity *e = inactiveList;
+	//	while(e != NULL) {
+	//		e = entity_update_inactive(e);
+	//	}
+	//}
+	if(entityList != NULL) {
+		Entity *e = entityList;
+		while(e != NULL) {
+			e = entity_update(e);
+		}
+	}
+}
+
+void entities_update_inactive() {
+	if(inactiveList != NULL) {
+		Entity *e = inactiveList;
+		while(e != NULL) {
+			e = entity_update_inactive(e);
+		}
 	}
 }
 
@@ -164,7 +329,7 @@ void entity_update_collision(Entity *e) {
 	} else if (e->x_speed > 0) {
 		collide_stage_rightwall(e);
 	}
-	if(e->grounded /*&& e->x_speed != 0*/) {
+	if(e->grounded) {
 		e->grounded = collide_stage_floor_grounded(e);
 	} else if(e->y_speed > 0) {
 		e->grounded = collide_stage_floor(e);
@@ -317,16 +482,30 @@ bool collide_stage_cieling(Entity *e) {
 	return false;
 }
 
-Entity *entity_find_by_id(u16 id) {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(entities[i].active && entities[i].id == id) return &entities[i];
-	}
-	return NULL;
+bool entity_overlapping(Entity *a, Entity *b) {
+	s16 ax1 = sub_to_pixel(a->x) - a->hit_box.left,
+		ax2 = sub_to_pixel(a->x) + a->hit_box.right,
+		ay1 = sub_to_pixel(a->y) - a->hit_box.top,
+		ay2 = sub_to_pixel(a->y) + a->hit_box.bottom,
+		bx1 = sub_to_pixel(b->x) - b->hit_box.left,
+		bx2 = sub_to_pixel(b->x) + b->hit_box.right,
+		by1 = sub_to_pixel(b->y) - b->hit_box.top,
+		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
+	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-u8 first_inactive() {
-	for(u8 i = 0; i < MAX_ENTITIES; i++) if(!entities[i].active) return i;
-	return MAX_ENTITIES;
+Entity *entity_find_by_id(u16 id) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(e->id == id) return e;
+		else e = e->next;
+	}
+	e = inactiveList;
+	while(e != NULL) {
+		if(e->id == id) return e;
+		else e = e->next;
+	}
+	return NULL;
 }
 
 bool entity_on_screen(Entity *obj) {
@@ -336,22 +515,30 @@ bool entity_on_screen(Entity *obj) {
 			obj->y < camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
 }
 
-void entity_update(Entity *e) {
-	if(e->onScreen) {
-		if(!entity_on_screen(e)) {
-			e->onScreen = false;
-			if(e->sprite != SPRITE_NONE) {
-				sprite_delete(e->sprite);
-				e->sprite = SPRITE_NONE;
-			}
-			return;
-		}
-	} else if(entity_on_screen(e)) {
-		e->onScreen = true;
+Entity *entity_update_inactive(Entity *e) {
+	if(entity_on_screen(e)) {
 		if(npc_info[e->type].sprite != NULL)
 			e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
-	} else {
-		return;
+		//Entity *activated = e;
+		//e = e->next;
+		//entity_cut(activated);
+		//entity_insert_after(activated, lastActiveEntity);
+		Entity *next = e->next;
+		entity_reactivate(e);
+		return next;
+	}
+	return e->next;
+}
+
+Entity *entity_update(Entity *e) {
+	if(!entity_on_screen(e)) {
+		if(e->sprite != SPRITE_NONE) {
+			sprite_delete(e->sprite);
+			e->sprite = SPRITE_NONE;
+		}
+		Entity *next = e->next;
+		entity_deactivate(e);
+		return next;
 	}
 	entity_update_movement(e);
 	if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
@@ -377,9 +564,13 @@ void entity_update(Entity *e) {
 						if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 						if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 						sprite_delete(e->sprite);
-						e->sprite = SPRITE_NONE;
-						e->active = false;
-						return;
+						//e->sprite = SPRITE_NONE;
+						//e->active = false;
+						Entity *next = e->next;
+						Entity *prev = list_get_prev(e, entityList);
+						prev->next = next;
+						MEM_free(e);
+						return next;
 					}
 					e->health -= b->damage;
 					sound_play(e->hurtSound, 5);
@@ -387,38 +578,43 @@ void entity_update(Entity *e) {
 			}
 		}
 	}
-	if(e->sprite == SPRITE_NONE) return;
-	sprite_set_position(e->sprite,
-		sub_to_pixel(e->x) - sub_to_pixel(camera.x) - (e->display_box.left-8) + SCREEN_HALF_W,
-		sub_to_pixel(e->y) - sub_to_pixel(camera.y) - (e->display_box.top-8) + SCREEN_HALF_H);
+	if(e->sprite != SPRITE_NONE) {
+		sprite_set_position(e->sprite,
+			sub_to_pixel(e->x) - sub_to_pixel(camera.x) - (e->display_box.left-8) + SCREEN_HALF_W,
+			sub_to_pixel(e->y) - sub_to_pixel(camera.y) - (e->display_box.top-8) + SCREEN_HALF_H);
+	}
+	return e->next;
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
-	u8 index = first_inactive();
-	if(index == MAX_ENTITIES) SYS_die("Too many objects!");
-	Entity *e = &entities[index];
+	Entity *e = MEM_alloc(sizeof(Entity));
 	e->x = block_to_sub(x);
 	e->y = block_to_sub(y);
 	e->id = id;
 	e->event = event;
 	e->type = type;
 	// Apply NPC flags in addition to entity flags
-	e->flags = flags | npc_flags(type); //npc_info[type].flags;
+	e->flags = flags | npc_flags(type);
 	e->x_speed = 0;
 	e->y_speed = 0;
-	e->health = npc_health(type); //npc_info[type].health;
-	e->attack = npc_attack(type); //npc_info[type].damage;
-	e->experience = npc_experience(type); //npc_info[type].experience;
-	e->hurtSound = npc_hurtSound(type); //npc_info[type].hurtSound;
-	e->deathSound = npc_deathSound(type); //npc_info[type].deathSound;
-	e->onScreen = entity_on_screen(e);
-	if(npc_info[type].sprite != NULL && e->onScreen) {
-		e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+	e->health = npc_health(type);
+	e->attack = npc_attack(type);
+	e->experience = npc_experience(type);
+	e->hurtSound = npc_hurtSound(type);
+	e->deathSound = npc_deathSound(type);
+	if(entity_on_screen(e)) {
+		e->next = entityList;
+		entityList = e;
+		if(npc_info[type].sprite != NULL) {
+			e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+		} else e->sprite = SPRITE_NONE;
 	} else {
+		e->next = inactiveList;
+		inactiveList = e;
 		e->sprite = SPRITE_NONE;
+
 	}
-	e->hit_box = npc_hitBox(type); //npc_info[type].hitBox;
-	e->display_box = npc_displayBox(type); //npc_info[type].displayBox;
-	e->active = true;
+	e->hit_box = npc_hitBox(type);
+	e->display_box = npc_displayBox(type);
 	return e;
 }

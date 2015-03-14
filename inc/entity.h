@@ -3,15 +3,9 @@
 
 #include "common.h"
 
-#define MAX_ENTITIES 192
-
 typedef struct Entity {
-	// Active is true if the entity exists. Instead of deleting entities they are
-	// "deactivated" and that spot in the array is considered unused
-	bool active;
-	// Flips on/off depending if the entity is near the screen enough to be
-	// relevant. No collision checks or update code are done when this is false
-	bool onScreen;
+	// We linked list now
+	struct Entity *next;
 	u16 id; // Entity ID (from the stage PXE, or when created by a TSC script)
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of npc_info in tables.c (npc.tbl in original game)
@@ -48,7 +42,8 @@ typedef struct Entity {
 	u8 anim; // Current animation of the sprite being displayed
 } Entity; // 54 bytes
 
-Entity entities[MAX_ENTITIES];
+// First element of the "active" list and the "inactive" list
+Entity *entityList, *inactiveList;
 
 // Deactivates everything
 void entities_clear();
@@ -58,9 +53,11 @@ void entities_clear_id(u16 id);
 void entities_clear_event(u16 event);
 void entities_clear_type(u16 type);
 // Counts the number of active entities
-u8 entities_count();
+u16 entities_count();
 // Per frame update for entities
 void entities_update();
+// This one is called by the camera when it moves
+void entities_update_inactive();
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
 Entity *entity_find_by_id(u16 id);
@@ -69,5 +66,6 @@ void entity_update_walk(Entity *e);
 void entity_update_jump(Entity *e);
 void entity_update_float(Entity *e);
 void entity_update_collision(Entity *e);
+bool entity_overlapping(Entity *a, Entity *b);
 
 #endif // INC_ENTITY_H_

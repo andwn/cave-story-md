@@ -82,6 +82,10 @@ void camera_update() {
 	// Apply camera position
 	camera.x = x_next;
 	camera.y = y_next;
+	// Reactivate any entities that are approaching the screen
+	if(x_dir != 0 || y_dir != 0) {
+		entities_update_inactive();
+	}
 }
 
 void camera_focus_on_player(u16 speed) {

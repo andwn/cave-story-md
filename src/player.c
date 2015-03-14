@@ -54,8 +54,9 @@ void player_init() {
 	player.y_speed = 0;
 	player.accel = 0x55 >> 1;
 	player.max_speed = 0x32C >> 1;
-	player.hit_box = (bounding_box){ 7, 8, 7, 8 };
-	player.active = true;
+	// Actually 6,6,5,8 but need to get directional hitboxes working first
+	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
+	//player.active = true;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No weapons
@@ -141,18 +142,24 @@ void player_update_bullets() {
 
 void player_update_interaction() {
 	// Interaction with entities when pressing down
-	if((player.controller[0]&BUTTON_DOWN) && !(player.controller[1]&BUTTON_DOWN)) {
-		for(u8 i = 0; i < MAX_ENTITIES; i++) {
-			Entity *e = &entities[i];
-			if(e->active &&
-					player.x > e->x && player.x < e->x + block_to_sub(1) &&
-					player.y > e->y && player.y < e->y + block_to_sub(1) &&
-					(e->flags & NPC_INTERACTIVE)) {
+	if(entityList != NULL && (player.controller[0]&BUTTON_DOWN) &&
+			!(player.controller[1]&BUTTON_DOWN)) {
+		//for(u8 i = 0; i < MAX_ENTITIES; i++) {
+		//	Entity *e = &entities[i];
+		//	if(e->active &&
+		Entity *e = entityList;
+		while(e != NULL) {
+			if((e->flags & NPC_INTERACTIVE) && player.x > e->x &&
+					player.x < e->x + block_to_sub(1) && player.y > e->y &&
+					player.y < e->y + block_to_sub(1)) {
 				player.controller[1] |= BUTTON_DOWN; // To avoid triggering it twice
 				if(e->event > 0) tsc_call_event(e->event);
 				break;
 			}
+			e = e->next;
 		}
+
+		//}
 		// TODO: Do the question mark thing here
 	}
 }
@@ -223,6 +230,45 @@ void player_unlock_controls() {
 }
 
 void player_update_entity_collision() {
+	//u16 px = sub_to_pixel(player.x_next), py = sub_to_pixel(player.y_next);
+	if(playerIFrames > 0) playerIFrames--;
+	Entity *e = entityList;
+	while(e != NULL) {
+	//for(u8 i = 0; i < MAX_ENTITIES; i++) {
+	//	if(!entities[i].active) continue;
+	//	Entity *e = &entities[i];
+		if(e->attack > 0 && entity_overlapping(&player, e)) {
+		//u16 ex = sub_to_pixel(e->x), ey = sub_to_pixel(e->y);
+		//bounding_box pb = player.hit_box, eb = e->hit_box;
+		//if((e->attack > 0) && playerIFrames == 0) {
+			//if(ex-eb.left < px+pb.right && ex+eb.right > px-pb.left &&
+			//		ey-eb.top < py+pb.bottom && ey+eb.bottom > py-pb.top) {
+				// Take health
+				if(player.health < e->attack) {
+					player.health = 0;
+					sound_play(SOUND_DIE, 15);
+					tsc_call_event(PLAYER_DEFEATED_EVENT);
+					break;
+				}
+				player.health -= e->attack;
+				sound_play(SOUND_HURT, 5);
+				// Show damage numbers
+				effect_create_damage_string(-e->attack,
+						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
+				playerIFrames = INVINCIBILITY_FRAMES;
+				// TODO: Find an accurate value for knock back
+				player.y_speed -= pixel_to_sub(2);
+			}
+		//}
+		//if(e->flags & NPC_SOLID) {
+
+		//}
+		e = e->next;
+	}
+}
+
+/*
+void player_update_entity_collision() {
 	u16 px = sub_to_pixel(player.x_next), py = sub_to_pixel(player.y_next);
 	if(playerIFrames > 0) playerIFrames--;
 	for(u8 i = 0; i < MAX_ENTITIES; i++) {
@@ -255,7 +301,7 @@ void player_update_entity_collision() {
 		}
 	}
 }
-
+*/
 void player_update_bounds() {
 	if(player.y_next > block_to_sub(stageHeight + 1)) {
 		player.health = 0;

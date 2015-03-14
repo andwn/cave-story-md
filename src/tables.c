@@ -481,7 +481,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 208 - Enemy: Basu (2)
 	{ NULL, PAL0 }, // 209 - Projectile: Basu (2)
 	{ NULL, PAL0 }, // 210 - Enemy: Beetle (Follow 2)
-	{ NULL, PAL0 }, // 211 - Spikes
+	{ &SPR_Spikes, PAL1 }, // 211 - Spikes
 	{ NULL, PAL0 }, // 212 - Sky Dragon
 	{ NULL, PAL0 }, // 213 - Enemy: Night Spirit
 	{ NULL, PAL0 }, // 214 - Projectile: Night Spirit
