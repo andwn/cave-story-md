@@ -13,7 +13,6 @@ TODO
  - Moon and Fog / H-Scrolling
  - Match the correct backs to each stage
  - Scrolling
-- Finish Sound effects
 - Finish Message Box
  - Draw black around message box
  - Support for faces
@@ -41,6 +40,7 @@ DONE
  - Change room to stage
  - Change object to entity
 - Optimize sprite module
+- Finish Sound effects
 
 ISSUES
 - Hell's tileset is cut off so a couple of the rooms are messed up

@@ -46,7 +46,7 @@ bool controlsLocked;
 u16 playerEquipment;
 u8 playerInventory[MAX_ITEMS];
 
-u8 hudSprite;
+//u8 hudSprite;
 
 Entity player;
 

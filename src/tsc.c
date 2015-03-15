@@ -11,6 +11,7 @@
 #include "vdp_ext.h"
 #include "tables.h"
 #include "common.h"
+#include "hud.h"
 
 // Execution State
 #define TSC_IDLE 0 // Not executing any events
@@ -358,7 +359,8 @@ u8 execute_command() {
 			exeMode = TSC_IDLE;
 			window_close();
 			player_unlock_controls();
-			sprite_set_visible(hudSprite, true);
+			hud_show();
+			//sprite_set_visible(hudSprite, true);
 			return 1;
 		case CMD_EVE: // Jump to event (1)
 			args[0] = tsc_read_word();
@@ -373,7 +375,7 @@ u8 execute_command() {
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			window_close();
 			player_unlock_controls();
-			sprite_set_visible(hudSprite, true);
+			//sprite_set_visible(hudSprite, true);
 			stage_load(args[0]);
 			tsc_call_event(args[1]);
 			return 1;
@@ -455,14 +457,16 @@ u8 execute_command() {
 			break;
 		case CMD_KEY: // Lock controls and hide the HUD
 			player_lock_controls();
-			sprite_set_visible(hudSprite, false);
+			hud_hide();
+			//sprite_set_visible(hudSprite, false);
 			break;
 		case CMD_PRI: // Lock controls
 			player_lock_controls();
 			break;
 		case CMD_FRE: // Unlock controls
 			player_unlock_controls();
-			sprite_set_visible(hudSprite, true);
+			hud_show();
+			//sprite_set_visible(hudSprite, true);
 			break;
 		case CMD_HMC: // Hide player character
 			sprite_set_visible(player.sprite, false);

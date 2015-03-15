@@ -1,6 +1,6 @@
 #include "stage.h"
 
-#include "../inc/entity.h"
+#include "entity.h"
 #include "resources.h"
 #include "tables.h"
 #include "sprite.h"
@@ -10,6 +10,7 @@
 #include "input.h"
 #include "system.h"
 #include "effect.h"
+#include "hud.h"
 
 #define TS_WIDTH 32
 #define TS_HEIGHT 20
@@ -30,6 +31,7 @@ void stage_draw_background();
 
 void stage_load(u16 id) {
 	VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
+	hud_hide();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear(FILTER_ALL, 0);
@@ -51,6 +53,7 @@ void stage_load(u16 id) {
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
 	stage_load_entities();
 	tsc_load(id);
+	hud_show();
 	VDP_setEnable(true);
 }
 

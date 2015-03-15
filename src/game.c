@@ -12,6 +12,7 @@
 #include "vdp_ext.h"
 #include "effect.h"
 #include "sprite.h"
+#include "hud.h"
 
 void debug_update() {
 	// Change Map
@@ -103,6 +104,7 @@ void game_main(bool load) {
 				if(debuggingEnabled) debug_update();
 				camera_update();
 				player_update();
+				hud_update();
 				entities_update();
 				u8 rtn = tsc_update();
 				if(rtn > 0) {

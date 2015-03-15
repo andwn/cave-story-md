@@ -27,7 +27,6 @@
 u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
 bool playerDead = false;
-u8 hudHealthSprite[2];
 u8 weaponCount = 0;
 
 void player_update_entity_collision();
@@ -68,18 +67,10 @@ void player_init() {
 void player_reset_sprites() {
 	player.sprite = sprite_create(&SPR_Quote, PAL0, false);
 	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, playerFacing));
-	hudSprite = sprite_create(&SPR_Hud1, PAL0, true);
-	sprite_set_position(hudSprite, tile_to_pixel(2), tile_to_pixel(4));
 	if(playerWeapon[currentWeapon].type > 0) {
 		playerWeapon[currentWeapon].sprite = sprite_create(
 			weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
 	}
-	hudHealthSprite[0] = sprite_create(&SPR_Numbers, PAL0, true);
-	hudHealthSprite[1] = sprite_create(&SPR_Numbers, PAL0, true);
-	sprite_set_position(hudHealthSprite[0], tile_to_pixel(3), tile_to_pixel(5));
-	sprite_set_position(hudHealthSprite[1], tile_to_pixel(4), tile_to_pixel(5));
-	sprite_set_animframe(hudHealthSprite[0], 0, player.health / 10);
-	sprite_set_animframe(hudHealthSprite[1], 0, player.health % 10);
 }
 
 void player_update() {
@@ -118,10 +109,18 @@ void player_update_shooting() {
 				b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
 				b->damage = w->level;
 				b->ttl = 20 + w->level * 5;
-				b->x = player.x - pixel_to_sub(8) + pixel_to_sub(16) * playerFacing;
-				b->y = player.y + pixel_to_sub(4);
-				b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * playerFacing;
-				b->y_speed = 0;
+				if(player.controller[0]&BUTTON_UP) {
+					sprite_set_animation(b->sprite, 1);
+					b->x = player.x;
+					b->y = player.y - pixel_to_sub(8);
+					b->x_speed = 0;
+					b->y_speed = pixel_to_sub(-4);
+				} else {
+					b->x = player.x - pixel_to_sub(8) + pixel_to_sub(16) * playerFacing;
+					b->y = player.y + pixel_to_sub(4);
+					b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * playerFacing;
+					b->y_speed = 0;
+				}
 			}
 		}
 	}
@@ -242,49 +241,14 @@ void player_update_entity_collision() {
 			// TODO: Find an accurate value for knock back
 			player.y_speed -= pixel_to_sub(2);
 		}
-		//}
-		//if(e->flags & NPC_SOLID) {
+		// TODO: Solid Entities
+		if(e->flags & NPC_SOLID) {
 
-		//}
+		}
 		e = e->next;
 	}
 }
 
-/*
-void player_update_entity_collision() {
-	u16 px = sub_to_pixel(player.x_next), py = sub_to_pixel(player.y_next);
-	if(playerIFrames > 0) playerIFrames--;
-	for(u8 i = 0; i < MAX_ENTITIES; i++) {
-		if(!entities[i].active) continue;
-		Entity *e = &entities[i];
-		u16 ex = sub_to_pixel(e->x), ey = sub_to_pixel(e->y);
-		bounding_box pb = player.hit_box, eb = e->hit_box;
-		if((e->attack > 0) && playerIFrames == 0) {
-			if(ex-eb.left < px+pb.right && ex+eb.right > px-pb.left &&
-					ey-eb.top < py+pb.bottom && ey+eb.bottom > py-pb.top) {
-				// Take health
-				if(player.health < e->attack) {
-					player.health = 0;
-					sound_play(SOUND_DIE, 15);
-					tsc_call_event(PLAYER_DEFEATED_EVENT);
-					break;
-				}
-				player.health -= e->attack;
-				sound_play(SOUND_HURT, 5);
-				// Show damage numbers
-				effect_create_damage_string(-e->attack,
-						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
-				playerIFrames = INVINCIBILITY_FRAMES;
-				// TODO: Find an accurate value for knock back
-				player.y_speed -= pixel_to_sub(2);
-			}
-		}
-		if(e->flags & NPC_SOLID) {
-
-		}
-	}
-}
-*/
 void player_update_bounds() {
 	if(player.y_next > block_to_sub(stageHeight + 1)) {
 		player.health = 0;
