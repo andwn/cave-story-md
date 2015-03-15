@@ -9,7 +9,7 @@
 #define TILESET_COUNT 22
 #define BACKGROUND_COUNT 12
 #define SONG_COUNT 42
-#define SOUND_COUNT 73
+#define SOUND_COUNT 118
 #define WEAPON_COUNT 9
 
 // NPC Flags

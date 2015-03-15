@@ -6,8 +6,8 @@
 #define FLAGS_INDEX 0
 #define HEALTH_INDEX (NPC_COUNT * 2)
 #define PALETTE_INDEX (NPC_COUNT * 4)
-#define HURTSOUND_INDEX (NPC_COUNT * 5)
-#define DEATHSOUND_INDEX (NPC_COUNT * 6)
+#define DEATHSOUND_INDEX (NPC_COUNT * 5)
+#define HURTSOUND_INDEX (NPC_COUNT * 6)
 #define DEATHSMOKE_INDEX (NPC_COUNT * 7)
 #define ENERGY_INDEX (NPC_COUNT * 8)
 #define ATTACK_INDEX (NPC_COUNT * 12)
@@ -25,19 +25,19 @@ u16 npc_health(u16 type) {
 }
 
 u8 npc_palette(u16 type) {
-	return NPC_TABLE[type * PALETTE_INDEX];
+	return NPC_TABLE[type + PALETTE_INDEX];
 }
 
 u8 npc_hurtSound(u16 type) {
-	return NPC_TABLE[type * HURTSOUND_INDEX];
+	return NPC_TABLE[type + HURTSOUND_INDEX];
 }
 
 u8 npc_deathSound(u16 type) {
-	return NPC_TABLE[type * DEATHSOUND_INDEX];
+	return NPC_TABLE[type + DEATHSOUND_INDEX];
 }
 
 u8 npc_deathSmoke(u16 type) {
-	return NPC_TABLE[type * DEATHSMOKE_INDEX];
+	return NPC_TABLE[type + DEATHSMOKE_INDEX];
 }
 
 u16 npc_experience(u16 type) {
@@ -69,4 +69,3 @@ bounding_box npc_displayBox(u16 type) {
 	};
 	return b;
 }
-

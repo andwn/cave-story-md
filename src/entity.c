@@ -143,6 +143,7 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	// First element
 	while(list != NULL) {
 		if(entity_matches_criteria(list, criteria, value)) {
+			if(list->flags&NPC_DISABLEONFLAG) system_set_flag(list->id, true);
 			temp = list->next;
 			MEM_free(entityList);
 			list = temp;
@@ -154,8 +155,9 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	// Other elements
 	e = list;
 	while(e->next != NULL) {
-		if(entity_matches_criteria(e, criteria, value)) {
+		if(entity_matches_criteria(e->next, criteria, value)) {
 			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
+			if(e->next->flags&NPC_DISABLEONFLAG) system_set_flag(e->next->id, true);
 			temp = e->next->next;
 			MEM_free(e->next);
 			e->next = temp;
@@ -564,6 +566,9 @@ Entity *entity_update(Entity *e) {
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
+	u16 eflags = flags | npc_flags(type);
+	if((eflags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
+	if((eflags&NPC_ENABLEONFLAG) && !system_get_flag(id)) return NULL;
 	Entity *e = MEM_alloc(sizeof(Entity));
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
@@ -571,7 +576,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->event = event;
 	e->type = type;
 	// Apply NPC flags in addition to entity flags
-	e->flags = flags | npc_flags(type);
+	e->flags = eflags;
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->health = npc_health(type);
@@ -590,7 +595,6 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		e->next = inactiveList;
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
-
 	}
 	e->hit_box = npc_hitBox(type);
 	e->display_box = npc_displayBox(type);

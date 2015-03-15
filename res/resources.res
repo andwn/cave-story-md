@@ -462,41 +462,97 @@ XGM BGM_Run			"bgm/run.vgm"
 XGM BGM_Safety		"bgm/safety.vgm"
 
 # Sound Effects
-WAV SFX_Bark		"sfx/bark.wav" 5
-WAV SFX_BlockBreak	"sfx/blockdestroy.wav" 5
-WAV SFX_Bonk		"sfx/bonkhead.wav" 5
-WAV SFX_Chest		"sfx/chestopen.wav" 5
-WAV SFX_Computer	"sfx/computerbeep.wav" 5
-WAV SFX_CritJump	"sfx/critterjump.wav" 5
-WAV SFX_Cursor		"sfx/cursor.wav" 5
-WAV SFX_Die			"sfx/die.wav" 5
-WAV SFX_Door		"sfx/door.wav" 5
-WAV SFX_EnemyDmg	"sfx/enemydamage.wav" 5
-WAV SFX_EnemyHurt1	"sfx/enemyhurt1.wav" 5
-WAV SFX_EnemyHurt2	"sfx/enemyhurt2.wav" 5
-WAV SFX_EnemyHurt3	"sfx/enemyhurt3.wav" 5
-WAV SFX_EnemyHurt4	"sfx/enemyhurt4.wav" 5
-WAV SFX_ExpBounce	"sfx/expbounce.wav" 5
-WAV SFX_Explode1	"sfx/explode1.wav" 5
-WAV SFX_GetExp		"sfx/getexp.wav" 5
-WAV SFX_GetItem		"sfx/getitem.wav" 5
-WAV SFX_GetMissile	"sfx/getmissile.wav" 5
-WAV SFX_Thud		"sfx/hitground.wav" 5
-WAV SFX_Hurt		"sfx/hurt.wav" 5
-WAV SFX_Jump		"sfx/jump.wav" 5
-WAV SFX_LevelUp		"sfx/levelup.wav" 5
-WAV SFX_MissileHit	"sfx/missilehit.wav" 5
-WAV SFX_Message		"sfx/msg.wav" 5
-WAV SFX_PolarStar	"sfx/polarstar1.wav" 5
-WAV SFX_PolarStar3	"sfx/polarstar3.wav" 5
-WAV SFX_Prompt		"sfx/prompt.wav" 5
-WAV SFX_Quake		"sfx/quake.wav" 5
-WAV SFX_Refill		"sfx/refill.wav" 5
-WAV SFX_Select		"sfx/select.wav" 5
-WAV SFX_ShotBounce	"sfx/shotbounce.wav" 5
-WAV SFX_ShotHit		"sfx/shothit.wav" 5
-WAV SFX_Splash		"sfx/splash.wav" 5
-WAV SFX_Squeak		"sfx/squeak.wav" 5
-WAV SFX_SwitchWpn	"sfx/switchweapon.wav" 5
-WAV SFX_Teleport	"sfx/teleport.wav" 5
-WAV SFX_Walk		"sfx/walk.wav" 5
+WAV SFX_01		"sfx/01.wav" 5
+WAV SFX_02		"sfx/02.wav" 5
+WAV SFX_03		"sfx/03.wav" 5
+WAV SFX_04		"sfx/04.wav" 5
+WAV SFX_05		"sfx/05.wav" 5
+WAV SFX_06		"sfx/06.wav" 5
+
+WAV SFX_08		"sfx/08.wav" 5
+
+WAV SFX_0B		"sfx/0B.wav" 5
+WAV SFX_0C		"sfx/0C.wav" 5
+
+WAV SFX_0E		"sfx/0E.wav" 5
+WAV SFX_0F		"sfx/0F.wav" 5
+WAV SFX_10		"sfx/10.wav" 5
+WAV SFX_11		"sfx/11.wav" 5
+WAV SFX_12		"sfx/12.wav" 5
+
+WAV SFX_14		"sfx/14.wav" 5
+WAV SFX_15		"sfx/15.wav" 5
+WAV SFX_16		"sfx/16.wav" 5
+WAV SFX_17		"sfx/17.wav" 5
+WAV SFX_18		"sfx/18.wav" 5
+WAV SFX_19		"sfx/19.wav" 5
+WAV SFX_1A		"sfx/1A.wav" 5
+WAV SFX_1B		"sfx/1B.wav" 5
+WAV SFX_1C		"sfx/1C.wav" 5
+WAV SFX_1D		"sfx/1D.wav" 5
+WAV SFX_1E		"sfx/1E.wav" 5
+WAV SFX_1F		"sfx/1F.wav" 5
+WAV SFX_20		"sfx/20.wav" 5
+WAV SFX_21		"sfx/21.wav" 5
+WAV SFX_22		"sfx/22.wav" 5
+WAV SFX_23		"sfx/23.wav" 5
+
+WAV SFX_25		"sfx/25.wav" 5
+WAV SFX_26		"sfx/26.wav" 5
+WAV SFX_27		"sfx/27.wav" 5
+WAV SFX_28		"sfx/28.wav" 5
+
+WAV SFX_2A		"sfx/2A.wav" 5
+WAV SFX_2B		"sfx/2B.wav" 5
+WAV SFX_2C		"sfx/2C.wav" 5
+WAV SFX_2D		"sfx/2D.wav" 5
+WAV SFX_2E		"sfx/2E.wav" 5
+WAV SFX_2F		"sfx/2F.wav" 5
+WAV SFX_30		"sfx/30.wav" 5
+WAV SFX_31		"sfx/31.wav" 5
+WAV SFX_32		"sfx/32.wav" 5
+WAV SFX_33		"sfx/33.wav" 5
+WAV SFX_34		"sfx/34.wav" 5
+WAV SFX_35		"sfx/35.wav" 5
+WAV SFX_36		"sfx/36.wav" 5
+WAV SFX_37		"sfx/37.wav" 5
+WAV SFX_38		"sfx/38.wav" 5
+WAV SFX_39		"sfx/39.wav" 5
+WAV SFX_3A		"sfx/3A.wav" 5
+WAV SFX_3B		"sfx/3B.wav" 5
+WAV SFX_3C		"sfx/3C.wav" 5
+WAV SFX_3D		"sfx/3D.wav" 5
+WAV SFX_3E		"sfx/3E.wav" 5
+WAV SFX_3F		"sfx/3F.wav" 5
+WAV SFX_40		"sfx/40.wav" 5
+WAV SFX_41		"sfx/41.wav" 5
+
+WAV SFX_46		"sfx/46.wav" 5
+WAV SFX_47		"sfx/47.wav" 5
+WAV SFX_48		"sfx/48.wav" 5
+
+WAV SFX_64		"sfx/64.wav" 5
+WAV SFX_65		"sfx/65.wav" 5
+WAV SFX_66		"sfx/66.wav" 5
+WAV SFX_67		"sfx/67.wav" 5
+WAV SFX_68		"sfx/68.wav" 5
+WAV SFX_69		"sfx/69.wav" 5
+WAV SFX_6A		"sfx/6A.wav" 5
+WAV SFX_6B		"sfx/6B.wav" 5
+WAV SFX_6C		"sfx/6C.wav" 5
+WAV SFX_6D		"sfx/6D.wav" 5
+WAV SFX_6E		"sfx/6E.wav" 5
+WAV SFX_6F		"sfx/6F.wav" 5
+WAV SFX_70		"sfx/70.wav" 5
+WAV SFX_71		"sfx/71.wav" 5
+WAV SFX_72		"sfx/72.wav" 5
+WAV SFX_73		"sfx/73.wav" 5
+WAV SFX_74		"sfx/74.wav" 5
+WAV SFX_75		"sfx/75.wav" 5
+
+WAV SFX_96		"sfx/96.wav" 5
+WAV SFX_97		"sfx/97.wav" 5
+WAV SFX_98		"sfx/98.wav" 5
+WAV SFX_99		"sfx/99.wav" 5
+WAV SFX_9A		"sfx/9A.wav" 5
+WAV SFX_9B		"sfx/9B.wav" 5

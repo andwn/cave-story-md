@@ -20,12 +20,14 @@ void sound_init() {
 }
 
 void sound_play(u8 id, u8 priority) {
-	if(sound_info[id].length == 0) return;
+	if(id >= 0x90 && id < 0xA0) id -= 0x40;
+	if(id >= SOUND_COUNT || sound_info[id].length == 0) return;
 	SND_startPlayPCM_XGM(0x80 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }
 
 void song_play(u8 id) {
+	if(id == songPlaying) return;
 	songResume = songPlaying;
 	// Track 0 in song_info is NULL, but others could be potentially
 	if(song_info[id].song == NULL) {
