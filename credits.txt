@@ -1,0 +1,6 @@
+All the graphics, sound, music, and characters/story belong
+to Pixel, the original creator of the game. Except:
+
+The font - Provided with the SGDK library (GPLv3)
+Music files - I manually created these in Deflemask tracker
+

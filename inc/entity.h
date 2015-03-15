@@ -23,7 +23,7 @@ typedef struct Entity {
 	s32 x; s32 y;
 	s32 x_next; s32 y_next; // What x and y will be next frame
 	s16 x_speed; s16 y_speed;
-	s16 accel; s16 max_speed;
+	//s16 accel; s16 max_speed;
 	// True when on the ground, enables jumping and on-ground collision is a bit
 	// different (have to stick to downward slopes, etc)
 	bool grounded;

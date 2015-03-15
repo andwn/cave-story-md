@@ -10,6 +10,8 @@
 #define SOUND_CONFIRM 0x12
 #define SOUND_HURT 0x10
 #define SOUND_DIE 0x11
+#define SOUND_HEADBONK 0x03 // Bump ceiling
+#define SOUND_THUD 0x17 // Landing
 // IDs for title screen songs
 // Indexes of song_info
 #define SONG_TITLE 0x18

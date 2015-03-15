@@ -8,29 +8,29 @@
 #define SCREEN_HALF_H 112
 
 // Unit conversions
-// subpixel (1/256x1/256)
+// subpixel/unit (1/512x1/512)
 // pixel (1x1)
 // tile (8x8)
 // block (16x16)
-#define sub_to_pixel(x)   ((x)>>8)
-#define sub_to_tile(x)    ((x)>>11)
-#define sub_to_block(x)   ((x)>>12)
+#define sub_to_pixel(x)   ((x)>>9)
+#define sub_to_tile(x)    ((x)>>12)
+#define sub_to_block(x)   ((x)>>13)
 
-#define pixel_to_sub(x)   ((x)<<8)
+#define pixel_to_sub(x)   ((x)<<9)
 #define pixel_to_tile(x)  ((x)>>3)
 #define pixel_to_block(x) ((x)>>4)
 
-#define tile_to_sub(x)    ((x)<<11)
+#define tile_to_sub(x)    ((x)<<12)
 #define tile_to_pixel(x)  ((x)<<3)
 #define tile_to_block(x)  ((x)>>1)
 
-#define block_to_sub(x)   ((x)<<12)
+#define block_to_sub(x)   ((x)<<13)
 #define block_to_pixel(x) ((x)<<4)
 #define block_to_tile(x)  ((x)<<1)
 
 #define floor(x) ((x)&~0xFF)
 #define round(x) ((x+0x80)&~0xFF)
-#define ciel(x)  ((x+0x100)&~0xFF)
+#define ceil(x)  ((x+0x100)&~0xFF)
 
 #ifndef _GENESIS_H_
 // This is so types like u8/u16 can be used in headers without including genesis.h

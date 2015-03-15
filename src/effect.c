@@ -59,6 +59,7 @@ void effect_create_damage_string(s16 num, u16 x, u16 y, u8 ttl) {
 			damage_string[i].sprite[d+1] = sprite_create(&SPR_Numbers, PAL0, true);
 			sprite_set_animframe(damage_string[i].sprite[d+1], anim, (abs(num) / pow(10,d)) % 10);
 		}
+		break; // Oh that's why they lag so much
 	}
 }
 

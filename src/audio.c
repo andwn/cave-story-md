@@ -20,6 +20,7 @@ void sound_init() {
 }
 
 void sound_play(u8 id, u8 priority) {
+	if(sound_info[id].length == 0) return;
 	SND_startPlayPCM_XGM(0x80 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }

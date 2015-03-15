@@ -14,6 +14,49 @@
 #include "tsc.h"
 #include "npc.h"
 
+// The original game runs at 50 Hz. The PAL values are copied from it
+// NTSC values calculated with: value * (50.0 / 60.0)
+
+#define MAX_FALL_SPEED_NTSC 0x4FF
+#define MAX_FALL_SPEED_PAL 0x5FF
+#define MAX_FALL_SPEED_WATER_NTSC 0x27F
+#define MAX_FALL_SPEED_WATER_PAL 0x2FF
+
+#define GRAVITY_NTSC 0x43
+#define GRAVITY_PAL 0x50
+#define GRAVITY_WATER_NTSC 0x21
+#define GRAVITY_WATER_PAL 0x28
+
+#define GRAVITY_JUMP_NTSC 0x1B
+#define GRAVITY_JUMP_PAL 0x20
+#define GRAVITY_JUMP_WATER_NTSC 0x0D
+#define GRAVITY_JUMP_WATER_PAL 0x10
+
+#define JUMP_SPEED_NTSC 0x430
+#define JUMP_SPEED_PAL 0x500
+#define JUMP_SPEED_WATER_NTSC 0x210
+#define JUMP_SPEED_WATER_PAL 0x280
+
+#define MAX_WALK_SPEED_NTSC 0x2A5
+#define MAX_WALK_SPEED_PAL 0x32C
+#define MAX_WALK_SPEED_WATER_NTSC 0x151
+#define MAX_WALK_SPEED_WATER_PAL 0x196
+
+#define WALK_ACCEL_NTSC 0x47
+#define WALK_ACCEL_PAL 0x55
+#define WALK_ACCEL_WATER_NTSC 0x23
+#define WALK_ACCEL_WATER_PAL 0x2A
+
+#define AIR_CONTROL_NTSC 0x1B
+#define AIR_CONTROL_PAL 0x20
+#define AIR_CONTROL_WATER_NTSC 0x0D
+#define AIR_CONTROL_WATER_PAL 0x10
+
+#define FRICTION_NTSC 0x2A // (This one is 42.499 and I went for 42 here)
+#define FRICTION_PAL 0x33
+#define FRICTION_WATER_NTSC 0x15
+#define FRICTION_WATER_PAL 0x19
+
 // Heightmaps for slopes
 const u8 heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
@@ -22,10 +65,15 @@ const u8 heightmap[4][16] = {
 	{ 0x7,0x7,0x6,0x6,0x5,0x5,0x4,0x4,0x3,0x3,0x2,0x2,0x1,0x1,0x0,0x0 },
 };
 
-// These are the values used by the original game halved,
-// because a pixel here is 256 units instead of 512
-s16 gravity = 0x50 >> 1, waterGravity = 0x28 >> 1,
-	jumpGravity = 0x20 >> 1, waterJumpGravity = 0x10 >> 1;
+// Not halved anymore, using 512 per pixel units now
+s16 maxFallSpeed = MAX_FALL_SPEED_NTSC, maxFallSpeedWater = MAX_FALL_SPEED_WATER_NTSC,
+	gravity = GRAVITY_NTSC, gravityWater = GRAVITY_WATER_NTSC,
+	gravityJump = GRAVITY_JUMP_NTSC, gravityJumpWater = GRAVITY_JUMP_WATER_NTSC,
+	jumpSpeed = JUMP_SPEED_NTSC, jumpSpeedWater = JUMP_SPEED_WATER_NTSC,
+	maxWalkSpeed = MAX_WALK_SPEED_NTSC, maxWalkSpeedWater = MAX_WALK_SPEED_WATER_NTSC,
+	walkAccel = WALK_ACCEL_NTSC, walkAccelWater = WALK_ACCEL_WATER_NTSC,
+	airControl = AIR_CONTROL_NTSC, airControlWater = AIR_CONTROL_WATER_NTSC,
+	friction = FRICTION_NTSC, frictionWater = FRICTION_WATER_NTSC;
 
 // List functions
 void list_clear(Entity *first);
@@ -37,7 +85,10 @@ bool collide_stage_leftwall(Entity *e);
 bool collide_stage_rightwall(Entity *e);
 bool collide_stage_floor(Entity *e);
 bool collide_stage_floor_grounded(Entity *e);
-bool collide_stage_cieling(Entity *e);
+bool collide_stage_ceiling(Entity *e);
+
+// Big switch statement for type specific stuff
+void entity_create_special(Entity *e);
 
 void list_clear(Entity *first) {
 	Entity *e;
@@ -227,12 +278,6 @@ u16 entities_count() {
 }
 
 void entities_update() {
-	//if(inactiveList != NULL) {
-	//	Entity *e = inactiveList;
-	//	while(e != NULL) {
-	//		e = entity_update_inactive(e);
-	//	}
-	//}
 	if(entityList != NULL) {
 		Entity *e = entityList;
 		while(e != NULL) {
@@ -261,39 +306,41 @@ void entity_update_movement(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 }
 
+// TODO: Water for all these functions
+// TODO: If "friction" isn't supposed to be used in the air, what value is?
 void entity_update_walk(Entity *e) {
-	s16 acc = e->accel,
-		friction = 0x33 >> 1;
-	if (!e->grounded) {
-		acc = jumpGravity;
-	}
+	s16 acc = walkAccel,
+		fric = friction,
+		max_speed = maxWalkSpeed;
+	if (!e->grounded) acc = airControl;
 	if (e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
-		if (e->x_speed < -e->max_speed) {
-			e->x_speed = -e->max_speed;
+		if (e->x_speed < -max_speed) {
+			e->x_speed = -max_speed;
 		}
 	} else if (e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
-		if (e->x_speed > e->max_speed) {
-			e->x_speed = e->max_speed;
+		if (e->x_speed > max_speed) {
+			e->x_speed = max_speed;
 		}
 	} else {
-		if (e->x_speed < friction && e->x_speed > -friction) {
+		if (e->x_speed < fric && e->x_speed > -fric) {
 			e->x_speed = 0;
 		} else if (e->x_speed < 0) {
-			e->x_speed += friction;
+			e->x_speed += fric;
 		} else if (e->x_speed > 0) {
-			e->x_speed -= friction;
+			e->x_speed -= fric;
 		}
 	}
 }
 
+// TODO: Real value for max jump time
 void entity_update_jump(Entity *e) {
-	const u8 maxJumpTime = 20;
+	const u8 maxJumpTime = 18;
 	if(e->controller[0] & BUTTON_Z) e->jump_time = 1;
 	if (e->jump_time > 0) {
 		if (e->controller[0] & BUTTON_C) {
-			e->y_speed = -0x280;
+			e->y_speed = -jumpSpeed;
 			e->jump_time--;
 		} else {
 			e->jump_time = 0;
@@ -303,17 +350,17 @@ void entity_update_jump(Entity *e) {
 	if (e->grounded) {
 		if ((e->controller[0] & BUTTON_C) && !(e->controller[1] & BUTTON_C)) {
 			e->grounded = false;
-			e->y_speed = -0x280;
+			e->y_speed = -jumpSpeed;
 			e->jump_time = maxJumpTime;
 		}
 	} else {
-		if ((e->controller[0] & BUTTON_C) && e->y_speed > 0) {
-				e->y_speed += jumpGravity;
+		if ((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
+				e->y_speed += gravityJump;
 		} else {
 			e->y_speed += gravity;
 		}
-		if (e->y_speed > 0x2FF) {
-			e->y_speed = 0x2FF;
+		if (e->y_speed > maxFallSpeed) {
+			e->y_speed = maxFallSpeed;
 		}
 	}
 }
@@ -335,9 +382,8 @@ void entity_update_collision(Entity *e) {
 		e->grounded = collide_stage_floor(e);
 		return;
 	}
-	if(e->y_speed < 0) {
-		collide_stage_cieling(e);
-	}
+	if(e->y_speed < 0) collide_stage_ceiling(e);
+
 }
 
 bool collide_stage_leftwall(Entity *e) {
@@ -379,13 +425,14 @@ bool collide_stage_rightwall(Entity *e) {
 bool collide_stage_floor(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_y;
 	u8 pxa1, pxa2;
-	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
-	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
+	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
+	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	if(pxa1 == 0x41 || pxa2 == 0x41 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub(
 				pixel_y - e->hit_box.bottom);
@@ -394,6 +441,7 @@ bool collide_stage_floor(Entity *e) {
 	bool result = false;
 	if((pxa1&0x30) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
+		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%2][pixel_x1%16] - e->hit_box.bottom);
 		e->y_speed = 0;
@@ -401,6 +449,7 @@ bool collide_stage_floor(Entity *e) {
 	}
 	if((pxa2&0x30) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= 0xF - heightmap[pxa2%2][pixel_x2%16]) {
+		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
 				heightmap[pxa2%2][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
@@ -413,8 +462,8 @@ bool collide_stage_floor_grounded(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_y1, pixel_y2;
 	u8 pxa1, pxa2;//, slope;
 	//bool result = false;
-	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
-	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
+	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
+	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
 	pixel_y1 = sub_to_pixel(e->y_next) + e->hit_box.bottom - 2;
 	pixel_y2 = sub_to_pixel(e->y_next) + e->hit_box.bottom + 2;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y1));
@@ -463,7 +512,7 @@ bool collide_stage_floor_grounded(Entity *e) {
 	return false;
 }
 
-bool collide_stage_cieling(Entity *e) {
+bool collide_stage_ceiling(Entity *e) {
 	u16 block_x1, block_x2, block_y;
 	u8 pxa1, pxa2;
 	block_x1 = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left + 2);
@@ -473,6 +522,7 @@ bool collide_stage_cieling(Entity *e) {
 	pxa2 = stage_get_block_type(block_x2, block_y);
 	if(pxa1 == 0x41 || pxa2 == 0x41 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub(
 				block_to_pixel(block_y) + block_to_pixel(1) + e->hit_box.top);
@@ -519,10 +569,6 @@ Entity *entity_update_inactive(Entity *e) {
 	if(entity_on_screen(e)) {
 		if(npc_info[e->type].sprite != NULL)
 			e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
-		//Entity *activated = e;
-		//e = e->next;
-		//entity_cut(activated);
-		//entity_insert_after(activated, lastActiveEntity);
 		Entity *next = e->next;
 		entity_reactivate(e);
 		return next;
@@ -580,16 +626,16 @@ Entity *entity_update(Entity *e) {
 	}
 	if(e->sprite != SPRITE_NONE) {
 		sprite_set_position(e->sprite,
-			sub_to_pixel(e->x) - sub_to_pixel(camera.x) - (e->display_box.left-8) + SCREEN_HALF_W,
-			sub_to_pixel(e->y) - sub_to_pixel(camera.y) - (e->display_box.top-8) + SCREEN_HALF_H);
+			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 	}
 	return e->next;
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	Entity *e = MEM_alloc(sizeof(Entity));
-	e->x = block_to_sub(x);
-	e->y = block_to_sub(y);
+	e->x = block_to_sub(x) + pixel_to_sub(8);
+	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
 	e->type = type;
@@ -616,5 +662,23 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	}
 	e->hit_box = npc_hitBox(type);
 	e->display_box = npc_displayBox(type);
+	entity_create_special(e);
 	return e;
+}
+
+void entity_create_special(Entity *e) {
+	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+	switch(e->type) {
+	case 211: // Spikes
+		if(stage_get_block(x, y+1) == 0x41) break;
+		if(stage_get_block(x, y-1) == 0x41) {
+			sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, true, false));
+			break;
+		}
+		//if(stage_get_block(x-1, y) == 0x41) break;
+		//if(stage_get_block(x+1, y) == 0x41) break;
+		break;
+	default:
+		break;
+	}
 }

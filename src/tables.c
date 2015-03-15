@@ -334,7 +334,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 61 - King
 	{ NULL, PAL0 }, // 62 - Kazuma (Computer)
 	{ NULL, PAL0 }, // 63 - Toroko (Attacking)
-	{ NULL, PAL0 }, // 64 - Enemy: Critter (Hopping, Blue)
+	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
 	{ NULL, PAL0 }, // 66 - Bubble
 	{ NULL, PAL0 }, // 67 - Misery (Floating)

@@ -34,6 +34,8 @@ SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
 SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 30 NONE
 SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 20 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE
+# Use Same Palette as Stage
+SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
 SPRITE SPR_Kazuma	"sprite/kazuma.png" 2 3 0 10 NONE
 SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
