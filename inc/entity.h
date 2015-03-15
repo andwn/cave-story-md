@@ -3,6 +3,12 @@
 
 #include "common.h"
 
+#define FILTER_NONE 0
+#define FILTER_ID 1
+#define FILTER_EVENT 2
+#define FILTER_TYPE 3
+#define FILTER_ALL 4
+
 typedef struct Entity {
 	// We linked list now
 	struct Entity *next;
@@ -46,12 +52,12 @@ typedef struct Entity {
 Entity *entityList, *inactiveList;
 
 // Deactivates everything
-void entities_clear();
+void entities_clear(u8 criteria, u16 value);
 // These 3 are for TSC scripts, deactivates all entities that fit
 // a specific criteria (id, event #, or type)
-void entities_clear_id(u16 id);
-void entities_clear_event(u16 event);
-void entities_clear_type(u16 type);
+//void entities_clear_id(u16 id);
+//void entities_clear_event(u16 event);
+//void entities_clear_type(u16 type);
 // Counts the number of active entities
 u16 entities_count();
 // Per frame update for entities

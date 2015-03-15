@@ -118,8 +118,8 @@ void player_update_shooting() {
 				b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
 				b->damage = w->level;
 				b->ttl = 20 + w->level * 5;
-				b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * playerFacing;
-				b->y = player.y;
+				b->x = player.x - pixel_to_sub(8) + pixel_to_sub(16) * playerFacing;
+				b->y = player.y + pixel_to_sub(4);
 				b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * playerFacing;
 				b->y_speed = 0;
 			}

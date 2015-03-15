@@ -496,11 +496,11 @@ u8 execute_command() {
 			break;
 		case CMD_DNA: // Delete all entities of type (1)
 			args[0] = tsc_read_word();
-			entities_clear_type(args[0]);
+			entities_clear(FILTER_TYPE, args[0]);
 			break;
 		case CMD_DNP: // Delete all entities with event # (1)
 			args[0] = tsc_read_word();
-			entities_clear_event(args[0]);
+			entities_clear(FILTER_EVENT, args[0]);
 			break;
 		// TODO: Change entity (1) to type (2) with direction (3) and set flag 0x1000?
 		case CMD_INP:

@@ -32,7 +32,7 @@ void stage_load(u16 id) {
 	VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
-	entities_clear();
+	entities_clear(FILTER_ALL, 0);
 	sprites_clear();
 	player_reset_sprites(); // Reloads player/weapon/hud sprites
 	stageID = id;

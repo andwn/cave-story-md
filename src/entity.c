@@ -76,7 +76,7 @@ s16 maxFallSpeed = MAX_FALL_SPEED_NTSC, maxFallSpeedWater = MAX_FALL_SPEED_WATER
 	friction = FRICTION_NTSC, frictionWater = FRICTION_WATER_NTSC;
 
 // List functions
-void list_clear(Entity *first);
+Entity *list_clear(Entity *list, u8 criteria, u16 value);
 Entity *list_get_prev(Entity *e, Entity *list);
 
 Entity *entity_update(Entity *e);
@@ -90,29 +90,12 @@ bool collide_stage_ceiling(Entity *e);
 // Big switch statement for type specific stuff
 void entity_create_special(Entity *e);
 
-void list_clear(Entity *first) {
-	Entity *e;
-	while(first != NULL) {
-		e = first->next;
-		MEM_free(first);
-		first = e;
-	}
-}
-
 Entity *list_get_prev(Entity *e, Entity *list) {
 	while(list->next != NULL) {
 		if(list->next == e) return list;
 		list = list->next;
 	}
 	return NULL;
-}
-
-void entities_clear() {
-	list_clear(entityList);
-	list_clear(inactiveList);
-	// Might not be needed
-	entityList = NULL;
-	inactiveList = NULL;
 }
 
 void entity_deactivate(Entity *e) {
@@ -139,118 +122,53 @@ void entity_reactivate(Entity *e) {
 	}
 }
 
-void entities_clear_id(u16 id) {
-	Entity *e, *temp;
-	// First active element
-	while(entityList->id == id) {
-		temp = entityList->next;
-		MEM_free(entityList);
-		entityList = temp;
-	}
-	// Other active elements
-	e = entityList;
-	while(e->next != NULL) {
-		if(e->next->id == id) {
-			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		}
-		else e = e->next;
-	}
-
-	// First inactive element
-	while(inactiveList->id == id) {
-		temp = inactiveList->next;
-		MEM_free(inactiveList);
-		inactiveList = temp;
-	}
-	// Other inactive elements
-	e = inactiveList;
-	while(e->next != NULL) {
-		if(e->next->id == id) {
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		}
-		else e = e->next;
+bool entity_matches_criteria(Entity *e, u8 criteria, u16 value) {
+	switch(criteria) {
+	case FILTER_ID:
+		return (e->id == value);
+	case FILTER_EVENT:
+		return (e->event == value);
+	case FILTER_TYPE:
+		return (e->type == value);
+	case FILTER_ALL:
+		return true;
+	default:
+		return false;
 	}
 }
 
-void entities_clear_event(u16 event) {
+// Clears a single linked list of entities, returns first element
+Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	Entity *e, *temp;
-	// First active element
-	while(entityList->event == event) {
-		temp = entityList->next;
-		MEM_free(entityList);
-		entityList = temp;
+	// First element
+	while(list != NULL) {
+		if(entity_matches_criteria(list, criteria, value)) {
+			temp = list->next;
+			MEM_free(entityList);
+			list = temp;
+		} else {
+			break;
+		}
 	}
-	// Other active elements
-	e = entityList;
+	if(list == NULL) return NULL; // If we cleared every entity
+	// Other elements
+	e = list;
 	while(e->next != NULL) {
-		if(e->next->event == event) {
-			if(e->next->flags & NPC_DISABLEONFLAG) system_set_flag(e->next->id, true);
+		if(entity_matches_criteria(e, criteria, value)) {
 			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
 			temp = e->next->next;
 			MEM_free(e->next);
 			e->next = temp;
+		} else {
+			e = e->next;
 		}
-		else e = e->next;
 	}
-
-	// First inactive element
-	while(inactiveList->event == event) {
-		temp = inactiveList->next;
-		MEM_free(inactiveList);
-		inactiveList = temp;
-	}
-	// Other inactive elements
-	e = inactiveList;
-	while(e->next != NULL) {
-		if(e->next->event == event) {
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		}
-		else e = e->next;
-	}
+	return list;
 }
 
-void entities_clear_type(u16 type) {
-	Entity *e, *temp;
-	// First active element
-	while(entityList->type == type) {
-		temp = entityList->next;
-		MEM_free(entityList);
-		entityList = temp;
-	}
-	// Other active elements
-	e = entityList;
-	while(e->next != NULL) {
-		if(e->next->type == type) {
-			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		}
-		else e = e->next;
-	}
-	// First inactive element
-	while(inactiveList->type == type) {
-		temp = inactiveList->next;
-		MEM_free(inactiveList);
-		inactiveList = temp;
-	}
-	// Other inactive elements
-	e = inactiveList;
-	while(e->next != NULL) {
-		if(e->next->type == type) {
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		}
-		else e = e->next;
-	}
+void entities_clear(u8 criteria, u16 value) {
+	entityList = list_clear(entityList, criteria, value);
+	inactiveList = list_clear(inactiveList, criteria, value);
 }
 
 u16 entities_count_active() {
@@ -434,8 +352,7 @@ bool collide_stage_floor(Entity *e) {
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_speed = 0;
-		e->y_next = pixel_to_sub(
-				pixel_y - e->hit_box.bottom);
+		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
 		return true;
 	}
 	bool result = false;
