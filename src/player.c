@@ -72,7 +72,7 @@ void player_reset_sprites() {
 	sprite_set_position(hudSprite, tile_to_pixel(2), tile_to_pixel(4));
 	if(playerWeapon[currentWeapon].type > 0) {
 		playerWeapon[currentWeapon].sprite = sprite_create(
-			weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, true);
+			weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
 	}
 	hudHealthSprite[0] = sprite_create(&SPR_Numbers, PAL0, true);
 	hudHealthSprite[1] = sprite_create(&SPR_Numbers, PAL0, true);

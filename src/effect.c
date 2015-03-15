@@ -6,20 +6,36 @@
 #include "resources.h"
 #include "camera.h"
 
-#define MAX_DAMAGE_STRINGS 8
+#define MAX_DAMAGE_STRINGS 4
+
+#define MAX_SMOKE 8
+#define SMOKE_NONE 0
+#define SMOKE_SMALL 1
+#define SMOKE_MID 2
+#define SMOKE_BIG 3
+#define SMOKE_PLAYER 4
 
 typedef struct {
 	u8 sprite[4];
 	u8 sprite_count;
-	u16 x, y;
+	s16 x, y;
 	u8 ttl;
 } damage_string_def;
 
 damage_string_def damage_string[MAX_DAMAGE_STRINGS];
 
+typedef struct {
+	u8 sprite;
+	s16 x, y;
+	u8 ttl;
+} smoke_def;
+
+smoke_def smoke[MAX_SMOKE];
+
 // Internal functions
 void damage_string_update(damage_string_def *d);
 void damage_string_cleanup(damage_string_def *d);
+void smoke_update(smoke_def *s);
 s16 abs(s16 v);
 s16 pow(s16 base, s16 exp);
 
@@ -27,6 +43,10 @@ void effects_clear() {
 	for(u8 i = 0; i < MAX_DAMAGE_STRINGS; i++) {
 		damage_string[i].ttl = 0;
 		damage_string_cleanup(&damage_string[i]);
+	}
+	for(u8 i = 0; i < MAX_SMOKE; i++) {
+		smoke[i].ttl = 0;
+		sprite_delete(smoke[i].sprite);
 	}
 }
 
@@ -40,9 +60,18 @@ void effects_update() {
 			damage_string_update(&damage_string[i]);
 		}
 	}
+	for(u8 i = 0; i < MAX_SMOKE; i++) {
+		if(smoke[i].ttl == 0) continue;
+		smoke[i].ttl--;
+		if(smoke[i].ttl == 0) {
+			sprite_delete(smoke[i].sprite);
+		} else {
+			smoke_update(&smoke[i]);
+		}
+	}
 }
 
-void effect_create_damage_string(s16 num, u16 x, u16 y, u8 ttl) {
+void effect_create_damage_string(s16 num, s16 x, s16 y, u8 ttl) {
 	for(u8 i = 0; i < MAX_DAMAGE_STRINGS; i++) {
 		if(damage_string[i].ttl > 0) continue;
 		damage_string[i].x = x;
@@ -74,6 +103,26 @@ void damage_string_update(damage_string_def *d) {
 
 void damage_string_cleanup(damage_string_def *d) {
 	for(u8 s = 0; s < d->sprite_count; s++) sprite_delete(d->sprite[s]);
+}
+
+void effect_create_smoke(u8 type, s16 x, s16 y) {
+	for(u8 i = 0; i < MAX_SMOKE; i++) {
+		if(smoke[i].ttl > 0) continue;
+		smoke[i].x = x;
+		smoke[i].y = y;
+		smoke[i].ttl = 48;
+		smoke[i].sprite = sprite_create(&SPR_Smoke, PAL1, false);
+		sprite_set_position(smoke[i].sprite,
+				smoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+				smoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		break;
+	}
+}
+
+void smoke_update(smoke_def *s) {
+	sprite_set_position(s->sprite,
+			s->x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+			s->y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 }
 
 s16 abs(s16 v) {

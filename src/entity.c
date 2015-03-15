@@ -516,29 +516,43 @@ Entity *entity_update(Entity *e) {
 						by+4 > sub_to_pixel(e->y)-e->hit_box.top) {
 					b->ttl = 0;
 					sprite_delete(b->sprite);
-					if(e->flags & NPC_SHOWDAMAGE)
-						effect_create_damage_string(-b->damage, bx, by, 60);
 					if(e->health <= b->damage) {
+						if(e->flags & NPC_SHOWDAMAGE)
+							effect_create_damage_string(e->damage_value - b->damage,
+									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 						// Killed enemy
 						e->health = 0;
-						//soundmgr_play(entities[j].deathSound, 5);
-						// entity_create(e->x, e->y, 0, 0, (exp), 0);
-						// effect_create_smoke(e->x, e->y);
+						sound_play(e->deathSound, 5);
+						if(e->flags&NPC_DROPPOWERUP) {
+							// entity_create(e->x, e->y, 0, 0, (exp), 0);
+						}
+						effect_create_smoke(e->deathSmoke,
+								sub_to_pixel(e->x), sub_to_pixel(e->y));
 						if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 						if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 						sprite_delete(e->sprite);
-						//e->sprite = SPRITE_NONE;
-						//e->active = false;
 						Entity *next = e->next;
 						Entity *prev = list_get_prev(e, entityList);
 						prev->next = next;
 						MEM_free(e);
 						return next;
 					}
+					if(e->flags & NPC_SHOWDAMAGE) {
+						e->damage_value -= b->damage;
+						e->damage_time = 30;
+					}
 					e->health -= b->damage;
 					sound_play(e->hurtSound, 5);
 				}
 			}
+		}
+	}
+	if((e->flags & NPC_SHOWDAMAGE) && e->damage_value != 0) {
+		e->damage_time--;
+		if(e->damage_time <= 0) {
+			effect_create_damage_string(e->damage_value,
+					sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+			e->damage_value = 0;
 		}
 	}
 	if(e->sprite != SPRITE_NONE) {
@@ -565,6 +579,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->experience = npc_experience(type);
 	e->hurtSound = npc_hurtSound(type);
 	e->deathSound = npc_deathSound(type);
+	e->deathSmoke = npc_deathSmoke(type);
 	if(entity_on_screen(e)) {
 		e->next = entityList;
 		entityList = e;
@@ -579,6 +594,8 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	}
 	e->hit_box = npc_hitBox(type);
 	e->display_box = npc_displayBox(type);
+	e->damage_value = 0;
+	e->damage_time = 0;
 	entity_create_special(e);
 	return e;
 }
