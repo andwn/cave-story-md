@@ -115,6 +115,12 @@ void player_update_shooting() {
 					b->y = player.y - pixel_to_sub(8);
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(-4);
+				} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+					sprite_set_animation(b->sprite, 1);
+					b->x = player.x;
+					b->y = player.y + pixel_to_sub(8);
+					b->x_speed = 0;
+					b->y_speed = pixel_to_sub(4);
 				} else {
 					b->x = player.x - pixel_to_sub(8) + pixel_to_sub(16) * playerFacing;
 					b->y = player.y + pixel_to_sub(4);
