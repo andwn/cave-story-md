@@ -110,19 +110,19 @@ void player_update_shooting() {
 				b->damage = w->level;
 				b->ttl = 20 + w->level * 5;
 				if(player.controller[0]&BUTTON_UP) {
-					sprite_set_animation(b->sprite, 1);
+					sprite_set_frame(b->sprite, 1);
 					b->x = player.x;
-					b->y = player.y - pixel_to_sub(8);
+					b->y = player.y - pixel_to_sub(12);
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(-4);
 				} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-					sprite_set_animation(b->sprite, 1);
+					sprite_set_frame(b->sprite, 1);
 					b->x = player.x;
-					b->y = player.y + pixel_to_sub(8);
+					b->y = player.y + pixel_to_sub(12);
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(4);
 				} else {
-					b->x = player.x - pixel_to_sub(8) + pixel_to_sub(16) * playerFacing;
+					b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * playerFacing;
 					b->y = player.y + pixel_to_sub(4);
 					b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * playerFacing;
 					b->y_speed = 0;
@@ -139,8 +139,8 @@ void player_update_bullets() {
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		sprite_set_position(b->sprite,
-				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
-				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
+				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		if(--b->ttl == 0) sprite_delete(b->sprite);
 	}
 }
@@ -203,11 +203,11 @@ void player_draw() {
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0) {
-		bool wanim = 0;
+		u8 wanim = 0;
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
 		sprite_set_animation(playerWeapon[currentWeapon].sprite, wanim);
-		sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, true, false, playerFacing));
+		sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, playerFacing));
 		sprite_set_visible(playerWeapon[currentWeapon].sprite, !((playerIFrames / 2) % 2));
 		sprite_set_position(playerWeapon[currentWeapon].sprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
@@ -234,6 +234,7 @@ void player_update_entity_collision() {
 			// Take health
 			if(player.health <= e->attack) {
 				player.health = 0;
+				effect_create_smoke(2, player.x, player.y);
 				sound_play(SOUND_DIE, 15);
 				tsc_call_event(PLAYER_DEFEATED_EVENT);
 				break;

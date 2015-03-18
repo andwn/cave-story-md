@@ -10,11 +10,13 @@ SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
 SPRITE SPR_Numbers	"sprite/numbers.png" 1 1 0 0 NONE
 SPRITE SPR_Hud1		"sprite/hud1.png" 8 2 0 0 NONE
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
+SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
-SPRITE SPR_PolarB1	"sprite/polarb1.png" 1 1 0 0 NONE
-SPRITE SPR_PolarB2	"sprite/polarb2.png" 1 1 0 0 NONE
-SPRITE SPR_PolarB3	"sprite/polarb3.png" 1 1 0 0 NONE
+#SPRITE SPR_PolarB	"sprite/polarb.png" 2 2 0 0 NONE
+SPRITE SPR_PolarB1	"sprite/polarb1.png" 2 2 0 0 NONE
+SPRITE SPR_PolarB2	"sprite/polarb2.png" 2 2 0 0 NONE
+SPRITE SPR_PolarB3	"sprite/polarb3.png" 2 2 0 0 NONE
 SPRITE SPR_Chest	"sprite/chest.png" 2 2 0 10 NONE
 SPRITE SPR_Save		"sprite/save.png" 2 2 0 6 NONE
 SPRITE SPR_Refill	"sprite/refill.png" 2 2 0 1 NONE

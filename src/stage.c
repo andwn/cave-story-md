@@ -16,7 +16,6 @@
 #define TS_HEIGHT 20
 #define TILE_BACKINDEX (TILE_USERINDEX + (TS_WIDTH * TS_HEIGHT))
 
-u8 stageTileset;
 u8 stageBackground;
 s16 backScrollTable[16];
 s8 morphingRow, morphingColumn;
@@ -31,6 +30,7 @@ void stage_draw_background();
 
 void stage_load(u16 id) {
 	VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
+	player_lock_controls();
 	hud_hide();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
@@ -40,10 +40,6 @@ void stage_load(u16 id) {
 	stageID = id;
 	stageTileset = stage_info[id].tileset;
 	stage_load_blocks();
-	//stageBlocks = stage_info[stageID].PXM;
-	//stageWidth = stageBlocks[4] + (stageBlocks[5] << 8);
-	//stageHeight = stageBlocks[6] + (stageBlocks[7] << 8);
-	//stageBlocks += 8;
 	camera_set_position(player.x, player.y);
 	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
@@ -54,6 +50,7 @@ void stage_load(u16 id) {
 	stage_load_entities();
 	tsc_load(id);
 	hud_show();
+	player_unlock_controls();
 	VDP_setEnable(true);
 }
 

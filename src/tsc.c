@@ -374,7 +374,7 @@ u8 execute_command() {
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			window_close();
-			player_unlock_controls();
+			//player_unlock_controls();
 			//sprite_set_visible(hudSprite, true);
 			stage_load(args[0]);
 			tsc_call_event(args[1]);

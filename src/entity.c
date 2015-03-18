@@ -57,6 +57,10 @@
 #define FRICTION_WATER_NTSC 0x15
 #define FRICTION_WATER_PAL 0x19
 
+typedef struct {
+	s16 x1, x2, y1, y2;
+} pixel_box;
+
 // Heightmaps for slopes
 const u8 heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
@@ -123,18 +127,35 @@ void entity_reactivate(Entity *e) {
 }
 
 bool entity_matches_criteria(Entity *e, u8 criteria, u16 value) {
+	bool result = false;
 	switch(criteria) {
 	case FILTER_ID:
-		return (e->id == value);
+		if(e->id == value) {
+			result = true;
+			if(e->flags&NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+		}
+		break;
 	case FILTER_EVENT:
-		return (e->event == value);
+		if(e->event == value) {
+			result = true;
+		}
+		break;
 	case FILTER_TYPE:
-		return (e->type == value);
+		if(e->type == value) {
+			result = true;
+		}
+		break;
 	case FILTER_ALL:
-		return true;
+		result = true;
+		break;
 	default:
-		return false;
+		break;
 	}
+	if(result && e->sprite != SPRITE_NONE) {
+		sprite_delete(e->sprite);
+		e->sprite = SPRITE_NONE;
+	}
+	return result;
 }
 
 // Clears a single linked list of entities, returns first element
@@ -143,9 +164,8 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	// First element
 	while(list != NULL) {
 		if(entity_matches_criteria(list, criteria, value)) {
-			if(list->flags&NPC_DISABLEONFLAG) system_set_flag(list->id, true);
 			temp = list->next;
-			MEM_free(entityList);
+			MEM_free(list);
 			list = temp;
 		} else {
 			break;
@@ -156,8 +176,6 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	e = list;
 	while(e->next != NULL) {
 		if(entity_matches_criteria(e->next, criteria, value)) {
-			if(e->next->sprite != SPRITE_NONE) sprite_delete(e->next->sprite);
-			if(e->next->flags&NPC_DISABLEONFLAG) system_set_flag(e->next->id, true);
 			temp = e->next->next;
 			MEM_free(e->next);
 			e->next = temp;
@@ -232,7 +250,15 @@ void entity_update_walk(Entity *e) {
 	s16 acc = walkAccel,
 		fric = friction,
 		max_speed = maxWalkSpeed;
-	if (!e->grounded) acc = airControl;
+	if (!e->grounded) {
+		acc = airControl;
+		fric = airControl;
+	}
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) {
+		acc /= 2;
+		fric /=2;
+		max_speed /= 2;
+	}
 	if (e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if (e->x_speed < -max_speed) {
@@ -243,7 +269,7 @@ void entity_update_walk(Entity *e) {
 		if (e->x_speed > max_speed) {
 			e->x_speed = max_speed;
 		}
-	} else {
+	} else if(e->grounded) {
 		if (e->x_speed < fric && e->x_speed > -fric) {
 			e->x_speed = 0;
 		} else if (e->x_speed < 0) {
@@ -257,10 +283,22 @@ void entity_update_walk(Entity *e) {
 // TODO: Real value for max jump time
 void entity_update_jump(Entity *e) {
 	const u8 maxJumpTime = 18;
+	s16 tJumpSpeed = jumpSpeed,
+		tMaxJumpTime = maxJumpTime,
+		tGravity = gravity,
+		tGravityJump = gravityJump,
+		tMaxFallSpeed = maxFallSpeed;
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) {
+		tJumpSpeed /= 2;
+		tMaxJumpTime /=2;
+		tGravity /= 2;
+		tGravityJump /= 2;
+		tMaxFallSpeed /= 2;
+	}
 	if(e->controller[0] & BUTTON_Z) e->jump_time = 1;
 	if (e->jump_time > 0) {
 		if (e->controller[0] & BUTTON_C) {
-			e->y_speed = -jumpSpeed;
+			e->y_speed = -tJumpSpeed;
 			e->jump_time--;
 		} else {
 			e->jump_time = 0;
@@ -270,17 +308,17 @@ void entity_update_jump(Entity *e) {
 	if (e->grounded) {
 		if ((e->controller[0] & BUTTON_C) && !(e->controller[1] & BUTTON_C)) {
 			e->grounded = false;
-			e->y_speed = -jumpSpeed;
-			e->jump_time = maxJumpTime;
+			e->y_speed = -tJumpSpeed;
+			e->jump_time = tMaxJumpTime;
 		}
 	} else {
 		if ((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
-				e->y_speed += gravityJump;
+				e->y_speed += tGravityJump;
 		} else {
-			e->y_speed += gravity;
+			e->y_speed += tGravity;
 		}
-		if (e->y_speed > maxFallSpeed) {
-			e->y_speed = maxFallSpeed;
+		if (e->y_speed > tMaxFallSpeed) {
+			e->y_speed = tMaxFallSpeed;
 		}
 	}
 }
@@ -303,7 +341,6 @@ void entity_update_collision(Entity *e) {
 		return;
 	}
 	if(e->y_speed < 0) collide_stage_ceiling(e);
-
 }
 
 bool collide_stage_leftwall(Entity *e) {
@@ -358,7 +395,7 @@ bool collide_stage_floor(Entity *e) {
 		return true;
 	}
 	bool result = false;
-	if((pxa1&0x30) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
+	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
@@ -366,7 +403,7 @@ bool collide_stage_floor(Entity *e) {
 		e->y_speed = 0;
 		result = true;
 	}
-	if((pxa2&0x30) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
+	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= 0xF - heightmap[pxa2%2][pixel_x2%16]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
@@ -377,58 +414,92 @@ bool collide_stage_floor(Entity *e) {
 	return result;
 }
 
-bool collide_stage_floor_grounded(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_y1, pixel_y2;
-	u8 pxa1, pxa2;//, slope;
-	//bool result = false;
+u8 read_slope_table(s16 x, s16 y) {
+	s16 mx, my;
+	u8 t, type;
+	mx = pixel_to_block(x);
+	my = pixel_to_block(y);
+	if (mx < 0 || my < 0 || mx >= stageWidth || my >= stageHeight)
+		return 0;
+	t = stage_get_block_type(mx, my);
+	if(t & BLOCK_SLOPE) {
+		type = (t & 0x07) + 1;
+		return type;
+	}
+	return 0;
+}
+
+bool collide_stage_slope_grounded(Entity *e) {
+	u16 pixel_x1, pixel_x2, pixel_y;
+	u8 pxa1, pxa2;
+	bool result = false;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
-	pixel_y1 = sub_to_pixel(e->y_next) + e->hit_box.bottom - 2;
-	pixel_y2 = sub_to_pixel(e->y_next) + e->hit_box.bottom + 2;
-	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y1));
-	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y1));
-	// Check for rising slopes
-	if((pxa1&0x30) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 8) {
-		// Walking up left slope
-		s32 y_new = pixel_to_sub((pixel_y1&0xFFF0) + 1 +
+	// If we are on flat ground and run up to a slope
+	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom - 1;
+	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
+	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
+	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
+			pixel_y%16 >= heightmap[pxa1%4][pixel_x1%16]) {
+		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
-		if(y_new <= e->y_next) {
-			e->y_next = y_new;
-			e->y_speed = 0;
-			return true;
-		}
+		e->y_speed = 0;
+		result = true;
 	}
-	if((pxa2&0x30) && (pxa2&0xF) >= 4 && (pxa2&0xF) < 8) {
-		// Walking up right slope
-		s32 y_new = pixel_to_sub((pixel_y1&0xFFF0) + 1 +
+	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
+			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
+		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
-		if(y_new <= e->y_next) {
-			e->y_next = y_new;
-			e->y_speed = 0;
-			return true;
-		}
+		e->y_speed = 0;
+		result = true;
 	}
-	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y2));
-	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y2));
-	// Check for solid blocks
+	if(result) return true;
+	// If we're already on a slope
+	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom + 1;
+	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
+	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
+	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
+			pixel_y%16 >= heightmap[pxa1%4][pixel_x1%16]) {
+		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
+				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
+		e->y_speed = 0;
+		result = true;
+	}
+	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
+			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
+		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
+				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
+		e->y_speed = 0;
+		result = true;
+	}
+	return result;
+}
+
+bool collide_stage_floor_grounded(Entity *e) {
+	bool result = false;
+	// If we aren't moving we're still on the ground
+	if(e->x_speed == 0) return true;
+	// First see if we are still standing on a flat block
+	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
+			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
+	u8 pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
+			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
 	if(pxa1 == 0x41 || pxa2 == 0x41 ||
 		(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
-		return true;
+		// After going up a slope and returning to flat land, we are one or
+		// two pixels too low. This causes the player to ignore new upward slopes
+		// which is bad, so this is a dumb hack to push us back up if we are
+		// a bit too low
+		if((sub_to_pixel(e->y_next) + e->hit_box.bottom) % 16 < 4) {
+			e->y_next = pixel_to_sub(((sub_to_pixel(e->y_next) + e->hit_box.bottom)&~0xF) -
+				e->hit_box.bottom);
+		}
+		result = true;
 	}
-	// Check for lowering slopes
-	//slope = (pxa1 >= 0x54 && pxa1 < 0x58) + ((pxa1 >= 0x54 && pxa1 < 0x58)<<1);
-	//if(slope & 1) {
-	//	obj->y_next += pixel_to_sub(collide_slope_sticky(pxa1,
-	//			sub_to_pixel(obj->x_next % 16), sub_to_pixel(pixel_y2 % 16)));
-	//	result = true;
-	//}
-	//if(slope & 2) {
-	//	obj->y_next += pixel_to_sub(collide_slope_sticky(pxa2,
-	//			sub_to_pixel(obj->x_next % 16), sub_to_pixel(pixel_y2 % 16)));
-	//	result = true;
-	//}
-	//if(result) return true;
-	return false;
+	if(collide_stage_slope_grounded(e)) {
+		result = true;
+	}
+	return result;
 }
 
 bool collide_stage_ceiling(Entity *e) {
@@ -495,6 +566,18 @@ Entity *entity_update_inactive(Entity *e) {
 	return e->next;
 }
 
+void entity_drop_powerup(Entity *e) {
+	u8 chance = random() % 100;
+	// TODO: Not sure how drops are determined
+	if(chance < 30) {
+		// Heart
+	} else if(chance < 80) {
+		// Exp
+	} else {
+		// Missiles (or exp if no missiles)
+	}
+}
+
 Entity *entity_update(Entity *e) {
 	if(!entity_on_screen(e)) {
 		if(e->sprite != SPRITE_NONE) {
@@ -526,6 +609,7 @@ Entity *entity_update(Entity *e) {
 						e->health = 0;
 						sound_play(e->deathSound, 5);
 						if(e->flags&NPC_DROPPOWERUP) {
+							entity_drop_powerup(e);
 							// entity_create(e->x, e->y, 0, 0, (exp), 0);
 						}
 						effect_create_smoke(e->deathSmoke,
@@ -608,8 +692,8 @@ void entity_create_special(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	switch(e->type) {
 	case 211: // Spikes
-		if(stage_get_block(x, y+1) == 0x41) break;
-		if(stage_get_block(x, y-1) == 0x41) {
+		if(tileset_info[stageTileset].PXA[stageBlocks[(y+1) * stageWidth + x]] == 0x41) break;
+		if(tileset_info[stageTileset].PXA[stageBlocks[(y-1) * stageWidth + x]] == 0x41) {
 			sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, true, false));
 			break;
 		}

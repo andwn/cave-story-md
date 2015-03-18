@@ -34,6 +34,18 @@
  * 0x12 + E*12: Entity flags (see tables.h)
  */
 
+#define BLOCK_SOLID 0x1
+#define BLOCK_DAMAGE 0x2
+#define BLOCK_SPECIAL 0x3
+#define BLOCK_NPCSOLID 0x4
+#define BLOCK_BULLETPASS 0x5
+#define BLOCK_PLAYERSOLID 0x6
+
+#define BLOCK_SLOPE 0x10
+#define BLOCK_WATER 0x20
+#define BLOCK_FOREGROUND 0x40
+#define BLOCK_WIND 0x80
+
 // Helper macros
 #define stage_get_block(x, y) (stageBlocks[y * stageWidth + x])
 #define stage_get_block_type(x, y) (stageTileFlags[x%32][y%32])
@@ -42,6 +54,7 @@ u16 stageID; // Index of current stage in stage_info
 u16 stageWidth, stageHeight; // Width and height measured in blocks
 u8 stageBackgroundType; // Which effect to use to display the background
 u8 *stageBlocks; // Pointer to level layout data on ROM
+u8 stageTileset;
 // Cached tile flags in a 512x512 area around the player
 // Used to speed up collision detection
 u8 stageTileFlags[32][32];

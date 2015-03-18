@@ -6,7 +6,7 @@
 
 // One less than BLOCK_SIZE in sub-pixels, because only one
 // row/column is drawn per frame while the camera is moving
-#define CAMERA_MAX_SPEED 0x0FFF
+#define CAMERA_MAX_SPEED 0x1FFF
 
 u16 focusSpeed = 32;
 
