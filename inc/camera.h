@@ -4,10 +4,6 @@
 #include "common.h"
 #include "entity.h"
 
-// When cameraShake is nonzero the camera will shake, and decrement this value
-// each frame until it becomes zero again
-u16 cameraShake;
-
 struct {
 	s32 x, y; // Units
 	Entity *target; // Player, boss, NPC, or NULL
@@ -21,6 +17,8 @@ void camera_init();
 // Center camera directly on a specific point
 // This does not redraw or morph the stage, call stage_draw_area() manually after
 void camera_set_position(s32 x, s32 y);
+
+void camera_shake(u16 time);
 // Per frame update for camera, moves toward the target entity
 // Will "morph" the stage (draw areas surrounding the screen) when necessary
 void camera_update();

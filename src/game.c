@@ -71,7 +71,7 @@ void game_reset(bool load) {
 	tsc_init();
 	if(load) {
 		system_load();
-		tsc_call_event(GAME_LOAD_EVENT);
+		//tsc_call_event(GAME_LOAD_EVENT);
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);

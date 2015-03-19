@@ -46,3 +46,7 @@ void song_stop() {
 void song_resume() {
 	song_play(songResume);
 }
+
+u8 song_get_playing() {
+	return songPlaying;
+}

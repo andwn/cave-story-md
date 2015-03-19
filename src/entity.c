@@ -57,10 +57,6 @@
 #define FRICTION_WATER_NTSC 0x15
 #define FRICTION_WATER_PAL 0x19
 
-typedef struct {
-	s16 x1, x2, y1, y2;
-} pixel_box;
-
 // Heightmaps for slopes
 const u8 heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
@@ -138,6 +134,7 @@ bool entity_matches_criteria(Entity *e, u8 criteria, u16 value) {
 	case FILTER_EVENT:
 		if(e->event == value) {
 			result = true;
+			if(e->flags&NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 		}
 		break;
 	case FILTER_TYPE:

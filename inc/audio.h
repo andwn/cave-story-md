@@ -30,4 +30,6 @@ void song_stop();
 // TSC calls this after fanfare tracks
 void song_resume();
 
+u8 song_get_playing();
+
 #endif /* INC_AUDIO_H_ */

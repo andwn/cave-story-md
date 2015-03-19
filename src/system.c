@@ -77,17 +77,15 @@ void system_drawtime(u16 x, u16 y) {
 
 void system_new() {
 	time.hour = time.minute = time.second = time.frame = 0;
-	//playingSong = 32;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	player_init();
 	stage_load(13);
-	//system_save();
 }
 
 void system_save() {
 	SRAM_enable();
 	SRAM_writeWord(0x000, stageID);
-	//SRAM_writeWord(0x002, playingSong);
+	SRAM_writeWord(0x002, song_get_playing());
 	SRAM_writeWord(0x004, sub_to_block(player.x));
 	SRAM_writeWord(0x006, sub_to_block(player.y));
 	SRAM_writeWord(0x008, playerMaxHealth);
@@ -126,7 +124,7 @@ void system_load() {
 	player_init();
 	SRAM_enableRO();
 	u16 rid = SRAM_readWord(0x00);
-	//playingSong = SRAM_readWord(0x02);
+	u8 song = SRAM_readWord(0x02);
 	player.x = block_to_sub(SRAM_readWord(0x04)) + pixel_to_sub(8);
 	player.y = block_to_sub(SRAM_readWord(0x06)) + pixel_to_sub(8);
 	playerMaxHealth = SRAM_readWord(0x08);
@@ -160,6 +158,7 @@ void system_load() {
 	}
 	SRAM_disable();
 	stage_load(rid);
+	song_play(song);
 }
 
 u8 system_checkdata() {

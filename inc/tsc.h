@@ -4,7 +4,7 @@
 #include <genesis.h>
 
 #define GAME_START_EVENT 200
-#define GAME_LOAD_EVENT 90
+//#define GAME_LOAD_EVENT 90 // "Playing Song" from save data is used instead
 #define PLAYER_DEFEATED_EVENT 40
 #define PLAYER_DROWN_EVENT 41
 #define PLAYER_OOB_EVENT 42

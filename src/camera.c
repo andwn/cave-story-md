@@ -6,9 +6,12 @@
 
 // One less than BLOCK_SIZE in sub-pixels, because only one
 // row/column is drawn per frame while the camera is moving
-#define CAMERA_MAX_SPEED 0x1FFF
+#define CAMERA_MAX_SPEED (block_to_sub(1) - 1)
 
 u16 focusSpeed = 32;
+// When cameraShake is nonzero the camera will shake, and decrement this value
+// each frame until it becomes zero again
+u16 cameraShake;
 
 void camera_init() {
 	camera.target = &player;
@@ -28,6 +31,10 @@ void camera_set_position(s32 x, s32 y) {
 	// Apply
 	camera.x = x;
 	camera.y = y;
+}
+
+void camera_shake(u16 time) {
+	cameraShake = time;
 }
 
 void camera_update() {

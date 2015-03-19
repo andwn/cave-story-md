@@ -6,10 +6,13 @@
 #include "resources.h"
 #include "input.h"
 #include "tables.h"
+#include "audio.h"
 
 #define STOPPED	0
 #define PLAYING	1
 #define PAUSED	2
+
+#define FIRST_SOUND 0x80
 
 u8 track = 0;
 
@@ -39,52 +42,60 @@ void draw_status() {
 
 void soundtest_main() {
 	sprites_clear();
+	song_stop();
 	VDP_setEnable(false);
+	SYS_disableInts();
+	VDP_clearPlan(APLAN, true);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true);
-	//VDP_fillTileMapRectInc(BPLAN,
-	//		TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
-	VDP_clearPlan(APLAN, true);
+	VDP_fillTileMapRectInc(BPLAN,
+			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
 	draw_status();
 	VDP_drawText("Sound Test", 15, 2);
 	VDP_drawText("Track: ", 2, 8);
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	draw_byte(track, 10, 8);
+	SYS_enableInts();
 	VDP_setEnable(true);
     while(true) {
 		input_update();
 		if(joy_pressed(BUTTON_LEFT)) {
-			if(track == 0) track = SONG_COUNT - 1;
+			if(track == 0) track = FIRST_SOUND + SOUND_COUNT - 1;
+			else if(track == FIRST_SOUND) track = SONG_COUNT - 1;
 			else track--;
 			draw_byte(track, 10, 8);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			if(track == SONG_COUNT - 1) track = 0;
+			if(track == SONG_COUNT - 1) track = FIRST_SOUND;
+			else if(track == FIRST_SOUND + SOUND_COUNT - 1) track = 0;
 			else track++;
 			draw_byte(track, 10, 8);
 		}
 		if(joy_pressed(BUTTON_C)) {
 			// Play
-			if(song_info[track].song != NULL)
-				SND_startPlay_XGM(song_info[track].song);
-			status = PLAYING;
-			draw_track_info();
+			if(track < SONG_COUNT) {
+				song_play(track);
+				status = PLAYING;
+				draw_track_info();
+			} else if(track >= FIRST_SOUND && track < FIRST_SOUND + SOUND_COUNT){
+				sound_play(track - FIRST_SOUND, 0);
+			}
 		} else if(joy_pressed(BUTTON_B)) {
 			// Stop
-			SND_stopPlay_XGM();
+			song_stop();
 			status = STOPPED;
 		} else if(joy_pressed(BUTTON_A)) {
 			// Pause
 			if(status == PLAYING) {
-				SND_stopPlay_XGM();
+				song_stop();
 				status = PAUSED;
 			} else if(status == PAUSED) {
-				SND_resumePlay_XGM();
+				song_resume();
 				status = PLAYING;
 			}
 		}
 		if(joy_pressed(BUTTON_START)) {
-			SND_stopPlay_XGM();
+			song_stop();
 			oldstate |= BUTTON_START;
 			break;
 		}

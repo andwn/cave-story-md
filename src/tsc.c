@@ -617,7 +617,7 @@ u8 execute_command() {
 			break;
 		case CMD_QUA: // Shake camera for (1) frames
 			args[0] = tsc_read_word();
-			cameraShake = args[0];
+			camera_shake(args[0]);
 			break;
 		case CMD_FAI: // TODO: Fading, in direction (1)
 			args[0] = tsc_read_word();

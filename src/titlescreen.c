@@ -11,6 +11,7 @@
 #define OPTIONS 3
 
 u8 titlescreen_main() {
+	VDP_setEnable(false);
 	VDP_resetScreen();
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setHorizontalScroll(PLAN_A, 0);
@@ -24,6 +25,8 @@ u8 titlescreen_main() {
 	VDP_drawText("Sound Test", 14, 20);
 	VDP_drawText(" ", 2, 25);
 	VDP_drawText("2015.03", 31, 25);
+	VDP_setEnable(true);
+	song_play(SONG_TITLE);
 	u8 cursor = system_checkdata();
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
