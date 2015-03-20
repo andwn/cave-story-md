@@ -48,7 +48,7 @@ void stage_load(u16 id) {
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
 	stage_load_entities();
-	tsc_load(id);
+	tsc_load_stage(id);
 	hud_show();
 	player_unlock_controls();
 	VDP_setEnable(true);
@@ -98,6 +98,7 @@ void stage_load_entities() {
 	}
 }
 
+// TODO: Use DMA here
 void stage_update() {
 	// Column
 	if(morphingColumn != 0) {

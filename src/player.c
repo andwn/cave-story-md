@@ -93,6 +93,22 @@ void player_update() {
 	player_draw();
 }
 
+Bullet *bullet_colliding(Entity *e) {
+	for(u8 i = 0; i < 3; i++) {
+		if(playerBullet[i].ttl > 0) {
+			Bullet *b = &playerBullet[i];
+			s16 bx = sub_to_pixel(b->x), by = sub_to_pixel(b->y);
+			if(bx-4 < sub_to_pixel(e->x)+e->hit_box.right &&
+					bx+4 > sub_to_pixel(e->x)-e->hit_box.left &&
+					by-4 < sub_to_pixel(e->y)+e->hit_box.bottom &&
+					by+4 > sub_to_pixel(e->y)-e->hit_box.top) {
+				return b;
+			}
+		}
+	}
+	return NULL;
+}
+
 void player_update_shooting() {
 	if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
 		Weapon *w = &playerWeapon[currentWeapon];
@@ -230,23 +246,31 @@ void player_update_entity_collision() {
 	if(playerIFrames > 0) playerIFrames--;
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(playerIFrames == 0 && e->attack > 0 && entity_overlapping(&player, e)) {
-			// Take health
-			if(player.health <= e->attack) {
-				player.health = 0;
-				effect_create_smoke(2, player.x, player.y);
-				sound_play(SOUND_DIE, 15);
-				tsc_call_event(PLAYER_DEFEATED_EVENT);
-				break;
+		if(e->attack > 0) {
+			if(playerIFrames == 0 && entity_overlapping(&player, e)) {
+				// Take health
+				if(player.health <= e->attack) {
+					player.health = 0;
+					effect_create_smoke(2, player.x, player.y);
+					sound_play(SOUND_DIE, 15);
+					tsc_call_event(PLAYER_DEFEATED_EVENT);
+					break;
+				}
+				player.health -= e->attack;
+				sound_play(SOUND_HURT, 5);
+				// Show damage numbers
+				effect_create_damage_string(-e->attack,
+						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
+				playerIFrames = INVINCIBILITY_FRAMES;
+				// TODO: Find an accurate value for knock back
+				player.y_speed -= pixel_to_sub(2);
 			}
-			player.health -= e->attack;
-			sound_play(SOUND_HURT, 5);
-			// Show damage numbers
-			effect_create_damage_string(-e->attack,
-					sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
-			playerIFrames = INVINCIBILITY_FRAMES;
-			// TODO: Find an accurate value for knock back
-			player.y_speed -= pixel_to_sub(2);
+		} else if(e->type == 46) { // Trigger
+			if(entity_overlapping(&player, e)) {
+				tsc_call_event(e->event);
+				e = entity_destroy(e);
+				continue;
+			}
 		}
 		// TODO: Solid Entities
 		if(e->flags & NPC_SOLID) {

@@ -13,6 +13,7 @@
 #include "audio.h"
 #include "tsc.h"
 #include "npc.h"
+#include "behavior.h"
 
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
@@ -87,6 +88,7 @@ bool collide_stage_floor(Entity *e);
 bool collide_stage_floor_grounded(Entity *e);
 bool collide_stage_ceiling(Entity *e);
 
+void entity_drop_powerup(Entity *e);
 // Big switch statement for type specific stuff
 void entity_create_special(Entity *e);
 
@@ -122,19 +124,35 @@ void entity_reactivate(Entity *e) {
 	}
 }
 
-bool entity_matches_criteria(Entity *e, u8 criteria, u16 value) {
+Entity *entity_destroy(Entity *e) {
+	sound_play(e->deathSound, 5);
+	if(e->flags&NPC_DROPPOWERUP) entity_drop_powerup(e);
+	effect_create_smoke(e->deathSmoke,
+			sub_to_pixel(e->x), sub_to_pixel(e->y));
+	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
+	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+	sprite_delete(e->sprite);
+	Entity *next = e->next;
+	Entity *prev = list_get_prev(e, entityList);
+	if(prev == NULL) entityList = next;
+	else prev->next = next;
+	MEM_free(e);
+	return next;
+}
+
+bool entity_matches_criteria(Entity *e, u8 criteria, u16 value, bool delete) {
 	bool result = false;
 	switch(criteria) {
 	case FILTER_ID:
 		if(e->id == value) {
 			result = true;
-			if(e->flags&NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+			if(delete && (e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
 		}
 		break;
 	case FILTER_EVENT:
 		if(e->event == value) {
 			result = true;
-			if(e->flags&NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+			if(delete && (e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
 		}
 		break;
 	case FILTER_TYPE:
@@ -148,7 +166,7 @@ bool entity_matches_criteria(Entity *e, u8 criteria, u16 value) {
 	default:
 		break;
 	}
-	if(result && e->sprite != SPRITE_NONE) {
+	if(delete && result && e->sprite != SPRITE_NONE) {
 		sprite_delete(e->sprite);
 		e->sprite = SPRITE_NONE;
 	}
@@ -160,7 +178,7 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	Entity *e, *temp;
 	// First element
 	while(list != NULL) {
-		if(entity_matches_criteria(list, criteria, value)) {
+		if(entity_matches_criteria(list, criteria, value, true)) {
 			temp = list->next;
 			MEM_free(list);
 			list = temp;
@@ -172,7 +190,7 @@ Entity *list_clear(Entity *list, u8 criteria, u16 value) {
 	// Other elements
 	e = list;
 	while(e->next != NULL) {
-		if(entity_matches_criteria(e->next, criteria, value)) {
+		if(entity_matches_criteria(e->next, criteria, value, true)) {
 			temp = e->next->next;
 			MEM_free(e->next);
 			e->next = temp;
@@ -585,49 +603,29 @@ Entity *entity_update(Entity *e) {
 		entity_deactivate(e);
 		return next;
 	}
+	if(e->update != NULL) e->update(e);
 	entity_update_movement(e);
 	if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
 	if((e->flags & NPC_SHOOTABLE)) {
-		for(u8 i = 0; i < 3; i++) {
-			if(playerBullet[i].ttl > 0) {
-				Bullet *b = &playerBullet[i];
-				s16 bx = sub_to_pixel(b->x), by = sub_to_pixel(b->y);
-				if(bx-4 < sub_to_pixel(e->x)+e->hit_box.right &&
-						bx+4 > sub_to_pixel(e->x)-e->hit_box.left &&
-						by-4 < sub_to_pixel(e->y)+e->hit_box.bottom &&
-						by+4 > sub_to_pixel(e->y)-e->hit_box.top) {
-					b->ttl = 0;
-					sprite_delete(b->sprite);
-					if(e->health <= b->damage) {
-						if(e->flags & NPC_SHOWDAMAGE)
-							effect_create_damage_string(e->damage_value - b->damage,
-									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
-						// Killed enemy
-						e->health = 0;
-						sound_play(e->deathSound, 5);
-						if(e->flags&NPC_DROPPOWERUP) {
-							entity_drop_powerup(e);
-							// entity_create(e->x, e->y, 0, 0, (exp), 0);
-						}
-						effect_create_smoke(e->deathSmoke,
-								sub_to_pixel(e->x), sub_to_pixel(e->y));
-						if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
-						if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
-						sprite_delete(e->sprite);
-						Entity *next = e->next;
-						Entity *prev = list_get_prev(e, entityList);
-						prev->next = next;
-						MEM_free(e);
-						return next;
-					}
-					if(e->flags & NPC_SHOWDAMAGE) {
-						e->damage_value -= b->damage;
-						e->damage_time = 30;
-					}
-					e->health -= b->damage;
-					sound_play(e->hurtSound, 5);
-				}
+		Bullet *b = bullet_colliding(e);
+		if(b != NULL) {
+			b->ttl = 0;
+			sprite_delete(b->sprite);
+			if(e->health <= b->damage) {
+				if(e->flags & NPC_SHOWDAMAGE)
+					effect_create_damage_string(e->damage_value - b->damage,
+							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+				// Killed enemy
+				e->health = 0;
+
+				return entity_destroy(e);
 			}
+			if(e->flags & NPC_SHOWDAMAGE) {
+				e->damage_value -= b->damage;
+				e->damage_time = 30;
+			}
+			e->health -= b->damage;
+			sound_play(e->hurtSound, 5);
 		}
 	}
 	if((e->flags & NPC_SHOWDAMAGE) && e->damage_value != 0) {
@@ -646,6 +644,26 @@ Entity *entity_update(Entity *e) {
 	return e->next;
 }
 
+void entity_change(Entity *e, u16 type, u16 flags) {
+	e->type = type;
+	// Apply NPC flags in addition to entity flags
+	e->flags = flags;
+	e->x_speed = 0;
+	e->y_speed = 0;
+	e->health = npc_health(type);
+	e->attack = npc_attack(type);
+	e->experience = npc_experience(type);
+	e->hurtSound = npc_hurtSound(type);
+	e->deathSound = npc_deathSound(type);
+	e->deathSmoke = npc_deathSmoke(type);
+	e->hit_box = npc_hitBox(type);
+	e->display_box = npc_displayBox(type);
+	e->damage_value = 0;
+	e->damage_time = 0;
+	e->update = NULL;
+	entity_create_special(e);
+}
+
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	u16 eflags = flags | npc_flags(type);
 	if((eflags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
@@ -655,17 +673,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
-	e->type = type;
-	// Apply NPC flags in addition to entity flags
-	e->flags = eflags;
-	e->x_speed = 0;
-	e->y_speed = 0;
-	e->health = npc_health(type);
-	e->attack = npc_attack(type);
-	e->experience = npc_experience(type);
-	e->hurtSound = npc_hurtSound(type);
-	e->deathSound = npc_deathSound(type);
-	e->deathSmoke = npc_deathSmoke(type);
+	entity_change(e, type, eflags);
 	if(entity_on_screen(e)) {
 		e->next = entityList;
 		entityList = e;
@@ -677,17 +685,16 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
 	}
-	e->hit_box = npc_hitBox(type);
-	e->display_box = npc_displayBox(type);
-	e->damage_value = 0;
-	e->damage_time = 0;
-	entity_create_special(e);
 	return e;
 }
 
 void entity_create_special(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	switch(e->type) {
+	case 63:
+		e->y -= block_to_sub(1);
+		e->update = &ai_update_toroko;
+		break;
 	case 211: // Spikes
 		if(tileset_info[stageTileset].PXA[stageBlocks[(y+1) * stageWidth + x]] == 0x41) break;
 		if(tileset_info[stageTileset].PXA[stageBlocks[(y-1) * stageWidth + x]] == 0x41) {
@@ -699,5 +706,19 @@ void entity_create_special(Entity *e) {
 		break;
 	default:
 		break;
+	}
+}
+
+void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(entity_matches_criteria(e, criteria, value, false)) {
+			entity_change(e, type, flags | npc_flags(type));
+			sprite_delete(e->sprite);
+			if(npc_info[type].sprite != NULL) {
+				e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+			} else e->sprite = SPRITE_NONE;
+		}
+		e = e->next;
 	}
 }

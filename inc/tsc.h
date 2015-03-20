@@ -3,8 +3,9 @@
 
 #include <genesis.h>
 
+// This is the first event after hitting "New Game"
 #define GAME_START_EVENT 200
-//#define GAME_LOAD_EVENT 90 // "Playing Song" from save data is used instead
+// Events that get called when killed, drowned, out of bounds, etc
 #define PLAYER_DEFEATED_EVENT 40
 #define PLAYER_DROWN_EVENT 41
 #define PLAYER_OOB_EVENT 42
@@ -13,7 +14,7 @@ u8 tscEventCount;
 
 void tsc_init();
 
-void tsc_load(u8 id);
+void tsc_load_stage(u8 id);
 
 u8 tsc_update();
 

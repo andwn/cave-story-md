@@ -33,10 +33,11 @@
 #define MSG_TOP_ROW 20
 #define MSG_LEFT_FACE 11
 
-#define HEAD_EVENT_COUNT 13 // There are exactly 13
+#define HEAD_EVENT_COUNT 14 // There are exactly 14
 #define MAX_EVENTS 80 // Largest is Plantation with 76
 
 // TSC Commands
+#define FIRST_CMD 0x80
 #define CMD_MSG 0x80
 #define CMD_MS2 0x81
 #define CMD_MS3 0x82
@@ -127,13 +128,16 @@
 #define CMD_SVP 0xd7
 #define CMD_STC 0xd8
 #define CMD_XX1 0xd9
+#define LAST_CMD 0xd9
+
+typedef struct {
+	u16 number;
+	const u8 *data;
+} Event;
 
 // Array of pointers to each event in the current TSC
-u16 event_nums[MAX_EVENTS];
-const u8 *event_index[MAX_EVENTS];
-
-u16 head_nums[HEAD_EVENT_COUNT];
-const u8 *head_events[HEAD_EVENT_COUNT];
+Event headEvents[HEAD_EVENT_COUNT];
+Event stageEvents[MAX_EVENTS];
 
 const u8 *curCommand = NULL;
 
@@ -150,6 +154,7 @@ u16 waitYesNo = 0;
 bool answerYesNo = false;
 u8 handSpr;
 
+u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
 bool execute_command();
 u8 tsc_read_byte();
 u16 tsc_read_word();
@@ -157,56 +162,56 @@ u16 tsc_read_word();
 void tsc_init() {
 	exeMode = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, true);
-	const u8 *headTSC = TSC_Head;
-	u8 loadedEvents = 0;
-	for(u16 i = 1; loadedEvents < HEAD_EVENT_COUNT; i++) {
-		if(headTSC[i] == 0xFF && headTSC[i+1] == 0xFF) {
-			head_nums[loadedEvents] = headTSC[i+2]+(headTSC[i+3]<<8);
-			head_events[loadedEvents] = &headTSC[i+4];
-			loadedEvents++;
-			i += 3;
-		}
-	}
+	const u8 *TSC = TSC_Head;
+	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
 
-void tsc_load(u8 id) {
+void tsc_load_stage(u8 id) {
 	const u8 *TSC = stage_info[id].TSC;
-	tscEventCount = TSC[0];
-	if(tscEventCount > MAX_EVENTS) {
+	tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+}
+
+u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
+	// First byte of TSC is the number of events
+	u8 eventCount = TSC[0];
+	// Make sure it isn't more than can be handled
+	if(eventCount > max) {
 		char str[32] = "Too many events: ";
-		intToStr(tscEventCount, &str[17], 1);
+		intToStr(eventCount, &str[17], 1);
 		SYS_die(str);
 	}
+	// Step through ROM data until finding all the events
 	u8 loadedEvents = 0;
-	for(u16 i = 1; loadedEvents < tscEventCount; i++) {
+	for(u16 i = 1; loadedEvents < eventCount; i++) {
+		// The event marker is a word 0xFFFF
 		if(TSC[i] == 0xFF && TSC[i+1] == 0xFF) {
-			event_nums[loadedEvents] = TSC[i+2]+(TSC[i+3]<<8);
-			event_index[loadedEvents] = &TSC[i+4];
+			eventList[loadedEvents].number = TSC[i+2]+(TSC[i+3]<<8);
+			eventList[loadedEvents].data = &TSC[i+4];
 			loadedEvents++;
 			i += 3;
 		}
 	}
+	return loadedEvents;
 }
 
 void tsc_call_event(u16 number) {
 	if(number < 50) {
 		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
-			if(head_nums[i] == number) {
+			if(headEvents[i].number == number) {
 				exeMode = TSC_RUNNING;
-				curCommand = head_events[i];
+				curCommand = headEvents[i].data;
 				return;
 			}
 		}
 	} else {
 		for(u8 i = 0; i < tscEventCount; i++) {
-			if(event_nums[i] == number) {
+			if(stageEvents[i].number == number) {
 				exeMode = TSC_RUNNING;
-				curCommand = event_index[i];
+				curCommand = stageEvents[i].data;
 				return;
 			}
 		}
 	}
-	curCommand = event_index[0];
 }
 
 u8 tsc_update() {
@@ -237,7 +242,7 @@ u8 tsc_update() {
 				answerYesNo = !answerYesNo;
 				sound_play(SOUND_CURSOR, 5);
 				sprite_set_position(handSpr,
-					tile_to_pixel(29-(answerYesNo*6)), tile_to_pixel(20)-4);
+					tile_to_pixel(33-(answerYesNo*6))-4, tile_to_pixel(20)-4);
 			}
 		}
 		break;
@@ -273,31 +278,32 @@ void window_open() {
 	msgWindowOpen = true;
 }
 
+#define PROMPT_X1 26
+#define PROMPT_X2 36
+#define PROMPT_Y1 19
+#define PROMPT_Y2 21
+
 void window_open_prompt() {
-	char str[16];
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(3), 22, 19);
-	for(u8 x = 23; x < 36; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(4), x, 19);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(5), 36, 19);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(9), 22, 20);
-	for(u8 x = 23; x < 36; x++) {
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(10), x, 20);
-	}
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(11), 36, 20);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(15), 22, 21);
-	for(u8 x = 23; x < 36; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(16), x, 21);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(17), 36, 21);
-	strcpy(str, "Yes / No");
-	for(u8 i = 0; str[i] != '\0'; i++) {
-		VDP_setTileMapXY(WINDOW,
-			TILE_FONTINDEX + str[i] - 0x20, 25 + i, 20);
-		msgTextX++;
-	}
+	// Top of window
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(3), PROMPT_X1, PROMPT_Y1);
+	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(4), x, PROMPT_Y1);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(5), 36, PROMPT_Y1);
+	// Text area of window
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(9), PROMPT_X1, PROMPT_Y1 + 1);
+	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(10), x, PROMPT_Y1 + 1);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(11), PROMPT_X2, PROMPT_Y1 + 1);
+	// Bottom of window
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(15), PROMPT_X1, PROMPT_Y2);
+	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(16), x, PROMPT_Y2);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(17), PROMPT_X2, PROMPT_Y2);
+	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
 	sound_play(SOUND_PROMPT, 5);
 	// Load hand sprite and move next to yes
 	handSpr = sprite_create(&SPR_Pointer, PAL0, true);
-	sprite_set_position(handSpr, tile_to_pixel(23), tile_to_pixel(20)-4);
+	sprite_set_position(handSpr, tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4);
 	answerYesNo = true; // Yes is default
 	promptingYesNo = true;
 }
@@ -360,7 +366,6 @@ u8 execute_command() {
 			window_close();
 			player_unlock_controls();
 			hud_show();
-			//sprite_set_visible(hudSprite, true);
 			return 1;
 		case CMD_EVE: // Jump to event (1)
 			args[0] = tsc_read_word();
@@ -374,8 +379,6 @@ u8 execute_command() {
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			window_close();
-			//player_unlock_controls();
-			//sprite_set_visible(hudSprite, true);
 			stage_load(args[0]);
 			tsc_call_event(args[1]);
 			return 1;
@@ -397,9 +400,7 @@ u8 execute_command() {
 			break;
 		case CMD_SOU: // Play sound (1)
 			args[0] = tsc_read_word();
-			if(sound_info[args[0]].sound != NULL) {
-				sound_play(args[0], 0);
-			}
+			sound_play(args[0], 0);
 			break;
 		case CMD_SPS: // TODO: Persistent sounds, skip for now
 		case CMD_CPS:
@@ -433,9 +434,9 @@ u8 execute_command() {
 		case CMD_MYB: // Bounce player in direction (1)
 			args[0] = tsc_read_word();
 			if(args[0] == 0) { // Left
-				player.x_speed = pixel_to_sub(-2);
+				player.x_speed = pixel_to_sub(1);
 			} else if(args[0] == 2) { // Right
-				player.x_speed = pixel_to_sub(2);
+				player.x_speed = pixel_to_sub(-1);
 			}
 			player.y_speed = pixel_to_sub(-2);
 			break;
@@ -458,7 +459,6 @@ u8 execute_command() {
 		case CMD_KEY: // Lock controls and hide the HUD
 			player_lock_controls();
 			hud_hide();
-			//sprite_set_visible(hudSprite, false);
 			break;
 		case CMD_PRI: // Lock controls
 			player_lock_controls();
@@ -466,7 +466,6 @@ u8 execute_command() {
 		case CMD_FRE: // Unlock controls
 			player_unlock_controls();
 			hud_show();
-			//sprite_set_visible(hudSprite, true);
 			break;
 		case CMD_HMC: // Hide player character
 			sprite_set_visible(player.sprite, false);
@@ -491,6 +490,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
+			entities_replace(FILTER_EVENT, args[0], args[1], args[2], 0);
 			break;
 		case CMD_MNP: // TODO: Move entity (1) to (2),(3) with direction (4)
 			args[0] = tsc_read_word();
@@ -511,12 +511,14 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
+			entities_replace(FILTER_EVENT, args[0], args[1], args[2], 0x1000);
 			break;
 		case CMD_SNP: // TODO: Create entity (1) at (2),(3) with direction (4)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
+			entity_create(args[1], args[2], 0, 0, args[0], 0);
 			break;
 		case CMD_BOA: // TODO: Give map boss state (1)
 			args[0] = tsc_read_word();
@@ -667,9 +669,6 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			break;
 		default:
-			//intToHex(exeCursor[0], str, 2);
-			//strcat(str, "h bad CMD");
-			//SYS_die(str);
 			break;
 		}
 	} else if(msgWindowOpen) {
@@ -678,7 +677,6 @@ u8 execute_command() {
 			if(showingFace > 0) msgTextX = MSG_LEFT_FACE;
 			else msgTextX = MSG_LEFT_COLUMN;
 			if(msgTextY > 25) {
-				//msgTextY = 20;
 				window_clear();
 			}
 		} else {
@@ -687,10 +685,6 @@ u8 execute_command() {
 			msgTextX++;
 		}
 		return 1;
-	} else {
-		//intToHex(exeCursor[0], str, 2);
-		//strcat(str, "h bad CMD");
-		//SYS_die(str);
 	}
 	return 0;
 }

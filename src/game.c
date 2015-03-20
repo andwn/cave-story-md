@@ -39,6 +39,7 @@ void draw_pause() {
 		uintToStr(tscEventCount, numstr[1], 3);
 		uintToStr(entities_count(), numstr[2], 3);
 		uintToStr(MEM_getFree(), numstr[3], 6);
+		//uintToStr(sizeof(void*), numstr[3], 6);
 		for(u8 i = 0; i < 4; i++) strcat(fullstr[i], numstr[i]);
 		VDP_setWindowPos(0, 243); // Show window plane
 		VDP_drawTextWindow(fullstr[0], 2, 25);
@@ -58,7 +59,6 @@ void erase_pause() {
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
 		erase_pause();
-		SND_resumePlay_XGM();
 		return false;
 	}
 	return true;
@@ -71,7 +71,6 @@ void game_reset(bool load) {
 	tsc_init();
 	if(load) {
 		system_load();
-		//tsc_call_event(GAME_LOAD_EVENT);
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
@@ -98,7 +97,6 @@ void game_main(bool load) {
 		} else {
 			if(can_pause && joy_pressed(BUTTON_START)) {
 				draw_pause();
-				SND_stopPlay_XGM();
 				paused = true;
 			} else {
 				if(debuggingEnabled) debug_update();
@@ -125,4 +123,5 @@ void game_main(bool load) {
 		}
 		VDP_waitVSync();
 	}
+	SYS_setVIntCallback(NULL);
 }

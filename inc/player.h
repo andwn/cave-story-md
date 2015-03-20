@@ -57,6 +57,8 @@ void player_update();
 // Sprite animation
 void player_draw();
 
+Bullet *bullet_colliding(Entity *e);
+
 // TSC Stuff
 void player_give_weapon(u8 id, u8 ammo); // AM+ Command
 void player_take_weapon(u8 id); // AM- Command

@@ -47,6 +47,9 @@
 typedef unsigned char bool;
 enum {false, true};
 
+// Generic function pointer
+typedef void (*func)();
+
 // Bounding box
 typedef struct {
 	u8 left;

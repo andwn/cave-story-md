@@ -1,6 +1,5 @@
 TODO
 - Finish tile behavior
- - Water tiles
  - Slope tiles (1/2 working)
 - Collision with solid entities
 - Finish TSC commands
@@ -8,7 +7,7 @@ TODO
  - Compare with NXEngine, make sure they match in behavior
 - Finish the rest of the game's music
  - Huge time sink
-- Finish the NPC Table
+- Finish the NPC Sprites
 - Finish backgrounds
  - Moon and Fog / H-Scrolling
  - Match the correct backs to each stage
@@ -18,8 +17,8 @@ TODO
  - Support for faces
  - Display item graphic
 - Finish HUD
- - Display weapons/ammo at the top
- - Actually show something for health and exp
+ - Ammo
+ - Update the bars
 - Credits
 - Inventory
 - Map
@@ -41,6 +40,9 @@ DONE
  - Change object to entity
 - Optimize sprite module
 - Finish Sound effects
+- Water tiles
+- Display weapons at the top
+- Actually show something for health and exp
 
 ISSUES
 - Hell's tileset is cut off so a couple of the rooms are messed up
@@ -50,8 +52,8 @@ ISSUES
 - The original game runs at 50 FPS. The physics have to be adjusted to 60
 - I don't know what is going on with the Oside tileset and palette
 - Drawing background crashes on hardware
-- Drawing 3 bullets at a time or any damage numbers reduces framerate
-- Player to entity collision slows down big maps a lot
 
 FIXED
 - The message window looks like shit
+- Drawing 3 bullets at a time or any damage numbers reduces framerate
+- Player to entity collision slows down big maps a lot

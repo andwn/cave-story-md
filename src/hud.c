@@ -6,7 +6,7 @@
 #include "resources.h"
 #include "tables.h"
 
-#define HEALTH_DECREASE_TIME 2
+#define HEALTH_DECREASE_TIME 5
 
 u8 hudMaxHealth, hudHealth, hudHealthTime;
 u8 hudWeapon, hudMaxAmmo, hudAmmo;
@@ -27,7 +27,7 @@ void hud_show() {
 	// Health
 	hudMaxHealth = playerMaxHealth;
 	hudHealth = player.health;
-	hudHealthTime = 0;
+	hudHealthTime = HEALTH_DECREASE_TIME;
 	hudSprite = sprite_create(&SPR_Hud1, PAL0, true);
 	sprite_set_position(hudSprite, tile_to_pixel(2), tile_to_pixel(3));
 	hudHealthSprite[0] = sprite_create(&SPR_Numbers, PAL0, true);
@@ -67,10 +67,10 @@ void hud_redraw_health() {
 }
 
 void hud_decrease_health() {
-	hudHealthTime++;
-	if(hudHealthTime >= HEALTH_DECREASE_TIME) {
+	hudHealthTime--;
+	if(hudHealthTime == 0) {
 		hudHealth--;
-		hudHealthTime = 0;
+		hudHealthTime = HEALTH_DECREASE_TIME;
 	}
 	sprite_set_animframe(hudHealthSprite[0], 0, hudHealth / 10);
 	sprite_set_animframe(hudHealthSprite[1], 0, hudHealth % 10);

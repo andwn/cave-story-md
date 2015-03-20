@@ -5,6 +5,7 @@
 #include "stage.h"
 #include "player.h"
 #include "tsc.h"
+#include "audio.h"
 
 // 5000 flags, official game supports 8000 but only uses 4000
 #define FLAGS_LEN 156
@@ -21,13 +22,6 @@ u32 skip_flags = 0;
 u32 flags[FLAGS_LEN];
 
 void system_set_flag(u16 flag, bool value) {
-	//if(true) {
-		//char str[32] = "Flag index    /  ";
-		//uintToStr(flag / 32, &str[11], 3);
-		//strcat(str, "/ ");
-		//uintToStr(flag % 32, &str[16], 2);
-		//SYS_die(str);
-	//}
 	if(value) flags[flag/32] |= 1<<(flag%32);
 	else flags[flag/32] &= ~(1<<(flag%32));
 }

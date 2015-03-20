@@ -78,23 +78,8 @@ typedef struct {
 typedef struct {
 	const u8 *sound;
 	u32 length;
-	u8 name[24];
 } sound_info_def;
-/*
-typedef struct {
-	u16 flags;
-	u16 health;
-	const SpriteDefinition *sprite;
-	u16 palette;
-	u8 deathSound;
-	u8 hurtSound;
-	u8 deathSmoke;
-	u8 experience;
-	u8 damage;
-	bounding_box hitBox;
-	bounding_box displayBox;
-} npc_info_def;
-*/
+
 typedef struct {
 	const SpriteDefinition *sprite;
 	u16 palette;

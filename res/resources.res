@@ -36,11 +36,17 @@ SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
 SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 30 NONE
 SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 20 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE
+SPRITE SPR_Behem	"sprite/behem.png" 4 3 0 20 NONE
+SPRITE SPR_Basil	"sprite/basil.png" 4 2 0 10 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
 SPRITE SPR_Kazuma	"sprite/kazuma.png" 2 3 0 10 NONE
 SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
+SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
+SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
+SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 0 NONE
+SPRITE SPR_ToroSt	"sprite/torostick.png" 2 2 0 20 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 

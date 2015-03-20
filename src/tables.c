@@ -188,143 +188,140 @@ const song_info_def song_info[SONG_COUNT] = {
 };
 
 const sound_info_def sound_info[SOUND_COUNT] = {
-	{ NULL, 0, "Silence" },
-	{ SFX_01, 1905, "Cursor" },
-	{ SFX_02, 2540, "Message" },
-	{ SFX_03, 1905, "Head Bonk" },
-	{ SFX_04, 5080, "Switch Weapon" },
-	{ SFX_05, 3810, "Yes/No Prompt" },
-	{ SFX_06, 3175, "Hop" },
-	{ NULL, 0, "Silence" },
-	{ SFX_08, 14000, "Sound 0x08" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ SFX_0B, 3175, "Door Open" },
-	{ SFX_0C, 6350, "Block Destroy" },
-	{ NULL, 0, "Silence" },
-	{ SFX_0E, 6350, "Get Weapon Exp" },
-	{ SFX_0F, 635, "Jump" },
-	{ SFX_10, 3175, "Take Damage" }, // 0x10 (16)
-	{ SFX_11, 25397, "Player Defeated" },
-	{ SFX_12, 6530, "Selection" },
-	{ NULL, 0, "Silence" },
-	{ SFX_14, 12700, "Health/Ammo Refill" },
-	{ SFX_15, 6350, "Bubble" },
-	{ SFX_16, 2540, "Open Chest" },
-	{ SFX_17, 1905, "Landing Thud" },
-	{ SFX_18, 635, "Walking" },
-	{ SFX_19, 12700, "Funny Explode" },
-	{ SFX_1A, 14000, "Quake" },
-	{ SFX_1B, 6350, "Level Up" },
-	{ SFX_1C, 1905, "Shot Hit" },
-	{ SFX_1D, 12700, "Teleport" },
-	{ SFX_1E, 6350, "Critter Hop" },
-	{ SFX_1F, 5080, "Shot Bounce" },
-	{ SFX_20, 3175, "Polar Star Lv1&2" }, // 0x20 (32)
-	{ SFX_21, 6350, "Sound 0x21" },
-	{ SFX_22, 2540, "Fireball" },
-	{ SFX_23, 25397, "Explosion 1" },
-	{ NULL, 0, "Silence" },
-	{ SFX_25, 2540, "Gun Click" },
-	{ SFX_26, 3810, "Get Item" },
-	{ SFX_27, 3175, "Sound 0x27" },
-	{ SFX_28, 28000, "Stream" },
-	{ NULL, 0, "Silence" },
-	{ SFX_2A, 3175, "Get Missile" },
-	{ SFX_2B, 1905, "Computer Beep" },
-	{ SFX_2C, 12699, "Missile Hit" },
-	{ SFX_2D, 3175, "Exp Bounce" },
-	{ SFX_2E, 1270, "Sound 0x2E" },
-	{ SFX_2F, 1270, "Sound 0x2F" },
-	{ SFX_30, 5080, "Bubbler Shot" }, // 0x30 (48)
-	{ SFX_31, 6350, "Polar Star Lv3" },
-	{ SFX_32, 3810, "Squeak" },
-	{ SFX_33, 6350, "Enemy Hurt" },
-	{ SFX_34, 12700, "Big Enemy Hurt" },
-	{ SFX_35, 6350, "Small Enemy Hurt" },
-	{ SFX_36, 5080, "Cool Enemy Hurt" },
-	{ SFX_37, 3810, "Enemy Squeak" },
-	{ SFX_38, 14000, "Splash" },
-	{ SFX_39, 3175, "Enemy Damage" },
-	{ SFX_3A, 1270, "Sound 0x3A" },
-	{ SFX_3B, 254, "Spur Charge 1" },
-	{ SFX_3C, 254, "Spur Charge 2" },
-	{ SFX_3D, 254, "Spur Charge 3" },
-	{ SFX_3E, 5080, "Silence" },
-	{ SFX_3F, 5080, "Silence" },
-	{ SFX_40, 5080, "Spur Fire Max" }, // 0x40 (64)
-	{ SFX_41, 5080, "Spur Full Charge" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ SFX_46, 6350, "Explosion Small" },
-	{ SFX_47, 9524, "Explosion Mid" },
-	{ SFX_48, 13969, "Explosion Big" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" }, // 0x50 (80)
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ SFX_96, 3175, "Silence" },
-	{ SFX_97, 6350, "Silence" },
-	{ SFX_98, 635, "Silence" },
-	{ SFX_99, 6350, "Silence" },
-	{ SFX_9A, 6350, "Silence" },
-	{ SFX_9B, 2540, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" }, // 0x60 (96)
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ NULL, 0, "Silence" },
-	{ SFX_64, 2540, "Sound 0x64" },
-	{ SFX_65, 39397, "Silence" },
-	{ SFX_66, 5747, "Silence" },
-	{ SFX_67, 14000, "Silence" },
-	{ SFX_68, 3175, "Silence" },
-	{ SFX_69, 3810, "Bark" },
-	{ SFX_6A, 6350, "Silence" },
-	{ SFX_6B, 6350, "Silence" },
-	{ SFX_6C, 6350, "Silence" },
-	{ SFX_6D, 2540, "Silence" },
-	{ SFX_6E, 2540, "Silence" },
-	{ SFX_6F, 1905, "Silence" },
-	{ SFX_70, 1905, "Silence" }, // 0x70 (112)
-	{ SFX_71, 1905, "Silence" },
-	{ SFX_72, 7620, "Core Hurt" },
-	{ SFX_73, 25429, "Core Thrust" },
-	{ SFX_74, 19048, "Silence" },
-	{ SFX_75, 6350, "Silence" }, // 0x75 (117)
+	{ NULL, 0 },
+	{ SFX_01, 1905 }, // 1 - Cursor
+	{ SFX_02, 2540 }, // 2 - Message
+	{ SFX_03, 1905 }, // 3 - Head Bonk
+	{ SFX_04, 5080 }, // 4 - Switch Weapon
+	{ SFX_05, 3810 }, // 5 - Prompt
+	{ SFX_06, 3175 }, // 6 - Hop
+	{ NULL, 0 },
+	{ SFX_08, 14000 }, // 8 - ????
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ SFX_0B, 3175 }, // 11 - Door Open
+	{ SFX_0C, 6350 }, // 12 - Destroy Block
+	{ NULL, 0 },
+	{ SFX_0E, 6350 }, // 14 - Weapon Energy
+	{ SFX_0F, 635 }, // 15 - Jump
+	{ SFX_10, 3175 }, // 16 - Take Damage
+	{ SFX_11, 25397 }, // 17 - Die
+	{ SFX_12, 6530 }, // 18 - Confirm
+	{ NULL, 0 },
+	{ SFX_14, 12700 }, // 20 - Refill
+	{ SFX_15, 6350 }, // 21 - Bubble
+	{ SFX_16, 2540 }, // 22 - Open Chest
+	{ SFX_17, 1905 }, // 23 - Hit Ground
+	{ SFX_18, 635 }, // 24 - Walking
+	{ SFX_19, 12700 }, // 25 - Funny Explode
+	{ SFX_1A, 14000 }, // 26 - Quake
+	{ SFX_1B, 6350 }, // 27 - Level Up
+	{ SFX_1C, 1905 }, // 28 - Shot Hit
+	{ SFX_1D, 12700 }, // 29 - Teleport
+	{ SFX_1E, 6350 }, // 30 - Critter Hop
+	{ SFX_1F, 5080 }, // 31 - Shot Bounce
+	{ SFX_20, 3175 }, // 32 - Polar Star
+	{ SFX_21, 6350 }, // 33 - ????
+	{ SFX_22, 2540 }, // 34 - Fireball
+	{ SFX_23, 25397 },
+	{ NULL, 0 },
+	{ SFX_25, 2540 },
+	{ SFX_26, 3810 },
+	{ SFX_27, 3175 },
+	{ SFX_28, 28000 },
+	{ NULL, 0 },
+	{ SFX_2A, 3175 }, // Get Missile
+	{ SFX_2B, 1905 },
+	{ SFX_2C, 12699 },
+	{ SFX_2D, 3175 }, // 45 - Energy Bounce
+	{ SFX_2E, 1270 },
+	{ SFX_2F, 1270 },
+	{ SFX_30, 5080 },
+	{ SFX_31, 6350 }, // 49 - Polar star Lv 3
+	{ SFX_32, 3810 },
+	{ SFX_33, 6350 },
+	{ SFX_34, 12700 },
+	{ SFX_35, 6350 },
+	{ SFX_36, 5080 },
+	{ SFX_37, 3810 },
+	{ SFX_38, 14000 }, // Splash
+	{ SFX_39, 3175 },
+	{ SFX_3A, 1270 },
+	{ SFX_3B, 254 }, // Spur charge 1
+	{ SFX_3C, 254 }, // 2
+	{ SFX_3D, 254 }, // 3
+	{ SFX_3E, 5080 },
+	{ SFX_3F, 5080 },
+	{ SFX_40, 5080 }, // 64 - Spur fire max
+	{ SFX_41, 5080 }, // 65 - Spur full charge
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ SFX_46, 6350 },
+	{ SFX_47, 9524 },
+	{ SFX_48, 13969 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	// The following range 0x50 - 0x5F are remapped 0x90 - 0x9F
+	{ NULL, 0 }, // 0x50 (80)
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ SFX_96, 3175 },
+	{ SFX_97, 6350 },
+	{ SFX_98, 635 },
+	{ SFX_99, 6350 },
+	{ SFX_9A, 6350 },
+	{ SFX_9B, 2540 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	// End of remapped section
+	{ NULL, 0 }, // 0x60 (96)
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ NULL, 0 },
+	{ SFX_64, 2540 },
+	{ SFX_65, 39397 },
+	{ SFX_66, 5747 },
+	{ SFX_67, 14000 },
+	{ SFX_68, 3175 },
+	{ SFX_69, 3810 },
+	{ SFX_6A, 6350 },
+	{ SFX_6B, 6350 },
+	{ SFX_6C, 6350 },
+	{ SFX_6D, 2540 },
+	{ SFX_6E, 2540 },
+	{ SFX_6F, 1905 },
+	{ SFX_70, 1905 }, // 0x70 (112)
+	{ SFX_71, 1905 },
+	{ SFX_72, 7620 },
+	{ SFX_73, 25429 },
+	{ SFX_74, 19048 },
+	{ SFX_75, 6350 }, // 0x75 (117)
 };
 
-#define SPR_Behem NULL
-#define SPR_CrtHG NULL
-#define SPR_BtlHG NULL
-#define SPR_Basil NULL
-#define SPR_BtlF1 NULL
 #define SPR_Balrog NULL
 
 const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 0 - Nothing
 	{ &SPR_EnergyS, PAL1 }, // 1 - Weapon Energy (Small)
-	{ SPR_Behem, PAL1 }, // 2 - Enemy: Behemoth
+	{ &SPR_Behem, PAL1 }, // 2 - Enemy: Behemoth
 	{ NULL, PAL0 }, // 3 - Nothing / Unknown
 	{ &SPR_Smoke, PAL1 }, // 4 - Smoke
-	{ SPR_CrtHG, PAL0 }, // 5 - Enemy: Critter (Hopping, Green)
-	{ SPR_BtlHG, PAL0 }, // 6 - Enemy: Beetle (Horizontal, Green)
-	{ SPR_Basil, PAL0 }, // 7 - Enemy: Basil
-	{ SPR_BtlF1, PAL0 }, // 8 - Enemy: Beetle (Follow 1)
+	{ &SPR_CritHG, PAL3 }, // 5 - Enemy: Critter (Hopping, Green)
+	{ &SPR_BtlHG, PAL3 }, // 6 - Enemy: Beetle (Horizontal, Green)
+	{ &SPR_Basil, PAL1 }, // 7 - Enemy: Basil
+	{ &SPR_BtlHG, PAL3 }, // 8 - Enemy: Beetle (Follow 1)
 	{ SPR_Balrog, PAL3 }, // 9 - Balrog (Drops in)
 	{ SPR_Balrog, PAL3 }, // 10 - Boss: Balrog (Shooting)
 	{ NULL, PAL0 }, // 11 - Projectile: Balrog energy shot
@@ -374,12 +371,12 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Kazuma, PAL3 }, // 55 - Kazuma
 	{ NULL, PAL0 }, // 56 - Enemy: Beetle (Horizontal, Brown)
 	{ NULL, PAL0 }, // 57 - Enemy: Crow
-	{ NULL, PAL0 }, // 58 - Enemy: Basu (1)
+	{ &SPR_Basu, PAL3 }, // 58 - Enemy: Basu (1)
 	{ &SPR_DoorE, PAL1 }, // 59 - Enemy: Door
 	{ NULL, PAL0 }, // 60 - Toroko
 	{ NULL, PAL0 }, // 61 - King
 	{ NULL, PAL0 }, // 62 - Kazuma (Computer)
-	{ NULL, PAL0 }, // 63 - Toroko (Attacking)
+	{ &SPR_ToroSt, PAL0 }, // 63 - Toroko (Attacking)
 	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
 	{ NULL, PAL0 }, // 66 - Bubble
