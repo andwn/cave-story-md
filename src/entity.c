@@ -17,6 +17,7 @@
 
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
+// All measured in units, 0x200 (512) units is one pixel
 
 #define MAX_FALL_SPEED_NTSC 0x4FF
 #define MAX_FALL_SPEED_PAL 0x5FF
@@ -90,7 +91,7 @@ bool collide_stage_ceiling(Entity *e);
 
 void entity_drop_powerup(Entity *e);
 // Big switch statement for type specific stuff
-void entity_create_special(Entity *e);
+void entity_create_special(Entity *e, bool option1, bool option2);
 
 Entity *list_get_prev(Entity *e, Entity *list) {
 	while(list->next != NULL) {
@@ -122,6 +123,7 @@ void entity_reactivate(Entity *e) {
 	} else {
 		prev->next = next;
 	}
+	e->activate(e);
 }
 
 Entity *entity_destroy(Entity *e) {
@@ -603,9 +605,9 @@ Entity *entity_update(Entity *e) {
 		entity_deactivate(e);
 		return next;
 	}
-	if(e->update != NULL) e->update(e);
-	entity_update_movement(e);
-	if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
+	e->update(e);
+	//entity_update_movement(e);
+	//if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
 	if((e->flags & NPC_SHOOTABLE)) {
 		Bullet *b = bullet_colliding(e);
 		if(b != NULL) {
@@ -660,8 +662,10 @@ void entity_change(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->update = NULL;
-	entity_create_special(e);
+	e->activate = &ai_activate_null;
+	e->update = &ai_update_null;
+	//e->set_state = &ai_setstate_null;
+	entity_create_special(e, (flags&NPC_OPTION1) > 0, (flags&NPC_OPTION2) > 0);
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
@@ -680,6 +684,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		if(npc_info[type].sprite != NULL) {
 			e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
 		} else e->sprite = SPRITE_NONE;
+		e->activate(e);
 	} else {
 		e->next = inactiveList;
 		inactiveList = e;
@@ -688,21 +693,21 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	return e;
 }
 
-void entity_create_special(Entity *e) {
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+void entity_create_special(Entity *e, bool option1, bool option2) {
 	switch(e->type) {
-	case 63:
+	case 60: // Toroko
+		e->update = &ai_update_toroko;
+		//e->set_state = &ai_setstate_toroko;
+		break;
+	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);
 		e->update = &ai_update_toroko;
+		//e->set_state = &ai_setstate_toroko;
+		e->state = 3; // Running back and forth
+		sprite_set_animation(e->sprite, 2);
 		break;
 	case 211: // Spikes
-		if(tileset_info[stageTileset].PXA[stageBlocks[(y+1) * stageWidth + x]] == 0x41) break;
-		if(tileset_info[stageTileset].PXA[stageBlocks[(y-1) * stageWidth + x]] == 0x41) {
-			sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, true, false));
-			break;
-		}
-		//if(stage_get_block(x-1, y) == 0x41) break;
-		//if(stage_get_block(x+1, y) == 0x41) break;
+		e->activate = &ai_activate_spike;
 		break;
 	default:
 		break;

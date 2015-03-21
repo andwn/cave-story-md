@@ -167,7 +167,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Access, "Access" },
 	{ BGM_Balcony, "Oppression" },
 	{ BGM_Balcony, "Geothermal" },
-	{ BGM_Balcony, "Cave Story" },
+	{ BGM_CaveStory, "Cave Story" },
 	{ BGM_Balcony, "Moon Song" },
 	{ BGM_Balcony, "Hero's End" },
 	{ BGM_Balcony, "Scorching Back" },
@@ -373,10 +373,10 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 57 - Enemy: Crow
 	{ &SPR_Basu, PAL3 }, // 58 - Enemy: Basu (1)
 	{ &SPR_DoorE, PAL1 }, // 59 - Enemy: Door
-	{ NULL, PAL0 }, // 60 - Toroko
+	{ &SPR_Toroko, PAL3 }, // 60 - Toroko
 	{ NULL, PAL0 }, // 61 - King
 	{ NULL, PAL0 }, // 62 - Kazuma (Computer)
-	{ &SPR_ToroSt, PAL0 }, // 63 - Toroko (Attacking)
+	{ &SPR_Toroko, PAL3 }, // 63 - Toroko (Attacking)
 	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
 	{ NULL, PAL0 }, // 66 - Bubble
@@ -686,4 +686,37 @@ const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
+};
+
+const face_info_def face_info[FACE_COUNT] = {
+	{ NULL, PAL0 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face05, PAL3 },
+	{ &TS_Face06, PAL3 },
+	{ &TS_Face07, PAL3 },
+	{ &TS_Face08, PAL3 },
+	{ &TS_Face09, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face14, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face23, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
+	{ &TS_Face01, PAL3 },
 };

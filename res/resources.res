@@ -46,7 +46,7 @@ SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
 SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
 SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
 SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 0 NONE
-SPRITE SPR_ToroSt	"sprite/torostick.png" 2 2 0 20 NONE
+SPRITE SPR_Toroko	"sprite/toroko.png" 2 2 0 20 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 
@@ -60,6 +60,16 @@ TILESET TS_MsgFont	"font_blue.png" 0
 
 # NPC Table
 BIN NPC_TABLE	"npc.tbl"
+
+#Face Tilesets
+TILESET TS_Face01	"face/face01.png" 0
+TILESET TS_Face05	"face/face05.png" 0
+TILESET TS_Face06	"face/face06.png" 0
+TILESET TS_Face07	"face/face07.png" 0
+TILESET TS_Face08	"face/face08.png" 0
+TILESET TS_Face09	"face/face09.png" 0
+TILESET TS_Face14	"face/face14.png" 0
+TILESET TS_Face23	"face/face23.png" 0
 
 # Tileset palettes
 #PALETTE PAL_0		"Stage/Prt0.bmp" 2
@@ -460,6 +470,7 @@ BIN PXE_WeedS	"Stage/WeedS.pxe"
 XGM BGM_Access		"bgm/access.vgm"
 XGM BGM_Balcony		"bgm/balcony.vgm"
 XGM BGM_Balrog		"bgm/balrog.vgm"
+XGM BGM_CaveStory	"bgm/cavestory.vgm"
 XGM BGM_Charge		"bgm/charge.vgm"
 XGM BGM_EyesOfFlame	"bgm/eyesofflame.vgm"
 XGM BGM_Fanfare1	"bgm/fanfare1.vgm"

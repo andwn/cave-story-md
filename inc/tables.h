@@ -10,7 +10,8 @@
 #define BACKGROUND_COUNT 12
 #define SONG_COUNT 42
 #define SOUND_COUNT 118
-#define WEAPON_COUNT 9
+#define WEAPON_COUNT 13
+#define FACE_COUNT 30
 
 // NPC Flags
 // Player can't pass through the NPC
@@ -81,6 +82,11 @@ typedef struct {
 } sound_info_def;
 
 typedef struct {
+	const TileSet *tiles;
+	u16 palette;
+} face_info_def;
+
+typedef struct {
 	const SpriteDefinition *sprite;
 	u16 palette;
 } npc_info_def;
@@ -106,5 +112,7 @@ extern const sound_info_def sound_info[SOUND_COUNT];
 extern const npc_info_def npc_info[NPC_COUNT];
 
 extern const weapon_info_def weapon_info[WEAPON_COUNT];
+
+extern const face_info_def face_info[FACE_COUNT];
 
 #endif /* INC_TABLES_H_ */

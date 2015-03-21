@@ -24,14 +24,22 @@
 #define TSC_RELOADSAVE 7 // Reload save data (try again)
 
 #define TILE_WINDOWINDEX (TILE_FONTINDEX + 0x60)
+#define TILE_FACEINDEX (TILE_WINDOWINDEX + 0x20)
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, true, false, false, TILE_WINDOWINDEX+x)
-#define WINDOW_XPOS 2
-#define WINDOW_YPOS 19
-#define PROMPT_XPOS 22
-#define PROMPT_YPOS 19
-#define MSG_LEFT_COLUMN 3
-#define MSG_TOP_ROW 20
-#define MSG_LEFT_FACE 11
+
+#define WINDOW_X1 2
+#define WINDOW_X2 37
+#define WINDOW_Y1 20
+#define WINDOW_Y2 27
+#define TEXT_X1 (WINDOW_X1 + 1)
+#define TEXT_X2 (WINDOW_X2 - 1)
+#define TEXT_Y1 (WINDOW_Y1 + 1)
+#define TEXT_Y2 (WINDOW_Y2 - 1)
+#define TEXT_X1_FACE 10
+#define PROMPT_X1 26
+#define PROMPT_X2 36
+#define PROMPT_Y1 20
+#define PROMPT_Y2 22
 
 #define HEAD_EVENT_COUNT 14 // There are exactly 14
 #define MAX_EVENTS 80 // Largest is Plantation with 76
@@ -242,7 +250,7 @@ u8 tsc_update() {
 				answerYesNo = !answerYesNo;
 				sound_play(SOUND_CURSOR, 5);
 				sprite_set_position(handSpr,
-					tile_to_pixel(33-(answerYesNo*6))-4, tile_to_pixel(20)-4);
+					tile_to_pixel(33-(answerYesNo*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
 			}
 		}
 		break;
@@ -256,32 +264,29 @@ u8 tsc_update() {
 	return 0;
 }
 
+
+
 void window_open() {
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(0), 2, 19);
-	for(u8 x = 3; x < 37; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(1), x, 19);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(2), 37, 19);
-	for(u8 y = 20; y < 26; y++) {
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(6), 2, y);
-		for(u8 x = 3; x < 37; x++) {
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
+	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
+	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(6), WINDOW_X1, y);
+		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
 			VDP_setTileMapXY(WINDOW, WINDOW_ATTR(7), x, y);
 		}
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(8), 37, y);
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(8), WINDOW_X2, y);
 	}
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(12), 2, 26);
-	for(u8 x = 3; x < 37; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(13), x, 26);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(14), 37, 26);
-	msgTextX = MSG_LEFT_COLUMN;
-	msgTextY = MSG_TOP_ROW;
-	VDP_setWindowPos(0, 243);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(12), WINDOW_X1, WINDOW_Y2);
+	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
+		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
+	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
+	msgTextX = TEXT_X1;
+	msgTextY = TEXT_Y1;
+	VDP_setWindowPos(0, 244);
 	msgWindowOpen = true;
 }
-
-#define PROMPT_X1 26
-#define PROMPT_X2 36
-#define PROMPT_Y1 19
-#define PROMPT_Y2 21
 
 void window_open_prompt() {
 	// Top of window
@@ -309,18 +314,26 @@ void window_open_prompt() {
 }
 
 void tsc_unpause_debug() {
-	if(msgWindowOpen) VDP_setReg(0x12, 243);
+	if(msgWindowOpen) VDP_setReg(0x12, 244);
 }
 
 void window_clear() {
 	window_open();
-	if(showingFace > 0) msgTextX = MSG_LEFT_FACE;
+	if(showingFace > 0) msgTextX = TEXT_X1_FACE;
 }
 
 void window_close() {
 	VDP_setWindowPos(0, 0);
 	showingFace = 0;
 	msgWindowOpen = false;
+}
+
+void draw_face(u8 index) {
+	SYS_disableInts();
+	VDP_loadTileSet(face_info[index].tiles, TILE_FACEINDEX, false);
+	VDP_fillTileMapRectInc(WINDOW, TILE_ATTR_FULL(face_info[index].palette,
+			false, false, false, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
+	SYS_enableInts();
 }
 
 u8 execute_command() {
@@ -338,6 +351,10 @@ u8 execute_command() {
 			break;
 		case CMD_CLR: // Clear message box
 			window_clear();
+			if(showingFace > 0) {
+				draw_face(showingFace);
+				msgTextX = TEXT_X1_FACE;
+			}
 			break;
 		case CMD_NUM: // TODO: Show number (1) in message box
 			args[0] = tsc_read_word();
@@ -348,8 +365,13 @@ u8 execute_command() {
 		case CMD_FAC: // TODO: Display face (1) in message box
 			args[0] = tsc_read_word();
 			showingFace = args[0];
-			if(showingFace > 0) msgTextX = MSG_LEFT_FACE;
-			else msgTextX = MSG_LEFT_COLUMN;
+			if(showingFace > 0) {
+				msgTextX = TEXT_X1_FACE;
+				draw_face(args[0]);
+			}
+			else {
+				msgTextX = TEXT_X1;
+			}
 			break;
 		case CMD_CAT: // TODO: All 3 of these display text instantly
 		case CMD_SAT:
@@ -673,11 +695,15 @@ u8 execute_command() {
 		}
 	} else if(msgWindowOpen) {
 		if(cmd == '\n') {
-			msgTextY++;
-			if(showingFace > 0) msgTextX = MSG_LEFT_FACE;
-			else msgTextX = MSG_LEFT_COLUMN;
-			if(msgTextY > 25) {
+			msgTextY += 2;
+			if(showingFace > 0) msgTextX = TEXT_X1_FACE;
+			else msgTextX = TEXT_X1;
+			if(msgTextY >= TEXT_Y2) {
 				window_clear();
+				if(showingFace > 0) {
+					draw_face(showingFace);
+					msgTextX = TEXT_X1_FACE;
+				}
 			}
 		} else {
 			VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, true, false, false,

@@ -23,7 +23,7 @@ void camera_init() {
 void camera_set_position(s32 x, s32 y) {
 	// Don't let the camera leave the stage
 	if(x < pixel_to_sub(SCREEN_HALF_W)) x = pixel_to_sub(SCREEN_HALF_W);
-	if(y < pixel_to_sub(SCREEN_HALF_H)) y = pixel_to_sub(SCREEN_HALF_H);
+	if(y < pixel_to_sub(SCREEN_HALF_H + 8)) y = pixel_to_sub(SCREEN_HALF_H + 8);
 	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
 		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
 	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H))
@@ -75,7 +75,7 @@ void camera_update() {
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
 	if(x_next < pixel_to_sub(SCREEN_HALF_W)) x_next = pixel_to_sub(SCREEN_HALF_W);
-	if(y_next < pixel_to_sub(SCREEN_HALF_H)) y_next = pixel_to_sub(SCREEN_HALF_H);
+	if(y_next < pixel_to_sub(SCREEN_HALF_H + 8)) y_next = pixel_to_sub(SCREEN_HALF_H + 8);
 	if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
 		x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
 	if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H))

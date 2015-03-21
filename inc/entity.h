@@ -25,10 +25,12 @@ typedef struct Entity {
 	// This is assumed to be an array of type u16[2], or at least next to each other
 	// in memory. Index 0 is current joy state, 1 is previous frame's state
 	u16 *controller;
+	u8 direction; // Direction entity is facing, 0=left, 1=right
 	// Behavior properties
 	u8 oflags;
 	func activate;
 	func update;
+	//func set_state;
 	// Combat
 	u16 health; // If this is an enemy it will die when health reaches 0
 	u8 attack; // Damage inflicted on player when colliding
@@ -56,6 +58,7 @@ typedef struct Entity {
 	// Like hit_box this is also pixels
 	bounding_box display_box;
 	u8 anim; // Current animation of the sprite being displayed
+	u16 state; // Script state / ANP
 	// Used to generate damage strings
 	s8 damage_value;
 	s8 damage_time;
