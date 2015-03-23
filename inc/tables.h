@@ -65,7 +65,7 @@ typedef struct {
 
 typedef struct {
 	const TileSet *tileset;
-	const Palette *palette;
+	u16 palette;
 	u8 type;
 	u8 width;
 	u8 height;

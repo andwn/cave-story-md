@@ -41,13 +41,15 @@ void draw_status() {
 }
 
 void soundtest_main() {
+	VDP_setEnable(false);
 	sprites_clear();
 	song_stop();
-	VDP_setEnable(false);
-	SYS_disableInts();
+	//VDP_setEnable(false);
+	//SYS_disableInts();
 	VDP_clearPlan(APLAN, true);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true);
+	//SYS_disableInts();
 	VDP_fillTileMapRectInc(BPLAN,
 			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
 	draw_status();
@@ -56,7 +58,7 @@ void soundtest_main() {
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	draw_byte(track, 10, 8);
-	SYS_enableInts();
+	//SYS_enableInts();
 	VDP_setEnable(true);
     while(true) {
 		input_update();

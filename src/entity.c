@@ -664,7 +664,6 @@ void entity_change(Entity *e, u16 type, u16 flags) {
 	e->damage_time = 0;
 	e->activate = &ai_activate_null;
 	e->update = &ai_update_null;
-	//e->set_state = &ai_setstate_null;
 	entity_create_special(e, (flags&NPC_OPTION1) > 0, (flags&NPC_OPTION2) > 0);
 }
 
@@ -697,12 +696,10 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 	switch(e->type) {
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
-		//e->set_state = &ai_setstate_toroko;
 		break;
 	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);
 		e->update = &ai_update_toroko;
-		//e->set_state = &ai_setstate_toroko;
 		e->state = 3; // Running back and forth
 		sprite_set_animation(e->sprite, 2);
 		break;

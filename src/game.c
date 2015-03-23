@@ -88,6 +88,7 @@ void vblank() {
 void game_main(bool load) {
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
+	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	game_reset(load);
 	bool paused = false, can_pause = true;
 	while(true) {

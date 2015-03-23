@@ -36,8 +36,6 @@ smoke_def smoke[MAX_SMOKE];
 void damage_string_update(damage_string_def *d);
 void damage_string_cleanup(damage_string_def *d);
 void smoke_update(smoke_def *s);
-s16 abs(s16 v);
-s16 pow(s16 base, s16 exp);
 
 void effects_clear() {
 	for(u8 i = 0; i < MAX_DAMAGE_STRINGS; i++) {
@@ -74,29 +72,32 @@ void effects_update() {
 void effect_create_damage_string(s16 num, s16 x, s16 y, u8 ttl) {
 	for(u8 i = 0; i < MAX_DAMAGE_STRINGS; i++) {
 		if(damage_string[i].ttl > 0) continue;
+		u8 anim = num < 0;
+		num *= ((num>0) - (num<0)); // Absolute value
+		// Determine digit sprites
+		u8 digits = 0;
+		for(; num; digits++) {
+			damage_string[i].sprite[digits] = sprite_create(&SPR_Numbers, PAL0, true);
+			sprite_set_animframe(damage_string[i].sprite[digits], anim, num % 10);
+			num /= 10;
+		}
+		// First sprite is + or -
+		damage_string[i].sprite[digits] = sprite_create(&SPR_Numbers, PAL0, true);
+		sprite_set_animframe(damage_string[i].sprite[digits], anim, 10);
+		digits++;
 		damage_string[i].x = x;
 		damage_string[i].y = y;
 		damage_string[i].ttl = 60;
-		u8 digits = 1;
-		if(abs(num) >= 10) digits++;
-		if(abs(num) >= 100) digits++;
-		damage_string[i].sprite_count = digits + 1;
-		u8 anim = num < 0;
-		damage_string[i].sprite[0] = sprite_create(&SPR_Numbers, PAL0, true);
-		sprite_set_animframe(damage_string[i].sprite[0], anim, 10);
-		for(u8 d = 0; d < digits; d++) {
-			damage_string[i].sprite[d+1] = sprite_create(&SPR_Numbers, PAL0, true);
-			sprite_set_animframe(damage_string[i].sprite[d+1], anim, (abs(num) / pow(10,d)) % 10);
-		}
-		break; // Oh that's why they lag so much
+		damage_string[i].sprite_count = digits;
+		break;
 	}
 }
 
 void damage_string_update(damage_string_def *d) {
 	if(d->ttl%2) d->y -= 1;
-	for(u8 i = 0; i < d->sprite_count; i++) {
+	for(u8 i = d->sprite_count; i--;) {
 		sprite_set_position(d->sprite[i],
-			d->x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 16 + (8*i),
+			d->x - sub_to_pixel(camera.x) + SCREEN_HALF_W + 16 - (8*i),
 			d->y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	}
 }
@@ -123,14 +124,4 @@ void smoke_update(smoke_def *s) {
 	sprite_set_position(s->sprite,
 			s->x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 			s->y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-}
-
-s16 abs(s16 v) {
-	return v * ((v>0) - (v<0));
-}
-
-s16 pow(s16 base, s16 exp) {
-    s16 result = 1;
-    while(exp) { result *= base; exp--; }
-    return result;
 }

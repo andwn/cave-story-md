@@ -17,7 +17,7 @@
 #define TILE_BACKINDEX (TILE_USERINDEX + (TS_WIDTH * TS_HEIGHT))
 
 u8 stageBackground;
-s16 backScrollTable[16];
+s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;
 
 void stage_load_blocks();
@@ -27,8 +27,11 @@ void stage_load_entities();
 void stage_draw_column(s16 _x, s16 _y);
 void stage_draw_row(s16 _x, s16 _y);
 void stage_draw_background();
+void stage_draw_background2();
+void stage_update_back();
 
 void stage_load(u16 id) {
+	SYS_disableInts();
 	VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
 	player_lock_controls();
 	hud_hide();
@@ -44,6 +47,26 @@ void stage_load(u16 id) {
 	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
 	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_USERINDEX, true);
+	if(stageBackground != stage_info[id].background) {
+		stageBackground = stage_info[id].background;
+		VDP_clearPlan(BPLAN, true);
+		if(stageBackground > 0) {
+			stageBackgroundType = background_info[stageBackground].type;
+			if(stageBackgroundType == 0) { // Static
+				//VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
+				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+				stage_draw_background();
+			} else if(stageBackgroundType == 1) { // Moon/Sky
+				//VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
+				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+				for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
+				stage_draw_background2();
+			//} else if(stageBackgroundType == 2) { // Solid Color
+			//	VDP_setBackgroundColor(background_info[stageBackground].palette->data);
+			}
+		}
+	}
+
 	stage_load_tileflags();
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
@@ -52,6 +75,7 @@ void stage_load(u16 id) {
 	hud_show();
 	player_unlock_controls();
 	VDP_setEnable(true);
+	SYS_enableInts();
 }
 
 void stage_load_blocks() {
@@ -114,8 +138,26 @@ void stage_update() {
 		if(y >= 0 && y < stageHeight) stage_draw_row(x, y);
 		morphingRow = 0;
 	}
-	VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+	s16 off[32];
+	for(u8 i = 0; i < 32; i++) {
+		off[i] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
+	}
+	// Foreground scrolling
+	VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
+	//VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 	VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+	// Background Scrolling
+	if(stageBackgroundType == 1) stage_update_back();
+}
+
+void stage_update_back() {
+	for(u8 y = 0; y < 32; y++) {
+		if(y < 12) backScrollTable[y] = 0;
+		else if(y < 16) backScrollTable[y] += 1;
+		else if(y < 20) backScrollTable[y] += 2;
+		else backScrollTable[y] += 3;
+	}
+	VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
 }
 
 void stage_draw_column(s16 _x, s16 _y) {
@@ -206,25 +248,10 @@ void stage_draw_background() {
 	}
 }
 
-/*
-void stage_cache_area(s16 _x, s16 _y, u8 _w, u8 _h) {
-	const u8 *PXA = tileset_info[stageTileset].PXA;
-	for(s16 y = _y; y < _y + _h; y++) {
-		if(y < 0) continue;
-		if(y >= stageHeight) break;
-		for(s16 x = _x; x < _x + _w; x++) {
-			if(x < 0) continue;
-			if(x >= stageWidth) break;
-			stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
-		}
-	}
-}
-*/
-/*
-void stage_draw_back2() {
+void stage_draw_background2() {
 	for(u8 y = 0; y < 28; y++) {
 		for(u16 x = 0; x < 64; x++) {
-			u16 b = BACKGROUND_USERINDEX;;
+			u16 b = TILE_BACKINDEX;;
 			if(y < 4 || (y >= 8 && y < 12)) { // Draw blank sky
 				// Keep b how it is
 			} else if(y < 8) { // Between 4-7, draw moon
@@ -246,7 +273,21 @@ void stage_draw_back2() {
 			} else {
 				b += 48;
 			}
-			VDP_setTileMapXY(BPLAN, TILE_ATTR_FULL(PAL3, 0, 0, 0, b), x, y);
+			VDP_setTileMapXY(BPLAN, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
+		}
+	}
+}
+
+/*
+void stage_cache_area(s16 _x, s16 _y, u8 _w, u8 _h) {
+	const u8 *PXA = tileset_info[stageTileset].PXA;
+	for(s16 y = _y; y < _y + _h; y++) {
+		if(y < 0) continue;
+		if(y >= stageHeight) break;
+		for(s16 x = _x; x < _x + _w; x++) {
+			if(x < 0) continue;
+			if(x >= stageWidth) break;
+			stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
 		}
 	}
 }

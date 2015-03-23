@@ -128,18 +128,18 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 
 // Background Info
 const background_info_def background_info[BACKGROUND_COUNT] = {
-	{ NULL, NULL, 0, 0, 0 },
-	{ &BG_Blue, &PAL_BkBlue, 0, 8, 8 },
-	{ &BG_Blue, &PAL_BkBlue, 0, 8, 8 },
-	{ &BG_Blue, &PAL_BkBlue, 0, 8, 8 },
-	{ &BG_Fog, &PAL_BkFog, 1, 16, 4 },
-	{ &BG_Gard, &PAL_BkGard, 0, 6, 8 },
-	{ &BG_Gray, &PAL_BkGray, 0, 8, 8 },
-	{ &BG_Green, &PAL_BkGreen, 0, 8, 8 },
-	{ &BG_Maze, &PAL_BkMaze, 0, 8, 8 },
-	{ &BG_Maze, &PAL_BkMaze, 0, 8, 8 },
-	{ &BG_Red, &PAL_BkRed, 0, 4, 4 },
-	{ &BG_Red, &PAL_BkRed, 0, 4, 4 },
+	{ NULL, PAL2, 0, 0, 0 },
+	{ &BG_Blue, PAL2, 0, 8, 8 },
+	{ &BG_Blue, PAL2, 0, 8, 8 },
+	{ &BG_Blue, PAL2, 0, 8, 8 },
+	{ &BG_Fog, PAL2, 1, 16, 4 },
+	{ &BG_Gard, PAL2, 0, 6, 8 },
+	{ &BG_Gray, PAL2, 0, 8, 8 },
+	{ &BG_Green, PAL2, 0, 8, 8 },
+	{ &BG_Maze, PAL2, 0, 8, 8 },
+	{ &BG_Maze, PAL2, 0, 8, 8 },
+	{ &BG_Red, PAL2, 0, 4, 4 },
+	{ &BG_Red, PAL2, 0, 4, 4 },
 };
 
 const song_info_def song_info[SONG_COUNT] = {
@@ -152,11 +152,11 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Balcony, "Meltdown 2" },
 	{ BGM_EyesOfFlame, "Eyes Of Flame" },
 	{ BGM_Balcony, "Gestation" },
-	{ BGM_Balcony, "Mimiga Village" },
+	{ BGM_Mimiga, "Mimiga Village" },
 	{ BGM_Fanfare1, "Fanfare 1" },
 	{ BGM_Balrog, "Balrog's Theme" },
-	{ BGM_Balcony, "Cemetery" },
-	{ BGM_Balcony, "Yamashita Farm" },
+	{ BGM_Mimiga, "Cemetery" },
+	{ BGM_Mimiga, "Yamashita Farm" },
 	{ BGM_Balcony, "Pulse" },
 	{ BGM_Fanfare1, "Fanfare 2" },
 	{ BGM_Fanfare1, "Fanfare 3" }, // 0x10
