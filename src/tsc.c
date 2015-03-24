@@ -270,6 +270,14 @@ u8 tsc_update() {
 }
 
 
+void draw_face(u8 index) {
+	SYS_disableInts();
+	VDP_loadTileSet(face_info[index].tiles, TILE_FACEINDEX, false);
+	VDP_fillTileMapRectInc(WINDOW, TILE_ATTR_FULL(face_info[index].palette,
+			false, false, false, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
+	SYS_enableInts();
+}
+
 
 void window_open() {
 	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
@@ -289,6 +297,10 @@ void window_open() {
 	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
 	msgTextX = TEXT_X1;
 	msgTextY = TEXT_Y1;
+	if(showingFace > 0) {
+		draw_face(showingFace);
+		msgTextX = TEXT_X1_FACE;
+	}
 	VDP_setWindowPos(0, 244);
 	msgWindowOpen = true;
 }
@@ -322,23 +334,15 @@ void tsc_unpause_debug() {
 	if(msgWindowOpen) VDP_setReg(0x12, 244);
 }
 
-void window_clear() {
-	window_open();
-	if(showingFace > 0) msgTextX = TEXT_X1_FACE;
-}
+//void window_clear() {
+//	window_open();
+//
+//}
 
 void window_close() {
 	VDP_setWindowPos(0, 0);
 	showingFace = 0;
 	msgWindowOpen = false;
-}
-
-void draw_face(u8 index) {
-	SYS_disableInts();
-	VDP_loadTileSet(face_info[index].tiles, TILE_FACEINDEX, false);
-	VDP_fillTileMapRectInc(WINDOW, TILE_ATTR_FULL(face_info[index].palette,
-			false, false, false, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
-	SYS_enableInts();
 }
 
 u8 execute_command() {
@@ -355,11 +359,7 @@ u8 execute_command() {
 			window_close();
 			break;
 		case CMD_CLR: // Clear message box
-			window_clear();
-			if(showingFace > 0) {
-				draw_face(showingFace);
-				msgTextX = TEXT_X1_FACE;
-			}
+			window_open();
 			break;
 		case CMD_NUM: // TODO: Show number (1) in message box
 			args[0] = tsc_read_word();
@@ -370,13 +370,12 @@ u8 execute_command() {
 		case CMD_FAC: // TODO: Display face (1) in message box
 			args[0] = tsc_read_word();
 			showingFace = args[0];
-			if(showingFace > 0) {
-				msgTextX = TEXT_X1_FACE;
-				draw_face(args[0]);
-			}
-			else {
-				msgTextX = TEXT_X1;
-			}
+			if(msgWindowOpen) {
+				if(showingFace > 0) {
+					msgTextX = TEXT_X1_FACE;
+					draw_face(args[0]);
+				}
+			} else window_open();
 			break;
 		case CMD_CAT: // TODO: All 3 of these display text instantly
 		case CMD_SAT:
@@ -708,11 +707,7 @@ u8 execute_command() {
 			if(showingFace > 0) msgTextX = TEXT_X1_FACE;
 			else msgTextX = TEXT_X1;
 			if(msgTextY >= TEXT_Y2) {
-				window_clear();
-				if(showingFace > 0) {
-					draw_face(showingFace);
-					msgTextX = TEXT_X1_FACE;
-				}
+				window_open();
 			}
 		} else {
 			VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, true, false, false,

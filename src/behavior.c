@@ -17,6 +17,25 @@ void ai_setstate_stub(Entity *e, u16 state) {
 	e->state = state;
 }
 
+void ai_update_energy(Entity *e) {
+
+	if(e->grounded) {
+		e->y_speed = pixel_to_sub(-2);
+		e->grounded = false;
+	}
+	e->y_speed += gravity;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	s16 xsp = e->x_speed;
+	entity_update_collision(e);
+	if(e->x_speed == 0) {
+		e->direction = !e->direction;
+		e->x_speed = -xsp;
+	}
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
 void ai_update_toroko(Entity *e) {
 	switch(e->state) {
 	case 0: // Stand still
@@ -34,7 +53,7 @@ void ai_update_toroko(Entity *e) {
 				e->attack = 0; // Don't hurt the player anymore
 				e->flags |= NPC_INTERACTIVE; // Enable interaction
 				e->state = 10; // Change animation to falling on ground
-				e->y_speed = -1;
+				e->y_speed = pixel_to_sub(-1);
 				e->x_speed /= 2;
 				e->grounded = false;
 				sprite_set_animation(e->sprite, 3);

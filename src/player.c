@@ -246,10 +246,8 @@ void player_update_entity_collision() {
 	if(playerIFrames > 0) playerIFrames--;
 	Entity *e = entityList;
 	while(e != NULL) {
-		bool collided = false;
 		if(e->attack > 0) {
-			collided = entity_overlapping(&player, e);
-			if(collided && playerIFrames == 0) {
+			if(entity_overlapping(&player, e) && playerIFrames == 0) {
 				// Take health
 				if(player.health <= e->attack) {
 					player.health = 0;
@@ -270,8 +268,7 @@ void player_update_entity_collision() {
 		} else { // Not an enemy
 			switch(e->type) {
 			case 1: // Energy
-				collided = entity_overlapping(&player, e);
-				if(collided) {
+				if(entity_overlapping(&player, e)) {
 					playerWeapon[currentWeapon].energy += e->experience;
 					e = entity_destroy(e);
 					continue;
@@ -281,11 +278,10 @@ void player_update_entity_collision() {
 				}
 				break;
 			case 46: // Trigger
-				collided = entity_overlapping(&player, e);
-				if(collided && !tsc_running()) {
+				if(entity_overlapping(&player, e) && !tsc_running()) {
 					tsc_call_event(e->event);
 					//e = entity_destroy(e);
-					return;
+					continue;
 				}
 				break;
 			default:
@@ -293,11 +289,11 @@ void player_update_entity_collision() {
 			}
 		}
 		// TODO: Solid Entities
-		if(e->flags & NPC_SOLID) {
-			if(collided || entity_overlapping(&player, e)) {
+		//if(e->flags & NPC_SOLID) {
+			//if(collided || entity_overlapping(&player, e)) {
 
-			}
-		}
+			//}
+		//}
 		e = e->next;
 	}
 }

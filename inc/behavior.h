@@ -9,6 +9,9 @@ void ai_activate_stub(Entity *e);
 void ai_update_stub(Entity *e);
 void ai_setstate_stub(Entity *e, u16 state);
 
+// 1 - Weapon Energy
+void ai_update_energy(Entity *e);
+
 // 60 and 63 - Toroko / Toroko attack with stick
 void ai_update_toroko(Entity *e);
 //void ai_setstate_toroko(Entity *e, u16 state);

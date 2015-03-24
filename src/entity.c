@@ -588,19 +588,19 @@ void entity_drop_powerup(Entity *e) {
 	//if(chance < 30) {
 		// Heart
 	//} else if(chance < 80) {
-		//s16 i = e->experience;
-		//for(; i >= 5; i -= 5) { // Big
-		//	Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
-		//	exp->experience = 5;
-		//}
-		//for(; i >= 3; i -= 3) { // Med
-		//	Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
-		//	exp->experience = 3;
-		//}
-		//for(; i > 0; i--) { // Small
+		s16 i = e->experience;
+		for(; i >= 5; i -= 5) { // Big
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			exp->experience = 5;
+		}
+		for(; i >= 3; i -= 3) { // Med
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			exp->experience = 3;
+		}
+		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 1;
-		//}
+		}
 	//} else {
 		// Missiles (or exp if no missiles)
 	//}
@@ -664,6 +664,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->flags = flags;
 	e->x_speed = 0;
 	e->y_speed = 0;
+	e->grounded = false;
 	e->health = npc_health(type);
 	e->attack = npc_attack(type);
 	e->experience = npc_experience(type);
@@ -711,6 +712,10 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 
 void entity_create_special(Entity *e, bool option1, bool option2) {
 	switch(e->type) {
+	case 1: // Weapon Energy
+		e->x_speed = 0x400 - (random() % 0x200);
+		e->update = &ai_update_energy;
+		break;
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
 		break;
