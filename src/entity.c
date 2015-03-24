@@ -713,7 +713,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 void entity_create_special(Entity *e, bool option1, bool option2) {
 	switch(e->type) {
 	case 1: // Weapon Energy
-		e->x_speed = 0x400 - (random() % 0x200);
+		e->x_speed = 0x200 - (random() % 0x400);
 		e->update = &ai_update_energy;
 		break;
 	case 60: // Toroko
