@@ -1,4 +1,6 @@
 #include "tsc.h"
+
+#include <genesis.h>
 #include "sprite.h"
 #include "audio.h"
 #include "player.h"
@@ -10,7 +12,6 @@
 #include "system.h"
 #include "vdp_ext.h"
 #include "tables.h"
-#include "common.h"
 #include "hud.h"
 
 // Execution State
@@ -220,6 +221,10 @@ void tsc_call_event(u16 number) {
 			}
 		}
 	}
+}
+
+bool tsc_running() {
+	return exeMode != TSC_IDLE;
 }
 
 u8 tsc_update() {
@@ -507,12 +512,13 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
+			entities_set_state(FILTER_EVENT, args[0], args[1], args[2] > 0);
 			break;
 		case CMD_CNP: // TODO: Change all entities (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(FILTER_EVENT, args[0], args[1], args[2], 0);
+			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0);
 			break;
 		case CMD_MNP: // TODO: Move entity (1) to (2),(3) with direction (4)
 			args[0] = tsc_read_word();
@@ -533,7 +539,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(FILTER_EVENT, args[0], args[1], args[2], 0x1000);
+			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0x1000);
 			break;
 		case CMD_SNP: // TODO: Create entity (1) at (2),(3) with direction (4)
 			args[0] = tsc_read_word();
@@ -551,6 +557,9 @@ u8 execute_command() {
 		case CMD_NCJ: // TODO: If entity type (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
+			if(entity_exists(args[0])) {
+				tsc_call_event(args[1]);
+			}
 			break;
 		case CMD_ECJ: // TODO: If entity id (1) exists jump to event (2)
 			args[0] = tsc_read_word();

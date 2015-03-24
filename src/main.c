@@ -36,6 +36,7 @@ int main() {
     // Sprite list overlaps the bottom of the window, so move it up
 	VDP_setSpriteListAddress(0xB600); // Default: 0xBC00
 	VDP_setHScrollTableAddress(0xF800);
+	sprites_init();
     sound_init();
 	input_init();
     while(true) {

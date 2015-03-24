@@ -246,8 +246,10 @@ void player_update_entity_collision() {
 	if(playerIFrames > 0) playerIFrames--;
 	Entity *e = entityList;
 	while(e != NULL) {
+		bool collided = false;
 		if(e->attack > 0) {
-			if(playerIFrames == 0 && entity_overlapping(&player, e)) {
+			collided = entity_overlapping(&player, e);
+			if(collided && playerIFrames == 0) {
 				// Take health
 				if(player.health <= e->attack) {
 					player.health = 0;
@@ -265,16 +267,36 @@ void player_update_entity_collision() {
 				// TODO: Find an accurate value for knock back
 				player.y_speed -= pixel_to_sub(2);
 			}
-		} else if(e->type == 46) { // Trigger
-			if(entity_overlapping(&player, e)) {
-				tsc_call_event(e->event);
-				e = entity_destroy(e);
-				continue;
+		} else { // Not an enemy
+			switch(e->type) {
+			case 1: // Energy
+				collided = entity_overlapping(&player, e);
+				if(collided) {
+					playerWeapon[currentWeapon].energy += e->experience;
+					e = entity_destroy(e);
+					continue;
+					//tsc_call_event(e->event);
+					//e = entity_destroy(e);
+					//return;
+				}
+				break;
+			case 46: // Trigger
+				collided = entity_overlapping(&player, e);
+				if(collided && !tsc_running()) {
+					tsc_call_event(e->event);
+					//e = entity_destroy(e);
+					return;
+				}
+				break;
+			default:
+				break;
 			}
 		}
 		// TODO: Solid Entities
 		if(e->flags & NPC_SOLID) {
+			if(collided || entity_overlapping(&player, e)) {
 
+			}
 		}
 		e = e->next;
 	}

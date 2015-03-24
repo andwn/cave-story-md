@@ -11,6 +11,7 @@ SPRITE SPR_Numbers	"sprite/numbers.png" 1 1 0 0 NONE
 SPRITE SPR_Hud1		"sprite/hud1.png" 8 2 0 0 NONE
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
 SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
+SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
 #SPRITE SPR_PolarB	"sprite/polarb.png" 2 2 0 0 NONE
@@ -38,6 +39,7 @@ SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 20 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE
 SPRITE SPR_Behem	"sprite/behem.png" 4 3 0 20 NONE
 SPRITE SPR_Basil	"sprite/basil.png" 4 2 0 10 NONE
+SPRITE SPR_Balrog	"sprite/balrog.png" 5 3 0 15 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
@@ -63,13 +65,34 @@ BIN NPC_TABLE	"npc.tbl"
 
 #Face Tilesets
 TILESET TS_Face01	"face/face01.png" 0
+TILESET TS_Face02	"face/face02.png" 0
+TILESET TS_Face03	"face/face03.png" 0
+TILESET TS_Face04	"face/face04.png" 0
 TILESET TS_Face05	"face/face05.png" 0
 TILESET TS_Face06	"face/face06.png" 0
 TILESET TS_Face07	"face/face07.png" 0
 TILESET TS_Face08	"face/face08.png" 0
 TILESET TS_Face09	"face/face09.png" 0
+TILESET TS_Face10	"face/face10.png" 0
+TILESET TS_Face11	"face/face11.png" 0
+TILESET TS_Face12	"face/face12.png" 0
+
 TILESET TS_Face14	"face/face14.png" 0
+TILESET TS_Face15	"face/face15.png" 0
+TILESET TS_Face16	"face/face16.png" 0
+TILESET TS_Face17	"face/face17.png" 0
+TILESET TS_Face18	"face/face18.png" 0
+TILESET TS_Face19	"face/face19.png" 0
+TILESET TS_Face20	"face/face20.png" 0
+TILESET TS_Face21	"face/face21.png" 0
+
 TILESET TS_Face23	"face/face23.png" 0
+TILESET TS_Face24	"face/face24.png" 0
+TILESET TS_Face25	"face/face25.png" 0
+TILESET TS_Face26	"face/face26.png" 0
+
+TILESET TS_Face28	"face/face28.png" 0
+TILESET TS_Face29	"face/face29.png" 0
 
 # Tileset palettes
 #PALETTE PAL_0		"Stage/Prt0.bmp" 2

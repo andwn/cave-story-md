@@ -7,9 +7,15 @@
 #include "stage.h"
 #include "sprite.h"
 
-void ai_activate_null(Entity *e) { }
-void ai_update_null(Entity *e) { }
-void ai_setstate_null(Entity *e, u16 state) { }
+void ai_activate_stub(Entity *e) {
+
+}
+void ai_update_stub(Entity *e) {
+
+}
+void ai_setstate_stub(Entity *e, u16 state) {
+	e->state = state;
+}
 
 void ai_update_toroko(Entity *e) {
 	switch(e->state) {
@@ -29,6 +35,9 @@ void ai_update_toroko(Entity *e) {
 				e->flags |= NPC_INTERACTIVE; // Enable interaction
 				e->state = 10; // Change animation to falling on ground
 				e->y_speed = -1;
+				e->x_speed /= 2;
+				e->grounded = false;
+				sprite_set_animation(e->sprite, 3);
 				b->ttl = 0;
 				sprite_delete(b->sprite);
 			}
@@ -44,12 +53,19 @@ void ai_update_toroko(Entity *e) {
 	case 8: // Jump in place
 		break;
 	case 10: // Falling down
+		if(e->grounded) {
+			e->x_speed = 0;
+			e->state = 11;
+			sprite_set_animation(e->sprite, 4);
+		}
 		break;
-	case 11:
+	case 11: // After falling on ground
+
 		break;
 	default:
 		break;
 	}
+	if(!e->grounded) e->y_speed += gravity;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

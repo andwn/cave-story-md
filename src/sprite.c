@@ -34,37 +34,37 @@ u8 sprite_create(const SpriteDefinition *def, u16 palette, bool priority) {
 }
 
 void sprite_set_position(u8 sprite, s16 x, s16 y) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setPosition(&sprites[sprite], x, y);
 }
 
 void sprite_set_attr(u8 sprite, u16 attr) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setAttribut(&sprites[sprite], attr);
 }
 
 void sprite_set_visible(u8 sprite, bool visible) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setNeverVisible(&sprites[sprite], !visible);
 }
 
 void sprite_set_animation(u8 sprite, u8 anim) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setAnim(&sprites[sprite], anim);
 }
 
 void sprite_set_animframe(u8 sprite, u8 anim, u8 frame) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setAnimAndFrame(&sprites[sprite], anim, frame);
 }
 
 void sprite_set_frame(u8 sprite, u8 frame) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setFrame(&sprites[sprite], frame);
 }
 
 void sprite_delete(u8 sprite) {
-	if(sprite >= MAX_SPRITES) return;
+	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setNeverVisible(&sprites[sprite], true);
 	spriteEnabled[sprite] = false;
 }

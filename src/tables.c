@@ -310,8 +310,6 @@ const sound_info_def sound_info[SOUND_COUNT] = {
 	{ SFX_75, 6350 }, // 0x75 (117)
 };
 
-#define SPR_Balrog NULL
-
 const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 0 - Nothing
 	{ &SPR_EnergyS, PAL1 }, // 1 - Weapon Energy (Small)
@@ -322,17 +320,17 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_BtlHG, PAL3 }, // 6 - Enemy: Beetle (Horizontal, Green)
 	{ &SPR_Basil, PAL1 }, // 7 - Enemy: Basil
 	{ &SPR_BtlHG, PAL3 }, // 8 - Enemy: Beetle (Follow 1)
-	{ SPR_Balrog, PAL3 }, // 9 - Balrog (Drops in)
-	{ SPR_Balrog, PAL3 }, // 10 - Boss: Balrog (Shooting)
+	{ &SPR_Balrog, PAL1 }, // 9 - Balrog (Drops in)
+	{ &SPR_Balrog, PAL1 }, // 10 - Boss: Balrog (Shooting)
 	{ NULL, PAL0 }, // 11 - Projectile: Balrog energy shot
-	{ SPR_Balrog, PAL3 }, // 12 - Balrog (Cutscene)
+	{ &SPR_Balrog, PAL1 }, // 12 - Balrog (Cutscene)
 	{ NULL, PAL1 }, // 13 - Forcefield
 	{ NULL, PAL1 }, // 14 - Santa's Key
 	{ &SPR_Chest, PAL1 }, // 15 - Treasure Chest (Closed)
 	{ &SPR_Save, PAL1 }, // 16 - Save Point
 	{ &SPR_Refill, PAL1 }, // 17 - Health / Ammo Refill
 	{ &SPR_Door, PAL1 }, // 18 - Door
-	{ SPR_Balrog, PAL3 }, // 19 - Balrog (Busts in)
+	{ &SPR_Balrog, PAL1 }, // 19 - Balrog (Busts in)
 	{ NULL, PAL0 }, // 20 - Computer
 	{ NULL, PAL0 }, // 21 - Treasure Chest (Open)
 	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
@@ -349,7 +347,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 33 - Projectile: Balrog energy bounce
 	{ &SPR_Bed, PAL1 }, // 34 - Bed
 	{ NULL, PAL0 }, // 35 - Enemy: Mannan
-	{ SPR_Balrog, PAL3 }, // 36 - Boss: Balrog (Hovering)
+	{ &SPR_Balrog, PAL1 }, // 36 - Boss: Balrog (Hovering)
 	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
 	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
 	{ NULL, PAL1 }, // 39 - Save Sign
@@ -380,8 +378,8 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
 	{ NULL, PAL0 }, // 66 - Bubble
-	{ NULL, PAL0 }, // 67 - Misery (Floating)
-	{ SPR_Balrog, PAL3 }, // 68 - Boss: Balrog (Running)
+	{ &SPR_Misery, PAL0 }, // 67 - Misery (Floating)
+	{ &SPR_Balrog, PAL3 }, // 68 - Boss: Balrog (Running)
 	{ NULL, PAL0 }, // 69 - Enemy: Pignon
 	{ &SPR_Sparkle, PAL1 }, // 70 - Sparkling Item
 	{ NULL, PAL0 }, // 71 - Enemy: Chinfish
@@ -691,32 +689,32 @@ const weapon_info_def weapon_info[WEAPON_COUNT] = {
 const face_info_def face_info[FACE_COUNT] = {
 	{ NULL, PAL0 },
 	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
+	{ &TS_Face02, PAL3 },
+	{ &TS_Face03, PAL3 },
+	{ &TS_Face04, PAL3 },
 	{ &TS_Face05, PAL3 },
 	{ &TS_Face06, PAL3 },
 	{ &TS_Face07, PAL3 },
 	{ &TS_Face08, PAL3 },
 	{ &TS_Face09, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
+	{ &TS_Face10, PAL3 },
+	{ &TS_Face11, PAL3 },
+	{ &TS_Face12, PAL3 },
 	{ &TS_Face01, PAL3 },
 	{ &TS_Face14, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
+	{ &TS_Face15, PAL0 },
+	{ &TS_Face16, PAL0 },
+	{ &TS_Face17, PAL3 },
+	{ &TS_Face18, PAL3 },
+	{ &TS_Face19, PAL3 },
+	{ &TS_Face20, PAL3 },
+	{ &TS_Face21, PAL3 },
 	{ &TS_Face01, PAL3 },
 	{ &TS_Face23, PAL3 },
+	{ &TS_Face24, PAL3 },
+	{ &TS_Face25, PAL3 },
+	{ &TS_Face26, PAL0 },
 	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
-	{ &TS_Face01, PAL3 },
+	{ &TS_Face28, PAL3 },
+	{ &TS_Face29, PAL0 },
 };

@@ -15,9 +15,25 @@
 #define OFLAG_PROJECTILE 4 // Projectiles are deleted when off screen
 #define OFLAG_GENERATOR 8 // No movement or collision
 
-typedef struct Entity {
+typedef struct Entity Entity;
+
+typedef void (*activateFunc)(Entity*);
+typedef void (*updateFunc)(Entity*);
+typedef void (*stateFunc)(Entity*, u16);
+
+// Temporarily making these global until I refactor entity and behavior together
+extern s16 maxFallSpeed, maxFallSpeedWater,
+	gravity, gravityWater,
+	gravityJump, gravityJumpWater,
+	jumpSpeed, jumpSpeedWater,
+	maxWalkSpeed, maxWalkSpeedWater,
+	walkAccel, walkAccelWater,
+	airControl, airControlWater,
+	friction, frictionWater;
+
+struct Entity {
 	// We linked list now
-	struct Entity *next;
+	Entity *next;
 	u16 id; // Entity ID (from the stage PXE, or when created by a TSC script)
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of npc_info in tables.c (npc.tbl in original game)
@@ -28,9 +44,9 @@ typedef struct Entity {
 	u8 direction; // Direction entity is facing, 0=left, 1=right
 	// Behavior properties
 	u8 oflags;
-	func activate;
-	func update;
-	//func set_state;
+	activateFunc activate;
+	updateFunc update;
+	stateFunc set_state;
 	// Combat
 	u16 health; // If this is an enemy it will die when health reaches 0
 	u8 attack; // Damage inflicted on player when colliding
@@ -62,7 +78,7 @@ typedef struct Entity {
 	// Used to generate damage strings
 	s8 damage_value;
 	s8 damage_time;
-} Entity; // 58 bytes
+};
 
 // First element of the "active" list and the "inactive" list
 Entity *entityList, *inactiveList;
@@ -76,10 +92,12 @@ void entities_update();
 // This one is called by the camera when it moves
 void entities_update_inactive();
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags);
+void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction);
 
 Entity *entity_destroy(Entity *e);
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
 Entity *entity_find_by_id(u16 id);
+bool entity_exists(u16 type);
 void entity_update_movement(Entity *e);
 void entity_update_walk(Entity *e);
 void entity_update_jump(Entity *e);

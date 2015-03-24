@@ -1,7 +1,7 @@
 #ifndef INC_TSC_H_
 #define INC_TSC_H_
 
-#include <genesis.h>
+#include "common.h"
 
 // This is the first event after hitting "New Game"
 #define GAME_START_EVENT 200
@@ -19,6 +19,8 @@ void tsc_load_stage(u8 id);
 u8 tsc_update();
 
 void tsc_call_event(u16 number);
+
+bool tsc_running();
 
 void tsc_unpause_debug();
 

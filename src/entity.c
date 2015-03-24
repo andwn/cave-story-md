@@ -128,7 +128,7 @@ void entity_reactivate(Entity *e) {
 
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
-	if(e->flags&NPC_DROPPOWERUP) entity_drop_powerup(e);
+	if(e->flags&NPC_OPTION2) entity_drop_powerup(e);
 	effect_create_smoke(e->deathSmoke,
 			sub_to_pixel(e->x), sub_to_pixel(e->y));
 	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
@@ -261,7 +261,6 @@ void entity_update_movement(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 }
 
-// TODO: Water for all these functions
 // TODO: If "friction" isn't supposed to be used in the air, what value is?
 void entity_update_walk(Entity *e) {
 	s16 acc = walkAccel,
@@ -584,15 +583,27 @@ Entity *entity_update_inactive(Entity *e) {
 }
 
 void entity_drop_powerup(Entity *e) {
-	u8 chance = random() % 100;
+	//u8 chance = random() % 100;
 	// TODO: Not sure how drops are determined
-	if(chance < 30) {
+	//if(chance < 30) {
 		// Heart
-	} else if(chance < 80) {
-		// Exp
-	} else {
+	//} else if(chance < 80) {
+		//s16 i = e->experience;
+		//for(; i >= 5; i -= 5) { // Big
+		//	Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+		//	exp->experience = 5;
+		//}
+		//for(; i >= 3; i -= 3) { // Med
+		//	Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+		//	exp->experience = 3;
+		//}
+		//for(; i > 0; i--) { // Small
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			exp->experience = 1;
+		//}
+	//} else {
 		// Missiles (or exp if no missiles)
-	}
+	//}
 }
 
 Entity *entity_update(Entity *e) {
@@ -646,7 +657,8 @@ Entity *entity_update(Entity *e) {
 	return e->next;
 }
 
-void entity_change(Entity *e, u16 type, u16 flags) {
+void entity_default(Entity *e, u16 type, u16 flags) {
+	// Depending on the NPC type, apply default values
 	e->type = type;
 	// Apply NPC flags in addition to entity flags
 	e->flags = flags;
@@ -662,21 +674,25 @@ void entity_change(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->activate = &ai_activate_null;
-	e->update = &ai_update_null;
-	entity_create_special(e, (flags&NPC_OPTION1) > 0, (flags&NPC_OPTION2) > 0);
+	e->activate = &ai_activate_stub;
+	e->update = &ai_update_stub;
+	e->set_state = &ai_setstate_stub;
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
+	// Combine entity flags with NPC flags
 	u16 eflags = flags | npc_flags(type);
+	// Some entities should not be created until a specific system flag is set,
+	// and some no longer appear once one is set
 	if((eflags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
 	if((eflags&NPC_ENABLEONFLAG) && !system_get_flag(id)) return NULL;
+	// Allocate memory and start applying values
 	Entity *e = MEM_alloc(sizeof(Entity));
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
-	entity_change(e, type, eflags);
+	entity_default(e, type, eflags);
 	if(entity_on_screen(e)) {
 		e->next = entityList;
 		entityList = e;
@@ -689,6 +705,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
 	}
+	entity_create_special(e, (eflags&NPC_OPTION1) > 0, (eflags&NPC_OPTION2) > 0);
 	return e;
 }
 
@@ -712,15 +729,41 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 }
 
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags) {
+	u16 eflags = flags | npc_flags(type);
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(entity_matches_criteria(e, criteria, value, false)) {
-			entity_change(e, type, flags | npc_flags(type));
+			entity_default(e, type, eflags);
+			e->direction = direction;
 			sprite_delete(e->sprite);
 			if(npc_info[type].sprite != NULL) {
 				e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+				sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, direction));
 			} else e->sprite = SPRITE_NONE;
+			entity_create_special(e, (eflags&NPC_OPTION1) > 0, (eflags&NPC_OPTION2) > 0);
 		}
 		e = e->next;
 	}
+}
+
+void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(entity_matches_criteria(e, criteria, value, false)) {
+			e->direction = direction;
+			e->set_state(e, state);
+		}
+		e = e->next;
+	}
+}
+
+bool entity_exists(u16 type) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(entity_matches_criteria(e, FILTER_TYPE, type, false)) {
+			return true;
+		}
+		e = e->next;
+	}
+	return false;
 }

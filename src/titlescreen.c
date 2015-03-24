@@ -11,21 +11,25 @@
 #define OPTIONS 3
 
 u8 titlescreen_main() {
+	SYS_disableInts();
 	VDP_setEnable(false);
 	VDP_resetScreen();
-	VDP_setPalette(PAL0, PAL_Main.data);
+	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
 	VDP_setHorizontalScroll(PLAN_A, 0);
 	VDP_setVerticalScroll(PLAN_A, 0);
-	sprites_init();
+	VDP_setPalette(PAL0, PAL_Main.data);
 	u8 cursorSprite = sprite_create(&SPR_Quote, PAL0, true);
 	sprite_set_position(cursorSprite, tile_to_pixel(12) - 4, tile_to_pixel(16) - 4);
 	sprite_set_attr(cursorSprite, TILE_ATTR(PAL0, true, false, true));
+	sprite_set_animation(cursorSprite, 1);
 	VDP_drawText("New Game", 14, 16);
 	VDP_drawText("Continue", 14, 18);
 	VDP_drawText("Sound Test", 14, 20);
 	VDP_drawText(" ", 2, 25);
 	VDP_drawText("2015.03", 31, 25);
+	// TODO: Draw actual title in background
 	VDP_setEnable(true);
+	SYS_enableInts();
 	song_play(SONG_TITLE);
 	u8 cursor = system_checkdata();
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
