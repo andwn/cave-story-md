@@ -8,3 +8,4 @@ out.bin
 out.elf
 temp.bin
 *.o
+/.vagrant

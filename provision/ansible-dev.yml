@@ -1,0 +1,18 @@
+---
+- hosts: all
+  vars:
+    apt_packages:
+      - emacs24-nox
+      - vim-nox
+      - build-essential
+  tasks:
+    - name: Install debian packages
+      sudo: yes
+      apt: name={{ item }} update_cache=yes
+      with_items: apt_packages
+
+    - name: Overwrite profile
+      shell: >
+        creates=~/.ansible-profile
+        cat /vagrant/provision/vagrant_env >> ~/.profile;
+        touch ~/.ansible-profile
