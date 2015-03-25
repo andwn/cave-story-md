@@ -63,6 +63,8 @@ u8 stageEntityCount; // Used for debug mainly
 // Clears previous stage and switches to one with the given ID, which is
 // indexed in the stage_info table
 void stage_load(u16 id);
+
+void stage_replace_block(u16 bx, u16 by, u8 index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
 void stage_update();

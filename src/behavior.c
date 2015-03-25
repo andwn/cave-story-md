@@ -18,10 +18,10 @@ void ai_setstate_stub(Entity *e, u16 state) {
 }
 
 void ai_update_energy(Entity *e) {
-
 	if(e->grounded) {
 		e->y_speed = pixel_to_sub(-2);
 		e->grounded = false;
+		sound_play(SOUND_EXPBOUNCE, 0);
 	}
 	e->y_speed += gravity;
 	e->x_next = e->x + e->x_speed;
@@ -34,6 +34,10 @@ void ai_update_energy(Entity *e) {
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+void ai_activate_door(Entity *e) {
+	if(e->direction) sprite_delete(e->sprite);
 }
 
 void ai_update_toroko(Entity *e) {

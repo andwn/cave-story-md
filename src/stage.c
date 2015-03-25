@@ -20,6 +20,7 @@ u8 stageBackground;
 s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;
 
+void stage_load_tileset();
 void stage_load_blocks();
 void stage_load_tileflags();
 void stage_load_entities();
@@ -45,19 +46,16 @@ void stage_load(u16 id) {
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
 	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
-	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
-	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_USERINDEX, true);
+	stage_load_tileset();
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		VDP_clearPlan(BPLAN, true);
 		if(stageBackground > 0) {
 			stageBackgroundType = background_info[stageBackground].type;
 			if(stageBackgroundType == 0) { // Static
-				//VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
 				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
 				stage_draw_background();
 			} else if(stageBackgroundType == 1) { // Moon/Sky
-				//VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
 				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
 				for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
 				stage_draw_background2();
@@ -66,7 +64,6 @@ void stage_load(u16 id) {
 			}
 		}
 	}
-
 	stage_load_tileflags();
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
@@ -78,6 +75,21 @@ void stage_load(u16 id) {
 	SYS_enableInts();
 }
 
+void stage_load_tileset() {
+	VDP_setPalette(PAL3, stage_info[stageID].npcPalette->data);
+	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_USERINDEX, true);
+	// Inject the breakable block sprite into the tileset
+	const u8 *PXA = tileset_info[stageTileset].PXA;
+	for(u16 i = 0; i < 160; i++) {
+		if(PXA[i] == 0x43) {
+			u32 addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
+			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
+			VDP_loadTileData(&TS_Break.tiles[0], TILE_USERINDEX + addr1, 2, true);
+			VDP_loadTileData(&TS_Break.tiles[2], TILE_USERINDEX + addr2, 2, true);
+		}
+	}
+}
+
 void stage_load_blocks() {
 	const u8 *PXM = stage_info[stageID].PXM;
 	stageWidth = PXM[4] + (PXM[5] << 8);
@@ -85,7 +97,9 @@ void stage_load_blocks() {
 	PXM += 8;
 	MEM_free(stageBlocks);
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
-	for(u32 i = 0; i < stageWidth * stageHeight; i++) stageBlocks[i] = PXM[i];
+	for(u32 i = 0; i < stageWidth * stageHeight; i++) {
+		stageBlocks[i] = PXM[i];
+	}
 }
 
 void stage_load_tileflags() {
@@ -120,6 +134,14 @@ void stage_load_entities() {
 		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
 		entity_create(x, y, id, event, type, flags);
 	}
+}
+
+void stage_replace_block(u16 bx, u16 by, u8 index) {
+	//entity_create(bx, by, 0, 0, 4, 0);
+	stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];
+	stageBlocks[by * stageWidth + bx] = index;
+	stage_draw_area(bx, by, 1, 1);
+	effect_create_smoke(1, block_to_pixel(bx) + 8, block_to_pixel(by) + 8);
 }
 
 // TODO: Use DMA here
@@ -161,33 +183,35 @@ void stage_update_back() {
 }
 
 void stage_draw_column(s16 _x, s16 _y) {
-	u16 attr[4], t, b; u8 p;
+	u16 attr[4], t, b, pal; u8 p;
 	for(s16 y = _y-8; y < _y+8; y++) {
 		if(y < 0) continue;
 		if(y >= stageHeight) break;
 		p = (stage_get_block_type(_x, y) & 0x40) > 0;
+		pal = stage_get_block_type(_x, y) == 0x43 ? PAL1 : PAL2;
 		t = block_to_tile(stage_get_block(_x, y));
 		b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-		attr[0] = TILE_ATTR_FULL(PAL2, p, 0, 0, b);
-		attr[1] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+1);
-		attr[2] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH);
-		attr[3] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH+1);
+		attr[0] = TILE_ATTR_FULL(pal, p, 0, 0, b);
+		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
+		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
+		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
 		VDP_setTileMapDataRect(APLAN, attr, block_to_tile(_x)%64, block_to_tile(y)%32, 2, 2);
 	}
 }
 
 void stage_draw_row(s16 _x, s16 _y) {
-	u16 attr[4], t, b; u8 p;
+	u16 attr[4], t, b, pal; u8 p;
 	for(s16 x = _x-11; x < _x+11; x++) {
 		if(x < 0) continue;
 		if(x >= stageWidth) break;
 		p = (stage_get_block_type(x, _y) & 0x40) > 0;
+		pal = stage_get_block_type(x, _y) == 0x43 ? PAL1 : PAL2;
 		t = block_to_tile(stage_get_block(x, _y));
 		b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-		attr[0] = TILE_ATTR_FULL(PAL2, p, 0, 0, b);
-		attr[1] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+1);
-		attr[2] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH);
-		attr[3] = TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH+1);
+		attr[0] = TILE_ATTR_FULL(pal, p, 0, 0, b);
+		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
+		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
+		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
 		VDP_setTileMapDataRect(APLAN, attr, block_to_tile(x)%64, block_to_tile(_y)%32, 2, 2);
 	}
 }
@@ -221,18 +245,19 @@ void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
 }
 
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
-	u16 t, b, xx, yy; u8 p;
+	u16 t, b, xx, yy, pal; u8 p;
 	for(u16 y = _y; y < _y + _h; y++) {
 		for(u16 x = _x; x < _x + _w; x++) {
 			p = (stage_get_block_type(x, y) & 0x40) > 0;
+			pal = stage_get_block_type(x, y) == 0x43 ? PAL1 : PAL2;
 			t = block_to_tile(stage_get_block(x, y));
 			b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 			xx = block_to_tile(x) % 64;
 			yy = block_to_tile(y) % 32;
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(PAL2, p, 0, 0, b), xx, yy);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(PAL2, p, 0, 0, b+1), xx+1, yy);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(PAL2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
+			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b), xx, yy);
+			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+1), xx+1, yy);
+			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH), xx, yy+1);
+			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
 		}
 	}
 }

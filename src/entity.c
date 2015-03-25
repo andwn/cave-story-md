@@ -126,9 +126,19 @@ void entity_reactivate(Entity *e) {
 	e->activate(e);
 }
 
+Entity *entity_delete(Entity *e) {
+	sprite_delete(e->sprite);
+	Entity *next = e->next;
+	Entity *prev = list_get_prev(e, entityList);
+	if(prev == NULL) entityList = next;
+	else prev->next = next;
+	MEM_free(e);
+	return next;
+}
+
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
-	if(e->flags&NPC_OPTION2) entity_drop_powerup(e);
+	entity_drop_powerup(e);
 	effect_create_smoke(e->deathSmoke,
 			sub_to_pixel(e->x), sub_to_pixel(e->y));
 	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
@@ -367,7 +377,7 @@ bool collide_stage_leftwall(Entity *e) {
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
-	if(pxa1 == 0x41 || pxa2 == 0x41 ||
+	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
@@ -385,7 +395,7 @@ bool collide_stage_rightwall(Entity *e) {
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
-	if(pxa1 == 0x41 || pxa2 == 0x41 ||
+	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
@@ -403,7 +413,7 @@ bool collide_stage_floor(Entity *e) {
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
-	if(pxa1 == 0x41 || pxa2 == 0x41 ||
+	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_speed = 0;
@@ -500,7 +510,7 @@ bool collide_stage_floor_grounded(Entity *e) {
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
 	u8 pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
-	if(pxa1 == 0x41 || pxa2 == 0x41 ||
+	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 		(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		// After going up a slope and returning to flat land, we are one or
 		// two pixels too low. This causes the player to ignore new upward slopes
@@ -519,23 +529,47 @@ bool collide_stage_floor_grounded(Entity *e) {
 }
 
 bool collide_stage_ceiling(Entity *e) {
-	u16 block_x1, block_x2, block_y;
+	u16 pixel_x1, pixel_x2, pixel_y;
 	u8 pxa1, pxa2;
-	block_x1 = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left + 2);
-	block_x2 = pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right - 2);
-	block_y = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top);
-	pxa1 = stage_get_block_type(block_x1, block_y);
-	pxa2 = stage_get_block_type(block_x2, block_y);
-	if(pxa1 == 0x41 || pxa2 == 0x41 ||
+	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
+	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
+	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top;
+	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
+	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
+
+	//u16 block_x1, block_x2, block_y;
+	//u8 pxa1, pxa2;
+	//block_x1 = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left + 2);
+	//block_x2 = pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right - 2);
+	//block_y = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top);
+	//pxa1 = stage_get_block_type(block_x1, block_y);
+	//pxa2 = stage_get_block_type(block_x2, block_y);
+	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
 		e->y_speed = 0;
-		e->y_next = pixel_to_sub(
-				block_to_pixel(block_y) + block_to_pixel(1) + e->hit_box.top);
+		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
 		e->jump_time = 0;
 		return true;
 	}
-	return false;
+	bool result = false;
+	if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
+			pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
+		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
+		e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF + 1 -
+				heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top);
+		e->y_speed = 0;
+		result = true;
+	}
+	if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
+			pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
+		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
+		e->y_next = pixel_to_sub((pixel_y&~0xF) + 1 +
+				heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top);
+		e->y_speed = 0;
+		result = true;
+	}
+	return result;
 }
 
 bool entity_overlapping(Entity *a, Entity *b) {
@@ -583,27 +617,30 @@ Entity *entity_update_inactive(Entity *e) {
 }
 
 void entity_drop_powerup(Entity *e) {
-	//u8 chance = random() % 100;
+	u8 chance = random() % 100;
 	// TODO: Not sure how drops are determined
-	//if(chance < 30) {
-		// Heart
-	//} else if(chance < 80) {
+	if(chance < 30) { // Heart
+		Entity *heart = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 87, 0);
+		heart->health = 2;
+	} else if(chance < 50) {
+		// Missiles
+	} else { // Energy
 		s16 i = e->experience;
 		for(; i >= 5; i -= 5) { // Big
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 5;
+			sprite_set_animation(e->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 3;
+			sprite_set_animation(e->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 1;
 		}
-	//} else {
-		// Missiles (or exp if no missiles)
-	//}
+	}
 }
 
 Entity *entity_update(Entity *e) {
@@ -664,6 +701,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->flags = flags;
 	e->x_speed = 0;
 	e->y_speed = 0;
+	e->direction = 0;
 	e->grounded = false;
 	e->health = npc_health(type);
 	e->attack = npc_attack(type);
@@ -716,6 +754,10 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		e->x_speed = 0x200 - (random() % 0x400);
 		e->update = &ai_update_energy;
 		break;
+	case 18: // Door
+		e->activate = &ai_activate_door;
+		e->activate(e);
+		break;
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
 		break;
@@ -727,6 +769,7 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		break;
 	case 211: // Spikes
 		e->activate = &ai_activate_spike;
+		if(e->sprite != SPRITE_NONE) e->activate(e);
 		break;
 	default:
 		break;

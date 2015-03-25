@@ -27,7 +27,7 @@
 u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
 bool playerDead = false;
-u8 weaponCount = 0;
+u8 playerWeaponCount = 0;
 
 void player_update_entity_collision();
 void player_update_bounds();
@@ -51,6 +51,8 @@ void player_init() {
 	player.y_next = player.y;
 	player.x_speed = 0;
 	player.y_speed = 0;
+	player.damage_time = 0;
+	player.damage_value = 0;
 	//player.accel = 0x55 >> 1;
 	//player.max_speed = 0x32C >> 1;
 	// Actually 6,6,5,8 but need to get directional hitboxes working first
@@ -58,7 +60,7 @@ void player_init() {
 	//player.active = true;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No weapons
+	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No playerWeapons
 	for(u8 i = 0; i < 3; i++) playerBullet[i].ttl = 0; // No bullets
 	playerDead = false;
 	currentWeapon = 0;
@@ -157,6 +159,14 @@ void player_update_bullets() {
 		sprite_set_position(b->sprite,
 				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		u16 bx = sub_to_block(b->x), by = sub_to_block(b->y);
+		if(stage_get_block_type(bx, by) == 0x43) {
+			sprite_delete(b->sprite);
+			b->ttl = 0;
+			sound_play(SOUND_BREAK, 8);
+			stage_replace_block(bx, by, 0);
+			continue;
+		}
 		if(--b->ttl == 0) sprite_delete(b->sprite);
 	}
 }
@@ -244,6 +254,14 @@ void player_unlock_controls() {
 
 void player_update_entity_collision() {
 	if(playerIFrames > 0) playerIFrames--;
+	if(player.damage_time > 0) {
+		player.damage_time--;
+		if(player.damage_time == 0) {
+			effect_create_damage_string(player.damage_value,
+					sub_to_pixel(player.x) - 8, sub_to_pixel(player.y) - 4, 60);
+			player.damage_value = 0;
+		}
+	}
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(e->attack > 0) {
@@ -269,18 +287,33 @@ void player_update_entity_collision() {
 			switch(e->type) {
 			case 1: // Energy
 				if(entity_overlapping(&player, e)) {
-					playerWeapon[currentWeapon].energy += e->experience;
-					e = entity_destroy(e);
+					Weapon *w = &playerWeapon[currentWeapon];
+					w->energy += e->experience;
+					if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level]) {
+						sound_play(SOUND_LEVELUP, 5);
+						w->energy -= weapon_info[w->type].experience[w->level];
+						w->level++;
+					} else {
+						sound_play(SOUND_GETEXP, 5);
+						player.damage_time = 30;
+						player.damage_value += e->experience;
+					}
+					e = entity_delete(e);
 					continue;
-					//tsc_call_event(e->event);
-					//e = entity_destroy(e);
-					//return;
 				}
 				break;
 			case 46: // Trigger
 				if(entity_overlapping(&player, e) && !tsc_running()) {
 					tsc_call_event(e->event);
-					//e = entity_destroy(e);
+					continue;
+				}
+				break;
+			case 87: // Heart
+				if(entity_overlapping(&player, e)) {
+					player.health += e->health;
+					if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
+					sound_play(SOUND_REFILL, 5);
+					e = entity_delete(e);
 					continue;
 				}
 				break;
@@ -306,7 +339,7 @@ void player_update_bounds() {
 }
 
 Weapon *player_find_weapon(u8 id) {
-	for(u8 i = 0; i < weaponCount; i++) {
+	for(u8 i = 0; i < playerWeaponCount; i++) {
 		if(playerWeapon[i].type == id) return &playerWeapon[i];
 	}
 	return NULL;
@@ -315,7 +348,7 @@ Weapon *player_find_weapon(u8 id) {
 void player_give_weapon(u8 id, u8 ammo) {
 	Weapon *w = player_find_weapon(id);
 	if(w == NULL) {
-		w = &playerWeapon[weaponCount];
+		w = &playerWeapon[playerWeaponCount];
 		w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
 		w->type = id;
 		w->level = 1;
@@ -332,7 +365,7 @@ void player_take_weapon(u8 id) {
 }
 
 bool player_has_weapon(u8 id) {
-	for(u8 i = 0; i < weaponCount; i++) {
+	for(u8 i = 0; i < playerWeaponCount; i++) {
 		if(playerWeapon[i].type == id) return true;
 	}
 	return false;

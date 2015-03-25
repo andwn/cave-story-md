@@ -94,6 +94,7 @@ void entities_update_inactive();
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags);
 void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction);
 
+Entity *entity_delete(Entity *e);
 Entity *entity_destroy(Entity *e);
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
 Entity *entity_find_by_id(u16 id);

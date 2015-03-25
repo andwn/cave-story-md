@@ -367,7 +367,7 @@ u8 execute_command() {
 		case CMD_GIT: // TODO: Display item (1) in message box
 			args[0] = tsc_read_word();
 			break;
-		case CMD_FAC: // TODO: Display face (1) in message box
+		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
 			showingFace = args[0];
 			if(msgWindowOpen) {
@@ -507,13 +507,13 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			player_maxhealth_increase(args[0]);
 			break;
-		case CMD_ANP: // TODO: Give all entities (1) script state (2) with direction (3)
+		case CMD_ANP: // Give all entities (1) script state (2) with direction (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			entities_set_state(FILTER_EVENT, args[0], args[1], args[2] > 0);
 			break;
-		case CMD_CNP: // TODO: Change all entities (1) to type (2) with direction (3)
+		case CMD_CNP: // Change all entities (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -533,14 +533,14 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			entities_clear(FILTER_EVENT, args[0]);
 			break;
-		// TODO: Change entity (1) to type (2) with direction (3) and set flag 0x1000?
+		// Change entity (1) to type (2) with direction (3) and set flag 0x1000?
 		case CMD_INP:
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0x1000);
 			break;
-		case CMD_SNP: // TODO: Create entity (1) at (2),(3) with direction (4)
+		case CMD_SNP: // Create entity (1) at (2),(3) with direction (4)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -553,7 +553,7 @@ u8 execute_command() {
 		case CMD_BSL: // TODO: Start boss fight with entity (1)
 			args[0] = tsc_read_word();
 			break;
-		case CMD_NCJ: // TODO: If entity type (1) exists jump to event (2)
+		case CMD_NCJ: // If entity type (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(entity_exists(args[0])) {
@@ -665,10 +665,11 @@ u8 execute_command() {
 			break;
 		case CMD_MNA: // TODO: Show stage name
 			break;
-		case CMD_CMP: // TODO: Change stage tile at (1),(2) to type (3)
+		case CMD_CMP: // Change stage tile at (1),(2) to type (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
+			stage_replace_block(args[0], args[1], args[2]);
 			break;
 		case CMD_MP_ADD: // TODO: Map flag (1)
 			args[0] = tsc_read_word();

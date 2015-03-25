@@ -22,6 +22,7 @@ typedef struct {
 	u8 type;
 	u8 level;
 	u16 energy;
+	u16 next;
 	u16 maxammo;
 	u16 ammo;
 } Weapon;

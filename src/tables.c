@@ -312,7 +312,7 @@ const sound_info_def sound_info[SOUND_COUNT] = {
 
 const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 0 - Nothing
-	{ &SPR_EnergyS, PAL1 }, // 1 - Weapon Energy (Small)
+	{ &SPR_Energy, PAL1 }, // 1 - Weapon Energy
 	{ &SPR_Behem, PAL1 }, // 2 - Enemy: Behemoth
 	{ NULL, PAL0 }, // 3 - Nothing / Unknown
 	{ &SPR_Smoke, PAL1 }, // 4 - Smoke
@@ -398,7 +398,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 84 - Projectile: Basu (1)
 	{ NULL, PAL0 }, // 85 - Terminal
 	{ NULL, PAL0 }, // 86 - Missile
-	{ NULL, PAL0 }, // 87 - Heart
+	{ &SPR_Heart, PAL1 }, // 87 - Heart
 	{ NULL, PAL0 }, // 88 - Boss: Igor
 	{ NULL, PAL0 }, // 89 - Igor (Defeated)
 	{ NULL, PAL0 }, // 90 - Background

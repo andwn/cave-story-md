@@ -26,20 +26,23 @@ SPRITE SPR_Tele		"sprite/tele.png" 3 4 0 1 NONE
 SPRITE SPR_Trap		"sprite/trap.png" 4 3 0 0 NONE
 SPRITE SPR_LifeUp	"sprite/lifeup.png" 2 2 0 5 NONE
 SPRITE SPR_Bed		"sprite/bed.png" 4 2 0 0 NONE
-SPRITE SPR_Break	"sprite/breakable.png" 2 2 0 0 NONE
+#SPRITE SPR_Break	"sprite/breakable.png" 2 2 0 0 NONE
+TILESET TS_Break	"sprite/breakable.png" 0
 SPRITE SPR_Fire		"sprite/fire.png" 2 2 0 10 NONE
 SPRITE SPR_Sign		"sprite/sign.png" 2 2 0 0 NONE
 SPRITE SPR_Smoke	"sprite/smoke.png" 2 2 0 6 NONE
 SPRITE SPR_Sparkle	"sprite/sparkle.png" 2 2 0 10 NONE
-SPRITE SPR_EnergyS	"sprite/energysm.png" 2 2 0 6 NONE
-SPRITE SPR_EnergyM	"sprite/energymid.png" 2 2 0 6 NONE
-SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
+SPRITE SPR_Energy	"sprite/energy.png" 2 2 0 6 NONE
+#SPRITE SPR_EnergyS	"sprite/energysm.png" 2 2 0 6 NONE
+#SPRITE SPR_EnergyM	"sprite/energymid.png" 2 2 0 6 NONE
+#SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
 SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 30 NONE
 SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 20 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE
 SPRITE SPR_Behem	"sprite/behem.png" 4 3 0 20 NONE
 SPRITE SPR_Basil	"sprite/basil.png" 4 2 0 10 NONE
 SPRITE SPR_Balrog	"sprite/balrog.png" 5 3 0 15 NONE
+SPRITE SPR_Heart	"sprite/heart.png" 2 2 0 2 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
