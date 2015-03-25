@@ -50,7 +50,7 @@ OBJS = $(RESOURCES)
 
 all: out.bin 
 
-src/boot/sega.o: src/boot/rom_head.bin
+src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
 
 %.bin: %.elf
@@ -111,7 +111,7 @@ src/boot/sega.o: src/boot/rom_head.bin
 %.s: %.res
 	$(RESCOMP) $< $@
 
-src/boot/rom_head.bin: src/boot/rom_head.o
+out/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
 
 clean:
