@@ -136,6 +136,13 @@ void stage_load_entities() {
 	}
 }
 
+bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {
+	u8 block = stage_get_block_type(x, y);
+	if(block&BLOCK_SLOPE) return false;
+	block &= 0xF;
+	return block == 1 || block == 3 || (checkNpcSolid && block == 4);
+}
+
 void stage_replace_block(u16 bx, u16 by, u8 index) {
 	//entity_create(bx, by, 0, 0, 4, 0);
 	stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];

@@ -19,7 +19,7 @@ typedef struct Entity Entity;
 
 typedef void (*activateFunc)(Entity*);
 typedef void (*updateFunc)(Entity*);
-typedef void (*stateFunc)(Entity*, u16);
+typedef bool (*stateFunc)(Entity*, u16);
 
 // Temporarily making these global until I refactor entity and behavior together
 extern s16 maxFallSpeed, maxFallSpeedWater,
@@ -83,21 +83,40 @@ struct Entity {
 // First element of the "active" list and the "inactive" list
 Entity *entityList, *inactiveList;
 
+// References whichever entity is a boss otherwise it is NULL
+Entity *bossEntity;
+
 // Deletes entities based on a criteria
 void entities_clear(u8 criteria, u16 value);
-// Counts the number of active entities
+// Counts the number of entities
 u16 entities_count();
-// Per frame update for entities
+u16 entities_count_active();
+u16 entities_count_inactive();
+// Per frame update for active entities
 void entities_update();
+// Reactivate entities when they come back on screen
 // This one is called by the camera when it moves
 void entities_update_inactive();
+// Replaces existing (active) entities matching criteria to one of another type
+// Called by CNP and INP commands
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags);
+// Sets the state of (active) entities matching criteria using set_state
+// Called by ANP command
 void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction);
+void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction);
 
+// Deletes an entity and returns the next one
 Entity *entity_delete(Entity *e);
+// Same as delete entity but does the following first:
+// Plays death sound, drops power ups, and creates smoke
 Entity *entity_destroy(Entity *e);
+// Creates an entity and makes it head of active or inactive list
+// Called internally everywhere and by SNP command
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
+// Finds entity matching an ID and returns it
 Entity *entity_find_by_id(u16 id);
+Entity *entity_find_by_event(u16 event);
+// Returns true if an entity of given type exists
 bool entity_exists(u16 type);
 void entity_update_movement(Entity *e);
 void entity_update_walk(Entity *e);

@@ -39,7 +39,7 @@ void player_update_interaction();
 void player_init() {
 	controlsLocked = false;
 	player_reset_sprites();
-	playerFacing = 0;
+	player.direction = 0;
 	player.flags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	player.controller = &joystate;
 	playerMaxHealth = 3;
@@ -68,7 +68,7 @@ void player_init() {
 
 void player_reset_sprites() {
 	player.sprite = sprite_create(&SPR_Quote, PAL0, false);
-	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, playerFacing));
+	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
 	if(playerWeapon[currentWeapon].type > 0) {
 		playerWeapon[currentWeapon].sprite = sprite_create(
 			weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
@@ -140,9 +140,9 @@ void player_update_shooting() {
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(4);
 				} else {
-					b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * playerFacing;
+					b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * player.direction;
 					b->y = player.y + pixel_to_sub(4);
-					b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * playerFacing;
+					b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * player.direction;
 					b->y_speed = 0;
 				}
 			}
@@ -216,12 +216,12 @@ void player_draw() {
 		}
 	}
 	sprite_set_animation(player.sprite, anim);
-	if((player.controller[0]&BUTTON_RIGHT) && playerFacing == 0) {
+	if((player.controller[0]&BUTTON_RIGHT) && player.direction == 0) {
 		sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, true));
-		playerFacing = 1;
-	} else if((player.controller[0]&BUTTON_LEFT) && playerFacing == 1) {
+		player.direction = 1;
+	} else if((player.controller[0]&BUTTON_LEFT) && player.direction == 1) {
 		sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, false));
-		playerFacing = 0;
+		player.direction = 0;
 	}
 	sprite_set_visible(player.sprite, !((playerIFrames / 2) % 2));
 	sprite_set_position(player.sprite,
@@ -233,7 +233,7 @@ void player_draw() {
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
 		sprite_set_animation(playerWeapon[currentWeapon].sprite, wanim);
-		sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, playerFacing));
+		sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, player.direction));
 		sprite_set_visible(playerWeapon[currentWeapon].sprite, !((playerIFrames / 2) % 2));
 		sprite_set_position(playerWeapon[currentWeapon].sprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,

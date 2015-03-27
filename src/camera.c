@@ -16,7 +16,7 @@ u16 cameraShake;
 void camera_init() {
 	camera.target = &player;
 	camera.x = pixel_to_sub(SCREEN_HALF_W);
-	camera.y = pixel_to_sub(SCREEN_HALF_H);
+	camera.y = pixel_to_sub(SCREEN_HALF_H + 8);
 	cameraShake = 0;
 }
 
@@ -45,9 +45,9 @@ void camera_update() {
 		camera.y_offset = 0;
 		// If following the player focus on where they are walking/looking
 		if(camera.target == &player) {
-			if(player.controller[0] & BUTTON_LEFT) {
+			if(player.direction == 0) {
 				camera.x_offset = pixel_to_sub(-48);
-			} else if(player.controller[0] & BUTTON_RIGHT) {
+			} else {
 				camera.x_offset = pixel_to_sub(48);
 			}
 			if((player.controller[0] & BUTTON_UP) && player.y_speed <= 0) {

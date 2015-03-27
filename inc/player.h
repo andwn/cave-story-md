@@ -42,7 +42,7 @@ Bullet playerBullet[3];
 
 u16 playerMaxAir, playerAir;
 u16 playerMaxHealth;
-u8 playerFacing;
+//u8 playerFacing;
 bool controlsLocked;
 u16 playerEquipment;
 u8 playerInventory[MAX_ITEMS];

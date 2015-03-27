@@ -14,6 +14,7 @@
 #include "tsc.h"
 #include "npc.h"
 #include "behavior.h"
+//#include "collision.h"
 
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
@@ -60,6 +61,7 @@
 #define FRICTION_WATER_PAL 0x19
 
 // Heightmaps for slopes
+
 const u8 heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
 	{ 0x8,0x8,0x9,0x9,0xA,0xA,0xB,0xB,0xC,0xC,0xD,0xD,0xE,0xE,0xF,0xF },
@@ -598,6 +600,20 @@ Entity *entity_find_by_id(u16 id) {
 	return NULL;
 }
 
+Entity *entity_find_by_event(u16 event) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(e->event == event) return e;
+		else e = e->next;
+	}
+	e = inactiveList;
+	while(e != NULL) {
+		if(e->event == event) return e;
+		else e = e->next;
+	}
+	return NULL;
+}
+
 bool entity_on_screen(Entity *obj) {
 	return obj->x > camera.x - pixel_to_sub(SCREEN_HALF_W + 32) &&
 			obj->x < camera.x + pixel_to_sub(SCREEN_HALF_W + 32) &&
@@ -667,8 +683,8 @@ Entity *entity_update(Entity *e) {
 							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 				// Killed enemy
 				e->health = 0;
-
-				return entity_destroy(e);
+				if(e->set_state(e, STATE_DEFEATED)) return entity_destroy(e);
+				else return e->next;
 			}
 			if(e->flags & NPC_SHOWDAMAGE) {
 				e->damage_value -= b->damage;
@@ -767,6 +783,10 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		e->state = 3; // Running back and forth
 		sprite_set_animation(e->sprite, 2);
 		break;
+	case 68: // Boss: Balrog (Mimiga Village)
+		e->update = &ai_update_balrog_boss1;
+		e->set_state = &ai_setstate_balrog_boss1;
+		break;
 	case 211: // Spikes
 		e->activate = &ai_activate_spike;
 		if(e->sprite != SPRITE_NONE) e->activate(e);
@@ -800,6 +820,20 @@ void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction) {
 		if(entity_matches_criteria(e, criteria, value, false)) {
 			e->direction = direction;
 			e->set_state(e, state);
+		}
+		e = e->next;
+	}
+}
+
+void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(entity_matches_criteria(e, criteria, value, false)) {
+			e->direction = direction;
+			e->x = block_to_sub(x) + pixel_to_sub(8);
+			e->y = block_to_sub(y) + pixel_to_sub(8);
+			e->grounded = false;
+			break;
 		}
 		e = e->next;
 	}

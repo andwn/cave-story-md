@@ -379,7 +379,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
 	{ NULL, PAL0 }, // 66 - Bubble
 	{ &SPR_Misery, PAL0 }, // 67 - Misery (Floating)
-	{ &SPR_Balrog, PAL3 }, // 68 - Boss: Balrog (Running)
+	{ &SPR_Balrog, PAL1 }, // 68 - Boss: Balrog (Running)
 	{ NULL, PAL0 }, // 69 - Enemy: Pignon
 	{ &SPR_Sparkle, PAL1 }, // 70 - Sparkling Item
 	{ NULL, PAL0 }, // 71 - Enemy: Chinfish

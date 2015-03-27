@@ -6,6 +6,7 @@
 #include "audio.h"
 #include "stage.h"
 #include "sprite.h"
+#include "tsc.h"
 
 void ai_activate_stub(Entity *e) {
 
@@ -13,8 +14,12 @@ void ai_activate_stub(Entity *e) {
 void ai_update_stub(Entity *e) {
 
 }
-void ai_setstate_stub(Entity *e, u16 state) {
+bool ai_setstate_stub(Entity *e, u16 state) {
 	e->state = state;
+	if(state == STATE_DEFEATED) {
+		return true;
+	}
+	return false;
 }
 
 void ai_update_energy(Entity *e) {
@@ -94,6 +99,29 @@ void ai_update_toroko(Entity *e) {
 	entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+// 12 - Balrog (Cutscene)
+void ai_update_balrog_scene(Entity *e) {
+
+}
+
+bool ai_setstate_balrog_scene(Entity *e, u16 state) {
+	return false;
+}
+
+// 68 - Boss: Balrog (Mimiga Village)
+void ai_update_balrog_boss1(Entity *e) {
+
+}
+
+bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
+	e->state = state;
+	if(state == STATE_DEFEATED) {
+		e->state += 1;
+		tsc_call_event(e->event); // Boss defeated event.. maybe
+	}
+	return false;
 }
 
 void ai_activate_spike(Entity *e) {

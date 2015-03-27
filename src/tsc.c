@@ -456,6 +456,7 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			player.x = block_to_sub(args[0]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[1]) + pixel_to_sub(8);
+			player.grounded = false;
 			break;
 		case CMD_MYB: // Bounce player in direction (1)
 			args[0] = tsc_read_word();
@@ -469,11 +470,11 @@ u8 execute_command() {
 		case CMD_MYD: // Change direction to (1)
 			args[0] = tsc_read_word();
 			if(args[0] == 0) { // Left
-				playerFacing = 0;
+				player.direction = 0;
 			} else if(args[0] == 2) { // Right
-				playerFacing = 1;
+				player.direction = 1;
 			}
-			sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, playerFacing));
+			sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
 			break;
 		case CMD_UNI: // TODO: Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -524,6 +525,7 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
+			entities_set_position(FILTER_EVENT, args[0], args[1], args[2], args[3] > 0);
 			break;
 		case CMD_DNA: // Delete all entities of type (1)
 			args[0] = tsc_read_word();
@@ -639,7 +641,7 @@ u8 execute_command() {
 		case CMD_FON: // TODO: Figure out the difference between these
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			Entity *e = entity_find_by_id(args[0]);
+			Entity *e = entity_find_by_event(args[0]);
 			if(e != NULL) camera.target = e;
 			else camera.target = &player;
 			break;
@@ -670,6 +672,7 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			stage_replace_block(args[0], args[1], args[2]);
+			sound_play(SOUND_BREAK, 5);
 			break;
 		case CMD_MP_ADD: // TODO: Map flag (1)
 			args[0] = tsc_read_word();

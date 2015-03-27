@@ -7,6 +7,13 @@
 #define SCREEN_HALF_W 160
 #define SCREEN_HALF_H 112
 
+// Direction
+#define DIRECTION_LEFT 0
+#define DIRECTION_UP 1
+#define DIRECTION_RIGHT 2
+#define DIRECTION_DOWN 3
+#define DIRECTION_CENTER 4
+
 // Unit conversions
 // subpixel/unit (1/512x1/512)
 // pixel (1x1)
@@ -40,6 +47,10 @@
 #define u8      unsigned char
 #define u16     unsigned short
 #define u32     unsigned long
+
+#define NULL 0
+#define TRUE 1
+#define FALSE 0
 
 #endif // _GENESIS_H_
 

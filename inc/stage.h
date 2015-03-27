@@ -64,6 +64,8 @@ u8 stageEntityCount; // Used for debug mainly
 // indexed in the stage_info table
 void stage_load(u16 id);
 
+bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid);
+
 void stage_replace_block(u16 bx, u16 by, u8 index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
