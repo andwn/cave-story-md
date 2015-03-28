@@ -317,6 +317,10 @@ void player_update_entity_collision() {
 		bounding_box collision = { 0, 0, 0, 0 };
 		if((e->eflags|e->nflags) & NPC_SOLID) {
 			collision = entity_react_to_collision(&player, e);
+			if(collision.bottom && ((e->eflags|e->nflags) & NPC_BOUNCYTOP)) {
+				player.y_speed = pixel_to_sub(-1);
+				player.grounded = false;
+			}
 		}
 		// Enemies
 		if(e->attack > 0) {
