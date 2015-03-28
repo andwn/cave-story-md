@@ -256,6 +256,8 @@ void player_unlock_controls() {
 
 void player_update_entity_collision() {
 	if(playerIFrames > 0) playerIFrames--;
+	// This "damage_time" block is for energy numbers
+	// When the player gets hurt damage numbers are created instantly
 	if(player.damage_time > 0) {
 		player.damage_time--;
 		if(player.damage_time == 0) {
@@ -266,10 +268,72 @@ void player_update_entity_collision() {
 	}
 	Entity *e = entityList;
 	while(e != NULL) {
+		// Handle special cases
+		// TODO: Maybe this could be handled with function pointers instead
+		// The "continue" statements here go to the next iteration of the while loop
+		switch(e->type) {
+		case 1: // Energy
+			// Increase weapon level/energy
+			if(entity_overlapping(&player, e)) {
+				Weapon *w = &playerWeapon[currentWeapon];
+				w->energy += e->experience;
+				if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level]) {
+					sound_play(SOUND_LEVELUP, 5);
+					w->energy -= weapon_info[w->type].experience[w->level];
+					w->level++;
+				} else {
+					sound_play(SOUND_GETEXP, 5);
+					player.damage_time = 30;
+					player.damage_value += e->experience;
+				}
+				e = entity_delete(e);
+				continue;
+			}
+			break;
+		case 46: // Trigger
+			// Call the trigger's event if an event isn't already running
+			// We don't delete the trigger here, the event takes care of it
+			if(entity_overlapping(&player, e) && !tsc_running()) {
+				tsc_call_event(e->event);
+				e = e->next;
+				continue;
+			}
+			break;
+		case 87: // Heart
+			// Increases health, plays sound and deletes itself
+			if(entity_overlapping(&player, e)) {
+				player.health += e->health;
+				// Don't go over max health
+				if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
+				sound_play(SOUND_REFILL, 5);
+				e = entity_delete(e);
+				continue;
+			}
+			break;
+		default:
+			break;
+		}
+		// Solid Entities
+		bounding_box collision = { 0, 0, 0, 0 };
+		if((e->eflags|e->nflags) & NPC_SOLID) {
+			collision = entity_react_to_collision(&player, e);
+		}
+		// Enemies
 		if(e->attack > 0) {
-			if(entity_overlapping(&player, e) && playerIFrames == 0) {
+			u32 collided = *(u32*)&collision; // I do what I want
+			if((collided > 0 || entity_overlapping(&player, e)) && playerIFrames == 0) {
+				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
+				// with the front of the enemy, the player shouldn't get hurt
+				if((e->eflags|e->nflags)&NPC_FRONTATKONLY) {
+					if((e->direction == 0 && collision.right == 0) ||
+							(e->direction > 0 && collision.left == 0)) {
+						e = e->next;
+						continue;
+					}
+				}
 				// Take health
 				if(player.health <= e->attack) {
+					// If health reached 0 we are dead
 					player.health = 0;
 					effect_create_smoke(2, player.x, player.y);
 					sound_play(SOUND_DIE, 15);
@@ -282,53 +346,10 @@ void player_update_entity_collision() {
 				effect_create_damage_string(-e->attack,
 						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 				playerIFrames = INVINCIBILITY_FRAMES;
-				// TODO: Find an accurate value for knock back
-				player.y_speed = pixel_to_sub(-2);
+				// Knock back
+				player.y_speed = -0x300; // 1.5 pixels per frame
 				player.grounded = false;
 			}
-		} else { // Not an enemy
-			// The "continue" statements here go to the next iteration of the while loop
-			switch(e->type) {
-			case 1: // Energy
-				if(entity_overlapping(&player, e)) {
-					Weapon *w = &playerWeapon[currentWeapon];
-					w->energy += e->experience;
-					if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level]) {
-						sound_play(SOUND_LEVELUP, 5);
-						w->energy -= weapon_info[w->type].experience[w->level];
-						w->level++;
-					} else {
-						sound_play(SOUND_GETEXP, 5);
-						player.damage_time = 30;
-						player.damage_value += e->experience;
-					}
-					e = entity_delete(e);
-					continue;
-				}
-				break;
-			case 46: // Trigger
-				if(entity_overlapping(&player, e) && !tsc_running()) {
-					tsc_call_event(e->event);
-					e = e->next;
-					continue;
-				}
-				break;
-			case 87: // Heart
-				if(entity_overlapping(&player, e)) {
-					player.health += e->health;
-					if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
-					sound_play(SOUND_REFILL, 5);
-					e = entity_delete(e);
-					continue;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		// TODO: Solid Entities
-		if((e->eflags|e->nflags) & NPC_SOLID) {
-			entity_react_to_collision(&player, e);
 		}
 		e = e->next;
 	}

@@ -13,7 +13,7 @@
 #include "audio.h"
 #include "tsc.h"
 #include "npc.h"
-#include "behavior.h"
+#include "ai_common.h"
 //#include "collision.h"
 
 #define abs(x) (x * ((x>0) - (x<0)))
@@ -588,7 +588,8 @@ bool entity_overlapping(Entity *a, Entity *b) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-void entity_react_to_collision(Entity *a, Entity *b) {
+bounding_box entity_react_to_collision(Entity *a, Entity *b) {
+	bounding_box result = { 0, 0, 0, 0 };
 	s16 ax1 = sub_to_pixel(a->x_next) - a->hit_box.left,
 		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right,
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
@@ -597,7 +598,7 @@ void entity_react_to_collision(Entity *a, Entity *b) {
 		bx2 = sub_to_pixel(b->x) + b->hit_box.right,
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
-	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return;
+	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return result;
 	// Wall reaction
 	ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
 	ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
@@ -607,9 +608,11 @@ void entity_react_to_collision(Entity *a, Entity *b) {
 		s16 move1 = pixel_to_sub(bx2 - ax1);
 		s16 move2 = pixel_to_sub(bx1 - ax2);
 		if(abs(move1) < abs(move2)) {
+			result.left = 1;
 			a->x_next += move1;
 			if(a->x_speed < 0) a->x_speed = 0;
 		} else {
+			result.right = 1;
 			a->x_next += move2;
 			if(a->x_speed > 0) a->x_speed = 0;
 		}
@@ -623,14 +626,17 @@ void entity_react_to_collision(Entity *a, Entity *b) {
 		s16 move1 = pixel_to_sub(by2 - ay1);
 		s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
 		if(abs(move1) < abs(move2)) {
+			result.top = 1;
 			a->y_next += move1;
 			if(a->y_speed < 0) a->y_speed = 0;
 		} else {
+			result.bottom = 1;
 			a->y_next += move2;
 			if(a->y_speed > 0) a->y_speed = 0;
 			a->grounded = true;
 		}
 	}
+	return result;
 }
 
 Entity *entity_find_by_id(u16 id) {
@@ -777,9 +783,9 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->activate = &ai_activate_stub;
-	e->update = &ai_update_stub;
-	e->set_state = &ai_setstate_stub;
+	e->activate = &ai_activate_base;
+	e->update = &ai_update_base;
+	e->set_state = &ai_setstate_base;
 	e->state = 0;
 	e->state_time = 0;
 }
@@ -811,42 +817,6 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	}
 	entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
 	return e;
-}
-
-void entity_create_special(Entity *e, bool option1, bool option2) {
-	switch(e->type) {
-	case 1: // Weapon Energy
-		e->x_speed = 0x200 - (random() % 0x400);
-		e->update = &ai_update_energy;
-		break;
-	case 12: // Balrog (Cutscene)
-		e->update = &ai_update_balrog_scene;
-		e->set_state = &ai_setstate_balrog_scene;
-		break;
-	case 18: // Door
-		e->activate = &ai_activate_door;
-		e->activate(e);
-		break;
-	case 60: // Toroko
-		e->update = &ai_update_toroko;
-		break;
-	case 63: // Toroko attacking with stick
-		e->y -= block_to_sub(1);
-		e->update = &ai_update_toroko;
-		e->state = 3; // Running back and forth
-		sprite_set_animation(e->sprite, 2);
-		break;
-	case 68: // Boss: Balrog (Mimiga Village)
-		e->update = &ai_update_balrog_boss1;
-		e->set_state = &ai_setstate_balrog_boss1;
-		break;
-	case 211: // Spikes
-		e->activate = &ai_activate_spike;
-		if(e->sprite != SPRITE_NONE) e->activate(e);
-		break;
-	default:
-		break;
-	}
 }
 
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags) {

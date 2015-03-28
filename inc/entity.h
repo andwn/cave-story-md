@@ -127,6 +127,6 @@ void entity_update_jump(Entity *e);
 void entity_update_float(Entity *e);
 void entity_update_collision(Entity *e);
 bool entity_overlapping(Entity *a, Entity *b);
-void entity_react_to_collision(Entity *a, Entity *b);
+bounding_box entity_react_to_collision(Entity *a, Entity *b);
 
 #endif // INC_ENTITY_H_
