@@ -37,7 +37,9 @@ struct Entity {
 	u16 id; // Entity ID (from the stage PXE, or when created by a TSC script)
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of npc_info in tables.c (npc.tbl in original game)
-	u16 flags; // NPC flags - see tables.h for what the flags are
+	//u16 flags; // NPC flags - see tables.h for what the flags are
+	u16 nflags;
+	u16 eflags;
 	// This is assumed to be an array of type u16[2], or at least next to each other
 	// in memory. Index 0 is current joy state, 1 is previous frame's state
 	u16 *controller;
@@ -75,6 +77,7 @@ struct Entity {
 	bounding_box display_box;
 	u8 anim; // Current animation of the sprite being displayed
 	u16 state; // Script state / ANP
+	u16 state_time;
 	// Used to generate damage strings
 	s8 damage_value;
 	s8 damage_time;
@@ -124,5 +127,6 @@ void entity_update_jump(Entity *e);
 void entity_update_float(Entity *e);
 void entity_update_collision(Entity *e);
 bool entity_overlapping(Entity *a, Entity *b);
+void entity_react_to_collision(Entity *a, Entity *b);
 
 #endif // INC_ENTITY_H_

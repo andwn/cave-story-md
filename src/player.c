@@ -40,7 +40,7 @@ void player_init() {
 	controlsLocked = false;
 	player_reset_sprites();
 	player.direction = 0;
-	player.flags = NPC_IGNORE44|NPC_SHOWDAMAGE;
+	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	player.controller = &joystate;
 	playerMaxHealth = 3;
 	player.health = 3;
@@ -176,10 +176,12 @@ void player_update_interaction() {
 	if((player.controller[0]&BUTTON_DOWN) && !(player.controller[1]&BUTTON_DOWN)) {
 		Entity *e = entityList;
 		while(e != NULL) {
-			if((e->flags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
+			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
 				player.controller[1] |= BUTTON_DOWN; // To avoid triggering it twice
-				if(e->event > 0) tsc_call_event(e->event);
-				return;
+				if(e->event > 0) {
+					tsc_call_event(e->event);
+					return;
+				}
 			}
 			e = e->next;
 		}
@@ -281,9 +283,11 @@ void player_update_entity_collision() {
 						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 				playerIFrames = INVINCIBILITY_FRAMES;
 				// TODO: Find an accurate value for knock back
-				player.y_speed -= pixel_to_sub(2);
+				player.y_speed = pixel_to_sub(-2);
+				player.grounded = false;
 			}
 		} else { // Not an enemy
+			// The "continue" statements here go to the next iteration of the while loop
 			switch(e->type) {
 			case 1: // Energy
 				if(entity_overlapping(&player, e)) {
@@ -305,6 +309,7 @@ void player_update_entity_collision() {
 			case 46: // Trigger
 				if(entity_overlapping(&player, e) && !tsc_running()) {
 					tsc_call_event(e->event);
+					e = e->next;
 					continue;
 				}
 				break;
@@ -322,11 +327,9 @@ void player_update_entity_collision() {
 			}
 		}
 		// TODO: Solid Entities
-		//if(e->flags & NPC_SOLID) {
-			//if(collided || entity_overlapping(&player, e)) {
-
-			//}
-		//}
+		if((e->eflags|e->nflags) & NPC_SOLID) {
+			entity_react_to_collision(&player, e);
+		}
 		e = e->next;
 	}
 }

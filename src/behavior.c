@@ -42,7 +42,10 @@ void ai_update_energy(Entity *e) {
 }
 
 void ai_activate_door(Entity *e) {
-	if(e->direction) sprite_delete(e->sprite);
+	if(e->direction) {
+		sprite_delete(e->sprite);
+		e->sprite = SPRITE_NONE;
+	}
 }
 
 void ai_update_toroko(Entity *e) {
@@ -60,7 +63,7 @@ void ai_update_toroko(Entity *e) {
 			if(b != NULL) {
 				sound_play(e->hurtSound, 10); // Squeak
 				e->attack = 0; // Don't hurt the player anymore
-				e->flags |= NPC_INTERACTIVE; // Enable interaction
+				e->eflags |= NPC_INTERACTIVE; // Enable interaction
 				e->state = 10; // Change animation to falling on ground
 				e->y_speed = pixel_to_sub(-1);
 				e->x_speed /= 2;
@@ -103,10 +106,41 @@ void ai_update_toroko(Entity *e) {
 
 // 12 - Balrog (Cutscene)
 void ai_update_balrog_scene(Entity *e) {
-
+	if(e->state == 30) {
+		if(e->state_time > 0) {
+			e->state_time--;
+		} else {
+			e->set_state(e, 0);
+		}
+	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 bool ai_setstate_balrog_scene(Entity *e, u16 state) {
+	e->state = state;
+	switch(state) {
+	case 0: // Standing around
+		sprite_set_animation(e->sprite, 0);
+		break;
+	case 10: // Going up!
+	case 11:
+		sprite_set_animation(e->sprite, 3);
+		e->y_speed = pixel_to_sub(-2);
+		break;
+	case 20: // Smoking, going up!
+	case 21:
+		sprite_set_animation(e->sprite, 5);
+		e->y_speed = pixel_to_sub(-2);
+		break;
+	case 30: // Smile
+		sprite_set_animation(e->sprite, 6);
+		e->state_time = 60;
+		break;
+	case 70: // Vanish
+	case 71:
+		return true;
+	}
 	return false;
 }
 

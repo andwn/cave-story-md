@@ -16,6 +16,8 @@
 #include "behavior.h"
 //#include "collision.h"
 
+#define abs(x) (x * ((x>0) - (x<0)))
+
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
 // All measured in units, 0x200 (512) units is one pixel
@@ -143,8 +145,8 @@ Entity *entity_destroy(Entity *e) {
 	entity_drop_powerup(e);
 	effect_create_smoke(e->deathSmoke,
 			sub_to_pixel(e->x), sub_to_pixel(e->y));
-	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
-	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
+	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	sprite_delete(e->sprite);
 	Entity *next = e->next;
 	Entity *prev = list_get_prev(e, entityList);
@@ -160,13 +162,13 @@ bool entity_matches_criteria(Entity *e, u8 criteria, u16 value, bool delete) {
 	case FILTER_ID:
 		if(e->id == value) {
 			result = true;
-			if(delete && (e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
+			if(delete && (e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
 		}
 		break;
 	case FILTER_EVENT:
 		if(e->event == value) {
 			result = true;
-			if(delete && (e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
+			if(delete && (e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
 		}
 		break;
 	case FILTER_TYPE:
@@ -263,7 +265,7 @@ void entities_update_inactive() {
 }
 
 void entity_update_movement(Entity *e) {
-	if (e->flags&NPC_IGNORESOLID) {
+	if ((e->eflags|e->nflags)&NPC_IGNORESOLID) {
 		entity_update_float(e);
 	} else {
 		entity_update_walk(e);
@@ -380,7 +382,7 @@ bool collide_stage_leftwall(Entity *e) {
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
 			block_to_pixel(block_x) + block_to_pixel(1) + e->hit_box.left);
@@ -398,7 +400,7 @@ bool collide_stage_rightwall(Entity *e) {
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
 				block_to_pixel(block_x) - e->hit_box.right);
@@ -416,7 +418,7 @@ bool collide_stage_floor(Entity *e) {
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
@@ -513,7 +515,7 @@ bool collide_stage_floor_grounded(Entity *e) {
 	u8 pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-		(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+		(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		// After going up a slope and returning to flat land, we are one or
 		// two pixels too low. This causes the player to ignore new upward slopes
 		// which is bad, so this is a dumb hack to push us back up if we are
@@ -547,7 +549,7 @@ bool collide_stage_ceiling(Entity *e) {
 	//pxa1 = stage_get_block_type(block_x1, block_y);
 	//pxa2 = stage_get_block_type(block_x2, block_y);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!(e->flags&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
@@ -584,6 +586,51 @@ bool entity_overlapping(Entity *a, Entity *b) {
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
+}
+
+void entity_react_to_collision(Entity *a, Entity *b) {
+	s16 ax1 = sub_to_pixel(a->x_next) - a->hit_box.left,
+		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right,
+		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
+		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom,
+		bx1 = sub_to_pixel(b->x) - b->hit_box.left,
+		bx2 = sub_to_pixel(b->x) + b->hit_box.right,
+		by1 = sub_to_pixel(b->y) - b->hit_box.top,
+		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
+	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return;
+	// Wall reaction
+	ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
+	ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
+	ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
+	ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
+	if(ay1 < by2 && ay2 > by1) {
+		s16 move1 = pixel_to_sub(bx2 - ax1);
+		s16 move2 = pixel_to_sub(bx1 - ax2);
+		if(abs(move1) < abs(move2)) {
+			a->x_next += move1;
+			if(a->x_speed < 0) a->x_speed = 0;
+		} else {
+			a->x_next += move2;
+			if(a->x_speed > 0) a->x_speed = 0;
+		}
+	}
+	// Floor reaction
+	ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 2;
+	ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 2;
+	ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
+	ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
+	if(ax1 < bx2 && ax2 > bx1) {
+		s16 move1 = pixel_to_sub(by2 - ay1);
+		s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
+		if(abs(move1) < abs(move2)) {
+			a->y_next += move1;
+			if(a->y_speed < 0) a->y_speed = 0;
+		} else {
+			a->y_next += move2;
+			if(a->y_speed > 0) a->y_speed = 0;
+			a->grounded = true;
+		}
+	}
 }
 
 Entity *entity_find_by_id(u16 id) {
@@ -672,13 +719,13 @@ Entity *entity_update(Entity *e) {
 	e->update(e);
 	//entity_update_movement(e);
 	//if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
-	if((e->flags & NPC_SHOOTABLE)) {
+	if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
 		Bullet *b = bullet_colliding(e);
 		if(b != NULL) {
 			b->ttl = 0;
 			sprite_delete(b->sprite);
 			if(e->health <= b->damage) {
-				if(e->flags & NPC_SHOWDAMAGE)
+				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
 					effect_create_damage_string(e->damage_value - b->damage,
 							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 				// Killed enemy
@@ -686,7 +733,7 @@ Entity *entity_update(Entity *e) {
 				if(e->set_state(e, STATE_DEFEATED)) return entity_destroy(e);
 				else return e->next;
 			}
-			if(e->flags & NPC_SHOWDAMAGE) {
+			if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
 				e->damage_value -= b->damage;
 				e->damage_time = 30;
 			}
@@ -694,7 +741,7 @@ Entity *entity_update(Entity *e) {
 			sound_play(e->hurtSound, 5);
 		}
 	}
-	if((e->flags & NPC_SHOWDAMAGE) && e->damage_value != 0) {
+	if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
 		e->damage_time--;
 		if(e->damage_time <= 0) {
 			effect_create_damage_string(e->damage_value,
@@ -714,7 +761,8 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
 	// Apply NPC flags in addition to entity flags
-	e->flags = flags;
+	e->nflags = npc_flags(type);
+	e->eflags |= flags;
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->direction = 0;
@@ -732,22 +780,23 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->activate = &ai_activate_stub;
 	e->update = &ai_update_stub;
 	e->set_state = &ai_setstate_stub;
+	e->state = 0;
+	e->state_time = 0;
 }
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
-	// Combine entity flags with NPC flags
-	u16 eflags = flags | npc_flags(type);
 	// Some entities should not be created until a specific system flag is set,
 	// and some no longer appear once one is set
-	if((eflags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
-	if((eflags&NPC_ENABLEONFLAG) && !system_get_flag(id)) return NULL;
+	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
+	if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) return NULL;
 	// Allocate memory and start applying values
 	Entity *e = MEM_alloc(sizeof(Entity));
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
-	entity_default(e, type, eflags);
+	e->eflags = flags;
+	entity_default(e, type, 0);
 	if(entity_on_screen(e)) {
 		e->next = entityList;
 		entityList = e;
@@ -760,7 +809,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
 	}
-	entity_create_special(e, (eflags&NPC_OPTION1) > 0, (eflags&NPC_OPTION2) > 0);
+	entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
 	return e;
 }
 
@@ -769,6 +818,10 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 	case 1: // Weapon Energy
 		e->x_speed = 0x200 - (random() % 0x400);
 		e->update = &ai_update_energy;
+		break;
+	case 12: // Balrog (Cutscene)
+		e->update = &ai_update_balrog_scene;
+		e->set_state = &ai_setstate_balrog_scene;
 		break;
 	case 18: // Door
 		e->activate = &ai_activate_door;
@@ -797,18 +850,18 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 }
 
 void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags) {
-	u16 eflags = flags | npc_flags(type);
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(entity_matches_criteria(e, criteria, value, false)) {
-			entity_default(e, type, eflags);
+			//u16 eflags = e->flags | npc_flags(type) | flags;
+			entity_default(e, type, flags);
 			e->direction = direction;
 			sprite_delete(e->sprite);
 			if(npc_info[type].sprite != NULL) {
 				e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
 				sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, direction));
 			} else e->sprite = SPRITE_NONE;
-			entity_create_special(e, (eflags&NPC_OPTION1) > 0, (eflags&NPC_OPTION2) > 0);
+			entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
 		}
 		e = e->next;
 	}
