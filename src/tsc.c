@@ -158,6 +158,8 @@ bool msgWindowOpen = false;
 u8 msgTextX = 0;
 u8 msgTextY = 0;
 u8 showingFace = 0;
+bool instantText = false;
+bool alreadyWaited = false;
 
 bool promptingYesNo = false;
 u16 waitYesNo = 0;
@@ -302,6 +304,11 @@ u8 tsc_update() {
 		} else { // No menus just waiting for player to press a button
 			if(joy_pressed(BUTTON_C)) {
 				exeMode = TSC_RUNNING;
+				if(msgTextY >= TEXT_Y2) {
+					window_open();
+				} else {
+					alreadyWaited = true;
+				}
 			}
 		}
 		break;
@@ -349,6 +356,7 @@ void window_open() {
 	}
 	VDP_setWindowPos(0, 244);
 	msgWindowOpen = true;
+	alreadyWaited = false;
 }
 
 void window_open_prompt() {
@@ -454,6 +462,7 @@ u8 execute_command() {
 		case CMD_CAT: // TODO: All 3 of these display text instantly
 		case CMD_SAT:
 		case CMD_TUR:
+			instantText = true;
 			break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
 			args[0] = tsc_read_word();
@@ -787,18 +796,24 @@ u8 execute_command() {
 		}
 	} else if(msgWindowOpen) {
 		if(cmd == '\n') {
+			instantText = false;
 			msgTextY += 2;
 			if(showingFace > 0) msgTextX = TEXT_X1_FACE;
 			else msgTextX = TEXT_X1;
 			if(msgTextY >= TEXT_Y2) {
-				window_open();
+				if(alreadyWaited) {
+					window_open();
+				} else {
+					exeMode = TSC_WAITINPUT;
+				}
 			}
 		} else {
 			VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, true, false, false,
 					TILE_FONTINDEX + cmd - 0x20), msgTextX, msgTextY);
 			msgTextX++;
+			alreadyWaited = false;
 		}
-		return 1;
+		if(!instantText) return 1;
 	}
 	return 0;
 }
