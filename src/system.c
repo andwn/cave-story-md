@@ -104,8 +104,7 @@ void system_save() {
 	}
 	// Teleporter locations
 	for(u8 i = 0; i < 8; i++) {
-		SRAM_writeByte(0x80 + i*2, 0);
-		SRAM_writeByte(0x81 + i*2, 0);
+		SRAM_writeWord(0x80 + i*2, teleportEvent[i]);
 	}
 	// Flags
 	for (u16 i = 0; i < FLAGS_LEN; i++) {
@@ -142,10 +141,9 @@ void system_load() {
 		playerInventory[i] = SRAM_readByte(0x60 + i);
 	}
 	// Teleporter locations
-	//for(u8 i = 0; i < 8; i++) {
-	//	SRAM_readByte(0x80 + i*2);
-	//	SRAM_readByte(0x81 + i*2);
-	//}
+	for(u8 i = 0; i < 8; i++) {
+		teleportEvent[i] = SRAM_readWord(0x80 + i*2);
+	}
 	// Flags
 	for (u16 i = 0; i < FLAGS_LEN; i++) {
 		flags[i] = SRAM_readLong(0x100 + i * 4);

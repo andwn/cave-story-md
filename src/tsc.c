@@ -158,12 +158,29 @@ bool msgWindowOpen = false;
 u8 msgTextX = 0;
 u8 msgTextY = 0;
 u8 showingFace = 0;
+
 bool promptingYesNo = false;
 u16 waitYesNo = 0;
 bool answerYesNo = false;
-u8 handSpr;
+u8 handSpr = SPRITE_NONE;
+
+bool showingTeleMenu = false;
+u8 teleMenuSlotCount = 0;
+u16 teleMenuEvent[8];
+u8 teleMenuSelection = 0;
+u8 teleMenuSprite[8];
 
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
+
+void draw_face(u8 index);
+void window_open();
+void window_close();
+void window_open_prompt();
+void tsc_show_boss_health();
+void tsc_hide_boss_health();
+void tsc_show_teleport_menu();
+void tsc_hide_teleport_menu();
+
 bool execute_command();
 u8 tsc_read_byte();
 u16 tsc_read_word();
@@ -171,6 +188,9 @@ u16 tsc_read_word();
 void tsc_init() {
 	exeMode = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, true);
+	for(u8 i = 0; i < 8; i++) {
+		teleMenuSprite[i] = SPRITE_NONE;
+	}
 	const u8 *TSC = TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
@@ -242,20 +262,46 @@ u8 tsc_update() {
 		if(waitTime == 0) exeMode = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
-		if(joy_pressed(BUTTON_C)) {
-			exeMode = TSC_RUNNING;
-			if(promptingYesNo) {
+		if(promptingYesNo) { // Update Yes/No Prompt
+			if(joy_pressed(BUTTON_C)) {
 				if(!answerYesNo) tsc_call_event(waitYesNo);
 				sound_play(SOUND_CONFIRM, 5);
 				promptingYesNo = false;
 				sprite_delete(handSpr);
-			}
-		} else if(promptingYesNo) {
-			if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
+				exeMode = TSC_RUNNING;
+			} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 				answerYesNo = !answerYesNo;
 				sound_play(SOUND_CURSOR, 5);
 				sprite_set_position(handSpr,
 					tile_to_pixel(33-(answerYesNo*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
+			}
+		} else if(showingTeleMenu) { // Update the Teleport Menu
+			if(joy_pressed(BUTTON_C)) {
+				tsc_call_event(teleMenuEvent[teleMenuSelection]);
+				sound_play(SOUND_CONFIRM, 5);
+				tsc_hide_teleport_menu();
+				exeMode = TSC_RUNNING;
+			} else if(joy_pressed(BUTTON_B)) { // Cancel
+				tsc_hide_teleport_menu();
+				exeMode = TSC_RUNNING;
+			} else if(joy_pressed(BUTTON_LEFT)) {
+				if(teleMenuSelection == 0) {
+					teleMenuSelection = teleMenuSlotCount - 1;
+				} else {
+					teleMenuSelection--;
+				}
+				sound_play(SOUND_CURSOR, 5);
+			} else if(joy_pressed(BUTTON_RIGHT)) {
+				if(teleMenuSelection == teleMenuSlotCount - 1) {
+					teleMenuSelection = 0;
+				} else {
+					teleMenuSelection++;
+				}
+				sound_play(SOUND_CURSOR, 5);
+			}
+		} else { // No menus just waiting for player to press a button
+			if(joy_pressed(BUTTON_C)) {
+				exeMode = TSC_RUNNING;
 			}
 		}
 		break;
@@ -330,19 +376,47 @@ void window_open_prompt() {
 	promptingYesNo = true;
 }
 
-void tsc_unpause_debug() {
-	if(msgWindowOpen) VDP_setReg(0x12, 244);
-}
-
-//void window_clear() {
-//	window_open();
-//
-//}
-
 void window_close() {
 	VDP_setWindowPos(0, 0);
 	showingFace = 0;
 	msgWindowOpen = false;
+}
+
+void tsc_unpause_debug() {
+	if(msgWindowOpen) VDP_setReg(0x12, 244);
+}
+
+void tsc_show_boss_health() {
+
+}
+
+void tsc_hide_boss_health() {
+
+}
+
+void tsc_show_teleport_menu() {
+	teleMenuSlotCount = 0;
+	for(u8 i = 0; i < 8; i++) {
+		if(teleportEvent[i] == 0) continue;
+		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
+		teleMenuSprite[i] = sprite_create(&SPR_TeleMenu, PAL0, true);
+		sprite_set_frame(teleMenuSprite[i], i);
+		sprite_set_position(teleMenuSprite[i], 80 + 64*i, 96);
+		teleMenuSlotCount++;
+	}
+	if(teleMenuSlotCount > 0) {
+		showingTeleMenu = true;
+	} else {
+		exeMode = TSC_RUNNING; // Don't bother with the menu if we can't teleport
+	}
+}
+
+void tsc_hide_teleport_menu() {
+	for(u8 i = 0; i < 8; i++) {
+		sprite_delete(teleMenuSprite[i]);
+		teleMenuSprite[i] = SPRITE_NONE;
+	}
+	showingTeleMenu = false;
 }
 
 u8 execute_command() {
@@ -447,7 +521,6 @@ u8 execute_command() {
 			exeMode = TSC_WAITGROUNDED;
 			return 1;
 		case CMD_MM0: // Halt player movement
-			// TODO: Find out if this disables physics
 			player.x_speed = 0;
 			player.y_speed = 0;
 			break;
@@ -520,7 +593,7 @@ u8 execute_command() {
 			args[2] = tsc_read_word();
 			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0);
 			break;
-		case CMD_MNP: // TODO: Move entity (1) to (2),(3) with direction (4)
+		case CMD_MNP: // Move entity (1) to (2),(3) with direction (4)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -552,8 +625,12 @@ u8 execute_command() {
 		case CMD_BOA: // TODO: Give map boss state (1)
 			args[0] = tsc_read_word();
 			break;
-		case CMD_BSL: // TODO: Start boss fight with entity (1)
+		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
+			bossEntity = entity_find_by_event(args[0]);
+			if(bossEntity != NULL) {
+				tsc_show_boss_health();
+			}
 			break;
 		case CMD_NCJ: // If entity type (1) exists jump to event (2)
 			args[0] = tsc_read_word();
@@ -562,9 +639,10 @@ u8 execute_command() {
 				tsc_call_event(args[1]);
 			}
 			break;
-		case CMD_ECJ: // TODO: If entity id (1) exists jump to event (2)
+		case CMD_ECJ: // If entity id (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
+			// This one is actually unused so I won't bother
 			break;
 		case CMD_AE_ADD: // Refill all weapon ammo
 			player_refill_ammo();
@@ -688,11 +766,13 @@ u8 execute_command() {
 			break;
 		case CMD_CIL: // TODO: Clear illustration in the credits
 			break;
-		case CMD_SLP: // TODO: Show the teleporter menu
+		case CMD_SLP: // Show the teleporter menu
+			tsc_show_teleport_menu();
 			break;
-		case CMD_PS_ADD: // TODO: Set teleporter slot (1) to event (2)
+		case CMD_PS_ADD: // Set teleporter slot (1) to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
+			if(args[0] < 8) teleportEvent[args[0]] = args[1];
 			break;
 		case CMD_SVP: // Save
 			system_save();

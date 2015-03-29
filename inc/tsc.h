@@ -11,6 +11,7 @@
 #define PLAYER_OOB_EVENT 42
 
 u8 tscEventCount;
+u16 teleportEvent[8];
 
 void tsc_init();
 

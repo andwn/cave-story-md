@@ -12,6 +12,7 @@ SPRITE SPR_Hud1		"sprite/hud1.png" 8 2 0 0 NONE
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
 SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
 SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
+SPRITE SPR_TeleMenu	"sprite/telemenu.png" 4 2 0 0 NONE
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
 #SPRITE SPR_PolarB	"sprite/polarb.png" 2 2 0 0 NONE
