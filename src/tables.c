@@ -151,14 +151,14 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Balcony, "On To Grasstown" },
 	{ BGM_Balcony, "Meltdown 2" },
 	{ BGM_EyesOfFlame, "Eyes Of Flame" },
-	{ BGM_Balcony, "Gestation" },
+	{ BGM_Gestation, "Gestation" },
 	{ BGM_Mimiga, "Mimiga Village" },
 	{ BGM_Fanfare1, "Fanfare 1" },
 	{ BGM_Balrog, "Balrog's Theme" },
 	{ BGM_Mimiga, "Cemetery" },
 	{ BGM_Mimiga, "Yamashita Farm" },
 	{ BGM_Balcony, "Pulse" },
-	{ BGM_Fanfare1, "Fanfare 2" },
+	{ BGM_Fanfare3, "Fanfare 2" },
 	{ BGM_Fanfare1, "Fanfare 3" }, // 0x10
 	{ BGM_Balcony, "Tyrant" },
 	{ BGM_Run, "Run!" },
@@ -324,14 +324,14 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Balrog, PAL1 }, // 10 - Boss: Balrog (Shooting)
 	{ NULL, PAL0 }, // 11 - Projectile: Balrog energy shot
 	{ &SPR_Balrog, PAL1 }, // 12 - Balrog (Cutscene)
-	{ NULL, PAL1 }, // 13 - Forcefield
+	{ &SPR_ForceField, PAL1 }, // 13 - Forcefield
 	{ NULL, PAL1 }, // 14 - Santa's Key
 	{ &SPR_Chest, PAL1 }, // 15 - Treasure Chest (Closed)
 	{ &SPR_Save, PAL1 }, // 16 - Save Point
 	{ &SPR_Refill, PAL1 }, // 17 - Health / Ammo Refill
 	{ &SPR_Door, PAL1 }, // 18 - Door
 	{ &SPR_Balrog, PAL1 }, // 19 - Balrog (Busts in)
-	{ NULL, PAL0 }, // 20 - Computer
+	{ &SPR_Computer, PAL1 }, // 20 - Computer
 	{ NULL, PAL0 }, // 21 - Treasure Chest (Open)
 	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
 	{ NULL, PAL0 }, // 23 - Teleporter Lights
@@ -350,11 +350,11 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Balrog, PAL1 }, // 36 - Boss: Balrog (Hovering)
 	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
 	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
-	{ NULL, PAL1 }, // 39 - Save Sign
+	{ &SPR_SaveSign, PAL1 }, // 39 - Save Sign
 	{ NULL, PAL0 }, // 40 - Santa
 	{ NULL, PAL0 }, // 41 - Busted Doorway
-	{ NULL, PAL0 }, // 42 - Sue
-	{ NULL, PAL0 }, // 43 - Blackboard
+	{ &SPR_Sue, PAL3 }, // 42 - Sue
+	{ &SPR_Board, PAL1 }, // 43 - Blackboard
 	{ NULL, PAL0 }, // 44 - Enemy: Polish
 	{ NULL, PAL0 }, // 45 - Enemy: Baby
 	{ NULL, PAL0 }, // 46 - Horiz/Vert Trigger
@@ -372,7 +372,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Basu, PAL3 }, // 58 - Enemy: Basu (1)
 	{ &SPR_DoorE, PAL1 }, // 59 - Enemy: Door
 	{ &SPR_Toroko, PAL3 }, // 60 - Toroko
-	{ NULL, PAL0 }, // 61 - King
+	{ &SPR_King, PAL3 }, // 61 - King
 	{ NULL, PAL0 }, // 62 - Kazuma (Computer)
 	{ &SPR_Toroko, PAL3 }, // 63 - Toroko (Attacking)
 	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
@@ -393,15 +393,15 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 79 - Mahin
 	{ NULL, PAL0 }, // 80 - Enemy: Gravekeeper
 	{ NULL, PAL0 }, // 81 - Enemy: Giant Pignon
-	{ NULL, PAL0 }, // 82 - Misery (Standing)
-	{ NULL, PAL0 }, // 83 - Igor (Cutscene)
+	{ &SPR_Misery, PAL0 }, // 82 - Misery (Standing)
+	{ &SPR_Igor, PAL3 }, // 83 - Igor (Cutscene)
 	{ NULL, PAL0 }, // 84 - Projectile: Basu (1)
 	{ NULL, PAL0 }, // 85 - Terminal
 	{ NULL, PAL0 }, // 86 - Missile
 	{ &SPR_Heart, PAL1 }, // 87 - Heart
-	{ NULL, PAL0 }, // 88 - Boss: Igor
+	{ &SPR_Igor, PAL3 }, // 88 - Boss: Igor
 	{ NULL, PAL0 }, // 89 - Igor (Defeated)
-	{ NULL, PAL0 }, // 90 - Background
+	{ NULL, PAL0 }, // 90 - Background (what?)
 	{ NULL, PAL0 }, // 91 - Cage
 	{ NULL, PAL0 }, // 92 - Sue (Computer)
 	{ NULL, PAL0 }, // 93 - Chaco
@@ -413,7 +413,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 99 - Fan (Down)
 	{ NULL, PAL0 }, // 100 - Grate
 	{ NULL, PAL0 }, // 101 - Power Controls (Screen)
-	{ NULL, PAL0 }, // 102 - Power Controls (Power Flow)
+	{ &SPR_Wave, PAL1 }, // 102 - Power Controls (Power Flow)
 	{ NULL, PAL0 }, // 103 - Projectile: Mannan
 	{ NULL, PAL0 }, // 104 - Enemy: Frog
 	{ NULL, PAL0 }, // 105 - Balloon (Hey!, Low)
@@ -480,7 +480,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 166 - Chaba
 	{ NULL, PAL0 }, // 167 - Prof. Booster (Fall)
 	{ NULL, PAL0 }, // 168 - Boulder
-	{ NULL, PAL0 }, // 169 - Boss: Balrog (Missiles)
+	{ &SPR_Balrog, PAL1 }, // 169 - Boss: Balrog (Missiles)
 	{ NULL, PAL0 }, // 170 - Projectile: Balrog (Missiles)
 	{ NULL, PAL0 }, // 171 - Enemy: Fire Whirr
 	{ NULL, PAL0 }, // 172 - Projectile: Fire Whirr

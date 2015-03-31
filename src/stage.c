@@ -84,8 +84,8 @@ void stage_load_tileset() {
 		if(PXA[i] == 0x43) {
 			u32 addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			VDP_loadTileData(&TS_Break.tiles[0], TILE_USERINDEX + addr1, 2, true);
-			VDP_loadTileData(&TS_Break.tiles[2], TILE_USERINDEX + addr2, 2, true);
+			VDP_loadTileData(TS_Break.tiles, TILE_USERINDEX + addr1, 2, true);
+			VDP_loadTileData(TS_Break.tiles + 16, TILE_USERINDEX + addr2, 2, true);
 		}
 	}
 }

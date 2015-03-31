@@ -459,7 +459,7 @@ u8 execute_command() {
 				}
 			} else window_open();
 			break;
-		case CMD_CAT: // TODO: All 3 of these display text instantly
+		case CMD_CAT: // All 3 of these display text instantly
 		case CMD_SAT:
 		case CMD_TUR:
 			instantText = true;

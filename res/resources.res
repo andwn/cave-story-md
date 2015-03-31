@@ -44,6 +44,11 @@ SPRITE SPR_Behem	"sprite/behem.png" 4 3 0 20 NONE
 SPRITE SPR_Basil	"sprite/basil.png" 4 2 0 10 NONE
 SPRITE SPR_Balrog	"sprite/balrog.png" 5 3 0 15 NONE
 SPRITE SPR_Heart	"sprite/heart.png" 2 2 0 2 NONE
+SPRITE SPR_ForceField	"sprite/forcefield.png" 2 2 0 2 NONE
+SPRITE SPR_Computer	"sprite/computer.png" 4 3 0 30 NONE
+SPRITE SPR_Board	"sprite/blackboard.png" 5 4 0 0 NONE
+SPRITE SPR_SaveSign	"sprite/savesign.png" 2 2 0 0 NONE
+SPRITE SPR_Wave		"sprite/wave.png" 2 2 0 2 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
@@ -53,6 +58,10 @@ SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
 SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
 SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 0 NONE
 SPRITE SPR_Toroko	"sprite/toroko.png" 2 2 0 20 NONE
+SPRITE SPR_Sue		"sprite/sue.png" 2 2 0 20 NONE
+SPRITE SPR_King		"sprite/king.png" 2 2 0 20 NONE
+SPRITE SPR_Igor		"sprite/igor.png" 5 5 0 20 NONE
+SPRITE SPR_Robot	"sprite/robot.png" 2 2 0 0 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 
@@ -501,7 +510,9 @@ XGM BGM_CaveStory	"bgm/cavestory.vgm"
 XGM BGM_Charge		"bgm/charge.vgm"
 XGM BGM_EyesOfFlame	"bgm/eyesofflame.vgm"
 XGM BGM_Fanfare1	"bgm/fanfare1.vgm"
+XGM BGM_Fanfare3	"bgm/fanfare3.vgm"
 XGM BGM_GameOver	"bgm/gameover.vgm"
+XGM BGM_Gestation	"bgm/gestation.vgm"
 XGM BGM_Gravity		"bgm/gravity.vgm"
 XGM BGM_Mimiga		"bgm/mimiga.vgm"
 XGM BGM_Quiet		"bgm/quiet.vgm"
