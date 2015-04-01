@@ -14,6 +14,8 @@
 #include "sprite.h"
 #include "hud.h"
 
+u32 playerProf, entityProf;
+
 void debug_update() {
 	// Change Map
 	if(joy_pressed(BUTTON_Y)) {
@@ -51,7 +53,7 @@ void draw_pause() {
 
 void erase_pause() {
 	if(debuggingEnabled) {
-		VDP_setWindowPos(0, 0); // Hide window plane
+		VDP_setWindowPos(0, 251); // Hide window plane
 		tsc_unpause_debug(); // Brings message window back if open
 	}
 }
@@ -83,6 +85,12 @@ void game_reset(bool load) {
 
 void vblank() {
 	stage_update();
+	hud_update_vblank();
+	u8 str[10];
+	uintToStr(playerProf, str, 8);
+	VDP_drawTextWindow(str, 1, 27);
+	uintToStr(entityProf, str, 8);
+	VDP_drawTextWindow(str, 10, 27);
 }
 
 void game_main(bool load) {
@@ -90,6 +98,7 @@ void game_main(bool load) {
 	SYS_setVIntCallback(vblank);
 	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	game_reset(load);
+	VDP_setWindowPos(0, 251);
 	bool paused = false, can_pause = true;
 	while(true) {
 		input_update();
@@ -102,9 +111,13 @@ void game_main(bool load) {
 			} else {
 				if(debuggingEnabled) debug_update();
 				camera_update();
+				playerProf = getSubTick();
 				player_update();
+				playerProf = getSubTick() - playerProf;
 				hud_update();
+				entityProf = getSubTick();
 				entities_update();
+				entityProf = getSubTick() - entityProf;
 				u8 rtn = tsc_update();
 				if(rtn > 0) {
 					if(rtn == 1) {

@@ -14,6 +14,16 @@
 #define DIRECTION_DOWN 3
 #define DIRECTION_CENTER 4
 
+// Tile sizes, indexes
+#define TS_WIDTH 32
+#define TS_HEIGHT 20
+#define BACK_SIZE 16 * 6
+#define FACE_SIZE 6 * 6
+#define TILE_BACKINDEX (TILE_USERINDEX + (TS_WIDTH * TS_HEIGHT))
+#define TILE_WINDOWINDEX (TILE_FONTINDEX + 0x60)
+#define TILE_FACEINDEX (TILE_FONTINDEX - 6 * 6)
+#define TILE_HUDINDEX (TILE_BACKINDEX + BACK_SIZE)
+
 // Unit conversions
 // subpixel/unit (1/512x1/512)
 // pixel (1x1)

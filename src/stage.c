@@ -12,10 +12,6 @@
 #include "effect.h"
 #include "hud.h"
 
-#define TS_WIDTH 32
-#define TS_HEIGHT 20
-#define TILE_BACKINDEX (TILE_USERINDEX + (TS_WIDTH * TS_HEIGHT))
-
 u8 stageBackground;
 s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;

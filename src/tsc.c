@@ -24,8 +24,6 @@
 #define TSC_RESTARTGAME 6 // Return to title screen
 #define TSC_RELOADSAVE 7 // Reload save data (try again)
 
-#define TILE_WINDOWINDEX (TILE_FONTINDEX + 0x60)
-#define TILE_FACEINDEX (TILE_FONTINDEX - 0x24)
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, true, false, false, TILE_WINDOWINDEX+x)
 
 #define WINDOW_X1 2
@@ -385,7 +383,7 @@ void window_open_prompt() {
 }
 
 void window_close() {
-	VDP_setWindowPos(0, 0);
+	VDP_setWindowPos(0, 251);
 	showingFace = 0;
 	msgWindowOpen = false;
 }

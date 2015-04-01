@@ -8,7 +8,10 @@ PALETTE PAL_Gunsmith	"sprite/gunsmith.png" 3
 # Use PAL_Main
 SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
 SPRITE SPR_Numbers	"sprite/numbers.png" 1 1 0 0 NONE
-SPRITE SPR_Hud1		"sprite/hud1.png" 8 2 0 0 NONE
+TILESET TS_Numbers	"sprite/numbers.png" 0
+#SPRITE SPR_Hud1		"sprite/hud1.png" 8 2 0 0 NONE
+SPRITE SPR_Hud2		"sprite/hud2.png" 8 4 0 0 NONE
+TILESET TS_HudBar	"sprite/hudfill.png" 0
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
 SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
 SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE

@@ -33,6 +33,10 @@ u8 sprite_create(const SpriteDefinition *def, u16 palette, bool priority) {
 	return SPRITE_NONE;
 }
 
+void sprite_set_tileindex(u8 sprite, u16 index) {
+	SPR_setVRAMTileIndex(&sprites[sprite], index);
+}
+
 void sprite_set_position(u8 sprite, s16 x, s16 y) {
 	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setPosition(&sprites[sprite], x, y);
@@ -67,4 +71,8 @@ void sprite_delete(u8 sprite) {
 	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
 	SPR_setNeverVisible(&sprites[sprite], true);
 	spriteEnabled[sprite] = false;
+}
+
+Sprite* sprite_get_direct(u8 sprite) {
+	return &sprites[sprite];
 }

@@ -54,17 +54,17 @@ void camera_update() {
 				camera.y_offset = pixel_to_sub(-48);
 			}
 		}
-		// Camera shaking
-		if(cameraShake > 0) {
-			camera.x_offset += (random() % 0x2000) - 0x1000;
-			camera.y_offset += (random() % 0x2000) - 0x1000;
-			cameraShake--;
-		}
 		// Calculate where camera will be next frame
 		x_next = camera.x +
 				((floor(camera.target->x) + camera.x_offset) - camera.x) / focusSpeed;
 		y_next = camera.y +
 				((floor(camera.target->y) + camera.y_offset) - camera.y) / focusSpeed;
+		// Camera shaking
+		if(cameraShake > 0) {
+			x_next += (random() % 0x800) - 0x400;
+			y_next += (random() % 0x800) - 0x400;
+			if(cameraShake != 9999) cameraShake--;
+		}
 	} else { // Camera isn't following anything
 		return;
 	}

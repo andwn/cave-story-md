@@ -15,5 +15,7 @@ bool ai_setstate_balrog_scene(Entity *e, u16 state);
 void ai_update_balrog_boss1(Entity *e);
 bool ai_setstate_balrog_boss1(Entity *e, u16 state);
 // 10 - Boss: Balrog (Grasstown)
+// Balfrog
+// Balrog (Missiles)
 
 #endif /* INC_AI_BALROG_H_ */

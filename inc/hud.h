@@ -3,11 +3,14 @@
 
 #include "common.h"
 
+// Loads sprites for HUD and displays it on screen
 void hud_show();
+// Unloads HUD sprites
 void hud_hide();
-void hud_change_health();
-void hud_change_weapon();
-void hud_change_ammo();
+// Updates numbers + other info if they changed
 void hud_update();
+// This injects tiles into the health and energy bars
+// Called during vblank so DMA can be used
+void hud_update_vblank();
 
 #endif /* INC_HUD_H_ */
