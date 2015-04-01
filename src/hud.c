@@ -135,8 +135,13 @@ void hud_update_vblank() {
 
 void hud_prepare_dma() {
 	// The bars are 40 pixels wide, 5 tiles of 8 pixels
-	s16 fillHP = 40 * hudHealth / hudMaxHealth;
-	s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
+	s16 fillHP, fillXP;
+	fillHP = 40 * hudHealth / hudMaxHealth;
+	if(hudMaxEnergy > 0) {
+		fillXP = 40 * hudEnergy / hudMaxEnergy;
+	} else {
+		fillXP = 0;
+	}
 	for(u8 i = 0; i < 5; i++) {
 		// The TS_HudBar tileset has two rows of 8 tiles, where the section of the
 		// bar is empty at tile 0 and full at tile 7
