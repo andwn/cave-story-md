@@ -11,6 +11,7 @@
       - unzip
       - texinfo
     gendev_dir: /opt/gendev
+    vagrant_dir: /vagrant
     vagrant_user: vagrant
     vagrant_group: vagrant
   tasks:
@@ -46,3 +47,8 @@
       shell: >
         chdir={{ gendev_dir }}/sgdk
         . ~/.gendev; make install
+
+    - name: Build game
+      shell: >
+        chdir={{ vagrant_dir }}
+        . ~/.gendev; make
