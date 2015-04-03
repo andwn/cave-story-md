@@ -10,7 +10,7 @@
 // 5000 flags, official game supports 8000 but only uses 4000
 #define FLAGS_LEN 156
 
-bool debuggingEnabled = true;
+bool debuggingEnabled = false;
 
 struct {
 	u8 hour, minute, second, frame;

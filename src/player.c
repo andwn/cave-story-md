@@ -22,7 +22,22 @@
 #define ANIM_LOOKUPJUMP 6
 #define ANIM_LOOKDOWNJUMP 7
 
+#define WEAPON_NONE 0
+#define WEAPON_SNAKE 1
+#define WEAPON_POLARSTAR 2
+#define WEAPON_FIREBALL 3
+#define WEAPON_MACHINEGUN 4
+#define WEAPON_MISSILES 5
+#define WEAPON_BUBBLER 7
+#define WEAPON_BLADE 9
+#define WEAPON_SUPERMISSILES 10
+#define WEAPON_NEMESIS 12
+#define WEAPON_SPUR 13
+
 #define INVINCIBILITY_FRAMES 60
+
+#define MAX_AIR_NTSC (30 * 100)
+#define MAX_AIR_PAL (25 * 100)
 
 u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
@@ -44,7 +59,7 @@ void player_init() {
 	player.controller = &joystate;
 	playerMaxHealth = 3;
 	player.health = 3;
-	playerMaxAir = 1800; playerAir = playerMaxAir;
+	playerMaxAir = MAX_AIR_NTSC; playerAir = playerMaxAir;
 	player.x = block_to_sub(10) + pixel_to_sub(8);
 	player.y = block_to_sub(8) + pixel_to_sub(8);
 	player.x_next = player.x;
@@ -53,11 +68,8 @@ void player_init() {
 	player.y_speed = 0;
 	player.damage_time = 0;
 	player.damage_value = 0;
-	//player.accel = 0x55 >> 1;
-	//player.max_speed = 0x32C >> 1;
 	// Actually 6,6,5,8 but need to get directional hitboxes working first
 	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
-	//player.active = true;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No playerWeapons
@@ -77,10 +89,16 @@ void player_reset_sprites() {
 
 void player_update() {
 	if(playerDead) return;
-	entity_update_movement(&player);
-	entity_update_collision(&player);
-	player_update_entity_collision();
-	player_update_bounds();
+	if(debuggingEnabled && (joystate&BUTTON_A)) {
+		entity_update_float(&player);
+		player.x_next = player.x + player.x_speed;
+		player.y_next = player.y + player.y_speed;
+	} else {
+		entity_update_movement(&player);
+		entity_update_collision(&player);
+		player_update_entity_collision();
+		player_update_bounds();
+	}
 	player.x = player.x_next;
 	player.y = player.y_next;
 	if(player.health == 0) {
@@ -389,7 +407,13 @@ void player_give_weapon(u8 id, u8 ammo) {
 }
 
 void player_take_weapon(u8 id) {
-
+	Weapon *w = player_find_weapon(id);
+	if(w != NULL) {
+		if(w == &playerWeapon[currentWeapon]) {
+			//player_next_weapon();
+		}
+		w->type = 0;
+	}
 }
 
 bool player_has_weapon(u8 id) {
@@ -400,15 +424,26 @@ bool player_has_weapon(u8 id) {
 }
 
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
-
+	Weapon *w = player_find_weapon(id_take);
+	if(w != NULL) {
+		w->sprite = sprite_create(weapon_info[id_give].sprite, PAL1, true);
+		w->type = id_give;
+		w->level = 1;
+		w->energy = 0;
+		w->maxammo = ammo;
+		w->ammo = ammo;
+	}
 }
 
 void player_refill_ammo() {
-
+	for(u8 i = 0; i < playerWeaponCount; i++) {
+		playerWeapon[i].ammo = playerWeapon[i].maxammo;
+	}
 }
 
 void player_take_allweapons() {
-
+	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0;
+	playerWeaponCount = 0;
 }
 
 void player_heal(u8 health) {
@@ -444,4 +479,12 @@ bool player_has_item(u8 id) {
 		if(playerInventory[i] == id) return true;
 	}
 	return false;
+}
+
+void player_equip(u16 id) {
+	playerEquipment |= id;
+}
+
+void player_unequip(u16 id) {
+	playerEquipment &= ~id;
 }

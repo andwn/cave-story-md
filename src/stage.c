@@ -28,8 +28,11 @@ void stage_draw_background2();
 void stage_update_back();
 
 void stage_load(u16 id) {
-	SYS_disableInts();
-	VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
+	bool vdpEnabled = VDP_getEnable();
+	if(vdpEnabled) {
+		SYS_disableInts();
+		VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
+	}
 	player_lock_controls();
 	hud_hide();
 	// Clear out or deactivate stuff from the old stage
@@ -67,8 +70,10 @@ void stage_load(u16 id) {
 	tsc_load_stage(id);
 	hud_show();
 	player_unlock_controls();
-	VDP_setEnable(true);
-	SYS_enableInts();
+	if(vdpEnabled) {
+		VDP_setEnable(true);
+		SYS_enableInts();
+	}
 }
 
 void stage_load_tileset() {
@@ -140,7 +145,6 @@ bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {
 }
 
 void stage_replace_block(u16 bx, u16 by, u8 index) {
-	//entity_create(bx, by, 0, 0, 4, 0);
 	stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];
 	stageBlocks[by * stageWidth + bx] = index;
 	stage_draw_area(bx, by, 1, 1);
@@ -305,84 +309,3 @@ void stage_draw_background2() {
 		}
 	}
 }
-
-/*
-void stage_cache_area(s16 _x, s16 _y, u8 _w, u8 _h) {
-	const u8 *PXA = tileset_info[stageTileset].PXA;
-	for(s16 y = _y; y < _y + _h; y++) {
-		if(y < 0) continue;
-		if(y >= stageHeight) break;
-		for(s16 x = _x; x < _x + _w; x++) {
-			if(x < 0) continue;
-			if(x >= stageWidth) break;
-			stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
-		}
-	}
-}
-*/
-/*
-void stage_draw_area(u16 x, u16 y, u8 w, u8 h) {
-	u16 index = 0, t, tile;
-	u16 *b = MEM_alloc(block_to_tile(w) * block_to_tile(h));
-	for(u16 sy = y; sy < y + h; sy++) {
-		for(u16 sx = x; sx < x + w; sx++) {
-			t = block_to_tile(stage_get_block(sx, sy));
-			tile = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-			b[index] = TILE_ATTR_FULL(PAL2, 0, 0, 0, tile);
-			b[index + 1] = TILE_ATTR_FULL(PAL2, 0, 0, 0, tile + 1);
-			b[index + block_to_tile(w)] =
-					TILE_ATTR_FULL(PAL2, 0, 0, 0, tile + TS_WIDTH);
-			b[index + block_to_tile(w) + 1] =
-					TILE_ATTR_FULL(PAL2, 0, 0, 0, tile + TS_WIDTH + 1);
-			index += 2;
-		}
-		index += block_to_tile(w);
-	}
-	VDP_setTileMapDataRect(APLAN, b,
-			block_to_tile(x) % 64, block_to_tile(y) % 64,
-			block_to_tile(w), block_to_tile(h));
-	MEM_free(b);
-}
-*/
-/*
-if(stageBackgroundType == 1) {
-	//stageBackgroundH++;
-	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
-	for(u8 y = 0; y < 16; y++) {
-		backScrollTable[y] += 1 + (y>>2);
-	}
-	VDP_setHorizontalScrollTile(PLAN_B, 12, backScrollTable, 16, true);
-	// 20 - bottom
-	//s16 values1[2] = { value*3, value*3 };
-	//VDP_setHorizontalScrollTile(PLAN_B, 20, values1, 2, true);
-	// 16 - mid
-	//s16 values2[4] = { value*2, value*2, value*2, value*2 };
-	//VDP_setHorizontalScrollTile(PLAN_B, 16, values2, 4, true);
-	// 12 - upper
-	//s16 values3[4] = { value, value, value, value };
-	//VDP_setHorizontalScrollTile(PLAN_B, 12, values3, 4, true);
-	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-}
-*/
-/*
-	if(stageBackground != stage_info[id].background) {
-		stageBackground = stage_info[id].background;
-		VDP_clearPlan(BPLAN, true);
-		if(stageBackground > 0) {
-			stageBackgroundType = background_info[stageBackground].type;
-			if(stageBackgroundType == 0) { // Static
-				//VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-				//VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
-				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
-				stage_draw_back();
-			} //else if(stageBackgroundType == 1) { // Moon/Sky
-			//	//VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
-			//	VDP_setPalette(PAL3, background_info[stageBackground].palette->data);
-			//	VDP_loadTileSet(background_info[stageBackground].tileset, BACKGROUND_USERINDEX, true);
-			//	stage_draw_back2();
-			//} else if(stageBackgroundType == 2) { // Solid Color
-			//	VDP_setBackgroundColor(background_info[stageBackground].palette->data);
-			//}
-		}
-	}
-	 */

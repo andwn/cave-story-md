@@ -6,7 +6,7 @@ Sprite sprites[MAX_SPRITES];
 bool spriteEnabled[MAX_SPRITES];
 
 void sprites_init() {
-	SPR_init(512);
+	SPR_init(0);
 	sprites_clear();
 }
 

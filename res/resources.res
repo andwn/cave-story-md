@@ -16,6 +16,7 @@ SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
 SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
 SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
 SPRITE SPR_TeleMenu	"sprite/telemenu.png" 4 2 0 0 NONE
+TILESET TS_Title	"sprite/title.png" 0
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
 #SPRITE SPR_PolarB	"sprite/polarb.png" 2 2 0 0 NONE
@@ -126,7 +127,7 @@ PALETTE PAL_Jail	"Stage/PrtJail.bmp" 2
 PALETTE PAL_Labo	"Stage/PrtLabo.bmp" 2
 PALETTE PAL_Maze	"Stage/PrtMaze.bmp" 2
 PALETTE PAL_Mimi	"Stage/PrtMimi.bmp" 2
-PALETTE PAL_Oside	"Stage/PrtOside.bmp" 2
+PALETTE PAL_Oside	"Stage/PrtOside.png" 2
 PALETTE PAL_Pens	"Stage/PrtPens.bmp" 2
 PALETTE PAL_River	"Stage/PrtRiver.bmp" 2
 PALETTE PAL_Sand	"Stage/PrtSand.bmp" 2
@@ -150,7 +151,7 @@ TILESET TS_Jail		"Stage/PrtJail.bmp" 0
 TILESET TS_Labo		"Stage/PrtLabo.bmp" 0
 TILESET TS_Maze		"Stage/PrtMaze.bmp" 0
 TILESET TS_Mimi		"Stage/PrtMimi.bmp" 0
-TILESET TS_Oside	"Stage/PrtOside.bmp" 0
+TILESET TS_Oside	"Stage/PrtOside.png" 0
 TILESET TS_Pens		"Stage/PrtPens.bmp" 0
 TILESET TS_River	"Stage/PrtRiver.bmp" 0
 TILESET TS_Sand		"Stage/PrtSand.bmp" 0

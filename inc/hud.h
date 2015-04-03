@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+bool hudRedrawPending;
+
 // Loads sprites for HUD and displays it on screen
 void hud_show();
 // Unloads HUD sprites

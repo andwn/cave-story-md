@@ -75,6 +75,9 @@ void player_give_item(u8 id); // IT+ Command
 void player_take_item(u8 id); // IT- Command
 bool player_has_item(u8 id); // ITJ Command
 
+void player_equip(u16 id);
+void player_unequip(u16 id);
+
 void player_lock_controls(); // PRI and KEY Commands
 void player_unlock_controls(); // KEY and FRE Commands
 

@@ -318,14 +318,13 @@ void entity_update_jump(Entity *e) {
 		tGravity = gravity,
 		tGravityJump = gravityJump,
 		tMaxFallSpeed = maxFallSpeed;
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) {
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		tJumpSpeed /= 2;
 		tMaxJumpTime /=2;
 		tGravity /= 2;
 		tGravityJump /= 2;
 		tMaxFallSpeed /= 2;
 	}
-	if(e->controller[0] & BUTTON_Z) e->jump_time = 1;
 	if (e->jump_time > 0) {
 		if (e->controller[0] & BUTTON_C) {
 			e->y_speed = -tJumpSpeed;
@@ -353,9 +352,48 @@ void entity_update_jump(Entity *e) {
 	}
 }
 
-void entity_update_float(Entity *e)
-{
-	
+void entity_update_float(Entity *e) {
+	s16 acc = walkAccel,
+		fric = friction,
+		max_speed = maxWalkSpeed;
+	if (e->controller[0] & BUTTON_LEFT) {
+		e->x_speed -= acc;
+		if (e->x_speed < -max_speed) {
+			e->x_speed = -max_speed;
+		}
+	} else if (e->controller[0] & BUTTON_RIGHT) {
+		e->x_speed += acc;
+		if (e->x_speed > max_speed) {
+			e->x_speed = max_speed;
+		}
+	} else {
+		if (e->x_speed < fric && e->x_speed > -fric) {
+			e->x_speed = 0;
+		} else if (e->x_speed < 0) {
+			e->x_speed += fric;
+		} else if (e->x_speed > 0) {
+			e->x_speed -= fric;
+		}
+	}
+	if (e->controller[0] & BUTTON_UP) {
+		e->y_speed -= acc;
+		if (e->y_speed < -max_speed) {
+			e->y_speed = -max_speed;
+		}
+	} else if (e->controller[0] & BUTTON_DOWN) {
+		e->y_speed += acc;
+		if (e->y_speed > max_speed) {
+			e->y_speed = max_speed;
+		}
+	} else {
+		if (e->y_speed < fric && e->y_speed > -fric) {
+			e->y_speed = 0;
+		} else if (e->y_speed < 0) {
+			e->y_speed += fric;
+		} else if (e->y_speed > 0) {
+			e->y_speed -= fric;
+		}
+	}
 }
 
 void entity_update_collision(Entity *e) {
@@ -830,6 +868,9 @@ void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags)
 			if(npc_info[type].sprite != NULL) {
 				e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
 				sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, direction));
+				sprite_set_position(e->sprite,
+					sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+					sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 			} else e->sprite = SPRITE_NONE;
 			entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
 		}

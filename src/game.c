@@ -14,54 +14,15 @@
 #include "sprite.h"
 #include "hud.h"
 
+u8 debugTime = 1;
 u32 playerProf, entityProf;
-
-void debug_update() {
-	// Change Map
-	if(joy_pressed(BUTTON_Y)) {
-		u8 newstage = (stageID + 1) % STAGE_COUNT;
-		if(newstage == 0) newstage = 1; // Softlocking is bad
-		stage_load(newstage);
-		player.x = block_to_sub(11);
-		player.y = block_to_sub(7);
-	} else if(joy_pressed(BUTTON_X)) {
-		u8 newstage = (stageID - 1) % STAGE_COUNT;
-		if(newstage == 0) newstage = STAGE_COUNT - 1;
-		stage_load(newstage);
-		player.x = block_to_sub(11);
-		player.y = block_to_sub(7);
-	}
-}
-
-void draw_pause() {
-	if(debuggingEnabled) {
-		char numstr[4][8];
-		char fullstr[4][20] = { "Entity: ", "Events: ", "Active: ", "FreeMem:" };
-		uintToStr(stageEntityCount, numstr[0], 3);
-		uintToStr(tscEventCount, numstr[1], 3);
-		uintToStr(entities_count(), numstr[2], 3);
-		uintToStr(MEM_getFree(), numstr[3], 6);
-		//uintToStr(sizeof(void*), numstr[3], 6);
-		for(u8 i = 0; i < 4; i++) strcat(fullstr[i], numstr[i]);
-		VDP_setWindowPos(0, 243); // Show window plane
-		VDP_drawTextWindow(fullstr[0], 2, 25);
-		VDP_drawTextWindow(fullstr[1], 2, 26);
-		VDP_drawTextWindow(fullstr[2], 22, 25);
-		VDP_drawTextWindow(fullstr[3], 22, 26);
-	}
-}
-
-void erase_pause() {
-	if(debuggingEnabled) {
-		VDP_setWindowPos(0, 251); // Hide window plane
-		tsc_unpause_debug(); // Brings message window back if open
-	}
-}
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
-		erase_pause();
+		//erase_pause();
 		return false;
+	} else {
+		// TODO: Item Menu
 	}
 	return true;
 }
@@ -85,31 +46,47 @@ void game_reset(bool load) {
 
 void vblank() {
 	stage_update();
-	hud_update_vblank();
-	u8 str[10];
-	uintToStr(playerProf, str, 8);
-	VDP_drawTextWindow(str, 1, 27);
-	uintToStr(entityProf, str, 8);
-	VDP_drawTextWindow(str, 10, 27);
+	if(hudRedrawPending) hud_update_vblank();
+	if(debuggingEnabled && --debugTime == 0) {
+		u8 str[34];
+		// Draw player/entity update time
+		uintToStr(playerProf, &str[0], 5);
+		uintToStr(entityProf, &str[6], 5);
+		// Entity count
+		uintToStr(entities_count_active(), &str[15], 3);
+		uintToStr(entities_count(), &str[19], 3);
+		// Free Memory
+		uintToStr(MEM_getFree(), &str[27], 5);
+		str[5] = str[11] = str[22] = ' ';
+		str[12] = 'E'; str[13] = '#'; str[14] = ':'; str[18] = '/';
+		str[23] = str[25] = 'M'; str[24] = 'E'; str[26] = ':';
+		VDP_drawTextWindow(str, 1, 27);
+		debugTime = 60;
+	}
 }
 
 void game_main(bool load) {
+	SYS_disableInts();
+	VDP_setEnable(false);
+	VDP_resetScreen();
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
 	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	game_reset(load);
-	VDP_setWindowPos(0, 251);
-	bool paused = false, can_pause = true;
+	VDP_setEnable(true);
+	SYS_enableInts();
+	VDP_setWindowPos(0, 251 * debuggingEnabled);
+	bool paused = false;
 	while(true) {
 		input_update();
 		if(paused) {
 			paused = update_pause();
 		} else {
-			if(can_pause && joy_pressed(BUTTON_START)) {
-				draw_pause();
+			if(!tsc_running() && joy_pressed(BUTTON_START)) {
+				//draw_pause();
 				paused = true;
 			} else {
-				if(debuggingEnabled) debug_update();
+				//if(debuggingEnabled) debug_update();
 				camera_update();
 				playerProf = getSubTick();
 				player_update();

@@ -29,7 +29,7 @@ u32 tileData[32][TSIZE];
 // Keeps track of whether the HUD is loaded or not to avoid double loads/frees
 bool showing = false;
 // When this gets flipped on the bars will be redrawn next vblank
-bool redrawPending = false;
+//bool hudRedrawPending = false;
 
 void hud_redraw_health();
 void hud_decrease_health();
@@ -65,7 +65,7 @@ void hud_show() {
 	memcpy(tileData[0], spr->frame[0].frameSprites[0]->tileset->tiles, sizeof(u32) * TSIZE * 16);
 	memcpy(tileData[16], spr->frame[0].frameSprites[1]->tileset->tiles, sizeof(u32) * TSIZE * 16);
 	// Prepare DMA -- put the real data in tileData
-	redrawPending = true;
+	hudRedrawPending = true;
 	hud_prepare_dma();
 	showing = true;
 }
@@ -80,7 +80,7 @@ void hud_hide() {
 void hud_redraw_health() {
 	hudMaxHealth = playerMaxHealth;
 	hudHealth = player.health;
-	redrawPending = true;
+	hudRedrawPending = true;
 }
 
 void hud_decrease_health() {
@@ -89,7 +89,7 @@ void hud_decrease_health() {
 		hudHealth--;
 		hudHealthTime = HEALTH_DECREASE_TIME;
 	}
-	redrawPending = true;
+	hudRedrawPending = true;
 }
 
 void hud_redraw_weapon() {
@@ -98,13 +98,13 @@ void hud_redraw_weapon() {
 	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel];
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	sprite_set_frame(hudWeaponSprite, hudWeapon);
-	redrawPending = true;
+	hudRedrawPending = true;
 }
 
 void hud_redraw_ammo() {
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	hudAmmo = playerWeapon[currentWeapon].ammo;
-	redrawPending = true;
+	hudRedrawPending = true;
 }
 
 void hud_update() {
@@ -122,15 +122,15 @@ void hud_update() {
 		hud_redraw_weapon();
 	} else if(hudEnergy != playerWeapon[currentWeapon].energy) {
 		hudEnergy = playerWeapon[currentWeapon].energy;
-		redrawPending = true;
+		hudRedrawPending = true;
 	}
-	if(redrawPending) hud_prepare_dma();
+	if(hudRedrawPending) hud_prepare_dma();
 }
 
 void hud_update_vblank() {
-	if(!redrawPending) return;
+	//if(!hudRedrawPending) return;
 	VDP_loadTileData(tileData[0], TILE_HUDINDEX, 32, true);
-	redrawPending = false;
+	hudRedrawPending = false;
 }
 
 void hud_prepare_dma() {

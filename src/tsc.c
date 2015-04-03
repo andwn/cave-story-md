@@ -23,18 +23,24 @@
 #define TSC_WAITGROUNDED 5 // Waiting for the player to touch the ground
 #define TSC_RESTARTGAME 6 // Return to title screen
 #define TSC_RELOADSAVE 7 // Reload save data (try again)
+#define TSC_PROMPT 8
+#define TSC_TELEMENU 9
+#define TSC_ITEMMENU 10
 
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, true, false, false, TILE_WINDOWINDEX+x)
 
+// Window location
 #define WINDOW_X1 2
 #define WINDOW_X2 37
 #define WINDOW_Y1 20
 #define WINDOW_Y2 27
+// Text area location within window
 #define TEXT_X1 (WINDOW_X1 + 1)
 #define TEXT_X2 (WINDOW_X2 - 1)
 #define TEXT_Y1 (WINDOW_Y1 + 1)
 #define TEXT_Y2 (WINDOW_Y2 - 1)
 #define TEXT_X1_FACE 10
+// Prompt window location
 #define PROMPT_X1 26
 #define PROMPT_X2 36
 #define PROMPT_Y1 20
@@ -169,6 +175,12 @@ u8 teleMenuSlotCount = 0;
 u16 teleMenuEvent[8];
 u8 teleMenuSelection = 0;
 u8 teleMenuSprite[8];
+u8 teleMenuAnim = 0;
+u8 teleMenuFrame[8];
+
+bool showingBossHealth = false;
+u16 bossMaxHealth;
+u16 bossHealth;
 
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
 
@@ -278,13 +290,15 @@ u8 tsc_update() {
 		} else if(showingTeleMenu) { // Update the Teleport Menu
 			if(joy_pressed(BUTTON_C)) {
 				tsc_call_event(teleMenuEvent[teleMenuSelection]);
-				sound_play(SOUND_CONFIRM, 5);
+				//sound_play(SOUND_CONFIRM, 5);
 				tsc_hide_teleport_menu();
 				exeMode = TSC_RUNNING;
 			} else if(joy_pressed(BUTTON_B)) { // Cancel
 				tsc_hide_teleport_menu();
 				exeMode = TSC_RUNNING;
 			} else if(joy_pressed(BUTTON_LEFT)) {
+				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+						0, teleMenuFrame[teleMenuSelection]);
 				if(teleMenuSelection == 0) {
 					teleMenuSelection = teleMenuSlotCount - 1;
 				} else {
@@ -292,12 +306,18 @@ u8 tsc_update() {
 				}
 				sound_play(SOUND_CURSOR, 5);
 			} else if(joy_pressed(BUTTON_RIGHT)) {
+				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+						0, teleMenuFrame[teleMenuSelection]);
 				if(teleMenuSelection == teleMenuSlotCount - 1) {
 					teleMenuSelection = 0;
 				} else {
 					teleMenuSelection++;
 				}
 				sound_play(SOUND_CURSOR, 5);
+			} else { // Doing nothing, blink cursor
+				teleMenuAnim = !teleMenuAnim;
+				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+						teleMenuAnim, teleMenuFrame[teleMenuSelection]);
 			}
 		} else { // No menus just waiting for player to press a button
 			if(joy_pressed(BUTTON_C)) {
@@ -383,7 +403,7 @@ void window_open_prompt() {
 }
 
 void window_close() {
-	VDP_setWindowPos(0, 251);
+	VDP_setWindowPos(0, 251 * debuggingEnabled);
 	showingFace = 0;
 	msgWindowOpen = false;
 }
@@ -405,9 +425,10 @@ void tsc_show_teleport_menu() {
 	for(u8 i = 0; i < 8; i++) {
 		if(teleportEvent[i] == 0) continue;
 		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
-		teleMenuSprite[i] = sprite_create(&SPR_TeleMenu, PAL0, true);
-		sprite_set_frame(teleMenuSprite[i], i);
-		sprite_set_position(teleMenuSprite[i], 80 + 64*i, 96);
+		teleMenuSprite[teleMenuSlotCount] = sprite_create(&SPR_TeleMenu, PAL0, true);
+		teleMenuFrame[teleMenuSlotCount] = i;
+		sprite_set_frame(teleMenuSprite[teleMenuSlotCount], i);
+		sprite_set_position(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
 		teleMenuSlotCount++;
 	}
 	if(teleMenuSlotCount > 0) {
@@ -677,11 +698,14 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			if(player_has_weapon(args[0])) tsc_call_event(args[1]);
 			break;
-		case CMD_EQ_ADD: // TODO: Equip item (1)
+			// These two equip commands actually give a flag between 1<<0 and 1<<8
+		case CMD_EQ_ADD: // Equip item (1)
 			args[0] = tsc_read_word();
+			player_equip(args[0]);
 			break;
-		case CMD_EQ_SUB: // TODO: Remove equip (1)
+		case CMD_EQ_SUB: // Remove equip (1)
 			args[0] = tsc_read_word();
+			player_unequip(args[0]);
 			break;
 		case CMD_IT_ADD: // Give item (1)
 			args[0] = tsc_read_word();

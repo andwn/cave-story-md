@@ -18,16 +18,22 @@ u8 titlescreen_main() {
 	VDP_setHorizontalScroll(PLAN_A, 0);
 	VDP_setVerticalScroll(PLAN_A, 0);
 	VDP_setPalette(PAL0, PAL_Main.data);
+	VDP_setPaletteColor(PAL0, 0x0444); // Gray background
+	VDP_setPaletteColor(PAL0 + 8, 0x08CE); // Yellow text
 	u8 cursorSprite = sprite_create(&SPR_Quote, PAL0, true);
 	sprite_set_position(cursorSprite, tile_to_pixel(12) - 4, tile_to_pixel(16) - 4);
 	sprite_set_attr(cursorSprite, TILE_ATTR(PAL0, true, false, true));
 	sprite_set_animation(cursorSprite, 1);
-	VDP_drawText("New Game", 14, 16);
-	VDP_drawText("Continue", 14, 18);
-	VDP_drawText("Sound Test", 14, 20);
-	VDP_drawText(" ", 2, 25);
-	VDP_drawText("2015.03", 31, 25);
-	// TODO: Draw actual title in background
+	VDP_drawText("New Game", 15, 14);
+	VDP_drawText("Continue", 15, 16);
+	VDP_drawText("Sound Test", 15, 18);
+	VDP_drawText("Version. 1.0.0.6", 12, 24);
+	VDP_drawText("Mega Drive Version 0.1 2015.04", 2, 26);
+	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
+	VDP_fillTileMapRectInc(BPLAN,
+		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX), 11, 3, 18, 4);
+	VDP_fillTileMapRectInc(BPLAN,
+		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX + 18 * 4), 11, 21, 18, 2);
 	VDP_setEnable(true);
 	SYS_enableInts();
 	song_play(SONG_TITLE);
@@ -44,10 +50,11 @@ u8 titlescreen_main() {
 			sound_play(SOUND_CURSOR, 0);
 		}
 		sprite_set_position(cursorSprite,
-				tile_to_pixel(12) - 4, tile_to_pixel(16 + cursor * 2) - 4);
+				tile_to_pixel(13) - 4, tile_to_pixel(14 + cursor * 2) - 4);
 		sprites_update();
 		VDP_waitVSync();
 	}
+	debuggingEnabled = (joystate&BUTTON_A) && joy_pressed(BUTTON_START);
 	sound_play(SOUND_CONFIRM, 0);
 	return cursor;
 }
