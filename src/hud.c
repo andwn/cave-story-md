@@ -46,7 +46,7 @@ void hud_show() {
 	// Weapon
 	hudWeapon = playerWeapon[currentWeapon].type;
 	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel];
+	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	// Ammo
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
@@ -95,7 +95,7 @@ void hud_decrease_health() {
 void hud_redraw_weapon() {
 	hudWeapon = playerWeapon[currentWeapon].type;
 	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel];
+	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	sprite_set_frame(hudWeaponSprite, hudWeapon);
 	hudRedrawPending = true;

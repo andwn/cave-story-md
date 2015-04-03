@@ -295,9 +295,9 @@ void player_update_entity_collision() {
 			if(entity_overlapping(&player, e)) {
 				Weapon *w = &playerWeapon[currentWeapon];
 				w->energy += e->experience;
-				if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level]) {
+				if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level-1]) {
 					sound_play(SOUND_LEVELUP, 5);
-					w->energy -= weapon_info[w->type].experience[w->level];
+					w->energy -= weapon_info[w->type].experience[w->level-1];
 					w->level++;
 				} else {
 					sound_play(SOUND_GETEXP, 5);

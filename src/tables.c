@@ -159,7 +159,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Mimiga, "Yamashita Farm" },
 	{ BGM_Balcony, "Pulse" },
 	{ BGM_Fanfare3, "Fanfare 2" },
-	{ BGM_Fanfare1, "Fanfare 3" }, // 0x10
+	{ BGM_Fanfare2, "Fanfare 3" }, // 0x10
 	{ BGM_Balcony, "Tyrant" },
 	{ BGM_Run, "Run!" },
 	{ BGM_Balcony, "Jenka 1" },

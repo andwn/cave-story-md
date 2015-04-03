@@ -46,6 +46,7 @@ void soundtest_main() {
 	sprites_clear();
 	song_stop();
 	VDP_clearPlan(APLAN, true);
+	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(BPLAN,
