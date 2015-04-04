@@ -10,7 +10,7 @@
 #define BACKGROUND_COUNT 12
 #define SONG_COUNT 42
 #define SOUND_COUNT 118
-#define WEAPON_COUNT 13
+#define WEAPON_COUNT 14
 #define FACE_COUNT 30
 
 // NPC Flags

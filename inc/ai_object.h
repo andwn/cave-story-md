@@ -9,6 +9,8 @@
 void ai_update_energy(Entity *e);
 // 18 - Door
 void ai_activate_door(Entity *e);
+// 46 - Trigger
+void ai_update_trigger(Entity *e);
 // 211 - Spike
 void ai_activate_spike();
 

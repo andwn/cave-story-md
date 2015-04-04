@@ -39,6 +39,9 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		e->activate = &ai_activate_door;
 		e->activate(e);
 		break;
+	case 46: // Trigger
+		e->update = &ai_update_trigger;
+		break;
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
 		break;

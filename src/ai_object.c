@@ -38,6 +38,20 @@ void ai_activate_door(Entity *e) {
 	}
 }
 
+void ai_update_trigger(Entity *e) {
+	if(tsc_running()) return;
+	bool activate = false;
+	if(e->eflags&NPC_OPTION2) { // Vertical
+		if(player.x - pixel_to_sub(player.hit_box.left) < e->x + pixel_to_sub(e->hit_box.right) &&
+			player.x + pixel_to_sub(player.hit_box.right) > e->x - pixel_to_sub(e->hit_box.left)) {
+			activate = true;
+		}
+	} else { // Horizontal
+		if(entity_overlapping(&player, e) && player.y_speed < 0) activate = true;
+	}
+	if(activate) tsc_call_event(e->event);
+}
+
 // This rotates the spikes so they are always sticking out of a solid area
 // Spikes use a second frame for 90 degree rotation
 void ai_activate_spike(Entity *e) {

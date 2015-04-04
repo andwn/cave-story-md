@@ -676,14 +676,19 @@ const npc_info_def npc_info[NPC_COUNT] = {
 
 const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {3,6,9} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
 };
 
 const face_info_def face_info[FACE_COUNT] = {

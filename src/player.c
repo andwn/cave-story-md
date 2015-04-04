@@ -130,7 +130,27 @@ Bullet *bullet_colliding(Entity *e) {
 }
 
 void player_update_shooting() {
-	if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
+	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
+		for(u8 i = (currentWeapon-1) % 8; i != currentWeapon; i = (i-1) % 8) {
+			if(playerWeapon[i].type > 0) {
+				sprite_delete(playerWeapon[currentWeapon].sprite);
+				currentWeapon = i;
+				playerWeapon[i].sprite = sprite_create(
+						weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				break;
+			}
+		}
+	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
+		for(u8 i = (currentWeapon+1) % 8; i != currentWeapon; i = (i+1) % 8) {
+			if(playerWeapon[i].type > 0) {
+				sprite_delete(playerWeapon[currentWeapon].sprite);
+				currentWeapon = i;
+				playerWeapon[i].sprite = sprite_create(
+						weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				break;
+			}
+		}
+	} else if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->type == 2) { // Polar Star
 			Bullet *b = NULL;
@@ -308,15 +328,15 @@ void player_update_entity_collision() {
 				continue;
 			}
 			break;
-		case 46: // Trigger
+		//case 46: // Trigger
 			// Call the trigger's event if an event isn't already running
 			// We don't delete the trigger here, the event takes care of it
-			if(entity_overlapping(&player, e) && !tsc_running()) {
-				tsc_call_event(e->event);
-				e = e->next;
-				continue;
-			}
-			break;
+		//	if(entity_overlapping(&player, e) && !tsc_running()) {
+		//		tsc_call_event(e->event);
+		//		e = e->next;
+		//		continue;
+		//	}
+		//	break;
 		case 87: // Heart
 			// Increases health, plays sound and deletes itself
 			if(entity_overlapping(&player, e)) {
@@ -394,13 +414,18 @@ Weapon *player_find_weapon(u8 id) {
 void player_give_weapon(u8 id, u8 ammo) {
 	Weapon *w = player_find_weapon(id);
 	if(w == NULL) {
-		w = &playerWeapon[playerWeaponCount];
-		w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
-		w->type = id;
-		w->level = 1;
-		w->energy = 0;
-		w->maxammo = 0;
-		w->ammo = 0;
+		sprite_delete(playerWeapon[currentWeapon].sprite);
+		for(u8 i = 0; i < 8; i++) {
+			if(playerWeapon[i].type > 0) continue;
+			w = &playerWeapon[i];
+			w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
+			w->type = id;
+			w->level = 1;
+			w->energy = 0;
+			w->maxammo = 0;
+			w->ammo = 0;
+			break;
+		}
 	}
 	w->maxammo += ammo;
 	w->ammo += ammo;
