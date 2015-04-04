@@ -3,10 +3,10 @@ This is a rewrite/port of the popular freeware game Cave Story. It is built to r
 Tested to work on Kega Fusion, Gens GS, and an NTSC Genesis Model 1.
 The engine is built using SGDK, and written almost entirely in C.
 
-### Download ROM
+## Download ROM
 I update this every so often: [Cave-Story-MD.bin](https://dl.dropboxusercontent.com/u/105253377/Cave-Story-MD.bin)
 
-### Is this beatable?
+#### Is this beatable?
 Not yet.
 From "New Game" without cheats you can make it to Grasstown. 
 About 30% of the game's music is implemented, and all of the sound effects are.
@@ -24,7 +24,7 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 2. Clone the project and do `make`.
 - Note: This setup can be fairly error prone. I'm looking into ways to help but for now [this thread](http://gendev.spritesmind.net/forum/viewtopic.php?t=1248&sid=062e63d4c70d3d74012e31e680089aab) can help.
 
-### Caveats
+#### Caveats
 Many of the colors are more vivid or even wrong sometimes. The usable palette on the Genesis is limited:
 - 4 Palettes
 - 15 opaque colors per palette, and 1 transparent
@@ -37,9 +37,7 @@ Some effects are not possible or difficult to implement without lag
 - Health bars
 - Screen fading (with pattern)
 
-### Legal Stuff
-- The game engine was written by me from the ground up and has been given the GPLv3 free software license.
-- The music tracks are covers of the original game's soundtrack created by me in Deflemask tracker.
-- The art assets and sound effects are property of Studio Pixel.
-- As stated in the GPL, there is no warranty. While I test this often on my model 1 Genesis I cannot guarantee it won't damage your console somehow and will not be held liable.
+#### Legal Disclaimer
+The art assets and sound effects are property of Studio Pixel and are in no way ownd by me.
+The game engine and music covers are my own and licensed GPLv3 (code) and CC0 (music).
 
