@@ -16,28 +16,20 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 
 ## How to build? (Windows)
 1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
-2. After everything is in order clone the repo `git clone https://github.com/aderosier/cave-story-md.git`
-3. For Windows, run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
+2. Clone the repo `git clone https://github.com/aderosier/cave-story-md.git`
+3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
+  - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.
 
 ### How to build? (GNU/Linux)
 1. Set up [Gendev](https://code.google.com/p/gendev/)
 2. Clone the project and do `make`.
-- Note: This setup can be fairly error prone. I'm looking into ways to help but for now [this thread](http://gendev.spritesmind.net/forum/viewtopic.php?t=1248&sid=062e63d4c70d3d74012e31e680089aab) can help.
+  - This setup can be fairly error prone. I'm looking into ways to make this easier but for now [this thread](http://gendev.spritesmind.net/forum/viewtopic.php?t=1248&sid=062e63d4c70d3d74012e31e680089aab) can help.
 
 #### Caveats
-Many of the colors are more vivid or even wrong sometimes. The usable palette on the Genesis is limited:
-- 4 Palettes
-- 15 opaque colors per palette, and 1 transparent
-- Usable colormap totals 512 colors to choose from
-- Shadow/Highlight modes increase this a bit however I do not use them
-
-Some effects are not possible or difficult to implement without lag
-- Particle effects such as sprinkler
-- Sprite text
-- Health bars
-- Screen fading (with pattern)
+- Many of the colors are more vivid or even wrong sometimes due to palette limitations.
+- Some effects like the sprinkler and screen fading are not possible or difficult to implement without lag
 
 #### Legal Disclaimer
-The art assets and sound effects are property of Studio Pixel and are in no way ownd by me.
-The game engine and music covers are my own and licensed GPLv3 (code) and CC0 (music).
+The art assets and sound effects are property of Studio Pixel and are in no way owned by me.
+This repository focuses on the engine (GPLv3) and music covers (CC0).
 
