@@ -53,6 +53,7 @@ SPRITE SPR_Computer	"sprite/computer.png" 4 3 0 30 NONE
 SPRITE SPR_Board	"sprite/blackboard.png" 5 4 0 0 NONE
 SPRITE SPR_SaveSign	"sprite/savesign.png" 2 2 0 0 NONE
 SPRITE SPR_Wave		"sprite/wave.png" 2 2 0 2 NONE
+SPRITE SPR_Platform	"sprite/platform.png" 4 2 0 15 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu

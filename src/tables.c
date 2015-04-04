@@ -336,7 +336,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
 	{ NULL, PAL0 }, // 23 - Teleporter Lights
 	{ NULL, PAL0 }, // 24 - Enemy: Power Critter
-	{ NULL, PAL0 }, // 25 - Lift Platform
+	{ &SPR_Platform, PAL1 }, // 25 - Lift Platform
 	{ &SPR_Bat, PAL0 }, // 26 - Enemy: Bat (Black, circling)
 	{ &SPR_Trap, PAL1 }, // 27 - Death trap
 	{ NULL, PAL0 }, // 28 - Enemy: Critter (Flying)
