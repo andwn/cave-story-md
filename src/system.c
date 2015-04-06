@@ -7,8 +7,9 @@
 #include "tsc.h"
 #include "audio.h"
 
-// 5000 flags, official game supports 8000 but only uses 4000
-#define FLAGS_LEN 156
+// Official game supports 8000 but only uses 4000
+// Decrease if there are memory issues
+#define FLAGS_LEN 250
 
 bool debuggingEnabled = false;
 
