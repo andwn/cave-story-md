@@ -72,8 +72,14 @@ void player_init() {
 	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No playerWeapons
-	for(u8 i = 0; i < 3; i++) playerBullet[i].ttl = 0; // No bullets
+	for(u8 i = 0; i < 8; i++) {
+		playerWeapon[i].type = 0; // No playerWeapons
+		playerWeapon[i].sprite = SPRITE_NONE;
+	}
+	for(u8 i = 0; i < 3; i++) {
+		playerBullet[i].ttl = 0; // No bullets
+		playerBullet[i].sprite = SPRITE_NONE;
+	}
 	playerDead = false;
 	currentWeapon = 0;
 }

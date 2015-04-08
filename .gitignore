@@ -1,1 +1,6 @@
 /out
+.project
+.cproject
+.settings/
+res/resources.h
+*.exe

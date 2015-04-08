@@ -17,6 +17,7 @@
 #define SOUND_REFILL 0x14
 #define SOUND_EXPBOUNCE 0x2D
 #define SOUND_BREAK 0x0C
+#define SOUND_HOP 0x1E
 // IDs for title screen songs
 // Indexes of song_info
 #define SONG_TITLE 0x18
