@@ -760,7 +760,7 @@ Entity *entity_update(Entity *e) {
 		entity_deactivate(e);
 		return next;
 	}
-	e->update(e);
+	if(e->update != NULL) e->update(e);
 	//entity_update_movement(e);
 	//if(!(e->flags & NPC_IGNORESOLID)) entity_update_collision(e);
 	if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
@@ -783,6 +783,7 @@ Entity *entity_update(Entity *e) {
 			}
 			e->health -= b->damage;
 			sound_play(e->hurtSound, 5);
+			if(e->hurt != NULL) e->hurt(e);
 		}
 	}
 	if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
@@ -822,8 +823,9 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->damage_value = 0;
 	e->damage_time = 0;
 	e->activate = &ai_activate_base;
-	e->update = &ai_update_base;
+	e->update = NULL; //&ai_update_base;
 	e->set_state = &ai_setstate_base;
+	e->hurt = NULL;
 	e->state = 0;
 	e->state_time = 0;
 }

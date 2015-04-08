@@ -373,7 +373,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_DoorE, PAL1 }, // 59 - Enemy: Door
 	{ &SPR_Toroko, PAL3 }, // 60 - Toroko
 	{ &SPR_King, PAL3 }, // 61 - King
-	{ NULL, PAL0 }, // 62 - Kazuma (Computer)
+	{ &SPR_KazuCom, PAL3 }, // 62 - Kazuma (Computer)
 	{ &SPR_Toroko, PAL3 }, // 63 - Toroko (Attacking)
 	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
 	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)

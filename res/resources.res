@@ -41,7 +41,7 @@ SPRITE SPR_Energy	"sprite/energy.png" 2 2 0 6 NONE
 #SPRITE SPR_EnergyS	"sprite/energysm.png" 2 2 0 6 NONE
 #SPRITE SPR_EnergyM	"sprite/energymid.png" 2 2 0 6 NONE
 #SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
-SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 30 NONE
+SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 0 NONE
 SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 20 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE
 SPRITE SPR_Behem	"sprite/behem.png" 4 3 0 20 NONE
@@ -67,6 +67,7 @@ SPRITE SPR_Sue		"sprite/sue.png" 2 2 0 20 NONE
 SPRITE SPR_King		"sprite/king.png" 2 2 0 20 NONE
 SPRITE SPR_Igor		"sprite/igor.png" 5 5 0 20 NONE
 SPRITE SPR_Robot	"sprite/robot.png" 2 2 0 0 NONE
+SPRITE SPR_KazuCom	"sprite/kazucom.png" 2 3 0 0 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 

@@ -7,6 +7,7 @@
 // One less than BLOCK_SIZE in sub-pixels, because only one
 // row/column is drawn per frame while the camera is moving
 #define CAMERA_MAX_SPEED (block_to_sub(1) - 1)
+#define LIMIT (8 * !cameraShake)
 
 u16 focusSpeed = 32;
 // When cameraShake is nonzero the camera will shake, and decrement this value
@@ -22,12 +23,12 @@ void camera_init() {
 
 void camera_set_position(s32 x, s32 y) {
 	// Don't let the camera leave the stage
-	if(x < pixel_to_sub(SCREEN_HALF_W)) x = pixel_to_sub(SCREEN_HALF_W);
-	if(y < pixel_to_sub(SCREEN_HALF_H + 8)) y = pixel_to_sub(SCREEN_HALF_H + 8);
-	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
-		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
-	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H))
-		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H);
+	if(x < pixel_to_sub(SCREEN_HALF_W + LIMIT)) x = pixel_to_sub(SCREEN_HALF_W + LIMIT);
+	if(y < pixel_to_sub(SCREEN_HALF_H + LIMIT)) y = pixel_to_sub(SCREEN_HALF_H + LIMIT);
+	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT))
+		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT);
+	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
+		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	// Apply
 	camera.x = x;
 	camera.y = y;
@@ -74,12 +75,19 @@ void camera_update() {
 	if(x_next - camera.x > CAMERA_MAX_SPEED) x_next = camera.x + CAMERA_MAX_SPEED;
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
-	if(x_next < pixel_to_sub(SCREEN_HALF_W)) x_next = pixel_to_sub(SCREEN_HALF_W);
-	if(y_next < pixel_to_sub(SCREEN_HALF_H + 8)) y_next = pixel_to_sub(SCREEN_HALF_H + 8);
-	if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
-		x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
-	if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H))
-		y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H);
+	if(stageID == 18) { // Special case for shelter
+		x_next = pixel_to_sub(SCREEN_HALF_W + LIMIT);
+		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
+	} else {
+		if(x_next < pixel_to_sub(SCREEN_HALF_W + LIMIT))
+			x_next = pixel_to_sub(SCREEN_HALF_W + LIMIT);
+		else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT))
+			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT);
+		if(y_next < pixel_to_sub(SCREEN_HALF_H + LIMIT))
+			y_next = pixel_to_sub(SCREEN_HALF_H + LIMIT);
+		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
+			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
+	}
 	// Morph the stage if the camera is moving
 	s16 x_block = sub_to_block(x_next);
 	s16 y_block = sub_to_block(y_next);

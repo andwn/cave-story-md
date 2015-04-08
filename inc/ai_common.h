@@ -19,4 +19,8 @@ void ai_update_bat_circle(Entity *e);
 void ai_update_critter_hop(Entity *e);
 bool ai_setstate_critter_hop(Entity *e, u16 state);
 
+// Door Enemy
+void ai_update_door_enemy(Entity *e);
+void ai_hurt_door_enemy(Entity *e);
+
 #endif /* INC_AI_COMMON_H_ */

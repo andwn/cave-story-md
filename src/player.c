@@ -136,6 +136,7 @@ Bullet *bullet_colliding(Entity *e) {
 }
 
 void player_update_shooting() {
+	// Weapon switching
 	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
 		for(u8 i = (currentWeapon-1) % 8; i != currentWeapon; i = (i-1) % 8) {
 			if(playerWeapon[i].type > 0) {
@@ -156,6 +157,7 @@ void player_update_shooting() {
 				break;
 			}
 		}
+	// Shooting
 	} else if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->type == 2) { // Polar Star

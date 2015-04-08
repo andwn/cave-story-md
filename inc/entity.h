@@ -20,6 +20,7 @@ typedef struct Entity Entity;
 typedef void (*activateFunc)(Entity*);
 typedef void (*updateFunc)(Entity*);
 typedef bool (*stateFunc)(Entity*, u16);
+typedef void (*hurtFunc)(Entity*);
 
 // Temporarily making these global until I refactor entity and behavior together
 extern s16 maxFallSpeed, maxFallSpeedWater,
@@ -49,6 +50,7 @@ struct Entity {
 	activateFunc activate;
 	updateFunc update;
 	stateFunc set_state;
+	hurtFunc hurt;
 	// Combat
 	u16 health; // If this is an enemy it will die when health reaches 0
 	u8 attack; // Damage inflicted on player when colliding

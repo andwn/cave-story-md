@@ -51,8 +51,8 @@ void ai_update_critter_hop(Entity *e) {
 		e->state_time--;
 		if(e->state_time == 0) e->set_state(e, 2);
 	} else {
-		s32 x1 = e->x - block_to_sub(8), y1 = e->y - block_to_sub(8),
-			x2 = e->x + block_to_sub(8), y2 = e->y + block_to_sub(8);
+		s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
+			x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
 		if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
 			e->direction = player.x > e->x;
 			e->set_state(e, 1);
@@ -87,6 +87,27 @@ bool ai_setstate_critter_hop(Entity *e, u16 state) {
 	return false;
 }
 
+void ai_update_door_enemy(Entity *e) {
+	if(e->state == 1) {
+		e->state_time--;
+		if(e->state_time == 0) e->state = 0;
+	} else {
+		s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
+			x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
+		if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
+			sprite_set_frame(e->sprite, 2);
+		} else {
+			sprite_set_frame(e->sprite, 0);
+		}
+	}
+}
+
+void ai_hurt_door_enemy(Entity *e) {
+	e->state = 1;
+	e->state_time = 30;
+	sprite_set_frame(e->sprite, 3);
+}
+
 void entity_create_special(Entity *e, bool option1, bool option2) {
 	switch(e->type) {
 	case 1: // Weapon Energy
@@ -101,11 +122,21 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		e->activate = &ai_activate_door;
 		e->activate(e);
 		break;
+	case 30: // Gunsmith
+		e->x += block_to_sub(1);
+		break;
 	case 46: // Trigger
 		e->update = &ai_update_trigger;
 		break;
+	case 59: // Door Enemy
+		e->update = &ai_update_door_enemy;
+		e->hurt = &ai_hurt_door_enemy;
+		break;
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
+		break;
+	case 62: // Kazuma on computer
+		e->y += block_to_sub(1);
 		break;
 	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);
