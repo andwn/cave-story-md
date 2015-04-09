@@ -6,8 +6,8 @@
 #include "npc.h"
 
 #define STAGE_COUNT 95
-#define TILESET_COUNT 22
-#define BACKGROUND_COUNT 12
+#define TILESET_COUNT 23
+#define BACKGROUND_COUNT 13
 #define SONG_COUNT 42
 #define SOUND_COUNT 118
 #define WEAPON_COUNT 14

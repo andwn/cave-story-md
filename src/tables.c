@@ -5,7 +5,7 @@
 const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_0,		PXE_0,		TSC_0,		&PAL_Regu,	0,	0,	"" },
 	{ PXM_Pens1,	PXE_Pens1,	TSC_Pens1,	&PAL_Regu,	16,	0,	"Arthur's House" },
-	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	7,	"Egg Corridor" },
+	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	12,	"Egg Corridor" },
 	{ PXM_EggX,		PXE_EggX,	TSC_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },
 	{ PXM_Egg6,		PXE_Egg6,	TSC_Egg6,	&PAL_Regu,	5,	0,	"Egg No. 06" },
 	{ PXM_EggR,		PXE_EggR,	TSC_EggR,	&PAL_Regu,	19,	0,	"Egg Observation Room" },
@@ -20,7 +20,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Barr,		PXE_Barr,	TSC_Barr,	&PAL_Regu,	14,	0,	"Shack" },
 	{ PXM_Pool,		PXE_Pool,	TSC_Pool,	&PAL_Regu,	14,	2,	"Reservoir" },
 	{ PXM_Cemet,	PXE_Cemet,	TSC_Cemet,	&PAL_Regu,	14,	2,	"Graveyard" },
-	{ PXM_Plant,	PXE_Plant,	TSC_Plant,	&PAL_Regu,	14,	2,	"Yamashita Farm" },
+	{ PXM_Plant,	PXE_Plant,	TSC_Plant,	&PAL_Plant,	14,	2,	"Yamashita Farm" },
 	{ PXM_Shelt,	PXE_Shelt,	TSC_Shelt,	&PAL_Regu,	19,	0,	"Shelter" },
 	{ PXM_Comu,		PXE_Comu,	TSC_Comu,	&PAL_Regu,	16,	0,	"Assembly Hall" },
 	{ PXM_MiBox,	PXE_MiBox,	TSC_MiBox,	&PAL_Regu,	14,	0,	"Shack" },
@@ -52,10 +52,10 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Drain,	PXE_Drain,	TSC_Drain,	&PAL_Regu,	3,	0,	"Dark Place" },
 	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Regu,	1,	0,	"Core" },
 	{ PXM_River,	PXE_River,	TSC_River,	&PAL_Regu,	17,	6,	"Waterway" },
-	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Regu,	6,	7,	"Egg Corridor?" },
+	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Regu,	6,	12,	"Egg Corridor?" },
 	{ PXM_Cthu2,	PXE_Cthu2,	TSC_Cthu2,	&PAL_Regu,	19,	0,	"Cthulhu's Abode?" },
 	{ PXM_EggR2,	PXE_EggR2,	TSC_EggR2,	&PAL_Regu,	19,	0,	"Egg Observation Room?" },
-	{ PXM_EggX,		PXE_EggX2,	TSC_EggX2,	&PAL_Regu,	7,	0,	"Egg No. 00" },
+	{ PXM_EggX,		PXE_EggX2,	TSC_EggX2,	&PAL_Regu,	22,	0,	"Egg No. 00" },
 	{ PXM_Oside,	PXE_Oside,	TSC_Oside,	&PAL_Regu,	15,	9,	"Outer Wall" },
 	{ PXM_EgEnd2,	PXE_EgEnd2,	TSC_EgEnd2,	&PAL_Regu,	19,	0,	"Side Room" },
 	{ PXM_Itoh,		PXE_Itoh,	TSC_Itoh,	&PAL_Regu,	19,	0,	"Storehouse" },
@@ -124,6 +124,7 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 	{ &TS_Store, &PAL_Store, PXA_Store },
 	{ &TS_Weed, &PAL_Weed, PXA_Weed },
 	{ &TS_White, &PAL_White, PXA_White },
+	{ &TS_EggX2, &PAL_EggX, PXA_EggX },
 };
 
 // Background Info
@@ -140,6 +141,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ &BG_Maze, PAL2, 0, 8, 8 },
 	{ &BG_Red, PAL2, 0, 4, 4 },
 	{ &BG_Red, PAL2, 0, 4, 4 },
+	{ &BG_Eggs, PAL2, 0, 8, 8 },
 };
 
 const song_info_def song_info[SONG_COUNT] = {
@@ -325,14 +327,14 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 11 - Projectile: Balrog energy shot
 	{ &SPR_Balrog, PAL1 }, // 12 - Balrog (Cutscene)
 	{ &SPR_ForceField, PAL1 }, // 13 - Forcefield
-	{ NULL, PAL1 }, // 14 - Santa's Key
+	{ &SPR_Key, PAL1 }, // 14 - Santa's Key
 	{ &SPR_Chest, PAL1 }, // 15 - Treasure Chest (Closed)
 	{ &SPR_Save, PAL1 }, // 16 - Save Point
 	{ &SPR_Refill, PAL1 }, // 17 - Health / Ammo Refill
 	{ &SPR_Door, PAL1 }, // 18 - Door
 	{ &SPR_Balrog, PAL1 }, // 19 - Balrog (Busts in)
 	{ &SPR_Computer, PAL1 }, // 20 - Computer
-	{ NULL, PAL0 }, // 21 - Treasure Chest (Open)
+	{ &SPR_Chest2, PAL1 }, // 21 - Treasure Chest (Open)
 	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
 	{ NULL, PAL0 }, // 23 - Teleporter Lights
 	{ NULL, PAL0 }, // 24 - Enemy: Power Critter
@@ -351,7 +353,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
 	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
 	{ &SPR_SaveSign, PAL1 }, // 39 - Save Sign
-	{ NULL, PAL0 }, // 40 - Santa
+	{ &SPR_Santa, PAL0 }, // 40 - Santa
 	{ NULL, PAL0 }, // 41 - Busted Doorway
 	{ &SPR_Sue, PAL3 }, // 42 - Sue
 	{ &SPR_Board, PAL1 }, // 43 - Blackboard
@@ -380,23 +382,23 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 66 - Bubble
 	{ &SPR_Misery, PAL0 }, // 67 - Misery (Floating)
 	{ &SPR_Balrog, PAL1 }, // 68 - Boss: Balrog (Running)
-	{ NULL, PAL0 }, // 69 - Enemy: Pignon
+	{ &SPR_Pignon, PAL1 }, // 69 - Enemy: Pignon
 	{ &SPR_Sparkle, PAL1 }, // 70 - Sparkling Item
-	{ NULL, PAL0 }, // 71 - Enemy: Chinfish
+	{ &SPR_Fish, PAL0 }, // 71 - Enemy: Chinfish
 	{ NULL, PAL0 }, // 72 - Sprinkler
 	{ NULL, PAL0 }, // 73 - Water Drop
-	{ NULL, PAL0 }, // 74 - Jack
-	{ NULL, PAL0 }, // 75 - Kanpachi (Fishing)
-	{ NULL, PAL0 }, // 76 - Flowers
-	{ NULL, PAL0 }, // 77 - Sandame's Pavilion
+	{ &SPR_Jack, PAL3 }, // 74 - Jack
+	{ &SPR_Kanpachi, PAL3 }, // 75 - Kanpachi (Fishing)
+	{ &SPR_Flower, PAL3 }, // 76 - Flowers
+	{ &SPR_Sanda, PAL3 }, // 77 - Sandame's Pavilion
 	{ NULL, PAL0 }, // 78 - Pot
-	{ NULL, PAL0 }, // 79 - Mahin
+	{ &SPR_Mahin, PAL3 }, // 79 - Mahin
 	{ NULL, PAL0 }, // 80 - Enemy: Gravekeeper
-	{ NULL, PAL0 }, // 81 - Enemy: Giant Pignon
+	{ &SPR_PignonB, PAL1 }, // 81 - Enemy: Giant Pignon
 	{ &SPR_Misery, PAL0 }, // 82 - Misery (Standing)
 	{ &SPR_Igor, PAL3 }, // 83 - Igor (Cutscene)
 	{ NULL, PAL0 }, // 84 - Projectile: Basu (1)
-	{ NULL, PAL0 }, // 85 - Terminal
+	{ &SPR_Term, PAL1 }, // 85 - Terminal
 	{ NULL, PAL0 }, // 86 - Missile
 	{ &SPR_Heart, PAL1 }, // 87 - Heart
 	{ &SPR_Igor, PAL3 }, // 88 - Boss: Igor
@@ -676,19 +678,19 @@ const npc_info_def npc_info[NPC_COUNT] = {
 
 const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {3,6,9} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,3} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 };
 
 const face_info_def face_info[FACE_COUNT] = {

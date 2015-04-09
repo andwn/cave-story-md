@@ -648,7 +648,15 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			entity_create(args[1], args[2], 0, 0, args[0], 0);
+			if(args[3] > 0) {
+				Entity *e = entity_create(args[1], args[2], 0, 0, args[0], 0);
+				if(e->sprite == SPRITE_NONE) break;
+				e->direction = 1;
+				u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+				sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
+			} else {
+				entity_create(args[1], args[2], 0, 0, args[0], 0);
+			}
 			break;
 		case CMD_BOA: // TODO: Give map boss state (1)
 			args[0] = tsc_read_word();

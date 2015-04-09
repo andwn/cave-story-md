@@ -11,8 +11,6 @@
 #include "tables.h"
 #include "tsc.h"
 
-#define entity_within_rect(p, x1, y1, x2, y2) (p->x > x1 && p->x < x2 && p->y > y1 && p->y < y2)
-
 void ai_activate_base(Entity *e) {
 
 }
@@ -73,7 +71,8 @@ bool ai_setstate_critter_hop(Entity *e, u16 state) {
 		break;
 	case 1: // Preparing to jump
 		sprite_set_frame(e->sprite, 1);
-		sprite_set_attr(e->sprite, TILE_ATTR(PAL2, 0, 0, e->direction));
+		u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+		sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, e->direction));
 		e->state_time = 30;
 		break;
 	case 2: // Hop
@@ -108,11 +107,14 @@ void ai_hurt_door_enemy(Entity *e) {
 	sprite_set_frame(e->sprite, 3);
 }
 
-void entity_create_special(Entity *e, bool option1, bool option2) {
+void ai_setup(Entity *e) {
 	switch(e->type) {
 	case 1: // Weapon Energy
 		e->x_speed = 0x200 - (random() % 0x400);
 		e->update = &ai_update_energy;
+		break;
+	case 7: // Basil
+		e->alwaysActive = true;
 		break;
 	case 12: // Balrog (Cutscene)
 		e->update = &ai_update_balrog_scene;
@@ -122,8 +124,9 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 		e->activate = &ai_activate_door;
 		e->activate(e);
 		break;
-	case 30: // Gunsmith
-		e->x += block_to_sub(1);
+	case 43: // Blackboard
+		e->y -= block_to_sub(1);
+		if(e->eflags&NPC_OPTION2) sprite_set_frame(e->sprite, 1);
 		break;
 	case 46: // Trigger
 		e->update = &ai_update_trigger;
@@ -135,17 +138,12 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
 		break;
-	case 62: // Kazuma on computer
-		e->y += block_to_sub(1);
-		break;
 	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);
 		e->update = &ai_update_toroko;
 		e->state = 3; // Running back and forth
 		sprite_set_animation(e->sprite, 2);
 		break;
-	//case 26:
-	//case 31:
 	case 64: // Critter - Blue
 		e->update = &ai_update_critter_hop;
 		e->set_state = &ai_setstate_critter_hop;
@@ -158,6 +156,16 @@ void entity_create_special(Entity *e, bool option1, bool option2) {
 	case 68: // Boss: Balrog (Mimiga Village)
 		e->update = &ai_update_balrog_boss1;
 		e->set_state = &ai_setstate_balrog_boss1;
+		break;
+	case 21: // Open Chest
+	case 30: // Gunsmith
+		if(!(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y) + 1) & BLOCK_SOLID)) {
+			e->y += block_to_sub(1);
+		}
+		break;
+	case 62: // Kazuma on computer
+	case 79: // Mahin
+		e->y += block_to_sub(1);
 		break;
 	case 211: // Spikes
 		e->activate = &ai_activate_spike;

@@ -6,9 +6,10 @@
 
 #define STATE_DEFEATED 900
 
+void ai_setup(Entity *e);
+
 // Entity behavior and AI
 void ai_activate_base(Entity *e);
-void ai_update_base(Entity *e);
 bool ai_setstate_base(Entity *e, u16 state);
 
 // Bats

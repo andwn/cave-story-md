@@ -11,8 +11,8 @@ Not yet.
 From "New Game" without cheats you can make it to Grasstown. 
 About 30% of the game's music is implemented, and all of the sound effects are.
 Only Polar Star works but Y and Z can still be used to switch weapons.
-None of the enemies move yet, but they can be killed and drop power ups. Same with bosses.
-The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I will probably write a converter.
+Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
+The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I am writing a converter.
 
 ## How to build? (Windows)
 1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
@@ -28,6 +28,43 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 #### Caveats
 - Many of the colors are more vivid or even wrong sometimes due to palette limitations.
 - Some effects like the sprinkler and screen fading are not possible or difficult to implement without lag
+
+### Areas
+- [x] First Cave
+- [ ] Mimiga
+  - [x] Completable
+  - [x] Sprites
+  - [ ] Music
+    - [x] Village
+    - [ ] Farm
+  - [ ] AI/actions
+- [ ] Graveyard
+  - [x] Completable
+  - [ ] Sprites
+  - [ ] Music
+  - [ ] AI/actions
+- [ ] Eggs
+  - [x] Completable
+  - [ ] Sprites
+  - [ ] AI/actions
+  - [ ] Weapon: Missiles
+- [ ] Grasstown
+  - [ ] Completable
+  - [ ] Sprites
+  - [ ] Music
+  - [ ] AI/actions
+  - [ ] Weapon: Fireball
+- [ ] Sand Zone
+- [ ] Labyrinth
+- [ ] Core
+- [ ] Waterway
+- [ ] Eggs2
+- [ ] Outer Wall
+- [ ] Plantation
+- [ ] Last Cave
+- [ ] Balcony / Ring
+- [ ] Credits
+- [ ] Sacred Ground
 
 #### Legal Disclaimer
 The art assets and sound effects are property of Studio Pixel and are in no way owned by me.

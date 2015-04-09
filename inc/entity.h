@@ -9,12 +9,6 @@
 #define FILTER_TYPE 3
 #define FILTER_ALL 4
 
-// Optimization flags
-#define OFLAG_ALWAYSACTIVE 1 // Do not deactivate entity even when off screen
-#define OFLAG_HOPONLY 2 // Assumes entity is always grounded until it jumps (critters)
-#define OFLAG_PROJECTILE 4 // Projectiles are deleted when off screen
-#define OFLAG_GENERATOR 8 // No movement or collision
-
 typedef struct Entity Entity;
 
 typedef void (*activateFunc)(Entity*);
@@ -46,7 +40,7 @@ struct Entity {
 	u16 *controller;
 	u8 direction; // Direction entity is facing, 0=left, 1=right
 	// Behavior properties
-	u8 oflags;
+	bool alwaysActive;
 	activateFunc activate;
 	updateFunc update;
 	stateFunc set_state;
@@ -81,7 +75,7 @@ struct Entity {
 	u16 state; // Script state / ANP
 	u16 state_time;
 	// Used to generate damage strings
-	s8 damage_value;
+	s16 damage_value;
 	s8 damage_time;
 };
 

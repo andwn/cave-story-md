@@ -94,8 +94,6 @@ bool collide_stage_floor_grounded(Entity *e);
 bool collide_stage_ceiling(Entity *e);
 
 void entity_drop_powerup(Entity *e);
-// Big switch statement for type specific stuff
-void entity_create_special(Entity *e, bool option1, bool option2);
 
 Entity *list_get_prev(Entity *e, Entity *list) {
 	while(list->next != NULL) {
@@ -546,7 +544,7 @@ bool collide_stage_slope_grounded(Entity *e) {
 bool collide_stage_floor_grounded(Entity *e) {
 	bool result = false;
 	// If we aren't moving we're still on the ground
-	if(e->x_speed == 0) return true;
+	if(e->y_speed == 0 && e->x_speed == 0) return true;
 	// First see if we are still standing on a flat block
 	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
@@ -822,6 +820,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
+	e->alwaysActive = false;
 	e->activate = &ai_activate_base;
 	e->update = NULL; //&ai_update_base;
 	e->set_state = &ai_setstate_base;
@@ -855,7 +854,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
 	}
-	entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
+	ai_setup(e);
 	return e;
 }
 
@@ -874,7 +873,7 @@ void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags)
 					sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
 					sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 			} else e->sprite = SPRITE_NONE;
-			entity_create_special(e, (e->eflags&NPC_OPTION1) > 0, (e->eflags&NPC_OPTION2) > 0);
+			ai_setup(e);
 		}
 		e = e->next;
 	}
@@ -895,7 +894,13 @@ void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction) {
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(entity_matches_criteria(e, criteria, value, false)) {
-			e->direction = direction;
+			if(e->direction != direction){
+				e->direction = direction;
+				if(e->sprite != SPRITE_NONE) {
+					u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+					sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
+				}
+			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
 			e->grounded = false;

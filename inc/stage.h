@@ -47,8 +47,8 @@
 #define BLOCK_WIND 0x80
 
 // Helper macros
-#define stage_get_block(x, y) (stageBlocks[y * stageWidth + x])
-#define stage_get_block_type(x, y) (stageTileFlags[x%32][y%32])
+#define stage_get_block(x, y) (stageBlocks[(y) * stageWidth + (x)])
+#define stage_get_block_type(x, y) (stageTileFlags[(x)%32][(y)%32])
 
 u16 stageID; // Index of current stage in stage_info
 u16 stageWidth, stageHeight; // Width and height measured in blocks
