@@ -73,6 +73,13 @@ void sprite_delete(u8 sprite) {
 	spriteEnabled[sprite] = false;
 }
 
+void sprite_set_direction(u8 sprite, u8 direction) {
+	u16 attr = sprites[sprite].attribut;
+	if(direction > 0) attr |= TILE_ATTR_HFLIP_MASK;
+	else attr &= ~TILE_ATTR_HFLIP_MASK;
+	SPR_setAttribut(&sprites[sprite], attr);
+}
+
 Sprite* sprite_get_direct(u8 sprite) {
 	return &sprites[sprite];
 }

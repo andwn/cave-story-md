@@ -731,10 +731,12 @@ u8 execute_command() {
 		case CMD_FL_ADD: // Set flag (1)
 			args[0] = tsc_read_word();
 			system_set_flag(args[0], true);
+			//entities_handle_flag(args[0], true);
 			break;
 		case CMD_FL_SUB: // Unset flag (1)
 			args[0] = tsc_read_word();
 			system_set_flag(args[0], false);
+			//entities_handle_flag(args[0], false);
 			break;
 		case CMD_FLJ: // If flag (1) is true jump to event (2)
 			args[0] = tsc_read_word();

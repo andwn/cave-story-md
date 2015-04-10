@@ -58,6 +58,7 @@ SPRITE SPR_PignonB	"sprite/pignonb.png" 3 3 0 15 NONE
 SPRITE SPR_Chest2	"sprite/chestopen.png" 2 1 0 0 NONE
 SPRITE SPR_Key		"sprite/key.png" 2 2 0 2 NONE
 SPRITE SPR_Term		"sprite/terminal.png" 2 3 0 10 NONE
+SPRITE SPR_Keeper	"sprite/gkeeper.png" 3 3 0 15 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu

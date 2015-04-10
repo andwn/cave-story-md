@@ -40,7 +40,7 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
   - [ ] AI/actions
 - [ ] Graveyard
   - [x] Completable
-  - [ ] Sprites
+  - [x] Sprites
   - [ ] Music
   - [ ] AI/actions
 - [ ] Eggs

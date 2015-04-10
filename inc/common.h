@@ -49,6 +49,8 @@
 #define round(x) ((x+0x80)&~0xFF)
 #define ceil(x)  ((x+0x100)&~0xFF)
 
+#define abs(n) ((n) * (((n)>0) - ((n)<0)))
+
 #ifndef _GENESIS_H_
 // This is so types like u8/u16 can be used in headers without including genesis.h
 #define s8      char

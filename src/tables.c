@@ -393,7 +393,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Sanda, PAL3 }, // 77 - Sandame's Pavilion
 	{ NULL, PAL0 }, // 78 - Pot
 	{ &SPR_Mahin, PAL3 }, // 79 - Mahin
-	{ NULL, PAL0 }, // 80 - Enemy: Gravekeeper
+	{ &SPR_Keeper, PAL1 }, // 80 - Enemy: Gravekeeper
 	{ &SPR_PignonB, PAL1 }, // 81 - Enemy: Giant Pignon
 	{ &SPR_Misery, PAL0 }, // 82 - Misery (Standing)
 	{ &SPR_Igor, PAL3 }, // 83 - Igor (Cutscene)

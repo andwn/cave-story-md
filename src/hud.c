@@ -20,8 +20,8 @@ u8 hudWeapon, hudMaxAmmo, hudAmmo;
 u8 hudLevel, hudMaxEnergy, hudEnergy;
 
 // The sprites
-u8 hudSprite;
-u8 hudWeaponSprite;
+u8 hudSprite = SPRITE_NONE;
+u8 hudWeaponSprite = SPRITE_NONE;
 
 // DMA tile data
 u32 tileData[32][TSIZE];
@@ -108,6 +108,7 @@ void hud_redraw_ammo() {
 }
 
 void hud_update() {
+	if(!showing) return;
 	// Redraw health if it changed
 	if(hudMaxHealth < playerMaxHealth) {
 		hud_redraw_health();

@@ -115,10 +115,13 @@ void ai_setup(Entity *e) {
 		break;
 	case 7: // Basil
 		e->alwaysActive = true;
+		e->x = player.x;
 		break;
 	case 12: // Balrog (Cutscene)
+	case 19:
 		e->update = &ai_update_balrog_scene;
 		e->set_state = &ai_setstate_balrog_scene;
+		e->grounded = false;
 		break;
 	case 18: // Door
 		e->activate = &ai_activate_door;
@@ -152,6 +155,10 @@ void ai_setup(Entity *e) {
 		e->y_speed = pixel_to_sub(1);
 		e->update = &ai_update_bat_vert;
 		e->set_state(e, 0);
+		break;
+	case 67: // Misery (floating)
+		e->update = &ai_update_misery_float;
+		e->set_state = &ai_setstate_misery_float;
 		break;
 	case 68: // Boss: Balrog (Mimiga Village)
 		e->update = &ai_update_balrog_boss1;

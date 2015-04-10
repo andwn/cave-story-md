@@ -19,6 +19,7 @@ void sprite_set_animation(u8 sprite, u8 anim);
 void sprite_set_animframe(u8 sprite, u8 anim, u8 frame);
 void sprite_set_frame(u8 sprite, u8 frame);
 void sprite_delete(u8 sprite);
+void sprite_set_direction(u8 sprite, u8 direction);
 Sprite* sprite_get_direct(u8 sprite);
 
 #endif /* INC_SPRITE_H_ */

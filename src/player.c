@@ -34,7 +34,7 @@
 #define WEAPON_NEMESIS 12
 #define WEAPON_SPUR 13
 
-#define INVINCIBILITY_FRAMES 60
+#define INVINCIBILITY_FRAMES 120
 
 #define MAX_AIR_NTSC (30 * 100)
 #define MAX_AIR_PAL (25 * 100)
@@ -381,6 +381,9 @@ void player_update_entity_collision() {
 						continue;
 					}
 				}
+				// Show damage numbers
+				effect_create_damage_string(-e->attack,
+						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 				// Take health
 				if(player.health <= e->attack) {
 					// If health reached 0 we are dead
@@ -392,9 +395,6 @@ void player_update_entity_collision() {
 				}
 				player.health -= e->attack;
 				sound_play(SOUND_HURT, 5);
-				// Show damage numbers
-				effect_create_damage_string(-e->attack,
-						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 				playerIFrames = INVINCIBILITY_FRAMES;
 				// Knock back
 				player.y_speed = -0x300; // 1.5 pixels per frame
@@ -403,6 +403,22 @@ void player_update_entity_collision() {
 		}
 		e = e->next;
 	}
+}
+
+bool player_inflict_damage(s16 damage) {
+	// Take health
+	if(player.health <= damage) {
+		// If health reached 0 we are dead
+		player.health = 0;
+		effect_create_smoke(2, player.x, player.y);
+		sound_play(SOUND_DIE, 15);
+		tsc_call_event(PLAYER_DEFEATED_EVENT);
+		return true;
+	}
+	player.health -= damage;
+	sound_play(SOUND_HURT, 5);
+	playerIFrames = INVINCIBILITY_FRAMES;
+	return false;
 }
 
 void player_update_bounds() {

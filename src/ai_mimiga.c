@@ -63,3 +63,27 @@ void ai_update_toroko(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
+
+void ai_update_misery_float(Entity *e) {
+	switch(e->state) {
+	case 20:
+	case 21:
+		e->y_speed -= 0x20;
+		break;
+	default:
+		break;
+	}
+	e->y += e->y_speed;
+}
+
+bool ai_setstate_misery_float(Entity *e, u16 state) {
+	e->state = state;
+	switch(state) {
+	case 20: // Hover, going up
+	case 21:
+		break;
+	default:
+		break;
+	}
+	return false;
+}

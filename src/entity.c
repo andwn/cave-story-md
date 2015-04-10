@@ -16,7 +16,7 @@
 #include "ai_common.h"
 //#include "collision.h"
 
-#define abs(x) (x * ((x>0) - (x<0)))
+//#define abs(x) (x * ((x>0) - (x<0)))
 
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
@@ -711,7 +711,7 @@ bool entity_on_screen(Entity *obj) {
 }
 
 Entity *entity_update_inactive(Entity *e) {
-	if(entity_on_screen(e)) {
+	if(entity_on_screen(e) && !entity_disabled(e)) {
 		if(npc_info[e->type].sprite != NULL)
 			e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
 		Entity *next = e->next;
@@ -749,7 +749,7 @@ void entity_drop_powerup(Entity *e) {
 }
 
 Entity *entity_update(Entity *e) {
-	if(!entity_on_screen(e)) {
+	if(!entity_on_screen(e) && !e->alwaysActive) {
 		if(e->sprite != SPRITE_NONE) {
 			sprite_delete(e->sprite);
 			e->sprite = SPRITE_NONE;
@@ -829,11 +829,16 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->state_time = 0;
 }
 
-Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
-	// Some entities should not be created until a specific system flag is set,
+bool entity_disabled(Entity *e) {
+	// Some entities should not be activated until a specific system flag is set,
 	// and some no longer appear once one is set
+
+	if((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id)) return true;
+	return false;
+}
+
+Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
-	if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) return NULL;
 	// Allocate memory and start applying values
 	Entity *e = MEM_alloc(sizeof(Entity));
 	e->x = block_to_sub(x) + pixel_to_sub(8);
@@ -842,11 +847,15 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->event = event;
 	e->eflags = flags;
 	entity_default(e, type, 0);
-	if(entity_on_screen(e)) {
+	if(entity_on_screen(e) && !entity_disabled(e)) {
 		e->next = entityList;
 		entityList = e;
 		if(npc_info[type].sprite != NULL) {
 			e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+			sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, e->direction));
+			sprite_set_position(e->sprite,
+				sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+				sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 		} else e->sprite = SPRITE_NONE;
 		e->activate(e);
 	} else {
@@ -907,6 +916,23 @@ void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction) {
 			break;
 		}
 		e = e->next;
+	}
+}
+
+void entities_handle_flag(u16 flag) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if((e->eflags& NPC_DISABLEONFLAG) && e->id == flag) {
+			if(e->sprite != SPRITE_NONE) {
+				sprite_delete(e->sprite);
+				e->sprite = SPRITE_NONE;
+			}
+			Entity *next = e->next;
+			entity_deactivate(e);
+			e = next;
+		} else {
+			e = e->next;
+		}
 	}
 }
 

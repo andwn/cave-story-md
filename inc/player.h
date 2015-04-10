@@ -60,6 +60,8 @@ void player_draw();
 
 Bullet *bullet_colliding(Entity *e);
 
+bool player_inflict_damage(s16 damage);
+
 // TSC Stuff
 void player_give_weapon(u8 id, u8 ammo); // AM+ Command
 void player_take_weapon(u8 id); // AM- Command

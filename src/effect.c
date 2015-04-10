@@ -73,7 +73,7 @@ void effect_create_damage_string(s16 num, s16 x, s16 y, u8 ttl) {
 	for(u8 i = 0; i < MAX_DAMAGE_STRINGS; i++) {
 		if(damage_string[i].ttl > 0) continue;
 		u8 anim = num < 0;
-		num *= ((num>0) - (num<0)); // Absolute value
+		num = abs(num);
 		// Determine digit sprites
 		u8 digits = 0;
 		for(; num; digits++) {
