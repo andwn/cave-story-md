@@ -34,9 +34,9 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 - [ ] Mimiga
   - [x] Completable
   - [x] Sprites
-  - [ ] Music
+  - [x] Music
     - [x] Village
-    - [ ] Farm
+    - [x] Farm
   - [ ] AI/actions
 - [ ] Graveyard
   - [x] Completable
