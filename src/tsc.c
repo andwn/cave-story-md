@@ -13,38 +13,16 @@
 #include "vdp_ext.h"
 #include "tables.h"
 #include "hud.h"
+#include "window.h"
 
 // Execution State
 #define TSC_IDLE 0 // Not executing any events
 #define TSC_RUNNING 1 // Executing event commands
 #define TSC_WAITTIME 2 // Waiting on a timer before continuing
 #define TSC_WAITINPUT 3 // Waiting for player to press C
-#define TSC_WAITNPC 4 // Waiting for an NPC to finish something
-#define TSC_WAITGROUNDED 5 // Waiting for the player to touch the ground
-#define TSC_RESTARTGAME 6 // Return to title screen
-#define TSC_RELOADSAVE 7 // Reload save data (try again)
-#define TSC_PROMPT 8
-#define TSC_TELEMENU 9
-#define TSC_ITEMMENU 10
-
-#define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, true, false, false, TILE_WINDOWINDEX+x)
-
-// Window location
-#define WINDOW_X1 2
-#define WINDOW_X2 37
-#define WINDOW_Y1 20
-#define WINDOW_Y2 27
-// Text area location within window
-#define TEXT_X1 (WINDOW_X1 + 1)
-#define TEXT_X2 (WINDOW_X2 - 1)
-#define TEXT_Y1 (WINDOW_Y1 + 1)
-#define TEXT_Y2 (WINDOW_Y2 - 1)
-#define TEXT_X1_FACE 10
-// Prompt window location
-#define PROMPT_X1 26
-#define PROMPT_X2 36
-#define PROMPT_Y1 20
-#define PROMPT_Y2 22
+#define TSC_PROMPT 4 // Prompting yes/no
+#define TSC_TELEMENU 5 // Teleport menu
+#define TSC_WAITGROUNDED 6 // Waiting for the player to touch the ground
 
 #define HEAD_EVENT_COUNT 14 // There are exactly 14
 #define MAX_EVENTS 80 // Largest is Plantation with 76
@@ -141,7 +119,8 @@
 #define CMD_SVP 0xd7
 #define CMD_STC 0xd8
 #define CMD_XX1 0xd9
-#define LAST_CMD 0xd9
+#define CMD_SMP 0xda
+#define LAST_CMD 0xda
 
 typedef struct {
 	u16 number;
@@ -154,23 +133,13 @@ Event stageEvents[MAX_EVENTS];
 
 const u8 *curCommand = NULL;
 
-u8 exeMode = TSC_IDLE;
+u8 tscState = TSC_IDLE;
 
 u16 waitTime;
 
-bool msgWindowOpen = false;
-u8 msgTextX = 0;
-u8 msgTextY = 0;
-u8 showingFace = 0;
-bool instantText = false;
-bool alreadyWaited = false;
+u16 promptJump = 0;
 
-bool promptingYesNo = false;
-u16 waitYesNo = 0;
-bool answerYesNo = false;
-u8 handSpr = SPRITE_NONE;
-
-bool showingTeleMenu = false;
+//bool showingTeleMenu = false;
 u8 teleMenuSlotCount = 0;
 u16 teleMenuEvent[8];
 u8 teleMenuSelection = 0;
@@ -184,10 +153,10 @@ u16 bossHealth;
 
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
 
-void draw_face(u8 index);
-void window_open();
-void window_close();
-void window_open_prompt();
+//void draw_face(u8 index);
+//void window_open();
+//void window_close();
+//void window_open_prompt();
 void tsc_show_boss_health();
 void tsc_hide_boss_health();
 void tsc_show_teleport_menu();
@@ -198,7 +167,7 @@ u8 tsc_read_byte();
 u16 tsc_read_word();
 
 void tsc_init() {
-	exeMode = TSC_IDLE;
+	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, true);
 	for(u8 i = 0; i < 8; i++) {
 		teleMenuSprite[i] = SPRITE_NONE;
@@ -239,7 +208,7 @@ void tsc_call_event(u16 number) {
 	if(number < 50) {
 		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
-				exeMode = TSC_RUNNING;
+				tscState = TSC_RUNNING;
 				curCommand = headEvents[i].data;
 				return;
 			}
@@ -247,7 +216,7 @@ void tsc_call_event(u16 number) {
 	} else {
 		for(u8 i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
-				exeMode = TSC_RUNNING;
+				tscState = TSC_RUNNING;
 				curCommand = stageEvents[i].data;
 				return;
 			}
@@ -256,11 +225,11 @@ void tsc_call_event(u16 number) {
 }
 
 bool tsc_running() {
-	return exeMode != TSC_IDLE;
+	return tscState != TSC_IDLE;
 }
 
 u8 tsc_update() {
-	switch(exeMode) {
+	switch(tscState) {
 	case TSC_IDLE:
 		break; // Nothing to update
 	case TSC_RUNNING:
@@ -271,145 +240,59 @@ u8 tsc_update() {
 		break;
 	case TSC_WAITTIME:
 		waitTime--;
-		if(waitTime == 0) exeMode = TSC_RUNNING;
+		if(waitTime == 0) tscState = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
-		if(promptingYesNo) { // Update Yes/No Prompt
-			if(joy_pressed(BUTTON_C)) {
-				if(!answerYesNo) tsc_call_event(waitYesNo);
-				sound_play(SOUND_CONFIRM, 5);
-				promptingYesNo = false;
-				sprite_delete(handSpr);
-				exeMode = TSC_RUNNING;
-			} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
-				answerYesNo = !answerYesNo;
-				sound_play(SOUND_CURSOR, 5);
-				sprite_set_position(handSpr,
-					tile_to_pixel(33-(answerYesNo*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
+		if(joy_pressed(BUTTON_C)) {
+			tscState = TSC_RUNNING;
+		}
+		break;
+	case TSC_PROMPT:
+		if(window_prompt_update()) {
+			if(!window_prompt_answer()) tsc_call_event(promptJump);
+			tscState = TSC_RUNNING;
+		}
+		break;
+	case TSC_TELEMENU:
+		if(joy_pressed(BUTTON_C)) {
+			tsc_call_event(teleMenuEvent[teleMenuSelection]);
+			tsc_hide_teleport_menu();
+			tscState = TSC_RUNNING;
+		} else if(joy_pressed(BUTTON_B)) { // Cancel
+			tsc_hide_teleport_menu();
+			tscState = TSC_RUNNING;
+		} else if(joy_pressed(BUTTON_LEFT)) {
+			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+					0, teleMenuFrame[teleMenuSelection]);
+			if(teleMenuSelection == 0) {
+				teleMenuSelection = teleMenuSlotCount - 1;
+			} else {
+				teleMenuSelection--;
 			}
-		} else if(showingTeleMenu) { // Update the Teleport Menu
-			if(joy_pressed(BUTTON_C)) {
-				tsc_call_event(teleMenuEvent[teleMenuSelection]);
-				//sound_play(SOUND_CONFIRM, 5);
-				tsc_hide_teleport_menu();
-				exeMode = TSC_RUNNING;
-			} else if(joy_pressed(BUTTON_B)) { // Cancel
-				tsc_hide_teleport_menu();
-				exeMode = TSC_RUNNING;
-			} else if(joy_pressed(BUTTON_LEFT)) {
-				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-						0, teleMenuFrame[teleMenuSelection]);
-				if(teleMenuSelection == 0) {
-					teleMenuSelection = teleMenuSlotCount - 1;
-				} else {
-					teleMenuSelection--;
-				}
-				sound_play(SOUND_CURSOR, 5);
-			} else if(joy_pressed(BUTTON_RIGHT)) {
-				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-						0, teleMenuFrame[teleMenuSelection]);
-				if(teleMenuSelection == teleMenuSlotCount - 1) {
-					teleMenuSelection = 0;
-				} else {
-					teleMenuSelection++;
-				}
-				sound_play(SOUND_CURSOR, 5);
-			} else { // Doing nothing, blink cursor
-				teleMenuAnim = !teleMenuAnim;
-				sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-						teleMenuAnim, teleMenuFrame[teleMenuSelection]);
+			sound_play(SOUND_CURSOR, 5);
+		} else if(joy_pressed(BUTTON_RIGHT)) {
+			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+					0, teleMenuFrame[teleMenuSelection]);
+			if(teleMenuSelection == teleMenuSlotCount - 1) {
+				teleMenuSelection = 0;
+			} else {
+				teleMenuSelection++;
 			}
-		} else { // No menus just waiting for player to press a button
-			if(joy_pressed(BUTTON_C)) {
-				exeMode = TSC_RUNNING;
-				if(msgTextY >= TEXT_Y2) {
-					window_open();
-				} else {
-					alreadyWaited = true;
-				}
-			}
+			sound_play(SOUND_CURSOR, 5);
+		} else { // Doing nothing, blink cursor
+			teleMenuAnim = !teleMenuAnim;
+			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+					teleMenuAnim, teleMenuFrame[teleMenuSelection]);
 		}
 		break;
 	case TSC_WAITGROUNDED:
-		if(player.grounded) exeMode = TSC_RUNNING;
+		if(player.grounded) tscState = TSC_RUNNING;
 		break;
 	default:
 		SYS_die("Invalid TSC State");
 		break;
 	}
 	return 0;
-}
-
-
-void draw_face(u8 index) {
-	SYS_disableInts();
-	VDP_loadTileSet(face_info[index].tiles, TILE_FACEINDEX, false);
-	VDP_fillTileMapRectInc(WINDOW, TILE_ATTR_FULL(face_info[index].palette,
-			false, false, false, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
-	SYS_enableInts();
-}
-
-
-void window_open() {
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
-	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
-	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(6), WINDOW_X1, y);
-		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(WINDOW, WINDOW_ATTR(7), x, y);
-		}
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(8), WINDOW_X2, y);
-	}
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(12), WINDOW_X1, WINDOW_Y2);
-	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
-	msgTextX = TEXT_X1;
-	msgTextY = TEXT_Y1;
-	if(showingFace > 0) {
-		draw_face(showingFace);
-		msgTextX = TEXT_X1_FACE;
-	}
-	VDP_setWindowPos(0, 244);
-	msgWindowOpen = true;
-	alreadyWaited = false;
-}
-
-void window_open_prompt() {
-	// Top of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(3), PROMPT_X1, PROMPT_Y1);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(4), x, PROMPT_Y1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(5), 36, PROMPT_Y1);
-	// Text area of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(9), PROMPT_X1, PROMPT_Y1 + 1);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(10), x, PROMPT_Y1 + 1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(11), PROMPT_X2, PROMPT_Y1 + 1);
-	// Bottom of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(15), PROMPT_X1, PROMPT_Y2);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(16), x, PROMPT_Y2);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(17), PROMPT_X2, PROMPT_Y2);
-	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
-	sound_play(SOUND_PROMPT, 5);
-	// Load hand sprite and move next to yes
-	handSpr = sprite_create(&SPR_Pointer, PAL0, true);
-	sprite_set_position(handSpr, tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4);
-	answerYesNo = true; // Yes is default
-	promptingYesNo = true;
-}
-
-void window_close() {
-	VDP_setWindowPos(0, 251 * debuggingEnabled);
-	showingFace = 0;
-	msgWindowOpen = false;
-}
-
-void tsc_unpause_debug() {
-	if(msgWindowOpen) VDP_setReg(0x12, 244);
 }
 
 void tsc_show_boss_health() {
@@ -432,9 +315,9 @@ void tsc_show_teleport_menu() {
 		teleMenuSlotCount++;
 	}
 	if(teleMenuSlotCount > 0) {
-		showingTeleMenu = true;
+		tscState = TSC_TELEMENU;
 	} else {
-		exeMode = TSC_RUNNING; // Don't bother with the menu if we can't teleport
+		tscState = TSC_RUNNING; // Don't bother with the menu if we can't teleport
 	}
 }
 
@@ -443,7 +326,6 @@ void tsc_hide_teleport_menu() {
 		sprite_delete(teleMenuSprite[i]);
 		teleMenuSprite[i] = SPRITE_NONE;
 	}
-	showingTeleMenu = false;
 }
 
 u8 execute_command() {
@@ -454,13 +336,13 @@ u8 execute_command() {
 		case CMD_MSG: // Display message box (bottom - visible)
 		case CMD_MS2: // Display message box (top - invisible)
 		case CMD_MS3: // Display message box (top - visible)
-			window_open();
+			window_open(0);
 			break;
 		case CMD_CLO: // Close message box
 			window_close();
 			break;
 		case CMD_CLR: // Clear message box
-			window_open();
+			window_clear();
 			break;
 		case CMD_NUM: // TODO: Show number (1) in message box
 			args[0] = tsc_read_word();
@@ -470,27 +352,23 @@ u8 execute_command() {
 			break;
 		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
-			showingFace = args[0];
-			if(msgWindowOpen) {
-				if(showingFace > 0) {
-					msgTextX = TEXT_X1_FACE;
-					draw_face(args[0]);
-				}
-			} else window_open();
+			window_set_face(args[0]);
 			break;
 		case CMD_CAT: // All 3 of these display text instantly
 		case CMD_SAT:
+			window_set_textmode(TM_LINE);
+			break;
 		case CMD_TUR:
-			instantText = true;
+			window_set_textmode(TM_ALL);
 			break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
 			args[0] = tsc_read_word();
-			waitYesNo = args[0];
-			window_open_prompt();
-			exeMode = TSC_WAITINPUT;
+			promptJump = args[0];
+			window_prompt_open();
+			tscState = TSC_PROMPT;
 			return 1;
 		case CMD_END: // End the event
-			exeMode = TSC_IDLE;
+			tscState = TSC_IDLE;
 			window_close();
 			player_unlock_controls();
 			hud_show();
@@ -538,15 +416,15 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			break;
 		case CMD_NOD: // Wait for player input
-			exeMode = TSC_WAITINPUT;
+			tscState = TSC_WAITINPUT;
 			return 1;
 		case CMD_WAI: // Wait (1) frames
 			args[0] = tsc_read_word();
-			exeMode = TSC_WAITTIME;
+			tscState = TSC_WAITTIME;
 			waitTime = args[0];
 			return 1;
 		case CMD_WAS: // Wait for player to hit the ground
-			exeMode = TSC_WAITGROUNDED;
+			tscState = TSC_WAITGROUNDED;
 			return 1;
 		case CMD_MM0: // Halt player movement
 			player.x_speed = 0;
@@ -809,7 +687,7 @@ u8 execute_command() {
 			break;
 		case CMD_SLP: // Show the teleporter menu
 			tsc_show_teleport_menu();
-			break;
+			return 1;
 		case CMD_PS_ADD: // Set teleporter slot (1) to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
@@ -823,29 +701,20 @@ u8 execute_command() {
 		case CMD_XX1: // TODO: Island effect
 			args[0] = tsc_read_word();
 			break;
+		case CMD_SMP:
+			args[0] = tsc_read_word();
+			args[1] = tsc_read_word();
+			break;
 		default:
 			break;
 		}
-	} else if(msgWindowOpen) {
-		if(cmd == '\n') {
-			instantText = false;
-			msgTextY += 2;
-			if(showingFace > 0) msgTextX = TEXT_X1_FACE;
-			else msgTextX = TEXT_X1;
-			if(msgTextY >= TEXT_Y2) {
-				if(alreadyWaited) {
-					window_open();
-				} else {
-					exeMode = TSC_WAITINPUT;
-				}
-			}
+	} else if(window_is_open()) {
+		if(window_tick()) {
+			window_draw_char(cmd);
 		} else {
-			VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, true, false, false,
-					TILE_FONTINDEX + cmd - 0x20), msgTextX, msgTextY);
-			msgTextX++;
-			alreadyWaited = false;
+			curCommand -= 1;
+			return 1;
 		}
-		if(!instantText) return 1;
 	}
 	return 0;
 }

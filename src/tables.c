@@ -3,7 +3,7 @@
 
 // Stage Info
 const stage_info_def stage_info[STAGE_COUNT] = {
-	{ PXM_0,		PXE_0,		TSC_0,		&PAL_Regu,	0,	0,	"" },
+	{ NULL,			NULL,		NULL,		&PAL_Regu,	0,	0,	"" },
 	{ PXM_Pens1,	PXE_Pens1,	TSC_Pens1,	&PAL_Regu,	16,	0,	"Arthur's House" },
 	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	12,	"Egg Corridor" },
 	{ PXM_EggX,		PXE_EggX,	TSC_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },

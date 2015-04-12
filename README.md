@@ -69,4 +69,3 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 #### Legal Disclaimer
 The art assets and sound effects are property of Studio Pixel and are in no way owned by me.
 This repository focuses on the engine (GPLv3) and music covers (CC0).
-
