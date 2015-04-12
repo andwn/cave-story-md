@@ -1,22 +1,14 @@
 import os, subprocess
 
-#issues = []
-FNULL = open(os.devnull, 'w')
+def tscomp(path):
+	for item in os.listdir(path):
+		if not item.endswith('.tsc'):
+			continue
+		out = item[:-3] + 'tsb'
+		print out
+		status = subprocess.call("tscomp2 " + path + item + " " + path + out)
+		if(status != 0):
+			print "Problem with " + item
 
-for item in os.listdir('.'):
-	if not item.endswith('.tsc'):
-		continue
-	status = subprocess.call("tscomp " + item, stdout=FNULL, stderr=subprocess.STDOUT)
-	if(status != 0):
-		print "Problem with " + item
-
-for item in os.listdir('Stage'):
-	if not item.endswith('.tsc'):
-		continue
-	status = subprocess.call("tscomp Stage/" + item, stdout=FNULL, stderr=subprocess.STDOUT)
-	if(status != 0):
-		print "Problem with " + item
-		
-#if issues.count > 0:
-#	print "There was a problem"
-	
+tscomp('./Stage/')
+tscomp('./')

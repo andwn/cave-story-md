@@ -1,303 +1,323 @@
-/*
- * tscomp.c
- *
- *  Created on: Feb 22, 2015
- *      Author: aderosier
- *
- *  Converts Cave Story TSC files to a smaller binary format
- *  This is horribly written and needs an overhaul
- */
+// Can we try this again
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#define true 1
-#define false 0
+#define bool unsigned char
+#define TRUE 1
+#define FALSE 0
 
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef signed short s16;
+#define MAX_EVENTS 80
+#define COMMAND_COUNT 93
 
-typedef unsigned char bool;
-//enum { false, true };
+#define SYM_EVENT		'#'
+#define SYM_COMMENT		'-'
+#define SYM_COMMAND		'<'
+#define SYM_PARAM_SEP	':'
 
-struct {
-	char text[4];
-	u8 args;
-} instructions[92] = {
-	// Message related (0-11)
-	{ "MSG", 0 }, // Normal message window bottom
-	{ "MS2", 0 }, // Invisible message window top
-	{ "MS3", 0 }, // Normal message window top
-	{ "CLO", 0 }, // Close message window
-	{ "CLR", 0 }, // Clear message window
-	{ "NUM", 1 }, // Print a number to the message window
-	{ "GIT", 1 }, // Show item graphic
-	{ "FAC", 1 }, // Show face
-	{ "CAT", 0 }, // Show message immediately
-	{ "SAT", 0 }, // Same as CAT
-	{ "TUR", 0 }, // Show remainder of message immediately
-	{ "YNJ", 1 }, // Prompts Yes/No, jump if no is selected
-	// Commands that end an event (12-17)
-	{ "END", 0 }, // End event, return control, close msg window
-	{ "EVE", 1 }, // Jump to another event
-	{ "TRA", 4 }, // Teleport player to another map
-	{ "INI", 0 }, // Reset memory and restart game (0x10)
-	{ "LDP", 0 }, // Load save data
-	{ "ESC", 0 }, // Return to title screen
+#define LEN_COMMAND		3
+#define LEN_NUMBER		4
+
+#define CFLAG_MSGOPEN	0x01
+#define CFLAG_MSGCLOSE	0x02
+#define CFLAG_JUMP		0x04
+#define CFLAG_END		0x08
+
+#define OP_EVENT	0xFFFF
+
+// TSC Command Definition
+typedef struct {
+	char name[4]; // All commands are 3 uppercase characters
+	unsigned char opcode; // Byte value that represents the instruction
+	unsigned char params; // Number of parameters 0-4
+	unsigned short flags; // Other properties of the instruction
+} CommandDef;
+
+const CommandDef command_table[COMMAND_COUNT] = {
+	// Message Related
+	{ "MSG", 0x80, 0, CFLAG_MSGOPEN },
+	{ "MS2", 0x81, 0, CFLAG_MSGOPEN },
+	{ "MS3", 0x82, 0, CFLAG_MSGOPEN },
+	{ "CLO", 0x83, 0, CFLAG_MSGCLOSE },
+	{ "CLR", 0x84, 0, CFLAG_MSGOPEN },
+	{ "NUM", 0x85, 1, CFLAG_MSGOPEN },
+	{ "GIT", 0x86, 1, CFLAG_MSGOPEN },
+	{ "FAC", 0x87, 1, CFLAG_MSGOPEN },
+	{ "CAT", 0x88, 0, 0 },
+	{ "SAT", 0x89, 0, 0 },
+	{ "TUR", 0x8A, 0, 0 },
+	{ "YNJ", 0x8B, 1, CFLAG_JUMP },
+	// Commands that are at the end of an event block
+	{ "END", 0x8C, 0, CFLAG_MSGCLOSE | CFLAG_END },
+	{ "EVE", 0x8D, 1, CFLAG_MSGCLOSE | CFLAG_JUMP | CFLAG_END },
+	{ "TRA", 0x8E, 4, CFLAG_MSGCLOSE | CFLAG_END },
+	{ "INI", 0x8F, 0, CFLAG_MSGCLOSE | CFLAG_END },
+	{ "LDP", 0x90, 0, CFLAG_MSGCLOSE | CFLAG_END },
+	{ "ESC", 0x91, 0, CFLAG_MSGCLOSE | CFLAG_END },
 	// Music / Sound (18-25)
-	{ "CMU", 1 }, // Change music
-	{ "FMU", 0 }, // Fade music
-	{ "RMU", 0 }, // Resume music
-	{ "SOU", 1 }, // Play a sound
-	{ "SPS", 0 }, // Start the propeller sound
-	{ "CPS", 0 }, // Stop the propeller sound
-	{ "SSS", 1 }, // Start the stream sound
-	{ "CSS", 0 }, // Stop the stream sound
+	{ "CMU", 0x92, 1, 0 }, // Change music
+	{ "FMU", 0x93, 0, 0 }, // Fade music
+	{ "RMU", 0x94, 0, 0 }, // Resume music
+	{ "SOU", 0x95, 1, 0 }, // Play a sound
+	{ "SPS", 0x96, 0, 0 }, // Start the propeller sound
+	{ "CPS", 0x97, 0, 0 }, // Stop the propeller sound
+	{ "SSS", 0x98, 1, 0 }, // Start the stream sound
+	{ "CSS", 0x99, 0, 0 }, // Stop the stream sound
 	// Wait Commands
-	{ "NOD", 0 }, // Wait for player input before resuming
-	{ "WAI", 1 }, // Wait an amount of time
-	{ "WAS", 0 }, // Wait for player to be on the ground
+	{ "NOD", 0x9A, 0, 0 }, // Wait for player input before resuming
+	{ "WAI", 0x9B, 1, 0 }, // Wait an amount of time
+	{ "WAS", 0x9C, 0, 0 }, // Wait for player to be on the ground
 	// Player Control
-	{ "MM0", 0 }, // Stop player movement
-	{ "MOV", 2 }, // Move the player
-	{ "MYB", 1 }, // Makes the player hop (0x20)
-	{ "MYD", 1 }, // Set player direction
-	{ "UNI", 1 }, // Change movement type
-	{ "UNJ", 2 }, // Jump on movement type
-	{ "KEY", 0 }, // Lock player controls and hide HUD
-	{ "PRI", 0 }, // Lock player controls until KEY or END
-	{ "FRE", 0 }, // Give control back to the player
-	{ "HMC", 0 }, // Hide the player
-	{ "SMC", 0 }, // Show the player
-	{ "LI+", 1 }, // Restore health
-	{ "ML+", 1 }, // Increase max health
+	{ "MM0", 0x9D, 0, 0 }, // Stop player movement
+	{ "MOV", 0x9E, 2, 0 }, // Move the player
+	{ "MYB", 0x9F, 1, 0 }, // Makes the player hop (0x20)
+	{ "MYD", 0xA0, 1, 0 }, // Set player direction
+	{ "UNI", 0xA1, 1, 0 }, // Change movement type
+	{ "UNJ", 0xA2, 2, CFLAG_JUMP }, // Jump on movement type
+	{ "KEY", 0xA3, 0, 0 }, // Lock player controls and hide HUD
+	{ "PRI", 0xA4, 0, 0 }, // Lock player controls until KEY or END
+	{ "FRE", 0xA5, 0, 0 }, // Give control back to the player
+	{ "HMC", 0xA6, 0, 0 }, // Hide the player
+	{ "SMC", 0xA7, 0, 0 }, // Show the player
+	{ "LI+", 0xA8, 1, 0 }, // Restore health
+	{ "ML+", 0xA9, 1, 0 }, // Increase max health
 	// NPC / Entities / Boss
-	{ "ANP", 3 }, // Animate NPC
-	{ "CNP", 3 }, // Change NPC
-	{ "MNP", 4 }, // Move NPC
-	{ "DNA", 1 }, // Delete all of a certain NPC
-	{ "DNP", 1 }, // Delete specific NPC
-	{ "INP", 3 }, // Initialize / change entity (0x30)
-	{ "SNP", 4 }, // Also creates an entity
-	{ "BOA", 1 }, // Change boss animation / state
-	{ "BSL", 1 }, // Start boss fight with entity
-	{ "NCJ", 2 }, // Jump to event if NPC exists
-	{ "ECJ", 2 }, // Jump to event if any entity exists
+	{ "ANP", 0xAA, 3, 0 }, // Animate NPC
+	{ "CNP", 0xAB, 3, 0 }, // Change NPC
+	{ "MNP", 0xAC, 4, 0 }, // Move NPC
+	{ "DNA", 0xAD, 1, 0 }, // Delete all of a certain NPC
+	{ "DNP", 0xAE, 1, 0 }, // Delete specific NPC
+	{ "INP", 0xAF, 3, 0 }, // Initialize / change entity (0x30)
+	{ "SNP", 0xB0, 4, 0 }, // Also creates an entity
+	{ "BOA", 0xB1, 1, 0 }, // Change boss animation / state
+	{ "BSL", 0xB2, 1, 0 }, // Start boss fight with entity
+	{ "NCJ", 0xB3, 2, CFLAG_JUMP }, // Jump to event if NPC exists
+	{ "ECJ", 0xB4, 2, CFLAG_JUMP }, // Jump to event if any entity exists
 	// Arms
-	{ "AE+", 0 }, // Refill all ammo
-	{ "ZAM", 0 }, // Takes away all ammo
-	{ "AM+", 2 }, // Give player weapon and/or ammo
-	{ "AM-", 1 }, // Remove player weapon
-	{ "TAM", 3 }, // Trade weapons
-	{ "AMJ", 2 }, // Jump to event if have weapon
+	{ "AE+", 0xB5, 0, 0 }, // Refill all ammo
+	{ "ZAM", 0xB6, 0, 0 }, // Takes away all ammo
+	{ "AM+", 0xB7, 2, 0 }, // Give player weapon and/or ammo
+	{ "AM-", 0xB8, 1, 0 }, // Remove player weapon
+	{ "TAM", 0xB9, 3, 0 }, // Trade weapons
+	{ "AMJ", 0xBA, 2, CFLAG_JUMP }, // Jump to event if have weapon
 	// Equps
-	{ "EQ+", 1 }, // Equip item
-	{ "EQ-", 1 }, // Unequip item
+	{ "EQ+", 0xBB, 1, 0 }, // Equip item
+	{ "EQ-", 0xBC, 1, 0 }, // Unequip item
 	// Items
-	{ "IT+", 1 }, // Give item
-	{ "IT-", 1 }, // Remove item
-	{ "ITJ", 2 }, // Jump to event if have item (0x40)
+	{ "IT+", 0xBD, 1, 0 }, // Give item
+	{ "IT-", 0xBE, 1, 0 }, // Remove item
+	{ "ITJ", 0xBF, 2, CFLAG_JUMP }, // Jump to event if have item (0x40)
 	// Flags
-	{ "FL+", 1 }, // Set flag
-	{ "FL-", 1 }, // Clear flag
-	{ "FLJ", 2 }, // Jump to event if flag is true
-	{ "SK+", 1 }, // Enable skipflag
-	{ "SK-", 1 }, // Disable skipflag
-	{ "SKJ", 2 }, // Jump on skipflag (boss rematch)
+	{ "FL+", 0xC0, 1, 0 }, // Set flag
+	{ "FL-", 0xC1, 1, 0 }, // Clear flag
+	{ "FLJ", 0xC2, 2, CFLAG_JUMP }, // Jump to event if flag is true
+	{ "SK+", 0xC3, 1, 0 }, // Enable skipflag
+	{ "SK-", 0xC4, 1, 0 }, // Disable skipflag
+	{ "SKJ", 0xC5, 2, CFLAG_JUMP }, // Jump on skipflag (boss rematch)
 	// Camera
-	{ "FOB", 2 }, // Focus on boss
-	{ "FOM", 1 }, // Focus on me
-	{ "FON", 2 }, // Focus on NPC
-	{ "QUA", 1 }, // Shake camera for quake effect
+	{ "FOB", 0xC6, 2, 0 }, // Focus on boss
+	{ "FOM", 0xC7, 1, 0 }, // Focus on me
+	{ "FON", 0xC8, 2, 0 }, // Focus on NPC
+	{ "QUA", 0xC9, 1, 0 }, // Shake camera for quake effect
 	// Screen Effects
-	{ "FAI", 1 }, // Fade in
-	{ "FAO", 1 }, // Fade out
-	{ "FLA", 0 }, // Flash screen white
+	{ "FAI", 0xCA, 1, 0 }, // Fade in
+	{ "FAO", 0xCB, 1, 0 }, // Fade out
+	{ "FLA", 0xCC, 0, 0 }, // Flash screen white
 	// Room
-	{ "MLP", 0 }, // Show the map
-	{ "MNA", 0 }, // Display room name
-	{ "CMP", 3 }, // Change room tile (0x50)
-	{ "MP+", 1 }, // Enable map flag
-	{ "MPJ", 1 }, // Jump if map flag enabled
+	{ "MLP", 0xCD, 0, 0 }, // Show the map
+	{ "MNA", 0xCE, 0, 0 }, // Display room name
+	{ "CMP", 0xCF, 3, 0 }, // Change room tile (0x50)
+	{ "MP+", 0xD0, 1, 0 }, // Enable map flag
+	{ "MPJ", 0xD1, 1, CFLAG_JUMP }, // Jump if map flag enabled
 	// Misc
-	{ "CRE", 0 }, // Rolls the credits
-	{ "SIL", 1 }, // Show illustration (credits)
-	{ "CIL", 0 }, // Clear illustration (credits)
-	{ "SLP", 0 }, // Show teleporter menu
-	{ "PS+", 2 }, // Portal slot +
-	{ "SVP", 0 }, // Saves the game
-	{ "STC", 0 }, // Save time counter
-	{ "XX1", 1 }, // Island control
+	{ "CRE", 0xD2, 0, 0 }, // Rolls the credits
+	{ "SIL", 0xD3, 1, 0 }, // Show illustration (credits)
+	{ "CIL", 0xD4, 0, 0 }, // Clear illustration (credits)
+	{ "SLP", 0xD5, 0, 0 }, // Show teleporter menu
+	{ "PS+", 0xD6, 2, 0 }, // Portal slot +
+	{ "SVP", 0xD7, 0, 0 }, // Saves the game
+	{ "STC", 0xD8, 0, 0 }, // Save time counter
+	{ "XX1", 0xD9, 1, 0 }, // Island control
+	{ "SMP", 0xDA, 2, 0 },
+	{ "NOP", 0xDB, 0, 0 },
 };
 
-// Declarations
-FILE *infile, *outfile;
-char outfn[256], buf[18000], key;
-int len, cursor, mode;
-bool msgWindowOpen;
+const char *ValidChars = 
+	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ,.?=!@$%^&*()[]{}|_-+:;'\"\n";
 
-void skip() {
-	cursor++;
-}
+FILE* decrypt_tsc(const char *filename);
 
-void write(u8 c) {
-	fwrite(&c, 1, 1, outfile);
-	cursor++;
-}
+void do_script(FILE *fin, FILE *fout);
+void do_event(FILE *fin, FILE *fout);
+unsigned short do_command(FILE *fin, FILE *fout);
+unsigned short read_number(FILE *file);
 
-void writenum() {
-	u16 num =
-			(buf[cursor+0] - 0x30) * 1000 +
-			(buf[cursor+1] - 0x30) * 100 +
-			(buf[cursor+2] - 0x30) * 10 +
-			(buf[cursor+3] - 0x30);
-	// Moto CPUs use big endian, reverse lines if there are problems
-	fwrite(&num, 1, 2, outfile);
-	//fwrite(&num+1, 1, 1, outfile);
-	cursor += 4;
-}
+bool is_valid_char(char c);
 
-void writecmd(u8 c) {
-	fwrite(&c, 1, 1, outfile);
-	cursor += 3;
-}
-
-bool is_text(u8 c) {
-	return (c >= 0x20 && c < 0x7F);
-}
-
-void parse_text() {
-	printf("Text: ");
-	while(true) {
-		if(buf[cursor] == '<') {
-			printf("\n");
-			break;
-		} else if(buf[cursor] == '\r') {
-			skip();
-		} else if(is_text(buf[cursor]) || buf[cursor] == '\n') {
-			printf("%c", buf[cursor]);
-			write(buf[cursor]);
-		} else {
-			printf("Aw hell no what is \"%c\"?", buf[cursor]);
-			skip();
-		}
+int main(int argc,char *argv[]) {
+	if(argc != 3) {
+		printf("Usage: tscomp <tsc file> <output file>\n");
+		return 0;
 	}
-}
-// Found a '<', look in the instructions table for how to convert
-// the following instruction
-bool parse_command() {
-	// Figure out which command this is
-	char cmd[4] = { buf[cursor], buf[cursor+1], buf[cursor+2], '\0' };
-	for(int i = 0; i < 92; i++) {
-		if(strcmp(cmd, instructions[i].text) == 0) {
-			// Found a match! write the ID
-			// There are 91 commands and extended ascii is never used
-			// by the game, so we use those for commands instead
-			writecmd(i + 0x80);
-			// Take care of any args
-			for(int a = 0; a < instructions[i].args; a++) {
-				writenum();
-				if(buf[cursor] == ':') skip();
-			}
-			if(i >= 0 && i < 3) {
-				msgWindowOpen = true;
-			} else if(i == 3) {
-				msgWindowOpen = false;
-			} else if(i >= 12 && i < 18) {
-				msgWindowOpen = false;
-				return true;
-			}
-			return false;
-		}
+	FILE *infile, *outfile;
+	if((infile = decrypt_tsc(argv[1])) == NULL) {
+		printf("Failed to open decrypted file.\n");
+		return 1;
 	}
-	// Didn't find anything. That shouldn't happen
-	printf("Don't know how to \"%s\" something.\n", cmd);
-	return false;
-}
-
-// Found an event, default to display message until encountering
-// a '<' for commands
-void find_commands() {
-	while(true) {
-		if(buf[cursor] == '#') {
-			break;
-		} else if(buf[cursor] == '<') {
-			printf("Found a command! %.4s\n", &buf[cursor]);
-			skip(); //write('<');
-			if(parse_command()) break;
-		} else if(cursor >= len) {
-			return;
-		} else if(msgWindowOpen) {
-			parse_text();
-		} else {
-			skip();
-		}
+	if((outfile = fopen(argv[2], "wb")) == NULL) {
+		printf("Failed to open output file.\n");
+		return 1;
 	}
-}
-
-// Looking for an event or global instruction
-void find_events() {
-	switch(buf[cursor]) {
-	case '#':
-		printf("Found an event! %.5s\n", &buf[cursor]);
-		// Hash (#), Event number (4 digits)
-		write(0xFF);
-		write(0xFF);
-		cursor--;
-		writenum();
-		//skip(); // Newline char
-		find_commands();
-		break;
-	default:
-		skip();
-		break;
-	}
-}
-
-void parse() {
-	// Count the number of events first
-	u8 eventCount = 0;
-	for(int i = cursor; i < len; i++) {
-		if(buf[i] == '#') eventCount++;
-	}
-	write(eventCount);
-	cursor = 0; // Thanks Obama
-	// Then parse through them
-	printf("Begin parsing\n");
-	while(cursor < len) {
-		find_events();
-	}
-	printf("All done!\n");
-}
-
-int main(int argc, char *argv[]) {
-	// Open in/out files
-	if(argc != 2) return 1;
-	infile = fopen(argv[1], "rb");
-	if(!infile) return 2;
-	strcpy(outfn, argv[1]);
-	strcat(outfn, ".mds");
-	outfile = fopen(outfn, "wb");
-	if(!outfile) return 3;
-	// Find the key at "file_length / 2"
-	fseek(infile, 0, SEEK_END);
-	len = ftell(infile);
-	fseek(infile, len / 2, SEEK_SET);
-	fread(&key, 1, 1, infile);
-	// Read "decrypted" file into buf
-	fseek(infile, 0, SEEK_SET);
-	fread(buf, 1, len, infile);
-	for(int i = 0; i < len; i++) {
-		if(buf[i] != key) buf[i] -= key;
-	}
-	buf[len] = '\0';
+	do_script(infile, outfile);
 	fclose(infile);
-	// Do shit
-	cursor = 0;
-	msgWindowOpen = false;
-	parse();
 	fclose(outfile);
-	//getc(stdin);
 	return 0;
+}
+
+FILE* decrypt_tsc(const char *filename) {
+	long fileSize;
+	unsigned char key;
+	FILE *infile, *outfile;
+	if((infile = fopen(filename, "rb")) == NULL) {
+		printf("Failed to open input file.\n");
+		exit(1);
+	}
+	if((outfile = fopen("tscomp.tmp", "wb")) == NULL) {
+		printf("Failed to create temporary file.\n");
+		exit(1);
+	}
+	// Get the size of the file
+	fseek(infile, 0, SEEK_END);
+	fileSize = ftell(infile);
+	// Obtain the key from the center of the file
+	fseek(infile, fileSize / 2, SEEK_SET);
+	fread(&key, 1, 1, infile);
+	// Copy over bytes subtracting the key
+	fseek(infile, 0, SEEK_SET);
+	for(long i = 0; i < fileSize; i++) {
+		unsigned char c;
+		fread(&c, 1, 1, infile);
+		if(i != fileSize / 2) c -= key;
+		fwrite(&c, 1, 1, outfile);
+	}
+	// Close the files
+	fclose(infile);
+	fclose(outfile);
+	// Reopen decrypted file in read mode and return it
+	return fopen("tscomp.tmp", "rb");
+}
+
+void do_script(FILE *fin, FILE * fout) {
+	unsigned char eventCount = 0;
+	// Place holder to store the real count when finished
+	fwrite(&eventCount, 1, 1, fout);
+	while(!feof(fin) && eventCount < MAX_EVENTS) {
+		char c = fgetc(fin);
+		if(c == SYM_EVENT) {
+			unsigned short sym = OP_EVENT;
+			fwrite(&sym, 1, 2, fout);
+			do_event(fin, fout);
+			eventCount++;
+		} else if(c == EOF) {
+			break;
+		} else if(c != '\n' && c != '\r') {
+			//printf("Debug: Char '%c' while looking for events.\n", c);
+		}
+	}
+	// Event count at beginning of file
+	fseek(fout, 0, SEEK_SET);
+	fwrite(&eventCount, 1, 1, fout);
+}
+
+void do_event(FILE *fin, FILE *fout) {
+	bool msgWindowOpen;
+	unsigned short id, commandCount;
+	msgWindowOpen = FALSE;
+	id = read_number(fin);
+	commandCount = 0;
+	fwrite(&id, 1, 2, fout);
+	while(!feof(fin)) {
+		char c = fgetc(fin);
+		if(c == SYM_COMMAND) {
+			commandCount++;
+			unsigned short flags = do_command(fin, fout);
+			if(flags & CFLAG_MSGOPEN) msgWindowOpen = TRUE;
+			else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = FALSE;
+			if(flags & CFLAG_END) break;
+		} else if(is_valid_char(c)) {
+			if(msgWindowOpen) {
+				fwrite(&c, 1, 1, fout);
+			} else if(c != '\n') {
+				printf("Debug: Printable text char '%c' is never displayed.\n", c);
+			}
+		} else if(c == SYM_EVENT) {
+			if(commandCount != 0) {
+				printf("Warning: Non-empty event #%04hu has no ending!\n", id);
+			}
+			fseek(fin, -1, SEEK_CUR);
+			break;
+		} else {
+			if(c == '\r') continue;
+			printf("Warning: Invalid char '%c' in event #%04hu.\n", c, id);
+		}
+	}
+}
+
+unsigned short do_command(FILE *fin, FILE *fout) {
+	unsigned char opcode, params;
+	unsigned short flags;
+	char str[LEN_COMMAND + 1];
+	// Find command from 3 character string
+	fread(&str, 1, LEN_COMMAND, fin);
+	str[LEN_COMMAND] = '\0';
+	for(int i = 0; i < COMMAND_COUNT; i++) {
+		if(strcmp(str, command_table[i].name) == 0) {
+			opcode = command_table[i].opcode;
+			params = command_table[i].params;
+			flags = command_table[i].flags;
+			break;
+		}
+	}
+	//printf("TRACE: Command %s matches %hhu.\n", str, opcode);
+	fwrite(&opcode, 1, 1, fout);
+	// Parse parameters
+	for(int i = 0; i < params; i++) {
+		short val = read_number(fin);
+		fwrite(&val, 1, 2, fout);
+		if(i != params - 1) { // Skip the ':' between parameters
+			if(fgetc(fin) != ':') {
+				printf("Warning: Expected ':' between parameters.\n");
+			}
+		}
+	}
+	return flags;
+}
+
+unsigned short read_number(FILE *file) {
+	char str[LEN_NUMBER + 1];
+	fread(&str, 1, LEN_NUMBER, file);
+	str[LEN_NUMBER] = '\0';
+	// Make sure the string is 4 digits
+	for(int i = 0; i < LEN_NUMBER; i++) {
+		if(str[i] < '0' || str[i] > '9') {
+			// Workaround in case a param is given 3 digits instead of 4
+			if(i == 3 && str[i] == ':') {
+				printf("Warning: Parameter is not 4 digits.\n");
+				str[i] = '\0';
+				fseek(file, -1, SEEK_CUR);
+			} else {
+				printf("Error: Expected 4 digit number.\n");
+				exit(1);
+			}
+		}
+	}
+	return atoi(str);
+}
+
+bool is_valid_char(char c) {
+	for(int i = 0; i < strlen(ValidChars); i++) {
+		if(c == ValidChars[i]) return TRUE;
+	}
+	return FALSE;
 }
