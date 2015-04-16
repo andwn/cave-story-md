@@ -25,7 +25,7 @@ void ai_update_balrog_scene(Entity *e) {
 	if(!e->grounded) e->y_speed += gravityJump;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
-	if(e->state != 10) entity_update_collision(e);
+	if(e->state != 10 && e->y > block_to_sub(6)) entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -89,6 +89,7 @@ void ai_update_balrog_boss1(Entity *e) {
 	case 7: // Grabbed player
 		player.x = e->x;
 		player.y = e->y;
+		if(!e->grounded) e->y_speed += gravityJump;
 		if(e->state_time == 0) e->set_state(e, 8);
 		break;
 	case 8:
@@ -98,7 +99,7 @@ void ai_update_balrog_boss1(Entity *e) {
 		break;
 	}
 	// Grab/throw player
-	if(e->state < 7 && entity_overlapping(&player, e)) {
+	if(e->state < 7 && !player_invincible() && entity_overlapping(&player, e)) {
 		e->set_state(e, 7);
 	}
 	e->x_next = e->x + e->x_speed;

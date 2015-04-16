@@ -60,6 +60,7 @@ void player_draw();
 
 Bullet *bullet_colliding(Entity *e);
 
+bool player_invincible();
 bool player_inflict_damage(s16 damage);
 
 // TSC Stuff

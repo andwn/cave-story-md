@@ -65,7 +65,7 @@ void vblank() {
 	}
 }
 
-void game_main(bool load) {
+u8 game_main(bool load) {
 	SYS_disableInts();
 	VDP_setEnable(false);
 	VDP_resetScreen();
@@ -77,6 +77,7 @@ void game_main(bool load) {
 	SYS_enableInts();
 	VDP_setWindowPos(0, 251 * debuggingEnabled);
 	bool paused = false;
+	u8 ending = 0;
 	while(true) {
 		input_update();
 		if(paused) {
@@ -98,13 +99,20 @@ void game_main(bool load) {
 				u8 rtn = tsc_update();
 				if(rtn > 0) {
 					if(rtn == 1) {
-						SYS_reset();
+						ending = 0; // No ending, return to title
+						break;
 					} else if(rtn == 2) {
-						game_reset(true);
+						game_reset(true); // Reload save
 						continue;
 					} else if(rtn == 3) {
-						game_reset(false);
+						game_reset(false); // Start from beginning
 						continue;
+					} else if(rtn == 4) {
+						ending = 1; // Normal ending
+						break;
+					} else if(rtn == 5) {
+						ending = 2; // Good ending
+						break;
 					}
 				}
 				effects_update();
@@ -115,4 +123,5 @@ void game_main(bool load) {
 		VDP_waitVSync();
 	}
 	SYS_setVIntCallback(NULL);
+	return ending;
 }

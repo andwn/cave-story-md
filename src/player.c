@@ -369,7 +369,7 @@ void player_update_entity_collision() {
 			}
 		}
 		// Enemies
-		if(e->attack > 0) {
+		if(e->attack > 0 && !tsc_running()) {
 			u32 collided = *(u32*)&collision; // I do what I want
 			if((collided > 0 || entity_overlapping(&player, e)) && playerIFrames == 0) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
@@ -403,6 +403,10 @@ void player_update_entity_collision() {
 		}
 		e = e->next;
 	}
+}
+
+bool player_invincible() {
+	return playerIFrames > 0 || tsc_running();
 }
 
 bool player_inflict_damage(s16 damage) {

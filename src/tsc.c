@@ -139,7 +139,6 @@ u16 waitTime;
 
 u16 promptJump = 0;
 
-//bool showingTeleMenu = false;
 u8 teleMenuSlotCount = 0;
 u16 teleMenuEvent[8];
 u8 teleMenuSelection = 0;
@@ -153,10 +152,6 @@ u16 bossHealth;
 
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
 
-//void draw_face(u8 index);
-//void window_open();
-//void window_close();
-//void window_open_prompt();
 void tsc_show_boss_health();
 void tsc_hide_boss_health();
 void tsc_show_teleport_menu();

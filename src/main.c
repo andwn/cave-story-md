@@ -29,6 +29,7 @@
 #include "soundtest.h"
 #include "game.h"
 #include "input.h"
+#include "credits.h"
 
 int main() {
     VDP_init();
@@ -42,8 +43,11 @@ int main() {
     while(true) {
 		u8 select = titlescreen_main();
 		switch(select) {
-			case 0: game_main(false); break;
-			case 1: game_main(true); break;
+			case 0:
+			case 1:
+				select = game_main(select);
+				if(select > 0) credits_main(select);
+				break;
 			case 2: soundtest_main(); break;
 		}
     }

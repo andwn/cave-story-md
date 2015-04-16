@@ -9,7 +9,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_EggX,		PXE_EggX,	TSC_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },
 	{ PXM_Egg6,		PXE_Egg6,	TSC_Egg6,	&PAL_Regu,	5,	0,	"Egg No. 06" },
 	{ PXM_EggR,		PXE_EggR,	TSC_EggR,	&PAL_Regu,	19,	0,	"Egg Observation Room" },
-	{ PXM_Weed,		PXE_Weed,	TSC_Weed,	&PAL_Regu,	20,	7,	"Grasstown" },
+	{ PXM_Weed,		PXE_Weed,	TSC_Weed,	&PAL_Regu,	20,	2,	"Grasstown" },
 	{ PXM_Santa,	PXE_Santa,	TSC_Santa,	&PAL_Regu,	2,	0,	"Santa's House" },
 	{ PXM_Chako,	PXE_Chako,	TSC_Chako,	&PAL_Regu,	2,	0,	"Chako's House" },
 	{ PXM_MazeI,	PXE_MazeI,	TSC_MazeI,	&PAL_Regu,	13,	8,	"Labyrinth I" },
@@ -353,7 +353,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
 	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
 	{ &SPR_SaveSign, PAL1 }, // 39 - Save Sign
-	{ &SPR_Santa, PAL0 }, // 40 - Santa
+	{ &SPR_Santa, PAL3 }, // 40 - Santa
 	{ NULL, PAL0 }, // 41 - Busted Doorway
 	{ &SPR_Sue, PAL3 }, // 42 - Sue
 	{ &SPR_Board, PAL1 }, // 43 - Blackboard

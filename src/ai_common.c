@@ -117,6 +117,7 @@ void ai_setup(Entity *e) {
 		e->alwaysActive = true;
 		e->x = player.x;
 		break;
+	case 9:
 	case 12: // Balrog (Cutscene)
 	case 19:
 		e->update = &ai_update_balrog_scene;
@@ -147,6 +148,7 @@ void ai_setup(Entity *e) {
 		e->state = 3; // Running back and forth
 		sprite_set_animation(e->sprite, 2);
 		break;
+	case 5: // Critter - Green
 	case 64: // Critter - Blue
 		e->update = &ai_update_critter_hop;
 		e->set_state = &ai_setstate_critter_hop;

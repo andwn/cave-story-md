@@ -99,6 +99,11 @@ typedef struct {
 	u8 damage[3];
 } weapon_info_def;
 
+typedef struct {
+	u8 *function;
+	u8 paramCount;
+} command_info_def;
+
 extern const stage_info_def stage_info[STAGE_COUNT];
 
 extern const tileset_info_def tileset_info[TILESET_COUNT];
