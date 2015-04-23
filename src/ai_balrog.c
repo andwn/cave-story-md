@@ -51,6 +51,9 @@ bool ai_setstate_balrog_scene(Entity *e, u16 state) {
 		sprite_set_animation(e->sprite, 6);
 		e->state_time = 90;
 		break;
+	case 42: // Balfrog
+		entity_create_boss(sub_to_block(e->x), sub_to_block(e->y), BOSS_BALFROG, 1000);
+		break;
 	case 70: // Vanish
 	case 71:
 		return true;
@@ -157,6 +160,16 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 		break;
 	default:
 		break;
+	}
+	return false;
+}
+
+bool ai_setstate_balfrog(Entity *e, u16 state) {
+	e->state = state;
+	if(state == STATE_DEFEATED) {
+		e->state += 1;
+		tsc_call_event(e->event); // Boss defeated event
+		return true;
 	}
 	return false;
 }

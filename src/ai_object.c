@@ -52,6 +52,53 @@ void ai_update_trigger(Entity *e) {
 	if(activate) tsc_call_event(e->event);
 }
 
+void ai_activate_fan(Entity *e) {
+	switch(e->type) {
+	case 96: // Left
+		// Nothing
+		break;
+	case 97: // Up
+		sprite_set_animation(e->sprite, 1);
+		break;
+	case 98: // Right
+		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 0, 1));
+		break;
+	case 99: // Down
+		sprite_set_animation(e->sprite, 1);
+		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 1, 0));
+		break;
+	}
+}
+
+void ai_update_fan(Entity *e) {
+	u16 ex = sub_to_block(e->x), ey = sub_to_block(e->y);
+	u16 px = sub_to_block(player.x), py = sub_to_block(player.y);
+	switch(e->state) {
+	case 1: // Left
+		if(px > ex - 8 && px <= ex && py == ey) {
+			player.x_speed -= 0x50;
+		}
+		break;
+	case 2: // Up
+		if(py > ey - 8 && py <= ey && px == ex) {
+			player.y_speed -= 0x50;
+		}
+		break;
+	case 3: // Right
+		if(px >= ex && px < ex + 8 && py == ey) {
+			player.x_speed += 0x50;
+		}
+		break;
+	case 4: // Down
+		if(py >= ey && py < ey + 8 && px == ex) {
+			player.y_speed += 0x50;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 // This rotates the spikes so they are always sticking out of a solid area
 // Spikes use a second frame for 90 degree rotation
 void ai_activate_spike(Entity *e) {

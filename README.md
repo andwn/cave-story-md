@@ -29,42 +29,139 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 - Many of the colors are more vivid or even wrong sometimes due to palette limitations.
 - Some effects like the sprinkler and screen fading are not possible or difficult to implement without lag
 
-### Areas
+### Area TODO List
 - [x] First Cave
-- [ ] Mimiga
-  - [x] Completable
-  - [x] Sprites
-  - [x] Music
-    - [x] Village
-    - [x] Farm
-  - [ ] AI/actions
-- [ ] Graveyard
-  - [x] Completable
-  - [x] Sprites
+- [x] Mimiga Village
+- [x] Graveyard
   - [ ] Music
-  - [ ] AI/actions
-- [ ] Eggs
-  - [x] Completable
-  - [ ] Sprites
-  - [ ] AI/actions
+  - [ ] Enemies
+    - [ ] Pignon
+    - [ ] Gravekeeper
+- [x] Egg Corridor
+  - [ ] Music
+    - [ ] Mischievous Robot
+    - [ ] Pulse
+  - [ ] Enemies
+    - [x] Critters
+    - [ ] Behemoth
+    - [ ] Bosu
+    - [ ] Basil
+    - [ ] Beetle (Follow)
+    - [ ] Beetle (Wall)
+    - [ ] Boss: Igor
+  - [ ] NPCs
+    - [ ] Robot
+    - [x] Sue
+    - [x] Igor
+    - [x] Cthulhu
   - [ ] Weapon: Missiles
-- [ ] Grasstown
-  - [ ] Completable
+- [x] Grasstown
   - [ ] Sprites
   - [ ] Music
-  - [ ] AI/actions
+  - [ ] Enemies
+    - [ ] Hover critter
+    - [ ] Power critter
+    - [ ] Jellyfish
+    - [ ] Big jellyfish (Kulala)
+    - [ ] Circling bats
+    - [ ] Hanging bats
+    - [ ] Mannan
+    - [ ] Frog
+    - [ ] Press (vertical)
+    - [ ] Boss: Balrog 2
+    - [ ] Boss: Ravil
+    - [ ] Boss: Balfrog
+  - [ ] NPCs
+    - [x] Santa
+    - [ ] Chaco
+    - [ ] Malco
+    - [x] Kazuma
+    - [ ] Booster
   - [ ] Weapon: Fireball
 - [ ] Sand Zone
+  - [ ] Completable
+  - [ ] Fix the background color
+  - [ ] Music
+    - [ ] Meltdown 2
+    - [ ] Jenka
+    - [ ] Tyrant
+    - [x] Run!
+  - [ ] Enemies
+    - [ ] Beetle (Wall / Brown)
+    - [ ] Boss: Curly
+    - [ ] Sandcroc
+    - [ ] Polish & Baby Polish
+    - [ ] Boss: Omega
+    - [ ] Crow
+    - [ ] Skullhead
+    - [ ] Crow carrying Skullhead
+    - [ ] Armadillo
+    - [ ] Skullstep
+    - [ ] Skeleton
+    - [ ] Boss: Toroko
+  - [ ] NPCs
+    - [ ] Curly
+    - [ ] Mimigas
+    - [ ] Sun blocks
+    - [ ] Jenka
+    - [ ] Puppies
+    - [ ] Doctor
+  - [ ] Weapon: Machine Gun
 - [ ] Labyrinth
+  - [ ] Completable
+  - [ ] Music
+    - [ ] Jenka 2
+    - [ ] Labyrinth fight
+  - [ ] Weapon: Snake
+  - [ ] Equip: Booster 0.8
+  - [ ] Item Menu (Needed to equip booster)
 - [ ] Core
+  - [ ] Completable
+  - [ ] Music
+    - [ ] Geothermal
+    - [ ] Oppression
 - [ ] Waterway
-- [ ] Eggs2
+  - [ ] Completable
+  - [ ] Music
+- [ ] Egg Corridor?
+  - [ ] Completable
+  - [ ] Music
+    - [x] Quiet
+    - [ ] Scorching Back
+  - [ ] Weapon: Spur
+  - [ ] Equip: Booster 2.0
 - [ ] Outer Wall
+  - [ ] Completable
+  - [ ] Music
+    - [ ] Moonsong
+    - [ ] Hero's End
 - [ ] Plantation
+  - [ ] Completable
+  - [x] Music
 - [ ] Last Cave
+  - [ ] Completable
+  - [ ] Music
 - [ ] Balcony / Ring
-- [ ] Credits
+  - [ ] Completable
+  - [ ] Music
+    - [x] Balcony
+    - [x] Charge
+    - [ ] Zombie
+    - [ ] Last Battle
+- [ ] Ending / Credits
+  - [ ] Completable
+  - [ ] Music
+    - [ ] Breaking Down
+    - [ ] Credits
 - [ ] Sacred Ground
+  - [ ] Completable
+  - [ ] Music
+    - [ ] Running Hell
+    - [ ] Seal Chamber
+- [ ] Misc
+  - [ ] Air counter and drowning
+  - [ ] Walk and jump sound effect
+  - [ ] Stars when bumping ceiling
 
 #### Legal Disclaimer
 The art assets and sound effects are property of Studio Pixel and are in no way owned by me.

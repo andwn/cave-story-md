@@ -4,6 +4,7 @@ PALETTE PAL_Sym			"sprite/door.png" 1
 PALETTE PAL_Regu		"sprite/kazuma.png" 3
 PALETTE PAL_Gunsmith	"sprite/gunsmith.png" 3
 PALETTE PAL_Plant		"sprite/flower.png" 3
+PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 
 # Sprites
 # Use PAL_Main
@@ -59,6 +60,8 @@ SPRITE SPR_Chest2	"sprite/chestopen.png" 2 1 0 0 NONE
 SPRITE SPR_Key		"sprite/key.png" 2 2 0 2 NONE
 SPRITE SPR_Term		"sprite/terminal.png" 2 3 0 10 NONE
 SPRITE SPR_Keeper	"sprite/gkeeper.png" 3 3 0 15 NONE
+SPRITE SPR_Fan		"sprite/fan.png" 2 2 0 5 NONE
+SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu

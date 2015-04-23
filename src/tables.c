@@ -31,7 +31,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Malco,	PXE_Malco,	TSC_Malco,	&PAL_Regu,	2,	0,	"Power Room" },
 	{ PXM_WeedS,	PXE_WeedS,	TSC_WeedS,	&PAL_Regu,	2,	0,	"Save Point" },
 	{ PXM_WeedD,	PXE_WeedD,	TSC_WeedD,	&PAL_Regu,	19,	0,	"Execution Chamber" },
-	{ PXM_Frog,		PXE_Frog,	TSC_Frog,	&PAL_Regu,	20,	0,	"Gum" },
+	{ PXM_Frog,		PXE_Frog,	TSC_Frog,	&PAL_Frog,	20,	2,	"Gum" },
 	{ PXM_Curly,	PXE_Curly,	TSC_Curly,	&PAL_Regu,	18,	0,	"Sand Zone Residence" },
 	{ PXM_WeedB,	PXE_WeedB,	TSC_WeedB,	&PAL_Regu,	16,	0,	"Grasstown Hut" },
 	{ PXM_Stream,	PXE_Stream,	TSC_Stream,	&PAL_Regu,	17,	2,	"Main Artery" },
@@ -402,17 +402,17 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 86 - Missile
 	{ &SPR_Heart, PAL1 }, // 87 - Heart
 	{ &SPR_Igor, PAL3 }, // 88 - Boss: Igor
-	{ NULL, PAL0 }, // 89 - Igor (Defeated)
+	{ NULL, PAL3 }, // 89 - Igor (Defeated)
 	{ NULL, PAL0 }, // 90 - Background (what?)
 	{ NULL, PAL0 }, // 91 - Cage
 	{ NULL, PAL0 }, // 92 - Sue (Computer)
 	{ NULL, PAL0 }, // 93 - Chaco
 	{ NULL, PAL0 }, // 94 - Enemy: Kulala
 	{ NULL, PAL0 }, // 95 - Enemy: Jelly
-	{ NULL, PAL0 }, // 96 - Fan (Left)
-	{ NULL, PAL0 }, // 97 - Fan (Up)
-	{ NULL, PAL0 }, // 98 - Fan (Right)
-	{ NULL, PAL0 }, // 99 - Fan (Down)
+	{ &SPR_Fan, PAL1 }, // 96 - Fan (Left)
+	{ &SPR_Fan, PAL1 }, // 97 - Fan (Up)
+	{ &SPR_Fan, PAL1 }, // 98 - Fan (Right)
+	{ &SPR_Fan, PAL1 }, // 99 - Fan (Down)
 	{ NULL, PAL0 }, // 100 - Grate
 	{ NULL, PAL0 }, // 101 - Power Controls (Screen)
 	{ &SPR_Wave, PAL1 }, // 102 - Power Controls (Power Flow)

@@ -9,6 +9,17 @@
 #define FILTER_TYPE 3
 #define FILTER_ALL 4
 
+#define BOSS_NONE 0
+#define BOSS_OMEGA 1
+#define BOSS_BALFROG 2
+#define BOSS_MONSTERX 3
+#define BOSS_CORE 4
+#define BOSS_IRONHEAD 5
+#define BOSS_SISTERS 6
+#define BOSS_UNDEADCORE 7
+#define BOSS_HEAVYPRESS 8
+#define BOSS_BALLOS 9
+
 typedef struct Entity Entity;
 
 typedef void (*activateFunc)(Entity*);
@@ -114,6 +125,7 @@ Entity *entity_destroy(Entity *e);
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
+Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event);
 // Finds entity matching an ID and returns it
 Entity *entity_find_by_id(u16 id);
 Entity *entity_find_by_event(u16 event);

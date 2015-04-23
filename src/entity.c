@@ -14,6 +14,7 @@
 #include "tsc.h"
 #include "npc.h"
 #include "ai_common.h"
+#include "ai_balrog.h"
 //#include "collision.h"
 
 //#define abs(x) (x * ((x>0) - (x<0)))
@@ -290,12 +291,12 @@ void entity_update_walk(Entity *e) {
 	if (e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if (e->x_speed < -max_speed) {
-			e->x_speed = -max_speed;
+			e->x_speed = min(e->x_speed + acc, -max_speed);
 		}
 	} else if (e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if (e->x_speed > max_speed) {
-			e->x_speed = max_speed;
+			e->x_speed = max(e->x_speed - acc, max_speed);
 		}
 	} else if(e->grounded) {
 		if (e->x_speed < fric && e->x_speed > -fric) {
@@ -310,7 +311,7 @@ void entity_update_walk(Entity *e) {
 
 // TODO: Real value for max jump time
 void entity_update_jump(Entity *e) {
-	const u8 maxJumpTime = 18;
+	const u8 maxJumpTime = 17;
 	s16 tJumpSpeed = jumpSpeed,
 		tMaxJumpTime = maxJumpTime,
 		tGravity = gravity,
@@ -318,14 +319,14 @@ void entity_update_jump(Entity *e) {
 		tMaxFallSpeed = maxFallSpeed;
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		tJumpSpeed /= 2;
-		tMaxJumpTime /=2;
+		//tMaxJumpTime /=2;
 		tGravity /= 2;
 		tGravityJump /= 2;
 		tMaxFallSpeed /= 2;
 	}
 	if (e->jump_time > 0) {
 		if (e->controller[0] & BUTTON_C) {
-			e->y_speed = -tJumpSpeed;
+			//e->y_speed = -tJumpSpeed;
 			e->jump_time--;
 		} else {
 			e->jump_time = 0;
@@ -571,19 +572,11 @@ bool collide_stage_floor_grounded(Entity *e) {
 bool collide_stage_ceiling(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_y;
 	u8 pxa1, pxa2;
-	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
-	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
-	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top;
+	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
+	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
+	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top + 2;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
-
-	//u16 block_x1, block_x2, block_y;
-	//u8 pxa1, pxa2;
-	//block_x1 = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left + 2);
-	//block_x2 = pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right - 2);
-	//block_y = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top);
-	//pxa1 = stage_get_block_type(block_x1, block_y);
-	//pxa2 = stage_get_block_type(block_x2, block_y);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
@@ -596,7 +589,7 @@ bool collide_stage_ceiling(Entity *e) {
 	if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
 			pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
-		e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF + 1 -
+		e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
 				heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top);
 		e->y_speed = 0;
 		result = true;
@@ -604,7 +597,7 @@ bool collide_stage_ceiling(Entity *e) {
 	if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 			pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
-		e->y_next = pixel_to_sub((pixel_y&~0xF) + 1 +
+		e->y_next = pixel_to_sub((pixel_y&~0xF) +
 				heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top);
 		e->y_speed = 0;
 		result = true;
@@ -711,7 +704,7 @@ bool entity_on_screen(Entity *obj) {
 }
 
 Entity *entity_update_inactive(Entity *e) {
-	if(entity_on_screen(e) && !entity_disabled(e)) {
+	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		if(npc_info[e->type].sprite != NULL)
 			e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
 		Entity *next = e->next;
@@ -820,7 +813,6 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->alwaysActive = false;
 	e->activate = &ai_activate_base;
 	e->update = NULL; //&ai_update_base;
 	e->set_state = &ai_setstate_base;
@@ -846,8 +838,13 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->id = id;
 	e->event = event;
 	e->eflags = flags;
+	if(stageID == 28) {
+		e->alwaysActive = true;
+	} else {
+		e->alwaysActive = false;
+	}
 	entity_default(e, type, 0);
-	if(entity_on_screen(e) && !entity_disabled(e)) {
+	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		e->next = entityList;
 		entityList = e;
 		if(npc_info[type].sprite != NULL) {
@@ -857,13 +854,65 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 				sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
 				sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 		} else e->sprite = SPRITE_NONE;
-		e->activate(e);
+		//e->activate(e);
 	} else {
 		e->next = inactiveList;
 		inactiveList = e;
 		e->sprite = SPRITE_NONE;
 	}
 	ai_setup(e);
+	return e;
+}
+
+Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
+	Entity *e = MEM_alloc(sizeof(Entity));
+	e->x = block_to_sub(x) + pixel_to_sub(8);
+	e->y = block_to_sub(y) + pixel_to_sub(8);
+	e->id = 0;
+	e->type = 0;
+	e->x_speed = 0;
+	e->y_speed = 0;
+	e->grounded = false;
+	e->experience = 0;
+	e->alwaysActive = true;
+	e->damage_value = 0;
+	e->damage_time = 0;
+	e->activate = &ai_activate_base;
+	e->update = NULL;
+	e->set_state = &ai_setstate_base;
+	e->hurt = NULL;
+	e->state = 0;
+	e->state_time = 0;
+	switch(bossid) {
+	case BOSS_NONE:
+		SYS_die("What are you doing?");
+		break;
+	case BOSS_OMEGA:
+		break;
+	case BOSS_BALFROG:
+		e->event = 1000;
+		e->eflags = NPC_SOLID | NPC_SHOOTABLE | NPC_EVENTONDEATH | NPC_SHOWDAMAGE;
+		e->direction = 1;
+		e->health = 300;
+		e->attack = 5;
+		e->hurtSound = 52;
+		e->deathSound = 72;
+		e->deathSmoke = 3;
+		bounding_box hb = { 32, 24, 32, 32 };
+		bounding_box db = { 40, 32, 40, 32 };
+		e->hit_box = hb;
+		e->display_box = db;
+		e->sprite = sprite_create(&SPR_Balfrog1, PAL3, false);
+		e->set_state = &ai_setstate_balfrog;
+		break;
+	}
+	e->next = entityList;
+	entityList = e;
+	sprite_set_attr(e->sprite, TILE_ATTR(PAL3, 0, 0, e->direction));
+	sprite_set_position(e->sprite,
+		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+	e->activate(e);
 	return e;
 }
 

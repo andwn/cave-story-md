@@ -176,6 +176,20 @@ void ai_setup(Entity *e) {
 	case 79: // Mahin
 		e->y += block_to_sub(1);
 		break;
+	case 96: // Fans
+	case 97:
+	case 98:
+	case 99:
+		if(e->eflags&NPC_OPTION2) {
+			e->state = e->type - 95;
+			e->update = &ai_update_fan;
+		}
+		e->activate = &ai_activate_fan;
+		if(e->sprite != SPRITE_NONE) e->activate(e);
+		break;
+	case 102: // Power Wave
+		e->y += block_to_sub(1);
+		break;
 	case 211: // Spikes
 		e->activate = &ai_activate_spike;
 		if(e->sprite != SPRITE_NONE) e->activate(e);

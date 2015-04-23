@@ -171,7 +171,7 @@ void player_update_shooting() {
 				if(w->level == 3) sound_play(0x31, 5);
 				else sound_play(0x20, 5);
 				b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
-				b->damage = w->level;
+				b->damage = weapon_info[w->type].damage[w->level - 1];
 				b->ttl = 20 + w->level * 5;
 				if(player.controller[0]&BUTTON_UP) {
 					sprite_set_frame(b->sprite, 1);
