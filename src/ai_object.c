@@ -53,21 +53,24 @@ void ai_update_trigger(Entity *e) {
 }
 
 void ai_activate_fan(Entity *e) {
+	u8 anim = 0;
+	if(e->eflags & NPC_OPTION2) anim = 2;
 	switch(e->type) {
 	case 96: // Left
 		// Nothing
 		break;
 	case 97: // Up
-		sprite_set_animation(e->sprite, 1);
+		anim += 1;
 		break;
 	case 98: // Right
 		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 0, 1));
 		break;
 	case 99: // Down
-		sprite_set_animation(e->sprite, 1);
+		anim += 1;
 		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 1, 0));
 		break;
 	}
+	sprite_set_animation(e->sprite, anim);
 }
 
 void ai_update_fan(Entity *e) {

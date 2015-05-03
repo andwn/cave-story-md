@@ -15,9 +15,6 @@
 #include "npc.h"
 #include "ai_common.h"
 #include "ai_balrog.h"
-//#include "collision.h"
-
-//#define abs(x) (x * ((x>0) - (x<0)))
 
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
@@ -276,6 +273,7 @@ void entity_update_movement(Entity *e) {
 
 // TODO: If "friction" isn't supposed to be used in the air, what value is?
 void entity_update_walk(Entity *e) {
+	bool water = false;
 	s16 acc = walkAccel,
 		fric = friction,
 		max_speed = maxWalkSpeed;
@@ -287,16 +285,17 @@ void entity_update_walk(Entity *e) {
 		acc /= 2;
 		fric /=2;
 		max_speed /= 2;
+		water = true;
 	}
 	if (e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if (e->x_speed < -max_speed) {
-			e->x_speed = min(e->x_speed + acc, -max_speed);
+			e->x_speed = min(e->x_speed + (acc + acc*water), -max_speed);
 		}
 	} else if (e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if (e->x_speed > max_speed) {
-			e->x_speed = max(e->x_speed - acc, max_speed);
+			e->x_speed = max(e->x_speed - (acc + acc*water), max_speed);
 		}
 	} else if(e->grounded) {
 		if (e->x_speed < fric && e->x_speed > -fric) {
@@ -414,7 +413,7 @@ bool collide_stage_leftwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left);
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
+	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
@@ -432,7 +431,7 @@ bool collide_stage_rightwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right);
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
+	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);

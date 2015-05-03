@@ -19,6 +19,9 @@ SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
 SPRITE SPR_TeleMenu	"sprite/telemenu.png" 4 2 0 0 NONE
 TILESET TS_Title	"sprite/title.png" -1
 SPRITE SPR_Fish		"sprite/fish.png" 2 2 0 20 NONE
+SPRITE SPR_CritBig	"sprite/critbig.png" 3 3 0 0 NONE
+SPRITE SPR_Jelly	"sprite/jelly.png" 2 2 0 15 NONE
+SPRITE SPR_Kulala	"sprite/kulala.png" 6 3 0 0 NONE
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
 SPRITE SPR_PolarB1	"sprite/polarb1.png" 2 2 0 0 NONE
@@ -61,7 +64,7 @@ SPRITE SPR_Key		"sprite/key.png" 2 2 0 2 NONE
 SPRITE SPR_Term		"sprite/terminal.png" 2 3 0 10 NONE
 SPRITE SPR_Keeper	"sprite/gkeeper.png" 3 3 0 15 NONE
 SPRITE SPR_Fan		"sprite/fan.png" 2 2 0 5 NONE
-SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
+SPRITE SPR_Malco	"sprite/malco.png" 2 3 0 0 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
@@ -80,11 +83,14 @@ SPRITE SPR_Kanpachi	"sprite/kanpachi.png" 3 2 0 0 NONE
 SPRITE SPR_Jack		"sprite/jack.png" 2 2 0 15 NONE
 SPRITE SPR_Mahin	"sprite/mahin.png" 2 2 0 0 NONE
 SPRITE SPR_Santa	"sprite/santa.png" 2 2 0 15 NONE
+SPRITE SPR_Mannan	"sprite/mannan.png" 2 4 0 0 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 # Use PAL_Plant
 SPRITE SPR_Sanda	"sprite/sanda.png" 6 4 0 0 NONE
 SPRITE SPR_Flower	"sprite/flower.png" 2 2 0 0 NONE
+# Use PAL_Frog
+SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
 
 # Sound Test
 PALETTE PAL_SndTest	"back/soundtest.png" 0
@@ -537,6 +543,7 @@ XGM BGM_Fanfare2	"bgm/fanfare2.vgm"
 XGM BGM_Fanfare3	"bgm/fanfare3.vgm"
 XGM BGM_GameOver	"bgm/gameover.vgm"
 XGM BGM_Gestation	"bgm/gestation.vgm"
+XGM BGM_Grasstown	"bgm/grasstown.vgm"
 XGM BGM_Gravity		"bgm/gravity.vgm"
 XGM BGM_Mimiga		"bgm/mimiga.vgm"
 XGM BGM_Plant		"bgm/plant.vgm"

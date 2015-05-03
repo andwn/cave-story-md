@@ -361,7 +361,7 @@ void player_update_entity_collision() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if((e->eflags|e->nflags) & NPC_SOLID) {
+		if((e->eflags|e->nflags) & (NPC_SOLID | NPC_SPECIALSOLID)) {
 			collision = entity_react_to_collision(&player, e);
 			if(collision.bottom && ((e->eflags|e->nflags) & NPC_BOUNCYTOP)) {
 				player.y_speed = pixel_to_sub(-1);

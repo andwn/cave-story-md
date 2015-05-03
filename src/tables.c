@@ -150,7 +150,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Safety, "Safety" },
 	{ BGM_GameOver, "Game Over" },
 	{ BGM_Gravity, "Gravity" },
-	{ BGM_Balcony, "On To Grasstown" },
+	{ BGM_Grasstown, "On To Grasstown" },
 	{ BGM_Balcony, "Meltdown 2" },
 	{ BGM_EyesOfFlame, "Eyes Of Flame" },
 	{ BGM_Gestation, "Gestation" },
@@ -337,18 +337,18 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Chest2, PAL1 }, // 21 - Treasure Chest (Open)
 	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
 	{ NULL, PAL0 }, // 23 - Teleporter Lights
-	{ NULL, PAL0 }, // 24 - Enemy: Power Critter
+	{ &SPR_CritBig, PAL0 }, // 24 - Enemy: Power Critter
 	{ &SPR_Platform, PAL1 }, // 25 - Lift Platform
 	{ &SPR_Bat, PAL0 }, // 26 - Enemy: Bat (Black, circling)
 	{ &SPR_Trap, PAL1 }, // 27 - Death trap
-	{ NULL, PAL0 }, // 28 - Enemy: Critter (Flying)
+	{ &SPR_CritHG, PAL3 }, // 28 - Enemy: Critter (Flying)
 	{ &SPR_Cthu, PAL3 }, // 29 - Cthulhu
 	{ &SPR_Gunsmith, PAL3 }, // 30 - Hermit Gunsmith
 	{ &SPR_Bat, PAL0 }, // 31 - Enemy: Bat (Black, Hanging)
 	{ &SPR_LifeUp, PAL1 }, // 32 - Life Capsule
 	{ NULL, PAL0 }, // 33 - Projectile: Balrog energy bounce
 	{ &SPR_Bed, PAL1 }, // 34 - Bed
-	{ NULL, PAL0 }, // 35 - Enemy: Mannan
+	{ &SPR_Mannan, PAL3 }, // 35 - Enemy: Mannan
 	{ &SPR_Balrog, PAL1 }, // 36 - Boss: Balrog (Hovering)
 	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
 	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
@@ -407,8 +407,8 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 91 - Cage
 	{ NULL, PAL0 }, // 92 - Sue (Computer)
 	{ NULL, PAL0 }, // 93 - Chaco
-	{ NULL, PAL0 }, // 94 - Enemy: Kulala
-	{ NULL, PAL0 }, // 95 - Enemy: Jelly
+	{ &SPR_Kulala, PAL0 }, // 94 - Enemy: Kulala
+	{ &SPR_Jelly, PAL0 }, // 95 - Enemy: Jelly
 	{ &SPR_Fan, PAL1 }, // 96 - Fan (Left)
 	{ &SPR_Fan, PAL1 }, // 97 - Fan (Up)
 	{ &SPR_Fan, PAL1 }, // 98 - Fan (Right)
@@ -420,12 +420,12 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, PAL0 }, // 104 - Enemy: Frog
 	{ NULL, PAL0 }, // 105 - Balloon (Hey!, Low)
 	{ NULL, PAL0 }, // 106 - Balloon (Hey!, High)
-	{ NULL, PAL0 }, // 107 - Malco (Undamaged)
+	{ &SPR_Malco, PAL1 }, // 107 - Malco (Undamaged)
 	{ NULL, PAL0 }, // 108 - Projectile: Balfrog
-	{ NULL, PAL0 }, // 109 - Malco (Damaged)
+	{ &SPR_Malco, PAL1 }, // 109 - Malco (Damaged)
 	{ NULL, PAL0 }, // 110 - Enemy: Puchi
-	{ NULL, PAL0 }, // 111 - Quote (Teleports Out)
-	{ NULL, PAL0 }, // 112 - Quote (Teleports In)
+	{ &SPR_Quote, PAL0 }, // 111 - Quote (Teleports Out)
+	{ &SPR_Quote, PAL0 }, // 112 - Quote (Teleports In)
 	{ NULL, PAL0 }, // 113 - Prof. Booster
 	{ NULL, PAL0 }, // 114 - Enemy: Press
 	{ NULL, PAL0 }, // 115 - Enemy: Ravil
