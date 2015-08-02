@@ -21,7 +21,7 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
   - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.
 
 ### How to build? (GNU/Linux)
-1. Set up [Gendev](https://code.google.com/p/gendev/)
+1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
 2. Clone the project and do `make`.
   - This setup can be fairly error prone. I'm looking into ways to make this easier but for now [this thread](http://gendev.spritesmind.net/forum/viewtopic.php?t=1248&sid=062e63d4c70d3d74012e31e680089aab) can help.
 
@@ -29,135 +29,55 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 - Many of the colors are more vivid or even wrong sometimes due to palette limitations.
 - Some effects like the sprinkler and screen fading are not possible or difficult to implement without lag
 
-### Area TODO List
-- [x] First Cave
-- [x] Mimiga Village
-- [x] Graveyard
-  - [ ] Music
-  - [ ] Enemies
-    - [ ] Pignon
-    - [ ] Gravekeeper
-- [x] Egg Corridor
-  - [ ] Music
-    - [ ] Mischievous Robot
-    - [ ] Pulse
-  - [ ] Enemies
-    - [x] Critters
-    - [ ] Behemoth
-    - [ ] Bosu
-    - [ ] Basil
-    - [ ] Beetle (Follow)
-    - [ ] Beetle (Wall)
-    - [ ] Boss: Igor
-  - [ ] NPCs
-    - [ ] Robot
-    - [x] Sue
-    - [x] Igor
-    - [x] Cthulhu
-  - [ ] Weapon: Missiles
-- [x] Grasstown
-  - [ ] Sprites
-  - [ ] Music
-  - [ ] Enemies
-    - [ ] Hover critter
-    - [ ] Power critter
-    - [ ] Jellyfish
-    - [ ] Big jellyfish (Kulala)
-    - [ ] Circling bats
-    - [ ] Hanging bats
-    - [ ] Mannan
-    - [ ] Frog
-    - [ ] Press (vertical)
-    - [ ] Boss: Balrog 2
-    - [ ] Boss: Ravil
-    - [ ] Boss: Balfrog
-  - [ ] NPCs
-    - [x] Santa
-    - [ ] Chaco
-    - [ ] Malco
-    - [x] Kazuma
-    - [ ] Booster
-  - [ ] Weapon: Fireball
-- [ ] Sand Zone
-  - [ ] Completable
-  - [ ] Fix the background color
-  - [ ] Music
-    - [ ] Meltdown 2
-    - [ ] Jenka
-    - [ ] Tyrant
-    - [x] Run!
-  - [ ] Enemies
-    - [ ] Beetle (Wall / Brown)
-    - [ ] Boss: Curly
-    - [ ] Sandcroc
-    - [ ] Polish & Baby Polish
-    - [ ] Boss: Omega
-    - [ ] Crow
-    - [ ] Skullhead
-    - [ ] Crow carrying Skullhead
-    - [ ] Armadillo
-    - [ ] Skullstep
-    - [ ] Skeleton
-    - [ ] Boss: Toroko
-  - [ ] NPCs
-    - [ ] Curly
-    - [ ] Mimigas
-    - [ ] Sun blocks
-    - [ ] Jenka
-    - [ ] Puppies
-    - [ ] Doctor
-  - [ ] Weapon: Machine Gun
-- [ ] Labyrinth
-  - [ ] Completable
-  - [ ] Music
-    - [ ] Jenka 2
-    - [ ] Labyrinth fight
-  - [ ] Weapon: Snake
+### TODO List
+- [ ] "Completable" Areas
+  - [x] First Cave
+  - [x] Mimiga Village
+  - [x] Egg Corridor
+  - [x] Grasstown
+  - [ ] Sand Zone
+  - [ ] Labyrinth
+  - [ ] Waterway
+  - [ ] Busted Egg Corridor
+  - [ ] Outer Wall
+  - [ ] Plantation
+  - [ ] Last Cave
+  - [ ] Balcony / Ring
+  - [ ] Sacred Ground
+- [ ] Weapons
+  - [x] Polar Star
+  - [ ] Missiles
+  - [ ] Fireball
+  - [ ] Machine Gun
+  - [ ] Snake
+  - [ ] Spur
+  - [ ] Super Missiles
+  - [ ] Nemesis
+- [ ] Item / Pause Menu
   - [ ] Equip: Booster 0.8
-  - [ ] Item Menu (Needed to equip booster)
-- [ ] Core
-  - [ ] Completable
-  - [ ] Music
-    - [ ] Geothermal
-    - [ ] Oppression
-- [ ] Waterway
-  - [ ] Completable
-  - [ ] Music
-- [ ] Egg Corridor?
-  - [ ] Completable
-  - [ ] Music
-    - [x] Quiet
-    - [ ] Scorching Back
-  - [ ] Weapon: Spur
   - [ ] Equip: Booster 2.0
-- [ ] Outer Wall
-  - [ ] Completable
-  - [ ] Music
-    - [ ] Moonsong
-    - [ ] Hero's End
-- [ ] Plantation
-  - [ ] Completable
-  - [x] Music
-- [ ] Last Cave
-  - [ ] Completable
-  - [ ] Music
-- [ ] Balcony / Ring
-  - [ ] Completable
-  - [ ] Music
-    - [x] Balcony
-    - [x] Charge
-    - [ ] Zombie
-    - [ ] Last Battle
-- [ ] Ending / Credits
-  - [ ] Completable
-  - [ ] Music
-    - [ ] Breaking Down
-    - [ ] Credits
-- [ ] Sacred Ground
-  - [ ] Completable
-  - [ ] Music
-    - [ ] Running Hell
-    - [ ] Seal Chamber
+- [ ] Music
+  - [ ] Graveyard
+  - [ ] Mischievous Robot
+  - [ ] Pulse
+  - [ ] Meltdown 2
+  - [ ] Jenka
+  - [ ] Tyrant
+  - [ ] Jenka 2
+  - [ ] Labyrinth Fight
+  - [ ] Geothermal
+  - [ ] Oppression
+  - [ ] Waterway
+  - [ ] Scorching Back
+  - [ ] Moonsong
+  - [ ] Hero's End
+  - [ ] Last Cave
+  - [ ] Zombie
+  - [ ] Last Battle
+  - [ ] Breaking Down
+  - [ ] Credits
+  - [ ] Running Hell
+  - [ ] Seal Chamber
 - [ ] Misc
   - [ ] Air counter and drowning
   - [ ] Walk and jump sound effect
