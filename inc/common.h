@@ -1,6 +1,8 @@
 #ifndef INC_COMMON_H_
 #define INC_COMMON_H_
 
+#include <types.h>
+
 // Screen size
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 224
@@ -48,23 +50,6 @@
 #define floor(x) ((x)&~0xFF)
 #define round(x) ((x+0x80)&~0xFF)
 #define ceil(x)  ((x+0x100)&~0xFF)
-
-#define abs(n) ((n) * (((n)>0) - ((n)<0)))
-
-#ifndef _GENESIS_H_
-// This is so types like u8/u16 can be used in headers without including genesis.h
-#define s8      char
-#define s16     short
-#define s32     long
-#define u8      unsigned char
-#define u16     unsigned short
-#define u32     unsigned long
-
-#define NULL 0
-#define TRUE 1
-#define FALSE 0
-
-#endif // _GENESIS_H_
 
 // Booleans
 typedef unsigned char bool;
