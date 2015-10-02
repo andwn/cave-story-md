@@ -33,13 +33,15 @@
 
 int main() {
     VDP_init();
+    SYS_disableInts();
     VDP_setPlanSize(64, 32);
-    // Sprite list overlaps the bottom of the window, so move it up
-	VDP_setSpriteListAddress(0xB600); // Default: 0xBC00
-	VDP_setHScrollTableAddress(0xF800);
+    // Sprite list overlaps the bottom of the window, so move it
+	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800
+	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
 	sprites_init();
     sound_init();
 	input_init();
+	SYS_enableInts();
     while(true) {
 		u8 select = titlescreen_main();
 		switch(select) {

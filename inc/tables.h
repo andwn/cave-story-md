@@ -73,7 +73,7 @@ typedef struct {
 
 typedef struct {
 	const u8 *song;
-	u8 name[24];
+	char name[24];
 } song_info_def;
 
 typedef struct {

@@ -28,8 +28,6 @@ u32 tileData[32][TSIZE];
 
 // Keeps track of whether the HUD is loaded or not to avoid double loads/frees
 bool showing = false;
-// When this gets flipped on the bars will be redrawn next vblank
-//bool hudRedrawPending = false;
 
 void hud_redraw_health();
 void hud_decrease_health();
@@ -129,7 +127,6 @@ void hud_update() {
 }
 
 void hud_update_vblank() {
-	//if(!hudRedrawPending) return;
 	VDP_loadTileData(tileData[0], TILE_HUDINDEX, 32, true);
 	hudRedrawPending = false;
 }

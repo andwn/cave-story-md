@@ -48,7 +48,7 @@ void vblank() {
 	stage_update();
 	if(hudRedrawPending) hud_update_vblank();
 	if(debuggingEnabled && --debugTime == 0) {
-		u8 str[34];
+		char str[34];
 		// Draw player/entity update time
 		uintToStr(playerProf, &str[0], 5);
 		uintToStr(entityProf, &str[6], 5);

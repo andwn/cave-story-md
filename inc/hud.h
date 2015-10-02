@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// When this gets flipped on the bars will be redrawn next vblank
 bool hudRedrawPending;
 
 // Loads sprites for HUD and displays it on screen
