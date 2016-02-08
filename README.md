@@ -16,7 +16,7 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 
 ## How to build? (Windows)
 1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
-2. Clone the repo `git clone https://github.com/aderosier/cave-story-md.git`
+2. Clone the repo `git clone https://github.com/andwn/cave-story-md.git`
 3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
   - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.
 
