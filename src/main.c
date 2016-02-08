@@ -1,6 +1,6 @@
 /*
  * An attempt to rewrite/port Cave Story's engine to an old console
- * Copyright (C) 2015 aderosier
+ * Copyright (C) 2015 andwn
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

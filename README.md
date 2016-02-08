@@ -8,11 +8,11 @@ I update this every so often: [Cave-Story-MD.bin](https://dl.dropboxusercontent.
 
 #### Is this beatable?
 Not yet.
-From "New Game" without cheats you can make it to Grasstown. 
+From "New Game" without cheats you can make it to Sand Zone. 
 About 30% of the game's music is implemented, and all of the sound effects are.
-Only Polar Star works but Y and Z can still be used to switch weapons.
+Only Polar Star actually does anything but Y and Z can still be used to switch weapons.
 Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
-The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I am writing a converter.
+The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).
 
 ## How to build? (Windows)
 1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
@@ -23,13 +23,13 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 ### How to build? (GNU/Linux)
 1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
 2. Clone the project and do `make`.
-  - This setup can be fairly error prone. I'm looking into ways to make this easier but for now [this thread](http://gendev.spritesmind.net/forum/viewtopic.php?t=1248&sid=062e63d4c70d3d74012e31e680089aab) can help.
 
 #### Caveats
 - Many of the colors are more vivid or even wrong sometimes due to palette limitations.
 - Some effects like the sprinkler and screen fading are not possible or difficult to implement without lag
 
 ### TODO List
+- [ ] Finish the rest of the music
 - [ ] "Completable" Areas
   - [x] First Cave
   - [x] Mimiga Village
@@ -44,7 +44,8 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
   - [ ] Last Cave
   - [ ] Balcony / Ring
   - [ ] Sacred Ground
-- [ ] Weapons
+  - [ ] Wind Fortress (assuming CS+ maps are the same)
+- [ ] Weapons / Equip
   - [x] Polar Star
   - [ ] Missiles
   - [ ] Fireball
@@ -53,31 +54,12 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
   - [ ] Spur
   - [ ] Super Missiles
   - [ ] Nemesis
+  - [ ] Booster 0.8
+  - [ ] Booster 2.0
 - [ ] Item / Pause Menu
-  - [ ] Equip: Booster 0.8
-  - [ ] Equip: Booster 2.0
-- [ ] Music
-  - [ ] Graveyard
-  - [ ] Mischievous Robot
-  - [ ] Pulse
-  - [ ] Meltdown 2
-  - [ ] Jenka
-  - [ ] Tyrant
-  - [ ] Jenka 2
-  - [ ] Labyrinth Fight
-  - [ ] Geothermal
-  - [ ] Oppression
-  - [ ] Waterway
-  - [ ] Scorching Back
-  - [ ] Moonsong
-  - [ ] Hero's End
-  - [ ] Last Cave
-  - [ ] Zombie
-  - [ ] Last Battle
-  - [ ] Breaking Down
-  - [ ] Credits
-  - [ ] Running Hell
-  - [ ] Seal Chamber
+- [ ] Map
+- [x] Teleporter Menu
+- [ ] The AI/Behavior code is awful and needs to be rethought
 - [ ] Misc
   - [ ] Air counter and drowning
   - [ ] Walk and jump sound effect
@@ -85,4 +67,4 @@ The game can be saved and resumed. I have yet to notice any data related bugs. T
 
 #### Legal Disclaimer
 The art assets and sound effects are property of Studio Pixel and are in no way owned by me.
-This repository focuses on the engine (GPLv3) and music covers (CC0).
+This repository focuses on the engine and music conversions.
