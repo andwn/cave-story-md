@@ -16,6 +16,48 @@
 #include "ai_common.h"
 #include "ai_balrog.h"
 
+#define LIST_PUSH(list, obj) ({ \
+	obj->next = list; \
+	obj->prev = NULL; \
+	list->prev = obj; \
+	list = obj; \
+})
+
+#define LIST_REMOVE(list, obj) ({ \
+	if(obj->next != NULL) obj->next->prev = obj->prev; \
+	if(obj->prev != NULL) obj->prev->next = obj->next; \
+	else list = obj->next; \
+})
+
+#define LIST_MOVE(fromList, toList, obj) ({ \
+	LIST_REMOVE(fromList, obj); \
+	LIST_PUSH(toList, obj); \
+})
+
+#define LIST_CLEAR(list) ({ \
+	Entity *temp; \
+	while(list != NULL) { \
+		temp = list; \
+		LIST_REMOVE(list, list); \
+		sprite_delete(temp->sprite); \
+		MEM_free(temp); \
+	} \
+})
+
+#define LIST_CLEAR_BY_FILTER(list, var, match) ({ \
+	Entity *obj = list, *temp; \
+	while(obj != NULL) { \
+		temp = obj->next; \
+		if(obj->var == match) { \
+			LIST_REMOVE(list, obj); \
+			sprite_delete(obj->sprite); \
+			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, true); \
+			MEM_free(obj); \
+		} \
+		obj = temp; \
+	} \
+})
+
 // The original game runs at 50 Hz. The PAL values are copied from it
 // NTSC values calculated with: value * (50.0 / 60.0)
 // All measured in units, 0x200 (512) units is one pixel
@@ -80,8 +122,7 @@ s16 maxFallSpeed = MAX_FALL_SPEED_NTSC, maxFallSpeedWater = MAX_FALL_SPEED_WATER
 	friction = FRICTION_NTSC, frictionWater = FRICTION_WATER_NTSC;
 
 // List functions
-Entity *list_clear(Entity *list, u8 criteria, u16 value);
-Entity *list_get_prev(Entity *e, Entity *list);
+//Entity *list_clear(Entity *list, u8 criteria, u16 value);
 
 Entity *entity_update(Entity *e);
 Entity *entity_update_inactive(Entity *e);
@@ -93,45 +134,19 @@ bool collide_stage_ceiling(Entity *e);
 
 void entity_drop_powerup(Entity *e);
 
-Entity *list_get_prev(Entity *e, Entity *list) {
-	while(list->next != NULL) {
-		if(list->next == e) return list;
-		list = list->next;
-	}
-	return NULL;
-}
-
 void entity_deactivate(Entity *e) {
-	Entity *next = e->next;
-	Entity *prev = list_get_prev(e, entityList);
-	e->next = inactiveList;
-	inactiveList = e;
-	if(prev == NULL) {
-		entityList = next;
-	} else {
-		prev->next = next;
-	}
+	LIST_MOVE(entityList, inactiveList, e);
 }
 
 void entity_reactivate(Entity *e) {
-	Entity *next = e->next;
-	Entity *prev = list_get_prev(e, inactiveList);
-	e->next = entityList;
-	entityList = e;
-	if(prev == NULL) {
-		inactiveList = next;
-	} else {
-		prev->next = next;
-	}
+	LIST_MOVE(inactiveList, entityList, e);
 	e->activate(e);
 }
 
 Entity *entity_delete(Entity *e) {
 	sprite_delete(e->sprite);
 	Entity *next = e->next;
-	Entity *prev = list_get_prev(e, entityList);
-	if(prev == NULL) entityList = next;
-	else prev->next = next;
+	LIST_REMOVE(entityList, e);
 	MEM_free(e);
 	return next;
 }
@@ -145,77 +160,14 @@ Entity *entity_destroy(Entity *e) {
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	sprite_delete(e->sprite);
 	Entity *next = e->next;
-	Entity *prev = list_get_prev(e, entityList);
-	if(prev == NULL) entityList = next;
-	else prev->next = next;
+	LIST_REMOVE(entityList, e);
 	MEM_free(e);
 	return next;
 }
 
-bool entity_matches_criteria(Entity *e, u8 criteria, u16 value, bool delete) {
-	bool result = false;
-	switch(criteria) {
-	case FILTER_ID:
-		if(e->id == value) {
-			result = true;
-			if(delete && (e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
-		}
-		break;
-	case FILTER_EVENT:
-		if(e->event == value) {
-			result = true;
-			if(delete && (e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, true);
-		}
-		break;
-	case FILTER_TYPE:
-		if(e->type == value) {
-			result = true;
-		}
-		break;
-	case FILTER_ALL:
-		result = true;
-		break;
-	default:
-		break;
-	}
-	if(delete && result && e->sprite != SPRITE_NONE) {
-		sprite_delete(e->sprite);
-		e->sprite = SPRITE_NONE;
-	}
-	return result;
-}
-
-// Clears a single linked list of entities, returns first element
-Entity *list_clear(Entity *list, u8 criteria, u16 value) {
-	Entity *e, *temp;
-	// First element
-	while(list != NULL) {
-		if(entity_matches_criteria(list, criteria, value, true)) {
-			temp = list->next;
-			MEM_free(list);
-			list = temp;
-		} else {
-			break;
-		}
-	}
-	if(list == NULL) return NULL; // If we cleared every entity
-	// Other elements
-	e = list;
-	while(e->next != NULL) {
-		if(entity_matches_criteria(e->next, criteria, value, true)) {
-			temp = e->next->next;
-			MEM_free(e->next);
-			e->next = temp;
-		} else {
-			e = e->next;
-		}
-	}
-	return list;
-}
-
-void entities_clear(u8 criteria, u16 value) {
-	entityList = list_clear(entityList, criteria, value);
-	inactiveList = list_clear(inactiveList, criteria, value);
+void entities_clear() {
+	LIST_CLEAR(entityList);
+	LIST_CLEAR(inactiveList);
 }
 
 u16 entities_count_active() {
@@ -695,6 +647,16 @@ Entity *entity_find_by_event(u16 event) {
 	return NULL;
 }
 
+void entities_clear_by_event(u16 event) {
+	LIST_CLEAR_BY_FILTER(entityList, event, event);
+	LIST_CLEAR_BY_FILTER(inactiveList, event, event);
+}
+
+void entities_clear_by_type(u16 type) {
+	LIST_CLEAR_BY_FILTER(entityList, type, type);
+	LIST_CLEAR_BY_FILTER(inactiveList, type, type);
+}
+
 bool entity_on_screen(Entity *obj) {
 	return obj->x > camera.x - pixel_to_sub(SCREEN_HALF_W + 32) &&
 			obj->x < camera.x + pixel_to_sub(SCREEN_HALF_W + 32) &&
@@ -823,7 +785,6 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 bool entity_disabled(Entity *e) {
 	// Some entities should not be activated until a specific system flag is set,
 	// and some no longer appear once one is set
-
 	if((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id)) return true;
 	return false;
 }
@@ -844,8 +805,9 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	}
 	entity_default(e, type, 0);
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
-		e->next = entityList;
-		entityList = e;
+		//e->next = entityList;
+		//entityList = e;
+		LIST_PUSH(entityList, e);
 		if(npc_info[type].sprite != NULL) {
 			e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
 			sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, e->direction));
@@ -855,8 +817,9 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		} else e->sprite = SPRITE_NONE;
 		//e->activate(e);
 	} else {
-		e->next = inactiveList;
-		inactiveList = e;
+		//e->next = inactiveList;
+		//inactiveList = e;
+		LIST_PUSH(inactiveList, e);
 		e->sprite = SPRITE_NONE;
 	}
 	ai_setup(e);
@@ -905,8 +868,10 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 		e->set_state = &ai_setstate_balfrog;
 		break;
 	}
-	e->next = entityList;
-	entityList = e;
+	//e->next = entityList;
+	//entityList->prev = e;
+	//entityList = e;
+	LIST_PUSH(entityList, e);
 	sprite_set_attr(e->sprite, TILE_ATTR(PAL3, 0, 0, e->direction));
 	sprite_set_position(e->sprite,
 		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
@@ -915,10 +880,10 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	return e;
 }
 
-void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags) {
+void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(entity_matches_criteria(e, criteria, value, false)) {
+		if(e->event == event/*entity_matches_criteria(e, criteria, value, false)*/) {
 			//u16 eflags = e->flags | npc_flags(type) | flags;
 			entity_default(e, type, flags);
 			e->direction = direction;
@@ -936,10 +901,10 @@ void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags)
 	}
 }
 
-void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction) {
+void entities_set_state(u16 event, u16 state, u8 direction) {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(entity_matches_criteria(e, criteria, value, false)) {
+		if(e->event == event) {
 			e->direction = direction;
 			e->set_state(e, state);
 		}
@@ -947,10 +912,10 @@ void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction) {
 	}
 }
 
-void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction) {
+void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(entity_matches_criteria(e, criteria, value, false)) {
+		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
 				if(e->sprite != SPRITE_NONE) {
@@ -987,9 +952,10 @@ void entities_handle_flag(u16 flag) {
 bool entity_exists(u16 type) {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(entity_matches_criteria(e, FILTER_TYPE, type, false)) {
-			return true;
-		}
+		//if(entity_matches_criteria(e, FILTER_TYPE, type, false)) {
+		//	return true;
+		//}
+		if(e->type == type) return true;
 		e = e->next;
 	}
 	return false;

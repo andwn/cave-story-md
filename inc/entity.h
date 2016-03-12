@@ -39,7 +39,7 @@ extern s16 maxFallSpeed, maxFallSpeedWater,
 
 struct Entity {
 	// We linked list now
-	Entity *next;
+	Entity *next, *prev;
 	u16 id; // Entity ID (from the stage PXE, or when created by a TSC script)
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of npc_info in tables.c (npc.tbl in original game)
@@ -92,29 +92,33 @@ struct Entity {
 
 // First element of the "active" list and the "inactive" list
 Entity *entityList, *inactiveList;
-
 // References whichever entity is a boss otherwise it is NULL
 Entity *bossEntity;
 
 // Deletes entities based on a criteria
-void entities_clear(u8 criteria, u16 value);
+void entities_clear();
+void entities_clear_by_event(u16 event);
+void entities_clear_by_type(u16 type);
+
 // Counts the number of entities
 u16 entities_count();
 u16 entities_count_active();
 u16 entities_count_inactive();
+
 // Per frame update for active entities
 void entities_update();
 // Reactivate entities when they come back on screen
 // This one is called by the camera when it moves
 void entities_update_inactive();
+
 // Replaces existing (active) entities matching criteria to one of another type
 // Called by CNP and INP commands
-void entities_replace(u8 criteria, u16 value, u16 type, u8 direction, u16 flags);
+void entities_replace(u16 event, u16 type, u8 direction, u16 flags);
 // Sets the state of (active) entities matching criteria using set_state
 // Called by ANP command
-void entities_set_state(u8 criteria, u16 value, u16 state, u8 direction);
-void entities_set_position(u8 criteria, u16 value, u16 x, u16 y, u8 direction);
-
+void entities_set_state(u16 event, u16 state, u8 direction);
+void entities_move(u16 event, u16 x, u16 y, u8 direction);
+// Called when a flag changes
 void entities_handle_flag(u16 flag);
 
 // Deletes an entity and returns the next one
@@ -122,16 +126,22 @@ Entity *entity_delete(Entity *e);
 // Same as delete entity but does the following first:
 // Plays death sound, drops power ups, and creates smoke
 Entity *entity_destroy(Entity *e);
+
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
 Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event);
+
 // Finds entity matching an ID and returns it
 Entity *entity_find_by_id(u16 id);
 Entity *entity_find_by_event(u16 event);
+//Entity *entity_find_by_type(u16 type);
+
 // Returns true if an entity of given type exists
 bool entity_exists(u16 type);
 bool entity_disabled(Entity *e);
+
+// Physics
 void entity_update_movement(Entity *e);
 void entity_update_walk(Entity *e);
 void entity_update_jump(Entity *e);

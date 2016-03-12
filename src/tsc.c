@@ -482,39 +482,39 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			player_maxhealth_increase(args[0]);
 			break;
-		case CMD_ANP: // Give all entities (1) script state (2) with direction (3)
+		case CMD_ANP: // Give all entities of event (1) script state (2) with direction (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_set_state(FILTER_EVENT, args[0], args[1], args[2] > 0);
+			entities_set_state(args[0], args[1], args[2] > 0);
 			break;
-		case CMD_CNP: // Change all entities (1) to type (2) with direction (3)
+		case CMD_CNP: // Change all entities of event (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0);
+			entities_replace(args[0], args[1], args[2] > 0, 0);
 			break;
-		case CMD_MNP: // Move entity (1) to (2),(3) with direction (4)
+		case CMD_MNP: // Move entity of event (1) to (2),(3) with direction (4)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			entities_set_position(FILTER_EVENT, args[0], args[1], args[2], args[3] > 0);
+			entities_move(args[0], args[1], args[2], args[3] > 0);
 			break;
 		case CMD_DNA: // Delete all entities of type (1)
 			args[0] = tsc_read_word();
-			entities_clear(FILTER_TYPE, args[0]);
+			entities_clear_by_type(args[0]);
 			break;
 		case CMD_DNP: // Delete all entities with event # (1)
 			args[0] = tsc_read_word();
-			entities_clear(FILTER_EVENT, args[0]);
+			entities_clear_by_event(args[0]);
 			break;
-		// Change entity (1) to type (2) with direction (3) and set flag 0x1000?
+		// Change entity of event (1) to type (2) with direction (3) and set flag 0x1000?
 		case CMD_INP:
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(FILTER_EVENT, args[0], args[1], args[2] > 0, 0x1000);
+			entities_replace(args[0], args[1], args[2] > 0, 0x1000);
 			break;
 		case CMD_SNP: // Create entity (1) at (2),(3) with direction (4)
 			args[0] = tsc_read_word();
@@ -551,7 +551,9 @@ u8 execute_command() {
 		case CMD_ECJ: // If entity id (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			// This one is actually unused so I won't bother
+			if(entity_find_by_id(args[0]) != NULL) {
+				tsc_call_event(args[1]);
+			}
 			break;
 		case CMD_AE_ADD: // Refill all weapon ammo
 			player_refill_ammo();
@@ -629,8 +631,12 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			if(system_get_skip_flag(args[0])) tsc_call_event(args[1]);
 			break;
-		case CMD_FOB: // Focus on boss/NPC (1) with (2) ticks
-		case CMD_FON: // TODO: Figure out the difference between these
+		case CMD_FOB: // Focus on boss (1) with (2) ticks
+			if(bossEntity != NULL) {
+				camera.target = bossEntity;
+				break;
+			}
+		case CMD_FON: // Focus on NPC (1) with (2) ticks
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			Entity *e = entity_find_by_event(args[0]);
