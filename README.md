@@ -1,10 +1,10 @@
-# Fun Cave Game
+# Cave Story MD
 This is a rewrite/port of the popular freeware game Cave Story. It is built to run on a Genesis/Mega Drive.
 Tested to work on Kega Fusion, Gens GS, and an NTSC Genesis Model 1.
 The engine is built using SGDK, and written almost entirely in C.
 
 ## Download ROM
-Check the releases tab.
+See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
 Not yet. From "New Game" without cheats you can make it to Sand Zone.
