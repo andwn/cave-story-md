@@ -19,10 +19,6 @@ u8 hudMaxHealth, hudHealth, hudHealthTime;
 u8 hudWeapon, hudMaxAmmo, hudAmmo;
 u8 hudLevel, hudMaxEnergy, hudEnergy;
 
-// The sprites
-u8 hudSprite = SPRITE_NONE;
-u8 hudWeaponSprite = SPRITE_NONE;
-
 // DMA tile data
 u32 tileData[32][TSIZE];
 
@@ -50,18 +46,8 @@ void hud_show() {
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	hudAmmo = playerWeapon[currentWeapon].ammo;
 	// Create HUD sprite
-	hudSprite = sprite_create(&SPR_Hud2, PAL0, true);
-	// Force HUD sprite into a special location of VRAM
-	sprite_set_tileindex(hudSprite, TILE_HUDINDEX);
-	sprite_set_position(hudSprite, tile_to_pixel(2), tile_to_pixel(1));
-	// Weapon Sprite
-	hudWeaponSprite = sprite_create(&SPR_ArmsImage, PAL0, true);
-	sprite_set_position(hudWeaponSprite, tile_to_pixel(2), tile_to_pixel(1));
-	sprite_set_animframe(hudWeaponSprite, 0, hudWeapon);
-	// Fill up tileData with the sprite tiles
-	Sprite *spr = sprite_get_direct(hudSprite);
-	memcpy(tileData[0], spr->frame[0].frameSprites[0]->tileset->tiles, sizeof(u32) * TSIZE * 16);
-	memcpy(tileData[16], spr->frame[0].frameSprites[1]->tileset->tiles, sizeof(u32) * TSIZE * 16);
+	memcpy(tileData[0], SPR_TILESET(SPR_Hud2, 0, 0, 0)->tiles, sizeof(u32) * TSIZE * 16);
+	memcpy(tileData[16], SPR_TILESET(SPR_Hud2, 0, 0, 1)->tiles, sizeof(u32) * TSIZE * 16);
 	// Prepare DMA -- put the real data in tileData
 	hudRedrawPending = true;
 	hud_prepare_dma();
@@ -69,9 +55,6 @@ void hud_show() {
 }
 
 void hud_hide() {
-	if(!showing) return;
-	sprite_delete(hudSprite);
-	sprite_delete(hudWeaponSprite);
 	showing = false;
 }
 
@@ -95,7 +78,7 @@ void hud_redraw_weapon() {
 	hudLevel = playerWeapon[currentWeapon].level;
 	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
 	hudEnergy = playerWeapon[currentWeapon].energy;
-	sprite_set_frame(hudWeaponSprite, hudWeapon);
+	//sprite_set_frame(hudWeaponSprite, hudWeapon);
 	hudRedrawPending = true;
 }
 
@@ -124,6 +107,10 @@ void hud_update() {
 		hudRedrawPending = true;
 	}
 	if(hudRedrawPending) hud_prepare_dma();
+	sprite_add(tile_to_pixel(2), tile_to_pixel(1),
+		TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX), SPRITE_SIZE(4, 4));
+	sprite_add(tile_to_pixel(6), tile_to_pixel(1),
+		TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX + 16), SPRITE_SIZE(4, 4));
 }
 
 void hud_update_vblank() {
@@ -164,7 +151,7 @@ void hud_prepare_dma() {
 		memcpy(tileData[SPR_TILE(6, 1)], &TS_Numbers.tiles[(hudAmmo / 10)*TSIZE], sizeof(u32) * TSIZE);
 		memcpy(tileData[SPR_TILE(7, 1)], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
 	} else {
-		TileSet *ts = sprite_get_direct(hudSprite)->frame[0].frameSprites[1]->tileset;
+		TileSet *ts = SPR_TILESET(SPR_Hud2, 0, 0, 1);
 		memcpy(tileData[SPR_TILE(6, 0)], &ts->tiles[SPR_TILE(2, 0)*TSIZE], sizeof(u32) * TSIZE * 2);
 		memcpy(tileData[SPR_TILE(7, 0)], &ts->tiles[SPR_TILE(3, 0)*TSIZE], sizeof(u32) * TSIZE * 2);
 	}

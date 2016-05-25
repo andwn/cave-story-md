@@ -67,19 +67,19 @@ bool ai_setstate_critter_hop(Entity *e, u16 state) {
 	case 0: // Still on the ground
 		e->y_speed = 0;
 		e->x_speed = 0;
-		sprite_set_frame(e->sprite, 0);
+		//sprite_set_frame(e->sprite, 0);
 		break;
 	case 1: // Preparing to jump
-		sprite_set_frame(e->sprite, 1);
-		u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
-		sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, e->direction));
+		//sprite_set_frame(e->sprite, 1);
+		//u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+		//sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, e->direction));
 		e->state_time = 30;
 		break;
 	case 2: // Hop
 		e->grounded = false;
 		e->x_speed = -0x100 + 0x200 * e->direction;
 		e->y_speed = pixel_to_sub(-3);
-		sprite_set_frame(e->sprite, 2);
+		//sprite_set_frame(e->sprite, 2);
 		sound_play(SOUND_HOP, 5);
 		break;
 	}
@@ -91,20 +91,20 @@ void ai_update_door_enemy(Entity *e) {
 		e->state_time--;
 		if(e->state_time == 0) e->state = 0;
 	} else {
-		s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
-			x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
-		if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
-			sprite_set_frame(e->sprite, 2);
-		} else {
-			sprite_set_frame(e->sprite, 0);
-		}
+		//s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
+		//	x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
+		//if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
+		//	sprite_set_frame(e->sprite, 2);
+		//} else {
+		//	sprite_set_frame(e->sprite, 0);
+		//}
 	}
 }
 
 void ai_hurt_door_enemy(Entity *e) {
 	e->state = 1;
 	e->state_time = 30;
-	sprite_set_frame(e->sprite, 3);
+	//sprite_set_frame(e->sprite, 3);
 }
 
 void ai_setup(Entity *e) {
@@ -130,7 +130,7 @@ void ai_setup(Entity *e) {
 		break;
 	case 43: // Blackboard
 		e->y -= block_to_sub(1);
-		if(e->eflags&NPC_OPTION2) sprite_set_frame(e->sprite, 1);
+		//if(e->eflags&NPC_OPTION2) sprite_set_frame(e->sprite, 1);
 		break;
 	case 46: // Trigger
 		e->update = &ai_update_trigger;
@@ -146,7 +146,7 @@ void ai_setup(Entity *e) {
 		e->y -= block_to_sub(1);
 		e->update = &ai_update_toroko;
 		e->state = 3; // Running back and forth
-		sprite_set_animation(e->sprite, 2);
+		//sprite_set_animation(e->sprite, 2);
 		break;
 	case 5: // Critter - Green
 	case 64: // Critter - Blue
@@ -185,14 +185,14 @@ void ai_setup(Entity *e) {
 			e->update = &ai_update_fan;
 		}
 		e->activate = &ai_activate_fan;
-		if(e->sprite != SPRITE_NONE) e->activate(e);
+		//if(e->sprite != SPRITE_NONE) e->activate(e);
 		break;
 	case 102: // Power Wave
 		e->y += block_to_sub(1);
 		break;
 	case 211: // Spikes
 		e->activate = &ai_activate_spike;
-		if(e->sprite != SPRITE_NONE) e->activate(e);
+		//if(e->sprite != SPRITE_NONE) e->activate(e);
 		break;
 	default:
 		break;

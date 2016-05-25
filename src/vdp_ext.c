@@ -1,5 +1,6 @@
 #include "vdp_ext.h"
 
+// Window functions
 void VDP_setWindowPos(u8 x, u8 y) {
 	VDP_setReg(0x11, x);
 	VDP_setReg(0x12, y);

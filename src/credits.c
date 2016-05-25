@@ -1,7 +1,7 @@
 #include "credits.h"
 
 #include <genesis.h>
-#include "sprite.h"
+//#include "sprite.h"
 #include "resources.h"
 #include "input.h"
 #include "tables.h"
@@ -10,7 +10,7 @@
 void credits_main(u8 ending) {
 	SYS_disableInts();
 	VDP_setEnable(false);
-	sprites_clear();
+	//sprites_clear();
 	song_stop();
 	VDP_resetScreen();
 	VDP_setPalette(PAL0, PAL_Main.data);

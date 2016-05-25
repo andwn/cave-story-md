@@ -28,7 +28,7 @@ SCD_LOADER = scd/LukeProjectCD
 
 OPTION =
 INCS = -I. -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -O2 -std=c99 -c -fomit-frame-pointer
+CCFLAGS = $(OPTION) -m68000 -Wall -O2 -std=gnu99 -c -fomit-frame-pointer -fno-builtin
 HWCCFLAGS = $(OPTION) -m68000 -Wall -O1 -c -fomit-frame-pointer
 Z80FLAGS = -vb2
 ASFLAGS = -m68000 --register-prefix-optional

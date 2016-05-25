@@ -78,7 +78,7 @@ struct Entity {
 	// This is measured in pixels
 	bounding_box hit_box;
 	// Sprite ID assigned to this entity, or SPRITE_NONE
-	u8 sprite;
+	//u8 sprite;
 	// Area where sprite is displayed relative to the center
 	// Like hit_box this is also pixels
 	bounding_box display_box;

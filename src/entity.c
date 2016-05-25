@@ -39,7 +39,7 @@
 	while(list != NULL) { \
 		temp = list; \
 		LIST_REMOVE(list, list); \
-		sprite_delete(temp->sprite); \
+		/* sprite_delete(temp->sprite); */                                                     \
 		MEM_free(temp); \
 	} \
 })
@@ -50,7 +50,7 @@
 		temp = obj->next; \
 		if(obj->var == match) { \
 			LIST_REMOVE(list, obj); \
-			sprite_delete(obj->sprite); \
+			/* sprite_delete(obj->sprite); */                                                  \
 			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, true); \
 			MEM_free(obj); \
 		} \
@@ -144,7 +144,7 @@ void entity_reactivate(Entity *e) {
 }
 
 Entity *entity_delete(Entity *e) {
-	sprite_delete(e->sprite);
+	//sprite_delete(e->sprite);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
 	MEM_free(e);
@@ -158,7 +158,7 @@ Entity *entity_destroy(Entity *e) {
 			sub_to_pixel(e->x), sub_to_pixel(e->y));
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
-	sprite_delete(e->sprite);
+	//sprite_delete(e->sprite);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
 	MEM_free(e);
@@ -666,8 +666,8 @@ bool entity_on_screen(Entity *obj) {
 
 Entity *entity_update_inactive(Entity *e) {
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
-		if(npc_info[e->type].sprite != NULL)
-			e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
+		//if(npc_info[e->type].sprite != NULL)
+		//	e->sprite = sprite_create(npc_info[e->type].sprite, npc_info[e->type].palette, false);
 		Entity *next = e->next;
 		entity_reactivate(e);
 		return next;
@@ -688,12 +688,12 @@ void entity_drop_powerup(Entity *e) {
 		for(; i >= 5; i -= 5) { // Big
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 5;
-			sprite_set_animation(e->sprite, 2);
+			//sprite_set_animation(e->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
 			exp->experience = 3;
-			sprite_set_animation(e->sprite, 1);
+			//sprite_set_animation(e->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
@@ -704,10 +704,10 @@ void entity_drop_powerup(Entity *e) {
 
 Entity *entity_update(Entity *e) {
 	if(!entity_on_screen(e) && !e->alwaysActive) {
-		if(e->sprite != SPRITE_NONE) {
-			sprite_delete(e->sprite);
-			e->sprite = SPRITE_NONE;
-		}
+		//if(e->sprite != SPRITE_NONE) {
+		//	sprite_delete(e->sprite);
+		//	e->sprite = SPRITE_NONE;
+		//}
 		Entity *next = e->next;
 		entity_deactivate(e);
 		return next;
@@ -719,10 +719,10 @@ Entity *entity_update(Entity *e) {
 		Bullet *b = bullet_colliding(e);
 		if(b != NULL) {
 			b->ttl = 0;
-			sprite_delete(b->sprite);
+			//sprite_delete(b->sprite);
 			if(e->health <= b->damage) {
 				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
-					effect_create_damage_string(e->damage_value - b->damage,
+					effect_create_damage(e->damage_value - b->damage,
 							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 				// Killed enemy
 				e->health = 0;
@@ -741,16 +741,16 @@ Entity *entity_update(Entity *e) {
 	if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
 		e->damage_time--;
 		if(e->damage_time <= 0) {
-			effect_create_damage_string(e->damage_value,
+			effect_create_damage(e->damage_value,
 					sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 			e->damage_value = 0;
 		}
 	}
-	if(e->sprite != SPRITE_NONE) {
-		sprite_set_position(e->sprite,
-			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
-	}
+	//if(e->sprite != SPRITE_NONE) {
+	//	sprite_set_position(e->sprite,
+	//		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+	//		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+	//}
 	return e->next;
 }
 
@@ -808,19 +808,19 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		//e->next = entityList;
 		//entityList = e;
 		LIST_PUSH(entityList, e);
-		if(npc_info[type].sprite != NULL) {
-			e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
-			sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, e->direction));
-			sprite_set_position(e->sprite,
-				sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-				sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
-		} else e->sprite = SPRITE_NONE;
+		//if(npc_info[type].sprite != NULL) {
+		//	e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+		//	sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, e->direction));
+		//	sprite_set_position(e->sprite,
+		//		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+		//		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+		//} else e->sprite = SPRITE_NONE;
 		//e->activate(e);
 	} else {
 		//e->next = inactiveList;
 		//inactiveList = e;
 		LIST_PUSH(inactiveList, e);
-		e->sprite = SPRITE_NONE;
+		//e->sprite = SPRITE_NONE;
 	}
 	ai_setup(e);
 	return e;
@@ -864,7 +864,7 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 		bounding_box db = { 40, 32, 40, 32 };
 		e->hit_box = hb;
 		e->display_box = db;
-		e->sprite = sprite_create(&SPR_Balfrog1, PAL3, false);
+		//e->sprite = sprite_create(&SPR_Balfrog1, PAL3, false);
 		e->set_state = &ai_setstate_balfrog;
 		break;
 	}
@@ -872,10 +872,10 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	//entityList->prev = e;
 	//entityList = e;
 	LIST_PUSH(entityList, e);
-	sprite_set_attr(e->sprite, TILE_ATTR(PAL3, 0, 0, e->direction));
-	sprite_set_position(e->sprite,
-		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+	//sprite_set_attr(e->sprite, TILE_ATTR(PAL3, 0, 0, e->direction));
+	//sprite_set_position(e->sprite,
+	//	sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+	//	sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 	e->activate(e);
 	return e;
 }
@@ -887,14 +887,14 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			//u16 eflags = e->flags | npc_flags(type) | flags;
 			entity_default(e, type, flags);
 			e->direction = direction;
-			sprite_delete(e->sprite);
-			if(npc_info[type].sprite != NULL) {
-				e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
-				sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, direction));
-				sprite_set_position(e->sprite,
-					sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-					sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
-			} else e->sprite = SPRITE_NONE;
+			//sprite_delete(e->sprite);
+			//if(npc_info[type].sprite != NULL) {
+			//	e->sprite = sprite_create(npc_info[type].sprite, npc_info[type].palette, false);
+			//	sprite_set_attr(e->sprite, TILE_ATTR(npc_info[type].palette, 0, 0, direction));
+			//	sprite_set_position(e->sprite,
+			//		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+			//		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+			//} else e->sprite = SPRITE_NONE;
 			ai_setup(e);
 		}
 		e = e->next;
@@ -918,10 +918,10 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != SPRITE_NONE) {
-					u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
-					sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
-				}
+				//if(e->sprite != SPRITE_NONE) {
+				//	u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+				//	sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
+				//}
 			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
@@ -936,10 +936,10 @@ void entities_handle_flag(u16 flag) {
 	Entity *e = entityList;
 	while(e != NULL) {
 		if((e->eflags& NPC_DISABLEONFLAG) && e->id == flag) {
-			if(e->sprite != SPRITE_NONE) {
-				sprite_delete(e->sprite);
-				e->sprite = SPRITE_NONE;
-			}
+			//if(e->sprite != SPRITE_NONE) {
+			//	sprite_delete(e->sprite);
+			//	e->sprite = SPRITE_NONE;
+			//}
 			Entity *next = e->next;
 			entity_deactivate(e);
 			e = next;

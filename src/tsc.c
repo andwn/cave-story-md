@@ -142,7 +142,7 @@ u16 promptJump = 0;
 u8 teleMenuSlotCount = 0;
 u16 teleMenuEvent[8];
 u8 teleMenuSelection = 0;
-u8 teleMenuSprite[8];
+//u8 teleMenuSprite[8];
 u8 teleMenuAnim = 0;
 u8 teleMenuFrame[8];
 
@@ -164,9 +164,9 @@ u16 tsc_read_word();
 void tsc_init() {
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, true);
-	for(u8 i = 0; i < 8; i++) {
-		teleMenuSprite[i] = SPRITE_NONE;
-	}
+	//for(u8 i = 0; i < 8; i++) {
+	//	teleMenuSprite[i] = SPRITE_NONE;
+	//}
 	const u8 *TSC = TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
@@ -257,8 +257,8 @@ u8 tsc_update() {
 			tsc_hide_teleport_menu();
 			tscState = TSC_RUNNING;
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-					0, teleMenuFrame[teleMenuSelection]);
+			//sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+			//		0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == 0) {
 				teleMenuSelection = teleMenuSlotCount - 1;
 			} else {
@@ -266,8 +266,8 @@ u8 tsc_update() {
 			}
 			sound_play(SOUND_CURSOR, 5);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-					0, teleMenuFrame[teleMenuSelection]);
+			//sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+			//		0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == teleMenuSlotCount - 1) {
 				teleMenuSelection = 0;
 			} else {
@@ -276,8 +276,8 @@ u8 tsc_update() {
 			sound_play(SOUND_CURSOR, 5);
 		} else { // Doing nothing, blink cursor
 			teleMenuAnim = !teleMenuAnim;
-			sprite_set_animframe(teleMenuSprite[teleMenuSelection],
-					teleMenuAnim, teleMenuFrame[teleMenuSelection]);
+			//sprite_set_animframe(teleMenuSprite[teleMenuSelection],
+			//		teleMenuAnim, teleMenuFrame[teleMenuSelection]);
 		}
 		break;
 	case TSC_WAITGROUNDED:
@@ -303,10 +303,10 @@ void tsc_show_teleport_menu() {
 	for(u8 i = 0; i < 8; i++) {
 		if(teleportEvent[i] == 0) continue;
 		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
-		teleMenuSprite[teleMenuSlotCount] = sprite_create(&SPR_TeleMenu, PAL0, true);
+		//teleMenuSprite[teleMenuSlotCount] = sprite_create(&SPR_TeleMenu, PAL0, true);
 		teleMenuFrame[teleMenuSlotCount] = i;
-		sprite_set_frame(teleMenuSprite[teleMenuSlotCount], i);
-		sprite_set_position(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
+		//sprite_set_frame(teleMenuSprite[teleMenuSlotCount], i);
+		//sprite_set_position(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
 		teleMenuSlotCount++;
 	}
 	if(teleMenuSlotCount > 0) {
@@ -318,8 +318,8 @@ void tsc_show_teleport_menu() {
 
 void tsc_hide_teleport_menu() {
 	for(u8 i = 0; i < 8; i++) {
-		sprite_delete(teleMenuSprite[i]);
-		teleMenuSprite[i] = SPRITE_NONE;
+		//sprite_delete(teleMenuSprite[i]);
+		//teleMenuSprite[i] = SPRITE_NONE;
 	}
 }
 
@@ -448,7 +448,7 @@ u8 execute_command() {
 			} else if(args[0] == 2) { // Right
 				player.direction = 1;
 			}
-			sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
+			//sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
 			break;
 		case CMD_UNI: // TODO: Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -469,10 +469,10 @@ u8 execute_command() {
 			hud_show();
 			break;
 		case CMD_HMC: // Hide player character
-			sprite_set_visible(player.sprite, false);
+			//sprite_set_visible(player.sprite, false);
 			break;
 		case CMD_SMC: // Show player character
-			sprite_set_visible(player.sprite, true);
+			//sprite_set_visible(player.sprite, true);
 			break;
 		case CMD_LI_ADD: // Restore health by (1)
 			args[0] = tsc_read_word();
@@ -523,10 +523,10 @@ u8 execute_command() {
 			args[3] = tsc_read_word();
 			if(args[3] > 0) {
 				Entity *e = entity_create(args[1], args[2], 0, 0, args[0], 0);
-				if(e->sprite == SPRITE_NONE) break;
+				//if(e->sprite == SPRITE_NONE) break;
 				e->direction = 1;
-				u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
-				sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
+				//u16 pal = (sprite_get_direct(e->sprite)->attribut & TILE_ATTR_PALETTE_MASK) >> 13;
+				//sprite_set_attr(e->sprite, TILE_ATTR(pal, 0, 0, 1));
 			} else {
 				entity_create(args[1], args[2], 0, 0, args[0], 0);
 			}

@@ -39,7 +39,7 @@ void stage_load(u16 id) {
 	effects_clear();
 	entities_clear(FILTER_ALL, 0);
 	sprites_clear();
-	player_reset_sprites(); // Reloads player/weapon/hud sprites
+	//player_reset_sprites(); // Reloads player/weapon/hud sprites
 	stageID = id;
 	stageTileset = stage_info[id].tileset;
 	stage_load_blocks();

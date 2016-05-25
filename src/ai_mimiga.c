@@ -11,14 +11,14 @@
 void ai_update_toroko(Entity *e) {
 	switch(e->state) {
 	case 0: // Stand still
-		sprite_set_animation(e->sprite, 0);
+		//sprite_set_animation(e->sprite, 0);
 		break;
 	case 3: // Run back and forth
 	case 4:
 		if(e->attack == 0) {
-			sprite_set_animation(e->sprite, 1);
+			//sprite_set_animation(e->sprite, 1);
 		} else {
-			sprite_set_animation(e->sprite, 2);
+			//sprite_set_animation(e->sprite, 2);
 			Bullet *b = bullet_colliding(e);
 			if(b != NULL) {
 				sound_play(e->hurtSound, 10); // Squeak
@@ -28,15 +28,15 @@ void ai_update_toroko(Entity *e) {
 				e->y_speed = pixel_to_sub(-1);
 				e->x_speed /= 2;
 				e->grounded = false;
-				sprite_set_animation(e->sprite, 3);
+				//sprite_set_animation(e->sprite, 3);
 				b->ttl = 0;
-				sprite_delete(b->sprite);
+				//sprite_delete(b->sprite);
 			}
 		}
 		if(e->x_speed == 0) {
 			e->direction = !e->direction;
 			e->x_speed = pixel_to_sub(-2 + 4*e->direction);
-			sprite_set_attr(e->sprite, TILE_ATTR(PAL3, false, false, e->direction));
+			//sprite_set_attr(e->sprite, TILE_ATTR(PAL3, false, false, e->direction));
 		}
 		break;
 	case 6: // Jump then run
@@ -47,7 +47,7 @@ void ai_update_toroko(Entity *e) {
 		if(e->grounded) {
 			e->x_speed = 0;
 			e->state = 11;
-			sprite_set_animation(e->sprite, 4);
+			//sprite_set_animation(e->sprite, 4);
 		}
 		break;
 	case 11: // After falling on ground

@@ -1,85 +1,39 @@
 #include "sprite.h"
 
-#define MAX_SPRITES 80
+// Hardware sprite
+typedef struct {
+	s16 y; // end 9 bits
+	u8 size; // end 4 bits
+	u8 link; // end 7 bits
+	u16 attr;
+	s16 x; // end 9 bits
+} MDSprite;
 
-Sprite sprites[MAX_SPRITES];
-bool spriteEnabled[MAX_SPRITES];
-
-void sprites_init() {
-	SPR_init(0);
-	sprites_clear();
-}
+u8 spriteCount;
+MDSprite spriteList[MAX_SPRITE];
 
 void sprites_clear() {
-	SPR_clear();
-	for(u8 i = 0; i < MAX_SPRITES; i++) {
-		SPR_setNeverVisible(&sprites[i], true);
-		spriteEnabled[i] = false;
-	}
+	spriteCount = 0;
 }
 
 void sprites_update() {
-	SPR_update(sprites, MAX_SPRITES);
-}
-
-u8 sprite_create(const SpriteDefinition *def, u16 palette, bool priority) {
-	for(u8 i = 0; i < MAX_SPRITES; i++) {
-		if(spriteEnabled[i]) continue;
-		SPR_initSprite(&sprites[i], def, 0, 0,
-				TILE_ATTR(palette, priority, false, false));
-		spriteEnabled[i] = true;
-		return i;
+	if(spriteCount) {
+		DMA_queueDma(DMA_VRAM, (u32) spriteList, VDP_getSpriteListAddress(), 
+			(spriteCount * sizeof(MDSprite)) >> 1, 2);
 	}
-	return SPRITE_NONE;
 }
 
-void sprite_set_tileindex(u8 sprite, u16 index) {
-	SPR_setVRAMTileIndex(&sprites[sprite], index);
-}
-
-void sprite_set_position(u8 sprite, s16 x, s16 y) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setPosition(&sprites[sprite], x, y);
-}
-
-void sprite_set_attr(u8 sprite, u16 attr) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setAttribut(&sprites[sprite], attr);
-}
-
-void sprite_set_visible(u8 sprite, bool visible) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setNeverVisible(&sprites[sprite], !visible);
-}
-
-void sprite_set_animation(u8 sprite, u8 anim) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setAnim(&sprites[sprite], anim);
-}
-
-void sprite_set_animframe(u8 sprite, u8 anim, u8 frame) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setAnimAndFrame(&sprites[sprite], anim, frame);
-}
-
-void sprite_set_frame(u8 sprite, u8 frame) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setFrame(&sprites[sprite], frame);
-}
-
-void sprite_delete(u8 sprite) {
-	if(sprite >= MAX_SPRITES || !spriteEnabled[sprite]) return;
-	SPR_setNeverVisible(&sprites[sprite], true);
-	spriteEnabled[sprite] = false;
-}
-
-void sprite_set_direction(u8 sprite, u8 direction) {
-	u16 attr = sprites[sprite].attribut;
-	if(direction > 0) attr |= TILE_ATTR_HFLIP_MASK;
-	else attr &= ~TILE_ATTR_HFLIP_MASK;
-	SPR_setAttribut(&sprites[sprite], attr);
-}
-
-Sprite* sprite_get_direct(u8 sprite) {
-	return &sprites[sprite];
+void sprite_add(s16 x, s16 y, u16 attr, u8 size) {
+	if(spriteCount >= MAX_SPRITE) return;
+	// Make sure sprite is on screen
+	if(x < -32 || x >= 320 || y < -32 || y >= 224) return;
+	// Screen top left is 128x128
+	spriteList[spriteCount].x = x + 128;
+	spriteList[spriteCount].y = y + 128;
+	spriteList[spriteCount].size = size;
+	spriteList[spriteCount].link = 0; // 0 is end of the chain
+	spriteList[spriteCount].attr = attr;
+	// Link previous sprite to this one
+	if(spriteCount > 0) spriteList[spriteCount - 1].link = spriteCount;
+	spriteCount++;
 }

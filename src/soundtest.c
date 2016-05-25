@@ -2,7 +2,6 @@
 
 #include <genesis.h>
 
-#include "sprite.h"
 #include "resources.h"
 #include "input.h"
 #include "tables.h"
@@ -43,7 +42,6 @@ void draw_status() {
 void soundtest_main() {
 	SYS_disableInts();
 	VDP_setEnable(false);
-	sprites_clear();
 	song_stop();
 	VDP_clearPlan(APLAN, true);
 	VDP_setPalette(PAL0, PAL_Main.data);

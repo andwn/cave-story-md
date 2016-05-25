@@ -53,7 +53,7 @@ void player_update_interaction();
 // Default values for player
 void player_init() {
 	controlsLocked = false;
-	player_reset_sprites();
+	//player_reset_sprites();
 	player.direction = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	player.controller = &joystate;
@@ -74,24 +74,24 @@ void player_init() {
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < 8; i++) {
 		playerWeapon[i].type = 0; // No playerWeapons
-		playerWeapon[i].sprite = SPRITE_NONE;
+		//playerWeapon[i].sprite = SPRITE_NONE;
 	}
 	for(u8 i = 0; i < 3; i++) {
 		playerBullet[i].ttl = 0; // No bullets
-		playerBullet[i].sprite = SPRITE_NONE;
+		//playerBullet[i].sprite = SPRITE_NONE;
 	}
 	playerDead = false;
 	currentWeapon = 0;
 }
 
-void player_reset_sprites() {
-	player.sprite = sprite_create(&SPR_Quote, PAL0, false);
-	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
-	if(playerWeapon[currentWeapon].type > 0) {
-		playerWeapon[currentWeapon].sprite = sprite_create(
-			weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
-	}
-}
+//void player_reset_sprites() {
+	//player.sprite = sprite_create(&SPR_Quote, PAL0, false);
+	//sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
+	//if(playerWeapon[currentWeapon].type > 0) {
+	//	playerWeapon[currentWeapon].sprite = sprite_create(
+	//		weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
+	//}
+//}
 
 void player_update() {
 	if(playerDead) return;
@@ -109,7 +109,7 @@ void player_update() {
 	player.y = player.y_next;
 	if(player.health == 0) {
 		playerIFrames = 0;
-		sprite_set_visible(player.sprite, false);
+		//sprite_set_visible(player.sprite, false);
 		playerDead = true;
 		return;
 	}
@@ -140,20 +140,20 @@ void player_update_shooting() {
 	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
 		for(u8 i = (currentWeapon-1) % 8; i != currentWeapon; i = (i-1) % 8) {
 			if(playerWeapon[i].type > 0) {
-				sprite_delete(playerWeapon[currentWeapon].sprite);
+				//sprite_delete(playerWeapon[currentWeapon].sprite);
 				currentWeapon = i;
-				playerWeapon[i].sprite = sprite_create(
-						weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				//playerWeapon[i].sprite = sprite_create(
+				//		weapon_info[playerWeapon[i].type].sprite, PAL1, true);
 				break;
 			}
 		}
 	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
 		for(u8 i = (currentWeapon+1) % 8; i != currentWeapon; i = (i+1) % 8) {
 			if(playerWeapon[i].type > 0) {
-				sprite_delete(playerWeapon[currentWeapon].sprite);
+				//sprite_delete(playerWeapon[currentWeapon].sprite);
 				currentWeapon = i;
-				playerWeapon[i].sprite = sprite_create(
-						weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				//playerWeapon[i].sprite = sprite_create(
+				//		weapon_info[playerWeapon[i].type].sprite, PAL1, true);
 				break;
 			}
 		}
@@ -170,17 +170,17 @@ void player_update_shooting() {
 			if(b != NULL) {
 				if(w->level == 3) sound_play(0x31, 5);
 				else sound_play(0x20, 5);
-				b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
+				//b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
 				b->damage = weapon_info[w->type].damage[w->level - 1];
 				b->ttl = 20 + w->level * 5;
 				if(player.controller[0]&BUTTON_UP) {
-					sprite_set_frame(b->sprite, 1);
+					//sprite_set_frame(b->sprite, 1);
 					b->x = player.x;
 					b->y = player.y - pixel_to_sub(12);
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(-4);
 				} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-					sprite_set_frame(b->sprite, 1);
+					//sprite_set_frame(b->sprite, 1);
 					b->x = player.x;
 					b->y = player.y + pixel_to_sub(12);
 					b->x_speed = 0;
@@ -202,18 +202,19 @@ void player_update_bullets() {
 		if(b->ttl == 0) continue;
 		b->x += b->x_speed;
 		b->y += b->y_speed;
-		sprite_set_position(b->sprite,
-				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		u16 bx = sub_to_block(b->x), by = sub_to_block(b->y);
+		// Check if bullet is colliding with a breakable block
 		if(stage_get_block_type(bx, by) == 0x43) {
-			sprite_delete(b->sprite);
 			b->ttl = 0;
 			sound_play(SOUND_BREAK, 8);
 			stage_replace_block(bx, by, 0);
 			continue;
+		} else if(--b->ttl > 0) {
+			// Add bullet to sprite list if it hasn't expired
+			sprite_add(sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8, 
+				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8, 
+				TILE_ATTR_FULL(PAL0, true, false, false, TILE_BULLETINDEX), SPRITE_SIZE(2, 2));
 		}
-		if(--b->ttl == 0) sprite_delete(b->sprite);
 	}
 }
 
@@ -263,29 +264,29 @@ void player_draw() {
 			anim = ANIM_JUMPING;
 		}
 	}
-	sprite_set_animation(player.sprite, anim);
+	//sprite_set_animation(player.sprite, anim);
 	if((player.controller[0]&BUTTON_RIGHT) && player.direction == 0) {
-		sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, true));
+	//	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, true));
 		player.direction = 1;
 	} else if((player.controller[0]&BUTTON_LEFT) && player.direction == 1) {
-		sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, false));
+	//	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, false));
 		player.direction = 0;
 	}
-	sprite_set_visible(player.sprite, !((playerIFrames / 2) % 2));
-	sprite_set_position(player.sprite,
-			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+	//sprite_set_visible(player.sprite, !((playerIFrames / 2) % 2));
+	//sprite_set_position(player.sprite,
+	//		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+	//		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0) {
 		u8 wanim = 0;
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
-		sprite_set_animation(playerWeapon[currentWeapon].sprite, wanim);
-		sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, player.direction));
-		sprite_set_visible(playerWeapon[currentWeapon].sprite, !((playerIFrames / 2) % 2));
-		sprite_set_position(playerWeapon[currentWeapon].sprite,
-			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
-			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		//sprite_set_animation(playerWeapon[currentWeapon].sprite, wanim);
+		//sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, player.direction));
+		//sprite_set_visible(playerWeapon[currentWeapon].sprite, !((playerIFrames / 2) % 2));
+		//sprite_set_position(playerWeapon[currentWeapon].sprite,
+		//	sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
+		//	sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 
 	}
 }
@@ -307,7 +308,7 @@ void player_update_entity_collision() {
 	if(player.damage_time > 0) {
 		player.damage_time--;
 		if(player.damage_time == 0) {
-			effect_create_damage_string(player.damage_value,
+			effect_create_damage(player.damage_value,
 					sub_to_pixel(player.x) - 8, sub_to_pixel(player.y) - 4, 60);
 			player.damage_value = 0;
 		}
@@ -315,8 +316,6 @@ void player_update_entity_collision() {
 	Entity *e = entityList;
 	while(e != NULL) {
 		// Handle special cases
-		// TODO: Maybe this could be handled with function pointers instead
-		// The "continue" statements here go to the next iteration of the while loop
 		switch(e->type) {
 		case 1: // Energy
 			// Increase weapon level/energy
@@ -336,15 +335,6 @@ void player_update_entity_collision() {
 				continue;
 			}
 			break;
-		//case 46: // Trigger
-			// Call the trigger's event if an event isn't already running
-			// We don't delete the trigger here, the event takes care of it
-		//	if(entity_overlapping(&player, e) && !tsc_running()) {
-		//		tsc_call_event(e->event);
-		//		e = e->next;
-		//		continue;
-		//	}
-		//	break;
 		case 87: // Heart
 			// Increases health, plays sound and deletes itself
 			if(entity_overlapping(&player, e)) {
@@ -382,7 +372,7 @@ void player_update_entity_collision() {
 					}
 				}
 				// Show damage numbers
-				effect_create_damage_string(-e->attack,
+				effect_create_damage(-e->attack,
 						sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 				// Take health
 				if(player.health <= e->attack) {
@@ -442,11 +432,11 @@ Weapon *player_find_weapon(u8 id) {
 void player_give_weapon(u8 id, u8 ammo) {
 	Weapon *w = player_find_weapon(id);
 	if(w == NULL) {
-		sprite_delete(playerWeapon[currentWeapon].sprite);
+		//sprite_delete(playerWeapon[currentWeapon].sprite);
 		for(u8 i = 0; i < 8; i++) {
 			if(playerWeapon[i].type > 0) continue;
 			w = &playerWeapon[i];
-			w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
+			//w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
 			w->type = id;
 			w->level = 1;
 			w->energy = 0;
@@ -479,7 +469,7 @@ bool player_has_weapon(u8 id) {
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w != NULL) {
-		w->sprite = sprite_create(weapon_info[id_give].sprite, PAL1, true);
+		//w->sprite = sprite_create(weapon_info[id_give].sprite, PAL1, true);
 		w->type = id_give;
 		w->level = 1;
 		w->energy = 0;

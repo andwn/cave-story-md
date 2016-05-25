@@ -40,7 +40,7 @@ u8 windowTextTick = 0;
 
 bool promptShowing = false;
 bool promptAnswer = true;
-u8 handSpr = SPRITE_NONE;
+//u8 handSpr = SPRITE_NONE;
 
 void window_clear_text();
 void window_draw_face();
@@ -193,13 +193,13 @@ void window_prompt_open() {
 	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
 	sound_play(SOUND_PROMPT, 5);
 	// Load hand sprite and move next to yes
-	handSpr = sprite_create(&SPR_Pointer, PAL0, true);
-	sprite_set_position(handSpr, tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4);
+	//handSpr = sprite_create(&SPR_Pointer, PAL0, true);
+	//sprite_set_position(handSpr, tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4);
 	promptAnswer = true; // Yes is default
 }
 
 void window_prompt_close() {
-	sprite_delete(handSpr);
+	//sprite_delete(handSpr);
 	window_clear();
 }
 
@@ -215,8 +215,8 @@ bool window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SOUND_CURSOR, 5);
-		sprite_set_position(handSpr,
-				tile_to_pixel(33-(promptAnswer*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
+		//sprite_set_position(handSpr,
+		//		tile_to_pixel(33-(promptAnswer*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
 	}
 	return false;
 }

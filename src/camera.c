@@ -9,7 +9,7 @@
 #define CAMERA_MAX_SPEED (block_to_sub(1) - 1)
 #define LIMIT (8 * !cameraShake)
 
-u16 focusSpeed = 32;
+u16 focusSpeed = 5;
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 u16 cameraShake;
@@ -57,9 +57,9 @@ void camera_update() {
 		}
 		// Calculate where camera will be next frame
 		x_next = camera.x +
-				((floor(camera.target->x) + camera.x_offset) - camera.x) / focusSpeed;
+				(((floor(camera.target->x) + camera.x_offset) - camera.x) >> focusSpeed);
 		y_next = camera.y +
-				((floor(camera.target->y) + camera.y_offset) - camera.y) / focusSpeed;
+				(((floor(camera.target->y) + camera.y_offset) - camera.y) >> focusSpeed);
 		// Camera shaking
 		if(cameraShake > 0) {
 			x_next += (random() % 0x800) - 0x400;
@@ -105,14 +105,14 @@ void camera_update() {
 
 void camera_focus_on_player(u16 speed) {
 	camera.target = &player;
-	focusSpeed = speed;
+	focusSpeed = 5; //speed;
 }
 
 void camera_focus_on_entity(Entity *e, u16 speed) {
 	camera.target = e;
-	focusSpeed = speed;
+	focusSpeed = 5; //speed;
 }
 // TODO: Focus on boss
 void camera_focus_on_boss(u16 speed) {
-	focusSpeed = speed;
+	focusSpeed = 5; //speed;
 }

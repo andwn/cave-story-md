@@ -22,6 +22,7 @@ bool update_pause() {
 		//erase_pause();
 		return false;
 	} else {
+		
 		// TODO: Item Menu
 	}
 	return true;
@@ -29,7 +30,6 @@ bool update_pause() {
 
 void game_reset(bool load) {
 	effects_clear();
-	sprites_init();
 	camera_init();
 	tsc_init();
 	if(load) {
@@ -47,6 +47,7 @@ void game_reset(bool load) {
 void vblank() {
 	stage_update();
 	if(hudRedrawPending) hud_update_vblank();
+	/* TODO: Rewrite with sprintf
 	if(debuggingEnabled && --debugTime == 0) {
 		char str[34];
 		// Draw player/entity update time
@@ -63,22 +64,24 @@ void vblank() {
 		VDP_drawTextWindow(str, 1, 27);
 		debugTime = 60;
 	}
+	*/
 }
 
 u8 game_main(bool load) {
 	SYS_disableInts();
 	VDP_setEnable(false);
-	VDP_resetScreen();
+	//VDP_resetScreen();
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
 	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	game_reset(load);
 	VDP_setEnable(true);
 	SYS_enableInts();
-	VDP_setWindowPos(0, 251 * debuggingEnabled);
+	VDP_setWindowPos(0, 0);
 	bool paused = false;
 	u8 ending = 0;
 	while(true) {
+		sprites_clear();
 		input_update();
 		if(paused) {
 			paused = update_pause();
@@ -89,13 +92,13 @@ u8 game_main(bool load) {
 			} else {
 				//if(debuggingEnabled) debug_update();
 				camera_update();
-				playerProf = getSubTick();
+				//playerProf = getSubTick();
 				player_update();
-				playerProf = getSubTick() - playerProf;
+				//playerProf = getSubTick() - playerProf;
 				hud_update();
-				entityProf = getSubTick();
+				//entityProf = getSubTick();
 				entities_update();
-				entityProf = getSubTick() - entityProf;
+				//entityProf = getSubTick() - entityProf;
 				u8 rtn = tsc_update();
 				if(rtn > 0) {
 					if(rtn == 1) {
@@ -116,10 +119,10 @@ u8 game_main(bool load) {
 					}
 				}
 				effects_update();
-				sprites_update();
 				system_update();
 			}
 		}
+		sprites_update();
 		VDP_waitVSync();
 	}
 	SYS_setVIntCallback(NULL);

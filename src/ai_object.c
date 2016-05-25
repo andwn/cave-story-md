@@ -32,10 +32,10 @@ void ai_update_energy(Entity *e) {
 // When the door's direction is changed to be facing right it becomes
 // transparent. The CNP command does this when Balrog barges into Barr
 void ai_activate_door(Entity *e) {
-	if(e->direction) {
-		sprite_delete(e->sprite);
-		e->sprite = SPRITE_NONE;
-	}
+	//if(e->direction) {
+	//	sprite_delete(e->sprite);
+	//	e->sprite = SPRITE_NONE;
+	//}
 }
 
 void ai_update_trigger(Entity *e) {
@@ -63,14 +63,14 @@ void ai_activate_fan(Entity *e) {
 		anim += 1;
 		break;
 	case 98: // Right
-		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 0, 1));
+		//sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 0, 1));
 		break;
 	case 99: // Down
 		anim += 1;
-		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 1, 0));
+		//sprite_set_attr(e->sprite, TILE_ATTR(PAL1, 0, 1, 0));
 		break;
 	}
-	sprite_set_animation(e->sprite, anim);
+	//sprite_set_animation(e->sprite, anim);
 }
 
 void ai_update_fan(Entity *e) {
@@ -109,17 +109,17 @@ void ai_activate_spike(Entity *e) {
 	if(stage_get_block_type(x, y+1) == 0x41) return; // Solid on bottom
 	if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
 		// Flip vertical
-		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, true, false));
+		//sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, true, false));
 		return;
 	}
 	if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		sprite_set_frame(e->sprite, 1);
+		//sprite_set_frame(e->sprite, 1);
 		return;
 	}
 	if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		sprite_set_frame(e->sprite, 1);
+		//sprite_set_frame(e->sprite, 1);
 		// Flip horizontal
-		sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, false, true));
+		//sprite_set_attr(e->sprite, TILE_ATTR(PAL1, false, false, true));
 		return;
 	}
 }
