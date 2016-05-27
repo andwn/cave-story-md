@@ -18,7 +18,6 @@
 #define MAX_WEAPONS 8
 
 typedef struct {
-	//SpriteDefinition *sprite;
 	u8 type;
 	u8 level;
 	u16 energy;
@@ -31,7 +30,6 @@ Weapon playerWeapon[MAX_WEAPONS];
 u8 currentWeapon;
 
 typedef struct {
-	//SpriteDefinition *sprite;
 	s32 x, y;
 	s16 x_speed, y_speed;
 	u8 damage;
@@ -42,7 +40,6 @@ Bullet playerBullet[3];
 
 u16 playerMaxAir, playerAir;
 u16 playerMaxHealth;
-//u8 playerFacing;
 bool controlsLocked;
 u16 playerEquipment;
 u8 playerInventory[MAX_ITEMS];
@@ -51,8 +48,6 @@ Entity player;
 
 // Initialize everything for the player, sets default values
 void player_init();
-// Reloads sprites for player, weapon, and HUD, called by stage_load
-//void player_reset_sprites();
 // Per frame update for the player and related objects
 void player_update();
 // Sprite animation
@@ -60,6 +55,7 @@ void player_draw();
 
 Bullet *bullet_colliding(Entity *e);
 
+void player_unpause();
 bool player_invincible();
 bool player_inflict_damage(s16 damage);
 

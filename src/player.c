@@ -53,7 +53,6 @@ void player_update_interaction();
 // Default values for player
 void player_init() {
 	controlsLocked = false;
-	//player_reset_sprites();
 	player.direction = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	player.controller = &joystate;
@@ -72,26 +71,13 @@ void player_init() {
 	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < 8; i++) {
-		playerWeapon[i].type = 0; // No playerWeapons
-		//playerWeapon[i].sprite = SPRITE_NONE;
-	}
-	for(u8 i = 0; i < 3; i++) {
-		playerBullet[i].ttl = 0; // No bullets
-		//playerBullet[i].sprite = SPRITE_NONE;
-	}
+	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No playerWeapons
+	for(u8 i = 0; i < 3; i++) playerBullet[i].ttl = 0; // No bullets
 	playerDead = false;
 	currentWeapon = 0;
+	VDP_loadTileData(SPR_TILESET(SPR_Quote, 0, 0, 0)->tiles, TILE_PLAYERINDEX, 
+		TILE_PLAYERSIZE, true);
 }
-
-//void player_reset_sprites() {
-	//player.sprite = sprite_create(&SPR_Quote, PAL0, false);
-	//sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, player.direction));
-	//if(playerWeapon[currentWeapon].type > 0) {
-	//	playerWeapon[currentWeapon].sprite = sprite_create(
-	//		weapon_info[playerWeapon[currentWeapon].type].sprite, PAL1, false);
-	//}
-//}
 
 void player_update() {
 	if(playerDead) return;
@@ -109,7 +95,6 @@ void player_update() {
 	player.y = player.y_next;
 	if(player.health == 0) {
 		playerIFrames = 0;
-		//sprite_set_visible(player.sprite, false);
 		playerDead = true;
 		return;
 	}
@@ -241,14 +226,12 @@ void player_draw() {
 	u8 anim;
 	if(player.grounded) {
 		if(player.controller[0]&BUTTON_UP) {
-			if((player.controller[0]&BUTTON_RIGHT) ||
-					(player.controller[0]&BUTTON_LEFT)) {
+			if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
 				anim = ANIM_LOOKUPWALK;
 			} else {
 				anim = ANIM_LOOKUP;
 			}
-		} else if((player.controller[0]&BUTTON_RIGHT) ||
-				(player.controller[0]&BUTTON_LEFT)) {
+		} else if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
 			anim = ANIM_WALKING;
 		} else if((player.controller[0]&BUTTON_DOWN)) {
 			anim = ANIM_INTERACT;
@@ -264,18 +247,28 @@ void player_draw() {
 			anim = ANIM_JUMPING;
 		}
 	}
-	//sprite_set_animation(player.sprite, anim);
-	if((player.controller[0]&BUTTON_RIGHT) && player.direction == 0) {
-	//	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, true));
-		player.direction = 1;
-	} else if((player.controller[0]&BUTTON_LEFT) && player.direction == 1) {
-	//	sprite_set_attr(player.sprite, TILE_ATTR(PAL0, false, false, false));
-		player.direction = 0;
+	// God this is a mess
+	Animation *a = SPR_Quote.animations[anim];
+	if(player.anim != anim) {
+		player.anim = anim;
+		player.frame = 0;
+		player.frameTime = 0;
+		VDP_loadTileData(SPR_TILESET(SPR_Quote, anim, 0, 0)->tiles, 
+			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
+	} else if(a->length > 1 && ++player.frameTime >= 16) {
+		if(++player.frame >= a->length) player.frame = 0;
+		player.frameTime = 0;
+		VDP_loadTileData(a->frames[a->sequence[player.frame]]->frameSprites[0]->tileset->tiles, 
+			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
 	}
-	//sprite_set_visible(player.sprite, !((playerIFrames / 2) % 2));
-	//sprite_set_position(player.sprite,
-	//		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-	//		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+	if(player.controller[0]&BUTTON_RIGHT) player.direction = 1;
+	else if(player.controller[0]&BUTTON_LEFT) player.direction = 0;
+	if(!((playerIFrames >> 1) & 1)) {
+		sprite_add(sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
+			TILE_ATTR_FULL(PAL0, 0, 0, player.direction, TILE_PLAYERINDEX), 
+			SPRITE_SIZE(2, 2));
+	}
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0) {
 		u8 wanim = 0;
@@ -393,6 +386,10 @@ void player_update_entity_collision() {
 		}
 		e = e->next;
 	}
+}
+
+void player_unpause() {
+	if(pauseCancelsIFrames) playerIFrames = 0;
 }
 
 bool player_invincible() {

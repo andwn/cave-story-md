@@ -12,6 +12,7 @@
 #define FLAGS_LEN 250
 
 bool debuggingEnabled = false;
+bool pauseCancelsIFrames = true;
 
 struct {
 	u8 hour, minute, second, frame;

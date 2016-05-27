@@ -3,7 +3,14 @@
 
 #include "common.h"
 
+// Shows extra info on screen, fly through walls
 extern bool debuggingEnabled;
+
+// Normally after the player is hurt they are invincible on a short timer (~2 seconds).
+// Cave Story has a bug where pausing resets this timer to 0, allowing a section
+// in Grasstown to be skipped using the knockback of a bat twice in the same jump
+// See player.c: player_unpause()
+extern bool pauseCancelsIFrames;
 
 // Global flags are persisted to save data
 void system_set_flag(u16 flag, bool value);

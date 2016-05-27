@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+void effects_init();
 void effects_clear();
 void effects_update();
 

@@ -83,6 +83,7 @@ struct Entity {
 	// Like hit_box this is also pixels
 	bounding_box display_box;
 	u8 anim; // Current animation of the sprite being displayed
+	u8 frame, frameTime; // Frame and frame time for sprite animation
 	u16 state; // Script state / ANP
 	u16 state_time;
 	// Used to generate damage strings

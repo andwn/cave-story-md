@@ -19,7 +19,7 @@ u32 playerProf, entityProf;
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
-		//erase_pause();
+		player_unpause();
 		return false;
 	} else {
 		
@@ -70,13 +70,19 @@ void vblank() {
 u8 game_main(bool load) {
 	SYS_disableInts();
 	VDP_setEnable(false);
-	//VDP_resetScreen();
+	
+	VDP_resetScreen();
+	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
+	// A couple backgrounds (clouds) use tile scrolling
 	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
+	effects_init();
 	game_reset(load);
+	
 	VDP_setEnable(true);
 	SYS_enableInts();
+	
 	VDP_setWindowPos(0, 0);
 	bool paused = false;
 	u8 ending = 0;

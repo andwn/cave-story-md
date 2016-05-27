@@ -10,11 +10,7 @@
 #define SCREEN_HALF_H 112
 
 // Direction
-#define DIRECTION_LEFT 0
-#define DIRECTION_UP 1
-#define DIRECTION_RIGHT 2
-#define DIRECTION_DOWN 3
-#define DIRECTION_CENTER 4
+enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
 // Tile sizes
 #define TS_WIDTH 32
