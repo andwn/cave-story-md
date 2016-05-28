@@ -7,7 +7,7 @@
 /**
  * Get tileset from SpriteDefinition
  */
-#define SPR_TILESET(spr, a, f, s) (spr.animations[a]->frames[f]->frameSprites[s]->tileset)
+#define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
 /**
  * Clear the sprite list. Call at the beginning of a frame before adding sprites

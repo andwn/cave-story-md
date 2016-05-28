@@ -1,5 +1,7 @@
 #include "sprite.h"
 
+#define MAX_SPRITE 80
+
 // Hardware sprite
 typedef struct {
 	s16 y; // end 9 bits

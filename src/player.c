@@ -75,7 +75,7 @@ void player_init() {
 	for(u8 i = 0; i < 3; i++) playerBullet[i].ttl = 0; // No bullets
 	playerDead = false;
 	currentWeapon = 0;
-	VDP_loadTileData(SPR_TILESET(SPR_Quote, 0, 0, 0)->tiles, TILE_PLAYERINDEX, 
+	VDP_loadTileData(SPR_TILESET(SPR_Quote, 0, 0)->tiles, TILE_PLAYERINDEX, 
 		TILE_PLAYERSIZE, true);
 }
 
@@ -253,12 +253,12 @@ void player_draw() {
 		player.anim = anim;
 		player.frame = 0;
 		player.frameTime = 0;
-		VDP_loadTileData(SPR_TILESET(SPR_Quote, anim, 0, 0)->tiles, 
+		VDP_loadTileData(SPR_TILESET(SPR_Quote, anim, 0)->tiles, 
 			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
 	} else if(a->length > 1 && ++player.frameTime >= 16) {
 		if(++player.frame >= a->length) player.frame = 0;
 		player.frameTime = 0;
-		VDP_loadTileData(a->frames[a->sequence[player.frame]]->frameSprites[0]->tileset->tiles, 
+		VDP_loadTileData(a->frames[a->sequence[player.frame]]->tileset->tiles, 
 			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
 	}
 	if(player.controller[0]&BUTTON_RIGHT) player.direction = 1;

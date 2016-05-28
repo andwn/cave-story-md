@@ -49,21 +49,21 @@ void window_open(u8 mode) {
 	window_clear_text();
 	textRow = 0;
 	textColumn = 0;
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
 	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(6), WINDOW_X1, y);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, y);
 		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(WINDOW, WINDOW_ATTR(7), x, y);
+			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, y);
 		}
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(8), WINDOW_X2, y);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, y);
 	}
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(12), WINDOW_X1, WINDOW_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(12), WINDOW_X1, WINDOW_Y2);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
 	//msgTextX = TEXT_X1;
 	//msgTextY = TEXT_Y1;
 	if(showingFace > 0) {
@@ -82,7 +82,7 @@ void window_clear() {
 	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
 		for(u8 x = x1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(WINDOW, WINDOW_ATTR(7), x, y);
+			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, y);
 		}
 	}
 	window_clear_text();
@@ -127,7 +127,7 @@ void window_draw_char(u8 c) {
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn;
 		u8 msgTextY = TEXT_Y1 + textRow * 2;
-		VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
 		textColumn++;
 	}
@@ -140,7 +140,7 @@ void window_scroll_text() {
 		u8 msgTextY = TEXT_Y1 + row * 2;
 		for(u8 col = 0; col < 34 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
-			VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 					TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
 			msgTextX++;
 		}
@@ -150,7 +150,7 @@ void window_scroll_text() {
 	u8 msgTextY = TEXT_Y1 + 4;
 	for(u8 col = 0; col < 34 - (showingFace > 0) * 8; col++) {
 		windowText[2][col] = ' ';
-		VDP_setTileMapXY(WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX), msgTextX, msgTextY);
 		msgTextX++;
 	}
@@ -176,20 +176,20 @@ bool window_tick() {
 
 void window_prompt_open() {
 	// Top of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(3), PROMPT_X1, PROMPT_Y1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), PROMPT_X1, PROMPT_Y1);
 	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(4), x, PROMPT_Y1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(5), 36, PROMPT_Y1);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, PROMPT_Y1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), 36, PROMPT_Y1);
 	// Text area of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(9), PROMPT_X1, PROMPT_Y1 + 1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(9), PROMPT_X1, PROMPT_Y1 + 1);
 	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(10), x, PROMPT_Y1 + 1);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(11), PROMPT_X2, PROMPT_Y1 + 1);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(10), x, PROMPT_Y1 + 1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(11), PROMPT_X2, PROMPT_Y1 + 1);
 	// Bottom of window
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(15), PROMPT_X1, PROMPT_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(15), PROMPT_X1, PROMPT_Y2);
 	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(WINDOW, WINDOW_ATTR(16), x, PROMPT_Y2);
-	VDP_setTileMapXY(WINDOW, WINDOW_ATTR(17), PROMPT_X2, PROMPT_Y2);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(16), x, PROMPT_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(17), PROMPT_X2, PROMPT_Y2);
 	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
 	sound_play(SOUND_PROMPT, 5);
 	// Load hand sprite and move next to yes
@@ -224,7 +224,7 @@ bool window_prompt_update() {
 void window_draw_face() {
 	SYS_disableInts();
 	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, false);
-	VDP_fillTileMapRectInc(WINDOW, TILE_ATTR_FULL(face_info[showingFace].palette,
+	VDP_fillTileMapRectInc(PLAN_WINDOW, TILE_ATTR_FULL(face_info[showingFace].palette,
 			1, 0, 0, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
 	SYS_enableInts();
 }

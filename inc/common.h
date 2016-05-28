@@ -12,39 +12,37 @@
 // Direction
 enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
-// Tile sizes
+// Tileset width/height
+// The only map larger than this is hell (have to figure out something for that)
 #define TS_WIDTH 32
 #define TS_HEIGHT 20
-#define TS_SIZE (TS_WIDTH * TS_HEIGHT)
-#define BACK_SIZE 0x60
-#define HUD_SIZE 0x20
-#define FACE_SIZE 0x24
 
-// Tile indexes
-#define TILE_TSINDEX TILE_USERINDEX
-#define TILE_BACKINDEX (TILE_TSINDEX + TS_SIZE)
-#define TILE_HUDINDEX (TILE_BACKINDEX + BACK_SIZE)
-#define TILE_FACEINDEX (TILE_HUDINDEX + HUD_SIZE)
-#define TILE_SPRITEINDEX (TILE_FACEINDEX + FACE_SIZE)
 // Stick window border in the empty space after SGDK font
 #define TILE_WINDOWINDEX (TILE_FONTINDEX + 0x60)
+// Stage tileset is first in USERINDEX
+#define TILE_TSINDEX TILE_USERINDEX
+#define TILE_TSSIZE (TS_WIDTH * TS_HEIGHT)
+#define TILE_FACEINDEX (TILE_TSINDEX + TILE_TSSIZE)
+#define FACE_SIZE 36
+// VRAM reserved for SGDK sprite engine
+#define TILE_SPRITEINDEX (TILE_FACEINDEX + FACE_SIZE)
+#define TILE_SPRITESIZE ((0xB000 >> 5) - TILE_SPRITEINDEX)
 // Extra space for tiles between planes
 #define TILE_EXTRA1INDEX (0xD000 >> 5)
 #define TILE_EXTRA2INDEX (0xF000 >> 5)
-
-// Specific locations and sizes for sprite tiles
-#define TILE_PLAYERINDEX TILE_SPRITEINDEX
+// Allocation of EXTRA1 (128 tiles)
+#define TILE_BACKINDEX TILE_EXTRA1INDEX
+#define BACK_SIZE 96
+#define TILE_HUDINDEX (TILE_BACKINDEX + BACK_SIZE)
+#define HUD_SIZE 32
+// Allocation of EXTRA2 (64 tiles)
+#define TILE_PLAYERINDEX TILE_EXTRA2INDEX
 #define TILE_PLAYERSIZE 4
 #define TILE_WEAPONINDEX (TILE_PLAYERINDEX + TILE_PLAYERSIZE)
-#define TILE_WEAPONSIZE 2
+#define TILE_WEAPONSIZE 6
 #define TILE_BULLETINDEX (TILE_WEAPONINDEX + TILE_WEAPONSIZE)
 #define TILE_BULLETSIZE 8
-#define TILE_NPCINDEX (TILE_BULLETINDEX + TILE_BULLETSIZE)
-#define TILE_NPCSIZE ((0xB000 >> 5) - TILE_NPCINDEX)
-// Use the extra 128 tiles for big bosses
-#define TILE_BOSSINDEX TILE_EXTRA1INDEX
-// Use the extra 64 tiles for smoke and damage numbers
-#define TILE_NUMBERINDEX TILE_EXTRA2INDEX
+#define TILE_NUMBERINDEX (TILE_BULLETINDEX + TILE_BULLETSIZE)
 #define TILE_NUMBERSIZE 16
 #define TILE_SMOKEINDEX (TILE_NUMBERINDEX + TILE_NUMBERSIZE)
 #define TILE_SMOKESIZE 28
@@ -70,9 +68,9 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define block_to_pixel(x) ((x)<<4)
 #define block_to_tile(x)  ((x)<<1)
 
-#define floor(x) ((x)&~0xFF)
-#define round(x) ((x+0x80)&~0xFF)
-#define ceil(x)  ((x+0x100)&~0xFF)
+#define floor(x) ((x)&~0x1FF)
+#define round(x) (((x)+0x100)&~0x1FF)
+#define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
 // Booleans
 typedef unsigned char bool;

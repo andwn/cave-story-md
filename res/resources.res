@@ -9,7 +9,6 @@ PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 # Sprites
 # Use PAL_Main
 SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
-SPRITE SPR_Numbers	"sprite/numbers.png" 1 1 0 0 NONE
 TILESET TS_Numbers	"sprite/numbers.png" 0
 SPRITE SPR_Hud2		"sprite/hud2.png" 8 4 0 0 NONE
 TILESET TS_HudBar	"sprite/hudfill.png" 0
@@ -17,7 +16,7 @@ SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
 SPRITE SPR_ArmsImage "sprite/armsimage.png" 2 2 0 0 NONE
 SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
 SPRITE SPR_TeleMenu	"sprite/telemenu.png" 4 2 0 0 NONE
-TILESET TS_Title	"sprite/title.png" -1
+TILESET TS_Title	"sprite/title.png" 2
 SPRITE SPR_Fish		"sprite/fish.png" 2 2 0 20 NONE
 SPRITE SPR_CritBig	"sprite/critbig.png" 3 3 0 0 NONE
 SPRITE SPR_Jelly	"sprite/jelly.png" 2 2 0 15 NONE
@@ -94,48 +93,47 @@ SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
 
 # Sound Test
 PALETTE PAL_SndTest	"back/soundtest.png" 0
-TILESET TS_SndTest	"back/soundtest.png" -1
+TILESET TS_SndTest	"back/soundtest.png" 2
 
 # Window
-TILESET TS_Window	"window.png" -1
-TILESET TS_MsgFont	"font_blue.png" -1
+TILESET TS_Window	"window.png" 2
+TILESET TS_MsgFont	"font_blue.png" 2
 
 # NPC Table
 BIN NPC_TABLE	"npc.tbl"
 
 #Face Tilesets
-TILESET TS_Face01	"face/face01.png" -1
-TILESET TS_Face02	"face/face02.png" -1
-TILESET TS_Face03	"face/face03.png" -1
-TILESET TS_Face04	"face/face04.png" -1
-TILESET TS_Face05	"face/face05.png" -1
-TILESET TS_Face06	"face/face06.png" -1
-TILESET TS_Face07	"face/face07.png" -1
-TILESET TS_Face08	"face/face08.png" -1
-TILESET TS_Face09	"face/face09.png" -1
-TILESET TS_Face10	"face/face10.png" -1
-TILESET TS_Face11	"face/face11.png" -1
-TILESET TS_Face12	"face/face12.png" -1
+TILESET TS_Face01	"face/face01.png" 2
+TILESET TS_Face02	"face/face02.png" 2
+TILESET TS_Face03	"face/face03.png" 2
+TILESET TS_Face04	"face/face04.png" 2
+TILESET TS_Face05	"face/face05.png" 2
+TILESET TS_Face06	"face/face06.png" 2
+TILESET TS_Face07	"face/face07.png" 2
+TILESET TS_Face08	"face/face08.png" 2
+TILESET TS_Face09	"face/face09.png" 2
+TILESET TS_Face10	"face/face10.png" 2
+TILESET TS_Face11	"face/face11.png" 2
+TILESET TS_Face12	"face/face12.png" 2
 
-TILESET TS_Face14	"face/face14.png" -1
-TILESET TS_Face15	"face/face15.png" -1
-TILESET TS_Face16	"face/face16.png" -1
-TILESET TS_Face17	"face/face17.png" -1
-TILESET TS_Face18	"face/face18.png" -1
-TILESET TS_Face19	"face/face19.png" -1
-TILESET TS_Face20	"face/face20.png" -1
-TILESET TS_Face21	"face/face21.png" -1
+TILESET TS_Face14	"face/face14.png" 2
+TILESET TS_Face15	"face/face15.png" 2
+TILESET TS_Face16	"face/face16.png" 2
+TILESET TS_Face17	"face/face17.png" 2
+TILESET TS_Face18	"face/face18.png" 2
+TILESET TS_Face19	"face/face19.png" 2
+TILESET TS_Face20	"face/face20.png" 2
+TILESET TS_Face21	"face/face21.png" 2
 
-TILESET TS_Face23	"face/face23.png" -1
-TILESET TS_Face24	"face/face24.png" -1
-TILESET TS_Face25	"face/face25.png" -1
-TILESET TS_Face26	"face/face26.png" -1
+TILESET TS_Face23	"face/face23.png" 2
+TILESET TS_Face24	"face/face24.png" 2
+TILESET TS_Face25	"face/face25.png" 2
+TILESET TS_Face26	"face/face26.png" 2
 
-TILESET TS_Face28	"face/face28.png" -1
-TILESET TS_Face29	"face/face29.png" -1
+TILESET TS_Face28	"face/face28.png" 2
+TILESET TS_Face29	"face/face29.png" 2
 
 # Tileset palettes
-#PALETTE PAL_0		"Stage/Prt0.bmp" 2
 PALETTE PAL_Almond	"Stage/PrtAlmond.bmp" 2
 PALETTE PAL_Barr	"Stage/PrtBarr.bmp" 2
 PALETTE PAL_Cave	"Stage/PrtCave.bmp" 2
@@ -159,32 +157,30 @@ PALETTE PAL_Weed	"Stage/PrtWeed.bmp" 2
 PALETTE PAL_White	"Stage/PrtWhite.bmp" 2
 
 # Tileset graphics
-#TILESET TS_0		"Stage/Prt0.bmp" 0
-TILESET TS_Almond	"Stage/PrtAlmond.bmp" 0
-TILESET TS_Barr		"Stage/PrtBarr.bmp" 0
-TILESET TS_Cave		"Stage/PrtCave.bmp" 0
-TILESET TS_Cent		"Stage/PrtCent.bmp" 0
-TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 0
-TILESET TS_Eggs		"Stage/PrtEggs.bmp" 0
-TILESET TS_EggX		"Stage/PrtEggX1.bmp" 0
-TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 0
-TILESET TS_Fall		"Stage/PrtFall.bmp" 0
-TILESET TS_Gard		"Stage/PrtGard.bmp" 0
-TILESET TS_Hell		"Stage/PrtHell.bmp" 0
-TILESET TS_Jail		"Stage/PrtJail.bmp" 0
-TILESET TS_Labo		"Stage/PrtLabo.bmp" 0
-TILESET TS_Maze		"Stage/PrtMaze.bmp" 0
-TILESET TS_Mimi		"Stage/PrtMimi.bmp" 0
-TILESET TS_Oside	"Stage/PrtOside.png" 0
-TILESET TS_Pens		"Stage/PrtPens.bmp" 0
-TILESET TS_River	"Stage/PrtRiver.bmp" 0
-TILESET TS_Sand		"Stage/PrtSand.bmp" 0
-TILESET TS_Store	"Stage/PrtStore.bmp" 0
-TILESET TS_Weed		"Stage/PrtWeed.bmp" 0
-TILESET TS_White	"Stage/PrtWhite.bmp" 0
+TILESET TS_Almond	"Stage/PrtAlmond.bmp" 2
+TILESET TS_Barr		"Stage/PrtBarr.bmp" 2
+TILESET TS_Cave		"Stage/PrtCave.bmp" 2
+TILESET TS_Cent		"Stage/PrtCent.bmp" 2
+TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 2
+TILESET TS_Eggs		"Stage/PrtEggs.bmp" 2
+TILESET TS_EggX		"Stage/PrtEggX1.bmp" 2
+TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 2
+TILESET TS_Fall		"Stage/PrtFall.bmp" 2
+TILESET TS_Gard		"Stage/PrtGard.bmp" 2
+TILESET TS_Hell		"Stage/PrtHell.bmp" 2
+TILESET TS_Jail		"Stage/PrtJail.bmp" 2
+TILESET TS_Labo		"Stage/PrtLabo.bmp" 2
+TILESET TS_Maze		"Stage/PrtMaze.bmp" 2
+TILESET TS_Mimi		"Stage/PrtMimi.bmp" 2
+TILESET TS_Oside	"Stage/PrtOside.png" 2
+TILESET TS_Pens		"Stage/PrtPens.bmp" 2
+TILESET TS_River	"Stage/PrtRiver.bmp" 2
+TILESET TS_Sand		"Stage/PrtSand.bmp" 2
+TILESET TS_Store	"Stage/PrtStore.bmp" 2
+TILESET TS_Weed		"Stage/PrtWeed.bmp" 2
+TILESET TS_White	"Stage/PrtWhite.bmp" 2
 
 # Tileset behavior
-#BIN PXA_0		"Stage/0.pxa"
 BIN PXA_Almond	"Stage/Almond.pxa"
 BIN PXA_Barr	"Stage/Barr.pxa"
 BIN PXA_Cave	"Stage/Cave.pxa"
@@ -208,33 +204,18 @@ BIN PXA_Weed	"Stage/Weed.pxa"
 BIN PXA_White	"Stage/White.pxa"
 
 # Background Tilesets
-#TILESET BG_0		"back/bk0.bmp" -1
-#TILESET BG_Black	"back/bkBlack.bmp" -1
-TILESET BG_Blue		"back/bkMimi.png" -1
-TILESET BG_Eggs		"back/bkEggs.png" -1
-#TILESET BG_Fall		"back/bkFall.bmp" -1
-TILESET BG_Fog		"back/bkFog.png" -1
-TILESET BG_Gard		"back/bkGard.bmp" -1
-TILESET BG_Gray		"back/bkGray.bmp" -1
-TILESET BG_Green	"back/bkGreen.bmp" -1
-TILESET BG_Maze		"back/bkMaze.bmp" -1
-#TILESET BG_Moon		"back/bkMoon.bmp" -1
-TILESET BG_Red		"back/bkRed.bmp" -1
-#TILESET BG_Water	"back/bkWater.bmp" -1
-
-# Background Palettes
-#PALETTE PAL_Bk0		"back/Bk0.bmp"
-#PALETTE PAL_BkBlack	"back/BkBlack.bmp"
-#PALETTE PAL_BkBlue		"back/BkBlue.bmp"
-#PALETTE PAL_BkFall		"back/BkFall.bmp"
-#PALETTE PAL_BkFog		"back/BkFog.png"
-#PALETTE PAL_BkGard		"back/BkGard.bmp"
-#PALETTE PAL_BkGray		"back/BkGray.bmp"
-#PALETTE PAL_BkGreen		"back/BkGreen.bmp"
-#PALETTE PAL_BkMaze		"back/BkMaze.bmp"
-#PALETTE PAL_BkMoon		"back/BkMoon.bmp"
-#PALETTE PAL_BkRed		"back/BkRed.bmp"
-#PALETTE PAL_BkWater	"back/BkWater.bmp"
+#TILESET BG_Black	"back/bkBlack.bmp" 2
+TILESET BG_Blue		"back/bkMimi.png" 2
+TILESET BG_Eggs		"back/bkEggs.png" 2
+#TILESET BG_Fall		"back/bkFall.bmp" 2
+TILESET BG_Fog		"back/bkFog.png" 2
+TILESET BG_Gard		"back/bkGard.bmp" 2
+TILESET BG_Gray		"back/bkGray.bmp" 2
+TILESET BG_Green	"back/bkGreen.bmp" 2
+TILESET BG_Maze		"back/bkMaze.bmp" 2
+#TILESET BG_Moon		"back/bkMoon.bmp" 2
+TILESET BG_Red		"back/bkRed.bmp" 2
+#TILESET BG_Water	"back/bkWater.bmp" 2
 
 # Stages (PXM)
 BIN PXM_0		"Stage/0.pxm"
@@ -338,7 +319,6 @@ BIN PXM_WeedS	"Stage/WeedS.pxm"
 BIN TSC_ArmsItem	"ArmsItem.tsb"
 BIN TSC_Head		"Head.tsb"
 # Stage Specific
-#BIN TSC_0		"Stage/0.tsb"
 BIN TSC_Almond	"Stage/Almond.tsb"
 BIN TSC_Ballo1	"Stage/Ballo1.tsb"
 BIN TSC_Ballo2	"Stage/Ballo2.tsb"

@@ -15,9 +15,9 @@ u8 VDP_getWindowPosY() {
 }
 
 void VDP_drawTextWindow(const char *str, u16 x, u16 y) {
-	VDP_drawTextBG(WINDOW, str, 0, x, y);
+	VDP_drawTextBG(PLAN_WINDOW, str, x, y);
 }
 
 void VDP_clearTextWindow(u16 x, u16 y, u16 w) {
-	VDP_clearTextBG(WINDOW, x, y, w);
+	VDP_clearTextBG(PLAN_WINDOW, x, y, w);
 }

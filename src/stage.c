@@ -48,7 +48,7 @@ void stage_load(u16 id) {
 	stage_load_tileset();
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
-		VDP_clearPlan(BPLAN, true);
+		VDP_clearPlan(PLAN_A, true);
 		if(stageBackground > 0) {
 			stageBackgroundType = background_info[stageBackground].type;
 			if(stageBackgroundType == 0) { // Static
@@ -202,7 +202,7 @@ void stage_draw_column(s16 _x, s16 _y) {
 		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
 		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
 		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
-		VDP_setTileMapDataRect(APLAN, attr, block_to_tile(_x)%64, block_to_tile(y)%32, 2, 2);
+		VDP_setTileMapDataRect(PLAN_A, attr, block_to_tile(_x)%64, block_to_tile(y)%32, 2, 2);
 	}
 }
 
@@ -219,7 +219,7 @@ void stage_draw_row(s16 _x, s16 _y) {
 		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
 		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
 		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
-		VDP_setTileMapDataRect(APLAN, attr, block_to_tile(x)%64, block_to_tile(_y)%32, 2, 2);
+		VDP_setTileMapDataRect(PLAN_A, attr, block_to_tile(x)%64, block_to_tile(_y)%32, 2, 2);
 	}
 }
 
@@ -261,10 +261,10 @@ void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
 			b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 			xx = block_to_tile(x) % 64;
 			yy = block_to_tile(y) % 32;
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b), xx, yy);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+1), xx+1, yy);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH), xx, yy+1);
-			VDP_setTileMapXY(APLAN, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b), xx, yy);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+1), xx+1, yy);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH), xx, yy+1);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
 		}
 	}
 }
@@ -275,7 +275,7 @@ void stage_draw_background() {
 	for(u8 y = 0; y < 32; y++) {
 		for(u8 x = 0; x < 64; x++) {
 			u16 b = TILE_BACKINDEX + (x%w) + ((y%h) * w);
-			VDP_setTileMapXY(BPLAN, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
+			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
 		}
 	}
 }
@@ -305,7 +305,7 @@ void stage_draw_background2() {
 			} else {
 				b += 48;
 			}
-			VDP_setTileMapXY(BPLAN, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
+			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
 		}
 	}
 }

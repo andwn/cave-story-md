@@ -68,6 +68,10 @@ void vblank() {
 }
 
 u8 game_main(bool load) {
+	// If player chooses continue with no save, start a new game
+	if(load && !system_checkdata()) {
+		load = false;
+	}
 	SYS_disableInts();
 	VDP_setEnable(false);
 	

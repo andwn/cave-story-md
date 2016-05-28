@@ -24,7 +24,7 @@ void effects_init() {
 	// Load each frame of the small smoke sprite
 	u32 tiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(u32))]
 	for(u8 i = 0; i < 7; i++) {
-		memcpy(tiles[i], SPR_TILESET(SPR_Smoke, 0, i, 0)->tiles, 128);
+		memcpy(tiles[i], SPR_TILESET(SPR_Smoke, 0, i)->tiles, 128);
 	}
 	// Transfer to VRAM
 	VDP_loadTileData(tiles, TILE_SMOKEINDEX, TILE_SMOKESIZE, true);
@@ -59,15 +59,17 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		if(effDamage[i].ttl > 0) continue;
 		// Negative numbers are red and show '-' (Damage)
 		// Positive are white and show '+' (Weapon energy)
-		bool negative = num < 0;
+		bool negative = (num < 0);
 		num = abs(num);
 		u8 digitCount = 0; // Number of digit tiles: 1, 2, or 3 after loop
 		// Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 		// Then copy to VRAM via DMA transfer
 		u32 tiles[4][8];
-		memcpy(tiles[0], SPR_TILESET(SPR_Numbers, negative, 10, 0)->tiles, 32); // - or +
+		u16 tileIndex = (negative * 11 + 10) * 8;
+		memcpy(tiles[0], &TS_Numbers.tiles[tileIndex], 32); // - or +
 		for(; num; digitCount++) {
-			memcpy(tiles[digitCount+1], SPR_TILESET(SPR_Numbers, negative, num % 10, 0)->tiles, 32);
+			tileIndex = (negative * 11 + (num % 10)) * 8;
+			memcpy(tiles[digitCount+1], &TS_Numbers.tiles[tileIndex], 32);
 			num /= 10;
 		}
 		// Fill any remaining digits blank

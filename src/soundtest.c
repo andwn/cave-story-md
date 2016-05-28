@@ -43,11 +43,11 @@ void soundtest_main() {
 	SYS_disableInts();
 	VDP_setEnable(false);
 	song_stop();
-	VDP_clearPlan(APLAN, true);
+	VDP_clearPlan(PLAN_A, true);
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true);
-	VDP_fillTileMapRectInc(BPLAN,
+	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
 	draw_status();
 	VDP_drawText("Sound Test", 15, 2);
