@@ -23,12 +23,12 @@ void camera_init() {
 
 void camera_set_position(s32 x, s32 y) {
 	// Don't let the camera leave the stage
-	if(x < pixel_to_sub(SCREEN_HALF_W + LIMIT)) x = pixel_to_sub(SCREEN_HALF_W + LIMIT);
-	if(y < pixel_to_sub(SCREEN_HALF_H + LIMIT)) y = pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT))
 		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT);
 	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
 		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
+	if(x < pixel_to_sub(SCREEN_HALF_W + LIMIT)) x = pixel_to_sub(SCREEN_HALF_W + LIMIT);
+	if(y < pixel_to_sub(SCREEN_HALF_H + LIMIT)) y = pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	// Apply
 	camera.x = x;
 	camera.y = y;

@@ -1,10 +1,8 @@
 #include "player.h"
 
-#include <genesis.h>
 #include "input.h"
 #include "camera.h"
 #include "resources.h"
-#include "sprite.h"
 #include "tsc.h"
 #include "system.h"
 #include "sound.h"
@@ -43,6 +41,7 @@ u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
 bool playerDead = false;
 u8 playerWeaponCount = 0;
+Sprite *weaponSprite = NULL;
 
 void player_update_entity_collision();
 void player_update_bounds();
@@ -67,16 +66,38 @@ void player_init() {
 	player.y_speed = 0;
 	player.damage_time = 0;
 	player.damage_value = 0;
+	player_reset_sprites();
 	// Actually 6,6,5,8 but need to get directional hitboxes working first
 	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No playerWeapons
-	for(u8 i = 0; i < 3; i++) playerBullet[i].ttl = 0; // No bullets
+	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No Weapons
 	playerDead = false;
 	currentWeapon = 0;
-	VDP_loadTileData(SPR_TILESET(SPR_Quote, 0, 0)->tiles, TILE_PLAYERINDEX, 
-		TILE_PLAYERSIZE, true);
+}
+
+void player_reset_sprites() {
+	// Manual visibility
+	player.sprite = SPR_addSpriteEx(&SPR_Quote, 
+		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
+		TILE_ATTR(PAL0, 0, 0, player.direction), 0,
+		SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | SPR_FLAG_AUTO_TILE_UPLOAD);
+	SPR_setVisibility(player.sprite, VISIBLE);
+	// Weapon
+	if(playerWeapon[currentWeapon].type != 0) {
+		weaponSprite = SPR_addSprite(weapon_info[playerWeapon[currentWeapon].type].sprite,
+			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
+			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
+			TILE_ATTR(PAL1, 0, 0, player.direction));
+	} else {
+		weaponSprite = NULL;
+	}
+	// Clear bullets
+	for(u8 i = 0; i < 3; i++) {
+		playerBullet[i].ttl = 0; // No bullets
+		playerBullet[i].sprite = NULL;
+	}
 }
 
 void player_update() {
@@ -125,20 +146,20 @@ void player_update_shooting() {
 	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
 		for(u8 i = (currentWeapon-1) % 8; i != currentWeapon; i = (i-1) % 8) {
 			if(playerWeapon[i].type > 0) {
-				//sprite_delete(playerWeapon[currentWeapon].sprite);
+				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				//playerWeapon[i].sprite = sprite_create(
-				//		weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
 			}
 		}
 	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
 		for(u8 i = (currentWeapon+1) % 8; i != currentWeapon; i = (i+1) % 8) {
 			if(playerWeapon[i].type > 0) {
-				//sprite_delete(playerWeapon[currentWeapon].sprite);
+				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				//playerWeapon[i].sprite = sprite_create(
-				//		weapon_info[playerWeapon[i].type].sprite, PAL1, true);
+				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
 			}
 		}
@@ -155,17 +176,18 @@ void player_update_shooting() {
 			if(b != NULL) {
 				if(w->level == 3) sound_play(0x31, 5);
 				else sound_play(0x20, 5);
-				//b->sprite = sprite_create(weapon_info[2].bulletSprite[w->level-1], PAL0, false);
+				b->sprite = SPR_addSprite(
+					weapon_info[2].bulletSprite[w->level-1], 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
 				b->damage = weapon_info[w->type].damage[w->level - 1];
 				b->ttl = 20 + w->level * 5;
 				if(player.controller[0]&BUTTON_UP) {
-					//sprite_set_frame(b->sprite, 1);
+					SPR_setFrame(b->sprite, 1);
 					b->x = player.x;
 					b->y = player.y - pixel_to_sub(12);
 					b->x_speed = 0;
 					b->y_speed = pixel_to_sub(-4);
 				} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-					//sprite_set_frame(b->sprite, 1);
+					SPR_setFrame(b->sprite, 1);
 					b->x = player.x;
 					b->y = player.y + pixel_to_sub(12);
 					b->x_speed = 0;
@@ -191,14 +213,16 @@ void player_update_bullets() {
 		// Check if bullet is colliding with a breakable block
 		if(stage_get_block_type(bx, by) == 0x43) {
 			b->ttl = 0;
+			SPR_SAFERELEASE(b->sprite);
 			sound_play(SOUND_BREAK, 8);
 			stage_replace_block(bx, by, 0);
 			continue;
-		} else if(--b->ttl > 0) {
-			// Add bullet to sprite list if it hasn't expired
-			sprite_add(sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8, 
-				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8, 
-				TILE_ATTR_FULL(PAL0, true, false, false, TILE_BULLETINDEX), SPRITE_SIZE(2, 2));
+		} else if(--b->ttl == 0) { // Bullet time to live expired
+			SPR_SAFERELEASE(b->sprite);
+		} else {
+			SPR_setPosition(b->sprite, 
+				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		}
 	}
 }
@@ -247,39 +271,37 @@ void player_draw() {
 			anim = ANIM_JUMPING;
 		}
 	}
-	// God this is a mess
-	Animation *a = SPR_Quote.animations[anim];
+	// Set animation if it changed
 	if(player.anim != anim) {
 		player.anim = anim;
-		player.frame = 0;
-		player.frameTime = 0;
-		VDP_loadTileData(SPR_TILESET(SPR_Quote, anim, 0)->tiles, 
-			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
-	} else if(a->length > 1 && ++player.frameTime >= 16) {
-		if(++player.frame >= a->length) player.frame = 0;
-		player.frameTime = 0;
-		VDP_loadTileData(a->frames[a->sequence[player.frame]]->tileset->tiles, 
-			TILE_PLAYERINDEX, TILE_PLAYERSIZE, true);
+		// Frame change is a workaround for tapping looking like quote is floating
+		SPR_setAnimAndFrame(player.sprite, anim, 
+			anim==ANIM_WALKING || anim==ANIM_LOOKUPWALK ? 1 : 0);
 	}
-	if(player.controller[0]&BUTTON_RIGHT) player.direction = 1;
-	else if(player.controller[0]&BUTTON_LEFT) player.direction = 0;
-	if(!((playerIFrames >> 1) & 1)) {
-		sprite_add(sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
-			TILE_ATTR_FULL(PAL0, 0, 0, player.direction, TILE_PLAYERINDEX), 
-			SPRITE_SIZE(2, 2));
+	// Change direction if pressing left or right
+	if(player.controller[0]&BUTTON_RIGHT && !player.direction) {
+		player.direction = 1;
+		SPR_setHFlip(player.sprite, 1);
+	} else if(player.controller[0]&BUTTON_LEFT && player.direction) {
+		player.direction = 0;
+		SPR_setHFlip(player.sprite, 0);
 	}
+	SPR_setPosition(player.sprite,
+		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+	// Blink during invincibility frames
+	SPR_setVisibility(player.sprite, !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0) {
 		u8 wanim = 0;
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
-		//sprite_set_animation(playerWeapon[currentWeapon].sprite, wanim);
-		//sprite_set_attr(playerWeapon[currentWeapon].sprite, TILE_ATTR(PAL1, false, false, player.direction));
-		//sprite_set_visible(playerWeapon[currentWeapon].sprite, !((playerIFrames / 2) % 2));
-		//sprite_set_position(playerWeapon[currentWeapon].sprite,
-		//	sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
-		//	sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		SPR_setAnim(weaponSprite, wanim);
+		SPR_setHFlip(weaponSprite, player.direction);
+		SPR_setVisibility(weaponSprite, !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
+		SPR_setPosition(weaponSprite,
+			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
+			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 
 	}
 }
@@ -371,6 +393,7 @@ void player_update_entity_collision() {
 				if(player.health <= e->attack) {
 					// If health reached 0 we are dead
 					player.health = 0;
+					SPR_SAFERELEASE(player.sprite);
 					effect_create_smoke(2, player.x, player.y);
 					sound_play(SOUND_DIE, 15);
 					tsc_call_event(PLAYER_DEFEATED_EVENT);

@@ -1,6 +1,7 @@
 #ifndef INC_PLAYER_H_
 #define INC_PLAYER_H_
 
+#include <genesis.h>
 #include "common.h"
 #include "entity.h"
 
@@ -30,6 +31,7 @@ Weapon playerWeapon[MAX_WEAPONS];
 u8 currentWeapon;
 
 typedef struct {
+	Sprite *sprite;
 	s32 x, y;
 	s16 x_speed, y_speed;
 	u8 damage;
@@ -48,6 +50,7 @@ Entity player;
 
 // Initialize everything for the player, sets default values
 void player_init();
+void player_reset_sprites();
 // Per frame update for the player and related objects
 void player_update();
 // Sprite animation

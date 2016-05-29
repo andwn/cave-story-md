@@ -6,6 +6,7 @@
 // When this gets flipped on the bars will be redrawn next vblank
 bool hudRedrawPending;
 
+void hud_create();
 // Loads sprites for HUD and displays it on screen
 void hud_show();
 // Unloads HUD sprites

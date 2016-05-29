@@ -3,7 +3,6 @@
 #include <genesis.h>
 #include "audio.h"
 #include "player.h"
-#include "sprite.h"
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
@@ -34,21 +33,21 @@ bool ai_setstate_balrog_scene(Entity *e, u16 state) {
 	e->state = state;
 	switch(state) {
 	case 0: // Standing around
-		//sprite_set_animation(e->sprite, 0);
+		SPR_setAnim(e->sprite, 0);
 		break;
 	case 10: // Going up!
 	case 11:
-		//sprite_set_animation(e->sprite, 3);
+		SPR_setAnim(e->sprite, 3);
 		e->y_speed = pixel_to_sub(-2);
 		break;
 	case 20: // Smoking, going up!
 	case 21:
-		//sprite_set_animation(e->sprite, 5);
+		SPR_setAnim(e->sprite, 5);
 		//e->y_speed = pixel_to_sub(-2);
 		e->state_time = 160;
 		break;
 	case 30: // Smile
-		//sprite_set_animation(e->sprite, 6);
+		SPR_setAnim(e->sprite, 6);
 		e->state_time = 90;
 		break;
 	case 42: // Balfrog
@@ -72,7 +71,7 @@ void ai_update_balrog_boss1(Entity *e) {
 		else if(e->x_speed < 0) e->x_speed += 0x10;
 		if(abs(e->x_speed) < 0x10) {
 			e->x_speed = 0;
-			//sprite_set_animation(e->sprite, 0);
+			SPR_setAnim(e->sprite, 0);
 		}
 		if(e->state_time == 0) e->set_state(e, e->state + 1);
 		break;
@@ -129,14 +128,14 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 	case 3: // Run towards player (2)
 	case 5: // Run towards player and jump
 		e->direction = e->x < player.x;
-		//sprite_set_animation(e->sprite, 1);
-		//sprite_set_direction(e->sprite, e->direction);
+		SPR_setAnim(e->sprite, 1);
+		SPR_setHFlip(e->sprite, e->direction);
 		e->state_time = 120;
 		break;
 	case 6: // Jumping
 		e->grounded = false;
 		e->y_speed = pixel_to_sub(-2);
-		//sprite_set_animation(e->sprite, 3);
+		SPR_setAnim(e->sprite, 3);
 		e->state_time = 160;
 		break;
 	case 7: // Grab player
@@ -147,12 +146,12 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 		player.y_speed = 0;
 		player.grounded = true;
 		e->x_speed = 0;
-		//sprite_set_animation(e->sprite, 8);
+		SPR_setAnim(e->sprite, 8);
 		e->state_time = 120;
 		break;
 	case 8: // Throw player
 		player_unlock_controls();
-		//sprite_set_animation(e->sprite, 3);
+		SPR_setAnim(e->sprite, 3);
 		if(player_inflict_damage(1)) break;
 		player.y_speed = pixel_to_sub(-1);
 		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->direction);

@@ -1,7 +1,6 @@
 #include "hud.h"
 
 #include <genesis.h>
-#include "sprite.h"
 #include "player.h"
 #include "resources.h"
 #include "tables.h"
@@ -19,6 +18,9 @@ u8 hudMaxHealth, hudHealth, hudHealthTime;
 u8 hudWeapon, hudMaxAmmo, hudAmmo;
 u8 hudLevel, hudMaxEnergy, hudEnergy;
 
+// HUD Sprite
+Sprite *sprHUD = NULL;
+
 // DMA tile data
 u32 tileData[32][TSIZE];
 
@@ -31,8 +33,7 @@ void hud_redraw_weapon();
 void hud_redraw_ammo();
 void hud_prepare_dma();
 
-void hud_show() {
-	if(showing) return;
+void hud_create() {
 	// Health
 	hudMaxHealth = playerMaxHealth;
 	hudHealth = player.health;
@@ -45,15 +46,22 @@ void hud_show() {
 	// Ammo
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	hudAmmo = playerWeapon[currentWeapon].ammo;
-	// Create HUD sprite
+	// Create HUD sprite, manual tile/visibility
+	sprHUD = SPR_addSpriteEx(&SPR_Hud2, tile_to_pixel(2), tile_to_pixel(1),
+		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_HUDINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
 	memcpy(tileData[0], SPR_TILESET(SPR_Hud2, 0, 0)->tiles, sizeof(u32) * TSIZE * 32);
-	// Prepare DMA -- put the real data in tileData
-	hudRedrawPending = true;
+	// Prepare DMA -- populate tileData
+	hud_redraw_weapon();
 	hud_prepare_dma();
+}
+
+void hud_show() {
+	SPR_setVisibility(sprHUD, VISIBLE);
 	showing = true;
 }
 
 void hud_hide() {
+	SPR_setVisibility(sprHUD, HIDDEN);
 	showing = false;
 }
 
@@ -77,7 +85,10 @@ void hud_redraw_weapon() {
 	hudLevel = playerWeapon[currentWeapon].level;
 	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
 	hudEnergy = playerWeapon[currentWeapon].energy;
-	//sprite_set_frame(hudWeaponSprite, hudWeapon);
+	memcpy(tileData[SPR_TILE(1, 0)], 
+		SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles, sizeof(u32) * TSIZE * 2);
+	memcpy(tileData[SPR_TILE(2, 0)], 
+		&SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles[TSIZE * 2], sizeof(u32) * TSIZE * 2);
 	hudRedrawPending = true;
 }
 
@@ -106,10 +117,10 @@ void hud_update() {
 		hudRedrawPending = true;
 	}
 	if(hudRedrawPending) hud_prepare_dma();
-	sprite_add(tile_to_pixel(2), tile_to_pixel(1),
-		TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX), SPRITE_SIZE(4, 4));
-	sprite_add(tile_to_pixel(6), tile_to_pixel(1),
-		TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX + 16), SPRITE_SIZE(4, 4));
+	//sprite_add(tile_to_pixel(2), tile_to_pixel(1),
+	//	TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX), SPRITE_SIZE(4, 4));
+	//sprite_add(tile_to_pixel(6), tile_to_pixel(1),
+	//	TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX + 16), SPRITE_SIZE(4, 4));
 }
 
 void hud_update_vblank() {

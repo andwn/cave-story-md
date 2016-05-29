@@ -11,11 +11,10 @@
 #include "tsc.h"
 #include "vdp_ext.h"
 #include "effect.h"
-#include "sprite.h"
 #include "hud.h"
 
-u8 debugTime = 1;
-u32 playerProf, entityProf;
+//u8 debugTime = 1;
+//u32 playerProf, entityProf;
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
@@ -29,7 +28,6 @@ bool update_pause() {
 }
 
 void game_reset(bool load) {
-	effects_clear();
 	camera_init();
 	tsc_init();
 	if(load) {
@@ -75,6 +73,7 @@ u8 game_main(bool load) {
 	SYS_disableInts();
 	VDP_setEnable(false);
 	
+	//SPR_reset();
 	VDP_resetScreen();
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
@@ -85,13 +84,13 @@ u8 game_main(bool load) {
 	game_reset(load);
 	
 	VDP_setEnable(true);
+	VDP_setWindowPos(0, 0);
 	SYS_enableInts();
 	
-	VDP_setWindowPos(0, 0);
 	bool paused = false;
 	u8 ending = 0;
+	
 	while(true) {
-		sprites_clear();
 		input_update();
 		if(paused) {
 			paused = update_pause();
@@ -132,7 +131,7 @@ u8 game_main(bool load) {
 				system_update();
 			}
 		}
-		sprites_update();
+		SPR_update();
 		VDP_waitVSync();
 	}
 	SYS_setVIntCallback(NULL);

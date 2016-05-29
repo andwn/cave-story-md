@@ -2,7 +2,6 @@
 
 #include <genesis.h>
 #include "audio.h"
-#include "sprite.h"
 #include "input.h"
 #include "system.h"
 #include "common.h"
@@ -23,8 +22,9 @@ u8 titlescreen_main() {
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPaletteColor(PAL0, 0x0444); // Gray background
 	VDP_setPaletteColor(PAL0 + 8, 0x08CE); // Yellow text
-	// Load quote sprite tiles
-	VDP_loadTileSet(SPR_TILESET(SPR_Quote, 0, 0), TILE_PLAYERINDEX, true);
+	// Load quote sprite
+	Sprite *sprCursor = SPR_addSprite(&SPR_Quote, 0, 0, TILE_ATTR(PAL0, 1, 0, 1));
+	SPR_setAnim(sprCursor, 1);
 	// Menu and version text
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Continue", 15, 14);
@@ -42,7 +42,6 @@ u8 titlescreen_main() {
 	song_play(SONG_TITLE);
 	u8 cursor = system_checkdata();
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
-		sprites_clear();
 		input_update();
 		if(joy_pressed(BUTTON_UP)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
@@ -54,10 +53,8 @@ u8 titlescreen_main() {
 			sound_play(SOUND_CURSOR, 0);
 		}
 		// Draw quote sprite at cursor position
-		// TODO: Bring back the animation
-		sprite_add(tile_to_pixel(13) - 4, tile_to_pixel(12 + cursor * 2) - 4,
-			TILE_ATTR_FULL(PAL0, 1, 0, 1, TILE_PLAYERINDEX), SPRITE_SIZE(2, 2));
-		sprites_update();
+		SPR_setPosition(sprCursor, tile_to_pixel(13) - 4, tile_to_pixel(12 + cursor * 2) - 4);
+		SPR_update();
 		VDP_waitVSync();
 	}
 	// A + Start enables debug mode

@@ -53,7 +53,7 @@
 u16 stageID; // Index of current stage in stage_info
 u16 stageWidth, stageHeight; // Width and height measured in blocks
 u8 stageBackgroundType; // Which effect to use to display the background
-u8 *stageBlocks; // Pointer to level layout data on ROM
+extern u8 *stageBlocks; // Pointer to level layout data on ROM
 u8 stageTileset;
 // Cached tile flags in a 512x512 area around the player
 // Used to speed up collision detection

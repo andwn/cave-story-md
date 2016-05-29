@@ -20,7 +20,6 @@ struct {
 
 u32 skip_flags = 0;
 
-
 u32 flags[FLAGS_LEN];
 
 void system_set_flag(u16 flag, bool value) {

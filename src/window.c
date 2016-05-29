@@ -1,7 +1,6 @@
 #include "window.h"
 
 #include <genesis.h>
-#include "sprite.h"
 #include "vdp_ext.h"
 #include "input.h"
 #include "audio.h"
@@ -29,8 +28,6 @@
 #define PROMPT_Y2 22
 
 bool windowOpen = false;
-//u8 msgTextX = 0;
-//u8 msgTextY = 0;
 u16 showingFace = 0;
 u8 textMode = TM_NORMAL;
 
@@ -40,7 +37,7 @@ u8 windowTextTick = 0;
 
 bool promptShowing = false;
 bool promptAnswer = true;
-//u8 handSpr = SPRITE_NONE;
+Sprite *handSpr = NULL;
 
 void window_clear_text();
 void window_draw_face();
@@ -64,11 +61,8 @@ void window_open(u8 mode) {
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
-	//msgTextX = TEXT_X1;
-	//msgTextY = TEXT_Y1;
 	if(showingFace > 0) {
 		window_draw_face(showingFace);
-		//msgTextX = TEXT_X1_FACE;
 	}
 	VDP_setWindowPos(0, 244);
 	windowOpen = true;
@@ -193,13 +187,14 @@ void window_prompt_open() {
 	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
 	sound_play(SOUND_PROMPT, 5);
 	// Load hand sprite and move next to yes
-	//handSpr = sprite_create(&SPR_Pointer, PAL0, true);
-	//sprite_set_position(handSpr, tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4);
+	handSpr = SPR_addSprite(&SPR_Pointer, 
+		tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4, 
+		TILE_ATTR(PAL0, 1, 0, 0));
 	promptAnswer = true; // Yes is default
 }
 
 void window_prompt_close() {
-	//sprite_delete(handSpr);
+	SPR_SAFERELEASE(handSpr);
 	window_clear();
 }
 
@@ -215,16 +210,17 @@ bool window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SOUND_CURSOR, 5);
-		//sprite_set_position(handSpr,
-		//		tile_to_pixel(33-(promptAnswer*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
+		SPR_setPosition(handSpr, 
+			tile_to_pixel(33-(promptAnswer*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
 	}
 	return false;
 }
 
 void window_draw_face() {
 	SYS_disableInts();
-	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, false);
-	VDP_fillTileMapRectInc(PLAN_WINDOW, TILE_ATTR_FULL(face_info[showingFace].palette,
-			1, 0, 0, TILE_FACEINDEX), TEXT_X1, TEXT_Y1, 6, 6);
+	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, true);
+	VDP_fillTileMapRectInc(PLAN_WINDOW, 
+		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
+		TEXT_X1, TEXT_Y1, 6, 6);
 	SYS_enableInts();
 }

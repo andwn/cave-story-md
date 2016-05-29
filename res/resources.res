@@ -7,6 +7,9 @@ PALETTE PAL_Plant		"sprite/flower.png" 3
 PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 
 # Sprites
+# Dummy sprites
+SPRITE SPR_Dummy4x1	"sprite/savesign.png" 4 1 0 0 NONE
+SPRITE SPR_Dummy2x2	"sprite/savesign.png" 2 2 0 0 NONE
 # Use PAL_Main
 SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
 TILESET TS_Numbers	"sprite/numbers.png" 0

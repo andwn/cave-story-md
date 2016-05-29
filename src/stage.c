@@ -3,7 +3,6 @@
 #include "entity.h"
 #include "resources.h"
 #include "tables.h"
-#include "sprite.h"
 #include "camera.h"
 #include "tsc.h"
 #include "player.h"
@@ -15,6 +14,7 @@
 u8 stageBackground;
 s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;
+u8 *stageBlocks = NULL;
 
 void stage_load_tileset();
 void stage_load_blocks();
@@ -33,22 +33,21 @@ void stage_load(u16 id) {
 		SYS_disableInts();
 		VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
 	}
+	stageID = id;
 	player_lock_controls();
 	hud_hide();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear(FILTER_ALL, 0);
-	sprites_clear();
-	//player_reset_sprites(); // Reloads player/weapon/hud sprites
-	stageID = id;
-	stageTileset = stage_info[id].tileset;
-	stage_load_blocks();
-	camera_set_position(player.x, player.y);
-	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
-	stage_load_tileset();
+	SPR_reset();
+	if(stageBlocks != NULL) MEM_free(stageBlocks);
+	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
+	if(stageTileset != stage_info[id].tileset) {
+		stageTileset = stage_info[id].tileset;
+		stage_load_tileset();
+	}
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
-		VDP_clearPlan(PLAN_A, true);
 		if(stageBackground > 0) {
 			stageBackgroundType = background_info[stageBackground].type;
 			if(stageBackgroundType == 0) { // Static
@@ -58,16 +57,22 @@ void stage_load(u16 id) {
 				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
 				for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
 				stage_draw_background2();
-			//} else if(stageBackgroundType == 2) { // Solid Color
-			//	VDP_setBackgroundColor(background_info[stageBackground].palette->data);
+			} else if(stageBackgroundType == 2) { // Solid Color
+				//VDP_setPaletteColor(PAL0, 0x0444);
+				VDP_clearPlan(PLAN_B, true);
 			}
 		}
 	}
+	stage_load_blocks();
+	camera_set_position(player.x, player.y);
 	stage_load_tileflags();
+	//VDP_clearPlan(PLAN_A, true);
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
+	player_reset_sprites(); // Reloads player/weapon sprites
 	stage_load_entities();
 	tsc_load_stage(id);
+	hud_create();
 	hud_show();
 	player_unlock_controls();
 	if(vdpEnabled) {
@@ -77,16 +82,18 @@ void stage_load(u16 id) {
 }
 
 void stage_load_tileset() {
-	VDP_setPalette(PAL3, stage_info[stageID].npcPalette->data);
-	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_USERINDEX, true);
+	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
+	if(!VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, true)) {
+		SYS_die("Not enough memory to decompress tileset!");
+	}
 	// Inject the breakable block sprite into the tileset
 	const u8 *PXA = tileset_info[stageTileset].PXA;
 	for(u16 i = 0; i < 160; i++) {
 		if(PXA[i] == 0x43) {
 			u32 addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			VDP_loadTileData(TS_Break.tiles, TILE_USERINDEX + addr1, 2, true);
-			VDP_loadTileData(TS_Break.tiles + 16, TILE_USERINDEX + addr2, 2, true);
+			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, true);
+			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, true);
 		}
 	}
 }
@@ -96,7 +103,6 @@ void stage_load_blocks() {
 	stageWidth = PXM[4] + (PXM[5] << 8);
 	stageHeight = PXM[6] + (PXM[7] << 8);
 	PXM += 8;
-	MEM_free(stageBlocks);
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
 	for(u32 i = 0; i < stageWidth * stageHeight; i++) {
 		stageBlocks[i] = PXM[i];
@@ -252,13 +258,15 @@ void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
 }
 
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
+	if(_x > stageWidth) _x = 0;
+	if(_y > stageHeight) _y = 0;
 	u16 t, b, xx, yy, pal; u8 p;
 	for(u16 y = _y; y < _y + _h; y++) {
 		for(u16 x = _x; x < _x + _w; x++) {
 			p = (stage_get_block_type(x, y) & 0x40) > 0;
 			pal = stage_get_block_type(x, y) == 0x43 ? PAL1 : PAL2;
 			t = block_to_tile(stage_get_block(x, y));
-			b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
+			b = TILE_TSINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 			xx = block_to_tile(x) % 64;
 			yy = block_to_tile(y) % 32;
 			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b), xx, yy);
@@ -283,7 +291,7 @@ void stage_draw_background() {
 void stage_draw_background2() {
 	for(u8 y = 0; y < 28; y++) {
 		for(u16 x = 0; x < 64; x++) {
-			u16 b = TILE_BACKINDEX;;
+			u16 b = TILE_BACKINDEX;
 			if(y < 4 || (y >= 8 && y < 12)) { // Draw blank sky
 				// Keep b how it is
 			} else if(y < 8) { // Between 4-7, draw moon

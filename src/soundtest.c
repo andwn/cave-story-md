@@ -6,32 +6,21 @@
 #include "input.h"
 #include "tables.h"
 #include "audio.h"
+#include "vdp_ext.h"
 
-#define STOPPED	0
-#define PLAYING	1
-#define PAUSED	2
+enum { STOPPED, PLAYING, PAUSED };
 
+// Music 0x00 - 0x7F, Sound Effects 0x80 - 0xFF
 #define FIRST_SOUND 0x80
 
-u8 track = 0;
-
-u8 status = STOPPED, oldstatus = STOPPED;
-
-void draw_byte(u8 n, u16 x, u16 y) {
-	char b[2] = { (n>>4)+0x30, (n&0xF)+0x30 };
-	for(u8 i=0;i<2;i++) { 
-		if(b[i] > 0x39) b[i] += 0x7;
-	}
-	VDP_drawText(b, x, y);
-}
-
-void draw_track_info() {
+// Track # and name
+void draw_track_info(u8 track) {
 	draw_byte(track, 2, 6);
 	VDP_clearText(5, 6, 33);
 	VDP_drawText(song_info[track].name, 5, 6);
 }
 
-void draw_status() {
+void draw_status(u8 status) {
 	switch(status) {
 		case STOPPED: VDP_drawText("Stopped", 2, 4); break;
 		case PLAYING: VDP_drawText("Playing", 2, 4); break;
@@ -40,16 +29,20 @@ void draw_status() {
 }
 
 void soundtest_main() {
+	u8 track = 0;
+	u8 status = STOPPED, oldstatus = STOPPED;
+	song_stop();
 	SYS_disableInts();
 	VDP_setEnable(false);
-	song_stop();
+	SPR_reset();
 	VDP_clearPlan(PLAN_A, true);
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
+	// Background picture
 	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
-	draw_status();
+	draw_status(status);
 	VDP_drawText("Sound Test", 15, 2);
 	VDP_drawText("Track: ", 2, 8);
 	VDP_drawText("C-Play B-Stop", 2, 14);
@@ -59,6 +52,8 @@ void soundtest_main() {
 	SYS_enableInts();
     while(true) {
 		input_update();
+		// Switch between tracks
+		// Skip the gap between the last song and first sfx
 		if(joy_pressed(BUTTON_LEFT)) {
 			if(track == 0) track = FIRST_SOUND + SOUND_COUNT - 1;
 			else if(track == FIRST_SOUND) track = SONG_COUNT - 1;
@@ -75,7 +70,7 @@ void soundtest_main() {
 			if(track < SONG_COUNT) {
 				song_play(track);
 				status = PLAYING;
-				draw_track_info();
+				draw_track_info(track);
 			} else if(track >= FIRST_SOUND && track < FIRST_SOUND + SOUND_COUNT){
 				sound_play(track - FIRST_SOUND, 0);
 			}
@@ -99,7 +94,7 @@ void soundtest_main() {
 			break;
 		}
 		if(status != oldstatus) {
-			draw_status();
+			draw_status(status);
 			oldstatus = status;
 		}
 		VDP_waitVSync();

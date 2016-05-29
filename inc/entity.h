@@ -1,6 +1,7 @@
 #ifndef INC_ENTITY_H_
 #define INC_ENTITY_H_
 
+#include <genesis.h>
 #include "common.h"
 
 enum { FILTER_NONE, FILTER_ID, FILTER_EVENT, FILTER_TYPE, FILTER_ALL };
@@ -68,12 +69,12 @@ struct Entity {
 	// This is measured in pixels
 	bounding_box hit_box;
 	// Sprite ID assigned to this entity, or SPRITE_NONE
-	//u8 sprite;
+	Sprite *sprite;
 	// Area where sprite is displayed relative to the center
 	// Like hit_box this is also pixels
 	bounding_box display_box;
 	u8 anim; // Current animation of the sprite being displayed
-	u8 frame, frameTime; // Frame and frame time for sprite animation
+	//u8 frame, frameTime; // Frame and frame time for sprite animation
 	u16 state; // Script state / ANP
 	u16 state_time;
 	// Used to generate damage strings
@@ -82,9 +83,9 @@ struct Entity {
 };
 
 // First element of the "active" list and the "inactive" list
-Entity *entityList, *inactiveList;
+extern Entity *entityList, *inactiveList;
 // References whichever entity is a boss otherwise it is NULL
-Entity *bossEntity;
+extern Entity *bossEntity;
 
 // Deletes entities based on a criteria
 void entities_clear();

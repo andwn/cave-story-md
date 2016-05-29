@@ -10,4 +10,8 @@ u8 VDP_getWindowPosY();
 void VDP_drawTextWindow(const char *str, u16 x, u16 y);
 void VDP_clearTextWindow(u16 x, u16 y, u16 w);
 
+// Number draw functions
+void draw_byte(u8 n, u16 x, u16 y);
+void draw_word(u16 n, u16 x, u16 y);
+
 #endif
