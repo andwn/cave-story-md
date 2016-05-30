@@ -146,7 +146,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 
 const song_info_def song_info[SONG_COUNT] = {
 	{ NULL, "Silence" },
-	{ BGM_Balcony, "Mischievous Robot" },
+	{ BGM_Mischievous, "Mischievous Robot" },
 	{ BGM_Safety, "Safety" },
 	{ BGM_GameOver, "Game Over" },
 	{ BGM_Gravity, "Gravity" },

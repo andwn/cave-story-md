@@ -48,19 +48,17 @@ void stage_load(u16 id) {
 	}
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
-		if(stageBackground > 0) {
-			stageBackgroundType = background_info[stageBackground].type;
-			if(stageBackgroundType == 0) { // Static
-				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
-				stage_draw_background();
-			} else if(stageBackgroundType == 1) { // Moon/Sky
-				VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
-				for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
-				stage_draw_background2();
-			} else if(stageBackgroundType == 2) { // Solid Color
-				//VDP_setPaletteColor(PAL0, 0x0444);
-				VDP_clearPlan(PLAN_B, true);
-			}
+		stageBackgroundType = background_info[stageBackground].type;
+		if(stageBackgroundType == 0) { // Static
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			stage_draw_background();
+		} else if(stageBackgroundType == 1) { // Moon/Sky
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
+			stage_draw_background2();
+		} else if(stageBackgroundType == 2) { // Solid Color
+			//VDP_setPaletteColor(PAL0, 0x0444);
+			VDP_clearPlan(PLAN_B, true);
 		}
 	}
 	stage_load_blocks();
