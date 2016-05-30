@@ -157,7 +157,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Mimiga, "Mimiga Village" },
 	{ BGM_Fanfare1, "Fanfare 1" },
 	{ BGM_Balrog, "Balrog's Theme" },
-	{ BGM_Mimiga, "Cemetery" },
+	{ BGM_Cemetery, "Cemetery" },
 	{ BGM_Plant, "Yamashita Farm" },
 	{ BGM_Balcony, "Pulse" },
 	{ BGM_Fanfare3, "Fanfare 2" },
