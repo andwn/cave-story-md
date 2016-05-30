@@ -164,7 +164,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Fanfare2, "Fanfare 3" }, // 0x10
 	{ BGM_Balcony, "Tyrant" },
 	{ BGM_Run, "Run!" },
-	{ BGM_Balcony, "Jenka 1" },
+	{ BGM_Jenka1, "Jenka 1" },
 	{ BGM_Balcony, "Labyrinth Fight" },
 	{ BGM_Access, "Access" },
 	{ BGM_Balcony, "Oppression" },
