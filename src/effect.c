@@ -80,15 +80,17 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		// Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 		// Then copy to VRAM via DMA transfer
 		u32 tiles[4][8];
-		u16 tileIndex = (negative * 11 + 10) * 8;
-		memcpy(tiles[0], &TS_Numbers.tiles[tileIndex], 32); // - or +
+		// Create right to left, otherwise digits show up backwards
+		u16 tileIndex;
 		for(; num; digitCount++) {
 			tileIndex = (negative * 11 + (num % 10)) * 8;
-			memcpy(tiles[digitCount+1], &TS_Numbers.tiles[tileIndex], 32);
+			memcpy(tiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32);
 			num /= 10;
 		}
+		tileIndex = (negative * 11 + 10) * 8;
+		memcpy(tiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32); // - or +
 		// Fill any remaining digits blank
-		for(u8 i = digitCount + 1; i < 4; i++) memcpy(tiles[i], TILE_BLANK, 32);
+		for(u8 i = digitCount + 1; i < 4; i++) memcpy(tiles[3 - i], TILE_BLANK, 32);
 		effDamage[i].ttl = 60; // 1 second
 		effDamage[i].x = x;
 		effDamage[i].y = y;

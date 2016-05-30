@@ -1,7 +1,4 @@
-#include "ai_common.h"
-#include "ai_object.h"
-#include "ai_mimiga.h"
-#include "ai_balrog.h"
+#include "behavior.h"
 
 #include <genesis.h>
 #include "audio.h"

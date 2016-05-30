@@ -11,8 +11,7 @@
 #include "audio.h"
 #include "tsc.h"
 #include "npc.h"
-#include "ai_common.h"
-#include "ai_balrog.h"
+#include "behavior.h"
 
 /* Linked List Macros */
 

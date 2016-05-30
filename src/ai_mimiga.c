@@ -1,4 +1,4 @@
-#include "ai_mimiga.h"
+#include "behavior.h"
 
 #include <genesis.h>
 #include "audio.h"
