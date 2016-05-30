@@ -96,7 +96,7 @@ SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
 
 # Sound Test
 PALETTE PAL_SndTest	"back/soundtest.png" 0
-TILESET TS_SndTest	"back/soundtest.png" 2
+TILESET TS_SndTest	"back/soundtest.png" 0 # OOM when unpacking, don't compress
 
 # Window
 TILESET TS_Window	"window.png" 2

@@ -89,6 +89,7 @@ typedef struct {
 typedef struct {
 	const SpriteDefinition *sprite;
 	u16 palette;
+	char name[26];
 } npc_info_def;
 
 typedef struct {

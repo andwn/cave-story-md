@@ -66,7 +66,6 @@ void stage_load(u16 id) {
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
 	stage_load_tileflags();
-	//VDP_clearPlan(PLAN_A, true);
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
 	player_reset_sprites(); // Reloads player/weapon sprites

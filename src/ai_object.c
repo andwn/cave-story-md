@@ -31,7 +31,9 @@ void ai_update_energy(Entity *e) {
 // When the door's direction is changed to be facing right it becomes
 // transparent. The CNP command does this when Balrog barges into Barr
 void ai_activate_door(Entity *e) {
-	if(e->direction) SPR_SAFERELEASE(e->sprite);
+	if(e->direction) {
+		SPR_SAFERELEASE(e->sprite);
+	}
 }
 
 void ai_update_trigger(Entity *e) {

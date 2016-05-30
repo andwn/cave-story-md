@@ -129,7 +129,7 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 
 // Background Info
 const background_info_def background_info[BACKGROUND_COUNT] = {
-	{ NULL, PAL2, 0, 0, 0 },
+	{ NULL, PAL2, 2, 0, 0 },
 	{ &BG_Blue, PAL2, 0, 8, 8 },
 	{ &BG_Blue, PAL2, 0, 8, 8 },
 	{ &BG_Blue, PAL2, 0, 8, 8 },
@@ -313,376 +313,378 @@ const sound_info_def sound_info[SOUND_COUNT] = {
 };
 
 const npc_info_def npc_info[NPC_COUNT] = {
-	{ NULL, PAL0 }, // 0 - Nothing
-	{ &SPR_Energy, PAL1 }, // 1 - Weapon Energy
-	{ &SPR_Behem, PAL1 }, // 2 - Enemy: Behemoth
-	{ NULL, PAL0 }, // 3 - Nothing / Unknown
-	{ &SPR_Smoke, PAL1 }, // 4 - Smoke
-	{ &SPR_CritHG, PAL3 }, // 5 - Enemy: Critter (Hopping, Green)
-	{ &SPR_BtlHG, PAL3 }, // 6 - Enemy: Beetle (Horizontal, Green)
-	{ &SPR_Basil, PAL1 }, // 7 - Enemy: Basil
-	{ &SPR_BtlHG, PAL3 }, // 8 - Enemy: Beetle (Follow 1)
-	{ &SPR_Balrog, PAL1 }, // 9 - Balrog (Drops in)
-	{ &SPR_Balrog, PAL1 }, // 10 - Boss: Balrog (Shooting)
-	{ NULL, PAL0 }, // 11 - Projectile: Balrog energy shot
-	{ &SPR_Balrog, PAL1 }, // 12 - Balrog (Cutscene)
-	{ &SPR_ForceField, PAL1 }, // 13 - Forcefield
-	{ &SPR_Key, PAL1 }, // 14 - Santa's Key
-	{ &SPR_Chest, PAL1 }, // 15 - Treasure Chest (Closed)
-	{ &SPR_Save, PAL1 }, // 16 - Save Point
-	{ &SPR_Refill, PAL1 }, // 17 - Health / Ammo Refill
-	{ &SPR_Door, PAL1 }, // 18 - Door
-	{ &SPR_Balrog, PAL1 }, // 19 - Balrog (Busts in)
-	{ &SPR_Computer, PAL1 }, // 20 - Computer
-	{ &SPR_Chest2, PAL1 }, // 21 - Treasure Chest (Open)
-	{ &SPR_Tele, PAL1 }, // 22 - Teleporter
-	{ NULL, PAL0 }, // 23 - Teleporter Lights
-	{ &SPR_CritBig, PAL0 }, // 24 - Enemy: Power Critter
-	{ &SPR_Platform, PAL1 }, // 25 - Lift Platform
-	{ &SPR_Bat, PAL0 }, // 26 - Enemy: Bat (Black, circling)
-	{ &SPR_Trap, PAL1 }, // 27 - Death trap
-	{ &SPR_CritHG, PAL3 }, // 28 - Enemy: Critter (Flying)
-	{ &SPR_Cthu, PAL3 }, // 29 - Cthulhu
-	{ &SPR_Gunsmith, PAL3 }, // 30 - Hermit Gunsmith
-	{ &SPR_Bat, PAL0 }, // 31 - Enemy: Bat (Black, Hanging)
-	{ &SPR_LifeUp, PAL1 }, // 32 - Life Capsule
-	{ NULL, PAL0 }, // 33 - Projectile: Balrog energy bounce
-	{ &SPR_Bed, PAL1 }, // 34 - Bed
-	{ &SPR_Mannan, PAL3 }, // 35 - Enemy: Mannan
-	{ &SPR_Balrog, PAL1 }, // 36 - Boss: Balrog (Hovering)
-	{ &SPR_Sign, PAL1 }, // 37 - Sign Post
-	{ &SPR_Fire, PAL1 }, // 38 - Fireplace Fire
-	{ &SPR_SaveSign, PAL1 }, // 39 - Save Sign
-	{ &SPR_Santa, PAL3 }, // 40 - Santa
-	{ NULL, PAL0 }, // 41 - Busted Doorway
-	{ &SPR_Sue, PAL3 }, // 42 - Sue
-	{ &SPR_Board, PAL1 }, // 43 - Blackboard
-	{ NULL, PAL0 }, // 44 - Enemy: Polish
-	{ NULL, PAL0 }, // 45 - Enemy: Baby
-	{ NULL, PAL0 }, // 46 - Horiz/Vert Trigger
-	{ NULL, PAL0 }, // 47 - Enemy: Sandcroc (Green)
-	{ NULL, PAL0 }, // 48 - Projectile: Omega
-	{ NULL, PAL0 }, // 49 - Enemy: Skullhead
-	{ NULL, PAL0 }, // 50 - Projectile: Skeleton
-	{ NULL, PAL0 }, // 51 - Enemy: Crow & Skullhead
-	{ NULL, PAL3 }, // 52 - Blue Robot (Sitting)
-	{ NULL, PAL0 }, // 53 - <CRASH>
-	{ NULL, PAL0 }, // 54 - Enemy: Skullstep
-	{ &SPR_Kazuma, PAL3 }, // 55 - Kazuma
-	{ NULL, PAL0 }, // 56 - Enemy: Beetle (Horizontal, Brown)
-	{ NULL, PAL0 }, // 57 - Enemy: Crow
-	{ &SPR_Basu, PAL3 }, // 58 - Enemy: Basu (1)
-	{ &SPR_DoorE, PAL1 }, // 59 - Enemy: Door
-	{ &SPR_Toroko, PAL3 }, // 60 - Toroko
-	{ &SPR_King, PAL3 }, // 61 - King
-	{ &SPR_KazuCom, PAL3 }, // 62 - Kazuma (Computer)
-	{ &SPR_Toroko, PAL3 }, // 63 - Toroko (Attacking)
-	{ &SPR_CritHB, PAL2 }, // 64 - Enemy: Critter (Hopping, Blue)
-	{ &SPR_Bat, PAL0 }, // 65 - Enemy: Bat (Blue)
-	{ NULL, PAL0 }, // 66 - Bubble
-	{ &SPR_Misery, PAL0 }, // 67 - Misery (Floating)
-	{ &SPR_Balrog, PAL1 }, // 68 - Boss: Balrog (Running)
-	{ &SPR_Pignon, PAL1 }, // 69 - Enemy: Pignon
-	{ &SPR_Sparkle, PAL1 }, // 70 - Sparkling Item
-	{ &SPR_Fish, PAL0 }, // 71 - Enemy: Chinfish
-	{ NULL, PAL0 }, // 72 - Sprinkler
-	{ NULL, PAL0 }, // 73 - Water Drop
-	{ &SPR_Jack, PAL3 }, // 74 - Jack
-	{ &SPR_Kanpachi, PAL3 }, // 75 - Kanpachi (Fishing)
-	{ &SPR_Flower, PAL3 }, // 76 - Flowers
-	{ &SPR_Sanda, PAL3 }, // 77 - Sandame's Pavilion
-	{ NULL, PAL0 }, // 78 - Pot
-	{ &SPR_Mahin, PAL3 }, // 79 - Mahin
-	{ &SPR_Keeper, PAL1 }, // 80 - Enemy: Gravekeeper
-	{ &SPR_PignonB, PAL1 }, // 81 - Enemy: Giant Pignon
-	{ &SPR_Misery, PAL0 }, // 82 - Misery (Standing)
-	{ &SPR_Igor, PAL3 }, // 83 - Igor (Cutscene)
-	{ NULL, PAL0 }, // 84 - Projectile: Basu (1)
-	{ &SPR_Term, PAL1 }, // 85 - Terminal
-	{ NULL, PAL0 }, // 86 - Missile
-	{ &SPR_Heart, PAL1 }, // 87 - Heart
-	{ &SPR_Igor, PAL3 }, // 88 - Boss: Igor
-	{ NULL, PAL3 }, // 89 - Igor (Defeated)
-	{ NULL, PAL0 }, // 90 - Background (what?)
-	{ NULL, PAL0 }, // 91 - Cage
-	{ NULL, PAL0 }, // 92 - Sue (Computer)
-	{ NULL, PAL0 }, // 93 - Chaco
-	{ &SPR_Kulala, PAL0 }, // 94 - Enemy: Kulala
-	{ &SPR_Jelly, PAL0 }, // 95 - Enemy: Jelly
-	{ &SPR_Fan, PAL1 }, // 96 - Fan (Left)
-	{ &SPR_Fan, PAL1 }, // 97 - Fan (Up)
-	{ &SPR_Fan, PAL1 }, // 98 - Fan (Right)
-	{ &SPR_Fan, PAL1 }, // 99 - Fan (Down)
-	{ NULL, PAL0 }, // 100 - Grate
-	{ NULL, PAL0 }, // 101 - Power Controls (Screen)
-	{ &SPR_Wave, PAL1 }, // 102 - Power Controls (Power Flow)
-	{ NULL, PAL0 }, // 103 - Projectile: Mannan
-	{ NULL, PAL0 }, // 104 - Enemy: Frog
-	{ NULL, PAL0 }, // 105 - Balloon (Hey!, Low)
-	{ NULL, PAL0 }, // 106 - Balloon (Hey!, High)
-	{ &SPR_Malco, PAL1 }, // 107 - Malco (Undamaged)
-	{ NULL, PAL0 }, // 108 - Projectile: Balfrog
-	{ &SPR_Malco, PAL1 }, // 109 - Malco (Damaged)
-	{ NULL, PAL0 }, // 110 - Enemy: Puchi
-	{ &SPR_Quote, PAL0 }, // 111 - Quote (Teleports Out)
-	{ &SPR_Quote, PAL0 }, // 112 - Quote (Teleports In)
-	{ NULL, PAL0 }, // 113 - Prof. Booster
-	{ NULL, PAL0 }, // 114 - Enemy: Press
-	{ NULL, PAL0 }, // 115 - Enemy: Ravil
-	{ NULL, PAL0 }, // 116 - Red Flowers (Petals)
-	{ NULL, PAL0 }, // 117 - Curly
-	{ NULL, PAL0 }, // 118 - Boss: Curly
-	{ NULL, PAL0 }, // 119 - Tables & Chair
-	{ NULL, PAL0 }, // 120 - Colon 1
-	{ NULL, PAL0 }, // 121 - Colon 2
-	{ NULL, PAL0 }, // 122 - Enemy: Colon
-	{ NULL, PAL0 }, // 123 - Projectile: Curly
-	{ NULL, PAL0 }, // 124 - Sunstone
-	{ NULL, PAL0 }, // 125 - Hidden Heart/Missile
-	{ NULL, PAL0 }, // 126 - Puppy (Runs Away)
-	{ NULL, PAL0 }, // 127 - Glowy thing?
-	{ NULL, PAL0 }, // 128 - Glowy thing?
-	{ NULL, PAL0 }, // 129 - Glowy thing?
-	{ NULL, PAL0 }, // 130 - Puppy (Tail Wag)
-	{ NULL, PAL0 }, // 131 - Puppy (Sleeping)
-	{ NULL, PAL0 }, // 132 - Puppy (Bark)
-	{ NULL, PAL0 }, // 133 - Jenka
-	{ NULL, PAL0 }, // 134 - Enemy: Armadillo
-	{ NULL, PAL0 }, // 135 - Enemy: Skeleton
-	{ NULL, PAL0 }, // 136 - Puppy (Carried)
-	{ NULL, PAL0 }, // 137 - Large Doorway (Frame)
-	{ NULL, PAL0 }, // 138 - Large Doorway (Doors)
-	{ NULL, PAL0 }, // 139 - Doctor (Crowned)
-	{ NULL, PAL0 }, // 140 - Boss: Frenzied Toroko
-	{ NULL, PAL0 }, // 141 - <CRASH>
-	{ NULL, PAL0 }, // 142 - Enemy: Flowercub
-	{ NULL, PAL0 }, // 143 - Jenka (Collapsed)
-	{ NULL, PAL0 }, // 144 - Toroko (Teleports In)
-	{ NULL, PAL0 }, // 145 - <CRASH>
-	{ NULL, PAL0 }, // 146 - Lightning
-	{ NULL, PAL0 }, // 147 - Enemy: Critter (Hover)
-	{ NULL, PAL0 }, // 148 - Projectile: Critter
-	{ NULL, PAL0 }, // 149 - Moving Block (Horizontal)
-	{ NULL, PAL0 }, // 150 - Quote
-	{ NULL, PAL0 }, // 151 - Blue Robot
-	{ NULL, PAL0 }, // 152 - Shutter (Stuck)
-	{ NULL, PAL0 }, // 153 - Enemy: Gaudi
-	{ NULL, PAL0 }, // 154 - Enemy: Gaudi (Defeated)
-	{ NULL, PAL0 }, // 155 - Enemy: Gaudi (Flying)
-	{ NULL, PAL0 }, // 156 - Projectile: Gaudi (Flying)
-	{ NULL, PAL0 }, // 157 - Moving Block (Vertical)
-	{ NULL, PAL0 }, // 158 - Projectile: Monster X
-	{ NULL, PAL0 }, // 159 - Monster X (Defeated)
-	{ NULL, PAL0 }, // 160 - Boss: Pooh Black
-	{ NULL, PAL0 }, // 161 - Projectile: Pooh Black
-	{ NULL, PAL0 }, // 162 - Pooh Black (Defeated)
-	{ NULL, PAL0 }, // 163 - Dr. Gero
-	{ NULL, PAL0 }, // 164 - Nurse Hasumi
-	{ NULL, PAL0 }, // 165 - Curly (Collapsed)
-	{ NULL, PAL0 }, // 166 - Chaba
-	{ NULL, PAL0 }, // 167 - Prof. Booster (Fall)
-	{ NULL, PAL0 }, // 168 - Boulder
-	{ &SPR_Balrog, PAL1 }, // 169 - Boss: Balrog (Missiles)
-	{ NULL, PAL0 }, // 170 - Projectile: Balrog (Missiles)
-	{ NULL, PAL0 }, // 171 - Enemy: Fire Whirr
-	{ NULL, PAL0 }, // 172 - Projectile: Fire Whirr
-	{ NULL, PAL0 }, // 173 - Enemy: Gaudi Armor
-	{ NULL, PAL0 }, // 174 - Projectile: Gaudi Armor
-	{ NULL, PAL0 }, // 175 - Enemy: Gaudi Egg
-	{ NULL, PAL0 }, // 176 - Enemy: Buyobuyo Base
-	{ NULL, PAL0 }, // 177 - Enemy: Buyobuyo
-	{ NULL, PAL0 }, // 178 - Projectile: Core (Spinner)
-	{ NULL, PAL0 }, // 179 - Projectile: Core (Wisp)
-	{ NULL, PAL0 }, // 180 - Curly (A.I.)
-	{ NULL, PAL0 }, // 181 - Unknown
-	{ NULL, PAL0 }, // 182 - Unknown
-	{ NULL, PAL0 }, // 183 - Unknown
-	{ NULL, PAL0 }, // 184 - Shutter (Large)
-	{ NULL, PAL0 }, // 185 - Shutter (Small)
-	{ NULL, PAL0 }, // 186 - Lift Block
-	{ NULL, PAL0 }, // 187 - Enemy: Fuzz Core
-	{ NULL, PAL0 }, // 188 - <CRASH>
-	{ NULL, PAL0 }, // 189 - Projectile: Homing Flame
-	{ NULL, PAL0 }, // 190 - Surface Robot
-	{ NULL, PAL0 }, // 191 - Water Level
-	{ NULL, PAL0 }, // 192 - Scooter
-	{ NULL, PAL0 }, // 193 - Scooter (Pieces)
-	{ NULL, PAL0 }, // 194 - Blue Robot (Pieces)
-	{ NULL, PAL0 }, // 195 - Grate Mouth
-	{ NULL, PAL0 }, // 196 - Motion Wall
-	{ NULL, PAL0 }, // 197 - Enemy: Porcupine Fish
-	{ NULL, PAL0 }, // 198 - Projectile: Ironhead
-	{ NULL, PAL0 }, // 199 - Underwater Current
-	{ NULL, PAL0 }, // 200 - Enemy: Dragon Zombie
-	{ NULL, PAL0 }, // 201 - Dragon Zombie (Dead)
-	{ NULL, PAL0 }, // 202 - Projectile: Dragon Zombie
-	{ NULL, PAL0 }, // 203 - Enemy: Critter (Hopping, Aqua)
-	{ NULL, PAL0 }, // 204 - Falling Spike (Small)
-	{ NULL, PAL0 }, // 205 - Falling Spike (Large)
-	{ NULL, PAL0 }, // 206 - Enemy: Counter Bomb
-	{ NULL, PAL0 }, // 207 - Balloon (Countdown)
-	{ NULL, PAL0 }, // 208 - Enemy: Basu (2)
-	{ NULL, PAL0 }, // 209 - Projectile: Basu (2)
-	{ NULL, PAL0 }, // 210 - Enemy: Beetle (Follow 2)
-	{ &SPR_Spikes, PAL1 }, // 211 - Spikes
-	{ NULL, PAL0 }, // 212 - Sky Dragon
-	{ NULL, PAL0 }, // 213 - Enemy: Night Spirit
-	{ NULL, PAL0 }, // 214 - Projectile: Night Spirit
-	{ NULL, PAL0 }, // 215 - Enemy: Sandcroc (White)
-	{ NULL, PAL0 }, // 216 - Debug Cat
-	{ NULL, PAL0 }, // 217 - Itoh
-	{ NULL, PAL0 }, // 218 - Unknown
-	{ NULL, PAL0 }, // 219 - Generator: Smoke/Underwater Current
-	{ NULL, PAL0 }, // 220 - Shovel Brigade
-	{ NULL, PAL0 }, // 221 - Shovel Brigade (Walking)
-	{ NULL, PAL0 }, // 222 - Prison Bars
-	{ NULL, PAL0 }, // 223 - Momorin
-	{ NULL, PAL0 }, // 224 - Chie
-	{ NULL, PAL0 }, // 225 - Megane
-	{ NULL, PAL0 }, // 226 - Kanpachi
-	{ NULL, PAL0 }, // 227 - Bucket
-	{ NULL, PAL0 }, // 228 - Droll (Guard)
-	{ NULL, PAL0 }, // 229 - Red Flowers (Sprouts)
-	{ NULL, PAL0 }, // 230 - Red Flowers (Blooming)
-	{ NULL, PAL0 }, // 231 - Rocket
-	{ NULL, PAL0 }, // 232 - Enemy: Orangebell
-	{ NULL, PAL0 }, // 233 - <CRASH>
-	{ NULL, PAL0 }, // 234 - Red Flowers (picked)
-	{ NULL, PAL0 }, // 235 - Enemy: Midorin
-	{ NULL, PAL0 }, // 236 - Enemy: Gunfish
-	{ NULL, PAL0 }, // 237 - Projectile: Gunfish
-	{ NULL, PAL0 }, // 238 - Enemy: Press (Killer)
-	{ NULL, PAL0 }, // 239 - Cage Bars
-	{ NULL, PAL0 }, // 240 - Mimiga (Jailed)
-	{ NULL, PAL0 }, // 241 - Enemy: Critter (Hopping, Red)
-	{ NULL, PAL0 }, // 242 - Enemy: Bat (Red)
-	{ NULL, PAL0 }, // 243 - Generator: Bat (Red)
-	{ NULL, PAL0 }, // 244 - Acid Drop
-	{ NULL, PAL0 }, // 245 - Generator: Acid Drop
-	{ NULL, PAL0 }, // 246 - Enemy: Press (Proximity)
-	{ NULL, PAL0 }, // 247 - Boss: Misery
-	{ NULL, PAL0 }, // 248 - Boss: Misery (Vanish)
-	{ NULL, PAL0 }, // 249 - Projectile: Misery (Energy shot)
-	{ NULL, PAL0 }, // 250 - Projectile: Misery (Lightning ball)
-	{ NULL, PAL0 }, // 251 - Projectile: Misery (Lightning)
-	{ NULL, PAL0 }, // 252 - <CRASH>
-	{ NULL, PAL0 }, // 253 - Energy Capsule
-	{ NULL, PAL0 }, // 254 - Helicopter
-	{ NULL, PAL0 }, // 255 - <CRASH>
-	{ NULL, PAL0 }, // 256 - Doctor (Crowned, Facing away)
-	{ NULL, PAL0 }, // 257 - Red Crystal
-	{ NULL, PAL0 }, // 258 - Mimiga (Sleeping)
-	{ NULL, PAL0 }, // 259 - Curly (Carried, Unconscious)
-	{ NULL, PAL0 }, // 260 - Shovel Brigade (Caged)
-	{ NULL, PAL0 }, // 261 - Chie (Caged)
-	{ NULL, PAL0 }, // 262 - Chaco (Caged)
-	{ NULL, PAL0 }, // 263 - Boss: Doctor
-	{ NULL, PAL0 }, // 264 - Projectile: Doctor (Red wave)
-	{ NULL, PAL0 }, // 265 - Projectile: Doctor (Red ball, Quick)
-	{ NULL, PAL0 }, // 266 - Projectile: Doctor (Red ball, Slow)
-	{ NULL, PAL0 }, // 267 - Boss: Muscle Doctor
-	{ NULL, PAL0 }, // 268 - Enemy: Igor
-	{ NULL, PAL0 }, // 269 - Enemy: Bat (Red energy)
-	{ NULL, PAL0 }, // 270 - Red Energy
-	{ NULL, PAL0 }, // 271 - Underwater Block
-	{ NULL, PAL0 }, // 272 - Generator: Underwater Block
-	{ NULL, PAL0 }, // 273 - Projectile: Droll
-	{ NULL, PAL0 }, // 274 - Enemy: Droll
-	{ NULL, PAL0 }, // 275 - Puppy (With items)
-	{ NULL, PAL0 }, // 276 - Boss: Red Demon
-	{ NULL, PAL0 }, // 277 - Projectile: Red Demon
-	{ NULL, PAL0 }, // 278 - Little Family
-	{ NULL, PAL0 }, // 279 - Falling Block (Large)
-	{ NULL, PAL0 }, // 280 - Sue (Teleported In)
-	{ NULL, PAL0 }, // 281 - Doctor (Red energy form)
-	{ NULL, PAL0 }, // 282 - Enemy: Mini Undead Core (Floats Forward)
-	{ NULL, PAL0 }, // 283 - Enemy: Misery (Transformed)
-	{ NULL, PAL0 }, // 284 - Enemy: Sue (Transformed)
-	{ NULL, PAL0 }, // 285 - Projectile: Undead Core (Orange spiral shot)
-	{ NULL, PAL0 }, // 286 - Orange Dot
-	{ NULL, PAL0 }, // 287 - Orange Smoke
-	{ NULL, PAL0 }, // 288 - Projectile: Undead Core (Glowing rock)
-	{ NULL, PAL0 }, // 289 - Enemy: Critter (Hopping, Orange)
-	{ NULL, PAL0 }, // 290 - Enemy: Bat (Orange)
-	{ NULL, PAL0 }, // 291 - Mini Undead Core (Before fight)
-	{ NULL, PAL0 }, // 292 - Quake
-	{ NULL, PAL0 }, // 293 - Projectile: Undead Core (Huge energy shot)
-	{ NULL, PAL0 }, // 294 - Quake & Generator: Falling Blocks
-	{ NULL, PAL0 }, // 295 - Cloud
-	{ NULL, PAL0 }, // 296 - Generator: Cloud
-	{ NULL, PAL0 }, // 297 - <CRASH>
-	{ NULL, PAL0 }, // 298 - Doctor (Uncrowned)
-	{ NULL, PAL0 }, // 299 - Balrog/Misery (Bubble)
-	{ NULL, PAL0 }, // 300 - Demon Crown
-	{ NULL, PAL0 }, // 301 - Enemy: Fish Missile (Orange)
-	{ NULL, PAL0 }, // 302 - Ending stuff?
-	{ NULL, PAL0 }, // 303 - Unknown
-	{ NULL, PAL0 }, // 304 - Gaudi (Sitting)
-	{ NULL, PAL0 }, // 305 - Puppy (Small)
-	{ NULL, PAL0 }, // 306 - Balrog (Nurse)
-	{ NULL, PAL0 }, // 307 - Santa (Caged)
-	{ NULL, PAL0 }, // 308 - Enemy: Stumpy
-	{ NULL, PAL0 }, // 309 - Enemy: Bute
-	{ NULL, PAL0 }, // 310 - Enemy: Bute (Sword)
-	{ NULL, PAL0 }, // 311 - Enemy: Bute (Archer)
-	{ NULL, PAL0 }, // 312 - Projectile: Bute (Archer)
-	{ NULL, PAL0 }, // 313 - Boss: Ma Pignon
-	{ NULL, PAL0 }, // 314 - Falling, Indestructible
-	{ NULL, PAL0 }, // 315 - Enemy (Hopping, Disappears)
-	{ NULL, PAL0 }, // 316 - Bute (Defeated)
-	{ NULL, PAL0 }, // 317 - Enemy: Mesa
-	{ NULL, PAL0 }, // 318 - Mesa (Defeated)
-	{ NULL, PAL0 }, // 319 - <CRASH>
-	{ NULL, PAL0 }, // 320 - Curly (Carried, Shooting)
-	{ NULL, PAL0 }, // 321 - Unknown
-	{ NULL, PAL0 }, // 322 - Enemy: Deleet
-	{ NULL, PAL0 }, // 323 - Enemy: Bute (Generated)
-	{ NULL, PAL0 }, // 324 - Generator: Bute
-	{ NULL, PAL0 }, // 325 - Projectile: Heavy Press
-	{ NULL, PAL0 }, // 326 - Itoh/Sue (Turning Human)
-	{ NULL, PAL0 }, // 327 - <CRASH>
-	{ NULL, PAL0 }, // 328 - Transmogrifier
-	{ NULL, PAL0 }, // 329 - Building Fan
-	{ NULL, PAL0 }, // 330 - Enemy: Rolling
-	{ NULL, PAL0 }, // 331 - Projectile: Ballos (Bone)
-	{ NULL, PAL0 }, // 332 - Projectile: Ballos (Shockwave)
-	{ NULL, PAL0 }, // 333 - Projectile: Ballos (Lightning)
-	{ NULL, PAL0 }, // 334 - Sweat
-	{ NULL, PAL0 }, // 335 - Ika-chan
-	{ NULL, PAL0 }, // 336 - Generator: Ika-chan
-	{ NULL, PAL0 }, // 337 - Numahachi
-	{ NULL, PAL0 }, // 338 - Enemy: Green Devil
-	{ NULL, PAL0 }, // 339 - Generator: Green Devil
-	{ NULL, PAL0 }, // 340 - Boss: Ballos
-	{ NULL, PAL0 }, // 341 - <CRASH>
-	{ NULL, PAL0 }, // 342 - <CRASH>
-	{ NULL, PAL0 }, // 343 - <CRASH>
-	{ NULL, PAL0 }, // 344 - <CRASH>
-	{ NULL, PAL0 }, // 345 - Projectile: Ballos (Skull)
-	{ NULL, PAL0 }, // 346 - <CRASH>
-	{ NULL, PAL0 }, // 347 - Enemy: Hoppy
-	{ NULL, PAL0 }, // 348 - Ballos Spikes (Rising)
-	{ NULL, PAL0 }, // 349 - Statue
-	{ NULL, PAL0 }, // 350 - Enemy: Bute (Archer, Red)
-	{ NULL, PAL0 }, // 351 - Statue (Can shoot)
-	{ NULL, PAL0 }, // 352 - King (Sword)
-	{ NULL, PAL0 }, // 353 - Enemy: Bute (Sword, Red)
-	{ NULL, PAL0 }, // 354 - Invisible Death Trap Wall
-	{ NULL, PAL0 }, // 355 - <CRASH>
-	{ NULL, PAL0 }, // 356 - Balrog (Rescue)
-	{ NULL, PAL0 }, // 357 - Puppy (Ghost)
-	{ NULL, PAL0 }, // 358 - Misery (Wind)
-	{ NULL, PAL0 }, // 359 - Generator: Water Drop
-	{ NULL, PAL0 }, // 360 - "Thank You!"
+	{ NULL, 		PAL0, "Nothing" },
+	{ &SPR_Energy, 	PAL1, "Weapon Energy" },
+	{ &SPR_Behem, 	PAL1, "Behemoth" },
+	{ NULL, 		PAL0, "Nothing" },
+	{ &SPR_Smoke, 	PAL1, "Smoke" },
+	{ &SPR_CritHG, 	PAL3, "Green Hopping Critter" },
+	{ &SPR_BtlHG, 	PAL3, "Green Beetle" },
+	{ &SPR_Basil, 	PAL1, "Basil" },
+	{ &SPR_BtlHG, 	PAL3, "Green Beetle (Follow)" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Drops in)" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Shooting)" },
+	{ NULL, 		PAL0, "Balrog Energy Shot" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Scene)" },
+	{ &SPR_ForceField, PAL1, "Force Field" },
+	{ &SPR_Key, 	PAL1, "Santa's Key" },
+	{ &SPR_Chest, 	PAL1, "Treasure Chest" },
+	{ &SPR_Save, 	PAL1, "Save Point" }, // 0x10
+	{ &SPR_Refill, 	PAL1, "Health & Ammo Refill" },
+	{ &SPR_Door, 	PAL1, "Door" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Mimiga Village)" },
+	{ &SPR_Computer, PAL1, "Computer" },
+	{ &SPR_Chest2, 	PAL1, "Opened Chest" },
+	{ &SPR_Tele, 	PAL1, "Teleporter" },
+	{ NULL, 		PAL0, "Teleporter Lights" },
+	{ &SPR_CritBig, PAL0, "Power Critter" },
+	{ &SPR_Platform, PAL1, "Lift Platform" },
+	{ &SPR_Bat, 	PAL0, "Bat (Circling)" },
+	{ &SPR_Trap, 	PAL1, "Death Trap" },
+	{ &SPR_CritHG, 	PAL3, "Flying Critter" },
+	{ &SPR_Cthu, 	PAL3, "Cthulhu" },
+	{ &SPR_Gunsmith, PAL3, "Hermit Gunsmith" },
+	{ &SPR_Bat, 	PAL0, "Bat (Hanging)" },
+	{ &SPR_LifeUp, 	PAL1, "Life Capsule" }, // 0x20
+	{ NULL, 		PAL0, "Balrog Energy Bounce" },
+	{ &SPR_Bed, 	PAL1, "Bed" },
+	{ &SPR_Mannan, 	PAL3, "Mannan" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Second Fight)" },
+	{ &SPR_Sign, 	PAL1, "Sign Post" },
+	{ &SPR_Fire, 	PAL1, "Fireplace Fire" },
+	{ &SPR_SaveSign, PAL1, "Save Sign" },
+	{ &SPR_Santa, 	PAL3, "Santa" },
+	{ NULL, 		PAL0, "Busted Doorway" },
+	{ &SPR_Sue, 	PAL3, "Sue" },
+	{ &SPR_Board, 	PAL1, "Blackboard" },
+	{ NULL, 		PAL0, "Polish" },
+	{ NULL, 		PAL0, "Baby" },
+	{ NULL, 		PAL0, "Horiz/Vert Trigger" },
+	{ NULL, 		PAL0, "Green Sandcroc" },
+	{ NULL, 		PAL0, "Omega Projectile" }, // 0x30
+	{ NULL, 		PAL0, "Skullhead" },
+	{ NULL, 		PAL0, "Skeleton" },
+	{ NULL, 		PAL0, "Crow & Skullhead" },
+	{ NULL, 		PAL3, "Blue Robot (Sitting)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Skullstep" },
+	{ &SPR_Kazuma, 	PAL3, "Kazuma" },
+	{ NULL, 		PAL0, "Brown Beetle" },
+	{ NULL, 		PAL0, "Crow" },
+	{ &SPR_Basu, 	PAL3, "Basu" },
+	{ &SPR_DoorE, 	PAL1, "Door Enemy" },
+	{ &SPR_Toroko, 	PAL3, "Toroko" },
+	{ &SPR_King, 	PAL3, "King" },
+	{ &SPR_KazuCom, PAL3, "Kazuma (Computer)" },
+	{ &SPR_Toroko, 	PAL3, "Toroko (Attacking)" },
+	{ &SPR_CritHB, 	PAL2, "Blue Hopping Critter" }, // 0x40
+	{ &SPR_Bat, 	PAL0, "Bat" },
+	{ NULL, 		PAL0, "Misery's Bubble" },
+	{ &SPR_Misery, 	PAL0, "Misery (Floating)" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (First Fight)" },
+	{ &SPR_Pignon, 	PAL1, "Pignon" },
+	{ &SPR_Sparkle, PAL1, "Sparkling Item" },
+	{ &SPR_Fish, 	PAL0, "Chinfish" },
+	{ NULL, 		PAL0, "Sprinkler" },
+	{ NULL, 		PAL0, "Water Drop" },
+	{ &SPR_Jack, 	PAL3, "Jack" },
+	{ &SPR_Kanpachi, PAL3, "Kanpachi (Fishing)" },
+	{ &SPR_Flower, 	PAL3, "Flowers" },
+	{ &SPR_Sanda, 	PAL3, "Sandame's Pavilion" },
+	{ NULL, 		PAL0 , "Pot" },
+	{ &SPR_Mahin, 	PAL3, "Mahin" },
+	{ &SPR_Keeper, 	PAL1, "Gravekeeper" }, // 0x50
+	{ &SPR_PignonB, PAL1, "Big Pignon" },
+	{ &SPR_Misery, 	PAL0, "Misery (Standing)" },
+	{ &SPR_Igor, 	PAL3, "Igor (Scene)" },
+	{ NULL, 		PAL0, "Basu Projectile" },
+	{ &SPR_Term, 	PAL1, "Terminal" },
+	{ NULL, 		PAL0, "Missile" },
+	{ &SPR_Heart, 	PAL1, "Heart" },
+	{ &SPR_Igor, 	PAL3, "Igor (Boss)" },
+	{ NULL, 		PAL3, "Igor (Defeated)" },
+	{ NULL, 		PAL0, "???" }, // 90 - Background (what?)
+	{ NULL, 		PAL0, "Cage" },
+	{ NULL, 		PAL0, "Sue (Computer)" },
+	{ NULL, 		PAL0, "Chaco" },
+	{ &SPR_Kulala, 	PAL0, "Kulala" },
+	{ &SPR_Jelly, 	PAL0, "Jelly" },
+	{ &SPR_Fan, 	PAL1, "Fan (Left)" }, // 0x60
+	{ &SPR_Fan, 	PAL1, "Fan (Up)" },
+	{ &SPR_Fan, 	PAL1, "Fan (Right)" },
+	{ &SPR_Fan, 	PAL1, "Fan (Down)" },
+	{ NULL, 		PAL0, "Grate" },
+	{ NULL, 		PAL0, "Power Controls (Screen)" },
+	{ &SPR_Wave, 	PAL1, "Power Controls (Flow)" },
+	{ NULL, 		PAL0, "Mannan Projectile" },
+	{ NULL, 		PAL0, "Frog" },
+	{ NULL, 		PAL0, "Hey! (Low)" },
+	{ NULL, 		PAL0, "Hey! (High)" },
+	{ &SPR_Malco, 	PAL1, "Malco" },
+	{ NULL, 		PAL0, "Balfrog Projectile" },
+	{ &SPR_Malco, 	PAL1, "Malco (Damaged)" },
+	{ NULL, 		PAL0, "Puchi" },
+	{ &SPR_Quote, 	PAL0, "Quote Teleporting Out" },
+	{ &SPR_Quote, 	PAL0, "Quote Teleporting In" }, // 0x70
+	{ NULL, 		PAL0, "Prof. Booster" },
+	{ NULL, 		PAL0, "Press" },
+	{ NULL, 		PAL0, "Ravil" },
+	{ NULL, 		PAL0, "Red Flower Petals" },
+	{ NULL, 		PAL0, "Curly" },
+	{ NULL, 		PAL0, "Curly (Boss)" },
+	{ NULL, 		PAL0, "Tables & Chair" },
+	{ NULL, 		PAL0, "Colon 1" },
+	{ NULL, 		PAL0, "Colon 2" },
+	{ NULL, 		PAL0, "Colon (Enemy)" },
+	{ NULL, 		PAL0, "Curly Projectile" },
+	{ NULL, 		PAL0, "Sunstone" },
+	{ NULL, 		PAL0, "Hidden Heart/Missile" },
+	{ NULL, 		PAL0, "Puppy (Runs Away)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" }, // 0x80
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Puppy (Tail Wag)" },
+	{ NULL, 		PAL0, "Puppy (Sleeping)" },
+	{ NULL, 		PAL0, "Puppy (Bark)" },
+	{ NULL, 		PAL0, "Jenka" },
+	{ NULL, 		PAL0, "Armadillo" },
+	{ NULL, 		PAL0, "Skeleton" },
+	{ NULL, 		PAL0, "Puppy (Carried)" },
+	{ NULL, 		PAL0, "Large Doorway (Frame)" },
+	{ NULL, 		PAL0, "Large Doorway (Doors)" },
+	{ NULL, 		PAL0, "Doctor (Crowned)" },
+	{ NULL, 		PAL0, "Frenzied Toroko" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Flowercub" },
+	{ NULL, 		PAL0, "Jenka (Collapsed)" },
+	{ NULL, 		PAL0, "Toroko (Teleport In)" }, // 0x90
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Lightning" },
+	{ NULL, 		PAL0, "Purple Critter" },
+	{ NULL, 		PAL0, "Critter Projectile" },
+	{ NULL, 		PAL0, "Moving Block (Horiz)" },
+	{ NULL, 		PAL0, "Quote" },
+	{ NULL, 		PAL0, "Blue Robot" },
+	{ NULL, 		PAL0, "Shutter (Stuck)" },
+	{ NULL, 		PAL0, "Gaudi" },
+	{ NULL, 		PAL0, "Gaudi (Defeated)" },
+	{ NULL, 		PAL0, "Gaudi (Flying)" },
+	{ NULL, 		PAL0, "Gaudi Projectile)" },
+	{ NULL, 		PAL0, "Moving Block (Vert)" },
+	{ NULL, 		PAL0, "Monster X Projectile" },
+	{ NULL, 		PAL0, "Monster X (Defeated)" },
+	{ NULL, 		PAL0, "Pooh Black" }, // 0xA0
+	{ NULL, 		PAL0, "Pooh Black Projectile" },
+	{ NULL, 		PAL0, "Pooh Black (Defeated)" },
+	{ NULL, 		PAL0, "Dr. Gero" },
+	{ NULL, 		PAL0, "Nurse Hasumi" },
+	{ NULL, 		PAL0, "Curly (Collapsed)" },
+	{ NULL, 		PAL0, "Chaba" },
+	{ NULL, 		PAL0, "Prof. Booster (Fall)" },
+	{ NULL, 		PAL0, "Boulder" },
+	{ &SPR_Balrog, 	PAL1, "Balrog (Third Fight)" },
+	{ NULL, 		PAL0, "Balrog Missile" },
+	{ NULL, 		PAL0, "Fire Whirr" },
+	{ NULL, 		PAL0, "Fire Whirr Projectile" },
+	{ NULL, 		PAL0, "Gaudi Armor" },
+	{ NULL, 		PAL0, "Gaudi Armor Projectile" },
+	{ NULL, 		PAL0, "Gaudi Egg" },
+	{ NULL, 		PAL0, "Buyobuyo Base" }, // 0xB0
+	{ NULL, 		PAL0, "Buyobuyo" },
+	{ NULL, 		PAL0, "Core Spinning Projectile" },
+	{ NULL, 		PAL0, "Core Wisp Projectile" },
+	{ NULL, 		PAL0, "Curly (AI)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Shutter (Large)" },
+	{ NULL, 		PAL0, "Shutter (Small)" },
+	{ NULL, 		PAL0, "Lift Block" },
+	{ NULL, 		PAL0, "Fuzz Core" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Homing Flame Projectile" },
+	{ NULL, 		PAL0, "Surface Robot" },
+	{ NULL, 		PAL0, "Water Level" },
+	{ NULL, 		PAL0, "Scooter" }, // 0xC0
+	{ NULL, 		PAL0, "Scooter (Pieces)" },
+	{ NULL, 		PAL0, "Blue Robot (Pieces)" },
+	{ NULL, 		PAL0, "Grate Mouth" },
+	{ NULL, 		PAL0, "Motion Wall" },
+	{ NULL, 		PAL0, "Porcupine Fish" },
+	{ NULL, 		PAL0, "Ironhead Projectile" },
+	{ NULL, 		PAL0, "Underwater Current" },
+	{ NULL, 		PAL0, "Dragon Zombie" },
+	{ NULL, 		PAL0, "Dragon Zombie (Dead)" },
+	{ NULL, 		PAL0, "Dragon Zombie Projectile" },
+	{ NULL, 		PAL0, "Blue Hopping Critter" },
+	{ NULL, 		PAL0, "Falling Spike (Small)" },
+	{ NULL, 		PAL0, "Falling Spike (Large)" },
+	{ NULL, 		PAL0, "Counter Bomb" },
+	{ NULL, 		PAL0, "Countdown Balloon" },
+	{ NULL, 		PAL0, "Basu (2)" }, // 0xD0
+	{ NULL, 		PAL0, "Basu Projectile (2)" },
+	{ NULL, 		PAL0, "Green Beetle (Follow 2)" },
+	{ &SPR_Spikes, 	PAL1, "Spikes" },
+	{ NULL, 		PAL0, "Sky Dragon" },
+	{ NULL, 		PAL0, "Night Spirit" },
+	{ NULL, 		PAL0, "Night Spirit Projectile" },
+	{ NULL, 		PAL0, "White Sandcroc" },
+	{ NULL, 		PAL0, "Debug Cat" },
+	{ NULL, 		PAL0, "Itoh" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Smoke/Current Generator" },
+	{ NULL, 		PAL0, "Shovel Brigade" },
+	{ NULL, 		PAL0, "Shovel Brigade (Walking)" },
+	{ NULL, 		PAL0, "Prison Bars" },
+	{ NULL, 		PAL0, "Momorin" },
+	{ NULL, 		PAL0, "Chie" }, // 0xE0
+	{ NULL, 		PAL0, "Megane" },
+	{ NULL, 		PAL0, "Kanpachi" },
+	{ NULL, 		PAL0, "Bucket" },
+	{ NULL, 		PAL0, "Droll (Guard)" },
+	{ NULL, 		PAL0, "Red Flower Sprouts" },
+	{ NULL, 		PAL0, "Blooming Red Flowers" },
+	{ NULL, 		PAL0, "Rocket" },
+	{ NULL, 		PAL0, "Orangebell" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Picked Red Flowers" },
+	{ NULL, 		PAL0, "Midorin" },
+	{ NULL, 		PAL0, "Gunfish" },
+	{ NULL, 		PAL0, "Gunfish Projectile" },
+	{ NULL, 		PAL0, "Lethal Press" },
+	{ NULL, 		PAL0, "Cage Bars" },
+	{ NULL, 		PAL0, "Jailed Mimiga" }, // 0xF0
+	{ NULL, 		PAL0, "Red Critter" },
+	{ NULL, 		PAL0, "Red Bat" },
+	{ NULL, 		PAL0, "Red Bat Generator" },
+	{ NULL, 		PAL0, "Acid Drop" },
+	{ NULL, 		PAL0, "Acid Drop Generator" },
+	{ NULL, 		PAL0, "Press (Proximity)" },
+	{ NULL, 		PAL0, "Misery (Boss)" },
+	{ NULL, 		PAL0, "Misery (Vanish)" },
+	{ NULL, 		PAL0, "Misery Energy Shot" },
+	{ NULL, 		PAL0, "Misery Lightning Ball" },
+	{ NULL, 		PAL0, "Misery Lightning" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Energy Capsule" },
+	{ NULL, 		PAL0, "Helicopter" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Doctor (Before Fight)" }, // 0x100
+	{ NULL, 		PAL0, "Red Crystal" },
+	{ NULL, 		PAL0, "Sleeping Mimiga" },
+	{ NULL, 		PAL0, "Curly (Carried)" },
+	{ NULL, 		PAL0, "Shovel Brigade (Caged)" },
+	{ NULL, 		PAL0, "Chie (Caged)" },
+	{ NULL, 		PAL0, "Chaco (Caged)" },
+	{ NULL, 		PAL0, "Doctor (Boss)" },
+	{ NULL, 		PAL0, "Doctor Red Wave" },
+	{ NULL, 		PAL0, "Doctor Red Ball (Fast)" },
+	{ NULL, 		PAL0, "Doctor Red Ball (Slow)" },
+	{ NULL, 		PAL0, "Muscle Doctor (Boss)" },
+	{ NULL, 		PAL0, "Igor" },
+	{ NULL, 		PAL0, "Red Energy Bat" },
+	{ NULL, 		PAL0, "Red Energy" },
+	{ NULL, 		PAL0, "Underwater Block" },
+	{ NULL, 		PAL0, "Water Block Generator" }, // 0x110
+	{ NULL, 		PAL0, "Droll Projectile" },
+	{ NULL, 		PAL0, "Droll" },
+	{ NULL, 		PAL0, "Puppy (With Item)" },
+	{ NULL, 		PAL0, "Red Demon" },
+	{ NULL, 		PAL0, "Red Demon Projectile" },
+	{ NULL, 		PAL0, "Little Family" },
+	{ NULL, 		PAL0, "Falling Block (Large)" },
+	{ NULL, 		PAL0, "Sue (Teleport In)" },
+	{ NULL, 		PAL0, "Doctor (Red Energy)" },
+	{ NULL, 		PAL0, "Mini Undead Core" },
+	{ NULL, 		PAL0, "Misery (Transformed)" },
+	{ NULL, 		PAL0, "Sue (Transformed)" },
+	{ NULL, 		PAL0, "Orange Spinning Shot" },
+	{ NULL, 		PAL0, "Orange Dot" },
+	{ NULL, 		PAL0, "Orange Smoke" },
+	{ NULL, 		PAL0, "Glowing Rock Shot" }, // 0x120
+	{ NULL, 		PAL0, "Orange Critter" },
+	{ NULL, 		PAL0, "Orange Bat" },
+	{ NULL, 		PAL0, "Mini Core (Before Fight)" },
+	{ NULL, 		PAL0, "Quake" },
+	{ NULL, 		PAL0, "Huge Energy Shot" },
+	{ NULL, 		PAL0, "Falling Block Generator" },
+	{ NULL, 		PAL0, "Cloud" },
+	{ NULL, 		PAL0, "Cloud Generator" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Doctor (Uncrowned)" },
+	{ NULL, 		PAL0, "Balrog/Misery (Bubble)" },
+	{ NULL, 		PAL0, "Demon Crown" },
+	{ NULL, 		PAL0, "Fish Missile (Orange)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Gaudi (Sitting)" }, // 0x130
+	{ NULL, 		PAL0, "Puppy (Small)" },
+	{ NULL, 		PAL0, "Balrog (Nurse)" },
+	{ NULL, 		PAL0, "Santa (Caged)" },
+	{ NULL, 		PAL0, "Stumpy" },
+	{ NULL, 		PAL0, "Bute" },
+	{ NULL, 		PAL0, "Bute (Sword)" },
+	{ NULL, 		PAL0, "Bute (Archer)" },
+	{ NULL, 		PAL0, "Bute Projectile" },
+	{ NULL, 		PAL0, "Ma Pignon" },
+	{ NULL, 		PAL0, "Falling (?)" },
+	{ NULL, 		PAL0, "Hopping Enemy (?)" },
+	{ NULL, 		PAL0, "Bute (Defeated)" },
+	{ NULL, 		PAL0, "Mesa" },
+	{ NULL, 		PAL0, "Mesa (Defeated)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Curly (Hell)" }, // 0x140
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Deleet" },
+	{ NULL, 		PAL0, "Bute (Generated)" },
+	{ NULL, 		PAL0, "Bute Generator" },
+	{ NULL, 		PAL0, "Heavy Press Projectile" },
+	{ NULL, 		PAL0, "Itoh/Sue (Ending)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Transmogrifier" },
+	{ NULL, 		PAL0, "Building Fan" },
+	{ NULL, 		PAL0, "Rolling" },
+	{ NULL, 		PAL0, "Ballos Bone Shot" },
+	{ NULL, 		PAL0, "Ballos Shockwave" },
+	{ NULL, 		PAL0, "Ballos Lightning" },
+	{ NULL, 		PAL0, "Sweat" },
+	{ NULL, 		PAL0, "Ika-chan" },
+	{ NULL, 		PAL0, "Ika-chan Generator" }, // 0x150
+	{ NULL, 		PAL0, "Numahachi" },
+	{ NULL, 		PAL0, "Green Devil" },
+	{ NULL, 		PAL0, "Green Devil Generator" },
+	{ NULL, 		PAL0, "Ballos (Boss)" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Ballos Skull Shot" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Hoppy" },
+	{ NULL, 		PAL0, "Ballos Spikes" },
+	{ NULL, 		PAL0, "Statue" },
+	{ NULL, 		PAL0, "Red Bute (Archer)" },
+	{ NULL, 		PAL0, "Statue (Breakable)" },
+	{ NULL, 		PAL0, "King (Sword)" }, // 0x160
+	{ NULL, 		PAL0, "Red Bute (Sword)" },
+	{ NULL, 		PAL0, "Kill Zone" },
+	{ NULL, 		PAL0, "???" },
+	{ NULL, 		PAL0, "Balrog (Rescue)" },
+	{ NULL, 		PAL0, "Puppy (Ghost)" },
+	{ NULL, 		PAL0, "Misery (Wind)" },
+	{ NULL, 		PAL0, "Water Drop Generator" },
+	{ NULL, 		PAL0, "Thank You" }, // 0x168 (360)
 };
 
 const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // Polar Star
+		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {3,6,9} },
+	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // Fireball
+		{0x20,0x20,0x31}, {10,20,30}, {3,6,9} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
 	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, {0x20,0x20,0x31}, {10,20,30}, {1,2,4} },

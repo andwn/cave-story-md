@@ -69,7 +69,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
-#define SPR_SAFERELEASE(s); if(s != NULL) { SPR_releaseSprite(s); s = NULL; }
+#define SPR_SAFERELEASE(s); { if(s != NULL) { SPR_releaseSprite(s); s = NULL; } }
 
 // Booleans
 typedef unsigned char bool;

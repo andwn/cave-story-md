@@ -37,11 +37,16 @@ void draw_npc_template() {
 	// Stats
 	
 	// Collision and display box
+	
+	// Controls
+	VDP_drawText("C-Hurt B-Kill A-Anim Start-Exit", 2, 25);
 }
 
 void draw_npc_info(u16 id) {
-	draw_word(id, 5, 4); // ID
-	VDP_drawText("???", 10, 4); // Name
+	SYS_disableInts();
+	draw_word(id, 4, 4); // ID
+	VDP_drawText(".", 4, 4); // Only need 3 digits, cover leading 0
+	redraw_text(npc_info[id].name, 9, 4, 25); // Name
 	// NPC Flags
 	u16 fl = npc_flags(id);
 	u16 fl_y = 8;
@@ -63,6 +68,19 @@ void draw_npc_info(u16 id) {
 	// Stats
 	
 	// Collision and display box
+	
+	SYS_enableInts();
+}
+
+Sprite* change_npc_sprite(Sprite *sprite, u16 id) {
+	SPR_reset(); SPR_clear(); // Workaround big sprites not releasing properly
+	//SPR_SAFERELEASE(sprite);
+	const SpriteDefinition *def = npc_info[id].sprite;
+	return def != NULL
+		? SPR_addSprite(def, 304 - npc_displayBox(id).right - npc_displayBox(id).left, 
+			32 + npc_displayBox(id).top + npc_displayBox(id).bottom,
+			TILE_ATTR(npc_info[id].palette, 1, 0, 0))
+		: NULL;
 }
 
 void npctest_main() {
@@ -75,27 +93,48 @@ void npctest_main() {
 	VDP_clearPlan(PLAN_B, true);
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
-	VDP_setPalette(PAL2, PAL_Sym.data);
-	VDP_setPalette(PAL3, PAL_Sym.data);
+	VDP_setPalette(PAL2, PAL_Cave.data);
+	VDP_setPalette(PAL3, PAL_Regu.data);
 	draw_npc_template();
+	draw_npc_info(npcId);
+	npcSprite = change_npc_sprite(npcSprite, npcId);
 	VDP_setEnable(true);
 	SYS_enableInts();
-	song_play(1);
+	song_play(2);
     while(true) {
 		input_update();
+		// Scroll between NPCs
 		if(joy_pressed(BUTTON_LEFT)) {
 			if(npcId == 0) npcId = NPC_COUNT - 1;
 			else npcId--;
 			draw_npc_info(npcId);
+			npcSprite = change_npc_sprite(npcSprite, npcId);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
 			if(npcId == NPC_COUNT - 1) npcId = 0;
 			else npcId++;
 			draw_npc_info(npcId);
+			npcSprite = change_npc_sprite(npcSprite, npcId);
 		}
+		// Play Hurt/Death sound effects
+		if(joy_pressed(BUTTON_C)) {
+			sound_play(npc_hurtSound(npcId), 5);
+		} else if(joy_pressed(BUTTON_B)) {
+			sound_play(npc_deathSound(npcId), 5);
+		}
+		// Cycle animations
+		if(joy_pressed(BUTTON_A) && npcSprite != NULL) {
+			if(npcSprite->animInd >= npcSprite->definition->numAnimation - 1) {
+				SPR_setAnim(npcSprite, 0);
+			} else {
+				SPR_setAnim(npcSprite, npcSprite->animInd + 1);
+			}
+		}
+		// Return to Title
 		if(joy_pressed(BUTTON_START)) {
 			oldstate |= BUTTON_START;
 			break;
 		}
+		SPR_update();
 		VDP_waitVSync();
     }
     song_stop();
