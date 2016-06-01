@@ -34,4 +34,6 @@ bool window_prompt_answer();
 
 bool window_prompt_update();
 
+void window_show_item(u16 item);
+
 #endif /* INC_WINDOW_H_ */

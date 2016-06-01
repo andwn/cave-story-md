@@ -29,6 +29,7 @@
 
 bool windowOpen = false;
 u16 showingFace = 0;
+
 u8 textMode = TM_NORMAL;
 
 u8 windowText[3][34];
@@ -38,6 +39,9 @@ u8 windowTextTick = 0;
 bool promptShowing = false;
 bool promptAnswer = true;
 Sprite *handSpr = NULL;
+
+u16 showingItem = 0;
+Sprite *itemSpr = NULL;
 
 void window_clear_text();
 void window_draw_face();
@@ -95,7 +99,8 @@ void window_clear_text() {
 
 void window_close() {
 	VDP_setWindowPos(0, 0);
-	//showingFace = 0;
+	showingItem = 0;
+	SPR_SAFERELEASE(itemSpr);
 	windowOpen = false;
 }
 
@@ -223,4 +228,19 @@ void window_draw_face() {
 		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 		TEXT_X1, TEXT_Y1, 6, 6);
 	SYS_enableInts();
+}
+
+void window_show_item(u16 item) {
+	showingItem = item;
+	// Wonky workaround to use either PAL_Sym or PAL_Main
+	const SpriteDefinition *sprDef = &SPR_ItemImage;
+	u16 pal = PAL1;
+	if(item == 2 || item == 13 || item == 18 || item == 19 || item == 23 || item == 25
+		|| item == 32 || item == 35 || item == 37 || item == 38 || item == 39) {
+		sprDef = &SPR_ItemImageG;
+		pal = PAL0;
+	}
+	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H - 16,
+		TILE_ATTR(pal, 1, 0, 0));
+	SPR_setAnimAndFrame(itemSpr, item / 8, item % 8);
 }

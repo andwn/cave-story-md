@@ -126,17 +126,21 @@ void player_update() {
 		playerDead = true;
 		return;
 	}
-	if(player.underwater) {
-		if(--playerAir == 0) {
-			player.health = 0;
-			SPR_SAFERELEASE(airSprite);
-			SPR_setAnim(player.sprite, 8);
-			tsc_call_event(PLAYER_DROWN_EVENT);
-			return;
+	if(tsc_running()) {
+		SPR_SAFERELEASE(airSprite);
+	} else {
+		if(player.underwater) {
+			if(--playerAir == 0) {
+				player.health = 0;
+				SPR_SAFERELEASE(airSprite);
+				SPR_setAnim(player.sprite, 8);
+				tsc_call_event(PLAYER_DROWN_EVENT);
+				return;
+			}
+		} else if(playerAir < playerMaxAir) {
+			playerAir += 4;
+			if(playerAir > playerMaxAir) playerAir = playerMaxAir;
 		}
-	} else if(playerAir < playerMaxAir) {
-		playerAir += 4;
-		if(playerAir > playerMaxAir) playerAir = playerMaxAir;
 	}
 	if((system_get_frame() & 7) == 0) player_update_air_display();
 	player_update_shooting();
@@ -338,8 +342,9 @@ void player_update_air_display() {
 		SPR_SAFERELEASE(airSprite);
 	} else {
 		if(airSprite == NULL) {
-			airSprite = SPR_addSprite(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
-				TILE_ATTR(PAL0, 1, 0, 0));
+			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
+				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
+			SPR_setVisibility(airSprite, VISIBLE);
 		}
 		// Calculate air percent and display the value
 		u8 airPercent = 100 * playerAir / playerMaxAir;
@@ -347,12 +352,11 @@ void player_update_air_display() {
 		memcpy(numberTiles[0], &TS_Numbers.tiles[(airPercent / 10) * 8], 32);
 		memcpy(numberTiles[1], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
 		SYS_disableInts();
-		VDP_loadTileData(numberTiles[0], (airSprite->attribut & 0x4FF) + 4, 2, true);
+		VDP_loadTileData(numberTiles[0], TILE_FACEINDEX + 4, 2, true);
 		if(system_get_frame() & 8) {
-			VDP_loadTileData(TILE_BLANK, airSprite->attribut & 0x4FF, 1, true);
+			VDP_loadTileData(TILE_BLANK, TILE_FACEINDEX, 1, true);
 		} else {
-			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, 
-				airSprite->attribut & 0x4FF, 1, true);
+			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 4, true);
 		}
 		SYS_enableInts();
 	}

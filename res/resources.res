@@ -96,6 +96,10 @@ SPRITE SPR_Flower	"sprite/flower.png" 2 2 0 0 NONE
 # Use PAL_Frog
 SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
 
+# ItemImage PAL_Sym (gray)and PAL_Main (green)
+SPRITE SPR_ItemImage "sprite/itemimage.png" 4 2 0 0 NONE
+SPRITE SPR_ItemImageG "sprite/itemimage_g.png" 4 2 0 0 NONE
+
 # Sound Test
 PALETTE PAL_SndTest	"back/soundtest.png" 0
 TILESET TS_SndTest	"back/soundtest.png" 0 # OOM when unpacking, don't compress

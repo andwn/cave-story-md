@@ -344,6 +344,7 @@ u8 execute_command() {
 			break;
 		case CMD_GIT: // TODO: Display item (1) in message box
 			args[0] = tsc_read_word();
+			window_show_item(args[0] - 1000);
 			break;
 		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
