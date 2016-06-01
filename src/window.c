@@ -94,13 +94,13 @@ void window_clear_text() {
 }
 
 void window_close() {
-	VDP_setWindowPos(0, 251 * debuggingEnabled);
-	showingFace = 0;
+	VDP_setWindowPos(0, 0);
+	//showingFace = 0;
 	windowOpen = false;
 }
 
-void window_set_face(u16 face) {
-	if(!windowOpen) window_open(0);
+void window_set_face(u16 face, bool open) {
+	if(open && !windowOpen) window_open(0);
 	showingFace = face;
 	if(face > 0) window_draw_face();
 }

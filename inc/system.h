@@ -22,6 +22,7 @@ bool system_get_skip_flag(u16 flag);
 
 // Mostly play time
 void system_update();
+u8 system_get_frame();
 void system_drawtime(u16 x, u16 y);
 
 // Save data

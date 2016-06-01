@@ -10,6 +10,7 @@
 #include "effect.h"
 #include "stage.h"
 #include "tables.h"
+#include "vdp_ext.h"
 
 #define ANIM_STANDING 0
 #define ANIM_WALKING 1
@@ -34,24 +35,30 @@
 
 #define INVINCIBILITY_FRAMES 120
 
-#define MAX_AIR_NTSC (30 * 100)
-#define MAX_AIR_PAL (25 * 100)
+#define MAX_AIR_NTSC (1200)
+#define MAX_AIR_PAL (1000)
 
 u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
 bool playerDead = false;
+bool playerShow;
 u8 playerWeaponCount = 0;
 Sprite *weaponSprite = NULL;
+Sprite *airSprite = NULL;
+Sprite *mapNameSprite = NULL;
+u16 mapNameTTL = 0;
 
 void player_update_entity_collision();
 void player_update_bounds();
 void player_update_shooting();
 void player_update_bullets();
 void player_update_interaction();
+void player_update_air_display();
 
 // Default values for player
 void player_init() {
 	controlsLocked = false;
+	playerShow = true;
 	player.direction = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	player.controller = &joystate;
@@ -119,10 +126,26 @@ void player_update() {
 		playerDead = true;
 		return;
 	}
+	if(player.underwater) {
+		if(--playerAir == 0) {
+			player.health = 0;
+			SPR_SAFERELEASE(airSprite);
+			SPR_setAnim(player.sprite, 8);
+			tsc_call_event(PLAYER_DROWN_EVENT);
+			return;
+		}
+	} else if(playerAir < playerMaxAir) {
+		playerAir += 4;
+		if(playerAir > playerMaxAir) playerAir = playerMaxAir;
+	}
+	if((system_get_frame() & 7) == 0) player_update_air_display();
 	player_update_shooting();
 	player_update_bullets();
 	player_update_interaction();
 	player_draw();
+	if(mapNameTTL > 0 && --mapNameTTL == 0) {
+		SPR_SAFERELEASE(mapNameSprite);
+	}
 }
 
 Bullet *bullet_colliding(Entity *e) {
@@ -148,6 +171,8 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
+				if(weapon_info[playerWeapon[i].type].sprite == NULL) 
+					SYS_die("Weapon sprite is NULL");
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
@@ -158,6 +183,8 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
+				if(weapon_info[playerWeapon[i].type].sprite == NULL) 
+					SYS_die("Weapon sprite is NULL");
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
@@ -166,39 +193,68 @@ void player_update_shooting() {
 	// Shooting
 	} else if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
 		Weapon *w = &playerWeapon[currentWeapon];
-		if(w->type == 2) { // Polar Star
-			Bullet *b = NULL;
+		Bullet *b = NULL;
+		switch(w->type) {
+			case WEAPON_POLARSTAR:
+			// Polar Star allows 3 bullets max
 			for(u8 i = 0; i < 3; i++) {
 				if(playerBullet[i].ttl > 0) continue;
 				b = &playerBullet[i];
 				break;
 			}
-			if(b != NULL) {
-				if(w->level == 3) sound_play(0x31, 5);
-				else sound_play(0x20, 5);
-				b->sprite = SPR_addSprite(
-					weapon_info[2].bulletSprite[w->level-1], 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
-				b->damage = weapon_info[w->type].damage[w->level - 1];
-				b->ttl = 20 + w->level * 5;
-				if(player.controller[0]&BUTTON_UP) {
-					SPR_setFrame(b->sprite, 1);
-					b->x = player.x;
-					b->y = player.y - pixel_to_sub(12);
-					b->x_speed = 0;
-					b->y_speed = pixel_to_sub(-4);
-				} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-					SPR_setFrame(b->sprite, 1);
-					b->x = player.x;
-					b->y = player.y + pixel_to_sub(12);
-					b->x_speed = 0;
-					b->y_speed = pixel_to_sub(4);
-				} else {
-					b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * player.direction;
-					b->y = player.y + pixel_to_sub(4);
-					b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * player.direction;
-					b->y_speed = 0;
-				}
+			if(b == NULL) break;
+			if(w->level == 3) sound_play(0x31, 5);
+			else sound_play(0x20, 5);
+			b->sprite = SPR_addSprite(
+				weapon_info[2].bulletSprite[w->level-1], 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+			b->damage = weapon_info[w->type].damage[w->level - 1];
+			b->ttl = 20 + w->level * 5;
+			if(player.controller[0]&BUTTON_UP) {
+				SPR_setAnim(b->sprite, 1);
+				b->x = player.x;
+				b->y = player.y - pixel_to_sub(12);
+				b->x_speed = 0;
+				b->y_speed = pixel_to_sub(-4);
+			} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+				SPR_setAnim(b->sprite, 1);
+				b->x = player.x;
+				b->y = player.y + pixel_to_sub(12);
+				b->x_speed = 0;
+				b->y_speed = pixel_to_sub(4);
+			} else {
+				b->x = player.x - pixel_to_sub(12) + pixel_to_sub(24) * player.direction;
+				b->y = player.y + pixel_to_sub(4);
+				b->x_speed = pixel_to_sub(-4) + pixel_to_sub(8) * player.direction;
+				b->y_speed = 0;
 			}
+			break;
+			case WEAPON_FIREBALL:
+			// Fireball also 3 max... TODO doublecheck that's correct
+			for(u8 i = 0; i < 3; i++) {
+				if(playerBullet[i].ttl > 0) continue;
+				b = &playerBullet[i];
+				break;
+			}
+			if(b == NULL) break;
+			sound_play(0x22, 5);
+			b->sprite = SPR_addSprite(
+				weapon_info[2].bulletSprite[w->level-1], 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+			b->damage = weapon_info[w->type].damage[w->level - 1];
+			b->ttl = 20 + w->level * 5;
+			break;
+			case WEAPON_MISSILES:
+			for(u8 i = 0; i < 3; i++) {
+				if(playerBullet[i].ttl > 0) continue;
+				b = &playerBullet[i];
+				break;
+			}
+			if(b == NULL) break;
+			
+			break;
+			case WEAPON_BUBBLER:
+			break;
+			case WEAPON_MACHINEGUN:
+			break;
 		}
 	}
 }
@@ -210,13 +266,17 @@ void player_update_bullets() {
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		u16 bx = sub_to_block(b->x), by = sub_to_block(b->y);
+		u8 block = stage_get_block_type(bx, by);
 		// Check if bullet is colliding with a breakable block
-		if(stage_get_block_type(bx, by) == 0x43) {
+		if(block == 0x43) {
 			b->ttl = 0;
 			SPR_SAFERELEASE(b->sprite);
 			sound_play(SOUND_BREAK, 8);
 			stage_replace_block(bx, by, 0);
-			continue;
+		} else if(block == 0x41) {
+			b->ttl = 0;
+			SPR_SAFERELEASE(b->sprite);
+			sound_play(0x1F, 5);
 		} else if(--b->ttl == 0) { // Bullet time to live expired
 			SPR_SAFERELEASE(b->sprite);
 		} else {
@@ -242,6 +302,59 @@ void player_update_interaction() {
 			e = e->next;
 		}
 		// TODO: Question mark above head
+	}
+}
+
+void player_show() {
+	playerShow = true;
+}
+
+void player_hide() {
+	playerShow = false;
+}
+
+void player_show_map_name(u8 ttl) {
+	//SPR_SAFERELEASE(mapNameSprite);
+	// Define sprite for map name
+	mapNameSprite = SPR_addSpriteEx(&SPR_Dummy16x1, SCREEN_HALF_W - 64, SCREEN_HALF_H - 32,
+		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX + 36), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
+	SPR_setVisibility(mapNameSprite, VISIBLE);
+	// Create a string of tiles in RAM
+	u32 nameTiles[16][8];
+	for(u8 i = 0; i < 16; i++) {
+		u8 chr = stage_info[stageID].name[i] - 0x20;
+		if(chr >= 0x60) chr = 0;
+		memcpy(nameTiles[i], &TS_SprFont.tiles[chr * 8], 32);
+	}
+	// Transfer tile array to VRAM
+	SYS_disableInts();
+	VDP_loadTileData(nameTiles[0], TILE_FACEINDEX + 36, 16, true);
+	SYS_enableInts();
+	mapNameTTL = ttl;
+}
+
+void player_update_air_display() {
+	if(playerAir == playerMaxAir) {
+		SPR_SAFERELEASE(airSprite);
+	} else {
+		if(airSprite == NULL) {
+			airSprite = SPR_addSprite(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
+				TILE_ATTR(PAL0, 1, 0, 0));
+		}
+		// Calculate air percent and display the value
+		u8 airPercent = 100 * playerAir / playerMaxAir;
+		u32 numberTiles[2][8];
+		memcpy(numberTiles[0], &TS_Numbers.tiles[(airPercent / 10) * 8], 32);
+		memcpy(numberTiles[1], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
+		SYS_disableInts();
+		VDP_loadTileData(numberTiles[0], (airSprite->attribut & 0x4FF) + 4, 2, true);
+		if(system_get_frame() & 8) {
+			VDP_loadTileData(TILE_BLANK, airSprite->attribut & 0x4FF, 1, true);
+		} else {
+			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, 
+				airSprite->attribut & 0x4FF, 1, true);
+		}
+		SYS_enableInts();
 	}
 }
 
@@ -290,7 +403,8 @@ void player_draw() {
 		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Blink during invincibility frames
-	SPR_setVisibility(player.sprite, !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
+	SPR_setVisibility(player.sprite, 
+		playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0) {
 		u8 wanim = 0;
@@ -298,11 +412,11 @@ void player_draw() {
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
 		SPR_setAnim(weaponSprite, wanim);
 		SPR_setHFlip(weaponSprite, player.direction);
-		SPR_setVisibility(weaponSprite, !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
+		SPR_setVisibility(weaponSprite, 
+			playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 		SPR_setPosition(weaponSprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-
 	}
 }
 

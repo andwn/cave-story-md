@@ -9,8 +9,6 @@
 #define MAX_DAMAGE 4
 #define MAX_SMOKE 6
 
-const u32 TILE_BLANK[8] = {0,0,0,0,0,0,0,0};
-
 typedef struct {
 	Sprite *sprite;
 	u8 ttl;

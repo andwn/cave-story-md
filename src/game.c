@@ -37,9 +37,9 @@ void game_reset(bool load) {
 		tsc_call_event(GAME_START_EVENT);
 	}
 	// Load up the main palette
-	VDP_setPalette(PAL0, PAL_Main.data);
-	VDP_setPalette(PAL1, PAL_Sym.data);
-	VDP_setPalette(PAL3, PAL_Regu.data);
+	VDP_setCachedPalette(PAL0, PAL_Main.data);
+	VDP_setCachedPalette(PAL1, PAL_Sym.data);
+	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 }
 
 void vblank() {
@@ -87,6 +87,11 @@ u8 game_main(bool load) {
 	VDP_setWindowPos(0, 0);
 	SYS_enableInts();
 	
+	if(load) {
+		hud_show();
+		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
+	}
+	
 	bool paused = false;
 	u8 ending = 0;
 	
@@ -115,6 +120,8 @@ u8 game_main(bool load) {
 						break;
 					} else if(rtn == 2) {
 						game_reset(true); // Reload save
+						hud_show();
+						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
 						continue;
 					} else if(rtn == 3) {
 						game_reset(false); // Start from beginning

@@ -10,9 +10,11 @@ PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 # Dummy sprites
 SPRITE SPR_Dummy4x1	"sprite/savesign.png" 4 1 0 0 NONE
 SPRITE SPR_Dummy2x2	"sprite/savesign.png" 2 2 0 0 NONE
+SPRITE SPR_Dummy16x1 "sprite/armsimage.png" 16 1 0 0 NONE
 # Use PAL_Main
 SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
 TILESET TS_Numbers	"sprite/numbers.png" 0
+SPRITE SPR_Air		"sprite/air.png" 6 1 0 0 NONE
 SPRITE SPR_Hud2		"sprite/hud2.png" 8 4 0 0 NONE
 TILESET TS_HudBar	"sprite/hudfill.png" 0
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE
@@ -101,6 +103,9 @@ TILESET TS_SndTest	"back/soundtest.png" 0 # OOM when unpacking, don't compress
 # Window
 TILESET TS_Window	"window.png" 2
 TILESET TS_MsgFont	"font_blue.png" 2
+
+# Unconpressed font
+TILESET TS_SprFont	"font_lib_copy.png" 0
 
 # NPC Table
 BIN NPC_TABLE	"npc.tbl"

@@ -242,7 +242,6 @@ void entity_update_movement(Entity *e) {
 
 // TODO: If "friction" isn't supposed to be used in the air, what value is?
 void entity_update_walk(Entity *e) {
-	bool water = false;
 	s16 acc = walkAccel,
 		fric = friction,
 		max_speed = maxWalkSpeed;
@@ -251,20 +250,22 @@ void entity_update_walk(Entity *e) {
 		fric = airControl;
 	}
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) {
+		e->underwater = true;
 		acc /= 2;
 		fric /=2;
 		max_speed /= 2;
-		water = true;
+	} else {
+		e->underwater = false;
 	}
 	if (e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if (e->x_speed < -max_speed) {
-			e->x_speed = min(e->x_speed + (acc + acc*water), -max_speed);
+			e->x_speed = min(e->x_speed + (acc + acc * e->underwater), -max_speed);
 		}
 	} else if (e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if (e->x_speed > max_speed) {
-			e->x_speed = max(e->x_speed - (acc + acc*water), max_speed);
+			e->x_speed = max(e->x_speed - (acc + acc * e->underwater), max_speed);
 		}
 	} else if(e->grounded) {
 		if (e->x_speed < fric && e->x_speed > -fric) {
@@ -773,6 +774,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->y_speed = 0;
 	e->direction = 0;
 	e->grounded = false;
+	e->underwater = false;
 	e->health = npc_health(type);
 	e->attack = npc_attack(type);
 	e->experience = npc_experience(type);

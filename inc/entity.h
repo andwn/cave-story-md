@@ -60,7 +60,7 @@ struct Entity {
 	s16 x_speed; s16 y_speed;
 	// True when on the ground, enables jumping and on-ground collision is a bit
 	// different (have to stick to downward slopes, etc)
-	bool grounded;
+	bool grounded, underwater;
 	// When pressing the jump button, this is set to the "max jump time" and
 	// decrements each frame until either it reaches zero, or the button is released
 	// It gives control over how high the player jumps

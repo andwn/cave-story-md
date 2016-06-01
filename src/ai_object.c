@@ -6,6 +6,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
+#include "input.h"
 
 void ai_update_energy(Entity *e) {
 	// Bounce when hitting the ground
@@ -82,7 +83,7 @@ void ai_update_fan(Entity *e) {
 		break;
 	case 2: // Up
 		if(py > ey - 8 && py <= ey && px == ex) {
-			player.y_speed -= 0x50;
+			player.y_speed -= (joy_pressed(BUTTON_C) ? 0x60 : 0x40);
 		}
 		break;
 	case 3: // Right

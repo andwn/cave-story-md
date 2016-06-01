@@ -16,7 +16,7 @@ void window_clear();
 
 void window_close();
 
-void window_set_face(u16 face);
+void window_set_face(u16 face, bool open);
 
 void window_draw_char(u8 c);
 

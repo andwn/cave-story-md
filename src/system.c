@@ -55,6 +55,10 @@ void system_update() {
 	}
 }
 
+u8 system_get_frame() {
+	return time.frame;
+}
+
 void system_drawtime(u16 x, u16 y) {
 	char buf[4];
 	uintToStr(time.hour, buf, 1);

@@ -1,5 +1,7 @@
 #include "vdp_ext.h"
 
+const u32 TILE_BLANK[8] = {0,0,0,0,0,0,0,0};
+
 // Window functions
 void VDP_setWindowPos(u8 x, u8 y) {
 	VDP_setReg(0x11, x);
@@ -20,6 +22,33 @@ void VDP_drawTextWindow(const char *str, u16 x, u16 y) {
 
 void VDP_clearTextWindow(u16 x, u16 y, u16 w) {
 	VDP_clearTextBG(PLAN_WINDOW, x, y, w);
+}
+
+// Palette functions
+const u16 PAL_FadeOut[64] = {
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0xEEE,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+const u16 PAL_FullWhite[64] = {
+	0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,
+	0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,
+	0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,
+	0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE};
+u16 cachedPalette[64];
+
+void VDP_setCachedPalette(u16 pindex, u16 *colors) {
+	if(pindex >= 4) return;
+	memcpy(&cachedPalette[pindex * 16], colors, 16 * 2);
+}
+
+void VDP_setCachedColor(u16 cindex, u16 color) {
+	if(cindex >= 64) return;
+	cachedPalette[cindex] = color;
+}
+
+u16* VDP_getCachedPalette() {
+	return cachedPalette;
 }
 
 // Number draw functions

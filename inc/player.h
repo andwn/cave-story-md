@@ -62,6 +62,11 @@ void player_unpause();
 bool player_invincible();
 bool player_inflict_damage(s16 damage);
 
+void player_show();
+void player_hide();
+
+void player_show_map_name(u8 ttl);
+
 // TSC Stuff
 void player_give_weapon(u8 id, u8 ammo); // AM+ Command
 void player_take_weapon(u8 id); // AM- Command

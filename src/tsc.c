@@ -332,6 +332,7 @@ u8 execute_command() {
 		case CMD_MS3: // Display message box (top - visible)
 			window_open(0);
 			break;
+			break;
 		case CMD_CLO: // Close message box
 			window_close();
 			break;
@@ -346,7 +347,7 @@ u8 execute_command() {
 			break;
 		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
-			window_set_face(args[0]);
+			window_set_face(args[0], true);
 			break;
 		case CMD_CAT: // All 3 of these display text instantly
 		case CMD_SAT:
@@ -363,6 +364,7 @@ u8 execute_command() {
 			return 1;
 		case CMD_END: // End the event
 			tscState = TSC_IDLE;
+			window_set_face(0, false);
 			window_close();
 			player_unlock_controls();
 			hud_show();
@@ -378,6 +380,9 @@ u8 execute_command() {
 			args[3] = tsc_read_word();
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
+			player.x_speed = 0;
+			player.y_speed = 0;
+			window_set_face(0, false);
 			window_close();
 			stage_load(args[0]);
 			tsc_call_event(args[1]);
@@ -468,10 +473,10 @@ u8 execute_command() {
 			hud_show();
 			break;
 		case CMD_HMC: // Hide player character
-			//sprite_set_visible(player.sprite, false);
+			player_hide();
 			break;
 		case CMD_SMC: // Show player character
-			//sprite_set_visible(player.sprite, true);
+			player_show();
 			break;
 		case CMD_LI_ADD: // Restore health by (1)
 			args[0] = tsc_read_word();
@@ -649,19 +654,24 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			camera_shake(args[0]);
 			break;
-		case CMD_FAI: // TODO: Fading, in direction (1)
+		case CMD_FAI: // Fading, in direction (1)
 			args[0] = tsc_read_word();
-			//VDP_setEnable(true);
+			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
 			break;
 		case CMD_FAO:
 			args[0] = tsc_read_word();
-			//VDP_setEnable(false);
+			VDP_fadeTo(0, 63, PAL_FadeOut, 20, false);
+			// So message text is still visible
+			VDP_setPaletteColor(15, 0xEEE);
 			break;
-		case CMD_FLA: // TODO: Flash screen white
+		case CMD_FLA: // Flash screen white
+			VDP_setPaletteColors(0, PAL_FullWhite, 64);
+			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, true);
 			break;
 		case CMD_MLP: // TODO: Show the map
 			break;
-		case CMD_MNA: // TODO: Show stage name
+		case CMD_MNA: // Show stage name
+			player_show_map_name(180);
 			break;
 		case CMD_CMP: // Change stage tile at (1),(2) to type (3)
 			args[0] = tsc_read_word();

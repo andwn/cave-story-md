@@ -10,6 +10,7 @@
 #include "system.h"
 #include "effect.h"
 #include "hud.h"
+#include "vdp_ext.h"
 
 u8 stageBackground;
 s16 backScrollTable[32];
@@ -35,17 +36,22 @@ void stage_load(u16 id) {
 	}
 	stageID = id;
 	player_lock_controls();
-	hud_hide();
+	//hud_hide();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear(FILTER_ALL, 0);
 	SPR_reset();
 	if(stageBlocks != NULL) MEM_free(stageBlocks);
-	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
+	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
+	//if(!vdpEnabled) { // Loading game, not a room transition
+	//	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
+	//	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
+	//}
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
@@ -70,7 +76,6 @@ void stage_load(u16 id) {
 	stage_load_entities();
 	tsc_load_stage(id);
 	hud_create();
-	hud_show();
 	player_unlock_controls();
 	if(vdpEnabled) {
 		VDP_setEnable(true);
@@ -79,7 +84,6 @@ void stage_load(u16 id) {
 }
 
 void stage_load_tileset() {
-	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
 	if(!VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, true)) {
 		SYS_die("Not enough memory to decompress tileset!");
 	}
