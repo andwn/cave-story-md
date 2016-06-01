@@ -1,0 +1,53 @@
+### TODO List
+
+- [ ] Music (22 of 41)
+- [ ] Completable Areas
+  - [ ] Intro
+  - [x] First Cave
+    - [ ] Fix Kazuma & Computer sprite order
+  - [x] Mimiga Village
+    - [ ] Sprite for pot, bed, fireplace
+    - [ ] Sprinkler sprite and effect
+    - [ ] Behavior for Pignon & Gravekeeper
+    - [ ] Animate Toroko and King
+    - [ ] Animate Jack / Fix starting position
+  - [x] Egg Corridor
+    - [ ] Animate teleporter
+    - [ ] Behavior for Basil, Behemoth, Beetle, Basu
+    - [ ] Animate terminals & lift to missiles
+    - [ ] Animate Sue & Igor
+    - [ ] Behavior for Igor Boss
+    - [ ] Animate scene in Arthur2
+  - [x] Grasstown
+    - [ ] Animate Santa, Chako
+    - [ ] Behavior for Hovering Critter, Circling & Hanging Bat
+    - [ ] Behavior for Jelly, Big Jellyfish, Mannan, Frog
+    - [ ] Animate Maco, Kazuma's word bubbles
+    - [ ] Behavior for Ravil, Press
+    - [ ] Behavior for Balfrog
+    - [ ] Animate Kazuma, Booster, Rocket
+  - [ ] Sand Zone
+  ...
+- [ ] Weapons / Equip
+  - [x] Polar Star
+    - [ ] Animate bounce against wall
+  - [ ] Missiles
+  - [ ] Fireball
+  - [ ] Machine Gun
+  - [ ] Snake
+  - [ ] Spur
+  - [ ] Super Missiles
+  - [ ] Nemesis
+  - [ ] Booster 0.8
+  - [ ] Booster 2.0
+- [ ] Item / Pause Menu
+- [ ] Map
+- [x] Teleporter Menu
+- [ ] The AI/Behavior code is awful and needs to be rethought
+- [ ] Misc
+  - [x] Air counter and drowning
+  - [ ] Walk and jump sound effect
+  - [ ] Stars when bumping ceiling
+  - [ ] Question mark above head
+  - [ ] Level Up animation
+  - [ ] Boss Health

@@ -15,7 +15,7 @@ enum { STOPPED, PLAYING, PAUSED };
 
 // Track # and name
 void draw_track_info(u8 track) {
-	draw_byte(track, 2, 6);
+	VDP_drawByte(track, 2, 6);
 	VDP_clearText(5, 6, 33);
 	VDP_drawText(song_info[track].name, 5, 6);
 }
@@ -51,7 +51,7 @@ void soundtest_main() {
 	VDP_drawText("Track: ", 2, 8);
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
-	draw_byte(track, 10, 8);
+	VDP_drawByte(track, 10, 8);
 	VDP_setEnable(true);
 	SYS_enableInts();
     while(true) {
@@ -62,12 +62,12 @@ void soundtest_main() {
 			if(track == 0) track = FIRST_SOUND + SOUND_COUNT - 1;
 			else if(track == FIRST_SOUND) track = SONG_COUNT - 1;
 			else track--;
-			draw_byte(track, 10, 8);
+			VDP_drawByte(track, 10, 8);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
 			if(track == SONG_COUNT - 1) track = FIRST_SOUND;
 			else if(track == FIRST_SOUND + SOUND_COUNT - 1) track = 0;
 			else track++;
-			draw_byte(track, 10, 8);
+			VDP_drawByte(track, 10, 8);
 		}
 		if(joy_pressed(BUTTON_C)) {
 			// Play

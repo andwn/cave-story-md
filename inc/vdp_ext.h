@@ -20,7 +20,8 @@ void VDP_setCachedColor(u16 cindex, u16 color);
 u16* VDP_getCachedPalette();
 
 // Number draw functions
-void draw_byte(u8 n, u16 x, u16 y);
-void draw_word(u16 n, u16 x, u16 y);
+void VDP_drawInt(u32 n, u16 x, u16 y);
+void VDP_drawByte(u8 n, u16 x, u16 y);
+void VDP_drawWord(u16 n, u16 x, u16 y);
 
 #endif

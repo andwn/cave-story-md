@@ -52,7 +52,13 @@ u16* VDP_getCachedPalette() {
 }
 
 // Number draw functions
-void draw_byte(u8 n, u16 x, u16 y) {
+void VDP_drawInt(u32 n, u16 x, u16 y) {
+	char str[12];
+	intToStr(n, str, 1);
+	VDP_drawText(str, x, y);
+}
+
+void VDP_drawByte(u8 n, u16 x, u16 y) {
 	char b[2] = { (n>>4)+0x30, (n&0xF)+0x30 };
 	for(u8 i=0;i<2;i++) { 
 		if(b[i] > 0x39) b[i] += 0x7;
@@ -60,7 +66,7 @@ void draw_byte(u8 n, u16 x, u16 y) {
 	VDP_drawText(b, x, y);
 }
 
-void draw_word(u16 n, u16 x, u16 y) {
-	draw_byte(n >> 8, x, y); 
-	draw_byte(n & 0xFF, x + 2, y);
+void VDP_drawWord(u16 n, u16 x, u16 y) {
+	VDP_drawByte(n >> 8, x, y); 
+	VDP_drawByte(n & 0xFF, x + 2, y);
 }

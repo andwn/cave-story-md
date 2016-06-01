@@ -8,16 +8,15 @@
 #include "audio.h"
 #include "vdp_ext.h"
 
-void redraw_text(const char *txt, u16 x, u16 y, u8 len) {
-	VDP_clearText(x, y, len);
-	VDP_drawText(txt, x, y);
-}
-
 void draw_npc_template() {
 	VDP_drawText("NPC Test", 16, 2); // Title
 	VDP_drawText("No.", 2, 4); // ID
+	// Stats
+	VDP_drawText("Health:", 2, 6);
+	VDP_drawText("Energy:", 2, 7);
+	VDP_drawText("Attack:", 2, 8);
 	// Flags
-	u16 fl_y = 8;
+	u16 fl_y = 10;
 	VDP_drawText("[ ] Solid", 2, fl_y++);
 	VDP_drawText("[ ] Sp.Solid", 2, fl_y++);
 	VDP_drawText("[ ] Bouncy Top", 2, fl_y++);
@@ -34,22 +33,27 @@ void draw_npc_template() {
 	VDP_drawText("[ ] Disable on Flag", 2, fl_y++);
 	VDP_drawText("[ ] Ignore NPC Blockade", 2, fl_y++);
 	VDP_drawText("[ ] Only Front Vulnerable", 2, fl_y++);
-	// Stats
-	
-	// Collision and display box
-	
 	// Controls
 	VDP_drawText("C-Hurt B-Kill A-Anim Start-Exit", 2, 25);
 }
 
 void draw_npc_info(u16 id) {
 	SYS_disableInts();
-	draw_word(id, 4, 4); // ID
-	VDP_drawText(".", 4, 4); // Only need 3 digits, cover leading 0
-	redraw_text(npc_info[id].name, 9, 4, 25); // Name
+	// ID
+	VDP_drawInt(id, 5, 4); 
+	// Name
+	VDP_clearText(10, 4, 25);
+	VDP_drawText(npc_info[id].name, 10, 4);
+	// Stats
+	VDP_clearText(10, 6, 5);
+	VDP_clearText(10, 7, 5);
+	VDP_clearText(10, 8, 5);
+	VDP_drawInt(npc_health(id), 10, 6);
+	VDP_drawInt(npc_experience(id), 10, 7);
+	VDP_drawInt(npc_attack(id), 10, 8);
 	// NPC Flags
 	u16 fl = npc_flags(id);
-	u16 fl_y = 8;
+	u16 fl_y = 10;
 	VDP_drawText(fl&NPC_SOLID ? "X":" ", 3, fl_y++);
 	VDP_drawText(fl&NPC_SPECIALSOLID ? "X":" ", 3, fl_y++);
 	VDP_drawText(fl&NPC_BOUNCYTOP ? "X":" ", 3, fl_y++);
@@ -65,16 +69,11 @@ void draw_npc_info(u16 id) {
 	VDP_drawText(fl&NPC_ENABLEONFLAG ? "X":" ", 3, fl_y++);
 	VDP_drawText(fl&NPC_DISABLEONFLAG ? "X":" ", 3, fl_y++);
 	VDP_drawText(fl&NPC_FRONTATKONLY ? "X":" ", 3, fl_y++);
-	// Stats
-	
-	// Collision and display box
-	
 	SYS_enableInts();
 }
 
 Sprite* change_npc_sprite(Sprite *sprite, u16 id) {
-	SPR_reset(); SPR_clear(); // Workaround big sprites not releasing properly
-	//SPR_SAFERELEASE(sprite);
+	SPR_SAFERELEASE(sprite);
 	const SpriteDefinition *def = npc_info[id].sprite;
 	return def != NULL
 		? SPR_addSprite(def, 304 - npc_displayBox(id).right - npc_displayBox(id).left, 
