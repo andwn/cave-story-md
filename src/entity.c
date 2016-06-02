@@ -898,7 +898,7 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction == DIR_RIGHT);
+				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction);
 			}
 			e->set_state(e, state);
 		}
@@ -920,7 +920,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction == DIR_RIGHT);
+				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction);
 			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
