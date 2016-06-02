@@ -342,7 +342,7 @@ u8 execute_command() {
 		case CMD_NUM: // TODO: Show number (1) in message box
 			args[0] = tsc_read_word();
 			break;
-		case CMD_GIT: // TODO: Display item (1) in message box
+		case CMD_GIT: // Display item (1) in message box
 			args[0] = tsc_read_word();
 			window_show_item(args[0] - 1000);
 			break;
@@ -383,6 +383,7 @@ u8 execute_command() {
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			player.x_speed = 0;
 			player.y_speed = 0;
+			player.grounded = false;
 			window_set_face(0, false);
 			window_close();
 			stage_load(args[0]);

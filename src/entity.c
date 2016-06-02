@@ -212,20 +212,16 @@ u16 entities_count() {
 }
 
 void entities_update() {
-	if(entityList != NULL) {
-		Entity *e = entityList;
-		while(e != NULL) {
-			e = entity_update(e);
-		}
+	Entity *e = entityList;
+	while(e != NULL) {
+		e = entity_update(e);
 	}
 }
 
 void entities_update_inactive() {
-	if(inactiveList != NULL) {
-		Entity *e = inactiveList;
-		while(e != NULL) {
-			e = entity_update_inactive(e);
-		}
+	Entity *e = inactiveList;
+	while(e != NULL) {
+		e = entity_update_inactive(e);
 	}
 }
 
@@ -240,7 +236,6 @@ void entity_update_movement(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 }
 
-// TODO: If "friction" isn't supposed to be used in the air, what value is?
 void entity_update_walk(Entity *e) {
 	s16 acc = walkAccel,
 		fric = friction,
@@ -249,7 +244,7 @@ void entity_update_walk(Entity *e) {
 		acc = airControl;
 		fric = airControl;
 	}
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) {
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		e->underwater = true;
 		acc /= 2;
 		fric /=2;
@@ -278,7 +273,6 @@ void entity_update_walk(Entity *e) {
 	}
 }
 
-// TODO: Real value for max jump time
 void entity_update_jump(Entity *e) {
 	const u8 maxJumpTime = 17;
 	s16 tJumpSpeed = jumpSpeed,
@@ -286,16 +280,14 @@ void entity_update_jump(Entity *e) {
 		tGravity = gravity,
 		tGravityJump = gravityJump,
 		tMaxFallSpeed = maxFallSpeed;
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
+	if(e->underwater) {
 		tJumpSpeed /= 2;
-		//tMaxJumpTime /=2;
 		tGravity /= 2;
 		tGravityJump /= 2;
 		tMaxFallSpeed /= 2;
 	}
 	if (e->jump_time > 0) {
 		if (e->controller[0] & BUTTON_C) {
-			//e->y_speed = -tJumpSpeed;
 			e->jump_time--;
 		} else {
 			e->jump_time = 0;
@@ -786,7 +778,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->damage_value = 0;
 	e->damage_time = 0;
 	e->activate = &ai_activate_base;
-	e->update = NULL; //&ai_update_base;
+	e->update = NULL;
 	e->set_state = &ai_setstate_base;
 	e->hurt = NULL;
 	e->state = 0;
@@ -797,6 +789,7 @@ bool entity_disabled(Entity *e) {
 	// Some entities should not be activated until a specific system flag is set,
 	// and some no longer appear once one is set
 	if((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id)) return true;
+	//if((e->eflags&NPC_DISABLEONFLAG) && system_get_flag(e->id)) return true;
 	return false;
 }
 
@@ -818,7 +811,6 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		LIST_PUSH(entityList, e);
 		sprite_create(e);
-		//e->activate(e);
 	} else {
 		LIST_PUSH(inactiveList, e);
 		e->sprite = NULL;
@@ -889,10 +881,30 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		}
 		e = e->next;
 	}
+	e = inactiveList;
+	while(e != NULL) {
+		if(e->event == event) {
+			entity_default(e, type, flags);
+			e->direction = direction;
+			ai_setup(e);
+		}
+		e = e->next;
+	}
 }
 
 void entities_set_state(u16 event, u16 state, u8 direction) {
 	Entity *e = entityList;
+	while(e != NULL) {
+		if(e->event == event) {
+			if(e->direction != direction){
+				e->direction = direction;
+				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction == DIR_RIGHT);
+			}
+			e->set_state(e, state);
+		}
+		e = e->next;
+	}
+	e = inactiveList;
 	while(e != NULL) {
 		if(e->event == event) {
 			e->direction = direction;
@@ -908,7 +920,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction);
+				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction == DIR_RIGHT);
 			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
@@ -917,18 +929,16 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		}
 		e = e->next;
 	}
-}
-
-void entities_handle_flag(u16 flag) {
-	Entity *e = entityList;
+	e = inactiveList;
 	while(e != NULL) {
-		if((e->eflags& NPC_DISABLEONFLAG) && e->id == flag) {
-			Entity *next = e->next;
-			entity_deactivate(e);
-			e = next;
-		} else {
-			e = e->next;
+		if(e->event == event) {
+			e->direction = direction;
+			e->x = block_to_sub(x) + pixel_to_sub(8);
+			e->y = block_to_sub(y) + pixel_to_sub(8);
+			e->grounded = false;
+			break;
 		}
+		e = e->next;
 	}
 }
 
