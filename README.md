@@ -7,7 +7,7 @@ The engine is built using SGDK, and written almost entirely in C.
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
-[Not yet](https://github.com/andwn/cave-story-md/TODO.md). From "New Game" without cheats you can make it to Sand Zone.
+[Not yet](https://github.com/andwn/cave-story-md/blob/master/TODO.md). From "New Game" without cheats you can make it to Sand Zone.
 - Only Polar Star actually does anything but Y and Z can still be used to switch weapons.
 - Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
 - The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).

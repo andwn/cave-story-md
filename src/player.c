@@ -126,16 +126,22 @@ void player_update() {
 		playerDead = true;
 		return;
 	}
+	// Handle air when underwater, unless a script is running
 	if(tsc_running()) {
 		SPR_SAFERELEASE(airSprite);
 	} else {
 		if(player.underwater) {
 			if(--playerAir == 0) {
-				player.health = 0;
-				SPR_SAFERELEASE(airSprite);
-				SPR_setAnim(player.sprite, 8);
-				tsc_call_event(PLAYER_DROWN_EVENT);
-				return;
+				// Spoilers
+				//if(stageID == STAGE_ALMOND && system_get_flag(FLAG_CORE_DEFEATED)) {
+				//	tsc_call_event();
+				//} else {
+					player.health = 0;
+					SPR_SAFERELEASE(airSprite);
+					SPR_setAnim(player.sprite, 8);
+					tsc_call_event(PLAYER_DROWN_EVENT);
+					return;
+				//}
 			}
 		} else if(playerAir < playerMaxAir) {
 			playerAir += 4;
@@ -175,8 +181,8 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				if(weapon_info[playerWeapon[i].type].sprite == NULL) 
-					SYS_die("Weapon sprite is NULL");
+				//if(weapon_info[playerWeapon[i].type].sprite == NULL) 
+				//	SYS_die("Weapon sprite is NULL");
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
@@ -187,8 +193,8 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				if(weapon_info[playerWeapon[i].type].sprite == NULL) 
-					SYS_die("Weapon sprite is NULL");
+				//if(weapon_info[playerWeapon[i].type].sprite == NULL) 
+				//	SYS_die("Weapon sprite is NULL");
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
 				break;
@@ -277,10 +283,11 @@ void player_update_bullets() {
 			SPR_SAFERELEASE(b->sprite);
 			sound_play(SOUND_BREAK, 8);
 			stage_replace_block(bx, by, 0);
-		} else if(block == 0x41) {
+		} else if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			SPR_SAFERELEASE(b->sprite);
 			sound_play(0x1F, 5);
+			// TODO: Add the sprite and effect for hitting a wall
 		} else if(--b->ttl == 0) { // Bullet time to live expired
 			SPR_SAFERELEASE(b->sprite);
 		} else {
@@ -318,7 +325,6 @@ void player_hide() {
 }
 
 void player_show_map_name(u8 ttl) {
-	//SPR_SAFERELEASE(mapNameSprite);
 	// Define sprite for map name
 	mapNameSprite = SPR_addSpriteEx(&SPR_Dummy16x1, SCREEN_HALF_W - 64, SCREEN_HALF_H - 32,
 		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX + 36), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
@@ -341,10 +347,21 @@ void player_update_air_display() {
 	if(playerAir == playerMaxAir) {
 		SPR_SAFERELEASE(airSprite);
 	} else {
-		if(airSprite == NULL) {
+		if(airSprite == NULL) { // Initialize and draw full "AIR" text
 			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
 				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
 			SPR_setVisibility(airSprite, VISIBLE);
+			SYS_disableInts();
+			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 4, true);
+			SYS_enableInts();
+		} else { // Just blink the small down arrow thing
+			SYS_disableInts();
+			if(system_get_frame() & 8) {
+				VDP_loadTileData(TILE_BLANK, TILE_FACEINDEX, 1, true);
+			} else {
+				VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 1, true);
+			}
+			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
 		u8 airPercent = 100 * playerAir / playerMaxAir;
@@ -353,11 +370,6 @@ void player_update_air_display() {
 		memcpy(numberTiles[1], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
 		SYS_disableInts();
 		VDP_loadTileData(numberTiles[0], TILE_FACEINDEX + 4, 2, true);
-		if(system_get_frame() & 8) {
-			VDP_loadTileData(TILE_BLANK, TILE_FACEINDEX, 1, true);
-		} else {
-			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 4, true);
-		}
 		SYS_enableInts();
 	}
 }
@@ -410,7 +422,7 @@ void player_draw() {
 	SPR_setVisibility(player.sprite, 
 		playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 	// Weapon sprite
-	if(playerWeapon[currentWeapon].type > 0) {
+	if(playerWeapon[currentWeapon].type > 0 && weaponSprite != NULL) {
 		u8 wanim = 0;
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;

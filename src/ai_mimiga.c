@@ -32,16 +32,25 @@ void ai_update_toroko(Entity *e) {
 				SPR_SAFERELEASE(b->sprite);
 			}
 		}
-		if(e->x_speed == 0) {
+		if(e->x_speed == 0) { // Stop after hitting a wall
 			e->direction = !e->direction;
 			e->x_speed = pixel_to_sub(-2 + 4*e->direction);
 			SPR_setHFlip(e->sprite, e->direction);
 		}
 		break;
 	case 6: // Jump then run
+		if(e->x_speed == 0 && e->grounded) {
+			e->x_speed = pixel_to_sub(-2 + 4*e->direction);
+		}
 		break;
-	case 8: // Jump in place
+	case 8: // Jump in place (don't run after)
 		break;
+	//case 9: // Run off screen and delete self (after 6)
+	//	if(e->x_speed == 0 && e->grounded) {
+	//		e->x_speed = pixel_to_sub(-2 + 4*e->direction);
+	//	}
+		//if(!entity_on_screen(e)) { }
+	//	break;
 	case 10: // Falling down
 		if(e->grounded) {
 			e->x_speed = 0;
@@ -50,7 +59,7 @@ void ai_update_toroko(Entity *e) {
 		}
 		break;
 	case 11: // After falling on ground
-
+		e->direction = 0;
 		break;
 	default:
 		break;
@@ -61,6 +70,20 @@ void ai_update_toroko(Entity *e) {
 	entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+bool ai_setstate_toroko(Entity *e, u16 state) {
+	e->state = state;
+	switch(state) {
+	case 6: // Jump
+	case 8:
+		e->y_speed = pixel_to_sub(-1);
+		e->grounded = false;
+		break;
+	default:
+		break;
+	}
+	return false;
 }
 
 void ai_update_misery_float(Entity *e) {

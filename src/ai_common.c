@@ -102,6 +102,7 @@ void ai_hurt_door_enemy(Entity *e) {
 	SPR_setFrame(e->sprite, 3);
 }
 
+// TODO: Make a table to assign functions per NPC
 void ai_setup(Entity *e) {
 	switch(e->type) {
 	case 1: // Weapon Energy
@@ -136,6 +137,7 @@ void ai_setup(Entity *e) {
 		break;
 	case 60: // Toroko
 		e->update = &ai_update_toroko;
+		e->set_state = &ai_setstate_toroko;
 		break;
 	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);

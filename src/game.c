@@ -141,6 +141,18 @@ u8 game_main(bool load) {
 		SPR_update();
 		VDP_waitVSync();
 	}
-	SYS_setVIntCallback(NULL);
+	
+	if(ending) { // You are a winner
+		
+	} else { // Going back to title screen
+		// Sometimes after restart stage will not load any tileset, instead
+		// showing the Cave Story title. Unset to prevent that
+		stageID = 0;
+		stageTileset = 0;
+		stageBackground = 0;
+		// Title screen uses built in font not blue background font
+		VDP_loadFont(&font_lib, 0);
+		SYS_setVIntCallback(NULL);
+	}
 	return ending;
 }

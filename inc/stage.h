@@ -52,6 +52,7 @@
 
 u16 stageID; // Index of current stage in stage_info
 u16 stageWidth, stageHeight; // Width and height measured in blocks
+u8 stageBackground;
 u8 stageBackgroundType; // Which effect to use to display the background
 extern u8 *stageBlocks; // Pointer to level layout data on ROM
 u8 stageTileset;

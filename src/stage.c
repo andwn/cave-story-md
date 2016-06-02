@@ -12,7 +12,6 @@
 #include "hud.h"
 #include "vdp_ext.h"
 
-u8 stageBackground;
 s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;
 u8 *stageBlocks = NULL;
@@ -105,9 +104,10 @@ void stage_load_blocks() {
 	stageHeight = PXM[6] + (PXM[7] << 8);
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
-	for(u32 i = 0; i < stageWidth * stageHeight; i++) {
-		stageBlocks[i] = PXM[i];
-	}
+	//for(u32 i = 0; i < stageWidth * stageHeight; i++) {
+	//	stageBlocks[i] = PXM[i];
+	//}
+	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 }
 
 void stage_load_tileflags() {

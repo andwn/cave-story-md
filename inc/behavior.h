@@ -44,6 +44,7 @@ void ai_activate_spike();
 
 // 60 and 63 - Toroko / Toroko attack with stick
 void ai_update_toroko(Entity *e);
+bool ai_setstate_toroko(Entity *e, u16 state);
 //void ai_setstate_toroko(Entity *e, u16 state);
 
 /* Balrog */
