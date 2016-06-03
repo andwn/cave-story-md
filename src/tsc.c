@@ -149,6 +149,8 @@ bool showingBossHealth = false;
 u16 bossMaxHealth;
 u16 bossHealth;
 
+u16 lastAmmoNum = 0;
+
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
 
 void tsc_show_boss_health();
@@ -339,8 +341,15 @@ u8 execute_command() {
 		case CMD_CLR: // Clear message box
 			window_clear();
 			break;
-		case CMD_NUM: // TODO: Show number (1) in message box
+		case CMD_NUM: // Show number (1) in message box
 			args[0] = tsc_read_word();
+			{
+				char str[12];
+				intToStr(lastAmmoNum, str, 1);
+				for(u8 i = 0; str[i] != 0 && i < 12; i++) {
+					window_draw_char(str[i]);
+				}
+			}
 			break;
 		case CMD_GIT: // Display item (1) in message box
 			args[0] = tsc_read_word();
@@ -574,6 +583,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			player_give_weapon(args[0], args[1]);
+			lastAmmoNum = args[1];
 			break;
 		case CMD_AM_SUB: // Remove weapon (1)
 			args[0] = tsc_read_word();

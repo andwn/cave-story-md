@@ -45,12 +45,6 @@ void ai_update_toroko(Entity *e) {
 		break;
 	case 8: // Jump in place (don't run after)
 		break;
-	//case 9: // Run off screen and delete self (after 6)
-	//	if(e->x_speed == 0 && e->grounded) {
-	//		e->x_speed = pixel_to_sub(-2 + 4*e->direction);
-	//	}
-		//if(!entity_on_screen(e)) { }
-	//	break;
 	case 10: // Falling down
 		if(e->grounded) {
 			e->x_speed = 0;
@@ -77,13 +71,22 @@ bool ai_setstate_toroko(Entity *e, u16 state) {
 	switch(state) {
 	case 6: // Jump
 	case 8:
-		e->y_speed = pixel_to_sub(-1);
+		e->y_speed = pixel_to_sub(-2);
 		e->grounded = false;
 		break;
 	default:
 		break;
 	}
 	return false;
+}
+
+void ai_update_jack(Entity *e) {
+	if(!e->grounded) e->y_speed += gravity;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	entity_update_collision(e);
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_update_misery_float(Entity *e) {

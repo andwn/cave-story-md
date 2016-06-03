@@ -802,6 +802,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 	e->id = id;
 	e->event = event;
 	e->eflags = flags;
+	e->grounded = false;
 	if(stageID == 28) {
 		e->alwaysActive = true;
 	} else {

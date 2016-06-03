@@ -139,11 +139,20 @@ void ai_setup(Entity *e) {
 		e->update = &ai_update_toroko;
 		e->set_state = &ai_setstate_toroko;
 		break;
+	case 61: // King
+		if(e->eflags & NPC_OPTION2) {
+			e->direction = 1;
+			if(e->sprite != NULL) SPR_setHFlip(e->sprite, 1);
+		}
+		break;
 	case 63: // Toroko attacking with stick
 		e->y -= block_to_sub(1);
 		e->update = &ai_update_toroko;
 		e->state = 3; // Running back and forth
 		SPR_setAnim(e->sprite, 2);
+		break;
+	case 74: // Jack
+		e->update = &ai_update_jack;
 		break;
 	case 5: // Critter - Green
 	case 64: // Critter - Blue
