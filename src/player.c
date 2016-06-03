@@ -181,10 +181,10 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				//if(weapon_info[playerWeapon[i].type].sprite == NULL) 
-				//	SYS_die("Weapon sprite is NULL");
-				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
+				if(weapon_info[playerWeapon[i].type].sprite != NULL) {
+					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+						0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
+				}
 				break;
 			}
 		}
@@ -193,10 +193,10 @@ void player_update_shooting() {
 			if(playerWeapon[i].type > 0) {
 				SPR_SAFERELEASE(weaponSprite);
 				currentWeapon = i;
-				//if(weapon_info[playerWeapon[i].type].sprite == NULL) 
-				//	SYS_die("Weapon sprite is NULL");
-				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-					0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
+				if(weapon_info[playerWeapon[i].type].sprite != NULL) {
+					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+						0, 0, TILE_ATTR(PAL1, 1, 0, player.direction));
+				}
 				break;
 			}
 		}
@@ -349,17 +349,17 @@ void player_update_air_display() {
 	} else {
 		if(airSprite == NULL) { // Initialize and draw full "AIR" text
 			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
-				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
+				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_AIRINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
 			SPR_setVisibility(airSprite, VISIBLE);
 			SYS_disableInts();
-			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 4, true);
+			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
 			SYS_enableInts();
 		} else { // Just blink the small down arrow thing
 			SYS_disableInts();
 			if(system_get_frame() & 8) {
-				VDP_loadTileData(TILE_BLANK, TILE_FACEINDEX, 1, true);
+				VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
 			} else {
-				VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_FACEINDEX, 1, true);
+				VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
 			}
 			SYS_enableInts();
 		}
@@ -369,7 +369,7 @@ void player_update_air_display() {
 		memcpy(numberTiles[0], &TS_Numbers.tiles[(airPercent / 10) * 8], 32);
 		memcpy(numberTiles[1], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
 		SYS_disableInts();
-		VDP_loadTileData(numberTiles[0], TILE_FACEINDEX + 4, 2, true);
+		VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 2, true);
 		SYS_enableInts();
 	}
 }

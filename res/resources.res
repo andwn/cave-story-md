@@ -107,6 +107,8 @@ TILESET TS_SndTest	"back/soundtest.png" 0 # OOM when unpacking, don't compress
 # Window
 TILESET TS_Window	"window.png" 2
 TILESET TS_MsgFont	"font_blue.png" 2
+SPRITE SPR_ItemWin	"itemwindow.png" 6 3 0 0 NONE
+SPRITE SPR_Prompt	"prompt.png" 8 3 0 0 NONE
 
 # Unconpressed font
 TILESET TS_SprFont	"font_lib_copy.png" 0

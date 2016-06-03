@@ -36,4 +36,6 @@ bool window_prompt_update();
 
 void window_show_item(u16 item);
 
+void window_show_weapon(u16 weapon);
+
 #endif /* INC_WINDOW_H_ */

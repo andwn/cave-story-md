@@ -22,10 +22,8 @@
 #define TEXT_Y2 (WINDOW_Y2 - 1)
 #define TEXT_X1_FACE (WINDOW_X1 + 8)
 // Prompt window location
-#define PROMPT_X1 26
-#define PROMPT_X2 36
-#define PROMPT_Y1 20
-#define PROMPT_Y2 22
+#define PROMPT_X 26
+#define PROMPT_Y 19
 
 bool windowOpen = false;
 u16 showingFace = 0;
@@ -38,10 +36,10 @@ u8 windowTextTick = 0;
 
 bool promptShowing = false;
 bool promptAnswer = true;
-Sprite *handSpr = NULL;
+Sprite *promptSpr = NULL, *handSpr = NULL;
 
 u16 showingItem = 0;
-Sprite *itemSpr = NULL;
+Sprite *itemSpr = NULL, *itemWinSpr = NULL;
 
 void window_clear_text();
 void window_draw_face();
@@ -55,16 +53,16 @@ void window_open(u8 mode) {
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
 	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, y);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), WINDOW_X1, y);
 		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, y);
+			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 		}
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, y);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), WINDOW_X2, y);
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(12), WINDOW_X1, WINDOW_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, WINDOW_Y2);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(13), x, WINDOW_Y2);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(14), WINDOW_X2, WINDOW_Y2);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, WINDOW_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, WINDOW_Y2);
 	if(showingFace > 0) {
 		window_draw_face(showingFace);
 	}
@@ -80,7 +78,7 @@ void window_clear() {
 	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
 		for(u8 x = x1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, y);
+			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 		}
 	}
 	window_clear_text();
@@ -100,6 +98,7 @@ void window_clear_text() {
 void window_close() {
 	VDP_setWindowPos(0, 0);
 	showingItem = 0;
+	SPR_SAFERELEASE(itemWinSpr);
 	SPR_SAFERELEASE(itemSpr);
 	windowOpen = false;
 }
@@ -174,31 +173,20 @@ bool window_tick() {
 }
 
 void window_prompt_open() {
-	// Top of window
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), PROMPT_X1, PROMPT_Y1);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, PROMPT_Y1);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), 36, PROMPT_Y1);
-	// Text area of window
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(9), PROMPT_X1, PROMPT_Y1 + 1);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(10), x, PROMPT_Y1 + 1);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(11), PROMPT_X2, PROMPT_Y1 + 1);
-	// Bottom of window
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(15), PROMPT_X1, PROMPT_Y2);
-	for(u8 x = PROMPT_X1 + 1; x < PROMPT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(16), x, PROMPT_Y2);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(17), PROMPT_X2, PROMPT_Y2);
-	VDP_drawTextWindow("Yes / No", PROMPT_X1 + 2, PROMPT_Y1 + 1);
 	sound_play(SOUND_PROMPT, 5);
 	// Load hand sprite and move next to yes
 	handSpr = SPR_addSprite(&SPR_Pointer, 
-		tile_to_pixel(PROMPT_X1 + 1)-4, tile_to_pixel(PROMPT_Y1 + 1) - 4, 
+		tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
+		TILE_ATTR(PAL0, 1, 0, 0));
+	// Load prompt sprite
+	promptSpr = SPR_addSprite(&SPR_Prompt, 
+		tile_to_pixel(PROMPT_X), tile_to_pixel(PROMPT_Y), 
 		TILE_ATTR(PAL0, 1, 0, 0));
 	promptAnswer = true; // Yes is default
 }
 
 void window_prompt_close() {
+	SPR_SAFERELEASE(promptSpr);
 	SPR_SAFERELEASE(handSpr);
 	window_clear();
 }
@@ -216,7 +204,7 @@ bool window_prompt_update() {
 		promptAnswer = !promptAnswer;
 		sound_play(SOUND_CURSOR, 5);
 		SPR_setPosition(handSpr, 
-			tile_to_pixel(33-(promptAnswer*6))-4, tile_to_pixel(PROMPT_Y1+1)-4);
+			tile_to_pixel(30-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
 	return false;
 }
@@ -232,6 +220,11 @@ void window_draw_face() {
 
 void window_show_item(u16 item) {
 	showingItem = item;
+	if(item == 0) {
+		SPR_SAFERELEASE(itemSpr);
+		SPR_SAFERELEASE(itemWinSpr);
+		return;
+	}
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
 	u16 pal = PAL1;
@@ -240,7 +233,23 @@ void window_show_item(u16 item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H - 16,
+	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 16,
 		TILE_ATTR(pal, 1, 0, 0));
+	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
+		TILE_ATTR(PAL0, 1, 0, 0));
 	SPR_setAnimAndFrame(itemSpr, item / 8, item % 8);
+}
+
+void window_show_weapon(u16 item) {
+	showingItem = item;
+	if(item == 0) {
+		SPR_SAFERELEASE(itemSpr);
+		SPR_SAFERELEASE(itemWinSpr);
+		return;
+	}
+	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 16,
+		TILE_ATTR(PAL0, 1, 0, 0));
+	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
+		TILE_ATTR(PAL0, 1, 0, 0));
+	SPR_setFrame(itemSpr, item);
 }

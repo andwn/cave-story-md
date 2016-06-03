@@ -35,7 +35,6 @@ void stage_load(u16 id) {
 	}
 	stageID = id;
 	player_lock_controls();
-	//hud_hide();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear(FILTER_ALL, 0);
@@ -47,10 +46,6 @@ void stage_load(u16 id) {
 	}
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
-	//if(!vdpEnabled) { // Loading game, not a room transition
-	//	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
-	//	VDP_setPalette(PAL3, stage_info[id].npcPalette->data);
-	//}
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
@@ -62,7 +57,6 @@ void stage_load(u16 id) {
 			for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
 			stage_draw_background2();
 		} else if(stageBackgroundType == 2) { // Solid Color
-			//VDP_setPaletteColor(PAL0, 0x0444);
 			VDP_clearPlan(PLAN_B, true);
 		}
 	}
@@ -104,9 +98,6 @@ void stage_load_blocks() {
 	stageHeight = PXM[6] + (PXM[7] << 8);
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
-	//for(u32 i = 0; i < stageWidth * stageHeight; i++) {
-	//	stageBlocks[i] = PXM[i];
-	//}
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 }
 
@@ -158,7 +149,6 @@ void stage_replace_block(u16 bx, u16 by, u8 index) {
 	effect_create_smoke(1, block_to_pixel(bx) + 8, block_to_pixel(by) + 8);
 }
 
-// TODO: Use DMA here
 void stage_update() {
 	// Column
 	if(morphingColumn != 0) {
@@ -180,7 +170,6 @@ void stage_update() {
 	}
 	// Foreground scrolling
 	VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
-	//VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 	VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	// Background Scrolling
 	if(stageBackgroundType == 1) stage_update_back();

@@ -344,7 +344,11 @@ u8 execute_command() {
 			break;
 		case CMD_GIT: // Display item (1) in message box
 			args[0] = tsc_read_word();
-			window_show_item(args[0] - 1000);
+			if(args[0] >= 1000) {
+				window_show_item(args[0] - 1000);
+			} else {
+				window_show_weapon(args[0]);
+			}
 			break;
 		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
