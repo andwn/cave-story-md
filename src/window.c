@@ -22,8 +22,8 @@
 #define TEXT_Y2 (WINDOW_Y2 - 1)
 #define TEXT_X1_FACE (WINDOW_X1 + 8)
 // Prompt window location
-#define PROMPT_X 26
-#define PROMPT_Y 19
+#define PROMPT_X 27
+#define PROMPT_Y 18
 
 bool windowOpen = false;
 u16 showingFace = 0;
@@ -204,7 +204,7 @@ bool window_prompt_update() {
 		promptAnswer = !promptAnswer;
 		sound_play(SOUND_CURSOR, 5);
 		SPR_setPosition(handSpr, 
-			tile_to_pixel(30-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
+			tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
 	return false;
 }
@@ -233,7 +233,7 @@ void window_show_item(u16 item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 16,
+	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 12,
 		TILE_ATTR(pal, 1, 0, 0));
 	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
 		TILE_ATTR(PAL0, 1, 0, 0));
@@ -247,7 +247,7 @@ void window_show_weapon(u16 item) {
 		SPR_SAFERELEASE(itemWinSpr);
 		return;
 	}
-	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 16,
+	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
 		TILE_ATTR(PAL0, 1, 0, 0));
 	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
 		TILE_ATTR(PAL0, 1, 0, 0));
