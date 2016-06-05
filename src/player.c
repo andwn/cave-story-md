@@ -138,7 +138,7 @@ void player_update() {
 				//} else {
 					player.health = 0;
 					SPR_SAFERELEASE(airSprite);
-					SPR_setAnim(player.sprite, 8);
+					SPR_SAFEANIM(player.sprite, 8);
 					tsc_call_event(PLAYER_DROWN_EVENT);
 					return;
 				//}
@@ -220,13 +220,13 @@ void player_update_shooting() {
 			b->damage = weapon_info[w->type].damage[w->level - 1];
 			b->ttl = 20 + w->level * 5;
 			if(player.controller[0]&BUTTON_UP) {
-				SPR_setAnim(b->sprite, 1);
+				SPR_SAFEANIM(b->sprite, 1);
 				b->x = player.x;
 				b->y = player.y - pixel_to_sub(12);
 				b->x_speed = 0;
 				b->y_speed = pixel_to_sub(-4);
 			} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-				SPR_setAnim(b->sprite, 1);
+				SPR_SAFEANIM(b->sprite, 1);
 				b->x = player.x;
 				b->y = player.y + pixel_to_sub(12);
 				b->x_speed = 0;
@@ -291,7 +291,7 @@ void player_update_bullets() {
 		} else if(--b->ttl == 0) { // Bullet time to live expired
 			SPR_SAFERELEASE(b->sprite);
 		} else {
-			SPR_setPosition(b->sprite, 
+			SPR_SAFEMOVE(b->sprite, 
 				sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		}
@@ -404,18 +404,18 @@ void player_draw() {
 	if(player.anim != anim) {
 		player.anim = anim;
 		// Frame change is a workaround for tapping looking like quote is floating
-		SPR_setAnimAndFrame(player.sprite, anim, 
+		SPR_SAFEANIMFRAME(player.sprite, anim, 
 			anim==ANIM_WALKING || anim==ANIM_LOOKUPWALK ? 1 : 0);
 	}
 	// Change direction if pressing left or right
 	if(player.controller[0]&BUTTON_RIGHT && !player.direction) {
 		player.direction = 1;
-		SPR_setHFlip(player.sprite, 1);
+		SPR_SAFEHFLIP(player.sprite, 1);
 	} else if(player.controller[0]&BUTTON_LEFT && player.direction) {
 		player.direction = 0;
-		SPR_setHFlip(player.sprite, 0);
+		SPR_SAFEHFLIP(player.sprite, 0);
 	}
-	SPR_setPosition(player.sprite,
+	SPR_SAFEMOVE(player.sprite,
 		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Blink during invincibility frames
@@ -426,11 +426,11 @@ void player_draw() {
 		u8 wanim = 0;
 		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
-		SPR_setAnim(weaponSprite, wanim);
-		SPR_setHFlip(weaponSprite, player.direction);
+		SPR_SAFEANIM(weaponSprite, wanim);
+		SPR_SAFEHFLIP(weaponSprite, player.direction);
 		SPR_setVisibility(weaponSprite, 
 			playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
-		SPR_setPosition(weaponSprite,
+		SPR_SAFEMOVE(weaponSprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	}

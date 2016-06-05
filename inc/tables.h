@@ -4,6 +4,7 @@
 #include <genesis.h>
 #include "common.h"
 #include "npc.h"
+#include "entity.h"
 
 #define STAGE_COUNT 95
 #define TILESET_COUNT 23
@@ -90,6 +91,7 @@ typedef struct {
 	const SpriteDefinition *sprite;
 	u16 palette;
 	char name[26];
+	EntityMethod onCreate, onUpdate, onState, onHurt;
 } npc_info_def;
 
 typedef struct {

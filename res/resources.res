@@ -32,7 +32,7 @@ SPRITE SPR_PolarB1	"sprite/polarb1.png" 2 2 0 0 NONE
 SPRITE SPR_PolarB2	"sprite/polarb2.png" 2 2 0 0 NONE
 SPRITE SPR_PolarB3	"sprite/polarb3.png" 2 2 0 0 NONE
 SPRITE SPR_Chest	"sprite/chest.png" 2 2 0 10 NONE
-SPRITE SPR_Save		"sprite/save.png" 2 2 0 6 NONE
+SPRITE SPR_Save		"sprite/save.png" 2 2 0 4 NONE
 SPRITE SPR_Refill	"sprite/refill.png" 2 2 0 1 NONE
 SPRITE SPR_Door		"sprite/door.png" 2 3 0 0 NONE
 SPRITE SPR_Tele		"sprite/tele.png" 3 4 0 1 NONE
@@ -82,7 +82,7 @@ SPRITE SPR_Sue		"sprite/sue.png" 2 2 0 20 NONE
 SPRITE SPR_King		"sprite/king.png" 2 2 0 20 NONE
 SPRITE SPR_Igor		"sprite/igor.png" 5 5 0 20 NONE
 SPRITE SPR_Robot	"sprite/robot.png" 2 2 0 0 NONE
-SPRITE SPR_KazuCom	"sprite/kazucom.png" 2 3 0 0 NONE
+SPRITE SPR_KazuCom	"sprite/kazucom.png" 2 3 0 2 NONE
 SPRITE SPR_Kanpachi	"sprite/kanpachi.png" 3 2 0 0 NONE
 SPRITE SPR_Jack		"sprite/jack.png" 2 2 0 15 NONE
 SPRITE SPR_Mahin	"sprite/mahin.png" 2 2 0 0 NONE

@@ -1,4 +1,4 @@
-#include "behavior.h"
+#include "ai.h"
 
 #include <genesis.h>
 #include "audio.h"
@@ -7,16 +7,15 @@
 #include "tables.h"
 #include "tsc.h"
 
-
 // 12 - Balrog (Cutscene)
-void ai_update_balrog_scene(Entity *e) {
+void ai_balrog_onUpdate(Entity *e) {
 	if(e->state_time > 0) {
 		e->state_time--;
 		if(e->state_time == 0) {
 			switch(e->state) {
 			case 20:
-			case 21: e->set_state(e, 10); break;
-			case 30: e->set_state(e, 0); break;
+			case 21: ENTITY_SET_STATE(e, 10, 0); break;
+			case 30: ENTITY_SET_STATE(e, 0, 0); break;
 			default: break;
 			}
 		}
@@ -29,25 +28,23 @@ void ai_update_balrog_scene(Entity *e) {
 	e->y = e->y_next;
 }
 
-bool ai_setstate_balrog_scene(Entity *e, u16 state) {
-	e->state = state;
-	switch(state) {
+void ai_balrog_onState(Entity *e) {
+	switch(e->state) {
 	case 0: // Standing around
-		SPR_setAnim(e->sprite, 0);
+		SPR_SAFEANIM(e->sprite, 0);
 		break;
 	case 10: // Going up!
 	case 11:
-		SPR_setAnim(e->sprite, 3);
+		SPR_SAFEANIM(e->sprite, 3);
 		e->y_speed = pixel_to_sub(-2);
 		break;
 	case 20: // Smoking, going up!
 	case 21:
-		SPR_setAnim(e->sprite, 5);
-		//e->y_speed = pixel_to_sub(-2);
+		SPR_SAFEANIM(e->sprite, 5);
 		e->state_time = 160;
 		break;
 	case 30: // Smile
-		SPR_setAnim(e->sprite, 6);
+		SPR_SAFEANIM(e->sprite, 6);
 		e->state_time = 90;
 		break;
 	case 42: // Balfrog
@@ -55,13 +52,13 @@ bool ai_setstate_balrog_scene(Entity *e, u16 state) {
 		break;
 	case 70: // Vanish
 	case 71:
-		return true;
+		ENTITY_SET_STATE(e, STATE_DELETE, 0);
+		break;
 	}
-	return false;
 }
 
 // 68 - Boss: Balrog (Mimiga Village)
-void ai_update_balrog_boss1(Entity *e) {
+void ai_balrogRunning_onUpdate(Entity *e) {
 	if(e->state_time > 0) e->state_time--;
 	switch(e->state) {
 	case 0:
@@ -73,36 +70,36 @@ void ai_update_balrog_boss1(Entity *e) {
 			e->x_speed = 0;
 			SPR_setAnim(e->sprite, 0);
 		}
-		if(e->state_time == 0) e->set_state(e, e->state + 1);
+		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
 	case 1:
 	case 3:
 	case 5:
 		e->x_speed -= 0x10 - (0x20 * e->direction);
 		if(e->state_time == 0 || (abs(e->x - player.x) < block_to_sub(2)))
-			e->set_state(e, e->state + 1);
+			ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
 	case 6:
 		if(e->grounded) {
 			e->x_speed >>= 1;
-			e->set_state(e, 0);
+			ENTITY_SET_STATE(e, 0, 0);
 		} else e->y_speed += gravityJump;
 		break;
 	case 7: // Grabbed player
 		player.x = e->x;
 		player.y = e->y;
 		if(!e->grounded) e->y_speed += gravityJump;
-		if(e->state_time == 0) e->set_state(e, 8);
+		if(e->state_time == 0) ENTITY_SET_STATE(e, 8, 0);
 		break;
 	case 8:
-		if(e->state_time == 0) e->set_state(e, 0);
+		if(e->state_time == 0) ENTITY_SET_STATE(e, 0, 0);
 		break;
 	default:
 		break;
 	}
 	// Grab/throw player
 	if(e->state < 7 && !player_invincible() && entity_overlapping(&player, e)) {
-		e->set_state(e, 7);
+		ENTITY_SET_STATE(e, 7, 0);
 	}
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -111,14 +108,12 @@ void ai_update_balrog_boss1(Entity *e) {
 	e->y = e->y_next;
 }
 
-bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
-	e->state = state;
-	if(state == STATE_DEFEATED) {
-		e->state += 1;
+void ai_balrogRunning_onState(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
 		tsc_call_event(e->event); // Boss defeated event
-		return false;
+		return;
 	}
-	switch(state) {
+	switch(e->state) {
 	case 0: // Stand still
 	case 2:
 	case 4:
@@ -128,14 +123,14 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 	case 3: // Run towards player (2)
 	case 5: // Run towards player and jump
 		e->direction = e->x < player.x;
-		SPR_setAnim(e->sprite, 1);
+		SPR_SAFEANIM(e->sprite, 1);
 		SPR_setHFlip(e->sprite, e->direction);
 		e->state_time = 120;
 		break;
 	case 6: // Jumping
 		e->grounded = false;
 		e->y_speed = pixel_to_sub(-2);
-		SPR_setAnim(e->sprite, 3);
+		SPR_SAFEANIM(e->sprite, 3);
 		e->state_time = 160;
 		break;
 	case 7: // Grab player
@@ -146,12 +141,12 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 		player.y_speed = 0;
 		player.grounded = true;
 		e->x_speed = 0;
-		SPR_setAnim(e->sprite, 8);
+		SPR_SAFEANIM(e->sprite, 8);
 		e->state_time = 120;
 		break;
 	case 8: // Throw player
 		player_unlock_controls();
-		SPR_setAnim(e->sprite, 3);
+		SPR_SAFEANIM(e->sprite, 3);
 		if(player_inflict_damage(1)) break;
 		player.y_speed = pixel_to_sub(-1);
 		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->direction);
@@ -160,15 +155,11 @@ bool ai_setstate_balrog_boss1(Entity *e, u16 state) {
 	default:
 		break;
 	}
-	return false;
 }
 
-bool ai_setstate_balfrog(Entity *e, u16 state) {
-	e->state = state;
-	if(state == STATE_DEFEATED) {
-		e->state += 1;
+// Boss 02 - Balfrog
+void ai_balfrog_onState(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
 		tsc_call_event(e->event); // Boss defeated event
-		return true;
 	}
-	return false;
 }

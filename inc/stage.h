@@ -30,7 +30,7 @@
  * 0x0A + E*12: y position
  * 0x0C + E*12: ID
  * 0x0E + E*12: Event # (in the TSC)
- * 0x10 + E*12: NPC type (index in npc.tbl, or in our case npc_info in tables.c)
+ * 0x10 + E*12: NPC type (index in npc.tbl)
  * 0x12 + E*12: Entity flags (see tables.h)
  */
 
@@ -48,7 +48,10 @@
 
 // Helper macros
 #define stage_get_block(x, y) (stageBlocks[(y) * stageWidth + (x)])
-#define stage_get_block_type(x, y) (stageTileFlags[(x)%32][(y)%32])
+#define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
+/*(stageTileFlags[(x)%32][(y)%32])*/
+// Workaround for spike onCreate
+#define stage_get_block_type_ROM(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
 
 u16 stageID; // Index of current stage in stage_info
 u16 stageWidth, stageHeight; // Width and height measured in blocks
@@ -58,7 +61,7 @@ extern u8 *stageBlocks; // Pointer to level layout data on ROM
 u8 stageTileset;
 // Cached tile flags in a 512x512 area around the player
 // Used to speed up collision detection
-u8 stageTileFlags[32][32];
+//u8 stageTileFlags[32][32];
 u8 stageEntityCount; // Used for debug mainly
 
 // Clears previous stage and switches to one with the given ID, which is

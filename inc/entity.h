@@ -4,7 +4,26 @@
 #include <genesis.h>
 #include "common.h"
 
-enum { FILTER_NONE, FILTER_ID, FILTER_EVENT, FILTER_TYPE, FILTER_ALL };
+#define ENTITY_ONCREATE(e) ({                                                                  \
+	if(npc_info[e->type].onCreate != NULL) npc_info[e->type].onCreate(e);                      \
+})
+#define ENTITY_ONUPDATE(e) ({                                                                  \
+	if(npc_info[e->type].onUpdate != NULL) npc_info[e->type].onUpdate(e);                      \
+})
+#define ENTITY_ONSTATE(e) ({                                                                   \
+	if(npc_info[e->type].onState != NULL) npc_info[e->type].onState(e);                        \
+})
+#define ENTITY_ONHURT(e) ({                                                                    \
+	if(npc_info[e->type].onHurt != NULL) npc_info[e->type].onHurt(e);                          \
+})
+
+#define ENTITY_SET_STATE(e, s, t) ({                                                           \
+	e->state = s;                                                                              \
+	e->state_time = t;                                                                         \
+	ENTITY_ONSTATE(e);                                                                         \
+})              
+
+#define SPRITE_DISABLE 0xFF                                                                               
 
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
@@ -12,11 +31,7 @@ enum {
 };
 
 typedef struct Entity Entity;
-
-typedef void (*activateFunc)(Entity*);
-typedef void (*updateFunc)(Entity*);
-typedef bool (*stateFunc)(Entity*, u16);
-typedef void (*hurtFunc)(Entity*);
+typedef void (*EntityMethod)(Entity*);
 
 // Temporarily making these global until I refactor entity and behavior together
 extern s16 maxFallSpeed, maxFallSpeedWater,
@@ -29,24 +44,19 @@ extern s16 maxFallSpeed, maxFallSpeedWater,
 	friction, frictionWater;
 
 struct Entity {
-	// We linked list now
 	Entity *next, *prev;
 	u16 id; // Entity ID (from the stage PXE, or when created by a TSC script)
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of npc_info in tables.c (npc.tbl in original game)
-	//u16 flags; // NPC flags - see tables.h for what the flags are
-	u16 nflags;
-	u16 eflags;
+	u16 nflags; // NPC Flags from the npc.tbl that apply to every instance of this entity
+	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via bitwise OR
 	// This is assumed to be an array of type u16[2], or at least next to each other
-	// in memory. Index 0 is current joy state, 1 is previous frame's state
+	// in memory (input.h). Index 0 is current joy state, 1 is previous frame's state
 	u16 *controller;
 	u8 direction; // Direction entity is facing, 0=left, 1=right
 	// Behavior properties
 	bool alwaysActive;
-	activateFunc activate;
-	updateFunc update;
-	stateFunc set_state;
-	hurtFunc hurt;
+	//EntityMethod onCreate, onUpdate, onState, onHurt;
 	// Combat
 	u16 health; // If this is an enemy it will die when health reaches 0
 	u8 attack; // Damage inflicted on player when colliding
@@ -68,13 +78,15 @@ struct Entity {
 	// Collidable area, for both physics and combat
 	// This is measured in pixels
 	bounding_box hit_box;
-	// Sprite ID assigned to this entity, or SPRITE_NONE
+	// Sprite assigned to this entity, or NULL
 	Sprite *sprite;
+	// These 3 sprite variables remember the sprite state when an entity deactivates
+	// Once reactivated, they are used to restore the sprite attributes
+	u8 spriteFrame, spriteAnim, spriteVFlip;
 	// Area where sprite is displayed relative to the center
 	// Like hit_box this is also pixels
 	bounding_box display_box;
 	u8 anim; // Current animation of the sprite being displayed
-	//u8 frame, frameTime; // Frame and frame time for sprite animation
 	u16 state; // Script state / ANP
 	u16 state_time;
 	// Used to generate damage strings
@@ -121,7 +133,7 @@ Entity *entity_destroy(Entity *e);
 
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
-Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags);
+Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction);
 Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event);
 
 // Finds entity matching an ID and returns it

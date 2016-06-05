@@ -11,7 +11,7 @@
 #include "audio.h"
 #include "tsc.h"
 #include "npc.h"
-#include "behavior.h"
+#include "ai.h"
 
 /* Linked List Macros */
 
@@ -137,19 +137,27 @@ bool collide_stage_ceiling(Entity *e);
 
 // Initialize sprite for entity
 void sprite_create(Entity *e) {
-	if(npc_info[e->type].sprite == NULL) {
+	if(e->sprite != NULL) SYS_die(npc_info[e->type].name);
+	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
 		e->sprite = NULL;
 		return;
 	}
 	e->sprite = SPR_addSprite(npc_info[e->type].sprite, 
 		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
-		TILE_ATTR(npc_info[e->type].palette, 0, 0, e->direction));
+		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
+	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
 }
 
 // Move to inactive list, delete sprite
 void entity_deactivate(Entity *e) {
 	LIST_MOVE(entityList, inactiveList, e);
+	// Remember sprite frame and animation (or if there was no sprite)
+	if(e->sprite != NULL) {
+		e->spriteAnim = e->sprite->animInd;
+		e->spriteFrame = e->sprite->frameInd;
+		e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
+	}
 	SPR_SAFERELEASE(e->sprite);
 }
 
@@ -157,7 +165,6 @@ void entity_deactivate(Entity *e) {
 void entity_reactivate(Entity *e) {
 	LIST_MOVE(inactiveList, entityList, e);
 	sprite_create(e);
-	e->activate(e);
 }
 
 Entity *entity_delete(Entity *e) {
@@ -171,8 +178,7 @@ Entity *entity_delete(Entity *e) {
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
 	entity_drop_powerup(e);
-	effect_create_smoke(e->deathSmoke,
-			sub_to_pixel(e->x), sub_to_pixel(e->y));
+	effect_create_smoke(e->deathSmoke, sub_to_pixel(e->x), sub_to_pixel(e->y));
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	Entity *next = e->next;
@@ -687,24 +693,24 @@ void entity_drop_powerup(Entity *e) {
 	u8 chance = random() % 100;
 	// TODO: Not sure how drops are determined
 	if(chance < 30) { // Heart
-		Entity *heart = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 87, 0);
+		Entity *heart = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 87, 0, 0);
 		heart->health = 2;
 	} else if(chance < 50) {
 		// Missiles
 	} else { // Energy
 		s16 i = e->experience;
 		for(; i >= 5; i -= 5) { // Big
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
 			exp->experience = 5;
-			SPR_setAnim(e->sprite, 2);
+			SPR_SAFEANIM(e->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
 			exp->experience = 3;
-			SPR_setAnim(e->sprite, 1);
+			SPR_SAFEANIM(e->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0);
+			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
 			exp->experience = 1;
 		}
 	}
@@ -716,7 +722,7 @@ Entity *entity_update(Entity *e) {
 		entity_deactivate(e);
 		return next;
 	}
-	if(e->update != NULL) e->update(e);
+	ENTITY_ONUPDATE(e);
 	if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
 		Bullet *b = bullet_colliding(e);
 		if(b != NULL) {
@@ -728,7 +734,8 @@ Entity *entity_update(Entity *e) {
 							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 				// Killed enemy
 				e->health = 0;
-				if(e->set_state(e, STATE_DEFEATED)) return entity_destroy(e);
+				ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
+				if(e->state == STATE_DESTROY) return entity_destroy(e);
 				else return e->next;
 			}
 			if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
@@ -737,7 +744,7 @@ Entity *entity_update(Entity *e) {
 			}
 			e->health -= b->damage;
 			sound_play(e->hurtSound, 5);
-			if(e->hurt != NULL) e->hurt(e);
+			ENTITY_ONHURT(e);
 		}
 	}
 	if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
@@ -748,11 +755,9 @@ Entity *entity_update(Entity *e) {
 			e->damage_value = 0;
 		}
 	}
-	if(e->sprite != NULL) {
-		SPR_setPosition(e->sprite,
-			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
-	}
+	SPR_SAFEMOVE(e->sprite,
+		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
 	return e->next;
 }
 
@@ -777,10 +782,11 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->activate = &ai_activate_base;
-	e->update = NULL;
-	e->set_state = &ai_setstate_base;
-	e->hurt = NULL;
+	e->alwaysActive = false;
+	e->sprite = NULL;
+	e->spriteFrame = 0;
+	e->spriteAnim = 0;
+	e->spriteVFlip = 0;
 	e->state = 0;
 	e->state_time = 0;
 }
@@ -793,22 +799,26 @@ bool entity_disabled(Entity *e) {
 	return false;
 }
 
-Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
+Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
 	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
+	if(type > 360) return NULL;
 	// Allocate memory and start applying values
 	Entity *e = MEM_alloc(sizeof(Entity));
+	e->next = NULL; e->prev = NULL;
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
 	e->eflags = flags;
 	e->grounded = false;
-	if(stageID == 28) {
-		e->alwaysActive = true;
-	} else {
-		e->alwaysActive = false;
-	}
+	//if(stageID == 28) {
+	//	e->alwaysActive = true;
+	//} else {
+	//	e->alwaysActive = false;
+	//}
 	entity_default(e, type, 0);
+	e->direction = direction;
+	ENTITY_ONCREATE(e);
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		LIST_PUSH(entityList, e);
 		sprite_create(e);
@@ -816,7 +826,6 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags) {
 		LIST_PUSH(inactiveList, e);
 		e->sprite = NULL;
 	}
-	ai_setup(e);
 	return e;
 }
 
@@ -833,10 +842,10 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	e->alwaysActive = true;
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->activate = &ai_activate_base;
-	e->update = NULL;
-	e->set_state = &ai_setstate_base;
-	e->hurt = NULL;
+	//e->activate = &ai_activate_base;
+	//e->update = NULL;
+	//e->set_state = &ai_setstate_base;
+	//e->hurt = NULL;
 	e->state = 0;
 	e->state_time = 0;
 	switch(bossid) {
@@ -862,11 +871,11 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
 			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
 			TILE_ATTR(PAL3, 0, 0, e->direction));
-		e->set_state = &ai_setstate_balfrog;
+		//e->set_state = &ai_setstate_balfrog;
 		break;
 	}
 	LIST_PUSH(entityList, e);
-	e->activate(e);
+	//e->activate(e);
 	return e;
 }
 
@@ -874,11 +883,11 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(e->event == event) {
+			SPR_SAFERELEASE(e->sprite);
 			entity_default(e, type, flags);
 			e->direction = direction;
-			SPR_SAFERELEASE(e->sprite);
+			ENTITY_ONCREATE(e);
 			sprite_create(e);
-			ai_setup(e);
 		}
 		e = e->next;
 	}
@@ -887,7 +896,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		if(e->event == event) {
 			entity_default(e, type, flags);
 			e->direction = direction;
-			ai_setup(e);
+			ENTITY_ONCREATE(e);
 		}
 		e = e->next;
 	}
@@ -899,9 +908,9 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction);
+				SPR_SAFEHFLIP(e->sprite, direction);
 			}
-			e->set_state(e, state);
+			ENTITY_SET_STATE(e, state, 0);
 		}
 		e = e->next;
 	}
@@ -909,7 +918,7 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 	while(e != NULL) {
 		if(e->event == event) {
 			e->direction = direction;
-			e->set_state(e, state);
+			ENTITY_SET_STATE(e, state, 0);
 		}
 		e = e->next;
 	}
@@ -921,7 +930,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		if(e->event == event) {
 			if(e->direction != direction){
 				e->direction = direction;
-				if(e->sprite != NULL) SPR_setHFlip(e->sprite, direction);
+				SPR_SAFEHFLIP(e->sprite, direction);
 			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);

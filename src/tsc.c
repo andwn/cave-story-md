@@ -258,7 +258,7 @@ u8 tsc_update() {
 			tsc_hide_teleport_menu();
 			tscState = TSC_RUNNING;
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			SPR_setAnimAndFrame(teleMenuSprite[teleMenuSelection],
+			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
 					0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == 0) {
 				teleMenuSelection = teleMenuSlotCount - 1;
@@ -267,7 +267,7 @@ u8 tsc_update() {
 			}
 			sound_play(SOUND_CURSOR, 5);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			SPR_setAnimAndFrame(teleMenuSprite[teleMenuSelection],
+			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
 					0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == teleMenuSlotCount - 1) {
 				teleMenuSelection = 0;
@@ -277,7 +277,7 @@ u8 tsc_update() {
 			sound_play(SOUND_CURSOR, 5);
 		} else { // Doing nothing, blink cursor
 			teleMenuAnim = !teleMenuAnim;
-			SPR_setAnimAndFrame(teleMenuSprite[teleMenuSelection],
+			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
 					teleMenuAnim, teleMenuFrame[teleMenuSelection]);
 		}
 		break;
@@ -307,8 +307,8 @@ void tsc_show_teleport_menu() {
 		teleMenuSprite[teleMenuSlotCount] = 
 			SPR_addSprite(&SPR_TeleMenu, 0, 0, TILE_ATTR(PAL0, 1, 0, 0));
 		teleMenuFrame[teleMenuSlotCount] = i;
-		SPR_setFrame(teleMenuSprite[teleMenuSlotCount], i);
-		SPR_setPosition(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
+		SPR_SAFEFRAME(teleMenuSprite[teleMenuSlotCount], i);
+		SPR_SAFEMOVE(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
 		teleMenuSlotCount++;
 	}
 	if(teleMenuSlotCount > 0) {
@@ -467,7 +467,7 @@ u8 execute_command() {
 			} else if(args[0] == 2) { // Right
 				player.direction = 1;
 			}
-			SPR_setHFlip(player.sprite, player.direction);
+			SPR_SAFEHFLIP(player.sprite, player.direction);
 			break;
 		case CMD_UNI: // TODO: Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -540,14 +540,7 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			if(args[3] > 0) {
-				Entity *e = entity_create(args[1], args[2], 0, 0, args[0], 0);
-				if(e->sprite == NULL) break;
-				e->direction = 1;
-				SPR_setHFlip(e->sprite, e->direction);
-			} else {
-				entity_create(args[1], args[2], 0, 0, args[0], 0);
-			}
+			entity_create(args[1], args[2], 0, 0, args[0], 0, args[3] > 0);
 			break;
 		case CMD_BOA: // TODO: Give map boss state (1)
 			args[0] = tsc_read_word();

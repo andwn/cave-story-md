@@ -71,7 +71,13 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
-#define SPR_SAFERELEASE(s); { if(s != NULL) { SPR_releaseSprite(s); s = NULL; } }
+#define SPR_SAFERELEASE(s); ({ if(s != NULL) { SPR_releaseSprite(s); s = NULL; } })
+#define SPR_SAFEVFLIP(s ,f); ({ if(s != NULL) { SPR_setVFlip(s, f); } })
+#define SPR_SAFEHFLIP(s, f); ({ if(s != NULL) { SPR_setHFlip(s, f); } })
+#define SPR_SAFEMOVE(s, x, y); ({ if(s != NULL) { SPR_setPosition(s, x, y); } })
+#define SPR_SAFEANIM(s, a); ({ if(s != NULL) { SPR_setAnim(s, a); } })
+#define SPR_SAFEFRAME(s, f); ({ if(s != NULL) { SPR_setFrame(s, f); } })
+#define SPR_SAFEANIMFRAME(s, a, f); ({ if(s != NULL) { SPR_setAnimAndFrame(s, a, f); } })
 
 // Booleans
 typedef unsigned char bool;

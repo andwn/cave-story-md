@@ -1,4 +1,6 @@
 # Cave Story MD
+![Screenshot](doc/ss01.png)
+
 This is a rewrite/port of the popular freeware game Cave Story. It is built to run on a Genesis/Mega Drive.
 Tested to work on Kega Fusion, Gens GS, and an NTSC Genesis Model 1.
 The engine is built using SGDK, and written almost entirely in C.
@@ -7,7 +9,7 @@ The engine is built using SGDK, and written almost entirely in C.
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
-[Not yet](TODO.md). From "New Game" without cheats you can make it to Sand Zone.
+Not yet, check out the [TODO list](doc/TODO.md) for progress.
 - Only Polar Star actually does anything but Y and Z can still be used to switch weapons.
 - Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
 - The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).

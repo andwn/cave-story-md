@@ -37,7 +37,7 @@ void stage_load(u16 id) {
 	player_lock_controls();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
-	entities_clear(FILTER_ALL, 0);
+	entities_clear();
 	SPR_reset();
 	if(stageBlocks != NULL) MEM_free(stageBlocks);
 	if(stageTileset != stage_info[id].tileset) {
@@ -62,7 +62,7 @@ void stage_load(u16 id) {
 	}
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
-	stage_load_tileflags();
+	//stage_load_tileflags();
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
 	player_reset_sprites(); // Reloads player/weapon sprites
@@ -100,7 +100,7 @@ void stage_load_blocks() {
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 }
-
+/*
 void stage_load_tileflags() {
 	const u8 *PXA = tileset_info[stageTileset].PXA;
 	s16 startx = sub_to_block(camera.x) - 16,
@@ -116,7 +116,7 @@ void stage_load_tileflags() {
 		}
 	}
 }
-
+*/
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
 	stageEntityCount = PXE[4];
@@ -131,7 +131,7 @@ void stage_load_entities() {
 		if(id==0 && event==0 && type==0 && flags==0) continue;
 		if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
 		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
-		entity_create(x, y, id, event, type, flags);
+		entity_create(x, y, id, event, type, flags, 0);
 	}
 }
 
@@ -143,7 +143,7 @@ bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {
 }
 
 void stage_replace_block(u16 bx, u16 by, u8 index) {
-	stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];
+	//stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];
 	stageBlocks[by * stageWidth + bx] = index;
 	stage_draw_area(bx, by, 1, 1);
 	effect_create_smoke(1, block_to_pixel(bx) + 8, block_to_pixel(by) + 8);
@@ -221,14 +221,14 @@ void stage_draw_row(s16 _x, s16 _y) {
 
 void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
 	// Cache the tile flag data
-	const u8 *PXA = tileset_info[stageTileset].PXA;
+	//const u8 *PXA = tileset_info[stageTileset].PXA;
 	if(x_dir != 0) {
 		s16 x = _x + (x_dir*15);
 		if(x >= 0 && x < stageWidth) {
 			for(s16 y = _y-16; y < _y+16; y++) {
 				if(y < 0) continue;
 				if(y >= stageHeight) break;
-				stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
+				//stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
 			}
 		}
 	}
@@ -238,7 +238,7 @@ void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
 			for(s16 x = _x-16; x < _x+16; x++) {
 				if(x < 0) continue;
 				if(x >= stageWidth) break;
-				stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
+				//stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
 			}
 		}
 	}
