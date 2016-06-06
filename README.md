@@ -24,6 +24,7 @@ Not yet, check out the [TODO list](doc/TODO.md) for progress.
 
 #### How to build? (Windows)
 **Note**: I don't use Windows and can't guarantee this will work. If it does fail, show me the make output.
+
 1. Download and install [SGDK](https://github.com/Stephane-D/SGDK.git) using the instructions from that page.
 2. Clone the repo `git clone https://github.com/andwn/cave-story-md.git`
 3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
