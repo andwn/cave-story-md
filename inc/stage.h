@@ -4,10 +4,12 @@
 #include <genesis.h>
 #include "common.h"
 
-// "Stage" refers to a level map. SGDK has a "Map" structure that is not used here,
-// so stage was chosen to avoid conflict
-// "Block" here refers to 16x16 in-game tiles. It is named this way to differentiate
-// it from the 8x8 tiles used to store graphical data in VDP
+/*
+ * "Stage" refers to a level map. SGDK has a "Map" structure that is not used here,
+ * so stage was chosen to avoid conflict
+ * "Block" refers to 16x16 in-game tiles. It is named this way to differentiate
+ * it from the 8x8 tiles used to store graphical data in VDP
+ */
 
 /*
  * Cave Story file types related to stage data
@@ -34,51 +36,55 @@
  * 0x12 + E*12: Entity flags (see tables.h)
  */
 
+// Tile options (PXA)
+// Low 4 bits are distinct values
 #define BLOCK_SOLID 0x1
 #define BLOCK_DAMAGE 0x2
 #define BLOCK_SPECIAL 0x3
 #define BLOCK_NPCSOLID 0x4
 #define BLOCK_BULLETPASS 0x5
 #define BLOCK_PLAYERSOLID 0x6
-
+// High 4 bits are flags that can be used in combination
 #define BLOCK_SLOPE 0x10
 #define BLOCK_WATER 0x20
 #define BLOCK_FOREGROUND 0x40
 #define BLOCK_WIND 0x80
 
 // Helper macros
+// This will get the block (in the tileset) that is at a specific location in the stage grid
 #define stage_get_block(x, y) (stageBlocks[(y) * stageWidth + (x)])
+// Like above, but will return the "tile options" (solid, water, damage, etc)
 #define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
-/*(stageTileFlags[(x)%32][(y)%32])*/
-// Workaround for spike onCreate
-#define stage_get_block_type_ROM(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
 
-u16 stageID; // Index of current stage in stage_info
-u16 stageWidth, stageHeight; // Width and height measured in blocks
-u8 stageBackground;
-u8 stageBackgroundType; // Which effect to use to display the background
-extern u8 *stageBlocks; // Pointer to level layout data on ROM
+// Index of current stage in db/stage.c
+u16 stageID;
+// Size of the stage - how many blocks wide/high
+u16 stageWidth, stageHeight;
+// Index of background in db/back.c and the effect type
+u8 stageBackground, stageBackgroundType;
+// Copy of level layout data loaded into RAM
+// This takes up extra space, but there are times where scripts make modifications to the
+// level layout (allowing player to reach some areas) so it is necessary to do this
+extern u8 *stageBlocks;
+// Which tileset (db/tileset.c) is used by the current stage
 u8 stageTileset;
-// Cached tile flags in a 512x512 area around the player
-// Used to speed up collision detection
-//u8 stageTileFlags[32][32];
-u8 stageEntityCount; // Used for debug mainly
+// Used for debug mainly - counts the number of entities created by stage_load()
+// It is NOT the total number of entities that exist at any time, use entity_count() instead
+u8 stageEntityCount;
 
-// Clears previous stage and switches to one with the given ID, which is
-// indexed in the stage_info table
+// Clears previous stage and switches to one with the given ID
 void stage_load(u16 id);
 
 bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid);
-
+// Called by TSC, replaces one block with another and creates smoke
 void stage_replace_block(u16 bx, u16 by, u8 index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
 void stage_update();
-// Updates the stageTileFlags "cache" array and prepares to draw off-screen
-// tiles when stage_update() is later called
-// Camera uses this
+// Prepares to draw off-screen tiles when stage_update() is later called
+// Camera calls this each time it scrolls past 1 block length (16 pixels)
 void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir);
-// Immediately draws a rectangular area of the stage
+// Immediately draws a rectangular area of the stage (slow)
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
 
 #endif

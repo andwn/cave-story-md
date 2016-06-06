@@ -3,18 +3,18 @@
 
 #include "common.h"
 
-// When this gets flipped on the bars will be redrawn next vblank
+// When this gets flipped on the HUD will be redrawn next vblank
 bool hudRedrawPending;
 
+// Loads the initial HUD sprite, only stage_load() should call this
 void hud_create();
-// Loads sprites for HUD and displays it on screen
+// Makes the HUD visible
 void hud_show();
-// Unloads HUD sprites
+// Hides the HUD (doesn't unload)
 void hud_hide();
 // Updates numbers + other info if they changed
 void hud_update();
-// This injects tiles into the health and energy bars
-// Called during vblank so DMA can be used
+// Reloads HUD tiles to display current values if necessary
 void hud_update_vblank();
 
 #endif /* INC_HUD_H_ */

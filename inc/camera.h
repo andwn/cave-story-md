@@ -5,7 +5,7 @@
 #include "entity.h"
 
 struct {
-	s32 x, y; // Units
+	s32 x, y; // Fixed point units
 	Entity *target; // Player, boss, NPC, or NULL
 	// Offset is the point relative to the target's position
 	// that the camera tries to center on
@@ -17,7 +17,7 @@ void camera_init();
 // Center camera directly on a specific point
 // This does not redraw or morph the stage, call stage_draw_area() manually after
 void camera_set_position(s32 x, s32 y);
-
+// Shake camera for a specified number of frames
 void camera_shake(u16 time);
 // Per frame update for camera, moves toward the target entity
 // Will "morph" the stage (draw areas surrounding the screen) when necessary

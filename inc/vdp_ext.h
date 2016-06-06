@@ -3,7 +3,17 @@
 
 #include <genesis.h>
 
+/*
+ * This contains some helper functions that don't exist in SGDK
+ */
+
+// 32 bytes of zero, can be sent to VDP to clear any tile
 extern const u32 TILE_BLANK[8];
+// FadeOut is almost completely black, except index 15 which is white
+// This allows text to still be displayed after the screen fades to black
+extern const u16 PAL_FadeOut[64];
+// FullWhite is used for a TSC instruction that flashes the screen white
+extern const u16 PAL_FullWhite[64];
 
 // Window plane functions
 void VDP_setWindowPos(u8 x, u8 y);
@@ -13,8 +23,8 @@ void VDP_drawTextWindow(const char *str, u16 x, u16 y);
 void VDP_clearTextWindow(u16 x, u16 y, u16 w);
 
 // Palette functions
-extern const u16 PAL_FadeOut[64], PAL_FullWhite[64];
-
+// The "cached palette" is an in-memory copy of the full 64 colors in CRAM so 
+// that they can be remembered during/after fades
 void VDP_setCachedPalette(u16 pindex, u16 *colors);
 void VDP_setCachedColor(u16 cindex, u16 color);
 u16* VDP_getCachedPalette();

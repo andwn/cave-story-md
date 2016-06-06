@@ -1,4 +1,4 @@
-#include "titlescreen.h"
+#include "gamemode.h"
 
 #include <genesis.h>
 #include "audio.h"

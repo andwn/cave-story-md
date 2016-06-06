@@ -24,12 +24,8 @@
 #include "audio.h"
 #include "common.h"
 #include "resources.h"
-#include "titlescreen.h"
-#include "soundtest.h"
-#include "npctest.h"
-#include "game.h"
+#include "gamemode.h"
 #include "input.h"
-#include "credits.h"
 
 int main() {
     VDP_init();

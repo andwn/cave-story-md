@@ -1,7 +1,6 @@
-#include "credits.h"
+#include "gamemode.h"
 
 #include <genesis.h>
-//#include "sprite.h"
 #include "resources.h"
 #include "input.h"
 #include "tables.h"

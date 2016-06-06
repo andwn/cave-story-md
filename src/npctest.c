@@ -1,7 +1,6 @@
-#include "npctest.h"
+#include "gamemode.h"
 
 #include <genesis.h>
-
 #include "resources.h"
 #include "input.h"
 #include "tables.h"

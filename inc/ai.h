@@ -24,6 +24,27 @@
  * onState and check for STATE_DEFEATED to act upon death.
  */
 
+#define ENTITY_ONCREATE(e) ({                                                                  \
+	if(npc_info[e->type].onCreate != NULL) npc_info[e->type].onCreate(e);                      \
+})
+#define ENTITY_ONUPDATE(e) ({                                                                  \
+	if(npc_info[e->type].onUpdate != NULL) npc_info[e->type].onUpdate(e);                      \
+})
+#define ENTITY_ONSTATE(e) ({                                                                   \
+	if(npc_info[e->type].onState != NULL) npc_info[e->type].onState(e);                        \
+})
+#define ENTITY_ONHURT(e) ({                                                                    \
+	if(npc_info[e->type].onHurt != NULL) npc_info[e->type].onHurt(e);                          \
+})
+
+#define ENTITY_SET_STATE(e, s, t) ({                                                           \
+	e->state = s;                                                                              \
+	e->state_time = t;                                                                         \
+	ENTITY_ONSTATE(e);                                                                         \
+})              
+
+typedef void (*EntityMethod)(Entity*);
+
 // Special states
 // Defeated is automatically set when health reaches zero. Many enemies do not immediately
 // explode so this allows a custom onUpdate/onState method to show a death animation

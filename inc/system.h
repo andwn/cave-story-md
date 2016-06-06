@@ -12,6 +12,9 @@ extern bool debuggingEnabled;
 // See player.c: player_unpause()
 extern bool pauseCancelsIFrames;
 
+// When true, player can skip through all the message text by holding the B button
+extern bool holdBToSkipText;
+
 // Global flags are persisted to save data
 void system_set_flag(u16 flag, bool value);
 bool system_get_flag(u16 flag);
@@ -20,15 +23,20 @@ bool system_get_flag(u16 flag);
 void system_set_skip_flag(u16 flag, bool value);
 bool system_get_skip_flag(u16 flag);
 
-// Mostly play time
+// Counts play time
 void system_update();
+// Returns play time
 u8 system_get_frame();
+// Draws play time
 void system_drawtime(u16 x, u16 y);
 
-// Save data
+// Initializes variables with defaults when starting a new game
 void system_new();
+// Initializes variables from SRAM when loading a game save
 void system_load();
+// Stores variables and game state into SRAM
 void system_save();
+// Validates whether any save data exists in SRAM
 u8 system_checkdata();
 
 #endif // INC_SYSTEM_H_

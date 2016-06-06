@@ -4,110 +4,102 @@
 #include <genesis.h>
 #include "common.h"
 #include "npc.h"
-#include "entity.h"
+#include "ai.h"
 
+/*
+ * This is a database of most of the game's content. Wherever possible, the indexes match
+ * the IDs used by the original game.
+ * Any time you see a const pointer, that is pointing to ROM data
+ */
+
+// Information about each stage, indexed by stageID
 #define STAGE_COUNT 95
-#define TILESET_COUNT 23
-#define BACKGROUND_COUNT 13
-#define SONG_COUNT 42
-#define SOUND_COUNT 118
-#define WEAPON_COUNT 14
-#define FACE_COUNT 30
-
-// NPC Flags
-// Player can't pass through the NPC
-#define NPC_SOLID			0x0001
-// Ignore tile type 0x44. Normally NPCs cannot pass them
-#define NPC_IGNORE44		0x0002
-// Can't be damaged and makes a *clink* sound
-#define NPC_INVINCIBLE		0x0004
-// Goes through walls, used on flying enemies
-#define NPC_IGNORESOLID		0x0008
-// I think only the Behemoth enemy uses this
-#define NPC_BOUNCYTOP		0x0010
-// Can be damaged with player bullets
-#define NPC_SHOOTABLE		0x0020
-// Not sure what "special solid" is
-#define NPC_SPECIALSOLID	0x0040
-// Touching the bottom, top, and back does not hurt
-#define NPC_FRONTATKONLY	0x0080
-// Custom, depends on the NPC type
-#define NPC_OPTION1			0x0100
-// Trigger event [Entity.event] on death
-#define NPC_EVENTONDEATH	0x0200
-// Drops health/energy/missiles
-#define NPC_DROPPOWERUP		0x0400
-// Only appears if the flag [Entity.id] is set
-#define NPC_ENABLEONFLAG	0x0800
-// Custom, depends on the NPC type
-#define NPC_OPTION2			0x1000
-// Calls event [Entity.event] when player presses down
-#define NPC_INTERACTIVE		0x2000
-// Only appears if the flag [Entity.id] is unset
-#define NPC_DISABLEONFLAG	0x4000
-// Pops up red numbers when damaged
-#define NPC_SHOWDAMAGE		0x8000
-
 typedef struct {
-	const u8 *PXM;
-	const u8 *PXE;
-	const u8 *TSC;
+	const u8 *PXM; // PXM is the layout, each byte is an index of the current tileset
+	const u8 *PXE; // PXE is the entity list
+	const u8 *TSC; // TSC is the script
+	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const Palette *npcPalette;
-	u8 tileset;
-	u8 background;
-	u8 name[24];
+	u8 tileset; // Which tileset in tileset_info to use
+	u8 background; // Which background in background_info to use
+	u8 name[24]; // The name of the map, as displayed to the player
 } stage_info_def;
+extern const stage_info_def stage_info[STAGE_COUNT];
 
+// Information about each tileset, indexed by stageTileset
+#define TILESET_COUNT 23
 typedef struct {
-	const TileSet *tileset;
-	const Palette *palette;
-	const u8 *PXA;
+	const TileSet *tileset; // The graphical tile data to load
+	const Palette *palette; // The palette, which will be loaded to PAL2
+	const u8 *PXA; // Tile options, how objects interact with different tiles
 } tileset_info_def;
 
+// Information about each background, indexed by stageBackground
+// The IDs deviate from the original game. I do not know the "correct" order
+#define BACKGROUND_COUNT 13
 typedef struct {
-	const TileSet *tileset;
+	const TileSet *tileset; // Graphical tile data to load
+	// Backgrounds do not use their own palette and instead "share" with any other of the
+	// 4 already loaded. This value specifies which, like PAL0, PAL1, etc
 	u16 palette;
+	// The "type" is which behavior/algorithm to use when loading/scrolling the background
+	// 0 - Draw a plain tiled image into PLAN_B
+	// 1 - Moon/Fog - Draw from a specified pattern into PLAN_B and scroll the clouds
+	// 2 - Clear PLAN_B to black, no background
 	u8 type;
-	u8 width;
-	u8 height;
+	u8 width, height; // Size of tiled image for type 0
 } background_info_def;
 
+// Information about each music track for song_play()
+#define SONG_COUNT 42
 typedef struct {
-	const u8 *song;
-	char name[24];
+	const u8 *song; // Location of XGM to be loaded
+	char name[24]; // Name of the track (sound test)
 } song_info_def;
 
+// Information about each sound effect for sound_play()
+#define SOUND_COUNT 118
 typedef struct {
-	const u8 *sound;
-	u32 length;
+	const u8 *sound; // Location of PCM data to playback
+	u32 length; // Number of frames (sound frames, not screen frames)
 } sound_info_def;
 
+// Information about each character face image
+#define FACE_COUNT 30
 typedef struct {
-	const TileSet *tiles;
+	const TileSet *tiles; // Graphical tile data
+	// Like backgrounds, faces share palettes. This is which of the 4 currently loaded to use
 	u16 palette;
 } face_info_def;
 
+// Information about each NPC type, indexes are the same as npc.tbl
+// It has 8 extra spots for major bosses though, as they do not exist in npc.tbl
 typedef struct {
-	const SpriteDefinition *sprite;
-	u16 palette;
-	char name[26];
+	const SpriteDefinition *sprite; // Sprite to load
+	u16 palette; // Any of the 4 loaded palettes to use for the sprite
+	char name[26]; // Name of the NPC (NPC Test)
+	// The "methods" for AI/behavior. Storing them in this table frees up 16 bytes per entity
 	EntityMethod onCreate, onUpdate, onState, onHurt;
 } npc_info_def;
 
+// Information about each weapon, indexes match <AM+ and ArmsImage
+#define WEAPON_COUNT 14
 typedef struct {
-	const SpriteDefinition *sprite;
-	const SpriteDefinition *bulletSprite[3];
-	u8 shootSound[3];
-	u8 experience[3];
-	u8 damage[3];
+	const SpriteDefinition *sprite; // Sprite to display beneath player
+	// The [3] here, means different values for each level of the weapon
+	const SpriteDefinition *bulletSprite[3]; // Sprite for bullets
+	u8 shootSound[3]; // Sound effect to play when shooting
+	u8 experience[3]; // Amount of exp required to level up the weapon
+	u8 damage[3]; // Amount of damage dealt to enemies
 } weapon_info_def;
 
+// Oh... I was going to do something with this
 typedef struct {
 	u8 *function;
 	u8 paramCount;
 } command_info_def;
 
-extern const stage_info_def stage_info[STAGE_COUNT];
+
 
 extern const tileset_info_def tileset_info[TILESET_COUNT];
 

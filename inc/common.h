@@ -24,16 +24,18 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_FACESIZE 36
 // VRAM reserved for SGDK sprite engine
 #define TILE_SPRITEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
-#define TILE_SPRITESIZE (TILE_MAXNUM - TILE_SPRITEINDEX)
-// Extra space for tiles between planes
+#define TILE_SPRITESIZE (TILE_FONTINDEX - TILE_SPRITEINDEX)
+// PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
+// also moved to the end as to not overlap the window plane (0xF800)
+// These index the 2 unused areas between for some extra tile space
 #define TILE_EXTRA1INDEX (0xD000 >> 5)
 #define TILE_EXTRA2INDEX (0xF000 >> 5)
-// Allocation of EXTRA1 (128 tiles)
+// Allocation of EXTRA1 (128 tiles) - background & HUD
 #define TILE_BACKINDEX TILE_EXTRA1INDEX
-#define BACK_SIZE 96
-#define TILE_HUDINDEX (TILE_BACKINDEX + BACK_SIZE)
-#define HUD_SIZE 32
-// Allocation of EXTRA2 (64 tiles)
+#define TILE_BACKSIZE 96
+#define TILE_HUDINDEX (TILE_BACKINDEX + TILE_BACKSIZE)
+#define TILE_HUDSIZE 32
+// Allocation of EXTRA2 (64 tiles) - Effects, window, misc
 #define TILE_NUMBERINDEX TILE_EXTRA2INDEX
 #define TILE_NUMBERSIZE 16
 #define TILE_SMOKEINDEX (TILE_NUMBERINDEX + TILE_NUMBERSIZE)
@@ -41,7 +43,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_WINDOWINDEX (TILE_SMOKEINDEX + TILE_SMOKESIZE)
 #define TILE_WINDOWSIZE 9
 #define TILE_AIRINDEX (TILE_WINDOWINDEX + TILE_WINDOWSIZE)
-#define TILE_AIRSIZE 6
+#define TILE_AIRSIZE 7
 
 // Unit conversions
 // sub - fixed point unit (1/512x1/512)
@@ -71,6 +73,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
+// "Safe" wrappers for sprite functions will only execute if given a non-null sprite
 #define SPR_SAFERELEASE(s); ({ if(s != NULL) { SPR_releaseSprite(s); s = NULL; } })
 #define SPR_SAFEVFLIP(s ,f); ({ if(s != NULL) { SPR_setVFlip(s, f); } })
 #define SPR_SAFEHFLIP(s, f); ({ if(s != NULL) { SPR_setHFlip(s, f); } })
@@ -86,7 +89,7 @@ enum {false, true};
 // Generic function pointer
 typedef void (*func)();
 
-// Bounding box
+// Bounding box used for collision and relative area to display sprites
 typedef struct {
 	u8 left;
 	u8 top;

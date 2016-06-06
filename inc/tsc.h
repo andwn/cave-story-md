@@ -10,17 +10,24 @@
 #define PLAYER_DROWN_EVENT 41
 #define PLAYER_OOB_EVENT 42
 
+// Number of events loaded by tsc_load(), for debugging
 u8 tscEventCount;
+
+// As teleporter locations are made available to the player, this list is populated
+// with which event is called when selecting a particular area.
+// This is in the header so that system_save() can write the values to SRAM
 u16 teleportEvent[8];
 
+// Initialize default values to avoid strange glitches
+// Also loads persistent head.tsc and arms.tsc events
 void tsc_init();
-
+// Called by stage_load(), fills up the event list with pointers to each event
 void tsc_load_stage(u8 id);
-
+// Per frame update, will advance the script or wait for something based on whats happening
 u8 tsc_update();
-
+// This will begin executing a scripted event if it exists
 void tsc_call_event(u16 number);
-
+// Returns true if a script is being executed
 bool tsc_running();
 
 void tsc_unpause_debug();

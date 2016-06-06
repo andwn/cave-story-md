@@ -73,6 +73,8 @@ void player_init() {
 	player.y_speed = 0;
 	player.damage_time = 0;
 	player.damage_value = 0;
+	player.direction = 1;
+	player.spriteAnim = 0;
 	player_reset_sprites();
 	// Actually 6,6,5,8 but need to get directional hitboxes working first
 	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
@@ -401,8 +403,8 @@ void player_draw() {
 		}
 	}
 	// Set animation if it changed
-	if(player.anim != anim) {
-		player.anim = anim;
+	if(player.spriteAnim != anim) {
+		player.spriteAnim = anim;
 		// Frame change is a workaround for tapping looking like quote is floating
 		SPR_SAFEANIMFRAME(player.sprite, anim, 
 			anim==ANIM_WALKING || anim==ANIM_LOOKUPWALK ? 1 : 0);
