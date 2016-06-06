@@ -14,7 +14,7 @@ SPRITE SPR_Dummy16x1 "sprite/armsimage.png" 16 1 0 0 NONE
 # Use PAL_Main
 SPRITE SPR_Quote	"sprite/quote.png" 2 2 0 10 NONE
 TILESET TS_Numbers	"sprite/numbers.png" 0
-SPRITE SPR_Air		"sprite/air.png" 6 1 0 0 NONE
+SPRITE SPR_Air		"sprite/air.png" 7 1 0 0 NONE
 SPRITE SPR_Hud2		"sprite/hud2.png" 8 4 0 0 NONE
 TILESET TS_HudBar	"sprite/hudfill.png" 0
 SPRITE SPR_Pointer	"sprite/pointer.png" 2 2 0 0 NONE

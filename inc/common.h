@@ -81,6 +81,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define SPR_SAFEANIM(s, a); ({ if(s != NULL) { SPR_setAnim(s, a); } })
 #define SPR_SAFEFRAME(s, f); ({ if(s != NULL) { SPR_setFrame(s, f); } })
 #define SPR_SAFEANIMFRAME(s, a, f); ({ if(s != NULL) { SPR_setAnimAndFrame(s, a, f); } })
+#define SPR_SAFEVISIBILITY(s, v); ({ if(s != NULL) { SPR_setVisibility(s, v); } })
 
 // Booleans
 typedef unsigned char bool;

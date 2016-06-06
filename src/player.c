@@ -35,8 +35,8 @@
 
 #define INVINCIBILITY_FRAMES 120
 
-#define MAX_AIR_NTSC (1200)
-#define MAX_AIR_PAL (1000)
+#define MAX_AIR_NTSC (12 * 100)
+#define MAX_AIR_PAL (10 * 100)
 
 u16 dummyController[2] = { 0, 0 };
 u8 playerIFrames = 0;
@@ -47,6 +47,7 @@ Sprite *weaponSprite = NULL;
 Sprite *airSprite = NULL;
 Sprite *mapNameSprite = NULL;
 u16 mapNameTTL = 0;
+u8 airTime = 0;
 
 void player_update_entity_collision();
 void player_update_bounds();
@@ -146,11 +147,18 @@ void player_update() {
 				//}
 			}
 		} else if(playerAir < playerMaxAir) {
-			playerAir += 4;
+			playerAir = playerMaxAir;
+			airTime = 60;
 			if(playerAir > playerMaxAir) playerAir = playerMaxAir;
+		} else {
+			if(airTime > 0) {
+				airTime--;
+			} else {
+				SPR_SAFERELEASE(airSprite);
+			}
 		}
+		player_update_air_display();
 	}
-	if((system_get_frame() & 7) == 0) player_update_air_display();
 	player_update_shooting();
 	player_update_bullets();
 	player_update_interaction();
@@ -345,34 +353,44 @@ void player_show_map_name(u8 ttl) {
 	mapNameTTL = ttl;
 }
 
+void draw_air_percent(u8 percent) {
+	u32 numberTiles[3][8];
+	memcpy(numberTiles[0], percent == 100 ? &TS_Numbers.tiles[8] : TILE_BLANK, 32);
+	memcpy(numberTiles[1], &TS_Numbers.tiles[((percent / 10) % 10) * 8], 32);
+	memcpy(numberTiles[2], &TS_Numbers.tiles[(percent % 10) * 8], 32);
+	SYS_disableInts();
+	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, true);
+	SYS_enableInts();
+}
+
 void player_update_air_display() {
 	if(playerAir == playerMaxAir) {
-		SPR_SAFERELEASE(airSprite);
+		if(airTime == 60) {
+			draw_air_percent(100);
+		} else if(airTime > 0) {
+			SPR_SAFEVISIBILITY(airSprite, (airTime & 8) ? VISIBLE : HIDDEN);
+		}
 	} else {
 		if(airSprite == NULL) { // Initialize and draw full "AIR" text
-			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 24, SCREEN_HALF_H - 24,
+			airTime == 0;
+			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 28, SCREEN_HALF_H - 24,
 				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_AIRINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
-			SPR_setVisibility(airSprite, VISIBLE);
+			SPR_SAFEVISIBILITY(airSprite, VISIBLE);
 			SYS_disableInts();
 			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
 			SYS_enableInts();
 		} else { // Just blink the small down arrow thing
 			SYS_disableInts();
-			if(system_get_frame() & 8) {
+			airTime++;
+			if((airTime & 31) == 0) {
 				VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
-			} else {
+			} else if((airTime & 31) == 15) {
 				VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
 			}
 			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
-		u8 airPercent = 100 * playerAir / playerMaxAir;
-		u32 numberTiles[2][8];
-		memcpy(numberTiles[0], &TS_Numbers.tiles[(airPercent / 10) * 8], 32);
-		memcpy(numberTiles[1], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
-		SYS_disableInts();
-		VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 2, true);
-		SYS_enableInts();
+		if((airTime % 12) == 0) draw_air_percent(100 * playerAir / playerMaxAir);
 	}
 }
 
