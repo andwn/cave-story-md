@@ -23,22 +23,3 @@ void ai_batVertical_onUpdate(Entity *e) {
 	}
 	e->y += e->y_speed;
 }
-
-/*
-// TODO: Make a table to assign functions per NPC
-void ai_setup(Entity *e) {
-	switch(e->type) {
-	case 96: // Fans
-	case 97:
-	case 98:
-	case 99:
-		if(e->eflags&NPC_OPTION2) {
-			e->state = e->type - 95;
-			e->update = &ai_update_fan;
-		}
-		e->activate = &ai_activate_fan;
-		if(e->sprite != NULL) e->activate(e);
-		break;
-	}
-}
-* */

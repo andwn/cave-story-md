@@ -2,7 +2,7 @@
 #include "resources.h"
 #include "ai.h"
 
-const npc_info_def npc_info[NPC_COUNT] = {
+const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ NULL, 		PAL0, "Nothing",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Energy, 	PAL1, "Weapon Energy",
@@ -41,7 +41,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Refill, 	PAL1, "Health & Ammo Refill",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Door, 	PAL1, "Door",
-		&ai_door_onCreate, NULL, NULL, NULL },
+		&ai_door_onCreate, NULL, &ai_door_onState, NULL },
 	{ &SPR_Balrog, 	PAL1, "Balrog (Mimiga Village)",
 		NULL, &ai_balrog_onUpdate, &ai_balrog_onState, NULL },
 	{ &SPR_Computer, PAL1, "Computer",
@@ -129,7 +129,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Toroko, 	PAL3, "Toroko",
 		&ai_op2flip_onCreate, &ai_toroko_onUpdate, &ai_toroko_onState, NULL },
 	{ &SPR_King, 	PAL3, "King",
-		&ai_op2flip_onCreate, NULL, NULL, NULL },
+		&ai_op2flip_onCreate, &ai_king_onUpdate, &ai_king_onState, NULL },
 	{ &SPR_KazuCom, PAL3, "Kazuma (Computer)",
 		&ai_pushdn_onCreate, &ai_kazuComp_onUpdate, NULL, NULL },
 	{ &SPR_Toroko, 	PAL3, "Toroko (Attacking)",
@@ -146,7 +146,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Balrog, 	PAL1, "Balrog (First Fight)",
 		NULL, &ai_balrogRunning_onUpdate, &ai_balrogRunning_onState, NULL },
 	{ &SPR_Pignon, 	PAL1, "Pignon",
-		NULL, NULL, &ai_default_onState, NULL },
+		NULL, &ai_pignon_onUpdate, &ai_default_onState, &ai_pignon_onHurt },
 	{ &SPR_Sparkle, PAL1, "Sparkling Item",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Fish, 	PAL0, "Chinfish",
@@ -171,7 +171,7 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ &SPR_Keeper, 	PAL1, "Gravekeeper",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ &SPR_PignonB, PAL1, "Big Pignon",
-		NULL, NULL, &ai_default_onState, NULL },
+		NULL, &ai_pignon_onUpdate, &ai_default_onState, &ai_pignon_onHurt },
 	{ &SPR_Misery, 	PAL0, "Misery (Standing)",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Igor, 	PAL3, "Igor (Scene)",
@@ -746,6 +746,12 @@ const npc_info_def npc_info[NPC_COUNT] = {
 	{ NULL, 		PAL0, "Water Drop Generator",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, "Thank You",
-		NULL, NULL, &ai_default_onState, NULL }
+		NULL, NULL, &ai_default_onState, NULL },
 	/* ^ 0x168 (360) ^ */
+	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
+	/* 0x169 (361) */
+	{ NULL, 		PAL3, "Omega",
+		NULL, NULL, &ai_default_onState, NULL },
+	{ &SPR_Balfrog1, PAL3, "Balfrog",
+		NULL, NULL, &ai_balfrog_onState, NULL },
 };

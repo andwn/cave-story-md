@@ -10,7 +10,10 @@
 
 void ai_fan_onCreate(Entity *e) {
 	u8 anim = 0;
-	if(e->eflags & NPC_OPTION2) anim = 2;
+	if(e->eflags & NPC_OPTION2) {
+		e->state = e->type - 95;
+		anim = 2;
+	}
 	switch(e->type) {
 	case 96: // Left
 		// Nothing
@@ -19,16 +22,13 @@ void ai_fan_onCreate(Entity *e) {
 		anim += 1;
 		break;
 	case 98: // Right
-		//SPR_SAFEHFLIP(e->sprite, 1);
 		e->direction = 1;
 		break;
 	case 99: // Down
 		anim += 1;
-		//SPR_SAFEHFLIP(e->sprite, 1);
 		e->direction = 1;
 		break;
 	}
-	//SPR_SAFEANIM(e->sprite, anim);
 	e->spriteAnim = anim;
 }
 

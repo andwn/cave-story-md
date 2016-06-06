@@ -10,17 +10,21 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
 Not yet, check out the [TODO list](doc/TODO.md) for progress.
-- Only Polar Star actually does anything but Y and Z can still be used to switch weapons.
-- Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
-- The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).
+- The game can also be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).
+
+#### Controls
+- C - Jump, confirm
+- B - Shoot, cancel
+- Y, Z - Switch weapon
+- Start - Item Menu
 
 #### How to build? (GNU/Linux)
 1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
 2. Clone the project and do `make`.
 
 #### How to build? (Windows)
-- *Note*: I don't use Windows and can't guarantee the build will work. If it does fail, please open an issue with the make output.
-1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
+**Note**: I don't use Windows and can't guarantee this will work. If it does fail, show me the make output.
+1. Download and install [SGDK](https://github.com/Stephane-D/SGDK.git) using the instructions from that page.
 2. Clone the repo `git clone https://github.com/andwn/cave-story-md.git`
 3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
   - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.

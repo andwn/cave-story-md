@@ -137,7 +137,7 @@ bool collide_stage_ceiling(Entity *e);
 
 // Initialize sprite for entity
 void sprite_create(Entity *e) {
-	if(e->sprite != NULL) SYS_die(npc_info[e->type].name);
+	//if(e->sprite != NULL) SYS_die(npc_info[e->type].name);
 	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
 		e->sprite = NULL;
 		return;

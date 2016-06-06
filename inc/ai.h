@@ -35,20 +35,26 @@
 
 /* Generic - basic.c */
 
+// Tons of NPCs are placed 1 block above where they are meant to appear
+// This function pushes them down to the right spot
 void ai_pushdn_onCreate(Entity *e);
+// NPC will face right if NPC_OPTION2 is set
 void ai_op2flip_onCreate(Entity *e);
+// NPC's sprite will start at the second frame if NPC_OPTION2 is set
 void ai_op2frame_onCreate(Entity *e);
+// NPC's sprite will start at the second animation if NPC_OPTION2 is set
 void ai_op2anim_onCreate(Entity *e);
-
+// Blackboard needs to be pushed up, and changes frame on NPC_OPTION2
 void ai_blackboard_onCreate(Entity *e);
-
+// Rotates the spikes so they are always sticking out of a solid area
 void ai_spike_onCreate(Entity *e);
-
+// Apply gravity & collision, some NPC's need to fall when the floor disappears beneath them
+// See save points and refills in Sand Zone, Labyrinth
 void ai_grav_onUpdate(Entity *e);
-
-void ai_default_onState(Entity *e);
-
+// When the player enters a trigger's target area, an event will begin automatically
 void ai_trigger_onUpdate(Entity *e);
+// Default onState just explodes on death
+void ai_default_onState(Entity *e);
 
 /* Balrog - balrog.c */
 
@@ -115,7 +121,8 @@ void ai_kazuComp_onUpdate(Entity *e);
 
 /* King - king.c */
 
-//void ai_king_onCreate(Entity *e);
+void ai_king_onUpdate(Entity *e);
+void ai_king_onState(Entity *e);
 
 /* Misery - misery.c */
 
@@ -128,5 +135,12 @@ void ai_torokoAtk_onCreate(Entity *e);
 
 void ai_toroko_onUpdate(Entity *e);
 void ai_toroko_onState(Entity *e);
+
+/* Cemetery Enemies - cemetery.c */
+
+void ai_pignon_onUpdate(Entity *e);
+void ai_pignon_onHurt(Entity *e);
+
+void ai_gkeeper_onUpdate(Entity *e);
 
 #endif /* INC_AI_H_ */

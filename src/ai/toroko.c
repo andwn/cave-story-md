@@ -82,12 +82,12 @@ void ai_toroko_onState(Entity *e) {
 	switch(e->state) {
 	case 6: // Jump
 		SPR_SAFEANIM(e->sprite, 1);
-		e->y_speed = pixel_to_sub(-1);
-		e->x_speed = -0x200 + 0x400 * e->direction;
+		e->y_speed = -0x150;
+		e->x_speed = -0x150 + 0x300 * e->direction;
 		e->grounded = false;
 		break;
 	case 8:
-		e->y_speed = pixel_to_sub(-1);
+		e->y_speed = 0x150;
 		e->grounded = false;
 		break;
 	default:

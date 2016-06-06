@@ -117,7 +117,7 @@ extern const song_info_def song_info[SONG_COUNT];
 
 extern const sound_info_def sound_info[SOUND_COUNT];
 
-extern const npc_info_def npc_info[NPC_COUNT];
+extern const npc_info_def npc_info[NPC_COUNT + 8];
 
 extern const weapon_info_def weapon_info[WEAPON_COUNT];
 

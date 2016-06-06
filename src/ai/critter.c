@@ -8,7 +8,7 @@
 #include "tsc.h"
 
 void ai_critterHop_onUpdate(Entity *e) {
-	if(!e->grounded) {
+	if(!e->grounded) { // Jumping/falling
 		e->y_speed += gravity;
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
@@ -16,10 +16,10 @@ void ai_critterHop_onUpdate(Entity *e) {
 		e->x = e->x_next;
 		e->y = e->y_next;
 		if(e->grounded) ENTITY_SET_STATE(e, 0, 0);
-	} else if(e->state == 1) {
+	} else if(e->state == 1) { // Preparing to jump
 		e->state_time--;
 		if(e->state_time == 0) ENTITY_SET_STATE(e, 2, 0);
-	} else {
+	} else { // Hop towards player
 		s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
 			x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
 		if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {

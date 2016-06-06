@@ -239,7 +239,7 @@ u8 tsc_update() {
 		if(waitTime == 0) tscState = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
-		if(joy_pressed(BUTTON_C)) {
+		if(joy_pressed(BUTTON_C) || (joystate & BUTTON_B)) {
 			tscState = TSC_RUNNING;
 		}
 		break;
@@ -727,7 +727,7 @@ u8 execute_command() {
 			break;
 		}
 	} else if(window_is_open()) {
-		if(window_tick()) {
+		if(window_tick() || (joystate & BUTTON_B)) {
 			window_draw_char(cmd);
 		} else {
 			curCommand -= 1;
