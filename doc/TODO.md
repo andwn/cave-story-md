@@ -1,15 +1,31 @@
 ### TODO List
 
 - [ ] Music (22 of 41)
+- [ ] Engine
+  - [ ] Sprite ordering
+  - [ ] Item Menu
+  - [ ] Map
+  - [x] Teleport Menu
+  - [ ] Boss health
+  - [x] Air & drowning
+  - [ ] Additional player animations
+    - [ ] Stars when bumping cieling
+    - [ ] Question mark
+    - [ ] Weapon level up
+    - [ ] Walk & jump sound
+  - [ ] Missing mechanics
+    - [ ] Lose weapon exp when hit, level down
+    - [ ] <UNI:0001
+    - [ ] Carrying objects (puppy, curly)
 - [ ] Completable Areas
   - [ ] Intro
   - [x] First Cave
-    - [ ] Fix Kazuma & Computer sprite order
   - [x] Mimiga Village
-    - [ ] Sprite for pot, bed, fireplace
+    - [ ] Sprite for pot
     - [ ] Sprinkler sprite and effect
     - [ ] Behavior for Pignon & Gravekeeper
-    - [ ] Animate Toroko and King
+    - [x] Animate Toroko
+    - [ ] Animate King
     - [ ] Animate Jack / Fix starting position
   - [x] Egg Corridor
     - [ ] Animate teleporter
@@ -40,14 +56,3 @@
   - [ ] Nemesis
   - [ ] Booster 0.8
   - [ ] Booster 2.0
-- [ ] Item / Pause Menu
-- [ ] Map
-- [x] Teleporter Menu
-- [ ] The AI/Behavior code is awful and needs to be rethought
-- [ ] Misc
-  - [x] Air counter and drowning
-  - [ ] Walk and jump sound effect
-  - [ ] Stars when bumping ceiling
-  - [ ] Question mark above head
-  - [ ] Level Up animation
-  - [ ] Boss Health

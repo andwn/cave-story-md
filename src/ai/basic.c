@@ -11,7 +11,7 @@
 // to appear. This function pushes them down to the right spot
 void ai_pushdn_onCreate(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
-	if((stage_get_block_type(x, y + 1) & 0xF) == BLOCK_SOLID) e->y += block_to_sub(1);
+	if(stage_get_block_type(x, y + 1) != 0x41) e->y += block_to_sub(1);
 }
 // King faces right on NPC_OPTION2
 void ai_op2flip_onCreate(Entity *e) {

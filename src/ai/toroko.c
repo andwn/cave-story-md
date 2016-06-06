@@ -50,7 +50,10 @@ void ai_toroko_onUpdate(Entity *e) {
 	case 6: // Jump then run
 		if(e->grounded && abs(e->x_speed) < 0x300) {
 			e->x_speed = -0x300 + 0x600 * e->direction;
+			e->state = 7; // Toroko stops after hitting a wall so don't keep doing this
 		}
+		break;
+	case 7:
 		break;
 	case 8: // Jump in place (don't run after)
 		break;

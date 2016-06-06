@@ -5,7 +5,7 @@ This is a rewrite/port of the popular freeware game Cave Story. It is built to r
 Tested to work on Kega Fusion, Gens GS, and an NTSC Genesis Model 1.
 The engine is built using SGDK, and written almost entirely in C.
 
-## Download ROM
+#### Download ROM
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
@@ -14,15 +14,16 @@ Not yet, check out the [TODO list](doc/TODO.md) for progress.
 - Only enemies in First Cave move, but all can be killed and drop power ups. Same with bosses.
 - The game can be saved and resumed. I have yet to notice any data related bugs. The SRAM is not compatible with the real game, but I wrote a [converter](tools/prof2sram).
 
-## How to build? (Windows)
+#### How to build? (GNU/Linux)
+1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
+2. Clone the project and do `make`.
+
+#### How to build? (Windows)
+- *Note*: I don't use Windows and can't guarantee the build will work. If it does fail, please open an issue with the make output.
 1. Download and install [SGDK](http://github.com/Stephane-D/SGDK.git) using the instructions from that page.
 2. Clone the repo `git clone https://github.com/andwn/cave-story-md.git`
 3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
   - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.
-
-### How to build? (GNU/Linux)
-1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
-2. Clone the project and do `make`.
 
 #### Caveats
 - Many of the colors are more vivid or even wrong sometimes due to palette limitations.

@@ -56,7 +56,7 @@ SPRITE SPR_Basil	"sprite/basil.png" 4 2 0 4 NONE
 SPRITE SPR_Balrog	"sprite/balrog.png" 5 3 0 15 NONE
 SPRITE SPR_Heart	"sprite/heart.png" 2 2 0 2 NONE
 SPRITE SPR_ForceField	"sprite/forcefield.png" 2 2 0 2 NONE
-SPRITE SPR_Computer	"sprite/computer.png" 4 3 0 30 NONE
+SPRITE SPR_Computer	"sprite/computer.png" 4 3 0 10 NONE
 SPRITE SPR_Board	"sprite/blackboard.png" 5 4 0 0 NONE
 SPRITE SPR_SaveSign	"sprite/savesign.png" 2 2 0 0 NONE
 SPRITE SPR_Wave		"sprite/wave.png" 2 2 0 2 NONE
@@ -69,6 +69,9 @@ SPRITE SPR_Term		"sprite/terminal.png" 2 3 0 10 NONE
 SPRITE SPR_Keeper	"sprite/gkeeper.png" 3 3 0 15 NONE
 SPRITE SPR_Fan		"sprite/fan.png" 2 2 0 5 NONE
 SPRITE SPR_Malco	"sprite/malco.png" 2 3 0 0 NONE
+SPRITE SPR_Pot		"sprite/pot.png" 2 2 0 0 NONE
+SPRITE SPR_Press	"sprite/press.png" 2 3 0 0 NONE
+SPRITE SPR_Cage		"sprite/cage.png" 4 3 0 0 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu
@@ -76,7 +79,7 @@ SPRITE SPR_Kazuma	"sprite/kazuma.png" 2 3 0 10 NONE
 SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
 SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
 SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
-SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 0 NONE
+SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 2 NONE
 SPRITE SPR_Toroko	"sprite/toroko.png" 2 2 0 20 NONE
 SPRITE SPR_Sue		"sprite/sue.png" 2 2 0 20 NONE
 SPRITE SPR_King		"sprite/king.png" 2 2 0 20 NONE
