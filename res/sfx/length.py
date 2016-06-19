@@ -7,4 +7,4 @@ for fname in glob('*.wav'):
 		frames = f.getnframes()
 		rate = f.getframerate()
 		duration = int(frames / 22050.0 * 14000.0 + 0.999)
-		print fname + ", " + str(duration)
+		print(fname + ", " + str(duration))

@@ -512,7 +512,8 @@ bool collide_stage_slope_grounded(Entity *e) {
 bool collide_stage_floor_grounded(Entity *e) {
 	bool result = false;
 	// If we aren't moving we're still on the ground
-	if(e->y_speed == 0 && e->x_speed == 0) return true;
+	// Lolno im floating an sheit
+	//if(e->y_speed == 0 && e->x_speed == 0) return true;
 	// First see if we are still standing on a flat block
 	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));

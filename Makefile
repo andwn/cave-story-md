@@ -58,6 +58,8 @@ RESOURCES+=$(S80S:.s80=.o)
 
 OBJS = $(RESOURCES)
 
+.SECONDARY: out.elf
+
 all: out.bin 
 
 src/boot/sega.o: out/rom_head.bin
@@ -92,6 +94,6 @@ out/rom_head.bin: src/boot/rom_head.o
 
 clean:
 	$(RM) $(RESOURCES)
-	$(RM) *.o *.bin *.elf *.map *.iso
+	$(RM) *.o *.bin *.elf *.map
 	$(RM) src/boot/*.o src/boot/*.bin
 

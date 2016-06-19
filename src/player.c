@@ -372,7 +372,7 @@ void player_update_air_display() {
 		}
 	} else {
 		if(airSprite == NULL) { // Initialize and draw full "AIR" text
-			airTime == 0;
+			airTime = 0;
 			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 28, SCREEN_HALF_H - 24,
 				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_AIRINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
 			SPR_SAFEVISIBILITY(airSprite, VISIBLE);

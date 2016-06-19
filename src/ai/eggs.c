@@ -106,10 +106,45 @@ void ai_basil_onUpdate(Entity *e) {
 // Push out of the wall and align with bottom floor
 void ai_lift_onCreate(Entity *e) {
 	e->x += pixel_to_sub(8);
-	e->y += pixel_to_sub(8);
+	//e->y += pixel_to_sub(8);
 }
+
+#define LIFT_SPEED 0x200
+#define LIFT_MOVE_TIME 64
+#define LIFT_WAIT_TIME 60
 
 // Moves through floors 1, 2, 3, 1, 2, 3 - doesn't stop at 2 on the way down
 void ai_lift_onUpdate(Entity *e) {
-	
+	if(e->state_time > 0) e->state_time--;
+	if(e->state_time == 0) {
+		e->state++;
+		if(e->state == 6) e->state = 0;
+		switch(e->state) {
+			case 0: // bottom floor wait
+			e->state_time = LIFT_WAIT_TIME;
+			e->y_speed = 0;
+			break;
+			case 1: // bottom to middle
+			e->state_time = LIFT_MOVE_TIME;
+			e->y_speed = -LIFT_SPEED;
+			break;
+			case 2: // middle wait
+			e->state_time = LIFT_WAIT_TIME;
+			e->y_speed = 0;
+			break;
+			case 3: // middle to top
+			e->state_time = LIFT_MOVE_TIME;
+			e->y_speed = -LIFT_SPEED;
+			break;
+			case 4: // top wait
+			e->state_time = LIFT_WAIT_TIME;
+			e->y_speed = 0;
+			break;
+			case 5: // top to bottom
+			e->state_time = LIFT_MOVE_TIME * 2;
+			e->y_speed = LIFT_SPEED;
+			break;
+		}
+	}
+	e->y += e->y_speed;
 }

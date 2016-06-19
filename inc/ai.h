@@ -41,7 +41,9 @@
 	e->state = s;                                                                              \
 	e->state_time = t;                                                                         \
 	ENTITY_ONSTATE(e);                                                                         \
-})              
+})         
+
+#define FACE_PLAYER(e) (e->direction = e->x > player.x ? 0 : 1)     
 
 typedef void (*EntityMethod)(Entity*);
 
@@ -107,6 +109,15 @@ void ai_behemoth_onState(Entity *e);
 void ai_lift_onCreate(Entity *e);
 void ai_lift_onUpdate(Entity *e);
 
+/* Igor - igor.c */
+
+void ai_igor_onCreate(Entity *e);
+void ai_igor_onUpdate(Entity *e);
+void ai_igor_onState(Entity *e);
+
+void ai_igorscene_onUpdate(Entity *e);
+void ai_igorscene_onState(Entity *e);
+
 /* Critters - critter.c */
 
 void ai_critterHop_onUpdate(Entity *e);
@@ -132,9 +143,16 @@ void ai_fan_onUpdate(Entity *e);
 
 /* Minor Mimigas - mimiga.c */
 
+void ai_flower_onCreate(Entity *e);
 //void ai_kanpachi_onState(Entity *e);
 void ai_jack_onUpdate(Entity *e);
+void ai_jack_onState(Entity *e);
 //void ai_mahin_onState(Entity *e);
+
+/* Sue - sue.c */
+
+void ai_sue_onUpdate(Entity *e);
+void ai_sue_onState(Entity *e);
 
 /* Kazuma - kazuma.c */
 
