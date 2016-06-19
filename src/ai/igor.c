@@ -41,9 +41,9 @@ void ai_igor_onUpdate(Entity *e) {
 			if(++e->state_time > 20) ENTITY_SET_STATE(e, STATE_MOUTH_BLAST, 0);
 		} else {
 			if(e->direction == 0) {
-				if(e->x <= player.x + pixel_to_sub(24)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
+				if(e->x <= player.x + pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
 			} else {
-				if(e->x >= player.x - pixel_to_sub(24)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
+				if(e->x >= player.x - pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
 			}
 			// if we don't reach him after a while, do a jump
 			if(++e->state_time > 60) ENTITY_SET_STATE(e, STATE_JUMPING, 0);
@@ -56,9 +56,9 @@ void ai_igor_onUpdate(Entity *e) {
 		if(++e->state_time > 12) {
 			// return to normal-size bounding box
 			if(e->direction == 0) {
-				e->hit_box.left -= 8;
+				e->hit_box.left -= 10;
 			} else {
-				e->hit_box.right -= 8;
+				e->hit_box.right -= 10;
 			}
 			ENTITY_SET_STATE(e, STATE_STAND, 0);
 		}
@@ -133,9 +133,9 @@ void ai_igor_onState(Entity *e) {
 		sound_play(0x46, 5);
 		// sprite appears identical, but has a wider bounding box.
 		if(e->direction == 0) {
-			e->hit_box.left += 8;
+			e->hit_box.left += 10;
 		} else {
-			e->hit_box.right += 8;
+			e->hit_box.right += 10;
 		}
 		SPR_SAFEANIM(e->sprite, 3);
 		e->attack = 5;
@@ -212,4 +212,8 @@ void ai_igorscene_onState(Entity *e) {
 		e->state_time = 20;
 		break;
 	}
+}
+
+void ai_igordead_onUpdate(Entity *e) {
+	
 }

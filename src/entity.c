@@ -724,6 +724,7 @@ Entity *entity_update(Entity *e) {
 		return next;
 	}
 	ENTITY_ONUPDATE(e);
+	if(e->state == STATE_DELETE) return entity_delete(e);
 	if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
 		Bullet *b = bullet_colliding(e);
 		if(b != NULL) {
@@ -898,6 +899,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			entity_default(e, type, flags);
 			e->direction = direction;
 			ENTITY_ONCREATE(e);
+			e->sprite = NULL;
 		}
 		e = e->next;
 	}

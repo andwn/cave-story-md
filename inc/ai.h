@@ -43,8 +43,6 @@
 	ENTITY_ONSTATE(e);                                                                         \
 })         
 
-#define FACE_PLAYER(e) (e->direction = e->x > player.x ? 0 : 1)     
-
 typedef void (*EntityMethod)(Entity*);
 
 // Special states
@@ -55,6 +53,10 @@ typedef void (*EntityMethod)(Entity*);
 #define STATE_DESTROY 998
 // Signal to delete, but don't explode
 #define STATE_DELETE 999
+
+/* Helper Macros */
+
+#define FACE_PLAYER(e) (e->direction = e->x > player.x ? 0 : 1)
 
 /* Generic - basic.c */
 
@@ -76,6 +78,8 @@ void ai_spike_onCreate(Entity *e);
 void ai_grav_onUpdate(Entity *e);
 // When the player enters a trigger's target area, an event will begin automatically
 void ai_trigger_onUpdate(Entity *e);
+// Generic enemy projectile
+void ai_genericproj_onUpdate(Entity *e);
 // Default onState just explodes on death
 void ai_default_onState(Entity *e);
 
@@ -117,6 +121,8 @@ void ai_igor_onState(Entity *e);
 
 void ai_igorscene_onUpdate(Entity *e);
 void ai_igorscene_onState(Entity *e);
+
+void ai_igordead_onUpdate(Entity *e);
 
 /* Critters - critter.c */
 

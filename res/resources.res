@@ -72,6 +72,7 @@ SPRITE SPR_Malco	"sprite/malco.png" 2 3 0 0 NONE
 SPRITE SPR_Pot		"sprite/pot.png" 2 2 0 0 NONE
 SPRITE SPR_Press	"sprite/press.png" 2 3 0 0 NONE
 SPRITE SPR_Cage		"sprite/cage.png" 4 3 0 0 NONE
+SPRITE SPR_EnergyShot "sprite/energyshot.png" 2 2 0 6 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu

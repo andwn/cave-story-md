@@ -93,7 +93,7 @@ void player_reset_sprites() {
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
 		TILE_ATTR(PAL0, 0, 0, player.direction), 0,
 		SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | SPR_FLAG_AUTO_TILE_UPLOAD);
-	SPR_setVisibility(player.sprite, VISIBLE);
+	SPR_SAFEVISIBILITY(player.sprite, VISIBLE);
 	// Weapon
 	if(playerWeapon[currentWeapon].type != 0) {
 		weaponSprite = SPR_addSprite(weapon_info[playerWeapon[currentWeapon].type].sprite,
@@ -108,6 +108,12 @@ void player_reset_sprites() {
 		playerBullet[i].ttl = 0; // No bullets
 		playerBullet[i].sprite = NULL;
 	}
+	// Clear air and map name
+	airSprite = NULL;
+	airTime = 0;
+	playerAir = playerMaxAir;
+	mapNameSprite = NULL;
+	mapNameTTL = 0;
 }
 
 void player_update() {
@@ -338,7 +344,7 @@ void player_show_map_name(u8 ttl) {
 	// Define sprite for map name
 	mapNameSprite = SPR_addSpriteEx(&SPR_Dummy16x1, SCREEN_HALF_W - 64, SCREEN_HALF_H - 32,
 		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX + 36), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
-	SPR_setVisibility(mapNameSprite, VISIBLE);
+	SPR_SAFEVISIBILITY(mapNameSprite, VISIBLE);
 	// Create a string of tiles in RAM
 	u32 nameTiles[16][8];
 	for(u8 i = 0; i < 16; i++) {

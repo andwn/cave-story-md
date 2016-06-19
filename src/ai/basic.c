@@ -68,6 +68,16 @@ void ai_trigger_onUpdate(Entity *e) {
 	if(activate) tsc_call_event(e->event);
 }
 
+void ai_genericproj_onUpdate(Entity *e) {
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
+		// entity_overlapping(e, &player)
+		e->state = STATE_DELETE;
+	} else {
+		e->x += e->x_speed;
+		e->y += e->y_speed;
+	}
+}
+
 void ai_default_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) e->state = STATE_DESTROY;
 }
