@@ -4,3 +4,7 @@
 .settings/
 res/resources.h
 *.exe
+out.bin
+out.elf
+temp.bin
+*.o

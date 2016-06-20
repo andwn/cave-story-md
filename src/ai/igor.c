@@ -85,11 +85,10 @@ void ai_igor_onUpdate(Entity *e) {
 		if(e->state_time > 120) {
 			if((e->state_time % 8) == 1) {
 				sound_play(SOUND_BREAK, 5);
-				//Entity *shot = entity_create(e->x + block_to_sub(e->direction ? 2 : -2),
-				//	e->y, 0, 0, ??, 0, e->direction);
-				//int angle = (e->dir == LEFT) ? 136 : 248;
-				//angle += random(-16, 16);
-				//ThrowObjectAtAngle(shot, angle, 0x580);
+				Entity *shot = entity_create(sub_to_block(e->x) + (e->direction ? 1 : -1),
+					sub_to_block(e->y), 0, 0, 0x0B, 0, e->direction);
+				shot->x_speed = 0x4A0 * (e->direction ? 1 : -1);
+				shot->y_speed = 0x100 - (random() % 0x300);
 			}
 			// fires 6 shots
 			if(e->state_time > 150) ENTITY_SET_STATE(e, STATE_STAND, 0);
@@ -159,6 +158,7 @@ void ai_igor_onState(Entity *e) {
 		break;
 		case STATE_DEFEATED:
 		e->attack = 0;
+		e->x_speed = 0;
 		tsc_call_event(e->event); // Boss defeated event
 		break;
 	}
@@ -215,5 +215,64 @@ void ai_igorscene_onState(Entity *e) {
 }
 
 void ai_igordead_onUpdate(Entity *e) {
-	
+	switch(e->state) {
+		case 0:
+		FACE_PLAYER(e);
+		//sound(SND_BIG_CRASH);
+		//SmokeBoomUp(e);
+		e->x_speed = 0;
+		e->state_time = 0;
+		e->state = 1;
+		break;
+		case 1:
+		// Puffs of smoke
+		if((++e->state_time % 10) == 1) {
+			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
+				sub_to_pixel(e->y) - 32 + (random() % 64));
+		}
+		// Shake
+		if((e->state_time & 3) == 1) {
+			e->display_box.left -= 1;
+		} else if((e->state_time & 3) == 3) {
+			e->display_box.left += 1;
+		}
+		if(e->state_time > 100) {
+			e->state_time = 0;
+			e->state = 2;
+		}
+		break;
+		case 2:
+		// Slower smoke puff
+		if((++e->state_time & 15) == 0) {
+			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
+				sub_to_pixel(e->y) - 32 + (random() % 64));
+		}
+		// alternate between big and small sprites
+		// (frenzied/not-frenzied forms)
+		if((e->state_time & 3) == 1) {
+			SPR_SAFEANIM(e->sprite, 9);
+		} else if((e->state_time & 3) == 3) {
+			SPR_SAFEANIM(e->sprite, 7);
+		}
+		if(e->state_time > 160) {
+			SPR_SAFEANIM(e->sprite, 9);
+			e->state = 3;
+			e->state_time = 0;
+		}
+		break;
+		case 3:
+		if(++e->state_time > 60) {
+			if(e->sprite->animInd >= 11) {
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				e->state = 4;
+			} else {
+				e->state_time = 0;
+				SPR_SAFEANIM(e->sprite, e->sprite->animInd + 1);
+			}
+		}
+		//if((e->timer % 24) == 0)
+		//	smoke_puff(o, false);
+		break;
+		case 4: break;
+	}
 }
