@@ -1,13 +1,11 @@
 ### TODO List
 
-- [ ] Music (22 of 41)
+- [ ] Music (27 of 41)
 - [ ] Engine
   - [ ] Sprite ordering
   - [ ] Item Menu
   - [ ] Map
-  - [x] Teleport Menu
   - [ ] Boss health
-  - [x] Air & drowning
   - [ ] Additional player animations
     - [ ] Stars when bumping cieling
     - [ ] Question mark
@@ -20,28 +18,37 @@
 - [ ] Completable Areas
   - [ ] Intro
   - [x] First Cave
+    - [ ] Zzz above gunsmith's head
   - [x] Mimiga Village
-    - [ ] Sprite for pot
     - [ ] Sprinkler sprite and effect
-    - [ ] Behavior for Pignon & Gravekeeper
-    - [x] Animate Toroko
-    - [ ] Animate King
-    - [ ] Animate Jack / Fix starting position
+    - [ ] Behavior for Gravekeeper
+    - [ ] Animate Mahin
+    - [ ] Animate Kanpachi
+    - [ ] Animate Misery's Bubble
   - [x] Egg Corridor
-    - [ ] Animate teleporter
-    - [ ] Behavior for Basil, Behemoth, Beetle, Basu
-    - [ ] Animate terminals & lift to missiles
-    - [ ] Animate Sue & Igor
-    - [ ] Behavior for Igor Boss
+    - [ ] Animate Teleporter
+    - [ ] Animate Terminals
+    - [ ] Fix Sue
+    - [ ] AI for Basu
     - [ ] Animate scene in Arthur2
-  - [x] Grasstown
-    - [ ] Animate Santa, Chako
-    - [ ] Behavior for Hovering Critter, Circling & Hanging Bat
-    - [ ] Behavior for Jelly, Big Jellyfish, Mannan, Frog
-    - [ ] Animate Maco, Kazuma's word bubbles
-    - [ ] Behavior for Ravil, Press
-    - [ ] Behavior for Balfrog
-    - [ ] Animate Kazuma, Booster, Rocket
+  - [ ] Grasstown
+    - [ ] Animate Santa
+    - [ ] Animate Chako
+    - [ ] Animate Malco
+    - [ ] Animate Kazuma
+    - [ ] Animate Booster
+    - [ ] Animate Pink Rocket
+    - [ ] AI for Hovering Critters
+    - [ ] AI for Circling & Hanging Bats
+    - [ ] AI for Jellies
+    - [ ] AI for Big Jellyfish
+    - [ ] AI for Mannan
+    - [ ] AI for Frog
+    - [ ] AI for Ravil
+    - [ ] AI for Press
+    - [ ] AI for Second Balrog Fight
+    - [ ] Fix boss routines so Balfrog can be loaded again
+    - [ ] AI for Balfrog
   - [ ] Sand Zone
   ...
 - [ ] Weapons / Equip

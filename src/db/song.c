@@ -8,7 +8,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_GameOver, "Game Over" },
 	{ BGM_Gravity, "Gravity" },
 	{ BGM_Grasstown, "On To Grasstown" },
-	{ BGM_Balcony, "Meltdown 2" },
+	{ BGM_Meltdown2, "Meltdown 2" },
 	{ BGM_EyesOfFlame, "Eyes Of Flame" },
 	{ BGM_Gestation, "Gestation" },
 	{ BGM_Mimiga, "Mimiga Village" },
@@ -19,7 +19,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Pulse, "Pulse" },
 	{ BGM_Fanfare3, "Fanfare 2" },
 	{ BGM_Fanfare2, "Fanfare 3" }, // 0x10
-	{ BGM_Balcony, "Tyrant" },
+	{ BGM_Tyrant, "Tyrant" },
 	{ BGM_Run, "Run!" },
 	{ BGM_Jenka1, "Jenka 1" },
 	{ BGM_Balcony, "Labyrinth Fight" },

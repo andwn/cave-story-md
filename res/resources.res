@@ -547,6 +547,7 @@ XGM BGM_Grasstown	"bgm/grasstown.vgm"
 XGM BGM_Gravity		"bgm/gravity.vgm"
 XGM BGM_Jenka1		"bgm/jenka1.vgm"
 XGM BGM_Jenka2		"bgm/jenka2.vgm"
+XGM BGM_Meltdown2	"bgm/meltdown2.vgm"
 XGM BGM_Mischievous	"bgm/mischievous.vgm"
 XGM BGM_Mimiga		"bgm/mimiga.vgm"
 XGM BGM_Oppression	"bgm/oppression.vgm"
@@ -555,6 +556,7 @@ XGM BGM_Pulse		"bgm/pulse.vgm"
 XGM BGM_Quiet		"bgm/quiet.vgm"
 XGM BGM_Run			"bgm/run.vgm"
 XGM BGM_Safety		"bgm/safety.vgm"
+XGM BGM_Tyrant		"bgm/tyrant.vgm"
 
 # Sound Effects
 WAV SFX_01		"sfx/01.wav" 5
