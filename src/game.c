@@ -19,6 +19,9 @@
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
 		player_unpause();
+		player_show();
+		//entities_show();
+		hud_show();
 		return false;
 	} else {
 		
@@ -40,6 +43,15 @@ void game_reset(bool load) {
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+}
+
+void draw_itemmenu() {
+	SYS_disableInts();
+	//window_draw_area(2, 1, 36, 18);
+	player_hide();
+	//entities_hide();
+	hud_hide();
+	SYS_enableInts();
 }
 
 void vblank() {
@@ -101,7 +113,7 @@ u8 game_main(bool load) {
 			paused = update_pause();
 		} else {
 			if(!tsc_running() && joy_pressed(BUTTON_START)) {
-				//draw_pause();
+				draw_itemmenu();
 				paused = true;
 			} else {
 				//if(debuggingEnabled) debug_update();
@@ -151,8 +163,10 @@ u8 game_main(bool load) {
 		stageTileset = 0;
 		stageBackground = 0;
 		// Title screen uses built in font not blue background font
+		SYS_disableInts();
 		VDP_loadFont(&font_lib, 0);
 		SYS_setVIntCallback(NULL);
+		SYS_enableInts();
 	}
 	return ending;
 }
