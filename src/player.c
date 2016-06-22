@@ -88,12 +88,10 @@ void player_init() {
 
 void player_reset_sprites() {
 	// Manual visibility
-	player.sprite = SPR_addSpriteEx(&SPR_Quote, 
+	player.sprite = SPR_addSprite(&SPR_Quote, 
 		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
-		TILE_ATTR(PAL0, 0, 0, player.direction), 0,
-		SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | SPR_FLAG_AUTO_TILE_UPLOAD);
-	SPR_SAFEVISIBILITY(player.sprite, VISIBLE);
+		TILE_ATTR(PAL0, 0, 0, player.direction));
 	// Weapon
 	if(playerWeapon[currentWeapon].type != 0) {
 		weaponSprite = SPR_addSprite(weapon_info[playerWeapon[currentWeapon].type].sprite,
@@ -334,10 +332,12 @@ void player_update_interaction() {
 
 void player_show() {
 	playerShow = true;
+	SPR_SAFEVISIBILITY(player.sprite, VISIBLE);
 }
 
 void player_hide() {
 	playerShow = false;
+	SPR_SAFEVISIBILITY(player.sprite, HIDDEN);
 }
 
 void player_show_map_name(u8 ttl) {
@@ -445,8 +445,8 @@ void player_draw() {
 		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Blink during invincibility frames
-	SPR_setVisibility(player.sprite, 
-		playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
+	SPR_SAFEVISIBILITY(player.sprite, playerShow && 
+		!((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 	// Weapon sprite
 	if(playerWeapon[currentWeapon].type > 0 && weaponSprite != NULL) {
 		u8 wanim = 0;
@@ -454,8 +454,8 @@ void player_draw() {
 		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
 		SPR_SAFEANIM(weaponSprite, wanim);
 		SPR_SAFEHFLIP(weaponSprite, player.direction);
-		SPR_setVisibility(weaponSprite, 
-			playerShow && !((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
+		SPR_SAFEVISIBILITY(weaponSprite, playerShow && 
+			!((playerIFrames >> 1) & 1) ? VISIBLE : HIDDEN);
 		SPR_SAFEMOVE(weaponSprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
@@ -567,8 +567,21 @@ void player_update_entity_collision() {
 	}
 }
 
+void player_pause() {
+	player_hide();
+	SPR_SAFEVISIBILITY(weaponSprite, HIDDEN);
+	for(u16 i = 0; i < MAX_BULLETS; i++) {
+		SPR_SAFEVISIBILITY(playerBullet[i].sprite, HIDDEN);
+	}
+}
+
 void player_unpause() {
 	if(pauseCancelsIFrames) playerIFrames = 0;
+	player_show();
+	SPR_SAFEVISIBILITY(weaponSprite, VISIBLE);
+	for(u16 i = 0; i < MAX_BULLETS; i++) {
+		SPR_SAFEVISIBILITY(playerBullet[i].sprite, VISIBLE);
+	}
 }
 
 bool player_invincible() {

@@ -62,9 +62,9 @@ struct Entity {
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	/* Display */
 	Sprite *sprite; // Sprite assigned to this entity, or NULL
-	// These 3 sprite variables remember the sprite state when an entity deactivates
+	// These 4 sprite variables remember the sprite state when an entity deactivates
 	// Once reactivated, they are used to restore the sprite attributes
-	u8 spriteAnim, spriteFrame, spriteVFlip;
+	u8 spriteAnim, spriteFrame : 7, spriteVFlip : 1;
 	bounding_box display_box; // Area where sprite is displayed relative to the center
 	// Used to generate damage strings
 	s16 damage_value;
@@ -104,6 +104,9 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags);
 void entities_set_state(u16 event, u16 state, u8 direction);
 // Moves the entity of the specified event to another location
 void entities_move(u16 event, u16 x, u16 y, u8 direction);
+
+void entities_pause();
+void entities_unpause();
 
 // Deletes an entity and returns the next one
 Entity *entity_delete(Entity *e);

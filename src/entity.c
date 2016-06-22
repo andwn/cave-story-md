@@ -147,6 +147,7 @@ void sprite_create(Entity *e) {
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
 		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
 	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
+	//SPR_SAFEVISIBILITY(e->sprite, e->spriteVisible);
 }
 
 // Move to inactive list, delete sprite
@@ -157,6 +158,7 @@ void entity_deactivate(Entity *e) {
 		e->spriteAnim = e->sprite->animInd;
 		e->spriteFrame = e->sprite->frameInd;
 		e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
+		//e->spriteVisible = e->sprite->visibility;
 	}
 	SPR_SAFERELEASE(e->sprite);
 }
@@ -789,6 +791,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->spriteFrame = 0;
 	e->spriteAnim = 0;
 	e->spriteVFlip = 0;
+	//e->spriteVisible = 0;
 	e->state = 0;
 	e->state_time = 0;
 }
@@ -953,6 +956,14 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		}
 		e = e->next;
 	}
+}
+
+void entities_pause() {
+	while(entityList != NULL) entity_deactivate(entityList);
+}
+
+void entities_unpause() {
+	entities_update_inactive();
 }
 
 bool entity_exists(u16 type) {

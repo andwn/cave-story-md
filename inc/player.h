@@ -72,8 +72,6 @@ void player_draw();
 // It will return the first bullet that is colliding with the given entity, if any
 Bullet *bullet_colliding(Entity *e);
 
-// All this does is cancel invincibility frames, cause Grasstown skip
-void player_unpause();
 // Returns true if the player is blinking or otherwise should not be damaged (cutscene)
 bool player_invincible();
 // Inflict damage on the player, will start the animation, knockback, red numbers,
@@ -83,6 +81,8 @@ bool player_inflict_damage(s16 damage);
 // Makes the player sprite visible/invisible
 void player_show();
 void player_hide();
+void player_pause();
+void player_unpause();
 
 // Shows the name of the map for a specified amount of time (frames)
 // This would make more sense in stage, but stage_update() is in vblank
