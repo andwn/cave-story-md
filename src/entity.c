@@ -576,12 +576,12 @@ bool collide_stage_ceiling(Entity *e) {
 }
 
 bool entity_overlapping(Entity *a, Entity *b) {
-	s16 ax1 = sub_to_pixel(a->x) - a->hit_box.left,
-		ax2 = sub_to_pixel(a->x) + a->hit_box.right,
+	s16 ax1 = sub_to_pixel(a->x) - (a->direction ? a->hit_box.right : a->hit_box.left),
+		ax2 = sub_to_pixel(a->x) + (a->direction ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y) + a->hit_box.bottom,
-		bx1 = sub_to_pixel(b->x) - b->hit_box.left,
-		bx2 = sub_to_pixel(b->x) + b->hit_box.right,
+		bx1 = sub_to_pixel(b->x) - (b->direction ? b->hit_box.right : b->hit_box.left),
+		bx2 = sub_to_pixel(b->x) + (b->direction ? b->hit_box.left : b->hit_box.right),
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
@@ -589,12 +589,12 @@ bool entity_overlapping(Entity *a, Entity *b) {
 
 bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 	bounding_box result = { 0, 0, 0, 0 };
-	s16 ax1 = sub_to_pixel(a->x_next) - a->hit_box.left,
-		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right,
+	s16 ax1 = sub_to_pixel(a->x_next) - (a->direction ? a->hit_box.right : a->hit_box.left),
+		ax2 = sub_to_pixel(a->x_next) + (a->direction ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom,
-		bx1 = sub_to_pixel(b->x) - b->hit_box.left,
-		bx2 = sub_to_pixel(b->x) + b->hit_box.right,
+		bx1 = sub_to_pixel(b->x) - (b->direction ? b->hit_box.right : b->hit_box.left),
+		bx2 = sub_to_pixel(b->x) + (b->direction ? b->hit_box.left : b->hit_box.right),
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return result;

@@ -78,10 +78,10 @@ void player_init() {
 	player.spriteAnim = 0;
 	player_reset_sprites();
 	// Actually 6,6,5,8 but need to get directional hitboxes working first
-	player.hit_box = (bounding_box){ 6, 6, 6, 8 };
+	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
 	playerEquipment = 0; // Nothing equipped
-	for(u8 i = 0; i < 32; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < 8; i++) playerWeapon[i].type = 0; // No Weapons
+	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
+	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
 	playerDead = false;
 	currentWeapon = 0;
 }
@@ -102,7 +102,7 @@ void player_reset_sprites() {
 		weaponSprite = NULL;
 	}
 	// Clear bullets
-	for(u8 i = 0; i < 3; i++) {
+	for(u8 i = 0; i < MAX_BULLETS; i++) {
 		playerBullet[i].ttl = 0; // No bullets
 		playerBullet[i].sprite = NULL;
 	}
@@ -173,17 +173,54 @@ void player_update() {
 }
 
 Bullet *bullet_colliding(Entity *e) {
-	for(u8 i = 0; i < 3; i++) {
-		if(playerBullet[i].ttl > 0) {
-			Bullet *b = &playerBullet[i];
-			s16 bx = sub_to_pixel(b->x), by = sub_to_pixel(b->y);
-			if(bx-4 < sub_to_pixel(e->x)+e->hit_box.right &&
-					bx+4 > sub_to_pixel(e->x)-e->hit_box.left &&
-					by-4 < sub_to_pixel(e->y)+e->hit_box.bottom &&
-					by+4 > sub_to_pixel(e->y)-e->hit_box.top) {
-				return b;
-			}
+	for(u8 i = 0; i < MAX_BULLETS; i++) {
+		if(playerBullet[i].ttl == 0) continue;
+		/*
+		bounding_box *bb = &weapon_info[playerWeapon.type].hit_box; //&playerBullet[i].hit_box;
+		bounding_box adjb = 
+			playerBullet[i].dir == DIR_LEFT ? { bb->left, bb->top, bb->right, bb->bottom }
+			: playerBullet[i].dir == DIR_UP ? { bb->top, bb->right, bb->bottom, bb->left }
+			: playerBullet[i].dir == DIR_RIGHT ? { bb->right, bb->bottom, bb->left, bb->top }
+			: { bb->bottom, bb->left, bb->top, bb->right };
+		if(sub_to_pixel(playerBullet[i].x) - adjb.left >= 
+			sub_to_pixel(e->x) + (e->direction ? e->hit_box.left : e->hit_box.right)) continue;
+		if(sub_to_pixel(playerBullet[i].x) + adjb.right <= 
+			sub_to_pixel(e->x) - (e->direction ? e->hit_box.right : e->hit_box.left)) continue;
+		if(sub_to_pixel(playerBullet[i].y) - adjb.top >= 
+			sub_to_pixel(e->y) + e->hit_box.bottom) continue;
+		if(sub_to_pixel(playerBullet[i].y) + adjb.bottom <= 
+			sub_to_pixel(e->y) - e->hit_box.top) continue;
+		return b;
+		* */
+		/*
+		bounding_box *bb = &playerBullet[i].hit_box, eb = &e->hit_box;
+		s16 bx = sub_to_pixel(b->x), by = sub_to_pixel(b->y),
+			ex = sub_to_pixel(e->x), ey = sub_to_pixel(e->y);
+		s16 bx1 = sub_to_pixel(b->x) - (b->dirH ? b->hit_box.right : b->hit_box.left),
+			bx2 = sub_to_pixel(b->x) + (b->dirH ? b->hit_box.left : b->hit_box.right),
+			by1 = sub_to_pixel(b->y) - (b->dirV ? b->hit_box.bottom : b->hit_box.top),
+			by2 = sub_to_pixel(b->y) + (b->dirV ? b->hit_box.top : b->hit_box.bottom),
+			ex1 = sub_to_pixel(e->x) - (e->direction ? e->hit_box.right : e->hit_box.left),
+			ex2 = sub_to_pixel(e->x) + (e->direction ? e->hit_box.left : e->hit_box.right),
+			ey1 = sub_to_pixel(e->y) - e->hit_box.top,
+			ey2 = sub_to_pixel(e->y) + e->hit_box.bottom;
+		if(bx - (playerBullet[i].dirH ? bb->right : bb->left) 
+				< ex + (e->direction ? eb->left : eb->right) &&
+			bx + (playerBullet[i].dirH ? bb->left : bb->right) 
+				< ex - (e->direction ? eb->right : eb->left) &&
+			by - (playerBullet[i].dirV ? bb->right : bb->left) 
+				< ex + (e->direction ? eb->left : eb->right) &&
+			bx - (playerBullet[i].dirH ? bb->right : bb->left) 
+				< ex + (e->direction ? eb->left : eb->right)) {
+			return b;
 		}
+		* */
+		Bullet *b = &playerBullet[i];
+		s16 bx = sub_to_pixel(b->x), by = sub_to_pixel(b->y);
+		if(bx - 4 < sub_to_pixel(e->x) + (e->direction ? e->hit_box.right : e->hit_box.left) &&
+			bx + 4 > sub_to_pixel(e->x) - (e->direction ? e->hit_box.left : e->hit_box.right) &&
+			by - 4 < sub_to_pixel(e->y) + e->hit_box.bottom &&
+			by + 4 > sub_to_pixel(e->y) - e->hit_box.top) return b;
 	}
 	return NULL;
 }
@@ -284,7 +321,7 @@ void player_update_shooting() {
 }
 
 void player_update_bullets() {
-	for(u8 i = 0; i < 3; i++) {
+	for(u8 i = 0; i < MAX_BULLETS; i++) {
 		Bullet *b = &playerBullet[i];
 		if(b->ttl == 0) continue;
 		b->x += b->x_speed;
