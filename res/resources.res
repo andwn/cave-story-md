@@ -533,6 +533,7 @@ BIN PXE_WeedS	"Stage/WeedS.pxe"
 XGM BGM_Access		"bgm/access.vgm"
 XGM BGM_Balcony		"bgm/balcony.vgm"
 XGM BGM_Balrog		"bgm/balrog.vgm"
+XGM BGM_BreakDown	"bgm/breakdown.vgm"
 XGM BGM_CaveStory	"bgm/cavestory.vgm"
 XGM BGM_Cemetery	"bgm/cemetery.vgm"
 XGM BGM_Charge		"bgm/charge.vgm"
@@ -557,6 +558,7 @@ XGM BGM_Quiet		"bgm/quiet.vgm"
 XGM BGM_Run			"bgm/run.vgm"
 XGM BGM_Safety		"bgm/safety.vgm"
 XGM BGM_Tyrant		"bgm/tyrant.vgm"
+XGM BGM_Zombie		"bgm/zombie.vgm"
 
 # Sound Effects
 WAV SFX_01		"sfx/01.wav" 5
