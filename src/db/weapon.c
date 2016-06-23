@@ -2,28 +2,18 @@
 #include "resources.h"
 
 const weapon_info_def weapon_info[WEAPON_COUNT] = {
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 1 - Snake
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 2 - Polar Star
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 3 - Fireball
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 4 - Machine Gun
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 5 - Missile
-		{0x20,0x20,0x31}, {10,20,30}, {3,6,9} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 7 - Bubbler
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 9 - King's Sword
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 10 - Super Missile
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ NULL, {NULL,NULL,NULL}, {0,0,0}, {0,0,0}, {0,0,0} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 12 - Nemesis
-		{0x20,0x20,0x31}, {10,20,30}, {1,2,4} },
-	{ &SPR_Polar, {&SPR_PolarB1,&SPR_PolarB2,&SPR_PolarB3}, // 13 - Spur
-		{0x20,0x20,0x31}, {10,20,30}, {4,4,4} },
+	{ NULL, {0,0,0}, "N/A" },
+	{ &SPR_Polar, {10,20,30}, "Snake" },
+	{ &SPR_Polar, {10,20,30}, "Polar Star" },
+	{ &SPR_Fireb, {10,20,30}, "Fireball" },
+	{ &SPR_Polar, {10,20,30}, "Machine Gun" },
+	{ &SPR_Missl, {10,20,30}, "Missiles" },
+	{ NULL, {0,0,0}, "N/A" },
+	{ &SPR_Polar, {10,20,30}, "Bubbler" },
+	{ NULL, {0,0,0}, "N/A" },
+	{ &SPR_Polar, {10,20,30}, "King's Blade" },
+	{ &SPR_Polar, {10,20,30}, "Super Missiles" },
+	{ NULL, {0,0,0}, "N/A" },
+	{ &SPR_Polar, {10,20,30}, "Nemesis" },
+	{ &SPR_Polar, {10,20,30}, "Spur" },
 };

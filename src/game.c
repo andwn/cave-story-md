@@ -12,6 +12,7 @@
 #include "vdp_ext.h"
 #include "effect.h"
 #include "hud.h"
+#include "weapon.h"
 
 //u8 debugTime = 1;
 //u32 playerProf, entityProf;

@@ -4,6 +4,7 @@
 #include <genesis.h>
 #include "common.h"
 #include "entity.h"
+#include "weapon.h"
 
 // Equips are bit flags in the original Cave Story, even in the TSC commands
 #define EQUIP_BOOSTER08		0x001
@@ -17,31 +18,10 @@
 #define EQUIP_CLOCK			0x100
 
 #define MAX_ITEMS 32
-#define MAX_WEAPONS 8
-#define MAX_BULLETS 3
 
-// Weapons owned by the player, sprite is not included in the array because only
-// one is displayed at a time
-typedef struct {
-	u8 type;
-	u8 level;
-	u16 energy;
-	u16 next;
-	u16 maxammo;
-	u16 ammo;
-} Weapon;
 Weapon playerWeapon[MAX_WEAPONS];
 u8 currentWeapon; // Index 0-7 of which slot in the array the currently used weapon is
 
-// Have not decided yet how to handle weapons which allow more than 3 bullets
-// I expect much of the weapon/bullet code to be rewritten soon
-typedef struct {
-	Sprite *sprite;
-	s32 x, y;
-	s16 x_speed, y_speed;
-	u8 damage;
-	u8 ttl;
-} Bullet;
 Bullet playerBullet[MAX_BULLETS];
 
 // The player is an entity, as to better interact with entities & physics

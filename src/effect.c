@@ -6,9 +6,6 @@
 #include "camera.h"
 #include "vdp_ext.h"
 
-#define MAX_DAMAGE 4
-#define MAX_SMOKE 6
-
 typedef struct {
 	Sprite *sprite;
 	u8 ttl;
@@ -34,6 +31,10 @@ void effects_clear() {
 		effDamage[i].ttl = 0;
 		SPR_SAFERELEASE(effDamage[i].sprite);
 	}
+	effects_clear_smoke();
+}
+
+void effects_clear_smoke() {
 	for(u8 i = 0; i < MAX_SMOKE; i++) {
 		effSmoke[i].ttl = 0;
 		SPR_SAFERELEASE(effSmoke[i].sprite);

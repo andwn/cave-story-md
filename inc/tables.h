@@ -5,6 +5,7 @@
 #include "common.h"
 #include "npc.h"
 #include "ai.h"
+#include "weapon.h"
 
 /*
  * This is a database of most of the game's content. Wherever possible, the indexes match
@@ -83,14 +84,10 @@ typedef struct {
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
-#define WEAPON_COUNT 14
 typedef struct {
 	const SpriteDefinition *sprite; // Sprite to display beneath player
-	// The [3] here, means different values for each level of the weapon
-	const SpriteDefinition *bulletSprite[3]; // Sprite for bullets
-	u8 shootSound[3]; // Sound effect to play when shooting
 	u8 experience[3]; // Amount of exp required to level up the weapon
-	u8 damage[3]; // Amount of damage dealt to enemies
+	u8 name[16];
 } weapon_info_def;
 
 // Oh... I was going to do something with this
@@ -98,8 +95,6 @@ typedef struct {
 	u8 *function;
 	u8 paramCount;
 } command_info_def;
-
-
 
 extern const tileset_info_def tileset_info[TILESET_COUNT];
 

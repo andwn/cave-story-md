@@ -96,7 +96,7 @@ void system_save() {
 	SRAM_writeByte(0x012, time.second);
 	SRAM_writeByte(0x013, time.frame);
 	// Weapons (0x40)
-	for(u8 i = 0; i < 8; i++) {
+	for(u8 i = 0; i < MAX_WEAPONS; i++) {
 		SRAM_writeByte(0x20 + i*8, playerWeapon[i].type);
 		SRAM_writeByte(0x21 + i*8, playerWeapon[i].level);
 		SRAM_writeWord(0x22 + i*8, playerWeapon[i].energy);
@@ -104,7 +104,7 @@ void system_save() {
 		SRAM_writeWord(0x26 + i*8, playerWeapon[i].ammo);
 	}
 	// Inventory (0x20)
-	for(u8 i = 0; i < 32; i++) {
+	for(u8 i = 0; i < MAX_ITEMS; i++) {
 		SRAM_writeByte(0x60 + i, playerInventory[i]);
 	}
 	// Teleporter locations
@@ -134,7 +134,7 @@ void system_load() {
 	time.second = SRAM_readByte(0x12);
 	time.frame = SRAM_readByte(0x13);
 	// Weapons
-	for(u8 i = 0; i < 8; i++) {
+	for(u8 i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].type = SRAM_readByte(0x20 + i*8);
 		playerWeapon[i].level = SRAM_readByte(0x21 + i*8);
 		playerWeapon[i].energy = SRAM_readWord(0x22 + i*8);
@@ -142,7 +142,7 @@ void system_load() {
 		playerWeapon[i].ammo = SRAM_readWord(0x26 + i*8);
 	}
 	// Inventory (0x20)
-	for(u8 i = 0; i < 32; i++) {
+	for(u8 i = 0; i < MAX_ITEMS; i++) {
 		playerInventory[i] = SRAM_readByte(0x60 + i);
 	}
 	// Teleporter locations

@@ -12,10 +12,15 @@
  * the sprite engine from thrashing.
  */
 
+#define MAX_DAMAGE 4
+#define MAX_SMOKE 6
+
 // Initialize default (0, NULL) values to avoid weird glitches
 void effects_init();
 // Clear all effects
 void effects_clear();
+// Just clear the smoke
+void effects_clear_smoke();
 // Per frame update of effects
 void effects_update();
 
