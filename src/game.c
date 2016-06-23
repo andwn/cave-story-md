@@ -14,9 +14,6 @@
 #include "hud.h"
 #include "weapon.h"
 
-//u8 debugTime = 1;
-//u32 playerProf, entityProf;
-
 Sprite *itemSprite[MAX_ITEMS];
 
 bool update_pause() {
@@ -84,24 +81,12 @@ void draw_itemmenu() {
 void vblank() {
 	stage_update();
 	if(hudRedrawPending) hud_update_vblank();
-	/* TODO: Rewrite with sprintf
-	if(debuggingEnabled && --debugTime == 0) {
-		char str[34];
-		// Draw player/entity update time
-		uintToStr(playerProf, &str[0], 5);
-		uintToStr(entityProf, &str[6], 5);
-		// Entity count
-		uintToStr(entities_count_active(), &str[15], 3);
-		uintToStr(entities_count(), &str[19], 3);
-		// Free Memory
-		uintToStr(MEM_getFree(), &str[27], 5);
-		str[5] = str[11] = str[22] = ' ';
-		str[12] = 'E'; str[13] = '#'; str[14] = ':'; str[18] = '/';
-		str[23] = str[25] = 'M'; str[24] = 'E'; str[26] = ':';
-		VDP_drawTextWindow(str, 1, 27);
-		debugTime = 60;
-	}
-	*/
+	//if(debuggingEnabled) {
+	//	char str[34];
+	//	sprintf(str, "%05u %05u E#:%03hu/%03hu MEM:%05hu", playerProf, entityProf, 
+	//		entities_count_active(), entities_count(), MEM_getFree());
+	//	VDP_drawTextWindow(str, 1, 27);
+	//}
 }
 
 u8 game_main(bool load) {
@@ -112,7 +97,6 @@ u8 game_main(bool load) {
 	SYS_disableInts();
 	VDP_setEnable(false);
 	
-	//SPR_reset();
 	VDP_resetScreen();
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
@@ -143,15 +127,10 @@ u8 game_main(bool load) {
 				draw_itemmenu();
 				paused = true;
 			} else {
-				//if(debuggingEnabled) debug_update();
 				camera_update();
-				//playerProf = getSubTick();
 				player_update();
-				//playerProf = getSubTick() - playerProf;
 				hud_update();
-				//entityProf = getSubTick();
 				entities_update();
-				//entityProf = getSubTick() - entityProf;
 				u8 rtn = tsc_update();
 				if(rtn > 0) {
 					if(rtn == 1) {

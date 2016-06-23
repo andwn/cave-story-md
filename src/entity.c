@@ -125,15 +125,8 @@ Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 // Internal functions
 void sprite_create(Entity *e);
 
-Entity *entity_update(Entity *e);
-Entity *entity_update_inactive(Entity *e);
 void entity_drop_powerup(Entity *e);
-
-bool collide_stage_leftwall(Entity *e);
-bool collide_stage_rightwall(Entity *e);
-bool collide_stage_floor(Entity *e);
-bool collide_stage_floor_grounded(Entity *e);
-bool collide_stage_ceiling(Entity *e);
+bool entity_on_screen(Entity *e);
 
 // Initialize sprite for entity
 void sprite_create(Entity *e) {
@@ -222,14 +215,70 @@ u16 entities_count() {
 void entities_update() {
 	Entity *e = entityList;
 	while(e != NULL) {
-		e = entity_update(e);
+		if(!entity_on_screen(e) && !e->alwaysActive) {
+			Entity *next = e->next;
+			entity_deactivate(e);
+			e = next;
+			continue;
+		}
+		ENTITY_ONUPDATE(e);
+		if(e->state == STATE_DELETE) {
+			e = entity_delete(e);
+			continue;
+		}
+		if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
+			Bullet *b = bullet_colliding(e);
+			if(b != NULL) {
+				b->ttl = 0;
+				SPR_SAFERELEASE(b->sprite);
+				if(e->health <= b->damage) {
+					if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
+						effect_create_damage(e->damage_value - b->damage,
+								sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+					// Killed enemy
+					e->health = 0;
+					ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
+					if(e->state == STATE_DESTROY) {
+						e = entity_destroy(e);
+					} else {
+						e = e->next;
+					}
+					continue;
+				}
+				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
+					e->damage_value -= b->damage;
+					e->damage_time = 30;
+				}
+				e->health -= b->damage;
+				sound_play(e->hurtSound, 5);
+				ENTITY_ONHURT(e);
+			}
+		}
+		if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
+			e->damage_time--;
+			if(e->damage_time <= 0) {
+				effect_create_damage(e->damage_value,
+						sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+				e->damage_value = 0;
+			}
+		}
+		SPR_SAFEMOVE(e->sprite,
+			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
+			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+		e = e->next;
 	}
 }
 
 void entities_update_inactive() {
 	Entity *e = inactiveList;
 	while(e != NULL) {
-		e = entity_update_inactive(e);
+		if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
+			Entity *next = e->next;
+			entity_reactivate(e);
+			e = next;
+		} else {
+			e = e->next;
+		}
 	}
 }
 
@@ -683,15 +732,6 @@ bool entity_on_screen(Entity *obj) {
 			obj->y < camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
 }
 
-Entity *entity_update_inactive(Entity *e) {
-	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
-		Entity *next = e->next;
-		entity_reactivate(e);
-		return next;
-	}
-	return e->next;
-}
-
 void entity_drop_powerup(Entity *e) {
 	u8 chance = random() % 100;
 	// TODO: Not sure how drops are determined
@@ -717,52 +757,6 @@ void entity_drop_powerup(Entity *e) {
 			exp->experience = 1;
 		}
 	}
-}
-
-Entity *entity_update(Entity *e) {
-	if(!entity_on_screen(e) && !e->alwaysActive) {
-		Entity *next = e->next;
-		entity_deactivate(e);
-		return next;
-	}
-	ENTITY_ONUPDATE(e);
-	if(e->state == STATE_DELETE) return entity_delete(e);
-	if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
-		Bullet *b = bullet_colliding(e);
-		if(b != NULL) {
-			b->ttl = 0;
-			SPR_SAFERELEASE(b->sprite);
-			if(e->health <= b->damage) {
-				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
-					effect_create_damage(e->damage_value - b->damage,
-							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
-				// Killed enemy
-				e->health = 0;
-				ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
-				if(e->state == STATE_DESTROY) return entity_destroy(e);
-				else return e->next;
-			}
-			if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
-				e->damage_value -= b->damage;
-				e->damage_time = 30;
-			}
-			e->health -= b->damage;
-			sound_play(e->hurtSound, 5);
-			ENTITY_ONHURT(e);
-		}
-	}
-	if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
-		e->damage_time--;
-		if(e->damage_time <= 0) {
-			effect_create_damage(e->damage_value,
-					sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
-			e->damage_value = 0;
-		}
-	}
-	SPR_SAFEMOVE(e->sprite,
-		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
-	return e->next;
 }
 
 void entity_default(Entity *e, u16 type, u16 flags) {

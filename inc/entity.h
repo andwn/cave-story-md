@@ -136,6 +136,13 @@ void entity_update_jump(Entity *e);
 void entity_update_float(Entity *e);
 // Handles collision with the loaded stage, pushes x_next and y_next out of solid areas
 void entity_update_collision(Entity *e);
+
+bool collide_stage_leftwall(Entity *e);
+bool collide_stage_rightwall(Entity *e);
+bool collide_stage_floor(Entity *e);
+bool collide_stage_floor_grounded(Entity *e);
+bool collide_stage_ceiling(Entity *e);
+
 // Returns true if entity a's hitbox is overlapping b's
 bool entity_overlapping(Entity *a, Entity *b);
 // Pushes entity a outside of entity b's hitbox
