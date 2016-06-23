@@ -172,6 +172,7 @@ void player_update_shooting() {
 					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 						0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
 				}
+				sound_play(0x04, 5);
 				break;
 			}
 		}
@@ -185,6 +186,7 @@ void player_update_shooting() {
 					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 						0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
 				}
+				sound_play(0x04, 5);
 				break;
 			}
 		}

@@ -96,7 +96,8 @@ void weapon_fire_fireball(Weapon *w) {
 		break;
 	}
 	if(b == NULL) return;
-	sound_play(0x22, 5);
+	if(w->level == 3) sound_play(0x21, 5);
+	else sound_play(0x22, 5);
 	b->type = w->type;
 	b->level = w->level;
 	b->sprite = SPR_addSprite(&SPR_FirebB1, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
@@ -241,9 +242,9 @@ Bullet *bullet_colliding(Entity *e) {
 		if(playerBullet[i].ttl == 0) continue;
 		bounding_box bb = playerBullet[i].hit_box;
 		if(sub_to_pixel(playerBullet[i].x) - bb.left >= 
-			sub_to_pixel(e->x) + (e->direction ? e->hit_box.left : e->hit_box.right)) continue;
+			sub_to_pixel(e->x) + e->hit_box.right) continue;
 		if(sub_to_pixel(playerBullet[i].x) + bb.right <= 
-			sub_to_pixel(e->x) - (e->direction ? e->hit_box.right : e->hit_box.left)) continue;
+			sub_to_pixel(e->x) - e->hit_box.left) continue;
 		if(sub_to_pixel(playerBullet[i].y) - bb.top >= 
 			sub_to_pixel(e->y) + e->hit_box.bottom) continue;
 		if(sub_to_pixel(playerBullet[i].y) + bb.bottom <= 
