@@ -45,8 +45,8 @@ struct Entity {
 	u16 type; // NPC type - index of both npc.tbl and npc_info
 	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via bitwise OR
 	/* AI / Behavior */
-	u16 alwaysActive : 1, // Guaranteed to never deactivate when true
-		state : 15; // Script state / ANP
+	bool alwaysActive; // Guaranteed to never deactivate when true
+	u16 state; // Script state / ANP
 	u16 state_time;
 	// This is assumed to be an array of type u16[2], or at least next to each other
 	// in memory (input.h). Index 0 is current joy state, 1 is previous frame's state
@@ -55,10 +55,10 @@ struct Entity {
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
 	s16 x_speed, y_speed; // Velocity
-	u8 direction : 1, // Direction entity is facing, 0=left, 1=right
-		grounded : 1, // True when on the ground, enables jumping
-		underwater : 1, // True when entity is within a water tile
-		jump_time: 5; // Time until jump button no longer increases jump height
+	bool direction, // Direction entity is facing, 0=left, 1=right
+		grounded, // True when on the ground, enables jumping
+		underwater; // True when entity is within a water tile
+	u8 jump_time: 5; // Time until jump button no longer increases jump height
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	/* Display */
 	Sprite *sprite; // Sprite assigned to this entity, or NULL
@@ -76,7 +76,7 @@ extern Entity *entityList;
 // To save memory and CPU (indeed the game will run 15 FPS without this), off screen
 // entities are moved into the "inactive" list. This list is not iterated by
 // entities_update(), but only in entities_update_inactive() which is not called
-// every frame but instead each time the camera moves the length on 1 block
+// every frame but instead each time the camera moves the length of 1 block
 extern Entity *inactiveList;
 // References whichever entity is a boss otherwise it is NULL
 extern Entity *bossEntity;

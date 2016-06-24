@@ -44,6 +44,9 @@ void player_update_bullets();
 void player_update_interaction();
 void player_update_air_display();
 
+void player_prev_weapon();
+void player_next_weapon();
+
 // Default values for player
 void player_init() {
 	controlsLocked = false;
@@ -163,33 +166,9 @@ void player_update() {
 void player_update_shooting() {
 	// Weapon switching
 	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
-		for(u8 i = currentWeapon - 1; i != currentWeapon; i--) {
-			if(i == 0xFF) i = MAX_WEAPONS - 1;
-			if(playerWeapon[i].type > 0) {
-				SPR_SAFERELEASE(weaponSprite);
-				currentWeapon = i;
-				if(weapon_info[playerWeapon[i].type].sprite != NULL) {
-					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-						0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
-				}
-				sound_play(0x04, 5);
-				break;
-			}
-		}
+		player_prev_weapon();
 	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
-		for(u8 i = currentWeapon + 1; i != currentWeapon; i++) {
-			if(i >= MAX_WEAPONS) i = 0;
-			if(playerWeapon[i].type > 0) {
-				SPR_SAFERELEASE(weaponSprite);
-				currentWeapon = i;
-				if(weapon_info[playerWeapon[i].type].sprite != NULL) {
-					weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-						0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
-				}
-				sound_play(0x04, 5);
-				break;
-			}
-		}
+		player_next_weapon();
 	// Shooting
 	} else if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
 		weapon_fire(playerWeapon[currentWeapon]);
@@ -508,8 +487,40 @@ void player_update_bounds() {
 	}
 }
 
+void player_prev_weapon() {
+	for(u8 i = currentWeapon - 1; i != currentWeapon; i--) {
+		if(i == 0xFF) i = MAX_WEAPONS - 1;
+		if(playerWeapon[i].type > 0) {
+			SPR_SAFERELEASE(weaponSprite);
+			currentWeapon = i;
+			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
+				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			}
+			sound_play(0x04, 5);
+			break;
+		}
+	}
+}
+
+void player_next_weapon() {
+	for(u8 i = currentWeapon + 1; i != currentWeapon; i++) {
+		if(i >= MAX_WEAPONS) i = 0;
+		if(playerWeapon[i].type > 0) {
+			SPR_SAFERELEASE(weaponSprite);
+			currentWeapon = i;
+			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
+				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			}
+			sound_play(0x04, 5);
+			break;
+		}
+	}
+}
+
 Weapon *player_find_weapon(u8 id) {
-	for(u8 i = 0; i < playerWeaponCount; i++) {
+	for(u8 i = 0; i < MAX_WEAPONS; i++) {
 		if(playerWeapon[i].type == id) return &playerWeapon[i];
 	}
 	return NULL;
@@ -518,35 +529,39 @@ Weapon *player_find_weapon(u8 id) {
 void player_give_weapon(u8 id, u8 ammo) {
 	Weapon *w = player_find_weapon(id);
 	if(w == NULL) {
-		//sprite_delete(playerWeapon[currentWeapon].sprite);
 		for(u8 i = 0; i < MAX_WEAPONS; i++) {
 			if(playerWeapon[i].type > 0) continue;
 			w = &playerWeapon[i];
-			//w->sprite = sprite_create(weapon_info[id].sprite, PAL1, true);
 			w->type = id;
 			w->level = 1;
 			w->energy = 0;
-			w->maxammo = 0;
-			w->ammo = 0;
+			w->maxammo = ammo;
+			w->ammo = ammo;
 			break;
 		}
+	} else {
+		w->maxammo += ammo;
+		w->ammo += ammo;
 	}
-	w->maxammo += ammo;
-	w->ammo += ammo;
 }
 
 void player_take_weapon(u8 id) {
 	Weapon *w = player_find_weapon(id);
 	if(w != NULL) {
-		if(w == &playerWeapon[currentWeapon]) {
-			//player_next_weapon();
+		if(playerWeapon[currentWeapon].type == id) {
+			SPR_SAFERELEASE(weaponSprite);
+			player_next_weapon();
 		}
 		w->type = 0;
+		w->level = 0;
+		w->energy = 0;
+		w->maxammo = 0;
+		w->ammo = 0;
 	}
 }
 
 bool player_has_weapon(u8 id) {
-	for(u8 i = 0; i < playerWeaponCount; i++) {
+	for(u8 i = 0; i < MAX_WEAPONS; i++) {
 		if(playerWeapon[i].type == id) return true;
 	}
 	return false;
@@ -555,7 +570,13 @@ bool player_has_weapon(u8 id) {
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w != NULL) {
-		//w->sprite = sprite_create(weapon_info[id_give].sprite, PAL1, true);
+		if(id_take == playerWeapon[currentWeapon].type) {
+			SPR_SAFERELEASE(weaponSprite);
+			if(weapon_info[w->type].sprite != NULL) {
+				weaponSprite = SPR_addSprite(weapon_info[w->type].sprite, 
+					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			}
+		}
 		w->type = id_give;
 		w->level = 1;
 		w->energy = 0;

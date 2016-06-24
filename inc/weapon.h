@@ -11,7 +11,7 @@
 #define MAX_WEAPONS 5
 // Length of player's bullet array, a global maximum
 // Different weapons have different limits
-#define MAX_BULLETS 6
+#define MAX_BULLETS 10
 
 // Weapon 06, 08, and 11 do not exist
 // As weapon IDs are hard coded into game scripts, this order cannot be changed

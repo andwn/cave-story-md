@@ -85,16 +85,12 @@ void hud_redraw_weapon() {
 	hudLevel = playerWeapon[currentWeapon].level;
 	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
 	hudEnergy = playerWeapon[currentWeapon].energy;
+	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
+	hudAmmo = playerWeapon[currentWeapon].ammo;
 	memcpy(tileData[SPR_TILE(1, 0)], 
 		SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles, sizeof(u32) * TSIZE * 2);
 	memcpy(tileData[SPR_TILE(2, 0)], 
 		&SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles[TSIZE * 2], sizeof(u32) * TSIZE * 2);
-	hudRedrawPending = true;
-}
-
-void hud_redraw_ammo() {
-	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
-	hudAmmo = playerWeapon[currentWeapon].ammo;
 	hudRedrawPending = true;
 }
 
@@ -115,12 +111,13 @@ void hud_update() {
 	} else if(hudEnergy != playerWeapon[currentWeapon].energy) {
 		hudEnergy = playerWeapon[currentWeapon].energy;
 		hudRedrawPending = true;
+	} else if(hudAmmo != playerWeapon[currentWeapon].ammo ||
+			hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
+		hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
+		hudAmmo = playerWeapon[currentWeapon].ammo;
+		hudRedrawPending = true;
 	}
 	if(hudRedrawPending) hud_prepare_dma();
-	//sprite_add(tile_to_pixel(2), tile_to_pixel(1),
-	//	TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX), SPRITE_SIZE(4, 4));
-	//sprite_add(tile_to_pixel(6), tile_to_pixel(1),
-	//	TILE_ATTR_FULL(PAL0, true, false, false, TILE_HUDINDEX + 16), SPRITE_SIZE(4, 4));
 }
 
 void hud_update_vblank() {

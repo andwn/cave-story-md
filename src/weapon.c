@@ -6,6 +6,7 @@
 #include "audio.h"
 #include "resources.h"
 #include "tables.h"
+#include "effect.h"
 
 const WeaponFunc weapon_fire_array[WEAPON_COUNT] = {
 	&weapon_fire_none,
@@ -49,8 +50,9 @@ void weapon_fire_snake(Weapon *w) {
 
 void weapon_fire_polarstar(Weapon *w) {
 	// Use first 3 slots for polar star
+	// Max bullets for lv 1,2,3: 3,3,2
 	Bullet *b = NULL;
-	for(u8 i = 0; i < 3; i++) {
+	for(u8 i = 0 + (w->level == 3 ? 1 : 0); i < 3; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -89,8 +91,9 @@ void weapon_fire_fireball(Weapon *w) {
 	// The real cave story stores bullets for weapons in separate lists most likely,
 	// since you can switch back and forth to get 3 polar star and 3 fireball bullets.
 	// I try to simulate this by storing fireball bullets in a different part of the array
+	// Max bullets for lv 1,2,3: 2,3,4
 	Bullet *b = NULL;
-	for(u8 i = 3; i < 6; i++) {
+	for(u8 i = 2 + (3 - w->level); i < 6; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -127,7 +130,40 @@ void weapon_fire_machinegun(Weapon *w) {
 }
 
 void weapon_fire_missile(Weapon *w) {
-	
+	// Use end of array for missiles
+	// Max bullets for lv 1,2,3: 1,2,6
+	Bullet *b = NULL;
+	for(u8 i = 4 + (w->level == 1 ? 5 : w->level == 2 ? 4 : 0); i < 10; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(b == NULL || w->ammo == 0) return;
+	w->ammo--;
+	b->type = w->type;
+	b->level = w->level;
+	//b->sprite = SPR_addSprite(&SPR_FirebB1, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+	b->damage = 0; // 0 damage because an explosion object causes damage instead
+	b->ttl = 120;
+	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	if(player.controller[0]&BUTTON_UP) {
+		//SPR_SAFEANIM(b->sprite, 1);
+		b->x = player.x;
+		b->y = player.y - pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(-4);
+	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+		//SPR_SAFEANIM(b->sprite, 1);
+		b->x = player.x;
+		b->y = player.y + pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(4);
+	} else {
+		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
+		b->y = player.y + pixel_to_sub(4);
+		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->y_speed = 0;
+	}
 }
 
 void weapon_fire_bubbler(Weapon *w) {
@@ -214,7 +250,28 @@ void bullet_update_machinegun(Bullet *b) {
 }
 
 void bullet_update_missile(Bullet *b) {
-	
+	if(--b->ttl == 0) { // Bullet time to live expired
+		SPR_SAFERELEASE(b->sprite);
+		return;
+	}
+	if(b->x_speed != 0 || b->y_speed != 0) {
+		b->x += b->x_speed;
+		b->y += b->y_speed;
+		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		if(block == 0x41 || block == 0x43) { // Explode
+			b->x_speed = 0;
+			b->y_speed = 0;
+			b->ttl = 20;
+			b->damage = 2;
+			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
+			SPR_SAFERELEASE(b->sprite);
+			effect_create_smoke(0, sub_to_pixel(b->x), sub_to_pixel(b->y));
+			//b->sprite = SPR_addSprite(&SPR_MisslExp, 0, 0, TILE_ATTR(PAL1, 1, 0, 0));
+		}
+		SPR_SAFEMOVE(b->sprite, 
+			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	}
 }
 
 void bullet_update_bubbler(Bullet *b) {
