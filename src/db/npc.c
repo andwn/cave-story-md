@@ -191,7 +191,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ NULL, 		PAL0, "Nothing",
 		NULL, &ai_behemoth_onUpdate, &ai_behemoth_onState, NULL },
 	{ &SPR_Cage, 	PAL1, "Cage",
-		NULL, NULL, NULL, NULL },
+		&ai_pushdn_onCreate, NULL, NULL, NULL },
 	{ NULL, 		PAL0, "Sue (Computer)",
 		NULL, NULL, NULL, NULL },
 	{ NULL, 		PAL0, "Chaco",

@@ -14,7 +14,18 @@ void ai_sue_onUpdate(Entity *e) {
 	if(!e->grounded) e->y_speed += gravity;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
+	// Don't test ceiling, only test sticking to ground while moving
+	if(e->x_speed < 0) {
+		collide_stage_leftwall(e);
+	} else if(e->x_speed > 0) {
+		collide_stage_rightwall(e);
+	}
+	if(e->grounded) {
+		if(e->x_speed != 0) collide_stage_floor_grounded(e);
+	} else {
+		collide_stage_floor(e);
+		if(e->grounded && e->state == 8) ENTITY_SET_STATE(e, 10, 0);
+	}
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -42,8 +53,6 @@ Sue [0042] -By Shmitz
 void ai_sue_onState(Entity *e) {
 	switch(e->state) {
 		case 0:
-		case 1:
-		case 2:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 0);
@@ -60,7 +69,9 @@ void ai_sue_onState(Entity *e) {
 		SPR_SAFEANIM(e->sprite, 3);
 		break;
 		case 8:
-		e->x_speed = 0;
+		e->x_speed = e->direction ? 0x100 : -0x100;
+		e->y_speed = -0x300;
+		e->grounded = false;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 4);
 		sound_play(0x32, 6);
