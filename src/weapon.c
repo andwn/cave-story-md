@@ -142,26 +142,27 @@ void weapon_fire_missile(Weapon *w) {
 	w->ammo--;
 	b->type = w->type;
 	b->level = w->level;
-	//b->sprite = SPR_addSprite(&SPR_FirebB1, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+	b->sprite = SPR_addSprite(w->level == 2 ? &SPR_MisslB2 : &SPR_MisslB1, 
+		0, 0, TILE_ATTR(PAL0, 0, 0, 0));
 	b->damage = 0; // 0 damage because an explosion object causes damage instead
 	b->ttl = 120;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	if(player.controller[0]&BUTTON_UP) {
-		//SPR_SAFEANIM(b->sprite, 1);
+		SPR_SAFEANIM(b->sprite, 1);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-4);
+		b->y_speed = pixel_to_sub(-3);
 	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
-		//SPR_SAFEANIM(b->sprite, 1);
+		SPR_SAFEANIM(b->sprite, 2);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(4);
+		b->y_speed = pixel_to_sub(3);
 	} else {
 		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
-		b->y = player.y + pixel_to_sub(4);
-		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = (player.direction ? pixel_to_sub(3) : pixel_to_sub(-3));
 		b->y_speed = 0;
 	}
 }
@@ -259,14 +260,7 @@ void bullet_update_missile(Bullet *b) {
 		b->y += b->y_speed;
 		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41 || block == 0x43) { // Explode
-			b->x_speed = 0;
-			b->y_speed = 0;
-			b->ttl = 20;
-			b->damage = 2;
-			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
-			SPR_SAFERELEASE(b->sprite);
-			effect_create_smoke(0, sub_to_pixel(b->x), sub_to_pixel(b->y));
-			//b->sprite = SPR_addSprite(&SPR_MisslExp, 0, 0, TILE_ATTR(PAL1, 1, 0, 0));
+			bullet_missile_explode(b);
 		}
 		SPR_SAFEMOVE(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
@@ -309,4 +303,18 @@ Bullet *bullet_colliding(Entity *e) {
 		return &playerBullet[i];
 	}
 	return NULL;
+}
+
+void bullet_missile_explode(Bullet *b) {
+	b->x_speed = 0;
+	b->y_speed = 0;
+	b->ttl = 8;
+	b->damage = 1 + b->level;
+	b->hit_box = (bounding_box) { 12, 12, 12, 12 };
+	SPR_SAFERELEASE(b->sprite);
+	for(u8 i =  b->level; i < 4; i++) {
+		effect_create_smoke(0, 
+			sub_to_pixel(b->x) - 10 + (random() % 20), 
+			sub_to_pixel(b->y) - 10 + (random() % 20));
+	}
 }

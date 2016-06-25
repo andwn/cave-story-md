@@ -47,6 +47,8 @@ void player_update_air_display();
 void player_prev_weapon();
 void player_next_weapon();
 
+Weapon *player_find_weapon(u8 id);
+
 // Default values for player
 void player_init() {
 	controlsLocked = false;
@@ -375,6 +377,23 @@ void player_update_entity_collision() {
 				continue;
 			}
 			break;
+		case 86: // Missile
+			// Increases missile ammo, plays sound and deletes itself
+			if(entity_overlapping(&player, e)) {
+				// Find missile or super missile
+				Weapon *w = player_find_weapon(WEAPON_MISSILE);
+				if(w == NULL) w = player_find_weapon(WEAPON_SUPERMISSILE);
+				// If we found either increase ammo
+				if(w != NULL) {
+					// I store ammo in the experience variable since there was no better place
+					w->ammo += e->experience;
+					if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
+				}
+				sound_play(0x2A, 5);
+				e = entity_delete(e);
+				continue;
+			}
+			break;
 		case 87: // Heart
 			// Increases health, plays sound and deletes itself
 			if(entity_overlapping(&player, e)) {
@@ -475,6 +494,15 @@ bool player_inflict_damage(s16 damage) {
 		return true;
 	}
 	player.health -= damage;
+	Weapon *w = &playerWeapon[currentWeapon];
+	if(w->energy == 0) {
+		if(w->level > 1) {
+			w->level -= 1;
+			w->energy = weapon_info[w->type].experience[w->level - 1];
+		}
+	} else {
+		w->energy -= 1;
+	}
 	sound_play(SOUND_HURT, 5);
 	playerIFrames = INVINCIBILITY_FRAMES;
 	return false;

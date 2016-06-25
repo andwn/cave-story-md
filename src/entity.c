@@ -229,8 +229,17 @@ void entities_update() {
 		if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
 			Bullet *b = bullet_colliding(e);
 			if(b != NULL) {
-				b->ttl = 0;
-				SPR_SAFERELEASE(b->sprite);
+				// Destroy the bullet, or if it is a missile make it explode
+				if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
+					if(b->x_speed != 0 || b->y_speed != 0) {
+						bullet_missile_explode(b);
+						if(b->damage < e->health) sound_play(e->hurtSound, 5);
+					}
+				} else {
+					b->ttl = 0;
+					SPR_SAFERELEASE(b->sprite);
+					if(b->damage < e->health) sound_play(e->hurtSound, 5);
+				}
 				if(e->health <= b->damage) {
 					if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
 						effect_create_damage(e->damage_value - b->damage,
@@ -250,7 +259,6 @@ void entities_update() {
 					e->damage_time = 30;
 				}
 				e->health -= b->damage;
-				sound_play(e->hurtSound, 5);
 				ENTITY_ONHURT(e);
 			}
 		}
@@ -732,29 +740,43 @@ bool entity_on_screen(Entity *obj) {
 			obj->y < camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
 }
 
+
 void entity_drop_powerup(Entity *e) {
-	u8 chance = random() % 100;
-	// TODO: Not sure how drops are determined
-	if(chance < 30) { // Heart
-		Entity *heart = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 87, 0, 0);
-		heart->health = 2;
-	} else if(chance < 50) {
-		// Missiles
-	} else { // Energy
+	u8 chance = random() % 5;
+	u16 bx = sub_to_block(e->x), by = sub_to_block(e->y);
+	if(chance >= 3) { // Weapon Energy
 		s16 i = e->experience;
 		for(; i >= 5; i -= 5) { // Big
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
+			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 5;
 			SPR_SAFEANIM(e->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
+			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 3;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
-			Entity *exp = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, 1, 0, 0);
+			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 1;
+		}
+		
+	} else if(chance == 2 && (player_has_weapon(WEAPON_MISSILE) || 
+		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
+		if(e->experience > 6) {
+			Entity *msl = entity_create(bx, by, 0, 0, 86, NPC_OPTION2, 0);
+			msl->experience = 3;
+		} else {
+			Entity *msl = entity_create(bx, by, 0, 0, 86, 0, 0);
+			msl->experience = 3;
+		}
+	} else { // Heart
+		if(e->experience > 6) {
+			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION2, 0);
+			heart->health = 5;
+		} else {
+			Entity *heart = entity_create(bx, by, 0, 0, 87, 0, 0);
+			heart->health = 2;
 		}
 	}
 }

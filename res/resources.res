@@ -26,7 +26,14 @@ SPRITE SPR_Fish		"sprite/fish.png" 2 2 0 20 NONE
 SPRITE SPR_CritBig	"sprite/critbig.png" 3 3 0 0 NONE
 SPRITE SPR_Jelly	"sprite/jelly.png" 2 2 0 15 NONE
 SPRITE SPR_Kulala	"sprite/kulala.png" 6 3 0 0 NONE
-SPRITE SPR_FirebB1	"sprite/fireballb1.png" 2 2 0 10 NONE
+SPRITE SPR_FirebB1	"sprite/fireballb1.png" 2 2 0 8 NONE
+SPRITE SPR_FirebB3	"sprite/fireballb3.png" 2 2 0 8 NONE
+SPRITE SPR_MisslB1	"sprite/missileb1.png" 2 2 0 0 NONE
+SPRITE SPR_MisslB2	"sprite/missileb2.png" 2 2 0 0 NONE
+SPRITE SPR_BladeB1	"sprite/bladeb1.png" 2 2 0 8 NONE
+SPRITE SPR_BladeB2	"sprite/bladeb2.png" 3 3 0 10 NONE
+SPRITE SPR_BladeB3	"sprite/bladeb3.png" 3 3 0 0 NONE
+SPRITE SPR_BladeB3S	"sprite/bladeb3slash.png" 2 2 0 4 NONE
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE
 SPRITE SPR_PolarB1	"sprite/polarb1.png" 2 2 0 0 NONE
@@ -76,6 +83,7 @@ SPRITE SPR_Pot		"sprite/pot.png" 2 2 0 0 NONE
 SPRITE SPR_Press	"sprite/press.png" 2 3 0 0 NONE
 SPRITE SPR_Cage		"sprite/cage.png" 4 3 0 0 NONE
 SPRITE SPR_EnergyShot "sprite/energyshot.png" 2 2 0 6 NONE
+SPRITE SPR_MisslP	"sprite/missilep.png" 2 2 0 6 NONE
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
 # Use PAL_Regu

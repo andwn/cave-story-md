@@ -89,5 +89,6 @@ typedef void (*BulletFunc)(Bullet *b);
 extern const BulletFunc bullet_update_array[WEAPON_COUNT];
 
 Bullet* bullet_colliding(Entity *e);
+void bullet_missile_explode(Bullet *b);
 
 #endif
