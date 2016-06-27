@@ -34,3 +34,50 @@ void ai_jack_onState(Entity *e) {
 		break;
 	}
 }
+
+void ai_santa_onUpdate(Entity *e) {
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+}
+
+void ai_santa_onState(Entity *e) {
+	switch(e->state) {
+		case 0: // Stand
+		e->x_speed = 0;
+		SPR_SAFEANIM(e->sprite, 0);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		break;
+		case 3: // Walk
+		case 4:
+		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		SPR_SAFEANIM(e->sprite, 1);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		break;
+	}
+}
+
+void ai_chaco_onUpdate(Entity* e) {
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+}
+
+void ai_chaco_onState(Entity *e) {
+	switch(e->state) {
+		case 0: // Stand
+		e->x_speed = 0;
+		SPR_SAFEANIM(e->sprite, 0);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		break;
+		case 3: // Walk
+		case 4:
+		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		SPR_SAFEANIM(e->sprite, 1);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		break;
+		case 10: // Sleeping
+		e->x_speed = 0;
+		SPR_SAFEANIM(e->sprite, 3);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		break;
+	}
+}

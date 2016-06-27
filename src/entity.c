@@ -130,7 +130,6 @@ bool entity_on_screen(Entity *e);
 
 // Initialize sprite for entity
 void sprite_create(Entity *e) {
-	//if(e->sprite != NULL) SYS_die(npc_info[e->type].name);
 	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
 		e->sprite = NULL;
 		return;
@@ -140,7 +139,6 @@ void sprite_create(Entity *e) {
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
 		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
 	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
-	//SPR_SAFEVISIBILITY(e->sprite, e->spriteVisible);
 }
 
 // Move to inactive list, delete sprite
@@ -151,7 +149,6 @@ void entity_deactivate(Entity *e) {
 		e->spriteAnim = e->sprite->animInd;
 		e->spriteFrame = e->sprite->frameInd;
 		e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
-		//e->spriteVisible = e->sprite->visibility;
 	}
 	SPR_SAFERELEASE(e->sprite);
 }
@@ -784,30 +781,39 @@ void entity_drop_powerup(Entity *e) {
 void entity_default(Entity *e, u16 type, u16 flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
-	// Apply NPC flags in addition to entity flags
-	e->nflags = npc_flags(type);
+	if(type <= 360) {
+		e->nflags = npc_flags(type);
+		e->health = npc_health(type);
+		e->attack = npc_attack(type);
+		e->experience = npc_experience(type);
+		e->hurtSound = npc_hurtSound(type);
+		e->deathSound = npc_deathSound(type);
+		e->deathSmoke = npc_deathSmoke(type);
+		e->hit_box = npc_hitBox(type);
+		e->display_box = npc_displayBox(type);
+	} else {
+		e->nflags = 0;
+		e->health = 1;
+		e->attack = 0;
+		e->experience = 0;
+		e->hurtSound = 0;
+		e->deathSound = 0;
+		e->deathSmoke = 0;
+		e->hit_box = (bounding_box) { 8, 8, 8, 8 };
+		e->display_box = (bounding_box) { 8, 8, 8, 8 };
+	}
 	e->eflags |= flags;
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->direction = 0;
 	e->grounded = false;
 	e->underwater = false;
-	e->health = npc_health(type);
-	e->attack = npc_attack(type);
-	e->experience = npc_experience(type);
-	e->hurtSound = npc_hurtSound(type);
-	e->deathSound = npc_deathSound(type);
-	e->deathSmoke = npc_deathSmoke(type);
-	e->hit_box = npc_hitBox(type);
-	e->display_box = npc_displayBox(type);
 	e->damage_value = 0;
 	e->damage_time = 0;
-	e->alwaysActive = false;
 	e->sprite = NULL;
 	e->spriteFrame = 0;
 	e->spriteAnim = 0;
 	e->spriteVFlip = 0;
-	//e->spriteVisible = 0;
 	e->state = 0;
 	e->state_time = 0;
 }
@@ -822,7 +828,6 @@ bool entity_disabled(Entity *e) {
 
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
 	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
-	if(type > 360) return NULL;
 	// Allocate memory and start applying values
 	Entity *e = MEM_alloc(sizeof(Entity));
 	e->next = NULL; e->prev = NULL;
@@ -831,12 +836,11 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 	e->id = id;
 	e->event = event;
 	e->eflags = flags;
-	e->grounded = false;
-	//if(stageID == 28) {
-	//	e->alwaysActive = true;
-	//} else {
-	//	e->alwaysActive = false;
-	//}
+	if(stageID == 28) {
+		e->alwaysActive = true;
+	} else {
+		e->alwaysActive = false;
+	}
 	entity_default(e, type, 0);
 	e->direction = direction;
 	ENTITY_ONCREATE(e);
@@ -855,48 +859,14 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = 0;
-	e->type = 0;
-	e->x_speed = 0;
-	e->y_speed = 0;
-	e->grounded = false;
-	e->experience = 0;
+	e->event = event;
+	e->eflags = NPC_SOLID | NPC_SHOOTABLE | NPC_EVENTONDEATH | NPC_SHOWDAMAGE;
+	entity_default(e, 360 + bossid, 0);
 	e->alwaysActive = true;
-	e->damage_value = 0;
-	e->damage_time = 0;
-	//e->activate = &ai_activate_base;
-	//e->update = NULL;
-	//e->set_state = &ai_setstate_base;
-	//e->hurt = NULL;
-	e->state = 0;
-	e->state_time = 0;
-	switch(bossid) {
-	case BOSS_NONE:
-		SYS_die("What are you doing?");
-		break;
-	case BOSS_OMEGA:
-		break;
-	case BOSS_BALFROG:
-		e->event = 1000;
-		e->eflags = NPC_SOLID | NPC_SHOOTABLE | NPC_EVENTONDEATH | NPC_SHOWDAMAGE;
-		e->direction = 1;
-		e->health = 300;
-		e->attack = 5;
-		e->hurtSound = 52;
-		e->deathSound = 72;
-		e->deathSmoke = 3;
-		bounding_box hb = { 32, 24, 32, 32 };
-		bounding_box db = { 40, 32, 40, 32 };
-		e->hit_box = hb;
-		e->display_box = db;
-		e->sprite = SPR_addSprite(&SPR_Balfrog1, 
-			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
-			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
-			TILE_ATTR(PAL3, 0, 0, e->direction));
-		//e->set_state = &ai_setstate_balfrog;
-		break;
-	}
+	ENTITY_ONCREATE(e);
 	LIST_PUSH(entityList, e);
-	//e->activate(e);
+	bossEntity = e;
+	sprite_create(e);
 	return e;
 }
 

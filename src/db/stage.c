@@ -10,7 +10,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_EggR,		PXE_EggR,	TSC_EggR,	&PAL_Regu,	19,	0,	"Egg Observation Room" },
 	{ PXM_Weed,		PXE_Weed,	TSC_Weed,	&PAL_Regu,	20,	2,	"Grasstown" },
 	{ PXM_Santa,	PXE_Santa,	TSC_Santa,	&PAL_Regu,	2,	0,	"Santa's House" },
-	{ PXM_Chako,	PXE_Chako,	TSC_Chako,	&PAL_Regu,	2,	0,	"Chako's House" },
+	{ PXM_Chako,	PXE_Chako,	TSC_Chako,	&PAL_Chaco,	2,	0,	"Chako's House" },
 	{ PXM_MazeI,	PXE_MazeI,	TSC_MazeI,	&PAL_Regu,	13,	8,	"Labyrinth I" },
 	{ PXM_Sand,		PXE_Sand,	TSC_Sand,	&PAL_Regu,	18,	7,	"Sand Zone" },
 	{ PXM_Mimi,		PXE_Mimi,	TSC_Mimi,	&PAL_Regu,	14,	2,	"Mimiga Village" },

@@ -31,7 +31,7 @@ u8 titlescreen_main() {
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("NPC Test", 15, 18);
 	VDP_drawText("Version. 1.0.0.6", 12, 24);
-	VDP_drawText("Mega Drive Version 0.1 2016.06", 2, 26);
+	VDP_drawText("Mega Drive Version 0.1 2016.06", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(PLAN_B,
 		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX), 11, 3, 18, 4);

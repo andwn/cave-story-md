@@ -12,7 +12,6 @@
     - [ ] Weapon level up
     - [ ] Walk & jump sound
   - [ ] Missing mechanics
-    - [ ] Lose weapon exp when hit, level down
     - [ ] <UNI:0001
     - [ ] Carrying objects (puppy, curly)
 - [ ] Completable Areas
@@ -54,8 +53,10 @@
 - [ ] Weapons / Equip
   - [x] Polar Star
     - [ ] Animate bounce against wall
-  - [ ] Missiles
-  - [ ] Fireball
+  - [x] Missiles
+    - [ ] Lv 3 shoots 3 at a time
+  - [x] Fireball
+    - [ ] Proper graphic for lv 2 and 3
   - [ ] Machine Gun
   - [ ] Snake
   - [ ] Spur

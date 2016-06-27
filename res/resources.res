@@ -5,6 +5,7 @@ PALETTE PAL_Regu		"sprite/kazuma.png" 3
 PALETTE PAL_Gunsmith	"sprite/gunsmith.png" 3
 PALETTE PAL_Plant		"sprite/flower.png" 3
 PALETTE PAL_Frog		"sprite/balfrog1.png" 3
+PALETTE PAL_Chaco		"sprite/chaco.png" 3
 
 # Sprites
 # Dummy sprites
@@ -102,7 +103,8 @@ SPRITE SPR_Kanpachi	"sprite/kanpachi.png" 3 2 0 0 NONE
 SPRITE SPR_Jack		"sprite/jack.png" 2 2 0 15 NONE
 SPRITE SPR_Mahin	"sprite/mahin.png" 2 2 0 0 NONE
 SPRITE SPR_Santa	"sprite/santa.png" 2 2 0 15 NONE
-SPRITE SPR_Mannan	"sprite/mannan.png" 2 4 0 0 NONE
+SPRITE SPR_Mannan	"sprite/mannan.png" 3 4 0 0 NONE
+SPRITE SPR_Curly	"sprite/curly.png" 2 2 0 8 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 # Use PAL_Plant
@@ -110,6 +112,8 @@ SPRITE SPR_Sanda	"sprite/sanda.png" 6 4 0 0 NONE
 SPRITE SPR_Flower	"sprite/flower.png" 2 2 0 0 NONE
 # Use PAL_Frog
 SPRITE SPR_Balfrog1	"sprite/balfrog1.png" 10 8 0 0 NONE
+# Use PAL_Chaco	
+SPRITE SPR_Chaco	"sprite/chaco.png" 2 2 0 8 NONE
 
 # ItemImage PAL_Sym (gray)and PAL_Main (green)
 SPRITE SPR_ItemImage "sprite/itemimage.png" 4 2 0 0 NONE
@@ -235,12 +239,12 @@ BIN PXA_White	"Stage/White.pxa"
 # Background Tilesets
 #TILESET BG_Black	"back/bkBlack.bmp" 2
 TILESET BG_Blue		"back/bkMimi.png" 2
-TILESET BG_Eggs		"back/bkEggs.png" 2
+#TILESET BG_Eggs		"back/bkEggs.png" 2
 #TILESET BG_Fall		"back/bkFall.bmp" 2
 TILESET BG_Fog		"back/bkFog.png" 2
 TILESET BG_Gard		"back/bkGard.bmp" 2
 TILESET BG_Gray		"back/bkGray.bmp" 2
-TILESET BG_Green	"back/bkGreen.bmp" 2
+TILESET BG_Green	"back/bkSand.png" 2
 TILESET BG_Maze		"back/bkMaze.bmp" 2
 #TILESET BG_Moon		"back/bkMoon.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2

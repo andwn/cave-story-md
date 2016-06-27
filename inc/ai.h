@@ -85,7 +85,10 @@ void ai_default_onState(Entity *e);
 
 /* Balrog - balrog.c */
 
+void ai_balfrog_onCreate(Entity *e);
+void ai_balfrog_onUpdate(Entity *e);
 void ai_balfrog_onState(Entity *e);
+void ai_balfrog_onHurt(Entity *e);
 
 void ai_balrog_onUpdate(Entity *e);
 void ai_balrog_onState(Entity *e);
@@ -154,6 +157,10 @@ void ai_flower_onCreate(Entity *e);
 void ai_jack_onUpdate(Entity *e);
 void ai_jack_onState(Entity *e);
 //void ai_mahin_onState(Entity *e);
+void ai_santa_onUpdate(Entity* e);
+void ai_santa_onState(Entity *e);
+void ai_chaco_onUpdate(Entity* e);
+void ai_chaco_onState(Entity *e);
 
 /* Sue - sue.c */
 
