@@ -12,7 +12,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Santa,	PXE_Santa,	TSC_Santa,	&PAL_Regu,	2,	0,	"Santa's House" },
 	{ PXM_Chako,	PXE_Chako,	TSC_Chako,	&PAL_Chaco,	2,	0,	"Chako's House" },
 	{ PXM_MazeI,	PXE_MazeI,	TSC_MazeI,	&PAL_Regu,	13,	8,	"Labyrinth I" },
-	{ PXM_Sand,		PXE_Sand,	TSC_Sand,	&PAL_Regu,	18,	7,	"Sand Zone" },
+	{ PXM_Sand,		PXE_Sand,	TSC_Sand,	&PAL_Regu,	18,	12,	"Sand Zone" },
 	{ PXM_Mimi,		PXE_Mimi,	TSC_Mimi,	&PAL_Regu,	14,	2,	"Mimiga Village" },
 	{ PXM_Cave,		PXE_Cave,	TSC_Cave,	&PAL_Regu,	3,	0,	"First Cave" },
 	{ PXM_Start,	PXE_Start,	TSC_Start,	&PAL_Regu,	3,	0,	"Start Point" },

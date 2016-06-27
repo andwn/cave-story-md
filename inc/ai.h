@@ -101,6 +101,11 @@ void ai_balrogRunning_onState(Entity *e);
 void ai_batVertical_onCreate(Entity *e);
 void ai_batVertical_onUpdate(Entity *e);
 
+/* Curly - curly.c */
+
+void ai_curly_onUpdate(Entity *e);
+void ai_curly_onState(Entity *e);
+
 /* Egg Corridor - eggs.c */
 
 void ai_basil_onCreate(Entity *e);
@@ -108,6 +113,7 @@ void ai_basil_onUpdate(Entity *e);
 
 void ai_beetle_onUpdate(Entity *e);
 
+void ai_beetleFollow_onCreate(Entity *e);
 void ai_beetleFollow_onUpdate(Entity *e);
 
 void ai_behemoth_onUpdate(Entity *e);

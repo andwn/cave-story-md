@@ -270,10 +270,11 @@ void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
 void stage_draw_background() {
 	u8 w = background_info[stageBackground].width;
 	u8 h = background_info[stageBackground].height;
+	u16 pal = background_info[stageBackground].palette;
 	for(u8 y = 0; y < 32; y++) {
 		for(u8 x = 0; x < 64; x++) {
 			u16 b = TILE_BACKINDEX + (x%w) + ((y%h) * w);
-			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
+			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(pal, 0, 0, 0, b), x, y);
 		}
 	}
 }

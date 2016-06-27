@@ -64,6 +64,10 @@ void ai_beetle_onUpdate(Entity *e) {
 	e->x += e->x_speed;
 }
 
+void ai_beetleFollow_onCreate(Entity *e) {
+	e->spriteAnim = 1;
+}
+
 void ai_beetleFollow_onUpdate(Entity *e) {
 	u8 dir = player.x >= e->x;
 	if(dir != e->direction) {
@@ -72,6 +76,7 @@ void ai_beetleFollow_onUpdate(Entity *e) {
 	}
 	e->x_speed += dir ? 6 : -6;
 	if(abs(e->x_speed) > 0x300) e->x_speed = dir ? 0x300 : -0x300;
+	e->y_speed += (e->state_time % 120) >= 60 ? -1 : 1;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

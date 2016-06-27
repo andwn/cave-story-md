@@ -93,6 +93,7 @@ SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
 SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
 SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
 SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 2 NONE
+SPRITE SPR_BtlHB	"sprite/btlhb.png" 2 2 0 2 NONE
 SPRITE SPR_Toroko	"sprite/toroko.png" 2 2 0 20 NONE
 SPRITE SPR_Sue		"sprite/sue.png" 2 2 0 20 NONE
 SPRITE SPR_King		"sprite/king.png" 2 2 0 20 NONE
@@ -105,6 +106,7 @@ SPRITE SPR_Mahin	"sprite/mahin.png" 2 2 0 0 NONE
 SPRITE SPR_Santa	"sprite/santa.png" 2 2 0 15 NONE
 SPRITE SPR_Mannan	"sprite/mannan.png" 3 4 0 0 NONE
 SPRITE SPR_Curly	"sprite/curly.png" 2 2 0 8 NONE
+SPRITE SPR_CurlyB	"sprite/curlyb.png" 4 3 0 8 NONE
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
 # Use PAL_Plant
