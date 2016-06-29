@@ -7,6 +7,7 @@
 #include "resources.h"
 #include "tables.h"
 #include "effect.h"
+#include "entity.h"
 
 const WeaponFunc weapon_fire_array[WEAPON_COUNT] = {
 	&weapon_fire_none,
@@ -236,7 +237,7 @@ void bullet_update_fireball(Bullet *b) {
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed > -0x300) b->y_speed = -0x300;
 	} else {
-		b->y_speed += gravity;
+		b->y_speed += GRAVITY;
 		if(b->y_speed > 0x600) b->y_speed = 0x600;
 	}
 	b->x += b->x_speed;

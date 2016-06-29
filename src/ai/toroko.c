@@ -70,7 +70,7 @@ void ai_toroko_onUpdate(Entity *e) {
 	default:
 		break;
 	}
-	if(!e->grounded) e->y_speed += gravityJump;
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

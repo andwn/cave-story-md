@@ -57,52 +57,7 @@
 	}                                                                                          \
 })
 
-// The original game runs at 50 Hz. The PAL values are copied from it
-// NTSC values calculated with: value * (50.0 / 60.0)
-// All measured in subpixel, 0x200 (512) units is one pixel
-
-#define MAX_FALL_SPEED_NTSC 0x4FF
-#define MAX_FALL_SPEED_PAL 0x5FF
-#define MAX_FALL_SPEED_WATER_NTSC 0x27F
-#define MAX_FALL_SPEED_WATER_PAL 0x2FF
-
-#define GRAVITY_NTSC 0x43
-#define GRAVITY_PAL 0x50
-#define GRAVITY_WATER_NTSC 0x21
-#define GRAVITY_WATER_PAL 0x28
-
-#define GRAVITY_JUMP_NTSC 0x1B
-#define GRAVITY_JUMP_PAL 0x20
-#define GRAVITY_JUMP_WATER_NTSC 0x0D
-#define GRAVITY_JUMP_WATER_PAL 0x10
-
-#define JUMP_SPEED_NTSC 0x430
-#define JUMP_SPEED_PAL 0x500
-#define JUMP_SPEED_WATER_NTSC 0x210
-#define JUMP_SPEED_WATER_PAL 0x280
-
-#define MAX_WALK_SPEED_NTSC 0x2A5
-#define MAX_WALK_SPEED_PAL 0x32C
-#define MAX_WALK_SPEED_WATER_NTSC 0x151
-#define MAX_WALK_SPEED_WATER_PAL 0x196
-
-#define WALK_ACCEL_NTSC 0x47
-#define WALK_ACCEL_PAL 0x55
-#define WALK_ACCEL_WATER_NTSC 0x23
-#define WALK_ACCEL_WATER_PAL 0x2A
-
-#define AIR_CONTROL_NTSC 0x1B
-#define AIR_CONTROL_PAL 0x20
-#define AIR_CONTROL_WATER_NTSC 0x0D
-#define AIR_CONTROL_WATER_PAL 0x10
-
-#define FRICTION_NTSC 0x2A // (This one is 42.499 and I went for 42 here)
-#define FRICTION_PAL 0x33
-#define FRICTION_WATER_NTSC 0x15
-#define FRICTION_WATER_PAL 0x19
-
 // Heightmaps for slopes
-
 const u8 heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
 	{ 0x8,0x8,0x9,0x9,0xA,0xA,0xB,0xB,0xC,0xC,0xD,0xD,0xE,0xE,0xF,0xF },
@@ -110,16 +65,6 @@ const u8 heightmap[4][16] = {
 	{ 0x7,0x7,0x6,0x6,0x5,0x5,0x4,0x4,0x3,0x3,0x2,0x2,0x1,0x1,0x0,0x0 },
 };
 
-// Not halved anymore, using 512 per pixel units now
-s16 maxFallSpeed = MAX_FALL_SPEED_NTSC, maxFallSpeedWater = MAX_FALL_SPEED_WATER_NTSC,
-	gravity = GRAVITY_NTSC, gravityWater = GRAVITY_WATER_NTSC,
-	gravityJump = GRAVITY_JUMP_NTSC, gravityJumpWater = GRAVITY_JUMP_WATER_NTSC,
-	jumpSpeed = JUMP_SPEED_NTSC, jumpSpeedWater = JUMP_SPEED_WATER_NTSC,
-	maxWalkSpeed = MAX_WALK_SPEED_NTSC, maxWalkSpeedWater = MAX_WALK_SPEED_WATER_NTSC,
-	walkAccel = WALK_ACCEL_NTSC, walkAccelWater = WALK_ACCEL_WATER_NTSC,
-	airControl = AIR_CONTROL_NTSC, airControlWater = AIR_CONTROL_WATER_NTSC,
-	friction = FRICTION_NTSC, frictionWater = FRICTION_WATER_NTSC;
-	
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
 // Internal functions
@@ -288,7 +233,7 @@ void entities_update_inactive() {
 }
 
 void entity_update_movement(Entity *e) {
-	if ((e->eflags|e->nflags)&NPC_IGNORESOLID) {
+	if((e->eflags|e->nflags)&NPC_IGNORESOLID) {
 		entity_update_float(e);
 	} else {
 		entity_update_walk(e);
@@ -299,12 +244,15 @@ void entity_update_movement(Entity *e) {
 }
 
 void entity_update_walk(Entity *e) {
-	s16 acc = walkAccel,
-		fric = friction,
-		max_speed = maxWalkSpeed;
-	if (!e->grounded) {
-		acc = airControl;
-		fric = airControl;
+	s16 acc;
+	s16 fric;
+	s16 max_speed = MAX_WALK_SPEED;
+	if(e->grounded) {
+		acc = WALK_ACCEL;
+		fric = FRICTION;
+	} else {
+		acc = AIR_CONTROL;
+		fric = AIR_CONTROL;
 	}
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		e->underwater = true;
@@ -314,82 +262,80 @@ void entity_update_walk(Entity *e) {
 	} else {
 		e->underwater = false;
 	}
-	if (e->controller[0] & BUTTON_LEFT) {
+	if(e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
-		if (e->x_speed < -max_speed) {
-			e->x_speed = min(e->x_speed + (acc + acc * e->underwater), -max_speed);
+		if(e->x_speed < -max_speed) {
+			e->x_speed = min(e->x_speed + acc * 2, -max_speed);
 		}
-	} else if (e->controller[0] & BUTTON_RIGHT) {
+	} else if(e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
-		if (e->x_speed > max_speed) {
-			e->x_speed = max(e->x_speed - (acc + acc * e->underwater), max_speed);
+		if(e->x_speed > max_speed) {
+			e->x_speed = max(e->x_speed - acc * 2, max_speed);
 		}
 	} else if(e->grounded) {
-		if (e->x_speed < fric && e->x_speed > -fric) {
+		if(e->x_speed < fric && e->x_speed > -fric) {
 			e->x_speed = 0;
-		} else if (e->x_speed < 0) {
+		} else if(e->x_speed < 0) {
 			e->x_speed += fric;
-		} else if (e->x_speed > 0) {
+		} else if(e->x_speed > 0) {
 			e->x_speed -= fric;
 		}
 	}
 }
 
 void entity_update_jump(Entity *e) {
-	const u8 maxJumpTime = 17;
-	s16 tJumpSpeed = jumpSpeed,
-		tMaxJumpTime = maxJumpTime,
-		tGravity = gravity,
-		tGravityJump = gravityJump,
-		tMaxFallSpeed = maxFallSpeed;
+	s16 jumpSpeed = JUMP_SPEED;
+	s16 gravity = GRAVITY;
+	s16 gravityJump = GRAVITY_JUMP;
+	s16 maxFallSpeed = MAX_FALL_SPEED;
 	if(e->underwater) {
-		tJumpSpeed /= 2;
-		tGravity /= 2;
-		tGravityJump /= 2;
-		tMaxFallSpeed /= 2;
+		jumpSpeed /= 2;
+		gravity /= 2;
+		gravityJump /= 2;
+		maxFallSpeed /= 2;
 	}
-	if (e->jump_time > 0) {
-		if (e->controller[0] & BUTTON_C) {
+	if(e->jump_time > 0) {
+		if(e->controller[0] & BUTTON_C) {
 			e->jump_time--;
 		} else {
 			e->jump_time = 0;
 		}
 	}
-	if (e->jump_time > 0) return;
-	if (e->grounded) {
-		if ((e->controller[0] & BUTTON_C) && !(e->controller[1] & BUTTON_C)) {
+	if(e->jump_time > 0) return;
+	if(e->grounded) {
+		if((e->controller[0] & BUTTON_C) && !(e->controller[1] & BUTTON_C)) {
 			e->grounded = false;
-			e->y_speed = -tJumpSpeed;
-			e->jump_time = tMaxJumpTime;
+			e->y_speed = -jumpSpeed;
+			e->jump_time = MAX_JUMP_TIME;
 		}
 	} else {
-		if ((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
-				e->y_speed += tGravityJump;
+		if((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
+			e->y_speed += gravityJump;
 		} else {
-			e->y_speed += tGravity;
+			e->y_speed += gravity;
 		}
-		if (e->y_speed > tMaxFallSpeed) {
-			e->y_speed = tMaxFallSpeed;
+		if(e->y_speed > maxFallSpeed) {
+			e->y_speed = maxFallSpeed;
 		}
 	}
 }
 
 void entity_update_float(Entity *e) {
-	s16 acc = walkAccel,
-		fric = friction,
-		max_speed = maxWalkSpeed;
-	if (e->controller[0] & BUTTON_LEFT) {
+	s16 acc = WALK_ACCEL;
+	s16 fric = FRICTION;
+	s16 max_speed = MAX_WALK_SPEED;
+	if(e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if (e->x_speed < -max_speed) {
 			e->x_speed = -max_speed;
 		}
-	} else if (e->controller[0] & BUTTON_RIGHT) {
+	} else if(e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if (e->x_speed > max_speed) {
 			e->x_speed = max_speed;
 		}
 	} else {
-		if (e->x_speed < fric && e->x_speed > -fric) {
+		if(e->x_speed < fric && e->x_speed > -fric) {
 			e->x_speed = 0;
 		} else if (e->x_speed < 0) {
 			e->x_speed += fric;
@@ -397,22 +343,22 @@ void entity_update_float(Entity *e) {
 			e->x_speed -= fric;
 		}
 	}
-	if (e->controller[0] & BUTTON_UP) {
+	if(e->controller[0] & BUTTON_UP) {
 		e->y_speed -= acc;
 		if (e->y_speed < -max_speed) {
 			e->y_speed = -max_speed;
 		}
-	} else if (e->controller[0] & BUTTON_DOWN) {
+	} else if(e->controller[0] & BUTTON_DOWN) {
 		e->y_speed += acc;
 		if (e->y_speed > max_speed) {
 			e->y_speed = max_speed;
 		}
 	} else {
-		if (e->y_speed < fric && e->y_speed > -fric) {
+		if(e->y_speed < fric && e->y_speed > -fric) {
 			e->y_speed = 0;
-		} else if (e->y_speed < 0) {
+		} else if(e->y_speed < 0) {
 			e->y_speed += fric;
-		} else if (e->y_speed > 0) {
+		} else if(e->y_speed > 0) {
 			e->y_speed -= fric;
 		}
 	}

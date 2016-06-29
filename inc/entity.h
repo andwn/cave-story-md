@@ -16,14 +16,30 @@ enum {
 	BOSS_IRONHEAD, BOSS_SISTERS, BOSS_UNDEADCORE, BOSS_HEAVYPRESS, BOSS_BALLOS
 };
 
-extern s16 maxFallSpeed, maxFallSpeedWater,
-	gravity, gravityWater,
-	gravityJump, gravityJumpWater,
-	jumpSpeed, jumpSpeedWater,
-	maxWalkSpeed, maxWalkSpeedWater,
-	walkAccel, walkAccelWater,
-	airControl, airControlWater,
-	friction, frictionWater;
+// The original game runs at 50 Hz. The PAL values are copied from it
+// NTSC values calculated with: value * (50.0 / 60.0)
+// All measured in subpixel, 0x200 (512) units is one pixel
+#ifdef PAL
+#define MAX_FALL_SPEED 0x5FF
+#define GRAVITY 0x50
+#define GRAVITY_JUMP 0x20
+#define JUMP_SPEED 0x500
+#define MAX_WALK_SPEED 0x32C
+#define WALK_ACCEL 0x55
+#define AIR_CONTROL 0x20
+#define FRICTION 0x33
+#define MAX_JUMP_TIME 0x11
+#else
+#define MAX_FALL_SPEED 0x4FF
+#define GRAVITY 0x43
+#define GRAVITY_JUMP 0x1B
+#define JUMP_SPEED 0x430
+#define MAX_WALK_SPEED 0x2A5
+#define WALK_ACCEL 0x47
+#define AIR_CONTROL 0x1B
+#define FRICTION 0x2A // (This one is 42.499 and I went for 42 here)
+#define MAX_JUMP_TIME 0x0F
+#endif
 
 // This slightly redundant typedef is required for Entity to refer to itself
 typedef struct Entity Entity;

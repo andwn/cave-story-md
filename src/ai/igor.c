@@ -95,7 +95,7 @@ void ai_igor_onUpdate(Entity *e) {
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += gravityJump;
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);
@@ -169,7 +169,7 @@ void ai_igorscene_onUpdate(Entity *e) {
 		e->state_time--;
 		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
 	}
-	if(!e->grounded) e->y_speed += gravity;
+	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

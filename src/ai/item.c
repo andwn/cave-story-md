@@ -19,7 +19,7 @@ void ai_energy_onUpdate(Entity *e) {
 		e->grounded = false;
 		sound_play(SOUND_EXPBOUNCE, 0);
 	}
-	e->y_speed += gravity;
+	e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	s16 xsp = e->x_speed;

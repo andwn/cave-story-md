@@ -11,7 +11,7 @@ void ai_sue_onUpdate(Entity *e) {
 	if(e->state == 20 || e->state == 21) {
 		if(player.x - block_to_sub(2) > e->x) ENTITY_SET_STATE(e, 0, 0);
 	}
-	if(!e->grounded) e->y_speed += gravity;
+	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// Don't test ceiling, only test sticking to ground while moving

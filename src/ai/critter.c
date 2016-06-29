@@ -9,7 +9,7 @@
 
 void ai_critterHop_onUpdate(Entity *e) {
 	if(!e->grounded) { // Jumping/falling
-		e->y_speed += gravity;
+		e->y_speed += GRAVITY;
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		entity_update_collision(e);

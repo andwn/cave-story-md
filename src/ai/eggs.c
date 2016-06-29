@@ -14,7 +14,7 @@ void ai_behemoth_onUpdate(Entity *e) {
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		e->x_speed = -0x100 + 0x200 * e->direction;
 	}
-	if(!e->grounded) e->y_speed += gravityJump;
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

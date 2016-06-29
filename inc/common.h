@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+//#define PAL
+
 // Screen size
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 224
@@ -69,6 +71,17 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define floor(x) ((x)&~0x1FF)
 #define round(x) (((x)+0x100)&~0x1FF)
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
+
+#define divu10(n) ({ \
+    u16 q, r; \
+    q = (n >> 1) + (n >> 2); \
+    q = q + (q >> 4); \
+    q = q + (q >> 8); \
+    /* q = q + (q >> 16); */ \
+    q = q >> 3; \
+    r = n - (((q << 2) + q) << 1); \
+    n = q + (r > 9); \
+})
 
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)

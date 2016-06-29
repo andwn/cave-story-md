@@ -20,7 +20,7 @@ void ai_balrog_onUpdate(Entity *e) {
 			}
 		}
 	}
-	if(!e->grounded) e->y_speed += gravityJump;
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 	if(e->state != 10 && e->y > block_to_sub(6)) entity_update_collision(e);
@@ -83,12 +83,12 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 		if(e->grounded) {
 			e->x_speed >>= 1;
 			ENTITY_SET_STATE(e, 0, 0);
-		} else e->y_speed += gravityJump;
+		} else e->y_speed += GRAVITY_JUMP;
 		break;
 	case 7: // Grabbed player
 		player.x = e->x;
 		player.y = e->y;
-		if(!e->grounded) e->y_speed += gravityJump;
+		if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 		if(e->state_time == 0) ENTITY_SET_STATE(e, 8, 0);
 		break;
 	case 8:

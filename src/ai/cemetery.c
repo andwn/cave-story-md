@@ -49,7 +49,7 @@ void ai_pignon_onUpdate(Entity *e) {
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += gravityJump;
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// Don't test ceiling, only test sticking to ground while moving

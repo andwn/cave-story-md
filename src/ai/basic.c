@@ -46,7 +46,7 @@ void ai_spike_onCreate(Entity *e) {
 }
 
 void ai_grav_onUpdate(Entity *e) {
-	if(!e->grounded) e->y_speed += gravity;
+	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);
