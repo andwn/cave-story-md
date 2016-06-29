@@ -6,6 +6,7 @@
 #include "player.h"
 #include "tsc.h"
 #include "audio.h"
+#include "vdp_ext.h"
 
 // Official game supports 8000 but only uses 4000
 // Decrease if there are memory issues
@@ -78,6 +79,7 @@ void system_new() {
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	player_init();
+	//stage_load(80);
 	stage_load(13);
 }
 

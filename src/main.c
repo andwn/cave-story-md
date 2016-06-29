@@ -36,7 +36,7 @@ int main() {
 	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
     sound_init();
 	input_init();
-	SPR_init(80, 0, 0);
+	SPR_init(100, 512, 0);
 	SYS_enableInts();
     while(true) {
 		u8 select = titlescreen_main();

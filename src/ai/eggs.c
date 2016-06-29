@@ -69,6 +69,7 @@ void ai_beetleFollow_onCreate(Entity *e) {
 }
 
 void ai_beetleFollow_onUpdate(Entity *e) {
+	e->state_time++;
 	u8 dir = player.x >= e->x;
 	if(dir != e->direction) {
 		e->direction = dir;

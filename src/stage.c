@@ -39,7 +39,10 @@ void stage_load(u16 id) {
 	effects_clear();
 	entities_clear();
 	SPR_reset();
-	if(stageBlocks != NULL) MEM_free(stageBlocks);
+	if(stageBlocks != NULL) {
+		MEM_free(stageBlocks);
+		stageBlocks = NULL;
+	}
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();

@@ -46,6 +46,7 @@ void game_reset(bool load) {
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+	//VDP_setPaletteColors(0, VDP_getCachedPalette(), 64);
 }
 
 void draw_itemmenu() {

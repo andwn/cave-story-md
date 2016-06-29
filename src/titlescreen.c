@@ -59,6 +59,7 @@ u8 titlescreen_main() {
 	}
 	// A + Start enables debug mode
 	debuggingEnabled = (joystate&BUTTON_A) && joy_pressed(BUTTON_START);
+	song_stop();
 	sound_play(SOUND_CONFIRM, 0);
 	return cursor;
 }

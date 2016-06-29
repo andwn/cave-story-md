@@ -15,7 +15,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Tileset width/height
 // The only map larger than this is hell (have to figure out something for that)
 #define TS_WIDTH 32
-#define TS_HEIGHT 20
+#define TS_HEIGHT 16
 
 // Stage tileset is first in USERINDEX
 #define TILE_TSINDEX TILE_USERINDEX

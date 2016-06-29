@@ -18,11 +18,16 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 	{ &TS_Maze, &PAL_Maze, PXA_Maze },
 	{ &TS_Mimi, &PAL_Mimi, PXA_Mimi },
 	{ &TS_Oside, &PAL_Oside, PXA_Oside },
+	/* 0x10 (16) */
 	{ &TS_Pens, &PAL_Pens, PXA_Pens },
 	{ &TS_River, &PAL_River, PXA_River },
 	{ &TS_Sand, &PAL_Sand, PXA_Sand },
 	{ &TS_Store, &PAL_Store, PXA_Store },
 	{ &TS_Weed, &PAL_Weed, PXA_Weed },
 	{ &TS_White, &PAL_White, PXA_White },
+	// Tilesets which have been split off their main ones to reduce size
 	{ &TS_EggX2, &PAL_EggX, PXA_EggX },
+	{ &TS_Eggs2, &PAL_Eggs, PXA_Eggs2 },
+	{ &TS_MazeM, &PAL_Maze, PXA_MazeM },
+	{ &TS_Kings, &PAL_White, PXA_Kings },
 };
