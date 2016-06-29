@@ -52,7 +52,7 @@
 
 // Helper macros
 // This will get the block (in the tileset) that is at a specific location in the stage grid
-#define stage_get_block(x, y) (stageBlocks[(y) * stageWidth + (x)])
+#define stage_get_block(x, y) (stageBlocks[stageTable[y] + (x)])
 // Like above, but will return the "tile options" (solid, water, damage, etc)
 #define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
 
@@ -60,6 +60,9 @@
 u16 stageID;
 // Size of the stage - how many blocks wide/high
 u16 stageWidth, stageHeight;
+// A multiplication lookup table for each row of stageBlocks
+// Removes all mulu.w and __mulsci3 instructions in entity stage collision
+extern u16 *stageTable;
 // Index of background in db/back.c and the effect type
 u8 stageBackground, stageBackgroundType;
 // Copy of level layout data loaded into RAM

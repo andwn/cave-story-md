@@ -15,6 +15,7 @@
 s16 backScrollTable[32];
 s8 morphingRow, morphingColumn;
 u8 *stageBlocks = NULL;
+u16 *stageTable = NULL;
 
 void stage_load_tileset();
 void stage_load_blocks();
@@ -42,6 +43,10 @@ void stage_load(u16 id) {
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
+	}
+	if(stageTable != NULL) {
+		MEM_free(stageTable);
+		stageTable = NULL;
 	}
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
@@ -102,6 +107,13 @@ void stage_load_blocks() {
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
+	// Multiplication table for stage rows
+	stageTable = MEM_alloc(stageHeight * 2);
+	u16 blockTotal = 0;
+	for(u16 y = 0; y < stageHeight; y++) {
+		stageTable[y] = blockTotal;
+		blockTotal += stageWidth;
+	}
 }
 /*
 void stage_load_tileflags() {
