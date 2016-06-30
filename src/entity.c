@@ -84,6 +84,7 @@ void sprite_create(Entity *e) {
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
 		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
 	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
+	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 }
 
 // Move to inactive list, delete sprite
@@ -163,11 +164,13 @@ void entities_update() {
 			e = next;
 			continue;
 		}
+		// AI onUpdate method - may set STATE_DELETE
 		ENTITY_ONUPDATE(e);
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
 		}
+		// Handle Shootable flag - check for collision with player's bullets
 		if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
 			Bullet *b = bullet_colliding(e);
 			if(b != NULL) {
@@ -204,6 +207,35 @@ void entities_update() {
 				ENTITY_ONHURT(e);
 			}
 		}
+		// Solid Entities
+		bounding_box collision = { 0, 0, 0, 0 };
+		if((e->eflags|e->nflags) & (NPC_SOLID | NPC_SPECIALSOLID)) {
+			collision = entity_react_to_collision(&player, e);
+			if(collision.bottom && ((e->eflags|e->nflags) & NPC_BOUNCYTOP)) {
+				player.y_speed = pixel_to_sub(-1);
+				player.grounded = false;
+			}
+		}
+		// Can damage player if we have an attack stat and no script is running
+		if(e->attack > 0 && !tsc_running()) {
+			u32 collided = *(u32*)&collision; // I do what I want
+			if((collided > 0 || entity_overlapping(&player, e)) && playerIFrames == 0) {
+				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
+				// with the front of the enemy, the player shouldn't get hurt
+				if((e->eflags|e->nflags)&NPC_FRONTATKONLY) {
+					if((e->direction == 0 && collision.right == 0) ||
+							(e->direction > 0 && collision.left == 0)) {
+						e = e->next;
+						continue;
+					}
+				}
+				if(player_inflict_damage(e->attack)) {
+					// Player died, don't update entities anymore
+					return;
+				}
+			}
+		}
+		// Display damage
 		if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
 			e->damage_time--;
 			if(e->damage_time <= 0) {
@@ -265,12 +297,12 @@ void entity_update_walk(Entity *e) {
 	if(e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if(e->x_speed < -max_speed) {
-			e->x_speed = min(e->x_speed + acc * 2, -max_speed);
+			e->x_speed = min(e->x_speed + acc, -max_speed);
 		}
 	} else if(e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if(e->x_speed > max_speed) {
-			e->x_speed = max(e->x_speed - acc * 2, max_speed);
+			e->x_speed = max(e->x_speed - acc, max_speed);
 		}
 	} else if(e->grounded) {
 		if(e->x_speed < fric && e->x_speed > -fric) {

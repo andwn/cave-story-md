@@ -150,6 +150,8 @@ void ai_theDoor_onHurt(Entity *e);
 
 void ai_energy_onCreate(Entity *e);
 void ai_energy_onUpdate(Entity *e);
+void ai_missile_onUpdate(Entity *e);
+void ai_heart_onUpdate(Entity *e);
 
 /* Fans - fan.c */
 

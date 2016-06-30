@@ -66,6 +66,7 @@ void ai_beetle_onUpdate(Entity *e) {
 
 void ai_beetleFollow_onCreate(Entity *e) {
 	e->spriteAnim = 1;
+	e->state_time = 90;
 }
 
 void ai_beetleFollow_onUpdate(Entity *e) {
@@ -77,7 +78,7 @@ void ai_beetleFollow_onUpdate(Entity *e) {
 	}
 	e->x_speed += dir ? 6 : -6;
 	if(abs(e->x_speed) > 0x300) e->x_speed = dir ? 0x300 : -0x300;
-	e->y_speed += (e->state_time % 120) >= 60 ? -1 : 1;
+	e->y_speed += (e->state_time % 180) >= 90 ? -4 : 4;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -117,7 +118,7 @@ void ai_lift_onCreate(Entity *e) {
 
 #define LIFT_SPEED 0x200
 #define LIFT_MOVE_TIME 64
-#define LIFT_WAIT_TIME 60
+#define LIFT_WAIT_TIME 90
 
 // Moves through floors 1, 2, 3, 1, 2, 3 - doesn't stop at 2 on the way down
 void ai_lift_onUpdate(Entity *e) {

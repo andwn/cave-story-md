@@ -27,8 +27,7 @@ Bullet playerBullet[MAX_BULLETS];
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
 Entity player;
-// Amount of time (frames) player can stay underwater until they drown
-u16 playerMaxAir, playerAir;
+u8 playerIFrames;
 // Max health - current health is player.health (Entity)
 u16 playerMaxHealth;
 // When this is true, quote can not be controlled by player input
@@ -51,6 +50,8 @@ void player_draw();
 // This is called by entities to check if it got hit by any bullets
 // It will return the first bullet that is colliding with the given entity, if any
 Bullet *bullet_colliding(Entity *e);
+
+Weapon *player_find_weapon(u8 id);
 
 // Returns true if the player is blinking or otherwise should not be damaged (cutscene)
 bool player_invincible();

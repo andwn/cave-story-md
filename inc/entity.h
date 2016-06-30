@@ -28,7 +28,7 @@ enum {
 #define WALK_ACCEL 0x55
 #define AIR_CONTROL 0x20
 #define FRICTION 0x33
-#define MAX_JUMP_TIME 0x11
+#define MAX_JUMP_TIME 0x0F
 #else
 #define MAX_FALL_SPEED 0x4FF
 #define GRAVITY 0x43
@@ -38,7 +38,7 @@ enum {
 #define WALK_ACCEL 0x47
 #define AIR_CONTROL 0x1B
 #define FRICTION 0x2A // (This one is 42.499 and I went for 42 here)
-#define MAX_JUMP_TIME 0x0F
+#define MAX_JUMP_TIME 0x11
 #endif
 
 // This slightly redundant typedef is required for Entity to refer to itself
