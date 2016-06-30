@@ -42,6 +42,7 @@ SPRITE SPR_BladeB1	"sprite/bladeb1.png" 2 2 0 8 NONE
 SPRITE SPR_BladeB2	"sprite/bladeb2.png" 3 3 0 10 NONE
 SPRITE SPR_BladeB3	"sprite/bladeb3.png" 3 3 0 0 NONE
 SPRITE SPR_BladeB3S	"sprite/bladeb3slash.png" 2 2 0 4 NONE
+SPRITE SPR_Quotele	"sprite/quotele.png" 2 2 0 5 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar	"sprite/polar.png" 3 2 0 0 NONE

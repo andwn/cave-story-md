@@ -83,6 +83,15 @@ void ai_genericproj_onUpdate(Entity *e);
 // Default onState just explodes on death
 void ai_default_onState(Entity *e);
 
+void ai_teleIn_onCreate(Entity *e);
+void ai_teleIn_onUpdate(Entity *e);
+
+void ai_teleOut_onCreate(Entity *e);
+void ai_teleOut_onUpdate(Entity *e);
+
+void ai_player_onUpdate(Entity *e);
+void ai_player_onState(Entity *e);
+
 /* Balrog - balrog.c */
 
 void ai_balfrog_onCreate(Entity *e);

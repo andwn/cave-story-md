@@ -6,6 +6,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
+#include "effect.h"
 
 // Only drop down if there is no ground underneath
 void ai_pushdn_onCreate(Entity *e) {
@@ -81,4 +82,115 @@ void ai_genericproj_onUpdate(Entity *e) {
 
 void ai_default_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) e->state = STATE_DESTROY;
+}
+
+void ai_teleIn_onCreate(Entity *e) {
+	e->x += pixel_to_sub(16);
+	e->y += pixel_to_sub(8);
+	e->spriteAnim = 2;
+	sound_play(0x1D, 5);
+}
+
+void ai_teleIn_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0: // Appear
+		if(++e->state_time >= 5 * 14) {
+			e->state_time = 0;
+			e->state++;
+			SPR_SAFEANIM(e->sprite, 0);
+		}
+		break;
+		case 1: // Drop
+		e->y_speed += GRAVITY;
+		e->y_next = e->y + e->y_speed;
+		collide_stage_floor(e);
+		e->y = e->y_next;
+		if(++e->state_time > 12) e->state++;
+		break;
+	}
+}
+
+void ai_teleOut_onCreate(Entity *e) {
+	e->y -= pixel_to_sub(16);
+	e->y_speed = pixel_to_sub(-2);
+}
+
+void ai_teleOut_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0: // Hopping up
+		if(++e->state_time >= 24) {
+			e->state++;
+			e->state_time = 0;
+			e->y_speed = 0;
+			SPR_SAFEANIM(e->sprite, 1);
+			sound_play(0x1D, 5);
+		} else {
+			e->y_speed += GRAVITY;
+			e->y += e->y_speed;
+		}
+		break;
+		case 1: // Show teleport animation
+		if(++e->state_time >= 5 * 14) {
+			e->state++;
+			e->state_time = 0;
+			SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+		}
+		break;
+	}
+}
+
+void ai_player_onUpdate(Entity *e) {
+	if(!e->grounded) e->y_speed += GRAVITY;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	entity_update_collision(e);
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
+void ai_player_onState(Entity *e) {
+	switch(e->state) {
+		case 0:
+		e->x_speed = 0;
+		SPR_SAFEANIM(e->sprite, 0);
+		break;
+		case 2:		// looking up
+		SPR_SAFEANIM(e->sprite, 2);
+		break;
+		case 10:	// he gets flattened
+		sound_play(0x47, 5);
+		for(u8 i = 0; i < 3; i++) {
+			effect_create_smoke(0, sub_to_pixel(e->x) - 16 + (random() % 32), 
+				sub_to_pixel(e->y) - 16 + (random() % 32));
+		}
+		e->state++;
+		case 11:
+		SPR_SAFEANIM(e->sprite, 9);
+		break;
+		case 20:	// he teleports away
+		e->type = 0x6F;
+		e->state = 0;
+		e->state_time = 0;
+		ai_teleOut_onCreate(e);
+		break;
+		case 50:	// walking
+		e->x_speed = e->direction ? pixel_to_sub(1) : pixel_to_sub(-1);
+		SPR_SAFEANIM(e->sprite, 1);
+		break;
+		// falling, upside-down (from good ending; Fall stage)
+		case 60:
+		SPR_SAFEANIM(e->sprite, 0);
+		SPR_SAFEVFLIP(e->sprite, 1);
+		break;
+		case 80:	// face away
+		SPR_SAFEANIM(e->sprite, 4);
+		break;
+		// walking in place during credits
+		case 99:
+		case 100:
+		case 101:
+		case 102:
+		SPR_SAFEANIM(e->sprite, 1);
+		break;
+	}
 }

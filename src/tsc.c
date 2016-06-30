@@ -686,7 +686,12 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			stage_replace_block(args[0], args[1], args[2]);
+			if(stageID == 14) { // Mimiga Village Shack
+				stage_replace_block(args[0], args[1], 
+					(args[2]==80 || args[2]==81 || args[2]==82) ? args[2]+32 : args[2]+19);
+			} else {
+				stage_replace_block(args[0], args[1], args[2]);
+			}
 			sound_play(SOUND_BREAK, 5);
 			break;
 		case CMD_MP_ADD: // TODO: Map flag (1)
