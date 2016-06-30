@@ -110,6 +110,9 @@ void ai_balrogRunning_onState(Entity *e);
 void ai_batVertical_onCreate(Entity *e);
 void ai_batVertical_onUpdate(Entity *e);
 
+void ai_batHang_onCreate(Entity *e);
+void ai_batHang_onUpdate(Entity *e);
+
 /* Curly - curly.c */
 
 void ai_curly_onUpdate(Entity *e);
@@ -144,8 +147,9 @@ void ai_igordead_onUpdate(Entity *e);
 
 /* Critters - critter.c */
 
-void ai_critterHop_onUpdate(Entity *e);
-void ai_critterHop_onState(Entity *e);
+void ai_critter_onUpdate(Entity *e);
+void ai_critter_onState(Entity *e);
+void ai_critter_onHurt(Entity *e);
 
 /* Doors - door.c */
 
@@ -211,5 +215,21 @@ void ai_pignon_onUpdate(Entity *e);
 void ai_pignon_onHurt(Entity *e);
 
 void ai_gkeeper_onUpdate(Entity *e);
+
+/* Grasstown - weed.c */
+
+void ai_jelly_onCreate(Entity *e);
+void ai_jelly_onUpdate(Entity *e);
+void ai_jelly_onHurt(Entity *e);
+
+void ai_mannan_onUpdate(Entity *e);
+void ai_mannan_onState(Entity *e);
+void ai_mannan_onHurt(Entity *e);
+
+void ai_mannanShot_onUpdate(Entity *e);
+
+/* Sand Zone - sand.c */
+
+
 
 #endif /* INC_AI_H_ */

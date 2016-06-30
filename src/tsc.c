@@ -13,6 +13,7 @@
 #include "tables.h"
 #include "hud.h"
 #include "window.h"
+#include "effect.h"
 
 // Execution State
 #define TSC_IDLE 0 // Not executing any events
@@ -469,12 +470,16 @@ u8 execute_command() {
 			}
 			SPR_SAFEHFLIP(player.sprite, player.direction);
 			break;
-		case CMD_UNI: // TODO: Change movement type to (1)
+		case CMD_UNI: // Change movement type to (1)
 			args[0] = tsc_read_word();
+			playerMoveMode = args[0];
 			break;
-		case CMD_UNJ: // TODO: If movement type is (1) jump to event (2)
+		case CMD_UNJ: // If movement type is (1) jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
+			if(playerMoveMode == args[0]) {
+				tsc_call_event(args[1]);
+			}
 			break;
 		case CMD_KEY: // Lock controls and hide the HUD
 			player_lock_controls();
@@ -542,8 +547,9 @@ u8 execute_command() {
 			args[3] = tsc_read_word();
 			entity_create(args[1], args[2], 0, 0, args[0], 0, args[3] > 0);
 			break;
-		case CMD_BOA: // TODO: Give map boss state (1)
+		case CMD_BOA: // Give map boss state (1)
 			args[0] = tsc_read_word();
+			stageBossState = args[0];
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
@@ -670,8 +676,6 @@ u8 execute_command() {
 		case CMD_FAO:
 			args[0] = tsc_read_word();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, false);
-			// So message text is still visible
-			VDP_setPaletteColor(15, 0xEEE);
 			break;
 		case CMD_FLA: // Flash screen white
 			VDP_setPaletteColors(0, PAL_FullWhite, 64);
@@ -686,12 +690,17 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			if(stageID == 14) { // Mimiga Village Shack
+			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
+			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
+			// code so I can put in this hacky section which fixes specific scripts
+			if(stageID == 14) { // Mimiga Village Shack - when Balrog barges in
 				stage_replace_block(args[0], args[1], 
 					(args[2]==80 || args[2]==81 || args[2]==82) ? args[2]+32 : args[2]+19);
 			} else {
 				stage_replace_block(args[0], args[1], args[2]);
 			}
+			// Puff of smoke and make crash sound
+			effect_create_smoke(1, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
 			sound_play(SOUND_BREAK, 5);
 			break;
 		case CMD_MP_ADD: // TODO: Map flag (1)
@@ -724,9 +733,10 @@ u8 execute_command() {
 		case CMD_XX1: // TODO: Island effect
 			args[0] = tsc_read_word();
 			break;
-		case CMD_SMP:
+		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
+			stage_replace_block(args[0], args[1], stage_get_block(args[0], args[1]) - 1);
 			break;
 		default:
 			break;

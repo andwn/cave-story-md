@@ -75,6 +75,8 @@ u8 stageTileset;
 // It is NOT the total number of entities that exist at any time, use entity_count() instead
 u8 stageEntityCount;
 
+u8 stageBossState;
+
 // Clears previous stage and switches to one with the given ID
 void stage_load(u16 id);
 

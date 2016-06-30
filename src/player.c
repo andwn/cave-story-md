@@ -77,6 +77,7 @@ void player_init() {
 	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
 	playerDead = false;
+	playerMoveMode = 0;
 	currentWeapon = 0;
 	airPercent = 100;
 	airTick = 0;
@@ -111,13 +112,29 @@ void player_reset_sprites() {
 
 void player_update() {
 	if(playerDead) return;
-	if(debuggingEnabled && (joystate&BUTTON_A)) {
+	if(debuggingEnabled && (joystate&BUTTON_A)) { // Float - no collision
 		entity_update_float(&player);
 		player.x_next = player.x + player.x_speed;
 		player.y_next = player.y + player.y_speed;
-	} else {
+	} else if(playerMoveMode == 0) { // Normal movement
 		entity_update_movement(&player);
 		entity_update_collision(&player);
+		player_update_bounds();
+	} else { // Move mode 1 - for ironhead
+		entity_update_float(&player);
+		player.x_next = player.x + player.x_speed;
+		player.y_next = player.y + player.y_speed;
+		if(player.x_speed < 0) {
+			collide_stage_leftwall(&player);
+		} else if (player.x_speed > 0) {
+			collide_stage_rightwall(&player);
+		}
+		// No "grounded" when floating, but don't go through the floor
+		if(player.y_speed > 0) {
+			collide_stage_floor(&player);
+		} else if(player.y_speed < 0) {
+			collide_stage_ceiling(&player);
+		}
 		player_update_bounds();
 	}
 	player.x = player.x_next;

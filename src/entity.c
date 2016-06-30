@@ -70,9 +70,6 @@ Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 // Internal functions
 void sprite_create(Entity *e);
 
-void entity_drop_powerup(Entity *e);
-bool entity_on_screen(Entity *e);
-
 // Initialize sprite for entity
 void sprite_create(Entity *e) {
 	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
@@ -693,6 +690,15 @@ Entity *entity_find_by_event(u16 event) {
 	e = inactiveList;
 	while(e != NULL) {
 		if(e->event == event) return e;
+		else e = e->next;
+	}
+	return NULL;
+}
+
+Entity *entity_find_by_type(u16 type) {
+	Entity *e = entityList;
+	while(e != NULL) {
+		if(e->type == type) return e;
 		else e = e->next;
 	}
 	return NULL;

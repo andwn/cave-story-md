@@ -28,6 +28,7 @@ Bullet playerBullet[MAX_BULLETS];
 // Not all variables in Entity are used but most are
 Entity player;
 u8 playerIFrames;
+u8 playerMoveMode;
 // Max health - current health is player.health (Entity)
 u16 playerMaxHealth;
 // When this is true, quote can not be controlled by player input

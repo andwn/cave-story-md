@@ -202,8 +202,9 @@ void bullet_update_polarstar(Bullet *b) {
 	if(block == 0x43) {
 		b->ttl = 0;
 		SPR_SAFERELEASE(b->sprite);
-		sound_play(SOUND_BREAK, 8);
 		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+		effect_create_smoke(1, sub_to_pixel(b->x) + 8, sub_to_pixel(b->y) + 8);
+		sound_play(SOUND_BREAK, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		SPR_SAFERELEASE(b->sprite);
@@ -260,8 +261,13 @@ void bullet_update_missile(Bullet *b) {
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if(block == 0x41 || block == 0x43) { // Explode
+		if(block == 0x41) { // Explode
 			bullet_missile_explode(b);
+		} else if(block == 0x43) {
+			bullet_missile_explode(b);
+			stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+			effect_create_smoke(1, sub_to_pixel(b->x) + 8, sub_to_pixel(b->y) + 8);
+			sound_play(SOUND_BREAK, 5);
 		}
 		SPR_SAFEMOVE(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,

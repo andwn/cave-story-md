@@ -39,6 +39,7 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
+	stageBossState = 0;
 	SPR_reset();
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
@@ -70,7 +71,6 @@ void stage_load(u16 id) {
 	}
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
-	//stage_load_tileflags();
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
 	player_reset_sprites(); // Reloads player/weapon sprites
@@ -115,23 +115,7 @@ void stage_load_blocks() {
 		blockTotal += stageWidth;
 	}
 }
-/*
-void stage_load_tileflags() {
-	const u8 *PXA = tileset_info[stageTileset].PXA;
-	s16 startx = sub_to_block(camera.x) - 16,
-		starty = sub_to_block(camera.y) - 16,
-		endx = startx + 32, endy = starty + 32;
-	if(startx < 0) startx = 0;
-	if(starty < 0) starty = 0;
-	if(endx > stageWidth) endx = stageWidth;
-	if(endy > stageHeight) endy = stageHeight;
-	for(u16 y = starty; y < endy; y++) {
-		for(u16 x = startx; x < endx; x++) {
-			stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
-		}
-	}
-}
-*/
+
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
 	stageEntityCount = PXE[4];
@@ -158,10 +142,8 @@ bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {
 }
 
 void stage_replace_block(u16 bx, u16 by, u8 index) {
-	//stageTileFlags[bx%32][by%32] = tileset_info[stageTileset].PXA[index];
-	stageBlocks[by * stageWidth + bx] = index;
+	stageBlocks[stageTable[by] + bx] = index;
 	stage_draw_area(bx, by, 1, 1);
-	effect_create_smoke(1, block_to_pixel(bx) + 8, block_to_pixel(by) + 8);
 }
 
 void stage_update() {
@@ -235,15 +217,12 @@ void stage_draw_row(s16 _x, s16 _y) {
 }
 
 void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
-	// Cache the tile flag data
-	//const u8 *PXA = tileset_info[stageTileset].PXA;
 	if(x_dir != 0) {
 		s16 x = _x + (x_dir*15);
 		if(x >= 0 && x < stageWidth) {
 			for(s16 y = _y-16; y < _y+16; y++) {
 				if(y < 0) continue;
 				if(y >= stageHeight) break;
-				//stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
 			}
 		}
 	}
@@ -253,7 +232,6 @@ void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
 			for(s16 x = _x-16; x < _x+16; x++) {
 				if(x < 0) continue;
 				if(x >= stageWidth) break;
-				//stageTileFlags[x%32][y%32] = PXA[stage_get_block(x,y)];
 			}
 		}
 	}

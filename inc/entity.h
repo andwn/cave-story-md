@@ -138,11 +138,15 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event);
 // Finds entity matching an ID or event and returns it
 Entity *entity_find_by_id(u16 id);
 Entity *entity_find_by_event(u16 event);
+Entity *entity_find_by_type(u16 event);
 
 // Returns true if an entity of given type exists
 bool entity_exists(u16 type);
 // Returns true if the entity should be disabled (checks flags)
 bool entity_disabled(Entity *e);
+
+void entity_drop_powerup(Entity *e);
+bool entity_on_screen(Entity *e);
 
 // Handles movement physics based on controller input, will set the values x_next and y_next
 void entity_update_movement(Entity *e);

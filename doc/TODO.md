@@ -12,27 +12,23 @@
     - [ ] Weapon level up
     - [ ] Walk & jump sound
   - [ ] Missing mechanics
-    - [ ] <UNI:0001
     - [ ] Carrying objects (puppy, curly)
-- [ ] Completable Areas
-  - [ ] Intro
+- [ ] Completable Main Areas
   - [x] First Cave
     - [ ] Zzz above gunsmith's head
   - [x] Mimiga Village
-    - [ ] Sprinkler sprite and effect
-    - [ ] Behavior for Gravekeeper
+    - [ ] Animate Sprinkler
     - [ ] Animate Mahin
     - [ ] Animate Kanpachi
     - [ ] Animate Misery's Bubble
+    - [ ] AI for Gravekeeper
   - [x] Egg Corridor
     - [ ] Animate Teleporter
     - [ ] Animate Terminals
     - [ ] Fix Sue
     - [ ] AI for Basu
     - [ ] Animate scene in Arthur2
-  - [ ] Grasstown
-    - [ ] Animate Santa
-    - [ ] Animate Chako
+  - [x] Grasstown
     - [ ] Animate Malco
     - [ ] Animate Kazuma
     - [ ] Animate Booster
@@ -46,10 +42,43 @@
     - [ ] AI for Ravil
     - [ ] AI for Press
     - [ ] AI for Second Balrog Fight
-    - [ ] Fix boss routines so Balfrog can be loaded again
     - [ ] AI for Balfrog
   - [ ] Sand Zone
-  ...
+    - [ ] Animate Jenka
+    - [ ] Animate Puppies
+    - [ ] Animate Mimigas in the Bar
+    - [ ] Animate Doctor
+    - [ ] Fix whatever King is supposed to do
+    - [ ] AI for Curly Boss
+    - [ ] AI for that enemy that splits into more enemies
+    - [ ] AI for Sand Croc
+    - [ ] AI for Omega
+    - [ ] AI for Skeleton Head
+    - [ ] AI for Skeleton Head with Legs
+    - [ ] AI for Bird
+    - [ ] AI for Bird Carrying Skeleton Head
+    - [ ] AI for Armadillo
+    - [ ] AI for Toroko Boss
+  - [ ] Labyrinth
+    - [ ] Animate Moving Blocks
+    - [ ] Animate Nurse
+    - [ ] AI for Purple Critter
+    - [ ] AI for Gaudi
+    - [ ] AI for Pooh Black
+    - [ ] AI for Monster X
+    - [ ] AI for Last Balrog Fight
+  - [ ] Post Labyrinth / Almond
+  - [ ] Waterway
+  - [ ] Egg Corridor 2
+  - [ ] Outer Wall
+  - [ ] Plantation
+  - [ ] Last Cave
+  - [ ] Balcony
+- [ ] Completable Pre/Post Game Areas
+  - [ ] Intro
+  - [ ] Ending
+  - [ ] Credits
+  - [ ] Sacred Ground
 - [ ] Weapons / Equip
   - [x] Polar Star
     - [ ] Animate bounce against wall
@@ -58,6 +87,7 @@
   - [x] Fireball
     - [ ] Proper graphic for lv 2 and 3
   - [ ] Machine Gun
+  - [ ] Blade
   - [ ] Snake
   - [ ] Spur
   - [ ] Super Missiles

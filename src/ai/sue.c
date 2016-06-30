@@ -8,26 +8,35 @@
 #include "tsc.h"
 
 void ai_sue_onUpdate(Entity *e) {
-	if(e->state == 20 || e->state == 21) {
-		if(player.x - block_to_sub(2) > e->x) ENTITY_SET_STATE(e, 0, 0);
-	}
-	if(!e->grounded) e->y_speed += GRAVITY;
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	// Don't test ceiling, only test sticking to ground while moving
-	if(e->x_speed < 0) {
-		collide_stage_leftwall(e);
-	} else if(e->x_speed > 0) {
-		collide_stage_rightwall(e);
-	}
-	if(e->grounded) {
-		if(e->x_speed != 0) collide_stage_floor_grounded(e);
+	if(e->state == 14) { // Carried by Igor
+		Entity *igor = entity_find_by_type(0x53);
+		if(igor != NULL) { // This should never be NULL but just in case
+			e->y = igor->y + block_to_sub(1);
+			e->x = igor->x + igor->direction ? block_to_sub(2) : 0;
+			SPR_SAFEHFLIP(e->sprite, igor->direction);
+		}
 	} else {
-		collide_stage_floor(e);
-		if(e->grounded && e->state == 8) ENTITY_SET_STATE(e, 10, 0);
+		if(e->state == 20 || e->state == 21) {
+			if(player.x - block_to_sub(2) > e->x) ENTITY_SET_STATE(e, 0, 0);
+		}
+		if(!e->grounded) e->y_speed += GRAVITY;
+		e->x_next = e->x + e->x_speed;
+		e->y_next = e->y + e->y_speed;
+		// Don't test ceiling, only test sticking to ground while moving
+		if(e->x_speed < 0) {
+			collide_stage_leftwall(e);
+		} else if(e->x_speed > 0) {
+			collide_stage_rightwall(e);
+		}
+		if(e->grounded) {
+			if(e->x_speed != 0) collide_stage_floor_grounded(e);
+		} else {
+			collide_stage_floor(e);
+			if(e->grounded && e->state == 8) ENTITY_SET_STATE(e, 10, 0);
+		}
+		e->x = e->x_next;
+		e->y = e->y_next;
 	}
-	e->x = e->x_next;
-	e->y = e->y_next;
 }
 
 /*
@@ -69,10 +78,10 @@ void ai_sue_onState(Entity *e) {
 		SPR_SAFEANIM(e->sprite, 3);
 		break;
 		case 8:
-		e->x_speed = e->direction ? 0x100 : -0x100;
+		e->x_speed = e->direction ? -0x100 : 0x100;
 		e->y_speed = -0x300;
 		e->grounded = false;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, !e->direction);
 		SPR_SAFEANIM(e->sprite, 4);
 		sound_play(0x32, 6);
 		break;
