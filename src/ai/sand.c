@@ -59,3 +59,26 @@ void ai_sunstone_onUpdate(Entity *e) {
 void ai_sunstone_onState(Entity *e) {
 	
 }
+
+void ai_puppy_onCreate(Entity *e) {
+	e->eflags |= NPC_INTERACTIVE; // Yeah..
+}
+
+void ai_puppy_onUpdate(Entity *e) {
+	
+}
+
+void ai_torokoBoss_onCreate(Entity *e) {
+	e->eflags |= NPC_SHOOTABLE;
+}
+
+void ai_torokoBoss_onUpdate(Entity *e) {
+	
+}
+
+void ai_torokoBoss_onState(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
+		tsc_call_event(e->event);
+		e->state = STATE_DELETE;
+	}
+}

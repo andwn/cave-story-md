@@ -234,6 +234,8 @@ void ai_malco_onState(Entity *e);
 void ai_malcoBroken_onCreate(Entity *e);
 void ai_malcoBroken_onState(Entity *e);
 
+void ai_powerc_onCreate(Entity *e);
+
 /* Sand Zone - sand.c */
 
 void ai_omega_onCreate(Entity *e);
@@ -243,5 +245,12 @@ void ai_omega_onState(Entity *e);
 void ai_sunstone_onCreate(Entity *e);
 void ai_sunstone_onUpdate(Entity *e);
 void ai_sunstone_onState(Entity *e);
+
+void ai_puppy_onCreate(Entity *e);
+void ai_puppy_onUpdate(Entity *e);
+
+void ai_torokoBoss_onCreate(Entity *e);
+void ai_torokoBoss_onUpdate(Entity *e);
+void ai_torokoBoss_onState(Entity *e);
 
 #endif /* INC_AI_H_ */

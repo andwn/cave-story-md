@@ -37,10 +37,10 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Stream,	PXE_Stream,	TSC_Stream,	&PAL_Regu,	17,	2,	"Main Artery" },
 	/* 0x20 (32) */
 	{ PXM_CurlyS,	PXE_CurlyS,	TSC_CurlyS,	&PAL_Regu,	16,	0,	"Small Room" },
-	{ PXM_Jenka1,	PXE_Jenka1,	TSC_Jenka1,	&PAL_Regu,	2,	0,	"Jenka's House" },
+	{ PXM_Jenka1,	PXE_Jenka1,	TSC_Jenka1,	&PAL_Jenka,	2,	0,	"Jenka's House" },
 	{ PXM_Dark,		PXE_Dark,	TSC_Dark,	&PAL_Regu,	18,	0,	"Deserted House" },
 	{ PXM_Gard,		PXE_Gard,	TSC_Gard,	&PAL_Regu,	9,	5,	"Sand Zone Storehouse" },
-	{ PXM_Jenka2,	PXE_Jenka2,	TSC_Jenka2,	&PAL_Regu,	2,	0,	"Jenka's House" },
+	{ PXM_Jenka2,	PXE_Jenka2,	TSC_Jenka2,	&PAL_Jenka,	2,	0,	"Jenka's House" },
 	{ PXM_SandE,	PXE_SandE,	TSC_SandE,	&PAL_Regu,	18,	7,	"Sand Zone" },
 	{ PXM_MazeH,	PXE_MazeH,	TSC_MazeH,	&PAL_Regu,	13,	8,	"Labyrinth H" },
 	{ PXM_MazeW,	PXE_MazeW,	TSC_MazeW,	&PAL_Regu,	13,	8,	"Labyrinth W" },

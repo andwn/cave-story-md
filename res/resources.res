@@ -9,6 +9,7 @@ PALETTE PAL_Gunsmith	"sprite/gunsmith.png" 3
 PALETTE PAL_Plant		"sprite/flower.png" 3
 PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 PALETTE PAL_Chaco		"sprite/chaco.png" 3
+PALETTE PAL_Jenka		"sprite/jenka.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -98,6 +99,8 @@ SPRITE SPR_TeleLight "sprite/telelight.png" 2 2 0 0 NONE
 SPRITE SPR_Puppy	"sprite/puppy.png" 2 2 0 8 NONE
 SPRITE SPR_Table	"sprite/table.png" 3 2 0 0 NONE
 SPRITE SPR_ManShot	"sprite/manshot.png" 2 3 0 4 NONE
+SPRITE SPR_Skullhead "sprite/skullstep.png" 4 3 0 0 NONE
+
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
@@ -130,6 +133,11 @@ SPRITE SPR_Crow		"sprite/crow.png" 4 4 0 12 NONE
 SPRITE SPR_Armadl	"sprite/armadillo.png" 4 2 0 10 NONE
 SPRITE SPR_Omega	"sprite/omega.png" 10 8 0 0 NONE
 SPRITE SPR_OmegaLeg "sprite/omegaleg.png" 4 4 0 0 NONE
+SPRITE SPR_Booster	"sprite/booster.png" 2 2 0 10 NONE
+SPRITE SPR_Jenka	"sprite/jenka.png" 2 2 0 0 NONE
+SPRITE SPR_Doctor	"sprite/doctor.png" 3 4 0 12 NONE
+SPRITE SPR_ToroBoss "sprite/torokoboss.png" 4 4 0 12 NONE
+SPRITE SPR_ToroFlower "sprite/toroflower.png" 2 2 0 8 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
@@ -184,7 +192,7 @@ TILESET TS_Face09	"face/face09.png" 2
 TILESET TS_Face10	"face/face10.png" 2
 TILESET TS_Face11	"face/face11.png" 2
 TILESET TS_Face12	"face/face12.png" 2
-
+TILESET TS_Face13	"face/face13.png" 2
 TILESET TS_Face14	"face/face14.png" 2
 TILESET TS_Face15	"face/face15.png" 2
 TILESET TS_Face16	"face/face16.png" 2

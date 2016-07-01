@@ -27,21 +27,31 @@ void ai_energy_onUpdate(Entity *e) {
 		}
 		e->state = STATE_DELETE;
 	} else {
-		// Bounce when hitting the ground
-		if(e->grounded) {
-			e->y_speed = pixel_to_sub(-2);
-			e->grounded = false;
-			sound_play(SOUND_EXPBOUNCE, 0);
+		if(++e->state_time > 15 * 60) {
+			e->state = STATE_DELETE;
+			return;
+		} else if(e->state_time > 12 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
 		}
 		e->y_speed += GRAVITY;
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
-		s16 xsp = e->x_speed;
-		entity_update_collision(e);
 		// Reverse direction when hitting a wall
+		s16 xsp = e->x_speed;
+		if(e->x_speed < 0) {
+			collide_stage_leftwall(e);
+		} else {
+			collide_stage_rightwall(e);
+		}
 		if(e->x_speed == 0) {
 			e->direction = !e->direction;
 			e->x_speed = -xsp;
+		}
+		// Bounce when hitting the ground
+		if(collide_stage_floor(e)) {
+			e->y_speed = pixel_to_sub(-2);
+			e->grounded = false;
+			sound_play(SOUND_EXPBOUNCE, 0);
 		}
 		e->x = e->x_next;
 		e->y = e->y_next;

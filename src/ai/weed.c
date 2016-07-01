@@ -164,3 +164,7 @@ void ai_malcoBroken_onState(Entity *e) {
 		break;
 	}
 }
+
+void ai_powerc_onCreate(Entity *e) {
+	e->y += pixel_to_sub(8);
+}
