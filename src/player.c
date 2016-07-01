@@ -108,6 +108,7 @@ void player_reset_sprites() {
 	mapNameTTL = 0;
 	airSprite = NULL;
 	airDisplayTime = 0;
+	playerPlatform = NULL;
 }
 
 void player_update() {
@@ -119,6 +120,16 @@ void player_update() {
 	} else if(playerMoveMode == 0) { // Normal movement
 		entity_update_movement(&player);
 		entity_update_collision(&player);
+		if(playerPlatform != NULL) {
+			bounding_box box = entity_react_to_collision(&player, playerPlatform);
+			if(box.bottom > 0) {
+				player.y -= pixel_to_sub(box.bottom);
+				player.grounded = true;
+			} else {
+				player.y += playerPlatform->y_speed;
+			}
+			playerPlatform = NULL;
+		}
 		player_update_bounds();
 	} else { // Move mode 1 - for ironhead
 		entity_update_float(&player);

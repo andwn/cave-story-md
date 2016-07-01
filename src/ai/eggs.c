@@ -66,7 +66,7 @@ void ai_beetle_onUpdate(Entity *e) {
 
 void ai_beetleFollow_onCreate(Entity *e) {
 	e->spriteAnim = 1;
-	e->state_time = 90;
+	e->state_time = 45;
 }
 
 void ai_beetleFollow_onUpdate(Entity *e) {

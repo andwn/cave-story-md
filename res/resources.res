@@ -94,6 +94,10 @@ SPRITE SPR_Press	"sprite/press.png" 2 3 0 0 NONE
 SPRITE SPR_Cage		"sprite/cage.png" 4 3 0 0 NONE
 SPRITE SPR_EnergyShot "sprite/energyshot.png" 2 2 0 6 NONE
 SPRITE SPR_MisslP	"sprite/missilep.png" 2 2 0 6 NONE
+SPRITE SPR_TeleLight "sprite/telelight.png" 2 2 0 0 NONE
+SPRITE SPR_Puppy	"sprite/puppy.png" 2 2 0 8 NONE
+SPRITE SPR_Table	"sprite/table.png" 3 2 0 0 NONE
+SPRITE SPR_ManShot	"sprite/manshot.png" 2 3 0 4 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
@@ -118,6 +122,10 @@ SPRITE SPR_Santa	"sprite/santa.png" 2 2 0 15 NONE
 SPRITE SPR_Mannan	"sprite/mannan.png" 3 4 0 0 NONE
 SPRITE SPR_Curly	"sprite/curly.png" 2 2 0 8 NONE
 SPRITE SPR_CurlyB	"sprite/curlyb.png" 4 3 0 8 NONE
+SPRITE SPR_Sunstone "sprite/sandstone.png" 4 4 0 0 NONE
+SPRITE SPR_Sandcroc	"sprite/sandcroc.png" 6 4 0 4 NONE
+SPRITE SPR_Polish	"sprite/polish.png" 4 4 0 4 NONE
+SPRITE SPR_Baby		"sprite/baby.png" 2 2 0 4 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE

@@ -13,9 +13,12 @@ void ai_door_onCreate(Entity *e) {
 	if(e->direction) e->spriteAnim = SPRITE_DISABLE;
 }
 
-void ai_door_onState(Entity *e) {
-	if(e->direction) SPR_SAFERELEASE(e->sprite);
-	//else if(e->sprite == NULL) entity_create_sprite(e);
+void ai_door_onUpdate(Entity *e) {
+	if(e->direction) {
+		SPR_SAFERELEASE(e->sprite);
+	} else if(e->sprite == NULL) {
+		entity_sprite_create(e);
+	}
 }
 
 void ai_theDoor_onUpdate(Entity *e) {

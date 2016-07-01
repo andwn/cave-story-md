@@ -12,10 +12,19 @@ void ai_critter_onUpdate(Entity *e) {
 		if(e->sprite->animInd == 3) { // Flying
 			e->state_time++;
 			e->y_speed -= GRAVITY_JUMP;
-			if(e->state_time > 60) SPR_SAFEANIM(e->sprite, 4);
+			if(e->state_time > 60) {
+				SPR_SAFEANIM(e->sprite, 1);
+			}
+			e->x_next = e->x + e->x_speed;
+			e->y_next = e->y + e->y_speed;
+			entity_update_collision(e);
+			e->x = e->x_next;
+			e->y = e->y_next;
+			if(e->grounded) ENTITY_SET_STATE(e, 0, 0);
 		} else if((e->type == 0x18 || e->type == 0x1C) &&
 			e->sprite->animInd == 2 && e->y_speed > 0x100) { // Begin to fly
 			SPR_SAFEANIM(e->sprite, 3);
+			e->state_time = 0;
 		} else { // Jumping/falling
 			e->y_speed += GRAVITY;
 			e->x_next = e->x + e->x_speed;

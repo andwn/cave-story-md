@@ -154,7 +154,7 @@ void ai_critter_onHurt(Entity *e);
 /* Doors - door.c */
 
 void ai_door_onCreate(Entity *e);
-void ai_door_onState(Entity *e);
+void ai_door_onUpdate(Entity *e);
 
 void ai_theDoor_onUpdate(Entity *e);
 void ai_theDoor_onHurt(Entity *e);
@@ -228,8 +228,16 @@ void ai_mannan_onHurt(Entity *e);
 
 void ai_mannanShot_onUpdate(Entity *e);
 
+void ai_malco_onUpdate(Entity *e);
+void ai_malco_onState(Entity *e);
+
+void ai_malcoBroken_onCreate(Entity *e);
+void ai_malcoBroken_onState(Entity *e);
+
 /* Sand Zone - sand.c */
 
-
+void ai_sunstone_onCreate(Entity *e);
+void ai_sunstone_onUpdate(Entity *e);
+void ai_sunstone_onState(Entity *e);
 
 #endif /* INC_AI_H_ */

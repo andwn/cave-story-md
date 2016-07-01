@@ -67,11 +67,8 @@ const u8 heightmap[4][16] = {
 
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
-// Internal functions
-void sprite_create(Entity *e);
-
 // Initialize sprite for entity
-void sprite_create(Entity *e) {
+void entity_sprite_create(Entity *e) {
 	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
 		e->sprite = NULL;
 		return;
@@ -99,7 +96,7 @@ void entity_deactivate(Entity *e) {
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
 	LIST_MOVE(inactiveList, entityList, e);
-	sprite_create(e);
+	entity_sprite_create(e);
 }
 
 Entity *entity_delete(Entity *e) {
@@ -208,9 +205,13 @@ void entities_update() {
 		bounding_box collision = { 0, 0, 0, 0 };
 		if((e->eflags|e->nflags) & (NPC_SOLID | NPC_SPECIALSOLID)) {
 			collision = entity_react_to_collision(&player, e);
-			if(collision.bottom && ((e->eflags|e->nflags) & NPC_BOUNCYTOP)) {
-				player.y_speed = pixel_to_sub(-1);
-				player.grounded = false;
+			if(collision.bottom) {
+				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
+					player.y_speed = pixel_to_sub(-1);
+					player.grounded = false;
+				} else {
+					playerPlatform = e;
+				}
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
@@ -830,7 +831,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 	ENTITY_ONCREATE(e);
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		LIST_PUSH(entityList, e);
-		sprite_create(e);
+		entity_sprite_create(e);
 	} else {
 		LIST_PUSH(inactiveList, e);
 		e->sprite = NULL;
@@ -850,7 +851,7 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	ENTITY_ONCREATE(e);
 	LIST_PUSH(entityList, e);
 	bossEntity = e;
-	sprite_create(e);
+	entity_sprite_create(e);
 	return e;
 }
 
@@ -862,7 +863,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			entity_default(e, type, flags);
 			e->direction = direction;
 			ENTITY_ONCREATE(e);
-			sprite_create(e);
+			entity_sprite_create(e);
 		}
 		e = e->next;
 	}

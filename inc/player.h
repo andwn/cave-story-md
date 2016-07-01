@@ -38,6 +38,8 @@ u16 playerEquipment;
 // What items the player has and will show up in the inventory screen
 u8 playerInventory[MAX_ITEMS];
 
+Entity *playerPlatform;
+
 // Initialize everything for the player, sets default values on game start
 void player_init();
 // Reloads the player sprites after calling SPR_reset() in stage_load()

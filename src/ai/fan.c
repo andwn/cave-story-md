@@ -38,22 +38,22 @@ void ai_fan_onUpdate(Entity *e) {
 	switch(e->state) {
 	case 1: // Left
 		if(px > ex - 8 && px <= ex && py == ey) {
-			player.x_speed -= 0x50;
+			if(player.x_speed > -MAX_WALK_SPEED * 2) player.x_speed -= 0x50;
 		}
 		break;
 	case 2: // Up
 		if(py > ey - 8 && py <= ey && px == ex) {
-			player.y_speed -= (joy_pressed(BUTTON_C) ? 0x60 : 0x40);
+			player.y_speed -= (joy_pressed(BUTTON_C) ? 0x70 : 0x50);
 		}
 		break;
 	case 3: // Right
 		if(px >= ex && px < ex + 8 && py == ey) {
-			player.x_speed += 0x50;
+			if(player.x_speed < MAX_WALK_SPEED * 2) player.x_speed += 0x50;
 		}
 		break;
 	case 4: // Down
 		if(py >= ey && py < ey + 8 && px == ex) {
-			player.y_speed += 0x50;
+			player.y_speed += 0x40;
 		}
 		break;
 	default:

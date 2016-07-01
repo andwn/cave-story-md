@@ -148,6 +148,8 @@ bool entity_disabled(Entity *e);
 void entity_drop_powerup(Entity *e);
 bool entity_on_screen(Entity *e);
 
+void entity_sprite_create(Entity *e);
+
 // Handles movement physics based on controller input, will set the values x_next and y_next
 void entity_update_movement(Entity *e);
 // These 3 are individual parts of update_movement()

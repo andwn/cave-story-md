@@ -35,7 +35,7 @@ void ai_batHang_onUpdate(Entity *e) {
 			x2 = e->x + 0x1000, y2 = e->y + 0x9000;
 		if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
 			e->direction = player.x > e->x;
-			SPR_SAFEANIM(e->sprite, 2);
+			SPR_SAFEANIM(e->sprite, 3);
 			ENTITY_SET_STATE(e, 1, 0);
 		}
 	} else if(e->state == 1) {

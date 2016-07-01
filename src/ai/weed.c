@@ -147,6 +147,10 @@ void ai_malco_onState(Entity *e) {
 	}
 }
 
+void ai_malcoBroken_onCreate(Entity *e) {
+	e->spriteAnim = 6;
+}
+
 void ai_malcoBroken_onState(Entity *e) {
 	switch(e->state) {
 		case 0:
