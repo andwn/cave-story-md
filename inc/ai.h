@@ -236,6 +236,10 @@ void ai_malcoBroken_onState(Entity *e);
 
 /* Sand Zone - sand.c */
 
+void ai_omega_onCreate(Entity *e);
+void ai_omega_onUpdate(Entity *e);
+void ai_omega_onState(Entity *e);
+
 void ai_sunstone_onCreate(Entity *e);
 void ai_sunstone_onUpdate(Entity *e);
 void ai_sunstone_onState(Entity *e);

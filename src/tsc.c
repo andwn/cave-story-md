@@ -549,11 +549,17 @@ u8 execute_command() {
 			break;
 		case CMD_BOA: // Give map boss state (1)
 			args[0] = tsc_read_word();
-			stageBossState = args[0];
+			if(bossEntity != NULL) {
+				ENTITY_SET_STATE(bossEntity, args[0], 0);
+			} else if(stageID == 0x0A && args[0] == 20) {
+				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 1, 
+					BOSS_OMEGA, 210);
+				ENTITY_SET_STATE(bossEntity, 20, 0);
+			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
-			bossEntity = entity_find_by_event(args[0]);
+			//bossEntity = entity_find_by_event(args[0]);
 			if(bossEntity != NULL) {
 				tsc_show_boss_health();
 			}
@@ -650,10 +656,8 @@ u8 execute_command() {
 			if(system_get_skip_flag(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_FOB: // Focus on boss (1) with (2) ticks
-			if(bossEntity != NULL) {
-				camera.target = bossEntity;
-				break;
-			}
+			if(bossEntity != NULL) camera.target = bossEntity;
+			break;
 		case CMD_FON: // Focus on NPC (1) with (2) ticks
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();

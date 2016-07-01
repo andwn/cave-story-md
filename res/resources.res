@@ -126,6 +126,10 @@ SPRITE SPR_Sunstone "sprite/sandstone.png" 4 4 0 0 NONE
 SPRITE SPR_Sandcroc	"sprite/sandcroc.png" 6 4 0 4 NONE
 SPRITE SPR_Polish	"sprite/polish.png" 4 4 0 4 NONE
 SPRITE SPR_Baby		"sprite/baby.png" 2 2 0 4 NONE
+SPRITE SPR_Crow		"sprite/crow.png" 4 4 0 12 NONE
+SPRITE SPR_Armadl	"sprite/armadillo.png" 4 2 0 10 NONE
+SPRITE SPR_Omega	"sprite/omega.png" 10 8 0 0 NONE
+SPRITE SPR_OmegaLeg "sprite/omegaleg.png" 4 4 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE

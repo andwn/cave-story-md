@@ -159,7 +159,6 @@ void ai_balrogRunning_onState(Entity *e) {
 
 // Boss 02 - Balfrog
 void ai_balfrog_onCreate(Entity *e) {
-	e->event = 1000;
 	e->direction = 1;
 	e->health = 300;
 	e->attack = 5;

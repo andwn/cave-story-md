@@ -203,7 +203,7 @@ void bullet_update_polarstar(Bullet *b) {
 		b->ttl = 0;
 		SPR_SAFERELEASE(b->sprite);
 		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
-		effect_create_smoke(1, sub_to_pixel(b->x) + 8, sub_to_pixel(b->y) + 8);
+		effect_create_smoke(1, sub_to_pixel(b->x), sub_to_pixel(b->y));
 		sound_play(SOUND_BREAK, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
@@ -266,7 +266,7 @@ void bullet_update_missile(Bullet *b) {
 		} else if(block == 0x43) {
 			bullet_missile_explode(b);
 			stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
-			effect_create_smoke(1, sub_to_pixel(b->x) + 8, sub_to_pixel(b->y) + 8);
+			effect_create_smoke(1, sub_to_pixel(b->x), sub_to_pixel(b->y));
 			sound_play(SOUND_BREAK, 5);
 		}
 		SPR_SAFEMOVE(b->sprite, 

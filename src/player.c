@@ -121,14 +121,16 @@ void player_update() {
 		entity_update_movement(&player);
 		entity_update_collision(&player);
 		if(playerPlatform != NULL) {
+			player.x += playerPlatform->x_speed;
+			player.y += playerPlatform->y_speed;
+			player.hit_box.bottom++;
 			bounding_box box = entity_react_to_collision(&player, playerPlatform);
-			if(box.bottom > 0) {
-				player.y -= pixel_to_sub(box.bottom);
-				player.grounded = true;
+			player.hit_box.bottom--;
+			if(box.bottom == 0) {
+				playerPlatform = NULL;
 			} else {
-				player.y += playerPlatform->y_speed;
+				player.grounded = true;
 			}
-			playerPlatform = NULL;
 		}
 		player_update_bounds();
 	} else { // Move mode 1 - for ironhead

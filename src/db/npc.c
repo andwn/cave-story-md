@@ -71,7 +71,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	/* 0x020 (32) */
 	{ &SPR_LifeUp, 	PAL1, "Life Capsule",
 		NULL, NULL, NULL, NULL },
-	{ NULL, 		PAL0, "Balrog Energy Bounce", // TODO
+	{ &SPR_EnergyShot, PAL1, "Balrog Energy Bounce", // TODO
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Bed, 	PAL1, "Bed",
 		NULL, NULL, NULL, NULL },
@@ -99,7 +99,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		NULL, NULL, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, "Horiz/Vert Trigger",
 		NULL, &ai_trigger_onUpdate, NULL, NULL },
-	{ NULL, 		PAL0, "Green Sandcroc", // TODO
+	{ &SPR_Sandcroc, PAL3, "Green Sandcroc", // TODO
 		NULL, NULL, &ai_default_onState, NULL },
 	/* 0x030 (48) */
 	{ NULL, 		PAL0, "Omega Projectile", // TODO
@@ -258,7 +258,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		NULL, NULL, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, "Curly Projectile",
 		NULL, NULL, NULL, NULL },
-	{ &SPR_Sunstone, PAL0, "Sunstone",
+	{ &SPR_Sunstone, PAL3, "Sunstone",
 		&ai_sunstone_onCreate, NULL, NULL, NULL },
 	{ NULL, 		PAL0, "Hidden Heart/Missile",
 		NULL, &ai_heart_onUpdate, NULL, NULL },
@@ -750,8 +750,8 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
-	{ NULL, 		PAL3, "Omega",
-		NULL, NULL, &ai_default_onState, NULL },
+	{ &SPR_Omega, 	PAL3, "Omega",
+		&ai_omega_onCreate, &ai_omega_onUpdate, &ai_omega_onState, NULL },
 	{ &SPR_Balfrog1, PAL3, "Balfrog",
 		&ai_balfrog_onCreate, &ai_balfrog_onUpdate, &ai_balfrog_onState, &ai_balfrog_onHurt },
 };
