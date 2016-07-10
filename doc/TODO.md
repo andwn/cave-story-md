@@ -87,6 +87,7 @@
   - [x] Fireball
     - [ ] Proper graphic for lv 2 and 3
   - [ ] Machine Gun
+  - [ ] Bubbler
   - [ ] Blade
   - [ ] Snake
   - [ ] Spur

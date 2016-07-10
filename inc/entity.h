@@ -9,7 +9,13 @@
  */
 
 // Used in Entity.spriteAnim, disables loading sprite when reactivating
-#define SPRITE_DISABLE 0xFF                                                                               
+#define SPRITE_DISABLE 0xFF       
+
+enum {
+	DONT_SORT,
+	FORCE_FRONT,
+	FORCE_BACK
+};                                                                        
 
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,

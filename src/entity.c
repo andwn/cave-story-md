@@ -79,6 +79,11 @@ void entity_sprite_create(Entity *e) {
 		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
 	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+	if(npc_info[e->type].sorting == FORCE_BACK) {
+		
+	} else if(npc_info[e->type].sorting == FORCE_FRONT) {
+		
+	}
 }
 
 // Move to inactive list, delete sprite

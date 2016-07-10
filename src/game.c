@@ -51,6 +51,7 @@ void game_reset(bool load) {
 
 void draw_itemmenu() {
 	SYS_disableInts();
+	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, 0, 64 * 20);
 	//window_draw_area(2, 1, 36, 18);
 	VDP_drawTextWindow("--ARMS--", 16, 3);
 	for(u16 i = 0; i < MAX_ITEMS; i++) {

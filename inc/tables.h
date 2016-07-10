@@ -78,6 +78,7 @@ typedef struct {
 typedef struct {
 	const SpriteDefinition *sprite; // Sprite to load
 	u16 palette; // Any of the 4 loaded palettes to use for the sprite
+	u8 sorting;
 	char name[26]; // Name of the NPC (NPC Test)
 	// The "methods" for AI/behavior. Storing them in this table frees up 16 bytes per entity
 	EntityMethod onCreate, onUpdate, onState, onHurt;
