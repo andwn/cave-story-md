@@ -121,8 +121,8 @@ void player_update() {
 		entity_update_movement(&player);
 		entity_update_collision(&player);
 		if(playerPlatform != NULL) {
-			player.x += playerPlatform->x_speed;
-			player.y += playerPlatform->y_speed;
+			player.x_next += playerPlatform->x_speed;
+			player.y_next += playerPlatform->y_speed;
 			player.hit_box.bottom++;
 			bounding_box box = entity_react_to_collision(&player, playerPlatform);
 			player.hit_box.bottom--;
