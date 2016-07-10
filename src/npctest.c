@@ -39,6 +39,7 @@ void draw_npc_template() {
 void draw_npc_info(u16 id) {
 	SYS_disableInts();
 	// ID
+	VDP_clearText(5, 4, 3);
 	VDP_drawInt(id, 5, 4); 
 	// Name
 	VDP_clearText(10, 4, 25);
@@ -72,7 +73,8 @@ void draw_npc_info(u16 id) {
 }
 
 Sprite* change_npc_sprite(Sprite *sprite, u16 id) {
-	SPR_SAFERELEASE(sprite);
+	SPR_reset();
+	SPR_clear();
 	const SpriteDefinition *def = npc_info[id].sprite;
 	return def != NULL
 		? SPR_addSprite(def, 304 - npc_displayBox(id).right - npc_displayBox(id).left, 
