@@ -89,6 +89,10 @@ void ai_teleIn_onUpdate(Entity *e);
 void ai_teleOut_onCreate(Entity *e);
 void ai_teleOut_onUpdate(Entity *e);
 
+void ai_teleLight_onCreate(Entity *e);
+void ai_teleLight_onUpdate(Entity *e);
+void ai_teleLight_onState(Entity *e);
+
 void ai_player_onUpdate(Entity *e);
 void ai_player_onState(Entity *e);
 

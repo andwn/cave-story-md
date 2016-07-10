@@ -139,6 +139,20 @@ void ai_teleOut_onUpdate(Entity *e) {
 	}
 }
 
+void ai_teleLight_onCreate(Entity *e) {
+	e->spriteAnim = SPRITE_DISABLE;
+	e->x += pixel_to_sub(8);
+	e->y += pixel_to_sub(8);
+}
+
+void ai_teleLight_onUpdate(Entity *e) {
+	
+}
+
+void ai_teleLight_onState(Entity *e) {
+	
+}
+
 void ai_player_onUpdate(Entity *e) {
 	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;

@@ -51,7 +51,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Tele, 	PAL1, "Teleporter",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_TeleLight, PAL1, "Teleporter Lights",
-		NULL, NULL, NULL, NULL },
+		&ai_teleLight_onCreate, &ai_teleLight_onUpdate, &ai_teleLight_onState, NULL },
 	{ &SPR_CritBig, PAL0, "Power Critter",
 		&ai_pushdn_onCreate, &ai_critter_onUpdate, &ai_critter_onState, &ai_critter_onHurt },
 	{ &SPR_Platform, PAL1, "Lift Platform",
