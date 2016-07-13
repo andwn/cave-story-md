@@ -752,10 +752,10 @@ void entity_drop_powerup(Entity *e) {
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {
 			Entity *msl = entity_create(bx, by, 0, 0, 86, NPC_OPTION2, 0);
-			msl->experience = 3;
+			//msl->experience = 3;
 		} else {
 			Entity *msl = entity_create(bx, by, 0, 0, 86, 0, 0);
-			msl->experience = 3;
+			//msl->experience = 1;
 		}
 	} else { // Heart
 		if(e->experience > 6) {

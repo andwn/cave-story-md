@@ -66,8 +66,8 @@ void ai_missile_onUpdate(Entity *e) {
 		if(w == NULL) w = player_find_weapon(WEAPON_SUPERMISSILE);
 		// If we found either increase ammo
 		if(w != NULL) {
-			// I store ammo in the experience variable since there was no better place
-			w->ammo += e->experience;
+			// OPTION2 is large pickup
+			w->ammo += (e->eflags & NPC_OPTION2) ? 3 : 1;
 			if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
 		}
 		sound_play(0x2A, 5);
