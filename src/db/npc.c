@@ -140,7 +140,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Bat, 	PAL0, 3, "Bat",
 		&ai_batVertical_onCreate, &ai_batVertical_onUpdate, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, 3, "Misery's Bubble",
-		NULL, NULL, NULL, NULL },
+		NULL, &ai_miseryBubble_onUpdate, NULL, NULL },
 	{ &SPR_Misery, 	PAL0, 3, "Misery (Floating)",
 		NULL, &ai_miseryFloat_onUpdate, &ai_miseryFloat_onState, NULL },
 	{ &SPR_Balrog, 	PAL1, 3, "Balrog (First Fight)",
@@ -169,7 +169,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		&ai_pushdn_onCreate, NULL, NULL, NULL },
 	/* 0x050 (80) */
 	{ &SPR_Keeper, 	PAL1, 3, "Gravekeeper",
-		NULL, NULL, &ai_default_onState, NULL },
+		NULL, &ai_gkeeper_onUpdate, &ai_default_onState, NULL },
 	{ &SPR_PignonB, PAL1, 3, "Big Pignon",
 		NULL, &ai_pignon_onUpdate, &ai_default_onState, &ai_pignon_onHurt },
 	{ &SPR_Misery, 	PAL0, 3, "Misery (Standing)",
@@ -199,7 +199,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Kulala, 	PAL0, 3, "Kulala",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ &SPR_Jelly, 	PAL0, 3, "Jelly",
-		&ai_op2flip_onCreate, NULL, &ai_default_onState, NULL },
+		&ai_op2flip_onCreate, &ai_jelly_onUpdate, &ai_default_onState, &ai_jelly_onHurt },
 	/* 0x060 (96) */
 	{ &SPR_Fan, 	PAL1, 3, "Fan (Left)",
 		&ai_fan_onCreate, &ai_fan_onUpdate, NULL, NULL },

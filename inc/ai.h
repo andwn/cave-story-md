@@ -206,6 +206,8 @@ void ai_king_onState(Entity *e);
 void ai_miseryFloat_onUpdate(Entity *e);
 void ai_miseryFloat_onState(Entity *e);
 
+void ai_miseryBubble_onUpdate(Entity *e);
+
 /* Toroko - toroko.c */
 
 void ai_torokoAtk_onCreate(Entity *e);
