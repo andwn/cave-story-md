@@ -65,10 +65,10 @@ SPRITE SPR_Fire		"sprite/fire.png" 2 2 0 10 NONE
 SPRITE SPR_Sign		"sprite/sign.png" 2 2 0 0 NONE
 SPRITE SPR_Smoke	"sprite/smoke.png" 2 2 0 6 NONE
 SPRITE SPR_Sparkle	"sprite/sparkle.png" 2 2 0 10 NONE
-SPRITE SPR_Energy	"sprite/energy.png" 2 2 0 6 NONE
-#SPRITE SPR_EnergyS	"sprite/energysm.png" 2 2 0 6 NONE
+#SPRITE SPR_Energy	"sprite/energy.png" 2 2 0 6 NONE
+SPRITE SPR_EnergyS	"sprite/energysm.png" 1 1 0 6 NONE
 #SPRITE SPR_EnergyM	"sprite/energymid.png" 2 2 0 6 NONE
-#SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
+SPRITE SPR_EnergyL	"sprite/energylg.png" 2 2 0 6 NONE
 SPRITE SPR_DoorE	"sprite/doore.png" 2 3 0 0 NONE
 SPRITE SPR_Bat		"sprite/bat.png" 2 2 0 6 NONE
 SPRITE SPR_Spikes	"sprite/spikes.png" 2 2 0 0 NONE

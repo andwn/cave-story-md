@@ -11,12 +11,6 @@
 // Used in Entity.spriteAnim, disables loading sprite when reactivating
 #define SPRITE_DISABLE 0xFF       
 
-enum {
-	DONT_SORT,
-	FORCE_FRONT,
-	FORCE_BACK
-};                                                                        
-
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
 	BOSS_IRONHEAD, BOSS_SISTERS, BOSS_UNDEADCORE, BOSS_HEAVYPRESS, BOSS_BALLOS
@@ -80,13 +74,13 @@ struct Entity {
 	bool direction, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping
 		underwater; // True when entity is within a water tile
-	u8 jump_time: 5; // Time until jump button no longer increases jump height
+	u8 jump_time; // Time until jump button no longer increases jump height
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	/* Display */
 	Sprite *sprite; // Sprite assigned to this entity, or NULL
 	// These 4 sprite variables remember the sprite state when an entity deactivates
 	// Once reactivated, they are used to restore the sprite attributes
-	u8 spriteAnim, spriteFrame : 7, spriteVFlip : 1;
+	u8 spriteAnim, spriteFrame, spriteVFlip;
 	bounding_box display_box; // Area where sprite is displayed relative to the center
 	// Used to generate damage strings
 	s16 damage_value;

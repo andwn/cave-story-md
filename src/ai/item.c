@@ -9,6 +9,10 @@
 #include "input.h"
 
 void ai_energy_onCreate(Entity *e) {
+	if(!(e->eflags & NPC_OPTION2)) {
+		e->display_box.left -= 4;
+		e->display_box.right -= 4;
+	}
 	e->x_speed = 0x200 - (random() % 0x400);
 }
 

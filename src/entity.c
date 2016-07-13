@@ -73,17 +73,15 @@ void entity_sprite_create(Entity *e) {
 		e->sprite = NULL;
 		return;
 	}
-	e->sprite = SPR_addSprite(npc_info[e->type].sprite, 
+	SPR_SAFEADD(e->sprite, (e->type == 1 && (e->eflags & NPC_OPTION2)) ? 
+		&SPR_EnergyL : npc_info[e->type].sprite, 
 		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
-		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction));
+		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction),
+		npc_info[e->type].zorder);
 	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
-	if(npc_info[e->type].sorting == FORCE_BACK) {
-		
-	} else if(npc_info[e->type].sorting == FORCE_FRONT) {
-		
-	}
+	// TODO: Sorting
 }
 
 // Move to inactive list, delete sprite
@@ -734,14 +732,14 @@ void entity_drop_powerup(Entity *e) {
 	if(chance >= 3) { // Weapon Energy
 		s16 i = e->experience;
 		for(; i >= 5; i -= 5) { // Big
-			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
+			Entity *exp = entity_create(bx, by, 0, 0, 1, NPC_OPTION2, 0);
 			exp->experience = 5;
-			SPR_SAFEANIM(exp->sprite, 2);
+			//SPR_SAFEANIM(exp->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 3;
-			SPR_SAFEANIM(exp->sprite, 1);
+			//SPR_SAFEANIM(exp->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
@@ -751,11 +749,9 @@ void entity_drop_powerup(Entity *e) {
 	} else if(chance == 2 && (player_has_weapon(WEAPON_MISSILE) || 
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {
-			Entity *msl = entity_create(bx, by, 0, 0, 86, NPC_OPTION2, 0);
-			//msl->experience = 3;
+			entity_create(bx, by, 0, 0, 86, NPC_OPTION2, 0);
 		} else {
-			Entity *msl = entity_create(bx, by, 0, 0, 86, 0, 0);
-			//msl->experience = 1;
+			entity_create(bx, by, 0, 0, 86, 0, 0);
 		}
 	} else { // Heart
 		if(e->experience > 6) {

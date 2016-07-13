@@ -106,7 +106,16 @@ void window_close() {
 void window_set_face(u16 face, bool open) {
 	if(open && !windowOpen) window_open(0);
 	showingFace = face;
-	if(face > 0) window_draw_face();
+	if(face > 0) {
+		window_draw_face();
+	} else {
+		// Hack to clear face only
+		for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
+			for(u8 x = TEXT_X1; x <= TEXT_X1_FACE; x++) {
+				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
+			}
+		}
+	}
 }
 
 void window_draw_char(u8 c) {

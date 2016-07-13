@@ -87,6 +87,13 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
 // "Safe" wrappers for sprite functions will only execute if given a non-null sprite
+#define SPR_SAFEADD(s, def, x, y, attr, z) ({ \
+	SPR_SAFERELEASE(s); \
+	s = SPR_addSprite(def, x, y, attr); \
+	if(s != NULL) { \
+		s->data = z; \
+	} \
+})
 #define SPR_SAFERELEASE(s); ({ if(s != NULL) { SPR_releaseSprite(s); s = NULL; } })
 #define SPR_SAFEVFLIP(s ,f); ({ if(s != NULL) { SPR_setVFlip(s, f); } })
 #define SPR_SAFEHFLIP(s, f); ({ if(s != NULL) { SPR_setHFlip(s, f); } })

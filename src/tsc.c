@@ -421,7 +421,7 @@ u8 execute_command() {
 			break;
 		case CMD_SOU: // Play sound (1)
 			args[0] = tsc_read_word();
-			sound_play(args[0], 0);
+			sound_play(args[0], 5);
 			break;
 		case CMD_SPS: // TODO: Persistent sounds, skip for now
 		case CMD_CPS:
@@ -552,6 +552,7 @@ u8 execute_command() {
 			if(bossEntity != NULL) {
 				ENTITY_SET_STATE(bossEntity, args[0], 0);
 			} else if(stageID == 0x0A && args[0] == 20) {
+				// Hack to spawn Omega in Sand Zone
 				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 1, 
 					BOSS_OMEGA, 210);
 				ENTITY_SET_STATE(bossEntity, 20, 0);
