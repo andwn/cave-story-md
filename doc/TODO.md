@@ -2,7 +2,7 @@
 
 - [ ] Music (27 of 41)
 - [ ] Engine
-  - [ ] Sprite ordering
+  - [ ] Sprite ordering (Pending on SGDK)
   - [ ] Item Menu
   - [ ] Map
   - [ ] Boss health
@@ -11,21 +11,14 @@
     - [ ] Question mark
     - [ ] Weapon level up
     - [ ] Walk & jump sound
-  - [ ] Missing mechanics
-    - [ ] Carrying objects (puppy, curly)
 - [ ] Completable Main Areas
   - [x] First Cave
     - [ ] Zzz above gunsmith's head
   - [x] Mimiga Village
     - [ ] Animate Sprinkler
     - [ ] Animate Mahin
-    - [ ] Animate Kanpachi
-    - [ ] Animate Misery's Bubble
-    - [ ] AI for Gravekeeper
   - [x] Egg Corridor
-    - [ ] Animate Teleporter
     - [ ] Animate Terminals
-    - [ ] Fix Sue
     - [ ] AI for Basu
     - [ ] Animate scene in Arthur2
   - [x] Grasstown
@@ -43,7 +36,7 @@
     - [ ] AI for Press
     - [ ] AI for Second Balrog Fight
     - [ ] AI for Balfrog
-  - [ ] Sand Zone
+  - [x] Sand Zone
     - [ ] Animate Jenka
     - [ ] Animate Puppies
     - [ ] Animate Mimigas in the Bar

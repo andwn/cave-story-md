@@ -8,12 +8,16 @@
 #include "tsc.h"
 
 void ai_sue_onUpdate(Entity *e) {
-	if(e->state == 14) { // Carried by Igor
+	if(e->state == 13) { // Carried by Igor
 		Entity *igor = entity_find_by_type(0x53);
 		if(igor != NULL) { // This should never be NULL but just in case
-			e->y = igor->y + block_to_sub(1);
-			e->x = igor->x + igor->direction ? block_to_sub(2) : 0;
+			e->y = igor->y;
+			e->x = igor->x + igor->direction ? block_to_sub(1) : block_to_sub(-1);
 			SPR_SAFEHFLIP(e->sprite, igor->direction);
+		}
+	} else if(e->state == 6) {
+		if(++e->state_time > 40) {
+			ENTITY_SET_STATE(e, 0, 0);
 		}
 	} else {
 		if(e->state == 20 || e->state == 21) {
@@ -36,48 +40,38 @@ void ai_sue_onUpdate(Entity *e) {
 		}
 		e->x = e->x_next;
 		e->y = e->y_next;
+		if(e->state == 8 && e->grounded) { 
+			e->x_speed = 0;
+			ENTITY_SET_STATE(e, 10, 0);
+		}
 	}
 }
 
-/*
-Sue [0042] -By Shmitz
-0000	Stand around. Eyes blink.
-0003	Walk forward			
-0004	Walk forward			
-0005	Back turned			
-0008	Knocked a bit over		
-0009	Fall over			
-0010	Fall over			
-0011	Throw a fit			
-0012	Fall over, throw a fit.
-0014	CRASH GAME
-0015	Summons red crystal		
-0017	Looks afraid
-0020	Run while to left of main char		
-0021	Run while to left of main char		
-0030	Run forward			
-0031	Run forward			
-0040	Hops once
- */
 void ai_sue_onState(Entity *e) {
 	switch(e->state) {
-		case 0:
+		case 0: // Stand
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 0);
 		break;
-		case 3:
-		case 4:
+		case 3: // Walking
+		case 4: 
 		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 1);
 		break;
-		case 5:
+		case 5: // Face away
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 3);
 		break;
-		case 8:
+		case 6: // Punched by Igor
+		e->x_speed = 0;
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEANIM(e->sprite, 4);
+		sound_play(0x32, 6);
+		break;
+		case 8: // Punched harder
 		e->x_speed = e->direction ? -0x100 : 0x100;
 		e->y_speed = -0x300;
 		e->grounded = false;
@@ -86,47 +80,44 @@ void ai_sue_onState(Entity *e) {
 		sound_play(0x32, 6);
 		break;
 		case 9:
-		case 10:
+		case 10: // On the ground
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 5);
 		break;
-		case 11:
+		case 11: // Punching in the air
+		case 12:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 7);
 		break;
-		case 12:
-		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		SPR_SAFEANIM(e->sprite, 5);
-		break;
-		case 14: // Maybe when grabbed by Igor
+		case 13: // Grabbed by Igor
+		case 14:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 6);
 		break;
-		case 15:
+		case 15: // Red crystal
 		break;
 		case 17:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 9);
 		break;
-		case 20:
+		case 20: // Run away from doctor and hide behind player
 		case 21:
 		e->direction = 1;
 		e->x_speed = pixel_to_sub(2);
 		SPR_SAFEHFLIP(e->sprite, 1);
 		SPR_SAFEANIM(e->sprite, 1);
 		break;
-		case 30:
+		case 30: // Run in ending scene
 		case 31:
 		e->x_speed = pixel_to_sub(e->direction ? 2 : -2);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 1);
 		break;
-		case 40:
+		case 40: // Jump
 		e->y_speed = -0x300;
 		e->grounded = false;
 		break;
