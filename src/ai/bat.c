@@ -50,7 +50,7 @@ void ai_batHang_onUpdate(Entity *e) {
 	} else {
 		e->state_time++;
 		FACE_PLAYER(e);
-		e->x_speed += (e->x > player.x) ? -0x1D : 0x1D;
+		e->x_speed = (e->x > player.x) ? -0x150 : 0x150;
 		e->y_speed += (e->state_time % 60) < 30 ? -0x0F : 0x0F;
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;

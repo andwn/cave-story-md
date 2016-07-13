@@ -28,3 +28,11 @@ void ai_miseryFloat_onState(Entity *e) {
 		break;
 	}
 }
+
+void ai_miseryBubble_onUpdate(Entity *e) {
+	
+}
+
+void ai_miseryBubble_onState(Entity *e) {
+	
+}
