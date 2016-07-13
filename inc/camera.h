@@ -26,6 +26,5 @@ void camera_update();
 // Functions used by TSC Scripts
 void camera_focus_on_player(u16 speed);
 void camera_focus_on_entity(Entity *e, u16 speed);
-void camera_focus_on_boss(u16 speed);
 
 #endif /* INC_CAMERA_H_ */

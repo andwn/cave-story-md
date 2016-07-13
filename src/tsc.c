@@ -547,7 +547,7 @@ u8 execute_command() {
 			args[3] = tsc_read_word();
 			entity_create(args[1], args[2], 0, 0, args[0], 0, args[3] > 0);
 			break;
-		case CMD_BOA: // Give map boss state (1)
+		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
 			if(bossEntity != NULL) {
 				ENTITY_SET_STATE(bossEntity, args[0], 0);

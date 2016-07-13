@@ -89,16 +89,13 @@ void camera_update() {
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	}
 	// Morph the stage if the camera is moving
-	s16 x_block = sub_to_block(x_next);
-	s16 y_block = sub_to_block(y_next);
-	s16 x_dir = x_block - sub_to_block(camera.x);
-	s16 y_dir = y_block - sub_to_block(camera.y);
-	stage_morph(x_block, y_block, x_dir, y_dir);
+	morphingColumn = sub_to_block(x_next) - sub_to_block(camera.x);
+	morphingRow = sub_to_block(y_next) - sub_to_block(camera.y);
 	// Apply camera position
 	camera.x = x_next;
 	camera.y = y_next;
 	// Reactivate any entities that are approaching the screen
-	if(x_dir != 0 || y_dir != 0) {
+	if(morphingColumn != 0 || morphingRow != 0) {
 		entities_update_inactive();
 	}
 }
@@ -110,9 +107,5 @@ void camera_focus_on_player(u16 speed) {
 
 void camera_focus_on_entity(Entity *e, u16 speed) {
 	camera.target = e;
-	focusSpeed = 5; //speed;
-}
-// TODO: Focus on boss
-void camera_focus_on_boss(u16 speed) {
 	focusSpeed = 5; //speed;
 }

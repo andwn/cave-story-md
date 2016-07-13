@@ -74,8 +74,9 @@ u8 stageTileset;
 // Used for debug mainly - counts the number of entities created by stage_load()
 // It is NOT the total number of entities that exist at any time, use entity_count() instead
 u8 stageEntityCount;
-
-u8 stageBossState;
+// Prepares to draw off-screen tiles when stage_update() is later called
+// Camera calls this each time it scrolls past 1 block length (16 pixels)
+s8 morphingRow, morphingColumn;
 
 // Clears previous stage and switches to one with the given ID
 void stage_load(u16 id);
@@ -86,9 +87,6 @@ void stage_replace_block(u16 bx, u16 by, u8 index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
 void stage_update();
-// Prepares to draw off-screen tiles when stage_update() is later called
-// Camera calls this each time it scrolls past 1 block length (16 pixels)
-void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir);
 // Immediately draws a rectangular area of the stage (slow)
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
 

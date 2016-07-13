@@ -13,7 +13,6 @@
 #include "vdp_ext.h"
 
 s16 backScrollTable[32];
-s8 morphingRow, morphingColumn;
 u8 *stageBlocks = NULL;
 u16 *stageTable = NULL;
 
@@ -39,7 +38,6 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	stageBossState = 0;
 	SPR_reset();
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
@@ -214,30 +212,6 @@ void stage_draw_row(s16 _x, s16 _y) {
 		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
 		VDP_setTileMapDataRect(PLAN_A, attr, block_to_tile(x)%64, block_to_tile(_y)%32, 2, 2);
 	}
-}
-
-void stage_morph(s16 _x, s16 _y, s8 x_dir, s8 y_dir) {
-	if(x_dir != 0) {
-		s16 x = _x + (x_dir*15);
-		if(x >= 0 && x < stageWidth) {
-			for(s16 y = _y-16; y < _y+16; y++) {
-				if(y < 0) continue;
-				if(y >= stageHeight) break;
-			}
-		}
-	}
-	if(y_dir != 0) {
-		s16 y = _y + (y_dir*15);
-		if(y >= 0 && y < stageHeight) {
-			for(s16 x = _x-16; x < _x+16; x++) {
-				if(x < 0) continue;
-				if(x >= stageWidth) break;
-			}
-		}
-	}
-	// Draw part of the stage during vblank
-	morphingColumn = x_dir;
-	morphingRow = y_dir;
 }
 
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
