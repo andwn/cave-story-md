@@ -736,12 +736,12 @@ void entity_drop_powerup(Entity *e) {
 		for(; i >= 5; i -= 5) { // Big
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 5;
-			SPR_SAFEANIM(e->sprite, 2);
+			SPR_SAFEANIM(exp->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 3;
-			SPR_SAFEANIM(e->sprite, 1);
+			SPR_SAFEANIM(exp->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
