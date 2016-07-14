@@ -83,6 +83,24 @@ void ai_beetleFollow_onUpdate(Entity *e) {
 	e->y += e->y_speed;
 }
 
+void ai_basu_onCreate(Entity *e) {
+	e->state_time = 45;
+}
+
+void ai_basu_onUpdate(Entity *e) {
+	e->state_time++;
+	u8 dir = player.x >= e->x;
+	if(dir != e->direction) {
+		e->direction = dir;
+		SPR_SAFEHFLIP(e->sprite, dir);
+	}
+	e->x_speed += dir ? 5 : -5;
+	if(abs(e->x_speed) > 0x200) e->x_speed = dir ? 0x200 : -0x200;
+	e->y_speed += (e->state_time % 180) >= 90 ? -3 : 3;
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+}
+
 void ai_basil_onCreate(Entity *e) {
 	e->alwaysActive = true;
 	e->x = player.x;
@@ -154,4 +172,21 @@ void ai_lift_onUpdate(Entity *e) {
 		}
 	}
 	e->y += e->y_speed;
+}
+
+void ai_terminal_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0:
+		case 1:
+		SPR_SAFEANIM(e->sprite, 0);
+		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
+			player.y > e->y - 0x2000 && player.y < e->y + 0x1000) {
+			sound_play(SND_COMPUTER_BEEP, 5);
+			SPR_SAFEANIM(e->sprite, 1 + e->state);
+			e->state = 10;
+		}
+		break;
+		case 10:
+		break;
+	}
 }

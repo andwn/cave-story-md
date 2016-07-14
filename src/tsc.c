@@ -266,7 +266,7 @@ u8 tsc_update() {
 			} else {
 				teleMenuSelection--;
 			}
-			sound_play(SOUND_CURSOR, 5);
+			sound_play(SND_MENU_MOVE, 5);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
 			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
 					0, teleMenuFrame[teleMenuSelection]);
@@ -275,7 +275,7 @@ u8 tsc_update() {
 			} else {
 				teleMenuSelection++;
 			}
-			sound_play(SOUND_CURSOR, 5);
+			sound_play(SND_MENU_MOVE, 5);
 		} else { // Doing nothing, blink cursor
 			teleMenuAnim = !teleMenuAnim;
 			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
@@ -706,7 +706,7 @@ u8 execute_command() {
 			}
 			// Puff of smoke and make crash sound
 			effect_create_smoke(1, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
-			sound_play(SOUND_BREAK, 5);
+			sound_play(SND_BLOCK_DESTROY, 5);
 			break;
 		case CMD_MP_ADD: // TODO: Map flag (1)
 			args[0] = tsc_read_word();

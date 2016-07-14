@@ -458,7 +458,7 @@ bool collide_stage_floor(Entity *e) {
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
-		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
+		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
 		return true;
@@ -466,7 +466,7 @@ bool collide_stage_floor(Entity *e) {
 	bool result = false;
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
-		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
+		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%2][pixel_x1%16] - e->hit_box.bottom);
 		e->y_speed = 0;
@@ -474,7 +474,7 @@ bool collide_stage_floor(Entity *e) {
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= 0xF - heightmap[pxa2%2][pixel_x2%16]) {
-		if(e == &player && e->y_speed > 0xFF) sound_play(SOUND_THUD, 2);
+		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
 				heightmap[pxa2%2][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
@@ -582,7 +582,7 @@ bool collide_stage_ceiling(Entity *e) {
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
-		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
+		if(e == &player && e->y_speed < -0xFF) sound_play(SND_BONK_HEAD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
 		e->jump_time = 0;
@@ -591,7 +591,7 @@ bool collide_stage_ceiling(Entity *e) {
 	bool result = false;
 	if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
 			pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
-		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
+		if(e == &player && e->y_speed < -0xFF) sound_play(SND_BONK_HEAD, 2);
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
 				heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top);
 		e->y_speed = 0;
@@ -599,7 +599,7 @@ bool collide_stage_ceiling(Entity *e) {
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 			pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
-		if(e == &player && e->y_speed < -0xFF) sound_play(SOUND_HEADBONK, 2);
+		if(e == &player && e->y_speed < -0xFF) sound_play(SND_BONK_HEAD, 2);
 		e->y_next = pixel_to_sub((pixel_y&~0xF) +
 				heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top);
 		e->y_speed = 0;

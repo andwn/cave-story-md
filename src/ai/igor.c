@@ -65,7 +65,7 @@ void ai_igor_onUpdate(Entity *e) {
 		break;
 		case STATE_JUMPING:
 		if(e->grounded) {
-			sound_play(0x1A, 5);
+			sound_play(SND_ENEMY_JUMP, 5);
 			effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y) + e->hit_box.bottom);
 			ENTITY_SET_STATE(e, STATE_LANDED, 0);
 		}
@@ -84,7 +84,7 @@ void ai_igor_onUpdate(Entity *e) {
 		// fire shots
 		if(e->state_time > 120) {
 			if((e->state_time % 8) == 1) {
-				sound_play(SOUND_BREAK, 5);
+				sound_play(SND_BLOCK_DESTROY, 5);
 				Entity *shot = entity_create(sub_to_block(e->x) + (e->direction ? 1 : -1),
 					sub_to_block(e->y), 0, 0, 0x0B, 0, e->direction);
 				shot->x_speed = 0x4A0 * (e->direction ? 1 : -1);
@@ -129,7 +129,7 @@ void ai_igor_onState(Entity *e) {
 		e->x_speed = 0;
 		break;
 		case STATE_PUNCH_2:
-		sound_play(0x46, 5);
+		sound_play(SND_EXPL_SMALL, 5);
 		// sprite appears identical, but has a wider bounding box.
 		if(e->direction == 0) {
 			e->hit_box.left += 10;

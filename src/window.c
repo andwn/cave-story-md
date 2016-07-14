@@ -182,7 +182,7 @@ bool window_tick() {
 }
 
 void window_prompt_open() {
-	sound_play(SOUND_PROMPT, 5);
+	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
 	handSpr = SPR_addSprite(&SPR_Pointer, 
 		tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
@@ -206,12 +206,12 @@ bool window_prompt_answer() {
 
 bool window_prompt_update() {
 	if(joy_pressed(BUTTON_C)) {
-		sound_play(SOUND_CONFIRM, 5);
+		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
 		return true;
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
-		sound_play(SOUND_CURSOR, 5);
+		sound_play(SND_MENU_MOVE, 5);
 		SPR_setPosition(handSpr, 
 			tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}

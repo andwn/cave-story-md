@@ -11,7 +11,8 @@ void ai_critter_onUpdate(Entity *e) {
 	if(!e->grounded) { 
 		if(e->sprite->animInd == 3) { // Flying
 			e->state_time++;
-			e->y_speed -= GRAVITY_JUMP;
+			e->y_speed -= GRAVITY_JUMP / 2;
+			if(e->state_time % 8 == 0) sound_play(SND_CRITTER_FLY, 2);
 			if(e->state_time > 60) {
 				SPR_SAFEANIM(e->sprite, 1);
 			}
@@ -67,7 +68,7 @@ void ai_critter_onState(Entity *e) {
 		e->x_speed = -0x100 + 0x200 * e->direction;
 		e->y_speed = pixel_to_sub(-3);
 		SPR_SAFEANIM(e->sprite, 2);
-		sound_play(SOUND_HOP, 5);
+		sound_play(SND_ENEMY_JUMP, 5);
 		break;
 	}
 }

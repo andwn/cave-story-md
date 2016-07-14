@@ -132,11 +132,16 @@ void ai_beetle_onUpdate(Entity *e);
 void ai_beetleFollow_onCreate(Entity *e);
 void ai_beetleFollow_onUpdate(Entity *e);
 
+void ai_basu_onCreate(Entity *e);
+void ai_basu_onUpdate(Entity *e);
+
 void ai_behemoth_onUpdate(Entity *e);
 void ai_behemoth_onState(Entity *e);
 
 void ai_lift_onCreate(Entity *e);
 void ai_lift_onUpdate(Entity *e);
+
+void ai_terminal_onUpdate(Entity *e);
 
 /* Igor - igor.c */
 

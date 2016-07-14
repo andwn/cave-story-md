@@ -52,7 +52,7 @@ void ai_mannan_onUpdate(Entity *e) {
 
 void ai_mannan_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
-		sound_play(0x1D, 5);
+		sound_play(e->deathSound, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		entity_drop_powerup(e);
 		// Face sprite remains after defeated
@@ -85,7 +85,7 @@ void ai_mannan_onHurt(Entity *e) {
 void ai_mannanShot_onUpdate(Entity *e) {
 	e->x_speed += e->direction ? 0x1D : -0x1D;
 	if((e->state_time % 8) == 1) {
-		//sound_play(SND_IRONH_SHOT_FLY, 2);
+		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
 	if(++e->state_time > 120) e->state = STATE_DELETE;
 }
@@ -95,7 +95,7 @@ void ai_malco_onUpdate(Entity *e) {
 		case 10:
 		if(++e->state_time < 100) {
 			if((e->state_time % 4) == 0) {
-				//sound_play(SND_COMPUTER_BEEP);
+				sound_play(SND_COMPUTER_BEEP, 5);
 			}
 		} else if(e->state_time > 150) {
 			ENTITY_SET_STATE(e, 15, 0);
@@ -104,7 +104,7 @@ void ai_malco_onUpdate(Entity *e) {
 		case 15:		// shaking
 		if(e->state_time % 4 == 0) {
 			e->x += sub_to_pixel(1);
-			//sound_play(SOUND_DOOR, 5);
+			sound_play(SND_DOOR, 5);
 		} else if(e->state_time % 4 == 2) {
 			e->x -= sub_to_pixel(1);
 		}
@@ -114,7 +114,7 @@ void ai_malco_onUpdate(Entity *e) {
 		if(++e->state_time > 150) ENTITY_SET_STATE(e, 18, 0);
 		break;
 		case 18:		// gawking/bobbing up and down
-		if(++e->state_time % 8 == 0) sound_play(0x0B, 5);
+		if(++e->state_time % 8 == 0) sound_play(SND_DOOR, 5);
 		if(e->state_time > 100) ENTITY_SET_STATE(e, 20, 0);
 		break;
 	}
@@ -130,7 +130,7 @@ void ai_malco_onState(Entity *e) {
 		break;
 		case 16:
 		SPR_SAFEANIM(e->sprite, 2);
-		sound_play(SOUND_BREAK, 5);
+		sound_play(SND_BLOCK_DESTROY, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 18:
@@ -142,7 +142,7 @@ void ai_malco_onState(Entity *e) {
 		break;
 		case 21:	// got smushed!
 		SPR_SAFEANIM(e->sprite, 5);
-		//sound_play(SND_ENEMY_HURT);
+		sound_play(SND_ENEMY_HURT, 5);
 		break;
 	}
 }
@@ -158,7 +158,7 @@ void ai_malcoBroken_onState(Entity *e) {
 		FACE_PLAYER(e);
 		break;
 		case 10:	// set when pulled out of ground
-		sound_play(SOUND_BREAK, 5);
+		sound_play(SND_BLOCK_DESTROY, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		e->state = 0;
 		break;

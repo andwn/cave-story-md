@@ -49,7 +49,7 @@ void ai_miseryBubble_onUpdate(Entity *e) {
 		e->x += e->x_speed;
 		e->y += e->y_speed;
 		if(e->x == target->x && e->y == target->y) {
-			// TODO: Bubble sound
+			sound_play(SND_BUBBLE, 5);
 			ENTITY_SET_STATE(e, 1, 0);
 			e->y_speed = 0;
 			SPR_SAFEANIM(e->sprite, 1);

@@ -46,11 +46,11 @@ u8 titlescreen_main() {
 		if(joy_pressed(BUTTON_UP)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
-			sound_play(SOUND_CURSOR, 0);
+			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
-			sound_play(SOUND_CURSOR, 0);
+			sound_play(SND_MENU_MOVE, 0);
 		}
 		// Draw quote sprite at cursor position
 		SPR_setPosition(sprCursor, tile_to_pixel(13) - 4, tile_to_pixel(12 + cursor * 2) - 4);
@@ -60,6 +60,6 @@ u8 titlescreen_main() {
 	// A + Start enables debug mode
 	debuggingEnabled = (joystate&BUTTON_A) && joy_pressed(BUTTON_START);
 	song_stop();
-	sound_play(SOUND_CONFIRM, 0);
+	sound_play(SND_MENU_SELECT, 0);
 	return cursor;
 }

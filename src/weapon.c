@@ -59,8 +59,8 @@ void weapon_fire_polarstar(Weapon *w) {
 		break;
 	}
 	if(b == NULL) return;
-	if(w->level == 3) sound_play(0x31, 5);
-	else sound_play(0x20, 5);
+	if(w->level == 3) sound_play(SND_POLAR_STAR_L3, 5);
+	else sound_play(SND_POLAR_STAR_L1_2, 5);
 	b->type = w->type;
 	b->level = w->level;
 	b->sprite = SPR_addSprite(w->level == 1 ? &SPR_PolarB1 : w->level == 2 
@@ -100,8 +100,7 @@ void weapon_fire_fireball(Weapon *w) {
 		break;
 	}
 	if(b == NULL) return;
-	if(w->level == 3) sound_play(0x21, 5);
-	else sound_play(0x22, 5);
+	sound_play(SND_FIREBALL, 5);
 	b->type = w->type;
 	b->level = w->level;
 	b->sprite = SPR_addSprite(&SPR_FirebB1, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
@@ -204,11 +203,11 @@ void bullet_update_polarstar(Bullet *b) {
 		SPR_SAFERELEASE(b->sprite);
 		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
 		effect_create_smoke(1, sub_to_pixel(b->x), sub_to_pixel(b->y));
-		sound_play(SOUND_BREAK, 5);
+		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		SPR_SAFERELEASE(b->sprite);
-		sound_play(0x1F, 5);
+		sound_play(SND_TINK, 3);
 		// TODO: Add the sprite and effect for hitting a wall
 	} else if(--b->ttl == 0) { // Bullet time to live expired
 		SPR_SAFERELEASE(b->sprite);
@@ -267,7 +266,7 @@ void bullet_update_missile(Bullet *b) {
 			bullet_missile_explode(b);
 			stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
 			effect_create_smoke(1, sub_to_pixel(b->x), sub_to_pixel(b->y));
-			sound_play(SOUND_BREAK, 5);
+			sound_play(SND_BLOCK_DESTROY, 5);
 		}
 		SPR_SAFEMOVE(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
@@ -313,6 +312,7 @@ Bullet *bullet_colliding(Entity *e) {
 }
 
 void bullet_missile_explode(Bullet *b) {
+	sound_play(SND_MISSILE_HIT, 5);
 	b->x_speed = 0;
 	b->y_speed = 0;
 	b->ttl = 8;

@@ -6,6 +6,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
+#include "camera.h"
 
 // 12 - Balrog (Cutscene)
 void ai_balrog_onUpdate(Entity *e) {
@@ -76,12 +77,14 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 	case 3:
 	case 5:
 		e->x_speed -= 0x10 - (0x20 * e->direction);
+		if(e->state_time % 16 == 14) sound_play(SND_THUD, 3);
 		if(e->state_time == 0 || (abs(e->x - player.x) < block_to_sub(2)))
 			ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
 	case 6:
 		if(e->grounded) {
 			e->x_speed >>= 1;
+			camera_shake(30);
 			ENTITY_SET_STATE(e, 0, 0);
 		} else e->y_speed += GRAVITY_JUMP;
 		break;

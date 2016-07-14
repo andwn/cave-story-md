@@ -21,11 +21,11 @@ void ai_energy_onUpdate(Entity *e) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		w->energy += e->experience;
 		if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level-1]) {
-			sound_play(SOUND_LEVELUP, 5);
+			sound_play(SND_LEVEL_UP, 5);
 			w->energy -= weapon_info[w->type].experience[w->level-1];
 			w->level++;
 		} else {
-			sound_play(SOUND_GETEXP, 5);
+			sound_play(SND_GET_XP, 5);
 			player.damage_time = 30;
 			player.damage_value += e->experience;
 		}
@@ -55,7 +55,7 @@ void ai_energy_onUpdate(Entity *e) {
 		if(collide_stage_floor(e)) {
 			e->y_speed = pixel_to_sub(-2);
 			e->grounded = false;
-			sound_play(SOUND_EXPBOUNCE, 0);
+			sound_play(SND_XP_BOUNCE, 0);
 		}
 		e->x = e->x_next;
 		e->y = e->y_next;
@@ -74,7 +74,7 @@ void ai_missile_onUpdate(Entity *e) {
 			w->ammo += (e->eflags & NPC_OPTION2) ? 3 : 1;
 			if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
 		}
-		sound_play(0x2A, 5);
+		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
 	}
 }
@@ -85,7 +85,7 @@ void ai_heart_onUpdate(Entity *e) {
 		player.health += e->health;
 		// Don't go over max health
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
-		sound_play(SOUND_REFILL, 5);
+		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
 	}
 }

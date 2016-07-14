@@ -428,12 +428,12 @@ bool player_inflict_damage(s16 damage) {
 				sub_to_pixel(player.x) + (random() % 90 ) - 45, 
 				sub_to_pixel(player.y) + (random() % 90 ) - 45);
 		}
-		sound_play(SOUND_DIE, 15);
+		sound_play(SND_PLAYER_DIE, 15);
 		tsc_call_event(PLAYER_DEFEATED_EVENT);
 		return true;
 	}
 	player.health -= damage;
-	sound_play(SOUND_HURT, 5);
+	sound_play(SND_PLAYER_HURT, 5);
 	playerIFrames = INVINCIBILITY_FRAMES;
 	if(playerWeapon[currentWeapon].type != 0) {
 		Weapon *w = &playerWeapon[currentWeapon];
@@ -469,7 +469,7 @@ void player_prev_weapon() {
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
 			}
-			sound_play(0x04, 5);
+			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}
 	}
@@ -485,7 +485,7 @@ void player_next_weapon() {
 				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
 					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
 			}
-			sound_play(0x04, 5);
+			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}
 	}

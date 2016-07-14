@@ -88,7 +88,7 @@ void ai_teleIn_onCreate(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y += pixel_to_sub(8);
 	e->spriteAnim = 2;
-	sound_play(0x1D, 5);
+	sound_play(SND_TELEPORT, 5);
 }
 
 void ai_teleIn_onUpdate(Entity *e) {
@@ -123,7 +123,7 @@ void ai_teleOut_onUpdate(Entity *e) {
 			e->state_time = 0;
 			e->y_speed = 0;
 			SPR_SAFEANIM(e->sprite, 1);
-			sound_play(0x1D, 5);
+			sound_play(SND_TELEPORT, 5);
 		} else {
 			e->y_speed += GRAVITY;
 			e->y += e->y_speed;
@@ -172,7 +172,7 @@ void ai_player_onState(Entity *e) {
 		SPR_SAFEANIM(e->sprite, 2);
 		break;
 		case 10:	// he gets flattened
-		sound_play(0x47, 5);
+		sound_play(SND_LITTLE_CRASH, 5);
 		for(u8 i = 0; i < 3; i++) {
 			effect_create_smoke(0, sub_to_pixel(e->x) - 16 + (random() % 32), 
 				sub_to_pixel(e->y) - 16 + (random() % 32));
