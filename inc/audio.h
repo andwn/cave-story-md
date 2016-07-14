@@ -4,20 +4,6 @@
 #include "common.h"
 
 // IDs for sounds, see db/sound.c
-//#define SOUND_CURSOR 	0x01
-//#define SOUND_HEADBONK 	0x03 // Bump ceiling
-//#define SOUND_PROMPT 	0x05
-//#define SOUND_DOOR		0x0B
-//#define SOUND_BREAK 	0x0C
-//#define SOUND_GETEXP 	0x0E
-//#define SOUND_HURT 		0x10
-//#define SOUND_DIE 		0x11
-//#define SOUND_CONFIRM 	0x12
-//#define SOUND_REFILL 	0x14
-//#define SOUND_THUD 		0x17 // Landing
-//#define SOUND_LEVELUP 	0x1B
-//#define SOUND_HOP 		0x1E
-//#define SOUND_EXPBOUNCE 0x2D
 // https://github.com/libretro/nxengine-libretro/blob/master/nxengine/sound/sound.h
 #define SND_MENU_MOVE		1
 #define SND_MSG				2

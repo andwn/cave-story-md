@@ -139,7 +139,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		&ai_pushdn_onCreate, &ai_critter_onUpdate, &ai_critter_onState, &ai_critter_onHurt },
 	{ &SPR_Bat, 	PAL0, 3, "Bat",
 		&ai_batVertical_onCreate, &ai_batVertical_onUpdate, &ai_default_onState, NULL },
-	{ NULL, 		PAL0, 3, "Misery's Bubble",
+	{ &SPR_Bubble, 	PAL0, 3, "Misery's Bubble",
 		NULL, &ai_miseryBubble_onUpdate, NULL, NULL },
 	{ &SPR_Misery, 	PAL0, 3, "Misery (Floating)",
 		NULL, &ai_miseryFloat_onUpdate, &ai_miseryFloat_onState, NULL },

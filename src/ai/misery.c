@@ -9,6 +9,14 @@
 
 void ai_miseryFloat_onUpdate(Entity *e) {
 	switch(e->state) {
+	case 14: // Standing
+		break;
+	case 15: // Spawning bubble
+	case 16:
+		sound_play(SND_BUBBLE, 5);
+		entity_create(sub_to_block(e->x), sub_to_block(e->y) - 1, 0, 0, 0x42, 0, 0);
+		e->state = 14;
+		break;
 	case 20:
 	case 21:
 		e->y_speed -= 0x20;
@@ -33,26 +41,24 @@ void ai_miseryFloat_onState(Entity *e) {
 
 void ai_miseryBubble_onUpdate(Entity *e) {
 	// find the Toroko object we are to home in on
-	Entity *target = entity_find_by_id(1000);
+	Entity *target = entity_find_by_type(0x3C);
 	if(target == NULL) {
 		e->state = STATE_DELETE;
 		return;
 	}
 	switch(e->state) {
 		case 0:
-		e->x_speed = e->x - target->x;
-		e->y_speed = e->y - target->y;
-		if(e->x_speed > 0x300) e->x_speed = 0x300;
-		if(e->y_speed > 0x300) e->y_speed = 0x300;
-		if(e->x_speed > -0x300) e->x_speed = -0x300;
-		if(e->y_speed > -0x300) e->y_speed = -0x300;
+		e->x_speed = e->x > target->x ? -0x200 : 0x200;
+		e->y_speed = e->y > target->y ? -0x200 : 0x200;
 		e->x += e->x_speed;
 		e->y += e->y_speed;
-		if(e->x == target->x && e->y == target->y) {
+		if(e->x > target->x - 0x200 && e->y > target->y - 0x200 &&
+			e->x < target->x + 0x200 && e->y < target->y + 0x200) {
 			sound_play(SND_BUBBLE, 5);
 			ENTITY_SET_STATE(e, 1, 0);
+			e->x_speed = 0;
 			e->y_speed = 0;
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 			SPR_SAFEANIM(target->sprite, 1);
 		}
 		break;
