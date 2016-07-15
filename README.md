@@ -8,8 +8,8 @@ The engine is built using SGDK, and written almost entirely in C.
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
-Not yet. Right now Grasstown is as far as you can make it.
-Check out the [TODO list](doc/TODO.md) for progress.
+Not yet. Right now you can technically make it to Labyrinth, but only the parts leading up to the beginning of Grasstown are in a well working state (As you progress into Grasstown and Sand Zone you will notice the game getting emptier and buggier)
+Check out the [TODO list](doc/TODO.md) for progress. I may replace this list with issues eventually.
 
 #### Controls
 - C - Jump, confirm
@@ -18,17 +18,19 @@ Check out the [TODO list](doc/TODO.md) for progress.
 - Start - Pause / Item Menu
 
 #### How to build? (GNU/Linux)
+Note: Gendev is still using outdated SGDK 1.1 and will not build my project without [changes](https://github.com/kubilus1/gendev/issues/17).
+
 1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
 2. Clone the project and do `make`.
+3. Open `out.bin` in your emulator of choice.
 
 #### How to build? (Windows)
-**Note**: I don't use Windows and can't guarantee this will work. If it does fail, show me the make output.
-
 1. Download and install [SGDK](https://github.com/Stephane-D/SGDK.git) using the instructions from that page.
-2. Clone the repo `git clone https://github.com/andwn/cave-story-md.git`
-3. Run "build.bat" and if everything goes well the ROM should be located at out/rom.bin.
-  - Sometimes GCC will throw an error about heap space, especially on newer versions of Windows. Just retry until it completes or you get a different error.
+2. Clone the repo `git clone https://github.com/andwn/cave-story-md`
+3. Run "build.bat" and if everything goes well the ROM should be located at `out/rom.bin`.
+  - Sometimes GCC will throw an error about heap space. Just retry until it completes or you get a different error.
 
-#### Legal Stuff
-Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
-My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+#### Shoutouts & Legal Stuff
+- Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
+- My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+- There exists another open source rewrite of Cave Story known as NXEngine. While I did not know about it's existence until knee deep into my own port, I have recently been using it as a reference for the AI.
