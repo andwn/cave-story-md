@@ -290,8 +290,8 @@ void entity_update_walk(Entity *e) {
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		e->underwater = true;
 		acc /= 2;
-		fric /=2;
 		max_speed /= 2;
+		if(abs(e->x_speed) <= max_speed) fric /= 2;
 	} else {
 		e->underwater = false;
 	}

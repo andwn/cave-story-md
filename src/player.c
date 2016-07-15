@@ -130,6 +130,7 @@ void player_update() {
 				playerPlatform = NULL;
 			} else {
 				player.grounded = true;
+				player.y_next += pixel_to_sub(1);
 			}
 		}
 		player_update_bounds();
