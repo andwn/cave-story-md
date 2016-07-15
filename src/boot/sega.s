@@ -50,7 +50,7 @@ _Entry_Point:
         bne.s   SkipJoyDetect
         tst.w   0xa1000c
 SkipJoyDetect:
-        bne.s   SkipSetup
+        * bne.s   SkipSetup
 
         lea     Table,%a5
         movem.w (%a5)+,%d5-%d7
