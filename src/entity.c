@@ -207,7 +207,7 @@ void entities_update() {
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
 		if((e->eflags|e->nflags) & (NPC_SOLID | NPC_SPECIALSOLID)) {
-			collision = entity_react_to_collision(&player, e);
+			collision = entity_react_to_collision(&player, e, true);
 			if(collision.bottom) {
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
 					player.y_speed = pixel_to_sub(-1);
@@ -620,7 +620,7 @@ bool entity_overlapping(Entity *a, Entity *b) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-bounding_box entity_react_to_collision(Entity *a, Entity *b) {
+bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY) {
 	bounding_box result = { 0, 0, 0, 0 };
 	s16 ax1 = sub_to_pixel(a->x_next) - (a->direction ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x_next) + (a->direction ? a->hit_box.left : a->hit_box.right),
@@ -641,11 +641,19 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		s16 move2 = pixel_to_sub(bx1 - ax2);
 		if(abs(move1) < abs(move2)) {
 			result.left = 1;
-			a->x_next += move1;
+			if(realXY) {
+				a->x += move1;
+			} else {
+				a->x_next += move1;
+			}
 			if(a->x_speed < 0) a->x_speed = 0;
 		} else {
 			result.right = 1;
-			a->x_next += move2;
+			if(realXY) {
+				a->x += move2;
+			} else {
+				a->x_next += move2;
+			}
 			if(a->x_speed > 0) a->x_speed = 0;
 		}
 	}
@@ -659,11 +667,19 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
 		if(abs(move1) < abs(move2)) {
 			result.top = 1;
-			a->y_next += move1;
+			if(realXY) {
+				a->y += move1;
+			} else {
+				a->y_next += move1;
+			}
 			if(a->y_speed < 0) a->y_speed = 0;
 		} else {
 			result.bottom = 1;
-			a->y_next += move2;
+			if(realXY) {
+				a->y += move2;
+			} else {
+				a->y_next += move2;
+			}
 			if(a->y_speed > 0) a->y_speed = 0;
 			a->grounded = true;
 		}

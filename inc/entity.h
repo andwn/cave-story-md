@@ -168,6 +168,6 @@ bool collide_stage_ceiling(Entity *e);
 // Returns true if entity a's hitbox is overlapping b's
 bool entity_overlapping(Entity *a, Entity *b);
 // Pushes entity a outside of entity b's hitbox
-bounding_box entity_react_to_collision(Entity *a, Entity *b);
+bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY);
 
 #endif // INC_ENTITY_H_

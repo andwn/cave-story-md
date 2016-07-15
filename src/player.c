@@ -124,7 +124,7 @@ void player_update() {
 			player.x_next += playerPlatform->x_speed;
 			player.y_next += playerPlatform->y_speed;
 			player.hit_box.bottom++;
-			bounding_box box = entity_react_to_collision(&player, playerPlatform);
+			bounding_box box = entity_react_to_collision(&player, playerPlatform, false);
 			player.hit_box.bottom--;
 			if(box.bottom == 0) {
 				playerPlatform = NULL;
