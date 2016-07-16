@@ -12,7 +12,7 @@ void ai_sue_onUpdate(Entity *e) {
 		Entity *igor = entity_find_by_type(0x53);
 		if(igor != NULL) { // This should never be NULL but just in case
 			e->y = igor->y;
-			e->x = igor->x + igor->direction ? block_to_sub(1) : block_to_sub(-1);
+			e->x = igor->x + igor->direction ? pixel_to_sub(24) : pixel_to_sub(-24);
 			SPR_SAFEHFLIP(e->sprite, igor->direction);
 		}
 	} else if(e->state == 6) {
@@ -35,7 +35,7 @@ void ai_sue_onUpdate(Entity *e) {
 		if(e->grounded) {
 			if(e->x_speed != 0) collide_stage_floor_grounded(e);
 		} else {
-			collide_stage_floor(e);
+			e->grounded = collide_stage_floor(e);
 			if(e->grounded && e->state == 8) ENTITY_SET_STATE(e, 10, 0);
 		}
 		e->x = e->x_next;
