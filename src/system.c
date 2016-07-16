@@ -9,8 +9,7 @@
 #include "vdp_ext.h"
 
 // Official game supports 8000 but only uses 4000
-// Decrease if there are memory issues
-#define FLAGS_LEN 250
+#define FLAGS_LEN 125
 
 bool debuggingEnabled = false;
 bool pauseCancelsIFrames = true;
