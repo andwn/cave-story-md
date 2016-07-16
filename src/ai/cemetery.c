@@ -93,7 +93,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		}
 	} else {
 		// Wait for player
-		if(player.x > e->x - block_to_sub(2) || player.x < e->x + block_to_sub(2)) {
+		if(player.x > e->x - block_to_sub(2) && player.x < e->x + block_to_sub(2)) {
 			ENTITY_SET_STATE(e, 2, 0);
 			FACE_PLAYER(e);
 			e->x_speed = 0;

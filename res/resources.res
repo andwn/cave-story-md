@@ -218,7 +218,7 @@ TILESET TS_Face29	"face/face29.png" 2
 # Mimiga Village
 # Crushed to 256x112
 PALETTE PAL_Mimi	"Stage/Mimi/PrtMimi.bmp" 2
-TILESET TS_Mimi		"Stage/Mimi/PrtMimi.bmp" 2
+TILESET TS_Mimi		"Stage/Mimi/PrtMimi.bmp" 0
 BIN PXA_Mimi		"Stage/Mimi/Mimi.pxa"
 BIN PXM_Barr		"Stage/Mimi/Barr.pxm"
 BIN PXM_Cemet		"Stage/Mimi/Cemet.pxm"
@@ -231,8 +231,8 @@ BIN PXM_Pool		"Stage/Mimi/Pool.pxm"
 # Egg Corridor
 # Split into 2 tilesets, crushed to fit 256x112
 PALETTE PAL_Eggs	"Stage/Eggs/PrtEggs.bmp" 2
-TILESET TS_Eggs		"Stage/Eggs/PrtEggs.bmp" 2
-TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2.bmp" 2
+TILESET TS_Eggs		"Stage/Eggs/PrtEggs.bmp" 0
+TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2.bmp" 0
 BIN PXA_Eggs		"Stage/Eggs/Eggs.pxa"
 BIN PXA_Eggs2		"Stage/Eggs/Eggs2.pxa"
 BIN PXM_Eggs		"Stage/Eggs/Eggs.pxm"
@@ -241,7 +241,7 @@ BIN PXM_Eggs2		"Stage/Eggs/Eggs2.pxm"
 # Labyrinth
 # Split MazeM out, crushed to fit 256x112
 PALETTE PAL_Maze	"Stage/Maze/PrtMaze.bmp" 2
-TILESET TS_Maze		"Stage/Maze/PrtMaze.bmp" 2
+TILESET TS_Maze		"Stage/Maze/PrtMaze.bmp" 0
 BIN PXA_Maze		"Stage/Maze/Maze.pxa"
 BIN PXM_e_Maze		"Stage/Maze/e_Maze.pxm"
 BIN PXM_MazeB		"Stage/Maze/MazeB.pxm"
@@ -251,20 +251,20 @@ BIN PXM_MazeI		"Stage/Maze/MazeI.pxm"
 BIN PXM_MazeO		"Stage/Maze/MazeO.pxm"
 BIN PXM_MazeS		"Stage/Maze/MazeS.pxm"
 BIN PXM_MazeW		"Stage/Maze/MazeW.pxm"
-TILESET TS_MazeM	"Stage/Maze/PrtMazeM.bmp" 2
+TILESET TS_MazeM	"Stage/Maze/PrtMazeM.bmp" 0
 BIN PXA_MazeM		"Stage/Maze/MazeM.pxa"
 BIN PXM_MazeM		"Stage/Maze/MazeM.pxm"
 
 # Balcony & Ring
 PALETTE PAL_White	"Stage/White/PrtWhite.bmp" 2
-TILESET TS_White	"Stage/White/PrtWhite.bmp" 2
+TILESET TS_White	"Stage/White/PrtWhite.bmp" 0
 BIN PXA_White		"Stage/White/White.pxa"
 BIN PXM_e_Blcn		"Stage/White/e_Blcn.pxm"
 BIN PXM_Blcny1		"Stage/White/Blcny1.pxm"
 BIN PXM_Blcny2		"Stage/White/Blcny2.pxm"
 BIN PXM_Island		"Stage/White/Island.pxm"
 BIN PXM_Ostep		"Stage/White/Ostep.pxm"
-TILESET TS_Kings	"Stage/White/PrtKings.bmp" 2
+TILESET TS_Kings	"Stage/White/PrtKings.bmp" 0
 BIN PXA_Kings		"Stage/White/Kings.pxa"
 BIN PXM_Kings		"Stage/White/Kings.pxm"
 BIN PXM_Ring1		"Stage/White/Ring1.pxm"
@@ -274,7 +274,7 @@ BIN PXM_Ring3		"Stage/White/Ring3.pxm"
 # Sacred Ground
 # Crushed to fit 256x112
 PALETTE PAL_Hell	"Stage/Hell/PrtHell.bmp" 2
-TILESET TS_Hell		"Stage/Hell/PrtHell.bmp" 2
+TILESET TS_Hell		"Stage/Hell/PrtHell.bmp" 0
 BIN PXA_Hell		"Stage/Hell/Hell.pxa"
 BIN PXM_Hell1		"Stage/Hell/Hell1.pxm"
 BIN PXM_Hell2		"Stage/Hell/Hell2.pxm"
@@ -314,27 +314,27 @@ PALETTE PAL_Weed	"Stage/PrtWeed.bmp" 2
 # Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET TS_Almond	"Stage/PrtAlmond.bmp" 2
-TILESET TS_Barr		"Stage/PrtBarr.bmp" 2
-TILESET TS_Cave		"Stage/PrtCave.bmp" 2
-TILESET TS_Cent		"Stage/PrtCent.bmp" 2
-TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 2
+TILESET TS_Almond	"Stage/PrtAlmond.bmp" 0
+TILESET TS_Barr		"Stage/PrtBarr.bmp" 0
+TILESET TS_Cave		"Stage/PrtCave.bmp" 0
+TILESET TS_Cent		"Stage/PrtCent.bmp" 0
+TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 0
 #TILESET TS_Eggs		"Stage/PrtEggs.bmp" 2
-TILESET TS_EggX		"Stage/PrtEggX1.bmp" 2
-TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 2
-TILESET TS_Fall		"Stage/PrtFall.bmp" 2
-TILESET TS_Gard		"Stage/PrtGard.bmp" 2
+TILESET TS_EggX		"Stage/PrtEggX1.bmp" 0
+TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 0
+TILESET TS_Fall		"Stage/PrtFall.bmp" 0
+TILESET TS_Gard		"Stage/PrtGard.bmp" 0
 #TILESET TS_Hell		"Stage/PrtHell.bmp" 2
-TILESET TS_Jail		"Stage/PrtJail.bmp" 2
-TILESET TS_Labo		"Stage/PrtLabo.bmp" 2
+TILESET TS_Jail		"Stage/PrtJail.bmp" 0
+TILESET TS_Labo		"Stage/PrtLabo.bmp" 0
 #TILESET TS_Maze		"Stage/PrtMaze.bmp" 2
 #TILESET TS_Mimi		"Stage/PrtMimi.bmp" 2
-TILESET TS_Oside	"Stage/PrtOside.png" 2
-TILESET TS_Pens		"Stage/PrtPens.bmp" 2
-TILESET TS_River	"Stage/PrtRiver.bmp" 2
-TILESET TS_Sand		"Stage/PrtSand.bmp" 2
-TILESET TS_Store	"Stage/PrtStore.bmp" 2
-TILESET TS_Weed		"Stage/PrtWeed.bmp" 2
+TILESET TS_Oside	"Stage/PrtOside.png" 0
+TILESET TS_Pens		"Stage/PrtPens.bmp" 0
+TILESET TS_River	"Stage/PrtRiver.bmp" 0
+TILESET TS_Sand		"Stage/PrtSand.bmp" 0
+TILESET TS_Store	"Stage/PrtStore.bmp" 0
+TILESET TS_Weed		"Stage/PrtWeed.bmp" 0
 #TILESET TS_White	"Stage/PrtWhite.bmp" 2
 
 # ----------------------------------------------------------------------------------------------
