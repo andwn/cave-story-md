@@ -139,6 +139,7 @@ SPRITE SPR_Jenka	"sprite/jenka.png" 2 2 0 0 NONE
 SPRITE SPR_Doctor	"sprite/doctor.png" 3 4 0 12 NONE
 SPRITE SPR_ToroBoss "sprite/torokoboss.png" 4 4 0 12 NONE
 SPRITE SPR_ToroFlower "sprite/toroflower.png" 2 2 0 8 NONE
+SPRITE SPR_Frog		"sprite/frog.png" 3 4 0 20 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
