@@ -26,17 +26,20 @@ u8 titlescreen_main() {
 	Sprite *sprCursor = SPR_addSprite(&SPR_Quote, 0, 0, TILE_ATTR(PAL0, 1, 0, 1));
 	SPR_setAnim(sprCursor, 1);
 	// Menu and version text
+	if(!checksumValid) {
+		VDP_drawText("WARNING: Bad Checksum!", 8, 9);
+	}
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Continue", 15, 14);
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("NPC Test", 15, 18);
-	VDP_drawText("Version. 1.0.0.6", 12, 24);
+	//VDP_drawText("Version. 1.0.0.6", 12, 24);
 	VDP_drawText("Mega Drive Version 0.1 2016.07", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(PLAN_B,
 		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
-		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX + 18 * 4), 11, 21, 18, 2);
+		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX + 18 * 4), 11, 23, 18, 2);
 	VDP_setEnable(true);
 	SYS_enableInts();
 	song_play(SONG_TITLE);

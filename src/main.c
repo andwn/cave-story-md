@@ -26,8 +26,10 @@
 #include "resources.h"
 #include "gamemode.h"
 #include "input.h"
+#include "system.h"
 
 int main() {
+	system_verifychecksum();
     VDP_init();
     SYS_disableInts();
     VDP_setPlanSize(64, 32);

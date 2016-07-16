@@ -14,6 +14,7 @@
 
 bool debuggingEnabled = false;
 bool pauseCancelsIFrames = true;
+bool checksumValid = true;
 
 struct {
 	u8 hour, minute, second, frame;
@@ -165,4 +166,34 @@ u8 system_checkdata() {
 	u32 t = SRAM_readLong(0x10);
 	SRAM_disable();
 	return t > 0;
+}
+
+void system_verifychecksum() {
+	const u16 *CHECKSUM = (u16*) 0x18E;
+	if(*CHECKSUM == 0) { // No checksum
+		return;
+	}
+	u32 chk = 0;
+	u32 *ptr = (u32*) 0x200;
+	u16 loopCount = (0x100000 - 0x200) >> 6;
+	while(loopCount--) {
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+		chk ^= *ptr++;
+	}
+	u16 checksum = (chk >> 16) ^ (chk & 0xFFFF);
+	if(checksum != *CHECKSUM) checksumValid = false;
 }

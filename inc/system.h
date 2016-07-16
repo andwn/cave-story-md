@@ -15,6 +15,8 @@ extern bool pauseCancelsIFrames;
 // When true, player can skip through all the message text by holding the B button
 extern bool holdBToSkipText;
 
+extern bool checksumValid;
+
 // Global flags are persisted to save data
 void system_set_flag(u16 flag, bool value);
 bool system_get_flag(u16 flag);
@@ -38,5 +40,7 @@ void system_load();
 void system_save();
 // Validates whether any save data exists in SRAM
 u8 system_checkdata();
+
+void system_verifychecksum();
 
 #endif // INC_SYSTEM_H_
