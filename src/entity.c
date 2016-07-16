@@ -215,6 +215,19 @@ void entities_update() {
 				} else {
 					playerPlatform = e;
 				}
+			// Double check stage collision to avoid clipping through walls
+			} else if(collision.top) {
+				player.y_next = player.y;
+				collide_stage_floor(&player);
+				player.y = player.y_next;
+			} else if(collision.left) {
+				player.x_next = player.x;
+				collide_stage_rightwall(&player);
+				player.x = player.x_next;
+			} else if(collision.right) {
+				player.x_next = player.x;
+				collide_stage_leftwall(&player);
+				player.x = player.x_next;
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
@@ -278,32 +291,35 @@ void entity_update_movement(Entity *e) {
 
 void entity_update_walk(Entity *e) {
 	s16 acc;
+	s16 dec;
 	s16 fric;
 	s16 max_speed = MAX_WALK_SPEED;
 	if(e->grounded) {
 		acc = WALK_ACCEL;
+		dec = WALK_ACCEL;
 		fric = FRICTION;
 	} else {
 		acc = AIR_CONTROL;
+		dec = AIR_CONTROL;
 		fric = AIR_CONTROL;
 	}
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
 		e->underwater = true;
 		acc /= 2;
 		max_speed /= 2;
-		if(abs(e->x_speed) <= max_speed) fric /= 2;
+		fric /= 2;
 	} else {
 		e->underwater = false;
 	}
 	if(e->controller[0] & BUTTON_LEFT) {
 		e->x_speed -= acc;
 		if(e->x_speed < -max_speed) {
-			e->x_speed = min(e->x_speed + acc, -max_speed);
+			e->x_speed = min(e->x_speed + dec, -max_speed);
 		}
 	} else if(e->controller[0] & BUTTON_RIGHT) {
 		e->x_speed += acc;
 		if(e->x_speed > max_speed) {
-			e->x_speed = max(e->x_speed - acc, max_speed);
+			e->x_speed = max(e->x_speed - dec, max_speed);
 		}
 	} else if(e->grounded) {
 		if(e->x_speed < fric && e->x_speed > -fric) {

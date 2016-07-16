@@ -26,6 +26,10 @@ void ai_op2anim_onCreate(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->spriteAnim = 1;
 }
 
+void ai_op2pushdn_onCreate(Entity *e) {
+	if(e->eflags & NPC_OPTION2) e->y += block_to_sub(1);
+}
+
 void ai_blackboard_onCreate(Entity *e) {
 	e->y -= block_to_sub(1);
 	if(e->eflags & NPC_OPTION2) e->spriteFrame = 1;

@@ -1,8 +1,6 @@
 #include "types.h"
 
-
-const struct
-{
+const struct {
     char console[16];               /* Console Name (16) */
     char copyright[16];             /* Copyright Information (16) */
     char title_local[48];           /* Domestic Name (48) */
@@ -36,7 +34,7 @@ const struct
     "RA",
     0xF820,
     0x00200001,
-    0x00200FFF,
+    0x0020FFFF,
     "            ",
     "                                        ",
     "JUE             "

@@ -69,6 +69,8 @@ void ai_op2flip_onCreate(Entity *e);
 void ai_op2frame_onCreate(Entity *e);
 // NPC's sprite will start at the second animation if NPC_OPTION2 is set
 void ai_op2anim_onCreate(Entity *e);
+// Only push down for NPC_OPTION2, used for the door after rescuing Kazuma
+void ai_op2pushdn_onCreate(Entity *e);
 // Blackboard needs to be pushed up, and changes frame on NPC_OPTION2
 void ai_blackboard_onCreate(Entity *e);
 // Rotates the spikes so they are always sticking out of a solid area

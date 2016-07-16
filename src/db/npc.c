@@ -4,7 +4,7 @@
 
 const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ NULL, 		PAL0, 3, "Nothing",
-		NULL, NULL, NULL, NULL },
+		&ai_op2pushdn_onCreate, NULL, NULL, NULL },
 	{ &SPR_EnergyS, PAL1, 2, "Weapon Energy",
 		&ai_energy_onCreate, &ai_energy_onUpdate, NULL, NULL },
 	{ &SPR_Behem, 	PAL1, 3, "Behemoth",
