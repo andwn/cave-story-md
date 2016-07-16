@@ -9,13 +9,16 @@
 #include "effect.h"
 
 void ai_jelly_onCreate(Entity *e) {
+	/*
 	e->x_next = e->x;
 	e->y_next = e->y;
 	e->state_time = (random() % 20) + 11;
 	e->x_speed = e->direction ? -0x200 : 0x200;
+	* */
 }
 
 void ai_jelly_onUpdate(Entity *e) {
+	/*
 	if(e->state == 0) {
 		if(--e->state_time == 0) {
 			SPR_SAFEFRAME(e->sprite, 0);
@@ -37,11 +40,14 @@ void ai_jelly_onUpdate(Entity *e) {
 	e->y_speed += 0x20;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+	* */
 }
 
 void ai_jelly_onHurt(Entity *e) {
+	/*
 	e->x_speed /= 2;
 	e->y_speed /= 2;
+	* */
 }
 
 void ai_mannan_onUpdate(Entity *e) {
