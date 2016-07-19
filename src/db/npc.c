@@ -169,7 +169,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		&ai_pushdn_onCreate, NULL, NULL, NULL },
 	/* 0x050 (80) */
 	{ &SPR_Keeper, 	PAL1, 3, "Gravekeeper",
-		NULL, &ai_gkeeper_onUpdate, &ai_default_onState, NULL },
+		&ai_gkeeper_onCreate, &ai_gkeeper_onUpdate, &ai_default_onState, NULL },
 	{ &SPR_PignonB, PAL1, 3, "Big Pignon",
 		NULL, &ai_pignon_onUpdate, &ai_default_onState, &ai_pignon_onHurt },
 	{ &SPR_Misery, 	PAL0, 3, "Misery (Standing)",
@@ -753,5 +753,5 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Omega, 	PAL3, 3, "Omega",
 		&ai_omega_onCreate, &ai_omega_onUpdate, &ai_omega_onState, NULL },
 	{ &SPR_Balfrog1, PAL3, 3, "Balfrog",
-		&ai_balfrog_onCreate, &ai_balfrog_onUpdate, &ai_balfrog_onState, &ai_balfrog_onHurt },
+		&ai_balfrog_onCreate, &ai_balfrog_onUpdate, &ai_balfrog_onState, NULL },
 };

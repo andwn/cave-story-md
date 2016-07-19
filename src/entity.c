@@ -166,6 +166,9 @@ void entities_update() {
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
+		} else if(e->state == STATE_DESTROY) {
+			e = entity_destroy(e);
+			continue;
 		}
 		// Handle Shootable flag - check for collision with player's bullets
 		if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {

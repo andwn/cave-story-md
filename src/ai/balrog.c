@@ -159,31 +159,3 @@ void ai_balrogRunning_onState(Entity *e) {
 		break;
 	}
 }
-
-// Boss 02 - Balfrog
-void ai_balfrog_onCreate(Entity *e) {
-	e->direction = 1;
-	e->health = 300;
-	e->attack = 5;
-	e->hurtSound = 52;
-	e->deathSound = 72;
-	e->deathSmoke = 3;
-	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
-	e->display_box = (bounding_box) { 40, 32, 40, 32 };
-}
-
-void ai_balfrog_onUpdate(Entity *e) {
-	
-}
-
-void ai_balfrog_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
-		tsc_call_event(e->event); // Boss defeated event
-		e->state = STATE_DESTROY;
-		bossEntity = NULL;
-	}
-}
-
-void ai_balfrog_onHurt(Entity *e) {
-	// Blink
-}

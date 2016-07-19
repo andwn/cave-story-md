@@ -108,7 +108,6 @@ void ai_player_onState(Entity *e);
 void ai_balfrog_onCreate(Entity *e);
 void ai_balfrog_onUpdate(Entity *e);
 void ai_balfrog_onState(Entity *e);
-void ai_balfrog_onHurt(Entity *e);
 
 void ai_balrog_onUpdate(Entity *e);
 void ai_balrog_onState(Entity *e);
@@ -232,6 +231,7 @@ void ai_toroko_onState(Entity *e);
 void ai_pignon_onUpdate(Entity *e);
 void ai_pignon_onHurt(Entity *e);
 
+void ai_gkeeper_onCreate(Entity *e);
 void ai_gkeeper_onUpdate(Entity *e);
 
 /* Grasstown - weed.c */
