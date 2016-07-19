@@ -58,6 +58,11 @@ typedef void (*EntityMethod)(Entity*);
 
 #define FACE_PLAYER(e) (e->direction = e->x > player.x ? 0 : 1)
 
+#define PLAYER_DIST_X(dist) (player.x > e->x - dist && player.x < e->x + dist)
+#define PLAYER_DIST_Y(dist) (player.y > e->y - dist && player.y < e->y + dist)
+#define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - dist1 && player.x < e->x + dist2)
+#define PLAYER_DIST_Y2(dist1, dist2) (player.y > e->y - dist1 && player.y < e->y + dist2)
+
 /* Generic - basic.c */
 
 // Tons of NPCs are placed 1 block above where they are meant to appear

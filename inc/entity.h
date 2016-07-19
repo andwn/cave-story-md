@@ -70,6 +70,7 @@ struct Entity {
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
+	s32 x_mark, y_mark; // Marker value so the AI can remember a position later
 	s16 x_speed, y_speed; // Velocity
 	bool direction, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping

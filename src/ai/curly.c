@@ -37,9 +37,9 @@ void ai_curly_onUpdate(Entity *e) {
 		collide_stage_rightwall(e);
 	}
 	if(e->grounded) {
-		if(e->state != 11 && e->x_speed != 0) collide_stage_floor_grounded(e);
+		if(e->state != 11 && e->x_speed != 0) e->grounded = collide_stage_floor_grounded(e);
 	} else if(e->y_speed > 0) {
-		collide_stage_floor(e);
+		e->grounded = collide_stage_floor(e);
 		if(e->grounded && e->state == 30) ENTITY_SET_STATE(e, 31, 0);
 	}
 	//if(e->state == 10 && e->direction ? 

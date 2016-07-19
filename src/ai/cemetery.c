@@ -59,9 +59,9 @@ void ai_pignon_onUpdate(Entity *e) {
 		collide_stage_rightwall(e);
 	}
 	if(e->grounded) {
-		if(e->x_speed != 0) collide_stage_floor_grounded(e);
+		if(e->x_speed != 0) e->grounded = collide_stage_floor_grounded(e);
 	} else {
-		collide_stage_floor(e);
+		e->grounded = collide_stage_floor(e);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -74,48 +74,82 @@ void ai_pignon_onHurt(Entity *e) {
 	SPR_SAFEANIM(e->sprite, 3);
 }
 
+void ai_gkeeper_onCreate(Entity *e) {
+	e->eflags |= NPC_SHOOTABLE;
+	e->eflags |= NPC_INVINCIBLE;
+	e->attack = 0;
+}
+
 void ai_gkeeper_onUpdate(Entity *e) {
-	e->state_time++;
-	if(e->state == 2) { // Attacking
-		if(e->state_time == 40) { // Animate
-			SPR_SAFEANIM(e->sprite, 3);
-			//e->hit_box.left += 12;
-			e->attack = 10;
-		} else if(e->state_time == 50) {
-			SPR_SAFEANIM(e->sprite, 4);
-			e->attack = 0;
-		} else if(e->state_time > 80) { // Back to standing state
-			ENTITY_SET_STATE(e, 0, 0);
-			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 0);
-			//e->hit_box.left -= 12;
-			e->eflags &= ~NPC_SHOOTABLE;
+	switch(e->state) {
+		case 0: // Standing
+		FACE_PLAYER(e);
+		// start walking when player comes near
+		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
+			PLAYER_DIST_Y2(pixel_to_sub(48), pixel_to_sub(32))) {
+			e->state = 1;
+			SPR_SAFEANIM(e->sprite, 1);
 		}
-	} else {
-		// Wait for player
-		if(player.x > e->x - block_to_sub(2) && player.x < e->x + block_to_sub(2)) {
-			ENTITY_SET_STATE(e, 2, 0);
-			FACE_PLAYER(e);
+		// start walking if shot
+		if(e->damage_time > 0) {
+			e->state = 1;
+			SPR_SAFEANIM(e->sprite, 1);
+			e->eflags |= NPC_INVINCIBLE;
+		}
+		break;
+		case 1: // Walking
+		FACE_PLAYER(e);
+		e->x_speed = e->direction ? 0x100 : -0x100;
+		// reached knife range of player?
+		if(PLAYER_DIST_X(pixel_to_sub(10))) {
+			e->state = 2;
+			e->state_time = 0;
 			e->x_speed = 0;
+			sound_play(SND_FIREBALL, 5);
 			SPR_SAFEANIM(e->sprite, 2);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
-			e->eflags |= NPC_SHOOTABLE; // Vulnerable while attacking
-		} else if(e->state == 1) { // Walking
-			if(e->state_time >= 30) {
-				ENTITY_SET_STATE(e, 0, 0);
-				e->x_speed = 0;
-				SPR_SAFEANIM(e->sprite, 0);
-			}
-		} else if(e->state_time > 120 && (e->state_time & 31) == 0) { // Standing
-			// Walk in a random direction
-			u8 rnd = random() & 7;
-			if(rnd == 1) {
-				ENTITY_SET_STATE(e, 1, 0);
-				e->direction = random() & 1;
-				e->x_speed = e->direction ? 0x50 : -0x50;
-				SPR_SAFEANIM(e->sprite, 1);
-				SPR_SAFEHFLIP(e->sprite, e->direction);
-			}
+			e->eflags &= ~NPC_INVINCIBLE;
 		}
+		break;
+		case 2: // Knife raised
+		if(++e->state_time > 40) {
+			e->state = 3;
+			e->state_time = 0;
+			e->attack = 10;
+			sound_play(SND_SLASH, 5);
+			SPR_SAFEANIM(e->sprite, 3);
+		}
+		break;
+		case 3: // Knife frame 2
+		if(++e->state_time > 2) {
+			e->state = 4;
+			e->state_time = 0;
+			SPR_SAFEANIM(e->sprite, 4);
+		}
+		break;
+		case 4: // Knife frame 3
+		if(++e->state_time > 60) {
+			e->state = 0;
+			SPR_SAFEANIM(e->sprite, 0);
+			e->eflags |= NPC_SHOOTABLE;
+			e->eflags |= NPC_INVINCIBLE;
+			e->attack = 0;
+		}
+		break;
 	}
+	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	// Don't test ceiling, only test sticking to ground while moving
+	if(e->x_speed < 0) {
+		collide_stage_leftwall(e);
+	} else if(e->x_speed > 0) {
+		collide_stage_rightwall(e);
+	}
+	if(e->grounded) {
+		if(e->x_speed != 0) e->grounded = collide_stage_floor_grounded(e);
+	} else {
+		e->grounded = collide_stage_floor(e);
+	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }

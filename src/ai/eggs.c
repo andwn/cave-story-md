@@ -85,6 +85,7 @@ void ai_beetleFollow_onUpdate(Entity *e) {
 
 void ai_basu_onCreate(Entity *e) {
 	e->state_time = 45;
+	e->attack = 5;
 }
 
 void ai_basu_onUpdate(Entity *e) {

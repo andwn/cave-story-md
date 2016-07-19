@@ -821,6 +821,8 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 		e->display_box = (bounding_box) { 8, 8, 8, 8 };
 	}
 	e->eflags |= flags;
+	e->x_mark = 0;
+	e->y_mark = 0;
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->direction = 0;

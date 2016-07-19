@@ -94,6 +94,7 @@ void ai_mannanShot_onUpdate(Entity *e) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
 	if(++e->state_time > 120) e->state = STATE_DELETE;
+	e->x += e->x_speed;
 }
 
 void ai_malco_onUpdate(Entity *e) {

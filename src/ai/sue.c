@@ -33,7 +33,7 @@ void ai_sue_onUpdate(Entity *e) {
 			collide_stage_rightwall(e);
 		}
 		if(e->grounded) {
-			if(e->x_speed != 0) collide_stage_floor_grounded(e);
+			if(e->x_speed != 0) e->grounded = collide_stage_floor_grounded(e);
 		} else {
 			e->grounded = collide_stage_floor(e);
 			if(e->grounded && e->state == 8) ENTITY_SET_STATE(e, 10, 0);

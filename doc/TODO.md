@@ -4,7 +4,6 @@
 - [ ] Engine
   - [ ] Sprite ordering (Pending on SGDK)
   - [ ] Item Menu
-  - [ ] Map
   - [ ] Boss health
   - [ ] Additional player animations
     - [ ] Stars when bumping cieling
