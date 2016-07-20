@@ -178,33 +178,43 @@ void entities_update() {
 				if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 					if(b->x_speed != 0 || b->y_speed != 0) {
 						bullet_missile_explode(b);
-						if(b->damage < e->health) sound_play(e->hurtSound, 5);
+						if((e->nflags | e->eflags) & NPC_INVINCIBLE) {
+							sound_play(SND_TINK, 5);
+						} else {
+							if(b->damage < e->health) sound_play(e->hurtSound, 5);
+						}
 					}
 				} else {
 					b->ttl = 0;
 					SPR_SAFERELEASE(b->sprite);
-					if(b->damage < e->health) sound_play(e->hurtSound, 5);
-				}
-				if(e->health <= b->damage) {
-					if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
-						effect_create_damage(e->damage_value - b->damage,
-								sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
-					// Killed enemy
-					e->health = 0;
-					ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
-					if(e->state == STATE_DESTROY) {
-						e = entity_destroy(e);
+					if((e->nflags | e->eflags) & NPC_INVINCIBLE) {
+						sound_play(SND_TINK, 5);
 					} else {
-						e = e->next;
+						if(b->damage < e->health) sound_play(e->hurtSound, 5);
 					}
-					continue;
 				}
-				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
-					e->damage_value -= b->damage;
-					e->damage_time = 30;
+				if(!((e->nflags | e->eflags) & NPC_INVINCIBLE)) {
+					if(e->health <= b->damage) {
+						if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
+							effect_create_damage(e->damage_value - b->damage,
+									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+						// Killed enemy
+						e->health = 0;
+						ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
+						if(e->state == STATE_DESTROY) {
+							e = entity_destroy(e);
+						} else {
+							e = e->next;
+						}
+						continue;
+					}
+					if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
+						e->damage_value -= b->damage;
+						e->damage_time = 30;
+					}
+					e->health -= b->damage;
+					ENTITY_ONHURT(e);
 				}
-				e->health -= b->damage;
-				ENTITY_ONHURT(e);
 			}
 		}
 		// Solid Entities

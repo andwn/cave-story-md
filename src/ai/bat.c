@@ -92,7 +92,11 @@ void ai_batHang_onUpdate(Entity *e) {
 			e->y = e->y_next;
 		}
 	} else { // Flying
+		u8 old_dir = e->direction;
 		FACE_PLAYER(e);
+		if(e->direction != old_dir) {
+			SPR_SAFEHFLIP(e->sprite, e->direction);
+		}
 		e->x_speed += (e->x > player.x) ? -BAT_FLY_XACCEL : BAT_FLY_XACCEL;
 		e->y_speed += (e->y > e->y_mark) ? -BAT_FLY_YACCEL : BAT_FLY_YACCEL;
 		// Limit speed
@@ -103,9 +107,16 @@ void ai_batHang_onUpdate(Entity *e) {
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		// Bounce against floor and walls
-		if(collide_stage_floor(e)) e->y_speed = -BAT_BOUNCE_SPEED;
-		if(e->direction ? collide_stage_rightwall(e) : collide_stage_leftwall(e)) {
-			e->y_speed = BAT_BOUNCE_SPEED;
+		if(e->x_speed < 0) {
+			collide_stage_leftwall(e);
+		} else if(e->x_speed > 0) {
+			collide_stage_rightwall(e);
+		}
+		if(collide_stage_floor(e)) {
+			e->y_speed = -BAT_BOUNCE_SPEED;
+		}
+		if(e->y_speed <= 0) {
+			collide_stage_ceiling(e);
 		}
 		e->x = e->x_next;
 		e->y = e->y_next;

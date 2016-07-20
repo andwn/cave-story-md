@@ -8,6 +8,7 @@
 #include "tsc.h"
 #include "camera.h"
 #include "effect.h"
+#include "resources.h"
 
 enum Frames
 {
@@ -43,8 +44,8 @@ enum BBox_States
 	BM_DISABLED
 };
 
-#define FROG_START_X			(block_to_sub(5))
-#define FROG_START_Y			(block_to_sub(10))
+#define FROG_START_X			(block_to_sub(7))
+#define FROG_START_Y			(block_to_sub(12))
 
 #define LANDING_SMOKE_COUNT		8
 #define LANDING_SMOKE_YTOP		-4
@@ -85,7 +86,9 @@ bounding_box bbox[2];
 void place_bboxes(Entity *e);
 void set_jump_sprite(Entity *e, bool enable);
 bool player_bbox_collide(Entity *e, u8 index);
-Bullet* bullets_bbox_collide(Entity *e);
+Bullet* bullets_bbox_collide(Entity *e, u8 index);
+void deflect_bullet(Bullet *b);
+void hurt_by_bullet(Entity *e, Bullet *b);
 
 void ai_balfrog_onCreate(Entity *e) {
 	e->x = FROG_START_X;
@@ -119,7 +122,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 	if(!e->grounded) e->y_speed += FROG_GRAVITY;
 	// don't limit upwards inertia or Big Jump will fail
 	if(e->y_speed > FROG_MAX_FALL) e->y_speed = FROG_MAX_FALL;
-	e->x_next = e->x + e->y_speed;
+	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		// transforming from Balrog
@@ -165,10 +168,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 		
 		case STATE_JUMPING:
 			sound_play(SND_FUNNY_EXPLODE, 8);
-			//SetJumpingSprite(true);
+			set_jump_sprite(e, true);
 			e->y_speed = -0x400;
 			e->grounded = false;
-			e->x_speed = e->direction ? 0x200 : -0x200;
 			e->state_time = 0;
 			e->state++;
 		case STATE_JUMPING+1:
@@ -178,11 +180,12 @@ void ai_balfrog_onUpdate(Entity *e) {
 			} else if(!e->direction && collide_stage_leftwall(e)) {
 				e->direction = !e->direction;
 			}
+			e->x_speed = e->direction ? 0x200 : -0x200;
 			// landed?
 			if(++e->state_time > 3 && collide_stage_floor(e)) {
 				e->grounded = true;
 				camera_shake(30);
-				//SetJumpingSprite(false);
+				set_jump_sprite(e, false);
 				// passed player? turn around and fire!
 				if((e->direction && e->x >= player.x) ||
 					(!e->direction && e->x <= player.x)) {
@@ -213,22 +216,22 @@ void ai_balfrog_onUpdate(Entity *e) {
 			}
 			if(e->state_time > 74) {
 				e->state++;
-				//SetJumpingSprite(true);
+				set_jump_sprite(e, true);
 				e->y_speed = -0xA00;
 				e->grounded = false;
 			}
 		break;
 		case STATE_BIG_JUMP+2:		// in air, waiting to hit ground
 			// pass through ceiling at edges
-			if(e->y <= block_to_sub(8)) {
-				e->eflags |= NPC_IGNORESOLID;
-			} else {
-				e->eflags &= ~NPC_IGNORESOLID;
-			}
+			//if(e->y <= block_to_sub(8)) {
+			//	e->eflags |= NPC_IGNORESOLID;
+			//} else {
+			//	e->eflags &= ~NPC_IGNORESOLID;
+			//}
 			if(++e->state_time > 3 && collide_stage_floor(e)) {
 				e->grounded = true;
 				e->eflags &= ~NPC_IGNORESOLID;
-				//SetJumpingSprite(false);
+				set_jump_sprite(e, false);
 				camera_shake(60);
 				//SpawnFrogs(OBJ_MINIFROG, 6);
 				//SpawnFrogs(OBJ_FROG, 2);
@@ -277,6 +280,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 					SPR_SAFEANIM(e->sprite, 1);
 					e->state = STATE_CLOSE_MOUTH;
 					bbox_mode = BM_STAND;
+					bbox_damage = 0;
 					e->state_time = 0;
 				}
 			}
@@ -289,40 +293,25 @@ void ai_balfrog_onUpdate(Entity *e) {
 			}
 		break;
 	}
+	SPR_SAFEHFLIP(e->sprite, e->direction);
 	// Player collision
 	if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
 		player_inflict_damage(5);
 	}
-	if(bbox_mode == BM_MOUTH_OPEN) {
-		Bullet *b = bullets_bbox_collide(e);
-		if(b != NULL) {
-			bbox_damage += b->damage;
-			// Copy pasting is bad but i do it anyway
-			// Destroy the bullet, or if it is a missile make it explode
-			if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
-				if(b->x_speed != 0 || b->y_speed != 0) {
-					bullet_missile_explode(b);
-					if(b->damage < e->health) sound_play(e->hurtSound, 5);
-				}
-			} else {
-				b->ttl = 0;
-				SPR_SAFERELEASE(b->sprite);
-				if(b->damage < e->health) sound_play(e->hurtSound, 5);
-			}
-			if(e->health <= b->damage) {
-				if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
-					effect_create_damage(e->damage_value - b->damage,
-							sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
-				// Killed enemy
-				e->health = 0;
-				ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
-			}
-			if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
-				e->damage_value -= b->damage;
-				e->damage_time = 30;
-			}
-			e->health -= b->damage;
+	Bullet *b1 = bullets_bbox_collide(e, 0);
+	Bullet *b2 = bullets_bbox_collide(e, 1);
+	if(b1 != NULL) deflect_bullet(b1);
+	if(b2 != NULL) {
+		if(bbox_mode == BM_MOUTH_OPEN) {
+			hurt_by_bullet(e, b2);
+		} else {
+			deflect_bullet(b2);
 		}
+	}
+	if(!e->grounded) {
+		e->grounded = collide_stage_floor_grounded(e);
+	} else {
+		e->grounded = collide_stage_floor(e);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -345,9 +334,9 @@ void place_bboxes(Entity *e) {
 			bbox[0] = (bounding_box) { 16, 0, 32, 32 };	// body
 			bbox[1] = (bounding_box) { 32, 24, 0, 8 };	// head
 		break;
-		case BM_JUMPING: // Fixme
-			bbox[0] = (bounding_box) { 12, 29, 41, 47 };// body
-			bbox[1] = (bounding_box) { 30, 3, 43, 35 };	// head
+		case BM_JUMPING:
+			bbox[0] = (bounding_box) { 24, 24, 8, 0 };// head
+			bbox[1] = (bounding_box) { 8, 4, 28, 40 };	// body
 		break;
 		case BM_MOUTH_OPEN:
 			bbox[0]	= (bounding_box) { 0, 8, 32, 32 };	// backside
@@ -524,12 +513,14 @@ Object *smoke;
 // switches on and off the jumping frame/sprite
 void set_jump_sprite(Entity *e, bool enable) {
 	if(enable) {
-		//SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+		SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
 		e->y -= JUMP_SPRITE_ADJ;
+		e->display_box.left -= 4;
 		bbox_mode = BM_JUMPING;
 	} else {
-		//SPR_SAFEADD(e->sprite, &SPR_Balfrog1, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+		SPR_SAFEADD(e->sprite, &SPR_Balfrog1, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
 		e->y += JUMP_SPRITE_ADJ;
+		e->display_box.left += 4;
 		bbox_mode = BM_STAND;
 	}
 }
@@ -546,19 +537,54 @@ bool player_bbox_collide(Entity *e, u8 index) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-Bullet* bullets_bbox_collide(Entity *e) {
+Bullet* bullets_bbox_collide(Entity *e, u8 index) {
 	for(u8 i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl == 0) continue;
 		bounding_box bb = playerBullet[i].hit_box;
 		if(sub_to_pixel(playerBullet[i].x) - bb.left >= 
-			sub_to_pixel(e->x) + bbox[1].right) continue;
+			sub_to_pixel(e->x) + bbox[index].right) continue;
 		if(sub_to_pixel(playerBullet[i].x) + bb.right <= 
-			sub_to_pixel(e->x) - bbox[1].left) continue;
+			sub_to_pixel(e->x) - bbox[index].left) continue;
 		if(sub_to_pixel(playerBullet[i].y) - bb.top >= 
-			sub_to_pixel(e->y) + bbox[1].bottom) continue;
+			sub_to_pixel(e->y) + bbox[index].bottom) continue;
 		if(sub_to_pixel(playerBullet[i].y) + bb.bottom <= 
-			sub_to_pixel(e->y) - bbox[1].top) continue;
+			sub_to_pixel(e->y) - bbox[index].top) continue;
 		return &playerBullet[i];
 	}
 	return NULL;
+}
+
+void deflect_bullet(Bullet *b) {
+	b->ttl = 0;
+	SPR_SAFERELEASE(b->sprite);
+	sound_play(SND_TINK, 5);
+}
+
+void hurt_by_bullet(Entity *e, Bullet *b) {
+	bbox_damage += b->damage;
+	// Copy pasting is bad but i do it anyway
+	// Destroy the bullet, or if it is a missile make it explode
+	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
+		if(b->x_speed != 0 || b->y_speed != 0) {
+			bullet_missile_explode(b);
+			if(b->damage < e->health) sound_play(e->hurtSound, 5);
+		}
+	} else {
+		b->ttl = 0;
+		SPR_SAFERELEASE(b->sprite);
+		if(b->damage < e->health) sound_play(e->hurtSound, 5);
+	}
+	if(e->health <= b->damage) {
+		if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
+			effect_create_damage(e->damage_value - b->damage,
+					sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+		// Killed enemy
+		e->health = 0;
+		ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
+	}
+	if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
+		e->damage_value -= b->damage;
+		e->damage_time = 30;
+	}
+	e->health -= b->damage;
 }
