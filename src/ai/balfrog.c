@@ -10,18 +10,7 @@
 #include "effect.h"
 #include "resources.h"
 
-enum Frames
-{
-	FRAME_STAND				= 0,
-	FRAME_CROUCH			= 1,
-	FRAME_MOUTH_OPEN		= 2,
-	FRAME_MOUTH_OPEN_HURT	= 3,
-	
-	FRAME_JUMPING			= 0		// on other sprite (SPR_BALFROG_JUMP)
-};
-
-enum States
-{
+enum States {
 	STATE_TRANSFORM			= 20,			// script-triggered: must stay at this value
 	STATE_READY				= 10,			// script-triggered: must stay at this value
 	STATE_DEATH				= 130,			// script-triggered: must stay at this value
@@ -36,8 +25,7 @@ enum States
 	STATE_BIG_JUMP			= 90
 };
 
-enum BBox_States
-{
+enum BBox_States {
 	BM_STAND,
 	BM_JUMPING,
 	BM_MOUTH_OPEN,
@@ -47,23 +35,12 @@ enum BBox_States
 #define FROG_START_X			(block_to_sub(7))
 #define FROG_START_Y			(block_to_sub(12))
 
-#define LANDING_SMOKE_COUNT		8
-#define LANDING_SMOKE_YTOP		-4
-
-#define DEATH_SMOKE_COUNT		8
-#define DEATH_SMOKE_YTOP		-24
-
 // when he lands he spawns frogs from ceiling--
 // this is the range of where they should spawn at
 #define SPAWN_RANGE_LEFT		4
 #define SPAWN_RANGE_RIGHT		16
 #define SPAWN_RANGE_TOP			0
 #define SPAWN_RANGE_BOTTOM		4
-
-// offset from top and from left or right (depending on direction facing)
-// to spawn the balrog 'puppet' when we return to balrog form after being defeated.
-#define BALDEATH_X				(pixel_to_sub(12))
-#define BALDEATH_Y				(pixel_to_sub(44))
 
 // twiddle adjustment to get the proper Y coordinate when switching
 // between normal and jumping sprites.
@@ -78,6 +55,7 @@ enum BBox_States
 #define FROG_MAX_FALL		0x4FF
 #endif
 
+u8 frog_attack_count;
 u8 bbox_mode;
 u8 bbox_attack;
 u16 bbox_damage;
@@ -98,6 +76,7 @@ void ai_balfrog_onCreate(Entity *e) {
 	e->attack = 0;	// damage comes from our bbox puppets, not our own bbox
 	e->experience = 1;
 	e->direction = 1;
+	e->eflags |= NPC_IGNORE44;
 	e->eflags |= NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
 	e->eflags &= ~NPC_SHOOTABLE;
@@ -116,6 +95,8 @@ void ai_balfrog_onCreate(Entity *e) {
 	bbox_attack = 5;
 	bbox_mode = BM_DISABLED;
 	bbox_damage = 0;
+	
+	frog_attack_count = 0;
 }
 
 void ai_balfrog_onUpdate(Entity *e) {
@@ -289,23 +270,117 @@ void ai_balfrog_onUpdate(Entity *e) {
 			if(++e->state_time > 10) {
 				e->state_time = 0;
 				SPR_SAFEANIM(e->sprite, 0);
-				e->state = STATE_FIGHTING;
+				// Big jump after 3 attacks
+				if(++frog_attack_count >= 3) {
+					frog_attack_count = 0;
+					e->state = STATE_BIG_JUMP;
+				} else {
+					e->state = STATE_FIGHTING;
+				}
+			}
+		break;
+		
+		case STATE_DEATH:			// BOOM!
+			SPR_SAFEANIM(e->sprite, 2);
+			sound_play(SND_BIG_CRASH, 10);
+			e->x_speed = 0;
+			e->state_time = 0;
+			e->state++;
+			//SpawnSmoke(DEATH_SMOKE_COUNT, DEATH_SMOKE_YTOP);
+		case STATE_DEATH+1:			// shaking with mouth open
+			e->state_time++;
+			if((e->state_time % 8) == 0) {
+				effect_create_smoke(0, e->x - 28 + (random() % 56),
+					e->y - 24 + (random() % 48));
+			}
+			// at a glance it might seem like this has it alternate
+			// slowly between 2 X coordinates, but in fact, it
+			// alternates quickly between 3.
+			e->x += (e->state_time & 2) ? pixel_to_sub(1) : pixel_to_sub(-1);
+			if(e->state_time > 100) {
+				e->state_time = 0;
+				e->state++;
+			}
+		break;
+		case STATE_DEATH+2:			// begin flashing back and forth between frog and balrog
+		{ // Scope for balrog pointer
+			// spawn balrog puppet
+			Entity *balrog = entity_create(e->x, e->y, 0, 0, 0xB, 0, e->direction);
+			balrog->state = 500;	// tell him to give us complete control
+			//frog.balrog->frame = 5;
+			e->state++;
+		}
+		case STATE_DEATH+3:		// flashing
+			e->state_time++;
+			if((e->state_time % 16) == 0) {
+				effect_create_smoke(0, e->x - 28 + (random() % 56),
+					e->y - 24 + (random() % 48));
+			}
+			if(e->state_time <= 150) {
+				SPR_SAFEVISIBILITY(e->sprite, e->state_time & 2);
+				Entity *balrog = entity_find_by_type(0xB);
+				if(balrog != NULL) {
+					SPR_SAFEVISIBILITY(balrog->sprite, !(e->state_time & 2));
+				}
+			}
+			if(e->state_time > 156) {
+				e->state_time = 0;
+				e->state++;
+			}
+		break;
+		case STATE_DEATH+4:		// balrog falling to ground
+		{
+			Entity *balrog = entity_find_by_type(0xB);
+			// should start to move exactly when timer hits 160
+			//
+			// 10 frames until starts to fall
+			// 14 frames until changes to landed frame
+			if(balrog != NULL) {
+				balrog->y_speed += 0x40;
+				if(collide_stage_floor(balrog)) {
+					balrog->grounded = true;
+					balrog->y_speed = 0;
+					//balrog->frame = 2;
+					if(++e->state_time > 30) {
+						//balrog->frame = 3;
+						e->state++;
+					}
+				}
+			}
+		}
+		break;
+		case STATE_DEATH+5:		// balrog flying away
+			if(++e->state_time > 30) {
+				Entity *balrog = entity_find_by_type(0xB);
+				// it's all over, destroy ourselves and clean up
+				if(balrog != NULL) {
+					balrog->y_speed = -0xA00;
+					balrog->eflags |= NPC_IGNORESOLID;
+					if(balrog->y < -0x400) {
+						entity_delete(balrog);
+						bossEntity = NULL;
+						e->state = STATE_DELETE;
+						return;
+					}
+				}
 			}
 		break;
 	}
 	SPR_SAFEHFLIP(e->sprite, e->direction);
 	// Player collision
-	if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
-		player_inflict_damage(5);
-	}
-	Bullet *b1 = bullets_bbox_collide(e, 0);
-	Bullet *b2 = bullets_bbox_collide(e, 1);
-	if(b1 != NULL) deflect_bullet(b1);
-	if(b2 != NULL) {
-		if(bbox_mode == BM_MOUTH_OPEN) {
-			hurt_by_bullet(e, b2);
-		} else {
-			deflect_bullet(b2);
+	if(bbox_mode != BM_DISABLED) {
+		if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
+			player_inflict_damage(5);
+		}
+		Bullet *b1 = bullets_bbox_collide(e, 0);
+		Bullet *b2 = bullets_bbox_collide(e, 1);
+		if(b1 != NULL) deflect_bullet(b1);
+		if(b2 != NULL) {
+			if(bbox_mode == BM_MOUTH_OPEN) {
+				hurt_by_bullet(e, b2);
+			} else {
+				deflect_bullet(b2);
+			}
 		}
 	}
 	if(!e->grounded) {
@@ -322,8 +397,12 @@ void ai_balfrog_onUpdate(Entity *e) {
 void ai_balfrog_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
 		tsc_call_event(e->event); // Boss defeated event
-		e->state = STATE_DESTROY;
-		bossEntity = NULL;
+		if(bbox_mode == BM_JUMPING) {
+			set_jump_sprite(e, false);
+		}
+		bbox_mode = BM_DISABLED;
+		e->state = STATE_DEATH;
+		e->state_time = 0;
 	}
 }
 
@@ -353,129 +432,7 @@ void place_bboxes(Entity *e) {
 		bbox[1].right = temp;
 	}
 }
-/*
-void BalfrogBoss::RunDeathAnim()
-{
-	switch(o->state)
-	{
-		case STATE_DEATH:			// BOOM!
-		{
-			SetJumpingSprite(false);
-			o->frame = FRAME_MOUTH_OPEN;
-			
-			sound(SND_BIG_CRASH);
-			o->xinertia = 0;
-			o->timer = 0;
-			o->state++;
-			
-			SpawnSmoke(DEATH_SMOKE_COUNT, DEATH_SMOKE_YTOP);
-		}
-		case STATE_DEATH+1:			// shaking with mouth open
-		{
-			o->timer++;
-			if ((o->timer % 5) == 0)
-			{
-				SpawnSmoke(1, DEATH_SMOKE_YTOP);
-			}
-			
-			// at a glance it might seem like this has it alternate
-			// slowly between 2 X coordinates, but in fact, it
-			// alternates quickly between 3.
-			o->x += (o->timer & 2) ? (1 << CSF) : (-1 << CSF);
-			
-			if (o->timer > 100)
-			{
-				o->timer = 0;
-				o->state++;
-			}
-		}
-		break;
-		
-		case STATE_DEATH+2:			// begin flashing back and forth between frog and balrog
-		{
-			// spawn balrog puppet
-			frog.balrog = CreateObject(0, o->y+BALDEATH_Y, OBJ_BALROG);
-			frog.balrog->state = 500;	// tell him to give us complete control
-			frog.balrog->dir = o->dir;
-			frog.balrog->frame = 5;
-			
-			if (o->dir == RIGHT)
-			{
-				frog.balrog->x = (o->x + BALDEATH_X);
-			}
-			else
-			{
-				frog.balrog->x = o->x + o->Width();	// not the same as o->Right()
-				frog.balrog->x -= frog.balrog->Width();
-				frog.balrog->x -= BALDEATH_X;
-			}
-			
-			o->state++;
-		}
-		case STATE_DEATH+3:		// flashing
-		{
-			o->timer++;
-			
-			if ((o->timer % 9) == 0)
-				SpawnSmoke(1, DEATH_SMOKE_YTOP);
-			
-			if (o->timer <= 150)
-			{
-				o->invisible = (o->timer & 2);
-				frog.balrog->invisible = !(o->timer & 2);
-			}
-			
-			if (o->timer > 156)
-			{
-				o->timer = 0;
-				o->state++;
-			}
-		}
-		break;
-		
-		case STATE_DEATH+4:		// balrog falling to ground
-		{
-			// should start to move exactly when timer hits 160
-			//
-			// 10 frames until starts to fall
-			// 14 frames until changes to landed frame
-			frog.balrog->yinertia += 0x40;
-			
-			if (frog.balrog->blockd)
-			{
-				frog.balrog->frame = 2;
-				if (++o->timer > 30)
-				{
-					frog.balrog->frame = 3;
-					o->state++;
-				}
-			}
-		}
-		break;
-		
-		case STATE_DEATH+5:		// balrog flying away
-		{
-			if (++o->timer > 30)
-			{
-				// it's all over, destroy ourselves and clean up
-				frog.balrog->yinertia = -0xA00;
-				frog.balrog->flags |= FLAG_IGNORE_SOLID;
-				
-				if (frog.balrog->y < -(100 << CSF))
-				{
-					frog.balrog->Delete();
-					frog.bboxes.destroy();
-					
-					o->Delete();
-					o = game.stageboss.object = NULL;
-					return;
-				}
-			}
-		}
-		break;
-	}
-}
-*/
+
 /*
 // shake loose frogs from the ceiling
 void BalfrogBoss::SpawnFrogs(int objtype, int count)
@@ -489,23 +446,6 @@ Object *child;
 		
 		child = CreateObject((x*TILE_W)<<CSF, (y*TILE_H)<<CSF, objtype);
 		child->dir = DOWN;	// allow fall through ceiling
-	}
-}
-
-// spawn the smoke clouds from landing after a jump
-// or during the death sequence.
-void BalfrogBoss::SpawnSmoke(int count, int ytop)
-{
-Object *smoke;
-
-	for(int i=0;i<count;i++)
-	{
-		int x = random(o->Left() + (4 << CSF), o->Right() - (4<<CSF));
-		int y = o->Bottom() + random(ytop<<CSF, 4<<CSF);
-		
-		smoke = CreateObject(x, y, OBJ_SMOKE_CLOUD);
-		smoke->xinertia = random(-0x155, 0x155);
-		smoke->yinertia = random(-0x600, 0);
 	}
 }
 */

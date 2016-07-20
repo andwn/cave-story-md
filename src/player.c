@@ -448,7 +448,7 @@ bool player_inflict_damage(s16 damage) {
 		}
 	}
 	// Knock back
-	player.y_speed = -0x300; // 1.5 pixels per frame
+	player.y_speed = -0x400; // 2 pixels per frame
 	player.grounded = false;
 	return false;
 }

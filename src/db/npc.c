@@ -239,7 +239,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Booster, PAL3, 3, "Prof. Booster",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Press, 	PAL1, 3, "Press",
-		NULL, NULL, &ai_default_onState, NULL },
+		NULL, &ai_press_onUpdate, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, 3, "Ravil",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, 2, "Red Flower Petals",

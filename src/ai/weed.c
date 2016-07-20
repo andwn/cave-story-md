@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "effect.h"
+#include "camera.h"
 
 void ai_jelly_onCreate(Entity *e) {
 	/*
@@ -78,6 +79,8 @@ void ai_mannan_onState(Entity *e) {
 			Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
 				0, 0, 0x67, 0, e->direction);
 			shot->direction = e->direction;
+			// We want the bullet to delete itself offscreen, it can't do this while inactive
+			shot->alwaysActive = true;
 		}
 		break;
 	}
@@ -174,4 +177,45 @@ void ai_malcoBroken_onState(Entity *e) {
 
 void ai_powerc_onCreate(Entity *e) {
 	e->y += pixel_to_sub(8);
+}
+
+void ai_press_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0:
+			e->x_next = e->x;
+			e->y_next = e->y + 0x200;
+			e->grounded = collide_stage_floor(e);
+			if(!e->grounded) {
+				e->state = 10;
+				e->state_time = 0;
+				SPR_SAFEFRAME(e->sprite, 1);
+			}
+		break;
+		case 10:		// fall
+			e->state_time++;
+			if(e->state_time == 4) {
+				SPR_SAFEFRAME(e->sprite, 2);
+			}
+			e->y_speed += 0x20;
+			if(e->y_speed > 0x5FF) e->y_speed = 0x5FF;
+			e->y_next = e->y + e->y_speed;
+			if(e->y < player.y) {
+				e->eflags &= ~NPC_SOLID;
+				e->attack = 127;
+			} else {
+				e->eflags |= NPC_SOLID;
+				e->attack = 0;
+			}
+			e->grounded = collide_stage_floor(e);
+			if(e->grounded) {
+				//SmokeSide(o, 4, DOWN);
+				camera_shake(10);
+				e->state = 11;
+				SPR_SAFEFRAME(e->sprite, 0);
+				e->attack = 0;
+				e->eflags |= NPC_SOLID;
+			}
+			e->y = e->y_next;
+		break;
+	}
 }

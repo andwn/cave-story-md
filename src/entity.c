@@ -155,7 +155,7 @@ u16 entities_count() {
 void entities_update() {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(!entity_on_screen(e) && !e->alwaysActive) {
+		if(!e->alwaysActive && !entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_deactivate(e);
 			e = next;

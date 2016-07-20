@@ -72,8 +72,8 @@ void ai_sue_onState(Entity *e) {
 		sound_play(SND_ENEMY_SQUEAK, 6);
 		break;
 		case 8: // Punched harder
-		e->x_speed = e->direction ? -0x100 : 0x100;
-		e->y_speed = -0x300;
+		e->x_speed = e->direction ? -0x180 : 0x180;
+		e->y_speed = -0x400;
 		e->grounded = false;
 		SPR_SAFEHFLIP(e->sprite, !e->direction);
 		SPR_SAFEANIM(e->sprite, 4);

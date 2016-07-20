@@ -254,6 +254,8 @@ void ai_malcoBroken_onState(Entity *e);
 
 void ai_powerc_onCreate(Entity *e);
 
+void ai_press_onUpdate(Entity *e);
+
 /* Sand Zone - sand.c */
 
 void ai_omega_onCreate(Entity *e);

@@ -19,6 +19,7 @@ void ai_miseryFloat_onUpdate(Entity *e) {
 		break;
 	case 20:
 	case 21:
+		if(e->y < -0x1000) e->state = STATE_DELETE;
 		e->y_speed -= 0x20;
 		break;
 	default:
