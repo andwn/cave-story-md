@@ -11,6 +11,7 @@
 #include "effect.h"
 #include "hud.h"
 #include "vdp_ext.h"
+#include "ai.h"
 
 s16 backScrollTable[32];
 u8 *stageBlocks = NULL;
@@ -47,6 +48,7 @@ void stage_load(u16 id) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
+	energyCount = 0;
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();

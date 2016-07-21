@@ -8,6 +8,9 @@
 #include "tsc.h"
 #include "effect.h"
 #include "camera.h"
+#include "system.h"
+
+u8 jellyFlag = 0;
 
 void ai_jelly_onCreate(Entity *e) {
 	/*
@@ -16,6 +19,8 @@ void ai_jelly_onCreate(Entity *e) {
 	e->state_time = (random() % 20) + 11;
 	e->x_speed = e->direction ? -0x200 : 0x200;
 	* */
+	jellyFlag = !jellyFlag;
+	e->state_time = (system_get_frame() + jellyFlag) % 2;
 }
 
 void ai_jelly_onUpdate(Entity *e) {
@@ -42,6 +47,14 @@ void ai_jelly_onUpdate(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	* */
+	e->state_time++;
+	// Blink in large jelly section
+	u16 cx = sub_to_block(camera.x);
+	if(cx < 90) {
+		SPR_SAFEVISIBILITY(e->sprite, e->state_time % 2);
+	} else {
+		SPR_SAFEVISIBILITY(e->sprite, true);
+	}
 }
 
 void ai_jelly_onHurt(Entity *e) {

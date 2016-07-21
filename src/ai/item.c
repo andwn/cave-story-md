@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "input.h"
+#include "system.h"
 
 void ai_energy_onCreate(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
@@ -14,6 +15,10 @@ void ai_energy_onCreate(Entity *e) {
 		e->display_box.right -= 4;
 	}
 	e->x_speed = 0x200 - (random() % 0x400);
+	// Sync to global timer
+	e->alwaysActive = true;
+	energyCount++;
+	e->state_time = (system_get_frame() + energyCount * 2) % 4;
 }
 
 void ai_energy_onUpdate(Entity *e) {
@@ -30,12 +35,19 @@ void ai_energy_onUpdate(Entity *e) {
 			player.damage_value += e->experience;
 		}
 		e->state = STATE_DELETE;
+		energyCount--;
 	} else {
-		if(++e->state_time > 15 * 60) {
+		e->state_time++;
+		if(e->state_time > 15 * 60) {
 			e->state = STATE_DELETE;
+			energyCount--;
 			return;
-		} else if(e->state_time > 12 * 60) {
+		} else if(energyCount > 8 || e->state_time > 12 * 60) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		} else if(!entity_on_screen(e)) {
+			SPR_SAFERELEASE(e->sprite);
+		} else if(e->sprite == NULL) {
+			entity_sprite_create(e);
 		}
 		e->y_speed += GRAVITY;
 		e->x_next = e->x + e->x_speed;
@@ -63,6 +75,14 @@ void ai_energy_onUpdate(Entity *e) {
 }
 
 void ai_missile_onUpdate(Entity *e) {
+	// Hide the sprite when under a breakable block
+	// Reduces unnecessary lag in sand zone
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
+		SPR_SAFERELEASE(e->sprite);
+		return;
+	} else if(e->sprite == NULL) {
+		entity_sprite_create(e);
+	}
 	// Increases missile ammo, plays sound and deletes itself
 	if(entity_overlapping(&player, e)) {
 		// Find missile or super missile
@@ -76,10 +96,26 @@ void ai_missile_onUpdate(Entity *e) {
 		}
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
+	} else if(e->eflags & NPC_OPTION1) {
+		e->state_time++;
+		if(e->state_time > 15 * 60) {
+			e->state = STATE_DELETE;
+			return;
+		} else if(e->state_time > 12 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		}
 	}
 }
 
 void ai_heart_onUpdate(Entity *e) {
+	// Hide the sprite when under a breakable block
+	// Reduces unnecessary lag in sand zone
+	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
+		SPR_SAFERELEASE(e->sprite);
+		return;
+	} else if(e->sprite == NULL) {
+		entity_sprite_create(e);
+	}
 	// Increases health, plays sound and deletes itself
 	if(entity_overlapping(&player, e)) {
 		player.health += e->health;
@@ -87,5 +123,13 @@ void ai_heart_onUpdate(Entity *e) {
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
+	} else if(e->eflags & NPC_OPTION1) {
+		e->state_time++;
+		if(e->state_time > 15 * 60) {
+			e->state = STATE_DELETE;
+			return;
+		} else if(e->state_time > 12 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		}
 	}
 }

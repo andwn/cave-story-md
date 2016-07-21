@@ -115,6 +115,11 @@ void ai_balrog_onState(Entity *e);
 void ai_balrogRunning_onUpdate(Entity *e);
 void ai_balrogRunning_onState(Entity *e);
 
+void ai_balrogFlying_onUpdate(Entity *e);
+void ai_balrogFlying_onState(Entity *e);
+
+void ai_balrogShot_onUpdate(Entity *e);
+
 /* Bats - bat.c */
 
 void ai_batVertical_onCreate(Entity *e);
@@ -175,6 +180,8 @@ void ai_theDoor_onUpdate(Entity *e);
 void ai_theDoor_onHurt(Entity *e);
 
 /* Items & Treasure - item.c */
+
+u8 energyCount;
 
 void ai_energy_onCreate(Entity *e);
 void ai_energy_onUpdate(Entity *e);

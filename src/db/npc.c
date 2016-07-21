@@ -71,14 +71,14 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	/* 0x020 (32) */
 	{ &SPR_LifeUp, 	PAL1, 2, "Life Capsule",
 		NULL, NULL, NULL, NULL },
-	{ &SPR_EnergyShot, PAL1, 3, "Balrog Energy Bounce", // TODO
-		NULL, NULL, NULL, NULL },
+	{ &SPR_EnergyShot, PAL1, 3, "Balrog Energy Bounce",
+		NULL, &ai_balrogShot_onUpdate, NULL, NULL },
 	{ &SPR_Bed, 	PAL1, 2, "Bed",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Mannan, 	PAL3, 3, "Mannan",
 		NULL, &ai_mannan_onUpdate, &ai_mannan_onState, &ai_mannan_onHurt },
-	{ &SPR_Balrog, 	PAL1, 3, "Balrog (Second Fight)", // TODO
-		NULL, NULL, &ai_default_onState, NULL },
+	{ &SPR_Balrog, 	PAL1, 3, "Balrog (Second Fight)",
+		NULL, &ai_balrogFlying_onUpdate, &ai_balrogFlying_onState, NULL },
 	{ &SPR_Sign, 	PAL1, 2, "Sign Post",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Fire, 	PAL1, 2, "Fireplace Fire",
@@ -224,7 +224,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ NULL, 		PAL0, 3, "Hey! (High)",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Malco, 	PAL1, 3, "Malco",
-		NULL, &ai_malco_onUpdate, &ai_malco_onUpdate, NULL },
+		NULL, &ai_malco_onUpdate, &ai_malco_onState, NULL },
 	{ NULL, 		PAL0, 3, "Balfrog Projectile",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_Malco, 	PAL1, 3, "Malco (Damaged)",

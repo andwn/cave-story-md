@@ -780,12 +780,10 @@ void entity_drop_powerup(Entity *e) {
 		for(; i >= 5; i -= 5) { // Big
 			Entity *exp = entity_create(bx, by, 0, 0, 1, NPC_OPTION2, 0);
 			exp->experience = 5;
-			//SPR_SAFEANIM(exp->sprite, 2);
 		}
 		for(; i >= 3; i -= 3) { // Med
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
 			exp->experience = 3;
-			//SPR_SAFEANIM(exp->sprite, 1);
 		}
 		for(; i > 0; i--) { // Small
 			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
@@ -795,16 +793,16 @@ void entity_drop_powerup(Entity *e) {
 	} else if(chance == 2 && (player_has_weapon(WEAPON_MISSILE) || 
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {
-			entity_create(bx, by, 0, 0, 86, NPC_OPTION2, 0);
+			entity_create(bx, by, 0, 0, 86, NPC_OPTION1 | NPC_OPTION2, 0);
 		} else {
-			entity_create(bx, by, 0, 0, 86, 0, 0);
+			entity_create(bx, by, 0, 0, 86, NPC_OPTION1, 0);
 		}
 	} else { // Heart
 		if(e->experience > 6) {
-			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION2, 0);
+			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION1 | NPC_OPTION2, 0);
 			heart->health = 5;
 		} else {
-			Entity *heart = entity_create(bx, by, 0, 0, 87, 0, 0);
+			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION1, 0);
 			heart->health = 2;
 		}
 	}

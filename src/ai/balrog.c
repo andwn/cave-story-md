@@ -160,7 +160,7 @@ void ai_balrogRunning_onState(Entity *e) {
 	}
 }
 
-void ai_balfrogFlying_onUpdate(Entity *e) {
+void ai_balrogFlying_onUpdate(Entity *e) {
 	enum {
 		WAIT_BEGIN = 0,
 		SHOOT_PLAYER,
@@ -286,5 +286,27 @@ void ai_balrogFlying_onState(Entity *e) {
 		e->attack = 0;
 		entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
 		entities_clear_by_type(OBJ_IGOR_SHOT);
+	}
+}
+
+#ifdef PAL
+#define BALROG_SHOT_SPEED	0x400
+#define BALROG_SHOT_TIME	250
+#define BALROG_SHOT_GRAVITY	42
+#else
+#define BALROG_SHOT_SPEED	0x355
+#define BALROG_SHOT_TIME	300
+#define BALROG_SHOT_GRAVITY	35
+#endif
+
+void ai_balrogShot_onUpdate(Entity *e) {
+	if(e->y_speed > 0 && collide_stage_floor(e)) {
+		e->y_speed = -BALROG_SHOT_SPEED;
+	}
+	e->y_speed += BALROG_SHOT_GRAVITY;
+	if((e->x_speed > 0 && collide_stage_rightwall(e)) ||
+		(e->x_speed < 0 && collide_stage_leftwall(e)) ||
+		++e->state_time > BALROG_SHOT_TIME) {
+		e->state = STATE_DELETE;
 	}
 }
