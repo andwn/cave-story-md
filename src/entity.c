@@ -171,14 +171,14 @@ void entities_update() {
 			continue;
 		}
 		// Handle Shootable flag - check for collision with player's bullets
-		if(((e->eflags|e->nflags) & NPC_SHOOTABLE)) {
+		if((e->nflags | e->eflags) & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
 			if(b != NULL) {
 				// Destroy the bullet, or if it is a missile make it explode
 				if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 					if(b->x_speed != 0 || b->y_speed != 0) {
 						bullet_missile_explode(b);
-						if((e->nflags | e->eflags) & NPC_INVINCIBLE) {
+						if(e->eflags & NPC_INVINCIBLE) {
 							sound_play(SND_TINK, 5);
 						} else {
 							if(b->damage < e->health) sound_play(e->hurtSound, 5);
@@ -187,15 +187,15 @@ void entities_update() {
 				} else {
 					b->ttl = 0;
 					SPR_SAFERELEASE(b->sprite);
-					if((e->nflags | e->eflags) & NPC_INVINCIBLE) {
+					if(e->eflags & NPC_INVINCIBLE) {
 						sound_play(SND_TINK, 5);
 					} else {
 						if(b->damage < e->health) sound_play(e->hurtSound, 5);
 					}
 				}
-				if(!((e->nflags | e->eflags) & NPC_INVINCIBLE)) {
+				if(!(e->eflags & NPC_INVINCIBLE)) {
 					if(e->health <= b->damage) {
-						if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
+						if((e->nflags | e->eflags) & NPC_SHOWDAMAGE)
 							effect_create_damage(e->damage_value - b->damage,
 									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 						// Killed enemy
@@ -208,7 +208,7 @@ void entities_update() {
 						}
 						continue;
 					}
-					if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
+					if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
 						e->damage_value -= b->damage;
 						e->damage_time = 30;
 					}
@@ -492,6 +492,7 @@ bool collide_stage_floor(Entity *e) {
 		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
 		return true;
 	}
+	if(!e->enableSlopes) return false;
 	bool result = false;
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
@@ -595,7 +596,7 @@ bool collide_stage_floor_grounded(Entity *e) {
 		}
 		result = true;
 	}
-	if(collide_stage_slope_grounded(e)) {
+	if(e->enableSlopes && collide_stage_slope_grounded(e)) {
 		result = true;
 	}
 	return result;
@@ -838,6 +839,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->y_mark = 0;
 	e->x_speed = 0;
 	e->y_speed = 0;
+	e->enableSlopes = true;
 	e->direction = 0;
 	e->grounded = false;
 	e->underwater = false;

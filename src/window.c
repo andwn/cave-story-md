@@ -229,11 +229,9 @@ void window_draw_face() {
 
 void window_show_item(u16 item) {
 	showingItem = item;
-	if(item == 0) {
-		SPR_SAFERELEASE(itemSpr);
-		SPR_SAFERELEASE(itemWinSpr);
-		return;
-	}
+	SPR_SAFERELEASE(itemSpr);
+	SPR_SAFERELEASE(itemWinSpr);
+	if(item == 0) return;
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
 	u16 pal = PAL1;
@@ -251,11 +249,9 @@ void window_show_item(u16 item) {
 
 void window_show_weapon(u16 item) {
 	showingItem = item;
-	if(item == 0) {
-		SPR_SAFERELEASE(itemSpr);
-		SPR_SAFERELEASE(itemWinSpr);
-		return;
-	}
+	SPR_SAFERELEASE(itemSpr);
+	SPR_SAFERELEASE(itemWinSpr);
+	if(item == 0) return;
 	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
 		TILE_ATTR(PAL0, 1, 0, 0));
 	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,

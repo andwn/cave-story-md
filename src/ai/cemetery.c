@@ -84,6 +84,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Standing
 		FACE_PLAYER(e);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
 		// start walking when player comes near
 		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
 			PLAYER_DIST_Y2(pixel_to_sub(48), pixel_to_sub(32))) {
@@ -99,6 +100,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		break;
 		case 1: // Walking
 		FACE_PLAYER(e);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
 		e->x_speed = e->direction ? 0x100 : -0x100;
 		// reached knife range of player?
 		if(PLAYER_DIST_X(pixel_to_sub(10))) {
@@ -130,7 +132,6 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		if(++e->state_time > 60) {
 			e->state = 0;
 			SPR_SAFEANIM(e->sprite, 0);
-			e->eflags |= NPC_SHOOTABLE;
 			e->eflags |= NPC_INVINCIBLE;
 			e->attack = 0;
 		}

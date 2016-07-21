@@ -74,7 +74,8 @@ struct Entity {
 	s16 x_speed, y_speed; // Velocity
 	bool direction, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping
-		underwater; // True when entity is within a water tile
+		underwater, // True when entity is within a water tile
+		enableSlopes; // Check collision with slopes when enabled
 	u8 jump_time; // Time until jump button no longer increases jump height
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	/* Display */

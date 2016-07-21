@@ -37,23 +37,23 @@ void ai_fan_onUpdate(Entity *e) {
 	u16 px = sub_to_block(player.x), py = sub_to_block(player.y);
 	switch(e->state) {
 	case 1: // Left
-		if(px > ex - 8 && px <= ex && py == ey) {
-			if(player.x_speed > -MAX_WALK_SPEED * 2) player.x_speed -= 0x50;
+		if(px > ex - 6 && px <= ex && py == ey) {
+			if(player.x_speed > -MAX_WALK_SPEED * 2) player.x_speed -= 0x88;
 		}
 		break;
 	case 2: // Up
-		if(py > ey - 8 && py <= ey && px == ex) {
-			player.y_speed -= (joy_pressed(BUTTON_C) ? 0x70 : 0x50);
+		if(py > ey - 6 && py <= ey && px == ex) {
+			if(player.y_speed > -MAX_FALL_SPEED) player.y_speed -= 0x88;
 		}
 		break;
 	case 3: // Right
-		if(px >= ex && px < ex + 8 && py == ey) {
-			if(player.x_speed < MAX_WALK_SPEED * 2) player.x_speed += 0x50;
+		if(px >= ex && px < ex + 6 && py == ey) {
+			if(player.x_speed < MAX_WALK_SPEED * 2) player.x_speed += 0x88;
 		}
 		break;
 	case 4: // Down
 		if(py >= ey && py < ey + 8 && px == ex) {
-			player.y_speed += 0x40;
+			if(player.y_speed < MAX_FALL_SPEED) player.y_speed += 0x88;
 		}
 		break;
 	default:

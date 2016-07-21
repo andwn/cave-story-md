@@ -335,7 +335,6 @@ u8 execute_command() {
 		case CMD_MS3: // Display message box (top - visible)
 			window_open(0);
 			break;
-			break;
 		case CMD_CLO: // Close message box
 			window_close();
 			break;

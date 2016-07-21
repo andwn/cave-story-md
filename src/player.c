@@ -67,6 +67,7 @@ void player_init() {
 	player.y_next = player.y;
 	player.x_speed = 0;
 	player.y_speed = 0;
+	player.enableSlopes = true;
 	player.damage_time = 0;
 	player.damage_value = 0;
 	player.direction = 1;

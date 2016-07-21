@@ -50,9 +50,15 @@ enum BBox_States {
 #ifdef PAL
 #define FROG_GRAVITY		0x40
 #define FROG_MAX_FALL		0x5FF
+#define FROG_JUMP_SPEED		0x400
+#define FROG_BIGJUMP_SPEED	0xA00
+#define FROG_MOVE_SPEED		0x200
 #else
 #define FROG_GRAVITY		0x36
 #define FROG_MAX_FALL		0x4FF
+#define FROG_JUMP_SPEED		0x355
+#define FROG_BIGJUMP_SPEED	0x855
+#define FROG_MOVE_SPEED		0x1AA
 #endif
 
 u8 frog_attack_count;
@@ -76,10 +82,12 @@ void ai_balfrog_onCreate(Entity *e) {
 	e->attack = 0;	// damage comes from our bbox puppets, not our own bbox
 	e->experience = 1;
 	e->direction = 1;
+	e->enableSlopes = false;
 	e->eflags |= NPC_IGNORE44;
 	e->eflags |= NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
 	e->eflags &= ~NPC_SHOOTABLE;
+	e->eflags &= ~NPC_SOLID;
 	
 	e->hurtSound = 52;
 	e->deathSound = 72;
@@ -150,7 +158,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		case STATE_JUMPING:
 			sound_play(SND_FUNNY_EXPLODE, 8);
 			set_jump_sprite(e, true);
-			e->y_speed = -0x400;
+			e->y_speed = -FROG_JUMP_SPEED;
 			e->grounded = false;
 			e->state_time = 0;
 			e->state++;
@@ -161,7 +169,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 			} else if(!e->direction && collide_stage_leftwall(e)) {
 				e->direction = !e->direction;
 			}
-			e->x_speed = e->direction ? 0x200 : -0x200;
+			e->x_speed = e->direction ? FROG_MOVE_SPEED : -FROG_MOVE_SPEED;
 			// landed?
 			if(++e->state_time > 3 && collide_stage_floor(e)) {
 				e->grounded = true;
@@ -198,20 +206,12 @@ void ai_balfrog_onUpdate(Entity *e) {
 			if(e->state_time > 74) {
 				e->state++;
 				set_jump_sprite(e, true);
-				e->y_speed = -0xA00;
+				e->y_speed = -FROG_BIGJUMP_SPEED;
 				e->grounded = false;
 			}
 		break;
 		case STATE_BIG_JUMP+2:		// in air, waiting to hit ground
-			// pass through ceiling at edges
-			//if(e->y <= block_to_sub(8)) {
-			//	e->eflags |= NPC_IGNORESOLID;
-			//} else {
-			//	e->eflags &= ~NPC_IGNORESOLID;
-			//}
-			if(++e->state_time > 3 && collide_stage_floor(e)) {
-				e->grounded = true;
-				e->eflags &= ~NPC_IGNORESOLID;
+			if(e->grounded) {
 				set_jump_sprite(e, false);
 				camera_shake(60);
 				//SpawnFrogs(OBJ_MINIFROG, 6);
@@ -338,11 +338,11 @@ void ai_balfrog_onUpdate(Entity *e) {
 			if(balrog != NULL) {
 				balrog->y_speed += 0x40;
 				if(collide_stage_floor(balrog)) {
-					balrog->grounded = true;
 					balrog->y_speed = 0;
 					//balrog->frame = 2;
 					if(++e->state_time > 30) {
 						//balrog->frame = 3;
+						balrog->grounded = true;
 						e->state++;
 					}
 				}
@@ -354,9 +354,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 				Entity *balrog = entity_find_by_type(0xB);
 				// it's all over, destroy ourselves and clean up
 				if(balrog != NULL) {
-					balrog->y_speed = -0xA00;
+					balrog->y_speed = -FROG_BIGJUMP_SPEED;
 					balrog->eflags |= NPC_IGNORESOLID;
-					if(balrog->y < -0x400) {
+					if(balrog->y < -FROG_JUMP_SPEED) {
 						entity_delete(balrog);
 						bossEntity = NULL;
 						e->state = STATE_DELETE;
@@ -384,7 +384,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		}
 	}
 	if(!e->grounded) {
-		e->grounded = collide_stage_floor_grounded(e);
+		if(e->y_speed > 0) e->grounded = collide_stage_floor_grounded(e);
 	} else {
 		e->grounded = collide_stage_floor(e);
 	}
