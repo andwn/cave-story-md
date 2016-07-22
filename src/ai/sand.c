@@ -68,6 +68,15 @@ void ai_puppy_onUpdate(Entity *e) {
 	
 }
 
+void ai_puppyCarry_onCreate(Entity *e) {
+	e->alwaysActive = true;
+}
+
+void ai_puppyCarry_onUpdate(Entity *e) {
+	e->x = player.x + (player.direction ? -2 : 2);
+	e->y = player.y - 2;
+}
+
 void ai_torokoBoss_onCreate(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE;
 }

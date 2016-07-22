@@ -8,6 +8,8 @@
 #include "tsc.h"
 #include "input.h"
 #include "system.h"
+#include "resources.h"
+#include "effect.h"
 
 void ai_energy_onCreate(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
@@ -131,5 +133,28 @@ void ai_heart_onUpdate(Entity *e) {
 		} else if(e->state_time > 12 * 60) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
 		}
+	}
+}
+
+void ai_hiddenPowerup_onCreate(Entity *e) {
+	e->eflags |= NPC_SHOOTABLE;
+}
+
+void ai_hiddenPowerup_onUpdate(Entity *e) {
+	if(e->health < 990) {
+		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		sound_play(SND_EXPL_SMALL, 5);
+		if(e->eflags & NPC_OPTION2) {
+			e->type = OBJ_MISSILE;
+			SPR_SAFEADD(e->sprite, &SPR_MisslP, sub_to_pixel(e->x), sub_to_pixel(e->y),
+				TILE_ATTR(PAL1, 0, 0, 0), 4);
+			e->eflags &= ~NPC_OPTION2;
+		} else {
+			e->type = OBJ_HEART;
+			SPR_SAFEADD(e->sprite, &SPR_Heart, sub_to_pixel(e->x), sub_to_pixel(e->y),
+				TILE_ATTR(PAL1, 0, 0, 0), 4);
+			e->health = 2;
+		}
+		e->eflags &= ~NPC_SHOOTABLE;
 	}
 }

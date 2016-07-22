@@ -185,8 +185,13 @@ u8 energyCount;
 
 void ai_energy_onCreate(Entity *e);
 void ai_energy_onUpdate(Entity *e);
+
 void ai_missile_onUpdate(Entity *e);
+
 void ai_heart_onUpdate(Entity *e);
+
+void ai_hiddenPowerup_onCreate(Entity *e);
+void ai_hiddenPowerup_onUpdate(Entity *e);
 
 /* Fans - fan.c */
 
@@ -276,8 +281,17 @@ void ai_sunstone_onState(Entity *e);
 void ai_puppy_onCreate(Entity *e);
 void ai_puppy_onUpdate(Entity *e);
 
+void ai_puppyCarry_onCreate(Entity *e);
+void ai_puppyCarry_onUpdate(Entity *e);
+
 void ai_torokoBoss_onCreate(Entity *e);
 void ai_torokoBoss_onUpdate(Entity *e);
 void ai_torokoBoss_onState(Entity *e);
+
+/* Labyrinth - maze.c */
+
+void ai_block_onCreate(Entity *e);
+void ai_blockh_onUpdate(Entity *e);
+void ai_blockv_onUpdate(Entity *e);
 
 #endif /* INC_AI_H_ */
