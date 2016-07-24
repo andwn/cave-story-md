@@ -32,7 +32,7 @@ SPRITE SPR_Misery	"sprite/misery.png" 2 2 0 0 NONE
 SPRITE SPR_TeleMenu	"sprite/telemenu.png" 4 2 0 0 NONE
 TILESET TS_Title	"sprite/title.png" 2
 SPRITE SPR_Fish		"sprite/fish.png" 2 2 0 20 NONE
-SPRITE SPR_CritBig	"sprite/critbig.png" 3 3 0 0 NONE
+SPRITE SPR_CritBig	"sprite/critbig.png" 3 3 0 10 NONE
 SPRITE SPR_Jelly	"sprite/jelly.png" 2 2 0 15 NONE
 SPRITE SPR_Kulala	"sprite/kulala.png" 6 3 0 0 NONE
 SPRITE SPR_FirebB1	"sprite/fireballb1.png" 2 2 0 8 NONE
@@ -105,11 +105,15 @@ SPRITE SPR_Skullhead "sprite/skullstep.png" 4 3 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
+SPRITE SPR_MazeBlock "sprite/mazeblock.png" 4 4 0 0 NONE
+SPRITE SPR_CritterP	"sprite/critterp.png" 2 2 0 8 NONE
+SPRITE SPR_Gaudi	"sprite/gaudi.png" 3 3 0 6 NONE
+SPRITE SPR_LabShot	"sprite/labshot.png" 2 2 0 8 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma	"sprite/kazuma.png" 2 3 0 10 NONE
 SPRITE SPR_Cthu		"sprite/cthu.png" 2 3 0 60 NONE
-SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 0 NONE
+SPRITE SPR_CritHG	"sprite/crithg.png" 2 2 0 8 NONE
 SPRITE SPR_Basu		"sprite/basu.png" 3 3 0 10 NONE
 SPRITE SPR_BtlHG	"sprite/btlhg.png" 2 2 0 2 NONE
 SPRITE SPR_BtlHB	"sprite/btlhb.png" 2 2 0 2 NONE

@@ -19,11 +19,12 @@ void ai_critter_onUpdate(Entity *e) {
 			e->x_next = e->x + e->x_speed;
 			e->y_next = e->y + e->y_speed;
 			entity_update_collision(e);
-			e->x = e->x_next;
+			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) e->x = e->x_next;
 			e->y = e->y_next;
 			if(e->grounded) ENTITY_SET_STATE(e, 0, 0);
-		} else if((e->type == 0x18 || e->type == 0x1C) &&
-			e->sprite->animInd == 2 && e->y_speed > 0x100) { // Begin to fly
+		} else if((e->type == OBJ_CRITTER_FLYING || e->type == OBJ_POWER_CRITTER ||
+				e->type == OBJ_CRITTER_SHOOTING_PURPLE) &&
+				e->sprite->animInd == 2 && e->y_speed > 0x100) { // Begin to fly
 			SPR_SAFEANIM(e->sprite, 3);
 			e->state_time = 0;
 		} else { // Jumping/falling
@@ -31,7 +32,7 @@ void ai_critter_onUpdate(Entity *e) {
 			e->x_next = e->x + e->x_speed;
 			e->y_next = e->y + e->y_speed;
 			entity_update_collision(e);
-			e->x = e->x_next;
+			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) e->x = e->x_next;
 			e->y = e->y_next;
 			if(e->grounded) ENTITY_SET_STATE(e, 0, 0);
 		}

@@ -776,20 +776,8 @@ void entity_drop_powerup(Entity *e) {
 	u8 chance = random() % 5;
 	u16 bx = sub_to_block(e->x), by = sub_to_block(e->y);
 	if(chance >= 3) { // Weapon Energy
-		s16 i = e->experience;
-		for(; i >= 5; i -= 5) { // Big
-			Entity *exp = entity_create(bx, by, 0, 0, 1, NPC_OPTION2, 0);
-			exp->experience = 5;
-		}
-		for(; i >= 3; i -= 3) { // Med
-			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
-			exp->experience = 3;
-		}
-		for(; i > 0; i--) { // Small
-			Entity *exp = entity_create(bx, by, 0, 0, 1, 0, 0);
-			exp->experience = 1;
-		}
-		
+		Entity *exp = entity_create(bx, by, 0, 0, 1, e->experience > 6 ? NPC_OPTION2 : 0, 0);
+		exp->experience = e->experience;
 	} else if(chance == 2 && (player_has_weapon(WEAPON_MISSILE) || 
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {

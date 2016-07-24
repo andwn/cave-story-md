@@ -40,12 +40,12 @@ void ai_energy_onUpdate(Entity *e) {
 		energyCount--;
 	} else {
 		e->state_time++;
-		if(e->state_time > 15 * 60) {
+		if(e->state_time > 10 * 60) {
 			e->state = STATE_DELETE;
 			energyCount--;
 			return;
-		} else if(energyCount > 8 || e->state_time > 12 * 60) {
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		} else if(energyCount > 8 || e->state_time > 7 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		} else if(!entity_on_screen(e)) {
 			SPR_SAFERELEASE(e->sprite);
 		} else if(e->sprite == NULL) {
@@ -100,11 +100,11 @@ void ai_missile_onUpdate(Entity *e) {
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
 		e->state_time++;
-		if(e->state_time > 15 * 60) {
+		if(e->state_time > 10 * 60) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 12 * 60) {
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		} else if(e->state_time > 7 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		}
 	}
 }
@@ -127,11 +127,11 @@ void ai_heart_onUpdate(Entity *e) {
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
 		e->state_time++;
-		if(e->state_time > 15 * 60) {
+		if(e->state_time > 10 * 60) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 12 * 60) {
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? VISIBLE : HIDDEN);
+		} else if(e->state_time > 7 * 60) {
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		}
 	}
 }
@@ -156,5 +156,6 @@ void ai_hiddenPowerup_onUpdate(Entity *e) {
 			e->health = 2;
 		}
 		e->eflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOOTABLE;
 	}
 }

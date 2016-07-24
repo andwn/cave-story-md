@@ -355,10 +355,10 @@ void player_draw() {
 			anim==ANIM_WALKING || anim==ANIM_LOOKUPWALK ? 1 : 0);
 	}
 	// Change direction if pressing left or right
-	if(player.controller[0]&BUTTON_RIGHT && !player.direction) {
+	if((player.controller[0]&BUTTON_RIGHT) && !player.direction) {
 		player.direction = 1;
 		SPR_SAFEHFLIP(player.sprite, 1);
-	} else if(player.controller[0]&BUTTON_LEFT && player.direction) {
+	} else if((player.controller[0]&BUTTON_LEFT) && player.direction) {
 		player.direction = 0;
 		SPR_SAFEHFLIP(player.sprite, 0);
 	}

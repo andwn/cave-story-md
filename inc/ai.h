@@ -109,6 +109,7 @@ void ai_balfrog_onCreate(Entity *e);
 void ai_balfrog_onUpdate(Entity *e);
 void ai_balfrog_onState(Entity *e);
 
+void ai_balrog_onCreate(Entity *e);
 void ai_balrog_onUpdate(Entity *e);
 void ai_balrog_onState(Entity *e);
 
@@ -287,6 +288,8 @@ void ai_puppyCarry_onUpdate(Entity *e);
 void ai_torokoBoss_onCreate(Entity *e);
 void ai_torokoBoss_onUpdate(Entity *e);
 void ai_torokoBoss_onState(Entity *e);
+
+void ai_jenka_onCreate(Entity *e);
 
 /* Labyrinth - maze.c */
 

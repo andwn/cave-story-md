@@ -9,6 +9,10 @@
 #include "camera.h"
 
 // 12 - Balrog (Cutscene)
+void ai_balrog_onCreate(Entity *e) {
+	e->alwaysActive = true;
+}
+
 void ai_balrog_onUpdate(Entity *e) {
 	if(e->state_time > 0) {
 		e->state_time--;
@@ -184,7 +188,7 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 			if(++e->state_time > 12) {
 				e->state = SHOOT_PLAYER;
 				e->state_time = 0;
-				//e->frame = 1;
+				SPR_SAFEANIM(e->sprite, 2);
 			}
 		break;
 		case SHOOT_PLAYER:
@@ -192,8 +196,13 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 			FACE_PLAYER(e);
 			SPR_SAFEHFLIP(e->sprite, e->direction);
 			if((e->state_time % 16) == 15) {
-				//o->frame = 1;
-				//EmFireAngledShot(o, OBJ_IGOR_SHOT, 16, 0x200);
+				SPR_SAFEANIM(e->sprite, 2);
+				// Fire shot
+				Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
+					0, 0, OBJ_IGOR_SHOT, 0, 0);
+				shot->x_speed = e->direction ? 0x400 : -0x400;
+				shot->y_speed = -0x100 + (random() % 0x200);
+
 				sound_play(SND_EM_FIRE, 5);
 				if(e->state_time > 32) {	// 3 shots
 					e->state = JUMP_BEGIN;
@@ -210,7 +219,7 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 				e->state_time = 0;
 				e->x_speed = (player.x - e->x) / 128;
 				e->y_speed = -0x600;
-				//o->frame = 3;
+				SPR_SAFEANIM(e->sprite, 3);
 			}
 		break;
 		case JUMP_UP:		// jumping up
@@ -222,21 +231,18 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 					e->state = FLYING;
 					e->state_time = 0;
 					e->y_mark = e->y;
-					//e->frame = 13;
+					SPR_SAFEANIM(e->sprite, 9);
 				}
 			}
 		break;
 		case FLYING:
 			e->state_time++;
-			//if(e->state_time & 1) {
-				//o->frame = (o->frame == 13) ? 14 : 13;
-				// wings just went down
-				//if(o->frame == 13)
-				//	sound(SND_EXPLOSION2);
-			//}
+			if(e->state_time % 16 == 0) {
+				sound_play(SND_EXPLOSION2, 3);
+			}
 			if(e->state_time >= 128) {
 				e->state = JUMP_END;
-				//e->frame = 3;
+				SPR_SAFEANIM(e->sprite, 3);
 			}
 			e->y_speed += (e->y >= e->y_mark) ? -0x40 : 0x40;
 			if(e->y_speed > 0x200) e->y_speed = 0x200;
@@ -254,7 +260,6 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 				e->attack = 0;
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				camera_shake(30);
-				//SmokeSide(o, 6, DOWN);
 				for(int i=0;i<4;i++) {
 					Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
 						0, 0, OBJ_BALROG_SHOT_BOUNCE, 0, 0);
@@ -263,11 +268,10 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 				}
 				e->state = LANDED;
 				e->state_time = 0;
-				//o->frame = 2;
+				SPR_SAFEANIM(e->sprite, 0);
 			}
 		break;
 		case LANDED:
-			//o->frame = 2;
 			if(++e->state_time > 3) {
 				e->state = SHOOT_PLAYER;
 				e->state_time = 0;
@@ -286,6 +290,7 @@ void ai_balrogFlying_onState(Entity *e) {
 		e->attack = 0;
 		entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
 		entities_clear_by_type(OBJ_IGOR_SHOT);
+		tsc_call_event(e->event);
 	}
 }
 
@@ -300,13 +305,17 @@ void ai_balrogFlying_onState(Entity *e) {
 #endif
 
 void ai_balrogShot_onUpdate(Entity *e) {
+	e->y_speed += BALROG_SHOT_GRAVITY;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	if(e->y_speed > 0 && collide_stage_floor(e)) {
 		e->y_speed = -BALROG_SHOT_SPEED;
 	}
-	e->y_speed += BALROG_SHOT_GRAVITY;
 	if((e->x_speed > 0 && collide_stage_rightwall(e)) ||
 		(e->x_speed < 0 && collide_stage_leftwall(e)) ||
 		++e->state_time > BALROG_SHOT_TIME) {
 		e->state = STATE_DELETE;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }

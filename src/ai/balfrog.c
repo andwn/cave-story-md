@@ -87,6 +87,7 @@ void ai_balfrog_onCreate(Entity *e) {
 	e->eflags |= NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
 	e->eflags &= ~NPC_SHOOTABLE;
+	e->nflags &= ~NPC_SHOOTABLE;
 	e->eflags &= ~NPC_SOLID;
 	
 	e->hurtSound = 52;
@@ -123,7 +124,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 			SPR_SAFEANIM(e->sprite, 2);
 		case STATE_TRANSFORM+1:
 			e->state_time++;
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 4) > 1);
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 4) > 1 ? AUTO_FAST : HIDDEN);
 		break;
 		// transformation complete: puff away balrog, and appear solid now
 		case STATE_READY:
@@ -305,22 +306,23 @@ void ai_balfrog_onUpdate(Entity *e) {
 		case STATE_DEATH+2:			// begin flashing back and forth between frog and balrog
 		{ // Scope for balrog pointer
 			// spawn balrog puppet
-			Entity *balrog = entity_create(e->x, e->y, 0, 0, 0xB, 0, e->direction);
+			Entity *balrog = entity_create(sub_to_block(e->x), sub_to_block(e->y),
+					0, 0, OBJ_BALROG, 0, e->direction);
 			balrog->state = 500;	// tell him to give us complete control
-			//frog.balrog->frame = 5;
+			SPR_SAFEANIM(balrog->sprite, 5);
 			e->state++;
 		}
 		case STATE_DEATH+3:		// flashing
 			e->state_time++;
 			if((e->state_time % 16) == 0) {
-				effect_create_smoke(0, e->x - 28 + (random() % 56),
-					e->y - 24 + (random() % 48));
+				effect_create_smoke(0, sub_to_pixel(e->x) - 28 + (random() % 56),
+					sub_to_pixel(e->y) - 24 + (random() % 48));
 			}
 			if(e->state_time <= 150) {
-				SPR_SAFEVISIBILITY(e->sprite, e->state_time & 2);
-				Entity *balrog = entity_find_by_type(0xB);
+				SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) > 0 ? AUTO_FAST : HIDDEN);
+				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				if(balrog != NULL) {
-					SPR_SAFEVISIBILITY(balrog->sprite, !(e->state_time & 2));
+					SPR_SAFEVISIBILITY(balrog->sprite, !((e->state_time & 2) > 0) ? AUTO_FAST : HIDDEN);
 				}
 			}
 			if(e->state_time > 156) {
@@ -330,33 +332,38 @@ void ai_balfrog_onUpdate(Entity *e) {
 		break;
 		case STATE_DEATH+4:		// balrog falling to ground
 		{
-			Entity *balrog = entity_find_by_type(0xB);
+			Entity *balrog = entity_find_by_type(OBJ_BALROG);
 			// should start to move exactly when timer hits 160
 			//
 			// 10 frames until starts to fall
 			// 14 frames until changes to landed frame
 			if(balrog != NULL) {
 				balrog->y_speed += 0x40;
+				balrog->y_next = balrog->y + balrog->y_speed;
 				if(collide_stage_floor(balrog)) {
 					balrog->y_speed = 0;
-					//balrog->frame = 2;
+					SPR_SAFEANIM(balrog->sprite, 2);
 					if(++e->state_time > 30) {
-						//balrog->frame = 3;
+						SPR_SAFEANIM(balrog->sprite, 0);
 						balrog->grounded = true;
 						e->state++;
 					}
 				}
+				balrog->y = balrog->y_next;
 			}
 		}
 		break;
 		case STATE_DEATH+5:		// balrog flying away
 			if(++e->state_time > 30) {
-				Entity *balrog = entity_find_by_type(0xB);
+				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				// it's all over, destroy ourselves and clean up
 				if(balrog != NULL) {
+					SPR_SAFEANIM(balrog->sprite, 3);
 					balrog->y_speed = -FROG_BIGJUMP_SPEED;
+					balrog->y_next = balrog->y + balrog->y_speed;
+					balrog->y = balrog->y_next;
 					balrog->eflags |= NPC_IGNORESOLID;
-					if(balrog->y < -FROG_JUMP_SPEED) {
+					if(balrog->y < -0x400) {
 						entity_delete(balrog);
 						bossEntity = NULL;
 						e->state = STATE_DELETE;
@@ -396,13 +403,13 @@ void ai_balfrog_onUpdate(Entity *e) {
 
 void ai_balfrog_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
-		tsc_call_event(e->event); // Boss defeated event
 		if(bbox_mode == BM_JUMPING) {
 			set_jump_sprite(e, false);
 		}
 		bbox_mode = BM_DISABLED;
 		e->state = STATE_DEATH;
 		e->state_time = 0;
+		tsc_call_event(e->event); // Boss defeated event
 	}
 }
 

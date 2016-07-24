@@ -49,12 +49,7 @@ void ai_jelly_onUpdate(Entity *e) {
 	* */
 	e->state_time++;
 	// Blink in large jelly section
-	u16 cx = sub_to_block(camera.x);
-	if(cx < 90) {
-		SPR_SAFEVISIBILITY(e->sprite, e->state_time % 2);
-	} else {
-		SPR_SAFEVISIBILITY(e->sprite, true);
-	}
+	SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 2) ? AUTO_FAST : HIDDEN);
 }
 
 void ai_jelly_onHurt(Entity *e) {

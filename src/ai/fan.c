@@ -42,8 +42,11 @@ void ai_fan_onUpdate(Entity *e) {
 		}
 		break;
 	case 2: // Up
-		if(py > ey - 6 && py <= ey && px == ex) {
-			if(player.y_speed > -MAX_FALL_SPEED) player.y_speed -= 0x88;
+		if(py > ey - 8 && py <= ey && px == ex) {
+			if(player.y_speed > -MAX_FALL_SPEED - MAX_FALL_SPEED / 2) {
+				player.y_speed -= 0x88;
+				player.jump_time = 10;
+			}
 		}
 		break;
 	case 3: // Right
@@ -52,8 +55,8 @@ void ai_fan_onUpdate(Entity *e) {
 		}
 		break;
 	case 4: // Down
-		if(py >= ey && py < ey + 8 && px == ex) {
-			if(player.y_speed < MAX_FALL_SPEED) player.y_speed += 0x88;
+		if(py >= ey && py < ey + 6 && px == ex) {
+			if(player.y_speed < MAX_FALL_SPEED + MAX_FALL_SPEED / 2) player.y_speed += 0x88;
 		}
 		break;
 	default:

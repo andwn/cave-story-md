@@ -70,11 +70,18 @@ void ai_puppy_onUpdate(Entity *e) {
 
 void ai_puppyCarry_onCreate(Entity *e) {
 	e->alwaysActive = true;
+	// One's all you can manage. One's all you can manage. One's all you can manage.
+	e->eflags &= ~NPC_INTERACTIVE;
+	e->nflags &= ~NPC_INTERACTIVE;
 }
 
 void ai_puppyCarry_onUpdate(Entity *e) {
-	e->x = player.x + (player.direction ? -2 : 2);
-	e->y = player.y - 2;
+	if(player.direction != e->direction) {
+		e->direction ^= 1;
+		SPR_SAFEHFLIP(e->sprite, e->direction);
+	}
+	e->x = player.x + pixel_to_sub(e->direction ? -4 : 4);
+	e->y = player.y - pixel_to_sub(5);
 }
 
 void ai_torokoBoss_onCreate(Entity *e) {
@@ -87,7 +94,15 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 
 void ai_torokoBoss_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
-		tsc_call_event(e->event);
 		e->state = STATE_DELETE;
+		e->eflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOOTABLE;
+		tsc_call_event(e->event);
+	}
+}
+
+void ai_jenka_onCreate(Entity *e) {
+	if(e->type == OBJ_JENKA_COLLAPSED) {
+		e->spriteAnim = 2;
 	}
 }
