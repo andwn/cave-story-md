@@ -265,10 +265,17 @@ void player_show_map_name(u8 ttl) {
 	SPR_SAFEVISIBILITY(mapNameSprite, VISIBLE);
 	// Create a string of tiles in RAM
 	u32 nameTiles[16][8];
+	u8 len = 0;
 	for(u8 i = 0; i < 16; i++) {
 		u8 chr = stage_info[stageID].name[i] - 0x20;
-		if(chr >= 0x60) chr = 0;
+		if(chr >= 0x60) {
+			chr = 0;
+			if(len == 0) len = i;
+		}
 		memcpy(nameTiles[i], &TS_SprFont.tiles[chr * 8], 32);
+	}
+	if(len > 0) {
+		SPR_SAFEMOVE(mapNameSprite, SCREEN_HALF_W - len * 4, SCREEN_HALF_H - 32);
 	}
 	// Transfer tile array to VRAM
 	SYS_disableInts();
