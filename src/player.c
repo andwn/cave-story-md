@@ -131,7 +131,7 @@ void player_update() {
 		if(ledge_time == 0) {
 			if(player.grounded) {
 				player.grounded = collide_stage_floor_grounded(&player);
-			} else {
+			} else if(player.y_speed >= 0) {
 				player.grounded = collide_stage_floor(&player);
 			}
 		}
