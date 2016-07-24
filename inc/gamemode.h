@@ -7,6 +7,8 @@
  * Entry points for each of the game modes, like title screen, sound test, gameplay, etc
  */
 
+bool gameFrozen;
+
 // Displays title screen, returns which option was picked
 u8 titlescreen_main();
 

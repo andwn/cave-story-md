@@ -44,6 +44,9 @@ u8 airPercent = 100;
 u8 airTick = 0;
 u8 airDisplayTime = 0;
 
+bool blockl, blocku, blockr, blockd;
+u8 ledge_time;
+
 void player_update_bounds();
 void player_update_bullets();
 void player_update_interaction();
@@ -74,6 +77,7 @@ void player_init() {
 	player.spriteAnim = 0;
 	player_reset_sprites();
 	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
+	ledge_time = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
@@ -120,7 +124,46 @@ void player_update() {
 		player.y_next = player.y + player.y_speed;
 	} else if(playerMoveMode == 0) { // Normal movement
 		entity_update_movement(&player);
-		entity_update_collision(&player);
+		bool blockl_next, blocku_next, blockr_next, blockd_next;
+		blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : false;
+		blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : false;
+		blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : false;
+		if(ledge_time == 0) {
+			if(player.grounded) {
+				player.grounded = collide_stage_floor_grounded(&player);
+			} else {
+				player.grounded = collide_stage_floor(&player);
+			}
+		}
+		blockd_next = player.grounded;
+		// Here I do something weird to emulate the way the game pushes quote
+		// into small gaps
+		// Actually, I think this is how the original game does it. The speedrun
+		// tutorial mentioned trying to hug the floors while you jump up to them because
+		// it gives a minor speed boost
+		if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
+			player.x_speed -= 0xE0;
+			player.x_next = player.x + player.x_speed;
+		}
+		if(!blockr_next && blockr && joy_down(BUTTON_RIGHT)) {
+			player.x_speed += 0xE0;
+			player.x_next = player.x + player.x_speed;
+		}
+		if(ledge_time > 0) {
+			ledge_time--;
+			player.y_next += 0x600;
+			blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : false;
+			blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : false;
+			player.y_next -= 0x600;
+		} else if(player.jump_time == 0 && !blockd_next && blockd) {
+			player.y_speed += 0x80;
+			ledge_time = 4;
+		}
+		blockl = blockl_next;
+		blocku = blocku_next;
+		blockr = blockr_next;
+		blockd = blockd_next;
+		//entity_update_collision(&player);
 		if(playerPlatform != NULL) {
 			player.x_next += playerPlatform->x_speed;
 			player.y_next += playerPlatform->y_speed;

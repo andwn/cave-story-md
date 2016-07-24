@@ -36,6 +36,7 @@ bool update_pause() {
 void game_reset(bool load) {
 	camera_init();
 	tsc_init();
+	gameFrozen = false;
 	if(load) {
 		system_load();
 	} else {
@@ -129,10 +130,13 @@ u8 game_main(bool load) {
 				draw_itemmenu();
 				paused = true;
 			} else {
-				camera_update();
-				player_update();
+				// Don't update this stuff if script is using <PRI
+				if(!gameFrozen) {
+					camera_update();
+					player_update();
+					entities_update();
+				}
 				hud_update();
-				entities_update();
 				u8 rtn = tsc_update();
 				if(rtn > 0) {
 					if(rtn == 1) {

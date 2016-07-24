@@ -64,5 +64,6 @@ u8 titlescreen_main() {
 	debuggingEnabled = (joystate&BUTTON_A) && joy_pressed(BUTTON_START);
 	song_stop();
 	sound_play(SND_MENU_SELECT, 0);
+	VDP_waitVSync();
 	return cursor;
 }

@@ -79,7 +79,8 @@ void entity_sprite_create(Entity *e) {
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
 		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction),
 		npc_info[e->type].zorder);
-	SPR_SAFEANIMFRAME(e->sprite, e->spriteAnim, e->spriteFrame);
+	if(e->spriteAnim > 0) SPR_SAFEANIM(e->sprite, e->spriteAnim);
+	if(e->spriteFrame > 0) SPR_SAFEFRAME(e->sprite, e->spriteFrame);
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 	// TODO: Sorting
 }
@@ -478,13 +479,15 @@ bool collide_stage_rightwall(Entity *e) {
 }
 
 bool collide_stage_floor(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_y;
-	u8 pxa1, pxa2;
+	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
+	u8 pxa1, pxa2, pxa3;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
+	pixel_x3 = sub_to_pixel(e->x_next);
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
+	pxa3 = stage_get_block_type(pixel_to_block(pixel_x3), pixel_to_block(pixel_y + 2));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
@@ -510,6 +513,15 @@ bool collide_stage_floor(Entity *e) {
 		e->y_speed = 0;
 		result = true;
 	}
+	// Extra check in the center
+	if(!result && (pxa3 & 0x10)) {
+		if((pxa3 & 0xF) >= 4 && (pixel_y + 2) % 16 >= heightmap[pxa3%4][pixel_x3%16]) {
+			if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
+			e->y_next = e->y;
+			e->y_speed = 0;
+			result = true;
+		}
+	}
 	return result;
 }
 
@@ -529,11 +541,12 @@ u8 read_slope_table(s16 x, s16 y) {
 }
 
 bool collide_stage_slope_grounded(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_y;
-	u8 pxa1, pxa2;
+	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
+	u8 pxa1, pxa2, pxa3;
 	bool result = false;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
+	pixel_x3 = sub_to_pixel(e->x_next);
 	// If we are on flat ground and run up to a slope
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom - 1;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
@@ -557,6 +570,7 @@ bool collide_stage_slope_grounded(Entity *e) {
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom + 1;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
+	pxa3 = stage_get_block_type(pixel_to_block(pixel_x3), pixel_to_block(pixel_y + 2));
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%4][pixel_x1%16]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
@@ -570,6 +584,14 @@ bool collide_stage_slope_grounded(Entity *e) {
 				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = true;
+	}
+	// Extra check in the center
+	if(!result && (pxa3 & 0x10)) {
+		if((pxa3 & 0xF) >= 4 && (pixel_y + 2) % 16 >= heightmap[pxa3%4][pixel_x3%16]) {
+			e->y_next = e->y;
+			e->y_speed = 0;
+			result = true;
+		}
 	}
 	return result;
 }

@@ -14,6 +14,7 @@
 #include "hud.h"
 #include "window.h"
 #include "effect.h"
+#include "gamemode.h"
 
 // Execution State
 #define TSC_IDLE 0 // Not executing any events
@@ -378,6 +379,7 @@ u8 execute_command() {
 			return 1;
 		case CMD_END: // End the event
 			tscState = TSC_IDLE;
+			gameFrozen = false;
 			window_set_face(0, false);
 			window_close();
 			player_unlock_controls();
@@ -397,6 +399,7 @@ u8 execute_command() {
 			player.x_speed = 0;
 			player.y_speed = 0;
 			player.grounded = false;
+			gameFrozen = false;
 			window_set_face(0, false);
 			window_close();
 			stage_load(args[0]);
@@ -435,7 +438,12 @@ u8 execute_command() {
 		case CMD_WAI: // Wait (1) frames
 			args[0] = tsc_read_word();
 			tscState = TSC_WAITTIME;
+//#ifdef PAL
 			waitTime = args[0];
+//#else
+//			waitTime = args[0] * 60 / 50;
+//#endif
+//			if(joy_down(BUTTON_B)) waitTime /= 2;
 			return 1;
 		case CMD_WAS: // Wait for player to hit the ground
 			tscState = TSC_WAITGROUNDED;
@@ -483,13 +491,16 @@ u8 execute_command() {
 		case CMD_KEY: // Lock controls and hide the HUD
 			player_lock_controls();
 			hud_hide();
+			gameFrozen = false;
 			break;
 		case CMD_PRI: // Lock controls
 			player_lock_controls();
+			gameFrozen = true;
 			break;
 		case CMD_FRE: // Unlock controls
 			player_unlock_controls();
 			hud_show();
+			gameFrozen = false;
 			break;
 		case CMD_HMC: // Hide player character
 			player_hide();
