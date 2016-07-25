@@ -17,29 +17,25 @@
     - [ ] Animate Sprinkler
     - [ ] Animate Mahin
   - [x] Egg Corridor
-    - [ ] Animate Terminals
-    - [ ] AI for Basu
+    - [ ] Basu Projectiles
     - [ ] Animate scene in Arthur2
   - [x] Grasstown
     - [ ] Animate Malco
     - [ ] Animate Kazuma
     - [ ] Animate Booster
     - [ ] Animate Pink Rocket
-    - [ ] AI for Hovering Critters
-    - [ ] AI for Circling & Hanging Bats
+    - [ ] AI for Circling Bats
     - [ ] AI for Jellies
     - [ ] AI for Big Jellyfish
-    - [ ] AI for Mannan
     - [ ] AI for Frog
     - [ ] AI for Ravil
-    - [ ] AI for Press
-    - [ ] AI for Second Balrog Fight
-    - [ ] AI for Balfrog
+    - [ ] Make Balfrog drop 
   - [x] Sand Zone
     - [ ] Animate Jenka
     - [ ] Animate Puppies
     - [ ] Animate Mimigas in the Bar
     - [ ] Animate Doctor
+    - [ ] Damage tiles
     - [ ] Fix whatever King is supposed to do
     - [ ] AI for Curly Boss
     - [ ] AI for that enemy that splits into more enemies
@@ -52,17 +48,34 @@
     - [ ] AI for Armadillo
     - [ ] AI for Toroko Boss
   - [ ] Labyrinth
+    - [ ] Need to be able to equip the booster
     - [ ] Animate Moving Blocks
     - [ ] Animate Nurse
-    - [ ] AI for Purple Critter
+    - [ ] Purple Critter's projectile
     - [ ] AI for Gaudi
     - [ ] AI for Pooh Black
     - [ ] AI for Monster X
     - [ ] AI for Last Balrog Fight
-  - [ ] Post Labyrinth / Almond
+  - [ ] Post Labyrinth / Core
+    - [ ] BGM: Labyrinth Fight
+    - [ ] Water mechanic for the Core room
+    - [ ] Bubble shield
+    - [ ] AI for all the enemies
+    - [ ] AI for Curly
+    - [ ] AI for Core
   - [ ] Waterway
+    - [ ] BGM: Living Waterway
+    - [ ] Wind tiles
+    - [ ] AI for Ironhead
   - [ ] Egg Corridor 2
+    - [ ] BGM: Scorching Back
+    - [ ] AI for Dragon
+    - [ ] AI for stalactite
+    - [ ] AI for Sisters
   - [ ] Outer Wall
+    - [ ] BGM: Moonsong
+    - [ ] BGM: Hero's End
+    - [ ] Clouds background
   - [ ] Plantation
   - [ ] Last Cave
   - [ ] Balcony
@@ -73,11 +86,8 @@
   - [ ] Sacred Ground
 - [ ] Weapons / Equip
   - [x] Polar Star
-    - [ ] Animate bounce against wall
   - [x] Missiles
-    - [ ] Lv 3 shoots 3 at a time
   - [x] Fireball
-    - [ ] Proper graphic for lv 2 and 3
   - [ ] Machine Gun
   - [ ] Bubbler
   - [ ] Blade

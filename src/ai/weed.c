@@ -10,7 +10,7 @@
 #include "camera.h"
 #include "system.h"
 
-u8 jellyFlag = 0;
+//u8 jellyFlag = 0;
 
 void ai_jelly_onCreate(Entity *e) {
 	/*
@@ -19,8 +19,8 @@ void ai_jelly_onCreate(Entity *e) {
 	e->state_time = (random() % 20) + 11;
 	e->x_speed = e->direction ? -0x200 : 0x200;
 	* */
-	jellyFlag = !jellyFlag;
-	e->state_time = (system_get_frame() + jellyFlag) % 2;
+	//jellyFlag = !jellyFlag;
+	//e->state_time = (system_get_frame() + jellyFlag) % 2;
 }
 
 void ai_jelly_onUpdate(Entity *e) {
@@ -47,9 +47,9 @@ void ai_jelly_onUpdate(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	* */
-	e->state_time++;
+	//e->state_time++;
 	// Blink in large jelly section
-	SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 2) ? AUTO_FAST : HIDDEN);
+	//SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 2) ? AUTO_FAST : HIDDEN);
 }
 
 void ai_jelly_onHurt(Entity *e) {

@@ -6,10 +6,9 @@
 
 // One less than BLOCK_SIZE in sub-pixels, because only one
 // row/column is drawn per frame while the camera is moving
-#define CAMERA_MAX_SPEED (block_to_sub(1) - 1)
-#define LIMIT (8 * !cameraShake)
-
-u16 focusSpeed = 5;
+#define CAMERA_MAX_SPEED 	(block_to_sub(1) - 1)
+#define LIMIT 				(cameraShake ? 4 : 8)
+#define FOCUS_SPEED 		5
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 u16 cameraShake;
@@ -57,9 +56,9 @@ void camera_update() {
 		}
 		// Calculate where camera will be next frame
 		x_next = camera.x +
-				(((floor(camera.target->x) + camera.x_offset) - camera.x) >> focusSpeed);
+				(((floor(camera.target->x) + camera.x_offset) - camera.x) >> FOCUS_SPEED);
 		y_next = camera.y +
-				(((floor(camera.target->y) + camera.y_offset) - camera.y) >> focusSpeed);
+				(((floor(camera.target->y) + camera.y_offset) - camera.y) >> FOCUS_SPEED);
 		// Camera shaking
 		if(cameraShake > 0) {
 			x_next += (random() % 0x800) - 0x400;
@@ -98,14 +97,4 @@ void camera_update() {
 	if(morphingColumn != 0 || morphingRow != 0) {
 		entities_update_inactive();
 	}
-}
-
-void camera_focus_on_player(u16 speed) {
-	camera.target = &player;
-	focusSpeed = 5; //speed;
-}
-
-void camera_focus_on_entity(Entity *e, u16 speed) {
-	camera.target = e;
-	focusSpeed = 5; //speed;
 }

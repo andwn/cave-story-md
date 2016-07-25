@@ -225,17 +225,22 @@ void bullet_update_fireball(Bullet *b) {
 	}
 	u8 block_below = b->y_speed > 0 
 			? stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y + 0x800)) : 0;
+	u8 block_above = b->y_speed < 0
+				? stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y - 0x800)) : 0;
 	u8 block_front = stage_get_block_type(
 			sub_to_block(b->x + (b->x_speed > 0 ? 0x800 : -0x800)), sub_to_block(b->y));
-	if(block_front == 0x41) { // Bullet hit a wall
+	if(block_front == 0x41 || block_front == 0x43) { // Bullet hit a wall
 		b->x_speed = -b->x_speed;
 	} else if(block_front & BLOCK_SLOPE) {
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed > -0x300) b->y_speed = -0x300;
 	}
-	if(block_below == 0x41) {
+	if(block_below == 0x41 || block_below == 0x43) {
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed > -0x300) b->y_speed = -0x300;
+	} else if(block_below == 0x41 || block_below == 0x43) {
+		b->y_speed = -b->y_speed >> 1;
+		if(b->y_speed < 0x300) b->y_speed = 0x300;
 	} else {
 		b->y_speed += GRAVITY;
 		if(b->y_speed > 0x600) b->y_speed = 0x600;

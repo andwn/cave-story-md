@@ -4,12 +4,14 @@
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
+It should work on any console or emulator (but not PAL yet).
+
 #### Download prebuilt ROM
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
-Not yet. Right now you can technically make it to Labyrinth, but only the parts leading up to the beginning of Grasstown are in a well working state (As you progress into Grasstown and Sand Zone you will notice the game getting emptier and buggier)
-Check out the [TODO list](doc/TODO.md) for progress. I may replace this list with issues eventually.
+Not yet. Right now you can make it to the first room of Labyrinth, but only the parts leading up to the beginning of Sand Zone are in a well working state (a lot of NPCs don't move or are invisible as you get further into the game).
+Check out the [TODO list](doc/TODO.md) for progress.
 
 #### Controls
 - C - Jump, confirm
@@ -17,18 +19,15 @@ Check out the [TODO list](doc/TODO.md) for progress. I may replace this list wit
 - Y, Z - Switch weapon
 - Start - Pause / Item Menu
 
-#### How to build? (GNU/Linux)
+#### How to build
 Note: Gendev is still using outdated SGDK 1.1 and will not build my project without [changes](https://github.com/kubilus1/gendev/issues/17).
 
 1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
 2. Clone the project and do `make`.
 3. Open `out.bin` in your emulator of choice.
 
-#### How to build? (Windows)
-1. Download and install [SGDK](https://github.com/Stephane-D/SGDK.git) using the instructions from that page.
-2. Clone the repo `git clone https://github.com/andwn/cave-story-md`
-3. Run "build.bat" and if everything goes well the ROM should be located at `out/rom.bin`.
-  - Sometimes GCC will throw an error about heap space. Just retry until it completes or you get a different error.
+#### What about Windows?
+I've run out of patience with this platform. The output ROM is laggy and randomly crashes for no good reason, not to mention the ancient GCC throwing heap errors 80% of the time making me have to start the build process over. Install Ubuntu in a VM or something.
 
 #### Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.

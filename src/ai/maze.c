@@ -60,20 +60,19 @@ void ai_blockh_onUpdate(Entity *e) {
 			if(e->x_speed < -BLOCK_TRAVEL_SPEED) e->x_speed = -BLOCK_TRAVEL_SPEED;
 			e->x_next = e->x + e->x_speed;
 			// hit edge
-			if(e->x_speed == BLOCK_TRAVEL_SPEED) {
-				collide_stage_rightwall(e);
-			} else if(e->x_speed == -BLOCK_TRAVEL_SPEED) {
-				collide_stage_leftwall(e);
-			}
-			if(e->x_speed == 0) {
+			if(stage_get_block_type(
+					sub_to_block(e->x_next + 0x3200), sub_to_block(e->y) == 0x41 ||
+				stage_get_block_type(
+					sub_to_block(e->x_next - 0x3200), sub_to_block(e->y) == 0x41))) {
 				camera_shake(10);
 				e->x_speed = 0;
 				e->eflags ^= NPC_OPTION2;
 				e->state = dir ? 10 : 20;
-			}
-			e->x = e->x_next;
-			if((++e->state_time % BLOCK_SOUND_INTERVAL) == 6) {
-				sound_play(SND_BLOCK_MOVE, 2);
+			} else {
+				e->x = e->x_next;
+				if((++e->state_time % BLOCK_SOUND_INTERVAL) == 6) {
+					sound_play(SND_BLOCK_MOVE, 2);
+				}
 			}
 		}
 		break;
