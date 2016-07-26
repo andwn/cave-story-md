@@ -103,7 +103,8 @@ void weapon_fire_fireball(Weapon *w) {
 	sound_play(SND_FIREBALL, 5);
 	b->type = w->type;
 	b->level = w->level;
-	b->sprite = SPR_addSprite(&SPR_FirebB1, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+	b->sprite = SPR_addSprite(w->level < 3 ? &SPR_FirebB1 : &SPR_FirebB3,
+			0, 0, TILE_ATTR(PAL0, 0, 0, 0));
 	b->damage = 2 * w->level; // 2, 4, 6
 	b->ttl = 50 + w->level * 10;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
@@ -118,7 +119,7 @@ void weapon_fire_fireball(Weapon *w) {
 		b->x_speed = player.direction ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(2);
 	} else {
-		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
+		b->x = player.x + (player.direction ? pixel_to_sub(8) : pixel_to_sub(-8));
 		b->y = player.y + pixel_to_sub(4);
 		b->x_speed = player.direction ? 0x500 : -0x500; // 2.5
 		b->y_speed = 0;
@@ -126,7 +127,50 @@ void weapon_fire_fireball(Weapon *w) {
 }
 
 void weapon_fire_machinegun(Weapon *w) {
-	
+	// Use all 10 slots for machine gun
+	Bullet *b = NULL;
+	for(u8 i = 0; i < 10; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(b == NULL) return;
+	if(w->level == 3) sound_play(SND_POLAR_STAR_L3, 5);
+	else sound_play(SND_POLAR_STAR_L1_2, 5);
+	b->type = w->type;
+	b->level = w->level;
+	b->sprite = SPR_addSprite(w->level == 1 ? &SPR_MGunB1 : w->level == 2
+			? &SPR_MGunB2 : &SPR_MGunB3, 0, 0, TILE_ATTR(PAL0, 0, 0, 0));
+	b->damage = w->level * 2; // 2, 4, 6
+	b->ttl = 90;
+	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
+	if(player.controller[0]&BUTTON_UP) {
+		SPR_SAFEANIM(b->sprite, 1);
+		b->x = player.x;
+		b->y = player.y - pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(-4);
+	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+		SPR_SAFEANIM(b->sprite, 1);
+		SPR_SAFEVFLIP(b->sprite, 1);
+		if(player.y_speed >= 0) {
+			player.y_speed -= 0x300;
+		} else if(player.y_speed >= 0x200) {
+			player.y_speed -= 0x200;
+		} else {
+			player.y_speed -= 0x100;
+		}
+		b->x = player.x;
+		b->y = player.y + pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(4);
+	} else {
+		SPR_SAFEHFLIP(b->sprite, player.direction);
+		b->x = player.x + (player.direction ? pixel_to_sub(10) : pixel_to_sub(-10));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->y_speed = 0;
+	}
 }
 
 void weapon_fire_missile(Weapon *w) {
@@ -223,27 +267,39 @@ void bullet_update_fireball(Bullet *b) {
 		SPR_SAFERELEASE(b->sprite);
 		return;
 	}
-	u8 block_below = b->y_speed > 0 
-			? stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y + 0x800)) : 0;
+	// Check below / above first
+	u8 block_below = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y + 0x800));
 	u8 block_above = b->y_speed < 0
 				? stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y - 0x800)) : 0;
-	u8 block_front = stage_get_block_type(
-			sub_to_block(b->x + (b->x_speed > 0 ? 0x800 : -0x800)), sub_to_block(b->y));
-	if(block_front == 0x41 || block_front == 0x43) { // Bullet hit a wall
-		b->x_speed = -b->x_speed;
-	} else if(block_front & BLOCK_SLOPE) {
-		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed > -0x300) b->y_speed = -0x300;
-	}
 	if(block_below == 0x41 || block_below == 0x43) {
+		b->y -= sub_to_pixel(b->y + 0x800) % 16;
 		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed > -0x300) b->y_speed = -0x300;
-	} else if(block_below == 0x41 || block_below == 0x43) {
+		if(b->y_speed > -0x400) b->y_speed = -0x400;
+	} else if(block_below & BLOCK_SLOPE) {
+		u8 index = block_below & 0xF;
+		if(index >= 4) {
+			u16 xx = sub_to_pixel(b->x);
+			u16 yy = sub_to_pixel(b->y + 0x800);
+			s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+			if(overlap >= 0) {
+				b->y -= overlap;
+				b->y_speed = -b->y_speed;
+				if(b->y_speed > -0x400) b->y_speed = -0x400;
+			}
+		}
+	} else if(block_above == 0x41 || block_above == 0x43) {
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed < 0x300) b->y_speed = 0x300;
 	} else {
 		b->y_speed += GRAVITY;
 		if(b->y_speed > 0x600) b->y_speed = 0x600;
+	}
+	// Check in front
+	u8 block_front = stage_get_block_type(
+			sub_to_block(b->x + (b->x_speed > 0 ? 0x800 : -0x800)),
+			sub_to_block(b->y - 0x100));
+	if(block_front == 0x41 || block_front == 0x43) { // Bullet hit a wall
+		b->x_speed = -b->x_speed;
 	}
 	b->x += b->x_speed;
 	b->y += b->y_speed;
@@ -253,7 +309,28 @@ void bullet_update_fireball(Bullet *b) {
 }
 
 void bullet_update_machinegun(Bullet *b) {
-	
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+	if(block == 0x43) {
+		b->ttl = 0;
+		SPR_SAFERELEASE(b->sprite);
+		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+		effect_create_smoke(1, sub_to_pixel(b->x), sub_to_pixel(b->y));
+		sound_play(SND_BLOCK_DESTROY, 5);
+	} else if(block == 0x41) { // Bullet hit a wall
+		b->ttl = 0;
+		SPR_SAFERELEASE(b->sprite);
+		sound_play(SND_TINK, 3);
+		// TODO: Add the sprite and effect for hitting a wall
+	} else if(--b->ttl == 0) { // Bullet time to live expired
+		SPR_SAFERELEASE(b->sprite);
+	} else {
+		//SPR_SAFEVISIBILITY(b->sprite, (b->ttl & 1) ? VISIBLE : HIDDEN);
+		SPR_SAFEMOVE(b->sprite,
+			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	}
 }
 
 void bullet_update_missile(Bullet *b) {

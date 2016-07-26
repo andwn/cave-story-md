@@ -117,6 +117,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 			e->state = 3;
 			e->state_time = 0;
 			e->attack = 10;
+			e->hit_box.left += 6;
 			sound_play(SND_SLASH, 5);
 			SPR_SAFEANIM(e->sprite, 3);
 		}
@@ -134,6 +135,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 			SPR_SAFEANIM(e->sprite, 0);
 			e->eflags |= NPC_INVINCIBLE;
 			e->attack = 0;
+			e->hit_box.left -= 6;
 		}
 		break;
 	}

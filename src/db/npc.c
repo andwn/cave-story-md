@@ -258,7 +258,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		NULL, NULL, &ai_default_onState, NULL },
 	{ NULL, 		PAL0, 3, "Curly Projectile",
 		NULL, NULL, NULL, NULL },
-	{ &SPR_Sunstone, PAL3, 3, "Sunstone",
+	{ &SPR_Sunstone, PAL2, 3, "Sunstone",
 		&ai_sunstone_onCreate, NULL, NULL, NULL },
 	{ NULL, 		PAL0, 3, "Hidden Powerup",
 		&ai_hiddenPowerup_onCreate, &ai_hiddenPowerup_onUpdate, NULL, NULL },

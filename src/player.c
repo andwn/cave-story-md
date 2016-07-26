@@ -47,6 +47,8 @@ u8 airDisplayTime = 0;
 bool blockl, blocku, blockr, blockd;
 u8 ledge_time;
 
+u8 mgun_shoottime, mgun_chargetime;
+
 void player_update_bounds();
 void player_update_bullets();
 void player_update_interaction();
@@ -78,6 +80,8 @@ void player_init() {
 	player_reset_sprites();
 	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
 	ledge_time = 0;
+	mgun_shoottime = 0;
+	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
@@ -256,8 +260,31 @@ void player_update() {
 	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
 		player_next_weapon();
 	// Shooting
-	} else if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
-		weapon_fire(playerWeapon[currentWeapon]);
+	}
+	if(playerWeapon[currentWeapon].type == WEAPON_MACHINEGUN) {
+		if(mgun_shoottime > 0) mgun_shoottime--;
+		if(player.controller[0]&BUTTON_B) {
+			if(mgun_shoottime == 0) {
+				if(playerWeapon[currentWeapon].ammo > 0) {
+					weapon_fire(playerWeapon[currentWeapon]);
+					playerWeapon[currentWeapon].ammo--;
+				} else {
+					sound_play(SND_GUN_CLICK, 5);
+				}
+				mgun_shoottime = 9;
+			}
+		} else if(playerWeapon[currentWeapon].ammo < 100) {
+			if(mgun_chargetime > 0) {
+				mgun_chargetime--;
+			} else {
+				playerWeapon[currentWeapon].ammo++;
+				mgun_chargetime = 4;
+			}
+		}
+	} else {
+		if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
+			weapon_fire(playerWeapon[currentWeapon]);
+		}
 	}
 	player_update_bullets();
 	player_update_interaction();

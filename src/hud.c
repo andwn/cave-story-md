@@ -4,6 +4,7 @@
 #include "player.h"
 #include "resources.h"
 #include "tables.h"
+#include "vdp_ext.h"
 
 #define HEALTH_DECREASE_TIME 5
 
@@ -153,12 +154,24 @@ void hud_prepare_dma() {
 	memcpy(tileData[SPR_TILE(1, 3)], &TS_Numbers.tiles[(hudHealth / 10)*TSIZE], sizeof(u32) * TSIZE);
 	memcpy(tileData[SPR_TILE(2, 3)], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], sizeof(u32) * TSIZE);
 	if(hudMaxAmmo > 0) { // Max and current ammo
-		memcpy(tileData[SPR_TILE(6, 0)], &TS_Numbers.tiles[(hudMaxAmmo / 10)*TSIZE], sizeof(u32) * TSIZE);
-		memcpy(tileData[SPR_TILE(7, 0)], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
-		memcpy(tileData[SPR_TILE(6, 1)], &TS_Numbers.tiles[(hudAmmo / 10)*TSIZE], sizeof(u32) * TSIZE);
-		memcpy(tileData[SPR_TILE(7, 1)], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
+		if(hudAmmo >= 100) {
+			memcpy(tileData[SPR_TILE(5, 0)], &TS_Numbers.tiles[1*TSIZE], sizeof(u32) * TSIZE);
+		} else {
+			memcpy(tileData[SPR_TILE(5, 0)], TILE_BLANK, sizeof(u32) * TSIZE);
+		}
+		memcpy(tileData[SPR_TILE(6, 0)], &TS_Numbers.tiles[((hudAmmo / 10) % 10)*TSIZE], sizeof(u32) * TSIZE);
+		memcpy(tileData[SPR_TILE(7, 0)], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
+		if(hudMaxAmmo == 100) {
+			memcpy(tileData[SPR_TILE(5, 1)], &TS_Numbers.tiles[1*TSIZE], sizeof(u32) * TSIZE);
+		} else {
+			memcpy(tileData[SPR_TILE(5, 1)], TILE_BLANK, sizeof(u32) * TSIZE);
+		}
+		memcpy(tileData[SPR_TILE(6, 1)], &TS_Numbers.tiles[((hudMaxAmmo / 10) % 10)*TSIZE], sizeof(u32) * TSIZE);
+		memcpy(tileData[SPR_TILE(7, 1)], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
 	} else {
 		TileSet *ts = SPR_TILESET(SPR_Hud2, 0, 0);
+		memcpy(tileData[SPR_TILE(5, 0)], TILE_BLANK, sizeof(u32) * TSIZE);
+		memcpy(tileData[SPR_TILE(5, 1)], TILE_BLANK, sizeof(u32) * TSIZE);
 		memcpy(tileData[SPR_TILE(6, 0)], &ts->tiles[SPR_TILE(6, 0)*TSIZE], sizeof(u32) * TSIZE * 2);
 		memcpy(tileData[SPR_TILE(7, 0)], &ts->tiles[SPR_TILE(7, 0)*TSIZE], sizeof(u32) * TSIZE * 2);
 	}

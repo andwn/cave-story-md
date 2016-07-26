@@ -51,28 +51,47 @@ void ai_energy_onUpdate(Entity *e) {
 		} else if(e->sprite == NULL) {
 			entity_sprite_create(e);
 		}
-		e->y_speed += GRAVITY;
-		e->x_next = e->x + e->x_speed;
-		e->y_next = e->y + e->y_speed;
-		// Reverse direction when hitting a wall
-		s16 xsp = e->x_speed;
-		if(e->x_speed < 0) {
-			collide_stage_leftwall(e);
-		} else {
-			collide_stage_rightwall(e);
-		}
-		if(e->x_speed == 0) {
-			e->direction = !e->direction;
-			e->x_speed = -xsp;
-		}
-		// Bounce when hitting the ground
-		if(collide_stage_floor(e)) {
-			e->y_speed = pixel_to_sub(-2);
-			e->grounded = false;
+		e->y_speed += 0x10;
+		if(e->y_speed > 0x400) e->y_speed = 0x400;
+		// Check below / above first
+		u8 block_below = stage_get_block_type(
+				sub_to_block(e->x), sub_to_block(e->y + 0x800));
+		u8 block_above = stage_get_block_type(
+				sub_to_block(e->x), sub_to_block(e->y - 0x800));
+		if(block_below == 0x41 || block_below == 0x43) {
+			e->y -= sub_to_pixel(e->y + 0x800) % 16;
+			e->y_speed = -e->y_speed >> 1;
+			if(e->y_speed > -0x400) e->y_speed = -0x400;
 			sound_play(SND_XP_BOUNCE, 0);
+		} else if(block_below & BLOCK_SLOPE) {
+			u8 index = block_below & 0xF;
+			if(index >= 4) {
+				u16 xx = sub_to_pixel(e->x);
+				u16 yy = sub_to_pixel(e->y + 0x800);
+				s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+				if(overlap >= 0) {
+					e->y -= overlap;
+					if(e->y_speed >= 0x200) sound_play(SND_XP_BOUNCE, 0);
+					e->y_speed = -e->y_speed;
+					if(e->y_speed > -0x400) e->y_speed = -0x400;
+				}
+			}
+		} else if(block_above == 0x41 || block_above == 0x43) {
+			e->y_speed = -e->y_speed >> 1;
+			if(e->y_speed < 0x300) e->y_speed = 0x300;
+		} else {
+			e->y_speed += GRAVITY;
+			if(e->y_speed > 0x600) e->y_speed = 0x600;
 		}
-		e->x = e->x_next;
-		e->y = e->y_next;
+		// Check in front
+		u8 block_front = stage_get_block_type(
+				sub_to_block(e->x + (e->x_speed > 0 ? 0x800 : -0x800)),
+				sub_to_block(e->y - 0x100));
+		if(block_front == 0x41 || block_front == 0x43) { // hit a wall
+			e->x_speed = -e->x_speed;
+		}
+		e->x += e->x_speed;
+		e->y += e->y_speed;
 	}
 }
 

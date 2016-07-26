@@ -98,6 +98,8 @@ extern Entity *entityList;
 extern Entity *inactiveList;
 // References whichever entity is a boss otherwise it is NULL
 extern Entity *bossEntity;
+// Heightmaps for slope tiles
+extern const u8 heightmap[4][16];
 
 // Deletes entities based on a criteria, scripts sometimes call the bottom 2
 void entities_clear();
