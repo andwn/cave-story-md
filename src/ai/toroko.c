@@ -6,6 +6,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
+#include "camera.h"
 
 void ai_torokoAtk_onCreate(Entity *e) {
 	e->y -= block_to_sub(1);
@@ -93,4 +94,320 @@ void ai_toroko_onState(Entity *e) {
 	default:
 		break;
 	}
+}
+
+void ai_torokoFrenzy_onUpdate(Entity *o) {
+	Entity *block = entity_find_by_type(OBJ_TOROKO_BLOCK);
+
+#define SPAWNBLOCK	\
+{					\
+	block = entity_create(0, 0, 0, 0, OBJ_TOROKO_BLOCK, 0, o->direction);	\
+	block->eflags &= ~NPC_INVINCIBLE;		\
+	block->nflags &= ~NPC_INVINCIBLE;		\
+}
+#define THROWBLOCK	\
+{			\
+	block->x += pixel_to_sub(16) * (o->direction ? 1 : -1);	\
+	block->y += pixel_to_sub(9);	\
+	block->eflags |= NPC_INVINCIBLE;		\
+	block->x_speed = o->direction ? 0x600 : -0x600;		\
+	block->y_speed = (o->y - player.y) - abs(o->x - player.x) / 4; \
+	if(block->y_speed > 0x300) block->y_speed = 0x300; \
+	sound_play(SND_EM_FIRE, 5);		\
+}
+
+#define HOLDBRICKTIME		30
+
+	switch(o->state)
+	{
+		case 0:
+			o->state = 1;
+			//o->frame = 9;
+			o->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
+		case 1:		// wait a sec before morphing
+			if (++o->state_time > 50)
+			{
+				o->state_time = 0;
+				o->state = 2;
+				//o->frame = 8;
+			}
+		break;
+		
+		case 2:		// morph into big toroko
+			//ANIMATE(0, 9, 10);
+			if (++o->state_time > 50)
+			{
+				o->state = 3;
+				o->state_time = 0;
+				o->eflags |= NPC_SHOOTABLE;
+			}
+		break;
+		
+		case 3:		// rest a moment, then jump
+			//o->frame = 1;
+			if (++o->state_time > 5)
+			{
+				o->state = 10;
+				o->eflags |= NPC_SHOOTABLE;
+			}
+		break;
+		
+		case 10:	// wait a moment then ATTACK!!
+			o->state = 11;
+			//o->frame = 0;
+			//o->animtimer = 0;
+			o->state_time = (random() % 110) + 20;
+			o->x_speed = 0;
+		case 11:
+			FACE_PLAYER(o);
+			//ANIMATE(4, 0, 1);
+			///FIXME:: I think Toroko does not like fireball either?
+			//if (o->frame==0 && (sound_is_playing(SND_MISSILE_HIT) /*|| sound_is_playing(0)*/))
+			//{
+			//	o->state = 20;
+			//}
+			
+			if (!o->state_time)
+			{
+				o->state = (random() & 1) ? 20 : 50;
+			}
+			else o->state_time--;
+		break;
+		
+		case 20:	// init for a jump
+			o->state = 21;
+			//o->frame = 2;
+			o->state_time = 0;
+		case 21:	// preparing to jump
+			if (++o->state_time > 10)
+			{
+				o->state = 22;
+				o->state_time = 0;
+				//o->frame = 3;
+				o->y_speed = -0x5ff;
+				o->x_speed = o->direction ? 0x200 : -0x200;
+			}
+		break;
+		case 22:	// jumping up
+			if (++o->state_time > 10) { 
+				o->state = 23; 
+				o->state_time = 0; 
+				//o->frame = 6; 
+				SPAWNBLOCK; 
+			}
+		break;
+		case 23:	// preparing to throw block
+			if (++o->state_time > HOLDBRICKTIME) { 
+				o->state = 24; 
+				o->state_time = 0; 
+				//o->frame = 7; 
+				THROWBLOCK; 
+			}
+			FACE_PLAYER(o);
+		break;
+		case 24:	// threw block
+			if (++o->state_time > 3) { 
+				o->state = 25; 
+				//o->frame = 3; 
+			}
+		break;
+		case 25:	// coming back down
+			if ((o->grounded = collide_stage_floor(o)))
+			{
+				o->state = 26;
+				o->state_time = 0;
+				//o->frame = 2;
+				sound_play(SND_QUAKE, 5);
+				camera_shake(20);
+			}
+		break;
+		case 26:	// landed
+			o->x_speed *= 8;
+			o->x_speed /= 9;
+			if (++o->state_time > 20)
+			{
+				o->state = 10;
+				//o->frame = 0;
+			}
+		break;
+		
+		case 50:	// throw a block (standing on ground)
+			o->state = 51;
+			o->state_time = 0;
+			//o->frame = 4;
+			SPAWNBLOCK;
+		case 51:
+			if (++o->state_time > HOLDBRICKTIME)
+			{
+				o->state = 52;
+				o->state_time = 0;
+				//o->frame = 5;
+				THROWBLOCK;
+			}
+			FACE_PLAYER(o);
+		break;
+		case 52:
+			if (++o->state_time > 3) { 
+				o->state = 10; 
+				//o->frame = 0; 
+			}
+		break;
+		
+		case 100:		// defeated (set by Script On Death)
+			//o->frame = 3;
+			o->state = 101;
+			o->eflags &= ~NPC_SHOOTABLE;
+			//SmokeClouds(o, 8, 8, 8);
+		case 101:		// wait till fall to ground
+			if ((o->grounded = collide_stage_floor(o)))
+			{
+				o->state = 102;
+				o->state_time = 0;
+				//o->frame = 2;
+				sound_play(SND_QUAKE, 5);
+				camera_shake(20);
+			}
+		break;
+		case 102:		// crouching & smoking
+			o->x_speed *= 8; 
+			o->x_speed /= 9;
+			if (++o->state_time > 50) { 
+				o->state = 103; 
+				o->state_time = 0; 
+				//o->frame = 10; 
+			}
+		break;
+		case 103:		// looks pained
+			if (++o->state_time > 50) { 
+				o->state = 104; 
+				o->state_time = 0; 
+				//o->frame = 9; 
+			}
+		break;
+		case 104:		// morphing back into normal toroko
+			//o->frame = (o->frame==9) ? 10:9;
+			if (++o->state_time > 100) { 
+				o->state = 105; 
+				o->state_time = 0; 
+				//o->frame = 9; 
+			}
+		break;
+		case 105:		// back to normal
+			if (++o->state_time > 50) { 
+				o->state = 106; 
+				//o->animtimer = 0; 
+				//o->frame = 11; 
+			}
+		break;
+		case 106:		// red goes out of her eyes, she falls down
+			//if (++o->animtimer > 50)
+			//{	// collapse
+			//	o->animtimer = 0;
+			//	if (++o->frame > 12) o->frame = 12;
+			//}
+		break;
+		
+		case 140:		// disappear
+			o->state = 141;
+			o->state_time = 0;
+			//o->frame = 12;
+			sound_play(SND_TELEPORT, 5);
+		case 141:
+			//o->invisible ^= 1;
+			if (++o->state_time > 100)
+			{
+				// normal SmokeClouds() doesn't spawn in the right place because the sprite
+				// is still sized for big toroko, so I made an Action Point for this frame.
+				//SmokePuff(o->ActionPointX(), o->ActionPointY());
+				//SmokePuff(o->ActionPointX(), o->ActionPointY());
+				//SmokePuff(o->ActionPointX(), o->ActionPointY());
+				//SmokePuff(o->ActionPointX(), o->ActionPointY());
+				o->state = STATE_DELETE;
+			}
+		break;
+	}
+	
+	//if (o->state > 100 && o->state <= 105)
+	//{
+	//	if ((o->timer % 9)==1)
+	//	{
+	//		SmokeClouds(o, 1, 8, 8);
+	//	}
+	//}
+	
+	if(!o->grounded) o->y_speed += 0x20;
+	//LIMITY(0x5ff);
+}
+
+// the blocks Frenzied Toroko throws
+void ai_torokoBlock_onUpdate(Entity *o)
+{
+	o->x_next = o->x + o->x_speed;
+	o->y_next = o->y + o->y_speed;
+	if(collide_stage_leftwall(o) || collide_stage_rightwall(o) || collide_stage_floor(o)) {
+		sound_play(SND_BLOCK_DESTROY, 5);
+		entity_default(o, OBJ_TOROKO_FLOWER, 0);
+		//o->frame = 0;
+		entity_sprite_create(o);
+		o->state = 20;
+		o->x_speed = 0;
+		o->eflags &= ~NPC_INVINCIBLE;
+		o->eflags |= NPC_SHOOTABLE;
+		//o->state = STATE_DELETE;
+	} else if(entity_overlapping(o, &player)) {
+		if(!player_invincible()) player_inflict_damage(o->attack);
+		sound_play(SND_BLOCK_DESTROY, 5);
+		o->state = STATE_DELETE;
+	} else {
+		o->x = o->x_next;
+		o->y = o->y_next;
+	}
+}
+
+void ai_torokoFlower_onUpdate(Entity *o)
+{
+	switch(o->state)
+	{
+		case 10:
+			o->state = 11;
+			o->state_time = 0;
+		case 11:
+			if (++o->state_time > 30)
+			{
+				o->state = 12;
+				o->state_time = 0;
+				//o->frame = 1;
+				//o->animtimer = 0;
+			}
+		break;
+		case 12:
+			//ANIMATE_FWD(8);
+			if (++o->state_time > 30)
+			{
+				o->state = 20;
+				o->y_speed = -0x200;
+				o->x_speed = (o->x > player.x) ? -0x200 : 0x200;
+			}
+		break;
+		
+		case 20:	// falling/jumping
+			//if (o->yinertia > -0x80) o->frame = 4; else o->frame = 3;
+			if ((o->grounded = collide_stage_floor(o)))
+			{
+				//o->frame = 2;
+				o->state = 21;
+				o->state_time = o->x_speed = 0;
+				sound_play(SND_THUD, 3);
+			}
+		break;
+		case 21:
+			if (++o->state_time > 10) { 
+				o->state = 10; 
+				//o->frame = 0; 
+			}
+		break;
+	}
+	
+	o->y_speed += 0x40;
+	//LIMITY(0x5ff);
 }

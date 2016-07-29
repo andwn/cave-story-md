@@ -111,3 +111,181 @@ void ai_curly_onState(Entity *e) {
 		break;
 	}
 }
+
+// I'm copying from NXEngine again lol
+
+#define CURLYB_FIGHT_START		10
+#define CURLYB_WAIT				11
+#define CURLYB_WALK_PLAYER		13
+#define CURLYB_WALKING_PLAYER	14
+#define CURLYB_CHARGE_GUN		20
+#define CURLYB_FIRE_GUN			21
+#define CURLYB_SHIELD			30
+
+#ifdef PAL
+#define CURLYB_WALK_ACCEL	0x40
+#define CURLYB_WALK_SPEED	0x1FF
+#else
+#define CURLYB_WALK_ACCEL	0x36
+#define CURLYB_WALK_SPEED	0x1B0
+#endif
+
+static void curlyboss_fire(Entity *o, u8 dir)
+{
+	Entity *shot = entity_create(0, 0, 0, 0, OBJ_CURLYBOSS_SHOT, 0, dir & 1);
+	
+	shot->attack = 6;
+	//shot->sprite = SPR_SHOT_MGUN_L1;
+	//shot->dir = dir & 1;
+	//shot->shot.dir = dir;
+	
+	//effect(shot->CenterX(), shot->CenterY(), EFFECT_STARPOOF);
+	
+	switch(dir)
+	{
+		case 0:
+			shot->x_speed = -4096;
+		break;
+		
+		case 1:
+			shot->x_speed = 4096;
+		break;
+		
+		case 2:
+			shot->y_speed = -4096;
+			SPR_SAFEANIM(shot->sprite, 1);
+		break;
+	}
+	
+	sound_play(SND_POLAR_STAR_L1_2, 4);
+}
+
+void ai_curlyBoss_onUpdate(Entity *o) 
+{
+	switch(o->state) 
+	{
+		case CURLYB_FIGHT_START:
+		{
+			//o->health = 12;
+			o->state = CURLYB_WAIT;
+			o->state_time = (random() % 50) + 50;
+			SPR_SAFEANIM(o->sprite, 0);
+			o->direction = (o->x <= player.x);
+			o->eflags |= NPC_SHOOTABLE;
+			o->eflags &= ~NPC_INVINCIBLE;
+			o->nflags &= ~NPC_INVINCIBLE;
+		}
+		case CURLYB_WAIT:
+			if (o->state_time) o->state_time--;
+			else
+			{
+				o->state = CURLYB_WALK_PLAYER;
+			}
+		break;
+		
+		
+		case CURLYB_WALK_PLAYER:
+			o->state = CURLYB_WALKING_PLAYER;
+			SPR_SAFEANIM(o->sprite, 1);
+			o->state_time = (random() % 50) + 50;
+			o->direction = (o->x <= player.x);
+		case CURLYB_WALKING_PLAYER:
+			o->x_speed += o->direction ? CURLYB_WALK_ACCEL : -CURLYB_WALK_ACCEL;
+			
+			if (o->state_time) o->state_time--;
+			else
+			{
+				o->eflags |= NPC_SHOOTABLE;
+				o->state = CURLYB_CHARGE_GUN;
+				o->state_time = 0;
+				sound_play(SND_CHARGE_GUN, 5);
+			}
+		break;
+		
+		
+		case CURLYB_CHARGE_GUN:
+			o->direction = (o->x <= player.x);
+			
+			if(abs(o->x_speed) >= CURLYB_WALK_ACCEL)
+				o->x_speed -= o->direction ? CURLYB_WALK_ACCEL : -CURLYB_WALK_ACCEL;
+			
+			SPR_SAFEANIM(o->sprite, 0);
+			if (++o->state_time > 50)
+			{
+				o->state = CURLYB_FIRE_GUN;
+				//o->frame = 0;
+				o->state_time = 0;
+			}
+		break;
+		
+		case CURLYB_FIRE_GUN:
+			o->state_time++;
+			
+			if (!(o->state_time & 3))
+			{	// time to fire
+				
+				// check if player is trying to jump over
+				if (abs(o->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < o->y)
+				{	// shoot up instead
+					SPR_SAFEANIM(o->sprite, 2);
+					curlyboss_fire(o, 2);
+				}
+				else
+				{
+					SPR_SAFEANIM(o->sprite, 0);
+					curlyboss_fire(o, o->direction);
+				}
+			}
+			
+			if (o->state_time > 30) o->state = 10;
+		break;
+		
+		case CURLYB_SHIELD:
+			//if (++o->frame > 8) o->frame = 7;
+			if (++o->state_time > 30)
+			{
+				//o->frame = 0;
+				o->state = CURLYB_FIGHT_START;
+			}
+		break;
+	}
+
+
+	if (o->state > CURLYB_FIGHT_START && o->state < CURLYB_SHIELD)
+	{
+		// curly activates her shield anytime a missile's explosion goes off,
+		// even if it's nowhere near her at all
+		if(bullet_missile_is_exploding())
+		{
+			o->state_time = 0;
+			o->state = CURLYB_SHIELD;
+			SPR_SAFEANIM(o->sprite, 2);
+			o->eflags &= ~NPC_SHOOTABLE;
+			o->eflags |= NPC_INVINCIBLE;
+			o->x_speed = 0;
+		}
+	}
+	
+	o->x += o->x_speed;
+	
+	if (o->x_speed > CURLYB_WALK_SPEED) o->x_speed = CURLYB_WALK_SPEED;
+	if (o->x_speed < -CURLYB_WALK_SPEED) o->x_speed = -CURLYB_WALK_SPEED;
+	
+	//o->y_speed += 0x40;
+	//LIMITY(0x5ff);
+}
+
+void ai_curlyBossShot_onUpdate(Entity *o)
+{
+	o->x_next = o->x + o->x_speed;
+	o->y_next = o->y + o->y_speed;
+	if(collide_stage_leftwall(o) || collide_stage_rightwall(o) || collide_stage_ceiling(o)) {
+		o->state = STATE_DELETE;
+	} else if(!player_invincible() && entity_overlapping(o, &player)) {
+		player_inflict_damage(o->attack);
+		o->state = STATE_DELETE;
+	} else {
+		o->x = o->x_next;
+		o->y = o->y_next;
+	}
+}

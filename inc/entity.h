@@ -174,4 +174,6 @@ bool entity_overlapping(Entity *a, Entity *b);
 // Pushes entity a outside of entity b's hitbox
 bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY);
 
+void entity_default(Entity *e, u16 type, u16 flags);
+
 #endif // INC_ENTITY_H_

@@ -18,7 +18,7 @@
 
 Sprite *itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
-Sprite *selectSprite;
+//Sprite *selectSprite;
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
@@ -27,7 +27,7 @@ bool update_pause() {
 			SPR_SAFERELEASE(itemSprite[i]);
 		}
 		selectedItem = 0;
-		SPR_SAFERELEASE(selectSprite);
+		//SPR_SAFERELEASE(selectSprite);
 		// Reload TSC Events for the current stage
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
