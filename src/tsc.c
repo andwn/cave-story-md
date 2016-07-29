@@ -175,8 +175,13 @@ void tsc_init() {
 }
 
 void tsc_load_stage(u8 id) {
-	const u8 *TSC = stage_info[id].TSC;
-	tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+	if(id == 255) {
+		const u8 *TSC = TSC_ArmsItem;
+		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+	} else {
+		const u8 *TSC = stage_info[id].TSC;
+		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+	}
 }
 
 u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {

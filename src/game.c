@@ -13,22 +13,58 @@
 #include "effect.h"
 #include "hud.h"
 #include "weapon.h"
+#include "window.h"
+#include "audio.h"
 
 Sprite *itemSprite[MAX_ITEMS];
+u8 selectedItem = 0;
+Sprite *selectSprite;
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
+		// Unload graphics
 		for(u16 i = 0; i < MAX_ITEMS; i++) {
 			SPR_SAFERELEASE(itemSprite[i]);
 		}
+		selectedItem = 0;
+		SPR_SAFERELEASE(selectSprite);
+		// Reload TSC Events for the current stage
+		tsc_load_stage(stageID);
+		// Put the sprites for player/entities/HUD back
 		player_unpause();
 		entities_unpause();
 		hud_show();
 		VDP_setWindowPos(0, 0);
 		return false;
 	} else {
-		
-		// TODO: Item Menu
+		// Weapons are 1000 + ID
+		// Items are 5000 + ID
+		// Item descriptions are 6000 + ID
+		if(tsc_running()) {
+			tsc_update();
+		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
+			tsc_call_event(6000 + playerInventory[selectedItem]);
+		} else if(joy_pressed(BUTTON_LEFT)) {
+			sound_play(SND_MENU_MOVE, 5);
+			selectedItem--;
+			selectedItem %= 32;
+			tsc_call_event(5000 + playerInventory[selectedItem]);
+		} else if(joy_pressed(BUTTON_UP)) {
+			sound_play(SND_MENU_MOVE, 5);
+			selectedItem -= 8;
+			selectedItem %= 32;
+			tsc_call_event(5000 + playerInventory[selectedItem]);
+		} else if(joy_pressed(BUTTON_RIGHT)) {
+			sound_play(SND_MENU_MOVE, 5);
+			selectedItem++;
+			selectedItem %= 32;
+			tsc_call_event(5000 + playerInventory[selectedItem]);
+		} else if(joy_pressed(BUTTON_DOWN)) {
+			sound_play(SND_MENU_MOVE, 5);
+			selectedItem += 8;
+			selectedItem %= 32;
+			tsc_call_event(5000 + playerInventory[selectedItem]);
+		} 
 	}
 	return true;
 }
@@ -54,6 +90,7 @@ void draw_itemmenu() {
 	SYS_disableInts();
 	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, 0, 64 * 20);
 	//window_draw_area(2, 1, 36, 18);
+	window_clear();
 	VDP_drawTextWindow("--ARMS--", 16, 3);
 	for(u16 i = 0; i < MAX_ITEMS; i++) {
 		u16 item = playerInventory[i];
@@ -128,6 +165,7 @@ u8 game_main(bool load) {
 		} else {
 			if(!tsc_running() && joy_pressed(BUTTON_START)) {
 				draw_itemmenu();
+				tsc_load_stage(255);
 				paused = true;
 			} else {
 				// Don't update this stuff if script is using <PRI
