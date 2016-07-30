@@ -105,7 +105,7 @@ SPRITE SPR_Puppy	"sprite/puppy.png" 2 2 0 8 NONE
 SPRITE SPR_Table	"sprite/table.png" 3 2 0 0 NONE
 SPRITE SPR_ManShot	"sprite/manshot.png" 2 3 0 4 NONE
 SPRITE SPR_Skullhead "sprite/skullstep.png" 4 3 0 0 NONE
-
+SPRITE SPR_FrogShot	"sprite/frogshot.png" 2 2 0 8 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE
@@ -154,6 +154,8 @@ SPRITE SPR_Doctor	"sprite/doctor.png" 3 4 0 12 NONE
 SPRITE SPR_ToroBoss "sprite/torokoboss.png" 4 4 0 12 NONE
 SPRITE SPR_ToroFlower "sprite/toroflower.png" 2 2 0 8 NONE
 SPRITE SPR_Frog		"sprite/frog.png" 3 4 0 20 NONE
+SPRITE SPR_FrogSm	"sprite/frogsm.png" 2 2 0 20 NONE
+SPRITE SPR_CurlyMimi "sprite/cirlymimi.png" 2 2 0 12 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith	"sprite/gunsmith.png" 2 2 0 0 NONE
