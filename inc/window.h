@@ -13,6 +13,8 @@
 #define TM_LINE		1 // CAT/SAT
 #define TM_ALL		2 // TUR
 
+extern const u8 ITEM_PAL[40];
+
 // Opens the message window
 void window_open(u8 mode);
 // Returns true if the message window is open

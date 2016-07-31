@@ -84,23 +84,6 @@ void ai_puppyCarry_onUpdate(Entity *e) {
 	e->y = player.y - pixel_to_sub(5);
 }
 
-void ai_torokoBoss_onCreate(Entity *e) {
-	e->eflags |= NPC_SHOOTABLE;
-}
-
-void ai_torokoBoss_onUpdate(Entity *e) {
-	
-}
-
-void ai_torokoBoss_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
-		e->state = STATE_DELETE;
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->nflags &= ~NPC_SHOOTABLE;
-		tsc_call_event(e->event);
-	}
-}
-
 void ai_jenka_onCreate(Entity *e) {
 	if(e->type == OBJ_JENKA_COLLAPSED) {
 		e->spriteAnim = 2;

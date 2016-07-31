@@ -25,6 +25,14 @@
 #define PROMPT_X 27
 #define PROMPT_Y 18
 
+const u8 ITEM_PAL[40] = {
+	0, 0, 1, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 1, 0, 0,
+	0, 0, 1, 1, 0, 1, 1, 1,
+	0, 1, 0, 1, 0, 0, 0, 0,
+	0, 0, 0, 1, 0, 1, 1, 1,
+};
+
 bool windowOpen = false;
 u16 showingFace = 0;
 
@@ -235,8 +243,7 @@ void window_show_item(u16 item) {
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
 	u16 pal = PAL1;
-	if(item == 2 || item == 13 || item == 18 || item == 19 || item == 23 || item == 25
-		|| item == 32 || item == 35 || item == 37 || item == 38 || item == 39) {
+	if(ITEM_PAL[item]) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
@@ -244,7 +251,7 @@ void window_show_item(u16 item) {
 		TILE_ATTR(pal, 1, 0, 0));
 	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
 		TILE_ATTR(PAL0, 1, 0, 0));
-	SPR_setAnimAndFrame(itemSpr, item / 8, item % 8);
+	SPR_setAnim(itemSpr, item);
 }
 
 void window_show_weapon(u16 item) {

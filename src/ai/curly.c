@@ -144,14 +144,20 @@ static void curlyboss_fire(Entity *o, u8 dir)
 	switch(dir)
 	{
 		case 0:
+			shot->x = o->x - pixel_to_sub(12);
+			shot->y = o->y + pixel_to_sub(2);
 			shot->x_speed = -4096;
 		break;
 		
 		case 1:
+			shot->x = o->x + pixel_to_sub(12);
+			shot->y = o->y + pixel_to_sub(2);
 			shot->x_speed = 4096;
 		break;
 		
 		case 2:
+			shot->x = o->x;
+			shot->y = o->y - pixel_to_sub(10);
 			shot->y_speed = -4096;
 			SPR_SAFEANIM(shot->sprite, 1);
 		break;
@@ -273,6 +279,16 @@ void ai_curlyBoss_onUpdate(Entity *o)
 	
 	//o->y_speed += 0x40;
 	//LIMITY(0x5ff);
+}
+
+void ai_curlyBoss_onState(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
+		entity_default(e, OBJ_CURLY, 0);
+		entity_sprite_create(e);
+		e->x -= 8;
+		e->eflags &= ~NPC_SHOOTABLE;
+		e->state = 0;
+	}
 }
 
 void ai_curlyBossShot_onUpdate(Entity *o)

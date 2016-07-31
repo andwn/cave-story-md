@@ -60,13 +60,7 @@ void ai_jelly_onHurt(Entity *e) {
 }
 
 void ai_mannan_onUpdate(Entity *e) {
-	if(e->state == 1 && ++e->state_time > 24) {
-		ENTITY_SET_STATE(e, 0, 0);
-	}
-}
-
-void ai_mannan_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
+	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		entity_drop_powerup(e);
@@ -77,7 +71,12 @@ void ai_mannan_onState(Entity *e) {
 		e->attack = 0;
 		e->state = 3;
 		return;
+	} else if(e->state == 1 && ++e->state_time > 24) {
+		ENTITY_SET_STATE(e, 0, 0);
 	}
+}
+
+void ai_mannan_onState(Entity *e) {
 	switch(e->state) {
 		case 0:
 		SPR_SAFEANIM(e->sprite, 0);
@@ -225,5 +224,122 @@ void ai_press_onUpdate(Entity *e) {
 			}
 			e->y = e->y_next;
 		break;
+	}
+}
+
+void ai_frog_onUpdate(Entity *e) {
+	if(!e->grounded) e->y_speed += 0x80;
+
+	if(e->y_speed > 0x5ff) e->y_speed = 0x5ff;
+	if(e->y_speed < -0x5ff) e->y_speed = -0x5ff;
+
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+
+	switch(e->state) {
+		case 0:
+			e->state_time = 0;
+			e->x_speed = 0;
+			e->y_speed = 0;
+
+			// Balfrog sets OPTION2
+			if(e->eflags & NPC_OPTION2) {
+				e->direction = random() & 1;
+				e->eflags |= NPC_IGNORESOLID;
+
+				e->state = 3;
+				SPR_SAFEANIM(e->sprite, 1);
+			} else {
+				e->eflags &= ~NPC_IGNORESOLID;
+				e->state = 1;
+			}
+		case 1:		// standing
+		case 2:
+			e->state_time++;
+		break;
+		case 3:		// falling out of ceiling during balfrog fight
+			if(++e->state_time > 40) {
+				e->eflags &= ~NPC_IGNORESOLID;
+
+				if((e->grounded = collide_stage_floor(e))) {
+					e->state = 0;
+					SPR_SAFEANIM(e->sprite, 0);
+					e->state_time = 0;
+				}
+			}
+		break;
+
+		case 10:	// jumping
+		case 11:
+			if (e->x_speed < 0 && collide_stage_leftwall(e)) {
+				e->direction = 1;
+				e->x_speed = -e->x_speed;
+			}
+			if (e->x_speed > 0 && collide_stage_rightwall(e)) {
+				e->direction = 0;
+				e->x_speed = -e->x_speed;
+			}
+			if ((e->grounded = collide_stage_floor(e))) {
+				e->state = 0;
+				SPR_SAFEANIM(e->sprite, 0);
+				e->state_time = 0;
+			}
+		break;
+	}
+
+	// random jumping, and jump when shot
+	if (e->state < 3 && e->state_time > 10) {
+		bool dojump = false;
+
+		if(e->damage_time) {
+			dojump = true;
+		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {
+			if((random() % 50) == 0) {
+				dojump = true;
+			}
+		}
+
+		if (dojump) {
+			FACE_PLAYER(e);
+			e->state = 10;
+			SPR_SAFEANIM(e->sprite, 1);
+			e->y_speed = -0x5ff;
+			e->grounded = false;
+
+			// no jumping sound in cutscenes at ending
+			//if (!player->inputs_locked && !player->disabled)
+			//	sound(SND_ENEMY_JUMP);
+
+			e->x_speed = e->direction ? 0x200 : -0x200;
+		}
+	}
+
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
+void ai_hey_onUpdate(Entity *e) {
+	switch(e->state) {
+	case 0:
+		e->y += 8;
+		e->x += 8;
+		e->state = 1;
+		e->state_time = 0;
+	case 1:
+		if(++e->state_time >= 60) {
+			e->y += 8;
+			e->x += 8;
+			e->state = 2;
+			e->state_time = 0;
+		}
+	break;
+	case 2:
+		if(++e->state_time >= 60) {
+			e->y -= 8;
+			e->x += 8;
+			e->state = 1;
+			e->state_time = 0;
+		}
+	break;
 	}
 }

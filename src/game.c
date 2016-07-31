@@ -98,14 +98,13 @@ void draw_itemmenu() {
 			// Wonky workaround to use either PAL_Sym or PAL_Main
 			const SpriteDefinition *sprDef = &SPR_ItemImage;
 			u16 pal = PAL1;
-			if(item == 2 || item == 13 || item == 18 || item == 19 || item == 23 || item == 25
-				|| item == 32 || item == 35 || item == 37 || item == 38 || item == 39) {
+			if(ITEM_PAL[item]) {
 				sprDef = &SPR_ItemImageG;
 				pal = PAL0;
 			}
 			itemSprite[i] = SPR_addSprite(sprDef, 
 				24 + (i % 8) * 32, 88 + (i / 8) * 16, TILE_ATTR(pal, 1, 0, 0));
-			SPR_SAFEANIMFRAME(itemSprite[i], item / 8, item % 8);
+			SPR_SAFEANIM(itemSprite[i], item);
 		} else {
 			itemSprite[i] = NULL;
 		}

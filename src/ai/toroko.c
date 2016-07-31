@@ -96,7 +96,7 @@ void ai_toroko_onState(Entity *e) {
 	}
 }
 
-void ai_torokoFrenzy_onUpdate(Entity *o) {
+void ai_torokoBoss_onUpdate(Entity *o) {
 	Entity *block = entity_find_by_type(OBJ_TOROKO_BLOCK);
 
 #define SPAWNBLOCK	\
@@ -337,6 +337,15 @@ void ai_torokoFrenzy_onUpdate(Entity *o) {
 	
 	if(!o->grounded) o->y_speed += 0x20;
 	//LIMITY(0x5ff);
+}
+
+void ai_torokoBoss_onState(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
+		e->state = STATE_DELETE;
+		e->eflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOOTABLE;
+		tsc_call_event(e->event);
+	}
 }
 
 // the blocks Frenzied Toroko throws

@@ -100,9 +100,9 @@ void ai_batHang_onUpdate(Entity *e) {
 		e->x_speed += (e->x > player.x) ? -BAT_FLY_XACCEL : BAT_FLY_XACCEL;
 		e->y_speed += (e->y > e->y_mark) ? -BAT_FLY_YACCEL : BAT_FLY_YACCEL;
 		// Limit speed
-		if(e->x_speed > BAT_FLY_SPEED) e->y_speed = BAT_FLY_SPEED;
+		if(e->x_speed > BAT_FLY_SPEED) e->x_speed = BAT_FLY_SPEED;
 		if(e->y_speed > BAT_FLY_SPEED) e->y_speed = BAT_FLY_SPEED;
-		if(e->x_speed < -BAT_FLY_SPEED) e->y_speed = -BAT_FLY_SPEED;
+		if(e->x_speed < -BAT_FLY_SPEED) e->x_speed = -BAT_FLY_SPEED;
 		if(e->y_speed < -BAT_FLY_SPEED) e->y_speed = -BAT_FLY_SPEED;
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;

@@ -134,6 +134,11 @@ void ai_batHang_onUpdate(Entity *e);
 void ai_curly_onUpdate(Entity *e);
 void ai_curly_onState(Entity *e);
 
+void ai_curlyBoss_onUpdate(Entity *e);
+void ai_curlyBoss_onState(Entity *e);
+
+void ai_curlyBossShot(Entity *e);
+
 /* Egg Corridor - eggs.c */
 
 void ai_basil_onCreate(Entity *e);
@@ -269,6 +274,10 @@ void ai_powerc_onCreate(Entity *e);
 
 void ai_press_onUpdate(Entity *e);
 
+void ai_frog_onUpdate(Entity *e);
+
+void ai_hey_onUpdate(Entity *e);
+
 /* Sand Zone - sand.c */
 
 void ai_omega_onCreate(Entity *e);
@@ -288,6 +297,10 @@ void ai_puppyCarry_onUpdate(Entity *e);
 void ai_torokoBoss_onCreate(Entity *e);
 void ai_torokoBoss_onUpdate(Entity *e);
 void ai_torokoBoss_onState(Entity *e);
+
+void ai_torokoBlock_onUpdate(Entity *e);
+
+void ai_torokoFlower_onUpdate(Entity *e);
 
 void ai_jenka_onCreate(Entity *e);
 

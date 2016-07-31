@@ -4,7 +4,7 @@
 const stage_info_def stage_info[STAGE_COUNT] = {
 	{ NULL,			NULL,		NULL,		&PAL_Regu,	0,	0,	"" },
 	{ PXM_Pens1,	PXE_Pens1,	TSC_Pens1,	&PAL_Regu,	16,	0,	"Arthur's House" },
-	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	12,	"Egg Corridor" },
+	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	13,	"Egg Corridor" },
 	{ PXM_EggX,		PXE_EggX,	TSC_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },
 	{ PXM_Egg6,		PXE_Egg6,	TSC_Egg6,	&PAL_Regu,	5,	0,	"Egg No. 06" },
 	{ PXM_EggR,		PXE_EggR,	TSC_EggR,	&PAL_Regu,	19,	0,	"Egg Observation Room" },
@@ -54,7 +54,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Regu,	1,	0,	"Core" },
 	/* 0x30 (48) */
 	{ PXM_River,	PXE_River,	TSC_River,	&PAL_Regu,	17,	6,	"Waterway" },
-	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Regu,	23,	12,	"Egg Corridor?" },
+	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Regu,	23,	13,	"Egg Corridor?" },
 	{ PXM_Cthu2,	PXE_Cthu2,	TSC_Cthu2,	&PAL_Regu,	19,	0,	"Cthulhu's Abode?" },
 	{ PXM_EggR2,	PXE_EggR2,	TSC_EggR2,	&PAL_Regu,	19,	0,	"Egg Observation Room?" },
 	{ PXM_EggX,		PXE_EggX2,	TSC_EggX2,	&PAL_Regu,	22,	0,	"Egg No. 00" },

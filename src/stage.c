@@ -162,24 +162,30 @@ void stage_update() {
 		morphingRow = 0;
 	}
 	s16 off[32];
-	for(u8 i = 0; i < 32; i++) {
-		off[i] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
+	off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
+	for(u8 i = 1; i < 32; i++) {
+		off[i] = off[0];
 	}
 	// Foreground scrolling
 	VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
 	VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	// Background Scrolling
-	if(stageBackgroundType == 1) stage_update_back();
-}
-
-void stage_update_back() {
-	for(u8 y = 0; y < 32; y++) {
-		if(y < 12) backScrollTable[y] = 0;
-		else if(y < 16) backScrollTable[y] += 1;
-		else if(y < 20) backScrollTable[y] += 2;
-		else backScrollTable[y] += 3;
+	if(stageBackgroundType == 0) {
+		backScrollTable[0] = -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W;
+		for(u8 y = 1; y < 32; y++) {
+			backScrollTable[y] = backScrollTable[0];
+		}
+		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
+		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
+	} else if(stageBackgroundType == 1) {
+		for(u8 y = 0; y < 32; y++) {
+			if(y < 12) backScrollTable[y] = 0;
+			else if(y < 16) backScrollTable[y] += 1;
+			else if(y < 20) backScrollTable[y] += 2;
+			else backScrollTable[y] += 3;
+		}
+		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
 	}
-	VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
 }
 
 void stage_draw_column(s16 _x, s16 _y) {
