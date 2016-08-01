@@ -63,6 +63,17 @@ typedef void (*EntityMethod)(Entity*);
 #define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - dist1 && player.x < e->x + dist2)
 #define PLAYER_DIST_Y2(dist1, dist2) (player.y > e->y - dist1 && player.y < e->y + dist2)
 
+#define LIMIT_X(v) ({ \
+	if(e->x_speed > (v)) e->x_speed = (v); \
+	if(e->x_speed < -(v)) e->x_speed = -(v); \
+})
+#define LIMIT_Y(v) ({ \
+	if(e->y_speed > (v)) e->y_speed = (v); \
+	if(e->y_speed < -(v)) e->y_speed = -(v); \
+})
+
+#define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
+
 /* Generic - basic.c */
 
 // Tons of NPCs are placed 1 block above where they are meant to appear
@@ -254,9 +265,9 @@ void ai_gkeeper_onUpdate(Entity *e);
 
 /* Grasstown - weed.c */
 
-void ai_jelly_onCreate(Entity *e);
+//void ai_jelly_onCreate(Entity *e);
 void ai_jelly_onUpdate(Entity *e);
-void ai_jelly_onHurt(Entity *e);
+//void ai_jelly_onHurt(Entity *e);
 
 void ai_mannan_onUpdate(Entity *e);
 void ai_mannan_onState(Entity *e);

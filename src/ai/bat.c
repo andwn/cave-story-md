@@ -122,3 +122,60 @@ void ai_batHang_onUpdate(Entity *e) {
 		e->y = e->y_next;
 	}
 }
+
+void ai_batCircle_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			// set up initial direction and target x,y
+			// Angles are between 0-1024 where 1024 is 360 degrees
+			u16 angle = random() % 1024;
+			// SGDK has a sine table already available, but it is meant to be used with
+			// its own 'fix32' type which is a 10-bit fixed point number. Cave Story's fixed
+			// point numbers use a 9-bit decimal so we shift right by 1 bit
+			e->x_speed = sintab32[angle] >> 1;
+			angle += 256; // Add 90 degrees to get cosine
+			e->x_mark = e->x + (sintab32[angle] >> 1) * 8;
+			// Starting Y speed
+			angle = random() % 1024;
+			e->y_speed = sintab32[angle] >> 1;
+			// Target Y position
+			angle += 256;
+			e->y_mark = e->y + (sintab32[angle] >> 1) * 8;
+			
+			e->state = 1;
+		}
+		case 1:
+			// circle around our target point
+			FACE_PLAYER(e);
+			SPR_SAFEHFLIP(e->sprite, e->direction);
+			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
+			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
+			LIMIT_X(0x200);
+			LIMIT_Y(0x200);
+			if(!e->state_time) {
+				if(PLAYER_DIST_X(0x1000) && (player.y > e->y) && PLAYER_DIST_Y(0xC000)) {
+					// dive attack
+					e->x_speed /= 2;
+					e->y_speed = 0;
+					e->state = 2;
+					SPR_SAFEANIM(e->sprite, 1);		// mouth showing teeth
+				}
+			} else {
+				e->state_time--;
+			}
+		break;
+		
+		case 2:	// dive attack
+			e->y_speed += 0x40;
+			LIMIT_Y(0x5ff);
+			if(collide_stage_floor(e)) {
+				e->y_speed = 0;
+				e->x_speed *= 2;
+				e->state_time = 120;		// delay before can dive again
+				e->state = 1;
+				SPR_SAFEANIM(e->sprite, 0);
+			}
+		break;
+	}
+}

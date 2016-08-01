@@ -199,7 +199,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Kulala, 	PAL0, 3, "Kulala",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ &SPR_Jelly, 	PAL0, 3, "Jelly",
-		&ai_op2flip_onCreate, &ai_jelly_onUpdate, &ai_default_onState, &ai_jelly_onHurt },
+		NULL, &ai_jelly_onUpdate, &ai_default_onState, NULL },
 	/* 0x060 (96) */
 	{ &SPR_Fan, 	PAL1, 3, "Fan (Left)",
 		&ai_fan_onCreate, &ai_fan_onUpdate, NULL, NULL },

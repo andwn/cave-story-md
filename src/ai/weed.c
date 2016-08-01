@@ -10,53 +10,153 @@
 #include "camera.h"
 #include "system.h"
 
-//u8 jellyFlag = 0;
-
-void ai_jelly_onCreate(Entity *e) {
-	/*
-	e->x_next = e->x;
-	e->y_next = e->y;
-	e->state_time = (random() % 20) + 11;
-	e->x_speed = e->direction ? -0x200 : 0x200;
-	* */
-	//jellyFlag = !jellyFlag;
-	//e->state_time = (system_get_frame() + jellyFlag) % 2;
+void ai_jelly_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0:
+			e->state_time = random() % 20;
+			e->x_mark = e->x;
+			e->y_mark = e->y;
+			if(e->eflags & NPC_OPTION2) e->direction = 1;
+			e->x_speed = e->direction ? 0x200 : -0x200;
+			e->state = 1;
+		case 1:
+			if(e->state_time == 0) {
+				e->state = 10;
+			} else {
+				e->state_time--;
+				break;
+			}
+		case 10:
+			if(++e->state_time > 10) {
+				e->state_time = 0;
+				e->state = 11;
+			}
+		break;
+		
+		case 11:
+			if(++e->state_time == 12) {
+				e->x_speed += e->direction ? 0x100 : -0x100;
+				e->y_speed -= 0x200;
+			} else if(e->state_time > 16) {
+				e->state = 12;
+			}
+		break;
+		
+		case 12:
+			e->state_time++;
+			if(e->y > e->y_mark && e->state_time > 10) {
+				e->state_time = 0;
+				e->state = 10;
+			}
+		break;
+	}
+	e->direction = (e->x < e->x_mark);
+	e->y_speed += 0x20;
+	LIMIT_X(0x100);
+	LIMIT_Y(0x200);
+	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(collide_stage_leftwall(e)) e->direction = 1;
+	if(collide_stage_rightwall(e)) e->direction = 0;
+	if(collide_stage_floor(e)) e->y_speed = -0x200;
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
-void ai_jelly_onUpdate(Entity *e) {
-	/*
-	if(e->state == 0) {
-		if(--e->state_time == 0) {
-			SPR_SAFEFRAME(e->sprite, 0);
-			ENTITY_SET_STATE(e, 1, 0);
-		}
-	} else if(e->state == 1) {
-		if(++e->state_time > 15) {
-			ENTITY_SET_STATE(e, 2, 0);
-		} else if(e->state_time > 10) {
-			e->x_speed += e->direction ? 0x100 : -0x100;
-			e->y_speed -= 0x200;
+void ai_kulala_onUpdate(Entity *e) {
+	switch(e->state) {
+		case 0:		// frozen/in stasis. waiting for player to shoot.
+			SPR_SAFEANIM(e->sprite, 4);
+			if(e->damage_time) {
+				camera_shake(30);
+				e->state = 10;
+				SPR_SAFEANIM(e->sprite, 0);
+				e->state_time = 0;
+			}
+		break;
+		
+		case 10:	// falling
+			//e->eflags |= FLAG_SHOOTABLE;
+			e->eflags &= ~NPC_INVINCIBLE;
+			
+			if(++e->state_time > 40) {
+				e->state_time = 0;
+				e->state = 11;
+			}
+		break;
+		
+		case 11:	// animate thrust
+			e->state_time++;
+			if(e->state_time % 5 == 0) {
+				u8 frame = e->sprite->animInd;
+				SPR_SAFEANIM(e->sprite, ++frame);
+				if(frame >= 3) {
+					e->state = 12;
+					e->state_time = 0;
+				}
+			}
+		break;
+		
+		case 12:	// thrusting upwards
+			e->y_speed = -0x155;
+			if(++e->state_time > 20) {
+				e->state = 10;
+				SPR_SAFEANIM(e->sprite, 0);
+				e->state_time = 0;
+			}
+		break;
+		
+		case 20:	// shot/freeze over/go invulnerable
+			SPR_SAFEANIM(e->sprite, 4);
+			e->x_speed >>= 1;
+			e->y_speed += 0x20;
+			
+			if(!e->damage_time) {
+				e->state = 10;
+				SPR_SAFEANIM(e->sprite, 0);
+				e->state_time = 30;
+			}
+		break;
+	}
+	
+	if(e->damage_time) {
+		// x_mark unused so use it as a second timer
+		if(++e->x_mark > 12) {
+			e->state = 20;
+			SPR_SAFEANIM(e->sprite, 4);
+			//e->eflags &= ~NPC_SHOOTABLE;
+			e->eflags |= NPC_INVINCIBLE;
 		}
 	} else {
-		if(++e->state_time > 10 && e->y > e->y_next) {
-			ENTITY_SET_STATE(e, 1, 0);
+		e->x_mark = 0;
+	}
+	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
+	if(e->state >= 10) {
+		e->y_speed += 0x10;
+		if(collide_stage_floor(e)) e->y_speed = -0x300;
+		
+		// Unused y_mark for third timer
+		if(collide_stage_leftwall(e)) { e->y_mark = 50; e->direction = 1; }
+		if(collide_stage_rightwall(e)) { e->y_mark = 50; e->direction = 0; }
+		
+		if(e->y_mark > 0) {
+			e->y_mark--;
+			e->x_speed += e->direction ? 0x80 : -0x80;
+		} else {
+			e->y_mark = 50;
+			FACE_PLAYER(e);
 		}
 	}
-	e->direction = e->x < e->x_next;
-	e->y_speed += 0x20;
-	e->x += e->x_speed;
-	e->y += e->y_speed;
-	* */
-	//e->state_time++;
-	// Blink in large jelly section
-	//SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 2) ? AUTO_FAST : HIDDEN);
-}
-
-void ai_jelly_onHurt(Entity *e) {
-	/*
-	e->x_speed /= 2;
-	e->y_speed /= 2;
-	* */
+	
+	LIMIT_X(0x100);
+	LIMIT_Y(0x300);
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_mannan_onUpdate(Entity *e) {
@@ -342,5 +442,67 @@ void ai_hey_onUpdate(Entity *e) {
 			e->state_time = 0;
 		}
 	break;
+	}
+}
+
+void ai_motorbike_onUpdate(Entity *e) {
+
+	switch(e->state) {
+		case 0:		// parked
+		break;
+		
+		case 10:	// kazuma and booster mounted
+			e->alwaysActive = true;
+			e->y -= 0x400;
+			//SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+			e->state++;
+		break;
+		
+		case 20:	// kazuma and booster start the engine
+			e->state = 21;
+			e->state_time = 1;
+			e->x_mark = e->x;
+			e->y_mark = e->y;
+		case 21:
+			e->x = e->x_mark + 0x200 - (random() % 0x400);
+			e->y = e->y_mark + 0x200 - (random() % 0x400);
+			if(++e->state_time > 30) {
+				e->state = 30;
+			}
+		break;
+		
+		case 30:	// kazuma and booster take off
+			e->state = 31;
+			e->state_time = 1;
+			e->x_speed = -0x800;
+			e->y_mark = e->y;
+			sound_play(SND_MISSILE_HIT, 5);
+		case 31:
+			e->x_speed += 0x20;
+			e->state_time++;
+			e->y = e->y_mark + 0x200 - (random() % 0x400);
+			if (e->state_time > 10)  e->direction = 1;
+			if (e->state_time > 200) e->state = 40;
+		break;
+		
+		case 40:		// flying away (fast out-of-control)
+			e->state = 41;
+			e->state_time = 2;
+			e->direction = 0;
+			e->y -= pixel_to_sub(48);		// move up...
+			e->x_speed = -0x1000;		// ...and fly fast
+		case 41:
+			e->state_time += 2;	// makes exhaust sound go faster
+			if(e->state_time > 1200) e->state = STATE_DELETE;
+		break;
+	}
+	
+	if(e->state >= 20 && (e->state_time & 3) == 0) {
+		sound_play(SND_FIREBALL, 5);
+		// make exhaust puffs, and make them go out horizontal
+		// instead of straight up as this effect usually does
+		//Caret *puff = effect(o->ActionPointX(), o->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
+		//puff->yinertia = 0;
+		//puff->xinertia = (o->dir == LEFT) ? 0x280 : -0x280;
 	}
 }
