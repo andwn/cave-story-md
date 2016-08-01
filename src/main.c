@@ -30,7 +30,7 @@
 
 int main() {
 	//system_verifychecksum();
-    VDP_init();
+    //VDP_init();
     SYS_disableInts();
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it

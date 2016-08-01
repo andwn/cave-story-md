@@ -242,14 +242,15 @@ void ai_frog_onUpdate(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 
-			// Balfrog sets OPTION2
-			if(e->eflags & NPC_OPTION2) {
+			// Balfrog sets OPTION1
+			if(e->eflags & NPC_OPTION1) {
 				e->direction = random() & 1;
 				e->eflags |= NPC_IGNORESOLID;
 
 				e->state = 3;
 				SPR_SAFEANIM(e->sprite, 1);
 			} else {
+				e->grounded = true;
 				e->eflags &= ~NPC_IGNORESOLID;
 				e->state = 1;
 			}
@@ -279,7 +280,7 @@ void ai_frog_onUpdate(Entity *e) {
 				e->direction = 0;
 				e->x_speed = -e->x_speed;
 			}
-			if ((e->grounded = collide_stage_floor(e))) {
+			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 0;
 				SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
@@ -321,7 +322,7 @@ void ai_frog_onUpdate(Entity *e) {
 void ai_hey_onUpdate(Entity *e) {
 	switch(e->state) {
 	case 0:
-		e->y += 8;
+		e->y -= 16;
 		e->x += 8;
 		e->state = 1;
 		e->state_time = 0;
