@@ -140,6 +140,8 @@ void ai_batVertical_onUpdate(Entity *e);
 void ai_batHang_onCreate(Entity *e);
 void ai_batHang_onUpdate(Entity *e);
 
+void ai_batCircle_onUpdate(Entity *e);
+
 /* Curly - curly.c */
 
 void ai_curly_onUpdate(Entity *e);
@@ -269,6 +271,8 @@ void ai_gkeeper_onUpdate(Entity *e);
 void ai_jelly_onUpdate(Entity *e);
 //void ai_jelly_onHurt(Entity *e);
 
+void ai_kulala_onUpdate(Entity *e);
+
 void ai_mannan_onUpdate(Entity *e);
 void ai_mannan_onState(Entity *e);
 void ai_mannan_onHurt(Entity *e);
@@ -288,6 +292,8 @@ void ai_press_onUpdate(Entity *e);
 void ai_frog_onUpdate(Entity *e);
 
 void ai_hey_onUpdate(Entity *e);
+
+void ai_motorbike_onUpdate(Entity *e);
 
 /* Sand Zone - sand.c */
 
