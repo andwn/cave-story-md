@@ -104,14 +104,17 @@ void ai_polish_onUpdate(Entity *e) {
 	// Split after 20 damage
 	if(e->health <= 100) {
 		entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, OBJ_POLISHBABY, 0, 0)->x -= 0x1600;
+				0, 0, OBJ_POLISHBABY, 0, 0)->x -= 0x1000;
 		entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, OBJ_POLISHBABY, 0, 1)->x += 0x1600;
+				0, 0, OBJ_POLISHBABY, 0, 1)->x += 0x1000;
 		e->state = STATE_DELETE;
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(e->deathSound, 5);
 		return;
 	}
+	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	
 	switch(e->state) {
 		case 0:		// initilization
@@ -232,7 +235,10 @@ void ai_polish_onUpdate(Entity *e) {
 	LIMIT_X(POLISH_SPEED);
 	LIMIT_Y(POLISH_SPEED);
 	
-	e->direction = 1;
+	e->x = e->x_next;
+	e->y = e->y_next;
+	
+	e->direction = 0;
 }
 
 void ai_polishBaby_onUpdate(Entity *e) {
@@ -249,6 +255,10 @@ void ai_polishBaby_onUpdate(Entity *e) {
 			e->y_speed = (random() % 0x100) - 0x300;
 		}
 	}
+	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
 	// Collide functions set speed to 0. Remember using mark vars
 	e->x_mark = e->x_speed;
 	e->y_mark = e->y_speed;
@@ -256,10 +266,12 @@ void ai_polishBaby_onUpdate(Entity *e) {
 	if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = -e->x_mark;
 	if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -e->y_mark;
 	if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = -e->y_mark;
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_sandcroc_onUpdate(Entity *e) {
-	//int pbottom, crocbottom;
 	switch(e->state) {
 		case 0:
 			e->state = 1;
@@ -338,9 +350,11 @@ void ai_sandcroc_onUpdate(Entity *e) {
 		break;
 	}
 	LIMIT_Y(0x100);
-	
 	// these guys (from oside) don't track
 	if(e->type == OBJ_SANDCROC_OSIDE) e->x_speed = 0;
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 
@@ -368,22 +382,40 @@ void ai_sunstone_onUpdate(Entity *e) {
 }
 
 void ai_armadillo_onUpdate(Entity *e) {
+	if(!e->grounded) e->y_speed += 0x40;
+	LIMIT_Y(0x5ff);
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 			FACE_PLAYER(e);
+			SPR_SAFEHFLIP(e->sprite, e->direction);
 			e->state = 1;
 		case 1:
-			if(collide_stage_leftwall(e) && !e->direction) e->direction = 1;
-			if(collide_stage_rightwall(e) && e->direction) e->direction = 0;
+			if(collide_stage_leftwall(e) && !e->direction) {
+				e->direction = 1;
+				SPR_SAFEHFLIP(e->sprite, e->direction);
+			}
+			if(collide_stage_rightwall(e) && e->direction) {
+				e->direction = 0;
+				SPR_SAFEHFLIP(e->sprite, e->direction);
+			}
 			MOVE_X(0x100);
 		break;
 	}
-	
-	e->y_speed += 0x40;
-	LIMIT_Y(0x5ff);
+	if(!e->grounded) {
+		e->grounded = collide_stage_floor(e);
+	} else {
+		e->grounded = collide_stage_floor_grounded(e);
+	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_crow_onUpdate(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
 	switch(e->state) {
 		case 0:
 		{
@@ -440,9 +472,14 @@ void ai_crow_onUpdate(Entity *e) {
 			LIMIT_Y(0x5ff);
 		break;
 	}
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_skullhead_onUpdate(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 			e->state = 1;
@@ -478,9 +515,14 @@ void ai_skullhead_onUpdate(Entity *e) {
 	
 	e->y_speed += 0x40;
 	LIMIT_Y(0x5ff);
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_skelShot_onUpdate(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	// bounce off walls
 	if((e->x_speed < 0 && collide_stage_leftwall(e)) || 
 		(e->x_speed > 0 && collide_stage_rightwall(e))) {
@@ -509,10 +551,15 @@ void ai_skelShot_onUpdate(Entity *e) {
 	if(e->state_time >= 10) {
 		e->state = STATE_DELETE;
 	}
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 // curly's mimiga's
 void ai_curlys_mimigas(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:		// init/set initial anim state
 			if(e->type == OBJ_MIMIGAC1) {
@@ -626,4 +673,7 @@ void ai_curlys_mimigas(Entity *e) {
 	e->y_speed += 0x20;
 	LIMIT_Y(0x5ff);
 	LIMIT_X(0x1ff);
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }

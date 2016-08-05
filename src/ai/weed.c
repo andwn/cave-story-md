@@ -402,6 +402,7 @@ void ai_frog_onUpdate(Entity *e) {
 
 		if (dojump) {
 			FACE_PLAYER(e);
+			SPR_SAFEHFLIP(e->sprite, e->direction);
 			e->state = 10;
 			SPR_SAFEANIM(e->sprite, 1);
 			e->y_speed = -0x5ff;
