@@ -23,30 +23,30 @@
     - [ ] Animate Malco
     - [ ] Animate Kazuma
     - [ ] Animate Booster
-    - [ ] Animate Pink Rocket
-    - [ ] AI for Circling Bats
-    - [ ] AI for Jellies
-    - [ ] AI for Big Jellyfish
-    - [ ] AI for Frog
+    - [x] Animate Pink Rocket
+    - [x] AI for Circling Bats
+    - [x] AI for Jellies
+    - [x] AI for Big Jellyfish
+    - [x] AI for Frog
     - [ ] AI for Ravil
     - [ ] Make Balfrog drop 
   - [x] Sand Zone
-    - [ ] Animate Jenka
+    - [x] Animate Jenka
     - [ ] Animate Puppies
-    - [ ] Animate Mimigas in the Bar
+    - [x] Animate Mimigas in the Bar
     - [ ] Animate Doctor
     - [ ] Damage tiles
     - [ ] Fix whatever King is supposed to do
-    - [ ] AI for Curly Boss
-    - [ ] AI for that enemy that splits into more enemies
-    - [ ] AI for Sand Croc
+    - [x] AI for Curly Boss
+    - [x] AI for Polish
+    - [x] AI for Sand Croc
     - [ ] AI for Omega
-    - [ ] AI for Skeleton Head
+    - [x] AI for Skeleton Head
     - [ ] AI for Skeleton Head with Legs
-    - [ ] AI for Bird
+    - [x] AI for Bird
     - [ ] AI for Bird Carrying Skeleton Head
-    - [ ] AI for Armadillo
-    - [ ] AI for Toroko Boss
+    - [x] AI for Armadillo
+    - [x] AI for Toroko Boss
   - [ ] Labyrinth
     - [ ] Need to be able to equip the booster
     - [ ] Animate Moving Blocks
@@ -88,7 +88,7 @@
   - [x] Polar Star
   - [x] Missiles
   - [x] Fireball
-  - [ ] Machine Gun
+  - [x] Machine Gun
   - [ ] Bubbler
   - [ ] Blade
   - [ ] Snake

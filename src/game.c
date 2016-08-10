@@ -154,7 +154,7 @@ u8 game_main(bool load) {
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
 	}
 	
-	bool paused = false;
+	paused = false;
 	u8 ending = 0;
 	
 	while(true) {

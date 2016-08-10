@@ -7,6 +7,7 @@
 #include "system.h"
 #include "tables.h"
 #include "resources.h"
+#include "gamemode.h"
 
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
@@ -74,7 +75,7 @@ void window_open(u8 mode) {
 	if(showingFace > 0) {
 		window_draw_face(showingFace);
 	}
-	VDP_setWindowPos(0, 244);
+	if(!paused) VDP_setWindowPos(0, 244);
 	windowOpen = true;
 }
 
@@ -104,7 +105,7 @@ void window_clear_text() {
 }
 
 void window_close() {
-	VDP_setWindowPos(0, 0);
+	if(!paused) VDP_setWindowPos(0, 0);
 	showingItem = 0;
 	SPR_SAFERELEASE(itemWinSpr);
 	SPR_SAFERELEASE(itemSpr);
