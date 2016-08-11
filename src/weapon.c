@@ -274,7 +274,7 @@ void bullet_update_fireball(Bullet *b) {
 	if(block_below == 0x41 || block_below == 0x43) {
 		b->y -= sub_to_pixel(b->y + 0x800) % 16;
 		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed > -0x400) b->y_speed = -0x400;
+		if(b->y_speed > -0x300) b->y_speed = -0x300;
 	} else if(block_below & BLOCK_SLOPE) {
 		u8 index = block_below & 0xF;
 		if(index >= 4) {
@@ -284,12 +284,12 @@ void bullet_update_fireball(Bullet *b) {
 			if(overlap >= 0) {
 				b->y -= overlap;
 				b->y_speed = -b->y_speed;
-				if(b->y_speed > -0x400) b->y_speed = -0x400;
+				if(b->y_speed > -0x300) b->y_speed = -0x300;
 			}
 		}
 	} else if(block_above == 0x41 || block_above == 0x43) {
 		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed < 0x300) b->y_speed = 0x300;
+		if(b->y_speed < 0x200) b->y_speed = 0x200;
 	} else {
 		b->y_speed += GRAVITY;
 		if(b->y_speed > 0x600) b->y_speed = 0x600;

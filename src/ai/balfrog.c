@@ -130,6 +130,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		case STATE_READY:
 			e->state++;
 			SPR_SAFEANIM(e->sprite, 2);
+			SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 		break;
 		
 		case STATE_FIGHTING:
@@ -337,6 +338,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 			//
 			// 10 frames until starts to fall
 			// 14 frames until changes to landed frame
+			SPR_SAFEVISIBILITY(balrog->sprite, AUTO_FAST);
 			if(balrog != NULL) {
 				balrog->y_speed += 0x40;
 				balrog->y_next = balrog->y + balrog->y_speed;
