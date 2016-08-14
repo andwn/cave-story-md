@@ -150,7 +150,7 @@ void ai_curly_onState(Entity *e);
 void ai_curlyBoss_onUpdate(Entity *e);
 void ai_curlyBoss_onState(Entity *e);
 
-void ai_curlyBossShot(Entity *e);
+void ai_curlyBossShot_onUpdate(Entity *e);
 
 /* Egg Corridor - eggs.c */
 

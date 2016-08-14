@@ -257,7 +257,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_CurlyMimi, PAL3, 3, "Bar Mimiga (Enemy)",
 		NULL, NULL, &ai_default_onState, NULL },
 	{ &SPR_MGunB1, 	PAL0, 3, "Curly Projectile",
-		NULL, NULL, NULL, NULL },
+		NULL, &ai_curlyBossShot_onUpdate, NULL, NULL },
 	{ &SPR_Sunstone, PAL2, 3, "Sunstone",
 		&ai_sunstone_onCreate, NULL, NULL, NULL },
 	{ NULL, 		PAL0, 3, "Hidden Powerup",

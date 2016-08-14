@@ -168,6 +168,8 @@ static void curlyboss_fire(Entity *o, u8 dir)
 
 void ai_curlyBoss_onUpdate(Entity *o) 
 {
+
+	//o->y_next = o->y + o->y_speed;
 	switch(o->state) 
 	{
 		case CURLYB_FIGHT_START:
@@ -265,29 +267,34 @@ void ai_curlyBoss_onUpdate(Entity *o)
 		{
 			o->state_time = 0;
 			o->state = CURLYB_SHIELD;
-			SPR_SAFEANIM(o->sprite, 2);
+			SPR_SAFEANIM(o->sprite, 3);
 			o->eflags &= ~NPC_SHOOTABLE;
 			o->eflags |= NPC_INVINCIBLE;
 			o->x_speed = 0;
 		}
 	}
 	
-	o->x += o->x_speed;
-	
 	if (o->x_speed > CURLYB_WALK_SPEED) o->x_speed = CURLYB_WALK_SPEED;
 	if (o->x_speed < -CURLYB_WALK_SPEED) o->x_speed = -CURLYB_WALK_SPEED;
-	
-	//o->y_speed += 0x40;
-	//LIMITY(0x5ff);
+
+	o->x_next = o->x + o->x_speed;
+
+	collide_stage_leftwall(o);
+	collide_stage_rightwall(o);
+
+	o->x = o->x_next;
 }
 
 void ai_curlyBoss_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
+		SPR_SAFERELEASE(e->sprite);
 		entity_default(e, OBJ_CURLY, 0);
 		entity_sprite_create(e);
 		e->x -= 8;
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->state = 0;
+		entities_clear_by_type(OBJ_CURLYBOSS_SHOT);
+		tsc_call_event(e->event);
 	}
 }
 
