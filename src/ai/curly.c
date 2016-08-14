@@ -42,10 +42,10 @@ void ai_curly_onUpdate(Entity *e) {
 		e->grounded = collide_stage_floor(e);
 		if(e->grounded && e->state == 30) ENTITY_SET_STATE(e, 31, 0);
 	}
-	//if(e->state == 10 && e->direction ? 
-	//	(e->x > player.x - block_to_sub(2)) : (e->x < player.x + block_to_sub(2))) {
-	//	ENTITY_SET_STATE(e, 0, 0);
-	//}
+	if(e->state == 10 && (e->direction ?
+		(e->x > player.x - block_to_sub(2)) : (e->x < player.x + block_to_sub(2)))) {
+		ENTITY_SET_STATE(e, 0, 0);
+	}
 	e->x = e->x_next;
 	e->y = e->y_next;
 }

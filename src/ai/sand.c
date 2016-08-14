@@ -116,6 +116,11 @@ void ai_polish_onUpdate(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
+	bool blockl = collide_stage_leftwall(e);
+	bool blockr = collide_stage_rightwall(e);
+	bool blocku = collide_stage_ceiling(e);
+	bool blockd = collide_stage_floor(e);
+
 	switch(e->state) {
 		case 0:		// initilization
 			if(e->eflags & NPC_OPTION2) {
@@ -129,51 +134,51 @@ void ai_polish_onUpdate(Entity *e) {
 		
 		case POLISH_CCW_LEFT:	// traveling left on ceiling
 			e->y_speed -= POLISH_ACCEL;
-			if (e->y_speed < 0 && collide_stage_ceiling(e))
+			if (e->y_speed < 0 && blocku)
 			{
 				e->y_speed = POLISH_BOUNCE;
 				e->x_speed -= POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_leftwall(e)) e->state = POLISH_CCW_DOWN;
+			if (blockl) e->state = POLISH_CCW_DOWN;
 		break;
 		
 		case POLISH_CCW_UP:	// traveling up right wall
 		{
 			e->x_speed += POLISH_ACCEL;
-			if (e->x_speed > 0 && collide_stage_rightwall(e))
+			if (e->x_speed > 0 && blockr)
 			{
 				e->x_speed = -POLISH_BOUNCE;
 				e->y_speed -= POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_ceiling(e)) e->state = POLISH_CCW_LEFT;
+			if (blocku) e->state = POLISH_CCW_LEFT;
 		}
 		break;
 		
 		case POLISH_CCW_RIGHT:	// traveling right on floor
 		{
 			e->y_speed += POLISH_ACCEL;
-			if (e->y_speed > 0 && collide_stage_floor(e))
+			if (e->y_speed > 0 && blockd)
 			{
 				e->y_speed = -POLISH_BOUNCE;
 				e->x_speed += POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_rightwall(e)) e->state = POLISH_CCW_UP;
+			if (blockr) e->state = POLISH_CCW_UP;
 		}
 		break;
 		
 		case POLISH_CCW_DOWN:	// traveling down left wall
 		{
 			e->x_speed -= POLISH_ACCEL;
-			if (e->x_speed < 0 && collide_stage_leftwall(e))
+			if (e->x_speed < 0 && blockl)
 			{
 				e->x_speed = POLISH_BOUNCE;
 				e->y_speed += POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_floor(e)) e->state = POLISH_CCW_RIGHT;
+			if (blockd) e->state = POLISH_CCW_RIGHT;
 		}
 		break;
 		
@@ -182,52 +187,52 @@ void ai_polish_onUpdate(Entity *e) {
 		case POLISH_CW_LEFT:		// traveling left on floor
 		{
 			e->y_speed += POLISH_ACCEL;
-			if (e->y_speed > 0 && collide_stage_floor(e))
+			if (e->y_speed > 0 && blockd)
 			{
 				e->y_speed = -POLISH_BOUNCE;
 				e->x_speed -= POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_leftwall(e)) e->state = POLISH_CW_UP;
+			if (blockl) e->state = POLISH_CW_UP;
 		}
 		break;
 		
 		case POLISH_CW_UP:		// traveling up left wall
 		{
 			e->x_speed -= POLISH_ACCEL;
-			if (e->x_speed < 0 && collide_stage_leftwall(e))
+			if (e->x_speed < 0 && blockl)
 			{
 				e->x_speed = POLISH_BOUNCE;
 				e->y_speed -= POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_ceiling(e)) e->state = POLISH_CW_RIGHT;
+			if (blocku) e->state = POLISH_CW_RIGHT;
 		}
 		break;
 		
 		case POLISH_CW_RIGHT:		// traveling right on ceiling
 		{
 			e->y_speed -= POLISH_ACCEL;
-			if (e->y_speed < 0 && collide_stage_ceiling(e))
+			if (e->y_speed < 0 && blocku)
 			{
 				e->y_speed = POLISH_BOUNCE;
 				e->x_speed += POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_rightwall(e)) e->state = POLISH_CW_DOWN;
+			if (blockr) e->state = POLISH_CW_DOWN;
 		}
 		break;
 		
 		case POLISH_CW_DOWN:		// traveling down right wall
 		{
 			e->x_speed += POLISH_ACCEL;
-			if (e->x_speed > 0 && collide_stage_rightwall(e))
+			if (e->x_speed > 0 && blockr)
 			{
 				e->x_speed = -POLISH_BOUNCE;
 				e->y_speed += POLISH_BOUNCE;
 			}
 			
-			if (collide_stage_floor(e)) e->state = POLISH_CW_LEFT;
+			if (blockd) e->state = POLISH_CW_LEFT;
 		}
 		break;
 	}
@@ -241,7 +246,7 @@ void ai_polish_onUpdate(Entity *e) {
 	e->direction = 0;
 }
 
-void ai_polishBaby_onUpdate(Entity *e) {
+void ai_baby_onUpdate(Entity *e) {
 	if(!e->state) {
 		e->state = 1;
 		if(random() & 1) {
@@ -276,12 +281,24 @@ void ai_sandcroc_onUpdate(Entity *e) {
 		case 0:
 			e->state = 1;
 			e->state_time = 0;
+			e->x_mark = e->x;
 			e->y_mark = e->y;
 			e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 			e->nflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		case 1:
 			// track player invisibly underground
-			e->x_speed = (e->x < player.x) ? 0x400:-0x400;
+			if(e->type != OBJ_SANDCROC_OSIDE) {
+				e->x_speed = (e->x < player.x) ? 0x400:-0x400;
+				e->x_next = e->x + e->x_speed;
+				e->y_next = e->y - 0x200;
+				collide_stage_leftwall(e);
+				collide_stage_rightwall(e);
+				e->x = e->x_next;
+			}
+			//if((e->x_speed > 0 && e->x > e->x_mark + 0x800) ||
+			//		(e->x_speed < 0 && e->x < e->x_mark - 0x800)) {
+			//	e->x_speed = 0;
+			//}
 			
 			if(PLAYER_DIST_X(pixel_to_sub(19))) {
 				// check if bottoms of player and croc are near
@@ -292,8 +309,11 @@ void ai_sandcroc_onUpdate(Entity *e) {
 					e->state = 2;
 					e->state_time = 0;
 					sound_play(SND_JAWS, 5);
+					SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 					SPR_SAFEANIM(e->sprite, 1);
 				}
+			} else {
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
 		break;
 		
@@ -323,9 +343,11 @@ void ai_sandcroc_onUpdate(Entity *e) {
 		
 		case 4:		// retreat
 			e->y += 0x280;
+			e->eflags &= ~(NPC_SOLID);
 			
 			if (++e->state_time == 30) {
-				e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE);
+				e->eflags &= ~(NPC_SHOOTABLE);
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 5;
 				e->state_time = 0;
 			}
@@ -349,12 +371,12 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			}
 		break;
 	}
-	LIMIT_Y(0x100);
+	//LIMIT_Y(0x100);
 	// these guys (from oside) don't track
-	if(e->type == OBJ_SANDCROC_OSIDE) e->x_speed = 0;
+	//if(e->type == OBJ_SANDCROC_OSIDE) e->x_speed = 0;
 	
-	e->x += e->x_speed;
-	e->y += e->y_speed;
+	//e->x += e->x_speed;
+	//e->y += e->y_speed;
 }
 
 
@@ -673,6 +695,8 @@ void ai_curlys_mimigas(Entity *e) {
 	e->y_speed += 0x20;
 	LIMIT_Y(0x5ff);
 	LIMIT_X(0x1ff);
+	if(!e->grounded) e->grounded = collide_stage_floor_grounded(e);
+	else e->grounded = collide_stage_floor(e);
 	
 	e->x = e->x_next;
 	e->y = e->y_next;

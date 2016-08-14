@@ -311,12 +311,23 @@ void ai_puppy_onUpdate(Entity *e);
 void ai_puppyCarry_onCreate(Entity *e);
 void ai_puppyCarry_onUpdate(Entity *e);
 
+void ai_polish_onUpdate(Entity *e);
+void ai_baby_onUpdate(Entity *e);
+
+void ai_sandcroc_onUpdate(Entity *e);
+
+void ai_skullhead_onUpdate(Entity *e);
+
+void ai_crow_onUpdate(Entity *e);
+
+void ai_curlys_mimigas(Entity *e);
+
+void ai_armadillo_onUpdate(Entity *e);
+
 void ai_torokoBoss_onCreate(Entity *e);
 void ai_torokoBoss_onUpdate(Entity *e);
 void ai_torokoBoss_onState(Entity *e);
-
 void ai_torokoBlock_onUpdate(Entity *e);
-
 void ai_torokoFlower_onUpdate(Entity *e);
 
 void ai_jenka_onCreate(Entity *e);

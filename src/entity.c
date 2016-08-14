@@ -220,7 +220,7 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if((e->eflags|e->nflags) & (NPC_SOLID | NPC_SPECIALSOLID)) {
+		if((e->eflags|e->nflags) & (NPC_SPECIALSOLID)) {
 			collision = entity_react_to_collision(&player, e, true);
 			if(collision.bottom) {
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
@@ -229,6 +229,9 @@ void entities_update() {
 				} else {
 					playerPlatform = e;
 				}
+				player.y_next = player.y;
+				collide_stage_ceiling(&player);
+				player.y = player.y_next;
 			// Double check stage collision to avoid clipping through walls
 			} else if(collision.top) {
 				player.y_next = player.y;
@@ -239,6 +242,37 @@ void entities_update() {
 				collide_stage_rightwall(&player);
 				player.x = player.x_next;
 			} else if(collision.right) {
+				player.x_next = player.x;
+				collide_stage_leftwall(&player);
+				player.x = player.x_next;
+			}
+		} // "Smushy" Solid Entities
+		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
+			collision = entity_react_to_collision(&player, e, true);
+			if(collision.bottom) {
+				player.y += (collision.bottom - 1);
+				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
+					player.y_speed = pixel_to_sub(-1);
+					player.grounded = false;
+				} else {
+					playerPlatform = e;
+				}
+				player.y_next = player.y;
+				collide_stage_ceiling(&player);
+				player.y = player.y_next;
+			// Double check stage collision to avoid clipping through walls
+			} else if(collision.top) {
+				player.y -= (collision.top - 1);
+				player.y_next = player.y;
+				collide_stage_floor(&player);
+				player.y = player.y_next;
+			} else if(collision.left) {
+				player.x += (collision.left - 1);
+				player.x_next = player.x;
+				collide_stage_rightwall(&player);
+				player.x = player.x_next;
+			} else if(collision.right) {
+				player.x -= (collision.right - 1);
 				player.x_next = player.x;
 				collide_stage_leftwall(&player);
 				player.x = player.x_next;
