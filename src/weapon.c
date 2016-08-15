@@ -82,7 +82,7 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
-		b->y = player.y + pixel_to_sub(4);
+		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
 		b->y_speed = 0;
 	}
