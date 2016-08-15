@@ -108,6 +108,8 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 	block = entity_create(0, 0, 0, 0, OBJ_TOROKO_BLOCK, 0, o->direction);	\
 	block->x = o->x + (o->direction ? 0x100 : -0x100); \
 	block->y = o->y - 0x200; \
+	block->x_speed = o->x_speed; \
+	block->y_speed = o->y_speed; \
 	block->eflags &= ~NPC_INVINCIBLE;		\
 	block->nflags &= ~NPC_INVINCIBLE;		\
 }
@@ -116,9 +118,10 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 	block->x += pixel_to_sub(16) * (o->direction ? 1 : -1);	\
 	block->y += pixel_to_sub(9);	\
 	block->eflags |= NPC_INVINCIBLE;		\
-	block->x_speed = o->direction ? 0x600 : -0x600;		\
-	block->y_speed = (o->y - player.y) - abs(o->x - player.x) / 4; \
-	if(block->y_speed > 0x300) block->y_speed = 0x300; \
+	block->x_speed = o->direction ? 0x400 : -0x400;		\
+	block->y_speed = (o->y - player.y) / 16; \
+	if(block->y_speed > 0x200) block->y_speed = 0x200; \
+	if(block->y_speed < -0x200) block->y_speed = -0x200; \
 	sound_play(SND_EM_FIRE, 5);		\
 }
 
@@ -388,7 +391,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 
 void ai_torokoBoss_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
-		e->state = STATE_DELETE;
+		//e->state = STATE_DELETE;
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->nflags &= ~NPC_SHOOTABLE;
 		tsc_call_event(e->event);
@@ -421,50 +424,54 @@ void ai_torokoBlock_onUpdate(Entity *o)
 	}
 }
 
-void ai_torokoFlower_onUpdate(Entity *o)
+void ai_torokoFlower_onUpdate(Entity *e)
 {
-	switch(o->state)
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	switch(e->state)
 	{
 		case 10:
-			o->state = 11;
-			o->state_time = 0;
+			e->state = 11;
+			e->state_time = 0;
 		case 11:
-			if (++o->state_time > 30)
+			if (++e->state_time > 30)
 			{
-				o->state = 12;
-				o->state_time = 0;
+				e->state = 12;
+				e->state_time = 0;
 				//o->frame = 1;
 				//o->animtimer = 0;
 			}
 		break;
 		case 12:
 			//ANIMATE_FWD(8);
-			if (++o->state_time > 30)
+			if (++e->state_time > 30)
 			{
-				o->state = 20;
-				o->y_speed = -0x200;
-				o->x_speed = (o->x > player.x) ? -0x200 : 0x200;
+				e->state = 20;
+				e->y_speed = -0x200;
+				e->x_speed = (e->x > player.x) ? -0x200 : 0x200;
 			}
 		break;
 		
 		case 20:	// falling/jumping
 			//if (o->yinertia > -0x80) o->frame = 4; else o->frame = 3;
-			if ((o->grounded = collide_stage_floor(o)))
+			if ((e->grounded = collide_stage_floor(e)))
 			{
 				//o->frame = 2;
-				o->state = 21;
-				o->state_time = o->x_speed = 0;
+				e->state = 21;
+				e->state_time = e->x_speed = 0;
 				sound_play(SND_THUD, 3);
 			}
 		break;
 		case 21:
-			if (++o->state_time > 10) { 
-				o->state = 10; 
+			if (++e->state_time > 10) {
+				e->state = 10;
 				//o->frame = 0; 
 			}
 		break;
 	}
 	
-	o->y_speed += 0x40;
-	//LIMITY(0x5ff);
+	if(!e->grounded) e->y_speed += 0x40;
+	LIMIT_Y(0x5ff);
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
