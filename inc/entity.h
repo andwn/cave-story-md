@@ -64,6 +64,7 @@ struct Entity {
 	bool alwaysActive; // Guaranteed to never deactivate when true
 	u16 state; // Script state / ANP
 	u16 state_time;
+	u16 state_time2;
 	// This is assumed to be an array of type u16[2], or at least next to each other
 	// in memory (input.h). Index 0 is current joy state, 1 is previous frame's state
 	u16 *controller;
