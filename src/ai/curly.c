@@ -179,6 +179,7 @@ void ai_curlyBoss_onUpdate(Entity *o)
 			o->state_time = (random() % 50) + 50;
 			SPR_SAFEANIM(o->sprite, 0);
 			o->direction = (o->x <= player.x);
+			SPR_SAFEHFLIP(o->sprite, o->direction);
 			o->eflags |= NPC_SHOOTABLE;
 			o->eflags &= ~NPC_INVINCIBLE;
 			o->nflags &= ~NPC_INVINCIBLE;
@@ -197,6 +198,7 @@ void ai_curlyBoss_onUpdate(Entity *o)
 			SPR_SAFEANIM(o->sprite, 1);
 			o->state_time = (random() % 50) + 50;
 			o->direction = (o->x <= player.x);
+			SPR_SAFEHFLIP(o->sprite, o->direction);
 		case CURLYB_WALKING_PLAYER:
 			o->x_speed += o->direction ? CURLYB_WALK_ACCEL : -CURLYB_WALK_ACCEL;
 			
@@ -214,14 +216,14 @@ void ai_curlyBoss_onUpdate(Entity *o)
 		case CURLYB_CHARGE_GUN:
 			o->direction = (o->x <= player.x);
 			
-			if(abs(o->x_speed) >= CURLYB_WALK_ACCEL)
-				o->x_speed -= o->direction ? CURLYB_WALK_ACCEL : -CURLYB_WALK_ACCEL;
+			o->x_speed -= o->x_speed >> 3;
 			
 			SPR_SAFEANIM(o->sprite, 0);
 			if (++o->state_time > 50)
 			{
 				o->state = CURLYB_FIRE_GUN;
 				//o->frame = 0;
+				o->x_speed = 0;
 				o->state_time = 0;
 			}
 		break;
@@ -245,10 +247,11 @@ void ai_curlyBoss_onUpdate(Entity *o)
 				}
 			}
 			
-			if (o->state_time > 30) o->state = 10;
+			if (o->state_time > 30) o->state = CURLYB_FIGHT_START;
 		break;
 		
 		case CURLYB_SHIELD:
+			o->x_speed = 0;
 			//if (++o->frame > 8) o->frame = 7;
 			if (++o->state_time > 30)
 			{

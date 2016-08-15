@@ -596,17 +596,19 @@ void ai_curlys_mimigas(Entity *e) {
 		case 2:		// init stand and blink
 			e->state = 3;
 		case 3:		// stand and blink
-			//o->frame = 0;
+			SPR_SAFEANIM(e->sprite, 0);
 			//randblink(o, 1, 8);
 		break;
 		
 		// sitting mimiga (when facing right)
 		// facing away mimiga (when facing left)
 		case 100:
+			SPR_SAFEANIM(e->sprite, 3);
 			//o->frame = 4;
 		break;
 		
 		case 110:	// sleeping facing left mimiga
+			SPR_SAFEANIM(e->sprite, 6);
 			//o->frame = 7;
 			//ai_zzzz_spawner(o);
 		break;
@@ -630,6 +632,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 14;
 			e->state_time = random() % 50;
 			FACE_PLAYER(e);
+			SPR_SAFEHFLIP(e->sprite, e->direction);
 			SPR_SAFEANIM(e->sprite, 1);
 			// fall thru
 		case 14:
@@ -660,6 +663,11 @@ void ai_curlys_mimigas(Entity *e) {
 			if((e->grounded = collide_stage_floor(e))) {
 				e->x_speed = 0;
 				e->state = 21;
+				if(e->sprite->animInd == 5) {
+					SPR_SAFEANIM(e->sprite, 7);
+				} else {
+					SPR_SAFEANIM(e->sprite, 6);
+				}
 				//if (o->frame==6) o->frame = 7;
 				//			else o->frame = 8;
 				
@@ -684,6 +692,7 @@ void ai_curlys_mimigas(Entity *e) {
 	{	// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
+		SPR_SAFEANIM(e->sprite, (random() & 1) + 4);
 		//e->frame = random(5, 6);
 		
 		e->attack = 0;
