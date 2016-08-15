@@ -896,6 +896,8 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->spriteVFlip = 0;
 	e->state = 0;
 	e->state_time = 0;
+	e->state_time2 = 0;
+	e->linkedEntity = NULL;
 }
 
 bool entity_disabled(Entity *e) {

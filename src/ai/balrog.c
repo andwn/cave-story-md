@@ -319,3 +319,204 @@ void ai_balrogShot_onUpdate(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
+
+#define STATE_CHARGE			10
+#define STATE_JUMP_FIRE			20
+#define STATE_PAUSE				30
+#define STATE_CAUGHT_PLAYER		40
+
+void ai_balrog_boss_missiles(Entity *e)
+{
+	// try to catch player
+	switch(e->state)
+	{
+		case STATE_CHARGE+1:
+		case STATE_JUMP_FIRE+1:
+		{
+			if (PLAYER_DIST_X(12<<9) && PLAYER_DIST_Y2(12<<9, 8<<9))
+			{
+				//balrog_grab_player(e);
+				//hurtplayer(5);
+				e->state = STATE_CAUGHT_PLAYER;
+			}
+		}
+		break;
+	}
+	
+	// main state engine
+	switch(e->state)
+	{
+		case 0:
+		{
+			//e->nxflags |= NXFLAG_FOLLOW_SLOPE;
+			FACE_PLAYER(e);
+			
+			e->state = 1;
+			//e->frame = 0;
+			e->state_time = 0;
+		}
+		case 1:
+		{
+			if (++e->state_time > 30)
+			{
+				e->state = STATE_CHARGE;
+				e->state_time2 ^= 1;	// affects how we react if we miss the player
+			}
+		}
+		break;
+		
+		// charge the player
+		case STATE_CHARGE:
+		{
+			e->state_time = 0;
+			//e->frame = 9;
+			//e->animtimer = 0;
+			e->state++;
+		}
+		case STATE_CHARGE+1:
+		{
+			e->x_speed += e->direction ? 0x20 : -0x20;
+			//walking_animation(o);
+			
+			// stuck against the wall?
+			if ((e->direction == 0 && collide_stage_leftwall(e)) || \
+				(e->direction == 1 && collide_stage_rightwall(e)))
+			{
+				if (++e->x_mark > 5)
+					e->state = STATE_JUMP_FIRE;
+			}
+			else
+			{
+				// Use x_mark instead of timer3
+				e->x_mark = 0;
+			}
+			
+			// he behaves differently after every other time he pauses
+			if (e->state_time2)
+			{
+				if (++e->state_time > 75)
+				{
+					//e->frame = 0;
+					e->state = STATE_PAUSE;
+				}
+			}
+			else
+			{
+				if (++e->state_time > 24)
+					e->state = STATE_JUMP_FIRE;
+			}
+		}
+		break;
+		
+		// jump and fire missiles
+		case STATE_JUMP_FIRE:
+		{
+			e->state++;
+			e->state_time = 0;
+			//e->frame = 3;
+			e->y_speed = -0x5ff;
+		}
+		case STATE_JUMP_FIRE+1:
+		{
+			FACE_PLAYER(e);
+			
+			// fire missiles
+			if (++e->state_time < 30)
+			{
+				if ((e->state_time % 6) == 1)
+				{
+					sound_play(SND_EM_FIRE, 5);
+					
+					//Entity *shot = SpawnEntityAtActionPoint(o, OBJ_BALROG_MISSILE);
+					//shot->dir = e->dir;
+					//shot->xinertia = 0x100;
+				}
+			}
+			
+			// landed?
+			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e)))
+			{
+				//e->frame = 2;
+				e->state = STATE_PAUSE;
+				camera_shake(30);
+			}
+		}
+		break;
+		
+		// stop for a moment
+		case STATE_PAUSE:
+		{
+			e->x_speed *= 4;
+			e->x_speed /= 5;
+			if (e->x_speed != 0) break;
+			
+			e->state = 0;
+		}
+		break;
+		
+		case STATE_CAUGHT_PLAYER:	// caught player
+		{
+			//if (balrog_toss_player_away(o))
+				e->state = 0;
+		}
+		break;
+	}
+	
+	e->y_speed += 0x20;
+	LIMIT_X(0x300);
+	LIMIT_Y(0x5ff);
+}
+
+void ai_balrog_missile(Entity *e)
+{
+	if ((e->direction == 1 && collide_stage_rightwall(e)) || \
+		(e->direction == 0 && collide_stage_leftwall(e)))
+	{
+		//SmokeClouds(o, 3, 0, 0);
+		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+		sound_play(SND_MISSILE_HIT, 5);
+		
+		e->state = STATE_DELETE;
+		return;
+	}
+	
+	if (e->state == 0)
+	{
+		// recoil in oppisite direction
+		e->x_speed = random(-2, -1) << 9;
+		if (e->direction == 0) e->x_speed = -e->x_speed;
+		
+		e->y_speed = random(-2, 0) << 9;
+		
+		e->state = 1;
+	}
+	
+	e->x_speed += e->direction ? 0x20 : -0x20;
+	
+	//if ((++e->state_time2 % 4) == 1)
+	//{
+	//	effect(e->CenterX() - e->x_speed, e->CenterY(), EFFECT_SMOKETRAIL_SLOW);
+	//}
+	
+	// heat-seeking at start, then level out straight
+	if (e->state_time2 < 50)
+	{
+		if (e->y < player.y)
+			e->y_speed += 0x20;
+		else
+			e->y_speed -= 0x20;
+	}
+	else
+	{
+		e->y_speed = 0;
+	}
+	
+	// flash
+	//e->frame ^= 1;
+	
+	if (e->x_speed < -0x400)
+		e->x_speed = -0x600;
+	
+	if (e->x_speed > 0x400)
+		e->x_speed = 0x600;
+}

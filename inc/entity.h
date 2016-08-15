@@ -68,6 +68,8 @@ struct Entity {
 	// This is assumed to be an array of type u16[2], or at least next to each other
 	// in memory (input.h). Index 0 is current joy state, 1 is previous frame's state
 	u16 *controller;
+	// Linked Entity
+	Entity *linkedEntity;
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
