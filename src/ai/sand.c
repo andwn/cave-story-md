@@ -510,7 +510,7 @@ void ai_skullhead_onUpdate(Entity *e) {
 			if(++e->state_time > 8) {
 				e->y_speed = -0x350;
 				e->state = 2;
-				SPR_SAFEANIM(e->sprite, 1);
+				SPR_SAFEANIM(e->sprite, 2);
 				MOVE_X(0x100);
 			} else {
 				break;
@@ -519,12 +519,14 @@ void ai_skullhead_onUpdate(Entity *e) {
 			e->y_speed += 0x40;
 			LIMIT_Y(0x5ff);
 			if(e->y_speed > 0) {
-				SPR_SAFEANIM(e->sprite, 0);
 				if(collide_stage_floor(e)) {
 					e->x_speed = 0;
 					e->y_speed = 0;
 					e->state = 1;
 					e->state_time = 0;
+					SPR_SAFEANIM(e->sprite, 0);
+				} else {
+					SPR_SAFEANIM(e->sprite, 1);
 				}
 			} else {
 				collide_stage_ceiling(e);

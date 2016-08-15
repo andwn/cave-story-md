@@ -257,6 +257,12 @@ void ai_torokoAtk_onCreate(Entity *e);
 void ai_toroko_onUpdate(Entity *e);
 void ai_toroko_onState(Entity *e);
 
+void ai_torokoBoss_onCreate(Entity *e);
+void ai_torokoBoss_onUpdate(Entity *e);
+void ai_torokoBoss_onState(Entity *e);
+void ai_torokoBlock_onUpdate(Entity *e);
+void ai_torokoFlower_onUpdate(Entity *e);
+
 /* Cemetery Enemies - cemetery.c */
 
 void ai_pignon_onUpdate(Entity *e);
@@ -323,12 +329,6 @@ void ai_crow_onUpdate(Entity *e);
 void ai_curlys_mimigas(Entity *e);
 
 void ai_armadillo_onUpdate(Entity *e);
-
-void ai_torokoBoss_onCreate(Entity *e);
-void ai_torokoBoss_onUpdate(Entity *e);
-void ai_torokoBoss_onState(Entity *e);
-void ai_torokoBlock_onUpdate(Entity *e);
-void ai_torokoFlower_onUpdate(Entity *e);
 
 void ai_jenka_onCreate(Entity *e);
 

@@ -96,12 +96,18 @@ void ai_toroko_onState(Entity *e) {
 	}
 }
 
+void ai_torokoBoss_onCreate(Entity *e) {
+	e->spriteAnim = 10;
+}
+
 void ai_torokoBoss_onUpdate(Entity *o) {
 	Entity *block = entity_find_by_type(OBJ_TOROKO_BLOCK);
 
 #define SPAWNBLOCK	\
 {					\
 	block = entity_create(0, 0, 0, 0, OBJ_TOROKO_BLOCK, 0, o->direction);	\
+	block->x = o->x + (o->direction ? 0x100 : -0x100); \
+	block->y = o->y - 0x200; \
 	block->eflags &= ~NPC_INVINCIBLE;		\
 	block->nflags &= ~NPC_INVINCIBLE;		\
 }
@@ -118,9 +124,14 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 
 #define HOLDBRICKTIME		30
 
+	o->x_next = o->x + o->x_speed;
+	o->y_next = o->y + o->y_speed;
+
 	switch(o->state)
 	{
 		case 0:
+			o->y_next -= 0x400;
+			o->grounded = true;
 			o->state = 1;
 			//o->frame = 9;
 			o->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
@@ -129,12 +140,14 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			{
 				o->state_time = 0;
 				o->state = 2;
+				SPR_SAFEANIM(o->sprite, 11);
 				//o->frame = 8;
 			}
 		break;
 		
 		case 2:		// morph into big toroko
 			//ANIMATE(0, 9, 10);
+			SPR_SAFEANIM(o->sprite, (o->state_time & 1) ? 11 : 7);
 			if (++o->state_time > 50)
 			{
 				o->state = 3;
@@ -144,6 +157,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		break;
 		
 		case 3:		// rest a moment, then jump
+			SPR_SAFEANIM(o->sprite, 0);
 			//o->frame = 1;
 			if (++o->state_time > 5)
 			{
@@ -154,12 +168,14 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		
 		case 10:	// wait a moment then ATTACK!!
 			o->state = 11;
+			SPR_SAFEANIM(o->sprite, 0);
 			//o->frame = 0;
 			//o->animtimer = 0;
 			o->state_time = (random() % 110) + 20;
 			o->x_speed = 0;
 		case 11:
 			FACE_PLAYER(o);
+			SPR_SAFEHFLIP(o->sprite, o->direction);
 			//ANIMATE(4, 0, 1);
 			///FIXME:: I think Toroko does not like fireball either?
 			//if (o->frame==0 && (sound_is_playing(SND_MISSILE_HIT) /*|| sound_is_playing(0)*/))
@@ -176,6 +192,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		
 		case 20:	// init for a jump
 			o->state = 21;
+			SPR_SAFEANIM(o->sprite, 1);
 			//o->frame = 2;
 			o->state_time = 0;
 		case 21:	// preparing to jump
@@ -183,7 +200,9 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			{
 				o->state = 22;
 				o->state_time = 0;
+				SPR_SAFEANIM(o->sprite, 2);
 				//o->frame = 3;
+				o->grounded = false;
 				o->y_speed = -0x5ff;
 				o->x_speed = o->direction ? 0x200 : -0x200;
 			}
@@ -192,6 +211,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			if (++o->state_time > 10) { 
 				o->state = 23; 
 				o->state_time = 0; 
+				SPR_SAFEANIM(o->sprite, 5);
 				//o->frame = 6; 
 				SPAWNBLOCK; 
 			}
@@ -200,6 +220,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			if (++o->state_time > HOLDBRICKTIME) { 
 				o->state = 24; 
 				o->state_time = 0; 
+				SPR_SAFEANIM(o->sprite, 6);
 				//o->frame = 7; 
 				THROWBLOCK; 
 			}
@@ -208,6 +229,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		case 24:	// threw block
 			if (++o->state_time > 3) { 
 				o->state = 25; 
+				SPR_SAFEANIM(o->sprite, 2);
 				//o->frame = 3; 
 			}
 		break;
@@ -216,6 +238,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			{
 				o->state = 26;
 				o->state_time = 0;
+				SPR_SAFEANIM(o->sprite, 1);
 				//o->frame = 2;
 				sound_play(SND_QUAKE, 5);
 				camera_shake(20);
@@ -227,6 +250,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			if (++o->state_time > 20)
 			{
 				o->state = 10;
+				SPR_SAFEANIM(o->sprite, 0);
 				//o->frame = 0;
 			}
 		break;
@@ -234,6 +258,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		case 50:	// throw a block (standing on ground)
 			o->state = 51;
 			o->state_time = 0;
+			SPR_SAFEANIM(o->sprite, 3);
 			//o->frame = 4;
 			SPAWNBLOCK;
 		case 51:
@@ -241,6 +266,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			{
 				o->state = 52;
 				o->state_time = 0;
+				SPR_SAFEANIM(o->sprite, 4);
 				//o->frame = 5;
 				THROWBLOCK;
 			}
@@ -249,12 +275,14 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		case 52:
 			if (++o->state_time > 3) { 
 				o->state = 10; 
+				SPR_SAFEANIM(o->sprite, 0);
 				//o->frame = 0; 
 			}
 		break;
 		
 		case 100:		// defeated (set by Script On Death)
 			//o->frame = 3;
+			SPR_SAFEANIM(o->sprite, 2);
 			o->state = 101;
 			o->eflags &= ~NPC_SHOOTABLE;
 			//SmokeClouds(o, 8, 8, 8);
@@ -264,6 +292,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 				o->state = 102;
 				o->state_time = 0;
 				//o->frame = 2;
+				SPR_SAFEANIM(o->sprite, 1);
 				sound_play(SND_QUAKE, 5);
 				camera_shake(20);
 			}
@@ -274,6 +303,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			if (++o->state_time > 50) { 
 				o->state = 103; 
 				o->state_time = 0; 
+				SPR_SAFEANIM(o->sprite, 7);
 				//o->frame = 10; 
 			}
 		break;
@@ -281,25 +311,33 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			if (++o->state_time > 50) { 
 				o->state = 104; 
 				o->state_time = 0; 
+				SPR_SAFEANIM(o->sprite, 8);
 				//o->frame = 9; 
 			}
 		break;
 		case 104:		// morphing back into normal toroko
+			SPR_SAFEANIM(o->sprite, (o->state_time & 1) ? 11 : 7);
 			//o->frame = (o->frame==9) ? 10:9;
 			if (++o->state_time > 100) { 
 				o->state = 105; 
 				o->state_time = 0; 
+				SPR_SAFEANIM(o->sprite, 11);
 				//o->frame = 9; 
 			}
 		break;
 		case 105:		// back to normal
 			if (++o->state_time > 50) { 
 				o->state = 106; 
+				o->state_time = 0;
 				//o->animtimer = 0; 
+				SPR_SAFEANIM(o->sprite, 8);
 				//o->frame = 11; 
 			}
 		break;
 		case 106:		// red goes out of her eyes, she falls down
+			if (++o->state_time > 50) {
+				SPR_SAFEANIM(o->sprite, 9);
+			}
 			//if (++o->animtimer > 50)
 			//{	// collapse
 			//	o->animtimer = 0;
@@ -313,6 +351,7 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 			//o->frame = 12;
 			sound_play(SND_TELEPORT, 5);
 		case 141:
+			SPR_SAFEVISIBILITY(o->sprite, o->state_time & 1);
 			//o->invisible ^= 1;
 			if (++o->state_time > 100)
 			{
@@ -327,6 +366,14 @@ void ai_torokoBoss_onUpdate(Entity *o) {
 		break;
 	}
 	
+	SPR_SAFEANIM(o->sprite, o->direction);
+
+	//if(!o->grounded) o->grounded = collide_stage_floor(o);
+	//else o->grounded = collide_stage_floor_grounded(o);
+
+	o->x = o->x_next;
+	o->y = o->y_next;
+
 	//if (o->state > 100 && o->state <= 105)
 	//{
 	//	if ((o->timer % 9)==1)
@@ -355,6 +402,7 @@ void ai_torokoBlock_onUpdate(Entity *o)
 	o->y_next = o->y + o->y_speed;
 	if(collide_stage_leftwall(o) || collide_stage_rightwall(o) || collide_stage_floor(o)) {
 		sound_play(SND_BLOCK_DESTROY, 5);
+		SPR_SAFERELEASE(o->sprite);
 		entity_default(o, OBJ_TOROKO_FLOWER, 0);
 		//o->frame = 0;
 		entity_sprite_create(o);
