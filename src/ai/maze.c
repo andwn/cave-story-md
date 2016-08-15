@@ -20,6 +20,8 @@
 #define BLOCK_TRAVEL_SPEED		0x1B0
 #endif
 
+static int bubble_xmark = 0, bubble_ymark = 0;
+
 void ai_block_onCreate(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
@@ -636,4 +638,193 @@ void ai_gaudiArmoredShot_onUpdate(Entity *e)
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+#define FRAME_STAND		0
+#define FRAME_DYING		1
+#define FRAME_LANDED	2
+#define FRAME_FLYING	3
+
+void ai_pooh_black(Entity *e)
+{
+	switch(e->state) {
+		case 0:
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			FACE_PLAYER(e);
+			SPR_SAFEHFLIP(e->sprite, e->direction);
+			
+			e->y_speed = 0xA00;
+			e->eflags |= NPC_IGNORESOLID;
+			
+			if (e->y >= block_to_sub(8)) {
+				e->eflags &= ~NPC_IGNORESOLID;
+				e->state = 1;
+			}
+		}
+		break;
+		
+		case 1:
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			e->y_speed = 0xA00;
+			
+			if ((e->grounded = collide_stage_floor(e))) {
+				//SmokeSide(o, 8, DOWN);
+				sound_play(SND_BIG_CRASH, 5);
+				camera_shake(30);
+				
+				entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
+				e->state = 2;
+			}
+			// damage player if he falls on him
+			e->attack = (e->y < player.y && player.grounded) ? 20 : 0;
+		}
+		break;
+		
+		case 2:		// landed, showing landed frame
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_LANDED);
+			e->attack = 0;
+			if (++e->state_time > 24) {
+				e->state = 3;
+				e->state_time = 0;
+			}
+		}
+		break;
+		
+		case 3:		// standing, stare at player till he shoots us.
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_STAND);
+			bubble_xmark = e->x;
+			bubble_ymark = e->y;
+			
+			// spawn bubbles when hit
+			if (e->damage_time && (e->damage_time % 4) == 1) {
+				Entity *bubble = entity_create(0, 0, 0, 0, OBJ_POOH_BLACK_BUBBLE, 0, 0);
+				bubble->alwaysActive = true;
+				bubble->x = e->x - 0x1800 + (random() % 0x3000);
+				bubble->y = e->y - 0x1800 + (random() % 0x3000);
+				bubble->x_speed = -0x600 + (random() % 0xC00);
+				bubble->y_speed = -0x600 + (random() % 0xC00);
+				
+				// fly away after hit enough times
+				if (++e->state_time > 30)
+				{
+					e->state = 4;
+					e->state_time = 0;
+					
+					e->eflags |= NPC_IGNORESOLID;
+					e->y_speed = -0xC00;
+				}
+			}
+		}
+		break;
+		
+		case 4:		// flying away off-screen
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			e->state_time++;
+			
+			// bubbles shoot down past player just before
+			// he falls.
+			if (e->state_time == 60)
+			{
+				bubble_xmark = player.x;
+				bubble_ymark = (10000 << 9);
+			}
+			else if (e->state_time < 60)
+			{
+				bubble_xmark = e->x;
+				bubble_ymark = e->y;
+			}
+			
+			// fall on player
+			if (e->state_time >= 170)
+			{
+				e->x = player.x;
+				e->y = 0;
+				e->y_speed = 0x5ff;
+				
+				e->state = 0;
+				e->state_time = 0;
+			}
+		}
+		break;
+	}
+}
+
+
+void ai_pooh_black_bubble(Entity *e) {
+	if (e->health < 100) {
+		e->state = STATE_DELETE;
+	}
+	//else if (!random(0, 10))
+	//{
+		//e->frame = 0;
+	//}
+	//else
+	//{
+		//e->frame = 1;
+	//}
+	e->x_speed += (e->x > bubble_xmark) ? -0x40 : 0x40;
+	e->y_speed += (e->y > bubble_ymark) ? -0x40 : 0x40;
+	LIMIT_X(0x11FD);
+	LIMIT_Y(0x11FD);
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+}
+
+
+void ai_pooh_black_dying(Entity *e) {
+	bubble_xmark = e->x;
+	bubble_ymark = -(10000 << 9);
+
+	switch(e->state) {
+		case 0:
+		{
+			SPR_SAFEANIM(e->sprite, FRAME_DYING);
+			FACE_PLAYER(e);
+			
+			sound_play(SND_BIG_CRASH, 5);
+			//SmokeClouds(o, 10, 12, 12);
+			entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
+			
+			e->state = 1;
+			e->state_time = 0;
+			e->state_time2 = 0;
+		}
+		break;
+		
+		case 1:
+		case 2:
+		{
+			camera_shake(2);
+			if (++e->state_time > 200) {
+				e->state = 2;
+				e->state_time2++;
+				if ((e->state_time2 % 4) == 2) {
+					SPR_SAFEVISIBILITY(e->sprite, 1);
+					sound_play(SND_BUBBLE, 5);
+				} else if((e->state_time2 % 4) == 0) {
+					SPR_SAFEVISIBILITY(e->sprite, 0);
+				}
+				if(e->state_time2 > 60) {
+					e->state = STATE_DELETE;
+					return;
+				}
+			}
+		}
+		break;
+	}
+	
+	if ((e->state_time % 4) == 1) {
+		Entity *bubble = entity_create(0, 0, 0, 0, OBJ_POOH_BLACK_BUBBLE, 0, 0);
+		bubble->alwaysActive = true;
+		bubble->x = e->x - 0x1800 + (random() % 0x3000);
+		bubble->y = e->y - 0x1800 + (random() % 0x3000);
+		bubble->x_speed = -0x200 + (random() % 0x400);
+		bubble->y_speed = -0x100;
+	}
+
 }
