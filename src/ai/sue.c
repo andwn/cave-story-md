@@ -9,7 +9,7 @@
 
 void ai_sue_onUpdate(Entity *e) {
 	if(e->state == 13) { // Carried by Igor
-		Entity *igor = entity_find_by_type(0x53);
+		Entity *igor = entity_find_by_id(501);
 		if(igor != NULL) { // This should never be NULL but just in case
 			e->y = igor->y;
 			e->x = igor->x + igor->direction ? pixel_to_sub(24) : pixel_to_sub(-24);

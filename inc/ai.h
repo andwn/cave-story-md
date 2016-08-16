@@ -74,6 +74,12 @@ typedef void (*EntityMethod)(Entity*);
 
 #define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
 
+/* Shared Variables */
+
+u16 global_timer;
+s32 global_xmark, global_ymark;
+Entity *pieces[6];
+
 /* Generic - basic.c */
 
 // Tons of NPCs are placed 1 block above where they are meant to appear
