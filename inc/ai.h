@@ -79,6 +79,7 @@ typedef void (*EntityMethod)(Entity*);
 // Tons of NPCs are placed 1 block above where they are meant to appear
 // This function pushes them down to the right spot
 void ai_pushdn_onCreate(Entity *e);
+void ai_pushup_onCreate(Entity *e);
 // NPC will face right if NPC_OPTION2 is set
 void ai_op2flip_onCreate(Entity *e);
 // NPC's sprite will start at the second frame if NPC_OPTION2 is set
@@ -129,8 +130,10 @@ void ai_balrogRunning_onState(Entity *e);
 
 void ai_balrogFlying_onUpdate(Entity *e);
 void ai_balrogFlying_onState(Entity *e);
-
 void ai_balrogShot_onUpdate(Entity *e);
+
+void ai_balrog_boss_missiles(Entity *e);
+void ai_balrog_missile(Entity *e);
 
 /* Bats - bat.c */
 
@@ -151,6 +154,8 @@ void ai_curlyBoss_onUpdate(Entity *e);
 void ai_curlyBoss_onState(Entity *e);
 
 void ai_curlyBossShot_onUpdate(Entity *e);
+
+void ai_curly_ai(Entity *e);
 
 /* Egg Corridor - eggs.c */
 
@@ -337,5 +342,16 @@ void ai_jenka_onCreate(Entity *e);
 void ai_block_onCreate(Entity *e);
 void ai_blockh_onUpdate(Entity *e);
 void ai_blockv_onUpdate(Entity *e);
+void ai_boulder_onUpdate(Entity *e);
+
+void ai_gaudiDying_onUpdate(Entity *e);
+void ai_gaudi_onUpdate(Entity *e);
+void ai_gaudiFlying_onUpdate(Entity *e);
+void ai_gaudiArmored_onUpdate(Entity *e);
+void ai_gaudiArmoredShot_onUpdate(Entity *e);
+
+void ai_pooh_black(Entity *e);
+void ai_pooh_black_bubble(Entity *e);
+void ai_pooh_black_dying(Entity *e);
 
 #endif /* INC_AI_H_ */

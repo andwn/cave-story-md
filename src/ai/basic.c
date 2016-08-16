@@ -17,6 +17,11 @@ void ai_pushdn_onCreate(Entity *e) {
 	if(stage_get_block_type(x, y + 1) != 0x41) e->y += block_to_sub(1);
 }
 
+void ai_pushup_onCreate(Entity *e) {
+	u16 x = sub_to_block(e->x), y = sub_to_block(e->y + pixel_to_sub(e->hit_box.bottom));
+	if(stage_get_block_type(x, y + 1) == 0x41) e->y -= block_to_sub(1);
+}
+
 void ai_op2flip_onCreate(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->direction = 1;
 }

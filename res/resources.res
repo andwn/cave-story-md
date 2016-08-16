@@ -108,7 +108,7 @@ SPRITE SPR_Skullhead "sprite/skullstep.png" 4 3 0 0 NONE
 SPRITE SPR_FrogShot	"sprite/frogshot.png" 2 2 0 8 NONE
 SPRITE SPR_ToroBlock "sprite/toroblock.png" 2 2 0 4 NONE
 SPRITE SPR_BigDoorFrame "sprite/bigdoorframe.png" 4 4 0 0 NONE
-SPRITE SPR_BigDoor	"sprite/bigdoor.png" 4 3 0 0 NONE
+SPRITE SPR_BigDoor	"sprite/bigdoor.png" 2 3 0 0 NONE
 SPRITE SPR_PowerScreen "sprite/powerscreen.png" 2 2 0 12 NONE
 SPRITE SPR_Hey		"sprite/hey.png" 2 2 0 0 NONE
 SPRITE SPR_Sprinkler "sprite/sprinkler.png" 2 2 0 0 NONE
