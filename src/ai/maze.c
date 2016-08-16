@@ -319,7 +319,7 @@ void ai_gaudi_onUpdate(Entity *e)
 				//e->frame = 12;
 				e->state_time = 0;
 				
-				//if (!player->inputs_locked)	// no sound during ending cutscene
+				//if (!player.inputs_locked)	// no sound during ending cutscene
 					sound_play(SND_THUD, 5);
 			}
 			
@@ -572,7 +572,7 @@ void ai_gaudiArmored_onUpdate(Entity *e)
 			
 			if (++e->state_time >= 2)
 			{
-				//stat("dtt= %d", abs(e->x_mark - e->x)>>CSF);
+				//stat("dtt= %d", abs(e->x_mark - e->x)>>9);
 				SPR_SAFEANIM(e->sprite, 0);
 				e->x_speed = 0;
 				
@@ -827,4 +827,380 @@ void ai_pooh_black_dying(Entity *e) {
 		bubble->y_speed = -0x100;
 	}
 
+}
+
+// MazeM enemies
+
+void ai_firewhirr(Entity *e)
+{
+Entity *shot;
+
+	FACE_PLAYER(e);
+	
+	switch(e->state)
+	{
+		case 0:
+			e->state = 1;
+			e->state_time = random() % 50;
+			e->y_mark = e->y;
+		case 1:
+			
+			if (!e->state_time)
+			{
+				e->state = 10;
+				e->y_speed = -0x200;
+			}
+			else e->state_time--;
+			
+		case 10:
+			//e->frame ^= 1;
+			
+			e->y_speed += (e->y < e->y_mark) ? 0x10 : -0x10;
+			LIMIT_Y(0x200);
+			
+			// inc time-to-fire while player near
+			if (PLAYER_DIST_Y(80 << 9))
+			{
+				if (e->direction==0 && player.x < e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
+				if (e->direction==1 && player.x > e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
+			}
+			
+			// if time to fire, spawn a shot
+			if (e->state_time2 > 20)
+			{
+				shot = entity_create(0, 0, 0, 0, OBJ_FIREWHIRR_SHOT, 0, e->direction);
+				shot->alwaysActive = true;
+				shot->x = e->x;
+				shot->y = e->y;
+				e->state_time2 = -100 + random(0, 20);
+				// tell Curly to acquire us as a target
+				//e->CurlyTargetHere();
+				
+			}
+		break;
+	}
+}
+
+void ai_firewhirr_shot(Entity *e)
+{
+	//ANIMATE(1, 0, 2);
+	e->x += (e->direction==0) ? -0x200 : 0x200;
+	
+	if ((e->direction==0 && collide_stage_leftwall(e)) || (e->direction==1 && collide_stage_rightwall(e)))
+	{
+		//if (e->direction == 1) e->x += e->Width();
+		//effect(e->x, e->CenterY(), EFFECT_FISHY);
+		//e->Delete();
+		e->state = STATE_DELETE;
+	}
+}
+
+/*
+void c------------------------------() {}
+*/
+
+void ai_gaudi_egg(Entity *e)
+{
+	if (!e->state)
+	{
+		if (e->direction==0)
+		{	// on floor
+			// align properly with ground
+			e->y -= (4<<9);
+			e->x -= (4<<9);
+		}
+		else
+		{	// on ceiling
+			// for the egg @ entrance point that is on a ceiling slope
+			if (!collide_stage_ceiling(e))
+			{
+				e->y -= (14 << 9);
+			}
+		}
+		e->state = 1;
+	}
+	else if (e->state == 1)
+	{
+		if (e->health < 90)
+		{
+			//e->frame = 1;
+			SPR_SAFEANIM(e->sprite, 1);
+			e->attack = 0;
+			e->eflags &= ~NPC_SHOOTABLE;
+			entity_drop_powerup(e);
+			sound_play(e->deathSound, 5);
+			//SmokeSide(o, 6, (e->direction==0)?DOWN:UP);
+			//e->SpawnPowerups();
+			//sound(objprop[e->type].death_sound);
+			e->state = 2;
+		}
+	}
+}
+
+/*
+void c------------------------------() {}
+*/
+
+void ai_fuzz_core(Entity *e)
+{
+	//ANIMATE(2, 0, 1);
+	
+	switch(e->state)
+	{
+		case 0:
+		{
+			// spawn mini-fuzzes
+			int angle = 0;
+			for(int i=0;i<5;i++)
+			{
+				Entity *f = entity_create(0, 0, 0, 0, OBJ_FUZZ, 0, 0);
+				f->x = e->x;
+				f->y = e->y;
+				f->linkedEntity = e;
+				//f->angle = angle;
+				angle += (1024 / 5);
+			}
+			
+			e->state_time = 1 + (random() % 49);
+			e->state = 1;
+		}
+		case 1:		// de-syncs the Y positions when multiple cores are present at once
+		{
+			if (--e->state_time <= 0)
+			{
+				e->state = 2;
+				e->y_speed = 0x300;
+				e->y_mark = e->y;
+			}
+		}
+		break;
+		
+		case 2:
+		{
+			FACE_PLAYER(e);
+			
+			if (e->y > e->y_mark) e->y_speed -= 0x10;
+			if (e->y < e->y_mark) e->y_speed += 0x10;
+			LIMIT_Y(0x355);
+		}
+		break;
+	}
+}
+
+void ai_fuzz(Entity *e)
+{
+	FACE_PLAYER(e);
+	
+	switch(e->state)
+	{
+		case 0:
+		{
+			//e->angle += 4;
+			
+			if (e->linkedEntity->state == STATE_DESTROY)
+			{
+				e->x_speed = -0x200 + (random() % 0x400);
+				e->y_speed = -0x200 + (random() % 0x400);
+				e->state = 1;
+			}
+		}
+		break;
+		
+		// base destroyed, simple sinusoidal player-seek
+		case 1:
+		{
+			e->x_speed += (e->x > player.x) ? -0x20 : 0x20;
+			e->y_speed += (e->y > player.y) ? -0x20 : 0x20;
+			
+			LIMIT_X(0x800);
+			LIMIT_Y(0x200);
+		}
+		break;
+	}
+}
+/*
+void aftermove_fuzz(Entity *e)
+{
+	if (e->state == 0 && e->linkedEntity)
+	{
+		vector_from_angle(e->angle, (20 << 9), &e->x, NULL);
+		vector_from_angle(e->angle, (32 << 9), NULL, &e->y);
+		
+		e->x += e->linkedEntity->CenterX() - (e->Width() / 2);
+		e->y += e->linkedEntity->CenterY() - (e->Height() / 2);
+	}
+}
+*/
+/*
+void c------------------------------() {}
+*/
+
+#define BUYOBUYO_BASE_HP		60
+
+void ai_buyobuyo_base(Entity *e)
+{
+/*if (e->onscreen) {
+	debug("state: %d", e->state);
+	debug("timer: %d", e->state_time);
+	debug("timer2: %d", e->state_time2);
+}*/
+	
+	if (e->state < 3 && e->health < (1000 - BUYOBUYO_BASE_HP))
+	{
+		//SmokeClouds(o, objprop[e->type].death_smoke_amt, 8, 8);
+		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+		//e->SpawnPowerups();
+		
+		e->eflags &= ~NPC_SHOOTABLE;
+		e->attack = 0;
+		
+		e->state = 10;
+		//e->frame = 2;
+	}
+	
+	switch(e->state)
+	{
+		case 0:
+		{
+         //NX_LOG("ai_buyobuyo_base - state 0\n");
+			// ceiling has different bounding box and action point
+			//if (e->direction == 1)
+			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
+			
+			e->state = 1;
+			e->state_time = 10;
+		}
+		case 1:
+		{
+         //NX_LOG("ai_buyobuyo_base - state 1\n");
+			if (PLAYER_DIST_X(0x14000))
+			{
+				if ((e->direction == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
+					(e->direction == 1 && PLAYER_DIST_Y2(0x2000, 0x14000)))
+				{
+					if (--e->state_time < 0)
+					{
+						e->state = 2;
+						e->state_time = 0;
+						//e->animtimer = 0;
+					}
+				}
+			}
+		}
+		break;
+		
+		case 2:
+		{
+         //NX_LOG("ai_buyobuyo_base - state 2\n");
+			//ANIMATE(3, 0, 1);
+			
+			if (++e->state_time > 10)
+			{
+				Entity *buyo = entity_create(0, 0, 0, 0, OBJ_BUYOBUYO, 0, e->direction);
+				buyo->x = e->x;
+				buyo->y = e->y;
+				
+				sound_play(SND_EM_FIRE, 5);
+				//e->frame = 0;
+				//e->CurlyTargetHere();
+				
+				// cyclic: three firings then pause
+				e->state = 1;
+				if (++e->state_time2 > 2)
+				{
+					e->state_time = 100;
+					e->state_time2 = 0;
+				}
+				else
+				{
+					e->state_time = 20;
+				}
+			}
+		}
+		break;
+	}
+}
+
+void ai_buyobuyo(Entity *e)
+{
+	bool deleteme = false;
+	//ANIMATE(6, 0, 1);
+	
+	switch(e->state)
+	{
+		case 0:
+		{
+			// shoot up down at player...
+         //NX_LOG("ai_buyobuyo - state 0\n");
+			e->y_speed = (e->direction == 0) ? -0x600 : 0x600;
+			e->state = 1;
+			e->state_time = 0;
+		}
+		case 1:
+		{
+         //NX_LOG("ai_buyobuyo - state 1\n");
+			e->state_time++;		// inc fly time
+			// reached height of player yet?
+			if (PLAYER_DIST_Y(0x2000))
+			{
+				e->state = 2;
+				ai_buyobuyo(e);
+				return;
+			}
+		}
+		break;
+		
+		case 2:
+		{
+         //NX_LOG("ai_buyobuyo - state 2\n");
+			// this slight "minimum fly time" keeps the underwater ones from
+			// smacking into the floor if the player is underwater with them
+			if (++e->state_time > 3)
+			{
+				FACE_PLAYER(e);
+				e->x_mark = e->x;
+				e->y_mark = e->y;
+				
+				e->x_speed = (random() & 1) ? 0x200 : -0x200;
+				e->y_speed = (random() & 1) ? 0x200 : -0x200;
+				
+				e->state = 3;
+			}
+		}
+		break;
+		
+		case 3:
+		{
+         //NX_LOG("ai_buyobuyo - state 3\n");
+			if (e->x > e->x_mark) e->x_speed -= 0x20;
+			if (e->x < e->x_mark) e->x_speed += 0x20;
+			if (e->y > e->y_mark) e->y_speed -= 0x20;
+			if (e->y < e->y_mark) e->y_speed += 0x20;
+			LIMIT_X(0x400);
+			LIMIT_Y(0x400);
+			
+			// move the point we are bobbling around
+			e->x_mark += (e->direction == 0) ? -(1 << 9) : (1 << 9);
+			//debugVline(e->x_mark, 0, 0xff, 0);
+			
+			if (++e->state_time > 300)
+				deleteme = true;
+		}
+		break;
+	}
+	
+	if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
+		(e->x_speed > 0 && collide_stage_rightwall(e)) || \
+		(e->y_speed < 0 && collide_stage_ceiling(e)) || \
+		(e->y_speed > 0 && collide_stage_floor(e)))
+	{
+		deleteme = true;
+	}
+
+	if (deleteme)
+	{
+		//effect(e->CenterX(), e->CenterY(), EFFECT_STARPOOF);
+		e->state = STATE_DELETE;
+		return;
+	}
 }
