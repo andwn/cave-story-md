@@ -76,8 +76,8 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Shared Variables */
 
-u16 global_timer;
-s32 global_xmark, global_ymark;
+u16 curly_target_time;
+s32 curly_target_x, curly_target_y;
 Entity *pieces[6];
 
 /* Generic - basic.c */

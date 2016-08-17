@@ -79,9 +79,10 @@ void ai_king_onUpdate(Entity *e) {
 			e->y_speed = 0;
 			//o->nxflags &= ~NXFLAG_FOLLOW_SLOPE;		// necessary to keep him from going down slope...
 		case 31:
-			// Don't fall
-			//e->y_speed = 0;
-			//e->y_next = e->y;
+			// Don't follow slopes
+			e->grounded = false;
+			e->y_speed = 0;
+			e->y_next = e->y;
 			if (e->x_speed == 0) // Hit the wall
 			{
 				e->direction = 1;
@@ -116,7 +117,7 @@ void ai_king_onUpdate(Entity *e) {
 		case 60:		// jump (used when he lunges with sword)
 			SPR_SAFEANIM(e->sprite, 0);
 			e->state = 61;
-			e->y_speed = -0x5FF;
+			e->y_speed = -0x4FF;
 			e->x_speed = 0x400;
 			SPR_SAFEHFLIP(e->linkedEntity->sprite, 1);
 		break;

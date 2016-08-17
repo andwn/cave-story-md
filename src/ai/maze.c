@@ -20,7 +20,7 @@
 #define BLOCK_TRAVEL_SPEED		0x1B0
 #endif
 
-static int bubble_xmark = 0, bubble_ymark = 0;
+//static int bubble_xmark = 0, bubble_ymark = 0;
 
 void ai_block_onCreate(Entity *e) {
 	e->x += pixel_to_sub(8);
@@ -276,6 +276,7 @@ void ai_gaudi_onUpdate(Entity *e)
 			if (!(random() % 100)) {
 				if (random() & 1) {
 					e->direction ^= 1;
+					SPR_SAFEHFLIP(e->sprite, e->direction);
 				} else {
 					e->state = 10;
 				}
@@ -335,6 +336,7 @@ void ai_gaudi_onUpdate(Entity *e)
 				if (++e->state_time > 10) {
 					e->state_time = 0;
 					e->direction ^= 1;
+					SPR_SAFEHFLIP(e->sprite, e->direction);
 				}
 			} else {
 				e->state_time = 0;
@@ -351,9 +353,12 @@ void ai_gaudi_onUpdate(Entity *e)
 		}
 		break;
 	}
-	
-	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
+	if(e->y_speed >= 0) {
+		if(!e->grounded) e->grounded = collide_stage_floor(e);
+		else e->grounded = collide_stage_floor_grounded(e);
+	} else {
+		collide_stage_ceiling(e);
+	}
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -649,8 +654,13 @@ void ai_gaudiArmoredShot_onUpdate(Entity *e)
 #define FRAME_LANDED	2
 #define FRAME_FLYING	3
 
+#define bubble_xmark curly_target_x
+#define bubble_ymark curly_target_y
+
 void ai_pooh_black(Entity *e)
 {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 		{
@@ -756,6 +766,9 @@ void ai_pooh_black(Entity *e)
 		}
 		break;
 	}
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 

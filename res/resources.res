@@ -121,8 +121,8 @@ SPRITE SPR_Gaudi	"sprite/gaudi.png" 3 3 0 6 NONE
 SPRITE SPR_LabShot	"sprite/labshot.png" 2 2 0 8 NONE
 SPRITE SPR_GaudiShot "sprite/gaudishot.png" 2 2 0 8 NONE
 SPRITE SPR_GaudiArmor "sprite/gaudiarmor.png" 3 3 0 6 NONE
-SPRITE SPR_Buyo		"sprite/buyobig.png" 4 4 0 0 NONE
-SPRITE SPR_BuyoSm	"sprite/buyosmall.png" 2 2 0 0 NONE
+SPRITE SPR_FuzzCore	"sprite/fuzzcore.png" 4 4 0 0 NONE
+SPRITE SPR_Fuzz		"sprite/fuzz.png" 2 2 0 0 NONE
 SPRITE SPR_CoreThing "sprite/corething.png" 4 4 0 8 NONE
 SPRITE SPR_CoreThingShot "sprite/corethingshot.png" 2 4 0 8 NONE
 SPRITE SPR_Buggy	"sprite/buggy.png" 4 2 0 0 NONE

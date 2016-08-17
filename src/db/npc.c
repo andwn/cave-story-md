@@ -84,7 +84,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Fire, 	PAL1, 2, "Fireplace Fire",
 		NULL, NULL, NULL, NULL },
 	{ &SPR_SaveSign, PAL1, 2, "Save Sign",
-		&ai_op2frame_onCreate, NULL, NULL, NULL },
+		&ai_op2anim_onCreate, NULL, NULL, NULL },
 	{ &SPR_Santa, 	PAL3, 3, "Santa",
 		NULL, &ai_santa_onUpdate, &ai_santa_onState, NULL },
 	{ NULL, 		PAL0, 2, "Busted Doorway",

@@ -139,7 +139,13 @@ void ai_heart_onUpdate(Entity *e) {
 	}
 	// Increases health, plays sound and deletes itself
 	if(entity_overlapping(&player, e)) {
-		player.health += e->health;
+		if(e->eflags & NPC_OPTION1) {
+			player.health += e->health;
+		} else if(e->eflags & NPC_OPTION2) {
+			player.health += 5;
+		} else {
+			player.health += 2;
+		}
 		// Don't go over max health
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
 		sound_play(SND_HEALTH_REFILL, 5);

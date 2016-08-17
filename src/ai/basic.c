@@ -19,7 +19,7 @@ void ai_pushdn_onCreate(Entity *e) {
 
 void ai_pushup_onCreate(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y + pixel_to_sub(e->hit_box.bottom));
-	if(stage_get_block_type(x, y + 1) == 0x41) e->y -= block_to_sub(1);
+	if(stage_get_block_type(x, y + 1) == 0x41) e->y -= pixel_to_sub(8);
 }
 
 void ai_op2flip_onCreate(Entity *e) {
@@ -51,9 +51,9 @@ void ai_spike_onCreate(Entity *e) {
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
 		e->spriteVFlip = 1;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		e->spriteFrame = 1;
+		e->spriteAnim = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		e->spriteFrame = 1;
+		e->spriteAnim = 1;
 		e->direction = 1;
 	}
 }

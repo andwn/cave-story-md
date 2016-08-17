@@ -325,9 +325,6 @@ void ai_curlyBossShot_onUpdate(Entity *e)
 bool curly_mgun = 0;
 bool curly_watershield = 0;
 bool curly_impjump = 0;
-u16 curly_target_time = 0;
-u16 curly_target_x = 0;
-u16 curly_target_y = 0;
 u8 curly_reachptimer = 0;
 u8 curly_blockedtime = 0;
 s8 curly_impjumptime = 0;
