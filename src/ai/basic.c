@@ -69,6 +69,8 @@ void ai_grav_onUpdate(Entity *e) {
 
 void ai_trigger_onUpdate(Entity *e) {
 	if(tsc_running()) return;
+	// Hack to skip Monster X
+	if(stageID == 0x27) return;
 	bool activate = false;
 	if(e->eflags&NPC_OPTION2) { // Vertical
 		if(player.x - pixel_to_sub(player.hit_box.left) < e->x + pixel_to_sub(e->hit_box.right) &&
@@ -76,6 +78,8 @@ void ai_trigger_onUpdate(Entity *e) {
 			activate = true;
 		}
 	} else { // Horizontal (Egg Corridor eggs)
+		e->hit_box.left = 32;
+		e->hit_box.right = 32;
 		if(entity_overlapping(&player, e) && player.y_speed < 0) activate = true;
 	}
 	if(activate) tsc_call_event(e->event);

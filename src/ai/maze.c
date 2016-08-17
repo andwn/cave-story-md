@@ -27,7 +27,7 @@ void ai_block_onCreate(Entity *e) {
 	e->y += pixel_to_sub(8);
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
-	e->eflags |= NPC_SOLID;
+	e->eflags |= NPC_SPECIALSOLID;
 	e->eflags |= NPC_IGNORE44;
 	e->enableSlopes = false;
 	e->attack = 0;
@@ -62,10 +62,10 @@ void ai_blockh_onUpdate(Entity *e) {
 			if(e->x_speed < -BLOCK_TRAVEL_SPEED) e->x_speed = -BLOCK_TRAVEL_SPEED;
 			e->x_next = e->x + e->x_speed;
 			// hit edge
-			if(stage_get_block_type(
-					sub_to_block(e->x_next + 0x3200), sub_to_block(e->y) == 0x41 ||
-				stage_get_block_type(
-					sub_to_block(e->x_next - 0x3200), sub_to_block(e->y) == 0x41))) {
+			if((e->x_speed > 0 && stage_get_block_type(
+					sub_to_block(e->x_next + 0x1000), sub_to_block(e->y)) == 0x41) ||
+				(e->x_speed < 0 && stage_get_block_type(
+					sub_to_block(e->x_next - 0x1000), sub_to_block(e->y)) == 0x41)) {
 				camera_shake(10);
 				e->x_speed = 0;
 				e->eflags ^= NPC_OPTION2;
@@ -102,23 +102,27 @@ void ai_blockv_onUpdate(Entity *e) {
 		}
 		break;
 		case 30:
-		e->y_speed += e->direction ? BLOCK_TRAVEL_ACCEL : -BLOCK_TRAVEL_ACCEL;
-		if(e->y_speed > BLOCK_TRAVEL_SPEED) e->y_speed = BLOCK_TRAVEL_SPEED;
-		if(e->y_speed < -BLOCK_TRAVEL_SPEED) e->y_speed = -BLOCK_TRAVEL_SPEED;
-		e->y_next = e->y + e->y_speed;
-		// hit edge
-		if((e->direction && collide_stage_floor(e)) || 
-			(!e->direction && collide_stage_ceiling(e))) {
-			
-			camera_shake(10);
-			
-			e->y_speed = 0;
-			e->direction ^= 1;
-			e->state = (e->direction) ? 20 : 10;
-		}
-		e->y = e->y_next;
-		if((++e->state_time % BLOCK_SOUND_INTERVAL) == 6) {
-			sound_play(SND_BLOCK_MOVE, 2);
+		{
+			u16 dir = e->eflags & NPC_OPTION2;
+			e->y_speed += dir ? BLOCK_TRAVEL_ACCEL : -BLOCK_TRAVEL_ACCEL;
+			if(e->y_speed > BLOCK_TRAVEL_SPEED) e->y_speed = BLOCK_TRAVEL_SPEED;
+			if(e->y_speed < -BLOCK_TRAVEL_SPEED) e->y_speed = -BLOCK_TRAVEL_SPEED;
+			e->y_next = e->y + e->y_speed;
+			// hit edge
+			if((e->y_speed > 0 && stage_get_block_type(
+					sub_to_block(e->x - 0x200), sub_to_block(e->y_next + 0x1000)) == 0x41) ||
+				(e->y_speed < 0 && stage_get_block_type(
+					sub_to_block(e->x - 0x200), sub_to_block(e->y_next - 0x1000)) == 0x41)) {
+				camera_shake(10);
+				e->y_speed = 0;
+				e->eflags ^= NPC_OPTION2;
+				e->state = dir ? 10 : 20;
+			} else {
+				e->y = e->y_next;
+				if((++e->state_time % BLOCK_SOUND_INTERVAL) == 6) {
+					sound_play(SND_BLOCK_MOVE, 2);
+				}
+			}
 		}
 		break;
 	}
