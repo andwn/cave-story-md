@@ -178,12 +178,15 @@ void ai_boulder_onUpdate(Entity *e)
 #define GAUDI_FLYING_HP 15
 #define GAUDI_ARMORED_HP 15
 
-void ai_gaudiDying_onUpdate(Entity *e)
-{
+void ai_gaudiDying_onUpdate(Entity *e) {
+	// Use different palette in Labyrinth Shop
+	if(stageID == 0x2A && e->sprite != NULL) {
+		SPR_setPalette(e->sprite, PAL3);
+	}
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:		// just died (initilizing)
 		{
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
@@ -234,10 +237,8 @@ void ai_gaudiDying_onUpdate(Entity *e)
 	LIMIT_Y(0x5ff);
 }
 
-void ai_gaudi_onUpdate(Entity *e)
-{
-	if (e->health <= (1000 - GAUDI_HP))
-	{
+void ai_gaudi_onUpdate(Entity *e) {
+	if (e->health <= (1000 - GAUDI_HP)) {
 		SPR_SAFERELEASE(e->sprite);
 		e->type = OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
@@ -246,19 +247,19 @@ void ai_gaudi_onUpdate(Entity *e)
 		return;
 	}
 	
-	//if (!PLAYER_NEAR_ENOUGH())
-	//	return;
+	// Use different palette in Labyrinth Shop
+	if(stageID == 0x2A && e->sprite != NULL) {
+		SPR_setPalette(e->sprite, PAL3);
+	}
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			// Gaudi's in shop
-			if (e->eflags & NPC_INTERACTIVE)
-			{
+			if (e->eflags & NPC_INTERACTIVE) {
 				e->attack = 0;
 				e->eflags &= ~NPC_SHOOTABLE;
 			}
@@ -299,8 +300,7 @@ void ai_gaudi_onUpdate(Entity *e)
 			
 			// try to jump over any walls we come to
 			if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
-				(e->x_speed > 0 && collide_stage_rightwall(e)))
-			{
+				(e->x_speed > 0 && collide_stage_rightwall(e))) {
 				e->y_speed = -0x5ff;
 				//e->frame = 2;
 				e->state = 20;
@@ -315,8 +315,7 @@ void ai_gaudi_onUpdate(Entity *e)
 		case 20:		// jumping
 		{
 			// landed?
-			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e)))
-			{
+			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->x_speed = 0;
 				e->state = 21;
 				//e->frame = 12;
@@ -378,6 +377,11 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 		entity_sprite_create(e);
 		ai_gaudiDying_onUpdate(e);
 		return;
+	}
+	
+	// Use different palette in Labyrinth Shop
+	if(stageID == 0x2A && e->sprite != NULL) {
+		SPR_setPalette(e->sprite, PAL3);
 	}
 	
 	switch(e->state) {

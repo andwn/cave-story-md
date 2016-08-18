@@ -80,10 +80,16 @@ u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 //Entity *pieces[6];
 
+/* Utility functions - util.c */
+
+void entity_snaptoground(Entity *e);
+void generic_npc_states(Entity *e);
+
 /* Generic - basic.c */
 
 // Tons of NPCs are placed 1 block above where they are meant to appear
 // This function pushes them down to the right spot
+void oncreate_snap(Entity *e);
 void ai_pushdn_onCreate(Entity *e);
 void ai_pushup_onCreate(Entity *e);
 // NPC will face right if NPC_OPTION2 is set
@@ -120,6 +126,24 @@ void ai_teleLight_onState(Entity *e);
 
 void ai_player_onUpdate(Entity *e);
 void ai_player_onState(Entity *e);
+
+/* Regular NPCs - regu.c */
+
+void ai_jenka(Entity *e);
+void ai_doctor(Entity *e);
+void ai_toroko(Entity *e);
+void ai_toroko_teleport_in(Entity *e);
+void ai_sue(Entity *e);
+void ai_sue_teleport_in(Entity *e);
+void ai_kazuma(Entity *e);
+void ai_king(Entity *e);
+void ai_blue_robot(Entity *e);
+void ai_kanpachi_fishing(Entity *e);
+void ai_booster(Entity *e);
+void ai_booster_falling(Entity *e);
+void ai_npc_at_computer(Entity *e);
+void ai_generic_npc(Entity *e);
+void ai_generic_npc_nofaceplayer(Entity *e);
 
 /* Balrog - balrog.c */
 
@@ -232,28 +256,9 @@ void ai_fan_onUpdate(Entity *e);
 /* Minor Mimigas - mimiga.c */
 
 void ai_flower_onCreate(Entity *e);
-//void ai_kanpachi_onState(Entity *e);
-void ai_jack_onUpdate(Entity *e);
-void ai_jack_onState(Entity *e);
-//void ai_mahin_onState(Entity *e);
-void ai_santa_onUpdate(Entity* e);
-void ai_santa_onState(Entity *e);
-void ai_chaco_onUpdate(Entity* e);
-void ai_chaco_onState(Entity *e);
-
-/* Sue - sue.c */
-
-void ai_sue_onUpdate(Entity *e);
-void ai_sue_onState(Entity *e);
-
-/* Kazuma - kazuma.c */
-
-void ai_kazuComp_onUpdate(Entity *e);
-
-/* King - king.c */
-
-void ai_king_onUpdate(Entity *e);
-void ai_king_onState(Entity *e);
+void ai_jack(Entity *e);
+void ai_santa(Entity* e);
+void ai_chaco(Entity* e);
 
 /* Misery - misery.c */
 

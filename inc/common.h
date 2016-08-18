@@ -56,6 +56,8 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // pixel - single dot on screen (1x1)
 // tile - genesis VDP tile (8x8)
 // block - Cave Story tile (16x16)
+#define CSF 9
+
 #define sub_to_pixel(x)   ((x)>>9)
 #define sub_to_tile(x)    ((x)>>12)
 #define sub_to_block(x)   ((x)>>13)

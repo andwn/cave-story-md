@@ -112,6 +112,7 @@ SPRITE SPR_BigDoor	"sprite/bigdoor.png" 2 3 0 0 NONE
 SPRITE SPR_PowerScreen "sprite/powerscreen.png" 2 2 0 12 NONE
 SPRITE SPR_Hey		"sprite/hey.png" 2 2 0 0 NONE
 SPRITE SPR_Sprinkler "sprite/sprinkler.png" 2 2 0 0 NONE
+SPRITE SPR_Sword	 "sprite/kingsword.png" 2 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB	"sprite/critcave.png" 2 2 0 0 NONE

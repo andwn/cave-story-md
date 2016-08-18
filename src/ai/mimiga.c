@@ -7,83 +7,41 @@
 #include "tables.h"
 #include "tsc.h"
 
-#ifdef PAL
-#define MIMIGA_WALKSPEED 0x200
-#else
-#define MIMIGA_WALKSPEED 0x1D0
-#endif
-
 void ai_flower_onCreate(Entity *e) {
 	e->spriteFrame = random() % 6;
 }
 
-void ai_jack_onUpdate(Entity *e) {
+void ai_jack(Entity *e) {
 	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+	generic_npc_states(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
 
-void ai_jack_onState(Entity *e) {
-	switch(e->state) {
-		case 0: // Stand
-		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 0);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
-		case 8: // Walk
-		MOVE_X(MIMIGA_WALKSPEED);
-		SPR_SAFEANIM(e->sprite, 1);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
-	}
-}
-
-void ai_santa_onUpdate(Entity *e) {
+void ai_santa(Entity *e) {
+	generic_npc_states(e);
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
 
-void ai_santa_onState(Entity *e) {
+void ai_chaco(Entity* e) {
 	switch(e->state) {
-		case 0: // Stand
-		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 0);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
-		case 3: // Walk
-		case 4:
-		MOVE_X(MIMIGA_WALKSPEED);
-		SPR_SAFEANIM(e->sprite, 1);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
-	}
-}
-
-void ai_chaco_onUpdate(Entity* e) {
-	e->x += e->x_speed;
-	e->y += e->y_speed;
-}
-
-void ai_chaco_onState(Entity *e) {
-	switch(e->state) {
-		case 0: // Stand
-		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 0);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
-		case 3: // Walk
-		case 4:
-		MOVE_X(MIMIGA_WALKSPEED);
-		SPR_SAFEANIM(e->sprite, 1);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		break;
 		case 10: // Sleeping
-		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 3);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		{
+			e->state++;
+			e->x_speed = 0;
+			SPR_SAFEANIM(e->sprite, 3);
+		}
+		break;
+		case 11: break;
+		default:
+			generic_npc_states(e);
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

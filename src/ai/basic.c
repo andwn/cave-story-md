@@ -8,6 +8,16 @@
 #include "tsc.h"
 #include "effect.h"
 
+void entity_snaptoground(Entity *e) {
+	
+}
+
+void oncreate_snap(Entity *e) {
+	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+	if(stage_get_block_type(x, y + 1) != 0x41) e->y += block_to_sub(1);
+}
+
+
 // Only drop down if there is no ground underneath
 void ai_pushdn_onCreate(Entity *e) {
 	if(stageID == 1 && e->type == 0x3E) {
