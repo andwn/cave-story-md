@@ -8,58 +8,362 @@
 #include "tsc.h"
 #include "camera.h"
 
-// 12 - Balrog (Cutscene)
-void ai_balrog_onCreate(Entity *e) {
+#ifdef PAL
+#define BALROG_GRAVITY		0x20
+#define BALROG_BUSTINSPEED	0x100
+#define BALROG_WALKSPEED	0x200
+#define BALROG_MAXFALL		0x5FF
+#define BALROG_FLYAWAYSPEED	0x800
+#define BALROG_JUMPTIME		20
+#define BALROG_SHAKETIME	100
+#define BALROG_SMILETIME	100
+#else
+#define BALROG_GRAVITY		0x1D
+#define BALROG_BUSTINSPEED	0xE8
+#define BALROG_WALKSPEED	0x1D0
+#define BALROG_MAXFALL		0x4FF
+#define BALROG_FLYAWAYSPEED	0x6B0
+#define BALROG_JUMPTIME		24
+#define BALROG_SHAKETIME	120
+#define BALROG_SMILETIME	120
+#endif
+
+// Repurpose unused x_mark and y_mark variables
+#define balrog_smoking		x_mark
+#define balrog_smoketimer	y_mark
+
+// Balrog should never deactivate
+void oncreate_balrog(Entity *e) {
 	e->alwaysActive = true;
 }
 
-void ai_balrog_onUpdate(Entity *e) {
-	if(e->state_time > 0) {
-		e->state_time--;
-		if(e->state_time == 0) {
-			switch(e->state) {
-			case 20:
-			case 21: ENTITY_SET_STATE(e, 10, 0); break;
-			case 30: ENTITY_SET_STATE(e, 0, 0); break;
-			default: break;
-			}
-		}
-	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+void ai_balrog(Entity *e) {
+	bool fall = true;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
-	if(e->state != 10 && e->y > block_to_sub(6)) entity_update_collision(e);
+
+	switch(e->state) {
+		case 0:
+		{
+			e->eflags &= ~NPC_IGNORESOLID;
+			e->x_speed = 0;
+			e->balrog_smoking = false;
+			SPR_SAFEANIM(e->sprite, 0);
+			//randblink(o, 4, 8);
+		}
+		break;
+		case 10:		// he jumps and flys away
+		{
+			e->x_speed = 0;
+			SPR_SAFEANIM(e->sprite, 2);
+			e->state_time = 0;
+			e->state++;
+		}
+		/* no break */
+		case 11:
+		{
+			if (++e->state_time <= BALROG_JUMPTIME) break;
+			SPR_SAFEANIM(e->sprite, 3);
+			e->state++;
+			e->y_speed = -BALROG_FLYAWAYSPEED;
+			e->eflags |= NPC_IGNORESOLID;
+		}
+		/* no break */
+		case 12:
+		{
+			fall = false;
+			e->y_speed -= BALROG_GRAVITY / 2;
+			if (e->y < 0) {
+				e->state = STATE_DELETE;
+				sound_play(SND_QUAKE, 5);
+				camera_shake(30);
+			}
+		}
+		break;
+		// he looks shocked and shakes, then flys away
+		// used when he is "hit by something"
+		case 20:
+		{
+			e->state = 21;
+			SPR_SAFEANIM(e->sprite, 5);
+			e->x_speed = 0;
+			e->state_time = e->state_time2 = 0;
+			//SmokeClouds(e, 4, 8, 8);
+			sound_play(SND_BIG_CRASH, 5);
+			e->balrog_smoking = 1;
+		}
+		/* no break */
+		case 21:
+		{
+			e->state_time2++;
+			e->x += ((e->state_time2 >> 1) & 1) ? (1<<9) : -(1<<9);
+			if (++e->state_time > BALROG_SHAKETIME) {
+				e->state = 10;
+			}
+			e->y_speed += BALROG_GRAVITY;
+			LIMIT_Y(BALROG_MAXFALL);
+		}
+		break;
+		case 30:	// he smiles for a moment
+		{
+			SPR_SAFEANIM(e->sprite, 5);
+			e->state_time = 0;
+			e->state = 31;
+		}
+		/* no break */
+		case 31:
+		{
+			if (++e->state_time > BALROG_SMILETIME) {
+				e->state = 0;
+			}
+		}
+		break;
+		case 40: // Spell cast before transforming into Balfrog
+		{
+			e->state = 41;
+			SPR_SAFEANIM(e->sprite, 5);
+		}
+		break;
+		case 42:
+		{
+			e->state_time = 0;
+			e->state = 43;
+		}
+		/* no break */
+		case 43:
+		{
+			// flashing visibility
+			// (transforming into Balfrog stage boss;
+			//	our flashing is interlaced with his)
+			e->state_time++;
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) ? HIDDEN : AUTO_FAST);
+		}
+		break;
+		case 50:	// he faces away
+		{
+			SPR_SAFEANIM(e->sprite, 8);
+			e->x_speed = 0;
+		}
+		break;
+		case 60:	// he walks
+		{
+			e->state = 61;
+			SPR_SAFEANIM(e->sprite, 1);
+		}
+		/* no break */
+		case 61:
+		{
+			MOVE_X(BALROG_WALKSPEED);
+		}
+		break;
+
+		// he is teleported away (looking distressed)
+		// this is when he is sent to Labyrinth at end of Sand Zone
+		case 70:
+		{
+			e->x_speed = 0;
+			e->state_time = 0;
+			SPR_SAFEANIM(e->sprite, 7);
+			e->state++;
+		}
+		/* no break */
+		case 71:
+		{
+			if(++e->state_time > 120) {
+				e->state = STATE_DELETE;
+				return;
+			}
+			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) ? HIDDEN : AUTO_FAST);
+		}
+		break;
+		case 80:	// hands up and shakes
+		{
+			SPR_SAFEANIM(e->sprite, 5);
+			e->state = 81;
+		}
+		/* no break */
+		case 81:
+		{
+			if (++e->state_time & 2) {
+				e->x += (1 << 9);
+			} else {
+				e->x -= (1 << 9);
+			}
+		}
+		break;
+		// fly up and lift Curly & PNPC
+		// (post-Ballos ending scene)
+		case 100:
+		{
+			e->state = 101;
+			e->state_time = 0;
+			SPR_SAFEANIM(e->sprite, 2);	// prepare for jump
+		}
+		/* no break */
+		case 101:
+		{
+			if (++e->state_time > BALROG_JUMPTIME) {
+				e->state = 102;
+				e->state_time = 0;
+				SPR_SAFEANIM(e->sprite, 3);	// fly up
+				entities_clear_by_type(OBJ_NPC_PLAYER);
+				entities_clear_by_type(OBJ_CURLY);
+				// TODO: OBJ_BALROG_PASSENGER
+				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, LEFT)->linkedobject = o;
+				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, RIGHT)->linkedobject = o;
+				e->y_speed = -BALROG_FLYAWAYSPEED;
+				e->eflags |= NPC_IGNORESOLID;	// so can fly through ceiling
+				fall = false;
+			}
+		}
+		break;
+		case 102:	// flying up during escape seq
+		{
+			fall = false;
+			// bust through ceiling
+			u16 y = sub_to_block(e->y + (4<<9));
+			if (y < 35 && y >= 0) {
+				if (stage_get_block(sub_to_block(e->x), y) != 0) {
+					// smoke needs to go at the bottom of z-order or you can't
+					// see any of the characters through all the smoke.
+					//map_ChangeTileWithSmoke(x, y, 0, 4, false, lowestobject);
+					//map_ChangeTileWithSmoke(x-1, y, 0, 4, false, lowestobject);
+					//map_ChangeTileWithSmoke(x+1, y, 0, 4, false, lowestobject);
+					camera_shake(10);
+					sound_play(SND_MISSILE_HIT, 5);
+				}
+			}
+			if (e->y + pixel_to_sub(e->hit_box.bottom) < -pixel_to_sub(20)) {
+				camera_shake(30);
+				e->state = STATE_DELETE;
+				return;
+			}
+		}
+		break;
+		case 500:	// used during Balfrog death scene
+		{
+			fall = false;
+		}
+		break;
+	}
+
+	e->x = e->x_next;
+	e->y = e->y_next;
+
+	if (e->balrog_smoking) {
+		if (++e->balrog_smoketimer > 20 || !(random() % 16)) {
+			//SmokeClouds(e, 1, 4, 4);
+			e->balrog_smoketimer = 0;
+		}
+	}
+
+	if (fall) {
+		e->y_speed += BALROG_GRAVITY;
+		if (e->y_speed >= BALROG_MAXFALL) e->y_speed = BALROG_MAXFALL;
+	}
+}
+
+void ai_balrog_drop_in(Entity *e) {
+	if(!e->grounded) e->y_speed += BALROG_GRAVITY;
+	e->y_next = e->y + e->y_speed;
+	e->x_next = e->x + e->x_speed;
+
+	switch(e->state) {
+		case 0:
+		{
+			e->state = 1;
+			e->grounded = false;
+			SPR_SAFEANIM(e->sprite, 3);	// falling
+		}
+		/* no break */
+		case 1:
+		{
+			// since balrog often falls through the ceiling we must wait until he is free-falling
+			// before we start checking to see if he hit the floor
+			if (stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) != 0x41) {
+				e->state = 2;
+			}
+		}
+		break;
+		case 2:	// free-falling
+		{
+			if ((e->grounded = collide_stage_floor(e))) {
+				e->y_speed = 0;
+				SPR_SAFEANIM(e->sprite, 2);
+				e->state = 3;
+				e->state_time = 0;
+
+				//SmokeSide(o, 4, DOWN);
+				camera_shake(30);
+			}
+		}
+		break;
+		case 3:	// landed
+		{
+			if (++e->state_time > BALROG_JUMPTIME) {
+				e->state = 4;
+				SPR_SAFEANIM(e->sprite, 0);
+			}
+		}
+		break;
+	}
+
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
 
-void ai_balrog_onState(Entity *e) {
+// Balrog busting in the door of the Shack.
+// he exists like this for only a moment, then the script
+// changes him to a standard OBJ_BALROG.
+void ai_balrog_bust_in(Entity *e) {
+	e->y_next = e->y + e->y_speed;
+	e->x_next = e->x + e->x_speed;
+
 	switch(e->state) {
-	case 0: // Standing around
-		SPR_SAFEANIM(e->sprite, 0);
+		case 0:
+		{
+			//SmokeClouds(o, 10, 8, 8);
+			e->y += (10 << 9);
+			e->y_speed = -BALROG_BUSTINSPEED;
+			//sound(SND_BLOCK_DESTROY);
+			camera_shake(30);
+			e->state = 1;
+			SPR_SAFEANIM(e->sprite, 3);
+		}
+		/* no break */
+		case 1:		// falling the short distance to ground
+		{
+			e->y_speed += BALROG_GRAVITY / 2;
+			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
+				e->state = 2;
+				SPR_SAFEANIM(e->sprite, 2);
+				e->state_time = 0;
+				camera_shake(30);
+			}
+		}
 		break;
-	case 10: // Going up!
-	case 11:
-		SPR_SAFEANIM(e->sprite, 3);
-		e->y_speed = pixel_to_sub(-2);
+		// landing animation
+		case 2:
+		{
+			if (++e->state_time > 16) {
+				e->state = 3;
+				SPR_SAFEANIM(e->sprite, 0);
+			}
+		}
 		break;
-	case 20: // Smoking, going up!
-	case 21:
-		SPR_SAFEANIM(e->sprite, 5);
-		e->state_time = 160;
-		break;
-	case 30: // Smile
-		SPR_SAFEANIM(e->sprite, 6);
-		e->state_time = 90;
-		break;
-	case 42: // Balfrog
-		entity_create_boss(sub_to_block(e->x), sub_to_block(e->y), BOSS_BALFROG, 1000);
-		break;
-	case 70: // Vanish
-	case 71:
-		ENTITY_SET_STATE(e, STATE_DELETE, 0);
+		// standing and blinking
+		case 3:
+		case 4:
+		{
+			//randblink(o, 4, 16, 100);
+		}
 		break;
 	}
+
+	e->x = e->x_next;
+	e->y = e->y_next;
+
+	LIMIT_Y(BALROG_MAXFALL);
 }
 
 // 68 - Boss: Balrog (Mimiga Village)

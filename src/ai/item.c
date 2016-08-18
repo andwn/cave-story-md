@@ -17,10 +17,7 @@ void ai_energy_onCreate(Entity *e) {
 		e->display_box.right -= 4;
 	}
 	e->x_speed = 0x200 - (random() % 0x400);
-	// Sync to global timer
 	e->alwaysActive = true;
-	energyCount++;
-	e->state_time = (system_get_frame() + energyCount * 2) % 4;
 }
 
 void ai_energy_onUpdate(Entity *e) {
@@ -37,14 +34,12 @@ void ai_energy_onUpdate(Entity *e) {
 			player.damage_value += e->experience;
 		}
 		e->state = STATE_DELETE;
-		energyCount--;
 	} else {
 		e->state_time++;
-		if(e->state_time > 10 * 60) {
+		if(e->state_time > 10 * FPS) {
 			e->state = STATE_DELETE;
-			energyCount--;
 			return;
-		} else if(energyCount > 8 || e->state_time > 7 * 60) {
+		} else if(e->state_time > 7 * FPS) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		} else if(!entity_on_screen(e)) {
 			SPR_SAFERELEASE(e->sprite);

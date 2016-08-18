@@ -21,11 +21,11 @@
 #define ANIM_LOOKUPJUMP 6
 #define ANIM_LOOKDOWNJUMP 7
 
-#define INVINCIBILITY_FRAMES 120
-
 #ifdef PAL
+#define INVINCIBILITY_FRAMES 100
 #define AIR_TICKS 10
 #else
+#define INVINCIBILITY_FRAMES 120
 #define AIR_TICKS 12
 #endif
 
@@ -259,8 +259,8 @@ void player_update() {
 		player_prev_weapon();
 	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
 		player_next_weapon();
-	// Shooting
 	}
+	// Shooting
 	if(playerWeapon[currentWeapon].type == WEAPON_MACHINEGUN) {
 		if(mgun_shoottime > 0) mgun_shoottime--;
 		if(player.controller[0]&BUTTON_B) {
@@ -278,7 +278,7 @@ void player_update() {
 				mgun_chargetime--;
 			} else {
 				playerWeapon[currentWeapon].ammo++;
-				mgun_chargetime = 4;
+				mgun_chargetime = (playerEquipment & EQUIP_TURBOCHARGE) ? 2 : 4;
 			}
 		}
 	} else {
@@ -492,6 +492,8 @@ bool player_invincible() {
 }
 
 bool player_inflict_damage(s16 damage) {
+	// Halve damage if we have the arms barrier
+	if((playerEquipment & EQUIP_ARMSBARRIER) && damage > 1) damage >>= 1;
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 	// Take health
@@ -526,7 +528,7 @@ bool player_inflict_damage(s16 damage) {
 		}
 	}
 	// Knock back
-	player.y_speed = -0x500; // 2 pixels per frame
+	player.y_speed = -0x500; // 2.5 pixels per frame
 	player.grounded = false;
 	return false;
 }

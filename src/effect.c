@@ -48,7 +48,7 @@ void effects_update() {
 			SPR_SAFERELEASE(effDamage[i].sprite);
 		} else {
 			if(effDamage[i].ttl & 1) effDamage[i].y -= 1;
-			SPR_setPosition(effDamage[i].sprite, 
+			SPR_SAFEMOVE(effDamage[i].sprite,
 				effDamage[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
 				effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
 		}
@@ -59,9 +59,9 @@ void effects_update() {
 			SPR_SAFERELEASE(effSmoke[i].sprite);
 		} else {
 			// Half assed animation
-			SPR_setVRAMTileIndex(effSmoke[i].sprite, 
+			SPR_SAFETILEINDEX(effSmoke[i].sprite,
 				TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 3) << 2));
-			SPR_setPosition(effSmoke[i].sprite, 
+			SPR_SAFEMOVE(effSmoke[i].sprite,
 				effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		}
@@ -69,6 +69,7 @@ void effects_update() {
 }
 
 void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
+
 	for(u8 i = 0; i < MAX_DAMAGE; i++) {
 		if(effDamage[i].ttl > 0) continue;
 		// Negative numbers are red and show '-' (Damage)
@@ -82,20 +83,20 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		// Create right to left, otherwise digits show up backwards
 		u16 tileIndex;
 		for(; num; digitCount++) {
-			tileIndex = (negative * 11 + (num % 10)) * 8;
+			tileIndex = ((negative ? 11 : 0) + (num % 10)) * 8;
 			memcpy(tiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32);
 			num /= 10;
 		}
-		tileIndex = (negative * 11 + 10) * 8;
+		tileIndex = ((negative ? 11 : 0) + 10) * 8;
 		memcpy(tiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32); // - or +
 		// Fill any remaining digits blank
 		for(u8 i = digitCount + 1; i < 4; i++) memcpy(tiles[3 - i], TILE_BLANK, 32);
 		effDamage[i].ttl = 60; // 1 second
 		effDamage[i].x = x;
 		effDamage[i].y = y;
-		effDamage[i].sprite = SPR_addSpriteEx(&SPR_Dummy4x1, 
+		effDamage[i].sprite = SPR_addSpriteEx(&SPR_Dummy4x1,
 			x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
-			y - sub_to_pixel(camera.y) + SCREEN_HALF_H, 
+			y - sub_to_pixel(camera.y) + SCREEN_HALF_H,
 			TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i * 4)), 0,
 			SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_SPRITE_ALLOC);
 		SYS_disableInts();
@@ -103,6 +104,7 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		SYS_enableInts();
 		break;
 	}
+
 }
 
 void effect_create_smoke(u8 type, s16 x, s16 y) {
@@ -111,9 +113,9 @@ void effect_create_smoke(u8 type, s16 x, s16 y) {
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
 		effSmoke[i].ttl = 48;
-		effSmoke[i].sprite = SPR_addSpriteEx(&SPR_Dummy2x2, 
+		effSmoke[i].sprite = SPR_addSpriteEx(&SPR_Dummy2x2,
 			x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-			y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8, 
+			y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
 			TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX), 0,
 			SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_SPRITE_ALLOC);
 		break;

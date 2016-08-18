@@ -443,11 +443,11 @@ u8 execute_command() {
 		case CMD_WAI: // Wait (1) frames
 			args[0] = tsc_read_word();
 			tscState = TSC_WAITTIME;
-//#ifdef PAL
+#ifdef PAL
 			waitTime = args[0];
-//#else
-//			waitTime = args[0] * 60 / 50;
-//#endif
+#else
+			waitTime = args[0] * 60 / 50;
+#endif
 //			if(joy_down(BUTTON_B)) waitTime /= 2;
 			return 1;
 		case CMD_WAS: // Wait for player to hit the ground

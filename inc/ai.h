@@ -78,7 +78,7 @@ typedef void (*EntityMethod)(Entity*);
 
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
-Entity *pieces[6];
+//Entity *pieces[6];
 
 /* Generic - basic.c */
 
@@ -127,9 +127,10 @@ void ai_balfrog_onCreate(Entity *e);
 void ai_balfrog_onUpdate(Entity *e);
 void ai_balfrog_onState(Entity *e);
 
-void ai_balrog_onCreate(Entity *e);
-void ai_balrog_onUpdate(Entity *e);
-void ai_balrog_onState(Entity *e);
+void oncreate_balrog(Entity *e);
+void ai_balrog(Entity *e);
+void ai_balrog_drop_in(Entity *e);
+void ai_balrog_bust_in(Entity *e);
 
 void ai_balrogRunning_onUpdate(Entity *e);
 void ai_balrogRunning_onState(Entity *e);

@@ -16,8 +16,8 @@ PALETTE PAL_Jenka		"sprite/jenka.png" 3
 # ----------------------------------------------------------------------------------------------
 
 # Dummy sprites
-SPRITE SPR_Dummy4x1	"sprite/savesign.png" 4 1 0 0 NONE
-SPRITE SPR_Dummy2x2	"sprite/savesign.png" 2 2 0 0 NONE
+SPRITE SPR_Dummy4x1	"sprite/refill.png" 4 1 0 0 NONE
+SPRITE SPR_Dummy2x2	"sprite/refill.png" 2 2 0 0 NONE
 SPRITE SPR_Dummy16x1 "sprite/armsimage.png" 16 1 0 0 NONE
 
 # Use PAL_Main

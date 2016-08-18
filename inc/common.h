@@ -4,6 +4,11 @@
 #include <types.h>
 
 //#define PAL
+#ifdef PAL
+#define FPS 50
+#else
+#define FPS 60
+#endif
 
 // Screen size
 #define SCREEN_WIDTH 320
@@ -15,7 +20,6 @@
 enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
 // Tileset width/height
-// The only map larger than this is hell (have to figure out something for that)
 #define TS_WIDTH 32
 #define TS_HEIGHT 16
 
@@ -72,17 +76,6 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define round(x) (((x)+0x100)&~0x1FF)
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
-#define divu10(n) ({ \
-    u16 q, r; \
-    q = (n >> 1) + (n >> 2); \
-    q = q + (q >> 4); \
-    q = q + (q >> 8); \
-    /* q = q + (q >> 16); */ \
-    q = q >> 3; \
-    r = n - (((q << 2) + q) << 1); \
-    n = q + (r > 9); \
-})
-
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
 
@@ -102,6 +95,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define SPR_SAFEFRAME(s, f); ({ if(s != NULL) { SPR_setFrame(s, f); } })
 #define SPR_SAFEANIMFRAME(s, a, f); ({ if(s != NULL) { SPR_setAnimAndFrame(s, a, f); } })
 #define SPR_SAFEVISIBILITY(s, v); ({ if(s != NULL) { SPR_setVisibility(s, v); } })
+#define SPR_SAFETILEINDEX(s, i); ({ if(s != NULL) { SPR_setVRAMTileIndex(s, i); } })
 
 // Booleans
 typedef unsigned char bool;
