@@ -20,8 +20,6 @@
 #define BLOCK_TRAVEL_SPEED		0x1B0
 #endif
 
-//static int bubble_xmark = 0, bubble_ymark = 0;
-
 void ai_block_onCreate(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
@@ -367,14 +365,8 @@ void ai_gaudi_onUpdate(Entity *e)
 	LIMIT_Y(0x5ff);
 }
 
-/*
-void c------------------------------() {}
-*/
-
-void ai_gaudiFlying_onUpdate(Entity *e)
-{
-	if (e->health <= (1000 - GAUDI_FLYING_HP))
-	{
+void ai_gaudiFlying_onUpdate(Entity *e) {
+	if (e->health <= (1000 - GAUDI_FLYING_HP)) {
 		if (e->direction == 0)
 			e->x -= (2 << 9);
 		else
@@ -388,11 +380,7 @@ void ai_gaudiFlying_onUpdate(Entity *e)
 		return;
 	}
 	
-	//if (!PLAYER_NEAR_ENOUGH())
-	//	return;
-	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			//vector_from_angle(random(0, 255), (1 << 9), &e->x_speed, &e->y_speed);
@@ -450,10 +438,6 @@ void ai_gaudiFlying_onUpdate(Entity *e)
 	e->y += e->y_speed;
 }
 
-/*
-void c------------------------------() {}
-*/
-
 void ai_gaudiArmored_onUpdate(Entity *e)
 {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP))
@@ -466,18 +450,11 @@ void ai_gaudiArmored_onUpdate(Entity *e)
 		return;
 	}
 	
-	//if (!PLAYER_NEAR_ENOUGH())
-	//	return;
-	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
 	FACE_PLAYER(e);
 	SPR_SAFEHFLIP(e->sprite, e->direction);
-	
-	//debug("%d", e->state);
-	//debugVline(e->x, 0, 0, 255);
-	//debugVline(e->x_mark, 0, 255, 0);
 	
 	switch(e->state)
 	{
@@ -912,10 +889,6 @@ void ai_firewhirr_shot(Entity *e)
 	}
 }
 
-/*
-void c------------------------------() {}
-*/
-
 void ai_gaudi_egg(Entity *e)
 {
 	if (!e->state)
@@ -953,10 +926,6 @@ void ai_gaudi_egg(Entity *e)
 		}
 	}
 }
-
-/*
-void c------------------------------() {}
-*/
 
 void ai_fuzz_core(Entity *e)
 {
@@ -1048,22 +1017,11 @@ void aftermove_fuzz(Entity *e)
 	}
 }
 */
-/*
-void c------------------------------() {}
-*/
 
 #define BUYOBUYO_BASE_HP		60
 
-void ai_buyobuyo_base(Entity *e)
-{
-/*if (e->onscreen) {
-	debug("state: %d", e->state);
-	debug("timer: %d", e->state_time);
-	debug("timer2: %d", e->state_time2);
-}*/
-	
-	if (e->state < 3 && e->health < (1000 - BUYOBUYO_BASE_HP))
-	{
+void ai_buyobuyo_base(Entity *e) {
+	if (e->state < 3 && e->health < (1000 - BUYOBUYO_BASE_HP)) {
 		//SmokeClouds(o, objprop[e->type].death_smoke_amt, 8, 8);
 		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
 		//e->SpawnPowerups();
@@ -1075,11 +1033,9 @@ void ai_buyobuyo_base(Entity *e)
 		//e->frame = 2;
 	}
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
-         //NX_LOG("ai_buyobuyo_base - state 0\n");
 			// ceiling has different bounding box and action point
 			//if (e->direction == 1)
 			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
@@ -1089,7 +1045,6 @@ void ai_buyobuyo_base(Entity *e)
 		}
 		case 1:
 		{
-         //NX_LOG("ai_buyobuyo_base - state 1\n");
 			if (PLAYER_DIST_X(0x14000))
 			{
 				if ((e->direction == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
@@ -1108,9 +1063,7 @@ void ai_buyobuyo_base(Entity *e)
 		
 		case 2:
 		{
-         //NX_LOG("ai_buyobuyo_base - state 2\n");
 			//ANIMATE(3, 0, 1);
-			
 			if (++e->state_time > 10)
 			{
 				Entity *buyo = entity_create(0, 0, 0, 0, OBJ_BUYOBUYO, 0, e->direction);
@@ -1138,24 +1091,19 @@ void ai_buyobuyo_base(Entity *e)
 	}
 }
 
-void ai_buyobuyo(Entity *e)
-{
+void ai_buyobuyo(Entity *e) {
 	bool deleteme = false;
-	//ANIMATE(6, 0, 1);
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			// shoot up down at player...
-         //NX_LOG("ai_buyobuyo - state 0\n");
 			e->y_speed = (e->direction == 0) ? -0x600 : 0x600;
 			e->state = 1;
 			e->state_time = 0;
 		}
 		case 1:
 		{
-         //NX_LOG("ai_buyobuyo - state 1\n");
 			e->state_time++;		// inc fly time
 			// reached height of player yet?
 			if (PLAYER_DIST_Y(0x2000))
@@ -1169,7 +1117,6 @@ void ai_buyobuyo(Entity *e)
 		
 		case 2:
 		{
-         //NX_LOG("ai_buyobuyo - state 2\n");
 			// this slight "minimum fly time" keeps the underwater ones from
 			// smacking into the floor if the player is underwater with them
 			if (++e->state_time > 3)
@@ -1188,7 +1135,6 @@ void ai_buyobuyo(Entity *e)
 		
 		case 3:
 		{
-         //NX_LOG("ai_buyobuyo - state 3\n");
 			if (e->x > e->x_mark) e->x_speed -= 0x20;
 			if (e->x < e->x_mark) e->x_speed += 0x20;
 			if (e->y > e->y_mark) e->y_speed -= 0x20;

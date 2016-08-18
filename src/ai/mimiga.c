@@ -7,6 +7,12 @@
 #include "tables.h"
 #include "tsc.h"
 
+#ifdef PAL
+#define MIMIGA_WALKSPEED 0x200
+#else
+#define MIMIGA_WALKSPEED 0x1D0
+#endif
+
 void ai_flower_onCreate(Entity *e) {
 	e->spriteFrame = random() % 6;
 }
@@ -28,7 +34,7 @@ void ai_jack_onState(Entity *e) {
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		break;
 		case 8: // Walk
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		MOVE_X(MIMIGA_WALKSPEED);
 		SPR_SAFEANIM(e->sprite, 1);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		break;
@@ -49,7 +55,7 @@ void ai_santa_onState(Entity *e) {
 		break;
 		case 3: // Walk
 		case 4:
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		MOVE_X(MIMIGA_WALKSPEED);
 		SPR_SAFEANIM(e->sprite, 1);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		break;
@@ -70,7 +76,7 @@ void ai_chaco_onState(Entity *e) {
 		break;
 		case 3: // Walk
 		case 4:
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		MOVE_X(MIMIGA_WALKSPEED);
 		SPR_SAFEANIM(e->sprite, 1);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		break;

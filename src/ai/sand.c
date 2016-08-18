@@ -84,8 +84,6 @@ void ai_jenka_onCreate(Entity *e) {
 	}
 }
 
-// Shoutouts to Noxious because I keep stealing his AI code
-
 void ai_polish_onUpdate(Entity *e) {
 	#define POLISH_ACCEL	0x20
 	#define POLISH_SPEED	0x200
@@ -295,11 +293,6 @@ void ai_sandcroc_onUpdate(Entity *e) {
 				collide_stage_rightwall(e);
 				e->x = e->x_next;
 			}
-			//if((e->x_speed > 0 && e->x > e->x_mark + 0x800) ||
-			//		(e->x_speed < 0 && e->x < e->x_mark - 0x800)) {
-			//	e->x_speed = 0;
-			//}
-			
 			if(PLAYER_DIST_X(pixel_to_sub(19))) {
 				// check if bottoms of player and croc are near
 				if(player.y < e->y && sub_to_pixel(player.y) + player.hit_box.bottom + 12 >
@@ -371,14 +364,7 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			}
 		break;
 	}
-	//LIMIT_Y(0x100);
-	// these guys (from oside) don't track
-	//if(e->type == OBJ_SANDCROC_OSIDE) e->x_speed = 0;
-	
-	//e->x += e->x_speed;
-	//e->y += e->y_speed;
 }
-
 
 void ai_sunstone_onUpdate(Entity *e) {
 	switch(e->state) {

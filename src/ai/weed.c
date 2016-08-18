@@ -51,7 +51,7 @@ void ai_jelly_onUpdate(Entity *e) {
 		break;
 	}
 	e->direction = (e->x < e->x_mark);
-	e->y_speed += 0x20;
+	if(e->y <= e->y_mark) e->y_speed += 0x20;
 	LIMIT_X(0x100);
 	LIMIT_Y(0x200);
 	

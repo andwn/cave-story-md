@@ -117,10 +117,6 @@ void ai_shutter_stuck(Entity *e)
 	SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 }
 
-/*
-void c------------------------------() {}
-*/
-
 // the damaged robot which wakes up right before the Almond battle
 void ai_almond_robot(Entity *e)
 {

@@ -42,6 +42,9 @@ void ai_balrog(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:
 		{
@@ -258,7 +261,7 @@ void ai_balrog(Entity *e) {
 	}
 
 	if (fall) {
-		e->y_speed += BALROG_GRAVITY;
+		if (!e->grounded) e->y_speed += BALROG_GRAVITY;
 		if (e->y_speed >= BALROG_MAXFALL) e->y_speed = BALROG_MAXFALL;
 	}
 }

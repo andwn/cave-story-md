@@ -112,8 +112,6 @@ void ai_curly_onState(Entity *e) {
 	}
 }
 
-// I'm copying from NXEngine again lol
-
 #define CURLYB_FIGHT_START		10
 #define CURLYB_WAIT				11
 #define CURLYB_WALK_PLAYER		13
@@ -133,28 +131,18 @@ void ai_curly_onState(Entity *e) {
 static void curlyboss_fire(Entity *e, u8 dir)
 {
 	Entity *shot = entity_create(0, 0, 0, 0, OBJ_CURLYBOSS_SHOT, 0, dir & 1);
-	
 	shot->attack = 6;
-	//shot->sprite = SPR_SHOT_MGUN_L1;
-	//shot->dir = dir & 1;
-	//shot->shot.dir = dir;
-	
-	//effect(shot->CenterX(), shot->CenterY(), EFFECT_STARPOOF);
-	
-	switch(dir)
-	{
+	switch(dir) {
 		case 0:
 			shot->x = e->x - pixel_to_sub(12);
 			shot->y = e->y + pixel_to_sub(2);
 			shot->x_speed = -4096;
 		break;
-		
 		case 1:
 			shot->x = e->x + pixel_to_sub(12);
 			shot->y = e->y + pixel_to_sub(2);
 			shot->x_speed = 4096;
 		break;
-		
 		case 2:
 			shot->x = e->x;
 			shot->y = e->y - pixel_to_sub(10);
@@ -162,13 +150,10 @@ static void curlyboss_fire(Entity *e, u8 dir)
 			SPR_SAFEANIM(shot->sprite, 1);
 		break;
 	}
-	
 	sound_play(SND_POLAR_STAR_L1_2, 4);
 }
 
-void ai_curlyBoss_onUpdate(Entity *e) 
-{
-
+void ai_curlyBoss_onUpdate(Entity *e) {
 	//e->y_next = e->y + e->y_speed;
 	switch(e->state) 
 	{

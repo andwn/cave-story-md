@@ -7,6 +7,12 @@
 #include "tables.h"
 #include "tsc.h"
 
+#ifdef PAL
+#define SUE_WALKSPEED	0x200
+#else
+#define SUE_WALKSPEED	0x1D0
+#endif
+
 void ai_sue_onUpdate(Entity *e) {
 	if(e->state == 13) { // Carried by Igor
 		Entity *igor = entity_find_by_id(501);
@@ -56,7 +62,7 @@ void ai_sue_onState(Entity *e) {
 		break;
 		case 3: // Walking
 		case 4: 
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		MOVE_X(SUE_WALKSPEED);
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 1);
 		break;

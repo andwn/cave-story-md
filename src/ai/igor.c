@@ -9,9 +9,13 @@
 #include "input.h"
 #include "effect.h"
 
-// I copied stuff from NXEngine here
+#ifdef PAL
+#define IGOR_WALKSPEED	0x200
+#else
+#define IGOR_WALKSPEED	0x1D0
+#endif
 
-s8 fireatk = 0;
+#define fireatk curly_target_x
 
 enum {
 	STATE_STAND = 0,
@@ -25,6 +29,7 @@ enum {
 };
 
 void ai_igor_onCreate(Entity *e) {
+	fireatk = 0;
 	e->attack = 0;
 	e->hit_box.bottom += 4;
 	e->hit_box.top -= 4;
@@ -169,12 +174,12 @@ void ai_igorscene_onUpdate(Entity *e) {
 		e->state_time--;
 		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
 	}
-	if(!e->grounded) e->y_speed += GRAVITY;
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
-	e->x = e->x_next;
-	e->y = e->y_next;
+	//if(!e->grounded) e->y_speed += GRAVITY;
+	//e->x_next = e->x + e->x_speed;
+	//e->y_next = e->y + e->y_speed;
+	//entity_update_collision(e);
+	e->x += e->x_speed;
+	//e->y = e->y_next;
 }
 
 /*
