@@ -1,4 +1,5 @@
 ### TODO List
+This list is updated when things are fixed in master and may not reflect the current release.
 
 - [ ] Music (27 of 41)
 - [ ] Engine
@@ -34,9 +35,9 @@
     - [x] Animate Jenka
     - [ ] Animate Puppies
     - [x] Animate Mimigas in the Bar
-    - [ ] Animate Doctor
+    - [x] Animate Doctor
     - [ ] Damage tiles
-    - [ ] Fix whatever King is supposed to do
+    - [x] Fix whatever King is supposed to do
     - [x] AI for Curly Boss
     - [x] AI for Polish
     - [x] AI for Sand Croc
@@ -49,13 +50,13 @@
     - [x] AI for Toroko Boss
   - [ ] Labyrinth
     - [ ] Need to be able to equip the booster
-    - [ ] Animate Moving Blocks
+    - [x] Animate Moving Blocks
     - [ ] Animate Nurse
     - [ ] Purple Critter's projectile
-    - [ ] AI for Gaudi
-    - [ ] AI for Pooh Black
+    - [x] AI for Gaudi
+    - [x] AI for Pooh Black
     - [ ] AI for Monster X
-    - [ ] AI for Last Balrog Fight
+    - [x] AI for Last Balrog Fight
   - [ ] Post Labyrinth / Core
     - [ ] BGM: Labyrinth Fight
     - [ ] Water mechanic for the Core room

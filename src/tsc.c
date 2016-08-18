@@ -723,10 +723,12 @@ u8 execute_command() {
 			effect_create_smoke(1, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
 			sound_play(SND_BLOCK_DESTROY, 5);
 			break;
-		case CMD_MP_ADD: // TODO: Map flag (1)
+		// These two "Map Flag" commands were mentioned in TSC.txt but may not exist
+		// At least NXEngine doesn't check for them. I keep them here just in case
+		case CMD_MP_ADD: // Map flag (1)
 			args[0] = tsc_read_word();
 			break;
-		case CMD_MPJ: // TODO: If map flag (1) set jump to event (2)
+		case CMD_MPJ: // If map flag (1) set jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			break;
@@ -762,7 +764,7 @@ u8 execute_command() {
 			break;
 		}
 	} else if(window_is_open()) {
-		if(window_tick() || (joystate & BUTTON_B)) {
+		if(window_tick() || (joystate & BUTTON_A)) {
 			window_draw_char(cmd);
 		} else {
 			curCommand -= 1;

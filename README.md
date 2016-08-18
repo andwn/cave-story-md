@@ -1,7 +1,7 @@
 # Cave Story MD
 ![Screenshot](doc/ss01.png)
 
-[More Screenshots](doc/SCREENS.md) / [Funny Screenshots](doc/SCREENS-FUNNY.md)
+[More Screenshots](doc/SCREENS.md) / [Glitches](doc/SCREENS-FUNNY.md)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
@@ -12,12 +12,16 @@ It should work on any console or emulator (but not PAL yet).
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 #### Is this beatable?
-Not yet. Right now you can make it to the first room of Labyrinth, but only the parts leading up to the beginning of Sand Zone are in a well working state (a lot of NPCs don't move or are invisible as you get further into the game).
-Check out the [TODO list](doc/TODO.md) for progress.
+Not yet. Check out the [TODO list](doc/TODO.md) for progress.
+
+In the current release, you can get to the first room in Labyrinth but many objects/characters do not move/react to anything in Grasstown and Sand Zone. 
+
+In master you can make it to the third Balrog fight (Labyrinth).
 
 #### Controls
 - C - Jump, confirm
-- B - Shoot, hold to skip text
+- B - Shoot
+- A - Hold to skip text
 - Y, Z - Switch weapon
 - Start - Pause / Item Menu
 
@@ -31,4 +35,4 @@ Note: Upstream Gendev is using an outdated SGDK version. for now use [my fork](h
 #### Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
 - My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
-- There exists another open source rewrite of Cave Story known as NXEngine. While I did not know about it's existence until knee deep into my own port, I have recently been using it as a reference for the AI.
+- Most of the AI is ported over from NXEngine. Good thing that exists because I probably would have given up otherwise.
