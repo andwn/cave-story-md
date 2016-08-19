@@ -33,11 +33,7 @@
 #define ENTITY_ONSTATE(e) ({                                                                   \
 	if(npc_info[e->type].onState != NULL) npc_info[e->type].onState(e);                        \
 })
-/*
-#define ENTITY_ONHURT(e) ({                                                                    \
-	if(npc_info[e->type].onHurt != NULL) npc_info[e->type].onHurt(e);                          \
-})
-*/
+
 #define ENTITY_SET_STATE(e, s, t) ({                                                           \
 	e->state = s;                                                                              \
 	e->state_time = t;                                                                         \
@@ -54,6 +50,15 @@ typedef void (*EntityMethod)(Entity*);
 #define STATE_DESTROY 998
 // Signal to delete, but don't explode
 #define STATE_DELETE 999
+
+// states to control the water-level object
+#define WL_CALM				10	// calm and slow at set point
+
+#define WL_CYCLE			20	// cycles between set point and top of screen
+#define WL_DOWN				21	// in cycle--currently down
+#define WL_UP				22	// in cycle--currently up
+
+#define WL_STAY_UP			30	// goes to top of screen and doesn't come back down
 
 /* Helper Macros */
 
@@ -96,9 +101,14 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Shared Variables */
 
+Entity *global_entitylink;
+#define water_entity	global_entitylink
+
+u8 water_screenlevel;
+u16 water_state, water_forcestate;
+
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
-//Entity *pieces[6];
 
 /* Utility functions - util.c */
 

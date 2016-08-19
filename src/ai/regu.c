@@ -333,8 +333,8 @@ void ai_sue(Entity *e) {
 		{
 			if (e->linkedEntity != NULL) {
 				Entity *link = e->linkedEntity;
-				e->x = link->x + link->direction ? -0x1000 : 0x1000;
-				e->y = link->y;
+				e->x_next = link->x + link->direction ? -0x1000 : 0x1000;
+				e->y_next = link->y;
 				e->direction = link->direction;
 				SPR_SAFEHFLIP(e->sprite, e->direction);
 			}
