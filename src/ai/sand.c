@@ -277,13 +277,17 @@ void ai_baby_onUpdate(Entity *e) {
 void ai_sandcroc_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
+		{
 			e->state = 1;
 			e->state_time = 0;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 			e->nflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+		}
+		/* no break */
 		case 1:
+		{
 			// track player invisibly underground
 			if(e->type != OBJ_SANDCROC_OSIDE) {
 				e->x_speed = (e->x < player.x) ? 0x400:-0x400;
@@ -308,9 +312,10 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			} else {
 				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
+		}
 		break;
-		
 		case 2:		// attacking
+		{
 			e->state_time++;
 			if(e->state_time == 12) {
 				e->attack = (e->type == OBJ_SANDCROC_OSIDE) ? 15 : 10;
@@ -322,9 +327,10 @@ void ai_sandcroc_onUpdate(Entity *e) {
 				e->state_time = 0;
 				SPR_SAFEANIM(e->sprite, 2);
 			}
+		}
 		break;
-		
 		case 3:
+		{
 			e->state_time++;
 			if(e->damage_time) {
 				e->state = 4;
@@ -332,9 +338,10 @@ void ai_sandcroc_onUpdate(Entity *e) {
 				e->y_speed = 0;
 				e->damage_time += 25;		// delay floattext until after we're underground
 			}
+		}
 		break;
-		
 		case 4:		// retreat
+		{
 			e->y += 0x280;
 			e->eflags &= ~(NPC_SOLID);
 			
@@ -344,9 +351,10 @@ void ai_sandcroc_onUpdate(Entity *e) {
 				e->state = 5;
 				e->state_time = 0;
 			}
+		}
 		break;
-		
 		case 5:
+		{
 			SPR_SAFEANIM(e->sprite, 0);
 			e->y = e->y_mark;
 			
@@ -362,6 +370,7 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			} else {
 				e->state = 0;
 			}
+		}
 		break;
 	}
 }
@@ -369,22 +378,27 @@ void ai_sandcroc_onUpdate(Entity *e) {
 void ai_sunstone_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
-			e->eflags |= NPC_IGNORESOLID;
+		{
+			// Don't allow bullets through
+			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state = 1;
+		}
 		break;
-		
 		case 10:	// triggered to move by hvtrigger script
-			// Don't flip the sprite
+		{
+			// Always face left, don't flip the sprite while moving
 			SPR_SAFEHFLIP(e->sprite, 0);
 			e->state_time = 0;
 			e->state++;
+		}
+		/* no break */
 		case 11:
+		{
 			if(e->direction) e->x += 0x80; else e->x -= 0x80;
-			
 			if((e->state_time & 7) == 0) sound_play(SND_QUAKE, 5);
 			e->state_time++;
-				
 			camera_shake(20);
+		}
 		break;
 	}
 }
@@ -396,26 +410,23 @@ void ai_armadillo_onUpdate(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
+		{
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			e->state = 1;
+		}
+		/* no break */
 		case 1:
-			if(collide_stage_leftwall(e) && !e->direction) {
-				e->direction = 1;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+		{
+			if((!e->direction && collide_stage_leftwall(e)) ||
+				(e->direction && collide_stage_rightwall(e))) {
+				TURN_AROUND(e);
 			}
-			if(collide_stage_rightwall(e) && e->direction) {
-				e->direction = 0;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
-			}
-			MOVE_X(0x100);
+			MOVE_X(SPEED(0x100));
+		}
 		break;
 	}
-	if(!e->grounded) {
-		e->grounded = collide_stage_floor(e);
-	} else {
-		e->grounded = collide_stage_floor_grounded(e);
-	}
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -434,6 +445,7 @@ void ai_crow_onUpdate(Entity *e) {
 			e->y_mark = e->y + (e->y_speed * 8);
 			e->state = 1;
 		}
+		/* no break */
 		case 1:
 		case 101:
 			if (e->x > e->x_mark) e->x_speed -= 16;
@@ -490,9 +502,13 @@ void ai_skullhead_onUpdate(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
+		{
 			e->state = 1;
 			e->state_time = random() % 5;
+		}
+		/* no break */
 		case 1:
+		{
 			if(++e->state_time > 8) {
 				e->y_speed = -0x350;
 				e->state = 2;
@@ -501,7 +517,10 @@ void ai_skullhead_onUpdate(Entity *e) {
 			} else {
 				break;
 			}
+		}
+		/* no break */
 		case 2:
+		{
 			e->y_speed += 0x40;
 			LIMIT_Y(0x5ff);
 			if(e->y_speed > 0) {
@@ -517,6 +536,7 @@ void ai_skullhead_onUpdate(Entity *e) {
 			} else {
 				collide_stage_ceiling(e);
 			}
+		}
 		break;
 	}
 	if(e->x_speed) {
@@ -570,60 +590,67 @@ void ai_curlys_mimigas(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:		// init/set initial anim state
+		{
 			if(e->type == OBJ_MIMIGAC1) {
 				e->state = 100;
 			} else { // OBJ_MIMIGAC2 & OBJ_MIMIGA_ENEMY
 				e->state = 2;			// stand and blink
 				if(e->type == OBJ_MIMIGAC2) {
-					if(e->direction) e->state = 110; // sleeping
+					if(e->eflags & NPC_OPTION2) e->state = 110; // sleeping
 				}
 			}
-			ai_curlys_mimigas(e);		// re-process again with correct state
+			//ai_curlys_mimigas(e);		// re-process again with correct state
+		}
 		break;
-		
 		case 2:		// init stand and blink
+		{
 			e->state = 3;
+		}
+		/* no break */
 		case 3:		// stand and blink
+		{
 			SPR_SAFEANIM(e->sprite, 0);
 			//randblink(o, 1, 8);
+		}
 		break;
-		
 		// sitting mimiga (when facing right)
 		// facing away mimiga (when facing left)
 		case 100:
+		{
 			SPR_SAFEANIM(e->sprite, 3);
-			//o->frame = 4;
+		}
 		break;
-		
 		case 110:	// sleeping facing left mimiga
+		{
 			SPR_SAFEANIM(e->sprite, 6);
-			//o->frame = 7;
 			//ai_zzzz_spawner(o);
+		}
 		break;
-		
 		/// ******************** Fighting Mimiga Code ********************
 		case 10:
+		{
 			e->eflags |= NPC_SHOOTABLE;
-			
 			e->health = 1000;
 			e->state = 11;
-			
 			e->state_time = random() % 50;
 			SPR_SAFEANIM(e->sprite, 0);
-		//fall thru to state 11
+		}
+		/* no break */
 		case 11:
 			if(e->state_time) e->state_time--;
 			else e->state = 13;
 		break;
-		
 		case 13:
+		{
 			e->state = 14;
 			e->state_time = random() % 50;
 			FACE_PLAYER(e);
 			SPR_SAFEHFLIP(e->sprite, e->direction);
 			SPR_SAFEANIM(e->sprite, 1);
-			// fall thru
+		}
+		/* no break */
 		case 14:
+		{
 			if(e->direction) e->x_speed += 0x40;
 			else e->x_speed -= 0x40;
 			
@@ -632,22 +659,23 @@ void ai_curlys_mimigas(Entity *e) {
 			} else {	
 				// enter hop state
 				e->state = 15;
-				//e->frame = 2;
 				e->y_speed = -0x200;
 				e->attack = 2;
 			}
+		}
 		break;
-		
 		case 15:	// hopping
+		{
 			if((e->grounded = collide_stage_floor(e))) {	
 				// landed
 				e->x_speed = 0;
 				e->state = 10;
 				e->attack = 0;
 			}
+		}
 		break;
-		
 		case 20:	// aiiie! got shot!!
+		{
 			if((e->grounded = collide_stage_floor(e))) {
 				e->x_speed = 0;
 				e->state = 21;
@@ -656,14 +684,12 @@ void ai_curlys_mimigas(Entity *e) {
 				} else {
 					SPR_SAFEANIM(e->sprite, 6);
 				}
-				//if (o->frame==6) o->frame = 7;
-				//			else o->frame = 8;
-				
 				e->state_time = 300 + (random() % 100);
 			}
+		}
 		break;
-		
 		case 21:	// lying on ground knocked out
+		{
 			if (e->state_time) {
 				e->state_time--;
 				break;
@@ -673,23 +699,21 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 11;
 			e->state_time = random() % 50;
 			SPR_SAFEANIM(e->sprite, 0);
+		}
 		break;
 	}
-	
-	if (e->state > 10 && e->state < 20 && e->health != 1000)
-	{	// got shot by player
+	if (e->state > 10 && e->state < 20 && e->health != 1000) {
+		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
 		SPR_SAFEANIM(e->sprite, (random() & 1) + 4);
-		//e->frame = random(5, 6);
-		
 		e->attack = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 	}
 	
-	e->y_speed += 0x20;
-	LIMIT_Y(0x5ff);
-	LIMIT_X(0x1ff);
+	if(!e->grounded) e->y_speed += SPEED(0x20);
+	LIMIT_Y(SPEED(0x5ff));
+	LIMIT_X(SPEED(0x1ff));
 	if(!e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
 	

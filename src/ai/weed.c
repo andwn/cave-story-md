@@ -13,53 +13,63 @@
 void ai_jelly_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
-			e->state_time = random() % 20;
+		{
+			e->state_time = random() % TIME(20);
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			if(e->eflags & NPC_OPTION2) e->direction = 1;
-			e->x_speed = e->direction ? 0x200 : -0x200;
+			MOVE_X(SPEED(0x200));
 			e->state = 1;
+		}
+		/* no break */
 		case 1:
+		{
 			if(e->state_time == 0) {
 				e->state = 10;
 			} else {
 				e->state_time--;
 				break;
 			}
+		}
+		/* no break */
 		case 10:
-			if(++e->state_time > 10) {
+		{
+			if(++e->state_time > TIME(10)) {
 				e->state_time = 0;
 				e->state = 11;
 			}
+		}
 		break;
-		
 		case 11:
-			if(++e->state_time == 12) {
-				e->x_speed += e->direction ? 0x100 : -0x100;
-				e->y_speed -= 0x200;
-			} else if(e->state_time > 16) {
+		{
+			if(++e->state_time == TIME(12)) {
+				MOVE_X(SPEED(0x100));
+				e->y_speed -= SPEED(0x200);
+			} else if(e->state_time > TIME(16)) {
 				e->state = 12;
 			}
+		}
 		break;
-		
 		case 12:
+		{
 			e->state_time++;
-			if(e->y > e->y_mark && e->state_time > 10) {
+			if(e->y > e->y_mark && e->state_time > TIME(10)) {
 				e->state_time = 0;
 				e->state = 10;
 			}
+		}
 		break;
 	}
 	e->direction = (e->x < e->x_mark);
-	if(e->y <= e->y_mark) e->y_speed += 0x20;
-	LIMIT_X(0x100);
-	LIMIT_Y(0x200);
+	if(e->y <= e->y_mark) e->y_speed += SPEED(0x20);
+	LIMIT_X(SPEED(0x100));
+	LIMIT_Y(SPEED(0x200));
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(collide_stage_leftwall(e)) e->direction = 1;
 	if(collide_stage_rightwall(e)) e->direction = 0;
-	if(collide_stage_floor(e)) e->y_speed = -0x200;
+	if(collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -67,6 +77,7 @@ void ai_jelly_onUpdate(Entity *e) {
 void ai_kulala_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
+		{
 			SPR_SAFEANIM(e->sprite, 4);
 			if(e->damage_time) {
 				camera_shake(30);
@@ -74,21 +85,21 @@ void ai_kulala_onUpdate(Entity *e) {
 				SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
+		}
 		break;
-		
 		case 10:	// falling
-			//e->eflags |= FLAG_SHOOTABLE;
+		{
 			e->eflags &= ~NPC_INVINCIBLE;
-			
-			if(++e->state_time > 40) {
+			if(++e->state_time > TIME(40)) {
 				e->state_time = 0;
 				e->state = 11;
 			}
+		}
 		break;
-		
 		case 11:	// animate thrust
+		{
 			e->state_time++;
-			if(e->state_time % 5 == 0) {
+			if(e->state_time % TIME(5) == 0) {
 				u8 frame = e->sprite->animInd;
 				SPR_SAFEANIM(e->sprite, ++frame);
 				if(frame >= 3) {
@@ -96,36 +107,37 @@ void ai_kulala_onUpdate(Entity *e) {
 					e->state_time = 0;
 				}
 			}
+		}
 		break;
-		
 		case 12:	// thrusting upwards
-			e->y_speed = -0x155;
-			if(++e->state_time > 20) {
+		{
+			e->y_speed = SPEED(-0x155);
+			if(++e->state_time > TIME(20)) {
 				e->state = 10;
 				SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
+		}
 		break;
-		
 		case 20:	// shot/freeze over/go invulnerable
+		{
 			SPR_SAFEANIM(e->sprite, 4);
 			e->x_speed >>= 1;
-			e->y_speed += 0x20;
-			
+			e->y_speed += SPEED(0x20);
 			if(!e->damage_time) {
 				e->state = 10;
 				SPR_SAFEANIM(e->sprite, 0);
-				e->state_time = 30;
+				e->state_time = TIME(30);
 			}
+		}
 		break;
 	}
 	
 	if(e->damage_time) {
 		// x_mark unused so use it as a second timer
-		if(++e->x_mark > 12) {
+		if(++e->x_mark > TIME(12)) {
 			e->state = 20;
 			SPR_SAFEANIM(e->sprite, 4);
-			//e->eflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_INVINCIBLE;
 		}
 	} else {
@@ -136,24 +148,30 @@ void ai_kulala_onUpdate(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	
 	if(e->state >= 10) {
-		e->y_speed += 0x10;
-		if(collide_stage_floor(e)) e->y_speed = -0x300;
+		e->y_speed += SPEED(0x10);
+		if(collide_stage_floor(e)) e->y_speed = SPEED(-0x300);
 		
 		// Unused y_mark for third timer
-		if(collide_stage_leftwall(e)) { e->y_mark = 50; e->direction = 1; }
-		if(collide_stage_rightwall(e)) { e->y_mark = 50; e->direction = 0; }
+		if(collide_stage_leftwall(e)) {
+			e->y_mark = TIME(50);
+			e->direction = 1;
+		}
+		if(collide_stage_rightwall(e)) {
+			e->y_mark = TIME(50);
+			e->direction = 0;
+		}
 		
 		if(e->y_mark > 0) {
 			e->y_mark--;
-			e->x_speed += e->direction ? 0x80 : -0x80;
+			ACCEL_X(SPEED(0x80));
 		} else {
-			e->y_mark = 50;
+			e->y_mark = TIME(50);
 			FACE_PLAYER(e);
 		}
 	}
 	
-	LIMIT_X(0x100);
-	LIMIT_Y(0x300);
+	LIMIT_X(SPEED(0x100));
+	LIMIT_Y(SPEED(0x300));
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -171,39 +189,28 @@ void ai_mannan_onUpdate(Entity *e) {
 		e->attack = 0;
 		e->state = 3;
 		return;
+	} else if(e->state == 0 && e->damage_time) {
+		e->state = 1;
+		e->state_time = 0;
+		SPR_SAFEANIM(e->sprite, 1);
+		Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
+			0, 0, OBJ_MANNAN_SHOT, 0, e->direction);
+		shot->direction = e->direction;
+		// We want the bullet to delete itself offscreen, it can't do this while inactive
+		shot->alwaysActive = true;
 	} else if(e->state == 1 && ++e->state_time > 24) {
-		ENTITY_SET_STATE(e, 0, 0);
-	}
-}
-
-void ai_mannan_onState(Entity *e) {
-	switch(e->state) {
-		case 0:
+		e->state = 0;
+		e->state_time = 0;
 		SPR_SAFEANIM(e->sprite, 0);
-		break;
-		case 1: {
-			SPR_SAFEANIM(e->sprite, 1);
-			Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, 0x67, 0, e->direction);
-			shot->direction = e->direction;
-			// We want the bullet to delete itself offscreen, it can't do this while inactive
-			shot->alwaysActive = true;
-		}
-		break;
 	}
-}
-
-void ai_mannan_onHurt(Entity *e) {
-	// Fire projectile
-	if(e->state == 0) ENTITY_SET_STATE(e, 1, 0);
 }
 
 void ai_mannanShot_onUpdate(Entity *e) {
-	e->x_speed += e->direction ? 0x1D : -0x1D;
+	MOVE_X(SPEED(0x20));
 	if((e->state_time % 8) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
-	if(++e->state_time > 120) e->state = STATE_DELETE;
+	if(++e->state_time > TIME(120)) e->state = STATE_DELETE;
 	e->x += e->x_speed;
 }
 
@@ -328,25 +335,22 @@ void ai_press_onUpdate(Entity *e) {
 }
 
 void ai_frog_onUpdate(Entity *e) {
-	if(!e->grounded) e->y_speed += 0x80;
-
-	if(e->y_speed > 0x5ff) e->y_speed = 0x5ff;
-	if(e->y_speed < -0x5ff) e->y_speed = -0x5ff;
+	if(!e->grounded) e->y_speed += SPEED(0x80);
+	LIMIT_Y(SPEED(0x5FF));
 
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 
 	switch(e->state) {
 		case 0:
+		{
 			e->state_time = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
-
 			// Balfrog sets OPTION1
 			if(e->eflags & NPC_OPTION1) {
 				e->direction = random() & 1;
 				e->eflags |= NPC_IGNORESOLID;
-
 				e->state = 3;
 				SPR_SAFEANIM(e->sprite, 1);
 			} else {
@@ -354,52 +358,55 @@ void ai_frog_onUpdate(Entity *e) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				e->state = 1;
 			}
+		}
+		/* no break */
 		case 1:		// standing
 		case 2:
+		{
 			e->state_time++;
+		}
 		break;
 		case 3:		// falling out of ceiling during balfrog fight
-			if(++e->state_time > 40) {
+		{
+			if(++e->state_time > TIME(40)) {
 				e->eflags &= ~NPC_IGNORESOLID;
-
 				if((e->grounded = collide_stage_floor(e))) {
 					e->state = 0;
 					SPR_SAFEANIM(e->sprite, 0);
 					e->state_time = 0;
 				}
 			}
+		}
 		break;
-
 		case 10:	// jumping
 		case 11:
+		{
 			if (e->x_speed < 0 && collide_stage_leftwall(e)) {
-				e->direction = 1;
-				e->x_speed = -e->x_speed;
+				TURN_AROUND(e);
+				MOVE_X(abs(e->x_speed));
 			}
 			if (e->x_speed > 0 && collide_stage_rightwall(e)) {
-				e->direction = 0;
-				e->x_speed = -e->x_speed;
+				TURN_AROUND(e);
+				MOVE_X(abs(e->x_speed));
 			}
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 0;
 				SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
+		}
 		break;
 	}
-
 	// random jumping, and jump when shot
-	if (e->state < 3 && e->state_time > 10) {
+	if (e->state < 3 && e->state_time > TIME(10)) {
 		bool dojump = false;
-
 		if(e->damage_time) {
 			dojump = true;
 		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {
-			if((random() % 50) == 0) {
+			if((random() % TIME(50)) == 0) {
 				dojump = true;
 			}
 		}
-
 		if (dojump) {
 			FACE_PLAYER(e);
 			SPR_SAFEHFLIP(e->sprite, e->direction);
@@ -412,7 +419,7 @@ void ai_frog_onUpdate(Entity *e) {
 			//if (!player->inputs_locked && !player->disabled)
 			//	sound(SND_ENEMY_JUMP);
 
-			e->x_speed = e->direction ? 0x200 : -0x200;
+			MOVE_X(0x200);
 		}
 	}
 
@@ -422,82 +429,101 @@ void ai_frog_onUpdate(Entity *e) {
 
 void ai_hey_onUpdate(Entity *e) {
 	switch(e->state) {
-	case 0:
-		e->y -= 16;
-		e->x += 8;
-		e->state = 1;
-		e->state_time = 0;
-	case 1:
-		if(++e->state_time >= 60) {
-			e->y += 8;
-			e->x += 8;
-			e->state = 2;
-			e->state_time = 0;
-		}
-	break;
-	case 2:
-		if(++e->state_time >= 60) {
-			e->y -= 8;
-			e->x += 8;
+		case 0:
+		{
+			e->y -= 16 << CSF;
+			e->x += 8 << CSF;
 			e->state = 1;
 			e->state_time = 0;
 		}
-	break;
+		/* no break */
+		case 1:
+		{
+			if(++e->state_time >= TIME(50)) {
+				e->y += 8 << CSF;
+				e->x += 8 << CSF;
+				e->state = 2;
+				e->state_time = 0;
+			}
+		}
+		break;
+		case 2:
+		{
+			if(++e->state_time >= TIME(50)) {
+				e->y -= 8 << CSF;
+				e->x -= 8 << CSF;
+				e->state = 1;
+				e->state_time = 0;
+			}
+		}
+		break;
 	}
 }
 
 void ai_motorbike_onUpdate(Entity *e) {
-
 	switch(e->state) {
 		case 0:		// parked
 		break;
-		
 		case 10:	// kazuma and booster mounted
+		{
 			e->alwaysActive = true;
 			e->y -= 0x400;
 			//SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
 			e->state++;
+		}
 		break;
-		
 		case 20:	// kazuma and booster start the engine
+		{
 			e->state = 21;
 			e->state_time = 1;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
+		}
+		/* no break */
 		case 21:
+		{
 			e->x = e->x_mark + 0x200 - (random() % 0x400);
 			e->y = e->y_mark + 0x200 - (random() % 0x400);
 			if(++e->state_time > 30) {
 				e->state = 30;
 			}
+		}
 		break;
-		
 		case 30:	// kazuma and booster take off
+		{
 			e->state = 31;
 			e->state_time = 1;
 			e->x_speed = -0x800;
 			e->y_mark = e->y;
 			sound_play(SND_MISSILE_HIT, 5);
+		}
+		/* no break */
 		case 31:
+		{
 			e->x_speed += 0x20;
 			e->state_time++;
 			e->y = e->y_mark + 0x200 - (random() % 0x400);
 			if (e->state_time > 10)  e->direction = 1;
 			if (e->state_time > 200) e->state = 40;
+		}
 		break;
 		
 		case 40:		// flying away (fast out-of-control)
+		{
 			e->state = 41;
 			e->state_time = 2;
 			e->direction = 0;
 			e->y -= pixel_to_sub(48);		// move up...
 			e->x_speed = -0x1000;		// ...and fly fast
+		}
+		/* no break */
 		case 41:
+		{
 			e->state_time += 2;	// makes exhaust sound go faster
 			if(e->state_time > 1200) e->state = STATE_DELETE;
+		}
 		break;
 	}
-	
 	if(e->state >= 20 && (e->state_time & 3) == 0) {
 		sound_play(SND_FIREBALL, 5);
 		// make exhaust puffs, and make them go out horizontal

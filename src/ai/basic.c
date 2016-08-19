@@ -8,54 +8,30 @@
 #include "tsc.h"
 #include "effect.h"
 
-void entity_snaptoground(Entity *e) {
-	
-}
-
 void oncreate_snap(Entity *e) {
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
-	if(stage_get_block_type(x, y + 1) != 0x41) e->y += block_to_sub(1);
+	SNAP_TO_GROUND(e);
 }
 
-
-// Only drop down if there is no ground underneath
-void ai_pushdn_onCreate(Entity *e) {
-	if(stageID == 1 && e->type == 0x3E) {
-		e->state = STATE_DELETE; // Remove duplicate Kazuma from Arthur's house
-	}
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
-	if(stage_get_block_type(x, y + 1) != 0x41) e->y += block_to_sub(1);
-}
-
-void ai_pushup_onCreate(Entity *e) {
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y + pixel_to_sub(e->hit_box.bottom));
-	if(stage_get_block_type(x, y + 1) == 0x41) e->y -= pixel_to_sub(8);
-}
-
-void ai_op2flip_onCreate(Entity *e) {
+void oncreate_op2flip(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->direction = 1;
 }
 
-void ai_op2frame_onCreate(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->spriteFrame = 1;
-}
-
-void ai_op2anim_onCreate(Entity *e) {
+void oncreate_op2anim(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->spriteAnim = 1;
 }
 
-void ai_op2pushdn_onCreate(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->y += block_to_sub(1);
+void oncreate_op2snap(Entity *e) {
+	if(e->eflags & NPC_OPTION2) SNAP_TO_GROUND(e);
 }
 
-void ai_blackboard_onCreate(Entity *e) {
+void oncreate_blackboard(Entity *e) {
 	e->y -= block_to_sub(1);
 	if(e->eflags & NPC_OPTION2) e->spriteFrame = 1;
 }
 
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
-void ai_spike_onCreate(Entity *e) {
+void oncreate_spike(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
@@ -96,9 +72,8 @@ void ai_trigger_onUpdate(Entity *e) {
 }
 
 void ai_genericproj_onUpdate(Entity *e) {
-	if(++e->state_time > 300 || 
+	if(++e->state_time > TIME(300) ||
 		stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
-		// entity_overlapping(e, &player)
 		e->state = STATE_DELETE;
 	} else {
 		e->x += e->x_speed;
@@ -120,18 +95,21 @@ void ai_teleIn_onCreate(Entity *e) {
 void ai_teleIn_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Appear
-		if(++e->state_time >= 5 * 14) {
-			e->state_time = 0;
-			e->state++;
-			SPR_SAFEANIM(e->sprite, 0);
+		{
+			if(++e->state_time >= 5 * 14) {
+				e->state_time = 0;
+				e->state++;
+				SPR_SAFEANIM(e->sprite, 0);
+			}
 		}
 		break;
 		case 1: // Drop
-		e->y_speed += GRAVITY;
-		e->y_next = e->y + e->y_speed;
-		collide_stage_floor(e);
-		e->y = e->y_next;
-		if(++e->state_time > 12) e->state++;
+		{
+			if(!e->grounded) e->y_speed += SPEED(0x40);
+			e->y_next = e->y + e->y_speed;
+			e->grounded = collide_stage_floor(e);
+			e->y = e->y_next;
+		}
 		break;
 	}
 }
@@ -144,19 +122,19 @@ void ai_teleOut_onCreate(Entity *e) {
 void ai_teleOut_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Hopping up
-		if(++e->state_time >= 24) {
+		if(++e->state_time >= TIME(24)) {
 			e->state++;
 			e->state_time = 0;
 			e->y_speed = 0;
 			SPR_SAFEANIM(e->sprite, 1);
 			sound_play(SND_TELEPORT, 5);
 		} else {
-			e->y_speed += GRAVITY;
+			e->y_speed += SPEED(0x40);
 			e->y += e->y_speed;
 		}
 		break;
 		case 1: // Show teleport animation
-		if(++e->state_time >= 5 * 14) {
+		if(++e->state_time >= 5*14) {
 			e->state++;
 			e->state_time = 0;
 			SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
@@ -180,7 +158,7 @@ void ai_teleLight_onState(Entity *e) {
 }
 
 void ai_player_onUpdate(Entity *e) {
-	if(!e->grounded) e->y_speed += GRAVITY;
+	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);
@@ -199,11 +177,12 @@ void ai_player_onState(Entity *e) {
 		break;
 		case 10:	// he gets flattened
 		sound_play(SND_LITTLE_CRASH, 5);
-		for(u8 i = 0; i < 3; i++) {
+		for(u8 i = 0; i < 4; i++) {
 			effect_create_smoke(0, sub_to_pixel(e->x) - 16 + (random() % 32), 
 				sub_to_pixel(e->y) - 16 + (random() % 32));
 		}
 		e->state++;
+		/* no break */
 		case 11:
 		SPR_SAFEANIM(e->sprite, 9);
 		break;
@@ -214,7 +193,7 @@ void ai_player_onState(Entity *e) {
 		ai_teleOut_onCreate(e);
 		break;
 		case 50:	// walking
-		e->x_speed = e->direction ? pixel_to_sub(1) : pixel_to_sub(-1);
+		MOVE_X(SPEED(0x200));
 		SPR_SAFEANIM(e->sprite, 1);
 		break;
 		// falling, upside-down (from good ending; Fall stage)

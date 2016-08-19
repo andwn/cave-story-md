@@ -92,7 +92,7 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		// Fill any remaining digits blank
 		for(u8 i = digitCount + 1; i < 4; i++) memcpy(tiles[3 - i], TILE_BLANK, 32);
 		effDamage[i].ttl = 60; // 1 second
-		effDamage[i].x = x;
+		effDamage[i].x = x - 8;
 		effDamage[i].y = y;
 		effDamage[i].sprite = SPR_addSpriteEx(&SPR_Dummy4x1,
 			x - sub_to_pixel(camera.x) + SCREEN_HALF_W,

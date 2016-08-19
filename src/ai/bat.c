@@ -145,6 +145,7 @@ void ai_batCircle_onUpdate(Entity *e) {
 			
 			e->state = 1;
 		}
+		/* no break */
 		case 1:
 			// circle around our target point
 			FACE_PLAYER(e);

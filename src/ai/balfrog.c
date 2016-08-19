@@ -119,27 +119,38 @@ void ai_balfrog_onUpdate(Entity *e) {
 		// the flicker is calibrated to be interlaced exactly out-of-phase
 		// with Balrog's flicker, which is entirely separate.
 		case STATE_TRANSFORM:
+		{
 			e->state++;
 			e->state_time = 0;
 			SPR_SAFEANIM(e->sprite, 2);
+		}
+		/* no break */
 		case STATE_TRANSFORM+1:
+		{
 			e->state_time++;
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 4) > 1 ? AUTO_FAST : HIDDEN);
+		}
 		break;
 		// transformation complete: puff away balrog, and appear solid now
 		case STATE_READY:
+		{
 			e->state++;
 			SPR_SAFEANIM(e->sprite, 2);
 			SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+		}
 		break;
 		
 		case STATE_FIGHTING:
+		{
 			SPR_SAFEANIM(e->sprite, 0);
 			bbox_mode = BM_STAND;
 			e->state++;
 			e->state_time = 0;
 			e->x_speed = 0;
+		}
+		/* no break */
 		case STATE_FIGHTING+1:
+		{
 			e->state_time++;
 			// prepare to jump
 			if(e->state_time < 50) {
@@ -155,16 +166,21 @@ void ai_balfrog_onUpdate(Entity *e) {
 			if(e->state_time > 64) {
 				e->state = STATE_JUMPING;
 			}
+		}
 		break;
 		
 		case STATE_JUMPING:
+		{
 			sound_play(SND_FUNNY_EXPLODE, 8);
 			set_jump_sprite(e, true);
 			e->y_speed = -FROG_JUMP_SPEED;
 			e->grounded = false;
 			e->state_time = 0;
 			e->state++;
+		}
+		/* no break */
 		case STATE_JUMPING+1:
+		{
 			// turn around at walls
 			if(e->direction && collide_stage_rightwall(e)) {
 				e->direction = !e->direction;
@@ -189,12 +205,17 @@ void ai_balfrog_onUpdate(Entity *e) {
 				//SpawnFrogs(OBJ_MINIFROG, 1);
 				//SpawnSmoke(LANDING_SMOKE_COUNT, LANDING_SMOKE_YTOP);
 			}
+		}
 		break;
 		case STATE_BIG_JUMP:
+		{
 			e->state++;
 			e->state_time = 0;
 			e->x_speed = 0;
+		}
+		/* no break */
 		case STATE_BIG_JUMP+1:		// animation of preparing to jump
+		{
 			e->state_time++;
 			if(e->state_time < 50) {
 				SPR_SAFEANIM(e->sprite, 0);
@@ -211,8 +232,10 @@ void ai_balfrog_onUpdate(Entity *e) {
 				e->y_speed = -FROG_BIGJUMP_SPEED;
 				e->grounded = false;
 			}
+		}
 		break;
 		case STATE_BIG_JUMP+2:		// in air, waiting to hit ground
+		{
 			if(e->grounded) {
 				set_jump_sprite(e, false);
 				camera_shake(60);
@@ -228,14 +251,19 @@ void ai_balfrog_onUpdate(Entity *e) {
 				}
 				FACE_PLAYER(e);
 			}
+		}
 		break;
 		
 		case STATE_OPEN_MOUTH:		// open mouth and fire shots
+		{
 			SPR_SAFEANIM(e->sprite, 0);
 			e->x_speed = 0;
 			e->state_time = 0;
 			e->state++;
+		}
+		/* no break */
 		case STATE_OPEN_MOUTH+1:
+		{
 			e->state_time++;
 			if(e->state_time == 50) {
 				SPR_SAFEANIM(e->sprite, 1);
@@ -246,8 +274,10 @@ void ai_balfrog_onUpdate(Entity *e) {
 				SPR_SAFEANIM(e->sprite, 2);
 				bbox_mode = BM_MOUTH_OPEN;
 			}
+		}
 		break;
 		case STATE_SHOOTING:
+		{
 			e->state_time++;
 			if(e->damage_time > 0) {
 				if((e->damage_time % 8) == 1) {
@@ -267,8 +297,10 @@ void ai_balfrog_onUpdate(Entity *e) {
 					e->state_time = 0;
 				}
 			}
+		}
 		break;
 		case STATE_CLOSE_MOUTH:
+		{
 			if(++e->state_time > 10) {
 				e->state_time = 0;
 				SPR_SAFEANIM(e->sprite, 0);
@@ -280,16 +312,21 @@ void ai_balfrog_onUpdate(Entity *e) {
 					e->state = STATE_FIGHTING;
 				}
 			}
+		}
 		break;
 		
 		case STATE_DEATH:			// BOOM!
+		{
 			SPR_SAFEANIM(e->sprite, 2);
 			sound_play(SND_BIG_CRASH, 10);
 			e->x_speed = 0;
 			e->state_time = 0;
 			e->state++;
 			//SpawnSmoke(DEATH_SMOKE_COUNT, DEATH_SMOKE_YTOP);
+		}
+		/* no break */
 		case STATE_DEATH+1:			// shaking with mouth open
+		{
 			e->state_time++;
 			if((e->state_time % 8) == 0) {
 				effect_create_smoke(0, e->x - 28 + (random() % 56),
@@ -303,6 +340,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 				e->state_time = 0;
 				e->state++;
 			}
+		}
 		break;
 		case STATE_DEATH+2:			// begin flashing back and forth between frog and balrog
 		{ // Scope for balrog pointer
@@ -313,7 +351,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 			SPR_SAFEANIM(balrog->sprite, 5);
 			e->state++;
 		}
+		/* no break */
 		case STATE_DEATH+3:		// flashing
+		{
 			e->state_time++;
 			if((e->state_time % 16) == 0) {
 				effect_create_smoke(0, sub_to_pixel(e->x) - 28 + (random() % 56),
@@ -330,6 +370,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 				e->state_time = 0;
 				e->state++;
 			}
+		}
 		break;
 		case STATE_DEATH+4:		// balrog falling to ground
 		{
@@ -356,6 +397,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		}
 		break;
 		case STATE_DEATH+5:		// balrog flying away
+		{
 			if(++e->state_time > 30) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				// it's all over, destroy ourselves and clean up
@@ -373,6 +415,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 					}
 				}
 			}
+		}
 		break;
 	}
 	SPR_SAFEHFLIP(e->sprite, e->direction);

@@ -81,7 +81,7 @@ typedef struct {
 	u8 zorder;
 	char name[26]; // Name of the NPC (NPC Test)
 	// The "methods" for AI/behavior. Storing them in this table frees up 16 bytes per entity
-	EntityMethod onCreate, onUpdate, onState, onHurt;
+	EntityMethod onCreate, onUpdate, onState;//, onHurt;
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage

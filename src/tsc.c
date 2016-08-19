@@ -246,7 +246,7 @@ u8 tsc_update() {
 		if(waitTime == 0) tscState = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
-		if(joy_pressed(BUTTON_C) || (joystate & BUTTON_B)) {
+		if(joy_pressed(BUTTON_C) || (joystate & BUTTON_A)) {
 			tscState = TSC_RUNNING;
 		}
 		break;

@@ -31,7 +31,6 @@ bool showing = false;
 void hud_redraw_health();
 void hud_decrease_health();
 void hud_redraw_weapon();
-void hud_redraw_ammo();
 void hud_prepare_dma();
 
 void hud_create() {

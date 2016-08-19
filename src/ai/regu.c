@@ -11,16 +11,6 @@
 #include "system.h"
 #include "resources.h"
 
-#ifdef PAL
-#define NPC_WALKSPEED		0x200
-#define NPC_RUNSPEED		0x400
-#define NPC_MAXFALLSPEED	0x5FF
-#else
-#define NPC_WALKSPEED		0x1D0
-#define NPC_RUNSPEED		0x3A0
-#define NPC_MAXFALLSPEED	0x4FF
-#endif
-
 void ai_jenka(Entity *e) {
 	switch(e->state) {
 		case 0: 
@@ -28,9 +18,10 @@ void ai_jenka(Entity *e) {
 			e->state = 1; 
 			SPR_SAFEANIM(e->sprite, 0);
 		}
+		/* no break */
 		case 1: 
 		{
-			if ((random() % 120) < 10) { 
+			if ((random() % TIME(120)) < 10) {
 				e->state = 2; 
 				e->state_time = 0; 
 				SPR_SAFEANIM(e->sprite, 1);
@@ -56,9 +47,10 @@ void ai_doctor(Entity *e) {
 			e->state_time2 = 0;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 11:
 		{
-			if (++e->state_time2 > 8*6) { 
+			if (++e->state_time2 > TIME(8*6)) {
 				SPR_SAFEANIM(e->sprite, 0); 
 				e->state = 1; 
 			}
@@ -71,10 +63,11 @@ void ai_doctor(Entity *e) {
 			SPR_SAFEANIM(e->sprite, 2);
 			e->y_mark = e->y - (32 << CSF);
 		}
+		/* no break */
 		case 21:
 		{
-			e->y_speed += (e->y > e->y_mark) ? -0x20 : 0x20;
-			LIMIT_Y(0x200);
+			e->y_speed += (e->y > e->y_mark) ? SPEED(-0x20) : SPEED(0x20);
+			LIMIT_Y(SPEED(0x200));
 		}
 		break;
 		case 30:	// he teleports away
@@ -84,6 +77,7 @@ void ai_doctor(Entity *e) {
 			e->y_speed = 0;
 			e->state++;
 		}
+		/* no break */
 		case 31:
 		{
 			//if (DoTeleportOut(e, 1)) {
@@ -97,18 +91,26 @@ void ai_doctor(Entity *e) {
 			e->state = 41;
 			SPR_SAFEANIM(e->sprite, 2);
 		}
+		/* no break */
 		case 41:
 		{
 			//if (DoTeleportIn(o, 1)) {
 				e->state = 20;
-				e->y_speed = -0x200;
+				e->y_speed = SPEED(-0x200);
 			//}
 		}
 		break;
 	}
+	e->y += e->y_speed;
 }
 
 void ai_toroko(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
@@ -122,25 +124,27 @@ void ai_toroko(Entity *e) {
 			e->state = 4;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 4:
 		{
 			if((e->y_speed < 0 && collide_stage_leftwall(e)) ||
 				(e->y_speed > 0 && collide_stage_rightwall(e))) { 
-				e->direction ^= 1;
+				TURN_AROUND(e);
 			}
-			MOVE_X(NPC_RUNSPEED);
+			MOVE_X(SPEED(0x400));
 		}
 		break;
 		case 6:		// hop and run away!!
 		{
 			e->state = 7;
 			SPR_SAFEANIM(e->sprite, 1);
-			e->y_speed = -0x400;
+			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 		}
+		/* no break */
 		case 7:
 		{
-			MOVE_X(NPC_WALKSPEED / 2);
+			MOVE_X(SPEED(0x100));
 			if(e->grounded) e->state = 3;
 		}
 		break;
@@ -151,9 +155,10 @@ void ai_toroko(Entity *e) {
 			//SPR_SAFEANIM(e->sprite, 1);
 			e->state_time = 0;
 			e->state = 9;
-			e->y_speed = -0x200;
+			e->y_speed = SPEED(-0x200);
 			e->grounded = false;
 		}
+		/* no break */
 		case 9:
 		{
 			if(e->grounded) e->state = 0;
@@ -163,10 +168,10 @@ void ai_toroko(Entity *e) {
 		{
 			e->state = 11;
 			SPR_SAFEANIM(e->sprite, 3);
-			e->y_speed = -0x400;
+			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			MOVE_X(0x100);
+			MOVE_X(SPEED(0x100));
 		}
 		break;
 		case 11:	// falling down
@@ -181,12 +186,19 @@ void ai_toroko(Entity *e) {
 		break;
 	}
 	
-	if(!e->grounded) e->y_speed += 0x40;
-	LIMIT_Y(NPC_MAXFALLSPEED);
+	e->x = e->x_next;
+	e->y = e->y_next;
+
+	if(!e->grounded) e->y_speed += SPEED(0x40);
+	LIMIT_Y(SPEED(0x5FF));
 }
 
 
 void ai_toroko_teleport_in(Entity *e) {
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:
 		{
@@ -195,6 +207,7 @@ void ai_toroko_teleport_in(Entity *e) {
 			e->state_time = 0;
 			e->nflags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
 		}
+		/* no break */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 2))
@@ -216,10 +229,11 @@ void ai_toroko_teleport_in(Entity *e) {
 		case 4: break;			// knocked out
 	}
 	
+	e->y = e->y_next;
 	// fall unless teleporting
 	if (e->state >= 2) {
-		if(!e->grounded) e->y_speed += 0x20;
-		LIMIT_Y(NPC_MAXFALLSPEED);
+		if(!e->grounded) e->y_speed += SPEED(0x20);
+		LIMIT_Y(SPEED(0x5FF));
 	}
 }
 
@@ -228,6 +242,12 @@ void ai_toroko_teleport_in(Entity *e) {
 #define crystal_ymark curly_target_y
 
 void ai_sue(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:		// stand and blink
 			e->state_time = 0;
@@ -239,15 +259,16 @@ void ai_sue(Entity *e) {
 		case 3:		// walking
 		case 4:		// walking
 		case 5:		// face away
-			ai_generic_npc(e);
+			generic_npc_states(e);
 		break;
 		case 6:		// got punched by Igor
 		{
 			e->state = 7;
-			SPR_SAFEANIM(e->sprite, 5);
+			SPR_SAFEANIM(e->sprite, 4);
 			e->state_time = 0;
 			sound_play(SND_ENEMY_SQUEAK, 5);
 		}
+		/* no break */
 		case 7:
 		{
 			if (++e->state_time > 10) e->state = 0;
@@ -258,12 +279,13 @@ void ai_sue(Entity *e) {
 		case 8:
 		{
 			e->state = 9;
-			SPR_SAFEANIM(e->sprite, 5);
+			SPR_SAFEANIM(e->sprite, 4);
 			e->state_time = 0;
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			e->y_speed = -0x200;
-			MOVE_X(-0x400);
+			e->y_speed = SPEED(-0x200);
+			MOVE_X(SPEED(-0x400));
 		}
+		/* no break */
 		case 9:
 		{
 			if (++e->state_time > 3 && e->grounded) {
@@ -276,7 +298,7 @@ void ai_sue(Entity *e) {
 		case 10:
 		{
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 6);
+			SPR_SAFEANIM(e->sprite, 5);
 		}
 		break;
 		// punching the air (when she tells Igor "I'm not afraid of you!")
@@ -285,6 +307,7 @@ void ai_sue(Entity *e) {
 			e->state = 12;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 12:
 		{
 			e->state_time++;
@@ -305,6 +328,7 @@ void ai_sue(Entity *e) {
 			// find Igor
 			e->linkedEntity = entity_find_by_id(501);
 		}
+		/* no break */
 		case 14:	// being carried--see aftermove routine
 		{
 			if (e->linkedEntity != NULL) {
@@ -324,6 +348,7 @@ void ai_sue(Entity *e) {
 			e->x_speed = 0;
 			SPR_SAFEANIM(e->sprite, 0);
 		}
+		/* no break */
 		case 16:
 		{
 			crystal_xmark = e->x - (18<<CSF);
@@ -344,9 +369,10 @@ void ai_sue(Entity *e) {
 			e->state = 21;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 21:
 		{
-			MOVE_X(NPC_RUNSPEED);
+			MOVE_X(SPEED(0x400));
 			if (e->x < player.x - (8<<CSF)) {
 				e->direction = 1;
 				e->state = 0;
@@ -359,25 +385,33 @@ void ai_sue(Entity *e) {
 			e->state = 31;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 31:
 		{
-			MOVE_X(NPC_RUNSPEED);
+			MOVE_X(SPEED(0x400));
 		}
 		break;
 		case 40:	// she jumps off the island
 		{
 			e->state = 41;
 			SPR_SAFEANIM(e->sprite, 9);
-			e->y_speed = -0x400;
+			e->y_speed = SPEED(-0x400);
 		}
 		break;
 	}
-	
-	if(!e->grounded) e->y_speed += 0x40;
-	LIMIT_Y(NPC_MAXFALLSPEED);
+
+	e->x = e->x_next;
+	e->y = e->y_next;
+
+	if(!e->grounded) e->y_speed += SPEED(0x40);
+	LIMIT_Y(SPEED(0x5FF));
 }
 
 void ai_sue_teleport_in(Entity *e) {
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:
 		{
@@ -386,6 +420,7 @@ void ai_sue_teleport_in(Entity *e) {
 			e->state = 1;
 			SPR_SAFEANIM(e->sprite, 6);	// her "hanging on a hook" frame
 		}
+		/* no break */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 2)) {
@@ -405,10 +440,12 @@ void ai_sue_teleport_in(Entity *e) {
 		}
 		break;
 	}
+
+	e->y = e->y_next;
 	// fall unless teleporting
 	if (e->state >= 2) {
-		e->y_speed += 0x20;
-		LIMIT_Y(NPC_MAXFALLSPEED);
+		e->y_speed += SPEED(0x20);
+		LIMIT_Y(SPEED(0x5FF));
 	}
 }
 
@@ -439,13 +476,14 @@ void ai_king(Entity *e) {
 		{
 			e->state = 7;
 			e->state_time = 0;
-			e->y_speed = -0x400;
+			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 		}
+		/* no break */
 		case 7:			// he falls and is knocked out
 		{
 			SPR_SAFEANIM(e->sprite, 3);
-			MOVE_X(0x200);
+			MOVE_X(SPEED(0x200));
 			e->y_speed += 0x40;
 			if (e->state_time++ && e->grounded) e->state = 5;
 		}
@@ -455,9 +493,10 @@ void ai_king(Entity *e) {
 			e->state = 9;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 9:
 		{
-			MOVE_X(NPC_WALKSPEED);
+			MOVE_X(SPEED(0x200));
 		}
 		break;
 		case 10:		// run
@@ -465,9 +504,10 @@ void ai_king(Entity *e) {
 			e->state = 11;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 11:
 		{
-			MOVE_X(NPC_RUNSPEED);
+			MOVE_X(SPEED(0x400));
 		}
 		break;
 		case 20:		// pull out sword
@@ -487,9 +527,10 @@ void ai_king(Entity *e) {
 			e->state = 31;
 			e->state_time = 0;
 			SPR_SAFEANIM(e->sprite, 3);
-			MOVE_X(0x600);
+			MOVE_X(SPEED(0x600));
 			e->y_speed = 0;
 		}
+		/* no break */
 		case 31:
 		{
 			// Don't follow slopes
@@ -501,9 +542,9 @@ void ai_king(Entity *e) {
 				e->direction = 1;
 				e->state = 7;
 				e->state_time = 0;
-				e->y_speed = -0x400;
+				e->y_speed = SPEED(-0x400);
 				e->grounded = false;
-				e->x_speed = 0x200;
+				e->x_speed = SPEED(0x200);
 				sound_play(SND_LITTLE_CRASH, 5);
 				//SmokeClouds(o, 4, 8, 8);
 			}
@@ -514,6 +555,7 @@ void ai_king(Entity *e) {
 			e->state = 41;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 41:
 		{
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time % 4) > 1 ? AUTO_FAST : HIDDEN);
@@ -531,12 +573,12 @@ void ai_king(Entity *e) {
 		case 60:		// jump (used when he lunges with sword)
 			SPR_SAFEANIM(e->sprite, 0);
 			e->state = 61;
-			e->y_speed = -NPC_MAXFALLSPEED;
-			e->x_speed = 0x400;
+			e->y_speed = SPEED(-0x5FF);
+			e->x_speed = SPEED(0x400);
 			SPR_SAFEHFLIP(e->linkedEntity->sprite, 1);
 		break;
 		case 61:		// jumping
-			e->y_speed += 0x80;
+			e->y_speed += SPEED(0x80);
 			if (e->grounded) {
 				e->state = 0;
 				e->x_speed = 0;
@@ -547,19 +589,22 @@ void ai_king(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	//LIMIT_X(0x400);
-	LIMIT_Y(NPC_MAXFALLSPEED);
+	LIMIT_Y(SPEED(0x5FF));
 }
 
 void ai_blue_robot(Entity *e) {
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 	//randblink(o, 1, 4);
-	if(!e->grounded) e->y_speed += 0x40;
-	LIMIT_Y(NPC_MAXFALLSPEED);
+	e->y = e->y_next;
+	if(!e->grounded) e->y_speed += SPEED(0x40);
+	LIMIT_Y(SPEED(0x5FF));
 }
 
 void ai_kanpachi_fishing(Entity *e) {
 	if (!e->state) {
-		entity_snaptoground(e);
+		SNAP_TO_GROUND(e);
 		e->state = 1;
 	}
 	// open eyes when player comes near
@@ -571,6 +616,11 @@ void ai_kanpachi_fishing(Entity *e) {
 }
 
 void ai_booster(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:
 		{
@@ -579,6 +629,7 @@ void ai_booster(Entity *e) {
 			e->x_speed = e->y_speed = 0;
 			SPR_SAFEANIM(e->sprite, 0);
 		}
+		/* no break */
 		case 1:
 		{
 			//randblink(o, 1, 8, 120);
@@ -595,6 +646,7 @@ void ai_booster(Entity *e) {
 			e->state++;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 31:	// teleporting-in animation
 		{
 			//if (DoTeleportIn(o, 2)) {
@@ -624,11 +676,17 @@ void ai_booster(Entity *e) {
 			generic_npc_states(e);
 		break;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 	// no fall when teleporting in
 	if (!e->grounded && e->state != 31 && e->state != 32) e->y_speed += 0x40;
 }
 
 void ai_booster_falling(Entity *e) {
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+
 	switch(e->state) {
 		case 0:			// sitting on ground after fall
 			SPR_SAFEANIM(e->sprite, 5);
@@ -636,8 +694,8 @@ void ai_booster_falling(Entity *e) {
 		case 10:		// falling
 		{
 			SPR_SAFEANIM(e->sprite, 4);
-			e->y_speed += 0x40;
-			LIMIT_Y(NPC_MAXFALLSPEED);
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x5FF));
 		}
 		break;
 		case 20:		// dying (flickering away)
@@ -646,16 +704,19 @@ void ai_booster_falling(Entity *e) {
 			e->state = 21;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 21:
 		{
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) ? AUTO_FAST : HIDDEN);
-			if (++e->state_time > 100) {
+			if (++e->state_time > TIME(100)) {
 				//SmokeClouds(o, 4, 16, 16);
 				e->state = STATE_DELETE;
 			}
 		}
 		break;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 // shared between OBJ_KAZUMA_AT_COMPUTER and OBJ_SUE_AT_COMPUTER
@@ -686,9 +747,10 @@ void generic_npc_states(Entity *e) {
 			e->state++;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 4:
 		{
-			MOVE_X(NPC_WALKSPEED);
+			MOVE_X(SPEED(0x200));
 		}
 		break;
 		case 5:		// face away

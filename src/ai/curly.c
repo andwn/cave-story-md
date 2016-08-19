@@ -8,24 +8,6 @@
 #include "tsc.h"
 #include "effect.h"
 
-/*
- * Curly [0117] -By Shmitz
-0000	Stand around. Eyes blink.
-0003	Walk forward
-0004	Walk forward
-0005	Poof defeat
-0006	Defeat
-0010	Walk towards main char until 1 away
-0011	Walk forward no falling
-0020	Back turned
-0021	Look up
-0030	Knocked a bit over
-0031	Fall over
-0032	Fall over
-0070	Moonwalk
-0071	Moonwalk
-* */
-
 void ai_curly_onUpdate(Entity *e) {
 	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
@@ -65,6 +47,7 @@ void ai_curly_onState(Entity *e) {
 		break;
 		case 5:
 		effect_create_smoke(0, sub_to_block(e->x), sub_to_block(e->y));
+		/* no break */
 		case 6: // Defeated
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->direction);
@@ -120,16 +103,7 @@ void ai_curly_onState(Entity *e) {
 #define CURLYB_FIRE_GUN			21
 #define CURLYB_SHIELD			30
 
-#ifdef PAL
-#define CURLYB_WALK_ACCEL	0x40
-#define CURLYB_WALK_SPEED	0x1FF
-#else
-#define CURLYB_WALK_ACCEL	0x36
-#define CURLYB_WALK_SPEED	0x1B0
-#endif
-
-static void curlyboss_fire(Entity *e, u8 dir)
-{
+static void curlyboss_fire(Entity *e, u8 dir) {
 	Entity *shot = entity_create(0, 0, 0, 0, OBJ_CURLYBOSS_SHOT, 0, dir & 1);
 	shot->attack = 6;
 	switch(dir) {
@@ -154,12 +128,9 @@ static void curlyboss_fire(Entity *e, u8 dir)
 }
 
 void ai_curlyBoss_onUpdate(Entity *e) {
-	//e->y_next = e->y + e->y_speed;
-	switch(e->state) 
-	{
+	switch(e->state) {
 		case CURLYB_FIGHT_START:
 		{
-			//e->health = 12;
 			e->state = CURLYB_WAIT;
 			e->state_time = (random() % 50) + 50;
 			SPR_SAFEANIM(e->sprite, 0);
@@ -169,90 +140,76 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE;
 		}
+		/* no break */
 		case CURLYB_WAIT:
-			if (e->state_time) e->state_time--;
-			else
-			{
-				e->state = CURLYB_WALK_PLAYER;
-			}
+		{
+			if(!e->state_time--) e->state = CURLYB_WALK_PLAYER;
+		}
 		break;
-		
-		
 		case CURLYB_WALK_PLAYER:
+		{
 			e->state = CURLYB_WALKING_PLAYER;
 			SPR_SAFEANIM(e->sprite, 1);
 			e->state_time = (random() % 50) + 50;
 			e->direction = (e->x <= player.x);
 			SPR_SAFEHFLIP(e->sprite, e->direction);
+		}
+		/* no break */
 		case CURLYB_WALKING_PLAYER:
-			e->x_speed += e->direction ? CURLYB_WALK_ACCEL : -CURLYB_WALK_ACCEL;
-			
-			if (e->state_time) e->state_time--;
-			else
-			{
+			ACCEL_X(SPEED(0x40));
+			if (e->state_time) {
+				e->state_time--;
+			} else {
 				e->eflags |= NPC_SHOOTABLE;
 				e->state = CURLYB_CHARGE_GUN;
 				e->state_time = 0;
 				sound_play(SND_CHARGE_GUN, 5);
 			}
 		break;
-		
-		
 		case CURLYB_CHARGE_GUN:
-			e->direction = (e->x <= player.x);
-			
+		{
+			FACE_PLAYER(e);
 			e->x_speed -= e->x_speed >> 3;
-			
 			SPR_SAFEANIM(e->sprite, 0);
-			if (++e->state_time > 50)
-			{
+			if (++e->state_time > TIME(50)) {
 				e->state = CURLYB_FIRE_GUN;
-				//e->frame = 0;
 				e->x_speed = 0;
 				e->state_time = 0;
 			}
+		}
 		break;
-		
 		case CURLYB_FIRE_GUN:
-			e->state_time++;
-			
-			if (!(e->state_time & 3))
-			{	// time to fire
-				
+		{
+#ifdef PAL
+			if (e->state_time % 4 == 0) {	// time to fire
+#else
+			if (e->state_time % 5 == 0) {	// time to fire
+#endif
 				// check if player is trying to jump over
-				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y)
-				{	// shoot up instead
+				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y) {
+					// shoot up instead
 					SPR_SAFEANIM(e->sprite, 2);
 					curlyboss_fire(e, 2);
-				}
-				else
-				{
+				} else {
 					SPR_SAFEANIM(e->sprite, 0);
 					curlyboss_fire(e, e->direction);
 				}
 			}
-			
-			if (e->state_time > 30) e->state = CURLYB_FIGHT_START;
+			if (++e->state_time > TIME(30)) e->state = CURLYB_FIGHT_START;
+		}
 		break;
-		
 		case CURLYB_SHIELD:
+		{
 			e->x_speed = 0;
-			//if (++e->frame > 8) e->frame = 7;
-			if (++e->state_time > 30)
-			{
-				//e->frame = 0;
-				e->state = CURLYB_FIGHT_START;
-			}
+			if (++e->state_time > TIME(30)) e->state = CURLYB_FIGHT_START;
+		}
 		break;
 	}
 
-
-	if (e->state > CURLYB_FIGHT_START && e->state < CURLYB_SHIELD)
-	{
+	if (e->state > CURLYB_FIGHT_START && e->state < CURLYB_SHIELD) {
 		// curly activates her shield anytime a missile's explosion goes off,
 		// even if it's nowhere near her at all
-		if(bullet_missile_is_exploding())
-		{
+		if(bullet_missile_is_exploding()) {
 			e->state_time = 0;
 			e->state = CURLYB_SHIELD;
 			SPR_SAFEANIM(e->sprite, 3);
@@ -262,8 +219,8 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 		}
 	}
 	
-	if (e->x_speed > CURLYB_WALK_SPEED) e->x_speed = CURLYB_WALK_SPEED;
-	if (e->x_speed < -CURLYB_WALK_SPEED) e->x_speed = -CURLYB_WALK_SPEED;
+	if (e->x_speed > SPEED(0x200)) e->x_speed = SPEED(0x200);
+	if (e->x_speed < -SPEED(0x200)) e->x_speed = -SPEED(0x200);
 
 	e->x_next = e->x + e->x_speed;
 
@@ -316,16 +273,16 @@ s8 curly_impjumptime = 0;
 u8 curly_tryjumptime = 0;
 u8 curly_look = 0;
 
-static void CaiJUMP(Entity *e)
-{
-	if (e->grounded)
-	{
+static void CaiJUMP(Entity *e) {
+	if (e->grounded) {
 		e->y_speed = random(-0x600, -0x300);
 		e->grounded = false;
 		//e->frame = 3;
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
 }
+
+const char porn[1] = {""};
 
 // curly that fights beside you
 void ai_curly_ai(Entity *e) {
@@ -355,15 +312,20 @@ void ai_curly_ai(Entity *e) {
 	switch(e->state)
 	{
 		case 0:
+		{
 			e->alwaysActive = true;
 			e->x_speed = 0;
 			e->y_speed += 0x20;
+		}
 		break;
 		
 		case CAI_INIT:			// set to this by an ANP in Maze M
+		{
 			e->alwaysActive = true;
 			e->x = player.x;
 			e->y = player.y;
+		}
+		/* no break */
 		case CAI_START:			// set here after she stops being knocked out in Almond
 		{
 			e->alwaysActive = true;
@@ -391,6 +353,7 @@ void ai_curly_ai(Entity *e) {
 			e->state = CAI_KNOCKEDOUT+1;
 			//e->frame = 15;
 		}
+		/* no break */
 		case CAI_KNOCKEDOUT+1:
 		{
 			if (++e->state_time > 1000)

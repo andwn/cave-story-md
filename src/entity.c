@@ -214,7 +214,7 @@ void entities_update() {
 						e->damage_time = 30;
 					}
 					e->health -= b->damage;
-					ENTITY_ONHURT(e);
+					//ENTITY_ONHURT(e);
 				}
 			}
 		}

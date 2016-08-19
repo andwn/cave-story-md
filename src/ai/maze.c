@@ -137,6 +137,7 @@ void ai_boulder_onUpdate(Entity *e)
 			e->state_time = 0;
 			e->x_mark = e->x;
 		}
+		/* no break */
 		case 11:
 		{
 			if ((++e->state_time % 3) != 0)
@@ -156,6 +157,7 @@ void ai_boulder_onUpdate(Entity *e)
 			e->state = 21;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 21:
 		{
 			e->y_speed += 0x10;
@@ -267,6 +269,7 @@ void ai_gaudi_onUpdate(Entity *e) {
 			e->x_speed = 0;
 			e->state = 1;
 		}
+		/* no break */
 		case 1:
 		{
 			SPR_SAFEANIM(e->sprite, 1);
@@ -290,6 +293,7 @@ void ai_gaudi_onUpdate(Entity *e) {
 			
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 11:
 		{
 			// time to stop walking?
@@ -397,11 +401,13 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 			e->state_time2 = 120;
 			SPR_SAFEANIM(e->sprite, 10);
 		}
+		/* no break */
 		case 1:
 		{
 			e->state_time = (random() % 80) - 70;
 			e->state = 2;
 		}
+		/* no break */
 		case 2:
 		{
 			if (!--e->state_time)
@@ -468,6 +474,7 @@ void ai_gaudiArmored_onUpdate(Entity *e)
 			e->x_mark = e->x;
 			e->state = 1;
 		}
+		/* no break */
 		case 1:
 		{
 			e->x_speed = 0;
@@ -838,19 +845,24 @@ Entity *shot;
 	switch(e->state)
 	{
 		case 0:
+		{
 			e->state = 1;
 			e->state_time = random() % 50;
 			e->y_mark = e->y;
+		}
+		/* no break */
 		case 1:
-			
+		{
 			if (!e->state_time)
 			{
 				e->state = 10;
 				e->y_speed = -0x200;
 			}
 			else e->state_time--;
-			
+		}
+		/* no break */
 		case 10:
+		{
 			//e->frame ^= 1;
 			
 			e->y_speed += (e->y < e->y_mark) ? 0x10 : -0x10;
@@ -875,6 +887,7 @@ Entity *shot;
 				//e->CurlyTargetHere();
 				
 			}
+		}
 		break;
 	}
 }
@@ -954,6 +967,7 @@ void ai_fuzz_core(Entity *e)
 			e->state_time = 1 + (random() % 49);
 			e->state = 1;
 		}
+		/* no break */
 		case 1:		// de-syncs the Y positions when multiple cores are present at once
 		{
 			if (--e->state_time <= 0)
@@ -1047,6 +1061,7 @@ void ai_buyobuyo_base(Entity *e) {
 			e->state = 1;
 			e->state_time = 10;
 		}
+		/* no break */
 		case 1:
 		{
 			if (PLAYER_DIST_X(0x14000))
@@ -1106,6 +1121,7 @@ void ai_buyobuyo(Entity *e) {
 			e->state = 1;
 			e->state_time = 0;
 		}
+		/* no break */
 		case 1:
 		{
 			e->state_time++;		// inc fly time

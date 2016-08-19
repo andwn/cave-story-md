@@ -9,12 +9,6 @@
 #include "input.h"
 #include "effect.h"
 
-#ifdef PAL
-#define IGOR_WALKSPEED	0x200
-#else
-#define IGOR_WALKSPEED	0x1D0
-#endif
-
 #define fireatk curly_target_x
 
 enum {
@@ -123,7 +117,8 @@ void ai_igor_onState(Entity *e) {
 		if(++fireatk >= 3 && e->health <= npc_health(e->type) / 2) {
 			fireatk = -1;
 			e->direction ^= 1;	// walk away from player
-		} // fall thru
+		}
+		/* no break */
 		case STATE_WALK:
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 1);
@@ -174,12 +169,13 @@ void ai_igorscene_onUpdate(Entity *e) {
 		e->state_time--;
 		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
 	}
-	//if(!e->grounded) e->y_speed += GRAVITY;
-	//e->x_next = e->x + e->x_speed;
-	//e->y_next = e->y + e->y_speed;
-	//entity_update_collision(e);
+	if(!e->grounded) e->y_speed += SPEED(0x40);
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 	e->x += e->x_speed;
-	//e->y = e->y_next;
+	e->y = e->y_next;
 }
 
 /*
@@ -200,7 +196,7 @@ void ai_igorscene_onState(Entity *e) {
 		break;
 		case 2:
 		case 3:
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		MOVE_X(SPEED(0x200));
 		SPR_SAFEHFLIP(e->sprite, e->direction);
 		SPR_SAFEANIM(e->sprite, 1);
 		break;

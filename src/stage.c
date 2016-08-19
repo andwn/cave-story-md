@@ -19,14 +19,12 @@ u16 *stageTable = NULL;
 
 void stage_load_tileset();
 void stage_load_blocks();
-void stage_load_tileflags();
 void stage_load_entities();
 
 void stage_draw_column(s16 _x, s16 _y);
 void stage_draw_row(s16 _x, s16 _y);
 void stage_draw_background();
 void stage_draw_background2();
-void stage_update_back();
 
 void stage_load(u16 id) {
 	bool vdpEnabled = VDP_getEnable();

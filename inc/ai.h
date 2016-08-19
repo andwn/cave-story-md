@@ -33,10 +33,11 @@
 #define ENTITY_ONSTATE(e) ({                                                                   \
 	if(npc_info[e->type].onState != NULL) npc_info[e->type].onState(e);                        \
 })
+/*
 #define ENTITY_ONHURT(e) ({                                                                    \
 	if(npc_info[e->type].onHurt != NULL) npc_info[e->type].onHurt(e);                          \
 })
-
+*/
 #define ENTITY_SET_STATE(e, s, t) ({                                                           \
 	e->state = s;                                                                              \
 	e->state_time = t;                                                                         \
@@ -56,7 +57,25 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Helper Macros */
 
-#define FACE_PLAYER(e) (e->direction = e->x > player.x ? 0 : 1)
+#define SNAP_TO_GROUND(e); ({ \
+	u16 bx = sub_to_block(e->x); \
+	u16 by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF)); \
+	if(stage_get_block_type(bx, by) != 0x41) { \
+		e->y += 16 << CSF; \
+	} else { \
+		by = sub_to_block(e->y + ((e->hit_box.bottom-1)<<CSF)); \
+		if(stage_get_block_type(bx, by) == 0x41) e->y -= 8 << CSF; \
+	} \
+})
+
+#define FACE_PLAYER(e) ({ \
+	e->direction = e->x > player.x ? 0 : 1; \
+	SPR_SAFEHFLIP(e->sprite, e->direction); \
+})
+#define TURN_AROUND(e) ({ \
+	e->direction ^= 1; \
+	SPR_SAFEHFLIP(e->sprite, e->direction); \
+})
 
 #define PLAYER_DIST_X(dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
 #define PLAYER_DIST_Y(dist) (player.y > e->y - (dist) && player.y < e->y + (dist))
@@ -73,6 +92,7 @@ typedef void (*EntityMethod)(Entity*);
 })
 
 #define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
+#define ACCEL_X(v) (e->x_speed += e->direction ? (v) : -(v))
 
 /* Shared Variables */
 
@@ -82,7 +102,6 @@ s32 curly_target_x, curly_target_y;
 
 /* Utility functions - util.c */
 
-void entity_snaptoground(Entity *e);
 void generic_npc_states(Entity *e);
 
 /* Generic - basic.c */
@@ -90,20 +109,18 @@ void generic_npc_states(Entity *e);
 // Tons of NPCs are placed 1 block above where they are meant to appear
 // This function pushes them down to the right spot
 void oncreate_snap(Entity *e);
-void ai_pushdn_onCreate(Entity *e);
-void ai_pushup_onCreate(Entity *e);
 // NPC will face right if NPC_OPTION2 is set
-void ai_op2flip_onCreate(Entity *e);
+void oncreate_op2flip(Entity *e);
 // NPC's sprite will start at the second frame if NPC_OPTION2 is set
-void ai_op2frame_onCreate(Entity *e);
+//void ai_op2frame_onCreate(Entity *e);
 // NPC's sprite will start at the second animation if NPC_OPTION2 is set
-void ai_op2anim_onCreate(Entity *e);
+void oncreate_op2anim(Entity *e);
 // Only push down for NPC_OPTION2, used for the door after rescuing Kazuma
-void ai_op2pushdn_onCreate(Entity *e);
+void oncreate_op2snap(Entity *e);
 // Blackboard needs to be pushed up, and changes frame on NPC_OPTION2
-void ai_blackboard_onCreate(Entity *e);
+void oncreate_blackboard(Entity *e);
 // Rotates the spikes so they are always sticking out of a solid area
-void ai_spike_onCreate(Entity *e);
+void oncreate_spike(Entity *e);
 // Apply gravity & collision, some NPC's need to fall when the floor disappears beneath them
 // See save points and refills in Sand Zone, Labyrinth
 void ai_grav_onUpdate(Entity *e);

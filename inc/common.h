@@ -6,8 +6,12 @@
 //#define PAL
 #ifdef PAL
 #define FPS 50
+#define TIME(x)		(x)
+#define SPEED(x)	(x)
 #else
 #define FPS 60
+#define TIME(x)		((x) * 60 / 50)
+#define SPEED(x)	((x) * 50 / 60)
 #endif
 
 // Screen size
