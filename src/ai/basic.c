@@ -87,7 +87,7 @@ void ai_default_onState(Entity *e) {
 
 void ai_teleIn_onCreate(Entity *e) {
 	e->x += pixel_to_sub(16);
-	e->y += pixel_to_sub(8);
+	e->y -= pixel_to_sub(8);
 	e->spriteAnim = 2;
 	sound_play(SND_TELEPORT, 5);
 }
@@ -96,48 +96,57 @@ void ai_teleIn_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Appear
 		{
-			if(++e->state_time >= 5 * 14) {
+			if(++e->state_time >= 5*14) {
 				e->state_time = 0;
 				e->state++;
+				e->grounded = false;
 				SPR_SAFEANIM(e->sprite, 0);
 			}
 		}
 		break;
 		case 1: // Drop
 		{
-			if(!e->grounded) e->y_speed += SPEED(0x40);
-			e->y_next = e->y + e->y_speed;
-			e->grounded = collide_stage_floor(e);
-			e->y = e->y_next;
+			if(!e->grounded) {
+				e->y_speed += SPEED(0x40);
+				e->y += e->y_speed;
+				// For whatever reason, collide_stage_floor() doesn't work here
+				e->grounded = stage_get_block_type(
+						sub_to_block(e->x), sub_to_block(e->y + (8<<CSF))) == 0x41;
+			}
 		}
 		break;
 	}
 }
 
 void ai_teleOut_onCreate(Entity *e) {
-	e->y -= pixel_to_sub(16);
-	e->y_speed = pixel_to_sub(-2);
+	e->y -= pixel_to_sub(24);
+	SNAP_TO_GROUND(e);
+	e->y_speed = SPEED(-0x400);
 }
 
 void ai_teleOut_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Hopping up
-		if(++e->state_time >= TIME(24)) {
-			e->state++;
-			e->state_time = 0;
-			e->y_speed = 0;
-			SPR_SAFEANIM(e->sprite, 1);
-			sound_play(SND_TELEPORT, 5);
-		} else {
-			e->y_speed += SPEED(0x40);
-			e->y += e->y_speed;
+		{
+			if(++e->state_time >= TIME(20)) {
+				e->state++;
+				e->state_time = 0;
+				e->y_speed = 0;
+				SPR_SAFEANIM(e->sprite, 1);
+				sound_play(SND_TELEPORT, 5);
+			} else {
+				e->y_speed += SPEED(0x43);
+				e->y += e->y_speed;
+			}
 		}
 		break;
 		case 1: // Show teleport animation
-		if(++e->state_time >= 5*14) {
-			e->state++;
-			e->state_time = 0;
-			SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+		{
+			if(++e->state_time >= 5*14) {
+				e->state++;
+				e->state_time = 0;
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+			}
 		}
 		break;
 	}
