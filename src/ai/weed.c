@@ -60,16 +60,17 @@ void ai_jelly_onUpdate(Entity *e) {
 		}
 		break;
 	}
-	e->direction = (e->x < e->x_mark);
+	if((e->direction && e->x > e->x_mark) || (!e->direction && e->x < e->x_mark)) TURN_AROUND(e);
 	if(e->y <= e->y_mark) e->y_speed += SPEED(0x20);
 	LIMIT_X(SPEED(0x100));
 	LIMIT_Y(SPEED(0x200));
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	if(collide_stage_leftwall(e)) e->direction = 1;
-	if(collide_stage_rightwall(e)) e->direction = 0;
-	if(collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x100);
+	if(e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -206,7 +207,7 @@ void ai_mannan_onUpdate(Entity *e) {
 }
 
 void ai_mannanShot_onUpdate(Entity *e) {
-	MOVE_X(SPEED(0x20));
+	ACCEL_X(SPEED(0x20));
 	if((e->state_time % 8) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
@@ -290,7 +291,7 @@ void ai_malcoBroken_onState(Entity *e) {
 }
 
 void ai_powerc_onCreate(Entity *e) {
-	e->y += pixel_to_sub(8);
+	e->y -= 8 << CSF;
 }
 
 void ai_press_onUpdate(Entity *e) {
@@ -409,17 +410,16 @@ void ai_frog_onUpdate(Entity *e) {
 		}
 		if (dojump) {
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			e->state = 10;
 			SPR_SAFEANIM(e->sprite, 1);
-			e->y_speed = -0x5ff;
+			e->y_speed = SPEED(-0x5ff);
 			e->grounded = false;
 
 			// no jumping sound in cutscenes at ending
 			//if (!player->inputs_locked && !player->disabled)
 			//	sound(SND_ENEMY_JUMP);
 
-			MOVE_X(0x200);
+			MOVE_X(SPEED(0x200));
 		}
 	}
 
@@ -440,8 +440,8 @@ void ai_hey_onUpdate(Entity *e) {
 		case 1:
 		{
 			if(++e->state_time >= TIME(50)) {
-				e->y += 8 << CSF;
-				e->x += 8 << CSF;
+				e->y -= 8 << CSF;
+				e->x -= 8 << CSF;
 				e->state = 2;
 				e->state_time = 0;
 			}
@@ -450,8 +450,8 @@ void ai_hey_onUpdate(Entity *e) {
 		case 2:
 		{
 			if(++e->state_time >= TIME(50)) {
-				e->y -= 8 << CSF;
-				e->x -= 8 << CSF;
+				e->y += 8 << CSF;
+				e->x += 8 << CSF;
 				e->state = 1;
 				e->state_time = 0;
 			}

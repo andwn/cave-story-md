@@ -30,11 +30,12 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Stage tileset is first in USERINDEX
 #define TILE_TSINDEX TILE_USERINDEX
 #define TILE_TSSIZE (TS_WIDTH * TS_HEIGHT)
+// Face graphics
 #define TILE_FACEINDEX (TILE_TSINDEX + TILE_TSSIZE)
 #define TILE_FACESIZE 36
-// VRAM reserved for SGDK sprite engine
-#define TILE_SPRITEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
-#define TILE_SPRITESIZE (TILE_FONTINDEX - TILE_SPRITEINDEX)
+// 16 tiles for the map name display
+#define TILE_NAMEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
+#define TILE_NAMESIZE 16
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space

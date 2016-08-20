@@ -72,10 +72,12 @@ void window_open(u8 mode) {
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, WINDOW_Y2);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, WINDOW_Y2);
-	if(showingFace > 0) {
-		window_draw_face(showingFace);
-	}
-	if(!paused) VDP_setWindowPos(0, 244);
+	if(!paused) {
+		if(showingFace > 0) {
+			window_draw_face(showingFace);
+		}
+		VDP_setWindowPos(0, 244);
+	} else showingFace = 0;
 	windowOpen = true;
 }
 
@@ -113,6 +115,7 @@ void window_close() {
 }
 
 void window_set_face(u16 face, bool open) {
+	if(paused) return;
 	if(open && !windowOpen) window_open(0);
 	showingFace = face;
 	if(face > 0) {

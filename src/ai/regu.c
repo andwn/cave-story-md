@@ -108,14 +108,21 @@ void ai_toroko(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 
-	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
+	if(!(e->eflags & NPC_IGNORESOLID)) {
+		if(!e->grounded) e->grounded = collide_stage_floor(e);
+		else e->grounded = collide_stage_floor_grounded(e);
+	}
 
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
 			SPR_SAFEANIM(e->sprite, 0);
 			e->x_speed = 0;
+			e->state = 1;
+		}
+		/* no break */
+		case 1:
+		{
 			//randblink(o, 1, 4);
 		}
 		break;
@@ -271,7 +278,7 @@ void ai_sue(Entity *e) {
 		/* no break */
 		case 7:
 		{
-			if (++e->state_time > 10) e->state = 0;
+			if (++e->state_time > TIME(10)) e->state = 0;
 		}
 		break;
 		// got punched extra hard by Igor
@@ -290,8 +297,7 @@ void ai_sue(Entity *e) {
 		{
 			if (++e->state_time > 3 && e->grounded) {
 				e->state = 10;
-				e->direction ^= 1;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+				TURN_AROUND(e);
 			}
 		}
 		break;
@@ -326,17 +332,16 @@ void ai_sue(Entity *e) {
 			e->y_speed = 0;
 			e->state = 14;
 			// find Igor
-			e->linkedEntity = entity_find_by_id(501);
+			e->linkedEntity = entity_find_by_id(1234);
 		}
 		/* no break */
 		case 14:	// being carried--see aftermove routine
 		{
-			if (e->linkedEntity != NULL) {
-				Entity *link = e->linkedEntity;
-				e->x_next = link->x + link->direction ? -0x1000 : 0x1000;
+			Entity *link = e->linkedEntity;
+			if (link != NULL) {
+				e->x_next = link->x + link->direction ? (32 << CSF) : -(32 << CSF);
 				e->y_next = link->y;
-				e->direction = link->direction;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+				if(e->direction != link->direction) TURN_AROUND(e);
 			}
 		}
 		break;
@@ -755,7 +760,7 @@ void generic_npc_states(Entity *e) {
 		break;
 		case 5:		// face away
 		{
-			SPR_SAFEANIM(e->sprite, 3);
+			SPR_SAFEANIM(e->sprite, e->type == OBJ_KAZUMA ? 2 : 3);
 			e->x_speed = 0;
 		}
 		break;

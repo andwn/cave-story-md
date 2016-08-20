@@ -24,6 +24,7 @@ void ai_waterlevel(Entity *e) {
 			e->y_mark = e->y;
 			e->y_speed = SPEED(0x200);
 		}
+		/* no break */
 		case WL_CALM:	// calm waves around set point
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
@@ -35,6 +36,7 @@ void ai_waterlevel(Entity *e) {
 			e->state = WL_DOWN;
 			e->state_time = 0;
 		}
+		/* no break */
 		case WL_DOWN:
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;

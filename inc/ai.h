@@ -16,12 +16,10 @@
  * Called for active entities only in entity_update(), after checking for deactivation, and
  * before combat. 
  * * onState
- * The macro ENTITY_SET_STATE will call this after setting a new state.
+ * This is called whenever a TSC script changes the state of an entity. It is also called
+ * when a bullet causes the entity's health to reach zero, and sets STATE_DEFEATED.
  * * onHurt
- * Called by entity_update() if the entity has taken damage from the player's weapon.
- * The sound effect and damage string are already managed in entity.c so do not do so
- * inside of onHurt. Additionally onHurt is NOT called when the entity is killed. Use
- * onState and check for STATE_DEFEATED to act upon death.
+ * Removed. Check if e->damage_time is nonzero instead.
  */
 
 #define ENTITY_ONCREATE(e) ({                                                                  \
@@ -53,12 +51,13 @@ typedef void (*EntityMethod)(Entity*);
 
 // states to control the water-level object
 #define WL_CALM				10	// calm and slow at set point
-
 #define WL_CYCLE			20	// cycles between set point and top of screen
 #define WL_DOWN				21	// in cycle--currently down
 #define WL_UP				22	// in cycle--currently up
-
 #define WL_STAY_UP			30	// goes to top of screen and doesn't come back down
+
+#define WATER_TOP			0
+#define WATER_DISABLE		255
 
 /* Helper Macros */
 
@@ -121,8 +120,8 @@ void generic_npc_states(Entity *e);
 void oncreate_snap(Entity *e);
 // NPC will face right if NPC_OPTION2 is set
 void oncreate_op2flip(Entity *e);
-// NPC's sprite will start at the second frame if NPC_OPTION2 is set
-//void ai_op2frame_onCreate(Entity *e);
+// Combination of the above
+void oncreate_snapflip(Entity *e);
 // NPC's sprite will start at the second animation if NPC_OPTION2 is set
 void oncreate_op2anim(Entity *e);
 // Only push down for NPC_OPTION2, used for the door after rescuing Kazuma
@@ -140,37 +139,44 @@ void ai_trigger_onUpdate(Entity *e);
 void ai_genericproj_onUpdate(Entity *e);
 // Default onState just explodes on death
 void ai_default_onState(Entity *e);
-
+// Quote teleporting in
 void ai_teleIn_onCreate(Entity *e);
 void ai_teleIn_onUpdate(Entity *e);
-
+// Quote teleporting out
 void ai_teleOut_onCreate(Entity *e);
 void ai_teleOut_onUpdate(Entity *e);
-
+// TODO: Blue light that flashes while the teleporter is in use
 void ai_teleLight_onCreate(Entity *e);
 void ai_teleLight_onUpdate(Entity *e);
 void ai_teleLight_onState(Entity *e);
-
+// Quote NPC used in scenes where the actual player character is hidden
 void ai_player_onUpdate(Entity *e);
 void ai_player_onState(Entity *e);
 
 /* Regular NPCs - regu.c */
 
 void ai_jenka(Entity *e);
+
 void ai_doctor(Entity *e);
+
 void ai_toroko(Entity *e);
 void ai_toroko_teleport_in(Entity *e);
+
 void ai_sue(Entity *e);
 void ai_sue_teleport_in(Entity *e);
+
 void ai_kazuma(Entity *e);
+
 void ai_king(Entity *e);
+
 void ai_blue_robot(Entity *e);
+
 void ai_kanpachi_fishing(Entity *e);
+
 void ai_booster(Entity *e);
 void ai_booster_falling(Entity *e);
+
 void ai_npc_at_computer(Entity *e);
-void ai_generic_npc(Entity *e);
-void ai_generic_npc_nofaceplayer(Entity *e);
 
 /* Balrog - balrog.c */
 
@@ -262,8 +268,6 @@ void ai_theDoor_onUpdate(Entity *e);
 void ai_theDoor_onHurt(Entity *e);
 
 /* Items & Treasure - item.c */
-
-u8 energyCount;
 
 void ai_energy_onCreate(Entity *e);
 void ai_energy_onUpdate(Entity *e);
@@ -392,5 +396,10 @@ void ai_gaudiArmoredShot_onUpdate(Entity *e);
 void ai_pooh_black(Entity *e);
 void ai_pooh_black_bubble(Entity *e);
 void ai_pooh_black_dying(Entity *e);
+
+/* Core - core.c */
+
+void create_core();
+void ai_core(Entity *e);
 
 #endif /* INC_AI_H_ */

@@ -15,10 +15,28 @@
 #include "weapon.h"
 #include "window.h"
 #include "audio.h"
+#include "ai.h"
 
 Sprite *itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
 //Sprite *selectSprite;
+
+void itemcursor_move(u8 oldindex, u8 index) {
+	// Erase old position
+	u16 x = 3 + (oldindex % 8) * 4;
+	u16 y = 11 + (oldindex / 8) * 2;
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+1);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y+1);
+	// Draw new position
+	x = 3 + (index % 8) * 4;
+	y = 11 + (index / 8) * 2;
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX,   x,   y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+3, y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+1);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+3, x+3, y+1);
+}
 
 bool update_pause() {
 	if(joy_pressed(BUTTON_START)) {
@@ -45,21 +63,25 @@ bool update_pause() {
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_LEFT)) {
+			itemcursor_move(selectedItem, (selectedItem - 1) % 32);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem--;
 			selectedItem %= 32;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_UP)) {
+			itemcursor_move(selectedItem, selectedItem < 8 ? selectedItem + 24 : selectedItem - 8);
 			sound_play(SND_MENU_MOVE, 5);
-			selectedItem -= 8;
+			selectedItem = selectedItem < 8 ? selectedItem + 24 : selectedItem - 8;
 			selectedItem %= 32;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
+			itemcursor_move(selectedItem, (selectedItem + 1) % 32);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem++;
 			selectedItem %= 32;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_DOWN)) {
+			itemcursor_move(selectedItem, (selectedItem + 8) % 32);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem += 8;
 			selectedItem %= 32;
@@ -89,6 +111,7 @@ void game_reset(bool load) {
 void draw_itemmenu() {
 	SYS_disableInts();
 	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, 0, 64 * 20);
+	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, true);
 	//window_draw_area(2, 1, 36, 18);
 	window_clear();
 	VDP_drawTextWindow("--ARMS--", 16, 3);
@@ -110,6 +133,7 @@ void draw_itemmenu() {
 		}
 	}
 	VDP_drawTextWindow("--ITEM--", 16, 10);
+	itemcursor_move(0, 0);
 	player_pause();
 	entities_pause();
 	hud_hide();
@@ -120,6 +144,7 @@ void draw_itemmenu() {
 void vblank() {
 	stage_update();
 	if(hudRedrawPending) hud_update_vblank();
+	if(water_screenlevel != WATER_DISABLE) vblank_water();
 	//if(debuggingEnabled) {
 	//	char str[34];
 	//	sprintf(str, "%05u %05u E#:%03hu/%03hu MEM:%05hu", playerProf, entityProf, 

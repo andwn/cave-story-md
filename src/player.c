@@ -201,11 +201,17 @@ void player_update() {
 	}
 	player.x = player.x_next;
 	player.y = player.y_next;
-	if(player.health == 0) {
-		playerIFrames = 0;
-		playerDead = true;
-		return;
-	} else if(playerIFrames > 0) {
+	// Damage Tiles / Death check / IFrames
+	if(!playerIFrames) {
+		if(stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) == 0x42) {
+			player_inflict_damage(10);
+		}
+		if(player.health == 0) {
+			playerIFrames = 0;
+			playerDead = true;
+			return;
+		}
+	} else {
 		playerIFrames--;
 	}
 	// This "damage_time" block is for energy numbers
@@ -476,6 +482,7 @@ void player_pause() {
 	for(u16 i = 0; i < MAX_BULLETS; i++) {
 		SPR_SAFEVISIBILITY(playerBullet[i].sprite, HIDDEN);
 	}
+	if(mapNameTTL) SPR_SAFEVISIBILITY(mapNameSprite, HIDDEN);
 }
 
 void player_unpause() {
@@ -485,6 +492,7 @@ void player_unpause() {
 	for(u16 i = 0; i < MAX_BULLETS; i++) {
 		SPR_SAFEVISIBILITY(playerBullet[i].sprite, AUTO_FAST);
 	}
+	if(mapNameTTL) SPR_SAFEVISIBILITY(mapNameSprite, AUTO_FAST);
 }
 
 bool player_invincible() {

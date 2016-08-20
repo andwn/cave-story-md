@@ -10,6 +10,12 @@
 
 void ai_pignon_onUpdate(Entity *e) {
 	e->state_time++;
+	if(e->state < 3 && e->damage_time) {
+		ENTITY_SET_STATE(e, 3, 0);
+		e->y_speed = -0x100;
+		MOVE_X(-0x120);
+		SPR_SAFEANIM(e->sprite, 3);
+	}
 	switch(e->state) {
 		case 0: // Standing
 		if(e->state_time > 120 && (e->state_time & 31) == 0) { 
@@ -42,14 +48,14 @@ void ai_pignon_onUpdate(Entity *e) {
 		break;
 		case 3: // Hurt
 		e->x_speed += -0x4 + 0x8 * e->direction; // Decellerate
-		if(e->state_time >= 60) {
+		if(e->state_time >= TIME(30)) {
 			ENTITY_SET_STATE(e, 0, 0);
 			e->x_speed = 0;
 			SPR_SAFEANIM(e->sprite, 0);
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	if(!e->grounded) e->y_speed += SPEED(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// Don't test ceiling, only test sticking to ground while moving
@@ -67,13 +73,6 @@ void ai_pignon_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_pignon_onHurt(Entity *e) {
-	ENTITY_SET_STATE(e, 3, 0);
-	e->y_speed = -0x100;
-	e->x_speed = -0x150 + 0x300 * !e->direction; // Knock backwards
-	SPR_SAFEANIM(e->sprite, 3);
-}
-
 void ai_gkeeper_onCreate(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE;
 	e->eflags |= NPC_INVINCIBLE;
@@ -84,7 +83,6 @@ void ai_gkeeper_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Standing
 		FACE_PLAYER(e);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
 		// start walking when player comes near
 		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
 			PLAYER_DIST_Y2(pixel_to_sub(48), pixel_to_sub(32))) {
@@ -100,7 +98,6 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		break;
 		case 1: // Walking
 		FACE_PLAYER(e);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
 		e->x_speed = e->direction ? 0x100 : -0x100;
 		// reached knife range of player?
 		if(PLAYER_DIST_X(pixel_to_sub(10))) {

@@ -13,7 +13,7 @@
  */
 
 #define MAX_DAMAGE 4
-#define MAX_SMOKE 6
+#define MAX_SMOKE 8
 
 // Initialize default (0, NULL) values to avoid weird glitches
 void effects_init();
@@ -29,7 +29,9 @@ void effects_update();
 // Values must be limited to 3 digits
 // TTL means time to live, and is the number of frames until the effect expires
 void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl);
-// Creates a single puff of smoke (maximum of 6)
+// Creates a single puff of smoke (maximum of 8)
 void effect_create_smoke(u8 type, s16 x, s16 y);
+
+void effect_set_zzz(bool enabled, s16 x, s16 y);
 
 #endif /* INC_EFFECT_H_ */

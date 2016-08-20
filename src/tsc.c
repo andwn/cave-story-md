@@ -243,6 +243,7 @@ u8 tsc_update() {
 		break;
 	case TSC_WAITTIME:
 		waitTime--;
+		if(paused) waitTime = 0;
 		if(waitTime == 0) tscState = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
@@ -384,11 +385,13 @@ u8 execute_command() {
 			return 1;
 		case CMD_END: // End the event
 			tscState = TSC_IDLE;
-			gameFrozen = false;
-			window_set_face(0, false);
-			window_close();
-			player_unlock_controls();
-			hud_show();
+			if(!paused) {
+				gameFrozen = false;
+				window_set_face(0, false);
+				window_close();
+				player_unlock_controls();
+				hud_show();
+			}
 			return 1;
 		case CMD_EVE: // Jump to event (1)
 			args[0] = tsc_read_word();

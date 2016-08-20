@@ -14,6 +14,10 @@ extern const u32 TILE_BLANK[8];
 extern const u16 PAL_FadeOut[64];
 // FullWhite is used for a TSC instruction that flashes the screen white
 extern const u16 PAL_FullWhite[64];
+// Palette data
+u16 cachedPalette[64];
+u16 waterPalette[64];
+u16 waterPending;
 
 // Window plane functions
 void VDP_setWindowPos(u8 x, u8 y);
@@ -28,6 +32,11 @@ void VDP_clearTextWindow(u16 x, u16 y, u16 w);
 void VDP_setCachedPalette(u16 pindex, u16 *colors);
 void VDP_setCachedColor(u16 cindex, u16 color);
 u16* VDP_getCachedPalette();
+
+// Water palette
+void VDP_genWaterPalette();
+void vblank_water();
+void hblank_water();
 
 // Number draw functions
 void VDP_drawInt(u32 n, u16 x, u16 y);

@@ -37,7 +37,10 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	SPR_reset();
+	//SPR_reset();
+	// You think this is a motherfucking game?
+	SPR_end();
+	SPR_init(80, 512, 512);
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
@@ -46,7 +49,8 @@ void stage_load(u16 id) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
-	energyCount = 0;
+	water_screenlevel = WATER_DISABLE;
+	water_entity = NULL;
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
@@ -117,18 +121,43 @@ void stage_load_blocks() {
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
 	stageEntityCount = PXE[4];
-	for(u8 i = 0; i < stageEntityCount; i++) {
-		u16 x, y, id, event, type, flags;
-		x = PXE[8 + i * 12] + (PXE[9 + i * 12]<<8);
-		y = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
-		id = PXE[12 + i * 12] + (PXE[13 + i * 12]<<8);
-		event = PXE[14 + i * 12] + (PXE[15 + i * 12]<<8);
-		type = PXE[16 + i * 12] + (PXE[17 + i * 12]<<8);
-		flags = PXE[18 + i * 12] + (PXE[19 + i * 12]<<8);
-		if(id==0 && event==0 && type==0 && flags==0) continue;
-		if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
-		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
-		entity_create(x, y, id, event, type, flags, 0);
+	// Some small rooms depend on sprite sorting to be back -> front
+	// But on Genesis it works the opposite, so here is a terrible hack that loads
+	// all the entities on those maps in reverse order
+	if(stageID == 0x01		/* Arthur's House */
+		|| stageID == 0x05	/* Egg.00 */
+		|| stageID == 0x12	/* Shelter */
+		|| stageID == 0x13	/* Assembly Hall */
+		|| stageID == 0x18	/* Arthur's House (Scene after Egg Corridor) */
+		|| stageID == 0x1D	/* Sand Zone Residence */ ) {
+		for(u8 i = stageEntityCount; i > 0; i--) {
+			u16 x, y, id, event, type, flags;
+			x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
+			y = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
+			id = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
+			event = PXE[14 + (i-1) * 12] + (PXE[15 + (i-1) * 12]<<8);
+			type = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
+			flags = PXE[18 + (i-1) * 12] + (PXE[19 + (i-1) * 12]<<8);
+			if(id==0 && event==0 && type==0 && flags==0) continue;
+			if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
+			if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
+			entity_create(x, y, id, event, type, flags, 0);
+		}
+	} else {
+		// And then the normal order for all other maps
+		for(u8 i = 0; i < stageEntityCount; i++) {
+			u16 x, y, id, event, type, flags;
+			x = PXE[8 + i * 12] + (PXE[9 + i * 12]<<8);
+			y = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
+			id = PXE[12 + i * 12] + (PXE[13 + i * 12]<<8);
+			event = PXE[14 + i * 12] + (PXE[15 + i * 12]<<8);
+			type = PXE[16 + i * 12] + (PXE[17 + i * 12]<<8);
+			flags = PXE[18 + i * 12] + (PXE[19 + i * 12]<<8);
+			if(id==0 && event==0 && type==0 && flags==0) continue;
+			if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
+			if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
+			entity_create(x, y, id, event, type, flags, 0);
+		}
 	}
 }
 

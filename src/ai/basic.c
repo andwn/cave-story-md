@@ -16,6 +16,11 @@ void oncreate_op2flip(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->direction = 1;
 }
 
+void oncreate_snapflip(Entity *e) {
+	if(e->eflags & NPC_OPTION2) e->direction = 1;
+	SNAP_TO_GROUND(e);
+}
+
 void oncreate_op2anim(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->spriteAnim = 1;
 }

@@ -124,6 +124,8 @@ void ai_batHang_onUpdate(Entity *e) {
 }
 
 void ai_batCircle_onUpdate(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 		{
@@ -148,12 +150,12 @@ void ai_batCircle_onUpdate(Entity *e) {
 		/* no break */
 		case 1:
 			// circle around our target point
-			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			if(e->direction && player.x < e->x) TURN_AROUND(e);
+			if(!e->direction && player.x > e->x) TURN_AROUND(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
-			LIMIT_X(0x200);
-			LIMIT_Y(0x200);
+			LIMIT_X(SPEED(0x200));
+			LIMIT_Y(SPEED(0x200));
 			if(!e->state_time) {
 				if(PLAYER_DIST_X(0x1000) && (player.y > e->y) && PLAYER_DIST_Y(0xC000)) {
 					// dive attack
@@ -168,15 +170,17 @@ void ai_batCircle_onUpdate(Entity *e) {
 		break;
 		
 		case 2:	// dive attack
-			e->y_speed += 0x40;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x5ff));
 			if(collide_stage_floor(e)) {
 				e->y_speed = 0;
 				e->x_speed *= 2;
-				e->state_time = 120;		// delay before can dive again
+				e->state_time = TIME(120);		// delay before can dive again
 				e->state = 1;
 				SPR_SAFEANIM(e->sprite, 0);
 			}
 		break;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }

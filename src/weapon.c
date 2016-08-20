@@ -153,12 +153,12 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
 		SPR_SAFEANIM(b->sprite, 1);
 		SPR_SAFEVFLIP(b->sprite, 1);
-		if(player.y_speed >= 0) {
-			player.y_speed -= 0x300;
-		} else if(player.y_speed >= 0x200) {
-			player.y_speed -= 0x200;
+		if(player.y_speed >= SPEED(0x200)) {
+			player.y_speed -= SPEED(0x400);
+		} else if(player.y_speed >= 0) {
+			player.y_speed -= SPEED(0x280);
 		} else {
-			player.y_speed -= 0x100;
+			player.y_speed -= SPEED(0x100);
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);

@@ -108,6 +108,8 @@ void ai_balrog(Entity *e) {
 		{
 			e->state_time = 0;
 			e->state = 43;
+			// Spawn the Balfrog boss
+			entity_create_boss(sub_to_block(e->x), sub_to_block(e->y), BOSS_BALFROG, 1000);
 		}
 		/* no break */
 		case 43:
@@ -304,7 +306,7 @@ void ai_balrog_bust_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y += (8 << CSF);
+			e->y += (2 << CSF);
 			e->y_speed = SPEED(-0x100);
 			camera_shake(30);
 			e->state = 1;

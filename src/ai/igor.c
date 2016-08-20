@@ -174,7 +174,7 @@ void ai_igorscene_onUpdate(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
-	e->x += e->x_speed;
+	e->x = e->x_next;
 	e->y = e->y_next;
 }
 
@@ -190,15 +190,24 @@ void ai_igorscene_onState(Entity *e) {
 	switch(e->state) {
 		case 0:
 		case 1:
-		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		SPR_SAFEANIM(e->sprite, 0);
+		{
+			e->x_speed = 0;
+			SPR_SAFEHFLIP(e->sprite, e->direction);
+			SPR_SAFEANIM(e->sprite, 0);
+		}
 		break;
 		case 2:
 		case 3:
-		MOVE_X(SPEED(0x200));
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		SPR_SAFEANIM(e->sprite, 1);
+		{
+			// Push Igor sprite behind Sue
+			// This is the proper way to sort sprites in SGDK, I think
+			//SPR_SAFERELEASE(e->sprite);
+			//entity_sprite_create(e);
+			// Also set the ID for grabbing
+			e->id = 1234;
+			MOVE_X(SPEED(0x200));
+			SPR_SAFEANIM(e->sprite, 1);
+		}
 		break;
 		case 4:
 		e->x_speed = 0;
