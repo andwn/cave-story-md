@@ -179,7 +179,7 @@ void ai_toroko(Entity *e) {
 			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			MOVE_X(SPEED(0x100));
+			MOVE_X(SPEED(0x200));
 		}
 		break;
 		case 11:	// falling down
@@ -203,13 +203,15 @@ void ai_toroko(Entity *e) {
 
 
 void ai_toroko_teleport_in(Entity *e) {
+	e->x_next = e->x;
 	e->y_next = e->y + e->y_speed;
-	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
+	e->grounded = collide_stage_floor(e);
 
 	switch(e->state) {
 		case 0:
 		{
+			//e->x += 8 << CSF;
+			//e->hit_box.bottom = 8;
 			e->grounded = false;
 			e->state = 1;
 			e->state_time = 0;
@@ -218,11 +220,11 @@ void ai_toroko_teleport_in(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			//if (DoTeleportIn(o, 2))
-			//{
+			//if (DoTeleportIn(o, 2)) {
+			if(++e->state_time > TIME(50)) {
 				SPR_SAFEANIM(e->sprite, 1);
 				e->state = 2;
-			//}
+			}
 		}
 		break;
 		case 2:
@@ -334,6 +336,7 @@ void ai_sue(Entity *e) {
 			e->state = 14;
 			// find Igor
 			e->linkedEntity = entity_find_by_id(1234);
+			e->alwaysActive = true;
 		}
 		/* no break */
 		case 14:	// being carried--see aftermove routine
@@ -341,7 +344,7 @@ void ai_sue(Entity *e) {
 			Entity *link = e->linkedEntity;
 			if (link != NULL) {
 				e->x_next = link->x + link->direction ? (32 << CSF) : -(32 << CSF);
-				e->y_next = link->y;
+				e->y_next = link->y - (32 << CSF);
 				if(e->direction != link->direction) TURN_AROUND(e);
 			}
 		}
@@ -489,7 +492,7 @@ void ai_king(Entity *e) {
 		case 7:			// he falls and is knocked out
 		{
 			SPR_SAFEANIM(e->sprite, 3);
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED(0x280));
 			e->y_speed += 0x40;
 			if (e->state_time++ && e->grounded) e->state = 5;
 		}
@@ -550,7 +553,7 @@ void ai_king(Entity *e) {
 				e->state_time = 0;
 				e->y_speed = SPEED(-0x400);
 				e->grounded = false;
-				e->x_speed = SPEED(0x200);
+				e->x_speed = SPEED(0x280);
 				sound_play(SND_LITTLE_CRASH, 5);
 				//SmokeClouds(o, 4, 8, 8);
 			}
@@ -580,7 +583,7 @@ void ai_king(Entity *e) {
 			SPR_SAFEANIM(e->sprite, 0);
 			e->state = 61;
 			e->y_speed = SPEED(-0x5FF);
-			e->x_speed = SPEED(0x400);
+			e->x_speed = SPEED(0x380);
 			SPR_SAFEHFLIP(e->linkedEntity->sprite, 1);
 		break;
 		case 61:		// jumping
@@ -599,13 +602,13 @@ void ai_king(Entity *e) {
 }
 
 void ai_blue_robot(Entity *e) {
-	e->y_next = e->y + e->y_speed;
-	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
+	//e->y_next = e->y + e->y_speed;
+	//if(!e->grounded) e->grounded = collide_stage_floor(e);
+	//else e->grounded = collide_stage_floor_grounded(e);
 	//randblink(o, 1, 4);
-	e->y = e->y_next;
-	if(!e->grounded) e->y_speed += SPEED(0x40);
-	LIMIT_Y(SPEED(0x5FF));
+	//e->y = e->y_next;
+	//if(!e->grounded) e->y_speed += SPEED(0x40);
+	//LIMIT_Y(SPEED(0x5FF));
 }
 
 void ai_kanpachi_fishing(Entity *e) {

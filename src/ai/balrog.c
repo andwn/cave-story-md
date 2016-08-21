@@ -22,6 +22,11 @@ void ai_balrog(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 
+	if(!(e->eflags & NPC_IGNORESOLID)) {
+		if(!e->grounded) e->grounded = collide_stage_floor(e);
+		else e->grounded = collide_stage_floor_grounded(e);
+	}
+
 	switch(e->state) {
 		case 0:
 		{
@@ -75,6 +80,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 21:
 		{
+			fall = false;
 			e->state_time2++;
 			e->x += ((e->state_time2 >> 1) & 1) ? (1<<9) : -(1<<9);
 			if (++e->state_time > TIME(100)) {
@@ -93,6 +99,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 31:
 		{
+			fall = false;
 			if (++e->state_time > TIME(100)) {
 				e->state = 0;
 			}
@@ -151,6 +158,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 71:
 		{
+			fall = false;
 			if(++e->state_time > 120) {
 				e->state = STATE_DELETE;
 				return;
@@ -166,6 +174,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 81:
 		{
+			fall = false;
 			if (++e->state_time & 2) {
 				e->x += (1 << 9);
 			} else {
@@ -242,8 +251,6 @@ void ai_balrog(Entity *e) {
 	if (fall) {
 		if (!e->grounded) e->y_speed += SPEED(0x20);
 		LIMIT_Y(SPEED(0x5FF));
-		if(!e->grounded) e->grounded = collide_stage_floor(e);
-		else e->grounded = collide_stage_floor_grounded(e);
 	}
 }
 
@@ -272,7 +279,6 @@ void ai_balrog_drop_in(Entity *e) {
 		case 2:	// free-falling
 		{
 			if ((e->grounded = collide_stage_floor(e))) {
-				e->y_speed = 0;
 				SPR_SAFEANIM(e->sprite, 2);
 				e->state = 3;
 				e->state_time = 0;

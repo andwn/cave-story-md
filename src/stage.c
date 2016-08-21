@@ -124,12 +124,12 @@ void stage_load_entities() {
 	// Some small rooms depend on sprite sorting to be back -> front
 	// But on Genesis it works the opposite, so here is a terrible hack that loads
 	// all the entities on those maps in reverse order
-	if(stageID == 0x01		/* Arthur's House */
-		|| stageID == 0x05	/* Egg.00 */
-		|| stageID == 0x12	/* Shelter */
-		|| stageID == 0x13	/* Assembly Hall */
-		|| stageID == 0x18	/* Arthur's House (Scene after Egg Corridor) */
-		|| stageID == 0x1D	/* Sand Zone Residence */ ) {
+	//if(stageID == 0x01		/* Arthur's House */
+	//	|| stageID == 0x05	/* Egg.00 */
+	//	|| stageID == 0x12	/* Shelter */
+	//	|| stageID == 0x13	/* Assembly Hall */
+	//	|| stageID == 0x18	/* Arthur's House (Scene after Egg Corridor) */
+	//	|| stageID == 0x1D	/* Sand Zone Residence */ ) {
 		for(u8 i = stageEntityCount; i > 0; i--) {
 			u16 x, y, id, event, type, flags;
 			x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
@@ -143,6 +143,7 @@ void stage_load_entities() {
 			if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
 			entity_create(x, y, id, event, type, flags, 0);
 		}
+	/*
 	} else {
 		// And then the normal order for all other maps
 		for(u8 i = 0; i < stageEntityCount; i++) {
@@ -159,6 +160,7 @@ void stage_load_entities() {
 			entity_create(x, y, id, event, type, flags, 0);
 		}
 	}
+	*/
 }
 
 bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {

@@ -10,6 +10,7 @@ PALETTE PAL_Plant		"sprite/flower.png" 3
 PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 PALETTE PAL_Chaco		"sprite/chaco.png" 3
 PALETTE PAL_Jenka		"sprite/jenka.png" 3
+PALETTE PAL_Dark		"sprite/dark.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -158,7 +159,6 @@ SPRITE SPR_Armadl		"sprite/armadillo.png" 4 2 0 10 NONE
 SPRITE SPR_Omega		"sprite/omega.png" 10 8 0 0 NONE
 SPRITE SPR_OmegaLeg		"sprite/omegaleg.png" 4 4 0 0 NONE
 SPRITE SPR_Booster		"sprite/booster.png" 2 2 0 10 NONE
-SPRITE SPR_Jenka		"sprite/jenka.png" 2 2 0 0 NONE
 SPRITE SPR_Doctor		"sprite/doctor.png" 3 4 0 12 NONE
 SPRITE SPR_ToroBoss		"sprite/torokoboss.png" 4 4 0 12 NONE
 SPRITE SPR_ToroFlower	"sprite/toroflower.png" 2 2 0 8 NONE
@@ -180,6 +180,13 @@ SPRITE SPR_Balfrog2		"sprite/balfrog2.png" 9 11 0 0 NONE
 
 # Use PAL_Chaco	
 SPRITE SPR_Chaco		"sprite/chaco.png" 2 2 0 8 NONE
+
+# Use PAL_Jenka
+SPRITE SPR_Jenka		"sprite/jenka.png" 2 2 0 0 NONE
+
+# Use PAL_Dark
+SPRITE SPR_Dark			"sprite/dark.png" 5 3 0 0 NONE
+SPRITE SPR_DarkBub		"sprite/darkbubble.png" 2 2 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

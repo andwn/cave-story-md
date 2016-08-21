@@ -112,14 +112,18 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 	block->nflags &= ~NPC_INVINCIBLE;		\
 })
 #define THROWBLOCK	({			\
-	block->x = e->x;	\
-	block->y = e->y;	\
-	block->eflags |= NPC_INVINCIBLE;		\
-	block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5; \
-	block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5; \
-	if(block->x > player.x) block->x_speed = -block->x_speed; \
-	if(block->y > player.y) block->y_speed = -block->y_speed; \
-	sound_play(SND_EM_FIRE, 5);		\
+	if(block != NULL) { \
+		block->x = e->x;	\
+		block->y = e->y;	\
+		block->eflags |= NPC_INVINCIBLE;		\
+		block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5; \
+		block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5; \
+		if(block->x > player.x) block->x_speed = -block->x_speed; \
+		if(block->y > player.y) block->y_speed = -block->y_speed; \
+		sound_play(SND_EM_FIRE, 5);		\
+		e->linkedEntity = NULL; \
+		block->linkedEntity = NULL; \
+	} \
 })
 
 	e->x_next = e->x + e->x_speed;
@@ -380,15 +384,20 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 
 void ai_torokoBoss_onState(Entity *e) {
 	if(e->state == STATE_DEFEATED) {
-		//e->state = STATE_DELETE;
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->nflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOWDAMAGE;
 		tsc_call_event(e->event);
 	}
 }
 
 // the blocks Frenzied Toroko throws
 void ai_torokoBlock_onUpdate(Entity *e) {
+	if(e->linkedEntity != NULL) {
+		e->x = e->linkedEntity->x + (e->linkedEntity->direction ? 16 << CSF : -16 << CSF);
+		e->y = e->linkedEntity->y - (16 << CSF);
+		return;
+	}
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_floor(e)) {
