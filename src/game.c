@@ -50,6 +50,7 @@ bool update_pause() {
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
+		player_unlock_controls();
 		entities_unpause();
 		hud_show();
 		VDP_setWindowPos(0, 0);

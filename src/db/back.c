@@ -7,7 +7,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ &BG_Blue, PAL2, 0, 8, 8 }, // Mimiga Village, Grasstown
 	{ &BG_Grass, PAL0, 0, 8, 8 },
 	{ &BG_Fog, PAL2, 1, 16, 4 },
-	{ &BG_Gard, PAL3, 0, 6, 8 }, // Sand Zone Building
+	{ &BG_Gard, PAL2, 0, 6, 8 }, // Sand Zone Building
 	{ &BG_Gray, PAL2, 0, 8, 8 },
 	{ &BG_Green, PAL3, 0, 8, 8 },
 	{ &BG_Maze, PAL3, 0, 8, 8 },

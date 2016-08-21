@@ -98,28 +98,27 @@ void ai_toroko_onState(Entity *e) {
 
 void ai_torokoBoss_onCreate(Entity *e) {
 	e->spriteAnim = 10;
+	e->y -= 8 << CSF;
 }
 
 void ai_torokoBoss_onUpdate(Entity *e) {
-	Entity *block = entity_find_by_type(OBJ_TOROKO_BLOCK);
+	Entity *block = e->linkedEntity;
 
 #define SPAWNBLOCK	({					\
-	block = entity_create(0, 0, 0, 0, OBJ_TOROKO_BLOCK, 0, e->direction);	\
-	block->x = e->x + (e->direction ? 0x100 : -0x100); \
-	block->y = e->y - 0x200; \
-	block->x_speed = e->x_speed; \
-	block->y_speed = e->y_speed; \
+	block = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, OBJ_TOROKO_BLOCK, 0, e->direction);	\
+	e->linkedEntity = block; \
+	block->linkedEntity = e; \
 	block->eflags &= ~NPC_INVINCIBLE;		\
 	block->nflags &= ~NPC_INVINCIBLE;		\
 })
 #define THROWBLOCK	({			\
-	block->x += pixel_to_sub(16) * (e->direction ? 1 : -1);	\
-	block->y += pixel_to_sub(9);	\
+	block->x = e->x;	\
+	block->y = e->y;	\
 	block->eflags |= NPC_INVINCIBLE;		\
-	block->x_speed = e->direction ? SPEED(0x400) : SPEED(-0x400);		\
-	block->y_speed = abs(e->y - player.y) / 32; \
-	if(block->y_speed > SPEED(0x200)) block->y_speed = SPEED(0x200); \
-	if(block->y_speed < SPEED(-0x200)) block->y_speed = SPEED(-0x200); \
+	block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5; \
+	block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5; \
+	if(block->x > player.x) block->x_speed = -block->x_speed; \
+	if(block->y > player.y) block->y_speed = -block->y_speed; \
 	sound_play(SND_EM_FIRE, 5);		\
 })
 
@@ -129,10 +128,8 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y_next -= SPEED(0x400);
 			e->grounded = true;
 			e->state = 1;
-			//e->frame = 9;
 			e->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
 		}
 		/* no break */
@@ -175,7 +172,6 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 		case 11:
 		{
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			if (!e->state_time) {
 				e->state = (random() & 1) ? 20 : 50;
 			}
@@ -216,15 +212,15 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 			if (++e->state_time > TIME(30)) {
 				e->state = 24;
 				e->state_time = 0;
+				FACE_PLAYER(e);
 				SPR_SAFEANIM(e->sprite, 6);
 				THROWBLOCK; 
 			}
-			FACE_PLAYER(e);
 		}
 		break;
 		case 24:	// threw block
 		{
-			if (++e->state_time > 4) {
+			if (++e->state_time > TIME(5)) {
 				e->state = 25;
 				SPR_SAFEANIM(e->sprite, 2);
 			}
@@ -264,15 +260,16 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 			if (++e->state_time > TIME(30)) {
 				e->state = 52;
 				e->state_time = 0;
+				FACE_PLAYER(e);
 				SPR_SAFEANIM(e->sprite, 4);
 				THROWBLOCK;
 			}
-			FACE_PLAYER(e);
+
 		}
 		break;
 		case 52:
 		{
-			if (++e->state_time > 4) {
+			if (++e->state_time > TIME(5)) {
 				e->state = 10;
 				SPR_SAFEANIM(e->sprite, 0);
 			}
@@ -364,7 +361,8 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 		break;
 	}
 	
-	SPR_SAFEANIM(e->sprite, e->direction);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(e->x_speed < 0) collide_stage_leftwall(e);
 
 	e->x = e->x_next;
 	e->y = e->y_next;

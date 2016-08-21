@@ -21,7 +21,7 @@ void ai_jenka(Entity *e) {
 		/* no break */
 		case 1: 
 		{
-			if ((random() % TIME(120)) < 10) {
+			if (++e->state_time > 30 && (random() % TIME(120)) < 10) {
 				e->state = 2; 
 				e->state_time = 0; 
 				SPR_SAFEANIM(e->sprite, 1);
@@ -30,8 +30,9 @@ void ai_jenka(Entity *e) {
 		break;
 		case 2: 
 		{
-			if (++e->state_time > 8) { 
-				e->state = 1; 
+			if (++e->state_time > TIME(8)) {
+				e->state = 1;
+				e->state_time = 0;
 				SPR_SAFEANIM(e->sprite, 0);
 			} 
 		}

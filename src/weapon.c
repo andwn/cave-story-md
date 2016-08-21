@@ -8,6 +8,7 @@
 #include "tables.h"
 #include "effect.h"
 #include "entity.h"
+#include "input.h"
 
 const WeaponFunc weapon_fire_array[WEAPON_COUNT] = {
 	&weapon_fire_none,
@@ -145,26 +146,28 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->ttl = 90;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	if(player.controller[0]&BUTTON_UP) {
+		player.y_mark = 0;
 		SPR_SAFEANIM(b->sprite, 1);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
 	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+		if(player.y_mark == 0) player.y_mark = player.y;
+		if(w->level < 3) player.y_mark += 0x10;
 		SPR_SAFEANIM(b->sprite, 1);
 		SPR_SAFEVFLIP(b->sprite, 1);
-		if(player.y_speed >= SPEED(0x200)) {
-			player.y_speed -= SPEED(0x400);
-		} else if(player.y_speed >= 0) {
-			player.y_speed -= SPEED(0x280);
+		if(player.y > player.y_mark) {
+			player.y_speed = SPEED(-0x200);
 		} else {
-			player.y_speed -= SPEED(0x100);
+			player.y_speed = SPEED(-0x100);
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
+		player.y_mark = 0;
 		SPR_SAFEHFLIP(b->sprite, player.direction);
 		b->x = player.x + (player.direction ? pixel_to_sub(10) : pixel_to_sub(-10));
 		b->y = player.y + pixel_to_sub(2);

@@ -288,7 +288,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_BigDoorFrame, PAL1, 2, "Large Doorway (Frame)",
 		NULL, NULL, NULL },
 	{ &SPR_BigDoor, PAL1, 2, "Large Doorway (Doors)",
-		&oncreate_op2anim, NULL, NULL },
+		&oncreate_doorway, &ai_doorway, NULL },
 	{ &SPR_Doctor, 	PAL3, 3, "Doctor (Crowned)",
 		&oncreate_snap, &ai_doctor, NULL },
 	{ &SPR_ToroBoss, PAL3, 3, "Frenzied Toroko",

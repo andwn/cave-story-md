@@ -571,7 +571,7 @@ u8 execute_command() {
 				ENTITY_SET_STATE(bossEntity, args[0], 0);
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
-				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 1, 
+				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 3,
 					BOSS_OMEGA, 210);
 				ENTITY_SET_STATE(bossEntity, 20, 0);
 			}

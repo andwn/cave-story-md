@@ -46,6 +46,7 @@ u8 airDisplayTime = 0;
 
 bool blockl, blocku, blockr, blockd;
 u8 ledge_time;
+u8 walk_time;
 
 u8 mgun_shoottime, mgun_chargetime;
 
@@ -279,12 +280,15 @@ void player_update() {
 				}
 				mgun_shoottime = 9;
 			}
-		} else if(playerWeapon[currentWeapon].ammo < 100) {
-			if(mgun_chargetime > 0) {
-				mgun_chargetime--;
-			} else {
-				playerWeapon[currentWeapon].ammo++;
-				mgun_chargetime = (playerEquipment & EQUIP_TURBOCHARGE) ? 2 : 4;
+		} else {
+			player.y_mark = 0;
+			if(playerWeapon[currentWeapon].ammo < 100) {
+				if(mgun_chargetime > 0) {
+					mgun_chargetime--;
+				} else {
+					playerWeapon[currentWeapon].ammo++;
+					mgun_chargetime = (playerEquipment & EQUIP_TURBOCHARGE) ? 2 : 4;
+				}
 			}
 		}
 	} else {
@@ -411,17 +415,23 @@ void player_draw() {
 		if(player.controller[0]&BUTTON_UP) {
 			if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
 				anim = ANIM_LOOKUPWALK;
+				walk_time++;
 			} else {
 				anim = ANIM_LOOKUP;
+				walk_time = 0;
 			}
 		} else if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
 			anim = ANIM_WALKING;
+			walk_time++;
 		} else if((player.controller[0]&BUTTON_DOWN)) {
 			anim = ANIM_INTERACT;
+			walk_time = 0;
 		} else {
 			anim = ANIM_STANDING;
+			walk_time = 0;
 		}
 	} else {
+		walk_time = 0;
 		if((player.controller[0]&BUTTON_UP)) {
 			anim = ANIM_LOOKUPJUMP;
 		} else if((player.controller[0]&BUTTON_DOWN)) {
@@ -429,6 +439,10 @@ void player_draw() {
 		} else {
 			anim = ANIM_JUMPING;
 		}
+	}
+	if(walk_time == TIME(10)) {
+		walk_time = 0;
+		sound_play(SND_PLAYER_WALK, 2);
 	}
 	// Set animation if it changed
 	if(player.spriteAnim != anim) {

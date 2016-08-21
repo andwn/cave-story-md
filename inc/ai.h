@@ -267,6 +267,9 @@ void ai_door_onUpdate(Entity *e);
 void ai_theDoor_onUpdate(Entity *e);
 void ai_theDoor_onHurt(Entity *e);
 
+void oncreate_doorway(Entity *e);
+void ai_doorway(Entity *e);
+
 /* Items & Treasure - item.c */
 
 void ai_energy_onCreate(Entity *e);

@@ -404,6 +404,7 @@ void entity_update_jump(Entity *e) {
 			e->grounded = false;
 			e->y_speed = -jumpSpeed;
 			e->jump_time = MAX_JUMP_TIME;
+			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else {
 		if((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {

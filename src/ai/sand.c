@@ -23,7 +23,7 @@ void ai_omega_onCreate(Entity *e) {
 
 void ai_omega_onUpdate(Entity *e) {
 	if(e->state == 20) {
-		if(++e->state_time > 120) {
+		if(++e->state_time > TIME(120)) {
 			ENTITY_SET_STATE(e, 21, 0);
 		}
 	} else {
