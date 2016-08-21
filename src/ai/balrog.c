@@ -271,7 +271,8 @@ void ai_balrog_drop_in(Entity *e) {
 		{
 			// since balrog often falls through the ceiling we must wait until he is free-falling
 			// before we start checking to see if he hit the floor
-			if (stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) != 0x41) {
+			u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+			if(((stage_get_block_type(x, y - 1) | stage_get_block_type(x, y + 1)) & 0x41) != 0x41) {
 				e->state = 2;
 			}
 		}

@@ -349,7 +349,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		NULL, NULL, NULL },
 	{ &SPR_Booster, PAL3, 3, "Prof. Booster (Fall)",
 		NULL, &ai_booster_falling, NULL },
-	{ NULL, 		PAL0, 3, "Boulder",
+	{ &SPR_Boulder, PAL3, 3, "Boulder",
 		NULL, NULL, NULL },
 	{ &SPR_Balrog, 	PAL1, 3, "Balrog (Third Fight)",
 		&oncreate_balrog, &ai_balrog_boss_missiles, &ai_default_onState },

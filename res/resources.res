@@ -11,6 +11,7 @@ PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 PALETTE PAL_Chaco		"sprite/chaco.png" 3
 PALETTE PAL_Jenka		"sprite/jenka.png" 3
 PALETTE PAL_Dark		"sprite/dark.png" 3
+PALETTE PAL_Boulder		"sprite/boulder.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -187,6 +188,9 @@ SPRITE SPR_Jenka		"sprite/jenka.png" 2 2 0 0 NONE
 # Use PAL_Dark
 SPRITE SPR_Dark			"sprite/dark.png" 5 3 0 0 NONE
 SPRITE SPR_DarkBub		"sprite/darkbubble.png" 2 2 0 0 NONE
+
+# Use PAL_Boulder
+SPRITE SPR_Boulder		"sprite/boulder.png" 7 5 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory
