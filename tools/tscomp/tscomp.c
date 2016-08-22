@@ -8,7 +8,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define MAX_EVENTS 80
+#define MAX_EVENTS 106
 #define COMMAND_COUNT 93
 
 #define SYM_EVENT		'#'

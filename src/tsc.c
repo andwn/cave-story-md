@@ -26,7 +26,7 @@
 #define TSC_WAITGROUNDED 6 // Waiting for the player to touch the ground
 
 #define HEAD_EVENT_COUNT 14 // There are exactly 14
-#define MAX_EVENTS 80 // Largest is Plantation with 76
+#define MAX_EVENTS 106 // Largest is ArmsItem with 106
 
 // TSC Commands
 #define FIRST_CMD 0x80

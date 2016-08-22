@@ -971,7 +971,14 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			entity_default(e, type, flags);
 			e->direction = direction;
 			ENTITY_ONCREATE(e);
-			e->sprite = NULL;
+			// Some CNP'd offscreen entities (Balrog in Sand Zone) set alwaysActive,
+			// so when that happens we need to move it into the active list
+			if(e->alwaysActive) {
+				LIST_MOVE(inactiveList, entityList, e);
+				entity_sprite_create(e);
+			} else {
+				e->sprite = NULL;
+			}
 		}
 		e = e->next;
 	}

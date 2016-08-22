@@ -71,12 +71,14 @@ void ai_shutter(Entity *e) {
 	if (e->state == 10) {
 		// allow hitting the stuck shutter no. 4
 		e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
-		
+		e->nflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+		e->x_next = e->x;
+		e->y_next = e->y;
 		switch(e->direction) {
-			case DIR_LEFT:  e->x -= SPEED(0x80); break;
-			case DIR_RIGHT: e->x += SPEED(0x80); break;
-			case DIR_UP:    e->y -= SPEED(0x80); break;
-			case DIR_DOWN:  e->y += SPEED(0x80); break;
+			case DIR_LEFT:  e->x_next = e->x - SPEED(0x80); break;
+			case DIR_RIGHT: e->x_next = e->x + SPEED(0x80); break;
+			case DIR_UP:    e->y_next = e->y + SPEED(0x80); break;
+			case DIR_DOWN:  e->y_next = e->y - SPEED(0x80); break;
 		}
 		if (e->type==OBJ_SHUTTER_BIG) {
 			if (!e->state_time) {
@@ -85,6 +87,8 @@ void ai_shutter(Entity *e) {
 				e->state_time = TIME(6);
 			} else e->state_time--;
 		}
+		e->x = e->x_next;
+		e->y = e->y_next;
 	} else if (e->state == 20) {	// tripped by script when Shutter_Big closes fully
 		//SmokeSide(o, 4, DOWN);
 		e->state = 21;
@@ -92,6 +96,10 @@ void ai_shutter(Entity *e) {
 }
 
 void ai_shutter_stuck(Entity *e) {
+	if(!e->state) {
+		e->state++;
+		e->x -= 4 << CSF;
+	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them
 	// to think they're shooting the regular shutter object, so go invisible
 	SPR_SAFEVISIBILITY(e->sprite, HIDDEN);

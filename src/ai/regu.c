@@ -692,6 +692,7 @@ void ai_booster(Entity *e) {
 }
 
 void ai_booster_falling(Entity *e) {
+	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);

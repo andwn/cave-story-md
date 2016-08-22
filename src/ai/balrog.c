@@ -34,6 +34,10 @@ void ai_balrog(Entity *e) {
 			e->x_speed = 0;
 			e->balrog_smoking = false;
 			SPR_SAFEANIM(e->sprite, 0);
+		}
+		/* no break */
+		case 1:
+		{
 			//randblink(o, 4, 8);
 		}
 		break;
@@ -80,7 +84,6 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 21:
 		{
-			fall = false;
 			e->state_time2++;
 			e->x += ((e->state_time2 >> 1) & 1) ? (1<<9) : -(1<<9);
 			if (++e->state_time > TIME(100)) {
@@ -99,7 +102,6 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 31:
 		{
-			fall = false;
 			if (++e->state_time > TIME(100)) {
 				e->state = 0;
 			}
@@ -145,7 +147,6 @@ void ai_balrog(Entity *e) {
 			MOVE_X(SPEED(0x200));
 		}
 		break;
-
 		// he is teleported away (looking distressed)
 		// this is when he is sent to Labyrinth at end of Sand Zone
 		case 70:
@@ -256,8 +257,8 @@ void ai_balrog(Entity *e) {
 
 void ai_balrog_drop_in(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x20);
-	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 
 	switch(e->state) {
 		case 0:
@@ -279,6 +280,9 @@ void ai_balrog_drop_in(Entity *e) {
 		break;
 		case 2:	// free-falling
 		{
+			//if(stageID == 0x1A || stageID == 0x26) {
+			//	if(e->y < block_to_sub(60)) break;
+			//}
 			if ((e->grounded = collide_stage_floor(e))) {
 				SPR_SAFEANIM(e->sprite, 2);
 				e->state = 3;

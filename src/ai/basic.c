@@ -34,6 +34,10 @@ void oncreate_blackboard(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->spriteFrame = 1;
 }
 
+void oncreate_persistent(Entity *e) {
+	e->alwaysActive = true;
+}
+
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
 void oncreate_spike(Entity *e) {

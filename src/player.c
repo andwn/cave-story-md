@@ -51,7 +51,7 @@ u8 walk_time;
 u8 mgun_shoottime, mgun_chargetime;
 
 void player_update_bounds();
-void player_update_bullets();
+//void player_update_bullets();
 void player_update_interaction();
 void player_update_air_display();
 
@@ -296,7 +296,7 @@ void player_update() {
 			weapon_fire(playerWeapon[currentWeapon]);
 		}
 	}
-	player_update_bullets();
+	//player_update_bullets();
 	player_update_interaction();
 	player_draw();
 	if(mapNameTTL > 0 && --mapNameTTL == 0) {

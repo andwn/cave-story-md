@@ -98,6 +98,12 @@ typedef void (*EntityMethod)(Entity*);
 #define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
 #define ACCEL_X(v) (e->x_speed += e->direction ? (v) : -(v))
 
+#define CURLY_TARGET_HERE(e) ({ \
+	curly_target_time = 300; \
+	curly_target_x = e->x; \
+	curly_target_y = e->y; \
+})
+
 /* Shared Variables */
 
 Entity *global_entitylink;
@@ -128,6 +134,8 @@ void oncreate_op2anim(Entity *e);
 void oncreate_op2snap(Entity *e);
 // Blackboard needs to be pushed up, and changes frame on NPC_OPTION2
 void oncreate_blackboard(Entity *e);
+// Always active
+void oncreate_persistent(Entity *e);
 // Rotates the spikes so they are always sticking out of a solid area
 void oncreate_spike(Entity *e);
 // Apply gravity & collision, some NPC's need to fall when the floor disappears beneath them
@@ -399,6 +407,21 @@ void ai_gaudiArmoredShot_onUpdate(Entity *e);
 void ai_pooh_black(Entity *e);
 void ai_pooh_black_bubble(Entity *e);
 void ai_pooh_black_dying(Entity *e);
+
+void ai_firewhirr(Entity *e);
+void ai_firewhirr_shot(Entity *e);
+void ai_gaudi_egg(Entity *e);
+void ai_fuzz_core(Entity *e);
+void ai_fuzz(Entity *e);
+void ai_buyobuyo_base(Entity *e);
+void ai_buyobuyo(Entity *e);
+
+/* Core Room - almond.c */
+
+void ai_waterlevel(Entity *e);
+void ai_shutter(Entity *e);
+void ai_shutter_stuck(Entity *e);
+void ai_almond_robot(Entity *e);
 
 /* Core - core.c */
 
