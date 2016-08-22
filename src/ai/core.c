@@ -10,6 +10,9 @@
 #include "camera.h"
 #include "system.h"
 /*
+#define CFRONT				5
+#define CBACK				6
+
 // states for the core
 #define CORE_SLEEP			10
 #define CORE_CLOSED			200
@@ -24,29 +27,39 @@
 #define MC_FIRED			40
 #define MC_RETREAT			50
 
-// makes the core open his mouth and handles flashing red when hit
+// flash red when struck, else stay in Mouth Open frame
+// TODO: Palette swapping
 #define OPEN_MOUTH		\
 {						\
-	RunOpenMouth();	\
+	if(e->damage_time & 2) { \
+		 \
+	} else { \
+		 \
+	} \
+	if(!e->mouthOpen) { \
+		e->mouth_open = true; \
+	} \
 }
 
 // makes the core close his mouth
 #define CLOSE_MOUTH		\
 {		\
-	pieces[CFRONT]->frame = 2;		\
-	pieces[CBACK]->frame = 0;		\
+	if(e->mouthOpen) { \
+		e->mouth_open = false; \
+	} \
 }
+
+bounding_box core_tiles = {};
+Entity *pieces[7];
+
+//Entity *CreateMinicore(Entity *e);
 
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
 void create_core() {
-	e = entity_create_boss(0, 0, BOSS_CORE, 1000);
-	//game.stageboss.object = o;
-	
-	e->state = 10;
-	
-	e->eflags = (FLAG_SHOW_FLOATTEXT | FLAG_IGNORE_SOLID | FLAG_SCRIPTONDEATH);
-	//e->id2 = 1000;
+	Entity *e = entity_create_boss(0, 0, BOSS_CORE, 1000);
+	e->state = CORE_SLEEP;
+	e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
 	
 	e->x = (1207 << CSF);
 	e->y = (212 << CSF);
@@ -57,49 +70,45 @@ void create_core() {
 	//e->sprite = SPR_CORESHOOTMARKER;
 	
 	// spawn all the pieces in the correct z-order
-	pieces[3] = CreateMinicore(e);
-	pieces[4] = CreateMinicore(e);
-	pieces[CFRONT] = CreateEntity(0, 0, OBJ_CORE_FRONT);
-	pieces[CBACK] = CreateEntity(0, 0, OBJ_CORE_BACK);
-	pieces[0] = CreateMinicore(e);
-	pieces[1] = CreateMinicore(e);
-	pieces[2] = CreateMinicore(e);
+	//pieces[3] = CreateMinicore(e);
+	//pieces[4] = CreateMinicore(e);
+	pieces[CFRONT] = entity_create(0, 0, 0, 0, OBJ_CORE_FRONT, 0, 0);
+	pieces[CBACK] = entity_create(0, 0, 0, 0, OBJ_CORE_BACK, 0, 0);
+	//pieces[0] = CreateMinicore(e);
+	//pieces[1] = CreateMinicore(e);
+	//pieces[2] = CreateMinicore(e);
 	
 	// set up the front piece
-	pieces[CFRONT]->sprite = SPR_CORE_FRONT;
 	pieces[CFRONT]->state = CORE_SLEEP;
-	pieces[CFRONT]->linkedobject = e;
-	pieces[CFRONT]->flags |= (FLAG_IGNORE_SOLID | FLAG_INVULNERABLE);
-	pieces[CFRONT]->frame = 2;			// mouth closed
+	pieces[CFRONT]->linkedEntity = e;
+	pieces[CFRONT]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	//pieces[CFRONT]->frame = 2;			// mouth closed
 	
 	// set up our back piece
-	pieces[CBACK]->sprite = SPR_CORE_BACK;
 	pieces[CBACK]->state = CORE_SLEEP;
-	pieces[CBACK]->linkedobject = e;
-	pieces[CBACK]->flags |= (FLAG_IGNORE_SOLID | FLAG_INVULNERABLE);
-	pieces[CBACK]->frame = 0;
+	pieces[CBACK]->linkedEntity = e;
+	pieces[CBACK]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
 	
 	// set the positions of all the minicores
-	pieces[0]->x = (e->x - 0x1000);
-	pieces[0]->y = (e->y - 0x8000);
+	//pieces[0]->x = (e->x - 0x1000);
+	//pieces[0]->y = (e->y - 0x8000);
 	
-	pieces[1]->x = (e->x + 0x2000);
-	pieces[1]->y = e->y;
+	//pieces[1]->x = (e->x + 0x2000);
+	//pieces[1]->y = e->y;
 	
-	pieces[2]->x = (e->x - 0x1000);
-	pieces[2]->y = (e->y + 0x8000);
+	//pieces[2]->x = (e->x - 0x1000);
+	//pieces[2]->y = (e->y + 0x8000);
 	
-	pieces[3]->x = (e->x - 0x6000);
-	pieces[3]->y = (e->y + 0x4000);
+	//pieces[3]->x = (e->x - 0x6000);
+	//pieces[3]->y = (e->y + 0x4000);
 	
-	pieces[4]->x = (e->x - 0x6000);
-	pieces[4]->y = (e->y - 0x4000);
-	
-	//this->hittimer = 0;
+	//pieces[4]->x = (e->x - 0x6000);
+	//pieces[4]->y = (e->y - 0x4000);
 }
 
 // We never need to know the core controller's ID but need an extra u16 variable to save hp
-#define savedhp	id
+#define savedhp		id
+#define mouth_open	grounded
 
 void ai_core(Entity *e) {
 	bool do_thrust = false;
@@ -224,17 +233,15 @@ void ai_core(Entity *e) {
 			//SmokeXY(pieces[CBACK]->x, pieces[CBACK]->CenterY(), 20, 128, 64);
 			
 			// tell all the MC's to retreat
-			for(i=0;i<5;i++)
-			{
-				pieces[i]->flags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
-				pieces[i]->state = MC_RETREAT;
-			}
+			//for(i=0;i<5;i++) {
+			//	pieces[i]->flags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
+			//	pieces[i]->state = MC_RETREAT;
+			//}
 		}
 		case 501:
 		{
 			e->state_time++;
-			if ((e->state_time & 0x0f) != 0)
-			{
+			if ((e->state_time & 0x0f) != 0) {
 				//SmokeXY(pieces[CBACK]->x, pieces[CBACK]->CenterY(), 1, 64, 32);
 			}
 			
@@ -282,9 +289,9 @@ void ai_core(Entity *e) {
 	
 	if (do_thrust) {
 		// tell all the minicores to jump to a new position
-		for(i=0;i<5;i++) {
-			pieces[i]->state = MC_THRUST;
-		}
+		//for(i=0;i<5;i++) {
+		//	pieces[i]->state = MC_THRUST;
+		//}
 		
 		camera_shake(20);
 		sound_play(SND_CORE_THRUST, 5);
@@ -296,26 +303,26 @@ void ai_core(Entity *e) {
 		
 		// fire off each minicore sequentially...
 		switch(e->state_time) {
-			case 80+0:   pieces[0]->state = MC_CHARGE_FIRE; break;
-			case 80+30:  pieces[1]->state = MC_CHARGE_FIRE; break;
-			case 80+60:  pieces[2]->state = MC_CHARGE_FIRE; break;
-			case 80+90:  pieces[3]->state = MC_CHARGE_FIRE; break;
-			case 80+120: pieces[4]->state = MC_CHARGE_FIRE; break;
+			case TIME(80+0):   pieces[0]->state = MC_CHARGE_FIRE; break;
+			case TIME(80+30):  pieces[1]->state = MC_CHARGE_FIRE; break;
+			case TIME(80+60):  pieces[2]->state = MC_CHARGE_FIRE; break;
+			case TIME(80+90):  pieces[3]->state = MC_CHARGE_FIRE; break;
+			case TIME(80+120): pieces[4]->state = MC_CHARGE_FIRE; break;
 		}
 		
 		// move main core towards a spot in front of target
-		e->x_speed += (e->x > (e->xmark + (160<<CSF))) ? -4 : 4;
-		e->y_speed += (e->y > e->ymark - (e->Height() / 2)) ? -4 : 4;
+		e->x_speed += (e->x > (e->x_mark + (160<<CSF))) ? -4 : 4;
+		e->y_speed += (e->y > e->y_mark ? -4 : 4;
 	}
 	
 	// set up our shootable status--you never actually hit the core (CFRONT),
 	// but if it's mouth is open, make us, the invisible controller object, shootable.
-	if (pieces[CFRONT]->frame==2) {
-		e->flags &= ~FLAG_SHOOTABLE;
-		pieces[CFRONT]->flags |= FLAG_INVULNERABLE;
+	if (pieces[CFRONT]->mouth_open) {
+		e->flags &= ~NPC_SHOOTABLE;
+		pieces[CFRONT]->flags |= NPC_INVINCIBLE;
 	} else {
-		e->flags |= FLAG_SHOOTABLE;
-		pieces[CFRONT]->flags &= ~FLAG_INVULNERABLE;
+		e->flags |= NPC_SHOOTABLE;
+		pieces[CFRONT]->flags &= ~NPC_INVINCIBLE;
 	}
 	
 	LIMITX(SPEED(0x80));
@@ -323,23 +330,7 @@ void ai_core(Entity *e) {
 }
 
 void RunOpenMouth() {
-	// flash red when struck, else stay in Mouth Open frame
-	pieces[CFRONT]->frame = 0;
-	pieces[CBACK]->frame = 0;
 	
-	if (e->shaketime)
-	{
-		this->hittimer++;
-		if (this->hittimer & 2)
-		{
-			pieces[CFRONT]->frame = 1;
-			pieces[CBACK]->frame = 1;
-		}
-	}
-	else
-	{
-		this->hittimer = 0;
-	}
 }
 
 void StartWaterStream() {
@@ -378,146 +369,125 @@ void ai_core_back(Entity *e) {
 	e->y = core->y - 0x5e00;
 }
 
-static Entity *CreateMinicore(Entity *core) {
-	Entity *e = CreateEntity(0, 0, OBJ_MINICORE);
+static Entity *CreateMinicore(Entity *core, u16 x, u16 y) {
+	Entity *e = CreateEntity(x, y, 0, 0, OBJ_MINICORE, 0, 0);
 	e->linkedEntity = core;
-	e->eflags = (FLAG_SHOOTABLE | FLAG_INVULNERABLE | FLAG_IGNORE_SOLID);
+	e->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 	e->health = 1000;
 	e->state = MC_SLEEP;
 	
-	return o;
+	return e;
 }
 
 void ai_minicore(Entity *e) {
 	Entity *core = e->linkedEntity;
-	if (!core) { e->state == STATE_DELETE; return; }
+	if (core == NULL) { e->state = STATE_DELETE; return; }
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case MC_SLEEP:		// idle & mouth closed
-			e->frame = 2;
-			e->xmark = e->x;
-			e->ymark = e->y;
+			SPR_SAFEANIM(e->sprite, 2);
+			e->state = MC_SLEEP+1;
+		case MC_SLEEP+1:
+			e->x_mark = e->x;
+			e->y_mark = e->y;
 		break;
-		
 		case MC_THRUST:			// thrust (move to random new pos)
 			e->state = MC_THRUST+1;
-			e->frame = 2;
+			SPR_SAFEANIM(e->sprite, 2);
 			e->state_time = 0;
-			e->xmark = core->x + (random(-128, 32) << CSF);
-			e->ymark = core->y + (random(-64, 64) << CSF);
+			e->x_mark = e->x + ((-128 + (random() % 160)) << CSF);
+			e->y_mark = e->y + ((-64 + (random() % 128)) << CSF);
 		case MC_THRUST+1:
-			if (++e->state_time > 50)
-			{
-				e->frame = 0;
+			if (++e->state_time > TIME(50)) {
+				SPR_SAFEANIM(e->sprite, 0);
 			}
 		break;
-		
 		case MC_CHARGE_FIRE:			// charging for fire
 			e->state = MC_CHARGE_FIRE+1;
 			e->state_time = 0;
 		case MC_CHARGE_FIRE+1:			// flash blue
 			e->state_time++;
-			e->frame = ((e->state_time >> 1) & 1);
-			if (e->state_time > 20)
-			{
+			if(e->state_time % 4 == 0) SPR_SAFEANIM(e->sprite, 0);
+			else if(e->state_time % 4 == 2) SPR_SAFEANIM(e->sprite, 1);
+			if(e->state_time > TIME(20)) {
 				e->state = MC_FIRE;
 			}
 		break;
-		
 		case MC_FIRE:			// firing
 			e->state = MC_FIRE+1;
-			e->frame = 2;	// close mouth again
+			SPR_SAFEANIM(e->sprite, 2);	// close mouth again
 			e->state_time = 0;
-			e->xmark = e->x + (random(24, 48) << CSF);
-			e->ymark = e->y + (random(-4, 4) << CSF);
+			e->x_mark = e->x + ((24 + (random() % 16)) << CSF);
+			e->y_mark = e->y + ((-4 + (random() % 8)) << CSF);
 		case MC_FIRE+1:
-			if (++e->state_time > 50)
-			{
+			if (++e->state_time > TIME(50)) {
 				e->state = MC_FIRED;
-				e->frame = 0;
-			}
-			else if (e->state_time==1 || e->state_time==3)
-			{
+				SPR_SAFEANIM(e->sprite, 0);
+			} else if (e->state_time==1 || e->state_time==3) {
 				// fire at player at speed (2<<CSF) with 2 degrees of variance
-				EmFireAngledShot(o, OBJ_MINICORE_SHOT, 2, 2<<CSF);
-				sound(SND_EM_FIRE);
+				//EmFireAngledShot(o, OBJ_MINICORE_SHOT, 2, 2<<CSF);
+				sound_play(SND_EM_FIRE, 5);
 			}
 		break;
-		
-		
 		case MC_RETREAT:		// defeated!
 			e->state = MC_RETREAT+1;
-			e->frame = 2;
+			SPR_SAFEANIM(e->sprite, 2);
 			e->x_speed = e->y_speed = 0;
 		case MC_RETREAT+1:		// retreat back into the abyss
-			e->x_speed += 0x20;
-			if (e->x > ((map.xsize*TILE_W)<<CSF) + 0x4000)
-			{
-				e->Delete();
+			e->x_speed += SPEED(0x20);
+			if (e->x > block_to_sub(stageWidth) + 0x4000) {
+				e->state = STATE_DELETE;
 			}
 		break;
 	}
 	
-	if (e->state < MC_RETREAT)
-	{
+	if (e->state < MC_RETREAT) {
 		// jump back when shot
-		if (e->shaketime)
-		{
-			e->xmark += 0x400;
+		if (e->damage_time) {
+			e->x_mark += 0x400;
 		}
 		
-		e->x += (e->xmark - e->x) / 16;
-		e->y += (e->ymark - e->y) / 16;
+		e->x += (e->x_mark - e->x) / 16;
+		e->y += (e->y_mark - e->y) / 16;
 	}
 	
 	// don't let them kill us
-	e->hp = 1000;
+	e->health = 1000;
 	
 	// invincible when mouth is closed
-	if (e->frame != 2)
-		e->flags &= ~FLAG_INVULNERABLE;
-	else
-		e->flags |= FLAG_INVULNERABLE;
+	//if (e->frame != 2)
+	//	e->flags &= ~FLAG_INVULNERABLE;
+	//else
+	//	e->flags |= FLAG_INVULNERABLE;
 }
 
-void ai_minicore_shot(Entity *e)
-{
-	if (++e->state_time2 > 150)
-	{
-		effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
-		e->Delete();
+void ai_minicore_shot(Entity *e) {
+	if (++e->state_time2 > TIME(150)) {
+		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
+		e->state = STATE_DELETE;
 	}
-	
-	ai_animate2(o);
 }
 // shutter made noise when opening
 // curly looks up at no 4
 
-void ai_core_ghostie(Entity *e)
-{
-char hit = 0;
+void ai_core_ghostie(Entity *e) {
+	char hit = 0;
 
-	if (e->x_speed > 0 && e->blockr) hit = 1;
-	if (e->x_speed < 0 && e->blockl) hit = 1;
-	if (e->y_speed > 0 && e->blockd) hit = 1;
-	if (e->y_speed < 0 && e->blocku) hit = 1;
+	if (e->x_speed > 0 && collide_stage_rightwall(e)) hit = 1;
+	if (e->x_speed < 0 && collide_stage_leftwall(e)) hit = 1;
+	if (e->y_speed > 0 && collide_stage_floor(e)) hit = 1;
+	if (e->y_speed < 0 && collide_stage_ceiling(e)) hit = 1;
 	
-	e->x_speed -= 0x20;
-	LIMITX(0x400);
+	e->x_speed -= SPEED(0x20);
+	LIMITX(SPEED(0x400));
 	
-	if (hit)
-	{
-		effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
-		e->Delete();
+	if(hit) {
+		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
+		e->state = STATE_DELETE;
 	}
-	
-	ai_animate2(o);
 }
 
-void ai_core_blast(Entity *e)
-{
-	if (++e->state_time > 200) e->Delete();
-	ANIMATE(2, 0, 1);
+void ai_core_blast(Entity *e) {
+	if (++e->state_time > TIME(200)) e->state = STATE_DELETE;
 }
 */

@@ -757,5 +757,5 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Balfrog1, PAL3, 3, "Monster X",
 		NULL, NULL, NULL },
 	{ &SPR_Balfrog1, PAL3, 3, "Core",
-		NULL, NULL, NULL },
+		NULL, &ai_core, NULL },
 };

@@ -4,13 +4,13 @@ This list is updated when things are fixed in master and may not reflect the cur
 - [ ] Music (27 of 41)
 - [ ] Engine
   - [ ] Sprite ordering (Pending on SGDK)
-  - [ ] Item Menu
+  - [x] Item Menu
+    - [ ] Weapon stuff
   - [ ] Boss health
   - [ ] Additional player animations
-    - [ ] Stars when bumping cieling
+    - [ ] Stars when bumping ceiling
     - [ ] Question mark
-    - [ ] Weapon level up
-    - [ ] Walk & jump sound
+    - [ ] Weapon level up / down
 - [ ] Completable Main Areas
   - [x] First Cave
     - [ ] Zzz above gunsmith's head
@@ -19,44 +19,23 @@ This list is updated when things are fixed in master and may not reflect the cur
     - [ ] Animate Mahin
   - [x] Egg Corridor
     - [ ] Basu Projectiles
-    - [ ] Animate scene in Arthur2
   - [x] Grasstown
     - [ ] Animate Malco
-    - [ ] Animate Kazuma
-    - [ ] Animate Booster
-    - [x] Animate Pink Rocket
-    - [x] AI for Circling Bats
-    - [x] AI for Jellies
-    - [x] AI for Big Jellyfish
-    - [x] AI for Frog
+    - [ ] Animate Pink Rocket
+    - [ ] AI for Big Jellyfish
     - [ ] AI for Ravil
-    - [ ] Make Balfrog drop 
+    - [ ] Make Balfrog drop frogs
   - [x] Sand Zone
-    - [x] Animate Jenka
     - [ ] Animate Puppies
-    - [x] Animate Mimigas in the Bar
-    - [x] Animate Doctor
-    - [ ] Damage tiles
-    - [x] Fix whatever King is supposed to do
-    - [x] AI for Curly Boss
-    - [x] AI for Polish
-    - [x] AI for Sand Croc
     - [ ] AI for Omega
-    - [x] AI for Skeleton Head
-    - [ ] AI for Skeleton Head with Legs
-    - [x] AI for Bird
-    - [ ] AI for Bird Carrying Skeleton Head
-    - [x] AI for Armadillo
-    - [x] AI for Toroko Boss
-  - [ ] Labyrinth
-    - [ ] Need to be able to equip the booster
-    - [x] Animate Moving Blocks
+    - [ ] AI for Skullhead with Legs
+    - [ ] AI for Crow Carrying Skullhead
+    - [ ] AI for Skeleton
+  - [x] Labyrinth
     - [ ] Animate Nurse
     - [ ] Purple Critter's projectile
-    - [x] AI for Gaudi
-    - [x] AI for Pooh Black
     - [ ] AI for Monster X
-    - [x] AI for Last Balrog Fight
+    - [ ] AI for Last Balrog Fight
   - [ ] Post Labyrinth / Core
     - [ ] BGM: Labyrinth Fight
     - [ ] Water mechanic for the Core room
@@ -85,6 +64,7 @@ This list is updated when things are fixed in master and may not reflect the cur
   - [ ] Ending
   - [ ] Credits
   - [ ] Sacred Ground
+  - [ ] Wind Fortress?
 - [ ] Weapons / Equip
   - [x] Polar Star
   - [x] Missiles
@@ -96,5 +76,8 @@ This list is updated when things are fixed in master and may not reflect the cur
   - [ ] Spur
   - [ ] Super Missiles
   - [ ] Nemesis
+  - [x] Turbocharge
+  - [x] Arms Barrier
   - [ ] Booster 0.8
   - [ ] Booster 2.0
+  - [ ] Whimsical Star
