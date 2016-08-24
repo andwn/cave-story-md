@@ -130,6 +130,10 @@ SPRITE SPR_CoreThing	"sprite/corething.png" 4 4 0 8 NONE
 SPRITE SPR_CoreThingShot	"sprite/corethingshot.png" 2 4 0 8 NONE
 SPRITE SPR_Buggy		"sprite/buggy.png" 4 2 0 0 NONE
 SPRITE SPR_Buggy2		"sprite/buggy2.png" 8 2 0 0 NONE
+SPRITE SPR_GaudiMerch	"sprite/gaudimerch.png" 4 3 0 0 NONE
+SPRITE SPR_BuyoBase		"sprite/buyobase.png" 4 4 0 0 NONE
+SPRITE SPR_Buyo			"sprite/buyo.png" 2 2 0 0 NONE
+SPRITE SPR_GaudiEgg		"sprite/gaudiegg.png" 3 3 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png" 2 3 0 10 NONE
@@ -167,6 +171,8 @@ SPRITE SPR_Frog			"sprite/frog.png" 3 4 0 20 NONE
 SPRITE SPR_FrogSm		"sprite/frogsm.png" 2 2 0 20 NONE
 SPRITE SPR_CurlyMimi	"sprite/cirlymimi.png" 2 2 0 12 NONE
 SPRITE SPR_SueCom		"sprite/suecom.png" 2 3 0 4 NONE
+SPRITE SPR_DrGero		"sprite/drgero.png"	2 2 0 0 NONE
+SPRITE SPR_Nurse		"sprite/nurse.png" 2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png" 2 2 0 0 NONE

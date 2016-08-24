@@ -886,102 +886,88 @@ void ai_fuzz_core(Entity *e) {
 		case 0:
 		{
 			// spawn mini-fuzzes
-			int angle = 0;
-			for(int i=0;i<5;i++)
-			{
-				Entity *f = entity_create(0, 0, 0, 0, OBJ_FUZZ, 0, 0);
+			u16 angle = 0;
+			for(u16 i=0;i<5;i++) {
+				Entity *f = entity_create(sub_to_block(e->x), sub_to_block(e->y),
+						0, 0, OBJ_FUZZ, 0, 0);
 				f->x = e->x;
 				f->y = e->y;
 				f->linkedEntity = e;
-				//f->angle = angle;
+				f->state_time = angle;
 				angle += (1024 / 5);
 			}
-			
-			e->state_time = 1 + (random() % 49);
+			e->state_time = random() % TIME(50);
 			e->state = 1;
 		}
 		/* no break */
 		case 1:		// de-syncs the Y positions when multiple cores are present at once
 		{
-			if (--e->state_time <= 0)
-			{
+			if (e->state_time == 0) {
 				e->state = 2;
-				e->y_speed = 0x300;
+				e->y_speed = SPEED(0x300);
 				e->y_mark = e->y;
-			}
+			} else e->state_time--;
 		}
 		break;
-		
 		case 2:
 		{
 			FACE_PLAYER(e);
 			
-			if (e->y > e->y_mark) e->y_speed -= 0x10;
-			if (e->y < e->y_mark) e->y_speed += 0x10;
-			LIMIT_Y(0x355);
+			if (e->y > e->y_mark) e->y_speed -= SPEED(0x10);
+			if (e->y < e->y_mark) e->y_speed += SPEED(0x10);
+			LIMIT_Y(SPEED(0x355));
 		}
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
-void ai_fuzz(Entity *e)
-{
+void ai_fuzz(Entity *e) {
 	FACE_PLAYER(e);
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
-			//e->angle += 4;
-			
-			if (e->linkedEntity->state == STATE_DESTROY)
-			{
-				e->x_speed = -0x200 + (random() % 0x400);
-				e->y_speed = -0x200 + (random() % 0x400);
+			e->state_time = (e->state_time + TIME(16)) % 1024; // Increase angle
+			e->state_time2 = (e->state_time + 256) % 1024; // add 90 degrees for cosine
+			if (e->linkedEntity->state == STATE_DESTROY) {
+				e->x_speed = SPEED(-0x200) + (random() % SPEED(0x400));
+				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
+			} else {
+				e->x = e->linkedEntity->x + ((sintab32[e->state_time] >> 1) << 4);
+				e->y = e->linkedEntity->y + ((sintab32[e->state_time2] >> 1) << 4);
 			}
 		}
 		break;
-		
 		// base destroyed, simple sinusoidal player-seek
 		case 1:
 		{
-			e->x_speed += (e->x > player.x) ? -0x20 : 0x20;
-			e->y_speed += (e->y > player.y) ? -0x20 : 0x20;
+			e->x_speed += (e->x > player.x) ? SPEED(-0x20) : SPEED(0x20);
+			e->y_speed += (e->y > player.y) ? SPEED(-0x20) : SPEED(0x20);
 			
-			LIMIT_X(0x800);
-			LIMIT_Y(0x200);
+			LIMIT_X(SPEED(0x800));
+			LIMIT_Y(SPEED(0x200));
+			e->x += e->x_speed;
+			e->y += e->y_speed;
 		}
 		break;
 	}
 }
-/*
-void aftermove_fuzz(Entity *e)
-{
-	if (e->state == 0 && e->linkedEntity)
-	{
-		vector_from_angle(e->angle, (20 << 9), &e->x, NULL);
-		vector_from_angle(e->angle, (32 << 9), NULL, &e->y);
-		
-		e->x += e->linkedEntity->CenterX() - (e->Width() / 2);
-		e->y += e->linkedEntity->CenterY() - (e->Height() / 2);
-	}
-}
-*/
 
 #define BUYOBUYO_BASE_HP		60
 
 void ai_buyobuyo_base(Entity *e) {
 	if (e->state < 3 && e->health < (1000 - BUYOBUYO_BASE_HP)) {
 		//SmokeClouds(o, objprop[e->type].death_smoke_amt, 8, 8);
-		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
-		//e->SpawnPowerups();
-		
-		e->eflags &= ~NPC_SHOOTABLE;
 		e->attack = 0;
-		
+		e->eflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOOTABLE;
+		entity_drop_powerup(e);
+		sound_play(e->deathSound, 5);
 		e->state = 10;
-		//e->frame = 2;
+		SPR_SAFEANIM(e->sprite, 2);
 	}
 	
 	switch(e->state) {
@@ -992,51 +978,43 @@ void ai_buyobuyo_base(Entity *e) {
 			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
 			
 			e->state = 1;
-			e->state_time = 10;
+			e->state_time = TIME(10);
 		}
 		/* no break */
 		case 1:
 		{
-			if (PLAYER_DIST_X(0x14000))
-			{
+			if (PLAYER_DIST_X(0x14000)) {
 				if ((e->direction == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
-					(e->direction == 1 && PLAYER_DIST_Y2(0x2000, 0x14000)))
-				{
-					if (--e->state_time < 0)
-					{
+					(e->direction == 1 && PLAYER_DIST_Y2(0x2000, 0x14000))) {
+					if (--e->state_time < 0) {
 						e->state = 2;
 						e->state_time = 0;
-						//e->animtimer = 0;
+						SPR_SAFEANIM(e->sprite, 1);
 					}
 				}
 			}
 		}
 		break;
-		
 		case 2:
 		{
-			//ANIMATE(3, 0, 1);
-			if (++e->state_time > 10)
-			{
-				Entity *buyo = entity_create(0, 0, 0, 0, OBJ_BUYOBUYO, 0, e->direction);
+			if (++e->state_time > TIME(10)) {
+				Entity *buyo = entity_create(sub_to_block(e->x), sub_to_block(e->y),
+						0, 0, OBJ_BUYOBUYO, 0, e->direction);
 				buyo->x = e->x;
 				buyo->y = e->y;
 				
 				sound_play(SND_EM_FIRE, 5);
-				//e->frame = 0;
-				//e->CurlyTargetHere();
+				CURLY_TARGET_HERE(e);
 				
 				// cyclic: three firings then pause
 				e->state = 1;
-				if (++e->state_time2 > 2)
-				{
-					e->state_time = 100;
+				if (++e->state_time2 > 2) {
+					e->state_time = TIME(100);
 					e->state_time2 = 0;
+				} else {
+					e->state_time = TIME(20);
 				}
-				else
-				{
-					e->state_time = 20;
-				}
+				SPR_SAFEANIM(e->sprite, 0);
 			}
 		}
 		break;
@@ -1045,12 +1023,13 @@ void ai_buyobuyo_base(Entity *e) {
 
 void ai_buyobuyo(Entity *e) {
 	bool deleteme = false;
-	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 		{
 			// shoot up down at player...
-			e->y_speed = (e->direction == 0) ? -0x600 : 0x600;
+			e->y_speed = (e->direction == 0) ? SPEED(-0x600) : SPEED(0x600);
 			e->state = 1;
 			e->state_time = 0;
 		}
@@ -1059,64 +1038,54 @@ void ai_buyobuyo(Entity *e) {
 		{
 			e->state_time++;		// inc fly time
 			// reached height of player yet?
-			if (PLAYER_DIST_Y(0x2000))
-			{
+			if (PLAYER_DIST_Y(0x2000)) {
 				e->state = 2;
-				ai_buyobuyo(e);
-				return;
-			}
+			} else break;
 		}
-		break;
-		
+		/* no break */
 		case 2:
 		{
 			// this slight "minimum fly time" keeps the underwater ones from
 			// smacking into the floor if the player is underwater with them
-			if (++e->state_time > 3)
-			{
+			if (++e->state_time > 3) {
 				FACE_PLAYER(e);
 				e->x_mark = e->x;
 				e->y_mark = e->y;
 				
-				e->x_speed = (random() & 1) ? 0x200 : -0x200;
-				e->y_speed = (random() & 1) ? 0x200 : -0x200;
+				e->x_speed = (random() & 1) ? SPEED(0x200) : SPEED(-0x200);
+				e->y_speed = (random() & 1) ? SPEED(0x200) : SPEED(-0x200);
 				
 				e->state = 3;
 			}
 		}
 		break;
-		
 		case 3:
 		{
-			if (e->x > e->x_mark) e->x_speed -= 0x20;
-			if (e->x < e->x_mark) e->x_speed += 0x20;
-			if (e->y > e->y_mark) e->y_speed -= 0x20;
-			if (e->y < e->y_mark) e->y_speed += 0x20;
-			LIMIT_X(0x400);
-			LIMIT_Y(0x400);
+			if (e->x > e->x_mark) e->x_speed -= SPEED(0x20);
+			if (e->x < e->x_mark) e->x_speed += SPEED(0x20);
+			if (e->y > e->y_mark) e->y_speed -= SPEED(0x20);
+			if (e->y < e->y_mark) e->y_speed += SPEED(0x20);
+			LIMIT_X(SPEED(0x400));
+			LIMIT_Y(SPEED(0x400));
 			
 			// move the point we are bobbling around
-			e->x_mark += (e->direction == 0) ? -(1 << 9) : (1 << 9);
-			//debugVline(e->x_mark, 0, 0xff, 0);
+			e->x_mark += e->direction ? SPEED(1 << 9) : SPEED(-(1 << 9));
 			
-			if (++e->state_time > 300)
-				deleteme = true;
+			if (++e->state_time > TIME(300)) deleteme = true;
 		}
 		break;
 	}
-	
 	if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
 		(e->x_speed > 0 && collide_stage_rightwall(e)) || \
 		(e->y_speed < 0 && collide_stage_ceiling(e)) || \
-		(e->y_speed > 0 && collide_stage_floor(e)))
-	{
+		(e->y_speed > 0 && collide_stage_floor(e))) {
 		deleteme = true;
 	}
-
-	if (deleteme)
-	{
+	if (deleteme) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_STARPOOF);
 		e->state = STATE_DELETE;
 		return;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
