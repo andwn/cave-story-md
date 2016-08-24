@@ -39,7 +39,7 @@ u16 showingFace = 0;
 
 u8 textMode = TM_NORMAL;
 
-u8 windowText[3][34];
+u8 windowText[3][35];
 u8 textRow, textColumn;
 u8 windowTextTick = 0;
 
@@ -142,7 +142,7 @@ void window_draw_char(u8 c) {
 		}
 	} else {
 		windowText[textRow][textColumn] = c;
-		if(textColumn >= 34 - (showingFace > 0) * 8) return;
+		if(textColumn >= 35 - (showingFace > 0) * 8) return;
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn;
 		u8 msgTextY = TEXT_Y1 + textRow * 2;

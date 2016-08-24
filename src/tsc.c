@@ -147,7 +147,6 @@ Sprite *teleMenuSprite[8];
 u8 teleMenuAnim = 0;
 u8 teleMenuFrame[8];
 
-bool showingBossHealth = false;
 u16 bossMaxHealth;
 u16 bossHealth;
 
@@ -243,7 +242,15 @@ u8 tsc_update() {
 		break;
 	case TSC_WAITTIME:
 		waitTime--;
-		if(paused) waitTime = 0;
+		if(paused) {
+			waitTime = 0;
+		// Check the wait time again to prevent underflowing
+		} else if(waitTime > 0 && joy_down(BUTTON_A)) {
+			// Fast forward while holding A, update active entities a second time
+			// to double their movement speed (unless <PRI is set)
+			waitTime--;
+			if(!gameFrozen) entities_update();
+		}
 		if(waitTime == 0) tscState = TSC_RUNNING;
 		break;
 	case TSC_WAITINPUT:
@@ -300,11 +307,50 @@ u8 tsc_update() {
 }
 
 void tsc_show_boss_health() {
+	showingBossHealth = true;
+	VDP_setWindowPos(12, 254);
+	VDP_drawTextWindow("Boss[        ]  ", 24, 26);
+	VDP_drawTextWindow("                ", 24, 27);
+	// Face tiles are unused during boss battles, upload the tiles there
+	VDP_loadTileData(TS_HudBar.tiles, TILE_FACEINDEX, 9, true);
+}
 
+void tsc_update_boss_health() {
+	if(bossEntity == NULL) {
+		tsc_hide_boss_health();
+	} else if(bossEntity->health > bossMaxHealth) {
+		VDP_drawTextWindow("?HP>MHP?", 29, 26);
+	} else if(bossHealth != bossEntity->health) {
+		bossHealth = bossEntity->health;
+		if(bossHealth == 0) {
+			// Boss is dead hide the bar
+			tsc_hide_boss_health();
+			return;
+		}
+		u16 hp = bossHealth, inc = bossMaxHealth / 8, i;
+		// Draw filled tiles
+		for(i = 0; i < 8 && hp > inc; i++) {
+			hp -= inc;
+			VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
+				TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX + 8));
+		}
+		// If boss health is full no need to go any further
+		if(bossHealth == bossMaxHealth) return;
+		// Draw a partial filled tile
+		i++;
+		VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
+			TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX + hp / 8));
+		// draw empty tiles
+		for(; i < 8; i++) {
+			VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
+				TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX));
+		}
+	}
 }
 
 void tsc_hide_boss_health() {
-
+	showingBossHealth = false;
+	VDP_setWindowPos(0, 0);
 }
 
 void tsc_show_teleport_menu() {
@@ -571,15 +617,19 @@ u8 execute_command() {
 				ENTITY_SET_STATE(bossEntity, args[0], 0);
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
-				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 3,
+				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 5,
 					BOSS_OMEGA, 210);
 				ENTITY_SET_STATE(bossEntity, 20, 0);
+			} else if(stageID == 0x2F && args[0] == 10) {
+				// Hack to spawn Core
+				
 			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
-			//bossEntity = entity_find_by_event(args[0]);
+			bossEntity = entity_find_by_event(args[0]);
 			if(bossEntity != NULL) {
+				bossMaxHealth = bossHealth = bossEntity->health;
 				tsc_show_boss_health();
 			}
 			break;

@@ -198,7 +198,7 @@ u8 game_main(bool load) {
 					camera_update();
 					player_update();
 					entities_update();
-					player_update_bullets();
+					if(showingBossHealth) tsc_update_boss_health();
 				}
 				hud_update();
 				u8 rtn = tsc_update();

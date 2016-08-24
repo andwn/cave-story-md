@@ -21,12 +21,22 @@
 #define ANIM_LOOKUPJUMP 6
 #define ANIM_LOOKDOWNJUMP 7
 
+enum BoosterState {
+	BOOST_OFF = 0,
+	BOOST_UP,
+	BOOST_DOWN,
+	BOOST_HOZ,
+	BOOST_08
+};
+
 #ifdef PAL
 #define INVINCIBILITY_FRAMES 100
 #define AIR_TICKS 10
+#define BOOSTER_FUEL 50
 #else
 #define INVINCIBILITY_FRAMES 120
 #define AIR_TICKS 12
+#define BOOSTER_FUEL 60
 #endif
 
 u16 dummyController[2] = { 0, 0 };
@@ -50,8 +60,10 @@ u8 walk_time;
 
 u8 mgun_shoottime, mgun_chargetime;
 
+u8 playerBoosterFuel, playerBoostState;
+
 void player_update_bounds();
-//void player_update_bullets();
+void player_update_booster();
 void player_update_interaction();
 void player_update_air_display();
 
@@ -128,58 +140,64 @@ void player_update() {
 		player.x_next = player.x + player.x_speed;
 		player.y_next = player.y + player.y_speed;
 	} else if(playerMoveMode == 0) { // Normal movement
-		entity_update_movement(&player);
-		bool blockl_next, blocku_next, blockr_next, blockd_next;
-		blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : false;
-		blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : false;
-		blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : false;
-		if(ledge_time == 0) {
-			if(player.grounded) {
-				player.grounded = collide_stage_floor_grounded(&player);
-			} else if(player.y_speed >= 0) {
-				player.grounded = collide_stage_floor(&player);
+		if(playerBoostState != BOOST_OFF) {
+			player.x_next = player.x + player.x_speed;
+			player.y_next = player.y + player.y_speed;
+			player_update_booster();
+		} else {
+			entity_update_movement(&player);
+			bool blockl_next, blocku_next, blockr_next, blockd_next;
+			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : false;
+			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : false;
+			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : false;
+			if(ledge_time == 0) {
+				if(player.grounded) {
+					player.grounded = collide_stage_floor_grounded(&player);
+				} else if(player.y_speed >= 0) {
+					player.grounded = collide_stage_floor(&player);
+				}
 			}
-		}
-		blockd_next = player.grounded;
-		// Here I do something weird to emulate the way the game pushes quote
-		// into small gaps
-		// Actually, I think this is how the original game does it. The speedrun
-		// tutorial mentioned trying to hug the floors while you jump up to them because
-		// it gives a minor speed boost
-		if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
-			player.x_speed -= 0xE0;
-			player.x_next = player.x + player.x_speed;
-		}
-		if(!blockr_next && blockr && joy_down(BUTTON_RIGHT)) {
-			player.x_speed += 0xE0;
-			player.x_next = player.x + player.x_speed;
-		}
-		if(ledge_time > 0) {
-			ledge_time--;
-			player.y_next += 0x600;
-			blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : false;
-			blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : false;
-			player.y_next -= 0x600;
-		} else if(player.jump_time == 0 && !blockd_next && blockd) {
-			player.y_speed += 0x80;
-			ledge_time = 4;
-		}
-		blockl = blockl_next;
-		blocku = blocku_next;
-		blockr = blockr_next;
-		blockd = blockd_next;
-		//entity_update_collision(&player);
-		if(playerPlatform != NULL) {
-			player.x_next += playerPlatform->x_speed;
-			player.y_next += playerPlatform->y_speed;
-			player.hit_box.bottom++;
-			bounding_box box = entity_react_to_collision(&player, playerPlatform, false);
-			player.hit_box.bottom--;
-			if(box.bottom == 0) {
-				playerPlatform = NULL;
-			} else {
-				player.grounded = true;
-				player.y_next += pixel_to_sub(1);
+			blockd_next = player.grounded;
+			// Here I do something weird to emulate the way the game pushes quote
+			// into small gaps
+			// Actually, I think this is how the original game does it. The speedrun
+			// tutorial mentioned trying to hug the floors while you jump up to them because
+			// it gives a minor speed boost
+			if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
+				player.x_speed -= 0xE0;
+				player.x_next = player.x + player.x_speed;
+			}
+			if(!blockr_next && blockr && joy_down(BUTTON_RIGHT)) {
+				player.x_speed += 0xE0;
+				player.x_next = player.x + player.x_speed;
+			}
+			if(ledge_time > 0) {
+				ledge_time--;
+				player.y_next += 0x600;
+				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : false;
+				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : false;
+				player.y_next -= 0x600;
+			} else if(player.jump_time == 0 && !blockd_next && blockd) {
+				player.y_speed += 0x80;
+				ledge_time = 4;
+			}
+			blockl = blockl_next;
+			blocku = blocku_next;
+			blockr = blockr_next;
+			blockd = blockd_next;
+			//entity_update_collision(&player);
+			if(playerPlatform != NULL) {
+				player.x_next += playerPlatform->x_speed;
+				player.y_next += playerPlatform->y_speed;
+				player.hit_box.bottom++;
+				bounding_box box = entity_react_to_collision(&player, playerPlatform, false);
+				player.hit_box.bottom--;
+				if(box.bottom == 0) {
+					playerPlatform = NULL;
+				} else {
+					player.grounded = true;
+					player.y_next += pixel_to_sub(1);
+				}
 			}
 		}
 		player_update_bounds();
@@ -229,21 +247,21 @@ void player_update() {
 	if(tsc_running()) {
 		SPR_SAFERELEASE(airSprite);
 	} else {
-		if(player.underwater) {
+		if(player.underwater && !(playerEquipment & EQUIP_AIRTANK)) {
 			if(airTick == 0) {
 				airTick = AIR_TICKS;
 				airPercent--;
 				if(airPercent == 0) {
-				// Spoilers
-				//if(stageID == STAGE_ALMOND && system_get_flag(FLAG_CORE_DEFEATED)) {
-				//	tsc_call_event();
-				//} else {
-					player.health = 0;
-					SPR_SAFERELEASE(airSprite);
-					SPR_SAFEANIM(player.sprite, 8);
-					tsc_call_event(PLAYER_DROWN_EVENT);
-					return;
-				//}
+					// Spoilers
+					if(system_get_flag(ALMOND_DROWN_FLAG)) {
+						tsc_call_event(ALMOND_DROWN_EVENT);
+					} else {
+						player.health = 0;
+						SPR_SAFERELEASE(airSprite);
+						SPR_SAFEANIM(player.sprite, 8);
+						tsc_call_event(PLAYER_DROWN_EVENT);
+						return;
+					}
 				}
 			} else {
 				airTick--;
@@ -296,8 +314,11 @@ void player_update() {
 			weapon_fire(playerWeapon[currentWeapon]);
 		}
 	}
-	//player_update_bullets();
-	player_update_interaction();
+	player_update_bullets();
+	if(player.grounded) {
+		playerBoosterFuel = BOOSTER_FUEL;
+		player_update_interaction();
+	}
 	player_draw();
 	if(mapNameTTL > 0 && --mapNameTTL == 0) {
 		SPR_SAFERELEASE(mapNameSprite);
@@ -325,6 +346,114 @@ void player_update_interaction() {
 			e = e->next;
 		}
 		// TODO: Question mark above head
+		
+	}
+}
+
+void booster20_direction() {
+	playerBoostState = BOOST_UP;
+	// in order of precedence
+	if (joy_down(BUTTON_LEFT)) {
+		player.direction = 0;
+		playerBoostState = BOOST_HOZ;
+	}
+	if (joy_down(BUTTON_RIGHT)) {
+		player.direction = 1;
+		playerBoostState = BOOST_HOZ;
+	}
+	if (joy_down(BUTTON_DOWN)) {
+		playerBoostState = BOOST_DOWN;
+	}
+	if (joy_down(BUTTON_UP)) {
+		playerBoostState = BOOST_UP; 
+	}
+}
+
+void player_start_booster() {
+	if(playerBoosterFuel == 0) return;
+	// Pick a direction with Booster 2.0, default up
+	if ((playerEquipment & EQUIP_BOOSTER20)) {
+		booster20_direction();
+		
+		if (playerBoostState == BOOST_UP || playerBoostState == BOOST_DOWN)
+			player.x_speed = 0;
+		
+		switch(playerBoostState) {
+			case BOOST_UP:
+				player.y_speed = SPEED(-0x5ff);
+			break;
+			case BOOST_DOWN:
+				player.y_speed = SPEED(0x5ff);
+			break;
+			case BOOST_HOZ:
+				player.y_speed = 0;
+				if (joy_down(BUTTON_LEFT))
+					player.x_speed = SPEED(-0x5ff);
+				else
+					player.x_speed = SPEED(0x5ff);
+			break;
+		}
+	} else {
+		playerBoostState = BOOST_08;
+		// help it overcome gravity
+		if (player.y_speed > 0x100)
+			player.y_speed >>= 1;
+	}
+	sound_play(SND_BOOSTER, 3);
+}
+
+void player_update_booster() {
+	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
+	if(!joy_down(BUTTON_C)) playerBoostState = BOOST_OFF;
+	if(playerBoostState == BOOST_OFF) return;
+	// player seems to want it active...check the fuel
+	if(playerBoosterFuel == 0) {
+		playerBoostState = BOOST_OFF;
+		return;
+	} else {
+		playerBoosterFuel--;
+	}
+	// ok so then, booster is active right now
+	bool sputtering = false;
+	// Update player input since we are skipping that
+	booster20_direction();
+	
+	switch(playerBoostState) {
+		case BOOST_HOZ:
+		{
+			if ((player.direction == 0 && collide_stage_leftwall(&player)) || \
+				(player.direction == 1 && collide_stage_rightwall(&player))) {
+				player.y_speed = -0x100;
+			}
+			if (joy_down(BUTTON_DOWN)) player.y_speed -= 0x20;
+			if (joy_down(BUTTON_UP)) player.y_speed += 0x20;
+		}
+		break;
+		case BOOST_UP:
+		{
+			player.y_speed -= 0x20;
+		}
+		break;
+		case BOOST_DOWN:
+		{
+			player.y_speed += 0x20;
+		}
+		break;
+		case BOOST_08:
+		{
+			// top speed and sputtering
+			if (player.y_speed < -0x400) {
+				player.y_speed += 0x20;
+				sputtering = true;	// no sound/smoke this frame
+			} else {
+				player.y_speed -= 0x20;
+			}
+		}
+		break;
+	}
+	// smoke and sound effects
+	if ((playerBoosterFuel % 4) == 1 && !sputtering) {
+		sound_play(SND_BOOSTER, 3);
 	}
 }
 
@@ -515,7 +644,7 @@ bool player_invincible() {
 
 bool player_inflict_damage(s16 damage) {
 	// Halve damage if we have the arms barrier
-	if((playerEquipment & EQUIP_ARMSBARRIER) && damage > 1) damage >>= 1;
+	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
 	// Take health
@@ -538,19 +667,21 @@ bool player_inflict_damage(s16 damage) {
 	player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
 	playerIFrames = INVINCIBILITY_FRAMES;
-	if(playerWeapon[currentWeapon].type != 0) {
+	// Decrease weapon exp
+	if(damage > 0 && playerWeapon[currentWeapon].type != 0) {
 		Weapon *w = &playerWeapon[currentWeapon];
-		if(w->energy == 0) {
+		if(w->energy < damage) {
 			if(w->level > 1) {
 				w->level -= 1;
-				w->energy = weapon_info[w->type].experience[w->level - 1];
+				w->energy += weapon_info[w->type].experience[w->level - 1];
+				w->energy -= damage;
 			}
 		} else {
-			w->energy -= 1;
+			w->energy -= damage;
 		}
 	}
 	// Knock back
-	player.y_speed = -0x500; // 2.5 pixels per frame
+	player.y_speed = SPEED(-0x500); // 2.5 pixels per frame
 	player.grounded = false;
 	return false;
 }

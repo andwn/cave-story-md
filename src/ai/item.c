@@ -23,7 +23,12 @@ void ai_energy_onCreate(Entity *e) {
 void ai_energy_onUpdate(Entity *e) {
 	if(entity_overlapping(&player, e)) {
 		Weapon *w = &playerWeapon[currentWeapon];
-		w->energy += e->experience;
+		if(w->level == 3 && w->energy + e->experience > 
+				weapon_info[w->type].experience[w->level-1]) {
+			w->energy = weapon_info[w->type].experience[w->level-1];
+		} else {
+			w->energy += e->experience;
+		}
 		if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level-1]) {
 			sound_play(SND_LEVEL_UP, 5);
 			w->energy -= weapon_info[w->type].experience[w->level-1];

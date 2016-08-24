@@ -406,6 +406,8 @@ void entity_update_jump(Entity *e) {
 			e->jump_time = MAX_JUMP_TIME;
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
+	} else if(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) {
+		player_start_booster();
 	} else {
 		if((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
 			e->y_speed += gravityJump;
@@ -480,7 +482,8 @@ void entity_update_collision(Entity *e) {
 bool collide_stage_leftwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
-	block_x = pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left);
+	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
+			(e->direction ? e->hit_box.right : e->hit_box.left));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
@@ -498,7 +501,8 @@ bool collide_stage_leftwall(Entity *e) {
 bool collide_stage_rightwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
-	block_x = pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right);
+	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
+			(e->direction ? e->hit_box.left : e->hit_box.right));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);

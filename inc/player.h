@@ -48,6 +48,7 @@ void player_reset_sprites();
 // Per frame update for the player and related objects
 void player_update();
 void player_update_bullets();
+void player_start_booster();
 // Sprite animation
 void player_draw();
 
