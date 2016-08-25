@@ -397,7 +397,7 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ NULL, 		PAL0, 3, "Surface Robot",
 		NULL, &ai_almond_robot, &ai_default_onState },
 	{ NULL, 		PAL0, 3, "Water Level",
-		NULL, &ai_waterlevel, NULL },
+		&oncreate_persistent, &ai_waterlevel, NULL },
 	/* 0x0C0 (192) */
 	{ &SPR_Buggy, 	PAL3, 3, "Scooter",
 		NULL, &ai_motorbike_onUpdate, NULL },

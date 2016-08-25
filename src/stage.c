@@ -40,7 +40,7 @@ void stage_load(u16 id) {
 	//SPR_reset();
 	// You think this is a motherfucking game?
 	SPR_end();
-	SPR_init(80, 512, 384);
+	SPR_init(80, 0, 0);
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;

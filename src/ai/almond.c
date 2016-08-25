@@ -9,20 +9,18 @@
 #include "effect.h"
 #include "camera.h"
 #include "system.h"
+#include "vdp_ext.h"
 
-void ai_waterlevel(Entity *e) {
-	if (water_forcestate) {
-		e->state = water_forcestate;
-		water_forcestate = 0;
-	}
+void ai_waterlevel(Entity *e) {\
 	switch(e->state) {
 		case 0:
 		{
-			//map_waterlevelobject = e;
+			water_entity = e;
 			e->state = WL_CALM;
 			e->y += (8<<9);
 			e->y_mark = e->y;
 			e->y_speed = SPEED(0x200);
+			VDP_genWaterPalette();
 		}
 		/* no break */
 		case WL_CALM:	// calm waves around set point
@@ -63,7 +61,11 @@ void ai_waterlevel(Entity *e) {
 		}
 		break;
 	}
-	water_state = e->state;
+	e->y += e->y_speed;
+	s16 wl = sub_to_pixel(e->y - (camera.y - pixel_to_sub(SCREEN_HALF_H)));
+	if(wl >= SCREEN_HEIGHT) water_screenlevel = 254;
+	else if(wl <= 0) water_screenlevel = 0;
+	else water_screenlevel = wl;
 }
 
 /// common code to both Shutter AND Lift

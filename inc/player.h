@@ -19,6 +19,14 @@
 
 #define MAX_ITEMS 32
 
+enum BoosterState {
+	BOOST_OFF = 0,
+	BOOST_UP,
+	BOOST_DOWN,
+	BOOST_HOZ,
+	BOOST_08
+};
+
 Weapon playerWeapon[MAX_WEAPONS];
 u8 currentWeapon; // Index 0-7 of which slot in the array the currently used weapon is
 
@@ -39,6 +47,8 @@ u16 playerEquipment;
 u8 playerInventory[MAX_ITEMS];
 
 Entity *playerPlatform;
+
+u8 playerBoosterFuel, playerBoostState;
 
 // Initialize everything for the player, sets default values on game start
 void player_init();

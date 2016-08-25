@@ -351,7 +351,8 @@ void entity_update_walk(Entity *e) {
 		dec = AIR_CONTROL;
 		fric = AIR_CONTROL;
 	}
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) {
+	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
+			(water_entity != NULL && e->y > water_entity->y)) {
 		e->underwater = true;
 		acc /= 2;
 		max_speed /= 2;
@@ -406,9 +407,10 @@ void entity_update_jump(Entity *e) {
 			e->jump_time = MAX_JUMP_TIME;
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
-	} else if(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) {
+	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
+			(e->controller[0] & BUTTON_C) && !(e->controller[1] & BUTTON_C)) {
 		player_start_booster();
-	} else {
+	} else if(playerBoostState == BOOST_OFF) {
 		if((e->controller[0] & BUTTON_C) && e->y_speed >= 0) {
 			e->y_speed += gravityJump;
 		} else {

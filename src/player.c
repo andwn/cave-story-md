@@ -21,14 +21,6 @@
 #define ANIM_LOOKUPJUMP 6
 #define ANIM_LOOKDOWNJUMP 7
 
-enum BoosterState {
-	BOOST_OFF = 0,
-	BOOST_UP,
-	BOOST_DOWN,
-	BOOST_HOZ,
-	BOOST_08
-};
-
 #ifdef PAL
 #define INVINCIBILITY_FRAMES 100
 #define AIR_TICKS 10
@@ -59,8 +51,6 @@ u8 ledge_time;
 u8 walk_time;
 
 u8 mgun_shoottime, mgun_chargetime;
-
-u8 playerBoosterFuel, playerBoostState;
 
 void player_update_bounds();
 void player_update_booster();
@@ -140,12 +130,10 @@ void player_update() {
 		player.x_next = player.x + player.x_speed;
 		player.y_next = player.y + player.y_speed;
 	} else if(playerMoveMode == 0) { // Normal movement
+		entity_update_movement(&player);
 		if(playerBoostState != BOOST_OFF) {
-			player.x_next = player.x + player.x_speed;
-			player.y_next = player.y + player.y_speed;
 			player_update_booster();
 		} else {
-			entity_update_movement(&player);
 			bool blockl_next, blocku_next, blockr_next, blockd_next;
 			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : false;
 			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : false;
@@ -350,30 +338,27 @@ void player_update_interaction() {
 	}
 }
 
-void booster20_direction() {
-	playerBoostState = BOOST_UP;
-	// in order of precedence
-	if (joy_down(BUTTON_LEFT)) {
-		player.direction = 0;
-		playerBoostState = BOOST_HOZ;
-	}
-	if (joy_down(BUTTON_RIGHT)) {
-		player.direction = 1;
-		playerBoostState = BOOST_HOZ;
-	}
-	if (joy_down(BUTTON_DOWN)) {
-		playerBoostState = BOOST_DOWN;
-	}
-	if (joy_down(BUTTON_UP)) {
-		playerBoostState = BOOST_UP; 
-	}
-}
-
 void player_start_booster() {
 	if(playerBoosterFuel == 0) return;
+	player.jump_time = 0;
 	// Pick a direction with Booster 2.0, default up
 	if ((playerEquipment & EQUIP_BOOSTER20)) {
-		booster20_direction();
+		playerBoostState = BOOST_UP;
+		// in order of precedence
+		if (joy_down(BUTTON_LEFT)) {
+			player.direction = 0;
+			playerBoostState = BOOST_HOZ;
+		}
+		if (joy_down(BUTTON_RIGHT)) {
+			player.direction = 1;
+			playerBoostState = BOOST_HOZ;
+		}
+		if (joy_down(BUTTON_DOWN)) {
+			playerBoostState = BOOST_DOWN;
+		}
+		if (joy_down(BUTTON_UP)) {
+			playerBoostState = BOOST_UP;
+		}
 		
 		if (playerBoostState == BOOST_UP || playerBoostState == BOOST_DOWN)
 			player.x_speed = 0;
@@ -396,7 +381,7 @@ void player_start_booster() {
 	} else {
 		playerBoostState = BOOST_08;
 		// help it overcome gravity
-		if (player.y_speed > 0x100)
+		if (player.y_speed > SPEED(0x100))
 			player.y_speed >>= 1;
 	}
 	sound_play(SND_BOOSTER, 3);
@@ -415,44 +400,51 @@ void player_update_booster() {
 	}
 	// ok so then, booster is active right now
 	bool sputtering = false;
-	// Update player input since we are skipping that
-	booster20_direction();
 	
+	if (joy_down(BUTTON_LEFT)) player.direction = 0;
+	else if (joy_down(BUTTON_RIGHT)) player.direction = 1;
+	SPR_SAFEHFLIP(player.sprite, player.direction);
+
+	bool blockl = collide_stage_leftwall(&player),
+			blockr = collide_stage_rightwall(&player),
+			blocku = collide_stage_ceiling(&player),
+			blockd = collide_stage_floor(&player);
+
 	switch(playerBoostState) {
 		case BOOST_HOZ:
 		{
-			if ((player.direction == 0 && collide_stage_leftwall(&player)) || \
-				(player.direction == 1 && collide_stage_rightwall(&player))) {
-				player.y_speed = -0x100;
+			if ((player.direction == 0 && blockl) || \
+				(player.direction == 1 && blockr)) {
+				player.y_speed = SPEED(-0x100);
 			}
-			if (joy_down(BUTTON_DOWN)) player.y_speed -= 0x20;
-			if (joy_down(BUTTON_UP)) player.y_speed += 0x20;
+			if (joy_down(BUTTON_DOWN)) player.y_speed -= SPEED(0x20);
+			if (joy_down(BUTTON_UP)) player.y_speed += SPEED(0x20);
 		}
 		break;
 		case BOOST_UP:
 		{
-			player.y_speed -= 0x20;
+			player.y_speed -= SPEED(0x20);
 		}
 		break;
 		case BOOST_DOWN:
 		{
-			player.y_speed += 0x20;
+			player.y_speed += SPEED(0x20);
 		}
 		break;
 		case BOOST_08:
 		{
 			// top speed and sputtering
-			if (player.y_speed < -0x400) {
-				player.y_speed += 0x20;
+			if (player.y_speed < SPEED(-0x400)) {
+				player.y_speed += SPEED(0x20);
 				sputtering = true;	// no sound/smoke this frame
 			} else {
-				player.y_speed -= 0x20;
+				player.y_speed -= SPEED(0x20);
 			}
 		}
 		break;
 	}
 	// smoke and sound effects
-	if ((playerBoosterFuel % 4) == 1 && !sputtering) {
+	if ((playerBoosterFuel % 5) == 1 && !sputtering) {
 		sound_play(SND_BOOSTER, 3);
 	}
 }

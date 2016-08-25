@@ -110,7 +110,7 @@ Entity *global_entitylink;
 #define water_entity	global_entitylink
 
 u8 water_screenlevel;
-u16 water_state, water_forcestate;
+//u16 water_state, water_forcestate;
 
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;

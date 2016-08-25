@@ -166,6 +166,7 @@ u8 game_main(bool load) {
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
+	SYS_setHIntCallback(hblank_water);
 	// A couple backgrounds (clouds) use tile scrolling
 	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	effects_init();
@@ -242,6 +243,7 @@ u8 game_main(bool load) {
 		SYS_disableInts();
 		VDP_loadFont(&font_lib, 0);
 		SYS_setVIntCallback(NULL);
+		SYS_setHIntCallback(NULL);
 		SYS_enableInts();
 	}
 	return ending;
