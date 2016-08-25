@@ -12,15 +12,6 @@
 #include "tables.h"
 #include "vdp_ext.h"
 
-#define ANIM_STANDING 0
-#define ANIM_WALKING 1
-#define ANIM_LOOKUP 2
-#define ANIM_LOOKUPWALK 3
-#define ANIM_INTERACT 4
-#define ANIM_JUMPING 5
-#define ANIM_LOOKUPJUMP 6
-#define ANIM_LOOKDOWNJUMP 7
-
 #ifdef PAL
 #define INVINCIBILITY_FRAMES 100
 #define AIR_TICKS 10

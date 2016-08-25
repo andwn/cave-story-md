@@ -17,6 +17,16 @@
 #define EQUIP_WHIMSICAL		0x080
 #define EQUIP_CLOCK			0x100
 
+// Shared with curly
+#define ANIM_STANDING 0
+#define ANIM_WALKING 1
+#define ANIM_LOOKUP 2
+#define ANIM_LOOKUPWALK 3
+#define ANIM_INTERACT 4
+#define ANIM_JUMPING 5
+#define ANIM_LOOKUPJUMP 6
+#define ANIM_LOOKDOWNJUMP 7
+
 #define MAX_ITEMS 32
 
 enum BoosterState {

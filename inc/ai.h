@@ -106,11 +106,8 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Shared Variables */
 
-Entity *global_entitylink;
-#define water_entity	global_entitylink
-
+Entity *water_entity;
 u8 water_screenlevel;
-//u16 water_state, water_forcestate;
 
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
@@ -219,8 +216,8 @@ void ai_batCircle_onUpdate(Entity *e);
 
 /* Curly - curly.c */
 
-void ai_curly_onUpdate(Entity *e);
-void ai_curly_onState(Entity *e);
+void ai_curly(Entity *e);
+void ai_curly_carried(Entity *e);
 
 void ai_curlyBoss_onUpdate(Entity *e);
 void ai_curlyBoss_onState(Entity *e);
