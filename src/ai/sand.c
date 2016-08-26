@@ -299,8 +299,8 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			}
 			if(PLAYER_DIST_X(pixel_to_sub(19))) {
 				// check if bottoms of player and croc are near
-				if(player.y < e->y && sub_to_pixel(player.y) + player.hit_box.bottom + 12 >
-					sub_to_pixel(e->y) + e->hit_box.bottom) {
+				if(player.y < e->y + 0x200 && sub_to_pixel(player.y) + 
+					player.hit_box.bottom + 12 > sub_to_pixel(e->y) + e->hit_box.bottom) {
 					// attack!!
 					e->x_speed = 0;
 					e->state = 2;
@@ -434,7 +434,6 @@ void ai_armadillo_onUpdate(Entity *e) {
 void ai_crow_onUpdate(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	
 	switch(e->state) {
 		case 0:
 		{
@@ -448,51 +447,55 @@ void ai_crow_onUpdate(Entity *e) {
 		/* no break */
 		case 1:
 		case 101:
-			if (e->x > e->x_mark) e->x_speed -= 16;
-			else if (e->x < e->x_mark) e->x_speed += 16;
-			
-			if (e->y > e->y_mark) e->y_speed -= 16;
-			else if (e->y < e->y_mark) e->y_speed += 16;
+		{
+			if 		(e->x > e->x_mark) e->x_speed -= SPEED(16);
+			else if (e->x < e->x_mark) e->x_speed += SPEED(16);
+			if 		(e->y > e->y_mark) e->y_speed -= SPEED(16);
+			else if (e->y < e->y_mark) e->y_speed += SPEED(16);
 			
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
-			LIMIT_X(0x200);
-			LIMIT_Y(0x200);
+			LIMIT_X(SPEED(0x200));
+			LIMIT_Y(SPEED(0x200));
 			
 			if (e->damage_time) {
 				e->state++;		// state 2/102
+				SPR_SAFEANIM(e->sprite, 2);
 				e->state_time = 0;
 				e->y_speed = 0;
 			}
+		}
 		break;
-		
 		case 2:
 		case 102:
-			FACE_PLAYER(e);
-			
+		{
+			if (e->direction != player.direction) FACE_PLAYER(e);
 			if (e->damage_time) {
 				// fall while hurt
-				e->y_speed += 0x20;
+				e->y_speed += SPEED(0x20);
 				e->x_speed = 0;
+				e->state_time = 0;
 			} else {
 				// move towards player
-				if(e->x < player.x) e->x_speed += 0x10;
-				else e->x_speed -= 0x10;
-				if(e->y < player.y) e->y_speed += 0x10;
-				else e->y_speed -= 0x10;
+				if(e->x < player.x) e->x_speed += SPEED(0x10);
+				else e->x_speed -= SPEED(0x10);
+				if(e->y < player.y) e->y_speed += SPEED(0x10);
+				else e->y_speed -= SPEED(0x10);
+				if(!e->state_time) {
+					SPR_SAFEANIM(e->sprite, 0);
+					e->state_time++;
+				}
 			}
 			// bounce off walls
-			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = 0x200;
-			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -0x200;
+			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
+			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = SPEED(-0x200);
+			if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x200);
+			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
 			
-			if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = 0x200;
-			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -0x200;
-			
-			LIMIT_X(0x5ff);
-			LIMIT_Y(0x5ff);
+			LIMIT_X(SPEED(0x5ff));
+			LIMIT_Y(SPEED(0x5ff));
+		}
 		break;
 	}
-	
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -599,7 +602,6 @@ void ai_curlys_mimigas(Entity *e) {
 					if(e->eflags & NPC_OPTION2) e->state = 110; // sleeping
 				}
 			}
-			//ai_curlys_mimigas(e);		// re-process again with correct state
 		}
 		break;
 		case 2:		// init stand and blink

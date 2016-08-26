@@ -104,6 +104,21 @@ typedef void (*EntityMethod)(Entity*);
 	curly_target_y = e->y; \
 })
 
+#define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) ({ \
+	Entity *shot = entity_create(sub_to_block(xx), sub_to_block(yy), 0, 0, type, 0, 0); \
+	e->x = xx; \
+	e->y = yy; \
+	e->x_speed = (sintab32[(angle)] >> 1) * (speed); \
+	e->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * (speed); \
+})
+
+#define SMOKE_AREA(x, y, w, h, count) ({ \
+	for(u8 i = 0; i < count; i++) { \
+		effect_create_smoke(0, 	(x) + (random() % (w)), \
+								(y) + (random() % (h))); \
+	} \
+})
+
 /* Shared Variables */
 
 Entity *water_entity;
@@ -225,6 +240,8 @@ void ai_curlyBoss_onState(Entity *e);
 void ai_curlyBossShot_onUpdate(Entity *e);
 
 void ai_curly_ai(Entity *e);
+void ai_cai_gun(Entity *e);
+void ai_cai_watershield(Entity *e);
 
 /* Egg Corridor - eggs.c */
 
@@ -301,10 +318,8 @@ void ai_chaco(Entity* e);
 
 /* Misery - misery.c */
 
-void ai_miseryFloat_onUpdate(Entity *e);
-void ai_miseryFloat_onState(Entity *e);
-
-void ai_miseryBubble_onUpdate(Entity *e);
+void ai_misery_float(Entity *e);
+void ai_misery_bubble(Entity *e);
 
 /* Toroko - toroko.c */
 

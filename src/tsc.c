@@ -622,7 +622,7 @@ u8 execute_command() {
 				ENTITY_SET_STATE(bossEntity, 20, 0);
 			} else if(stageID == 0x2F && args[0] == 10) {
 				// Hack to spawn Core
-				
+				create_core();
 			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)

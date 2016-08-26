@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "effect.h"
+#include "resources.h"
 
 #define CAI_INIT			20			// ANP'd to this by the entry script in Lab M
 #define CAI_START			21			// ANP'd to this by Almond script
@@ -327,19 +328,24 @@ void ai_cai_gun(Entity *e) {
 
 	if (curly == NULL) { e->state = STATE_DELETE; return; }
 	
-	//e->frame = 0;
-	if (curly_look)
-	{
-		//e->sprite = (curly->curly.gunsprite + 1);
-		//if (curly->curly.look==DOWN) e->frame = 1;
+	if(!e->state) {
+		if(curly_mgun) {
+			SPR_SAFEADD(e->sprite, &SPR_MGun, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
+		}
+		e->state = 1;
 	}
-	else
-	{
-		//e->sprite = curly->curly.gunsprite;
+	// Stick to curly
+	e->x = curly->x;
+	e->y = curly->y;
+	e->direction = curly->direction;
+	if (curly_look) {
+		SPR_SAFEANIM(e->sprite, curly_look == DIR_DOWN ? 2 : 1);
+	} else {
+		SPR_SAFEANIM(e->sprite, 0);
 	}
+	SPR_SAFEHFLIP(e->sprite, e->direction);
 	
-	if (curly_target_time)
-	{
+	if (curly_target_time) {
 		// fire when we get close to the target
 		if (!curly_look)
 		{	// firing LR-- fire when lined up vertically and close by horizontally
@@ -397,41 +403,17 @@ void ai_cai_gun(Entity *e) {
 	if (e->state_time) e->state_time--;
 }
 
-void aftermove_cai_gun(Entity *e)
-{
-	Entity *curly = e->linkedEntity;
-	if (curly)
-	{
-		e->x = curly->x;
-		e->y = curly->y;
-		e->direction = curly->direction;
-	}
-}
-
-
 // curly's air bubble when she goes underwater
-void aftermove_cai_watershield(Entity *e)
-{
+void ai_cai_watershield(Entity *e) {
 	Entity *curly = e->linkedEntity;
-	if (curly == NULL)
-	{
-		e->state = STATE_DELETE;
-		return;
-	}
+	if (curly == NULL) { e->state = STATE_DELETE; return; }
 	
-	//static const Point cwp = { 8, 5 };
-	if(curly->underwater)
-	{
-		//e->invisible = false;
+	if(curly->underwater) {
+		SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 		e->x = curly->x;
 		e->y = curly->y;
-		
-		//e->frame = (++e->state_time & 2) ? 1 : 0;
-	}
-	else
-	{
-		//e->invisible = true;
-		//e->state_time = e->frame = 0;
+	} else {
+		SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 		e->state_time = 0;
 	}
 }
