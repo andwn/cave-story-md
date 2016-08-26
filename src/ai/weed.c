@@ -431,17 +431,14 @@ void ai_hey_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y -= 16 << CSF;
-			e->x += 8 << CSF;
+			e->y -= 8 << CSF;
 			e->state = 1;
-			e->state_time = 0;
 		}
 		/* no break */
 		case 1:
 		{
 			if(++e->state_time >= TIME(50)) {
-				e->y -= 8 << CSF;
-				e->x -= 8 << CSF;
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 2;
 				e->state_time = 0;
 			}
@@ -450,8 +447,7 @@ void ai_hey_onUpdate(Entity *e) {
 		case 2:
 		{
 			if(++e->state_time >= TIME(50)) {
-				e->y += 8 << CSF;
-				e->x += 8 << CSF;
+				SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 				e->state = 1;
 				e->state_time = 0;
 			}
