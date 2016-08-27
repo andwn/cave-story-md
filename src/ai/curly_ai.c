@@ -306,7 +306,7 @@ void ai_curly_ai(Entity *e) {
 		}
 	}
 	// Set animation
-	SPR_SAFEANIM(player.sprite, anim);
+	SPR_SAFEANIM(e->sprite, anim);
 	// Change direction if pressing left or right
 	SPR_SAFEHFLIP(e->sprite, e->direction);
 	

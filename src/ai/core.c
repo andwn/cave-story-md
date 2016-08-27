@@ -9,7 +9,7 @@
 #include "effect.h"
 #include "camera.h"
 #include "system.h"
-/*
+
 #define CFRONT				5
 #define CBACK				6
 
@@ -29,35 +29,43 @@
 
 // flash red when struck, else stay in Mouth Open frame
 // TODO: Palette swapping
-#define OPEN_MOUTH		\
-{						\
+#define OPEN_MOUTH ({ \
 	if(e->damage_time & 2) { \
 		 \
 	} else { \
 		 \
 	} \
-	if(!e->mouthOpen) { \
+	if(!e->mouth_open) { \
 		e->mouth_open = true; \
 	} \
-}
+})
 
 // makes the core close his mouth
-#define CLOSE_MOUTH		\
-{		\
-	if(e->mouthOpen) { \
+#define CLOSE_MOUTH ({ \
+	if(e->mouth_open) { \
 		e->mouth_open = false; \
 	} \
-}
+})
 
-bounding_box core_tiles = {};
+// bring the water up if it's not already up, but don't keep it up
+// if it's already been up on it's own because that's not fair
+#define START_WATER_STREAM ({ \
+	if (water_entity->state == WL_DOWN) water_entity->state = WL_UP; \
+	camera_shake(100); \
+})
+
+// bring the water down again if it's not already
+#define STOP_WATER_STREAM ({ \
+	if (water_entity->state == WL_UP) water_entity->state = WL_CYCLE; \
+})
+
+typedef struct { u8 x1, x2, y1, y2; } DrawArea;
+DrawArea drawn_area = {};
 Entity *pieces[7];
-
-//Entity *CreateMinicore(Entity *e);
 
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
-void create_core() {
-	Entity *e = entity_create_boss(0, 0, BOSS_CORE, 1000);
+void oncreate_core(Entity *e) {
 	e->state = CORE_SLEEP;
 	e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
 	
@@ -70,40 +78,43 @@ void create_core() {
 	//e->sprite = SPR_CORESHOOTMARKER;
 	
 	// spawn all the pieces in the correct z-order
-	//pieces[3] = CreateMinicore(e);
-	//pieces[4] = CreateMinicore(e);
+	pieces[3] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
+	pieces[4] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
 	pieces[CFRONT] = entity_create(0, 0, 0, 0, OBJ_CORE_FRONT, 0, 0);
 	pieces[CBACK] = entity_create(0, 0, 0, 0, OBJ_CORE_BACK, 0, 0);
-	//pieces[0] = CreateMinicore(e);
-	//pieces[1] = CreateMinicore(e);
-	//pieces[2] = CreateMinicore(e);
+	pieces[0] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
+	pieces[1] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
+	pieces[2] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
 	
 	// set up the front piece
-	pieces[CFRONT]->state = CORE_SLEEP;
 	pieces[CFRONT]->linkedEntity = e;
 	pieces[CFRONT]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	//pieces[CFRONT]->frame = 2;			// mouth closed
 	
 	// set up our back piece
-	pieces[CBACK]->state = CORE_SLEEP;
 	pieces[CBACK]->linkedEntity = e;
 	pieces[CBACK]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
 	
 	// set the positions of all the minicores
-	//pieces[0]->x = (e->x - 0x1000);
-	//pieces[0]->y = (e->y - 0x8000);
+	pieces[0]->x = (e->x - 0x1000);
+	pieces[0]->y = (e->y - 0x8000);
 	
-	//pieces[1]->x = (e->x + 0x2000);
-	//pieces[1]->y = e->y;
+	pieces[1]->x = (e->x + 0x2000);
+	pieces[1]->y = e->y;
 	
-	//pieces[2]->x = (e->x - 0x1000);
-	//pieces[2]->y = (e->y + 0x8000);
+	pieces[2]->x = (e->x - 0x1000);
+	pieces[2]->y = (e->y + 0x8000);
 	
-	//pieces[3]->x = (e->x - 0x6000);
-	//pieces[3]->y = (e->y + 0x4000);
+	pieces[3]->x = (e->x - 0x6000);
+	pieces[3]->y = (e->y + 0x4000);
 	
-	//pieces[4]->x = (e->x - 0x6000);
-	//pieces[4]->y = (e->y - 0x4000);
+	pieces[4]->x = (e->x - 0x6000);
+	pieces[4]->y = (e->y - 0x4000);
+
+	for(u8 i = 0; i < 5; i++) {
+		pieces[i]->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+		pieces[i]->health = 1000;
+		pieces[i]->state = MC_SLEEP;
+	}
 }
 
 // We never need to know the core controller's ID but need an extra u16 variable to save hp
@@ -112,7 +123,7 @@ void create_core() {
 
 void ai_core(Entity *e) {
 	bool do_thrust = false;
-	int i;
+	//int i;
 
 	switch(e->state) {
 		case CORE_SLEEP: break;			// core is asleep
@@ -124,10 +135,11 @@ void ai_core(Entity *e) {
 			e->state = CORE_CLOSED+1;
 			e->state_time = 0;
 			
-			StopWaterStream();
+			STOP_WATER_STREAM;
 			e->x_mark = player.x;
 			e->y_mark = player.y;
 		}
+		/* no break */
 		case CORE_CLOSED+1:
 		{
 			// open mouth after 400 ticks
@@ -156,6 +168,7 @@ void ai_core(Entity *e) {
 			// know how much damage we've taken this time.
 			e->savedhp = e->health;
 		}
+		/* no break */
 		case CORE_OPEN+1:
 		{
 			e->x_mark = player.x;
@@ -179,7 +192,7 @@ void ai_core(Entity *e) {
 			}
 			
 			// close mouth when 400 ticks have passed or we've taken more than 200 damage
-			if (e->state_time > TIME(400) || (e->savedhp - e->hp) >= 200) {
+			if (e->state_time > TIME(400) || (e->savedhp - e->health) >= 200) {
 				e->state = CORE_CLOSED;
 				CLOSE_MOUTH;
 				do_thrust = true;
@@ -191,12 +204,13 @@ void ai_core(Entity *e) {
 			e->state = CORE_GUST+1;
 			e->state_time = 0;
 			
-			StartWaterStream();
+			START_WATER_STREAM;
 		}
+		/* no break */
 		case CORE_GUST+1:
 		{
 			// spawn water droplet effects and push player
-			//Entity *droplet = CreateEntity(player->x + ((random(-50, 150)<<CSF)*2), \
+			//Entity *droplet = CreateEntity(player->x + ((random(-50, 150)<<CSF)*2),
 			//					   		   player->y + (random(-160, 160)<<CSF),
 			//					   		   OBJ_FAN_DROPLET);
 			//droplet->dir = LEFT;
@@ -219,7 +233,7 @@ void ai_core(Entity *e) {
 		break;
 		case 500:		// defeated!!
 		{
-			StopWaterStream();
+			STOP_WATER_STREAM;
 			water_entity->state = WL_CALM;
 			
 			e->state = 501;
@@ -238,6 +252,7 @@ void ai_core(Entity *e) {
 			//	pieces[i]->state = MC_RETREAT;
 			//}
 		}
+		/* no break */
 		case 501:
 		{
 			e->state_time++;
@@ -266,6 +281,7 @@ void ai_core(Entity *e) {
 			//pieces[CFRONT]->clip_enable = pieces[CBACK]->clip_enable = 1;
 			e->state_time = 60;//sprites[pieces[CFRONT]->sprite].h;
 		}
+		/* no break */
 		case 601:
 		{
 			//pieces[CFRONT]->display_xoff = pieces[CBACK]->display_xoff = random(-8, 8);
@@ -289,9 +305,9 @@ void ai_core(Entity *e) {
 	
 	if (do_thrust) {
 		// tell all the minicores to jump to a new position
-		//for(i=0;i<5;i++) {
-		//	pieces[i]->state = MC_THRUST;
-		//}
+		for(u8 i=0;i<5;i++) {
+			pieces[i]->state = MC_THRUST;
+		}
 		
 		camera_shake(20);
 		sound_play(SND_CORE_THRUST, 5);
@@ -312,49 +328,36 @@ void ai_core(Entity *e) {
 		
 		// move main core towards a spot in front of target
 		e->x_speed += (e->x > (e->x_mark + (160<<CSF))) ? -4 : 4;
-		e->y_speed += (e->y > e->y_mark ? -4 : 4;
+		e->y_speed += (e->y > e->y_mark) ? -4 : 4;
 	}
 	
 	// set up our shootable status--you never actually hit the core (CFRONT),
 	// but if it's mouth is open, make us, the invisible controller object, shootable.
 	if (pieces[CFRONT]->mouth_open) {
-		e->flags &= ~NPC_SHOOTABLE;
-		pieces[CFRONT]->flags |= NPC_INVINCIBLE;
+		e->eflags &= ~NPC_SHOOTABLE;
+		pieces[CFRONT]->eflags |= NPC_INVINCIBLE;
 	} else {
-		e->flags |= NPC_SHOOTABLE;
-		pieces[CFRONT]->flags &= ~NPC_INVINCIBLE;
+		e->eflags |= NPC_SHOOTABLE;
+		pieces[CFRONT]->eflags &= ~NPC_INVINCIBLE;
 	}
 	
-	LIMITX(SPEED(0x80));
-	LIMITY(SPEED(0x80));
-}
+	LIMIT_X(SPEED(0x80));
+	LIMIT_Y(SPEED(0x80));
 
-void RunOpenMouth() {
-	
-}
-
-void StartWaterStream() {
-	// bring the water up if it's not already up, but don't keep it up
-	// if it's already been up on it's own because that's not fair
-	if (water_entity->state == WL_DOWN)
-		water_entity->state = WL_UP;
-	
-	camera_shake(100);
-	//StartStreamSound(400);
-}
-
-void StopWaterStream() {
-	// bring the water down again if it's not already
-	if (water_entity->state == WL_UP)
-		water_entity->state = WL_CYCLE;
-	
-	//StopLoopSounds();
+	// Draw blank core tiles that come onscreen, erase those that go offscreen
+	//SYS_disableInts();
+	//s16 hscroll = (e->x - camera.x) >> CSF;
+	//s16 vscroll = (e->y - camera.y) >> CSF;
+	//DrawArea visible_area = {
+	//		.x1 = ,
+	//};
+	//SYS_enableInts();
 }
 
 // the front (mouth) piece of the main core
 void ai_core_front(Entity *e) {
 	Entity *core = e->linkedEntity;
-	if (!core) { e->state == STATE_DELETE; return; }
+	if (!core) { e->state = STATE_DELETE; return; }
 	
 	e->x = core->x - 0x4800;
 	e->y = core->y - 0x5e00;
@@ -363,20 +366,10 @@ void ai_core_front(Entity *e) {
 // the back (unanimated) piece of the main core
 void ai_core_back(Entity *e) {
 	Entity *core = e->linkedEntity;
-	if (!core) { e->state == STATE_DELETE; return; }
+	if (!core) { e->state = STATE_DELETE; return; }
 	
 	e->x = core->x + (0x5800 - (8 << CSF));
 	e->y = core->y - 0x5e00;
-}
-
-static Entity *CreateMinicore(Entity *core, u16 x, u16 y) {
-	Entity *e = CreateEntity(x, y, 0, 0, OBJ_MINICORE, 0, 0);
-	e->linkedEntity = core;
-	e->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
-	e->health = 1000;
-	e->state = MC_SLEEP;
-	
-	return e;
 }
 
 void ai_minicore(Entity *e) {
@@ -385,41 +378,63 @@ void ai_minicore(Entity *e) {
 	
 	switch(e->state) {
 		case MC_SLEEP:		// idle & mouth closed
+		{
 			SPR_SAFEANIM(e->sprite, 2);
 			e->state = MC_SLEEP+1;
+		}
+		/* no break */
 		case MC_SLEEP+1:
+		{
 			e->x_mark = e->x;
 			e->y_mark = e->y;
+		}
 		break;
 		case MC_THRUST:			// thrust (move to random new pos)
+		{
 			e->state = MC_THRUST+1;
 			SPR_SAFEANIM(e->sprite, 2);
 			e->state_time = 0;
 			e->x_mark = e->x + ((-128 + (random() % 160)) << CSF);
 			e->y_mark = e->y + ((-64 + (random() % 128)) << CSF);
+		}
+		/* no break */
 		case MC_THRUST+1:
+		{
 			if (++e->state_time > TIME(50)) {
 				SPR_SAFEANIM(e->sprite, 0);
 			}
+		}
 		break;
 		case MC_CHARGE_FIRE:			// charging for fire
+		{
 			e->state = MC_CHARGE_FIRE+1;
 			e->state_time = 0;
+		}
+		/* no break */
 		case MC_CHARGE_FIRE+1:			// flash blue
+		{
 			e->state_time++;
-			if(e->state_time % 4 == 0) SPR_SAFEANIM(e->sprite, 0);
-			else if(e->state_time % 4 == 2) SPR_SAFEANIM(e->sprite, 1);
+			if(e->state_time % 4 == 0) {
+				SPR_SAFEANIM(e->sprite, 0);
+			} else if(e->state_time % 4 == 2) {
+				SPR_SAFEANIM(e->sprite, 1);
+			}
 			if(e->state_time > TIME(20)) {
 				e->state = MC_FIRE;
 			}
+		}
 		break;
 		case MC_FIRE:			// firing
+		{
 			e->state = MC_FIRE+1;
 			SPR_SAFEANIM(e->sprite, 2);	// close mouth again
 			e->state_time = 0;
 			e->x_mark = e->x + ((24 + (random() % 16)) << CSF);
 			e->y_mark = e->y + ((-4 + (random() % 8)) << CSF);
+		}
+		/* no break */
 		case MC_FIRE+1:
+		{
 			if (++e->state_time > TIME(50)) {
 				e->state = MC_FIRED;
 				SPR_SAFEANIM(e->sprite, 0);
@@ -428,16 +443,22 @@ void ai_minicore(Entity *e) {
 				//EmFireAngledShot(o, OBJ_MINICORE_SHOT, 2, 2<<CSF);
 				sound_play(SND_EM_FIRE, 5);
 			}
+		}
 		break;
 		case MC_RETREAT:		// defeated!
+		{
 			e->state = MC_RETREAT+1;
 			SPR_SAFEANIM(e->sprite, 2);
 			e->x_speed = e->y_speed = 0;
+		}
+		/* no break */
 		case MC_RETREAT+1:		// retreat back into the abyss
+		{
 			e->x_speed += SPEED(0x20);
 			if (e->x > block_to_sub(stageWidth) + 0x4000) {
 				e->state = STATE_DELETE;
 			}
+		}
 		break;
 	}
 	
@@ -462,6 +483,8 @@ void ai_minicore(Entity *e) {
 }
 
 void ai_minicore_shot(Entity *e) {
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 	if (++e->state_time2 > TIME(150)) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
 		e->state = STATE_DELETE;
@@ -473,13 +496,19 @@ void ai_minicore_shot(Entity *e) {
 void ai_core_ghostie(Entity *e) {
 	char hit = 0;
 
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+
 	if (e->x_speed > 0 && collide_stage_rightwall(e)) hit = 1;
 	if (e->x_speed < 0 && collide_stage_leftwall(e)) hit = 1;
 	if (e->y_speed > 0 && collide_stage_floor(e)) hit = 1;
 	if (e->y_speed < 0 && collide_stage_ceiling(e)) hit = 1;
 	
+	e->x = e->x_next;
+	e->y = e->y_next;
+
 	e->x_speed -= SPEED(0x20);
-	LIMITX(SPEED(0x400));
+	LIMIT_X(SPEED(0x400));
 	
 	if(hit) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
@@ -488,6 +517,7 @@ void ai_core_ghostie(Entity *e) {
 }
 
 void ai_core_blast(Entity *e) {
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 	if (++e->state_time > TIME(200)) e->state = STATE_DELETE;
 }
-*/

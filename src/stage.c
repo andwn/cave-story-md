@@ -37,10 +37,10 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	//SPR_reset();
+	SPR_reset();
 	// You think this is a motherfucking game?
-	SPR_end();
-	SPR_init(80, 0, 0);
+	//SPR_end();
+	//SPR_init(80, 0, 0);
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;

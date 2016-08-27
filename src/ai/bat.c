@@ -92,10 +92,8 @@ void ai_batHang_onUpdate(Entity *e) {
 			e->y = e->y_next;
 		}
 	} else { // Flying
-		u8 old_dir = e->direction;
-		FACE_PLAYER(e);
-		if(e->direction != old_dir) {
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+		if((e->direction && player.x < e->x) || (!e->direction && player.x > e->x)) {
+			FACE_PLAYER(e);
 		}
 		e->x_speed += (e->x > player.x) ? -BAT_FLY_XACCEL : BAT_FLY_XACCEL;
 		e->y_speed += (e->y > e->y_mark) ? -BAT_FLY_YACCEL : BAT_FLY_YACCEL;
@@ -136,13 +134,13 @@ void ai_batCircle_onUpdate(Entity *e) {
 			// its own 'fix32' type which is a 10-bit fixed point number. Cave Story's fixed
 			// point numbers use a 9-bit decimal so we shift right by 1 bit
 			e->x_speed = sintab32[angle] >> 1;
-			angle += 256; // Add 90 degrees to get cosine
+			angle = (angle + 256) % 1024; // Add 90 degrees to get cosine
 			e->x_mark = e->x + (sintab32[angle] >> 1) * 8;
 			// Starting Y speed
 			angle = random() % 1024;
 			e->y_speed = sintab32[angle] >> 1;
 			// Target Y position
-			angle += 256;
+			angle = (angle + 256) % 1024;
 			e->y_mark = e->y + (sintab32[angle] >> 1) * 8;
 			
 			e->state = 1;
@@ -162,7 +160,7 @@ void ai_batCircle_onUpdate(Entity *e) {
 					e->x_speed /= 2;
 					e->y_speed = 0;
 					e->state = 2;
-					SPR_SAFEANIM(e->sprite, 1);		// mouth showing teeth
+					SPR_SAFEANIM(e->sprite, 2);		// mouth showing teeth
 				}
 			} else {
 				e->state_time--;

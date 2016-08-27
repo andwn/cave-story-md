@@ -94,7 +94,7 @@ void ai_trigger_onUpdate(Entity *e) {
 }
 
 void ai_genericproj_onUpdate(Entity *e) {
-	if(++e->state_time > TIME(300) ||
+	if(++e->state_time > TIME(250) ||
 		stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		e->state = STATE_DELETE;
 	} else {

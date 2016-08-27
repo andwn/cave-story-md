@@ -620,9 +620,10 @@ u8 execute_command() {
 				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 5,
 					BOSS_OMEGA, 210);
 				ENTITY_SET_STATE(bossEntity, 20, 0);
-			} else if(stageID == 0x2F && args[0] == 10) {
+			} else if(stageID == 0x2F && args[0] == 200) {
 				// Hack to spawn Core
-				create_core();
+				entity_create_boss(0, 0, BOSS_CORE, 1000);
+				ENTITY_SET_STATE(bossEntity, 200, 0);
 			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)

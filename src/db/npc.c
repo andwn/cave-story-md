@@ -2,7 +2,7 @@
 #include "resources.h"
 #include "ai.h"
 
-const npc_info_def npc_info[NPC_COUNT + 8] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, 		PAL0, 3, "Nothing",
 		&oncreate_op2snap, NULL, NULL },
 	{ &SPR_EnergyS, PAL1, 2, "Weapon Energy",
@@ -226,10 +226,10 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Malco, 	PAL1, 3, "Malco",
 		NULL, &ai_malco_onUpdate, &ai_malco_onState },
 	{ &SPR_FrogShot, PAL1, 3, "Balfrog Projectile",
-		NULL, &ai_genericproj_onUpdate, NULL },
+		&oncreate_persistent, &ai_genericproj_onUpdate, NULL },
 	{ &SPR_Malco, 	PAL1, 3, "Malco (Damaged)",
 		&ai_malcoBroken_onCreate, NULL, &ai_malcoBroken_onState },
-	{ &SPR_FrogSm, 	PAL2, 3, "Puchi",
+	{ &SPR_FrogSm, 	PAL3, 3, "Puchi",
 		NULL, &ai_frog_onUpdate, &ai_default_onState },
 	{ &SPR_Quotele, PAL0, 3, "Quote Teleporting Out",
 		&ai_teleOut_onCreate, &ai_teleOut_onUpdate, NULL },
@@ -371,9 +371,9 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 	{ &SPR_Buyo, 	PAL2, 3, "Buyobuyo",
 		NULL, &ai_buyobuyo, &ai_default_onState },
 	{ NULL, 		PAL3, 3, "Core Spinning Projectile",
-		&oncreate_persistent, NULL, NULL },
+		&oncreate_persistent, &ai_minicore_shot, NULL },
 	{ NULL, 		PAL3, 3, "Core Wisp Projectile",
-		&oncreate_persistent, NULL, NULL },
+		&oncreate_persistent, &ai_core_ghostie, NULL },
 	{ &SPR_Curly, 	PAL3, 3, "Curly (AI)",
 		&oncreate_persistent, &ai_curly_ai, NULL },
 	{ &SPR_Polar, 	PAL0, 3, "Curly Polar Star",
@@ -392,8 +392,8 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		NULL, &ai_fuzz_core, &ai_default_onState },
 	{ &SPR_Fuzz, 	PAL2, 3, "Fuzz",
 		NULL, &ai_fuzz, &ai_default_onState },
-	{ NULL, 		PAL0, 3, "Homing Flame Projectile",
-		NULL, NULL, NULL },
+	{ NULL, 		PAL3, 3, "Homing Flame Projectile",
+		&oncreate_persistent, &ai_core_blast, NULL },
 	{ NULL, 		PAL0, 3, "Surface Robot",
 		NULL, &ai_almond_robot, NULL },
 	{ NULL, 		PAL0, 3, "Water Level",
@@ -754,8 +754,28 @@ const npc_info_def npc_info[NPC_COUNT + 8] = {
 		&ai_omega_onCreate, &ai_omega_onUpdate, &ai_omega_onState },
 	{ &SPR_Balfrog1, PAL3, 3, "Balfrog",
 		&ai_balfrog_onCreate, &ai_balfrog_onUpdate, &ai_balfrog_onState },
-	{ &SPR_Balfrog1, PAL3, 3, "Monster X",
+	{ NULL, PAL3, 3, "Monster X",
 		NULL, NULL, NULL },
-	{ &SPR_Balfrog1, PAL3, 3, "Core",
+	{ NULL, PAL3, 3, "Core (Controller)",
+		&oncreate_core, &ai_core, &ai_default_onState },
+	{ NULL, PAL3, 3, "Ironhead",
 		NULL, NULL, NULL },
+	{ NULL, PAL3, 3, "Sisters",
+		NULL, NULL, NULL },
+	{ NULL, PAL3, 3, "Undead Core",
+		NULL, NULL, NULL },
+	{ NULL, PAL3, 3, "Heavy Press",
+		NULL, NULL, NULL },
+	{ NULL, PAL3, 3, "Ballos",
+		NULL, NULL, NULL },
+	/* ^ 0x171 (369) ^ */
+	/* BOSS PARTS - Separate entities belonging to the bosses which don't
+	 * already exist in the NPC table, for whatever reason */
+	/* 0x172 (370) */
+	{ NULL, PAL3, 3, "Core (Front)",
+		&oncreate_persistent, &ai_core_front, NULL },
+	{ NULL, PAL3, 3, "Core (Back)",
+		&oncreate_persistent, &ai_core_back, NULL },
+	{ NULL, PAL3, 3, "Mini Core",
+		&oncreate_persistent, &ai_minicore, NULL },
 };

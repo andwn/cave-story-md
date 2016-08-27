@@ -23,11 +23,12 @@ void ai_omega_onCreate(Entity *e) {
 
 void ai_omega_onUpdate(Entity *e) {
 	if(e->state == 20) {
-		if(++e->state_time > TIME(120)) {
+		e->y_speed = -0x0A0;
+		if(++e->state_time > TIME(240)) {
 			ENTITY_SET_STATE(e, 21, 0);
 		}
 	} else {
-		
+		e->y_speed = 0;
 	}
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -38,14 +39,6 @@ void ai_omega_onState(Entity *e) {
 		tsc_call_event(e->event); // Boss defeated event
 		e->state = STATE_DESTROY;
 		bossEntity = NULL;
-	}
-	switch(e->state) {
-		case 20:
-		e->y_speed = -0x0A0;
-		break;
-		case 21:
-		e->y_speed = 0;
-		break;
 	}
 }
 

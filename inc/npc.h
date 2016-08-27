@@ -399,6 +399,11 @@
 #define OBJ_DROPLET_SPAWNER			359		// spawns small falling water drips from e.g. resevoir
 #define OBJ_THANK_YOU				360		// credits
 
+// Extra stuff
+#define OBJ_CORE_FRONT				370
+#define OBJ_CORE_BACK				371
+#define OBJ_MINICORE				372
+
 // NPC Flags
 u16 npc_flags(u16 type);
 // Starting health

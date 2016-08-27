@@ -105,15 +105,15 @@ typedef void (*EntityMethod)(Entity*);
 })
 
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) ({ \
-	Entity *shot = entity_create(sub_to_block(xx), sub_to_block(yy), 0, 0, type, 0, 0); \
-	e->x = xx; \
-	e->y = yy; \
-	e->x_speed = (sintab32[(angle)] >> 1) * (speed); \
-	e->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * (speed); \
+	Entity *shot = entity_create(sub_to_block(xx), sub_to_block(yy), 0, 0, (type), 0, 0); \
+	shot->x = (xx); \
+	shot->y = (yy); \
+	shot->x_speed = (sintab32[(angle)] >> 1) * ((speed) >> CSF); \
+	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF); \
 })
 
 #define SMOKE_AREA(x, y, w, h, count) ({ \
-	for(u8 i = 0; i < count; i++) { \
+	for(u8 i = 0; i < (count); i++) { \
 		effect_create_smoke(0, 	(x) + (random() % (w)), \
 								(y) + (random() % (h))); \
 	} \
@@ -437,7 +437,13 @@ void ai_almond_robot(Entity *e);
 
 /* Core - core.c */
 
-void create_core();
+void oncreate_core(Entity *e);
 void ai_core(Entity *e);
+void ai_core_front(Entity *e);
+void ai_core_back(Entity *e);
+void ai_minicore(Entity *e);
+void ai_minicore_shot(Entity *e);
+void ai_core_ghostie(Entity *e);
+void ai_core_blast(Entity *e);
 
 #endif /* INC_AI_H_ */

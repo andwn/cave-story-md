@@ -15,12 +15,15 @@
 void ai_curly(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 	switch(e->state) {
 		case 0:							// state 0: stand and do nothing
 		{
 			SPR_SAFEANIM(e->sprite, 0);
 			e->eflags |= NPC_INTERACTIVE;	// needed for after Almond battle
 		}
+		/* no break */
 		case 1:
 		{
 			// important that state 1 does not change look-away frame for Drain cutscene
@@ -35,6 +38,7 @@ void ai_curly(Entity *e) {
 			e->state++;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 4:
 		case 11:
 		{
@@ -42,7 +46,7 @@ void ai_curly(Entity *e) {
 				e->state = 0;
 				break;
 			}
-			if (!e->grounded) SPR_SAFEANIM(e->sprite, 5);
+			//if (!e->grounded) SPR_SAFEANIM(e->sprite, 5);
 			MOVE_X(SPEED(0x200));
 		}
 		break;
@@ -52,6 +56,7 @@ void ai_curly(Entity *e) {
 			e->state = 6;
 			//SmokeClouds(e, 8, 0, 0);
 		}
+		/* no break */
 		case 6:
 		{
 			SPR_SAFEANIM(e->sprite, 10);
@@ -78,11 +83,13 @@ void ai_curly(Entity *e) {
 			e->grounded = false;
 			MOVE_X(SPEED(-0x200));
 		}
+		/* no break */
 		case 31:
 		{
 			if (e->grounded) e->state = 32;
 			else break;
 		}
+		/* no break */
 		case 32:			// state 32: curly is laying knocked out
 		{
 			SPR_SAFEANIM(e->sprite, 9);
@@ -97,6 +104,7 @@ void ai_curly(Entity *e) {
 			e->state_time = 0;
 			SPR_SAFEANIM(e->sprite, 1);
 		}
+		/* no break */
 		case 71:
 		{
 			MOVE_X(SPEED(-0x100));
@@ -125,6 +133,7 @@ void ai_curly_carried(Entity *e) {
 			//	if (t) t->ChangeType(OBJ_HVTRIGGER);
 			//}
 		}
+		/* no break */
 		case 1:
 		{	// carried by player
 			if(player.direction != e->direction) {
@@ -142,6 +151,7 @@ void ai_curly_carried(Entity *e) {
 			e->y_speed = SPEED(-0x20);
 			e->state = 11;
 		}
+		/* no break */
 		case 11:
 		{
 			if (e->y < block_to_sub(4))	{

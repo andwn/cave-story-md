@@ -80,6 +80,11 @@ void ai_kulala_onUpdate(Entity *e) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
 		{
 			SPR_SAFEANIM(e->sprite, 4);
+			e->state = 1;
+		}
+		/* no break */
+		case 1:
+		{
 			if(e->damage_time) {
 				camera_shake(30);
 				e->state = 10;
@@ -351,6 +356,7 @@ void ai_frog_onUpdate(Entity *e) {
 			// Balfrog sets OPTION1
 			if(e->eflags & NPC_OPTION1) {
 				e->direction = random() & 1;
+				SPR_SAFEHFLIP(e->sprite, e->direction);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 3;
 				SPR_SAFEANIM(e->sprite, 1);
@@ -372,7 +378,7 @@ void ai_frog_onUpdate(Entity *e) {
 			if(++e->state_time > TIME(40)) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				if((e->grounded = collide_stage_floor(e))) {
-					e->state = 0;
+					e->state = 1;
 					SPR_SAFEANIM(e->sprite, 0);
 					e->state_time = 0;
 				}

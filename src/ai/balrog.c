@@ -370,7 +370,7 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 		else if(e->x_speed < 0) e->x_speed += 0x10;
 		if(abs(e->x_speed) < 0x10) {
 			e->x_speed = 0;
-			SPR_setAnim(e->sprite, 0);
+			SPR_SAFEANIM(e->sprite, 0);
 		}
 		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
@@ -428,7 +428,7 @@ void ai_balrogRunning_onState(Entity *e) {
 	case 5: // Run towards player and jump
 		e->direction = e->x < player.x;
 		SPR_SAFEANIM(e->sprite, 1);
-		SPR_setHFlip(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->direction);
 		e->state_time = 120;
 		break;
 	case 6: // Jumping
@@ -481,7 +481,6 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 	switch(e->state) {
 		case WAIT_BEGIN:	// wait at start of battle
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			if(++e->state_time > 12) {
 				e->state = SHOOT_PLAYER;
 				e->state_time = 0;
@@ -491,7 +490,6 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 		case SHOOT_PLAYER:
 			e->state_time++;
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			if((e->state_time % 16) == 15) {
 				SPR_SAFEANIM(e->sprite, 2);
 				// Fire shot
@@ -510,7 +508,6 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 		case JUMP_BEGIN:	// begin jump
 			e->state_time++;
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
 			if(e->state_time > 3) {
 				e->state = JUMP_UP;
 				e->state_time = 0;
@@ -602,6 +599,15 @@ void ai_balrogFlying_onState(Entity *e) {
 #endif
 
 void ai_balrogShot_onUpdate(Entity *e) {
+	if(!e->state) {
+		e->eflags |= NPC_SHOOTABLE | NPC_SHOWDAMAGE;
+		e->health = 1000;
+		e->state++;
+	}
+	if(e->damage_time) {
+		e->state = STATE_DELETE;
+		return;
+	}
 	e->y_speed += BALROG_SHOT_GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;

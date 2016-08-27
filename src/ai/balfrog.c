@@ -73,6 +73,7 @@ bool player_bbox_collide(Entity *e, u8 index);
 Bullet* bullets_bbox_collide(Entity *e, u8 index);
 void deflect_bullet(Bullet *b);
 void hurt_by_bullet(Entity *e, Bullet *b);
+void spawn_frogs(u16 objtype, u8 count);
 
 void ai_balfrog_onCreate(Entity *e) {
 	e->x = FROG_START_X;
@@ -202,8 +203,8 @@ void ai_balfrog_onUpdate(Entity *e) {
 					e->state = STATE_FIGHTING;
 				}
 				// shake a small frog loose from the ceiling on every landing
-				//SpawnFrogs(OBJ_MINIFROG, 1);
-				//SpawnSmoke(LANDING_SMOKE_COUNT, LANDING_SMOKE_YTOP);
+				spawn_frogs(OBJ_MINIFROG, 1);
+				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 2);
 			}
 		}
 		break;
@@ -239,9 +240,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 			if(e->grounded) {
 				set_jump_sprite(e, false);
 				camera_shake(60);
-				//SpawnFrogs(OBJ_MINIFROG, 6);
-				//SpawnFrogs(OBJ_FROG, 2);
-				//SpawnSmoke(LANDING_SMOKE_COUNT, LANDING_SMOKE_YTOP);
+				spawn_frogs(OBJ_MINIFROG, 4);
+				spawn_frogs(OBJ_FROG, 2);
+				//SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 4);
 				// player ran under us? turn around and fire!
 				if((e->direction && e->x >= player.x) ||
 					(!e->direction && e->x <= player.x)) {
@@ -287,7 +288,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 				}
 			}
 			if((e->state_time % 16) == 1) {
-				//EmFireAngledShot(o, OBJ_BALFROG_SHOT, 16, 0x200);
+				u16 angle = (-32 + random() % 64 + (e->direction ? 256 : 768)) % 1024;
+				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->direction ? 0x1000 : -0x1000),
+						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
 				if(e->state_time > 160 || bbox_damage > 90) {
 					SPR_SAFEANIM(e->sprite, 1);
@@ -322,15 +325,14 @@ void ai_balfrog_onUpdate(Entity *e) {
 			e->x_speed = 0;
 			e->state_time = 0;
 			e->state++;
-			//SpawnSmoke(DEATH_SMOKE_COUNT, DEATH_SMOKE_YTOP);
+			SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 4);
 		}
 		/* no break */
 		case STATE_DEATH+1:			// shaking with mouth open
 		{
 			e->state_time++;
 			if((e->state_time % 8) == 0) {
-				effect_create_smoke(0, e->x - 28 + (random() % 56),
-					e->y - 24 + (random() % 48));
+				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
 			// at a glance it might seem like this has it alternate
 			// slowly between 2 X coordinates, but in fact, it
@@ -356,8 +358,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		{
 			e->state_time++;
 			if((e->state_time % 16) == 0) {
-				effect_create_smoke(0, sub_to_pixel(e->x) - 28 + (random() % 56),
-					sub_to_pixel(e->y) - 24 + (random() % 48));
+				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
 			if(e->state_time <= 150) {
 				SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) > 0 ? AUTO_FAST : HIDDEN);
@@ -379,8 +380,9 @@ void ai_balfrog_onUpdate(Entity *e) {
 			//
 			// 10 frames until starts to fall
 			// 14 frames until changes to landed frame
-			SPR_SAFEVISIBILITY(balrog->sprite, AUTO_FAST);
 			if(balrog != NULL) {
+				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				SPR_SAFEVISIBILITY(balrog->sprite, AUTO_FAST);
 				balrog->y_speed += 0x40;
 				balrog->y_next = balrog->y + balrog->y_speed;
 				if(collide_stage_floor(balrog)) {
@@ -403,7 +405,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 				// it's all over, destroy ourselves and clean up
 				if(balrog != NULL) {
 					SPR_SAFEANIM(balrog->sprite, 3);
-					balrog->y_speed = -FROG_BIGJUMP_SPEED;
+					balrog->y_speed = SPEED(-0x800);
 					balrog->y_next = balrog->y + balrog->y_speed;
 					balrog->y = balrog->y_next;
 					balrog->eflags |= NPC_IGNORESOLID;
@@ -485,22 +487,14 @@ void place_bboxes(Entity *e) {
 	}
 }
 
-/*
 // shake loose frogs from the ceiling
-void BalfrogBoss::SpawnFrogs(int objtype, int count)
-{
-Object *child;
-
-	for(int i=0;i<count;i++)
-	{
-		int x = random(SPAWN_RANGE_LEFT, SPAWN_RANGE_RIGHT);
-		int y = random(SPAWN_RANGE_TOP, SPAWN_RANGE_BOTTOM);
-		
-		child = CreateObject((x*TILE_W)<<CSF, (y*TILE_H)<<CSF, objtype);
-		child->dir = DOWN;	// allow fall through ceiling
+void spawn_frogs(u16 objtype, u8 count) {
+	for(int i=0;i<count;i++) {
+		entity_create(SPAWN_RANGE_LEFT + random() % SPAWN_RANGE_RIGHT,
+				SPAWN_RANGE_TOP + random() % SPAWN_RANGE_BOTTOM,
+				0, 0, objtype, NPC_OPTION1, random() & 1);
 	}
 }
-*/
 
 // switches on and off the jumping frame/sprite
 void set_jump_sprite(Entity *e, bool enable) {
