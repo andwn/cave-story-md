@@ -12,6 +12,7 @@ PALETTE PAL_Chaco		"sprite/chaco.png" 3
 PALETTE PAL_Jenka		"sprite/jenka.png" 3
 PALETTE PAL_Dark		"sprite/dark.png" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
+PALETTE PAL_Core		"sprite/coremini.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -197,6 +198,15 @@ SPRITE SPR_DarkBub		"sprite/darkbubble.png" 2 2 0 0 NONE
 
 # Use PAL_Boulder
 SPRITE SPR_Boulder		"sprite/boulder.png" 7 5 0 0 NONE
+
+# Use PAL_Core
+#SPRITE SPR_CoreFront	"sprite/corefront.png" 9 14 0 0 NONE
+#SPRITE SPR_CoreBack		"sprite/coreback.png" 11 14 0 0 NONE
+SPRITE SPR_MiniCore		"sprite/coremini.png" 8 5 0 0 NONE
+SPRITE SPR_CoreShot1	"sprite/coreshot1.png" 2 2 0 15 NONE
+SPRITE SPR_CoreShot2	"sprite/coreshot2.png" 3 2 0 15 NONE
+SPRITE SPR_CoreShot3	"sprite/coreshot3.png" 1 2 0 15 NONE
+SPRITE SPR_CoreShot4	"sprite/coreshot4.png" 4 4 0 15 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

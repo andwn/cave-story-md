@@ -26,6 +26,7 @@ void ai_block_onCreate(Entity *e) {
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
 	e->eflags |= NPC_SPECIALSOLID;
+	e->nflags &= ~NPC_SOLID;
 	e->eflags |= NPC_IGNORE44;
 	e->enableSlopes = false;
 	e->attack = 0;

@@ -51,7 +51,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_MazeS,	PXE_MazeS,	TSC_MazeS,	&PAL_Boulder,13,0,	"Boulder Chamber" },
 	{ PXM_MazeM,	PXE_MazeM,	TSC_MazeM,	&PAL_Regu,	24,	10,	"Labyrinth M" },
 	{ PXM_Drain,	PXE_Drain,	TSC_Drain,	&PAL_Regu,	3,	0,	"Dark Place" },
-	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Regu,	1,	0,	"Core" },
+	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Core,	1,	0,	"Core" },
 	/* 0x30 (48) */
 	{ PXM_River,	PXE_River,	TSC_River,	&PAL_Regu,	17,	6,	"Waterway" },
 	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Regu,	23,	13,	"Egg Corridor?" },

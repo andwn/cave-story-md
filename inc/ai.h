@@ -439,6 +439,7 @@ void ai_almond_robot(Entity *e);
 
 void oncreate_core(Entity *e);
 void ai_core(Entity *e);
+void ondeath_core(Entity *e);
 void ai_core_front(Entity *e);
 void ai_core_back(Entity *e);
 void ai_minicore(Entity *e);

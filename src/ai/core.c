@@ -59,8 +59,8 @@
 	if (water_entity->state == WL_UP) water_entity->state = WL_CYCLE; \
 })
 
-typedef struct { u8 x1, x2, y1, y2; } DrawArea;
-DrawArea drawn_area = {};
+//typedef struct { u8 x1, x2, y1, y2; } DrawArea;
+//DrawArea drawn_area = {};
 Entity *pieces[7];
 
 // called at the entry to the Core room.
@@ -74,6 +74,7 @@ void oncreate_core(Entity *e) {
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->health = 650;
+	e->hit_box = (bounding_box) { 9*8, 5*8, 0, 5*8 };
 	
 	//e->sprite = SPR_CORESHOOTMARKER;
 	
@@ -89,10 +90,13 @@ void oncreate_core(Entity *e) {
 	// set up the front piece
 	pieces[CFRONT]->linkedEntity = e;
 	pieces[CFRONT]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	pieces[CFRONT]->hit_box = (bounding_box) { 4*8, 5*8, 4*8, 5*8 };
+	pieces[CFRONT]->display_box = (bounding_box) { 4*8+4, 7*8, 4*8+4, 7*8 };
 	
 	// set up our back piece
 	pieces[CBACK]->linkedEntity = e;
 	pieces[CBACK]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	pieces[CBACK]->display_box = (bounding_box) { 5*8+4, 7*8, 5*8+4, 7*8 };
 	
 	// set the positions of all the minicores
 	pieces[0]->x = (e->x - 0x1000);
@@ -114,6 +118,8 @@ void oncreate_core(Entity *e) {
 		pieces[i]->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		pieces[i]->health = 1000;
 		pieces[i]->state = MC_SLEEP;
+		pieces[i]->hit_box = (bounding_box) { 28, 16, 20, 16 };
+		pieces[i]->display_box = (bounding_box) { 32, 20, 32, 20 };
 	}
 }
 
@@ -123,7 +129,6 @@ void oncreate_core(Entity *e) {
 
 void ai_core(Entity *e) {
 	bool do_thrust = false;
-	//int i;
 
 	switch(e->state) {
 		case CORE_SLEEP: break;			// core is asleep
@@ -289,13 +294,14 @@ void ai_core(Entity *e) {
 			//pieces[CFRONT]->clipy2 = e->state_time;
 			//pieces[CBACK]->clipy2 = e->state_time;
 			
-			if (--e->state_time < 0) {
+			if (--e->state_time == 0) {
 				//pieces[CFRONT]->invisible = true;
 				//pieces[CBACK]->invisible = true;
 				
 				// restore status bars
 				//game.stageboss.object = NULL;
 				//game.bossbar.object = NULL;
+				for(u8 i = 0; i < 7; i++) pieces[i]->state = STATE_DELETE;
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -354,19 +360,28 @@ void ai_core(Entity *e) {
 	//SYS_enableInts();
 }
 
+void ondeath_core(Entity *e) {
+	if(e->state == STATE_DEFEATED) {
+		e->state = 500;
+		e->state_time = 0;
+		e->eflags = 0;
+		tsc_call_event(e->event);
+	}
+}
+
 // the front (mouth) piece of the main core
 void ai_core_front(Entity *e) {
 	Entity *core = e->linkedEntity;
-	if (!core) { e->state = STATE_DELETE; return; }
+	if (core == NULL) { e->state = STATE_DELETE; return; }
 	
-	e->x = core->x - 0x4800;
-	e->y = core->y - 0x5e00;
+	e->x = core->x - (36 << CSF);
+	e->y = core->y - (48 << CSF);
 }
 
 // the back (unanimated) piece of the main core
 void ai_core_back(Entity *e) {
 	Entity *core = e->linkedEntity;
-	if (!core) { e->state = STATE_DELETE; return; }
+	if (core == NULL) { e->state = STATE_DELETE; return; }
 	
 	e->x = core->x + (0x5800 - (8 << CSF));
 	e->y = core->y - 0x5e00;

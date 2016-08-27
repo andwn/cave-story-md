@@ -8,8 +8,9 @@
 #include "audio.h"
 #include "vdp_ext.h"
 
-// Official game supports 8000 but only uses 4000
-#define FLAGS_LEN 125
+// Official game supports 8000 but only uses up to 4000 (the INDEX of 4000 is used, so 4001 flags)
+// Max here is 4096
+#define FLAGS_LEN 128
 
 bool debuggingEnabled = false;
 bool pauseCancelsIFrames = true;

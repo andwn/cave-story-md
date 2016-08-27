@@ -235,7 +235,7 @@ void ai_curly_ai(Entity *e) {
 				}
 			}
 		}
-		else curly_impjumptime = 0;
+		else if(e->x_speed != 0) curly_impjumptime = 0;
 		
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<9)) {

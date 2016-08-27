@@ -21,6 +21,7 @@ void ai_misery_float(Entity *e) {
 			SPR_SAFEANIM(e->sprite, 0);
 			e->state_time = 0;
 		}
+		/* no break */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 1)) {
@@ -34,6 +35,7 @@ void ai_misery_float(Entity *e) {
 			e->state_time = 0;
 			e->y_speed = SPEED(1 << CSF);
 		}
+		/* no break */
 		case 11:
 		{
 			if (e->y_next > e->y_mark) e->y_speed -= SPEED(16);
@@ -63,6 +65,7 @@ void ai_misery_float(Entity *e) {
 			e->state_time = 0;
 			e->state = 16;
 		}
+		/* no break */
 		case 16:
 		{
 			if (++e->state_time >= TIME(30)) {
@@ -78,6 +81,7 @@ void ai_misery_float(Entity *e) {
 		{
 			if (++e->state_time >= TIME(50)) e->state = 14;
 		}
+		/* no break */
 		case 20: 	// fly away
 		{
 			e->state = 21;
@@ -85,6 +89,7 @@ void ai_misery_float(Entity *e) {
 			e->y_speed = 0;
 			//e->eflags |= NPC_IGNORESOLID;
 		}
+		/* no break */
 		case 21:
 		{
 			e->y_speed -= SPEED(0x20);
@@ -97,6 +102,7 @@ void ai_misery_float(Entity *e) {
 			e->state_time = 0;
 			SPR_SAFEANIM(e->sprite, 2);
 		}
+		/* no break */
 		case 26:	// she flashes, then a clap of thunder
 		{
 			if (++e->state_time >= TIME(20)) {
