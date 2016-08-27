@@ -109,7 +109,7 @@ void window_clear_text() {
 
 void window_close() {
 	if(!paused) VDP_setWindowPos(0, 0);
-	if(showingBossHealth) VDP_setWindowPos(28, 234);
+	//if(showingBossHealth) VDP_setWindowPos(28, 234);
 	showingItem = 0;
 	SPR_SAFERELEASE(itemWinSpr);
 	SPR_SAFERELEASE(itemSpr);
