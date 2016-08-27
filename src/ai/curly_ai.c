@@ -121,6 +121,13 @@ void ai_curly_ai(Entity *e) {
 	else e->grounded = collide_stage_floor(e);
 	bool blockl = collide_stage_leftwall(e);
 	bool blockr = collide_stage_rightwall(e);
+	// Handle underwater
+	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) ||
+			(water_entity != NULL && e->y > water_entity->y)) {
+		e->underwater = true;
+	} else {
+		e->underwater = false;
+	}
 	// Inactive, just apply basic physics and gtfo
 	if (e->state != CAI_ACTIVE) {
 		e->x = e->x_next;

@@ -43,6 +43,8 @@ u8 walk_time;
 
 u8 mgun_shoottime, mgun_chargetime;
 
+Sprite *airTankSprite = NULL;
+
 void player_update_bounds();
 void player_update_booster();
 void player_update_interaction();
@@ -106,6 +108,7 @@ void player_reset_sprites() {
 		playerBullet[i].ttl = 0; // No bullets
 		playerBullet[i].sprite = NULL;
 	}
+	airTankSprite = NULL;
 	// Clear air and map name
 	mapNameSprite = NULL;
 	mapNameTTL = 0;
@@ -116,11 +119,21 @@ void player_reset_sprites() {
 
 void player_update() {
 	if(playerDead) return;
+	u8 tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
 	if(debuggingEnabled && (joystate&BUTTON_A)) { // Float - no collision
 		entity_update_float(&player);
 		player.x_next = player.x + player.x_speed;
 		player.y_next = player.y + player.y_speed;
 	} else if(playerMoveMode == 0) { // Normal movement
+		// Wind/Water current
+		if(tile & 0x80) {
+			switch(tile & 0x03) {
+			case 0: player.x_speed -= SPEED(0x88); break;
+			case 1: player.y_speed -= SPEED(0x80); break;
+			case 2: player.x_speed += SPEED(0x88); break;
+			case 3: player.y_speed += SPEED(0x50); break;
+			}
+		}
 		entity_update_movement(&player);
 		if(playerBoostState != BOOST_OFF) {
 			player_update_booster();
@@ -201,7 +214,7 @@ void player_update() {
 	player.y = player.y_next;
 	// Damage Tiles / Death check / IFrames
 	if(!playerIFrames) {
-		if(stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) == 0x42) {
+		if(tile == 0x42) {
 			player_inflict_damage(10);
 		}
 		if(player.health == 0) {
@@ -589,6 +602,17 @@ void player_draw() {
 		SPR_SAFEMOVE(weaponSprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+	}
+	// Bubble shield
+	if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
+		if(airTankSprite == NULL) {
+			SPR_SAFEADD(airTankSprite, &SPR_Bubble, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
+		}
+		SPR_SAFEMOVE(airTankSprite,
+				(player.x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 12,
+				(player.y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 12);
+	} else {
+		SPR_SAFERELEASE(airTankSprite);
 	}
 }
 
