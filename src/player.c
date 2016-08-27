@@ -133,6 +133,8 @@ void player_update() {
 			case 2: player.x_speed += SPEED(0x88); break;
 			case 3: player.y_speed += SPEED(0x50); break;
 			}
+			if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
+			if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
 		}
 		entity_update_movement(&player);
 		if(playerBoostState != BOOST_OFF) {

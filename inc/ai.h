@@ -99,7 +99,7 @@ typedef void (*EntityMethod)(Entity*);
 #define ACCEL_X(v) (e->x_speed += e->direction ? (v) : -(v))
 
 #define CURLY_TARGET_HERE(e) ({ \
-	curly_target_time = 300; \
+	curly_target_time = 120; \
 	curly_target_x = e->x; \
 	curly_target_y = e->y; \
 })

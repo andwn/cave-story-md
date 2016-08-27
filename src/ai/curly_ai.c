@@ -8,6 +8,7 @@
 #include "tsc.h"
 #include "effect.h"
 #include "resources.h"
+#include "camera.h"
 
 #define CAI_INIT			20			// ANP'd to this by the entry script in Lab M
 #define CAI_START			21			// ANP'd to this by Almond script
@@ -82,15 +83,14 @@ void ai_curly_ai(Entity *e) {
 			e->direction = player.direction;
 			e->state = CAI_ACTIVE;
 			e->state_time = 0;
+			// If we traded Curly for machine gun she uses the polar star
+			curly_mgun = !player_has_weapon(WEAPON_MACHINEGUN);
 			// spawn her gun
 			Entity *gun = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-					0, 0, OBJ_CAI_GUN, 0, 0);
+					0, 0, OBJ_CAI_GUN + curly_mgun, 0, 0);
 			gun->alwaysActive = true;
 			gun->linkedEntity = e;
 			//gun->PushBehind(o);
-			
-			// If we traded Curly for machine gun she uses the polar star
-			curly_mgun = !player_has_weapon(WEAPON_MACHINEGUN);
 		}
 		break;
 		case CAI_KNOCKEDOUT:
@@ -223,8 +223,7 @@ void ai_curly_ai(Entity *e) {
 		if (e->x_next < e->x_mark) e->x_speed += SPEED(0x20);
 		
 		// jump if we hit a wall
-		if ((e->x_speed > 0 && blockr) || 
-			(e->x_speed < 0 && blockl)) {
+		if (blockr || blockl) {
 			if (++curly_blockedtime > 8) {
 				CaiJUMP(e);
 			}
@@ -242,7 +241,7 @@ void ai_curly_ai(Entity *e) {
 				}
 			}
 		}
-		else if(e->x_speed != 0) curly_impjumptime = 0;
+		else curly_impjumptime = 0;
 		
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<9)) {
@@ -261,7 +260,7 @@ void ai_curly_ai(Entity *e) {
 		// deactivate Improbable Jump once we clear the wall or hit the ground
 		if (e->direction==0 && blockl) curly_impjump = 0;
 		if (e->direction==1 && blockr) curly_impjump = 0;
-		if (e->y_speed > 0 && e->grounded) curly_impjump = 0;
+		if (e->grounded) curly_impjump = 0;
 	}
 	else e->y_speed += SPEED(0x33);
 	
@@ -324,26 +323,94 @@ void ai_curly_ai(Entity *e) {
 	LIMIT_Y(SPEED(0x5ff));
 }
 
-void ai_cai_gun(Entity *e) {
-	Entity *curly = e->linkedEntity;
-	//Entity *shot;
-	//u8 fire;
-	//int x, y;
-	//u8 dir;
+void fire_mgun(s32 x, s32 y, u8 dir) {
+	// Curly shares the bullet array with the player so don't use up the whole thing
+	// Use slots 2-4 and 7-8 backwards
+	// This leaves room in the worst case for 1 missile, 2 polar star, and 2 fireball
+	Bullet *b = NULL;
+	for(u8 i = 8; i > 6; i--) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(b == NULL) {
+		for(u8 i = 4; i > 1; i--) {
+			if(playerBullet[i].ttl > 0) continue;
+			b = &playerBullet[i];
+			break;
+		}
+		if(b == NULL) return;
+	}
+	sound_play(SND_POLAR_STAR_L3, 5);
+	b->type = WEAPON_MACHINEGUN;
+	b->level = 3;
+	// Need to set the position immediately or else the sprite will blink in upper left
+	SPR_SAFEADD(b->sprite, &SPR_MGunB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+			(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
+	b->damage = 6;
+	b->ttl = 90;
+	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->x = x;
+	b->y = y;
+	if(dir == DIR_UP) {
+		SPR_SAFEANIM(b->sprite, 1);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(-4);
+	} else if(dir == DIR_DOWN) {
+		SPR_SAFEANIM(b->sprite, 1);
+		SPR_SAFEVFLIP(b->sprite, 1);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(4);
+	} else {
+		SPR_SAFEHFLIP(b->sprite, dir > 0);
+		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->y_speed = 0;
+	}
+}
+
+void fire_pstar(s32 x, s32 y, u8 dir) {
+	// Use slot 7 and 8, this messes with player's missiles slightly
+	Bullet *b = NULL;
+	for(u8 i = 7; i < 9; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(b == NULL) return;
+	sound_play(SND_POLAR_STAR_L3, 5);
+	b->type = WEAPON_POLARSTAR;
+	b->level = 3;
+	SPR_SAFEADD(b->sprite, &SPR_PolarB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+			(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
+	b->damage = 4;
+	b->ttl = 35;
+	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->x = x;
+	b->y = y;
+	if(dir == DIR_UP) {
+		SPR_SAFEANIM(b->sprite, 1);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(-4);
+	} else if(dir == DIR_DOWN) {
+		SPR_SAFEANIM(b->sprite, 1);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(4);
+	} else {
+		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->y_speed = 0;
+	}
+}
+
 #define SMALLDIST		(32 << CSF)
 #define BIGDIST			(160 << CSF)
 
+void ai_cai_gun(Entity *e) {
+	Entity *curly = e->linkedEntity;
 	if (curly == NULL) { e->state = STATE_DELETE; return; }
 	
-	if(!e->state) {
-		if(curly_mgun) {
-			SPR_SAFEADD(e->sprite, &SPR_MGun, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
-		}
-		e->state = 1;
-	}
 	// Stick to curly
-	e->x = curly->x;
-	e->y = curly->y;
+	e->x = curly->x - (4 << CSF);
+	e->y = curly->y - (4 << CSF);
 	e->direction = curly->direction;
 	if (curly_look) {
 		SPR_SAFEANIM(e->sprite, curly_look == DIR_DOWN ? 2 : 1);
@@ -354,60 +421,54 @@ void ai_cai_gun(Entity *e) {
 	
 	if (curly_target_time) {
 		// fire when we get close to the target
-		if (!curly_look)
-		{	// firing LR-- fire when lined up vertically and close by horizontally
-			//fire = ((abs(e->x - game.curlytarget.x) <= BIGDIST) && (abs(e->y - game.curlytarget.y) <= SMALLDIST));
+		u8 fire;
+		if (!curly_look) {
+			// firing LR-- fire when lined up vertically and close by horizontally
+			fire = ((abs(curly->x - curly_target_x) <= BIGDIST) && (abs(curly->y - curly_target_y) <= SMALLDIST));
+		} else {
+			// firing vertically-- fire when lined up horizontally and close by vertically
+			fire = ((abs(curly->x - curly_target_x) <= SMALLDIST) && (abs(curly->y - curly_target_y) <= BIGDIST));
 		}
-		else
-		{	// firing vertically-- fire when lined up horizontally and close by vertically
-			//fire = ((abs(e->x - game.curlytarget.x) <= SMALLDIST) && (abs(e->y - game.curlytarget.y) <= BIGDIST));
-		}
-		/*
-		if (fire)
-		{
-			// get coordinate of our action point
-			x = (e->ActionPointX() - e->DrawPointX());
-			y = (e->ActionPointY() - e->DrawPointY());
-			dir = curly->curly.look ? curly->curly.look : e->dir;
-			
-			if (curly->curly.gunsprite==SPR_MGUN)
-			{	// she has the Machine Gun
-				if (!e->state_time)
-				{
-					e->state_time2 = random(2, 6);		// no. shots to fire
-					e->state_time = random(40, 50);
-					e->animtimer = 0;
-				}
-				
-				if (e->state_time2)
-				{	// create the MGun blast
-					if (!e->animtimer)
-					{
-						FireLevel23MGun(x, y, 2, dir);
-						
-						e->animtimer = 5;
-						e->state_time2--;
-					}
-					else e->animtimer--;
-				}
+		if (fire) {
+			// Get point where bullet will be created based on direction / looking
+			if(!curly_look) {
+				e->x_mark = curly->x + curly->direction ? 8 << CSF : -8 << CSF;
+				e->y_mark = curly->y + (1 << CSF);
+			} else if(curly_look == DIR_UP) {
+				e->x_mark = curly->x;
+				e->y_mark = curly->y - (8 << CSF);
+			} else if(curly_look == DIR_DOWN) {
+				e->x_mark = curly->x;
+				e->y_mark = curly->y + (8 << CSF);
 			}
-			else
-			{	// she has the Polar Star
-				if (!e->state_time)
-				{
-					e->state_time = random(4, 16);
-					if (random(0, 10)==0) e->state_time += random(20, 30);
-					
+			if (curly_mgun) {	// she has the Machine Gun
+				if (!e->state_time2) {
+					e->state_time2 = 2 + random() % 4;		// no. shots to fire
+					e->state_time = 40 + random() % 10;
+				}
+				if (e->state_time) {
+					e->state_time--;
+				} else {
+					// create the MGun blast
+					// curly_look is forward (0), DIR_UP (1), or DIR_DOWN (3)
+					// curly->direction is either 0 or 1, where 1 means right but DIR_RIGHT is 2
+					// So we do this weird thing to fix it
+					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->direction << 1);
+					e->state_time = 40 + random() % 10;
+					e->state_time2--;
+				}
+			} else {	// she has the Polar Star
+				if (!e->state_time) {
+					e->state_time = 4 + random() % 12;
+					if (random() % 10 == 0) e->state_time += 20 + random() % 10;
 					// create the shot
-					shot = CreateEntity(x, y, OBJ_POLAR_SHOT);
-					SetupBullet(shot, x, y, B_PSTAR_L3, dir);
+					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->direction << 1);
+				} else {
+					e->state_time--;
 				}
 			}
 		}
-		* */
 	}
-	
-	if (e->state_time) e->state_time--;
 }
 
 // curly's air bubble when she goes underwater

@@ -308,7 +308,7 @@ u8 tsc_update() {
 
 void tsc_show_boss_health() {
 	showingBossHealth = true;
-	VDP_setWindowPos(12, 254);
+	VDP_setWindowPos(28, 234);
 	VDP_drawTextWindow("Boss[        ]  ", 24, 26);
 	VDP_drawTextWindow("                ", 24, 27);
 	// Face tiles are unused during boss battles, upload the tiles there

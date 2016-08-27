@@ -8,6 +8,7 @@
 #include "tables.h"
 #include "resources.h"
 #include "gamemode.h"
+#include "tsc.h"
 
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
@@ -108,6 +109,7 @@ void window_clear_text() {
 
 void window_close() {
 	if(!paused) VDP_setWindowPos(0, 0);
+	if(showingBossHealth) VDP_setWindowPos(28, 234);
 	showingItem = 0;
 	SPR_SAFERELEASE(itemWinSpr);
 	SPR_SAFERELEASE(itemSpr);
