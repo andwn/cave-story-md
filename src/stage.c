@@ -38,9 +38,6 @@ void stage_load(u16 id) {
 	effects_clear();
 	entities_clear();
 	SPR_reset();
-	// You think this is a motherfucking game?
-	//SPR_end();
-	//SPR_init(80, 0, 0);
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
@@ -51,16 +48,18 @@ void stage_load(u16 id) {
 	}
 	water_screenlevel = WATER_DISABLE;
 	water_entity = NULL;
+	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
+	// Stage palette and shared NPC palette
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
-		if(stageBackgroundType == 0) { // Static
+		if(stageBackgroundType == 0) { // Tiled image
 			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
 			stage_draw_background();
 		} else if(stageBackgroundType == 1) { // Moon/Sky
@@ -69,8 +68,12 @@ void stage_load(u16 id) {
 			stage_draw_background2();
 		} else if(stageBackgroundType == 2) { // Solid Color
 			VDP_clearPlan(PLAN_B, true);
+		} else if(stageBackgroundType == 3) { // Tiled image, auto scroll
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			stage_draw_background();
 		}
 	}
+	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
@@ -120,61 +123,37 @@ void stage_load_blocks() {
 
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
-	stageEntityCount = PXE[4];
 	// Some small rooms depend on sprite sorting to be back -> front
 	// But on Genesis it works the opposite, so here is a terrible hack that loads
-	// all the entities on those maps in reverse order
-	//if(stageID == 0x01		/* Arthur's House */
-	//	|| stageID == 0x05	/* Egg.00 */
-	//	|| stageID == 0x12	/* Shelter */
-	//	|| stageID == 0x13	/* Assembly Hall */
-	//	|| stageID == 0x18	/* Arthur's House (Scene after Egg Corridor) */
-	//	|| stageID == 0x1D	/* Sand Zone Residence */ ) {
-		for(u8 i = stageEntityCount; i > 0; i--) {
-			u16 x, y, id, event, type, flags;
-			x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
-			y = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
-			id = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
-			event = PXE[14 + (i-1) * 12] + (PXE[15 + (i-1) * 12]<<8);
-			type = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
-			flags = PXE[18 + (i-1) * 12] + (PXE[19 + (i-1) * 12]<<8);
-			if(id==0 && event==0 && type==0 && flags==0) continue;
-			if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
-			if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
-			entity_create(x, y, id, event, type, flags, 0);
-		}
-	/*
-	} else {
-		// And then the normal order for all other maps
-		for(u8 i = 0; i < stageEntityCount; i++) {
-			u16 x, y, id, event, type, flags;
-			x = PXE[8 + i * 12] + (PXE[9 + i * 12]<<8);
-			y = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
-			id = PXE[12 + i * 12] + (PXE[13 + i * 12]<<8);
-			event = PXE[14 + i * 12] + (PXE[15 + i * 12]<<8);
-			type = PXE[16 + i * 12] + (PXE[17 + i * 12]<<8);
-			flags = PXE[18 + i * 12] + (PXE[19 + i * 12]<<8);
-			if(id==0 && event==0 && type==0 && flags==0) continue;
-			if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
-			if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
-			entity_create(x, y, id, event, type, flags, 0);
-		}
+	// all the entities in reverse order
+	// PXE[4] is the number of entities to load. It's word length but never more than 255
+	for(u8 i = PXE[4]; i > 0; i--) {
+		u16 x, y, id, event, type, flags;
+		// Like all of cave story's data files PXEs are little endian
+		x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
+		y = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
+		id = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
+		event = PXE[14 + (i-1) * 12] + (PXE[15 + (i-1) * 12]<<8);
+		type = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
+		flags = PXE[18 + (i-1) * 12] + (PXE[19 + (i-1) * 12]<<8);
+		// There are some unused entities that have all these values as 0, as well as
+		// entities that should only exist when specific flags are on/off
+		// Loading these would be a waste of memory, just skip them
+		if(id==0 && event==0 && type==0 && flags==0) continue;
+		if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
+		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
+		entity_create(x, y, id, event, type, flags, 0);
 	}
-	*/
 }
 
-bool stage_get_block_solid(u16 x, u16 y, bool checkNpcSolid) {
-	u8 block = stage_get_block_type(x, y);
-	if(block&BLOCK_SLOPE) return false;
-	block &= 0xF;
-	return block == 1 || block == 3 || (checkNpcSolid && block == 4);
-}
-
+// Replaces a block with another, used by <CMP and <SMP, and when player shoots breakable blocks
+// Unfortunately because of this the entire map must be loaded into RAM
 void stage_replace_block(u16 bx, u16 by, u8 index) {
 	stageBlocks[stageTable[by] + bx] = index;
 	stage_draw_area(bx, by, 1, 1);
 }
 
+// Stage vblank drawing routine
 void stage_update() {
 	// Column
 	if(morphingColumn != 0) {
@@ -199,7 +178,9 @@ void stage_update() {
 	VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
 	VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	// Background Scrolling
+	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
+		// Normal tiled background scrolls a bit slower than stage
 		backScrollTable[0] = -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W;
 		for(u8 y = 1; y < 32; y++) {
 			backScrollTable[y] = backScrollTable[0];
@@ -207,6 +188,7 @@ void stage_update() {
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
 		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1) {
+		// Moon background has different spots scrolling horizontally at different speeds
 		for(u8 y = 0; y < 32; y++) {
 			if(y < 12) backScrollTable[y] = 0;
 			else if(y < 16) backScrollTable[y] += 1;
@@ -214,14 +196,22 @@ void stage_update() {
 			else backScrollTable[y] += 3;
 		}
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
+	} else if(stageBackgroundType == 3) {
+		// Ironhead boss background auto scrolls leftward
+		backScrollTable[0] -= 2;
+		for(u8 y = 1; y < 32; y++) {
+			backScrollTable[y] = backScrollTable[0];
+		}
+		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
 	}
 }
 
+// This loads a column of 16x16 tile mappings while the camera scrolls left/right
 void stage_draw_column(s16 _x, s16 _y) {
 	u16 attr[4], t, b, pal; u8 p;
 	for(s16 y = _y-8; y < _y+8; y++) {
-		if(y < 0) continue;
-		if(y >= stageHeight) break;
+		if(y < 0) continue; // Skip tiles before top part of map
+		if(y >= stageHeight) break; // Skip tiles after bottom part of map
 		p = (stage_get_block_type(_x, y) & 0x40) > 0;
 		pal = stage_get_block_type(_x, y) == 0x43 ? PAL1 : PAL2;
 		t = block_to_tile(stage_get_block(_x, y));
@@ -234,11 +224,12 @@ void stage_draw_column(s16 _x, s16 _y) {
 	}
 }
 
+// This loads a row of 16x16 tile mappings while the camera scrolls up/down
 void stage_draw_row(s16 _x, s16 _y) {
 	u16 attr[4], t, b, pal; u8 p;
 	for(s16 x = _x-11; x < _x+11; x++) {
-		if(x < 0) continue;
-		if(x >= stageWidth) break;
+		if(x < 0) continue; // Skip tiles before leftmost part of map
+		if(x >= stageWidth) break; // Skip tiles after rightmost part of map
 		p = (stage_get_block_type(x, _y) & 0x40) > 0;
 		pal = stage_get_block_type(x, _y) == 0x43 ? PAL1 : PAL2;
 		t = block_to_tile(stage_get_block(x, _y));
@@ -251,6 +242,8 @@ void stage_draw_row(s16 _x, s16 _y) {
 	}
 }
 
+// This draws an arbitrary rectangular area of 16x16 tiles
+// It's used on stage load to draw the full screen area
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
 	if(_x > stageWidth) _x = 0;
 	if(_y > stageHeight) _y = 0;
@@ -271,6 +264,7 @@ void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
 	}
 }
 
+// Fills PLAN_B with a tiled background
 void stage_draw_background() {
 	u8 w = background_info[stageBackground].width;
 	u8 h = background_info[stageBackground].height;
@@ -283,6 +277,7 @@ void stage_draw_background() {
 	}
 }
 
+// TODO: Replace this routine with a generated tileset/mapping
 void stage_draw_background2() {
 	for(u8 y = 0; y < 28; y++) {
 		for(u16 x = 0; x < 64; x++) {
