@@ -236,15 +236,17 @@ u8 game_main(bool load) {
 	} else { // Going back to title screen
 		// Sometimes after restart stage will not load any tileset, instead
 		// showing the Cave Story title. Unset to prevent that
-		stageID = 0;
-		stageTileset = 0;
-		stageBackground = 0;
+		//stageID = 0;
+		//stageTileset = 0;
+		//stageBackground = 0;
 		// Title screen uses built in font not blue background font
-		SYS_disableInts();
-		VDP_loadFont(&font_lib, 0);
-		SYS_setVIntCallback(NULL);
-		SYS_setHIntCallback(NULL);
-		SYS_enableInts();
+		//SYS_disableInts();
+		//VDP_loadFont(&font_lib, 0);
+		//SYS_setVIntCallback(NULL);
+		//SYS_setHIntCallback(NULL);
+		//SYS_enableInts();
+		// Screw this just doing a hard reset
+		SYS_hardReset();
 	}
 	return ending;
 }

@@ -30,29 +30,37 @@ u8 titlescreen_main() {
 		VDP_drawText("WARNING: Bad Checksum!", 8, 9);
 	}
 	VDP_drawText("New Game", 15, 12);
-	VDP_drawText("Continue", 15, 14);
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("NPC Test", 15, 18);
-	//VDP_drawText("Version. 1.0.0.6", 12, 24);
 	VDP_drawText("Mega Drive Version 0.2 2016.08", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(PLAN_B,
 		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
 		TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USERINDEX + 18 * 4), 11, 23, 18, 2);
+	// Check save data, only enable continue if save data exists
+	u8 cursor = 0;
+	u8 sram_state = system_checkdata();
+	if(sram_state == SRAM_VALID_SAVE) {
+		VDP_drawText("Continue", 15, 14);
+		cursor = 1;
+	}
 	VDP_setEnable(true);
 	SYS_enableInts();
 	song_play(SONG_TITLE);
-	u8 cursor = system_checkdata();
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
 		if(joy_pressed(BUTTON_UP)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
+			// Skip over "continue" if no save data
+			if(sram_state != SRAM_VALID_SAVE && cursor == 1) cursor--;
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
+			// Skip over "continue" if no save data
+			if(sram_state != SRAM_VALID_SAVE && cursor == 1) cursor++;
 			sound_play(SND_MENU_MOVE, 0);
 		}
 		// Draw quote sprite at cursor position

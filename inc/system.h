@@ -3,6 +3,14 @@
 
 #include "common.h"
 
+#define SRAM_UNCHECKED		0x00
+#define SRAM_VALID_EMPTY	0x01
+#define SRAM_VALID_SAVE		0x02
+#define SRAM_INVALID		0xFF
+
+#define FLAG_EVENTONDROWN		4000
+#define FLAG_DISABLESAVE		4095
+
 // Shows extra info on screen, fly through walls
 extern bool debuggingEnabled;
 

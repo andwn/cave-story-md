@@ -216,7 +216,8 @@ void player_update() {
 	player.y = player.y_next;
 	// Damage Tiles / Death check / IFrames
 	if(!playerIFrames) {
-		if(tile == 0x42) {
+		// Underwater spikes (0x62) exist too
+		if((tile & 0x4F) == 0x42) {
 			player_inflict_damage(10);
 		}
 		if(player.health == 0) {
