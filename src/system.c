@@ -32,6 +32,9 @@ u32 skip_flags = 0;
 u32 flags[FLAGS_LEN];
 
 void system_set_flag(u16 flag, bool value) {
+#ifdef KDB_SYS
+	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
+#endif
 	if(value) flags[flag/32] |= 1<<(flag%32);
 	else flags[flag/32] &= ~(1<<(flag%32));
 }
@@ -41,6 +44,9 @@ bool system_get_flag(u16 flag) {
 }
 
 void system_set_skip_flag(u16 flag, bool value) {
+#ifdef KDB_SYS
+	printf("Setting skip flag %hu %s", flag, value ? "ON" : "OFF");
+#endif
 	if(value) skip_flags |= (1<<flag);
 	else skip_flags &= ~(1<<flag);
 }
@@ -59,6 +65,10 @@ void system_update() {
 			time.second = 0;
 			if(time.minute >= 60) {
 				time.hour++;
+				time.minute = 0;
+#ifdef KDB_SYS
+				printf("You have been playing for %hu hour(s)", time.hour);
+#endif
 			}
 		}
 	}
@@ -84,9 +94,12 @@ void system_drawtime(u16 x, u16 y) {
 }
 
 void system_new() {
+#ifdef KDB_SYS
+	puts("Starting a new game");
+#endif
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
-	system_set_flag(FLAG_DISABLESAVE, true);
+	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, true);
 	player_init();
 	stage_load(13);
 }
@@ -173,6 +186,9 @@ void system_load() {
 
 u8 system_checkdata() {
 	// Read a specific spot in SRAM
+#ifdef KDB_SYS
+	puts("Checking SRAM");
+#endif
 	SRAM_enableRO();
 	u32 test = SRAM_readLong(0x5C);
 	SRAM_disable();
@@ -199,6 +215,13 @@ u8 system_checkdata() {
 			sram_state = SRAM_INVALID;
 		}
 	}
+#ifdef KDB_SYS
+	switch(sram_state) {
+	case SRAM_VALID_EMPTY: puts("SRAM valid - no save data"); break;
+	case SRAM_VALID_SAVE: puts("SRAM valid - save exists"); break;
+	case SRAM_INVALID: puts("SRAM read/write test FAILED! Saving disabled"); break;
+	}
+#endif
 	return sram_state;
 }
 

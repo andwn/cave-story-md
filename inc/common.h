@@ -3,6 +3,25 @@
 
 #include <types.h>
 
+#define KDEBUG
+#ifdef KDEBUG
+#include <kdebug.h>
+
+// Enable/disable logger for specific modules
+#define KDB_HELLO	// "Hi" message at start of main()
+#define KDB_SYS		// Save data and flags
+#define KDB_TSC		// Log TSC commands as they are executed
+#define KDB_STAGE	// State loading
+#define KDB_AI		// AI routines
+
+#define puts(x) KDebug_Alert(x)
+#define printf(...) ({ \
+	char str[80]; \
+	sprintf(str, __VA_ARGS__); \
+	KDebug_Alert(str); \
+})
+#endif
+
 //#define PAL
 #ifdef PAL
 #define FPS 50
@@ -36,6 +55,12 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // 16 tiles for the map name display
 #define TILE_NAMEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
 #define TILE_NAMESIZE 16
+// 4 tiles for polar star or machine gun bullet
+#define TILE_WEP1INDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
+#define TILE_WEP1SIZE 4
+// 12 tiles for fireball
+#define TILE_WEP2INDEX (TILE_WEP1INDEX + TILE_WEP1SIZE)
+#define TILE_WEP2SIZE 12
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space

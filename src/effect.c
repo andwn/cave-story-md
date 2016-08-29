@@ -69,7 +69,6 @@ void effects_update() {
 }
 
 void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
-
 	for(u8 i = 0; i < MAX_DAMAGE; i++) {
 		if(effDamage[i].ttl > 0) continue;
 		// Negative numbers are red and show '-' (Damage)
