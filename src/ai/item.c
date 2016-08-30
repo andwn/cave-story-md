@@ -96,6 +96,11 @@ void ai_energy_onUpdate(Entity *e) {
 }
 
 void ai_missile_onUpdate(Entity *e) {
+	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
+	if(!e->state) {
+		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
+		e->state = 1;
+	}
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
@@ -119,16 +124,20 @@ void ai_missile_onUpdate(Entity *e) {
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
 		e->state_time++;
-		if(e->state_time > 10 * 60) {
+		if(e->state_time > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 7 * 60) {
+		} else if(e->state_time > 7 * FPS) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		}
 	}
 }
 
 void ai_heart_onUpdate(Entity *e) {
+	if(!e->state) {
+		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
+		e->state = 1;
+	}
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
@@ -152,10 +161,10 @@ void ai_heart_onUpdate(Entity *e) {
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
 		e->state_time++;
-		if(e->state_time > 10 * 60) {
+		if(e->state_time > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 7 * 60) {
+		} else if(e->state_time > 7 * FPS) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
 		}
 	}

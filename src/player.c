@@ -413,9 +413,9 @@ void player_update_booster() {
 	SPR_SAFEHFLIP(player.sprite, player.direction);
 
 	bool blockl = collide_stage_leftwall(&player),
-			blockr = collide_stage_rightwall(&player),
-			blocku = collide_stage_ceiling(&player),
-			blockd = collide_stage_floor(&player);
+			blockr = collide_stage_rightwall(&player);
+	collide_stage_ceiling(&player);
+	collide_stage_floor(&player);
 
 	switch(playerBoostState) {
 		case BOOST_HOZ:
@@ -516,7 +516,7 @@ void player_update_air_display() {
 				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_AIRINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
 			SPR_SAFEVISIBILITY(airSprite, VISIBLE);
 			SYS_disableInts();
-			VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
+			VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
 			SYS_enableInts();
 		} else { // Just blink the small down arrow thing
 			SYS_disableInts();
@@ -524,7 +524,7 @@ void player_update_air_display() {
 			if((airDisplayTime % 32) == 0) {
 				VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
 			} else if((airDisplayTime % 32) == 15) {
-				VDP_loadTileData(SPR_TILESET(SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
+				VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
 			}
 			SYS_enableInts();
 		}

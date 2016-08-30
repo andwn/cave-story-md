@@ -15,12 +15,12 @@ typedef struct {
 Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE];
 
 void effects_init() {
-	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect) { NULL, 0, 0, 0 };
-	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect) { NULL, 0, 0, 0 };
+	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect){};
+	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect){};
 	// Load each frame of the small smoke sprite
 	u32 tiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(u32))]
 	for(u8 i = 0; i < 7; i++) {
-		memcpy(tiles[i], SPR_TILESET(SPR_Smoke, 0, i)->tiles, 128);
+		memcpy(tiles[i], SPR_TILESET(&SPR_Smoke, 0, i)->tiles, 128);
 	}
 	// Transfer to VRAM
 	VDP_loadTileData(tiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE, true);

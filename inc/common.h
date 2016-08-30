@@ -13,6 +13,7 @@
 #define KDB_TSC		// Log TSC commands as they are executed
 #define KDB_STAGE	// State loading
 #define KDB_AI		// AI routines
+#define KDB_SHEET	// Sprite sheets
 
 #define puts(x) KDebug_Alert(x)
 #define printf(...) ({ \
@@ -55,12 +56,8 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // 16 tiles for the map name display
 #define TILE_NAMEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
 #define TILE_NAMESIZE 16
-// 4 tiles for polar star or machine gun bullet
-#define TILE_WEP1INDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
-#define TILE_WEP1SIZE 4
-// 12 tiles for fireball
-#define TILE_WEP2INDEX (TILE_WEP1INDEX + TILE_WEP1SIZE)
-#define TILE_WEP2SIZE 12
+// Space for manually allocated sprite sheets
+#define TILE_SHEETINDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space
@@ -109,7 +106,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
 // Get tileset from SpriteDefinition
-#define SPR_TILESET(spr, a, f) (spr.animations[a]->frames[f]->tileset)
+#define SPR_TILESET(spr, a, f) ((spr)->animations[a]->frames[f]->tileset)
 
 // "Safe" wrappers for sprite functions will only execute if given a non-null sprite
 #define SPR_SAFEADD(s, def, x, y, attr, z) ({ \

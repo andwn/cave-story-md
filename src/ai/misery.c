@@ -46,15 +46,12 @@ void ai_misery_float(Entity *e) {
 		break;
 		case 13:	// fall from floaty
 			SPR_SAFEANIM(e->sprite, 1);
-			//e->eflags &= ~NPC_IGNORESOLID;
-			//e->nflags &= ~NPC_IGNORESOLID;
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
 			if ((e->grounded = collide_stage_floor(e))) {
 				sound_play(SND_THUD, 5);
 				e->state = 14;
-				//e->eflags |= NPC_IGNORESOLID;
 			}
 		break;
 		case 14: break;			// standing
@@ -87,7 +84,6 @@ void ai_misery_float(Entity *e) {
 			e->state = 21;
 			SPR_SAFEANIM(e->sprite, 0);
 			e->y_speed = 0;
-			//e->eflags |= NPC_IGNORESOLID;
 		}
 		/* no break */
 		case 21:
@@ -136,15 +132,15 @@ void ai_misery_bubble(Entity *e) {
 		case 0:
 		{
 			// Wait a bit
-			if(++e->state_time > TIME(30)) e->state = 1;
+			if(++e->state_time > TIME(25)) e->state = 1;
 		}
 		break;
 		case 1:
 		{
 			// Calculate the speed it will take to reach the target in 1 second
 			// Genesis can't divide 32 bit integers so here is a fun hack have fun deciphering it
-			e->x_speed = (((s32)((u16)(abs(target->x - e->x) >> 5)) / TIME(60))) << 5;
-			e->y_speed = (((s32)((u16)(abs(target->y - e->y) >> 5)) / TIME(60))) << 5;
+			e->x_speed = (((s32)((u16)(abs(target->x - e->x) >> 5)) / TIME(50))) << 5;
+			e->y_speed = (((s32)((u16)(abs(target->y - e->y) >> 5)) / TIME(50))) << 5;
 			if(e->x > target->x) e->x_speed = -e->x_speed;
 			if(e->y > target->y) e->y_speed = -e->y_speed;
 			e->state = 2;

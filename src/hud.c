@@ -49,7 +49,7 @@ void hud_create() {
 	// Create HUD sprite, manual tile/visibility
 	sprHUD = SPR_addSpriteEx(&SPR_Hud2, tile_to_pixel(2), tile_to_pixel(1),
 		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_HUDINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
-	memcpy(tileData[0], SPR_TILESET(SPR_Hud2, 0, 0)->tiles, sizeof(u32) * TSIZE * 32);
+	memcpy(tileData[0], SPR_TILESET(&SPR_Hud2, 0, 0)->tiles, sizeof(u32) * TSIZE * 32);
 	// Prepare DMA -- populate tileData
 	hud_redraw_weapon();
 	hud_prepare_dma();
@@ -88,9 +88,9 @@ void hud_redraw_weapon() {
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	hudAmmo = playerWeapon[currentWeapon].ammo;
 	memcpy(tileData[SPR_TILE(1, 0)], 
-		SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles, sizeof(u32) * TSIZE * 2);
+		SPR_TILESET(&SPR_ArmsImage, 0, hudWeapon)->tiles, sizeof(u32) * TSIZE * 2);
 	memcpy(tileData[SPR_TILE(2, 0)], 
-		&SPR_TILESET(SPR_ArmsImage, 0, hudWeapon)->tiles[TSIZE * 2], sizeof(u32) * TSIZE * 2);
+		&SPR_TILESET(&SPR_ArmsImage, 0, hudWeapon)->tiles[TSIZE * 2], sizeof(u32) * TSIZE * 2);
 	hudRedrawPending = true;
 }
 
@@ -168,7 +168,7 @@ void hud_prepare_dma() {
 		memcpy(tileData[SPR_TILE(6, 1)], &TS_Numbers.tiles[((hudMaxAmmo / 10) % 10)*TSIZE], sizeof(u32) * TSIZE);
 		memcpy(tileData[SPR_TILE(7, 1)], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], sizeof(u32) * TSIZE);
 	} else {
-		TileSet *ts = SPR_TILESET(SPR_Hud2, 0, 0);
+		TileSet *ts = SPR_TILESET(&SPR_Hud2, 0, 0);
 		memcpy(tileData[SPR_TILE(5, 0)], TILE_BLANK, sizeof(u32) * TSIZE);
 		memcpy(tileData[SPR_TILE(5, 1)], TILE_BLANK, sizeof(u32) * TSIZE);
 		memcpy(tileData[SPR_TILE(6, 0)], &ts->tiles[SPR_TILE(6, 0)*TSIZE], sizeof(u32) * TSIZE * 2);

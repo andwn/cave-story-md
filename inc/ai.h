@@ -73,8 +73,10 @@ typedef void (*EntityMethod)(Entity*);
 })
 
 #define FACE_PLAYER(e) ({ \
-	e->direction = e->x > player.x ? 0 : 1; \
-	SPR_SAFEHFLIP(e->sprite, e->direction); \
+	if((e->direction && e->x < player.x) || (!e->direction && e->x > player.x)) { \
+		e->direction ^= 1; \
+		SPR_SAFEHFLIP(e->sprite, e->direction); \
+	} \
 })
 #define TURN_AROUND(e) ({ \
 	e->direction ^= 1; \

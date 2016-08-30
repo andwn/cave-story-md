@@ -856,7 +856,7 @@ void ai_firewhirr_shot(Entity *e) {
 
 void ai_gaudi_egg(Entity *e) {
 	if (!e->state) {
-		if (!e->direction) {	// on floor
+		if (!(e->eflags & NPC_OPTION2)) {	// on floor
 			// align properly with ground
 			e->y -= (4<<9);
 			e->x -= (4<<9);
