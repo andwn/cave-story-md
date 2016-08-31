@@ -10,6 +10,7 @@
 #include "system.h"
 #include "resources.h"
 #include "effect.h"
+#include "sheet.h"
 
 void ai_energy_onCreate(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
@@ -33,6 +34,14 @@ void ai_energy_onUpdate(Entity *e) {
 			sound_play(SND_LEVEL_UP, 5);
 			w->energy -= weapon_info[w->type].experience[w->level-1];
 			w->level++;
+			// Update the sprite sheet for specific weapons when they change level
+			if(w->type == WEAPON_POLARSTAR) {
+				sheets_refresh_polarstar(w->level);
+			} else if(w->type == WEAPON_MACHINEGUN) {
+				sheets_refresh_machinegun(w->level);
+			} else if(w->type == WEAPON_FIREBALL) {
+				sheets_refresh_fireball(w->level);
+			}
 		} else {
 			sound_play(SND_GET_XP, 5);
 			player.damage_time = 30;

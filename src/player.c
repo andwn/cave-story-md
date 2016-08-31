@@ -11,6 +11,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "vdp_ext.h"
+#include "sheet.h"
 
 #ifdef PAL
 #define INVINCIBILITY_FRAMES 100
@@ -685,6 +686,16 @@ bool player_inflict_damage(s16 damage) {
 				w->level -= 1;
 				w->energy += weapon_info[w->type].experience[w->level - 1];
 				w->energy -= damage;
+				// Update the sprite sheet for specific weapons when they change level
+				if(w->type == WEAPON_POLARSTAR) {
+					sheets_refresh_polarstar(w->level);
+				} else if(w->type == WEAPON_MACHINEGUN) {
+					sheets_refresh_machinegun(w->level);
+				} else if(w->type == WEAPON_FIREBALL) {
+					sheets_refresh_fireball(w->level);
+				}
+			} else {
+				w->energy = 0;
 			}
 		} else {
 			w->energy -= damage;
@@ -753,6 +764,14 @@ void player_give_weapon(u8 id, u8 ammo) {
 			w->energy = 0;
 			w->maxammo = ammo;
 			w->ammo = ammo;
+			// Update the sprite sheet for specific weapons
+			if(w->type == WEAPON_POLARSTAR) {
+				sheets_refresh_polarstar(w->level);
+			} else if(w->type == WEAPON_MACHINEGUN) {
+				sheets_refresh_machinegun(w->level);
+			} else if(w->type == WEAPON_FIREBALL) {
+				sheets_refresh_fireball(w->level);
+			}
 			break;
 		}
 	} else {
@@ -798,6 +817,14 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 		w->energy = 0;
 		w->maxammo = ammo;
 		w->ammo = ammo;
+		// Update the sprite sheet for specific weapons
+		if(w->type == WEAPON_POLARSTAR) {
+			sheets_refresh_polarstar(w->level);
+		} else if(w->type == WEAPON_MACHINEGUN) {
+			sheets_refresh_machinegun(w->level);
+		} else if(w->type == WEAPON_FIREBALL) {
+			sheets_refresh_fireball(w->level);
+		}
 	}
 }
 

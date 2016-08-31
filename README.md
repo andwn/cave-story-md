@@ -14,14 +14,12 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 #### Is this beatable?
 Not yet. Check out the [TODO list](doc/TODO.md) for progress.
 
-In the current release, you can get to the first room in Labyrinth but many objects/characters do not move/react to anything in Grasstown and Sand Zone. 
-
-In master you can make it to the third Balrog fight (Labyrinth).
+In the current release, you can make it to the end section of Waterway if you try hard enough.
 
 #### Controls
 - C - Jump, confirm
 - B - Shoot
-- A - Hold to skip text
+- A - Fast forward through scenes
 - Y, Z - Switch weapon
 - Start - Pause / Item Menu
 

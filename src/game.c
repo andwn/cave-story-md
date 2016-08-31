@@ -16,6 +16,7 @@
 #include "window.h"
 #include "audio.h"
 #include "ai.h"
+#include "sheet.h"
 
 // Item menu stuff
 Sprite *itemSprite[MAX_ITEMS];
@@ -137,6 +138,8 @@ void game_reset(bool load) {
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+	// Default sprite sheets
+	sheets_init();
 }
 
 void draw_itemmenu() {

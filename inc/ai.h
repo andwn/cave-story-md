@@ -61,26 +61,26 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Helper Macros */
 
-#define SNAP_TO_GROUND(e); ({ \
-	u16 bx = sub_to_block(e->x); \
-	u16 by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF)); \
-	if(stage_get_block_type(bx, by) != 0x41) { \
-		e->y += 16 << CSF; \
-	} else { \
-		by = sub_to_block(e->y + ((e->hit_box.bottom-1)<<CSF)); \
-		if(stage_get_block_type(bx, by) == 0x41) e->y -= 8 << CSF; \
-	} \
+#define SNAP_TO_GROUND(e); ({                                                                  \
+	u16 bx = sub_to_block(e->x);                                                               \
+	u16 by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF));                                \
+	if(stage_get_block_type(bx, by) != 0x41) {                                                 \
+		e->y += 16 << CSF;                                                                     \
+	} else {                                                                                   \
+		by = sub_to_block(e->y + ((e->hit_box.bottom-1)<<CSF));                                \
+		if(stage_get_block_type(bx, by) == 0x41) e->y -= 8 << CSF;                             \
+	}                                                                                          \
 })
 
-#define FACE_PLAYER(e) ({ \
-	if((e->direction && e->x < player.x) || (!e->direction && e->x > player.x)) { \
-		e->direction ^= 1; \
-		SPR_SAFEHFLIP(e->sprite, e->direction); \
-	} \
+#define FACE_PLAYER(e) ({                                                                      \
+	if((e->direction && e->x < player.x) || (!e->direction && e->x > player.x)) {              \
+		e->direction ^= 1;                                                                     \
+		SPR_SAFEHFLIP(e->sprite, e->direction);                                                \
+	}                                                                                          \
 })
-#define TURN_AROUND(e) ({ \
-	e->direction ^= 1; \
-	SPR_SAFEHFLIP(e->sprite, e->direction); \
+#define TURN_AROUND(e) ({                                                                      \
+	e->direction ^= 1;                                                                         \
+	SPR_SAFEHFLIP(e->sprite, e->direction);                                                    \
 })
 
 #define PLAYER_DIST_X(dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
@@ -88,37 +88,37 @@ typedef void (*EntityMethod)(Entity*);
 #define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - (dist1) && player.x < e->x + (dist2))
 #define PLAYER_DIST_Y2(dist1, dist2) (player.y > e->y - (dist1) && player.y < e->y + (dist2))
 
-#define LIMIT_X(v) ({ \
-	if(e->x_speed > (v)) e->x_speed = (v); \
-	if(e->x_speed < -(v)) e->x_speed = -(v); \
+#define LIMIT_X(v) ({                                                                          \
+	if(e->x_speed > (v)) e->x_speed = (v);                                                     \
+	if(e->x_speed < -(v)) e->x_speed = -(v);                                                   \
 })
-#define LIMIT_Y(v) ({ \
-	if(e->y_speed > (v)) e->y_speed = (v); \
-	if(e->y_speed < -(v)) e->y_speed = -(v); \
+#define LIMIT_Y(v) ({                                                                          \
+	if(e->y_speed > (v)) e->y_speed = (v);                                                     \
+	if(e->y_speed < -(v)) e->y_speed = -(v);                                                   \
 })
 
 #define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
 #define ACCEL_X(v) (e->x_speed += e->direction ? (v) : -(v))
 
-#define CURLY_TARGET_HERE(e) ({ \
-	curly_target_time = 120; \
-	curly_target_x = e->x; \
-	curly_target_y = e->y; \
+#define CURLY_TARGET_HERE(e) ({                                                                \
+	curly_target_time = 120;                                                                   \
+	curly_target_x = e->x;                                                                     \
+	curly_target_y = e->y;                                                                     \
 })
 
-#define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) ({ \
-	Entity *shot = entity_create(sub_to_block(xx), sub_to_block(yy), 0, 0, (type), 0, 0); \
-	shot->x = (xx); \
-	shot->y = (yy); \
-	shot->x_speed = (sintab32[(angle)] >> 1) * ((speed) >> CSF); \
-	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF); \
+#define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) ({                                        \
+	Entity *shot = entity_create(sub_to_block(xx), sub_to_block(yy), 0, 0, (type), 0, 0);      \
+	shot->x = (xx);                                                                            \
+	shot->y = (yy);                                                                            \
+	shot->x_speed = (sintab32[(angle)] >> 1) * ((speed) >> CSF);                               \
+	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF);                \
 })
 
-#define SMOKE_AREA(x, y, w, h, count) ({ \
-	for(u8 i = 0; i < (count); i++) { \
-		effect_create_smoke(0, 	(x) + (random() % (w)), \
-								(y) + (random() % (h))); \
-	} \
+#define SMOKE_AREA(x, y, w, h, count) ({                                                       \
+	for(u8 i = 0; i < (count); i++) {                                                          \
+		effect_create_smoke(0, 	(x) + (random() % (w)),                                        \
+								(y) + (random() % (h)));                                       \
+	}                                                                                          \
 })
 
 /* Shared Variables */

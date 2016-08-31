@@ -24,41 +24,51 @@ This list is updated when things are fixed in master and may not reflect the cur
     - [ ] Animate Pink Rocket
     - [ ] AI for Big Jellyfish
     - [ ] AI for Ravil
-    - [ ] Make Balfrog drop frogs
   - [x] Sand Zone
     - [ ] Animate Puppies
     - [ ] AI for Omega
     - [ ] AI for Skullhead with Legs
     - [ ] AI for Crow Carrying Skullhead
     - [ ] AI for Skeleton
-  - [x] Labyrinth
-    - [ ] Animate Nurse
+  - [x] Labyrinth (0.2)
     - [ ] Purple Critter's projectile
     - [ ] AI for Monster X
     - [ ] AI for Last Balrog Fight
-  - [ ] Post Labyrinth / Core
+  - [x] Post Labyrinth / Core (0.2)
     - [ ] BGM: Labyrinth Fight
-    - [ ] Water mechanic for the Core room
-    - [ ] Bubble shield
-    - [ ] AI for all the enemies
-    - [ ] AI for Curly
+    - [ ] AI for Byuobyuo
     - [ ] AI for Core
   - [ ] Waterway
     - [ ] BGM: Living Waterway
-    - [ ] Wind tiles
     - [ ] AI for Ironhead
-  - [ ] Egg Corridor 2
+  - [ ] Egg Corridor 2 (0.3)
     - [ ] BGM: Scorching Back
     - [ ] AI for Dragon
     - [ ] AI for stalactite
     - [ ] AI for Sisters
-  - [ ] Outer Wall
+  - [ ] Outer Wall (0.3)
     - [ ] BGM: Moonsong
     - [ ] BGM: Hero's End
     - [ ] Clouds background
-  - [ ] Plantation
-  - [ ] Last Cave
-  - [ ] Balcony
+  - [ ] Plantation (0.4)
+    - [ ] Itoh
+    - [ ] Momo
+    - [ ] Droll
+    - [ ] Various Mimiga
+    - [ ] Rocket
+    - [ ] Sideways Press
+    - [ ] That big bat
+    - [ ] Hell Statues
+    - [ ] Ma Pignon
+  - [ ] Last Cave (0.4)
+    - [ ] BGM: Last Cave
+    - [ ] Orange bats and critters
+    - [ ] Generators for bats
+    - [ ] Droll boss
+    - [ ] Proximity Press
+  - [ ] Balcony (0.5)
+    - [ ] BGM: Last Battle
+    - [ ] AI for all the bosses
 - [ ] Completable Pre/Post Game Areas
   - [ ] Intro
   - [ ] Ending
@@ -78,6 +88,6 @@ This list is updated when things are fixed in master and may not reflect the cur
   - [ ] Nemesis
   - [x] Turbocharge
   - [x] Arms Barrier
-  - [ ] Booster 0.8
-  - [ ] Booster 2.0
+  - [x] Booster 0.8
+  - [x] Booster 2.0
   - [ ] Whimsical Star

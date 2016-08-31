@@ -4,6 +4,7 @@
 #include "stage.h"
 #include "resources.h"
 #include "tables.h"
+#include "player.h"
 
 #ifndef KDB_SHEET
 #define puts(x) /**/
@@ -27,10 +28,29 @@ void sheets_init() {
 	for(u8 i = 6; i < 10; i++) sheets[i] = (Sheet) {};
 	// Actually load the tiles - assume the VDP is disabled
 	// TODO: Move these to player_init
-	sheets_refresh_polarstar(1);
-	sheets_refresh_machinegun(1);
-	sheets_refresh_fireball(1);
-	
+	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
+	Weapon *mgun = player_find_weapon(WEAPON_MACHINEGUN);
+	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
+	sheets_refresh_polarstar(pstar != NULL ? pstar->level : 1);
+	sheets_refresh_machinegun(mgun != NULL ? mgun->level : 1);
+	sheets_refresh_fireball(fball != NULL ? fball->level : 1);
+	// Heart
+	VDP_loadTileData(SPR_TILESET(&SPR_Heart,0,0)->tiles, sheets[3].index, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_Heart,0,1)->tiles, sheets[3].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_Heart,1,0)->tiles, sheets[3].index + 8, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_Heart,1,1)->tiles, sheets[3].index + 12, 4, true);
+	// Missile
+	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,0,0)->tiles, sheets[4].index, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,0,1)->tiles, sheets[4].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,1,0)->tiles, sheets[4].index + 8, 4, true);
+	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,1,1)->tiles, sheets[4].index + 12, 4, true);
+	// Small Energy
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,0)->tiles, sheets[5].index, 1, false);
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,1)->tiles, sheets[5].index + 1, 1, false);
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,2)->tiles, sheets[5].index + 2, 1, false);
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,3)->tiles, sheets[5].index + 3, 1, false);
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,4)->tiles, sheets[5].index + 4, 1, false);
+	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,5)->tiles, sheets[5].index + 5, 1, false);
 }
 
 void sheets_refresh_polarstar(u8 level) {
