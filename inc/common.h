@@ -125,6 +125,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define SPR_SAFEANIMFRAME(s, a, f); ({ if(s != NULL) { SPR_setAnimAndFrame(s, a, f); } })
 #define SPR_SAFEVISIBILITY(s, v); ({ if(s != NULL) { SPR_setVisibility(s, v); } })
 #define SPR_SAFETILEINDEX(s, i); ({ if(s != NULL) { SPR_setVRAMTileIndex(s, i); } })
+#define SPR_SAFEPALETTE(s, pal); ({ if(s != NULL) { SPR_setPalette(s, pal); } })
 
 // Booleans
 typedef unsigned char bool;

@@ -121,6 +121,20 @@ typedef void (*EntityMethod)(Entity*);
 	}                                                                                          \
 })
 
+#define SPRITE_FROM_SHEET(spr, sht) ({                                                         \
+	for(u8 i = 0; i < 10; i++) {                                                               \
+		if(sheets[i].id == (sht)) {                                                            \
+			e->spriteAnim = i;                                                                 \
+			break;                                                                             \
+		}                                                                                      \
+	}                                                                                          \
+	e->sprite = SPR_addSpriteEx((spr), 0, 0,                                                   \
+		TILE_ATTR_FULL(PAL0,0,0,e->direction,sheets[e->spriteAnim].index), 0,                  \
+		SPR_FLAG_AUTO_SPRITE_ALLOC);                                                           \
+	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);                                                  \
+	e->spriteFrame = 0;                                                                        \
+})
+
 /* Shared Variables */
 
 Entity *water_entity;
@@ -279,9 +293,7 @@ void ai_igordead_onUpdate(Entity *e);
 
 /* Critters - critter.c */
 
-void ai_critter_onUpdate(Entity *e);
-void ai_critter_onState(Entity *e);
-void ai_critter_onHurt(Entity *e);
+void ai_critter(Entity *e);
 
 /* Doors - door.c */
 
@@ -346,9 +358,7 @@ void ai_gkeeper_onUpdate(Entity *e);
 
 /* Grasstown - weed.c */
 
-//void ai_jelly_onCreate(Entity *e);
 void ai_jelly_onUpdate(Entity *e);
-//void ai_jelly_onHurt(Entity *e);
 
 void ai_kulala_onUpdate(Entity *e);
 

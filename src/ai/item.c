@@ -22,6 +22,20 @@ void ai_energy_onCreate(Entity *e) {
 }
 
 void ai_energy_onUpdate(Entity *e) {
+	if(e->sprite == NULL) {
+		if(e->eflags & NPC_OPTION2) {
+			SPRITE_FROM_SHEET(&SPR_EnergyL, SHEET_ENERGYL);
+		} else {
+			SPRITE_FROM_SHEET(&SPR_EnergyS, SHEET_ENERGY);
+		}
+		SPR_SAFEPALETTE(e->sprite, PAL1);
+		e->state_time2 = 0;
+	} else if(++e->state_time2 > 7) {
+		if(++e->spriteFrame >= 6) e->spriteFrame = 0;
+		u8 f = e->spriteFrame << (e->eflags & NPC_OPTION2 ? 2 : 0);
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + f);
+		e->state_time2 = 0;
+	}
 	if(entity_overlapping(&player, e)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
@@ -55,11 +69,11 @@ void ai_energy_onUpdate(Entity *e) {
 			return;
 		} else if(e->state_time > 7 * FPS) {
 			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 3) > 1 ? AUTO_FAST : HIDDEN);
-		} else if(!entity_on_screen(e)) {
-			SPR_SAFERELEASE(e->sprite);
-		} else if(e->sprite == NULL) {
-			entity_sprite_create(e);
-		}
+		} //else if(!entity_on_screen(e)) {
+		//	SPR_SAFERELEASE(e->sprite);
+		//} else if(e->sprite == NULL) {
+		//	entity_sprite_create(e);
+		//}
 		e->y_speed += 0x10;
 		if(e->y_speed > 0x400) e->y_speed = 0x400;
 		// Check below / above first
@@ -105,18 +119,26 @@ void ai_energy_onUpdate(Entity *e) {
 }
 
 void ai_missile_onUpdate(Entity *e) {
-	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
-	if(!e->state) {
-		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
-		e->state = 1;
-	}
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
 		SPR_SAFERELEASE(e->sprite);
 		return;
-	} else if(e->sprite == NULL) {
-		entity_sprite_create(e);
+	}
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_MisslP, SHEET_MISSILE);
+		SPR_SAFEPALETTE(e->sprite, PAL1);
+		e->state_time2 = 0;
+	} else if(++e->state_time2 > 5) {
+		e->spriteFrame ^= 1;
+		u8 f = e->spriteFrame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + f);
+		e->state_time2 = 0;
+	}
+	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
+	if(!e->state) {
+		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
+		e->state = 1;
 	}
 	// Increases missile ammo, plays sound and deletes itself
 	if(entity_overlapping(&player, e)) {
@@ -143,17 +165,26 @@ void ai_missile_onUpdate(Entity *e) {
 }
 
 void ai_heart_onUpdate(Entity *e) {
-	if(!e->state) {
-		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
-		e->state = 1;
-	}
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
 		SPR_SAFERELEASE(e->sprite);
 		return;
-	} else if(e->sprite == NULL) {
-		entity_sprite_create(e);
+	}
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_Heart, SHEET_HEART);
+		SPR_SAFEPALETTE(e->sprite, PAL1);
+		e->state_time2 = 0;
+	} else if(++e->state_time2 > 5) {
+		e->spriteFrame ^= 1;
+		u8 f = e->spriteFrame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + f);
+		e->state_time2 = 0;
+	}
+	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
+	if(!e->state) {
+		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
+		e->state = 1;
 	}
 	// Increases health, plays sound and deletes itself
 	if(entity_overlapping(&player, e)) {

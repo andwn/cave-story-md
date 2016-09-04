@@ -6,6 +6,8 @@
 #include "stage.h"
 #include "tables.h"
 #include "tsc.h"
+#include "resources.h"
+#include "sheet.h"
 
 #ifdef PAL
 #define BAT_FALL_ACCEL		0x20
@@ -36,6 +38,14 @@ void ai_batVertical_onCreate(Entity *e) {
 
 // Just up and down gotta go up and down
 void ai_batVertical_onUpdate(Entity *e) {
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
+		e->state_time2 = 0;
+	} else if(++e->state_time2 > 4) {
+		if(++e->spriteFrame >= 3) e->spriteFrame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		e->state_time2 = 0;
+	}
 	if(e->state == 0) {
 		e->y_speed -= 8;
 		if(e->y_speed <= pixel_to_sub(-1)) e->state = 1;
@@ -48,15 +58,21 @@ void ai_batVertical_onUpdate(Entity *e) {
 }
 
 void ai_batHang_onCreate(Entity *e) {
-	e->spriteAnim = 1; // Hanging anim
+	//e->spriteAnim = 1; // Hanging anim
 }
 
 void ai_batHang_onUpdate(Entity *e) {
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
+		if(!e->state) e->spriteFrame = 3;
+		e->state_time2 = 0;
+	}
 	if(e->state == 0) { // Hanging and waiting
 		if(random() % BAT_WAIT_TIME == 0) {
 			e->state = 1;
 			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->spriteFrame = 4;
+			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
 		}
 		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
 			player.y > e->y - 0x1000 && player.y < e->y + 0x9000) {
@@ -67,31 +83,39 @@ void ai_batHang_onUpdate(Entity *e) {
 		if(++e->state_time > BAT_BLINK_TIME) {
 			e->state = 0;
 			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->spriteFrame = 3;
+			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
 		}
 	} else if(e->state == 2) { // At attention
 		if(e->damage_time > 0 || (player.x > e->x - 0x2800 && player.x < e->x + 0x2800)) {
 			e->state = 3;
 			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 3);
+			e->spriteFrame = 5;
+			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
 		}
 	} else if(e->state == 3) { // Falling
 		e->y_speed += BAT_FALL_ACCEL;
 		if(e->y_speed > BAT_FALL_SPEED) e->y_speed = BAT_FALL_SPEED;
 		
 		e->state_time++;
+		e->x_next = e->x; // x_next needs to be set for collision to work properly
 		e->y_next = e->y + e->y_speed;
 		bool collided = collide_stage_floor(e);
 		if(collided || (e->state_time > BAT_FALL_TIME && player.y - 0x2000 < e->y)) {
 			e->state = 4;
 			e->state_time = 0;
 			e->y_mark = e->y;
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 			if(collided) e->y_speed = -BAT_BOUNCE_SPEED;
 		} else {
 			e->y = e->y_next;
 		}
 	} else { // Flying
+		if(++e->state_time2 > 4) {
+			if(++e->spriteFrame >= 3) e->spriteFrame = 0;
+			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+			e->state_time2 = 0;
+		}
 		if((e->direction && player.x < e->x) || (!e->direction && player.x > e->x)) {
 			FACE_PLAYER(e);
 		}
@@ -122,6 +146,14 @@ void ai_batHang_onUpdate(Entity *e) {
 }
 
 void ai_batCircle_onUpdate(Entity *e) {
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
+		e->state_time2 = 0;
+	} else if(e->state == 1 && ++e->state_time2 > 4) {
+		if(++e->spriteFrame >= 3) e->spriteFrame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		e->state_time2 = 0;
+	}
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -160,7 +192,10 @@ void ai_batCircle_onUpdate(Entity *e) {
 					e->x_speed /= 2;
 					e->y_speed = 0;
 					e->state = 2;
-					SPR_SAFEANIM(e->sprite, 2);		// mouth showing teeth
+					//SPR_SAFEANIM(e->sprite, 2);		// mouth showing teeth
+					e->spriteFrame = 5;
+					SPR_SAFETILEINDEX(e->sprite, 
+							sheets[e->spriteAnim].index + e->spriteFrame * 4);
 				}
 			} else {
 				e->state_time--;
@@ -175,7 +210,7 @@ void ai_batCircle_onUpdate(Entity *e) {
 				e->x_speed *= 2;
 				e->state_time = TIME(120);		// delay before can dive again
 				e->state = 1;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 			}
 		break;
 	}

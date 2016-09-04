@@ -12,6 +12,7 @@
 #include "hud.h"
 #include "vdp_ext.h"
 #include "ai.h"
+#include "sheet.h"
 
 s16 backScrollTable[32];
 u8 *stageBlocks = NULL;
@@ -53,6 +54,8 @@ void stage_load(u16 id) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
+	// Load sprite sheets
+	sheets_load_stage(id);
 	// Stage palette and shared NPC palette
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);

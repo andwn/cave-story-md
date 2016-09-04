@@ -9,8 +9,18 @@
 #include "effect.h"
 #include "camera.h"
 #include "system.h"
+#include "sheet.h"
+#include "resources.h"
 
 void ai_jelly_onUpdate(Entity *e) {
+	if(e->sprite == NULL) {
+		SPRITE_FROM_SHEET(&SPR_Jelly, SHEET_JELLY);
+		e->state_time2 = 0;
+	} else if(++e->state_time2 > 10) {
+		if(++e->spriteFrame > 5) e->spriteFrame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		e->state_time2 = 0;
+	}
 	switch(e->state) {
 		case 0:
 		{
