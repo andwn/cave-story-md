@@ -73,7 +73,7 @@ typedef void (*EntityMethod)(Entity*);
 })
 
 #define FACE_PLAYER(e) ({                                                                      \
-	if((e->direction && e->x < player.x) || (!e->direction && e->x > player.x)) {              \
+	if((e->direction && e->x > player.x) || (!e->direction && e->x < player.x)) {              \
 		e->direction ^= 1;                                                                     \
 		SPR_SAFEHFLIP(e->sprite, e->direction);                                                \
 	}                                                                                          \

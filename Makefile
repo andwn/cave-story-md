@@ -1,52 +1,28 @@
-GENDEV?=/opt/toolchains/gen/
-MAKE?=make
+GENDEV?=/opt/toolchains/gen
+GENGCC_BIN=$(GENDEV)/m68k-elf/bin/m68k-elf-
+GENBIN=$(GENDEV)/bin/
 
-GENGCC_BIN=$(GENDEV)/m68k-elf/bin
-GENBIN=$(GENDEV)/bin
+CC = $(GENGCC_BIN)gcc
+AS = $(GENGCC_BIN)as
+LD = $(GENGCC_BIN)ld
+OBJC = $(GENGCC_BIN)objcopy
+RESCOMP= $(GENBIN)rescomp
 
-CC = $(GENGCC_BIN)/m68k-elf-gcc 
-AS = $(GENGCC_BIN)/m68k-elf-as
-AR = $(GENGCC_BIN)/m68k-elf-ar 
-LD = $(GENGCC_BIN)/m68k-elf-ld
-RANLIB = $(GENGCC_BIN)/m68k-elf-ranlib 
-OBJC = $(GENGCC_BIN)/m68k-elf-objcopy 
-BINTOS = $(GENBIN)/bintos 
-RESCOMP= $(GENBIN)/rescomp
-XGMTOOL= $(GENBIN)/xgmtool
-PCMTORAW = $(GENBIN)/pcmtoraw
-WAVTORAW = $(GENBIN)/wavtoraw
-SIZEBND = $(GENBIN)/sizebnd
-ASMZ80 = $(GENBIN)/zasm
-
-RM = rm -f 
-NM = nm
-NM2WCH = nm2wch
-
-OPTION =
-INCS = -I. -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -O2 -std=c99 -c -fomit-frame-pointer -fno-builtin
-HWCCFLAGS = $(OPTION) -m68000 -Wall -O1 -c -fomit-frame-pointer
-Z80FLAGS = -vb2
+INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
+CCFLAGS = $(OPTION) -m68000 -Wall -O2 -std=c99 -c -fomit-frame-pointer -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
-LIBS =  -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/lib/gcc/m68k-elf/* -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
-LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib 
-SCDLINKFLAGS = -T scd/mdcd.ld -nostdlib 
+LIBS = -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
+LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/libmd.a $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
 
-BOOTSS=$(wildcard boot/*.s)
-BOOTSS+=$(wildcard src/boot/*.s)
+BOOTSS=$(wildcard src/boot/*.s)
 BOOT_RESOURCES=$(BOOTSS:.s=.o)
 
 RESS=$(wildcard res/*.res)
-RESS+=$(wildcard *.res)
-
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-
 SS=$(wildcard src/*.s)
-SS+=$(wildcard *.s)
-
 RESOURCES=$(RESS:.res=.o)
 RESOURCES+=$(CS:.c=.o)
 RESOURCES+=$(SS:.s=.o)
@@ -79,10 +55,8 @@ src/boot/sega.o: out/rom_head.bin
 out/rom_head.bin: src/boot/rom_head.o
 	mkdir -p out/boot
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
-	
 
 clean:
-	$(RM) $(RESOURCES)
-	$(RM) *.o *.bin *.elf *.map
-	$(RM) src/boot/*.o src/boot/*.bin
-
+	rm -f $(RESOURCES)
+	rm -f *.o *.bin *.elf *.map
+	rm -f src/boot/*.o src/boot/*.bin

@@ -11,6 +11,11 @@
 #include "system.h"
 #include "resources.h"
 
+#ifndef KDB_AI
+#define puts(x) /**/
+#define printf(...) /**/
+#endif
+
 void ai_jenka(Entity *e) {
 	switch(e->state) {
 		case 0: 
@@ -335,7 +340,12 @@ void ai_sue(Entity *e) {
 			e->y_speed = 0;
 			e->state = 14;
 			// find Igor
-			e->linkedEntity = entity_find_by_id(1234);
+			e->linkedEntity = entity_find_by_event(501);
+			if(e->linkedEntity) {
+				puts("Found Igor");
+			} else {
+				puts("Couldn't find Igor");
+			}
 			e->alwaysActive = true;
 		}
 		/* no break */

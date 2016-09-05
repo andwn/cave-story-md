@@ -199,12 +199,6 @@ void ai_igorscene_onState(Entity *e) {
 		case 2:
 		case 3:
 		{
-			// Push Igor sprite behind Sue
-			// This is the proper way to sort sprites in SGDK, I think
-			//SPR_SAFERELEASE(e->sprite);
-			//entity_sprite_create(e);
-			// Also set the ID for grabbing
-			e->id = 1234;
 			MOVE_X(SPEED(0x200));
 			SPR_SAFEANIM(e->sprite, 1);
 		}

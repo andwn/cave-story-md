@@ -12,12 +12,12 @@
 #include "sheet.h"
 #include "resources.h"
 
-void ai_jelly_onUpdate(Entity *e) {
-	if(e->sprite == NULL) {
+void ai_jelly_onUpdate(Entity *restrict e) {
+	if(!e->sprite) {
 		SPRITE_FROM_SHEET(&SPR_Jelly, SHEET_JELLY);
 		e->state_time2 = 0;
 	} else if(++e->state_time2 > 10) {
-		if(++e->spriteFrame > 5) e->spriteFrame = 0;
+		if(++e->spriteFrame >= 5) e->spriteFrame = 0;
 		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
 		e->state_time2 = 0;
 	}
@@ -85,7 +85,7 @@ void ai_jelly_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_kulala_onUpdate(Entity *e) {
+void ai_kulala_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
 		{
@@ -193,7 +193,7 @@ void ai_kulala_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_mannan_onUpdate(Entity *e) {
+void ai_mannan_onUpdate(Entity *restrict e) {
 	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
@@ -221,7 +221,7 @@ void ai_mannan_onUpdate(Entity *e) {
 	}
 }
 
-void ai_mannanShot_onUpdate(Entity *e) {
+void ai_mannanShot_onUpdate(Entity *restrict e) {
 	ACCEL_X(SPEED(0x20));
 	if((e->state_time % 8) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
@@ -230,7 +230,7 @@ void ai_mannanShot_onUpdate(Entity *e) {
 	e->x += e->x_speed;
 }
 
-void ai_malco_onUpdate(Entity *e) {
+void ai_malco_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 10:
 		if(++e->state_time < 100) {
@@ -260,7 +260,7 @@ void ai_malco_onUpdate(Entity *e) {
 	}
 }
 
-void ai_malco_onState(Entity *e) {
+void ai_malco_onState(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 		SPR_SAFEANIM(e->sprite, 0);
@@ -287,11 +287,11 @@ void ai_malco_onState(Entity *e) {
 	}
 }
 
-void ai_malcoBroken_onCreate(Entity *e) {
+void ai_malcoBroken_onCreate(Entity *restrict e) {
 	e->spriteAnim = 6;
 }
 
-void ai_malcoBroken_onState(Entity *e) {
+void ai_malcoBroken_onState(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 		SPR_SAFEANIM(e->sprite, 0);
@@ -305,11 +305,11 @@ void ai_malcoBroken_onState(Entity *e) {
 	}
 }
 
-void ai_powerc_onCreate(Entity *e) {
+void ai_powerc_onCreate(Entity *restrict e) {
 	e->y -= 8 << CSF;
 }
 
-void ai_press_onUpdate(Entity *e) {
+void ai_press_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 			e->x_next = e->x;
@@ -350,7 +350,7 @@ void ai_press_onUpdate(Entity *e) {
 	}
 }
 
-void ai_frog_onUpdate(Entity *e) {
+void ai_frog_onUpdate(Entity *restrict e) {
 	if(!e->grounded) e->y_speed += SPEED(0x80);
 	LIMIT_Y(SPEED(0x5FF));
 
@@ -443,7 +443,7 @@ void ai_frog_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_hey_onUpdate(Entity *e) {
+void ai_hey_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -472,7 +472,7 @@ void ai_hey_onUpdate(Entity *e) {
 	}
 }
 
-void ai_motorbike_onUpdate(Entity *e) {
+void ai_motorbike_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 0:		// parked
 		break;

@@ -4,11 +4,13 @@
  * Module to organize sprite sheets for manual tile allocation
  * 
  * SGDK will often duplicate tiles uploads for sprites especially after they are deleted
- * and there are a lot of the same sprite existing at the same time. This is the cause for
- * every laggy area in the game so far. I work around this by manually picking out specific
- * sprites and adding them here. The objects which use this are responsible for knowing
- * their sprite sheet's frame width, height, number and animation
+ * and there are a lot of the same sprite existing at the same time. 
+ * I work around this by manually picking out specific sprites and adding them here. 
+ * The objects which use this are responsible for knowing their sprite sheet's 
+ * frame width, height, number and animation
  */
+
+#define MAX_SHEETS	10
  
 enum { 
 	SHEET_NONE, SHEET_PSTAR, SHEET_MGUN, SHEET_FBALL, SHEET_HEART, SHEET_MISSILE, 
@@ -23,7 +25,7 @@ typedef struct {
 	u16 index; // VDP tile index
 } Sheet;
 
-Sheet sheets[10];
+Sheet sheets[MAX_SHEETS];
 
 void sheets_init();
 

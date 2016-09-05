@@ -1,15 +1,24 @@
 #include "sheet.h"
 
 #include <genesis.h>
-#include "stage.h"
-#include "resources.h"
-#include "tables.h"
 #include "player.h"
+#include "resources.h"
+#include "stage.h"
+#include "tables.h"
 
 #ifndef KDB_SHEET
 #define puts(x) /**/
 #define printf(...) /**/
 #endif
+
+// Reduces the copy paste mess of VDP_loadTileData calls
+// The end params are anim,frame value couples from the sprite definition
+#define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) ({                                    \
+	const u8 fa[frames*2] = { __VA_ARGS__ };                                                   \
+	for(u8 i = 0; i < frames; i++) {                                                           \
+		VDP_loadTileData(SPR_TILESET(sdef,fa[i*2],fa[i*2+1])->tiles,index+i*fsize,fsize,dma);  \
+	}                                                                                          \
+})
 
 void sheets_init() {
 	// Polar star
@@ -31,35 +40,19 @@ void sheets_init() {
 	// Actually load the tiles - assume the VDP is disabled
 	// TODO: Move these to player_init
 	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
-	Weapon *mgun = player_find_weapon(WEAPON_MACHINEGUN);
+	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
 	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
-	sheets_refresh_polarstar(pstar != NULL ? pstar->level : 1);
-	sheets_refresh_machinegun(mgun != NULL ? mgun->level : 1);
-	sheets_refresh_fireball(fball != NULL ? fball->level : 1);
+	sheets_refresh_polarstar(pstar ? pstar->level : 1);
+	sheets_refresh_machinegun(mgun ? mgun->level : 1);
+	sheets_refresh_fireball(fball ? fball->level : 1);
 	// Heart
-	VDP_loadTileData(SPR_TILESET(&SPR_Heart,0,0)->tiles, sheets[3].index, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_Heart,0,1)->tiles, sheets[3].index + 4, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_Heart,1,0)->tiles, sheets[3].index + 8, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_Heart,1,1)->tiles, sheets[3].index + 12, 4, true);
+	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, true, 0,0, 0,1, 1,0, 1,1);
 	// Missile
-	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,0,0)->tiles, sheets[4].index, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,0,1)->tiles, sheets[4].index + 4, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,1,0)->tiles, sheets[4].index + 8, 4, true);
-	VDP_loadTileData(SPR_TILESET(&SPR_MisslP,1,1)->tiles, sheets[4].index + 12, 4, true);
+	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, true, 0,0, 0,1, 1,0, 1,1);
 	// Small Energy
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,0)->tiles, sheets[5].index, 1, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,1)->tiles, sheets[5].index + 1, 1, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,2)->tiles, sheets[5].index + 2, 1, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,3)->tiles, sheets[5].index + 3, 1, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,4)->tiles, sheets[5].index + 4, 1, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyS,0,5)->tiles, sheets[5].index + 5, 1, false);
+	SHEET_LOAD(&SPR_EnergyS,6,1, sheets[5].index, false,0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 	// Large Energy
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,0)->tiles, sheets[6].index, 4, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,1)->tiles, sheets[6].index + 4, 4, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,2)->tiles, sheets[6].index + 8, 4, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,3)->tiles, sheets[6].index + 12, 4, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,4)->tiles, sheets[6].index + 16, 4, false);
-	VDP_loadTileData(SPR_TILESET(&SPR_EnergyL,0,5)->tiles, sheets[6].index + 20, 4, false);
+	SHEET_LOAD(&SPR_EnergyL,6,4, sheets[6].index, true, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 }
 
 void sheets_refresh_polarstar(u8 level) {
@@ -107,60 +100,44 @@ void sheets_load_stage(u16 sid) {
 		case 0x0C: // First Cave
 		// Bat
 		sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,0)->tiles,sheets[7].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,1)->tiles,sheets[7].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,2)->tiles,sheets[7].index+8, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,1,0)->tiles,sheets[7].index+12,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,2,0)->tiles,sheets[7].index+16,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,3,0)->tiles,sheets[7].index+20,4,true);
+		SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 		// Cave Critter
 		sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHB,0,0)->tiles,sheets[8].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHB,1,0)->tiles,sheets[8].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHB,2,0)->tiles,sheets[8].index+8, 4,true);
+		SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, true, 0,0, 1,0, 2,0);
 		// Nothing
 		sheets[9] = (Sheet) {};
 		break;
 		case 0x10: // Graveyard
 		// Pignon
 		sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Pignon,0,0)->tiles,sheets[7].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Pignon,1,0)->tiles,sheets[7].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Pignon,1,2)->tiles,sheets[7].index+8, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Pignon,2,0)->tiles,sheets[7].index+12,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Pignon,3,0)->tiles,sheets[7].index+16,4,true);
+		SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, true, 0,0, 1,0, 1,2, 2,0, 3,0);
 		// Nothing
 		sheets[8] = (Sheet) {};
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x02: // Egg Corridor
+		// Green Critter (no hover)
+		sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size };
+		SHEET_LOAD(&SPR_CritHG, 3,4, sheets[7].index, true, 0,0, 1,0, 2,0);
+		// Beetle
+		sheets[8] = (Sheet) {};
+		// Behemoth
 		sheets[9] = (Sheet) {};
 		break;
 		case 0x06: // Grasstown
 		case 0x30: // Waterway
 		// Jelly
 		sheets[7] = (Sheet){ SHEET_JELLY, 5*4, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Jelly,0,0)->tiles,sheets[7].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Jelly,0,1)->tiles,sheets[7].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Jelly,0,2)->tiles,sheets[7].index+8, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Jelly,0,3)->tiles,sheets[7].index+12,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Jelly,0,4)->tiles,sheets[7].index+16,4,true);
+		SHEET_LOAD(&SPR_Jelly, 5,4, sheets[7].index, true, 0,0, 0,1, 0,2, 0,3, 0,4);
 		// Bat
 		sheets[8] = (Sheet){ SHEET_BAT, 6*4, sheets[7].index + sheets[7].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,0)->tiles,sheets[8].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,1)->tiles,sheets[8].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,0,2)->tiles,sheets[8].index+8, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,1,0)->tiles,sheets[8].index+12,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,2,0)->tiles,sheets[8].index+16,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Bat,3,0)->tiles,sheets[8].index+20,4,true);
+		SHEET_LOAD(&SPR_Bat, 6,4, sheets[8].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 		// Green Critter
 		sheets[9] = (Sheet){ SHEET_CRITTER, 6*4, sheets[8].index + sheets[8].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,0,0)->tiles,sheets[9].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,1,0)->tiles,sheets[9].index+4, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,2,0)->tiles,sheets[9].index+8, 4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,3,0)->tiles,sheets[9].index+12,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,3,1)->tiles,sheets[9].index+16,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_CritHG,3,2)->tiles,sheets[9].index+20,4,true);
+		SHEET_LOAD(&SPR_CritHB, 6,4, sheets[9].index, true, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 		break;
 		case 0x1C: // Gum
-		// Balfrog jumping
+		// Balfrog jumping frame
 		sheets[7] = (Sheet){ SHEET_BALFROG, 9*11, sheets[6].index + sheets[6].size };
 		VDP_loadTileData(SPR_TILESET(&SPR_Balfrog2,0,0)->tiles,sheets[7].index,9*11,true);
 		// Nothing
@@ -171,11 +148,99 @@ void sheets_load_stage(u16 sid) {
 		case 0x25:
 		// Crow
 		sheets[7] = (Sheet){ SHEET_CROW, 3*16, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Crow,0,0)->tiles,sheets[7].index,   4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Crow,0,1)->tiles,sheets[7].index+16,4,true);
-		VDP_loadTileData(SPR_TILESET(&SPR_Crow,2,0)->tiles,sheets[7].index+32,4,true);
+		SHEET_LOAD(&SPR_Crow, 3,16, sheets[7].index, true, 0,0, 0,1, 2,0);
+		// Skullhead
+		sheets[8] = (Sheet) {};
+		// Omega Projectile
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x09: // Labyrinth I
+		case 0x26: // Labyrinth H
+		case 0x27: // Labyrinth W
+		// Purple Critter
+		sheets[7] = (Sheet){ SHEET_CRITTER, 6*4, sheets[6].index + sheets[6].size };
+		SHEET_LOAD(&SPR_CritterP, 6,4, sheets[7].index, true, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
+		// Gaudi (Walking / Flying, but not death frames)
+		sheets[8] = (Sheet) {};
+		// Monster X Wheels
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x29: // Clinic Ruins
+		// Pooh Black's Bubbles
+		sheets[7] = (Sheet) {};
 		// Nothing
 		sheets[8] = (Sheet) {};
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x2D: // Labyrinth M
+		// Purple Critter
+		sheets[7] = (Sheet){ SHEET_CRITTER, 6*4, sheets[6].index + sheets[6].size };
+		SHEET_LOAD(&SPR_CritterP, 6,4, sheets[7].index, true, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
+		// Armored Gaudi (no death frames)
+		sheets[8] = (Sheet) {};
+		// Fuzz
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x2F: // Core
+		// Minicore
+		sheets[7] = (Sheet) {};
+		// Nothing
+		sheets[8] = (Sheet) {};
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x31: // Egg Corridor?
+		// Critter
+		sheets[7] = (Sheet) {};
+		// Nothing
+		sheets[8] = (Sheet) {};
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x35: // Outer Wall
+		// Projectile
+		sheets[7] = (Sheet) {};
+		// Nothing
+		sheets[8] = (Sheet) {};
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x38: // Plantation
+		// Bat
+		sheets[7] = (Sheet) {};
+		// Sideways Press
+		sheets[8] = (Sheet) {};
+		// Nothing
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x3F: // Last Cave
+		case 0x43:
+		// Orange Bat
+		sheets[7] = (Sheet) {};
+		// Orange Critter
+		sheets[8] = (Sheet) {};
+		// Proximity Press?
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x40: // Throne Room
+		// Bat
+		sheets[7] = (Sheet) {};
+		// Black Orb
+		sheets[8] = (Sheet) {};
+		// Lightning
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x41: // King's Table
+		// Red Bat
+		sheets[7] = (Sheet) {};
+		// Projectile
+		sheets[8] = (Sheet) {};
+		// Cage
+		sheets[9] = (Sheet) {};
+		break;
+		case 0x44: // Black Space
+		// Orange Bat
+		sheets[7] = (Sheet) {};
+		// Orange Critter
+		sheets[8] = (Sheet) {};
+		// Projectile
 		sheets[9] = (Sheet) {};
 		break;
 		default:

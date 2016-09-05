@@ -26,7 +26,7 @@ enum {
 	}                                                                                          \
 })
 
-void ai_critter(Entity *e) {
+void ai_critter(Entity *restrict e) {
 	if(e->sprite == NULL) {
 		if(e->type == OBJ_CRITTER_HOPPING_BLUE) {
 			SPRITE_FROM_SHEET(&SPR_CritHB, SHEET_CRITTER);
@@ -124,6 +124,8 @@ void ai_critter(Entity *e) {
 		}
 		break;
 	}
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	else if(e->x_speed < 0) collide_stage_leftwall(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 	if(!e->grounded) {

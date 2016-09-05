@@ -65,7 +65,7 @@ void ai_misery_float(Entity *e) {
 		/* no break */
 		case 16:
 		{
-			if (++e->state_time >= TIME(30)) {
+			if (++e->state_time >= TIME(20)) {
 				sound_play(SND_BUBBLE, 5);
 				entity_create(sub_to_block(e->x), sub_to_block(e->y - (16 << CSF)), 
 						0, 0, OBJ_MISERYS_BUBBLE, 0, 0);
@@ -132,7 +132,7 @@ void ai_misery_bubble(Entity *e) {
 		case 0:
 		{
 			// Wait a bit
-			if(++e->state_time > TIME(25)) e->state = 1;
+			if(++e->state_time > TIME(20)) e->state = 1;
 		}
 		break;
 		case 1:
@@ -152,7 +152,7 @@ void ai_misery_bubble(Entity *e) {
 			e->x += e->x_speed;
 			e->y += e->y_speed;
 			// Did we reach the target?
-			if(++e->state_time == TIME(75)) {
+			if(++e->state_time == TIME(50)) {
 				sound_play(SND_BUBBLE, 5);
 				e->state = 3;
 				e->x = target->x;

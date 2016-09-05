@@ -32,12 +32,12 @@
 #endif
 
 // The range is a bit too high so here is my lazy way to fix it
-void ai_batVertical_onCreate(Entity *e) {
+void ai_batVertical_onCreate(Entity *restrict e) {
 	e->y += pixel_to_sub(24);
 }
 
 // Just up and down gotta go up and down
-void ai_batVertical_onUpdate(Entity *e) {
+void ai_batVertical_onUpdate(Entity *restrict e) {
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
 		e->state_time2 = 0;
@@ -57,11 +57,11 @@ void ai_batVertical_onUpdate(Entity *e) {
 	e->y += e->y_speed;
 }
 
-void ai_batHang_onCreate(Entity *e) {
+void ai_batHang_onCreate(Entity *restrict e) {
 	//e->spriteAnim = 1; // Hanging anim
 }
 
-void ai_batHang_onUpdate(Entity *e) {
+void ai_batHang_onUpdate(Entity *restrict e) {
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
 		if(!e->state) e->spriteFrame = 3;
@@ -145,7 +145,7 @@ void ai_batHang_onUpdate(Entity *e) {
 	}
 }
 
-void ai_batCircle_onUpdate(Entity *e) {
+void ai_batCircle_onUpdate(Entity *restrict e) {
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
 		e->state_time2 = 0;
