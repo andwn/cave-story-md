@@ -135,6 +135,13 @@ typedef void (*EntityMethod)(Entity*);
 	e->spriteFrame = 0;                                                                        \
 })
 
+#define ANIMATE(e, spd, ...) {                                                                 \
+	const u8 anim[] = { __VA_ARGS__ };                                                         \
+	(e)->animtime++;                                                                           \
+	if((e)->animtime > spd * sizeof(anim)) (e)->animtime = 0;                                  \
+	if((e)->animtime % sizeof(anim) == 0) (e)->frame = anim[(e)->animtime / spd];              \
+}
+
 /* Shared Variables */
 
 Entity *water_entity;

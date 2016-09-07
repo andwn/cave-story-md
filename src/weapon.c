@@ -73,7 +73,7 @@ void weapon_fire_polarstar(Weapon *w) {
 	b->damage = w->level + (w->level == 3 ? 1 : 0); // 1, 2, 4
 	b->ttl = 20 + w->level * 5;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
-	if(player.controller[0]&BUTTON_UP) {
+	if(joy_down(BUTTON_UP)) {
 		//SPR_SAFEANIM(b->sprite, 1);
 		if(b->sprite != NULL)
 			SPR_setVRAMTileIndex(b->sprite, sheets[0].index + 4);
@@ -81,7 +81,7 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
-	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		//SPR_SAFEANIM(b->sprite, 1);
 		if(b->sprite != NULL)
 			SPR_setVRAMTileIndex(b->sprite, sheets[0].index + 4);
@@ -121,12 +121,12 @@ void weapon_fire_fireball(Weapon *w) {
 	b->damage = 2 * w->level; // 2, 4, 6
 	b->ttl = 50 + w->level * 10;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
-	if(player.controller[0]&BUTTON_UP) {
+	if(joy_down(BUTTON_UP)) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = player.direction ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(-3);
-	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = player.direction ? 0x300 : -0x300; // 1.5
@@ -160,7 +160,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->damage = w->level * 2; // 2, 4, 6
 	b->ttl = 90;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
-	if(player.controller[0]&BUTTON_UP) {
+	if(joy_down(BUTTON_UP)) {
 		player.y_mark = 0;
 		//SPR_SAFEANIM(b->sprite, 1);
 		if(b->sprite != NULL)
@@ -169,7 +169,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
-	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		if(player.y_mark == 0) player.y_mark = player.y;
 		if(w->level < 3) player.y_mark += 0x10;
 		//SPR_SAFEANIM(b->sprite, 1);
@@ -213,13 +213,13 @@ void weapon_fire_missile(Weapon *w) {
 	b->damage = 0; // 0 damage because an explosion object causes damage instead
 	b->ttl = 120;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
-	if(player.controller[0]&BUTTON_UP) {
+	if(joy_down(BUTTON_UP)) {
 		SPR_SAFEANIM(b->sprite, 1);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-3);
-	} else if(!player.grounded && (player.controller[0]&BUTTON_DOWN)) {
+	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		SPR_SAFEANIM(b->sprite, 2);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);

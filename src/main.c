@@ -29,9 +29,7 @@
 #include "system.h"
 
 int main() {
-#ifdef KDB_HELLO
 	puts("Hi Plum");
-#endif
     SYS_disableInts();
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it
@@ -39,7 +37,7 @@ int main() {
 	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
     sound_init();
 	input_init();
-	SPR_init(80, 0, 0);
+	//SPR_init(80, 0, 0);
 	SYS_enableInts();
     while(true) {
 		u8 select = titlescreen_main();

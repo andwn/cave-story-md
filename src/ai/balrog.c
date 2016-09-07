@@ -438,7 +438,7 @@ void ai_balrogRunning_onState(Entity *e) {
 		e->state_time = 160;
 		break;
 	case 7: // Grab player
-		player_lock_controls();
+		controlsLocked = true;
 		player.x = e->x;
 		player.y = e->y;
 		player.x_speed = 0;
@@ -449,7 +449,7 @@ void ai_balrogRunning_onState(Entity *e) {
 		e->state_time = 120;
 		break;
 	case 8: // Throw player
-		player_unlock_controls();
+		controlsLocked = false;
 		SPR_SAFEANIM(e->sprite, 3);
 		if(player_inflict_damage(1)) break;
 		player.y_speed = pixel_to_sub(-1);

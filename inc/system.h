@@ -11,19 +11,7 @@
 #define FLAG_EVENTONDROWN		4000
 #define FLAG_DISABLESAVE		4095
 
-// Shows extra info on screen, fly through walls
 extern bool debuggingEnabled;
-
-// Normally after the player is hurt they are invincible on a short timer (~2 seconds).
-// Cave Story has a bug where pausing resets this timer to 0, allowing a section
-// in Grasstown to be skipped using the knockback of a bat twice in the same jump
-// See player.c: player_unpause()
-extern bool pauseCancelsIFrames;
-
-// When true, player can skip through all the message text by holding the B button
-extern bool holdBToSkipText;
-
-extern bool checksumValid;
 
 // Global flags are persisted to save data
 void system_set_flag(u16 flag, bool value);
@@ -33,12 +21,8 @@ bool system_get_flag(u16 flag);
 void system_set_skip_flag(u16 flag, bool value);
 bool system_get_skip_flag(u16 flag);
 
-// Counts play time
+// Increments play time
 void system_update();
-// Returns play time
-u8 system_get_frame();
-// Draws play time
-void system_drawtime(u16 x, u16 y);
 
 // Initializes variables with defaults when starting a new game
 void system_new();
@@ -48,7 +32,5 @@ void system_load();
 void system_save();
 // Validates whether any save data exists in SRAM
 u8 system_checkdata();
-
-void system_verifychecksum();
 
 #endif // INC_SYSTEM_H_

@@ -6,23 +6,27 @@
 #define KDEBUG
 #ifdef KDEBUG
 #include <kdebug.h>
-
 // Enable/disable logger for specific modules
-#define KDB_HELLO	// "Hi" message at start of main()
 #define KDB_SYS		// Save data and flags
 #define KDB_TSC		// Log TSC commands as they are executed
-#define KDB_STAGE	// State loading
+#define KDB_STAGE	// Stage loading
 #define KDB_AI		// AI routines
 #define KDB_SHEET	// Sprite sheets
-
 #define puts(x) KDebug_Alert(x)
-#define printf(...) ({ \
-	char str[80]; \
-	sprintf(str, __VA_ARGS__); \
-	KDebug_Alert(str); \
-})
+#define printf(...) {                                                                          \
+	char str[80];                                                                              \
+	sprintf(str, __VA_ARGS__);                                                                 \
+	KDebug_Alert(str);                                                                         \
+}
+#else
+#define puts(x) /**/
+#define printf(...) /**/
 #endif
 
+// The original cave story is 50 FPS, so in NTSC mode TIME() and SPEED() are used
+// to make the game play at (almost) the same speed as if it were 50 FPS
+// Try to only use constant values instead of variables, otherwise the compiler
+// will not be able to optimize out the DIV and MUL operations
 //#define PAL
 #ifdef PAL
 #define FPS 50
@@ -56,8 +60,12 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // 16 tiles for the map name display
 #define TILE_NAMEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
 #define TILE_NAMESIZE 16
-// Space for manually allocated sprite sheets
+// Space for shared sprite sheets
 #define TILE_SHEETINDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
+#define TILE_SHEETSIZE 384
+// Space for per entity sprite tiles
+#define TILE_ENTITYINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE)
+#define TILE_ENTITYSIZE 384
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space
@@ -77,6 +85,11 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_WINDOWSIZE 9
 #define TILE_AIRINDEX (TILE_WINDOWINDEX + TILE_WINDOWSIZE)
 #define TILE_AIRSIZE 7
+// Unused palette color tiles area
+#define TILE_PLAYERINDEX (TILE_SYSTEMINDEX + 2)
+#define TILE_PLAYERSIZE 4
+#define TILE_WEAPONINDEX (TILE_PLAYERINDEX + TILE_PLAYERSIZE)
+#define TILE_WEAPONSIZE 9
 
 // Unit conversions
 // sub - fixed point unit (1/512x1/512)
@@ -108,31 +121,24 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Get tileset from SpriteDefinition
 #define SPR_TILESET(spr, a, f) ((spr)->animations[a]->frames[f]->tileset)
 
-// "Safe" wrappers for sprite functions will only execute if given a non-null sprite
-#define SPR_SAFEADD(s, def, x, y, attr, z) ({ \
-	SPR_SAFERELEASE(s); \
-	s = SPR_addSprite(def, x, y, attr); \
-	if(s != NULL) { \
-		s->data = z; \
-	} \
-})
-#define SPR_SAFERELEASE(s); ({ if(s != NULL) { SPR_releaseSprite(s); s = NULL; } })
-#define SPR_SAFEVFLIP(s ,f); ({ if(s != NULL) { SPR_setVFlip(s, f); } })
-#define SPR_SAFEHFLIP(s, f); ({ if(s != NULL) { SPR_setHFlip(s, f); } })
-#define SPR_SAFEMOVE(s, x, y); ({ if(s != NULL) { SPR_setPosition(s, x, y); } })
-#define SPR_SAFEANIM(s, a); ({ if(s != NULL) { SPR_setAnim(s, a); } })
-#define SPR_SAFEFRAME(s, f); ({ if(s != NULL) { SPR_setFrame(s, f); } })
-#define SPR_SAFEANIMFRAME(s, a, f); ({ if(s != NULL) { SPR_setAnimAndFrame(s, a, f); } })
-#define SPR_SAFEVISIBILITY(s, v); ({ if(s != NULL) { SPR_setVisibility(s, v); } })
-#define SPR_SAFETILEINDEX(s, i); ({ if(s != NULL) { SPR_setVRAMTileIndex(s, i); } })
-#define SPR_SAFEPALETTE(s, pal); ({ if(s != NULL) { SPR_setPalette(s, pal); } })
+// Disabled sprite functions
+#define SPR_SAFEADD(s, def, x, y, attr, z) /**/
+#define SPR_SAFERELEASE(s) /**/
+#define SPR_SAFEVFLIP(s ,f) /**/
+#define SPR_SAFEHFLIP(s, f) /**/
+#define SPR_SAFEMOVE(s, x, y) /**/
+#define SPR_SAFEANIM(s, a) /**/
+#define SPR_SAFEFRAME(s, f) /**/
+#define SPR_SAFEANIMFRAME(s, a, f) /**/
+#define SPR_SAFEVISIBILITY(s, v) /**/
+#define SPR_SAFETILEINDEX(s, i) /**/
+#define SPR_SAFEPALETTE(s, pal) /**/
+
+#define NUMARGS(...) sizeof((u8[]){__VA_ARGS__})
 
 // Booleans
 typedef unsigned char bool;
 enum {false, true};
-
-// Generic function pointer
-typedef void (*func)();
 
 // Bounding box used for collision and relative area to display sprites
 typedef struct {

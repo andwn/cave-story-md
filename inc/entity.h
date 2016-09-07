@@ -47,6 +47,7 @@ typedef struct Entity Entity;
 struct Entity {
 	// Next and previous linked list nodes. NULL at the end/beginning of the list
 	Entity *next, *prev;
+	Entity *linkedEntity; // Arbitrary entity used by AI
 	/* NPC Attributes */
 	u16 health; // If this is an enemy it will die when health reaches 0
 	u8 attack; // Damage inflicted on player when colliding
@@ -59,17 +60,10 @@ struct Entity {
 	u16 id; // Entity ID
 	u16 event; // Event # to run when triggered
 	u16 type; // NPC type - index of both npc.tbl and npc_info
-	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via bitwise OR
+	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
 	bool alwaysActive; // Guaranteed to never deactivate when true
-	u16 state; // Script state / ANP
-	u16 state_time;
-	u16 state_time2;
-	// This is assumed to be an array of type u16[2], or at least next to each other
-	// in memory (input.h). Index 0 is current joy state, 1 is previous frame's state
-	u16 *controller;
-	// Linked Entity
-	Entity *linkedEntity;
+	u16 state, state_time, state_time2;
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
@@ -81,15 +75,13 @@ struct Entity {
 		enableSlopes; // Check collision with slopes when enabled
 	u8 jump_time; // Time until jump button no longer increases jump height
 	bounding_box hit_box; // Collidable area, for both physics and combat
-	/* Display */
-	Sprite *sprite; // Sprite assigned to this entity, or NULL
-	// These 4 sprite variables remember the sprite state when an entity deactivates
-	// Once reactivated, they are used to restore the sprite attributes
-	u8 spriteAnim, spriteFrame, spriteVFlip;
 	bounding_box display_box; // Area where sprite is displayed relative to the center
 	// Used to generate damage strings
 	s16 damage_value;
 	s8 damage_time;
+	// Sprite
+	u8 sprite_count, frame, oframe, animtime;
+	VDPSprite sprite[0];
 };
 
 // First element of the "active" list. Entities in this list are updated fully
@@ -157,12 +149,6 @@ bool entity_on_screen(Entity *e);
 
 void entity_sprite_create(Entity *e);
 
-// Handles movement physics based on controller input, will set the values x_next and y_next
-void entity_update_movement(Entity *e);
-// These 3 are individual parts of update_movement()
-void entity_update_walk(Entity *e);
-void entity_update_jump(Entity *e);
-void entity_update_float(Entity *e);
 // Handles collision with the loaded stage, pushes x_next and y_next out of solid areas
 void entity_update_collision(Entity *e);
 

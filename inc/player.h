@@ -17,16 +17,6 @@
 #define EQUIP_WHIMSICAL		0x080
 #define EQUIP_CLOCK			0x100
 
-// Shared with curly
-#define ANIM_STANDING 0
-#define ANIM_WALKING 1
-#define ANIM_LOOKUP 2
-#define ANIM_LOOKUPWALK 3
-#define ANIM_INTERACT 4
-#define ANIM_JUMPING 5
-#define ANIM_LOOKUPJUMP 6
-#define ANIM_LOOKDOWNJUMP 7
-
 #define MAX_ITEMS 32
 
 enum BoosterState {
@@ -45,6 +35,10 @@ Bullet playerBullet[MAX_BULLETS];
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
 Entity player;
+// This is directly after player so player.sprite will refer to the same memory location
+VDPSprite playerSprite;
+
+bool playerShow;
 u8 playerIFrames;
 u8 playerMoveMode;
 // Max health - current health is player.health (Entity)
@@ -112,7 +106,7 @@ bool player_has_item(u8 id); // <ITJ
 void player_equip(u16 id); // <EQ+
 void player_unequip(u16 id); // <EQ-
 
-void player_lock_controls(); // <PRI and <KEY
-void player_unlock_controls(); // <KEY and <FRE
+//void player_lock_controls(); // <PRI and <KEY
+//void player_unlock_controls(); // <KEY and <FRE
 
 #endif /* INC_PLAYER_H_ */

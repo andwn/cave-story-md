@@ -1,8 +1,9 @@
 #include "camera.h"
 
 #include <genesis.h>
-#include "stage.h"
+#include "input.h"
 #include "player.h"
+#include "stage.h"
 
 // One less than BLOCK_SIZE in sub-pixels, because only one
 // row/column is drawn per frame while the camera is moving
@@ -50,7 +51,7 @@ void camera_update() {
 			} else {
 				camera.x_offset = pixel_to_sub(48);
 			}
-			if((player.controller[0] & BUTTON_UP) && player.y_speed <= 0) {
+			if(!controlsLocked && joy_down(BUTTON_UP) && player.y_speed <= 0) {
 				camera.y_offset = pixel_to_sub(-48);
 			}
 		}
@@ -94,7 +95,7 @@ void camera_update() {
 	camera.x = x_next;
 	camera.y = y_next;
 	// Reactivate any entities that are approaching the screen
-	if(morphingColumn != 0 || morphingRow != 0) {
+	if(morphingColumn | morphingRow) {
 		entities_update_inactive();
 	}
 }

@@ -460,7 +460,7 @@ u8 execute_command() {
 				gameFrozen = false;
 				window_set_face(0, false);
 				window_close();
-				player_unlock_controls();
+				controlsLocked = false;
 				hud_show();
 			}
 			return 1;
@@ -593,28 +593,28 @@ u8 execute_command() {
 			break;
 		case CMD_KEY: // Lock controls and hide the HUD
 			logcmd("<KEY");
-			player_lock_controls();
+			controlsLocked = true;
 			hud_hide();
 			gameFrozen = false;
 			break;
 		case CMD_PRI: // Lock controls
 			logcmd("<PRI");
-			player_lock_controls();
+			controlsLocked = true;
 			gameFrozen = true;
 			break;
 		case CMD_FRE: // Unlock controls
 			logcmd("<FRE");
-			player_unlock_controls();
+			controlsLocked = false;
 			hud_show();
 			gameFrozen = false;
 			break;
 		case CMD_HMC: // Hide player character
 			logcmd("<HMC");
-			player_hide();
+			playerShow = false;
 			break;
 		case CMD_SMC: // Show player character
 			logcmd("<SMC");
-			player_show();
+			playerShow = true;
 			break;
 		case CMD_LI_ADD: // Restore health by (1)
 			args[0] = tsc_read_word();

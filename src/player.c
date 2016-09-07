@@ -12,6 +12,7 @@
 #include "tables.h"
 #include "vdp_ext.h"
 #include "sheet.h"
+#include "sprite.h"
 
 #ifdef PAL
 #define INVINCIBILITY_FRAMES 100
@@ -23,17 +24,14 @@
 #define BOOSTER_FUEL 60
 #endif
 
-u16 dummyController[2] = { 0, 0 };
-bool playerDead;
-bool playerShow;
-
-Sprite *weaponSprite = NULL;
+VDPSprite weaponSprite;
 u8 playerWeaponCount = 0;
 
-Sprite *mapNameSprite = NULL;
+u8 mapNameSpriteNum;
+VDPSprite mapNameSprite[4];
 u16 mapNameTTL = 0;
 
-Sprite *airSprite = NULL;
+VDPSprite airSprite[2];
 u8 airPercent = 100;
 u8 airTick = 0;
 u8 airDisplayTime = 0;
@@ -44,12 +42,17 @@ u8 walk_time;
 
 u8 mgun_shoottime, mgun_chargetime;
 
-Sprite *airTankSprite = NULL;
+VDPSprite airTankSprite;
 
 void player_update_bounds();
 void player_update_booster();
 void player_update_interaction();
 void player_update_air_display();
+
+void player_update_movement();
+void player_update_walk();
+void player_update_jump();
+void player_update_float();
 
 void player_prev_weapon();
 void player_next_weapon();
@@ -60,7 +63,6 @@ void player_init() {
 	playerShow = true;
 	player.direction = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
-	player.controller = &joystate;
 	playerMaxHealth = 3;
 	player.health = 3;
 	player.x = block_to_sub(10) + pixel_to_sub(8);
@@ -73,22 +75,37 @@ void player_init() {
 	player.damage_time = 0;
 	player.damage_value = 0;
 	player.direction = 1;
-	player.spriteAnim = 0;
-	player_reset_sprites();
 	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
+	player.frame = 255;
 	ledge_time = 0;
 	mgun_shoottime = 0;
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
 	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
-	playerDead = false;
 	playerMoveMode = 0;
 	currentWeapon = 0;
 	airPercent = 100;
 	airTick = 0;
+	// AIR Sprite
+	VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
+	airSprite[0] = (VDPSprite){
+		.x = SCREEN_HALF_W - 28, .y = SCREEN_HALF_H - 24, 
+		.size = SPRITE_SIZE(4, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX)
+	};
+	airSprite[1] = (VDPSprite){
+		.x = SCREEN_HALF_W, .y = SCREEN_HALF_H - 24, 
+		.size = SPRITE_SIZE(3, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX+4)
+	};
+	// Player sprite
+	playerSprite = (VDPSprite){
+		.size = SPRITE_SIZE(2,2),
+		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_PLAYERINDEX)
+	};
+	// Weapon sprite
+	//SHEET_LOAD(&SPR_Polar
 }
-
+/*
 void player_reset_sprites() {
 	// Manual visibility
 	player.sprite = SPR_addSprite(&SPR_Quote, 
@@ -117,14 +134,11 @@ void player_reset_sprites() {
 	airDisplayTime = 0;
 	playerPlatform = NULL;
 }
-
+*/
 void player_update() {
-	if(playerDead) return;
 	u8 tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
 	if(debuggingEnabled && (joystate&BUTTON_A)) { // Float - no collision
-		entity_update_float(&player);
-		player.x_next = player.x + player.x_speed;
-		player.y_next = player.y + player.y_speed;
+		player_update_float();
 	} else if(playerMoveMode == 0) { // Normal movement
 		// Wind/Water current
 		if(tile & 0x80) {
@@ -137,7 +151,7 @@ void player_update() {
 			if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
 			if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
 		}
-		entity_update_movement(&player);
+		player_update_movement();
 		if(playerBoostState != BOOST_OFF) {
 			player_update_booster();
 		} else {
@@ -155,9 +169,6 @@ void player_update() {
 			blockd_next = player.grounded;
 			// Here I do something weird to emulate the way the game pushes quote
 			// into small gaps
-			// Actually, I think this is how the original game does it. The speedrun
-			// tutorial mentioned trying to hug the floors while you jump up to them because
-			// it gives a minor speed boost
 			if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
 				player.x_speed -= 0xE0;
 				player.x_next = player.x + player.x_speed;
@@ -180,7 +191,6 @@ void player_update() {
 			blocku = blocku_next;
 			blockr = blockr_next;
 			blockd = blockd_next;
-			//entity_update_collision(&player);
 			if(playerPlatform != NULL) {
 				player.x_next += playerPlatform->x_speed;
 				player.y_next += playerPlatform->y_speed;
@@ -197,9 +207,7 @@ void player_update() {
 		}
 		player_update_bounds();
 	} else { // Move mode 1 - for ironhead
-		entity_update_float(&player);
-		player.x_next = player.x + player.x_speed;
-		player.y_next = player.y + player.y_speed;
+		player_update_float();
 		if(player.x_speed < 0) {
 			collide_stage_leftwall(&player);
 		} else if (player.x_speed > 0) {
@@ -221,11 +229,7 @@ void player_update() {
 		if((tile & 0xDF) == 0x42) {
 			player_inflict_damage(10);
 		}
-		if(player.health == 0) {
-			playerIFrames = 0;
-			playerDead = true;
-			return;
-		}
+		if(player.health == 0) return;
 	} else {
 		playerIFrames--;
 	}
@@ -240,9 +244,7 @@ void player_update() {
 		}
 	}
 	// Handle air when underwater, unless a script is running
-	if(tsc_running()) {
-		SPR_SAFERELEASE(airSprite);
-	} else {
+	if(!tsc_running()) {
 		if(player.underwater && !(playerEquipment & EQUIP_AIRTANK)) {
 			if(airTick == 0) {
 				airTick = AIR_TICKS;
@@ -253,8 +255,7 @@ void player_update() {
 						tsc_call_event(ALMOND_DROWN_EVENT);
 					} else {
 						player.health = 0;
-						SPR_SAFERELEASE(airSprite);
-						SPR_SAFEANIM(player.sprite, 8);
+						player.frame = 8;
 						tsc_call_event(PLAYER_DROWN_EVENT);
 						return;
 					}
@@ -266,25 +267,21 @@ void player_update() {
 			airPercent = 100;
 			airTick = 0;
 			airDisplayTime = 60;
-		} else {
-			if(airDisplayTime > 0) {
-				airDisplayTime--;
-			} else {
-				SPR_SAFERELEASE(airSprite);
-			}
+		} else if(airDisplayTime > 0) {
+			airDisplayTime--;
 		}
 		player_update_air_display();
 	}
 	// Weapon switching
-	if((player.controller[0]&BUTTON_Y) && !(player.controller[1]&BUTTON_Y)) {
+	if(joy_pressed(BUTTON_Y)) {
 		player_prev_weapon();
-	} else if((player.controller[0]&BUTTON_Z) && !(player.controller[1]&BUTTON_Z)) {
+	} else if(joy_pressed(BUTTON_Z)) {
 		player_next_weapon();
 	}
 	// Shooting
 	if(playerWeapon[currentWeapon].type == WEAPON_MACHINEGUN) {
 		if(mgun_shoottime > 0) mgun_shoottime--;
-		if(player.controller[0]&BUTTON_B) {
+		if(joy_down(BUTTON_B)) {
 			if(mgun_shoottime == 0) {
 				if(playerWeapon[currentWeapon].ammo > 0) {
 					weapon_fire(playerWeapon[currentWeapon]);
@@ -306,7 +303,7 @@ void player_update() {
 			}
 		}
 	} else {
-		if((player.controller[0]&BUTTON_B) && !(player.controller[1]&BUTTON_B)) {
+		if(joy_pressed(BUTTON_B)) {
 			weapon_fire(playerWeapon[currentWeapon]);
 		}
 	}
@@ -316,8 +313,119 @@ void player_update() {
 		player_update_interaction();
 	}
 	player_draw();
-	if(mapNameTTL > 0 && --mapNameTTL == 0) {
-		SPR_SAFERELEASE(mapNameSprite);
+	if(mapNameTTL > 0) {
+		mapNameTTL--;
+		sprite_addq(mapNameSprite, mapNameSpriteNum);
+	}
+}
+
+void player_update_movement() {
+	player_update_walk();
+	player_update_jump();
+	player.x_next = player.x + player.x_speed;
+	player.y_next = player.y + player.y_speed;
+}
+
+void player_update_walk() {
+	s16 acc;
+	s16 dec;
+	s16 fric;
+	s16 max_speed = MAX_WALK_SPEED;
+	if(player.grounded) {
+		acc = WALK_ACCEL;
+		dec = WALK_ACCEL;
+		fric = FRICTION;
+	} else {
+		acc = AIR_CONTROL;
+		dec = AIR_CONTROL;
+		fric = AIR_CONTROL;
+	}
+	if((stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) & BLOCK_WATER) ||
+			(water_entity != NULL && player.y > water_entity->y)) {
+		player.underwater = true;
+		acc /= 2;
+		max_speed /= 2;
+		fric /= 2;
+	} else {
+		player.underwater = false;
+	}
+	if(joy_down(BUTTON_LEFT)) {
+		player.x_speed -= acc;
+		if(player.x_speed < -max_speed) player.x_speed = min(player.x_speed + dec, -max_speed);
+	} else if(joy_down(BUTTON_RIGHT)) {
+		player.x_speed += acc;
+		if(player.x_speed > max_speed) player.x_speed = max(player.x_speed - dec, max_speed);
+	} else if(player.grounded) {
+		if(player.x_speed < fric && player.x_speed > -fric) player.x_speed = 0;
+		else if(player.x_speed < 0) player.x_speed += fric;
+		else if(player.x_speed > 0) player.x_speed -= fric;
+	}
+}
+
+void player_update_jump() {
+	s16 jumpSpeed = 	JUMP_SPEED;
+	s16 gravity = 		GRAVITY;
+	s16 gravityJump = 	GRAVITY_JUMP;
+	s16 maxFallSpeed = 	MAX_FALL_SPEED;
+	if(player.underwater) {
+		jumpSpeed /= 2;
+		gravity /= 2;
+		gravityJump /= 2;
+		maxFallSpeed /= 2;
+	}
+	if(player.jump_time > 0) {
+		if(joy_down(BUTTON_C)) {
+			player.jump_time--;
+		} else {
+			player.jump_time = 0;
+		}
+	}
+	if(player.jump_time > 0) return;
+	if(player.grounded) {
+		if(joy_pressed(BUTTON_C)) {
+			player.grounded = false;
+			player.y_speed = -jumpSpeed;
+			player.jump_time = MAX_JUMP_TIME;
+			sound_play(SND_PLAYER_JUMP, 3);
+		}
+	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
+			joy_pressed(BUTTON_C)) {
+		player_start_booster();
+	} else if(playerBoostState == BOOST_OFF) {
+		if(joy_down(BUTTON_C) && player.y_speed >= 0) {
+			player.y_speed += gravityJump;
+		} else {
+			player.y_speed += gravity;
+		}
+		if(player.y_speed > maxFallSpeed) player.y_speed = maxFallSpeed;
+	}
+}
+
+void player_update_float() {
+	s16 acc = 		WALK_ACCEL;
+	s16 fric = 		FRICTION;
+	s16 max_speed = MAX_WALK_SPEED;
+	if (joy_down(BUTTON_LEFT)) {
+		player.x_speed -= acc;
+		if (player.x_speed < -max_speed) player.x_speed = -max_speed;
+	} else if (joy_down(BUTTON_RIGHT)) {
+		player.x_speed += acc;
+		if (player.x_speed > max_speed) player.x_speed = max_speed;
+	} else {
+		if (player.x_speed < fric && player.x_speed > -fric) player.x_speed = 0;
+		else if (player.x_speed < 0) player.x_speed += fric;
+		else if (player.x_speed > 0) player.x_speed -= fric;
+	}
+	if (joy_down(BUTTON_UP)) {
+		player.y_speed -= acc;
+		if (player.y_speed < -max_speed) player.y_speed = -max_speed;
+	} else if (joy_down(BUTTON_DOWN)) {
+		player.y_speed += acc;
+		if (player.y_speed > max_speed) player.y_speed = max_speed;
+	} else {
+		if(player.y_speed < fric && player.y_speed > -fric) player.y_speed = 0;
+		else if (player.y_speed < 0) player.y_speed += fric;
+		else if (player.y_speed > 0) player.y_speed -= fric;
 	}
 }
 
@@ -329,11 +437,11 @@ void player_update_bullets() {
 
 void player_update_interaction() {
 	// Interaction with entities when pressing down
-	if((player.controller[0]&BUTTON_DOWN) && !(player.controller[1]&BUTTON_DOWN)) {
+	if(joy_pressed(BUTTON_DOWN)) {
 		Entity *e = entityList;
 		while(e != NULL) {
 			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
-				player.controller[1] |= BUTTON_DOWN; // To avoid triggering it twice
+				oldstate |= BUTTON_DOWN; // To avoid triggering it twice
 				if(e->event > 0) {
 					tsc_call_event(e->event);
 					return;
@@ -457,40 +565,35 @@ void player_update_booster() {
 	}
 }
 
-void player_show() {
-	playerShow = true;
-	SPR_SAFEVISIBILITY(player.sprite, AUTO_FAST);
-}
-
-void player_hide() {
-	playerShow = false;
-	SPR_SAFEVISIBILITY(player.sprite, HIDDEN);
-}
-
 void player_show_map_name(u8 ttl) {
-	// Define sprite for map name
-	mapNameSprite = SPR_addSpriteEx(&SPR_Dummy16x1, SCREEN_HALF_W - 64, SCREEN_HALF_H - 32,
-		TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_FACEINDEX + 36), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
-	SPR_SAFEVISIBILITY(mapNameSprite, VISIBLE);
 	// Create a string of tiles in RAM
 	u32 nameTiles[16][8];
 	u8 len = 0;
 	for(u8 i = 0; i < 16; i++) {
 		u8 chr = stage_info[stageID].name[i] - 0x20;
-		if(chr >= 0x60) {
-			chr = 0;
-			if(len == 0) len = i;
-		}
+		if(chr < 0x60) len++;
+		else chr = 0;
 		memcpy(nameTiles[i], &TS_SprFont.tiles[chr * 8], 32);
 	}
-	if(len > 0) {
-		SPR_SAFEMOVE(mapNameSprite, SCREEN_HALF_W - len * 4, SCREEN_HALF_H - 32);
-	}
 	// Transfer tile array to VRAM
-	SYS_disableInts();
-	VDP_loadTileData(nameTiles[0], TILE_FACEINDEX + 36, 16, true);
-	SYS_enableInts();
-	mapNameTTL = ttl;
+	if(len > 0) {
+		SYS_disableInts();
+		VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, true);
+		SYS_enableInts();
+		mapNameSpriteNum = 0;
+		u16 x = SCREEN_HALF_W - len * 4;
+		for(u8 i = 0; i < len; i += 4) {
+			mapNameSprite[i/4] = (VDPSprite){
+				.x = x + 128,
+				.y = SCREEN_HALF_H - 32 + 128,
+				.size = SPRITE_SIZE(min(4,len-i), 1),
+				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+			};
+			x += 32;
+			mapNameSpriteNum++;
+		}
+		mapNameTTL = ttl;
+	}
 }
 
 void draw_air_percent() {
@@ -504,149 +607,111 @@ void draw_air_percent() {
 }
 
 void player_update_air_display() {
+	// Blink for a second after getting out of the water
 	if(airPercent == 100) {
-		if(airDisplayTime == 60) {
+		if(airDisplayTime == TIME(50)) {
 			draw_air_percent();
-		} else if(airDisplayTime > 0) {
-			SPR_SAFEVISIBILITY(airSprite, (airDisplayTime & 8) ? VISIBLE : HIDDEN);
+		} else if(airDisplayTime & 8) {
+			sprite_addq(airSprite, 2);
 		}
 	} else {
-		if(airSprite == NULL) { // Initialize and draw full "AIR" text
-			airDisplayTime = 0;
-			airSprite = SPR_addSpriteEx(&SPR_Air, SCREEN_HALF_W - 28, SCREEN_HALF_H - 24,
-				TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_AIRINDEX), 0, SPR_FLAG_AUTO_SPRITE_ALLOC);
-			SPR_SAFEVISIBILITY(airSprite, VISIBLE);
+		airDisplayTime++;
+		if((airDisplayTime % 32) == 0) {
 			SYS_disableInts();
-			VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
+			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
 			SYS_enableInts();
-		} else { // Just blink the small down arrow thing
+		} else if((airDisplayTime % 32) == 15) {
 			SYS_disableInts();
-			airDisplayTime++;
-			if((airDisplayTime % 32) == 0) {
-				VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
-			} else if((airDisplayTime % 32) == 15) {
-				VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
-			}
+			VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
 			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
-		if(airTick == AIR_TICKS) {
-			draw_air_percent();
-			SPR_SAFEVISIBILITY(airSprite, VISIBLE);
-		}
+		if(airTick == AIR_TICKS) draw_air_percent();
+		sprite_addq(airSprite, 2);
 	}
 }
 
 void player_draw() {
+	enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 	// Sprite Animation
-	u8 anim;
+	player.oframe = player.frame;
 	if(player.grounded) {
-		if(player.controller[0]&BUTTON_UP) {
-			if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
-				anim = ANIM_LOOKUPWALK;
-				walk_time++;
+		if(joy_down(BUTTON_UP)) {
+			if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
+				ANIMATE(&player, 7, UPWALK1, LOOKUP, UPWALK2, LOOKUP);
 			} else {
-				anim = ANIM_LOOKUP;
-				walk_time = 0;
+				player.frame = LOOKUP;
+				player.animtime = 0;
 			}
-		} else if((player.controller[0]&BUTTON_RIGHT) || (player.controller[0]&BUTTON_LEFT)) {
-			anim = ANIM_WALKING;
-			walk_time++;
-		} else if((player.controller[0]&BUTTON_DOWN)) {
-			anim = ANIM_INTERACT;
-			walk_time = 0;
+		} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
+			ANIMATE(&player, 7, WALK1, STAND, WALK2, STAND);
+		} else if(joy_down(BUTTON_DOWN)) {
+			player.frame = LOOKDN;
+			player.animtime = 0;
 		} else {
-			anim = ANIM_STANDING;
-			walk_time = 0;
+			player.frame = STAND;
+			player.animtime = 0;
 		}
 	} else {
-		walk_time = 0;
-		if((player.controller[0]&BUTTON_UP)) {
-			anim = ANIM_LOOKUPJUMP;
-		} else if((player.controller[0]&BUTTON_DOWN)) {
-			anim = ANIM_LOOKDOWNJUMP;
+		player.animtime = 0;
+		if(joy_down(BUTTON_UP)) {
+			player.frame = UPWALK1;
+		} else if(joy_down(BUTTON_DOWN)) {
+			player.frame = JUMPDN;
 		} else {
-			anim = ANIM_JUMPING;
+			player.frame = WALK1;
 		}
 	}
-	if(walk_time == TIME(10)) {
-		walk_time = 0;
-		sound_play(SND_PLAYER_WALK, 2);
+	if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
+	// Set frame if it changed
+	if(player.frame != player.oframe) {
+		TILES_QUEUE(SPR_TILESET(&SPR_Quote,player.frame,0)->tiles,TILE_PLAYERINDEX,4);
 	}
-	// Set animation if it changed
-	if(player.spriteAnim != anim) {
-		player.spriteAnim = anim;
-		// Frame change is a workaround for tapping looking like quote is floating
-		SPR_SAFEANIMFRAME(player.sprite, anim, 
-			anim==ANIM_WALKING || anim==ANIM_LOOKUPWALK ? 1 : 0);
-	}
-	// Change direction if pressing left or right
-	if((player.controller[0]&BUTTON_RIGHT) && !player.direction) {
-		player.direction = 1;
-		SPR_SAFEHFLIP(player.sprite, 1);
-	} else if((player.controller[0]&BUTTON_LEFT) && player.direction) {
-		player.direction = 0;
-		SPR_SAFEHFLIP(player.sprite, 0);
-	}
-	SPR_SAFEMOVE(player.sprite,
-		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 	// Blink during invincibility frames
-	SPR_SAFEVISIBILITY(player.sprite, playerShow && 
-		!((playerIFrames >> 1) & 1) ? AUTO_FAST : HIDDEN);
-	// Weapon sprite
-	if(playerWeapon[currentWeapon].type > 0) {
-		u8 wanim = 0;
-		if(anim==ANIM_LOOKUP || anim==ANIM_LOOKUPWALK || anim==ANIM_LOOKUPJUMP) wanim = 1;
-		else if(anim==ANIM_LOOKDOWNJUMP) wanim = 2;
-		SPR_SAFEANIM(weaponSprite, wanim);
-		SPR_SAFEHFLIP(weaponSprite, player.direction);
-		SPR_SAFEVISIBILITY(weaponSprite, playerShow && 
-			!((playerIFrames >> 1) & 1) ? AUTO_FAST : HIDDEN);
-		SPR_SAFEMOVE(weaponSprite,
-			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
-			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-	}
-	// Bubble shield
-	if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
-		if(airTankSprite == NULL) {
-			SPR_SAFEADD(airTankSprite, &SPR_Bubble, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
+	if(playerShow && !((playerIFrames >> 1) & 1)) {
+		// Change direction if pressing left or right
+		if(joy_down(BUTTON_RIGHT) && !player.direction) {
+			player.direction ^= 1;
+			playerSprite.attribut |= TILE_ATTR_HFLIP_MASK;
+		} else if(joy_down(BUTTON_LEFT) && player.direction) {
+			player.direction ^= 1;
+			playerSprite.attribut &= ~TILE_ATTR_HFLIP_MASK;
 		}
-		SPR_SAFEMOVE(airTankSprite,
-				(player.x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 12,
-				(player.y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 12);
-	} else {
-		SPR_SAFERELEASE(airTankSprite);
+		sprite_pos(playerSprite,
+				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_add(playerSprite);
+		if(playerWeapon[currentWeapon].type > 0) {
+			bool vert = 0, vdir = 0;
+			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
+				vert = 1;
+				vdir = 0;
+			} else if(player.frame==JUMPDN) {
+				vert = 1;
+				vdir = 1;
+			}
+			weaponSprite = (VDPSprite){
+				.x = (player.x<<CSF) - (camera.x<<CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
+				.y = (player.y<<CSF) - (camera.y<<CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
+				.size = SPRITE_SIZE(vert ? 1 : 4, vert ? 4 : 1),
+				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.direction,TILE_WEAPONINDEX+vert*6)
+			};
+			sprite_add(weaponSprite);
+		}
+		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
+			sprite_pos(airTankSprite, 
+					(player.x<<CSF) - (camera.x<<CSF) + SCREEN_HALF_W - 12,
+					(player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 12);
+			sprite_add(airTankSprite);
+		}
 	}
-}
-
-void player_lock_controls() {
-	controlsLocked = true;
-	player.controller = dummyController;
-}
-
-void player_unlock_controls() {
-	controlsLocked = false;
-	player.controller = &joystate;
-}
-
-void player_pause() {
-	player_hide();
-	SPR_SAFEVISIBILITY(weaponSprite, HIDDEN);
-	for(u16 i = 0; i < MAX_BULLETS; i++) {
-		SPR_SAFEVISIBILITY(playerBullet[i].sprite, HIDDEN);
-	}
-	if(mapNameTTL) SPR_SAFEVISIBILITY(mapNameSprite, HIDDEN);
 }
 
 void player_unpause() {
-	if(pauseCancelsIFrames) playerIFrames = 0;
-	player_show();
-	SPR_SAFEVISIBILITY(weaponSprite, AUTO_FAST);
-	for(u16 i = 0; i < MAX_BULLETS; i++) {
-		SPR_SAFEVISIBILITY(playerBullet[i].sprite, AUTO_FAST);
-	}
-	if(mapNameTTL) SPR_SAFEVISIBILITY(mapNameSprite, AUTO_FAST);
+	// Sometimes player is left stuck after pausing
+	controlsLocked = false;
+	// Simulates a bug which allows skipping Chako's fireplace in Grasstown
+	playerIFrames = 0;
 }
 
 bool player_invincible() {
@@ -718,11 +783,13 @@ void player_prev_weapon() {
 	for(u8 i = currentWeapon - 1; i != currentWeapon; i--) {
 		if(i == 0xFF) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
-			SPR_SAFERELEASE(weaponSprite);
+			//SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
-				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//	weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
+					TILE_WEAPONINDEX,6);
 			}
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
@@ -734,11 +801,13 @@ void player_next_weapon() {
 	for(u8 i = currentWeapon + 1; i != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
-			SPR_SAFERELEASE(weaponSprite);
+			//SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
-				weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//	weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
+					TILE_WEAPONINDEX,6);
 			}
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
@@ -784,7 +853,7 @@ void player_take_weapon(u8 id) {
 	Weapon *w = player_find_weapon(id);
 	if(w != NULL) {
 		if(playerWeapon[currentWeapon].type == id) {
-			SPR_SAFERELEASE(weaponSprite);
+			//SPR_SAFERELEASE(weaponSprite);
 			player_next_weapon();
 		}
 		w->type = 0;
@@ -806,10 +875,12 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w != NULL) {
 		if(id_take == playerWeapon[currentWeapon].type) {
-			SPR_SAFERELEASE(weaponSprite);
+			//SPR_SAFERELEASE(weaponSprite);
 			if(weapon_info[w->type].sprite != NULL) {
-				weaponSprite = SPR_addSprite(weapon_info[w->type].sprite, 
-					0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//	weaponSprite = SPR_addSprite(weapon_info[w->type].sprite, 
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			TILES_QUEUE(SPR_TILESET(weapon_info[w->type].sprite,0,0)->tiles,
+					TILE_WEAPONINDEX,6);
 			}
 		}
 		w->type = id_give;

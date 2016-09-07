@@ -1,6 +1,5 @@
 #include "sheet.h"
 
-#include <genesis.h>
 #include "player.h"
 #include "resources.h"
 #include "stage.h"
@@ -10,15 +9,6 @@
 #define puts(x) /**/
 #define printf(...) /**/
 #endif
-
-// Reduces the copy paste mess of VDP_loadTileData calls
-// The end params are anim,frame value couples from the sprite definition
-#define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) ({                                    \
-	const u8 fa[frames*2] = { __VA_ARGS__ };                                                   \
-	for(u8 i = 0; i < frames; i++) {                                                           \
-		VDP_loadTileData(SPR_TILESET(sdef,fa[i*2],fa[i*2+1])->tiles,index+i*fsize,fsize,dma);  \
-	}                                                                                          \
-})
 
 void sheets_init() {
 	// Polar star

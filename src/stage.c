@@ -14,6 +14,9 @@
 #include "ai.h"
 #include "sheet.h"
 
+// Index of background in db/back.c and the effect type
+u8 stageBackground = 0xFF, stageBackgroundType;
+
 s16 backScrollTable[32];
 u8 *stageBlocks = NULL;
 u16 *stageTable = NULL;
@@ -24,6 +27,7 @@ void stage_load_entities();
 
 void stage_draw_column(s16 _x, s16 _y);
 void stage_draw_row(s16 _x, s16 _y);
+void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
 void stage_draw_background();
 void stage_draw_background2();
 
@@ -34,7 +38,7 @@ void stage_load(u16 id) {
 		VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
 	}
 	stageID = id;
-	player_lock_controls();
+	//player_lock_controls();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
@@ -81,11 +85,11 @@ void stage_load(u16 id) {
 	camera_set_position(player.x, player.y);
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
-	player_reset_sprites(); // Reloads player/weapon sprites
+	//player_reset_sprites(); // Reloads player/weapon sprites
 	stage_load_entities();
 	tsc_load_stage(id);
 	hud_create();
-	player_unlock_controls();
+	//player_unlock_controls();
 	if(vdpEnabled) {
 		VDP_setEnable(true);
 		SYS_enableInts();
@@ -126,9 +130,8 @@ void stage_load_blocks() {
 
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
-	// Some small rooms depend on sprite sorting to be back -> front
-	// But on Genesis it works the opposite, so here is a terrible hack that loads
-	// all the entities in reverse order
+	// Most of the rooms depend on sprite sorting to be back -> front
+	// But on Genesis it works the opposite, so load all the entities in reverse order
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
 	for(u8 i = PXE[4]; i > 0; i--) {
 		u16 x, y, id, event, type, flags;
@@ -172,25 +175,22 @@ void stage_update() {
 		if(y >= 0 && y < stageHeight) stage_draw_row(x, y);
 		morphingRow = 0;
 	}
-	s16 off[32];
-	off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
-	for(u8 i = 1; i < 32; i++) {
-		off[i] = off[0];
-	}
-	// Foreground scrolling
-	VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
-	VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
-		// Normal tiled background scrolls a bit slower than stage
-		backScrollTable[0] = -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W;
-		for(u8 y = 1; y < 32; y++) {
-			backScrollTable[y] = backScrollTable[0];
-		}
-		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1) {
+		// PLAN_A Tile scroll
+		s16 off[32];
+		off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
+		for(u8 i = 1; i < 32; i++) {
+			off[i] = off[0];
+		}
+		VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
+		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		for(u8 y = 0; y < 32; y++) {
 			if(y < 12) backScrollTable[y] = 0;
@@ -202,10 +202,13 @@ void stage_update() {
 	} else if(stageBackgroundType == 3) {
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
-		for(u8 y = 1; y < 32; y++) {
-			backScrollTable[y] = backScrollTable[0];
-		}
-		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
+	} else {
+		// Only scroll foreground
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
 }
 

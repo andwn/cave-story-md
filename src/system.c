@@ -8,33 +8,27 @@
 #include "audio.h"
 #include "vdp_ext.h"
 
+#ifndef KDB_SYS
+#define puts(x) /**/
+#define printf(...) /**/
+#endif
+
 // ASCII string "CSMD" used as a sort of checksum to verify save data exists
 #define STR_CSMD 0x43534D44
 // When save data is not found "TEST" is written to verify SRAM is usable
 #define STR_TEST 0x54455354
 
-u8 sram_state = SRAM_UNCHECKED;
-
-// Official game supports 8000 but only uses up to 4000 (the INDEX of 4000 is used, so 4001 flags)
-// Max here is 4096
+// Supports 0-4095, official game uses 0-4000
 #define FLAGS_LEN 128
 
 bool debuggingEnabled = false;
-bool pauseCancelsIFrames = true;
-bool checksumValid = true;
-
-struct {
-	u8 hour, minute, second, frame;
-} time;
-
+u8 sram_state = SRAM_UNCHECKED;
+struct { u8 hour, minute, second, frame; } time;
+u32 flags[FLAGS_LEN];
 u32 skip_flags = 0;
 
-u32 flags[FLAGS_LEN];
-
 void system_set_flag(u16 flag, bool value) {
-#ifdef KDB_SYS
 	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
-#endif
 	if(value) flags[flag/32] |= 1<<(flag%32);
 	else flags[flag/32] &= ~(1<<(flag%32));
 }
@@ -44,9 +38,7 @@ bool system_get_flag(u16 flag) {
 }
 
 void system_set_skip_flag(u16 flag, bool value) {
-#ifdef KDB_SYS
 	printf("Setting skip flag %hu %s", flag, value ? "ON" : "OFF");
-#endif
 	if(value) skip_flags |= (1<<flag);
 	else skip_flags &= ~(1<<flag);
 }
@@ -57,7 +49,7 @@ bool system_get_skip_flag(u16 flag) {
 
 void system_update() {
 	time.frame++;
-	if(time.frame >= 60) {
+	if(time.frame >= FPS) {
 		time.second++;
 		time.frame = 0;
 		if(time.second >= 60) {
@@ -66,37 +58,14 @@ void system_update() {
 			if(time.minute >= 60) {
 				time.hour++;
 				time.minute = 0;
-#ifdef KDB_SYS
 				printf("You have been playing for %hu hour(s)", time.hour);
-#endif
 			}
 		}
 	}
 }
 
-u8 system_get_frame() {
-	return time.frame;
-}
-
-void system_drawtime(u16 x, u16 y) {
-	char buf[4];
-	uintToStr(time.hour, buf, 1);
-	VDP_drawText(buf, x + (3 - strlen(buf)), y);
-	VDP_drawText(":", x + 3, y);
-	uintToStr(time.hour, buf, 2);
-	VDP_drawText(buf, x + 4, y);
-	VDP_drawText(":", x + 6, y);
-	uintToStr(time.hour, buf, 2);
-	VDP_drawText(buf, x + 7, y);
-	VDP_drawText(".", x + 9, y);
-	uintToStr(time.hour, buf, 2);
-	VDP_drawText(buf, x + 10, y);
-}
-
 void system_new() {
-#ifdef KDB_SYS
 	puts("Starting a new game");
-#endif
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, true);
@@ -106,6 +75,7 @@ void system_new() {
 
 void system_save() {
 	if(sram_state == SRAM_INVALID) return;
+	puts("Writing game save to SRAM");
 	SRAM_enable();
 	SRAM_writeWord(0x000, stageID);
 	SRAM_writeWord(0x002, song_get_playing());
@@ -144,7 +114,7 @@ void system_save() {
 }
 
 void system_load() {
-	if(sram_state == SRAM_INVALID) SYS_die("Invalid SRAM");
+	puts("Loading game save from SRAM");
 	player_init();
 	SRAM_enableRO();
 	u16 rid = SRAM_readWord(0x00);
@@ -186,9 +156,7 @@ void system_load() {
 
 u8 system_checkdata() {
 	// Read a specific spot in SRAM
-#ifdef KDB_SYS
 	puts("Checking SRAM");
-#endif
 	SRAM_enableRO();
 	u32 test = SRAM_readLong(0x5C);
 	SRAM_disable();
@@ -215,42 +183,10 @@ u8 system_checkdata() {
 			sram_state = SRAM_INVALID;
 		}
 	}
-#ifdef KDB_SYS
 	switch(sram_state) {
-	case SRAM_VALID_EMPTY: puts("SRAM valid - no save data"); break;
-	case SRAM_VALID_SAVE: puts("SRAM valid - save exists"); break;
-	case SRAM_INVALID: puts("SRAM read/write test FAILED! Saving disabled"); break;
+		case SRAM_VALID_EMPTY:	puts("SRAM valid - no save data"); break;
+		case SRAM_VALID_SAVE:	puts("SRAM valid - save exists"); break;
+		case SRAM_INVALID:		puts("SRAM read/write test FAILED! Saving disabled"); break;
 	}
-#endif
 	return sram_state;
-}
-
-void system_verifychecksum() {
-	const u16 *CHECKSUM = (u16*) 0x18E;
-	if(*CHECKSUM == 0) { // No checksum
-		return;
-	}
-	u32 chk = 0;
-	u32 *ptr = (u32*) 0x200;
-	u16 loopCount = (0x100000 - 0x200) >> 6;
-	while(loopCount--) {
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-		chk ^= *ptr++;
-	}
-	u16 checksum = (chk >> 16) ^ (chk & 0xFFFF);
-	if(checksum != *CHECKSUM) checksumValid = false;
 }

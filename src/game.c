@@ -17,9 +17,10 @@
 #include "audio.h"
 #include "ai.h"
 #include "sheet.h"
+#include "sprite.h"
 
 // Item menu stuff
-Sprite *itemSprite[MAX_ITEMS];
+VDPSprite itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
 
 void draw_itemmenu();
@@ -30,11 +31,9 @@ void itemcursor_move(u8 oldindex, u8 index);
 void game_reset(bool load);
 
 void vblank() {
-	// Setup water for next frame if there is a water entity in the current room
-	if(water_screenlevel != WATER_DISABLE) vblank_water();
-	// Handle map scrolling
-	stage_update();
-	// Refresh the HUD if something has changed
+	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
+	sprites_send();
+	stage_update(); // Scrolling
 	if(hudRedrawPending) hud_update_vblank();
 }
 
@@ -45,8 +44,6 @@ u8 game_main(bool load) {
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
 	SYS_setVIntCallback(vblank);
 	SYS_setHIntCallback(hblank_water);
-	// A couple backgrounds (clouds) use tile scrolling
-	VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
 	effects_init();
 	game_reset(load);
 	
@@ -109,7 +106,6 @@ u8 game_main(bool load) {
 				system_update();
 			}
 		}
-		SPR_update();
 		VDP_waitVSync();
 	}
 	
@@ -126,8 +122,6 @@ void game_reset(bool load) {
 	camera_init();
 	tsc_init();
 	gameFrozen = false;
-	stageBackground = 0xFF;
-	stageBackgroundType = 0xFF;
 	if(load) {
 		system_load();
 	} else {
@@ -157,6 +151,7 @@ void draw_itemmenu() {
 	// TODO: Draw the status for all weapons the player owns under --ARMS--
 	// Items
 	VDP_drawTextWindow("--ITEM--", 16, 10);
+	u8 held = 0;
 	for(u16 i = 0; i < MAX_ITEMS; i++) {
 		u16 item = playerInventory[i];
 		if(item > 0) {
@@ -167,17 +162,23 @@ void draw_itemmenu() {
 				sprDef = &SPR_ItemImageG;
 				pal = PAL0;
 			}
-			itemSprite[i] = SPR_addSprite(sprDef,
-				24 + (i % 8) * 32, 88 + (i / 8) * 16, TILE_ATTR(pal, 1, 0, 0));
-			SPR_SAFEANIM(itemSprite[i], item);
+			// Clobber the entity/bullet shared sheets
+			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, true, item,0);
+			itemSprite[i] = (VDPSprite){
+				.x = 24 + (i % 8) * 32 + 128, 
+				.y = 88 + (i / 8) * 16 + 128, 
+				.size = SPRITE_SIZE(3, 2),
+				.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_SHEETINDEX+held*6)
+			};
+			held++;
 		} else {
-			itemSprite[i] = NULL;
+			itemSprite[i] = (VDPSprite){};
 		}
 	}
 	// Draw item cursor at first index (default selection)
 	itemcursor_move(0, 0);
 	// These routines handle hiding or deleting sprites
-	player_pause();
+	//player_pause();
 	entities_pause();
 	hud_hide();
 	// Make the window plane fully overlap the game
@@ -188,16 +189,17 @@ void draw_itemmenu() {
 bool update_pause() {
 	// Start will close the menu and resume the game
 	if(joy_pressed(BUTTON_START)) {
-		// Unload item sprites
-		for(u16 i = 0; i < MAX_ITEMS; i++) {
-			SPR_SAFERELEASE(itemSprite[i]);
-		}
+		// Reload shared sheets we clobbered
+		SYS_disableInts();
+		sheets_init();
+		sheets_load_stage(stageID);
+		SYS_enableInts();
+		
 		selectedItem = 0;
 		// Reload TSC Events for the current stage
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
-		player_unlock_controls();
 		entities_unpause();
 		hud_show();
 		VDP_setWindowPos(0, 0);
@@ -236,6 +238,7 @@ bool update_pause() {
 			selectedItem %= 32;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		}
+		for(u8 i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
 	}
 	return true;
 }

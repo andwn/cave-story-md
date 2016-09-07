@@ -213,8 +213,8 @@ SPRITE SPR_CoreShot4	"sprite/coreshot4.png" 4 4 0 15 NONE
 # ----------------------------------------------------------------------------------------------
 
 # ItemImage PAL_Sym (gray)and PAL_Main (green)
-SPRITE SPR_ItemImage "sprite/itemimage.png" 4 2 0 0 NONE
-SPRITE SPR_ItemImageG "sprite/itemimage_g.png" 4 2 0 0 NONE
+SPRITE SPR_ItemImage "sprite/itemimage.png" 3 2 0 0 NONE
+SPRITE SPR_ItemImageG "sprite/itemimage_g.png" 3 2 0 0 NONE
 
 # Sound Test
 PALETTE PAL_SndTest	"back/soundtest.png" 0
