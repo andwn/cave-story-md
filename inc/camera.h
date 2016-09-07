@@ -4,6 +4,9 @@
 #include "common.h"
 #include "entity.h"
 
+// Pre calculated camera bounds values to speed up entity_on_screen()
+s32 camera_left, camera_top, camera_right, camera_bottom;
+
 struct {
 	s32 x, y; // Fixed point units
 	Entity *target; // Player, boss, NPC, or NULL

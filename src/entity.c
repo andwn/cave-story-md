@@ -12,6 +12,7 @@
 #include "tsc.h"
 #include "npc.h"
 #include "ai.h"
+#include "sprite.h"
 
 /* Linked List Macros */
 
@@ -68,8 +69,9 @@ const u8 heightmap[4][16] = {
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
 // Initialize sprite for entity
+/*
 void entity_sprite_create(Entity *e) {
-	if(e->spriteAnim == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
+	if(e->frame == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
 		e->sprite = NULL;
 		return;
 	}
@@ -77,36 +79,37 @@ void entity_sprite_create(Entity *e) {
 		&SPR_EnergyL : npc_info[e->type].sprite, 
 		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
 		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
-		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->direction),
+		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->dir),
 		npc_info[e->type].zorder);
-	if(e->spriteAnim > 0) SPR_SAFEANIM(e->sprite, e->spriteAnim);
-	if(e->spriteFrame > 0) SPR_SAFEFRAME(e->sprite, e->spriteFrame);
+	if(e->frame > 0) SPR_SAFEANIM(e->sprite, e->frame);
+	if(e->frame > 0) SPR_SAFEFRAME(e->sprite, e->frame);
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 	// TODO: Sorting
 }
-
+*/
 // Move to inactive list, delete sprite
 void entity_deactivate(Entity *e) {
 	LIST_MOVE(entityList, inactiveList, e);
 	// Remember sprite frame and animation (or if there was no sprite)
-	if(e->sprite != NULL) {
-		e->spriteAnim = e->sprite->animInd;
-		e->spriteFrame = e->sprite->frameInd;
-		e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
-	}
-	SPR_SAFERELEASE(e->sprite);
+	// No need for this anymore
+	//if(e->sprite != NULL) {
+	//	e->frame = e->sprite->animInd;
+	//	e->frame = e->sprite->frameInd;
+	//	e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
+	//}
+	//SPR_SAFERELEASE(e->sprite);
 }
 
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
 	LIST_MOVE(inactiveList, entityList, e);
-	entity_sprite_create(e);
+	//entity_sprite_create(e);
 }
 
 Entity *entity_delete(Entity *e) {
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
-	SPR_SAFERELEASE(e->sprite);
+	//SPR_SAFERELEASE(e->sprite);
 	MEM_free(e);
 	return next;
 }
@@ -119,7 +122,7 @@ Entity *entity_destroy(Entity *e) {
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
-	SPR_SAFERELEASE(e->sprite);
+	//SPR_SAFERELEASE(e->sprite);
 	MEM_free(e);
 	return next;
 }
@@ -162,6 +165,8 @@ void entities_update() {
 			e = next;
 			continue;
 		}
+		e->oframe = e->frame;
+		e->odir = e->dir;
 		// AI onUpdate method - may set STATE_DELETE
 		ENTITY_ONUPDATE(e);
 		if(e->state == STATE_DELETE) {
@@ -187,7 +192,7 @@ void entities_update() {
 					}
 				} else {
 					b->ttl = 0;
-					SPR_SAFERELEASE(b->sprite);
+					//SPR_SAFERELEASE(b->sprite);
 					if(e->eflags & NPC_INVINCIBLE) {
 						sound_play(SND_TINK, 5);
 					} else {
@@ -214,7 +219,6 @@ void entities_update() {
 						e->damage_time = 30;
 					}
 					e->health -= b->damage;
-					//ENTITY_ONHURT(e);
 				}
 			}
 		}
@@ -279,14 +283,14 @@ void entities_update() {
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
-		if(e->attack > 0 && !tsc_running()) {
+		if(e->attack > 0 && playerIFrames == 0 && !tsc_running()) {
 			u32 collided = *(u32*)&collision; // I do what I want
-			if((collided > 0 || entity_overlapping(&player, e)) && playerIFrames == 0) {
+			if((collided > 0 || entity_overlapping(&player, e))) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
 				if((e->eflags|e->nflags)&NPC_FRONTATKONLY) {
-					if((e->direction == 0 && collision.right == 0) ||
-							(e->direction > 0 && collision.left == 0)) {
+					if((e->dir == 0 && collision.right == 0) ||
+							(e->dir > 0 && collision.left == 0)) {
 						e = e->next;
 						continue;
 					}
@@ -306,9 +310,20 @@ void entities_update() {
 				e->damage_value = 0;
 			}
 		}
-		SPR_SAFEMOVE(e->sprite,
-			sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left,
-			sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top);
+		// Handle sprite movement/changes
+		if(e->sprite_count) {
+			sprite_pos(e->sprite[0],
+					(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
+					(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+			if(e->frame != e->oframe) {
+				if(e->autotile) { // Tile replace
+					
+				} else { // Tile index
+					
+				}
+			}
+			if(e->dir != e->odir) sprite_hflip(e->sprite[0], e->dir);
+		}
 		e = e->next;
 	}
 }
@@ -345,7 +360,7 @@ bool collide_stage_leftwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
-			(e->direction ? e->hit_box.right : e->hit_box.left));
+			(e->dir ? e->hit_box.right : e->hit_box.left));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
@@ -364,7 +379,7 @@ bool collide_stage_rightwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
-			(e->direction ? e->hit_box.left : e->hit_box.right));
+			(e->dir ? e->hit_box.left : e->hit_box.right));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
@@ -425,7 +440,7 @@ bool collide_stage_floor(Entity *e) {
 	}
 	return result;
 }
-
+/*
 u8 read_slope_table(s16 x, s16 y) {
 	s16 mx, my;
 	u8 t, type;
@@ -440,7 +455,7 @@ u8 read_slope_table(s16 x, s16 y) {
 	}
 	return 0;
 }
-
+*/
 bool collide_stage_slope_grounded(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
 	u8 pxa1, pxa2, pxa3;
@@ -499,9 +514,6 @@ bool collide_stage_slope_grounded(Entity *e) {
 
 bool collide_stage_floor_grounded(Entity *e) {
 	bool result = false;
-	// If we aren't moving we're still on the ground
-	// Lolno im floating an sheit
-	//if(e->y_speed == 0 && e->x_speed == 0) return true;
 	// First see if we are still standing on a flat block
 	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
@@ -562,12 +574,12 @@ bool collide_stage_ceiling(Entity *e) {
 }
 
 bool entity_overlapping(Entity *a, Entity *b) {
-	s16 ax1 = sub_to_pixel(a->x) - (a->direction ? a->hit_box.right : a->hit_box.left),
-		ax2 = sub_to_pixel(a->x) + (a->direction ? a->hit_box.left : a->hit_box.right),
+	s16 ax1 = sub_to_pixel(a->x) - (a->dir ? a->hit_box.right : a->hit_box.left),
+		ax2 = sub_to_pixel(a->x) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y) + a->hit_box.bottom,
-		bx1 = sub_to_pixel(b->x) - (b->direction ? b->hit_box.right : b->hit_box.left),
-		bx2 = sub_to_pixel(b->x) + (b->direction ? b->hit_box.left : b->hit_box.right),
+		bx1 = sub_to_pixel(b->x) - (b->dir ? b->hit_box.right : b->hit_box.left),
+		bx2 = sub_to_pixel(b->x) + (b->dir ? b->hit_box.left : b->hit_box.right),
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
@@ -575,12 +587,12 @@ bool entity_overlapping(Entity *a, Entity *b) {
 
 bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY) {
 	bounding_box result = { 0, 0, 0, 0 };
-	s16 ax1 = sub_to_pixel(a->x_next) - (a->direction ? a->hit_box.right : a->hit_box.left),
-		ax2 = sub_to_pixel(a->x_next) + (a->direction ? a->hit_box.left : a->hit_box.right),
+	s16 ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
+		ax2 = sub_to_pixel(a->x_next) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom,
-		bx1 = sub_to_pixel(b->x) - (b->direction ? b->hit_box.right : b->hit_box.left),
-		bx2 = sub_to_pixel(b->x) + (b->direction ? b->hit_box.left : b->hit_box.right),
+		bx1 = sub_to_pixel(b->x) - (b->dir ? b->hit_box.right : b->hit_box.left),
+		bx2 = sub_to_pixel(b->x) + (b->dir ? b->hit_box.left : b->hit_box.right),
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return result;
@@ -687,14 +699,6 @@ void entities_clear_by_type(u16 type) {
 	LIST_CLEAR_BY_FILTER(inactiveList, type, type);
 }
 
-bool entity_on_screen(Entity *obj) {
-	return obj->x > camera.x - pixel_to_sub(SCREEN_HALF_W + 32) &&
-			obj->x < camera.x + pixel_to_sub(SCREEN_HALF_W + 32) &&
-			obj->y > camera.y - pixel_to_sub(SCREEN_HALF_H + 32) &&
-			obj->y < camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
-}
-
-
 void entity_drop_powerup(Entity *e) {
 	u8 chance = random() % 5;
 	u16 bx = sub_to_block(e->x), by = sub_to_block(e->y);
@@ -725,6 +729,8 @@ void entity_drop_powerup(Entity *e) {
 void entity_default(Entity *e, u16 type, u16 flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
+	e->eflags |= flags;
+	e->enableSlopes = true;
 	if(type <= 360) {
 		e->nflags = npc_flags(type);
 		e->health = npc_health(type);
@@ -736,86 +742,61 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 		e->hit_box = npc_hitBox(type);
 		e->display_box = npc_displayBox(type);
 	} else {
-		e->nflags = 0;
 		e->health = 1;
-		e->attack = 0;
-		e->experience = 0;
-		e->hurtSound = 0;
-		e->deathSound = 0;
-		e->deathSmoke = 0;
 		e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 		e->display_box = (bounding_box) { 8, 8, 8, 8 };
 	}
-	e->eflags |= flags;
-	e->x_mark = 0;
-	e->y_mark = 0;
-	e->x_speed = 0;
-	e->y_speed = 0;
-	e->enableSlopes = true;
-	e->direction = 0;
-	e->grounded = false;
-	e->underwater = false;
-	e->damage_value = 0;
-	e->damage_time = 0;
-	e->sprite = NULL;
-	e->spriteFrame = 0;
-	e->spriteAnim = 0;
-	e->spriteVFlip = 0;
-	e->state = 0;
-	e->state_time = 0;
-	e->state_time2 = 0;
-	e->linkedEntity = NULL;
 }
-
+/*
 bool entity_disabled(Entity *e) {
 	// Some entities should not be activated until a specific system flag is set,
 	// and some no longer appear once one is set
 	if((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id)) return true;
-	//if((e->eflags&NPC_DISABLEONFLAG) && system_get_flag(e->id)) return true;
 	return false;
 }
-
+*/
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
 	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
 	// Allocate memory and start applying values
-	Entity *e = MEM_alloc(sizeof(Entity));
-	e->next = NULL; e->prev = NULL;
+	u8 sprite_count = npc_info[type].sprite_count;
+	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	*e = (Entity){};
+	//e->next = NULL; e->prev = NULL;
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = id;
 	e->event = event;
-	e->eflags = flags;
-	if(stageID == 28) {
-		e->alwaysActive = true;
-	} else {
-		e->alwaysActive = false;
-	}
-	entity_default(e, type, 0);
-	e->direction = direction;
+	//e->eflags = flags;
+	e->sprite_count = sprite_count;
+	//if(stageID == 28) e->alwaysActive = true;
+	entity_default(e, type, flags);
+	e->dir = direction;
 	ENTITY_ONCREATE(e);
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		LIST_PUSH(entityList, e);
-		entity_sprite_create(e);
+		//entity_sprite_create(e);
 	} else {
 		LIST_PUSH(inactiveList, e);
-		e->sprite = NULL;
+		//e->sprite = NULL;
 	}
 	return e;
 }
 
 Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
-	Entity *e = MEM_alloc(sizeof(Entity));
+	u8 sprite_count = npc_info[360 + bossid].sprite_count;
+	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	*e = (Entity){};
 	e->x = block_to_sub(x) + pixel_to_sub(8);
 	e->y = block_to_sub(y) + pixel_to_sub(8);
 	e->id = 0;
 	e->event = event;
-	e->eflags = NPC_SOLID | NPC_SHOOTABLE | NPC_EVENTONDEATH | NPC_SHOWDAMAGE;
-	entity_default(e, 360 + bossid, 0);
+	e->sprite_count = sprite_count;
+	entity_default(e, 360 + bossid, NPC_SOLID|NPC_SHOOTABLE|NPC_EVENTONDEATH|NPC_SHOWDAMAGE);
 	e->alwaysActive = true;
 	ENTITY_ONCREATE(e);
 	LIST_PUSH(entityList, e);
 	bossEntity = e;
-	entity_sprite_create(e);
+	//entity_sprite_create(e);
 	return e;
 }
 
@@ -825,9 +806,9 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		if(e->event == event) {
 			SPR_SAFERELEASE(e->sprite);
 			entity_default(e, type, flags);
-			e->direction = direction;
+			e->dir = direction;
 			ENTITY_ONCREATE(e);
-			entity_sprite_create(e);
+			//entity_sprite_create(e);
 		}
 		e = e->next;
 	}
@@ -835,16 +816,16 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	while(e != NULL) {
 		if(e->event == event) {
 			entity_default(e, type, flags);
-			e->direction = direction;
+			e->dir = direction;
 			ENTITY_ONCREATE(e);
 			// Some CNP'd offscreen entities (Balrog in Sand Zone) set alwaysActive,
 			// so when that happens we need to move it into the active list
 			if(e->alwaysActive) {
 				LIST_MOVE(inactiveList, entityList, e);
-				entity_sprite_create(e);
-			} else {
-				e->sprite = NULL;
-			}
+				//entity_sprite_create(e);
+			} //else {
+			//	e->sprite = NULL;
+			//}
 		}
 		e = e->next;
 	}
@@ -854,9 +835,9 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(e->event == event) {
-			if(e->direction != direction){
-				e->direction = direction;
-				SPR_SAFEHFLIP(e->sprite, direction);
+			if(e->dir != direction){
+				e->dir = direction;
+				//SPR_SAFEHFLIP(e->sprite, direction);
 			}
 			ENTITY_SET_STATE(e, state, 0);
 		}
@@ -865,7 +846,7 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 	e = inactiveList;
 	while(e != NULL) {
 		if(e->event == event) {
-			e->direction = direction;
+			e->dir = direction;
 			ENTITY_SET_STATE(e, state, 0);
 		}
 		e = e->next;
@@ -876,9 +857,9 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	Entity *e = entityList;
 	while(e != NULL) {
 		if(e->event == event) {
-			if(e->direction != direction){
-				e->direction = direction;
-				SPR_SAFEHFLIP(e->sprite, direction);
+			if(e->dir != direction){
+				e->dir = direction;
+				//SPR_SAFEHFLIP(e->sprite, direction);
 			}
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
@@ -890,7 +871,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	e = inactiveList;
 	while(e != NULL) {
 		if(e->event == event) {
-			e->direction = direction;
+			e->dir = direction;
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
 			e->grounded = false;
@@ -900,14 +881,6 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	}
 }
 
-void entities_pause() {
-	while(entityList != NULL) entity_deactivate(entityList);
-}
-
-void entities_unpause() {
-	entities_update_inactive();
-}
-
 bool entity_exists(u16 type) {
 	Entity *e = entityList;
 	while(e != NULL) {
@@ -915,4 +888,22 @@ bool entity_exists(u16 type) {
 		e = e->next;
 	}
 	return false;
+}
+
+void entities_draw_fore() {
+	const Entity *e = entityList;
+	while(e) {
+		if(!e->inback && !e->hidden && entity_on_screen(e)) 
+				sprite_addq(e->sprite, e->sprite_count);
+		e = e->next;
+	}
+}
+
+void entities_draw_back() {
+	const Entity *e = entityList;
+	while(e) {
+		if(e->inback && !e->hidden && entity_on_screen(e))
+				sprite_addq(e->sprite, e->sprite_count);
+		e = e->next;
+	}
 }

@@ -21,7 +21,7 @@ void ai_jenka(Entity *e) {
 		case 0: 
 		{
 			e->state = 1; 
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 		}
 		/* no break */
 		case 1: 
@@ -29,7 +29,7 @@ void ai_jenka(Entity *e) {
 			if (++e->state_time > 30 && (random() % TIME(120)) < 10) {
 				e->state = 2; 
 				e->state_time = 0; 
-				SPR_SAFEANIM(e->sprite, 1);
+				e->frame = 1;
 			} 
 		}
 		break;
@@ -38,7 +38,7 @@ void ai_jenka(Entity *e) {
 			if (++e->state_time > TIME(8)) {
 				e->state = 1;
 				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, 0);
+				e->frame = 0;
 			} 
 		}
 		break;
@@ -51,13 +51,13 @@ void ai_doctor(Entity *e) {
 		{
 			e->state = 11;
 			e->state_time2 = 0;
-			SPR_SAFEANIM(e->sprite, 1);
+			ANIMATE(e, 10, 1,2);
 		}
 		/* no break */
 		case 11:
 		{
 			if (++e->state_time2 > TIME(8*6)) {
-				SPR_SAFEANIM(e->sprite, 0); 
+				e->frame = 0;
 				e->state = 1; 
 			}
 		}
@@ -66,7 +66,7 @@ void ai_doctor(Entity *e) {
 		{
 			e->state = 21;
 			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 3;
 			e->y_mark = e->y - (32 << CSF);
 		}
 		/* no break */
@@ -79,7 +79,7 @@ void ai_doctor(Entity *e) {
 		case 30:	// he teleports away
 		{
 			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 3;
 			e->y_speed = 0;
 			e->state++;
 		}
@@ -95,7 +95,7 @@ void ai_doctor(Entity *e) {
 		{
 			e->state_time = 0;
 			e->state = 41;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 3;
 		}
 		/* no break */
 		case 41:
@@ -122,7 +122,7 @@ void ai_toroko(Entity *e) {
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 			e->x_speed = 0;
 			e->state = 1;
 		}
@@ -135,7 +135,7 @@ void ai_toroko(Entity *e) {
 		case 3:		// run away!!
 		{
 			e->state = 4;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 		}
 		/* no break */
 		case 4:
@@ -150,7 +150,7 @@ void ai_toroko(Entity *e) {
 		case 6:		// hop and run away!!
 		{
 			e->state = 7;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 		}
@@ -165,7 +165,7 @@ void ai_toroko(Entity *e) {
 		// shaking the ground, used in Shack
 		case 8:
 		{
-			//SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 			e->state_time = 0;
 			e->state = 9;
 			e->y_speed = SPEED(-0x200);
@@ -180,7 +180,7 @@ void ai_toroko(Entity *e) {
 		case 10:	// eeks and falls down
 		{
 			e->state = 11;
-			SPR_SAFEANIM(e->sprite, 3);
+			e->frame = 3;
 			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 			sound_play(SND_ENEMY_SQUEAK, 5);
@@ -191,7 +191,7 @@ void ai_toroko(Entity *e) {
 		{
 			if (e->grounded) {
 				e->state = 12;
-				SPR_SAFEANIM(e->sprite, 4);
+				e->frame = 4;
 				e->eflags |= NPC_INTERACTIVE;
 				e->x_speed = 0;
 			}
@@ -215,8 +215,6 @@ void ai_toroko_teleport_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->x += 8 << CSF;
-			//e->hit_box.bottom = 8;
 			e->grounded = false;
 			e->state = 1;
 			e->state_time = 0;
@@ -227,7 +225,7 @@ void ai_toroko_teleport_in(Entity *e) {
 		{
 			//if (DoTeleportIn(o, 2)) {
 			if(++e->state_time > TIME(50)) {
-				SPR_SAFEANIM(e->sprite, 1);
+				e->frame = 1;
 				e->state = 2;
 			}
 		}
@@ -236,7 +234,7 @@ void ai_toroko_teleport_in(Entity *e) {
 		{
 			if (e->grounded) {
 				e->state = 4;
-				SPR_SAFEANIM(e->sprite, 4);
+				e->frame = 4;
 				sound_play(SND_THUD, 5);
 			}
 		}
@@ -353,9 +351,9 @@ void ai_sue(Entity *e) {
 		{
 			Entity *link = e->linkedEntity;
 			if (link != NULL) {
-				e->x_next = link->x + link->direction ? (32 << CSF) : -(32 << CSF);
+				e->x_next = link->x + link->dir ? (32 << CSF) : -(32 << CSF);
 				e->y_next = link->y - (32 << CSF);
-				if(e->direction != link->direction) TURN_AROUND(e);
+				if(e->dir != link->dir) TURN_AROUND(e);
 			}
 		}
 		break;
@@ -393,7 +391,7 @@ void ai_sue(Entity *e) {
 		{
 			MOVE_X(SPEED(0x400));
 			if (e->x < player.x - (8<<CSF)) {
-				e->direction = 1;
+				e->dir = 1;
 				e->state = 0;
 			}
 		}
@@ -558,7 +556,7 @@ void ai_king(Entity *e) {
 			e->y_next = e->y;
 			// Hit the wall
 			if (e->x_speed == 0) {
-				e->direction = 1;
+				e->dir = 1;
 				e->state = 7;
 				e->state_time = 0;
 				e->y_speed = SPEED(-0x400);
@@ -628,9 +626,9 @@ void ai_kanpachi_fishing(Entity *e) {
 	}
 	// open eyes when player comes near
 	if(PLAYER_DIST_X(64<<CSF) && PLAYER_DIST_Y2(64<<CSF, 16<<CSF)) {
-		SPR_SAFEFRAME(e->sprite, 1);
+		e->frame = 1;
 	} else {
-		SPR_SAFEFRAME(e->sprite, 0);
+		e->frame = 0;
 	}
 }
 
@@ -744,12 +742,12 @@ void ai_npc_at_computer(Entity *e) {
 	if(stageID == 1 && e->type == 0x3E) {
 		e->state = STATE_DELETE; // Remove duplicate Kazuma from Arthur's house
 	}
-	if((++e->state_time % 30 == 1) && (random() % 4 == 0)) {
-		s16 newAnim = e->sprite->animInd + 1;
-		if(newAnim >= 3) newAnim = 0;
-		SPR_SAFEANIM(e->sprite, newAnim);
-		e->state_time = 0;
-	}
+	//if((++e->state_time % 30 == 1) && (random() % 4 == 0)) {
+	//	s16 newAnim = e->sprite->animInd + 1;
+	//	if(newAnim >= 3) newAnim = 0;
+	//	SPR_SAFEANIM(e->sprite, newAnim);
+	//	e->state_time = 0;
+	//}
 }
 
 void generic_npc_states(Entity *e) {

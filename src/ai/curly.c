@@ -136,11 +136,11 @@ void ai_curly_carried(Entity *e) {
 		/* no break */
 		case 1:
 		{	// carried by player
-			if(player.direction != e->direction) {
-				e->direction ^= 1;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+			if(player.dir != e->dir) {
+				e->dir ^= 1;
+				SPR_SAFEHFLIP(e->sprite, e->dir);
 			}
-			e->x = player.x + pixel_to_sub(e->direction ? -4 : 4);
+			e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
 			e->y = player.y - pixel_to_sub(5);
 		}
 		break;
@@ -209,8 +209,8 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 			e->state = CURLYB_WAIT;
 			e->state_time = (random() % 50) + 50;
 			SPR_SAFEANIM(e->sprite, 0);
-			e->direction = (e->x <= player.x);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			e->dir = (e->x <= player.x);
+			SPR_SAFEHFLIP(e->sprite, e->dir);
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE;
@@ -226,8 +226,8 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 			e->state = CURLYB_WALKING_PLAYER;
 			SPR_SAFEANIM(e->sprite, 1);
 			e->state_time = (random() % 50) + 50;
-			e->direction = (e->x <= player.x);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			e->dir = (e->x <= player.x);
+			SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
 		/* no break */
 		case CURLYB_WALKING_PLAYER:
@@ -267,7 +267,7 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 					curlyboss_fire(e, 2);
 				} else {
 					SPR_SAFEANIM(e->sprite, 0);
-					curlyboss_fire(e, e->direction);
+					curlyboss_fire(e, e->dir);
 				}
 			}
 			if (++e->state_time > TIME(30)) e->state = CURLYB_FIGHT_START;

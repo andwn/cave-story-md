@@ -22,14 +22,14 @@ void ai_fan_onCreate(Entity *e) {
 		anim += 1;
 		break;
 	case 98: // Right
-		e->direction = 1;
+		e->dir = 1;
 		break;
 	case 99: // Down
 		anim += 1;
-		e->direction = 1;
+		e->dir = 1;
 		break;
 	}
-	e->spriteAnim = anim;
+	e->frame = anim;
 }
 
 void ai_fan_onUpdate(Entity *e) {

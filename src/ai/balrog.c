@@ -358,7 +358,7 @@ void ai_balrog_bust_in(Entity *e) {
 
 	LIMIT_Y(SPEED(0x5FF));
 }
-
+/*
 // 68 - Boss: Balrog (Mimiga Village)
 void ai_balrogRunning_onUpdate(Entity *e) {
 	if(e->state_time > 0) e->state_time--;
@@ -377,7 +377,7 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 	case 1:
 	case 3:
 	case 5:
-		e->x_speed -= 0x10 - (0x20 * e->direction);
+		e->x_speed -= 0x10 - (0x20 * e->dir);
 		if(e->state_time % 16 == 14) sound_play(SND_THUD, 3);
 		if(e->state_time == 0 || (abs(e->x - player.x) < block_to_sub(2)))
 			ENTITY_SET_STATE(e, e->state + 1, 0);
@@ -426,9 +426,9 @@ void ai_balrogRunning_onState(Entity *e) {
 	case 1: // Run towards player
 	case 3: // Run towards player (2)
 	case 5: // Run towards player and jump
-		e->direction = e->x < player.x;
+		e->dir = e->x < player.x;
 		SPR_SAFEANIM(e->sprite, 1);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->state_time = 120;
 		break;
 	case 6: // Jumping
@@ -453,14 +453,14 @@ void ai_balrogRunning_onState(Entity *e) {
 		SPR_SAFEANIM(e->sprite, 3);
 		if(player_inflict_damage(1)) break;
 		player.y_speed = pixel_to_sub(-1);
-		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->direction);
+		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->dir);
 		e->state_time = 60;
 		break;
 	default:
 		break;
 	}
 }
-
+*/
 void ai_balrogFlying_onUpdate(Entity *e) {
 	enum {
 		WAIT_BEGIN = 0,
@@ -495,7 +495,7 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 				// Fire shot
 				Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
 					0, 0, OBJ_IGOR_SHOT, 0, 0);
-				shot->x_speed = e->direction ? 0x400 : -0x400;
+				shot->x_speed = e->dir ? 0x400 : -0x400;
 				shot->y_speed = -0x100 + (random() % 0x200);
 
 				sound_play(SND_EM_FIRE, 5);
@@ -680,12 +680,12 @@ void ai_balrog_boss_missiles(Entity *e)
 		/* no break */
 		case STATE_CHARGE+1:
 		{
-			e->x_speed += e->direction ? 0x20 : -0x20;
+			e->x_speed += e->dir ? 0x20 : -0x20;
 			//walking_animation(o);
 			
 			// stuck against the wall?
-			if ((e->direction == 0 && collide_stage_leftwall(e)) || \
-				(e->direction == 1 && collide_stage_rightwall(e)))
+			if ((e->dir == 0 && collide_stage_leftwall(e)) || \
+				(e->dir == 1 && collide_stage_rightwall(e)))
 			{
 				if (++e->x_mark > 5)
 					e->state = STATE_JUMP_FIRE;
@@ -775,8 +775,8 @@ void ai_balrog_boss_missiles(Entity *e)
 
 void ai_balrog_missile(Entity *e)
 {
-	if ((e->direction == 1 && collide_stage_rightwall(e)) || \
-		(e->direction == 0 && collide_stage_leftwall(e)))
+	if ((e->dir == 1 && collide_stage_rightwall(e)) || \
+		(e->dir == 0 && collide_stage_leftwall(e)))
 	{
 		//SmokeClouds(o, 3, 0, 0);
 		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
@@ -790,14 +790,14 @@ void ai_balrog_missile(Entity *e)
 	{
 		// recoil in oppisite direction
 		e->x_speed = random(-2, -1) << 9;
-		if (e->direction == 0) e->x_speed = -e->x_speed;
+		if (e->dir == 0) e->x_speed = -e->x_speed;
 		
 		e->y_speed = random(-2, 0) << 9;
 		
 		e->state = 1;
 	}
 	
-	e->x_speed += e->direction ? 0x20 : -0x20;
+	e->x_speed += e->dir ? 0x20 : -0x20;
 	
 	//if ((++e->state_time2 % 4) == 1)
 	//{

@@ -20,9 +20,6 @@ u8 game_main(bool load);
 // Listen to music, sound effects
 void soundtest_main();
 
-// NPC Test lets you cycle between different NPCs sprites and data
-void npctest_main();
-
 void credits_main(u8 ending);
 
 #endif /* INC_GAMEMODE_H_ */

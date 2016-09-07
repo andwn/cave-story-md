@@ -37,7 +37,6 @@ int main() {
 	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
     sound_init();
 	input_init();
-	//SPR_init(80, 0, 0);
 	SYS_enableInts();
     while(true) {
 		u8 select = titlescreen_main();
@@ -48,7 +47,6 @@ int main() {
 				if(select > 0) credits_main(select);
 				break;
 			case 2: soundtest_main(); break;
-			case 3: npctest_main(); break;
 		}
     }
 	return 0;

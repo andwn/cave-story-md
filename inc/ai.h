@@ -6,37 +6,15 @@
 
 /*
  * This module contains behavior or AI for entities specific to NPC type
- * There are 4 "methods" which may be indexed in the npc_info table for an NPC:
- * * onCreate
- * Called by entity_create() and entity_replace() after applying default values,
- * but before deciding to activate or deactivate (and therefore load the sprite).
- * Because of this SPR_XX functions will have to effect. Instead modify spriteAnim,
- * spriteFrame, spriteVFlip, and direction. The sprite, once created, will adjust accordingly
- * * onUpdate
- * Called for active entities only in entity_update(), after checking for deactivation, and
- * before combat. 
- * * onState
- * This is called whenever a TSC script changes the state of an entity. It is also called
- * when a bullet causes the entity's health to reach zero, and sets STATE_DEFEATED.
- * * onHurt
- * Removed. Check if e->damage_time is nonzero instead.
+ * There are 3 "methods" which may be indexed in the npc_info table for an NPC:
+ * * onCreate: when first created or replaced
+ * * onUpdate: each frame while it is active
+ * * onDeath: when it's killed
  */
 
-#define ENTITY_ONCREATE(e) ({                                                                  \
-	if(npc_info[e->type].onCreate != NULL) npc_info[e->type].onCreate(e);                      \
-})
-#define ENTITY_ONUPDATE(e) ({                                                                  \
-	if(npc_info[e->type].onUpdate != NULL) npc_info[e->type].onUpdate(e);                      \
-})
-#define ENTITY_ONSTATE(e) ({                                                                   \
-	if(npc_info[e->type].onState != NULL) npc_info[e->type].onState(e);                        \
-})
-
-#define ENTITY_SET_STATE(e, s, t) ({                                                           \
-	e->state = s;                                                                              \
-	e->state_time = t;                                                                         \
-	ENTITY_ONSTATE(e);                                                                         \
-})         
+#define ENTITY_ONCREATE(e) { if(npc_info[e->type].onCreate) npc_info[e->type].onCreate(e); }
+#define ENTITY_ONUPDATE(e) { if(npc_info[e->type].onUpdate) npc_info[e->type].onUpdate(e); }
+#define ENTITY_ONDEATH(e)  { if(npc_info[e->type].onDeath)  npc_info[e->type].onDeath(e);  }
 
 typedef void (*EntityMethod)(Entity*);
 
@@ -72,16 +50,8 @@ typedef void (*EntityMethod)(Entity*);
 	}                                                                                          \
 })
 
-#define FACE_PLAYER(e) ({                                                                      \
-	if((e->direction && e->x > player.x) || (!e->direction && e->x < player.x)) {              \
-		e->direction ^= 1;                                                                     \
-		SPR_SAFEHFLIP(e->sprite, e->direction);                                                \
-	}                                                                                          \
-})
-#define TURN_AROUND(e) ({                                                                      \
-	e->direction ^= 1;                                                                         \
-	SPR_SAFEHFLIP(e->sprite, e->direction);                                                    \
-})
+#define FACE_PLAYER(e) (e->dir = e->x < player.x)
+#define TURN_AROUND(e) (e->dir ^= 1)
 
 #define PLAYER_DIST_X(dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
 #define PLAYER_DIST_Y(dist) (player.y > e->y - (dist) && player.y < e->y + (dist))
@@ -97,8 +67,8 @@ typedef void (*EntityMethod)(Entity*);
 	if(e->y_speed < -(v)) e->y_speed = -(v);                                                   \
 })
 
-#define MOVE_X(v) (e->x_speed = e->direction ? (v) : -(v))
-#define ACCEL_X(v) (e->x_speed += e->direction ? (v) : -(v))
+#define MOVE_X(v) (e->x_speed = e->dir ? (v) : -(v))
+#define ACCEL_X(v) (e->x_speed += e->dir ? (v) : -(v))
 
 #define CURLY_TARGET_HERE(e) ({                                                                \
 	curly_target_time = 120;                                                                   \
@@ -120,21 +90,21 @@ typedef void (*EntityMethod)(Entity*);
 								(y) + (random() % (h)));                                       \
 	}                                                                                          \
 })
-
+/*
 #define SPRITE_FROM_SHEET(spr, sht) ({                                                         \
 	for(u8 i = 0; i < 10; i++) {                                                               \
 		if(sheets[i].id == (sht)) {                                                            \
-			e->spriteAnim = i;                                                                 \
+			e->frame = i;                                                                 \
 			break;                                                                             \
 		}                                                                                      \
 	}                                                                                          \
 	e->sprite = SPR_addSpriteEx((spr), 0, 0,                                                   \
-		TILE_ATTR_FULL(PAL0,0,0,e->direction,sheets[e->spriteAnim].index), 0,                  \
+		TILE_ATTR_FULL(PAL0,0,0,e->dir,sheets[e->frame].index), 0,                  \
 		SPR_FLAG_AUTO_SPRITE_ALLOC);                                                           \
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);                                                  \
-	e->spriteFrame = 0;                                                                        \
+	e->frame = 0;                                                                        \
 })
-
+*/
 #define ANIMATE(e, spd, ...) {                                                                 \
 	const u8 anim[] = { __VA_ARGS__ };                                                         \
 	(e)->animtime++;                                                                           \

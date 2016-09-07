@@ -47,6 +47,7 @@ typedef struct {
 	// 0 - Draw a plain tiled image into PLAN_B
 	// 1 - Moon/Fog - Draw from a specified pattern into PLAN_B and scroll the clouds
 	// 2 - Clear PLAN_B to black, no background
+	// 3 - Scroll tiled image automatically (Ironhead boss)
 	u8 type;
 	u8 width, height; // Size of tiled image for type 0
 } background_info_def;
@@ -74,14 +75,15 @@ typedef struct {
 } face_info_def;
 
 // Information about each NPC type, indexes are the same as npc.tbl
-// It has 8 extra spots for major bosses though, as they do not exist in npc.tbl
+#define NOSHEET 255
 typedef struct {
-	const SpriteDefinition *sprite; // Sprite to load
+	// SpriteDef containing tile data, ignored if a sheet is used
+	const SpriteDefinition *sprite;
+	u8 sheet; // Sheet ID or NOSHEET
 	u16 palette; // Any of the 4 loaded palettes to use for the sprite
-	u8 zorder;
+	u8 sprite_count; // Size of sprite[0], must be known beforehand
 	char name[26]; // Name of the NPC (NPC Test)
-	// The "methods" for AI/behavior. Storing them in this table frees up 16 bytes per entity
-	EntityMethod onCreate, onUpdate, onState;//, onHurt;
+	EntityMethod onCreate, onUpdate, onDeath; // AI
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
@@ -91,12 +93,6 @@ typedef struct {
 	u8 name[16];
 } weapon_info_def;
 
-// Oh... I was going to do something with this
-typedef struct {
-	u8 *function;
-	u8 paramCount;
-} command_info_def;
-
 extern const tileset_info_def tileset_info[TILESET_COUNT];
 
 extern const background_info_def background_info[BACKGROUND_COUNT];
@@ -105,7 +101,7 @@ extern const song_info_def song_info[SONG_COUNT];
 
 extern const sound_info_def sound_info[SOUND_COUNT];
 
-extern const npc_info_def npc_info[NPC_COUNT + 9 + 3];
+extern const npc_info_def npc_info[NPC_COUNT + 9 + 3]; // 9 bosses
 
 extern const weapon_info_def weapon_info[WEAPON_COUNT];
 

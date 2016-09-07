@@ -9,7 +9,8 @@
  */
 
 // Used in Entity.spriteAnim, disables loading sprite when reactivating
-#define SPRITE_DISABLE 0xFF       
+// Not needed - use e->hidden
+//#define SPRITE_DISABLE 0xFF       
 
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
@@ -41,6 +42,11 @@ enum {
 #define MAX_JUMP_TIME 0x11
 #endif
 
+#define entity_on_screen(e) ((unsigned)((e)->x - camera_left) < camera_right && \
+		(unsigned)((e)->y - camera_top) < camera_bottom)
+		
+#define entity_disabled(e) ((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id))
+
 // This slightly redundant typedef is required for Entity to refer to itself
 typedef struct Entity Entity;
 
@@ -63,13 +69,13 @@ struct Entity {
 	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
 	bool alwaysActive; // Guaranteed to never deactivate when true
-	u16 state, state_time, state_time2;
+	u16 state, state_time, state_time2; // AI script state and timers
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
 	s32 x_mark, y_mark; // Marker value so the AI can remember a position later
 	s16 x_speed, y_speed; // Velocity
-	bool direction, // Direction entity is facing, 0=left, 1=right
+	bool dir, odir, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping
 		underwater, // True when entity is within a water tile
 		enableSlopes; // Check collision with slopes when enabled
@@ -77,11 +83,17 @@ struct Entity {
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	bounding_box display_box; // Area where sprite is displayed relative to the center
 	// Used to generate damage strings
-	s16 damage_value;
-	s8 damage_time;
-	// Sprite
-	u8 sprite_count, frame, oframe, animtime;
-	VDPSprite sprite[0];
+	s16 damage_value; // Cumulative damage to be displayed
+	s8 damage_time; // Amount of time before effect is created
+	/* Sprite Stuff */
+	bool hidden,
+		inback, // Draw sprite in back (end of the sprite list)
+		autotile; // Queue DMA transfer of tiles when frame changes
+	u8 sprite_count; // Number of (hardware) sprites
+	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
+	u8 animtime; // Animation timer used by AI and ANIMATE() macro
+	u16 vramindex; // Sheet or tiles index
+	VDPSprite sprite[0]; // Raw sprite(s) to copy into sprite list
 };
 
 // First element of the "active" list. Entities in this list are updated fully
@@ -141,11 +153,8 @@ Entity *entity_find_by_type(u16 event);
 
 // Returns true if an entity of given type exists
 bool entity_exists(u16 type);
-// Returns true if the entity should be disabled (checks flags)
-bool entity_disabled(Entity *e);
 
 void entity_drop_powerup(Entity *e);
-bool entity_on_screen(Entity *e);
 
 void entity_sprite_create(Entity *e);
 
@@ -164,5 +173,9 @@ bool entity_overlapping(Entity *a, Entity *b);
 bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY);
 
 void entity_default(Entity *e, u16 type, u16 flags);
+
+// Drawing
+void entities_draw_fore();
+void entities_draw_back();
 
 #endif // INC_ENTITY_H_

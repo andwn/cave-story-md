@@ -13,16 +13,16 @@ void oncreate_snap(Entity *e) {
 }
 
 void oncreate_op2flip(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->direction = 1;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
 }
 
 void oncreate_snapflip(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->direction = 1;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
 	SNAP_TO_GROUND(e);
 }
 
 void oncreate_op2anim(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->spriteAnim = 1;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
 void oncreate_op2snap(Entity *e) {
@@ -30,8 +30,8 @@ void oncreate_op2snap(Entity *e) {
 }
 
 void oncreate_blackboard(Entity *e) {
-	e->y -= block_to_sub(1);
-	if(e->eflags & NPC_OPTION2) e->spriteFrame = 1;
+	e->y -= 16<<CSF;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
 void oncreate_persistent(Entity *e) {
@@ -44,25 +44,25 @@ void oncreate_spike(Entity *e) {
 	if(stageID == 0x2D) {
 		// Disable sprite in Labyrinth M
 		// The map has a brown version overlapping us so it's pointless
-		e->spriteAnim = SPRITE_DISABLE;
+		e->hidden = true;
 		return;
 	}
 	// Shrink hitbox slightly -- test this in First Cave
 	// Player should not collide with the first spike to the left when not jumping
-	e->hit_box.left--;
-	e->hit_box.top--;
-	e->hit_box.right--;
-	e->hit_box.bottom--;
+	e->hit_box.left -= 2;
+	e->hit_box.top -= 2;
+	e->hit_box.right -= 2;
+	e->hit_box.bottom -= 2;
 	
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
-		e->spriteVFlip = 1;
+		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		e->spriteAnim = 1;
+		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		e->spriteAnim = 1;
-		e->direction = 1;
+		e->frame = 1;
+		e->dir = 1;
 	}
 }
 
@@ -110,7 +110,7 @@ void ai_default_onState(Entity *e) {
 void ai_teleIn_onCreate(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y -= pixel_to_sub(8);
-	e->spriteAnim = 2;
+	e->frame = 2;
 	sound_play(SND_TELEPORT, 5);
 }
 
@@ -122,7 +122,7 @@ void ai_teleIn_onUpdate(Entity *e) {
 				e->state_time = 0;
 				e->state++;
 				e->grounded = false;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 			}
 		}
 		break;
@@ -154,7 +154,7 @@ void ai_teleOut_onUpdate(Entity *e) {
 				e->state++;
 				e->state_time = 0;
 				e->y_speed = 0;
-				SPR_SAFEANIM(e->sprite, 1);
+				//SPR_SAFEANIM(e->sprite, 1);
 				sound_play(SND_TELEPORT, 5);
 			} else {
 				e->y_speed += SPEED(0x43);
@@ -167,7 +167,8 @@ void ai_teleOut_onUpdate(Entity *e) {
 			if(++e->state_time >= 5*14) {
 				e->state++;
 				e->state_time = 0;
-				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				e->hidden = true;
+				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
 		}
 		break;
@@ -175,7 +176,7 @@ void ai_teleOut_onUpdate(Entity *e) {
 }
 
 void ai_teleLight_onCreate(Entity *e) {
-	e->spriteAnim = SPRITE_DISABLE;
+	e->hidden = true;
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
 }

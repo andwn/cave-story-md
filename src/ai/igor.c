@@ -9,6 +9,9 @@
 #include "input.h"
 #include "effect.h"
 
+// Rewrite this whole file tbh
+
+/*
 #define fireatk curly_target_x
 
 enum {
@@ -27,7 +30,7 @@ void ai_igor_onCreate(Entity *e) {
 	e->attack = 0;
 	e->hit_box.bottom += 4;
 	e->hit_box.top -= 4;
-	if(e->type == 0x59) e->spriteAnim = 7;
+	if(e->type == 0x59) e->frame = 7;
 }
 
 void ai_igor_onUpdate(Entity *e) {
@@ -39,7 +42,7 @@ void ai_igor_onUpdate(Entity *e) {
 		if(fireatk == -1) {	// begin mouth-blast attack
 			if(++e->state_time > 20) ENTITY_SET_STATE(e, STATE_MOUTH_BLAST, 0);
 		} else {
-			if(e->direction == 0) {
+			if(e->dir == 0) {
 				if(e->x <= player.x + pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
 			} else {
 				if(e->x >= player.x - pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
@@ -54,7 +57,7 @@ void ai_igor_onUpdate(Entity *e) {
 		case STATE_PUNCH_2:
 		if(++e->state_time > 12) {
 			// return to normal-size bounding box
-			if(e->direction == 0) {
+			if(e->dir == 0) {
 				e->hit_box.left -= 10;
 			} else {
 				e->hit_box.right -= 10;
@@ -84,9 +87,9 @@ void ai_igor_onUpdate(Entity *e) {
 		if(e->state_time > 120) {
 			if((e->state_time % 8) == 1) {
 				sound_play(SND_BLOCK_DESTROY, 5);
-				Entity *shot = entity_create(sub_to_block(e->x) + (e->direction ? 1 : -1),
-					sub_to_block(e->y), 0, 0, 0x0B, 0, e->direction);
-				shot->x_speed = 0x4A0 * (e->direction ? 1 : -1);
+				Entity *shot = entity_create(sub_to_block(e->x) + (e->dir ? 1 : -1),
+					sub_to_block(e->y), 0, 0, 0x0B, 0, e->dir);
+				shot->x_speed = 0x4A0 * (e->dir ? 1 : -1);
 				shot->y_speed = 0x100 - (random() % 0x300);
 			}
 			// fires 6 shots
@@ -105,7 +108,7 @@ void ai_igor_onUpdate(Entity *e) {
 void ai_igor_onState(Entity *e) {
 	switch(e->state) {
 		case STATE_STAND:
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		SPR_SAFEANIM(e->sprite, 0);
 		e->attack = 0;
 		break;
@@ -116,13 +119,13 @@ void ai_igor_onState(Entity *e) {
 		// the mouth blast attack every third time.
 		if(++fireatk >= 3 && e->health <= npc_health(e->type) / 2) {
 			fireatk = -1;
-			e->direction ^= 1;	// walk away from player
+			e->dir ^= 1;	// walk away from player
 		}
-		/* no break */
+		
 		case STATE_WALK:
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		SPR_SAFEANIM(e->sprite, 1);
-		e->x_speed = pixel_to_sub(e->direction ? 1 : -1);
+		e->x_speed = pixel_to_sub(e->dir ? 1 : -1);
 		break;
 		case STATE_PUNCH:
 		SPR_SAFEANIM(e->sprite, 2);
@@ -131,7 +134,7 @@ void ai_igor_onState(Entity *e) {
 		case STATE_PUNCH_2:
 		sound_play(SND_EXPL_SMALL, 5);
 		// sprite appears identical, but has a wider bounding box.
-		if(e->direction == 0) {
+		if(e->dir == 0) {
 			e->hit_box.left += 10;
 		} else {
 			e->hit_box.right += 10;
@@ -152,7 +155,7 @@ void ai_igor_onState(Entity *e) {
 		break;
 		case STATE_MOUTH_BLAST:
 		FACE_PLAYER(e);
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		SPR_SAFEANIM(e->sprite, 4);
 		e->x_speed = 0;
 		break;
@@ -178,21 +181,13 @@ void ai_igorscene_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-/*
- * 0000	Standing
- * 0001	Standing
- * 0002	Walk
- * 0003	Walk
- * 0004	Bend arm and Jab
- * 0005	Quick Jab
- */
 void ai_igorscene_onState(Entity *e) {
 	switch(e->state) {
 		case 0:
 		case 1:
 		{
 			e->x_speed = 0;
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			SPR_SAFEHFLIP(e->sprite, e->dir);
 			SPR_SAFEANIM(e->sprite, 0);
 		}
 		break;
@@ -205,13 +200,13 @@ void ai_igorscene_onState(Entity *e) {
 		break;
 		case 4:
 		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		SPR_SAFEANIM(e->sprite, 2);
 		e->state_time = 20;
 		break;
 		case 5:
 		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		SPR_SAFEANIM(e->sprite, 3);
 		e->state_time = 20;
 		break;
@@ -280,3 +275,4 @@ void ai_igordead_onUpdate(Entity *e) {
 		case 4: break;
 	}
 }
+*/

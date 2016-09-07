@@ -9,6 +9,7 @@
 #include "effect.h"
 #include "camera.h"
 #include "system.h"
+#include "sprite.h"
 
 #ifdef PAL
 #define BLOCK_SOUND_INTERVAL	10
@@ -128,6 +129,7 @@ void ai_blockv_onUpdate(Entity *e) {
 }
 
 void ai_boulder_onUpdate(Entity *e) {
+	e->inback = true;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -184,9 +186,7 @@ void ai_boulder_onUpdate(Entity *e) {
 
 void ai_gaudiDying_onUpdate(Entity *e) {
 	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A && e->sprite != NULL) {
-		if(e->sprite != NULL) SPR_setPalette(e->sprite, PAL3);
-	}
+	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -196,7 +196,7 @@ void ai_gaudiDying_onUpdate(Entity *e) {
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			
-			SPR_SAFEANIM(e->sprite, 7);
+			//SPR_SAFEANIM(e->sprite, 7);
 			
 			e->y_speed = SPEED(-0x200);
 			MOVE_X(SPEED(-0x100));
@@ -209,7 +209,7 @@ void ai_gaudiDying_onUpdate(Entity *e) {
 		case 1:		// flying backwards through air
 		{
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
-				SPR_SAFEANIM(e->sprite, 8);
+				//SPR_SAFEANIM(e->sprite, 8);
 				e->state = 2;
 				e->state_time = 0;
 			}
@@ -219,7 +219,7 @@ void ai_gaudiDying_onUpdate(Entity *e) {
 		case 2:		// landed, shake
 		{
 			e->x_speed -= e->x_speed >> 4;
-			SPR_SAFEANIM(e->sprite, (e->state_time % TIME(8)) > 3 ? 9 : 8);
+			//SPR_SAFEANIM(e->sprite, (e->state_time % TIME(8)) > 3 ? 9 : 8);
 			
 			if (++e->state_time > TIME(50)) {
 				// this deletes Entity while generating smoke effects and boom
@@ -238,18 +238,16 @@ void ai_gaudiDying_onUpdate(Entity *e) {
 
 void ai_gaudi_onUpdate(Entity *e) {
 	if (e->health <= (1000 - GAUDI_HP)) {
-		SPR_SAFERELEASE(e->sprite);
+		//SPR_SAFERELEASE(e->sprite);
 		e->type = OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
-		entity_sprite_create(e);
+		//entity_sprite_create(e);
 		ai_gaudiDying_onUpdate(e);
 		return;
 	}
 	
 	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A && e->sprite != NULL) {
-		if(e->sprite != NULL) SPR_setPalette(e->sprite, PAL3);
-	}
+	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -269,7 +267,7 @@ void ai_gaudi_onUpdate(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 			//randblink(o, 1, 20, 100);
 			
 			if (!(random() % TIME(100))) {
@@ -286,7 +284,7 @@ void ai_gaudi_onUpdate(Entity *e) {
 			e->state = 11;
 			e->state_time = (random() % TIME(75)) + TIME(25);		// how long to walk for
 			
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 		}
 		/* no break */
 		case 11:
@@ -324,8 +322,8 @@ void ai_gaudi_onUpdate(Entity *e) {
 			// count how long we've been touching the wall
 			// we're trying to jump over..if it's not working
 			// go the other way.
-			if ((e->direction == 0 && collide_stage_leftwall(e)) || \
-				(e->direction == 1 && collide_stage_rightwall(e))) {
+			if ((e->dir == 0 && collide_stage_leftwall(e)) || \
+				(e->dir == 1 && collide_stage_rightwall(e))) {
 				if (++e->state_time > TIME(10)) {
 					e->state_time = 0;
 					TURN_AROUND(e);
@@ -359,23 +357,21 @@ void ai_gaudi_onUpdate(Entity *e) {
 
 void ai_gaudiFlying_onUpdate(Entity *e) {
 	if (e->health <= (1000 - GAUDI_FLYING_HP)) {
-		if (e->direction == 0)
+		if (e->dir == 0)
 			e->x -= (2 << 9);
 		else
 			e->x += (2 << 9);
 		
-		SPR_SAFERELEASE(e->sprite);
+		//SPR_SAFERELEASE(e->sprite);
 		e->type =OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
-		entity_sprite_create(e);
+		//entity_sprite_create(e);
 		ai_gaudiDying_onUpdate(e);
 		return;
 	}
 	
 	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A && e->sprite != NULL) {
-		if(e->sprite != NULL) SPR_setPalette(e->sprite, PAL3);
-	}
+	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
 	
 	switch(e->state) {
 		case 0:
@@ -388,7 +384,7 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 			e->y_mark = e->y + (e->y_speed * 8);
 			e->state = 1;
 			e->state_time2 = 120;
-			SPR_SAFEANIM(e->sprite, 10);
+			//SPR_SAFEANIM(e->sprite, 10);
 		}
 		/* no break */
 		case 1:
@@ -401,7 +397,7 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 		{
 			if (!--e->state_time)
 			{
-				SPR_SAFEANIM(e->sprite, 11);
+				//SPR_SAFEANIM(e->sprite, 11);
 				e->state = 3;
 				//e->frame |= 0x02;	// switch us into using flashing purple animation
 			}
@@ -417,7 +413,7 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->state = 1;
-				SPR_SAFEANIM(e->sprite, 10);
+				//SPR_SAFEANIM(e->sprite, 10);
 				//e->frame &= 1;		// stop flashing purple
 			}
 		}
@@ -435,10 +431,10 @@ void ai_gaudiFlying_onUpdate(Entity *e) {
 
 void ai_gaudiArmored_onUpdate(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
-		SPR_SAFERELEASE(e->sprite);
+		//SPR_SAFERELEASE(e->sprite);
 		e->type =OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
-		entity_sprite_create(e);
+		//entity_sprite_create(e);
 		ai_gaudiDying_onUpdate(e);
 		return;
 	}
@@ -451,7 +447,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 			e->x_mark = e->x;
 			e->state = 1;
 		}
@@ -464,7 +460,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 				if (PLAYER_DIST_X(192 << 9) && PLAYER_DIST_Y(160 << 9)) {	// begin hopping
 					e->state = 10;
 					e->state_time = 0;
-					SPR_SAFEANIM(e->sprite, 1);
+					//SPR_SAFEANIM(e->sprite, 1);
 				}
 			}
 		}
@@ -473,7 +469,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 		{
 			if (++e->state_time > 3) {
 				sound_play(SND_ENEMY_JUMP, 5);
-				SPR_SAFEANIM(e->sprite, 2);
+				//SPR_SAFEANIM(e->sprite, 2);
 				e->state_time = 0;
 				
 				if (++e->state_time2 < 3) {	// hopping back and forth
@@ -502,7 +498,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 				
 				sound_play(SND_THUD, 5);
 				e->state = 40;
-				SPR_SAFEANIM(e->sprite, 1);
+				//SPR_SAFEANIM(e->sprite, 1);
 				e->state_time = 0;
 			}
 		}
@@ -516,7 +512,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 				//EmFireAngledShot(o, OBJ_GAUDI_ARMORED_SHOT, 6, 0x600);
 				sound_play(SND_EM_FIRE, 5);
 				
-				SPR_SAFEANIM(e->sprite, 3);
+				//SPR_SAFEANIM(e->sprite, 3);
 				CURLY_TARGET_HERE(e);
 			}
 			
@@ -526,7 +522,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
 				sound_play(SND_THUD, 5);
 				e->state = 40;
-				SPR_SAFEANIM(e->sprite, 1);
+				//SPR_SAFEANIM(e->sprite, 1);
 				e->state_time = 0;
 			}
 		}
@@ -537,7 +533,7 @@ void ai_gaudiArmored_onUpdate(Entity *e) {
 			
 			if (++e->state_time >= 2) {
 				//stat("dtt= %d", abs(e->x_mark - e->x)>>9);
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 				e->x_speed = 0;
 				
 				e->state = 1;
@@ -617,7 +613,7 @@ void ai_pooh_black(Entity *e) {
 		{
 			e->alwaysActive = true;
 
-			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			e->frame = FRAME_FLYING;
 			FACE_PLAYER(e);
 			
 			e->y_speed = SPEED(0xA00);
@@ -631,7 +627,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 1:
 		{
-			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			e->frame = FRAME_FLYING;
 			e->y_speed = SPEED(0xA00);
 			
 			if ((e->grounded = collide_stage_floor(e))) {
@@ -648,7 +644,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 2:		// landed, showing landed frame
 		{
-			SPR_SAFEANIM(e->sprite, FRAME_LANDED);
+			e->frame = FRAME_LANDED;
 			e->attack = 0;
 			if (++e->state_time > TIME(24)) {
 				e->state = 3;
@@ -658,7 +654,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 3:		// standing, stare at player till he shoots us.
 		{
-			SPR_SAFEANIM(e->sprite, FRAME_STAND);
+			e->frame = FRAME_STAND;
 			bubble_xmark = e->x;
 			bubble_ymark = e->y;
 			
@@ -686,7 +682,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 4:		// flying away off-screen
 		{
-			SPR_SAFEANIM(e->sprite, FRAME_FLYING);
+			e->frame = FRAME_FLYING;
 			e->state_time++;
 			
 			// bubbles shoot down past player just before
@@ -744,7 +740,7 @@ void ai_pooh_black_dying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			SPR_SAFEANIM(e->sprite, FRAME_DYING);
+			e->frame = FRAME_DYING;
 			FACE_PLAYER(e);
 			
 			sound_play(SND_BIG_CRASH, 5);
@@ -765,10 +761,12 @@ void ai_pooh_black_dying(Entity *e) {
 				e->state = 2;
 				e->state_time2++;
 				if ((e->state_time2 % 4) == 2) {
-					SPR_SAFEVISIBILITY(e->sprite, 1);
+					e->hidden = false;
+					//SPR_SAFEVISIBILITY(e->sprite, 1);
 					sound_play(SND_BUBBLE, 5);
 				} else if((e->state_time2 % 4) == 0) {
-					SPR_SAFEVISIBILITY(e->sprite, 0);
+					e->hidden = true;
+					//SPR_SAFEVISIBILITY(e->sprite, 0);
 				}
 				if(e->state_time2 > 60) {
 					e->state = STATE_DELETE;
@@ -821,14 +819,14 @@ void ai_firewhirr(Entity *e) {
 			
 			// inc time-to-fire while player near
 			if (PLAYER_DIST_Y(80 << 9)) {
-				if (!e->direction && player.x < e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
-				if (e->direction && player.x > e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
+				if (!e->dir && player.x < e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
+				if (e->dir && player.x > e->x && PLAYER_DIST_X(160 << 9)) e->state_time2++;
 			}
 			
 			// if time to fire, spawn a shot
 			if (e->state_time2 > TIME(120)) {
 				shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-						0, 0, OBJ_FIREWHIRR_SHOT, 0, e->direction);
+						0, 0, OBJ_FIREWHIRR_SHOT, 0, e->dir);
 				shot->alwaysActive = true;
 				shot->x = e->x;
 				shot->y = e->y;
@@ -842,11 +840,11 @@ void ai_firewhirr(Entity *e) {
 }
 
 void ai_firewhirr_shot(Entity *e) {
-	e->x_next = e->x + (!e->direction ? SPEED(-0x200) : SPEED(0x200));
+	e->x_next = e->x + (!e->dir ? SPEED(-0x200) : SPEED(0x200));
 	e->y_next = e->y;
 	
-	if ((!e->direction && collide_stage_leftwall(e)) ||
-		(e->direction && collide_stage_rightwall(e))) {
+	if ((!e->dir && collide_stage_leftwall(e)) ||
+		(e->dir && collide_stage_rightwall(e))) {
 		//effect(e->x, e->CenterY(), EFFECT_FISHY);
 		e->state = STATE_DELETE;
 	}
@@ -870,13 +868,13 @@ void ai_gaudi_egg(Entity *e) {
 		e->state = 1;
 	} else if (e->state == 1) {
 		if (e->health < 90) {
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 			e->attack = 0;
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->nflags &= ~NPC_SHOOTABLE;
 			entity_drop_powerup(e);
 			sound_play(e->deathSound, 5);
-			//SmokeSide(o, 6, (e->direction==0)?DOWN:UP);
+			//SmokeSide(o, 6, (e->dir==0)?DOWN:UP);
 			e->state = 2;
 		}
 	}
@@ -968,14 +966,14 @@ void ai_buyobuyo_base(Entity *e) {
 		entity_drop_powerup(e);
 		sound_play(e->deathSound, 5);
 		e->state = 10;
-		SPR_SAFEANIM(e->sprite, 2);
+		//SPR_SAFEANIM(e->sprite, 2);
 	}
 	
 	switch(e->state) {
 		case 0:
 		{
 			// ceiling has different bounding box and action point
-			//if (e->direction == 1)
+			//if (e->dir == 1)
 			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
 			
 			e->state = 1;
@@ -985,12 +983,12 @@ void ai_buyobuyo_base(Entity *e) {
 		case 1:
 		{
 			if (PLAYER_DIST_X(0x14000)) {
-				if ((e->direction == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
-					(e->direction == 1 && PLAYER_DIST_Y2(0x2000, 0x14000))) {
+				if ((e->dir == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
+					(e->dir == 1 && PLAYER_DIST_Y2(0x2000, 0x14000))) {
 					if (--e->state_time < 0) {
 						e->state = 2;
 						e->state_time = 0;
-						SPR_SAFEANIM(e->sprite, 1);
+						//SPR_SAFEANIM(e->sprite, 1);
 					}
 				}
 			}
@@ -1000,7 +998,7 @@ void ai_buyobuyo_base(Entity *e) {
 		{
 			if (++e->state_time > TIME(10)) {
 				Entity *buyo = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-						0, 0, OBJ_BUYOBUYO, 0, e->direction);
+						0, 0, OBJ_BUYOBUYO, 0, e->dir);
 				buyo->x = e->x;
 				buyo->y = e->y;
 				
@@ -1015,7 +1013,7 @@ void ai_buyobuyo_base(Entity *e) {
 				} else {
 					e->state_time = TIME(20);
 				}
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 			}
 		}
 		break;
@@ -1030,7 +1028,7 @@ void ai_buyobuyo(Entity *e) {
 		case 0:
 		{
 			// shoot up down at player...
-			e->y_speed = (e->direction == 0) ? SPEED(-0x600) : SPEED(0x600);
+			e->y_speed = (e->dir == 0) ? SPEED(-0x600) : SPEED(0x600);
 			e->state = 1;
 			e->state_time = 0;
 		}
@@ -1070,7 +1068,7 @@ void ai_buyobuyo(Entity *e) {
 			LIMIT_Y(SPEED(0x400));
 			
 			// move the point we are bobbling around
-			e->x_mark += e->direction ? SPEED(1 << 9) : SPEED(-(1 << 9));
+			e->x_mark += e->dir ? SPEED(1 << 9) : SPEED(-(1 << 9));
 			
 			if (++e->state_time > TIME(300)) deleteme = true;
 		}

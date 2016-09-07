@@ -17,16 +17,18 @@ enum {
 };
 
 // Power critter doesn't use sheets
+/*
 #define SET_FRAME(f) ({                                                                        \
 	if(e->type == OBJ_POWER_CRITTER) {                                                         \
 		SPR_SAFEANIM(e->sprite, min(f, 3));                                                    \
 	} else if(e->sprite != NULL) {                                                             \
-		e->spriteFrame = f;                                                                    \
-		SPR_setVRAMTileIndex(e->sprite, sheets[e->spriteAnim].index + (f) * 4);                \
+		e->frame = f;                                                                    \
+		SPR_setVRAMTileIndex(e->sprite, sheets[e->frame].index + (f) * 4);                \
 	}                                                                                          \
 })
-
+*/
 void ai_critter(Entity *restrict e) {
+	/*
 	if(e->sprite == NULL) {
 		if(e->type == OBJ_CRITTER_HOPPING_BLUE) {
 			SPRITE_FROM_SHEET(&SPR_CritHB, SHEET_CRITTER);
@@ -46,13 +48,14 @@ void ai_critter(Entity *restrict e) {
 			return; // Shouldn't happen
 		}
 	}
+	* */
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	switch(e->state) {
 		case STATE_WAITING:
 		{
-			SET_FRAME(0);
+			//SET_FRAME(0);
 			e->x_speed = e->y_speed = 0;
 			e->state++;
 		}
@@ -66,7 +69,7 @@ void ai_critter(Entity *restrict e) {
 		break;
 		case STATE_ATTENTION:
 		{
-			SET_FRAME(1);
+			//SET_FRAME(1);
 			e->state++;
 			e->state_time = 0;
 		}
@@ -79,7 +82,7 @@ void ai_critter(Entity *restrict e) {
 		break;
 		case STATE_HOPPING:
 		{
-			SET_FRAME(2);
+			//SET_FRAME(2);
 			e->grounded = false;
 			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED(0x100));
 			e->y_speed = SPEED(-0x600);
@@ -108,7 +111,7 @@ void ai_critter(Entity *restrict e) {
 			e->y_speed -= SPEED(0x50);
 			if(e->state_time % 8 == 1) sound_play(SND_CRITTER_FLY, 2);
 			if(e->state_time > TIME(50)) {
-				SET_FRAME(1);
+				//SET_FRAME(1);
 				e->state++;
 			} else if(e->grounded) {
 				e->state = STATE_WAITING;

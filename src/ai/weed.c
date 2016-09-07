@@ -12,22 +12,24 @@
 #include "sheet.h"
 #include "resources.h"
 
-void ai_jelly_onUpdate(Entity *restrict e) {
+void ai_jelly_onUpdate(Entity *e) {
+	/*
 	if(!e->sprite) {
 		SPRITE_FROM_SHEET(&SPR_Jelly, SHEET_JELLY);
 		e->state_time2 = 0;
 	} else if(++e->state_time2 > 10) {
-		if(++e->spriteFrame >= 5) e->spriteFrame = 0;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		if(++e->frame >= 5) e->frame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->state_time2 = 0;
 	}
+	* */
 	switch(e->state) {
 		case 0:
 		{
 			e->state_time = random() % TIME(20);
 			e->x_mark = e->x;
 			e->y_mark = e->y;
-			if(e->eflags & NPC_OPTION2) e->direction = 1;
+			if(e->eflags & NPC_OPTION2) e->dir = 1;
 			MOVE_X(SPEED(0x200));
 			e->state = 1;
 		}
@@ -70,7 +72,7 @@ void ai_jelly_onUpdate(Entity *restrict e) {
 		}
 		break;
 	}
-	if((e->direction && e->x > e->x_mark) || (!e->direction && e->x < e->x_mark)) TURN_AROUND(e);
+	if((e->dir && e->x > e->x_mark) || (!e->dir && e->x < e->x_mark)) TURN_AROUND(e);
 	if(e->y <= e->y_mark) e->y_speed += SPEED(0x20);
 	LIMIT_X(SPEED(0x100));
 	LIMIT_Y(SPEED(0x200));
@@ -85,11 +87,11 @@ void ai_jelly_onUpdate(Entity *restrict e) {
 	e->y = e->y_next;
 }
 
-void ai_kulala_onUpdate(Entity *restrict e) {
+void ai_kulala_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
 		{
-			SPR_SAFEANIM(e->sprite, 4);
+			//SPR_SAFEANIM(e->sprite, 4);
 			e->state = 1;
 		}
 		/* no break */
@@ -98,7 +100,7 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 			if(e->damage_time) {
 				camera_shake(30);
 				e->state = 10;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
 		}
@@ -116,12 +118,12 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 		{
 			e->state_time++;
 			if(e->state_time % TIME(5) == 0) {
-				u8 frame = e->sprite->animInd;
-				SPR_SAFEANIM(e->sprite, ++frame);
-				if(frame >= 3) {
+				//u8 frame = e->sprite->animInd;
+				//SPR_SAFEANIM(e->sprite, ++frame);
+				//if(frame >= 3) {
 					e->state = 12;
 					e->state_time = 0;
-				}
+				//}
 			}
 		}
 		break;
@@ -130,19 +132,19 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 			e->y_speed = SPEED(-0x155);
 			if(++e->state_time > TIME(20)) {
 				e->state = 10;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
 		}
 		break;
 		case 20:	// shot/freeze over/go invulnerable
 		{
-			SPR_SAFEANIM(e->sprite, 4);
+			//SPR_SAFEANIM(e->sprite, 4);
 			e->x_speed >>= 1;
 			e->y_speed += SPEED(0x20);
 			if(!e->damage_time) {
 				e->state = 10;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = TIME(30);
 			}
 		}
@@ -153,7 +155,7 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 		// x_mark unused so use it as a second timer
 		if(++e->x_mark > TIME(12)) {
 			e->state = 20;
-			SPR_SAFEANIM(e->sprite, 4);
+			//SPR_SAFEANIM(e->sprite, 4);
 			e->eflags |= NPC_INVINCIBLE;
 		}
 	} else {
@@ -170,11 +172,11 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 		// Unused y_mark for third timer
 		if(collide_stage_leftwall(e)) {
 			e->y_mark = TIME(50);
-			e->direction = 1;
+			e->dir = 1;
 		}
 		if(collide_stage_rightwall(e)) {
 			e->y_mark = TIME(50);
-			e->direction = 0;
+			e->dir = 0;
 		}
 		
 		if(e->y_mark > 0) {
@@ -193,7 +195,7 @@ void ai_kulala_onUpdate(Entity *restrict e) {
 	e->y = e->y_next;
 }
 
-void ai_mannan_onUpdate(Entity *restrict e) {
+void ai_mannan_onUpdate(Entity *e) {
 	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
@@ -201,17 +203,17 @@ void ai_mannan_onUpdate(Entity *restrict e) {
 		// Face sprite remains after defeated
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->nflags &= ~NPC_SHOOTABLE;
-		SPR_SAFEANIM(e->sprite, 2);
+		//SPR_SAFEANIM(e->sprite, 2);
 		e->attack = 0;
 		e->state = 3;
 		return;
-	} else if(e->state == 0 && e->damage_time) {
+	} else if(e->state == 0 && e->damage_time == 29) {
 		e->state = 1;
 		e->state_time = 0;
-		SPR_SAFEANIM(e->sprite, 1);
+		//SPR_SAFEANIM(e->sprite, 1);
 		Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-			0, 0, OBJ_MANNAN_SHOT, 0, e->direction);
-		shot->direction = e->direction;
+			0, 0, OBJ_MANNAN_SHOT, 0, e->dir);
+		shot->dir = e->dir;
 		// We want the bullet to delete itself offscreen, it can't do this while inactive
 		shot->alwaysActive = true;
 	} else if(e->state == 1 && ++e->state_time > 24) {
@@ -221,7 +223,7 @@ void ai_mannan_onUpdate(Entity *restrict e) {
 	}
 }
 
-void ai_mannanShot_onUpdate(Entity *restrict e) {
+void ai_mannanShot_onUpdate(Entity *e) {
 	ACCEL_X(SPEED(0x20));
 	if((e->state_time % 8) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
@@ -230,7 +232,9 @@ void ai_mannanShot_onUpdate(Entity *restrict e) {
 	e->x += e->x_speed;
 }
 
-void ai_malco_onUpdate(Entity *restrict e) {
+// Redo malco later
+/*
+void ai_malco_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 10:
 		if(++e->state_time < 100) {
@@ -288,7 +292,7 @@ void ai_malco_onState(Entity *restrict e) {
 }
 
 void ai_malcoBroken_onCreate(Entity *restrict e) {
-	e->spriteAnim = 6;
+	e->frame = 6;
 }
 
 void ai_malcoBroken_onState(Entity *restrict e) {
@@ -304,6 +308,7 @@ void ai_malcoBroken_onState(Entity *restrict e) {
 		break;
 	}
 }
+*/
 
 void ai_powerc_onCreate(Entity *restrict e) {
 	e->y -= 8 << CSF;
@@ -318,13 +323,13 @@ void ai_press_onUpdate(Entity *restrict e) {
 			if(!e->grounded) {
 				e->state = 10;
 				e->state_time = 0;
-				SPR_SAFEFRAME(e->sprite, 1);
+				//SPR_SAFEFRAME(e->sprite, 1);
 			}
 		break;
 		case 10:		// fall
 			e->state_time++;
 			if(e->state_time == 4) {
-				SPR_SAFEFRAME(e->sprite, 2);
+				//SPR_SAFEFRAME(e->sprite, 2);
 			}
 			e->y_speed += 0x20;
 			if(e->y_speed > 0x5FF) e->y_speed = 0x5FF;
@@ -341,7 +346,7 @@ void ai_press_onUpdate(Entity *restrict e) {
 				//SmokeSide(o, 4, DOWN);
 				camera_shake(10);
 				e->state = 11;
-				SPR_SAFEFRAME(e->sprite, 0);
+				//SPR_SAFEFRAME(e->sprite, 0);
 				e->attack = 0;
 				e->eflags |= NPC_SOLID;
 			}
@@ -365,11 +370,11 @@ void ai_frog_onUpdate(Entity *restrict e) {
 			e->y_speed = 0;
 			// Balfrog sets OPTION1
 			if(e->eflags & NPC_OPTION1) {
-				e->direction = random() & 1;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+				e->dir = random() & 1;
+				//SPR_SAFEHFLIP(e->sprite, e->dir);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 3;
-				SPR_SAFEANIM(e->sprite, 1);
+				//SPR_SAFEANIM(e->sprite, 1);
 			} else {
 				e->grounded = true;
 				e->eflags &= ~NPC_IGNORESOLID;
@@ -389,7 +394,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				if((e->grounded = collide_stage_floor(e))) {
 					e->state = 1;
-					SPR_SAFEANIM(e->sprite, 0);
+					//SPR_SAFEANIM(e->sprite, 0);
 					e->state_time = 0;
 				}
 			}
@@ -408,7 +413,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 			}
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 0;
-				SPR_SAFEANIM(e->sprite, 0);
+				//SPR_SAFEANIM(e->sprite, 0);
 				e->state_time = 0;
 			}
 		}
@@ -427,7 +432,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 		if (dojump) {
 			FACE_PLAYER(e);
 			e->state = 10;
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 			e->y_speed = SPEED(-0x5ff);
 			e->grounded = false;
 
@@ -454,7 +459,7 @@ void ai_hey_onUpdate(Entity *restrict e) {
 		case 1:
 		{
 			if(++e->state_time >= TIME(50)) {
-				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 2;
 				e->state_time = 0;
 			}
@@ -463,7 +468,7 @@ void ai_hey_onUpdate(Entity *restrict e) {
 		case 2:
 		{
 			if(++e->state_time >= TIME(50)) {
-				SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+				//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 				e->state = 1;
 				e->state_time = 0;
 			}
@@ -480,7 +485,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		{
 			e->alwaysActive = true;
 			e->y -= 0x400;
-			//SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+			//SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 			e->state++;
 		}
 		break;
@@ -515,7 +520,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 			e->x_speed += 0x20;
 			e->state_time++;
 			e->y = e->y_mark + 0x200 - (random() % 0x400);
-			if (e->state_time > 10)  e->direction = 1;
+			if (e->state_time > 10)  e->dir = 1;
 			if (e->state_time > 200) e->state = 40;
 		}
 		break;
@@ -524,7 +529,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		{
 			e->state = 41;
 			e->state_time = 2;
-			e->direction = 0;
+			e->dir = 0;
 			e->y -= pixel_to_sub(48);		// move up...
 			e->x_speed = -0x1000;		// ...and fly fast
 		}

@@ -572,11 +572,11 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			logcmd("<MYD:%hu", args[0]);
 			if(args[0] == 0) { // Left
-				player.direction = 0;
+				player.dir = 0;
 			} else if(args[0] == 2) { // Right
-				player.direction = 1;
+				player.dir = 1;
 			}
-			SPR_SAFEHFLIP(player.sprite, player.direction);
+			SPR_SAFEHFLIP(player.sprite, player.dir);
 			break;
 		case CMD_UNI: // Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -677,17 +677,17 @@ u8 execute_command() {
 		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
 			logcmd("<BOA:%hu", args[0]);
-			if(bossEntity != NULL) {
-				ENTITY_SET_STATE(bossEntity, args[0], 0);
+			if(bossEntity) {
+				bossEntity->state = arg[0];
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
 				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 5,
 					BOSS_OMEGA, 210);
-				ENTITY_SET_STATE(bossEntity, 20, 0);
+				bossEntity->state = 20;
 			} else if(stageID == 0x2F && args[0] == 200) {
 				// Hack to spawn Core
 				entity_create_boss(0, 0, BOSS_CORE, 1000);
-				ENTITY_SET_STATE(bossEntity, 200, 0);
+				bossEntity->state = 200;
 			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)

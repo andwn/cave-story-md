@@ -32,20 +32,22 @@
 #endif
 
 // The range is a bit too high so here is my lazy way to fix it
-void ai_batVertical_onCreate(Entity *restrict e) {
+void ai_batVertical_onCreate(Entity *e) {
 	e->y += pixel_to_sub(24);
 }
 
 // Just up and down gotta go up and down
-void ai_batVertical_onUpdate(Entity *restrict e) {
+void ai_batVertical_onUpdate(Entity *e) {
+	/*
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
 		e->state_time2 = 0;
 	} else if(++e->state_time2 > 4) {
-		if(++e->spriteFrame >= 3) e->spriteFrame = 0;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		if(++e->frame >= 3) e->frame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->state_time2 = 0;
 	}
+	* */
 	if(e->state == 0) {
 		e->y_speed -= 8;
 		if(e->y_speed <= pixel_to_sub(-1)) e->state = 1;
@@ -57,22 +59,24 @@ void ai_batVertical_onUpdate(Entity *restrict e) {
 	e->y += e->y_speed;
 }
 
-void ai_batHang_onCreate(Entity *restrict e) {
-	//e->spriteAnim = 1; // Hanging anim
+void ai_batHang_onCreate(Entity *e) {
+	//e->frame = 1; // Hanging anim
 }
 
-void ai_batHang_onUpdate(Entity *restrict e) {
+void ai_batHang_onUpdate(Entity *e) {
+	/*
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
-		if(!e->state) e->spriteFrame = 3;
+		if(!e->state) e->frame = 3;
 		e->state_time2 = 0;
 	}
+	* */
 	if(e->state == 0) { // Hanging and waiting
 		if(random() % BAT_WAIT_TIME == 0) {
 			e->state = 1;
 			e->state_time = 0;
-			e->spriteFrame = 4;
-			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+			e->frame = 4;
+			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
 			player.y > e->y - 0x1000 && player.y < e->y + 0x9000) {
@@ -83,15 +87,15 @@ void ai_batHang_onUpdate(Entity *restrict e) {
 		if(++e->state_time > BAT_BLINK_TIME) {
 			e->state = 0;
 			e->state_time = 0;
-			e->spriteFrame = 3;
-			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+			e->frame = 3;
+			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 	} else if(e->state == 2) { // At attention
 		if(e->damage_time > 0 || (player.x > e->x - 0x2800 && player.x < e->x + 0x2800)) {
 			e->state = 3;
 			e->state_time = 0;
-			e->spriteFrame = 5;
-			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+			e->frame = 5;
+			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 	} else if(e->state == 3) { // Falling
 		e->y_speed += BAT_FALL_ACCEL;
@@ -112,11 +116,11 @@ void ai_batHang_onUpdate(Entity *restrict e) {
 		}
 	} else { // Flying
 		if(++e->state_time2 > 4) {
-			if(++e->spriteFrame >= 3) e->spriteFrame = 0;
-			SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+			if(++e->frame >= 3) e->frame = 0;
+			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 			e->state_time2 = 0;
 		}
-		if((e->direction && player.x < e->x) || (!e->direction && player.x > e->x)) {
+		if((e->dir && player.x < e->x) || (!e->dir && player.x > e->x)) {
 			FACE_PLAYER(e);
 		}
 		e->x_speed += (e->x > player.x) ? -BAT_FLY_XACCEL : BAT_FLY_XACCEL;
@@ -145,15 +149,17 @@ void ai_batHang_onUpdate(Entity *restrict e) {
 	}
 }
 
-void ai_batCircle_onUpdate(Entity *restrict e) {
+void ai_batCircle_onUpdate(Entity *e) {
+	/*
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
 		e->state_time2 = 0;
 	} else if(e->state == 1 && ++e->state_time2 > 4) {
-		if(++e->spriteFrame >= 3) e->spriteFrame = 0;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->spriteAnim].index + e->spriteFrame * 4);
+		if(++e->frame >= 3) e->frame = 0;
+		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->state_time2 = 0;
 	}
+	* */
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -180,8 +186,8 @@ void ai_batCircle_onUpdate(Entity *restrict e) {
 		/* no break */
 		case 1:
 			// circle around our target point
-			if(e->direction && player.x < e->x) TURN_AROUND(e);
-			if(!e->direction && player.x > e->x) TURN_AROUND(e);
+			if(e->dir && player.x < e->x) TURN_AROUND(e);
+			if(!e->dir && player.x > e->x) TURN_AROUND(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
 			LIMIT_X(SPEED(0x200));
@@ -193,9 +199,9 @@ void ai_batCircle_onUpdate(Entity *restrict e) {
 					e->y_speed = 0;
 					e->state = 2;
 					//SPR_SAFEANIM(e->sprite, 2);		// mouth showing teeth
-					e->spriteFrame = 5;
-					SPR_SAFETILEINDEX(e->sprite, 
-							sheets[e->spriteAnim].index + e->spriteFrame * 4);
+					e->frame = 5;
+					//SPR_SAFETILEINDEX(e->sprite, 
+					//		sheets[e->frame].index + e->frame * 4);
 				}
 			} else {
 				e->state_time--;

@@ -29,7 +29,7 @@ static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
 		e->y_speed = SPEED(-0x300) - random(SPEED(0x300));
 		e->grounded = false;
-		SPR_SAFEANIM(e->sprite, ANIM_JUMPING);
+		//SPR_SAFEANIM(e->sprite, ANIM_JUMPING);
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
 }
@@ -80,7 +80,7 @@ void ai_curly_ai(Entity *e) {
 			e->alwaysActive = true;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
-			e->direction = player.direction;
+			e->dir = player.dir;
 			e->state = CAI_ACTIVE;
 			e->state_time = 0;
 			// If we traded Curly for machine gun she uses the polar star
@@ -97,7 +97,7 @@ void ai_curly_ai(Entity *e) {
 		{
 			e->state_time = 0;
 			e->state = CAI_KNOCKEDOUT+1;
-			SPR_SAFEANIM(e->sprite, 9);
+			//SPR_SAFEANIM(e->sprite, 9);
 		}
 		/* no break */
 		case CAI_KNOCKEDOUT+1:
@@ -108,7 +108,7 @@ void ai_curly_ai(Entity *e) {
 			else if (e->state_time > TIME(750))
 			{	// stand up
 				e->eflags &= ~NPC_INTERACTIVE;
-				SPR_SAFEANIM(e->sprite, ANIM_STANDING);
+				//SPR_SAFEANIM(e->sprite, ANIM_STANDING);
 			}
 		}
 		break;
@@ -122,8 +122,8 @@ void ai_curly_ai(Entity *e) {
 	bool blockl = collide_stage_leftwall(e);
 	bool blockr = collide_stage_rightwall(e);
 	// Handle underwater
-	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & 0x20) ||
-			(water_entity != NULL && e->y > water_entity->y)) {
+	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
+			(water_entity && e->y > water_entity->y)) {
 		e->underwater = true;
 	} else {
 		e->underwater = false;
@@ -196,10 +196,10 @@ void ai_curly_ai(Entity *e) {
 	// when her x == xmark.
 	if (e->x_next < e->x_mark) wantdir = 1;
 	if (e->x_next > e->x_mark) wantdir = 0;
-	if (wantdir != e->direction) {
+	if (wantdir != e->dir) {
 		if (++e->state_time2 > 4) {
 			e->state_time2 = 0;
-			e->direction = wantdir;
+			e->dir = wantdir;
 		}
 	} else e->state_time2 = 0;
 	
@@ -216,7 +216,7 @@ void ai_curly_ai(Entity *e) {
 	else curly_reachptimer = 0;
 	
 	if (!reached_p)	{	// if not at rest walk towards target
-		SPR_SAFEANIM(e->sprite, ANIM_WALKING);
+		//SPR_SAFEANIM(e->sprite, ANIM_WALKING);
 		
 		// walk towards target
 		if (e->x_next > e->x_mark) e->x_speed -= SPEED(0x20);
@@ -258,8 +258,8 @@ void ai_curly_ai(Entity *e) {
 	if (curly_impjump > 0) {
 		e->y_speed += SPEED(0x10);
 		// deactivate Improbable Jump once we clear the wall or hit the ground
-		if (e->direction==0 && blockl) curly_impjump = 0;
-		if (e->direction==1 && blockr) curly_impjump = 0;
+		if (e->dir==0 && blockl) curly_impjump = 0;
+		if (e->dir==1 && blockr) curly_impjump = 0;
 		if (e->grounded) curly_impjump = 0;
 	}
 	else e->y_speed += SPEED(0x33);
@@ -287,6 +287,7 @@ void ai_curly_ai(Entity *e) {
 	}
 	
 	// Sprite Animation
+	/*
 	u8 anim;
 	if(e->grounded) {
 		if(curly_look == DIR_UP) {
@@ -314,8 +315,8 @@ void ai_curly_ai(Entity *e) {
 	// Set animation
 	SPR_SAFEANIM(e->sprite, anim);
 	// Change direction if pressing left or right
-	SPR_SAFEHFLIP(e->sprite, e->direction);
-	
+	SPR_SAFEHFLIP(e->sprite, e->dir);
+	*/
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
@@ -345,24 +346,24 @@ void fire_mgun(s32 x, s32 y, u8 dir) {
 	b->type = WEAPON_MACHINEGUN;
 	b->level = 3;
 	// Need to set the position immediately or else the sprite will blink in upper left
-	SPR_SAFEADD(b->sprite, &SPR_MGunB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
-			(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
+	//SPR_SAFEADD(b->sprite, &SPR_MGunB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+	//		(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
 	b->damage = 6;
 	b->ttl = 90;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		SPR_SAFEANIM(b->sprite, 1);
+		//SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
 	} else if(dir == DIR_DOWN) {
-		SPR_SAFEANIM(b->sprite, 1);
-		SPR_SAFEVFLIP(b->sprite, 1);
+		//SPR_SAFEANIM(b->sprite, 1);
+		//SPR_SAFEVFLIP(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		SPR_SAFEHFLIP(b->sprite, dir > 0);
+		//SPR_SAFEHFLIP(b->sprite, dir > 0);
 		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
 		b->y_speed = 0;
 	}
@@ -380,19 +381,19 @@ void fire_pstar(s32 x, s32 y, u8 dir) {
 	sound_play(SND_POLAR_STAR_L3, 5);
 	b->type = WEAPON_POLARSTAR;
 	b->level = 3;
-	SPR_SAFEADD(b->sprite, &SPR_PolarB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
-			(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
+	//SPR_SAFEADD(b->sprite, &SPR_PolarB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+	//		(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
 	b->damage = 4;
 	b->ttl = 35;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		SPR_SAFEANIM(b->sprite, 1);
+		//SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
 	} else if(dir == DIR_DOWN) {
-		SPR_SAFEANIM(b->sprite, 1);
+		//SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
@@ -411,13 +412,13 @@ void ai_cai_gun(Entity *e) {
 	// Stick to curly
 	e->x = curly->x - (4 << CSF);
 	e->y = curly->y - (4 << CSF);
-	e->direction = curly->direction;
-	if (curly_look) {
-		SPR_SAFEANIM(e->sprite, curly_look == DIR_DOWN ? 2 : 1);
-	} else {
-		SPR_SAFEANIM(e->sprite, 0);
-	}
-	SPR_SAFEHFLIP(e->sprite, e->direction);
+	e->dir = curly->dir;
+	//if (curly_look) {
+	//	SPR_SAFEANIM(e->sprite, curly_look == DIR_DOWN ? 2 : 1);
+	//} else {
+	//	SPR_SAFEANIM(e->sprite, 0);
+	//}
+	//SPR_SAFEHFLIP(e->sprite, e->dir);
 	
 	if (curly_target_time) {
 		// fire when we get close to the target
@@ -432,7 +433,7 @@ void ai_cai_gun(Entity *e) {
 		if (fire) {
 			// Get point where bullet will be created based on direction / looking
 			if(!curly_look) {
-				e->x_mark = curly->x + curly->direction ? 8 << CSF : -8 << CSF;
+				e->x_mark = curly->x + curly->dir ? 8 << CSF : -8 << CSF;
 				e->y_mark = curly->y + (1 << CSF);
 			} else if(curly_look == DIR_UP) {
 				e->x_mark = curly->x;
@@ -451,9 +452,9 @@ void ai_cai_gun(Entity *e) {
 				} else {
 					// create the MGun blast
 					// curly_look is forward (0), DIR_UP (1), or DIR_DOWN (3)
-					// curly->direction is either 0 or 1, where 1 means right but DIR_RIGHT is 2
+					// curly->dir is either 0 or 1, where 1 means right but DIR_RIGHT is 2
 					// So we do this weird thing to fix it
-					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->direction << 1);
+					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
 					e->state_time = 40 + random() % 10;
 					e->state_time2--;
 				}
@@ -462,7 +463,7 @@ void ai_cai_gun(Entity *e) {
 					e->state_time = 4 + random() % 12;
 					if (random() % 10 == 0) e->state_time += 20 + random() % 10;
 					// create the shot
-					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->direction << 1);
+					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
 				} else {
 					e->state_time--;
 				}

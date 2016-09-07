@@ -12,7 +12,7 @@ void ai_torokoAtk_onCreate(Entity *e) {
 	e->y -= block_to_sub(1);
 	e->x_speed = 0x300; // 1.5px
 	e->state = 3; // Running back and forth
-	e->spriteAnim = 2;
+	e->frame = 2;
 }
 
 void ai_toroko_onUpdate(Entity *e) {
@@ -43,14 +43,14 @@ void ai_toroko_onUpdate(Entity *e) {
 		// Switch direction in specific range
 		if((e->x_speed > 0 && e->x > block_to_sub(15)) || 
 			(e->x_speed < 0 && e->x < block_to_sub(10))) {
-			e->direction = !e->direction;
-			e->x_speed = -0x300 + 0x600 * e->direction;
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			e->dir = !e->dir;
+			e->x_speed = -0x300 + 0x600 * e->dir;
+			SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
 		break;
 	case 6: // Jump then run
 		if(e->grounded && abs(e->x_speed) < 0x300) {
-			e->x_speed = -0x300 + 0x600 * e->direction;
+			e->x_speed = -0x300 + 0x600 * e->dir;
 			e->state = 7; // Toroko stops after hitting a wall so don't keep doing this
 		}
 		break;
@@ -66,7 +66,7 @@ void ai_toroko_onUpdate(Entity *e) {
 		}
 		break;
 	case 11: // After falling on ground
-		e->direction = 0;
+		e->dir = 0;
 		break;
 	default:
 		break;
@@ -84,7 +84,7 @@ void ai_toroko_onState(Entity *e) {
 	case 6: // Jump
 		SPR_SAFEANIM(e->sprite, 1);
 		e->y_speed = -0x150;
-		e->x_speed = -0x150 + 0x300 * e->direction;
+		e->x_speed = -0x150 + 0x300 * e->dir;
 		e->grounded = false;
 		break;
 	case 8:
@@ -97,7 +97,7 @@ void ai_toroko_onState(Entity *e) {
 }
 
 void ai_torokoBoss_onCreate(Entity *e) {
-	e->spriteAnim = 10;
+	e->frame = 10;
 	e->y -= 8 << CSF;
 }
 
@@ -105,7 +105,7 @@ void ai_torokoBoss_onUpdate(Entity *e) {
 	Entity *block = e->linkedEntity;
 
 #define SPAWNBLOCK	({					\
-	block = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, OBJ_TOROKO_BLOCK, 0, e->direction);	\
+	block = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, OBJ_TOROKO_BLOCK, 0, e->dir);	\
 	e->linkedEntity = block; \
 	block->linkedEntity = e; \
 	block->eflags &= ~NPC_INVINCIBLE;		\
@@ -394,7 +394,7 @@ void ai_torokoBoss_onState(Entity *e) {
 // the blocks Frenzied Toroko throws
 void ai_torokoBlock_onUpdate(Entity *e) {
 	if(e->linkedEntity != NULL) {
-		e->x = e->linkedEntity->x + (e->linkedEntity->direction ? 16 << CSF : -16 << CSF);
+		e->x = e->linkedEntity->x + (e->linkedEntity->dir ? 16 << CSF : -16 << CSF);
 		e->y = e->linkedEntity->y - (16 << CSF);
 		return;
 	}

@@ -9,7 +9,7 @@
 #include "sprite.h"
 #include "sheet.h"
 
-#define OPTIONS		4
+#define OPTIONS		3
 #define ANIM_SPEED	7
 #define ANIM_FRAMES	4
 
@@ -35,7 +35,6 @@ u8 titlescreen_main() {
 	// Menu and version text
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
-	VDP_drawText("NPC Test", 15, 18);
 	VDP_drawText("Mega Drive Version 0.2.1 2016.08", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
 	VDP_fillTileMapRectInc(PLAN_B,

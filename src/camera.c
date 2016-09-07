@@ -46,7 +46,7 @@ void camera_update() {
 		camera.y_offset = 0;
 		// If following the player focus on where they are walking/looking
 		if(camera.target == &player) {
-			if(player.direction == 0) {
+			if(player.dir == 0) {
 				camera.x_offset = pixel_to_sub(-48);
 			} else {
 				camera.x_offset = pixel_to_sub(48);
@@ -88,6 +88,11 @@ void camera_update() {
 		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	}
+	// Update quick fetch cutoff values
+	camera_left = 	camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_right = 	camera.x + pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_top = 	camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_bottom = camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
 	// Morph the stage if the camera is moving
 	morphingColumn = sub_to_block(x_next) - sub_to_block(camera.x);
 	morphingRow = sub_to_block(y_next) - sub_to_block(camera.y);

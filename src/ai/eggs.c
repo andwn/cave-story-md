@@ -10,9 +10,9 @@
 
 void ai_behemoth_onUpdate(Entity *e) {
 	if(e->x_speed == 0) {
-		e->direction = !e->direction;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		e->x_speed = -0x100 + 0x200 * e->direction;
+		e->dir = !e->dir;
+		SPR_SAFEHFLIP(e->sprite, e->dir);
+		e->x_speed = -0x100 + 0x200 * e->dir;
 	}
 	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
@@ -31,15 +31,15 @@ void ai_beetle_onUpdate(Entity *e) {
 	switch(e->state) {
 		case 0: // Initial state / moving left or right
 		if(e->x_speed == 0) {
-			e->x_speed = -0x200 + 0x400 * e->direction;
+			e->x_speed = -0x200 + 0x400 * e->dir;
 		} else if((sub_to_pixel(e->x) & 15) == 7) {
-			if(!e->direction && stage_get_block_type(x - 1, y) == 0x41) {
+			if(!e->dir && stage_get_block_type(x - 1, y) == 0x41) {
 				e->state = 1;
 				e->state_time = 0;
 				e->x_speed = 0;
 				SPR_SAFEHFLIP(e->sprite, 0);
 				SPR_SAFEANIM(e->sprite, 0);
-			} else if(e->direction && stage_get_block_type(x + 1, y) == 0x41) {
+			} else if(e->dir && stage_get_block_type(x + 1, y) == 0x41) {
 				e->state = 1;
 				e->state_time = 0;
 				e->x_speed = 0;
@@ -53,9 +53,9 @@ void ai_beetle_onUpdate(Entity *e) {
 			u16 py = sub_to_block(player.y);
 			if(py >= y - 1 || py <= y + 1) {
 				e->state = 0;
-				e->direction = !e->direction;
-				e->x_speed = -0x200 + 0x400 * e->direction;
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+				e->dir = !e->dir;
+				e->x_speed = -0x200 + 0x400 * e->dir;
+				SPR_SAFEHFLIP(e->sprite, e->dir);
 				SPR_SAFEANIM(e->sprite, 1);
 			}
 		}
@@ -65,15 +65,15 @@ void ai_beetle_onUpdate(Entity *e) {
 }
 
 void ai_beetleFollow_onCreate(Entity *e) {
-	e->spriteAnim = 1;
+	e->frame = 1;
 	e->state_time = 45;
 }
 
 void ai_beetleFollow_onUpdate(Entity *e) {
 	e->state_time++;
 	u8 dir = player.x >= e->x;
-	if(dir != e->direction) {
-		e->direction = dir;
+	if(dir != e->dir) {
+		e->dir = dir;
 		SPR_SAFEHFLIP(e->sprite, dir);
 	}
 	e->x_speed += dir ? 6 : -6;
@@ -91,8 +91,8 @@ void ai_basu_onCreate(Entity *e) {
 void ai_basu_onUpdate(Entity *e) {
 	e->state_time++;
 	u8 dir = player.x >= e->x;
-	if(dir != e->direction) {
-		e->direction = dir;
+	if(dir != e->dir) {
+		e->dir = dir;
 		SPR_SAFEHFLIP(e->sprite, dir);
 	}
 	e->x_speed += dir ? 5 : -5;
@@ -110,16 +110,16 @@ void ai_basil_onCreate(Entity *e) {
 
 void ai_basil_onUpdate(Entity *e) {
 	if(e->x_speed == 0) { // Hit a wall
-		e->direction = !e->direction;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
-		e->x_speed = -0x400 + 0x800 * e->direction;
+		e->dir = !e->dir;
+		SPR_SAFEHFLIP(e->sprite, e->dir);
+		e->x_speed = -0x400 + 0x800 * e->dir;
 	} else if(sub_to_pixel(e->x) < sub_to_pixel(camera.x) - SCREEN_HALF_W - 64) {
-		e->direction = 1;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		e->dir = 1;
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->x_speed = 0x400;
 	} else if(sub_to_pixel(e->x) > sub_to_pixel(camera.x) + SCREEN_HALF_W + 64) {
-		e->direction = 0;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		e->dir = 0;
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->x_speed = -0x400;
 	}
 	e->x_next = e->x + e->x_speed;

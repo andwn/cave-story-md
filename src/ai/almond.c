@@ -76,7 +76,7 @@ void ai_shutter(Entity *e) {
 		e->nflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 		e->x_next = e->x;
 		e->y_next = e->y;
-		switch(e->direction) {
+		switch(e->dir) {
 			case DIR_LEFT:  e->x_next = e->x - SPEED(0x80); break;
 			case DIR_RIGHT: e->x_next = e->x + SPEED(0x80); break;
 			case DIR_UP:    e->y_next = e->y + SPEED(0x80); break;
@@ -104,7 +104,7 @@ void ai_shutter_stuck(Entity *e) {
 	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them
 	// to think they're shooting the regular shutter object, so go invisible
-	SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+	e->hidden = true;
 }
 
 // the damaged robot which wakes up right before the Almond battle
@@ -112,7 +112,7 @@ void ai_almond_robot(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 			e->state++;
 		}
 		break;
@@ -125,7 +125,7 @@ void ai_almond_robot(Entity *e) {
 		break;
 		case 20:	// flashes
 		{
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEANIM(e->sprite, 1);
 			e->state++;
 		}
 		break;

@@ -179,8 +179,8 @@ void draw_itemmenu() {
 	itemcursor_move(0, 0);
 	// These routines handle hiding or deleting sprites
 	//player_pause();
-	entities_pause();
-	hud_hide();
+	//entities_pause();
+	//hud_hide();
 	// Make the window plane fully overlap the game
 	VDP_setWindowPos(0, 28);
 	SYS_enableInts();
@@ -200,8 +200,8 @@ bool update_pause() {
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
-		entities_unpause();
-		hud_show();
+		//entities_unpause();
+		//hud_show();
 		VDP_setWindowPos(0, 0);
 		return false;
 	} else {

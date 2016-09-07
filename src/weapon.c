@@ -90,10 +90,10 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		//SPR_SAFEHFLIP(b->sprite, player.direction);
-		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
+		//SPR_SAFEHFLIP(b->sprite, player.dir);
+		b->x = player.x + (player.dir ? pixel_to_sub(12) : pixel_to_sub(-12));
 		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (player.dir ? pixel_to_sub(4) : pixel_to_sub(-4));
 		b->y_speed = 0;
 	}
 }
@@ -124,17 +124,17 @@ void weapon_fire_fireball(Weapon *w) {
 	if(joy_down(BUTTON_UP)) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
-		b->x_speed = player.direction ? 0x300 : -0x300; // 1.5
+		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(-3);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = player.direction ? 0x300 : -0x300; // 1.5
+		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(2);
 	} else {
-		b->x = player.x + (player.direction ? pixel_to_sub(8) : pixel_to_sub(-8));
+		b->x = player.x + (player.dir ? pixel_to_sub(8) : pixel_to_sub(-8));
 		b->y = player.y + pixel_to_sub(4);
-		b->x_speed = player.direction ? 0x500 : -0x500; // 2.5
+		b->x_speed = player.dir ? 0x500 : -0x500; // 2.5
 		b->y_speed = 0;
 	}
 }
@@ -187,10 +187,10 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		player.y_mark = 0;
-		SPR_SAFEHFLIP(b->sprite, player.direction);
-		b->x = player.x + (player.direction ? pixel_to_sub(10) : pixel_to_sub(-10));
+		SPR_SAFEHFLIP(b->sprite, player.dir);
+		b->x = player.x + (player.dir ? pixel_to_sub(10) : pixel_to_sub(-10));
 		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (player.direction ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (player.dir ? pixel_to_sub(4) : pixel_to_sub(-4));
 		b->y_speed = 0;
 	}
 }
@@ -226,9 +226,9 @@ void weapon_fire_missile(Weapon *w) {
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(3);
 	} else {
-		b->x = player.x + (player.direction ? pixel_to_sub(12) : pixel_to_sub(-12));
+		b->x = player.x + (player.dir ? pixel_to_sub(12) : pixel_to_sub(-12));
 		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (player.direction ? pixel_to_sub(3) : pixel_to_sub(-3));
+		b->x_speed = (player.dir ? pixel_to_sub(3) : pixel_to_sub(-3));
 		b->y_speed = 0;
 	}
 }

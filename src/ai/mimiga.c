@@ -8,7 +8,7 @@
 #include "tsc.h"
 
 void ai_flower_onCreate(Entity *e) {
-	e->spriteFrame = random() % 6;
+	e->frame = random() % 6;
 }
 
 void ai_jack(Entity *e) {

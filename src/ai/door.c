@@ -9,7 +9,7 @@
 
 void ai_door_onCreate(Entity *e) {
 	// When the door's direction is changed to be facing right it becomes transparent
-	if(e->direction) e->spriteAnim = SPRITE_DISABLE;
+	if(e->dir) e->hidden = true;
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y + 1) != 0x41) { // Push down if too high
 		e->y += block_to_sub(1);
@@ -19,11 +19,7 @@ void ai_door_onCreate(Entity *e) {
 }
 
 void ai_door_onUpdate(Entity *e) {
-	if(e->direction) {
-		SPR_SAFERELEASE(e->sprite);
-	} else if(e->sprite == NULL) {
-		entity_sprite_create(e);
-	}
+	e->hidden = e->dir;
 }
 
 void ai_theDoor_onUpdate(Entity *e) {
@@ -50,7 +46,7 @@ void ai_theDoor_onUpdate(Entity *e) {
 void oncreate_doorway(Entity *e) {
 	if(e->eflags & NPC_OPTION2) {
 		// Right door
-		e->spriteAnim = 1;
+		e->frame = 1;
 		e->x -= 8 << CSF;
 	} else {
 		// Left door

@@ -10,7 +10,7 @@
 #include "camera.h"
 
 void ai_omega_onCreate(Entity *e) {
-	e->direction = 1;
+	e->dir = 1;
 	e->health = 300;
 	e->attack = 5;
 	e->hurtSound = 52;
@@ -63,17 +63,17 @@ void ai_puppyCarry_onCreate(Entity *e) {
 }
 
 void ai_puppyCarry_onUpdate(Entity *e) {
-	if(player.direction != e->direction) {
-		e->direction ^= 1;
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+	if(player.dir != e->dir) {
+		e->dir ^= 1;
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 	}
-	e->x = player.x + pixel_to_sub(e->direction ? -4 : 4);
+	e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
 	e->y = player.y - pixel_to_sub(5);
 }
 
 void ai_jenka_onCreate(Entity *e) {
 	if(e->type == OBJ_JENKA_COLLAPSED) {
-		e->spriteAnim = 2;
+		e->frame = 2;
 	}
 }
 
@@ -234,7 +234,7 @@ void ai_polish_onUpdate(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	e->direction = 0;
+	e->dir = 0;
 }
 
 void ai_baby_onUpdate(Entity *e) {
@@ -387,7 +387,7 @@ void ai_sunstone_onUpdate(Entity *e) {
 		/* no break */
 		case 11:
 		{
-			if(e->direction) e->x += 0x80; else e->x -= 0x80;
+			if(e->dir) e->x += 0x80; else e->x -= 0x80;
 			if((e->state_time & 7) == 0) sound_play(SND_QUAKE, 5);
 			e->state_time++;
 			camera_shake(20);
@@ -410,8 +410,8 @@ void ai_armadillo_onUpdate(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			if((!e->direction && collide_stage_leftwall(e)) ||
-				(e->direction && collide_stage_rightwall(e))) {
+			if((!e->dir && collide_stage_leftwall(e)) ||
+				(e->dir && collide_stage_rightwall(e))) {
 				TURN_AROUND(e);
 			}
 			MOVE_X(SPEED(0x100));
@@ -461,7 +461,7 @@ void ai_crow_onUpdate(Entity *e) {
 		case 2:
 		case 102:
 		{
-			if (e->direction != player.direction) FACE_PLAYER(e);
+			if (e->dir != player.dir) FACE_PLAYER(e);
 			if (e->damage_time) {
 				// fall while hurt
 				e->y_speed += SPEED(0x20);
@@ -536,9 +536,9 @@ void ai_skullhead_onUpdate(Entity *e) {
 		break;
 	}
 	if(e->x_speed) {
-		if (collide_stage_leftwall(e)) { e->direction = 1; e->x_speed = 0x100; }
-		if (collide_stage_rightwall(e)) { e->direction = 0; e->x_speed = -0x100; }
-		SPR_SAFEHFLIP(e->sprite, e->direction);
+		if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
+		if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
+		SPR_SAFEHFLIP(e->sprite, e->dir);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -640,13 +640,13 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 14;
 			e->state_time = random() % 50;
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->direction);
+			SPR_SAFEHFLIP(e->sprite, e->dir);
 			SPR_SAFEANIM(e->sprite, 1);
 		}
 		/* no break */
 		case 14:
 		{
-			if(e->direction) e->x_speed += 0x40;
+			if(e->dir) e->x_speed += 0x40;
 			else e->x_speed -= 0x40;
 			
 			if(e->state_time) {

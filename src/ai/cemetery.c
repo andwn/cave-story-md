@@ -10,11 +10,12 @@
 
 void ai_pignon_onUpdate(Entity *e) {
 	e->state_time++;
-	if(e->state < 3 && e->damage_time) {
-		ENTITY_SET_STATE(e, 3, 0);
+	if(e->state < 3 && e->damage_time == 29) {
+		//ENTITY_SET_STATE(e, 3, 0);
+		e->state = 3;
 		e->y_speed = -0x100;
 		MOVE_X(-0x120);
-		SPR_SAFEANIM(e->sprite, 3);
+		//SPR_SAFEANIM(e->sprite, 3);
 	}
 	switch(e->state) {
 		case 0: // Standing
@@ -22,36 +23,36 @@ void ai_pignon_onUpdate(Entity *e) {
 			// Either blink or walk in a random direction
 			u8 rnd = random() & 7;
 			if(rnd == 0) {
-				ENTITY_SET_STATE(e, 1, 0);
-				SPR_SAFEANIM(e->sprite, 2);
+				e->state = 1;
+				//SPR_SAFEANIM(e->sprite, 2);
 			} else if(rnd == 1) {
-				ENTITY_SET_STATE(e, 2, 0);
-				e->direction = random() & 1;
-				e->x_speed = e->direction ? 0x100 : -0x100;
-				SPR_SAFEANIM(e->sprite, 1);
-				SPR_SAFEHFLIP(e->sprite, e->direction);
+				e->state = 2;
+				e->dir = random() & 1;
+				e->x_speed = e->dir ? 0x100 : -0x100;
+				//SPR_SAFEANIM(e->sprite, 1);
+				//SPR_SAFEHFLIP(e->sprite, e->dir);
 			}
 		}
 		break;
 		case 1: // Blink
 		if(e->state_time >= 10) {
 			ENTITY_SET_STATE(e, 0, 0);
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 		}
 		break;
 		case 2: // Walking
 		if(e->state_time >= 30 && (random() & 31) == 0) {
 			ENTITY_SET_STATE(e, 0, 0);
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 		}
 		break;
 		case 3: // Hurt
-		e->x_speed += -0x4 + 0x8 * e->direction; // Decellerate
+		e->x_speed += -0x4 + 0x8 * e->dir; // Decellerate
 		if(e->state_time >= TIME(30)) {
 			ENTITY_SET_STATE(e, 0, 0);
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 0);
+			//SPR_SAFEANIM(e->sprite, 0);
 		}
 		break;
 	}
@@ -98,7 +99,7 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		break;
 		case 1: // Walking
 		FACE_PLAYER(e);
-		e->x_speed = e->direction ? 0x100 : -0x100;
+		e->x_speed = e->dir ? 0x100 : -0x100;
 		// reached knife range of player?
 		if(PLAYER_DIST_X(pixel_to_sub(10))) {
 			e->state = 2;

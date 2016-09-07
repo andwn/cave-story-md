@@ -61,7 +61,7 @@ void player_next_weapon();
 void player_init() {
 	controlsLocked = false;
 	playerShow = true;
-	player.direction = 0;
+	player.dir = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	playerMaxHealth = 3;
 	player.health = 3;
@@ -74,7 +74,7 @@ void player_init() {
 	player.enableSlopes = true;
 	player.damage_time = 0;
 	player.damage_value = 0;
-	player.direction = 1;
+	player.dir = 1;
 	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
 	player.frame = 255;
 	ledge_time = 0;
@@ -111,13 +111,13 @@ void player_reset_sprites() {
 	player.sprite = SPR_addSprite(&SPR_Quote, 
 		sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
-		TILE_ATTR(PAL0, 0, 0, player.direction));
+		TILE_ATTR(PAL0, 0, 0, player.dir));
 	// Weapon
 	if(playerWeapon[currentWeapon].type != 0) {
 		weaponSprite = SPR_addSprite(weapon_info[playerWeapon[currentWeapon].type].sprite,
 			sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 12,
 			sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
-			TILE_ATTR(PAL1, 0, 0, player.direction));
+			TILE_ATTR(PAL1, 0, 0, player.dir));
 	} else {
 		weaponSprite = NULL;
 	}
@@ -462,11 +462,11 @@ void player_start_booster() {
 		playerBoostState = BOOST_UP;
 		// in order of precedence
 		if (joy_down(BUTTON_LEFT)) {
-			player.direction = 0;
+			player.dir = 0;
 			playerBoostState = BOOST_HOZ;
 		}
 		if (joy_down(BUTTON_RIGHT)) {
-			player.direction = 1;
+			player.dir = 1;
 			playerBoostState = BOOST_HOZ;
 		}
 		if (joy_down(BUTTON_DOWN)) {
@@ -517,9 +517,9 @@ void player_update_booster() {
 	// ok so then, booster is active right now
 	bool sputtering = false;
 	
-	if (joy_down(BUTTON_LEFT)) player.direction = 0;
-	else if (joy_down(BUTTON_RIGHT)) player.direction = 1;
-	SPR_SAFEHFLIP(player.sprite, player.direction);
+	if (joy_down(BUTTON_LEFT)) player.dir = 0;
+	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
+	SPR_SAFEHFLIP(player.sprite, player.dir);
 
 	bool blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
@@ -529,8 +529,8 @@ void player_update_booster() {
 	switch(playerBoostState) {
 		case BOOST_HOZ:
 		{
-			if ((player.direction == 0 && blockl) || \
-				(player.direction == 1 && blockr)) {
+			if ((player.dir == 0 && blockl) || \
+				(player.dir == 1 && blockr)) {
 				player.y_speed = SPEED(-0x100);
 			}
 			if (joy_down(BUTTON_DOWN)) player.y_speed -= SPEED(0x20);
@@ -572,7 +572,7 @@ void player_show_map_name(u8 ttl) {
 	for(u8 i = 0; i < 16; i++) {
 		u8 chr = stage_info[stageID].name[i] - 0x20;
 		if(chr < 0x60) len++;
-		else chr = 0;
+		else break;
 		memcpy(nameTiles[i], &TS_SprFont.tiles[chr * 8], 32);
 	}
 	// Transfer tile array to VRAM
@@ -670,11 +670,11 @@ void player_draw() {
 	// Blink during invincibility frames
 	if(playerShow && !((playerIFrames >> 1) & 1)) {
 		// Change direction if pressing left or right
-		if(joy_down(BUTTON_RIGHT) && !player.direction) {
-			player.direction ^= 1;
+		if(joy_down(BUTTON_RIGHT) && !player.dir) {
+			player.dir ^= 1;
 			playerSprite.attribut |= TILE_ATTR_HFLIP_MASK;
-		} else if(joy_down(BUTTON_LEFT) && player.direction) {
-			player.direction ^= 1;
+		} else if(joy_down(BUTTON_LEFT) && player.dir) {
+			player.dir ^= 1;
 			playerSprite.attribut &= ~TILE_ATTR_HFLIP_MASK;
 		}
 		sprite_pos(playerSprite,
@@ -694,7 +694,7 @@ void player_draw() {
 				.x = (player.x<<CSF) - (camera.x<<CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
 				.y = (player.y<<CSF) - (camera.y<<CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
 				.size = SPRITE_SIZE(vert ? 1 : 4, vert ? 4 : 1),
-				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.direction,TILE_WEAPONINDEX+vert*6)
+				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.dir,TILE_WEAPONINDEX+vert*6)
 			};
 			sprite_add(weaponSprite);
 		}
@@ -787,7 +787,7 @@ void player_prev_weapon() {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
 			//	weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.dir));
 			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
 					TILE_WEAPONINDEX,6);
 			}
@@ -805,7 +805,7 @@ void player_next_weapon() {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite != NULL) {
 			//	weaponSprite = SPR_addSprite(weapon_info[playerWeapon[i].type].sprite, 
-			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.dir));
 			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
 					TILE_WEAPONINDEX,6);
 			}
@@ -878,7 +878,7 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 			//SPR_SAFERELEASE(weaponSprite);
 			if(weapon_info[w->type].sprite != NULL) {
 			//	weaponSprite = SPR_addSprite(weapon_info[w->type].sprite, 
-			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.direction));
+			//		0, 0, TILE_ATTR(PAL1, 0, 0, player.dir));
 			TILES_QUEUE(SPR_TILESET(weapon_info[w->type].sprite,0,0)->tiles,
 					TILE_WEAPONINDEX,6);
 			}

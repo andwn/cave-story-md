@@ -82,7 +82,7 @@ void ai_balfrog_onCreate(Entity *e) {
 	e->health = 300;
 	e->attack = 0;	// damage comes from our bbox puppets, not our own bbox
 	e->experience = 1;
-	e->direction = 1;
+	e->dir = 1;
 	e->enableSlopes = false;
 	e->eflags |= NPC_IGNORE44;
 	e->eflags |= NPC_SHOWDAMAGE;
@@ -183,21 +183,21 @@ void ai_balfrog_onUpdate(Entity *e) {
 		case STATE_JUMPING+1:
 		{
 			// turn around at walls
-			if(e->direction && collide_stage_rightwall(e)) {
-				e->direction = !e->direction;
-			} else if(!e->direction && collide_stage_leftwall(e)) {
-				e->direction = !e->direction;
+			if(e->dir && collide_stage_rightwall(e)) {
+				e->dir = !e->dir;
+			} else if(!e->dir && collide_stage_leftwall(e)) {
+				e->dir = !e->dir;
 			}
-			e->x_speed = e->direction ? FROG_MOVE_SPEED : -FROG_MOVE_SPEED;
+			e->x_speed = e->dir ? FROG_MOVE_SPEED : -FROG_MOVE_SPEED;
 			// landed?
 			if(++e->state_time > 3 && collide_stage_floor(e)) {
 				e->grounded = true;
 				camera_shake(30);
 				set_jump_sprite(e, false);
 				// passed player? turn around and fire!
-				if((e->direction && e->x >= player.x) ||
-					(!e->direction && e->x <= player.x)) {
-					e->direction ^= 1;
+				if((e->dir && e->x >= player.x) ||
+					(!e->dir && e->x <= player.x)) {
+					e->dir ^= 1;
 					e->state = STATE_OPEN_MOUTH;
 				} else {
 					e->state = STATE_FIGHTING;
@@ -244,8 +244,8 @@ void ai_balfrog_onUpdate(Entity *e) {
 				spawn_frogs(OBJ_FROG, 2);
 				//SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 4);
 				// player ran under us? turn around and fire!
-				if((e->direction && e->x >= player.x) ||
-					(!e->direction && e->x <= player.x)) {
+				if((e->dir && e->x >= player.x) ||
+					(!e->dir && e->x <= player.x)) {
 					e->state = STATE_OPEN_MOUTH;
 				} else {
 					e->state = STATE_FIGHTING;
@@ -288,8 +288,8 @@ void ai_balfrog_onUpdate(Entity *e) {
 				}
 			}
 			if((e->state_time % 16) == 1) {
-				u16 angle = (-32 + random() % 64 + (e->direction ? 256 : 768)) % 1024;
-				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->direction ? 0x1000 : -0x1000),
+				u16 angle = (-32 + random() % 64 + (e->dir ? 256 : 768)) % 1024;
+				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
 				if(e->state_time > 160 || bbox_damage > 90) {
@@ -348,7 +348,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		{ // Scope for balrog pointer
 			// spawn balrog puppet
 			Entity *balrog = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-					0, 0, OBJ_BALROG, 0, e->direction);
+					0, 0, OBJ_BALROG, 0, e->dir);
 			balrog->state = 500;	// tell him to give us complete control
 			SPR_SAFEANIM(balrog->sprite, 5);
 			e->state++;
@@ -420,7 +420,7 @@ void ai_balfrog_onUpdate(Entity *e) {
 		}
 		break;
 	}
-	SPR_SAFEHFLIP(e->sprite, e->direction);
+	SPR_SAFEHFLIP(e->sprite, e->dir);
 	// Player collision
 	if(bbox_mode != BM_DISABLED) {
 		if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
@@ -476,7 +476,7 @@ void place_bboxes(Entity *e) {
 			bbox[1] = (bounding_box) { 32, 8, 0, 32 };	// mouth
 		break;
 	}
-	if(e->direction) { // Swap when facing right
+	if(e->dir) { // Swap when facing right
 		u8 temp;
 		temp = bbox[0].left;
 		bbox[0].left = bbox[0].right;
@@ -499,12 +499,12 @@ void spawn_frogs(u16 objtype, u8 count) {
 // switches on and off the jumping frame/sprite
 void set_jump_sprite(Entity *e, bool enable) {
 	if(enable) {
-		SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+		SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 		e->y -= JUMP_SPRITE_ADJ;
 		e->display_box.left -= 4;
 		bbox_mode = BM_JUMPING;
 	} else {
-		SPR_SAFEADD(e->sprite, &SPR_Balfrog1, 0, 0, TILE_ATTR(PAL3, 0, 0, e->direction), 5);
+		SPR_SAFEADD(e->sprite, &SPR_Balfrog1, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 		e->y += JUMP_SPRITE_ADJ;
 		e->display_box.left += 4;
 		bbox_mode = BM_STAND;
@@ -512,12 +512,12 @@ void set_jump_sprite(Entity *e, bool enable) {
 }
 
 bool player_bbox_collide(Entity *e, u8 index) {
-	s16 ax1 = sub_to_pixel(player.x) - (player.direction ? player.hit_box.right : player.hit_box.left),
-		ax2 = sub_to_pixel(player.x) + (player.direction ? player.hit_box.left : player.hit_box.right),
+	s16 ax1 = sub_to_pixel(player.x) - (player.dir ? player.hit_box.right : player.hit_box.left),
+		ax2 = sub_to_pixel(player.x) + (player.dir ? player.hit_box.left : player.hit_box.right),
 		ay1 = sub_to_pixel(player.y) - player.hit_box.top,
 		ay2 = sub_to_pixel(player.y) + player.hit_box.bottom,
-		bx1 = sub_to_pixel(e->x) - (e->direction ? bbox[index].right : bbox[index].left),
-		bx2 = sub_to_pixel(e->x) + (e->direction ? bbox[index].left : bbox[index].right),
+		bx1 = sub_to_pixel(e->x) - (e->dir ? bbox[index].right : bbox[index].left),
+		bx2 = sub_to_pixel(e->x) + (e->dir ? bbox[index].left : bbox[index].right),
 		by1 = sub_to_pixel(e->y) - bbox[index].top,
 		by2 = sub_to_pixel(e->y) + bbox[index].bottom;
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
