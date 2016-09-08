@@ -7,7 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 
-void ai_door_onCreate(Entity *e) {
+void onspawn_door(Entity *e) {
 	// When the door's direction is changed to be facing right it becomes transparent
 	if(e->dir) e->hidden = true;
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
@@ -18,18 +18,18 @@ void ai_door_onCreate(Entity *e) {
 	}
 }
 
-void ai_door_onUpdate(Entity *e) {
+void ai_door(Entity *e) {
 	e->hidden = e->dir;
 }
 
-void ai_theDoor_onUpdate(Entity *e) {
+void ai_theDoor(Entity *e) {
 	if(e->state == 1) {
-		e->state_time--;
-		if(e->state_time == 0) e->state = 0;
+		e->timer--;
+		if(e->timer == 0) e->state = 0;
 	} else {
 		if(e->damage_time) {
 			e->state = 1;
-			e->state_time = TIME(30);
+			e->timer = TIME(30);
 			SPR_SAFEFRAME(e->sprite, 3);
 		} else {
 			s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
@@ -43,10 +43,10 @@ void ai_theDoor_onUpdate(Entity *e) {
 	}
 }
 
-void oncreate_doorway(Entity *e) {
+void onspawn_doorway(Entity *e) {
 	if(e->eflags & NPC_OPTION2) {
 		// Right door
-		e->frame = 1;
+		e->frame = 1;;
 		e->x -= 8 << CSF;
 	} else {
 		// Left door

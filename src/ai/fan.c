@@ -8,7 +8,7 @@
 #include "tsc.h"
 #include "input.h"
 
-void ai_fan_onCreate(Entity *e) {
+void onspawn_fan(Entity *e) {
 	u8 anim = 0;
 	if(e->eflags & NPC_OPTION2) {
 		e->state = e->type - 95;
@@ -29,10 +29,10 @@ void ai_fan_onCreate(Entity *e) {
 		e->dir = 1;
 		break;
 	}
-	e->frame = anim;
+	e->frame = anim;;
 }
 
-void ai_fan_onUpdate(Entity *e) {
+void ai_fan(Entity *e) {
 	u16 ex = sub_to_block(e->x), ey = sub_to_block(e->y);
 	u16 px = sub_to_block(player.x), py = sub_to_block(player.y);
 	switch(e->state) {

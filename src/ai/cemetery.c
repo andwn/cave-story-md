@@ -8,51 +8,60 @@
 #include "tsc.h"
 #include "camera.h"
 
-void ai_pignon_onUpdate(Entity *e) {
-	e->state_time++;
+void ai_pignon(Entity *e) {
+	e->timer++;
 	if(e->state < 3 && e->damage_time == 29) {
 		//ENTITY_SET_STATE(e, 3, 0);
 		e->state = 3;
+		e->timer = 0;
 		e->y_speed = -0x100;
 		MOVE_X(-0x120);
-		//SPR_SAFEANIM(e->sprite, 3);
+		//e->frame = 3;
 	}
 	switch(e->state) {
 		case 0: // Standing
-		if(e->state_time > 120 && (e->state_time & 31) == 0) { 
+		if(e->timer > 120 && (e->timer & 31) == 0) { 
 			// Either blink or walk in a random direction
 			u8 rnd = random() & 7;
 			if(rnd == 0) {
 				e->state = 1;
-				//SPR_SAFEANIM(e->sprite, 2);
+				e->timer = 0;
+				//e->frame = 2;
 			} else if(rnd == 1) {
 				e->state = 2;
+				e->timer = 0;
 				e->dir = random() & 1;
 				e->x_speed = e->dir ? 0x100 : -0x100;
-				//SPR_SAFEANIM(e->sprite, 1);
+				//e->frame = 1;
 				//SPR_SAFEHFLIP(e->sprite, e->dir);
 			}
 		}
 		break;
 		case 1: // Blink
-		if(e->state_time >= 10) {
-			ENTITY_SET_STATE(e, 0, 0);
-			//SPR_SAFEANIM(e->sprite, 0);
+		if(e->timer >= 10) {
+			//ENTITY_SET_STATE(e, 0, 0);
+			e->state = 0;
+			e->timer = 0;
+			//e->frame = 0;
 		}
 		break;
 		case 2: // Walking
-		if(e->state_time >= 30 && (random() & 31) == 0) {
-			ENTITY_SET_STATE(e, 0, 0);
+		if(e->timer >= 30 && (random() & 31) == 0) {
+			//ENTITY_SET_STATE(e, 0, 0);
+			e->state = 0;
+			e->timer = 0;
 			e->x_speed = 0;
-			//SPR_SAFEANIM(e->sprite, 0);
+			//e->frame = 0;
 		}
 		break;
 		case 3: // Hurt
 		e->x_speed += -0x4 + 0x8 * e->dir; // Decellerate
-		if(e->state_time >= TIME(30)) {
-			ENTITY_SET_STATE(e, 0, 0);
+		if(e->timer >= TIME(30)) {
+			//ENTITY_SET_STATE(e, 0, 0);
+			e->state = 0;
+			e->timer = 0;
 			e->x_speed = 0;
-			//SPR_SAFEANIM(e->sprite, 0);
+			//e->frame = 0;
 		}
 		break;
 	}
@@ -74,13 +83,13 @@ void ai_pignon_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_gkeeper_onCreate(Entity *e) {
+void onspawn_gkeeper(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE;
 	e->eflags |= NPC_INVINCIBLE;
 	e->attack = 0;
 }
 
-void ai_gkeeper_onUpdate(Entity *e) {
+void ai_gkeeper(Entity *e) {
 	switch(e->state) {
 		case 0: // Standing
 		FACE_PLAYER(e);
@@ -88,12 +97,12 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
 			PLAYER_DIST_Y2(pixel_to_sub(48), pixel_to_sub(32))) {
 			e->state = 1;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 		}
 		// start walking if shot
 		if(e->damage_time > 0) {
 			e->state = 1;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 			e->eflags |= NPC_INVINCIBLE;
 		}
 		break;
@@ -103,34 +112,34 @@ void ai_gkeeper_onUpdate(Entity *e) {
 		// reached knife range of player?
 		if(PLAYER_DIST_X(pixel_to_sub(10))) {
 			e->state = 2;
-			e->state_time = 0;
+			e->timer = 0;
 			e->x_speed = 0;
 			sound_play(SND_FIREBALL, 5);
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 2;
 			e->eflags &= ~NPC_INVINCIBLE;
 		}
 		break;
 		case 2: // Knife raised
-		if(++e->state_time > 40) {
+		if(++e->timer > 40) {
 			e->state = 3;
-			e->state_time = 0;
+			e->timer = 0;
 			e->attack = 10;
 			e->hit_box.left += 6;
 			sound_play(SND_SLASH, 5);
-			SPR_SAFEANIM(e->sprite, 3);
+			e->frame = 3;
 		}
 		break;
 		case 3: // Knife frame 2
-		if(++e->state_time > 2) {
+		if(++e->timer > 2) {
 			e->state = 4;
-			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 4);
+			e->timer = 0;
+			e->frame = 4;
 		}
 		break;
 		case 4: // Knife frame 3
-		if(++e->state_time > 60) {
+		if(++e->timer > 60) {
 			e->state = 0;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 			e->eflags |= NPC_INVINCIBLE;
 			e->attack = 0;
 			e->hit_box.left -= 6;

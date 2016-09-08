@@ -1,7 +1,9 @@
 #ifndef INC_NPC_H_
 #define INC_NPC_H_
 
+#include <genesis.h>
 #include "common.h"
+#include "resources.h"
 
 /*
  * Cave Story has a file named npc.tbl that contains a bunch of information about each
@@ -404,25 +406,33 @@
 #define OBJ_CORE_BACK				371
 #define OBJ_MINICORE				372
 
-// NPC Flags
-u16 npc_flags(u16 type);
-// Starting health
-u16 npc_health(u16 type);
-// This is actually an index of which file contains the sprites.. don't use it
-u8 npc_palette(u16 type);
-// Sound to make when the NPC is damaged by player's weapon
-u8 npc_hurtSound(u16 type);
-// Sound to play when defeated
-u8 npc_deathSound(u16 type);
-// Type of smoke effect to create when defeated (small, mid, large)
-u8 npc_deathSmoke(u16 type);
-// Amount of weapon energy that is dropped
-u16 npc_experience(u16 type);
-// Damage to player when colliding
-u16 npc_attack(u16 type);
-// Area relative to the center where collision may take place
-bounding_box npc_hitBox(u16 type);
-// Area relative to the center where the sprite is displayed
-bounding_box npc_displayBox(u16 type);
+
+#define NPC_FLAGIND	0
+#define NPC_HPIND	(NPC_COUNT * 2)
+#define NPC_PALIND	(NPC_COUNT * 4)
+#define NPC_DSFXIND	(NPC_COUNT * 5)
+#define NPC_HSFXIND (NPC_COUNT * 6)
+#define NPC_SMOKIND	(NPC_COUNT * 7)
+#define NPC_XPIND	(NPC_COUNT * 8)
+#define NPC_ATKIND	(NPC_COUNT * 12)
+#define NPC_HBOXIND	(NPC_COUNT * 16)
+#define NPC_DBOXIND	(NPC_COUNT * 20)
+
+#define npc_flags(t) (NPC_TABLE[(t)*2 + NPC_FLAGIND] + (NPC_TABLE[(t)*2 + NPC_FLAGIND+1] <<8 ))
+#define npc_hp(t)    (NPC_TABLE[(t)*2 + NPC_HPIND]   + (NPC_TABLE[(t)*2 + NPC_HPIND+1] << 8))
+#define npc_pal(t)		(NPC_TABLE[type + NPC_PALIND])
+#define npc_diesfx(t)	(NPC_TABLE[type + NPC_DSFXIND])
+#define npc_hurtsfx(t)	(NPC_TABLE[type + NPC_HSFXIND])
+#define npc_smoke(t)	(NPC_TABLE[type + NPC_SMOKIND])
+#define npc_xp(t)     (NPC_TABLE[(t)*4 + NPC_XPIND]  + (NPC_TABLE[(t)*4 + NPC_XPIND+1] << 8))
+#define npc_attack(t) (NPC_TABLE[(t)*4 + NPC_ATKIND] + (NPC_TABLE[(t)*4 + NPC_ATKIND+1] << 8))
+#define npc_hitbox(t) ((bounding_box){                                                         \
+	NPC_TABLE[(t)*4 + NPC_HBOXIND],   NPC_TABLE[(t)*4 + NPC_HBOXIND+1],                        \
+	NPC_TABLE[(t)*4 + NPC_HBOXIND+2], NPC_TABLE[(t)*4 + NPC_HBOXIND+3]                         \
+})
+#define npc_displaybox(t) ((bounding_box){                                                     \
+	NPC_TABLE[(t)*4 + NPC_DBOXIND],   NPC_TABLE[(t)*4 + NPC_DBOXIND+1],                        \
+	NPC_TABLE[(t)*4 + NPC_DBOXIND+2], NPC_TABLE[(t)*4 + NPC_DBOXIND+3]                         \
+})
 
 #endif /* INC_NPC_H_ */

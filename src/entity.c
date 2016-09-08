@@ -13,6 +13,7 @@
 #include "npc.h"
 #include "ai.h"
 #include "sprite.h"
+#include "sheet.h"
 
 /* Linked List Macros */
 
@@ -24,8 +25,8 @@
 })
 
 #define LIST_REMOVE(list, obj) ({                                                              \
-	if(obj->next != NULL) obj->next->prev = obj->prev;                                         \
-	if(obj->prev != NULL) obj->prev->next = obj->next;                                         \
+	if(obj->next) obj->next->prev = obj->prev;                                                 \
+	if(obj->prev) obj->prev->next = obj->next;                                                 \
 	else list = obj->next;                                                                     \
 })
 
@@ -36,21 +37,19 @@
 
 #define LIST_CLEAR(list) ({                                                                    \
 	Entity *temp;                                                                              \
-	while(list != NULL) {                                                                      \
+	while(list) {                                                                              \
 		temp = list;                                                                           \
 		LIST_REMOVE(list, list);                                                               \
-		SPR_SAFERELEASE(temp->sprite);                                                         \
 		MEM_free(temp);                                                                        \
 	}                                                                                          \
 })
 
 #define LIST_CLEAR_BY_FILTER(list, var, match) ({                                              \
 	Entity *obj = list, *temp;                                                                 \
-	while(obj != NULL) {                                                                       \
+	while(obj) {                                                                               \
 		temp = obj->next;                                                                      \
 		if(obj->var == match) {                                                                \
 			LIST_REMOVE(list, obj);                                                            \
-			SPR_SAFERELEASE(obj->sprite);                                                      \
 			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, true);                \
 			MEM_free(obj);                                                                     \
 		}                                                                                      \
@@ -68,48 +67,19 @@ const u8 heightmap[4][16] = {
 
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
-// Initialize sprite for entity
-/*
-void entity_sprite_create(Entity *e) {
-	if(e->frame == SPRITE_DISABLE || npc_info[e->type].sprite == NULL) {
-		e->sprite = NULL;
-		return;
-	}
-	SPR_SAFEADD(e->sprite, (e->type == 1 && (e->eflags & NPC_OPTION2)) ? 
-		&SPR_EnergyL : npc_info[e->type].sprite, 
-		sub_to_pixel(e->x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - e->display_box.left, 
-		sub_to_pixel(e->y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - e->display_box.top, 
-		TILE_ATTR(npc_info[e->type].palette, 0, e->spriteVFlip, e->dir),
-		npc_info[e->type].zorder);
-	if(e->frame > 0) SPR_SAFEANIM(e->sprite, e->frame);
-	if(e->frame > 0) SPR_SAFEFRAME(e->sprite, e->frame);
-	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
-	// TODO: Sorting
-}
-*/
 // Move to inactive list, delete sprite
 void entity_deactivate(Entity *e) {
 	LIST_MOVE(entityList, inactiveList, e);
-	// Remember sprite frame and animation (or if there was no sprite)
-	// No need for this anymore
-	//if(e->sprite != NULL) {
-	//	e->frame = e->sprite->animInd;
-	//	e->frame = e->sprite->frameInd;
-	//	e->spriteVFlip = (e->sprite->attribut & TILE_ATTR_VFLIP_MASK) > 0;
-	//}
-	//SPR_SAFERELEASE(e->sprite);
 }
 
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
 	LIST_MOVE(inactiveList, entityList, e);
-	//entity_sprite_create(e);
 }
 
 Entity *entity_delete(Entity *e) {
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
-	//SPR_SAFERELEASE(e->sprite);
 	MEM_free(e);
 	return next;
 }
@@ -122,7 +92,6 @@ Entity *entity_destroy(Entity *e) {
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
-	//SPR_SAFERELEASE(e->sprite);
 	MEM_free(e);
 	return next;
 }
@@ -135,7 +104,7 @@ void entities_clear() {
 u16 entities_count_active() {
 	u16 count = 0;
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		count++;
 		e = e->next;
 	}
@@ -145,7 +114,7 @@ u16 entities_count_active() {
 u16 entities_count_inactive() {
 	u16 count = 0;
 	Entity *e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		count++;
 		e = e->next;
 	}
@@ -158,7 +127,7 @@ u16 entities_count() {
 
 void entities_update() {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(!e->alwaysActive && !entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_deactivate(e);
@@ -168,7 +137,7 @@ void entities_update() {
 		e->oframe = e->frame;
 		e->odir = e->dir;
 		// AI onUpdate method - may set STATE_DELETE
-		ENTITY_ONUPDATE(e);
+		ENTITY_ONFRAME(e);
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
@@ -179,7 +148,7 @@ void entities_update() {
 		// Handle Shootable flag - check for collision with player's bullets
 		if((e->nflags | e->eflags) & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
-			if(b != NULL) {
+			if(b) {
 				// Destroy the bullet, or if it is a missile make it explode
 				if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 					if(b->x_speed != 0 || b->y_speed != 0) {
@@ -206,7 +175,7 @@ void entities_update() {
 									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
 						// Killed enemy
 						e->health = 0;
-						ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
+						ENTITY_ONDEATH(e);
 						if(e->state == STATE_DESTROY) {
 							e = entity_destroy(e);
 						} else {
@@ -283,7 +252,7 @@ void entities_update() {
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
-		if(e->attack > 0 && playerIFrames == 0 && !tsc_running()) {
+		if(e->attack > 0 && playerIFrames == 0 && !tscState) {
 			u32 collided = *(u32*)&collision; // I do what I want
 			if((collided > 0 || entity_overlapping(&player, e))) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
@@ -440,22 +409,7 @@ bool collide_stage_floor(Entity *e) {
 	}
 	return result;
 }
-/*
-u8 read_slope_table(s16 x, s16 y) {
-	s16 mx, my;
-	u8 t, type;
-	mx = pixel_to_block(x);
-	my = pixel_to_block(y);
-	if (mx < 0 || my < 0 || mx >= stageWidth || my >= stageHeight)
-		return 0;
-	t = stage_get_block_type(mx, my);
-	if(t & BLOCK_SLOPE) {
-		type = (t & 0x07) + 1;
-		return type;
-	}
-	return 0;
-}
-*/
+
 bool collide_stage_slope_grounded(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
 	u8 pxa1, pxa2, pxa3;
@@ -730,54 +684,61 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
 	e->eflags |= flags;
-	e->enableSlopes = true;
-	if(type <= 360) {
+	if(type < NPC_COUNT) {
 		e->nflags = npc_flags(type);
-		e->health = npc_health(type);
+		e->health = npc_hp(type);
 		e->attack = npc_attack(type);
-		e->experience = npc_experience(type);
-		e->hurtSound = npc_hurtSound(type);
-		e->deathSound = npc_deathSound(type);
-		e->deathSmoke = npc_deathSmoke(type);
-		e->hit_box = npc_hitBox(type);
-		e->display_box = npc_displayBox(type);
+		e->experience = npc_xp(type);
+		e->deathSound = npc_diesfx(type);
+		e->hurtSound = npc_hurtsfx(type);
+		e->deathSmoke = npc_smoke(type);
+		e->hit_box = npc_hitbox(type);
+		e->display_box = npc_displaybox(type);
 	} else {
 		e->health = 1;
 		e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 		e->display_box = (bounding_box) { 8, 8, 8, 8 };
 	}
 }
-/*
-bool entity_disabled(Entity *e) {
-	// Some entities should not be activated until a specific system flag is set,
-	// and some no longer appear once one is set
-	if((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id)) return true;
-	return false;
-}
-*/
+
 Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
-	if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
+	//if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
 	// Allocate memory and start applying values
 	u8 sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	*e = (Entity){};
-	//e->next = NULL; e->prev = NULL;
-	e->x = block_to_sub(x) + pixel_to_sub(8);
-	e->y = block_to_sub(y) + pixel_to_sub(8);
-	e->id = id;
-	e->event = event;
-	//e->eflags = flags;
-	e->sprite_count = sprite_count;
-	//if(stageID == 28) e->alwaysActive = true;
+	*e = (Entity){
+		.x = block_to_sub(x) + pixel_to_sub(8),
+		.y = block_to_sub(y) + pixel_to_sub(8),
+		.id = id,
+		.event = event,
+		.dir = direction,
+		.sprite_count = sprite_count,
+		.enableSlopes = true,
+	};
 	entity_default(e, type, flags);
-	e->dir = direction;
+	if(sprite_count) {
+		if(npc_info[type].sheet == NOSHEET) {
+			if(npc_info[type].sprite) {
+				// Use our own tiles
+				
+			}
+		} else { // Use a sprite sheet
+			u8 sind = 0;
+			FIND_SHEET(sind, npc_info[type].sheet);
+			e->vramindex = sheets[sind].index;
+			e->framesize = sheets[sind].w * sheets[sind].h;
+			e->sprite[0] = (VDPSprite){
+				.size = SPRITE_SIZE(sheets[sind].w, sheets[sind].h),
+				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,direction,
+						sheets[sind].index)
+			};
+		}
+	}
 	ENTITY_ONCREATE(e);
 	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
 		LIST_PUSH(entityList, e);
-		//entity_sprite_create(e);
 	} else {
 		LIST_PUSH(inactiveList, e);
-		//e->sprite = NULL;
 	}
 	return e;
 }
@@ -785,47 +746,41 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	u8 sprite_count = npc_info[360 + bossid].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	*e = (Entity){};
-	e->x = block_to_sub(x) + pixel_to_sub(8);
-	e->y = block_to_sub(y) + pixel_to_sub(8);
-	e->id = 0;
-	e->event = event;
-	e->sprite_count = sprite_count;
+	*e = (Entity){
+		.x = block_to_sub(x) + pixel_to_sub(8),
+		.y = block_to_sub(y) + pixel_to_sub(8),
+		.event = event,
+		.sprite_count = sprite_count,
+		.enableSlopes = true,
+		.alwaysActive = true,
+	};
 	entity_default(e, 360 + bossid, NPC_SOLID|NPC_SHOOTABLE|NPC_EVENTONDEATH|NPC_SHOWDAMAGE);
-	e->alwaysActive = true;
 	ENTITY_ONCREATE(e);
 	LIST_PUSH(entityList, e);
 	bossEntity = e;
-	//entity_sprite_create(e);
 	return e;
 }
 
 void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
 			SPR_SAFERELEASE(e->sprite);
 			entity_default(e, type, flags);
 			e->dir = direction;
 			ENTITY_ONCREATE(e);
-			//entity_sprite_create(e);
 		}
 		e = e->next;
 	}
 	e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
 			entity_default(e, type, flags);
 			e->dir = direction;
 			ENTITY_ONCREATE(e);
 			// Some CNP'd offscreen entities (Balrog in Sand Zone) set alwaysActive,
 			// so when that happens we need to move it into the active list
-			if(e->alwaysActive) {
-				LIST_MOVE(inactiveList, entityList, e);
-				//entity_sprite_create(e);
-			} //else {
-			//	e->sprite = NULL;
-			//}
+			if(e->alwaysActive) LIST_MOVE(inactiveList, entityList, e);
 		}
 		e = e->next;
 	}
@@ -833,21 +788,18 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 
 void entities_set_state(u16 event, u16 state, u8 direction) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
-			if(e->dir != direction){
-				e->dir = direction;
-				//SPR_SAFEHFLIP(e->sprite, direction);
-			}
-			ENTITY_SET_STATE(e, state, 0);
+			e->dir = direction;
+			e->state = state;
 		}
 		e = e->next;
 	}
 	e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
 			e->dir = direction;
-			ENTITY_SET_STATE(e, state, 0);
+			e->state = state;
 		}
 		e = e->next;
 	}
@@ -855,12 +807,9 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 
 void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
-			if(e->dir != direction){
-				e->dir = direction;
-				//SPR_SAFEHFLIP(e->sprite, direction);
-			}
+			e->dir = direction;
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
 			e->grounded = false;
@@ -869,7 +818,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 		e = e->next;
 	}
 	e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) {
 			e->dir = direction;
 			e->x = block_to_sub(x) + pixel_to_sub(8);

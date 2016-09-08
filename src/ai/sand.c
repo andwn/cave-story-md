@@ -9,7 +9,7 @@
 #include "effect.h"
 #include "camera.h"
 
-void ai_omega_onCreate(Entity *e) {
+void onspawn_omega(Entity *e) {
 	e->dir = 1;
 	e->health = 300;
 	e->attack = 5;
@@ -18,14 +18,13 @@ void ai_omega_onCreate(Entity *e) {
 	e->deathSmoke = 3;
 	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
 	e->display_box = (bounding_box) { 40, 32, 40, 32 };
-	//SYS_die("Hi I am create");
 }
 
-void ai_omega_onUpdate(Entity *e) {
+void ai_omega(Entity *e) {
 	if(e->state == 20) {
 		e->y_speed = -0x0A0;
-		if(++e->state_time > TIME(240)) {
-			ENTITY_SET_STATE(e, 21, 0);
+		if(++e->timer > TIME(240)) {
+			e->state = 21;
 		}
 	} else {
 		e->y_speed = 0;
@@ -34,50 +33,47 @@ void ai_omega_onUpdate(Entity *e) {
 	e->y += e->y_speed;
 }
 
-void ai_omega_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
+void ondeath_omega(Entity *e) {
+	//if(e->state == STATE_DEFEATED) {
 		tsc_call_event(e->event); // Boss defeated event
 		e->state = STATE_DESTROY;
 		bossEntity = NULL;
-	}
+	//}
 }
 
-void ai_sunstone_onCreate(Entity *e) {
+void onspawn_sunstone(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
 }
 
-void ai_puppy_onCreate(Entity *e) {
+void onspawn_puppy(Entity *e) {
 	e->eflags |= NPC_INTERACTIVE; // Yeah..
 }
 
-void ai_puppy_onUpdate(Entity *e) {
+void ai_puppy(Entity *e) {
 	
 }
 
-void ai_puppyCarry_onCreate(Entity *e) {
+void onspawn_puppyCarry(Entity *e) {
 	e->alwaysActive = true;
 	// One's all you can manage. One's all you can manage. One's all you can manage.
 	e->eflags &= ~NPC_INTERACTIVE;
 	e->nflags &= ~NPC_INTERACTIVE;
 }
 
-void ai_puppyCarry_onUpdate(Entity *e) {
-	if(player.dir != e->dir) {
-		e->dir ^= 1;
-		SPR_SAFEHFLIP(e->sprite, e->dir);
-	}
+void ai_puppyCarry(Entity *e) {
+	e->dir = player.dir;
 	e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
 	e->y = player.y - pixel_to_sub(5);
 }
 
-void ai_jenka_onCreate(Entity *e) {
+void onspawn_jenka(Entity *e) {
 	if(e->type == OBJ_JENKA_COLLAPSED) {
-		e->frame = 2;
+		e->frame = 2;;
 	}
 }
 
-void ai_polish_onUpdate(Entity *e) {
+void ai_polish(Entity *e) {
 	#define POLISH_ACCEL	0x20
 	#define POLISH_SPEED	0x200
 	#define POLISH_BOUNCE	0x100
@@ -237,7 +233,7 @@ void ai_polish_onUpdate(Entity *e) {
 	e->dir = 0;
 }
 
-void ai_baby_onUpdate(Entity *e) {
+void ai_baby(Entity *e) {
 	if(!e->state) {
 		e->state = 1;
 		if(random() & 1) {
@@ -267,12 +263,12 @@ void ai_baby_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_sandcroc_onUpdate(Entity *e) {
+void ai_sandcroc(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
 			e->state = 1;
-			e->state_time = 0;
+			e->timer = 0;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
@@ -297,37 +293,39 @@ void ai_sandcroc_onUpdate(Entity *e) {
 					// attack!!
 					e->x_speed = 0;
 					e->state = 2;
-					e->state_time = 0;
+					e->timer = 0;
 					sound_play(SND_JAWS, 5);
-					SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
-					SPR_SAFEANIM(e->sprite, 1);
+					e->hidden = false;
+					//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+					//e->frame = 1;
 				}
 			} else {
-				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				e->hidden = true;
 			}
 		}
 		break;
 		case 2:		// attacking
 		{
-			e->state_time++;
-			if(e->state_time == 12) {
+			e->timer++;
+			if(e->timer == 12) {
 				e->attack = (e->type == OBJ_SANDCROC_OSIDE) ? 15 : 10;
-			} else if(e->state_time==16) {
+			} else if(e->timer==16) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->eflags |= NPC_SOLID;
 				e->attack = 0;
 				e->state = 3;
-				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, 2);
+				e->timer = 0;
+				//e->frame = 2;
 			}
 		}
 		break;
 		case 3:
 		{
-			e->state_time++;
+			e->timer++;
 			if(e->damage_time) {
 				e->state = 4;
-				e->state_time = 0;
+				e->timer = 0;
 				e->y_speed = 0;
 				e->damage_time += 25;		// delay floattext until after we're underground
 			}
@@ -338,24 +336,25 @@ void ai_sandcroc_onUpdate(Entity *e) {
 			e->y += 0x280;
 			e->eflags &= ~(NPC_SOLID);
 			
-			if (++e->state_time == 30) {
+			if (++e->timer == 30) {
 				e->eflags &= ~(NPC_SHOOTABLE);
-				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				e->hidden = true;
 				e->state = 5;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 5:
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			//e->frame = 0;
 			e->y = e->y_mark;
 			
-			if(e->state_time < 100) {
-				e->state_time++;
+			if(e->timer < 100) {
+				e->timer++;
 				// have to wait before moving: till floattext goes away
 				// else they can see us jump
-				if(e->state_time==98) {
+				if(e->timer==98) {
 					e->x_speed = player.x - e->x;
 				} else {
 					e->x_speed = 0;
@@ -368,7 +367,7 @@ void ai_sandcroc_onUpdate(Entity *e) {
 	}
 }
 
-void ai_sunstone_onUpdate(Entity *e) {
+void ai_sunstone(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -380,23 +379,24 @@ void ai_sunstone_onUpdate(Entity *e) {
 		case 10:	// triggered to move by hvtrigger script
 		{
 			// Always face left, don't flip the sprite while moving
-			SPR_SAFEHFLIP(e->sprite, 0);
-			e->state_time = 0;
+			MOVE_X(SPEED(0x80));
+			e->dir = 0;
+			e->timer = 0;
 			e->state++;
 		}
 		/* no break */
 		case 11:
 		{
-			if(e->dir) e->x += 0x80; else e->x -= 0x80;
-			if((e->state_time & 7) == 0) sound_play(SND_QUAKE, 5);
-			e->state_time++;
+			e->x += e->x_speed;
+			if((e->timer & 7) == 0) sound_play(SND_QUAKE, 5);
+			e->timer++;
 			camera_shake(20);
 		}
 		break;
 	}
 }
 
-void ai_armadillo_onUpdate(Entity *e) {
+void ai_armadillo(Entity *e) {
 	if(!e->grounded) e->y_speed += 0x40;
 	LIMIT_Y(0x5ff);
 	e->x_next = e->x + e->x_speed;
@@ -424,7 +424,7 @@ void ai_armadillo_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_crow_onUpdate(Entity *e) {
+void ai_crow(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -452,8 +452,8 @@ void ai_crow_onUpdate(Entity *e) {
 			
 			if (e->damage_time) {
 				e->state++;		// state 2/102
-				SPR_SAFEANIM(e->sprite, 2);
-				e->state_time = 0;
+				//e->frame = 2;
+				e->timer = 0;
 				e->y_speed = 0;
 			}
 		}
@@ -466,16 +466,16 @@ void ai_crow_onUpdate(Entity *e) {
 				// fall while hurt
 				e->y_speed += SPEED(0x20);
 				e->x_speed = 0;
-				e->state_time = 0;
+				e->timer = 0;
 			} else {
 				// move towards player
 				if(e->x < player.x) e->x_speed += SPEED(0x10);
 				else e->x_speed -= SPEED(0x10);
 				if(e->y < player.y) e->y_speed += SPEED(0x10);
 				else e->y_speed -= SPEED(0x10);
-				if(!e->state_time) {
-					SPR_SAFEANIM(e->sprite, 0);
-					e->state_time++;
+				if(!e->timer) {
+					//e->frame = 0;
+					e->timer++;
 				}
 			}
 			// bounce off walls
@@ -493,22 +493,22 @@ void ai_crow_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_skullhead_onUpdate(Entity *e) {
+void ai_skullhead(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 		{
 			e->state = 1;
-			e->state_time = random() % 5;
+			e->timer = random() % 5;
 		}
 		/* no break */
 		case 1:
 		{
-			if(++e->state_time > 8) {
+			if(++e->timer > 8) {
 				e->y_speed = -0x350;
 				e->state = 2;
-				SPR_SAFEANIM(e->sprite, 2);
+				//e->frame = 2;
 				MOVE_X(0x100);
 			} else {
 				break;
@@ -524,10 +524,10 @@ void ai_skullhead_onUpdate(Entity *e) {
 					e->x_speed = 0;
 					e->y_speed = 0;
 					e->state = 1;
-					e->state_time = 0;
-					SPR_SAFEANIM(e->sprite, 0);
+					e->timer = 0;
+					//e->frame = 0;
 				} else {
-					SPR_SAFEANIM(e->sprite, 1);
+					//e->frame = 1;
 				}
 			} else {
 				collide_stage_ceiling(e);
@@ -538,33 +538,33 @@ void ai_skullhead_onUpdate(Entity *e) {
 	if(e->x_speed) {
 		if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
 		if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
 
-void ai_skelShot_onUpdate(Entity *e) {
+void ai_skelShot(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// bounce off walls
 	if((e->x_speed < 0 && collide_stage_leftwall(e)) || 
 		(e->x_speed > 0 && collide_stage_rightwall(e))) {
 		e->x_speed = -e->x_speed;
-		e->state_time += 5;
+		e->timer += 5;
 	}
 	
 	// bounce off ceiling
 	if(e->y_speed < 0 && collide_stage_ceiling(e)) {
 		e->y_speed = -e->y_speed;
-		e->state_time += 5;
+		e->timer += 5;
 	}
 	
 	// if hit floor bounce along it...
 	if (collide_stage_floor(e)) {
 		e->y_speed = -0x180;
 		e->state = 1;	// begin falling
-		e->state_time += 4;
+		e->timer += 4;
 	}
 	
 	if(e->state == 1) {
@@ -572,7 +572,7 @@ void ai_skelShot_onUpdate(Entity *e) {
 		LIMIT_Y(0x5ff);
 	}
 	
-	if(e->state_time >= 10) {
+	if(e->timer >= 10) {
 		e->state = STATE_DELETE;
 	}
 	
@@ -604,7 +604,7 @@ void ai_curlys_mimigas(Entity *e) {
 		/* no break */
 		case 3:		// stand and blink
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			//e->frame = 0;
 			//randblink(o, 1, 8);
 		}
 		break;
@@ -612,12 +612,12 @@ void ai_curlys_mimigas(Entity *e) {
 		// facing away mimiga (when facing left)
 		case 100:
 		{
-			SPR_SAFEANIM(e->sprite, 3);
+			//e->frame = 3;
 		}
 		break;
 		case 110:	// sleeping facing left mimiga
 		{
-			SPR_SAFEANIM(e->sprite, 6);
+			//e->frame = 6;
 			//ai_zzzz_spawner(o);
 		}
 		break;
@@ -627,21 +627,21 @@ void ai_curlys_mimigas(Entity *e) {
 			e->eflags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
-			e->state_time = random() % 50;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->timer = random() % 50;
+			//e->frame = 0;
 		}
 		/* no break */
 		case 11:
-			if(e->state_time) e->state_time--;
+			if(e->timer) e->timer--;
 			else e->state = 13;
 		break;
 		case 13:
 		{
 			e->state = 14;
-			e->state_time = random() % 50;
+			e->timer = random() % 50;
 			FACE_PLAYER(e);
-			SPR_SAFEHFLIP(e->sprite, e->dir);
-			SPR_SAFEANIM(e->sprite, 1);
+			//SPR_SAFEHFLIP(e->sprite, e->dir);
+			//e->frame = 1;
 		}
 		/* no break */
 		case 14:
@@ -649,8 +649,8 @@ void ai_curlys_mimigas(Entity *e) {
 			if(e->dir) e->x_speed += 0x40;
 			else e->x_speed -= 0x40;
 			
-			if(e->state_time) {
-				e->state_time--;
+			if(e->timer) {
+				e->timer--;
 			} else {	
 				// enter hop state
 				e->state = 15;
@@ -674,26 +674,26 @@ void ai_curlys_mimigas(Entity *e) {
 			if((e->grounded = collide_stage_floor(e))) {
 				e->x_speed = 0;
 				e->state = 21;
-				if(e->sprite->animInd == 5) {
-					SPR_SAFEANIM(e->sprite, 7);
-				} else {
-					SPR_SAFEANIM(e->sprite, 6);
-				}
-				e->state_time = 300 + (random() % 100);
+				//if(e->sprite->animInd == 5) {
+				//	e->frame = 7;
+				//} else {
+				//	e->frame = 6;
+				//}
+				e->timer = 300 + (random() % 100);
 			}
 		}
 		break;
 		case 21:	// lying on ground knocked out
 		{
-			if (e->state_time) {
-				e->state_time--;
+			if (e->timer) {
+				e->timer--;
 				break;
 			}
 			e->eflags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
-			e->state_time = random() % 50;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->timer = random() % 50;
+			//e->frame = 0;
 		}
 		break;
 	}
@@ -701,7 +701,7 @@ void ai_curlys_mimigas(Entity *e) {
 		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
-		SPR_SAFEANIM(e->sprite, (random() & 1) + 4);
+		//e->frame = (random() & 1) + 4;
 		e->attack = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 	}

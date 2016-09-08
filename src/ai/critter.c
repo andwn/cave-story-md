@@ -20,9 +20,9 @@ enum {
 /*
 #define SET_FRAME(f) ({                                                                        \
 	if(e->type == OBJ_POWER_CRITTER) {                                                         \
-		SPR_SAFEANIM(e->sprite, min(f, 3));                                                    \
+		e->frame = min(f, 3)                                                    \;
 	} else if(e->sprite != NULL) {                                                             \
-		e->frame = f;                                                                    \
+		e->frame = f;                                                                    \;
 		SPR_setVRAMTileIndex(e->sprite, sheets[e->frame].index + (f) * 4);                \
 	}                                                                                          \
 })
@@ -71,11 +71,11 @@ void ai_critter(Entity *restrict e) {
 		{
 			//SET_FRAME(1);
 			e->state++;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		case STATE_ATTENTION+1:
 		{
-			if(++e->state_time > TIME(25)) {
+			if(++e->timer > TIME(25)) {
 				e->state = STATE_HOPPING;
 			}
 		}
@@ -88,7 +88,7 @@ void ai_critter(Entity *restrict e) {
 			e->y_speed = SPEED(-0x600);
 			sound_play(SND_ENEMY_JUMP, 5);
 			e->state++;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		case STATE_HOPPING+1:
 		{
@@ -103,14 +103,14 @@ void ai_critter(Entity *restrict e) {
 		break;
 		case STATE_FLYING:
 		{
-			SET_FRAME(3);
+			//SET_FRAME(3);
 		}
 		case STATE_FLYING+1:
 		{
-			e->state_time++;
+			e->timer++;
 			e->y_speed -= SPEED(0x50);
-			if(e->state_time % 8 == 1) sound_play(SND_CRITTER_FLY, 2);
-			if(e->state_time > TIME(50)) {
+			if(e->timer % 8 == 1) sound_play(SND_CRITTER_FLY, 2);
+			if(e->timer > TIME(50)) {
 				//SET_FRAME(1);
 				e->state++;
 			} else if(e->grounded) {

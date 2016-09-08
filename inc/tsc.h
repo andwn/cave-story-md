@@ -16,6 +16,8 @@
 // Number of events loaded by tsc_load(), for debugging
 u8 tscEventCount;
 
+u8 tscState;
+
 // As teleporter locations are made available to the player, this list is populated
 // with which event is called when selecting a particular area.
 // This is in the header so that system_save() can write the values to SRAM
@@ -34,7 +36,7 @@ u8 tsc_update();
 // This will begin executing a scripted event if it exists
 void tsc_call_event(u16 number);
 // Returns true if a script is being executed
-bool tsc_running();
+bool tscState;
 
 void tsc_unpause_debug();
 

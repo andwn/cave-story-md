@@ -12,7 +12,7 @@
 #include "effect.h"
 #include "sheet.h"
 
-void ai_energy_onCreate(Entity *e) {
+void onspawn_energy(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
 		e->display_box.left -= 4;
 		e->display_box.right -= 4;
@@ -21,7 +21,7 @@ void ai_energy_onCreate(Entity *e) {
 	e->alwaysActive = true;
 }
 
-void ai_energy_onUpdate(Entity *e) {
+void ai_energy(Entity *e) {
 	/*
 	if(e->sprite == NULL) {
 		if(e->eflags & NPC_OPTION2) {
@@ -30,12 +30,12 @@ void ai_energy_onUpdate(Entity *e) {
 			SPRITE_FROM_SHEET(&SPR_EnergyS, SHEET_ENERGY);
 		}
 		SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->state_time2 = 0;
-	} else if(++e->state_time2 > 7) {
-		if(++e->frame >= 6) e->frame = 0;
+		e->timer2 = 0;
+	} else if(++e->timer2 > 7) {
+		if(++e->frame >= 6) e->frame = 0;;
 		u8 f = e->frame << (e->eflags & NPC_OPTION2 ? 2 : 0);
 		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->state_time2 = 0;
+		e->timer2 = 0;
 	}
 	* */
 	if(entity_overlapping(&player, e)) {
@@ -65,12 +65,12 @@ void ai_energy_onUpdate(Entity *e) {
 		}
 		e->state = STATE_DELETE;
 	} else {
-		e->state_time++;
-		if(e->state_time > 10 * FPS) {
+		e->timer++;
+		if(e->timer > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 7 * FPS) {
-			e->hidden = (e->state_time & 3) > 1;
+		} else if(e->timer > 7 * FPS) {
+			e->hidden = (e->timer & 3) > 1;
 		} //else if(!entity_on_screen(e)) {
 		//	SPR_SAFERELEASE(e->sprite);
 		//} else if(e->sprite == NULL) {
@@ -120,7 +120,7 @@ void ai_energy_onUpdate(Entity *e) {
 	}
 }
 
-void ai_missile_onUpdate(Entity *e) {
+void ai_missile(Entity *e) {
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
@@ -133,12 +133,12 @@ void ai_missile_onUpdate(Entity *e) {
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_MisslP, SHEET_MISSILE);
 		SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->state_time2 = 0;
-	} else if(++e->state_time2 > 5) {
+		e->timer2 = 0;
+	} else if(++e->timer2 > 5) {
 		e->frame ^= 1;
 		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
 		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->state_time2 = 0;
+		e->timer2 = 0;
 	}
 	* */
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
@@ -160,17 +160,17 @@ void ai_missile_onUpdate(Entity *e) {
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
-		e->state_time++;
-		if(e->state_time > 10 * FPS) {
+		e->timer++;
+		if(e->timer > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 7 * FPS) {
-			e->hidden = (e->state_time & 3) > 1;
+		} else if(e->timer > 7 * FPS) {
+			e->hidden = (e->timer & 3) > 1;
 		}
 	}
 }
 
-void ai_heart_onUpdate(Entity *e) {
+void ai_heart(Entity *e) {
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
@@ -183,12 +183,12 @@ void ai_heart_onUpdate(Entity *e) {
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Heart, SHEET_HEART);
 		SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->state_time2 = 0;
-	} else if(++e->state_time2 > 5) {
+		e->timer2 = 0;
+	} else if(++e->timer2 > 5) {
 		e->frame ^= 1;
 		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
 		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->state_time2 = 0;
+		e->timer2 = 0;
 	}
 	* */
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
@@ -210,21 +210,21 @@ void ai_heart_onUpdate(Entity *e) {
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
-		e->state_time++;
-		if(e->state_time > 10 * FPS) {
+		e->timer++;
+		if(e->timer > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->state_time > 7 * FPS) {
-			e->hidden = (e->state_time & 3) > 1;
+		} else if(e->timer > 7 * FPS) {
+			e->hidden = (e->timer & 3) > 1;
 		}
 	}
 }
 
-void ai_hiddenPowerup_onCreate(Entity *e) {
+void onspawn_hiddenPowerup(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE;
 }
 
-void ai_hiddenPowerup_onUpdate(Entity *e) {
+void ai_hiddenPowerup(Entity *e) {
 	if(e->health < 990) {
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(SND_EXPL_SMALL, 5);

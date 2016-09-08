@@ -8,20 +8,17 @@
  * This module contains behavior or AI for entities specific to NPC type
  * There are 3 "methods" which may be indexed in the npc_info table for an NPC:
  * * onCreate: when first created or replaced
- * * onUpdate: each frame while it is active
+ * * onFrame: each frame while it is active
  * * onDeath: when it's killed
  */
 
 #define ENTITY_ONCREATE(e) { if(npc_info[e->type].onCreate) npc_info[e->type].onCreate(e); }
-#define ENTITY_ONUPDATE(e) { if(npc_info[e->type].onUpdate) npc_info[e->type].onUpdate(e); }
-#define ENTITY_ONDEATH(e)  { if(npc_info[e->type].onDeath)  npc_info[e->type].onDeath(e);  }
+#define ENTITY_ONFRAME(e)  { if(npc_info[e->type].onFrame)  npc_info[e->type].onFrame(e); }
+#define ENTITY_ONDEATH(e)  { if(npc_info[e->type].onDeath)  npc_info[e->type].onDeath(e); }
 
 typedef void (*EntityMethod)(Entity*);
 
 // Special states
-// Defeated is automatically set when health reaches zero. Many enemies do not immediately
-// explode so this allows a custom onUpdate/onState method to show a death animation
-#define STATE_DEFEATED 900
 // Destroy signals the engine to make the entity explode and drop powerups
 #define STATE_DESTROY 998
 // Signal to delete, but don't explode
@@ -94,7 +91,7 @@ typedef void (*EntityMethod)(Entity*);
 #define SPRITE_FROM_SHEET(spr, sht) ({                                                         \
 	for(u8 i = 0; i < 10; i++) {                                                               \
 		if(sheets[i].id == (sht)) {                                                            \
-			e->frame = i;                                                                 \
+			e->frame = i;                                                                 \;
 			break;                                                                             \
 		}                                                                                      \
 	}                                                                                          \
@@ -102,7 +99,7 @@ typedef void (*EntityMethod)(Entity*);
 		TILE_ATTR_FULL(PAL0,0,0,e->dir,sheets[e->frame].index), 0,                  \
 		SPR_FLAG_AUTO_SPRITE_ALLOC);                                                           \
 	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);                                                  \
-	e->frame = 0;                                                                        \
+	e->frame = 0;                                                                        \;
 })
 */
 #define ANIMATE(e, spd, ...) {                                                                 \
@@ -128,43 +125,43 @@ void generic_npc_states(Entity *e);
 
 // Tons of NPCs are placed 1 block above where they are meant to appear
 // This function pushes them down to the right spot
-void oncreate_snap(Entity *e);
+void onspawn_snap(Entity *e);
 // NPC will face right if NPC_OPTION2 is set
-void oncreate_op2flip(Entity *e);
+void onspawn_op2flip(Entity *e);
 // Combination of the above
-void oncreate_snapflip(Entity *e);
+void onspawn_snapflip(Entity *e);
 // NPC's sprite will start at the second animation if NPC_OPTION2 is set
-void oncreate_op2anim(Entity *e);
+void onspawn_op2anim(Entity *e);
 // Only push down for NPC_OPTION2, used for the door after rescuing Kazuma
-void oncreate_op2snap(Entity *e);
+void onspawn_op2snap(Entity *e);
 // Blackboard needs to be pushed up, and changes frame on NPC_OPTION2
-void oncreate_blackboard(Entity *e);
+void onspawn_blackboard(Entity *e);
 // Always active
-void oncreate_persistent(Entity *e);
+void onspawn_persistent(Entity *e);
 // Rotates the spikes so they are always sticking out of a solid area
-void oncreate_spike(Entity *e);
+void onspawn_spike(Entity *e);
 // Apply gravity & collision, some NPC's need to fall when the floor disappears beneath them
 // See save points and refills in Sand Zone, Labyrinth
-void ai_grav_onUpdate(Entity *e);
+void ai_grav(Entity *e);
 // When the player enters a trigger's target area, an event will begin automatically
-void ai_trigger_onUpdate(Entity *e);
+void ai_trigger(Entity *e);
 // Generic enemy projectile
-void ai_genericproj_onUpdate(Entity *e);
+void ai_genericproj(Entity *e);
 // Default onState just explodes on death
-void ai_default_onState(Entity *e);
+void ondeath_default(Entity *e);
 // Quote teleporting in
-void ai_teleIn_onCreate(Entity *e);
-void ai_teleIn_onUpdate(Entity *e);
+void onspawn_teleIn(Entity *e);
+void ai_teleIn(Entity *e);
 // Quote teleporting out
-void ai_teleOut_onCreate(Entity *e);
-void ai_teleOut_onUpdate(Entity *e);
+void onspawn_teleOut(Entity *e);
+void ai_teleOut(Entity *e);
 // TODO: Blue light that flashes while the teleporter is in use
-void ai_teleLight_onCreate(Entity *e);
-void ai_teleLight_onUpdate(Entity *e);
-void ai_teleLight_onState(Entity *e);
+void onspawn_teleLight(Entity *e);
+void ai_teleLight(Entity *e);
+void ondeath_teleLight(Entity *e);
 // Quote NPC used in scenes where the actual player character is hidden
-void ai_player_onUpdate(Entity *e);
-void ai_player_onState(Entity *e);
+void ai_player(Entity *e);
+void ondeath_player(Entity *e);
 
 /* Regular NPCs - regu.c */
 
@@ -193,44 +190,44 @@ void ai_npc_at_computer(Entity *e);
 
 /* Balrog - balrog.c */
 
-void ai_balfrog_onCreate(Entity *e);
-void ai_balfrog_onUpdate(Entity *e);
-void ai_balfrog_onState(Entity *e);
+void onspawn_balfrog(Entity *e);
+void ai_balfrog(Entity *e);
+void ondeath_balfrog(Entity *e);
 
-void oncreate_balrog(Entity *e);
+void onspawn_balrog(Entity *e);
 void ai_balrog(Entity *e);
 void ai_balrog_drop_in(Entity *e);
 void ai_balrog_bust_in(Entity *e);
 
-void ai_balrogRunning_onUpdate(Entity *e);
-void ai_balrogRunning_onState(Entity *e);
+void ai_balrogRunning(Entity *e);
+void ondeath_balrogRunning(Entity *e);
 
-void ai_balrogFlying_onUpdate(Entity *e);
-void ai_balrogFlying_onState(Entity *e);
-void ai_balrogShot_onUpdate(Entity *e);
+void ai_balrogFlying(Entity *e);
+void ondeath_balrogFlying(Entity *e);
+void ai_balrogShot(Entity *e);
 
 void ai_balrog_boss_missiles(Entity *e);
 void ai_balrog_missile(Entity *e);
 
 /* Bats - bat.c */
 
-void ai_batVertical_onCreate(Entity *e);
-void ai_batVertical_onUpdate(Entity *e);
+void onspawn_batVertical(Entity *e);
+void ai_batVertical(Entity *e);
 
-void ai_batHang_onCreate(Entity *e);
-void ai_batHang_onUpdate(Entity *e);
+void onspawn_batHang(Entity *e);
+void ai_batHang(Entity *e);
 
-void ai_batCircle_onUpdate(Entity *e);
+void ai_batCircle(Entity *e);
 
 /* Curly - curly.c */
 
 void ai_curly(Entity *e);
 void ai_curly_carried(Entity *e);
 
-void ai_curlyBoss_onUpdate(Entity *e);
-void ai_curlyBoss_onState(Entity *e);
+void ai_curlyBoss(Entity *e);
+void ondeath_curlyBoss(Entity *e);
 
-void ai_curlyBossShot_onUpdate(Entity *e);
+void ai_curlyBossShot(Entity *e);
 
 void ai_curly_ai(Entity *e);
 void ai_cai_gun(Entity *e);
@@ -238,35 +235,34 @@ void ai_cai_watershield(Entity *e);
 
 /* Egg Corridor - eggs.c */
 
-void ai_basil_onCreate(Entity *e);
-void ai_basil_onUpdate(Entity *e);
+void onspawn_basil(Entity *e);
+void ai_basil(Entity *e);
 
-void ai_beetle_onUpdate(Entity *e);
+void ai_beetle(Entity *e);
 
-void ai_beetleFollow_onCreate(Entity *e);
-void ai_beetleFollow_onUpdate(Entity *e);
+void onspawn_beetleFollow(Entity *e);
+void ai_beetleFollow(Entity *e);
 
-void ai_basu_onCreate(Entity *e);
-void ai_basu_onUpdate(Entity *e);
+void onspawn_basu(Entity *e);
+void ai_basu(Entity *e);
 
-void ai_behemoth_onUpdate(Entity *e);
-void ai_behemoth_onState(Entity *e);
+void ai_behemoth(Entity *e);
 
-void ai_lift_onCreate(Entity *e);
-void ai_lift_onUpdate(Entity *e);
+void onspawn_lift(Entity *e);
+void ai_lift(Entity *e);
 
-void ai_terminal_onUpdate(Entity *e);
+void ai_terminal(Entity *e);
 
 /* Igor - igor.c */
 
-void ai_igor_onCreate(Entity *e);
-void ai_igor_onUpdate(Entity *e);
-void ai_igor_onState(Entity *e);
+void onspawn_igor(Entity *e);
+void ai_igor(Entity *e);
+void ondeath_igor(Entity *e);
 
-void ai_igorscene_onUpdate(Entity *e);
-void ai_igorscene_onState(Entity *e);
+void ai_igorscene(Entity *e);
+void ondeath_igorscene(Entity *e);
 
-void ai_igordead_onUpdate(Entity *e);
+void ai_igordead(Entity *e);
 
 /* Critters - critter.c */
 
@@ -274,35 +270,35 @@ void ai_critter(Entity *e);
 
 /* Doors - door.c */
 
-void ai_door_onCreate(Entity *e);
-void ai_door_onUpdate(Entity *e);
+void onspawn_door(Entity *e);
+void ai_door(Entity *e);
 
-void ai_theDoor_onUpdate(Entity *e);
+void ai_theDoor(Entity *e);
 void ai_theDoor_onHurt(Entity *e);
 
-void oncreate_doorway(Entity *e);
+void onspawn_doorway(Entity *e);
 void ai_doorway(Entity *e);
 
 /* Items & Treasure - item.c */
 
-void ai_energy_onCreate(Entity *e);
-void ai_energy_onUpdate(Entity *e);
+void onspawn_energy(Entity *e);
+void ai_energy(Entity *e);
 
-void ai_missile_onUpdate(Entity *e);
+void ai_missile(Entity *e);
 
-void ai_heart_onUpdate(Entity *e);
+void ai_heart(Entity *e);
 
-void ai_hiddenPowerup_onCreate(Entity *e);
-void ai_hiddenPowerup_onUpdate(Entity *e);
+void onspawn_hiddenPowerup(Entity *e);
+void ai_hiddenPowerup(Entity *e);
 
 /* Fans - fan.c */
 
-void ai_fan_onCreate(Entity *e);
-void ai_fan_onUpdate(Entity *e);
+void onspawn_fan(Entity *e);
+void ai_fan(Entity *e);
 
 /* Minor Mimigas - mimiga.c */
 
-void ai_flower_onCreate(Entity *e);
+void onspawn_flower(Entity *e);
 void ai_jack(Entity *e);
 void ai_santa(Entity* e);
 void ai_chaco(Entity* e);
@@ -314,96 +310,96 @@ void ai_misery_bubble(Entity *e);
 
 /* Toroko - toroko.c */
 
-void ai_torokoAtk_onCreate(Entity *e);
+void onspawn_torokoAtk(Entity *e);
 
-void ai_toroko_onUpdate(Entity *e);
-void ai_toroko_onState(Entity *e);
+void ai_torokoAtk(Entity *e);
+void ondeath_toroko(Entity *e);
 
-void ai_torokoBoss_onCreate(Entity *e);
-void ai_torokoBoss_onUpdate(Entity *e);
-void ai_torokoBoss_onState(Entity *e);
-void ai_torokoBlock_onUpdate(Entity *e);
-void ai_torokoFlower_onUpdate(Entity *e);
+void onspawn_torokoBoss(Entity *e);
+void ai_torokoBoss(Entity *e);
+void ondeath_torokoBoss(Entity *e);
+void ai_torokoBlock(Entity *e);
+void ai_torokoFlower(Entity *e);
 
 /* Cemetery Enemies - cemetery.c */
 
-void ai_pignon_onUpdate(Entity *e);
+void ai_pignon(Entity *e);
 void ai_pignon_onHurt(Entity *e);
 
-void ai_gkeeper_onCreate(Entity *e);
-void ai_gkeeper_onUpdate(Entity *e);
+void onspawn_gkeeper(Entity *e);
+void ai_gkeeper(Entity *e);
 
 /* Grasstown - weed.c */
 
-void ai_jelly_onUpdate(Entity *e);
+void ai_jelly(Entity *e);
 
-void ai_kulala_onUpdate(Entity *e);
+void ai_kulala(Entity *e);
 
-void ai_mannan_onUpdate(Entity *e);
-void ai_mannan_onState(Entity *e);
+void ai_mannan(Entity *e);
+void ondeath_mannan(Entity *e);
 void ai_mannan_onHurt(Entity *e);
 
-void ai_mannanShot_onUpdate(Entity *e);
+void ai_mannanShot(Entity *e);
 
-void ai_malco_onUpdate(Entity *e);
-void ai_malco_onState(Entity *e);
+void ai_malco(Entity *e);
+void ondeath_malco(Entity *e);
 
-void ai_malcoBroken_onCreate(Entity *e);
-void ai_malcoBroken_onState(Entity *e);
+void onspawn_malcoBroken(Entity *e);
+void ondeath_malcoBroken(Entity *e);
 
-void ai_powerc_onCreate(Entity *e);
+void onspawn_powerc(Entity *e);
 
-void ai_press_onUpdate(Entity *e);
+void ai_press(Entity *e);
 
-void ai_frog_onUpdate(Entity *e);
+void ai_frog(Entity *e);
 
-void ai_hey_onUpdate(Entity *e);
+void ai_hey(Entity *e);
 
-void ai_motorbike_onUpdate(Entity *e);
+void ai_motorbike(Entity *e);
 
 /* Sand Zone - sand.c */
 
-void ai_omega_onCreate(Entity *e);
-void ai_omega_onUpdate(Entity *e);
-void ai_omega_onState(Entity *e);
+void onspawn_omega(Entity *e);
+void ai_omega(Entity *e);
+void ondeath_omega(Entity *e);
 
-void ai_sunstone_onCreate(Entity *e);
-void ai_sunstone_onUpdate(Entity *e);
-void ai_sunstone_onState(Entity *e);
+void onspawn_sunstone(Entity *e);
+void ai_sunstone(Entity *e);
+void ondeath_sunstone(Entity *e);
 
-void ai_puppy_onCreate(Entity *e);
-void ai_puppy_onUpdate(Entity *e);
+void onspawn_puppy(Entity *e);
+void ai_puppy(Entity *e);
 
-void ai_puppyCarry_onCreate(Entity *e);
-void ai_puppyCarry_onUpdate(Entity *e);
+void onspawn_puppyCarry(Entity *e);
+void ai_puppyCarry(Entity *e);
 
-void ai_polish_onUpdate(Entity *e);
-void ai_baby_onUpdate(Entity *e);
+void ai_polish(Entity *e);
+void ai_baby(Entity *e);
 
-void ai_sandcroc_onUpdate(Entity *e);
+void ai_sandcroc(Entity *e);
 
-void ai_skullhead_onUpdate(Entity *e);
+void ai_skullhead(Entity *e);
 
-void ai_crow_onUpdate(Entity *e);
+void ai_crow(Entity *e);
 
 void ai_curlys_mimigas(Entity *e);
 
-void ai_armadillo_onUpdate(Entity *e);
+void ai_armadillo(Entity *e);
 
-void ai_jenka_onCreate(Entity *e);
+void onspawn_jenka(Entity *e);
 
 /* Labyrinth - maze.c */
 
-void ai_block_onCreate(Entity *e);
-void ai_blockh_onUpdate(Entity *e);
-void ai_blockv_onUpdate(Entity *e);
-void ai_boulder_onUpdate(Entity *e);
+void onspawn_block(Entity *e);
+void ai_blockh(Entity *e);
+void ai_blockv(Entity *e);
+void ai_boulder(Entity *e);
 
-void ai_gaudiDying_onUpdate(Entity *e);
-void ai_gaudi_onUpdate(Entity *e);
-void ai_gaudiFlying_onUpdate(Entity *e);
-void ai_gaudiArmored_onUpdate(Entity *e);
-void ai_gaudiArmoredShot_onUpdate(Entity *e);
+void ai_gaudiDying(Entity *e);
+void ai_gaudi(Entity *e);
+void ai_gaudiFlying(Entity *e);
+void ai_gaudiArmored(Entity *e);
+void ai_gaudiArmoredShot(Entity *e);
 
 void ai_pooh_black(Entity *e);
 void ai_pooh_black_bubble(Entity *e);
@@ -426,7 +422,7 @@ void ai_almond_robot(Entity *e);
 
 /* Core - core.c */
 
-void oncreate_core(Entity *e);
+void onspawn_core(Entity *e);
 void ai_core(Entity *e);
 void ondeath_core(Entity *e);
 void ai_core_front(Entity *e);

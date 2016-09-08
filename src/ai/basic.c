@@ -8,39 +8,39 @@
 #include "tsc.h"
 #include "effect.h"
 
-void oncreate_snap(Entity *e) {
+void onspawn_snap(Entity *e) {
 	SNAP_TO_GROUND(e);
 }
 
-void oncreate_op2flip(Entity *e) {
+void onspawn_op2flip(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->dir = 1;
 }
 
-void oncreate_snapflip(Entity *e) {
+void onspawn_snapflip(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->dir = 1;
 	SNAP_TO_GROUND(e);
 }
 
-void oncreate_op2anim(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->frame = 1;
+void onspawn_op2anim(Entity *e) {
+	if(e->eflags & NPC_OPTION2) e->frame = 1;;
 }
 
-void oncreate_op2snap(Entity *e) {
+void onspawn_op2snap(Entity *e) {
 	if(e->eflags & NPC_OPTION2) SNAP_TO_GROUND(e);
 }
 
-void oncreate_blackboard(Entity *e) {
+void onspawn_blackboard(Entity *e) {
 	e->y -= 16<<CSF;
-	if(e->eflags & NPC_OPTION2) e->frame = 1;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;;
 }
 
-void oncreate_persistent(Entity *e) {
+void onspawn_persistent(Entity *e) {
 	e->alwaysActive = true;
 }
 
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
-void oncreate_spike(Entity *e) {
+void onspawn_spike(Entity *e) {
 	if(stageID == 0x2D) {
 		// Disable sprite in Labyrinth M
 		// The map has a brown version overlapping us so it's pointless
@@ -59,14 +59,14 @@ void oncreate_spike(Entity *e) {
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
 		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		e->frame = 1;
+		e->frame = 1;;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		e->frame = 1;
+		e->frame = 1;;
 		e->dir = 1;
 	}
 }
 
-void ai_grav_onUpdate(Entity *e) {
+void ai_grav(Entity *e) {
 	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -75,8 +75,8 @@ void ai_grav_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_trigger_onUpdate(Entity *e) {
-	if(tsc_running()) return;
+void ai_trigger(Entity *e) {
+	if(tscState) return;
 	// Hack to skip Monster X
 	if(stageID == 0x27) return;
 	bool activate = false;
@@ -93,8 +93,8 @@ void ai_trigger_onUpdate(Entity *e) {
 	if(activate) tsc_call_event(e->event);
 }
 
-void ai_genericproj_onUpdate(Entity *e) {
-	if(++e->state_time > TIME(250) ||
+void ai_genericproj(Entity *e) {
+	if(++e->timer > TIME(250) ||
 		stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		e->state = STATE_DELETE;
 	} else {
@@ -103,26 +103,26 @@ void ai_genericproj_onUpdate(Entity *e) {
 	}
 }
 
-void ai_default_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) e->state = STATE_DESTROY;
+void ondeath_default(Entity *e) {
+	e->state = STATE_DESTROY;
 }
 
-void ai_teleIn_onCreate(Entity *e) {
+void onspawn_teleIn(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y -= pixel_to_sub(8);
-	e->frame = 2;
+	e->frame = 2;;
 	sound_play(SND_TELEPORT, 5);
 }
 
-void ai_teleIn_onUpdate(Entity *e) {
+void ai_teleIn(Entity *e) {
 	switch(e->state) {
 		case 0: // Appear
 		{
-			if(++e->state_time >= 5*14) {
-				e->state_time = 0;
+			if(++e->timer >= 5*14) {
+				e->timer = 0;
 				e->state++;
 				e->grounded = false;
-				//SPR_SAFEANIM(e->sprite, 0);
+				//e->frame = 0;
 			}
 		}
 		break;
@@ -140,21 +140,21 @@ void ai_teleIn_onUpdate(Entity *e) {
 	}
 }
 
-void ai_teleOut_onCreate(Entity *e) {
+void onspawn_teleOut(Entity *e) {
 	e->y -= pixel_to_sub(24);
 	SNAP_TO_GROUND(e);
 	e->y_speed = SPEED(-0x400);
 }
 
-void ai_teleOut_onUpdate(Entity *e) {
+void ai_teleOut(Entity *e) {
 	switch(e->state) {
 		case 0: // Hopping up
 		{
-			if(++e->state_time >= TIME(20)) {
+			if(++e->timer >= TIME(20)) {
 				e->state++;
-				e->state_time = 0;
+				e->timer = 0;
 				e->y_speed = 0;
-				//SPR_SAFEANIM(e->sprite, 1);
+				//e->frame = 1;
 				sound_play(SND_TELEPORT, 5);
 			} else {
 				e->y_speed += SPEED(0x43);
@@ -164,9 +164,9 @@ void ai_teleOut_onUpdate(Entity *e) {
 		break;
 		case 1: // Show teleport animation
 		{
-			if(++e->state_time >= 5*14) {
+			if(++e->timer >= 5*14) {
 				e->state++;
-				e->state_time = 0;
+				e->timer = 0;
 				e->hidden = true;
 				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
@@ -175,21 +175,21 @@ void ai_teleOut_onUpdate(Entity *e) {
 	}
 }
 
-void ai_teleLight_onCreate(Entity *e) {
+void onspawn_teleLight(Entity *e) {
 	e->hidden = true;
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
 }
 
-void ai_teleLight_onUpdate(Entity *e) {
+void ai_teleLight(Entity *e) {
 	
 }
 
-void ai_teleLight_onState(Entity *e) {
+void ondeath_teleLight(Entity *e) {
 	
 }
 
-void ai_player_onUpdate(Entity *e) {
+void ai_player(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -198,14 +198,14 @@ void ai_player_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_player_onState(Entity *e) {
+void ondeath_player(Entity *e) {
 	switch(e->state) {
 		case 0:
 		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 0);
+		e->frame = 0;
 		break;
 		case 2:		// looking up
-		SPR_SAFEANIM(e->sprite, 2);
+		e->frame = 2;
 		break;
 		case 10:	// he gets flattened
 		sound_play(SND_LITTLE_CRASH, 5);
@@ -216,32 +216,32 @@ void ai_player_onState(Entity *e) {
 		e->state++;
 		/* no break */
 		case 11:
-		SPR_SAFEANIM(e->sprite, 9);
+		e->frame = 9;
 		break;
 		case 20:	// he teleports away
 		e->type = 0x6F;
 		e->state = 0;
-		e->state_time = 0;
-		ai_teleOut_onCreate(e);
+		e->timer = 0;
+		onspawn_teleOut(e);
 		break;
 		case 50:	// walking
 		MOVE_X(SPEED(0x200));
-		SPR_SAFEANIM(e->sprite, 1);
+		e->frame = 1;
 		break;
 		// falling, upside-down (from good ending; Fall stage)
 		case 60:
-		SPR_SAFEANIM(e->sprite, 0);
+		e->frame = 0;
 		SPR_SAFEVFLIP(e->sprite, 1);
 		break;
 		case 80:	// face away
-		SPR_SAFEANIM(e->sprite, 4);
+		e->frame = 4;
 		break;
 		// walking in place during credits
 		case 99:
 		case 100:
 		case 101:
 		case 102:
-		SPR_SAFEANIM(e->sprite, 1);
+		e->frame = 1;
 		break;
 	}
 }

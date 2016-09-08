@@ -24,23 +24,26 @@ enum {
 	STATE_PUNCH_2,
 	STATE_MOUTH_BLAST
 };
-
-void ai_igor_onCreate(Entity *e) {
+*/
+void onspawn_igor(Entity *e) {
+	/*
 	fireatk = 0;
 	e->attack = 0;
 	e->hit_box.bottom += 4;
 	e->hit_box.top -= 4;
-	if(e->type == 0x59) e->frame = 7;
+	if(e->type == 0x59) e->frame = 7;;
+	* */
 }
 
-void ai_igor_onUpdate(Entity *e) {
+void ai_igor(Entity *e) {
+	/*
 	switch(e->state) {
 		case STATE_STAND:
-		if(++e->state_time > 60) ENTITY_SET_STATE(e, STATE_BEGIN_ATTACK, 0);
+		if(++e->timer > 60) ENTITY_SET_STATE(e, STATE_BEGIN_ATTACK, 0);
 		break;
 		case STATE_WALK:
 		if(fireatk == -1) {	// begin mouth-blast attack
-			if(++e->state_time > 20) ENTITY_SET_STATE(e, STATE_MOUTH_BLAST, 0);
+			if(++e->timer > 20) ENTITY_SET_STATE(e, STATE_MOUTH_BLAST, 0);
 		} else {
 			if(e->dir == 0) {
 				if(e->x <= player.x + pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
@@ -48,14 +51,14 @@ void ai_igor_onUpdate(Entity *e) {
 				if(e->x >= player.x - pixel_to_sub(22)) ENTITY_SET_STATE(e, STATE_PUNCH, 0);
 			}
 			// if we don't reach him after a while, do a jump
-			if(++e->state_time > 60) ENTITY_SET_STATE(e, STATE_JUMPING, 0);
+			if(++e->timer > 60) ENTITY_SET_STATE(e, STATE_JUMPING, 0);
 		}
 		break;
 		case STATE_PUNCH:
-		if(++e->state_time > 16) ENTITY_SET_STATE(e, STATE_PUNCH_2, 0);
+		if(++e->timer > 16) ENTITY_SET_STATE(e, STATE_PUNCH_2, 0);
 		break;
 		case STATE_PUNCH_2:
-		if(++e->state_time > 12) {
+		if(++e->timer > 12) {
 			// return to normal-size bounding box
 			if(e->dir == 0) {
 				e->hit_box.left -= 10;
@@ -73,19 +76,19 @@ void ai_igor_onUpdate(Entity *e) {
 		}
 		break;
 		case STATE_LANDED:
-		if(++e->state_time > 12) ENTITY_SET_STATE(e, STATE_STAND, 0);
+		if(++e->timer > 12) ENTITY_SET_STATE(e, STATE_STAND, 0);
 		break;
 		case STATE_MOUTH_BLAST:
-		e->state_time++;
+		e->timer++;
 		// flash mouth
-		if(e->state_time > 60 && (e->state_time & 4)) {
-			if(e->sprite->animInd != 8) SPR_SAFEANIM(e->sprite, 8);
+		if(e->timer > 60 && (e->timer & 4)) {
+			if(e->sprite->animInd != 8) e->frame = 8;
 		} else {
-			if(e->sprite->animInd != 4) SPR_SAFEANIM(e->sprite, 4);
+			if(e->sprite->animInd != 4) e->frame = 4;
 		}
 		// fire shots
-		if(e->state_time > 120) {
-			if((e->state_time % 8) == 1) {
+		if(e->timer > 120) {
+			if((e->timer % 8) == 1) {
 				sound_play(SND_BLOCK_DESTROY, 5);
 				Entity *shot = entity_create(sub_to_block(e->x) + (e->dir ? 1 : -1),
 					sub_to_block(e->y), 0, 0, 0x0B, 0, e->dir);
@@ -93,7 +96,7 @@ void ai_igor_onUpdate(Entity *e) {
 				shot->y_speed = 0x100 - (random() % 0x300);
 			}
 			// fires 6 shots
-			if(e->state_time > 150) ENTITY_SET_STATE(e, STATE_STAND, 0);
+			if(e->timer > 150) ENTITY_SET_STATE(e, STATE_STAND, 0);
 		}
 		break;
 	}
@@ -103,13 +106,15 @@ void ai_igor_onUpdate(Entity *e) {
 	entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+	* */
 }
 
-void ai_igor_onState(Entity *e) {
+void ondeath_igor(Entity *e) {
+	/*
 	switch(e->state) {
 		case STATE_STAND:
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		SPR_SAFEANIM(e->sprite, 0);
+		e->frame = 0;
 		e->attack = 0;
 		break;
 		case STATE_BEGIN_ATTACK:
@@ -124,11 +129,11 @@ void ai_igor_onState(Entity *e) {
 		
 		case STATE_WALK:
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		SPR_SAFEANIM(e->sprite, 1);
+		e->frame = 1;
 		e->x_speed = pixel_to_sub(e->dir ? 1 : -1);
 		break;
 		case STATE_PUNCH:
-		SPR_SAFEANIM(e->sprite, 2);
+		e->frame = 2;
 		e->x_speed = 0;
 		break;
 		case STATE_PUNCH_2:
@@ -139,24 +144,24 @@ void ai_igor_onState(Entity *e) {
 		} else {
 			e->hit_box.right += 10;
 		}
-		SPR_SAFEANIM(e->sprite, 3);
+		e->frame = 3;
 		e->attack = 5;
 		break;
 		case STATE_JUMPING:
-		SPR_SAFEANIM(e->sprite, 5);
+		e->frame = 5;
 		e->y_speed = -0x400;
 		e->attack = 2;
 		e->x_speed *= 2;
 		e->x_speed /= 3;
 		break;
 		case STATE_LANDED:
-		SPR_SAFEANIM(e->sprite, 6);
+		e->frame = 6;
 		e->x_speed = 0;
 		break;
 		case STATE_MOUTH_BLAST:
 		FACE_PLAYER(e);
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		SPR_SAFEANIM(e->sprite, 4);
+		e->frame = 4;
 		e->x_speed = 0;
 		break;
 		case STATE_DEFEATED:
@@ -165,12 +170,14 @@ void ai_igor_onState(Entity *e) {
 		tsc_call_event(e->event); // Boss defeated event
 		break;
 	}
+	* */
 }
 
-void ai_igorscene_onUpdate(Entity *e) {
+void ai_igorscene(Entity *e) {
+	/*
 	if(e->state >= 4) {
-		e->state_time--;
-		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
+		e->timer--;
+		if(e->timer == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
 	}
 	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
@@ -179,94 +186,98 @@ void ai_igorscene_onUpdate(Entity *e) {
 	else e->grounded = collide_stage_floor_grounded(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+	* */
 }
 
-void ai_igorscene_onState(Entity *e) {
+void ondeath_igorscene(Entity *e) {
+	/*
 	switch(e->state) {
 		case 0:
 		case 1:
 		{
 			e->x_speed = 0;
 			SPR_SAFEHFLIP(e->sprite, e->dir);
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 		}
 		break;
 		case 2:
 		case 3:
 		{
 			MOVE_X(SPEED(0x200));
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 		}
 		break;
 		case 4:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		SPR_SAFEANIM(e->sprite, 2);
-		e->state_time = 20;
+		e->frame = 2;
+		e->timer = 20;
 		break;
 		case 5:
 		e->x_speed = 0;
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		SPR_SAFEANIM(e->sprite, 3);
-		e->state_time = 20;
+		e->frame = 3;
+		e->timer = 20;
 		break;
 	}
+	* */
 }
 
-void ai_igordead_onUpdate(Entity *e) {
+void ai_igordead(Entity *e) {
+	/*
 	switch(e->state) {
 		case 0:
 		FACE_PLAYER(e);
 		//sound(SND_BIG_CRASH);
 		//SmokeBoomUp(e);
 		e->x_speed = 0;
-		e->state_time = 0;
+		e->timer = 0;
 		e->state = 1;
 		break;
 		case 1:
 		// Puffs of smoke
-		if((++e->state_time % 10) == 1) {
+		if((++e->timer % 10) == 1) {
 			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
 				sub_to_pixel(e->y) - 32 + (random() % 64));
 		}
 		// Shake
-		if((e->state_time & 3) == 1) {
+		if((e->timer & 3) == 1) {
 			e->display_box.left -= 1;
-		} else if((e->state_time & 3) == 3) {
+		} else if((e->timer & 3) == 3) {
 			e->display_box.left += 1;
 		}
-		if(e->state_time > 100) {
-			e->state_time = 0;
+		if(e->timer > 100) {
+			e->timer = 0;
 			e->state = 2;
 		}
 		break;
 		case 2:
 		// Slower smoke puff
-		if((++e->state_time & 15) == 0) {
+		if((++e->timer & 15) == 0) {
 			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
 				sub_to_pixel(e->y) - 32 + (random() % 64));
 		}
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)
-		if((e->state_time & 3) == 1) {
-			SPR_SAFEANIM(e->sprite, 9);
-		} else if((e->state_time & 3) == 3) {
-			SPR_SAFEANIM(e->sprite, 7);
+		if((e->timer & 3) == 1) {
+			e->frame = 9;
+		} else if((e->timer & 3) == 3) {
+			e->frame = 7;
 		}
-		if(e->state_time > 160) {
-			SPR_SAFEANIM(e->sprite, 9);
+		if(e->timer > 160) {
+			e->frame = 9;
 			e->state = 3;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		break;
 		case 3:
-		if(++e->state_time > 60) {
+		if(++e->timer > 60) {
 			if(e->sprite->animInd >= 11) {
 				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 4;
 			} else {
-				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, e->sprite->animInd + 1);
+				e->timer = 0;
+				e->frame = e->sprite->animInd + 1;
 			}
 		}
 		//if((e->timer % 24) == 0)
@@ -274,5 +285,5 @@ void ai_igordead_onUpdate(Entity *e) {
 		break;
 		case 4: break;
 	}
+	* */
 }
-*/

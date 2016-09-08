@@ -13,7 +13,7 @@
 #define balrog_smoketimer	y_mark
 
 // Balrog should never deactivate
-void oncreate_balrog(Entity *e) {
+void onspawn_balrog(Entity *e) {
 	e->alwaysActive = true;
 }
 
@@ -33,7 +33,7 @@ void ai_balrog(Entity *e) {
 			e->eflags &= ~NPC_IGNORESOLID;
 			e->x_speed = 0;
 			e->balrog_smoking = false;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 		}
 		/* no break */
 		case 1:
@@ -44,15 +44,15 @@ void ai_balrog(Entity *e) {
 		case 10:		// he jumps and flys away
 		{
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 2);
-			e->state_time = 0;
+			e->frame = 2;
+			e->timer = 0;
 			e->state++;
 		}
 		/* no break */
 		case 11:
 		{
-			if (++e->state_time <= TIME(20)) break;
-			SPR_SAFEANIM(e->sprite, 3);
+			if (++e->timer <= TIME(20)) break;
+			e->frame = 3;
 			e->state++;
 			e->y_speed = SPEED(-0x800);
 			e->eflags |= NPC_IGNORESOLID;
@@ -74,9 +74,9 @@ void ai_balrog(Entity *e) {
 		case 20:
 		{
 			e->state = 21;
-			SPR_SAFEANIM(e->sprite, 5);
+			e->frame = 5;
 			e->x_speed = 0;
-			e->state_time = e->state_time2 = 0;
+			e->timer = e->timer2 = 0;
 			//SmokeClouds(e, 4, 8, 8);
 			sound_play(SND_BIG_CRASH, 5);
 			e->balrog_smoking = 1;
@@ -84,9 +84,9 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 21:
 		{
-			e->state_time2++;
-			e->x += ((e->state_time2 >> 1) & 1) ? (1<<9) : -(1<<9);
-			if (++e->state_time > TIME(100)) {
+			e->timer2++;
+			e->x += ((e->timer2 >> 1) & 1) ? (1<<9) : -(1<<9);
+			if (++e->timer > TIME(100)) {
 				e->state = 10;
 			}
 			e->y_speed += SPEED(0x20);
@@ -95,14 +95,14 @@ void ai_balrog(Entity *e) {
 		break;
 		case 30:	// he smiles for a moment
 		{
-			SPR_SAFEANIM(e->sprite, 6);
-			e->state_time = 0;
+			e->frame = 6;
+			e->timer = 0;
 			e->state = 31;
 		}
 		/* no break */
 		case 31:
 		{
-			if (++e->state_time > TIME(100)) {
+			if (++e->timer > TIME(100)) {
 				e->state = 0;
 			}
 		}
@@ -110,12 +110,12 @@ void ai_balrog(Entity *e) {
 		case 40: // Spell cast before transforming into Balfrog
 		{
 			e->state = 41;
-			SPR_SAFEANIM(e->sprite, 5);
+			e->frame = 5;
 		}
 		break;
 		case 42:
 		{
-			e->state_time = 0;
+			e->timer = 0;
 			e->state = 43;
 			// Spawn the Balfrog boss
 			entity_create_boss(sub_to_block(e->x), sub_to_block(e->y), BOSS_BALFROG, 1000);
@@ -126,20 +126,20 @@ void ai_balrog(Entity *e) {
 			// flashing visibility
 			// (transforming into Balfrog stage boss;
 			//	our flashing is interlaced with his)
-			e->state_time++;
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) ? HIDDEN : AUTO_FAST);
+			e->timer++;
+			SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
 		}
 		break;
 		case 50:	// he faces away
 		{
-			SPR_SAFEANIM(e->sprite, 8);
+			e->frame = 8;
 			e->x_speed = 0;
 		}
 		break;
 		case 60:	// he walks
 		{
 			e->state = 61;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 		}
 		/* no break */
 		case 61:
@@ -152,31 +152,31 @@ void ai_balrog(Entity *e) {
 		case 70:
 		{
 			e->x_speed = 0;
-			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 7);
+			e->timer = 0;
+			e->frame = 7;
 			e->state++;
 		}
 		/* no break */
 		case 71:
 		{
 			fall = false;
-			if(++e->state_time > 120) {
+			if(++e->timer > 120) {
 				e->state = STATE_DELETE;
 				return;
 			}
-			SPR_SAFEVISIBILITY(e->sprite, (e->state_time & 2) ? HIDDEN : AUTO_FAST);
+			SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
 		}
 		break;
 		case 80:	// hands up and shakes
 		{
-			SPR_SAFEANIM(e->sprite, 5);
+			e->frame = 5;
 			e->state = 81;
 		}
 		/* no break */
 		case 81:
 		{
 			fall = false;
-			if (++e->state_time & 2) {
+			if (++e->timer & 2) {
 				e->x += (1 << 9);
 			} else {
 				e->x -= (1 << 9);
@@ -188,16 +188,16 @@ void ai_balrog(Entity *e) {
 		case 100:
 		{
 			e->state = 101;
-			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 2);	// prepare for jump
+			e->timer = 0;
+			e->frame = 2;	// prepare for jump;
 		}
 		/* no break */
 		case 101:
 		{
-			if (++e->state_time > TIME(20)) {
+			if (++e->timer > TIME(20)) {
 				e->state = 102;
-				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, 3);	// fly up
+				e->timer = 0;
+				e->frame = 3;	// fly up;
 				entities_clear_by_type(OBJ_NPC_PLAYER);
 				entities_clear_by_type(OBJ_CURLY);
 				// TODO: OBJ_BALROG_PASSENGER
@@ -265,7 +265,7 @@ void ai_balrog_drop_in(Entity *e) {
 		{
 			e->state = 1;
 			e->grounded = false;
-			SPR_SAFEANIM(e->sprite, 3);	// falling
+			e->frame = 3;	// falling;
 		}
 		/* no break */
 		case 1:
@@ -284,9 +284,9 @@ void ai_balrog_drop_in(Entity *e) {
 			//	if(e->y < block_to_sub(60)) break;
 			//}
 			if ((e->grounded = collide_stage_floor(e))) {
-				SPR_SAFEANIM(e->sprite, 2);
+				e->frame = 2;
 				e->state = 3;
-				e->state_time = 0;
+				e->timer = 0;
 
 				//SmokeSide(o, 4, DOWN);
 				camera_shake(30);
@@ -295,9 +295,9 @@ void ai_balrog_drop_in(Entity *e) {
 		break;
 		case 3:	// landed
 		{
-			if (++e->state_time > TIME(20)) {
+			if (++e->timer > TIME(20)) {
 				e->state = 4;
-				SPR_SAFEANIM(e->sprite, 0);
+				e->frame = 0;
 			}
 		}
 		break;
@@ -321,7 +321,7 @@ void ai_balrog_bust_in(Entity *e) {
 			e->y_speed = SPEED(-0x100);
 			camera_shake(30);
 			e->state = 1;
-			SPR_SAFEANIM(e->sprite, 3);
+			e->frame = 3;
 		}
 		/* no break */
 		case 1:		// falling the short distance to ground
@@ -329,8 +329,8 @@ void ai_balrog_bust_in(Entity *e) {
 			e->y_speed += SPEED(0x10);
 			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 2;
-				SPR_SAFEANIM(e->sprite, 2);
-				e->state_time = 0;
+				e->frame = 2;
+				e->timer = 0;
 				camera_shake(30);
 			}
 		}
@@ -338,9 +338,9 @@ void ai_balrog_bust_in(Entity *e) {
 		// landing animation
 		case 2:
 		{
-			if (++e->state_time > 16) {
+			if (++e->timer > 16) {
 				e->state = 3;
-				SPR_SAFEANIM(e->sprite, 0);
+				e->frame = 0;
 			}
 		}
 		break;
@@ -358,10 +358,11 @@ void ai_balrog_bust_in(Entity *e) {
 
 	LIMIT_Y(SPEED(0x5FF));
 }
-/*
+
 // 68 - Boss: Balrog (Mimiga Village)
-void ai_balrogRunning_onUpdate(Entity *e) {
-	if(e->state_time > 0) e->state_time--;
+void ai_balrogRunning(Entity *e) {
+	/*
+	if(e->timer > 0) e->timer--;
 	switch(e->state) {
 	case 0:
 	case 2:
@@ -370,16 +371,16 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 		else if(e->x_speed < 0) e->x_speed += 0x10;
 		if(abs(e->x_speed) < 0x10) {
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 		}
-		if(e->state_time == 0) ENTITY_SET_STATE(e, e->state + 1, 0);
+		if(e->timer == 0) ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
 	case 1:
 	case 3:
 	case 5:
 		e->x_speed -= 0x10 - (0x20 * e->dir);
-		if(e->state_time % 16 == 14) sound_play(SND_THUD, 3);
-		if(e->state_time == 0 || (abs(e->x - player.x) < block_to_sub(2)))
+		if(e->timer % 16 == 14) sound_play(SND_THUD, 3);
+		if(e->timer == 0 || (abs(e->x - player.x) < block_to_sub(2)))
 			ENTITY_SET_STATE(e, e->state + 1, 0);
 		break;
 	case 6:
@@ -393,10 +394,10 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 		player.x = e->x;
 		player.y = e->y;
 		if(!e->grounded) e->y_speed += GRAVITY_JUMP;
-		if(e->state_time == 0) ENTITY_SET_STATE(e, 8, 0);
+		if(e->timer == 0) ENTITY_SET_STATE(e, 8, 0);
 		break;
 	case 8:
-		if(e->state_time == 0) ENTITY_SET_STATE(e, 0, 0);
+		if(e->timer == 0) ENTITY_SET_STATE(e, 0, 0);
 		break;
 	default:
 		break;
@@ -410,9 +411,11 @@ void ai_balrogRunning_onUpdate(Entity *e) {
 	entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+	* */
 }
 
-void ai_balrogRunning_onState(Entity *e) {
+void ondeath_balrogRunning(Entity *e) {
+	/*
 	if(e->state == STATE_DEFEATED) {
 		tsc_call_event(e->event); // Boss defeated event
 		return;
@@ -421,21 +424,21 @@ void ai_balrogRunning_onState(Entity *e) {
 	case 0: // Stand still
 	case 2:
 	case 4:
-		e->state_time = 160;
+		e->timer = 160;
 		break;
 	case 1: // Run towards player
 	case 3: // Run towards player (2)
 	case 5: // Run towards player and jump
 		e->dir = e->x < player.x;
-		SPR_SAFEANIM(e->sprite, 1);
+		e->frame = 1;
 		SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->state_time = 120;
+		e->timer = 120;
 		break;
 	case 6: // Jumping
 		e->grounded = false;
 		e->y_speed = pixel_to_sub(-2);
-		SPR_SAFEANIM(e->sprite, 3);
-		e->state_time = 160;
+		e->frame = 3;
+		e->timer = 160;
 		break;
 	case 7: // Grab player
 		controlsLocked = true;
@@ -445,23 +448,24 @@ void ai_balrogRunning_onState(Entity *e) {
 		player.y_speed = 0;
 		player.grounded = true;
 		e->x_speed = 0;
-		SPR_SAFEANIM(e->sprite, 8);
-		e->state_time = 120;
+		e->frame = 8;
+		e->timer = 120;
 		break;
 	case 8: // Throw player
 		controlsLocked = false;
-		SPR_SAFEANIM(e->sprite, 3);
+		e->frame = 3;
 		if(player_inflict_damage(1)) break;
 		player.y_speed = pixel_to_sub(-1);
 		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->dir);
-		e->state_time = 60;
+		e->timer = 60;
 		break;
 	default:
 		break;
 	}
+	* */
 }
-*/
-void ai_balrogFlying_onUpdate(Entity *e) {
+
+void ai_balrogFlying(Entity *e) {
 	enum {
 		WAIT_BEGIN = 0,
 		SHOOT_PLAYER,
@@ -481,17 +485,17 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 	switch(e->state) {
 		case WAIT_BEGIN:	// wait at start of battle
 			FACE_PLAYER(e);
-			if(++e->state_time > 12) {
+			if(++e->timer > 12) {
 				e->state = SHOOT_PLAYER;
-				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, 2);
+				e->timer = 0;
+				e->frame = 2;
 			}
 		break;
 		case SHOOT_PLAYER:
-			e->state_time++;
+			e->timer++;
 			FACE_PLAYER(e);
-			if((e->state_time % 16) == 15) {
-				SPR_SAFEANIM(e->sprite, 2);
+			if((e->timer % 16) == 15) {
+				e->frame = 2;
 				// Fire shot
 				Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
 					0, 0, OBJ_IGOR_SHOT, 0, 0);
@@ -499,21 +503,21 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 				shot->y_speed = -0x100 + (random() % 0x200);
 
 				sound_play(SND_EM_FIRE, 5);
-				if(e->state_time > 32) {	// 3 shots
+				if(e->timer > 32) {	// 3 shots
 					e->state = JUMP_BEGIN;
-					e->state_time = 0;
+					e->timer = 0;
 				}
 			}
 		break;
 		case JUMP_BEGIN:	// begin jump
-			e->state_time++;
+			e->timer++;
 			FACE_PLAYER(e);
-			if(e->state_time > 3) {
+			if(e->timer > 3) {
 				e->state = JUMP_UP;
-				e->state_time = 0;
+				e->timer = 0;
 				e->x_speed = (player.x - e->x) / 128;
 				e->y_speed = -0x600;
-				SPR_SAFEANIM(e->sprite, 3);
+				e->frame = 3;
 			}
 		break;
 		case JUMP_UP:		// jumping up
@@ -523,20 +527,20 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 					e->state = JUMP_END;
 				} else {
 					e->state = FLYING;
-					e->state_time = 0;
+					e->timer = 0;
 					e->y_mark = e->y;
-					SPR_SAFEANIM(e->sprite, 9);
+					e->frame = 9;
 				}
 			}
 		break;
 		case FLYING:
-			e->state_time++;
-			if(e->state_time % 16 == 0) {
+			e->timer++;
+			if(e->timer % 16 == 0) {
 				sound_play(SND_EXPLOSION2, 3);
 			}
-			if(e->state_time >= 128) {
+			if(e->timer >= 128) {
 				e->state = JUMP_END;
-				SPR_SAFEANIM(e->sprite, 3);
+				e->frame = 3;
 			}
 			e->y_speed += (e->y >= e->y_mark) ? -0x40 : 0x40;
 			if(e->y_speed > 0x200) e->y_speed = 0x200;
@@ -561,14 +565,14 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 					shot->y_speed = -0x400 + (random() % 0x400);
 				}
 				e->state = LANDED;
-				e->state_time = 0;
-				SPR_SAFEANIM(e->sprite, 0);
+				e->timer = 0;
+				e->frame = 0;
 			}
 		break;
 		case LANDED:
-			if(++e->state_time > 3) {
+			if(++e->timer > 3) {
 				e->state = SHOOT_PLAYER;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		break;
 	}
@@ -577,15 +581,15 @@ void ai_balrogFlying_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_balrogFlying_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
+void ondeath_balrogFlying(Entity *e) {
+	//if(e->state == STATE_DEFEATED) {
 		e->x_speed = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->attack = 0;
 		entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
 		entities_clear_by_type(OBJ_IGOR_SHOT);
 		tsc_call_event(e->event);
-	}
+	//}
 }
 
 #ifdef PAL
@@ -598,7 +602,7 @@ void ai_balrogFlying_onState(Entity *e) {
 #define BALROG_SHOT_GRAVITY	35
 #endif
 
-void ai_balrogShot_onUpdate(Entity *e) {
+void ai_balrogShot(Entity *e) {
 	if(!e->state) {
 		e->eflags |= NPC_SHOOTABLE | NPC_SHOWDAMAGE;
 		e->health = 1000;
@@ -616,7 +620,7 @@ void ai_balrogShot_onUpdate(Entity *e) {
 	}
 	if((e->x_speed > 0 && collide_stage_rightwall(e)) ||
 		(e->x_speed < 0 && collide_stage_leftwall(e)) ||
-		++e->state_time > BALROG_SHOT_TIME) {
+		++e->timer > BALROG_SHOT_TIME) {
 		e->state = STATE_DELETE;
 	}
 	e->x = e->x_next;
@@ -655,16 +659,16 @@ void ai_balrog_boss_missiles(Entity *e)
 			FACE_PLAYER(e);
 			
 			e->state = 1;
-			//e->frame = 0;
-			e->state_time = 0;
+			//e->frame = 0;;
+			e->timer = 0;
 		}
 		/* no break */
 		case 1:
 		{
-			if (++e->state_time > 30)
+			if (++e->timer > 30)
 			{
 				e->state = STATE_CHARGE;
-				e->state_time2 ^= 1;	// affects how we react if we miss the player
+				e->timer2 ^= 1;	// affects how we react if we miss the player
 			}
 		}
 		break;
@@ -672,8 +676,8 @@ void ai_balrog_boss_missiles(Entity *e)
 		// charge the player
 		case STATE_CHARGE:
 		{
-			e->state_time = 0;
-			//e->frame = 9;
+			e->timer = 0;
+			//e->frame = 9;;
 			//e->animtimer = 0;
 			e->state++;
 		}
@@ -697,17 +701,17 @@ void ai_balrog_boss_missiles(Entity *e)
 			}
 			
 			// he behaves differently after every other time he pauses
-			if (e->state_time2)
+			if (e->timer2)
 			{
-				if (++e->state_time > 75)
+				if (++e->timer > 75)
 				{
-					//e->frame = 0;
+					//e->frame = 0;;
 					e->state = STATE_PAUSE;
 				}
 			}
 			else
 			{
-				if (++e->state_time > 24)
+				if (++e->timer > 24)
 					e->state = STATE_JUMP_FIRE;
 			}
 		}
@@ -717,8 +721,8 @@ void ai_balrog_boss_missiles(Entity *e)
 		case STATE_JUMP_FIRE:
 		{
 			e->state++;
-			e->state_time = 0;
-			//e->frame = 3;
+			e->timer = 0;
+			//e->frame = 3;;
 			e->y_speed = -0x5ff;
 		}
 		/* no break */
@@ -727,9 +731,9 @@ void ai_balrog_boss_missiles(Entity *e)
 			FACE_PLAYER(e);
 			
 			// fire missiles
-			if (++e->state_time < 30)
+			if (++e->timer < 30)
 			{
-				if ((e->state_time % 6) == 1)
+				if ((e->timer % 6) == 1)
 				{
 					sound_play(SND_EM_FIRE, 5);
 					
@@ -742,7 +746,7 @@ void ai_balrog_boss_missiles(Entity *e)
 			// landed?
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e)))
 			{
-				//e->frame = 2;
+				//e->frame = 2;;
 				e->state = STATE_PAUSE;
 				camera_shake(30);
 			}
@@ -799,13 +803,13 @@ void ai_balrog_missile(Entity *e)
 	
 	e->x_speed += e->dir ? 0x20 : -0x20;
 	
-	//if ((++e->state_time2 % 4) == 1)
+	//if ((++e->timer2 % 4) == 1)
 	//{
 	//	effect(e->CenterX() - e->x_speed, e->CenterY(), EFFECT_SMOKETRAIL_SLOW);
 	//}
 	
 	// heat-seeking at start, then level out straight
-	if (e->state_time2 < 50)
+	if (e->timer2 < 50)
 	{
 		if (e->y < player.y)
 			e->y_speed += 0x20;

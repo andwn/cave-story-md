@@ -12,21 +12,21 @@
 #include "sheet.h"
 #include "resources.h"
 
-void ai_jelly_onUpdate(Entity *e) {
+void ai_jelly(Entity *e) {
 	/*
 	if(!e->sprite) {
 		SPRITE_FROM_SHEET(&SPR_Jelly, SHEET_JELLY);
-		e->state_time2 = 0;
-	} else if(++e->state_time2 > 10) {
-		if(++e->frame >= 5) e->frame = 0;
+		e->timer2 = 0;
+	} else if(++e->timer2 > 10) {
+		if(++e->frame >= 5) e->frame = 0;;
 		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
-		e->state_time2 = 0;
+		e->timer2 = 0;
 	}
 	* */
 	switch(e->state) {
 		case 0:
 		{
-			e->state_time = random() % TIME(20);
+			e->timer = random() % TIME(20);
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			if(e->eflags & NPC_OPTION2) e->dir = 1;
@@ -36,37 +36,37 @@ void ai_jelly_onUpdate(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			if(e->state_time == 0) {
+			if(e->timer == 0) {
 				e->state = 10;
 			} else {
-				e->state_time--;
+				e->timer--;
 				break;
 			}
 		}
 		/* no break */
 		case 10:
 		{
-			if(++e->state_time > TIME(10)) {
-				e->state_time = 0;
+			if(++e->timer > TIME(10)) {
+				e->timer = 0;
 				e->state = 11;
 			}
 		}
 		break;
 		case 11:
 		{
-			if(++e->state_time == TIME(12)) {
+			if(++e->timer == TIME(12)) {
 				MOVE_X(SPEED(0x100));
 				e->y_speed -= SPEED(0x200);
-			} else if(e->state_time > TIME(16)) {
+			} else if(e->timer > TIME(16)) {
 				e->state = 12;
 			}
 		}
 		break;
 		case 12:
 		{
-			e->state_time++;
-			if(e->y > e->y_mark && e->state_time > TIME(10)) {
-				e->state_time = 0;
+			e->timer++;
+			if(e->y > e->y_mark && e->timer > TIME(10)) {
+				e->timer = 0;
 				e->state = 10;
 			}
 		}
@@ -87,11 +87,11 @@ void ai_jelly_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_kulala_onUpdate(Entity *e) {
+void ai_kulala(Entity *e) {
 	switch(e->state) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
 		{
-			//SPR_SAFEANIM(e->sprite, 4);
+			//e->frame = 4;
 			e->state = 1;
 		}
 		/* no break */
@@ -100,29 +100,29 @@ void ai_kulala_onUpdate(Entity *e) {
 			if(e->damage_time) {
 				camera_shake(30);
 				e->state = 10;
-				//SPR_SAFEANIM(e->sprite, 0);
-				e->state_time = 0;
+				//e->frame = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 10:	// falling
 		{
 			e->eflags &= ~NPC_INVINCIBLE;
-			if(++e->state_time > TIME(40)) {
-				e->state_time = 0;
+			if(++e->timer > TIME(40)) {
+				e->timer = 0;
 				e->state = 11;
 			}
 		}
 		break;
 		case 11:	// animate thrust
 		{
-			e->state_time++;
-			if(e->state_time % TIME(5) == 0) {
+			e->timer++;
+			if(e->timer % TIME(5) == 0) {
 				//u8 frame = e->sprite->animInd;
-				//SPR_SAFEANIM(e->sprite, ++frame);
+				//e->frame = ++frame;
 				//if(frame >= 3) {
 					e->state = 12;
-					e->state_time = 0;
+					e->timer = 0;
 				//}
 			}
 		}
@@ -130,22 +130,22 @@ void ai_kulala_onUpdate(Entity *e) {
 		case 12:	// thrusting upwards
 		{
 			e->y_speed = SPEED(-0x155);
-			if(++e->state_time > TIME(20)) {
+			if(++e->timer > TIME(20)) {
 				e->state = 10;
-				//SPR_SAFEANIM(e->sprite, 0);
-				e->state_time = 0;
+				//e->frame = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 20:	// shot/freeze over/go invulnerable
 		{
-			//SPR_SAFEANIM(e->sprite, 4);
+			//e->frame = 4;
 			e->x_speed >>= 1;
 			e->y_speed += SPEED(0x20);
 			if(!e->damage_time) {
 				e->state = 10;
-				//SPR_SAFEANIM(e->sprite, 0);
-				e->state_time = TIME(30);
+				//e->frame = 0;
+				e->timer = TIME(30);
 			}
 		}
 		break;
@@ -155,7 +155,7 @@ void ai_kulala_onUpdate(Entity *e) {
 		// x_mark unused so use it as a second timer
 		if(++e->x_mark > TIME(12)) {
 			e->state = 20;
-			//SPR_SAFEANIM(e->sprite, 4);
+			//e->frame = 4;
 			e->eflags |= NPC_INVINCIBLE;
 		}
 	} else {
@@ -195,7 +195,7 @@ void ai_kulala_onUpdate(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_mannan_onUpdate(Entity *e) {
+void ai_mannan(Entity *e) {
 	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
@@ -203,102 +203,106 @@ void ai_mannan_onUpdate(Entity *e) {
 		// Face sprite remains after defeated
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->nflags &= ~NPC_SHOOTABLE;
-		//SPR_SAFEANIM(e->sprite, 2);
+		//e->frame = 2;
 		e->attack = 0;
 		e->state = 3;
 		return;
 	} else if(e->state == 0 && e->damage_time == 29) {
 		e->state = 1;
-		e->state_time = 0;
-		//SPR_SAFEANIM(e->sprite, 1);
+		e->timer = 0;
+		//e->frame = 1;
 		Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
 			0, 0, OBJ_MANNAN_SHOT, 0, e->dir);
 		shot->dir = e->dir;
 		// We want the bullet to delete itself offscreen, it can't do this while inactive
 		shot->alwaysActive = true;
-	} else if(e->state == 1 && ++e->state_time > 24) {
+	} else if(e->state == 1 && ++e->timer > 24) {
 		e->state = 0;
-		e->state_time = 0;
-		SPR_SAFEANIM(e->sprite, 0);
+		e->timer = 0;
+		e->frame = 0;
 	}
 }
 
-void ai_mannanShot_onUpdate(Entity *e) {
+void ai_mannanShot(Entity *e) {
 	ACCEL_X(SPEED(0x20));
-	if((e->state_time % 8) == 1) {
+	if((e->timer % 8) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
-	if(++e->state_time > TIME(120)) e->state = STATE_DELETE;
+	if(++e->timer > TIME(120)) e->state = STATE_DELETE;
 	e->x += e->x_speed;
 }
 
 // Redo malco later
-/*
-void ai_malco_onUpdate(Entity *e) {
+void ai_malco(Entity *e) {
+	/*
 	switch(e->state) {
 		case 10:
-		if(++e->state_time < 100) {
-			if((e->state_time % 4) == 0) {
+		if(++e->timer < 100) {
+			if((e->timer % 4) == 0) {
 				sound_play(SND_COMPUTER_BEEP, 5);
 			}
-		} else if(e->state_time > 150) {
+		} else if(e->timer > 150) {
 			ENTITY_SET_STATE(e, 15, 0);
 		}
 		break;
 		case 15:		// shaking
-		if(e->state_time % 4 == 0) {
+		if(e->timer % 4 == 0) {
 			e->x += sub_to_pixel(1);
 			sound_play(SND_DOOR, 5);
-		} else if(e->state_time % 4 == 2) {
+		} else if(e->timer % 4 == 2) {
 			e->x -= sub_to_pixel(1);
 		}
-		if(++e->state_time > 50) ENTITY_SET_STATE(e, 16, 0);
+		if(++e->timer > 50) ENTITY_SET_STATE(e, 16, 0);
 		break;
 		case 16:		// stand up
-		if(++e->state_time > 150) ENTITY_SET_STATE(e, 18, 0);
+		if(++e->timer > 150) ENTITY_SET_STATE(e, 18, 0);
 		break;
 		case 18:		// gawking/bobbing up and down
-		if(++e->state_time % 8 == 0) sound_play(SND_DOOR, 5);
-		if(e->state_time > 100) ENTITY_SET_STATE(e, 20, 0);
+		if(++e->timer % 8 == 0) sound_play(SND_DOOR, 5);
+		if(e->timer > 100) ENTITY_SET_STATE(e, 20, 0);
 		break;
 	}
+	* */
 }
 
-void ai_malco_onState(Entity *restrict e) {
+void ondeath_malco(Entity *restrict e) {
+	/*
 	switch(e->state) {
 		case 0:
-		SPR_SAFEANIM(e->sprite, 0);
+		e->frame = 0;
 		break;
 		case 10:
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 16:
-		SPR_SAFEANIM(e->sprite, 2);
+		e->frame = 2;
 		sound_play(SND_BLOCK_DESTROY, 5);
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 18:
-		SPR_SAFEANIM(e->sprite, 3);
+		e->frame = 3;
 		break;
 		case 20: 
-		SPR_SAFEANIM(e->sprite, 4);
+		e->frame = 4;
 		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 21:	// got smushed!
-		SPR_SAFEANIM(e->sprite, 5);
+		e->frame = 5;
 		sound_play(SND_ENEMY_HURT, 5);
 		break;
 	}
+	* */
 }
 
-void ai_malcoBroken_onCreate(Entity *restrict e) {
-	e->frame = 6;
+void onspawn_malcoBroken(Entity *restrict e) {
+	e->frame = 6;;
 }
 
-void ai_malcoBroken_onState(Entity *restrict e) {
+void ondeath_malcoBroken(Entity *restrict e) {
+	/*
 	switch(e->state) {
 		case 0:
-		SPR_SAFEANIM(e->sprite, 0);
+		e->frame = 0;
 		FACE_PLAYER(e);
 		break;
 		case 10:	// set when pulled out of ground
@@ -307,14 +311,14 @@ void ai_malcoBroken_onState(Entity *restrict e) {
 		e->state = 0;
 		break;
 	}
+	* */
 }
-*/
 
-void ai_powerc_onCreate(Entity *restrict e) {
+void onspawn_powerc(Entity *restrict e) {
 	e->y -= 8 << CSF;
 }
 
-void ai_press_onUpdate(Entity *restrict e) {
+void ai_press(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 			e->x_next = e->x;
@@ -322,13 +326,13 @@ void ai_press_onUpdate(Entity *restrict e) {
 			e->grounded = collide_stage_floor(e);
 			if(!e->grounded) {
 				e->state = 10;
-				e->state_time = 0;
+				e->timer = 0;
 				//SPR_SAFEFRAME(e->sprite, 1);
 			}
 		break;
 		case 10:		// fall
-			e->state_time++;
-			if(e->state_time == 4) {
+			e->timer++;
+			if(e->timer == 4) {
 				//SPR_SAFEFRAME(e->sprite, 2);
 			}
 			e->y_speed += 0x20;
@@ -355,7 +359,7 @@ void ai_press_onUpdate(Entity *restrict e) {
 	}
 }
 
-void ai_frog_onUpdate(Entity *restrict e) {
+void ai_frog(Entity *restrict e) {
 	if(!e->grounded) e->y_speed += SPEED(0x80);
 	LIMIT_Y(SPEED(0x5FF));
 
@@ -365,7 +369,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->state_time = 0;
+			e->timer = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
 			// Balfrog sets OPTION1
@@ -374,7 +378,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 				//SPR_SAFEHFLIP(e->sprite, e->dir);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 3;
-				//SPR_SAFEANIM(e->sprite, 1);
+				//e->frame = 1;
 			} else {
 				e->grounded = true;
 				e->eflags &= ~NPC_IGNORESOLID;
@@ -385,17 +389,17 @@ void ai_frog_onUpdate(Entity *restrict e) {
 		case 1:		// standing
 		case 2:
 		{
-			e->state_time++;
+			e->timer++;
 		}
 		break;
 		case 3:		// falling out of ceiling during balfrog fight
 		{
-			if(++e->state_time > TIME(40)) {
+			if(++e->timer > TIME(40)) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				if((e->grounded = collide_stage_floor(e))) {
 					e->state = 1;
-					//SPR_SAFEANIM(e->sprite, 0);
-					e->state_time = 0;
+					//e->frame = 0;
+					e->timer = 0;
 				}
 			}
 		}
@@ -413,14 +417,14 @@ void ai_frog_onUpdate(Entity *restrict e) {
 			}
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 0;
-				//SPR_SAFEANIM(e->sprite, 0);
-				e->state_time = 0;
+				//e->frame = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 	}
 	// random jumping, and jump when shot
-	if (e->state < 3 && e->state_time > TIME(10)) {
+	if (e->state < 3 && e->timer > TIME(10)) {
 		bool dojump = false;
 		if(e->damage_time) {
 			dojump = true;
@@ -432,7 +436,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 		if (dojump) {
 			FACE_PLAYER(e);
 			e->state = 10;
-			//SPR_SAFEANIM(e->sprite, 1);
+			//e->frame = 1;
 			e->y_speed = SPEED(-0x5ff);
 			e->grounded = false;
 
@@ -448,7 +452,7 @@ void ai_frog_onUpdate(Entity *restrict e) {
 	e->y = e->y_next;
 }
 
-void ai_hey_onUpdate(Entity *restrict e) {
+void ai_hey(Entity *restrict e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -458,26 +462,26 @@ void ai_hey_onUpdate(Entity *restrict e) {
 		/* no break */
 		case 1:
 		{
-			if(++e->state_time >= TIME(50)) {
+			if(++e->timer >= TIME(50)) {
 				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 2;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 2:
 		{
-			if(++e->state_time >= TIME(50)) {
+			if(++e->timer >= TIME(50)) {
 				//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 				e->state = 1;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 	}
 }
 
-void ai_motorbike_onUpdate(Entity *restrict e) {
+void ai_motorbike(Entity *restrict e) {
 	switch(e->state) {
 		case 0:		// parked
 		break;
@@ -492,7 +496,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		case 20:	// kazuma and booster start the engine
 		{
 			e->state = 21;
-			e->state_time = 1;
+			e->timer = 1;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 		}
@@ -501,7 +505,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		{
 			e->x = e->x_mark + 0x200 - (random() % 0x400);
 			e->y = e->y_mark + 0x200 - (random() % 0x400);
-			if(++e->state_time > 30) {
+			if(++e->timer > 30) {
 				e->state = 30;
 			}
 		}
@@ -509,7 +513,7 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		case 30:	// kazuma and booster take off
 		{
 			e->state = 31;
-			e->state_time = 1;
+			e->timer = 1;
 			e->x_speed = -0x800;
 			e->y_mark = e->y;
 			sound_play(SND_MISSILE_HIT, 5);
@@ -518,17 +522,17 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		case 31:
 		{
 			e->x_speed += 0x20;
-			e->state_time++;
+			e->timer++;
 			e->y = e->y_mark + 0x200 - (random() % 0x400);
-			if (e->state_time > 10)  e->dir = 1;
-			if (e->state_time > 200) e->state = 40;
+			if (e->timer > 10)  e->dir = 1;
+			if (e->timer > 200) e->state = 40;
 		}
 		break;
 		
 		case 40:		// flying away (fast out-of-control)
 		{
 			e->state = 41;
-			e->state_time = 2;
+			e->timer = 2;
 			e->dir = 0;
 			e->y -= pixel_to_sub(48);		// move up...
 			e->x_speed = -0x1000;		// ...and fly fast
@@ -536,12 +540,12 @@ void ai_motorbike_onUpdate(Entity *restrict e) {
 		/* no break */
 		case 41:
 		{
-			e->state_time += 2;	// makes exhaust sound go faster
-			if(e->state_time > 1200) e->state = STATE_DELETE;
+			e->timer += 2;	// makes exhaust sound go faster
+			if(e->timer > 1200) e->state = STATE_DELETE;
 		}
 		break;
 	}
-	if(e->state >= 20 && (e->state_time & 3) == 0) {
+	if(e->state >= 20 && (e->timer & 3) == 0) {
 		sound_play(SND_FIREBALL, 5);
 		// make exhaust puffs, and make them go out horizontal
 		// instead of straight up as this effect usually does

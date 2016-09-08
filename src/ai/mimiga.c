@@ -7,8 +7,8 @@
 #include "tables.h"
 #include "tsc.h"
 
-void ai_flower_onCreate(Entity *e) {
-	e->frame = random() % 6;
+void onspawn_flower(Entity *e) {
+	e->frame = random() % 6;;
 }
 
 void ai_jack(Entity *e) {
@@ -34,7 +34,7 @@ void ai_chaco(Entity* e) {
 		{
 			e->state++;
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 3);
+			e->frame = 3;
 		}
 		break;
 		case 11: break;

@@ -65,7 +65,7 @@ Entity *pieces[7];
 
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
-void oncreate_core(Entity *e) {
+void onspawn_core(Entity *e) {
 	e->state = CORE_SLEEP;
 	e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
 	
@@ -138,7 +138,7 @@ void ai_core(Entity *e) {
 		case CORE_CLOSED:
 		{
 			e->state = CORE_CLOSED+1;
-			e->state_time = 0;
+			e->timer = 0;
 			
 			STOP_WATER_STREAM;
 			e->x_mark = player.x;
@@ -148,10 +148,10 @@ void ai_core(Entity *e) {
 		case CORE_CLOSED+1:
 		{
 			// open mouth after 400 ticks
-			if (e->state_time > TIME(400)) {
-				if (++e->state_time2 > 3) {
+			if (e->timer > TIME(400)) {
+				if (++e->timer2 > 3) {
 					// every 3rd time do gusting left and big core blasts
-					e->state_time2 = 0;
+					e->timer2 = 0;
 					e->state = CORE_GUST;
 				} else {
 					e->state = CORE_OPEN;
@@ -168,7 +168,7 @@ void ai_core(Entity *e) {
 		case CORE_OPEN:
 		{
 			e->state = CORE_OPEN+1;
-			e->state_time = 0;
+			e->timer = 0;
 			// gonna open mouth, so save the current HP so we'll
 			// know how much damage we've taken this time.
 			e->savedhp = e->health;
@@ -183,13 +183,13 @@ void ai_core(Entity *e) {
 			OPEN_MOUTH;
 			
 			// hint curly to target us
-			if ((e->state_time % TIME(64)) == 1) {
+			if ((e->timer % TIME(64)) == 1) {
 				CURLY_TARGET_HERE(e);
 			}
 			
 			// spawn ghosties
-			if (e->state_time < TIME(200)) {
-				if ((e->state_time % TIME(20))==0) {
+			if (e->timer < TIME(200)) {
+				if ((e->timer % TIME(20))==0) {
 					//CreateEntity(e->x + (random(-48, -16) << CSF),
 					//	     	 e->y + (random(-64, 64) << CSF),
 					//		 	 OBJ_CORE_GHOSTIE);
@@ -197,7 +197,7 @@ void ai_core(Entity *e) {
 			}
 			
 			// close mouth when 400 ticks have passed or we've taken more than 200 damage
-			if (e->state_time > TIME(400) || (e->savedhp - e->health) >= 200) {
+			if (e->timer > TIME(400) || (e->savedhp - e->health) >= 200) {
 				e->state = CORE_CLOSED;
 				CLOSE_MOUTH;
 				do_thrust = true;
@@ -207,7 +207,7 @@ void ai_core(Entity *e) {
 		case CORE_GUST:
 		{
 			e->state = CORE_GUST+1;
-			e->state_time = 0;
+			e->timer = 0;
 			
 			START_WATER_STREAM;
 		}
@@ -224,12 +224,12 @@ void ai_core(Entity *e) {
 			OPEN_MOUTH;
 			
 			// spawn the big white blasts
-			if (e->state_time==TIME(300) || e->state_time==TIME(350) || e->state_time==TIME(400)) {
+			if (e->timer==TIME(300) || e->timer==TIME(350) || e->timer==TIME(400)) {
 				//EmFireAngledShot(pieces[CFRONT], OBJ_CORE_BLAST, 0, 3<<CSF);
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 			}
 			
-			if (e->state_time > TIME(400)) {
+			if (e->timer > TIME(400)) {
 				e->state = CORE_CLOSED;
 				CLOSE_MOUTH;
 				do_thrust = true;
@@ -242,7 +242,7 @@ void ai_core(Entity *e) {
 			water_entity->state = WL_CALM;
 			
 			e->state = 501;
-			e->state_time = 0;
+			e->timer = 0;
 			e->x_speed = e->y_speed = 0;
 			curly_target_time = 0;
 			
@@ -260,12 +260,12 @@ void ai_core(Entity *e) {
 		/* no break */
 		case 501:
 		{
-			e->state_time++;
-			if ((e->state_time & 0x0f) != 0) {
+			e->timer++;
+			if ((e->timer & 0x0f) != 0) {
 				//SmokeXY(pieces[CBACK]->x, pieces[CBACK]->CenterY(), 1, 64, 32);
 			}
 			
-			if (e->state_time & 2)
+			if (e->timer & 2)
 				e->x -= (1 << CSF);
 			else
 				e->x += (1 << CSF);
@@ -284,17 +284,17 @@ void ai_core(Entity *e) {
 			//sound(SND_TELEPORT);
 			
 			//pieces[CFRONT]->clip_enable = pieces[CBACK]->clip_enable = 1;
-			e->state_time = 60;//sprites[pieces[CFRONT]->sprite].h;
+			e->timer = 60;//sprites[pieces[CFRONT]->sprite].h;
 		}
 		/* no break */
 		case 601:
 		{
 			//pieces[CFRONT]->display_xoff = pieces[CBACK]->display_xoff = random(-8, 8);
 			
-			//pieces[CFRONT]->clipy2 = e->state_time;
-			//pieces[CBACK]->clipy2 = e->state_time;
+			//pieces[CFRONT]->clipy2 = e->timer;
+			//pieces[CBACK]->clipy2 = e->timer;
 			
-			if (--e->state_time == 0) {
+			if (--e->timer == 0) {
 				//pieces[CFRONT]->invisible = true;
 				//pieces[CBACK]->invisible = true;
 				
@@ -321,10 +321,10 @@ void ai_core(Entity *e) {
 	
 	// fire the minicores in any awake non-dead state
 	if (e->state >= CORE_CLOSED && e->state < 500) {
-		e->state_time++;
+		e->timer++;
 		
 		// fire off each minicore sequentially...
-		switch(e->state_time) {
+		switch(e->timer) {
 			case TIME(80+0):   pieces[0]->state = MC_CHARGE_FIRE; break;
 			case TIME(80+30):  pieces[1]->state = MC_CHARGE_FIRE; break;
 			case TIME(80+60):  pieces[2]->state = MC_CHARGE_FIRE; break;
@@ -361,12 +361,10 @@ void ai_core(Entity *e) {
 }
 
 void ondeath_core(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
-		e->state = 500;
-		e->state_time = 0;
-		e->eflags = 0;
-		tsc_call_event(e->event);
-	}
+	e->state = 500;
+	e->timer = 0;
+	e->eflags = 0;
+	tsc_call_event(e->event);
 }
 
 // the front (mouth) piece of the main core
@@ -394,7 +392,7 @@ void ai_minicore(Entity *e) {
 	switch(e->state) {
 		case MC_SLEEP:		// idle & mouth closed
 		{
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 2;
 			e->state = MC_SLEEP+1;
 		}
 		/* no break */
@@ -407,34 +405,34 @@ void ai_minicore(Entity *e) {
 		case MC_THRUST:			// thrust (move to random new pos)
 		{
 			e->state = MC_THRUST+1;
-			SPR_SAFEANIM(e->sprite, 2);
-			e->state_time = 0;
+			e->frame = 2;
+			e->timer = 0;
 			e->x_mark = e->x + ((-128 + (random() % 160)) << CSF);
 			e->y_mark = e->y + ((-64 + (random() % 128)) << CSF);
 		}
 		/* no break */
 		case MC_THRUST+1:
 		{
-			if (++e->state_time > TIME(50)) {
-				SPR_SAFEANIM(e->sprite, 0);
+			if (++e->timer > TIME(50)) {
+				e->frame = 0;
 			}
 		}
 		break;
 		case MC_CHARGE_FIRE:			// charging for fire
 		{
 			e->state = MC_CHARGE_FIRE+1;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		/* no break */
 		case MC_CHARGE_FIRE+1:			// flash blue
 		{
-			e->state_time++;
-			if(e->state_time % 4 == 0) {
-				SPR_SAFEANIM(e->sprite, 0);
-			} else if(e->state_time % 4 == 2) {
-				SPR_SAFEANIM(e->sprite, 1);
+			e->timer++;
+			if(e->timer % 4 == 0) {
+				e->frame = 0;
+			} else if(e->timer % 4 == 2) {
+				e->frame = 1;
 			}
-			if(e->state_time > TIME(20)) {
+			if(e->timer > TIME(20)) {
 				e->state = MC_FIRE;
 			}
 		}
@@ -442,18 +440,18 @@ void ai_minicore(Entity *e) {
 		case MC_FIRE:			// firing
 		{
 			e->state = MC_FIRE+1;
-			SPR_SAFEANIM(e->sprite, 2);	// close mouth again
-			e->state_time = 0;
+			e->frame = 2;	// close mouth again;
+			e->timer = 0;
 			e->x_mark = e->x + ((24 + (random() % 16)) << CSF);
 			e->y_mark = e->y + ((-4 + (random() % 8)) << CSF);
 		}
 		/* no break */
 		case MC_FIRE+1:
 		{
-			if (++e->state_time > TIME(50)) {
+			if (++e->timer > TIME(50)) {
 				e->state = MC_FIRED;
-				SPR_SAFEANIM(e->sprite, 0);
-			} else if (e->state_time==1 || e->state_time==3) {
+				e->frame = 0;
+			} else if (e->timer==1 || e->timer==3) {
 				// fire at player at speed (2<<CSF) with 2 degrees of variance
 				//EmFireAngledShot(o, OBJ_MINICORE_SHOT, 2, 2<<CSF);
 				sound_play(SND_EM_FIRE, 5);
@@ -463,7 +461,7 @@ void ai_minicore(Entity *e) {
 		case MC_RETREAT:		// defeated!
 		{
 			e->state = MC_RETREAT+1;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 2;
 			e->x_speed = e->y_speed = 0;
 		}
 		/* no break */
@@ -500,7 +498,7 @@ void ai_minicore(Entity *e) {
 void ai_minicore_shot(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	if (++e->state_time2 > TIME(150)) {
+	if (++e->timer2 > TIME(150)) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
 		e->state = STATE_DELETE;
 	}
@@ -534,5 +532,5 @@ void ai_core_ghostie(Entity *e) {
 void ai_core_blast(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	if (++e->state_time > TIME(200)) e->state = STATE_DELETE;
+	if (++e->timer > TIME(200)) e->state = STATE_DELETE;
 }

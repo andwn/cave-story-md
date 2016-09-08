@@ -29,7 +29,7 @@ static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
 		e->y_speed = SPEED(-0x300) - random(SPEED(0x300));
 		e->grounded = false;
-		//SPR_SAFEANIM(e->sprite, ANIM_JUMPING);
+		//e->frame = ANIM_JUMPING;
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
 }
@@ -82,7 +82,7 @@ void ai_curly_ai(Entity *e) {
 			e->y_mark = e->y;
 			e->dir = player.dir;
 			e->state = CAI_ACTIVE;
-			e->state_time = 0;
+			e->timer = 0;
 			// If we traded Curly for machine gun she uses the polar star
 			curly_mgun = !player_has_weapon(WEAPON_MACHINEGUN);
 			// spawn her gun
@@ -95,20 +95,20 @@ void ai_curly_ai(Entity *e) {
 		break;
 		case CAI_KNOCKEDOUT:
 		{
-			e->state_time = 0;
+			e->timer = 0;
 			e->state = CAI_KNOCKEDOUT+1;
-			//SPR_SAFEANIM(e->sprite, 9);
+			//e->frame = 9;
 		}
 		/* no break */
 		case CAI_KNOCKEDOUT+1:
 		{
-			if (++e->state_time > TIME(1000)) {	// start fighting
+			if (++e->timer > TIME(1000)) {	// start fighting
 				e->state = CAI_START;
 			}
-			else if (e->state_time > TIME(750))
+			else if (e->timer > TIME(750))
 			{	// stand up
 				e->eflags &= ~NPC_INTERACTIVE;
-				//SPR_SAFEANIM(e->sprite, ANIM_STANDING);
+				//e->frame = ANIM_STANDING;
 			}
 		}
 		break;
@@ -197,11 +197,11 @@ void ai_curly_ai(Entity *e) {
 	if (e->x_next < e->x_mark) wantdir = 1;
 	if (e->x_next > e->x_mark) wantdir = 0;
 	if (wantdir != e->dir) {
-		if (++e->state_time2 > 4) {
-			e->state_time2 = 0;
+		if (++e->timer2 > 4) {
+			e->timer2 = 0;
 			e->dir = wantdir;
 		}
-	} else e->state_time2 = 0;
+	} else e->timer2 = 0;
 	
 	// if trying to return to the player then go into a rest state when we've reached him
 	reached_p = 0;
@@ -209,14 +209,14 @@ void ai_curly_ai(Entity *e) {
 		if (++curly_reachptimer > 80) {
 			e->x_speed *= 7;
 			e->x_speed /= 8;
-			SPR_SAFEANIM(e->sprite, ANIM_STANDING);
+			e->frame = 0;
 			reached_p = 1;
 		}
 	}
 	else curly_reachptimer = 0;
 	
 	if (!reached_p)	{	// if not at rest walk towards target
-		//SPR_SAFEANIM(e->sprite, ANIM_WALKING);
+		//e->frame = ANIM_WALKING;
 		
 		// walk towards target
 		if (e->x_next > e->x_mark) e->x_speed -= SPEED(0x20);
@@ -313,7 +313,7 @@ void ai_curly_ai(Entity *e) {
 		}
 	}
 	// Set animation
-	SPR_SAFEANIM(e->sprite, anim);
+	e->frame = anim;
 	// Change direction if pressing left or right
 	SPR_SAFEHFLIP(e->sprite, e->dir);
 	*/
@@ -414,9 +414,9 @@ void ai_cai_gun(Entity *e) {
 	e->y = curly->y - (4 << CSF);
 	e->dir = curly->dir;
 	//if (curly_look) {
-	//	SPR_SAFEANIM(e->sprite, curly_look == DIR_DOWN ? 2 : 1);
+	//	e->frame = curly_look == DIR_DOWN ? 2 : 1;
 	//} else {
-	//	SPR_SAFEANIM(e->sprite, 0);
+	//	e->frame = 0;
 	//}
 	//SPR_SAFEHFLIP(e->sprite, e->dir);
 	
@@ -443,29 +443,29 @@ void ai_cai_gun(Entity *e) {
 				e->y_mark = curly->y + (8 << CSF);
 			}
 			if (curly_mgun) {	// she has the Machine Gun
-				if (!e->state_time2) {
-					e->state_time2 = 2 + random() % 4;		// no. shots to fire
-					e->state_time = 40 + random() % 10;
+				if (!e->timer2) {
+					e->timer2 = 2 + random() % 4;		// no. shots to fire
+					e->timer = 40 + random() % 10;
 				}
-				if (e->state_time) {
-					e->state_time--;
+				if (e->timer) {
+					e->timer--;
 				} else {
 					// create the MGun blast
 					// curly_look is forward (0), DIR_UP (1), or DIR_DOWN (3)
 					// curly->dir is either 0 or 1, where 1 means right but DIR_RIGHT is 2
 					// So we do this weird thing to fix it
 					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
-					e->state_time = 40 + random() % 10;
-					e->state_time2--;
+					e->timer = 40 + random() % 10;
+					e->timer2--;
 				}
 			} else {	// she has the Polar Star
-				if (!e->state_time) {
-					e->state_time = 4 + random() % 12;
-					if (random() % 10 == 0) e->state_time += 20 + random() % 10;
+				if (!e->timer) {
+					e->timer = 4 + random() % 12;
+					if (random() % 10 == 0) e->timer += 20 + random() % 10;
 					// create the shot
 					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
 				} else {
-					e->state_time--;
+					e->timer--;
 				}
 			}
 		}
@@ -483,6 +483,6 @@ void ai_cai_watershield(Entity *e) {
 		e->y = curly->y;
 	} else {
 		SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
-		e->state_time = 0;
+		e->timer = 0;
 	}
 }

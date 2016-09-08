@@ -65,12 +65,17 @@ u8 game_main(bool load) {
 			paused = update_pause();
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
-			if(!tsc_running() && joy_pressed(BUTTON_START)) {
+			if(!tscState && joy_pressed(BUTTON_START)) {
 				draw_itemmenu();
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
 				paused = true;
 			} else {
+				// HUD on top
+				hud_update();
+				// Handle controller locking
+				u16 lockstate = joystate, oldlockstate = oldstate;
+				if(controlsLocked) joystate = oldstate = 0;
 				// Don't update this stuff if a script is using <PRI
 				if(!gameFrozen) {
 					camera_update();
@@ -78,7 +83,9 @@ u8 game_main(bool load) {
 					entities_update();
 					if(showingBossHealth) tsc_update_boss_health();
 				}
-				hud_update();
+				// Restore controller locking if it was locked
+				joystate = lockstate;
+				oldstate = oldlockstate;
 				// Run the next set of commands in a script if it is running
 				u8 rtn = tsc_update();
 				// Nonzero return values exit the game, or switch to the ending sequence
@@ -102,7 +109,11 @@ u8 game_main(bool load) {
 						break;
 					}
 				}
+				// Get the sprites ready
+				entities_draw_fore();
+				player_draw();
 				effects_update();
+				entities_draw_back();
 				system_update();
 			}
 		}
@@ -124,6 +135,8 @@ void game_reset(bool load) {
 	gameFrozen = false;
 	if(load) {
 		system_load();
+		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
+		if(wepSpr) TILES_QUEUE(SPR_TILESET(wepSpr,0,0)->tiles, TILE_WEAPONINDEX,6);
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
@@ -209,7 +222,7 @@ bool update_pause() {
 		// Weapons are 1000 + ID
 		// Items are 5000 + ID
 		// Item descriptions are 6000 + ID
-		if(tsc_running()) {
+		if(tscState) {
 			tsc_update();
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);

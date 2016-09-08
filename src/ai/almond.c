@@ -32,14 +32,14 @@ void ai_waterlevel(Entity *e) {\
 		case WL_CYCLE:	// wait 1000 ticks, then rise all the way to top come down and repeat
 		{
 			e->state = WL_DOWN;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		/* no break */
 		case WL_DOWN:
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
 			LIMIT_Y(SPEED(0x200));
-			if (++e->state_time > TIME(1000)) {
+			if (++e->timer > TIME(1000)) {
 				e->state = WL_UP;
 			}
 		}
@@ -83,11 +83,11 @@ void ai_shutter(Entity *e) {
 			case DIR_DOWN:  e->y_next = e->y - SPEED(0x80); break;
 		}
 		if (e->type==OBJ_SHUTTER_BIG) {
-			if (!e->state_time) {
+			if (!e->timer) {
 				camera_shake(20);
 				sound_play(SND_QUAKE, 5);
-				e->state_time = TIME(6);
-			} else e->state_time--;
+				e->timer = TIME(6);
+			} else e->timer--;
 		}
 		e->x = e->x_next;
 		e->y = e->y_next;
@@ -112,7 +112,7 @@ void ai_almond_robot(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//SPR_SAFEANIM(e->sprite, 0);
+			//e->frame = 0;
 			e->state++;
 		}
 		break;
@@ -125,7 +125,7 @@ void ai_almond_robot(Entity *e) {
 		break;
 		case 20:	// flashes
 		{
-			//SPR_SAFEANIM(e->sprite, 1);
+			//e->frame = 1;
 			e->state++;
 		}
 		break;

@@ -140,8 +140,6 @@ Event stageEvents[MAX_EVENTS];
 
 const u8 *curCommand = NULL;
 
-u8 tscState = TSC_IDLE;
-
 u16 waitTime;
 
 u16 promptJump = 0;
@@ -230,10 +228,6 @@ void tsc_call_event(u16 number) {
 			}
 		}
 	}
-}
-
-bool tsc_running() {
-	return tscState != TSC_IDLE;
 }
 
 u8 tsc_update() {
@@ -678,7 +672,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			logcmd("<BOA:%hu", args[0]);
 			if(bossEntity) {
-				bossEntity->state = arg[0];
+				bossEntity->state = args[0];
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
 				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 5,

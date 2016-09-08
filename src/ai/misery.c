@@ -18,8 +18,8 @@ void ai_misery_float(Entity *e) {
 			e->x_next += (1 << CSF);	// check Undead Core intro to prove this is correct
 			e->x_mark = e->x_next;
 			e->y_mark = e->y_next;
-			SPR_SAFEANIM(e->sprite, 0);
-			e->state_time = 0;
+			e->frame = 0;
+			e->timer = 0;
 		}
 		/* no break */
 		case 1:
@@ -32,7 +32,7 @@ void ai_misery_float(Entity *e) {
 		case 10:	// floating
 		{
 			e->state = 11;
-			e->state_time = 0;
+			e->timer = 0;
 			e->y_speed = SPEED(1 << CSF);
 		}
 		/* no break */
@@ -45,7 +45,7 @@ void ai_misery_float(Entity *e) {
 		}
 		break;
 		case 13:	// fall from floaty
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
@@ -58,31 +58,31 @@ void ai_misery_float(Entity *e) {
 		// spawn the bubble which picks up Toroko in Shack
 		case 15:
 		{
-			SPR_SAFEANIM(e->sprite, 2);
-			e->state_time = 0;
+			e->frame = 2;
+			e->timer = 0;
 			e->state = 16;
 		}
 		/* no break */
 		case 16:
 		{
-			if (++e->state_time >= TIME(20)) {
+			if (++e->timer >= TIME(20)) {
 				sound_play(SND_BUBBLE, 5);
 				entity_create(sub_to_block(e->x), sub_to_block(e->y - (16 << CSF)), 
 						0, 0, OBJ_MISERYS_BUBBLE, 0, 0);
 				e->state = 17;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 17:
 		{
-			if (++e->state_time >= TIME(50)) e->state = 14;
+			if (++e->timer >= TIME(50)) e->state = 14;
 		}
 		/* no break */
 		case 20: 	// fly away
 		{
 			e->state = 21;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 			e->y_speed = 0;
 		}
 		/* no break */
@@ -95,25 +95,25 @@ void ai_misery_float(Entity *e) {
 		case 25:	// big spell
 		{
 			e->state = 26;
-			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->timer = 0;
+			e->frame = 2;
 		}
 		/* no break */
 		case 26:	// she flashes, then a clap of thunder
 		{
-			if (++e->state_time >= TIME(20)) {
+			if (++e->timer >= TIME(20)) {
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				// Flash screen white
 				VDP_setPaletteColors(0, PAL_FullWhite, 64);
 				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, true);
 				e->state = 27;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case 27:	// return to standing after lightning strike
 		{
-			if (++e->state_time > TIME(16)) e->state = 14;
+			if (++e->timer > TIME(16)) e->state = 14;
 		}
 		break;
 	}
@@ -132,7 +132,7 @@ void ai_misery_bubble(Entity *e) {
 		case 0:
 		{
 			// Wait a bit
-			if(++e->state_time > TIME(20)) e->state = 1;
+			if(++e->timer > TIME(20)) e->state = 1;
 		}
 		break;
 		case 1:
@@ -144,7 +144,7 @@ void ai_misery_bubble(Entity *e) {
 			if(e->x > target->x) e->x_speed = -e->x_speed;
 			if(e->y > target->y) e->y_speed = -e->y_speed;
 			e->state = 2;
-			e->state_time = 0;
+			e->timer = 0;
 		}
 		/* no break */
 		case 2:
@@ -152,7 +152,7 @@ void ai_misery_bubble(Entity *e) {
 			e->x += e->x_speed;
 			e->y += e->y_speed;
 			// Did we reach the target?
-			if(++e->state_time == TIME(50)) {
+			if(++e->timer == TIME(50)) {
 				sound_play(SND_BUBBLE, 5);
 				e->state = 3;
 				e->x = target->x;

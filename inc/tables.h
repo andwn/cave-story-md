@@ -83,7 +83,7 @@ typedef struct {
 	u16 palette; // Any of the 4 loaded palettes to use for the sprite
 	u8 sprite_count; // Size of sprite[0], must be known beforehand
 	char name[26]; // Name of the NPC (NPC Test)
-	EntityMethod onCreate, onUpdate, onDeath; // AI
+	EntityMethod onCreate, onFrame, onDeath; // AI
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage

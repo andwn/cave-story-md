@@ -20,14 +20,14 @@ void ai_curly(Entity *e) {
 	switch(e->state) {
 		case 0:							// state 0: stand and do nothing
 		{
-			SPR_SAFEANIM(e->sprite, 0);
+			e->frame = 0;
 			e->eflags |= NPC_INTERACTIVE;	// needed for after Almond battle
 		}
 		/* no break */
 		case 1:
 		{
 			// important that state 1 does not change look-away frame for Drain cutscene
-			SPR_SAFEANIM(e->sprite, e->sprite->animInd == 4 ? 4 : 0);
+			if(e->frame != 4) e->frame = 0;
 			e->x_speed = 0;
 		}
 		break;
@@ -36,7 +36,7 @@ void ai_curly(Entity *e) {
 		{
 			if (e->state == 10) FACE_PLAYER(e);
 			e->state++;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->frame = 1;
 		}
 		/* no break */
 		case 4:
@@ -46,7 +46,7 @@ void ai_curly(Entity *e) {
 				e->state = 0;
 				break;
 			}
-			//if (!e->grounded) SPR_SAFEANIM(e->sprite, 5);
+			//if (!e->grounded) e->frame = 5;
 			MOVE_X(SPEED(0x200));
 		}
 		break;
@@ -59,26 +59,26 @@ void ai_curly(Entity *e) {
 		/* no break */
 		case 6:
 		{
-			SPR_SAFEANIM(e->sprite, 10);
+			e->frame = 10;
 		}
 		break;
 		case 20:			// face away
 		{
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 4);
+			e->frame = 4;
 		}
 		break;
 		case 21:			// look up
 		{
 			e->x_speed = 0;
-			SPR_SAFEANIM(e->sprite, 2);
+			e->frame = 2;
 		}
 		break;
 		case 30:			// state 30: curly goes flying through the air and is knocked out
 		{
 			e->state = 31;
-			SPR_SAFEANIM(e->sprite, 10);
-			e->state_time2 = 0;
+			e->frame = 10;
+			e->timer2 = 0;
 			e->y_speed = SPEED(-0x400);
 			e->grounded = false;
 			MOVE_X(SPEED(-0x200));
@@ -92,7 +92,7 @@ void ai_curly(Entity *e) {
 		/* no break */
 		case 32:			// state 32: curly is laying knocked out
 		{
-			SPR_SAFEANIM(e->sprite, 9);
+			e->frame = 9;
 			e->x_speed = 0;
 		}
 		break;
@@ -101,8 +101,8 @@ void ai_curly(Entity *e) {
 		case 70:
 		{
 			e->state = 71;
-			e->state_time = 0;
-			SPR_SAFEANIM(e->sprite, 1);
+			e->timer = 0;
+			e->frame = 1;
 		}
 		/* no break */
 		case 71:
@@ -123,7 +123,7 @@ void ai_curly_carried(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			SPR_SAFEANIM(e->sprite, 10);
+			e->frame = 10;
 			e->eflags &= ~NPC_INTERACTIVE;
 			e->nflags &= ~NPC_INTERACTIVE;
 			// TODO: turn on the HVTrigger in Waterway that kills Curly if you haven't
@@ -202,13 +202,13 @@ static void curlyboss_fire(Entity *e, u8 dir) {
 	sound_play(SND_POLAR_STAR_L1_2, 4);
 }
 
-void ai_curlyBoss_onUpdate(Entity *e) {
+void ai_curlyBoss(Entity *e) {
 	switch(e->state) {
 		case CURLYB_FIGHT_START:
 		{
 			e->state = CURLYB_WAIT;
-			e->state_time = (random() % 50) + 50;
-			SPR_SAFEANIM(e->sprite, 0);
+			e->timer = (random() % 50) + 50;
+			e->frame = 0;
 			e->dir = (e->x <= player.x);
 			SPR_SAFEHFLIP(e->sprite, e->dir);
 			e->eflags |= NPC_SHOOTABLE;
@@ -218,26 +218,26 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 		/* no break */
 		case CURLYB_WAIT:
 		{
-			if(!e->state_time--) e->state = CURLYB_WALK_PLAYER;
+			if(!e->timer--) e->state = CURLYB_WALK_PLAYER;
 		}
 		break;
 		case CURLYB_WALK_PLAYER:
 		{
 			e->state = CURLYB_WALKING_PLAYER;
-			SPR_SAFEANIM(e->sprite, 1);
-			e->state_time = (random() % 50) + 50;
+			e->frame = 1;
+			e->timer = (random() % 50) + 50;
 			e->dir = (e->x <= player.x);
 			SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
 		/* no break */
 		case CURLYB_WALKING_PLAYER:
 			ACCEL_X(SPEED(0x40));
-			if (e->state_time) {
-				e->state_time--;
+			if (e->timer) {
+				e->timer--;
 			} else {
 				e->eflags |= NPC_SHOOTABLE;
 				e->state = CURLYB_CHARGE_GUN;
-				e->state_time = 0;
+				e->timer = 0;
 				sound_play(SND_CHARGE_GUN, 5);
 			}
 		break;
@@ -245,38 +245,38 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 		{
 			FACE_PLAYER(e);
 			e->x_speed -= e->x_speed >> 3;
-			SPR_SAFEANIM(e->sprite, 0);
-			if (++e->state_time > TIME(50)) {
+			e->frame = 0;
+			if (++e->timer > TIME(50)) {
 				e->state = CURLYB_FIRE_GUN;
 				e->x_speed = 0;
-				e->state_time = 0;
+				e->timer = 0;
 			}
 		}
 		break;
 		case CURLYB_FIRE_GUN:
 		{
 #ifdef PAL
-			if (e->state_time % 4 == 0) {	// time to fire
+			if (e->timer % 4 == 0) {	// time to fire
 #else
-			if (e->state_time % 5 == 0) {	// time to fire
+			if (e->timer % 5 == 0) {	// time to fire
 #endif
 				// check if player is trying to jump over
 				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y) {
 					// shoot up instead
-					SPR_SAFEANIM(e->sprite, 2);
+					e->frame = 2;
 					curlyboss_fire(e, 2);
 				} else {
-					SPR_SAFEANIM(e->sprite, 0);
+					e->frame = 0;
 					curlyboss_fire(e, e->dir);
 				}
 			}
-			if (++e->state_time > TIME(30)) e->state = CURLYB_FIGHT_START;
+			if (++e->timer > TIME(30)) e->state = CURLYB_FIGHT_START;
 		}
 		break;
 		case CURLYB_SHIELD:
 		{
 			e->x_speed = 0;
-			if (++e->state_time > TIME(30)) e->state = CURLYB_FIGHT_START;
+			if (++e->timer > TIME(30)) e->state = CURLYB_FIGHT_START;
 		}
 		break;
 	}
@@ -285,9 +285,9 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 		// curly activates her shield anytime a missile's explosion goes off,
 		// even if it's nowhere near her at all
 		if(bullet_missile_is_exploding()) {
-			e->state_time = 0;
+			e->timer = 0;
 			e->state = CURLYB_SHIELD;
-			SPR_SAFEANIM(e->sprite, 3);
+			e->frame = 3;
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_INVINCIBLE;
 			e->x_speed = 0;
@@ -305,20 +305,20 @@ void ai_curlyBoss_onUpdate(Entity *e) {
 	e->x = e->x_next;
 }
 
-void ai_curlyBoss_onState(Entity *e) {
-	if(e->state == STATE_DEFEATED) {
-		SPR_SAFERELEASE(e->sprite);
+void ondeath_curlyBoss(Entity *e) {
+	//if(e->state == STATE_DEFEATED) {
+		//SPR_SAFERELEASE(e->sprite);
 		entity_default(e, OBJ_CURLY, 0);
-		entity_sprite_create(e);
+		//entity_sprite_create(e);
 		e->x -= 8;
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->state = 0;
 		entities_clear_by_type(OBJ_CURLYBOSS_SHOT);
 		tsc_call_event(e->event);
-	}
+	//}
 }
 
-void ai_curlyBossShot_onUpdate(Entity *e)
+void ai_curlyBossShot(Entity *e)
 {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;

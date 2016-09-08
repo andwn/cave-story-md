@@ -8,10 +8,6 @@
  * Apart from effects and player bullets, all game objects are entities.
  */
 
-// Used in Entity.spriteAnim, disables loading sprite when reactivating
-// Not needed - use e->hidden
-//#define SPRITE_DISABLE 0xFF       
-
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
 	BOSS_IRONHEAD, BOSS_SISTERS, BOSS_UNDEADCORE, BOSS_HEAVYPRESS, BOSS_BALLOS
@@ -69,7 +65,7 @@ struct Entity {
 	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
 	bool alwaysActive; // Guaranteed to never deactivate when true
-	u16 state, state_time, state_time2; // AI script state and timers
+	u16 state, timer, timer2; // AI script state and timers
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
@@ -93,6 +89,7 @@ struct Entity {
 	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
 	u8 animtime; // Animation timer used by AI and ANIMATE() macro
 	u16 vramindex; // Sheet or tiles index
+	u8 framesize; // Number of tiles per frame
 	VDPSprite sprite[0]; // Raw sprite(s) to copy into sprite list
 };
 
