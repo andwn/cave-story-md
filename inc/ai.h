@@ -87,21 +87,7 @@ typedef void (*EntityMethod)(Entity*);
 								(y) + (random() % (h)));                                       \
 	}                                                                                          \
 })
-/*
-#define SPRITE_FROM_SHEET(spr, sht) ({                                                         \
-	for(u8 i = 0; i < 10; i++) {                                                               \
-		if(sheets[i].id == (sht)) {                                                            \
-			e->frame = i;                                                                 \;
-			break;                                                                             \
-		}                                                                                      \
-	}                                                                                          \
-	e->sprite = SPR_addSpriteEx((spr), 0, 0,                                                   \
-		TILE_ATTR_FULL(PAL0,0,0,e->dir,sheets[e->frame].index), 0,                  \
-		SPR_FLAG_AUTO_SPRITE_ALLOC);                                                           \
-	SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);                                                  \
-	e->frame = 0;                                                                        \;
-})
-*/
+
 #define ANIMATE(e, spd, ...) {                                                                 \
 	const u8 anim[] = { __VA_ARGS__ };                                                         \
 	(e)->animtime++;                                                                           \

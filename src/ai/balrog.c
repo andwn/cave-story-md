@@ -118,7 +118,7 @@ void ai_balrog(Entity *e) {
 			e->timer = 0;
 			e->state = 43;
 			// Spawn the Balfrog boss
-			entity_create_boss(sub_to_block(e->x), sub_to_block(e->y), BOSS_BALFROG, 1000);
+			bossEntity = entity_create(e->x, e->y, 0, 1000, 360 + BOSS_BALFROG, 0, 0);
 		}
 		/* no break */
 		case 43:

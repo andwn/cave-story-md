@@ -62,10 +62,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_NAMESIZE 16
 // Space for shared sprite sheets
 #define TILE_SHEETINDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
-#define TILE_SHEETSIZE 384
-// Space for per entity sprite tiles
-#define TILE_ENTITYINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE)
-#define TILE_ENTITYSIZE 384
+#define TILE_SHEETSIZE (TILE_FONTINDEX - TILE_SHEETINDEX)
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space

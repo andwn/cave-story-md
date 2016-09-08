@@ -11,37 +11,28 @@
 #endif
 
 void sheets_init() {
-	// Polar star
-	sheets[0] = (Sheet){ SHEET_PSTAR, 2*4, TILE_SHEETINDEX };
-	// Machine Gun
-	sheets[1] = (Sheet){ SHEET_MGUN, 2*4, sheets[0].index + sheets[0].size };
-	// Fireball
-	sheets[2] = (Sheet){ SHEET_FBALL, 3*4, sheets[1].index + sheets[1].size };
-	// Heart
-	sheets[3] = (Sheet){ SHEET_HEART, 4*4, sheets[2].index + sheets[2].size };
-	// Missile
-	sheets[4] = (Sheet){ SHEET_MISSILE, 4*4, sheets[3].index + sheets[3].size };
-	// Small Energy
-	sheets[5] = (Sheet){ SHEET_ENERGY, 6*1, sheets[4].index + sheets[4].size };
-	// Large Energy
-	sheets[6] = (Sheet){ SHEET_ENERGYL, 6*4, sheets[5].index + sheets[5].size };
+	// Bullets
+	sheets[0] = (Sheet){ SHEET_PSTAR, 2*4, TILE_SHEETINDEX, 2, 2 };
+	sheets[1] = (Sheet){ SHEET_MGUN, 2*4, sheets[0].index + sheets[0].size, 2, 2 };
+	sheets[2] = (Sheet){ SHEET_FBALL, 3*4, sheets[1].index + sheets[1].size, 2, 2 };
+	// Power ups
+	sheets[3] = (Sheet){ SHEET_HEART, 4*4, sheets[2].index + sheets[2].size, 2, 2 };
+	sheets[4] = (Sheet){ SHEET_MISSILE, 4*4, sheets[3].index + sheets[3].size, 2, 2 };
+	sheets[5] = (Sheet){ SHEET_ENERGY, 6*1, sheets[4].index + sheets[4].size, 1, 1 };
+	sheets[6] = (Sheet){ SHEET_ENERGYL, 6*4, sheets[5].index + sheets[5].size, 2, 2 };
 	// The rest are blank
 	for(u8 i = 7; i < 10; i++) sheets[i] = (Sheet) {};
 	// Actually load the tiles - assume the VDP is disabled
-	// TODO: Move these to player_init
 	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
 	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
 	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
 	sheets_refresh_polarstar(pstar ? pstar->level : 1);
 	sheets_refresh_machinegun(mgun ? mgun->level : 1);
 	sheets_refresh_fireball(fball ? fball->level : 1);
-	// Heart
+	// Power ups
 	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, true, 0,0, 0,1, 1,0, 1,1);
-	// Missile
 	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, true, 0,0, 0,1, 1,0, 1,1);
-	// Small Energy
 	SHEET_LOAD(&SPR_EnergyS,6,1, sheets[5].index, false,0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
-	// Large Energy
 	SHEET_LOAD(&SPR_EnergyL,6,4, sheets[6].index, true, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 }
 
@@ -84,22 +75,47 @@ void sheets_refresh_fireball(u8 level) {
 	VDP_loadTileData(SPR_TILESET(def, 0, 1)->tiles, sheets[2].index + 4, 4, true);
 	VDP_loadTileData(SPR_TILESET(def, 0, 2)->tiles, sheets[2].index + 8, 4, true);
 }
+/*
+#define sheetdef(s, data, width, height, frames) { \
+	s.w = width; \
+	s.h = height; \
+	s.size = frames*width*height; \
+	for(u8 i = 0; i < frames; i++) VDP_loadTileData(data, s.index, s.size, 1); \
+}
 
+void sheet_load(u8 id) {
+	if(sheet_num > MAX_SHEETS || id == SHEET_NONE) return;
+	sheets[sheet_num] = (Sheet){
+		.id = id,
+		.index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size 
+						   : TILE_SHEETINDEX
+	};
+	switch(id) {
+		case SHEET_BAT:     sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
+		case SHEET_CRITTER: sheetdef(sheets[sheet_num], ST_Crit, 2, 2, 2); break;
+		case SHEET_SPIKE:   sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
+		case SHEET_PSTAR:   sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
+	}
+}
+*/
 void sheets_load_stage(u16 sid) {
+	//last_sheet = 6;
+	//last_tiloc = 0;
 	switch(sid) {
 		case 0x0C: // First Cave
-		// Bat
-		sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size };
-		SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
-		// Cave Critter
-		sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size };
-		SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, true, 0,0, 1,0, 2,0);
-		// Nothing
-		sheets[9] = (Sheet) {};
+		{	// Bat
+			sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size, 2, 2 };
+			SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			// Cave Critter
+			sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size, 2, 2 };
+			SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, true, 0,0, 1,0, 2,0);
+			// Nothing
+			sheets[9] = (Sheet) {};
+		}
 		break;
 		case 0x10: // Graveyard
 		// Pignon
-		sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size };
+		sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size, 2, 2 };
 		SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, true, 0,0, 1,0, 1,2, 2,0, 3,0);
 		// Nothing
 		sheets[8] = (Sheet) {};
@@ -107,7 +123,7 @@ void sheets_load_stage(u16 sid) {
 		break;
 		case 0x02: // Egg Corridor
 		// Green Critter (no hover)
-		sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size };
+		sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size, 2, 2 };
 		SHEET_LOAD(&SPR_CritHG, 3,4, sheets[7].index, true, 0,0, 1,0, 2,0);
 		// Beetle
 		sheets[8] = (Sheet) {};

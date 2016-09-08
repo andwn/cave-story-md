@@ -5,7 +5,7 @@
 #include "entity.h"
 
 // Pre calculated camera bounds values to speed up entity_on_screen()
-s32 camera_left, camera_top, camera_right, camera_bottom;
+s32 camera_xmin, camera_ymin, camera_xsize, camera_ysize;
 
 struct {
 	s32 x, y; // Fixed point units

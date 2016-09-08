@@ -110,9 +110,9 @@ u8 game_main(bool load) {
 					}
 				}
 				// Get the sprites ready
+				effects_update();
 				entities_draw_fore();
 				player_draw();
-				effects_update();
 				entities_draw_back();
 				system_update();
 			}

@@ -161,7 +161,6 @@ void entities_update() {
 					}
 				} else {
 					b->ttl = 0;
-					//SPR_SAFERELEASE(b->sprite);
 					if(e->eflags & NPC_INVINCIBLE) {
 						sound_play(SND_TINK, 5);
 					} else {
@@ -288,7 +287,7 @@ void entities_update() {
 				if(e->autotile) { // Tile replace
 					
 				} else { // Tile index
-					
+					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
 				}
 			}
 			if(e->dir != e->odir) sprite_hflip(e->sprite[0], e->dir);
@@ -701,14 +700,14 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	}
 }
 
-Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
+Entity *entity_create(s32 x, s32 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
 	//if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
 	// Allocate memory and start applying values
 	u8 sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	*e = (Entity){
-		.x = block_to_sub(x) + pixel_to_sub(8),
-		.y = block_to_sub(y) + pixel_to_sub(8),
+		.x = x + (8<<CSF),
+		.y = y + (8<<CSF),
 		.id = id,
 		.event = event,
 		.dir = direction,
@@ -718,19 +717,20 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 	entity_default(e, type, flags);
 	if(sprite_count) {
 		if(npc_info[type].sheet == NOSHEET) {
-			if(npc_info[type].sprite) {
-				// Use our own tiles
+			if(npc_info[type].sprite) { // Use our own tiles
+				e->autotile = true;
+				
+			} else { // Leave sprite handling to be done manually
 				
 			}
 		} else { // Use a sprite sheet
 			u8 sind = 0;
-			FIND_SHEET(sind, npc_info[type].sheet);
+			SHEET_FIND(sind, npc_info[type].sheet);
 			e->vramindex = sheets[sind].index;
 			e->framesize = sheets[sind].w * sheets[sind].h;
 			e->sprite[0] = (VDPSprite){
 				.size = SPRITE_SIZE(sheets[sind].w, sheets[sind].h),
-				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,direction,
-						sheets[sind].index)
+				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,direction, e->vramindex)
 			};
 		}
 	}
@@ -742,7 +742,7 @@ Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 	}
 	return e;
 }
-
+/*
 Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	u8 sprite_count = npc_info[360 + bossid].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
@@ -760,7 +760,7 @@ Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
 	bossEntity = e;
 	return e;
 }
-
+*/
 void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e) {
@@ -842,7 +842,7 @@ bool entity_exists(u16 type) {
 void entities_draw_fore() {
 	const Entity *e = entityList;
 	while(e) {
-		if(!e->inback && !e->hidden && entity_on_screen(e)) 
+		if(e->foreground && !e->hidden && entity_on_screen(e)) 
 				sprite_addq(e->sprite, e->sprite_count);
 		e = e->next;
 	}
@@ -851,7 +851,7 @@ void entities_draw_fore() {
 void entities_draw_back() {
 	const Entity *e = entityList;
 	while(e) {
-		if(e->inback && !e->hidden && entity_on_screen(e))
+		if(!e->hidden && !e->foreground && entity_on_screen(e))
 				sprite_addq(e->sprite, e->sprite_count);
 		e = e->next;
 	}

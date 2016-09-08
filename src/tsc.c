@@ -675,12 +675,12 @@ u8 execute_command() {
 				bossEntity->state = args[0];
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
-				entity_create_boss(sub_to_block(player.x) - 1, sub_to_block(player.y) + 5,
-					BOSS_OMEGA, 210);
+				bossEntity = entity_create(player.x - (16<<CSF), player.y + (80<<CSF),
+					0, 210, 360 + BOSS_OMEGA, 0, 0);
 				bossEntity->state = 20;
 			} else if(stageID == 0x2F && args[0] == 200) {
 				// Hack to spawn Core
-				entity_create_boss(0, 0, BOSS_CORE, 1000);
+				bossEntity = entity_create(0, 0, 0, 1000, 360 + BOSS_CORE, 0, 0);
 				bossEntity->state = 200;
 			}
 			break;
@@ -697,9 +697,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			logcmd("<NCJ:%hu:%hu", args[0], args[1]);
-			if(entity_exists(args[0])) {
-				tsc_call_event(args[1]);
-			}
+			if(entity_find_by_type(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_ECJ: // If entity id (1) exists jump to event (2)
 			args[0] = tsc_read_word();
@@ -773,13 +771,11 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			logcmd("<FL+:%hu", args[0]);
 			system_set_flag(args[0], true);
-			//entities_handle_flag(args[0], true);
 			break;
 		case CMD_FL_SUB: // Unset flag (1)
 			args[0] = tsc_read_word();
 			logcmd("<FL-:%hu", args[0]);
 			system_set_flag(args[0], false);
-			//entities_handle_flag(args[0], false);
 			break;
 		case CMD_FLJ: // If flag (1) is true jump to event (2)
 			args[0] = tsc_read_word();
@@ -861,9 +857,9 @@ u8 execute_command() {
 			} else {
 				stage_replace_block(args[0], args[1], args[2]);
 			}
-			// Puff of smoke and make crash sound
+			// Puff of smoke
 			effect_create_smoke(1, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
-			sound_play(SND_BLOCK_DESTROY, 5);
+			//sound_play(SND_BLOCK_DESTROY, 5);
 			break;
 		// These two "Map Flag" commands were mentioned in TSC.txt but may not exist
 		// At least NXEngine doesn't check for them. I keep them here just in case

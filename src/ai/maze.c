@@ -129,7 +129,7 @@ void ai_blockv(Entity *e) {
 }
 
 void ai_boulder(Entity *e) {
-	e->inback = true;
+	//e->inback = true;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {

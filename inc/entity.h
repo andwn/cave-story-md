@@ -38,9 +38,9 @@ enum {
 #define MAX_JUMP_TIME 0x11
 #endif
 
-#define entity_on_screen(e) ((unsigned)((e)->x - camera_left) < camera_right && \
-		(unsigned)((e)->y - camera_top) < camera_bottom)
-		
+#define entity_on_screen(e) ((unsigned)((e)->x - camera_xmin) < camera_xsize && \
+							(unsigned)((e)->y - camera_ymin) < camera_ysize)
+
 #define entity_disabled(e) ((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id))
 
 // This slightly redundant typedef is required for Entity to refer to itself
@@ -83,7 +83,7 @@ struct Entity {
 	s8 damage_time; // Amount of time before effect is created
 	/* Sprite Stuff */
 	bool hidden,
-		inback, // Draw sprite in back (end of the sprite list)
+		foreground, // Draw sprite before player
 		autotile; // Queue DMA transfer of tiles when frame changes
 	u8 sprite_count; // Number of (hardware) sprites
 	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
@@ -93,12 +93,10 @@ struct Entity {
 	VDPSprite sprite[0]; // Raw sprite(s) to copy into sprite list
 };
 
-// First element of the "active" list. Entities in this list are updated fully
+// List of "active" entities. Updated and drawn every frame
 extern Entity *entityList;
-// To save memory and CPU (indeed the game will run 15 FPS without this), off screen
-// entities are moved into the "inactive" list. This list is not iterated by
-// entities_update(), but only in entities_update_inactive() which is not called
-// every frame but instead each time the camera moves the length of 1 block
+// List of "inactive" entities. Most which go offscreen end up this list and are not
+// updated again until they are back on screen
 extern Entity *inactiveList;
 // References whichever entity is a boss otherwise it is NULL
 extern Entity *bossEntity;
@@ -109,11 +107,6 @@ extern const u8 heightmap[4][16];
 void entities_clear();
 void entities_clear_by_event(u16 event);
 void entities_clear_by_type(u16 type);
-
-// Counts the number of entities currently loaded, for debugging
-u16 entities_count();
-u16 entities_count_active();
-u16 entities_count_inactive();
 
 // Per frame update for active entities
 void entities_update();
@@ -129,9 +122,6 @@ void entities_set_state(u16 event, u16 state, u8 direction);
 // Moves the entity of the specified event to another location
 void entities_move(u16 event, u16 x, u16 y, u8 direction);
 
-void entities_pause();
-void entities_unpause();
-
 // Deletes an entity and returns the next one
 Entity *entity_delete(Entity *e);
 // Same as delete entity but does the following first:
@@ -140,20 +130,14 @@ Entity *entity_destroy(Entity *e);
 
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
-Entity *entity_create(u16 x, u16 y, u16 id, u16 event, u16 type, u16 flags, u8 direction);
-Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event);
+Entity *entity_create(s32 x, s32 y, u16 id, u16 event, u16 type, u16 flags, u8 direction);
 
 // Finds entity matching an ID or event and returns it
 Entity *entity_find_by_id(u16 id);
 Entity *entity_find_by_event(u16 event);
-Entity *entity_find_by_type(u16 event);
-
-// Returns true if an entity of given type exists
-bool entity_exists(u16 type);
+Entity *entity_find_by_type(u16 type);
 
 void entity_drop_powerup(Entity *e);
-
-void entity_sprite_create(Entity *e);
 
 // Handles collision with the loaded stage, pushes x_next and y_next out of solid areas
 void entity_update_collision(Entity *e);

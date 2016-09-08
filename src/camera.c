@@ -89,10 +89,10 @@ void camera_update() {
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	}
 	// Update quick fetch cutoff values
-	camera_left = 	camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_right = 	camera.x + pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_top = 	camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
-	camera_bottom = camera.y + pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_xmin =  camera.x    - pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_xsize = camera_xmin + pixel_to_sub(SCREEN_WIDTH + 64);
+	camera_ymin =  camera.y    - pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_ysize = camera_ymin + pixel_to_sub(SCREEN_HEIGHT + 64);
 	// Morph the stage if the camera is moving
 	morphingColumn = sub_to_block(x_next) - sub_to_block(camera.x);
 	morphingRow = sub_to_block(y_next) - sub_to_block(camera.y);
