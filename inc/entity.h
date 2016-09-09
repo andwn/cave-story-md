@@ -130,7 +130,7 @@ Entity *entity_destroy(Entity *e);
 
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
-Entity *entity_create(s32 x, s32 y, u16 id, u16 event, u16 type, u16 flags, u8 direction);
+Entity *entity_create(s32 x, s32 y, u16 type, u16 flags);
 
 // Finds entity matching an ID or event and returns it
 Entity *entity_find_by_id(u16 id);

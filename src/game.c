@@ -136,7 +136,7 @@ void game_reset(bool load) {
 	if(load) {
 		system_load();
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
-		if(wepSpr) TILES_QUEUE(SPR_TILESET(wepSpr,0,0)->tiles, TILE_WEAPONINDEX,6);
+		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);

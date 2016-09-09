@@ -168,7 +168,7 @@ void ai_teleOut(Entity *e) {
 				e->state++;
 				e->timer = 0;
 				e->hidden = true;
-				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
 		}
 		break;
@@ -210,7 +210,7 @@ void ondeath_player(Entity *e) {
 		case 10:	// he gets flattened
 		sound_play(SND_LITTLE_CRASH, 5);
 		for(u8 i = 0; i < 4; i++) {
-			effect_create_smoke(0, sub_to_pixel(e->x) - 16 + (random() % 32), 
+			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() % 32), 
 				sub_to_pixel(e->y) - 16 + (random() % 32));
 		}
 		e->state++;
@@ -231,7 +231,7 @@ void ondeath_player(Entity *e) {
 		// falling, upside-down (from good ending; Fall stage)
 		case 60:
 		e->frame = 0;
-		SPR_SAFEVFLIP(e->sprite, 1);
+		//SPR_SAFEVFLIP(e->sprite, 1);
 		break;
 		case 80:	// face away
 		e->frame = 4;

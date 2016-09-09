@@ -116,22 +116,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
 // Get tileset from SpriteDefinition
-#define SPR_TILESET(spr, a, f) ((spr)->animations[a]->frames[f]->tileset)
-
-// Disabled sprite functions
-#define SPR_SAFEADD(s, def, x, y, attr, z) /**/
-#define SPR_SAFERELEASE(s) /**/
-#define SPR_SAFEVFLIP(s ,f) /**/
-#define SPR_SAFEHFLIP(s, f) /**/
-#define SPR_SAFEMOVE(s, x, y) /**/
-#define SPR_SAFEANIM(s, a) /**/
-#define SPR_SAFEFRAME(s, f) /**/
-#define SPR_SAFEANIMFRAME(s, a, f) /**/
-#define SPR_SAFEVISIBILITY(s, v) /**/
-#define SPR_SAFETILEINDEX(s, i) /**/
-#define SPR_SAFEPALETTE(s, pal) /**/
-
-#define NUMARGS(...) sizeof((u8[]){__VA_ARGS__})
+#define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
 
 // Booleans
 typedef unsigned char bool;

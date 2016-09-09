@@ -5,9 +5,10 @@
 #include "resources.h"
 #include "camera.h"
 #include "vdp_ext.h"
+#include "sprite.h"
 
 typedef struct {
-	Sprite *sprite;
+	VDPSprite sprite;
 	u8 ttl;
 	s16 x, y;
 } Effect;
@@ -20,55 +21,45 @@ void effects_init() {
 	// Load each frame of the small smoke sprite
 	u32 tiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(u32))]
 	for(u8 i = 0; i < 7; i++) {
-		memcpy(tiles[i], SPR_TILESET(&SPR_Smoke, 0, i)->tiles, 128);
+		memcpy(tiles[i], SPR_TILES(&SPR_Smoke, 0, i), 128);
 	}
 	// Transfer to VRAM
 	VDP_loadTileData(tiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE, true);
 }
 
 void effects_clear() {
-	for(u8 i = 0; i < MAX_DAMAGE; i++) {
-		effDamage[i].ttl = 0;
-		SPR_SAFERELEASE(effDamage[i].sprite);
-	}
+	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	effects_clear_smoke();
 }
 
 void effects_clear_smoke() {
-	for(u8 i = 0; i < MAX_SMOKE; i++) {
-		effSmoke[i].ttl = 0;
-		SPR_SAFERELEASE(effSmoke[i].sprite);
-	}
+	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 }
 
 void effects_update() {
 	for(u8 i = 0; i < MAX_DAMAGE; i++) {
-		if(effDamage[i].ttl == 0) continue;
-		if(--effDamage[i].ttl == 0) {
-			SPR_SAFERELEASE(effDamage[i].sprite);
-		} else {
-			if(effDamage[i].ttl & 1) effDamage[i].y -= 1;
-			SPR_SAFEMOVE(effDamage[i].sprite,
-				effDamage[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
-				effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
-		}
+		if(!effDamage[i].ttl) continue;
+		effDamage[i].ttl--;
+		if(effDamage[i].ttl & 1) effDamage[i].y -= 1;
+		sprite_pos(effDamage[i].sprite,
+			effDamage[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
+			effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
+		sprite_add(effDamage[i].sprite);
 	}
 	for(u8 i = 0; i < MAX_SMOKE; i++) {
-		if(effSmoke[i].ttl == 0) continue;
-		if(--effSmoke[i].ttl == 0) {
-			SPR_SAFERELEASE(effSmoke[i].sprite);
-		} else {
-			// Half assed animation
-			SPR_SAFETILEINDEX(effSmoke[i].sprite,
-				TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 3) << 2));
-			SPR_SAFEMOVE(effSmoke[i].sprite,
-				effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-				effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		}
+		if(!effSmoke[i].ttl) continue;
+		effSmoke[i].ttl--;
+		// Half assed animation
+		sprite_index(effSmoke[i].sprite,
+			TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 3) << 2));
+		sprite_pos(effSmoke[i].sprite,
+			effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_add(effDamage[i].sprite);
 	}
 }
 
-void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
+void effect_create_damage(s16 num, s16 x, s16 y) {
 	for(u8 i = 0; i < MAX_DAMAGE; i++) {
 		if(effDamage[i].ttl > 0) continue;
 		// Negative numbers are red and show '-' (Damage)
@@ -93,30 +84,27 @@ void effect_create_damage(s16 num, s16 x, s16 y, u8 ttl) {
 		effDamage[i].ttl = 60; // 1 second
 		effDamage[i].x = x - 8;
 		effDamage[i].y = y;
-		effDamage[i].sprite = SPR_addSpriteEx(&SPR_Dummy4x1,
-			x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
-			y - sub_to_pixel(camera.y) + SCREEN_HALF_H,
-			TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i * 4)), 0,
-			SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_SPRITE_ALLOC);
+		effDamage[i].sprite = (VDPSprite) {
+			.size = SPRITE_SIZE(digitCount+1, 1),
+			.attribut = TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + i*4)
+		};
 		SYS_disableInts();
-		VDP_loadTileData(tiles[0], TILE_NUMBERINDEX + (i * 4), 4, true);
+		VDP_loadTileData(tiles[0], TILE_NUMBERINDEX + i*4, 4, true);
 		SYS_enableInts();
 		break;
 	}
-
 }
 
-void effect_create_smoke(u8 type, s16 x, s16 y) {
+void effect_create_smoke(s16 x, s16 y) {
 	for(u8 i = 0; i < MAX_SMOKE; i++) {
 		if(effSmoke[i].ttl > 0) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
 		effSmoke[i].ttl = 48;
-		effSmoke[i].sprite = SPR_addSpriteEx(&SPR_Dummy2x2,
-			x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-			y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8,
-			TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX), 0,
-			SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_SPRITE_ALLOC);
+		effSmoke[i].sprite = (VDPSprite) {
+			.size = SPRITE_SIZE(2, 2),
+			.attribut = TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
+		};
 		break;
 	}
 }

@@ -79,13 +79,13 @@ void onspawn_core(Entity *e) {
 	//e->sprite = SPR_CORESHOOTMARKER;
 	
 	// spawn all the pieces in the correct z-order
-	pieces[3] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
-	pieces[4] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
-	pieces[CFRONT] = entity_create(0, 0, 0, 0, OBJ_CORE_FRONT, 0, 0);
-	pieces[CBACK] = entity_create(0, 0, 0, 0, OBJ_CORE_BACK, 0, 0);
-	pieces[0] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
-	pieces[1] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
-	pieces[2] = entity_create(0, 0, 0, 0, OBJ_MINICORE, 0, 0);
+	pieces[3] = entity_create(0, 0, OBJ_MINICORE, 0);
+	pieces[4] = entity_create(0, 0, OBJ_MINICORE, 0);
+	pieces[CFRONT] = entity_create(0, 0, OBJ_CORE_FRONT, 0);
+	pieces[CBACK] = entity_create(0, 0, OBJ_CORE_BACK, 0);
+	pieces[0] = entity_create(0, 0, OBJ_MINICORE, 0);
+	pieces[1] = entity_create(0, 0, OBJ_MINICORE, 0);
+	pieces[2] = entity_create(0, 0, OBJ_MINICORE, 0);
 	
 	// set up the front piece
 	pieces[CFRONT]->linkedEntity = e;

@@ -45,8 +45,8 @@ void sheets_refresh_polarstar(u8 level) {
 		printf("Polar Star has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILESET(def, 0, 0)->tiles, sheets[0].index, 4, true);
-	VDP_loadTileData(SPR_TILESET(def, 1, 0)->tiles, sheets[0].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[0].index, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[0].index + 4, 4, true);
 }
 
 void sheets_refresh_machinegun(u8 level) {
@@ -58,8 +58,8 @@ void sheets_refresh_machinegun(u8 level) {
 		printf("Machine Gun has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILESET(def, 0, 0)->tiles, sheets[1].index, 4, true);
-	VDP_loadTileData(SPR_TILESET(def, 1, 0)->tiles, sheets[1].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[1].index + 4, 4, true);
 }
 
 void sheets_refresh_fireball(u8 level) {
@@ -71,9 +71,9 @@ void sheets_refresh_fireball(u8 level) {
 		printf("Fireball has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILESET(def, 0, 0)->tiles, sheets[2].index, 4, true);
-	VDP_loadTileData(SPR_TILESET(def, 0, 1)->tiles, sheets[2].index + 4, 4, true);
-	VDP_loadTileData(SPR_TILESET(def, 0, 2)->tiles, sheets[2].index + 8, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[2].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[2].index + 8, 4, true);
 }
 /*
 #define sheetdef(s, data, width, height, frames) { \
@@ -99,8 +99,8 @@ void sheet_load(u8 id) {
 }
 */
 void sheets_load_stage(u16 sid) {
-	//last_sheet = 6;
-	//last_tiloc = 0;
+	sheet_num = 7;
+	tiloc_num = 0;
 	switch(sid) {
 		case 0x0C: // First Cave
 		{	// Bat
@@ -145,7 +145,7 @@ void sheets_load_stage(u16 sid) {
 		case 0x1C: // Gum
 		// Balfrog jumping frame
 		sheets[7] = (Sheet){ SHEET_BALFROG, 9*11, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILESET(&SPR_Balfrog2,0,0)->tiles,sheets[7].index,9*11,true);
+		VDP_loadTileData(SPR_TILES(&SPR_Balfrog2,0,0),sheets[7].index,9*11,true);
 		// Nothing
 		sheets[8] = (Sheet) {};
 		sheets[9] = (Sheet) {};

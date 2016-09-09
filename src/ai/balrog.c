@@ -118,7 +118,8 @@ void ai_balrog(Entity *e) {
 			e->timer = 0;
 			e->state = 43;
 			// Spawn the Balfrog boss
-			bossEntity = entity_create(e->x, e->y, 0, 1000, 360 + BOSS_BALFROG, 0, 0);
+			bossEntity = entity_create(e->x, e->y, 360 + BOSS_BALFROG, 0);
+			bossEntity->event = 1000;
 		}
 		/* no break */
 		case 43:
@@ -127,7 +128,7 @@ void ai_balrog(Entity *e) {
 			// (transforming into Balfrog stage boss;
 			//	our flashing is interlaced with his)
 			e->timer++;
-			SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
+			//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
 		}
 		break;
 		case 50:	// he faces away
@@ -164,7 +165,7 @@ void ai_balrog(Entity *e) {
 				e->state = STATE_DELETE;
 				return;
 			}
-			SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
+			//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
 		}
 		break;
 		case 80:	// hands up and shakes
@@ -431,7 +432,7 @@ void ondeath_balrogRunning(Entity *e) {
 	case 5: // Run towards player and jump
 		e->dir = e->x < player.x;
 		e->frame = 1;
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->timer = 120;
 		break;
 	case 6: // Jumping
@@ -497,8 +498,7 @@ void ai_balrogFlying(Entity *e) {
 			if((e->timer % 16) == 15) {
 				e->frame = 2;
 				// Fire shot
-				Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-					0, 0, OBJ_IGOR_SHOT, 0, 0);
+				Entity *shot = entity_create(e->x, e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = e->dir ? 0x400 : -0x400;
 				shot->y_speed = -0x100 + (random() % 0x200);
 
@@ -559,8 +559,7 @@ void ai_balrogFlying(Entity *e) {
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				camera_shake(30);
 				for(int i=0;i<4;i++) {
-					Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-						0, 0, OBJ_BALROG_SHOT_BOUNCE, 0, 0);
+					Entity *shot = entity_create(e->x, e->y, OBJ_BALROG_SHOT_BOUNCE, 0);
 					shot->x_speed = -0x400 + (random() % 0x800);
 					shot->y_speed = -0x400 + (random() % 0x400);
 				}

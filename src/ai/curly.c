@@ -138,7 +138,7 @@ void ai_curly_carried(Entity *e) {
 		{	// carried by player
 			if(player.dir != e->dir) {
 				e->dir ^= 1;
-				SPR_SAFEHFLIP(e->sprite, e->dir);
+				//SPR_SAFEHFLIP(e->sprite, e->dir);
 			}
 			e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
 			e->y = player.y - pixel_to_sub(5);
@@ -178,8 +178,8 @@ void ai_curly_carried(Entity *e) {
 #define CURLYB_SHIELD			30
 
 static void curlyboss_fire(Entity *e, u8 dir) {
-	Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-			0, 0, OBJ_CURLYBOSS_SHOT, 0, dir & 1);
+	Entity *shot = entity_create(e->x, e->y, OBJ_CURLYBOSS_SHOT, 0);
+	shot->dir = dir & 1;
 	shot->attack = 6;
 	switch(dir) {
 		case 0:
@@ -196,7 +196,7 @@ static void curlyboss_fire(Entity *e, u8 dir) {
 			shot->x = e->x;
 			shot->y = e->y - pixel_to_sub(10);
 			shot->y_speed = -4096;
-			SPR_SAFEANIM(shot->sprite, 1);
+			//SPR_SAFEANIM(shot->sprite, 1);
 		break;
 	}
 	sound_play(SND_POLAR_STAR_L1_2, 4);
@@ -210,7 +210,7 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = (random() % 50) + 50;
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
-			SPR_SAFEHFLIP(e->sprite, e->dir);
+			//SPR_SAFEHFLIP(e->sprite, e->dir);
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE;
@@ -227,7 +227,7 @@ void ai_curlyBoss(Entity *e) {
 			e->frame = 1;
 			e->timer = (random() % 50) + 50;
 			e->dir = (e->x <= player.x);
-			SPR_SAFEHFLIP(e->sprite, e->dir);
+			//SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
 		/* no break */
 		case CURLYB_WALKING_PLAYER:
@@ -307,7 +307,7 @@ void ai_curlyBoss(Entity *e) {
 
 void ondeath_curlyBoss(Entity *e) {
 	//if(e->state == STATE_DEFEATED) {
-		//SPR_SAFERELEASE(e->sprite);
+		////SPR_SAFERELEASE(e->sprite);
 		entity_default(e, OBJ_CURLY, 0);
 		//entity_sprite_create(e);
 		e->x -= 8;

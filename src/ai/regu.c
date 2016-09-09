@@ -530,8 +530,7 @@ void ai_king(Entity *e) {
 		case 20:		// pull out sword
 		{
 			if (e->linkedEntity == NULL) {
-				Entity *sword = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-						0, 0, OBJ_KINGS_SWORD, 0, 0);
+				Entity *sword = entity_create(e->x, e->y, OBJ_KINGS_SWORD, 0);
 				sword->linkedEntity = e;
 				e->linkedEntity = sword;
 			}
@@ -575,12 +574,12 @@ void ai_king(Entity *e) {
 		/* no break */
 		case 41:
 		{
-			SPR_SAFEVISIBILITY(e->sprite, (e->timer % 4) > 1 ? AUTO_FAST : HIDDEN);
+			//SPR_SAFEVISIBILITY(e->sprite, (e->timer % 4) > 1 ? AUTO_FAST : HIDDEN);
 			if (++e->timer > 100) {
 				//SmokeClouds(o, 4, 8, 8);
 				e->state = 42;
-				SPR_SAFERELEASE(e->sprite);
-				SPR_SAFEADD(e->sprite, &SPR_Sword, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
+				//SPR_SAFERELEASE(e->sprite);
+				//SPR_SAFEADD(e->sprite, &SPR_Sword, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
 				// Just in case the player walks away
 				e->alwaysActive = true;
 			}
@@ -592,14 +591,14 @@ void ai_king(Entity *e) {
 			e->state = 61;
 			e->y_speed = SPEED(-0x5FF);
 			e->x_speed = SPEED(0x380);
-			SPR_SAFEHFLIP(e->linkedEntity->sprite, 1);
+			//SPR_SAFEHFLIP(e->linkedEntity->sprite, 1);
 		break;
 		case 61:		// jumping
 			e->y_speed += SPEED(0x80);
 			if (e->grounded) {
 				e->state = 0;
 				e->x_speed = 0;
-				SPR_SAFEHFLIP(e->linkedEntity->sprite, 0);
+				//SPR_SAFEHFLIP(e->linkedEntity->sprite, 0);
 			}
 		break;
 	}
@@ -725,7 +724,7 @@ void ai_booster_falling(Entity *e) {
 		/* no break */
 		case 21:
 		{
-			SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? AUTO_FAST : HIDDEN);
+			//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? AUTO_FAST : HIDDEN);
 			if (++e->timer > TIME(100)) {
 				//SmokeClouds(o, 4, 16, 16);
 				e->state = STATE_DELETE;

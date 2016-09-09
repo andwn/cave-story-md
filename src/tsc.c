@@ -273,8 +273,8 @@ u8 tsc_update() {
 			tsc_hide_teleport_menu();
 			tscState = TSC_RUNNING;
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
-					0, teleMenuFrame[teleMenuSelection]);
+			//SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
+					//0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == 0) {
 				teleMenuSelection = teleMenuSlotCount - 1;
 			} else {
@@ -282,8 +282,8 @@ u8 tsc_update() {
 			}
 			sound_play(SND_MENU_MOVE, 5);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
-					0, teleMenuFrame[teleMenuSelection]);
+			//SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
+					//0, teleMenuFrame[teleMenuSelection]);
 			if(teleMenuSelection == teleMenuSlotCount - 1) {
 				teleMenuSelection = 0;
 			} else {
@@ -292,8 +292,8 @@ u8 tsc_update() {
 			sound_play(SND_MENU_MOVE, 5);
 		} else { // Doing nothing, blink cursor
 			teleMenuAnim = !teleMenuAnim;
-			SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
-					teleMenuAnim, teleMenuFrame[teleMenuSelection]);
+			//SPR_SAFEANIMFRAME(teleMenuSprite[teleMenuSelection],
+					//teleMenuAnim, teleMenuFrame[teleMenuSelection]);
 		}
 		break;
 	case TSC_WAITGROUNDED:
@@ -361,8 +361,8 @@ void tsc_show_teleport_menu() {
 		teleMenuSprite[teleMenuSlotCount] = 
 			SPR_addSprite(&SPR_TeleMenu, 0, 0, TILE_ATTR(PAL0, 1, 0, 0));
 		teleMenuFrame[teleMenuSlotCount] = i;
-		SPR_SAFEFRAME(teleMenuSprite[teleMenuSlotCount], i);
-		SPR_SAFEMOVE(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
+		//SPR_SAFEFRAME(teleMenuSprite[teleMenuSlotCount], i);
+		//SPR_SAFEMOVE(teleMenuSprite[teleMenuSlotCount], 64 + 64*teleMenuSlotCount, 64);
 		teleMenuSlotCount++;
 	}
 	if(teleMenuSlotCount > 0) {
@@ -374,7 +374,7 @@ void tsc_show_teleport_menu() {
 
 void tsc_hide_teleport_menu() {
 	for(u8 i = 0; i < 8; i++) {
-		SPR_SAFERELEASE(teleMenuSprite[i]);
+		//SPR_SAFERELEASE(teleMenuSprite[i]);
 	}
 }
 
@@ -570,7 +570,7 @@ u8 execute_command() {
 			} else if(args[0] == 2) { // Right
 				player.dir = 1;
 			}
-			SPR_SAFEHFLIP(player.sprite, player.dir);
+			//SPR_SAFEHFLIP(player.sprite, player.dir);
 			break;
 		case CMD_UNI: // Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -661,13 +661,17 @@ u8 execute_command() {
 			entities_replace(args[0], args[1], args[2] > 0, 0x1000);
 			break;
 		case CMD_SNP: // Create entity (1) at (2),(3) with direction (4)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
 			logcmd("<SNP:%hu:%hu:%hu:%hu", args[0], args[1], args[2], args[3]);
-			entity_create(args[1], args[2], 0, 0, args[0], 0, args[3] > 0);
-			break;
+			Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
+									  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
+			e->dir = args[3] > 0;
+		}
+		break;
 		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
 			logcmd("<BOA:%hu", args[0]);
@@ -675,12 +679,14 @@ u8 execute_command() {
 				bossEntity->state = args[0];
 			} else if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
-				bossEntity = entity_create(player.x - (16<<CSF), player.y + (80<<CSF),
-					0, 210, 360 + BOSS_OMEGA, 0, 0);
+				bossEntity = entity_create(player.x - (16<<CSF), 
+										   player.y + (80<<CSF), 360 + BOSS_OMEGA, 0);
+				bossEntity->event = 210;
 				bossEntity->state = 20;
 			} else if(stageID == 0x2F && args[0] == 200) {
 				// Hack to spawn Core
-				bossEntity = entity_create(0, 0, 0, 1000, 360 + BOSS_CORE, 0, 0);
+				bossEntity = entity_create(0, 0, 360 + BOSS_CORE, 0);
+				bossEntity->event = 1000;
 				bossEntity->state = 200;
 			}
 			break;
@@ -688,7 +694,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			logcmd("<BSL:%hu", args[0]);
 			bossEntity = entity_find_by_event(args[0]);
-			if(bossEntity != NULL) {
+			if(bossEntity) {
 				bossMaxHealth = bossHealth = bossEntity->health;
 				tsc_show_boss_health();
 			}
@@ -858,7 +864,7 @@ u8 execute_command() {
 				stage_replace_block(args[0], args[1], args[2]);
 			}
 			// Puff of smoke
-			effect_create_smoke(1, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
+			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
 			//sound_play(SND_BLOCK_DESTROY, 5);
 			break;
 		// These two "Map Flag" commands were mentioned in TSC.txt but may not exist

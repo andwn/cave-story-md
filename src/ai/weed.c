@@ -19,7 +19,7 @@ void ai_jelly(Entity *e) {
 		e->timer2 = 0;
 	} else if(++e->timer2 > 10) {
 		if(++e->frame >= 5) e->frame = 0;;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->timer2 = 0;
 	}
 	* */
@@ -198,7 +198,7 @@ void ai_kulala(Entity *e) {
 void ai_mannan(Entity *e) {
 	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		entity_drop_powerup(e);
 		// Face sprite remains after defeated
 		e->eflags &= ~NPC_SHOOTABLE;
@@ -211,8 +211,7 @@ void ai_mannan(Entity *e) {
 		e->state = 1;
 		e->timer = 0;
 		//e->frame = 1;
-		Entity *shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-			0, 0, OBJ_MANNAN_SHOT, 0, e->dir);
+		Entity *shot = entity_create(e->x, e->y, OBJ_MANNAN_SHOT, 0);
 		shot->dir = e->dir;
 		// We want the bullet to delete itself offscreen, it can't do this while inactive
 		shot->alwaysActive = true;
@@ -272,19 +271,19 @@ void ondeath_malco(Entity *restrict e) {
 		e->frame = 0;
 		break;
 		case 10:
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 16:
 		e->frame = 2;
 		sound_play(SND_BLOCK_DESTROY, 5);
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 18:
 		e->frame = 3;
 		break;
 		case 20: 
 		e->frame = 4;
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		break;
 		case 21:	// got smushed!
 		e->frame = 5;
@@ -307,7 +306,7 @@ void ondeath_malcoBroken(Entity *restrict e) {
 		break;
 		case 10:	// set when pulled out of ground
 		sound_play(SND_BLOCK_DESTROY, 5);
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		e->state = 0;
 		break;
 	}
@@ -327,13 +326,13 @@ void ai_press(Entity *restrict e) {
 			if(!e->grounded) {
 				e->state = 10;
 				e->timer = 0;
-				//SPR_SAFEFRAME(e->sprite, 1);
+				////SPR_SAFEFRAME(e->sprite, 1);
 			}
 		break;
 		case 10:		// fall
 			e->timer++;
 			if(e->timer == 4) {
-				//SPR_SAFEFRAME(e->sprite, 2);
+				////SPR_SAFEFRAME(e->sprite, 2);
 			}
 			e->y_speed += 0x20;
 			if(e->y_speed > 0x5FF) e->y_speed = 0x5FF;
@@ -350,7 +349,7 @@ void ai_press(Entity *restrict e) {
 				//SmokeSide(o, 4, DOWN);
 				camera_shake(10);
 				e->state = 11;
-				//SPR_SAFEFRAME(e->sprite, 0);
+				////SPR_SAFEFRAME(e->sprite, 0);
 				e->attack = 0;
 				e->eflags |= NPC_SOLID;
 			}
@@ -375,7 +374,7 @@ void ai_frog(Entity *restrict e) {
 			// Balfrog sets OPTION1
 			if(e->eflags & NPC_OPTION1) {
 				e->dir = random() & 1;
-				//SPR_SAFEHFLIP(e->sprite, e->dir);
+				////SPR_SAFEHFLIP(e->sprite, e->dir);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 3;
 				//e->frame = 1;
@@ -463,7 +462,7 @@ void ai_hey(Entity *restrict e) {
 		case 1:
 		{
 			if(++e->timer >= TIME(50)) {
-				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 2;
 				e->timer = 0;
 			}
@@ -472,7 +471,7 @@ void ai_hey(Entity *restrict e) {
 		case 2:
 		{
 			if(++e->timer >= TIME(50)) {
-				//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+				////SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 				e->state = 1;
 				e->timer = 0;
 			}
@@ -489,7 +488,7 @@ void ai_motorbike(Entity *restrict e) {
 		{
 			e->alwaysActive = true;
 			e->y -= 0x400;
-			//SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
+			////SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 			e->state++;
 		}
 		break;

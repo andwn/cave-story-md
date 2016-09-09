@@ -71,7 +71,7 @@ void ai_igor(Entity *e) {
 		case STATE_JUMPING:
 		if(e->grounded) {
 			sound_play(SND_ENEMY_JUMP, 5);
-			effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y) + e->hit_box.bottom);
+			effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y) + e->hit_box.bottom);
 			ENTITY_SET_STATE(e, STATE_LANDED, 0);
 		}
 		break;
@@ -113,7 +113,7 @@ void ondeath_igor(Entity *e) {
 	/*
 	switch(e->state) {
 		case STATE_STAND:
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->frame = 0;
 		e->attack = 0;
 		break;
@@ -128,7 +128,7 @@ void ondeath_igor(Entity *e) {
 		}
 		
 		case STATE_WALK:
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->frame = 1;
 		e->x_speed = pixel_to_sub(e->dir ? 1 : -1);
 		break;
@@ -160,7 +160,7 @@ void ondeath_igor(Entity *e) {
 		break;
 		case STATE_MOUTH_BLAST:
 		FACE_PLAYER(e);
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->frame = 4;
 		e->x_speed = 0;
 		break;
@@ -196,7 +196,7 @@ void ondeath_igorscene(Entity *e) {
 		case 1:
 		{
 			e->x_speed = 0;
-			SPR_SAFEHFLIP(e->sprite, e->dir);
+			//SPR_SAFEHFLIP(e->sprite, e->dir);
 			e->frame = 0;
 		}
 		break;
@@ -209,13 +209,13 @@ void ondeath_igorscene(Entity *e) {
 		break;
 		case 4:
 		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->frame = 2;
 		e->timer = 20;
 		break;
 		case 5:
 		e->x_speed = 0;
-		SPR_SAFEHFLIP(e->sprite, e->dir);
+		//SPR_SAFEHFLIP(e->sprite, e->dir);
 		e->frame = 3;
 		e->timer = 20;
 		break;
@@ -237,7 +237,7 @@ void ai_igordead(Entity *e) {
 		case 1:
 		// Puffs of smoke
 		if((++e->timer % 10) == 1) {
-			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
+			effect_create_smoke(sub_to_pixel(e->x) - 24 + (random() % 48), 
 				sub_to_pixel(e->y) - 32 + (random() % 64));
 		}
 		// Shake
@@ -254,7 +254,7 @@ void ai_igordead(Entity *e) {
 		case 2:
 		// Slower smoke puff
 		if((++e->timer & 15) == 0) {
-			effect_create_smoke(0, sub_to_pixel(e->x) - 24 + (random() % 48), 
+			effect_create_smoke(sub_to_pixel(e->x) - 24 + (random() % 48), 
 				sub_to_pixel(e->y) - 32 + (random() % 64));
 		}
 		// alternate between big and small sprites
@@ -273,7 +273,7 @@ void ai_igordead(Entity *e) {
 		case 3:
 		if(++e->timer > 60) {
 			if(e->sprite->animInd >= 11) {
-				SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->state = 4;
 			} else {
 				e->timer = 0;

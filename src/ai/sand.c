@@ -90,12 +90,10 @@ void ai_polish(Entity *e) {
 	
 	// Split after 20 damage
 	if(e->health <= 100) {
-		entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, OBJ_POLISHBABY, 0, 0)->x -= 0x1000;
-		entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, OBJ_POLISHBABY, 0, 1)->x += 0x1000;
+		entity_create(e->x - (8<<CSF), e->y, OBJ_POLISHBABY, 0)->dir = 0;
+		entity_create(e->x + (8<<CSF), e->y, OBJ_POLISHBABY, 0)->dir = 1;
 		e->state = STATE_DELETE;
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(e->deathSound, 5);
 		return;
 	}
@@ -296,11 +294,11 @@ void ai_sandcroc(Entity *e) {
 					e->timer = 0;
 					sound_play(SND_JAWS, 5);
 					e->hidden = false;
-					//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+					////SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 					//e->frame = 1;
 				}
 			} else {
-				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->hidden = true;
 			}
 		}
@@ -338,7 +336,7 @@ void ai_sandcroc(Entity *e) {
 			
 			if (++e->timer == 30) {
 				e->eflags &= ~(NPC_SHOOTABLE);
-				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->hidden = true;
 				e->state = 5;
 				e->timer = 0;
@@ -538,7 +536,7 @@ void ai_skullhead(Entity *e) {
 	if(e->x_speed) {
 		if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
 		if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
+		////SPR_SAFEHFLIP(e->sprite, e->dir);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -640,7 +638,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 14;
 			e->timer = random() % 50;
 			FACE_PLAYER(e);
-			//SPR_SAFEHFLIP(e->sprite, e->dir);
+			////SPR_SAFEHFLIP(e->sprite, e->dir);
 			//e->frame = 1;
 		}
 		/* no break */

@@ -25,7 +25,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 	(s).y = (py) + 128;                                                                        \
 }
 
-#define sprite_pri(s, pri) { (s).attribut &= ~(1<<13); (s).attribut |= (pri) << 15; }
+#define sprite_pri(s, pri) { (s).attribut &= ~(1<<15); (s).attribut |= (pri) << 15; }
 #define sprite_pal(s, pal) { (s).attribut &= ~(3<<13); (s).attribut |= (pal) << 13; }
 #define sprite_vflip(s, flip) { (s).attribut &= ~(1<<12); (s).attribut |= (flip) << 12; }
 #define sprite_hflip(s, flip) { (s).attribut &= ~(1<<11); (s).attribut |= (flip) << 11; }

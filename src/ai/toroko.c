@@ -37,7 +37,7 @@ void ai_torokoAtk(Entity *e) {
 				e->grounded = false;
 				e->frame = 3;
 				b->ttl = 0;
-				SPR_SAFERELEASE(b->sprite);
+				//SPR_SAFERELEASE(b->sprite);
 			}
 		}
 		// Switch direction in specific range
@@ -45,7 +45,7 @@ void ai_torokoAtk(Entity *e) {
 			(e->x_speed < 0 && e->x < block_to_sub(10))) {
 			e->dir = !e->dir;
 			e->x_speed = -0x300 + 0x600 * e->dir;
-			SPR_SAFEHFLIP(e->sprite, e->dir);
+			//SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
 		break;
 	case 6: // Jump then run
@@ -104,26 +104,28 @@ void onspawn_torokoBoss(Entity *e) {
 void ai_torokoBoss(Entity *e) {
 	Entity *block = e->linkedEntity;
 
-#define SPAWNBLOCK	({					\
-	block = entity_create(sub_to_block(e->x), sub_to_block(e->y), 0, 0, OBJ_TOROKO_BLOCK, 0, e->dir);	\
-	e->linkedEntity = block; \
-	block->linkedEntity = e; \
-	block->eflags &= ~NPC_INVINCIBLE;		\
-	block->nflags &= ~NPC_INVINCIBLE;		\
+#define SPAWNBLOCK ({                                                                          \
+	block = entity_create(e->x, e->y, OBJ_TOROKO_BLOCK, 0);	                                   \
+	e->linkedEntity = block;                                                                   \
+	block->dir = e->dir;                                                                       \
+	block->linkedEntity = e;                                                                   \
+	block->eflags &= ~NPC_INVINCIBLE;                                                          \
+	block->nflags &= ~NPC_INVINCIBLE;                                                          \
 })
-#define THROWBLOCK	({			\
-	if(block != NULL) { \
-		block->x = e->x;	\
-		block->y = e->y;	\
-		block->eflags |= NPC_INVINCIBLE;		\
-		block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5; \
-		block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5; \
-		if(block->x > player.x) block->x_speed = -block->x_speed; \
-		if(block->y > player.y) block->y_speed = -block->y_speed; \
-		sound_play(SND_EM_FIRE, 5);		\
-		e->linkedEntity = NULL; \
-		block->linkedEntity = NULL; \
-	} \
+
+#define THROWBLOCK	({		 	                                                                      \
+	if(block != NULL) {                                                                        \
+		block->x = e->x;                                                                       \
+		block->y = e->y;                                                                       \
+		block->eflags |= NPC_INVINCIBLE;                                                       \
+		block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5;      \
+		block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5;      \
+		if(block->x > player.x) block->x_speed = -block->x_speed;                              \
+		if(block->y > player.y) block->y_speed = -block->y_speed;                              \
+		sound_play(SND_EM_FIRE, 5);                                                            \
+		e->linkedEntity = NULL;                                                                \
+		block->linkedEntity = NULL;                                                            \
+	}                                                                                          \
 })
 
 	e->x_next = e->x + e->x_speed;
@@ -351,7 +353,7 @@ void ai_torokoBoss(Entity *e) {
 		/* no break */
 		case 141:
 		{
-			SPR_SAFEVISIBILITY(e->sprite, e->timer & 1);
+			//SPR_SAFEVISIBILITY(e->sprite, e->timer & 1);
 			if (++e->timer > TIME(100)) {
 				// normal SmokeClouds() doesn't spawn in the right place because the sprite
 				// is still sized for big toroko, so I made an Action Point for this frame.
@@ -402,7 +404,7 @@ void ai_torokoBlock(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_floor(e)) {
 		sound_play(SND_BLOCK_DESTROY, 5);
-		//SPR_SAFERELEASE(e->sprite);
+		////SPR_SAFERELEASE(e->sprite);
 		entity_default(e, OBJ_TOROKO_FLOWER, 0);
 		//entity_sprite_create(e);
 		e->state = 20;

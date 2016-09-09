@@ -111,8 +111,8 @@ void window_close() {
 	if(!paused) VDP_setWindowPos(0, 0);
 	//if(showingBossHealth) VDP_setWindowPos(28, 234);
 	showingItem = 0;
-	SPR_SAFERELEASE(itemWinSpr);
-	SPR_SAFERELEASE(itemSpr);
+	//SPR_SAFERELEASE(itemWinSpr);
+	//SPR_SAFERELEASE(itemSpr);
 	windowOpen = false;
 }
 
@@ -209,8 +209,8 @@ void window_prompt_open() {
 }
 
 void window_prompt_close() {
-	SPR_SAFERELEASE(promptSpr);
-	SPR_SAFERELEASE(handSpr);
+	//SPR_SAFERELEASE(promptSpr);
+	//SPR_SAFERELEASE(handSpr);
 	window_clear();
 }
 
@@ -243,8 +243,8 @@ void window_draw_face() {
 
 void window_show_item(u16 item) {
 	showingItem = item;
-	SPR_SAFERELEASE(itemSpr);
-	SPR_SAFERELEASE(itemWinSpr);
+	//SPR_SAFERELEASE(itemSpr);
+	//SPR_SAFERELEASE(itemWinSpr);
 	if(item == 0) return;
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
@@ -262,8 +262,8 @@ void window_show_item(u16 item) {
 
 void window_show_weapon(u16 item) {
 	showingItem = item;
-	SPR_SAFERELEASE(itemSpr);
-	SPR_SAFERELEASE(itemWinSpr);
+	//SPR_SAFERELEASE(itemSpr);
+	//SPR_SAFERELEASE(itemWinSpr);
 	if(item == 0) return;
 	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
 		TILE_ATTR(PAL0, 1, 0, 0));

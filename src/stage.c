@@ -29,7 +29,7 @@ void stage_draw_column(s16 _x, s16 _y);
 void stage_draw_row(s16 _x, s16 _y);
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
 void stage_draw_background();
-void stage_draw_background2();
+void stage_draw_moonback();
 
 void stage_load(u16 id) {
 	bool vdpEnabled = VDP_getEnable();
@@ -72,7 +72,7 @@ void stage_load(u16 id) {
 		} else if(stageBackgroundType == 1) { // Moon/Sky
 			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
 			for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
-			stage_draw_background2();
+			stage_draw_moonback();
 		} else if(stageBackgroundType == 2) { // Solid Color
 			VDP_clearPlan(PLAN_B, true);
 		} else if(stageBackgroundType == 3) { // Tiled image, auto scroll
@@ -133,7 +133,7 @@ void stage_load_entities() {
 	// Most of the rooms depend on sprite sorting to be back -> front
 	// But on Genesis it works the opposite, so load all the entities in reverse order
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
-	for(u8 i = PXE[4]; i > 0; i--) {
+	for(u8 i = PXE[4]; i--; ) {
 		u16 x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
 		x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
@@ -145,15 +145,17 @@ void stage_load_entities() {
 		// There are some unused entities that have all these values as 0, as well as
 		// entities that should only exist when specific flags are on/off
 		// Loading these would be a waste of memory, just skip them
-		if(id==0 && event==0 && type==0 && flags==0) continue;
+		if(!id && !event && !type && !flags) continue;
 		if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
 		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
-		entity_create(x, y, id, event, type, flags, 0);
+		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 
+								  (y<<CSF)*16 + (8<<CSF), type, flags);
+		e->id = id;
+		e->event = event;
 	}
 }
 
-// Replaces a block with another, used by <CMP and <SMP, and when player shoots breakable blocks
-// Unfortunately because of this the entire map must be loaded into RAM
+// Replaces a block with another (for <CMP, <SMP, and breakable blocks)
 void stage_replace_block(u16 bx, u16 by, u8 index) {
 	stageBlocks[stageTable[by] + bx] = index;
 	stage_draw_area(bx, by, 1, 1);
@@ -284,32 +286,6 @@ void stage_draw_background() {
 }
 
 // TODO: Replace this routine with a generated tileset/mapping
-void stage_draw_background2() {
-	for(u8 y = 0; y < 28; y++) {
-		for(u16 x = 0; x < 64; x++) {
-			u16 b = TILE_BACKINDEX;
-			if(y < 4 || (y >= 8 && y < 12)) { // Draw blank sky
-				// Keep b how it is
-			} else if(y < 8) { // Between 4-7, draw moon
-				if(x >= 4 && x < 8) {
-					b += 1 + ((y-4)*16) + (x-4);
-				}
-			} else if(y == 12) { // Top clouds
-				b += 5 + (x%11);
-			} else if(y < 16) { // Between top and mid
-				b += 16;
-			} else if(y == 16) { // Mid clouds
-				b += 5 + 16 + (x%11);
-			} else if(y < 20) {
-				b += 32;
-			} else if(y == 20) { // Bottom clouds
-				b += 5 + 32 + (x%11);
-			} else if(y == 21) { // Bottom clouds 2
-				b += 5 + 48 + (x%11);
-			} else {
-				b += 48;
-			}
-			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, b), x, y);
-		}
-	}
+void stage_draw_moonback() {
+	
 }

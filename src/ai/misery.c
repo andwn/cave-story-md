@@ -67,8 +67,7 @@ void ai_misery_float(Entity *e) {
 		{
 			if (++e->timer >= TIME(20)) {
 				sound_play(SND_BUBBLE, 5);
-				entity_create(sub_to_block(e->x), sub_to_block(e->y - (16 << CSF)), 
-						0, 0, OBJ_MISERYS_BUBBLE, 0, 0);
+				entity_create(e->x, e->y - (16<<CSF), OBJ_MISERYS_BUBBLE, 0);
 				e->state = 17;
 				e->timer = 0;
 			}
@@ -160,7 +159,7 @@ void ai_misery_bubble(Entity *e) {
 				e->x_speed = 0;
 				e->y_speed = 0;
 				target->eflags |= NPC_IGNORESOLID;
-				SPR_SAFEANIM(target->sprite, 1);
+				//SPR_SAFEANIM(target->sprite, 1);
 			}
 		}
 		break;

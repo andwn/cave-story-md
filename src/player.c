@@ -88,7 +88,7 @@ void player_init() {
 	airPercent = 100;
 	airTick = 0;
 	// AIR Sprite
-	VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 4, true);
+	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, true);
 	airSprite[0] = (VDPSprite){
 		.x = SCREEN_HALF_W - 28, .y = SCREEN_HALF_H - 24, 
 		.size = SPRITE_SIZE(4, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX)
@@ -210,7 +210,7 @@ void player_update() {
 		player.damage_time--;
 		if(player.damage_time == 0) {
 			effect_create_damage(player.damage_value,
-					sub_to_pixel(player.x) - 8, sub_to_pixel(player.y) - 4, 60);
+					sub_to_pixel(player.x) - 8, sub_to_pixel(player.y) - 4);
 			player.damage_value = 0;
 		}
 	}
@@ -490,7 +490,7 @@ void player_update_booster() {
 	
 	if (joy_down(BUTTON_LEFT)) player.dir = 0;
 	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
-	SPR_SAFEHFLIP(player.sprite, player.dir);
+	//SPR_SAFEHFLIP(player.sprite, player.dir);
 
 	bool blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
@@ -593,7 +593,7 @@ void player_update_air_display() {
 			SYS_enableInts();
 		} else if((airDisplayTime % 32) == 15) {
 			SYS_disableInts();
-			VDP_loadTileData(SPR_TILESET(&SPR_Air, 0, 0)->tiles, TILE_AIRINDEX, 1, true);
+			VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 1, true);
 			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
@@ -636,10 +636,10 @@ void player_draw() {
 	if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
 	// Set frame if it changed
 	if(player.frame != player.oframe) {
-		TILES_QUEUE(SPR_TILESET(&SPR_Quote,player.frame,0)->tiles,TILE_PLAYERINDEX,4);
+		TILES_QUEUE(SPR_TILES(&SPR_Quote,player.frame,0),TILE_PLAYERINDEX,4);
 	}
 	// Blink during invincibility frames
-	if(playerShow && !((playerIFrames >> 1) & 1)) {
+	if(playerShow && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
 		if(joy_down(BUTTON_RIGHT) && !player.dir) {
 			player.dir ^= 1;
@@ -662,16 +662,16 @@ void player_draw() {
 				vdir = 1;
 			}
 			weaponSprite = (VDPSprite){
-				.x = (player.x<<CSF) - (camera.x<<CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
-				.y = (player.y<<CSF) - (camera.y<<CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
+				.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
+				.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
 				.size = SPRITE_SIZE(vert ? 1 : 3, vert ? 3 : 1),
-				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.dir,TILE_WEAPONINDEX+vert*6)
+				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.dir,TILE_WEAPONINDEX+vert*3)
 			};
 			sprite_add(weaponSprite);
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
 			sprite_pos(airTankSprite, 
-					(player.x<<CSF) - (camera.x<<CSF) + SCREEN_HALF_W - 12,
+					(player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12,
 					(player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 12);
 			sprite_add(airTankSprite);
 		}
@@ -693,19 +693,18 @@ bool player_inflict_damage(s16 damage) {
 	// Halve damage if we have the arms barrier
 	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Show damage numbers
-	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y), 60);
+	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
 	if(player.health <= damage) {
 		// If health reached 0 we are dead
 		player.health = 0;
-		SPR_SAFERELEASE(player.sprite);
-		SPR_SAFERELEASE(weaponSprite);
+		//SPR_SAFERELEASE(player.sprite);
+		//SPR_SAFERELEASE(weaponSprite);
 		// Clear smoke & fill up with smoke around player
 		effects_clear_smoke();
-		for(u8 i = 0; i < MAX_SMOKE; i++) {
-			effect_create_smoke(2, 
-				sub_to_pixel(player.x) + (random() % 90 ) - 45, 
-				sub_to_pixel(player.y) + (random() % 90 ) - 45);
+		for(u8 i = MAX_SMOKE; i--; ) {
+			effect_create_smoke(sub_to_pixel(player.x) + (random() % 90 ) - 45, 
+								sub_to_pixel(player.y) + (random() % 90 ) - 45);
 		}
 		sound_play(SND_PLAYER_DIE, 15);
 		tsc_call_event(PLAYER_DEFEATED_EVENT);
@@ -754,10 +753,10 @@ void player_prev_weapon() {
 	for(u8 i = currentWeapon - 1; i != currentWeapon; i--) {
 		if(i == 0xFF) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
-			//SPR_SAFERELEASE(weaponSprite);
+			////SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
+			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
 			sound_play(SND_SWITCH_WEAPON, 5);
@@ -770,10 +769,10 @@ void player_next_weapon() {
 	for(u8 i = currentWeapon + 1; i != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
-			//SPR_SAFERELEASE(weaponSprite);
+			////SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			TILES_QUEUE(SPR_TILESET(weapon_info[playerWeapon[i].type].sprite,0,0)->tiles,
+			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
 			sound_play(SND_SWITCH_WEAPON, 5);
@@ -820,7 +819,7 @@ void player_take_weapon(u8 id) {
 	Weapon *w = player_find_weapon(id);
 	if(w != NULL) {
 		if(playerWeapon[currentWeapon].type == id) {
-			//SPR_SAFERELEASE(weaponSprite);
+			////SPR_SAFERELEASE(weaponSprite);
 			player_next_weapon();
 		}
 		w->type = 0;
@@ -842,9 +841,9 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w != NULL) {
 		if(id_take == playerWeapon[currentWeapon].type) {
-			//SPR_SAFERELEASE(weaponSprite);
+			////SPR_SAFERELEASE(weaponSprite);
 			if(weapon_info[w->type].sprite) {
-			TILES_QUEUE(SPR_TILESET(weapon_info[w->type].sprite,0,0)->tiles,
+			TILES_QUEUE(SPR_TILES(weapon_info[w->type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
 		}

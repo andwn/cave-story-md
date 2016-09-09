@@ -48,18 +48,18 @@ SPRITE SPR_BladeB3		"sprite/bladeb3.png" 3 3 0 0 NONE
 SPRITE SPR_BladeB3S		"sprite/bladeb3slash.png" 2 2 0 4 NONE
 SPRITE SPR_Quotele		"sprite/quotele.png" 2 2 0 5 NONE
 SPRITE SPR_Bubble		"sprite/bubble.png" 3 3 0 8 NONE
-SPRITE SPR_MGun 		"sprite/mgun.png" 3 2 0 0 NONE
+SPRITE SPR_MGun 		"sprite/mgun.png" 6 1 0 0 NONE
 SPRITE SPR_MGunB1		"sprite/mgunb1.png" 2 2 0 0 NONE
 SPRITE SPR_MGunB2		"sprite/mgunb2.png" 2 2 0 0 NONE
 SPRITE SPR_MGunB3		"sprite/mgunb3.png" 2 2 0 0 NONE
 
 # Use PAL_sym
-SPRITE SPR_Polar		"sprite/polar.png" 3 2 0 0 NONE
+SPRITE SPR_Polar		"sprite/polar.png" 6 1 0 0 NONE
 SPRITE SPR_PolarB1		"sprite/polarb1.png" 2 2 0 0 NONE
 SPRITE SPR_PolarB2		"sprite/polarb2.png" 2 2 0 0 NONE
 SPRITE SPR_PolarB3		"sprite/polarb3.png" 2 2 0 0 NONE
-SPRITE SPR_Fireb		"sprite/fireball.png" 3 2 0 0 NONE
-SPRITE SPR_Missl		"sprite/missiles.png" 3 2 0 0 NONE
+SPRITE SPR_Fireb		"sprite/fireball.png" 6 1 0 0 NONE
+SPRITE SPR_Missl		"sprite/missiles.png" 6 1 0 0 NONE
 SPRITE SPR_Chest		"sprite/chest.png" 2 2 0 10 NONE
 SPRITE SPR_Save			"sprite/save.png" 2 2 0 4 NONE
 SPRITE SPR_Refill		"sprite/refill.png" 2 2 0 1 NONE

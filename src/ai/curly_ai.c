@@ -49,8 +49,7 @@ void ai_curly_ai(Entity *e) {
 	// knocked out. otherwise she wouldn't have it turned on in the cutscene if the
 	// player defeats the core before she gets up. I know that's unlikely but still.
 	if (!curly_watershield) {
-		Entity *shield = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-				0, 0, OBJ_CAI_WATERSHIELD, 0, 0);
+		Entity *shield = entity_create(e->x, e->y, OBJ_CAI_WATERSHIELD, 0);
 		shield->alwaysActive = true;
 		shield->linkedEntity = e;
 		
@@ -86,8 +85,7 @@ void ai_curly_ai(Entity *e) {
 			// If we traded Curly for machine gun she uses the polar star
 			curly_mgun = !player_has_weapon(WEAPON_MACHINEGUN);
 			// spawn her gun
-			Entity *gun = entity_create(sub_to_block(e->x), sub_to_block(e->y), 
-					0, 0, OBJ_CAI_GUN + curly_mgun, 0, 0);
+			Entity *gun = entity_create(e->x, e->y, OBJ_CAI_GUN + curly_mgun, 0);
 			gun->alwaysActive = true;
 			gun->linkedEntity = e;
 			//gun->PushBehind(o);
@@ -315,7 +313,7 @@ void ai_curly_ai(Entity *e) {
 	// Set animation
 	e->frame = anim;
 	// Change direction if pressing left or right
-	SPR_SAFEHFLIP(e->sprite, e->dir);
+	//SPR_SAFEHFLIP(e->sprite, e->dir);
 	*/
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -346,7 +344,7 @@ void fire_mgun(s32 x, s32 y, u8 dir) {
 	b->type = WEAPON_MACHINEGUN;
 	b->level = 3;
 	// Need to set the position immediately or else the sprite will blink in upper left
-	//SPR_SAFEADD(b->sprite, &SPR_MGunB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+	////SPR_SAFEADD(b->sprite, &SPR_MGunB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
 	//		(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
 	b->damage = 6;
 	b->ttl = 90;
@@ -354,16 +352,16 @@ void fire_mgun(s32 x, s32 y, u8 dir) {
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		//SPR_SAFEANIM(b->sprite, 1);
+		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
 	} else if(dir == DIR_DOWN) {
-		//SPR_SAFEANIM(b->sprite, 1);
-		//SPR_SAFEVFLIP(b->sprite, 1);
+		////SPR_SAFEANIM(b->sprite, 1);
+		////SPR_SAFEVFLIP(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		//SPR_SAFEHFLIP(b->sprite, dir > 0);
+		////SPR_SAFEHFLIP(b->sprite, dir > 0);
 		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
 		b->y_speed = 0;
 	}
@@ -381,7 +379,7 @@ void fire_pstar(s32 x, s32 y, u8 dir) {
 	sound_play(SND_POLAR_STAR_L3, 5);
 	b->type = WEAPON_POLARSTAR;
 	b->level = 3;
-	//SPR_SAFEADD(b->sprite, &SPR_PolarB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
+	////SPR_SAFEADD(b->sprite, &SPR_PolarB3, (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
 	//		(y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8, TILE_ATTR(PAL0, 0, 0, 0), 3);
 	b->damage = 4;
 	b->ttl = 35;
@@ -389,11 +387,11 @@ void fire_pstar(s32 x, s32 y, u8 dir) {
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		//SPR_SAFEANIM(b->sprite, 1);
+		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(-4);
 	} else if(dir == DIR_DOWN) {
-		//SPR_SAFEANIM(b->sprite, 1);
+		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
@@ -418,7 +416,7 @@ void ai_cai_gun(Entity *e) {
 	//} else {
 	//	e->frame = 0;
 	//}
-	//SPR_SAFEHFLIP(e->sprite, e->dir);
+	////SPR_SAFEHFLIP(e->sprite, e->dir);
 	
 	if (curly_target_time) {
 		// fire when we get close to the target
@@ -478,11 +476,11 @@ void ai_cai_watershield(Entity *e) {
 	if (curly == NULL) { e->state = STATE_DELETE; return; }
 	
 	if(curly->underwater) {
-		SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+		//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 		e->x = curly->x;
 		e->y = curly->y;
 	} else {
-		SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+		//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 		e->timer = 0;
 	}
 }

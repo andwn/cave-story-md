@@ -34,7 +34,7 @@ void system_set_flag(u16 flag, bool value) {
 }
 
 bool system_get_flag(u16 flag) {
-	return (flags[flag/32] & (1<<(flag%32))) > 0;
+	return flags[flag/32] & (1<<(flag%32));
 }
 
 void system_set_skip_flag(u16 flag, bool value) {
@@ -44,7 +44,7 @@ void system_set_skip_flag(u16 flag, bool value) {
 }
 
 bool system_get_skip_flag(u16 flag) {
-	return (skip_flags & (1<<flag)) > 0;
+	return skip_flags & (1<<flag);
 }
 
 void system_update() {

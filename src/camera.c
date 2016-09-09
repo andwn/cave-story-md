@@ -32,6 +32,11 @@ void camera_set_position(s32 x, s32 y) {
 	// Apply
 	camera.x = x;
 	camera.y = y;
+	// Update quick fetch cutoff values
+	camera_xmin =  camera.x    - pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_xsize = camera_xmin + pixel_to_sub(SCREEN_WIDTH + 64);
+	camera_ymin =  camera.y    - pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_ysize = camera_ymin + pixel_to_sub(SCREEN_HEIGHT + 64);
 }
 
 void camera_shake(u16 time) {
@@ -41,7 +46,7 @@ void camera_shake(u16 time) {
 void camera_update() {
 	// Just stick to the target object
 	s32 x_next, y_next;
-	if(camera.target != NULL) {
+	if(camera.target) {
 		camera.x_offset = 0;
 		camera.y_offset = 0;
 		// If following the player focus on where they are walking/looking
@@ -61,7 +66,7 @@ void camera_update() {
 		y_next = camera.y +
 				(((floor(camera.target->y) + camera.y_offset) - camera.y) >> FOCUS_SPEED);
 		// Camera shaking
-		if(cameraShake > 0) {
+		if(cameraShake) {
 			x_next += (random() % 0x800) - 0x400;
 			y_next += (random() % 0x800) - 0x400;
 			if(cameraShake != 9999) cameraShake--;
@@ -100,7 +105,5 @@ void camera_update() {
 	camera.x = x_next;
 	camera.y = y_next;
 	// Reactivate any entities that are approaching the screen
-	if(morphingColumn | morphingRow) {
-		entities_update_inactive();
-	}
+	if(morphingColumn | morphingRow) entities_update_inactive();
 }

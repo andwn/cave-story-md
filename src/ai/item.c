@@ -29,12 +29,12 @@ void ai_energy(Entity *e) {
 		} else {
 			SPRITE_FROM_SHEET(&SPR_EnergyS, SHEET_ENERGY);
 		}
-		SPR_SAFEPALETTE(e->sprite, PAL1);
+		//SPR_SAFEPALETTE(e->sprite, PAL1);
 		e->timer2 = 0;
 	} else if(++e->timer2 > 7) {
 		if(++e->frame >= 6) e->frame = 0;;
 		u8 f = e->frame << (e->eflags & NPC_OPTION2 ? 2 : 0);
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
 		e->timer2 = 0;
 	}
 	* */
@@ -72,7 +72,7 @@ void ai_energy(Entity *e) {
 		} else if(e->timer > 7 * FPS) {
 			e->hidden = (e->timer & 3) > 1;
 		} //else if(!entity_on_screen(e)) {
-		//	SPR_SAFERELEASE(e->sprite);
+		//	//SPR_SAFERELEASE(e->sprite);
 		//} else if(e->sprite == NULL) {
 		//	entity_sprite_create(e);
 		//}
@@ -132,12 +132,12 @@ void ai_missile(Entity *e) {
 	/*
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_MisslP, SHEET_MISSILE);
-		SPR_SAFEPALETTE(e->sprite, PAL1);
+		//SPR_SAFEPALETTE(e->sprite, PAL1);
 		e->timer2 = 0;
 	} else if(++e->timer2 > 5) {
 		e->frame ^= 1;
 		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
 		e->timer2 = 0;
 	}
 	* */
@@ -182,12 +182,12 @@ void ai_heart(Entity *e) {
 	/*
 	if(e->sprite == NULL) {
 		SPRITE_FROM_SHEET(&SPR_Heart, SHEET_HEART);
-		SPR_SAFEPALETTE(e->sprite, PAL1);
+		//SPR_SAFEPALETTE(e->sprite, PAL1);
 		e->timer2 = 0;
 	} else if(++e->timer2 > 5) {
 		e->frame ^= 1;
 		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
 		e->timer2 = 0;
 	}
 	* */
@@ -226,16 +226,16 @@ void onspawn_hiddenPowerup(Entity *e) {
 
 void ai_hiddenPowerup(Entity *e) {
 	if(e->health < 990) {
-		effect_create_smoke(0, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(SND_EXPL_SMALL, 5);
 		if(e->eflags & NPC_OPTION2) {
 			e->type = OBJ_MISSILE;
-			//SPR_SAFEADD(e->sprite, &SPR_MisslP, sub_to_pixel(e->x), sub_to_pixel(e->y),
+			////SPR_SAFEADD(e->sprite, &SPR_MisslP, sub_to_pixel(e->x), sub_to_pixel(e->y),
 			//	TILE_ATTR(PAL1, 0, 0, 0), 4);
 			e->eflags &= ~NPC_OPTION2;
 		} else {
 			e->type = OBJ_HEART;
-			//SPR_SAFEADD(e->sprite, &SPR_Heart, sub_to_pixel(e->x), sub_to_pixel(e->y),
+			////SPR_SAFEADD(e->sprite, &SPR_Heart, sub_to_pixel(e->x), sub_to_pixel(e->y),
 			//	TILE_ATTR(PAL1, 0, 0, 0), 4);
 			e->health = 2;
 		}

@@ -33,7 +33,7 @@ void ai_pignon(Entity *e) {
 				e->dir = random() & 1;
 				e->x_speed = e->dir ? 0x100 : -0x100;
 				//e->frame = 1;
-				//SPR_SAFEHFLIP(e->sprite, e->dir);
+				////SPR_SAFEHFLIP(e->sprite, e->dir);
 			}
 		}
 		break;

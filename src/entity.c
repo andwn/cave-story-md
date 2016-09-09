@@ -87,7 +87,7 @@ Entity *entity_delete(Entity *e) {
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
 	entity_drop_powerup(e);
-	effect_create_smoke(e->deathSmoke, sub_to_pixel(e->x), sub_to_pixel(e->y));
+	effect_create_smoke(e->x >> CSF, e->y >> CSF);
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	Entity *next = e->next;
@@ -134,8 +134,6 @@ void entities_update() {
 			e = next;
 			continue;
 		}
-		e->oframe = e->frame;
-		e->odir = e->dir;
 		// AI onUpdate method - may set STATE_DELETE
 		ENTITY_ONFRAME(e);
 		if(e->state == STATE_DELETE) {
@@ -171,7 +169,7 @@ void entities_update() {
 					if(e->health <= b->damage) {
 						if((e->nflags | e->eflags) & NPC_SHOWDAMAGE)
 							effect_create_damage(e->damage_value - b->damage,
-									sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+									sub_to_pixel(e->x), sub_to_pixel(e->y));
 						// Killed enemy
 						e->health = 0;
 						ENTITY_ONDEATH(e);
@@ -274,7 +272,7 @@ void entities_update() {
 			e->damage_time--;
 			if(e->damage_time <= 0) {
 				effect_create_damage(e->damage_value,
-						sub_to_pixel(e->x), sub_to_pixel(e->y), 60);
+						sub_to_pixel(e->x), sub_to_pixel(e->y));
 				e->damage_value = 0;
 			}
 		}
@@ -284,13 +282,18 @@ void entities_update() {
 					(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
 					(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
 			if(e->frame != e->oframe) {
+				e->oframe = e->frame;
 				if(e->autotile) { // Tile replace
-					
+					TILES_QUEUE(SPR_TILES(npc_info[e->type].sprite, e->frame, 0),
+								e->vramindex, e->framesize);
 				} else { // Tile index
 					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
 				}
 			}
-			if(e->dir != e->odir) sprite_hflip(e->sprite[0], e->dir);
+			if(e->dir != e->odir) {
+				e->odir = e->dir;
+				sprite_hflip(e->sprite[0], e->dir);
+			}
 		}
 		e = e->next;
 	}
@@ -654,26 +657,25 @@ void entities_clear_by_type(u16 type) {
 
 void entity_drop_powerup(Entity *e) {
 	u8 chance = random() % 5;
-	u16 bx = sub_to_block(e->x), by = sub_to_block(e->y);
 	if(chance >= 3) { // Weapon Energy
 		if(e->experience > 0) {
-			Entity *exp = entity_create(bx, by, 0, 0, 1,
-					e->experience > 6 ? NPC_OPTION2 : 0, 0);
+			Entity *exp = entity_create(e->x, e->y, OBJ_XP,
+					e->experience > 6 ? NPC_OPTION2 : 0);
 			exp->experience = e->experience;
 		}
 	} else if(chance == 2 && (player_has_weapon(WEAPON_MISSILE) || 
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {
-			entity_create(bx, by, 0, 0, 86, NPC_OPTION1 | NPC_OPTION2, 0);
+			entity_create(e->x, e->y, 86, NPC_OPTION1 | NPC_OPTION2);
 		} else {
-			entity_create(bx, by, 0, 0, 86, NPC_OPTION1, 0);
+			entity_create(e->x, e->y, 86, NPC_OPTION1);
 		}
 	} else { // Heart
 		if(e->experience > 6) {
-			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION1 | NPC_OPTION2, 0);
+			Entity *heart = entity_create(e->x, e->y, 87, NPC_OPTION1 | NPC_OPTION2);
 			heart->health = 5;
 		} else {
-			Entity *heart = entity_create(bx, by, 0, 0, 87, NPC_OPTION1, 0);
+			Entity *heart = entity_create(e->x, e->y, 87, NPC_OPTION1);
 			heart->health = 2;
 		}
 	}
@@ -700,26 +702,27 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	}
 }
 
-Entity *entity_create(s32 x, s32 y, u16 id, u16 event, u16 type, u16 flags, u8 direction) {
-	//if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) return NULL;
+Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	// Allocate memory and start applying values
 	u8 sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	*e = (Entity){
-		.x = x + (8<<CSF),
-		.y = y + (8<<CSF),
-		.id = id,
-		.event = event,
-		.dir = direction,
+		.x = x, .y = y,
 		.sprite_count = sprite_count,
 		.enableSlopes = true,
 	};
 	entity_default(e, type, flags);
-	if(sprite_count) {
+	if(sprite_count == 1) {
 		if(npc_info[type].sheet == NOSHEET) {
 			if(npc_info[type].sprite) { // Use our own tiles
 				e->autotile = true;
-				
+				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
+				e->framesize = f->vdpSpritesInf[0]->numTile;
+				TILOC_ADD(e->vramindex, e->framesize);
+				e->sprite[0] = (VDPSprite){
+					.size = SPRITE_SIZE(f->w, f->h),
+					.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
+				};
 			} else { // Leave sprite handling to be done manually
 				
 			}
@@ -730,12 +733,12 @@ Entity *entity_create(s32 x, s32 y, u16 id, u16 event, u16 type, u16 flags, u8 d
 			e->framesize = sheets[sind].w * sheets[sind].h;
 			e->sprite[0] = (VDPSprite){
 				.size = SPRITE_SIZE(sheets[sind].w, sheets[sind].h),
-				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,direction, e->vramindex)
+				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
 			};
 		}
 	}
-	ENTITY_ONCREATE(e);
-	if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
+	ENTITY_ONSPAWN(e);
+	if(e->alwaysActive || (entity_on_screen(e) /*&& !entity_disabled(e)*/)) {
 		LIST_PUSH(entityList, e);
 	} else {
 		LIST_PUSH(inactiveList, e);
@@ -765,10 +768,10 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
-			SPR_SAFERELEASE(e->sprite);
+			//SPR_SAFERELEASE(e->sprite);
 			entity_default(e, type, flags);
 			e->dir = direction;
-			ENTITY_ONCREATE(e);
+			ENTITY_ONSPAWN(e);
 		}
 		e = e->next;
 	}
@@ -777,7 +780,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		if(e->event == event) {
 			entity_default(e, type, flags);
 			e->dir = direction;
-			ENTITY_ONCREATE(e);
+			ENTITY_ONSPAWN(e);
 			// Some CNP'd offscreen entities (Balrog in Sand Zone) set alwaysActive,
 			// so when that happens we need to move it into the active list
 			if(e->alwaysActive) LIST_MOVE(inactiveList, entityList, e);

@@ -6,14 +6,22 @@
  */
 
 #define MAX_SHEETS	16
-#define MAX_TILOCS	16
+#define MAX_TILOCS	32
  
 // Reduces the copy paste mess of VDP_loadTileData calls
+#define SHEET_ADD(sheetid, frames, width, height) {                                            \
+	if(sheet_num < MAX_SHEETS) {                                                               \
+		u16 index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size           \
+							  : TILE_SHEETINDEX;                                               \
+		sheets[sheet_num] = (Sheet) { sheetid, frames*width*height, index, width, height };    \
+		sheet_num++;                                                                           \
+	}                                                                                          \
+}
 // The end params are anim,frame value couples from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
 	const u8 fa[frames*2] = { __VA_ARGS__ };                                                   \
 	for(u8 i = 0; i < frames; i++) {                                                           \
-		VDP_loadTileData(SPR_TILESET(sdef,fa[i*2],fa[i*2+1])->tiles,index+i*fsize,fsize,dma);  \
+		VDP_loadTileData(SPR_TILES(sdef,fa[i*2],fa[i*2+1]),index+i*fsize,fsize,dma);           \
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \
@@ -25,11 +33,16 @@
 	}                                                                                          \
 }
 
-#define TILOC_LOAD(sdef, frames, fsize, index, dma) { \
-	 \
+// Get the first available space in VRAM and allocate it
+#define TILOC_ADD(myindex, framesize) {                                                        \
+	myindex = tiloc_num ? tilocs[tiloc_num-1].index + tilocs[tiloc_num-1].size                 \
+			: sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size                 \
+			: TILE_SHEETINDEX;                                                                 \
+	tilocs[tiloc_num] = (Tiloc) { framesize, myindex };                                        \
+	tiloc_num++;                                                                               \
 }
-#define TILES_QUEUE(tiles,index,count) {                                                       \
-	DMA_queueDma(DMA_VRAM,(u32)tiles,(index)*TILE_SIZE,(count)*16,2);                          \
+#define TILES_QUEUE(tiles, index, count) {                                                     \
+	DMA_queueDma(DMA_VRAM, (u32)tiles, (index) * TILE_SIZE, (count) * 16, 2);                  \
 }
 
 enum { 
@@ -38,7 +51,7 @@ enum {
 	SHEET_BALFROG, SHEET_CROW, SHEET_GAUDI, SHEET_FUZZ, SHEET_SPIKE,
 };
 
-//u8 last_sheet;
+u8 sheet_num;
 typedef struct {
 	u8 id; // One of the values in the enum above - so an entity can find its sheet
 	u8 size; // Total number of tiles used by the complete sheet
@@ -47,7 +60,7 @@ typedef struct {
 } Sheet;
 Sheet sheets[MAX_SHEETS];
 
-//u8 last_tiloc;
+u8 tiloc_num;
 typedef struct {
 	u8 size; // Number of tiles
 	u16 index; // VDP tile index

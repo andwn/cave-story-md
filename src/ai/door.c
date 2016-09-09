@@ -30,14 +30,14 @@ void ai_theDoor(Entity *e) {
 		if(e->damage_time) {
 			e->state = 1;
 			e->timer = TIME(30);
-			SPR_SAFEFRAME(e->sprite, 3);
+			//SPR_SAFEFRAME(e->sprite, 3);
 		} else {
 			s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
 				x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
 			if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
-				SPR_SAFEFRAME(e->sprite, 2);
+				//SPR_SAFEFRAME(e->sprite, 2);
 			} else {
-				SPR_SAFEFRAME(e->sprite, 0);
+				//SPR_SAFEFRAME(e->sprite, 0);
 			}
 		}
 	}

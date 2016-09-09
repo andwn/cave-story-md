@@ -44,7 +44,7 @@ void ai_batVertical(Entity *e) {
 		e->timer2 = 0;
 	} else if(++e->timer2 > 4) {
 		if(++e->frame >= 3) e->frame = 0;;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->timer2 = 0;
 	}
 	* */
@@ -76,7 +76,7 @@ void ai_batHang(Entity *e) {
 			e->state = 1;
 			e->timer = 0;
 			e->frame = 4;;
-			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
 			player.y > e->y - 0x1000 && player.y < e->y + 0x9000) {
@@ -88,14 +88,14 @@ void ai_batHang(Entity *e) {
 			e->state = 0;
 			e->timer = 0;
 			e->frame = 3;;
-			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 	} else if(e->state == 2) { // At attention
 		if(e->damage_time > 0 || (player.x > e->x - 0x2800 && player.x < e->x + 0x2800)) {
 			e->state = 3;
 			e->timer = 0;
 			e->frame = 5;;
-			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		}
 	} else if(e->state == 3) { // Falling
 		e->y_speed += BAT_FALL_ACCEL;
@@ -117,7 +117,7 @@ void ai_batHang(Entity *e) {
 	} else { // Flying
 		if(++e->timer2 > 4) {
 			if(++e->frame >= 3) e->frame = 0;;
-			//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 			e->timer2 = 0;
 		}
 		if((e->dir && player.x < e->x) || (!e->dir && player.x > e->x)) {
@@ -156,7 +156,7 @@ void ai_batCircle(Entity *e) {
 		e->timer2 = 0;
 	} else if(e->state == 1 && ++e->timer2 > 4) {
 		if(++e->frame >= 3) e->frame = 0;;
-		SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
 		e->timer2 = 0;
 	}
 	* */
@@ -200,7 +200,7 @@ void ai_batCircle(Entity *e) {
 					e->state = 2;
 					//e->frame = 2		// mouth showing teeth;
 					e->frame = 5;;
-					//SPR_SAFETILEINDEX(e->sprite, 
+					////SPR_SAFETILEINDEX(e->sprite, 
 					//		sheets[e->frame].index + e->frame * 4);
 				}
 			} else {

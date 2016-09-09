@@ -238,7 +238,7 @@ void ai_gaudiDying(Entity *e) {
 
 void ai_gaudi(Entity *e) {
 	if (e->health <= (1000 - GAUDI_HP)) {
-		//SPR_SAFERELEASE(e->sprite);
+		////SPR_SAFERELEASE(e->sprite);
 		e->type = OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
 		//entity_sprite_create(e);
@@ -362,7 +362,7 @@ void ai_gaudiFlying(Entity *e) {
 		else
 			e->x += (2 << 9);
 		
-		//SPR_SAFERELEASE(e->sprite);
+		////SPR_SAFERELEASE(e->sprite);
 		e->type =OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
 		//entity_sprite_create(e);
@@ -431,7 +431,7 @@ void ai_gaudiFlying(Entity *e) {
 
 void ai_gaudiArmored(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
-		//SPR_SAFERELEASE(e->sprite);
+		////SPR_SAFERELEASE(e->sprite);
 		e->type =OBJ_GAUDI_DYING;
 		entity_default(e, OBJ_GAUDI_DYING, 0);
 		//entity_sprite_create(e);
@@ -660,8 +660,7 @@ void ai_pooh_black(Entity *e) {
 			
 			// spawn bubbles when hit
 			if (e->damage_time && (e->damage_time % TIME(5)) == 1) {
-				Entity *bubble = entity_create(block_to_sub(e->x), block_to_sub(e->y),
-						0, 0, OBJ_POOH_BLACK_BUBBLE, 0, 0);
+				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 				bubble->alwaysActive = true;
 				bubble->x = e->x - 0x1800 + (random() % 0x3000);
 				bubble->y = e->y - 0x1800 + (random() % 0x3000);
@@ -762,11 +761,11 @@ void ai_pooh_black_dying(Entity *e) {
 				e->timer2++;
 				if ((e->timer2 % 4) == 2) {
 					e->hidden = false;
-					//SPR_SAFEVISIBILITY(e->sprite, 1);
+					////SPR_SAFEVISIBILITY(e->sprite, 1);
 					sound_play(SND_BUBBLE, 5);
 				} else if((e->timer2 % 4) == 0) {
 					e->hidden = true;
-					//SPR_SAFEVISIBILITY(e->sprite, 0);
+					////SPR_SAFEVISIBILITY(e->sprite, 0);
 				}
 				if(e->timer2 > 60) {
 					e->state = STATE_DELETE;
@@ -778,7 +777,7 @@ void ai_pooh_black_dying(Entity *e) {
 	}
 	
 	if ((e->timer % 4) == 1) {
-		Entity *bubble = entity_create(0, 0, 0, 0, OBJ_POOH_BLACK_BUBBLE, 0, 0);
+		Entity *bubble = entity_create(0, 0, OBJ_POOH_BLACK_BUBBLE, 0);
 		bubble->alwaysActive = true;
 		bubble->x = e->x - 0x1800 + (random() % 0x3000);
 		bubble->y = e->y - 0x1800 + (random() % 0x3000);
@@ -825,8 +824,8 @@ void ai_firewhirr(Entity *e) {
 			
 			// if time to fire, spawn a shot
 			if (e->timer2 > TIME(120)) {
-				shot = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-						0, 0, OBJ_FIREWHIRR_SHOT, 0, e->dir);
+				shot = entity_create(e->x, e->y, OBJ_FIREWHIRR_SHOT, 0);
+				shot->dir = e->dir;
 				shot->alwaysActive = true;
 				shot->x = e->x;
 				shot->y = e->y;
@@ -859,7 +858,7 @@ void ai_gaudi_egg(Entity *e) {
 			e->y -= (4<<9);
 			e->x -= (4<<9);
 		} else {	// on ceiling
-			SPR_SAFEVFLIP(e->sprite, 1);
+			//SPR_SAFEVFLIP(e->sprite, 1);
 			// for the egg @ entrance point that is on a ceiling slope
 			if (!collide_stage_ceiling(e)) {
 				e->y -= (14 << 9);
@@ -887,8 +886,7 @@ void ai_fuzz_core(Entity *e) {
 			// spawn mini-fuzzes
 			u16 angle = 0;
 			for(u16 i=0;i<5;i++) {
-				Entity *f = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-						0, 0, OBJ_FUZZ, 0, 0);
+				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
 				f->x = e->x;
 				f->y = e->y;
 				f->linkedEntity = e;
@@ -997,8 +995,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 2:
 		{
 			if (++e->timer > TIME(10)) {
-				Entity *buyo = entity_create(sub_to_block(e->x), sub_to_block(e->y),
-						0, 0, OBJ_BUYOBUYO, 0, e->dir);
+				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, 0);
+				buyo->dir = e->dir;
 				buyo->x = e->x;
 				buyo->y = e->y;
 				
