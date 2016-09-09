@@ -4,12 +4,7 @@
 #include "common.h"
 
 /*
- * This manages the damage number and smoke effects.
- * Damage numbers are both the red "-5" and white "+5" numbers that pop up to show damage 
- * or weapon exp gain.
- * Small puffs of smoke appear for various reasons. There tend to be a lot of them, so the
- * sprite animation tiles are fully loaded into a dedicated section of VRAM to avoid
- * the sprite engine from thrashing.
+ * Number & Smoke effects, will be more than that eventually
  */
 
 #define MAX_DAMAGE 4

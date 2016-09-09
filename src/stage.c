@@ -38,7 +38,6 @@ void stage_load(u16 id) {
 		VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
 	}
 	stageID = id;
-	//player_lock_controls();
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
@@ -85,11 +84,9 @@ void stage_load(u16 id) {
 	camera_set_position(player.x, player.y);
 	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
 			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
-	//player_reset_sprites(); // Reloads player/weapon sprites
 	stage_load_entities();
 	tsc_load_stage(id);
 	hud_create();
-	//player_unlock_controls();
 	if(vdpEnabled) {
 		VDP_setEnable(true);
 		SYS_enableInts();
@@ -98,7 +95,7 @@ void stage_load(u16 id) {
 
 void stage_load_tileset() {
 	if(!VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, true)) {
-		SYS_die("Not enough memory to decompress tileset!");
+		puts("Not enough memory to decompress tileset!");
 	}
 	// Inject the breakable block sprite into the tileset
 	const u8 *PXA = tileset_info[stageTileset].PXA;
@@ -136,11 +133,11 @@ void stage_load_entities() {
 	for(u8 i = PXE[4]; i--; ) {
 		u16 x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
-		x = PXE[8 + (i-1) * 12] + (PXE[9 + (i-1) * 12]<<8);
-		y = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
-		id = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
+		x     = PXE[8  + (i-1) * 12] + (PXE[9  + (i-1) * 12]<<8);
+		y     = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
+		id    = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
 		event = PXE[14 + (i-1) * 12] + (PXE[15 + (i-1) * 12]<<8);
-		type = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
+		type  = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
 		flags = PXE[18 + (i-1) * 12] + (PXE[19 + (i-1) * 12]<<8);
 		// There are some unused entities that have all these values as 0, as well as
 		// entities that should only exist when specific flags are on/off
@@ -148,6 +145,8 @@ void stage_load_entities() {
 		if(!id && !event && !type && !flags) continue;
 		if((flags&NPC_DISABLEONFLAG) && system_get_flag(id)) continue;
 		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
+		// Special case to not load save points if SRAM is not found
+		if(type == OBJ_SAVE_POINT && system_get_flag(FLAG_DISABLESAVE)) continue;
 		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 
 								  (y<<CSF)*16 + (8<<CSF), type, flags);
 		e->id = id;

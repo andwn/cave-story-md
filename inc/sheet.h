@@ -1,3 +1,6 @@
+#ifndef INC_SHEET_H_
+#define INC_SHEET_H_
+
 #include <genesis.h>
 #include "common.h"
 
@@ -7,6 +10,9 @@
 
 #define MAX_SHEETS	16
 #define MAX_TILOCS	32
+
+#define NOSHEET 255
+#define NOTILOC 255
  
 // Reduces the copy paste mess of VDP_loadTileData calls
 #define SHEET_ADD(sheetid, frames, width, height) {                                            \
@@ -74,3 +80,5 @@ void sheets_refresh_machinegun(u8 level);
 void sheets_refresh_fireball(u8 level);
 
 void sheets_load_stage(u16 sid);
+
+#endif

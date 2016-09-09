@@ -24,13 +24,11 @@ In the current release, you can make it to the end section of Waterway if you tr
 - Start - Pause / Item Menu
 
 #### How to build
-Note: Upstream Gendev is using an outdated SGDK version. for now use [my fork](https://github.com/andwn/gendev.git).
-
-1. Set up [Gendev](https://github.com/kubilus1/gendev.git)
+1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git)
 2. Clone the project and do `make`.
 3. Open `out.bin` in your emulator of choice.
 
 #### Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
 - My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
-- Most of the AI is ported over from NXEngine. Good thing that exists because I probably would have given up otherwise.
+- AI code and some other bits and pieces ported from NXEngine.

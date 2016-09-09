@@ -6,6 +6,7 @@
 #include "npc.h"
 #include "ai.h"
 #include "weapon.h"
+#include "sheet.h"
 
 /*
  * This is a database of most of the game's content. Wherever possible, the indexes match
@@ -75,7 +76,6 @@ typedef struct {
 } face_info_def;
 
 // Information about each NPC type, indexes are the same as npc.tbl
-#define NOSHEET 255
 typedef struct {
 	// SpriteDef containing tile data, ignored if a sheet is used
 	const SpriteDefinition *sprite;

@@ -48,7 +48,7 @@ typedef struct {
 	u8 level;
 	u8 damage;
 	u8 ttl;
-	Sprite *sprite;
+	VDPSprite sprite;
 	s32 x, y;
 	s16 x_speed, y_speed;
 	bounding_box hit_box;

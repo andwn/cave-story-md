@@ -83,11 +83,11 @@ struct Entity {
 	s8 damage_time; // Amount of time before effect is created
 	/* Sprite Stuff */
 	bool hidden,
-		foreground, // Draw sprite before player
-		autotile; // Queue DMA transfer of tiles when frame changes
+		foreground; // Draw sprite before player
 	u8 sprite_count; // Number of (hardware) sprites
 	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
 	u8 animtime; // Animation timer used by AI and ANIMATE() macro
+	u8 sheet, tiloc;
 	u16 vramindex; // Sheet or tiles index
 	u8 framesize; // Number of tiles per frame
 	VDPSprite sprite[0]; // Raw sprite(s) to copy into sprite list

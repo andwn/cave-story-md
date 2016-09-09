@@ -277,16 +277,16 @@ void entities_update() {
 			}
 		}
 		// Handle sprite movement/changes
-		if(e->sprite_count) {
+		if(e->sprite_count && !e->hidden) {
 			sprite_pos(e->sprite[0],
 					(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
 					(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
 			if(e->frame != e->oframe) {
 				e->oframe = e->frame;
-				if(e->autotile) { // Tile replace
+				if(e->tiloc != NOTILOC) { // Tile replace
 					TILES_QUEUE(SPR_TILES(npc_info[e->type].sprite, e->frame, 0),
 								e->vramindex, e->framesize);
-				} else { // Tile index
+				} else if(e->sheet != NOSHEET) { // Tile index
 					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
 				}
 			}
@@ -708,6 +708,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	*e = (Entity){
 		.x = x, .y = y,
+		.tiloc = NOTILOC, .sheet = NOSHEET,
 		.sprite_count = sprite_count,
 		.enableSlopes = true,
 	};
@@ -715,10 +716,10 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	if(sprite_count == 1) {
 		if(npc_info[type].sheet == NOSHEET) {
 			if(npc_info[type].sprite) { // Use our own tiles
-				e->autotile = true;
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
 				e->framesize = f->vdpSpritesInf[0]->numTile;
-				TILOC_ADD(e->vramindex, e->framesize);
+				TILOC_ADD(e->tiloc, e->framesize);
+				e->vramindex = tilocs[e->tiloc].index;
 				e->sprite[0] = (VDPSprite){
 					.size = SPRITE_SIZE(f->w, f->h),
 					.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
@@ -727,18 +728,17 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 				
 			}
 		} else { // Use a sprite sheet
-			u8 sind = 0;
-			SHEET_FIND(sind, npc_info[type].sheet);
-			e->vramindex = sheets[sind].index;
-			e->framesize = sheets[sind].w * sheets[sind].h;
+			SHEET_FIND(e->sheet, npc_info[type].sheet);
+			e->vramindex = sheets[e->sheet].index;
+			e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
 			e->sprite[0] = (VDPSprite){
-				.size = SPRITE_SIZE(sheets[sind].w, sheets[sind].h),
+				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
 				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
 			};
 		}
 	}
 	ENTITY_ONSPAWN(e);
-	if(e->alwaysActive || (entity_on_screen(e) /*&& !entity_disabled(e)*/)) {
+	if(e->alwaysActive || entity_on_screen(e)) {
 		LIST_PUSH(entityList, e);
 	} else {
 		LIST_PUSH(inactiveList, e);
