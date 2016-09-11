@@ -41,7 +41,6 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	SPR_reset();
 	if(stageBlocks != NULL) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
@@ -130,7 +129,7 @@ void stage_load_entities() {
 	// Most of the rooms depend on sprite sorting to be back -> front
 	// But on Genesis it works the opposite, so load all the entities in reverse order
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
-	for(u8 i = PXE[4]; i--; ) {
+	for(u8 i = 0; i < PXE[4]; i++) {
 		u16 x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
 		x     = PXE[8  + (i-1) * 12] + (PXE[9  + (i-1) * 12]<<8);

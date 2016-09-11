@@ -36,7 +36,7 @@ typedef void (*EntityMethod)(Entity*);
 
 /* Helper Macros */
 
-#define SNAP_TO_GROUND(e); ({                                                                  \
+#define SNAP_TO_GROUND(e); {                                                                   \
 	u16 bx = sub_to_block(e->x);                                                               \
 	u16 by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF));                                \
 	if(stage_get_block_type(bx, by) != 0x41) {                                                 \
@@ -45,7 +45,7 @@ typedef void (*EntityMethod)(Entity*);
 		by = sub_to_block(e->y + ((e->hit_box.bottom-1)<<CSF));                                \
 		if(stage_get_block_type(bx, by) == 0x41) e->y -= 8 << CSF;                             \
 	}                                                                                          \
-})
+}
 
 #define FACE_PLAYER(e) (e->dir = e->x < player.x)
 #define TURN_AROUND(e) (e->dir ^= 1)
@@ -55,42 +55,51 @@ typedef void (*EntityMethod)(Entity*);
 #define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - (dist1) && player.x < e->x + (dist2))
 #define PLAYER_DIST_Y2(dist1, dist2) (player.y > e->y - (dist1) && player.y < e->y + (dist2))
 
-#define LIMIT_X(v) ({                                                                          \
+#define LIMIT_X(v) {                                                                           \
 	if(e->x_speed > (v)) e->x_speed = (v);                                                     \
 	if(e->x_speed < -(v)) e->x_speed = -(v);                                                   \
-})
-#define LIMIT_Y(v) ({                                                                          \
+}
+#define LIMIT_Y(v) {                                                                           \
 	if(e->y_speed > (v)) e->y_speed = (v);                                                     \
 	if(e->y_speed < -(v)) e->y_speed = -(v);                                                   \
-})
+}
 
 #define MOVE_X(v) (e->x_speed = e->dir ? (v) : -(v))
 #define ACCEL_X(v) (e->x_speed += e->dir ? (v) : -(v))
 
-#define CURLY_TARGET_HERE(e) ({                                                                \
+#define CURLY_TARGET_HERE(e) {                                                                 \
 	curly_target_time = 120;                                                                   \
 	curly_target_x = e->x;                                                                     \
 	curly_target_y = e->y;                                                                     \
-})
+}
 
-#define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) ({                                        \
+#define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
 	shot->x_speed = (sintab32[(angle)] >> 1) * ((speed) >> CSF);                               \
 	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF);                \
-})
+}
 
-#define SMOKE_AREA(x, y, w, h, count) ({                                                       \
+#define SMOKE_AREA(x, y, w, h, count) {                                                        \
 	for(u8 i = 0; i < (count); i++) {                                                          \
 		effect_create_smoke((x) + (random() % (w)),                                            \
 							(y) + (random() % (h)));                                           \
 	}                                                                                          \
-})
+}
 
 #define ANIMATE(e, spd, ...) {                                                                 \
 	const u8 anim[] = { __VA_ARGS__ };                                                         \
-	(e)->animtime++;                                                                           \
-	if((e)->animtime > spd * sizeof(anim)) (e)->animtime = 0;                                  \
-	if((e)->animtime % sizeof(anim) == 0) (e)->frame = anim[(e)->animtime / spd];              \
+	if(++(e)->animtime >= spd * sizeof(anim)) (e)->animtime = 0;                               \
+	if(!((e)->animtime % spd)) (e)->frame = anim[(e)->animtime / spd];                         \
+}
+
+#define RANDBLINK(e, blinkframe, prob) {                                                       \
+	if(e->animtimer) {                                                                         \
+		e->animtimer--;                                                                        \
+		e->frame = blinkframe;                                                                 \
+	} else if(!(random() % (prob))) {                                                          \
+		e->frame = blinkframe;                                                                 \
+		e->animtimer = 8;                                                                      \
+	}                                                                                          \
 }
 
 /* Shared Variables */
@@ -146,6 +155,9 @@ void ondeath_teleLight(Entity *e);
 // Quote NPC used in scenes where the actual player character is hidden
 void ai_player(Entity *e);
 void ondeath_player(Entity *e);
+void ai_computer(Entity *e);
+void ai_savepoint(Entity *e);
+void ai_refill(Entity *e);
 
 /* Regular NPCs - regu.c */
 void ai_jenka(Entity *e);

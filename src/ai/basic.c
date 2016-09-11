@@ -22,7 +22,7 @@ void onspawn_snapflip(Entity *e) {
 }
 
 void onspawn_op2anim(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->frame = 1;;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
 void onspawn_op2snap(Entity *e) {
@@ -31,7 +31,7 @@ void onspawn_op2snap(Entity *e) {
 
 void onspawn_blackboard(Entity *e) {
 	e->y -= 16<<CSF;
-	if(e->eflags & NPC_OPTION2) e->frame = 1;;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
 void onspawn_persistent(Entity *e) {
@@ -244,4 +244,16 @@ void ondeath_player(Entity *e) {
 		e->frame = 1;
 		break;
 	}
+}
+
+void ai_computer(Entity *e) {
+	ANIMATE(e, 5, 1,2);
+}
+
+void ai_savepoint(Entity *e) {
+	ANIMATE(e, 4, 0,1,2,3,4,5,6,7);
+}
+
+void ai_refill(Entity *e) {
+	ANIMATE(e, 2, 0,1);
 }

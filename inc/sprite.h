@@ -25,11 +25,11 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 	(s).y = (py) + 128;                                                                        \
 }
 
-#define sprite_pri(s, pri) { (s).attribut &= ~(1<<15); (s).attribut |= (pri) << 15; }
-#define sprite_pal(s, pal) { (s).attribut &= ~(3<<13); (s).attribut |= (pal) << 13; }
-#define sprite_vflip(s, flip) { (s).attribut &= ~(1<<12); (s).attribut |= (flip) << 12; }
-#define sprite_hflip(s, flip) { (s).attribut &= ~(1<<11); (s).attribut |= (flip) << 11; }
-#define sprite_index(s, index) { (s).attribut &= ~0x3FF; (s).attribut |= (index); }
+#define sprite_pri(s, pri)   { (s).attribut &= ~(1<<15); (s).attribut |= ((pri)&1) << 15; }
+#define sprite_pal(s, pal)   { (s).attribut &= ~(3<<13); (s).attribut |= ((pal)&3) << 13; }
+#define sprite_vflip(s, flp) { (s).attribut &= ~(1<<12); (s).attribut |= ((flp)&1) << 12; }
+#define sprite_hflip(s, flp) { (s).attribut &= ~(1<<11); (s).attribut |= ((flp)&1) << 11; }
+#define sprite_index(s, ind) { (s).attribut &= ~0x3FF;   (s).attribut |= (ind)&0x3FF; }
 
 // Send sprite list to VDP
 #define sprites_send() {                                                                       \

@@ -30,10 +30,10 @@ void sheets_init() {
 	sheets_refresh_machinegun(mgun ? mgun->level : 1);
 	sheets_refresh_fireball(fball ? fball->level : 1);
 	// Power ups
-	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, true, 0,0, 0,1, 1,0, 1,1);
-	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, true, 0,0, 0,1, 1,0, 1,1);
-	SHEET_LOAD(&SPR_EnergyS,6,1, sheets[5].index, false,0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
-	SHEET_LOAD(&SPR_EnergyL,6,4, sheets[6].index, true, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, 1, 0,0, 0,1, 1,0, 1,1);
+	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, 1, 0,0, 0,1, 1,0, 1,1);
+	SHEET_LOAD(&SPR_EnergyS,6,1, sheets[5].index, 1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+	SHEET_LOAD(&SPR_EnergyL,6,4, sheets[6].index, 1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 }
 
 void sheets_refresh_polarstar(u8 level) {
@@ -45,8 +45,8 @@ void sheets_refresh_polarstar(u8 level) {
 		printf("Polar Star has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[0].index, 4, true);
-	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[0].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[0].index, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[0].index + 4, 4, 1);
 }
 
 void sheets_refresh_machinegun(u8 level) {
@@ -58,8 +58,8 @@ void sheets_refresh_machinegun(u8 level) {
 		printf("Machine Gun has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, true);
-	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[1].index + 4, 4, true);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[1].index + 4, 4, 1);
 }
 
 void sheets_refresh_fireball(u8 level) {
@@ -71,64 +71,52 @@ void sheets_refresh_fireball(u8 level) {
 		printf("Fireball has no level %hu", level);
 		return;
 	}
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, true);
-	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[2].index + 4, 4, true);
-	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[2].index + 8, 4, true);
-}
-/*
-#define sheetdef(s, data, width, height, frames) { \
-	s.w = width; \
-	s.h = height; \
-	s.size = frames*width*height; \
-	for(u8 i = 0; i < frames; i++) VDP_loadTileData(data, s.index, s.size, 1); \
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[2].index + 4, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[2].index + 8, 4, 1);
 }
 
-void sheet_load(u8 id) {
-	if(sheet_num > MAX_SHEETS || id == SHEET_NONE) return;
-	sheets[sheet_num] = (Sheet){
-		.id = id,
-		.index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size 
-						   : TILE_SHEETINDEX
-	};
-	switch(id) {
-		case SHEET_BAT:     sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
-		case SHEET_CRITTER: sheetdef(sheets[sheet_num], ST_Crit, 2, 2, 2); break;
-		case SHEET_SPIKE:   sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
-		case SHEET_PSTAR:   sheetdef(sheets[sheet_num], ST_Bat, 2, 2, 2); break;
-	}
-}
-*/
 void sheets_load_stage(u16 sid) {
+	// Reset values
 	sheet_num = 7;
-	tiloc_num = 0;
+	tiloc_index = sheets[6].index + sheets[6].size;
+	memset(tilocs, 0, MAX_TILOCS);
+	memset(&sheets[7], 0, sizeof(Sheet) * (MAX_SHEETS - 7));
 	switch(sid) {
 		case 0x0C: // First Cave
 		{	// Bat
-			sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size, 2, 2 };
-			SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			SHEET_ADD(SHEET_BAT, 6, 2, 2);
+			//sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size, 2, 2 };
+			SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, 1, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 			// Cave Critter
-			sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size, 2, 2 };
-			SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, true, 0,0, 1,0, 2,0);
+			SHEET_ADD(SHEET_CRITTER, 3, 2, 2);
+			//sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size, 2, 2 };
+			SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, 1, 0,0, 1,0, 2,0);
 			// Nothing
-			sheets[9] = (Sheet) {};
+			//sheets[9] = (Sheet) {};
 		}
 		break;
 		case 0x10: // Graveyard
-		// Pignon
-		sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size, 2, 2 };
-		SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, true, 0,0, 1,0, 1,2, 2,0, 3,0);
-		// Nothing
-		sheets[8] = (Sheet) {};
-		sheets[9] = (Sheet) {};
+		{
+			// Pignon
+			SHEET_ADD(SHEET_PIGNON, 5, 2, 2);
+			//sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size, 2, 2 };
+			SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, 1, 0,0, 1,0, 1,2, 2,0, 3,0);
+		}
 		break;
 		case 0x02: // Egg Corridor
-		// Green Critter (no hover)
-		sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size, 2, 2 };
-		SHEET_LOAD(&SPR_CritHG, 3,4, sheets[7].index, true, 0,0, 1,0, 2,0);
-		// Beetle
-		sheets[8] = (Sheet) {};
-		// Behemoth
-		sheets[9] = (Sheet) {};
+		{
+			// Green Critter (no hover)
+			SHEET_ADD(SHEET_CRITTER, 3, 2, 2);
+			//sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size, 2, 2 };
+			SHEET_LOAD(&SPR_CritHG, 3,4, sheets[7].index, 1, 0,0, 1,0, 2,0);
+			// Beetle
+			SHEET_ADD(SHEET_BEETLE, 2, 2, 2);
+			//sheets[8] = (Sheet) {};
+			SHEET_LOAD(&SPR_BtlHG, 2,4, sheets[8].index, 1, 0,0, 1,0);
+			// Behemoth
+			sheets[9] = (Sheet) {};
+		}
 		break;
 		case 0x06: // Grasstown
 		case 0x30: // Waterway

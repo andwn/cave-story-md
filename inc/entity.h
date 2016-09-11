@@ -41,7 +41,7 @@ enum {
 #define entity_on_screen(e) ((unsigned)((e)->x - camera_xmin) < camera_xsize && \
 							(unsigned)((e)->y - camera_ymin) < camera_ysize)
 
-#define entity_disabled(e) ((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id))
+//#define entity_disabled(e) ((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id))
 
 // This slightly redundant typedef is required for Entity to refer to itself
 typedef struct Entity Entity;

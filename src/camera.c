@@ -5,10 +5,9 @@
 #include "player.h"
 #include "stage.h"
 
-// One less than BLOCK_SIZE in sub-pixels, because only one
-// row/column is drawn per frame while the camera is moving
-#define CAMERA_MAX_SPEED 	(block_to_sub(1) - 1)
-#define LIMIT 				(cameraShake ? 4 : 8)
+// Since only one row or column of tiles is drawn at a time
+#define CAMERA_MAX_SPEED 	0x1FFF
+#define LIMIT 				8
 #define FOCUS_SPEED 		5
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
@@ -23,20 +22,22 @@ void camera_init() {
 
 void camera_set_position(s32 x, s32 y) {
 	// Don't let the camera leave the stage
-	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT))
-		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT);
-	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
-		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
-	if(x < pixel_to_sub(SCREEN_HALF_W + LIMIT)) x = pixel_to_sub(SCREEN_HALF_W + LIMIT);
-	if(y < pixel_to_sub(SCREEN_HALF_H + LIMIT)) y = pixel_to_sub(SCREEN_HALF_H + LIMIT);
+	if(x > block_to_sub(stageWidth) - (SCREEN_HALF_W<<CSF))
+		x = block_to_sub(stageWidth) - (SCREEN_HALF_W<<CSF);
+	if(y > block_to_sub(stageHeight) - ((SCREEN_HALF_H+LIMIT)<<CSF))
+		y = block_to_sub(stageHeight) - ((SCREEN_HALF_H+LIMIT)<<CSF);
+	if(x < SCREEN_HALF_W<<CSF) 
+		x = SCREEN_HALF_W<<CSF;
+	if(y < (SCREEN_HALF_H+LIMIT)<<CSF) 
+		y = (SCREEN_HALF_H+LIMIT)<<CSF;
 	// Apply
 	camera.x = x;
 	camera.y = y;
 	// Update quick fetch cutoff values
-	camera_xmin =  camera.x    - pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_xsize = camera_xmin + pixel_to_sub(SCREEN_WIDTH + 64);
-	camera_ymin =  camera.y    - pixel_to_sub(SCREEN_HALF_H + 32);
-	camera_ysize = camera_ymin + pixel_to_sub(SCREEN_HEIGHT + 64);
+	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);
+	camera_ymin = camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_ysize = pixel_to_sub(SCREEN_HEIGHT + 64);
 }
 
 void camera_shake(u16 time) {
@@ -94,10 +95,10 @@ void camera_update() {
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	}
 	// Update quick fetch cutoff values
-	camera_xmin =  camera.x    - pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_xsize = camera_xmin + pixel_to_sub(SCREEN_WIDTH + 64);
-	camera_ymin =  camera.y    - pixel_to_sub(SCREEN_HALF_H + 32);
-	camera_ysize = camera_ymin + pixel_to_sub(SCREEN_HEIGHT + 64);
+	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
+	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);
+	camera_ymin = camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
+	camera_ysize = pixel_to_sub(SCREEN_HEIGHT + 64);
 	// Morph the stage if the camera is moving
 	morphingColumn = sub_to_block(x_next) - sub_to_block(camera.x);
 	morphingRow = sub_to_block(y_next) - sub_to_block(camera.y);

@@ -198,13 +198,13 @@ bool window_tick() {
 void window_prompt_open() {
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
-	handSpr = SPR_addSprite(&SPR_Pointer, 
-		tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
-		TILE_ATTR(PAL0, 1, 0, 0));
+	//handSpr = SPR_addSprite(&SPR_Pointer, 
+	//	tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
+	//	TILE_ATTR(PAL0, 1, 0, 0));
 	// Load prompt sprite
-	promptSpr = SPR_addSprite(&SPR_Prompt, 
-		tile_to_pixel(PROMPT_X), tile_to_pixel(PROMPT_Y), 
-		TILE_ATTR(PAL0, 1, 0, 0));
+	//promptSpr = SPR_addSprite(&SPR_Prompt, 
+	//	tile_to_pixel(PROMPT_X), tile_to_pixel(PROMPT_Y), 
+	//	TILE_ATTR(PAL0, 1, 0, 0));
 	promptAnswer = true; // Yes is default
 }
 
@@ -226,8 +226,8 @@ bool window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
-		SPR_setPosition(handSpr, 
-			tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
+		//SPR_setPosition(handSpr, 
+		//	tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
 	return false;
 }
@@ -253,11 +253,11 @@ void window_show_item(u16 item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 12,
-		TILE_ATTR(pal, 1, 0, 0));
-	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
-		TILE_ATTR(PAL0, 1, 0, 0));
-	SPR_setAnim(itemSpr, item);
+	//itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 12,
+	//	TILE_ATTR(pal, 1, 0, 0));
+	//itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
+	//	TILE_ATTR(PAL0, 1, 0, 0));
+	//SPR_setAnim(itemSpr, item);
 }
 
 void window_show_weapon(u16 item) {
@@ -265,9 +265,9 @@ void window_show_weapon(u16 item) {
 	//SPR_SAFERELEASE(itemSpr);
 	//SPR_SAFERELEASE(itemWinSpr);
 	if(item == 0) return;
-	itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
-		TILE_ATTR(PAL0, 1, 0, 0));
-	itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
-		TILE_ATTR(PAL0, 1, 0, 0));
-	SPR_setFrame(itemSpr, item);
+	//itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
+	//	TILE_ATTR(PAL0, 1, 0, 0));
+	//itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
+	//	TILE_ATTR(PAL0, 1, 0, 0));
+	//SPR_setFrame(itemSpr, item);
 }

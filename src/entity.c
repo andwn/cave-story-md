@@ -70,16 +70,38 @@ Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 // Move to inactive list, delete sprite
 void entity_deactivate(Entity *e) {
 	LIST_MOVE(entityList, inactiveList, e);
+	// If we had tile allocation release it for future generations to use
+	if(e->tiloc != NOTILOC) {
+		TILOC_FREE(e->tiloc, e->framesize);
+		e->tiloc = NOTILOC;
+	}
 }
 
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
+	//if(e->type == OBJ_DOOR) { // In back!
+	//	LIST_MOVE_TAIL(inactiveList, entityListTail, e);
+	//}
 	LIST_MOVE(inactiveList, entityList, e);
+	
+	if(e->sheet == NOSHEET && npc_info[e->type].sprite) {
+		// Try to allocate some VRAM
+		TILOC_ADD(e->tiloc, e->framesize);
+		if(e->tiloc != NOTILOC) {
+			e->vramindex = tiloc_index + e->tiloc * 4;
+			sprite_index(e->sprite[0], e->vramindex);
+		}
+	}
 }
 
 Entity *entity_delete(Entity *e) {
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
+	// If we had tile allocation release it for future generations to use
+	if(e->tiloc != NOTILOC) {
+		TILOC_FREE(e->tiloc, e->framesize);
+		e->tiloc = NOTILOC;
+	}
 	MEM_free(e);
 	return next;
 }
@@ -92,6 +114,11 @@ Entity *entity_destroy(Entity *e) {
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
+	// If we had tile allocation release it for future generations to use
+	if(e->tiloc != NOTILOC) {
+		TILOC_FREE(e->tiloc, e->framesize);
+		e->tiloc = NOTILOC;
+	}
 	MEM_free(e);
 	return next;
 }
@@ -284,7 +311,7 @@ void entities_update() {
 			if(e->frame != e->oframe) {
 				e->oframe = e->frame;
 				if(e->tiloc != NOTILOC) { // Tile replace
-					TILES_QUEUE(SPR_TILES(npc_info[e->type].sprite, e->frame, 0),
+					TILES_QUEUE(SPR_TILES(npc_info[e->type].sprite, 0, e->frame),
 								e->vramindex, e->framesize);
 				} else if(e->sheet != NOSHEET) { // Tile index
 					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
@@ -302,7 +329,7 @@ void entities_update() {
 void entities_update_inactive() {
 	Entity *e = inactiveList;
 	while(e != NULL) {
-		if(e->alwaysActive || (entity_on_screen(e) && !entity_disabled(e))) {
+		if(e->alwaysActive || entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_reactivate(e);
 			e = next;
@@ -713,17 +740,22 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 		.enableSlopes = true,
 	};
 	entity_default(e, type, flags);
-	if(sprite_count == 1) {
+	if(sprite_count) {
 		if(npc_info[type].sheet == NOSHEET) {
 			if(npc_info[type].sprite) { // Use our own tiles
-				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
-				e->framesize = f->vdpSpritesInf[0]->numTile;
+				const VDPSpriteInf *f = 
+						npc_info[e->type].sprite->animations[0]->frames[0]->vdpSpritesInf[0];
+				e->framesize = f->numTile;
 				TILOC_ADD(e->tiloc, e->framesize);
-				e->vramindex = tilocs[e->tiloc].index;
-				e->sprite[0] = (VDPSprite){
-					.size = SPRITE_SIZE(f->w, f->h),
-					.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
-				};
+				if(e->tiloc != NOTILOC) {
+					printf("%hu", tiloc_index);
+					e->vramindex = tiloc_index + e->tiloc * 4;
+					e->sprite[0] = (VDPSprite) {
+						.size = f->size,
+						.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
+					};
+					e->oframe = 255;
+				}
 			} else { // Leave sprite handling to be done manually
 				
 			}
@@ -731,7 +763,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 			SHEET_FIND(e->sheet, npc_info[type].sheet);
 			e->vramindex = sheets[e->sheet].index;
 			e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
-			e->sprite[0] = (VDPSprite){
+			e->sprite[0] = (VDPSprite) {
 				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
 				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
 			};
@@ -846,7 +878,7 @@ void entities_draw_fore() {
 	const Entity *e = entityList;
 	while(e) {
 		if(e->foreground && !e->hidden && entity_on_screen(e)) 
-				sprite_addq(e->sprite, e->sprite_count);
+				sprite_add(e->sprite[0]);
 		e = e->next;
 	}
 }
@@ -855,7 +887,7 @@ void entities_draw_back() {
 	const Entity *e = entityList;
 	while(e) {
 		if(!e->hidden && !e->foreground && entity_on_screen(e))
-				sprite_addq(e->sprite, e->sprite_count);
+				sprite_add(e->sprite[0]);
 		e = e->next;
 	}
 }

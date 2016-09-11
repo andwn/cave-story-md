@@ -9,7 +9,7 @@
  */
 
 #define MAX_SHEETS	16
-#define MAX_TILOCS	32
+#define MAX_TILOCS	64
 
 #define NOSHEET 255
 #define NOTILOC 255
@@ -20,6 +20,7 @@
 		u16 index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size           \
 							  : TILE_SHEETINDEX;                                               \
 		sheets[sheet_num] = (Sheet) { sheetid, frames*width*height, index, width, height };    \
+		tiloc_index = sheets[sheet_num].index + sheets[sheet_num].size;                        \
 		sheet_num++;                                                                           \
 	}                                                                                          \
 }
@@ -41,20 +42,35 @@
 
 // Get the first available space in VRAM and allocate it
 #define TILOC_ADD(myindex, framesize) {                                                        \
-	myindex = tiloc_num ? tilocs[tiloc_num-1].index + tilocs[tiloc_num-1].size                 \
-			: sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size                 \
-			: TILE_SHEETINDEX;                                                                 \
-	tilocs[tiloc_num] = (Tiloc) { framesize, myindex };                                        \
-	tiloc_num++;                                                                               \
+	myindex = NOTILOC;                                                                         \
+	u8 freeCount = 0;                                                                          \
+	for(u8 i = 0; i < MAX_TILOCS; i++) {                                                       \
+		if(tilocs[i]) {                                                                        \
+			freeCount = 0;                                                                     \
+			continue;                                                                          \
+		}                                                                                      \
+		if(++freeCount * 4 >= (framesize)) {                                                   \
+			myindex = i;                                                                       \
+			break;                                                                             \
+		}                                                                                      \
+	}                                                                                          \
+	if(myindex != NOTILOC) {                                                                   \
+		myindex -= freeCount-1;                                                                \
+		while(freeCount--) tilocs[myindex+freeCount] = true;                                   \
+	}                                                                                          \
+}
+#define TILOC_FREE(myindex, framesize) {                                                       \
+	u8 freeCount = framesize / 4 + (framesize & 3 ? 1 : 0);                                    \
+	while(freeCount--) tilocs[myindex+freeCount] = false;                                      \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
-	DMA_queueDma(DMA_VRAM, (u32)tiles, (index) * TILE_SIZE, (count) * 16, 2);                  \
+	DMA_queueDma(DMA_VRAM, (u32)(tiles), (index) * TILE_SIZE, (count) * 16, 2);                \
 }
 
 enum { 
 	SHEET_NONE, SHEET_PSTAR, SHEET_MGUN, SHEET_FBALL, SHEET_HEART, SHEET_MISSILE, 
 	SHEET_ENERGY, SHEET_ENERGYL, SHEET_BAT, SHEET_CRITTER, SHEET_PIGNON, SHEET_JELLY, 
-	SHEET_BALFROG, SHEET_CROW, SHEET_GAUDI, SHEET_FUZZ, SHEET_SPIKE,
+	SHEET_BALFROG, SHEET_CROW, SHEET_GAUDI, SHEET_FUZZ, SHEET_SPIKE, SHEET_BEETLE,
 };
 
 u8 sheet_num;
@@ -66,12 +82,8 @@ typedef struct {
 } Sheet;
 Sheet sheets[MAX_SHEETS];
 
-u8 tiloc_num;
-typedef struct {
-	u8 size; // Number of tiles
-	u16 index; // VDP tile index
-} Tiloc;
-Tiloc tilocs[MAX_TILOCS];
+u16 tiloc_index;
+bool tilocs[MAX_TILOCS];
 
 void sheets_init();
 

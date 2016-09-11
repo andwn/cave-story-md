@@ -528,12 +528,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			logcmd("<WAI:%hu", args[0]);
 			tscState = TSC_WAITTIME;
-#ifdef PAL
-			waitTime = args[0];
-#else
-			waitTime = args[0] * 60 / 50;
-#endif
-//			if(joy_down(BUTTON_B)) waitTime /= 2;
+			waitTime = TIME(args[0]);
 			return 1;
 		case CMD_WAS: // Wait for player to hit the ground
 			logcmd("<WAS");
@@ -709,9 +704,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			logcmd("<ECJ:%hu:%hu", args[0], args[1]);
-			if(entity_find_by_id(args[0]) != NULL) {
-				tsc_call_event(args[1]);
-			}
+			if(entity_find_by_id(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_AE_ADD: // Refill all weapon ammo
 			logcmd("<AE+");

@@ -6,6 +6,7 @@
 #include "tables.h"
 #include "audio.h"
 #include "vdp_ext.h"
+#include "sprite.h"
 
 enum { STOPPED, PLAYING, PAUSED };
 
@@ -33,9 +34,10 @@ void soundtest_main() {
 	song_stop();
 	SYS_disableInts();
 	VDP_setEnable(false);
-	SPR_reset();
-	SPR_clear();
-	SPR_update();
+	//Kill all sprites
+	spr_num = 1;
+	sprites[0] = (VDPSprite) {};
+	sprites_send();
 	VDP_clearPlan(PLAN_A, true);
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_SndTest.data);

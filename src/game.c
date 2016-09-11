@@ -23,6 +23,9 @@
 VDPSprite itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
 
+// Prevents incomplete sprite list from being sent to VDP
+volatile bool ready;
+
 void draw_itemmenu();
 bool update_pause();
 void itemcursor_move(u8 oldindex, u8 index);
@@ -32,7 +35,8 @@ void game_reset(bool load);
 
 void vblank() {
 	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
-	sprites_send();
+	if(ready) sprites_send();
+	ready = false;
 	stage_update(); // Scrolling
 	if(hudRedrawPending) hud_update_vblank();
 }
@@ -117,6 +121,7 @@ u8 game_main(bool load) {
 				system_update();
 			}
 		}
+		ready = true;
 		VDP_waitVSync();
 	}
 	
@@ -132,6 +137,8 @@ u8 game_main(bool load) {
 void game_reset(bool load) {
 	camera_init();
 	tsc_init();
+	// Default sprite sheets
+	sheets_init();
 	gameFrozen = false;
 	if(load) {
 		system_load();
@@ -145,8 +152,6 @@ void game_reset(bool load) {
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
-	// Default sprite sheets
-	sheets_init();
 }
 
 void draw_itemmenu() {

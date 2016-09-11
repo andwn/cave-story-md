@@ -738,15 +738,55 @@ void ai_booster_falling(Entity *e) {
 
 // shared between OBJ_KAZUMA_AT_COMPUTER and OBJ_SUE_AT_COMPUTER
 void ai_npc_at_computer(Entity *e) {
-	if(stageID == 1 && e->type == 0x3E) {
-		e->state = STATE_DELETE; // Remove duplicate Kazuma from Arthur's house
-	}
-	//if((++e->timer % 30 == 1) && (random() % 4 == 0)) {
-	//	s16 newAnim = e->sprite->animInd + 1;
-	//	if(newAnim >= 3) newAnim = 0;
-	//	e->frame = newAnim;
-	//	e->timer = 0;
+	//if(stageID == 1 && e->type == 0x3E) {
+	//	e->state = STATE_DELETE; // Remove duplicate Kazuma from Arthur's house
 	//}
+	enum { INIT=0, TYPING, PAUSE_SLOUCH, PAUSE_UPRIGHT };
+	switch(e->state) {
+		case INIT:
+		{
+			SNAP_TO_GROUND(e);
+			e->state = TYPING;
+			e->frame = 0;
+			e->x -= 4<<CSF;
+		}
+		case TYPING:
+		{
+			ANIMATE(e, 3, 0,1);
+			
+			if (!(random() % TIME(80))) {
+				e->state = PAUSE_SLOUCH;
+				e->frame = 1;
+				e->timer = 0;
+			}
+			else if (!(random() % TIME(120))) {
+				e->state = PAUSE_UPRIGHT;
+				e->frame = 2;
+				e->timer = 0;
+			}
+		}
+		break;
+		
+		case PAUSE_SLOUCH:
+		{
+			if (++e->timer > TIME(40)) {
+				e->state = PAUSE_UPRIGHT;
+				e->frame = 2;
+				e->timer = 0;
+			}
+		}
+		break;
+		
+		case PAUSE_UPRIGHT:
+		{
+			if (++e->timer > TIME(80)) {
+				e->state = TYPING;
+				e->frame = 0;
+				e->timer = 0;
+			}
+		}
+		break;
+	}
 }
 
 void generic_npc_states(Entity *e) {
