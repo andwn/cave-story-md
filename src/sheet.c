@@ -79,8 +79,6 @@ void sheets_refresh_fireball(u8 level) {
 void sheets_load_stage(u16 sid) {
 	// Reset values
 	sheet_num = 7;
-	// Consider the item menu clobbers sheets and do not use tile allocs in that area
-	tiloc_index = max(sheets[6].index + sheets[6].size, TILE_SHEETINDEX + 32*6);
 	memset(tilocs, 0, MAX_TILOCS);
 	memset(&sheets[7], 0, sizeof(Sheet) * (MAX_SHEETS - 7));
 	switch(sid) {
@@ -250,4 +248,7 @@ void sheets_load_stage(u16 sid) {
 		break;
 		default: printf("Stage %hu has no sheet set", sid);
 	}
+	// Consider the item menu clobbers sheets and do not use tile allocs in that area
+	tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
+			TILE_SHEETINDEX + 24*6);
 }

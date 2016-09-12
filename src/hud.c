@@ -94,8 +94,8 @@ void hud_refresh_health() {
 	memcpy(tileData[1], &TS_Numbers.tiles[(hudHealth / 10)*TSIZE], TILE_SIZE);
 	memcpy(tileData[2], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
-	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
-			(TILE_HUDINDEX+3)*TILE_SIZE, 8*(TSIZE/2), 4*TSIZE);
+	for(u8 i = 0; i < 8; i++)
+		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_energy() {
@@ -116,8 +116,8 @@ void hud_refresh_energy() {
 	memcpy(tileData[1], &SPR_TILES(&SPR_Hud2, 0, 0)[6*TSIZE], TILE_SIZE);
 	memcpy(tileData[2], &TS_Numbers.tiles[hudLevel*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for level/energy display
-	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
-			(TILE_HUDINDEX+2)*TILE_SIZE, 8*(TSIZE/2), 4*TSIZE);
+	for(u8 i = 0; i < 8; i++)
+		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+2+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_weapon() {
@@ -126,11 +126,8 @@ void hud_refresh_weapon() {
 	memcpy(tileData[0], SPR_TILES(&SPR_ArmsImage, 0, hudWeapon), TILE_SIZE*2);
 	memcpy(tileData[2], &SPR_TILES(&SPR_ArmsImage, 0, hudWeapon)[TSIZE*2], TILE_SIZE*2);
 	// Queue DMA transfer for level/energy display
-	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
-			(TILE_HUDINDEX)*TILE_SIZE, 2*(TSIZE/2), TILE_SIZE);
-	// Queue DMA transfer for level/energy display
-	DMA_queueDma(DMA_VRAM, (u32)tileData[2], 
-			(TILE_HUDINDEX+1)*TILE_SIZE, 2*(TSIZE/2), TILE_SIZE);
+	DMA_queueDma(DMA_VRAM, (u32)tileData[0], (TILE_HUDINDEX)*TILE_SIZE, 32, 2);
+	DMA_queueDma(DMA_VRAM, (u32)tileData[2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
 }
 
 void hud_refresh_ammo() {
@@ -151,8 +148,8 @@ void hud_refresh_ammo() {
 		memcpy(tileData[2], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for ammo
-	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
-			(TILE_HUDINDEX+16)*TILE_SIZE, 4*(TSIZE/2), 4*TSIZE);
+	for(u8 i = 0; i < 4; i++)
+		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+16+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_maxammo() {
@@ -171,6 +168,6 @@ void hud_refresh_maxammo() {
 		memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE*4);
 	}
 	// Queue DMA transfer for max ammo
-	DMA_queueDma(DMA_VRAM, (u32)tileData[4], 
-			(TILE_HUDINDEX+17)*TILE_SIZE, 4*(TSIZE/2), 4*TSIZE);
+	for(u8 i = 0; i < 4; i++)
+		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+17+i*4)*TILE_SIZE, 16, 2);
 }
