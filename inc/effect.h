@@ -11,7 +11,7 @@
 #define MAX_SMOKE 8
 
 // Only send tiles for 1 damage string per frame
-bool dqueued;
+u8 dqueued;
 
 // Initialize default (0, NULL) values to avoid weird glitches
 void effects_init();
@@ -29,6 +29,6 @@ void effect_create_damage(s16 num, s16 x, s16 y);
 // Creates a single puff of smoke
 void effect_create_smoke(s16 x, s16 y);
 
-void effect_set_zzz(bool enabled, s16 x, s16 y);
+void effect_set_zzz(u8 enabled, s16 x, s16 y);
 
 #endif /* INC_EFFECT_H_ */

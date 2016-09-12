@@ -21,29 +21,29 @@
 // Supports 0-4095, official game uses 0-4000
 #define FLAGS_LEN 128
 
-bool debuggingEnabled = false;
+u8 debuggingEnabled = FALSE;
 u8 sram_state = SRAM_UNCHECKED;
 struct { u8 hour, minute, second, frame; } time;
 u32 flags[FLAGS_LEN];
 u32 skip_flags = 0;
 
-void system_set_flag(u16 flag, bool value) {
+void system_set_flag(u16 flag, u8 value) {
 	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
 	if(value) flags[flag/32] |= 1<<(flag%32);
 	else flags[flag/32] &= ~(1<<(flag%32));
 }
 
-bool system_get_flag(u16 flag) {
+u8 system_get_flag(u16 flag) {
 	return (flags[flag/32] & (1<<(flag%32))) > 0;
 }
 
-void system_set_skip_flag(u16 flag, bool value) {
+void system_set_skip_flag(u16 flag, u8 value) {
 	printf("Setting skip flag %hu %s", flag, value ? "ON" : "OFF");
 	if(value) skip_flags |= (1<<flag);
 	else skip_flags &= ~(1<<flag);
 }
 
-bool system_get_skip_flag(u16 flag) {
+u8 system_get_skip_flag(u16 flag) {
 	return (skip_flags & (1<<flag)) > 0;
 }
 
@@ -68,7 +68,7 @@ void system_new() {
 	puts("Starting a new game");
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
-	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, true);
+	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
 	player_init();
 	stage_load(13);
 }

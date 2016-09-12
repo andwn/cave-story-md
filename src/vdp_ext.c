@@ -64,12 +64,12 @@ void VDP_genWaterPalette() {
 void vblank_water() {
 	if(water_screenlevel < 3) {
 		// Use only water palette and disable handler when water is above screen
-		VDP_setHInterrupt(false);
+		VDP_setHInterrupt(FALSE);
 		VDP_setPaletteColors(0, waterPalette, 64);
 		waterPending = 0;
 	} else {
 		// Set HInt timer to the water position
-		VDP_setHInterrupt(true);
+		VDP_setHInterrupt(TRUE);
 		VDP_setPaletteColors(0, cachedPalette, 64);
 		waterPending = 1;
 		VDP_setHIntCounter(water_screenlevel - 1);

@@ -91,6 +91,6 @@ extern const BulletFunc bullet_update_array[WEAPON_COUNT];
 Bullet* bullet_colliding(Entity *e);
 void bullet_missile_explode(Bullet *b);
 // Used by Curly boss to know when to enable her shield
-bool bullet_missile_is_exploding();
+u8 bullet_missile_is_exploding();
 
 #endif

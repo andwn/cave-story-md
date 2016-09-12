@@ -404,12 +404,12 @@ void bullet_missile_explode(Bullet *b) {
 	}
 }
 
-bool bullet_missile_is_exploding() {
+u8 bullet_missile_is_exploding() {
 	for(u8 i = 4; i < 10; i++) {
 		if(playerBullet[i].ttl > 0 &&
 				playerBullet[i].x_speed == 0 && playerBullet[i].y_speed == 0) {
-			return true;
+			return TRUE;
 		}
 	}
-	return false;
+	return FALSE;
 }

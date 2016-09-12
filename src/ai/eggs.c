@@ -99,7 +99,7 @@ void ai_basu(Entity *e) {
 }
 
 void onspawn_basil(Entity *e) {
-	e->alwaysActive = true;
+	e->alwaysActive = TRUE;
 	e->x = player.x;
 	e->x_speed = -0x400;
 }

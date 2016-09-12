@@ -38,13 +38,13 @@ Entity player;
 // This is directly after player so player.sprite will refer to the same memory location
 VDPSprite playerSprite;
 
-bool playerShow;
+u8 playerShow;
 u8 playerIFrames;
 u8 playerMoveMode;
 // Max health - current health is player.health (Entity)
 u16 playerMaxHealth;
-// When this is true, quote can not be controlled by player input
-bool controlsLocked;
+// When this is TRUE, quote can not be controlled by player input
+u8 controlsLocked;
 // What is currently equipped (see the flags at the top of this file)
 u16 playerEquipment;
 // What items the player has and will show up in the inventory screen
@@ -72,11 +72,11 @@ Bullet *bullet_colliding(Entity *e);
 
 Weapon *player_find_weapon(u8 id);
 
-// Returns true if the player is blinking or otherwise should not be damaged (cutscene)
-bool player_invincible();
+// Returns TRUE if the player is blinking or otherwise should not be damaged (cutscene)
+u8 player_invincible();
 // Inflict damage on the player, will start the animation, knockback, red numbers,
 // sound, iframes, and check for death
-bool player_inflict_damage(s16 damage);
+u8 player_inflict_damage(s16 damage);
 
 // Makes the player sprite visible/invisible
 void player_show();
@@ -91,7 +91,7 @@ void player_show_map_name(u8 ttl);
 // TSC Stuff
 void player_give_weapon(u8 id, u8 ammo); // <AM+
 void player_take_weapon(u8 id); // <AM-
-bool player_has_weapon(u8 id); // <AMJ
+u8 player_has_weapon(u8 id); // <AMJ
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo); // <TAM
 void player_refill_ammo(); // <AE+
 void player_take_allweapons(); // <ZAM
@@ -101,7 +101,7 @@ void player_maxhealth_increase(u8 health); // <ML+
 
 void player_give_item(u8 id); // <IT+
 void player_take_item(u8 id); // <IT-
-bool player_has_item(u8 id); // <ITJ
+u8 player_has_item(u8 id); // <ITJ
 
 void player_equip(u16 id); // <EQ+
 void player_unequip(u16 id); // <EQ-

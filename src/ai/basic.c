@@ -35,7 +35,7 @@ void onspawn_blackboard(Entity *e) {
 }
 
 void onspawn_persistent(Entity *e) {
-	e->alwaysActive = true;
+	e->alwaysActive = TRUE;
 }
 
 // Spikes use a second frame for 90 degree rotation
@@ -44,7 +44,7 @@ void onspawn_spike(Entity *e) {
 	if(stageID == 0x2D) {
 		// Disable sprite in Labyrinth M
 		// The map has a brown version overlapping us so it's pointless
-		e->hidden = true;
+		e->hidden = TRUE;
 		return;
 	}
 	// Shrink hitbox slightly -- test this in First Cave
@@ -79,16 +79,16 @@ void ai_trigger(Entity *e) {
 	if(tscState) return;
 	// Hack to skip Monster X
 	if(stageID == 0x27) return;
-	bool activate = false;
+	u8 activate = FALSE;
 	if(e->eflags&NPC_OPTION2) { // Vertical
 		if(player.x - pixel_to_sub(player.hit_box.left) < e->x + pixel_to_sub(e->hit_box.right) &&
 			player.x + pixel_to_sub(player.hit_box.right) > e->x - pixel_to_sub(e->hit_box.left)) {
-			activate = true;
+			activate = TRUE;
 		}
 	} else { // Horizontal (Egg Corridor eggs)
 		e->hit_box.left = 32;
 		e->hit_box.right = 32;
-		if(entity_overlapping(&player, e) && player.y_speed < 0) activate = true;
+		if(entity_overlapping(&player, e) && player.y_speed < 0) activate = TRUE;
 	}
 	if(activate) tsc_call_event(e->event);
 }
@@ -121,7 +121,7 @@ void ai_teleIn(Entity *e) {
 			if(++e->timer >= 5*14) {
 				e->timer = 0;
 				e->state++;
-				e->grounded = false;
+				e->grounded = FALSE;
 				e->frame = 0;
 			}
 		}
@@ -167,7 +167,7 @@ void ai_teleOut(Entity *e) {
 			if(++e->timer >= 5*14) {
 				e->state++;
 				e->timer = 0;
-				e->hidden = true;
+				e->hidden = TRUE;
 				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 			}
 		}
@@ -176,7 +176,7 @@ void ai_teleOut(Entity *e) {
 }
 
 void onspawn_teleLight(Entity *e) {
-	e->hidden = true;
+	e->hidden = TRUE;
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
 }

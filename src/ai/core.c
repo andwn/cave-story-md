@@ -36,14 +36,14 @@
 		 \
 	} \
 	if(!e->mouth_open) { \
-		e->mouth_open = true; \
+		e->mouth_open = TRUE;                                                                      \
 	} \
 })
 
 // makes the core close his mouth
 #define CLOSE_MOUTH ({ \
 	if(e->mouth_open) { \
-		e->mouth_open = false; \
+		e->mouth_open = FALSE;                                                                     \
 	} \
 })
 
@@ -128,7 +128,7 @@ void onspawn_core(Entity *e) {
 #define mouth_open	grounded
 
 void ai_core(Entity *e) {
-	bool do_thrust = false;
+	u8 do_thrust = FALSE;
 
 	switch(e->state) {
 		case CORE_SLEEP: break;			// core is asleep
@@ -157,7 +157,7 @@ void ai_core(Entity *e) {
 					e->state = CORE_OPEN;
 				}
 				
-				do_thrust = true;
+				do_thrust = TRUE;
 			}
 		}
 		break;
@@ -200,7 +200,7 @@ void ai_core(Entity *e) {
 			if (e->timer > TIME(400) || (e->savedhp - e->health) >= 200) {
 				e->state = CORE_CLOSED;
 				CLOSE_MOUTH;
-				do_thrust = true;
+				do_thrust = TRUE;
 			}
 		}
 		break;
@@ -232,7 +232,7 @@ void ai_core(Entity *e) {
 			if (e->timer > TIME(400)) {
 				e->state = CORE_CLOSED;
 				CLOSE_MOUTH;
-				do_thrust = true;
+				do_thrust = TRUE;
 			}
 		}
 		break;
@@ -295,8 +295,8 @@ void ai_core(Entity *e) {
 			//pieces[CBACK]->clipy2 = e->timer;
 			
 			if (--e->timer == 0) {
-				//pieces[CFRONT]->invisible = true;
-				//pieces[CBACK]->invisible = true;
+				//pieces[CFRONT]->invisible = TRUE;
+				//pieces[CBACK]->invisible = TRUE;
 				
 				// restore status bars
 				//game.stageboss.object = NULL;

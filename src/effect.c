@@ -28,7 +28,7 @@ void effects_init() {
 		memcpy(stiles[i], SPR_TILES(&SPR_Smoke, 0, i), 128);
 	}
 	// Transfer to VRAM
-	VDP_loadTileData(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE, true);
+	VDP_loadTileData(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE, TRUE);
 }
 
 void effects_clear() {
@@ -69,7 +69,7 @@ void effect_create_damage(s16 num, s16 x, s16 y) {
 		if(effDamage[i].ttl) continue;
 		// Negative numbers are red and show '-' (Damage)
 		// Positive are white and show '+' (Weapon energy)
-		bool negative = (num < 0);
+		u8 negative = (num < 0);
 		num = abs(num);
 		u8 digitCount = 0; // Number of digit tiles: 1, 2, or 3 after loop
 		// Create right to left, otherwise digits show up backwards
@@ -90,7 +90,7 @@ void effect_create_damage(s16 num, s16 x, s16 y) {
 			.attribut = TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + i*4)
 		};
 		TILES_QUEUE(dtiles[3-digitCount], TILE_NUMBERINDEX + i*4, digitCount+1);
-		dqueued = true;
+		dqueued = TRUE;
 		break;
 	}
 }

@@ -118,10 +118,6 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Get tileset from SpriteDefinition
 #define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
 
-// Booleans
-typedef unsigned char bool;
-enum {false, true};
-
 // Bounding box used for collision and relative area to display sprites
 typedef struct {
 	u8 left;

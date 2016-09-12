@@ -29,7 +29,7 @@ void onspawn_block(Entity *e) {
 	e->eflags |= NPC_SPECIALSOLID;
 	e->nflags &= ~NPC_SOLID;
 	e->eflags |= NPC_IGNORE44;
-	e->enableSlopes = false;
+	e->enableSlopes = FALSE;
 	e->attack = 0;
 	e->state = (e->eflags & NPC_OPTION2) ? 20 : 10;
 }
@@ -129,7 +129,7 @@ void ai_blockv(Entity *e) {
 }
 
 void ai_boulder(Entity *e) {
-	//e->inback = true;
+	//e->inback = TRUE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -298,7 +298,7 @@ void ai_gaudi(Entity *e) {
 			if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
 				(e->x_speed > 0 && collide_stage_rightwall(e))) {
 				e->y_speed = SPEED(-0x5ff);
-				e->grounded = false;
+				e->grounded = FALSE;
 				e->state = 20;
 				e->timer = 0;
 				
@@ -475,12 +475,12 @@ void ai_gaudiArmored(Entity *e) {
 				if (++e->timer2 < 3) {	// hopping back and forth
 					e->state = 20;
 					e->y_speed = SPEED(-0x200);
-					e->grounded = false;
+					e->grounded = FALSE;
 					e->x_speed = (e->x < e->x_mark) ? SPEED(0x200) : SPEED(-0x200);
 				} else {	// big jump and attack
 					e->state = 30;
 					e->y_speed = SPEED(-0x600);
-					e->grounded = false;
+					e->grounded = FALSE;
 					e->x_speed = (e->x < e->x_mark) ? SPEED(0x80) : SPEED(-0x80);
 					
 					e->timer2 = 0;
@@ -555,22 +555,22 @@ void ai_gaudiArmoredShot(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			bool bounced = false;
+			u8 bounced = FALSE;
 			if (e->x_speed <= 0 && collide_stage_leftwall(e)) { 
 				e->x_speed = SPEED(0x200);
-				bounced = true; 
+				bounced = TRUE; 
 			}
 			if (e->x_speed >= 0 && collide_stage_rightwall(e)) { 
 				e->x_speed = SPEED(-0x200);
-				bounced = true; 
+				bounced = TRUE; 
 			}
 			if (e->y_speed >= 0 && collide_stage_floor(e)) { 
 				e->y_speed = SPEED(-0x200);
-				bounced = true; 
+				bounced = TRUE; 
 			}
 			if (e->y_speed <= 0 && collide_stage_ceiling(e)) { 
 				e->y_speed = SPEED(0x200);
-				bounced = true; 
+				bounced = TRUE; 
 			}
 			
 			if (bounced) {
@@ -611,7 +611,7 @@ void ai_pooh_black(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 
 			e->frame = FRAME_FLYING;;
 			FACE_PLAYER(e);
@@ -661,7 +661,7 @@ void ai_pooh_black(Entity *e) {
 			// spawn bubbles when hit
 			if (e->damage_time && (e->damage_time % TIME(5)) == 1) {
 				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
-				bubble->alwaysActive = true;
+				bubble->alwaysActive = TRUE;
 				bubble->x = e->x - 0x1800 + (random() % 0x3000);
 				bubble->y = e->y - 0x1800 + (random() % 0x3000);
 				// Don't wrap the whole thing in 1 SPEED(), gcc can't optimize that
@@ -760,11 +760,11 @@ void ai_pooh_black_dying(Entity *e) {
 				e->state = 2;
 				e->timer2++;
 				if ((e->timer2 % 4) == 2) {
-					e->hidden = false;
+					e->hidden = FALSE;
 					////SPR_SAFEVISIBILITY(e->sprite, 1);
 					sound_play(SND_BUBBLE, 5);
 				} else if((e->timer2 % 4) == 0) {
-					e->hidden = true;
+					e->hidden = TRUE;
 					////SPR_SAFEVISIBILITY(e->sprite, 0);
 				}
 				if(e->timer2 > 60) {
@@ -778,7 +778,7 @@ void ai_pooh_black_dying(Entity *e) {
 	
 	if ((e->timer % 4) == 1) {
 		Entity *bubble = entity_create(0, 0, OBJ_POOH_BLACK_BUBBLE, 0);
-		bubble->alwaysActive = true;
+		bubble->alwaysActive = TRUE;
 		bubble->x = e->x - 0x1800 + (random() % 0x3000);
 		bubble->y = e->y - 0x1800 + (random() % 0x3000);
 		bubble->x_speed = -0x200 + (random() % 0x400);
@@ -826,7 +826,7 @@ void ai_firewhirr(Entity *e) {
 			if (e->timer2 > TIME(120)) {
 				shot = entity_create(e->x, e->y, OBJ_FIREWHIRR_SHOT, 0);
 				shot->dir = e->dir;
-				shot->alwaysActive = true;
+				shot->alwaysActive = TRUE;
 				shot->x = e->x;
 				shot->y = e->y;
 				e->timer2 = random() % TIME(20);
@@ -1019,7 +1019,7 @@ void ai_buyobuyo_base(Entity *e) {
 }
 
 void ai_buyobuyo(Entity *e) {
-	bool deleteme = false;
+	u8 deleteme = FALSE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -1068,7 +1068,7 @@ void ai_buyobuyo(Entity *e) {
 			// move the point we are bobbling around
 			e->x_mark += e->dir ? SPEED(1 << 9) : SPEED(-(1 << 9));
 			
-			if (++e->timer > TIME(300)) deleteme = true;
+			if (++e->timer > TIME(300)) deleteme = TRUE;
 		}
 		break;
 	}
@@ -1076,7 +1076,7 @@ void ai_buyobuyo(Entity *e) {
 		(e->x_speed > 0 && collide_stage_rightwall(e)) || \
 		(e->y_speed < 0 && collide_stage_ceiling(e)) || \
 		(e->y_speed > 0 && collide_stage_floor(e))) {
-		deleteme = true;
+		deleteme = TRUE;
 	}
 	if (deleteme) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_STARPOOF);

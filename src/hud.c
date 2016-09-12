@@ -7,47 +7,32 @@
 #include "vdp_ext.h"
 #include "sprite.h"
 
-#define HEALTH_DECREASE_TIME 5
-
 #define TSIZE 8
-
-// Sprite tiles are stored top to bottom THEN left to right
 #define SPR_TILE(x, y) (((x)*4)+(y))
+
+VDPSprite sprHUD[2];
+u32 tileData[8][8];
 
 // Values used to draw parts of the HUD
 // If the originator's value changes that part of the HUD will be updated
-u8 hudMaxHealth, hudHealth, hudHealthTime;
+u8 hudMaxHealth, hudHealth;
 u8 hudWeapon, hudMaxAmmo, hudAmmo;
 u8 hudLevel, hudMaxEnergy, hudEnergy;
 
-// HUD Sprite
-VDPSprite sprHUD[2];
+u8 showing = FALSE;
 
-// DMA tile data
-u32 tileData[32][TSIZE];
+void hud_refresh_health();
+void hud_refresh_energy();
+void hud_refresh_weapon();
+void hud_refresh_ammo();
+void hud_refresh_maxammo();
 
-// Keeps track of whether the HUD is loaded or not to avoid double loads/frees
-bool showing = false;
-
-void hud_redraw_health();
-void hud_decrease_health();
-void hud_redraw_weapon();
-void hud_prepare_dma();
-
+// Expected to happen while the screen is off
 void hud_create() {
-	// Health
-	hudMaxHealth = playerMaxHealth;
-	hudHealth = player.health;
-	hudHealthTime = HEALTH_DECREASE_TIME;
-	// Weapon
-	hudWeapon = playerWeapon[currentWeapon].type;
-	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
-	hudEnergy = playerWeapon[currentWeapon].energy;
-	// Ammo
-	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
-	hudAmmo = playerWeapon[currentWeapon].ammo;
-	// Create HUD sprite
+	// Invalidate all values, forces a redraw
+	hudMaxHealth = hudHealth = hudWeapon = hudLevel = 
+			hudMaxEnergy = hudEnergy = hudMaxAmmo = hudAmmo = 255;
+	// Create the sprites
 	sprHUD[0] = (VDPSprite) {
 		.x = 16 + 128,
 		.y = 8 + 128,
@@ -60,127 +45,132 @@ void hud_create() {
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
-	memcpy(tileData[0], SPR_TILES(&SPR_Hud2, 0, 0), TILE_SIZE * 32);
-	// Prepare DMA -- populate tileData
-	hud_redraw_weapon();
-	hud_prepare_dma();
 }
 
 void hud_show() {
-	showing = true;
+	showing = TRUE;
 }
 
 void hud_hide() {
-	showing = false;
-}
-
-void hud_redraw_health() {
-	hudMaxHealth = playerMaxHealth;
-	hudHealth = player.health;
-	hudRedrawPending = true;
-}
-
-void hud_decrease_health() {
-	hudHealthTime--;
-	if(hudHealthTime == 0) {
-		hudHealth--;
-		hudHealthTime = HEALTH_DECREASE_TIME;
-	}
-	hudRedrawPending = true;
-}
-
-void hud_redraw_weapon() {
-	hudWeapon = playerWeapon[currentWeapon].type;
-	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
-	hudEnergy = playerWeapon[currentWeapon].energy;
-	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
-	hudAmmo = playerWeapon[currentWeapon].ammo;
-	memcpy(tileData[SPR_TILE(1, 0)], 
-		SPR_TILES(&SPR_ArmsImage, 0, hudWeapon), sizeof(u32) * TSIZE * 2);
-	memcpy(tileData[SPR_TILE(2, 0)], 
-		&SPR_TILES(&SPR_ArmsImage, 0, hudWeapon)[TSIZE * 2], sizeof(u32) * TSIZE * 2);
-	hudRedrawPending = true;
+	showing = FALSE;
 }
 
 void hud_update() {
 	if(!showing) return;
 	sprite_addq(sprHUD, 2);
+	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent
+	if(hudMaxHealth != playerMaxHealth || hudHealth != player.health) {
+		hud_refresh_health();
+	} else if(hudWeapon != playerWeapon[currentWeapon].type) {
+		hud_refresh_weapon();
+	} else if(hudLevel != playerWeapon[currentWeapon].level ||
+			hudEnergy != playerWeapon[currentWeapon].energy) {
+		hud_refresh_energy();
+	} else if(hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
+		// Max ammo changed refresh both
+		hud_refresh_maxammo();
+		hud_refresh_ammo();
+	} else if(hudAmmo != playerWeapon[currentWeapon].ammo ) {
+		hud_refresh_ammo();
+	}
+}
+
+void hud_refresh_health() {
 	// Redraw health if it changed
-	if(hudMaxHealth < playerMaxHealth) {
-		hud_redraw_health();
-	} else if(hudHealth < player.health) {
-		hud_redraw_health();
-	} else if(hudHealth > player.health) {
-		hud_decrease_health();
-	}
-	// Same with weapon and ammo
-	if(hudWeapon != playerWeapon[currentWeapon].type ||
-			hudLevel != playerWeapon[currentWeapon].level) {
-		hud_redraw_weapon();
-	} else if(hudEnergy != playerWeapon[currentWeapon].energy) {
-		hudEnergy = playerWeapon[currentWeapon].energy;
-		hudRedrawPending = true;
-	} else if(hudAmmo != playerWeapon[currentWeapon].ammo ||
-			hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
-		hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
-		hudAmmo = playerWeapon[currentWeapon].ammo;
-		hudRedrawPending = true;
-	}
-	if(hudRedrawPending) hud_prepare_dma();
-}
-
-void hud_update_vblank() {
-	VDP_loadTileData(tileData[0], TILE_HUDINDEX, 32, true);
-	hudRedrawPending = false;
-}
-
-void hud_prepare_dma() {
-	// The bars are 40 pixels wide, 5 tiles of 8 pixels
-	s16 fillHP, fillXP;
-	fillHP = 40 * hudHealth / hudMaxHealth;
-	if(hudMaxEnergy > 0) {
-		fillXP = 40 * hudEnergy / hudMaxEnergy;
-	} else {
-		fillXP = 0;
-	}
+	hudMaxHealth = playerMaxHealth;
+	hudHealth = player.health;
+	s16 fillHP = 40 * hudHealth / hudMaxHealth;
 	for(u8 i = 0; i < 5; i++) {
 		// The TS_HudBar tileset has two rows of 8 tiles, where the section of the
 		// bar is empty at tile 0 and full at tile 7
 		s16 addrHP = min(fillHP*TSIZE, 7*TSIZE);
-		s16 addrXP = min(fillXP*TSIZE, 7*TSIZE);
 		if(addrHP < 0) addrHP = 0;
-		if(addrXP < 0) addrXP = 0;
-		// Copy health/expbar tiles
-		memcpy(tileData[SPR_TILE(i+3, 3)], &TS_HudBar.tiles[addrHP], TILE_SIZE);
-		memcpy(tileData[SPR_TILE(i+3, 2)], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
+		// Fill in the bar
+		memcpy(tileData[i+3], &TS_HudBar.tiles[addrHP], TILE_SIZE);
 		fillHP -= 8;
+	}
+	// Heart icon and two digits displaying current health
+	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
+	memcpy(tileData[1], &TS_Numbers.tiles[(hudHealth / 10)*TSIZE], TILE_SIZE);
+	memcpy(tileData[2], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
+	// Queue DMA transfer for health display
+	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
+			(TILE_HUDINDEX+3)*TILE_SIZE, 8*(TSIZE/2), 4*TSIZE);
+}
+
+void hud_refresh_energy() {
+	// Energy or level changed
+	hudLevel = playerWeapon[currentWeapon].level;
+	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
+	hudEnergy = playerWeapon[currentWeapon].energy;
+	// Same deal as HP with the bar
+	s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
+	for(u8 i = 0; i < 5; i++) {
+		s16 addrXP = min(fillXP*TSIZE, 7*TSIZE);
+		if(addrXP < 0) addrXP = 0;
+		memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
 		fillXP -= 8;
 	}
-	// Digit displaying current weapon's level
-	memcpy(tileData[SPR_TILE(2, 2)], &TS_Numbers.tiles[hudLevel*TSIZE], TILE_SIZE);
-	// Two digits displaying current health
-	memcpy(tileData[SPR_TILE(1, 3)], &TS_Numbers.tiles[(hudHealth / 10)*TSIZE], TILE_SIZE);
-	memcpy(tileData[SPR_TILE(2, 3)], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
-	if(hudMaxAmmo > 0) { // Max and current ammo
+	// "Lv." and 1 digit for the level
+	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[2*TSIZE], TILE_SIZE);
+	memcpy(tileData[1], &SPR_TILES(&SPR_Hud2, 0, 0)[6*TSIZE], TILE_SIZE);
+	memcpy(tileData[2], &TS_Numbers.tiles[hudLevel*TSIZE], TILE_SIZE);
+	// Queue DMA transfer for level/energy display
+	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
+			(TILE_HUDINDEX+2)*TILE_SIZE, 8*(TSIZE/2), 4*TSIZE);
+}
+
+void hud_refresh_weapon() {
+	// Weapon switched
+	hudWeapon = playerWeapon[currentWeapon].type;
+	memcpy(tileData[0], SPR_TILES(&SPR_ArmsImage, 0, hudWeapon), TILE_SIZE*2);
+	memcpy(tileData[2], &SPR_TILES(&SPR_ArmsImage, 0, hudWeapon)[TSIZE*2], TILE_SIZE*2);
+	// Queue DMA transfer for level/energy display
+	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
+			(TILE_HUDINDEX)*TILE_SIZE, 2*(TSIZE/2), TILE_SIZE);
+	// Queue DMA transfer for level/energy display
+	DMA_queueDma(DMA_VRAM, (u32)tileData[2], 
+			(TILE_HUDINDEX+1)*TILE_SIZE, 2*(TSIZE/2), TILE_SIZE);
+}
+
+void hud_refresh_ammo() {
+	// Top half of ammo display
+	hudAmmo = playerWeapon[currentWeapon].ammo;
+	if(hudMaxAmmo > 0) {
+		memcpy(tileData[0], TILE_BLANK, TILE_SIZE);
 		if(hudAmmo >= 100) {
-			memcpy(tileData[SPR_TILE(5, 0)], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
+			memcpy(tileData[1], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {
-			memcpy(tileData[SPR_TILE(5, 0)], TILE_BLANK, TILE_SIZE);
+			memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
 		}
-		memcpy(tileData[SPR_TILE(6, 0)], &TS_Numbers.tiles[((hudAmmo / 10) % 10)*TSIZE], TILE_SIZE);
-		memcpy(tileData[SPR_TILE(7, 0)], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], TILE_SIZE);
-		if(hudMaxAmmo == 100) {
-			memcpy(tileData[SPR_TILE(5, 1)], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
-		} else {
-			memcpy(tileData[SPR_TILE(5, 1)], TILE_BLANK, TILE_SIZE);
-		}
-		memcpy(tileData[SPR_TILE(6, 1)], &TS_Numbers.tiles[((hudMaxAmmo / 10) % 10)*TSIZE], TILE_SIZE);
-		memcpy(tileData[SPR_TILE(7, 1)], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], TILE_SIZE);
-	} else {
-		memcpy(tileData[SPR_TILE(5, 0)], TILE_BLANK, TILE_SIZE);
-		memcpy(tileData[SPR_TILE(5, 1)], TILE_BLANK, TILE_SIZE);
-		memcpy(tileData[SPR_TILE(6, 0)], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE * 2);
-		memcpy(tileData[SPR_TILE(7, 0)], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(7, 0)*TSIZE], TILE_SIZE * 2);
+		memcpy(tileData[2], &TS_Numbers.tiles[((hudAmmo / 10) % 10)*TSIZE], TILE_SIZE);
+		memcpy(tileData[3], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], TILE_SIZE);
+	} else { // Weapon doesn't use ammo
+		memcpy(tileData[0], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[2], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
+	// Queue DMA transfer for ammo
+	DMA_queueDma(DMA_VRAM, (u32)tileData[0], 
+			(TILE_HUDINDEX+16)*TILE_SIZE, 4*(TSIZE/2), 4*TSIZE);
+}
+
+void hud_refresh_maxammo() {
+	// Bottom half of ammo display
+	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
+	if(hudMaxAmmo > 0) {
+		memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 0)*TSIZE], TILE_SIZE*2);
+		if(hudMaxAmmo >= 100) {
+			memcpy(tileData[5], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
+		} else {
+			memcpy(tileData[5], TILE_BLANK, TILE_SIZE);
+		}
+		memcpy(tileData[6], &TS_Numbers.tiles[((hudMaxAmmo / 10) % 10)*TSIZE], TILE_SIZE);
+		memcpy(tileData[7], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], TILE_SIZE);
+	} else { // Weapon doesn't use ammo
+		memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE*4);
+	}
+	// Queue DMA transfer for max ammo
+	DMA_queueDma(DMA_VRAM, (u32)tileData[4], 
+			(TILE_HUDINDEX+17)*TILE_SIZE, 4*(TSIZE/2), 4*TSIZE);
 }

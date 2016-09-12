@@ -68,8 +68,8 @@ u16 bbox_damage;
 bounding_box bbox[2];
 
 void place_bboxes(Entity *e);
-void set_jump_sprite(Entity *e, bool enable);
-bool player_bbox_collide(Entity *e, u8 index);
+void set_jump_sprite(Entity *e, u8 enable);
+u8 player_bbox_collide(Entity *e, u8 index);
 Bullet* bullets_bbox_collide(Entity *e, u8 index);
 void deflect_bullet(Bullet *b);
 void hurt_by_bullet(Entity *e, Bullet *b);
@@ -83,7 +83,7 @@ void onspawn_balfrog(Entity *e) {
 	e->attack = 0;	// damage comes from our bbox puppets, not our own bbox
 	e->experience = 1;
 	e->dir = 1;
-	e->enableSlopes = false;
+	e->enableSlopes = FALSE;
 	e->eflags |= NPC_IGNORE44;
 	e->eflags |= NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
@@ -173,9 +173,9 @@ void ai_balfrog(Entity *e) {
 		case STATE_JUMPING:
 		{
 			sound_play(SND_FUNNY_EXPLODE, 8);
-			set_jump_sprite(e, true);
+			set_jump_sprite(e, TRUE);
 			e->y_speed = -FROG_JUMP_SPEED;
-			e->grounded = false;
+			e->grounded = FALSE;
 			e->timer = 0;
 			e->state++;
 		}
@@ -191,9 +191,9 @@ void ai_balfrog(Entity *e) {
 			e->x_speed = e->dir ? FROG_MOVE_SPEED : -FROG_MOVE_SPEED;
 			// landed?
 			if(++e->timer > 3 && collide_stage_floor(e)) {
-				e->grounded = true;
+				e->grounded = TRUE;
 				camera_shake(30);
-				set_jump_sprite(e, false);
+				set_jump_sprite(e, FALSE);
 				// passed player? turn around and fire!
 				if((e->dir && e->x >= player.x) ||
 					(!e->dir && e->x <= player.x)) {
@@ -229,16 +229,16 @@ void ai_balfrog(Entity *e) {
 			}
 			if(e->timer > 74) {
 				e->state++;
-				set_jump_sprite(e, true);
+				set_jump_sprite(e, TRUE);
 				e->y_speed = -FROG_BIGJUMP_SPEED;
-				e->grounded = false;
+				e->grounded = FALSE;
 			}
 		}
 		break;
 		case STATE_BIG_JUMP+2:		// in air, waiting to hit ground
 		{
 			if(e->grounded) {
-				set_jump_sprite(e, false);
+				set_jump_sprite(e, FALSE);
 				camera_shake(60);
 				spawn_frogs(OBJ_MINIFROG, 4);
 				spawn_frogs(OBJ_FROG, 2);
@@ -390,7 +390,7 @@ void ai_balfrog(Entity *e) {
 					//SPR_SAFEANIM(balrog->sprite, 2);
 					if(++e->timer > 30) {
 						//SPR_SAFEANIM(balrog->sprite, 0);
-						balrog->grounded = true;
+						balrog->grounded = TRUE;
 						e->state++;
 					}
 				}
@@ -451,7 +451,7 @@ void ai_balfrog(Entity *e) {
 void ondeath_balfrog(Entity *e) {
 	//if(e->state == STATE_DEFEATED) {
 		if(bbox_mode == BM_JUMPING) {
-			set_jump_sprite(e, false);
+			set_jump_sprite(e, FALSE);
 		}
 		bbox_mode = BM_DISABLED;
 		e->state = STATE_DEATH;
@@ -497,7 +497,7 @@ void spawn_frogs(u16 objtype, u8 count) {
 }
 
 // switches on and off the jumping frame/sprite
-void set_jump_sprite(Entity *e, bool enable) {
+void set_jump_sprite(Entity *e, u8 enable) {
 	if(enable) {
 		//SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 		e->y -= JUMP_SPRITE_ADJ;
@@ -511,7 +511,7 @@ void set_jump_sprite(Entity *e, bool enable) {
 	}
 }
 
-bool player_bbox_collide(Entity *e, u8 index) {
+u8 player_bbox_collide(Entity *e, u8 index) {
 	s16 ax1 = sub_to_pixel(player.x) - (player.dir ? player.hit_box.right : player.hit_box.left),
 		ax2 = sub_to_pixel(player.x) + (player.dir ? player.hit_box.left : player.hit_box.right),
 		ay1 = sub_to_pixel(player.y) - player.hit_box.top,

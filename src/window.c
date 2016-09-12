@@ -35,7 +35,7 @@ const u8 ITEM_PAL[40] = {
 	0, 0, 0, 1, 0, 1, 1, 1,
 };
 
-bool windowOpen = false;
+u8 windowOpen = FALSE;
 u16 showingFace = 0;
 
 u8 textMode = TM_NORMAL;
@@ -44,8 +44,8 @@ u8 windowText[3][35];
 u8 textRow, textColumn;
 u8 windowTextTick = 0;
 
-bool promptShowing = false;
-bool promptAnswer = true;
+u8 promptShowing = FALSE;
+u8 promptAnswer = TRUE;
 Sprite *promptSpr = NULL, *handSpr = NULL;
 
 u16 showingItem = 0;
@@ -79,10 +79,10 @@ void window_open(u8 mode) {
 		}
 		VDP_setWindowPos(0, 244);
 	} else showingFace = 0;
-	windowOpen = true;
+	windowOpen = TRUE;
 }
 
-bool window_is_open() {
+u8 window_is_open() {
 	return windowOpen;
 }
 
@@ -113,10 +113,10 @@ void window_close() {
 	showingItem = 0;
 	//SPR_SAFERELEASE(itemWinSpr);
 	//SPR_SAFERELEASE(itemSpr);
-	windowOpen = false;
+	windowOpen = FALSE;
 }
 
-void window_set_face(u16 face, bool open) {
+void window_set_face(u16 face, u8 open) {
 	if(paused) return;
 	if(open && !windowOpen) window_open(0);
 	showingFace = face;
@@ -184,14 +184,14 @@ void window_set_textmode(u8 mode) {
 	textMode = mode;
 }
 
-bool window_tick() {
-	if(textMode > 0) return true;
+u8 window_tick() {
+	if(textMode > 0) return TRUE;
 	windowTextTick++;
 	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&BUTTON_C))) {
 		windowTextTick = 0;
-		return true;
+		return TRUE;
 	} else {
-		return false;
+		return FALSE;
 	}
 }
 
@@ -205,7 +205,7 @@ void window_prompt_open() {
 	//promptSpr = SPR_addSprite(&SPR_Prompt, 
 	//	tile_to_pixel(PROMPT_X), tile_to_pixel(PROMPT_Y), 
 	//	TILE_ATTR(PAL0, 1, 0, 0));
-	promptAnswer = true; // Yes is default
+	promptAnswer = TRUE; // Yes is default
 }
 
 void window_prompt_close() {
@@ -214,27 +214,27 @@ void window_prompt_close() {
 	window_clear();
 }
 
-bool window_prompt_answer() {
+u8 window_prompt_answer() {
 	return promptAnswer;
 }
 
-bool window_prompt_update() {
+u8 window_prompt_update() {
 	if(joy_pressed(BUTTON_C)) {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
-		return true;
+		return TRUE;
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
 		//SPR_setPosition(handSpr, 
 		//	tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
-	return false;
+	return FALSE;
 }
 
 void window_draw_face() {
 	SYS_disableInts();
-	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, true);
+	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_WINDOW, 
 		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 		TEXT_X1, TEXT_Y1, 6, 6);

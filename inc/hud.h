@@ -4,7 +4,7 @@
 #include "common.h"
 
 // When this gets flipped on the HUD will be redrawn next vblank
-bool hudRedrawPending;
+u8 hudRedrawPending;
 
 // Loads the initial HUD sprite, only stage_load() should call this
 void hud_create();

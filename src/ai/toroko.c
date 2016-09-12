@@ -34,7 +34,7 @@ void ai_torokoAtk(Entity *e) {
 				e->state = 10; // Change animation to falling on ground
 				e->y_speed = pixel_to_sub(-1);
 				e->x_speed /= 2;
-				e->grounded = false;
+				e->grounded = FALSE;
 				e->frame = 3;
 				b->ttl = 0;
 				//SPR_SAFERELEASE(b->sprite);
@@ -85,11 +85,11 @@ void ondeath_toroko(Entity *e) {
 		e->frame = 1;
 		e->y_speed = -0x150;
 		e->x_speed = -0x150 + 0x300 * e->dir;
-		e->grounded = false;
+		e->grounded = FALSE;
 		break;
 	case 8:
 		e->y_speed = 0x150;
-		e->grounded = false;
+		e->grounded = FALSE;
 		break;
 	default:
 		break;
@@ -134,7 +134,7 @@ void ai_torokoBoss(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->grounded = true;
+			e->grounded = TRUE;
 			e->state = 1;
 			e->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
 		}
@@ -197,7 +197,7 @@ void ai_torokoBoss(Entity *e) {
 				e->state = 22;
 				e->timer = 0;
 				e->frame = 2;
-				e->grounded = false;
+				e->grounded = FALSE;
 				e->y_speed = SPEED(-0x5ff);
 				MOVE_X(SPEED(0x200));
 			}
@@ -408,7 +408,7 @@ void ai_torokoBlock(Entity *e) {
 		entity_default(e, OBJ_TOROKO_FLOWER, 0);
 		//entity_sprite_create(e);
 		e->state = 20;
-		e->grounded = false;
+		e->grounded = FALSE;
 		e->x_speed = 0;
 		e->eflags &= ~NPC_INVINCIBLE;
 		e->eflags |= NPC_SHOOTABLE;
@@ -445,7 +445,7 @@ void ai_torokoFlower(Entity *e) {
 			if (++e->timer > TIME(30)) {
 				e->state = 20;
 				e->y_speed = SPEED(-0x200);
-				e->grounded = false;
+				e->grounded = FALSE;
 				FACE_PLAYER(e);
 				MOVE_X(SPEED(0x200));
 			}

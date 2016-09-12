@@ -50,7 +50,7 @@
 		temp = obj->next;                                                                      \
 		if(obj->var == match) {                                                                \
 			LIST_REMOVE(list, obj);                                                            \
-			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, true);                \
+			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);                \
 			MEM_free(obj);                                                                     \
 		}                                                                                      \
 		obj = temp;                                                                            \
@@ -79,7 +79,7 @@ void entity_deactivate(Entity *e) {
 
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
-	//if(e->type == OBJ_DOOR) { // In back!
+	//if(e->type == OBJ_DOOR) { // In back
 	//	LIST_MOVE_TAIL(inactiveList, entityListTail, e);
 	//}
 	LIST_MOVE(inactiveList, entityList, e);
@@ -112,7 +112,7 @@ Entity *entity_destroy(Entity *e) {
 	entity_drop_powerup(e);
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
-	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, true);
+	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	Entity *next = e->next;
 	LIST_REMOVE(entityList, e);
 	// If we had tile allocation release it for future generations to use
@@ -219,11 +219,11 @@ void entities_update() {
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
 		if((e->eflags|e->nflags) & (NPC_SPECIALSOLID)) {
-			collision = entity_react_to_collision(&player, e, true);
+			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
 					player.y_speed = pixel_to_sub(-1);
-					player.grounded = false;
+					player.grounded = FALSE;
 				} else {
 					playerPlatform = e;
 				}
@@ -246,12 +246,12 @@ void entities_update() {
 			}
 		} // "Smushy" Solid Entities
 		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
-			collision = entity_react_to_collision(&player, e, true);
+			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				player.y += (collision.bottom - 1);
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
 					player.y_speed = pixel_to_sub(-1);
-					player.grounded = false;
+					player.grounded = FALSE;
 				} else {
 					playerPlatform = e;
 				}
@@ -355,7 +355,7 @@ void entity_update_collision(Entity *e) {
 	if(e->y_speed < 0) collide_stage_ceiling(e);
 }
 
-bool collide_stage_leftwall(Entity *e) {
+u8 collide_stage_leftwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
@@ -369,12 +369,12 @@ bool collide_stage_leftwall(Entity *e) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
 			block_to_pixel(block_x) + block_to_pixel(1) + e->hit_box.left);
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
-bool collide_stage_rightwall(Entity *e) {
+u8 collide_stage_rightwall(Entity *e) {
 	u16 block_x, block_y1, block_y2;
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
@@ -388,12 +388,12 @@ bool collide_stage_rightwall(Entity *e) {
 		e->x_speed = 0;
 		e->x_next = pixel_to_sub(
 				block_to_pixel(block_x) - e->hit_box.right);
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
-bool collide_stage_floor(Entity *e) {
+u8 collide_stage_floor(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
 	u8 pxa1, pxa2, pxa3;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
@@ -408,17 +408,17 @@ bool collide_stage_floor(Entity *e) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
-		return true;
+		return TRUE;
 	}
-	if(!e->enableSlopes) return false;
-	bool result = false;
+	if(!e->enableSlopes) return FALSE;
+	u8 result = FALSE;
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%2][pixel_x1%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= 0xF - heightmap[pxa2%2][pixel_x2%16]) {
@@ -426,7 +426,7 @@ bool collide_stage_floor(Entity *e) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
 				heightmap[pxa2%2][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	// Extra check in the center
 	if(!result && (pxa3 & 0x10)) {
@@ -434,16 +434,16 @@ bool collide_stage_floor(Entity *e) {
 			if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 			e->y_next = e->y;
 			e->y_speed = 0;
-			result = true;
+			result = TRUE;
 		}
 	}
 	return result;
 }
 
-bool collide_stage_slope_grounded(Entity *e) {
+u8 collide_stage_slope_grounded(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
 	u8 pxa1, pxa2, pxa3;
-	bool result = false;
+	u8 result = FALSE;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
 	pixel_x3 = sub_to_pixel(e->x_next);
@@ -456,16 +456,16 @@ bool collide_stage_slope_grounded(Entity *e) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
-	if(result) return true;
+	if(result) return TRUE;
 	// If we're already on a slope
 	pixel_y = sub_to_pixel(e->y_next) + e->hit_box.bottom + 1;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
@@ -476,28 +476,28 @@ bool collide_stage_slope_grounded(Entity *e) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
 			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
 				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	// Extra check in the center
 	if(!result && (pxa3 & 0x10)) {
 		if((pxa3 & 0xF) >= 4 && (pixel_y + 2) % 16 >= heightmap[pxa3%4][pixel_x3%16]) {
 			e->y_next = e->y;
 			e->y_speed = 0;
-			result = true;
+			result = TRUE;
 		}
 	}
 	return result;
 }
 
-bool collide_stage_floor_grounded(Entity *e) {
-	bool result = false;
+u8 collide_stage_floor_grounded(Entity *e) {
+	u8 result = FALSE;
 	// First see if we are still standing on a flat block
 	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
@@ -513,15 +513,15 @@ bool collide_stage_floor_grounded(Entity *e) {
 			e->y_next = pixel_to_sub(((sub_to_pixel(e->y_next) + e->hit_box.bottom)&~0xF) -
 				e->hit_box.bottom);
 		}
-		result = true;
+		result = TRUE;
 	}
 	if(e->enableSlopes && collide_stage_slope_grounded(e)) {
-		result = true;
+		result = TRUE;
 	}
 	return result;
 }
 
-bool collide_stage_ceiling(Entity *e) {
+u8 collide_stage_ceiling(Entity *e) {
 	u16 pixel_x1, pixel_x2, pixel_y;
 	u8 pxa1, pxa2;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
@@ -535,16 +535,16 @@ bool collide_stage_ceiling(Entity *e) {
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
 		e->jump_time = 0;
-		return true;
+		return TRUE;
 	}
-	bool result = false;
+	u8 result = FALSE;
 	if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
 			pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
 		if(e == &player && e->y_speed < -0xFF) sound_play(SND_BONK_HEAD, 2);
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
 				heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 			pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
@@ -552,12 +552,12 @@ bool collide_stage_ceiling(Entity *e) {
 		e->y_next = pixel_to_sub((pixel_y&~0xF) +
 				heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top);
 		e->y_speed = 0;
-		result = true;
+		result = TRUE;
 	}
 	return result;
 }
 
-bool entity_overlapping(Entity *a, Entity *b) {
+u8 entity_overlapping(Entity *a, Entity *b) {
 	s16 ax1 = sub_to_pixel(a->x) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y) - a->hit_box.top,
@@ -569,7 +569,7 @@ bool entity_overlapping(Entity *a, Entity *b) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY) {
+bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY) {
 	bounding_box result = { 0, 0, 0, 0 };
 	s16 ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x_next) + (a->dir ? a->hit_box.left : a->hit_box.right),
@@ -630,7 +630,7 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY) {
 				a->y_next += move2;
 			}
 			if(a->y_speed > 0) a->y_speed = 0;
-			a->grounded = true;
+			a->grounded = TRUE;
 		}
 	}
 	return result;
@@ -738,7 +738,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 		.x = x, .y = y,
 		.tiloc = NOTILOC, .sheet = NOSHEET,
 		.sprite_count = sprite_count,
-		.enableSlopes = true,
+		.enableSlopes = TRUE,
 	};
 	entity_default(e, type, flags);
 	if(sprite_count) {
@@ -749,7 +749,6 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 				e->framesize = f->numTile;
 				TILOC_ADD(e->tiloc, e->framesize);
 				if(e->tiloc != NOTILOC) {
-					printf("%hu", tiloc_index);
 					e->vramindex = tiloc_index + e->tiloc * 4;
 					e->sprite[0] = (VDPSprite) {
 						.size = f->size,
@@ -824,7 +823,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 			e->dir = direction;
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
-			e->grounded = false;
+			e->grounded = FALSE;
 			break;
 		}
 		e = e->next;
@@ -835,36 +834,28 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 			e->dir = direction;
 			e->x = block_to_sub(x) + pixel_to_sub(8);
 			e->y = block_to_sub(y) + pixel_to_sub(8);
-			e->grounded = false;
+			e->grounded = FALSE;
 			break;
 		}
 		e = e->next;
 	}
 }
 
-bool entity_exists(u16 type) {
+u8 entity_exists(u16 type) {
 	Entity *e = entityList;
 	while(e != NULL) {
-		if(e->type == type) return true;
+		if(e->type == type) return TRUE;
 		e = e->next;
 	}
-	return false;
+	return FALSE;
 }
 
-void entities_draw_fore() {
+void entities_draw() {
 	const Entity *e = entityList;
 	while(e) {
-		if(e->foreground && !e->hidden && entity_on_screen(e)) 
-				sprite_add(e->sprite[0]);
-		e = e->next;
-	}
-}
-
-void entities_draw_back() {
-	const Entity *e = entityList;
-	while(e) {
-		if(!e->hidden && !e->foreground && entity_on_screen(e))
-				sprite_add(e->sprite[0]);
+		if(!e->hidden) {
+			sprite_add(e->sprite[0]);
+		}
 		e = e->next;
 	}
 }

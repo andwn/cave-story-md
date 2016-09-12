@@ -152,7 +152,7 @@ void ai_toroko(Entity *e) {
 			e->state = 7;
 			e->frame = 1;;
 			e->y_speed = SPEED(-0x400);
-			e->grounded = false;
+			e->grounded = FALSE;
 		}
 		/* no break */
 		case 7:
@@ -169,7 +169,7 @@ void ai_toroko(Entity *e) {
 			e->timer = 0;
 			e->state = 9;
 			e->y_speed = SPEED(-0x200);
-			e->grounded = false;
+			e->grounded = FALSE;
 		}
 		/* no break */
 		case 9:
@@ -182,7 +182,7 @@ void ai_toroko(Entity *e) {
 			e->state = 11;
 			e->frame = 3;;
 			e->y_speed = SPEED(-0x400);
-			e->grounded = false;
+			e->grounded = FALSE;
 			sound_play(SND_ENEMY_SQUEAK, 5);
 			MOVE_X(SPEED(0x200));
 		}
@@ -215,7 +215,7 @@ void ai_toroko_teleport_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->grounded = false;
+			e->grounded = FALSE;
 			e->state = 1;
 			e->timer = 0;
 			e->nflags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
@@ -344,7 +344,7 @@ void ai_sue(Entity *e) {
 			} else {
 				puts("Couldn't find Igor");
 			}
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 		}
 		/* no break */
 		case 14:	// being carried--see aftermove routine
@@ -494,7 +494,7 @@ void ai_king(Entity *e) {
 			e->state = 7;
 			e->timer = 0;
 			e->y_speed = SPEED(-0x400);
-			e->grounded = false;
+			e->grounded = FALSE;
 		}
 		/* no break */
 		case 7:			// he falls and is knocked out
@@ -550,7 +550,7 @@ void ai_king(Entity *e) {
 		case 31:
 		{
 			// Don't follow slopes
-			e->grounded = false;
+			e->grounded = FALSE;
 			e->y_speed = 0;
 			e->y_next = e->y;
 			// Hit the wall
@@ -559,7 +559,7 @@ void ai_king(Entity *e) {
 				e->state = 7;
 				e->timer = 0;
 				e->y_speed = SPEED(-0x400);
-				e->grounded = false;
+				e->grounded = FALSE;
 				e->x_speed = SPEED(0x280);
 				sound_play(SND_LITTLE_CRASH, 5);
 				//SmokeClouds(o, 4, 8, 8);
@@ -581,7 +581,7 @@ void ai_king(Entity *e) {
 				//SPR_SAFERELEASE(e->sprite);
 				//SPR_SAFEADD(e->sprite, &SPR_Sword, 0, 0, TILE_ATTR(PAL0, 0, 0, 0), 3);
 				// Just in case the player walks away
-				e->alwaysActive = true;
+				e->alwaysActive = TRUE;
 			}
 		}
 		break;

@@ -104,7 +104,7 @@ void ai_shutter_stuck(Entity *e) {
 	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them
 	// to think they're shooting the regular shutter object, so go invisible
-	e->hidden = true;
+	e->hidden = TRUE;
 }
 
 // the damaged robot which wakes up right before the Almond battle

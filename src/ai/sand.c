@@ -55,7 +55,7 @@ void ai_puppy(Entity *e) {
 }
 
 void onspawn_puppyCarry(Entity *e) {
-	e->alwaysActive = true;
+	e->alwaysActive = TRUE;
 	// One's all you can manage. One's all you can manage. One's all you can manage.
 	e->eflags &= ~NPC_INTERACTIVE;
 	e->nflags &= ~NPC_INTERACTIVE;
@@ -101,10 +101,10 @@ void ai_polish(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	bool blockl = collide_stage_leftwall(e);
-	bool blockr = collide_stage_rightwall(e);
-	bool blocku = collide_stage_ceiling(e);
-	bool blockd = collide_stage_floor(e);
+	u8 blockl = collide_stage_leftwall(e);
+	u8 blockr = collide_stage_rightwall(e);
+	u8 blocku = collide_stage_ceiling(e);
+	u8 blockd = collide_stage_floor(e);
 
 	switch(e->state) {
 		case 0:		// initilization
@@ -293,13 +293,13 @@ void ai_sandcroc(Entity *e) {
 					e->state = 2;
 					e->timer = 0;
 					sound_play(SND_JAWS, 5);
-					e->hidden = false;
+					e->hidden = FALSE;
 					////SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
 					//e->frame = 1;
 				}
 			} else {
 				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
-				e->hidden = true;
+				e->hidden = TRUE;
 			}
 		}
 		break;
@@ -337,7 +337,7 @@ void ai_sandcroc(Entity *e) {
 			if (++e->timer == 30) {
 				e->eflags &= ~(NPC_SHOOTABLE);
 				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
-				e->hidden = true;
+				e->hidden = TRUE;
 				e->state = 5;
 				e->timer = 0;
 			}

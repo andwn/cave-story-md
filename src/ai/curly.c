@@ -80,7 +80,7 @@ void ai_curly(Entity *e) {
 			e->frame = 10;
 			e->timer2 = 0;
 			e->y_speed = SPEED(-0x400);
-			e->grounded = false;
+			e->grounded = FALSE;
 			MOVE_X(SPEED(-0x200));
 		}
 		/* no break */

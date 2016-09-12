@@ -36,7 +36,7 @@ u8 titlescreen_main() {
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("Mega Drive Version 0.2.1 2016.09", 4, 26);
-	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, true);
+	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
@@ -48,7 +48,7 @@ u8 titlescreen_main() {
 		VDP_drawText("Continue", 15, 14);
 		cursor = 1;
 	}
-	VDP_setEnable(true);
+	VDP_setEnable(TRUE);
 	SYS_enableInts();
 	song_play(SONG_TITLE);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {

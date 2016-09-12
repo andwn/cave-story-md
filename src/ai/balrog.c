@@ -14,11 +14,11 @@
 
 // Balrog should never deactivate
 void onspawn_balrog(Entity *e) {
-	e->alwaysActive = true;
+	e->alwaysActive = TRUE;
 }
 
 void ai_balrog(Entity *e) {
-	bool fall = true;
+	u8 fall = TRUE;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 
@@ -32,7 +32,7 @@ void ai_balrog(Entity *e) {
 		{
 			e->eflags &= ~NPC_IGNORESOLID;
 			e->x_speed = 0;
-			e->balrog_smoking = false;
+			e->balrog_smoking = FALSE;
 			e->frame = 0;
 		}
 		/* no break */
@@ -60,7 +60,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 12:
 		{
-			fall = false;
+			fall = FALSE;
 			e->y_speed -= SPEED(0x10);
 			if (e->y < 0) {
 				e->state = STATE_DELETE;
@@ -160,7 +160,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 71:
 		{
-			fall = false;
+			fall = FALSE;
 			if(++e->timer > 120) {
 				e->state = STATE_DELETE;
 				return;
@@ -176,7 +176,7 @@ void ai_balrog(Entity *e) {
 		/* no break */
 		case 81:
 		{
-			fall = false;
+			fall = FALSE;
 			if (++e->timer & 2) {
 				e->x += (1 << 9);
 			} else {
@@ -206,22 +206,22 @@ void ai_balrog(Entity *e) {
 				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, RIGHT)->linkedobject = o;
 				e->y_speed = SPEED(-0x800);
 				e->eflags |= NPC_IGNORESOLID;	// so can fly through ceiling
-				fall = false;
+				fall = FALSE;
 			}
 		}
 		break;
 		case 102:	// flying up during escape seq
 		{
-			fall = false;
+			fall = FALSE;
 			// bust through ceiling
 			u16 y = sub_to_block(e->y + (4<<9));
 			if (y < 35 && y >= 0) {
 				if (stage_get_block(sub_to_block(e->x), y) != 0) {
 					// smoke needs to go at the bottom of z-order or you can't
 					// see any of the characters through all the smoke.
-					//map_ChangeTileWithSmoke(x, y, 0, 4, false, lowestobject);
-					//map_ChangeTileWithSmoke(x-1, y, 0, 4, false, lowestobject);
-					//map_ChangeTileWithSmoke(x+1, y, 0, 4, false, lowestobject);
+					//map_ChangeTileWithSmoke(x, y, 0, 4, FALSE, lowestobject);
+					//map_ChangeTileWithSmoke(x-1, y, 0, 4, FALSE, lowestobject);
+					//map_ChangeTileWithSmoke(x+1, y, 0, 4, FALSE, lowestobject);
 					camera_shake(10);
 					sound_play(SND_MISSILE_HIT, 5);
 				}
@@ -235,7 +235,7 @@ void ai_balrog(Entity *e) {
 		break;
 		case 500:	// used during Balfrog death scene
 		{
-			fall = false;
+			fall = FALSE;
 		}
 		break;
 	}
@@ -265,7 +265,7 @@ void ai_balrog_drop_in(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->grounded = false;
+			e->grounded = FALSE;
 			e->frame = 3;	// falling;
 		}
 		/* no break */

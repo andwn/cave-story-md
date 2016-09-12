@@ -85,7 +85,7 @@ void ai_batHang(Entity *e) {
 		e->timer++;
 		e->x_next = e->x; // x_next needs to be set for collision to work properly
 		e->y_next = e->y + e->y_speed;
-		bool collided = collide_stage_floor(e);
+		u8 collided = collide_stage_floor(e);
 		if(collided || (e->timer > BAT_FALL_TIME && player.y - 0x2000 < e->y)) {
 			e->state = 4;
 			e->timer = 0;

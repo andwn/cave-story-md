@@ -56,12 +56,12 @@
 	}                                                                                          \
 	if(myindex != NOTILOC) {                                                                   \
 		myindex -= freeCount-1;                                                                \
-		while(freeCount--) tilocs[myindex+freeCount] = true;                                   \
+		while(freeCount--) tilocs[myindex+freeCount] = TRUE;                                   \
 	}                                                                                          \
 }
 #define TILOC_FREE(myindex, framesize) {                                                       \
 	u8 freeCount = framesize / 4 + (framesize & 3 ? 1 : 0);                                    \
-	while(freeCount--) tilocs[myindex+freeCount] = false;                                      \
+	while(freeCount--) tilocs[myindex+freeCount] = FALSE;                                      \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
 	DMA_queueDma(DMA_VRAM, (u32)(tiles), (index) * TILE_SIZE, (count) * 16, 2);                \
@@ -71,7 +71,11 @@ enum {
 	SHEET_NONE, SHEET_PSTAR, SHEET_MGUN, SHEET_FBALL, SHEET_HEART, SHEET_MISSILE, 
 	SHEET_ENERGY, SHEET_ENERGYL, SHEET_BAT, SHEET_CRITTER, SHEET_PIGNON, SHEET_JELLY, 
 	SHEET_BALFROG, SHEET_CROW, SHEET_GAUDI, SHEET_FUZZ, SHEET_SPIKE, SHEET_BEETLE,
-	SHEET_BEHEM,
+	SHEET_BEHEM, SHEET_TELE, SHEET_BASU, SHEET_BASIL, SHEET_TRAP, SHEET_MANNAN,
+	SHEET_PUCHI, SHEET_SKULLH, SHEET_IGORSHOT, SHEET_REDSHOT, SHEET_LABSHOT, SHEET_GAUDID,
+	SHEET_PCRITTER, SHEET_FAN, SHEET_BARMIMI, SHEET_DARK, SHEET_DARKBUB, SHEET_POWERS,
+	SHEET_POWERF, SHEET_FLOWER, SHEET_BASUSHOT, SHEET_POLISH, SHEET_BABY, SHEET_CROC,
+	SHEET_TERM, SHEET_FFIELD,
 };
 
 u8 sheet_num;
@@ -84,7 +88,7 @@ typedef struct {
 Sheet sheets[MAX_SHEETS];
 
 u16 tiloc_index;
-bool tilocs[MAX_TILOCS];
+u8 tilocs[MAX_TILOCS];
 
 void sheets_init();
 

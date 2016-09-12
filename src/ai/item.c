@@ -18,7 +18,7 @@ void onspawn_energy(Entity *e) {
 		e->display_box.right -= 4;
 	}
 	e->x_speed = 0x200 - (random() % 0x400);
-	e->alwaysActive = true;
+	e->alwaysActive = TRUE;
 }
 
 void ai_energy(Entity *e) {
@@ -109,10 +109,10 @@ void ai_missile(Entity *e) {
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
-		e->hidden = true;
+		e->hidden = TRUE;
 		return;
 	} else {
-		e->hidden = false;
+		e->hidden = FALSE;
 	}
 	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
 	else {ANIMATE(e, 4, 0,1);}
@@ -149,10 +149,10 @@ void ai_heart(Entity *e) {
 	// Hide the sprite when under a breakable block
 	// Reduces unnecessary lag in sand zone
 	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
-		e->hidden = true;
+		e->hidden = TRUE;
 		return;
 	} else {
-		e->hidden = false;
+		e->hidden = FALSE;
 	}
 	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
 	else {ANIMATE(e, 4, 0,1);}

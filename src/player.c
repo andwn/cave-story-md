@@ -36,7 +36,7 @@ u8 airPercent = 100;
 u8 airTick = 0;
 u8 airDisplayTime = 0;
 
-bool blockl, blocku, blockr, blockd;
+u8 blockl, blocku, blockr, blockd;
 u8 ledge_time;
 u8 walk_time;
 
@@ -59,8 +59,8 @@ void player_next_weapon();
 
 // Default values for player
 void player_init() {
-	controlsLocked = false;
-	playerShow = true;
+	controlsLocked = FALSE;
+	playerShow = TRUE;
 	player.dir = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	playerMaxHealth = 3;
@@ -71,7 +71,7 @@ void player_init() {
 	player.y_next = player.y;
 	player.x_speed = 0;
 	player.y_speed = 0;
-	player.enableSlopes = true;
+	player.enableSlopes = TRUE;
 	player.damage_time = 0;
 	player.damage_value = 0;
 	player.dir = 1;
@@ -88,7 +88,7 @@ void player_init() {
 	airPercent = 100;
 	airTick = 0;
 	// AIR Sprite
-	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, true);
+	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, TRUE);
 	airSprite[0] = (VDPSprite){
 		.x = SCREEN_HALF_W - 28, .y = SCREEN_HALF_H - 24, 
 		.size = SPRITE_SIZE(4, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX)
@@ -126,10 +126,10 @@ void player_update() {
 		if(playerBoostState != BOOST_OFF) {
 			player_update_booster();
 		} else {
-			bool blockl_next, blocku_next, blockr_next, blockd_next;
-			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : false;
-			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : false;
-			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : false;
+			u8 blockl_next, blocku_next, blockr_next, blockd_next;
+			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
+			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : FALSE;
+			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : FALSE;
 			if(ledge_time == 0) {
 				if(player.grounded) {
 					player.grounded = collide_stage_floor_grounded(&player);
@@ -151,8 +151,8 @@ void player_update() {
 			if(ledge_time > 0) {
 				ledge_time--;
 				player.y_next += 0x600;
-				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : false;
-				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : false;
+				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : FALSE;
+				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : FALSE;
 				player.y_next -= 0x600;
 			} else if(player.jump_time == 0 && !blockd_next && blockd) {
 				player.y_speed += 0x80;
@@ -166,12 +166,12 @@ void player_update() {
 				player.x_next += playerPlatform->x_speed;
 				player.y_next += playerPlatform->y_speed;
 				player.hit_box.bottom++;
-				bounding_box box = entity_react_to_collision(&player, playerPlatform, false);
+				bounding_box box = entity_react_to_collision(&player, playerPlatform, FALSE);
 				player.hit_box.bottom--;
 				if(box.bottom == 0) {
 					playerPlatform = NULL;
 				} else {
-					player.grounded = true;
+					player.grounded = TRUE;
 					player.y_next += pixel_to_sub(1);
 				}
 			}
@@ -313,12 +313,12 @@ void player_update_walk() {
 	}
 	if((stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) & BLOCK_WATER) ||
 			(water_entity != NULL && player.y > water_entity->y)) {
-		player.underwater = true;
+		player.underwater = TRUE;
 		acc /= 2;
 		max_speed /= 2;
 		fric /= 2;
 	} else {
-		player.underwater = false;
+		player.underwater = FALSE;
 	}
 	if(joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
@@ -354,7 +354,7 @@ void player_update_jump() {
 	if(player.jump_time > 0) return;
 	if(player.grounded) {
 		if(joy_pressed(BUTTON_C)) {
-			player.grounded = false;
+			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
 			player.jump_time = MAX_JUMP_TIME;
 			sound_play(SND_PLAYER_JUMP, 3);
@@ -486,13 +486,13 @@ void player_update_booster() {
 		playerBoosterFuel--;
 	}
 	// ok so then, booster is active right now
-	bool sputtering = false;
+	u8 sputtering = FALSE;
 	
 	if (joy_down(BUTTON_LEFT)) player.dir = 0;
 	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
 	//SPR_SAFEHFLIP(player.sprite, player.dir);
 
-	bool blockl = collide_stage_leftwall(&player),
+	u8 blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
 	collide_stage_ceiling(&player);
 	collide_stage_floor(&player);
@@ -523,7 +523,7 @@ void player_update_booster() {
 			// top speed and sputtering
 			if (player.y_speed < SPEED(-0x400)) {
 				player.y_speed += SPEED(0x20);
-				sputtering = true;	// no sound/smoke this frame
+				sputtering = TRUE;	// no sound/smoke this frame
 			} else {
 				player.y_speed -= SPEED(0x20);
 			}
@@ -549,7 +549,7 @@ void player_show_map_name(u8 ttl) {
 	// Transfer tile array to VRAM
 	if(len > 0) {
 		SYS_disableInts();
-		VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, true);
+		VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, TRUE);
 		SYS_enableInts();
 		mapNameSpriteNum = 0;
 		u16 x = SCREEN_HALF_W - len * 4;
@@ -573,7 +573,7 @@ void draw_air_percent() {
 	memcpy(numberTiles[1], &TS_Numbers.tiles[((airPercent / 10) % 10) * 8], 32);
 	memcpy(numberTiles[2], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
 	SYS_disableInts();
-	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, true);
+	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, TRUE);
 	SYS_enableInts();
 }
 
@@ -589,11 +589,11 @@ void player_update_air_display() {
 		airDisplayTime++;
 		if((airDisplayTime % 32) == 0) {
 			SYS_disableInts();
-			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, true);
+			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
 			SYS_enableInts();
 		} else if((airDisplayTime % 32) == 15) {
 			SYS_disableInts();
-			VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 1, true);
+			VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 1, TRUE);
 			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
@@ -653,7 +653,7 @@ void player_draw() {
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(playerSprite);
 		if(playerWeapon[currentWeapon].type > 0) {
-			bool vert = 0, vdir = 0;
+			u8 vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
 				vert = 1;
 				vdir = 0;
@@ -680,16 +680,16 @@ void player_draw() {
 
 void player_unpause() {
 	// Sometimes player is left stuck after pausing
-	controlsLocked = false;
+	controlsLocked = FALSE;
 	// Simulates a bug which allows skipping Chako's fireplace in Grasstown
 	playerIFrames = 0;
 }
 
-bool player_invincible() {
+u8 player_invincible() {
 	return playerIFrames > 0 || tscState;
 }
 
-bool player_inflict_damage(s16 damage) {
+u8 player_inflict_damage(s16 damage) {
 	// Halve damage if we have the arms barrier
 	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Show damage numbers
@@ -708,7 +708,7 @@ bool player_inflict_damage(s16 damage) {
 		}
 		sound_play(SND_PLAYER_DIE, 15);
 		tsc_call_event(PLAYER_DEFEATED_EVENT);
-		return true;
+		return TRUE;
 	}
 	player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
@@ -738,8 +738,8 @@ bool player_inflict_damage(s16 damage) {
 	}
 	// Knock back
 	player.y_speed = SPEED(-0x500); // 2.5 pixels per frame
-	player.grounded = false;
-	return false;
+	player.grounded = FALSE;
+	return FALSE;
 }
 
 void player_update_bounds() {
@@ -830,11 +830,11 @@ void player_take_weapon(u8 id) {
 	}
 }
 
-bool player_has_weapon(u8 id) {
+u8 player_has_weapon(u8 id) {
 	for(u8 i = 0; i < MAX_WEAPONS; i++) {
-		if(playerWeapon[i].type == id) return true;
+		if(playerWeapon[i].type == id) return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
@@ -902,11 +902,11 @@ void player_take_item(u8 id) {
 	}
 }
 
-bool player_has_item(u8 id) {
+u8 player_has_item(u8 id) {
 	for(u8 i = 0; i < MAX_ITEMS; i++) {
-		if(playerInventory[i] == id) return true;
+		if(playerInventory[i] == id) return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 void player_equip(u16 id) {

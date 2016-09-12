@@ -38,7 +38,7 @@ int main() {
     sound_init();
 	input_init();
 	SYS_enableInts();
-    while(true) {
+    while(TRUE) {
 		u8 select = titlescreen_main();
 		switch(select) {
 			case 0:

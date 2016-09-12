@@ -82,7 +82,6 @@ typedef struct {
 	u8 sheet; // Sheet ID or NOSHEET
 	u16 palette; // Any of the 4 loaded palettes to use for the sprite
 	u8 sprite_count; // Size of sprite[0], must be known beforehand
-	char name[26]; // Name of the NPC (NPC Test)
 	EntityMethod onSpawn, onFrame, onDeath; // AI
 } npc_info_def;
 

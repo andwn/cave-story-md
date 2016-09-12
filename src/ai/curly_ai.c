@@ -16,9 +16,9 @@
 #define CAI_KNOCKEDOUT		40			// knocked out at beginning of Almond battle
 #define CAI_ACTIVE	99
 
-bool curly_mgun = 0;
-bool curly_watershield = 0;
-bool curly_impjump = 0;
+u8 curly_mgun = 0;
+u8 curly_watershield = 0;
+u8 curly_impjump = 0;
 u8 curly_reachptimer = 0;
 u8 curly_blockedtime = 0;
 s8 curly_impjumptime = 0;
@@ -28,7 +28,7 @@ u8 curly_look = 0;
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
 		e->y_speed = SPEED(-0x300) - random(SPEED(0x300));
-		e->grounded = false;
+		e->grounded = FALSE;
 		//e->frame = ANIM_JUMPING;
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
@@ -50,7 +50,7 @@ void ai_curly_ai(Entity *e) {
 	// player defeats the core before she gets up. I know that's unlikely but still.
 	if (!curly_watershield) {
 		Entity *shield = entity_create(e->x, e->y, OBJ_CAI_WATERSHIELD, 0);
-		shield->alwaysActive = true;
+		shield->alwaysActive = TRUE;
 		shield->linkedEntity = e;
 		
 		//e->BringToFront();				// curly in front of monsters,
@@ -62,21 +62,21 @@ void ai_curly_ai(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 			e->x_speed = 0;
 			e->y_speed += SPEED(0x20);
 		}
 		break;
 		case CAI_INIT:			// set to this by an ANP in Maze M
 		{
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 			e->x = player.x;
 			e->y = player.y;
 		}
 		/* no break */
 		case CAI_START:			// set here after she stops being knocked out in Almond
 		{
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			e->dir = player.dir;
@@ -86,7 +86,7 @@ void ai_curly_ai(Entity *e) {
 			curly_mgun = !player_has_weapon(WEAPON_MACHINEGUN);
 			// spawn her gun
 			Entity *gun = entity_create(e->x, e->y, OBJ_CAI_GUN + curly_mgun, 0);
-			gun->alwaysActive = true;
+			gun->alwaysActive = TRUE;
 			gun->linkedEntity = e;
 			//gun->PushBehind(o);
 		}
@@ -114,17 +114,17 @@ void ai_curly_ai(Entity *e) {
 	// Check collision up front and remember the result
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	/* bool blocku = (unused) */collide_stage_ceiling(e);
+	/* u8 blocku = (unused) */collide_stage_ceiling(e);
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
-	bool blockl = collide_stage_leftwall(e);
-	bool blockr = collide_stage_rightwall(e);
+	u8 blockl = collide_stage_leftwall(e);
+	u8 blockr = collide_stage_rightwall(e);
 	// Handle underwater
 	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
 			(water_entity && e->y > water_entity->y)) {
-		e->underwater = true;
+		e->underwater = TRUE;
 	} else {
-		e->underwater = false;
+		e->underwater = FALSE;
 	}
 	// Inactive, just apply basic physics and gtfo
 	if (e->state != CAI_ACTIVE) {

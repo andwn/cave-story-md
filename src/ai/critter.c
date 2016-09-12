@@ -51,7 +51,7 @@ void ai_critter(Entity *restrict e) {
 		case STATE_HOPPING:
 		{
 			e->frame = 2;
-			e->grounded = false;
+			e->grounded = FALSE;
 			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED(0x100));
 			e->y_speed = SPEED(-0x600);
 			sound_play(SND_ENEMY_JUMP, 5);

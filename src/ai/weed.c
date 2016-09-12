@@ -204,7 +204,7 @@ void ai_mannan(Entity *e) {
 		Entity *shot = entity_create(e->x, e->y, OBJ_MANNAN_SHOT, 0);
 		shot->dir = e->dir;
 		// We want the bullet to delete itself offscreen, it can't do this while inactive
-		shot->alwaysActive = true;
+		shot->alwaysActive = TRUE;
 	} else if(e->state == 1 && ++e->timer > 24) {
 		e->state = 0;
 		e->timer = 0;
@@ -369,7 +369,7 @@ void ai_frog(Entity *restrict e) {
 				e->state = 3;
 				//e->frame = 1;
 			} else {
-				e->grounded = true;
+				e->grounded = TRUE;
 				e->eflags &= ~NPC_IGNORESOLID;
 				e->state = 1;
 			}
@@ -414,12 +414,12 @@ void ai_frog(Entity *restrict e) {
 	}
 	// random jumping, and jump when shot
 	if (e->state < 3 && e->timer > TIME(10)) {
-		bool dojump = false;
+		u8 dojump = FALSE;
 		if(e->damage_time) {
-			dojump = true;
+			dojump = TRUE;
 		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {
 			if((random() % TIME(50)) == 0) {
-				dojump = true;
+				dojump = TRUE;
 			}
 		}
 		if (dojump) {
@@ -427,7 +427,7 @@ void ai_frog(Entity *restrict e) {
 			e->state = 10;
 			//e->frame = 1;
 			e->y_speed = SPEED(-0x5ff);
-			e->grounded = false;
+			e->grounded = FALSE;
 
 			// no jumping sound in cutscenes at ending
 			//if (!player->inputs_locked && !player->disabled)
@@ -476,7 +476,7 @@ void ai_motorbike(Entity *restrict e) {
 		break;
 		case 10:	// kazuma and booster mounted
 		{
-			e->alwaysActive = true;
+			e->alwaysActive = TRUE;
 			e->y -= 0x400;
 			////SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
 			e->state++;

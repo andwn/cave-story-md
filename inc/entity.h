@@ -64,14 +64,14 @@ struct Entity {
 	u16 type; // NPC type - index of both npc.tbl and npc_info
 	u16 eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
-	bool alwaysActive; // Guaranteed to never deactivate when true
+	u8 alwaysActive; // Guaranteed to never deactivate when TRUE
 	u16 state, timer, timer2; // AI script state and timers
 	/* Physics */
 	s32 x, y; // Current position
 	s32 x_next, y_next; // What position will be changed to next frame
 	s32 x_mark, y_mark; // Marker value so the AI can remember a position later
 	s16 x_speed, y_speed; // Velocity
-	bool dir, odir, // Direction entity is facing, 0=left, 1=right
+	u8 dir, odir, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping
 		underwater, // True when entity is within a water tile
 		enableSlopes; // Check collision with slopes when enabled
@@ -82,7 +82,7 @@ struct Entity {
 	s16 damage_value; // Cumulative damage to be displayed
 	s8 damage_time; // Amount of time before effect is created
 	/* Sprite Stuff */
-	bool hidden,
+	u8 hidden,
 		foreground; // Draw sprite before player
 	u8 sprite_count; // Number of (hardware) sprites
 	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
@@ -142,21 +142,20 @@ void entity_drop_powerup(Entity *e);
 // Handles collision with the loaded stage, pushes x_next and y_next out of solid areas
 void entity_update_collision(Entity *e);
 
-bool collide_stage_leftwall(Entity *e);
-bool collide_stage_rightwall(Entity *e);
-bool collide_stage_floor(Entity *e);
-bool collide_stage_floor_grounded(Entity *e);
-bool collide_stage_ceiling(Entity *e);
+u8 collide_stage_leftwall(Entity *e);
+u8 collide_stage_rightwall(Entity *e);
+u8 collide_stage_floor(Entity *e);
+u8 collide_stage_floor_grounded(Entity *e);
+u8 collide_stage_ceiling(Entity *e);
 
-// Returns true if entity a's hitbox is overlapping b's
-bool entity_overlapping(Entity *a, Entity *b);
+// Returns TRUE if entity a's hitbox is overlapping b's
+u8 entity_overlapping(Entity *a, Entity *b);
 // Pushes entity a outside of entity b's hitbox
-bounding_box entity_react_to_collision(Entity *a, Entity *b, bool realXY);
+bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY);
 
 void entity_default(Entity *e, u16 type, u16 flags);
 
 // Drawing
-void entities_draw_fore();
-void entities_draw_back();
+void entities_draw();
 
 #endif // INC_ENTITY_H_

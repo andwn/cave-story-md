@@ -33,16 +33,16 @@ void soundtest_main() {
 	u8 status = STOPPED, oldstatus = STOPPED;
 	song_stop();
 	SYS_disableInts();
-	VDP_setEnable(false);
+	VDP_setEnable(FALSE);
 	//Kill all sprites
 	spr_num = 1;
 	sprites[0] = (VDPSprite) {};
 	sprites_send();
-	VDP_clearPlan(PLAN_A, true);
+	VDP_clearPlan(PLAN_A, TRUE);
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	// Background picture
-	if(!VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, true)) {
+	if(!VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE)) {
 		SYS_die("Not enough memory to unpack tileset.");
 	}
 	VDP_fillTileMapRectInc(PLAN_B,
@@ -53,9 +53,9 @@ void soundtest_main() {
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	VDP_drawByte(track, 10, 8);
-	VDP_setEnable(true);
+	VDP_setEnable(TRUE);
 	SYS_enableInts();
-    while(true) {
+    while(TRUE) {
 		input_update();
 		// Switch between tracks
 		// Skip the gap between the last song and first sfx

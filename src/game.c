@@ -24,47 +24,47 @@ VDPSprite itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
 
 // Prevents incomplete sprite list from being sent to VDP
-volatile bool ready;
+volatile u8 ready;
 
 void draw_itemmenu();
-bool update_pause();
+u8 update_pause();
 void itemcursor_move(u8 oldindex, u8 index);
 
 // Initializes or re-initializes the game after "try again"
-void game_reset(bool load);
+void game_reset(u8 load);
 
 void vblank() {
-	dqueued = false;
+	dqueued = FALSE;
 	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) sprites_send();
-	ready = false;
+	ready = FALSE;
 	stage_update(); // Scrolling
-	if(hudRedrawPending) hud_update_vblank();
+	//if(hudRedrawPending) hud_update_vblank();
 }
 
-u8 game_main(bool load) {
+u8 game_main(u8 load) {
 	SYS_disableInts();
-	VDP_setEnable(false);
+	VDP_setEnable(FALSE);
 	// This is the SGDK font with a blue background for the message window
-	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, true);
+	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
 	SYS_setVIntCallback(vblank);
 	SYS_setHIntCallback(hblank_water);
 	effects_init();
 	game_reset(load);
 	
-	VDP_setEnable(true);
+	VDP_setEnable(TRUE);
 	VDP_setWindowPos(0, 0);
 	SYS_enableInts();
 	// Load game doesn't run a script that fades in and shows the HUD, so do it manually
 	if(load) {
 		hud_show();
-		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
+		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
 	
-	paused = false;
+	paused = FALSE;
 	u8 ending = 0;
 	
-	while(true) {
+	while(TRUE) {
 		input_update();
 		if(paused) {
 			paused = update_pause();
@@ -74,7 +74,7 @@ u8 game_main(bool load) {
 				draw_itemmenu();
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
-				paused = true;
+				paused = TRUE;
 			} else {
 				// HUD on top
 				hud_update();
@@ -99,12 +99,12 @@ u8 game_main(bool load) {
 						ending = 0; // No ending, return to title
 						break;
 					} else if(rtn == 2) {
-						game_reset(true); // Reload save
+						game_reset(TRUE); // Reload save
 						hud_show();
-						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, true);
+						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 						continue;
 					} else if(rtn == 3) {
-						game_reset(false); // Start from beginning
+						game_reset(FALSE); // Start from beginning
 						continue;
 					} else if(rtn == 4) {
 						ending = 1; // Normal ending
@@ -116,13 +116,13 @@ u8 game_main(bool load) {
 				}
 				// Get the sprites ready
 				effects_update();
-				entities_draw_fore();
+				//entities_draw_fore();
 				player_draw();
-				entities_draw_back();
+				entities_draw();
 				system_update();
 			}
 		}
-		ready = true;
+		ready = TRUE;
 		VDP_waitVSync();
 	}
 	
@@ -135,12 +135,13 @@ u8 game_main(bool load) {
 	return ending;
 }
 
-void game_reset(bool load) {
+void game_reset(u8 load) {
 	camera_init();
 	tsc_init();
+	hud_create();
 	// Default sprite sheets
 	sheets_init();
-	gameFrozen = false;
+	gameFrozen = FALSE;
 	if(load) {
 		system_load();
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
@@ -162,7 +163,7 @@ void draw_itemmenu() {
 	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, 0, 64 * 20);
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
-	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, true);
+	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
 	// Redraw message box at the bottom of the screen
 	window_clear();
 	// Weapons
@@ -182,7 +183,7 @@ void draw_itemmenu() {
 				pal = PAL0;
 			}
 			// Clobber the entity/bullet shared sheets
-			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, true, item,0);
+			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
 			itemSprite[i] = (VDPSprite){
 				.x = 24 + (i % 8) * 32 + 128, 
 				.y = 88 + (i / 8) * 16 + 128, 
@@ -205,7 +206,7 @@ void draw_itemmenu() {
 	SYS_enableInts();
 }
 
-bool update_pause() {
+u8 update_pause() {
 	// Start will close the menu and resume the game
 	if(joy_pressed(BUTTON_START)) {
 		// Reload shared sheets we clobbered
@@ -222,7 +223,7 @@ bool update_pause() {
 		//entities_unpause();
 		//hud_show();
 		VDP_setWindowPos(0, 0);
-		return false;
+		return FALSE;
 	} else {
 		// Every cursor move and item selection runs a script
 		// Weapons are 1000 + ID
@@ -259,7 +260,7 @@ bool update_pause() {
 		}
 		for(u8 i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
 	}
-	return true;
+	return TRUE;
 }
 
 void itemcursor_move(u8 oldindex, u8 index) {

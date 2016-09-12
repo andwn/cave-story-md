@@ -281,7 +281,7 @@ void ai_igordead(Entity *e) {
 			}
 		}
 		//if((e->timer % 24) == 0)
-		//	smoke_puff(o, false);
+		//	smoke_puff(o, FALSE);
 		break;
 		case 4: break;
 	}

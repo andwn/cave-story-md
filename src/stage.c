@@ -31,10 +31,10 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(u16 id) {
-	bool vdpEnabled = VDP_getEnable();
+	u8 vdpEnabled = VDP_getEnable();
 	if(vdpEnabled) {
 		SYS_disableInts();
-		VDP_setEnable(false); // Turn the screen off, speeds up writes to VRAM
+		VDP_setEnable(FALSE); // Turn the screen off, speeds up writes to VRAM
 	}
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
@@ -64,16 +64,16 @@ void stage_load(u16 id) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
 		if(stageBackgroundType == 0) { // Tiled image
-			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
 			stage_draw_background();
 		} else if(stageBackgroundType == 1) { // Moon/Sky
-			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
 			for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
 			stage_draw_moonback();
 		} else if(stageBackgroundType == 2) { // Solid Color
-			VDP_clearPlan(PLAN_B, true);
+			VDP_clearPlan(PLAN_B, TRUE);
 		} else if(stageBackgroundType == 3) { // Tiled image, auto scroll
-			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, true);
+			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
 			stage_draw_background();
 		}
 	}
@@ -83,15 +83,15 @@ void stage_load(u16 id) {
 	stage_draw_screen();
 	stage_load_entities();
 	tsc_load_stage(id);
-	hud_create();
+	//hud_create();
 	if(vdpEnabled) {
-		VDP_setEnable(true);
+		VDP_setEnable(TRUE);
 		SYS_enableInts();
 	}
 }
 
 void stage_load_tileset() {
-	if(!VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, true)) {
+	if(!VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, TRUE)) {
 		puts("Not enough memory to decompress tileset!");
 	}
 	// Inject the breakable block sprite into the tileset
@@ -100,8 +100,8 @@ void stage_load_tileset() {
 		if(PXA[i] == 0x43) {
 			u32 addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, true);
-			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, true);
+			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
+			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
 		}
 	}
 }
@@ -173,7 +173,7 @@ void stage_update() {
 		for(u8 i = 1; i < 32; i++) {
 			off[i] = off[0];
 		}
-		VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, true);
+		VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, TRUE);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		for(u8 y = 0; y < 32; y++) {
@@ -182,7 +182,7 @@ void stage_update() {
 			else if(y < 20) backScrollTable[y] += 2;
 			else backScrollTable[y] += 3;
 		}
-		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, true);
+		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
 	} else if(stageBackgroundType == 3) {
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
