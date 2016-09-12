@@ -34,6 +34,7 @@ void itemcursor_move(u8 oldindex, u8 index);
 void game_reset(bool load);
 
 void vblank() {
+	dqueued = false;
 	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) sprites_send();
 	ready = false;

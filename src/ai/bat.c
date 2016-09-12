@@ -38,16 +38,7 @@ void onspawn_batVertical(Entity *e) {
 
 // Just up and down gotta go up and down
 void ai_batVertical(Entity *e) {
-	/*
-	if(e->sprite == NULL) {
-		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
-		e->timer2 = 0;
-	} else if(++e->timer2 > 4) {
-		if(++e->frame >= 3) e->frame = 0;;
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
-		e->timer2 = 0;
-	}
-	* */
+	ANIMATE(e, 4, 0,1,2);
 	if(e->state == 0) {
 		e->y_speed -= 8;
 		if(e->y_speed <= pixel_to_sub(-1)) e->state = 1;
@@ -60,23 +51,15 @@ void ai_batVertical(Entity *e) {
 }
 
 void onspawn_batHang(Entity *e) {
-	//e->frame = 1; // Hanging anim;
+	e->frame = 3; // Hanging anim;
 }
 
 void ai_batHang(Entity *e) {
-	/*
-	if(e->sprite == NULL) {
-		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
-		if(!e->state) e->frame = 3;;
-		e->timer2 = 0;
-	}
-	* */
 	if(e->state == 0) { // Hanging and waiting
 		if(random() % BAT_WAIT_TIME == 0) {
 			e->state = 1;
 			e->timer = 0;
-			e->frame = 4;;
-			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			e->frame = 4;
 		}
 		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
 			player.y > e->y - 0x1000 && player.y < e->y + 0x9000) {
@@ -87,15 +70,13 @@ void ai_batHang(Entity *e) {
 		if(++e->timer > BAT_BLINK_TIME) {
 			e->state = 0;
 			e->timer = 0;
-			e->frame = 3;;
-			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			e->frame = 3;
 		}
 	} else if(e->state == 2) { // At attention
 		if(e->damage_time > 0 || (player.x > e->x - 0x2800 && player.x < e->x + 0x2800)) {
 			e->state = 3;
 			e->timer = 0;
-			e->frame = 5;;
-			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			e->frame = 5;
 		}
 	} else if(e->state == 3) { // Falling
 		e->y_speed += BAT_FALL_ACCEL;
@@ -109,15 +90,14 @@ void ai_batHang(Entity *e) {
 			e->state = 4;
 			e->timer = 0;
 			e->y_mark = e->y;
-			//e->frame = 0;
+			e->frame = 0;
 			if(collided) e->y_speed = -BAT_BOUNCE_SPEED;
 		} else {
 			e->y = e->y_next;
 		}
 	} else { // Flying
 		if(++e->timer2 > 4) {
-			if(++e->frame >= 3) e->frame = 0;;
-			////SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
+			if(++e->frame >= 3) e->frame = 0;
 			e->timer2 = 0;
 		}
 		if((e->dir && player.x < e->x) || (!e->dir && player.x > e->x)) {
@@ -150,16 +130,6 @@ void ai_batHang(Entity *e) {
 }
 
 void ai_batCircle(Entity *e) {
-	/*
-	if(e->sprite == NULL) {
-		SPRITE_FROM_SHEET(&SPR_Bat, SHEET_BAT);
-		e->timer2 = 0;
-	} else if(e->state == 1 && ++e->timer2 > 4) {
-		if(++e->frame >= 3) e->frame = 0;;
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
-		e->timer2 = 0;
-	}
-	* */
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -198,10 +168,8 @@ void ai_batCircle(Entity *e) {
 					e->x_speed /= 2;
 					e->y_speed = 0;
 					e->state = 2;
-					//e->frame = 2		// mouth showing teeth;
-					e->frame = 5;;
-					////SPR_SAFETILEINDEX(e->sprite, 
-					//		sheets[e->frame].index + e->frame * 4);
+					//e->frame = 2;		// mouth showing teeth;
+					e->frame = 5;
 				}
 			} else {
 				e->timer--;
@@ -216,7 +184,7 @@ void ai_batCircle(Entity *e) {
 				e->x_speed *= 2;
 				e->timer = TIME(120);		// delay before can dive again
 				e->state = 1;
-				//e->frame = 0;
+				e->frame = 0;
 			}
 		break;
 	}

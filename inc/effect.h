@@ -10,6 +10,9 @@
 #define MAX_DAMAGE 4
 #define MAX_SMOKE 8
 
+// Only send tiles for 1 damage string per frame
+bool dqueued;
+
 // Initialize default (0, NULL) values to avoid weird glitches
 void effects_init();
 // Clear all effects

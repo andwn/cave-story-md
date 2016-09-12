@@ -11,57 +11,61 @@
 void ai_pignon(Entity *e) {
 	e->timer++;
 	if(e->state < 3 && e->damage_time == 29) {
-		//ENTITY_SET_STATE(e, 3, 0);
 		e->state = 3;
 		e->timer = 0;
 		e->y_speed = -0x100;
 		MOVE_X(-0x120);
-		//e->frame = 3;
+		e->frame = 3;
 	}
 	switch(e->state) {
 		case 0: // Standing
-		if(e->timer > 120 && (e->timer & 31) == 0) { 
-			// Either blink or walk in a random direction
-			u8 rnd = random() & 7;
-			if(rnd == 0) {
-				e->state = 1;
-				e->timer = 0;
-				//e->frame = 2;
-			} else if(rnd == 1) {
-				e->state = 2;
-				e->timer = 0;
-				e->dir = random() & 1;
-				e->x_speed = e->dir ? 0x100 : -0x100;
-				//e->frame = 1;
-				////SPR_SAFEHFLIP(e->sprite, e->dir);
+		{
+			if(e->timer > 120 && (e->timer & 31) == 0) { 
+				// Either blink or walk in a random direction
+				u8 rnd = random() & 7;
+				if(rnd == 0) {
+					e->state = 1;
+					e->timer = 0;
+					e->frame = 2;
+				} else if(rnd == 1) {
+					e->state = 2;
+					e->timer = 0;
+					e->dir = random() & 1;
+					e->x_speed = e->dir ? 0x100 : -0x100;
+					e->frame = 1;
+				}
 			}
 		}
 		break;
 		case 1: // Blink
-		if(e->timer >= 10) {
-			//ENTITY_SET_STATE(e, 0, 0);
-			e->state = 0;
-			e->timer = 0;
-			//e->frame = 0;
+		{
+			if(e->timer >= 10) {
+				e->state = 0;
+				e->timer = 0;
+				e->frame = 0;
+			}
 		}
 		break;
 		case 2: // Walking
-		if(e->timer >= 30 && (random() & 31) == 0) {
-			//ENTITY_SET_STATE(e, 0, 0);
-			e->state = 0;
-			e->timer = 0;
-			e->x_speed = 0;
-			//e->frame = 0;
+		{
+			ANIMATE(e, 8, 1,0,2,0);
+			if(e->timer >= 30 && (random() & 31) == 0) {
+				e->state = 0;
+				e->timer = 0;
+				e->x_speed = 0;
+				e->frame = 0;
+			}
 		}
 		break;
 		case 3: // Hurt
-		e->x_speed += -0x4 + 0x8 * e->dir; // Decellerate
-		if(e->timer >= TIME(30)) {
-			//ENTITY_SET_STATE(e, 0, 0);
-			e->state = 0;
-			e->timer = 0;
-			e->x_speed = 0;
-			//e->frame = 0;
+		{
+			e->x_speed += -0x4 + 0x8 * e->dir; // Decellerate
+			if(e->timer >= TIME(30)) {
+				e->state = 0;
+				e->timer = 0;
+				e->x_speed = 0;
+				e->frame = 0;
+			}
 		}
 		break;
 	}

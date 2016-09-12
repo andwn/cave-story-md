@@ -29,7 +29,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 #define sprite_pal(s, pal)   { (s).attribut &= ~(3<<13); (s).attribut |= ((pal)&3) << 13; }
 #define sprite_vflip(s, flp) { (s).attribut &= ~(1<<12); (s).attribut |= ((flp)&1) << 12; }
 #define sprite_hflip(s, flp) { (s).attribut &= ~(1<<11); (s).attribut |= ((flp)&1) << 11; }
-#define sprite_index(s, ind) { (s).attribut &= ~0x3FF;   (s).attribut |= (ind)&0x3FF; }
+#define sprite_index(s, ind) { (s).attribut &= ~0x7FF;   (s).attribut |= (ind)&0x7FF; }
 
 // Send sprite list to VDP
 #define sprites_send() {                                                                       \

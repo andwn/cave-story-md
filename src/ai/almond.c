@@ -92,7 +92,7 @@ void ai_shutter(Entity *e) {
 		e->x = e->x_next;
 		e->y = e->y_next;
 	} else if (e->state == 20) {	// tripped by script when Shutter_Big closes fully
-		//SmokeSide(o, 4, DOWN);
+		SMOKE_AREA((e->x>>CSF) - 16, (e->y>>CSF) + 12, 32, 8, 4);
 		e->state = 21;
 	}
 }
@@ -112,20 +112,20 @@ void ai_almond_robot(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->frame = 0;
+			e->frame = 0;
 			e->state++;
 		}
 		break;
 		case 10:	// blows up
 		{
 			sound_play(SND_BIG_CRASH, 5);
-			//SmokeClouds(o, 8, 3, 3);
+			SMOKE_AREA((e->x>>CSF) - 12, (e->y>>CSF) - 12, 24, 24, 3);
 			e->state = STATE_DELETE;
 		}
 		break;
 		case 20:	// flashes
 		{
-			//e->frame = 1;
+			e->frame = 1;
 			e->state++;
 		}
 		break;

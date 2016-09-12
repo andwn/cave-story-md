@@ -22,22 +22,7 @@ void onspawn_energy(Entity *e) {
 }
 
 void ai_energy(Entity *e) {
-	/*
-	if(e->sprite == NULL) {
-		if(e->eflags & NPC_OPTION2) {
-			SPRITE_FROM_SHEET(&SPR_EnergyL, SHEET_ENERGYL);
-		} else {
-			SPRITE_FROM_SHEET(&SPR_EnergyS, SHEET_ENERGY);
-		}
-		//SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->timer2 = 0;
-	} else if(++e->timer2 > 7) {
-		if(++e->frame >= 6) e->frame = 0;;
-		u8 f = e->frame << (e->eflags & NPC_OPTION2 ? 2 : 0);
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->timer2 = 0;
-	}
-	* */
+	ANIMATE(e, 4, 0,1,2,3,4,5);
 	if(entity_overlapping(&player, e)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
@@ -129,18 +114,8 @@ void ai_missile(Entity *e) {
 	} else {
 		e->hidden = false;
 	}
-	/*
-	if(e->sprite == NULL) {
-		SPRITE_FROM_SHEET(&SPR_MisslP, SHEET_MISSILE);
-		//SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->timer2 = 0;
-	} else if(++e->timer2 > 5) {
-		e->frame ^= 1;
-		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->timer2 = 0;
-	}
-	* */
+	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
+	else {ANIMATE(e, 4, 0,1);}
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
 	if(!e->state) {
 		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
@@ -179,18 +154,8 @@ void ai_heart(Entity *e) {
 	} else {
 		e->hidden = false;
 	}
-	/*
-	if(e->sprite == NULL) {
-		SPRITE_FROM_SHEET(&SPR_Heart, SHEET_HEART);
-		//SPR_SAFEPALETTE(e->sprite, PAL1);
-		e->timer2 = 0;
-	} else if(++e->timer2 > 5) {
-		e->frame ^= 1;
-		u8 f = e->frame * 4 + (e->eflags & NPC_OPTION2 ? 8 : 0);
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + f);
-		e->timer2 = 0;
-	}
-	* */
+	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
+	else {ANIMATE(e, 4, 0,1);}
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
 	if(!e->state) {
 		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
@@ -230,13 +195,11 @@ void ai_hiddenPowerup(Entity *e) {
 		sound_play(SND_EXPL_SMALL, 5);
 		if(e->eflags & NPC_OPTION2) {
 			e->type = OBJ_MISSILE;
-			////SPR_SAFEADD(e->sprite, &SPR_MisslP, sub_to_pixel(e->x), sub_to_pixel(e->y),
-			//	TILE_ATTR(PAL1, 0, 0, 0), 4);
+			SHEET_FIND(e->sheet, SHEET_MISSILE);
 			e->eflags &= ~NPC_OPTION2;
 		} else {
 			e->type = OBJ_HEART;
-			////SPR_SAFEADD(e->sprite, &SPR_Heart, sub_to_pixel(e->x), sub_to_pixel(e->y),
-			//	TILE_ATTR(PAL1, 0, 0, 0), 4);
+			SHEET_FIND(e->sheet, SHEET_HEART);
 			e->health = 2;
 		}
 		e->eflags &= ~NPC_SHOOTABLE;

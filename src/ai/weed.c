@@ -13,16 +13,6 @@
 #include "resources.h"
 
 void ai_jelly(Entity *e) {
-	/*
-	if(!e->sprite) {
-		SPRITE_FROM_SHEET(&SPR_Jelly, SHEET_JELLY);
-		e->timer2 = 0;
-	} else if(++e->timer2 > 10) {
-		if(++e->frame >= 5) e->frame = 0;;
-		//SPR_SAFETILEINDEX(e->sprite, sheets[e->frame].index + e->frame * 4);
-		e->timer2 = 0;
-	}
-	* */
 	switch(e->state) {
 		case 0:
 		{

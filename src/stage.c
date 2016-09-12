@@ -25,9 +25,8 @@ void stage_load_tileset();
 void stage_load_blocks();
 void stage_load_entities();
 
-void stage_draw_column(s16 _x, s16 _y);
-void stage_draw_row(s16 _x, s16 _y);
 void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
+void stage_draw_screen();
 void stage_draw_background();
 void stage_draw_moonback();
 
@@ -81,8 +80,7 @@ void stage_load(u16 id) {
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
 	camera_set_position(player.x, player.y);
-	stage_draw_area(sub_to_block(camera.x) - pixel_to_block(SCREEN_HALF_W),
-			sub_to_block(camera.y) - pixel_to_block(SCREEN_HALF_H), 21, 15);
+	stage_draw_screen();
 	stage_load_entities();
 	tsc_load_stage(id);
 	hud_create();
@@ -161,20 +159,6 @@ void stage_replace_block(u16 bx, u16 by, u8 index) {
 
 // Stage vblank drawing routine
 void stage_update() {
-	// Column
-	if(morphingColumn != 0) {
-		s16 x = sub_to_block(camera.x) + (morphingColumn*10),
-			y = sub_to_block(camera.y);
-		if(x >= 0 && x < stageWidth) stage_draw_column(x, y);
-		morphingColumn = 0;
-	}
-	// Row
-	if(morphingRow != 0) {
-		s16 x = sub_to_block(camera.x),
-			y = sub_to_block(camera.y) + (morphingRow*7);
-		if(y >= 0 && y < stageHeight) stage_draw_row(x, y);
-		morphingRow = 0;
-	}
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -212,39 +196,26 @@ void stage_update() {
 	}
 }
 
-// This loads a column of 16x16 tile mappings while the camera scrolls left/right
-void stage_draw_column(s16 _x, s16 _y) {
-	u16 attr[4], t, b, pal; u8 p;
-	for(s16 y = _y-8; y < _y+8; y++) {
-		if(y < 0) continue; // Skip tiles before top part of map
-		if(y >= stageHeight) break; // Skip tiles after bottom part of map
-		p = (stage_get_block_type(_x, y) & 0x40) > 0;
-		pal = stage_get_block_type(_x, y) == 0x43 ? PAL1 : PAL2;
-		t = block_to_tile(stage_get_block(_x, y));
-		b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-		attr[0] = TILE_ATTR_FULL(pal, p, 0, 0, b);
-		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
-		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
-		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
-		VDP_setTileMapDataRect(PLAN_A, attr, block_to_tile(_x)%64, block_to_tile(y)%32, 2, 2);
-	}
-}
-
-// This loads a row of 16x16 tile mappings while the camera scrolls up/down
-void stage_draw_row(s16 _x, s16 _y) {
-	u16 attr[4], t, b, pal; u8 p;
-	for(s16 x = _x-11; x < _x+11; x++) {
-		if(x < 0) continue; // Skip tiles before leftmost part of map
-		if(x >= stageWidth) break; // Skip tiles after rightmost part of map
-		p = (stage_get_block_type(x, _y) & 0x40) > 0;
-		pal = stage_get_block_type(x, _y) == 0x43 ? PAL1 : PAL2;
-		t = block_to_tile(stage_get_block(x, _y));
-		b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-		attr[0] = TILE_ATTR_FULL(pal, p, 0, 0, b);
-		attr[1] = TILE_ATTR_FULL(pal, p, 0, 0, b+1);
-		attr[2] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH);
-		attr[3] = TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1);
-		VDP_setTileMapDataRect(PLAN_A, attr, block_to_tile(x)%64, block_to_tile(_y)%32, 2, 2);
+void stage_draw_screen() {
+	u16 maprow[64];
+	s16 y = sub_to_tile(camera.y) - 15;
+	for(u8 i = 32; i--; ) {
+		if(y >= 0 && y < stageHeight * 2) {
+			s16 x = sub_to_tile(camera.x) - 31;
+			for(u8 j = 64; j--; ) {
+				if(x >= stageWidth * 2) break;
+				if(x >= 0) {
+					u8 b = stage_get_block(x/2, y/2);
+					u16 t = (b%16) * 2 + (b/16) * 64;
+					u8 ta = stage_get_block_type(x/2, y/2);
+					maprow[x%64] = TILE_ATTR_FULL(ta == 0x43 ? PAL1 : PAL2, (ta&0x40) > 0, 
+							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+				}
+				x++;
+			}
+			DMA_doDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*64*2, 64, 2);
+		}
+		y++;
 	}
 }
 

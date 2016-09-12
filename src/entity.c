@@ -90,6 +90,7 @@ void entity_reactivate(Entity *e) {
 		if(e->tiloc != NOTILOC) {
 			e->vramindex = tiloc_index + e->tiloc * 4;
 			sprite_index(e->sprite[0], e->vramindex);
+			e->oframe = 255;
 		}
 	}
 }
@@ -295,7 +296,7 @@ void entities_update() {
 			}
 		}
 		// Display damage
-		if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value != 0) {
+		if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value) {
 			e->damage_time--;
 			if(e->damage_time <= 0) {
 				effect_create_damage(e->damage_value,
@@ -777,47 +778,23 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	}
 	return e;
 }
-/*
-Entity *entity_create_boss(u16 x, u16 y, u8 bossid, u16 event) {
-	u8 sprite_count = npc_info[360 + bossid].sprite_count;
-	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	*e = (Entity){
-		.x = block_to_sub(x) + pixel_to_sub(8),
-		.y = block_to_sub(y) + pixel_to_sub(8),
-		.event = event,
-		.sprite_count = sprite_count,
-		.enableSlopes = true,
-		.alwaysActive = true,
-	};
-	entity_default(e, 360 + bossid, NPC_SOLID|NPC_SHOOTABLE|NPC_EVENTONDEATH|NPC_SHOWDAMAGE);
-	ENTITY_ONCREATE(e);
-	LIST_PUSH(entityList, e);
-	bossEntity = e;
-	return e;
-}
-*/
+
 void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
-			//SPR_SAFERELEASE(e->sprite);
-			entity_default(e, type, flags);
-			e->dir = direction;
-			ENTITY_ONSPAWN(e);
-		}
-		e = e->next;
+			Entity *new = entity_create(e->x, e->y, type, e->nflags | flags);
+			new->dir = direction;
+			e = entity_delete(e);
+		} else e = e->next;
 	}
 	e = inactiveList;
 	while(e) {
 		if(e->event == event) {
-			entity_default(e, type, flags);
-			e->dir = direction;
-			ENTITY_ONSPAWN(e);
-			// Some CNP'd offscreen entities (Balrog in Sand Zone) set alwaysActive,
-			// so when that happens we need to move it into the active list
-			if(e->alwaysActive) LIST_MOVE(inactiveList, entityList, e);
-		}
-		e = e->next;
+			Entity *new = entity_create(e->x, e->y, type, e->nflags | flags);
+			new->dir = direction;
+			e = entity_delete(e);
+		} else e = e->next;
 	}
 }
 

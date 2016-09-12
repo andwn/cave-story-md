@@ -122,7 +122,7 @@ void ai_teleIn(Entity *e) {
 				e->timer = 0;
 				e->state++;
 				e->grounded = false;
-				//e->frame = 0;
+				e->frame = 0;
 			}
 		}
 		break;
@@ -154,7 +154,7 @@ void ai_teleOut(Entity *e) {
 				e->state++;
 				e->timer = 0;
 				e->y_speed = 0;
-				//e->frame = 1;
+				e->frame = 1;
 				sound_play(SND_TELEPORT, 5);
 			} else {
 				e->y_speed += SPEED(0x43);
@@ -252,8 +252,10 @@ void ai_computer(Entity *e) {
 
 void ai_savepoint(Entity *e) {
 	ANIMATE(e, 4, 0,1,2,3,4,5,6,7);
+	ai_grav(e);
 }
 
 void ai_refill(Entity *e) {
 	ANIMATE(e, 2, 0,1);
+	ai_grav(e);
 }

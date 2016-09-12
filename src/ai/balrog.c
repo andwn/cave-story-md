@@ -128,7 +128,7 @@ void ai_balrog(Entity *e) {
 			// (transforming into Balfrog stage boss;
 			//	our flashing is interlaced with his)
 			e->timer++;
-			//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
+			e->hidden = (e->timer & 2) > 0;
 		}
 		break;
 		case 50:	// he faces away
@@ -165,7 +165,7 @@ void ai_balrog(Entity *e) {
 				e->state = STATE_DELETE;
 				return;
 			}
-			//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) ? HIDDEN : AUTO_FAST);
+			e->hidden = (e->timer & 2) > 0;
 		}
 		break;
 		case 80:	// hands up and shakes
@@ -271,19 +271,16 @@ void ai_balrog_drop_in(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			// since balrog often falls through the ceiling we must wait until he is free-falling
-			// before we start checking to see if he hit the floor
+			// since balrog often falls through the ceiling we must wait until he is 
+			// free-falling before we start checking to see if he hit the floor
 			u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
-			if(((stage_get_block_type(x, y - 1) | stage_get_block_type(x, y + 1)) & 0x41) != 0x41) {
+			if(((stage_get_block_type(x, y-1) | stage_get_block_type(x, y+1)) & 0x41) != 0x41) {
 				e->state = 2;
 			}
 		}
 		break;
 		case 2:	// free-falling
 		{
-			//if(stageID == 0x1A || stageID == 0x26) {
-			//	if(e->y < block_to_sub(60)) break;
-			//}
 			if ((e->grounded = collide_stage_floor(e))) {
 				e->frame = 2;
 				e->state = 3;
@@ -349,7 +346,7 @@ void ai_balrog_bust_in(Entity *e) {
 		case 3:
 		case 4:
 		{
-			//randblink(o, 4, 16, 100);
+			RANDBLINK(e, 4, 100);
 		}
 		break;
 	}
@@ -362,108 +359,11 @@ void ai_balrog_bust_in(Entity *e) {
 
 // 68 - Boss: Balrog (Mimiga Village)
 void ai_balrogRunning(Entity *e) {
-	/*
-	if(e->timer > 0) e->timer--;
-	switch(e->state) {
-	case 0:
-	case 2:
-	case 4:
-		if(e->x_speed > 0) e->x_speed -= 0x10;
-		else if(e->x_speed < 0) e->x_speed += 0x10;
-		if(abs(e->x_speed) < 0x10) {
-			e->x_speed = 0;
-			e->frame = 0;
-		}
-		if(e->timer == 0) ENTITY_SET_STATE(e, e->state + 1, 0);
-		break;
-	case 1:
-	case 3:
-	case 5:
-		e->x_speed -= 0x10 - (0x20 * e->dir);
-		if(e->timer % 16 == 14) sound_play(SND_THUD, 3);
-		if(e->timer == 0 || (abs(e->x - player.x) < block_to_sub(2)))
-			ENTITY_SET_STATE(e, e->state + 1, 0);
-		break;
-	case 6:
-		if(e->grounded) {
-			e->x_speed >>= 1;
-			camera_shake(30);
-			ENTITY_SET_STATE(e, 0, 0);
-		} else e->y_speed += GRAVITY_JUMP;
-		break;
-	case 7: // Grabbed player
-		player.x = e->x;
-		player.y = e->y;
-		if(!e->grounded) e->y_speed += GRAVITY_JUMP;
-		if(e->timer == 0) ENTITY_SET_STATE(e, 8, 0);
-		break;
-	case 8:
-		if(e->timer == 0) ENTITY_SET_STATE(e, 0, 0);
-		break;
-	default:
-		break;
-	}
-	// Grab/throw player
-	if(e->state < 7 && !player_invincible() && entity_overlapping(&player, e)) {
-		ENTITY_SET_STATE(e, 7, 0);
-	}
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
-	e->x = e->x_next;
-	e->y = e->y_next;
-	* */
+	
 }
 
 void ondeath_balrogRunning(Entity *e) {
-	/*
-	if(e->state == STATE_DEFEATED) {
-		tsc_call_event(e->event); // Boss defeated event
-		return;
-	}
-	switch(e->state) {
-	case 0: // Stand still
-	case 2:
-	case 4:
-		e->timer = 160;
-		break;
-	case 1: // Run towards player
-	case 3: // Run towards player (2)
-	case 5: // Run towards player and jump
-		e->dir = e->x < player.x;
-		e->frame = 1;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->timer = 120;
-		break;
-	case 6: // Jumping
-		e->grounded = false;
-		e->y_speed = pixel_to_sub(-2);
-		e->frame = 3;
-		e->timer = 160;
-		break;
-	case 7: // Grab player
-		controlsLocked = true;
-		player.x = e->x;
-		player.y = e->y;
-		player.x_speed = 0;
-		player.y_speed = 0;
-		player.grounded = true;
-		e->x_speed = 0;
-		e->frame = 8;
-		e->timer = 120;
-		break;
-	case 8: // Throw player
-		controlsLocked = false;
-		e->frame = 3;
-		if(player_inflict_damage(1)) break;
-		player.y_speed = pixel_to_sub(-1);
-		player.x_speed = pixel_to_sub(2) - (pixel_to_sub(4) * e->dir);
-		e->timer = 60;
-		break;
-	default:
-		break;
-	}
-	* */
+	
 }
 
 void ai_balrogFlying(Entity *e) {
@@ -581,14 +481,12 @@ void ai_balrogFlying(Entity *e) {
 }
 
 void ondeath_balrogFlying(Entity *e) {
-	//if(e->state == STATE_DEFEATED) {
-		e->x_speed = 0;
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->attack = 0;
-		entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
-		entities_clear_by_type(OBJ_IGOR_SHOT);
-		tsc_call_event(e->event);
-	//}
+	e->x_speed = 0;
+	e->eflags &= ~NPC_SHOOTABLE;
+	e->attack = 0;
+	entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
+	entities_clear_by_type(OBJ_IGOR_SHOT);
+	tsc_call_event(e->event);
 }
 
 #ifdef PAL
@@ -633,6 +531,8 @@ void ai_balrogShot(Entity *e) {
 
 void ai_balrog_boss_missiles(Entity *e)
 {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	// try to catch player
 	switch(e->state)
 	{
@@ -658,7 +558,7 @@ void ai_balrog_boss_missiles(Entity *e)
 			FACE_PLAYER(e);
 			
 			e->state = 1;
-			//e->frame = 0;;
+			e->frame = 0;;
 			e->timer = 0;
 		}
 		/* no break */
@@ -676,8 +576,8 @@ void ai_balrog_boss_missiles(Entity *e)
 		case STATE_CHARGE:
 		{
 			e->timer = 0;
-			//e->frame = 9;;
-			//e->animtimer = 0;
+			e->frame = 9;;
+			e->animtime = 0;
 			e->state++;
 		}
 		/* no break */
@@ -704,7 +604,7 @@ void ai_balrog_boss_missiles(Entity *e)
 			{
 				if (++e->timer > 75)
 				{
-					//e->frame = 0;;
+					e->frame = 0;;
 					e->state = STATE_PAUSE;
 				}
 			}
@@ -721,7 +621,7 @@ void ai_balrog_boss_missiles(Entity *e)
 		{
 			e->state++;
 			e->timer = 0;
-			//e->frame = 3;;
+			e->frame = 3;;
 			e->y_speed = -0x5ff;
 		}
 		/* no break */
@@ -745,7 +645,7 @@ void ai_balrog_boss_missiles(Entity *e)
 			// landed?
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e)))
 			{
-				//e->frame = 2;;
+				e->frame = 2;;
 				e->state = STATE_PAUSE;
 				camera_shake(30);
 			}
@@ -770,8 +670,9 @@ void ai_balrog_boss_missiles(Entity *e)
 		}
 		break;
 	}
-	
-	e->y_speed += 0x20;
+	e->x = e->x_next;
+	e->y = e->y_next;
+	if(!e->grounded) e->y_speed += 0x20;
 	LIMIT_X(0x300);
 	LIMIT_Y(0x5ff);
 }

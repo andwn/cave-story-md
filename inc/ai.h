@@ -88,17 +88,17 @@ typedef void (*EntityMethod)(Entity*);
 
 #define ANIMATE(e, spd, ...) {                                                                 \
 	const u8 anim[] = { __VA_ARGS__ };                                                         \
-	if(++(e)->animtime >= spd * sizeof(anim)) (e)->animtime = 0;                               \
 	if(!((e)->animtime % spd)) (e)->frame = anim[(e)->animtime / spd];                         \
+	if(++(e)->animtime >= spd * sizeof(anim)) (e)->animtime = 0;                               \
 }
 
 #define RANDBLINK(e, blinkframe, prob) {                                                       \
-	if(e->animtimer) {                                                                         \
-		e->animtimer--;                                                                        \
+	if(e->animtime) {                                                                          \
+		e->animtime--;                                                                         \
 		e->frame = blinkframe;                                                                 \
 	} else if(!(random() % (prob))) {                                                          \
 		e->frame = blinkframe;                                                                 \
-		e->animtimer = 8;                                                                      \
+		e->animtime = 8;                                                                       \
 	}                                                                                          \
 }
 

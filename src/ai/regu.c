@@ -738,9 +738,10 @@ void ai_booster_falling(Entity *e) {
 
 // shared between OBJ_KAZUMA_AT_COMPUTER and OBJ_SUE_AT_COMPUTER
 void ai_npc_at_computer(Entity *e) {
-	//if(stageID == 1 && e->type == 0x3E) {
-	//	e->state = STATE_DELETE; // Remove duplicate Kazuma from Arthur's house
-	//}
+	if(stageID == 1 && e->type == 0x3E) {
+		// Remove duplicate Kazuma from Arthur's house
+		e->state = STATE_DELETE; 
+	}
 	enum { INIT=0, TYPING, PAUSE_SLOUCH, PAUSE_UPRIGHT };
 	switch(e->state) {
 		case INIT:

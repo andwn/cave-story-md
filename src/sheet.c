@@ -86,21 +86,16 @@ void sheets_load_stage(u16 sid) {
 		case 0x0C: // First Cave
 		{	// Bat
 			SHEET_ADD(SHEET_BAT, 6, 2, 2);
-			//sheets[7] = (Sheet){ SHEET_BAT, 6*4, sheets[6].index + sheets[6].size, 2, 2 };
 			SHEET_LOAD(&SPR_Bat, 6,4, sheets[7].index, 1, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 			// Cave Critter
 			SHEET_ADD(SHEET_CRITTER, 3, 2, 2);
-			//sheets[8] = (Sheet){ SHEET_CRITTER, 3*4, sheets[7].index + sheets[7].size, 2, 2 };
 			SHEET_LOAD(&SPR_CritHB, 3,4, sheets[8].index, 1, 0,0, 1,0, 2,0);
-			// Nothing
-			//sheets[9] = (Sheet) {};
 		}
 		break;
 		case 0x10: // Graveyard
 		{
 			// Pignon
 			SHEET_ADD(SHEET_PIGNON, 5, 2, 2);
-			//sheets[7] = (Sheet){ SHEET_PIGNON, 5*4, sheets[6].index + sheets[6].size, 2, 2 };
 			SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, 1, 0,0, 1,0, 1,2, 2,0, 3,0);
 		}
 		break;
@@ -108,45 +103,58 @@ void sheets_load_stage(u16 sid) {
 		{
 			// Green Critter (no hover)
 			SHEET_ADD(SHEET_CRITTER, 3, 2, 2);
-			//sheets[7] = (Sheet){ SHEET_CRITTER, 3*4, sheets[6].index + sheets[6].size, 2, 2 };
 			SHEET_LOAD(&SPR_CritHG, 3,4, sheets[7].index, 1, 0,0, 1,0, 2,0);
 			// Beetle
 			SHEET_ADD(SHEET_BEETLE, 2, 2, 2);
-			//sheets[8] = (Sheet) {};
 			SHEET_LOAD(&SPR_BtlHG, 2,4, sheets[8].index, 1, 0,0, 1,0);
 			// Behemoth
-			sheets[9] = (Sheet) {};
+			SHEET_ADD(SHEET_BEHEM, 3, 4, 3);
+			SHEET_LOAD(&SPR_Behem, 12,3, sheets[9].index, 1, 0,0, 0,1, 0,3);
 		}
 		break;
 		case 0x06: // Grasstown
 		case 0x30: // Waterway
-		// Jelly
-		sheets[7] = (Sheet){ SHEET_JELLY, 5*4, sheets[6].index + sheets[6].size };
-		SHEET_LOAD(&SPR_Jelly, 5,4, sheets[7].index, true, 0,0, 0,1, 0,2, 0,3, 0,4);
-		// Bat
-		sheets[8] = (Sheet){ SHEET_BAT, 6*4, sheets[7].index + sheets[7].size };
-		SHEET_LOAD(&SPR_Bat, 6,4, sheets[8].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
-		// Green Critter
-		sheets[9] = (Sheet){ SHEET_CRITTER, 6*4, sheets[8].index + sheets[8].size };
-		SHEET_LOAD(&SPR_CritHB, 6,4, sheets[9].index, true, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
+		{
+			// Jelly
+			SHEET_ADD(SHEET_JELLY, 5, 2, 2);
+			SHEET_LOAD(&SPR_Jelly, 5,4, sheets[7].index, true, 0,0, 0,1, 0,2, 0,3, 0,4);
+			// Bat
+			SHEET_ADD(SHEET_BAT, 6, 2, 2);
+			SHEET_LOAD(&SPR_Bat, 6,4, sheets[8].index, true, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			// Green Critter
+			SHEET_ADD(SHEET_CRITTER, 6, 2, 2);
+			SHEET_LOAD(&SPR_CritHB, 6,4, sheets[9].index, true, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
+			// Death trap
+			
+			// Fan
+			
+			// Mannan
+			
+			// Power Critter
+			
+		}
 		break;
 		case 0x1C: // Gum
-		// Balfrog jumping frame
-		sheets[7] = (Sheet){ SHEET_BALFROG, 9*11, sheets[6].index + sheets[6].size };
-		VDP_loadTileData(SPR_TILES(&SPR_Balfrog2,0,0),sheets[7].index,9*11,true);
-		// Nothing
-		sheets[8] = (Sheet) {};
-		sheets[9] = (Sheet) {};
+		{
+			// Balfrog jumping frame
+			sheets[7] = (Sheet){ SHEET_BALFROG, 9*11, sheets[6].index + sheets[6].size };
+			VDP_loadTileData(SPR_TILES(&SPR_Balfrog2,0,0),sheets[7].index,9*11,true);
+			// Nothing
+			sheets[8] = (Sheet) {};
+			sheets[9] = (Sheet) {};
+		}
 		break;
 		case 0x0A: // Sand Zone
 		case 0x25:
-		// Crow
-		sheets[7] = (Sheet){ SHEET_CROW, 3*16, sheets[6].index + sheets[6].size };
-		SHEET_LOAD(&SPR_Crow, 3,16, sheets[7].index, true, 0,0, 0,1, 2,0);
-		// Skullhead
-		sheets[8] = (Sheet) {};
-		// Omega Projectile
-		sheets[9] = (Sheet) {};
+		{
+			// Crow
+			SHEET_ADD(SHEET_CROW, 3, 4, 4);
+			SHEET_LOAD(&SPR_Crow, 3,16, sheets[7].index, true, 0,0, 0,1, 2,0);
+			// Skullhead
+			sheets[8] = (Sheet) {};
+			// Omega Projectile
+			sheets[9] = (Sheet) {};
+		}
 		break;
 		case 0x09: // Labyrinth I
 		case 0x26: // Labyrinth H
