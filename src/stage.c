@@ -159,6 +159,7 @@ void stage_replace_block(u16 bx, u16 by, u8 index) {
 
 // Stage vblank drawing routine
 void stage_update() {
+	SYS_disableInts();
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -194,6 +195,7 @@ void stage_update() {
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
+	SYS_enableInts();
 }
 
 void stage_draw_screen() {

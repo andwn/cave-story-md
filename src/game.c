@@ -38,8 +38,6 @@ void vblank() {
 	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) sprites_send();
 	ready = FALSE;
-	stage_update(); // Scrolling
-	//if(hudRedrawPending) hud_update_vblank();
 }
 
 u8 game_main(u8 load) {
@@ -119,6 +117,7 @@ u8 game_main(u8 load) {
 				//entities_draw_fore();
 				player_draw();
 				entities_draw();
+				stage_update(); // Scrolling
 				system_update();
 			}
 		}

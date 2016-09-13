@@ -13,8 +13,8 @@
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
 // Window location
-#define WINDOW_X1 2
-#define WINDOW_X2 37
+#define WINDOW_X1 1
+#define WINDOW_X2 38
 #define WINDOW_Y1 20
 #define WINDOW_Y2 27
 // Text area location within window
@@ -35,6 +35,8 @@ const u8 ITEM_PAL[40] = {
 	0, 0, 0, 1, 0, 1, 1, 1,
 };
 
+u32 windrawbuf[40][8];
+
 u8 windowOpen = FALSE;
 u16 showingFace = 0;
 
@@ -46,10 +48,10 @@ u8 windowTextTick = 0;
 
 u8 promptShowing = FALSE;
 u8 promptAnswer = TRUE;
-Sprite *promptSpr = NULL, *handSpr = NULL;
+VDPSprite promptSpr, handSpr;
 
 u16 showingItem = 0;
-Sprite *itemSpr = NULL, *itemWinSpr = NULL;
+VDPSprite itemSpr, itemWinSpr;
 
 void window_clear_text();
 void window_draw_face();
@@ -198,6 +200,18 @@ u8 window_tick() {
 void window_prompt_open() {
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
+	handSpr = (VDPSprite) {
+		.x = tile_to_pixel(PROMPT_X) - 4 + 128,
+		.y = tile_to_pixel(PROMPT_Y + 1) - 4 + 128,
+		.size = SPRITE_SIZE(2, 2),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
+	};
+	promptSpr = (VDPSprite) {
+		.x = tile_to_pixel(PROMPT_X) + 128,
+		.y = tile_to_pixel(PROMPT_Y) + 128,
+		.size = SPRITE_SIZE(4, 4),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+4)
+	};
 	//handSpr = SPR_addSprite(&SPR_Pointer, 
 	//	tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
 	//	TILE_ATTR(PAL0, 1, 0, 0));
@@ -209,8 +223,6 @@ void window_prompt_open() {
 }
 
 void window_prompt_close() {
-	//SPR_SAFERELEASE(promptSpr);
-	//SPR_SAFERELEASE(handSpr);
 	window_clear();
 }
 
@@ -226,9 +238,10 @@ u8 window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
-		//SPR_setPosition(handSpr, 
-		//	tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
+		sprite_pos(handSpr, tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
+	sprite_add(handSpr);
+	sprite_add(promptSpr);
 	return FALSE;
 }
 
@@ -243,8 +256,6 @@ void window_draw_face() {
 
 void window_show_item(u16 item) {
 	showingItem = item;
-	//SPR_SAFERELEASE(itemSpr);
-	//SPR_SAFERELEASE(itemWinSpr);
 	if(item == 0) return;
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
@@ -253,21 +264,33 @@ void window_show_item(u16 item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	//itemSpr = SPR_addSprite(sprDef, SCREEN_HALF_W - 16, SCREEN_HALF_H + 12,
-	//	TILE_ATTR(pal, 1, 0, 0));
-	//itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
-	//	TILE_ATTR(PAL0, 1, 0, 0));
-	//SPR_setAnim(itemSpr, item);
+	itemSpr = (VDPSprite) {
+		.x = SCREEN_HALF_W - 12 + 128,
+		.y = SCREEN_HALF_H + 12 + 128,
+		.size = SPRITE_SIZE(3, 2),
+		.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_PROMPTINDEX)
+	};
+	itemWinSpr = (VDPSprite) {
+		.x = SCREEN_HALF_W - 16 + 128,
+		.y = SCREEN_HALF_H + 8 + 128,
+		.size = SPRITE_SIZE(4, 3),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
+	};
 }
 
 void window_show_weapon(u16 item) {
 	showingItem = item;
-	//SPR_SAFERELEASE(itemSpr);
-	//SPR_SAFERELEASE(itemWinSpr);
 	if(item == 0) return;
-	//itemSpr = SPR_addSprite(&SPR_ArmsImage, SCREEN_HALF_W - 8, SCREEN_HALF_H + 12,
-	//	TILE_ATTR(PAL0, 1, 0, 0));
-	//itemWinSpr = SPR_addSprite(&SPR_ItemWin, SCREEN_HALF_W - 24, SCREEN_HALF_H + 8,
-	//	TILE_ATTR(PAL0, 1, 0, 0));
-	//SPR_setFrame(itemSpr, item);
+	itemSpr = (VDPSprite) {
+		.x = SCREEN_HALF_W - 8 + 128,
+		.y = SCREEN_HALF_H + 12 + 128,
+		.size = SPRITE_SIZE(3, 2),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
+	};
+	itemWinSpr = (VDPSprite) {
+		.x = SCREEN_HALF_W - 16 + 128,
+		.y = SCREEN_HALF_H + 8 + 128,
+		.size = SPRITE_SIZE(4, 3),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
+	};
 }
