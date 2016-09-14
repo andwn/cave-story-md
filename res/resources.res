@@ -228,7 +228,7 @@ SPRITE SPR_Prompt	"prompt.png" 8 3 0 0 NONE
 TILESET TS_ItemSel	"itemsel.png" 2
 
 # Unconpressed font
-TILESET TS_SprFont	"font_lib_copy.png" 0
+#TILESET TS_SprFont	"font_lib_copy.png" 0
 
 # NPC Table
 BIN NPC_TABLE	"npc.tbl"

@@ -720,7 +720,6 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 		e->experience = npc_xp(type);
 		e->deathSound = npc_diesfx(type);
 		e->hurtSound = npc_hurtsfx(type);
-		e->deathSmoke = npc_smoke(type);
 		e->hit_box = npc_hitbox(type);
 		e->display_box = npc_displaybox(type);
 	} else {

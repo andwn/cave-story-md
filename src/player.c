@@ -544,7 +544,7 @@ void player_show_map_name(u8 ttl) {
 		u8 chr = stage_info[stageID].name[i] - 0x20;
 		if(chr < 0x60) len++;
 		else break;
-		memcpy(nameTiles[i], &TS_SprFont.tiles[chr * 8], 32);
+		memcpy(nameTiles[i], &font_lib.tiles[chr * 8], 32);
 	}
 	// Transfer tile array to VRAM
 	if(len > 0) {

@@ -129,17 +129,17 @@ void sheets_load_stage(u16 sid) {
 			SHEET_LOAD(&SPR_Bat, 6,4, sheets[8].index, 1, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 			// Green Critter
 			SHEET_ADD(SHEET_CRITTER, 6, 2, 2);
-			SHEET_LOAD(&SPR_CritHB, 6,4, sheets[9].index, 1, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
+			SHEET_LOAD(&SPR_CritHG, 6,4, sheets[9].index, 1, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 			// Death trap
 			SHEET_ADD(SHEET_TRAP, 1, 4, 3);
 			SHEET_LOAD(&SPR_Trap, 1,12, sheets[10].index, 1, 0,0);
 			// Fan
 			SHEET_ADD(SHEET_FAN, 8, 2, 2);
-			SHEET_LOAD(&SPR_CritHB, 8,4, sheets[11].index, 1, 1,0, 1,1, 1,2, 1,3, 
-					2,0, 2,1, 2,2, 2,3);
+			SHEET_LOAD(&SPR_Fan, 8,4, sheets[11].index, 1, 1,0, 1,1, 1,2, 1,3, 
+					3,0, 3,1, 3,2, 3,3);
 			// Mannan
 			SHEET_ADD(SHEET_MANNAN, 3, 2, 4);
-			SHEET_LOAD(&SPR_CritHB, 3,8, sheets[12].index, 1, 0,0, 1,0, 2,0);
+			SHEET_LOAD(&SPR_Mannan, 3,8, sheets[12].index, 1, 0,0, 1,0, 2,0);
 			// Power Critter
 			SHEET_ADD(SHEET_PCRITTER, 6, 3, 3);
 			SHEET_LOAD(&SPR_CritBig, 6,9, sheets[13].index, 1, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);

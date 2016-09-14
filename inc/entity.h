@@ -41,8 +41,6 @@ enum {
 #define entity_on_screen(e) ((unsigned)((e)->x - camera_xmin) < camera_xsize && \
 							(unsigned)((e)->y - camera_ymin) < camera_ysize)
 
-//#define entity_disabled(e) ((e->eflags&NPC_ENABLEONFLAG) && !system_get_flag(e->id))
-
 // This slightly redundant typedef is required for Entity to refer to itself
 typedef struct Entity Entity;
 
@@ -56,7 +54,6 @@ struct Entity {
 	u8 experience; // How much weapon energy/exp is dropped when killed
 	u8 hurtSound; // Sound ID that plays when the entity is hurt
 	u8 deathSound; // Sound ID that plays when the entity dies
-	u8 deathSmoke; // Type of smoke effect when destroyed
 	u16 nflags; // NPC Flags from the npc.tbl that apply to every instance of this entity
 	/* PXE Attributes */
 	u16 id; // Entity ID
@@ -82,8 +79,7 @@ struct Entity {
 	s16 damage_value; // Cumulative damage to be displayed
 	s8 damage_time; // Amount of time before effect is created
 	/* Sprite Stuff */
-	u8 hidden,
-		foreground; // Draw sprite before player
+	u8 hidden;
 	u8 sprite_count; // Number of (hardware) sprites
 	u8 frame, oframe; // Sprite frame index being displayed, remember old one to detect changes
 	u8 animtime; // Animation timer used by AI and ANIMATE() macro
