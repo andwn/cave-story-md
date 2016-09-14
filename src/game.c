@@ -23,7 +23,7 @@
 VDPSprite itemSprite[MAX_ITEMS];
 u8 selectedItem = 0;
 
-// Prevents incomplete sprite list from being sent to VDP
+// Prevents incomplete sprite list from being sent to VDP (flickering)
 volatile u8 ready;
 
 void draw_itemmenu();
@@ -36,8 +36,12 @@ void game_reset(u8 load);
 void vblank() {
 	dqueued = FALSE;
 	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
-	if(ready) sprites_send();
-	ready = FALSE;
+	if(ready) {
+		sprites_send();
+		ready = FALSE;
+	} else {
+		puts("Vint before main loop finished!");
+	}
 }
 
 u8 game_main(u8 load) {
@@ -112,6 +116,7 @@ u8 game_main(u8 load) {
 						break;
 					}
 				}
+				window_update();
 				// Get the sprites ready
 				effects_update();
 				//entities_draw_fore();

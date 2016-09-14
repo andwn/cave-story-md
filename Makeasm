@@ -1,14 +1,12 @@
 GENDEV?=/opt/toolchains/gen/
-GCC_VER?=4.8.2
-MAKE?=make
 
 GENGCC_BIN=$(GENDEV)/m68k-elf/bin
 GENBIN=$(GENDEV)/bin
 
 CC = $(GENGCC_BIN)/m68k-elf-gcc
 
-INCS = -I. -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = -m68000 -Wall -O3 -std=gnu99 -fomit-frame-pointer -fno-builtin
+INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Ires -Iinc
+CCFLAGS = -m68000 -Wall -O2 -std=c99 -fomit-frame-pointer -fno-builtin
 
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
@@ -19,7 +17,7 @@ OBJS = $(CS:.c=.s)
 all: $(OBJS)
 
 %.s: %.c
-	$(CC) $(CCFLAGS) $(INCS) -S -c $< -o $@
+	$(CC) $(CCFLAGS) $(INCS) -S -fverbose-asm -c $< -o $@
 
 clean:
 	rm $(OBJS)

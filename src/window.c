@@ -9,6 +9,8 @@
 #include "resources.h"
 #include "gamemode.h"
 #include "tsc.h"
+#include "sprite.h"
+#include "sheet.h"
 
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
@@ -48,10 +50,10 @@ u8 windowTextTick = 0;
 
 u8 promptShowing = FALSE;
 u8 promptAnswer = TRUE;
-VDPSprite promptSpr, handSpr;
+VDPSprite promptSpr[2], handSpr;
 
 u16 showingItem = 0;
-VDPSprite itemSpr, itemWinSpr;
+//VDPSprite itemSpr, itemWinSpr;
 
 void window_clear_text();
 void window_draw_face();
@@ -113,8 +115,6 @@ void window_close() {
 	if(!paused) VDP_setWindowPos(0, 0);
 	//if(showingBossHealth) VDP_setWindowPos(28, 234);
 	showingItem = 0;
-	//SPR_SAFERELEASE(itemWinSpr);
-	//SPR_SAFERELEASE(itemSpr);
 	windowOpen = FALSE;
 }
 
@@ -206,19 +206,20 @@ void window_prompt_open() {
 		.size = SPRITE_SIZE(2, 2),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
-	promptSpr = (VDPSprite) {
+	promptSpr[0] = (VDPSprite) {
 		.x = tile_to_pixel(PROMPT_X) + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
-		.size = SPRITE_SIZE(4, 4),
+		.size = SPRITE_SIZE(4, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+4)
 	};
-	//handSpr = SPR_addSprite(&SPR_Pointer, 
-	//	tile_to_pixel(PROMPT_X) - 4, tile_to_pixel(PROMPT_Y + 1) - 4, 
-	//	TILE_ATTR(PAL0, 1, 0, 0));
-	// Load prompt sprite
-	//promptSpr = SPR_addSprite(&SPR_Prompt, 
-	//	tile_to_pixel(PROMPT_X), tile_to_pixel(PROMPT_Y), 
-	//	TILE_ATTR(PAL0, 1, 0, 0));
+	promptSpr[1] = (VDPSprite) {
+		.x = tile_to_pixel(PROMPT_X) + 32 + 128,
+		.y = tile_to_pixel(PROMPT_Y) + 128,
+		.size = SPRITE_SIZE(4, 3),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+16)
+	};
+	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
+	TILES_QUEUE(SPR_TILES(&SPR_Prompt,0,0), TILE_PROMPTINDEX+4, 24);
 	promptAnswer = TRUE; // Yes is default
 }
 
@@ -241,7 +242,7 @@ u8 window_prompt_update() {
 		sprite_pos(handSpr, tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
 	}
 	sprite_add(handSpr);
-	sprite_add(promptSpr);
+	sprite_addq(promptSpr, 2);
 	return FALSE;
 }
 
@@ -264,33 +265,56 @@ void window_show_item(u16 item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	itemSpr = (VDPSprite) {
+	handSpr = (VDPSprite) {
 		.x = SCREEN_HALF_W - 12 + 128,
 		.y = SCREEN_HALF_H + 12 + 128,
 		.size = SPRITE_SIZE(3, 2),
 		.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_PROMPTINDEX)
 	};
-	itemWinSpr = (VDPSprite) {
+	promptSpr[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 16 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
-		.size = SPRITE_SIZE(4, 3),
+		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
+	promptSpr[1] = (VDPSprite) {
+		.x = SCREEN_HALF_W - 16 + 128,
+		.y = SCREEN_HALF_H + 8 + 128,
+		.size = SPRITE_SIZE(3, 3),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
+	};
+	TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
+	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
 }
 
 void window_show_weapon(u16 item) {
 	showingItem = item;
 	if(item == 0) return;
-	itemSpr = (VDPSprite) {
+	handSpr = (VDPSprite) {
 		.x = SCREEN_HALF_W - 8 + 128,
 		.y = SCREEN_HALF_H + 12 + 128,
 		.size = SPRITE_SIZE(3, 2),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
-	itemWinSpr = (VDPSprite) {
+	promptSpr[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 16 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
-		.size = SPRITE_SIZE(4, 3),
+		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
+	promptSpr[1] = (VDPSprite) {
+		.x = SCREEN_HALF_W - 16 + 128,
+		.y = SCREEN_HALF_H + 8 + 128,
+		.size = SPRITE_SIZE(3, 3),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
+	};
+	TILES_QUEUE(SPR_TILES(&SPR_ArmsImage,0,item), TILE_PROMPTINDEX, 6);
+	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
+}
+
+void window_update() {
+	if(showingItem) {
+		sprite_add(handSpr);
+		sprite_addq(promptSpr, 2);
+	}
 }

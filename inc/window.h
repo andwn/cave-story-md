@@ -49,4 +49,6 @@ void window_show_item(u16 item);
 // Same as above but will show a weapon's image
 void window_show_weapon(u16 weapon);
 
+void window_update();
+
 #endif /* INC_WINDOW_H_ */

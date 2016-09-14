@@ -63,6 +63,8 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 // Space for shared sprite sheets
 #define TILE_SHEETINDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
 #define TILE_SHEETSIZE (TILE_FONTINDEX - TILE_SHEETINDEX)
+// Space for prompt/item display at the end of the sprite tiles
+#define TILE_PROMPTINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE - 28)
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space
@@ -86,7 +88,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_PLAYERINDEX (TILE_SYSTEMINDEX + 2)
 #define TILE_PLAYERSIZE 4
 #define TILE_WEAPONINDEX (TILE_PLAYERINDEX + TILE_PLAYERSIZE)
-#define TILE_WEAPONSIZE 9
+#define TILE_WEAPONSIZE 6
 
 // Unit conversions
 // sub - fixed point unit (1/512x1/512)
