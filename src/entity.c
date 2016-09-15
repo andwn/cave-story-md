@@ -781,16 +781,22 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
-			Entity *new = entity_create(e->x, e->y, type, e->nflags | flags);
+			// Need to re-create the structure, the replaced entity may have a different
+			// number of sprites
+			Entity *new = entity_create(e->x, e->y, type, e->nflags | e->eflags | flags);
 			new->dir = direction;
+			new->id = e->id;
+			new->event = event;
 			e = entity_delete(e);
 		} else e = e->next;
 	}
 	e = inactiveList;
 	while(e) {
 		if(e->event == event) {
-			Entity *new = entity_create(e->x, e->y, type, e->nflags | flags);
+			Entity *new = entity_create(e->x, e->y, type, e->nflags | e->eflags | flags);
 			new->dir = direction;
+			new->id = e->id;
+			new->event = event;
 			e = entity_delete(e);
 		} else e = e->next;
 	}
@@ -842,7 +848,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 
 u8 entity_exists(u16 type) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->type == type) return TRUE;
 		e = e->next;
 	}
@@ -853,7 +859,7 @@ void entities_draw() {
 	const Entity *e = entityList;
 	while(e) {
 		if(!e->hidden) {
-			sprite_add(e->sprite[0]);
+			sprite_addq(e->sprite, e->sprite_count);
 		}
 		e = e->next;
 	}

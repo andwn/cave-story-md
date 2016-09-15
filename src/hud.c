@@ -77,7 +77,7 @@ void hud_update() {
 
 void hud_refresh_health() {
 	// Redraw health if it changed
-	hudMaxHealth = playerMaxHealth;
+	hudMaxHealth = max(playerMaxHealth, 1); // Just so it's impossible to divide zero
 	hudHealth = player.health;
 	s16 fillHP = 40 * hudHealth / hudMaxHealth;
 	for(u8 i = 0; i < 5; i++) {
@@ -101,7 +101,7 @@ void hud_refresh_health() {
 void hud_refresh_energy() {
 	// Energy or level changed
 	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1];
+	hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 1);
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	// Same deal as HP with the bar
 	s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
@@ -156,7 +156,7 @@ void hud_refresh_maxammo() {
 	// Bottom half of ammo display
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	if(hudMaxAmmo > 0) {
-		memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 0)*TSIZE], TILE_SIZE*2);
+		memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 0)*TSIZE], TILE_SIZE);
 		if(hudMaxAmmo >= 100) {
 			memcpy(tileData[5], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {

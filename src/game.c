@@ -42,6 +42,7 @@ void vblank() {
 	} else {
 		puts("Vint before main loop finished!");
 	}
+	stage_update(); // Scrolling
 }
 
 u8 game_main(u8 load) {
@@ -122,7 +123,7 @@ u8 game_main(u8 load) {
 				//entities_draw_fore();
 				player_draw();
 				entities_draw();
-				stage_update(); // Scrolling
+				
 				system_update();
 			}
 		}

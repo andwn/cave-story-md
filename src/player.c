@@ -89,21 +89,19 @@ void player_init() {
 	airTick = 0;
 	// AIR Sprite
 	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, TRUE);
-	airSprite[0] = (VDPSprite){
-		.x = SCREEN_HALF_W - 28, .y = SCREEN_HALF_H - 24, 
+	airSprite[0] = (VDPSprite) {
+		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(4, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX)
 	};
 	airSprite[1] = (VDPSprite){
-		.x = SCREEN_HALF_W, .y = SCREEN_HALF_H - 24, 
+		.x = SCREEN_HALF_W + 8 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(3, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Player sprite
-	playerSprite = (VDPSprite){
+	playerSprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2,2),
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_PLAYERINDEX)
 	};
-	// Weapon sprite
-	//SHEET_LOAD(&SPR_Polar
 }
 
 void player_update() {
@@ -554,11 +552,11 @@ void player_show_map_name(u8 ttl) {
 		mapNameSpriteNum = 0;
 		u16 x = SCREEN_HALF_W - len * 4;
 		for(u8 i = 0; i < len; i += 4) {
-			mapNameSprite[i/4] = (VDPSprite){
+			mapNameSprite[i/4] = (VDPSprite) {
 				.x = x + 128,
 				.y = SCREEN_HALF_H - 32 + 128,
 				.size = SPRITE_SIZE(min(4,len-i), 1),
-				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+i)
 			};
 			x += 32;
 			mapNameSpriteNum++;
@@ -800,6 +798,10 @@ void player_give_weapon(u8 id, u8 ammo) {
 			w->maxammo = ammo;
 			w->ammo = ammo;
 			// Update the sprite sheet for specific weapons
+			if(weapon_info[w->type].sprite) {
+			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+					TILE_WEAPONINDEX,6);
+			}
 			if(w->type == WEAPON_POLARSTAR) {
 				sheets_refresh_polarstar(w->level);
 			} else if(w->type == WEAPON_MACHINEGUN) {

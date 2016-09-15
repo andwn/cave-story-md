@@ -272,13 +272,13 @@ void window_show_item(u16 item) {
 		.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 16 + 128,
+		.x = SCREEN_HALF_W - 24 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 16 + 128,
+		.x = SCREEN_HALF_W + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
@@ -293,17 +293,17 @@ void window_show_weapon(u16 item) {
 	handSpr = (VDPSprite) {
 		.x = SCREEN_HALF_W - 8 + 128,
 		.y = SCREEN_HALF_H + 12 + 128,
-		.size = SPRITE_SIZE(3, 2),
+		.size = SPRITE_SIZE(2, 2),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 16 + 128,
+		.x = SCREEN_HALF_W - 24 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 16 + 128,
+		.x = SCREEN_HALF_W + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
