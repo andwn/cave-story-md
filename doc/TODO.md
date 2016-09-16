@@ -3,7 +3,8 @@ This list is updated when things are fixed in master and may not reflect the cur
 
 - [ ] Music (27 of 41)
 - [ ] Engine
-  - [ ] Sprite ordering (Pending on SGDK)
+  - [x] Fix sprite lag (0.2.1)
+  - [x] Sprite ordering (0.2.1)
   - [x] Item Menu
     - [ ] Weapon stuff
   - [ ] Boss health
@@ -38,7 +39,7 @@ This list is updated when things are fixed in master and may not reflect the cur
     - [ ] BGM: Labyrinth Fight
     - [ ] AI for Byuobyuo
     - [ ] AI for Core
-  - [ ] Waterway
+  - [ ] Waterway (0.3)
     - [ ] BGM: Living Waterway
     - [ ] AI for Ironhead
   - [ ] Egg Corridor 2 (0.3)
@@ -60,7 +61,7 @@ This list is updated when things are fixed in master and may not reflect the cur
     - [ ] That big bat
     - [ ] Hell Statues
     - [ ] Ma Pignon
-  - [ ] Last Cave (0.4)
+  - [ ] Last Cave (both of them) (0.4)
     - [ ] BGM: Last Cave
     - [ ] Orange bats and critters
     - [ ] Generators for bats
