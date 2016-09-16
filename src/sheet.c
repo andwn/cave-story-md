@@ -113,10 +113,13 @@ void sheets_load_stage(u16 sid) {
 			SHEET_LOAD(&SPR_BtlHG, 2,4, sheets[8].index, 1, 0,0, 1,0);
 			// Behemoth
 			SHEET_ADD(SHEET_BEHEM, 3, 4, 3);
-			SHEET_LOAD(&SPR_Behem, 12,3, sheets[9].index, 1, 0,0, 0,1, 0,3);
-			// Basu
-			// Basu projectile
+			SHEET_LOAD(&SPR_Behem, 3,12, sheets[9].index, 1, 0,0, 0,1, 0,3);
 			// Basil
+			SHEET_ADD(SHEET_BASIL, 2, 4, 2);
+			SHEET_LOAD(&SPR_Basil, 2,8, sheets[10].index, 1, 0,0, 0,1);
+			// Igor Shot
+			SHEET_ADD(SHEET_IGORSHOT, 2, 2, 2);
+			SHEET_LOAD(&SPR_EnergyShot, 2,4, sheets[11].index, 1, 0,0, 0,1);
 		}
 		break;
 		case 0x06: // Grasstown
@@ -146,12 +149,18 @@ void sheets_load_stage(u16 sid) {
 		}
 		break;
 		case 0x1C: // Gum
-		{	// Balfrog jumping frame
-			sheets[7] = (Sheet){ SHEET_BALFROG, 9*11, sheets[6].index + sheets[6].size };
-			VDP_loadTileData(SPR_TILES(&SPR_Balfrog2,0,0),sheets[7].index,9*11,TRUE);
-			// Nothing
-			sheets[8] = (Sheet) {};
-			sheets[9] = (Sheet) {};
+		{	// Red Shot
+			SHEET_ADD(SHEET_REDSHOT, 3, 2, 2);
+			SHEET_LOAD(&SPR_FrogShot, 3,4, sheets[7].index, 1, 0,0, 0,1, 0,2);
+			// Frog
+			SHEET_ADD(SHEET_FROG, 3, 3, 4);
+			SHEET_LOAD(&SPR_Frog, 3,12, sheets[8].index, 1, 0,0, 0,1, 1,0);
+			// Puchi
+			SHEET_ADD(SHEET_PUCHI, 2, 2, 2);
+			SHEET_LOAD(&SPR_FrogSm, 2,4, sheets[9].index, 1, 0,0, 1,0);
+			// Fan (vertical only)
+			SHEET_ADD(SHEET_FAN, 4, 2, 2);
+			SHEET_LOAD(&SPR_Fan, 4,4, sheets[10].index, 1, 1,0, 1,1, 1,2, 1,3);
 		}
 		break;
 		case 0x0A: // Sand Zone
@@ -196,8 +205,7 @@ void sheets_load_stage(u16 sid) {
 		}
 		break;
 		case 0x2F: // Core
-		{	// Core front
-			// Core back
+		{	// Core back
 			// Minicore front
 			// Minicore back
 			// Small projectile

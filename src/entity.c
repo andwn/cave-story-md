@@ -305,22 +305,37 @@ void entities_update() {
 			}
 		}
 		// Handle sprite movement/changes
-		if(e->sprite_count && !e->hidden) {
-			sprite_pos(e->sprite[0],
-					(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
-					(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
-			if(e->frame != e->oframe) {
-				e->oframe = e->frame;
-				if(e->tiloc != NOTILOC) { // Tile replace
-					TILES_QUEUE(SPR_TILES(npc_info[e->type].sprite, 0, e->frame),
-								e->vramindex, e->framesize);
-				} else if(e->sheet != NOSHEET) { // Tile index
+		if(!e->hidden) {
+			if(e->sheet != NOSHEET) {
+				sprite_pos(e->sprite[0],
+						(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
+						(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+				if(e->frame != e->oframe) {
+					e->oframe = e->frame;
 					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
 				}
-			}
-			if(e->dir != e->odir) {
-				e->odir = e->dir;
-				sprite_hflip(e->sprite[0], e->dir);
+				if(e->dir != e->odir) {
+					e->odir = e->dir;
+					sprite_hflip(e->sprite[0], e->dir);
+				}
+			} else if(e->tiloc != NOTILOC) {
+				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
+				if(e->frame != e->oframe) {
+					e->oframe = e->frame;
+					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
+				}
+				s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
+					by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
+				u8 x = 0, y = 0;
+				for(u8 i = 0; i < e->sprite_count; i++) {
+					sprite_pos(e->sprite[i], bx + x, by + y);
+					sprite_hflip(e->sprite[i], e->dir);
+					x += 32;
+					if(x > f->w) {
+						x = 0;
+						y += 32;
+					}
+				}
 			}
 		}
 		e = e->next;
@@ -638,12 +653,12 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY) {
 
 Entity *entity_find_by_id(u16 id) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->id == id) return e;
 		else e = e->next;
 	}
 	e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->id == id) return e;
 		else e = e->next;
 	}
@@ -652,12 +667,12 @@ Entity *entity_find_by_id(u16 id) {
 
 Entity *entity_find_by_event(u16 event) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) return e;
 		else e = e->next;
 	}
 	e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->event == event) return e;
 		else e = e->next;
 	}
@@ -666,7 +681,7 @@ Entity *entity_find_by_event(u16 event) {
 
 Entity *entity_find_by_type(u16 type) {
 	Entity *e = entityList;
-	while(e != NULL) {
+	while(e) {
 		if(e->type == type) return e;
 		else e = e->next;
 	}
@@ -741,24 +756,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	};
 	entity_default(e, type, flags);
 	if(sprite_count) {
-		if(npc_info[type].sheet == NOSHEET) {
-			if(npc_info[type].sprite) { // Use our own tiles
-				const VDPSpriteInf *f = 
-						npc_info[e->type].sprite->animations[0]->frames[0]->vdpSpritesInf[0];
-				e->framesize = f->numTile;
-				TILOC_ADD(e->tiloc, e->framesize);
-				if(e->tiloc != NOTILOC) {
-					e->vramindex = tiloc_index + e->tiloc * 4;
-					e->sprite[0] = (VDPSprite) {
-						.size = f->size,
-						.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
-					};
-					e->oframe = 255;
-				}
-			} else { // Leave sprite handling to be done manually
-				
-			}
-		} else { // Use a sprite sheet
+		if(npc_info[type].sheet != NOSHEET) { // Sheet
 			SHEET_FIND(e->sheet, npc_info[type].sheet);
 			e->vramindex = sheets[e->sheet].index;
 			e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
@@ -766,6 +764,23 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
 				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
 			};
+		} else if(npc_info[type].sprite) { // Use our own tiles
+			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
+			e->framesize = f->tileset->numTile;
+			TILOC_ADD(e->tiloc, e->framesize);
+			if(e->tiloc != NOTILOC) {
+				e->vramindex = tiloc_index + e->tiloc * 4;
+				u16 tile_offset = 0;
+				for(u8 i = 0; i < e->sprite_count; i++) {
+					e->sprite[i] = (VDPSprite) {
+						.size = f->vdpSpritesInf[i]->size,
+						.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,
+								e->vramindex + tile_offset)
+					};
+					tile_offset += f->vdpSpritesInf[i]->numTile;
+				}
+				e->oframe = 255;
+			}
 		}
 	}
 	ENTITY_ONSPAWN(e);

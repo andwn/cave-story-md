@@ -40,11 +40,11 @@ void stage_load(u16 id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	if(stageBlocks != NULL) {
+	if(stageBlocks) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
 	}
-	if(stageTable != NULL) {
+	if(stageTable) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
