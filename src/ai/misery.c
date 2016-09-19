@@ -38,6 +38,8 @@ void ai_misery_float(Entity *e) {
 		/* no break */
 		case 11:
 		{
+			e->frame = 0;
+			RANDBLINK(e, 1, 200);
 			if (e->y_next > e->y_mark) e->y_speed -= SPEED(16);
 			if (e->y_next < e->y_mark) e->y_speed += SPEED(16);
 			if (e->y_speed > SPEED(0x100)) e->y_speed = SPEED(0x100);
@@ -45,7 +47,7 @@ void ai_misery_float(Entity *e) {
 		}
 		break;
 		case 13:	// fall from floaty
-			e->frame = 1;
+			e->frame = 2;
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
@@ -58,7 +60,7 @@ void ai_misery_float(Entity *e) {
 		// spawn the bubble which picks up Toroko in Shack
 		case 15:
 		{
-			e->frame = 2;
+			e->frame = 4;
 			e->timer = 0;
 			e->state = 16;
 		}
@@ -95,11 +97,12 @@ void ai_misery_float(Entity *e) {
 		{
 			e->state = 26;
 			e->timer = 0;
-			e->frame = 2;
+			e->frame = 4;
 		}
 		/* no break */
 		case 26:	// she flashes, then a clap of thunder
 		{
+			ANIMATE(e, 2, 4, 5);
 			if (++e->timer >= TIME(20)) {
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				// Flash screen white
@@ -113,6 +116,108 @@ void ai_misery_float(Entity *e) {
 		case 27:	// return to standing after lightning strike
 		{
 			if (++e->timer > TIME(16)) e->state = 14;
+		}
+		break;
+	}
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
+void ai_misery_stand(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	switch(e->state) {
+		case 0:
+		{
+			e->state = 1;
+		}
+		case 1:
+		{
+			e->frame = 2;
+			RANDBLINK(e, 3, 200);
+		}
+		break;
+		case 20:	// she flys away
+		{
+			e->state = 21;
+			e->frame = 0;
+			e->y_speed = 0;
+			e->eflags |= NPC_IGNORESOLID;
+		}
+		case 21:
+		{
+			e->y_speed -= 0x20;
+			if (e->y < -0x1000) e->state = STATE_DELETE;
+		}
+		break;
+		// big spell
+		// she flashes, then a clap of thunder,
+		// and she teleports away.
+		case 25:
+		{
+			e->state = 26;
+			e->timer = 0;
+			e->frame = 5;
+			e->animtime = 0;
+		}
+		case 26:
+		{
+			ANIMATE(e, 2, 4, 5);
+			if (++e->timer >= TIME(20)) {
+				sound_play(SND_LIGHTNING_STRIKE, 5);
+				// Flash screen white
+				VDP_setPaletteColors(0, PAL_FullWhite, 64);
+				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
+				e->state = 27;
+				e->timer = 0;
+			}
+		}
+		break;
+		case 27:
+		{
+			if (++e->timer > 50) {	
+				// return to standing
+				e->state = 0;
+			}
+		}
+		break;
+		case 30:	// she throws up her staff like she's summoning something
+		{
+			e->timer = 0;
+			e->state++;
+			e->frame = 2;
+		}
+		case 31:
+		{
+			if (e->timer==10) e->frame = 4;
+			if (e->timer==130) e->state = 1;
+			e->timer++;
+		}
+		break;
+		// fire at DOCTOR_GHOST
+		case 40:
+		{
+			e->state = 41;
+			e->timer = 0;
+			e->frame = 4;
+		}
+		case 41:
+		{
+			e->timer++;
+			
+			if (e->timer == 30 || \
+				e->timer == 40 || \
+				e->timer == 50)
+			{
+				Entity *shot = entity_create(e->x+(16<<CSF), e->y, OBJ_IGOR_SHOT, 0);
+				shot->x_speed = 0x600;
+				shot->y_speed = -(random() % 0x200);
+				
+				sound_play(SND_SNAKE_FIRE, 5);
+			}
+			
+			if (e->timer > 50)
+				e->state = 0;
 		}
 		break;
 	}
