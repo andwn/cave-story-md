@@ -175,15 +175,20 @@ void ai_terminal(Entity *e) {
 	switch(e->state) {
 		case 0:
 		case 1:
-		e->frame = 0;
-		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
-			player.y > e->y - 0x2000 && player.y < e->y + 0x1000) {
-			sound_play(SND_COMPUTER_BEEP, 5);
-			e->frame = 1 + e->state;
-			e->state = 10;
+		{
+			e->frame = 0;
+			if (PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(16<<CSF, 8<<CSF)) {
+				sound_play(SND_COMPUTER_BEEP, 5);
+				e->frame = 1;
+				e->state = 10;
+			}
 		}
 		break;
 		case 10:
+		{
+			e->animtime = !e->animtime;
+			e->frame = e->animtime + (e->type==OBJ_TERMINAL : 0 : 2);
+		}
 		break;
 	}
 }

@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "effect.h"
+#include "sprite.h"
 
 void onspawn_snap(Entity *e) {
 	SNAP_TO_GROUND(e);
@@ -258,4 +259,86 @@ void ai_savepoint(Entity *e) {
 void ai_refill(Entity *e) {
 	ANIMATE(e, 2, 0,1);
 	ai_grav(e);
+}
+
+void ai_sprinkler(Entity *e) {
+	if (e->eflags & NPC_OPTION2) return;
+	
+	if (++e->animtimer & 1) e->frame ^= 1;
+	// Make sure this is an odd number so half the drops will show at once
+	if (++e->timer == 9) { 
+		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
+		drop->x_speed = -(2 << CSF) + random() % (2 << CSF);
+		drop->y_speed = -(3 << CSF) + random() % (1 << CSF);
+		e->timer = 0;
+	}
+}
+
+void ai_water_droplet(Entity *e) {
+	e->y_speed += SPEED(0x20);
+	if (e->y_speed > SPEED(0x5ff)) e->y_speed = SPEED(0x5ff);
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	e->hidden ^= 1;
+	if (++e->timer > 10) {
+		u8 block = stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y));
+		if(block & BLOCK_WATER || (block & BLOCK_SOLID && !(block & BLOCK_SLOPE)))
+			e->state = STATE_DELETE;
+	}
+}
+
+void ai_chinfish(Entity *e) {
+	switch(e->state) {
+		case 0:
+			e->state = 1;
+			e->x_mark = e->x;
+			e->y_mark = e->y;
+			e->y_speed = 0x88;
+		case 1:
+			e->y_speed += (e->y > e->y_mark) ? -8:8;
+			LIMITY(0x100);
+			ANIMATE(e, 4, 0, 1);
+			if (e->shaketime) e->frame = 2;
+		break;
+	}
+}
+
+
+void ai_fireplace(Entity *e) {
+	switch(e->state) {
+		case 0:		// burn
+			e->frame = 0;
+			e->state = 1;
+			e->hidden = 0;
+		case 1:
+			ANIMATE(e, 8, 0,1,2);
+		break;
+		
+		case 10:	// extinguished by Jellyfish Juice
+			e->state = 11;
+			//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+			SMOKE_AREA((e->x>>CSF) - 8, (e->y>>CSF) - 8, 16, 16, 2);
+		case 11:
+			e->hidden = 1;
+		break;
+	}
+}
+
+void ai_hermit_gunsmith(Entity *e) {
+	if (e->eflags & NPC_OPTION2) {
+		// Animate Zzz effect above head
+		if(++e->timer == 16) {
+			e->timer = 0;
+			if(++e->timer2 == 4) e->timer2 = 0;
+		}
+		sprite_add((VDPSprite) {
+			.x = (e->x << CSF) + 128,
+			.y = (e->y << CSF) + 112,
+			.size = SPRITE_SIZE(1, 1),
+			.attribut = TILE_ATTR_FULL(PAL0,0,0,0,12+e->timer2)
+		});
+	} else {
+		e->frame = 1;
+		RANDBLINK(e, 2, 200);
+	}
 }
