@@ -264,7 +264,7 @@ void ai_refill(Entity *e) {
 void ai_sprinkler(Entity *e) {
 	if (e->eflags & NPC_OPTION2) return;
 	
-	if (++e->animtimer & 1) e->frame ^= 1;
+	if (++e->animtime & 1) e->frame ^= 1;
 	// Make sure this is an odd number so half the drops will show at once
 	if (++e->timer == 9) { 
 		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
@@ -296,9 +296,9 @@ void ai_chinfish(Entity *e) {
 			e->y_speed = 0x88;
 		case 1:
 			e->y_speed += (e->y > e->y_mark) ? -8:8;
-			LIMITY(0x100);
+			LIMIT_Y(0x100);
 			ANIMATE(e, 4, 0, 1);
-			if (e->shaketime) e->frame = 2;
+			if (e->damage_time) e->frame = 2;
 		break;
 	}
 }
@@ -331,12 +331,13 @@ void ai_hermit_gunsmith(Entity *e) {
 			e->timer = 0;
 			if(++e->timer2 == 4) e->timer2 = 0;
 		}
-		sprite_add((VDPSprite) {
+		VDPSprite zzz = (VDPSprite) {
 			.x = (e->x << CSF) + 128,
 			.y = (e->y << CSF) + 112,
 			.size = SPRITE_SIZE(1, 1),
 			.attribut = TILE_ATTR_FULL(PAL0,0,0,0,12+e->timer2)
-		});
+		};
+		sprite_add(zzz);
 	} else {
 		e->frame = 1;
 		RANDBLINK(e, 2, 200);

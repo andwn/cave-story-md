@@ -187,7 +187,7 @@ void ai_terminal(Entity *e) {
 		case 10:
 		{
 			e->animtime = !e->animtime;
-			e->frame = e->animtime + (e->type==OBJ_TERMINAL : 0 : 2);
+			e->frame = e->animtime + (e->type==OBJ_TERMINAL ? 0 : 2);
 		}
 		break;
 	}
