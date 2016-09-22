@@ -26,7 +26,7 @@ u8 titlescreen_main() {
 	VDP_setPaletteColor(PAL0, 0x0444); // Gray background
 	VDP_setPaletteColor(PAL0 + 8, 0x08CE); // Yellow text
 	// Load quote sprite
-	SHEET_LOAD(&SPR_Quote, 4, 4, TILE_SHEETINDEX, 1, 0,0, 1,0, 0,0, 2,0);
+	SHEET_LOAD(&SPR_Quote, 4, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0);
 	VDPSprite sprCursor = { 
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_SHEETINDEX),
 		.size = SPRITE_SIZE(2,2)

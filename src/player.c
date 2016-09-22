@@ -634,7 +634,7 @@ void player_draw() {
 	if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
 	// Set frame if it changed
 	if(player.frame != player.oframe) {
-		TILES_QUEUE(SPR_TILES(&SPR_Quote,player.frame,0),TILE_PLAYERINDEX,4);
+		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
 	}
 	// Blink during invincibility frames
 	if(playerShow && !(playerIFrames & 2)) {
