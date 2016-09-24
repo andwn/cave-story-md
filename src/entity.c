@@ -324,16 +324,32 @@ void entities_update() {
 					e->oframe = e->frame;
 					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
 				}
-				s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
-					by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-				u8 x = 0, y = 0;
-				for(u8 i = 0; i < e->sprite_count; i++) {
-					sprite_pos(e->sprite[i], bx + x, by + y);
-					sprite_hflip(e->sprite[i], e->dir);
-					x += 32;
-					if(x > f->w) {
-						x = 0;
-						y += 32;
+				// We can't just flip the vdpsprites, gotta draw them in backwards order too
+				if(e->dir) {
+					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left, 
+						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
+					u8 x = 32, y = 0;
+					for(u8 i = 0; i < e->sprite_count; i++) {
+						sprite_pos(e->sprite[i], bx - x, by + y);
+						sprite_hflip(e->sprite[i], 1);
+						x += min(f->w - x, 32);
+						if(x >= f->w) {
+							x = 32;
+							y += 32;
+						}
+					}
+				} else {
+					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
+						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
+					u8 x = 0, y = 0;
+					for(u8 i = 0; i < e->sprite_count; i++) {
+						sprite_pos(e->sprite[i], bx + x, by + y);
+						sprite_hflip(e->sprite[i], 0);
+						x += 32;
+						if(x >= f->w) {
+							x = 0;
+							y += 32;
+						}
 					}
 				}
 			}
@@ -728,6 +744,9 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
 	e->eflags |= flags;
+	e->enableSlopes = TRUE;
+	e->tiloc = NOTILOC;
+	e->sheet = NOSHEET;
 	if(type < NPC_COUNT) {
 		e->nflags = npc_flags(type);
 		e->health = npc_hp(type);
@@ -748,12 +767,10 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	// Allocate memory and start applying values
 	u8 sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	*e = (Entity){
-		.x = x, .y = y,
-		.tiloc = NOTILOC, .sheet = NOSHEET,
-		.sprite_count = sprite_count,
-		.enableSlopes = TRUE,
-	};
+	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	e->x = x;
+	e->y = y;
+	e->sprite_count = sprite_count;
 	entity_default(e, type, flags);
 	if(sprite_count) {
 		if(npc_info[type].sheet != NOSHEET) { // Sheet
@@ -764,6 +781,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
 				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
 			};
+			e->oframe = 255;
 		} else if(npc_info[type].sprite) { // Use our own tiles
 			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
 			e->framesize = f->tileset->numTile;
@@ -798,20 +816,22 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		if(e->event == event) {
 			// Need to re-create the structure, the replaced entity may have a different
 			// number of sprites
-			Entity *new = entity_create(e->x, e->y, type, e->nflags | e->eflags | flags);
+			Entity *new = entity_create(e->x, e->y, type, /* e->nflags |*/ e->eflags | flags);
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
+			if(!new->state) new->state = e->state;
 			e = entity_delete(e);
 		} else e = e->next;
 	}
 	e = inactiveList;
 	while(e) {
 		if(e->event == event) {
-			Entity *new = entity_create(e->x, e->y, type, e->nflags | e->eflags | flags);
+			Entity *new = entity_create(e->x, e->y, type, /* e->nflags |*/ e->eflags | flags);
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
+			if(!new->state) new->state = e->state;
 			e = entity_delete(e);
 		} else e = e->next;
 	}

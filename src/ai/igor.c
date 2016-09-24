@@ -110,6 +110,10 @@ void ai_igor(Entity *e) {
 }
 
 void ondeath_igor(Entity *e) {
+	e->attack = 0;
+	e->eflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
+	e->x_speed = 0;
+	tsc_call_event(e->event); // Boss defeated event
 	/*
 	switch(e->state) {
 		case STATE_STAND:

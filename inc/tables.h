@@ -88,6 +88,7 @@ typedef struct {
 // Information about each weapon, indexes match <AM+ and ArmsImage
 typedef struct {
 	const SpriteDefinition *sprite; // Sprite to display beneath player
+	u16 palette;
 	u8 experience[3]; // Amount of exp required to level up the weapon
 	u8 name[16];
 } weapon_info_def;

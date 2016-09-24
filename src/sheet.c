@@ -97,6 +97,15 @@ void sheets_load_stage(u16 sid) {
 			SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, 1, 0,0, 1,0, 1,2, 2,0, 3,0);
 		}
 		break;
+		case 0x11: // Yamashita Farm
+		{	// Flowers
+			SHEET_ADD(SHEET_FLOWER, 6, 2, 2);
+			SHEET_LOAD(&SPR_Flower, 6,4, sheets[7].index, 1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+			// Water drop
+			SHEET_ADD(SHEET_DROP, 1, 1, 1);
+			SHEET_LOAD(&SPR_Drop, 1,1, sheets[8].index, 1, 0,0);
+		}
+		break;
 		case 0x01: // Arthur's House
 		{	// Teleport menu icons
 			SHEET_ADD(SHEET_TELE, 10, 4, 2);

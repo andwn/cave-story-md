@@ -113,23 +113,20 @@ void ai_doctor(Entity *e) {
 void ai_toroko(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-
-	if(!(e->eflags & NPC_IGNORESOLID)) {
-		if(!e->grounded) e->grounded = collide_stage_floor(e);
-		else e->grounded = collide_stage_floor_grounded(e);
-	}
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
-			e->frame = 0;;
 			e->x_speed = 0;
 			e->state = 1;
 		}
 		/* no break */
 		case 1:
 		{
-			//randblink(o, 1, 4);
+			e->frame = 0;
+			//RANDBLINK(e, 3, 200);
 		}
 		break;
 		case 3:		// run away!!

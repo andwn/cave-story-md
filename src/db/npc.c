@@ -36,16 +36,16 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_TRAP, 	PAL1, 1, NULL, NULL, NULL }, // Death Trap
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
 	{ &SPR_Cthu, NOSHEET, 	PAL3, 1, NULL, NULL, NULL }, // Cthulhu
-	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_snap, NULL, NULL }, // Gunsmith
+	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_snap, &ai_gunsmith, NULL }, // Gunsmith
 	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batHang, &ai_batHang, &ondeath_default }, // Bat
 	/* 0x020 (32) */
-	{ &SPR_LifeUp, NOSHEET, PAL1, 1, NULL, NULL, NULL }, // Life Capsule
+	{ &SPR_LifeUp, NOSHEET, PAL1, 1, NULL, &ai_lifeup, NULL }, // Life Capsule
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, NULL, &ai_balrogShot, NULL }, // Balrog Shot
 	{ &SPR_Bed, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Bed
 	{ NULL, SHEET_MANNAN, 	PAL3, 1, NULL, &ai_mannan, NULL }, // Mannan
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ondeath_balrogFlying, &ai_balrogFlying },
 	{ &SPR_Sign, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Sign Post
-	{ &SPR_Fire, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Fireplace
+	{ &SPR_Fire, NOSHEET, 	PAL1, 1, NULL, &ai_fireplace, NULL }, // Fireplace
 	{ &SPR_SaveSign,NOSHEET,PAL1, 1, &onspawn_op2anim, NULL, NULL }, // Save Sign
 	{ &SPR_Santa, NOSHEET, 	PAL3, 1, NULL, &ai_santa, NULL }, // Santa
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_door, NULL, NULL }, // Busted Doorway
@@ -80,9 +80,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrogRunning, &ondeath_balrogRunning },
 	{ NULL, SHEET_PIGNON, 	PAL1, 1, NULL, &ai_pignon, &ondeath_default }, // Pignon
 	{ &SPR_Sparkle,NOSHEET, PAL1, 1, NULL, NULL, NULL }, // Sparkle
-	{ &SPR_Fish, NOSHEET, 	PAL0, 1, NULL, NULL, &ondeath_default }, // Chinfish
-	{ &SPR_Sprinkler,NOSHEET,PAL1,1, NULL, NULL, NULL }, // Sprinkler
-	{ NULL, NOSHEET, 		PAL0, 1, NULL, NULL, NULL }, // Water Drop
+	{ &SPR_Fish, NOSHEET, 	PAL0, 1, NULL, &ai_chinfish, &ondeath_default }, // Chinfish
+	{ &SPR_Sprinkler,NOSHEET,PAL1,1, NULL, &ai_sprinkler, NULL }, // Sprinkler
+	{ NULL, SHEET_DROP, 	PAL1, 1, &onspawn_persistent, &ai_water_droplet, NULL }, // Water Drop
 	{ &SPR_Jack, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_jack, NULL }, // Jack
 	{ &SPR_Kanpachi,NOSHEET,PAL3, 1, NULL, &ai_kanpachi_fishing, NULL }, // Kanpachi
 	{ NULL, SHEET_FLOWER, 	PAL3, 1, &onspawn_flower, NULL, NULL }, // Flowers
@@ -137,7 +137,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_BARMIMI, 	PAL3, 1, NULL, &ai_curlys_mimigas, &ondeath_default },
 	{ NULL, SHEET_MGUN, 	PAL0, 1, &onspawn_persistent, &ai_curlyBossShot, NULL }, // Curly Shot
 	{ &SPR_Sunstone,NOSHEET,PAL2, 1, &onspawn_sunstone, &ai_sunstone, NULL }, // Sunstone
-	{ NULL, NOSHEET, 		PAL0, 1, &onspawn_hiddenPowerup, &ai_hiddenPowerup, NULL },
+	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_hiddenPowerup, &ai_hiddenPowerup, NULL },
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, NULL, NULL }, // Puppy (Running)
 	{ NULL, NOSHEET, 		PAL0, 1, NULL, NULL, NULL }, // ???UNKNOWN???
 	/* 0x080 (128) */

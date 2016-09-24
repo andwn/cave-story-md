@@ -264,12 +264,12 @@ void ai_refill(Entity *e) {
 void ai_sprinkler(Entity *e) {
 	if (e->eflags & NPC_OPTION2) return;
 	
-	if (++e->animtime & 1) e->frame ^= 1;
+	//if (++e->animtime & 1) e->frame ^= 1;
 	// Make sure this is an odd number so half the drops will show at once
-	if (++e->timer == 9) { 
+	if (++e->timer == 7) { 
 		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
-		drop->x_speed = -(2 << CSF) + random() % (2 << CSF);
-		drop->y_speed = -(3 << CSF) + random() % (1 << CSF);
+		drop->x_speed = -SPEED(2 << CSF) + random() % SPEED(4 << CSF);
+		drop->y_speed = -SPEED(3 << CSF) + random() % SPEED(1 << CSF);
 		e->timer = 0;
 	}
 }
@@ -297,8 +297,9 @@ void ai_chinfish(Entity *e) {
 		case 1:
 			e->y_speed += (e->y > e->y_mark) ? -8:8;
 			LIMIT_Y(0x100);
-			ANIMATE(e, 4, 0, 1);
-			if (e->damage_time) e->frame = 2;
+			e->y += e->y_speed;
+			if (e->damage_time) e->frame = 1;
+			else e->frame = 0;
 		break;
 	}
 }
@@ -324,7 +325,7 @@ void ai_fireplace(Entity *e) {
 	}
 }
 
-void ai_hermit_gunsmith(Entity *e) {
+void ai_gunsmith(Entity *e) {
 	if (e->eflags & NPC_OPTION2) {
 		// Animate Zzz effect above head
 		if(++e->timer == 16) {
@@ -342,4 +343,8 @@ void ai_hermit_gunsmith(Entity *e) {
 		e->frame = 1;
 		RANDBLINK(e, 2, 200);
 	}
+}
+
+void ai_lifeup(Entity *e) {
+	ANIMATE(e, 4, 0,1);
 }

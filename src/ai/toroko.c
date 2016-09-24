@@ -79,23 +79,6 @@ void ai_torokoAtk(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ondeath_toroko(Entity *e) {
-	switch(e->state) {
-	case 6: // Jump
-		e->frame = 1;
-		e->y_speed = -0x150;
-		e->x_speed = -0x150 + 0x300 * e->dir;
-		e->grounded = FALSE;
-		break;
-	case 8:
-		e->y_speed = 0x150;
-		e->grounded = FALSE;
-		break;
-	default:
-		break;
-	}
-}
-
 void onspawn_torokoBoss(Entity *e) {
 	e->frame = 10;;
 	e->y -= 8 << CSF;

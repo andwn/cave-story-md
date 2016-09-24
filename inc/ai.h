@@ -158,6 +158,12 @@ void ondeath_player(Entity *e);
 void ai_computer(Entity *e);
 void ai_savepoint(Entity *e);
 void ai_refill(Entity *e);
+void ai_sprinkler(Entity *e);
+void ai_water_droplet(Entity *e);
+void ai_chinfish(Entity *e);
+void ai_fireplace(Entity *e);
+void ai_gunsmith(Entity *e);
+void ai_lifeup(Entity *e);
 
 /* Regular NPCs - regu.c */
 void ai_jenka(Entity *e);
@@ -235,7 +241,6 @@ void ai_critter(Entity *e);
 void onspawn_door(Entity *e);
 void ai_door(Entity *e);
 void ai_theDoor(Entity *e);
-void ai_theDoor_onHurt(Entity *e);
 void onspawn_doorway(Entity *e);
 void ai_doorway(Entity *e);
 

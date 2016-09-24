@@ -21,7 +21,7 @@ void ai_balrog(Entity *e) {
 	u8 fall = TRUE;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
-
+	
 	if(!(e->eflags & NPC_IGNORESOLID)) {
 		if(!e->grounded) e->grounded = collide_stage_floor(e);
 		else e->grounded = collide_stage_floor_grounded(e);
@@ -33,12 +33,12 @@ void ai_balrog(Entity *e) {
 			e->eflags &= ~NPC_IGNORESOLID;
 			e->x_speed = 0;
 			e->balrog_smoking = FALSE;
-			e->frame = 0;
 		}
 		/* no break */
 		case 1:
 		{
-			//randblink(o, 4, 8);
+			e->frame = 0;
+			RANDBLINK(e, 4, 200);
 		}
 		break;
 		case 10:		// he jumps and flys away
@@ -264,6 +264,7 @@ void ai_balrog_drop_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->eflags &= ~NPC_IGNORESOLID;
 			e->state = 1;
 			e->grounded = FALSE;
 			e->frame = 3;	// falling;
@@ -309,8 +310,7 @@ void ai_balrog_drop_in(Entity *e) {
 // he exists like this for only a moment, then the script
 // changes him to a standard OBJ_BALROG.
 void ai_balrog_bust_in(Entity *e) {
-	e->y_next = e->y + e->y_speed;
-	e->x_next = e->x + e->x_speed;
+	
 
 	switch(e->state) {
 		case 0:
@@ -325,12 +325,17 @@ void ai_balrog_bust_in(Entity *e) {
 		case 1:		// falling the short distance to ground
 		{
 			e->y_speed += SPEED(0x10);
+			e->y_next = e->y + e->y_speed;
+			e->x_next = e->x + e->x_speed;
+			LIMIT_Y(SPEED(0x5FF));
 			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 2;
 				e->frame = 2;
 				e->timer = 0;
 				camera_shake(30);
 			}
+			e->x = e->x_next;
+			e->y = e->y_next;
 		}
 		break;
 		// landing animation
@@ -342,19 +347,10 @@ void ai_balrog_bust_in(Entity *e) {
 			}
 		}
 		break;
-		// standing and blinking
+		// standing
 		case 3:
-		case 4:
-		{
-			RANDBLINK(e, 4, 100);
-		}
-		break;
+		case 4: break;
 	}
-
-	e->x = e->x_next;
-	e->y = e->y_next;
-
-	LIMIT_Y(SPEED(0x5FF));
 }
 
 // 68 - Boss: Balrog (Mimiga Village)
@@ -363,7 +359,10 @@ void ai_balrogRunning(Entity *e) {
 }
 
 void ondeath_balrogRunning(Entity *e) {
-	
+	e->x_speed = 0;
+	e->eflags &= ~NPC_SHOOTABLE;
+	e->attack = 0;
+	tsc_call_event(e->event);
 }
 
 void ai_balrogFlying(Entity *e) {

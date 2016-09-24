@@ -23,23 +23,12 @@ void ai_door(Entity *e) {
 }
 
 void ai_theDoor(Entity *e) {
-	if(e->state == 1) {
-		e->timer--;
-		if(e->timer == 0) e->state = 0;
+	if(e->damage_time) {
+		e->frame = 3;
+	} else if(PLAYER_DIST_X(80 << CSF) && PLAYER_DIST_Y(80 << CSF)) {
+		e->frame = ++e->timer > 8 ? 2 : 1;
 	} else {
-		if(e->damage_time) {
-			e->state = 1;
-			e->timer = TIME(30);
-			//SPR_SAFEFRAME(e->sprite, 3);
-		} else {
-			s32 x1 = e->x - block_to_sub(6), y1 = e->y - block_to_sub(6),
-				x2 = e->x + block_to_sub(6), y2 = e->y + block_to_sub(6);
-			if(player.x > x1 && player.x < x2 && player.y > y1 && player.y < y2) {
-				//SPR_SAFEFRAME(e->sprite, 2);
-			} else {
-				//SPR_SAFEFRAME(e->sprite, 0);
-			}
-		}
+		e->timer = e->frame = 0;
 	}
 }
 

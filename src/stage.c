@@ -124,8 +124,6 @@ void stage_load_blocks() {
 
 void stage_load_entities() {
 	const u8 *PXE = stage_info[stageID].PXE;
-	// Most of the rooms depend on sprite sorting to be back -> front
-	// But on Genesis it works the opposite, so load all the entities in reverse order
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
 	for(u8 i = 0; i < PXE[4]; i++) {
 		u16 x, y, id, event, type, flags;

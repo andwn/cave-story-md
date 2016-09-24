@@ -663,7 +663,7 @@ void player_draw() {
 				.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
 				.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
 				.size = SPRITE_SIZE(vert ? 1 : 3, vert ? 3 : 1),
-				.attribut = TILE_ATTR_FULL(PAL0,0,vdir,player.dir,TILE_WEAPONINDEX+vert*3)
+				.attribut = TILE_ATTR_FULL(PAL1,0,vdir,player.dir,TILE_WEAPONINDEX+vert*3)
 			};
 			sprite_add(weaponSprite);
 		}
