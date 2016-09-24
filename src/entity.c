@@ -328,12 +328,12 @@ void entities_update() {
 				if(e->dir) {
 					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					u8 x = 32, y = 0;
+					u8 x = min(f->w, 32), y = 0;
 					for(u8 i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx - x, by + y);
 						sprite_hflip(e->sprite[i], 1);
 						x += min(f->w - x, 32);
-						if(x >= f->w) {
+						if(x >= f->w + 32) {
 							x = 32;
 							y += 32;
 						}

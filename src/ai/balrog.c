@@ -12,11 +12,6 @@
 #define balrog_smoking		x_mark
 #define balrog_smoketimer	y_mark
 
-// Balrog should never deactivate
-void onspawn_balrog(Entity *e) {
-	e->alwaysActive = TRUE;
-}
-
 void ai_balrog(Entity *e) {
 	u8 fall = TRUE;
 	e->y_next = e->y + e->y_speed;
@@ -310,8 +305,6 @@ void ai_balrog_drop_in(Entity *e) {
 // he exists like this for only a moment, then the script
 // changes him to a standard OBJ_BALROG.
 void ai_balrog_bust_in(Entity *e) {
-	
-
 	switch(e->state) {
 		case 0:
 		{
@@ -488,16 +481,6 @@ void ondeath_balrogFlying(Entity *e) {
 	tsc_call_event(e->event);
 }
 
-#ifdef PAL
-#define BALROG_SHOT_SPEED	0x400
-#define BALROG_SHOT_TIME	250
-#define BALROG_SHOT_GRAVITY	42
-#else
-#define BALROG_SHOT_SPEED	0x355
-#define BALROG_SHOT_TIME	300
-#define BALROG_SHOT_GRAVITY	35
-#endif
-
 void ai_balrogShot(Entity *e) {
 	if(!e->state) {
 		e->eflags |= NPC_SHOOTABLE | NPC_SHOWDAMAGE;
@@ -508,15 +491,15 @@ void ai_balrogShot(Entity *e) {
 		e->state = STATE_DELETE;
 		return;
 	}
-	e->y_speed += BALROG_SHOT_GRAVITY;
+	e->y_speed += SPEED(42);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(e->y_speed > 0 && collide_stage_floor(e)) {
-		e->y_speed = -BALROG_SHOT_SPEED;
+		e->y_speed = -SPEED(0x400);
 	}
 	if((e->x_speed > 0 && collide_stage_rightwall(e)) ||
 		(e->x_speed < 0 && collide_stage_leftwall(e)) ||
-		++e->timer > BALROG_SHOT_TIME) {
+		++e->timer > TIME(250)) {
 		e->state = STATE_DELETE;
 	}
 	e->x = e->x_next;
@@ -528,18 +511,15 @@ void ai_balrogShot(Entity *e) {
 #define STATE_PAUSE				30
 #define STATE_CAUGHT_PLAYER		40
 
-void ai_balrog_boss_missiles(Entity *e)
-{
+void ai_balrog_boss_missiles(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// try to catch player
-	switch(e->state)
-	{
+	switch(e->state) {
 		case STATE_CHARGE+1:
 		case STATE_JUMP_FIRE+1:
 		{
-			if (PLAYER_DIST_X(12<<9) && PLAYER_DIST_Y2(12<<9, 8<<9))
-			{
+			if (PLAYER_DIST_X(12<<CSF) && PLAYER_DIST_Y2(12<<CSF, 8<<CSF)) {
 				//balrog_grab_player(e);
 				//hurtplayer(5);
 				e->state = STATE_CAUGHT_PLAYER;
@@ -547,70 +527,54 @@ void ai_balrog_boss_missiles(Entity *e)
 		}
 		break;
 	}
-	
 	// main state engine
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
-			//e->nxflags |= NXFLAG_FOLLOW_SLOPE;
 			FACE_PLAYER(e);
-			
 			e->state = 1;
-			e->frame = 0;;
+			e->frame = 0;
 			e->timer = 0;
 		}
 		/* no break */
 		case 1:
 		{
-			if (++e->timer > 30)
-			{
+			if (++e->timer > TIME(30)) {
 				e->state = STATE_CHARGE;
 				e->timer2 ^= 1;	// affects how we react if we miss the player
 			}
 		}
 		break;
-		
 		// charge the player
 		case STATE_CHARGE:
 		{
 			e->timer = 0;
-			e->frame = 9;;
+			e->frame = 9;
 			e->animtime = 0;
 			e->state++;
 		}
 		/* no break */
 		case STATE_CHARGE+1:
 		{
-			e->x_speed += e->dir ? 0x20 : -0x20;
+			e->x_speed += e->dir ? SPEED(0x20) : -SPEED(0x20);
 			//walking_animation(o);
 			
 			// stuck against the wall?
-			if ((e->dir == 0 && collide_stage_leftwall(e)) || \
-				(e->dir == 1 && collide_stage_rightwall(e)))
-			{
-				if (++e->x_mark > 5)
-					e->state = STATE_JUMP_FIRE;
-			}
-			else
-			{
+			if((!e->dir && collide_stage_leftwall(e)) || 
+				(e->dir && collide_stage_rightwall(e))) {
+				if (++e->x_mark > 5) e->state = STATE_JUMP_FIRE;
+			} else {
 				// Use x_mark instead of timer3
 				e->x_mark = 0;
 			}
-			
 			// he behaves differently after every other time he pauses
-			if (e->timer2)
-			{
-				if (++e->timer > 75)
-				{
+			if (e->timer2) {
+				if (++e->timer > TIME(75)) {
 					e->frame = 0;;
 					e->state = STATE_PAUSE;
 				}
-			}
-			else
-			{
-				if (++e->timer > 24)
-					e->state = STATE_JUMP_FIRE;
+			} else {
+				if (++e->timer > TIME(24)) e->state = STATE_JUMP_FIRE;
 			}
 		}
 		break;
@@ -621,47 +585,38 @@ void ai_balrog_boss_missiles(Entity *e)
 			e->state++;
 			e->timer = 0;
 			e->frame = 3;;
-			e->y_speed = -0x5ff;
+			e->y_speed = -SPEED(0x5ff);
 		}
 		/* no break */
 		case STATE_JUMP_FIRE+1:
 		{
 			FACE_PLAYER(e);
-			
 			// fire missiles
-			if (++e->timer < 30)
-			{
-				if ((e->timer % 6) == 1)
-				{
+			if (++e->timer < 30) {
+				if ((e->timer % 6) == 1) {
 					sound_play(SND_EM_FIRE, 5);
-					
 					//Entity *shot = SpawnEntityAtActionPoint(o, OBJ_BALROG_MISSILE);
 					//shot->dir = e->dir;
 					//shot->xinertia = 0x100;
 				}
 			}
-			
 			// landed?
-			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e)))
-			{
-				e->frame = 2;;
+			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))){
+				e->frame = 2;
 				e->state = STATE_PAUSE;
 				camera_shake(30);
 			}
 		}
 		break;
-		
 		// stop for a moment
 		case STATE_PAUSE:
 		{
 			e->x_speed *= 4;
 			e->x_speed /= 5;
 			if (e->x_speed != 0) break;
-			
 			e->state = 0;
 		}
 		break;
-		
 		case STATE_CAUGHT_PLAYER:	// caught player
 		{
 			//if (balrog_toss_player_away(o))
@@ -676,8 +631,7 @@ void ai_balrog_boss_missiles(Entity *e)
 	LIMIT_Y(0x5ff);
 }
 
-void ai_balrog_missile(Entity *e)
-{
+void ai_balrog_missile(Entity *e) {
 	if ((e->dir == 1 && collide_stage_rightwall(e)) || \
 		(e->dir == 0 && collide_stage_leftwall(e)))
 	{

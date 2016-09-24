@@ -14,10 +14,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, NULL, &ai_beetle, &ondeath_default }, // Beetle
 	{ NULL, SHEET_BASIL, 	PAL1, 1, &onspawn_basil, &ai_basil, NULL }, // Basil
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default },
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog_drop_in, NULL }, // Balrog
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_drop_in, NULL }, // Balrog
 	{ NULL, NOSHEET, 		PAL0, 0, NULL, NULL, NULL },
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, &onspawn_persistent, &ai_genericproj, NULL }, // Igor Shot
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog, NULL }, // Balrog
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog, NULL }, // Balrog
 	{ NULL, SHEET_FFIELD, 	PAL1, 1, NULL, NULL, NULL }, // Forcefield
 	{ &SPR_Key, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Santa's Key
 	{ &SPR_Chest, NOSHEET, 	PAL1, 1, NULL, &ai_chest, NULL }, // Chest
@@ -25,7 +25,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ &SPR_Save, NOSHEET, 	PAL1, 1, NULL, &ai_savepoint, NULL }, // Save Point
 	{ &SPR_Refill, NOSHEET, PAL1, 1, NULL, &ai_refill, NULL }, // Refill
 	{ &SPR_Door, NOSHEET, 	PAL1, 1, &onspawn_door, &ai_door, NULL }, // Door
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog_bust_in, NULL }, // Balrog
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_bust_in, NULL }, // Balrog
 	{ &SPR_Computer,NOSHEET,PAL1, 1, NULL, &ai_computer, NULL }, // Computer
 	{ &SPR_Chest2, NOSHEET, PAL1, 1, &onspawn_snap, NULL, NULL }, // Open Chest
 	{ &SPR_Tele, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Teleporter
@@ -43,7 +43,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, NULL, &ai_balrogShot, NULL }, // Balrog Shot
 	{ &SPR_Bed, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Bed
 	{ NULL, SHEET_MANNAN, 	PAL3, 1, NULL, &ai_mannan, NULL }, // Mannan
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ondeath_balrogFlying, &ai_balrogFlying },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ondeath_balrogFlying, &ai_balrogFlying },
 	{ &SPR_Sign, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Sign Post
 	{ &SPR_Fire, NOSHEET, 	PAL1, 1, NULL, &ai_fireplace, NULL }, // Fireplace
 	{ &SPR_SaveSign,NOSHEET,PAL1, 1, &onspawn_op2anim, NULL, NULL }, // Save Sign
@@ -77,7 +77,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batVertical, &ai_batVertical, &ondeath_default }, // Bat
 	{ &SPR_Bubble, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bubble, NULL }, // Misery's Bubble
 	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_float, NULL }, // Misery
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrogRunning, &ondeath_default },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogRunning, &ondeath_default },
 	{ NULL, SHEET_PIGNON, 	PAL1, 1, NULL, &ai_pignon, &ondeath_default }, // Pignon
 	{ &SPR_Sparkle,NOSHEET, PAL1, 1, NULL, &ai_sparkle, NULL }, // Sparkle
 	{ &SPR_Fish, NOSHEET, 	PAL0, 1, NULL, &ai_chinfish, &ondeath_default }, // Chinfish
@@ -184,7 +184,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ &SPR_GaudiMerch,NOSHEET,PAL3,1,NULL, NULL, NULL }, // Chaba
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_booster_falling, NULL }, // Booster
 	{ &SPR_Boulder,NOSHEET, PAL3, 4, NULL, &ai_boulder, NULL }, // Boulder
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog_boss_missiles, &ondeath_default },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_default },
 	{ NULL, NOSHEET, 		PAL0, 1, NULL, &ai_balrog_missile, NULL }, // Balrog Missile
 	{ &SPR_CoreThing,NOSHEET,PAL2,1, NULL, &ai_firewhirr, &ondeath_default }, // Fire Whirr
 	{ &SPR_CoreThingShot,NOSHEET,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, NULL },
@@ -192,137 +192,73 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, NOSHEET, 		PAL2, 1, &onspawn_persistent, NULL, NULL }, // Gaudi Shot
 	{ &SPR_GaudiEgg,NOSHEET,PAL2, 1, NULL, &ai_gaudi_egg, NULL }, // Gaudi Egg
 	/* 0x0B0 (176) */
-	{ &SPR_BuyoBase, NOSHEET, PAL2, 1, // Buyobuyo Base
-		NULL, &ai_buyobuyo_base, NULL },
-	{ &SPR_Buyo, 	NOSHEET, PAL2, 1, // Buyobuyo
-		NULL, &ai_buyobuyo, &ondeath_default },
-	{ &SPR_CoreShot1, NOSHEET, PAL3, 1, // Core Spinning Projectile
-		&onspawn_persistent, &ai_minicore_shot, NULL },
-	{ &SPR_CoreShot2, NOSHEET, PAL3, 1, // Core Wisp Projectile
-		&onspawn_persistent, &ai_core_ghostie, NULL },
-	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (AI)
-		&onspawn_persistent, &ai_curly_ai, NULL },
-	{ &SPR_Polar, 	NOSHEET, PAL0, 1, // Curly Polar Star
-		&onspawn_persistent, &ai_cai_gun, NULL },
-	{ &SPR_MGun, 	NOSHEET, PAL1, 1, // Curly Machine Gun
-		&onspawn_persistent, &ai_cai_gun, NULL },
-	{ &SPR_Bubble, 	NOSHEET, PAL0, 1, // Curly Bubble Shield
-		&onspawn_persistent, &ai_cai_watershield, NULL },
-	{ NULL, 		NOSHEET, PAL2, 1, // Shutter (Large)
-		NULL, &ai_shutter, NULL },
-	{ NULL, 		NOSHEET, PAL2, 1, // Shutter (Small)
-		NULL, &ai_shutter, NULL },
-	{ &SPR_Baby, 		NOSHEET, PAL2, 1, // Lift Block
-		NULL, &ai_shutter, NULL },
-	{ &SPR_FuzzCore, NOSHEET, PAL2, 1, // Fuzz Core
-		NULL, &ai_fuzz_core, &ondeath_default },
-	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, // Fuzz
-		NULL, &ai_fuzz, &ondeath_default },
-	{ &SPR_CoreShot4, NOSHEET, PAL3, 1, // Homing Flame Projectile
-		&onspawn_persistent, &ai_core_blast, NULL },
-	{ NULL, 		NOSHEET, PAL0, 1, // Surface Robot
-		NULL, &ai_almond_robot, NULL },
-	{ NULL, 		NOSHEET, PAL0, 2, // Water Level
-		&onspawn_persistent, &ai_waterlevel, NULL },
+	{ &SPR_BuyoBase,NOSHEET, PAL2, 1, NULL, &ai_buyobuyo_base, NULL }, // Buyobuyo Base
+	{ &SPR_Buyo, 	NOSHEET, PAL2, 1, NULL, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
+	{ &SPR_CoreShot1,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_minicore_shot, NULL }, // Core Spinning Projectile
+	{ &SPR_CoreShot2,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_core_ghostie, NULL }, // Core Wisp Projectile
+	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, NULL }, // Curly (AI)
+	{ &SPR_Polar, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_gun, NULL }, // Curly Polar Star
+	{ &SPR_MGun, 	NOSHEET, PAL1, 1, &onspawn_persistent, &ai_cai_gun, NULL }, // Curly Machine Gun
+	{ &SPR_Bubble, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_watershield, NULL }, // Curly Bubble Shield
+	{ NULL, 		NOSHEET, PAL2, 1, NULL, &ai_shutter, NULL }, // Shutter (Large)
+	{ NULL, 		NOSHEET, PAL2, 1, NULL, &ai_shutter, NULL }, // Shutter (Small)
+	{ &SPR_Baby, 	NOSHEET, PAL2, 1, NULL, &ai_shutter, NULL }, // Lift Block
+	{ &SPR_FuzzCore,NOSHEET, PAL2, 1, NULL, &ai_fuzz_core, &ondeath_default }, // Fuzz Core
+	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, NULL, &ai_fuzz, &ondeath_default }, // Fuzz
+	{ &SPR_CoreShot4,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_core_blast, NULL }, // Homing Flame Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, &ai_almond_robot, NULL }, // Surface Robot
+	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, NULL }, // Water Level
 	/* 0x0C0 (192) */
-	{ &SPR_Buggy, 	NOSHEET, PAL1, 1, // Scooter
-		NULL, &ai_motorbike, NULL },
-	{ &SPR_Buggy2, 	NOSHEET, PAL1, 2, // Scooter (Pieces)
-		NULL, NULL, NULL },
-	{ &SPR_Robot, 	NOSHEET, PAL3, 1, // Blue Robot (Pieces)
-		NULL, NULL, NULL },
-	{ NULL, 		NOSHEET, PAL0, 1, // Grate Mouth
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Motion Wall
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Porcupine Fish
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Ironhead Projectile
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Underwater Current
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Dragon Zombie
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Dragon Zombie (Dead)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Dragon Zombie Projectile
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Blue Hopping Critter
-		&onspawn_snap, &ai_critter, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Falling Spike (Small)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Falling Spike (Large)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Counter Bomb
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Countdown Balloon
-		NULL, NULL, &ondeath_default },
+	{ &SPR_Buggy, 	NOSHEET, PAL1, 1, NULL, &ai_motorbike, NULL }, // Scooter
+	{ &SPR_Buggy2, 	NOSHEET, PAL1, 2, NULL, NULL, NULL }, // Scooter (Pieces)
+	{ &SPR_Robot, 	NOSHEET, PAL3, 1, NULL, NULL, NULL }, // Blue Robot (Pieces)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Grate Mouth
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Motion Wall
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Porcupine Fish
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Ironhead Projectile
+	{ NULL, 		NOSHEET, PAL0, 0, NULL, NULL, NULL }, // Underwater Current
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Dragon Zombie
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Dragon Zombie (Dead)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Dragon Zombie Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Falling Spike (Small)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Falling Spike (Large)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Counter Bomb
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Countdown Balloon
 	// 0x0D0 (208) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Basu (2)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Basu Projectile (2)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Green Beetle (Follow 2)
-		NULL, NULL, &ondeath_default },
-	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, // Spikes
-		&onspawn_spike, NULL, NULL },
-	{ NULL, 		NOSHEET, PAL0, 1, // Sky Dragon
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Night Spirit
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Night Spirit Projectile
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 2, // White Sandcroc
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Debug Cat
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Itoh
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Smoke/Current Generator
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Shovel Brigade
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Shovel Brigade (Walking)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Prison Bars
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Momorin
-		NULL, NULL, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Basu (2)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Basu Projectile (2)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Green Beetle (Follow 2)
+	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, NULL, NULL }, // Spikes
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Sky Dragon
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Night Spirit
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Night Spirit Projectile
+	{ NULL, 		NOSHEET, PAL0, 2, NULL, NULL, &ondeath_default }, // White Sandcroc
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Debug Cat
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Itoh
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // ???
+	{ NULL, 		NOSHEET, PAL0, 0, NULL, NULL, NULL }, // Smoke/Current Generator
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Shovel Brigade
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Shovel Brigade (Walking)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Prison Bars
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Momorin
 	/* 0x0E0 (224) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Chie
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Megane
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Kanpachi
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Bucket
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Droll (Guard)
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Flower Sprouts
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Blooming Red Flowers
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Rocket
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orangebell
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Picked Red Flowers
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Midorin
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Gunfish
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Gunfish Projectile
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Lethal Press
-		NULL, NULL, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Cage Bars
-		NULL, NULL, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Chie
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Megane
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Kanpachi
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Bucket
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Droll (Guard)
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Red Flower Sprouts
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Blooming Red Flowers
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Rocket
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Orangebell
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // ???
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Picked Red Flowers
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Midorin
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Gunfish
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Gunfish Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, &ondeath_default }, // Lethal Press
+	{ NULL, 		NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Cage Bars
 	/* 0x0F0 (240) */
 	{ NULL, 		NOSHEET, PAL0, 1, // Jailed Mimiga
 		NULL, NULL, &ondeath_default },
@@ -576,13 +512,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
-	{ &SPR_Omega, 	NOSHEET, PAL3, 3, // Omega
+	{ &SPR_Omega, 	NOSHEET, PAL3, 6, // Omega
 		&onspawn_omega, &ai_omega, &ondeath_omega },
-	{ &SPR_Balfrog1, NOSHEET, PAL3, 3, // Balfrog
+	{ &SPR_Balfrog1, NOSHEET, PAL3, 8, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },
-	{ NULL, NOSHEET, PAL3, 3, // Monster X
+	{ NULL, NOSHEET, PAL3, 8, // Monster X
 		NULL, NULL, NULL },
-	{ NULL, NOSHEET, PAL3, 3, // Core (Controller)
+	{ NULL, NOSHEET, PAL3, 1, // Core (Controller)
 		&onspawn_core, &ai_core, &ondeath_core },
 	{ NULL, NOSHEET, PAL3, 3, // Ironhead
 		NULL, NULL, NULL },
@@ -600,7 +536,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	/* 0x172 (370) */
 	{ NULL, NOSHEET, PAL3, 3, // Core (Front)
 		&onspawn_persistent, &ai_core_front, NULL },
-	{ NULL, NOSHEET, PAL3, 3, // Core (Back)
+	{ NULL, NOSHEET, PAL3, 9, // Core (Back)
 		&onspawn_persistent, &ai_core_back, NULL },
 	{ &SPR_MiniCore, NOSHEET, PAL3, 2, // Mini Core
 		&onspawn_persistent, &ai_minicore, NULL },
