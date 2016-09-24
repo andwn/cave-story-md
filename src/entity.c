@@ -50,7 +50,7 @@
 		temp = obj->next;                                                                      \
 		if(obj->var == match) {                                                                \
 			LIST_REMOVE(list, obj);                                                            \
-			/*if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);*/                \
+			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);                \
 			MEM_free(obj);                                                                     \
 		}                                                                                      \
 		obj = temp;                                                                            \
@@ -816,7 +816,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 		if(e->event == event) {
 			// Need to re-create the structure, the replaced entity may have a different
 			// number of sprites
-			Entity *new = entity_create(e->x, e->y, type, /* e->nflags |*/ e->eflags | flags);
+			Entity *new = entity_create(e->x, e->y, type, e->eflags | flags);
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
@@ -827,7 +827,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	e = inactiveList;
 	while(e) {
 		if(e->event == event) {
-			Entity *new = entity_create(e->x, e->y, type, /* e->nflags |*/ e->eflags | flags);
+			Entity *new = entity_create(e->x, e->y, type, e->eflags | flags);
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;

@@ -128,12 +128,12 @@ void stage_load_entities() {
 	for(u8 i = 0; i < PXE[4]; i++) {
 		u16 x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
-		x     = PXE[8  + (i-1) * 12] + (PXE[9  + (i-1) * 12]<<8);
-		y     = PXE[10 + (i-1) * 12] + (PXE[11 + (i-1) * 12]<<8);
-		id    = PXE[12 + (i-1) * 12] + (PXE[13 + (i-1) * 12]<<8);
-		event = PXE[14 + (i-1) * 12] + (PXE[15 + (i-1) * 12]<<8);
-		type  = PXE[16 + (i-1) * 12] + (PXE[17 + (i-1) * 12]<<8);
-		flags = PXE[18 + (i-1) * 12] + (PXE[19 + (i-1) * 12]<<8);
+		x     = PXE[8  + i * 12] + (PXE[9  + i * 12]<<8);
+		y     = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
+		id    = PXE[12 + i * 12] + (PXE[13 + i * 12]<<8);
+		event = PXE[14 + i * 12] + (PXE[15 + i * 12]<<8);
+		type  = PXE[16 + i * 12] + (PXE[17 + i * 12]<<8);
+		flags = PXE[18 + i * 12] + (PXE[19 + i * 12]<<8);
 		// There are some unused entities that have all these values as 0, as well as
 		// entities that should only exist when specific flags are on/off
 		// Loading these would be a waste of memory, just skip them
