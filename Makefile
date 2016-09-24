@@ -31,7 +31,7 @@ OBJS = $(RESOURCES)
 
 .SECONDARY: out.elf
 
-all: out.bin 
+all: ai_gen.h ut.bin 
 
 src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
@@ -55,6 +55,9 @@ src/boot/sega.o: out/rom_head.bin
 out/rom_head.bin: src/boot/rom_head.o
 	mkdir -p out/boot
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
+
+ai_gen.h:
+	python aigen.py
 
 clean:
 	rm -f $(RESOURCES)

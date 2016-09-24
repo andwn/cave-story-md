@@ -95,6 +95,9 @@ void sheets_load_stage(u16 sid) {
 		{	// Pignon
 			SHEET_ADD(SHEET_PIGNON, 5, 2, 2);
 			SHEET_LOAD(&SPR_Pignon, 5,4, sheets[7].index, 1, 0,0, 1,0, 1,2, 2,0, 3,0);
+			// Big Pignon
+			SHEET_ADD(SHEET_PIGNONB, 5, 3, 3);
+			SHEET_LOAD(&SPR_PignonB, 5,9, sheets[8].index, 1, 0,0, 1,0, 1,2, 2,0, 3,0);
 		}
 		break;
 		case 0x11: // Yamashita Farm
@@ -131,6 +134,12 @@ void sheets_load_stage(u16 sid) {
 			SHEET_LOAD(&SPR_EnergyShot, 2,4, sheets[11].index, 1, 0,0, 0,1);
 		}
 		break;
+		case 0x05: // Egg Observatory
+		case 0x17: // Egg no. 1
+		{	// Terminal
+			SHEET_ADD(SHEET_TERM, 4, 2, 3);
+			SHEET_LOAD(&SPR_Term, 4,6, sheets[8].index, 1, 0,0, 0,1, 0,2, 0,3);
+		}
 		case 0x06: // Grasstown
 		case 0x30: // Waterway
 		{	// Jelly
@@ -214,7 +223,8 @@ void sheets_load_stage(u16 sid) {
 		}
 		break;
 		case 0x2F: // Core
-		{	// Core back
+		{	// Terminal
+			// Core back
 			// Minicore front
 			// Minicore back
 			// Small projectile

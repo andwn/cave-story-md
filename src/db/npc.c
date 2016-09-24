@@ -1,6 +1,6 @@
 #include "tables.h"
 
-#include "ai.h"
+#include "ai_gen.h"
 #include "resources.h"
 #include "sheet.h"
 
@@ -16,11 +16,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default },
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog_drop_in, NULL }, // Balrog
 	{ NULL, NOSHEET, 		PAL0, 0, NULL, NULL, NULL },
-	{ NULL, SHEET_IGORSHOT, PAL1, 1, NULL, &ai_genericproj, NULL }, // Igor Shot
+	{ NULL, SHEET_IGORSHOT, PAL1, 1, &onspawn_persistent, &ai_genericproj, NULL }, // Igor Shot
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrog, NULL }, // Balrog
 	{ NULL, SHEET_FFIELD, 	PAL1, 1, NULL, NULL, NULL }, // Forcefield
 	{ &SPR_Key, NOSHEET, 	PAL1, 1, NULL, NULL, NULL }, // Santa's Key
-	{ &SPR_Chest, NOSHEET, 	PAL1, 1, NULL, &ai_grav, NULL }, // Chest
+	{ &SPR_Chest, NOSHEET, 	PAL1, 1, NULL, &ai_chest, NULL }, // Chest
 	/* 0x010 (16) */
 	{ &SPR_Save, NOSHEET, 	PAL1, 1, NULL, &ai_savepoint, NULL }, // Save Point
 	{ &SPR_Refill, NOSHEET, PAL1, 1, NULL, &ai_refill, NULL }, // Refill
@@ -75,11 +75,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	/* 0x040 (64) */
 	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
 	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batVertical, &ai_batVertical, &ondeath_default }, // Bat
-	{ &SPR_Bubble, NOSHEET, PAL0, 1, NULL, &ai_misery_bubble, NULL }, // Misery's Bubble
-	{ &SPR_Misery, NOSHEET, PAL0, 1, NULL, &ai_misery_float, NULL }, // Misery
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrogRunning, &ondeath_balrogRunning },
+	{ &SPR_Bubble, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bubble, NULL }, // Misery's Bubble
+	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_float, NULL }, // Misery
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_balrog, &ai_balrogRunning, &ondeath_default },
 	{ NULL, SHEET_PIGNON, 	PAL1, 1, NULL, &ai_pignon, &ondeath_default }, // Pignon
-	{ &SPR_Sparkle,NOSHEET, PAL1, 1, NULL, NULL, NULL }, // Sparkle
+	{ &SPR_Sparkle,NOSHEET, PAL1, 1, NULL, &ai_sparkle, NULL }, // Sparkle
 	{ &SPR_Fish, NOSHEET, 	PAL0, 1, NULL, &ai_chinfish, &ondeath_default }, // Chinfish
 	{ &SPR_Sprinkler,NOSHEET,PAL1,1, NULL, &ai_sprinkler, NULL }, // Sprinkler
 	{ NULL, SHEET_DROP, 	PAL1, 1, &onspawn_persistent, &ai_water_droplet, NULL }, // Water Drop
@@ -88,23 +88,23 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_FLOWER, 	PAL3, 1, &onspawn_flower, NULL, NULL }, // Flowers
 	{ &SPR_Sanda, NOSHEET, 	PAL3, 2, NULL, NULL, NULL }, // Sandame
 	{ &SPR_Pot, NOSHEET, 	PAL1, 1, &onspawn_op2anim, NULL, NULL }, // Pot
-	{ &SPR_Mahin, NOSHEET, 	PAL3, 1, &onspawn_snap, NULL, NULL }, // Mahin
+	{ &SPR_Mahin, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_mahin, NULL }, // Mahin
 	/* 0x050 (80) */
 	{ &SPR_Keeper, NOSHEET, PAL1, 1, &onspawn_gkeeper, &ai_gkeeper, &ondeath_default }, // Gravekeeper
-	{ &SPR_PignonB,NOSHEET, PAL1, 1, NULL, &ai_pignon, &ondeath_default }, // Big Pignon
-	{ &SPR_Misery, NOSHEET, PAL0, 1, NULL, NULL, NULL }, // Misery
+	{ NULL,SHEET_PIGNONB, 	PAL1, 1, NULL, &ai_pignon, &ondeath_default }, // Big Pignon
+	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_stand, NULL }, // Misery
 	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igorscene, NULL }, // Igor
-	{ NULL, SHEET_BASUSHOT, PAL0, 1, NULL, NULL, NULL }, // Basu Shot
+	{ NULL, SHEET_BASUSHOT, PAL0, 1, &onspawn_persistent, &ai_genericproj, NULL }, // Basu Shot
 	{ NULL, SHEET_TERM, 	PAL1, 1, NULL, &ai_terminal, NULL }, // Terminal
 	{ NULL, SHEET_MISSILE, 	PAL1, 1, &onspawn_op2anim, &ai_missile, NULL }, // Missile
 	{ NULL, SHEET_HEART, 	PAL1, 1, &onspawn_op2anim, &ai_heart, NULL }, // Heart
-	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igor, &ondeath_igor }, // Igor
+	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igor, &ondeath_default }, // Igor
 	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igordead, NULL }, // Igor
 	{ NULL, NOSHEET, 		PAL0, 0, NULL, NULL, NULL },
 	{ &SPR_Cage, NOSHEET, 	PAL1, 1, &onspawn_snap, NULL, NULL }, // Cage
 	{ &SPR_SueCom, NOSHEET, PAL3, 1, &onspawn_snap, &ai_npc_at_computer, NULL }, // Sue Typing
 	{ &SPR_Chaco, NOSHEET, 	PAL3, 1, NULL, &ai_chaco, NULL }, // Chaco
-	{ &SPR_Kulala, NOSHEET, PAL0, 2, NULL, NULL, &ondeath_default }, // Kulala
+	{ &SPR_Kulala, NOSHEET, PAL0, 2, NULL, &ai_kulala, &ondeath_default }, // Kulala
 	{ NULL,	SHEET_JELLY, 	PAL0, 1, NULL, &ai_jelly, &ondeath_default }, // Jelly
 	/* 0x060 (96) */
 	{ NULL, SHEET_FAN, 		PAL1, 1, &onspawn_fan, &ai_fan, NULL }, // Fans (L,U,R,D)
@@ -112,8 +112,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_FAN, 		PAL1, 1, &onspawn_fan, &ai_fan, NULL },
 	{ NULL, SHEET_FAN, 		PAL1, 1, &onspawn_fan, &ai_fan, NULL },
 	{ NULL, NOSHEET, 		PAL0, 1, NULL, NULL, NULL }, // Grate
-	{ NULL, SHEET_POWERS, 	PAL1, 1, NULL, NULL, NULL }, // Power Screen
-	{ NULL, SHEET_POWERF, 	PAL1, 1, &onspawn_powerc, NULL, NULL }, // Power Flow
+	{ NULL, SHEET_POWERS, 	PAL1, 1, NULL, &ai_powers, NULL }, // Power Screen
+	{ NULL, SHEET_POWERF, 	PAL1, 1, &onspawn_powerc, &ai_powerc, NULL }, // Power Flow
 	{ &SPR_ManShot,NOSHEET, PAL1, 1, NULL, &ai_mannanShot, NULL }, // Mannan Shot
 	{ &SPR_Frog, NOSHEET, 	PAL3, 1, NULL, &ai_frog, &ondeath_default }, // Frog
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, NULL, &ai_hey, NULL }, // "Hey!"

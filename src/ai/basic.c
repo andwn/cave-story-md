@@ -348,3 +348,11 @@ void ai_gunsmith(Entity *e) {
 void ai_lifeup(Entity *e) {
 	ANIMATE(e, 4, 0,1);
 }
+
+void ai_chest(Entity *e) {
+	ANIMATE(e, 8, 0,1,2);
+}
+
+void ai_sparkle(Entity *e) {
+	ANIMATE(e, 8, 0,1,2);
+}

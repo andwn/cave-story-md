@@ -50,7 +50,7 @@
 		temp = obj->next;                                                                      \
 		if(obj->var == match) {                                                                \
 			LIST_REMOVE(list, obj);                                                            \
-			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);                \
+			/*if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);*/                \
 			MEM_free(obj);                                                                     \
 		}                                                                                      \
 		obj = temp;                                                                            \

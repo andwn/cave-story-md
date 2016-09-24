@@ -45,3 +45,47 @@ void ai_chaco(Entity* e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
+
+void ai_mahin(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			SNAP_TO_GROUND(e);
+			e->frame = 2;
+			e->state = 1;
+		}
+		case 1: break;
+		case 2:
+		{
+			e->frame = 0;
+			RANDBLINK(e, 1, 200);
+		}
+		break;
+	}
+}
+
+void ai_sanda(Entity *e) {
+	if (!e->state) {
+		if (e->eflags & NPC_OPTION2) {	
+			// Sandaime gone
+			e->state = 2;
+			e->frame = 2;
+		} else {	
+			// Sandaime present
+			e->state = 1;
+		}
+	}
+	if (e->state == 1) {
+		e->frame = 0;
+		RANDBLINK(e, 1, 200);
+	}
+}
+
+void ai_cthulu(Entity *e) {
+	if (!e->state) {
+		SNAP_TO_GROUND(e);
+		e->state = 1;
+	}
+	// open eyes when player comes near
+	e->frame = (PLAYER_DIST_X((48<<CSF)) && PLAYER_DIST_Y2((48<<CSF), (16<<CSF))) ? 1 : 0;
+}

@@ -221,93 +221,27 @@ void ai_mannanShot(Entity *e) {
 	e->x += e->x_speed;
 }
 
-// Redo malco later
 void ai_malco(Entity *e) {
-	/*
-	switch(e->state) {
-		case 10:
-		if(++e->timer < 100) {
-			if((e->timer % 4) == 0) {
-				sound_play(SND_COMPUTER_BEEP, 5);
-			}
-		} else if(e->timer > 150) {
-			ENTITY_SET_STATE(e, 15, 0);
-		}
-		break;
-		case 15:		// shaking
-		if(e->timer % 4 == 0) {
-			e->x += sub_to_pixel(1);
-			sound_play(SND_DOOR, 5);
-		} else if(e->timer % 4 == 2) {
-			e->x -= sub_to_pixel(1);
-		}
-		if(++e->timer > 50) ENTITY_SET_STATE(e, 16, 0);
-		break;
-		case 16:		// stand up
-		if(++e->timer > 150) ENTITY_SET_STATE(e, 18, 0);
-		break;
-		case 18:		// gawking/bobbing up and down
-		if(++e->timer % 8 == 0) sound_play(SND_DOOR, 5);
-		if(e->timer > 100) ENTITY_SET_STATE(e, 20, 0);
-		break;
-	}
-	* */
+	
 }
 
-void ondeath_malco(Entity *restrict e) {
-	/*
-	switch(e->state) {
-		case 0:
-		e->frame = 0;
-		break;
-		case 10:
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-		break;
-		case 16:
-		e->frame = 2;
-		sound_play(SND_BLOCK_DESTROY, 5);
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-		break;
-		case 18:
-		e->frame = 3;
-		break;
-		case 20: 
-		e->frame = 4;
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-		break;
-		case 21:	// got smushed!
-		e->frame = 5;
-		sound_play(SND_ENEMY_HURT, 5);
-		break;
-	}
-	* */
+void onspawn_malcoBroken(Entity *e) {
+	e->frame = 6;
 }
 
-void onspawn_malcoBroken(Entity *restrict e) {
-	e->frame = 6;;
-}
-
-void ondeath_malcoBroken(Entity *restrict e) {
-	/*
-	switch(e->state) {
-		case 0:
-		e->frame = 0;
-		FACE_PLAYER(e);
-		break;
-		case 10:	// set when pulled out of ground
-		sound_play(SND_BLOCK_DESTROY, 5);
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-		e->state = 0;
-		break;
-	}
-	* */
-}
-
-void onspawn_powerc(Entity *restrict e) {
+void onspawn_powerc(Entity *e) {
 	e->y -= 8 << CSF;
 }
 
-void ai_press(Entity *restrict e) {
+void ai_powerc(Entity *e) {
+	ANIMATE(e, 8, 0,1);
+}
+
+void ai_powers(Entity *e) {
+	ANIMATE(e, 4, 0,1,2,3);
+}
+
+void ai_press(Entity *e) {
 	switch(e->state) {
 		case 0:
 			e->x_next = e->x;
@@ -316,13 +250,13 @@ void ai_press(Entity *restrict e) {
 			if(!e->grounded) {
 				e->state = 10;
 				e->timer = 0;
-				////SPR_SAFEFRAME(e->sprite, 1);
+				e->frame = 1;
 			}
 		break;
 		case 10:		// fall
 			e->timer++;
 			if(e->timer == 4) {
-				////SPR_SAFEFRAME(e->sprite, 2);
+				e->frame = 2;
 			}
 			e->y_speed += 0x20;
 			if(e->y_speed > 0x5FF) e->y_speed = 0x5FF;
@@ -339,7 +273,7 @@ void ai_press(Entity *restrict e) {
 				//SmokeSide(o, 4, DOWN);
 				camera_shake(10);
 				e->state = 11;
-				////SPR_SAFEFRAME(e->sprite, 0);
+				e->frame = 0;
 				e->attack = 0;
 				e->eflags |= NPC_SOLID;
 			}
@@ -348,7 +282,7 @@ void ai_press(Entity *restrict e) {
 	}
 }
 
-void ai_frog(Entity *restrict e) {
+void ai_frog(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x80);
 	LIMIT_Y(SPEED(0x5FF));
 
@@ -441,7 +375,7 @@ void ai_frog(Entity *restrict e) {
 	e->y = e->y_next;
 }
 
-void ai_hey(Entity *restrict e) {
+void ai_hey(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -470,7 +404,7 @@ void ai_hey(Entity *restrict e) {
 	}
 }
 
-void ai_motorbike(Entity *restrict e) {
+void ai_motorbike(Entity *e) {
 	switch(e->state) {
 		case 0:		// parked
 		break;
