@@ -210,7 +210,7 @@ void ai_balrog(Entity *e) {
 			fall = FALSE;
 			// bust through ceiling
 			u16 y = sub_to_block(e->y + (4<<9));
-			if (y < 35 && y >= 0) {
+			if (y < 35) {
 				if (stage_get_block(sub_to_block(e->x), y) != 0) {
 					// smoke needs to go at the bottom of z-order or you can't
 					// see any of the characters through all the smoke.

@@ -9,6 +9,8 @@
 #include "effect.h"
 #include "sprite.h"
 
+void ai_null(Entity *e) {}
+
 void onspawn_snap(Entity *e) {
 	SNAP_TO_GROUND(e);
 }
@@ -27,7 +29,9 @@ void onspawn_op2anim(Entity *e) {
 }
 
 void onspawn_op2snap(Entity *e) {
-	if(e->eflags & NPC_OPTION2) SNAP_TO_GROUND(e);
+	if(e->eflags & NPC_OPTION2) {
+		SNAP_TO_GROUND(e);
+	}
 }
 
 void onspawn_blackboard(Entity *e) {
@@ -60,9 +64,9 @@ void onspawn_spike(Entity *e) {
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
 		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		e->frame = 1;;
+		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		e->frame = 1;;
+		e->frame = 1;
 		e->dir = 1;
 	}
 }

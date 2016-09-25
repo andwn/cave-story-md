@@ -15,12 +15,14 @@
 #define NOTILOC 255
  
 // Reduces the copy paste mess of VDP_loadTileData calls
-#define SHEET_ADD(sheetid, frames, width, height) {                                            \
+#define SHEET_ADD(sheetid, sdef, frames, width, height, ...) {                                            \
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		u16 index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size           \
 							  : TILE_SHEETINDEX;                                               \
 		sheets[sheet_num] = (Sheet) { sheetid, frames*width*height, index, width, height };    \
 		tiloc_index = sheets[sheet_num].index + sheets[sheet_num].size;                        \
+		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sheet_num].index, 1, __VA_ARGS__);   \
+		for(u8 i = 0; i < 16; i++) frameOffset[sheet_num][i] = width * height * i;             \
 		sheet_num++;                                                                           \
 	}                                                                                          \
 }
@@ -86,6 +88,9 @@ typedef struct {
 	u8 w, h; // Size of each frame
 } Sheet;
 Sheet sheets[MAX_SHEETS];
+
+// Avoids MULU in entity update
+u8 frameOffset[MAX_SHEETS][16];
 
 u16 tiloc_index;
 u8 tilocs[MAX_TILOCS];

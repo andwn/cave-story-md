@@ -20,7 +20,7 @@ void ai_jelly(Entity *e) {
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			if(e->eflags & NPC_OPTION2) e->dir = 1;
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED(0x100));
 			e->state = 1;
 		}
 		/* no break */
@@ -49,6 +49,7 @@ void ai_jelly(Entity *e) {
 				e->y_speed -= SPEED(0x200);
 			} else if(e->timer > TIME(16)) {
 				e->state = 12;
+				e->timer = 0;
 			}
 		}
 		break;
@@ -63,10 +64,10 @@ void ai_jelly(Entity *e) {
 		break;
 	}
 	if((e->dir && e->x > e->x_mark) || (!e->dir && e->x < e->x_mark)) TURN_AROUND(e);
-	if(e->y <= e->y_mark) e->y_speed += SPEED(0x20);
-	LIMIT_X(SPEED(0x100));
-	LIMIT_Y(SPEED(0x200));
-	
+	if(e->y <= e->y_mark) {
+		e->y_speed += SPEED(0x20);
+		LIMIT_Y(SPEED(0x200));
+	}
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(e->x_speed < 0) collide_stage_leftwall(e);
@@ -152,10 +153,9 @@ void ai_kulala(Entity *e) {
 		e->x_mark = 0;
 	}
 	
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	
 	if(e->state >= 10) {
+		e->x_next = e->x + e->x_speed;
+		e->y_next = e->y + e->y_speed;
 		e->y_speed += SPEED(0x10);
 		if(collide_stage_floor(e)) e->y_speed = SPEED(-0x300);
 		
@@ -176,13 +176,11 @@ void ai_kulala(Entity *e) {
 			e->y_mark = TIME(50);
 			FACE_PLAYER(e);
 		}
+		LIMIT_X(SPEED(0x100));
+		LIMIT_Y(SPEED(0x300));
+		e->x = e->x_next;
+		e->y = e->y_next;
 	}
-	
-	LIMIT_X(SPEED(0x100));
-	LIMIT_Y(SPEED(0x300));
-	
-	e->x = e->x_next;
-	e->y = e->y_next;
 }
 
 void ai_mannan(Entity *e) {

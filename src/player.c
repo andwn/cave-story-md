@@ -639,13 +639,12 @@ void player_draw() {
 	// Blink during invincibility frames
 	if(playerShow && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
-		if(joy_down(BUTTON_RIGHT) && !player.dir) {
-			player.dir ^= 1;
-			playerSprite.attribut |= TILE_ATTR_HFLIP_MASK;
-		} else if(joy_down(BUTTON_LEFT) && player.dir) {
-			player.dir ^= 1;
-			playerSprite.attribut &= ~TILE_ATTR_HFLIP_MASK;
+		if(joy_down(BUTTON_RIGHT)) {
+			player.dir = 1;
+		} else if(joy_down(BUTTON_LEFT)) {
+			player.dir = 0;
 		}
+		sprite_hflip(playerSprite, player.dir);
 		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);

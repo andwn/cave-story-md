@@ -79,17 +79,18 @@ void entity_deactivate(Entity *e) {
 
 // Move into active list, recreate sprite
 void entity_reactivate(Entity *e) {
-	//if(e->type == OBJ_DOOR) { // In back
-	//	LIST_MOVE_TAIL(inactiveList, entityListTail, e);
-	//}
 	LIST_MOVE(inactiveList, entityList, e);
-	
 	if(e->sheet == NOSHEET && npc_info[e->type].sprite) {
 		// Try to allocate some VRAM
 		TILOC_ADD(e->tiloc, e->framesize);
 		if(e->tiloc != NOTILOC) {
+			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
 			e->vramindex = tiloc_index + e->tiloc * 4;
-			sprite_index(e->sprite[0], e->vramindex);
+			u16 tile_offset = 0;
+			for(u8 i = 0; i < e->sprite_count; i++) {
+				sprite_index(e->sprite[i], e->vramindex + tile_offset);
+				tile_offset += f->vdpSpritesInf[i]->numTile;
+			}
 			e->oframe = 255;
 		}
 	}
@@ -167,10 +168,10 @@ void entities_update() {
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
-		} else if(e->state == STATE_DESTROY) {
+		} /*else if(e->state == STATE_DESTROY) {
 			e = entity_destroy(e);
 			continue;
-		}
+		}*/
 		// Handle Shootable flag - check for collision with player's bullets
 		if((e->nflags | e->eflags) & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
@@ -218,7 +219,7 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if((e->eflags|e->nflags) & (NPC_SPECIALSOLID)) {
+		if((e->eflags|e->nflags) & (NPC_SPECIALSOLID|NPC_SOLID)) {
 			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
@@ -245,7 +246,7 @@ void entities_update() {
 				player.x = player.x_next;
 			}
 		} // "Smushy" Solid Entities
-		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
+		/*else if((e->eflags|e->nflags) & (NPC_SOLID)) {
 			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				player.y += (collision.bottom - 1);
@@ -275,11 +276,11 @@ void entities_update() {
 				collide_stage_leftwall(&player);
 				player.x = player.x_next;
 			}
-		}
+		}*/
 		// Can damage player if we have an attack stat and no script is running
-		if(e->attack > 0 && playerIFrames == 0 && !tscState) {
+		if(e->attack && !playerIFrames && !tscState) {
 			u32 collided = *(u32*)&collision; // I do what I want
-			if((collided > 0 || entity_overlapping(&player, e))) {
+			if(collided || entity_overlapping(&player, e)) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
 				if((e->eflags|e->nflags)&NPC_FRONTATKONLY) {
@@ -310,14 +311,8 @@ void entities_update() {
 				sprite_pos(e->sprite[0],
 						(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
 						(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
-				if(e->frame != e->oframe) {
-					e->oframe = e->frame;
-					sprite_index(e->sprite[0], e->vramindex + e->frame * e->framesize);
-				}
-				if(e->dir != e->odir) {
-					e->odir = e->dir;
-					sprite_hflip(e->sprite[0], e->dir);
-				}
+				sprite_index(e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
+				sprite_hflip(e->sprite[0], e->dir);
 			} else if(e->tiloc != NOTILOC) {
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
 				if(e->frame != e->oframe) {
@@ -334,7 +329,7 @@ void entities_update() {
 						sprite_hflip(e->sprite[i], 1);
 						x += min(f->w - x, 32);
 						if(x >= f->w + 32) {
-							x = 32;
+							x = min(f->w, 32);
 							y += 32;
 						}
 					}
@@ -353,6 +348,7 @@ void entities_update() {
 					}
 				}
 			}
+			//sprite_addq(e->sprite, e->sprite_count);
 		}
 		e = e->next;
 	}

@@ -9,7 +9,7 @@ OBJC = $(GENGCC_BIN)objcopy
 RESCOMP= $(GENBIN)rescomp
 
 INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -O2 -std=c99 -c -fomit-frame-pointer -fno-builtin
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-missing-field-initializers -O3 -std=c99 -c -fomit-frame-pointer -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
 LIBS = -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
@@ -63,3 +63,4 @@ clean:
 	rm -f $(RESOURCES)
 	rm -f *.o *.bin *.elf *.map
 	rm -f src/boot/*.o src/boot/*.bin
+	rm -f inc/ai_gen.h

@@ -73,7 +73,7 @@ u8 game_main(u8 load) {
 			paused = update_pause();
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
-			if(!tscState && joy_pressed(BUTTON_START)) {
+			if(joy_pressed(BUTTON_START) && !tscState) {
 				draw_itemmenu();
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
@@ -89,7 +89,7 @@ u8 game_main(u8 load) {
 					camera_update();
 					player_update();
 					entities_update();
-					if(showingBossHealth) tsc_update_boss_health();
+					//if(showingBossHealth) tsc_update_boss_health();
 				}
 				// Restore controller locking if it was locked
 				joystate = lockstate;
@@ -120,13 +120,11 @@ u8 game_main(u8 load) {
 				window_update();
 				// Get the sprites ready
 				effects_update();
-				//entities_draw_fore();
 				player_draw();
 				entities_draw();
-				
-				system_update();
 			}
 		}
+		system_update();
 		ready = TRUE;
 		VDP_waitVSync();
 	}

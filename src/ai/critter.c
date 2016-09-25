@@ -9,14 +9,13 @@
 #include "resources.h"
 #include "sheet.h"
 
-enum {
-	STATE_WAITING = 0, 
-	STATE_ATTENTION = 10, 
-	STATE_HOPPING = 20, 
-	STATE_FLYING = 30
-};
-
-void ai_critter(Entity *restrict e) {
+void ai_critter(Entity *e) {
+	enum {
+		STATE_WAITING = 0, 
+		STATE_ATTENTION = 10, 
+		STATE_HOPPING = 20, 
+		STATE_FLYING = 30
+	};
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
@@ -75,7 +74,7 @@ void ai_critter(Entity *restrict e) {
 		}
 		case STATE_FLYING+1:
 		{
-			ANIMATE(e, 4, 3,4,5);
+			ANIMATE(e, 4, 3,4,5,3,4,5,3,4,5,3,4,5,3,4,5);
 			e->timer++;
 			e->y_speed -= SPEED(0x50);
 			if(e->timer % 8 == 1) sound_play(SND_CRITTER_FLY, 2);
@@ -98,6 +97,7 @@ void ai_critter(Entity *restrict e) {
 	}
 	if(e->x_speed > 0) collide_stage_rightwall(e);
 	else if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->y_speed < 0) collide_stage_ceiling(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 	if(!e->grounded) {

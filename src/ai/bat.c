@@ -156,14 +156,14 @@ void ai_batCircle(Entity *e) {
 		/* no break */
 		case 1:
 			// circle around our target point
-			if(e->dir && player.x < e->x) TURN_AROUND(e);
-			if(!e->dir && player.x > e->x) TURN_AROUND(e);
+			ANIMATE(e, 4, 0,1,2,0,1,2,0,1,2,0,1,2,0,1,2);
+			FACE_PLAYER(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
 			LIMIT_X(SPEED(0x200));
 			LIMIT_Y(SPEED(0x200));
 			if(!e->timer) {
-				if(PLAYER_DIST_X(0x1000) && (player.y > e->y) && PLAYER_DIST_Y(0xC000)) {
+				if(PLAYER_DIST_X(0x1000) && PLAYER_DIST_Y2(0, 64<<CSF)) {
 					// dive attack
 					e->x_speed /= 2;
 					e->y_speed = 0;
@@ -182,7 +182,7 @@ void ai_batCircle(Entity *e) {
 			if(collide_stage_floor(e)) {
 				e->y_speed = 0;
 				e->x_speed *= 2;
-				e->timer = TIME(120);		// delay before can dive again
+				e->timer = TIME(100);		// delay before can dive again
 				e->state = 1;
 				e->frame = 0;
 			}

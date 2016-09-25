@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-#define KDEBUG
+//#define KDEBUG
 #ifdef KDEBUG
 #include <kdebug.h>
 // Enable/disable logger for specific modules

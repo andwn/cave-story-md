@@ -983,7 +983,7 @@ void ai_buyobuyo_base(Entity *e) {
 			if (PLAYER_DIST_X(0x14000)) {
 				if ((e->dir == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
 					(e->dir == 1 && PLAYER_DIST_Y2(0x2000, 0x14000))) {
-					if (--e->timer < 0) {
+					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;
 						//e->frame = 1;

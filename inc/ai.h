@@ -12,9 +12,9 @@
  * * onDeath: when it's killed
  */
 
-#define ENTITY_ONSPAWN(e) { if(npc_info[e->type].onSpawn) npc_info[e->type].onSpawn(e); }
-#define ENTITY_ONFRAME(e) { if(npc_info[e->type].onFrame) npc_info[e->type].onFrame(e); }
-#define ENTITY_ONDEATH(e) { if(npc_info[e->type].onDeath) npc_info[e->type].onDeath(e); }
+#define ENTITY_ONSPAWN(e) npc_info[e->type].onSpawn(e)
+#define ENTITY_ONFRAME(e) npc_info[e->type].onFrame(e)
+#define ENTITY_ONDEATH(e) npc_info[e->type].onDeath(e)
 
 typedef void (*EntityMethod)(Entity*);
 
