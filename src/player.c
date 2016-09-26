@@ -797,8 +797,8 @@ void player_give_weapon(u8 id, u8 ammo) {
 			w->maxammo = ammo;
 			w->ammo = ammo;
 			// Update the sprite sheet for specific weapons
-			if(weapon_info[w->type].sprite) {
-			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			if(!playerWeapon[i].type && weapon_info[w->type].sprite) {
+				TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
 			if(w->type == WEAPON_POLARSTAR) {
@@ -820,7 +820,6 @@ void player_take_weapon(u8 id) {
 	Weapon *w = player_find_weapon(id);
 	if(w != NULL) {
 		if(playerWeapon[currentWeapon].type == id) {
-			////SPR_SAFERELEASE(weaponSprite);
 			player_next_weapon();
 		}
 		w->type = 0;
@@ -842,7 +841,6 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w != NULL) {
 		if(id_take == playerWeapon[currentWeapon].type) {
-			////SPR_SAFERELEASE(weaponSprite);
 			if(weapon_info[w->type].sprite) {
 			TILES_QUEUE(SPR_TILES(weapon_info[w->type].sprite,0,0),
 					TILE_WEAPONINDEX,6);

@@ -9,6 +9,7 @@
 
 #define MAX_DAMAGE 4
 #define MAX_SMOKE 8
+#define MAX_MISC 4
 
 // Only send tiles for 1 damage string per frame
 u8 dqueued;
@@ -29,6 +30,6 @@ void effect_create_damage(s16 num, s16 x, s16 y);
 // Creates a single puff of smoke
 void effect_create_smoke(s16 x, s16 y);
 
-void effect_set_zzz(u8 enabled, s16 x, s16 y);
+void effect_create_misc(u8 type, s16 x, s16 y);
 
 #endif /* INC_EFFECT_H_ */

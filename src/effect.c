@@ -7,13 +7,15 @@
 #include "vdp_ext.h"
 #include "sprite.h"
 
+enum { EFF_BONKL, EFF_BONKR, EFF_ZZZ, EFF_BOOST, };
+
 typedef struct {
 	VDPSprite sprite;
-	u8 ttl;
+	u8 type, ttl;
 	s16 x, y;
 } Effect;
 
-Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE];
+Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
 
 // Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 // Then copy to VRAM via DMA transfer
@@ -22,6 +24,7 @@ u32 dtiles[4][8];
 void effects_init() {
 	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect){};
 	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect){};
+	for(u8 i = 0; i < MAX_MISC; i++) effMisc[i] = (Effect){};
 	// Load each frame of the small smoke sprite
 	u32 stiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(u32))]
 	for(u8 i = 0; i < 7; i++) {
@@ -33,6 +36,7 @@ void effects_init() {
 
 void effects_clear() {
 	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
+	for(u8 i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_clear_smoke();
 }
 
@@ -60,6 +64,39 @@ void effects_update() {
 			effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(effSmoke[i].sprite);
+	}
+	for(u8 i = 0; i < MAX_MISC; i++) {
+		if(!effMisc[i].ttl) continue;
+		effMisc[i].ttl--;
+		switch(effMisc[i].type) {
+			case EFF_BONKL:
+			{
+				if(effMisc[i].ttl > 15) {
+					effMisc[i].x--;
+					effMisc[i].y--;
+				}
+				if(effMisc[i].ttl&1) sprite_add(effMisc[i].sprite);
+			}
+			break;
+			case EFF_BONKR:
+			{
+				if(effMisc[i].ttl > 15) {
+					effMisc[i].x++;
+					effMisc[i].y--;
+				}
+				if(!(effMisc[i].ttl&1)) sprite_add(effMisc[i].sprite);
+			}
+			case EFF_ZZZ:
+			{
+				
+			}
+			break;
+			case EFF_BOOST:
+			{
+				
+			}
+			break;
+		}
 	}
 }
 
@@ -105,6 +142,29 @@ void effect_create_smoke(s16 x, s16 y) {
 			.size = SPRITE_SIZE(2, 2),
 			.attribut = TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
 		};
+		break;
+	}
+}
+
+void effect_create_misc(u8 type, s16 x, s16 y) {
+	for(u8 i = 0; i < MAX_MISC; i++) {
+		if(effMisc[i].ttl) continue;
+		effMisc[i].type = type;
+		effMisc[i].x = x;
+		effMisc[i].y = y;
+		switch(type) {
+			case EFF_BONKL:
+			case EFF_BONKR:
+			{
+				effMisc[i].ttl = 30;
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
+			break;
+			
+		}
 		break;
 	}
 }
