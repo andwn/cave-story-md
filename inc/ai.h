@@ -146,6 +146,8 @@ u8 water_screenlevel;
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 
+Entity *pieces[7]; // Most bosses use this
+
 void generic_npc_states(Entity *e);
 
 #endif /* INC_AI_H_ */

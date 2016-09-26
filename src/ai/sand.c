@@ -9,37 +9,6 @@
 #include "effect.h"
 #include "camera.h"
 
-void onspawn_omega(Entity *e) {
-	e->dir = 1;
-	e->health = 300;
-	e->attack = 5;
-	e->hurtSound = 52;
-	e->deathSound = 72;
-	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
-	e->display_box = (bounding_box) { 40, 32, 40, 32 };
-}
-
-void ai_omega(Entity *e) {
-	if(e->state == 20) {
-		e->y_speed = -0x0A0;
-		if(++e->timer > TIME(240)) {
-			e->state = 21;
-		}
-	} else {
-		e->y_speed = 0;
-	}
-	e->x += e->x_speed;
-	e->y += e->y_speed;
-}
-
-void ondeath_omega(Entity *e) {
-	//if(e->state == STATE_DEFEATED) {
-		tsc_call_event(e->event); // Boss defeated event
-		e->state = STATE_DESTROY;
-		bossEntity = NULL;
-	//}
-}
-
 void onspawn_sunstone(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);

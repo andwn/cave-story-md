@@ -95,6 +95,7 @@
 #define OBJ_POLISHBABY				45
 #define OBJ_HVTRIGGER				46
 #define OBJ_SANDCROC				47
+#define OBJ_OMEGA_SHOT				48
 #define OBJ_SKULLHEAD				49
 #define OBJ_SKELETON_SHOT			50		// bones fired by skullhead_carried & skeleton
 #define OBJ_CROWWITHSKULL			51
@@ -405,7 +406,8 @@
 #define OBJ_CORE_FRONT				370
 #define OBJ_CORE_BACK				371
 #define OBJ_MINICORE				372
-
+#define OBJ_OMEGA_LEG				373
+#define OBJ_OMEGA_STRUT				374
 
 #define NPC_FLAGIND	0
 #define NPC_HPIND	(NPC_COUNT * 2)

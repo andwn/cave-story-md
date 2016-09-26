@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 5] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -56,7 +56,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger, &ai_null }, // Trigger
 	{ NULL, SHEET_CROC, 	PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
 	/* 0x030 (48) */
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Omega Shot
+	{ &SPR_OmgShot,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ai_null }, // Omega Shot
 	{ NULL, SHEET_SKULLH, 	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
 	{ &SPR_Skullhead,NOSHEET,PAL1,1, &ai_null, &ai_skullhead, &ondeath_default }, // Skeleton
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow & Skullhead
@@ -514,13 +514,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	/* 0x169 (361) */
 	{ &SPR_Omega, 	NOSHEET, PAL3, 6, // Omega
 		&onspawn_omega, &ai_omega, &ondeath_omega },
-	{ &SPR_Balfrog1, NOSHEET, PAL3, 8, // Balfrog
+	{ &SPR_Balfrog1, NOSHEET, PAL3, 6, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },
 	{ NULL, NOSHEET, PAL3, 8, // Monster X
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Core (Controller)
 		&onspawn_core, &ai_core, &ondeath_core },
-	{ NULL, NOSHEET, PAL3, 3, // Ironhead
+	{ NULL, NOSHEET, PAL3, 2, // Ironhead
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 3, // Sisters
 		&ai_null, &ai_null, &ai_null },
@@ -534,10 +534,14 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't
 	 * already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
-	{ NULL, NOSHEET, PAL3, 3, // Core (Front)
+	{ NULL, NOSHEET, PAL3, 6, // Core (Front)
 		&onspawn_persistent, &ai_core_front, &ai_null },
 	{ NULL, NOSHEET, PAL3, 9, // Core (Back)
 		&onspawn_persistent, &ai_core_back, &ai_null },
 	{ &SPR_MiniCore, NOSHEET, PAL3, 2, // Mini Core
 		&onspawn_persistent, &ai_minicore, &ai_null },
+	{ &SPR_OmegaLeg, NOSHEET, PAL3, 1, // Omega Leg
+		&onspawn_persistent, &ai_null, &ai_null },
+	{ &SPR_OmegaLeg, NOSHEET, PAL3, 1, // Omega Strut
+		&onspawn_persistent, &ai_null, &ai_null },
 };

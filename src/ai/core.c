@@ -61,7 +61,7 @@
 
 //typedef struct { u8 x1, x2, y1, y2; } DrawArea;
 //DrawArea drawn_area = {};
-Entity *pieces[7];
+
 
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
