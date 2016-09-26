@@ -53,10 +53,12 @@ void ai_mahin(Entity *e) {
 			SNAP_TO_GROUND(e);
 			e->frame = 2;
 			e->state = 1;
+			e->dir = 1;
 		}
 		case 1: break;
 		case 2:
 		{
+			e->dir = 0;
 			e->frame = 0;
 			RANDBLINK(e, 1, 200);
 		}
@@ -68,6 +70,7 @@ void ai_sanda(Entity *e) {
 	if (!e->state) {
 		if (e->eflags & NPC_OPTION2) {	
 			// Sandaime gone
+			e->x -= 16 << CSF;
 			e->state = 2;
 			e->frame = 2;
 		} else {	

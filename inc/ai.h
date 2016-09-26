@@ -11,18 +11,8 @@
  * - Head bonk
  * - Level Up/Down
  * ANIMATE:
- * - Toroko
- * - King
- * - Jack
  * - Gravekeeper
- * - Sandaime
- * - Basil
  * - Quote teleporting
- * - Blue Robot
- * - Cthulu
- * - Basu
- * - Beetle
- * - Sue
  * - Santa
  * - Chako
  * - Fans
@@ -30,26 +20,20 @@
  * - Mannan (needs to be 3x4 instead of 2x3 also)
  * - Kulala
  * - Malco
- * - Kazuma
- * - Booster
  * - Curly
  * - Curly's Mimigas
  * - Puppies
  * REWRITE:
- * - Balrog Running
  * - Igor (Scene)
  * - Balfrog (Sprites)
  * - Omega
  * MISC:
- * - Mahin - face right
  * - Big Pignon damage frame is wrong
  * - Igor - some wrong frames
  * - Stop Kulala from clipping through ceiling
  * - Add ondeath_kulala that creates a treasure chest
- * - Make Misery's hair dark blue again
  * ENGINE:
  * - Handle having 0 items in menu
- * - Weapon graphic inappropriately changes when getting a new one
  * - Add a clipping effect
  * BGM:
  * - Labyrinth Fight

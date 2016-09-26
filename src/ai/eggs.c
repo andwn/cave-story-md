@@ -9,10 +9,10 @@
 #include "camera.h"
 
 void ai_behemoth(Entity *e) {
+	ANIMATE(e, 16, 0,1,0,2);
 	if(e->x_speed == 0) {
 		e->dir = !e->dir;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->x_speed = -0x100 + 0x200 * e->dir;
+		e->x_speed = e->dir ? SPEED(0x120) : -SPEED(0x120);
 	}
 	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
@@ -26,33 +26,34 @@ void ai_beetle(Entity *e) {
 	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	switch(e->state) {
 		case 0: // Initial state / moving left or right
-		if(e->x_speed == 0) {
-			e->x_speed = -0x200 + 0x400 * e->dir;
-		} else if((sub_to_pixel(e->x) & 15) == 7) {
-			if(!e->dir && stage_get_block_type(x - 1, y) == 0x41) {
-				e->state = 1;
-				e->timer = 0;
-				e->x_speed = 0;
-				//SPR_SAFEHFLIP(e->sprite, 0);
-				e->frame = 0;
-			} else if(e->dir && stage_get_block_type(x + 1, y) == 0x41) {
-				e->state = 1;
-				e->timer = 0;
-				e->x_speed = 0;
-				//SPR_SAFEHFLIP(e->sprite, 1);
-				e->frame = 0;
-			} 
+		{
+			ANIMATE(e, 4, 1,0);
+			if(e->x_speed == 0) {
+				e->x_speed = -0x200 + 0x400 * e->dir;
+			} else if((sub_to_pixel(e->x) & 15) == 7) {
+				if(!e->dir && stage_get_block_type(x - 1, y) == 0x41) {
+					e->state = 1;
+					e->timer = 0;
+					e->x_speed = 0;
+					e->frame = 0;
+				} else if(e->dir && stage_get_block_type(x + 1, y) == 0x41) {
+					e->state = 1;
+					e->timer = 0;
+					e->x_speed = 0;
+					e->frame = 0;
+				} 
+			}
 		}
 		break;
 		case 1: // On wall
-		if(++e->timer > 60) {
-			u16 py = sub_to_block(player.y);
-			if(py >= y - 1 || py <= y + 1) {
-				e->state = 0;
-				e->dir = !e->dir;
-				e->x_speed = -0x200 + 0x400 * e->dir;
-				//SPR_SAFEHFLIP(e->sprite, e->dir);
-				e->frame = 1;
+		{
+			if(++e->timer > 60) {
+				u16 py = sub_to_block(player.y);
+				if(py >= y - 1 || py <= y + 1) {
+					e->state = 0;
+					e->dir = !e->dir;
+					e->x_speed = -0x200 + 0x400 * e->dir;
+				}
 			}
 		}
 		break;
@@ -61,39 +62,38 @@ void ai_beetle(Entity *e) {
 }
 
 void onspawn_beetleFollow(Entity *e) {
-	e->frame = 1;;
-	e->timer = 45;
+	e->frame = 1;
+	e->timer = TIME(35);
 }
 
 void ai_beetleFollow(Entity *e) {
+	// Don't deactivate immediately when offscreen, but do if really far away
+	e->alwaysActive = TRUE;
+	if(PLAYER_DIST_X(384 << CSF)) e->alwaysActive = FALSE;
+	ANIMATE(e, 4, 1,0);
 	e->timer++;
-	u8 dir = player.x >= e->x;
-	if(dir != e->dir) {
-		e->dir = dir;
-		//SPR_SAFEHFLIP(e->sprite, dir);
-	}
-	e->x_speed += dir ? 6 : -6;
-	if(abs(e->x_speed) > 0x300) e->x_speed = dir ? 0x300 : -0x300;
-	e->y_speed += (e->timer % 180) >= 90 ? -4 : 4;
+	FACE_PLAYER(e);
+	e->x_speed += e->dir ? 7 : -7;
+	if(abs(e->x_speed) > SPEED(0x400)) e->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
+	e->y_speed += (e->timer % TIME(150)) >= TIME(75) ? -4 : 4;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
 
 void onspawn_basu(Entity *e) {
-	e->timer = 45;
+	e->timer = TIME(50);
 	e->attack = 5;
 }
 
 void ai_basu(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(PLAYER_DIST_X(384 << CSF)) e->alwaysActive = FALSE;
+	ANIMATE(e, 8, 1,0);
 	e->timer++;
-	u8 dir = player.x >= e->x;
-	if(dir != e->dir) {
-		e->dir = dir;
-		//SPR_SAFEHFLIP(e->sprite, dir);
-	}
-	e->x_speed += dir ? 5 : -5;
-	if(abs(e->x_speed) > 0x200) e->x_speed = dir ? 0x200 : -0x200;
-	e->y_speed += (e->timer % 180) >= 90 ? -3 : 3;
+	FACE_PLAYER(e);
+	e->x_speed += e->dir ? 5 : -5;
+	if(abs(e->x_speed) > SPEED(0x300)) e->x_speed = e->dir ? SPEED(0x300) : -SPEED(0x300);
+	e->y_speed += (e->timer % TIME(200)) >= TIME(100) ? -3 : 3;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -101,34 +101,28 @@ void ai_basu(Entity *e) {
 void onspawn_basil(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->x = player.x;
-	e->x_speed = -0x400;
 }
 
 void ai_basil(Entity *e) {
+	ANIMATE(e, 8, 0,1,2);
 	if(e->x_speed == 0) { // Hit a wall
-		e->dir = !e->dir;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->x_speed = -0x400 + 0x800 * e->dir;
+		e->dir ^= 1;
 	} else if(sub_to_pixel(e->x) < sub_to_pixel(camera.x) - SCREEN_HALF_W - 64) {
 		e->dir = 1;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->x_speed = 0x400;
 	} else if(sub_to_pixel(e->x) > sub_to_pixel(camera.x) + SCREEN_HALF_W + 64) {
 		e->dir = 0;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->x_speed = -0x400;
 	}
+	MOVE_X(SPEED(0x500));
 	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
+	e->y_next = e->y; // Must store y_next for collision to work
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	else collide_stage_rightwall(e);
 	e->x = e->x_next;
-	e->y = e->y_next;
 }
 
-// Push out of the wall and align with bottom floor
+// Push out of the wall
 void onspawn_lift(Entity *e) {
-	e->x += pixel_to_sub(8);
-	//e->y += pixel_to_sub(8);
+	e->x += 8 << CSF;
 }
 
 #define LIFT_SPEED 0x200

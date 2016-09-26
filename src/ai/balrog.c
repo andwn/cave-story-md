@@ -8,6 +8,63 @@
 #include "tsc.h"
 #include "camera.h"
 
+// "BalrogCommon" functions for grabbing/throwing the player
+
+#define STATE_GRAB 100
+
+// grab the player in preparation for running the toss_player_away animation.
+static void balrog_grab_player(Entity *e) {
+	controlsLocked = TRUE;
+	player.hidden = 1;
+	e->frame = 8;	// face away
+	e->state = STATE_GRAB;
+}
+
+// shake and toss the player away. call balrog_grab_player first.
+// returns true when complete.
+// used in boss battles in Shack and at end of Labyrinth.
+static u8 balrog_toss_player_away(Entity *e) {
+	// keep player locked in position while balrog has him
+	if (e->state <= STATE_GRAB+1) {
+		player.x = e->x;
+		player.y = e->y;
+		player.x_speed = player.y_speed = 0;
+	}
+	switch(e->state) {
+		case STATE_GRAB:		// slowing to a stop
+		{
+			e->x_speed *= 4;
+			e->x_speed /= 5;
+			if (e->x_speed == 0) {
+				e->state++;
+				e->timer = 0;
+			}
+		}
+		break;
+		case STATE_GRAB+1:		// shaking with back turned
+		{
+			ANIMATE(e, 4, 9,8);		// shake
+			// after a moment toss player away
+			if (++e->timer > TIME(100)) {
+				controlsLocked = FALSE;
+				player.dir = e->dir ^ 1;
+				player.x += player.dir ? 4 << CSF : -4 << CSF;
+				player.x_speed = player.dir ? SPEED(0x5FF) : -SPEED(0x5FF);
+				player.y -= 8 << CSF;
+				player.y_speed = -SPEED(0x200);
+				sound_play(SND_FUNNY_EXPLODE, 5);
+				e->dir = player.dir;
+				e->state++;
+				e->frame = 11;	// arms up
+				e->timer = 0;
+			}
+		}
+		break;
+		case STATE_GRAB+2: return ++e->timer > TIME(50);
+	}
+	return FALSE;
+}
+
 // Repurpose unused x_mark and y_mark variables
 #define balrog_smoking		x_mark
 #define balrog_smoketimer	y_mark
@@ -123,7 +180,7 @@ void ai_balrog(Entity *e) {
 			// (transforming into Balfrog stage boss;
 			//	our flashing is interlaced with his)
 			e->timer++;
-			e->hidden = (e->timer & 2) > 0;
+			e->hidden = e->timer & 2;
 		}
 		break;
 		case 50:	// he faces away
@@ -160,7 +217,7 @@ void ai_balrog(Entity *e) {
 				e->state = STATE_DELETE;
 				return;
 			}
-			e->hidden = (e->timer & 2) > 0;
+			e->hidden = e->timer & 2;
 		}
 		break;
 		case 80:	// hands up and shakes
@@ -348,7 +405,98 @@ void ai_balrog_bust_in(Entity *e) {
 
 // 68 - Boss: Balrog (Mimiga Village)
 void ai_balrogRunning(Entity *e) {
-	
+	enum {
+		STATE_CHARGE = 10,
+		STATE_JUMP = 20,
+		STATE_SLOW_DOWN = 30
+	};
+	// try to catch player
+	if (e->state == STATE_CHARGE+1 || e->state == STATE_JUMP) {
+		if (e->timer > 8 && entity_overlapping(&player, e)) {
+			if (!playerIFrames) player_inflict_damage(2);
+			balrog_grab_player(e);
+		}
+	}
+	switch(e->state) {
+		case 0:
+		{
+			FACE_PLAYER(e);
+			e->eflags |= NPC_SHOOTABLE;
+			e->frame = 0;
+			e->state = 1;
+		}
+		case 1:
+		{
+			if (++e->timer > TIME(30)) {
+				e->state = STATE_CHARGE;
+				e->timer2++;
+			}
+		}
+		break;
+		// running towards player
+		case STATE_CHARGE:
+		{
+			e->state++;
+			e->timer = 0;
+			e->frame = 9;
+			e->animtime = 0;
+		}
+		case STATE_CHARGE+1:
+		{
+			ACCEL_X(0x10);
+			ANIMATE(e, 8, 1,0,2,0);
+			if (++e->timer > TIME(75) ||
+				(!e->dir && collide_stage_leftwall(e)) ||
+				(e->dir && collide_stage_rightwall(e)))
+			{
+				e->frame = 0;
+				e->state = STATE_SLOW_DOWN;
+				break;
+			}
+			// can jump every 3rd time, but if he catches the player
+			// before he gets a chance to he does NOT jump on the next charge.
+			if (!(e->timer2 & 3)) {
+				if (e->timer > TIME(25)) {	// initiate jump
+					e->frame = 11;
+					e->y_speed = -SPEED(0x400);
+					e->grounded = FALSE;
+					e->state = STATE_JUMP;
+				}
+			}
+		}
+		break;
+		// jumping
+		case STATE_JUMP:
+		{
+			if ((e->grounded = collide_stage_floor(e))) {
+				e->frame = 3;		// <-- Landed frame.
+				camera_shake(30);
+				e->state = STATE_SLOW_DOWN;
+			}
+		}
+		break;
+		// slowing down after charging or jumping
+		case STATE_SLOW_DOWN:
+		{
+			e->x_speed *= 4;
+			e->x_speed /= 5;
+			if (e->x_speed == 0) e->state = 0;
+		}
+		break;
+		// caught player
+		case STATE_GRAB:
+		case STATE_GRAB+1:
+		case STATE_GRAB+2:
+		{
+			if (balrog_toss_player_away(e)) e->state = 0;
+		}
+		break;
+	}
+	e->x = e->x_next;
+	e->y = e->y_next;
+	if(!e->grounded) e->y_speed += SPEED(0x20);
+	LIMIT_X(SPEED(0x400));
+	LIMIT_Y(SPEED(0x5FF));
 }
 
 void ondeath_balrogRunning(Entity *e) {
@@ -520,9 +668,9 @@ void ai_balrog_boss_missiles(Entity *e) {
 		case STATE_JUMP_FIRE+1:
 		{
 			if (PLAYER_DIST_X(12<<CSF) && PLAYER_DIST_Y2(12<<CSF, 8<<CSF)) {
-				//balrog_grab_player(e);
-				//hurtplayer(5);
-				e->state = STATE_CAUGHT_PLAYER;
+				balrog_grab_player(e);
+				if(!playerIFrames) player_inflict_damage(5);
+				//e->state = STATE_CAUGHT_PLAYER;
 			}
 		}
 		break;
@@ -617,10 +765,11 @@ void ai_balrog_boss_missiles(Entity *e) {
 			e->state = 0;
 		}
 		break;
-		case STATE_CAUGHT_PLAYER:	// caught player
+		case STATE_GRAB:	// caught player
+		case STATE_GRAB+1:
+		case STATE_GRAB+2: 
 		{
-			//if (balrog_toss_player_away(o))
-				e->state = 0;
+			if (balrog_toss_player_away(e)) e->state = 0; 
 		}
 		break;
 	}
