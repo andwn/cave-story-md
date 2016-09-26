@@ -43,7 +43,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, &ai_null, &ai_balrogShot, &ai_null }, // Balrog Shot
 	{ &SPR_Bed, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Bed
 	{ NULL, SHEET_MANNAN, 	PAL3, 1, &ai_null, &ai_mannan, &ai_null }, // Mannan
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ondeath_balrogFlying, &ai_balrogFlying },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogFlying, &ondeath_balrogFlying },
 	{ &SPR_Sign, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Sign Post
 	{ &SPR_Fire, NOSHEET, 	PAL1, 1, &ai_null, &ai_fireplace, &ai_null }, // Fireplace
 	{ &SPR_SaveSign,NOSHEET,PAL1, 1, &onspawn_op2anim, &ai_null, &ai_null }, // Save Sign
@@ -77,7 +77,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batVertical, &ai_batVertical, &ondeath_default }, // Bat
 	{ &SPR_Bubble, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bubble, &ai_null }, // Misery's Bubble
 	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_float, &ai_null }, // Misery
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogRunning, &ondeath_default },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogRunning, &ondeath_balrogRunning },
 	{ NULL, SHEET_PIGNON, 	PAL1, 1, &ai_null, &ai_pignon, &ondeath_default }, // Pignon
 	{ &SPR_Sparkle,NOSHEET, PAL1, 1, &ai_null, &ai_sparkle, &ai_null }, // Sparkle
 	{ &SPR_Fish, NOSHEET, 	PAL0, 1, &ai_null, &ai_chinfish, &ondeath_default }, // Chinfish
@@ -98,7 +98,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, SHEET_TERM, 	PAL1, 1, &ai_null, &ai_terminal, &ai_null }, // Terminal
 	{ NULL, SHEET_MISSILE, 	PAL1, 1, &onspawn_op2anim, &ai_missile, &ai_null }, // Missile
 	{ NULL, SHEET_HEART, 	PAL1, 1, &onspawn_op2anim, &ai_heart, &ai_null }, // Heart
-	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igor, &ondeath_default }, // Igor
+	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igor, &ondeath_igor }, // Igor
 	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igordead, &ai_null }, // Igor
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },
 	{ &SPR_Cage, NOSHEET, 	PAL1, 1, &onspawn_snap, &ai_null, &ai_null }, // Cage
@@ -164,7 +164,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ NULL, NOSHEET, 		PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)
-	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ondeath_player, &ai_player }, // Quote
+	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Quote
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL2, 1, &ai_null, &ai_shutter_stuck, &ondeath_default }, // Shutter (Stuck)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
@@ -184,7 +184,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 3] = {
 	{ &SPR_GaudiMerch,NOSHEET,PAL3,1,&ai_null, &ai_null, &ai_null }, // Chaba
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_booster_falling, &ai_null }, // Booster
 	{ &SPR_Boulder,NOSHEET, PAL3, 4, &ai_null, &ai_boulder, &ai_null }, // Boulder
-	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_default },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_balrogFlying },
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_balrog_missile, &ai_null }, // Balrog Missile
 	{ &SPR_CoreThing,NOSHEET,PAL2,1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
 	{ &SPR_CoreThingShot,NOSHEET,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
