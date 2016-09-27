@@ -82,20 +82,26 @@ void ai_grav(Entity *e) {
 
 void ai_trigger(Entity *e) {
 	if(tscState) return;
-	// Hack to skip Monster X
-	if(stageID == 0x27) return;
-	u8 activate = FALSE;
-	if(e->eflags&NPC_OPTION2) { // Vertical
-		if(player.x - pixel_to_sub(player.hit_box.left) < e->x + pixel_to_sub(e->hit_box.right) &&
-			player.x + pixel_to_sub(player.hit_box.right) > e->x - pixel_to_sub(e->hit_box.left)) {
-			activate = TRUE;
+	if(!e->state) {
+		e->alwaysActive = TRUE;
+		e->state = 1;
+		if(e->eflags&NPC_OPTION2) { // Vertical
+			for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
+				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
+			}
+			for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
+				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
+			}
+		} else { // Horizontal
+			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
+				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, (e->y>>CSF)/16) == 0x41) break;
+			}
+			for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
+				if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, (e->y>>CSF)/16) == 0x41) break;
+			}
 		}
-	} else { // Horizontal (Egg Corridor eggs)
-		e->hit_box.left = 32;
-		e->hit_box.right = 32;
-		if(entity_overlapping(&player, e) && player.y_speed < 0) activate = TRUE;
 	}
-	if(activate) tsc_call_event(e->event);
+	if(entity_overlapping(&player, e) tsc_call_event(e->event);
 }
 
 void ai_genericproj(Entity *e) {
