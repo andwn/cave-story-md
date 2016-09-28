@@ -153,6 +153,7 @@ void game_reset(u8 load) {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
 	}
+	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	// Load up the main palettes
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);

@@ -7,8 +7,6 @@
 #include "vdp_ext.h"
 #include "sprite.h"
 
-enum { EFF_BONKL, EFF_BONKR, EFF_ZZZ, EFF_BOOST, };
-
 typedef struct {
 	VDPSprite sprite;
 	u8 type, ttl;

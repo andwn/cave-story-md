@@ -101,7 +101,7 @@ void ai_trigger(Entity *e) {
 			}
 		}
 	}
-	if(entity_overlapping(&player, e) tsc_call_event(e->event);
+	if(entity_overlapping(&player, e)) tsc_call_event(e->event);
 }
 
 void ai_genericproj(Entity *e) {

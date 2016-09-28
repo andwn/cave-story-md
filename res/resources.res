@@ -44,6 +44,7 @@ SPRITE SPR_MGun 		"sprite/mgun.png"		6 1 0 0 NONE
 SPRITE SPR_MGunB1		"sprite/mgunb1.png"		2 2 0 0 NONE
 SPRITE SPR_MGunB2		"sprite/mgunb2.png"		2 2 0 0 NONE
 SPRITE SPR_MGunB3		"sprite/mgunb3.png"		2 2 0 0 NONE
+SPRITE SPR_Bonk			"sprite/headbump.png"	1 1 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -152,8 +153,6 @@ SPRITE SPR_Polish		"sprite/polish.png"		4 4 0 0 NONE
 SPRITE SPR_Baby			"sprite/baby.png"		2 2 0 0 NONE
 SPRITE SPR_Crow			"sprite/crow.png"		4 4 0 0 NONE
 SPRITE SPR_Armadl		"sprite/armadillo.png"	4 2 0 0 NONE
-SPRITE SPR_Omega		"sprite/omega.png"		9 8 0 0 NONE
-SPRITE SPR_OmegaLeg		"sprite/omegaleg.png"	4 4 0 0 NONE
 SPRITE SPR_Booster		"sprite/booster.png"	2 2 0 0 NONE
 SPRITE SPR_Doctor		"sprite/doctor.png"		3 4 0 0 NONE
 SPRITE SPR_ToroBoss		"sprite/torokoboss.png"	4 4 0 0 NONE
@@ -164,6 +163,10 @@ SPRITE SPR_CurlyMimi	"sprite/cirlymimi.png"	2 2 0 0 NONE
 SPRITE SPR_SueCom		"sprite/suecom.png"		2 3 0 0 NONE
 SPRITE SPR_DrGero		"sprite/drgero.png"		2 2 0 0 NONE
 SPRITE SPR_Nurse		"sprite/nurse.png"		2 2 0 0 NONE
+SPRITE SPR_Omega		"sprite/omega.png"		9 8 0 0 NONE
+SPRITE SPR_OmegaLeg		"sprite/omegaleg.png"	4 4 0 0 NONE
+SPRITE SPR_OmgShot		"sprite/omegashot.png"	2 2 0 0 NONE
+SPRITE SPR_OmgStrut		"sprite/omgstrut.png"	3 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE
