@@ -403,11 +403,16 @@
 #define OBJ_THANK_YOU				360		// credits
 
 // Extra stuff
-#define OBJ_CORE_FRONT				370
-#define OBJ_CORE_BACK				371
-#define OBJ_MINICORE				372
-#define OBJ_OMEGA_LEG				373
-#define OBJ_OMEGA_STRUT				374
+enum {
+	OBJ_CORE_FRONT = 370,
+	OBJ_CORE_BACK,
+	OBJ_MINICORE,
+	OBJ_OMEGA_LEG,
+	OBJ_OMEGA_STRUT,
+	OBJ_X_TREAD,
+	OBJ_X_DOOR,
+	OBJ_X_TARGET,
+};
 
 #define NPC_FLAGIND	0
 #define NPC_HPIND	(NPC_COUNT * 2)
