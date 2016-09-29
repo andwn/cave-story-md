@@ -12,6 +12,7 @@
 #include "sheet.h"
 #include "resources.h"
 #include "npc.h"
+#include "sprite.h"
 
 #define STATE_X_APPEAR				1		// script-triggered: must stay constant
 #define STATE_X_FIGHT_BEGIN			10		// script-triggered: must stay constant
@@ -38,6 +39,8 @@
 #define DOORS_OPEN_DIST			(32 << CSF)		// how far the doors open
 #define DOORS_OPEN_FISHY_DIST	(20 << CSF)		// how far the doors open during fish-missile phase
 
+#define saved_health		curly_target_time
+
 enum Pieces {
 	TREADUL, TREADUR, TREADLL, TREADLR,
 	TARGET1, TARGET2, TARGET3, TARGET4,
@@ -48,85 +51,78 @@ enum Pieces {
 // which we change direction, etc.
 static const int tread_turnon_times[] = { 4, 8, 10, 12 };
 
+// return true if all the targets behind the doors have been destroyed.
+static u8 all_targets_destroyed() {
+	for(int i=TARGET1;i<TARGET1+4;i++) {
+		if (!pieces[i]->hidden) return FALSE;
+	}
+	return TRUE;
+}
+
+// sets state on an array on objects
+static void set_states(Entity *e[], u8 n, u16 state) {
+	while(--n) e[n]->state = state;
+}
+
+// sets direction on an array on objects
+static void set_dirs(Entity *e[], u8 n, u8 dir) {
+	while(--n) e[n]->dir = dir;
+}
+
 void onspawn_monsterx(Entity *e) {
-	//memset(&X, 0, sizeof(X));
-	//memset(&body, 0, sizeof(body));
-	//memset(&treads, 0, sizeof(treads));
-	//memset(&internals, 0, sizeof(internals));
-	//memset(&doors, 0, sizeof(doors));
-	//memset(&targets, 0, sizeof(targets));
-	//memset(&fishspawners, 0, sizeof(fishspawners));
-	//npieces = 0;
-	
-	//mainobject = CreateEntity(0, 0, OBJ_X_MAINOBJECT);
-	//mainobject->sprite = SPR_NULL;
-	
-	//game.stageboss.object = mainobject;
-	
+	e->alwaysActive = TRUE;
 	e->health = 700;
 	e->state = STATE_X_APPEAR;
 	e->x = (128 * 16) << CSF;
 	e->y = (200 << CSF);
 	e->eflags = NPC_IGNORESOLID;
 	
-	// put X behind the flying gaudis
-	//mainobject->PushBehind(lowestobject);
-	
-	// create body pieces
-	//for(i=3;i>=0;i--)
-	//{
-	//	body[i] = CreatePiece(0, 0, OBJ_X_BODY);
-	//	body[i]->dir   = (i == UL || i == LL) ? LEFT : RIGHT;
-	//	body[i]->frame = (i == LL || i == LR) ? 1 : 0;
-	//}
-	
-	// create treads
-	pieces[TREADUL] = entity_create(0xf8000, 0x12000, OBJ_X_TREAD, 0);
-	pieces[TREADUR] = entity_create(0x108000, 0x12000, OBJ_X_TREAD, 0);
-	pieces[TREADLL] = entity_create(0xf8000, (0x20000 - (16 << CSF)), OBJ_X_TREAD, 0);
-	pieces[TREADLR] = entity_create(0x108000, (0x20000 - (16 << CSF)), OBJ_X_TREAD, 0);
-	//for(i=0;i<4;i++) {
-	//	int x = (i == UL || i == LL) ? 0xf8000 : 0x108000;
-	//	int y = (i == UL || i == UR) ? 0x12000 : (0x20000 - (16 << CSF));
-	//	int sprite = (i == UL || i == UR) ? SPR_X_TREAD_UPPER : SPR_X_TREAD_LOWER;
-	//	
-	//	treads[i] = CreateTread(x, y, sprite);
-	//	treads[i]->smushdamage = 10;
-	//}
+	// Since this entity was created first it will draw the background portion of the boss.
+	// All the other pieces will be loaded in back -> front order
 	
 	// create internals
-	//internals = CreatePiece(0, 0, OBJ_X_INTERNALS);
-	//internals->hp = 1000;
-	//internals->flags &= ~FLAG_SHOW_FLOATTEXT;
-	
+	//pieces[INTERNALS] = entity_create(0, 0, OBJ_X_INTERNALS, 0);
 	// create targets
-	for(i=0;i<4;i++) {
-		pieces[TARGET1+i] = entity_create(0, 0, OBJ_X_TARGET, 0);
-		pieces[TARGET1+i]->health = 60;
-		pieces[TARGET1+i]->frame = i;
-		pieces[TARGET1+i]->eflags &= ~NPC_SHOWDAMAGE;
-	}
-	
-	// create fishy-missile shooters
-	//for(i=0;i<4;i++)
-	//{
-	//	fishspawners[i] = CreatePiece(0, 0, OBJ_X_FISHY_SPAWNER);
-	//	fishspawners[i]->sprite = SPR_NULL;
-	//	fishspawners[i]->invisible = true;
-	//	fishspawners[i]->flags = 0;
-	//}
-	
+	pieces[TARGET1] = entity_create(0, 0, OBJ_X_TARGET, 0);
+	pieces[TARGET2] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1);
+	pieces[TARGET3] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION2);
+	pieces[TARGET4] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1|NPC_OPTION2);
+	// create treads
+	pieces[TREADUL] = entity_create(0xf8000, 0x12000,           OBJ_X_TREAD, 0);
+	pieces[TREADUR] = entity_create(0x108000,0x12000,           OBJ_X_TREAD, NPC_OPTION1);
+	pieces[TREADLL] = entity_create(0xf8000, 0x20000-(16<<CSF), OBJ_X_TREAD, NPC_OPTION2);
+	pieces[TREADLR] = entity_create(0x108000,0x20000-(16<<CSF), OBJ_X_TREAD, NPC_OPTION1|NPC_OPTION2);
 	// create doors
-	for(i=0;i<2;i++) {
-		doors[i] = CreatePiece(0, 0, OBJ_X_DOOR);
-		doors[i]->sprite = SPR_X_DOOR;
-		doors[i]->dir = i;
-	}
+	pieces[DOORL] = entity_create(0, 0, OBJ_X_DOOR, 0);
+	pieces[DOORR] = entity_create(0, 0, OBJ_X_DOOR, NPC_OPTION2);
 	
-	//sprites[SPR_X_DOOR].frame[0].dir[LEFT].drawpoint.x = 40;
-	//sprites[SPR_X_DOOR].frame[0].dir[LEFT].drawpoint.y = 16;
-	//sprites[SPR_X_DOOR].frame[0].dir[RIGHT].drawpoint.x = -9;
-	//sprites[SPR_X_DOOR].frame[0].dir[RIGHT].drawpoint.y = 16;
+	// Link them all to us
+	for(u8 i = 0; i < 10; i++) pieces[i]->linkedEntity = e;
+}
+
+// The 4 green things look slightly different
+void onspawn_x_target(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->health = 60;
+	e->nflags &= ~NPC_SHOWDAMAGE;
+	if(e->eflags & NPC_OPTION1) e->frame += 1;
+	if(e->eflags & NPC_OPTION2) e->frame += 2;
+}
+
+// Change sprite vflip for top treads
+// The real game uses 4 different sprites
+void onspawn_x_tread(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(!(e->eflags & NPC_OPTION2)) {
+		sprite_vflip(e->sprite[0], 1);
+		sprite_vflip(e->sprite[1], 1);
+	}
+}
+
+// Door on the right uses the second frame
+void onspawn_x_door(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
 void ai_monsterx(Entity *e) {
@@ -170,8 +166,8 @@ void ai_monsterx(Entity *e) {
 			// and put them slightly out of sync with each-other.
 			for(int i=0;i<4;i++) {
 				if (e->timer == tread_turnon_times[i]) {
-					treads[i]->state = STATE_TREAD_RUN;
-					treads[i]->dir = e->dir;
+					pieces[TREADUL+i]->state = STATE_TREAD_RUN;
+					pieces[TREADUL+i]->dir = e->dir;
 				}
 			}
 			
@@ -190,8 +186,8 @@ void ai_monsterx(Entity *e) {
 				else
 				{
 					// passed player? skid and turn around.
-					if ((e->dir == RIGHT && e->x > player->x) ||
-					 	(e->dir == LEFT  && e->x < player->x)) {
+					if ((e->dir == 1 && e->x > player.x) ||
+					 	(e->dir == 0  && e->x < player.x)) {
 						e->dir ^= 1;
 						e->state = STATE_X_TRAVEL;
 					}
@@ -214,8 +210,8 @@ void ai_monsterx(Entity *e) {
 			// and put them slightly out of sync with each-other.
 			for(int i=0;i<4;i++) {
 				if (e->timer == tread_turnon_times[i]) {
-					treads[i]->state = STATE_TREAD_BRAKE;
-					treads[i]->dir = e->dir;
+					pieces[TREADUL+i]->state = STATE_TREAD_BRAKE;
+					pieces[TREADUL+i]->dir = e->dir;
 				}
 			}
 			
@@ -230,14 +226,14 @@ void ai_monsterx(Entity *e) {
 		case STATE_X_OPEN_DOORS:
 		{
 			e->timer = 0;
-			e->savedhp = e->hp;
+			saved_health = e->health;
 			
 			// select type of attack depending on where we are in the battle
 			if (!all_targets_destroyed()) {
-				SetStates(doors, 2, STATE_DOOR_OPENING);
+				set_states(&pieces[DOORL], 2, STATE_DOOR_OPENING);
 				e->state = STATE_X_FIRE_TARGETS;
 			} else {
-				SetStates(doors, 2, STATE_DOOR_OPENING_PARTIAL);
+				set_states(&pieces[DOORL], 2, STATE_DOOR_OPENING_PARTIAL);
 				e->state = STATE_X_FIRE_FISHIES;
 			}
 		}
@@ -248,7 +244,7 @@ void ai_monsterx(Entity *e) {
 		{
 			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
 				pieces[DOORL]->state = 0;
-				SetStates(targets, 4, STATE_TARGET_FIRE);
+				set_states(&pieces[TARGET1], 4, STATE_TARGET_FIRE);
 			}
 			
 			if (++e->timer > 300 || all_targets_destroyed()) {
@@ -264,11 +260,11 @@ void ai_monsterx(Entity *e) {
 			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
 				pieces[DOORL]->state = 0;
 				
-				SetStates(fishspawners, 4, STATE_FISHSPAWNER_FIRE);
-				internals->flags |= NPC_SHOOTABLE;
+				//set_states(fishspawners, 4, STATE_FISHSPAWNER_FIRE);
+				e->eflags |= NPC_SHOOTABLE;
 			}
 			
-			if (++e->timer > 300 || (e->savedhp - e->hp) > 200) {
+			if (++e->timer > 300 || (saved_health - e->health) > 200) {
 				e->state = STATE_X_CLOSE_DOORS;
 				e->timer = 0;
 			}
@@ -281,23 +277,21 @@ void ai_monsterx(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			
-			SetStates(doors, 2, STATE_DOOR_CLOSING);
+			set_states(&pieces[DOORL], 2, STATE_DOOR_CLOSING);
 		}
 		case STATE_X_CLOSE_DOORS+1:
 		{
-			if (pieces[DOORL]->state == STATE_DOOR_FINISHED)
-			{
+			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
 				pieces[DOORL]->state = 0;
 				
 				// just turn off everything for both types of attacks;
 				// turning off the attack type that wasn't enabled isn't harmful.
-				SetStates(targets, 4, 0);
-				SetStates(fishspawners, 4, 0);
-				internals->flags &= ~NPC_SHOOTABLE;
+				set_states(&pieces[TARGET1], 4, 0);
+				//set_states(fishspawners, 4, 0);
+				e->eflags &= ~NPC_SHOOTABLE;
 			}
 			
-			if (++e->timer > 50)
-			{
+			if (++e->timer > 50) {
 				FACE_PLAYER(e);
 				e->state = STATE_X_TRAVEL;
 				e->timer = 0;
@@ -309,9 +303,8 @@ void ai_monsterx(Entity *e) {
 		case STATE_X_EXPLODING:
 		{
 			//SetStates(fishspawners, 4, 0);
-			entities_clear_by_type(OBJ_X_FISHY_MISSILE);
+			//entities_clear_by_type(OBJ_X_FISHY_MISSILE);
 			
-			//StartScript(1000);
 			e->timer = 0;
 			e->state++;
 		}
@@ -346,13 +339,6 @@ void ai_monsterx(Entity *e) {
 		}
 		break;
 	}
-	
-	// call AI for all tread pieces
-	//for(i=0;i<4;i++)
-	//{
-	//	run_tread(i);
-	//	run_fishy_spawner(i);
-	//}
 }
 /*
 // moved this to aftermove so x_speed on treads is already applied
@@ -388,20 +374,20 @@ void ai_x_tread(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags |= (FLAG_SOLID_BRICK | FLAG_INVULNERABLE | FLAG_NOREARTOPATTACK);
+			e->eflags |= (NPC_SOLID | NPC_INVINCIBLE | NPC_FRONTATKONLY);
 			e->state = STATE_TREAD_STOPPED;
 		}
 		case STATE_TREAD_STOPPED:
 		{
 			e->frame = 0;
-			e->damage = 0;
-			e->eflags &= ~FLAG_BOUNCY;
+			e->attack = 0;
+			e->eflags &= ~NPC_BOUNCYTOP;
 		}
 		break;
 		
 		case STATE_TREAD_RUN:
 		{
-			e->eflags |= FLAG_BOUNCY;
+			e->eflags |= NPC_BOUNCYTOP;
 			e->timer = 0;
 			e->frame = 2;
 			e->animtime = 0;
@@ -410,12 +396,11 @@ void ai_x_tread(Entity *e) {
 		}
 		case STATE_TREAD_RUN+1:
 		{
-			ANIMATE(0, 2, 3);
-			XACCEL(0x20);
+			ANIMATE(e, 8, 2,3);
+			ACCEL_X(0x20);
 			
-			if (++e->timer > 30)
-			{
-				e->eflags &= ~FLAG_BOUNCY;
+			if (++e->timer > 30) {
+				e->eflags &= ~NPC_BOUNCYTOP;
 				e->frame = 0;
 				e->animtime = 0;
 				e->state++;
@@ -424,8 +409,8 @@ void ai_x_tread(Entity *e) {
 		break;
 		case STATE_TREAD_RUN+2:
 		{
-			ANIMATE(1, 0, 1);
-			XACCEL(0x20);
+			ANIMATE(e, 8, 0,1);
+			ACCEL_X(0x20);
 			
 			e->timer++;
 		}
@@ -436,16 +421,16 @@ void ai_x_tread(Entity *e) {
 			e->frame = 2;
 			e->animtime = 0;
 			
-			e->eflags |= FLAG_BOUNCY;
+			e->eflags |= NPC_BOUNCYTOP;
 			e->state++;
 		}
 		case STATE_TREAD_BRAKE+1:
 		{
-			ANIMATE(e, 4, 2, 3);
+			ANIMATE(e, 8, 2,3);
 			ACCEL_X(0x20);
 			
-			if ((e->dir == RIGHT && e->x_speed > 0) ||
-				(e->dir == LEFT && e->x_speed < 0)) {
+			if ((e->dir == 1 && e->x_speed > 0) ||
+				(e->dir == 0 && e->x_speed < 0)) {
 				e->x_speed = 0;
 				e->state = STATE_TREAD_STOPPED;
 			}
@@ -489,8 +474,8 @@ void XBoss::run_body(int i)
 {
 	// set body position based on main object position and
 	// our linked tread position. first get the center point we should be at...
-	body[i]->x = (mainobject->x + treads[i]->x) / 2;
-	body[i]->y = (mainobject->y + treads[i]->y) / 2;
+	body[i]->x = (mainobject->x + pieces[TREADUL+i]->x) / 2;
+	body[i]->y = (mainobject->y + pieces[TREADUL+i]->y) / 2;
 	
 	// ...and place our center pixel at those coordinates.
 	int dx = (sprites[body[i]->sprite].w / 2) - 8;
@@ -572,7 +557,7 @@ void ai_x_door(Entity *e) {
 		// doors closing
 		case STATE_DOOR_CLOSING:
 		{
-			e->xmark -= (1 << CSF);
+			e->x_mark -= (1 << CSF);
 			if (e->x_mark <= 0) {
 				e->x_mark = 0;
 				e->state = STATE_DOOR_FINISHED;
@@ -647,7 +632,7 @@ void ai_x_target(Entity *e) {
 		
 		case STATE_TARGET_FIRE:
 		{
-			e->timer = 40 + (index * 10);
+			e->timer = 40 + (NPC_OPTION1 ? 10 : 0) + (NPC_OPTION2 ? 20 : 0);
 			e->eflags |= NPC_SHOOTABLE;
 			e->state++;
 		}
@@ -662,7 +647,7 @@ void ai_x_target(Entity *e) {
 				if (e->timer <= 0)
 				{
 					e->timer = 40;
-					EmFireAngledShot(e, OBJ_GAUDI_FLYING_SHOT, 2, 0x500);
+					//EmFireAngledShot(e, OBJ_GAUDI_FLYING_SHOT, 2, 0x500);
 					sound_play(SND_EM_FIRE, 3);
 				}
 			}
@@ -687,96 +672,63 @@ void ondeath_x_target(Entity *e) {
 	e->hidden = TRUE;
 }
 
-// return true if all the targets behind the doors have been destroyed.
-static u8 all_targets_destroyed() {
-	for(int i=TARGET1;i<TARGET1+4;i++) {
-		if (!pieces[i]->hidden) return FALSE;
-	}
-	return TRUE;
-}
-
-// sets state on an array on objects
-static void set_states(Entity *e[], u8 n, u16 state) {
-	while(--n) e[i]->state = state;
-}
-
-// sets direction on an array on objects
-static void set_dirs(Entity *e[], u8 n, u8 dir) {
-	while(--n) e[i]->dir = dir;
-}
-
-void ai_x_fishy_missile(Entity *o)
-{
-	if (e->state == 0)
-	{
-		static const int angle_for_dirs[] = { 160, 224, 96, 32 };
+void ai_x_fishy_missile(Entity *e) {
+	if (e->state == 0) {
+		//static const int angle_for_dirs[] = { 160, 224, 96, 32 };
 		
-		e->angle = angle_for_dirs[e->dir];
-		e->dir = RIGHT;
+		//e->angle = angle_for_dirs[e->dir];
+		e->dir = 1;
 		
 		e->state = 1;
 	}
 	
-	vector_from_angle(e->angle, 0x400, &e->x_speed, &e->y_speed);
-	int desired_angle = GetAngle(e->x, e->y, player->x, player->y);
+	//vector_from_angle(e->angle, 0x400, &e->x_speed, &e->y_speed);
+	//int desired_angle = GetAngle(e->x, e->y, player.x, player.y);
 	
-	if (e->angle >= desired_angle)
-	{
-		if ((e->angle - desired_angle) < 128)
-		{
-			e->angle--;
-		}
-		else
-		{
-			e->angle++;
-		}
-	}
-	else
-	{
-		if ((e->angle - desired_angle) < 128)
-		{
-			e->angle++;
-		}
-		else
-		{
-			e->angle--;
-		}
-	}
+	//if (e->angle >= desired_angle) {
+	//	if ((e->angle - desired_angle) < 128) {
+	//		e->angle--;
+	//	} else {
+	//		e->angle++;
+	//	}
+	//} else {
+	//	if ((e->angle - desired_angle) < 128) {
+	//		e->angle++;
+	//	} else {
+	//		e->angle--;
+	//	}
+	//}
 	
 	// smoke trails
-	if (++e->timer2 > 2)
-	{
+	if (++e->timer2 > 2) {
 		e->timer2 = 0;
-		Caret *c = effect(e->ActionPointX(), e->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
-		c->x_speed = -e->x_speed >> 2;
-		c->y_speed = -e->y_speed >> 2;
+		//Caret *c = effect(e->ActionPointX(), e->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
+		//c->x_speed = -e->x_speed >> 2;
+		//c->y_speed = -e->y_speed >> 2;
 	}
 	
-	e->frame = (e->angle + 16) / 32;
-	if (e->frame > 7) e->frame = 7;
+	//e->frame = (e->angle + 16) / 32;
+	//if (e->frame > 7) e->frame = 7;
 }
 
 
 // this is the cat that falls out after you defeat him
-void ai_x_defeated(Entity *o)
-{
+void ai_x_defeated(Entity *e) {
 	e->timer++;
-	if ((e->timer % 4) == 0)
-	{
-		SmokeClouds(o, 1, 16, 16);
+	if ((e->timer % 4) == 0) {
+		//SmokeClouds(o, 1, 16, 16);
 	}
 	
 	switch(e->state)
 	{
 		case 0:
 		{
-			SmokeClouds(o, 8, 16, 16);
+			//SmokeClouds(o, 8, 16, 16);
 			e->state = 1;
 		}
 		case 1:
 		{
-			if (e->timer > 50)
-			{
+			if (e->timer > 50) {
 				e->state = 2;
 				e->x_speed = -0x100;
 			}
@@ -789,7 +741,7 @@ void ai_x_defeated(Entity *o)
 		case 2:
 		{
 			e->y_speed += 0x40;
-			if (e->y > (map.ysize * TILE_H) << CSF) e->state = STATE_DELETE;
+			if (e->y > (stageHeight * 16) << CSF) e->state = STATE_DELETE;
 		}
 		break;
 	}

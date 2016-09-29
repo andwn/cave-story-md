@@ -15,7 +15,7 @@ void ai_pignon(Entity *e) {
 		e->timer = 0;
 		e->y_speed = -0x100;
 		MOVE_X(-0x120);
-		e->frame = 3;
+		e->frame = 4;
 	}
 	switch(e->state) {
 		case 0: // Standing

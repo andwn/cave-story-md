@@ -8,8 +8,8 @@
  * TODO before 0.2.1
  * MISSING GRAPHICS:
  * - Red flower petals
- * - Head bonk
  * - Level Up/Down
+ * - Clipping effect
  * ANIMATE:
  * - Gravekeeper
  * - Quote teleporting
@@ -26,15 +26,10 @@
  * REWRITE:
  * - Igor (Scene)
  * - Balfrog (Sprites)
- * - Omega
  * MISC:
- * - Big Pignon damage frame is wrong
  * - Igor - some wrong frames
  * - Stop Kulala from clipping through ceiling
  * - Add ondeath_kulala that creates a treasure chest
- * ENGINE:
- * - Handle having 0 items in menu
- * - Add a clipping effect
  * BGM:
  * - Labyrinth Fight
  * - Living Waterway
@@ -146,7 +141,7 @@ u8 water_screenlevel;
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 
-Entity *pieces[7]; // Most bosses use this
+Entity *pieces[10]; // Most bosses use this
 
 void generic_npc_states(Entity *e);
 

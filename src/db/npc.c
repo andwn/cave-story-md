@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 5] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -545,9 +545,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 5] = {
 	{ &SPR_OmgStrut, NOSHEET, PAL3, 1, // Omega Strut
 		&onspawn_persistent, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 2, // Monster X Tread
-		&onspawn_persistent, &ai_null, &ai_null },
+		&onspawn_x_tread, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 4, // Monster X Door
-		&onspawn_persistent, &ai_null, &ai_null },
+		&onspawn_x_door, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Monster X Target
-		&onspawn_persistent, &ai_null, &ai_null },
+		&onspawn_x_target, &ai_null, &ai_null },
 };

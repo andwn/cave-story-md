@@ -199,6 +199,11 @@ void draw_itemmenu() {
 			itemSprite[i] = (VDPSprite){};
 		}
 	}
+	// Handle 0 items - draw a blank sprite to clear the rest
+	if(!held) {
+		spr_num = 0;
+		sprite_add((VDPSprite) {});
+	}
 	// Draw item cursor at first index (default selection)
 	itemcursor_move(0, 0);
 	// These routines handle hiding or deleting sprites

@@ -622,7 +622,14 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			logcmd("<ANP:%hu:%hu:%hu", args[0], args[1], args[2]);
-			entities_set_state(args[0], args[1], args[2] > 0);
+			if(stageID == 0x27 && args[0] == 1000) {
+				// Hack to make Monster X appear
+				Entity *e = entity_create(0, 0, 360 + BOSS_MONSTERX, 0);
+				e->event = 1000;
+				e->state = 1;
+			} else {
+				entities_set_state(args[0], args[1], args[2] > 0);
+			}
 			break;
 		case CMD_CNP: // Change all entities of event (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();
