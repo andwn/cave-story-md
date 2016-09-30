@@ -219,7 +219,7 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if((e->eflags|e->nflags) & (NPC_SPECIALSOLID|NPC_SOLID)) {
+		if((e->eflags|e->nflags) & NPC_SPECIALSOLID) {
 			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
@@ -246,7 +246,7 @@ void entities_update() {
 				player.x = player.x_next;
 			}
 		} // "Smushy" Solid Entities
-		/*else if((e->eflags|e->nflags) & (NPC_SOLID)) {
+		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
 			collision = entity_react_to_collision(&player, e, TRUE);
 			if(collision.bottom) {
 				player.y += (collision.bottom - 1);
@@ -276,7 +276,7 @@ void entities_update() {
 				collide_stage_leftwall(&player);
 				player.x = player.x_next;
 			}
-		}*/
+		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
 			u32 collided = *(u32*)&collision; // I do what I want
@@ -559,7 +559,6 @@ u8 collide_stage_ceiling(Entity *e) {
 	u8 result = FALSE;
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
-		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
 		e->jump_time = 0;
 		result = TRUE;
@@ -568,21 +567,22 @@ u8 collide_stage_ceiling(Entity *e) {
 				pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
 					heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top);
-			e->y_speed = 0;
 			result = TRUE;
 		}
 		if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 				pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) +
 					heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top);
-			e->y_speed = 0;
 			result = TRUE;
 		}
 	}
-	if(result && e == &player && e->y_speed < -0xFF) {
-		sound_play(SND_BONK_HEAD, 2);
-		effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
-		effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
+	if(result) {
+		if(e == &player && e->y_speed < -0xFF) {
+			sound_play(SND_BONK_HEAD, 2);
+			effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
+			effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
+		}
+		e->y_speed = 0;
 	}
 	return result;
 }

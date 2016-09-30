@@ -12,7 +12,7 @@ void onspawn_torokoAtk(Entity *e) {
 	e->y -= block_to_sub(1);
 	e->x_speed = 0x300; // 1.5px
 	e->state = 3; // Running back and forth
-	e->frame = 2;;
+	e->frame = 3;
 }
 
 void ai_torokoAtk(Entity *e) {
@@ -22,53 +22,35 @@ void ai_torokoAtk(Entity *e) {
 		break;
 	case 3: // Run back and forth
 	case 4:
-		if(e->attack == 0) {
-			e->frame = 1;
-		} else {
-			e->frame = 2;
-			Bullet *b = bullet_colliding(e);
-			if(b != NULL) {
-				sound_play(e->hurtSound, 10); // Squeak
-				e->attack = 0; // Don't hurt the player anymore
-				e->eflags |= NPC_INTERACTIVE; // Enable interaction
-				e->state = 10; // Change animation to falling on ground
-				e->y_speed = pixel_to_sub(-1);
-				e->x_speed /= 2;
-				e->grounded = FALSE;
-				e->frame = 3;
-				b->ttl = 0;
-				//SPR_SAFERELEASE(b->sprite);
-			}
+		ANIMATE(e, 8, 3,4);
+		Bullet *b = bullet_colliding(e);
+		if(b) {
+			sound_play(e->hurtSound, 10); // Squeak
+			e->attack = 0; // Don't hurt the player anymore
+			e->eflags |= NPC_INTERACTIVE; // Enable interaction
+			e->state = 10; // Change animation to falling on ground
+			e->y_speed = pixel_to_sub(-1);
+			e->x_speed /= 2;
+			e->grounded = FALSE;
+			e->frame = 5;
+			b->ttl = 0;
 		}
 		// Switch direction in specific range
 		if((e->x_speed > 0 && e->x > block_to_sub(15)) || 
 			(e->x_speed < 0 && e->x < block_to_sub(10))) {
 			e->dir = !e->dir;
 			e->x_speed = -0x300 + 0x600 * e->dir;
-			//SPR_SAFEHFLIP(e->sprite, e->dir);
 		}
-		break;
-	case 6: // Jump then run
-		if(e->grounded && abs(e->x_speed) < 0x300) {
-			e->x_speed = -0x300 + 0x600 * e->dir;
-			e->state = 7; // Toroko stops after hitting a wall so don't keep doing this
-		}
-		break;
-	case 7:
-		break;
-	case 8: // Jump in place (don't run after)
 		break;
 	case 10: // Falling down
 		if(e->grounded) {
 			e->x_speed = 0;
 			e->state = 11;
-			e->frame = 4;
+			e->frame = 6;
 		}
 		break;
 	case 11: // After falling on ground
 		e->dir = 0;
-		break;
-	default:
 		break;
 	}
 	if(!e->grounded) e->y_speed += GRAVITY_JUMP;

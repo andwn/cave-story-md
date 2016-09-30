@@ -69,20 +69,30 @@ void effects_update() {
 		switch(effMisc[i].type) {
 			case EFF_BONKL:
 			{
-				if(effMisc[i].ttl > 15) {
-					effMisc[i].x--;
-					effMisc[i].y--;
+				if(effMisc[i].ttl&1) {
+					if(effMisc[i].ttl > 15) {
+						effMisc[i].x--;
+						effMisc[i].y--;
+					}
+					sprite_pos(effMisc[i].sprite,
+						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_add(effMisc[i].sprite);
 				}
-				if(effMisc[i].ttl&1) sprite_add(effMisc[i].sprite);
 			}
 			break;
 			case EFF_BONKR:
 			{
-				if(effMisc[i].ttl > 15) {
-					effMisc[i].x++;
-					effMisc[i].y--;
+				if(!(effMisc[i].ttl&1)) {
+					if(effMisc[i].ttl > 15) {
+						effMisc[i].x++;
+						effMisc[i].y--;
+					}
+					sprite_pos(effMisc[i].sprite,
+						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_add(effMisc[i].sprite);
 				}
-				if(!(effMisc[i].ttl&1)) sprite_add(effMisc[i].sprite);
 			}
 			case EFF_ZZZ:
 			{

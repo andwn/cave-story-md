@@ -204,57 +204,74 @@ void ai_player(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
-	e->x = e->x_next;
-	e->y = e->y_next;
-}
-
-void ondeath_player(Entity *e) {
 	switch(e->state) {
 		case 0:
-		e->x_speed = 0;
-		e->frame = 0;
+		case 1:
+		{
+			e->x_speed = 0;
+			e->frame = 0;
+		}
 		break;
 		case 2:		// looking up
-		e->frame = 2;
+		case 3:
+		{
+			e->frame = 2;
+		}
 		break;
 		case 10:	// he gets flattened
-		sound_play(SND_LITTLE_CRASH, 5);
-		for(u8 i = 0; i < 4; i++) {
-			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() % 32), 
-				sub_to_pixel(e->y) - 16 + (random() % 32));
+		{
+			sound_play(SND_LITTLE_CRASH, 5);
+			for(u8 i = 0; i < 4; i++) {
+				effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() % 32), 
+					sub_to_pixel(e->y) - 16 + (random() % 32));
+			}
+			e->state++;
 		}
-		e->state++;
 		/* no break */
 		case 11:
-		e->frame = 9;
+		{
+			e->frame = 9;
+		}
 		break;
 		case 20:	// he teleports away
-		e->type = 0x6F;
-		e->state = 0;
-		e->timer = 0;
-		onspawn_teleOut(e);
+		{
+			Entity *new = entity_create(e->x, e->y, 0x6F, 0);
+			new->id = e->id;
+			new->event = e->event;
+			e->state = STATE_DELETE;
+		}
 		break;
 		case 50:	// walking
-		MOVE_X(SPEED(0x200));
-		e->frame = 1;
+		{
+			MOVE_X(SPEED(0x200));
+			e->frame = 1;
+		}
 		break;
 		// falling, upside-down (from good ending; Fall stage)
 		case 60:
-		e->frame = 0;
-		//SPR_SAFEVFLIP(e->sprite, 1);
+		{
+			e->frame = 0;
+			sprite_vflip(e->sprite[0], 1);
+		}
 		break;
 		case 80:	// face away
-		e->frame = 4;
+		{
+			e->frame = 4;
+		}
 		break;
 		// walking in place during credits
 		case 99:
 		case 100:
 		case 101:
 		case 102:
-		e->frame = 1;
+		{
+			ANIMATE(e, 16, 0,1,0,2);
+		}
 		break;
 	}
+	entity_update_collision(e);
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_computer(Entity *e) {

@@ -410,6 +410,10 @@ void ai_balrogRunning(Entity *e) {
 		STATE_JUMP = 20,
 		STATE_SLOW_DOWN = 30
 	};
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	//if(!e->grounded) e->grounded = collide_stage_floor(e);
+	//else e->grounded = collide_stage_floor_grounded(e);
 	// try to catch player
 	if (e->state == STATE_CHARGE+1 || e->state == STATE_JUMP) {
 		if (e->timer > 8 && entity_overlapping(&player, e)) {
@@ -420,6 +424,7 @@ void ai_balrogRunning(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->grounded = TRUE;
 			FACE_PLAYER(e);
 			e->eflags |= NPC_SHOOTABLE;
 			e->frame = 0;

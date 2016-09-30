@@ -796,9 +796,11 @@ void player_give_weapon(u8 id, u8 ammo) {
 			w->energy = 0;
 			w->maxammo = ammo;
 			w->ammo = ammo;
-			// Update the sprite sheet for specific weapons
-			if(!playerWeapon[i].type && weapon_info[w->type].sprite) {
-				TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			// Normally weapons are not automatically switched but when picking up the
+			// polar star, our first weapon, that is what happens. So make sure the
+			// sprite tiles get loaded when we pick it up.
+			if(w->type == WEAPON_POLARSTAR) {
+				TILES_QUEUE(SPR_TILES(weapon_info[WEAPON_POLARSTAR].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
 			if(w->type == WEAPON_POLARSTAR) {
