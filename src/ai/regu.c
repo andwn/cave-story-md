@@ -166,6 +166,9 @@ void ai_toroko(Entity *e) {
 			}
 		}
 		break;
+		default: // Toroko getting up after you shoot her, don't know the real state
+			FACE_PLAYER(e);
+			e->frame = 0;
 	}
 	
 	e->x = e->x_next;
@@ -222,6 +225,13 @@ void ai_toroko_teleport_in(Entity *e) {
 // Use the shared global x and y mark for red crystal
 #define crystal_xmark curly_target_x
 #define crystal_ymark curly_target_y
+
+void onspawn_sue(Entity *e) {
+	if(e->eflags & NPC_OPTION2) e->dir = TRUE;
+	SNAP_TO_GROUND(e);
+	// This keeps Sue behind the cage in Mimiga Village
+	if(stageID == 0x0B) e->alwaysActive = TRUE;
+}
 
 void ai_sue(Entity *e) {
 	e->x_next = e->x + e->x_speed;

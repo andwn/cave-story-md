@@ -74,7 +74,7 @@ void ai_igor(Entity *e) {
 		break;
 		case STATE_PUNCH:
 		{
-			e->frame = 5;
+			e->frame = 4;
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
@@ -93,7 +93,7 @@ void ai_igor(Entity *e) {
 			} else {
 				e->hit_box.left += 10;
 			}
-			e->frame = 6;
+			e->frame = 5;
 			e->attack = 5;
 			e->timer = 0;
 			e->state++;
@@ -146,6 +146,7 @@ void ai_igor(Entity *e) {
 		case STATE_MOUTH_BLAST:
 		{
 			e->frame = 9;
+			FACE_PLAYER(e);
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
@@ -184,63 +185,69 @@ void ondeath_igor(Entity *e) {
 }
 
 void ai_igorscene(Entity *e) {
-	/*
-	if(e->state >= 4) {
-		e->timer--;
-		if(e->timer == 0) ENTITY_SET_STATE(e, e->state == 4 ? 5 : 0, 0);
-	}
-	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
-	e->x = e->x_next;
-	e->y = e->y_next;
-	* */
-}
-
-void ondeath_igorscene(Entity *e) {
-	/*
 	switch(e->state) {
 		case 0:
-		case 1:
 		{
 			e->x_speed = 0;
-			//SPR_SAFEHFLIP(e->sprite, e->dir);
-			e->frame = 0;
+			e->timer = 0;
+			e->state++;
+		}
+		case 1:
+		{
+			ANIMATE(e, 16, 0,1);
 		}
 		break;
 		case 2:
-		case 3:
 		{
 			MOVE_X(SPEED(0x200));
-			e->frame = 1;
+		}
+		case 3:
+		{
+			ANIMATE(e, 12, 2,0,3,0);
 		}
 		break;
 		case 4:
-		e->x_speed = 0;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->frame = 2;
-		e->timer = 20;
-		break;
+		{
+			e->x_speed = 0;
+			e->frame = 4;
+			e->timer = 20;
+			e->state++;
+		}
 		case 5:
-		e->x_speed = 0;
-		//SPR_SAFEHFLIP(e->sprite, e->dir);
-		e->frame = 3;
-		e->timer = 20;
+		{
+			e->timer--;
+			if(!e->timer) {
+				e->frame = 5;
+				e->timer = 20;
+				e->state = 6;
+			}
+		}
+		break;
+		case 6:
+		{
+			e->timer--;
+			if(!e->timer) e->state = 0;
+		}
 		break;
 	}
-	* */
+	e->x = e->x_next;
+	e->y = e->y_next;
+	if(!e->grounded) e->y_speed += SPEED(0x40);
 }
 
 void ai_igordead(Entity *e) {
 	switch(e->state) {
 		case 0:
 		FACE_PLAYER(e);
-		//sound(SND_BIG_CRASH);
+		sound_play(SND_BIG_CRASH, 5);
 		//SmokeBoomUp(e);
 		e->x_speed = 0;
 		e->timer = 0;
+		e->frame = 8;
 		e->state = 1;
 		break;
 		case 1:
@@ -269,12 +276,12 @@ void ai_igordead(Entity *e) {
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)
 		if((e->timer & 3) == 1) {
-			e->frame = 9;
+			e->frame = 10;
 		} else if((e->timer & 3) == 3) {
-			e->frame = 7;
+			e->frame = 8;
 		}
 		if(e->timer > 160) {
-			e->frame = 9;
+			e->frame = 10;
 			e->state = 3;
 			e->timer = 0;
 		}

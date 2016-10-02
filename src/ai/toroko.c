@@ -52,6 +52,9 @@ void ai_torokoAtk(Entity *e) {
 	case 11: // After falling on ground
 		e->dir = 0;
 		break;
+	default:
+		e->dir = 0;
+		e->frame = 0;
 	}
 	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
 	e->x_next = e->x + e->x_speed;
@@ -62,7 +65,7 @@ void ai_torokoAtk(Entity *e) {
 }
 
 void onspawn_torokoBoss(Entity *e) {
-	e->frame = 10;;
+	e->frame = 10;
 	e->y -= 8 << CSF;
 }
 

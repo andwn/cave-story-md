@@ -13,9 +13,11 @@
 #include "resources.h"
 
 void ai_jelly(Entity *e) {
+	ANIMATE(e, 16, 0,1,2,3,4,5);
 	switch(e->state) {
 		case 0:
 		{
+			e->enableSlopes = FALSE;
 			e->timer = random() % TIME(20);
 			e->x_mark = e->x;
 			e->y_mark = e->y;
@@ -63,7 +65,7 @@ void ai_jelly(Entity *e) {
 		}
 		break;
 	}
-	if((e->dir && e->x > e->x_mark) || (!e->dir && e->x < e->x_mark)) TURN_AROUND(e);
+	e->dir = e->x < e->x_mark;
 	if(e->y <= e->y_mark) {
 		e->y_speed += SPEED(0x20);
 		LIMIT_Y(SPEED(0x200));
@@ -82,7 +84,7 @@ void ai_kulala(Entity *e) {
 	switch(e->state) {
 		case 0:		// frozen/in stasis. waiting for player to shoot.
 		{
-			//e->frame = 4;
+			e->frame = 4;
 			e->state = 1;
 		}
 		/* no break */
@@ -91,7 +93,7 @@ void ai_kulala(Entity *e) {
 			if(e->damage_time) {
 				camera_shake(30);
 				e->state = 10;
-				//e->frame = 0;
+				e->frame = 0;
 				e->timer = 0;
 			}
 		}
@@ -109,12 +111,10 @@ void ai_kulala(Entity *e) {
 		{
 			e->timer++;
 			if(e->timer % TIME(5) == 0) {
-				//u8 frame = e->sprite->animInd;
-				//e->frame = ++frame;
-				//if(frame >= 3) {
+				if(++e->frame >= 3) {
 					e->state = 12;
 					e->timer = 0;
-				//}
+				}
 			}
 		}
 		break;
@@ -123,19 +123,19 @@ void ai_kulala(Entity *e) {
 			e->y_speed = SPEED(-0x155);
 			if(++e->timer > TIME(20)) {
 				e->state = 10;
-				//e->frame = 0;
+				e->frame = 0;
 				e->timer = 0;
 			}
 		}
 		break;
 		case 20:	// shot/freeze over/go invulnerable
 		{
-			//e->frame = 4;
+			e->frame = 4;
 			e->x_speed >>= 1;
 			e->y_speed += SPEED(0x20);
 			if(!e->damage_time) {
 				e->state = 10;
-				//e->frame = 0;
+				e->frame = 0;
 				e->timer = TIME(30);
 			}
 		}
@@ -146,7 +146,7 @@ void ai_kulala(Entity *e) {
 		// x_mark unused so use it as a second timer
 		if(++e->x_mark > TIME(12)) {
 			e->state = 20;
-			//e->frame = 4;
+			e->frame = 4;
 			e->eflags |= NPC_INVINCIBLE;
 		}
 	} else {
@@ -158,6 +158,7 @@ void ai_kulala(Entity *e) {
 		e->y_next = e->y + e->y_speed;
 		e->y_speed += SPEED(0x10);
 		if(collide_stage_floor(e)) e->y_speed = SPEED(-0x300);
+		else if(e->y_speed < 0) collide_stage_ceiling(e);
 		
 		// Unused y_mark for third timer
 		if(collide_stage_leftwall(e)) {
@@ -191,14 +192,14 @@ void ai_mannan(Entity *e) {
 		// Face sprite remains after defeated
 		e->eflags &= ~NPC_SHOOTABLE;
 		e->nflags &= ~NPC_SHOOTABLE;
-		//e->frame = 2;
+		e->frame = 2;
 		e->attack = 0;
 		e->state = 3;
 		return;
 	} else if(e->state == 0 && e->damage_time == 29) {
 		e->state = 1;
 		e->timer = 0;
-		//e->frame = 1;
+		e->frame = 1;
 		Entity *shot = entity_create(e->x, e->y, OBJ_MANNAN_SHOT, 0);
 		shot->dir = e->dir;
 		// We want the bullet to delete itself offscreen, it can't do this while inactive
@@ -296,10 +297,9 @@ void ai_frog(Entity *e) {
 			// Balfrog sets OPTION1
 			if(e->eflags & NPC_OPTION1) {
 				e->dir = random() & 1;
-				////SPR_SAFEHFLIP(e->sprite, e->dir);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 3;
-				//e->frame = 1;
+				e->frame = 2;
 			} else {
 				e->grounded = TRUE;
 				e->eflags &= ~NPC_IGNORESOLID;
@@ -310,6 +310,8 @@ void ai_frog(Entity *e) {
 		case 1:		// standing
 		case 2:
 		{
+			e->frame = 0;
+			RANDBLINK(e, 1, 100);
 			e->timer++;
 		}
 		break;
@@ -319,7 +321,7 @@ void ai_frog(Entity *e) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				if((e->grounded = collide_stage_floor(e))) {
 					e->state = 1;
-					//e->frame = 0;
+					e->frame = 0;
 					e->timer = 0;
 				}
 			}
@@ -338,7 +340,7 @@ void ai_frog(Entity *e) {
 			}
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 0;
-				//e->frame = 0;
+				e->frame = 0;
 				e->timer = 0;
 			}
 		}
@@ -357,7 +359,7 @@ void ai_frog(Entity *e) {
 		if (dojump) {
 			FACE_PLAYER(e);
 			e->state = 10;
-			//e->frame = 1;
+			e->frame = 2;
 			e->y_speed = SPEED(-0x5ff);
 			e->grounded = FALSE;
 
@@ -377,6 +379,7 @@ void ai_hey(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->display_box.left = e->display_box.top = 8;
 			e->y -= 8 << CSF;
 			e->state = 1;
 		}
@@ -384,17 +387,7 @@ void ai_hey(Entity *e) {
 		case 1:
 		{
 			if(++e->timer >= TIME(50)) {
-				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
-				e->state = 2;
-				e->timer = 0;
-			}
-		}
-		break;
-		case 2:
-		{
-			if(++e->timer >= TIME(50)) {
-				////SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
-				e->state = 1;
+				e->hidden ^= 1;
 				e->timer = 0;
 			}
 		}

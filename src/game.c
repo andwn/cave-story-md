@@ -74,9 +74,9 @@ u8 game_main(u8 load) {
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
 			if(joy_pressed(BUTTON_START) && !tscState) {
-				draw_itemmenu();
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
+				draw_itemmenu();
 				paused = TRUE;
 			} else {
 				// HUD on top
@@ -149,6 +149,7 @@ void game_reset(u8 load) {
 		system_load();
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
+		sheets_refresh_weapons();
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
@@ -162,14 +163,23 @@ void game_reset(u8 load) {
 
 void draw_itemmenu() {
 	SYS_disableInts();
-	// Fill the top part with blue
-	// TODO: Make this prettier
-	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, 0, 64 * 20);
+	// Fill the top part
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX), 1, 0);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_WINDOWINDEX+1, 2, 36); // Upper mid
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+2), 38, 0);
+	for(u16 y = 1; y < 19; y++) {
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+3), 1, y);
+		VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, y*64 + 2, 36); // Body
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+5), 38, y);
+	}
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+6), 1, 19);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_WINDOWINDEX+7, 19*64 + 2, 36); // Lower mid
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+8), 38, 19);
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
 	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
 	// Redraw message box at the bottom of the screen
-	window_clear();
+	window_open(FALSE);
 	// Weapons
 	VDP_drawTextWindow("--ARMS--", 16, 3);
 	// TODO: Draw the status for all weapons the player owns under --ARMS--
@@ -189,7 +199,7 @@ void draw_itemmenu() {
 			// Clobber the entity/bullet shared sheets
 			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
 			itemSprite[i] = (VDPSprite){
-				.x = 24 + (i % 8) * 32 + 128, 
+				.x = 36 + (i % 8) * 32 + 128, 
 				.y = 88 + (i / 8) * 16 + 128, 
 				.size = SPRITE_SIZE(3, 2),
 				.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_SHEETINDEX+held*6)
@@ -199,19 +209,18 @@ void draw_itemmenu() {
 			itemSprite[i] = (VDPSprite){};
 		}
 	}
-	// Handle 0 items - draw a blank sprite to clear the rest
-	if(!held) {
-		spr_num = 0;
-		sprite_add((VDPSprite) {});
-	}
 	// Draw item cursor at first index (default selection)
 	itemcursor_move(0, 0);
-	// These routines handle hiding or deleting sprites
-	//player_pause();
-	//entities_pause();
-	//hud_hide();
+	selectedItem = 0;
+	tsc_call_event(5000 + playerInventory[selectedItem]);
 	// Make the window plane fully overlap the game
 	VDP_setWindowPos(0, 28);
+	// Handle 0 items - if we don't draw any sprites at all, the non-menu sprites
+	// will keep drawing. Draw a blank sprite in the upper left corner to work around this
+	if(!held) {
+		spr_num = 0;
+		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+	}
 	SYS_enableInts();
 }
 
@@ -229,8 +238,6 @@ u8 update_pause() {
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
-		//entities_unpause();
-		//hud_show();
 		VDP_setWindowPos(0, 0);
 		return FALSE;
 	} else {
@@ -274,14 +281,14 @@ u8 update_pause() {
 
 void itemcursor_move(u8 oldindex, u8 index) {
 	// Erase old position
-	u16 x = 3 + (oldindex % 8) * 4;
+	u16 x = 4 + (oldindex % 8) * 4;
 	u16 y = 11 + (oldindex / 8) * 2;
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+1);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y+1);
 	// Draw new position
-	x = 3 + (index % 8) * 4;
+	x = 4 + (index % 8) * 4;
 	y = 11 + (index / 8) * 2;
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX,   x,   y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+3, y);

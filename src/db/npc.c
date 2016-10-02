@@ -49,7 +49,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 	{ &SPR_SaveSign,NOSHEET,PAL1, 1, &onspawn_op2anim, &ai_null, &ai_null }, // Save Sign
 	{ &SPR_Santa, NOSHEET, 	PAL3, 1, &ai_null, &ai_santa, &ai_null }, // Santa
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_door, &ai_null, &ai_null }, // Busted Doorway
-	{ &SPR_Sue, NOSHEET, 	PAL3, 1, &onspawn_snapflip, &ai_sue, &ai_null }, // Sue
+	{ &SPR_Sue, NOSHEET, 	PAL3, 1, &onspawn_sue, &ai_sue, &ai_null }, // Sue
 	{ &SPR_Board, NOSHEET, 	PAL1, 2, &onspawn_blackboard, &ai_null, &ai_null }, // Blackboard
 	{ NULL, SHEET_POLISH, 	PAL3, 1, &ai_null, &ai_polish, &ondeath_default }, // Polish
 	{ NULL, SHEET_BABY, 	PAL3, 1, &ai_null, &ai_baby, &ondeath_default }, // Baby
@@ -66,7 +66,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 	{ &SPR_Kazuma, NOSHEET, PAL3, 1, &onspawn_snap, &ai_kazuma, &ai_null }, // Kazuma
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &ai_null, &ai_beetle, &ondeath_default }, // Beetle
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow
-	{ NULL, SHEET_BASU, 	PAL3, 1, &onspawn_basu, &ai_basu, &ondeath_default }, // Basu
+	{ &SPR_Basu, NOSHEET, 	PAL3, 1, &onspawn_basu, &ai_basu, &ondeath_default }, // Basu
 	{ &SPR_DoorE, NOSHEET,  PAL1, 1, &ai_null, &ai_theDoor, &ondeath_default }, // The Door
 	{ &SPR_Toroko, NOSHEET, PAL3, 1, &onspawn_op2flip, &ai_toroko, &ai_null }, // Toroko
 	{ &SPR_King, NOSHEET, 	PAL3, 1, &onspawn_op2flip, &ai_king, &ai_null }, // King

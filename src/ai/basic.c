@@ -86,6 +86,7 @@ void ai_trigger(Entity *e) {
 		e->alwaysActive = TRUE;
 		e->state = 1;
 		if(e->eflags&NPC_OPTION2) { // Vertical
+			e->hit_box.left = 2; e->hit_box.right = 2;
 			for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
 				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
 			}
@@ -93,6 +94,7 @@ void ai_trigger(Entity *e) {
 				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
 			}
 		} else { // Horizontal
+			e->hit_box.top = 2; e->hit_box.bottom = 2;
 			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
 				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, (e->y>>CSF)/16) == 0x41) break;
 			}
@@ -101,7 +103,10 @@ void ai_trigger(Entity *e) {
 			}
 		}
 	}
-	if(entity_overlapping(&player, e)) tsc_call_event(e->event);
+	if(entity_overlapping(&player, e)) {
+		if((e->eflags & NPC_OPTION2) || player.y_speed < 0)
+			tsc_call_event(e->event);
+	}
 }
 
 void ai_genericproj(Entity *e) {
@@ -120,39 +125,46 @@ void ondeath_default(Entity *e) {
 
 void onspawn_teleIn(Entity *e) {
 	e->x += pixel_to_sub(16);
-	e->y -= pixel_to_sub(8);
-	e->frame = 2;;
-	sound_play(SND_TELEPORT, 5);
+	e->y += pixel_to_sub(8);
 }
 
 void ai_teleIn(Entity *e) {
 	switch(e->state) {
 		case 0: // Appear
 		{
-			if(++e->timer >= 5*14) {
-				e->timer = 0;
+			sound_play(SND_TELEPORT, 5);
+			e->timer = 5*15;
+			e->state++;
+		}
+		case 1:
+		{
+			e->timer--;
+			e->frame = e->timer / 5;
+			e->x += e->timer & 1 ? 0x200 : -0x200;
+			if(!e->timer) {
 				e->state++;
 				e->grounded = FALSE;
-				e->frame = 0;
 			}
 		}
 		break;
-		case 1: // Drop
+		case 2: // Drop
 		{
-			if(!e->grounded) {
+			e->x_next = e->x;
+			e->y_next = e->y + e->y_speed;
+			if(e->grounded = collide_stage_floor(e)) {
+				e->state++;
+			} else {
 				e->y_speed += SPEED(0x40);
-				e->y += e->y_speed;
-				// For whatever reason, collide_stage_floor() doesn't work here
-				e->grounded = stage_get_block_type(
-						sub_to_block(e->x), sub_to_block(e->y + (8<<CSF))) == 0x41;
 			}
+			e->y = e->y_next;
 		}
 		break;
+		case 3: break;
 	}
 }
 
 void onspawn_teleOut(Entity *e) {
-	e->y -= pixel_to_sub(24);
+	e->y -= pixel_to_sub(32);
 	SNAP_TO_GROUND(e);
 	e->y_speed = SPEED(-0x400);
 }
@@ -165,7 +177,8 @@ void ai_teleOut(Entity *e) {
 				e->state++;
 				e->timer = 0;
 				e->y_speed = 0;
-				e->frame = 1;
+				Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
+				if(light) light->state = 1;
 				sound_play(SND_TELEPORT, 5);
 			} else {
 				e->y_speed += SPEED(0x43);
@@ -175,25 +188,30 @@ void ai_teleOut(Entity *e) {
 		break;
 		case 1: // Show teleport animation
 		{
-			if(++e->timer >= 5*14) {
+			e->timer++;
+			e->frame = e->timer / 5;
+			e->x += e->timer & 1 ? 0x200 : -0x200;
+			if(e->timer >= 5*15) {
 				e->state++;
-				e->timer = 0;
 				e->hidden = TRUE;
-				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+				Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
+				if(light) light->state = 0;
 			}
 		}
 		break;
+		case 2: break;
 	}
 }
 
 void onspawn_teleLight(Entity *e) {
 	e->hidden = TRUE;
-	e->x += pixel_to_sub(8);
-	e->y += pixel_to_sub(8);
+	e->x += pixel_to_sub(4);
+	e->y += pixel_to_sub(4);
 }
 
 void ai_teleLight(Entity *e) {
-	
+	if(e->state) e->hidden = ++e->timer & 1;
+	else e->hidden = TRUE;
 }
 
 void ondeath_teleLight(Entity *e) {

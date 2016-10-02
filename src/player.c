@@ -601,6 +601,8 @@ void player_update_air_display() {
 }
 
 void player_draw() {
+	// Don't draw the player if we died
+	if(!player.health) return;
 	enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 	// Sprite Animation
 	player.oframe = player.frame;
@@ -639,10 +641,12 @@ void player_draw() {
 	// Blink during invincibility frames
 	if(playerShow && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
-		if(joy_down(BUTTON_RIGHT)) {
-			player.dir = 1;
-		} else if(joy_down(BUTTON_LEFT)) {
-			player.dir = 0;
+		if(!controlsLocked) {
+			if(joy_down(BUTTON_RIGHT)) {
+				player.dir = 1;
+			} else if(joy_down(BUTTON_LEFT)) {
+				player.dir = 0;
+			}
 		}
 		sprite_hflip(playerSprite, player.dir);
 		sprite_pos(playerSprite,
@@ -695,8 +699,6 @@ u8 player_inflict_damage(s16 damage) {
 	if(player.health <= damage) {
 		// If health reached 0 we are dead
 		player.health = 0;
-		//SPR_SAFERELEASE(player.sprite);
-		//SPR_SAFERELEASE(weaponSprite);
 		// Clear smoke & fill up with smoke around player
 		effects_clear_smoke();
 		for(u8 i = MAX_SMOKE; i--; ) {

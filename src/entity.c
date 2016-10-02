@@ -168,10 +168,10 @@ void entities_update() {
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
-		} /*else if(e->state == STATE_DESTROY) {
+		} else if(e->state == STATE_DESTROY) {
 			e = entity_destroy(e);
 			continue;
-		}*/
+		}
 		// Handle Shootable flag - check for collision with player's bullets
 		if((e->nflags | e->eflags) & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
@@ -321,22 +321,23 @@ void entities_update() {
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
+					u8 h = f->h / 32 + (f->h % 32 != 0);
 					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					u8 x = min(f->w, 32), y = 0;
+					s16 x = min(f->w, 32), y = (h - 1) * 32;
 					for(u8 i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx - x, by + y);
 						sprite_hflip(e->sprite[i], 1);
 						x += min(f->w - x, 32);
 						if(x >= f->w + 32) {
 							x = min(f->w, 32);
-							y += 32;
+							y -= 32;
 						}
 					}
 				} else {
 					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					u8 x = 0, y = 0;
+					s16 x = 0, y = 0;
 					for(u8 i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx + x, by + y);
 						sprite_hflip(e->sprite[i], 0);
@@ -348,7 +349,6 @@ void entities_update() {
 					}
 				}
 			}
-			//sprite_addq(e->sprite, e->sprite_count);
 		}
 		e = e->next;
 	}
@@ -356,7 +356,7 @@ void entities_update() {
 
 void entities_update_inactive() {
 	Entity *e = inactiveList;
-	while(e != NULL) {
+	while(e) {
 		if(e->alwaysActive || entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_reactivate(e);
@@ -560,7 +560,6 @@ u8 collide_stage_ceiling(Entity *e) {
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
-		e->jump_time = 0;
 		result = TRUE;
 	} else {
 		if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
@@ -582,7 +581,8 @@ u8 collide_stage_ceiling(Entity *e) {
 			effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
 			effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
 		}
-		e->y_speed = 0;
+		e->jump_time = 0;
+		e->y_speed = -e->y_speed / 2;
 	}
 	return result;
 }

@@ -21,12 +21,7 @@ void sheets_init() {
 	sheets[5] = (Sheet){ SHEET_ENERGY, 6*1, sheets[4].index + sheets[4].size, 1, 1 };
 	sheets[6] = (Sheet){ SHEET_ENERGYL, 6*4, sheets[5].index + sheets[5].size, 2, 2 };
 	// Actually load the tiles - assume the VDP is disabled
-	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
-	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
-	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
-	sheets_refresh_polarstar(pstar ? pstar->level : 1);
-	sheets_refresh_machinegun(mgun ? mgun->level : 1);
-	sheets_refresh_fireball(fball ? fball->level : 1);
+	sheets_refresh_weapons();
 	// Power ups
 	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, 1, 0,0, 0,1, 1,0, 1,1);
 	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, 1, 0,0, 0,1, 1,0, 1,1);
@@ -80,6 +75,15 @@ void sheets_refresh_fireball(u8 level) {
 	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[2].index + 8, 4, 1);
 }
 
+void sheets_refresh_weapons() {
+	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
+	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
+	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
+	sheets_refresh_polarstar(pstar ? pstar->level : 1);
+	sheets_refresh_machinegun(mgun ? mgun->level : 1);
+	sheets_refresh_fireball(fball ? fball->level : 1);
+}
+
 void sheets_load_stage(u16 sid) {
 	// Reset values
 	sheet_num = 7;
@@ -106,16 +110,17 @@ void sheets_load_stage(u16 sid) {
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 3,2,2, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_BEETLE, &SPR_BtlHG, 2,2,2, 0,0, 1,0);
 			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 3,4,3, 0,0, 0,1, 0,3);
-			SHEET_ADD(SHEET_BASIL, &SPR_Basil, 2,4,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_BASIL, &SPR_Basil, 3,4,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x05: // Egg Observatory
 		case 0x17: // Egg no. 1
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 4,2,3, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x06: // Grasstown
-		{	SHEET_ADD(SHEET_FAN, &SPR_Fan, 8,2,2, 2,0, 2,1, 2,2, 2,3, 3,0, 3,1, 3,2, 3,3);
-			SHEET_ADD(SHEET_MANNAN, &SPR_Mannan, 3,2,4, 0,0, 1,0, 2,0);
+		{	SHEET_ADD(SHEET_FAN, &SPR_Fan, 6,2,2, 3,0, 3,1, 3,2, 2,0, 2,1, 2,2);
+			SHEET_ADD(SHEET_MANNAN, &SPR_Mannan, 3,3,4, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_PCRITTER, &SPR_CritBig, 6,3,3, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0,0, 0,1, 1,0);
 		} /* Below is for both Grasstown and Waterway */
@@ -131,11 +136,12 @@ void sheets_load_stage(u16 sid) {
 		{	SHEET_ADD(SHEET_REDSHOT, &SPR_FrogShot, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0,0, 0,1, 1,0);
 			SHEET_ADD(SHEET_PUCHI, &SPR_FrogSm, 2,2,2, 0,0, 1,0);
-			SHEET_ADD(SHEET_FAN, &SPR_Fan, 4,2,2, 2,0, 2,1, 2,2, 2,3);
+			SHEET_ADD(SHEET_FAN, &SPR_Fan, 3,2,2, 3,0, 3,1, 3,2);
 		} break;
 		case 0x0A: // Sand Zone
 		case 0x25:
 		{	SHEET_ADD(SHEET_CROW, &SPR_Crow, 3,4,4, 0,0, 0,1, 2,0);
+			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 			// Skullhead
 			// Omega Projectile
 		} break;

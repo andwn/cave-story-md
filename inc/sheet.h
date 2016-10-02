@@ -97,6 +97,7 @@ u8 tilocs[MAX_TILOCS];
 
 void sheets_init();
 
+void sheets_refresh_weapons();
 void sheets_refresh_polarstar(u8 level);
 void sheets_refresh_machinegun(u8 level);
 void sheets_refresh_fireball(u8 level);
