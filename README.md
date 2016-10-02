@@ -11,6 +11,12 @@ It should work on any console or emulator (but not PAL yet).
 ### Download prebuilt ROM
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
+### Progress
+In the current release `0.2` you can make it to Ironhead if you try really hard. Labyrinth and
+Waterway are really glitchy though.
+
+Master is broken in Grasstown, lol. Also looky here: [TODO list](doc/TODO.md)
+
 ### Controls
 - C - Jump, confirm
 - B - Shoot
@@ -20,6 +26,7 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 
 ### How to build
 Assuming you are running GNU/Linux,
+
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
 2. Clone the project and do `make`.
 3. Open `out.bin` in your emulator of choice, or put it on a flash cart.
@@ -29,17 +36,12 @@ Assuming you are running GNU/Linux,
 I was learning about Genesis homebrew and wanted to make something, but I'm not creative enough 
 to make my own game. Also Cave Story is pretty cool.
 
-#### Is the game beatable?
-Not yet. Check out the [TODO list](doc/TODO.md) for progress.
-
-In the current release, you can make it to the end section of Waterway if you try hard enough.
-
 #### Where are the Windows build instructions?
 There aren't any. I used to have a Makefile and bat to build this on Windows, 
 however the build only succeeded ~30% of the time due to random build errors. 
 The game also lags much more often when built from Windows for some reason.
 
-#### There are no save points. What's going on?
+#### There are no save points. What's going on? (as of `0.2.1`)
 The game detected that you have no SRAM. If this is not the case, open an issue.
 
 #### I found a discrepancy with the original
@@ -47,7 +49,6 @@ If it's not listed in [this document](doc/DIFFERENCES.md) report it! In general 
 base things around the original freeware (2004) version and not the one on Steam. There are
 some things that are different on purpose, almost always to work around console limitations.
 
-### I can't make these up
 #### Why Genesis instead of my favorite console?
 I'm not stopping you from porting CSMD to another console. Go make your dreams come true.
 
