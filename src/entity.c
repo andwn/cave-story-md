@@ -321,30 +321,30 @@ void entities_update() {
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
-					u8 h = f->h / 32 + (f->h % 32 != 0);
 					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					s16 x = min(f->w, 32), y = (h - 1) * 32;
+					s16 x = min(f->w, 32);
 					for(u8 i = 0; i < e->sprite_count; i++) {
-						sprite_pos(e->sprite[i], bx - x, by + y);
+						sprite_pos(e->sprite[i], bx - x, by);
 						sprite_hflip(e->sprite[i], 1);
-						x += min(f->w - x, 32);
-						if(x >= f->w + 32) {
+						if(x >= f->w) {
 							x = min(f->w, 32);
-							y -= 32;
+							by += 32;
+						} else {
+							x += min(f->w - x, 32);
 						}
 					}
 				} else {
 					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					s16 x = 0, y = 0;
+					s16 x = 0;
 					for(u8 i = 0; i < e->sprite_count; i++) {
-						sprite_pos(e->sprite[i], bx + x, by + y);
+						sprite_pos(e->sprite[i], bx + x, by);
 						sprite_hflip(e->sprite[i], 0);
 						x += 32;
 						if(x >= f->w) {
 							x = 0;
-							y += 32;
+							by += 32;
 						}
 					}
 				}
