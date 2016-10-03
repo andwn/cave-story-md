@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -517,13 +517,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 	{ &SPR_Balfrog1, NOSHEET, PAL3, 6, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },
 	{ NULL, NOSHEET, PAL3, 8, // Monster X
-		&ai_null, &ai_null, &ai_null },
+		&ai_monsterx, &ai_monsterx, &ondeath_monsterx },
 	{ NULL, NOSHEET, PAL3, 1, // Core (Controller)
 		&onspawn_core, &ai_core, &ondeath_core },
 	{ NULL, NOSHEET, PAL3, 2, // Ironhead
-		&ai_null, &ai_null, &ai_null },
+		&ai_ironhead, &ai_ironhead, &ondeath_ironhead },
 	{ NULL, NOSHEET, PAL3, 3, // Sisters
-		&ai_null, &ai_null, &ai_null },
+		&onspawn_sisters, &ai_sisters, &ondeath_sisters },
 	{ NULL, NOSHEET, PAL3, 3, // Undead Core
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 3, // Heavy Press
@@ -550,4 +550,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 		&onspawn_x_door, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Monster X Target
 		&onspawn_x_target, &ai_null, &ai_null },
+	{ NULL, NOSHEET, PAL3, 1, // Sisters Body
+		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
+	{ NULL, NOSHEET, PAL3, 1, // Sisters Head
+		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
 };

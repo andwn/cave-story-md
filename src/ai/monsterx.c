@@ -664,6 +664,11 @@ void ai_x_target(Entity *e) {
 	//e->y = internals->y + yoffs[index];
 }
 
+void ondeath_monsterx(Entity *e) {
+	e->state = STATE_X_EXPLODING;
+	tsc_call_event(e->event);
+}
+
 void ondeath_x_target(Entity *e) {
 	//SmokeClouds(o, 8, 8, 8);
 	sound_play(SND_LITTLE_CRASH, 5);
