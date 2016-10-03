@@ -108,6 +108,18 @@ Entity *entity_delete(Entity *e) {
 	return next;
 }
 
+Entity *entity_delete_inactive(Entity *e) {
+	Entity *next = e->next;
+	LIST_REMOVE(inactiveList, e);
+	// If we had tile allocation release it for future generations to use
+	//if(e->tiloc != NOTILOC) {
+	//	TILOC_FREE(e->tiloc, e->framesize);
+	//	e->tiloc = NOTILOC;
+	//}
+	MEM_free(e);
+	return next;
+}
+
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
 	entity_drop_powerup(e);
@@ -582,7 +594,7 @@ u8 collide_stage_ceiling(Entity *e) {
 			effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
 		}
 		e->jump_time = 0;
-		e->y_speed = -e->y_speed / 2;
+		e->y_speed = min(-e->y_speed / 2, 0xFF);
 	}
 	return result;
 }
@@ -819,7 +831,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
-			if(!new->state) new->state = e->state;
+			//if(!new->state) new->state = e->state;
 			e = entity_delete(e);
 		} else e = e->next;
 	}
@@ -830,8 +842,8 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
-			if(!new->state) new->state = e->state;
-			e = entity_delete(e);
+			//if(!new->state) new->state = e->state;
+			e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
 		} else e = e->next;
 	}
 }

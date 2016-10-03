@@ -13,7 +13,11 @@
 #include "resources.h"
 
 void ai_jelly(Entity *e) {
-	ANIMATE(e, 16, 0,1,2,3,4,5);
+	// No DIVU, no MULU
+	if(++e->animtime >= 12) {
+		e->animtime = 0;
+		if(++e->frame > 4) e->frame = 0;
+	}
 	switch(e->state) {
 		case 0:
 		{
@@ -221,11 +225,123 @@ void ai_mannanShot(Entity *e) {
 }
 
 void ai_malco(Entity *e) {
-	
+	switch(e->state) {
+		case 0:
+			e->state = 1;
+			e->frame = 0;
+			
+			// smushed into ground, used on re-entry to room
+			// if player does not choose to pull him out
+			// after Balrog fight
+			if (e->dir) e->frame = 5;
+		break;
+		
+		case 10:
+			e->state = 11;
+			e->timer = 0;
+			e->timer = 0;
+			effect_create_smoke(e->x << CSF, e->y << CSF);
+		case 11:	// beeping and eyes flickering
+			if (++e->timer < TIME(100)) {
+				if (!(e->timer & 3)) {
+					sound_play(SND_COMPUTER_BEEP, 5);
+					e->frame ^= 1;
+				}
+			} else if (e->timer > TIME(150)) {
+				e->timer = 0;
+				e->state = 15;
+			}
+		break;
+		
+		case 15:		// shaking
+			if (e->timer & 2) {
+				e->x += (1<<CSF);
+				sound_play(SND_DOOR, 5);
+			} else {
+				e->x -= (1<<CSF);
+			}
+			if (++e->timer > TIME(50)) e->state = 16;
+		break;
+		
+		case 16:		// stand up
+			e->state = 17;
+			e->frame = 2;
+			e->timer = 0;
+			sound_play(SND_BLOCK_DESTROY, 5);
+			effect_create_smoke(e->x << CSF, e->y << CSF);
+		case 17:
+			if (++e->timer > TIME(150)) {
+				e->state = 18;
+			}
+		break;
+		
+		case 18:		// gawking/bobbing up and down
+			e->state = 19;
+			e->timer = 0;
+			// go into gawk frame first time
+			e->animtime = 999; e->frame = 9;
+		case 19:
+			if (++e->animtime > 3) {
+				e->animtime = 0;
+				if (++e->frame > 4) e->frame = 3;
+				if (e->frame==3) sound_play(SND_DOOR, 5);
+			} if (++e->timer > 100) {
+				e->state = 20;
+				sound_play(SND_DOOR, 5);
+				effect_create_smoke(e->x << CSF, e->y << CSF);
+			}
+		break;
+		
+		case 20: e->frame = 4; break;
+		
+		case 21:	// got smushed!
+			e->state = 22;
+			e->frame = 5;
+			sound_play(SND_ENEMY_HURT, 5);
+		break;
+		
+		case 22:
+		break;
+		
+		case 100:	// "baby" malcos waking up during credits
+		{
+			e->state = 101;
+			e->frame = 3;
+			e->animtime = 0;
+		}
+		case 101:
+		{
+			ANIMATE(e, 4, 3,4);
+		}
+		break;
+		case 110:	// the one that blows up
+		{
+			effect_create_smoke(e->x << CSF, e->y << CSF);
+			e->state = STATE_DELETE;
+		}
+		break;
+	}
 }
 
 void onspawn_malcoBroken(Entity *e) {
-	e->frame = 6;
+	switch(e->state) {
+		case 10:	// set when pulled out of ground
+			sound_play(SND_BLOCK_DESTROY, 5);
+			effect_create_smoke(e->x << CSF, e->y << CSF);
+			e->state = 0;
+		break;
+		
+		case 0:
+		{
+			e->frame = 6;
+			RANDBLINK(e, 7, 200);
+			
+			if (!controlsLocked) {
+				FACE_PLAYER(e);
+			}
+		}
+		break;
+	}
 }
 
 void onspawn_powerc(Entity *e) {
@@ -281,6 +397,21 @@ void ai_press(Entity *e) {
 	}
 }
 
+void onspawn_frog(Entity *e) {
+	// Balfrog sets OPTION1
+	if(e->eflags & NPC_OPTION1) {
+		e->alwaysActive = TRUE;
+		e->dir = random() & 1;
+		e->eflags |= NPC_IGNORESOLID;
+		e->state = 3;
+		e->frame = 2;
+	} else {
+		e->grounded = TRUE;
+		e->eflags &= ~NPC_IGNORESOLID;
+		e->state = 1;
+	}
+}
+
 void ai_frog(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x80);
 	LIMIT_Y(SPEED(0x5FF));
@@ -294,17 +425,6 @@ void ai_frog(Entity *e) {
 			e->timer = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
-			// Balfrog sets OPTION1
-			if(e->eflags & NPC_OPTION1) {
-				e->dir = random() & 1;
-				e->eflags |= NPC_IGNORESOLID;
-				e->state = 3;
-				e->frame = 2;
-			} else {
-				e->grounded = TRUE;
-				e->eflags &= ~NPC_IGNORESOLID;
-				e->state = 1;
-			}
 		}
 		/* no break */
 		case 1:		// standing
@@ -364,8 +484,8 @@ void ai_frog(Entity *e) {
 			e->grounded = FALSE;
 
 			// no jumping sound in cutscenes at ending
-			//if (!player->inputs_locked && !player->disabled)
-			//	sound(SND_ENEMY_JUMP);
+			if (!controlsLocked)
+				sound_play(SND_ENEMY_JUMP, 3);
 
 			MOVE_X(SPEED(0x200));
 		}
@@ -402,8 +522,11 @@ void ai_motorbike(Entity *e) {
 		case 10:	// kazuma and booster mounted
 		{
 			e->alwaysActive = TRUE;
-			e->y -= 0x400;
-			////SPR_SAFEADD(e->sprite, SPR_Buggy3, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
+			e->linkedEntity = entity_create(e->x - (8<<CSF), e->y - (8<<CSF), OBJ_KAZUMA, 0);
+			e->linkedEntity->linkedEntity = 
+					entity_create(e->x + (8<<CSF), e->y - (8<<CSF), OBJ_PROFESSOR_BOOSTER, 0);
+			e->linkedEntity->linkedEntity->alwaysActive = e->linkedEntity->alwaysActive = TRUE;
+			e->linkedEntity->linkedEntity->state = e->linkedEntity->state = 500;
 			e->state++;
 		}
 		break;
@@ -455,7 +578,10 @@ void ai_motorbike(Entity *e) {
 		case 41:
 		{
 			e->timer += 2;	// makes exhaust sound go faster
-			if(e->timer > 1200) e->state = STATE_DELETE;
+			if(e->timer > 1200) {
+				e->linkedEntity->linkedEntity->state = 
+						e->linkedEntity->state = e->state = STATE_DELETE;
+			}
 		}
 		break;
 	}
@@ -466,5 +592,19 @@ void ai_motorbike(Entity *e) {
 		//Caret *puff = effect(o->ActionPointX(), o->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
 		//puff->yinertia = 0;
 		//puff->xinertia = (o->dir == LEFT) ? 0x280 : -0x280;
+	}
+	// This is the worst code I have ever written
+	if(e->linkedEntity && e->linkedEntity->linkedEntity) {
+		e->linkedEntity->linkedEntity->x = e->linkedEntity->x = e->x = e->x + e->x_speed;
+		e->linkedEntity->linkedEntity->y = e->linkedEntity->y = e->y = e->y + e->y_speed;
+		// "hide" normal sprite and force ourself on top
+		e->hidden = TRUE;
+		sprite_pos(e->sprite[0],
+				(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
+				(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+		sprite_hflip(e->sprite[0], e->dir);
+		sprite_add(e->sprite[0]);
+	} else {
+		e->hidden = FALSE;
 	}
 }

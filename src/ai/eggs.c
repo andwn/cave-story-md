@@ -62,38 +62,35 @@ void ai_beetle(Entity *e) {
 }
 
 void onspawn_beetleFollow(Entity *e) {
-	e->frame = 1;
-	e->timer = TIME(35);
+	e->timer = TIME(25);
 }
 
 void ai_beetleFollow(Entity *e) {
 	// Don't deactivate immediately when offscreen, but do if really far away
 	e->alwaysActive = TRUE;
-	if(PLAYER_DIST_X(384 << CSF)) e->alwaysActive = FALSE;
 	ANIMATE(e, 4, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? 7 : -7;
 	if(abs(e->x_speed) > SPEED(0x400)) e->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
-	e->y_speed += (e->timer % TIME(150)) >= TIME(75) ? -4 : 4;
+	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -4 : 4;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
 
 void onspawn_basu(Entity *e) {
-	e->timer = TIME(50);
+	e->timer = TIME(25);
 	e->attack = 5;
 }
 
 void ai_basu(Entity *e) {
-	e->alwaysActive = TRUE;
-	if(PLAYER_DIST_X(384 << CSF)) e->alwaysActive = FALSE;
+	//e->alwaysActive = TRUE;
 	ANIMATE(e, 8, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? 5 : -5;
 	if(abs(e->x_speed) > SPEED(0x300)) e->x_speed = e->dir ? SPEED(0x300) : -SPEED(0x300);
-	e->y_speed += (e->timer % TIME(200)) >= TIME(100) ? -3 : 3;
+	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -2 : 2;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

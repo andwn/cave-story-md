@@ -115,13 +115,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 8] = {
 	{ NULL, SHEET_POWERS, 	PAL1, 1, &ai_null, &ai_powers, &ai_null }, // Power Screen
 	{ NULL, SHEET_POWERF, 	PAL1, 1, &onspawn_powerc, &ai_powerc, &ai_null }, // Power Flow
 	{ &SPR_ManShot,NOSHEET, PAL1, 1, &ai_null, &ai_mannanShot, &ai_null }, // Mannan Shot
-	{ &SPR_Frog, NOSHEET, 	PAL3, 1, &ai_null, &ai_frog, &ondeath_default }, // Frog
+	{ NULL, SHEET_FROG, 	PAL3, 1, &onspawn_frog, &ai_frog, &ondeath_default }, // Frog
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!"
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!" Emitter
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &ai_null, &ai_malco, &ai_null }, // Malco
 	{ NULL, SHEET_REDSHOT, 	PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Balfrog Shot
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &onspawn_malcoBroken, &ai_null, &ai_null }, // Malco
-	{ NULL, SHEET_PUCHI, 	PAL3, 1, &ai_null, &ai_frog, &ondeath_default }, // Puchi
+	{ NULL, SHEET_PUCHI, 	PAL3, 1, &onspawn_frog, &ai_frog, &ondeath_default }, // Puchi
 	{ &SPR_Quotele,NOSHEET, PAL0, 1, &onspawn_teleOut, &ai_teleOut, &ai_null }, // Tele Out
 	/* 0x070 (112) */
 	{ &SPR_Quotele,NOSHEET, PAL0, 1, &onspawn_teleIn, &ai_teleIn, &ai_null }, // Tele In

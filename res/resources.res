@@ -176,8 +176,8 @@ SPRITE SPR_Sanda		"sprite/sanda.png"		6 4 0 0 NONE
 SPRITE SPR_Flower		"sprite/flower.png"		2 2 0 0 NONE
 
 # Use PAL_Frog
-SPRITE SPR_Balfrog1		"sprite/balfrog1.png"	10 8 0 0 NONE
-SPRITE SPR_Balfrog2		"sprite/balfrog2.png"	9 11 0 0 NONE
+SPRITE SPR_Balfrog1		"sprite/balfrog1.png"	9 8 0 0 NONE
+SPRITE SPR_Balfrog2		"sprite/balfrog2.png"	3 3 0 0 NONE
 
 # Use PAL_Chaco	
 SPRITE SPR_Chaco		"sprite/chaco.png"		2 2 0 0 NONE

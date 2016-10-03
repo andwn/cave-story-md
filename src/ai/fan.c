@@ -33,36 +33,38 @@ void ai_fan(Entity *e) {
 	switch(e->state) {
 		case 1: // Left
 		{
-			ANIMATE(e, 8, 3,4,5);
+			ANIMATE(e, 4, 3,4,5);
 			if(px > ex - 6 && px <= ex && py == ey) {
-				if(player.x_speed > -MAX_WALK_SPEED * 2) player.x_speed -= 0x88;
+				player.x_speed -= SPEED(0x88);
+				if(player.x_speed < -SPEED(0x5FF)) player.x_speed = -SPEED(0x5FF);
 			}
 		}
 		break;
 		case 2: // Up
 		{
-			ANIMATE(e, 8, 0,1,2);
+			ANIMATE(e, 4, 0,1,2);
 			if(py > ey - 8 && py <= ey && px == ex) {
-				if(player.y_speed > -MAX_FALL_SPEED - MAX_FALL_SPEED / 2) {
-					player.y_speed -= 0x88;
-					player.jump_time = 10;
-				}
+				player.y_speed -= SPEED(0x88);
+				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+				if(player.y_speed < 0) player.jump_time = 12;
 			}
 		}
 		break;
 		case 3: // Right
 		{
-			ANIMATE(e, 8, 3,4,5);
+			ANIMATE(e, 4, 3,4,5);
 			if(px >= ex && px < ex + 6 && py == ey) {
-				if(player.x_speed < MAX_WALK_SPEED * 2) player.x_speed += 0x88;
+				player.x_speed += SPEED(0x88);
+				if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
 			}
 		}
 		break;
 		case 4: // Down
 		{
-			ANIMATE(e, 8, 0,1,2);
+			ANIMATE(e, 4, 0,1,2);
 			if(py >= ey && py < ey + 6 && px == ex) {
-				if(player.y_speed < MAX_FALL_SPEED + MAX_FALL_SPEED / 2) player.y_speed += 0x88;
+				player.y_speed += SPEED(0x88);
+				if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
 			}
 		}
 		break;

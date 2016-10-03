@@ -23,6 +23,7 @@ void ai_jack(Entity *e) {
 }
 
 void ai_santa(Entity *e) {
+	if(!tscState) FACE_PLAYER(e);
 	generic_npc_states(e);
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -34,13 +35,11 @@ void ai_chaco(Entity* e) {
 		{
 			e->state++;
 			e->x_speed = 0;
-			e->frame = 3;
+			e->frame = 4;
 		}
 		break;
 		case 11: break;
-		default:
-			generic_npc_states(e);
-		break;
+		default: generic_npc_states(e);
 	}
 	e->x += e->x_speed;
 	e->y += e->y_speed;

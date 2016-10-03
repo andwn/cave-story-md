@@ -102,7 +102,7 @@ void ai_toroko(Entity *e) {
 		case 1:
 		{
 			e->frame = 0;
-			//RANDBLINK(e, 3, 200);
+			RANDBLINK(e, 7, 200);
 		}
 		break;
 		case 3:		// run away!!
@@ -168,6 +168,7 @@ void ai_toroko(Entity *e) {
 		break;
 		default: // Toroko getting up after you shoot her, don't know the real state
 			FACE_PLAYER(e);
+			e->alwaysActive = TRUE;
 			e->frame = 0;
 	}
 	
@@ -585,6 +586,7 @@ void ai_blue_robot(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
+	e->frame = 0;
 	RANDBLINK(e, 1, 200);
 	e->y = e->y_next;
 	if(!e->grounded) e->y_speed += SPEED(0x40);
@@ -771,7 +773,9 @@ void generic_npc_states(Entity *e) {
 			e->frame = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
-			//randblink(o, 1, 8, 100);
+			if(e->type != OBJ_KAZUMA) {
+				RANDBLINK(e, 3, 200);
+			}
 		}
 		break;
 		case 3:		// walking
@@ -783,7 +787,7 @@ void generic_npc_states(Entity *e) {
 		break;
 		case 5:		// face away
 		{
-			e->frame = e->type == OBJ_KAZUMA ? 2 : 3;
+			e->frame = e->type == OBJ_KAZUMA ? 3 : 4;
 			e->x_speed = 0;
 		}
 		break;

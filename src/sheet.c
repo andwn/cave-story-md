@@ -132,10 +132,14 @@ void sheets_load_stage(u16 sid) {
 		case 0x07: // Santa's House
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
+		case 0x19: // Malco
+		{
+			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
+		} break;
 		case 0x1C: // Gum
 		{	SHEET_ADD(SHEET_REDSHOT, &SPR_FrogShot, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0,0, 0,1, 1,0);
-			SHEET_ADD(SHEET_PUCHI, &SPR_FrogSm, 2,2,2, 0,0, 1,0);
+			SHEET_ADD(SHEET_PUCHI, &SPR_FrogSm, 3,2,2, 0,0, 0,0, 1,0);
 			SHEET_ADD(SHEET_FAN, &SPR_Fan, 3,2,2, 3,0, 3,1, 3,2);
 		} break;
 		case 0x0A: // Sand Zone

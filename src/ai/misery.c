@@ -228,8 +228,12 @@ void ai_misery_stand(Entity *e) {
 void ai_misery_bubble(Entity *e) {
 	// find the Toroko object we are to home in on
 	Entity *target = entity_find_by_type(0x3C);
-	if(target == NULL) {
+	if(!target) {
 		e->state = STATE_DELETE;
+		return;
+	} else if(e->y < 0) {
+		e->state = STATE_DELETE;
+		entity_delete(target);
 		return;
 	}
 	switch(e->state) {
@@ -264,7 +268,7 @@ void ai_misery_bubble(Entity *e) {
 				e->x_speed = 0;
 				e->y_speed = 0;
 				target->eflags |= NPC_IGNORESOLID;
-				//SPR_SAFEANIM(target->sprite, 1);
+				target->frame = 1;
 			}
 		}
 		break;

@@ -110,7 +110,12 @@ void ai_trigger(Entity *e) {
 }
 
 void ai_genericproj(Entity *e) {
-	if(++e->timer > TIME(250) ||
+	ANIMATE(e, 4, 0,1);
+	Bullet *b = bullet_colliding(e);
+	if(b) {
+		b->ttl = 0;
+		e->state = STATE_DELETE;
+	} else if(++e->timer > TIME(250) ||
 		stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		e->state = STATE_DELETE;
 	} else {

@@ -61,10 +61,11 @@ enum BBox_States {
 #define FROG_MOVE_SPEED		0x1AA
 #endif
 
+#define bbox_damage		curly_target_time
+#define bbox_attack		curly_target_x
+#define bbox_mode		curly_target_y
+
 u8 frog_attack_count;
-u8 bbox_mode;
-u8 bbox_attack;
-u16 bbox_damage;
 bounding_box bbox[2];
 
 void place_bboxes(Entity *e);
@@ -128,7 +129,7 @@ void ai_balfrog(Entity *e) {
 		case STATE_TRANSFORM+1:
 		{
 			e->timer++;
-			//SPR_SAFEVISIBILITY(e->sprite, (e->timer % 4) > 1 ? AUTO_FAST : HIDDEN);
+			e->hidden = !(e->timer & 2);
 		}
 		break;
 		// transformation complete: puff away balrog, and appear solid now
@@ -136,7 +137,10 @@ void ai_balfrog(Entity *e) {
 		{
 			e->state++;
 			e->frame = 2;
-			//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+			e->hidden = FALSE;
+			// Feet
+			TILES_QUEUE(SPR_TILES(&SPR_Balfrog2,0,0), TILE_FACEINDEX+4, 9);
+			TILES_QUEUE(SPR_TILES(&SPR_Balfrog2,0,1), TILE_FACEINDEX+4+9, 9);
 		}
 		break;
 		
@@ -172,6 +176,7 @@ void ai_balfrog(Entity *e) {
 		case STATE_JUMPING:
 		{
 			sound_play(SND_FUNNY_EXPLODE, 8);
+			e->frame = 4;
 			set_jump_sprite(e, TRUE);
 			e->y_speed = -FROG_JUMP_SPEED;
 			e->grounded = FALSE;
@@ -192,6 +197,7 @@ void ai_balfrog(Entity *e) {
 			if(++e->timer > 3 && collide_stage_floor(e)) {
 				e->grounded = TRUE;
 				camera_shake(30);
+				e->frame = 0;
 				set_jump_sprite(e, FALSE);
 				// passed player? turn around and fire!
 				if((e->dir && e->x >= player.x) ||
@@ -228,6 +234,7 @@ void ai_balfrog(Entity *e) {
 			}
 			if(e->timer > 74) {
 				e->state++;
+				e->frame = 4;
 				set_jump_sprite(e, TRUE);
 				e->y_speed = -FROG_BIGJUMP_SPEED;
 				e->grounded = FALSE;
@@ -237,11 +244,12 @@ void ai_balfrog(Entity *e) {
 		case STATE_BIG_JUMP+2:		// in air, waiting to hit ground
 		{
 			if(e->grounded) {
+				e->frame = 0;
 				set_jump_sprite(e, FALSE);
 				camera_shake(60);
 				spawn_frogs(OBJ_MINIFROG, 4);
 				spawn_frogs(OBJ_FROG, 2);
-				//SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 4);
+				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 4);
 				// player ran under us? turn around and fire!
 				if((e->dir && e->x >= player.x) ||
 					(!e->dir && e->x <= player.x)) {
@@ -349,7 +357,7 @@ void ai_balfrog(Entity *e) {
 			Entity *balrog = entity_create(e->x, e->y, OBJ_BALROG, 0);
 			balrog->dir = e->dir;
 			balrog->state = 500;	// tell him to give us complete control
-			//SPR_SAFEANIM(balrog->sprite, 5);
+			balrog->frame = 5;
 			e->state++;
 		}
 		/* no break */
@@ -360,10 +368,10 @@ void ai_balfrog(Entity *e) {
 				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
 			if(e->timer <= 150) {
-				//SPR_SAFEVISIBILITY(e->sprite, (e->timer & 2) > 0 ? AUTO_FAST : HIDDEN);
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
-				if(balrog != NULL) {
-					//SPR_SAFEVISIBILITY(balrog->sprite, !((e->timer & 2) > 0) ? AUTO_FAST : HIDDEN);
+				if(balrog) {
+					e->hidden ^= 1;
+					balrog->hidden = !e->hidden;
 				}
 			}
 			if(e->timer > 156) {
@@ -379,16 +387,17 @@ void ai_balfrog(Entity *e) {
 			//
 			// 10 frames until starts to fall
 			// 14 frames until changes to landed frame
-			if(balrog != NULL) {
-				//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
-				//SPR_SAFEVISIBILITY(balrog->sprite, AUTO_FAST);
+			if(balrog) {
+				e->hidden = TRUE;
+				balrog->hidden = FALSE;
 				balrog->y_speed += 0x40;
 				balrog->y_next = balrog->y + balrog->y_speed;
+				balrog->x_next = balrog->x;
 				if(collide_stage_floor(balrog)) {
 					balrog->y_speed = 0;
-					//SPR_SAFEANIM(balrog->sprite, 2);
-					if(++e->timer > 30) {
-						//SPR_SAFEANIM(balrog->sprite, 0);
+					balrog->frame = 2;
+					if(++e->timer > TIME(30)) {
+						balrog->frame = 0;
 						balrog->grounded = TRUE;
 						e->state++;
 					}
@@ -399,12 +408,12 @@ void ai_balfrog(Entity *e) {
 		break;
 		case STATE_DEATH+5:		// balrog flying away
 		{
-			if(++e->timer > 30) {
+			if(++e->timer > TIME(30)) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				// it's all over, destroy ourselves and clean up
-				if(balrog != NULL) {
-					//SPR_SAFEANIM(balrog->sprite, 3);
-					balrog->y_speed = SPEED(-0x800);
+				if(balrog) {
+					balrog->frame = 3;
+					balrog->y_speed = SPEED(-0x5FF);
 					balrog->y_next = balrog->y + balrog->y_speed;
 					balrog->y = balrog->y_next;
 					balrog->eflags |= NPC_IGNORESOLID;
@@ -419,7 +428,6 @@ void ai_balfrog(Entity *e) {
 		}
 		break;
 	}
-	//SPR_SAFEHFLIP(e->sprite, e->dir);
 	// Player collision
 	if(bbox_mode != BM_DISABLED) {
 		if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
@@ -427,8 +435,8 @@ void ai_balfrog(Entity *e) {
 		}
 		Bullet *b1 = bullets_bbox_collide(e, 0);
 		Bullet *b2 = bullets_bbox_collide(e, 1);
-		if(b1 != NULL) deflect_bullet(b1);
-		if(b2 != NULL) {
+		if(b1) deflect_bullet(b1);
+		if(b2) {
 			if(bbox_mode == BM_MOUTH_OPEN) {
 				hurt_by_bullet(e, b2);
 			} else {
@@ -443,20 +451,36 @@ void ai_balfrog(Entity *e) {
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
+	// Draw feet if jumping
+	if(e->jump_time) {
+		VDPSprite feet[2] = {
+			(VDPSprite) {
+				.x = (e->x << CSF) - (camera.x << CSF) + SCREEN_HALF_W - 16,
+				.y = (e->x << CSF) - (camera.y << CSF) + SCREEN_HALF_H + 24,
+				.size = SPRITE_SIZE(3, 3),
+				.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_FACEINDEX+4),
+			},
+			(VDPSprite) {
+				.x = (e->x << CSF) - (camera.x << CSF) + SCREEN_HALF_W + 8,
+				.y = (e->x << CSF) - (camera.y << CSF) + SCREEN_HALF_H + 24,
+				.size = SPRITE_SIZE(3, 3),
+				.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_FACEINDEX+4+9),
+			},
+		};
+		sprite_addq(feet, 2);
+	}
 	// link bboxes to our real object
 	place_bboxes(e);
 }
 
 void ondeath_balfrog(Entity *e) {
-	//if(e->state == STATE_DEFEATED) {
-		if(bbox_mode == BM_JUMPING) {
-			set_jump_sprite(e, FALSE);
-		}
-		bbox_mode = BM_DISABLED;
-		e->state = STATE_DEATH;
-		e->timer = 0;
-		tsc_call_event(e->event); // Boss defeated event
-	//}
+	if(bbox_mode == BM_JUMPING) {
+		set_jump_sprite(e, FALSE);
+	}
+	bbox_mode = BM_DISABLED;
+	e->state = STATE_DEATH;
+	e->timer = 0;
+	tsc_call_event(e->event); // Boss defeated event
 }
 
 void place_bboxes(Entity *e) {
@@ -498,14 +522,12 @@ void spawn_frogs(u16 objtype, u8 count) {
 // switches on and off the jumping frame/sprite
 void set_jump_sprite(Entity *e, u8 enable) {
 	if(enable) {
-		//SPR_SAFEADD(e->sprite, &SPR_Balfrog2, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
-		e->y -= JUMP_SPRITE_ADJ;
-		e->display_box.left -= 4;
+		e->jump_time = TRUE;
+		e->display_box.top -= 8;
 		bbox_mode = BM_JUMPING;
 	} else {
-		//SPR_SAFEADD(e->sprite, &SPR_Balfrog1, 0, 0, TILE_ATTR(PAL3, 0, 0, e->dir), 5);
-		e->y += JUMP_SPRITE_ADJ;
-		e->display_box.left += 4;
+		e->jump_time = FALSE;
+		e->display_box.top += 8;
 		bbox_mode = BM_STAND;
 	}
 }
@@ -541,7 +563,6 @@ Bullet* bullets_bbox_collide(Entity *e, u8 index) {
 
 void deflect_bullet(Bullet *b) {
 	b->ttl = 0;
-	//SPR_SAFERELEASE(b->sprite);
 	sound_play(SND_TINK, 5);
 }
 
@@ -556,7 +577,6 @@ void hurt_by_bullet(Entity *e, Bullet *b) {
 		}
 	} else {
 		b->ttl = 0;
-		//SPR_SAFERELEASE(b->sprite);
 		if(b->damage < e->health) sound_play(e->hurtSound, 5);
 	}
 	if(e->health <= b->damage) {
@@ -566,7 +586,6 @@ void hurt_by_bullet(Entity *e, Bullet *b) {
 		// Killed enemy
 		e->health = 0;
 		ENTITY_ONDEATH(e);
-		//ENTITY_SET_STATE(e, STATE_DEFEATED, 0);
 	}
 	if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
 		e->damage_value -= b->damage;
