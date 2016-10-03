@@ -1,82 +1,60 @@
 ### TODO List
-This list is updated when things are fixed in master and may not reflect the current release.
 
-- [ ] Music (27 of 41)
-- [ ] Engine
-  - [x] Fix sprite lag (0.2.1)
-  - [x] Sprite ordering (0.2.1)
-  - [x] Item Menu
-    - [ ] Weapon stuff
-  - [ ] Boss health
-  - [ ] Additional player animations
-    - [ ] Stars when bumping ceiling
-    - [ ] Question mark
-    - [ ] Weapon level up / down
-- [ ] Completable Main Areas
-  - [x] First Cave
-    - [ ] Zzz above gunsmith's head
-  - [x] Mimiga Village
-    - [ ] Animate Sprinkler
-    - [ ] Animate Mahin
-  - [x] Egg Corridor
-    - [ ] Basu Projectiles
-  - [x] Grasstown
-    - [ ] Animate Malco
-    - [ ] Animate Pink Rocket
-    - [ ] AI for Big Jellyfish
-    - [ ] AI for Ravil
-  - [x] Sand Zone
-    - [ ] Animate Puppies
-    - [ ] AI for Omega
-    - [ ] AI for Skullhead with Legs
-    - [ ] AI for Crow Carrying Skullhead
-    - [ ] AI for Skeleton
+- Music
+  - Labyrinth Fight
+  - Living Waterway
+  - Scorching Back
+  - Moon Song
+  - Hero's End
+  - Final Cave
+  - Last Boss
+  - Ending
+  - Hell
+  - Toroko's Theme
+  - King's Theme
+
+- Missing stuff
+  - Weapons in item menu
+  - Boss health
+  - Question mark when pressing down
+  - Weapon level up / down
+  - Zzz effect above Gunsmith, Chaco, Mimiga in Sand Zone bar, etc
+  - Basu's projectiles
+  - Ravil, the frenzied mimiga in Grasstown hut
+  - The puppy at the bottom of Sand Zone should run back and forth
+  - Some of the Crows should be carrying skullheads
+  - One of the skullheads have feet
+  - There should be a skeleton enemy that throws bones near the end of Sand Zone
+  
+- Major Boss Status
+  - [x] Balfrog
+  - [ ] Omega
+  - [ ] Monster X
+  - [ ] Core
+  - [ ] Ironhead
+  - [ ] Sisters
+  - [ ] Undead Core
+  
+- Completable Areas
+  - [x] Grasstown (0.1)
+  - [x] Sand Zone (0.1)
   - [x] Labyrinth (0.2)
-    - [ ] Purple Critter's projectile
-    - [ ] AI for Monster X
-    - [ ] AI for Last Balrog Fight
-  - [x] Post Labyrinth / Core (0.2)
-    - [ ] BGM: Labyrinth Fight
-    - [ ] AI for Byuobyuo
-    - [ ] AI for Core
+  - [x] Labyrinth M & Core (0.2)
   - [ ] Waterway (0.3)
-    - [ ] BGM: Living Waterway
-    - [ ] AI for Ironhead
-  - [ ] Egg Corridor 2 (0.3)
-    - [ ] BGM: Scorching Back
-    - [ ] AI for Dragon
-    - [ ] AI for stalactite
-    - [ ] AI for Sisters
+  - [ ] Egg Corridor? (0.3)
   - [ ] Outer Wall (0.3)
-    - [ ] BGM: Moonsong
-    - [ ] BGM: Hero's End
-    - [ ] Clouds background
   - [ ] Plantation (0.4)
-    - [ ] Itoh
-    - [ ] Momo
-    - [ ] Droll
-    - [ ] Various Mimiga
-    - [ ] Rocket
-    - [ ] Sideways Press
-    - [ ] That big bat
-    - [ ] Hell Statues
-    - [ ] Ma Pignon
-  - [ ] Last Cave (both of them) (0.4)
-    - [ ] BGM: Last Cave
-    - [ ] Orange bats and critters
-    - [ ] Generators for bats
-    - [ ] Droll boss
-    - [ ] Proximity Press
-  - [ ] Balcony (0.5)
-    - [ ] BGM: Last Battle
-    - [ ] AI for all the bosses
-- [ ] Completable Pre/Post Game Areas
+  - [ ] Final Cave (0.4)
+  - [ ] Balcony / Ring (0.5)
+  
+- Pre/Post Game Areas
   - [ ] Intro
   - [ ] Ending
   - [ ] Credits
-  - [ ] Sacred Ground
-  - [ ] Wind Fortress?
-- [ ] Weapons / Equip
+  - [ ] Hell
+  - [ ] Fortress?
+
+- Weapons / Equip
   - [x] Polar Star
   - [x] Missiles
   - [x] Fireball
@@ -91,4 +69,5 @@ This list is updated when things are fixed in master and may not reflect the cur
   - [x] Arms Barrier
   - [x] Booster 0.8
   - [x] Booster 2.0
+  - [x] Air Tank
   - [ ] Whimsical Star

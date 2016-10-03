@@ -15,7 +15,7 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 In the current release `0.2` you can make it to Ironhead if you try really hard. Labyrinth and
 Waterway are really glitchy though.
 
-Master is broken in Grasstown, lol. Also looky here: [TODO list](doc/TODO.md)
+Master is broken in Sand Zone, lol. Also looky here: [TODO list](doc/TODO.md)
 
 ### Controls
 - C - Jump, confirm
@@ -44,21 +44,17 @@ The game also lags much more often when built from Windows for some reason.
 #### There are no save points. What's going on? (as of `0.2.1`)
 The game detected that you have no SRAM. If this is not the case, open an issue.
 
-#### I found a discrepancy with the original
-If it's not listed in [this document](doc/DIFFERENCES.md) report it! In general I try to
-base things around the original freeware (2004) version and not the one on Steam. There are
-some things that are different on purpose, almost always to work around console limitations.
+#### I found a discrepancy with the original, what do?
+Report it, but first make sure
 
-#### Why Genesis instead of my favorite console?
-I'm not stopping you from porting CSMD to another console. Go make your dreams come true.
+1. You are comparing with the original freeware Cave Story, not CS+
+2. It's not in [this document](doc/DIFFERENCES.md)
 
 #### Why are you testing on emulator X instead of my favorite one?
 lol
 
 #### Isn't this just NXEngine ported to Genesis?
-No! I wrote the engine from scratch, with help from a bunch of scattered documentation made by
-Cave Story modders. It was not until recently that I knew of NXEngine. Now my AI code is
-heavily based on Noxoid's. Also, I did steal the Booster 0.8/2.0 code.
+The AI code is, but the rest I wrote from scratch with the help of various modding docs.
 
 ## Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
