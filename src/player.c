@@ -749,8 +749,8 @@ void player_update_bounds() {
 }
 
 void player_prev_weapon() {
-	for(u8 i = currentWeapon - 1; i != currentWeapon; i--) {
-		if(i == 0xFF) i = MAX_WEAPONS - 1;
+	for(s16 i = currentWeapon - 1; i != currentWeapon; i--) {
+		if(i < 0) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
 			////SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
@@ -765,7 +765,7 @@ void player_prev_weapon() {
 }
 
 void player_next_weapon() {
-	for(u8 i = currentWeapon + 1; i != currentWeapon; i++) {
+	for(s16 i = currentWeapon + 1; i != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
 			////SPR_SAFERELEASE(weaponSprite);

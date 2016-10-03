@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "effect.h"
 #include "resources.h"
+#include "sprite.h"
 
 enum States {
 	STATE_TRANSFORM			= 20,			// script-triggered: must stay at this value

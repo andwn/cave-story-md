@@ -11,6 +11,7 @@
 #include "system.h"
 #include "sheet.h"
 #include "resources.h"
+#include "sprite.h"
 
 void ai_jelly(Entity *e) {
 	// No DIVU, no MULU
