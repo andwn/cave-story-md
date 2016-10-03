@@ -301,7 +301,7 @@ void ai_sisters_body(Entity *e) {
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
 	s32 xoff = (sintab32[(angle) % 1024] >> 1) * (bossEntity->x_mark << CSF);
-	s32 yoff = (sintab32[(angle + 512) % 1024] >> 1) * (bossEntity->y_mark << CSF);
+	s32 yoff = (sintab32[(angle + 256) % 1024] >> 1) * (bossEntity->y_mark << CSF);
 	
 	// figure out where we are supposed to be
 	s32 desired_x = bossEntity->x + xoff;
