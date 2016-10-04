@@ -90,12 +90,16 @@ void ai_pignon(Entity *e) {
 void onspawn_gkeeper(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE;
 	e->eflags |= NPC_INVINCIBLE;
+	// I expanded the sprite to 32 width so hflip will be symmetrical
+	e->hit_box = (bounding_box) { 8, 11, 8, 11 };
+	e->display_box = (bounding_box) { 16, 12, 16, 12 };
 	e->attack = 0;
 }
 
 void ai_gkeeper(Entity *e) {
 	switch(e->state) {
 		case 0: // Standing
+		e->frame = 0;
 		FACE_PLAYER(e);
 		// start walking when player comes near
 		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
@@ -111,6 +115,7 @@ void ai_gkeeper(Entity *e) {
 		}
 		break;
 		case 1: // Walking
+		ANIMATE(e, 8, 1,0,2,0);
 		FACE_PLAYER(e);
 		e->x_speed = e->dir ? 0x100 : -0x100;
 		// reached knife range of player?
@@ -119,7 +124,7 @@ void ai_gkeeper(Entity *e) {
 			e->timer = 0;
 			e->x_speed = 0;
 			sound_play(SND_FIREBALL, 5);
-			e->frame = 2;
+			e->frame = 3;
 			e->eflags &= ~NPC_INVINCIBLE;
 		}
 		break;
@@ -130,14 +135,14 @@ void ai_gkeeper(Entity *e) {
 			e->attack = 10;
 			e->hit_box.left += 6;
 			sound_play(SND_SLASH, 5);
-			e->frame = 3;
+			e->frame = 4;
 		}
 		break;
 		case 3: // Knife frame 2
 		if(++e->timer > 2) {
 			e->state = 4;
 			e->timer = 0;
-			e->frame = 4;
+			e->frame = 5;
 		}
 		break;
 		case 4: // Knife frame 3

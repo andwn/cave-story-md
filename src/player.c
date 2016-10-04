@@ -752,7 +752,6 @@ void player_prev_weapon() {
 	for(s16 i = currentWeapon - 1; i != currentWeapon; i--) {
 		if(i < 0) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
-			////SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
 			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
@@ -768,7 +767,6 @@ void player_next_weapon() {
 	for(s16 i = currentWeapon + 1; i != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
-			////SPR_SAFERELEASE(weaponSprite);
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
 			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),

@@ -13,7 +13,7 @@
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 u16 cameraShake;
-// Mapping cache for scrolling
+// Tile attr buffer to draw offscreen during map scroll
 u16 mapcol[32], maprow[64];
 
 void camera_init() {
@@ -105,11 +105,11 @@ void camera_update() {
 	// Morph the stage if the camera is moving
 	morphingColumn = sub_to_tile(x_next) - sub_to_tile(camera.x);
 	morphingRow = sub_to_tile(y_next) - sub_to_tile(camera.y);
-	// Reactivate any entities that are approaching the screen
 	if(morphingColumn | morphingRow) {
+		// Reactivate any entities that are approaching the screen
 		entities_update_inactive();
 		// Queue row and/or column mapping
-		SYS_disableInts();
+		//SYS_disableInts();
 		if(morphingColumn) {
 			s16 x = sub_to_tile(x_next) + morphingColumn * 31;
 			s16 y = sub_to_tile(y_next) - 15 + morphingRow;
@@ -117,6 +117,7 @@ void camera_update() {
 				for(u8 i = 32; i--; ) {
 					if(y >= stageHeight * 2) break;
 					if(y >= 0) {
+						// Fuck math tbh
 						u8 b = stage_get_block(x/2, y/2);
 						u16 t = (b%16) * 2 + (b/16) * 64;
 						u8 ta = stage_get_block_type(x/2, y/2);
@@ -125,9 +126,8 @@ void camera_update() {
 					}
 					y++;
 				}
-				DMA_doDma(DMA_VRAM, (u32)mapcol, VDP_getAPlanAddress() + (x%64)*2, 32, 128);
+				DMA_queueDma(DMA_VRAM, (u32)mapcol, VDP_getAPlanAddress() + (x%64)*2, 32, 128);
 			}
-			
 		}
 		if(morphingRow) {
 			s16 y = sub_to_tile(y_next) + morphingRow * 15;
@@ -144,10 +144,10 @@ void camera_update() {
 					}
 					x++;
 				}
-				DMA_doDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*64*2, 64, 2);
+				DMA_queueDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*64*2, 64, 2);
 			}
 		}
-		SYS_enableInts();
+		//SYS_enableInts();
 	}
 	// Apply camera position
 	camera.x = x_next;

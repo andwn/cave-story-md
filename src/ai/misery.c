@@ -267,8 +267,7 @@ void ai_misery_bubble(Entity *e) {
 				e->y = target->y;
 				e->x_speed = 0;
 				e->y_speed = 0;
-				target->eflags |= NPC_IGNORESOLID;
-				target->frame = 1;
+				target->state = 500;
 			}
 		}
 		break;

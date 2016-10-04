@@ -87,11 +87,12 @@ void ai_doctor(Entity *e) {
 }
 
 void ai_toroko(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
-
+	if(e->state != 500) {
+		e->x_next = e->x + e->x_speed;
+		e->y_next = e->y + e->y_speed;
+		if(!e->grounded) e->grounded = collide_stage_floor(e);
+		else e->grounded = collide_stage_floor_grounded(e);
+	}
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
@@ -166,17 +167,22 @@ void ai_toroko(Entity *e) {
 			}
 		}
 		break;
+		case 500: // In bubble - don't move or collide with anything
+		{
+			e->frame = 1;
+		}
+		break;
 		default: // Toroko getting up after you shoot her, don't know the real state
 			FACE_PLAYER(e);
 			e->alwaysActive = TRUE;
 			e->frame = 0;
 	}
-	
-	e->x = e->x_next;
-	e->y = e->y_next;
-
-	if(!e->grounded) e->y_speed += SPEED(0x40);
-	LIMIT_Y(SPEED(0x5FF));
+	if(e->state != 500) {
+		e->x = e->x_next;
+		e->y = e->y_next;
+		if(!e->grounded) e->y_speed += SPEED(0x40);
+		LIMIT_Y(SPEED(0x5FF));
+	}
 }
 
 
