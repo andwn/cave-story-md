@@ -764,7 +764,7 @@ void player_prev_weapon() {
 }
 
 void player_next_weapon() {
-	for(s16 i = currentWeapon; i % MAX_WEAPONS != currentWeapon; i++) {
+	for(s16 i = currentWeapon + 1; i % MAX_WEAPONS != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
