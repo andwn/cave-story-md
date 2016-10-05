@@ -541,9 +541,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ &SPR_MiniCore, NOSHEET, PAL3, 2, // Mini Core
 		&onspawn_persistent, &ai_minicore, &ai_null },
 	{ &SPR_OmegaLeg, NOSHEET, PAL3, 1, // Omega Leg
-		&onspawn_persistent, &ai_null, &ai_null },
+		&onspawn_omega_leg, &ai_null, &ai_null },
 	{ &SPR_OmgStrut, NOSHEET, PAL3, 1, // Omega Strut
-		&onspawn_persistent, &ai_null, &ai_null },
+		&onspawn_omega_strut, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 2, // Monster X Tread
 		&onspawn_x_tread, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 4, // Monster X Door

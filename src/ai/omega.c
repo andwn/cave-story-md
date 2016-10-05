@@ -16,7 +16,7 @@
 #define OMEGA_RISE_HEIGHT			48
 #define OMEGA_SINK_DEPTH			60
 #define OMEGA_WAIT_TIME				7
-#define OMEGA_SPEED					(1<<CSF)
+#define OMEGA_SPEED					(SPEED(0x200))
 
 #define OMG_APPEAR					20  // this MUST be 20 because misery sets this to begin the battle
 #define OMG_WAIT					30
@@ -55,6 +55,11 @@ enum Pieces {
 };
 
 void onspawn_omega(Entity *e) {
+	// Trying something
+	entities_clear_by_type(OBJ_BEETLE_BROWN);
+	entities_clear_by_type(OBJ_SANDCROC);
+	entities_clear_by_type(OBJ_POLISH);
+	
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;
 	e->health = 400;
@@ -72,26 +77,34 @@ void onspawn_omega(Entity *e) {
 	omgmovetime = OMEGA_RISE_HEIGHT;
 	
 	// *MUST* create in this order so that the z-order is correct
-	memset(pieces, 0, sizeof(pieces) * 4);
+	memset(pieces, 0, NUM_PIECES * sizeof(Entity*));
 	pieces[LEFTLEG] = entity_create(0, 0, OBJ_OMEGA_LEG, 0);
-	pieces[RIGHTLEG] = entity_create(0, 0, OBJ_OMEGA_LEG, 0);
+	pieces[RIGHTLEG] = entity_create(0, 0, OBJ_OMEGA_LEG, NPC_OPTION2);
 	pieces[LEFTSTRUT] = entity_create(0, 0, OBJ_OMEGA_STRUT, 0);
-	pieces[RIGHTSTRUT] = entity_create(0, 0, OBJ_OMEGA_STRUT, 0);
-	
-	pieces[LEFTLEG]->dir = 0;
-	pieces[RIGHTLEG]->dir = 1;
-	pieces[LEFTSTRUT]->dir = 0;
-	pieces[RIGHTSTRUT]->dir = 1;
+	pieces[RIGHTSTRUT] = entity_create(0, 0, OBJ_OMEGA_STRUT, NPC_OPTION2);
 	
 	e->leg_descend = LEGD_MIN;
 	
-	e->x = ((217 * 16) + 5) << CSF;
-	e->y = ((14 * 16) - 5) << CSF;
+	//e->x = ((217 * 16) + 5) << CSF;
+	//e->y = ((14 * 16) - 5) << CSF;
+	e->x = player.x;
+	e->y = player.y + (48 << CSF);
+	
 	omgorgx = e->x;
 	omgorgy = e->y;
 	
 	bossEntity = e;
 	e->state = OMG_APPEAR;
+}
+
+void onspawn_omega_leg(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
+}
+
+void onspawn_omega_strut(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
 }
 
 void ai_omega(Entity *e) {
@@ -134,7 +147,7 @@ void ai_omega(Entity *e) {
 				} else {	// was going back into ground
 					e->timer = 0;
 					e->state = OMG_UNDERGROUND;
-					e->eflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
+					e->eflags &= ~NPC_SOLID;
 				}
 			}
 		}
@@ -176,7 +189,7 @@ void ai_omega(Entity *e) {
 						shot->frame = 1;
 						shot->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE);
 					}
-					shot->timer = (random() % 7 >= 4) ? 300 + random() % 100 : 0;
+					shot->timer = (random() % 7 >= 4) ? (300 + (random() % 100)) : 0;
 					shot->attack = 4;
 				}
 			} else if (e->firecounter >= e->endfirestate || bullet_missile_is_exploding()) {
@@ -205,10 +218,10 @@ void ai_omega(Entity *e) {
 						omgmovetime = OMEGA_SINK_DEPTH;
 					} else {	// form 2: jump
 						sound_play(SND_FUNNY_EXPLODE, 5);
-						if (e->x < player.x) e->x_speed = 0xC0;
-										 else e->x_speed = -0xC0;
+						if (e->x < player.x) e->x_speed = SPEED(0xC0);
+										 else e->x_speed = -SPEED(0xC0);
 						e->state = OMG_JUMP;
-						e->y_speed = -0x5FF;
+						e->y_speed = -SPEED(0x5FF);
 						omgorgy = e->y;
 					}
 				}
@@ -233,7 +246,7 @@ void ai_omega(Entity *e) {
 					
 					e->form = 2;
 					e->firefreq = 5;
-					e->shotxspd = 0x155;
+					e->shotxspd = SPEED(0x155);
 					e->timer = 50; // Start firing immediately and for only 30 frames
 					e->endfirestate = 50;
 					omgmovetime = OMEGA_RISE_HEIGHT+3;
@@ -249,10 +262,14 @@ void ai_omega(Entity *e) {
 		}
 		case OMG_JUMP+1:	// jumping
 		{
-			e->y_speed += 0x24;
-			LIMIT_Y(0x5FF);
+			e->y_speed += SPEED(0x24);
+			LIMIT_Y(SPEED(0x5FF));
 			if (e->y_speed > 0) {	// coming down
 				pieces[LEFTLEG]->frame = pieces[RIGHTLEG]->frame = 0;
+				pieces[LEFTLEG]->x_next = pieces[LEFTLEG]->x;
+				pieces[LEFTLEG]->y_next = pieces[LEFTLEG]->y;
+				pieces[RIGHTLEG]->x_next = pieces[RIGHTLEG]->x;
+				pieces[RIGHTLEG]->y_next = pieces[RIGHTLEG]->y;
 				// retract legs a little when we hit the ground
 				if (collide_stage_floor(pieces[LEFTLEG]) || 
 						collide_stage_floor(pieces[RIGHTLEG])) {
@@ -264,7 +281,7 @@ void ai_omega(Entity *e) {
 					}
 				}
 				// --- squash player if we land on him -------------
-				if (player.grounded && player.y >= e->y + (16 << CSF)) {
+				if (!playerIFrames && player.grounded && player.y >= e->y + (16 << CSF)) {
 					if (entity_overlapping(&player, e)) {	// SQUISH!
 						player_inflict_damage(OMEGA_DAMAGE);
 					}
@@ -313,7 +330,7 @@ void ai_omega(Entity *e) {
 	}
 	
 	// implement shaking when shot
-	if(e->damage_time) e->x += e->damage_time & 1 ? 0x200 : -0x200;
+	if(e->damage_time) e->x += (e->damage_time & 1) ? 0x200 : -0x200;
 	
 	if (e->state) {
 		e->x_next = e->x;
@@ -321,10 +338,10 @@ void ai_omega(Entity *e) {
 		collide_stage_leftwall(e);
 		collide_stage_rightwall(e);
 		e->x = e->x_next;
-		pieces[LEFTLEG]->x = e->x - (4 << CSF); pieces[LEFTLEG]->y = e->y + e->leg_descend;
-		pieces[RIGHTLEG]->x = e->x + (38 << CSF); pieces[RIGHTLEG]->y = e->y + e->leg_descend;
-		pieces[LEFTSTRUT]->x = e->x + (9 << CSF); pieces[LEFTSTRUT]->y = e->y + (27 << CSF);
-		pieces[RIGHTSTRUT]->x = e->x + (43 << CSF); pieces[RIGHTSTRUT]->y = e->y + (27 << CSF);
+		pieces[LEFTLEG]->x = e->x - (20 << CSF); pieces[LEFTLEG]->y = e->y + e->leg_descend;
+		pieces[RIGHTLEG]->x = e->x + (20 << CSF); pieces[RIGHTLEG]->y = e->y + e->leg_descend;
+		pieces[LEFTSTRUT]->x = e->x - (24 << CSF); pieces[LEFTSTRUT]->y = e->y + (27 << CSF);
+		pieces[RIGHTSTRUT]->x = e->x + (24 << CSF); pieces[RIGHTSTRUT]->y = e->y + (27 << CSF);
 	}
 }
 
