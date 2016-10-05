@@ -84,10 +84,10 @@ void sheets_refresh_weapons() {
 	sheets_refresh_fireball(fball ? fball->level : 1);
 }
 
-void sheets_load_stage(u16 sid) {
+void sheets_load_stage(u16 sid, u8 init_tiloc) {
 	// Reset values
 	sheet_num = 7;
-	memset(tilocs, 0, MAX_TILOCS);
+	if(init_tiloc) memset(tilocs, 0, MAX_TILOCS);
 	memset(&sheets[7], 0, sizeof(Sheet) * (MAX_SHEETS - 7));
 	switch(sid) {
 		case 0x0C: // First Cave
@@ -146,8 +146,17 @@ void sheets_load_stage(u16 sid) {
 		case 0x25:
 		{	SHEET_ADD(SHEET_CROW, &SPR_Crow, 3,4,4, 0,0, 0,1, 2,0);
 			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
-			// Skullhead
-			// Omega Projectile
+			SHEET_ADD(SHEET_BEETLE, &SPR_BtlHB, 2,2,2, 0,0, 1,0);
+			SHEET_ADD(SHEET_POLISH, &SPR_Polish, 2,4,4, 0,0, 0,1);
+			SHEET_ADD(SHEET_BABY, &SPR_Baby, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_OMGSHOT, &SPR_OmgShot, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_CROC, &SPR_Sandcroc, 4,4,4, 1,0, 1,1, 1,2, 1,3);
+			SHEET_ADD(SHEET_SKULLH, &SPR_Skullhead, 3,4,3, 0,0, 1,0, 2,0);
+		} break;
+		case 0x1D: // Sand Zone Bar
+		{	SHEET_ADD(SHEET_BARMIMI, &SPR_CurlyMimi, 8,2,2, 
+					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7);
+			SHEET_ADD(SHEET_CURLYB, &SPR_CurlyB, 5,4,3, 0,0, 1,0, 1,2, 2,0, 4,0);
 		} break;
 		case 0x09: // Labyrinth I
 		case 0x26: // Labyrinth H
@@ -210,6 +219,8 @@ void sheets_load_stage(u16 sid) {
 		default: printf("Stage %hu has no sheet set", sid);
 	}
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area
-	tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
+	if(init_tiloc) {
+		tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
 			TILE_SHEETINDEX + 24*6);
+	}
 }

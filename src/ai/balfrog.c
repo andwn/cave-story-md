@@ -345,7 +345,7 @@ void ai_balfrog(Entity *e) {
 			// at a glance it might seem like this has it alternate
 			// slowly between 2 X coordinates, but in fact, it
 			// alternates quickly between 3.
-			e->x += (e->timer & 2) ? pixel_to_sub(1) : pixel_to_sub(-1);
+			e->x += (e->timer & 2) ? 0x200 : -0x200;
 			if(e->timer > 100) {
 				e->timer = 0;
 				e->state++;

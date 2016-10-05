@@ -280,7 +280,7 @@ void ai_malco(Entity *e) {
 			e->state = 19;
 			e->timer = 0;
 			// go into gawk frame first time
-			e->animtime = 999; e->frame = 9;
+			e->animtime = 3; e->frame = 9;
 		case 19:
 			if (++e->animtime > 3) {
 				e->animtime = 0;
@@ -523,7 +523,7 @@ void ai_motorbike(Entity *e) {
 		case 10:	// kazuma and booster mounted
 		{
 			e->alwaysActive = TRUE;
-			e->linkedEntity = entity_create(e->x - (8<<CSF), e->y - (8<<CSF), OBJ_KAZUMA, 0);
+			e->linkedEntity = entity_create(e->x - (4<<CSF), e->y - (8<<CSF), OBJ_KAZUMA, 0);
 			e->linkedEntity->linkedEntity = 
 					entity_create(e->x + (8<<CSF), e->y - (8<<CSF), OBJ_PROFESSOR_BOOSTER, 0);
 			e->linkedEntity->linkedEntity->alwaysActive = e->linkedEntity->alwaysActive = TRUE;
@@ -596,8 +596,18 @@ void ai_motorbike(Entity *e) {
 	}
 	// This is the worst code I have ever written
 	if(e->linkedEntity && e->linkedEntity->linkedEntity) {
-		e->linkedEntity->linkedEntity->x = e->linkedEntity->x = e->x = e->x + e->x_speed;
-		e->linkedEntity->linkedEntity->y = e->linkedEntity->y = e->y = e->y + e->y_speed;
+		e->x += e->x_speed;
+		e->y += e->y_speed;
+		// Kazuma
+		e->linkedEntity->x = e->x + (e->dir ? (4<<CSF) : -(4<<CSF));
+		e->linkedEntity->y = e->y - (4<<CSF);
+		e->linkedEntity->dir = e->dir;
+		e->linkedEntity->y_speed = 0;
+		// Booster
+		e->linkedEntity->linkedEntity->x = e->x + (e->dir ? -(8<<CSF) : (8<<CSF));
+		e->linkedEntity->linkedEntity->y = e->y - (4<<CSF);
+		e->linkedEntity->linkedEntity->dir = e->dir;
+		e->linkedEntity->linkedEntity->y_speed = 0;
 		// "hide" normal sprite and force ourself on top
 		e->hidden = TRUE;
 		sprite_pos(e->sprite[0],

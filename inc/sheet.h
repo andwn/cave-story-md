@@ -77,7 +77,8 @@ enum {
 	SHEET_PUCHI, SHEET_SKULLH, SHEET_IGORSHOT, SHEET_REDSHOT, SHEET_LABSHOT, SHEET_GAUDID,
 	SHEET_PCRITTER, SHEET_FAN, SHEET_BARMIMI, SHEET_DARK, SHEET_DARKBUB, SHEET_POWERS,
 	SHEET_POWERF, SHEET_FLOWER, SHEET_BASUSHOT, SHEET_POLISH, SHEET_BABY, SHEET_CROC,
-	SHEET_TERM, SHEET_FFIELD, SHEET_FROG, SHEET_DROP, SHEET_PIGNONB, 
+	SHEET_TERM, SHEET_FFIELD, SHEET_FROG, SHEET_DROP, SHEET_PIGNONB, SHEET_OMGSHOT,
+	SHEET_CURLYB,
 };
 
 u8 sheet_num;
@@ -102,6 +103,6 @@ void sheets_refresh_polarstar(u8 level);
 void sheets_refresh_machinegun(u8 level);
 void sheets_refresh_fireball(u8 level);
 
-void sheets_load_stage(u16 sid);
+void sheets_load_stage(u16 sid, u8 init_tiloc);
 
 #endif

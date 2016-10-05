@@ -65,9 +65,9 @@ static void set_states(Entity *e[], u8 n, u16 state) {
 }
 
 // sets direction on an array on objects
-static void set_dirs(Entity *e[], u8 n, u8 dir) {
-	while(--n) e[n]->dir = dir;
-}
+//static void set_dirs(Entity *e[], u8 n, u8 dir) {
+//	while(--n) e[n]->dir = dir;
+//}
 
 void onspawn_monsterx(Entity *e) {
 	e->alwaysActive = TRUE;

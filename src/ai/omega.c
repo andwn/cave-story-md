@@ -72,7 +72,7 @@ void onspawn_omega(Entity *e) {
 	omgmovetime = OMEGA_RISE_HEIGHT;
 	
 	// *MUST* create in this order so that the z-order is correct
-	memset(pieces, 0, sizeof(pieces));
+	memset(pieces, 0, sizeof(pieces) * 4);
 	pieces[LEFTLEG] = entity_create(0, 0, OBJ_OMEGA_LEG, 0);
 	pieces[RIGHTLEG] = entity_create(0, 0, OBJ_OMEGA_LEG, 0);
 	pieces[LEFTSTRUT] = entity_create(0, 0, OBJ_OMEGA_STRUT, 0);
@@ -89,6 +89,9 @@ void onspawn_omega(Entity *e) {
 	e->y = ((14 * 16) - 5) << CSF;
 	omgorgx = e->x;
 	omgorgy = e->y;
+	
+	bossEntity = e;
+	e->state = OMG_APPEAR;
 }
 
 void ai_omega(Entity *e) {
@@ -167,10 +170,10 @@ void ai_omega(Entity *e) {
 					shot->x_speed = random(-e->shotxspd, e->shotxspd);
 					shot->y_speed = -0x333;
 					if (e->form==2 || !(random() & 7)) {
-						//shot->sprite = SPR_OMG_BULLET_NORMAL;
+						shot->frame = 0;
 						shot->eflags = NPC_SHOOTABLE;
 					} else {
-						//shot->sprite = SPR_OMG_BULLET_HARD;
+						shot->frame = 1;
 						shot->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE);
 					}
 					shot->timer = (random() % 7 >= 4) ? 300 + random() % 100 : 0;

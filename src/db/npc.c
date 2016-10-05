@@ -54,15 +54,15 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ NULL, SHEET_POLISH, 	PAL3, 1, &ai_null, &ai_polish, &ondeath_default }, // Polish
 	{ NULL, SHEET_BABY, 	PAL3, 1, &ai_null, &ai_baby, &ondeath_default }, // Baby
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger, &ai_null }, // Trigger
-	{ NULL, SHEET_CROC, 	PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
+	{ NULL, SHEET_CROC,		PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
 	/* 0x030 (48) */
-	{ &SPR_OmgShot,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ai_null }, // Omega Shot
-	{ NULL, SHEET_SKULLH, 	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
-	{ &SPR_Skullhead,NOSHEET,PAL1,1, &ai_null, &ai_skullhead, &ondeath_default }, // Skeleton
+	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ai_null }, // Omega Shot
+	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
+	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skeleton
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow & Skullhead
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
-	{ NULL, SHEET_SKULLH, 	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullstep
+	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullstep
 	{ &SPR_Kazuma, NOSHEET, PAL3, 1, &onspawn_snap, &ai_kazuma, &ai_null }, // Kazuma
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &ai_null, &ai_beetle, &ondeath_default }, // Beetle
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow
@@ -130,7 +130,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ NULL, NOSHEET, 		PAL0, 2, &ai_null, &ai_null, &ondeath_default }, // Ravil
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Red Flower Petals
 	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_curly, &ai_null }, // Curly
-	{ &SPR_CurlyB, NOSHEET, PAL3, 1, &onspawn_snap, &ai_curlyBoss, &ondeath_curlyBoss }, // Curly
+	{ NULL, SHEET_CURLYB,	PAL3, 1, &onspawn_snap, &ai_curlyBoss, &ondeath_curlyBoss }, // Curly
 	{ &SPR_Table, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Table & Chair
 	{ NULL, SHEET_BARMIMI, 	PAL3, 1, &ai_null, &ai_curlys_mimigas, &ondeath_default },
 	{ NULL, SHEET_BARMIMI, 	PAL3, 1, &ai_null, &ai_curlys_mimigas, &ondeath_default },
@@ -512,7 +512,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
-	{ &SPR_Omega, 	NOSHEET, PAL3, 6, // Omega
+	{ &SPR_Omega, 	NOSHEET, PAL3, 4, // Omega
 		&onspawn_omega, &ai_omega, &ondeath_omega },
 	{ &SPR_Balfrog1, NOSHEET, PAL3, 6, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },

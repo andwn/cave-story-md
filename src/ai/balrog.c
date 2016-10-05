@@ -18,7 +18,7 @@ enum Frame {
 // grab the player in preparation for running the toss_player_away animation.
 static void balrog_grab_player(Entity *e) {
 	controlsLocked = TRUE;
-	player.hidden = 1;
+	player.hidden = TRUE;
 	e->frame = AWAY1;	// face away
 	e->state = STATE_GRAB;
 }
@@ -49,8 +49,9 @@ static u8 balrog_toss_player_away(Entity *e) {
 			// after a moment toss player away
 			if (++e->timer > TIME(100)) {
 				controlsLocked = FALSE;
+				player.hidden = FALSE;
 				player.dir = e->dir ^ 1;
-				player.x += player.dir ? 4 << CSF : -4 << CSF;
+				player.x += player.dir ? (4 << CSF) : -(4 << CSF);
 				player.x_speed = player.dir ? SPEED(0x5FF) : -SPEED(0x5FF);
 				player.y -= 8 << CSF;
 				player.y_speed = -SPEED(0x200);

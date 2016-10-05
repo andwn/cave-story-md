@@ -38,7 +38,7 @@ Entity player;
 // This is directly after player so player.sprite will refer to the same memory location
 VDPSprite playerSprite;
 
-u8 playerShow;
+//u8 playerShow;
 u8 playerIFrames;
 u8 playerMoveMode;
 // Max health - current health is player.health (Entity)

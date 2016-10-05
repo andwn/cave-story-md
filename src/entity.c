@@ -259,35 +259,22 @@ void entities_update() {
 			}
 		} // "Smushy" Solid Entities
 		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
-			collision = entity_react_to_collision(&player, e, TRUE);
+			{
+				s32 px = player.x, py = player.y;
+				collision = entity_react_to_collision(&player, e, TRUE);
+				player.x = px; player.y = py;
+			}
 			if(collision.bottom) {
-				player.y += (collision.bottom - 1);
+				player.y -= 1<<CSF;
 				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
-					player.y_speed = pixel_to_sub(-1);
+					player.y_speed = -(1 << CSF);
 					player.grounded = FALSE;
 				} else {
 					playerPlatform = e;
 				}
-				player.y_next = player.y;
-				collide_stage_ceiling(&player);
-				player.y = player.y_next;
-			// Double check stage collision to avoid clipping through walls
-			} else if(collision.top) {
-				player.y -= (collision.top - 1);
-				player.y_next = player.y;
-				collide_stage_floor(&player);
-				player.y = player.y_next;
-			} else if(collision.left) {
-				player.x += (collision.left - 1);
-				player.x_next = player.x;
-				collide_stage_rightwall(&player);
-				player.x = player.x_next;
-			} else if(collision.right) {
-				player.x -= (collision.right - 1);
-				player.x_next = player.x;
-				collide_stage_leftwall(&player);
-				player.x = player.x_next;
-			}
+			} else if(collision.top) player.y += 1<<CSF;
+			else if(collision.left) player.x -= 1<<CSF;
+			else if(collision.right) player.x += 1<<CSF;
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
@@ -817,6 +804,10 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 		LIST_PUSH(entityList, e);
 	} else {
 		LIST_PUSH(inactiveList, e);
+		if(e->tiloc != NOTILOC) {
+			TILOC_FREE(e->tiloc, e->framesize);
+			e->tiloc = NOTILOC;
+		}
 	}
 	return e;
 }

@@ -36,12 +36,12 @@ void ai_curly(Entity *e) {
 		{
 			if (e->state == 10) FACE_PLAYER(e);
 			e->state++;
-			e->frame = 1;
 		}
 		/* no break */
 		case 4:
 		case 11:
 		{
+			ANIMATE(e, 8, 1,0,2,0);
 			if (e->state == 11 && PLAYER_DIST_X(20<<CSF)) {
 				e->state = 0;
 				break;
@@ -196,7 +196,7 @@ static void curlyboss_fire(Entity *e, u8 dir) {
 			shot->x = e->x;
 			shot->y = e->y - pixel_to_sub(10);
 			shot->y_speed = -4096;
-			//SPR_SAFEANIM(shot->sprite, 1);
+			shot->frame = 1;
 		break;
 	}
 	sound_play(SND_POLAR_STAR_L1_2, 4);
@@ -210,7 +210,6 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = (random() % 50) + 50;
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
-			//SPR_SAFEHFLIP(e->sprite, e->dir);
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE;
@@ -226,11 +225,12 @@ void ai_curlyBoss(Entity *e) {
 			e->state = CURLYB_WALKING_PLAYER;
 			e->frame = 1;
 			e->timer = (random() % 50) + 50;
-			e->dir = (e->x <= player.x);
-			//SPR_SAFEHFLIP(e->sprite, e->dir);
+			FACE_PLAYER(e);
 		}
 		/* no break */
 		case CURLYB_WALKING_PLAYER:
+		{
+			ANIMATE(e, 8, 1,0,2,0);
 			ACCEL_X(SPEED(0x40));
 			if (e->timer) {
 				e->timer--;
@@ -240,6 +240,7 @@ void ai_curlyBoss(Entity *e) {
 				e->timer = 0;
 				sound_play(SND_CHARGE_GUN, 5);
 			}
+		}
 		break;
 		case CURLYB_CHARGE_GUN:
 		{
@@ -263,7 +264,7 @@ void ai_curlyBoss(Entity *e) {
 				// check if player is trying to jump over
 				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y) {
 					// shoot up instead
-					e->frame = 2;
+					e->frame = 3;
 					curlyboss_fire(e, 2);
 				} else {
 					e->frame = 0;
@@ -287,7 +288,7 @@ void ai_curlyBoss(Entity *e) {
 		if(bullet_missile_is_exploding()) {
 			e->timer = 0;
 			e->state = CURLYB_SHIELD;
-			e->frame = 3;
+			e->frame = 4;
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_INVINCIBLE;
 			e->x_speed = 0;
@@ -298,6 +299,7 @@ void ai_curlyBoss(Entity *e) {
 	if (e->x_speed < -SPEED(0x200)) e->x_speed = -SPEED(0x200);
 
 	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y;
 
 	collide_stage_leftwall(e);
 	collide_stage_rightwall(e);

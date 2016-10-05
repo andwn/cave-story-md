@@ -14,7 +14,9 @@
 #define CAI_START			21			// ANP'd to this by Almond script
 #define CAI_RUNNING			22
 #define CAI_KNOCKEDOUT		40			// knocked out at beginning of Almond battle
-#define CAI_ACTIVE	99
+#define CAI_ACTIVE			99
+
+enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 
 u8 curly_mgun = 0;
 u8 curly_watershield = 0;
@@ -27,9 +29,9 @@ u8 curly_look = 0;
 
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
-		e->y_speed = SPEED(-0x300) - random(SPEED(0x300));
+		e->y_speed = -SPEED(0x300) - random(SPEED(0x300));
 		e->grounded = FALSE;
-		//e->frame = ANIM_JUMPING;
+		e->frame = WALK2;
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
 }
@@ -95,18 +97,17 @@ void ai_curly_ai(Entity *e) {
 		{
 			e->timer = 0;
 			e->state = CAI_KNOCKEDOUT+1;
-			//e->frame = 9;
+			e->frame = 9;
 		}
 		/* no break */
 		case CAI_KNOCKEDOUT+1:
 		{
 			if (++e->timer > TIME(1000)) {	// start fighting
 				e->state = CAI_START;
-			}
-			else if (e->timer > TIME(750))
+			} else if (e->timer > TIME(750))
 			{	// stand up
 				e->eflags &= ~NPC_INTERACTIVE;
-				//e->frame = ANIM_STANDING;
+				e->frame = 0;
 			}
 		}
 		break;
@@ -285,36 +286,30 @@ void ai_curly_ai(Entity *e) {
 	}
 	
 	// Sprite Animation
-	/*
-	u8 anim;
 	if(e->grounded) {
 		if(curly_look == DIR_UP) {
 			if(e->x_speed != 0) {
-				anim = ANIM_LOOKUPWALK;
+				ANIMATE(e, 8, UPWALK1,LOOKUP,UPWALK2,LOOKUP);
 			} else {
-				anim = ANIM_LOOKUP;
+				e->frame = LOOKUP;
 			}
 		} else if(e->x_speed != 0) {
-			anim = ANIM_WALKING;
+			ANIMATE(e, 8, WALK1,STAND,WALK2,STAND);
 		} else if(curly_look == DIR_DOWN) {
-			anim = ANIM_INTERACT;
+			e->frame = LOOKDN;
 		} else {
-			anim = ANIM_STANDING;
+			e->frame = STAND;
 		}
 	} else {
 		if(curly_look == DIR_UP) {
-			anim = ANIM_LOOKUPJUMP;
+			e->frame = UPWALK2;
 		} else if(curly_look == DIR_DOWN) {
-			anim = ANIM_LOOKDOWNJUMP;
+			e->frame = JUMPDN;
 		} else {
-			anim = ANIM_JUMPING;
+			e->frame = WALK2;
 		}
 	}
-	// Set animation
-	e->frame = anim;
-	// Change direction if pressing left or right
-	//SPR_SAFEHFLIP(e->sprite, e->dir);
-	*/
+	
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
@@ -354,7 +349,7 @@ void fire_mgun(s32 x, s32 y, u8 dir) {
 	if(dir == DIR_UP) {
 		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-4);
+		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
 		////SPR_SAFEANIM(b->sprite, 1);
 		////SPR_SAFEVFLIP(b->sprite, 1);
@@ -395,7 +390,7 @@ void fire_pstar(s32 x, s32 y, u8 dir) {
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (dir > 0 ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
@@ -431,7 +426,7 @@ void ai_cai_gun(Entity *e) {
 		if (fire) {
 			// Get point where bullet will be created based on direction / looking
 			if(!curly_look) {
-				e->x_mark = curly->x + curly->dir ? 8 << CSF : -8 << CSF;
+				e->x_mark = curly->x + (curly->dir ? 8 << CSF : -(8 << CSF));
 				e->y_mark = curly->y + (1 << CSF);
 			} else if(curly_look == DIR_UP) {
 				e->x_mark = curly->x;
@@ -442,8 +437,8 @@ void ai_cai_gun(Entity *e) {
 			}
 			if (curly_mgun) {	// she has the Machine Gun
 				if (!e->timer2) {
-					e->timer2 = 2 + random() % 4;		// no. shots to fire
-					e->timer = 40 + random() % 10;
+					e->timer2 = 2 + (random() % 4);		// no. shots to fire
+					e->timer = 40 + (random() % 10);
 				}
 				if (e->timer) {
 					e->timer--;
@@ -453,12 +448,12 @@ void ai_cai_gun(Entity *e) {
 					// curly->dir is either 0 or 1, where 1 means right but DIR_RIGHT is 2
 					// So we do this weird thing to fix it
 					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
-					e->timer = 40 + random() % 10;
+					e->timer = 40 + (random() % 10);
 					e->timer2--;
 				}
 			} else {	// she has the Polar Star
 				if (!e->timer) {
-					e->timer = 4 + random() % 12;
+					e->timer = 4 + (random() % 12);
 					if (random() % 10 == 0) e->timer += 20 + random() % 10;
 					// create the shot
 					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
@@ -473,14 +468,14 @@ void ai_cai_gun(Entity *e) {
 // curly's air bubble when she goes underwater
 void ai_cai_watershield(Entity *e) {
 	Entity *curly = e->linkedEntity;
-	if (curly == NULL) { e->state = STATE_DELETE; return; }
+	if (!curly) { e->state = STATE_DELETE; return; }
 	
 	if(curly->underwater) {
-		//SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
+		e->hidden = FALSE;
 		e->x = curly->x;
 		e->y = curly->y;
 	} else {
-		//SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
+		e->hidden = TRUE;
 		e->timer = 0;
 	}
 }

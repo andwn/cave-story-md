@@ -316,7 +316,7 @@ u8 tsc_update() {
 
 void tsc_show_boss_health() {
 	showingBossHealth = TRUE;
-	//VDP_setWindowPos(28, 234);
+	VDP_setWindowPos(0, 254);
 	VDP_drawTextWindow("Boss[        ]  ", 24, 26);
 	VDP_drawTextWindow("                ", 24, 27);
 	// Face tiles are unused during boss battles, upload the tiles there
@@ -369,7 +369,7 @@ void tsc_show_teleport_menu() {
 		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
 			.x = 160 + i*40, .y = 224,
 			.size = SPRITE_SIZE(4, 2),
-			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[7].index + i*8)
+			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[7].index + (i-1)*16)
 		};
 		teleMenuSlotCount++;
 	}
@@ -567,7 +567,6 @@ u8 execute_command() {
 			} else if(args[0] == 2) { // Right
 				player.dir = 1;
 			}
-			//SPR_SAFEHFLIP(player.sprite, player.dir);
 			break;
 		case CMD_UNI: // Change movement type to (1)
 			args[0] = tsc_read_word();
@@ -601,11 +600,11 @@ u8 execute_command() {
 			break;
 		case CMD_HMC: // Hide player character
 			logcmd("<HMC");
-			playerShow = FALSE;
+			player.hidden = TRUE;
 			break;
 		case CMD_SMC: // Show player character
 			logcmd("<SMC");
-			playerShow = TRUE;
+			player.hidden = FALSE;
 			break;
 		case CMD_LI_ADD: // Restore health by (1)
 			args[0] = tsc_read_word();
@@ -679,12 +678,9 @@ u8 execute_command() {
 		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
 			logcmd("<BOA:%hu", args[0]);
-			if(bossEntity) {
-				bossEntity->state = args[0];
-			} else if(stageID == 0x0A && args[0] == 20) {
+			if(stageID == 0x0A && args[0] == 20) {
 				// Hack to spawn Omega in Sand Zone
-				bossEntity = entity_create(player.x - (16<<CSF), 
-										   player.y + (80<<CSF), 360 + BOSS_OMEGA, 0);
+				bossEntity = entity_create(0, 0, 360 + BOSS_OMEGA, 0);
 				bossEntity->event = 210;
 				bossEntity->state = 20;
 			} else if(stageID == 0x2F && args[0] == 200) {
@@ -692,6 +688,8 @@ u8 execute_command() {
 				bossEntity = entity_create(0, 0, 360 + BOSS_CORE, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 200;
+			} else if(bossEntity) {
+				bossEntity->state = args[0];
 			}
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)

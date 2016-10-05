@@ -89,7 +89,7 @@ u8 game_main(u8 load) {
 					camera_update();
 					player_update();
 					entities_update();
-					//if(showingBossHealth) tsc_update_boss_health();
+					if(showingBossHealth) tsc_update_boss_health();
 				}
 				// Restore controller locking if it was locked
 				joystate = lockstate;
@@ -230,7 +230,7 @@ u8 update_pause() {
 		// Reload shared sheets we clobbered
 		SYS_disableInts();
 		sheets_init();
-		sheets_load_stage(stageID);
+		sheets_load_stage(stageID, FALSE);
 		SYS_enableInts();
 		
 		selectedItem = 0;

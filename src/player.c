@@ -60,7 +60,7 @@ void player_next_weapon();
 // Default values for player
 void player_init() {
 	controlsLocked = FALSE;
-	playerShow = TRUE;
+	player.hidden = FALSE;
 	player.dir = 0;
 	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	playerMaxHealth = 3;
@@ -639,7 +639,7 @@ void player_draw() {
 		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
 	}
 	// Blink during invincibility frames
-	if(playerShow && !(playerIFrames & 2)) {
+	if(!player.hidden && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
 		if(!controlsLocked) {
 			if(joy_down(BUTTON_RIGHT)) {

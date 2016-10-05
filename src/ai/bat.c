@@ -41,10 +41,10 @@ void ai_batVertical(Entity *e) {
 	ANIMATE(e, 4, 0,1,2);
 	if(e->state == 0) {
 		e->y_speed -= 8;
-		if(e->y_speed <= pixel_to_sub(-1)) e->state = 1;
+		if(e->y_speed <= -0x200) e->state = 1;
 	} else if(e->state == 1) {
 		e->y_speed += 8;
-		if(e->y_speed >= pixel_to_sub(1)) e->state = 0;
+		if(e->y_speed >= 0x200) e->state = 0;
 	}
 	FACE_PLAYER(e);
 	e->y += e->y_speed;
