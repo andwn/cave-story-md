@@ -45,8 +45,7 @@ This file is where I list off the differences in this port and why.
  - FEATURE: Hold A and press Start on the title screen to enable debug. In debug holding A lets you float and move through walls.
  - WONTFIX: Most objects when offscreen stop moving/updating until they are back on the screen.
  - WONTFIX: Weapon energy is combined into a single power up instead of many being created by the same enemy.
- - MIGHTFIX: The map system does not do anything
- 
+
 #### Game Content (Rooms/Scripts)
  - About half of the tilesets have been crushed to remove unused tiles (saving VRAM space for other things). This means the related PXA and PXM files were also modified to use those tilesets.
  - EggX and EggX2 are the same PXM with the tileset split into 2.

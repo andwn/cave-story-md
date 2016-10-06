@@ -173,7 +173,7 @@ void ai_omega(Entity *e) {
 		{
 			e->firecounter++;
 			if (e->firecounter > 20 && e->firecounter < 80) {
-				if (!(e->firecounter % 4)) {
+				if (!(e->firecounter % 6)) {
 					sound_play(SND_EM_FIRE, 5);
 					Entity *shot = entity_create(e->x, e->y, OBJ_OMEGA_SHOT, 0);
 					if(e->form == 2) {

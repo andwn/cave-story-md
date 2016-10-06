@@ -120,7 +120,7 @@ SPRITE SPR_FuzzCore		"sprite/fuzzcore.png"	4 4 0 0 NONE
 SPRITE SPR_Fuzz			"sprite/fuzz.png"		2 2 0 0 NONE
 SPRITE SPR_CoreThing	"sprite/corething.png"	4 4 0 8 NONE
 SPRITE SPR_CoreThingShot "sprite/corethingshot.png" 2 4 0 0 NONE
-SPRITE SPR_Buggy		"sprite/buggy.png"		4 2 0 0 NONE
+SPRITE SPR_Buggy		"sprite/buggy.png"		4 4 0 0 NONE
 SPRITE SPR_Buggy2		"sprite/buggy2.png"		8 2 0 0 NONE
 SPRITE SPR_GaudiMerch	"sprite/gaudimerch.png"	4 3 0 0 NONE
 SPRITE SPR_BuyoBase		"sprite/buyobase.png"	4 4 0 0 NONE

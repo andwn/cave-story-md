@@ -523,11 +523,7 @@ void ai_motorbike(Entity *e) {
 		case 10:	// kazuma and booster mounted
 		{
 			e->alwaysActive = TRUE;
-			e->linkedEntity = entity_create(e->x - (4<<CSF), e->y - (8<<CSF), OBJ_KAZUMA, 0);
-			e->linkedEntity->linkedEntity = 
-					entity_create(e->x + (8<<CSF), e->y - (8<<CSF), OBJ_PROFESSOR_BOOSTER, 0);
-			e->linkedEntity->linkedEntity->alwaysActive = e->linkedEntity->alwaysActive = TRUE;
-			e->linkedEntity->linkedEntity->state = e->linkedEntity->state = 500;
+			e->frame = 1;
 			e->state++;
 		}
 		break;
@@ -580,8 +576,7 @@ void ai_motorbike(Entity *e) {
 		{
 			e->timer += 2;	// makes exhaust sound go faster
 			if(e->timer > 1200) {
-				e->linkedEntity->linkedEntity->state = 
-						e->linkedEntity->state = e->state = STATE_DELETE;
+				e->state = STATE_DELETE;
 			}
 		}
 		break;
@@ -594,28 +589,6 @@ void ai_motorbike(Entity *e) {
 		//puff->yinertia = 0;
 		//puff->xinertia = (o->dir == LEFT) ? 0x280 : -0x280;
 	}
-	// This is the worst code I have ever written
-	if(e->linkedEntity && e->linkedEntity->linkedEntity) {
-		e->x += e->x_speed;
-		e->y += e->y_speed;
-		// Kazuma
-		e->linkedEntity->x = e->x + (e->dir ? (4<<CSF) : -(4<<CSF));
-		e->linkedEntity->y = e->y - (4<<CSF);
-		e->linkedEntity->dir = e->dir;
-		e->linkedEntity->y_speed = 0;
-		// Booster
-		e->linkedEntity->linkedEntity->x = e->x + (e->dir ? -(8<<CSF) : (8<<CSF));
-		e->linkedEntity->linkedEntity->y = e->y - (4<<CSF);
-		e->linkedEntity->linkedEntity->dir = e->dir;
-		e->linkedEntity->linkedEntity->y_speed = 0;
-		// "hide" normal sprite and force ourself on top
-		e->hidden = TRUE;
-		sprite_pos(e->sprite[0],
-				(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
-				(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
-		sprite_hflip(e->sprite[0], e->dir);
-		sprite_add(e->sprite[0]);
-	} else {
-		e->hidden = FALSE;
-	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

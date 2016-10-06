@@ -1,4 +1,4 @@
-### TODO List
+### TODO / Status
 
 - Music
   - Labyrinth Fight
@@ -15,6 +15,7 @@
 
 - Missing stuff
   - Weapons in item menu
+  - Map System?
   - Boss health
   - Question mark when pressing down
   - Weapon level up / down
@@ -28,7 +29,7 @@
   
 - Major Boss Status
   - [x] Balfrog
-  - [ ] Omega
+  - [x] Omega
   - [ ] Monster X
   - [ ] Core
   - [ ] Ironhead
@@ -71,3 +72,18 @@
   - [x] Booster 2.0
   - [x] Air Tank
   - [ ] Whimsical Star
+  - [ ] Nikumaru Counter
+
+- Jokes
+  - [x] Arguing with Noxoid via code comments
+  - [x] Bug reports about debug features
+  - [ ] Deflemask stops being proprietary
+  - [ ] DMCA
+  - [ ] GensKmod multiplat fork
+  - [ ] I get an actual programming job because of this project
+  - [x] Newer versions of GCC lagging noticably less than 3.x
+  - [x] Python
+  - [ ] Sega splash screen
+  - [ ] Someone holds A for free WR
+  - [ ] SRAM on UMDK
+  - [ ] Undertale

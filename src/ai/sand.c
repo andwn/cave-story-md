@@ -365,8 +365,9 @@ void ai_sunstone(Entity *e) {
 }
 
 void ai_armadillo(Entity *e) {
-	if(!e->grounded) e->y_speed += 0x40;
-	LIMIT_Y(0x5ff);
+	ANIMATE(e, 16, 0,1);
+	if(!e->grounded) e->y_speed += SOEED(0x40);
+	LIMIT_Y(SPEED(0x5ff));
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -417,10 +418,11 @@ void ai_crow(Entity *e) {
 			FACE_PLAYER(e);
 			LIMIT_X(SPEED(0x200));
 			LIMIT_Y(SPEED(0x200));
+			ANIMATE(e, 8, 0,1);
 			
 			if (e->damage_time) {
 				e->state++;		// state 2/102
-				//e->frame = 2;
+				e->frame = 2;
 				e->timer = 0;
 				e->y_speed = 0;
 			}
@@ -429,22 +431,21 @@ void ai_crow(Entity *e) {
 		case 2:
 		case 102:
 		{
-			if (e->dir != player.dir) FACE_PLAYER(e);
+			FACE_PLAYER(e);
 			if (e->damage_time) {
+				e->frame = 2;
 				// fall while hurt
 				e->y_speed += SPEED(0x20);
 				e->x_speed = 0;
 				e->timer = 0;
 			} else {
+				ANIMATE(e, 8, 0,1);
 				// move towards player
 				if(e->x < player.x) e->x_speed += SPEED(0x10);
 				else e->x_speed -= SPEED(0x10);
 				if(e->y < player.y) e->y_speed += SPEED(0x10);
 				else e->y_speed -= SPEED(0x10);
-				if(!e->timer) {
-					//e->frame = 0;
-					e->timer++;
-				}
+				if(!e->timer) e->timer++;
 			}
 			// bounce off walls
 			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
@@ -476,7 +477,7 @@ void ai_skullhead(Entity *e) {
 			if(++e->timer > 8) {
 				e->y_speed = -0x350;
 				e->state = 2;
-				//e->frame = 2;
+				e->frame = 2;
 				MOVE_X(0x100);
 			} else {
 				break;
@@ -493,9 +494,9 @@ void ai_skullhead(Entity *e) {
 					e->y_speed = 0;
 					e->state = 1;
 					e->timer = 0;
-					//e->frame = 0;
+					e->frame = 0;
 				} else {
-					//e->frame = 1;
+					e->frame = 1;
 				}
 			} else {
 				collide_stage_ceiling(e);
@@ -506,7 +507,6 @@ void ai_skullhead(Entity *e) {
 	if(e->x_speed) {
 		if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
 		if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
-		////SPR_SAFEHFLIP(e->sprite, e->dir);
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -572,20 +572,20 @@ void ai_curlys_mimigas(Entity *e) {
 		/* no break */
 		case 3:		// stand and blink
 		{
-			//e->frame = 0;
-			//randblink(o, 1, 8);
+			e->frame = 0;
+			RANDBLINK(e, 3, 200);
 		}
 		break;
 		// sitting mimiga (when facing right)
 		// facing away mimiga (when facing left)
 		case 100:
 		{
-			//e->frame = 3;
+			e->frame = 4;
 		}
 		break;
 		case 110:	// sleeping facing left mimiga
 		{
-			//e->frame = 6;
+			e->frame = 7;
 			//ai_zzzz_spawner(o);
 		}
 		break;
@@ -596,7 +596,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->health = 1000;
 			e->state = 11;
 			e->timer = random() % 50;
-			//e->frame = 0;
+			e->frame = 0;
 		}
 		/* no break */
 		case 11:
@@ -608,12 +608,12 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 14;
 			e->timer = random() % 50;
 			FACE_PLAYER(e);
-			////SPR_SAFEHFLIP(e->sprite, e->dir);
-			//e->frame = 1;
+			e->frame = 1;
 		}
 		/* no break */
 		case 14:
 		{
+			ANIMATE(e, 8, 1,0,2,0);
 			if(e->dir) e->x_speed += 0x40;
 			else e->x_speed -= 0x40;
 			
@@ -624,6 +624,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->state = 15;
 				e->y_speed = -0x200;
 				e->attack = 2;
+				e->frame = 2;
 			}
 		}
 		break;
@@ -642,11 +643,7 @@ void ai_curlys_mimigas(Entity *e) {
 			if((e->grounded = collide_stage_floor(e))) {
 				e->x_speed = 0;
 				e->state = 21;
-				//if(e->sprite->animInd == 5) {
-				//	e->frame = 7;
-				//} else {
-				//	e->frame = 6;
-				//}
+				e->frame += 2;
 				e->timer = 300 + (random() % 100);
 			}
 		}
@@ -655,13 +652,13 @@ void ai_curlys_mimigas(Entity *e) {
 		{
 			if (e->timer) {
 				e->timer--;
-				break;
+			} else {
+				e->eflags |= NPC_SHOOTABLE;
+				e->health = 1000;
+				e->state = 11;
+				e->timer = random() % 50;
+				e->frame = 0;
 			}
-			e->eflags |= NPC_SHOOTABLE;
-			e->health = 1000;
-			e->state = 11;
-			e->timer = random() % 50;
-			//e->frame = 0;
 		}
 		break;
 	}
@@ -669,7 +666,7 @@ void ai_curlys_mimigas(Entity *e) {
 		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
-		//e->frame = (random() & 1) + 4;
+		e->frame = (random() & 1) + 5;
 		e->attack = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 	}
