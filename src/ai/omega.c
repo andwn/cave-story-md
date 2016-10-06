@@ -13,7 +13,7 @@
 #include "resources.h"
 #include "npc.h"
 
-#define OMEGA_RISE_HEIGHT			48
+#define OMEGA_RISE_HEIGHT			56
 #define OMEGA_SINK_DEPTH			60
 #define OMEGA_WAIT_TIME				7
 #define OMEGA_SPEED					(SPEED(0x200))
@@ -29,8 +29,8 @@
 #define OMG_EXPLODING				100	// start fancy victory animation
 #define OMG_EXPLODED				110 // full-screen flash in progress
 
-#define LEGD_MIN				(25<<CSF)
-#define LEGD_MAX				(46<<CSF)
+#define LEGD_MIN				(10<<CSF)
+#define LEGD_MAX				(30<<CSF)
 
 #define OMEGA_DAMAGE			20
 #define HP_TRIGGER_POINT		280
@@ -41,11 +41,9 @@
 #define omgmovetime	curly_target_time
 
 #define nextstate		timer2
-#define endfirestate	timer2
+#define endfirestate	id
 #define firecounter		deathSound
 #define form			jump_time
-#define firefreq		underwater
-#define shotxspd		x_mark
 #define leg_descend		y_mark
 
 enum Pieces {
@@ -67,14 +65,12 @@ void onspawn_omega(Entity *e) {
 	e->frame = 0;
 	e->attack = 5;
 	e->hurtSound = 52;
-	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
-	e->display_box = (bounding_box) { 40, 32, 40, 32 };
+	e->hit_box = (bounding_box) { 28, 20, 28, 24 };
+	e->display_box = (bounding_box) { 36, 28, 36, 28 };
 	
 	e->form = 1;
-	e->firefreq = 3;
-	e->shotxspd = 0x100;
 	e->endfirestate = 200;
-	omgmovetime = OMEGA_RISE_HEIGHT;
+	omgmovetime = TIME(OMEGA_RISE_HEIGHT);
 	
 	// *MUST* create in this order so that the z-order is correct
 	memset(pieces, 0, NUM_PIECES * sizeof(Entity*));
@@ -177,19 +173,23 @@ void ai_omega(Entity *e) {
 		{
 			e->firecounter++;
 			if (e->firecounter > 20 && e->firecounter < 80) {
-				if ((e->firecounter % e->firefreq)==0) {
+				if (!(e->firecounter % 4)) {
 					sound_play(SND_EM_FIRE, 5);
 					Entity *shot = entity_create(e->x, e->y, OBJ_OMEGA_SHOT, 0);
-					shot->x_speed = random(-e->shotxspd, e->shotxspd);
-					shot->y_speed = -0x333;
-					if (e->form==2 || !(random() & 7)) {
+					if(e->form == 2) {
+						shot->x_speed = -SPEED(0x155) + (random() % SPEED(0x2AA));
+					} else {
+						shot->x_speed = -SPEED(0x100) + (random() % SPEED(0x200));
+					}
+					shot->y_speed = -SPEED(0x333);
+					if(e->form == 2 || !(random() & 7)) {
 						shot->frame = 0;
 						shot->eflags = NPC_SHOOTABLE;
 					} else {
-						shot->frame = 1;
+						shot->frame = 2;
 						shot->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE);
 					}
-					shot->timer = (random() % 7 >= 4) ? (300 + (random() % 100)) : 0;
+					shot->timer = (random() & 1) ? (TIME(300) + (random() % TIME(100))) : 0;
 					shot->attack = 4;
 				}
 			} else if (e->firecounter >= e->endfirestate || bullet_missile_is_exploding()) {
@@ -215,7 +215,7 @@ void ai_omega(Entity *e) {
 						e->state = OMG_WAIT;
 						e->nextstate = OMG_MOVE;
 						e->y_speed = OMEGA_SPEED;
-						omgmovetime = OMEGA_SINK_DEPTH;
+						omgmovetime = TIME(OMEGA_SINK_DEPTH);
 					} else {	// form 2: jump
 						sound_play(SND_FUNNY_EXPLODE, 5);
 						if (e->x < player.x) e->x_speed = SPEED(0xC0);
@@ -238,18 +238,16 @@ void ai_omega(Entity *e) {
 				
 				e->x = omgorgx + (-64) + ((random() % 128) << CSF);
 				e->y = omgorgy;
-				omgmovetime = OMEGA_RISE_HEIGHT;
+				omgmovetime = TIME(OMEGA_RISE_HEIGHT);
 				
 				// switch to jumping out of ground when we get low on life
 				if (e->form==1 && e->health <= HP_TRIGGER_POINT) {
 					e->eflags |= NPC_SOLID;
 					
 					e->form = 2;
-					e->firefreq = 5;
-					e->shotxspd = SPEED(0x155);
 					e->timer = 50; // Start firing immediately and for only 30 frames
 					e->endfirestate = 50;
-					omgmovetime = OMEGA_RISE_HEIGHT+3;
+					omgmovetime = TIME(OMEGA_RISE_HEIGHT+3);
 				}
 			}
 		}
@@ -333,11 +331,13 @@ void ai_omega(Entity *e) {
 	if(e->damage_time) e->x += (e->damage_time & 1) ? 0x200 : -0x200;
 	
 	if (e->state) {
-		e->x_next = e->x;
-		e->y_next = e->y;
-		collide_stage_leftwall(e);
-		collide_stage_rightwall(e);
-		e->x = e->x_next;
+		if(e->x_speed != 0) {
+			e->x_next = e->x;
+			e->y_next = e->y;
+			collide_stage_leftwall(e);
+			collide_stage_rightwall(e);
+			e->x = e->x_next;
+		}
 		pieces[LEFTLEG]->x = e->x - (20 << CSF); pieces[LEFTLEG]->y = e->y + e->leg_descend;
 		pieces[RIGHTLEG]->x = e->x + (20 << CSF); pieces[RIGHTLEG]->y = e->y + e->leg_descend;
 		pieces[LEFTSTRUT]->x = e->x - (24 << CSF); pieces[LEFTSTRUT]->y = e->y + (27 << CSF);
@@ -352,17 +352,22 @@ void ondeath_omega(Entity *e) {
 	bossEntity = NULL;
 }
 
+#define blk(xf, xoff, yf, yoff)                                                                \
+	stage_get_block_type((((xf)>>CSF)+(xoff))/16,(((yf)>>CSF)+(yoff))/16)
+
 void ai_omega_shot(Entity *e) {
 	e->y_speed += 5;
-	if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -0x100;
-	if (e->y_speed > 0 && collide_stage_ceiling(e)) e->y_speed = -e->y_speed;
-	if ((e->x_speed < 0 && stage_get_block_type(((e->x<<CSF)-8) / 16, (e->y<<CSF) / 16)) ||
-		(e->x_speed > 0 && stage_get_block_type(((e->x<<CSF)+8) / 16, (e->y<<CSF) / 16))) {
+	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x42) e->y_speed = -0x100;
+	if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x42) e->y_speed = -e->y_speed;
+	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x42) ||
+		(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x42)) {
 		e->x_speed = -e->x_speed;
 	}
-	if (++e->animtime > 2) { e->frame ^= 1; e->animtime = 0; }
+	if (++e->animtime > 3) { e->frame ^= 1; e->animtime = 0; }
 	if (++e->timer > 750) {
 		//effect(o->CenterX(), o->CenterY(), EFFECT_FISHY);
 		e->state = STATE_DELETE;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

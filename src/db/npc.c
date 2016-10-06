@@ -54,7 +54,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ NULL, SHEET_POLISH, 	PAL3, 1, &ai_null, &ai_polish, &ondeath_default }, // Polish
 	{ NULL, SHEET_BABY, 	PAL3, 1, &ai_null, &ai_baby, &ondeath_default }, // Baby
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger, &ai_null }, // Trigger
-	{ NULL, SHEET_CROC,		PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
+	{ &SPR_Sandcroc,NOSHEET,PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
 	/* 0x030 (48) */
 	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ai_null }, // Omega Shot
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
@@ -512,7 +512,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
-	{ &SPR_Omega, 	NOSHEET, PAL3, 4, // Omega
+	{ &SPR_Omega, 	NOSHEET, PAL3, 6, // Omega
 		&onspawn_omega, &ai_omega, &ondeath_omega },
 	{ &SPR_Balfrog1, NOSHEET, PAL3, 6, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },
@@ -540,7 +540,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 		&onspawn_persistent, &ai_core_back, &ai_null },
 	{ &SPR_MiniCore, NOSHEET, PAL3, 2, // Mini Core
 		&onspawn_persistent, &ai_minicore, &ai_null },
-	{ &SPR_OmegaLeg, NOSHEET, PAL3, 1, // Omega Leg
+	{ NULL, SHEET_OMGLEG, PAL3, 1, // Omega Leg
 		&onspawn_omega_leg, &ai_null, &ai_null },
 	{ &SPR_OmgStrut, NOSHEET, PAL3, 1, // Omega Strut
 		&onspawn_omega_strut, &ai_null, &ai_null },

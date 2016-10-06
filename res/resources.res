@@ -163,7 +163,7 @@ SPRITE SPR_CurlyMimi	"sprite/cirlymimi.png"	2 2 0 0 NONE
 SPRITE SPR_SueCom		"sprite/suecom.png"		2 3 0 0 NONE
 SPRITE SPR_DrGero		"sprite/drgero.png"		2 2 0 0 NONE
 SPRITE SPR_Nurse		"sprite/nurse.png"		2 2 0 0 NONE
-SPRITE SPR_Omega		"sprite/omega.png"		9 8 0 0 NONE
+SPRITE SPR_Omega		"sprite/omega.png"		9 7 0 0 NONE
 SPRITE SPR_OmegaLeg		"sprite/omegaleg.png"	4 4 0 0 NONE
 SPRITE SPR_OmgShot		"sprite/omegashot.png"	2 2 0 0 NONE
 SPRITE SPR_OmgStrut		"sprite/omgstrut.png"	3 2 0 0 NONE

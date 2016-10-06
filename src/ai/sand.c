@@ -87,7 +87,7 @@ void ai_polish(Entity *e) {
 		
 		case POLISH_CCW_LEFT:	// traveling left on ceiling
 			e->y_speed -= POLISH_ACCEL;
-			if (e->y_speed < 0 && blocku)
+			if (blocku)
 			{
 				e->y_speed = POLISH_BOUNCE;
 				e->x_speed -= POLISH_BOUNCE;
@@ -99,7 +99,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CCW_UP:	// traveling up right wall
 		{
 			e->x_speed += POLISH_ACCEL;
-			if (e->x_speed > 0 && blockr)
+			if (blockr)
 			{
 				e->x_speed = -POLISH_BOUNCE;
 				e->y_speed -= POLISH_BOUNCE;
@@ -112,7 +112,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CCW_RIGHT:	// traveling right on floor
 		{
 			e->y_speed += POLISH_ACCEL;
-			if (e->y_speed > 0 && blockd)
+			if (blockd)
 			{
 				e->y_speed = -POLISH_BOUNCE;
 				e->x_speed += POLISH_BOUNCE;
@@ -125,7 +125,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CCW_DOWN:	// traveling down left wall
 		{
 			e->x_speed -= POLISH_ACCEL;
-			if (e->x_speed < 0 && blockl)
+			if (blockl)
 			{
 				e->x_speed = POLISH_BOUNCE;
 				e->y_speed += POLISH_BOUNCE;
@@ -140,7 +140,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CW_LEFT:		// traveling left on floor
 		{
 			e->y_speed += POLISH_ACCEL;
-			if (e->y_speed > 0 && blockd)
+			if (blockd)
 			{
 				e->y_speed = -POLISH_BOUNCE;
 				e->x_speed -= POLISH_BOUNCE;
@@ -153,7 +153,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CW_UP:		// traveling up left wall
 		{
 			e->x_speed -= POLISH_ACCEL;
-			if (e->x_speed < 0 && blockl)
+			if (blockl)
 			{
 				e->x_speed = POLISH_BOUNCE;
 				e->y_speed -= POLISH_BOUNCE;
@@ -166,7 +166,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CW_RIGHT:		// traveling right on ceiling
 		{
 			e->y_speed -= POLISH_ACCEL;
-			if (e->y_speed < 0 && blocku)
+			if (blocku)
 			{
 				e->y_speed = POLISH_BOUNCE;
 				e->x_speed += POLISH_BOUNCE;
@@ -179,7 +179,7 @@ void ai_polish(Entity *e) {
 		case POLISH_CW_DOWN:		// traveling down right wall
 		{
 			e->x_speed += POLISH_ACCEL;
-			if (e->x_speed > 0 && blockr)
+			if (blockr)
 			{
 				e->x_speed = -POLISH_BOUNCE;
 				e->y_speed += POLISH_BOUNCE;
@@ -196,6 +196,7 @@ void ai_polish(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
+	ANIMATE(e, 4, 0,1);
 	e->dir = 0;
 }
 
@@ -227,6 +228,8 @@ void ai_baby(Entity *e) {
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
+	
+	ANIMATE(e, 4, 0,1);
 }
 
 void ai_sandcroc(Entity *e) {
@@ -262,11 +265,8 @@ void ai_sandcroc(Entity *e) {
 					e->timer = 0;
 					sound_play(SND_JAWS, 5);
 					e->hidden = FALSE;
-					////SPR_SAFEVISIBILITY(e->sprite, AUTO_FAST);
-					//e->frame = 1;
 				}
 			} else {
-				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->hidden = TRUE;
 			}
 		}
@@ -274,15 +274,18 @@ void ai_sandcroc(Entity *e) {
 		case 2:		// attacking
 		{
 			e->timer++;
-			if(e->timer == 12) {
+			if(e->timer == 6) {
+				e->frame = 1;
+			} else if(e->timer == 12) {
 				e->attack = (e->type == OBJ_SANDCROC_OSIDE) ? 15 : 10;
+				e->frame = 2;
 			} else if(e->timer==16) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->eflags |= NPC_SOLID;
 				e->attack = 0;
 				e->state = 3;
 				e->timer = 0;
-				//e->frame = 2;
+				e->frame = 3;
 			}
 		}
 		break;
@@ -304,7 +307,6 @@ void ai_sandcroc(Entity *e) {
 			
 			if (++e->timer == 30) {
 				e->eflags &= ~(NPC_SHOOTABLE);
-				////SPR_SAFEVISIBILITY(e->sprite, HIDDEN);
 				e->hidden = TRUE;
 				e->state = 5;
 				e->timer = 0;
@@ -313,7 +315,7 @@ void ai_sandcroc(Entity *e) {
 		break;
 		case 5:
 		{
-			//e->frame = 0;
+			e->frame = 0;
 			e->y = e->y_mark;
 			
 			if(e->timer < 100) {
