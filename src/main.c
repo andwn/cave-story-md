@@ -39,6 +39,7 @@ int main() {
 	input_init();
 	SYS_enableInts();
     while(TRUE) {
+		splash_main();
 		u8 select = titlescreen_main();
 		switch(select) {
 			case 0:

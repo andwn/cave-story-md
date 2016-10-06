@@ -10,6 +10,9 @@
 u8 paused;
 u8 gameFrozen;
 
+// Sega screen
+void splash_main();
+
 // Displays title screen, returns which option was picked
 u8 titlescreen_main();
 

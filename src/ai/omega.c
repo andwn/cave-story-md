@@ -65,7 +65,7 @@ void onspawn_omega(Entity *e) {
 	e->frame = 0;
 	e->attack = 5;
 	e->hurtSound = 52;
-	e->hit_box = (bounding_box) { 28, 20, 28, 24 };
+	e->hit_box = (bounding_box) { 24, 20, 24, 24 };
 	e->display_box = (bounding_box) { 36, 28, 36, 28 };
 	
 	e->form = 1;
@@ -95,11 +95,13 @@ void onspawn_omega(Entity *e) {
 
 void onspawn_omega_leg(Entity *e) {
 	e->alwaysActive = TRUE;
+	e->enableSlopes = FALSE;
 	if(e->eflags & NPC_OPTION2) e->dir = 1;
 }
 
 void onspawn_omega_strut(Entity *e) {
 	e->alwaysActive = TRUE;
+	e->enableSlopes = FALSE;
 	if(e->eflags & NPC_OPTION2) e->dir = 1;
 }
 
@@ -151,17 +153,16 @@ void ai_omega(Entity *e) {
 		case OMG_JAWS_OPEN:			// jaws opening
 		{
 			e->state++;
+			e->frame = 0;
 			e->animtime = 0;
 			sound_play(SND_JAWS, 5);
 			//e->sprite = SPR_OMG_OPENED;			// select "open" bounding box
 		}
 		case OMG_JAWS_OPEN+1:
 		{
-			e->animtime++;
-			if (e->animtime > 3) {
+			if (++e->animtime > 4) {
 				e->animtime = 0;
-				e->frame++;
-				if (e->frame >= 3) {
+				if (++e->frame >= 2) {
 					e->state = OMG_FIRE;
 					e->firecounter = 0;
 					e->eflags |= NPC_SHOOTABLE;
@@ -173,7 +174,7 @@ void ai_omega(Entity *e) {
 		{
 			e->firecounter++;
 			if (e->firecounter > 20 && e->firecounter < 80) {
-				if (!(e->firecounter % 6)) {
+				if (!(e->firecounter % 8)) {
 					sound_play(SND_EM_FIRE, 5);
 					Entity *shot = entity_create(e->x, e->y, OBJ_OMEGA_SHOT, 0);
 					if(e->form == 2) {
@@ -184,10 +185,10 @@ void ai_omega(Entity *e) {
 					shot->y_speed = -SPEED(0x333);
 					if(e->form == 2 || !(random() & 7)) {
 						shot->frame = 0;
-						shot->eflags = NPC_SHOOTABLE;
+						shot->nflags |= NPC_SHOOTABLE;
 					} else {
 						shot->frame = 2;
-						shot->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE);
+						shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 					}
 					shot->timer = (random() & 1) ? (TIME(300) + (random() % TIME(100))) : 0;
 					shot->attack = 4;
@@ -202,8 +203,7 @@ void ai_omega(Entity *e) {
 		break;
 		case OMG_JAWS_CLOSE:	// jaws closing
 		{
-			e->animtime++;
-			if (e->animtime > 3) {
+			if (++e->animtime > 4) {
 				e->animtime = 0;
 				e->frame--;
 				if (e->frame == 0) {
@@ -262,18 +262,24 @@ void ai_omega(Entity *e) {
 		{
 			e->y_speed += SPEED(0x24);
 			LIMIT_Y(SPEED(0x5FF));
+			pieces[LEFTLEG]->x_next = pieces[LEFTLEG]->x;
+			pieces[LEFTLEG]->y_next = pieces[LEFTLEG]->y;
+			pieces[RIGHTLEG]->x_next = pieces[RIGHTLEG]->x;
+			pieces[RIGHTLEG]->y_next = pieces[RIGHTLEG]->y;
+			// Check sides so we don't get stuck
+			if(collide_stage_leftwall(pieces[LEFTLEG])) {
+				e->x_speed = 0x100;
+			} else if(collide_stage_rightwall(pieces[RIGHTLEG])) {
+				e->x_speed = 0x100;
+			}
 			if (e->y_speed > 0) {	// coming down
 				pieces[LEFTLEG]->frame = pieces[RIGHTLEG]->frame = 0;
-				pieces[LEFTLEG]->x_next = pieces[LEFTLEG]->x;
-				pieces[LEFTLEG]->y_next = pieces[LEFTLEG]->y;
-				pieces[RIGHTLEG]->x_next = pieces[RIGHTLEG]->x;
-				pieces[RIGHTLEG]->y_next = pieces[RIGHTLEG]->y;
 				// retract legs a little when we hit the ground
 				if (collide_stage_floor(pieces[LEFTLEG]) || 
 						collide_stage_floor(pieces[RIGHTLEG])) {
 					e->x_speed = 0;
 					e->leg_descend -= e->y_speed;
-					if (++e->timer >= 3) {
+					if (++e->timer > 3) {
 						e->y_speed = 0;
 						e->state = OMG_JAWS_OPEN;
 					}
@@ -302,7 +308,9 @@ void ai_omega(Entity *e) {
 		case OMG_EXPLODING+1:
 		{
 			e->x_speed = e->y_speed = 0;
-			if(e->timer & 1) SMOKE_AREA((e->x >> CSF) - 48, (e->y >> CSF) - 48, 96, 96, 1);
+			if(e->timer & 1) {
+				SMOKE_AREA((e->x >> CSF) - 48, (e->y >> CSF) - 48, 96, 96, 1);
+			}
 			camera_shake(2);
 			
 			if (!(e->timer % 12)) sound_play(SND_ENEMY_HURT_BIG, 5);
@@ -314,14 +322,17 @@ void ai_omega(Entity *e) {
 			} else if (e->timer==24) {
 				tsc_call_event(210);
 			}
+			return;
 		}
 		break;
 		case OMG_EXPLODED:
 		{
 			camera_shake(40);
 			if (++e->timer > 50) {
+				bossEntity = NULL;
 				e->state = STATE_DELETE;
-				for(int i=0;i<NUM_PIECES;i++) pieces[i]->state = STATE_DELETE;
+				for(u8 i=0;i<NUM_PIECES;i++) pieces[i]->state = STATE_DELETE;
+				return;
 			}
 		}
 		break;
@@ -331,7 +342,7 @@ void ai_omega(Entity *e) {
 	if(e->damage_time) e->x += (e->damage_time & 1) ? 0x200 : -0x200;
 	
 	if (e->state) {
-		if(e->x_speed != 0) {
+		if(e->x_speed != 0 || e->state == OMG_JUMP+1) {
 			e->x_next = e->x;
 			e->y_next = e->y;
 			collide_stage_leftwall(e);
@@ -346,21 +357,21 @@ void ai_omega(Entity *e) {
 }
 
 void ondeath_omega(Entity *e) {
-	e->eflags &= ~NPC_SHOOTABLE;
+	e->eflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
+	e->nflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
 	entities_clear_by_type(OBJ_OMEGA_SHOT);
 	e->state = OMG_EXPLODING;
-	bossEntity = NULL;
 }
 
 #define blk(xf, xoff, yf, yoff)                                                                \
 	stage_get_block_type((((xf)>>CSF)+(xoff))/16,(((yf)>>CSF)+(yoff))/16)
 
 void ai_omega_shot(Entity *e) {
-	e->y_speed += 5;
-	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x42) e->y_speed = -0x100;
-	if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x42) e->y_speed = -e->y_speed;
-	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x42) ||
-		(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x42)) {
+	e->y_speed += 4;
+	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = -0x100;
+	if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = -e->y_speed;
+	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) ||
+		(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x41)) {
 		e->x_speed = -e->x_speed;
 	}
 	if (++e->animtime > 3) { e->frame ^= 1; e->animtime = 0; }

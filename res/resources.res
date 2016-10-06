@@ -2,6 +2,7 @@
 # Global palettes
 # ----------------------------------------------------------------------------------------------
 
+PALETTE PAL_Sega		"sprite/sega.png" 0
 PALETTE PAL_Main		"sprite/quote.png" 0
 PALETTE PAL_Sym			"sprite/door.png" 1
 PALETTE PAL_Regu		"sprite/kazuma.png" 3
@@ -17,6 +18,10 @@ PALETTE PAL_Core		"sprite/coremini.png" 3
 # ----------------------------------------------------------------------------------------------
 # Sprites
 # ----------------------------------------------------------------------------------------------
+
+# Use PAL_Sega
+SPRITE SPR_Sega			"sprite/sega.png"		12 4 0 0 NONE
+SPRITE SPR_Sega2		"sprite/sega2.png"		12 4 0 0 NONE
 
 # Use PAL_Main
 SPRITE SPR_Quote		"sprite/quote.png"		2 2 0 0 NONE

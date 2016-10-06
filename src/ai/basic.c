@@ -406,3 +406,111 @@ void ai_chest(Entity *e) {
 void ai_sparkle(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
 }
+
+void onspawn_segalogo(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->display_box = (bounding_box) { 48, 16, 48, 16 };
+}
+
+void onspawn_balrog_splash(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->display_box = (bounding_box) { 20, 12, 20, 12 };
+}
+
+void ai_segalogo(Entity *e) {
+	switch(e->state) {
+		case 0: // Normal
+		{
+			if(++e->timer > 4) {
+				e->timer = 0;
+				if(++e->frame >= 10) {
+					e->frame = 0;
+				}
+			}
+		}
+		break;
+		case 1: // Being crushed
+		{
+			e->type++;
+			e->oframe = 255;
+			e->frame = 0;
+			e->timer = 0;
+			e->state++;
+		}
+		case 2:
+		{
+			if(++e->timer > 2) {
+				e->timer = 0;
+				if(e->frame == 7) {
+					e->hidden = TRUE;
+					e->state++;
+				} else {
+					e->frame++;
+				}
+			}
+		}
+		break;
+		case 3: // Invisible
+		break;
+	}
+}
+
+void ai_balrog_splash(Entity *e) {
+	enum Frame {
+		STAND, GASP, DUCK, ARMSUP, BLINK, PAINED, SMILE, WORRY, 
+		WALK1, WALK2, AWAY1, AWAY2, FLY1, FLY2
+	};
+	
+	switch(e->state) {
+		case 0: // Waiting above screen
+		{
+			if(++e->timer > TIME(50)) {
+				e->timer = 0;
+				e->state++;
+				e->frame = ARMSUP;
+			}
+		}
+		break;
+		case 1: // Falling
+		{
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x5FF));
+			e->y += e->y_speed;
+			if(e->y >= (SCREEN_HALF_H - 24) << CSF) {
+				e->y_speed = 0x320;
+				e->state++;
+				e->linkedEntity->state++;
+				sound_play(SND_ENEMY_HURT, 5);
+			}
+		}
+		break;
+		case 2: // Crushing logo
+		{
+			e->y += e->y_speed;
+			if(e->y >= (SCREEN_HALF_H + 4) << CSF) {
+				e->state++;
+				e->frame = DUCK;
+			}
+		}
+		break;
+		case 3: // Hit ground
+		{
+			if(++e->timer > TIME(25)) {
+				e->timer = 0;
+				e->state++;
+				e->frame = STAND;
+			}
+		}
+		break;
+		case 4: // Standing
+		{
+			if(++e->timer > TIME(50)) {
+				e->state++;
+				e->frame = SMILE;
+			}
+		}
+		break;
+		case 5: // Smiling
+		break;
+	}
+}

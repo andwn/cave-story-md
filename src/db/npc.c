@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -56,7 +56,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger, &ai_null }, // Trigger
 	{ &SPR_Sandcroc,NOSHEET,PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
 	/* 0x030 (48) */
-	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ai_null }, // Omega Shot
+	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ondeath_default }, // Omega Shot
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skeleton
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow & Skullhead
@@ -554,4 +554,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10] = {
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Sisters Head
 		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
+	
+	// Extra stuff that does not belong to bosses
+	{ &SPR_Sega, NOSHEET, PAL0, 6, // Sega Logo
+		&onspawn_segalogo, &ai_segalogo, &ai_null },
+	{ &SPR_Sega2, NOSHEET, PAL0, 6, // Sega Logo being crushed
+		&onspawn_segalogo, &ai_segalogo, &ai_null },
+	{ &SPR_Balrog, NOSHEET, PAL1, 2, // Balrog in splash screen
+		&onspawn_balrog_splash, &ai_balrog_splash, &ai_null },
 };

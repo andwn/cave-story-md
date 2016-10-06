@@ -366,7 +366,7 @@ void ai_sunstone(Entity *e) {
 
 void ai_armadillo(Entity *e) {
 	ANIMATE(e, 16, 0,1);
-	if(!e->grounded) e->y_speed += SOEED(0x40);
+	if(!e->grounded) e->y_speed += SPEED(0x40);
 	LIMIT_Y(SPEED(0x5ff));
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
