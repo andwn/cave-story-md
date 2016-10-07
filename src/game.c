@@ -29,6 +29,7 @@ volatile u8 ready;
 void draw_itemmenu();
 u8 update_pause();
 void itemcursor_move(u8 oldindex, u8 index);
+void gen_maptile(u16 bx, u16 by, u16 index);
 
 // Initializes or re-initializes the game after "try again"
 void game_reset(u8 load);
@@ -143,7 +144,7 @@ void game_reset(u8 load) {
 	tsc_init();
 	hud_create();
 	// Default sprite sheets
-	sheets_init();
+	sheets_load_stage(255, TRUE, TRUE);
 	gameFrozen = FALSE;
 	if(load) {
 		system_load();
@@ -229,8 +230,7 @@ u8 update_pause() {
 	if(joy_pressed(BUTTON_START)) {
 		// Reload shared sheets we clobbered
 		SYS_disableInts();
-		sheets_init();
-		sheets_load_stage(stageID, FALSE);
+		sheets_load_stage(stageID, TRUE, FALSE);
 		SYS_enableInts();
 		
 		selectedItem = 0;
@@ -238,6 +238,8 @@ u8 update_pause() {
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
+		controlsLocked = FALSE;
+		gameFrozen = FALSE;
 		VDP_setWindowPos(0, 0);
 		return FALSE;
 	} else {
@@ -294,4 +296,45 @@ void itemcursor_move(u8 oldindex, u8 index) {
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+3, y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+1);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+3, x+3, y+1);
+}
+
+void do_map() {
+	// Disable sprites
+	spr_num = 0;
+	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+	
+	u16 mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
+	u16 mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
+	
+	u16 index = TILE_SHEETINDEX;
+	SYS_disableInts();
+	for(u16 y = 0; y < stageHeight / 8; y++) {
+		for(u16 x = 0; x < stageWidth / 8; x++) {
+			gen_maptile(x*8, y*8, index);
+			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
+			index++;
+		}
+	}
+	SYS_enableInts();
+	while(!joy_pressed(BUTTON_B)) {
+		input_update();
+		system_update();
+		ready = TRUE;
+		VDP_waitVSync();
+	}
+	draw_itemmenu();
+}
+
+void gen_maptile(u16 bx, u16 by, u16 index) {
+	u32 tile[8];
+	for(u16 y = 0; y < 8; y++) {
+		tile[y] = 0;
+		for(u16 x = 0; x < 8; x++) {
+			tile[y] |= stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
+					:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
+					:  stage_get_block_type(bx+x, by+y) == 0x01 ? (9 << ((7-x)*4)) 
+					: (1 << ((7-x)*4));
+		}
+	}
+	DMA_doDma(DMA_VRAM, tile, index*32, 16, 2);
 }

@@ -10,55 +10,14 @@
 #define printf(...) /**/
 #endif
 
-void sheets_init() {
-	// Bullets
-	sheets[0] = (Sheet){ SHEET_PSTAR, 2*4, TILE_SHEETINDEX, 2, 2 };
-	sheets[1] = (Sheet){ SHEET_MGUN, 2*4, sheets[0].index + sheets[0].size, 2, 2 };
-	sheets[2] = (Sheet){ SHEET_FBALL, 3*4, sheets[1].index + sheets[1].size, 2, 2 };
-	// Power ups
-	sheets[3] = (Sheet){ SHEET_HEART, 4*4, sheets[2].index + sheets[2].size, 2, 2 };
-	sheets[4] = (Sheet){ SHEET_MISSILE, 4*4, sheets[3].index + sheets[3].size, 2, 2 };
-	sheets[5] = (Sheet){ SHEET_ENERGY, 6*1, sheets[4].index + sheets[4].size, 1, 1 };
-	sheets[6] = (Sheet){ SHEET_ENERGYL, 6*4, sheets[5].index + sheets[5].size, 2, 2 };
-	// Actually load the tiles - assume the VDP is disabled
-	sheets_refresh_weapons();
-	// Power ups
-	SHEET_LOAD(&SPR_Heart,  4,4, sheets[3].index, 1, 0,0, 0,1, 1,0, 1,1);
-	SHEET_LOAD(&SPR_MisslP, 4,4, sheets[4].index, 1, 0,0, 0,1, 1,0, 1,1);
-	SHEET_LOAD(&SPR_EnergyS,6,1, sheets[5].index, 1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
-	SHEET_LOAD(&SPR_EnergyL,6,4, sheets[6].index, 1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
-	// Precalculated VRAM offset
-	for(u8 s = 0; s < 7; s++) {
-		for(u8 i = 0; i < 16; i++) {
-			frameOffset[s][i] = sheets[s].w * sheets[s].h * i;
-		}
-	}
-}
-
 void sheets_refresh_polarstar(u8 level) {
 	const SpriteDefinition *def;
 	if(level == 1) def = &SPR_PolarB1;
 	else if(level == 2) def = &SPR_PolarB2;
 	else if(level == 3) def = &SPR_PolarB3;
-	else {
-		printf("Polar Star has no level %hu", level);
-		return;
-	}
+	else return;
 	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[0].index, 4, 1);
 	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[0].index + 4, 4, 1);
-}
-
-void sheets_refresh_machinegun(u8 level) {
-	const SpriteDefinition *def;
-	if(level == 1) def = &SPR_MGunB1;
-	else if(level == 2) def = &SPR_MGunB2;
-	else if(level == 3) def = &SPR_MGunB3;
-	else {
-		printf("Machine Gun has no level %hu", level);
-		return;
-	}
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[1].index + 4, 4, 1);
 }
 
 void sheets_refresh_fireball(u8 level) {
@@ -66,29 +25,87 @@ void sheets_refresh_fireball(u8 level) {
 	if(level == 1) def = &SPR_FirebB1;
 	else if(level == 2) def = &SPR_FirebB1;
 	else if(level == 3) def = &SPR_FirebB3;
-	else {
-		printf("Fireball has no level %hu", level);
-		return;
-	}
+	else return;
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[1].index + 4, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[1].index + 8, 4, 1);
+}
+
+void sheets_refresh_machinegun(u8 level) {
+	const SpriteDefinition *def;
+	if(level == 1) def = &SPR_MGunB1;
+	else if(level == 2) def = &SPR_MGunB2;
+	else if(level == 3) def = &SPR_MGunB3;
+	else return;
 	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[2].index + 4, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[2].index + 8, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[2].index + 4, 4, 1);
+}
+
+void sheets_refresh_missile(u8 level) {
+	const SpriteDefinition *def;
+	if(level == 1) def = &SPR_MisslB1;
+	else if(level == 2) def = &SPR_MisslB2;
+	else if(level == 3) def = &SPR_MisslB2;
+	else return;
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, 1);
 }
 
 void sheets_refresh_weapons() {
 	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
-	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
 	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
-	sheets_refresh_polarstar(pstar ? pstar->level : 1);
-	sheets_refresh_machinegun(mgun ? mgun->level : 1);
-	sheets_refresh_fireball(fball ? fball->level : 1);
+	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
+	Weapon *bubb =  player_find_weapon(WEAPON_BUBBLER);
+	Weapon *blade = player_find_weapon(WEAPON_BLADE);
+	Weapon *snake = player_find_weapon(WEAPON_SNAKE);
+	Weapon *nemes = player_find_weapon(WEAPON_NEMESIS);
+	Weapon *spur =  player_find_weapon(WEAPON_SPUR);
+	if(pstar) {
+		sheets_refresh_polarstar(pstar->level);
+	} else if(spur) {
+		sheets_refresh_polarstar(spur->level);
+	} else if(snake) {
+		sheets_refresh_polarstar(snake->level);
+	}
+	if(fball) {
+		sheets_refresh_fireball(fball->level);
+	}
+	if(mgun) {
+		sheets_refresh_machinegun(mgun->level);
+	}
+	if(bubb) {
+		sheets_refresh_polarstar(bubb->level);
+	}
+	if(blade) {
+		sheets_refresh_polarstar(blade->level);
+	} else if(nemes) {
+		sheets_refresh_polarstar(nemes->level);
+	}
+	// Missiles
+	Weapon *missl = player_find_weapon(WEAPON_MISSILE);
+	if(!missl) missl = player_find_weapon(WEAPON_SUPERMISSILE);
+	if(missl) sheets_refresh_missile(missl->level);
 }
 
-void sheets_load_stage(u16 sid, u8 init_tiloc) {
+void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 	// Reset values
-	sheet_num = 7;
-	if(init_tiloc) memset(tilocs, 0, MAX_TILOCS);
-	memset(&sheets[7], 0, sizeof(Sheet) * (MAX_SHEETS - 7));
+	if(init_base) {
+		sheet_num = 0;
+		memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
+		SHEET_ADD(SHEET_PSTAR,   &SPR_PolarB1, 2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_FBALL,   &SPR_FirebB1, 3,2,2, 0,0, 0,1, 0,2);
+		SHEET_ADD(SHEET_MGUN,    &SPR_MGunB1,  2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_MISSL,   &SPR_MisslB1, 1,2,2, 0,0);
+		sheets_refresh_weapons();
+		SHEET_ADD(SHEET_HEART,   &SPR_Heart,   4,2,2, 0,0, 0,1, 1,0, 1,1);
+		SHEET_ADD(SHEET_MISSILE, &SPR_MisslP,  4,2,2, 0,0, 0,1, 1,0, 1,1);
+		SHEET_ADD(SHEET_ENERGY,  &SPR_EnergyS, 6,1,1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+		SHEET_ADD(SHEET_ENERGYL, &SPR_EnergyL, 6,2,2, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+	} else {
+		sheet_num = 8;
+	}
+	if(init_tiloc) {
+		memset(tilocs, 0, MAX_TILOCS);
+	}
 	switch(sid) {
 		case 0x0C: // First Cave
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);

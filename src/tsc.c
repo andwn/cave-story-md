@@ -842,8 +842,9 @@ u8 execute_command() {
 			VDP_setPaletteColors(0, PAL_FullWhite, 64);
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
 			break;
-		case CMD_MLP: // TODO: Show the map
+		case CMD_MLP: // Show the map
 			logcmd("<MLP");
+			do_map();
 			break;
 		case CMD_MNA: // Show stage name
 			logcmd("<MNA");

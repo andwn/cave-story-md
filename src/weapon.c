@@ -143,7 +143,7 @@ void weapon_fire_fireball(Weapon *w) {
 	b->level = w->level;
 	b->sprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[2].index)
+		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[1].index)
 	};
 	b->damage = 2 * w->level; // 2, 4, 6
 	b->ttl = 50 + w->level * 10;
@@ -185,7 +185,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	if(joy_down(BUTTON_UP)) {
 		player.y_mark = 0;
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[1].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[2].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
@@ -193,7 +193,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		if(player.y_mark == 0) player.y_mark = player.y;
 		if(w->level < 3) player.y_mark += 0x10;
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[1].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[2].index+4);
 		if(player.y > player.y_mark) {
 			player.y_speed = SPEED(-0x200);
 		} else {
@@ -205,7 +205,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		player.y_mark = 0;
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[1].index);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[2].index);
 		b->x = player.x + (player.dir ? pixel_to_sub(10) : pixel_to_sub(-10));
 		b->y = player.y + pixel_to_sub(2);
 		b->x_speed = (player.dir ? pixel_to_sub(4) : pixel_to_sub(-4));
@@ -535,6 +535,9 @@ void bullet_update_fireball(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	if(!(b->ttl % 4)) {
+		sprite_index(b->sprite, sheets[1].index + ((u16)(80 - b->ttl) % 12));
+	}
 	sprite_add(b->sprite);
 	b->ttl--;
 }

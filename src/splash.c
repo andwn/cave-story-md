@@ -30,8 +30,7 @@ void splash_main() {
 	VDP_setPalette(PAL0, PAL_Sega.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
 	// Init some subsystems used
-	sheets_init();
-	sheets_load_stage(255, TRUE); // No stage - just init tile allocation
+	sheets_load_stage(255, TRUE, TRUE); // No stage - just init tile allocation
 	effects_init();
 	camera_init();
 	camera.y -= 8 << CSF; // Cancel the offset, we want to use absolute positions
@@ -50,6 +49,7 @@ void splash_main() {
 		effects_update(); // Draw Smoke
 		VDP_waitVSync();
 	}
+	input_update(); // This pushes the joy state to avoid skipping the next menu
 	SYS_setVIntCallback(NULL);
 	VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
 	entities_clear();

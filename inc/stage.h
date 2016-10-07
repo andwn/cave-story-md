@@ -35,6 +35,9 @@
 #define stage_get_block(x, y) (stageBlocks[stageTable[y] + (x)])
 // Like above, but will return the attributes (solid, water, damage, etc)
 #define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
+// Shortcut version of above
+#define blk(xf, xoff, yf, yoff)                                                                \
+	stage_get_block_type((((xf)>>CSF)+(xoff))/16,(((yf)>>CSF)+(yoff))/16)
 
 // Index of current stage in db/stage.c
 u16 stageID;

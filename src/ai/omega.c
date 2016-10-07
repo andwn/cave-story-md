@@ -363,9 +363,6 @@ void ondeath_omega(Entity *e) {
 	e->state = OMG_EXPLODING;
 }
 
-#define blk(xf, xoff, yf, yoff)                                                                \
-	stage_get_block_type((((xf)>>CSF)+(xoff))/16,(((yf)>>CSF)+(yoff))/16)
-
 void ai_omega_shot(Entity *e) {
 	e->y_speed += 4;
 	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = -0x100;

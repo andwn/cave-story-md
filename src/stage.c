@@ -56,7 +56,7 @@ void stage_load(u16 id) {
 		stage_load_tileset();
 	}
 	// Load sprite sheets
-	sheets_load_stage(id, TRUE);
+	sheets_load_stage(id, FALSE, TRUE);
 	// Stage palette and shared NPC palette
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);

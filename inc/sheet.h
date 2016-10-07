@@ -8,7 +8,7 @@
  * Handles pre-loaded shared sprite sheets and individually owned sprite tile allocations
  */
 
-#define MAX_SHEETS	16
+#define MAX_SHEETS	20
 #define MAX_TILOCS	64
 
 #define NOSHEET 255
@@ -78,7 +78,7 @@ enum {
 	SHEET_PCRITTER, SHEET_FAN, SHEET_BARMIMI, SHEET_DARK, SHEET_DARKBUB, SHEET_POWERS,
 	SHEET_POWERF, SHEET_FLOWER, SHEET_BASUSHOT, SHEET_POLISH, SHEET_BABY, SHEET_CROC,
 	SHEET_TERM, SHEET_FFIELD, SHEET_FROG, SHEET_DROP, SHEET_PIGNONB, SHEET_OMGSHOT,
-	SHEET_CURLYB, SHEET_OMGLEG,
+	SHEET_CURLYB, SHEET_OMGLEG, SHEET_MISSL,
 };
 
 u8 sheet_num;
@@ -96,13 +96,14 @@ u8 frameOffset[MAX_SHEETS][16];
 u16 tiloc_index;
 u8 tilocs[MAX_TILOCS];
 
-void sheets_init();
+//void sheets_init();
 
 void sheets_refresh_weapons();
 void sheets_refresh_polarstar(u8 level);
-void sheets_refresh_machinegun(u8 level);
 void sheets_refresh_fireball(u8 level);
+void sheets_refresh_machinegun(u8 level);
+void sheets_refresh_missile(u8 level);
 
-void sheets_load_stage(u16 sid, u8 init_tiloc);
+void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc);
 
 #endif
