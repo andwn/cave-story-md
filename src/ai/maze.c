@@ -191,16 +191,17 @@ void ai_gaudiDying(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
-		case 0:		// just died (initilizing)
+		case 0:		// just died (initializing)
 		{
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			
-			//e->frame = 7;
+			e->frame = 4;
 			
 			e->y_speed = SPEED(-0x200);
 			MOVE_X(SPEED(-0x100));
 			sound_play(SND_ENEMY_HURT_SMALL, 5);
+			e->grounded = FALSE;
 			
 			e->state = 1;
 		}
@@ -209,7 +210,7 @@ void ai_gaudiDying(Entity *e) {
 		case 1:		// flying backwards through air
 		{
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
-				//e->frame = 8;
+				e->frame = 5;
 				e->state = 2;
 				e->timer = 0;
 			}
@@ -219,7 +220,7 @@ void ai_gaudiDying(Entity *e) {
 		case 2:		// landed, shake
 		{
 			e->x_speed -= e->x_speed >> 4;
-			//e->frame = (e->timer % TIME(8)) > 3 ? 9 : 8;
+			e->frame = (e->timer % 8) > 3 ? 6 : 5;
 			
 			if (++e->timer > TIME(50)) {
 				// this deletes Entity while generating smoke effects and boom
@@ -238,10 +239,10 @@ void ai_gaudiDying(Entity *e) {
 
 void ai_gaudi(Entity *e) {
 	if (e->health <= (1000 - GAUDI_HP)) {
-		////SPR_SAFERELEASE(e->sprite);
 		e->type = OBJ_GAUDI_DYING;
-		entity_default(e, OBJ_GAUDI_DYING, 0);
-		//entity_sprite_create(e);
+		e->attack = 0;
+		e->state = 0;
+		e->timer = 0;
 		ai_gaudiDying(e);
 		return;
 	}
@@ -267,8 +268,8 @@ void ai_gaudi(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			//e->frame = 1;
-			//randblink(o, 1, 20, 100);
+			e->frame = 0;
+			RANDBLINK(e, 3, 200);
 			
 			if (!(random() % TIME(100))) {
 				if (random() & 1) {
@@ -283,12 +284,11 @@ void ai_gaudi(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = (random() % TIME(75)) + TIME(25);		// how long to walk for
-			
-			//e->frame = 1;
 		}
 		/* no break */
 		case 11:
 		{
+			ANIMATE(e, 8, 1,0,2,0);
 			// time to stop walking?
 			if (--e->timer <= 0) e->state = 0;
 				
@@ -302,7 +302,7 @@ void ai_gaudi(Entity *e) {
 				e->state = 20;
 				e->timer = 0;
 				
-				//if (!player)	// no sound during ending cutscene
+				if (!controlsLocked)	// no sound during ending cutscene
 					sound_play(SND_ENEMY_JUMP, 5);
 			}
 		}
@@ -315,7 +315,7 @@ void ai_gaudi(Entity *e) {
 				e->state = 21;
 				e->timer = 0;
 				
-				//if (!player.inputs_locked)	// no sound during ending cutscene
+				if (!controlsLocked)	// no sound during ending cutscene
 					sound_play(SND_THUD, 5);
 			}
 			
@@ -362,10 +362,10 @@ void ai_gaudiFlying(Entity *e) {
 		else
 			e->x += (2 << 9);
 		
-		////SPR_SAFERELEASE(e->sprite);
-		e->type =OBJ_GAUDI_DYING;
-		entity_default(e, OBJ_GAUDI_DYING, 0);
-		//entity_sprite_create(e);
+		e->type = OBJ_GAUDI_DYING;
+		e->attack = 0;
+		e->state = 0;
+		e->timer = 0;
 		ai_gaudiDying(e);
 		return;
 	}
@@ -376,7 +376,6 @@ void ai_gaudiFlying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//vector_from_angle(random(0, 255), (1 << 9), &e->x_speed, &e->y_speed);
 			u16 angle = random() % 1024;
 			e->x_speed = sintab32[angle] >> 1;
 			e->y_speed = sintab32[(angle + 256) % 1024] >> 1;
@@ -384,7 +383,6 @@ void ai_gaudiFlying(Entity *e) {
 			e->y_mark = e->y + (e->y_speed * 8);
 			e->state = 1;
 			e->timer2 = 120;
-			//e->frame = 10;
 		}
 		/* no break */
 		case 1:
@@ -395,26 +393,26 @@ void ai_gaudiFlying(Entity *e) {
 		/* no break */
 		case 2:
 		{
-			if (!--e->timer)
-			{
-				//e->frame = 11;
+			ANIMATE(e, 4, 7,8);
+			
+			if (!--e->timer) {
 				e->state = 3;
-				//e->frame |= 0x02;	// switch us into using flashing purple animation
 			}
 		}
 		break;
 		
 		case 3:		// preparing to fire
 		{
-			e->timer++;
+			ANIMATE(e, 4, 9,8);
 			
+			e->timer++;
 			if (++e->timer > TIME(30)) {
-				//EmFireAngledShot(o, OBJ_GAUDI_FLYING_SHOT, 6, 0x500);
+				// 1024 (0x400) is 360 degrees
+				s16 angle = (e->dir ? -0x10 : 0x210 ) % 1024;
+				FIRE_ANGLED_SHOT(OBJ_GAUDI_FLYING_SHOT, e->x, e->y, angle, 0x400);
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->state = 1;
-				//e->frame = 10;
-				//e->frame &= 1;		// stop flashing purple
 			}
 		}
 	}
@@ -431,10 +429,10 @@ void ai_gaudiFlying(Entity *e) {
 
 void ai_gaudiArmored(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
-		////SPR_SAFERELEASE(e->sprite);
-		e->type =OBJ_GAUDI_DYING;
-		entity_default(e, OBJ_GAUDI_DYING, 0);
-		//entity_sprite_create(e);
+		e->type = OBJ_GAUDI_DYING;
+		e->attack = 0;
+		e->state = 0;
+		e->timer = 0;
 		ai_gaudiDying(e);
 		return;
 	}
@@ -447,7 +445,7 @@ void ai_gaudiArmored(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->frame = 0;
+			e->frame = 0;
 			e->x_mark = e->x;
 			e->state = 1;
 		}
@@ -460,7 +458,7 @@ void ai_gaudiArmored(Entity *e) {
 				if (PLAYER_DIST_X(192 << 9) && PLAYER_DIST_Y(160 << 9)) {	// begin hopping
 					e->state = 10;
 					e->timer = 0;
-					//e->frame = 1;
+					e->frame = 1;
 				}
 			}
 		}
@@ -469,7 +467,7 @@ void ai_gaudiArmored(Entity *e) {
 		{
 			if (++e->timer > 3) {
 				sound_play(SND_ENEMY_JUMP, 5);
-				//e->frame = 2;
+				e->frame = 2;
 				e->timer = 0;
 				
 				if (++e->timer2 < 3) {	// hopping back and forth
@@ -498,7 +496,7 @@ void ai_gaudiArmored(Entity *e) {
 				
 				sound_play(SND_THUD, 5);
 				e->state = 40;
-				//e->frame = 1;
+				e->frame = 1;
 				e->timer = 0;
 			}
 		}
@@ -509,10 +507,11 @@ void ai_gaudiArmored(Entity *e) {
 			
 			// throw attacks at player
 			if (e->timer == TIME(30) || e->timer == TIME(40)) {
-				//EmFireAngledShot(o, OBJ_GAUDI_ARMORED_SHOT, 6, 0x600);
+				s16 angle = (e->dir ? -0x10 : 0x210 ) % 1024;
+				FIRE_ANGLED_SHOT(OBJ_GAUDI_ARMORED_SHOT, e->x, e->y, angle, 0x600);
 				sound_play(SND_EM_FIRE, 5);
 				
-				//e->frame = 3;
+				e->frame = 3;
 				CURLY_TARGET_HERE(e);
 			}
 			
@@ -522,7 +521,7 @@ void ai_gaudiArmored(Entity *e) {
 			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
 				sound_play(SND_THUD, 5);
 				e->state = 40;
-				//e->frame = 1;
+				e->frame = 1;
 				e->timer = 0;
 			}
 		}
@@ -532,8 +531,7 @@ void ai_gaudiArmored(Entity *e) {
 			e->x_speed -= e->x_speed >> 4;
 			
 			if (++e->timer >= 2) {
-				//stat("dtt= %d", abs(e->x_mark - e->x)>>9);
-				//e->frame = 0;
+				e->frame = 0;
 				e->x_speed = 0;
 				
 				e->state = 1;
@@ -550,6 +548,7 @@ void ai_gaudiArmored(Entity *e) {
 }
 
 void ai_gaudiArmoredShot(Entity *e) {
+	ANIMATE(e, 4, 0,1,2);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -714,15 +713,10 @@ void ai_pooh_black(Entity *e) {
 void ai_pooh_black_bubble(Entity *e) {
 	if (e->health < 100) {
 		e->state = STATE_DELETE;
+		return;
 	}
-	//else if (!random(0, 10))
-	//{
-		//e->frame = 0;;
-	//}
-	//else
-	//{
-		//e->frame = 1;;
-	//}
+	if (!(random() % 8)) e->frame = 0;
+	else e->frame = 1;
 	e->x_speed += (e->x > bubble_xmark) ? SPEED(-0x40) : SPEED(0x40);
 	e->y_speed += (e->y > bubble_ymark) ? SPEED(-0x40) : SPEED(0x40);
 	LIMIT_X(SPEED(0x11FD));
@@ -739,7 +733,7 @@ void ai_pooh_black_dying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->frame = FRAME_DYING;;
+			e->frame = FRAME_DYING;
 			FACE_PLAYER(e);
 			
 			sound_play(SND_BIG_CRASH, 5);
@@ -761,11 +755,9 @@ void ai_pooh_black_dying(Entity *e) {
 				e->timer2++;
 				if ((e->timer2 % 4) == 2) {
 					e->hidden = FALSE;
-					////SPR_SAFEVISIBILITY(e->sprite, 1);
 					sound_play(SND_BUBBLE, 5);
 				} else if((e->timer2 % 4) == 0) {
 					e->hidden = TRUE;
-					////SPR_SAFEVISIBILITY(e->sprite, 0);
 				}
 				if(e->timer2 > 60) {
 					e->state = STATE_DELETE;

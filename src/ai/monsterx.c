@@ -49,11 +49,11 @@ enum Pieces {
 
 // the treads start moving at slightly different times
 // which we change direction, etc.
-static const int tread_turnon_times[] = { 4, 8, 10, 12 };
+static const u16 tread_turnon_times[] = { 4, 8, 10, 12 };
 
 // return true if all the targets behind the doors have been destroyed.
 static u8 all_targets_destroyed() {
-	for(int i=TARGET1;i<TARGET1+4;i++) {
+	for(u8 i=TARGET1;i<TARGET1+4;i++) {
 		if (!pieces[i]->hidden) return FALSE;
 	}
 	return TRUE;
@@ -81,7 +81,7 @@ void onspawn_monsterx(Entity *e) {
 	// All the other pieces will be loaded in back -> front order
 	
 	// create internals
-	//pieces[INTERNALS] = entity_create(0, 0, OBJ_X_INTERNALS, 0);
+	e->linkedEntity = entity_create(0, 0, OBJ_X_INTERNALS, 0);
 	// create targets
 	pieces[TARGET1] = entity_create(0, 0, OBJ_X_TARGET, 0);
 	pieces[TARGET2] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1);
@@ -123,6 +123,10 @@ void onspawn_x_tread(Entity *e) {
 void onspawn_x_door(Entity *e) {
 	e->alwaysActive = TRUE;
 	if(e->eflags & NPC_OPTION2) e->frame = 1;
+}
+
+void onspawn_x_internals(Entity *e) {
+	e->alwaysActive = TRUE;
 }
 
 void ai_monsterx(Entity *e) {
@@ -339,37 +343,39 @@ void ai_monsterx(Entity *e) {
 		}
 		break;
 	}
-}
-/*
-// moved this to aftermove so x_speed on treads is already applied
-// when we calculate the main object position.
-void XBoss::RunAftermove()
-{
-Entity *o = mainobject;
-int i;
-
-	if (!mainobject || mainobject->state == 0 || !X.initilized)
-		return;
 	
 	// main object pulled along as treads move
-	int tread_center = (treads[UL]->x + treads[UR]->x +
-					 	treads[LL]->x + treads[LR]->x) / 4;
+	s32 tread_center = (pieces[TREADUL]->x + pieces[TREADUR]->x +
+					 	pieces[TREADLL]->x + pieces[TREADLR]->x) / 4;
 	e->x += (tread_center - e->x) / 16;
 	
-	run_internals();
-	
-	for(i=0;i<4;i++)
-	{
-		run_body(i);
-		run_target(i);
-	}
-	
-	for(i=0;i<2;i++)
-	{
-		run_door(i);
-	}
+	// Fill in sprites for the body
+	e->sprite[0] = (VDPSprite) {
+		.x = (e->x >> CSF) - 64 + 128, 
+		.y = (e->y >> CSF) - 32 + 128, 
+		.size = SPRITE_SIZE(4, 4), 
+		.attribut = TILE_ATTR_FULL(PAL3,0,0,0,sheets[12].index),
+	};
+	e->sprite[1] = (VDPSprite) {
+		.x = (e->x >> CSF) + 64 + 128,
+		.y = (e->y >> CSF) - 32 + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attribut = TILE_ATTR_FULL(PAL3,0,0,1,sheets[12].index),
+	};
+	e->sprite[2] = (VDPSprite) {
+		.x = (e->x >> CSF) - 64 + 128,
+		.y = (e->y >> CSF) + 32 + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attribut = TILE_ATTR_FULL(PAL3,0,1,0,sheets[12].index),
+	};
+	e->sprite[3] = (VDPSprite) {
+		.x = (e->x >> CSF) + 64 + 128,
+		.y = (e->y >> CSF) + 32 + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attribut = TILE_ATTR_FULL(PAL3,0,1,1,sheets[12].index),
+	};
 }
-*/
+
 void ai_x_tread(Entity *e) {
 	switch(e->state) {
 		case 0:
@@ -469,67 +475,28 @@ void ai_x_tread(Entity *e) {
 	
 	LIMIT_X(0x400);
 }
-/*
-void XBoss::run_body(int i)
-{
-	// set body position based on main object position and
-	// our linked tread position. first get the center point we should be at...
-	body[i]->x = (mainobject->x + pieces[TREADUL+i]->x) / 2;
-	body[i]->y = (mainobject->y + pieces[TREADUL+i]->y) / 2;
-	
-	// ...and place our center pixel at those coordinates.
-	int dx = (sprites[body[i]->sprite].w / 2) - 8;
-	int dy = (sprites[body[i]->sprite].h / 2) - 8;
-	body[i]->x -= dx << CSF;
-	body[i]->y -= dy << CSF;
-	
-	// tweaks
-	if (i == UL || i == LL)
-	{
-		body[i]->x -= (6 << CSF);
-	}
-	else
-	{
-		body[i]->x += (7 << CSF);
-	}
-	
-	if (i == LL || i == LR)
-	{
-		body[i]->y += (8 << CSF);
-	}
 
-}
-
-void XBoss::run_internals()
-{
-	internals->x = mainobject->x;
-	internals->y = mainobject->y;
+void ai_x_internals(Entity *e) {
+	e->x = bossEntity->x;
+	e->y = bossEntity->y;
 	
-	// select frame
-	if (internals->shaketime & 2)
-	{
-		internals->frame = 1;
-	}
-	else
-	{
-		internals->frame = (mainobject->state < 10) ? 2 : 0;
-	}
+	// eye open after targets destroyed
+	e->frame = (bossEntity->state < 10) ? 1 : 0;
 	
 	// link damage to main object
-	if (internals->hp < 1000)
-	{
-		mainobject->DealDamage(1000 - internals->hp);
-		internals->hp = 1000;
-	}
-	
-	// trigger explosion sequence when monster defeated
-	if (mainobject->hp <= 0 && mainobject->state < STATE_X_EXPLODING)
-	{
-		mainobject->shaketime = 150;
-		mainobject->state = STATE_X_EXPLODING;
+	if (e->health < 1000) {
+		if(1000 - e->health > bossEntity->health) {
+			bossEntity->health = 0;
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+			e->eflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+			ENTITY_ONDEATH(bossEntity);
+		} else {
+			bossEntity->health -= 1000 - e->health;
+		}
+		e->health = 1000;
 	}
 }
-*/
+
 void ai_x_door(Entity *e) {
 	switch(e->state) {
 		// doors opening all the way
@@ -666,6 +633,9 @@ void ai_x_target(Entity *e) {
 
 void ondeath_monsterx(Entity *e) {
 	e->state = STATE_X_EXPLODING;
+	e->nflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+	e->eflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+	e->damage_time = 150;
 	tsc_call_event(e->event);
 }
 

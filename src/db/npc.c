@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -161,23 +161,23 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
 	{ &SPR_Toroko, NOSHEET, PAL3, 1, &ai_null, &ai_toroko_teleport_in, &ai_null },
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Lightning
-	{ NULL, NOSHEET, 		PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
+	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)
 	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Quote
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL2, 1, &ai_null, &ai_shutter_stuck, &ondeath_default }, // Shutter (Stuck)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
-	{ NULL, SHEET_GAUDID, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
+	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ai_null },
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockv, &ai_null }, // Moving Block (V)
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Monster X Shot
 	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Monster X Cat
 	/* 0x0A0 (160) */
-	{ NULL, SHEET_DARK, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_default }, // Pooh Black
+	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_default }, // Pooh Black
 	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ai_null }, // Pooh Black Bubble
-	{ NULL, SHEET_DARK, 	PAL3, 2, &ai_null, &ai_pooh_black_dying, &ai_null }, // Pooh Black (Dying)
+	{ &SPR_Dark, NOSHEET,	PAL3, 2, &ai_null, &ai_pooh_black_dying, &ai_null }, // Pooh Black (Dying)
 	{ &SPR_DrGero, NOSHEET, PAL3, 1, &ai_null, &generic_npc_states, &ai_null }, // Dr. Gero
 	{ &SPR_Nurse, NOSHEET, 	PAL3, 1, &ai_null, &generic_npc_states, &ai_null }, // Nurse Hasumi
 	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &ai_null, &ai_curly, &ai_null }, // Curly (Collapsed)
@@ -186,9 +186,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
 	{ &SPR_Boulder,NOSHEET, PAL3, 4, &ai_null, &ai_boulder, &ai_null }, // Boulder
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_balrogFlying },
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_balrog_missile, &ai_null }, // Balrog Missile
-	{ &SPR_CoreThing,NOSHEET,PAL2,1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
-	{ &SPR_CoreThingShot,NOSHEET,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
-	{ &SPR_GaudiArmor,NOSHEET,PAL2,1,&ai_null, &ai_gaudiArmored, &ai_null },
+	{ &SPR_FireWhir,NOSHEET,PAL2, 1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
+	{ &SPR_FireWShot,NOSHEET,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
+	{ NULL, SHEET_GAUDI,	PAL2, 1, &ai_null, &ai_gaudiArmored, &ai_null },
 	{ NULL, NOSHEET, 		PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Gaudi Shot
 	{ &SPR_GaudiEgg,NOSHEET,PAL2, 1, &ai_null, &ai_gaudi_egg, &ai_null }, // Gaudi Egg
 	/* 0x0B0 (176) */
@@ -516,8 +516,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
 		&onspawn_omega, &ai_omega, &ondeath_omega },
 	{ &SPR_Balfrog1, NOSHEET, PAL3, 6, // Balfrog
 		&onspawn_balfrog, &ai_balfrog, &ondeath_balfrog },
-	{ NULL, NOSHEET, PAL3, 8, // Monster X
-		&ai_monsterx, &ai_monsterx, &ondeath_monsterx },
+	{ NULL, NOSHEET, PAL3, 4, // Monster X
+		&onspawn_monsterx, &ai_monsterx, &ondeath_monsterx },
 	{ NULL, NOSHEET, PAL3, 1, // Core (Controller)
 		&onspawn_core, &ai_core, &ondeath_core },
 	{ NULL, NOSHEET, PAL3, 2, // Ironhead
@@ -545,11 +545,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 10 + 3] = {
 	{ &SPR_OmgStrut, NOSHEET, PAL3, 1, // Omega Strut
 		&onspawn_omega_strut, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 2, // Monster X Tread
-		&onspawn_x_tread, &ai_null, &ai_null },
-	{ NULL, NOSHEET, PAL3, 4, // Monster X Door
-		&onspawn_x_door, &ai_null, &ai_null },
-	{ NULL, NOSHEET, PAL3, 1, // Monster X Target
-		&onspawn_x_target, &ai_null, &ai_null },
+		&onspawn_x_tread, &ai_x_tread, &ai_null },
+	{ &SPR_XDoor, NOSHEET, PAL3, 4, // Monster X Door
+		&onspawn_x_door, &ai_x_door, &ai_null },
+	{ NULL, SHEET_XTARGET, PAL3, 1, // Monster X Target
+		&onspawn_x_target, &ai_x_target, &ai_null },
+	{ &SPR_XInts, NOSHEET, PAL3, 6, // Monster X Internals
+		&onspawn_x_internals, &ai_x_internals, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Sisters Body
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Sisters Head

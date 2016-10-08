@@ -47,7 +47,7 @@ void sheets_refresh_missile(u8 level) {
 	else if(level == 2) def = &SPR_MisslB2;
 	else if(level == 3) def = &SPR_MisslB2;
 	else return;
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, 1);
+	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[3].index, 4, 1);
 }
 
 void sheets_refresh_weapons() {
@@ -167,7 +167,6 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_POLISH, &SPR_Polish, 2,4,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_BABY, &SPR_Baby, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_OMGSHOT, &SPR_OmgShot, 4,2,2, 0,0, 0,1, 1,0, 1,1);
-			//SHEET_ADD(SHEET_CROC, &SPR_Sandcroc, 4,4,4, 1,0, 1,1, 1,2, 1,3);
 			SHEET_ADD(SHEET_SKULLH, &SPR_Skullhead, 3,4,3, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_OMGLEG, &SPR_OmegaLeg, 2,4,4, 0,0, 1,0);
 		} break;
@@ -177,19 +176,35 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_CURLYB, &SPR_CurlyB, 5,4,3, 0,0, 1,0, 1,2, 2,0, 4,0);
 		} break;
 		case 0x09: // Labyrinth I
+		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
+		}
 		case 0x26: // Labyrinth H
 		case 0x27: // Labyrinth W
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
-			// Gaudi (Walking / Flying, but not death frames)
-			// Monster X Wheels
+			SHEET_ADD(SHEET_LABSHOT, &SPR_LabShot, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 10,3,3, 
+					0,0, 1,0, 1,2, 2,0, 7,0, 8,0, 9,0, 10,0, 10,1, 11,0);
+			if(stageID == 0x27) {
+				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0,0, 1,0, 2,0, 3,0);
+				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,4,4, 0,0);
+				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,3,3, 
+						0,0, 0,1, 1,0, 1,1, 2,0, 2,1, 3,0, 3,1);
+				SHEET_ADD(SHEET_XFISHY, &SPR_XFishy, 8,2,2,
+						0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7);
+			}
 		} break;
 		case 0x29: // Clinic Ruins
-		{	// Pooh Black's Bubbles
+		{	SHEET_ADD(SHEET_DARKBUB, &SPR_DarkBub, 2,2,2, 0,0, 1,0);
 		} break;
 		case 0x2D: // Labyrinth M
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
-			// Armored Gaudi (no death frames)
-			// Fuzz
+			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiArmor, 7,3,3, 
+					0,0, 1,0, 2,0, 3,0, 4,0, 5,0, 6,0);
+			SHEET_ADD(SHEET_FUZZ, &SPR_Fuzz, 1,2,2, 0,0);
+			SHEET_ADD(SHEET_FUZZC, &SPR_FuzzCore, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_FIREWSHOT, &SPR_FireWShot, 3,2,4, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_LABSHOT, &SPR_LabShot, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_GAUDISHOT, &SPR_GaudiShot, 3,2,2, 0,0, 0,1, 0,2);
 		} break;
 		case 0x2F: // Core
 		{	// Terminal

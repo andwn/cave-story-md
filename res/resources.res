@@ -12,6 +12,7 @@ PALETTE PAL_Frog		"sprite/balfrog1.png" 3
 PALETTE PAL_Chaco		"sprite/chaco.png" 3
 PALETTE PAL_Jenka		"sprite/jenka.png" 3
 PALETTE PAL_Dark		"sprite/dark.png" 3
+PALETTE PAL_X			"sprite/xcat.png" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_Core		"sprite/coremini.png" 3
 
@@ -123,8 +124,8 @@ SPRITE SPR_GaudiShot	"sprite/gaudishot.png"	2 2 0 0 NONE
 SPRITE SPR_GaudiArmor	"sprite/gaudiarmor.png"	3 3 0 0 NONE
 SPRITE SPR_FuzzCore		"sprite/fuzzcore.png"	4 4 0 0 NONE
 SPRITE SPR_Fuzz			"sprite/fuzz.png"		2 2 0 0 NONE
-SPRITE SPR_CoreThing	"sprite/corething.png"	4 4 0 8 NONE
-SPRITE SPR_CoreThingShot "sprite/corethingshot.png" 2 4 0 0 NONE
+SPRITE SPR_FireWhir		"sprite/corething.png"	4 4 0 8 NONE
+SPRITE SPR_FireWShot	"sprite/corethingshot.png" 2 4 0 0 NONE
 SPRITE SPR_Buggy		"sprite/buggy.png"		4 4 0 0 NONE
 SPRITE SPR_Buggy2		"sprite/buggy2.png"		8 2 0 0 NONE
 SPRITE SPR_GaudiMerch	"sprite/gaudimerch.png"	4 3 0 0 NONE
@@ -193,6 +194,15 @@ SPRITE SPR_Jenka		"sprite/jenka.png"		2 2 0 0 NONE
 # Use PAL_Dark
 SPRITE SPR_Dark			"sprite/dark.png"		5 3 0 0 NONE
 SPRITE SPR_DarkBub		"sprite/darkbubble.png"	2 2 0 0 NONE
+
+# Use PAL_X
+SPRITE SPR_XFishy		"sprite/xfishy.png"		2 2 0 0 NONE
+SPRITE SPR_XTarget		"sprite/xtarget.png"	2 2 0 0 NONE
+SPRITE SPR_XTread		"sprite/xtread.png"		8 4 0 0 NONE
+SPRITE SPR_XDoor		"sprite/xdoor.png"		6 6 0 0 NONE
+SPRITE SPR_XInts		"sprite/xinternals.png" 9 5 0 0 NONE
+SPRITE SPR_XBody		"sprite/xbody.png"		9 4 0 0 NONE
+SPRITE SPR_XCat			"sprite/xcat.png"		6 9 0 0 NONE
 
 # Use PAL_Boulder
 SPRITE SPR_Boulder		"sprite/boulder.png"	7 5 0 0 NONE
