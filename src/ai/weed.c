@@ -188,6 +188,13 @@ void ai_kulala(Entity *e) {
 	}
 }
 
+void ondeath_kulala(Entity *e) {
+	Entity *chest = entity_create(e->x, e->y, OBJ_CHEST_CLOSED, NPC_INTERACTIVE);
+	chest->event = e->event;
+	e->eflags &= ~NPC_EVENTONDEATH;
+	e->state = STATE_DESTROY;
+}
+
 void ai_mannan(Entity *e) {
 	if(e->state < 3 && e->health < 90) {
 		sound_play(e->deathSound, 5);

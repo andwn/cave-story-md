@@ -8,11 +8,9 @@
  * TODO before 0.2.1
  * MISSING GRAPHICS:
  * - Level Up/Down
- * - Clipping effect
  * ANIMATE:
  * - Puppies
  * MISC:
- * - Igor - some wrong frames
  * - Add ondeath_kulala that creates a treasure chest
  * BGM:
  * - Labyrinth Fight

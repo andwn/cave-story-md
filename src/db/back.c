@@ -10,8 +10,8 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ &BG_Gard, PAL2, 0, 6, 8 }, // Sand Zone Building
 	{ &BG_Gray, PAL2, 0, 8, 8 },
 	{ &BG_Green,PAL3, 0, 8, 8 },
-	{ &BG_Maze, PAL3, 0, 8, 8 },
-	{ &BG_Maze, PAL3, 0, 8, 8 },
+	{ &BG_Maze, PAL3, 0, 8, 8 }, // PAL_X
+	{ &BG_Maze2,PAL3, 0, 8, 8 }, // PAL_XB
 	{ &BG_Red, 	PAL2, 0, 4, 4 },
 	{ &BG_Red, 	PAL2, 0, 4, 4 },
 	{ &BG_Green,PAL3, 0, 8, 8 }, // Sand Zone

@@ -13,6 +13,7 @@ PALETTE PAL_Chaco		"sprite/chaco.png" 3
 PALETTE PAL_Jenka		"sprite/jenka.png" 3
 PALETTE PAL_Dark		"sprite/dark.png" 3
 PALETTE PAL_X			"back/bkMaze.png" 3
+PALETTE PAL_XB			"back/bkMaze.bmp" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_Core		"sprite/coremini.png" 3
 
@@ -437,6 +438,7 @@ TILESET BG_Gard		"back/bkGard.bmp" 2
 TILESET BG_Gray		"back/bkGray.bmp" 2
 TILESET BG_Green	"back/bkSand.png" 2
 TILESET BG_Maze		"back/bkMaze.png" 2
+TILESET BG_Maze2	"back/bkMaze.bmp" 2
 #TILESET BG_Moon		"back/bkMoon.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
 

@@ -72,10 +72,14 @@ void onspawn_spike(Entity *e) {
 }
 
 void ai_grav(Entity *e) {
-	if(!e->grounded) e->y_speed += GRAVITY;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
+	if(e->grounded) {
+		e->grounded = collide_stage_floor_grounded(e);
+	} else {
+		e->y_speed += GRAVITY;
+		e->grounded = collide_stage_floor(e);
+	}
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
@@ -401,6 +405,7 @@ void ai_lifeup(Entity *e) {
 
 void ai_chest(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
+	ai_grav(e);
 }
 
 void ai_sparkle(Entity *e) {
