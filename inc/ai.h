@@ -90,7 +90,7 @@ typedef void (*EntityMethod)(Entity*);
 
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (sintab32[(angle)] >> 1) * ((speed) >> CSF);                               \
+	shot->x_speed = (sintab32[(angle) % 1024] >> 1) * ((speed) >> CSF);                        \
 	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF);                \
 }
 

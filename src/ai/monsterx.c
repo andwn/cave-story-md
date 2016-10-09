@@ -415,14 +415,13 @@ void ai_x_tread(Entity *e) {
 		{
 			e->eflags |= NPC_BOUNCYTOP;
 			e->timer = 0;
-			e->frame = 2;
 			e->animtime = 0;
 			
 			e->state++;
 		}
 		case STATE_TREAD_RUN+1:
 		{
-			ANIMATE(e, 8, 2,3);
+			ANIMATE(e, 8, 1,0);
 			ACCEL_X(0x20);
 			
 			if (++e->timer > 30) {
@@ -444,7 +443,7 @@ void ai_x_tread(Entity *e) {
 		
 		case STATE_TREAD_BRAKE:
 		{
-			e->frame = 2;
+			e->frame = 0;
 			e->animtime = 0;
 			
 			e->eflags |= NPC_BOUNCYTOP;
@@ -452,7 +451,6 @@ void ai_x_tread(Entity *e) {
 		}
 		case STATE_TREAD_BRAKE+1:
 		{
-			ANIMATE(e, 8, 2,3);
 			ACCEL_X(0x20);
 			
 			if ((e->dir == 1 && e->x_speed > 0) ||
@@ -501,13 +499,15 @@ void ai_x_tread(Entity *e) {
 		.x = (e->x>>CSF) - e->display_box.left - (camera.x>>CSF) + SCREEN_HALF_W + 128,
 		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,0,sheets[e->alt_sheet].index),
+		.attribut = TILE_ATTR_FULL(PAL3,0,0,e->y < 0x18000,
+				sheets[e->alt_sheet].index + (e->frame?32:0)),
 	};
 	e->sprite[1] = (VDPSprite) {
 		.x = (e->x>>CSF) - e->display_box.left + 32 - (camera.x>>CSF) + SCREEN_HALF_W + 128,
 		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,0,sheets[e->alt_sheet].index+16),
+		.attribut = TILE_ATTR_FULL(PAL3,0,0,e->y < 0x18000,
+				sheets[e->alt_sheet].index+16 + (e->frame?32:0)),
 	};
 }
 

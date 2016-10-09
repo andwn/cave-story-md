@@ -406,7 +406,7 @@ void ai_gaudiFlying(Entity *e) {
 			e->timer++;
 			if (++e->timer > TIME(30)) {
 				// 1024 (0x400) is 360 degrees
-				s16 angle = (e->dir ? -0x10 : 0x210 ) % 1024;
+				s16 angle = e->dir ? A_RIGHT-0x10 : A_LEFT+0x10;
 				FIRE_ANGLED_SHOT(OBJ_GAUDI_FLYING_SHOT, e->x, e->y, angle, 0x400);
 				sound_play(SND_EM_FIRE, 5);
 				

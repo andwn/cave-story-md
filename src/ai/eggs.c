@@ -84,15 +84,26 @@ void onspawn_basu(Entity *e) {
 }
 
 void ai_basu(Entity *e) {
-	//e->alwaysActive = TRUE;
 	ANIMATE(e, 8, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? 5 : -5;
-	if(abs(e->x_speed) > SPEED(0x300)) e->x_speed = e->dir ? SPEED(0x300) : -SPEED(0x300);
 	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -2 : 2;
-	e->x += e->x_speed;
-	e->y += e->y_speed;
+	LIMIT_X(SPEED(0x2FF));
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = 0x200;
+	if(e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -0x200;
+	e->x = e->x_next;
+	e->y = e->y_next;
+	// Fire projectile
+	if (!(e->timer % TIME(158))) {
+		if (PLAYER_DIST_X(0x14000)) {
+			sound_play(SND_EM_FIRE, 5);
+			FIRE_ANGLED_SHOT(OBJ_GIANT_BEETLE_SHOT, e->x, e->y, 
+					e->dir ? A_RIGHT-4 : A_LEFT+4, 0x400);
+		}
+	}
 }
 
 void onspawn_basil(Entity *e) {

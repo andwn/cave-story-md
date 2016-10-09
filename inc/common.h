@@ -47,6 +47,12 @@
 // Direction
 enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
+// Angles
+#define A_DOWN	0
+#define A_RIGHT	256
+#define A_UP	512
+#define A_LEFT	768
+
 // Tileset width/height
 #define TS_WIDTH 32
 #define TS_HEIGHT 16
