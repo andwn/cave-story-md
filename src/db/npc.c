@@ -105,7 +105,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_SueCom, NOSHEET, PAL3, 1, &onspawn_snap, &ai_npc_at_computer, &ai_null }, // Sue Typing
 	{ &SPR_Chaco, NOSHEET, 	PAL3, 1, &ai_null, &ai_chaco, &ai_null }, // Chaco
 	{ &SPR_Kulala, NOSHEET, PAL0, 2, &ai_null, &ai_kulala, &ondeath_default }, // Kulala
-	{ NULL,	SHEET_JELLY, 	PAL0, 1, &ai_null, &ai_jelly, &ondeath_default }, // Jelly
+	{ NULL,	SHEET_JELLY, 	PAL0, 1, &onspawn_jelly, &ai_jelly, &ondeath_default }, // Jelly
 	/* 0x060 (96) */
 	{ NULL, SHEET_FAN, 		PAL1, 1, &onspawn_fan, &ai_fan, &ai_null }, // Fans (L,U,R,D)
 	{ NULL, SHEET_FAN, 		PAL1, 1, &onspawn_fan, &ai_fan, &ai_null },
@@ -209,7 +209,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
 	/* 0x0C0 (192) */
-	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &ai_null, &ai_motorbike, &ai_null }, // Scooter
+	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_snap, &ai_motorbike, &ai_null }, // Scooter
 	{ &SPR_Buggy2, 	NOSHEET, PAL3, 2, &ai_null, &ai_null, &ai_null }, // Scooter (Pieces)
 	{ &SPR_Robot, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Grate Mouth

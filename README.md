@@ -15,7 +15,7 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 In the current release `0.2` you can make it to Ironhead if you try really hard. Labyrinth and
 Waterway are really glitchy though.
 
-Master is broken in Sand Zone, lol. Also looky here: [TODO list](doc/TODO.md)
+Master is broken at the Core fight, lol. Also looky here: [TODO list](doc/TODO.md)
 
 ### Controls
 - C - Jump, confirm
@@ -28,8 +28,8 @@ Master is broken in Sand Zone, lol. Also looky here: [TODO list](doc/TODO.md)
 Assuming you are running GNU/Linux,
 
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
-2. Clone the project and do `make`.
-3. Open `out.bin` in your emulator of choice, or put it on a flash cart.
+2. Clone this repository and do `make`.
+3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
 ## FAQ
 #### Why?

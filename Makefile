@@ -29,9 +29,9 @@ RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
 
-.SECONDARY: out.elf
+.SECONDARY: doukutsu.elf
 
-all: inc/ai_gen.h out.bin 
+all: inc/ai_gen.h doukutsu.bin 
 
 src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@

@@ -330,12 +330,12 @@ void do_map() {
 void gen_maptile(u16 bx, u16 by, u16 index) {
 	u32 tile[8];
 	for(u16 y = 0; y < 8; y++) {
-		if(y >= stageHeight) {
+		if(by+y >= stageHeight) {
 			tile[y] = 0x11111111;
 		} else {
 			tile[y] = 0;
 			for(u16 x = 0; x < 8; x++) {
-				tile[y] |= x >= stageWidth ? (1 << ((7-x)*4))
+				tile[y] |= bx+x >= stageWidth ? (1 << ((7-x)*4))
 						:  stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
 						:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
 						:  stage_get_block_type(bx+x, by+y) == 0x01 ? (9 << ((7-x)*4)) 

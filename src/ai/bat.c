@@ -156,7 +156,10 @@ void ai_batCircle(Entity *e) {
 		/* no break */
 		case 1:
 			// circle around our target point
-			ANIMATE(e, 4, 0,1,2,0,1,2,0,1,2,0,1,2,0,1,2);
+			if(++e->animtime >= 4) {
+				e->animtime = 0;
+				if(++e->frame > 2) e->frame = 0;
+			}
 			FACE_PLAYER(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
@@ -168,7 +171,6 @@ void ai_batCircle(Entity *e) {
 					e->x_speed /= 2;
 					e->y_speed = 0;
 					e->state = 2;
-					//e->frame = 2;		// mouth showing teeth;
 					e->frame = 5;
 				}
 			} else {
@@ -179,7 +181,7 @@ void ai_batCircle(Entity *e) {
 		case 2:	// dive attack
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5ff));
-			if(collide_stage_floor(e)) {
+			if(blk(e->x_next, 0, e->y_next, 8) == 0x41) {
 				e->y_speed = 0;
 				e->x_speed *= 2;
 				e->timer = TIME(100);		// delay before can dive again

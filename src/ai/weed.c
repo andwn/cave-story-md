@@ -13,8 +13,19 @@
 #include "resources.h"
 #include "sprite.h"
 
+void onspawn_jelly(Entity *e) {
+	e->enableSlopes = FALSE;
+	e->timer = random() % 32;
+	e->x_mark = e->x;
+	e->y_mark = e->y;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	MOVE_X(SPEED(0x100));
+}
+
 void ai_jelly(Entity *e) {
-	// No DIVU, no MULU
+	// VERY dirty hack - only checks collision with player bullets every other frame
+	e->nflags ^= NPC_SHOOTABLE;
+	
 	if(++e->animtime >= 12) {
 		e->animtime = 0;
 		if(++e->frame > 4) e->frame = 0;
@@ -22,25 +33,13 @@ void ai_jelly(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->enableSlopes = FALSE;
-			e->timer = random() % TIME(20);
-			e->x_mark = e->x;
-			e->y_mark = e->y;
-			if(e->eflags & NPC_OPTION2) e->dir = 1;
-			MOVE_X(SPEED(0x100));
-			e->state = 1;
-		}
-		/* no break */
-		case 1:
-		{
 			if(e->timer == 0) {
 				e->state = 10;
 			} else {
 				e->timer--;
-				break;
 			}
 		}
-		/* no break */
+		break;
 		case 10:
 		{
 			if(++e->timer > TIME(10)) {
@@ -75,14 +74,14 @@ void ai_jelly(Entity *e) {
 		e->y_speed += SPEED(0x20);
 		LIMIT_Y(SPEED(0x200));
 	}
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	if(e->x_speed < 0) collide_stage_leftwall(e);
-	if(e->x_speed > 0) collide_stage_rightwall(e);
-	if(e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x100);
-	if(e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
-	e->x = e->x_next;
-	e->y = e->y_next;
+	if((e->x_speed > 0 && (blk(e->x, 8, e->y, 0) == 0x41)) ||
+			(e->x_speed < 0 && (blk(e->x, -8, e->y, 0) == 0x41))) {
+		e->x_speed = 0;
+	}
+	if(e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = SPEED(0x100);
+	if(e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = SPEED(-0x200);
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ai_kulala(Entity *e) {

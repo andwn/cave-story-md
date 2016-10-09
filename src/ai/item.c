@@ -22,7 +22,10 @@ void onspawn_energy(Entity *e) {
 }
 
 void ai_energy(Entity *e) {
-	ANIMATE(e, 4, 0,1,2,3,4,5);
+	if(++e->animtime >= 4) {
+		e->animtime = 0;
+		if(++e->frame > 5) e->frame = 0;
+	}
 	if(entity_overlapping(&player, e)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
@@ -80,7 +83,7 @@ void ai_energy(Entity *e) {
 			if(e->y_speed < 0x300) e->y_speed = 0x300;
 		} else {
 			e->y_speed += GRAVITY;
-			if(e->y_speed > 0x600) e->y_speed = 0x600;
+			//if(e->y_speed > 0x600) e->y_speed = 0x600;
 		}
 		// Check in front
 		u8 block_front = stage_get_block_type(

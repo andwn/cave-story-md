@@ -456,16 +456,16 @@ void ai_balfrog(Entity *e) {
 	if(e->jump_time) {
 		VDPSprite feet[2] = {
 			(VDPSprite) {
-				.x = (e->x << CSF) - (camera.x << CSF) + SCREEN_HALF_W - 16,
-				.y = (e->x << CSF) - (camera.y << CSF) + SCREEN_HALF_H + 24,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 16,
+				.y = (e->x >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_FACEINDEX+4),
+				.attribut = TILE_ATTR_FULL(PAL3,0,e->dir,0,TILE_FACEINDEX+4+(e->dir?9:0)),
 			},
 			(VDPSprite) {
-				.x = (e->x << CSF) - (camera.x << CSF) + SCREEN_HALF_W + 8,
-				.y = (e->x << CSF) - (camera.y << CSF) + SCREEN_HALF_H + 24,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + 8,
+				.y = (e->x >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_FACEINDEX+4+9),
+				.attribut = TILE_ATTR_FULL(PAL3,0,e->dir,0,TILE_FACEINDEX+4+(e->dir?0:9)),
 			},
 		};
 		sprite_addq(feet, 2);
@@ -524,11 +524,11 @@ void spawn_frogs(u16 objtype, u8 count) {
 void set_jump_sprite(Entity *e, u8 enable) {
 	if(enable) {
 		e->jump_time = TRUE;
-		e->display_box.top -= 8;
+		e->display_box.top -= 12;
 		bbox_mode = BM_JUMPING;
 	} else {
 		e->jump_time = FALSE;
-		e->display_box.top += 8;
+		e->display_box.top += 12;
 		bbox_mode = BM_STAND;
 	}
 }

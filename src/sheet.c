@@ -219,8 +219,8 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 10,3,3, 
 					0,0, 1,0, 1,2, 2,0, 7,0, 8,0, 9,0, 10,0, 10,1, 11,0);
 			if(stageID == 0x27) {
-				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0,0, 1,0, 2,0, 3,0);
-				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,4,4, 0,0);
+				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 2,8,4, 0,0, 1,0 /*, 0,1, 1,1*/);
+				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0,0);
 				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
 						0,0, 0,1, 0,2, 0,3, 1,0, 1,1, 1,2, 1,3);
 				SHEET_ADD(SHEET_XFISHY, &SPR_XFishy, 8,2,2,
@@ -242,7 +242,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_GAUDISHOT, &SPR_GaudiShot, 3,2,2, 0,0, 0,1, 0,2);
 		} break;
 		case 0x2F: // Core
-		{	// Terminal
+		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 			// Core back
 			// Minicore front
 			// Minicore back
@@ -288,6 +288,14 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 	}
 	// Weapons at the end
 	for(u8 i = 0; i < MAX_WEAPONS; i++) sheets_load_weapon(&playerWeapon[i]);
+	// Special case for Sand Zone Bar because Curly uses the machine gun
+	if(sid == 0x1D) {
+		u8 msheet = NOSHEET;
+		SHEET_FIND(msheet, SHEET_MGUN);
+		if(msheet == NOSHEET) {
+			SHEET_ADD(SHEET_MGUN, &SPR_MGunB1, 2,2,2, 0,0, 1,0);
+		}
+	}
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area
 	if(init_tiloc) {
 		tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 

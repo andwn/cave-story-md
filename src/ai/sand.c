@@ -630,7 +630,7 @@ void ai_curlys_mimigas(Entity *e) {
 		break;
 		case 15:	// hopping
 		{
-			if((e->grounded = collide_stage_floor(e))) {	
+			if(e->grounded) {	
 				// landed
 				e->x_speed = 0;
 				e->state = 10;
@@ -640,7 +640,7 @@ void ai_curlys_mimigas(Entity *e) {
 		break;
 		case 20:	// aiiie! got shot!!
 		{
-			if((e->grounded = collide_stage_floor(e))) {
+			if(e->grounded) {
 				e->x_speed = 0;
 				e->state = 21;
 				e->frame += 2;
@@ -666,7 +666,7 @@ void ai_curlys_mimigas(Entity *e) {
 		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
-		e->frame = (random() & 1) + 5;
+		e->frame = (random() & 1) + 4;
 		e->attack = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 	}
@@ -674,7 +674,7 @@ void ai_curlys_mimigas(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x20);
 	LIMIT_Y(SPEED(0x5ff));
 	LIMIT_X(SPEED(0x1ff));
-	if(!e->grounded) e->grounded = collide_stage_floor_grounded(e);
+	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
 	
 	e->x = e->x_next;
