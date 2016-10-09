@@ -3,7 +3,7 @@
 
 const stage_info_def stage_info[STAGE_COUNT] = {
 	{ NULL,			NULL,		NULL,		&PAL_Regu,	0,	0,	"" },
-	{ PXM_Pens1,	PXE_Pens1,	TSC_Pens1,	&PAL_Regu,	16,	2,	"Arthur's House" },
+	{ PXM_Pens1,	PXE_Pens1,	TSC_Pens1,	&PAL_Regu,	16,	1,	"Arthur's House" },
 	{ PXM_Eggs,		PXE_Eggs,	TSC_Eggs,	&PAL_Regu,	6,	13,	"Egg Corridor" },
 	{ PXM_EggX,		PXE_EggX,	TSC_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },
 	{ PXM_Egg6,		PXE_Egg6,	TSC_Egg6,	&PAL_Regu,	5,	0,	"Egg No. 06" },
@@ -27,7 +27,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_EgEnd1,	PXE_EgEnd1,	TSC_EgEnd1,	&PAL_Regu,	19,	0,	"Side Room" },
 	{ PXM_Cthu,		PXE_Cthu,	TSC_Cthu,	&PAL_Regu,	19,	0,	"Cthulhu's Abode" },
 	{ PXM_Egg1,		PXE_Egg1,	TSC_Egg1,	&PAL_Regu,	5,	0,	"Egg No. 01" },
-	{ PXM_Pens2,	PXE_Pens2,	TSC_Pens2,	&PAL_Regu,	16,	2,	"Arthur's House" },
+	{ PXM_Pens2,	PXE_Pens2,	TSC_Pens2,	&PAL_Regu,	16,	1,	"Arthur's House" },
 	{ PXM_Malco,	PXE_Malco,	TSC_Malco,	&PAL_Regu,	2,	0,	"Power Room" },
 	{ PXM_WeedS,	PXE_WeedS,	TSC_WeedS,	&PAL_Regu,	2,	0,	"Save Point" },
 	{ PXM_WeedD,	PXE_WeedD,	TSC_WeedD,	&PAL_Regu,	19,	0,	"ExecutionChamber" },

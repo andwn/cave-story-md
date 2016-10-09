@@ -687,6 +687,7 @@ void ai_balrog_boss_missiles(Entity *e) {
 		case 0:
 		{
 			FACE_PLAYER(e);
+			e->grounded = TRUE;
 			e->state = 1;
 			e->frame = STAND;
 			e->timer = 0;
@@ -738,6 +739,7 @@ void ai_balrog_boss_missiles(Entity *e) {
 		case STATE_JUMP_FIRE:
 		{
 			e->state++;
+			e->grounded = FALSE;
 			e->timer = 0;
 			e->frame = ARMSUP;
 			e->y_speed = -SPEED(0x5ff);

@@ -149,6 +149,7 @@ u16 promptJump = 0;
 u8 teleMenuSlotCount = 0;
 u16 teleMenuEvent[8];
 u8 teleMenuSelection = 0;
+u8 teleMenuSheet = NOSHEET;
 VDPSprite teleMenuSprite[8];
 
 u16 bossMaxHealth;
@@ -276,7 +277,7 @@ u8 tsc_update() {
 				tscState = TSC_RUNNING;
 			} else if(joy_pressed(BUTTON_LEFT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
-						sheets[7].index + teleMenuSelection*16);
+						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == 0) {
 					teleMenuSelection = teleMenuSlotCount - 1;
 				} else {
@@ -285,7 +286,7 @@ u8 tsc_update() {
 				sound_play(SND_MENU_MOVE, 5);
 			} else if(joy_pressed(BUTTON_RIGHT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
-						sheets[7].index + teleMenuSelection*16);
+						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == teleMenuSlotCount - 1) {
 					teleMenuSelection = 0;
 				} else {
@@ -294,7 +295,7 @@ u8 tsc_update() {
 				sound_play(SND_MENU_MOVE, 5);
 			} else { // Doing nothing, blink cursor
 				sprite_index(teleMenuSprite[teleMenuSelection], 
-						sheets[7].index + teleMenuSelection*16 + 8);
+						sheets[teleMenuSheet].index + teleMenuSelection*16 + 8);
 			}
 			sprite_addq(teleMenuSprite, teleMenuSlotCount);
 		}
@@ -363,13 +364,14 @@ void tsc_hide_boss_health() {
 
 void tsc_show_teleport_menu() {
 	teleMenuSlotCount = 0;
+	SHEET_FIND(teleMenuSheet, SHEET_TELE);
 	for(u8 i = 0; i < 8; i++) {
 		if(teleportEvent[i] == 0) continue;
 		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
 		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
 			.x = 160 + i*40, .y = 224,
 			.size = SPRITE_SIZE(4, 2),
-			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[7].index + (i-1)*16)
+			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
 		};
 		teleMenuSlotCount++;
 	}
