@@ -12,6 +12,9 @@
 
 #define fireatk curly_target_x
 
+enum Frame { STAND1, STAND2, WALK1, WALK2, PUNCH1, PUNCH2, MOUTH1, 
+			 JUMP, LAND, DEFEAT1, MOUTH2, DEFEAT2, DEFEAT3, DEFEAT4 };
+
 void onspawn_igor(Entity *e) {
 	fireatk = 0;
 	e->attack = 0;
@@ -32,13 +35,13 @@ void ai_igor(Entity *e) {
 	switch(e->state) {
 		case STATE_STAND:
 		{
-			e->frame = 0;
 			e->attack = 0;
 			e->timer = 0;
 			e->state++;
 		}
 		case STATE_STAND+1:
 		{
+			ANIMATE(e, 16, STAND1, STAND2);
 			if(++e->timer > TIME(50)) e->state = STATE_WALK;
 		}
 		break;
@@ -57,7 +60,7 @@ void ai_igor(Entity *e) {
 		}
 		case STATE_WALK+1:
 		{
-			ANIMATE(e, 12, 3,2,4,2);
+			ANIMATE(e, 12, WALK1,STAND1,WALK2,STAND1);
 			if(fireatk == -1) {	// begin mouth-blast attack
 				if(++e->timer > TIME(20)) e->state = STATE_MOUTH_BLAST;
 			} else {
@@ -74,7 +77,7 @@ void ai_igor(Entity *e) {
 		break;
 		case STATE_PUNCH:
 		{
-			e->frame = 4;
+			e->frame = PUNCH1;
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
@@ -93,7 +96,7 @@ void ai_igor(Entity *e) {
 			} else {
 				e->hit_box.left += 10;
 			}
-			e->frame = 5;
+			e->frame = PUNCH2;
 			e->attack = 5;
 			e->timer = 0;
 			e->state++;
@@ -113,7 +116,7 @@ void ai_igor(Entity *e) {
 		break;
 		case STATE_JUMPING:
 		{
-			e->frame = 7;
+			e->frame = JUMP;
 			e->y_speed = -SPEED(2<<CSF);
 			e->grounded = FALSE;
 			e->attack = 2;
@@ -133,7 +136,7 @@ void ai_igor(Entity *e) {
 		break;
 		case STATE_LANDED:
 		{
-			e->frame = 8;
+			e->frame = LAND;
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
@@ -145,7 +148,7 @@ void ai_igor(Entity *e) {
 		break;
 		case STATE_MOUTH_BLAST:
 		{
-			e->frame = 9;
+			e->frame = MOUTH1;
 			FACE_PLAYER(e);
 			e->x_speed = 0;
 			e->timer = 0;
@@ -153,7 +156,7 @@ void ai_igor(Entity *e) {
 		}
 		case STATE_MOUTH_BLAST+1:
 		{
-			e->frame = (++e->timer > TIME(50) && (e->timer & 4)) ? 10 : 9;
+			e->frame = (++e->timer > TIME(50) && (e->timer & 4)) ? MOUTH2 : MOUTH1;
 			// fire shots
 			if(e->timer > TIME(100)) {
 				if((e->timer % 8) == 1) {
@@ -198,7 +201,7 @@ void ai_igorscene(Entity *e) {
 		}
 		case 1:
 		{
-			ANIMATE(e, 16, 0,1);
+			ANIMATE(e, 16, STAND1,STAND2);
 		}
 		break;
 		case 2:
@@ -207,13 +210,13 @@ void ai_igorscene(Entity *e) {
 		}
 		case 3:
 		{
-			ANIMATE(e, 12, 2,0,3,0);
+			ANIMATE(e, 12, WALK1,STAND1,WALK2,STAND1);
 		}
 		break;
 		case 4:
 		{
 			e->x_speed = 0;
-			e->frame = 4;
+			e->frame = PUNCH1;
 			e->timer = 20;
 			e->state++;
 		}
@@ -221,7 +224,7 @@ void ai_igorscene(Entity *e) {
 		{
 			e->timer--;
 			if(!e->timer) {
-				e->frame = 5;
+				e->frame = PUNCH2;
 				e->timer = 20;
 				e->state = 6;
 			}
@@ -247,7 +250,7 @@ void ai_igordead(Entity *e) {
 		//SmokeBoomUp(e);
 		e->x_speed = 0;
 		e->timer = 0;
-		e->frame = 8;
+		e->frame = DEFEAT1;
 		e->state = 1;
 		break;
 		case 1:
@@ -276,28 +279,26 @@ void ai_igordead(Entity *e) {
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)
 		if((e->timer & 3) == 1) {
-			e->frame = 10;
+			e->frame = DEFEAT2;
 		} else if((e->timer & 3) == 3) {
-			e->frame = 8;
+			e->frame = DEFEAT1;
 		}
 		if(e->timer > 160) {
-			e->frame = 10;
+			e->frame = DEFEAT2;
 			e->state = 3;
 			e->timer = 0;
 		}
 		break;
 		case 3:
 		if(++e->timer > 60) {
-			if(e->frame >= 13) {
+			e->frame++;
+			e->timer = 0;
+			if(e->frame > DEFEAT4) {
 				e->hidden = TRUE;
 				e->state = 4;
-			} else {
-				e->timer = 0;
-				e->frame++;
 			}
 		}
-		//if((e->timer % 24) == 0)
-		//	smoke_puff(o, FALSE);
+		effect_create_smoke(e->x >> CSF, (e->y >> CSF) + 20);
 		break;
 		case 4: break;
 	}

@@ -7,28 +7,12 @@
 /*
  * TODO before 0.2.1
  * MISSING GRAPHICS:
- * - Red flower petals
  * - Level Up/Down
  * - Clipping effect
  * ANIMATE:
- * - Gravekeeper
- * - Quote teleporting
- * - Santa
- * - Chako
- * - Fans
- * - Frog / Puchi
- * - Mannan (needs to be 3x4 instead of 2x3 also)
- * - Kulala
- * - Malco
- * - Curly
- * - Curly's Mimigas
  * - Puppies
- * REWRITE:
- * - Igor (Scene)
- * - Balfrog (Sprites)
  * MISC:
  * - Igor - some wrong frames
- * - Stop Kulala from clipping through ceiling
  * - Add ondeath_kulala that creates a treasure chest
  * BGM:
  * - Labyrinth Fight
