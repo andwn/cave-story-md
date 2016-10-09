@@ -11,11 +11,12 @@
 void ai_pignon(Entity *e) {
 	e->timer++;
 	if(e->state < 3 && e->damage_time == 29) {
-		FACE_PLAYER(e);
+		//FACE_PLAYER(e);
 		e->state = 3;
 		e->timer = 0;
 		e->y_speed = -0x100;
-		MOVE_X(-0x120);
+		e->x_speed = e->x > player.x ? -0x100 : 0x100;
+		//MOVE_X(-0x120);
 		e->frame = 4;
 	}
 	switch(e->state) {
@@ -60,7 +61,7 @@ void ai_pignon(Entity *e) {
 		break;
 		case 3: // Hurt
 		{
-			e->x_speed += -0x4 + 0x8 * e->dir; // Decellerate
+			e->x_speed -= e->x_speed > 0 ? 4 : -4; // Decellerate
 			if(e->timer >= TIME(30)) {
 				e->state = 0;
 				e->timer = 0;

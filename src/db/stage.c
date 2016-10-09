@@ -19,7 +19,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Barr,		PXE_Barr,	TSC_Barr,	&PAL_Regu,	14,	0,	"Shack" },
 	{ PXM_Pool,		PXE_Pool,	TSC_Pool,	&PAL_Regu,	14,	2,	"Reservoir" },
 	/* 0x10 (16) */
-	{ PXM_Cemet,	PXE_Cemet,	TSC_Cemet,	&PAL_Regu,	14,	2,	"Graveyard" },
+	{ PXM_Cemet,	PXE_Cemet,	TSC_Cemet,	&PAL_Regu,	14,	0,	"Graveyard" },
 	{ PXM_Plant,	PXE_Plant,	TSC_Plant,	&PAL_Plant,	14,	2,	"Yamashita Farm" },
 	{ PXM_Shelt,	PXE_Shelt,	TSC_Shelt,	&PAL_Regu,	19,	0,	"Shelter" },
 	{ PXM_Comu,		PXE_Comu,	TSC_Comu,	&PAL_Regu,	16,	0,	"Assembly Hall" },
