@@ -621,14 +621,7 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			logcmd("<ANP:%hu:%hu:%hu", args[0], args[1], args[2]);
-			if(stageID == 0x27 && args[0] == 1000) {
-				// Hack to make Monster X appear
-				Entity *e = entity_create(0, 0, 360 + BOSS_MONSTERX, 0);
-				e->event = 1000;
-				e->state = 1;
-			} else {
-				entities_set_state(args[0], args[1], args[2] > 0);
-			}
+			entities_set_state(args[0], args[1], args[2] > 0);
 			break;
 		case CMD_CNP: // Change all entities of event (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();
@@ -655,7 +648,7 @@ u8 execute_command() {
 			logcmd("<DNP:%hu", args[0]);
 			entities_clear_by_event(args[0]);
 			break;
-		// Change entity of event (1) to type (2) with direction (3) and set flag 0x1000?
+		// Change entity of event (1) to type (2) with direction (3) and set option 2 flag
 		case CMD_INP:
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
@@ -678,13 +671,21 @@ u8 execute_command() {
 		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
 			logcmd("<BOA:%hu", args[0]);
+			// The real cave story has the stage boss created at stage load in a dormant state.
+			// NXEngine also does this, but I don't, instead waiting until the boss is used
+			// In a <BOA command to create it. A bit hacky but it works.
 			if(stageID == 0x0A && args[0] == 20) {
-				// Hack to spawn Omega in Sand Zone
+				// Omega in Sand Zone
 				bossEntity = entity_create(0, 0, 360 + BOSS_OMEGA, 0);
 				bossEntity->event = 210;
 				bossEntity->state = 20;
+			} else if(stageID == 0x27 && args[0] == 1) {
+				// Monster X - #0301 <BOA0001
+				bossEntity = entity_create(0, 0, 360 + BOSS_MONSTERX, 0);
+				bossEntity->event = 1000;
+				bossEntity->state = 1;
 			} else if(stageID == 0x2F && args[0] == 200) {
-				// Hack to spawn Core
+				// Core
 				bossEntity = entity_create(0, 0, 360 + BOSS_CORE, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 200;
@@ -807,15 +808,14 @@ u8 execute_command() {
 			break;
 		case CMD_FOB: // Focus on boss (1) with (2) ticks
 			logcmd("<FOB");
-			if(bossEntity != NULL) camera.target = bossEntity;
+			if(bossEntity) camera.target = bossEntity;
 			break;
 		case CMD_FON: // Focus on NPC (1) with (2) ticks
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			logcmd("<FON:%hu:%hu", args[0], args[1]);
 			Entity *e = entity_find_by_event(args[0]);
-			if(e != NULL) camera.target = e;
-			else camera.target = &player;
+			camera.target = e ? e : &player;
 			break;
 		case CMD_FOM: // Focus on player at (1) speed
 			args[0] = tsc_read_word();
@@ -866,7 +866,6 @@ u8 execute_command() {
 			}
 			// Puff of smoke
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
-			//sound_play(SND_BLOCK_DESTROY, 5);
 			break;
 		// These two "Map Flag" commands were mentioned in TSC.txt but may not exist
 		// At least NXEngine doesn't check for them. I keep them here just in case

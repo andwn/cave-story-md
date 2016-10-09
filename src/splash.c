@@ -30,7 +30,7 @@ void splash_main() {
 	VDP_setPalette(PAL0, PAL_Sega.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
 	// Init some subsystems used
-	sheets_load_stage(255, TRUE, TRUE); // No stage - just init tile allocation
+	sheets_load_splash();
 	effects_init();
 	camera_init();
 	camera.y -= 8 << CSF; // Cancel the offset, we want to use absolute positions

@@ -10,80 +10,118 @@
 #define printf(...) /**/
 #endif
 
-void sheets_refresh_polarstar(u8 level) {
-	const SpriteDefinition *def;
-	if(level == 1) def = &SPR_PolarB1;
-	else if(level == 2) def = &SPR_PolarB2;
-	else if(level == 3) def = &SPR_PolarB3;
-	else return;
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[0].index, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[0].index + 4, 4, 1);
+void sheets_load_weapon(Weapon *w) {
+	if(!w) return;
+	w->sheet = sheet_num;
+	switch(w->type) {
+		case WEAPON_POLARSTAR:
+		SHEET_ADD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_SPUR:
+		SHEET_ADD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_SNAKE:
+		SHEET_ADD(SHEET_SNAKE, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_FIREBALL:
+		SHEET_ADD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB1 
+							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+		break;
+		case WEAPON_MACHINEGUN:
+		SHEET_ADD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
+							 : w->level == 2 ? &SPR_MGunB2 
+							 : &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_BUBBLER:
+		SHEET_ADD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_BLADE:
+		SHEET_ADD(SHEET_BLADE, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_NEMESIS:
+		SHEET_ADD(SHEET_NEMES, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_MISSILE:
+		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
+							 : w->level == 2 ? &SPR_MisslB2 
+							 : &SPR_MisslB2, 1,2,2, 0,0);
+		break;
+		case WEAPON_SUPERMISSILE:
+		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
+							 : w->level == 2 ? &SPR_MisslB2 
+							 : &SPR_MisslB2, 1,2,2, 0,0);
+		break;
+		default: w->sheet = NOSHEET;
+	}
 }
 
-void sheets_refresh_fireball(u8 level) {
-	const SpriteDefinition *def;
-	if(level == 1) def = &SPR_FirebB1;
-	else if(level == 2) def = &SPR_FirebB1;
-	else if(level == 3) def = &SPR_FirebB3;
-	else return;
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[1].index, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 0, 1), sheets[1].index + 4, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 0, 2), sheets[1].index + 8, 4, 1);
-}
-
-void sheets_refresh_machinegun(u8 level) {
-	const SpriteDefinition *def;
-	if(level == 1) def = &SPR_MGunB1;
-	else if(level == 2) def = &SPR_MGunB2;
-	else if(level == 3) def = &SPR_MGunB3;
-	else return;
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[2].index, 4, 1);
-	VDP_loadTileData(SPR_TILES(def, 1, 0), sheets[2].index + 4, 4, 1);
-}
-
-void sheets_refresh_missile(u8 level) {
-	const SpriteDefinition *def;
-	if(level == 1) def = &SPR_MisslB1;
-	else if(level == 2) def = &SPR_MisslB2;
-	else if(level == 3) def = &SPR_MisslB2;
-	else return;
-	VDP_loadTileData(SPR_TILES(def, 0, 0), sheets[3].index, 4, 1);
-}
-
-void sheets_refresh_weapons() {
-	Weapon *pstar = player_find_weapon(WEAPON_POLARSTAR);
-	Weapon *fball = player_find_weapon(WEAPON_FIREBALL);
-	Weapon *mgun =  player_find_weapon(WEAPON_MACHINEGUN);
-	Weapon *bubb =  player_find_weapon(WEAPON_BUBBLER);
-	Weapon *blade = player_find_weapon(WEAPON_BLADE);
-	Weapon *snake = player_find_weapon(WEAPON_SNAKE);
-	Weapon *nemes = player_find_weapon(WEAPON_NEMESIS);
-	Weapon *spur =  player_find_weapon(WEAPON_SPUR);
-	if(pstar) {
-		sheets_refresh_polarstar(pstar->level);
-	} else if(spur) {
-		sheets_refresh_polarstar(spur->level);
-	} else if(snake) {
-		sheets_refresh_polarstar(snake->level);
+void sheets_refresh_weapon(Weapon *w) {
+	if(!w) return;
+	switch(w->type) {
+		case WEAPON_POLARSTAR:
+		SHEET_MOD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_SPUR:
+		SHEET_MOD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_SNAKE:
+		SHEET_MOD(SHEET_SNAKE, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_FIREBALL:
+		SHEET_MOD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB1 
+							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+		break;
+		case WEAPON_MACHINEGUN:
+		SHEET_MOD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
+							 : w->level == 2 ? &SPR_MGunB2 
+							 : &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_BUBBLER:
+		SHEET_MOD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_BLADE:
+		SHEET_MOD(SHEET_BLADE, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_NEMESIS:
+		SHEET_MOD(SHEET_NEMES, w->level == 1 ? &SPR_PolarB1 
+							 : w->level == 2 ? &SPR_PolarB2 
+							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		break;
+		case WEAPON_MISSILE:
+		SHEET_MOD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
+							 : w->level == 2 ? &SPR_MisslB2 
+							 : &SPR_MisslB2, 1,2,2, 0,0);
+		break;
+		case WEAPON_SUPERMISSILE:
+		SHEET_MOD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
+							 : w->level == 2 ? &SPR_MisslB2 
+							 : &SPR_MisslB2, 1,2,2, 0,0);
+		break;
 	}
-	if(fball) {
-		sheets_refresh_fireball(fball->level);
-	}
-	if(mgun) {
-		sheets_refresh_machinegun(mgun->level);
-	}
-	if(bubb) {
-		sheets_refresh_polarstar(bubb->level);
-	}
-	if(blade) {
-		sheets_refresh_polarstar(blade->level);
-	} else if(nemes) {
-		sheets_refresh_polarstar(nemes->level);
-	}
-	// Missiles
-	Weapon *missl = player_find_weapon(WEAPON_MISSILE);
-	if(!missl) missl = player_find_weapon(WEAPON_SUPERMISSILE);
-	if(missl) sheets_refresh_missile(missl->level);
 }
 
 void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
@@ -91,17 +129,12 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 	if(init_base) {
 		sheet_num = 0;
 		memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
-		SHEET_ADD(SHEET_PSTAR,   &SPR_PolarB1, 2,2,2, 0,0, 1,0);
-		SHEET_ADD(SHEET_FBALL,   &SPR_FirebB1, 3,2,2, 0,0, 0,1, 0,2);
-		SHEET_ADD(SHEET_MGUN,    &SPR_MGunB1,  2,2,2, 0,0, 1,0);
-		SHEET_ADD(SHEET_MISSL,   &SPR_MisslB1, 1,2,2, 0,0);
-		sheets_refresh_weapons();
 		SHEET_ADD(SHEET_HEART,   &SPR_Heart,   4,2,2, 0,0, 0,1, 1,0, 1,1);
 		SHEET_ADD(SHEET_MISSILE, &SPR_MisslP,  4,2,2, 0,0, 0,1, 1,0, 1,1);
 		SHEET_ADD(SHEET_ENERGY,  &SPR_EnergyS, 6,1,1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 		SHEET_ADD(SHEET_ENERGYL, &SPR_EnergyL, 6,2,2, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 	} else {
-		sheet_num = 8;
+		sheet_num = 4;
 	}
 	if(init_tiloc) {
 		memset(tilocs, 0, MAX_TILOCS);
@@ -187,10 +220,11 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			if(stageID == 0x27) {
 				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0,0, 1,0, 2,0, 3,0);
 				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,4,4, 0,0);
-				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,3,3, 
-						0,0, 0,1, 1,0, 1,1, 2,0, 2,1, 3,0, 3,1);
+				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
+						0,0, 0,1, 0,2, 0,3, 1,0, 1,1, 1,2, 1,3);
 				SHEET_ADD(SHEET_XFISHY, &SPR_XFishy, 8,2,2,
 						0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7);
+				SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			}
 		} break;
 		case 0x29: // Clinic Ruins
@@ -251,9 +285,18 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		} break;
 		default: printf("Stage %hu has no sheet set", sid);
 	}
+	// Weapons at the end
+	for(u8 i = 0; i < MAX_WEAPONS; i++) sheets_load_weapon(&playerWeapon[i]);
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area
 	if(init_tiloc) {
 		tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
 			TILE_SHEETINDEX + 24*6);
 	}
+}
+
+void sheets_load_splash() {
+	sheet_num = 0;
+	memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
+	memset(tilocs, 0, MAX_TILOCS);
+	tiloc_index = TILE_USERINDEX;
 }

@@ -150,7 +150,7 @@ void game_reset(u8 load) {
 		system_load();
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
-		sheets_refresh_weapons();
+		//sheets_refresh_weapons();
 	} else {
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
@@ -307,16 +307,18 @@ void do_map() {
 	u16 mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
 	
 	u16 index = TILE_SHEETINDEX;
-	SYS_disableInts();
-	for(u16 y = 0; y < stageHeight / 8; y++) {
-		for(u16 x = 0; x < stageWidth / 8; x++) {
+	
+	for(u16 y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
+		SYS_disableInts();
+		for(u16 x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
 			gen_maptile(x*8, y*8, index);
 			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
 			index++;
 		}
+		SYS_enableInts();
+		VDP_waitVSync();
 	}
-	SYS_enableInts();
-	while(!joy_pressed(BUTTON_B)) {
+	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C)) {
 		input_update();
 		system_update();
 		ready = TRUE;
@@ -328,12 +330,17 @@ void do_map() {
 void gen_maptile(u16 bx, u16 by, u16 index) {
 	u32 tile[8];
 	for(u16 y = 0; y < 8; y++) {
-		tile[y] = 0;
-		for(u16 x = 0; x < 8; x++) {
-			tile[y] |= stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
-					:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
-					:  stage_get_block_type(bx+x, by+y) == 0x01 ? (9 << ((7-x)*4)) 
-					: (1 << ((7-x)*4));
+		if(y >= stageHeight) {
+			tile[y] = 0x11111111;
+		} else {
+			tile[y] = 0;
+			for(u16 x = 0; x < 8; x++) {
+				tile[y] |= x >= stageWidth ? (1 << ((7-x)*4))
+						:  stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
+						:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
+						:  stage_get_block_type(bx+x, by+y) == 0x01 ? (9 << ((7-x)*4)) 
+						:  (1 << ((7-x)*4));
+			}
 		}
 	}
 	DMA_doDma(DMA_VRAM, tile, index*32, 16, 2);

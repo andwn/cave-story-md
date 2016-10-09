@@ -407,6 +407,10 @@ void ai_sparkle(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
 }
 
+void ai_forcefield(Entity *e) {
+	ANIMATE(e, 2, 0,1,2,3);
+}
+
 void onspawn_segalogo(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 48, 16, 48, 16 };

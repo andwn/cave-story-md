@@ -18,8 +18,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Igor Shot
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog, &ai_null }, // Balrog
-	{ NULL, SHEET_FFIELD, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Forcefield
-	{ &SPR_Key, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Santa's Key
+	{ NULL, SHEET_FFIELD, 	PAL1, 1, &ai_null, &ai_forcefield, &ai_null }, // Forcefield
+	{ &SPR_Key, NOSHEET, 	PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Santa's Key
 	{ &SPR_Chest, NOSHEET, 	PAL1, 1, &ai_null, &ai_chest, &ai_null }, // Chest
 	/* 0x010 (16) */
 	{ &SPR_Save, NOSHEET, 	PAL1, 1, &ai_null, &ai_savepoint, &ai_null }, // Save Point
@@ -549,7 +549,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_XDoor, NOSHEET, PAL3, 4, // Monster X Door
 		&onspawn_x_door, &ai_x_door, &ai_null },
 	{ NULL, SHEET_XTARGET, PAL3, 1, // Monster X Target
-		&onspawn_x_target, &ai_x_target, &ai_null },
+		&onspawn_x_target, &ai_x_target, &ondeath_x_target },
 	{ &SPR_XInts, NOSHEET, PAL3, 6, // Monster X Internals
 		&onspawn_x_internals, &ai_x_internals, &ai_null },
 	{ NULL, NOSHEET, PAL3, 1, // Sisters Body

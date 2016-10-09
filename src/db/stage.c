@@ -43,7 +43,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Jenka2,	PXE_Jenka2,	TSC_Jenka2,	&PAL_Jenka,	2,	0,	"Jenka's House" },
 	{ PXM_SandE,	PXE_SandE,	TSC_SandE,	&PAL_Regu,	18,	7,	"Sand Zone" },
 	{ PXM_MazeH,	PXE_MazeH,	TSC_MazeH,	&PAL_Regu,	13,	8,	"Labyrinth H" },
-	{ PXM_MazeW,	PXE_MazeW,	TSC_MazeW,	&PAL_Regu,	13,	8,	"Labyrinth W" },
+	{ PXM_MazeW,	PXE_MazeW,	TSC_MazeW,	&PAL_X,		13,	8,	"Labyrinth W" },
 	{ PXM_MazeO,	PXE_MazeO,	TSC_MazeO,	&PAL_Regu,	13,	0,	"Camp" },
 	{ PXM_MazeD,	PXE_MazeD,	TSC_MazeD,	&PAL_Dark,	13,	0,	"Clinic Ruins" },
 	{ PXM_MazeA,	PXE_MazeA,	TSC_MazeA,	&PAL_Maze,	19,	0,	"Labyrinth Shop" },

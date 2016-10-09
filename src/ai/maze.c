@@ -185,15 +185,13 @@ void ai_boulder(Entity *e) {
 #define GAUDI_ARMORED_HP 15
 
 void ai_gaudiDying(Entity *e) {
-	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
-	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:		// just died (initializing)
 		{
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			
 			e->frame = 4;

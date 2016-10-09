@@ -3,6 +3,7 @@
 
 #include <genesis.h>
 #include "common.h"
+#include "weapon.h"
 
 /*
  * Handles pre-loaded shared sprite sheets and individually owned sprite tile allocations
@@ -24,6 +25,14 @@
 		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sheet_num].index, 1, __VA_ARGS__);   \
 		for(u8 i = 0; i < 16; i++) frameOffset[sheet_num][i] = width * height * i;             \
 		sheet_num++;                                                                           \
+	}                                                                                          \
+}
+// Replaces the tiles in a previously loaded sprite sheet
+#define SHEET_MOD(sheetid, sdef, frames, width, height, ...) {                                 \
+	u8 sindex = NOSHEET;                                                                       \
+	SHEET_FIND(sindex, sheetid);                                                               \
+	if(sindex != NOSHEET) {                                                                    \
+		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sindex].index, 1, __VA_ARGS__);      \
 	}                                                                                          \
 }
 // The end params are anim,frame value couples from the sprite definition
@@ -76,10 +85,11 @@ enum {
 	SHEET_BEHEM,   SHEET_TELE,   SHEET_BASU,    SHEET_BASIL,  SHEET_TRAP,   SHEET_MANNAN,
 	SHEET_PUCHI,   SHEET_SKULLH, SHEET_IGORSHOT,SHEET_REDSHOT,SHEET_LABSHOT,SHEET_GAUDID,
 	SHEET_PCRITTER,SHEET_FAN,    SHEET_BARMIMI, SHEET_DARK,   SHEET_DARKBUB,SHEET_POWERS,
-	SHEET_POWERF,  SHEET_FLOWER, SHEET_BASUSHOT,SHEET_POLISH, SHEET_BABY,   SHEET_CROC,
+	SHEET_POWERF,  SHEET_FLOWER, SHEET_BASUSHOT,SHEET_POLISH, SHEET_BABY,   SHEET_FIREWSHOT,
 	SHEET_TERM,    SHEET_FFIELD, SHEET_FROG,    SHEET_DROP,   SHEET_PIGNONB,SHEET_OMGSHOT,
 	SHEET_CURLYB,  SHEET_OMGLEG, SHEET_MISSL,   SHEET_XTARGET,SHEET_XFISHY, SHEET_XTREAD,
-	SHEET_GAUDISHOT, SHEET_FIREWSHOT, SHEET_FUZZC, SHEET_XBODY,
+	SHEET_BLADE,   SHEET_FUZZC,  SHEET_XBODY,   SHEET_SPUR,   SHEET_CROC,   SHEET_GAUDISHOT,
+	SHEET_SNAKE,   SHEET_BUBB,   SHEET_NEMES,
 };
 
 u8 sheet_num;
@@ -97,14 +107,9 @@ u8 frameOffset[MAX_SHEETS][16];
 u16 tiloc_index;
 u8 tilocs[MAX_TILOCS];
 
-//void sheets_init();
-
-void sheets_refresh_weapons();
-void sheets_refresh_polarstar(u8 level);
-void sheets_refresh_fireball(u8 level);
-void sheets_refresh_machinegun(u8 level);
-void sheets_refresh_missile(u8 level);
-
+void sheets_load_weapon(Weapon *w);
+void sheets_refresh_weapon(Weapon *w);
 void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc);
+void sheets_load_splash();
 
 #endif

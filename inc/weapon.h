@@ -34,24 +34,26 @@ enum {
 
 // Represents a weapon currently owned by the player
 typedef struct {
-	u8 type;
-	u8 level;
 	u16 energy;
 	u16 next;
 	u16 maxammo;
 	u16 ammo;
+	u8 type;
+	u8 level;
+	u8 sheet;
 } Weapon;
 
 // An active bullet created by the player (or curly)
 typedef struct {
+	VDPSprite sprite;
+	bounding_box hit_box;
+	s32 x, y;
+	s16 x_speed, y_speed;
 	u8 type;
 	u8 level;
 	u8 damage;
 	u8 ttl;
-	VDPSprite sprite;
-	s32 x, y;
-	s16 x_speed, y_speed;
-	bounding_box hit_box;
+	u8 sheet;
 } Bullet;
 
 #define weapon_fire(w) weapon_fire_array[(w).type](&(w))

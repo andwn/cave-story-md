@@ -35,14 +35,7 @@ void ai_energy(Entity *e) {
 			sound_play(SND_LEVEL_UP, 5);
 			w->energy -= weapon_info[w->type].experience[w->level-1];
 			w->level++;
-			// Update the sprite sheet for specific weapons when they change level
-			if(w->type == WEAPON_POLARSTAR) {
-				sheets_refresh_polarstar(w->level);
-			} else if(w->type == WEAPON_MACHINEGUN) {
-				sheets_refresh_machinegun(w->level);
-			} else if(w->type == WEAPON_FIREBALL) {
-				sheets_refresh_fireball(w->level);
-			}
+			sheets_refresh_weapon(w);
 		} else {
 			sound_play(SND_GET_XP, 5);
 			player.damage_time = 30;
@@ -56,11 +49,7 @@ void ai_energy(Entity *e) {
 			return;
 		} else if(e->timer > 7 * FPS) {
 			e->hidden = (e->timer & 3) > 1;
-		} //else if(!entity_on_screen(e)) {
-		//	//SPR_SAFERELEASE(e->sprite);
-		//} else if(e->sprite == NULL) {
-		//	entity_sprite_create(e);
-		//}
+		}
 		e->y_speed += 0x10;
 		if(e->y_speed > 0x400) e->y_speed = 0x400;
 		// Check below / above first
