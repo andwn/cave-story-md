@@ -11,6 +11,7 @@
 void ai_pignon(Entity *e) {
 	e->timer++;
 	if(e->state < 3 && e->damage_time == 29) {
+		FACE_PLAYER(e);
 		e->state = 3;
 		e->timer = 0;
 		e->y_speed = -0x100;
