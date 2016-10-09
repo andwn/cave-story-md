@@ -91,7 +91,12 @@ void hud_refresh_health() {
 	}
 	// Heart icon and two digits displaying current health
 	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
-	memcpy(tileData[1], &TS_Numbers.tiles[(hudHealth / 10)*TSIZE], TILE_SIZE);
+	u8 digit = hudHealth / 10;
+	if(digit) {
+		memcpy(tileData[1], &TS_Numbers.tiles[(digit)*TSIZE], TILE_SIZE);
+	} else {
+		memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
+	}
 	memcpy(tileData[2], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
 	for(u8 i = 0; i < 8; i++)

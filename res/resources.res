@@ -51,6 +51,7 @@ SPRITE SPR_MGunB1		"sprite/mgunb1.png"		2 2 0 0 NONE
 SPRITE SPR_MGunB2		"sprite/mgunb2.png"		2 2 0 0 NONE
 SPRITE SPR_MGunB3		"sprite/mgunb3.png"		2 2 0 0 NONE
 SPRITE SPR_Bonk			"sprite/headbump.png"	1 1 0 0 NONE
+SPRITE SPR_RedFl		"sprite/redflowers.png" 6 2 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
