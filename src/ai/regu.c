@@ -27,13 +27,13 @@ void ai_doctor(Entity *e) {
 		{
 			e->state = 11;
 			e->timer2 = 0;
-			ANIMATE(e, 10, 1,2);
+			ANIMATE(e, 10, 1,0);
 		}
 		/* no break */
 		case 11:
 		{
 			if (++e->timer2 > TIME(8*6)) {
-				e->frame = 0;;
+				e->frame = 0;
 				e->state = 1; 
 			}
 		}
@@ -42,7 +42,7 @@ void ai_doctor(Entity *e) {
 		{
 			e->state = 21;
 			e->timer = 0;
-			e->frame = 3;;
+			e->frame = 2;
 			e->y_mark = e->y - (32 << CSF);
 		}
 		/* no break */
@@ -55,7 +55,7 @@ void ai_doctor(Entity *e) {
 		case 30:	// he teleports away
 		{
 			e->timer = 0;
-			e->frame = 3;;
+			e->frame = 2;
 			e->y_speed = 0;
 			e->state++;
 		}
@@ -71,7 +71,7 @@ void ai_doctor(Entity *e) {
 		{
 			e->timer = 0;
 			e->state = 41;
-			e->frame = 3;;
+			e->frame = 2;
 		}
 		/* no break */
 		case 41:

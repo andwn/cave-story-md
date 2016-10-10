@@ -1,6 +1,8 @@
 ### Genesis Version Differences
 This file is where I list off the differences in this port and why.
 
+TODO: Make this a wiki page
+
 #### Graphics
  - CANTFIX: The resolution is 320x224 instead of 320x240 in NTSC mode. This causes rooms like First Cave and Egg Corridor to scroll vertically 16 pixels.
  - WONTFIX: I got a bit creative with the sprinkler effect to avoid lag. There are less particles and they alternate visibility.

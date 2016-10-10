@@ -15,22 +15,24 @@
 
 - Missing stuff
   - Weapons in item menu
-  - Map System?
   - Boss health
   - Question mark when pressing down
   - Weapon level up / down
   - Zzz effect above Gunsmith, Chaco, Mimiga in Sand Zone bar, etc
-  - Basu's projectiles
+  - The "Hey!" bubble isn't appearing outside shelter for some reason
   - Ravil, the frenzied mimiga in Grasstown hut
   - The puppy at the bottom of Sand Zone should run back and forth
   - Some of the Crows should be carrying skullheads
   - One of the skullheads have feet
   - There should be a skeleton enemy that throws bones near the end of Sand Zone
+  - Monster X projectiles & fish missiles
+  - Purple critter projectiles
+  - Large doorway animation
   
 - Major Boss Status
   - [x] Balfrog
   - [x] Omega
-  - [ ] Monster X
+  - [x] Monster X (Half done)
   - [ ] Core
   - [ ] Ironhead
   - [ ] Sisters
@@ -83,7 +85,7 @@
   - [ ] I get an actual programming job because of this project
   - [x] Newer versions of GCC lagging noticably less than 3.x
   - [x] Python
-  - [ ] Sega splash screen
+  - [x] Sega splash screen
   - [ ] Someone holds A for free WR
   - [ ] SRAM on UMDK
   - [ ] Undertale
