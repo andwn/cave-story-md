@@ -197,8 +197,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_CoreShot1,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
 	{ &SPR_CoreShot2,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)
-	{ &SPR_Polar, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
-	{ &SPR_MGun, 	NOSHEET, PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
+	{ NULL, SHEET_CGUN, 	 PAL0, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
+	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
 	{ &SPR_Bubble, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_watershield, &ai_null }, // Curly Bubble Shield
 	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Shutter (Large)
 	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Shutter (Small)
