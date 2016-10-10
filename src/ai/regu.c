@@ -17,6 +17,7 @@
 #endif
 
 void ai_jenka(Entity *e) {
+	e->dir = 1;
 	e->frame = 0;
 	RANDBLINK(e, 1, 200);
 }
