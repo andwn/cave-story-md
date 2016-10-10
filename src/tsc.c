@@ -557,9 +557,9 @@ u8 execute_command() {
 			if(args[0] == 0) { // Left
 				player.x_speed = pixel_to_sub(1);
 			} else if(args[0] == 2) { // Right
-				player.x_speed = pixel_to_sub(-1);
+				player.x_speed = -pixel_to_sub(1);
 			}
-			player.y_speed = pixel_to_sub(-2);
+			player.y_speed = -pixel_to_sub(2);
 			break;
 		case CMD_MYD: // Change direction to (1)
 			args[0] = tsc_read_word();

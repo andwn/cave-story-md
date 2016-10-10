@@ -257,7 +257,7 @@ void ai_gaudi(Entity *e) {
 			// Gaudi's in shop
 			if (e->eflags & NPC_INTERACTIVE) {
 				e->attack = 0;
-				e->eflags &= ~NPC_SHOOTABLE;
+				e->nflags &= ~NPC_SHOOTABLE;
 			}
 			
 			e->x_speed = 0;
@@ -295,7 +295,7 @@ void ai_gaudi(Entity *e) {
 			// try to jump over any walls we come to
 			if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
 				(e->x_speed > 0 && collide_stage_rightwall(e))) {
-				e->y_speed = SPEED(-0x5ff);
+				e->y_speed = -SPEED(0x5ff);
 				e->grounded = FALSE;
 				e->state = 20;
 				e->timer = 0;
@@ -367,9 +367,6 @@ void ai_gaudiFlying(Entity *e) {
 		ai_gaudiDying(e);
 		return;
 	}
-	
-	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
 	
 	switch(e->state) {
 		case 0:
@@ -1075,4 +1072,13 @@ void ai_buyobuyo(Entity *e) {
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+void onspawn_gero(Entity *e) {
+	e->x -= 8 << CSF;
+}
+
+void ai_gero(Entity *e) {
+	e->frame = 0;
+	RANDBLINK(e, 1, 200);
 }

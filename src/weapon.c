@@ -76,7 +76,7 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-4);
+		b->y_speed = -pixel_to_sub(4);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
@@ -85,9 +85,9 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
-		b->x = player.x + (player.dir ? pixel_to_sub(12) : pixel_to_sub(-12));
+		b->x = player.x + (player.dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (player.dir ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (player.dir ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
@@ -119,14 +119,14 @@ void weapon_fire_fireball(Weapon *w) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
-		b->y_speed = pixel_to_sub(-3);
+		b->y_speed = -pixel_to_sub(3);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(2);
 	} else {
-		b->x = player.x + (player.dir ? pixel_to_sub(8) : pixel_to_sub(-8));
+		b->x = player.x + (player.dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(4);
 		b->x_speed = player.dir ? 0x500 : -0x500; // 2.5
 		b->y_speed = 0;
@@ -157,7 +157,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-4);
+		b->y_speed = -pixel_to_sub(4);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		if(player.y_mark == 0) player.y_mark = player.y;
 		if(w->level < 3) player.y_mark += 0x10;
@@ -174,9 +174,9 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else {
 		player.y_mark = 0;
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index);
-		b->x = player.x + (player.dir ? pixel_to_sub(10) : pixel_to_sub(-10));
+		b->x = player.x + (player.dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (player.dir ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (player.dir ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
@@ -204,7 +204,7 @@ void weapon_fire_missile(Weapon *w) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-3);
+		b->y_speed = -pixel_to_sub(3);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
 		b->x = player.x;
@@ -213,9 +213,9 @@ void weapon_fire_missile(Weapon *w) {
 		b->y_speed = pixel_to_sub(3);
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index);
-		b->x = player.x + (player.dir ? pixel_to_sub(12) : pixel_to_sub(-12));
+		b->x = player.x + (player.dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (player.dir ? pixel_to_sub(3) : pixel_to_sub(-3));
+		b->x_speed = (player.dir ? pixel_to_sub(3) : -pixel_to_sub(3));
 		b->y_speed = 0;
 	}
 }

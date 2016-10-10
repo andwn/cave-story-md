@@ -35,6 +35,7 @@ void ai_igor(Entity *e) {
 	switch(e->state) {
 		case STATE_STAND:
 		{
+			e->alwaysActive = TRUE;
 			e->attack = 0;
 			e->timer = 0;
 			e->state++;

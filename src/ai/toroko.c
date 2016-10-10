@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "camera.h"
+#include "effect.h"
 
 void onspawn_torokoAtk(Entity *e) {
 	e->y -= block_to_sub(1);
@@ -29,7 +30,7 @@ void ai_torokoAtk(Entity *e) {
 			e->attack = 0; // Don't hurt the player anymore
 			e->eflags |= NPC_INTERACTIVE; // Enable interaction
 			e->state = 10; // Change animation to falling on ground
-			e->y_speed = pixel_to_sub(-1);
+			e->y_speed = -pixel_to_sub(1);
 			e->x_speed /= 2;
 			e->grounded = FALSE;
 			e->frame = 5;
@@ -355,7 +356,7 @@ void ondeath_torokoBoss(Entity *e) {
 // the blocks Frenzied Toroko throws
 void ai_torokoBlock(Entity *e) {
 	if(e->linkedEntity) {
-		e->x = e->linkedEntity->x + (e->linkedEntity->dir ? 16 << CSF : -16 << CSF);
+		e->x = e->linkedEntity->x + (e->linkedEntity->dir ? 16 << CSF : -(16 << CSF));
 		e->y = e->linkedEntity->y - (16 << CSF);
 		return;
 	}

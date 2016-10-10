@@ -343,5 +343,5 @@ void gen_maptile(u16 bx, u16 by, u16 index) {
 			}
 		}
 	}
-	DMA_doDma(DMA_VRAM, tile, index*32, 16, 2);
+	DMA_doDma(DMA_VRAM, (u32)tile, index*32, 16, 2);
 }

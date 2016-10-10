@@ -56,12 +56,12 @@ void camera_update() {
 		// If following the player focus on where they are walking/looking
 		if(camera.target == &player) {
 			if(player.dir == 0) {
-				camera.x_offset = pixel_to_sub(-48);
+				camera.x_offset = -pixel_to_sub(48);
 			} else {
 				camera.x_offset = pixel_to_sub(48);
 			}
 			if(!controlsLocked && joy_down(BUTTON_UP) && player.y_speed <= 0) {
-				camera.y_offset = pixel_to_sub(-48);
+				camera.y_offset = -pixel_to_sub(48);
 			}
 		}
 		// Calculate where camera will be next frame

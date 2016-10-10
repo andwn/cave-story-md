@@ -669,6 +669,11 @@ void ai_balrogShot(Entity *e) {
 void ai_balrog_boss_missiles(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(e->y_speed < 0) collide_stage_ceiling(e);
+	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
+	else if(!e->grounded) e->grounded = collide_stage_floor(e);
 	// try to catch player
 	switch(e->state) {
 		case STATE_CHARGE+1:
@@ -716,13 +721,13 @@ void ai_balrog_boss_missiles(Entity *e) {
 			//walking_animation(o);
 			
 			// stuck against the wall?
-			if((!e->dir && collide_stage_leftwall(e)) || 
-				(e->dir && collide_stage_rightwall(e))) {
-				if (++e->x_mark > 5) e->state = STATE_JUMP_FIRE;
-			} else {
+			//if((!e->dir && collide_stage_leftwall(e)) || 
+			//	(e->dir && collide_stage_rightwall(e))) {
+			//	if (++e->x_mark > 5) e->state = STATE_JUMP_FIRE;
+			//} else {
 				// Use x_mark instead of timer3
-				e->x_mark = 0;
-			}
+			//	e->x_mark = 0;
+			//}
 			// he behaves differently after every other time he pauses
 			if (e->timer2) {
 				if (++e->timer > TIME(75)) {
@@ -758,7 +763,7 @@ void ai_balrog_boss_missiles(Entity *e) {
 				}
 			}
 			// landed?
-			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))){
+			if (e->grounded) {
 				e->frame = DUCK;
 				e->state = STATE_PAUSE;
 				camera_shake(30);
@@ -790,7 +795,7 @@ void ai_balrog_boss_missiles(Entity *e) {
 }
 
 void ai_balrog_missile(Entity *e) {
-	if ((e->dir == 1 && collide_stage_rightwall(e)) || \
+	if ((e->dir == 1 && collide_stage_rightwall(e)) ||
 		(e->dir == 0 && collide_stage_leftwall(e)))
 	{
 		//SmokeClouds(o, 3, 0, 0);

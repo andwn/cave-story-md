@@ -178,9 +178,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_default }, // Pooh Black
 	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ai_null }, // Pooh Black Bubble
 	{ &SPR_Dark, NOSHEET,	PAL3, 2, &ai_null, &ai_pooh_black_dying, &ai_null }, // Pooh Black (Dying)
-	{ &SPR_DrGero, NOSHEET, PAL3, 1, &ai_null, &generic_npc_states, &ai_null }, // Dr. Gero
-	{ &SPR_Nurse, NOSHEET, 	PAL3, 1, &ai_null, &generic_npc_states, &ai_null }, // Nurse Hasumi
-	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &ai_null, &ai_curly, &ai_null }, // Curly (Collapsed)
+	{ &SPR_DrGero, NOSHEET, PAL3, 1, &onspawn_gero, &ai_gero, &ai_null }, // Dr. Gero
+	{ &SPR_Nurse, NOSHEET, 	PAL3, 1, &onspawn_gero, &ai_gero, &ai_null }, // Nurse Hasumi
+	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &onspawn_curly_collapsed, &ai_curly, &ai_null }, // Curly (Collapsed)
 	{ &SPR_GaudiMerch,NOSHEET,PAL3,1,&ai_null, &ai_null, &ai_null }, // Chaba
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_booster_falling, &ai_null }, // Booster
 	{ &SPR_Boulder,NOSHEET, PAL3, 4, &ai_null, &ai_boulder, &ai_null }, // Boulder

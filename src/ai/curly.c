@@ -12,6 +12,11 @@
 #define CURLY_WALK				3
 #define CURLY_WALKING			4
 
+void onspawn_curly_collapsed(Entity *e) {
+	e->state = 32;
+	e->y += 8 << CSF;
+}
+
 void ai_curly(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -27,7 +32,7 @@ void ai_curly(Entity *e) {
 		case 1:
 		{
 			// important that state 1 does not change look-away frame for Drain cutscene
-			if(e->frame != 4) e->frame = 0;
+			if(e->frame != 6) e->frame = 0;
 			e->x_speed = 0;
 		}
 		break;
@@ -65,7 +70,7 @@ void ai_curly(Entity *e) {
 		case 20:			// face away
 		{
 			e->x_speed = 0;
-			e->frame = 4;
+			e->frame = 6;
 		}
 		break;
 		case 21:			// look up
@@ -113,7 +118,7 @@ void ai_curly(Entity *e) {
 	}
 	e->y = e->y_next;
 	e->x = e->x_next;
-	if(!e->grounded) e->y_speed += SPEED(0x40);
+	if(!e->grounded && e->state != 32) e->y_speed += SPEED(0x40);
 	LIMIT_Y(SPEED(0x5ff));
 }
 
@@ -136,10 +141,7 @@ void ai_curly_carried(Entity *e) {
 		/* no break */
 		case 1:
 		{	// carried by player
-			if(player.dir != e->dir) {
-				e->dir ^= 1;
-				//SPR_SAFEHFLIP(e->sprite, e->dir);
-			}
+			e->dir = player.dir;
 			e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
 			e->y = player.y - pixel_to_sub(5);
 		}

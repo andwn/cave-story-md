@@ -228,6 +228,9 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 				SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			}
 		} break;
+		case 0x2A: // Labyrinth Shop
+		{	SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 4,3,3, 0,0, 1,0, 1,2, 2,0);
+		} break;
 		case 0x29: // Clinic Ruins
 		{	SHEET_ADD(SHEET_DARKBUB, &SPR_DarkBub, 2,2,2, 0,0, 1,0);
 		} break;
@@ -240,6 +243,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_FIREWSHOT, &SPR_FireWShot, 3,2,4, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_LABSHOT, &SPR_LabShot, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_GAUDISHOT, &SPR_GaudiShot, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 		} break;
 		case 0x2F: // Core
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);

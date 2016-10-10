@@ -48,6 +48,10 @@
 #define BODY_LR_X	 32
 #define BODY_LR_Y	 8
 
+#define ARENA_LEFT		0x106800
+#define ARENA_RIGHT		0x15B800
+#define ARENA_BOTTOM	0x21800
+
 #define saved_health		curly_target_time
 #define alt_sheet			jump_time
 
@@ -94,8 +98,8 @@ void onspawn_monsterx(Entity *e) {
 	pieces[TARGET3] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION2);
 	pieces[TARGET4] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1|NPC_OPTION2);
 	// create treads
-	pieces[TREADUL] = entity_create(0xfc000, 0x13000, OBJ_X_TREAD, 0);
-	pieces[TREADUR] = entity_create(0x10c000,0x13000, OBJ_X_TREAD, NPC_OPTION1);
+	pieces[TREADUL] = entity_create(0xfc000, 0x14000, OBJ_X_TREAD, 0);
+	pieces[TREADUR] = entity_create(0x10c000,0x14000, OBJ_X_TREAD, NPC_OPTION1);
 	pieces[TREADLL] = entity_create(0xfc000, 0x20000, OBJ_X_TREAD, NPC_OPTION2);
 	pieces[TREADLR] = entity_create(0x10c000,0x20000, OBJ_X_TREAD, NPC_OPTION1|NPC_OPTION2);
 	// create doors
@@ -112,8 +116,8 @@ void onspawn_x_target(Entity *e) {
 	if(e->eflags & NPC_OPTION1) e->frame += 1;
 	if(e->eflags & NPC_OPTION2) e->frame += 2;
 	
-	static const s32 xoffs[] = { -22 <<CSF,  28 <<CSF, -15 <<CSF,  17 <<CSF };
-	static const s32 yoffs[] = { -16 <<CSF, -16 <<CSF,  14 <<CSF,  14 <<CSF };
+	static const s32 xoffs[] = { -(22 <<CSF),  28 <<CSF, -(15 <<CSF),  17 <<CSF };
+	static const s32 yoffs[] = { -(16 <<CSF), -(16 <<CSF),  14 <<CSF,  14 <<CSF };
 	e->x_mark = xoffs[e->frame];
 	e->y_mark = yoffs[e->frame];
 }
@@ -124,12 +128,11 @@ void onspawn_x_tread(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->eflags |= NPC_SPECIALSOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XTREAD);
-	if(!(e->eflags & NPC_OPTION2)) {
-		sprite_vflip(e->sprite[0], 1);
-		sprite_vflip(e->sprite[1], 1);
-	}
 	e->hit_box = (bounding_box) { 32, 8, 32, 16 };
 	e->display_box = (bounding_box) { 32, 16, 32, 16 };
+	//if(e->eflags & NPC_OPTION2) {
+	//	e->hit_box.bottom += 8;
+	//}
 }
 
 // Door on the right uses the second frame
@@ -364,6 +367,13 @@ void ai_monsterx(Entity *e) {
 		break;
 	}
 	
+	// Prevent clipping through walls/floor
+	if(e->state >= STATE_X_FIGHT_BEGIN) {
+		if(player.x < ARENA_LEFT) player.x = ARENA_LEFT;
+		if(player.x > ARENA_RIGHT) player.x = ARENA_RIGHT;
+		if(player.y > ARENA_BOTTOM) player.y = ARENA_BOTTOM;
+	}
+	
 	// main object pulled along as treads move
 	s32 tread_center = (pieces[TREADUL]->x + pieces[TREADUR]->x +
 					 	pieces[TREADLL]->x + pieces[TREADLR]->x) / 4;
@@ -499,14 +509,14 @@ void ai_x_tread(Entity *e) {
 		.x = (e->x>>CSF) - e->display_box.left - (camera.x>>CSF) + SCREEN_HALF_W + 128,
 		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,e->y < 0x18000,
+		.attribut = TILE_ATTR_FULL(PAL3,0,e->y < 0x18000,0,
 				sheets[e->alt_sheet].index + (e->frame?32:0)),
 	};
 	e->sprite[1] = (VDPSprite) {
 		.x = (e->x>>CSF) - e->display_box.left + 32 - (camera.x>>CSF) + SCREEN_HALF_W + 128,
 		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,e->y < 0x18000,
+		.attribut = TILE_ATTR_FULL(PAL3,0,e->y < 0x18000,0,
 				sheets[e->alt_sheet].index+16 + (e->frame?32:0)),
 	};
 }

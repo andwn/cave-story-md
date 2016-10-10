@@ -357,7 +357,7 @@ void fire_mgun(s32 x, s32 y, u8 dir) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		////SPR_SAFEHFLIP(b->sprite, dir > 0);
-		b->x_speed = (dir > 0 ? pixel_to_sub(4) : pixel_to_sub(-4));
+		b->x_speed = (dir > 0 ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
@@ -384,7 +384,7 @@ void fire_pstar(s32 x, s32 y, u8 dir) {
 	if(dir == DIR_UP) {
 		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(-4);
+		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
 		////SPR_SAFEANIM(b->sprite, 1);
 		b->x_speed = 0;

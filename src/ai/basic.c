@@ -160,7 +160,7 @@ void ai_teleIn(Entity *e) {
 		{
 			e->x_next = e->x;
 			e->y_next = e->y + e->y_speed;
-			if(e->grounded = collide_stage_floor(e)) {
+			if((e->grounded = collide_stage_floor(e))) {
 				e->state++;
 			} else {
 				e->y_speed += SPEED(0x40);
@@ -221,10 +221,6 @@ void onspawn_teleLight(Entity *e) {
 void ai_teleLight(Entity *e) {
 	if(e->state) e->hidden = ++e->timer & 1;
 	else e->hidden = TRUE;
-}
-
-void ondeath_teleLight(Entity *e) {
-	
 }
 
 void ai_player(Entity *e) {

@@ -176,7 +176,7 @@ void ai_falling_spike_large(Entity *e) {
 			//Entity *enemy;
 			//FOREACH_OBJECT(enemy)
 			//{
-			//	if ((enemy->flags & FLAG_SHOOTABLE) && \
+			//	if ((enemy->flags & FLAG_SHOOTABLE) &&
 			//		e->Bottom() >= enemy->CenterY() && hitdetect(o, enemy))
 			//	{
 			//		if (!(enemy->flags & FLAG_INVULNERABLE))
