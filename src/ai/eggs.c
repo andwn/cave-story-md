@@ -181,15 +181,14 @@ void ai_terminal(Entity *e) {
 			e->frame = 0;
 			if (PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(16<<CSF, 8<<CSF)) {
 				sound_play(SND_COMPUTER_BEEP, 5);
-				e->frame = 1;
+				if(e->eflags & NPC_OPTION2) e->frame = 2;
 				e->state = 10;
 			}
 		}
 		break;
 		case 10:
 		{
-			e->animtime = !e->animtime;
-			e->frame = e->animtime + (e->type==OBJ_TERMINAL ? 0 : 2);
+			e->frame ^= 1;
 		}
 		break;
 	}

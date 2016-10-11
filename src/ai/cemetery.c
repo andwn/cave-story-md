@@ -15,7 +15,10 @@ void ai_pignon(Entity *e) {
 		e->state = 3;
 		e->timer = 0;
 		e->y_speed = -0x100;
-		e->x_speed = e->x > player.x ? -0x100 : 0x100;
+		if(e->type == OBJ_GIANT_MUSHROOM_ENEMY)
+			e->x_speed = e->x > player.x ? -0x100 : 0x100;
+		else
+			e->x_speed = 0;
 		//MOVE_X(-0x120);
 		e->frame = 4;
 	}

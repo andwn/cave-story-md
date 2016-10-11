@@ -111,15 +111,21 @@ void ai_curly_ai(Entity *e) {
 	// Check collision up front and remember the result
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	/* u8 blocku = (unused) */collide_stage_ceiling(e);
+	if(e->y_speed < 0) collide_stage_ceiling(e);
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
 	// Noxoid's "improbable jump" won't work if collision with walls stops inertia,
 	// so don't do that
-	s16 xsp = e->x_speed, ysp = e->y_speed;
+	s16 xsp = e->x_speed;
 	u8 blockl = collide_stage_leftwall(e);
 	u8 blockr = collide_stage_rightwall(e);
-	e->x_speed = xsp; e->y_speed = ysp;
+	e->x_speed = xsp;
+	if(blockl && e->x_speed < -0x80) e->x_speed = -0x80;
+	if(blockr) {
+		 if(e->x_speed > 0x80) e->x_speed = 0x80;
+		 //e->x_next += 0x1FF;
+	 }
+	
 	// Handle underwater
 	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
 			(water_entity && e->y > water_entity->y)) {
@@ -230,7 +236,7 @@ void ai_curly_ai(Entity *e) {
 		// if our target gets really far away (like p is leaving us behind) and
 		// the above jumping isn't getting us anywhere, activate the Improbable Jump
 		if ((blockl || blockr) && xdist > (80<<CSF)) {
-			sprite_add(((VDPSprite){.x=128,.y=128,.size=SPRITE_SIZE(4, 4)}));
+			//sprite_add(((VDPSprite){.x=128,.y=128,.size=SPRITE_SIZE(4, 4)}));
 			if (++curly_impjumptime > 60 && e->grounded) {
 				CaiJUMP(e);
 				curly_impjumptime = -100;
@@ -260,18 +266,18 @@ void ai_curly_ai(Entity *e) {
 	else e->y_speed += SPEED(0x33);
 	
 	// slow down when we hit bricks
-	if (blockl || blockr) {
+	//if (blockl || blockr) {
 		// full stop if on ground, partial stop if in air
-		xlimit = e->grounded ? 0x000 : 0x180;
+	//	xlimit = e->grounded ? 0x000 : 0x180;
 		
-		if (blockl) {
-			if (e->x_speed < -xlimit) e->x_speed = -xlimit;
-		} else if (e->x_speed > xlimit) {		
+	//	if (blockl) {
+	//		if (e->x_speed < -xlimit) e->x_speed = -xlimit;
+	//	} else if (e->x_speed > xlimit) {		
 			// we don't have to test blockr because we already know one or the other is set 
 			// and that it's not blockl
-			e->x_speed = xlimit;
-		}
-	}
+	//		e->x_speed = xlimit;
+	//	}
+	//}
 	
 	// look up/down at target
 	curly_look = 0;
