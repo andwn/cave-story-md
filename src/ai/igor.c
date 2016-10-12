@@ -196,6 +196,13 @@ void ai_igorscene(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			// Push Sue in front if she exists
+			Entity *find = entityList;
+			while(find && find->type != OBJ_SUE) find = find->next;
+			if(find) {
+				entity_deactivate(find);
+				entity_reactivate(find);
+			}
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;

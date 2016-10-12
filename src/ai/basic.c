@@ -412,6 +412,21 @@ void ai_forcefield(Entity *e) {
 	ANIMATE(e, 2, 0,1,2,3);
 }
 
+void ai_redflowerpetals(Entity *e) {
+	if(!e->state) {
+		e->state = 1;
+		// Push bed to front in Egg Observatory
+		if(stageID == 0x05) {
+			Entity *find = entityList;
+			while(find && find->type != OBJ_BED) find = find->next;
+			if(find) {
+				entity_deactivate(find);
+				entity_reactivate(find);
+			}
+		}
+	}
+}
+
 void onspawn_segalogo(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 48, 16, 48, 16 };

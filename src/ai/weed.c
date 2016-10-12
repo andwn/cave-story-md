@@ -506,17 +506,13 @@ void ai_hey(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->display_box.left = e->display_box.top = 8;
-			e->y -= 8 << CSF;
 			e->state = 1;
+			e->timer = 0;
 		}
-		/* no break */
+		break;
 		case 1:
 		{
-			if(++e->timer >= TIME(50)) {
-				e->hidden ^= 1;
-				e->timer = 0;
-			}
+			e->hidden = ++e->timer > TIME(50);
 		}
 		break;
 	}

@@ -826,6 +826,7 @@ void ai_firewhirr(Entity *e) {
 }
 
 void ai_firewhirr_shot(Entity *e) {
+	ANIMATE(e, 8, 0,1,2);
 	e->x_next = e->x + (!e->dir ? SPEED(-0x200) : SPEED(0x200));
 	e->y_next = e->y;
 	
@@ -845,7 +846,7 @@ void ai_gaudi_egg(Entity *e) {
 			e->y -= (4<<9);
 			e->x -= (4<<9);
 		} else {	// on ceiling
-			//SPR_SAFEVFLIP(e->sprite, 1);
+			sprite_vflip(e->sprite[0], 1);
 			// for the egg @ entrance point that is on a ceiling slope
 			if (!collide_stage_ceiling(e)) {
 				e->y -= (14 << 9);
@@ -854,7 +855,7 @@ void ai_gaudi_egg(Entity *e) {
 		e->state = 1;
 	} else if (e->state == 1) {
 		if (e->health < 90) {
-			//e->frame = 1;
+			e->frame = 1;
 			e->attack = 0;
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->nflags &= ~NPC_SHOOTABLE;
@@ -951,7 +952,7 @@ void ai_buyobuyo_base(Entity *e) {
 		entity_drop_powerup(e);
 		sound_play(e->deathSound, 5);
 		e->state = 10;
-		//e->frame = 2;
+		e->frame = 2;
 	}
 	
 	switch(e->state) {
@@ -973,7 +974,7 @@ void ai_buyobuyo_base(Entity *e) {
 					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;
-						//e->frame = 1;
+						e->frame = 1;
 					}
 				}
 			}
@@ -998,7 +999,7 @@ void ai_buyobuyo_base(Entity *e) {
 				} else {
 					e->timer = TIME(20);
 				}
-				//e->frame = 0;
+				e->frame = 0;
 			}
 		}
 		break;

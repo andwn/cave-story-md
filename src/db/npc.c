@@ -116,8 +116,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_POWERF, 	PAL1, 1, &onspawn_powerc, &ai_powerc, &ai_null }, // Power Flow
 	{ &SPR_ManShot,NOSHEET, PAL1, 1, &ai_null, &ai_mannanShot, &ai_null }, // Mannan Shot
 	{ NULL, SHEET_FROG, 	PAL3, 1, &onspawn_frog, &ai_frog, &ondeath_default }, // Frog
-	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!"
-	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!" Emitter
+	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &onspawn_snap, &ai_hey, &ai_null }, // "Hey!"
+	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &onspawn_snap, &ai_hey, &ai_null }, // "Hey!" Emitter
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &ai_null, &ai_malco, &ai_null }, // Malco
 	{ NULL, SHEET_REDSHOT, 	PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Balfrog Shot
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &onspawn_malcoBroken, &ai_null, &ai_null }, // Malco
@@ -187,10 +187,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_balrogFlying },
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_balrog_missile, &ai_null }, // Balrog Missile
 	{ &SPR_FireWhir,NOSHEET,PAL2, 1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
-	{ &SPR_FireWShot,NOSHEET,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
+	{ NULL,SHEET_FIREWSHOT,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
 	{ NULL, SHEET_GAUDI,	PAL2, 1, &ai_null, &ai_gaudiArmored, &ai_null },
-	{ NULL, NOSHEET, 		PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Gaudi Shot
-	{ &SPR_GaudiEgg,NOSHEET,PAL2, 1, &ai_null, &ai_gaudi_egg, &ai_null }, // Gaudi Egg
+	{ NULL, SHEET_GAUDISHOT, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ai_null }, // Gaudi Shot
+	{ NULL,SHEET_GAUDIEGG,	PAL2, 1, &ai_null, &ai_gaudi_egg, &ai_null }, // Gaudi Egg
 	/* 0x0B0 (176) */
 	{ &SPR_BuyoBase,NOSHEET, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
 	{ &SPR_Buyo, 	NOSHEET, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
