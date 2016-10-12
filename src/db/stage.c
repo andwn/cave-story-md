@@ -49,7 +49,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_MazeA,	PXE_MazeA,	TSC_MazeA,	&PAL_Maze,	19,	0,	"Labyrinth Shop" },
 	{ PXM_MazeB,	PXE_MazeB,	TSC_MazeB,	&PAL_XB,	13,	9,	"Labyrinth B" },
 	{ PXM_MazeS,	PXE_MazeS,	TSC_MazeS,	&PAL_Boulder,13,0,	"Boulder Chamber" },
-	{ PXM_MazeM,	PXE_MazeM,	TSC_MazeM,	&PAL_Regu,	24,	10,	"Labyrinth M" },
+	{ PXM_MazeM,	PXE_MazeM,	TSC_MazeM,	&PAL_MazeM,	24,	10,	"Labyrinth M" },
 	{ PXM_Drain,	PXE_Drain,	TSC_Drain,	&PAL_Regu,	3,	0,	"Dark Place" },
 	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Core,	1,	0,	"Core" },
 	/* 0x30 (48) */

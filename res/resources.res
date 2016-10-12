@@ -15,6 +15,7 @@ PALETTE PAL_Dark		"sprite/dark.png" 3
 PALETTE PAL_X			"back/bkMaze.png" 3
 PALETTE PAL_XB			"back/bkMaze.bmp" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
+PALETTE PAL_MazeM		"back/bkRed.bmp" 3
 PALETTE PAL_Core		"sprite/coremini.png" 3
 
 # ----------------------------------------------------------------------------------------------
