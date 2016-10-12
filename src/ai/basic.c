@@ -378,17 +378,15 @@ void ai_fireplace(Entity *e) {
 void ai_gunsmith(Entity *e) {
 	if (e->eflags & NPC_OPTION2) {
 		// Animate Zzz effect above head
-		if(++e->timer == 16) {
-			e->timer = 0;
-			if(++e->timer2 == 4) e->timer2 = 0;
-		}
-		VDPSprite zzz = (VDPSprite) {
-			.x = (e->x << CSF) + 128,
-			.y = (e->y << CSF) + 112,
-			.size = SPRITE_SIZE(1, 1),
-			.attribut = TILE_ATTR_FULL(PAL0,0,0,0,12+e->timer2)
-		};
-		sprite_add(zzz);
+		if(!e->timer) effect_create_misc(EFF_ZZZ, e->x >> CSF, e->y >> CSF);
+		if(++e->timer > TIME(100)) e->timer = 0;
+		//VDPSprite zzz = (VDPSprite) {
+		//	.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + 128,
+		//	.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 112,
+		//	.size = SPRITE_SIZE(1, 1),
+		//	.attribut = TILE_ATTR_FULL(PAL0,0,0,0,12)
+		//};
+		//sprite_add(zzz);
 	} else {
 		e->frame = 1;
 		RANDBLINK(e, 2, 200);
@@ -411,7 +409,7 @@ void ai_sparkle(Entity *e) {
 void ai_forcefield(Entity *e) {
 	ANIMATE(e, 2, 0,1,2,3);
 }
-
+/*
 void ai_redflowerpetals(Entity *e) {
 	if(!e->state) {
 		e->state = 1;
@@ -426,7 +424,7 @@ void ai_redflowerpetals(Entity *e) {
 		}
 	}
 }
-
+*/
 void onspawn_segalogo(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 48, 16, 48, 16 };
@@ -441,7 +439,7 @@ void ai_segalogo(Entity *e) {
 	switch(e->state) {
 		case 0: // Normal
 		{
-			if(++e->timer > 4) {
+			if(++e->timer > 5) {
 				e->timer = 0;
 				if(++e->frame >= 10) {
 					e->frame = 0;
