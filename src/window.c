@@ -25,6 +25,11 @@
 #define TEXT_Y1 (WINDOW_Y1 + 1)
 #define TEXT_Y2 (WINDOW_Y2 - 1)
 #define TEXT_X1_FACE (WINDOW_X1 + 8)
+// On top
+#define WINDOW_Y1_TOP 0
+#define WINDOW_Y2_TOP 7
+#define TEXT_Y1_TOP (WINDOW_Y1_TOP + 1)
+#define TEXT_Y2_TOP (WINDOW_Y2_TOP - 1)
 // Prompt window location
 #define PROMPT_X 27
 #define PROMPT_Y 18
@@ -37,14 +42,13 @@ const u8 ITEM_PAL[40] = {
 	0, 0, 0, 1, 0, 1, 1, 1,
 };
 
-u32 windrawbuf[40][8];
-
+u8 windowOnTop = FALSE;
 u8 windowOpen = FALSE;
 u16 showingFace = 0;
 
 u8 textMode = TM_NORMAL;
 
-u8 windowText[3][35];
+u8 windowText[3][36];
 u8 textRow, textColumn;
 u8 windowTextTick = 0;
 
@@ -53,7 +57,6 @@ u8 promptAnswer = TRUE;
 VDPSprite promptSpr[2], handSpr;
 
 u16 showingItem = 0;
-//VDPSprite itemSpr, itemWinSpr;
 
 void window_clear_text();
 void window_draw_face();
@@ -62,6 +65,12 @@ void window_open(u8 mode) {
 	window_clear_text();
 	textRow = 0;
 	textColumn = 0;
+	windowOnTop = mode;
+	//if(mode) {
+	//	
+	//} else {
+	//	
+	//}
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
@@ -105,15 +114,17 @@ void window_clear_text() {
 	textRow = 0;
 	textColumn = 0;
 	for(u8 row = 0; row < 3; row++) {
-		for(u8 col = 0; col < 34; col++) {
+		for(u8 col = 0; col < 36; col++) {
 			windowText[row][col] = ' ';
 		}
 	}
 }
 
 void window_close() {
-	if(!paused) VDP_setWindowPos(0, 0);
-	//if(showingBossHealth) VDP_setWindowPos(28, 234);
+	if(!paused) {
+		if(showingBossHealth) VDP_setWindowPos(0, 253);
+		else VDP_setWindowPos(0, 0);
+	}
 	showingItem = 0;
 	windowOpen = FALSE;
 }
@@ -146,7 +157,7 @@ void window_draw_char(u8 c) {
 		}
 	} else {
 		windowText[textRow][textColumn] = c;
-		if(textColumn >= 35 - (showingFace > 0) * 8) return;
+		if(textColumn >= 36 - (showingFace > 0) * 8) return;
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn;
 		u8 msgTextY = TEXT_Y1 + textRow * 2;
@@ -161,7 +172,7 @@ void window_scroll_text() {
 	for(u8 row = 0; row < 2; row++) {
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		u8 msgTextY = TEXT_Y1 + row * 2;
-		for(u8 col = 0; col < 34 - (showingFace > 0) * 8; col++) {
+		for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
 			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 					TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
@@ -171,7 +182,7 @@ void window_scroll_text() {
 	// Clear third row
 	u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	u8 msgTextY = TEXT_Y1 + 4;
-	for(u8 col = 0; col < 34 - (showingFace > 0) * 8; col++) {
+	for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 		windowText[2][col] = ' ';
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX), msgTextX, msgTextY);

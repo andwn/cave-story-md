@@ -508,7 +508,8 @@ void ai_frog(Entity *e) {
 }
 
 void onspawn_hey(Entity *e) {
-	e->y -= 8 << CSF;
+	SNAP_TO_GROUND(e);
+	e->display_box.top = 16;
 }
 
 void ai_hey(Entity *e) {

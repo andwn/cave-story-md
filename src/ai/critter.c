@@ -62,7 +62,6 @@ void ai_critter(Entity *e) {
 		{
 			e->frame = 2;
 			e->grounded = FALSE;
-			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED(0x100));
 			e->y_speed = -SPEED(0x600);
 			sound_play(SND_ENEMY_JUMP, 5);
 			e->state++;
@@ -70,6 +69,8 @@ void ai_critter(Entity *e) {
 		}
 		case STATE_HOPPING+1:
 		{
+			// Keep trying to move after hitting a wall
+			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED(0x100));
 			// Handle critters that can hover
 			if(e->y_speed > SPEED(0x100) && (e->type == OBJ_CRITTER_FLYING || 
 					e->type == OBJ_POWER_CRITTER || e->type == OBJ_CRITTER_SHOOTING_PURPLE)) {

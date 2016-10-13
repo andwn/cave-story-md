@@ -96,7 +96,13 @@ void effects_update() {
 			}
 			case EFF_ZZZ:
 			{
-				
+				if(!(effMisc[i].ttl % TIME(25))) {
+					sprite_index(effMisc[i].sprite, (effMisc[i].sprite.attribut & 11) + 1);
+				}
+				sprite_pos(effMisc[i].sprite,
+					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_add(effMisc[i].sprite);
 			}
 			break;
 			case EFF_BOOST:
@@ -171,7 +177,18 @@ void effect_create_misc(u8 type, s16 x, s16 y) {
 				};
 			}
 			break;
-			
+			case EFF_ZZZ:
+			{
+				u8 sheet = NOSHEET;
+				SHEET_FIND(sheet, SHEET_ZZZ);
+				if(sheet == NOSHEET) break;
+				effMisc[i].ttl = TIME(100);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[sheet].index)
+				};
+			}
+			break;
 		}
 		break;
 	}

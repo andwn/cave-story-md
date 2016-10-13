@@ -567,12 +567,15 @@ void ai_balrogFlying(Entity *e) {
 				e->state = JUMP_UP;
 				e->timer = 0;
 				e->x_speed = (player.x - e->x) / 128;
+				e->x_mark = e->x_speed; // Remember x speed
 				e->y_speed = -0x600;
 				e->frame = ARMSUP;
 			}
 		break;
 		case JUMP_UP:		// jumping up
 			if(e->y_speed > 0x200) {
+				// Keep trying to move after hitting a wall
+				if(e->x_speed == 0) e->x_speed = e->x_mark;
 				if(e->health <= 60) {	
 					// skip flying if low health
 					e->state = JUMP_END;

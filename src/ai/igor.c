@@ -123,6 +123,7 @@ void ai_igor(Entity *e) {
 			e->attack = 2;
 			e->x_speed *= 2;
 			e->x_speed /= 3;
+			e->x_mark = e->x_speed; // Remember x speed
 			e->timer = 0;
 			e->state++;
 		}
@@ -132,6 +133,9 @@ void ai_igor(Entity *e) {
 				sound_play(SND_ENEMY_JUMP, 5);
 				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y) + e->hit_box.bottom);
 				e->state = STATE_LANDED;
+			} else {
+				// Don't stop momentum if we hit the step on the left
+				if(e->x_speed == 0) e->x_speed = e->x_mark;
 			}
 		}
 		break;

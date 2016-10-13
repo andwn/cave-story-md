@@ -19,15 +19,27 @@
   - Question mark when pressing down
   - Weapon level up / down
   - Zzz effect above Gunsmith, Chaco, Mimiga in Sand Zone bar, etc
-  - The "Hey!" bubble isn't appearing outside shelter for some reason
   - Ravil, the frenzied mimiga in Grasstown hut
   - The puppy at the bottom of Sand Zone should run back and forth
+  - The puppies should also wag their tails when you get close to them
   - Some of the Crows should be carrying skullheads
   - One of the skullheads have feet
   - There should be a skeleton enemy that throws bones near the end of Sand Zone
   - Monster X projectiles & fish missiles
   - Purple critter projectiles
   - Large doorway animation
+  - Busted robot sprite
+  - No booster trail yet
+
+- Bad Stuff
+  - Smoke when Igor dies is a bit wrong
+  - Balfrog spawn animation isn't blinking
+  - Sometimes frogs land in the right wall
+  - Mimigas in the bar turn into Curly when they fall down
+  - Omega sticking to the right wall sometimes
+  - Pooh Black lands early on left/right walls, no death anim
+  - Background portion of Monster X is incomplete/on top
+  - Getting stuck in wind tunnels
   
 - Major Boss Status
   - [x] Balfrog
