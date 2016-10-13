@@ -137,12 +137,12 @@ void onspawn_lift(Entity *e) {
 #define LIFT_MOVE_TIME 64
 #define LIFT_WAIT_TIME 90
 
-// Moves through floors 1, 2, 3, 1, 2, 3 - doesn't stop at 2 on the way down
+// Lift in observatory room that moves up and down
 void ai_lift(Entity *e) {
 	if(e->timer > 0) e->timer--;
 	if(e->timer == 0) {
 		e->state++;
-		if(e->state == 6) e->state = 0;
+		if(e->state == 8) e->state = 0;
 		switch(e->state) {
 			case 0: // bottom floor wait
 			e->timer = LIFT_WAIT_TIME;
@@ -164,8 +164,16 @@ void ai_lift(Entity *e) {
 			e->timer = LIFT_WAIT_TIME;
 			e->y_speed = 0;
 			break;
-			case 5: // top to bottom
-			e->timer = LIFT_MOVE_TIME * 2;
+			case 5: // top to middle
+			e->timer = LIFT_MOVE_TIME;
+			e->y_speed = LIFT_SPEED;
+			break;
+			case 6: // middle wait
+			e->timer = LIFT_WAIT_TIME;
+			e->y_speed = 0;
+			break;
+			case 7: // middle to bottom
+			e->timer = LIFT_MOVE_TIME;
 			e->y_speed = LIFT_SPEED;
 			break;
 		}

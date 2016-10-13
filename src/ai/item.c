@@ -16,6 +16,9 @@ void onspawn_energy(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
 		e->display_box.left -= 4;
 		e->display_box.right -= 4;
+		// Big energy
+		SHEET_FIND(e->sheet, SHEET_ENERGYL);
+		e->vramindex = sheets[e->sheet].index;
 	}
 	e->x_speed = 0x200 - (random() % 0x400);
 	e->alwaysActive = TRUE;
@@ -117,9 +120,9 @@ void ai_missile(Entity *e) {
 	if(entity_overlapping(&player, e)) {
 		// Find missile or super missile
 		Weapon *w = player_find_weapon(WEAPON_MISSILE);
-		if(w == NULL) w = player_find_weapon(WEAPON_SUPERMISSILE);
+		if(!w) w = player_find_weapon(WEAPON_SUPERMISSILE);
 		// If we found either increase ammo
-		if(w != NULL) {
+		if(w) {
 			// OPTION2 is large pickup
 			w->ammo += (e->eflags & NPC_OPTION2) ? 3 : 1;
 			if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
@@ -132,7 +135,7 @@ void ai_missile(Entity *e) {
 			e->state = STATE_DELETE;
 			return;
 		} else if(e->timer > 7 * FPS) {
-			e->hidden = (e->timer & 3) > 1;
+			e->hidden ^= 1;
 		}
 	}
 }
@@ -172,7 +175,7 @@ void ai_heart(Entity *e) {
 			e->state = STATE_DELETE;
 			return;
 		} else if(e->timer > 7 * FPS) {
-			e->hidden = (e->timer & 3) > 1;
+			e->hidden ^= 1;
 		}
 	}
 }

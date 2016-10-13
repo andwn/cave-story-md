@@ -124,6 +124,9 @@ Entity *entity_delete(Entity *e);
 // Plays death sound, drops power ups, and creates smoke
 Entity *entity_destroy(Entity *e);
 
+void entity_deactivate(Entity *e);
+void entity_reactivate(Entity *e);
+
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
 Entity *entity_create(s32 x, s32 y, u16 type, u16 flags);

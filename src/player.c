@@ -113,7 +113,7 @@ void player_update() {
 		if(tile & 0x80) {
 			switch(tile & 0x03) {
 			case 0: player.x_speed -= SPEED(0x88); break;
-			case 1: player.y_speed -= SPEED(0x80); break;
+			case 1: player.y_speed -= SPEED(0x80); player.jump_time = 2; break;
 			case 2: player.x_speed += SPEED(0x88); break;
 			case 3: player.y_speed += SPEED(0x50); break;
 			}

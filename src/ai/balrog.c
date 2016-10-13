@@ -414,6 +414,12 @@ void ai_balrogRunning(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
+	if(e->y_speed < 0) {
+		// Balrog is wide, check a third point in the middle of his head
+		if(!collide_stage_ceiling(e)) {
+			if(blk(e->x, 0, e->y, -e->hit_box.top) == 0x41) e->y_speed = 0;
+		}
+	}
 	// try to catch player
 	if (e->state == STATE_CHARGE+1 || e->state == STATE_JUMP) {
 		if (e->timer > 8 && entity_overlapping(&player, e)) {

@@ -117,6 +117,7 @@ SPRITE SPR_Hey			"sprite/hey.png"		2 2 0 0 NONE
 SPRITE SPR_Sprinkler	"sprite/sprinkler.png"	2 2 0 0 NONE
 SPRITE SPR_Sword		"sprite/kingsword.png"	2 2 0 0 NONE
 SPRITE SPR_Drop			"sprite/drop.png"		1 1 0 0 NONE
+SPRITE SPR_RedFl2		"sprite/redflowers2.png" 4 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE
