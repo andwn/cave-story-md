@@ -666,7 +666,7 @@ void ai_curlys_mimigas(Entity *e) {
 		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
-		e->frame = (random() & 1) + 4;
+		e->frame = (random() & 1) + 5;
 		e->attack = 0;
 		e->eflags &= ~NPC_SHOOTABLE;
 	}

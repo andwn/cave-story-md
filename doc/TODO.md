@@ -37,8 +37,6 @@
   - Smoke when Igor dies is a bit wrong
   - Balfrog spawn animation isn't blinking
   - Sometimes frogs land in the right wall
-  - Mimigas in the bar turn into Curly when they fall down
-  - Omega sticking to the right wall sometimes
   - Pooh Black lands early on left/right walls, no death anim
   - Background portion of Monster X is incomplete/on top
   - Getting stuck in wind tunnels

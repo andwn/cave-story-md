@@ -236,7 +236,7 @@ void ai_omega(Entity *e) {
 				e->timer = 0;
 				e->state = OMG_APPEAR;
 				
-				e->x = omgorgx + (-64) + ((random() % 128) << CSF);
+				e->x = omgorgx + ((-64 + (random() % 128)) << CSF);
 				e->y = omgorgy;
 				omgmovetime = TIME(OMEGA_RISE_HEIGHT);
 				
@@ -270,7 +270,7 @@ void ai_omega(Entity *e) {
 			if(collide_stage_leftwall(pieces[LEFTLEG])) {
 				e->x_speed = 0x100;
 			} else if(collide_stage_rightwall(pieces[RIGHTLEG])) {
-				e->x_speed = 0x100;
+				e->x_speed = -0x100;
 			}
 			if (e->y_speed > 0) {	// coming down
 				pieces[LEFTLEG]->frame = pieces[RIGHTLEG]->frame = 0;

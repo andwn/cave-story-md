@@ -207,8 +207,8 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_OMGLEG, &SPR_OmegaLeg, 2,4,4, 0,0, 1,0);
 		} break;
 		case 0x1D: // Sand Zone Bar
-		{	SHEET_ADD(SHEET_BARMIMI, &SPR_CurlyMimi, 8,2,2, 
-					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7);
+		{	SHEET_ADD(SHEET_BARMIMI, &SPR_CurlyMimi, 9,2,2, 
+					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8);
 			SHEET_ADD(SHEET_CURLYB, &SPR_CurlyB, 5,4,3, 0,0, 1,0, 1,2, 2,0, 4,0);
 		} break;
 		case 0x09: // Labyrinth I
