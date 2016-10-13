@@ -14,6 +14,8 @@
   - King's Theme
 
 - Missing stuff
+  - Make <MS2 display window on top of the screen
+  - Show MAX in the HUD when weapon energy is full
   - Weapons in item menu
   - Boss health
   - Question mark when pressing down
