@@ -351,16 +351,16 @@ void onspawn_malcoBroken(Entity *e) {
 	}
 }
 
-void onspawn_powerc(Entity *e) {
-	e->y -= 8 << CSF;
+void onspawn_powerf(Entity *e) {
+	e->y += 8 << CSF;
 }
 
-void ai_powerc(Entity *e) {
-	ANIMATE(e, 8, 0,1);
+void ai_powerf(Entity *e) {
+	ANIMATE(e, 2, 0,1,2,3);
 }
 
 void ai_powers(Entity *e) {
-	ANIMATE(e, 4, 0,1,2,3);
+	ANIMATE(e, 8, 0,1);
 }
 
 void ai_press(Entity *e) {
@@ -500,6 +500,10 @@ void ai_frog(Entity *e) {
 
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+void onspawn_hey(Entity *e) {
+	e->y -= 8 << CSF;
 }
 
 void ai_hey(Entity *e) {

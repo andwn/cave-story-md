@@ -14,8 +14,10 @@
 
 void onspawn_energy(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
+		// Small energy
 		e->display_box.left -= 4;
 		e->display_box.right -= 4;
+	} else {
 		// Big energy
 		SHEET_FIND(e->sheet, SHEET_ENERGYL);
 		e->vramindex = sheets[e->sheet].index;

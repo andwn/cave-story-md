@@ -184,7 +184,8 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
 		case 0x19: // Malco
-		{
+		{	SHEET_ADD(SHEET_POWERS, &SPR_PowerScreen, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_POWERF, &SPR_Wave, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
 		} break;
 		case 0x1C: // Gum
@@ -192,6 +193,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0,0, 0,1, 1,0);
 			SHEET_ADD(SHEET_PUCHI, &SPR_FrogSm, 3,2,2, 0,0, 0,0, 1,0);
 			SHEET_ADD(SHEET_FAN, &SPR_Fan, 3,2,2, 3,0, 3,1, 3,2);
+			SHEET_ADD(SHEET_FROGFEET, &SPR_Balfrog2, 2,3,3, 0,0, 0,1);
 		} break;
 		case 0x0A: // Sand Zone
 		case 0x25:

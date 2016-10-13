@@ -98,6 +98,11 @@ void onspawn_balfrog(Entity *e) {
 	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
 	e->display_box = (bounding_box) { 40, 32, 40, 32 };
 	
+	// timer2 recycled for feet's VRAM index
+	u16 sheet = NOSHEET;
+	SHEET_FIND(sheet, SHEET_FROGFEET);
+	e->timer2 = sheets[sheet].index;
+	
 	// setup the bounding box objects--this boss has an irregular bounding box
 	// and so we simulate that by having three invisible objects which are wired
 	// to transmit hits to the real Balfrog boss object.
@@ -453,19 +458,21 @@ void ai_balfrog(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	// Draw feet if jumping
+	static const s16 xoff1[2] = { -16, -32 },
+					 xoff2[2] = { 8, -8 };
 	if(e->jump_time) {
 		VDPSprite feet[2] = {
 			(VDPSprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 16,
-				.y = (e->x >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff1[e->dir] + 128,
+				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,e->dir,0,TILE_FACEINDEX+4+(e->dir?9:0)),
+				.attribut = TILE_ATTR_FULL(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
 			},
 			(VDPSprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + 8,
-				.y = (e->x >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff2[e->dir] + 128,
+				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,e->dir,0,TILE_FACEINDEX+4+(e->dir?0:9)),
+				.attribut = TILE_ATTR_FULL(PAL3,0,0,e->dir,e->timer2+(e->dir?0:9)),
 			},
 		};
 		sprite_addq(feet, 2);
@@ -524,11 +531,11 @@ void spawn_frogs(u16 objtype, u8 count) {
 void set_jump_sprite(Entity *e, u8 enable) {
 	if(enable) {
 		e->jump_time = TRUE;
-		e->display_box.top -= 12;
+		e->display_box.top += 8;
 		bbox_mode = BM_JUMPING;
 	} else {
 		e->jump_time = FALSE;
-		e->display_box.top += 12;
+		e->display_box.top -= 8;
 		bbox_mode = BM_STAND;
 	}
 }
