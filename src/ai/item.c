@@ -31,7 +31,7 @@ void ai_energy(Entity *e) {
 		e->animtime = 0;
 		if(++e->frame > 5) e->frame = 0;
 	}
-	if(entity_overlapping(&player, e)) {
+	if((e->timer & 1) && entity_overlapping(&player, e)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
 				weapon_info[w->type].experience[w->level-1]) {
@@ -119,7 +119,8 @@ void ai_missile(Entity *e) {
 		e->state = 1;
 	}
 	// Increases missile ammo, plays sound and deletes itself
-	if(entity_overlapping(&player, e)) {
+	e->timer++;
+	if((e->timer & 1) && entity_overlapping(&player, e)) {
 		// Find missile or super missile
 		Weapon *w = player_find_weapon(WEAPON_MISSILE);
 		if(!w) w = player_find_weapon(WEAPON_SUPERMISSILE);
@@ -132,7 +133,6 @@ void ai_missile(Entity *e) {
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
-		e->timer++;
 		if(e->timer > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;
@@ -159,7 +159,8 @@ void ai_heart(Entity *e) {
 		e->state = 1;
 	}
 	// Increases health, plays sound and deletes itself
-	if(entity_overlapping(&player, e)) {
+	e->timer++;
+	if((e->timer & 1) && entity_overlapping(&player, e)) {
 		if(e->eflags & NPC_OPTION1) {
 			player.health += e->health;
 		} else if(e->eflags & NPC_OPTION2) {
@@ -172,7 +173,6 @@ void ai_heart(Entity *e) {
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
 	} else if(e->eflags & NPC_OPTION1) {
-		e->timer++;
 		if(e->timer > 10 * FPS) {
 			e->state = STATE_DELETE;
 			return;

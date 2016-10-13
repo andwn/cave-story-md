@@ -34,6 +34,10 @@ void onspawn_op2snap(Entity *e) {
 	}
 }
 
+void onspawn_pushup(Entity *e) {
+	e->y -= 16 << CSF;
+}
+
 void onspawn_blackboard(Entity *e) {
 	e->y -= 16<<CSF;
 	if(e->eflags & NPC_OPTION2) e->frame = 1;

@@ -161,9 +161,14 @@ void ai_kulala(Entity *e) {
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		e->y_speed += SPEED(0x10);
-		if(collide_stage_floor(e)) e->y_speed = SPEED(-0x300);
-		else if(e->y_speed < 0) collide_stage_ceiling(e);
-		
+		// Have to make an extra check because we are wide
+		if(collide_stage_floor(e) || (blk(e->x, 0, e->y, e->hit_box.bottom) & 0x41 == 0x41)) 
+			e->y_speed = SPEED(-0x300);
+		else if(e->y_speed < 0) {
+			if(!collide_stage_ceiling(e)) {
+				if((blk(e->x, 0, e->y, -e->hit_box.top) & 0x41 == 0x41)) e->y_speed = 0x100;
+			}
+		}
 		// Unused y_mark for third timer
 		if(collide_stage_leftwall(e)) {
 			e->y_mark = TIME(50);

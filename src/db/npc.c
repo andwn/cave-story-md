@@ -209,10 +209,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
 	/* 0x0C0 (192) */
-	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_snap, &ai_motorbike, &ai_null }, // Scooter
+	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_pushup, &ai_motorbike, &ai_null }, // Scooter
 	{ &SPR_Buggy2, 	NOSHEET, PAL3, 2, &ai_null, &ai_null, &ai_null }, // Scooter (Pieces)
 	{ &SPR_Robot, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
+	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Motion Wall
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Porcupine Fish
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Ironhead Projectile
