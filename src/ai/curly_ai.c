@@ -25,7 +25,7 @@ u8 curly_watershield = 0;
 u8 curly_impjump = 0;
 u8 curly_reachptimer = 0;
 u8 curly_blockedtime = 0;
-s16 curly_impjumptime = 0;
+//s16 curly_impjumptime = 0;
 u16 curly_tryjumptime = 0;
 u8 curly_look = 0;
 
@@ -43,7 +43,7 @@ const char porn[1] = {""};
 // curly that fights beside you
 void ai_curly_ai(Entity *e) {
 	s32 xdist, ydist;
-	s32 xlimit;
+	//s32 xlimit;
 	u8 reached_p;
 	u16 otiley;
 	u8 seeking_player = 0;
@@ -225,26 +225,24 @@ void ai_curly_ai(Entity *e) {
 		if (e->x_next > e->x_mark) e->x_speed -= SPEED(0x20);
 		if (e->x_next < e->x_mark) e->x_speed += SPEED(0x20);
 		
-		// jump if we hit a wall
-		if (blockr || blockl) {
-			if (++curly_blockedtime > 8) {
-				CaiJUMP(e);
-			}
+		// jump if we hit a wall, jump higher if off camera
+		if ((blockr || blockl) && ++curly_blockedtime > 8) {
+			CaiJUMP(e);
+			curly_impjump = abs(e->x - camera.x) > 240 << CSF;
 		}
 		else curly_blockedtime = 0;
-		
+		/*
 		// if our target gets really far away (like p is leaving us behind) and
 		// the above jumping isn't getting us anywhere, activate the Improbable Jump
 		if ((blockl || blockr) && xdist > (80<<CSF)) {
 			//sprite_add(((VDPSprite){.x=128,.y=128,.size=SPRITE_SIZE(4, 4)}));
-			if (++curly_impjumptime > 60 && e->grounded) {
+			if (abs(e->x - camera.x) > (240 << CSF) && e->grounded) {
 				CaiJUMP(e);
-				curly_impjumptime = -100;
 				curly_impjump = 1;
 			}
 		}
 		else curly_impjumptime = 0;
-		
+		*/
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<CSF)) {
 			if (++curly_tryjumptime > 20) {
