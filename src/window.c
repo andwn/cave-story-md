@@ -65,32 +65,34 @@ void window_open(u8 mode) {
 	window_clear_text();
 	textRow = 0;
 	textColumn = 0;
+	
 	windowOnTop = mode;
-	//if(mode) {
-	//	
-	//} else {
-	//	
-	//}
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, WINDOW_Y1);
+	u16 wy1 = mode ? WINDOW_Y1_TOP : WINDOW_Y1,
+		wy2 = mode ? WINDOW_Y2_TOP : WINDOW_Y2,
+		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
+		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
+	
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, WINDOW_Y1);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, WINDOW_Y1);
-	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, wy1);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, wy1);
+	for(u8 y = ty1; y <= ty2; y++) {
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), WINDOW_X1, y);
 		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
 			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 		}
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), WINDOW_X2, y);
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, WINDOW_Y2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, wy2);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, WINDOW_Y2);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, WINDOW_Y2);
+		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, wy2);
+	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, wy2);
+	
 	if(!paused) {
 		if(showingFace > 0) {
 			window_draw_face(showingFace);
 		}
-		VDP_setWindowPos(0, 244);
+		VDP_setWindowPos(0, mode ? 8 : 244);
 	} else showingFace = 0;
 	windowOpen = TRUE;
 }
@@ -101,7 +103,7 @@ u8 window_is_open() {
 
 void window_clear() {
 	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
+	for(u8 y = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1; y <= windowOnTop ? TEXT_Y2_TOP:TEXT_Y2; y++) {
 		for(u8 x = x1; x <= TEXT_X2; x++) {
 			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 		}
@@ -137,7 +139,7 @@ void window_set_face(u16 face, u8 open) {
 		window_draw_face();
 	} else {
 		// Hack to clear face only
-		for(u8 y = TEXT_Y1; y <= TEXT_Y2; y++) {
+		for(u8 y = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1; y <= windowOnTop ? TEXT_Y2_TOP:TEXT_Y2; y++) {
 			for(u8 x = TEXT_X1; x <= TEXT_X1_FACE; x++) {
 				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 			}
@@ -160,7 +162,7 @@ void window_draw_char(u8 c) {
 		if(textColumn >= 36 - (showingFace > 0) * 8) return;
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn;
-		u8 msgTextY = TEXT_Y1 + textRow * 2;
+		u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
 		textColumn++;
@@ -171,7 +173,7 @@ void window_scroll_text() {
 	// Push bottom 2 rows to top
 	for(u8 row = 0; row < 2; row++) {
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-		u8 msgTextY = TEXT_Y1 + row * 2;
+		u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
 		for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
 			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
@@ -181,7 +183,7 @@ void window_scroll_text() {
 	}
 	// Clear third row
 	u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	u8 msgTextY = TEXT_Y1 + 4;
+	u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
 	for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 		windowText[2][col] = ' ';
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
@@ -262,7 +264,7 @@ void window_draw_face() {
 	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_WINDOW, 
 		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
-		TEXT_X1, TEXT_Y1, 6, 6);
+		TEXT_X1, (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1), 6, 6);
 	SYS_enableInts();
 }
 
