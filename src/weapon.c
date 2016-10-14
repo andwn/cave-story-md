@@ -388,10 +388,10 @@ Bullet *bullet_colliding(Entity *e) {
 		if(!playerBullet[i].ttl) continue;
 		u16 bx = playerBullet[i].x >> CSF, by = playerBullet[i].y >> CSF;
 		bounding_box bb = playerBullet[i].hit_box;
-		if (bx - bb.left   >= ex + eb.right  &&
-			bx + bb.right  <= ex - eb.left   &&
-			by - bb.top    >= ey + eb.bottom &&
-			by + bb.bottom <= ey - eb.top) return &playerBullet[i];
+		if (bx - bb.left   <= ex + eb.right  &&
+			bx + bb.right  >= ex - eb.left   &&
+			by - bb.top    <= ey + eb.bottom &&
+			by + bb.bottom >= ey - eb.top) return &playerBullet[i];
 	}
 	return NULL;
 }
