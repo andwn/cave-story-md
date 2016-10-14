@@ -51,6 +51,7 @@ u8 textMode = TM_NORMAL;
 u8 windowText[3][36];
 u8 textRow, textColumn;
 u8 windowTextTick = 0;
+u8 spaceCounter = 0, spaceOffset = 0;
 
 u8 promptShowing = FALSE;
 u8 promptAnswer = TRUE;
@@ -115,6 +116,7 @@ void window_clear() {
 void window_clear_text() {
 	textRow = 0;
 	textColumn = 0;
+	spaceCounter = spaceOffset = 0;
 	for(u8 row = 0; row < 3; row++) {
 		for(u8 col = 0; col < 36; col++) {
 			windowText[row][col] = ' ';
@@ -152,6 +154,7 @@ void window_draw_char(u8 c) {
 	if(c == '\n') {
 		textRow++;
 		textColumn = 0;
+		spaceCounter = spaceOffset = 0;
 		if(textRow > 2) {
 			if(textMode == TM_ALL) textMode = TM_NORMAL;
 			window_scroll_text();
@@ -159,14 +162,28 @@ void window_draw_char(u8 c) {
 			textMode = TM_NORMAL;
 		}
 	} else {
-		windowText[textRow][textColumn] = c;
-		if(textColumn >= 36 - (showingFace > 0) * 8) return;
+		// Check if the line has leading spaces, and skip drawing a space occasionally,
+		// so that the sign text will be centered
+		if(textColumn == spaceCounter && c == ' ') {
+			spaceCounter++;
+		} else {
+			spaceCounter = 0;
+		}
+		windowText[textRow][textColumn - spaceOffset] = c;
+		// Don't draw text outside the window, hopefully this doesn't happen,
+		// because it means the text being cut off on the right
+		//if(textColumn >= 36 - (showingFace > 0) * 8) return;
+		// Figure out where this char is gonna go
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-		msgTextX += textColumn;
+		msgTextX += textColumn - spaceOffset;
 		u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
+		// And draw it
+		SYS_disableInts();
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
+		SYS_enableInts();
 		textColumn++;
+		if(spaceCounter % 5 == 1 || spaceCounter == 2) spaceOffset++;
 	}
 }
 
@@ -194,6 +211,7 @@ void window_scroll_text() {
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;
+	spaceCounter = spaceOffset = 0;
 }
 
 void window_set_textmode(u8 mode) {
