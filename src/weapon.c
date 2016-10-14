@@ -381,18 +381,17 @@ void bullet_update_spur(Bullet *b) {
 }
 
 Bullet *bullet_colliding(Entity *e) {
+	// Keeping this in the registers should be a bit faster than always following the pointer
+	u16 ex = e->x >> CSF, ey = e->y >> CSF;
+	bounding_box eb = eb = e->hit_box;
 	for(u8 i = 0; i < MAX_BULLETS; i++) {
-		if(playerBullet[i].ttl == 0) continue;
+		if(!playerBullet[i].ttl) continue;
+		u16 bx = playerBullet[i].x >> CSF, by = playerBullet[i].y >> CSF;
 		bounding_box bb = playerBullet[i].hit_box;
-		if(sub_to_pixel(playerBullet[i].x) - bb.left >= 
-			sub_to_pixel(e->x) + e->hit_box.right) continue;
-		if(sub_to_pixel(playerBullet[i].x) + bb.right <= 
-			sub_to_pixel(e->x) - e->hit_box.left) continue;
-		if(sub_to_pixel(playerBullet[i].y) - bb.top >= 
-			sub_to_pixel(e->y) + e->hit_box.bottom) continue;
-		if(sub_to_pixel(playerBullet[i].y) + bb.bottom <= 
-			sub_to_pixel(e->y) - e->hit_box.top) continue;
-		return &playerBullet[i];
+		if (bx - bb.left   >= ex + eb.right  &&
+			bx + bb.right  <= ex - eb.left   &&
+			by - bb.top    >= ey + eb.bottom &&
+			by + bb.bottom <= ey - eb.top) return &playerBullet[i];
 	}
 	return NULL;
 }

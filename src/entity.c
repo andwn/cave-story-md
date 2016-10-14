@@ -208,9 +208,11 @@ void entities_update() {
 				}
 				if(!(e->eflags & NPC_INVINCIBLE)) {
 					if(e->health <= b->damage) {
-						if((e->nflags | e->eflags) & NPC_SHOWDAMAGE)
+						if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
 							effect_create_damage(e->damage_value - b->damage,
 									sub_to_pixel(e->x), sub_to_pixel(e->y));
+							e->damage_time = 0;
+						}
 						// Killed enemy
 						e->health = 0;
 						ENTITY_ONDEATH(e);
@@ -220,8 +222,7 @@ void entities_update() {
 							e = e->next;
 						}
 						continue;
-					}
-					if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
+					} else if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
 						e->damage_value -= b->damage;
 						e->damage_time = 30;
 					}
