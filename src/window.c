@@ -103,7 +103,7 @@ u8 window_is_open() {
 
 void window_clear() {
 	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	for(u8 y = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1; y <= windowOnTop ? TEXT_Y2_TOP:TEXT_Y2; y++) {
+	for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
 		for(u8 x = x1; x <= TEXT_X2; x++) {
 			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 		}
@@ -124,8 +124,9 @@ void window_clear_text() {
 
 void window_close() {
 	if(!paused) {
-		if(showingBossHealth) VDP_setWindowPos(0, 253);
-		else VDP_setWindowPos(0, 0);
+		//if(showingBossHealth) VDP_setWindowPos(0, 253);
+		//else 
+		VDP_setWindowPos(0, 0);
 	}
 	showingItem = 0;
 	windowOpen = FALSE;
@@ -133,13 +134,13 @@ void window_close() {
 
 void window_set_face(u16 face, u8 open) {
 	if(paused) return;
-	if(open && !windowOpen) window_open(0);
+	if(open && !windowOpen) window_open(windowOnTop);
 	showingFace = face;
 	if(face > 0) {
 		window_draw_face();
 	} else {
 		// Hack to clear face only
-		for(u8 y = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1; y <= windowOnTop ? TEXT_Y2_TOP:TEXT_Y2; y++) {
+		for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
 			for(u8 x = TEXT_X1; x <= TEXT_X1_FACE; x++) {
 				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 			}

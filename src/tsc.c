@@ -701,11 +701,11 @@ u8 execute_command() {
 		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
 			logcmd("<BSL:%hu", args[0]);
-			bossEntity = entity_find_by_event(args[0]);
-			if(bossEntity) {
-				bossMaxHealth = bossHealth = bossEntity->health;
-				tsc_show_boss_health();
-			}
+			//bossEntity = entity_find_by_event(args[0]);
+			//if(bossEntity) {
+			//	bossMaxHealth = bossHealth = bossEntity->health;
+			//	tsc_show_boss_health();
+			//}
 			break;
 		case CMD_NCJ: // If entity type (1) exists jump to event (2)
 			args[0] = tsc_read_word();
