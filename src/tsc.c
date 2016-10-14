@@ -325,7 +325,7 @@ void tsc_show_boss_health() {
 }
 
 void tsc_update_boss_health() {
-	if(bossEntity == NULL) {
+	if(!bossEntity) {
 		tsc_hide_boss_health();
 	} else if(bossEntity->health > bossMaxHealth) {
 		VDP_drawTextWindow("?HP>MHP?", 29, 26);
@@ -360,6 +360,9 @@ void tsc_update_boss_health() {
 void tsc_hide_boss_health() {
 	showingBossHealth = FALSE;
 	VDP_setWindowPos(0, 0);
+	// Blank out these 2 tiles in the corner
+	VDP_setTileMapXY(PLAN_WINDOW, 39, 26, 0);
+	VDP_setTileMapXY(PLAN_WINDOW, 39, 27, 0);
 }
 
 void tsc_show_teleport_menu() {
@@ -393,11 +396,11 @@ u8 execute_command() {
 			break;
 		case CMD_MS2: // Display message box (top - invisible)
 			logcmd("<MS2");
-			window_open(0);
+			window_open(1);
 			break;
 		case CMD_MS3: // Display message box (top - visible)
 			logcmd("<MS3");
-			window_open(0);
+			window_open(1);
 			break;
 		case CMD_CLO: // Close message box
 			logcmd("<CLO");
@@ -547,19 +550,19 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			logcmd("<MOV:%hu:%hu", args[0], args[1]);
-			player.x = block_to_sub(args[0]) + pixel_to_sub(8);
-			player.y = block_to_sub(args[1]) + pixel_to_sub(8);
+			player.x = block_to_sub(args[0]) + (8 << CSF);
+			player.y = block_to_sub(args[1]) + (8 << CSF);
 			player.grounded = FALSE;
 			break;
 		case CMD_MYB: // Bounce player in direction (1)
 			args[0] = tsc_read_word();
 			logcmd("<MYB:%hu", args[0]);
-			if(args[0] == 0) { // Left
-				player.x_speed = pixel_to_sub(1);
-			} else if(args[0] == 2) { // Right
-				player.x_speed = -pixel_to_sub(1);
+			if(args[0] == 0) { // Right
+				player.x_speed = SPEED(0x200);
+			} else if(args[0] == 2) { // Left
+				player.x_speed = -SPEED(0x200);
 			}
-			player.y_speed = -pixel_to_sub(2);
+			player.y_speed = -SPEED(0x400);
 			break;
 		case CMD_MYD: // Change direction to (1)
 			args[0] = tsc_read_word();

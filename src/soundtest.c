@@ -104,4 +104,5 @@ void soundtest_main() {
 		}
 		VDP_waitVSync();
     }
+    SYS_hardReset(); // eh
 }

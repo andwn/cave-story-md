@@ -57,7 +57,6 @@ void ai_mahin(Entity *e) {
 		case 1: break;
 		case 2:
 		{
-			e->dir = 0;
 			e->frame = 0;
 			RANDBLINK(e, 1, 200);
 		}
