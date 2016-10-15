@@ -365,7 +365,7 @@ void ondeath_omega(Entity *e) {
 
 void ai_omega_shot(Entity *e) {
 	e->eflags ^= NPC_SHOOTABLE;
-	e->y_speed += 4;
+	e->y_speed += 5;
 	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = -0x100;
 	if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = -e->y_speed;
 	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) ||

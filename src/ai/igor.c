@@ -310,7 +310,7 @@ void ai_igordead(Entity *e) {
 				e->state = 4;
 			}
 		}
-		effect_create_smoke(e->x >> CSF, (e->y >> CSF) + 20);
+		//effect_create_smoke(e->x >> CSF, (e->y >> CSF) + 20);
 		break;
 		case 4: break;
 	}

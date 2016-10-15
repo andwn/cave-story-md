@@ -684,13 +684,13 @@ void ai_curlys_mimigas(Entity *e) {
 void ai_skeleton_shot(Entity *e) {
 	ANIMATE(e, 8, 0,1,2,3);
 	
-	if ((e->x_speed < 0 && blk(e->x, 0, e->y, -6) == 0x41) || 
-			(e->x_speed > 0 && blk(e->x, 0, e->y, 6) == 0x41)) {
+	if ((e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41) || 
+			(e->x_speed > 0 && blk(e->x, 6, e->y, 0) == 0x41)) {
 		e->x_speed = -e->x_speed;
 		e->timer += 5;
 	}
 	
-	if ((e->y_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41)) {
+	if ((e->y_speed < 0 && blk(e->x, 0, e->y, -6) == 0x41)) {
 		e->y_speed = -e->y_speed;
 		e->timer += 5;
 	}
@@ -773,7 +773,7 @@ void ai_skeleton(Entity *e) {
 					e->timer2++;
 					
 					FIRE_ANGLED_SHOT(OBJ_SKELETON_SHOT, e->x, e->y, 
-							e->dir ? A_RIGHT:A_LEFT, 0x300);
+							e->dir ? A_RIGHT+1:A_LEFT-1, 0x300);
 					sound_play(SND_EM_FIRE, 3);
 				}
 				

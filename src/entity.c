@@ -184,8 +184,9 @@ void entities_update() {
 			e = entity_destroy(e);
 			continue;
 		}
+		u16 flags = e->nflags | e->eflags;
 		// Handle Shootable flag - check for collision with player's bullets
-		if((e->nflags | e->eflags) & NPC_SHOOTABLE) {
+		if(flags & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
 			if(b) {
 				// Destroy the bullet, or if it is a missile make it explode
@@ -200,15 +201,15 @@ void entities_update() {
 					}
 				} else {
 					b->ttl = 0;
-					if(e->eflags & NPC_INVINCIBLE) {
+					if(flags & NPC_INVINCIBLE) {
 						sound_play(SND_TINK, 5);
 					} else {
 						if(b->damage < e->health) sound_play(e->hurtSound, 5);
 					}
 				}
-				if(!(e->eflags & NPC_INVINCIBLE)) {
+				if(!(flags & NPC_INVINCIBLE)) {
 					if(e->health <= b->damage) {
-						if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
+						if(flags & NPC_SHOWDAMAGE) {
 							effect_create_damage(e->damage_value - b->damage,
 									sub_to_pixel(e->x), sub_to_pixel(e->y));
 							e->damage_time = 0;
@@ -222,7 +223,7 @@ void entities_update() {
 							e = e->next;
 						}
 						continue;
-					} else if((e->nflags | e->eflags) & NPC_SHOWDAMAGE) {
+					} else if(flags & NPC_SHOWDAMAGE) {
 						e->damage_value -= b->damage;
 						e->damage_time = 30;
 					}
@@ -232,42 +233,42 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if((e->eflags|e->nflags) & NPC_SPECIALSOLID) {
-			collision = entity_react_to_collision(&player, e, TRUE);
+		if(flags & NPC_SPECIALSOLID) {
+			// Apply x_next/y_next so player is completely outside us
+			collision = entity_react_to_collision(&player, e);
+			player.x = player.x_next;
+			player.y = player.y_next;
 			if(collision.bottom) {
-				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
+				if(flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
 					player.grounded = FALSE;
 				} else {
 					playerPlatform = e;
 				}
-				player.y_next = player.y;
-				collide_stage_ceiling(&player);
-				player.y = player.y_next;
+				//player.y_next = player.y;
+				//collide_stage_ceiling(&player);
+				//player.y = player.y_next;
 			// Double check stage collision to avoid clipping through walls
-			} else if(collision.top) {
-				player.y_next = player.y;
-				collide_stage_floor(&player);
-				player.y = player.y_next;
-			} else if(collision.left) {
-				player.x_next = player.x;
-				collide_stage_rightwall(&player);
-				player.x = player.x_next;
-			} else if(collision.right) {
-				player.x_next = player.x;
-				collide_stage_leftwall(&player);
-				player.x = player.x_next;
+			//} else if(collision.top) {
+			//	player.y_next = player.y;
+			//	collide_stage_floor(&player);
+			//	player.y = player.y_next;
+			//} else if(collision.left) {
+			//	player.x_next = player.x;
+			//	collide_stage_rightwall(&player);
+			//	player.x = player.x_next;
+			//} else if(collision.right) {
+			//	player.x_next = player.x;
+			//	collide_stage_leftwall(&player);
+			//	player.x = player.x_next;
 			}
 		} // "Smushy" Solid Entities
-		else if((e->eflags|e->nflags) & (NPC_SOLID)) {
-			{
-				s32 px = player.x, py = player.y;
-				collision = entity_react_to_collision(&player, e, TRUE);
-				player.x = px; player.y = py;
-			}
+		else if(flags & NPC_SOLID) {
+			// Don't apply x_next/y_next, push outward 1 pixel at a time
+			collision = entity_react_to_collision(&player, e);
 			if(collision.bottom) {
 				player.y -= 1<<CSF;
-				if((e->eflags|e->nflags) & NPC_BOUNCYTOP) {
+				if(flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
 					player.grounded = FALSE;
 				} else {
@@ -283,7 +284,7 @@ void entities_update() {
 			if(collided || entity_overlapping(&player, e)) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
-				if((e->eflags|e->nflags)&NPC_FRONTATKONLY) {
+				if(flags & NPC_FRONTATKONLY) {
 					if((e->dir == 0 && collision.right == 0) ||
 							(e->dir > 0 && collision.left == 0)) {
 						e = e->next;
@@ -297,7 +298,7 @@ void entities_update() {
 			}
 		}
 		// Display damage
-		if(((e->eflags|e->nflags) & NPC_SHOWDAMAGE) && e->damage_value) {
+		if((flags & NPC_SHOWDAMAGE) && e->damage_value) {
 			e->damage_time--;
 			if(e->damage_time <= 0) {
 				effect_create_damage(e->damage_value,
@@ -599,7 +600,7 @@ u8 entity_overlapping(Entity *a, Entity *b) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY) {
+bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 	bounding_box result = { 0, 0, 0, 0 };
 	s16 ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x_next) + (a->dir ? a->hit_box.left : a->hit_box.right),
@@ -620,19 +621,11 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY) {
 		s16 move2 = pixel_to_sub(bx1 - ax2);
 		if(abs(move1) < abs(move2)) {
 			result.left = 1;
-			if(realXY) {
-				a->x += move1;
-			} else {
-				a->x_next += move1;
-			}
+			a->x_next += move1;
 			if(a->x_speed < 0) a->x_speed = 0;
 		} else {
 			result.right = 1;
-			if(realXY) {
-				a->x += move2;
-			} else {
-				a->x_next += move2;
-			}
+			a->x_next += move2;
 			if(a->x_speed > 0) a->x_speed = 0;
 		}
 	}
@@ -646,19 +639,11 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY) {
 		s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
 		if(abs(move1) < abs(move2)) {
 			result.top = 1;
-			if(realXY) {
-				a->y += move1;
-			} else {
-				a->y_next += move1;
-			}
+			a->y_next += move1;
 			if(a->y_speed < 0) a->y_speed = 0;
 		} else {
 			result.bottom = 1;
-			if(realXY) {
-				a->y += move2;
-			} else {
-				a->y_next += move2;
-			}
+			a->y_next += move2;
 			if(a->y_speed > 0) a->y_speed = 0;
 			a->grounded = TRUE;
 		}

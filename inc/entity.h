@@ -150,7 +150,7 @@ u8 collide_stage_ceiling(Entity *e);
 // Returns TRUE if entity a's hitbox is overlapping b's
 u8 entity_overlapping(Entity *a, Entity *b);
 // Pushes entity a outside of entity b's hitbox
-bounding_box entity_react_to_collision(Entity *a, Entity *b, u8 realXY);
+bounding_box entity_react_to_collision(Entity *a, Entity *b);
 
 void entity_default(Entity *e, u16 type, u16 flags);
 
