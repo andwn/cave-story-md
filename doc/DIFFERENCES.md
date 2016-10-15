@@ -27,7 +27,6 @@ TODO: Make this a wiki page
  - WONTFIX: Misery's face images have a red background and her shirt is green.
  - WONTFIX: Balrog is his normal color and not shaded green in the scene before he is transformed into Balfrog.
  - WONTFIX: Balrog's face graphic in both Gum room and Jenka's house are slightly dis-colored. That's because it uses the 4th (shared) palette which are different in those rooms. I rearranged the palettes so that his face would make sense.
- - MIGHTFIX: Mimigas in the bar with Curly have yellow-ish shirts instead of lime green.
  - MIGHTFIX: The bats in grasstown are blue like the first cave ones.
  - MIGHTFIX: Rooms like first cave have a solid black background instead of having a hint of blue.
  - MIGHTFIX: Backgrounds tend to be brighter than the original game. They have to share a palette with either NPCs or the map.
@@ -44,7 +43,6 @@ TODO: Make this a wiki page
 
 #### Mechanics
  - FEATURE: When holding A during a script, text will skip instantly and NPCs will move at double speed.
- - FEATURE: Hold A and press Start on the title screen to enable debug. In debug holding A lets you float and move through walls.
  - WONTFIX: Most objects when offscreen stop moving/updating until they are back on the screen.
  - WONTFIX: Weapon energy is combined into a single power up instead of many being created by the same enemy.
 

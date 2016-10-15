@@ -534,11 +534,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't
 	 * already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
-	{ &SPR_CoreFront, NOSHEET, PAL3, 8, // Core (Front)
+	{ &SPR_CoreFront, NOSHEET, PAL2, 6, // Core (Front)
 		&onspawn_persistent, &ai_core_front, &ai_null },
-	{ NULL, NOSHEET, PAL3, 9, // Core (Back)
+	{ &SPR_CoreBack, NOSHEET, PAL2, 9, // Core (Back)
 		&onspawn_persistent, &ai_core_back, &ai_null },
-	{ &SPR_MiniCore, NOSHEET, PAL3, 2, // Mini Core
+	{ NULL, NOSHEET, PAL2, 4, // Mini Core
 		&onspawn_persistent, &ai_minicore, &ai_null },
 	{ NULL, SHEET_OMGLEG, PAL3, 1, // Omega Leg
 		&onspawn_omega_leg, &ai_null, &ai_null },

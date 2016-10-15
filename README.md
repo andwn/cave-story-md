@@ -1,12 +1,12 @@
 # Cave Story MD
 ![Screenshot](doc/ss01.png)
 
-[More Screenshots](doc/SCREENS.md) / [Glitches](doc/SCREENS-FUNNY.md)
+[More Screenshots](doc/SCREENS.md)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
-It should work on any console or emulator (but not PAL yet).
+It should work on any console or emulator (PAL is untested).
 
 ### Download prebuilt ROM
 See: [Releases](https://github.com/andwn/cave-story-md/releases)
@@ -15,17 +15,19 @@ See: [Releases](https://github.com/andwn/cave-story-md/releases)
 In the current release `0.2` you can make it to Ironhead if you try really hard. Labyrinth and
 Waterway are really glitchy though.
 
-Master is broken at the Core fight, lol. Also looky here: [TODO list](doc/TODO.md)
+Also looky here: [TODO list](doc/TODO.md)
 
 ### Controls
+There may be an option to configure this in the future.
+
 - C - Jump, confirm
 - B - Shoot
-- A - Fast forward through scenes
+- A - Fast forward through scripted events
 - Y, Z - Switch weapon
 - Start - Pause / Item Menu
 
-### How to build
-Assuming you are running GNU/Linux,
+### Compilation
+Assuming you are running GNU/Linux. It might also work on BSDs
 
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
 2. Clone this repository and do `make`.
@@ -41,7 +43,7 @@ There aren't any. I used to have a Makefile and bat to build this on Windows,
 however the build only succeeded ~30% of the time due to random build errors. 
 The game also lags much more often when built from Windows for some reason.
 
-#### There are no save points. What's going on? (as of `0.2.1`)
+#### There are no save points. What's going on?
 The game detected that you have no SRAM. If this is not the case, open an issue.
 
 #### I found a discrepancy with the original, what do?

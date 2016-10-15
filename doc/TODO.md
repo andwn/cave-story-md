@@ -14,7 +14,6 @@
   - King's Theme
 
 - Missing stuff
-  - Make <MS2 display window on top of the screen
   - Show MAX in the HUD when weapon energy is full
   - Weapons in item menu
   - Boss health
@@ -26,7 +25,6 @@
   - The puppies should also wag their tails when you get close to them
   - Some of the Crows should be carrying skullheads
   - One of the skullheads have feet
-  - There should be a skeleton enemy that throws bones near the end of Sand Zone
   - Monster X projectiles & fish missiles
   - Purple critter projectiles
   - Large doorway animation
@@ -34,12 +32,11 @@
   - No booster trail yet
 
 - Bad Stuff
-  - Smoke when Igor dies is a bit wrong
   - Balfrog spawn animation isn't blinking
   - Sometimes frogs land in the right wall
   - Pooh Black lands early on left/right walls, no death anim
   - Background portion of Monster X is incomplete/on top
-  - Getting stuck in wind tunnels
+  - Getting stuck in wind tunnels (kind of fixed not really)
   
 - Major Boss Status
   - [x] Balfrog
@@ -67,7 +64,6 @@
   - [ ] Ending
   - [ ] Credits
   - [ ] Hell
-  - [ ] Fortress?
 
 - Weapons / Equip
   - [x] Polar Star
@@ -95,9 +91,9 @@
   - [ ] DMCA
   - [ ] GensKmod multiplat fork
   - [ ] I get an actual programming job because of this project
-  - [x] Newer versions of GCC lagging noticably less than 3.x
+  - [ ] Jenka's Nightmare
+  - [ ] Kero Blaster MD
   - [x] Python
   - [x] Sega splash screen
   - [ ] Someone holds A for free WR
-  - [ ] SRAM on UMDK
   - [ ] Undertale

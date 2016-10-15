@@ -108,6 +108,8 @@ void player_update() {
 	u8 tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
 	if(debuggingEnabled && (joystate&BUTTON_A)) { // Float - no collision
 		player_update_float();
+		player.x_next = player.x + player.x_speed;
+		player.y_next = player.y + player.y_speed;
 	} else if(playerMoveMode == 0) { // Normal movement
 		// Wind/Water current
 		if(tile & 0x80) {
@@ -180,6 +182,8 @@ void player_update() {
 		player_update_bounds();
 	} else { // Move mode 1 - for ironhead
 		player_update_float();
+		player.x_next = player.x + player.x_speed;
+		player.y_next = player.y + player.y_speed;
 		if(player.x_speed < 0) {
 			collide_stage_leftwall(&player);
 		} else if (player.x_speed > 0) {

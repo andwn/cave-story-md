@@ -141,7 +141,13 @@ SPRITE SPR_Shutter		"sprite/coreshutter.png"	2 4 0 0 NONE
 SPRITE SPR_BigShutter	"sprite/corebigshutter.png" 4 4 0 0 NONE
 SPRITE SPR_CoreLift		"sprite/corelift.png"	2 2 0 0 NONE
 SPRITE SPR_GrateMouth	"sprite/gratemouth.png" 2 2 0 0 NONE
-SPRITE SPR_CoreFront	"sprite/core.png"		8 13 0 0 NONE
+SPRITE SPR_CoreFront	"sprite/core.png"		8 12 0 0 NONE
+SPRITE SPR_CoreBack		"sprite/coreback.png"	10 12 0 0 NONE
+SPRITE SPR_MiniCore		"sprite/coremini.png"	7 5 0 0 NONE
+SPRITE SPR_CoreShot1	"sprite/coreshot1.png"	2 2 0 0 NONE
+SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE
+SPRITE SPR_CoreShot3	"sprite/coreshot3.png"	1 2 0 0 NONE
+SPRITE SPR_CoreShot4	"sprite/coreshot4.png"	4 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
@@ -220,12 +226,6 @@ SPRITE SPR_XCat			"sprite/xcat.png"		6 9 0 0 NONE
 # Use PAL_Boulder
 SPRITE SPR_Boulder		"sprite/boulder.png"	7 5 0 0 NONE
 
-# Use PAL_Core
-SPRITE SPR_MiniCore		"sprite/coremini.png"	8 5 0 0 NONE
-SPRITE SPR_CoreShot1	"sprite/coreshot1.png"	2 2 0 0 NONE
-SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE
-SPRITE SPR_CoreShot3	"sprite/coreshot3.png"	1 2 0 0 NONE
-SPRITE SPR_CoreShot4	"sprite/coreshot4.png"	4 4 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory
