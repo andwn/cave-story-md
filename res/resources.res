@@ -16,7 +16,7 @@ PALETTE PAL_X			"back/bkMaze.png" 3
 PALETTE PAL_XB			"back/bkMaze.bmp" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_MazeM		"back/bkRed.bmp" 3
-PALETTE PAL_Core		"sprite/coremini.png" 3
+#PALETTE PAL_Core		"sprite/coremini.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -137,6 +137,11 @@ SPRITE SPR_GaudiMerch	"sprite/gaudimerch.png"	4 3 0 0 NONE
 SPRITE SPR_BuyoBase		"sprite/buyobase.png"	4 4 0 0 NONE
 SPRITE SPR_Buyo			"sprite/buyo.png"		2 2 0 0 NONE
 SPRITE SPR_GaudiEgg		"sprite/gaudiegg.png"	3 3 0 0 NONE
+SPRITE SPR_Shutter		"sprite/coreshutter.png"	2 4 0 0 NONE
+SPRITE SPR_BigShutter	"sprite/corebigshutter.png" 4 4 0 0 NONE
+SPRITE SPR_CoreLift		"sprite/corelift.png"	2 2 0 0 NONE
+SPRITE SPR_GrateMouth	"sprite/gratemouth.png" 2 2 0 0 NONE
+SPRITE SPR_CoreFront	"sprite/core.png"		8 13 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
@@ -216,8 +221,6 @@ SPRITE SPR_XCat			"sprite/xcat.png"		6 9 0 0 NONE
 SPRITE SPR_Boulder		"sprite/boulder.png"	7 5 0 0 NONE
 
 # Use PAL_Core
-#SPRITE SPR_CoreFront	"sprite/corefront.png"	9 14 0 0 NONE
-#SPRITE SPR_CoreBack	"sprite/coreback.png"	11 14 0 0 NONE
 SPRITE SPR_MiniCore		"sprite/coremini.png"	8 5 0 0 NONE
 SPRITE SPR_CoreShot1	"sprite/coreshot1.png"	2 2 0 0 NONE
 SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE

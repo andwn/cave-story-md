@@ -17,7 +17,7 @@ void ai_waterlevel(Entity *e) {\
 		{
 			water_entity = e;
 			e->state = WL_CALM;
-			e->y += (8<<9);
+			e->y += 8 << CSF;
 			e->y_mark = e->y;
 			e->y_speed = SPEED(0x200);
 			VDP_genWaterPalette();
@@ -68,32 +68,51 @@ void ai_waterlevel(Entity *e) {\
 	else water_screenlevel = wl;
 }
 
+void onspawn_shutter(Entity *e) {
+	e->y += 8 << CSF;
+	if(e->type == OBJ_SHUTTER_BIG) e->x += 8 << CSF;
+}
+
 /// common code to both Shutter AND Lift
 void ai_shutter(Entity *e) {
-	if (e->state == 10) {
-		// allow hitting the stuck shutter no. 4
-		e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
-		e->nflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
-		e->x_next = e->x;
-		e->y_next = e->y;
-		switch(e->dir) {
-			case DIR_LEFT:  e->x_next = e->x - SPEED(0x80); break;
-			case DIR_RIGHT: e->x_next = e->x + SPEED(0x80); break;
-			case DIR_UP:    e->y_next = e->y + SPEED(0x80); break;
-			case DIR_DOWN:  e->y_next = e->y - SPEED(0x80); break;
+	switch(e->state) {
+		case 10:
+		{
+			// allow hitting the stuck shutter no. 4
+			e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+			// Store direction in timer2 instead of flipping the sprite
+			e->timer2 = e->dir;
+			e->dir = 0;
+			e->state++;
 		}
-		if (e->type==OBJ_SHUTTER_BIG) {
-			if (!e->timer) {
-				camera_shake(20);
-				sound_play(SND_QUAKE, 5);
-				e->timer = TIME(6);
-			} else e->timer--;
+		case 11:
+		{
+			e->x_next = e->x;
+			e->y_next = e->y;
+			switch(e->timer2) {
+				case 0: e->x_next = e->x - SPEED(0x80); break;
+				case 1: e->x_next = e->x + SPEED(0x80); break;
+				case 2: e->y_next = e->y - SPEED(0x80); break;
+				case 3: e->y_next = e->y + SPEED(0x80); break;
+			}
+			if (e->type==OBJ_SHUTTER_BIG) {
+				if (!e->timer) {
+					camera_shake(20);
+					sound_play(SND_QUAKE, 5);
+					e->timer = TIME(6);
+				} else e->timer--;
+			}
+			e->x = e->x_next;
+			e->y = e->y_next;
 		}
-		e->x = e->x_next;
-		e->y = e->y_next;
-	} else if (e->state == 20) {	// tripped by script when Shutter_Big closes fully
-		SMOKE_AREA((e->x>>CSF) - 16, (e->y>>CSF) + 12, 32, 8, 4);
-		e->state = 21;
+		break;
+		case 20: // tripped by script when Shutter_Big closes fully
+		{
+			SMOKE_AREA((e->x>>CSF) - 16, (e->y>>CSF) + 12, 32, 8, 4);
+			e->state = 21;
+		}
+		break;
 	}
 }
 

@@ -200,11 +200,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_CGUN, 	 PAL0, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
 	{ &SPR_Bubble, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_watershield, &ai_null }, // Curly Bubble Shield
-	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Shutter (Large)
-	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Shutter (Small)
-	{ &SPR_Baby, 	NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Lift Block
+	{ &SPR_BigShutter,NOSHEET,PAL2,1, &onspawn_shutter, &ai_shutter, &ai_null }, // Shutter (Large)
+	{ &SPR_Shutter, NOSHEET, PAL2, 1, &onspawn_shutter, &ai_shutter, &ai_null }, // Shutter (Small)
+	{ &SPR_CoreLift,NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Lift Block
 	{ &SPR_FuzzCore,NOSHEET, PAL2, 1, &ai_null, &ai_fuzz_core, &ondeath_default }, // Fuzz Core
-	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, &ai_null, &ai_fuzz, &ondeath_default }, // Fuzz
+	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, &onspawn_persistent, &ai_fuzz, &ondeath_default }, // Fuzz
 	{ &SPR_CoreShot4,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
@@ -212,7 +212,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_pushup, &ai_motorbike, &ai_null }, // Scooter
 	{ &SPR_Buggy2, 	NOSHEET, PAL3, 2, &ai_null, &ai_null, &ai_null }, // Scooter (Pieces)
 	{ &SPR_Robot, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
-	{ NULL, 		NOSHEET, PAL2, 1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
+	{ &SPR_GrateMouth,NOSHEET,PAL2,1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Motion Wall
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Porcupine Fish
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Ironhead Projectile
@@ -534,7 +534,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't
 	 * already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
-	{ NULL, NOSHEET, PAL3, 6, // Core (Front)
+	{ &SPR_CoreFront, NOSHEET, PAL3, 8, // Core (Front)
 		&onspawn_persistent, &ai_core_front, &ai_null },
 	{ NULL, NOSHEET, PAL3, 9, // Core (Back)
 		&onspawn_persistent, &ai_core_back, &ai_null },

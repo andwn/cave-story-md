@@ -245,28 +245,12 @@ void entities_update() {
 				} else {
 					playerPlatform = e;
 				}
-				//player.y_next = player.y;
-				//collide_stage_ceiling(&player);
-				//player.y = player.y_next;
-			// Double check stage collision to avoid clipping through walls
-			//} else if(collision.top) {
-			//	player.y_next = player.y;
-			//	collide_stage_floor(&player);
-			//	player.y = player.y_next;
-			//} else if(collision.left) {
-			//	player.x_next = player.x;
-			//	collide_stage_rightwall(&player);
-			//	player.x = player.x_next;
-			//} else if(collision.right) {
-			//	player.x_next = player.x;
-			//	collide_stage_leftwall(&player);
-			//	player.x = player.x_next;
 			}
 		} // "Smushy" Solid Entities
 		else if(flags & NPC_SOLID) {
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			collision = entity_react_to_collision(&player, e);
-			if(collision.bottom) {
+			if(collision.bottom && e->y > player.y) {
 				player.y -= 1<<CSF;
 				if(flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
@@ -274,9 +258,13 @@ void entities_update() {
 				} else {
 					playerPlatform = e;
 				}
-			} else if(collision.top) player.y += 1<<CSF;
-			else if(collision.left) player.x -= 1<<CSF;
-			else if(collision.right) player.x += 1<<CSF;
+			} else if(collision.top && e->y < player.y) {
+				player.y += 1<<CSF;
+			} else if(collision.left && e->x < player.x) {
+				player.x -= 1<<CSF;
+			} else if(collision.right && e->x > player.x) {
+				player.x += 1<<CSF;
+			}
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {

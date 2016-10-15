@@ -622,11 +622,17 @@ u8 execute_command() {
 			player_maxhealth_increase(args[0]);
 			break;
 		case CMD_ANP: // Give all entities of event (1) script state (2) with direction (3)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			logcmd("<ANP:%hu:%hu:%hu", args[0], args[1], args[2]);
-			entities_set_state(args[0], args[1], args[2] > 0);
+			// To make shutters in almond work, handle up/down
+			u8 dir = args[2] > 0;
+			if(args[2] == DIR_UP) dir = 2;
+			if(args[2] == DIR_DOWN) dir = 3;
+			entities_set_state(args[0], args[1], dir);
+		}
 			break;
 		case CMD_CNP: // Change all entities of event (1) to type (2) with direction (3)
 			args[0] = tsc_read_word();

@@ -29,39 +29,37 @@
 
 // flash red when struck, else stay in Mouth Open frame
 // TODO: Palette swapping
-#define OPEN_MOUTH ({ \
-	if(e->damage_time & 2) { \
-		 \
-	} else { \
-		 \
-	} \
-	if(!e->mouth_open) { \
-		e->mouth_open = TRUE;                                                                      \
-	} \
+#define OPEN_MOUTH ({                                                                          \
+	if(e->damage_time & 2) {                                                                   \
+		                                                                                       \
+	} else {                                                                                   \
+		                                                                                       \
+	}                                                                                          \
+	if(!e->mouth_open) {                                                                       \
+		pieces[CFRONT]->frame = 1;                                                             \
+		pieces[CFRONT]->mouth_open = TRUE;                                                     \
+	}                                                                                          \
 })
 
 // makes the core close his mouth
-#define CLOSE_MOUTH ({ \
-	if(e->mouth_open) { \
-		e->mouth_open = FALSE;                                                                     \
-	} \
+#define CLOSE_MOUTH ({                                                                         \
+	if(e->mouth_open) {                                                                        \
+		pieces[CFRONT]->frame = 0;                                                             \
+		pieces[CFRONT]->mouth_open = FALSE;                                                    \
+	}                                                                                          \
 })
 
 // bring the water up if it's not already up, but don't keep it up
 // if it's already been up on it's own because that's not fair
-#define START_WATER_STREAM ({ \
-	if (water_entity->state == WL_DOWN) water_entity->state = WL_UP; \
-	camera_shake(100); \
+#define START_WATER_STREAM ({                                                                  \
+	if (water_entity->state == WL_DOWN) water_entity->state = WL_UP;                           \
+	camera_shake(100);                                                                         \
 })
 
 // bring the water down again if it's not already
-#define STOP_WATER_STREAM ({ \
-	if (water_entity->state == WL_UP) water_entity->state = WL_CYCLE; \
+#define STOP_WATER_STREAM ({                                                                   \
+	if (water_entity->state == WL_UP) water_entity->state = WL_CYCLE;                          \
 })
-
-//typedef struct { u8 x1, x2, y1, y2; } DrawArea;
-//DrawArea drawn_area = {};
-
 
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
@@ -340,24 +338,15 @@ void ai_core(Entity *e) {
 	// set up our shootable status--you never actually hit the core (CFRONT),
 	// but if it's mouth is open, make us, the invisible controller object, shootable.
 	if (pieces[CFRONT]->mouth_open) {
-		e->eflags &= ~NPC_SHOOTABLE;
-		pieces[CFRONT]->eflags |= NPC_INVINCIBLE;
-	} else {
 		e->eflags |= NPC_SHOOTABLE;
-		pieces[CFRONT]->eflags &= ~NPC_INVINCIBLE;
+		pieces[CFRONT]->eflags &= ~(NPC_INVINCIBLE | NPC_SHOOTABLE);
+	} else {
+		e->eflags &= ~NPC_SHOOTABLE;
+		pieces[CFRONT]->eflags |= NPC_INVINCIBLE | NPC_SHOOTABLE;
 	}
 	
 	LIMIT_X(SPEED(0x80));
 	LIMIT_Y(SPEED(0x80));
-
-	// Draw blank core tiles that come onscreen, erase those that go offscreen
-	//SYS_disableInts();
-	//s16 hscroll = (e->x - camera.x) >> CSF;
-	//s16 vscroll = (e->y - camera.y) >> CSF;
-	//DrawArea visible_area = {
-	//		.x1 = ,
-	//};
-	//SYS_enableInts();
 }
 
 void ondeath_core(Entity *e) {
@@ -369,25 +358,25 @@ void ondeath_core(Entity *e) {
 
 // the front (mouth) piece of the main core
 void ai_core_front(Entity *e) {
-	Entity *core = e->linkedEntity;
-	if (core == NULL) { e->state = STATE_DELETE; return; }
+	//Entity *core = e->linkedEntity;
+	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
-	e->x = core->x - (36 << CSF);
-	e->y = core->y - (48 << CSF);
+	e->x = bossEntity->x - (36 << CSF);
+	e->y = bossEntity->y - (48 << CSF);
 }
 
 // the back (unanimated) piece of the main core
 void ai_core_back(Entity *e) {
-	Entity *core = e->linkedEntity;
-	if (core == NULL) { e->state = STATE_DELETE; return; }
+	//Entity *core = e->linkedEntity;
+	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
-	e->x = core->x + (0x5800 - (8 << CSF));
-	e->y = core->y - 0x5e00;
+	e->x = bossEntity->x + (0x5800 - (8 << CSF));
+	e->y = bossEntity->y - 0x5e00;
 }
 
 void ai_minicore(Entity *e) {
-	Entity *core = e->linkedEntity;
-	if (core == NULL) { e->state = STATE_DELETE; return; }
+	//Entity *core = e->linkedEntity;
+	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
 	switch(e->state) {
 		case MC_SLEEP:		// idle & mouth closed

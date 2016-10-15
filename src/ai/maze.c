@@ -502,8 +502,8 @@ void ai_gaudiArmored(Entity *e) {
 			
 			// throw attacks at player
 			if (e->timer == TIME(30) || e->timer == TIME(40)) {
-				s16 angle = (e->dir ? -0x10 : 0x210 ) % 1024;
-				FIRE_ANGLED_SHOT(OBJ_GAUDI_ARMORED_SHOT, e->x, e->y, angle, 0x600);
+				FIRE_ANGLED_SHOT(OBJ_GAUDI_ARMORED_SHOT, e->x, e->y, 
+						e->dir ? A_RIGHT+64 : A_LEFT-64, 0x600);
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->frame = 3;
@@ -555,11 +555,11 @@ void ai_gaudiArmoredShot(Entity *e) {
 				bounced = TRUE; 
 			}
 			if (e->x_speed >= 0 && collide_stage_rightwall(e)) { 
-				e->x_speed = SPEED(-0x200);
+				e->x_speed = -SPEED(0x200);
 				bounced = TRUE; 
 			}
 			if (e->y_speed >= 0 && collide_stage_floor(e)) { 
-				e->y_speed = SPEED(-0x200);
+				e->y_speed = -SPEED(0x200);
 				bounced = TRUE; 
 			}
 			if (e->y_speed <= 0 && collide_stage_ceiling(e)) { 
@@ -921,8 +921,8 @@ void ai_fuzz(Entity *e) {
 				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				e->x = e->linkedEntity->x + ((sintab32[e->timer] >> 1) << 4);
-				e->y = e->linkedEntity->y + ((sintab32[e->timer2] >> 1) << 4);
+				e->x = e->linkedEntity->x + ((sintab32[e->timer] >> 1) << 5);
+				e->y = e->linkedEntity->y + ((sintab32[e->timer2] >> 1) << 5);
 			}
 		}
 		break;
@@ -961,7 +961,10 @@ void ai_buyobuyo_base(Entity *e) {
 			// ceiling has different bounding box and action point
 			//if (e->dir == 1)
 			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
-			
+			if(e->eflags & NPC_OPTION2) {
+				e->dir = 1;
+				e->x -= 16 << CSF;
+			}
 			e->state = 1;
 			e->timer = TIME(10);
 		}
@@ -969,8 +972,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 1:
 		{
 			if (PLAYER_DIST_X(0x14000)) {
-				if ((e->dir == 0 && PLAYER_DIST_Y2(0x14000, 0x2000)) || \
-					(e->dir == 1 && PLAYER_DIST_Y2(0x2000, 0x14000))) {
+				if ((!e->dir && PLAYER_DIST_Y2(0x14000, 0x2000)) ||
+					(e->dir && PLAYER_DIST_Y2(0x2000, 0x14000))) {
 					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;
@@ -1014,7 +1017,7 @@ void ai_buyobuyo(Entity *e) {
 		case 0:
 		{
 			// shoot up down at player...
-			e->y_speed = (e->dir == 0) ? SPEED(-0x600) : SPEED(0x600);
+			e->y_speed = e->dir ? SPEED(0x600) : -SPEED(0x600);
 			e->state = 1;
 			e->timer = 0;
 		}
@@ -1037,8 +1040,8 @@ void ai_buyobuyo(Entity *e) {
 				e->x_mark = e->x;
 				e->y_mark = e->y;
 				
-				e->x_speed = (random() & 1) ? SPEED(0x200) : SPEED(-0x200);
-				e->y_speed = (random() & 1) ? SPEED(0x200) : SPEED(-0x200);
+				e->x_speed = (random() & 1) ? SPEED(0x200) : -SPEED(0x200);
+				e->y_speed = (random() & 1) ? SPEED(0x200) : -SPEED(0x200);
 				
 				e->state = 3;
 			}
@@ -1060,9 +1063,9 @@ void ai_buyobuyo(Entity *e) {
 		}
 		break;
 	}
-	if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
-		(e->x_speed > 0 && collide_stage_rightwall(e)) || \
-		(e->y_speed < 0 && collide_stage_ceiling(e)) || \
+	if ((e->x_speed < 0 && collide_stage_leftwall(e)) ||
+		(e->x_speed > 0 && collide_stage_rightwall(e)) ||
+		(e->y_speed < 0 && collide_stage_ceiling(e)) ||
 		(e->y_speed > 0 && collide_stage_floor(e))) {
 		deleteme = TRUE;
 	}

@@ -114,17 +114,9 @@ void ai_curly_ai(Entity *e) {
 	if(e->y_speed < 0) collide_stage_ceiling(e);
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
-	// Noxoid's "improbable jump" won't work if collision with walls stops inertia,
-	// so don't do that
-	s16 xsp = e->x_speed;
+	
 	u8 blockl = collide_stage_leftwall(e);
 	u8 blockr = collide_stage_rightwall(e);
-	e->x_speed = xsp;
-	if(blockl && e->x_speed < -0x80) e->x_speed = -0x80;
-	if(blockr) {
-		 if(e->x_speed > 0x80) e->x_speed = 0x80;
-		 //e->x_next += 0x1FF;
-	 }
 	
 	// Handle underwater
 	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
@@ -226,23 +218,10 @@ void ai_curly_ai(Entity *e) {
 		if (e->x_next < e->x_mark) e->x_speed += SPEED(0x20);
 		
 		// jump if we hit a wall, jump higher if off camera
-		if ((blockr || blockl) && ++curly_blockedtime > 8) {
+		if (e->grounded && (blockr || blockl)) {
 			CaiJUMP(e);
 			curly_impjump = abs(e->x - camera.x) > 240 << CSF;
 		}
-		else curly_blockedtime = 0;
-		/*
-		// if our target gets really far away (like p is leaving us behind) and
-		// the above jumping isn't getting us anywhere, activate the Improbable Jump
-		if ((blockl || blockr) && xdist > (80<<CSF)) {
-			//sprite_add(((VDPSprite){.x=128,.y=128,.size=SPRITE_SIZE(4, 4)}));
-			if (abs(e->x - camera.x) > (240 << CSF) && e->grounded) {
-				CaiJUMP(e);
-				curly_impjump = 1;
-			}
-		}
-		else curly_impjumptime = 0;
-		*/
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<CSF)) {
 			if (++curly_tryjumptime > 20) {
@@ -258,24 +237,10 @@ void ai_curly_ai(Entity *e) {
 	if (curly_impjump > 0) {
 		e->y_speed += SPEED(0x10);
 		// deactivate Improbable Jump once we clear the wall or hit the ground
-		if (!blockl && !blockr) curly_impjump = 0;
-		if (e->grounded) curly_impjump = 0;
+		if (e->grounded || (!blockl && !blockr)) curly_impjump = 0;
+		else curly_impjump = abs(e->x - camera.x) > 240 << CSF;
 	}
 	else e->y_speed += SPEED(0x33);
-	
-	// slow down when we hit bricks
-	//if (blockl || blockr) {
-		// full stop if on ground, partial stop if in air
-	//	xlimit = e->grounded ? 0x000 : 0x180;
-		
-	//	if (blockl) {
-	//		if (e->x_speed < -xlimit) e->x_speed = -xlimit;
-	//	} else if (e->x_speed > xlimit) {		
-			// we don't have to test blockr because we already know one or the other is set 
-			// and that it's not blockl
-	//		e->x_speed = xlimit;
-	//	}
-	//}
 	
 	// look up/down at target
 	curly_look = 0;
