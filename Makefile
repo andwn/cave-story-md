@@ -63,4 +63,5 @@ clean:
 	rm -f $(RESOURCES)
 	rm -f *.o *.bin *.elf *.map
 	rm -f src/boot/*.o src/boot/*.bin
+	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h

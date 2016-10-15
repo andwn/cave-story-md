@@ -35,7 +35,14 @@ u8 titlescreen_main() {
 	// Menu and version text
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
-	VDP_drawText("Mega Drive Version 0.2.1 2016.10", 4, 26);
+	// Debug
+	{
+		char vstr[40];
+		sprintf(vstr, "Test Build - %s", __DATE__);
+		VDP_drawText(vstr, 4, 26);
+	}
+	// Release
+	//VDP_drawText("Mega Drive Version 0.2.1 2016.10", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
