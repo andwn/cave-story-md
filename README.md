@@ -14,7 +14,7 @@ It should work on any console or emulator (PAL is untested).
 For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build. (thanks andywhyisit)
 
 ### Progress
-Farthest reachable point in `master`: Dragon Sisters room - softlock after "you feel a chill"
+Farthest reachable point in `master`: Complete Momo's rocket in Plantation (everything in outer wall & plantation has no graphic yet!)
 
 Also looky here: [TODO list](doc/TODO.md)
 

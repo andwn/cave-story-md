@@ -36,15 +36,14 @@
   - Sometimes frogs land in the right wall
   - Pooh Black lands early on left/right walls, no death anim
   - Background portion of Monster X is incomplete/on top
-  - Getting stuck in wind tunnels (kind of fixed not really)
   
-- Major Boss Status
+- Major Boss Status (the check means defeatable, most are unfinished)
   - [x] Balfrog
   - [x] Omega
-  - [x] Monster X (Half done)
-  - [ ] Core
-  - [ ] Ironhead
-  - [ ] Sisters
+  - [x] Monster X
+  - [x] Core
+  - [x] Ironhead
+  - [x] Sisters
   - [ ] Undead Core
   
 - Completable Areas
@@ -52,8 +51,8 @@
   - [x] Sand Zone (0.1)
   - [x] Labyrinth (0.2)
   - [x] Labyrinth M & Core (0.2)
-  - [ ] Waterway (0.3)
-  - [ ] Egg Corridor? (0.3)
+  - [x] Waterway (0.3)
+  - [x] Egg Corridor? (0.3)
   - [ ] Outer Wall (0.3)
   - [ ] Plantation (0.4)
   - [ ] Final Cave (0.4)
@@ -83,6 +82,7 @@
   - [x] Air Tank
   - [ ] Whimsical Star
   - [ ] Nikumaru Counter
+  - [ ] Mimiga Mask
 
 - Jokes
   - [x] Arguing with Noxoid via code comments
