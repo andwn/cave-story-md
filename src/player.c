@@ -340,7 +340,7 @@ void player_update_walk() {
 		fric = AIR_CONTROL;
 	}
 	if((stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) & BLOCK_WATER) ||
-			(water_entity != NULL && player.y > water_entity->y)) {
+			(water_entity && player.y > water_entity->y)) {
 		player.underwater = TRUE;
 		acc /= 2;
 		max_speed /= 2;
@@ -393,6 +393,8 @@ void player_update_jump() {
 	} else if(playerBoostState == BOOST_OFF) {
 		if(joy_down(BUTTON_C) && player.y_speed >= 0) {
 			player.y_speed += gravityJump;
+		} else if(player.underwater) {
+			player.y_speed += gravityJump + 0x7;
 		} else {
 			player.y_speed += gravity;
 		}

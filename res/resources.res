@@ -55,6 +55,7 @@ SPRITE SPR_MGunB3		"sprite/mgunb3.png"		2 2 0 0 NONE
 SPRITE SPR_Bonk			"sprite/headbump.png"	1 1 0 0 NONE
 SPRITE SPR_RedFl		"sprite/redflowers.png" 6 2 0 0 NONE
 SPRITE SPR_BasuShot		"sprite/basushot.png"	2 2 0 0 NONE
+SPRITE SPR_IkaChan		"sprite/ikachan.png"	2 2 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -152,6 +153,7 @@ SPRITE SPR_CoreShot1	"sprite/coreshot1.png"	2 2 0 0 NONE
 SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE
 SPRITE SPR_CoreShot3	"sprite/coreshot3.png"	1 2 0 0 NONE
 SPRITE SPR_CoreShot4	"sprite/coreshot4.png"	4 4 0 0 NONE
+SPRITE SPR_IronhBlk		"sprite/ironhblk.png"	4 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
@@ -197,6 +199,7 @@ SPRITE SPR_SkelFeet		"sprite/skelfeet.png"	3 2 0 0 NONE
 SPRITE SPR_Skeleton		"sprite/skeleton.png"	4 4 0 0 NONE
 SPRITE SPR_Bone			"sprite/bone.png"		2 2 0 0 NONE
 SPRITE SPR_Ironh		"sprite/ironh.png"		8 3 0 0 NONE
+SPRITE SPR_Blowfish		"sprite/blowfish.png"	2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE
@@ -230,7 +233,6 @@ SPRITE SPR_XCat			"sprite/xcat.png"		6 9 0 0 NONE
 
 # Use PAL_Boulder
 SPRITE SPR_Boulder		"sprite/boulder.png"	7 5 0 0 NONE
-
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory
@@ -389,7 +391,7 @@ PALETTE PAL_Jail	"Stage/PrtJail.bmp" 2
 PALETTE PAL_Labo	"Stage/PrtLabo.bmp" 2
 PALETTE PAL_Oside	"Stage/PrtOside.png" 2
 PALETTE PAL_Pens	"Stage/PrtPens.bmp" 2
-PALETTE PAL_River	"Stage/PrtRiver.bmp" 2
+PALETTE PAL_River	"back/bkGray.bmp" 2
 PALETTE PAL_Sand	"Stage/PrtSand.bmp" 2
 PALETTE PAL_Store	"Stage/PrtStore.bmp" 2
 PALETTE PAL_Weed	"Stage/PrtWeed.bmp" 2

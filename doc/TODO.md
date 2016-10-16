@@ -87,6 +87,7 @@
 - Jokes
   - [x] Arguing with Noxoid via code comments
   - [x] Bug reports about debug features
+  - [ ] Cave Story 64
   - [ ] Deflemask stops being proprietary
   - [ ] DMCA
   - [ ] GensKmod multiplat fork

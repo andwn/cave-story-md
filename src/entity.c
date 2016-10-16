@@ -571,7 +571,7 @@ u8 collide_stage_ceiling(Entity *e) {
 			effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
 		}
 		e->jump_time = 0;
-		e->y_speed = min(-e->y_speed / 2, 0xFF);
+		e->y_speed = min(-e->y_speed / 2, e->underwater ? 0x7F : 0xFF);
 	}
 	return result;
 }

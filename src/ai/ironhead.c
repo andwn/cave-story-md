@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "system.h"
 #include "sheet.h"
+#include "sprite.h"
 #include "resources.h"
 #include "npc.h"
 
@@ -82,7 +83,7 @@ void ai_ironhead(Entity *e) {
 		}
 		case IRONH_SWIM+1:
 		{
-			ANIMATE(e, 8, 2,0);
+			ANIMATE(e, 8, 4,3,2,3,4,1,0,1);
 			if (e->dir) {
 				e->x_mark += SPEED(0x400);
 			} else {
@@ -129,7 +130,7 @@ void ai_ironhead(Entity *e) {
 			sound_play(SND_EXPL_SMALL, 8);
 			e->state = IRONH_DEFEATED+1;
 			e->eflags &= ~NPC_SHOOTABLE;
-			e->frame = 8;
+			e->frame = 5;
 			e->attack = 0;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
@@ -187,13 +188,15 @@ void ai_ironhead(Entity *e) {
 //}
 
 void ai_ironh_fishy(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
 		{
 			e->state = 10;
 			e->animtime = 0;
-			e->y_speed = random(-0x200, 0x200);
-			e->x_speed = 0x800;
+			e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+			e->x_speed = SPEED(0x800);
 		}
 		case 10:			// harmless fishy
 		{
@@ -212,9 +215,11 @@ void ai_ironh_fishy(Entity *e) {
 		break;
 	}
 	
-	if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = 0x200;
-	if (e->y_speed < 0 && collide_stage_floor(e)) e->y_speed = -0x200;
-	e->x_speed -= 0x0c;
+	if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x200);
+	if (e->y_speed < 0 && collide_stage_floor(e)) e->y_speed = -SPEED(0x200);
+	e->x_speed -= SPEED(0x0c);
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 void ai_ironh_shot(Entity *e) {
@@ -225,7 +230,7 @@ void ai_ironh_shot(Entity *e) {
 			e->timer2 = 0;
 		}
 	} else {
-		e->x_speed += 0x20;
+		e->x_speed += SPEED(0x20);
 	}
 	
 	ANIMATE(e, 8, 0,2);
@@ -235,20 +240,22 @@ void ai_ironh_shot(Entity *e) {
 	}
 	
 	if ((e->timer2 & 3)==1) sound_play(SND_IRONH_SHOT_FLY, 3);
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 
 void ai_brick_spawner(Entity *e) {
-	Entity *brick;
-
 	if (!e->state) {
 		e->state = 1;
-		e->timer = random() % 200;
+		e->timer = random() % TIME(200);
 	}
 	
 	if (!e->timer) {	// time to spawn a block
 		e->state = 0;
-		brick = entity_create(e->x, e->y + (random(-20, 20) << CSF), OBJ_IRONH_BRICK, 0);
+		Entity *brick = entity_create(e->x, e->y - (20<<CSF) + ((random() % 40)<<CSF), 
+				OBJ_IRONH_BRICK, 0);
 		brick->dir = e->dir;
 	} else e->timer--;
 }
@@ -256,17 +263,21 @@ void ai_brick_spawner(Entity *e) {
 void ai_ironh_brick(Entity *e) {
 	if (!e->state) {
 		u8 r = random() % 10;
-		if (r == 9) {
-			//e->sprite = SPR_IRONH_BIGBRICK;
+		if (r) {
+			e->frame = e->oframe = 255;
+			e->vramindex = sheets[e->sheet].index + 16 + (r % 4) * 4;
+			e->sprite[0].size = SPRITE_SIZE(2, 2);
+			e->sprite[0].attribut = TILE_ATTR_FULL(PAL2,0,0,0,e->vramindex);
+			e->hit_box = e->display_box = (bounding_box) { 8, 8, 8, 8 };
+			e->sheet = NOSHEET;
 		} else {
-			//e->sprite = SPR_IRONH_BRICK;
-			e->frame = r;
+			e->hit_box = e->display_box = (bounding_box) { 16, 16, 16, 16 };
 		}
 		
-		e->x_speed = 0x100 + random() % 0x100;
+		e->x_speed = SPEED(0x100) + (random() % SPEED(0x100));
 		e->x_speed *= e->dir ? 2 : -2;
 		
-		e->y_speed = -0x200 + random() % 0x400;
+		e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
 		e->state = 1;
 	}
 	
@@ -286,6 +297,16 @@ void ai_ironh_brick(Entity *e) {
 		(e->x > (stageWidth * 16) << CSF)) {
 		e->state = STATE_DELETE;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	
+	// Have to manually add the small one
+	if(e->frame == 255) {
+		sprite_pos(e->sprite[0],
+				(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
+				(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+		sprite_add(e->sprite[0]);
+	}
 }
 
 void ai_ikachan_spawner(Entity *e) {
@@ -304,7 +325,7 @@ void ai_ikachan_spawner(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 3) == 1) {
-				entity_create(e->x, e->y + ((random(0, 13) * 16) << CSF), OBJ_IKACHAN, 0);
+				entity_create(e->x, e->y + (((random() % 14) * 16) << CSF), OBJ_IKACHAN, 0);
 			}
 		}
 		break;
@@ -316,13 +337,13 @@ void ai_ikachan(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->timer = 3 + random() % 17;
+			e->timer = 3 + (random() % 17);
 		}
 		case 1:		// he pushes ahead
 		{
 			if (--e->timer == 0) {
 				e->state = 2;
-				e->timer = 10 + random() % 40;
+				e->timer = 10 + (random() % 40);
 				e->frame = 1;
 				e->x_speed = 0x600;
 			}
@@ -335,7 +356,7 @@ void ai_ikachan(Entity *e) {
 				e->state = 3;
 				e->timer = 10 + random() % 40;
 				e->frame = 2;
-				e->y_speed = -0x100 + random() % 0x200;
+				e->y_speed = -0x100 + (random() % 0x200);
 			}
 		}
 		break;
@@ -352,6 +373,9 @@ void ai_ikachan(Entity *e) {
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 	
 	if (e->x > 720<<CSF) e->state = STATE_DELETE;
 }

@@ -269,11 +269,13 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 2,3,1, 0,0, 0,1);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
-			// Core back
-			// Minicore front
-			// Minicore back
 			// Small projectile
 			// Wisp projectile
+		} break;
+		case 0x1F: // Main Artery
+		{	SHEET_ADD(SHEET_IKACHAN, &SPR_IkaChan, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_IRONHBLK, &SPR_IronhBlk, 2,4,4, 0,0, 0,1);
+			SHEET_ADD(SHEET_BLOWFISH, &SPR_Blowfish, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x31: // Egg Corridor?
 		{	// Critter

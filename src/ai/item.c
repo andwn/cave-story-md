@@ -193,9 +193,9 @@ void ai_hiddenPowerup(Entity *e) {
 		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(SND_EXPL_SMALL, 5);
 		if(e->eflags & NPC_OPTION2) {
-			entity_create(e->x, e->y, OBJ_MISSILE, e->eflags & ~NPC_OPTION2);
+			entity_create(e->x, e->y, OBJ_MISSILE, e->eflags & ~(NPC_OPTION2|NPC_SHOOTABLE));
 		} else {
-			entity_create(e->x, e->y, OBJ_HEART, e->eflags)->health = 2;
+			entity_create(e->x, e->y, OBJ_HEART, e->eflags & ~(NPC_SHOOTABLE))->health = 2;
 		}
 		e->state = STATE_DELETE;
 	}

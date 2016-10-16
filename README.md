@@ -69,6 +69,9 @@ and I'm not going to dance around copyright laws more than I already am.
 #### Isn't this just NXEngine ported to Genesis?
 The AI code is, but the rest I wrote from scratch with the help of various modding docs.
 
+#### Could I port mods to this?
+It would be extremely painful.
+
 ## Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
 - My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).

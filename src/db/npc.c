@@ -36,7 +36,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_TRAP, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Death Trap
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
 	{ &SPR_Cthu, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Cthulhu
-	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_snap, &ai_gunsmith, &ai_null }, // Gunsmith
+	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_op2snap, &ai_gunsmith, &ai_null }, // Gunsmith
 	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batHang, &ai_batHang, &ondeath_default }, // Bat
 	/* 0x020 (32) */
 	{ &SPR_LifeUp, NOSHEET, PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Life Capsule
@@ -213,22 +213,22 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Buggy2, 	NOSHEET, PAL3, 2, &ai_null, &ai_null, &ai_null }, // Scooter (Pieces)
 	{ &SPR_Robot, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
 	{ &SPR_GrateMouth,NOSHEET,PAL2,1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Motion Wall
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Porcupine Fish
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Ironhead Projectile
+	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Motion Wall
+	{ NULL, SHEET_BLOWFISH,  PAL3, 1, &onspawn_persistent, &ai_ironh_fishy, &ondeath_default }, // Porcupine Fish
+	{ &SPR_ManShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ironh_shot, &ai_null }, // Ironhead Projectile
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Underwater Current
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Dragon Zombie
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Dragon Zombie (Dead)
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_dragon_zombie, &ondeath_default }, // Dragon Zombie
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_dragon_zombie, &ai_null }, // Dragon Zombie (Dead)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Dragon Zombie Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Falling Spike (Small)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Falling Spike (Large)
+	{ NULL, SHEET_CRITTER,   PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_falling_spike_small, &ondeath_default }, // Falling Spike (Small)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_falling_spike_large, &ondeath_default }, // Falling Spike (Large)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Counter Bomb
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Countdown Balloon
 	// 0x0D0 (208) */
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Basu (2)
+	{ NULL, SHEET_BASU, 	 PAL3, 1, &ai_null, &ai_basu, &ondeath_default }, // Basu (2)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Basu Projectile (2)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Green Beetle (Follow 2)
+	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &ai_null, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Sky Dragon
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Night Spirit
@@ -323,11 +323,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Energy
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Underwater Block
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, SHEET_IRONHBLK,  PAL2, 1, &onspawn_persistent, &ai_ironh_brick, &ondeath_default }, // Underwater Block
 	/* 0x110 (272) */
-	{ NULL, 		NOSHEET, PAL0, 0, // Water Block Generator
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_brick_spawner, &ai_null }, // Water Block Generator
 	{ NULL, 		NOSHEET, PAL0, 1, // Droll Projectile
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Droll
@@ -455,11 +453,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Sweat
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Ika-chan
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, SHEET_IKACHAN,   PAL0, 1, &onspawn_persistent, &ai_ikachan, &ai_null }, // Ika-chan
 	/* 0x150 (336) */
-	{ NULL, 		NOSHEET, PAL0, 0, // Ika-chan Generator
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_ikachan_spawner, &ai_null }, // Ika-chan Generator
 	{ NULL, 		NOSHEET, PAL0, 1, // Numahachi
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Green Devil
