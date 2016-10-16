@@ -27,6 +27,15 @@ There may be an option to configure this in the future.
 - Y, Z - Switch weapon
 - Start - Pause / Item Menu
 
+### Save files
+I have a few swappable SRAM files in the [save](/save) directory to jump around for tests.
+Most are named like location_ending.srm where:
+
+- "location" is an area or keyword to hint something more specific, such as before a boss fight
+- "ending" is the ending path good/bad (if applicable)
+
+This should go without saying, but Mega Drive SRAM and Profile.dat are completely different.
+
 ### Compilation
 Assuming you are running GNU/Linux. It might also work on BSDs
 

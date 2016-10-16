@@ -21,6 +21,8 @@ void onspawn_energy(Entity *e) {
 		// Big energy
 		SHEET_FIND(e->sheet, SHEET_ENERGYL);
 		e->vramindex = sheets[e->sheet].index;
+		e->framesize = 4;
+		e->sprite[0].size = SPRITE_SIZE(2, 2);
 	}
 	e->x_speed = 0x200 - (random() % 0x400);
 	e->alwaysActive = TRUE;
