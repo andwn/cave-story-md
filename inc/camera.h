@@ -27,8 +27,4 @@ void camera_shake(u16 time);
 // Will "morph" the stage (draw areas surrounding the screen) when necessary
 void camera_update();
 
-// Functions used by TSC Scripts
-void camera_focus_on_player(u16 speed);
-void camera_focus_on_entity(Entity *e, u16 speed);
-
 #endif /* INC_CAMERA_H_ */

@@ -113,17 +113,30 @@ void player_update() {
 	} else if(playerMoveMode == 0) { // Normal movement
 		// Wind/Water current
 		if(tile & 0x80) {
-			switch(tile & 0x03) {
-			case 0: player.x_speed -= SPEED(0x88); break;
-			case 1: 
-				player.y_speed -= SPEED(0x80); 
-				if(player.jump_time < 4) player.jump_time = 4;
-				break;
-			case 2: player.x_speed += SPEED(0x88); break;
-			case 3: player.y_speed += SPEED(0x50); break;
+			// This stops us fron getting stuck in ledges
+			if((blk(player.x, 0, player.y, 6) & 0x83) == 0x81) {
+				player.y_speed -= SPEED(0x80);
+			} else {
+				switch(tile & 0x03) {
+					case 0: player.x_speed -= SPEED(0x88); break;
+					case 1: player.y_speed -= SPEED(0x80); break;
+					case 2: player.x_speed += SPEED(0x88); break;
+					case 3: player.y_speed += SPEED(0x50); break;
+				}
 			}
-			if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
-			if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
+			if(player.underwater) {
+				// This makes it possible to reach the cabin... but now it's
+				// impossible to jump over 2 of the spike areas...
+				if(player.x_speed > SPEED(0x3FF)) player.x_speed = SPEED(0x3FF);
+				if(player.x_speed < SPEED(-0x3FF)) player.x_speed = SPEED(-0x3FF);
+				if(player.y_speed > SPEED(0x3FF)) player.y_speed = SPEED(0x3FF);
+				if(player.y_speed < SPEED(-0x3FF)) player.y_speed = SPEED(-0x3FF);
+			} else {
+				if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
+				if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
+				if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
+				if(player.y_speed < SPEED(-0x5FF)) player.y_speed = SPEED(-0x5FF);
+			}
 		}
 		player_update_movement();
 		if(playerBoostState != BOOST_OFF) {
@@ -186,8 +199,18 @@ void player_update() {
 		player.y_next = player.y + player.y_speed;
 		if(player.x_speed < 0) {
 			collide_stage_leftwall(&player);
+			// Check special noplayer blocks in main artery
+			if(blk(player.x, -6, player.y, 0) == 0x46) {
+				player.x_speed = 0;
+				player.x_next += 2 << CSF;
+			}
 		} else if (player.x_speed > 0) {
 			collide_stage_rightwall(&player);
+			// Check special noplayer blocks in main artery
+			if(blk(player.x, 6, player.y, 0) == 0x46) {
+				player.x_speed = 0;
+				player.x_next -= 2 << CSF;
+			}
 		}
 		// No "grounded" when floating, but don't go through the floor
 		if(player.y_speed > 0) {
@@ -200,7 +223,7 @@ void player_update() {
 	player.x = player.x_next;
 	player.y = player.y_next;
 	// Damage Tiles / Death check / IFrames
-	if(!playerIFrames) {
+	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)
 		if((tile & 0xDF) == 0x42) {
 			player_inflict_damage(10);

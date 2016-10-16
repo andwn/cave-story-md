@@ -520,8 +520,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&onspawn_monsterx, &ai_monsterx, &ondeath_monsterx },
 	{ NULL, NOSHEET, PAL3, 1, // Core (Controller)
 		&onspawn_core, &ai_core, &ondeath_core },
-	{ NULL, NOSHEET, PAL3, 2, // Ironhead
-		&ai_ironhead, &ai_ironhead, &ondeath_ironhead },
+	{ &SPR_Ironh, NOSHEET, PAL3, 2, // Ironhead
+		&onspawn_ironhead, &ai_ironhead, &ondeath_ironhead },
 	{ NULL, NOSHEET, PAL3, 3, // Sisters
 		&onspawn_sisters, &ai_sisters, &ondeath_sisters },
 	{ NULL, NOSHEET, PAL3, 3, // Undead Core

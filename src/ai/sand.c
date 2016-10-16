@@ -696,6 +696,8 @@ void ai_skeleton_shot(Entity *e) {
 	}
 	
 	// Have to collide with slopes, so use the normal method
+	e->x_next = e->x;
+	e->y_next = e->y;
 	if (collide_stage_floor(e)) {
 		e->y_speed = -SPEED(0x180);
 		e->state = 1;	// begin falling

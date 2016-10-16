@@ -70,7 +70,13 @@ void ai_waterlevel(Entity *e) {\
 
 void onspawn_shutter(Entity *e) {
 	e->y += 8 << CSF;
-	if(e->type == OBJ_SHUTTER_BIG) e->x += 8 << CSF;
+	if(e->type == OBJ_SHUTTER_BIG) {
+		e->x += 8 << CSF;
+		// After getting the Air Tank the script triggers the big shutter to open,
+		// but if it's offscreen nothing will happen and the player will be stuck.
+		// Keep active to prevent that from happening
+		e->alwaysActive = TRUE;
+	}
 }
 
 /// common code to both Shutter AND Lift

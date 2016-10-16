@@ -34,7 +34,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Frog,		PXE_Frog,	TSC_Frog,	&PAL_Frog,	20,	2,	"Gum" },
 	{ PXM_Curly,	PXE_Curly,	TSC_Curly,	&PAL_Regu,	18,	0,	"Sand Zone Bar" },
 	{ PXM_WeedB,	PXE_WeedB,	TSC_WeedB,	&PAL_Regu,	16,	0,	"Grasstown Hut" },
-	{ PXM_Stream,	PXE_Stream,	TSC_Stream,	&PAL_Regu,	17,	2,	"Main Artery" },
+	{ PXM_Stream,	PXE_Stream,	TSC_Stream,	&PAL_Regu,	17,	3,	"Main Artery" },
 	/* 0x20 (32) */
 	{ PXM_CurlyS,	PXE_CurlyS,	TSC_CurlyS,	&PAL_Regu,	16,	0,	"Small Room" },
 	{ PXM_Jenka1,	PXE_Jenka1,	TSC_Jenka1,	&PAL_Jenka,	2,	0,	"Jenka's House" },

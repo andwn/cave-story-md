@@ -82,6 +82,10 @@ void stage_load(u16 id) {
 	camera_set_position(player.x, player.y);
 	stage_draw_screen();
 	stage_load_entities();
+	if(stageBackgroundType == 3) {
+		camera.y -= 8 << CSF;
+		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
+	}
 	tsc_load_stage(id);
 	//hud_create();
 	if(vdpEnabled) {
@@ -183,6 +187,8 @@ void stage_update() {
 		}
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
 	} else if(stageBackgroundType == 3) {
+		// Lock camera at specific spot
+		camera.target = NULL;
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);

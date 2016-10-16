@@ -143,7 +143,11 @@ SPRITE SPR_CoreLift		"sprite/corelift.png"	2 2 0 0 NONE
 SPRITE SPR_GrateMouth	"sprite/gratemouth.png" 2 2 0 0 NONE
 SPRITE SPR_CoreFront	"sprite/core.png"		8 12 0 0 NONE
 SPRITE SPR_CoreBack		"sprite/coreback.png"	10 12 0 0 NONE
-SPRITE SPR_MiniCore		"sprite/coremini.png"	7 5 0 0 NONE
+SPRITE SPR_MiniCore1	"sprite/coremini1.png"	4 4 0 0 NONE
+SPRITE SPR_MiniCore2	"sprite/coremini2.png"	4 4 0 0 NONE
+SPRITE SPR_MiniCore3	"sprite/coremini3.png"	3 4 0 0 NONE
+SPRITE SPR_MiniCore4	"sprite/coremini4.png"	4 1 0 0 NONE
+SPRITE SPR_MiniCore5	"sprite/coremini5.png"	2 1 0 0 NONE
 SPRITE SPR_CoreShot1	"sprite/coreshot1.png"	2 2 0 0 NONE
 SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE
 SPRITE SPR_CoreShot3	"sprite/coreshot3.png"	1 2 0 0 NONE
@@ -192,6 +196,7 @@ SPRITE SPR_OmgStrut		"sprite/omgstrut.png"	3 2 0 0 NONE
 SPRITE SPR_SkelFeet		"sprite/skelfeet.png"	3 2 0 0 NONE
 SPRITE SPR_Skeleton		"sprite/skeleton.png"	4 4 0 0 NONE
 SPRITE SPR_Bone			"sprite/bone.png"		2 2 0 0 NONE
+SPRITE SPR_Ironh		"sprite/ironhead.png"	7 3 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

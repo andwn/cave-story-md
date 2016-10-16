@@ -26,6 +26,8 @@ void onspawn_ironhead(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->attack = 10;
 	e->health = 400;
+	e->hit_box = (bounding_box) { 20, 8, 20, 8 };
+	e->display_box = (bounding_box) { 28, 12, 28, 12 };
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->state = IRONH_SPAWN_FISHIES;
 	// Keep track if player gets hurt
@@ -168,6 +170,9 @@ void ai_ironhead(Entity *e) {
 	//{
 	//	this->hittimer = 0;
 	//}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 //static void ironh_smokecloud(Entity *e) {

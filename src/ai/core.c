@@ -61,20 +61,28 @@
 	if (water_entity->state == WL_UP) water_entity->state = WL_CYCLE;                          \
 })
 
+// Minicore frame indeces
+static const u16 mframeindex[5] = {
+	TILE_BACKINDEX, 		// Face - mouth closed
+	TILE_BACKINDEX + 16,	// Face - mouth open
+	TILE_BACKINDEX + 32,	// Back
+	TILE_BACKINDEX + 44,	// Bottom part of face
+	TILE_BACKINDEX + 48		// Bottom part of back
+};
+	
 // called at the entry to the Core room.
 // initilize all the pieces of the Core boss.
 void onspawn_core(Entity *e) {
 	e->state = CORE_SLEEP;
-	e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
+	e->eflags = NPC_SHOWDAMAGE;
 	
-	e->x = (1207 << CSF);
+	e->x = (1150 << CSF);
 	e->y = (212 << CSF);
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->health = 650;
-	e->hit_box = (bounding_box) { 9*8, 5*8, 0, 5*8 };
-	
-	//e->sprite = SPR_CORESHOOTMARKER;
+	e->hurtSound = SND_ENEMY_HURT_COOL;
+	e->hit_box = (bounding_box) { 3*8, 4*8, 3*8, 4*8 };
 	
 	// spawn all the pieces in the correct z-order
 	pieces[3] = entity_create(0, 0, OBJ_MINICORE, 0);
@@ -87,14 +95,15 @@ void onspawn_core(Entity *e) {
 	
 	// set up the front piece
 	pieces[CFRONT]->linkedEntity = e;
-	pieces[CFRONT]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	pieces[CFRONT]->hit_box = (bounding_box) { 4*8, 5*8, 4*8, 5*8 };
-	pieces[CFRONT]->display_box = (bounding_box) { 4*8+4, 7*8, 4*8+4, 7*8 };
+	pieces[CFRONT]->eflags = NPC_SHOOTABLE | NPC_INVINCIBLE;
+	pieces[CFRONT]->hit_box = (bounding_box) { 3*8+4, 4*8+4, 3*8+4, 4*8+4 };
+	pieces[CFRONT]->display_box = (bounding_box) { 4*8, 6*8, 4*8, 6*8 };
 	
 	// set up our back piece
 	pieces[CBACK]->linkedEntity = e;
-	pieces[CBACK]->eflags |= (NPC_IGNORESOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	pieces[CBACK]->display_box = (bounding_box) { 5*8+4, 7*8, 5*8+4, 7*8 };
+	pieces[CBACK]->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	pieces[CBACK]->hit_box = (bounding_box) { 6*8, 5*8, 2*8, 5*8 };
+	pieces[CBACK]->display_box = (bounding_box) { 6*8, 6*8, 6*8, 6*8 };
 	
 	// set the positions of all the minicores
 	pieces[0]->x = (e->x - 0x1000);
@@ -116,9 +125,18 @@ void onspawn_core(Entity *e) {
 		pieces[i]->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		pieces[i]->health = 1000;
 		pieces[i]->state = MC_SLEEP;
-		pieces[i]->hit_box = (bounding_box) { 28, 16, 20, 16 };
-		pieces[i]->display_box = (bounding_box) { 32, 20, 32, 20 };
+		pieces[i]->hurtSound = SND_ENEMY_HURT_BIG;
+		pieces[i]->hit_box = (bounding_box) { 24, 12, 0, 12 };
 	}
+	
+	// Upload some tile data for the minicore sprites into the background section
+	SYS_disableInts();
+	SHEET_LOAD(&SPR_MiniCore1, 1, 16, mframeindex[0], 1, 0,0);
+	SHEET_LOAD(&SPR_MiniCore2, 1, 16, mframeindex[1], 1, 0,0);
+	SHEET_LOAD(&SPR_MiniCore3, 1, 12, mframeindex[2], 1, 0,0);
+	SHEET_LOAD(&SPR_MiniCore4, 1, 4, mframeindex[3], 1, 0,0);
+	SHEET_LOAD(&SPR_MiniCore5, 1, 2, mframeindex[4], 1, 0,0);
+	SYS_enableInts();
 }
 
 // We never need to know the core controller's ID but need an extra u16 variable to save hp
@@ -268,7 +286,7 @@ void ai_core(Entity *e) {
 			else
 				e->x += (1 << CSF);
 			
-			#define CORE_DEATH_TARGET_X		0x7a000
+			#define CORE_DEATH_TARGET_X		0x72000
 			#define CORE_DEATH_TARGET_Y		0x16000
 			e->x_speed += (e->x > CORE_DEATH_TARGET_X) ? SPEED(-0x80) : SPEED(0x80);
 			e->y_speed += (e->y > CORE_DEATH_TARGET_Y) ? SPEED(-0x80) : SPEED(0x80);
@@ -331,7 +349,7 @@ void ai_core(Entity *e) {
 		}
 		
 		// move main core towards a spot in front of target
-		e->x_speed += (e->x > (e->x_mark + (160<<CSF))) ? -4 : 4;
+		e->x_speed += (e->x > (e->x_mark + (96<<CSF))) ? -4 : 4;
 		e->y_speed += (e->y > e->y_mark) ? -4 : 4;
 	}
 	
@@ -347,6 +365,9 @@ void ai_core(Entity *e) {
 	
 	LIMIT_X(SPEED(0x80));
 	LIMIT_Y(SPEED(0x80));
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ondeath_core(Entity *e) {
@@ -358,24 +379,21 @@ void ondeath_core(Entity *e) {
 
 // the front (mouth) piece of the main core
 void ai_core_front(Entity *e) {
-	//Entity *core = e->linkedEntity;
 	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
-	e->x = bossEntity->x - (36 << CSF);
-	e->y = bossEntity->y - (48 << CSF);
+	e->x = bossEntity->x;
+	e->y = bossEntity->y;
 }
 
 // the back (unanimated) piece of the main core
 void ai_core_back(Entity *e) {
-	//Entity *core = e->linkedEntity;
 	if (!bossEntity) { e->state = STATE_DELETE; return; }
-	
-	e->x = bossEntity->x + (0x5800 - (8 << CSF));
-	e->y = bossEntity->y - 0x5e00;
+	// Align with front so we look like one big entity
+	e->x = bossEntity->x + ((pieces[CFRONT]->display_box.right + e->display_box.left) << CSF);
+	e->y = bossEntity->y;
 }
 
 void ai_minicore(Entity *e) {
-	//Entity *core = e->linkedEntity;
 	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
 	switch(e->state) {
@@ -473,6 +491,35 @@ void ai_minicore(Entity *e) {
 		e->x += (e->x_mark - e->x) / 16;
 		e->y += (e->y_mark - e->y) / 16;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	
+	// Have to deal with sprites manually
+	e->sprite[0] = (VDPSprite) { // Face
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.size = SPRITE_SIZE(4, 4),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->mouth_open])
+	};
+	e->sprite[1] = (VDPSprite) { // Back
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 4 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.size = SPRITE_SIZE(3, 4),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2])
+	};
+	e->sprite[2] = (VDPSprite) { // Bottom-Face
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.size = SPRITE_SIZE(4, 1),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[3])
+	};
+	e->sprite[3] = (VDPSprite) { // Bottom-Back
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 4 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.size = SPRITE_SIZE(2, 1),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[4])
+	};
 	
 	// don't let them kill us
 	e->health = 1000;
