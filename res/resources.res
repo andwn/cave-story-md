@@ -196,7 +196,7 @@ SPRITE SPR_OmgStrut		"sprite/omgstrut.png"	3 2 0 0 NONE
 SPRITE SPR_SkelFeet		"sprite/skelfeet.png"	3 2 0 0 NONE
 SPRITE SPR_Skeleton		"sprite/skeleton.png"	4 4 0 0 NONE
 SPRITE SPR_Bone			"sprite/bone.png"		2 2 0 0 NONE
-SPRITE SPR_Ironh		"sprite/ironhead.png"	7 3 0 0 NONE
+SPRITE SPR_Ironh		"sprite/ironh.png"		7 3 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE
