@@ -309,7 +309,7 @@ TILESET TS_Face18	"face/face18.png" 2
 TILESET TS_Face19	"face/face19.png" 2
 TILESET TS_Face20	"face/face20.png" 2
 TILESET TS_Face21	"face/face21.png" 2
-
+TILESET TS_Face22	"face/face22.png" 2
 TILESET TS_Face23	"face/face23.png" 2
 TILESET TS_Face24	"face/face24.png" 2
 TILESET TS_Face25	"face/face25.png" 2

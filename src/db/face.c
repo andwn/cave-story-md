@@ -24,7 +24,7 @@ const face_info_def face_info[FACE_COUNT] = {
 	{ &TS_Face19, PAL3 },
 	{ &TS_Face20, PAL3 },
 	{ &TS_Face21, PAL3 },
-	{ &TS_Face01, PAL3 },
+	{ &TS_Face22, PAL3 },
 	{ &TS_Face23, PAL3 },
 	{ &TS_Face24, PAL3 },
 	{ &TS_Face25, PAL3 },
