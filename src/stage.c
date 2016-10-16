@@ -79,11 +79,11 @@ void stage_load(u16 id) {
 	}
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
-	camera_set_position(player.x, player.y);
+	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
+	camera.target = &player;
 	stage_draw_screen();
 	stage_load_entities();
 	if(stageBackgroundType == 3) {
-		camera.y -= 8 << CSF;
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
 	}
 	tsc_load_stage(id);

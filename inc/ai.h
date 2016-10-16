@@ -5,19 +5,6 @@
 #include "entity.h"
 
 /*
- * TODO before 0.2.1
- * MISSING GRAPHICS:
- * - Level Up/Down
- * ANIMATE:
- * - Puppies
- * MISC:
- * - Add ondeath_kulala that creates a treasure chest
- * BGM:
- * - Labyrinth Fight
- * - Living Waterway
- */
-
-/*
  * This module contains behavior or AI for entities specific to NPC type
  * There are 3 "methods" which may be indexed in the npc_info table for an NPC
  * * onCreate: when first created or replaced

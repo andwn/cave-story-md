@@ -8,12 +8,13 @@ The engine is built using SGDK, and written almost entirely in C.
 
 It should work on any console or emulator (PAL is untested).
 
-### Download prebuilt ROM
-See: [Releases](https://github.com/andwn/cave-story-md/releases)
+### Download
+"Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
+
+For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build. (thanks andywhyisit)
 
 ### Progress
-In the current release `0.2` you can make it to Ironhead if you try really hard. Labyrinth and
-Waterway are really glitchy though.
+Farthest reachable point in `master`: Dragon Sisters room - softlock after "you feel a chill"
 
 Also looky here: [TODO list](doc/TODO.md)
 
@@ -52,8 +53,9 @@ Report it, but first make sure
 1. You are comparing with the original freeware Cave Story, not CS+
 2. It's not in [this document](doc/DIFFERENCES.md)
 
-#### Why are you testing on emulator X instead of my favorite one?
-lol
+#### Will there be a physical release of this?
+Probably not. This is a fan port (not endorsed by Pixel or Nicalis), 
+and I'm not going to dance around copyright laws more than I already am.
 
 #### Isn't this just NXEngine ported to Genesis?
 The AI code is, but the rest I wrote from scratch with the help of various modding docs.

@@ -55,9 +55,9 @@ void ai_ironhead(Entity *e) {
 				e->state = IRONH_SWIM;
 			}
 			if (!(e->timer & 3)) {
-				entity_create(((15 + random() % 3) * 16) << CSF,
-						  	((ARENA_TOP+random() % (ARENA_BOTTOM-ARENA_TOP)) * 16) << CSF,
-						  	OBJ_IRONH_FISHY, 0);
+				//entity_create(((15 + random() % 3) * 16) << CSF,
+				//		  	((ARENA_TOP+random() % (ARENA_BOTTOM-ARENA_TOP)) * 16) << CSF,
+				//		  	OBJ_IRONH_FISHY, 0);
 			}
 		}
 		break;
@@ -75,8 +75,8 @@ void ai_ironhead(Entity *e) {
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			
-			e->y_speed = random(-0x200, 0x200);
-			e->x_speed = random(-0x200, 0x200);
+			e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+			e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
 			
 			e->eflags |= NPC_SHOOTABLE;
 		}
@@ -84,16 +84,16 @@ void ai_ironhead(Entity *e) {
 		{
 			ANIMATE(e, 8, 2,0);
 			if (e->dir) {
-				e->x_mark += 0x400;
+				e->x_mark += SPEED(0x400);
 			} else {
-				e->x_mark -= 0x200;
-				e->y_mark += (e->y_mark < player.y) ? 0x200: -0x200;
+				e->x_mark -= SPEED(0x200);
+				e->y_mark += (e->y_mark < player.y) ? SPEED(0x200): -SPEED(0x200);
 			}
 			
 			e->x_speed += (e->x > e->x_mark) ? -8 : 8;
 			e->y_speed += (e->y > e->y_mark) ? -8 : 8;
 			
-			LIMIT_Y(0x200);
+			LIMIT_Y(SPEED(0x200));
 			
 			if (e->dir) {
 				if (e->x > 0x5a000) {
@@ -114,9 +114,9 @@ void ai_ironhead(Entity *e) {
 					case 310:
 					case 320:
 					{
-						Entity *shot = entity_create(e->x, e->y, OBJ_IRONH_SHOT, 0);
-						shot->x_speed = (random(-3, 0) << CSF);
-						shot->y_speed = (random(-3, 3) << CSF);
+						//Entity *shot = entity_create(e->x, e->y, OBJ_IRONH_SHOT, 0);
+						//shot->x_speed = (random(-3, 0) << CSF);
+						//shot->y_speed = (random(-3, 3) << CSF);
 						sound_play(SND_EM_FIRE, 5);
 					}
 					break;
@@ -147,8 +147,8 @@ void ai_ironhead(Entity *e) {
 		{
 			e->x_mark -= (1<<CSF);
 			
-			e->x = e->x_mark + (random(-1, 1) << CSF);
-			e->y = e->y_mark + (random(-1, 1) << CSF);
+			e->x = e->x_mark - 1 + ((random() % 2) << CSF);
+			e->y = e->y_mark - 1 + ((random() % 2) << CSF);
 			
 			e->timer++;
 			//if ((e->timer & 3)==0) ironh_smokecloud(o);
