@@ -278,9 +278,15 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_BLOWFISH, &SPR_Blowfish, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x31: // Egg Corridor?
-		{	// Critter
-			// Baby dragon
-			// Falling spike
+		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritAqua, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_BEETLE, &SPR_Btl2, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_BASU, &SPR_Basu2, 3,3,3, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_BASUSHOT, &SPR_BasuShot, 2,2,2, 0,0, 1,0);
+			SHEET_ADD(SHEET_SMSTAL, &SPR_SmStal, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_LGSTAL, &SPR_LgStal, 2,2,4, 0,0, 0,1);
+		} break;
+		case 0x33: // Egg Observatory?
+		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 6,4,4, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 		} break;
 		case 0x35: // Outer Wall
 		{	// Projectile

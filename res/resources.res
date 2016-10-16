@@ -17,6 +17,8 @@ PALETTE PAL_XB			"back/bkMaze.bmp" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_MazeM		"back/bkRed.bmp" 3
 #PALETTE PAL_Core		"sprite/coremini.png" 3
+PALETTE PAL_Eggs2		"sprite/babydragon.png" 3
+PALETTE PAL_Sisters		"sprite/sishead.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -154,6 +156,8 @@ SPRITE SPR_CoreShot2	"sprite/coreshot2.png"	3 2 0 0 NONE
 SPRITE SPR_CoreShot3	"sprite/coreshot3.png"	1 2 0 0 NONE
 SPRITE SPR_CoreShot4	"sprite/coreshot4.png"	4 4 0 0 NONE
 SPRITE SPR_IronhBlk		"sprite/ironhblk.png"	4 4 0 0 NONE
+SPRITE SPR_SmStal		"sprite/smstal.png"		2 2 0 0 NONE
+SPRITE SPR_LgStal		"sprite/lgstal.png"		2 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
@@ -233,6 +237,18 @@ SPRITE SPR_XCat			"sprite/xcat.png"		6 9 0 0 NONE
 
 # Use PAL_Boulder
 SPRITE SPR_Boulder		"sprite/boulder.png"	7 5 0 0 NONE
+
+# Use PAL_Eggs2
+SPRITE SPR_BabyDragon	"sprite/babydragon.png" 5 4 0 0 NONE
+SPRITE SPR_Basu2		"sprite/basu2.png"		3 3 0 0 NONE
+SPRITE SPR_Btl2			"sprite/btl2.png"		2 2 0 0 NONE
+SPRITE SPR_Cloud		"sprite/wisp.png"		5 5 0 0 NONE
+SPRITE SPR_Countdown	"sprite/numbubble.png"	2 2 0 0 NONE
+SPRITE SPR_CritAqua		"sprite/critaqua.png"	2 2 0 0 NONE
+
+# Use PAL_Sisters
+SPRITE SPR_SisBody		"sprite/sisbody.png"	4 5 0 0 NONE
+SPRITE SPR_SisHead		"sprite/sishead.png"	4 4 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

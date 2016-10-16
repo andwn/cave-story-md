@@ -9,6 +9,11 @@
 #include "camera.h"
 #include "effect.h"
 
+void onspawn_deaddragon(Entity *e) {
+	e->frame = 5;
+	e->attack = 0;
+}
+
 void ai_dragon_zombie(Entity *e) {
 	if (e->health < 950 && e->state < 50) {
 		sound_play(SND_BIG_CRASH, 5);
@@ -67,7 +72,7 @@ void ai_dragon_zombie(Entity *e) {
 			e->timer++;
 			
 			if (e->timer < TIME(40) && (e->timer % 8) == 1) {
-				Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
+				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
 				//ThrowEntity(fire, e->xmark, e->ymark, 6, 0x600);
 				
 				sound_play(SND_SNAKE_FIRE, 3);

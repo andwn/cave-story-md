@@ -51,11 +51,11 @@ const struct {
 	u8 left, top, right, bottom;
 	u16 flags;
 } head_bboxes[] = {
-	{ 15, 1, 38, 26,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// closed
-	{ 15, 4, 36, 28,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// partway open
-	{ 14, 6, 31, 27,  NPC_SHOOTABLE },		// open (shootable)
-	{ 16, 6, 37, 26,  NPC_SHOOTABLE },		// bit tongue (shootable)
-	{ 17, 6, 38, 25,  0 }					// eyes closed (shots pass through)
+	{ 12, 12, 12, 12,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// closed
+	{ 12, 12, 12, 12,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// partway open
+	{ 12, 12, 12, 12,  NPC_SHOOTABLE },		// open (shootable)
+	{ 12, 12, 12, 12,  NPC_SHOOTABLE },		// bit tongue (shootable)
+	{ 12, 12, 12, 12,  0 }					// eyes closed (shots pass through)
 };
 
 #define mainangle	curly_target_x
@@ -109,13 +109,13 @@ void onspawn_sisters(Entity *e) {
 	pieces[HEAD2] = entity_create((64<<CSF) + (50<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, NPC_OPTION2);
 	pieces[HEAD2]->linkedEntity = pieces[BODY2];
 	pieces[BODY2]->linkedEntity = pieces[HEAD2];
-	
-	bossEntity = e;
 }
 
 void onspawn_sisters_body(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->attack = SISTERS_DAMAGE;
+	e->display_box = (bounding_box) { 16, 20, 16, 20 };
+	e->hit_box = (bounding_box) { 12, 16, 12, 16 };
 }
 
 void onspawn_sisters_head(Entity *e) {
@@ -125,6 +125,7 @@ void onspawn_sisters_head(Entity *e) {
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->damage_time = 10;
 	sound_play(e->hurtSound, 5);
+	e->display_box = (bounding_box) { 16, 16, 16, 16 };
 }
 
 void ondeath_sisters(Entity *e) {
@@ -255,8 +256,8 @@ void ai_sisters(Entity *e) {
 				SetBodyStates(STATE_BODY_LOCK_DIR);
 			
 			if (e->y_mark == 0) {
-				if (entity_overlapping(pieces[HEAD1], pieces[HEAD2]) || \
-					entity_overlapping(pieces[HEAD1], pieces[BODY2]) || \
+				if (entity_overlapping(pieces[HEAD1], pieces[HEAD2]) ||
+					entity_overlapping(pieces[HEAD1], pieces[BODY2]) ||
 					entity_overlapping(pieces[HEAD2], pieces[BODY1])) {
 					//starflash.Start(e->CenterX(), e->CenterY());
 					sound_play(SND_EXPLOSION1, 5);
@@ -292,7 +293,7 @@ void ai_sisters(Entity *e) {
 		break;
 	}
 	
-	mainangle %= 1024;
+	//mainangle %= 1024;
 }
 
 void ai_sisters_body(Entity *e) {
@@ -300,8 +301,8 @@ void ai_sisters_body(Entity *e) {
 	if(e->eflags & NPC_OPTION2) angle += 512;
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
-	s32 xoff = (sintab32[(angle) % 1024] >> 1) * (bossEntity->x_mark << CSF);
-	s32 yoff = (sintab32[(angle + 256) % 1024] >> 1) * (bossEntity->y_mark << CSF);
+	s32 xoff = (sintab32[(angle) % 1024] >> 1) * (bossEntity->x_mark); // <<CSF
+	s32 yoff = (sintab32[(angle + 256) % 1024] >> 1) * (bossEntity->y_mark); // <<CSF
 	
 	// figure out where we are supposed to be
 	s32 desired_x = bossEntity->x + xoff;
@@ -408,7 +409,7 @@ void ai_sisters_head(Entity *e) {
 		case STATE_HEAD_FIRE:
 		{
 			if ((++e->timer % 8) == 1) {
-				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
+				//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
 			
@@ -432,7 +433,7 @@ void ai_sisters_head(Entity *e) {
 			
 			if (e->timer > TIME(20)) {
 				if ((e->timer % 32) == 1) {
-					FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
+					//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
 					sound_play(SND_SNAKE_FIRE, 3);
 				}
 			}

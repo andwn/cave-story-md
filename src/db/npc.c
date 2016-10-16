@@ -217,18 +217,18 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_BLOWFISH,  PAL3, 1, &onspawn_persistent, &ai_ironh_fishy, &ondeath_default }, // Porcupine Fish
 	{ &SPR_ManShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ironh_shot, &ai_null }, // Ironhead Projectile
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Underwater Current
-	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_dragon_zombie, &ondeath_default }, // Dragon Zombie
-	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_dragon_zombie, &ai_null }, // Dragon Zombie (Dead)
+	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &ai_null, &ai_dragon_zombie, &ai_null }, // Dragon Zombie
+	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &onspawn_deaddragon, &ai_null, &ai_null }, // Dragon Zombie (Dead)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Dragon Zombie Projectile
 	{ NULL, SHEET_CRITTER,   PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_falling_spike_small, &ondeath_default }, // Falling Spike (Small)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_falling_spike_large, &ondeath_default }, // Falling Spike (Large)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Counter Bomb
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Countdown Balloon
+	{ NULL, SHEET_SMSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_small, &ondeath_default }, // Falling Spike (Small)
+	{ NULL, SHEET_LGSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_large, &ondeath_default }, // Falling Spike (Large)
+	{ NULL, 		NOSHEET, PAL1, 1, &ai_null, &ai_counter_bomb, &ondeath_default }, // Counter Bomb
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_counter_bomb_number, &ai_null }, // Countdown Balloon
 	// 0x0D0 (208) */
-	{ NULL, SHEET_BASU, 	 PAL3, 1, &ai_null, &ai_basu, &ondeath_default }, // Basu (2)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Basu Projectile (2)
-	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &ai_null, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
+	{ NULL, SHEET_BASU, 	 PAL3, 1, &onspawn_basu, &ai_basu, &ondeath_default }, // Basu (2)
+	{ NULL, SHEET_BASUSHOT,  PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Basu Projectile (2)
+	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Sky Dragon
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Night Spirit
@@ -548,9 +548,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&onspawn_x_target, &ai_x_target, &ondeath_x_target },
 	{ &SPR_XInts, NOSHEET, PAL3, 6, // Monster X Internals
 		&onspawn_x_internals, &ai_x_internals, &ai_null },
-	{ NULL, NOSHEET, PAL3, 1, // Sisters Body
+	{ &SPR_SisBody, NOSHEET, PAL3, 2, // Sisters Body
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
-	{ NULL, NOSHEET, PAL3, 1, // Sisters Head
+	{ NULL, SHEET_SISHEAD, PAL3, 1, // Sisters Head
 		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
 	
 	// Extra stuff that does not belong to bosses

@@ -700,6 +700,11 @@ u8 execute_command() {
 				bossEntity = entity_create(0, 0, 360 + BOSS_CORE, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 200;
+			} else if(stageID == 0x33 && args[0] == 20) {
+				// Dragon Sisters
+				bossEntity = entity_create(0, 0, 360 + BOSS_SISTERS, 0);
+				bossEntity->event = 1000;
+				bossEntity->state = 20;
 			} else if(bossEntity) {
 				bossEntity->state = args[0];
 			}
