@@ -1,7 +1,6 @@
 ### TODO / Status
 
 - Music
-  - Labyrinth Fight
   - Living Waterway
   - Scorching Back
   - Moon Song

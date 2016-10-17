@@ -22,7 +22,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Tyrant, 		"Tyrant" },
 	{ BGM_Run, 			"Run!" },
 	{ BGM_Jenka1, 		"Jenka 1" },
-	{ BGM_Jenka2, 		"Labyrinth Fight" },
+	{ BGM_LabFight, 	"Labyrinth Fight" },
 	{ BGM_Access, 		"Access" },
 	{ BGM_Oppression, 	"Oppression" },
 	{ BGM_Geothermal, 	"Geothermal" },
