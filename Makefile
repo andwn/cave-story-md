@@ -29,9 +29,10 @@ RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
 
+.PHONY: all clean
 .SECONDARY: doukutsu.elf
 
-all: inc/ai_gen.h doukutsu.bin 
+all: head-gen doukutsu.bin 
 
 src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
@@ -56,7 +57,8 @@ out/rom_head.bin: src/boot/rom_head.o
 	mkdir -p out/boot
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
 
-inc/ai_gen.h:
+head-gen:
+	rm -f inc/ai_gen.h
 	python aigen.py
 
 clean:
