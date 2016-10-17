@@ -3,8 +3,7 @@
 
 #include "common.h"
 
-// IDs for sounds, see db/sound.c
-// https://github.com/libretro/nxengine-libretro/blob/master/nxengine/sound/sound.h
+// IDs for sounds, identical to NXEngine for AI compatibility
 #define SND_MENU_MOVE		1
 #define SND_MSG				2
 #define SND_BONK_HEAD		3
@@ -90,7 +89,8 @@
 #define SND_153		153
 #define SND_154		154
 #define SND_155		155
-// IDs for title screen songs, see db/song.c
+
+// IDs for the title screen songs
 #define SONG_TITLE 		0x18
 #define SONG_TOROKO 	0x28
 #define SONG_KING 		0x29

@@ -7,9 +7,9 @@
 /*
  * This module contains behavior or AI for entities specific to NPC type
  * There are 3 "methods" which may be indexed in the npc_info table for an NPC
- * * onCreate: when first created or replaced
+ * * onSpawn: when first created or replaced
  * * onFrame: each frame while it is active
- * * onDeath: when it's killed
+ * * onDeath: when it's killed (by a collision with a bullet object ONLY)
  */
 
 #define ENTITY_ONSPAWN(e) npc_info[e->type].onSpawn(e)
@@ -31,6 +31,7 @@ typedef void (*EntityMethod)(Entity*);
 #define WL_UP				22	// in cycle--currently up
 #define WL_STAY_UP			30	// goes to top of screen and doesn't come back down
 
+// These were for "water screen level" and will go away soon
 #define WATER_TOP			0
 #define WATER_DISABLE		255
 
@@ -73,10 +74,12 @@ typedef void (*EntityMethod)(Entity*);
 	curly_target_y = e->y;                                                                     \
 }
 
+// The shifts here would be >>1 and >>CSF, but that will cause the speed value to be
+// truncated per-pixel. The new values give a bit more leeway
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (sintab32[(angle) % 1024] >> 1) * ((speed) >> CSF);                        \
-	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 1) * ((speed) >> CSF);                \
+	shot->x_speed = (sintab32[(angle) % 1024] >> 3) * ((speed) >> 7);                          \
+	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 3) * ((speed) >> 7);                  \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
@@ -107,6 +110,7 @@ typedef void (*EntityMethod)(Entity*);
 Entity *water_entity;
 u8 water_screenlevel;
 
+// These get aliased for other uses when curly isn't around
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 

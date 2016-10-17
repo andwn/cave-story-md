@@ -23,31 +23,33 @@
 #define printf(...) /**/
 #endif
 
+// Screen size
+#define SCREEN_WIDTH 320
+#define SCREEN_HALF_W 160
+
 // The original cave story is 50 FPS, so in NTSC mode TIME() and SPEED() are used
-// to make the game play at (almost) the same speed as if it were 50 FPS
+// to make the game play at (almost) the same speed as if it were 50 FPS.
 // Try to only use constant values instead of variables, otherwise the compiler
 // will not be able to optimize out the DIV and MUL operations
 //#define PAL
 #ifdef PAL
 #define FPS 50
+#define SCREEN_HEIGHT 240
+#define SCREEN_HALF_H 120
 #define TIME(x)		(x)
 #define SPEED(x)	(x)
 #else
 #define FPS 60
+#define SCREEN_HEIGHT 224
+#define SCREEN_HALF_H 112
 #define TIME(x)		((x) * 60 / 50)
 #define SPEED(x)	((x) * 50 / 60)
 #endif
 
-// Screen size
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 224
-#define SCREEN_HALF_W 160
-#define SCREEN_HALF_H 112
-
 // Direction
 enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
-// Angles
+// Angles - why 0 is down instead of right is beyond me
 #define A_DOWN	0
 #define A_RIGHT	256
 #define A_UP	512
@@ -97,17 +99,18 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_WEAPONSIZE 6
 
 // Unit conversions
+// Bit shifting "CSF" is how NXEngine converts units. I kind of like it better than my way
+#define CSF 9
+
 // sub - fixed point unit (1/512x1/512)
 // pixel - single dot on screen (1x1)
 // tile - genesis VDP tile (8x8)
 // block - Cave Story tile (16x16)
-#define CSF 9
-
-#define sub_to_pixel(x)   ((x)>>9)
+#define sub_to_pixel(x)   ((x)>>CSF)
 #define sub_to_tile(x)    ((x)>>12)
 #define sub_to_block(x)   ((x)>>13)
 
-#define pixel_to_sub(x)   ((x)<<9)
+#define pixel_to_sub(x)   ((x)<<CSF)
 #define pixel_to_tile(x)  ((x)>>3)
 #define pixel_to_block(x) ((x)>>4)
 
@@ -123,7 +126,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define round(x) (((x)+0x100)&~0x1FF)
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
-// Get tileset from SpriteDefinition
+// Get tiles from SpriteDefinition
 #define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
 
 // Bounding box used for collision and relative area to display sprites

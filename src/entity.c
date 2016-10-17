@@ -111,11 +111,6 @@ Entity *entity_delete(Entity *e) {
 Entity *entity_delete_inactive(Entity *e) {
 	Entity *next = e->next;
 	LIST_REMOVE(inactiveList, e);
-	// If we had tile allocation release it for future generations to use
-	//if(e->tiloc != NOTILOC) {
-	//	TILOC_FREE(e->tiloc, e->framesize);
-	//	e->tiloc = NOTILOC;
-	//}
 	MEM_free(e);
 	return next;
 }
@@ -126,15 +121,16 @@ Entity *entity_destroy(Entity *e) {
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
-	Entity *next = e->next;
-	LIST_REMOVE(entityList, e);
+	return entity_delete(e);
+	//Entity *next = e->next;
+	//LIST_REMOVE(entityList, e);
 	// If we had tile allocation release it for future generations to use
-	if(e->tiloc != NOTILOC) {
-		TILOC_FREE(e->tiloc, e->framesize);
-		e->tiloc = NOTILOC;
-	}
-	MEM_free(e);
-	return next;
+	//if(e->tiloc != NOTILOC) {
+	//	TILOC_FREE(e->tiloc, e->framesize);
+	//	e->tiloc = NOTILOC;
+	//}
+	//MEM_free(e);
+	//return next;
 }
 
 void entities_clear() {

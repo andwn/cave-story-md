@@ -8,7 +8,7 @@
 /*
  * Cave Story has a file named npc.tbl that contains a bunch of information about each
  * NPC Type (361 of them). This file is included into the ROM without modification,
- * and this module is used to grab the values needed from it
+ * and this module is used to grab the values needed from it.
  */
 
 #define NPC_COUNT 361
@@ -402,8 +402,12 @@
 #define OBJ_DROPLET_SPAWNER			359		// spawns small falling water drips from e.g. resevoir
 #define OBJ_THANK_YOU				360		// credits
 
-// Extra stuff
+// Then the bosses (360 + BOSS_???), boss enum is in entity.h
+
+// NXEngine goes wild with the IDs after this point,
+// but here IDs are array indeces so I do my own thing
 enum {
+	// Parts of bosses
 	OBJ_CORE_FRONT = 370,
 	OBJ_CORE_BACK,
 	OBJ_MINICORE,
@@ -415,12 +419,13 @@ enum {
 	OBJ_X_INTERNALS,
 	OBJ_SISTERS_BODY,
 	OBJ_SISTERS_HEAD,
-	
+	// Splash screen objects
 	OBJ_SEGALOGO,
 	OBJ_SEGALOGO2,
 	OBJ_BALROGSPLASH,
 };
 
+// Locations in npc.tbl where data for each property begins
 #define NPC_FLAGIND	0
 #define NPC_HPIND	(NPC_COUNT * 2)
 #define NPC_PALIND	(NPC_COUNT * 4)
@@ -432,6 +437,7 @@ enum {
 #define NPC_HBOXIND	(NPC_COUNT * 16)
 #define NPC_DBOXIND	(NPC_COUNT * 20)
 
+// Macros to get the data
 #define npc_flags(t) (NPC_TABLE[(t)*2 + NPC_FLAGIND] + (NPC_TABLE[(t)*2 + NPC_FLAGIND+1] <<8 ))
 #define npc_hp(t)    (NPC_TABLE[(t)*2 + NPC_HPIND]   + (NPC_TABLE[(t)*2 + NPC_HPIND+1] << 8))
 #define npc_pal(t)		(NPC_TABLE[type + NPC_PALIND])

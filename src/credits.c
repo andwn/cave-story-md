@@ -9,7 +9,6 @@
 void credits_main(u8 ending) {
 	SYS_disableInts();
 	VDP_setEnable(FALSE);
-	//sprites_clear();
 	song_stop();
 	VDP_resetScreen();
 	VDP_setPalette(PAL0, PAL_Main.data);
@@ -24,4 +23,5 @@ void credits_main(u8 ending) {
 		}
 		VDP_waitVSync();
     }
+    SYS_hardReset();
 }

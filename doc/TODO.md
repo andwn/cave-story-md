@@ -1,4 +1,5 @@
 ### TODO / Status
+This document is for the larger tasks. I removed the smaller ones, they should be issues anyway.
 
 - Music
   - Living Waterway
@@ -12,30 +13,13 @@
   - Toroko's Theme
   - King's Theme
 
-- Missing stuff
-  - Show MAX in the HUD when weapon energy is full
-  - Weapons in item menu
-  - Boss health
-  - Question mark when pressing down
-  - Weapon level up / down
-  - Zzz effect above Gunsmith, Chaco, Mimiga in Sand Zone bar, etc
-  - Ravil, the frenzied mimiga in Grasstown hut
-  - The puppy at the bottom of Sand Zone should run back and forth
-  - The puppies should also wag their tails when you get close to them
-  - Some of the Crows should be carrying skullheads
-  - One of the skullheads have feet
-  - Monster X projectiles & fish missiles
-  - Purple critter projectiles
-  - Large doorway animation
-  - Busted robot sprite
-  - No booster trail yet
+- Big stuff
+  - Weapons in pause menu
+  - Boss healthbar
+  - Exploding enemy in Eggs2 (sprite)
+  - Moon and Fog background
+  - Moving smoke clouds
 
-- Bad Stuff
-  - Balfrog spawn animation isn't blinking
-  - Sometimes frogs land in the right wall
-  - Pooh Black lands early on left/right walls, no death anim
-  - Background portion of Monster X is incomplete/on top
-  
 - Major Boss Status (the check means defeatable, most are unfinished)
   - [x] Balfrog
   - [x] Omega

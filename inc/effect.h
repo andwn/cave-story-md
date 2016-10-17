@@ -11,7 +11,7 @@
 #define MAX_SMOKE 8
 #define MAX_MISC 4
 
-enum { EFF_BONKL, EFF_BONKR, EFF_ZZZ, EFF_BOOST, };
+enum { EFF_BONKL, EFF_BONKR, EFF_ZZZ, EFF_BOOST8, EFF_BOOST2 };
 
 // Only send tiles for 1 damage string per frame
 u8 dqueued;

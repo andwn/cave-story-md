@@ -19,12 +19,11 @@ struct {
 // Initialize the camera with default values (upper left, no target)
 void camera_init();
 // Center camera directly on a specific point
-// This does not redraw or morph the stage, call stage_draw_area() manually after
+// This does not redraw the tilemap, call stage_draw_screen() manually after
 void camera_set_position(s32 x, s32 y);
 // Shake camera for a specified number of frames
 void camera_shake(u16 time);
-// Per frame update for camera, moves toward the target entity
-// Will "morph" the stage (draw areas surrounding the screen) when necessary
+// Per frame update for camera, moves toward the target entity and scrolls the tilemap
 void camera_update();
 
 #endif /* INC_CAMERA_H_ */

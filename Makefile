@@ -32,7 +32,7 @@ OBJS = $(RESOURCES)
 .PHONY: all clean
 .SECONDARY: doukutsu.elf
 
-all: head-gen doukutsu.bin 
+all: head-gen doukutsu.bin
 
 src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
