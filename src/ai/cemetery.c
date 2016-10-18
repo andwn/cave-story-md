@@ -93,8 +93,8 @@ void ai_pignon(Entity *e) {
 }
 
 void onspawn_gkeeper(Entity *e) {
-	e->eflags |= NPC_SHOOTABLE;
-	e->eflags |= NPC_INVINCIBLE;
+	e->nflags &= ~NPC_INVINCIBLE;
+	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	// I expanded the sprite to 32 width so hflip will be symmetrical
 	e->hit_box = (bounding_box) { 8, 11, 8, 11 };
 	e->display_box = (bounding_box) { 16, 12, 16, 12 };
