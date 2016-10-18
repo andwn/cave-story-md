@@ -86,7 +86,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Jack, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_jack, &ai_null }, // Jack
 	{ &SPR_Kanpachi,NOSHEET,PAL3, 1, &ai_null, &ai_kanpachi_fishing, &ai_null }, // Kanpachi
 	{ NULL, SHEET_FLOWER, 	PAL3, 1, &onspawn_flower, &ai_null, &ai_null }, // Flowers
-	{ &SPR_Sanda, NOSHEET, 	PAL3, 2, &ai_null, &ai_null, &ai_null }, // Sandame
+	{ &SPR_Sanda, NOSHEET, 	PAL3, 2, &ai_null, &ai_sanda, &ai_null }, // Sandame
 	{ &SPR_Pot, NOSHEET, 	PAL1, 1, &onspawn_op2anim, &ai_null, &ai_null }, // Pot
 	{ &SPR_Mahin, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_mahin, &ai_null }, // Mahin
 	/* 0x050 (80) */
