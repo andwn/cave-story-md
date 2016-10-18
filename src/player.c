@@ -918,6 +918,7 @@ void player_take_item(u8 id) {
 	for(; i < MAX_ITEMS - 1; i++) {
 		playerInventory[i] = playerInventory[i + 1];
 	}
+	playerInventory[MAX_ITEMS - 1] = 0; // Don't duplicate, blank the last one
 }
 
 u8 player_has_item(u8 id) {
