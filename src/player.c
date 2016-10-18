@@ -907,11 +907,16 @@ void player_give_item(u8 id) {
 }
 
 void player_take_item(u8 id) {
-	for(u8 i = 0; i < MAX_ITEMS; i++) {
+	u8 i = 0;
+	for(; i < MAX_ITEMS; i++) {
 		if(playerInventory[i] == id) {
 			playerInventory[i] = 0;
 			break;
 		}
+	}
+	// Fill in the gap
+	for(; i < MAX_ITEMS - 1; i++) {
+		playerInventory[i] = playerInventory[i + 1];
 	}
 }
 
