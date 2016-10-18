@@ -257,9 +257,9 @@ void entities_update() {
 			} else if(collision.top && e->y < player.y) {
 				player.y += 1<<CSF;
 			} else if(collision.left && e->x < player.x) {
-				player.x -= 1<<CSF;
-			} else if(collision.right && e->x > player.x) {
 				player.x += 1<<CSF;
+			} else if(collision.right && e->x > player.x) {
+				player.x -= 1<<CSF;
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
@@ -792,7 +792,6 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
-			//if(!new->state) new->state = e->state;
 			e = entity_delete(e);
 		} else e = e->next;
 	}
@@ -803,7 +802,6 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 			new->dir = direction;
 			new->id = e->id;
 			new->event = event;
-			//if(!new->state) new->state = e->state;
 			e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
 		} else e = e->next;
 	}
