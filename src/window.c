@@ -68,6 +68,7 @@ void window_open(u8 mode) {
 	textColumn = 0;
 	
 	windowOnTop = mode;
+	if(mode) hud_hide();
 	u16 wy1 = mode ? WINDOW_Y1_TOP : WINDOW_Y1,
 		wy2 = mode ? WINDOW_Y2_TOP : WINDOW_Y2,
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
