@@ -682,6 +682,7 @@ void ai_curlys_mimigas(Entity *e) {
 }
 
 void ai_skeleton_shot(Entity *e) {
+	e->eflags ^= NPC_SHOOTABLE;
 	ANIMATE(e, 8, 0,1,2,3);
 	
 	if ((e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41) || 
