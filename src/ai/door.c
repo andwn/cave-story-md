@@ -35,7 +35,7 @@ void ai_theDoor(Entity *e) {
 void onspawn_doorway(Entity *e) {
 	if(e->eflags & NPC_OPTION2) {
 		// Right door
-		e->frame = 1;;
+		e->dir = 1;
 		e->x -= 8 << CSF;
 	} else {
 		// Left door
@@ -44,5 +44,12 @@ void onspawn_doorway(Entity *e) {
 }
 
 void ai_doorway(Entity *e) {
-
+	if(e->state) {
+		if(++e->timer > TIME(150)) {
+			e->state = STATE_DELETE;
+		} else if(e->timer % TIME(10) == 1) {
+			e->frame++;
+			//if(e->eflags & NPC_OPTION2) e->x += 0x200;
+		}
+	}
 }

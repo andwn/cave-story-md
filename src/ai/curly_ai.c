@@ -25,7 +25,6 @@ u8 curly_watershield = 0;
 u8 curly_impjump = 0;
 u8 curly_reachptimer = 0;
 u8 curly_blockedtime = 0;
-//s16 curly_impjumptime = 0;
 u16 curly_tryjumptime = 0;
 u8 curly_look = 0;
 
@@ -43,15 +42,12 @@ const char porn[1] = {""};
 // curly that fights beside you
 void ai_curly_ai(Entity *e) {
 	s32 xdist, ydist;
-	//s32 xlimit;
 	u8 reached_p;
 	u16 otiley;
 	u8 seeking_player = 0;
 	u8 wantdir;
 
-	// put these here so she'll spawn the shield immediately, even while she's still
-	// knocked out. otherwise she wouldn't have it turned on in the cutscene if the
-	// player defeats the core before she gets up. I know that's unlikely but still.
+	// Spawn air tank if it doesn't exist yet
 	if (!curly_watershield) {
 		Entity *shield = entity_create(e->x, e->y, OBJ_CAI_WATERSHIELD, 0);
 		shield->alwaysActive = TRUE;
@@ -321,7 +317,7 @@ static void fire_mgun(s32 x, s32 y, u8 dir) {
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[b->sheet].index+4);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
@@ -381,13 +377,15 @@ void ai_cai_gun(Entity *e) {
 	e->y = curly->y;// - (4 << CSF);
 	e->dir = curly->dir;
 	if (curly_look) {
-		e->frame = 1;
 		sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
+		sprite_index(e->sprite[0], e->vramindex + 3);
 		e->sprite[0].size = SPRITE_SIZE(1, 3);
+		e->display_box = (bounding_box) { 4, 12, 4, 12 };
 	} else {
-		e->frame = 0;
 		sprite_vflip(e->sprite[0], 0);
+		sprite_index(e->sprite[0], e->vramindex);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
+		e->display_box = (bounding_box) { 12, 4, 12, 4 };
 	}
 	
 	if (curly_target_time) {
@@ -404,7 +402,7 @@ void ai_cai_gun(Entity *e) {
 			// Get point where bullet will be created based on direction / looking
 			if(!curly_look) {
 				e->x_mark = curly->x + (curly->dir ? 8 << CSF : -(8 << CSF));
-				e->y_mark = curly->y + (1 << CSF);
+				e->y_mark = curly->y + (2 << CSF);
 			} else if(curly_look == DIR_UP) {
 				e->x_mark = curly->x;
 				e->y_mark = curly->y - (8 << CSF);
@@ -453,6 +451,5 @@ void ai_cai_watershield(Entity *e) {
 		e->y = curly->y;
 	} else {
 		e->hidden = TRUE;
-		e->timer = 0;
 	}
 }

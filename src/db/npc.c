@@ -223,8 +223,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_CRITTER,   PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
 	{ NULL, SHEET_SMSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_small, &ondeath_default }, // Falling Spike (Small)
 	{ NULL, SHEET_LGSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_large, &ondeath_default }, // Falling Spike (Large)
-	{ NULL, 		NOSHEET, PAL1, 1, &ai_null, &ai_counter_bomb, &ondeath_default }, // Counter Bomb
-	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_counter_bomb_number, &ai_null }, // Countdown Balloon
+	{ &SPR_Cloud, 	NOSHEET, PAL3, 4, &ai_null, &ai_counter_bomb, &ondeath_default }, // Counter Bomb
+	{ &SPR_Countdown,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_counter_bomb_number, &ai_null }, // Countdown Balloon
 	// 0x0D0 (208) */
 	{ NULL, SHEET_BASU, 	 PAL3, 1, &onspawn_basu, &ai_basu, &ondeath_default }, // Basu (2)
 	{ NULL, SHEET_BASUSHOT,  PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Basu Projectile (2)
