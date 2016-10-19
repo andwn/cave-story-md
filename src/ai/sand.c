@@ -684,7 +684,7 @@ void ai_curlys_mimigas(Entity *e) {
 void ai_skeleton_shot(Entity *e) {
 	Bullet *b = bullet_colliding(e);
 	if(b) {
-		b->tll = 0;
+		b->ttl = 0;
 		e->state = STATE_DELETE;
 		return;
 	}
