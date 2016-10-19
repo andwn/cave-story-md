@@ -57,12 +57,12 @@ void sheets_load_weapon(Weapon *w) {
 		case WEAPON_MISSILE:
 		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
-							 : &SPR_MisslB2, 1,2,2, 0,0);
+							 : &SPR_MisslB2, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SUPERMISSILE:
 		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
-							 : &SPR_MisslB2, 1,2,2, 0,0);
+							 : &SPR_MisslB2, 2,2,2, 0,0, 1,0);
 		break;
 		default: w->sheet = NOSHEET;
 	}
@@ -114,12 +114,12 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_MISSILE:
 		SHEET_MOD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
-							 : &SPR_MisslB2, 1,2,2, 0,0);
+							 : &SPR_MisslB2, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SUPERMISSILE:
 		SHEET_MOD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
-							 : &SPR_MisslB2, 1,2,2, 0,0);
+							 : &SPR_MisslB2, 2,2,2, 0,0, 1,0);
 		break;
 	}
 }
