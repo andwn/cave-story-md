@@ -11,6 +11,7 @@
 #include "tsc.h"
 #include "sprite.h"
 #include "sheet.h"
+#include "hud.h"
 
 #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 

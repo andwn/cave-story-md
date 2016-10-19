@@ -9,12 +9,58 @@
 #include "camera.h"
 
 void ai_behemoth(Entity *e) {
-	ANIMATE(e, 16, 0,1,0,2);
-	if(e->x_speed == 0) {
-		e->dir = !e->dir;
-		e->x_speed = e->dir ? SPEED(0x120) : -SPEED(0x120);
+	switch(e->state) {
+		case 0: // Walking
+		{
+			ANIMATE(e, 12, 0,1,0,2);
+			if(e->x_speed == 0) TURN_AROUND(e);
+			MOVE_X(SPEED(0x100));
+			if(e->damage_time) {
+				e->frame = 3;
+				e->state = 1;
+				e->timer = 0;
+			}
+		}
+		break;
+		case 1: // Hit
+		{
+			e->x_speed *= 7;
+			e->y_speed /= 8;
+			
+			if(++e->timer > 40) {
+				if(e->damage_time) {
+					e->state = 2;
+					e->frame = 4;
+					e->timer = 0;
+					e->animtime = 0;
+					e->attack = 5;
+				} else {
+					e->state = 0;
+					e->animtime = 0;
+					e->attack = 1;
+				}
+			} else { // Shake
+				e->x += (e->timer & 1) ? 0x200 : -0x200;
+			}
+		}
+		break;
+		case 2: // Charging
+		{
+			ANIMATE(e, 8, 4,5);
+			if(e->x_speed == 0) TURN_AROUND(e);
+			MOVE_X(SPEED(0x100));
+			if(++e->timer > TIME(200)) {
+				e->state = 0;
+				e->attack = 1;
+				e->frame = 0;
+			}
+		}
+		break;
 	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	
+	if(!e->grounded) e->y_speed += SPEED(0x40);
+	LIMIT_Y(SPEED(0x5FF));
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

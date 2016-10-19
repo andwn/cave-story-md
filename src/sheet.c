@@ -159,7 +159,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		case 0x02: // Egg Corridor
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 3,2,2, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_BEETLE, &SPR_BtlHG, 2,2,2, 0,0, 1,0);
-			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 3,4,3, 0,0, 0,1, 0,3);
+			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 6,4,3, 0,0, 0,1, 0,3, 1,0, 2,0, 2,1);
 			SHEET_ADD(SHEET_BASIL, &SPR_Basil, 3,4,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_BASUSHOT, &SPR_BasuShot, 2,2,2, 0,0, 1,0);
