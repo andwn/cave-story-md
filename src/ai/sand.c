@@ -619,7 +619,7 @@ void ai_curlys_mimigas(Entity *e) {
 			
 			if(e->timer) {
 				e->timer--;
-			} else {	
+			} else if(e->grounded) {	
 				// enter hop state
 				e->state = 15;
 				e->y_speed = -0x200;
@@ -643,7 +643,7 @@ void ai_curlys_mimigas(Entity *e) {
 			if(e->grounded) {
 				e->x_speed = 0;
 				e->state = 21;
-				e->frame += 2;
+				if(e->frame < 7) e->frame += 2;
 				e->timer = 300 + (random() % 100);
 			}
 		}

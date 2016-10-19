@@ -151,14 +151,8 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->ttl = 80;
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
-	// Check up/down first
-	if(joy_down(BUTTON_LEFT) || joy_down(BUTTON_RIGHT)) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index);
-		b->x = player.x + (player.dir ? pixel_to_sub(10) : -pixel_to_sub(10));
-		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (player.dir ? pixel_to_sub(4) : -pixel_to_sub(4));
-		b->y_speed = 0;
-	} else if(joy_down(BUTTON_UP)) {
+	// check up/down first
+	if(joy_down(BUTTON_UP)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		if(w->level == 3) {
 			player.y_speed += SPEED(0x100);
@@ -180,6 +174,12 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
+	} else {
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index);
+		b->x = player.x + (player.dir ? pixel_to_sub(10) : -pixel_to_sub(10));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = (player.dir ? pixel_to_sub(4) : -pixel_to_sub(4));
+		b->y_speed = 0;
 	}
 }
 

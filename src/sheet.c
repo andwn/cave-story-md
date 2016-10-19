@@ -35,6 +35,14 @@ void sheets_load_weapon(Weapon *w) {
 							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_MACHINEGUN:
+		{
+			u8 mgun_sheet = NOSHEET;
+			SHEET_FIND(mgun_sheet, SHEET_MGUN);
+			if(mgun_sheet != NOSHEET) {
+				w->sheet = mgun_sheet;
+				return;
+			}
+		}
 		SHEET_ADD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
 							 : w->level == 2 ? &SPR_MGunB2 
 							 : &SPR_MGunB3, 2,2,2, 0,0, 1,0);
