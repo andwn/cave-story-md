@@ -162,10 +162,10 @@ void weapon_fire_machinegun(Weapon *w) {
 		//if(player.y_mark == 0) player.y_mark = player.y;
 		//if(w->level < 3) player.y_mark += 0x10;
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+4);
-		//if(w->level == 3) {
-		player.y_speed -= SPEED(0x80) * w->level;
-		if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
-		//}
+		if(w->level == 3) {
+			player.y_speed -= SPEED(0x300);
+			if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+		}
 		//if(player.y > player.y_mark) {
 		//	player.y_speed = SPEED(-0x200);
 		//} else {
