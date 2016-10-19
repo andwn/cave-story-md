@@ -465,15 +465,12 @@ void player_start_booster() {
 		if (joy_down(BUTTON_LEFT)) {
 			player.dir = 0;
 			playerBoostState = BOOST_HOZ;
-		}
-		if (joy_down(BUTTON_RIGHT)) {
+		} else if (joy_down(BUTTON_RIGHT)) {
 			player.dir = 1;
 			playerBoostState = BOOST_HOZ;
-		}
-		if (joy_down(BUTTON_DOWN)) {
+		} else if (joy_down(BUTTON_DOWN)) {
 			playerBoostState = BOOST_DOWN;
-		}
-		if (joy_down(BUTTON_UP)) {
+		} else if (joy_down(BUTTON_UP)) {
 			playerBoostState = BOOST_UP;
 		}
 		
@@ -520,7 +517,6 @@ void player_update_booster() {
 	
 	if (joy_down(BUTTON_LEFT)) player.dir = 0;
 	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
-	//SPR_SAFEHFLIP(player.sprite, player.dir);
 
 	u8 blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
@@ -530,7 +526,7 @@ void player_update_booster() {
 	switch(playerBoostState) {
 		case BOOST_HOZ:
 		{
-			if ((player.dir == 0 && blockl) || \
+			if ((player.dir == 0 && blockl) ||
 				(player.dir == 1 && blockr)) {
 				player.y_speed = SPEED(-0x100);
 			}
@@ -541,6 +537,7 @@ void player_update_booster() {
 		case BOOST_UP:
 		{
 			player.y_speed -= SPEED(0x20);
+			if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
 		}
 		break;
 		case BOOST_DOWN:

@@ -25,7 +25,7 @@ void ai_behemoth(Entity *e) {
 		case 1: // Hit
 		{
 			e->x_speed *= 7;
-			e->y_speed /= 8;
+			e->x_speed /= 8;
 			
 			if(++e->timer > 40) {
 				if(e->damage_time) {
@@ -34,10 +34,12 @@ void ai_behemoth(Entity *e) {
 					e->timer = 0;
 					e->animtime = 0;
 					e->attack = 5;
+					MOVE_X(SPEED(0x300));
 				} else {
 					e->state = 0;
 					e->animtime = 0;
 					e->attack = 1;
+					MOVE_X(SPEED(0x100));
 				}
 			} else { // Shake
 				e->x += (e->timer & 1) ? 0x200 : -0x200;
@@ -48,7 +50,7 @@ void ai_behemoth(Entity *e) {
 		{
 			ANIMATE(e, 8, 4,5);
 			if(e->x_speed == 0) TURN_AROUND(e);
-			MOVE_X(SPEED(0x100));
+			MOVE_X(SPEED(0x300));
 			if(++e->timer > TIME(200)) {
 				e->state = 0;
 				e->attack = 1;
