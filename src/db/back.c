@@ -13,7 +13,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ &BG_Maze, PAL3, 0, 8, 8 }, // Labyrinth W - PAL_X
 	{ &BG_Maze2,PAL3, 0, 8, 8 }, // Labyrinth I, O, B - PAL_XB
 	{ &BG_Red, 	PAL3, 0, 4, 4 }, // Labyrinth M
-	{ &BG_Gray, PAL3, 0, 8, 8 }, // Plantation
+	{ &BG_Gray2,PAL2, 0, 8, 8 }, // Plantation
 	{ &BG_Green,PAL3, 0, 8, 8 }, // Sand Zone
 	{ &BG_Eggs, PAL2, 0, 8, 8 }, // Egg Corridor
 };

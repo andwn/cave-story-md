@@ -467,6 +467,7 @@ TILESET BG_Grass	"back/bkGrass.png" 2
 TILESET BG_Fog		"back/bkFog.png" 2
 TILESET BG_Gard		"back/bkGard.bmp" 2
 TILESET BG_Gray		"back/bkGray.bmp" 2
+TILESET BG_Gray2	"back/bkGray2.bmp" 2
 TILESET BG_Green	"back/bkSand.png" 2
 TILESET BG_Maze		"back/bkMaze.png" 2
 TILESET BG_Maze2	"back/bkMaze.bmp" 2

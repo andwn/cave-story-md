@@ -152,27 +152,30 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	if(joy_down(BUTTON_UP)) {
-		player.y_mark = 0;
+		//player.y_mark = 0;
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
-		if(player.y_mark == 0) player.y_mark = player.y;
-		if(w->level < 3) player.y_mark += 0x10;
+		//if(player.y_mark == 0) player.y_mark = player.y;
+		//if(w->level < 3) player.y_mark += 0x10;
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+4);
-		if(player.y > player.y_mark) {
-			player.y_speed = SPEED(-0x200);
-		} else {
-			player.y_speed = SPEED(-0x100);
+		if(w->level == 3) {
+			player.y_speed -= SPEED(0x88);
 		}
+		//if(player.y > player.y_mark) {
+		//	player.y_speed = SPEED(-0x200);
+		//} else {
+		//	player.y_speed = SPEED(-0x100);
+		//}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		player.y_mark = 0;
+		//player.y_mark = 0;
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index);
 		b->x = player.x + (player.dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(2);
