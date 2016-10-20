@@ -248,7 +248,15 @@ u8 update_pause() {
 		// Items are 5000 + ID
 		// Item descriptions are 6000 + ID
 		if(tscState) {
+			u8 overid = playerInventory[selectedItem];
 			tsc_update();
+			// Item was comsumed, have to adjust the icons
+			if(playerInventory[selectedItem] != overid) {
+				for(; overid < MAX_ITEMS - 1; overid++) {
+					itemSprite[overid].attribut = itemSprite[overid + 1].attribut;
+				}
+				itemSprite[MAX_ITEMS - 1].attribut = 0;
+			}
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_LEFT)) {
