@@ -14,27 +14,6 @@ void onspawn_sunstone(Entity *e) {
 	e->y += pixel_to_sub(8);
 }
 
-void onspawn_puppy(Entity *e) {
-	e->eflags |= NPC_INTERACTIVE; // Yeah..
-}
-
-void ai_puppy(Entity *e) {
-	
-}
-
-void onspawn_puppyCarry(Entity *e) {
-	e->alwaysActive = TRUE;
-	// One's all you can manage. One's all you can manage. One's all you can manage.
-	e->eflags &= ~NPC_INTERACTIVE;
-	e->nflags &= ~NPC_INTERACTIVE;
-}
-
-void ai_puppyCarry(Entity *e) {
-	e->dir = player.dir;
-	e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
-	e->y = player.y - pixel_to_sub(5);
-}
-
 void onspawn_jenka(Entity *e) {
 	if(e->type == OBJ_JENKA_COLLAPSED) {
 		e->frame = 2;;
@@ -720,7 +699,7 @@ void ai_skeleton_shot(Entity *e) {
 	e->y += e->y_speed;
 	
 	if (e->timer >= 10) {
-		//effect(o->CenterX(), o->CenterY(), EFFECT_FISHY);
+		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
 		e->state = STATE_DELETE;
 	}
 }
@@ -803,4 +782,178 @@ void ai_skeleton(Entity *e) {
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
+}
+
+// Nothing but dogs below
+
+void onspawn_puppy(Entity *e) {
+	e->eflags |= NPC_INTERACTIVE; // Yeah..
+}
+
+void onspawn_puppyCarry(Entity *e) {
+	e->alwaysActive = TRUE;
+	// One's all you can manage. One's all you can manage. One's all you can manage.
+	e->eflags &= ~NPC_INTERACTIVE;
+	e->nflags &= ~NPC_INTERACTIVE;
+}
+
+void ai_puppyCarry(Entity *e) {
+	e->dir = player.dir;
+	e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
+	e->y = player.y - pixel_to_sub(5);
+}
+
+// these seem to be used for the the ones in jenka's house
+// that you have already gotten.
+void ai_puppy_wag(Entity *e) {
+	// code shared with talking item-giving puppy from Plantation--
+	// that one doesn't face you.
+	if (e->type != OBJ_PUPPY_ITEMS) FACE_PLAYER(e);
+	
+	// needed so you can talk to them immediately after giving them to jenka
+	e->eflags |= NPC_INTERACTIVE;
+	
+	// only wag when player is near
+	if (PLAYER_DIST_X(56 << CSF)) {
+		if (++e->animtime >= 4) {
+			e->animtime = 0;
+			e->frame ^= 1;
+		}
+	} else {
+		e->frame = 0;
+		e->animtime = 0;
+	}
+	
+	RANDBLINK(e, 2, 200);
+	
+	//e->y_speed += 0x40;
+	//LIMITY(0x5ff);
+}
+
+#define BARK	5
+#define NOBARK	3
+void ai_puppy_bark(Entity *e) {
+	if (e->state < 100) FACE_PLAYER(e);
+	
+	switch(e->state) {
+		case 0:
+		case 100:
+			e->state++;
+			e->timer2 = 0;
+		case 1:
+		case 101:
+			// bark when player is near
+			// note: this is also supposed to run at jenka's house when balrog appears
+			// but it's ok:
+			// the player is always near enough because of the way the cutscene is set up
+			if (PLAYER_DIST_X(64 << CSF) && PLAYER_DIST_Y(16 << CSF)) {
+				if (++e->animtime > 6) {
+					e->animtime = 0;
+					
+					if (e->frame==NOBARK) {
+						e->frame = BARK;
+						sound_play(SND_PUPPY_BARK, 5);
+					} else {
+						e->frame = NOBARK;
+						
+						if (!(random() % 8) || ++e->timer2 > 5) { 
+							// stop barking for a sec
+							e->state++;
+							e->timer = e->timer2 = 0;
+							e->frame = 0;
+						}
+					}
+				}
+			} else {
+				e->frame = 0;
+				e->animtime = 99;		// begin barking as SOON as player gets near
+			}
+		break;
+		
+		case 2:
+		case 102:
+			e->frame = 0;
+			if (++e->timer > 8) {	// start barking again
+				e->state--;
+				e->animtime = 0;
+				e->timer2 = 0;
+			}
+		break;
+		
+		// do not bark at all--set during jenka's 1st cutscene with balrog
+		case 20:
+		case 120:
+			e->frame = 0;
+		break;
+	}
+	
+	//e->y_speed += 0x40;
+	//LIMITY(0x5ff);
+}
+
+void ai_puppy_run(Entity *e) {
+	switch(e->state) {
+		case 0:
+			e->eflags |= NPC_INTERACTIVE; // for some reason this isn't set on puppy in map
+			e->state = 1;
+		case 1:
+		{
+			FACE_PLAYER(e);
+			e->frame = 0;		// necessary for randblink
+			
+			if (PLAYER_DIST_Y2((32 << CSF), (16 << CSF))) {
+				if (PLAYER_DIST_X(32 << CSF)) {	// run away!!!
+					FACE_PLAYER(e); TURN_AROUND(e);
+					e->state = 10;
+				} else if (PLAYER_DIST_X(96 << CSF)) {
+					// wag tail
+					if (++e->animtime >= 4) {
+						e->animtime = 0;
+						e->frame ^= 1;
+					}
+				}
+			}
+			
+			RANDBLINK(e, 2, 200);
+		}
+		break;
+		
+		case 10:
+			e->state = 11;
+			e->frame = 4;
+			e->animtime = 0;
+		case 11:		// running
+		{
+			ANIMATE(e, 8, 3,4);
+			
+			e->x_next = e->x + e->x_speed;
+			e->y_next = e->y + e->y_speed;
+			
+			if(!e->grounded) e->grounded = collide_stage_floor(e);
+			else e->grounded = collide_stage_floor_grounded(e);
+			
+			// "bounce" off walls
+			if (e->dir) {
+				if (collide_stage_rightwall(e)) {
+					e->x_speed = -SPEED(0x400);
+					e->dir = 0;
+				}
+			} else {
+				if (collide_stage_leftwall(e)) {
+					e->x_speed = SPEED(0x400);
+					e->dir = 1;
+				}
+			}
+			
+			e->x = e->x_next;
+			e->y = e->y_next;
+			
+			e->x_speed += e->dir ? SPEED(0x40) : -SPEED(0x40);
+			if(!e->grounded) e->y_speed += SPEED(0x40);
+			
+			LIMIT_X(SPEED(0x400));
+			LIMIT_Y(SPEED(0x5FF));
+		}
+		break;
+	}
 }
