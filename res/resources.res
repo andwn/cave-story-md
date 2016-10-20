@@ -158,6 +158,9 @@ SPRITE SPR_CoreShot4	"sprite/coreshot4.png"	4 4 0 0 NONE
 SPRITE SPR_IronhBlk		"sprite/ironhblk.png"	4 4 0 0 NONE
 SPRITE SPR_SmStal		"sprite/smstal.png"		2 2 0 0 NONE
 SPRITE SPR_LgStal		"sprite/lgstal.png"		2 4 0 0 NONE
+SPRITE SPR_NightSpirit	"sprite/nightshade.png" 6 6 0 0 NONE
+SPRITE SPR_NightShot	"sprite/nightshot.png"	4 2 0 0 NONE
+SPRITE SPR_Croc2		"sprite/sandcroc2.png"	6 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
@@ -473,6 +476,12 @@ TILESET BG_Maze		"back/bkMaze.png" 2
 TILESET BG_Maze2	"back/bkMaze.bmp" 2
 #TILESET BG_Moon		"back/bkMoon.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
+
+# Moon & Fog
+#BIN MoonTopTiles	"back/bkMoonTop.bin"
+#BIN MoonTopMap		"back/bkMoonTop.map"
+#BIN MoonBtmTiles	"back/bkMoonBottom.bin"
+#BIN MoonBtmMap		"back/bkMoonBottom.map"
 
 # ----------------------------------------------------------------------------------------------
 # Stages (PXM)
