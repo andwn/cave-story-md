@@ -138,14 +138,14 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_MGUN, 	PAL0, 1, &onspawn_persistent, &ai_curlyBossShot, &ai_null }, // Curly Shot
 	{ &SPR_Sunstone,NOSHEET,PAL2, 1, &onspawn_sunstone, &ai_sunstone, &ai_null }, // Sunstone
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_hiddenPowerup, &ai_hiddenPowerup, &ai_null },
-	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_null, &ai_null }, // Puppy (Running)
+	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_run, &ai_null }, // Puppy (Running)
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
 	/* 0x080 (128) */
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
-	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_null, &ai_null }, // Puppy (Tail Wag)
+	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (Tail Wag)
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_null, &ai_null }, // Puppy (Sleeping)
-	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_null, &ai_null }, // Puppy (Barking)
+	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_bark, &ai_null }, // Puppy (Barking)
 	{ &SPR_Jenka, NOSHEET, 	PAL3, 1, &ai_null, &ai_jenka, &ai_null }, // Jenka
 	{ &SPR_Armadl, NOSHEET, PAL3, 1, &ai_null, &ai_armadillo, &ondeath_default }, // Armadillo
 	{ &SPR_Skeleton,NOSHEET,PAL1, 1, &ai_null, &ai_skeleton, &ondeath_default }, // Skeleton
@@ -235,13 +235,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_NightShot, NOSHEET,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
 	{ &SPR_Croc2, 	NOSHEET, PAL2, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // White Sandcroc
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Itoh
+	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Itoh
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Smoke/Current Generator
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Walking)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Prison Bars
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Momorin
+	{ &SPR_Momo, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Momorin
 	/* 0x0E0 (224) */
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Chie
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Megane
@@ -251,12 +251,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Blooming Red Flowers
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Rocket
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Orangebell
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ &SPR_BigBat, 	NOSHEET, PAL3, 1, &ai_null, &ai_orangebell, &ondeath_default }, // Orangebell
+	{ NULL, 		SHEET_BAT,PAL3, 1, &ai_null, &ai_orangebell_baby, &ondeath_default }, // ???
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Picked Red Flowers
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Midorin
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Gunfish
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Gunfish Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
+	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
@@ -412,8 +412,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Falling (?)
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Hopping Enemy (?)
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, &ai_null, &ai_hoppy, &ondeath_default }, // Hopping Enemy (?)
 	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Defeated)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Mesa

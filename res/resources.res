@@ -58,6 +58,8 @@ SPRITE SPR_Bonk			"sprite/headbump.png"	1 1 0 0 NONE
 SPRITE SPR_RedFl		"sprite/redflowers.png" 6 2 0 0 NONE
 SPRITE SPR_BasuShot		"sprite/basushot.png"	2 2 0 0 NONE
 SPRITE SPR_IkaChan		"sprite/ikachan.png"	2 2 0 0 NONE
+SPRITE SPR_Droll2		"sprite/droll2.png"		4 5 0 0 NONE
+SPRITE SPR_Gunfish		"sprite/gunfish.png"	3 3 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -121,6 +123,7 @@ SPRITE SPR_Sprinkler	"sprite/sprinkler.png"	2 2 0 0 NONE
 SPRITE SPR_Sword		"sprite/kingsword.png"	2 2 0 0 NONE
 SPRITE SPR_Drop			"sprite/drop.png"		1 1 0 0 NONE
 SPRITE SPR_RedFl2		"sprite/redflowers2.png" 4 2 0 0 NONE
+SPRITE SPR_Hoppy		"sprite/jumpthing.png" 2 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE
@@ -207,6 +210,12 @@ SPRITE SPR_Skeleton		"sprite/skeleton.png"	4 4 0 0 NONE
 SPRITE SPR_Bone			"sprite/bone.png"		2 2 0 0 NONE
 SPRITE SPR_Ironh		"sprite/ironh.png"		8 3 0 0 NONE
 SPRITE SPR_Blowfish		"sprite/blowfish.png"	2 2 0 0 NONE
+SPRITE SPR_Momo			"sprite/momo.png"		2 3 0 0 NONE
+SPRITE SPR_Itoh			"sprite/itoh.png"		2 2 0 0 NONE
+SPRITE SPR_Droll		"sprite/droll.png"		4 5 0 0 NONE
+SPRITE SPR_Droll3		"sprite/droll3.png"		4 5 0 0 NONE
+SPRITE SPR_BigBat		"sprite/bigbat.png"		4 4 0 0 NONE
+SPRITE SPR_BlackBat		"sprite/blackbat.png"	2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

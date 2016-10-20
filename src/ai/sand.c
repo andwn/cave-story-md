@@ -799,8 +799,8 @@ void onspawn_puppyCarry(Entity *e) {
 
 void ai_puppyCarry(Entity *e) {
 	e->dir = player.dir;
-	e->x = player.x + pixel_to_sub(e->dir ? -4 : 4);
-	e->y = player.y - pixel_to_sub(5);
+	e->x = player.x + ((e->dir ? -4 : 4) << CSF);
+	e->y = player.y - (6 << CSF);
 }
 
 // these seem to be used for the the ones in jenka's house
@@ -825,9 +825,6 @@ void ai_puppy_wag(Entity *e) {
 	}
 	
 	RANDBLINK(e, 2, 200);
-	
-	//e->y_speed += 0x40;
-	//LIMITY(0x5ff);
 }
 
 #define BARK	5
@@ -886,17 +883,11 @@ void ai_puppy_bark(Entity *e) {
 			e->frame = 0;
 		break;
 	}
-	
-	//e->y_speed += 0x40;
-	//LIMITY(0x5ff);
 }
 
 void ai_puppy_run(Entity *e) {
 	switch(e->state) {
 		case 0:
-			e->eflags |= NPC_INTERACTIVE; // for some reason this isn't set on puppy in map
-			e->state = 1;
-		case 1:
 		{
 			FACE_PLAYER(e);
 			e->frame = 0;		// necessary for randblink
@@ -905,6 +896,7 @@ void ai_puppy_run(Entity *e) {
 				if (PLAYER_DIST_X(32 << CSF)) {	// run away!!!
 					FACE_PLAYER(e); TURN_AROUND(e);
 					e->state = 10;
+					e->animtime = 0;
 				} else if (PLAYER_DIST_X(96 << CSF)) {
 					// wag tail
 					if (++e->animtime >= 4) {
@@ -918,13 +910,9 @@ void ai_puppy_run(Entity *e) {
 		}
 		break;
 		
-		case 10:
-			e->state = 11;
-			e->frame = 4;
-			e->animtime = 0;
-		case 11:		// running
+		case 10:		// running
 		{
-			ANIMATE(e, 8, 3,4);
+			ANIMATE(e, 8, 4,3);
 			
 			e->x_next = e->x + e->x_speed;
 			e->y_next = e->y + e->y_speed;
