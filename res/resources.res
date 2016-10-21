@@ -792,7 +792,9 @@ XGM BGM_Pulse		"bgm/pulse.vgm"
 XGM BGM_Quiet		"bgm/quiet.vgm"
 XGM BGM_Run			"bgm/run.vgm"
 XGM BGM_Safety		"bgm/safety.vgm"
+XGM BGM_Scorching	"bgm/scorching.vgm"
 XGM BGM_Tyrant		"bgm/tyrant.vgm"
+XGM BGM_Waterway	"bgm/waterway.vgm"
 XGM BGM_Zombie		"bgm/zombie.vgm"
 
 # ----------------------------------------------------------------------------------------------
