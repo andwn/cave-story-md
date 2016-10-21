@@ -1,10 +1,7 @@
 /out
-.project
-.cproject
-.settings/
+doukutsu.bin
+doukutsu.elf
 res/resources.h
-*.exe
-out.bin
-out.elf
+inc/ai_gen.h
 temp.bin
 *.o
