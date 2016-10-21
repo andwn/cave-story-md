@@ -143,6 +143,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		SHEET_ADD(SHEET_ENERGYL, &SPR_EnergyL, 6,2,2, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 	} else {
 		sheet_num = 4;
+		memset(&sheets[4], 0, sizeof(Sheet) * (MAX_SHEETS - 4));
 	}
 	if(init_tiloc) {
 		memset(tilocs, 0, MAX_TILOCS);
