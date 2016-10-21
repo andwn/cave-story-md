@@ -216,6 +216,7 @@ SPRITE SPR_Droll		"sprite/droll.png"		4 5 0 0 NONE
 SPRITE SPR_Droll3		"sprite/droll3.png"		4 5 0 0 NONE
 SPRITE SPR_BigBat		"sprite/bigbat.png"		4 4 0 0 NONE
 SPRITE SPR_BlackBat		"sprite/blackbat.png"	2 2 0 0 NONE
+SPRITE SPR_Rocket		"sprite/rocket.png"		4 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

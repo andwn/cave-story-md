@@ -789,6 +789,7 @@ void ai_rocket(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = 0;
+			e->alwaysActive = TRUE;
 		}
 		case 11:
 		{
@@ -845,6 +846,7 @@ void ai_rocket(Entity *e) {
 				e->eflags |= NPC_INTERACTIVE;
 				e->frame = 0;
 				e->state = 0;
+				e->alwaysActive = FALSE;
 			}
 		}
 		break;
@@ -853,6 +855,10 @@ void ai_rocket(Entity *e) {
 	if(e->state) {
 		e->x = e->x_next;
 		e->y = e->y_next;
+		// Hack to prevent player from clipping off to the side
+		if(!player.jump_time && PLAYER_DIST_X(18 << CSF) && PLAYER_DIST_Y2(18 << CSF, 0)) {
+			player.y = e->y - (16 << CSF);
+		}
 	}
 }
 

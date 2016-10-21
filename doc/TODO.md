@@ -2,8 +2,6 @@
 This document is for the larger tasks. I removed the smaller ones, they should be issues anyway.
 
 - Music
-  - Living Waterway
-  - Scorching Back
   - Moon Song
   - Hero's End
   - Final Cave
@@ -16,7 +14,6 @@ This document is for the larger tasks. I removed the smaller ones, they should b
 - Big stuff
   - Weapons in pause menu
   - Boss healthbar
-  - Exploding enemy in Eggs2 (sprite)
   - Moon and Fog background
   - Moving smoke clouds
 

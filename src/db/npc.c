@@ -250,7 +250,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Droll (Guard)
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Blooming Red Flowers
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Rocket
+	{ &SPR_Rocket, 	NOSHEET, PAL0, 1, &ai_null, &ai_rocket, &ai_null }, // Rocket
 	{ &SPR_BigBat, 	NOSHEET, PAL3, 1, &ai_null, &ai_orangebell, &ondeath_default }, // Orangebell
 	{ NULL, 		SHEET_BAT,PAL3, 1, &ai_null, &ai_orangebell_baby, &ondeath_default }, // ???
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Picked Red Flowers
