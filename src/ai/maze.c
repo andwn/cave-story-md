@@ -607,7 +607,7 @@ void ai_pooh_black(Entity *e) {
 		{
 			e->alwaysActive = TRUE;
 
-			e->frame = FRAME_FLYING;;
+			e->frame = FRAME_FLYING;
 			FACE_PLAYER(e);
 			
 			e->y_speed = SPEED(0xA00);
@@ -621,7 +621,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 1:
 		{
-			e->frame = FRAME_FLYING;;
+			e->frame = FRAME_FLYING;
 			e->y_speed = SPEED(0xA00);
 			
 			if ((e->grounded = collide_stage_floor(e))) {
@@ -638,7 +638,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 2:		// landed, showing landed frame
 		{
-			e->frame = FRAME_LANDED;;
+			e->frame = FRAME_LANDED;
 			e->attack = 0;
 			if (++e->timer > TIME(24)) {
 				e->state = 3;
@@ -648,7 +648,7 @@ void ai_pooh_black(Entity *e) {
 		break;
 		case 3:		// standing, stare at player till he shoots us.
 		{
-			e->frame = FRAME_STAND;;
+			e->frame = FRAME_STAND;
 			bubble_xmark = e->x;
 			bubble_ymark = e->y;
 			
@@ -659,8 +659,8 @@ void ai_pooh_black(Entity *e) {
 				bubble->x = e->x - 0x1800 + (random() % 0x3000);
 				bubble->y = e->y - 0x1800 + (random() % 0x3000);
 				// Don't wrap the whole thing in 1 SPEED(), gcc can't optimize that
-				bubble->x_speed = SPEED(-0x600) + (random() % SPEED(0xC00));
-				bubble->y_speed = SPEED(-0x600) + (random() % SPEED(0xC00));
+				bubble->x_speed = -SPEED(0x600) + (random() % SPEED(0xC00));
+				bubble->y_speed = -SPEED(0x600) + (random() % SPEED(0xC00));
 				
 				// fly away after hit enough times
 				if (++e->timer > TIME(30)) {
@@ -668,7 +668,7 @@ void ai_pooh_black(Entity *e) {
 					e->timer = 0;
 					
 					e->eflags |= NPC_IGNORESOLID;
-					e->y_speed = SPEED(-0xC00);
+					e->y_speed = -SPEED(0xC00);
 				}
 			}
 		}
@@ -682,14 +682,16 @@ void ai_pooh_black(Entity *e) {
 			// he falls.
 			if (e->timer == TIME(60)) {
 				bubble_xmark = player.x;
-				bubble_ymark = (10000 << 9);
+				bubble_ymark = (10000 << CSF);
 			} else if (e->timer < TIME(60)) {
 				bubble_xmark = e->x;
 				bubble_ymark = e->y;
 			}
-			// fall on player
 			if (e->timer >= TIME(170)) {
+				// Fall on player, but keep outside the walls
 				e->x_next = player.x;
+				if(e->x_next < (5 * 16) << CSF) e->x_next = (4 * 16) << CSF;
+				if(e->x_next > (15 * 16) << CSF) e->x_next = (16 * 16) << CSF;
 				e->y_next = 0;
 				e->y_speed = SPEED(0x5ff);
 				
@@ -712,18 +714,25 @@ void ai_pooh_black_bubble(Entity *e) {
 	}
 	if (!(random() % 8)) e->frame = 0;
 	else e->frame = 1;
-	e->x_speed += (e->x > bubble_xmark) ? SPEED(-0x40) : SPEED(0x40);
-	e->y_speed += (e->y > bubble_ymark) ? SPEED(-0x40) : SPEED(0x40);
-	LIMIT_X(SPEED(0x11FD));
-	LIMIT_Y(SPEED(0x11FD));
+	e->x_speed += (e->x > bubble_xmark) ? -SPEED(0x40) : SPEED(0x40);
+	e->y_speed += (e->y > bubble_ymark) ? -SPEED(0x40) : SPEED(0x40);
+	LIMIT_X(SPEED(0x1000));
+	LIMIT_Y(SPEED(0x1000));
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
 
+void ondeath_pooh_black(Entity *e) {
+	e->type = OBJ_POOH_BLACK_DYING;
+	e->state = 0;
+	e->attack = 0;
+	e->nflags &= ~(NPC_SHOOTABLE|NPC_SOLID);
+	e->eflags &= ~(NPC_SHOOTABLE|NPC_SOLID);
+}
 
 void ai_pooh_black_dying(Entity *e) {
 	bubble_xmark = e->x;
-	bubble_ymark = -(10000 << 9);
+	bubble_ymark = -(10000 << CSF);
 
 	switch(e->state) {
 		case 0:
@@ -755,6 +764,7 @@ void ai_pooh_black_dying(Entity *e) {
 					e->hidden = TRUE;
 				}
 				if(e->timer2 > 60) {
+					entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
 					e->state = STATE_DELETE;
 					return;
 				}
@@ -764,10 +774,11 @@ void ai_pooh_black_dying(Entity *e) {
 	}
 	
 	if ((e->timer % 4) == 1) {
-		Entity *bubble = entity_create(0, 0, OBJ_POOH_BLACK_BUBBLE, 0);
+		Entity *bubble = entity_create(
+				e->x - 0x1800 + (random() % 0x3000), 
+				e->y - 0x1800 + (random() % 0x3000), OBJ_POOH_BLACK_BUBBLE, 0);
 		bubble->alwaysActive = TRUE;
-		bubble->x = e->x - 0x1800 + (random() % 0x3000);
-		bubble->y = e->y - 0x1800 + (random() % 0x3000);
+		bubble->attack = 0;
 		bubble->x_speed = -0x200 + (random() % 0x400);
 		bubble->y_speed = -0x100;
 	}

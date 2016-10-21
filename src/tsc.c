@@ -885,8 +885,7 @@ u8 execute_command() {
 			// Puff of smoke
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
 			break;
-		// These two "Map Flag" commands were mentioned in TSC.txt but may not exist
-		// At least NXEngine doesn't check for them. I keep them here just in case
+		// Map flags are unused but exist, keeping them here just in case
 		case CMD_MP_ADD: // Map flag (1)
 			args[0] = tsc_read_word();
 			logcmd("<MP+:%hu", args[0]);

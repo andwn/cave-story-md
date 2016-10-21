@@ -39,7 +39,7 @@ enum BBox_States {
 // when he lands he spawns frogs from ceiling--
 // this is the range of where they should spawn at
 #define SPAWN_RANGE_LEFT		4
-#define SPAWN_RANGE_RIGHT		16
+#define SPAWN_RANGE_RIGHT		15
 #define SPAWN_RANGE_TOP			0
 #define SPAWN_RANGE_BOTTOM		4
 

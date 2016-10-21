@@ -175,7 +175,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Monster X Shot
 	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Monster X Cat
 	/* 0x0A0 (160) */
-	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_default }, // Pooh Black
+	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_pooh_black }, // Pooh Black
 	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ai_null }, // Pooh Black Bubble
 	{ &SPR_Dark, NOSHEET,	PAL3, 2, &ai_null, &ai_pooh_black_dying, &ai_null }, // Pooh Black (Dying)
 	{ &SPR_DrGero, NOSHEET, PAL3, 1, &onspawn_gero, &ai_gero, &ai_null }, // Dr. Gero
