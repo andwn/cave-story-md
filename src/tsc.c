@@ -846,17 +846,19 @@ u8 execute_command() {
 		case CMD_FAI: // Fading, in direction (1)
 			args[0] = tsc_read_word();
 			logcmd("<FAI:%hu", args[0]);
+			SYS_disableInts();
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+			SYS_enableInts();
 			break;
 		case CMD_FAO:
 			args[0] = tsc_read_word();
 			logcmd("<FAO:%hu", args[0]);
+			VDP_waitVSync();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
 			break;
 		case CMD_FLA: // Flash screen white
 			logcmd("<FLA");
-			VDP_setPaletteColors(0, PAL_FullWhite, 64);
-			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
+			VDP_flashWhite();
 			break;
 		case CMD_MLP: // Show the map
 			logcmd("<MLP");

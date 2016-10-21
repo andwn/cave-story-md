@@ -16,8 +16,8 @@ extern const u16 PAL_FadeOut[64];
 extern const u16 PAL_FullWhite[64];
 // Palette data
 u16 cachedPalette[64];
-u16 waterPalette[64];
-u16 waterPending;
+//u16 waterPalette[64];
+//u16 waterPending;
 
 // Window plane functions
 void VDP_setWindowPos(u8 x, u8 y);
@@ -33,10 +33,13 @@ void VDP_setCachedPalette(u16 pindex, u16 *colors);
 void VDP_setCachedColor(u16 cindex, u16 color);
 u16* VDP_getCachedPalette();
 
+// Flash the screen white
+void VDP_flashWhite();
+
 // Water palette
-void VDP_genWaterPalette();
-void vblank_water();
-void hblank_water();
+//void VDP_genWaterPalette();
+//void vblank_water();
+//void hblank_water();
 
 // Number draw functions
 void VDP_drawInt(u32 n, u16 x, u16 y);

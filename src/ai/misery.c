@@ -166,8 +166,7 @@ void ai_misery_stand(Entity *e) {
 			if (++e->timer >= TIME(20)) {
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				// Flash screen white
-				VDP_setPaletteColors(0, PAL_FullWhite, 64);
-				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
+				VDP_flashWhite();
 				e->state = 27;
 				e->timer = 0;
 			}

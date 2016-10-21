@@ -51,36 +51,43 @@ u16* VDP_getCachedPalette() {
 	return cachedPalette;
 }
 
-void VDP_genWaterPalette() {
-	for(u8 i = 0; i < 64; i++) {
-		u16 color = cachedPalette[i];
-		if((color & 0xF00) < 0xE00) color += 0x200; // Blue
-		if((color & 0x00F) > 0x000) color -= 0x002; // Red
-		waterPalette[i] = color;
-	}
+void VDP_flashWhite() {
+	SYS_disableInts();
+	VDP_setPaletteColors(0, PAL_FullWhite, 64);
+	VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
+	SYS_enableInts();
 }
+
+//void VDP_genWaterPalette() {
+//	for(u8 i = 0; i < 64; i++) {
+//		u16 color = cachedPalette[i];
+//		if((color & 0xF00) < 0xE00) color += 0x200; // Blue
+//		if((color & 0x00F) > 0x000) color -= 0x002; // Red
+//		waterPalette[i] = color;
+//	}
+//}
 
 // Water interrupt handlers
-void vblank_water() {
-	if(water_screenlevel < 3) {
-		// Use only water palette and disable handler when water is above screen
-		VDP_setHInterrupt(FALSE);
-		VDP_setPaletteColors(0, waterPalette, 64);
-		waterPending = 0;
-	} else {
-		// Set HInt timer to the water position
-		VDP_setHInterrupt(TRUE);
-		VDP_setPaletteColors(0, cachedPalette, 64);
-		waterPending = 1;
-		VDP_setHIntCounter(water_screenlevel - 1);
-	}
-}
+//void vblank_water() {
+//	if(water_screenlevel < 3) {
+//		// Use only water palette and disable handler when water is above screen
+//		VDP_setHInterrupt(FALSE);
+//		VDP_setPaletteColors(0, waterPalette, 64);
+//		waterPending = 0;
+//	} else {
+//		// Set HInt timer to the water position
+//		VDP_setHInterrupt(TRUE);
+//		VDP_setPaletteColors(0, cachedPalette, 64);
+//		waterPending = 1;
+//		VDP_setHIntCounter(water_screenlevel - 1);
+//	}
+//}
 
-void hblank_water() {
-	if(!waterPending) return;
-	VDP_setPaletteColors(0, waterPalette, 64);
-	waterPending = 0;
-}
+//void hblank_water() {
+//	if(!waterPending) return;
+//	VDP_setPaletteColors(0, waterPalette, 64);
+//	waterPending = 0;
+//}
 
 // Number draw functions
 void VDP_drawInt(u32 n, u16 x, u16 y) {

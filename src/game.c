@@ -36,7 +36,7 @@ void game_reset(u8 load);
 
 void vblank() {
 	dqueued = FALSE;
-	if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
+	//if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) {
 		sprites_send();
 		ready = FALSE;
@@ -52,18 +52,19 @@ u8 game_main(u8 load) {
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
 	SYS_setVIntCallback(vblank);
-	SYS_setHIntCallback(hblank_water);
+	//SYS_setHIntCallback(hblank_water);
 	effects_init();
 	game_reset(load);
 	
 	VDP_setEnable(TRUE);
 	VDP_setWindowPos(0, 0);
-	SYS_enableInts();
+	
 	// Load game doesn't run a script that fades in and shows the HUD, so do it manually
 	if(load) {
 		hud_show();
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
+	SYS_enableInts();
 	
 	paused = FALSE;
 	u8 ending = 0;
@@ -90,7 +91,7 @@ u8 game_main(u8 load) {
 					camera_update();
 					player_update();
 					entities_update();
-					if(showingBossHealth) tsc_update_boss_health();
+					//if(showingBossHealth) tsc_update_boss_health();
 				}
 				// Restore controller locking if it was locked
 				joystate = lockstate;

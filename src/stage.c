@@ -48,7 +48,7 @@ void stage_load(u16 id) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
-	water_screenlevel = WATER_DISABLE;
+	//water_screenlevel = WATER_DISABLE;
 	water_entity = NULL;
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {

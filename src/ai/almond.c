@@ -11,7 +11,7 @@
 #include "system.h"
 #include "vdp_ext.h"
 
-void ai_waterlevel(Entity *e) {\
+void ai_waterlevel(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -20,7 +20,7 @@ void ai_waterlevel(Entity *e) {\
 			e->y += 8 << CSF;
 			e->y_mark = e->y;
 			e->y_speed = SPEED(0x200);
-			VDP_genWaterPalette();
+			//VDP_genWaterPalette();
 		}
 		/* no break */
 		case WL_CALM:	// calm waves around set point
@@ -63,9 +63,9 @@ void ai_waterlevel(Entity *e) {\
 	}
 	e->y += e->y_speed;
 	s16 wl = sub_to_pixel(e->y - (camera.y - pixel_to_sub(SCREEN_HALF_H)));
-	if(wl >= SCREEN_HEIGHT) water_screenlevel = 254;
-	else if(wl <= 0) water_screenlevel = 0;
-	else water_screenlevel = wl;
+	//if(wl >= SCREEN_HEIGHT) water_screenlevel = 254;
+	//else if(wl <= 0) water_screenlevel = 0;
+	//else water_screenlevel = wl;
 }
 
 void onspawn_shutter(Entity *e) {

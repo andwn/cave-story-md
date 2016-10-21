@@ -32,8 +32,8 @@ typedef void (*EntityMethod)(Entity*);
 #define WL_STAY_UP			30	// goes to top of screen and doesn't come back down
 
 // These were for "water screen level" and will go away soon
-#define WATER_TOP			0
-#define WATER_DISABLE		255
+//#define WATER_TOP			0
+//#define WATER_DISABLE		255
 
 /* Helper Macros */
 
@@ -108,7 +108,7 @@ typedef void (*EntityMethod)(Entity*);
 /* Shared Variables */
 
 Entity *water_entity;
-u8 water_screenlevel;
+//u8 water_screenlevel;
 
 // These get aliased for other uses when curly isn't around
 u16 curly_target_time;
