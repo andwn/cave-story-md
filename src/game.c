@@ -26,7 +26,7 @@ u8 selectedItem = 0;
 // Prevents incomplete sprite list from being sent to VDP (flickering)
 volatile u8 ready;
 
-void draw_itemmenu();
+void draw_itemmenu(u8 resetCursor);
 u8 update_pause();
 void itemcursor_move(u8 oldindex, u8 index);
 void gen_maptile(u16 bx, u16 by, u16 index);
@@ -77,7 +77,7 @@ u8 game_main(u8 load) {
 			if(joy_pressed(BUTTON_START) && !tscState) {
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
-				draw_itemmenu();
+				draw_itemmenu(TRUE);
 				paused = TRUE;
 			} else {
 				// HUD on top
@@ -162,7 +162,7 @@ void game_reset(u8 load) {
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 }
 
-void draw_itemmenu() {
+void draw_itemmenu(u8 resetCursor) {
 	SYS_disableInts();
 	// Fill the top part
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX), 1, 0);
@@ -211,8 +211,8 @@ void draw_itemmenu() {
 		}
 	}
 	// Draw item cursor at first index (default selection)
-	itemcursor_move(0, 0);
-	selectedItem = 0;
+	if(resetCursor) selectedItem = 0;
+	itemcursor_move(0, selectedItem);
 	tsc_call_event(5000 + playerInventory[selectedItem]);
 	// Make the window plane fully overlap the game
 	VDP_setWindowPos(0, 28);
@@ -252,10 +252,15 @@ u8 update_pause() {
 			tsc_update();
 			// Item was comsumed, have to adjust the icons
 			if(playerInventory[selectedItem] != overid) {
-				for(; overid < MAX_ITEMS - 1; overid++) {
-					itemSprite[overid].attribut = itemSprite[overid + 1].attribut;
-				}
-				itemSprite[MAX_ITEMS - 1].attribut = 0;
+				draw_itemmenu(FALSE);
+				//for(u8 i = selectedItem; i < MAX_ITEMS - 1; i++) {
+				//	if(playerInventory[i + 1]) {
+				//		itemSprite[i].attribut = itemSprite[i + 1].attribut;
+				//	} else {
+				//		itemSprite[i].y = 0;
+				//		break;
+				//	}
+				//}
 			}
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);
@@ -324,6 +329,7 @@ void do_map() {
 			index++;
 		}
 		SYS_enableInts();
+		ready = TRUE;
 		VDP_waitVSync();
 	}
 	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C)) {
@@ -332,7 +338,7 @@ void do_map() {
 		ready = TRUE;
 		VDP_waitVSync();
 	}
-	draw_itemmenu();
+	draw_itemmenu(FALSE);
 }
 
 void gen_maptile(u16 bx, u16 by, u16 index) {
