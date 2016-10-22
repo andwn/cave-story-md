@@ -228,7 +228,7 @@ void draw_itemmenu(u8 resetCursor) {
 
 u8 update_pause() {
 	// Start will close the menu and resume the game
-	if(joy_pressed(BUTTON_START)) {
+	if(joy_pressed(BUTTON_START) && !tscState) {
 		// Reload shared sheets we clobbered
 		SYS_disableInts();
 		sheets_load_stage(stageID, TRUE, FALSE);
@@ -241,6 +241,7 @@ u8 update_pause() {
 		player_unpause();
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
+		hud_show();
 		VDP_setWindowPos(0, 0);
 		return FALSE;
 	} else {
