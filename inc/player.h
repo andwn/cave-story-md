@@ -52,7 +52,7 @@ u8 playerInventory[MAX_ITEMS];
 
 Entity *playerPlatform;
 
-u8 playerBoosterFuel, playerBoostState;
+u8 playerBoosterFuel, playerBoostState, lastBoostState;
 
 // Initialize everything for the player, sets default values on game start
 void player_init();

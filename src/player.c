@@ -139,9 +139,30 @@ void player_update() {
 			}
 		}
 		player_update_movement();
+		// Updates the booster while it is enabled
 		if(playerBoostState != BOOST_OFF) {
 			player_update_booster();
-		} else {
+		}
+		// Slow down the player when we stop the Booster 2.0
+		// Has to run before collision since it recalculates our next position
+		if (playerBoostState != lastBoostState) {
+			if (playerBoostState == BOOST_OFF && (playerEquipment & EQUIP_BOOSTER20)) {
+				switch(lastBoostState) {
+					case BOOST_HOZ:
+						player.x_speed >>= 1;
+						player.x_next = player.x + player.x_speed;
+					break;
+					case BOOST_UP:
+						player.y_speed >>= 1;
+						player.y_next = player.y + player.y_speed;
+					break;
+				}
+			}
+		}
+		lastBoostState = playerBoostState;
+		// The above code to slow down the booster needs to always run. 
+		// As such we check again whether the booster is enabled
+		if(playerBoostState == BOOST_OFF) {
 			u8 blockl_next, blocku_next, blockr_next, blockd_next;
 			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
 			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : FALSE;
@@ -178,7 +199,7 @@ void player_update() {
 			blocku = blocku_next;
 			blockr = blockr_next;
 			blockd = blockd_next;
-			if(playerPlatform != NULL) {
+			if(playerPlatform) {
 				player.x_next += playerPlatform->x_speed;
 				player.y_next += playerPlatform->y_speed;
 				player.hit_box.bottom++;
@@ -192,6 +213,7 @@ void player_update() {
 				}
 			}
 		}
+		// Die when player goes OOB
 		player_update_bounds();
 	} else { // Move mode 1 - for ironhead
 		player_update_float();
@@ -440,7 +462,7 @@ void player_update_interaction() {
 	// Interaction with entities when pressing down
 	if(joy_pressed(BUTTON_DOWN)) {
 		Entity *e = entityList;
-		while(e != NULL) {
+		while(e) {
 			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
 				oldstate |= BUTTON_DOWN; // To avoid triggering it twice
 				if(e->event > 0) {
@@ -479,7 +501,7 @@ void player_start_booster() {
 		
 		switch(playerBoostState) {
 			case BOOST_UP:
-				player.y_speed = SPEED(-0x5ff);
+				player.y_speed = -SPEED(0x5ff);
 			break;
 			case BOOST_DOWN:
 				player.y_speed = SPEED(0x5ff);
@@ -487,7 +509,7 @@ void player_start_booster() {
 			case BOOST_HOZ:
 				player.y_speed = 0;
 				if (joy_down(BUTTON_LEFT))
-					player.x_speed = SPEED(-0x5ff);
+					player.x_speed = -SPEED(0x5ff);
 				else
 					player.x_speed = SPEED(0x5ff);
 			break;
@@ -526,9 +548,8 @@ void player_update_booster() {
 	switch(playerBoostState) {
 		case BOOST_HOZ:
 		{
-			if ((player.dir == 0 && blockl) ||
-				(player.dir == 1 && blockr)) {
-				player.y_speed = SPEED(-0x100);
+			if ((!player.dir && blockl) || (player.dir && blockr)) {
+				player.y_speed = -SPEED(0x100);
 			}
 			if (joy_down(BUTTON_DOWN)) player.y_speed -= SPEED(0x20);
 			if (joy_down(BUTTON_UP)) player.y_speed += SPEED(0x20);
@@ -548,7 +569,7 @@ void player_update_booster() {
 		case BOOST_08:
 		{
 			// top speed and sputtering
-			if (player.y_speed < SPEED(-0x400)) {
+			if (player.y_speed < -SPEED(0x400)) {
 				player.y_speed += SPEED(0x20);
 				sputtering = TRUE;	// no sound/smoke this frame
 			} else {

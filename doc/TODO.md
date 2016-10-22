@@ -16,7 +16,7 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Moon and Fog background
   - Moving smoke clouds
 
-- Major Boss Status (the check means defeatable, most are unfinished)
+- Major Boss Status (the check means the boss "works", only Balrog and Omega are "finished")
   - [x] Balfrog
   - [x] Omega
   - [x] Monster X
@@ -25,7 +25,7 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - [x] Sisters
   - [ ] Undead Core
   
-- Completable Areas
+- Reasonably Completable Areas
   - [x] Grasstown (0.1)
   - [x] Sand Zone (0.1)
   - [x] Labyrinth (0.2)
