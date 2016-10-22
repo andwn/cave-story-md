@@ -258,10 +258,10 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
-				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 2,3,1, 0,0, 0,1);
+			//	SHEET_ADD(SHEET_CGUN, &SPR_MGun, 2,3,1, 0,0, 0,1);
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
 			} else {
-				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 2,3,1, 0,0, 0,1);
+			//	SHEET_ADD(SHEET_CGUN, &SPR_Polar, 2,3,1, 0,0, 0,1);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
 		} break;
@@ -272,10 +272,10 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
-				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 2,3,1, 0,0, 0,1);
+				//SHEET_ADD(SHEET_CGUN, &SPR_MGun, 2,3,1, 0,0, 0,1);
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
 			} else {
-				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 2,3,1, 0,0, 0,1);
+				//SHEET_ADD(SHEET_CGUN, &SPR_Polar, 2,3,1, 0,0, 0,1);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
 			// Small projectile

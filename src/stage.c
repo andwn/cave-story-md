@@ -168,7 +168,7 @@ void stage_load_entities() {
 			SYS_disableInts();
 			VDP_setEnable(FALSE);
 		}
-		* */
+		*/
 		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 
 								  (y<<CSF)*16 + (8<<CSF), type, flags);
 		e->id = id;

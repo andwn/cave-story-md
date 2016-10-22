@@ -690,8 +690,8 @@ void ai_pooh_black(Entity *e) {
 			if (e->timer >= TIME(170)) {
 				// Fall on player, but keep outside the walls
 				e->x_next = player.x;
-				if(e->x_next < (6 * 16) << CSF) e->x_next = (6 * 16) << CSF;
-				if(e->x_next > (14 * 16) << CSF) e->x_next = (14 * 16) << CSF;
+				if(e->x_next < (5 * 16) << CSF) e->x_next = (5 * 16) << CSF;
+				if(e->x_next > (15 * 16) << CSF) e->x_next = (15 * 16) << CSF;
 				e->y_next = 0;
 				e->y_speed = SPEED(0x5ff);
 				
