@@ -165,11 +165,12 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+4);
 		if(w->level == 3) {
-			player.y_speed -= SPEED(0x400);
-			if(joy_down(BUTTON_C)) {
+			if(joy_down(BUTTON_C) || player.y_speed > 0) {
+				player.y_speed -= SPEED(0x400);
 				if (player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
 			} else {
-				if (player.y_speed < -SPEED(0x400)) player.y_speed = -SPEED(0x400);
+				player.y_speed -= SPEED(0x380);
+				if (player.y_speed < -SPEED(0x4FF)) player.y_speed = -SPEED(0x4FF);
 			}
 		}
 		b->x = player.x;
