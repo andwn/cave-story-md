@@ -192,8 +192,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_GAUDISHOT, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ai_null }, // Gaudi Shot
 	{ NULL,SHEET_GAUDIEGG,	PAL2, 1, &ai_null, &ai_gaudi_egg, &ai_null }, // Gaudi Egg
 	/* 0x0B0 (176) */
-	{ &SPR_BuyoBase,NOSHEET, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
-	{ &SPR_Buyo, 	NOSHEET, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
+	{ NULL,		SHEET_BUYOB, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
+	{ NULL, 	SHEET_BUYO, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
 	{ &SPR_CoreShot1,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
 	{ &SPR_CoreShot2,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)

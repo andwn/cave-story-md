@@ -999,10 +999,10 @@ void ai_buyobuyo_base(Entity *e) {
 		case 2:
 		{
 			if (++e->timer > TIME(10)) {
-				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, 0);
-				buyo->dir = e->dir;
-				buyo->x = e->x;
-				buyo->y = e->y;
+				//Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, 0);
+				//buyo->dir = e->dir;
+				//buyo->x = e->x;
+				//buyo->y = e->y;
 				
 				sound_play(SND_EM_FIRE, 5);
 				CURLY_TARGET_HERE(e);

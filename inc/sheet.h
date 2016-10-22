@@ -9,7 +9,7 @@
  * Handles pre-loaded shared sprite sheets and individually owned sprite tile allocations
  */
 
-#define MAX_SHEETS	20
+#define MAX_SHEETS	24
 #define MAX_TILOCS	64
 
 #define NOSHEET 255
@@ -91,7 +91,7 @@ enum {
 	SHEET_BLADE,   SHEET_FUZZC,  SHEET_XBODY,   SHEET_SPUR,   SHEET_CROC,   SHEET_GAUDISHOT,
 	SHEET_SNAKE,   SHEET_BUBB,   SHEET_NEMES,   SHEET_CGUN,   SHEET_JELLY,  SHEET_GAUDIEGG,
 	SHEET_ZZZ,	   SHEET_GAUDID, SHEET_IKACHAN, SHEET_POWERS, SHEET_SMSTAL, SHEET_LGSTAL,
-	SHEET_SISHEAD,
+	SHEET_SISHEAD, SHEET_BUYOB,  SHEET_BUYO
 };
 
 u8 sheet_num;
