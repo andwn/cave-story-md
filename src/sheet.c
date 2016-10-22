@@ -212,7 +212,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_POLISH, &SPR_Polish, 2,4,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_BABY, &SPR_Baby, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_OMGSHOT, &SPR_OmgShot, 4,2,2, 0,0, 0,1, 1,0, 1,1);
-			SHEET_ADD(SHEET_SKULLH, &SPR_Skullhead, 3,4,3, 0,0, 1,0, 2,0);
+			SHEET_ADD(SHEET_SKULLH, &SPR_Skullhead, 2,4,3, 1,0, 2,0);
 			SHEET_ADD(SHEET_OMGLEG, &SPR_OmegaLeg, 2,4,4, 0,0, 1,0);
 		} break;
 		case 0x1D: // Sand Zone Bar

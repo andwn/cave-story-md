@@ -325,6 +325,9 @@ void ai_sunstone(Entity *e) {
 		break;
 		case 10:	// triggered to move by hvtrigger script
 		{
+			// The sunstones push the player to the right here for some reason
+			// Disable solid to work around this
+			e->nflags &= ~(NPC_SOLID|NPC_SPECIALSOLID);
 			// Always face left, don't flip the sprite while moving
 			MOVE_X(SPEED(0x80));
 			e->dir = 0;
@@ -456,7 +459,7 @@ void ai_skullhead(Entity *e) {
 			if(++e->timer > 8) {
 				e->y_speed = -0x350;
 				e->state = 2;
-				e->frame = 2;
+				e->frame = 1;
 				MOVE_X(0x100);
 			} else {
 				break;
@@ -474,8 +477,8 @@ void ai_skullhead(Entity *e) {
 					e->state = 1;
 					e->timer = 0;
 					e->frame = 0;
-				} else {
-					e->frame = 1;
+				//} else {
+				//	e->frame = 0;
 				}
 			} else {
 				collide_stage_ceiling(e);
