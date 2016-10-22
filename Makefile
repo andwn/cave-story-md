@@ -5,15 +5,16 @@ GENBIN=$(GENDEV)/bin/
 CC = $(GENGCC_BIN)gcc
 AS = $(GENGCC_BIN)as
 LD = $(GENGCC_BIN)ld
+NM = $(GENGCC_BIN)nm
 OBJC = $(GENGCC_BIN)objcopy
 RESCOMP= $(GENBIN)rescomp
 
 INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-missing-field-initializers -O3 -std=c99 -c -fomit-frame-pointer -fno-builtin
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-missing-field-initializers -std=c99 -c -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
 LIBS = -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
-ARCHIVES = $(GENDEV)/m68k-elf/lib/libmd.a $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
+ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
 
 BOOTSS=$(wildcard src/boot/*.s)
 BOOT_RESOURCES=$(BOOTSS:.s=.o)
@@ -29,10 +30,33 @@ RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
 
-.PHONY: all clean
+.PHONY: all release debug ntsc pal ntsc-debug pal-debug clean
 .SECONDARY: doukutsu.elf
 
-all: head-gen doukutsu.bin
+all: ntsc
+
+ntsc: release
+
+ntsc-debug: debug
+
+pal: CCFLAGS += -DPAL
+pal: release
+
+pal-debug: CCFLAGS += -DPAL
+pal-debug: debug
+
+release: CCFLAGS += -O3 -fomit-frame-pointer
+release: LIBMD = $(GENDEV)/m68k-elf/lib/libmd.a
+release: main-build
+
+debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
+debug: LIBMD = $(GENDEV)/m68k-elf/lib/libmd_debug.a
+debug: main-build
+
+main-build: head-gen doukutsu.bin symbol.txt
+
+symbol.txt: doukutsu.bin
+	$(NM) -n doukutsu.elf > symbol.txt
 
 src/boot/sega.o: out/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
@@ -42,7 +66,7 @@ src/boot/sega.o: out/rom_head.bin
 	dd if=temp.bin of=$@ bs=8K conv=sync
 
 %.elf: $(OBJS) $(BOOT_RESOURCES)
-	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(LIBS)
+	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(LIBMD) $(ARCHIVES) $(OBJS) $(LIBS)
 
 %.o: %.c
 	$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
@@ -63,7 +87,7 @@ head-gen:
 
 clean:
 	rm -f $(RESOURCES)
-	rm -f *.o *.bin *.elf *.map
-	rm -f src/boot/*.o src/boot/*.bin
+	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
+	rm -f src/boot/sega.o src/boot/rom_head.bin
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h

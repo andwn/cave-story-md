@@ -141,7 +141,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b = &playerBullet[i];
 		break;
 	}
-	if(b == NULL) return;
+	if(!b) return;
 	if(w->level == 3) sound_play(SND_POLAR_STAR_L3, 5);
 	else sound_play(SND_POLAR_STAR_L1_2, 5);
 	b->type = w->type;
@@ -154,7 +154,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	// check up/down first
 	if(joy_down(BUTTON_UP)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
-		if(w->level == 3) {
+		if(!player.grounded && w->level == 3) {
 			player.y_speed += SPEED(0x100);
 			if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
 		}
@@ -165,10 +165,17 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else if(!player.grounded && joy_down(BUTTON_DOWN)) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+4);
 		if(w->level == 3) {
-			// Extra force if falling
-			if(player.y_speed > SPEED(0x100)) player.y_speed -= SPEED(0x200);
-			player.y_speed -= SPEED(0x300);
-			if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+			// This is basically PMgunFly() from NXEngine
+			// Except it didn't do anything different when you hold the jump button
+			if (player.y_speed > 0) player.y_speed >>= 1;
+			if (player.y_speed > -SPEED(0x400)) {
+				player.y_speed -= SPEED(0x200);
+				if(joy_down(BUTTON_C)) {
+					if (player.y_speed < -SPEED(0x500)) player.y_speed = -SPEED(0x500);
+				} else {
+					if (player.y_speed < -SPEED(0x400)) player.y_speed = -SPEED(0x400);
+				}
+			}
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);

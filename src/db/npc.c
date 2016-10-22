@@ -150,7 +150,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Armadl, NOSHEET, PAL3, 1, &ai_null, &ai_armadillo, &ondeath_default }, // Armadillo
 	{ &SPR_Skeleton,NOSHEET,PAL1, 1, &ai_null, &ai_skeleton, &ondeath_default }, // Skeleton
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppyCarry, &ai_puppyCarry, &ai_null }, // Puppy (Carried)
-	{ &SPR_BigDoorFrame,NOSHEET,PAL1,2, &ai_null, &ai_null, &ai_null }, // Large Door (Frame)
+	{ &SPR_BigDoorFrame,NOSHEET,PAL1,1, &ai_null, &ai_null, &ai_null }, // Large Door (Frame)
 	{ &SPR_BigDoor,NOSHEET, PAL1, 1, &onspawn_doorway, &ai_doorway, &ai_null }, // Large Door
 	{ &SPR_Doctor, NOSHEET, PAL3, 1, &onspawn_snap, &ai_doctor, &ai_null }, // Doctor
 	{ &SPR_ToroBoss,NOSHEET,PAL3, 2, &onspawn_torokoBoss, &ai_torokoBoss, &ondeath_torokoBoss },

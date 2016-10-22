@@ -146,6 +146,29 @@ void stage_load_entities() {
 		if((flags&NPC_ENABLEONFLAG) && !system_get_flag(id)) continue;
 		// Special case to not load save points if SRAM is not found
 		if(type == OBJ_SAVE_POINT && system_get_flag(FLAG_DISABLESAVE)) continue;
+		// I'll probably need this code block again in the future.
+		// When an NPC is assigned the improper number of sprites for their metasprite
+		// loading it will crash BlastEm and possibly hardware too. This steps through
+		// each entity as it is loaded so the problematic NPC can be found
+		/*
+		{
+			VDP_setEnable(TRUE);
+			VDP_setPaletteColor(15, 0xEEE);
+			char str[2][36];
+			sprintf(str[0], "X:%hu Y:%hu I:%hu", x, y, id);
+			sprintf(str[1], "E:%hu T:%hu F:%hu", event, type, flags);
+			VDP_drawText(str[0], 2, 2);
+			VDP_drawText(str[1], 2, 4);
+			SYS_enableInts();
+			input_update();
+			while(!joy_pressed(BUTTON_C)) {
+				input_update();
+				VDP_waitVSync();
+			}
+			SYS_disableInts();
+			VDP_setEnable(FALSE);
+		}
+		* */
 		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 
 								  (y<<CSF)*16 + (8<<CSF), type, flags);
 		e->id = id;
