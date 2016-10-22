@@ -2,12 +2,11 @@
 This document is for the larger tasks. I removed the smaller ones, they should be issues anyway.
 
 - Music
-  - Moon Song
-  - Hero's End
   - Final Cave
   - Last Boss
   - Ending
-  - Hell
+  - Running Hell
+  - Seal Chamber
   - Toroko's Theme
   - King's Theme
 
