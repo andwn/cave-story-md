@@ -31,7 +31,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_HerosEnd, 	"Hero's End" },
 	{ BGM_Scorching, 	"Scorching Back" },
 	{ BGM_Quiet, 		"Quiet" },
-	{ BGM_Balcony, 		"Last Cave" },
+	{ BGM_LastCave, 	"Last Cave" },
 	{ BGM_Balcony, 		"Balcony" },
 	{ BGM_Charge, 		"Charge" },
 	{ BGM_EyesOfFlame, 	"Last Battle" }, // 0x20
