@@ -94,7 +94,7 @@ void player_take_weapon(u8 id); // <AM-
 u8 player_has_weapon(u8 id); // <AMJ
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo); // <TAM
 void player_refill_ammo(); // <AE+
-void player_take_allweapons(); // <ZAM
+void player_delevel_weapons(); // <ZAM
 
 void player_heal(u8 health); // <LI+
 void player_maxhealth_increase(u8 health); // <ML+

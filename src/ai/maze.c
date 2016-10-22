@@ -708,7 +708,7 @@ void ai_pooh_black(Entity *e) {
 
 
 void ai_pooh_black_bubble(Entity *e) {
-	if (e->health < 100) {
+	if (e->health < 100 || (e->state && e->y < 0)) {
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -758,14 +758,14 @@ void ai_pooh_black_dying(Entity *e) {
 			if (++e->timer > 200) {
 				e->state = 2;
 				e->timer2++;
-				if ((e->timer2 % 4) == 2) {
+				if ((e->timer2 % 6) == 3) {
 					e->hidden = FALSE;
 					sound_play(SND_BUBBLE, 5);
-				} else if((e->timer2 % 4) == 0) {
+				} else if((e->timer2 % 6) == 0) {
 					e->hidden = TRUE;
 				}
 				if(e->timer2 > 60) {
-					entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
+					//entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
 					e->state = STATE_DELETE;
 					return;
 				}
@@ -780,6 +780,7 @@ void ai_pooh_black_dying(Entity *e) {
 				e->y - 0x1800 + (random() % 0x3000), OBJ_POOH_BLACK_BUBBLE, 0);
 		bubble->alwaysActive = TRUE;
 		bubble->attack = 0;
+		bubble->state = 1;
 		bubble->x_speed = -0x200 + (random() % 0x400);
 		bubble->y_speed = -0x100;
 	}

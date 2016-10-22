@@ -734,9 +734,9 @@ u8 execute_command() {
 			logcmd("<AE+");
 			player_refill_ammo();
 			break;
-		case CMD_ZAM: // Take away all weapons and ammo
+		case CMD_ZAM: // Make all weapons level 1
 			logcmd("<ZAM");
-			player_take_allweapons();
+			player_delevel_weapons();
 			break;
 		case CMD_AM_ADD: // Give weapon (1) and ammo (2)
 			args[0] = tsc_read_word();

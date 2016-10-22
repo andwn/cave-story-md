@@ -879,10 +879,9 @@ void player_refill_ammo() {
 	}
 }
 
-// Just the ammo/levels should be removed
-void player_take_allweapons() {
+void player_delevel_weapons() {
 	for(u8 i = 0; i < MAX_WEAPONS; i++) {
-		playerWeapon[i].ammo = 0;
+		//playerWeapon[i].ammo = 0;
 		playerWeapon[i].level = 1;
 	}
 }
