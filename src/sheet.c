@@ -297,7 +297,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_LGSTAL, &SPR_LgStal, 2,2,4, 0,0, 0,1);
 		} break;
 		case 0x33: // Egg Observatory?
-		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 6,4,4, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 5,4,4, 0,0, 0,1, 0,2, 0,3, 0,4);
 		} break;
 		case 0x35: // Outer Wall
 		{	// Projectile

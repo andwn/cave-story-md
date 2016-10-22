@@ -2,7 +2,6 @@
 This document is for the larger tasks. I removed the smaller ones, they should be issues anyway.
 
 - Music
-  - Final Cave
   - Last Boss
   - Ending
   - Running Hell
