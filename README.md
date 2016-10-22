@@ -39,7 +39,15 @@ This should go without saying, but Mega Drive SRAM and Profile.dat are completel
 ### Compilation
 Assuming you are running GNU/Linux. It might also work on BSDs
 
+0. Dependencies for all this:
+  - The base developer tools form your distro, like `build-essential` on Debian or `base-devel` on Arch
+  - `texinfo` - Newer GCC might pull this in but make sure it is installed
+  - `Java` - For the compression tool lz4w. I may do something about this eventually
+  - `Python` - Required to generate a header file, both 2 and 3 are known to work
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
+  - The command to build and install Gendev is `sudo make`
+  - Compiling a GNU toolchain takes a very long time, up to an hour on slow machines
+  - If after the fact you want to only update SGDK, run `sudo make sgdk-clean` then `sudo make sgdk`. This way you don't have to wait forever to rebuild the whole toolchain
 2. Clone this repository and do `make`.
 3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
