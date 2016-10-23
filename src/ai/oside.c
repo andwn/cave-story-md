@@ -161,6 +161,7 @@ void ai_hoppy(Entity *e) {
 		{
 			e->state = 1;
 			e->enableSlopes = FALSE;
+			e->grounded = TRUE;
 		}
 		case 1:		// wait for player...
 		{
@@ -186,6 +187,7 @@ void ai_hoppy(Entity *e) {
 				
 				sound_play(SND_HOPPY_JUMP, 5);
 				e->x_speed = SPEED(0x700);
+				e->grounded = FALSE;
 			}
 		}
 		break;
@@ -195,7 +197,7 @@ void ai_hoppy(Entity *e) {
 			if (e->y < player.y)	  e->y_speed = SPEED(0xAA);
 			else if (e->y > player.y) e->y_speed = -SPEED(0xAA);
 			
-			if (collide_stage_leftwall(e)) {
+			if ((e->grounded = collide_stage_leftwall(e))) {
 				e->x_speed = 0;
 				e->y_speed = 0;
 				
@@ -220,7 +222,7 @@ void ai_hoppy(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	e->x_speed -= SPEED(0x2A);
+	if(!e->grounded) e->x_speed -= SPEED(0x2A);
 	LIMIT_X(SPEED(0x5ff));
 }
 

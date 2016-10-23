@@ -842,7 +842,9 @@ void ai_rocket(Entity *e) {
 			if (e->y_speed < 0) {
 				if ((e->timer % 16) == 1) sound_play(SND_FIREBALL, 3);
 			} else if (collide_stage_floor(e)) {
-				//e->y >>= CSF; e->y <<= CSF;
+				// Apply this now, since it won't happen when the state is 0
+				e->x = e->x_next;
+				e->y = e->y_next;
 				e->eflags |= NPC_INTERACTIVE;
 				e->frame = 0;
 				e->state = 0;
@@ -856,8 +858,8 @@ void ai_rocket(Entity *e) {
 		e->x = e->x_next;
 		e->y = e->y_next;
 		// Hack to prevent player from clipping off to the side
-		if(!player.jump_time && PLAYER_DIST_X(18 << CSF) && PLAYER_DIST_Y2(18 << CSF, 0)) {
-			player.y = e->y - (16 << CSF);
+		if(!player.jump_time && PLAYER_DIST_X(16 << CSF) && PLAYER_DIST_Y(20 << CSF)) {
+			playerPlatform = e;
 		}
 	}
 }

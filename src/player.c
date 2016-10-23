@@ -87,6 +87,8 @@ void player_init() {
 	currentWeapon = 0;
 	airPercent = 100;
 	airTick = 0;
+	// Booster trail sprite tiles
+	VDP_loadTileData(SPR_TILES(&SPR_Boost, 0, 0), 12, 4, TRUE);
 	// AIR Sprite
 	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, TRUE);
 	airSprite[0] = (VDPSprite) {
@@ -96,6 +98,12 @@ void player_init() {
 	airSprite[1] = (VDPSprite){
 		.x = SCREEN_HALF_W + 8 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(3, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX+4)
+	};
+	// Air Tank sprite
+	VDP_loadTileData(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9, TRUE);
+	airTankSprite = (VDPSprite) {
+		.size = SPRITE_SIZE(3,3),
+		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_AIRTANKINDEX)
 	};
 	// Player sprite
 	playerSprite = (VDPSprite) {
@@ -551,8 +559,8 @@ void player_update_booster() {
 			if ((!player.dir && blockl) || (player.dir && blockr)) {
 				player.y_speed = -SPEED(0x100);
 			}
-			if (joy_down(BUTTON_DOWN)) player.y_speed -= SPEED(0x20);
-			if (joy_down(BUTTON_UP)) player.y_speed += SPEED(0x20);
+			if (joy_down(BUTTON_DOWN)) player.y_speed += SPEED(0x20);
+			if (joy_down(BUTTON_UP)) player.y_speed -= SPEED(0x20);
 		}
 		break;
 		case BOOST_UP:
@@ -581,6 +589,8 @@ void player_update_booster() {
 	// smoke and sound effects
 	if ((playerBoosterFuel % 5) == 1 && !sputtering) {
 		sound_play(SND_BOOSTER, 3);
+		effect_create_misc(playerBoostState == BOOST_08 ? EFF_BOOST8 : EFF_BOOST2, 
+				player.x >> CSF, (player.y >> CSF) + 6);
 	}
 }
 

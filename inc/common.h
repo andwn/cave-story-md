@@ -73,6 +73,7 @@ enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 #define TILE_SHEETSIZE (TILE_FONTINDEX - TILE_SHEETINDEX)
 // Space for prompt/item display at the end of the sprite tiles
 #define TILE_PROMPTINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE - 28)
+#define TILE_AIRTANKINDEX (TILE_PROMPTINDEX - 9)
 // PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
 // also moved to the end as to not overlap the window plane (0xF800)
 // These index the 2 unused areas between for some extra tile space

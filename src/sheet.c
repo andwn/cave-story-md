@@ -300,10 +300,11 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 5,4,4, 0,0, 0,1, 0,2, 0,3, 0,4);
 		} break;
 		case 0x35: // Outer Wall
-		{	// Projectile
+		{	SHEET_ADD(SHEET_NIGHTSHOT, &SPR_NightShot, 3,4,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_HOPPY, &SPR_Hoppy, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x38: // Plantation
-		{	// Bat
+		{	SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 4,2,2, 0,2, 0,3, 0,4, 0,5);
 			// Sideways Press
 		} break;
 		case 0x3F: // Last Cave

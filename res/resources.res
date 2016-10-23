@@ -60,6 +60,7 @@ SPRITE SPR_BasuShot		"sprite/basushot.png"	2 2 0 0 NONE
 SPRITE SPR_IkaChan		"sprite/ikachan.png"	2 2 0 0 NONE
 SPRITE SPR_Droll2		"sprite/droll2.png"		4 5 0 0 NONE
 SPRITE SPR_Gunfish		"sprite/gunfish.png"	3 3 0 0 NONE
+SPRITE SPR_Boost		"sprite/boost.png"		4 1 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -217,6 +218,9 @@ SPRITE SPR_Droll3		"sprite/droll3.png"		4 5 0 0 NONE
 SPRITE SPR_BigBat		"sprite/bigbat.png"		4 4 0 0 NONE
 SPRITE SPR_BlackBat		"sprite/blackbat.png"	2 2 0 0 NONE
 SPRITE SPR_Rocket		"sprite/rocket.png"		4 2 0 0 NONE
+SPRITE SPR_DrollShot	"sprite/drollshot.png"	3 3 0 0 NONE
+SPRITE SPR_Cat			"sprite/cat.png"		2 2 0 0 NONE
+SPRITE SPR_SkyDragon	"sprite/skydragon.png"	5 5 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

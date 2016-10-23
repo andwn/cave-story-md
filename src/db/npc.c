@@ -230,11 +230,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_BASUSHOT,  PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Basu Projectile (2)
 	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Sky Dragon
+	{ &SPR_SkyDragon, NOSHEET, PAL3, 4, &ai_null, &ai_sky_dragon, &ai_null }, // Sky Dragon
 	{ &SPR_NightSpirit,NOSHEET,PAL2,4, &ai_null, &ai_night_spirit, &ondeath_default }, // Night Spirit
-	{ &SPR_NightShot, NOSHEET,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
+	{ NULL, SHEET_NIGHTSHOT,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
 	{ &SPR_Croc2, 	NOSHEET, PAL2, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // White Sandcroc
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat
+	{ &SPR_Cat, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat
 	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Itoh
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Smoke/Current Generator
@@ -247,7 +247,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Megane
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Kanpachi
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Bucket
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Droll (Guard)
+	{ &SPR_Droll2, 	NOSHEET, PAL0, 1, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Blooming Red Flowers
 	{ &SPR_Rocket, 	NOSHEET, PAL0, 1, &ai_null, &ai_rocket, &ai_null }, // Rocket
@@ -255,18 +255,18 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		SHEET_BAT,PAL3, 1, &ai_null, &ai_orangebell_baby, &ondeath_default }, // ???
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Picked Red Flowers
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Midorin
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
-	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
+	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
+	{ NULL, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
 	{ NULL, 		NOSHEET, PAL0, 1, // Jailed Mimiga
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Critter
+	{ NULL, 		SHEET_CRITTER, PAL0, 1, // Red Critter
 		&onspawn_snap, &ai_critter, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Bat
+	{ NULL, 		SHEET_BAT, PAL0, 1, // Red Bat
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Bat Generator
+	{ NULL, 		NOSHEET, PAL0, 0, // Red Bat Generator
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Acid Drop
 		&ai_null, &ai_null, &ondeath_default },
@@ -274,7 +274,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ &SPR_Press, 	NOSHEET, PAL1, 1, // Press (Proximity)
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Boss)
+	{ &SPR_Misery, 	NOSHEET, PAL0, 1, // Misery (Boss)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
 		&ai_null, &ai_null, &ondeath_default },
@@ -326,15 +326,15 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_IRONHBLK,  PAL2, 1, &onspawn_persistent, &ai_ironh_brick, &ondeath_default }, // Underwater Block
 	/* 0x110 (272) */
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_brick_spawner, &ai_null }, // Water Block Generator
-	{ NULL, 		NOSHEET, PAL0, 1, // Droll Projectile
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, // Droll Projectile
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Droll
+	{ &SPR_Droll, 	NOSHEET, PAL3, 2, // Droll
 		&ai_null, &ai_null, &ondeath_default },
 	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, // Puppy (With Item)
 		&onspawn_puppy, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Demon
+	{ NULL, 		NOSHEET, PAL3, 1, // Red Demon
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Demon Projectile
+	{ NULL, 		NOSHEET, PAL3, 1, // Red Demon Projectile
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Little Family
 		&ai_null, &ai_null, &ondeath_default },
@@ -412,7 +412,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Falling (?)
 		&ai_null, &ai_null, &ondeath_default },
-	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, &ai_null, &ai_hoppy, &ondeath_default }, // Hopping Enemy (?)
+	{ NULL, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Hopping Enemy (?)
 	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Defeated)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Mesa
@@ -475,8 +475,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Hoppy
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, // Hoppy
+		&ai_null, &ai_hoppy, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Spikes
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Statue

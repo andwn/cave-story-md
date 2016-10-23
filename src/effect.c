@@ -112,7 +112,8 @@ void effects_update() {
 			case EFF_BOOST2:
 			{
 				if(!(effMisc[i].ttl % TIME(5))) {
-					sprite_index(effMisc[i].sprite, (effMisc[i].sprite.attribut & 11) + 1);
+					//sprite_index(effMisc[i].sprite, (effMisc[i].sprite.attribut & 0xFF) + 1);
+					effMisc[i].sprite.attribut++;
 				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
@@ -202,7 +203,7 @@ void effect_create_misc(u8 type, s16 x, s16 y) {
 			case EFF_BOOST8: // Smoke that emits while using the booster
 			case EFF_BOOST2:
 			{
-				effMisc[i].ttl = TIME(25);
+				effMisc[i].ttl = TIME(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,12)
