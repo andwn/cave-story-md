@@ -214,6 +214,7 @@ void stage_update() {
 			else backScrollTable[y] = backScrollTimer << 1;
 		}
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
+		VDP_setVerticalScroll(PLAN_B, 0);
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
