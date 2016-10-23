@@ -237,7 +237,11 @@ void ai_sky_dragon(Entity *e) {
 		case 10:	// player and kazuma gets on, dragon floats up
 		{
 			e->state = 11;
-			e->frame = 2;
+			// There is a separate 2 frames for the player wearing the Mimiga Mask
+			if(player_has_item(0x10))
+				e->frame = 4;
+			else
+				e->frame = 2;
 			e->animtime = 0;
 			
 			e->x_mark = e->x - (6 << CSF);
@@ -247,7 +251,10 @@ void ai_sky_dragon(Entity *e) {
 		}
 		case 11:
 		{
-			ANIMATE(e, 8, 2,3);
+			if(++e->animtime > 8) {
+				e->frame ^= 1;
+				e->animtime = 0;
+			}
 			e->x_speed += (e->x < e->x_mark) ? 0x08 : -0x08;
 			e->y_speed += (e->y < e->y_mark) ? 0x08 : -0x08;
 		}
@@ -255,8 +262,10 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 20:	// fly away
 		{
-			ANIMATE(e, 4, 2,3);
-			
+			if(++e->animtime > 8) {
+				e->frame ^= 1;
+				e->animtime = 0;
+			}
 			e->y_speed += (e->y < e->y_mark) ? 0x08 : -0x08;
 			e->x_speed += 0x20;
 			LIMIT_X(SPEED(0x600));

@@ -492,10 +492,10 @@ TILESET BG_Maze2	"back/bkMaze.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
 
 # Moon & Fog
-#BIN MoonTopTiles	"back/bkMoonTop.bin"
-#BIN MoonTopMap		"back/bkMoonTop.map"
-#BIN MoonBtmTiles	"back/bkMoonBottom.bin"
-#BIN MoonBtmMap		"back/bkMoonBottom.map"
+BIN MoonTopTiles	"back/bkMoonTop.bin"
+BIN MoonTopMap		"back/bkMoonTop.map"
+BIN MoonBtmTiles	"back/bkMoonBottom.bin"
+BIN MoonBtmMap		"back/bkMoonBottom.map"
 
 # ----------------------------------------------------------------------------------------------
 # Stages (PXM)
