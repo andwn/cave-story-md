@@ -538,7 +538,7 @@ u8 collide_stage_ceiling(Entity *e) {
 	u8 pxa1, pxa2;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
-	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top + 2;
+	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	u8 result = FALSE;
@@ -561,13 +561,27 @@ u8 collide_stage_ceiling(Entity *e) {
 		}
 	}
 	if(result) {
-		if(e == &player && e->y_speed < -0xFF) {
-			sound_play(SND_BONK_HEAD, 2);
-			effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
-			effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
+		if(e == &player) {
+			if(!playerNoBump && e->y_speed < -SPEED(0x200)) {
+				sound_play(SND_BONK_HEAD, 2);
+				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
+				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
+				if(mgun_shoottime) {
+					playerNoBump = TRUE;
+				} else {
+					e->y_speed = min(-e->y_speed / 2, e->underwater ? SPEED(0x80) : SPEED(0x100));
+				}
+			} else if(!mgun_shoottime) {
+				e->y_speed = 0;
+			}
+			e->jump_time = 0;
+		} else if(e->y_speed < -SPEED(0x200)) {
+			e->y_speed = min(-e->y_speed / 2, e->underwater ? SPEED(0x80) : SPEED(0x100));
+		} else {
+			e->y_speed = 0;
 		}
-		e->jump_time = 0;
-		e->y_speed = min(-e->y_speed / 2, e->underwater ? 0x7F : 0xFF);
+	} else if(e == &player) {
+		playerNoBump = FALSE;
 	}
 	return result;
 }

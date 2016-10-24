@@ -231,7 +231,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
 	{ &SPR_SkyDragon, NOSHEET, PAL3, 4, &ai_null, &ai_sky_dragon, &ai_null }, // Sky Dragon
-	{ &SPR_NightSpirit,NOSHEET,PAL2,4, &ai_null, &ai_night_spirit, &ondeath_default }, // Night Spirit
+	{ &SPR_NightSpirit,NOSHEET,PAL2,4, &onspawn_persistent, &ai_night_spirit, &ondeath_default }, // Night Spirit
 	{ NULL, SHEET_NIGHTSHOT,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
 	{ &SPR_Croc2, 	NOSHEET, PAL2, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // White Sandcroc
 	{ &SPR_Cat, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat

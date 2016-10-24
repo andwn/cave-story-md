@@ -50,6 +50,8 @@ u16 playerEquipment;
 // What items the player has and will show up in the inventory screen
 u8 playerInventory[MAX_ITEMS];
 
+u8 mgun_shoottime, mgun_chargetime, playerNoBump;
+
 Entity *playerPlatform;
 
 u8 playerBoosterFuel, playerBoostState, lastBoostState;

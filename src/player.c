@@ -40,8 +40,6 @@ u8 blockl, blocku, blockr, blockd;
 u8 ledge_time;
 u8 walk_time;
 
-u8 mgun_shoottime, mgun_chargetime;
-
 VDPSprite airTankSprite;
 
 void player_update_bounds();
@@ -321,7 +319,6 @@ void player_update() {
 				mgun_shoottime = 9;
 			}
 		} else {
-			player.y_mark = 0;
 			if(playerWeapon[currentWeapon].ammo < 100) {
 				if(mgun_chargetime > 0) {
 					mgun_chargetime--;
@@ -550,7 +547,8 @@ void player_update_booster() {
 
 	u8 blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
-	collide_stage_ceiling(&player);
+	// Don't bump in the opposite direction when hitting the ceiling
+	if(player.y_speed <= 0 && collide_stage_ceiling(&player)) player.y_speed = 0;
 	collide_stage_floor(&player);
 
 	switch(playerBoostState) {
@@ -840,7 +838,7 @@ Weapon *player_find_weapon(u8 id) {
 
 void player_give_weapon(u8 id, u8 ammo) {
 	Weapon *w = player_find_weapon(id);
-	if(w == NULL) {
+	if(!w) {
 		for(u8 i = 0; i < MAX_WEAPONS; i++) {
 			if(playerWeapon[i].type > 0) continue;
 			w = &playerWeapon[i];
@@ -867,7 +865,7 @@ void player_give_weapon(u8 id, u8 ammo) {
 
 void player_take_weapon(u8 id) {
 	Weapon *w = player_find_weapon(id);
-	if(w != NULL) {
+	if(w) {
 		if(playerWeapon[currentWeapon].type == id) {
 			player_next_weapon();
 		}
@@ -888,7 +886,7 @@ u8 player_has_weapon(u8 id) {
 
 void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 	Weapon *w = player_find_weapon(id_take);
-	if(w != NULL) {
+	if(w) {
 		if(id_take == playerWeapon[currentWeapon].type) {
 			if(weapon_info[w->type].sprite) {
 			TILES_QUEUE(SPR_TILES(weapon_info[w->type].sprite,0,0),
@@ -912,8 +910,9 @@ void player_refill_ammo() {
 
 void player_delevel_weapons() {
 	for(u8 i = 0; i < MAX_WEAPONS; i++) {
-		//playerWeapon[i].ammo = 0;
 		playerWeapon[i].level = 1;
+		playerWeapon[i].energy = 0;
+		sheets_refresh_weapon(&playerWeapon[i]);
 	}
 }
 
