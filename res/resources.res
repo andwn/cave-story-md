@@ -16,9 +16,9 @@ PALETTE PAL_X			"back/bkMaze.png" 3
 PALETTE PAL_XB			"back/bkMaze.bmp" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_MazeM		"back/bkRed.bmp" 3
-#PALETTE PAL_Core		"sprite/coremini.png" 3
 PALETTE PAL_Eggs2		"sprite/babydragon.png" 3
 PALETTE PAL_Sisters		"sprite/sishead.png" 3
+PALETTE PAL_Red			"sprite/dripred.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -266,6 +266,14 @@ SPRITE SPR_CritAqua		"sprite/critaqua.png"	2 2 0 0 NONE
 # Use PAL_Sisters
 SPRITE SPR_SisBody		"sprite/sisbody.png"	4 5 0 0 NONE
 SPRITE SPR_SisHead		"sprite/sishead.png"	4 4 0 0 NONE
+
+# Use PAL_Red
+SPRITE SPR_DripRed		"sprite/dripred.png"	1 2 0 0 NONE
+SPRITE SPR_CritRed		"sprite/critterred.png" 2 2 0 0 NONE
+SPRITE SPR_BatRed		"sprite/batred.png"		2 2 0 0 NONE
+SPRITE SPR_BubRed		"sprite/bubred.png"		1 1 0 0 NONE
+SPRITE SPR_DrollRed		"sprite/drollred.png"	4 5 0 0 NONE
+SPRITE SPR_DrollShotR	"sprite/drollshotred.png" 3 3 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

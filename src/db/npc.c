@@ -260,18 +260,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Jailed Mimiga
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		SHEET_CRITTER, PAL0, 1, // Red Critter
-		&onspawn_snap, &ai_critter, &ondeath_default },
-	{ NULL, 		SHEET_BAT, PAL0, 1, // Red Bat
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Red Bat Generator
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Acid Drop
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Acid Drop Generator
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
+	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Red Critter
+	{ NULL, SHEET_BAT, 		PAL3, 1, &ai_null, &ai_null, &ondeath_default }, // Red Bat
+	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ondeath_default }, // Red Bat Generator
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ondeath_default }, // Acid Drop
+	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ondeath_default }, // Acid Drop Generator
 	{ &SPR_Press, 	NOSHEET, PAL1, 1, // Press (Proximity)
 		&ai_null, &ai_null, &ondeath_default },
 	{ &SPR_Misery, 	NOSHEET, PAL0, 1, // Misery (Boss)
@@ -332,10 +326,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, // Puppy (With Item)
 		&onspawn_puppy, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL3, 1, // Red Demon
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL3, 1, // Red Demon Projectile
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_DrollRed, NOSHEET, PAL3, 2, // Red Demon
+		&ai_null, &ai_red_demon, &ondeath_default },
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, // Red Demon Projectile
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Little Family
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Falling Block (Large)

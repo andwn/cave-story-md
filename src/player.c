@@ -21,7 +21,7 @@
 #else
 #define INVINCIBILITY_FRAMES 120
 #define AIR_TICKS 12
-#define BOOSTER_FUEL 60
+#define BOOSTER_FUEL 61
 #endif
 
 VDPSprite weaponSprite;
@@ -793,7 +793,7 @@ u8 player_inflict_damage(s16 damage) {
 }
 
 void player_update_bounds() {
-	if(player.y_next > block_to_sub(stageHeight + 1)) {
+	if(player.y > block_to_sub(stageHeight)) {
 		player.health = 0;
 		tsc_call_event(PLAYER_OOB_EVENT);
 	}
