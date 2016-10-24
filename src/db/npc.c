@@ -238,61 +238,61 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Itoh
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Smoke/Current Generator
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Walking)
+	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade
+	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Walking)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Prison Bars
 	{ &SPR_Momo, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Momorin
 	/* 0x0E0 (224) */
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Chie
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Megane
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Kanpachi
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Bucket
-	{ &SPR_Droll2, 	NOSHEET, PAL0, 1, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
+	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie
+	{ &SPR_Megane, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Megane
+	{ &SPR_Kanpachi2,NOSHEET,PAL3, 1, &ai_null, &ai_null, &ai_null }, // Kanpachi
+	{ &SPR_Bucket, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Bucket
+	{ &SPR_Droll2, 	NOSHEET, PAL0, 2, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Blooming Red Flowers
 	{ &SPR_Rocket, 	NOSHEET, PAL0, 1, &ai_null, &ai_rocket, &ai_null }, // Rocket
 	{ &SPR_BigBat, 	NOSHEET, PAL3, 1, &ai_null, &ai_orangebell, &ondeath_default }, // Orangebell
 	{ NULL, 		SHEET_BAT,PAL3, 1, &ai_null, &ai_orangebell_baby, &ondeath_default }, // ???
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Picked Red Flowers
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Midorin
+	{ NULL, SHEET_MIDO, 	 PAL0, 1, &ai_null, &ai_midorin, &ondeath_default }, // Midorin
 	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
-	{ NULL, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Lethal Press
+	{ NULL, SHEET_GUNFSHOT,  PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
+	{ &SPR_JailedMimi,NOSHEET,PAL0,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Red Critter
-	{ NULL, SHEET_BAT, 		PAL3, 1, &ai_null, &ai_null, &ondeath_default }, // Red Bat
-	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ondeath_default }, // Red Bat Generator
-	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ondeath_default }, // Acid Drop
-	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ondeath_default }, // Acid Drop Generator
+	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_red_bat, &ondeath_default }, // Red Bat
+	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator
+	{ NULL, SHEET_ACID, 	PAL3, 1, &onspawn_persistent, &ai_lava_drip, &ai_null }, // Acid Drop
+	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
 	{ &SPR_Press, 	NOSHEET, PAL1, 1, // Press (Proximity)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_proximity_press_vert, &ondeath_default },
 	{ &SPR_Misery, 	NOSHEET, PAL0, 1, // Misery (Boss)
-		&ai_null, &ai_null, &ondeath_default },
+		&onspawn_persistent, &ai_boss_misery, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery Energy Shot
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery Lightning Ball
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 4, // Misery Lightning
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Energy Capsule
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 4, // Helicopter
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	/* 0x100 (256) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor (Before Fight)
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, // Doctor (Before Fight)
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Crystal
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Sleeping Mimiga
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (Carried)
 		&onspawn_persistent, &ai_curly_carried, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Shovel Brigade (Caged)
@@ -311,7 +311,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Muscle Doctor (Boss)
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 4, // Igor
+	{ &SPR_Igor, 	NOSHEET, PAL3, 4, // Igor
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Energy Bat
 		&ai_null, &ai_null, &ondeath_default },

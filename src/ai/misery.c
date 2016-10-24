@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "vdp_ext.h"
+#include "effect.h"
 
 void ai_misery_float(Entity *e) {
 	e->x_next = e->x + e->x_speed;
@@ -278,5 +279,441 @@ void ai_misery_bubble(Entity *e) {
 			target->y = e->y - 0x200;
 		}
 		break;
+	}
+}
+
+#define STATE_FIGHTING			100		// script-triggered, must be constant
+
+#define STATE_FLASH_FOR_SPELL	200		// flashes then casts either FIRE_SHOTS or SUMMON_BLOCk
+#define STATE_FIRE_SHOTS		210		// fires black shots at player
+#define STATE_SUMMON_BLOCK		220		// summons falling block over player's head
+#define STATE_SUMMON_BALLS		230		// summons black-lightning balls
+#define STATE_TP_AWAY			240		// teleports away then reappears
+
+#define STATE_DEFEATED			1000	// script-triggered, must be constant
+
+#define savedhp		curly_target_time
+
+static void run_intro(Entity *e);
+static void run_spells(Entity *e);
+static void run_teleport(Entity *e);
+static void run_defeated(Entity *e);
+
+static Entity* CreateRing(Entity *e, u16 angle);
+
+void ai_boss_misery(Entity *e) {
+	switch(e->state) {
+		// fight begin and default/base state
+		case STATE_FIGHTING:
+		{
+			e->eflags |= NPC_SHOOTABLE;
+			savedhp = e->health;
+			
+			e->timer = 0;
+			e->frame = 0;
+			e->x_speed = 0;
+			e->state++;
+		}
+		case STATE_FIGHTING+1:
+		{
+			FACE_PLAYER(e);
+			
+			e->y_speed += (e->y < e->y_mark) ? SPEED(0x20) : -SPEED(0x20);
+			LIMIT_Y(SPEED(0x200));
+			
+			if (++e->timer > TIME(200) || (e->health - savedhp) >= 80) {
+				e->state = STATE_FLASH_FOR_SPELL;
+				e->timer = 0;
+			}
+		}
+		break;
+	}
+	
+	run_spells(e);
+	run_teleport(e);
+	
+	run_intro(e);
+	run_defeated(e);
+	
+	LIMIT_X(SPEED(0x200));
+	LIMIT_Y(SPEED(0x400));
+}
+
+
+// her 3 attacks: black shots, black balls, and summon falling block.
+static void run_spells(Entity *e) {
+	switch(e->state) {
+		// flashes for spell...
+		// then either fires shots or casts the falling-block spell
+		case STATE_FLASH_FOR_SPELL:
+		{
+			e->eflags &= ~NPC_SHOOTABLE;
+			e->x_speed = 0;
+			e->y_speed = 0;
+			
+			e->timer = 0;
+			e->state++;
+		}
+		case STATE_FLASH_FOR_SPELL+1:
+		{
+			e->timer++;
+			e->frame = 5 + (e->timer & 1);
+			
+			if (e->timer > 30) {
+				e->timer = 0;
+				e->frame = 4;
+				
+				if (++e->timer >= 3) {
+					e->state = STATE_SUMMON_BLOCK;
+					e->timer2 = 0;
+				} else {
+					e->state = STATE_FIRE_SHOTS;
+				}
+			}
+		}
+		break;
+		
+		// fire black shots at player
+		case STATE_FIRE_SHOTS:
+		{
+			if ((++e->timer % 6) == 0) {
+				//EmFireAngledShot(o, OBJ_MISERY_SHOT, 4, 0x800);
+				sound_play(SND_FIREBALL, 3);
+			}
+			
+			if (e->timer > 30) {
+				e->timer = 0;
+				e->state = STATE_TP_AWAY;
+			}
+		}
+		break;
+		
+		// summon falling block
+		case STATE_SUMMON_BLOCK:
+		{
+			if (++e->timer == 10) {
+				//int x = player->x - (8 << CSF);
+				//int y = player->y - (64 << CSF);
+				//CreateObject(x, y, OBJ_FALLING_BLOCK);
+				//e->sprite = SPR_BALCONY_BLOCK_LARGE;
+				//e->dir = DOWN;	// tell block it was spawned by Misery
+			}
+			
+			if (e->timer > 30) {
+				e->state = STATE_TP_AWAY;
+				e->timer = 0;
+			}
+		}
+		break;
+		
+		// summon black balls
+		case STATE_SUMMON_BALLS:
+		{
+			FACE_PLAYER(e);
+			e->frame = 4;
+			
+			e->timer = 0;
+			e->state++;
+		}
+		case STATE_SUMMON_BALLS+1:
+		{
+			e->y_speed += (e->y < e->y_mark) ? SPEED(0x20) : -SPEED(0x20);
+			LIMIT_Y(SPEED(0x200));
+			
+			if ((++e->timer % 24) == 0) {
+				//CreateObject(e->x, e->y+(4<<CSF), OBJ_MISERY_BALL);
+				sound_play(SND_FIREBALL, 3);
+			}
+			
+			if (e->timer > 72) {
+				e->state = 100;
+				e->timer = 0;
+			}
+		}
+		break;
+	}
+}
+
+
+// runs her teleport-away and reappear states.
+static void run_teleport(Entity *e) {
+	switch(e->state) {
+		// teleport away, then reappear someplace else
+		case STATE_TP_AWAY:
+		{
+			e->state++;
+			e->timer = 0;
+			e->hidden = TRUE;
+			e->eflags &= ~NPC_SHOOTABLE;
+			
+			//CreateObject(e->x, e->y, OBJ_MISERY_PHASE)->dir = LEFT;
+			//CreateObject(e->x, e->y, OBJ_MISERY_PHASE)->dir = RIGHT;
+			
+			sound_play(SND_TELEPORT, 5);
+		}
+		case STATE_TP_AWAY+1:
+		{
+			e->timer++;
+			
+			// it takes exactly 8 frames for the phase-in animation to complete
+			if (e->timer == 42) {
+				// we don't actually move until the last possible second
+				// in order not to bring the floattext/damage numbers with us,
+				// which gives away our position.
+				e->x_mark = block_to_sub(9 + (random() % 23));
+				e->y_mark = block_to_sub(5 + (random() % 3));
+				
+				//CreateObject(e->x_mark + 0x2000, e->y_mark, OBJ_MISERY_PHASE)->dir = LEFT;
+				//CreateObject(e->x_mark - 0x2000, e->y_mark, OBJ_MISERY_PHASE)->dir = RIGHT;
+			} else if (e->timer == 50) {
+				// switch back to showing real misery instead of the phase-in effect
+				e->eflags |= NPC_SHOOTABLE;
+				e->hidden = FALSE;
+				e->frame = 0;
+				e->dir = 0;
+				
+				e->x = e->x_mark;
+				e->y = e->y_mark;
+				
+				// spawn rings
+				if (e->health < 340) {
+					CreateRing(e, A_RIGHT);
+					CreateRing(e, A_LEFT);
+					
+					if (e->health < 180) {
+						CreateRing(e, A_UP);
+						CreateRing(e, A_DOWN);
+					}
+				}
+				
+				// after tp we can summon the black balls if the player
+				// is far enough away from us that they won't immediately trigger
+				if (abs(player.x - e->x) > 112<<CSF) {
+					e->state = STATE_SUMMON_BALLS;
+				} else {
+					e->state = STATE_FIGHTING;
+				}
+				
+				// setup sinusoidal hover, both of those possible states
+				// are in-air states that do it.
+				e->timer = 0;
+				e->y_speed = -SPEED(0x200);
+				// counteracts y_speed of first visible frame, so it's a
+				// seamless transition from the phase-in effect.
+				e->y += SPEED(0x220);
+			}
+		}
+		break;
+	}
+}
+
+
+// intro states: stuff that happens before the fight actually starts.
+static void run_intro(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			// fixes her position on throne; don't use a spawn point or it'll
+			// glitch when she turns to misery_stand in defeated cinematic
+			//e->y += (6 << CSF);
+			
+			// her initial target height when fight begins
+			e->y_mark = (64 << CSF);
+			
+			e->state = 1;
+		}
+		case 1:
+		{
+			e->frame = 0;
+			RANDBLINK(e, 1, 200);
+		}
+		break;
+		
+		case 20:		// fall from throne (script-triggered)
+		{
+			if (e->grounded) {
+				e->state = 21;
+				e->frame = 2;
+			} else {
+				e->y_speed += SPEED(0x40);
+			}
+		}
+		break;
+		case 21:		// standing/talking after fall from throne
+		{
+			e->frame = 2;
+			RANDBLINK(e, 3, 200);
+		}
+		break;
+	}
+}
+
+
+// defeated states--they're all run by the ondeath script.
+static void run_defeated(Entity *e) {
+	// these states are all script-triggered and must be constant.
+	switch(e->state) {
+		// defeated! "gaah" in air
+		case 1000:
+		{
+			e->eflags &= ~NPC_SHOOTABLE;
+			entities_clear_by_type(OBJ_MISERY_RING);
+			//SmokeClouds(o, 3, 2, 2);
+			
+			e->x_speed = 0;
+			e->y_speed = 0;
+			
+			e->state = 1001;
+			e->timer = 0;
+			e->frame = 4;
+			e->x_mark = e->x;
+		}
+		case 1001:		// shake until script tells us otherwise
+		{
+			e->x = e->x_mark;
+			if (++e->timer & 2)
+				e->x += (1 << CSF);
+		}
+		break;
+		
+		case 1010:		// fall to ground and do defeated frame: "ergh"
+		{
+			e->y_speed += 10;
+			if (e->grounded) {
+				e->frame = 7;
+				e->state = 1011;
+			}
+		}
+		break;
+	}
+}
+
+static Entity *CreateRing(Entity *e, u16 angle) {
+	Entity *ring = entity_create(0, 0, OBJ_MISERY_RING, 0);
+	ring->timer2 = angle;
+	ring->linkedEntity = e;
+	
+	return ring;
+}
+
+void ai_misery_ring(Entity *e) {
+	if (!e->linkedEntity) {
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		e->state = STATE_DELETE;
+		return;
+	}
+	
+	switch(e->state) {
+		case 0:
+		{
+			e->state = 1;
+			e->timer = 0;
+		}
+		case 1:
+		{
+			// distance from misery
+			if (e->timer < 192)
+				e->timer++;
+			
+			// turn to bats when misery teleports
+			if (e->linkedEntity->state >= STATE_TP_AWAY &&
+				e->linkedEntity->state < STATE_TP_AWAY+10) {
+				e->state = 10;
+			}
+		}
+		break;
+		
+		case 10:	// transform to bat
+		{
+			e->eflags |= NPC_SHOOTABLE;
+			e->eflags &= ~NPC_INVINCIBLE;
+			
+			//ThrowObjectAtPlayer(e, 3, 0x200);
+			FACE_PLAYER(e);
+			
+			//e->sprite = SPR_ORANGE_BAT_FINAL;
+			e->state = 11;
+		}
+		case 11:
+		{
+			ANIMATE(e, 4, 0,1,2);
+			// Disappear when touching with any solid blocks
+			if (blk(e->x, 0, e->y, 0) == 0x41) {
+				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				e->state = STATE_DELETE;
+			}
+		}
+		break;
+	}
+}
+
+void aftermove_misery_ring(Entity *e) {
+	if (e->state == 1 && e->linkedEntity) {
+		e->timer2 += 2;
+		
+		//int dist = (e->timer << CSF) / 4;
+		//e->x = e->linkedEntity->x + x_speed_from_angle(e->timer2, dist);
+		//e->y = e->linkedEntity->y + y_speed_from_angle(e->timer2, dist);
+	}
+}
+
+// this is her phasy teleport out/teleport in effect
+// it's a 2-dir interlaced picture of her with each dir
+// containing only half the lines. We spawn two objects
+// in opposite dirs and then separate them.
+//void ai_misery_phase(Object *o)
+//{
+//	XMOVE(0x400);
+//	if (++e->timer >= 8) e->state = STATE_DELETE;
+//}
+
+
+void ai_misery_ball(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			e->state = 1;
+			e->y_mark = e->y;
+			e->x_speed = 0;
+			e->y_speed = -0x200;
+		}
+		case 1:
+		{
+			ANIMATE(e, 2, 0,1);
+			
+			e->x_speed += (e->x < player.x) ? 0x10 : -0x10;
+			e->y_speed += (e->y < e->y_mark) ? 0x20 : -0x20;
+			LIMIT_X(0x200);
+			LIMIT_Y(0x200);
+			
+			if (PLAYER_DIST_X(8<<CSF) && player.y > e->y) {
+				e->state = 10;
+				e->timer = 0;
+			}
+		}
+		break;
+		
+		case 10:	// black lightning
+		{
+			if (++e->timer > 10) {
+				sound_play(SND_LIGHTNING_STRIKE, 5);
+				entity_create(e->x, e->y, OBJ_BLACK_LIGHTNING, 0);
+				e->state = STATE_DELETE;
+			}
+			
+			e->frame = (e->timer & 2) ? 2 : 1;
+		}
+		break;
+	}
+}
+
+void ai_black_lightning(Entity *e) {
+	ANIMATE(e, 2, 0,1);
+	e->y_speed = SPEED(0x1000);
+	
+	if (collide_stage_floor(e)) {
+		//effect(e->CenterX(), e->Bottom(), EFFECT_BOOMFLASH);
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		e->state = STATE_DELETE;
 	}
 }

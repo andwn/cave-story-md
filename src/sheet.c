@@ -305,6 +305,8 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		} break;
 		case 0x38: // Plantation
 		{	SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 4,2,2, 0,2, 0,3, 0,4, 0,5);
+			SHEET_ADD(SHEET_MIDO, &SPR_Midorin, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_GUNFSHOT, &SPR_BubRed, 2,1,1, 0,0, 0,1);
 			// Sideways Press
 		} break;
 		case 0x3F: // Last Cave
@@ -312,6 +314,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_BAT, &SPR_BatRed, 6,2,2, 0,2, 0,3, 0,4, 0,0, 0,1, 0,5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritRed, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0,0, 0,1, 0,2, 0,3);
+			SHEET_ADD(SHEET_ACID, &SPR_DripRed, 4,1,2, 0,0, 0,1, 0,2, 0,3);
 			// Proximity Press?
 		} break;
 		case 0x40: // Throne Room
