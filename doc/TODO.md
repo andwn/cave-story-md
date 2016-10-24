@@ -9,6 +9,11 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Toroko's Theme
   - King's Theme
 
+- Music problems
+  - Missing important instruments in Genstation & Mischievous Robot
+  - Mimiga Town & Labyrinth Fight don't have proper release/volume adjustments
+  - Cave Story theme is missing the last part of the song
+
 - Big stuff
   - Weapons in pause menu
   - Boss healthbar
@@ -17,6 +22,8 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Water in Almond
   - Animated wind tile graphic
   - A bunch of the late game backgrounds are wrong
+  - Intro
+  - Credits
 
 - Major Boss Status
   - [x] Balfrog
@@ -33,23 +40,18 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - [ ] Undead Core
   
 - Completable Areas
-  - [x] Grasstown (0.1)
-  - [x] Sand Zone (0.1)
-  - [x] Labyrinth (0.2)
-  - [x] Labyrinth M & Core (0.2)
-  - [x] Waterway (0.3)
-  - [x] Egg Corridor? (0.3)
-  - [x] Outer Wall (0.3)
-  - [ ] Plantation (0.4)
-  - [ ] Final Cave (0.4)
-  - [ ] Balcony / Ring (0.5)
+  - [x] Grasstown
+  - [x] Sand Zone
+  - [x] Labyrinth
+  - [x] Labyrinth M & Core
+  - [x] Waterway
+  - [x] Egg Corridor?
+  - [x] Outer Wall
+  - [ ] Plantation
+  - [ ] Last Cave
+  - [ ] Balcony
+  - [ ] Sacred Ground
   
-- Pre/Post Game Areas
-  - [ ] Intro
-  - [ ] Ending
-  - [ ] Credits
-  - [ ] Hell
-
 - Weapons / Equip
   - [x] Polar Star
   - [x] Missiles
