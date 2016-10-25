@@ -102,7 +102,7 @@ void ai_trigger(Entity *e) {
 				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
 			}
 		} else { // Horizontal
-			e->hit_box.top = 2; e->hit_box.bottom = 2;
+			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
 				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, (e->y>>CSF)/16) == 0x41) break;
 			}
@@ -111,9 +111,9 @@ void ai_trigger(Entity *e) {
 			}
 		}
 	}
-	if(entity_overlapping(&player, e)) {
-		if((e->eflags & NPC_OPTION2) || player.y_speed < 0)
-			tsc_call_event(e->event);
+	// Prevent getting stuck in the eggs in egg corridor
+	if((e->eflags & NPC_OPTION2) || player.y_speed < 0 || stageID != 0x02) {
+		if(entity_overlapping(&player, e)) tsc_call_event(e->event);
 	}
 }
 

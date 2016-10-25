@@ -24,6 +24,7 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - A bunch of the late game backgrounds are wrong
   - Intro
   - Credits
+  - Stop being a lazy ass and make all the enemy/boss projectiles work
 
 - Major Boss Status
   - [x] Balfrog

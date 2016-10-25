@@ -266,10 +266,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator
 	{ NULL, SHEET_ACID, 	PAL3, 1, &onspawn_persistent, &ai_lava_drip, &ai_null }, // Acid Drop
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
-	{ &SPR_Press, 	NOSHEET, PAL1, 1, // Press (Proximity)
-		&ai_null, &ai_proximity_press_vert, &ondeath_default },
-	{ &SPR_Misery, 	NOSHEET, PAL0, 1, // Misery (Boss)
-		&onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery },
+	{ &SPR_Press, 	NOSHEET, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
+	{ &SPR_Misery, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery Energy Shot
