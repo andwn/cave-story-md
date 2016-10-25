@@ -557,8 +557,14 @@ void player_update_booster() {
 			if ((!player.dir && blockl) || (player.dir && blockr)) {
 				player.y_speed = -SPEED(0x100);
 			}
-			if (joy_down(BUTTON_DOWN)) player.y_speed += SPEED(0x20);
-			if (joy_down(BUTTON_UP)) player.y_speed -= SPEED(0x20);
+			// I believe the player should not constantly fly upward after
+			// getting hit but need to verify what the original CS does
+			//if(playerIFrames) {
+			//	if(player.y_speed > 0) player.y_speed -= SPEED(0x20);
+			//	if(player.y_speed < 0) player.y_speed += SPEED(0x20);
+			//}
+			//if (joy_down(BUTTON_DOWN)) player.y_speed += SPEED(0x20);
+			//if (joy_down(BUTTON_UP)) player.y_speed -= SPEED(0x20);
 		}
 		break;
 		case BOOST_UP:
@@ -749,8 +755,10 @@ u8 player_invincible() {
 }
 
 u8 player_inflict_damage(s16 damage) {
-	// Halve damage if we have the arms barrier
-	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
+	// Halve damage if we have the arms barrier, however the arms barrier does not seem
+	// to effect death trap and press damage. This is probably not the right way to fix it
+	if((playerEquipment & EQUIP_ARMSBARRIER) && damage != 127) 
+		damage = (damage + 1) >> 1;
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
@@ -786,8 +794,8 @@ u8 player_inflict_damage(s16 damage) {
 			w->energy -= damage;
 		}
 	}
-	// Knock back
-	player.y_speed = SPEED(-0x500); // 2.5 pixels per frame
+	// Don't knock back in <UNI:0001 mode
+	if(!playerMoveMode) player.y_speed = SPEED(-0x400);
 	player.grounded = FALSE;
 	return FALSE;
 }
