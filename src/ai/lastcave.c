@@ -17,7 +17,7 @@ void ai_proximity_press_vert(Entity *e) {
 		{
 			e->grounded = TRUE;
 			if (PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(8<<CSF, 128<<CSF) && 
-					!blk(e->x, 0, e->y, e->hit_box.bottom + 1) == 0x41) {
+					!(blk(e->x, 0, e->y, e->hit_box.bottom + 1) == 0x41)) {
 				e->state = 10;
 				e->grounded = FALSE;
 				e->animtime = 0;
@@ -55,6 +55,8 @@ void ai_proximity_press_vert(Entity *e) {
 					e->attack = 0;
 				}
 			}
+			e->x = e->x_next;
+			e->y = e->y_next;
 		}
 		break;
 	}
@@ -74,8 +76,10 @@ void ai_lava_drip_spawner(Entity *e) {
 		{
 			//e->sprite = SPR_LAVA_DRIP;
 			e->x += (4 << CSF);
-			e->timer = (e->event - e->id);
+			e->timer = abs(e->event - e->id) + 20;
 			e->state = 1;
+			e->frame = 1;
+			e->hidden = TRUE;
 		}
 		case 1:
 		{
@@ -83,6 +87,7 @@ void ai_lava_drip_spawner(Entity *e) {
 				e->state = 2;
 				e->animtime = 0;
 				e->timer2 = 0;
+				e->hidden = FALSE;
 			} else e->timer--;
 		}
 		break;
@@ -91,13 +96,16 @@ void ai_lava_drip_spawner(Entity *e) {
 		{
 			//e->display_xoff = (++e->timer2 & 2) ? 0 : 1;
 			
-			//ANIMATE_FWD(10);
+			if (e->frame <= 3 && ++e->animtime > 10) {
+				e->animtime = 0;
+				e->frame++;
+			}
 			if (e->frame > 3) {
-				e->frame = 0;
+				e->frame = 1;
 				e->state = 1;
-				e->timer = e->id;
-				
-				//ai_lava_drip(CreateEntity(e->x, e->y, OBJ_LAVA_DRIP));
+				e->timer = e->id + 20;
+				e->hidden = TRUE;
+				entity_create(e->x, e->y, OBJ_LAVA_DRIP, 0);
 			}
 		}
 		break;
@@ -105,9 +113,10 @@ void ai_lava_drip_spawner(Entity *e) {
 }
 
 void ai_lava_drip(Entity *e) {
-	e->frame = 4;
+	e->frame = 0;
 	e->y_speed += SPEED(0x40);
 	LIMIT_Y(SPEED(0x5ff));
+	e->y += e->y_speed;
 	
 	u8 blockd = blk(e->x, 0, e->y, 0);
 	if (blockd == 0x41 || (blockd & BLOCK_WATER)) {
@@ -127,16 +136,18 @@ void ai_red_bat_spawner(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->state = 1;
-			e->timer = random() % TIME(500);
+			//if(PLAYER_DIST_Y(64 << CSF)) {
+				if(e->eflags & NPC_OPTION2) e->dir = 1;
+				e->state = 1;
+				e->timer = TIME(200) + (random() % TIME(200));
+			//}
 		}
+		break;
 		case 1:
 		{
 			if (e->timer == 0) {
-				Entity *bat = entity_create(e->x, e->y - (32 << CSF) + (random() % (32 << CSF)),
+				Entity *bat = entity_create(e->x, e->y - (32 << CSF) + (random() % (64 << CSF)),
 											OBJ_RED_BAT, 0);
-				//bat->x -= (bat->Width() / 2);
-				//bat->y -= (bat->Height() / 2);
 				bat->dir = e->dir;
 				e->state = 0;
 			} else e->timer--;
@@ -253,7 +264,7 @@ void ai_red_demon(Entity *e) {
 				e->state = 21;
 				e->timer = 0;
 				e->frame = 5;
-				
+				e->grounded = FALSE;
 				e->y_speed = -SPEED(0x5ff);
 				e->x_speed = (e->x < player.x) ? SPEED(0x100) : -SPEED(0x100);
 			}

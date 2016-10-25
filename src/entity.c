@@ -571,7 +571,7 @@ u8 collide_stage_ceiling(Entity *e) {
 				} else {
 					e->y_speed = min(-e->y_speed / 2, e->underwater ? SPEED(0x80) : SPEED(0x100));
 				}
-			} else if(!mgun_shoottime) {
+			} else if(!mgun_shoottime || !joy_down(BUTTON_DOWN)) {
 				e->y_speed = 0;
 			}
 			e->jump_time = 0;

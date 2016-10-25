@@ -14,7 +14,7 @@ It should work on any console or emulator (PAL is untested).
 For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build. (thanks andywhyisit)
 
 ### Progress
-Farthest reachable point in `master`: Final Cave (most things outer wall & plantation have no graphic yet!)
+Farthest reachable point in `master`: Balcony
 
 Also looky here: [TODO list](doc/TODO.md)
 

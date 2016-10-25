@@ -339,6 +339,11 @@ void ai_boss_misery(Entity *e) {
 	LIMIT_Y(SPEED(0x400));
 }
 
+void ondeath_boss_misery(Entity *e) {
+	e->eflags &= ~NPC_SHOOTABLE;
+	e->attack = 0;
+	tsc_call_event(e->event);
+}
 
 // her 3 attacks: black shots, black balls, and summon falling block.
 static void run_spells(Entity *e) {

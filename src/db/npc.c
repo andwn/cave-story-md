@@ -269,7 +269,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Press, 	NOSHEET, PAL1, 1, // Press (Proximity)
 		&ai_null, &ai_proximity_press_vert, &ondeath_default },
 	{ &SPR_Misery, 	NOSHEET, PAL0, 1, // Misery (Boss)
-		&onspawn_persistent, &ai_boss_misery, &ai_null },
+		&onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery Energy Shot
