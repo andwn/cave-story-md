@@ -153,6 +153,7 @@ void ai_night_spirit_shot(Entity *e) {
 	e->y = e->y_next;
 }
 
+// Hoppy jumps off the left walls, physics needs to be handled a bit weird here
 void ai_hoppy(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -197,13 +198,24 @@ void ai_hoppy(Entity *e) {
 			if (e->y < player.y)	  e->y_speed = SPEED(0xAA);
 			else if (e->y > player.y) e->y_speed = -SPEED(0xAA);
 			
-			if ((e->grounded = collide_stage_leftwall(e))) {
-				e->x_speed = 0;
-				e->y_speed = 0;
-				
-				e->state = 4;
-				e->frame = 2;
-				e->timer = 0;
+			// Sides
+			if(e->y_speed < 0) {
+				collide_stage_ceiling(e);
+			} else if(e->y_speed > 0) {
+				collide_stage_floor(e);
+			}
+			
+			// Top/bottom
+			if (e->x_speed > 0) {
+				collide_stage_rightwall(e);
+			} else if (e->x_speed < 0) {
+				if((e->grounded = collide_stage_leftwall(e))) {
+					e->y_speed = 0;
+					
+					e->state = 4;
+					e->frame = 2;
+					e->timer = 0;
+				}
 			}
 		}
 		break;
