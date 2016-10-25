@@ -159,6 +159,15 @@ void ai_falling_spike_large(Entity *e) {
 			if (++e->timer > TIME(30)) {
 				e->state = 2;	// fall
 				e->frame = 1;	// slightly brighter frame at top
+				
+				// Search for a Dragon Zombie underneath
+				Entity *dragon = entityList;
+				while(dragon) {
+					if(dragon->type == OBJ_DRAGON_ZOMBIE && dragon->state < 50 &&
+							dragon->x > e->x - 0x2000 && dragon->x < e->x + 0x2000) break;
+					dragon = dragon->next;
+				}
+				if(dragon) e->linkedEntity = dragon;
 			}
 		}
 		break;
@@ -177,17 +186,13 @@ void ai_falling_spike_large(Entity *e) {
 				e->attack = 0;
 			}
 			
-			// damage NPC's as well (it kills that one Dragon Zombie)
-			//Entity *enemy;
-			//FOREACH_OBJECT(enemy)
-			//{
-			//	if ((enemy->flags & FLAG_SHOOTABLE) &&
-			//		e->Bottom() >= enemy->CenterY() && hitdetect(o, enemy))
-			//	{
-			//		if (!(enemy->flags & FLAG_INVULNERABLE))
-			//			enemy->DealDamage(127);
-			//	}
-			//}
+			// Kill that one Dragon Zombie
+			if(e->linkedEntity && entity_overlapping(e, e->linkedEntity)) {
+				e->linkedEntity->health -= 127;
+				e->linkedEntity->damage_time = 1;
+				e->linkedEntity = NULL;
+			}
+			
 			e->x_next = e->x;
 			e->y_next = e->y + e->y_speed;
 			if (++e->timer > 8 && collide_stage_floor(e)) {
