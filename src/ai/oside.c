@@ -198,13 +198,6 @@ void ai_hoppy(Entity *e) {
 			if (e->y < player.y)	  e->y_speed = SPEED(0xAA);
 			else if (e->y > player.y) e->y_speed = -SPEED(0xAA);
 			
-			// Sides
-			if(e->y_speed < 0) {
-				collide_stage_ceiling(e);
-			} else if(e->y_speed > 0) {
-				collide_stage_floor(e);
-			}
-			
 			// Top/bottom
 			if (e->x_speed > 0) {
 				collide_stage_rightwall(e);
@@ -216,6 +209,13 @@ void ai_hoppy(Entity *e) {
 					e->frame = 2;
 					e->timer = 0;
 				}
+			}
+			
+			// Sides
+			if(e->y_speed < 0) {
+				collide_stage_ceiling(e);
+			} else if(e->y_speed > 0) {
+				collide_stage_floor(e);
 			}
 		}
 		break;
