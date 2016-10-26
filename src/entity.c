@@ -372,7 +372,7 @@ u8 collide_stage_leftwall(Entity *e) {
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
 			(e->dir ? e->hit_box.right : e->hit_box.left));
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
+	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
@@ -391,7 +391,7 @@ u8 collide_stage_rightwall(Entity *e) {
 	u8 pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
 			(e->dir ? e->hit_box.left : e->hit_box.right));
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 4);
+	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
 	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
 	pxa1 = stage_get_block_type(block_x, block_y1);
 	pxa2 = stage_get_block_type(block_x, block_y2);
@@ -539,25 +539,25 @@ u8 collide_stage_ceiling(Entity *e) {
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
 	// Without the +1 here, quote will clip to the left/right of ceiling tiles
-	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top + 1;
+	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	u8 result = FALSE;
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
-		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top) + block_to_sub(1);
+		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top + 16) + 0x100;
 		result = TRUE;
 	} else {
 		if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
 				pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
-					heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top + 2);
+					heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top + 1) + 0x100;
 			result = TRUE;
 		}
 		if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 				pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) +
-					heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top + 2);
+					heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top + 1) + 0x100;
 			result = TRUE;
 		}
 	}

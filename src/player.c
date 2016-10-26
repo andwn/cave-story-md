@@ -170,7 +170,7 @@ void player_update() {
 		// As such we check again whether the booster is enabled
 		if(playerBoostState == BOOST_OFF) {
 			u8 blockl_next, blocku_next, blockr_next, blockd_next;
-			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
+			blocku_next = player.y_speed <= 0 ? collide_stage_ceiling(&player) : FALSE;
 			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : FALSE;
 			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : FALSE;
 			if(ledge_time == 0) {
@@ -197,7 +197,7 @@ void player_update() {
 				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : FALSE;
 				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : FALSE;
 				player.y_next -= 0x600;
-			} else if(player.jump_time == 0 && !blockd_next && blockd) {
+			} else if(!joy_down(BUTTON_C) && !blockd_next && blockd) {
 				player.y_speed += 0x80;
 				ledge_time = 4;
 			}
