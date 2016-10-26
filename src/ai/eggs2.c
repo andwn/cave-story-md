@@ -254,6 +254,7 @@ void ai_counter_bomb(Entity *e) {
 			if (PLAYER_DIST_X(80 << CSF) || e->damage_time) {
 				e->state = 3;
 				e->timer = 0;
+				e->alwaysActive = TRUE;
 			}
 		}
 		break;
@@ -268,14 +269,11 @@ void ai_counter_bomb(Entity *e) {
 					e->timer = 60;
 				} else {
 					// expand bounding box to cover explosion area
-					//e->x = e->CenterX();
-					//e->y = e->CenterY();
 					e->hidden = TRUE;
-					//e->sprite = SPR_BBOX_PUPPET_1;
-					//sprites[e->sprite].bbox.x1 = -128;
-					//sprites[e->sprite].bbox.y1 = -100;
-					//sprites[e->sprite].bbox.x2 = 128;
-					//sprites[e->sprite].bbox.y2 = 100;
+					e->hit_box.left = 128;
+					e->hit_box.top = 100;
+					e->hit_box.right = 128;
+					e->hit_box.bottom = 100;
 					e->attack = 30;
 					
 					e->y_speed = 0;
@@ -284,7 +282,9 @@ void ai_counter_bomb(Entity *e) {
 					// make kaboom
 					sound_play(SND_EXPLOSION1, 5);
 					camera_shake(20);
-					//SmokeXY(e->CenterX(), e->CenterY(), 100, 128, 100);
+					// Just override any other smoke that might be going on
+					effects_clear_smoke();
+					SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) - 50, 128, 100, MAX_SMOKE);
 					
 					return;
 				}
@@ -299,7 +299,10 @@ void ai_counter_bomb(Entity *e) {
 			return;
 	}
 	
-	ANIMATE(e, 4, 0,1,2);
+	// The sprite is a bit large, no point in refreshing our tiles when not visible
+	if(entity_on_screen(e)) {
+		ANIMATE(e, 4, 0,1,2);
+	}
 	
 	if (e->state == 2 || e->state == 3) {
 		e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
