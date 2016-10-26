@@ -1,14 +1,17 @@
+/*
+ * Simple tool to convert Cave Story Profile.dat to SRAM data for Cave Story MD
+ * 
+ * Compile:
+ * gcc prof2sram.c -o prof2sram
+ * 
+ * Usage:
+ * ./prof2sram <input Profile.dat> <output SRAM>
+ */
+
 #include <stdio.h>
 #include <string.h>
 
-#define FORMAT_PROFILE 0
-#define FORMAT_SRAM 1
-#define FORMAT_INVALID -1
-
 #define fskip(f, n) fseek(f, n, SEEK_CUR)
-
-const char *ext_profile = ".dat";
-const char *ext_sram = ".srm";
 
 const char *header_ver = "Do041220";
 const char *flag_str = "FLAG";
@@ -59,25 +62,15 @@ int get_format(const char *filename) {
 
 int main(int argc, char *argv[]) {
 	if(argc != 3) {
-		printf("Usage: %s <infile> <outfile>\n", argv[0]);
+		printf("Usage: %s <input Profile.dat> <output SRAM>\n", argv[0]);
 		return 0;
 	}
-	int inType = get_format(argv[1]), outType = get_format(argv[2]);
-	printf("Hello!!\n");
-	if(inType == FORMAT_PROFILE && outType == FORMAT_SRAM) {
-		if(read_profile_data(argv[1])) {
-			printf("Issue reading profile data, aborting.\n");
-			return 1;
-		}
-		if(write_sram_data(argv[2])) {
-			printf("Issue writing SRAM data, aborting.\n");
-			return 1;
-		}
-	} else if(inType == FORMAT_SRAM && outType == FORMAT_PROFILE) {
-		read_sram_data(argv[1]);
-		write_profile_data(argv[2]);
-	} else {
-		printf("Invalid file extensions.\n");
+	if(read_profile_data(argv[1])) {
+		printf("Issue reading profile data, aborting.\n");
+		return 1;
+	}
+	if(write_sram_data(argv[2])) {
+		printf("Issue writing SRAM data, aborting.\n");
 		return 1;
 	}
 	return 0;
@@ -85,25 +78,28 @@ int main(int argc, char *argv[]) {
 
 int read_profile_data(const char* filename) {
 	FILE *infile = fopen(filename, "rb");
-	if(infile == NULL) {
-		printf("Can't open input file.\n");
+	if(!infile) {
+		perror("Failed to load input file.");
 		return 1;
 	}
 	// Verify header
 	fread(ProfileData.header, 1, 8, infile);
 	if(strncmp(ProfileData.header, header_ver, 8)) {
-		printf("Invalid header.\n");
+		printf("Invalid header '%.8s'. Expected '%.8s'.\n", ProfileData.header, header_ver);
 		return 1;
 	}
 	// Current Map
 	fread(&ProfileData.current_map, 1, 1, infile);
 	fskip(infile, 3);
+	printf("Map ID: %hhu\n", &ProfileData.current_map);
 	// Current Song
 	fread(&ProfileData.current_song, 1, 1, infile);
 	fskip(infile, 3);
+	printf("Song ID: %hhu\n", &ProfileData.current_song);
 	// Player Position
 	fread(&ProfileData.x_position, 4, 1, infile);
 	fread(&ProfileData.y_position, 4, 1, infile);
+	printf("Location X: %x Y: %x\n", &ProfileData.x_position, &ProfileData.y_position);
 	// Player Direction
 	fread(&ProfileData.direction, 1, 1, infile);
 	fskip(infile, 3);
@@ -148,7 +144,7 @@ int read_profile_data(const char* filename) {
 	fseek(infile, 0x218, SEEK_SET);
 	fread(ProfileData.flag_header, 1, 4, infile);
 	if(strncmp(ProfileData.flag_header, flag_str, 4)) {
-		printf("Error: Expected 'FLAG'.\n");
+		printf("Error: Expected 'FLAG', found '%.4s'.\n", ProfileData.flag_header);
 		return 1;
 	}
 	for(int i = 0; i < 250; i++) {
@@ -157,14 +153,6 @@ int read_profile_data(const char* filename) {
 	// All done
 	fclose(infile);
 	return 0;
-}
-
-int read_sram_data(const char *filename) {
-	
-}
-
-int write_profile_data(const char *filename) {
-	
 }
 
 void sram_write_byte(FILE *file, unsigned char value) {
@@ -195,7 +183,7 @@ void sram_write_dword(FILE *file, unsigned int value) {
 
 int write_sram_data(const char *filename) {
 	FILE *outfile = fopen(filename, "wb");
-	if(outfile == NULL) {
+	if(!outfile) {
 		printf("Can't open output file.\n");
 		return 1;
 	}
@@ -206,8 +194,6 @@ int write_sram_data(const char *filename) {
 	// Player Position
 	sram_write_word(outfile, (ProfileData.x_position + 0x1000) >> 13);
 	sram_write_word(outfile, (ProfileData.y_position + 0x1000) >> 13);
-	// Player Direction
-	//sram_write_byte(outfile ProfileData.direction > 0);
 	// Health
 	sram_write_word(outfile, ProfileData.max_health);
 	sram_write_word(outfile, ProfileData.current_health);
@@ -226,13 +212,16 @@ int write_sram_data(const char *filename) {
 	sram_write_byte(outfile, frame);
 	// Weapons
 	fseek(outfile, 0x20 * 2, SEEK_SET);
-	for(int i = 0; i < 8; i++) {
+	for(int i = 0; i < 7; i++) {
 		sram_write_byte(outfile, ProfileData.weapon[i].type);
 		sram_write_byte(outfile, ProfileData.weapon[i].level);
 		sram_write_word(outfile, ProfileData.weapon[i].energy);
 		sram_write_word(outfile, ProfileData.weapon[i].max_ammo);
 		sram_write_word(outfile, ProfileData.weapon[i].ammo);
 	}
+	// "CSMD" checksum
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
 	// Items
 	for(int i = 0; i < 32; i++) {
 		sram_write_byte(outfile, ProfileData.item[i]);

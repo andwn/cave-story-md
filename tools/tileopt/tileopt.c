@@ -1,5 +1,6 @@
 /**
- * tileopt - Optimizes a tileset by removing unused tiles
+ * tileopt - Removes unused tiles from a Cave Story tileset by analyzing PXM files, 
+ * then adjusts the values in all related files accordingly
  * 
  * Compile:
  * gcc tileopt.c -lSDL2 -lSDL2_image -o tileopt
@@ -7,6 +8,7 @@
  * Usage:
  * ./tileopt <tileset file> <tile attribute file> <map file, [more map files, ...]>
  */
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>

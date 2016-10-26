@@ -1,4 +1,12 @@
-// Can we try this again
+/*
+ * tscomp - Converts a TSC file into bytecode usable by CSMD
+ * 
+ * Compile:
+ * gcc tscomp.c -o tscomp
+ * 
+ * Usage:
+ * ./tscomp <tsc file> <output file>
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
