@@ -46,19 +46,7 @@ struct {
 } ProfileData;
 
 int read_profile_data(const char *filename);
-int read_sram_data(const char *filename);
-int write_profile_data(const char *filename);
 int write_sram_data(const char *filename);
-
-int get_format(const char *filename) {
-	const char *ext = &filename[strlen(filename) - 4];
-	if(strcmp(ext, ext_profile) == 0) {
-		return FORMAT_PROFILE;
-	} else if(strcmp(ext, ext_sram) == 0) {
-		return FORMAT_SRAM;
-	}
-	return FORMAT_INVALID;
-}
 
 int main(int argc, char *argv[]) {
 	if(argc != 3) {
@@ -91,15 +79,15 @@ int read_profile_data(const char* filename) {
 	// Current Map
 	fread(&ProfileData.current_map, 1, 1, infile);
 	fskip(infile, 3);
-	printf("Map ID: %hhu\n", &ProfileData.current_map);
+	printf("Map ID: %hhu\n", ProfileData.current_map);
 	// Current Song
 	fread(&ProfileData.current_song, 1, 1, infile);
 	fskip(infile, 3);
-	printf("Song ID: %hhu\n", &ProfileData.current_song);
+	printf("Song ID: %hhu\n", ProfileData.current_song);
 	// Player Position
 	fread(&ProfileData.x_position, 4, 1, infile);
 	fread(&ProfileData.y_position, 4, 1, infile);
-	printf("Location X: %x Y: %x\n", &ProfileData.x_position, &ProfileData.y_position);
+	printf("Location X: %x Y: %x\n", ProfileData.x_position, ProfileData.y_position);
 	// Player Direction
 	fread(&ProfileData.direction, 1, 1, infile);
 	fskip(infile, 3);
@@ -212,15 +200,27 @@ int write_sram_data(const char *filename) {
 	sram_write_byte(outfile, frame);
 	// Weapons
 	fseek(outfile, 0x20 * 2, SEEK_SET);
-	for(int i = 0; i < 7; i++) {
+	for(int i = 0; i < 5; i++) {
 		sram_write_byte(outfile, ProfileData.weapon[i].type);
 		sram_write_byte(outfile, ProfileData.weapon[i].level);
 		sram_write_word(outfile, ProfileData.weapon[i].energy);
 		sram_write_word(outfile, ProfileData.weapon[i].max_ammo);
 		sram_write_word(outfile, ProfileData.weapon[i].ammo);
 	}
-	// "CSMD" checksum
+	// Check the last 3 weapons -- CSMD will only use the first 5 slots
+	for(int i = 5; i < 8; i++) {
+		if(ProfileData.weapon[i].type) {
+			printf("Warning: Weapon of type '%hhu' at index '%d' ignored.\n",
+					ProfileData.weapon[i].type, i);
+		}
+	}
+	// Nikumaru Counter - TODO
 	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	// "CSMD" checksum
 	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
 	// Items
 	for(int i = 0; i < 32; i++) {
@@ -238,4 +238,3 @@ int write_sram_data(const char *filename) {
 	// All done
 	fclose(outfile);
 }
-
