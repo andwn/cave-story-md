@@ -349,7 +349,7 @@ void do_map() {
 		// Alternate between the small plus and transparency
 		// We can't simply "not draw" the sprite because the VDP will draw it anyway
 		whereami.attribut &= ~1;
-		if(++blinkTimer % 16) whereami.attribut |= 1;
+		if(++blinkTimer & 16) whereami.attribut |= 1;
 		sprite_add(whereami);
 		ready = TRUE;
 		VDP_waitVSync();

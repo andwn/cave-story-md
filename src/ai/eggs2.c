@@ -17,6 +17,7 @@ void onspawn_deaddragon(Entity *e) {
 void ai_dragon_zombie(Entity *e) {
 	if (e->health < 950 && e->state < 50) {
 		sound_play(SND_BIG_CRASH, 5);
+		effect_create_damage(e->damage_value, sub_to_pixel(e->x), sub_to_pixel(e->y));
 		effect_create_smoke(e->x << CSF, e->y << CSF);
 		entity_drop_powerup(e);
 		
@@ -189,7 +190,7 @@ void ai_falling_spike_large(Entity *e) {
 			// Kill that one Dragon Zombie
 			if(e->linkedEntity && entity_overlapping(e, e->linkedEntity)) {
 				e->linkedEntity->health -= 127;
-				e->linkedEntity->damage_time = 1;
+				e->linkedEntity->damage_value = -127;
 				e->linkedEntity = NULL;
 			}
 			
@@ -218,6 +219,7 @@ void ai_falling_spike_large(Entity *e) {
 			if (++e->timer > 4) {	// make it destroyable
 				e->eflags |= NPC_SHOOTABLE;
 				e->eflags &= ~NPC_INVINCIBLE;
+				e->nflags &= ~NPC_INVINCIBLE;
 				e->state = 4;
 			}
 		}
