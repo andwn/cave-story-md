@@ -10,7 +10,7 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - King's Theme
 
 - Music problems
-  - Missing important instruments in Genstation & Mischievous Robot
+  - Missing important instruments in Gestation & Mischievous Robot
   - Mimiga Town & Labyrinth Fight don't have proper release/volume adjustments
   - Cave Story theme is missing the last part of the song
 
@@ -25,6 +25,9 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Intro
   - Credits
   - Stop being a lazy ass and make all the enemy/boss projectiles work
+  - Consolidate "nflags" and "eflags" into one "flags"
+  - I believe my walking acceleration is too fast?
+  - The camera following logic is also pretty inaccurate
 
 - Major Boss Status
   - [x] Balfrog
@@ -79,10 +82,8 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - [ ] Cave Story 64
   - [ ] Deflemask stops being proprietary
   - [ ] DMCA
-  - [ ] GensKmod multiplat fork
   - [ ] I get an actual programming job because of this project
-  - [ ] Jenka's Nightmare
-  - [ ] Kero Blaster MD
+  - [ ] Mods
   - [x] Python
   - [x] Sega splash screen
   - [ ] Speedruns

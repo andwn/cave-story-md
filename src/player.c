@@ -170,7 +170,10 @@ void player_update() {
 		// As such we check again whether the booster is enabled
 		if(playerBoostState == BOOST_OFF) {
 			u8 blockl_next, blocku_next, blockr_next, blockd_next;
-			blocku_next = player.y_speed <= 0 ? collide_stage_ceiling(&player) : FALSE;
+			// Ok so, making the collision with ceiling <= 0 pushes the player out of
+			// the ceiling during the opening scene with Kazuma on the computer.
+			// Hi Kazuma!
+			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
 			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : FALSE;
 			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : FALSE;
 			if(ledge_time == 0) {
