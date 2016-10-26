@@ -418,10 +418,10 @@ void player_update_jump() {
 			joy_pressed(BUTTON_C)) {
 		player_start_booster();
 	} else if(playerBoostState == BOOST_OFF) {
-		if(joy_down(BUTTON_C) && player.y_speed >= 0) {
+		if(joy_down(BUTTON_C) && player.y_speed <= 0) {
 			player.y_speed += gravityJump;
-		} else if(player.underwater) {
-			player.y_speed += gravityJump + 0x7;
+		//} else /* if(player.underwater) */ {
+			//player.y_speed += gravityJump /* + 0x7 */;
 		} else {
 			player.y_speed += gravity;
 		}

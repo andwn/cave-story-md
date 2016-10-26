@@ -25,7 +25,7 @@ enum {
 #define WALK_ACCEL 0x55
 #define AIR_CONTROL 0x20
 #define FRICTION 0x33
-#define MAX_JUMP_TIME 0x0F
+#define MAX_JUMP_TIME 5
 #else
 #define MAX_FALL_SPEED 0x4FF
 #define GRAVITY 0x43
@@ -35,7 +35,7 @@ enum {
 #define WALK_ACCEL 0x47
 #define AIR_CONTROL 0x1B
 #define FRICTION 0x2A // (This one is 42.499 and I went for 42 here)
-#define MAX_JUMP_TIME 0x11
+#define MAX_JUMP_TIME 6
 #endif
 
 #define entity_on_screen(e) ((unsigned)((e)->x - camera_xmin) < camera_xsize && \

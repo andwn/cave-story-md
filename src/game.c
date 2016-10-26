@@ -227,8 +227,8 @@ void draw_itemmenu(u8 resetCursor) {
 }
 
 u8 update_pause() {
-	// Start will close the menu and resume the game
-	if(joy_pressed(BUTTON_START) && !tscState) {
+	// Start or B will close the menu and resume the game
+	if((joy_pressed(BUTTON_START) || joy_pressed(BUTTON_B)) && !tscState) {
 		// Reload shared sheets we clobbered
 		SYS_disableInts();
 		sheets_load_stage(stageID, TRUE, FALSE);
@@ -334,9 +334,23 @@ void do_map() {
 		ready = TRUE;
 		VDP_waitVSync();
 	}
+	
+	VDPSprite whereami = (VDPSprite) {
+		.x = mapx * 8 + sub_to_block(player.x) - 4 + 128,
+		.y = mapy * 8 + sub_to_block(player.y) - 4 + 128,
+		.size = SPRITE_SIZE(1,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+	};
+	u16 blinkTimer = 0;
+	
 	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C)) {
 		input_update();
 		system_update();
+		// Alternate between the small plus and transparency
+		// We can't simply "not draw" the sprite because the VDP will draw it anyway
+		whereami.attribut &= ~1;
+		if(++blinkTimer % 16) whereami.attribut |= 1;
+		sprite_add(whereami);
 		ready = TRUE;
 		VDP_waitVSync();
 	}
