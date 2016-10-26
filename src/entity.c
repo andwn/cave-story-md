@@ -122,15 +122,6 @@ Entity *entity_destroy(Entity *e) {
 	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	return entity_delete(e);
-	//Entity *next = e->next;
-	//LIST_REMOVE(entityList, e);
-	// If we had tile allocation release it for future generations to use
-	//if(e->tiloc != NOTILOC) {
-	//	TILOC_FREE(e->tiloc, e->framesize);
-	//	e->tiloc = NOTILOC;
-	//}
-	//MEM_free(e);
-	//return next;
 }
 
 void entities_clear() {
@@ -281,12 +272,16 @@ void entities_update() {
 				}
 			}
 		}
-		// Display damage
-		if((flags & NPC_SHOWDAMAGE) && e->damage_value) {
+		// Damage timer and shaking
+		if(e->damage_value) {
 			e->damage_time--;
-			if(e->damage_time <= 0) {
-				effect_create_damage(e->damage_value,
-						sub_to_pixel(e->x), sub_to_pixel(e->y));
+			if(e->shakeWhenHit) {
+				e->x += (e->damage_time & 1) ? 0x200 : -0x200;
+			}
+			if(!e->damage_time) {
+				if(flags & NPC_SHOWDAMAGE) {
+					effect_create_damage(e->damage_value, e->x >> CSF, e->y >> CSF);
+				}
 				e->damage_value = 0;
 			}
 		}
@@ -728,6 +723,7 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	e->type = type;
 	e->eflags |= flags;
 	e->enableSlopes = TRUE;
+	e->shakeWhenHit = TRUE;
 	e->tiloc = NOTILOC;
 	e->sheet = NOSHEET;
 	if(type < NPC_COUNT) {

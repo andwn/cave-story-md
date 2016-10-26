@@ -7,6 +7,10 @@
 /*
  * Apart from effects and player bullets, all game objects are entities.
  */
+ 
+#define MD_STAYACTIVE	0x01
+#define MD_NOSLOPES		0x02
+#define MD_NOSHAKE		0x04
 
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
@@ -71,7 +75,8 @@ struct Entity {
 	u8 dir, odir, // Direction entity is facing, 0=left, 1=right
 		grounded, // True when on the ground, enables jumping
 		underwater, // True when entity is within a water tile
-		enableSlopes; // Check collision with slopes when enabled
+		enableSlopes, // Check collision with slopes when enabled
+		shakeWhenHit;
 	u8 jump_time; // Time until jump button no longer increases jump height
 	bounding_box hit_box; // Collidable area, for both physics and combat
 	bounding_box display_box; // Area where sprite is displayed relative to the center
