@@ -5,3 +5,4 @@ res/resources.h
 inc/ai_gen.h
 temp.bin
 *.o
+/.vagrant

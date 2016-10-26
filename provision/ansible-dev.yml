@@ -1,0 +1,54 @@
+---
+- hosts: all
+  vars:
+    apt_packages:
+      - htop
+      - emacs24-nox
+      - vim-nox
+      - build-essential
+      - git
+      - subversion
+      - unzip
+      - texinfo
+    gendev_dir: /opt/gendev
+    vagrant_dir: /vagrant
+    vagrant_user: vagrant
+    vagrant_group: vagrant
+  tasks:
+    - name: Install debian packages
+      sudo: yes
+      apt: name={{ item }} update_cache=yes
+      with_items: apt_packages
+
+    - name: Overwrite profile
+      shell: >
+        creates=~/.ansible-profile
+        cat /vagrant/provision/vagrant_env >> ~/.profile;
+        touch ~/.ansible-profile
+
+    - name: Checkout the latest gendev
+      sudo: yes
+      subversion: >
+        repo=http://gendev.googlecode.com/svn/trunk/
+        dest={{ gendev_dir }}
+
+    - name: Permission gendev directory
+      sudo: yes
+      file: >
+        path={{ gendev_dir }} state=directory recurse=yes
+        owner={{ vagrant_user }} group={{ vagrant_group }}
+
+    - name: Build gendev
+      shell: >
+        chdir={{ gendev_dir }}
+        make
+
+    - name: Build sgdk
+      shell: >
+        chdir={{ gendev_dir }}/sgdk
+        . ~/.gendev; make install
+
+    - name: Build game
+      shell: >
+        chdir={{ vagrant_dir }}
+        . ~/.gendev; make

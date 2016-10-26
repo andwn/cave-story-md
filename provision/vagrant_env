@@ -1,0 +1,6 @@
+if [ -f ~/.gendev ]
+then
+    . ~/.gendev
+fi
+
+cd /vagrant
