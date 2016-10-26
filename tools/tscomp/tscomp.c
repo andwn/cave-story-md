@@ -257,7 +257,7 @@ void do_event(FILE *fin, FILE *fout) {
 			if(msgWindowOpen) {
 				fwrite(&c, 1, 1, fout);
 			} else if(c != '\n') {
-				printf("Debug: Printable text char '%c' is never displayed.\n", c);
+				printf("Warning: Printable text char '%c' is never displayed.\n", c);
 			}
 		} else if(c == SYM_EVENT) {
 			if(commandCount != 0) {
@@ -293,9 +293,10 @@ unsigned short do_command(FILE *fin, FILE *fout) {
 	for(int i = 0; i < params; i++) {
 		short val = read_number(fin);
 		fwrite(&val, 1, 2, fout);
-		if(i != params - 1) { // Skip the ':' between parameters
+		// Parameters should be separated by ':', CS doesn't actually check though
+		if(i != params - 1) {
 			if(fgetc(fin) != ':') {
-				printf("Warning: Expected ':' between parameters.\n");
+				printf("Warning: No ':' between parameters.\n");
 			}
 		}
 	}
@@ -309,13 +310,13 @@ unsigned short read_number(FILE *file) {
 	// Make sure the string is 4 digits
 	for(int i = 0; i < LEN_NUMBER; i++) {
 		if(str[i] < '0' || str[i] > '9') {
-			// Workaround in case a param is given 3 digits instead of 4
-			if(i == 3 && str[i] == ':') {
-				printf("Warning: Parameter is not 4 digits.\n");
+			// Parameters should be 4 digits, but sometimes they are less
+			if(i < 4 && str[i] == ':') {
+				printf("Warning: Parameter is less than 4 digits.\n");
 				str[i] = '\0';
 				fseek(file, -1, SEEK_CUR);
 			} else {
-				printf("Error: Expected 4 digit number.\n");
+				printf("Error: Expected number.\n");
 				exit(1);
 			}
 		}

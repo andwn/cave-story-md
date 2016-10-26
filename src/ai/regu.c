@@ -772,39 +772,3 @@ void ai_npc_at_computer(Entity *e) {
 		break;
 	}
 }
-
-void generic_npc_states(Entity *e) {
-	switch(e->state) {
-		case 0:		// stand
-		{
-			e->frame = 0;
-			e->x_speed = 0;
-			e->y_speed = 0;
-			if(e->type != OBJ_KAZUMA) {
-				RANDBLINK(e, 3, 200);
-			}
-		}
-		break;
-		case 3:		// walking
-		case 4:
-		{
-			ANIMATE(e, 8, 1,0,2,0);
-			MOVE_X(SPEED(0x200));
-		}
-		break;
-		case 5:		// face away
-		{
-			e->frame = e->type == OBJ_KAZUMA ? 3 : 4;
-			e->x_speed = 0;
-		}
-		break;
-		case 8:		// walk (alternate state used by OBJ_NPC_JACK)
-		{
-			if (e->type == OBJ_JACK) {
-				e->state = 4;
-				e->frame = 1;
-			}
-		}
-		break;
-	}
-}

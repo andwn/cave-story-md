@@ -118,4 +118,6 @@ Entity *pieces[10]; // Most bosses use this
 
 void generic_npc_states(Entity *e);
 
+u16 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty);
+
 #endif /* INC_AI_H_ */

@@ -82,7 +82,7 @@ void ai_torokoBoss(Entity *e) {
 	block->nflags &= ~NPC_INVINCIBLE;                                                          \
 })
 
-#define THROWBLOCK	({		 	                                                                      \
+#define THROWBLOCK ({                                                                          \
 	if(block) {                                                                                \
 		block->x = e->x;                                                                       \
 		block->y = e->y;                                                                       \
