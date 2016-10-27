@@ -344,7 +344,7 @@ void ai_sue(Entity *e) {
 		{
 			Entity *link = e->linkedEntity;
 			if (link) {
-				e->x_next = link->x + (link->dir ? (12 << CSF) : -(12 << CSF));
+				e->x_next = link->x + (link->dir ? (8 << CSF) : -(8 << CSF));
 				e->y_next = link->y + (8 << CSF);
 				e->dir = link->dir;
 			}

@@ -109,7 +109,7 @@ void weapon_fire_fireball(Weapon *w) {
 	b->level = w->level;
 	b->sprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index)
+		.attribut = TILE_ATTR_FULL(PAL1,0,0,0,sheets[w->sheet].index)
 	};
 	b->damage = 2 * w->level; // 2, 4, 6
 	b->ttl = 50 + w->level * 10;

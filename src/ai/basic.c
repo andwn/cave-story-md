@@ -382,15 +382,8 @@ void ai_fireplace(Entity *e) {
 void ai_gunsmith(Entity *e) {
 	if (e->eflags & NPC_OPTION2) {
 		// Animate Zzz effect above head
-		if(!e->timer) effect_create_misc(EFF_ZZZ, e->x >> CSF, e->y >> CSF);
+		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8);
 		if(++e->timer > TIME(100)) e->timer = 0;
-		//VDPSprite zzz = (VDPSprite) {
-		//	.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + 128,
-		//	.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 112,
-		//	.size = SPRITE_SIZE(1, 1),
-		//	.attribut = TILE_ATTR_FULL(PAL0,0,0,0,12)
-		//};
-		//sprite_add(zzz);
 	} else {
 		e->frame = 1;
 		RANDBLINK(e, 2, 200);

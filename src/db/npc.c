@@ -32,12 +32,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_TeleLight,NOSHEET,PAL1,1, &onspawn_teleLight, &ai_teleLight, &ai_null }, // Tele Light
 	{ NULL, SHEET_PCRITTER, PAL0, 1, &onspawn_snap, &ai_critter, &ondeath_default },// Power Critter
 	{ &SPR_Platform,NOSHEET,PAL1, 1, &onspawn_lift, &ai_lift, &ai_null }, // Lift Platform
-	{ NULL, SHEET_BAT, 		PAL0, 1, &ai_null, &ai_batCircle, &ondeath_default }, // Bat
+	{ NULL, SHEET_BAT, 		PAL3, 1, &ai_null, &ai_batCircle, &ondeath_default }, // Bat
 	{ NULL, SHEET_TRAP, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Death Trap
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
 	{ &SPR_Cthu, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Cthulhu
 	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_op2snap, &ai_gunsmith, &ai_null }, // Gunsmith
-	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batHang, &ai_batHang, &ondeath_default }, // Bat
+	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_batHang, &ai_batHang, &ondeath_default }, // Bat
 	/* 0x020 (32) */
 	{ &SPR_LifeUp, NOSHEET, PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Life Capsule
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, &ai_null, &ai_balrogShot, &ai_null }, // Balrog Shot

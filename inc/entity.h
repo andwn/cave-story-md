@@ -32,7 +32,7 @@ enum {
 #define MAX_JUMP_TIME 5
 #else
 #define MAX_FALL_SPEED 0x4FF
-#define GRAVITY 0x43
+#define GRAVITY 0x42
 #define GRAVITY_JUMP 0x1B
 #define JUMP_SPEED 0x430
 #define MAX_WALK_SPEED 0x2A5

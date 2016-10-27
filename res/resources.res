@@ -40,8 +40,6 @@ SPRITE SPR_Fish			"sprite/fish.png"		2 2 0 0 NONE
 SPRITE SPR_CritBig		"sprite/critbig.png"	3 3 0 0 NONE
 SPRITE SPR_Jelly		"sprite/jelly.png"		2 2 0 0 NONE
 SPRITE SPR_Kulala		"sprite/kulala.png"		6 3 0 0 NONE
-SPRITE SPR_FirebB1		"sprite/fireballb1.png"	2 2 0 0 NONE
-SPRITE SPR_FirebB3		"sprite/fireballb3.png"	2 2 0 0 NONE
 SPRITE SPR_MisslB1		"sprite/missileb1.png"	2 2 0 0 NONE
 SPRITE SPR_MisslB2		"sprite/missileb2.png"	2 2 0 0 NONE
 SPRITE SPR_BladeB1		"sprite/bladeb1.png"	2 2 0 8 NONE
@@ -63,6 +61,7 @@ SPRITE SPR_Gunfish		"sprite/gunfish.png"	3 3 0 0 NONE
 SPRITE SPR_Boost		"sprite/boost.png"		4 1 0 0 NONE
 SPRITE SPR_Midorin		"sprite/happything.png" 2 2 0 0 NONE
 SPRITE SPR_Stumpy		"sprite/dragonfly.png"	2 2 0 0 NONE
+SPRITE SPR_Zzz			"sprite/z.png"			1 1 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -70,6 +69,9 @@ SPRITE SPR_PolarB1		"sprite/polarb1.png"	2 2 0 0 NONE
 SPRITE SPR_PolarB2		"sprite/polarb2.png"	2 2 0 0 NONE
 SPRITE SPR_PolarB3		"sprite/polarb3.png"	2 2 0 0 NONE
 SPRITE SPR_Fireb		"sprite/fireball.png"	6 1 0 0 NONE
+SPRITE SPR_FirebB1		"sprite/fireballb1.png"	2 2 0 0 NONE
+SPRITE SPR_FirebB2		"sprite/fireballb2.png"	2 2 0 0 NONE
+SPRITE SPR_FirebB3		"sprite/fireballb3.png"	2 2 0 0 NONE
 SPRITE SPR_Missl		"sprite/missiles.png"	6 1 0 0 NONE
 SPRITE SPR_Chest		"sprite/chest.png"		2 2 0 0 NONE
 SPRITE SPR_Save			"sprite/save.png"		2 2 0 0 NONE

@@ -31,7 +31,7 @@ void sheets_load_weapon(Weapon *w) {
 		break;
 		case WEAPON_FIREBALL:
 		SHEET_ADD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
-							 : w->level == 2 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB2 
 							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_MACHINEGUN:
@@ -96,7 +96,7 @@ void sheets_refresh_weapon(Weapon *w) {
 		break;
 		case WEAPON_FIREBALL:
 		SHEET_MOD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
-							 : w->level == 2 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB2 
 							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_MACHINEGUN:
@@ -153,6 +153,9 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHB, 3,2,2, 0,0, 1,0, 2,0);
 		} break;
+		case 0x5A: // Gunsmith
+		{	SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0,0, 0,1, 0,2, 0,3);
+		} break;
 		case 0x10: // Graveyard
 		{	SHEET_ADD(SHEET_PIGNON, &SPR_Pignon, 5,2,2, 0,0, 1,0, 1,2, 2,0, 3,0);
 			SHEET_ADD(SHEET_PIGNONB, &SPR_PignonB, 5,3,3, 0,0, 1,0, 1,2, 2,0, 3,0);
@@ -183,12 +186,11 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_MANNAN, &SPR_Mannan, 3,3,4, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_PCRITTER, &SPR_CritBig, 6,3,3, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0,0, 0,1, 1,0);
-		} /* Below is for both Grasstown and Waterway */
-		case 0x30: // Waterway
-		{	SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
-			SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 0,2, 0,3, 0,4, 0,1, 0,2, 0,5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
-		} /* And a death trap */
+			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
+		} break;
 		case 0x07: // Santa's House
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
@@ -260,10 +262,10 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_BUYO, &SPR_Buyo, 2,2,2, 0,0, 0,1);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
-				//SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
+				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
 			} else {
-				//SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
+				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
 		} break;
@@ -274,14 +276,19 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
-				//SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
+				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
 			} else {
-				//SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
+				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
 			// Small projectile
 			// Wisp projectile
+		} break;
+		case 0x30: // Waterway
+		{	SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+			SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 		} break;
 		case 0x1F: // Main Artery
 		{	SHEET_ADD(SHEET_IKACHAN, &SPR_IkaChan, 3,2,2, 0,0, 0,1, 0,2);
