@@ -82,6 +82,12 @@ typedef void (*EntityMethod)(Entity*);
 	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 3) * ((speed) >> 7);                  \
 }
 
+#define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
+	u16 angle = get_angle(shot->x, shot->y, tgtx, tgty);                                       \
+	shot->x_speed = (sintab32[angle % 1024] >> 3) * ((speed) >> 7);                            \
+	shot->y_speed = (sintab32[(angle + 256) % 1024] >> 3) * ((speed) >> 7);                    \
+}
+
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
 	for(u8 i = 0; i < (count); i++) {                                                          \
 		effect_create_smoke((x) + (random() % (w)),                                            \

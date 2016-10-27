@@ -38,41 +38,54 @@ void generic_npc_states(Entity *e) {
 	}
 }
 
-static u16 atan2(s32 y, s32 x) {
-    if (x == y) { // x/y or y/x would return -1 since 1 isn't representable
-        if (y > 0) { // 1/8
-            return 0x80;
-        } else if (y < 0) { // 5/8
-            return 0x280;
-        } else { // x = y = 0
-            return 0;
-        }
-    }
-    const s16 nabs_y = -abs(y), nabs_x = -abs(x);
-    if (nabs_x < nabs_y) { // octants 1, 4, 5, 8
-        const s16 y_over_x = (y << CSF) / x;
-        const s16 correction = (879 * -abs(y_over_x)) >> CSF;
-        const s16 unrotated = ((256 + 879 + correction) * y_over_x) >> CSF;
-        if (x > 0) { // octants 1, 8
-            return unrotated;
-        } else { // octants 4, 5
-            return 0x200 + unrotated;
-        }
-    } else { // octants 2, 3, 6, 7
-        const s16 x_over_y = (x << CSF) / y;
-        const s16 correction = (879 * -abs(x_over_y)) >> CSF;
-        const s16 unrotated = ((256 + 879 + correction) * x_over_y) >> CSF;
-        if (y > 0) { // octants 2, 3
-            return 0x100 - unrotated;
-        } else { // octants 6, 7
-            return 0x300 - unrotated;
-        }
-    }
-}
+static const u32 tan_table[33] = {
+	0,
+	402,
+	806,
+	1215,
+	1629,
+	2051,
+	2485,
+	2931,
+	3393,
+	3874,
+	4378,
+	4910,
+	5473,
+	6075,
+	6723,
+	7424,
+	8192,
+	9038,
+	9981,
+	11045,
+	12260,
+	13667,
+	15326,
+	17320,
+	19777,
+	22895,
+	27005,
+	32704,
+	41183,
+	55225,
+	83174,
+	166752,
+	// It is impossible for this to be less than anything, guaranteed to break the while loop
+	0xFFFFFFFF, 
+};
 
+// My brain hurts... don't read this
 u16 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
+	u16 angle = 32;
 	s32 xdist = (tgtx - curx);
 	s32 ydist = (tgty - cury);
-	if (xdist==0) return (tgty > cury) ? 0x100 : 0x300; // Undefined?
-	return atan2(ydist, xdist);
+	if (xdist==0) return (tgty > cury) ? 0x100 : 0x300; // Undefined
+	u32 ratio = (abs(ydist) << 13) / abs(xdist);
+	while(tan_table[33 - (angle--)] < ratio);
+	angle += 1;
+	angle *= 8;
+	if (curx > tgtx) angle = 0x400 - angle;
+	if (cury > tgty) angle = 0x200 - angle;
+	return angle;
 }

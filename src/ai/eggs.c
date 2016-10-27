@@ -148,8 +148,10 @@ void ai_basu(Entity *e) {
 	if (!(e->timer % TIME(158))) {
 		if (PLAYER_DIST_X(0x14000)) {
 			sound_play(SND_EM_FIRE, 5);
-			FIRE_ANGLED_SHOT(OBJ_GIANT_BEETLE_SHOT, e->x, e->y, 
-					e->dir ? A_RIGHT-4 : A_LEFT+4, 0x400);
+			//FIRE_ANGLED_SHOT(OBJ_GIANT_BEETLE_SHOT, e->x, e->y, 
+			//		e->dir ? A_RIGHT-4 : A_LEFT+4, 0x400);
+			Entity *shot = entity_create(e->x, e->y, OBJ_GIANT_BEETLE_SHOT, 0);
+			THROW_AT_TARGET(shot, player.x, player.y, 0x200);
 		}
 	}
 }
