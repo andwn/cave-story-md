@@ -190,3 +190,33 @@ u8 system_checkdata() {
 	}
 	return sram_state;
 }
+
+u32 system_load_counter() {
+	u8 buffer[20];
+	u32 *result = (u32*)buffer;
+	// Read 20 bytes of 290.rec from SRAM
+	SRAM_enableRO();
+	for(u16 i = 0; i < 20; i++) {
+		buffer[i] = SRAM_readByte(0x48 + i);
+	}
+	SRAM_disable();
+	// Apply key
+	for(u16 i = 0; i < 4; i++) {
+		u8 key = buffer[16 + i];
+		u16 j = i * 4;
+		buffer[j] -= key;
+		buffer[j+1] -= key;
+		buffer[j+2] -= key;
+		buffer[j+3] -= (key / 2);
+	}
+	// Ticks should be nonzero
+	if(!result[0]) {
+		return 0xFFFFFFFF;
+	}
+	// Make sure tick values match
+	if((result[0] != result[1]) || (result[0] != result[2]) || (result[0] != result[3])) {
+		return 0xFFFFFFFF;
+	}
+	// Convert LE -> BE
+    return (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[4];
+}

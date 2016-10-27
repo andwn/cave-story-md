@@ -14,8 +14,13 @@
 #define ANIM_FRAMES	4
 
 u8 titlescreen_main() {
+	u8 cursor = 0;
+	u32 besttime = 0xFFFFFFFF;
+	u8 tsong = SONG_TITLE;
+	SpriteDefinition *tsprite = &SPR_Quote;
+	
 	SYS_disableInts();
-	VDP_setEnable(0);
+	VDP_setEnable(FALSE);
 	VDP_resetScreen(); // This brings back the default SGDK font with transparency
 	// No special scrolling for title screen
 	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
@@ -25,8 +30,31 @@ u8 titlescreen_main() {
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPaletteColor(PAL0, 0x0444); // Gray background
 	VDP_setPaletteColor(PAL0 + 8, 0x08CE); // Yellow text
+	// PAL_Regu, for King and Toroko
+	VDP_setPalette(PAL3, PAL_Regu.data);
+	// Check save data, only enable continue if save data exists
+	u8 sram_state = system_checkdata();
+	if(sram_state == SRAM_VALID_SAVE) {
+		VDP_drawText("Continue", 15, 14);
+		cursor = 1;
+		besttime = system_load_counter(); // 290.rec data
+	}
+	// Change character & song based on 290.rec value
+	if(besttime <= 3*3000) {
+		tsprite = &SPR_Sue;
+		tsong = 2; // Safety
+	} else if(besttime <= 4*3000) {
+		tsprite = &SPR_King;
+		tsong = 41; // White Stone Wall
+	} else if(besttime <= 5*3000) {
+		tsprite = &SPR_Toroko;
+		tsong = 40; // Toroko's Theme
+	} else if(besttime <= 6*3000) {
+		tsprite = &SPR_Curly;
+		tsong = 36; // Running Hell
+	}
 	// Load quote sprite
-	SHEET_LOAD(&SPR_Quote, 4, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0);
+	SHEET_LOAD(tsprite, 4, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0);
 	VDPSprite sprCursor = { 
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_SHEETINDEX),
 		.size = SPRITE_SIZE(2,2)
@@ -48,16 +76,9 @@ u8 titlescreen_main() {
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
-	// Check save data, only enable continue if save data exists
-	u8 cursor = 0;
-	u8 sram_state = system_checkdata();
-	if(sram_state == SRAM_VALID_SAVE) {
-		VDP_drawText("Continue", 15, 14);
-		cursor = 1;
-	}
 	VDP_setEnable(TRUE);
 	SYS_enableInts();
-	song_play(SONG_TITLE);
+	song_play(tsong);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
 		if(joy_pressed(BUTTON_UP)) {
@@ -77,7 +98,7 @@ u8 titlescreen_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprCursor.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_SHEETINDEX+sprFrame*4);
+			sprite_index(sprCursor, TILE_SHEETINDEX+sprFrame*4);
 		}
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);

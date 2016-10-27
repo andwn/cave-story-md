@@ -57,7 +57,7 @@ struct {
 } ProfileData;
 
 struct {
-	unsigned int hour, min, sec, frame;
+	unsigned int ticks[4];
 	unsigned char key[4];
 } NikuCounter;
 
@@ -261,12 +261,8 @@ int write_sram_data(const char *filename) {
 		}
 	}
 	// Nikumaru Counter
-	sram_write_dword(outfile, NikuCounter.hour);
-	sram_write_dword(outfile, NikuCounter.min);
-	sram_write_dword(outfile, NikuCounter.sec);
-	sram_write_dword(outfile, NikuCounter.frame);
-	for(int i = 0; i < 4; i++)
-		sram_write_byte(outfile, NikuCounter.key[i]);
+	for(int i = 0; i < 4; i++) sram_write_dword(outfile, NikuCounter.ticks[i]);
+	for(int i = 0; i < 4; i++) sram_write_byte(outfile, NikuCounter.key[i]);
 	// "CSMD" checksum
 	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
 	// Items
