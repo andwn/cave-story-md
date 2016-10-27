@@ -4,8 +4,19 @@
  * Compile:
  * gcc prof2sram.c -o prof2sram
  * 
- * Usage:
- * ./prof2sram <input Profile.dat> <output SRAM>
+ * Usage (the arguments must be in this exact order):
+ * ./prof2sram [-n <290.rec>] <input Profile.dat> <output SRAM>
+ * 
+ * Example:
+ * Grab a Profile.dat and optionally 290.rec from http://www.cavestory.org/download/saves.php
+ * Extract with your archive manager of choice, then run
+ * ./prof2sram /path/to/Profile.dat doukutsu.srm
+ * Or to include 290.rec
+ * ./prof2sram -n /path/to/290.rec /path/to/Profile.dat doukutsu.srm
+ * 
+ * Where does the SRAM go? Depends on your emulator.
+ * Gens-GS: $HOME/.gens/doukutsu.srm
+ * BlastEm: $HOME/.config/blastem/doukutsu/save.sram
  */
 
 #include <stdio.h>
@@ -45,22 +56,57 @@ struct {
 	unsigned int flag[250];
 } ProfileData;
 
+struct {
+	unsigned int hour, min, sec, frame;
+	unsigned char key[4];
+} NikuCounter;
+
+int read_290rec(const char *filename);
 int read_profile_data(const char *filename);
 int write_sram_data(const char *filename);
 
+void usage() {
+	printf("Usage: prof2sram [-n <290.rec>] <input Profile.dat> <output SRAM>\n");
+}
+
 int main(int argc, char *argv[]) {
-	if(argc != 3) {
-		printf("Usage: %s <input Profile.dat> <output SRAM>\n", argv[0]);
+	// Make sure we will write all zeroes if no 290.rec is specified
+	memset(&NikuCounter, 0, sizeof(NikuCounter));
+	if(argc == 5) {
+		// Make sure the first arg is "-n"
+		if(argv[1][0] == '-' && argv[1][1] == 'n') {
+			if(read_290rec(argv[2])) {
+				printf("Issue reading 290.rec, aborting.\n");
+				return 1;
+			}
+		} else {
+			usage();
+			return 0;
+		}
+	} else if(argc != 3) {
+		usage();
 		return 0;
 	}
-	if(read_profile_data(argv[1])) {
+	if(read_profile_data(argv[argc - 2])) {
 		printf("Issue reading profile data, aborting.\n");
 		return 1;
 	}
-	if(write_sram_data(argv[2])) {
+	if(write_sram_data(argv[argc - 1])) {
 		printf("Issue writing SRAM data, aborting.\n");
 		return 1;
 	}
+	return 0;
+}
+
+int read_290rec(const char *filename) {
+	FILE *infile = fopen(filename, "rb");
+	if(!infile) {
+		perror("Failed to load 290.rec.");
+		return 1;
+	}
+	fread(&NikuCounter, 1, 20, infile);
+	// All done
+	fclose(infile);
 	return 0;
 }
 
@@ -214,12 +260,13 @@ int write_sram_data(const char *filename) {
 					ProfileData.weapon[i].type, i);
 		}
 	}
-	// Nikumaru Counter - TODO
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	// Nikumaru Counter
+	sram_write_dword(outfile, NikuCounter.hour);
+	sram_write_dword(outfile, NikuCounter.min);
+	sram_write_dword(outfile, NikuCounter.sec);
+	sram_write_dword(outfile, NikuCounter.frame);
+	for(int i = 0; i < 4; i++)
+		sram_write_byte(outfile, NikuCounter.key[i]);
 	// "CSMD" checksum
 	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
 	// Items
@@ -237,4 +284,5 @@ int write_sram_data(const char *filename) {
 	}
 	// All done
 	fclose(outfile);
+	return 0;
 }
