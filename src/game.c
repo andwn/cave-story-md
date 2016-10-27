@@ -243,7 +243,8 @@ u8 update_pause() {
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
 		hud_show();
-		VDP_setWindowPos(0, 0);
+		//VDP_setWindowPos(0, 0);
+		window_close();
 		return FALSE;
 	} else {
 		// Every cursor move and item selection runs a script

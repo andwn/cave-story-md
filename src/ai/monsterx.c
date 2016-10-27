@@ -300,7 +300,7 @@ void ai_monsterx(Entity *e) {
 			if (++e->timer > TIME(300) || (saved_health - e->health) > 200) {
 				e->state = STATE_X_CLOSE_DOORS;
 				e->timer = 0;
-			} else if(e->timer > TIME(50) && e->timer % TIME(25) == 0) {
+			} else if(e->timer > TIME(50) && e->timer % TIME(50) == 1) {
 				// Recycling useless underwater var to cycle fish index
 				spawn_fish(e->underwater++ % 4);
 			}
@@ -629,6 +629,8 @@ void ai_x_target(Entity *e) {
 				
 				if (e->timer == 0) {
 					e->timer = 40;
+					Entity *shot = entity_create(e->x, e->y, OBJ_GAUDI_FLYING_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x500));
 					//EmFireAngledShot(e, OBJ_GAUDI_FLYING_SHOT, 2, 0x500);
 					sound_play(SND_EM_FIRE, 3);
 				}
@@ -660,6 +662,20 @@ void ondeath_x_target(Entity *e) {
 #define cur_angle	y_mark
 
 void ai_x_fishy_missile(Entity *e) {
+	if(e->timer & 1) {
+		Bullet *b = bullet_colliding(e);
+		if(b) {
+			b->ttl = 0;
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			e->state = STATE_DELETE;
+			return;
+		}
+	} else if(e->timer > TIME(600)) {
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		e->state = STATE_DELETE;
+		return;
+	}
+	
 	// Find angle needed to reach player
 	// Don't do this every frame, arctan is expensive
 	if(e->timer++ % TIME(20) == 0) {
@@ -682,7 +698,13 @@ void ai_x_fishy_missile(Entity *e) {
 		//c->y_speed = -e->y_speed >> 2;
 	//}
 	
+	e->cur_angle %= 0x400;
 	e->frame = e->cur_angle / 128;
+	
+	e->x_speed = sintab32[e->cur_angle];
+	e->y_speed = sintab32[(e->cur_angle + 0x100) % 0x400];
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 
@@ -718,4 +740,6 @@ void ai_x_defeated(Entity *e) {
 		}
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

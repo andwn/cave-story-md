@@ -134,6 +134,7 @@ void window_close() {
 	}
 	showingItem = 0;
 	windowOpen = FALSE;
+	textMode = TM_NORMAL;
 }
 
 void window_set_face(u16 face, u8 open) {

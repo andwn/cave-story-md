@@ -382,7 +382,7 @@ void ai_gaudiFlying(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			e->timer = (random() % TIME(80)) - TIME(70);
+			e->timer = TIME(70) + (random() % TIME(80));
 			e->state = 2;
 		}
 		/* no break */
@@ -390,9 +390,9 @@ void ai_gaudiFlying(Entity *e) {
 		{
 			ANIMATE(e, 4, 7,8);
 			
-			if (!--e->timer) {
+			if (!e->timer) {
 				e->state = 3;
-			}
+			} else e->timer--;
 		}
 		break;
 		
@@ -402,9 +402,8 @@ void ai_gaudiFlying(Entity *e) {
 			
 			e->timer++;
 			if (++e->timer > TIME(30)) {
-				// 1024 (0x400) is 360 degrees
-				s16 angle = e->dir ? A_RIGHT-0x10 : A_LEFT+0x10;
-				FIRE_ANGLED_SHOT(OBJ_GAUDI_FLYING_SHOT, e->x, e->y, angle, 0x400);
+				Entity *shot = entity_create(e->x, e->y, OBJ_GAUDI_FLYING_SHOT, 0);
+				THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x400));
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->state = 1;
