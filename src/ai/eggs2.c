@@ -18,6 +18,7 @@ void ai_dragon_zombie(Entity *e) {
 	if (e->health < 950 && e->state < 50) {
 		sound_play(SND_BIG_CRASH, 5);
 		effect_create_damage(e->damage_value, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		e->damage_time = e->damage_value = 0;
 		effect_create_smoke(e->x << CSF, e->y << CSF);
 		entity_drop_powerup(e);
 		

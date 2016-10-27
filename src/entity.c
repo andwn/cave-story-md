@@ -199,7 +199,7 @@ void entities_update() {
 						if(flags & NPC_SHOWDAMAGE) {
 							effect_create_damage(e->damage_value - b->damage,
 									sub_to_pixel(e->x), sub_to_pixel(e->y));
-							e->damage_time = 0;
+							e->damage_time = e->damage_value = 0;
 						}
 						// Killed enemy
 						e->health = 0;

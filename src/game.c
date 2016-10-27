@@ -106,6 +106,7 @@ u8 game_main(u8 load) {
 					} else if(rtn == 2) {
 						game_reset(TRUE); // Reload save
 						hud_show();
+						playerIFrames = 0;
 						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 						continue;
 					} else if(rtn == 3) {
@@ -183,10 +184,10 @@ void draw_itemmenu(u8 resetCursor) {
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
 	// Weapons
-	VDP_drawTextWindow("--ARMS--", 16, 3);
+	VDP_drawTextWindow("--ARMS--", 4, 3);
 	// TODO: Draw the status for all weapons the player owns under --ARMS--
 	// Items
-	VDP_drawTextWindow("--ITEM--", 16, 10);
+	VDP_drawTextWindow("--ITEM--", 4, 10);
 	u8 held = 0;
 	for(u16 i = 0; i < MAX_ITEMS; i++) {
 		u16 item = playerInventory[i];

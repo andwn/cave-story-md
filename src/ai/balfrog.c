@@ -588,9 +588,11 @@ void hurt_by_bullet(Entity *e, Bullet *b) {
 		if(b->damage < e->health) sound_play(e->hurtSound, 5);
 	}
 	if(e->health <= b->damage) {
-		if((e->eflags|e->nflags) & NPC_SHOWDAMAGE)
+		//if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
 			effect_create_damage(e->damage_value - b->damage,
 					sub_to_pixel(e->x), sub_to_pixel(e->y));
+			e->damage_time = e->damage_value = 0;
+		//}
 		// Killed enemy
 		e->health = 0;
 		ENTITY_ONDEATH(e);
