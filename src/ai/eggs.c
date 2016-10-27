@@ -41,9 +41,9 @@ void ai_behemoth(Entity *e) {
 					e->attack = 1;
 					MOVE_X(SPEED(0x100));
 				}
-			} else { // Shake
-				e->x += (e->timer & 1) ? 0x200 : -0x200;
-			}
+			} //else { // Shake
+			//	e->x += (e->timer & 1) ? 0x200 : -0x200;
+			//}
 		}
 		break;
 		case 2: // Charging
@@ -71,42 +71,28 @@ void ai_behemoth(Entity *e) {
 }
 
 void ai_beetle(Entity *e) {
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
 	switch(e->state) {
-		case 0: // Initial state / moving left or right
+		case 0: // Initial state - wait for player on the wall
 		{
-			ANIMATE(e, 4, 1,0);
-			if(e->x_speed == 0) {
-				e->x_speed = -0x200 + 0x400 * e->dir;
-			} else if((sub_to_pixel(e->x) & 15) == 7) {
-				if(!e->dir && stage_get_block_type(x - 1, y) == 0x41) {
-					e->state = 1;
-					e->timer = 0;
-					e->x_speed = 0;
-					e->frame = 0;
-				} else if(e->dir && stage_get_block_type(x + 1, y) == 0x41) {
-					e->state = 1;
-					e->timer = 0;
-					e->x_speed = 0;
-					e->frame = 0;
-				} 
+			if(++e->timer > TIME(50) && PLAYER_DIST_Y(16 << CSF)) {
+				TURN_AROUND(e);
+				MOVE_X(SPEED(0x200));
+				e->state = 1;
 			}
 		}
 		break;
-		case 1: // On wall
+		case 1: // moving left or right
 		{
-			if(++e->timer > 60) {
-				u16 py = sub_to_block(player.y);
-				if(py >= y - 1 || py <= y + 1) {
-					e->state = 0;
-					e->dir = !e->dir;
-					e->x_speed = -0x200 + 0x400 * e->dir;
-				}
+			e->x += e->x_speed;
+			e->frame ^= 1;
+			if(blk(e->x, e->dir ? 8 : -8, e->y, 0) == 0x41) {
+				e->state = 0;
+				e->timer = 0;
+				e->x_speed = 0;
 			}
 		}
 		break;
 	}
-	e->x += e->x_speed;
 }
 
 void onspawn_beetleFollow(Entity *e) {

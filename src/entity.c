@@ -276,20 +276,21 @@ void entities_update() {
 		if(e->damage_value) {
 			e->damage_time--;
 			if(e->shakeWhenHit) {
-				e->x += (e->damage_time & 1) ? 0x200 : -0x200;
+				e->xoff = (e->damage_time & 3) - 1;
 			}
 			if(!e->damage_time) {
 				if(flags & NPC_SHOWDAMAGE) {
 					effect_create_damage(e->damage_value, e->x >> CSF, e->y >> CSF);
 				}
 				e->damage_value = 0;
+				e->xoff = 0;
 			}
 		}
 		// Handle sprite movement/changes
 		if(!e->hidden) {
 			if(e->sheet != NOSHEET) {
 				sprite_pos(e->sprite[0],
-						(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
+						(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff,
 						(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
 				sprite_index(e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
 				sprite_hflip(e->sprite[0], e->dir);
@@ -301,7 +302,7 @@ void entities_update() {
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
-					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left, 
+					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left + e->xoff, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
 					s16 x = min(f->w, 32);
 					for(u8 i = 0; i < e->sprite_count; i++) {
@@ -315,7 +316,7 @@ void entities_update() {
 						}
 					}
 				} else {
-					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left, 
+					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
 					s16 x = 0;
 					for(u8 i = 0; i < e->sprite_count; i++) {

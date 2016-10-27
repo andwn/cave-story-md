@@ -83,6 +83,7 @@ struct Entity {
 	// Used to generate damage strings
 	s16 damage_value; // Cumulative damage to be displayed
 	s8 damage_time; // Amount of time before effect is created
+	s8 xoff; // Sprite display offset for enemy shake during damage
 	/* Sprite Stuff */
 	u8 hidden;
 	u8 sprite_count; // Number of (hardware) sprites
