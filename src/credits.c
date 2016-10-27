@@ -7,13 +7,13 @@
 #include "audio.h"
 
 void credits_main(u8 ending) {
+	song_stop();
 	SYS_disableInts();
 	VDP_setEnable(FALSE);
-	song_stop();
 	VDP_resetScreen();
 	VDP_setPalette(PAL0, PAL_Main.data);
 	//VDP_setPalette(PAL1, PAL_Credits.data);
-	VDP_drawText("Nothing here yet.", 4, 8);
+	VDP_drawText("You won!!!", 4, 8);
 	VDP_setEnable(TRUE);
 	SYS_enableInts();
     while(TRUE) {

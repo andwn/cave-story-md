@@ -110,10 +110,7 @@ void effects_update() {
 			} /* no break */
 			case EFF_BOOST2:
 			{
-				if(!(effMisc[i].ttl % TIME(5))) {
-					//sprite_index(effMisc[i].sprite, (effMisc[i].sprite.attribut & 0xFF) + 1);
-					effMisc[i].sprite.attribut++;
-				}
+				if(!(effMisc[i].ttl % TIME(5))) effMisc[i].sprite.attribut++;
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);

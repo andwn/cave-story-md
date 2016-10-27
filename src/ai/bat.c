@@ -38,14 +38,32 @@ void onspawn_batVertical(Entity *e) {
 
 // Just up and down gotta go up and down
 void ai_batVertical(Entity *e) {
-	ANIMATE(e, 4, 0,1,2);
-	if(e->state == 0) {
-		e->y_speed -= 8;
-		if(e->y_speed <= -0x200) e->state = 1;
-	} else if(e->state == 1) {
-		e->y_speed += 8;
-		if(e->y_speed >= 0x200) e->state = 0;
+	switch(e->state) {
+		case 0:
+		{
+			e->y_mark = e->y;
+			e->timer = random() % 50;
+			e->state = 1;
+		}
+		case 1:
+		{
+			if (!e->timer) {
+				e->state = 2;
+				e->y_speed = SPEED(0x300);
+			} else e->timer--;
+		}
+		break;
+		case 2:
+		{
+			if (e->y >= e->y_mark)
+				e->y_speed -= SPEED(0x10);
+			else
+				e->y_speed += SPEED(0x10);
+			LIMIT_Y(0x300);
+		}
+		break;
 	}
+	ANIMATE(e, 4, 0,1,2);
 	FACE_PLAYER(e);
 	e->y += e->y_speed;
 }

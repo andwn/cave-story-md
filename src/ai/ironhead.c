@@ -56,9 +56,9 @@ void ai_ironhead(Entity *e) {
 				e->state = IRONH_SWIM;
 			}
 			if (!(e->timer & 3)) {
-				//entity_create(((15 + random() % 3) * 16) << CSF,
-				//		  	((ARENA_TOP+random() % (ARENA_BOTTOM-ARENA_TOP)) * 16) << CSF,
-				//		  	OBJ_IRONH_FISHY, 0);
+				entity_create(((15 + (random() % 3)) * 16) << CSF,
+						  	((ARENA_TOP + (random() % (ARENA_BOTTOM-ARENA_TOP))) * 16) << CSF,
+						  	OBJ_IRONH_FISHY, 0);
 			}
 		}
 		break;
@@ -115,9 +115,9 @@ void ai_ironhead(Entity *e) {
 					case 310:
 					case 320:
 					{
-						//Entity *shot = entity_create(e->x, e->y, OBJ_IRONH_SHOT, 0);
-						//shot->x_speed = (random(-3, 0) << CSF);
-						//shot->y_speed = (random(-3, 3) << CSF);
+						Entity *shot = entity_create(e->x, e->y, OBJ_IRONH_SHOT, 0);
+						shot->x_speed = -3 + ((random() % 4) << CSF);
+						shot->y_speed = -3 + ((random() % 7) << CSF);
 						sound_play(SND_EM_FIRE, 5);
 					}
 					break;
@@ -216,7 +216,7 @@ void ai_ironh_fishy(Entity *e) {
 	}
 	
 	if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x200);
-	if (e->y_speed < 0 && collide_stage_floor(e)) e->y_speed = -SPEED(0x200);
+	if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -SPEED(0x200);
 	e->x_speed -= SPEED(0x0c);
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -233,7 +233,7 @@ void ai_ironh_shot(Entity *e) {
 		e->x_speed += SPEED(0x20);
 	}
 	
-	ANIMATE(e, 8, 0,2);
+	ANIMATE(e, 8, 0,1,2);
 	
 	if (++e->timer2 > 100 && !entity_on_screen(e)) {
 		e->state = STATE_DELETE;

@@ -91,7 +91,13 @@ void ai_critter(Entity *e) {
 				if(++e->frame > 5) e->frame = 3;
 			}
 			e->y_speed -= SPEED(0x50);
-			if(e->timer > TIME(50)) {
+			if(e->timer == TIME(25)) {
+				if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {
+					sound_play(SND_EM_FIRE, 3);
+					Entity *shot = entity_create(e->x, e->y, OBJ_CRITTER_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, 0x200);
+				}
+			} else if(e->timer > TIME(50)) {
 				e->frame = 1;
 				e->state++;
 			}

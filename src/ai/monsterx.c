@@ -54,6 +54,7 @@
 
 #define saved_health		curly_target_time
 #define alt_sheet			jump_time
+#define fish_timer			id
 
 enum Pieces {
 	TREADUL, TREADUR, TREADLL, TREADLR,
@@ -73,6 +74,17 @@ static u8 all_targets_destroyed() {
 	return TRUE;
 }
 
+static void spawn_fish(u8 index) {
+	// keep appropriate position relative to main object
+	//                               UL          UR         LL         LR
+	static const int xoffs[]   = { -64 <<CSF,  76 <<CSF, -64 <<CSF,  76 <<CSF };
+	static const int yoffs[]   = {  27 <<CSF,  27 <<CSF, -16 <<CSF, -16 <<CSF };
+	FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
+					 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
+					 0x80 + index * 0x100, 0x200);
+	sound_play(SND_EM_FIRE, 3);
+}
+
 // sets state on an array on objects
 static void set_states(Entity *e[], u8 n, u16 state) {
 	for(u8 i = 0; i < n; i++) e[i]->state = state;
@@ -86,25 +98,6 @@ void onspawn_monsterx(Entity *e) {
 	e->y = (208 << CSF);
 	e->eflags = NPC_IGNORESOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XBODY);
-	
-	// Since this entity was created first it will draw the background portion of the boss.
-	// All the other pieces will be loaded in back -> front order
-	
-	// create internals
-	e->linkedEntity = entity_create(0, 0, OBJ_X_INTERNALS, 0);
-	// create targets
-	pieces[TARGET1] = entity_create(0, 0, OBJ_X_TARGET, 0);
-	pieces[TARGET2] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1);
-	pieces[TARGET3] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION2);
-	pieces[TARGET4] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1|NPC_OPTION2);
-	// create treads
-	pieces[TREADUL] = entity_create(0xfc000, 0x14000, OBJ_X_TREAD, 0);
-	pieces[TREADUR] = entity_create(0x10c000,0x14000, OBJ_X_TREAD, NPC_OPTION1);
-	pieces[TREADLL] = entity_create(0xfc000, 0x20000, OBJ_X_TREAD, NPC_OPTION2);
-	pieces[TREADLR] = entity_create(0x10c000,0x20000, OBJ_X_TREAD, NPC_OPTION1|NPC_OPTION2);
-	// create doors
-	pieces[DOORL] = entity_create(0, 0, OBJ_X_DOOR, 0);
-	pieces[DOORR] = entity_create(0, 0, OBJ_X_DOOR, NPC_OPTION2);
 }
 
 // The 4 green things look slightly different
@@ -130,9 +123,6 @@ void onspawn_x_tread(Entity *e) {
 	SHEET_FIND(e->alt_sheet, SHEET_XTREAD);
 	e->hit_box = (bounding_box) { 32, 8, 32, 16 };
 	e->display_box = (bounding_box) { 32, 16, 32, 16 };
-	//if(e->eflags & NPC_OPTION2) {
-	//	e->hit_box.bottom += 8;
-	//}
 }
 
 // Door on the right uses the second frame
@@ -156,7 +146,28 @@ void ai_monsterx(Entity *e) {
 		// script triggered us to initilize/appear
 		// (there is a hvtrigger, right before player first walks by us
 		// and sees us inactive, which sends us this ANP).
-		case STATE_X_APPEAR: break;
+		case STATE_X_APPEAR: 
+		{
+			e->state++;
+			// back -> front order
+			// create internals
+			e->linkedEntity = entity_create(0, 0, OBJ_X_INTERNALS, 0);
+			// create targets
+			pieces[TARGET1] = entity_create(0, 0, OBJ_X_TARGET, 0);
+			pieces[TARGET2] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1);
+			pieces[TARGET3] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION2);
+			pieces[TARGET4] = entity_create(0, 0, OBJ_X_TARGET, NPC_OPTION1|NPC_OPTION2);
+			// create treads
+			pieces[TREADUL] = entity_create(0xfc000, 0x14000, OBJ_X_TREAD, 0);
+			pieces[TREADUR] = entity_create(0x10c000,0x14000, OBJ_X_TREAD, NPC_OPTION1);
+			pieces[TREADLL] = entity_create(0xfc000, 0x20000, OBJ_X_TREAD, NPC_OPTION2);
+			pieces[TREADLR] = entity_create(0x10c000,0x20000, OBJ_X_TREAD, NPC_OPTION1|NPC_OPTION2);
+			// create doors
+			pieces[DOORL] = entity_create(0, 0, OBJ_X_DOOR, 0);
+			pieces[DOORR] = entity_create(0, 0, OBJ_X_DOOR, NPC_OPTION2);
+		}
+		break;
+		case STATE_X_APPEAR+1: break;
 		
 		// script has triggered the fight to begin
 		case STATE_X_FIGHT_BEGIN:
@@ -271,7 +282,7 @@ void ai_monsterx(Entity *e) {
 				set_states(&pieces[TARGET1], 4, STATE_TARGET_FIRE);
 			}
 			
-			if (++e->timer > 300 || all_targets_destroyed()) {
+			if (++e->timer > TIME(300) || all_targets_destroyed()) {
 				e->state = STATE_X_CLOSE_DOORS;
 				e->timer = 0;
 			}
@@ -283,14 +294,15 @@ void ai_monsterx(Entity *e) {
 		{
 			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
 				pieces[DOORL]->state = 0;
-				
-				//set_states(fishspawners, 4, STATE_FISHSPAWNER_FIRE);
 				e->linkedEntity->eflags |= NPC_SHOOTABLE;
 			}
 			
-			if (++e->timer > 300 || (saved_health - e->health) > 200) {
+			if (++e->timer > TIME(300) || (saved_health - e->health) > 200) {
 				e->state = STATE_X_CLOSE_DOORS;
 				e->timer = 0;
+			} else if(e->timer > TIME(50) && e->timer % TIME(25) == 0) {
+				// Recycling useless underwater var to cycle fish index
+				spawn_fish(e->underwater++ % 4);
 			}
 		}
 		break;
@@ -311,7 +323,6 @@ void ai_monsterx(Entity *e) {
 				// just turn off everything for both types of attacks;
 				// turning off the attack type that wasn't enabled isn't harmful.
 				set_states(&pieces[TARGET1], 4, 0);
-				//set_states(fishspawners, 4, 0);
 				e->linkedEntity->eflags &= ~NPC_SHOOTABLE;
 			}
 			
@@ -326,8 +337,7 @@ void ai_monsterx(Entity *e) {
 		// exploding
 		case STATE_X_EXPLODING:
 		{
-			//SetStates(fishspawners, 4, 0);
-			//entities_clear_by_type(OBJ_X_FISHY_MISSILE);
+			entities_clear_by_type(OBJ_X_FISHY_MISSILE);
 			
 			e->timer = 0;
 			e->state++;
@@ -337,13 +347,13 @@ void ai_monsterx(Entity *e) {
 			camera_shake(2);
 			e->timer++;
 			
-			if ((e->timer % 8) == 0)
+			if ((e->timer % TIME(8)) == 0)
 				sound_play(SND_ENEMY_HURT_BIG, 5);
 			
 			//SmokePuff(e->CenterX() + (random(-72, 72) << CSF),
 			//		  e->CenterY() + (random(-64, 64) << CSF));
 			
-			if (e->timer > 100) {
+			if (e->timer > TIME(100)) {
 				//starflash.Start(e->CenterX(), e->CenterY());
 				sound_play(SND_EXPLOSION1, 5);
 				e->timer = 0;
@@ -354,7 +364,7 @@ void ai_monsterx(Entity *e) {
 		case STATE_X_EXPLODING+2:
 		{
 			camera_shake(40);
-			if (++e->timer > 50) {
+			if (++e->timer > TIME(50)) {
 				entity_create(e->x, e->y - (24 << CSF), OBJ_X_DEFEATED, 0);
 				entities_clear_by_type(OBJ_X_TARGET);
 				entities_clear_by_type(OBJ_X_DOOR);
@@ -473,23 +483,22 @@ void ai_x_tread(Entity *e) {
 	}
 	
 	// make motor noise
-	//switch(e->state)
-	//{
-	//	case STATE_TREAD_RUN+1:
-	//	case STATE_TREAD_BRAKE+1:
-	//	{
-	//		if (e->timer & 1)
-	//			sound_play(SND_MOTOR_SKIP, 3);
-	//	}
-	//	break;
-	//	
-	//	case STATE_TREAD_RUN+2:
-	//	{
-	//		if ((e->timer % 4) == 1)
-	//			sound_play(SND_MOTOR_RUN, 3);
-	//	}
-	//	break;
-	//}
+	switch(e->state) {
+		case STATE_TREAD_RUN+1:
+		case STATE_TREAD_BRAKE+1:
+		{
+			if (e->timer & 2)
+				sound_play(SND_MOTOR_SKIP, 3);
+		}
+		break;
+		
+		case STATE_TREAD_RUN+2:
+		{
+			if ((e->timer % 8) == 1)
+				sound_play(SND_MOTOR_RUN, 3);
+		}
+		break;
+	}
 	
 	// determine if player is in a position where he could get run over.
 	if (e->state > STATE_TREAD_STOPPED && e->x_speed) {
@@ -501,7 +510,7 @@ void ai_x_tread(Entity *e) {
 		e->attack = 0;
 	}
 	
-	LIMIT_X(0x400);
+	LIMIT_X(SPEED(0x400));
 	e->x += e->x_speed;
 	
 	// Sprite
@@ -591,43 +600,7 @@ void ai_x_door(Entity *e) {
 	}
 	e->y = bossEntity->y;
 }
-/*
-void XBoss::run_fishy_spawner(int index)
-{
-	Entity *o = fishspawners[index];
-	
-	switch(e->state)
-	{
-		case STATE_FISHSPAWNER_FIRE:
-		{
-			e->timer = 20 + (index * 20);
-			e->state++;
-		}
-		case STATE_FISHSPAWNER_FIRE+1:
-		{
-			if (e->timer)
-			{
-				e->timer--;
-				break;
-			}
-			
-			// keep appropriate position relative to main object
-			//                               UL          UR         LL         LR
-			static const int xoffs[]   = { -64 <<CSF,  76 <<CSF, -64 <<CSF,  76 <<CSF };
-			static const int yoffs[]   = {  27 <<CSF,  27 <<CSF, -16 <<CSF, -16 <<CSF };
-			e->x = (mainobject->x + xoffs[index]);
-			e->y = (mainobject->y + yoffs[index]);
-			
-			Entity *missile = CreateEntity(e->x, e->y, OBJ_X_FISHY_MISSILE);
-			missile->dir = index;
-			
-			sound_play(SND_EM_FIRE);
-			e->timer = 120;
-		}
-		break;
-	}
-}
-*/
+
 void ai_x_target(Entity *e) {
 	// has this target been destroyed?
 	// (we don't really kill the object until the battle is over,
@@ -683,43 +656,33 @@ void ondeath_x_target(Entity *e) {
 	e->hidden = TRUE;
 }
 
+#define want_angle	x_mark
+#define cur_angle	y_mark
+
 void ai_x_fishy_missile(Entity *e) {
-	if (e->state == 0) {
-		//static const int angle_for_dirs[] = { 160, 224, 96, 32 };
-		
-		//e->angle = angle_for_dirs[e->dir];
-		e->dir = 1;
-		
-		e->state = 1;
+	// Find angle needed to reach player
+	// Don't do this every frame, arctan is expensive
+	if(e->timer++ % TIME(20) == 0) {
+		e->want_angle = get_angle(e->x, e->y, player.x, player.y) % 0x400;
+	}
+	// Turn towards desired angle
+	if(e->cur_angle < e->want_angle) {
+		if(abs(e->cur_angle - e->want_angle) < 0x200) e->cur_angle += 4;
+		else e->cur_angle -= 4;
+	} else {
+		if(abs(e->cur_angle - e->want_angle) < 0x200) e->cur_angle -= 4;
+		else e->cur_angle += 4;
 	}
 	
-	//vector_from_angle(e->angle, 0x400, &e->x_speed, &e->y_speed);
-	//int desired_angle = GetAngle(e->x, e->y, player.x, player.y);
-	
-	//if (e->angle >= desired_angle) {
-	//	if ((e->angle - desired_angle) < 128) {
-	//		e->angle--;
-	//	} else {
-	//		e->angle++;
-	//	}
-	//} else {
-	//	if ((e->angle - desired_angle) < 128) {
-	//		e->angle++;
-	//	} else {
-	//		e->angle--;
-	//	}
-	//}
-	
 	// smoke trails
-	if (++e->timer2 > 2) {
-		e->timer2 = 0;
+	//if (++e->timer2 > 2) {
+	//	e->timer2 = 0;
 		//Caret *c = effect(e->ActionPointX(), e->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
 		//c->x_speed = -e->x_speed >> 2;
 		//c->y_speed = -e->y_speed >> 2;
-	}
+	//}
 	
-	//e->frame = (e->angle + 16) / 32;
-	//if (e->frame > 7) e->frame = 7;
+	e->frame = e->cur_angle / 128;
 }
 
 
@@ -730,8 +693,7 @@ void ai_x_defeated(Entity *e) {
 		//SmokeClouds(o, 1, 16, 16);
 	}
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			//SmokeClouds(o, 8, 16, 16);
@@ -739,9 +701,9 @@ void ai_x_defeated(Entity *e) {
 		}
 		case 1:
 		{
-			if (e->timer > 50) {
+			if (e->timer > TIME(50)) {
 				e->state = 2;
-				e->x_speed = -0x100;
+				e->x_speed = -SPEED(0x100);
 			}
 			
 			// three-position shake
@@ -751,7 +713,7 @@ void ai_x_defeated(Entity *e) {
 		
 		case 2:
 		{
-			e->y_speed += 0x40;
+			e->y_speed += SPEED(0x40);
 			if (e->y > (stageHeight * 16) << CSF) e->state = STATE_DELETE;
 		}
 		break;

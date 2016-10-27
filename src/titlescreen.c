@@ -17,7 +17,7 @@ u8 titlescreen_main() {
 	u8 cursor = 0;
 	u32 besttime = 0xFFFFFFFF;
 	u8 tsong = SONG_TITLE;
-	SpriteDefinition *tsprite = &SPR_Quote;
+	const SpriteDefinition *tsprite = &SPR_Quote;
 	
 	SYS_disableInts();
 	VDP_setEnable(FALSE);

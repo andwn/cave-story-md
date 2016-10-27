@@ -1,5 +1,5 @@
 /*
- * An attempt to rewrite/port Cave Story's engine to an old console
+ * A "demake" of Cave Story for the Sega Mega Drive
  * Copyright (C) 2016 andwn
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,9 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * The above applies to the code only and not any of the art assets.
- * See credits.txt for detailed information
  */
 
 #include <genesis.h>
@@ -31,6 +28,9 @@
 int main() {
 	puts("Hi Plum");
     SYS_disableInts();
+#ifdef PAL
+    VDP_setScreenHeight240();
+#endif
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it
 	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800

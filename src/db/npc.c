@@ -172,8 +172,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ai_null },
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockv, &ai_null }, // Moving Block (V)
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Monster X Shot
-	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Monster X Cat
+	{ NULL, SHEET_XFISHY, 	PAL0, 1, &onspawn_persistent, &ai_x_fishy_missile, &ai_null }, // Monster X Shot
+	{ &SPR_XCat, NOSHEET, 	PAL3, 6, &onspawn_persistent, &ai_x_defeated, &ai_null }, // Monster X Cat
 	/* 0x0A0 (160) */
 	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_pooh_black }, // Pooh Black
 	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ai_null }, // Pooh Black Bubble
@@ -185,7 +185,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_booster_falling, &ai_null }, // Booster
 	{ &SPR_Boulder,NOSHEET, PAL3, 4, &ai_null, &ai_boulder, &ai_null }, // Boulder
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_boss_missiles, &ondeath_balrogFlying },
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_balrog_missile, &ai_null }, // Balrog Missile
+	{ NULL, NOSHEET, 		PAL0, 1, &onspawn_persistent, &ai_balrog_missile, &ai_null }, // Balrog Missile
 	{ &SPR_FireWhir,NOSHEET,PAL2, 1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
 	{ NULL,SHEET_FIREWSHOT,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
 	{ NULL, SHEET_GAUDI,	PAL2, 1, &ai_null, &ai_gaudiArmored, &ai_null },
