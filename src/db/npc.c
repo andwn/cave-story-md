@@ -257,7 +257,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_MIDO, 	 PAL0, 1, &ai_null, &ai_midorin, &ondeath_default }, // Midorin
 	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
 	{ NULL, SHEET_GUNFSHOT,  PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
+	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
 	{ &SPR_JailedMimi,NOSHEET,PAL0,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
@@ -266,7 +266,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator
 	{ NULL, SHEET_ACID, 	PAL3, 1, &onspawn_persistent, &ai_lava_drip, &ai_null }, // Acid Drop
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
-	{ &SPR_Press, 	NOSHEET, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
+	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
 	{ &SPR_Misery, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
 		&ai_null, &ai_null, &ai_null },
@@ -390,8 +390,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Santa (Caged)
 		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Stumpy
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		SHEET_STUMPY, PAL0, 1, // Stumpy
+		&ai_null, &ai_stumpy, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Bute
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Sword)

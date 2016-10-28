@@ -110,6 +110,7 @@ SPRITE SPR_Fan			"sprite/fan.png"		2 2 0 0 NONE
 SPRITE SPR_Malco		"sprite/malco.png"		2 3 0 0 NONE
 SPRITE SPR_Pot			"sprite/pot.png"		2 2 0 0 NONE
 SPRITE SPR_Press		"sprite/press.png"		2 3 0 0 NONE
+SPRITE SPR_PressH		"sprite/pressh.png"		3 2 0 0 NONE
 SPRITE SPR_Cage			"sprite/cage.png"		4 3 0 0 NONE
 SPRITE SPR_EnergyShot	"sprite/energyshot.png"	2 2 0 0 NONE
 SPRITE SPR_MisslP		"sprite/missilep.png"	2 2 0 0 NONE
