@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "camera.h"
+#include "effect.h"
 
 void ai_pignon(Entity *e) {
 	e->timer++;

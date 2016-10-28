@@ -320,7 +320,7 @@ void ai_gaudi(Entity *e) {
 			// count how long we've been touching the wall
 			// we're trying to jump over..if it's not working
 			// go the other way.
-			if ((e->dir == 0 && collide_stage_leftwall(e)) || \
+			if ((e->dir == 0 && collide_stage_leftwall(e)) ||
 				(e->dir == 1 && collide_stage_rightwall(e))) {
 				if (++e->timer > TIME(10)) {
 					e->timer = 0;
@@ -855,13 +855,13 @@ void ai_gaudi_egg(Entity *e) {
 	if (!e->state) {
 		if (!(e->eflags & NPC_OPTION2)) {	// on floor
 			// align properly with ground
-			e->y -= (4<<9);
-			e->x -= (4<<9);
+			e->y -= 0x800;
+			e->x -= 0x800;
 		} else {	// on ceiling
 			sprite_vflip(e->sprite[0], 1);
 			// for the egg @ entrance point that is on a ceiling slope
 			if (!collide_stage_ceiling(e)) {
-				e->y -= (14 << 9);
+				e->y -= (14 << CSF);
 			}
 		}
 		e->state = 1;
@@ -873,7 +873,7 @@ void ai_gaudi_egg(Entity *e) {
 			e->nflags &= ~NPC_SHOOTABLE;
 			entity_drop_powerup(e);
 			sound_play(e->deathSound, 5);
-			//SmokeSide(o, 6, (e->dir==0)?DOWN:UP);
+			SMOKE_AREA((e->x>>CSF) - 8, (e->y>>CSF) - 8, 16, 16, 2);
 			e->state = 2;
 		}
 	}
@@ -885,13 +885,11 @@ void ai_fuzz_core(Entity *e) {
 		{
 			// spawn mini-fuzzes
 			u16 angle = 0;
-			for(u16 i=0;i<5;i++) {
+			for(u16 i = 0; i < 5; i++) {
 				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
-				f->x = e->x;
-				f->y = e->y;
 				f->linkedEntity = e;
 				f->timer = angle;
-				angle += (1024 / 5);
+				angle += 25;
 			}
 			e->timer = random() % TIME(50);
 			e->state = 1;
@@ -922,19 +920,19 @@ void ai_fuzz_core(Entity *e) {
 
 void ai_fuzz(Entity *e) {
 	FACE_PLAYER(e);
+	e->nflags ^= NPC_SHOOTABLE;
 	
 	switch(e->state) {
 		case 0:
 		{
-			e->timer = (e->timer + TIME(16)) % 1024; // Increase angle
-			e->timer2 = (e->timer + 256) % 1024; // add 90 degrees for cosine
+			e->timer++;
 			if (e->linkedEntity->state == STATE_DESTROY) {
 				e->x_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				e->x = e->linkedEntity->x + ((sintab32[e->timer] >> 1) << 5);
-				e->y = e->linkedEntity->y + ((sintab32[e->timer2] >> 1) << 5);
+				e->x = e->linkedEntity->x + (sintab32[(e->timer & 0x7F) * 8] * 16);
+				e->y = e->linkedEntity->y + (sintab32[((e->timer+0x20) & 0x7F) * 8] * 16);
 			}
 		}
 		break;
@@ -970,15 +968,17 @@ void ai_buyobuyo_base(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			// ceiling has different bounding box and action point
-			//if (e->dir == 1)
-			//	e->sprite = SPR_BUYOBUYO_BASE_CEILING;
+			// pixel does some weird stuff with the hitboxes, normalize them
+			e->hit_box = (bounding_box) { 12, 12, 12, 12 };
+			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			// OPTION2 means we are on the ceiling
 			if(e->eflags & NPC_OPTION2) {
-				e->dir = 1;
-				e->x -= 16 << CSF;
+				
+			} else {
+				
 			}
-			e->state = 1;
 			e->timer = TIME(10);
+			e->state = 1;
 		}
 		/* no break */
 		case 1:
@@ -998,10 +998,9 @@ void ai_buyobuyo_base(Entity *e) {
 		case 2:
 		{
 			if (++e->timer > TIME(10)) {
-				//Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, 0);
-				//buyo->dir = e->dir;
-				//buyo->x = e->x;
-				//buyo->y = e->y;
+				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, e->eflags & NPC_OPTION2);
+				buyo->x = e->x;
+				buyo->y = e->y;
 				
 				sound_play(SND_EM_FIRE, 5);
 				CURLY_TARGET_HERE(e);
@@ -1022,14 +1021,15 @@ void ai_buyobuyo_base(Entity *e) {
 }
 
 void ai_buyobuyo(Entity *e) {
-	u8 deleteme = FALSE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+	ANIMATE(e, 8, 0,1);
+	
 	switch(e->state) {
 		case 0:
 		{
 			// shoot up down at player...
-			e->y_speed = e->dir ? SPEED(0x600) : -SPEED(0x600);
+			e->y_speed = (e->eflags & NPC_OPTION2) ? SPEED(0x600) : -SPEED(0x600);
 			e->state = 1;
 			e->timer = 0;
 		}
@@ -1048,7 +1048,6 @@ void ai_buyobuyo(Entity *e) {
 			// this slight "minimum fly time" keeps the underwater ones from
 			// smacking into the floor if the player is underwater with them
 			if (++e->timer > 3) {
-				FACE_PLAYER(e);
 				e->x_mark = e->x;
 				e->y_mark = e->y;
 				
@@ -1069,23 +1068,21 @@ void ai_buyobuyo(Entity *e) {
 			LIMIT_Y(SPEED(0x400));
 			
 			// move the point we are bobbling around
-			e->x_mark += e->dir ? SPEED(1 << 9) : SPEED(-(1 << 9));
+			e->x_mark += e->dir ? SPEED(0x200) : -SPEED(0x200);
 			
-			if (++e->timer > TIME(300)) deleteme = TRUE;
+			if (++e->timer > TIME(300)) {
+				e->state = STATE_DELETE;
+				return;
+			}
 		}
 		break;
 	}
-	if ((e->x_speed < 0 && collide_stage_leftwall(e)) ||
-		(e->x_speed > 0 && collide_stage_rightwall(e)) ||
-		(e->y_speed < 0 && collide_stage_ceiling(e)) ||
-		(e->y_speed > 0 && collide_stage_floor(e))) {
-		deleteme = TRUE;
-	}
-	if (deleteme) {
-		//effect(e->CenterX(), e->CenterY(), EFFECT_STARPOOF);
+	// Quicker collision
+	if (blk(e->x, 0, e->y, 0) == 0x41) {
 		e->state = STATE_DELETE;
 		return;
 	}
+	
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
