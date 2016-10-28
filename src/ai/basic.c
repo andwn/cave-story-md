@@ -122,9 +122,11 @@ void ai_genericproj(Entity *e) {
 	Bullet *b = bullet_colliding(e);
 	if(b) {
 		b->ttl = 0;
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	} else if(++e->timer > TIME(250) ||
-		stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
+			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	} else {
 		e->x += e->x_speed;

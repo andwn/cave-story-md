@@ -92,6 +92,13 @@ void ai_pignon(Entity *e) {
 	e->y = e->y_next;
 }
 
+// Pignon does not drop power ups
+void ondeath_pignon(Entity *e) {
+	sound_play(e->deathSound, 5);
+	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	e->state = STATE_DELETE;
+}
+
 void onspawn_gkeeper(Entity *e) {
 	e->nflags &= ~NPC_INVINCIBLE;
 	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;

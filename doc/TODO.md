@@ -28,8 +28,11 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Consolidate "nflags" and "eflags" into one "flags"
   - I believe my walking acceleration is too fast?
   - The camera following logic is also pretty inaccurate
+  - Skullstep and Skullhead carried by Crows
+  - "Clipping" effect for when characters teleport
+  - Screen flash when bosses die
 
-- Major Boss Status
+- Beatable Major Bosses
   - [x] Balfrog
   - [x] Omega
   - [x] Monster X
@@ -49,8 +52,8 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - [x] Waterway
   - [x] Egg Corridor?
   - [x] Outer Wall
-  - [ ] Plantation
-  - [ ] Last Cave
+  - [x] Plantation
+  - [x] Last Cave
   - [ ] Balcony
   - [ ] Sacred Ground
   

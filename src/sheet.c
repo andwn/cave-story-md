@@ -316,6 +316,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_GUNFSHOT, &SPR_BubRed, 2,1,1, 0,0, 0,1);
 			SHEET_ADD(SHEET_PRESS, &SPR_PressH, 3,3,2, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_STUMPY, &SPR_Stumpy, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_DROP, &SPR_Drop, 1,1,1, 0,0);
 		} break;
 		case 0x3F: // Last Cave
 		case 0x43:

@@ -78,7 +78,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Bubble, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bubble, &ai_null }, // Misery's Bubble
 	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_float, &ai_null }, // Misery
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogRunning, &ondeath_balrogRunning },
-	{ NULL, SHEET_PIGNON, 	PAL1, 1, &ai_null, &ai_pignon, &ondeath_default }, // Pignon
+	{ NULL, SHEET_PIGNON, 	PAL1, 1, &ai_null, &ai_pignon, &ondeath_pignon }, // Pignon
 	{ &SPR_Sparkle,NOSHEET, PAL1, 1, &ai_null, &ai_sparkle, &ai_null }, // Sparkle
 	{ &SPR_Fish, NOSHEET, 	PAL0, 1, &ai_null, &ai_chinfish, &ondeath_default }, // Chinfish
 	{ &SPR_Sprinkler,NOSHEET,PAL1,1, &ai_null, &ai_sprinkler, &ai_null }, // Sprinkler

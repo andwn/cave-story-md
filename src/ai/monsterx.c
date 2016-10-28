@@ -56,6 +56,10 @@
 #define alt_sheet			jump_time
 #define fish_timer			id
 
+// For fish missile only
+#define want_angle	x_mark
+#define cur_angle	y_mark
+
 enum Pieces {
 	TREADUL, TREADUR, TREADLL, TREADLR,
 	TARGET1, TARGET2, TARGET3, TARGET4,
@@ -76,12 +80,18 @@ static u8 all_targets_destroyed() {
 
 static void spawn_fish(u8 index) {
 	// keep appropriate position relative to main object
-	//                               UL          UR         LL         LR
-	static const int xoffs[]   = { -64 <<CSF,  76 <<CSF, -64 <<CSF,  76 <<CSF };
-	static const int yoffs[]   = {  27 <<CSF,  27 <<CSF, -16 <<CSF, -16 <<CSF };
-	FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
-					 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
-					 0x80 + index * 0x100, 0x200);
+	//                               UL          UR          LL          LR
+	static const s32 xoffs[]   = { -(64<<CSF),  (76<<CSF), -(64<<CSF),  (76<<CSF) };
+	static const s32 yoffs[]   = {  (27<<CSF),  (27<<CSF), -(16<<CSF), -(16<<CSF) };
+	static const u16 angles[]  = {  0x280, 0x180, 0x380, 0x80 };
+	// Create manually because cur_angle needs to be set
+	// Then let the missile itself deal with setting speeds with sin/cos
+	Entity *fish = entity_create(bossEntity->x + xoffs[index], bossEntity->y + yoffs[index],
+								 OBJ_X_FISHY_MISSILE, 0);
+	fish->cur_angle = angles[index];
+	//FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
+	//				 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
+	//				 0x80 + index * 0x100, SPEED(0x400));
 	sound_play(SND_EM_FIRE, 3);
 }
 
@@ -302,7 +312,9 @@ void ai_monsterx(Entity *e) {
 				e->timer = 0;
 			} else if(e->timer > TIME(50) && e->timer % TIME(50) == 1) {
 				// Recycling useless underwater var to cycle fish index
-				spawn_fish(e->underwater++ % 4);
+				if(e->underwater > 3) e->underwater = 0;
+				spawn_fish(e->underwater);
+				e->underwater++;
 			}
 		}
 		break;
@@ -532,10 +544,10 @@ void ai_x_tread(Entity *e) {
 
 void ai_x_internals(Entity *e) {
 	e->x = bossEntity->x;
-	e->y = bossEntity->y;
+	e->y = bossEntity->y + 0x800;
 	
 	// eye open during fight
-	e->frame = (bossEntity->state < 10) ? 1 : 0;
+	e->frame = (bossEntity->state < 10) ? 0 : 1;
 	
 	// link damage to main object
 	if (e->health < 1000) {
@@ -657,9 +669,6 @@ void ondeath_x_target(Entity *e) {
 	e->eflags &= ~NPC_SHOOTABLE;
 	e->hidden = TRUE;
 }
-
-#define want_angle	x_mark
-#define cur_angle	y_mark
 
 void ai_x_fishy_missile(Entity *e) {
 	if(e->timer & 1) {

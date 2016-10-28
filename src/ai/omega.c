@@ -55,8 +55,8 @@ enum Pieces {
 void onspawn_omega(Entity *e) {
 	// Trying something
 	entities_clear_by_type(OBJ_BEETLE_BROWN);
-	entities_clear_by_type(OBJ_SANDCROC);
-	entities_clear_by_type(OBJ_POLISH);
+	//entities_clear_by_type(OBJ_SANDCROC);
+	//entities_clear_by_type(OBJ_POLISH);
 	
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;
