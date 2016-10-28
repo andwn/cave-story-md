@@ -30,6 +30,7 @@ void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
 void stage_draw_screen();
 void stage_draw_background();
 void stage_draw_moonback();
+void stage_draw_waterback();
 
 void stage_load(u16 id) {
 	u8 vdpEnabled = VDP_getEnable();
@@ -78,6 +79,12 @@ void stage_load(u16 id) {
 			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
 			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
 			stage_draw_background();
+		} else if(stageBackgroundType == 4) { // Almond Water
+			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
+			stage_draw_waterback();
+		} else if(stageBackgroundType == 5) { // Fog
+			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
+			//stage_draw_moonback();
 		}
 	}
 	// Load stage into RAM and draw it around camera position
@@ -195,7 +202,7 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
-	} else if(stageBackgroundType == 1) {
+	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
 		s16 off[32];
 		off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
@@ -223,6 +230,8 @@ void stage_update() {
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
+	} else if(stageBackgroundType == 4) {
+		// TODO
 	} else {
 		// Only scroll foreground
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
@@ -289,6 +298,7 @@ void stage_draw_background() {
 	}
 }
 
+// Coulds fit under the Oside map (192 tile gap)
 #define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
 
 void stage_draw_moonback() {
@@ -319,4 +329,13 @@ void stage_draw_moonback() {
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 64, 1);
 	}
 	backScrollTimer = 0;
+}
+
+// Another tile gap, fits under both Almond and Cave
+#define TILE_WATERINDEX (TILE_TSINDEX + 384)
+
+void stage_draw_waterback() {
+	u16 mapBuffer[64];
+	VDP_loadTileSet(&BG_Water, TILE_WATERINDEX, TRUE);
+	// TODO - the rest of this
 }

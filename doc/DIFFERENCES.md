@@ -12,6 +12,7 @@ Cave Story's native resolution and framerate is 320x240x50. This won't be an iss
  - The message box disappears on fade out, but text is still visible. The way that works is actually that the color white in the main palette is kept white, as a result you can see the white of the HUD during fades too.
  - Where Courier New was used in the original game I am using the default 8x8 SGDK font. The font may change but it will likely still be 8x8.
  - CSMD uses a simple palette fade instead of the original effect which is very difficult to emulate on the hardware.
+ - The water "foreground" is in back of the foreground map tiles. I believe this is technically possible to fix but would add too much complication to the stage/background logic (swapping the planes they use for 2 maps only).
 
 #### Colors
  - The original game uses many off-shade colors that don't exist in a 9-bit colormap.

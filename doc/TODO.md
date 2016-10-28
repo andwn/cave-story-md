@@ -33,8 +33,6 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - [x] Balfrog
   - [x] Omega
   - [x] Monster X
-    - [ ] Fish missiles
-    - [ ] Cat
   - [x] Core
     - [ ] Projectiles
   - [x] Ironhead

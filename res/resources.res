@@ -499,17 +499,13 @@ BIN PXA_Weed	"Stage/Weed.pxa"
 TILESET BG_Arthur	"back/bkGrass.png" 2
 TILESET BG_Blue		"back/bkMimi.png" 2
 TILESET BG_Eggs		"back/bkEggs.png" 2
-TILESET BG_Grass	"back/bkGrass.png" 2
-#TILESET BG_Fall		"back/bkFall.bmp" 2
-TILESET BG_Fog		"back/bkFog.png" 2
 TILESET BG_Gard		"back/bkGard.bmp" 2
 TILESET BG_Gray		"back/bkGray.bmp" 2
-TILESET BG_Gray2	"back/bkGray2.bmp" 2
 TILESET BG_Green	"back/bkSand.png" 2
 TILESET BG_Maze		"back/bkMaze.png" 2
 TILESET BG_Maze2	"back/bkMaze.bmp" 2
-#TILESET BG_Moon		"back/bkMoon.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
+TILESET BG_Water	"back/bkWater.bmp" 2
 
 # Moon & Fog
 BIN MoonTopTiles	"back/bkMoonTop.bin"

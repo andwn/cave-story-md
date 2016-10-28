@@ -17,6 +17,10 @@ Some of them had to be crushed with a custom utility.
 #### 0x1D0 (TILE_FACEINDEX)
 36 tiles used to display a character's 6x6 face graphic in the message window.
 It is occasionally overwritten in scenarios where a face is guaranteed to never be displayed.
+For example, the item menu clobbers this:
+- 4 tiles for the cursor
+- 12 tiles for shadowed numbers '0123456789-/' ("Lv." text is borrowed from the HUD)
+- 20 tiles for the weapon icons, a maximum of 5 which are 4 tiles each
 
 #### 0x1F4 (TILE_NAMEINDEX)
 16 tiles to display the current map's name in the center of the screen.
@@ -60,7 +64,7 @@ Space for 128 tiles between PLAN_B and PLAN_A.
 
 #### TILE_EXTRA2INDEX
 Space for 64 tiles between PLAN_A and the sprite list/hscroll table.
-- 16 tiles to display damage (numbers like '-127') for up to 4 objects at once
+- 16 tiles to display float text (numbers like '-127') for up to 4 objects at once
 - 28 tiles for smoke animation
 - 9 tiles for the blue window border/skin
 - 7 tiles for the AIR display (during hell, replaced by timer)
