@@ -17,7 +17,7 @@
 #define EQUIP_WHIMSICAL		0x080
 #define EQUIP_CLOCK			0x100
 
-#define MAX_ITEMS 32
+#define MAX_ITEMS 24
 
 enum BoosterState {
 	BOOST_OFF = 0,

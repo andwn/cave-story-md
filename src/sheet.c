@@ -356,7 +356,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area
 	if(init_tiloc) {
 		tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
-			TILE_SHEETINDEX + 24*6);
+			TILE_SHEETINDEX + MAX_ITEMS*6);
 	}
 }
 

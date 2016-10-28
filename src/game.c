@@ -185,7 +185,21 @@ void draw_itemmenu(u8 resetCursor) {
 	window_open(FALSE);
 	// Weapons
 	VDP_drawTextWindow("--ARMS--", 4, 3);
-	// TODO: Draw the status for all weapons the player owns under --ARMS--
+	VDP_loadTileData(TS_Numbers.tiles, TILE_FACEINDEX+4, 10, TRUE);
+	//VDP_loadTileData(SPR_TILES(&SPR_Numbers, 0, 0), TILE_SHEETINDEX+10, 10, TRUE);
+	for(u16 i = 0; i < MAX_WEAPONS; i++) {
+		Weapon *w = &playerWeapon[i];
+		if(!w->type) continue;
+		// X tile pos and VRAM index to put the ArmsImage tiles
+		u16 x = 4 + i*6;
+		u16 index = TILE_FACEINDEX + 16 + i*4;
+		VDP_loadTileData(SPR_TILES(&SPR_ArmsImage, 0, w->type), index, 4, TRUE);
+		// 4 mappings for ArmsImage icon
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   4);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+2), x+1, 4);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+1), x,   5);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+3), x+1, 5);
+	}
 	// Items
 	VDP_drawTextWindow("--ITEM--", 4, 10);
 	u8 held = 0;
@@ -243,7 +257,7 @@ u8 update_pause() {
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
 		hud_show();
-		//VDP_setWindowPos(0, 0);
+		VDP_setWindowPos(0, 0);
 		window_close();
 		return FALSE;
 	} else {
@@ -257,14 +271,6 @@ u8 update_pause() {
 			// Item was comsumed, have to adjust the icons
 			if(playerInventory[selectedItem] != overid) {
 				draw_itemmenu(FALSE);
-				//for(u8 i = selectedItem; i < MAX_ITEMS - 1; i++) {
-				//	if(playerInventory[i + 1]) {
-				//		itemSprite[i].attribut = itemSprite[i + 1].attribut;
-				//	} else {
-				//		itemSprite[i].y = 0;
-				//		break;
-				//	}
-				//}
 			}
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);
