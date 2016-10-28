@@ -274,6 +274,9 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		} break;
 		case 0x2F: // Core
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
+			SHEET_ADD(SHEET_CORES1, &SPR_CoreShot1, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_CORES3, &SPR_CoreShot3, 3,1,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
 				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
@@ -282,7 +285,6 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
-			// Small projectile
 			// Wisp projectile
 		} break;
 		case 0x30: // Waterway

@@ -35,7 +35,7 @@
 	} else {                                                                                   \
 		                                                                                       \
 	}                                                                                          \
-	if(!e->mouth_open) {                                                                       \
+	if(!pieces[CFRONT]->mouth_open) {                                                          \
 		pieces[CFRONT]->frame = 1;                                                             \
 		pieces[CFRONT]->mouth_open = TRUE;                                                     \
 	}                                                                                          \
@@ -43,7 +43,7 @@
 
 // makes the core close his mouth
 #define CLOSE_MOUTH ({                                                                         \
-	if(e->mouth_open) {                                                                        \
+	if(pieces[CFRONT]->mouth_open) {                                                           \
 		pieces[CFRONT]->frame = 0;                                                             \
 		pieces[CFRONT]->mouth_open = FALSE;                                                    \
 	}                                                                                          \
@@ -206,9 +206,9 @@ void ai_core(Entity *e) {
 			// spawn ghosties
 			if (e->timer < TIME(200)) {
 				if ((e->timer % TIME(20))==0) {
-					//CreateEntity(e->x + (random(-48, -16) << CSF),
-					//	     	 e->y + (random(-64, 64) << CSF),
-					//		 	 OBJ_CORE_GHOSTIE);
+					entity_create(e->x + ((-48 + (random() + 64)) << CSF),
+						     	  e->y + ((-64 + (random() % 128)) << CSF),
+							 	  OBJ_CORE_GHOSTIE, 0);
 				}
 			}
 			
@@ -241,7 +241,9 @@ void ai_core(Entity *e) {
 			
 			// spawn the big white blasts
 			if (e->timer==TIME(300) || e->timer==TIME(350) || e->timer==TIME(400)) {
-				//EmFireAngledShot(pieces[CFRONT], OBJ_CORE_BLAST, 0, 3<<CSF);
+				Entity *shot = entity_create(pieces[CFRONT]->x, pieces[CFRONT]->y,
+											 OBJ_CORE_BLAST, 0);
+				THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x600));
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 			}
 			
@@ -265,20 +267,22 @@ void ai_core(Entity *e) {
 			CLOSE_MOUTH;
 			
 			camera_shake(20);
-			//SmokeXY(pieces[CBACK]->x, pieces[CBACK]->CenterY(), 20, 128, 64);
+			effect_create_smoke((e->x >> CSF) - 80 + (random() % 160), 
+								(e->y >> CSF) - 64 + (random() % 128));
 			
 			// tell all the MC's to retreat
-			//for(i=0;i<5;i++) {
-			//	pieces[i]->flags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
-			//	pieces[i]->state = MC_RETREAT;
-			//}
+			for(u8 i = 0; i < 5; i++) {
+				pieces[i]->eflags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
+				pieces[i]->state = MC_RETREAT;
+			}
 		}
 		/* no break */
 		case 501:
 		{
 			e->timer++;
-			if ((e->timer & 0x0f) != 0) {
-				//SmokeXY(pieces[CBACK]->x, pieces[CBACK]->CenterY(), 1, 64, 32);
+			if ((e->timer & 15) == 1) {
+				effect_create_smoke((e->x >> CSF) - 80 + (random() % 160), 
+									(e->y >> CSF) - 64 + (random() % 128));
 			}
 			
 			if (e->timer & 2)
@@ -311,8 +315,8 @@ void ai_core(Entity *e) {
 			//pieces[CBACK]->clipy2 = e->timer;
 			
 			if (--e->timer == 0) {
-				//pieces[CFRONT]->invisible = TRUE;
-				//pieces[CBACK]->invisible = TRUE;
+				pieces[CFRONT]->hidden = TRUE;
+				pieces[CBACK]->hidden = TRUE;
 				
 				// restore status bars
 				//game.stageboss.object = NULL;
@@ -327,7 +331,7 @@ void ai_core(Entity *e) {
 	
 	if (do_thrust) {
 		// tell all the minicores to jump to a new position
-		for(u8 i=0;i<5;i++) {
+		for(u8 i = 0; i < 5; i++) {
 			pieces[i]->state = MC_THRUST;
 		}
 		
@@ -460,6 +464,9 @@ void ai_minicore(Entity *e) {
 				e->frame = 0;
 			} else if (e->timer==1 || e->timer==3) {
 				// fire at player at speed (2<<CSF) with 2 degrees of variance
+				Entity *shot = entity_create(e->x - 0x1000, e->y,
+											 OBJ_MINICORE_SHOT, 0);
+				THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x400));
 				//EmFireAngledShot(o, OBJ_MINICORE_SHOT, 2, 2<<CSF);
 				sound_play(SND_EM_FIRE, 5);
 			}
@@ -525,10 +532,10 @@ void ai_minicore(Entity *e) {
 	e->health = 1000;
 	
 	// invincible when mouth is closed
-	//if (e->frame != 2)
-	//	e->flags &= ~FLAG_INVULNERABLE;
-	//else
-	//	e->flags |= FLAG_INVULNERABLE;
+	if (pieces[CFRONT]->mouth_open)
+		e->eflags &= ~NPC_INVINCIBLE;
+	else
+		e->eflags |= NPC_INVINCIBLE;
 }
 
 void ai_minicore_shot(Entity *e) {
@@ -539,19 +546,21 @@ void ai_minicore_shot(Entity *e) {
 		e->state = STATE_DELETE;
 	}
 }
-// shutter made noise when opening
-// curly looks up at no 4
 
 void ai_core_ghostie(Entity *e) {
-	char hit = 0;
+	//char hit = 0;
 
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 
-	if (e->x_speed > 0 && collide_stage_rightwall(e)) hit = 1;
-	if (e->x_speed < 0 && collide_stage_leftwall(e)) hit = 1;
-	if (e->y_speed > 0 && collide_stage_floor(e)) hit = 1;
-	if (e->y_speed < 0 && collide_stage_ceiling(e)) hit = 1;
+	//if (e->x_speed > 0 && collide_stage_rightwall(e)) hit = 1;
+	//if (e->x_speed < 0 && collide_stage_leftwall(e)) hit = 1;
+	//if (e->y_speed > 0 && collide_stage_floor(e)) hit = 1;
+	//if (e->y_speed < 0 && collide_stage_ceiling(e)) hit = 1;
+	if(blk(e->x, 0, e->y, 0) == 0x41) {
+		e->state = STATE_DELETE;
+		return;
+	}
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -559,10 +568,10 @@ void ai_core_ghostie(Entity *e) {
 	e->x_speed -= SPEED(0x20);
 	LIMIT_X(SPEED(0x400));
 	
-	if(hit) {
+	//if(hit) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
-		e->state = STATE_DELETE;
-	}
+	//	e->state = STATE_DELETE;
+	//}
 }
 
 void ai_core_blast(Entity *e) {
