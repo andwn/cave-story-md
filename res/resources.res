@@ -14,6 +14,7 @@ PALETTE PAL_Jenka		"sprite/jenka.png" 3
 PALETTE PAL_Dark		"sprite/dark.png" 3
 PALETTE PAL_X			"back/bkMaze.png" 3
 PALETTE PAL_XB			"back/bkMaze.bmp" 3
+PALETTE PAL_LabB		"back/bkMimiRegu.png" 3
 PALETTE PAL_Boulder		"sprite/boulder.png" 3
 PALETTE PAL_MazeM		"back/bkRed.bmp" 3
 PALETTE PAL_Eggs2		"sprite/babydragon.png" 3
@@ -500,12 +501,13 @@ TILESET BG_Arthur	"back/bkGrass.png" 2
 TILESET BG_Blue		"back/bkMimi.png" 2
 TILESET BG_Eggs		"back/bkEggs.png" 2
 TILESET BG_Gard		"back/bkGard.bmp" 2
-TILESET BG_Gray		"back/bkGray.bmp" 2
+TILESET BG_Gray		"back/bkGrayRegu.png" 2
 TILESET BG_Green	"back/bkSand.png" 2
 TILESET BG_Maze		"back/bkMaze.png" 2
 TILESET BG_Maze2	"back/bkMaze.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
 TILESET BG_Water	"back/bkWater.bmp" 2
+TILESET BG_LabB		"back/bkMimiRegu.png" 2
 
 # Moon & Fog
 BIN MoonTopTiles	"back/bkMoonTop.bin"

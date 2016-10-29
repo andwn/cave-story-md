@@ -81,6 +81,7 @@ void stage_load(u16 id) {
 			stage_draw_background();
 		} else if(stageBackgroundType == 4) { // Almond Water
 			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
+			VDP_clearPlan(PLAN_B, TRUE);
 			stage_draw_waterback();
 		} else if(stageBackgroundType == 5) { // Fog
 			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -95,6 +96,8 @@ void stage_load(u16 id) {
 	stage_load_entities();
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
+	} else if(stageBackgroundType == 4) {
+		backScrollTable[0] = SCREEN_HEIGHT + 24;
 	}
 	tsc_load_stage(id);
 	//hud_create();
@@ -192,6 +195,9 @@ void stage_replace_block(u16 bx, u16 by, u8 index) {
 	stage_draw_area(bx, by, 1, 1);
 }
 
+// Another tile gap, fits under both Almond and Cave
+#define TILE_WATERINDEX (TILE_TSINDEX + 384)
+
 // Stage vblank drawing routine
 void stage_update() {
 	SYS_disableInts();
@@ -231,7 +237,50 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
-		// TODO
+		s16 scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
+		s16 row = scroll;
+		//if(row < 0) {
+		//	row = 0;
+		//} else if(row > SCREEN_HEIGHT + 32) {
+		//	row = SCREEN_HEIGHT + 32;
+		//}
+		row /= 8;
+		s16 oldrow = backScrollTable[0] / 8;
+		u16 baddr = VDP_getBPlanAddress();
+		while(row > oldrow) {
+			if(scroll > -24) {
+				u16 mapBuffer[64] = {};
+				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (31-(oldrow&31))*(64*2), 64, 2);
+			} else {
+				u16 mapBuffer[64];
+				for(u16 x = 0; x < 64; x++) {
+					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
+							TILE_WATERINDEX + (oldrow == 31 ? 0 : (2+(random()%4))*4) + (x%4));
+				}
+				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (31-(oldrow&31))*(64*2), 64, 2);
+			}
+			oldrow++;
+		}
+		while(row < oldrow) {
+			if(scroll < SCREEN_HEIGHT + 24) {
+				u16 mapBuffer[64];
+				for(u16 x = 0; x < 64; x++) {
+					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
+							TILE_WATERINDEX + (oldrow == 31 ? 0 : (2+random()%4)*4) + (x%4));
+				}
+				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (31-(oldrow&31))*(64*2), 64, 2);
+			} else {
+				u16 mapBuffer[64] = {};
+				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (31-(oldrow&31))*(64*2), 64, 2);
+			}
+			oldrow--;
+		}
+		
+		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setVerticalScroll(PLAN_B, -scroll);
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		backScrollTable[0] = row * 8;
 	} else {
 		// Only scroll foreground
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
@@ -331,11 +380,16 @@ void stage_draw_moonback() {
 	backScrollTimer = 0;
 }
 
-// Another tile gap, fits under both Almond and Cave
-#define TILE_WATERINDEX (TILE_TSINDEX + 384)
-
 void stage_draw_waterback() {
-	u16 mapBuffer[64];
+	//u16 mapBuffer[64];
 	VDP_loadTileSet(&BG_Water, TILE_WATERINDEX, TRUE);
 	// TODO - the rest of this
+	
+	
+	//if(scroll >= 0) {
+	//	for(u16 x = 0; x < 64; x++) {
+	//		mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,TILE_WATERINDEX + (x%4));
+	//	}
+	//}
+	
 }

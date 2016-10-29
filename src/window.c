@@ -75,6 +75,8 @@ void window_open(u8 mode) {
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
 		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
 	
+	SYS_disableInts();
+	
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
 	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, wy1);
@@ -97,6 +99,9 @@ void window_open(u8 mode) {
 		}
 		VDP_setWindowPos(0, mode ? 8 : 244);
 	} else showingFace = 0;
+	
+	SYS_enableInts();
+	
 	windowOpen = TRUE;
 }
 
@@ -105,6 +110,7 @@ u8 window_is_open() {
 }
 
 void window_clear() {
+	SYS_disableInts();
 	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
 		for(u8 x = x1; x <= TEXT_X2; x++) {
@@ -112,6 +118,7 @@ void window_clear() {
 		}
 	}
 	window_clear_text();
+	SYS_enableInts();
 	textMode = TM_NORMAL;
 }
 
@@ -144,12 +151,14 @@ void window_set_face(u16 face, u8 open) {
 	if(face > 0) {
 		window_draw_face();
 	} else {
+		SYS_disableInts();
 		// Hack to clear face only
 		for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
 			for(u8 x = TEXT_X1; x <= TEXT_X1_FACE; x++) {
 				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
 			}
 		}
+		SYS_enableInts();
 	}
 }
 
@@ -191,6 +200,7 @@ void window_draw_char(u8 c) {
 }
 
 void window_scroll_text() {
+	SYS_disableInts();
 	// Push bottom 2 rows to top
 	for(u8 row = 0; row < 2; row++) {
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
@@ -211,6 +221,7 @@ void window_scroll_text() {
 				TILE_FONTINDEX), msgTextX, msgTextY);
 		msgTextX++;
 	}
+	SYS_enableInts();
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;

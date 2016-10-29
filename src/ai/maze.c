@@ -973,9 +973,9 @@ void ai_buyobuyo_base(Entity *e) {
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
 			// OPTION2 means we are on the ceiling
 			if(e->eflags & NPC_OPTION2) {
-				
+				e->x -= 0x1000;
 			} else {
-				
+				e->x += 0x1000;
 			}
 			e->timer = TIME(10);
 			e->state = 1;
@@ -984,8 +984,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 1:
 		{
 			if (PLAYER_DIST_X(0x14000)) {
-				if ((!e->dir && PLAYER_DIST_Y2(0x14000, 0x2000)) ||
-					(e->dir && PLAYER_DIST_Y2(0x2000, 0x14000))) {
+				if ((!(e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(0x14000, 0x2000)) ||
+					((e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(0x2000, 0x14000))) {
 					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;

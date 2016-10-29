@@ -55,7 +55,7 @@ void ai_ironhead(Entity *e) {
 				e->timer = 0;
 				e->state = IRONH_SWIM;
 			}
-			if (!(e->timer & 3)) {
+			if (!(e->timer & 7)) {
 				entity_create(((15 + (random() % 3)) * 16) << CSF,
 						  	((ARENA_TOP + (random() % (ARENA_BOTTOM-ARENA_TOP))) * 16) << CSF,
 						  	OBJ_IRONH_FISHY, 0);
@@ -210,7 +210,6 @@ void ai_ironh_fishy(Entity *e) {
 		case 20:			// puffer fish
 		{
 			ANIMATE(e, 8, 2,3);
-			if (e->x < (48<<CSF)) e->state = STATE_DELETE;
 		}
 		break;
 	}
@@ -220,6 +219,9 @@ void ai_ironh_fishy(Entity *e) {
 	e->x_speed -= SPEED(0x0c);
 	e->x = e->x_next;
 	e->y = e->y_next;
+	
+	if (e->x_speed < 0 && e->x < camera.x - (SCREEN_HALF_W << CSF)) 
+			e->state = STATE_DELETE;
 }
 
 void ai_ironh_shot(Entity *e) {
@@ -249,7 +251,7 @@ void ai_ironh_shot(Entity *e) {
 void ai_brick_spawner(Entity *e) {
 	if (!e->state) {
 		e->state = 1;
-		e->timer = random() % TIME(200);
+		e->timer = TIME(25) + (random() % TIME(150));
 	}
 	
 	if (!e->timer) {	// time to spawn a block

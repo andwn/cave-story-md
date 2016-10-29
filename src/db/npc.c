@@ -194,8 +194,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	/* 0x0B0 (176) */
 	{ NULL,		SHEET_BUYOB, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
 	{ NULL, 	SHEET_BUYO, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
-	{ NULL, SHEET_CORES1,	PAL2, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
-	{ NULL, SHEET_CORES3,	PAL2, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
+	{ NULL, SHEET_CORES1,	PAL0, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
+	{ NULL, SHEET_CORES3,	PAL0, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)
 	{ NULL, SHEET_CGUN, 	 PAL0, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
@@ -205,7 +205,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_CoreLift,NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Lift Block
 	{ &SPR_FuzzCore,NOSHEET, PAL2, 1, &ai_null, &ai_fuzz_core, &ondeath_default }, // Fuzz Core
 	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, &onspawn_persistent, &ai_fuzz, &ondeath_default }, // Fuzz
-	{ NULL, SHEET_CORES4,	PAL2, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
+	{ NULL, SHEET_CORES4,	PAL0, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
 	/* 0x0C0 (192) */
@@ -215,7 +215,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_GrateMouth,NOSHEET,PAL2,1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Motion Wall
 	{ NULL, SHEET_BLOWFISH,  PAL3, 1, &onspawn_persistent, &ai_ironh_fishy, &ondeath_default }, // Porcupine Fish
-	{ &SPR_ManShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ironh_shot, &ai_null }, // Ironhead Projectile
+	{ &SPR_ManShot, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_ironh_shot, &ai_null }, // Ironhead Projectile
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Underwater Current
 	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &ai_null, &ai_dragon_zombie, &ai_null }, // Dragon Zombie
 	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &onspawn_deaddragon, &ai_null, &ai_null }, // Dragon Zombie (Dead)
