@@ -973,9 +973,9 @@ void ai_buyobuyo_base(Entity *e) {
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
 			// OPTION2 means we are on the ceiling
 			if(e->eflags & NPC_OPTION2) {
-				e->x -= 0x1000;
+				e->x -= 0x2000;
 			} else {
-				e->x += 0x1000;
+				e->x += 0x2000;
 			}
 			e->timer = TIME(10);
 			e->state = 1;
@@ -1021,6 +1021,7 @@ void ai_buyobuyo_base(Entity *e) {
 }
 
 void ai_buyobuyo(Entity *e) {
+	e->nflags ^= NPC_SHOOTABLE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	ANIMATE(e, 8, 0,1);
@@ -1047,7 +1048,7 @@ void ai_buyobuyo(Entity *e) {
 		{
 			// this slight "minimum fly time" keeps the underwater ones from
 			// smacking into the floor if the player is underwater with them
-			if (++e->timer > 3) {
+			if (++e->timer > 4) {
 				e->x_mark = e->x;
 				e->y_mark = e->y;
 				

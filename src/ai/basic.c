@@ -88,6 +88,9 @@ void ai_grav(Entity *e) {
 	e->y = e->y_next;
 }
 
+// Triggers will activate on player's collision
+// OPTION2 off: horizontal, on: vertical
+// OPTION1 means to ignore solid blocks when expanding
 void ai_trigger(Entity *e) {
 	if(tscState) return;
 	if(!e->state) {
@@ -95,19 +98,31 @@ void ai_trigger(Entity *e) {
 		e->state = 1;
 		if(e->eflags&NPC_OPTION2) { // Vertical
 			e->hit_box.left = 2; e->hit_box.right = 2;
-			for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
-				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
-			}
-			for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
-				if(stage_get_block_type((e->x>>CSF)/16, ((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
+			if(e->eflags & NPC_OPTION1) {
+				e->hit_box.top = e->hit_box.bottom = 64;
+			} else {
+				for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
+					if(stage_get_block_type((e->x>>CSF)/16, 
+							((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
+				}
+				for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
+					if(stage_get_block_type((e->x>>CSF)/16, 
+							((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
+				}
 			}
 		} else { // Horizontal
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
-			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
-				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, (e->y>>CSF)/16) == 0x41) break;
-			}
-			for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
-				if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, (e->y>>CSF)/16) == 0x41) break;
+			if(e->eflags & NPC_OPTION1) {
+				e->hit_box.left = e->hit_box.right = 64;
+			} else {
+				for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
+					if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, 
+							(e->y>>CSF)/16) == 0x41) break;
+				}
+				for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
+					if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, 
+							(e->y>>CSF)/16) == 0x41) break;
+				}
 			}
 		}
 	}

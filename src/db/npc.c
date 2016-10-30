@@ -11,7 +11,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
-	{ NULL, SHEET_BEETLE, 	PAL3, 1, &ai_null, &ai_beetle, &ondeath_default }, // Beetle
+	{ NULL, SHEET_BEETLE, 	PAL3, 1, &onspawn_op2flip, &ai_beetle, &ondeath_default }, // Beetle
 	{ NULL, SHEET_BASIL, 	PAL1, 1, &onspawn_basil, &ai_basil, &ai_null }, // Basil
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default },
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_drop_in, &ai_null }, // Balrog

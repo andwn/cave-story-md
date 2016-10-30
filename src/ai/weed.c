@@ -78,8 +78,9 @@ void ai_jelly(Entity *e) {
 			(e->x_speed < 0 && (blk(e->x, -8, e->y, 0) == 0x41))) {
 		e->x_speed = 0;
 	}
-	if(e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = SPEED(0x100);
-	if(e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = SPEED(-0x200);
+	// & 0x41 will include the 0x43 (breakable)
+	if(e->y_speed < 0 && (blk(e->x, 0, e->y, -8) & 0x41) == 0x41) e->y_speed = SPEED(0x100);
+	if(e->y_speed > 0 && (blk(e->x, 0, e->y, 8) & 0x41) == 0x41) e->y_speed = SPEED(-0x200);
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

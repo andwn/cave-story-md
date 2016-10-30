@@ -72,21 +72,30 @@ void ai_behemoth(Entity *e) {
 
 void ai_beetle(Entity *e) {
 	switch(e->state) {
-		case 0: // Initial state - wait for player on the wall
+		case 0: // Initial state - begin at the wall we are facing
+		{
+			while(blk(e->x, e->dir ? 9 : -9, e->y, 0) != 0x41) {
+				e->x += e->dir ? 0x1000 : -0x1000;
+			}
+			e->alwaysActive = FALSE;
+			e->state++;
+		}
+		case 1: // wait for player on the wall
 		{
 			if(++e->timer > TIME(50) && PLAYER_DIST_Y(16 << CSF)) {
 				TURN_AROUND(e);
 				MOVE_X(SPEED(0x200));
-				e->state = 1;
+				e->state = 2;
 			}
 		}
 		break;
-		case 1: // moving left or right
+		case 2: // moving left or right
 		{
+			ANIMATE(e, 4, 1,0);
 			e->x += e->x_speed;
-			e->frame ^= 1;
 			if(blk(e->x, e->dir ? 8 : -8, e->y, 0) == 0x41) {
-				e->state = 0;
+				e->state = 1;
+				e->frame = 0;
 				e->timer = 0;
 				e->x_speed = 0;
 			}
@@ -126,18 +135,16 @@ void ai_basu(Entity *e) {
 	LIMIT_X(SPEED(0x2FF));
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	if(e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = 0x200;
-	if(e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -0x200;
+	if(e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
+	if(e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -SPEED(0x200);
 	e->x = e->x_next;
 	e->y = e->y_next;
 	// Fire projectile
 	if (!(e->timer % TIME(158))) {
 		if (PLAYER_DIST_X(0x14000)) {
 			sound_play(SND_EM_FIRE, 5);
-			//FIRE_ANGLED_SHOT(OBJ_GIANT_BEETLE_SHOT, e->x, e->y, 
-			//		e->dir ? A_RIGHT-4 : A_LEFT+4, 0x400);
 			Entity *shot = entity_create(e->x, e->y, OBJ_GIANT_BEETLE_SHOT, 0);
-			THROW_AT_TARGET(shot, player.x, player.y, 0x200);
+			THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x300));
 		}
 	}
 }
