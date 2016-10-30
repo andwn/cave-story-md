@@ -131,6 +131,8 @@ SPRITE SPR_Sword		"sprite/kingsword.png"	2 2 0 0 NONE
 SPRITE SPR_Drop			"sprite/drop.png"		1 1 0 0 NONE
 SPRITE SPR_RedFl2		"sprite/redflowers2.png" 4 2 0 0 NONE
 SPRITE SPR_Hoppy		"sprite/jumpthing.png" 2 2 0 0 NONE
+SPRITE SPR_Robot3		"sprite/surfacerobot.png" 2 2 0 0 NONE
+SPRITE SPR_Grate		"sprite/grate.png"		2 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE

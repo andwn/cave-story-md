@@ -110,7 +110,7 @@ void camera_update() {
 		entities_update_inactive();
 		// Queue row and/or column mapping
 		if(morphingColumn) {
-			s16 x = sub_to_tile(x_next) + morphingColumn * 30;
+			s16 x = sub_to_tile(x_next) + (morphingColumn == 1 ? 31 : -30);
 			s16 y = sub_to_tile(y_next) - 15 + morphingRow;
 			if(x >= 0 && x < stageWidth * 2) {
 				for(u8 i = 32; i--; ) {
@@ -129,7 +129,7 @@ void camera_update() {
 			}
 		}
 		if(morphingRow) {
-			s16 y = sub_to_tile(y_next) + morphingRow * 15;
+			s16 y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -14);
 			s16 x = sub_to_tile(x_next) - 31 + morphingColumn;
 			if(y >= 0 && y < stageHeight * 2) {
 				for(u8 i = 64; i--; ) {

@@ -74,7 +74,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Toroko, NOSHEET, PAL3, 1, &onspawn_torokoAtk, &ai_torokoAtk, &ai_null }, // Toroko
 	/* 0x040 (64) */
 	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
-	{ NULL, SHEET_BAT, 		PAL0, 1, &onspawn_batVertical, &ai_batVertical, &ondeath_default }, // Bat
+	{ NULL, SHEET_BAT, 		PAL0, 1, &ai_null, &ai_batVertical, &ondeath_default }, // Bat
 	{ &SPR_Bubble, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bubble, &ai_null }, // Misery's Bubble
 	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_float, &ai_null }, // Misery
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogRunning, &ondeath_balrogRunning },
@@ -206,7 +206,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_FuzzCore,NOSHEET, PAL2, 1, &ai_null, &ai_fuzz_core, &ondeath_default }, // Fuzz Core
 	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, &onspawn_persistent, &ai_fuzz, &ondeath_default }, // Fuzz
 	{ NULL, SHEET_CORES4,	PAL0, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
+	{ &SPR_Robot3, 	NOSHEET, PAL1, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
 	/* 0x0C0 (192) */
 	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_pushup, &ai_motorbike, &ai_null }, // Scooter
