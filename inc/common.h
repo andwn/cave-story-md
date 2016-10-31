@@ -6,12 +6,6 @@
 //#define KDEBUG
 #ifdef KDEBUG
 #include <kdebug.h>
-// Enable/disable logger for specific modules
-#define KDB_SYS		// Save data and flags
-#define KDB_TSC		// Log TSC commands as they are executed
-#define KDB_STAGE	// Stage loading
-#define KDB_AI		// AI routines
-#define KDB_SHEET	// Sprite sheets
 #define puts(x) KDebug_Alert(x)
 #define printf(...) {                                                                          \
 	char str[80];                                                                              \

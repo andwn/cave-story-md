@@ -97,7 +97,7 @@ void stage_load(u16 id) {
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
 	} else if(stageBackgroundType == 4) {
-		backScrollTable[0] = SCREEN_HEIGHT + 24;
+		backScrollTable[0] = 31;
 	}
 	tsc_load_stage(id);
 	//hud_create();
@@ -238,14 +238,8 @@ void stage_update() {
 		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
 		s16 scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
-		s16 row = scroll;
-		//if(row < 0) {
-		//	row = 0;
-		//} else if(row > SCREEN_HEIGHT + 32) {
-		//	row = SCREEN_HEIGHT + 32;
-		//}
-		row /= 8;
-		s16 oldrow = backScrollTable[0] / 8;
+		s16 row = scroll >> 3;
+		s16 oldrow = backScrollTable[0];
 		u16 baddr = VDP_getBPlanAddress();
 		while(row > oldrow) {
 			if(scroll > -24) {
@@ -280,7 +274,7 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_B, -scroll);
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		backScrollTable[0] = row * 8;
+		backScrollTable[0] = row;
 	} else {
 		// Only scroll foreground
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);

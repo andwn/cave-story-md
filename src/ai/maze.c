@@ -11,16 +11,6 @@
 #include "system.h"
 #include "sprite.h"
 
-#ifdef PAL
-#define BLOCK_SOUND_INTERVAL	10
-#define BLOCK_TRAVEL_ACCEL		0x20
-#define BLOCK_TRAVEL_SPEED		0x200
-#else
-#define BLOCK_SOUND_INTERVAL	12
-#define BLOCK_TRAVEL_ACCEL		0x1B
-#define BLOCK_TRAVEL_SPEED		0x1B0
-#endif
-
 void onspawn_block(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
@@ -57,9 +47,9 @@ void ai_blockh(Entity *e) {
 		case 30:
 		{
 			u16 dir = e->eflags & NPC_OPTION2;
-			e->x_speed += dir ? BLOCK_TRAVEL_ACCEL : -BLOCK_TRAVEL_ACCEL;
-			if(e->x_speed > BLOCK_TRAVEL_SPEED) e->x_speed = BLOCK_TRAVEL_SPEED;
-			if(e->x_speed < -BLOCK_TRAVEL_SPEED) e->x_speed = -BLOCK_TRAVEL_SPEED;
+			e->x_speed += dir ? SPEED(0x20) : -SPEED(0x20);
+			if(e->x_speed > SPEED(0x200)) e->x_speed = SPEED(0x200);
+			if(e->x_speed < -SPEED(0x200)) e->x_speed = -SPEED(0x200);
 			e->x_next = e->x + e->x_speed;
 			// hit edge
 			if((e->x_speed > 0 && stage_get_block_type(
@@ -72,7 +62,7 @@ void ai_blockh(Entity *e) {
 				e->state = dir ? 10 : 20;
 			} else {
 				e->x = e->x_next;
-				if((++e->timer % BLOCK_SOUND_INTERVAL) == 6) {
+				if((++e->timer % TIME(10)) == 6) {
 					sound_play(SND_BLOCK_MOVE, 2);
 				}
 			}
@@ -104,9 +94,9 @@ void ai_blockv(Entity *e) {
 		case 30:
 		{
 			u16 dir = e->eflags & NPC_OPTION2;
-			e->y_speed += dir ? BLOCK_TRAVEL_ACCEL : -BLOCK_TRAVEL_ACCEL;
-			if(e->y_speed > BLOCK_TRAVEL_SPEED) e->y_speed = BLOCK_TRAVEL_SPEED;
-			if(e->y_speed < -BLOCK_TRAVEL_SPEED) e->y_speed = -BLOCK_TRAVEL_SPEED;
+			e->y_speed += dir ? SPEED(0x20) : -SPEED(0x20);
+			if(e->y_speed > SPEED(0x200)) e->y_speed = SPEED(0x200);
+			if(e->y_speed < -SPEED(0x200)) e->y_speed = -SPEED(0x200);
 			e->y_next = e->y + e->y_speed;
 			// hit edge
 			if((e->y_speed > 0 && stage_get_block_type(
@@ -119,7 +109,7 @@ void ai_blockv(Entity *e) {
 				e->state = dir ? 10 : 20;
 			} else {
 				e->y = e->y_next;
-				if((++e->timer % BLOCK_SOUND_INTERVAL) == 6) {
+				if((++e->timer % TIME(10)) == 6) {
 					sound_play(SND_BLOCK_MOVE, 2);
 				}
 			}

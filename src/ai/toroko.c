@@ -10,8 +10,8 @@
 #include "effect.h"
 
 void onspawn_torokoAtk(Entity *e) {
-	e->y -= block_to_sub(1);
-	e->x_speed = 0x300; // 1.5px
+	e->y -= 16 << CSF;
+	e->x_speed = SPEED(0x400); // 1.5px
 	e->state = 3; // Running back and forth
 	e->frame = 3;
 }
@@ -23,24 +23,24 @@ void ai_torokoAtk(Entity *e) {
 		break;
 	case 3: // Run back and forth
 	case 4:
-		ANIMATE(e, 8, 3,4);
+		ANIMATE(e, 4, 3,4);
 		Bullet *b = bullet_colliding(e);
 		if(b) {
 			sound_play(e->hurtSound, 10); // Squeak
 			e->attack = 0; // Don't hurt the player anymore
 			e->eflags |= NPC_INTERACTIVE; // Enable interaction
 			e->state = 10; // Change animation to falling on ground
-			e->y_speed = -pixel_to_sub(1);
-			e->x_speed /= 2;
+			e->y_speed = -SPEED(0x200);
+			e->x_speed >>= 1;
 			e->grounded = FALSE;
 			e->frame = 5;
 			b->ttl = 0;
 		}
 		// Switch direction in specific range
 		if((e->x_speed > 0 && e->x > block_to_sub(15)) || 
-			(e->x_speed < 0 && e->x < block_to_sub(10))) {
-			e->dir = !e->dir;
-			e->x_speed = -0x300 + 0x600 * e->dir;
+			(e->x_speed < 0 && e->x < block_to_sub(11))) {
+			e->dir ^= 1;
+			e->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
 		}
 		break;
 	case 10: // Falling down
@@ -57,7 +57,7 @@ void ai_torokoAtk(Entity *e) {
 		e->dir = 0;
 		e->frame = 0;
 	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	if(!e->grounded) e->y_speed += SPEED(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

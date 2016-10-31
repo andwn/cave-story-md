@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <string.h>
 
+// Gens skips every other byte, blastem doesn't
+//#define GENS
+
 #define fskip(f, n) fseek(f, n, SEEK_CUR)
 
 const char *header_ver = "Do041220";
@@ -190,28 +193,42 @@ int read_profile_data(const char* filename) {
 }
 
 void sram_write_byte(FILE *file, unsigned char value) {
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&value, 1, 1, file);
 }
 
 void sram_write_word(FILE *file, unsigned short value) {
 	unsigned char high = value >> 8, low = value & 0xFF;
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&high, 1, 1, file);
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&low, 1, 1, file);
 }
 
 void sram_write_dword(FILE *file, unsigned int value) {
 	unsigned char byte1 = value >> 24, byte2 = (value >> 16) & 0xFF;
 	unsigned char byte3 = (value >> 8) & 0xFF, byte4 = value & 0xFF;
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&byte1, 1, 1, file);
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&byte2, 1, 1, file);
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&byte3, 1, 1, file);
+#ifdef GENS
 	fskip(file, 1);
+#endif
 	fwrite(&byte4, 1, 1, file);
 }
 
@@ -245,7 +262,11 @@ int write_sram_data(const char *filename) {
 	sram_write_byte(outfile, sec);
 	sram_write_byte(outfile, frame);
 	// Weapons
+#ifdef GENS
 	fseek(outfile, 0x20 * 2, SEEK_SET);
+#else
+	fseek(outfile, 0x20, SEEK_SET);
+#endif
 	for(int i = 0; i < 5; i++) {
 		sram_write_byte(outfile, ProfileData.weapon[i].type);
 		sram_write_byte(outfile, ProfileData.weapon[i].level);
@@ -274,7 +295,11 @@ int write_sram_data(const char *filename) {
 		sram_write_word(outfile, ProfileData.teleport[i].location);
 	}
 	// Flags
+#ifdef GENS
 	fseek(outfile, 0x100 * 2, SEEK_SET);
+#else
+	fseek(outfile, 0x100, SEEK_SET);
+#endif
 	for(int i = 0; i < 250; i++) {
 		sram_write_dword(outfile, ProfileData.flag[i]);
 	}

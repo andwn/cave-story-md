@@ -29,7 +29,7 @@ int main() {
 	puts("Hi Plum");
     SYS_disableInts();
 #ifdef PAL
-    VDP_setScreenHeight240();
+	VDP_setScreenHeight240();
 #endif
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it

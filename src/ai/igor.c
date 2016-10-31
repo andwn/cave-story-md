@@ -166,10 +166,10 @@ void ai_igor(Entity *e) {
 			if(e->timer > TIME(100)) {
 				if((e->timer % 8) == 1) {
 					sound_play(SND_BLOCK_DESTROY, 5);
-					Entity *shot = entity_create(e->x + (e->dir ? 0x200 : -0x200), e->y, 
-							OBJ_IGOR_SHOT, 0);
-					shot->x_speed = 0x4A0 * (e->dir ? 1 : -1);
-					shot->y_speed = 0x100 - (random() % 0x300);
+					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
+							e->y, OBJ_IGOR_SHOT, 0);
+					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
+					shot->y_speed = SPEED(0x180) - (random() % SPEED(0x300));
 				}
 				// fires 6 shots
 				if(e->timer > TIME(135)) e->state = STATE_STAND;
@@ -177,7 +177,7 @@ void ai_igor(Entity *e) {
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	if(!e->grounded) e->y_speed += SPEED(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

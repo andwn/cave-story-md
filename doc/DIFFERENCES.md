@@ -1,13 +1,8 @@
 ### Genesis Version Differences
 This file is where I list off the differences in this port and why.
 
-#### TV Standards
-Cave Story's native resolution and framerate is 320x240x50. This won't be an issue on PAL (once I get that to work), but on NTSC:
- - All constants (and sometimes variables) related to time and velocity need to be adjusted with a formula like `time * 60 / 50` and `speed * 50 / 60`. I have macros TIME(x) and SPEED(x) to do this for me, and the compiler will do the math.
- - This means that the physics/timings may be slightly off in a few places.
- - Many of the rooms are meant to exactly fit a 240 Y resolution. These will now scroll up/down 16 pixels to make up for the loss.
-
 #### Graphics
+ - The resolution is 320x224 on NTSC, so there will be an extra bit of scrolling.
  - I got a bit creative with the sprinkler effect to avoid lag. There are less particles and they alternate visibility.
  - The message box disappears on fade out, but text is still visible. The way that works is actually that the color white in the main palette is kept white, as a result you can see the white of the HUD during fades too.
  - Where Courier New was used in the original game I am using the default 8x8 SGDK font. The font may change but it will likely still be 8x8.

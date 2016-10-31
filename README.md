@@ -1,12 +1,10 @@
 # Cave Story MD
-![Screenshot](doc/ss01.png)
-
-[More Screenshots](doc/SCREENS.md)
+[![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
-It should work on any console or emulator (PAL is untested).
+It should work on any console or emulator.
 
 ### Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
@@ -28,13 +26,14 @@ There may be an option to configure this in the future.
 - Start - Pause / Item Menu
 
 ### Save files
-I have a few swappable SRAM files in the [save](/save) directory to jump around for tests.
-Most are named like location_ending.srm where:
+I've written an experimental tool to convert saves (one way only PC -> MD).
+Beware that SRAM formats differ between emulators.
 
-- "location" is an area or keyword to hint something more specific, such as before a boss fight
-- "ending" is the ending path good/bad (if applicable)
-
-This should go without saying, but Mega Drive SRAM and Profile.dat are completely different.
+1. `make tools`
+2. Download & extract a Profile.dat from [here](http://www.cavestory.org/download/saves.php)
+3. Example:
+   - BlastEm: `./prof2sram ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.local/share/blastem/doukutsu/save.sram`
+   - Gens: `./prof2gens ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.gens/doukutsu.srm`
 
 ### Compilation
 Assuming you are running GNU/Linux. It might also work on BSDs
@@ -65,10 +64,7 @@ The game also lags much more often when built from Windows for some reason.
 The game detected that you have no SRAM. If this is not the case, open an issue.
 
 #### I found a discrepancy with the original, what do?
-Report it, but first make sure
-
-1. You are comparing with the original freeware Cave Story, not CS+
-2. It's not in [this document](doc/DIFFERENCES.md)
+Report it, but first make sure it's not in [this document](doc/DIFFERENCES.md)
 
 #### Will there be a physical release of this?
 Probably not. This is a fan port (not endorsed by Pixel or Nicalis), 

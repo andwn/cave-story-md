@@ -9,33 +9,6 @@
 #include "resources.h"
 #include "sheet.h"
 
-#ifdef PAL
-#define BAT_FALL_ACCEL		0x20
-#define BAT_FALL_SPEED		0x5FF
-#define BAT_FALL_TIME		20
-#define BAT_WAIT_TIME		100
-#define BAT_BLINK_TIME		8
-#define BAT_BOUNCE_SPEED	0x200
-#define BAT_FLY_SPEED		0x200
-#define BAT_FLY_XACCEL		0x20
-#define BAT_FLY_YACCEL		0x10
-#else
-#define BAT_FALL_ACCEL		0x1B
-#define BAT_FALL_SPEED		0x4FF
-#define BAT_FALL_TIME		24
-#define BAT_WAIT_TIME		120
-#define BAT_BLINK_TIME		10
-#define BAT_BOUNCE_SPEED	0x1B0
-#define BAT_FLY_SPEED		0x1B0
-#define BAT_FLY_XACCEL		0x1B
-#define BAT_FLY_YACCEL		0xD
-#endif
-
-// The range is a bit too high so here is my lazy way to fix it
-void onspawn_batVertical(Entity *e) {
-	e->y += pixel_to_sub(24);
-}
-
 // Just up and down gotta go up and down
 void ai_batVertical(Entity *e) {
 	switch(e->state) {
@@ -74,7 +47,7 @@ void onspawn_batHang(Entity *e) {
 
 void ai_batHang(Entity *e) {
 	if(e->state == 0) { // Hanging and waiting
-		if(random() % BAT_WAIT_TIME == 0) {
+		if(random() % TIME(100) == 0) {
 			e->state = 1;
 			e->timer = 0;
 			e->frame = 4;
@@ -85,7 +58,7 @@ void ai_batHang(Entity *e) {
 			e->timer = 0;
 		}
 	} else if(e->state == 1) { // Blinking
-		if(++e->timer > BAT_BLINK_TIME) {
+		if(++e->timer > 8) {
 			e->state = 0;
 			e->timer = 0;
 			e->frame = 3;
@@ -97,19 +70,19 @@ void ai_batHang(Entity *e) {
 			e->frame = 5;
 		}
 	} else if(e->state == 3) { // Falling
-		e->y_speed += BAT_FALL_ACCEL;
-		if(e->y_speed > BAT_FALL_SPEED) e->y_speed = BAT_FALL_SPEED;
+		e->y_speed += SPEED(0x20);
+		if(e->y_speed > SPEED(0x5FF)) e->y_speed = SPEED(0x5FF);
 		
 		e->timer++;
 		e->x_next = e->x; // x_next needs to be set for collision to work properly
 		e->y_next = e->y + e->y_speed;
 		u8 collided = collide_stage_floor(e);
-		if(collided || (e->timer > BAT_FALL_TIME && player.y - 0x2000 < e->y)) {
+		if(collided || (e->timer > TIME(20) && player.y - 0x2000 < e->y)) {
 			e->state = 4;
 			e->timer = 0;
 			e->y_mark = e->y;
 			e->frame = 0;
-			if(collided) e->y_speed = -BAT_BOUNCE_SPEED;
+			if(collided) e->y_speed = -SPEED(0x200);
 		} else {
 			e->y = e->y_next;
 		}
@@ -118,16 +91,12 @@ void ai_batHang(Entity *e) {
 			if(++e->frame >= 3) e->frame = 0;
 			e->timer2 = 0;
 		}
-		if((e->dir && player.x < e->x) || (!e->dir && player.x > e->x)) {
-			FACE_PLAYER(e);
-		}
-		e->x_speed += (e->x > player.x) ? -BAT_FLY_XACCEL : BAT_FLY_XACCEL;
-		e->y_speed += (e->y > e->y_mark) ? -BAT_FLY_YACCEL : BAT_FLY_YACCEL;
+		FACE_PLAYER(e);
+		e->x_speed += (e->x > player.x) ? -SPEED(0x20) : SPEED(0x20);
+		e->y_speed += (e->y > e->y_mark) ? -SPEED(0x10) : SPEED(0x10);
 		// Limit speed
-		if(e->x_speed > BAT_FLY_SPEED) e->x_speed = BAT_FLY_SPEED;
-		if(e->y_speed > BAT_FLY_SPEED) e->y_speed = BAT_FLY_SPEED;
-		if(e->x_speed < -BAT_FLY_SPEED) e->x_speed = -BAT_FLY_SPEED;
-		if(e->y_speed < -BAT_FLY_SPEED) e->y_speed = -BAT_FLY_SPEED;
+		LIMIT_X(SPEED(0x200));
+		LIMIT_Y(SPEED(0x200));
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		// Bounce against floor and walls
@@ -137,7 +106,7 @@ void ai_batHang(Entity *e) {
 			collide_stage_rightwall(e);
 		}
 		if(collide_stage_floor(e)) {
-			e->y_speed = -BAT_BOUNCE_SPEED;
+			e->y_speed = -SPEED(0x200);
 		}
 		if(e->y_speed <= 0) {
 			collide_stage_ceiling(e);

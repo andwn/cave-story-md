@@ -299,7 +299,7 @@ void bullet_update_fireball(Bullet *b) {
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed < 0x200) b->y_speed = 0x200;
 	} else {
-		b->y_speed += GRAVITY;
+		b->y_speed += SPEED(0x50);
 		if(b->y_speed > 0x600) b->y_speed = 0x600;
 	}
 	// Check in front

@@ -14,16 +14,6 @@
 #include "sheet.h"
 #include "sprite.h"
 
-#ifdef PAL
-#define INVINCIBILITY_FRAMES 100
-#define AIR_TICKS 10
-#define BOOSTER_FUEL 50
-#else
-#define INVINCIBILITY_FRAMES 120
-#define AIR_TICKS 12
-#define BOOSTER_FUEL 61
-#endif
-
 VDPSprite weaponSprite;
 u8 playerWeaponCount = 0;
 
@@ -277,7 +267,7 @@ void player_update() {
 	if(!tscState) {
 		if(player.underwater && !(playerEquipment & EQUIP_AIRTANK)) {
 			if(airTick == 0) {
-				airTick = AIR_TICKS;
+				airTick = TIME(10);
 				airPercent--;
 				if(airPercent == 0) {
 					// Spoilers
@@ -338,7 +328,7 @@ void player_update() {
 	}
 	player_update_bullets();
 	if(player.grounded) {
-		playerBoosterFuel = BOOSTER_FUEL;
+		playerBoosterFuel = TIME(51);
 		player_update_interaction();
 	}
 	//player_draw();
@@ -356,35 +346,37 @@ void player_update_movement() {
 }
 
 void player_update_walk() {
-	s16 acc;
-	s16 dec;
-	s16 fric;
-	s16 max_speed = MAX_WALK_SPEED;
+	u16 acc;
+	u16 dec;
+	u16 fric;
+	u16 max_speed = SPEED(0x32C);
 	if(player.grounded) {
-		acc = WALK_ACCEL;
-		dec = WALK_ACCEL;
-		fric = FRICTION;
+		acc = SPEED(0x55);
+		dec = SPEED(0x55);
+		fric = SPEED(0x33);
 	} else {
-		acc = AIR_CONTROL;
-		dec = AIR_CONTROL;
-		fric = AIR_CONTROL;
+		acc = SPEED(0x20);
+		dec = SPEED(0x20);
+		fric = SPEED(0x20);
 	}
-	if((stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y)) & BLOCK_WATER) ||
+	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
 			(water_entity && player.y > water_entity->y)) {
 		player.underwater = TRUE;
-		acc /= 2;
-		max_speed /= 2;
-		fric /= 2;
+		acc >>= 1;
+		max_speed >>= 1;
+		fric >>= 1;
 	} else {
 		player.underwater = FALSE;
 	}
 	if(joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
 		if(player.x_speed < -max_speed) player.x_speed = min(player.x_speed + dec, -max_speed);
-	} else if(joy_down(BUTTON_RIGHT)) {
+	}
+	if(joy_down(BUTTON_RIGHT)) {
 		player.x_speed += acc;
 		if(player.x_speed > max_speed) player.x_speed = max(player.x_speed - dec, max_speed);
-	} else if(player.grounded) {
+	}
+	if(player.grounded) {
 		if(player.x_speed < fric && player.x_speed > -fric) player.x_speed = 0;
 		else if(player.x_speed < 0) player.x_speed += fric;
 		else if(player.x_speed > 0) player.x_speed -= fric;
@@ -392,15 +384,15 @@ void player_update_walk() {
 }
 
 void player_update_jump() {
-	s16 jumpSpeed = 	JUMP_SPEED;
-	s16 gravity = 		GRAVITY;
-	s16 gravityJump = 	GRAVITY_JUMP;
-	s16 maxFallSpeed = 	MAX_FALL_SPEED;
+	u16 jumpSpeed = 	SPEED(0x500);
+	u16 gravity = 		SPEED(0x50);
+	u16 gravityJump = 	SPEED(0x20);
+	u16 maxFallSpeed = 	SPEED(0x5FF);
 	if(player.underwater) {
-		jumpSpeed /= 2;
-		gravity /= 2;
-		gravityJump /= 2;
-		maxFallSpeed /= 2;
+		jumpSpeed >>= 1;
+		gravity >>= 1;
+		gravityJump >>= 1;
+		maxFallSpeed >>= 1;
 	}
 	if(player.jump_time > 0) {
 		if(joy_down(BUTTON_C)) {
@@ -414,17 +406,15 @@ void player_update_jump() {
 		if(joy_pressed(BUTTON_C)) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
-			player.jump_time = MAX_JUMP_TIME;
+			player.jump_time = TIME(5);
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
 			joy_pressed(BUTTON_C)) {
 		player_start_booster();
 	} else if(playerBoostState == BOOST_OFF) {
-		if(joy_down(BUTTON_C) && player.y_speed <= 0) {
+		if(joy_down(BUTTON_C) && (player.y_speed <= 0 || player.underwater)) {
 			player.y_speed += gravityJump;
-		//} else /* if(player.underwater) */ {
-			//player.y_speed += gravityJump /* + 0x7 */;
 		} else {
 			player.y_speed += gravity;
 		}
@@ -433,9 +423,9 @@ void player_update_jump() {
 }
 
 void player_update_float() {
-	s16 acc = 		WALK_ACCEL;
-	s16 fric = 		FRICTION;
-	s16 max_speed = MAX_WALK_SPEED;
+	u16 acc = 		SPEED(0x55);
+	u16 fric = 		SPEED(0x33);
+	u16 max_speed = SPEED(0x32C);
 	if (joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
 		if (player.x_speed < -max_speed) player.x_speed = -max_speed;
@@ -662,7 +652,7 @@ void player_update_air_display() {
 			SYS_enableInts();
 		}
 		// Calculate air percent and display the value
-		if(airTick == AIR_TICKS) draw_air_percent();
+		if(airTick == TIME(10)) draw_air_percent();
 		sprite_addq(airSprite, 2);
 	}
 }
@@ -780,7 +770,7 @@ u8 player_inflict_damage(s16 damage) {
 	}
 	player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
-	playerIFrames = INVINCIBILITY_FRAMES;
+	playerIFrames = TIME(100);
 	// Decrease weapon exp
 	if(damage > 0 && playerWeapon[currentWeapon].type != 0) {
 		Weapon *w = &playerWeapon[currentWeapon];

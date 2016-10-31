@@ -47,21 +47,6 @@ enum BBox_States {
 // between normal and jumping sprites.
 #define JUMP_SPRITE_ADJ			(pixel_to_sub(16))
 
-// Speed and time values adjusted depending on TV framerate
-#ifdef PAL
-#define FROG_GRAVITY		0x40
-#define FROG_MAX_FALL		0x5FF
-#define FROG_JUMP_SPEED		0x400
-#define FROG_BIGJUMP_SPEED	0xA00
-#define FROG_MOVE_SPEED		0x200
-#else
-#define FROG_GRAVITY		0x36
-#define FROG_MAX_FALL		0x4FF
-#define FROG_JUMP_SPEED		0x355
-#define FROG_BIGJUMP_SPEED	0x855
-#define FROG_MOVE_SPEED		0x1AA
-#endif
-
 #define bbox_damage		curly_target_time
 #define bbox_attack		curly_target_x
 #define bbox_mode		curly_target_y
@@ -116,9 +101,9 @@ void onspawn_balfrog(Entity *e) {
 }
 
 void ai_balfrog(Entity *e) {
-	if(!e->grounded) e->y_speed += FROG_GRAVITY;
+	if(!e->grounded) e->y_speed += SPEED(0x40);
 	// don't limit upwards inertia or Big Jump will fail
-	if(e->y_speed > FROG_MAX_FALL) e->y_speed = FROG_MAX_FALL;
+	if(e->y_speed > SPEED(0x5FF)) e->y_speed = SPEED(0x5FF);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -184,7 +169,7 @@ void ai_balfrog(Entity *e) {
 			sound_play(SND_FUNNY_EXPLODE, 8);
 			e->frame = 4;
 			set_jump_sprite(e, TRUE);
-			e->y_speed = -FROG_JUMP_SPEED;
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 			e->timer = 0;
 			e->state++;
@@ -198,7 +183,7 @@ void ai_balfrog(Entity *e) {
 			} else if(!e->dir && collide_stage_leftwall(e)) {
 				e->dir = !e->dir;
 			}
-			e->x_speed = e->dir ? FROG_MOVE_SPEED : -FROG_MOVE_SPEED;
+			e->x_speed = e->dir ? SPEED(0x200) : -SPEED(0x200);
 			// landed?
 			if(++e->timer > 3 && collide_stage_floor(e)) {
 				e->grounded = TRUE;
@@ -242,7 +227,7 @@ void ai_balfrog(Entity *e) {
 				e->state++;
 				e->frame = 4;
 				set_jump_sprite(e, TRUE);
-				e->y_speed = -FROG_BIGJUMP_SPEED;
+				e->y_speed = -SPEED(0xA00);
 				e->grounded = FALSE;
 			}
 		}

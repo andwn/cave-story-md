@@ -258,11 +258,7 @@ void ai_curlyBoss(Entity *e) {
 		break;
 		case CURLYB_FIRE_GUN:
 		{
-#ifdef PAL
-			if (e->timer % 4 == 0) {	// time to fire
-#else
-			if (e->timer % 5 == 0) {	// time to fire
-#endif
+			if (e->timer % TIME(5) == 0) {	// time to fire
 				// check if player is trying to jump over
 				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y) {
 					// shoot up instead

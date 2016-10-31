@@ -12,21 +12,19 @@
 void ai_pignon(Entity *e) {
 	e->timer++;
 	if(e->state < 3 && e->damage_time == 29) {
-		//FACE_PLAYER(e);
 		e->state = 3;
 		e->timer = 0;
-		e->y_speed = -0x100;
+		e->y_speed = -SPEED(0x120);
 		if(e->type == OBJ_GIANT_MUSHROOM_ENEMY)
-			e->x_speed = e->x > player.x ? -0x100 : 0x100;
+			e->x_speed = e->x > player.x ? -SPEED(0x120) : SPEED(0x120);
 		else
 			e->x_speed = 0;
-		//MOVE_X(-0x120);
 		e->frame = 4;
 	}
 	switch(e->state) {
 		case 0: // Standing
 		{
-			if(e->timer > 120 && (e->timer & 31) == 0) { 
+			if(e->timer > TIME(100) && (e->timer & 31) == 0) { 
 				// Either blink or walk in a random direction
 				u8 rnd = random() & 7;
 				if(rnd == 0) {
@@ -37,7 +35,7 @@ void ai_pignon(Entity *e) {
 					e->state = 2;
 					e->timer = 0;
 					e->dir = random() & 1;
-					e->x_speed = e->dir ? 0x100 : -0x100;
+					e->x_speed = e->dir ? SPEED(0x120) : -SPEED(0x120);
 					e->frame = 1;
 				}
 			}
@@ -55,7 +53,7 @@ void ai_pignon(Entity *e) {
 		case 2: // Walking
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			if(e->timer >= 30 && (random() & 31) == 0) {
+			if(e->timer >= TIME(25) && (random() & 31) == 0) {
 				e->state = 0;
 				e->timer = 0;
 				e->x_speed = 0;
@@ -168,7 +166,7 @@ void ai_gkeeper(Entity *e) {
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += GRAVITY_JUMP;
+	if(!e->grounded) e->y_speed += SPEED(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	// Don't test ceiling, only test sticking to ground while moving

@@ -89,7 +89,7 @@ void ai_energy(Entity *e) {
 			e->y_speed = -e->y_speed >> 1;
 			if(e->y_speed < 0x300) e->y_speed = 0x300;
 		} else {
-			e->y_speed += GRAVITY;
+			e->y_speed += SPEED(0x50);
 			//if(e->y_speed > 0x600) e->y_speed = 0x600;
 		}
 		// Check in front
