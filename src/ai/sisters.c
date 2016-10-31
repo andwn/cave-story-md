@@ -13,6 +13,7 @@
 #include "resources.h"
 #include "npc.h"
 #include "sprite.h"
+#include "vdp_ext.h"
 
 // mainstates
 #define STATE_CIRCLE_1		100		// circling right
@@ -259,7 +260,7 @@ void ai_sisters(Entity *e) {
 				if (entity_overlapping(pieces[HEAD1], pieces[HEAD2]) ||
 					entity_overlapping(pieces[HEAD1], pieces[BODY2]) ||
 					entity_overlapping(pieces[HEAD2], pieces[BODY1])) {
-					//starflash.Start(e->CenterX(), e->CenterY());
+					SCREEN_FLASH(30);
 					sound_play(SND_EXPLOSION1, 5);
 					
 					e->state = STATE_STARFLASH;

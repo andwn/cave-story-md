@@ -62,7 +62,7 @@ void ai_waterlevel(Entity *e) {
 		break;
 	}
 	e->y += e->y_speed;
-	s16 wl = sub_to_pixel(e->y - (camera.y - pixel_to_sub(SCREEN_HALF_H)));
+	//s16 wl = sub_to_pixel(e->y - (camera.y - pixel_to_sub(SCREEN_HALF_H)));
 	//if(wl >= SCREEN_HEIGHT) water_screenlevel = 254;
 	//else if(wl <= 0) water_screenlevel = 0;
 	//else water_screenlevel = wl;

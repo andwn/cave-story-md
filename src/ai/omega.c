@@ -12,6 +12,7 @@
 #include "sheet.h"
 #include "resources.h"
 #include "npc.h"
+#include "vdp_ext.h"
 
 #define OMEGA_RISE_HEIGHT			56
 #define OMEGA_SINK_DEPTH			60
@@ -317,7 +318,7 @@ void ai_omega(Entity *e) {
 			
 			if (++e->timer > 100) {
 				e->timer = 0;
-				//starflash.Start(o->CenterX(), o->CenterY());
+				SCREEN_FLASH(30);
 				e->state = OMG_EXPLODED;
 			} else if (e->timer==24) {
 				tsc_call_event(210);

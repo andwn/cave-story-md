@@ -13,6 +13,7 @@
 #include "resources.h"
 #include "npc.h"
 #include "sprite.h"
+#include "vdp_ext.h"
 
 #define STATE_X_APPEAR				1		// script-triggered: must stay constant
 #define STATE_X_FIGHT_BEGIN			10		// script-triggered: must stay constant
@@ -366,7 +367,7 @@ void ai_monsterx(Entity *e) {
 			//		  e->CenterY() + (random(-64, 64) << CSF));
 			
 			if (e->timer > TIME(100)) {
-				//starflash.Start(e->CenterX(), e->CenterY());
+				SCREEN_FLASH(30);
 				sound_play(SND_EXPLOSION1, 5);
 				e->timer = 0;
 				e->state++;
@@ -376,7 +377,11 @@ void ai_monsterx(Entity *e) {
 		case STATE_X_EXPLODING+2:
 		{
 			camera_shake(40);
-			if (++e->timer > TIME(50)) {
+			e->timer++;
+			// Delete this stuff once the screen starts to flash as opposed
+			// to the real game, where there is an explosion that takes time to
+			// cover the screen
+			if (e->timer == 1) {
 				entity_create(e->x, e->y - (24 << CSF), OBJ_X_DEFEATED, 0);
 				entities_clear_by_type(OBJ_X_TARGET);
 				entities_clear_by_type(OBJ_X_DOOR);

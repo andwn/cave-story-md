@@ -23,11 +23,9 @@ This document is for the larger tasks. I removed the smaller ones, they should b
   - Intro
   - Credits
   - Consolidate "nflags" and "eflags" into one "flags"
-  - I believe my walking acceleration is too fast?
   - The camera following logic is also pretty inaccurate
   - Skullstep and Skullhead carried by Crows
   - "Clipping" effect for when characters teleport
-  - Screen flash when bosses die
 
 - Beatable Major Bosses
   - [x] Balfrog

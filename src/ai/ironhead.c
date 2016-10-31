@@ -13,6 +13,7 @@
 #include "sprite.h"
 #include "resources.h"
 #include "npc.h"
+#include "vdp_ext.h"
 
 #define ARENA_TOP				2
 #define ARENA_BOTTOM			13
@@ -136,6 +137,8 @@ void ai_ironhead(Entity *e) {
 			e->y_mark = e->y;
 			e->x_speed = e->y_speed = 0;
 			e->timer = 0;
+			// I believe the screen should flash here since objects get deleted
+			SCREEN_FLASH(10);
 			entities_clear_by_type(OBJ_IRONH_FISHY);
 			entities_clear_by_type(OBJ_IRONH_BRICK);
 			entities_clear_by_type(OBJ_BRICK_SPAWNER);
