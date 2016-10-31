@@ -4,8 +4,10 @@
  * Compile:
  * gcc prof2sram.c -o prof2sram
  * 
- * Usage (the arguments must be in this exact order):
- * ./prof2sram [-n <290.rec>] <input Profile.dat> <output SRAM>
+ * Usage:
+ * ./prof2sram [-v] [-g] [-n <290.rec>] <input Profile.dat> <output SRAM>
+ * -g will skip every other byte in the output file (so it'll work with Gens)
+ * -v will print verbose information about the profile
  * 
  * Example:
  * Grab a Profile.dat and optionally 290.rec from http://www.cavestory.org/download/saves.php
@@ -16,79 +18,103 @@
  * 
  * Where does the SRAM go? Depends on your emulator.
  * Gens-GS: $HOME/.gens/doukutsu.srm
- * BlastEm: $HOME/.config/blastem/doukutsu/save.sram
+ * BlastEm: $HOME/.local/share/blastem/doukutsu/save.sram
  */
 
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
-// Gens skips every other byte, blastem doesn't
-//#define GENS
 
 #define fskip(f, n) fseek(f, n, SEEK_CUR)
 
 const char *header_ver = "Do041220";
 const char *flag_str = "FLAG";
+const char *wepname[14] = {
+	"N/A", "Snake", "Polar Star", "Fireball", "Machine Gun", "Missiles", "N/A", 
+	"Bubbler", "N/A", "Blade", "Super Missiles", "N/A", "Nemesis", "Spur"
+};
+
+static uint8_t oddbytes = 0;
+static uint8_t verbose = 0;
 
 struct {
 	char header[8];
-	unsigned char current_map;
-	unsigned char current_song;
-	int x_position;
-	int y_position;
-	unsigned char direction;
-	unsigned short max_health;
-	unsigned char whimsical_stars;
-	unsigned short current_health;
-	unsigned char current_weapon;
-	unsigned short equipment;
-	unsigned int time;
+	uint8_t current_map;
+	uint8_t current_song;
+	int32_t x_position;
+	int32_t y_position;
+	uint8_t direction;
+	uint16_t max_health;
+	uint8_t whimsical_stars;
+	uint16_t current_health;
+	uint8_t current_weapon;
+	uint16_t equipment;
+	uint32_t time;
 	struct {
-		unsigned char type;
-		unsigned char level;
-		unsigned short energy;
-		unsigned short max_ammo;
-		unsigned short ammo;
+		uint8_t type;
+		uint8_t level;
+		uint16_t energy;
+		uint16_t max_ammo;
+		uint16_t ammo;
 	} weapon[8];
-	unsigned short item[32];
+	uint16_t item[32];
 	struct {
-		unsigned short menu;
-		unsigned short location;
+		uint16_t menu;
+		uint16_t location;
 	} teleport[8];
 	char flag_header[4];
-	unsigned int flag[250];
+	uint32_t flag[250];
 } ProfileData;
 
 struct {
-	unsigned int ticks[4];
-	unsigned char key[4];
+	uint32_t ticks[4];
+	uint8_t key[4];
 } NikuCounter;
 
 int read_290rec(const char *filename);
 int read_profile_data(const char *filename);
 int write_sram_data(const char *filename);
 
+void sram_write_u8(FILE *file, uint8_t value);
+void sram_write_u16(FILE *file, uint16_t value);
+void sram_write_u32(FILE *file, uint32_t value);
+void sram_seek(FILE *file, uint32_t pos);
+
 void usage() {
-	printf("Usage: prof2sram [-n <290.rec>] <input Profile.dat> <output SRAM>\n");
+	printf("Usage: prof2sram [options] <input Profile.dat> <output SRAM>\n");
+	exit(0);
 }
 
 int main(int argc, char *argv[]) {
+	if(argc < 3) usage();
 	// Make sure we will write all zeroes if no 290.rec is specified
 	memset(&NikuCounter, 0, sizeof(NikuCounter));
-	if(argc == 5) {
-		// Make sure the first arg is "-n"
-		if(argv[1][0] == '-' && argv[1][1] == 'n') {
-			if(read_290rec(argv[2])) {
-				printf("Issue reading 290.rec, aborting.\n");
-				return 1;
+	// Look for any optional args
+	for(int i = 1; i < argc - 2; i++) {
+		if(argv[i][0] != '-') usage();
+		switch(argv[i][1]) {
+			case 'n': // 290.rec
+			{
+				i++; // next arg is the filename
+				if(read_290rec(argv[i])) {
+					perror("Issue reading 290.rec file.\n");
+					return 1;
+				}
 			}
-		} else {
-			usage();
-			return 0;
+			break;
+			case 'g': // Output in Gens SRAM format
+			{
+				oddbytes = 1;
+			}
+			break;
+			case 'v':
+			{
+				verbose = 1;
+			}
+			break;
+			default: usage();
 		}
-	} else if(argc != 3) {
-		usage();
-		return 0;
 	}
 	if(read_profile_data(argv[argc - 2])) {
 		printf("Issue reading profile data, aborting.\n");
@@ -98,7 +124,6 @@ int main(int argc, char *argv[]) {
 		printf("Issue writing SRAM data, aborting.\n");
 		return 1;
 	}
-	return 0;
 }
 
 int read_290rec(const char *filename) {
@@ -128,30 +153,44 @@ int read_profile_data(const char* filename) {
 	// Current Map
 	fread(&ProfileData.current_map, 1, 1, infile);
 	fskip(infile, 3);
-	printf("Map ID: %hhu\n", ProfileData.current_map);
+	if(verbose) printf("Map ID: %hhu\n", ProfileData.current_map);
 	// Current Song
 	fread(&ProfileData.current_song, 1, 1, infile);
 	fskip(infile, 3);
-	printf("Song ID: %hhu\n", ProfileData.current_song);
+	if(verbose) printf("Song ID: %hhu\n", ProfileData.current_song);
 	// Player Position
 	fread(&ProfileData.x_position, 4, 1, infile);
 	fread(&ProfileData.y_position, 4, 1, infile);
-	printf("Location X: %x Y: %x\n", ProfileData.x_position, ProfileData.y_position);
+	if(verbose) printf("Location X: 0x%x Y: 0x%x\n", 
+						ProfileData.x_position, ProfileData.y_position);
 	// Player Direction
 	fread(&ProfileData.direction, 1, 1, infile);
 	fskip(infile, 3);
+	if(verbose) printf("Facing %s.\n", ProfileData.direction == 0 ? "left" : 
+									   ProfileData.direction == 2 ? "right" : "???");
 	// Health
 	fread(&ProfileData.max_health, 2, 1, infile);
 	fread(&ProfileData.whimsical_stars, 2, 1, infile);
 	fread(&ProfileData.current_health, 2, 1, infile);
 	fskip(infile, 2);
+	if(verbose) printf("Health: %hu/%hu\n", ProfileData.current_health, ProfileData.max_health);
 	// Current Weapon, Equipment
 	fread(&ProfileData.current_weapon, 1, 1, infile);
 	fskip(infile, 7);
+	if(verbose) printf("Current Weapon: %hhu\n", ProfileData.current_weapon);
 	fread(&ProfileData.equipment, 2, 1, infile);
 	fskip(infile, 6);
+	if(verbose) printf("Equipment: 0x%hx\n", ProfileData.current_weapon);
 	// Play Time
 	fread(&ProfileData.time, 4, 1, infile);
+	if(verbose) {
+		uint8_t hour, min, sec, frame = 0;
+		frame = ProfileData.time % 50;
+		sec = (ProfileData.time / 50) % 60;
+		min = ((ProfileData.time / 50) / 60) % 60;
+		hour = ((ProfileData.time / 50) / 60) / 60;
+		printf("Time: %hhu:%hhu:%hhu.%hhu\n", hour, min, sec, frame);
+	}
 	// Weapons
 	for(int i = 0; i < 8; i++) {
 		fread(&ProfileData.weapon[i].type, 2, 1, infile);
@@ -164,12 +203,19 @@ int read_profile_data(const char* filename) {
 		fskip(infile, 2);
 		fread(&ProfileData.weapon[i].ammo, 2, 1, infile);
 		fskip(infile, 2);
+		if(verbose) {
+			printf("Weapon %d: %s level %hu\n", i, 
+					wepname[ProfileData.weapon[i].type], ProfileData.weapon[i].level);
+		}
 	}
 	// Items
+	if(verbose) printf("Items: ");
 	for(int i = 0; i < 32; i++) {
 		fread(&ProfileData.item[i], 2, 1, infile);
 		fskip(infile, 2);
+		if(verbose) printf("%hu,", ProfileData.item[i]);
 	}
+	if(verbose) printf("\n");
 	// Teleporter Locations
 	for(int i = 0; i < 8; i++) {
 		fread(&ProfileData.teleport[i].menu, 2, 1, infile);
@@ -184,52 +230,35 @@ int read_profile_data(const char* filename) {
 		printf("Error: Expected 'FLAG', found '%.4s'.\n", ProfileData.flag_header);
 		return 1;
 	}
+	if(verbose) printf("Flags:\n");
 	for(int i = 0; i < 250; i++) {
 		fread(&ProfileData.flag[i], 4, 1, infile);
+		if(verbose) printf("%x", ProfileData.flag[i]);
 	}
+	if(verbose) printf("\n");
 	// All done
 	fclose(infile);
 	return 0;
 }
 
-void sram_write_byte(FILE *file, unsigned char value) {
-#ifdef GENS
-	fskip(file, 1);
-#endif
+void sram_write_u8(FILE *file, uint8_t value) {
+	if(oddbytes) fskip(file, 1);
 	fwrite(&value, 1, 1, file);
 }
 
-void sram_write_word(FILE *file, unsigned short value) {
-	unsigned char high = value >> 8, low = value & 0xFF;
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&high, 1, 1, file);
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&low, 1, 1, file);
+void sram_write_u16(FILE *file, uint16_t value) {
+	sram_write_u8(file, value >> 8); // High byte
+	sram_write_u8(file, value & 0xFF); // Low byte
 }
 
-void sram_write_dword(FILE *file, unsigned int value) {
-	unsigned char byte1 = value >> 24, byte2 = (value >> 16) & 0xFF;
-	unsigned char byte3 = (value >> 8) & 0xFF, byte4 = value & 0xFF;
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&byte1, 1, 1, file);
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&byte2, 1, 1, file);
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&byte3, 1, 1, file);
-#ifdef GENS
-	fskip(file, 1);
-#endif
-	fwrite(&byte4, 1, 1, file);
+void sram_write_u32(FILE *file, uint32_t value) {
+	sram_write_u16(file, value >> 16); // High word
+	sram_write_u16(file, value & 0xFFFF); // Low word
+}
+
+void sram_seek(FILE *file, uint32_t pos) {
+	if(oddbytes) pos *= 2;
+	fseek(file, pos, SEEK_SET);
 }
 
 int write_sram_data(const char *filename) {
@@ -239,40 +268,36 @@ int write_sram_data(const char *filename) {
 		return 1;
 	}
 	// Current Map
-	sram_write_word(outfile, ProfileData.current_map);
+	sram_write_u16(outfile, ProfileData.current_map);
 	// Current Song
-	sram_write_word(outfile, ProfileData.current_song);
+	sram_write_u16(outfile, ProfileData.current_song);
 	// Player Position
-	sram_write_word(outfile, (ProfileData.x_position + 0x1000) >> 13);
-	sram_write_word(outfile, (ProfileData.y_position + 0x1000) >> 13);
+	sram_write_u16(outfile, (ProfileData.x_position + 0x1000) >> 13);
+	sram_write_u16(outfile, (ProfileData.y_position + 0x1000) >> 13);
 	// Health
-	sram_write_word(outfile, ProfileData.max_health);
-	sram_write_word(outfile, ProfileData.current_health);
+	sram_write_u16(outfile, ProfileData.max_health);
+	sram_write_u16(outfile, ProfileData.current_health);
 	// Current Weapon, Equipment
-	sram_write_word(outfile, ProfileData.current_weapon);
-	sram_write_word(outfile, ProfileData.equipment);
+	sram_write_u16(outfile, ProfileData.current_weapon);
+	sram_write_u16(outfile, ProfileData.equipment);
 	// Play Time
-	unsigned char hour, min, sec, frame = 0;
+	uint8_t hour, min, sec, frame = 0;
 	frame = ProfileData.time % 50;
 	sec = (ProfileData.time / 50) % 60;
 	min = ((ProfileData.time / 50) / 60) % 60;
 	hour = ((ProfileData.time / 50) / 60) / 60;
-	sram_write_byte(outfile, hour);
-	sram_write_byte(outfile, min);
-	sram_write_byte(outfile, sec);
-	sram_write_byte(outfile, frame);
+	sram_write_u8(outfile, hour);
+	sram_write_u8(outfile, min);
+	sram_write_u8(outfile, sec);
+	sram_write_u8(outfile, frame);
 	// Weapons
-#ifdef GENS
-	fseek(outfile, 0x20 * 2, SEEK_SET);
-#else
-	fseek(outfile, 0x20, SEEK_SET);
-#endif
+	sram_seek(outfile, 0x20);
 	for(int i = 0; i < 5; i++) {
-		sram_write_byte(outfile, ProfileData.weapon[i].type);
-		sram_write_byte(outfile, ProfileData.weapon[i].level);
-		sram_write_word(outfile, ProfileData.weapon[i].energy);
-		sram_write_word(outfile, ProfileData.weapon[i].max_ammo);
-		sram_write_word(outfile, ProfileData.weapon[i].ammo);
+		sram_write_u8(outfile, ProfileData.weapon[i].type);
+		sram_write_u8(outfile, ProfileData.weapon[i].level);
+		sram_write_u16(outfile, ProfileData.weapon[i].energy);
+		sram_write_u16(outfile, ProfileData.weapon[i].max_ammo);
+		sram_write_u16(outfile, ProfileData.weapon[i].ammo);
 	}
 	// Check the last 3 weapons -- CSMD will only use the first 5 slots
 	for(int i = 5; i < 8; i++) {
@@ -282,26 +307,22 @@ int write_sram_data(const char *filename) {
 		}
 	}
 	// Nikumaru Counter
-	for(int i = 0; i < 4; i++) sram_write_dword(outfile, NikuCounter.ticks[i]);
-	for(int i = 0; i < 4; i++) sram_write_byte(outfile, NikuCounter.key[i]);
+	for(int i = 0; i < 4; i++) sram_write_u32(outfile, NikuCounter.ticks[i]);
+	for(int i = 0; i < 4; i++) sram_write_u8(outfile, NikuCounter.key[i]);
 	// "CSMD" checksum
-	sram_write_dword(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
+	sram_write_u32(outfile, ('C'<<24)|('S'<<16)|('M'<<8)|('D'));
 	// Items
 	for(int i = 0; i < 32; i++) {
-		sram_write_byte(outfile, ProfileData.item[i]);
+		sram_write_u8(outfile, ProfileData.item[i]);
 	}
 	// Teleporter Locations
 	for(int i = 0; i < 8; i++) {
-		sram_write_word(outfile, ProfileData.teleport[i].location);
+		sram_write_u16(outfile, ProfileData.teleport[i].location);
 	}
 	// Flags
-#ifdef GENS
-	fseek(outfile, 0x100 * 2, SEEK_SET);
-#else
-	fseek(outfile, 0x100, SEEK_SET);
-#endif
+	sram_seek(outfile, 0x100);
 	for(int i = 0; i < 250; i++) {
-		sram_write_dword(outfile, ProfileData.flag[i]);
+		sram_write_u32(outfile, ProfileData.flag[i]);
 	}
 	// All done
 	fclose(outfile);

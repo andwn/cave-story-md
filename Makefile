@@ -85,16 +85,13 @@ head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
 	
-tools: tscomp tileopt prof2sram prof2gens
+tools: tscomp tileopt prof2sram
 
 tscomp:
 	gcc tools/tscomp/tscomp.c -o tscomp
 
 tileopt:
 	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt
-
-prof2gens:
-	gcc tools/prof2sram/prof2sram.c -DGENS -o prof2gens
 
 prof2sram:
 	gcc tools/prof2sram/prof2sram.c -o prof2sram
@@ -105,4 +102,4 @@ clean:
 	rm -f src/boot/sega.o src/boot/rom_head.bin
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-	rm -f prof2sram prof2gens tileopt tscomp
+	rm -f prof2sram tileopt tscomp

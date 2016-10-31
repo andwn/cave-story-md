@@ -33,9 +33,9 @@ Beware that SRAM formats differ between emulators.
 
 1. `make tools`
 2. Download & extract a Profile.dat from [here](http://www.cavestory.org/download/saves.php)
-3. Example:
+3. Example (note the -g option for Gens):
    - BlastEm: `./prof2sram ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.local/share/blastem/doukutsu/save.sram`
-   - Gens: `./prof2gens ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.gens/doukutsu.srm`
+   - Gens: `./prof2sram -g ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.gens/doukutsu.srm`
 
 ### Compilation
 Assuming you are running GNU/Linux. It might also work on BSDs
