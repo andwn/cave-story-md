@@ -1,5 +1,5 @@
 # Cave Story MD
-[Screenshot](doc/ss01.png)
+![Screenshot](doc/ss01.png)
 
 [![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
