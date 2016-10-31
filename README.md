@@ -1,4 +1,6 @@
 # Cave Story MD
+[Screenshot](doc/ss01.png)
+
 [![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
@@ -26,7 +28,7 @@ There may be an option to configure this in the future.
 - Start - Pause / Item Menu
 
 ### Save files
-I've written an experimental tool to convert saves (one way only PC -> MD).
+There is an experimental tool to convert saves (one way only PC -> MD).
 Beware that SRAM formats differ between emulators.
 
 1. `make tools`
