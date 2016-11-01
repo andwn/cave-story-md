@@ -127,6 +127,9 @@ Entity *water_entity;
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 
+#define crystal_xmark	curly_target_x
+#define crystal_ymark	curly_target_y
+
 Entity *pieces[10]; // Most bosses use this
 
 void generic_npc_states(Entity *e);
