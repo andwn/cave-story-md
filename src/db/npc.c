@@ -139,10 +139,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ &SPR_Sunstone,NOSHEET,PAL2, 1, &onspawn_sunstone, &ai_sunstone, &ai_null }, // Sunstone
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_hiddenPowerup, &ai_hiddenPowerup, &ai_null },
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_run, &ai_null }, // Puppy (Running)
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
+	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x080 (128) */
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
+	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null }, // ???
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (Tail Wag)
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_null, &ai_null }, // Puppy (Sleeping)
 	{ &SPR_Puppy, NOSHEET, 	PAL1, 1, &onspawn_puppy, &ai_puppy_bark, &ai_null }, // Puppy (Barking)
@@ -260,7 +260,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
-	{ &SPR_JailedMimi,NOSHEET,PAL0,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
+	{ &SPR_JailedMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Red Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_red_bat, &ondeath_default }, // Red Bat
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator
@@ -268,182 +268,113 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
 	{ &SPR_Misery, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
-	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Vanish)
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Misery Energy Shot
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Misery Lightning Ball
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 4, // Misery Lightning
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Energy Capsule
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 4, // Helicopter
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ai_null },
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery Energy Shot
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning Ball
+	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
+	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_null, &ai_null }, // Helicopter
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x100 (256) */
-	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, // Doctor (Before Fight)
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Crystal
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Sleeping Mimiga
-		&ai_null, &ai_null, &ai_null },
-	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (Carried)
-		&onspawn_persistent, &ai_curly_carried, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Shovel Brigade (Caged)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Chie (Caged)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Chaco (Caged)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor (Boss)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor Red Wave
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor Red Ball (Fast)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor Red Ball (Slow)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Muscle Doctor (Boss)
-		&ai_null, &ai_null, &ondeath_default },
-	{ &SPR_Igor, 	NOSHEET, PAL3, 4, // Igor
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Energy Bat
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Red Energy
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, SHEET_IRONHBLK,  PAL2, 1, &onspawn_persistent, &ai_ironh_brick, &ondeath_default }, // Underwater Block
+	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_doctor_crowned, &ai_null }, // Doctor (Before Fight)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Red Crystal
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Sleeping Mimiga
+	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_carried, &ai_null }, // Curly (Carried)
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Caged)
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie (Caged)
+	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chaco (Caged)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Doctor (Boss)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_shot, &ai_null }, // Doctor Red Wave
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Fast)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Slow)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Muscle Doctor (Boss)
+	{ &SPR_Igor, 	NOSHEET, PAL3, 4, &ai_null, &ai_null, &ondeath_default }, // Igor
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Red Energy Bat
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Red Energy
+	{ NULL, SHEET_IRONHBLK,  PAL2, 1, &onspawn_persistent, &ai_ironh_brick, &ai_null }, // Underwater Block
 	/* 0x110 (272) */
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_brick_spawner, &ai_null }, // Water Block Generator
-	{ &SPR_DrollShot, NOSHEET, PAL3, 1, // Droll Projectile
-		&ai_null, &ai_null, &ondeath_default },
-	{ &SPR_Droll, 	NOSHEET, PAL3, 2, // Droll
-		&ai_null, &ai_null, &ondeath_default },
-	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, // Puppy (With Item)
-		&onspawn_puppy, &ai_null, &ondeath_default },
-	{ &SPR_DrollRed, NOSHEET, PAL3, 2, // Red Demon
-		&ai_null, &ai_red_demon, &ondeath_default },
-	{ &SPR_DrollShot, NOSHEET, PAL3, 1, // Red Demon Projectile
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 1, // Little Family
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Falling Block (Large)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Sue (Teleport In)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor (Red Energy)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 2, // Mini Undead Core
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Transformed)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Sue (Transformed)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orange Spinning Shot
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orange Dot
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orange Smoke
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Droll Projectile
+	{ &SPR_Droll, 	NOSHEET, PAL3, 2, &ai_null, &ai_droll, &ondeath_default }, // Droll
+	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (With Item)
+	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_default }, // Red Demon
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Red Demon Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
+	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_null, &ai_null }, // Mini Undead Core
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Transformed)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Sue (Transformed)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Spinning Shot
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Dot
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Smoke
 	/* 0x120 (288) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Glowing Rock Shot
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orange Critter
-		&onspawn_snap, &ai_critter, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Orange Bat
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 2, // Mini Core (Before Fight)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Quake
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Huge Energy Shot
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Falling Block Generator
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Cloud
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 0, // Cloud Generator
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Doctor (Uncrowned)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Balrog/Misery (Bubble)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Demon Crown
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Fish Missile (Orange)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Glowing Rock Shot
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Orange Critter
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Orange Bat
+	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Quake
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Huge Energy Shot
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block Generator
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Cloud
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Cloud Generator
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Uncrowned)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Balrog/Misery (Bubble)
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Demon Crown
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Fish Missile (Orange)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x130 (304) */
-	{ NULL, 		NOSHEET, PAL0, 1, // Gaudi (Sitting)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Puppy (Small)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 2, // Balrog (Nurse)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Santa (Caged)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		SHEET_STUMPY, PAL0, 1, // Stumpy
-		&ai_null, &ai_stumpy, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Bute
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Sword)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Archer)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Bute Projectile
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Ma Pignon
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Falling (?)
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Gaudi (Sitting)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Puppy (Small)
+	{ NULL, 		NOSHEET, PAL0, 2, &ai_null, &ai_null, &ai_null }, // Balrog (Nurse)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Santa (Caged)
+	{ NULL, 		SHEET_STUMPY, PAL0, 1, &ai_null, &ai_stumpy, &ondeath_default }, // Stumpy
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Sword)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Archer)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Bute Projectile
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_ma_pignon, &ondeath_default }, // Ma Pignon
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Falling (?)
 	{ NULL, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Hopping Enemy (?)
-	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Defeated)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Mesa
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // Mesa (Defeated)
-		&ai_null, &ai_null, &ondeath_default },
-	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Defeated)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Mesa
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Mesa (Defeated)
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x140 (320) */
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (Hell)
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Deleet
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Bute (Generated)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 0, // Bute Generator
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Heavy Press Projectile
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Itoh/Sue (Ending)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Transmogrifier
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Building Fan
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Rolling
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Bone Shot
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Shockwave
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 4, // Ballos Lightning
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Sweat
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, SHEET_IKACHAN,   PAL0, 1, &onspawn_persistent, &ai_ikachan, &ai_null }, // Ika-chan
 	/* 0x150 (336) */
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_ikachan_spawner, &ai_null }, // Ika-chan Generator
@@ -452,50 +383,50 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, // Green Devil
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 0, // Green Devil Generator
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos (Boss)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Skull Shot
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, // Hoppy
 		&ai_null, &ai_hoppy, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Spikes
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Statue
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Bute (Archer)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 2, // Statue (Breakable)
 		&ai_null, &ai_null, &ondeath_default },
 	/* 0x160 (352) */
 	{ NULL, 		NOSHEET, PAL0, 1, // King (Sword)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Bute (Sword)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 0, // Kill Zone
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 2, // Balrog (Rescue)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Puppy (Ghost)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Wind)
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 0, // Water Drop Generator
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 2, // Thank You
-		&ai_null, &ai_null, &ondeath_default },
+		&ai_null, &ai_null, &ai_null },
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
