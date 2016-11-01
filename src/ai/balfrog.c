@@ -286,7 +286,7 @@ void ai_balfrog(Entity *e) {
 				}
 			}
 			if((e->timer % 16) == 1) {
-				u16 angle = (-32 + random() % 64 + (e->dir ? 256 : 768)) % 1024;
+				u8 angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() % 32);
 				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);

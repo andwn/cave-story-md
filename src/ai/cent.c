@@ -170,12 +170,13 @@ void ai_orangebell_baby(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->x_speed = sintab32[random() % 1024] * 0x100;
-			e->y_speed = sintab32[random() % 1024] * 0x100;
+			u8 angle = random();
+			e->x_speed = cos[angle] << CSF;
+			e->y_speed = sin[angle] << CSF;
 			
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat
-			e->y_next = -(32<<CSF) + (random() % (32<<CSF));
+			e->y_next = -(32<<CSF) + (random() & ((32<<CSF)-1));
 			
 			e->state = 1;
 		}

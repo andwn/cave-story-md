@@ -297,7 +297,7 @@ static void run_spells(Entity *e);
 static void run_teleport(Entity *e);
 static void run_defeated(Entity *e);
 
-static Entity* CreateRing(Entity *e, u16 angle);
+static Entity* CreateRing(Entity *e, u8 angle);
 
 void ai_boss_misery(Entity *e) {
 	switch(e->state) {
@@ -591,9 +591,9 @@ static void run_defeated(Entity *e) {
 	}
 }
 
-static Entity *CreateRing(Entity *e, u16 angle) {
+static Entity *CreateRing(Entity *e, u8 angle) {
 	Entity *ring = entity_create(0, 0, OBJ_MISERY_RING, 0);
-	ring->timer2 = angle;
+	ring->jump_time = angle;
 	ring->linkedEntity = e;
 	
 	return ring;
@@ -615,8 +615,12 @@ void ai_misery_ring(Entity *e) {
 		case 1:
 		{
 			// distance from misery
-			if (e->timer < 192)
-				e->timer++;
+			if (e->timer < 192) e->timer++;
+			
+			// angle
+			e->jump_time += 2;
+			e->x = e->linkedEntity->x + cos[e->jump_time] * e->timer;
+			e->y = e->linkedEntity->y + sin[e->jump_time] * e->timer;
 			
 			// turn to bats when misery teleports
 			if (e->linkedEntity->state >= STATE_TP_AWAY &&
@@ -647,16 +651,6 @@ void ai_misery_ring(Entity *e) {
 			}
 		}
 		break;
-	}
-}
-
-void aftermove_misery_ring(Entity *e) {
-	if (e->state == 1 && e->linkedEntity) {
-		e->timer2 += 2;
-		
-		//int dist = (e->timer << CSF) / 4;
-		//e->x = e->linkedEntity->x + x_speed_from_angle(e->timer2, dist);
-		//e->y = e->linkedEntity->y + y_speed_from_angle(e->timer2, dist);
 	}
 }
 

@@ -381,11 +381,11 @@ void ai_crow(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u16 angle = random() % 1024;
-			e->x_speed = sintab32[angle] >> 1;
-			e->y_speed = sintab32[(angle + 256) % 1024] >> 1;
-			e->x_mark = e->x + (e->x_speed * 8);
-			e->y_mark = e->y + (e->y_speed * 8);
+			u8 angle = random();
+			e->x_speed = cos[angle];
+			e->y_speed = sin[angle];
+			e->x_mark = e->x + (e->x_speed << 3);
+			e->y_mark = e->y + (e->y_speed << 3);
 			e->state = 1;
 		}
 		/* no break */

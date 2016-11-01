@@ -58,8 +58,8 @@
 #define fish_timer			id
 
 // For fish missile only
-#define want_angle	x_mark
-#define cur_angle	y_mark
+#define want_angle	jump_time
+#define cur_angle	underwater
 
 enum Pieces {
 	TREADUL, TREADUR, TREADLL, TREADLR,
@@ -84,7 +84,7 @@ static void spawn_fish(u8 index) {
 	//                               UL          UR          LL          LR
 	static const s32 xoffs[]   = { -(64<<CSF),  (76<<CSF), -(64<<CSF),  (76<<CSF) };
 	static const s32 yoffs[]   = {  (27<<CSF),  (27<<CSF), -(16<<CSF), -(16<<CSF) };
-	static const u16 angles[]  = {  0x280, 0x180, 0x380, 0x80 };
+	static const u8 angles[]  = { A_LEFT+0x20,  A_UP+0x20,A_DOWN+0x20, A_RIGHT+0x20 };
 	// Create manually because cur_angle needs to be set
 	// Then let the missile itself deal with setting speeds with sin/cos
 	Entity *fish = entity_create(bossEntity->x + xoffs[index], bossEntity->y + yoffs[index],
@@ -693,15 +693,15 @@ void ai_x_fishy_missile(Entity *e) {
 	// Find angle needed to reach player
 	// Don't do this every frame, arctan is expensive
 	if(e->timer++ % TIME(20) == 0) {
-		e->want_angle = get_angle(e->x, e->y, player.x, player.y) % 0x400;
+		e->want_angle = get_angle(e->x, e->y, player.x, player.y);
 	}
 	// Turn towards desired angle
 	if(e->cur_angle < e->want_angle) {
-		if(abs(e->cur_angle - e->want_angle) < 0x200) e->cur_angle += 4;
-		else e->cur_angle -= 4;
+		if(abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle++;
+		else e->cur_angle--;
 	} else {
-		if(abs(e->cur_angle - e->want_angle) < 0x200) e->cur_angle -= 4;
-		else e->cur_angle += 4;
+		if(abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle--;
+		else e->cur_angle++;
 	}
 	
 	// smoke trails
@@ -712,11 +712,11 @@ void ai_x_fishy_missile(Entity *e) {
 		//c->y_speed = -e->y_speed >> 2;
 	//}
 	
-	e->cur_angle %= 0x400;
-	e->frame = e->cur_angle / 128;
+	//e->cur_angle %= 0x400;
+	e->frame = e->cur_angle >> 5;
 	
-	e->x_speed = sintab32[e->cur_angle];
-	e->y_speed = sintab32[(e->cur_angle + 0x100) % 0x400];
+	e->x_speed = cos[e->cur_angle];
+	e->y_speed = sin[e->cur_angle];
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

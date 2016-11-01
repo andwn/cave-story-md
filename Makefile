@@ -30,7 +30,7 @@ RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
 
-.PHONY: all release debug ntsc pal ntsc-debug pal-debug tools clean
+.PHONY: all release debug ntsc pal ntsc-debug pal-debug tools clean clean-tools
 .SECONDARY: doukutsu.elf
 
 all: ntsc
@@ -85,13 +85,16 @@ head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
 	
-tools: tscomp tileopt prof2sram
+tools: tscomp tileopt lutgen prof2sram
 
 tscomp:
 	gcc tools/tscomp/tscomp.c -o tscomp
 
 tileopt:
 	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt
+
+lutgen:
+	gcc tools/lutgen/lutgen.c -lm -o lutgen
 
 prof2sram:
 	gcc tools/prof2sram/prof2sram.c -o prof2sram
@@ -102,4 +105,6 @@ clean:
 	rm -f src/boot/sega.o src/boot/rom_head.bin
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-	rm -f prof2sram tileopt tscomp
+
+clean-tools:
+	rm -f prof2sram tileopt tscomp lutgen

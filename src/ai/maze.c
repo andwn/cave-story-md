@@ -361,11 +361,11 @@ void ai_gaudiFlying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u16 angle = random() % 1024;
-			e->x_speed = sintab32[angle] >> 1;
-			e->y_speed = sintab32[(angle + 256) % 1024] >> 1;
-			e->x_mark = e->x + (e->x_speed * 8);
-			e->y_mark = e->y + (e->y_speed * 8);
+			u8 angle = random();
+			e->x_speed = cos[angle];
+			e->y_speed = sin[angle];
+			e->x_mark = e->x + (e->x_speed << 3);
+			e->y_mark = e->y + (e->y_speed << 3);
 			e->state = 1;
 			e->timer2 = 120;
 		}
@@ -873,13 +873,13 @@ void ai_fuzz_core(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			// spawn mini-fuzzes
-			u16 angle = 0;
+			// spawn mini-fuzzes, use jump_time as the angle since it is u8
+			u8 angle = 0;
 			for(u16 i = 0; i < 5; i++) {
 				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
 				f->linkedEntity = e;
-				f->timer = angle;
-				angle += 25;
+				f->jump_time = angle;
+				angle += 0x100 / 5;
 			}
 			e->timer = random() % TIME(50);
 			e->state = 1;
@@ -915,14 +915,14 @@ void ai_fuzz(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->timer++;
+			e->jump_time++;
 			if (e->linkedEntity->state == STATE_DESTROY) {
 				e->x_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				e->x = e->linkedEntity->x + (sintab32[(e->timer & 0x7F) * 8] * 16);
-				e->y = e->linkedEntity->y + (sintab32[((e->timer+0x20) & 0x7F) * 8] * 16);
+				e->x = e->linkedEntity->x + (cos[e->jump_time] << 4);
+				e->y = e->linkedEntity->y + (sin[e->jump_time] << 4);
 			}
 		}
 		break;

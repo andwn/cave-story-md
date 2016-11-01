@@ -298,12 +298,13 @@ void ai_sisters(Entity *e) {
 }
 
 void ai_sisters_body(Entity *e) {
-	s32 angle = mainangle;
-	if(e->eflags & NPC_OPTION2) angle += 512;
+	// mainangle works in a range of 1024 so the sisters can circle more slowly
+	u8 angle = mainangle >> 2;
+	if(e->eflags & NPC_OPTION2) angle ^= 0x80;
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
-	s32 xoff = (sintab32[(angle) % 1024] >> 1) * (bossEntity->x_mark); // <<CSF
-	s32 yoff = (sintab32[(angle + 256) % 1024] >> 1) * (bossEntity->y_mark); // <<CSF
+	s32 xoff = cos[angle] * bossEntity->x_mark;
+	s32 yoff = sin[angle] * bossEntity->y_mark;
 	
 	// figure out where we are supposed to be
 	s32 desired_x = bossEntity->x + xoff;

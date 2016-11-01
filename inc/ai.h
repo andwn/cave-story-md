@@ -74,18 +74,18 @@ typedef void (*EntityMethod)(Entity*);
 	curly_target_y = e->y;                                                                     \
 }
 
-// The shifts here would be >>1 and >>CSF, but that will cause the speed value to be
+// The shift here would be >>CSF, but that will cause the speed value to be
 // truncated per-pixel. The new values give a bit more leeway
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (sintab32[(angle) % 1024] >> 3) * ((speed) >> 7);                          \
-	shot->y_speed = (sintab32[((angle) + 256) % 1024] >> 3) * ((speed) >> 7);                  \
+	shot->x_speed = (cos[angle] >> 2) * ((speed) >> 7);                                        \
+	shot->y_speed = (sin[angle] >> 2) * ((speed) >> 7);                                        \
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
-	u16 angle = get_angle(shot->x, shot->y, tgtx, tgty);                                       \
-	shot->x_speed = (sintab32[angle % 1024] >> 3) * ((speed) >> 7);                            \
-	shot->y_speed = (sintab32[(angle + 256) % 1024] >> 3) * ((speed) >> 7);                    \
+	u8 angle = get_angle(shot->x, shot->y, tgtx, tgty);                                        \
+	shot->x_speed = (cos[angle] >> 2) * ((speed) >> 7);                                        \
+	shot->y_speed = (sin[angle] >> 2) * ((speed) >> 7);                                        \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
@@ -122,7 +122,6 @@ typedef void (*EntityMethod)(Entity*);
 /* Shared Variables */
 
 Entity *water_entity;
-//u8 water_screenlevel;
 
 // These get aliased for other uses when curly isn't around
 u16 curly_target_time;
@@ -132,6 +131,6 @@ Entity *pieces[10]; // Most bosses use this
 
 void generic_npc_states(Entity *e);
 
-u16 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty);
+u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty);
 
 #endif /* INC_AI_H_ */

@@ -122,22 +122,11 @@ void ai_batCircle(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			// set up initial direction and target x,y
-			// Angles are between 0-1024 where 1024 is 360 degrees
-			u16 angle = random() % 1024;
-			// SGDK has a sine table already available, but it is meant to be used with
-			// its own 'fix32' type which is a 10-bit fixed point number. Cave Story's fixed
-			// point numbers use a 9-bit decimal so we shift right by 1 bit
-			e->x_speed = sintab32[angle] >> 1;
-			angle = (angle + 256) % 1024; // Add 90 degrees to get cosine
-			e->x_mark = e->x + (sintab32[angle] >> 1) * 8;
-			// Starting Y speed
-			angle = random() % 1024;
-			e->y_speed = sintab32[angle] >> 1;
-			// Target Y position
-			angle = (angle + 256) % 1024;
-			e->y_mark = e->y + (sintab32[angle] >> 1) * 8;
-			
+			u8 angle = random();
+			e->x_speed = cos[angle];
+			e->y_speed = sin[angle];
+			e->x_mark = e->x + (e->x_speed << 3);
+			e->y_mark = e->y + (e->x_speed << 3);
 			e->state = 1;
 		}
 		/* no break */

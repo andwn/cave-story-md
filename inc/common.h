@@ -43,11 +43,15 @@
 // Direction
 enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 
-// Angles - why 0 is down instead of right is beyond me
-#define A_DOWN	0
-#define A_RIGHT	256
-#define A_UP	512
-#define A_LEFT	768
+// Angles
+#define A_RIGHT	0x00
+#define A_DOWN	0x40
+#define A_LEFT	0x80
+#define A_UP	0xC0
+
+// Sine & cosine lookup tables
+const s16 sin[0x100];
+const s16 cos[0x100];
 
 // Tileset width/height
 #define TS_WIDTH 32
