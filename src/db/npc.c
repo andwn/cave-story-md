@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -443,7 +443,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 	{ NULL, NOSHEET, PAL3, 3, // Sisters
 		&onspawn_sisters, &ai_sisters, &ondeath_sisters },
 	{ NULL, NOSHEET, PAL3, 3, // Undead Core
-		&ai_null, &ai_null, &ai_null },
+		&onspawn_undead_core, &ai_undead_core, &ai_null },
 	{ NULL, NOSHEET, PAL3, 3, // Heavy Press
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, PAL3, 3, // Ballos
@@ -474,7 +474,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
 	{ NULL, SHEET_SISHEAD, PAL3, 1, // Sisters Head
 		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
-	
+	{ NULL, NOSHEET, PAL2, 6, // Undead Core (Front)
+		&onspawn_persistent, &ai_undead_core_front, &ai_null },
+	{ NULL, NOSHEET, PAL2, 9, // Undead Core (Back)
+		&onspawn_persistent, &ai_undead_core_back, &ai_null },
+	{ NULL, NOSHEET, PAL2, 4, // Undead Core (Face)
+		&onspawn_persistent, &ai_undead_core_face, &ai_null },
+		
 	// Extra stuff that does not belong to bosses
 	{ &SPR_Sega, NOSHEET, PAL0, 6, // Sega Logo
 		&onspawn_segalogo, &ai_segalogo, &ai_null },
