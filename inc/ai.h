@@ -31,10 +31,6 @@ typedef void (*EntityMethod)(Entity*);
 #define WL_UP				22	// in cycle--currently up
 #define WL_STAY_UP			30	// goes to top of screen and doesn't come back down
 
-// These were for "water screen level" and will go away soon
-//#define WATER_TOP			0
-//#define WATER_DISABLE		255
-
 /* Helper Macros */
 
 #define SNAP_TO_GROUND(e); {                                                                   \
@@ -94,7 +90,7 @@ typedef void (*EntityMethod)(Entity*);
 }
 
 #define ANIMATE(e, spd, ...) {                                                                 \
-	const u8 anim[] = { __VA_ARGS__ };                                                         \
+	static const u8 anim[] = { __VA_ARGS__ };                                                  \
 	if(!((e)->animtime % spd)) (e)->frame = anim[(e)->animtime / spd];                         \
 	if(++(e)->animtime >= spd * sizeof(anim)) (e)->animtime = 0;                               \
 }

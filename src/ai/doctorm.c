@@ -55,18 +55,78 @@ static const u16 attack_pattern[] = {
 };
 
 // Prototypes
-static void run_jumps(Entity *e);
-static void run_red_dash(Entity *e);
-static void run_mega_bats(Entity *e);
-static void run_teleport(Entity *e);
-static void run_init(Entity *e);
-static void run_defeat(Entity *e);
 static void run_red_drip(Entity *e);
 static void do_redsplode(Entity *e);
 
 void ai_boss_doctor_frenzied(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->x_next = e->x + e->x_speed;
+	
+	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e);
+	u8 blockr = e->x_speed > 0 && collide_stage_rightwall(e);
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+	
 	switch(e->state) {
-		// fight begin/base state
+		// INIT
+		
+		case 0:
+		{
+			// put ourselves at correct position over the other doctor
+			e->dir = (crystal_xmark < player.x);
+			
+			e->x = crystal_xmark + ((e->dir) ? (6<<CSF) : -(6<<CSF));
+			e->y = crystal_ymark;
+			
+			// make sure we're front of other doctor
+			//e->BringToFront();
+			// make sure front crystal is in front of us
+			//crystal_tofront = TRUE;
+			
+			// because we moved our x/y directly
+			//e->UpdateBlockStates(ALLDIRMASK);
+			e->state = 1;
+		}
+		case 1:		// appearing/transforming
+		{
+			e->y_speed += 0x80;
+			
+			e->timer++;
+			e->frame = (e->timer & 2) ? 0 : 3;
+		}
+		break;
+		// standing idle & panting
+		// this state doesn't seem to ever be used;
+		// AFAIK can only be triggered by modifying the script.
+		case 5:
+		{
+			e->frame = 1;
+			e->animtime = 0;
+			e->state = 6;
+		}
+		case 6:
+		{
+			e->y_speed += 0x80;
+			ANIMATE(e, 30, 1,2);
+		}
+		break;
+		
+		case 7: 	// prepare-to-fight pause
+		{
+			e->state = 8;
+			e->timer = 0;
+			e->frame = 3;
+		}
+		case 8:
+		{
+			e->y_speed += 0x40;
+			
+			if (++e->timer > 40) e->state = STATE_BASE;
+		}
+		break;
+		
+		// BASE
+		
 		case STATE_BASE:
 		{
 			e->eflags |= NPC_SHOOTABLE;
@@ -111,37 +171,9 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			}
 		}
 		break;
-	}
-	
-	run_jumps(e);
-	
-	run_red_dash(e);
-	run_mega_bats(e);
-	run_teleport(e);
-	run_init(e);
-	run_defeat(e);
-	
-	if (e->state < STATE_DISSOLVE) run_red_drip(e);
-	
-	// set crystal follow position
-	// still set it on first 2 DEFEATED states (falling to ground)
-	// but not after that (alert: this seems pretty damn bug prone, fixme)
-	if (e->state >= STATE_BASE && e->state <= STATE_DEFEATED+1) {
-		if (e->hidden)	// in middle of teleport: after tp out, before tp in
-		{
-			crystal_xmark = e->x_mark;
-			crystal_ymark = e->y_mark;
-		} else {
-			crystal_xmark = e->x;
-			crystal_ymark = e->y;
-		}
-	}
-	
-	if (e->y_speed > 0x5ff) e->y_speed = 0x5ff;
-}
-
-static void run_jumps(Entity *e) {
-	switch(e->state) {
+		
+		// RUN & JUMP
+		
 		// jump at player
 		case STATE_JUMP:
 		{
@@ -212,13 +244,9 @@ static void run_jumps(Entity *e) {
 			if (++e->timer > 10) e->state = STATE_BASE;
 		}
 		break;
-	}
-}
-
-// flashing red elbow dash
-static void run_red_dash(Entity *e) {
-	switch(e->state) {
-		// prepare to dash
+		
+		// DASH
+		
 		case STATE_RED_DASH:
 		{
 			e->frame = 3;	// crouch down; look mean
@@ -243,7 +271,6 @@ static void run_red_dash(Entity *e) {
 			}
 		}
 		break;
-		
 		// doing red dash
 		case STATE_RED_DASH+2:
 		{
@@ -252,8 +279,7 @@ static void run_red_dash(Entity *e) {
 			e->frame = (e->timer & 2) ? 7 : 8;
 			
 			// time to stop?
-			if ((blk(e->x, -16, e->y, 0) == 0x41) ||
-				(blk(e->x, 16, e->y, 0) == 0x41) || e->timer > 30) {
+			if (blockl || blockr || e->timer > 30) {
 				if (e->timer > 30)		// stopped because timeout
 					e->state++;
 				else					// stopped because hit a wall
@@ -265,7 +291,6 @@ static void run_red_dash(Entity *e) {
 			}
 		}
 		break;
-		
 		// dash ending due to timeout
 		case STATE_RED_DASH+3:
 		{
@@ -278,13 +303,9 @@ static void run_red_dash(Entity *e) {
 			if (++e->timer > 10) e->state = STATE_BASE;
 		}
 		break;
-	}
-}
-
-// arms thrust out, spawn oodles of bouncing bats
-static void run_mega_bats(Entity *e) {
-
-	switch(e->state) {
+		
+		// MEGA BATS
+		
 		case STATE_MEGA_BATS:
 		{
 			e->state++;
@@ -314,13 +335,9 @@ static void run_mega_bats(Entity *e) {
 			if (e->timer > 90) e->state = STATE_BASE;
 		}
 		break;
-	}
-}
-
-
-// teleport away and return
-static void run_teleport(Entity *e) {
-	switch(e->state) {
+		
+		// TELEPORT
+		
 		case STATE_TELEPORT:
 		{
 			e->eflags &= ~NPC_SHOOTABLE;
@@ -351,7 +368,6 @@ static void run_teleport(Entity *e) {
 			//}
 		}
 		break;
-		
 		// invisible...waiting to reappear
 		case STATE_TELEPORT+2:
 		{
@@ -366,7 +382,6 @@ static void run_teleport(Entity *e) {
 			}
 		}
 		break;
-		
 		// reappear
 		case STATE_TELEPORT+3:
 		{
@@ -387,76 +402,9 @@ static void run_teleport(Entity *e) {
 			//}
 		}
 		break;
-	}
-	
-}
-
-// initilization/transformation animation and "prepare to fight" states.
-// this are of course all script-triggered and need to stay constant.
-static void run_init(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			// put ourselves at correct position over the other doctor
-			e->dir = (crystal_xmark < player.x);
-			
-			e->x = crystal_xmark + ((e->dir) ? (6<<CSF) : -(6<<CSF));
-			e->y = crystal_ymark;
-			
-			// make sure we're front of other doctor
-			//e->BringToFront();
-			// make sure front crystal is in front of us
-			//crystal_tofront = TRUE;
-			
-			// because we moved our x/y directly
-			//e->UpdateBlockStates(ALLDIRMASK);
-			e->state = 1;
-		}
-		case 1:		// appearing/transforming
-		{
-			e->y_speed += 0x80;
-			
-			e->timer++;
-			e->frame = (e->timer & 2) ? 0 : 3;
-		}
-		break;
 		
-		// standing idle & panting
-		// this state doesn't seem to ever be used;
-		// AFAIK can only be triggered by modifying the script.
-		case 5:
-		{
-			e->frame = 1;
-			e->animtime = 0;
-			e->state = 6;
-		}
-		case 6:
-		{
-			e->y_speed += 0x80;
-			ANIMATE(e, 30, 1,2);
-		}
-		break;
+		// DEFEAT
 		
-		case 7: 	// prepare-to-fight pause
-		{
-			e->state = 8;
-			e->timer = 0;
-			e->frame = 3;
-		}
-		case 8:
-		{
-			e->y_speed += 0x40;
-			
-			if (++e->timer > 40) e->state = STATE_BASE;
-		}
-		break;
-	}
-}
-
-
-// defeated states and animation
-static void run_defeat(Entity *e) {
-	switch(e->state) {
 		// Defeated!
 		case STATE_DEFEATED:
 		{
@@ -479,7 +427,6 @@ static void run_defeat(Entity *e) {
 			}
 		}
 		break;
-		
 		// shaking (script tells us when to stop)
 		case STATE_DEFEATED+2:
 		{
@@ -490,8 +437,6 @@ static void run_defeat(Entity *e) {
 			if (!(e->timer & 2)) e->x += (1 << CSF);
 		}
 		break;
-		
-		
 		// dissolve into red energy
 		// we already did this once before; think Pooh Black.
 		case STATE_DISSOLVE:
@@ -556,7 +501,6 @@ static void run_defeat(Entity *e) {
 			//}
 		}
 		break;
-		
 		// script: crystal up and away
 		case 520:
 		{
@@ -564,6 +508,27 @@ static void run_defeat(Entity *e) {
 		}
 		break;
 	}
+	
+	if (e->state < STATE_DISSOLVE) run_red_drip(e);
+	
+	// set crystal follow position
+	// still set it on first 2 DEFEATED states (falling to ground)
+	// but not after that (alert: this seems pretty damn bug prone, fixme)
+	if (e->state >= STATE_BASE && e->state <= STATE_DEFEATED+1) {
+		if (e->hidden)	// in middle of teleport: after tp out, before tp in
+		{
+			crystal_xmark = e->x_mark;
+			crystal_ymark = e->y_mark;
+		} else {
+			crystal_xmark = e->x;
+			crystal_ymark = e->y;
+		}
+	}
+	
+	if (e->y_speed > 0x5ff) e->y_speed = 0x5ff;
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }
 
 // this is a lesser-seen attack in which he pushes you away amongst
@@ -615,4 +580,7 @@ void ai_doctor_bat(Entity *e) {
 	else if ((blk(e->x, 0, e->y, -8) == 0x41) || (blk(e->x, 0, e->y, 8) == 0x41)) {
 		e->y_speed = -e->y_speed;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

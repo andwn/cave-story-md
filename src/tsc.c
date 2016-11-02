@@ -396,6 +396,8 @@ u8 execute_command() {
 			break;
 		case CMD_MS2: // Display message box (top - invisible)
 			logcmd("<MS2");
+			// Hide face or else doctor will talk with Misery's face graphic
+			window_set_face(0, 0);
 			window_open(1);
 			break;
 		case CMD_MS3: // Display message box (top - visible)

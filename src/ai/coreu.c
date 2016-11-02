@@ -316,6 +316,9 @@ void ai_undead_core(Entity *e) {
 	LIMIT_X(0x80);
 	LIMIT_Y(0x80);
 	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	
 	//run_face(pieces[CFACE]);
 	//run_front(pieces[CFRONT]);
 	//run_back(pieces[CBACK]);
@@ -739,6 +742,8 @@ void ai_udmini_platform(Entity *e) {
 		}
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 // falling lava-rock thing from Skull face
@@ -888,6 +893,5 @@ void ai_ud_blast(Entity *e) {
 	//SmokePuff(e->CenterX() + (random(0, 16) << CSF),
 	//		  e->CenterY() + (random(-16, 16) << CSF));
 	
-	if (e->x < -0x4000)
-		e->state = STATE_DELETE;
+	if (e->x < -0x4000) e->state = STATE_DELETE;
 }
