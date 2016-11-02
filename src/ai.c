@@ -77,15 +77,15 @@ static const u32 tan_table[33] = {
 
 // My brain hurts... don't read this
 u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
-	u8 angle = 32;
+	u8 angle = 0;
 	s32 xdist = (tgtx - curx);
 	s32 ydist = (tgty - cury);
 	if (xdist==0) return (tgty > cury) ? 0x40 : 0xC0; // Undefined
 	u32 ratio = (abs(ydist) << 13) / abs(xdist);
-	while(tan_table[33 - (angle--)] < ratio);
-	angle += 1;
+	while(tan_table[angle++] < ratio);
+	//angle += 1;
 	angle <<= 1;
-	if (curx > tgtx) angle = 0x100 - angle;
-	if (cury > tgty) angle = 0x80 - angle;
+	if (curx > tgtx) angle = 0x80 - angle;
+	if (cury > tgty) angle = 0x100 - angle;
 	return angle;
 }

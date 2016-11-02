@@ -5,7 +5,7 @@
 #include "sheet.h"
 
 const npc_info_def npc_info[NPC_COUNT + 9 + 11 + 3] = {
-	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_null, &ai_null },
+	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },

@@ -25,11 +25,11 @@ if __name__ == "__main__":
 	
 	if not os.path.exists(cachedir):
 		os.makedirs(cachedir)
+		for save in savelist:
+			download(save)
+
 	if not os.path.exists(outdir):
 		os.makedirs(outdir)
-
-	#for save in savelist:
-	#	download(save)
 
 	for filename in os.listdir(cachedir):
 		print(filename)

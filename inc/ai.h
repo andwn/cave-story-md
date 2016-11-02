@@ -74,18 +74,16 @@ typedef void (*EntityMethod)(Entity*);
 	curly_target_y = e->y;                                                                     \
 }
 
-// The shift here would be >>CSF, but that will cause the speed value to be
-// truncated per-pixel. The new values give a bit more leeway
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (cos[angle] >> 2) * ((speed) >> 7);                                        \
-	shot->y_speed = (sin[angle] >> 2) * ((speed) >> 7);                                        \
+	shot->x_speed = (cos[angle] * speed) >> CSF;                                               \
+	shot->y_speed = (sin[angle] * speed) >> CSF;                                               \
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
 	u8 angle = get_angle(shot->x, shot->y, tgtx, tgty);                                        \
-	shot->x_speed = (cos[angle] >> 2) * ((speed) >> 7);                                        \
-	shot->y_speed = (sin[angle] >> 2) * ((speed) >> 7);                                        \
+	shot->x_speed = (cos[angle] * speed) >> CSF;                                               \
+	shot->y_speed = (sin[angle] * speed) >> CSF;                                               \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
