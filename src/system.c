@@ -21,9 +21,14 @@
 // Supports 0-4095, official game uses 0-4000
 #define FLAGS_LEN 128
 
+typedef struct { u8 hour, minute, second, frame; } Time;
+
 u8 debuggingEnabled = FALSE;
 u8 sram_state = SRAM_UNCHECKED;
-struct { u8 hour, minute, second, frame; } time;
+
+u8 counterEnabled = FALSE;
+Time time, counter;
+
 u32 flags[FLAGS_LEN];
 u32 skip_flags = 0;
 
@@ -48,17 +53,26 @@ u8 system_get_skip_flag(u16 flag) {
 }
 
 void system_update() {
-	time.frame++;
-	if(time.frame >= FPS) {
-		time.second++;
+	if(++time.frame >= FPS) {
 		time.frame = 0;
-		if(time.second >= 60) {
-			time.minute++;
+		if(++time.second >= 60) {
 			time.second = 0;
-			if(time.minute >= 60) {
+			if(++time.minute >= 60) {
 				time.hour++;
 				time.minute = 0;
 				printf("You have been playing for %hu hour(s)", time.hour);
+			}
+		}
+	}
+	if(counterEnabled) {
+		if(++counter.frame >= FPS) {
+			counter.frame = 0;
+			if(++counter.second >= 60) {
+				counter.second = 0;
+				if(++counter.minute >= 60) {
+					counter.hour++;
+					counter.minute = 0;
+				}
 			}
 		}
 	}
@@ -66,6 +80,7 @@ void system_update() {
 
 void system_new() {
 	puts("Starting a new game");
+	counterEnabled = FALSE;
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(u16 i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
@@ -115,6 +130,7 @@ void system_save() {
 
 void system_load() {
 	puts("Loading game save from SRAM");
+	counterEnabled = FALSE;
 	player_init();
 	SRAM_enableRO();
 	u16 rid = SRAM_readWord(0x00);
@@ -191,6 +207,19 @@ u8 system_checkdata() {
 	return sram_state;
 }
 
+void system_start_counter() {
+	counter = (Time) { 0,0,0,0 };
+	counterEnabled = TRUE;
+}
+
+u32 system_counter_ticks() {
+	return counter.frame + counter.second*FPS + counter.minute*FPS*60 + counter.hour*FPS*60*60;
+}
+
+void system_counter_draw() {
+	
+}
+
 u32 system_load_counter() {
 	u8 buffer[20];
 	u32 *result = (u32*)buffer;
@@ -218,5 +247,32 @@ u32 system_load_counter() {
 		return 0xFFFFFFFF;
 	}
 	// Convert LE -> BE
-    return (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[4];
+    return (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[3];
+}
+
+void system_save_counter(u32 ticks) {
+	u8 buffer[20];
+	u32 *result = (u32*)buffer;
+	u8 *tickbuf = (u8*)&ticks;
+	// Generate random key
+	result[4] = random();
+	// Write to buffer BE -> LE 4 times
+	for(u16 i = 0; i < 4; i++) {
+		result[i] = (tickbuf[0]<<24) + (tickbuf[1]<<16) + (tickbuf[2]<<8) + tickbuf[3];
+	}
+	// Apply the key to each
+	for(u16 i = 0; i < 4; i++) {
+		u8 key = buffer[16 + i];
+		u16 j = i * 4;
+		buffer[j] += key;
+		buffer[j+1] += key;
+		buffer[j+2] += key;
+		buffer[j+3] += (key / 2);
+	}
+	// Write to SRAM
+	SRAM_enable();
+	for(u16 i = 0; i < 20; i++) {
+		SRAM_writeByte(0x48 + i, buffer[i]);
+	}
+	SRAM_disable();
 }

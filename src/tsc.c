@@ -18,20 +18,15 @@
 #include "sprite.h"
 #include "sheet.h"
 
-#ifdef KDB_TSC
-#define logcmd(...) printf(__VA_ARGS__)
-#else
-#define logcmd(...) /**/
-#endif
-
-// Execution State
-#define TSC_IDLE 0 // Not executing any events
-#define TSC_RUNNING 1 // Executing event commands
-#define TSC_WAITTIME 2 // Waiting on a timer before continuing
-#define TSC_WAITINPUT 3 // Waiting for player to press C
-#define TSC_PROMPT 4 // Prompting yes/no
-#define TSC_TELEMENU 5 // Teleport menu
-#define TSC_WAITGROUNDED 6 // Waiting for the player to touch the ground
+enum TSC_STATE {
+	TSC_IDLE,			// Not executing any script
+	TSC_RUNNING,		// Executing event commands
+	TSC_WAITTIME,		// Waiting on a timer before continuing
+	TSC_WAITINPUT,		// Waiting for player to press C
+	TSC_PROMPT,			// Prompting yes/no
+	TSC_TELEMENU, 		// Displaying the teleporter menu
+	TSC_WAITGROUNDED, 	// Waiting for the player to touch the ground
+};
 
 #define HEAD_EVENT_COUNT 14 // There are exactly 14
 #define MAX_EVENTS 106 // Largest is ArmsItem with 106
@@ -167,6 +162,7 @@ u8 execute_command();
 u8 tsc_read_byte();
 u16 tsc_read_word();
 
+// Load window tiles & the global "head" events
 void tsc_init() {
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
@@ -175,7 +171,7 @@ void tsc_init() {
 }
 
 void tsc_load_stage(u8 id) {
-	if(id == 255) {
+	if(id == 255) { // Stage index 255 is a special case for the item menu
 		const u8 *TSC = TSC_ArmsItem;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
@@ -208,6 +204,7 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 }
 
 void tsc_call_event(u16 number) {
+	// Events under 50 will be in Head.tsc
 	if(number < 50) {
 		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
@@ -241,6 +238,8 @@ u8 tsc_update() {
 		case TSC_WAITTIME:
 		{
 			waitTime--;
+			// ArmsItem uses <WAI9999 after everything. The original game probably uses this
+			// in some weird way but it'll just freeze here, so don't <WAI in the pause menu
 			if(paused) {
 				waitTime = 0;
 			// Check the wait time again to prevent underflowing
@@ -263,6 +262,7 @@ u8 tsc_update() {
 		case TSC_PROMPT:
 		{
 			if(window_prompt_update()) {
+				// Answering No will jump to another event
 				if(!window_prompt_answer()) tsc_call_event(promptJump);
 				tscState = TSC_RUNNING;
 			}
@@ -294,8 +294,9 @@ u8 tsc_update() {
 				}
 				sound_play(SND_MENU_MOVE, 5);
 			} else { // Doing nothing, blink cursor
+				bossHealth ^= 8;
 				sprite_index(teleMenuSprite[teleMenuSelection], 
-						sheets[teleMenuSheet].index + teleMenuSelection*16 + 8);
+						sheets[teleMenuSheet].index + teleMenuSelection*16 + bossHealth);
 			}
 			sprite_addq(teleMenuSprite, teleMenuSlotCount);
 		}
@@ -307,7 +308,6 @@ u8 tsc_update() {
 		break;
 		default:
 		{
-			puts("Invalid TSC State");
 			tscState = TSC_IDLE;
 		}
 		break;
@@ -372,7 +372,7 @@ void tsc_show_teleport_menu() {
 		if(teleportEvent[i] == 0) continue;
 		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
 		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
-			.x = 160 + i*40, .y = 224,
+			.x = 24 + i*40 + 128, .y = 96 + 128,
 			.size = SPRITE_SIZE(4, 2),
 			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
 		};
@@ -381,8 +381,14 @@ void tsc_show_teleport_menu() {
 	if(teleMenuSlotCount > 0) {
 		tscState = TSC_TELEMENU;
 	} else {
-		tscState = TSC_RUNNING; // Don't bother with the menu if we can't teleport
+		// Don't bother with the menu if we can't teleport
+		// Skip a command to avoid having to press C multiple times
+		execute_command();
+		tscState = TSC_RUNNING;
 	}
+	// I use bossHealth to tick back and forth between 0 and 8 so the cursor will flash
+	// since bosses don't happen in Arthur's house
+	bossHealth = 0;
 }
 
 u8 execute_command() {
@@ -391,30 +397,24 @@ u8 execute_command() {
 	if(cmd >= 0x80) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
-			logcmd("<MSG");
 			window_open(0);
 			break;
 		case CMD_MS2: // Display message box (top - invisible)
-			logcmd("<MS2");
 			// Hide face or else doctor will talk with Misery's face graphic
 			window_set_face(0, 0);
 			window_open(1);
 			break;
 		case CMD_MS3: // Display message box (top - visible)
-			logcmd("<MS3");
 			window_open(1);
 			break;
 		case CMD_CLO: // Close message box
-			logcmd("<CLO");
 			window_close();
 			break;
 		case CMD_CLR: // Clear message box
-			logcmd("<CLR");
 			window_clear();
 			break;
 		case CMD_NUM: // Show number (1) in message box
 			args[0] = tsc_read_word();
-			logcmd("<NUM:%hu", args[0]);
 			{
 				char str[12];
 				intToStr(lastAmmoNum, str, 1);
@@ -425,7 +425,6 @@ u8 execute_command() {
 			break;
 		case CMD_GIT: // Display item (1) in message box
 			args[0] = tsc_read_word();
-			logcmd("<GIT:%hu", args[0]);
 			if(args[0] >= 1000) {
 				window_show_item(args[0] - 1000);
 			} else {
@@ -434,30 +433,24 @@ u8 execute_command() {
 			break;
 		case CMD_FAC: // Display face (1) in message box
 			args[0] = tsc_read_word();
-			logcmd("<FAC:%hu", args[0]);
 			window_set_face(args[0], TRUE);
 			break;
 		case CMD_CAT: // All 3 of these display text instantly
-			logcmd("<CAT");
 			window_set_textmode(TM_LINE);
 			break;
 		case CMD_SAT:
-			logcmd("<SAT");
 			window_set_textmode(TM_LINE);
 			break;
 		case CMD_TUR:
-			logcmd("<TUR");
 			window_set_textmode(TM_ALL);
 			break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
 			args[0] = tsc_read_word();
-			logcmd("<YNJ:%hu", args[0]);
 			promptJump = args[0];
 			window_prompt_open();
 			tscState = TSC_PROMPT;
 			return 1;
 		case CMD_END: // End the event
-			logcmd("<END");
 			tscState = TSC_IDLE;
 			if(!paused) {
 				gameFrozen = FALSE;
@@ -469,7 +462,6 @@ u8 execute_command() {
 			return 1;
 		case CMD_EVE: // Jump to event (1)
 			args[0] = tsc_read_word();
-			logcmd("<EVE:%hu", args[0]);
 			tsc_call_event(args[0]);
 			break;
 		case CMD_TRA: // Teleport to stage (1), run event (2), coords (3),(4)
@@ -477,7 +469,6 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			logcmd("<TRA:%hu:%hu:%hu:%hu", args[0], args[1], args[2], args[3]);
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			player.x_speed = 0;
@@ -490,75 +481,58 @@ u8 execute_command() {
 			tsc_call_event(args[1]);
 			return 1;
 		case CMD_INI: // Start from beginning (try again without save data)
-			logcmd("<INI");
 			return 4;
 		case CMD_ESC: // Restart the game
-			logcmd("<ESC");
 			return 2;
 		case CMD_LDP: // Reload save file (try again)
-			logcmd("<LDP");
 			return 3;
 		case CMD_CMU: // Play song (1), stop if 0
 			args[0] = tsc_read_word();
-			logcmd("<CMU:%hu", args[0]);
 			song_play(args[0]);
 			break;
 		case CMD_FMU: // Fade out music (we just stop for now)
-			logcmd("<FMU");
 			song_stop();
 			break;
 		case CMD_RMU: // Resume previously playing music
-			logcmd("<RMU");
 			song_resume();
 			break;
 		case CMD_SOU: // Play sound (1)
 			args[0] = tsc_read_word();
-			logcmd("<SOU:%hu", args[0]);
 			sound_play(args[0], 5);
 			break;
 		case CMD_SPS: // TODO: Persistent sounds, skip for now
-			logcmd("<SPS");
 			break;
 		case CMD_CPS:
-			logcmd("<CPS");
 			break;
 		case CMD_SSS:
 			args[0] = tsc_read_word();
-			logcmd("<SSS:%hu", args[0]);
 			break;
 		case CMD_CSS:
-			logcmd("<CSS");
 			break;
 		case CMD_NOD: // Wait for player input
-			logcmd("<NOD");
 			tscState = TSC_WAITINPUT;
 			return 1;
 		case CMD_WAI: // Wait (1) frames
 			args[0] = tsc_read_word();
-			logcmd("<WAI:%hu", args[0]);
 			tscState = TSC_WAITTIME;
 			waitTime = TIME(args[0]);
 			return 1;
 		case CMD_WAS: // Wait for player to hit the ground
-			logcmd("<WAS");
 			tscState = TSC_WAITGROUNDED;
 			return 1;
 		case CMD_MM0: // Halt player movement
-			logcmd("<MM0");
 			player.x_speed = 0;
 			player.y_speed = 0;
 			break;
 		case CMD_MOV: // Move player to coordinates (1),(2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<MOV:%hu:%hu", args[0], args[1]);
 			player.x = block_to_sub(args[0]) + (8 << CSF);
 			player.y = block_to_sub(args[1]) + (8 << CSF);
 			player.grounded = FALSE;
 			break;
 		case CMD_MYB: // Bounce player in direction (1)
 			args[0] = tsc_read_word();
-			logcmd("<MYB:%hu", args[0]);
 			if(args[0] == 0) { // Right
 				player.x_speed = SPEED(0x200);
 			} else if(args[0] == 2) { // Left
@@ -568,7 +542,6 @@ u8 execute_command() {
 			break;
 		case CMD_MYD: // Change direction to (1)
 			args[0] = tsc_read_word();
-			logcmd("<MYD:%hu", args[0]);
 			if(args[0] == 0) { // Left
 				player.dir = 0;
 			} else if(args[0] == 2) { // Right
@@ -577,50 +550,41 @@ u8 execute_command() {
 			break;
 		case CMD_UNI: // Change movement type to (1)
 			args[0] = tsc_read_word();
-			logcmd("<UNI:%hu", args[0]);
 			playerMoveMode = args[0];
 			break;
 		case CMD_UNJ: // If movement type is (1) jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<UNJ:%hu:%hu", args[0], args[1]);
 			if(playerMoveMode == args[0]) {
 				tsc_call_event(args[1]);
 			}
 			break;
 		case CMD_KEY: // Lock controls and hide the HUD
-			logcmd("<KEY");
 			controlsLocked = TRUE;
 			hud_hide();
 			gameFrozen = FALSE;
 			break;
 		case CMD_PRI: // Lock controls
-			logcmd("<PRI");
 			controlsLocked = TRUE;
 			gameFrozen = TRUE;
 			break;
 		case CMD_FRE: // Unlock controls
-			logcmd("<FRE");
 			controlsLocked = FALSE;
 			hud_show();
 			gameFrozen = FALSE;
 			break;
 		case CMD_HMC: // Hide player character
-			logcmd("<HMC");
 			player.hidden = TRUE;
 			break;
 		case CMD_SMC: // Show player character
-			logcmd("<SMC");
 			player.hidden = FALSE;
 			break;
 		case CMD_LI_ADD: // Restore health by (1)
 			args[0] = tsc_read_word();
-			logcmd("<LI+:%hu", args[0]);
 			player_heal(args[0]);
 			break;
 		case CMD_ML_ADD: // Increase max health by (1)
 			args[0] = tsc_read_word();
-			logcmd("<ML+:%hu", args[0]);
 			player_maxhealth_increase(args[0]);
 			break;
 		case CMD_ANP: // Give all entities of event (1) script state (2) with direction (3)
@@ -628,7 +592,6 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			logcmd("<ANP:%hu:%hu:%hu", args[0], args[1], args[2]);
 			// To make shutters in almond work, handle up/down
 			u8 dir = args[2] > 0;
 			if(args[2] == DIR_UP) dir = 2;
@@ -640,7 +603,6 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			logcmd("<CNP:%hu:%hu:%hu", args[0], args[1], args[2]);
 			entities_replace(args[0], args[1], args[2] > 0, 0);
 			break;
 		case CMD_MNP: // Move entity of event (1) to (2),(3) with direction (4)
@@ -648,17 +610,14 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			logcmd("<MNP:%hu:%hu:%hu:%hu", args[0], args[1], args[2], args[3]);
 			entities_move(args[0], args[1], args[2], args[3] > 0);
 			break;
 		case CMD_DNA: // Delete all entities of type (1)
 			args[0] = tsc_read_word();
-			logcmd("<DNA:%hu", args[0]);
 			entities_clear_by_type(args[0]);
 			break;
 		case CMD_DNP: // Delete all entities with event # (1)
 			args[0] = tsc_read_word();
-			logcmd("<DNP:%hu", args[0]);
 			entities_clear_by_event(args[0]);
 			break;
 		// Change entity of event (1) to type (2) with direction (3) and set option 2 flag
@@ -666,7 +625,6 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			logcmd("<INP:%hu:%hu:%hu", args[0], args[1], args[2]);
 			entities_replace(args[0], args[1], args[2] > 0, 0x1000);
 			break;
 		case CMD_SNP: // Create entity (1) at (2),(3) with direction (4)
@@ -675,7 +633,6 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			logcmd("<SNP:%hu:%hu:%hu:%hu", args[0], args[1], args[2], args[3]);
 			Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
 									  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
 			e->dir = args[3] > 0;
@@ -683,7 +640,6 @@ u8 execute_command() {
 		break;
 		case CMD_BOA: // Set boss state to (1)
 			args[0] = tsc_read_word();
-			logcmd("<BOA:%hu", args[0]);
 			// The real cave story has the stage boss created at stage load in a dormant state.
 			// NXEngine also does this, but I don't, instead waiting until the boss is used
 			// In a <BOA command to create it. A bit hacky but it works.
@@ -713,7 +669,6 @@ u8 execute_command() {
 			break;
 		case CMD_BSL: // Start boss fight with entity (1)
 			args[0] = tsc_read_word();
-			logcmd("<BSL:%hu", args[0]);
 			//bossEntity = entity_find_by_event(args[0]);
 			//if(bossEntity) {
 			//	bossMaxHealth = bossHealth = bossEntity->health;
@@ -723,164 +678,136 @@ u8 execute_command() {
 		case CMD_NCJ: // If entity type (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<NCJ:%hu:%hu", args[0], args[1]);
 			if(entity_find_by_type(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_ECJ: // If entity id (1) exists jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<ECJ:%hu:%hu", args[0], args[1]);
 			if(entity_find_by_id(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_AE_ADD: // Refill all weapon ammo
-			logcmd("<AE+");
 			player_refill_ammo();
 			break;
 		case CMD_ZAM: // Make all weapons level 1
-			logcmd("<ZAM");
 			player_delevel_weapons();
 			break;
 		case CMD_AM_ADD: // Give weapon (1) and ammo (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<AM+:%hu:%hu", args[0], args[1]);
 			player_give_weapon(args[0], args[1]);
 			lastAmmoNum = args[1];
 			break;
 		case CMD_AM_SUB: // Remove weapon (1)
 			args[0] = tsc_read_word();
-			logcmd("<AM-:%hu", args[0]);
 			player_take_weapon(args[0]);
 			break;
 		case CMD_TAM: // Trade weapon (1) for (2) with (3) max ammo
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			logcmd("<TAM:%hu:%hu:%hu", args[0], args[1], args[2]);
 			player_trade_weapon(args[0], args[1], args[2]);
 			break;
 		case CMD_AMJ: // If player has weapon (1) jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<AMJ:%hu:%hu", args[0], args[1]);
 			if(player_has_weapon(args[0])) tsc_call_event(args[1]);
 			break;
 			// These two equip commands actually give a flag between 1<<0 and 1<<8
 		case CMD_EQ_ADD: // Equip item (1)
 			args[0] = tsc_read_word();
-			logcmd("<EQ+:%hu", args[0]);
 			player_equip(args[0]);
 			break;
 		case CMD_EQ_SUB: // Remove equip (1)
 			args[0] = tsc_read_word();
-			logcmd("<EQ-:%hu", args[0]);
 			player_unequip(args[0]);
 			break;
 		case CMD_IT_ADD: // Give item (1)
 			args[0] = tsc_read_word();
-			logcmd("<IT+:%hu", args[0]);
 			player_give_item(args[0]);
 			break;
 		case CMD_IT_SUB: // Remove item (1)
 			args[0] = tsc_read_word();
-			logcmd("<IT-:%hu", args[0]);
 			player_take_item(args[0]);
 			break;
 		case CMD_ITJ: // If player has item (1) jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<ITJ:%hu:%hu", args[0], args[1]);
 			if(player_has_item(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_FL_ADD: // Set flag (1)
 			args[0] = tsc_read_word();
-			logcmd("<FL+:%hu", args[0]);
 			system_set_flag(args[0], TRUE);
 			break;
 		case CMD_FL_SUB: // Unset flag (1)
 			args[0] = tsc_read_word();
-			logcmd("<FL-:%hu", args[0]);
 			system_set_flag(args[0], FALSE);
 			break;
 		case CMD_FLJ: // If flag (1) is TRUE jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<FLJ:%hu:%hu", args[0], args[1]);
 			if(system_get_flag(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_SK_ADD: // Set skip flag (1)
 			args[0] = tsc_read_word();
-			logcmd("<SK+:%hu", args[0]);
 			system_set_skip_flag(args[0], TRUE);
 			break;
 		case CMD_SK_SUB: // Unset skip flag (1)
 			args[0] = tsc_read_word();
-			logcmd("<SK-:%hu", args[0]);
 			system_set_skip_flag(args[0], FALSE);
 			break;
 		case CMD_SKJ: // If skip flag (1) is TRUE jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<SKJ:%hu:%hu", args[0], args[1]);
 			if(system_get_skip_flag(args[0])) tsc_call_event(args[1]);
 			break;
 		case CMD_FOB: // Focus on boss (1) with (2) ticks
-			logcmd("<FOB");
 			if(bossEntity) camera.target = bossEntity;
 			break;
 		case CMD_FON: // Focus on NPC (1) with (2) ticks
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<FON:%hu:%hu", args[0], args[1]);
 			Entity *e = entity_find_by_event(args[0]);
 			camera.target = e ? e : &player;
 			break;
 		case CMD_FOM: // Focus on player at (1) speed
 			args[0] = tsc_read_word();
-			logcmd("<FOM:%hu", args[0]);
 			camera.target = &player;
 			break;
 		case CMD_QUA: // Shake camera for (1) frames
 			args[0] = tsc_read_word();
-			logcmd("<QUA:%hu", args[0]);
 			camera_shake(args[0]);
 			break;
 		case CMD_FAI: // Fading, in direction (1)
 			args[0] = tsc_read_word();
-			logcmd("<FAI:%hu", args[0]);
 			SYS_disableInts();
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 			SYS_enableInts();
 			break;
 		case CMD_FAO:
 			args[0] = tsc_read_word();
-			logcmd("<FAO:%hu", args[0]);
 			VDP_waitVSync();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
 			break;
 		case CMD_FLA: // Flash screen white
-			logcmd("<FLA");
 			VDP_flashWhite();
 			break;
 		case CMD_MLP: // Show the map
-			logcmd("<MLP");
 			do_map();
 			break;
 		case CMD_MNA: // Show stage name
-			logcmd("<MNA");
 			player_show_map_name(180);
 			break;
 		case CMD_CMP: // Change stage tile at (1),(2) to type (3)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			logcmd("<CMP:%hu:%hu:%hu", args[0], args[1], args[2]);
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
 			// code so I can put in this hacky section which fixes specific scripts
 			if(stageID == 14) { // Mimiga Village Shack - when Balrog barges in
 				stage_replace_block(args[0], args[1], 
 					(args[2]==80 || args[2]==81 || args[2]==82) ? args[2]+32 : args[2]+19);
+				// TODO: Balcony tileset
 			} else {
 				stage_replace_block(args[0], args[1], args[2]);
 			}
@@ -890,48 +817,38 @@ u8 execute_command() {
 		// Map flags are unused but exist, keeping them here just in case
 		case CMD_MP_ADD: // Map flag (1)
 			args[0] = tsc_read_word();
-			logcmd("<MP+:%hu", args[0]);
 			break;
 		case CMD_MPJ: // If map flag (1) set jump to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<MPJ:%hu:%hu", args[0], args[1]);
 			break;
 		case CMD_CRE: // TODO: Show credits
-			logcmd("<CRE");
 			break;
 		case CMD_SIL: // TODO: Show illustration (1) in the credits
 			args[0] = tsc_read_word();
-			logcmd("<SIL:%hu", args[0]);
 			break;
 		case CMD_CIL: // TODO: Clear illustration in the credits
-			logcmd("<CIL");
 			break;
 		case CMD_SLP: // Show the teleporter menu
-			logcmd("<SLP");
 			tsc_show_teleport_menu();
 			return 1;
 		case CMD_PS_ADD: // Set teleporter slot (1) to event (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<PS+:%hu:%hu", args[0], args[1]);
 			if(args[0] < 8) teleportEvent[args[0]] = args[1];
 			break;
 		case CMD_SVP: // Save
-			logcmd("<SVP");
 			system_save();
 			break;
-		case CMD_STC: // TODO: Save counter
-			logcmd("<STC");
+		case CMD_STC: // Save counter
+			system_save_counter(system_counter_ticks());
 			break;
 		case CMD_XX1: // TODO: Island effect
 			args[0] = tsc_read_word();
-			logcmd("<XX1:%hu", args[0]);
 			break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			logcmd("<SMP:%hu:%hu", args[0], args[1]);
 			stage_replace_block(args[0], args[1], stage_get_block(args[0], args[1]) - 1);
 			break;
 		default:

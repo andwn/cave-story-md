@@ -168,15 +168,16 @@ void draw_itemmenu(u8 resetCursor) {
 	SYS_disableInts();
 	// Fill the top part
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX), 1, 0);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_WINDOWINDEX+1, 2, 36); // Upper mid
+	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+1), 2, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+2), 38, 0);
-	for(u16 y = 1; y < 19; y++) {
+	for(u16 y = 1; y < 19; y++) { // Body
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+3), 1, y);
-		VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_FONTINDEX, y*64 + 2, 36); // Body
+		VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX), y*64 + 2, 36);
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+5), 38, y);
 	}
+	// Bottom
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+6), 1, 19);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_WINDOWINDEX+7, 19*64 + 2, 36); // Lower mid
+	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+7), 19*64 + 2, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+8), 38, 19);
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
@@ -185,20 +186,34 @@ void draw_itemmenu(u8 resetCursor) {
 	window_open(FALSE);
 	// Weapons
 	VDP_drawTextWindow("--ARMS--", 4, 3);
-	VDP_loadTileData(TS_Numbers.tiles, TILE_FACEINDEX+4, 10, TRUE);
+	//VDP_loadTileData(TS_Numbers.tiles, TILE_FACEINDEX+4, 10, TRUE);
 	//VDP_loadTileData(SPR_TILES(&SPR_Numbers, 0, 0), TILE_SHEETINDEX+10, 10, TRUE);
 	for(u16 i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
 		// X tile pos and VRAM index to put the ArmsImage tiles
-		u16 x = 4 + i*6;
+		u16 x = 4 + i*6, y = 4;
 		u16 index = TILE_FACEINDEX + 16 + i*4;
 		VDP_loadTileData(SPR_TILES(&SPR_ArmsImage, 0, w->type), index, 4, TRUE);
 		// 4 mappings for ArmsImage icon
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   4);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+2), x+1, 4);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+1), x,   5);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+3), x+1, 5);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   y);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+2), x+1, y);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+1), x,   y+1);
+		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+3), x+1, y+1);
+		// Level
+		char str[6];
+		sprintf(str, "Lv %hu", w->level);
+		VDP_drawTextWindow(str, x, y+2);
+		// Ammo & Max Ammo
+		if(w->maxammo) {
+			sprintf(str, " %3hu", w->ammo);
+			VDP_drawTextWindow(str, x, y+3);
+			sprintf(str, "/%3hu", w->maxammo);
+			VDP_drawTextWindow(str, x, y+4);
+		} else {
+			VDP_drawTextWindow("  --", x, y+3);
+			VDP_drawTextWindow("/ --", x, y+4);
+		}
 	}
 	// Items
 	VDP_drawTextWindow("--ITEM--", 4, 10);

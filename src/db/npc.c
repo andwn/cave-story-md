@@ -273,7 +273,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning Ball
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
+	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
 	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_null, &ai_null }, // Helicopter
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x100 (256) */
@@ -284,7 +284,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Caged)
 	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie (Caged)
 	{ NULL, 		NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chaco (Caged)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Doctor (Boss)
+	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ondeath_default }, // Doctor (Boss)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_shot, &ai_null }, // Doctor Red Wave
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Fast)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Slow)

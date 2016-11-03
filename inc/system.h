@@ -32,7 +32,12 @@ void system_load();
 void system_save();
 // Validates whether any save data exists in SRAM
 u8 system_checkdata();
-// Read counter value from SRAM and return it
+
+// Counter stuff
+void system_start_counter();
+u32 system_counter_ticks();
+void system_counter_draw();
 u32 system_load_counter();
+void system_save_counter(u32 ticks);
 
 #endif // INC_SYSTEM_H_

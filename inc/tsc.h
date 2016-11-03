@@ -35,8 +35,6 @@ void tsc_load_stage(u8 id);
 u8 tsc_update();
 // This will begin executing a scripted event if it exists
 void tsc_call_event(u16 number);
-// Returns TRUE if a script is being executed
-u8 tscState;
 
 void tsc_unpause_debug();
 
