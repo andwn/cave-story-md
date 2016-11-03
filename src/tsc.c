@@ -822,8 +822,8 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			break;
-		case CMD_CRE: // TODO: Show credits
-			break;
+		case CMD_CRE: // Show credits
+			return 5;
 		case CMD_SIL: // TODO: Show illustration (1) in the credits
 			args[0] = tsc_read_word();
 			break;

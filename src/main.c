@@ -43,10 +43,7 @@ int main() {
 		u8 select = titlescreen_main();
 		switch(select) {
 			case 0:
-			case 1:
-				select = game_main(select);
-				if(select > 0) credits_main(select);
-				break;
+			case 1: game_main(select); credits_main(0); break;
 			case 2: soundtest_main(); break;
 		}
     }

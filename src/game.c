@@ -100,9 +100,8 @@ u8 game_main(u8 load) {
 				u8 rtn = tsc_update();
 				// Nonzero return values exit the game, or switch to the ending sequence
 				if(rtn > 0) {
-					if(rtn == 1) {
-						ending = 0; // No ending, return to title
-						break;
+					if(rtn == 1) { // Return to title screen
+						SYS_hardReset();
 					} else if(rtn == 2) {
 						game_reset(TRUE); // Reload save
 						hud_show();
@@ -112,11 +111,7 @@ u8 game_main(u8 load) {
 					} else if(rtn == 3) {
 						game_reset(FALSE); // Start from beginning
 						continue;
-					} else if(rtn == 4) {
-						ending = 1; // Normal ending
-						break;
-					} else if(rtn == 5) {
-						ending = 2; // Good ending
+					} else { // End credits
 						break;
 					}
 				}
@@ -130,13 +125,6 @@ u8 game_main(u8 load) {
 		system_update();
 		ready = TRUE;
 		VDP_waitVSync();
-	}
-	
-	if(ending) { // You are a winner
-		
-	} else { // Going back to title screen
-		// Screw this just doing a hard reset
-		SYS_hardReset();
 	}
 	return ending;
 }

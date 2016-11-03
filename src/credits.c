@@ -16,6 +16,7 @@ void credits_main(u8 ending) {
 	VDP_drawText("You won!!!", 4, 8);
 	VDP_setEnable(TRUE);
 	SYS_enableInts();
+	song_play(0x21);
     while(TRUE) {
 		input_update();
 		if(joy_pressed(BUTTON_START) || joy_pressed(BUTTON_C)) {

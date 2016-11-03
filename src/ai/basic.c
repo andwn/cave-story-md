@@ -535,3 +535,67 @@ void ai_balrog_splash(Entity *e) {
 		break;
 	}
 }
+
+// this object is used in a few places, such as during the Red Demon fight (last cave),
+// and during some of the end sequences. It seems to be primarily involved with providing
+// "extra" map scrolling modes. Generally you'll <FON on it, then set the mode you desire.
+void ai_scroll_controller(Entity *e) {
+	switch(e->state) {
+		// stay above player's head. This is used during the "mad run" Balcony2 stage;
+		// you'll notice there is not normal scrolling during this part.
+		case 10:
+		{
+			e->x = player.x;
+			e->y = player.y - (32 << CSF);
+		}
+		break;
+		// pan in the specified direction. used when you get the good ending
+		// to pan over all the scenes from the island just before it crashes.
+		case 20:
+		{
+			switch(e->dir) {
+				case A_LEFT:	e->x -= (2 << CSF); break;
+				case A_UP:		e->y -= (2 << CSF); break;
+				case A_RIGHT: 	e->x += (2 << CSF); break;
+				case A_DOWN:	e->y += (2 << CSF); break;
+			}
+			
+			// player is invisible during this part. dragging him along is
+			// what makes all the monsters, falling spikes etc react.
+			player.x = e->x;
+			player.y = e->y;
+		}
+		break;
+		
+		// stay below player.
+		case 30:
+		{
+			e->x = player.x;
+			e->y = player.y + (80 << CSF);
+		}
+		break;
+		
+		// stay mid-way between player and the specified object.
+		// used during the Red Demon fight in Last Cave (hidden).
+		case 100:
+		{
+			e->state = 101;
+			if (e->eflags & NPC_OPTION2) {
+				e->linkedEntity = entity_find_by_event(e->id);
+			} else {
+				e->linkedEntity = bossEntity;
+			}
+			if (!e->linkedEntity) e->state = STATE_DELETE;
+		}
+		case 101:
+		{
+			if(e->linkedEntity->state == STATE_DELETE) {
+				e->state = STATE_DELETE;
+			} else {
+				e->x = (player.x + e->linkedEntity->x) >> 1;
+				e->y = (player.y + e->linkedEntity->y) >> 1;
+			}
+		}
+		break;
+	}
+}
