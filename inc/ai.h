@@ -130,4 +130,6 @@ void generic_npc_states(Entity *e);
 
 u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty);
 
+u8 mddir(u8 dir);
+
 #endif /* INC_AI_H_ */

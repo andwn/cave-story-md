@@ -89,3 +89,14 @@ u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
 	if (cury > tgty) angle = 0x100 - angle;
 	return angle;
 }
+
+u8 mddir(u8 dir) {
+	switch(dir) {
+		case DIR_LEFT: 		return LEFT;
+		case DIR_UP: 		return UP;
+		case DIR_RIGHT: 	return RIGHT;
+		case DIR_DOWN: 		return DOWN;
+		case DIR_CENTER: 	return CENTER;
+		default: 			return LEFT;
+	}
+}

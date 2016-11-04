@@ -397,60 +397,84 @@ u8 execute_command() {
 	if(cmd >= 0x80) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
+		{
 			window_open(0);
-			break;
+		}
+		break;
 		case CMD_MS2: // Display message box (top - invisible)
+		{
 			// Hide face or else doctor will talk with Misery's face graphic
 			window_set_face(0, 0);
 			window_open(1);
-			break;
+		}
+		break;
 		case CMD_MS3: // Display message box (top - visible)
+		{
 			window_open(1);
-			break;
+		}
+		break;
 		case CMD_CLO: // Close message box
+		{
 			window_close();
-			break;
+		}
+		break;
 		case CMD_CLR: // Clear message box
+		{
 			window_clear();
-			break;
+		}
+		break;
 		case CMD_NUM: // Show number (1) in message box
+		{
 			args[0] = tsc_read_word();
-			{
-				char str[12];
-				intToStr(lastAmmoNum, str, 1);
-				for(u8 i = 0; str[i] != 0 && i < 12; i++) {
-					window_draw_char(str[i]);
-				}
+			char str[12];
+			intToStr(lastAmmoNum, str, 1);
+			for(u8 i = 0; str[i] != 0 && i < 12; i++) {
+				window_draw_char(str[i]);
 			}
-			break;
+		}
+		break;
 		case CMD_GIT: // Display item (1) in message box
+		{
 			args[0] = tsc_read_word();
 			if(args[0] >= 1000) {
 				window_show_item(args[0] - 1000);
 			} else {
 				window_show_weapon(args[0]);
 			}
-			break;
+		}
+		break;
 		case CMD_FAC: // Display face (1) in message box
+		{
 			args[0] = tsc_read_word();
 			window_set_face(args[0], TRUE);
-			break;
+		}
+		break;
 		case CMD_CAT: // All 3 of these display text instantly
+		{
 			window_set_textmode(TM_LINE);
-			break;
+		}
+		break;
 		case CMD_SAT:
+		{
 			window_set_textmode(TM_LINE);
-			break;
+		}
+		break;
 		case CMD_TUR:
+		{
 			window_set_textmode(TM_ALL);
-			break;
+		}
+		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
+		{
 			args[0] = tsc_read_word();
 			promptJump = args[0];
 			window_prompt_open();
 			tscState = TSC_PROMPT;
 			return 1;
+		}
+		break;
 		case CMD_END: // End the event
+		{
 			tscState = TSC_IDLE;
 			if(!paused) {
 				gameFrozen = FALSE;
@@ -460,11 +484,16 @@ u8 execute_command() {
 				hud_show();
 			}
 			return 1;
+		}
+		break;
 		case CMD_EVE: // Jump to event (1)
+		{
 			args[0] = tsc_read_word();
 			tsc_call_event(args[0]);
-			break;
+		}
+		break;
 		case CMD_TRA: // Teleport to stage (1), run event (2), coords (3),(4)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -480,58 +509,89 @@ u8 execute_command() {
 			stage_load(args[0]);
 			tsc_call_event(args[1]);
 			return 1;
+		}
+		break;
 		case CMD_INI: // Start from beginning (try again without save data)
+		{
 			return 4;
+		}
+		break;
 		case CMD_ESC: // Restart the game
+		{
 			return 2;
+		}
+		break;
 		case CMD_LDP: // Reload save file (try again)
+		{
 			return 3;
+		}
+		break;
 		case CMD_CMU: // Play song (1), stop if 0
+		{
 			args[0] = tsc_read_word();
 			song_play(args[0]);
-			break;
+		}
+		break;
 		case CMD_FMU: // Fade out music (we just stop for now)
+		{
 			song_stop();
-			break;
+		}
+		break;
 		case CMD_RMU: // Resume previously playing music
+		{
 			song_resume();
-			break;
+		}
+		break;
 		case CMD_SOU: // Play sound (1)
+		{
 			args[0] = tsc_read_word();
 			sound_play(args[0], 5);
-			break;
-		case CMD_SPS: // TODO: Persistent sounds, skip for now
-			break;
-		case CMD_CPS:
-			break;
-		case CMD_SSS:
-			args[0] = tsc_read_word();
-			break;
-		case CMD_CSS:
-			break;
+		}
+		break;
+		
+		// TODO: Persistent sounds, skip for now
+		case CMD_SPS: break;
+		case CMD_CPS: break;
+		case CMD_SSS: args[0] = tsc_read_word(); break;
+		case CMD_CSS: break;
+			
 		case CMD_NOD: // Wait for player input
+		{
 			tscState = TSC_WAITINPUT;
 			return 1;
+		}
+		break;
 		case CMD_WAI: // Wait (1) frames
+		{
 			args[0] = tsc_read_word();
 			tscState = TSC_WAITTIME;
 			waitTime = TIME(args[0]);
 			return 1;
+		}
+		break;
 		case CMD_WAS: // Wait for player to hit the ground
+		{
 			tscState = TSC_WAITGROUNDED;
 			return 1;
+		}
+		break;
 		case CMD_MM0: // Halt player movement
+		{
 			player.x_speed = 0;
 			player.y_speed = 0;
-			break;
+		}
+		break;
 		case CMD_MOV: // Move player to coordinates (1),(2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			player.x = block_to_sub(args[0]) + (8 << CSF);
 			player.y = block_to_sub(args[1]) + (8 << CSF);
 			player.grounded = FALSE;
-			break;
+		}
+		break;
 		case CMD_MYB: // Bounce player in direction (1)
+		{
 			args[0] = tsc_read_word();
 			if(args[0] == 0) { // Right
 				player.x_speed = SPEED(0x200);
@@ -539,94 +599,121 @@ u8 execute_command() {
 				player.x_speed = -SPEED(0x200);
 			}
 			player.y_speed = -SPEED(0x400);
-			break;
+		}
+		break;
 		case CMD_MYD: // Change direction to (1)
+		{
 			args[0] = tsc_read_word();
 			if(args[0] == 0) { // Left
 				player.dir = 0;
 			} else if(args[0] == 2) { // Right
 				player.dir = 1;
 			}
-			break;
+		}
+		break;
 		case CMD_UNI: // Change movement type to (1)
+		{
 			args[0] = tsc_read_word();
 			playerMoveMode = args[0];
-			break;
+		}
+		break;
 		case CMD_UNJ: // If movement type is (1) jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(playerMoveMode == args[0]) {
 				tsc_call_event(args[1]);
 			}
-			break;
+		}
+		break;
 		case CMD_KEY: // Lock controls and hide the HUD
+		{
 			controlsLocked = TRUE;
 			hud_hide();
 			gameFrozen = FALSE;
-			break;
+		}
+		break;
 		case CMD_PRI: // Lock controls
+		{
 			controlsLocked = TRUE;
 			gameFrozen = TRUE;
-			break;
+		}
+		break;
 		case CMD_FRE: // Unlock controls
+		{
 			controlsLocked = FALSE;
 			hud_show();
 			gameFrozen = FALSE;
-			break;
+		}
+		break;
 		case CMD_HMC: // Hide player character
+		{
 			player.hidden = TRUE;
-			break;
+		}
+		break;
 		case CMD_SMC: // Show player character
+		{
 			player.hidden = FALSE;
-			break;
+		}
+		break;
 		case CMD_LI_ADD: // Restore health by (1)
+		{
 			args[0] = tsc_read_word();
 			player_heal(args[0]);
-			break;
+		}
+		break;
 		case CMD_ML_ADD: // Increase max health by (1)
+		{
 			args[0] = tsc_read_word();
 			player_maxhealth_increase(args[0]);
-			break;
+		}
+		break;
 		case CMD_ANP: // Give all entities of event (1) script state (2) with direction (3)
 		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			// To make shutters in almond work, handle up/down
-			u8 dir = args[2] > 0;
-			if(args[2] == DIR_UP) dir = 2;
-			if(args[2] == DIR_DOWN) dir = 3;
-			entities_set_state(args[0], args[1], dir);
+			entities_set_state(args[0], args[1], mddir(args[2]));
 		}
-			break;
+		break;
 		case CMD_CNP: // Change all entities of event (1) to type (2) with direction (3)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(args[0], args[1], args[2] > 0, 0);
-			break;
+			entities_replace(args[0], args[1], mddir(args[2]), 0);
+		}
+		break;
 		case CMD_MNP: // Move entity of event (1) to (2),(3) with direction (4)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			entities_move(args[0], args[1], args[2], args[3] > 0);
-			break;
+			entities_move(args[0], args[1], args[2], mddir(args[3]));
+		}
+		break;
 		case CMD_DNA: // Delete all entities of type (1)
+		{
 			args[0] = tsc_read_word();
 			entities_clear_by_type(args[0]);
-			break;
+		}
+		break;
 		case CMD_DNP: // Delete all entities with event # (1)
+		{
 			args[0] = tsc_read_word();
 			entities_clear_by_event(args[0]);
-			break;
+		}
+		break;
 		// Change entity of event (1) to type (2) with direction (3) and set option 2 flag
 		case CMD_INP:
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			entities_replace(args[0], args[1], args[2] > 0, 0x1000);
-			break;
+			entities_replace(args[0], args[1], mddir(args[2]), 0x1000);
+		}
+		break;
 		case CMD_SNP: // Create entity (1) at (2),(3) with direction (4)
 		{
 			args[0] = tsc_read_word();
@@ -635,10 +722,11 @@ u8 execute_command() {
 			args[3] = tsc_read_word();
 			Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
 									  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
-			e->dir = args[3] > 0;
+			e->dir = mddir(args[3]);
 		}
 		break;
 		case CMD_BOA: // Set boss state to (1)
+		{
 			args[0] = tsc_read_word();
 			// The real cave story has the stage boss created at stage load in a dormant state.
 			// NXEngine also does this, but I don't, instead waiting until the boss is used
@@ -666,138 +754,196 @@ u8 execute_command() {
 			} else if(bossEntity) {
 				bossEntity->state = args[0];
 			}
-			break;
+		}
+		break;
 		case CMD_BSL: // Start boss fight with entity (1)
+		{
 			args[0] = tsc_read_word();
 			//bossEntity = entity_find_by_event(args[0]);
 			//if(bossEntity) {
 			//	bossMaxHealth = bossHealth = bossEntity->health;
 			//	tsc_show_boss_health();
 			//}
-			break;
+		}
+		break;
 		case CMD_NCJ: // If entity type (1) exists jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(entity_find_by_type(args[0])) tsc_call_event(args[1]);
-			break;
+		}
+		break;
 		case CMD_ECJ: // If entity id (1) exists jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(entity_find_by_id(args[0])) tsc_call_event(args[1]);
-			break;
+		}
+		break;
 		case CMD_AE_ADD: // Refill all weapon ammo
+		{
 			player_refill_ammo();
-			break;
+		}
+		break;
 		case CMD_ZAM: // Make all weapons level 1
+		{
 			player_delevel_weapons();
-			break;
+		}
+		break;
 		case CMD_AM_ADD: // Give weapon (1) and ammo (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			player_give_weapon(args[0], args[1]);
 			lastAmmoNum = args[1];
-			break;
+		}
+		break;
 		case CMD_AM_SUB: // Remove weapon (1)
+		{
 			args[0] = tsc_read_word();
 			player_take_weapon(args[0]);
-			break;
+		}
+		break;
 		case CMD_TAM: // Trade weapon (1) for (2) with (3) max ammo
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			player_trade_weapon(args[0], args[1], args[2]);
-			break;
+		}
+		break;
 		case CMD_AMJ: // If player has weapon (1) jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(player_has_weapon(args[0])) tsc_call_event(args[1]);
-			break;
-			// These two equip commands actually give a flag between 1<<0 and 1<<8
+		}
+		break;
+		// These two equip commands actually give a flag between 1<<0 and 1<<8
 		case CMD_EQ_ADD: // Equip item (1)
+		{
 			args[0] = tsc_read_word();
 			player_equip(args[0]);
-			break;
+		}
+		break;
 		case CMD_EQ_SUB: // Remove equip (1)
+		{
 			args[0] = tsc_read_word();
 			player_unequip(args[0]);
-			break;
+		}
+		break;
 		case CMD_IT_ADD: // Give item (1)
 			args[0] = tsc_read_word();
 			player_give_item(args[0]);
 			break;
 		case CMD_IT_SUB: // Remove item (1)
+		{
 			args[0] = tsc_read_word();
 			player_take_item(args[0]);
-			break;
+		}
+		break;
 		case CMD_ITJ: // If player has item (1) jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(player_has_item(args[0])) tsc_call_event(args[1]);
-			break;
+		}
+		break;
 		case CMD_FL_ADD: // Set flag (1)
+		{
 			args[0] = tsc_read_word();
 			system_set_flag(args[0], TRUE);
-			break;
+		}
+		break;
 		case CMD_FL_SUB: // Unset flag (1)
+		{
 			args[0] = tsc_read_word();
 			system_set_flag(args[0], FALSE);
-			break;
+		}
+		break;
 		case CMD_FLJ: // If flag (1) is TRUE jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(system_get_flag(args[0])) tsc_call_event(args[1]);
-			break;
+		}
+		break;
 		case CMD_SK_ADD: // Set skip flag (1)
+		{
 			args[0] = tsc_read_word();
 			system_set_skip_flag(args[0], TRUE);
-			break;
+		}
+		break;
 		case CMD_SK_SUB: // Unset skip flag (1)
+		{
 			args[0] = tsc_read_word();
 			system_set_skip_flag(args[0], FALSE);
-			break;
+		}
+		break;
 		case CMD_SKJ: // If skip flag (1) is TRUE jump to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(system_get_skip_flag(args[0])) tsc_call_event(args[1]);
-			break;
+		}
+		break;
 		case CMD_FOB: // Focus on boss (1) with (2) ticks
+		{
 			if(bossEntity) camera.target = bossEntity;
-			break;
+		}
+		break;
 		case CMD_FON: // Focus on NPC (1) with (2) ticks
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			Entity *e = entity_find_by_event(args[0]);
 			camera.target = e ? e : &player;
-			break;
+		}
+		break;
 		case CMD_FOM: // Focus on player at (1) speed
+		{
 			args[0] = tsc_read_word();
 			camera.target = &player;
-			break;
+		}
+		break;
 		case CMD_QUA: // Shake camera for (1) frames
+		{
 			args[0] = tsc_read_word();
 			camera_shake(args[0]);
-			break;
+		}
+		break;
 		case CMD_FAI: // Fading, in direction (1)
+		{
 			args[0] = tsc_read_word();
 			SYS_disableInts();
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 			SYS_enableInts();
-			break;
+		}
+		break;
 		case CMD_FAO:
+		{
 			args[0] = tsc_read_word();
 			VDP_waitVSync();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
-			break;
+		}
+		break;
 		case CMD_FLA: // Flash screen white
+		{
 			VDP_flashWhite();
-			break;
+		}
+		break;
 		case CMD_MLP: // Show the map
+		{
 			do_map();
-			break;
+		}
+		break;
 		case CMD_MNA: // Show stage name
+		{
 			player_show_map_name(180);
-			break;
+		}
+		break;
 		case CMD_CMP: // Change stage tile at (1),(2) to type (3)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -813,7 +959,8 @@ u8 execute_command() {
 			}
 			// Puff of smoke
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
-			break;
+		}
+		break;
 		// Map flags are unused but exist, keeping them here just in case
 		case CMD_MP_ADD: // Map flag (1)
 			args[0] = tsc_read_word();
@@ -823,36 +970,58 @@ u8 execute_command() {
 			args[1] = tsc_read_word();
 			break;
 		case CMD_CRE: // Show credits
+		{
 			return 5;
+		}
+		break;
 		case CMD_SIL: // TODO: Show illustration (1) in the credits
+		{
 			args[0] = tsc_read_word();
-			break;
+			
+		}
+		break;
 		case CMD_CIL: // TODO: Clear illustration in the credits
-			break;
+		{
+			
+		}
+		break;
 		case CMD_SLP: // Show the teleporter menu
+		{
 			tsc_show_teleport_menu();
 			return 1;
+		}
+		break;
 		case CMD_PS_ADD: // Set teleporter slot (1) to event (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			if(args[0] < 8) teleportEvent[args[0]] = args[1];
-			break;
+		}
+		break;
 		case CMD_SVP: // Save
+		{
 			system_save();
-			break;
+		}
+		break;
 		case CMD_STC: // Save counter
+		{
 			system_save_counter(system_counter_ticks());
-			break;
+		}
+		break;
 		case CMD_XX1: // TODO: Island effect
+		{
 			args[0] = tsc_read_word();
-			break;
+			
+		}
+		break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
+		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			stage_replace_block(args[0], args[1], stage_get_block(args[0], args[1]) - 1);
-			break;
-		default:
-			break;
+		}
+		break;
+		default: break;
 		}
 	} else if(window_is_open()) {
 		if(window_tick() || (joystate & BUTTON_A)) {

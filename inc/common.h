@@ -41,7 +41,8 @@
 #endif
 
 // Direction
-enum { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
+enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
+enum MDDIR { LEFT, RIGHT, UP, DOWN, CENTER };
 
 // Angles
 #define A_RIGHT	0x00
