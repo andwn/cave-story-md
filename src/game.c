@@ -219,8 +219,8 @@ void draw_itemmenu(u8 resetCursor) {
 			// Clobber the entity/bullet shared sheets
 			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
 			itemSprite[i] = (VDPSprite){
-				.x = 36 + (i % 8) * 32 + 128, 
-				.y = 88 + (i / 8) * 16 + 128, 
+				.x = 36 + (i % 6) * 32 + 128, 
+				.y = 88 + (i / 6) * 16 + 128, 
 				.size = SPRITE_SIZE(3, 2),
 				.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_SHEETINDEX+held*6)
 			};
@@ -278,28 +278,28 @@ u8 update_pause() {
 		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
 			tsc_call_event(6000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			itemcursor_move(selectedItem, selectedItem > 0 ? selectedItem - 1 : MAX_ITEMS - 1);
+			u8 newsel = selectedItem > 0 ? selectedItem - 1 : MAX_ITEMS - 1;
+			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
-			selectedItem--;
-			selectedItem %= 32;
+			selectedItem = newsel;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_UP)) {
-			itemcursor_move(selectedItem, selectedItem < 8 ? selectedItem + 24 : selectedItem - 8);
+			u8 newsel = selectedItem < 6 ? selectedItem + 18 : selectedItem - 6;
+			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
-			selectedItem = selectedItem < 8 ? selectedItem + 24 : selectedItem - 8;
-			selectedItem %= 32;
+			selectedItem = newsel;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			itemcursor_move(selectedItem, (selectedItem + 1) % 32);
+			u8 newsel = selectedItem + 1; newsel %= MAX_ITEMS;
+			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
-			selectedItem++;
-			selectedItem %= 32;
+			selectedItem = newsel;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		} else if(joy_pressed(BUTTON_DOWN)) {
-			itemcursor_move(selectedItem, (selectedItem + 8) % 32);
+			u8 newsel = selectedItem + 6; newsel %= MAX_ITEMS;
+			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
-			selectedItem += 8;
-			selectedItem %= 32;
+			selectedItem = newsel;
 			tsc_call_event(5000 + playerInventory[selectedItem]);
 		}
 		for(u8 i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
@@ -309,15 +309,15 @@ u8 update_pause() {
 
 void itemcursor_move(u8 oldindex, u8 index) {
 	// Erase old position
-	u16 x = 4 + (oldindex % 8) * 4;
-	u16 y = 11 + (oldindex / 8) * 2;
+	u16 x = 4 + (oldindex % 6) * 4;
+	u16 y = 11 + (oldindex / 6) * 2;
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+1);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y+1);
 	// Draw new position
-	x = 4 + (index % 8) * 4;
-	y = 11 + (index / 8) * 2;
+	x = 4 + (index % 6) * 4;
+	y = 11 + (index / 6) * 2;
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX,   x,   y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+3, y);
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+1);
