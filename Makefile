@@ -12,6 +12,7 @@ RESCOMP= $(GENBIN)rescomp
 INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
 CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-missing-field-initializers -std=c99 -c -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
+TOOLFLAGS = -std=c99 -O2 -Wall -Wextra
 LIBS = -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
@@ -88,16 +89,16 @@ head-gen:
 tools: tscomp tileopt lutgen prof2sram
 
 tscomp:
-	gcc tools/tscomp/tscomp.c -o tscomp
+	gcc tools/tscomp/tscomp.c -o tscomp $(TOOLFLAGS)
 
 tileopt:
-	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt
+	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt $(TOOLFLAGS)
 
 lutgen:
-	gcc tools/lutgen/lutgen.c -lm -o lutgen
+	gcc tools/lutgen/lutgen.c -lm -o lutgen $(TOOLFLAGS)
 
 prof2sram:
-	gcc tools/prof2sram/prof2sram.c -o prof2sram
+	gcc tools/prof2sram/prof2sram.c -o prof2sram $(TOOLFLAGS)
 
 clean:
 	rm -f $(RESOURCES)

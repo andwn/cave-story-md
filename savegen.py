@@ -21,7 +21,7 @@ def download(name):
 if __name__ == "__main__":
 	savelist = []
 	for i in range(1, 106):
-		savelist += ['02-{:03}.zip'.format(i)];
+		savelist += ['02-{0:03}.zip'.format(i)];
 	
 	if not os.path.exists(cachedir):
 		os.makedirs(cachedir)
