@@ -67,7 +67,9 @@ void ai_energy(Entity *e) {
 			e->x_speed -= SPEED(6);
 			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED(0x100);
 		} else {
-			e->y_speed += 0x10;
+			e->y_speed += SPEED(0x12);
+			if(e->x_speed > 0) e->x_speed--;
+			if(e->x_speed < 0) e->x_speed++;
 			if(e->y_speed > 0x400) e->y_speed = 0x400;
 			// Check below / above first
 			u8 block_below = stage_get_block_type(
@@ -143,7 +145,10 @@ void ai_missile(Entity *e) {
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
 	} else {
-		if(stageID == 0x1F) e->x_speed -= SPEED(6);
+		if(stageID == 0x1F) {
+			e->x_speed -= SPEED(6);
+			e->x += e->x_speed;
+		}
 		if(e->eflags & NPC_OPTION1) {
 			if(e->timer > 10 * FPS) {
 				e->state = STATE_DELETE;
@@ -186,7 +191,10 @@ void ai_heart(Entity *e) {
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
 	} else {
-		if(stageID == 0x1F) e->x_speed -= SPEED(6);
+		if(stageID == 0x1F) {
+			e->x_speed -= SPEED(6);
+			e->x += e->x_speed;
+		}
 		if(e->eflags & NPC_OPTION1) {
 			if(e->timer > 10 * FPS) {
 				e->state = STATE_DELETE;
