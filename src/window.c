@@ -282,7 +282,7 @@ u8 window_prompt_update() {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
 		return TRUE;
-	} else if(joy_pressed(BUTTON_LEFT) | joy_pressed(BUTTON_RIGHT)) {
+	} else if(joy_pressed(BUTTON_LEFT) || joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
 		sprite_pos(handSpr, tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);

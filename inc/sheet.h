@@ -10,7 +10,7 @@
  */
 
 #define MAX_SHEETS	24
-#define MAX_TILOCS	128
+#define MAX_TILOCS	96
 
 #define NOSHEET 255
 #define NOTILOC 255

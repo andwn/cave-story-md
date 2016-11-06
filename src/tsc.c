@@ -204,6 +204,19 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 }
 
 void tsc_call_event(u16 number) {
+	if(number == 0) {
+		if(tscState) {
+			tscState = TSC_IDLE;
+			if(!paused) {
+				gameFrozen = FALSE;
+				window_set_face(0, FALSE);
+				window_close();
+				controlsLocked = FALSE;
+				hud_show();
+			}
+		}
+		return;
+	}
 	// Events under 50 will be in Head.tsc
 	if(number < 50) {
 		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
@@ -237,19 +250,23 @@ u8 tsc_update() {
 		break;
 		case TSC_WAITTIME:
 		{
-			waitTime--;
-			// ArmsItem uses <WAI9999 after everything. The original game probably uses this
-			// in some weird way but it'll just freeze here, so don't <WAI in the pause menu
-			if(paused) {
-				waitTime = 0;
-			// Check the wait time again to prevent underflowing
-			} else if(waitTime > 0 && joy_down(BUTTON_A)) {
-				// Fast forward while holding A, update active entities a second time
-				// to double their movement speed (unless <PRI is set)
+			// Game will lock up if <WAI0000 is used. Don't do that
+			if(waitTime == 0) {
+				tscState = TSC_RUNNING;
+			} else {
 				waitTime--;
-				if(!gameFrozen) entities_update();
+				// ArmsItem uses <WAI9999 after everything. The original game probably uses this
+				// in some weird way but it'll just freeze here, so don't <WAI in the pause menu
+				if(paused) {
+					waitTime = 0;
+				// Check the wait time again to prevent underflowing
+				} else if(waitTime > 0 && joy_down(BUTTON_A)) {
+					// Fast forward while holding A, update active entities a second time
+					// to double their movement speed (unless <PRI is set)
+					waitTime--;
+					if(!gameFrozen) entities_update();
+				}
 			}
-			if(waitTime == 0) tscState = TSC_RUNNING;
 		}
 		break;
 		case TSC_WAITINPUT:
@@ -263,8 +280,8 @@ u8 tsc_update() {
 		{
 			if(window_prompt_update()) {
 				// Answering No will jump to another event
-				if(!window_prompt_answer()) tsc_call_event(promptJump);
 				tscState = TSC_RUNNING;
+				if(!window_prompt_answer()) tsc_call_event(promptJump);
 			}
 		}
 		break;
