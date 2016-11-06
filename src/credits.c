@@ -6,7 +6,7 @@
 #include "tables.h"
 #include "audio.h"
 
-void credits_main(u8 ending) {
+void credits_main() {
 	song_stop();
 	SYS_disableInts();
 	VDP_setEnable(FALSE);

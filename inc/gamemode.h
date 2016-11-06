@@ -25,6 +25,6 @@ void do_map();
 // Listen to music, sound effects
 void soundtest_main();
 
-void credits_main(u8 ending);
+void credits_main();
 
 #endif /* INC_GAMEMODE_H_ */

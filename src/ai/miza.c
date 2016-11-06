@@ -28,7 +28,7 @@ u8 sue_being_hurt;
 u8 sue_was_killed;
 
 // Prototypes
-static Entity *fm_spawn_missile(Entity *e, u8 angindex);
+//static Entity *fm_spawn_missile(Entity *e, u8 angindex);
 static void sue_somersault(Entity *e);
 static void sue_dash(Entity *e);
 static void set_ignore_solid(Entity *e);
@@ -231,7 +231,7 @@ void ai_misery_frenzied(Entity *e) {
 	}
 }
 
-
+/*
 // spawn a fishy missile in the given direction
 static Entity *fm_spawn_missile(Entity *e, u8 angindex) {
 	static const int ang_table_left[]  = { 0xD8, 0xEC, 0x14, 0x28 };
@@ -250,7 +250,7 @@ static Entity *fm_spawn_missile(Entity *e, u8 angindex) {
 	
 	return shot;
 }
-
+*/
 void ai_misery_critter(Entity *e) {
 	switch(e->state) {
 		case 0:

@@ -9,7 +9,7 @@
 #include "effect.h"
 #include "sprite.h"
 
-void ai_null(Entity *e) {}
+void ai_null(Entity *e) { (void)(e); }
 
 void onspawn_snap(Entity *e) {
 	SNAP_TO_GROUND(e);

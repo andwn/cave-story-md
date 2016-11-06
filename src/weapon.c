@@ -46,7 +46,7 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
-void weapon_fire_none(Weapon *w) { }
+void weapon_fire_none(Weapon *w) { (void)(w); }
 
 void weapon_fire_snake(Weapon *w) {
 	weapon_fire_polarstar(w);
@@ -245,7 +245,7 @@ void weapon_fire_spur(Weapon *w) {
 	weapon_fire_polarstar(w);
 }
 
-void bullet_update_none(Bullet *b) { }
+void bullet_update_none(Bullet *b) { (void)(b); }
 
 void bullet_update_snake(Bullet *b) {
 	bullet_update_polarstar(b);
