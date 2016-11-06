@@ -86,7 +86,7 @@ head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
 	
-tools: tscomp tileopt lutgen prof2sram
+tools: prof2sram
 
 tscomp:
 	gcc tools/tscomp/tscomp.c -o tscomp $(TOOLFLAGS)
