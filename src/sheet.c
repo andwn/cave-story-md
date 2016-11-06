@@ -335,9 +335,9 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		} break;
 		case 0x41: // King's Table
 		{
-			// Red Bat
-			// Projectile
-			// Cage
+			SHEET_ADD(SHEET_BAT, &SPR_DocBat, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_REDDOT, &SPR_RedDot, 2,1,1, 0,0, 0,1);
+			SHEET_ADD(SHEET_MIMI, &SPR_ShovelMimi, 2,2,2, 0,0, 0,1);
 		} break;
 		case 0x44: // Black Space
 		{

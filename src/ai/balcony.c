@@ -81,7 +81,7 @@ void ai_helicopter_blade(Entity *e) {
 
 void ai_igor_balcony(Entity *e) {
 	e->x_next = e->x + e->x_speed;
-	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	
 	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e);
 	u8 blockr = e->x_speed > 0 && collide_stage_rightwall(e);
@@ -92,6 +92,7 @@ void ai_igor_balcony(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
+			e->grounded = FALSE;
 		}
 		case 1:
 		{

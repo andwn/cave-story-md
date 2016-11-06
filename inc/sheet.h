@@ -10,7 +10,7 @@
  */
 
 #define MAX_SHEETS	24
-#define MAX_TILOCS	64
+#define MAX_TILOCS	128
 
 #define NOSHEET 255
 #define NOTILOC 255
@@ -71,7 +71,7 @@
 	}                                                                                          \
 }
 #define TILOC_FREE(myindex, framesize) {                                                       \
-	u8 freeCount = framesize / 4 + (framesize & 3 ? 1 : 0);                                    \
+	u8 freeCount = (framesize) / 4 + ((framesize) & 3 ? 1 : 0);                                \
 	while(freeCount--) tilocs[myindex+freeCount] = FALSE;                                      \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
@@ -93,7 +93,7 @@ enum {
 	SHEET_ZZZ,	   SHEET_GAUDID, SHEET_IKACHAN, SHEET_POWERS, SHEET_SMSTAL, SHEET_LGSTAL,
 	SHEET_SISHEAD, SHEET_BUYOB,  SHEET_BUYO,	SHEET_HOPPY,  SHEET_ACID,   SHEET_NIGHTSHOT,
 	SHEET_GUNFSHOT,SHEET_MIDO,   SHEET_PRESS,	SHEET_STUMPY, SHEET_CORES1, SHEET_CORES3,
-	SHEET_CORES4,
+	SHEET_CORES4,  SHEET_REDDOT, SHEET_MIMI,
 };
 
 u8 sheet_num;

@@ -663,34 +663,38 @@ void player_draw() {
 	enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 	// Sprite Animation
 	player.oframe = player.frame;
-	if(player.grounded) {
-		if(joy_down(BUTTON_UP) && !controlsLocked) {
-			if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
-				ANIMATE(&player, 7, UPWALK1, LOOKUP, UPWALK2, LOOKUP);
+	if(playerMoveMode) {
+		player.frame = WALK2;
+	} else {
+		if(player.grounded) {
+			if(joy_down(BUTTON_UP) && !controlsLocked) {
+				if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
+					ANIMATE(&player, 7, UPWALK1, LOOKUP, UPWALK2, LOOKUP);
+				} else {
+					player.frame = LOOKUP;
+					player.animtime = 0;
+				}
+			} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
+				ANIMATE(&player, 7, WALK1, STAND, WALK2, STAND);
+			} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
+				player.frame = LOOKDN;
+				player.animtime = 0;
 			} else {
-				player.frame = LOOKUP;
+				player.frame = STAND;
 				player.animtime = 0;
 			}
-		} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
-			ANIMATE(&player, 7, WALK1, STAND, WALK2, STAND);
-		} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
-			player.frame = LOOKDN;
-			player.animtime = 0;
 		} else {
-			player.frame = STAND;
 			player.animtime = 0;
+			if(joy_down(BUTTON_UP) && !controlsLocked) {
+				player.frame = UPWALK1;
+			} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
+				player.frame = JUMPDN;
+			} else {
+				player.frame = WALK1;
+			}
 		}
-	} else {
-		player.animtime = 0;
-		if(joy_down(BUTTON_UP) && !controlsLocked) {
-			player.frame = UPWALK1;
-		} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
-			player.frame = JUMPDN;
-		} else {
-			player.frame = WALK1;
-		}
+		if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
 	}
-	if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
 	// Set frame if it changed
 	if(player.frame != player.oframe) {
 		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
@@ -698,7 +702,9 @@ void player_draw() {
 	// Blink during invincibility frames
 	if(!player.hidden && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
-		if(!controlsLocked) {
+		if(playerMoveMode) {
+			player.dir = RIGHT;
+		} else if(!controlsLocked) {
 			if(joy_down(BUTTON_RIGHT)) {
 				player.dir = 1;
 			} else if(joy_down(BUTTON_LEFT)) {

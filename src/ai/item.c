@@ -12,6 +12,8 @@
 #include "effect.h"
 #include "sheet.h"
 
+#define left_gravity	underwater
+
 void onspawn_energy(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
 		// Small energy
@@ -24,6 +26,7 @@ void onspawn_energy(Entity *e) {
 		e->framesize = 4;
 		e->sprite[0].size = SPRITE_SIZE(2, 2);
 	}
+	e->left_gravity = (stageID == 0x1F || stageID == 0x35);
 	e->x_speed = 0x200 - (random() % 0x400);
 	e->alwaysActive = TRUE;
 }
@@ -60,44 +63,49 @@ void ai_energy(Entity *e) {
 		} else if(e->timer > 7 * FPS) {
 			e->hidden = (e->timer & 3) > 1;
 		}
-		e->y_speed += 0x10;
-		if(e->y_speed > 0x400) e->y_speed = 0x400;
-		// Check below / above first
-		u8 block_below = stage_get_block_type(
-				sub_to_block(e->x), sub_to_block(e->y + 0x800));
-		u8 block_above = stage_get_block_type(
-				sub_to_block(e->x), sub_to_block(e->y - 0x800));
-		if(block_below == 0x41 || block_below == 0x43) {
-			e->y -= sub_to_pixel(e->y + 0x800) % 16;
-			e->y_speed = -e->y_speed >> 1;
-			if(e->y_speed > -0x400) e->y_speed = -0x400;
-			sound_play(SND_XP_BOUNCE, 0);
-		} else if(block_below & BLOCK_SLOPE) {
-			u8 index = block_below & 0xF;
-			if(index >= 4) {
-				u16 xx = sub_to_pixel(e->x);
-				u16 yy = sub_to_pixel(e->y + 0x800);
-				s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
-				if(overlap >= 0) {
-					e->y -= overlap;
-					if(e->y_speed >= 0x200) sound_play(SND_XP_BOUNCE, 0);
-					e->y_speed = -e->y_speed;
-					if(e->y_speed > -0x400) e->y_speed = -0x400;
-				}
-			}
-		} else if(block_above == 0x41 || block_above == 0x43) {
-			e->y_speed = -e->y_speed >> 1;
-			if(e->y_speed < 0x300) e->y_speed = 0x300;
+		if(e->left_gravity) {
+			e->x_speed -= SPEED(6);
+			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED(0x100);
 		} else {
-			e->y_speed += SPEED(0x50);
-			//if(e->y_speed > 0x600) e->y_speed = 0x600;
-		}
-		// Check in front
-		u8 block_front = stage_get_block_type(
-				sub_to_block(e->x + (e->x_speed > 0 ? 0x800 : -0x800)),
-				sub_to_block(e->y - 0x100));
-		if(block_front == 0x41 || block_front == 0x43) { // hit a wall
-			e->x_speed = -e->x_speed;
+			e->y_speed += 0x10;
+			if(e->y_speed > 0x400) e->y_speed = 0x400;
+			// Check below / above first
+			u8 block_below = stage_get_block_type(
+					sub_to_block(e->x), sub_to_block(e->y + 0x800));
+			u8 block_above = stage_get_block_type(
+					sub_to_block(e->x), sub_to_block(e->y - 0x800));
+			if(block_below == 0x41 || block_below == 0x43) {
+				e->y -= sub_to_pixel(e->y + 0x800) % 16;
+				e->y_speed = -e->y_speed >> 1;
+				if(e->y_speed > -0x400) e->y_speed = -0x400;
+				sound_play(SND_XP_BOUNCE, 0);
+			} else if(block_below & BLOCK_SLOPE) {
+				u8 index = block_below & 0xF;
+				if(index >= 4) {
+					u16 xx = sub_to_pixel(e->x);
+					u16 yy = sub_to_pixel(e->y + 0x800);
+					s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+					if(overlap >= 0) {
+						e->y -= overlap;
+						if(e->y_speed >= 0x200) sound_play(SND_XP_BOUNCE, 0);
+						e->y_speed = -e->y_speed;
+						if(e->y_speed > -0x400) e->y_speed = -0x400;
+					}
+				}
+			} else if(block_above == 0x41 || block_above == 0x43) {
+				e->y_speed = -e->y_speed >> 1;
+				if(e->y_speed < 0x300) e->y_speed = 0x300;
+			} else {
+				e->y_speed += SPEED(0x50);
+				//if(e->y_speed > 0x600) e->y_speed = 0x600;
+			}
+			// Check in front
+			u8 block_front = stage_get_block_type(
+					sub_to_block(e->x + (e->x_speed > 0 ? 0x800 : -0x800)),
+					sub_to_block(e->y - 0x100));
+			if(block_front == 0x41 || block_front == 0x43) { // hit a wall
+				e->x_speed = -e->x_speed;
+			}
 		}
 		e->x += e->x_speed;
 		e->y += e->y_speed;
@@ -134,12 +142,15 @@ void ai_missile(Entity *e) {
 		}
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
-	} else if(e->eflags & NPC_OPTION1) {
-		if(e->timer > 10 * FPS) {
-			e->state = STATE_DELETE;
-			return;
-		} else if(e->timer > 7 * FPS) {
-			e->hidden ^= 1;
+	} else {
+		if(stageID == 0x1F) e->x_speed -= SPEED(6);
+		if(e->eflags & NPC_OPTION1) {
+			if(e->timer > 10 * FPS) {
+				e->state = STATE_DELETE;
+				return;
+			} else if(e->timer > 7 * FPS) {
+				e->hidden ^= 1;
+			}
 		}
 	}
 }
@@ -174,12 +185,15 @@ void ai_heart(Entity *e) {
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
-	} else if(e->eflags & NPC_OPTION1) {
-		if(e->timer > 10 * FPS) {
-			e->state = STATE_DELETE;
-			return;
-		} else if(e->timer > 7 * FPS) {
-			e->hidden ^= 1;
+	} else {
+		if(stageID == 0x1F) e->x_speed -= SPEED(6);
+		if(e->eflags & NPC_OPTION1) {
+			if(e->timer > 10 * FPS) {
+				e->state = STATE_DELETE;
+				return;
+			} else if(e->timer > 7 * FPS) {
+				e->hidden ^= 1;
+			}
 		}
 	}
 }

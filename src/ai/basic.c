@@ -75,6 +75,10 @@ void onspawn_spike(Entity *e) {
 	}
 }
 
+void ondeath_event(Entity *e) {
+	tsc_call_event(e->event);
+}
+
 void ai_grav(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;

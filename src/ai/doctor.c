@@ -19,12 +19,21 @@
 */
 
 #define savedhp		id
+#define angle		jump_time
 
 void ai_boss_doctor(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+	
 	switch(e->state) {
 		case 0:
 		{
-			e->y += (8 << CSF);
+			e->y_next += (8 << CSF);
 			e->frame = 3;
 			e->state = 1;
 			//e->BringToFront();		// make sure in front of doctor_crowned
@@ -69,27 +78,16 @@ void ai_boss_doctor(Entity *e) {
 					e->timer = TIME(50);
 			}
 			
-			if (e->timer == TIME(50))
-			{	// arm across chest
+			if (e->timer == TIME(50)) {	// arm across chest
 				FACE_PLAYER(e);
 				e->frame = 4;
 			}
 			
 			if (e->timer == TIME(80)) {
-				//Entity *shot;
 				e->frame = 5;	// arm cast out
 				
-				entity_create(e->x, e->y, OBJ_DOCTOR_SHOT, e->dir ? NPC_OPTION1 : 0);
-				entity_create(e->x, e->y, OBJ_DOCTOR_SHOT, (e->dir ? NPC_OPTION1 : 0) | NPC_OPTION2);
-				//FIRE_ANGLED_SHOT(OBJ_DOCTOR_SHOT, e->x, e->y, A_LEFT, SPEED(0x400));
-				//FIRE_ANGLED_SHOT(OBJ_DOCTOR_SHOT, e->x, e->y, A_RIGHT, SPEED(0x400));
-				//shot = SpawnEntityAtActionPoint(o, OBJ_DOCTOR_SHOT);
-				//shot->dir = e->dir;
-				//shot->angle = 0;
-				
-				//shot = SpawnEntityAtActionPoint(o, OBJ_DOCTOR_SHOT);
-				//shot->dir = e->dir;
-				//shot->angle = 0x80;
+				entity_create(e->x_next, e->y_next, OBJ_DOCTOR_SHOT, e->dir ? NPC_OPTION1 : 0);
+				entity_create(e->x_next, e->y_next, OBJ_DOCTOR_SHOT, (e->dir ? NPC_OPTION1 : 0) | NPC_OPTION2);
 				
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			}
@@ -117,13 +115,13 @@ void ai_boss_doctor(Entity *e) {
 			e->state = 31;
 			e->timer = 0;
 			e->frame = 6;
-			e->x_mark = e->x;
+			e->x_mark = e->x_next;
 			e->eflags |= NPC_SHOOTABLE;
 		}
 		case 31:
 		{
-			e->x = e->x_mark;
-			if (++e->timer & 2) e->x += (1 << CSF);
+			e->x_next = e->x_mark;
+			if (++e->timer & 2) e->x_next += (1 << CSF);
 			
 			if (e->timer > TIME(50)) {
 				e->state = 32;
@@ -132,9 +130,9 @@ void ai_boss_doctor(Entity *e) {
 				
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				
-				for(u16 angle = 8; angle < 256; angle += 16) {
-					FIRE_ANGLED_SHOT(OBJ_DOCTOR_BLAST, e->x, e->y, angle, SPEED(0x400));
-				}
+				//for(u16 angle = 8; angle < 256; angle += 16) {
+				//	FIRE_ANGLED_SHOT(OBJ_DOCTOR_BLAST, e->x, e->y, angle, SPEED(0x400));
+				//}
 			}
 		}
 		break;
@@ -178,8 +176,8 @@ void ai_boss_doctor(Entity *e) {
 				e->frame = 2;
 				e->y_speed = 0;
 				
-				e->x = e->x_mark;
-				e->y = e->y_mark;
+				e->x_next = e->x_mark;
+				e->y_next = e->y_mark;
 				
 				FACE_PLAYER(e);
 			}
@@ -221,7 +219,7 @@ void ai_boss_doctor(Entity *e) {
 				e->state = 501;
 				e->timer = 0;
 				
-				e->x_mark = e->x;
+				e->x_mark = e->x_next;
 				FACE_PLAYER(e);
 			}
 		}
@@ -232,9 +230,9 @@ void ai_boss_doctor(Entity *e) {
 			FACE_PLAYER(e);
 			e->frame = 8;
 			
-			e->x = e->x_mark;
+			e->x_next = e->x_mark;
 			if (!(++e->timer & 2))
-				e->x += (1 << CSF);
+				e->x_next += (1 << CSF);
 		}
 		break;
 	}
@@ -249,10 +247,13 @@ void ai_boss_doctor(Entity *e) {
 			crystal_xmark = e->x_mark;
 			crystal_ymark = e->y_mark;
 		} else {
-			crystal_xmark = e->x;
-			crystal_ymark = e->y;
+			crystal_xmark = e->x_next;
+			crystal_ymark = e->y_next;
 		}
 	}
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 	
 	LIMIT_Y(SPEED(0x5ff));
 }
@@ -269,7 +270,7 @@ void ai_doctor_shot(Entity *e) {
 		{
 			e->state = 1;
 			if(e->eflags & NPC_OPTION2) e->dir = 1;
-			if(e->eflags & NPC_OPTION1) e->jump_time = 0x80;
+			if(e->eflags & NPC_OPTION1) e->angle = 0x80;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 		}
@@ -280,15 +281,15 @@ void ai_doctor_shot(Entity *e) {
 				e->timer2++;
 			
 			// spin
-			e->jump_time += 6;
+			e->angle += 6;
 			
 			// travel
 			e->x_speed += (e->dir) ? 0x15 : -0x15;
 			//e->x += e->x_speed;
 			e->x_mark += e->x_speed;
 			
-			e->x = e->x_mark + ((cos[e->jump_time] * e->timer2) >> 3);
-			e->y = e->y_mark + ((sin[e->jump_time] * e->timer2) >> 1);
+			e->x = e->x_mark + ((cos[e->angle] * e->timer2) >> 3);
+			e->y = e->y_mark + ((sin[e->angle] * e->timer2) >> 1);
 			
 			//Entity *trail = CreateEntity(e->x, e->y, OBJ_DOCTOR_SHOT_TRAIL);
 			//trail->sprite = SPR_DOCTOR_SHOT;
@@ -381,8 +382,8 @@ void ai_doctor_crowned(Entity *e) {
 		{
 			// do this manually instead of a spawn point,
 			// cause he's gonna transform.
-			e->x -= (8 << CSF);
-			e->y -= (16 << CSF);
+			//e->x -= (8 << CSF);
+			//e->y -= (16 << CSF);
 			
 			e->state = 1;
 			//crystal_xmark = crystal_ymark = 0;

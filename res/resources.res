@@ -63,6 +63,7 @@ SPRITE SPR_Boost		"sprite/boost.png"		4 1 0 0 NONE
 SPRITE SPR_Midorin		"sprite/happything.png" 2 2 0 0 NONE
 SPRITE SPR_Stumpy		"sprite/dragonfly.png"	2 2 0 0 NONE
 SPRITE SPR_Zzz			"sprite/z.png"			1 1 0 0 NONE
+SPRITE SPR_RedFl3		"sprite/redflowers3.png" 6 4 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE
@@ -135,6 +136,9 @@ SPRITE SPR_Robot3		"sprite/surfacerobot.png" 2 2 0 0 NONE
 SPRITE SPR_Grate		"sprite/grate.png"		2 2 0 0 NONE
 SPRITE SPR_EnCap		"sprite/energycapsule.png" 2 2 0 0 NONE
 SPRITE SPR_DoctorM		"sprite/musldr.png"		5 6 0 0 NONE
+SPRITE SPR_DoctorB		"sprite/docboss.png"	3 4 0 0 NONE
+SPRITE SPR_DocBat		"sprite/docbat.png"		2 2 0 0 NONE
+SPRITE SPR_RedDot		"sprite/reddot.png"		1 1 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE
@@ -238,6 +242,7 @@ SPRITE SPR_ShovelMimi	"sprite/shovelmimi.png" 2 2 0 0 NONE
 SPRITE SPR_Megane		"sprite/megane.png"		2 2 0 0 NONE
 SPRITE SPR_OldMimi		"sprite/oldmimi.png"	2 2 0 0 NONE
 SPRITE SPR_Bucket		"sprite/bucket.png"		2 2 0 0 NONE
+SPRITE SPR_Chaco2		"sprite/chako2.png"		2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

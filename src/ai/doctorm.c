@@ -58,9 +58,9 @@ static const u16 attack_pattern[] = {
 static void run_red_drip(Entity *e);
 static void do_redsplode(Entity *e);
 
-void ai_boss_doctor_frenzied(Entity *e) {
+void ai_muscle_doctor(Entity *e) {
 	e->x_next = e->x + e->x_speed;
-	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
 	
 	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e);
 	u8 blockr = e->x_speed > 0 && collide_stage_rightwall(e);
@@ -89,7 +89,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case 1:		// appearing/transforming
 		{
-			e->y_speed += 0x80;
+			//e->y_speed += SPEED(0x80);
 			
 			e->timer++;
 			e->frame = (e->timer & 2) ? 0 : 3;
@@ -106,7 +106,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case 6:
 		{
-			e->y_speed += 0x80;
+			//e->y_speed += SPEED(0x80);
 			ANIMATE(e, 30, 1,2);
 		}
 		break;
@@ -119,9 +119,9 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case 8:
 		{
-			e->y_speed += 0x40;
+			//e->y_speed += SPEED(0x40);
 			
-			if (++e->timer > 40) e->state = STATE_BASE;
+			if (++e->timer > TIME(40)) e->state = STATE_BASE;
 		}
 		break;
 		
@@ -143,7 +143,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case STATE_BASE+1:
 		{
-			e->y_speed += 0x80;
+			e->y_speed += SPEED(0x80);
 			FACE_PLAYER(e);
 			
 			// select frame
@@ -180,13 +180,14 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			e->frame = 3;
 			FACE_PLAYER(e);
 			
-			if (++e->timer > 20) {
+			if (++e->timer > TIME(20)) {
+				e->grounded = FALSE;
 				e->state = STATE_IN_AIR;
 				e->frame = 4;
 				e->animtime = 0;
 				
-				e->y_speed = -0x600;
-				MOVE_X(0x400);
+				e->y_speed = -SPEED(0x600);
+				MOVE_X(SPEED(0x400));
 			}
 		}
 		break;
@@ -195,13 +196,13 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		case STATE_JUMP_WITH_GP:
 		{
 			FACE_PLAYER(e);
-			
+			e->grounded = FALSE;
 			e->state = STATE_IN_AIR_WITH_GP;
 			e->frame = 4;
 			e->animtime = 0;
 			
-			e->y_speed = -0x800;
-			MOVE_X(0x400);
+			e->y_speed = -SPEED(0x800);
+			MOVE_X(SPEED(0x400));
 		}
 		break;
 		
@@ -209,12 +210,12 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		case STATE_IN_AIR_WITH_GP:	// in air; can "ground pound" if we pass over player
 		{
 			ANIMATE(e, 1, 4, 5);
-			e->y_speed += 0x40;
+			e->y_speed += SPEED(0x40);
 			
 			if (e->state == STATE_IN_AIR_WITH_GP) {
-				if (PLAYER_DIST_X(8<<CSF) && player.y >= e->y) {
+				if (PLAYER_DIST_X(8<<CSF) && player.y >= e->y_next) {
 					e->x_speed = 0;
-					e->y_speed = 0x5ff;
+					e->y_speed = SPEED(0x5ff);
 					e->state = STATE_IN_AIR;
 				}
 			} else {
@@ -236,12 +237,12 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case STATE_LANDED+1:
 		{
-			e->y_speed += 0x80;
+			//e->y_speed += 0x80;
 			
-			e->x_speed *= 7;
-			e->x_speed /= 8;
+			e->x_speed += (e->x_speed << 2) + (e->x_speed << 1);
+			e->x_speed >>= 3;
 			
-			if (++e->timer > 10) e->state = STATE_BASE;
+			if (++e->timer > TIME(10)) e->state = STATE_BASE;
 		}
 		break;
 		
@@ -257,13 +258,13 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case STATE_RED_DASH+1:
 		{
-			if (++e->timer > 20) {
+			if (++e->timer > TIME(20)) {
 				e->frame = 7;		// elbow-out dash frame
 				e->timer = 0;
 				e->state++;
 				
 				sound_play(SND_FUNNY_EXPLODE, 5);
-				MOVE_X(0x5ff);
+				MOVE_X(SPEED(0x5ff));
 				
 				e->attack = DAMAGE_RED_DASH;
 				e->eflags |= NPC_FRONTATKONLY;
@@ -274,13 +275,14 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		// doing red dash
 		case STATE_RED_DASH+2:
 		{
+			e->y_speed = 0;	// he does not fall during dash
 			// flash red
 			e->timer++;
 			e->frame = (e->timer & 2) ? 7 : 8;
 			
 			// time to stop?
-			if (blockl || blockr || e->timer > 30) {
-				if (e->timer > 30)		// stopped because timeout
+			if (blockl || blockr || e->timer > TIME(30)) {
+				if (e->timer > TIME(30))		// stopped because timeout
 					e->state++;
 				else					// stopped because hit a wall
 					e->state = STATE_JUMP;
@@ -294,13 +296,14 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		// dash ending due to timeout
 		case STATE_RED_DASH+3:
 		{
-			e->y_speed += 0x80;
+			e->grounded = FALSE;
+			//e->y_speed += 0x80;
 			e->frame = 3;
 			
-			e->x_speed *= 7;
-			e->x_speed /= 8;
+			e->x_speed += (e->x_speed << 2) + (e->x_speed << 1);
+			e->x_speed >>= 3;
 			
-			if (++e->timer > 10) e->state = STATE_BASE;
+			if (++e->timer > TIME(10)) e->state = STATE_BASE;
 		}
 		break;
 		
@@ -316,7 +319,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			e->frame = 6;
 			e->timer++;
 			
-			if (e->timer > 20 && (e->timer % 3) == 1) {
+			if (e->timer > TIME(20) && (e->timer & 3) == 1) {
 				Entity *bat = entity_create(e->x + (8<<CSF),
 										   e->y - (4<<CSF), OBJ_DOCTOR_BAT, 0);
 				
@@ -332,7 +335,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 				sound_play(SND_EM_FIRE, 3);
 			}
 			
-			if (e->timer > 90) e->state = STATE_BASE;
+			if (e->timer > TIME(90)) e->state = STATE_BASE;
 		}
 		break;
 		
@@ -372,8 +375,8 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		case STATE_TELEPORT+2:
 		{
 			if (++e->timer > 40) {
-				e->x = e->x_mark;
-				e->y = e->y_mark;
+				e->x_next = e->x_mark;
+				e->y_next = e->y_mark;
 				e->frame = 4;
 				
 				FACE_PLAYER(e);
@@ -396,8 +399,9 @@ void ai_boss_doctor_frenzied(Entity *e) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->attack = DAMAGE_NORMAL;
 				
+				e->grounded = FALSE;
 				e->x_speed = 0;
-				e->y_speed = -0x200;
+				e->y_speed = -SPEED(0x200);
 				e->state = STATE_IN_AIR;
 			//}
 		}
@@ -410,6 +414,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		{
 			entities_clear_by_type(OBJ_DOCTOR_BAT);
 			e->eflags &= ~NPC_SHOOTABLE;
+			e->grounded = FALSE;
 			e->attack = 0;
 			e->frame = 4;
 			e->x_speed = 0;
@@ -417,12 +422,12 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		}
 		case STATE_DEFEATED+1:		// wait till we hit ground
 		{
-			e->y_speed += 0x20;
+			//e->y_speed += SPEED(0x20);
 			
 			if (e->grounded) {
 				e->state++;
 				e->timer = 0;
-				e->x_mark = e->x;
+				e->x_mark = e->x_next;
 				FACE_PLAYER(e);
 			}
 		}
@@ -433,8 +438,8 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			e->frame = 9;
 			e->timer++;
 			
-			e->x = e->x_mark;
-			if (!(e->timer & 2)) e->x += (1 << CSF);
+			e->x_next = e->x_mark;
+			if (!(e->timer & 2)) e->x_next += (1 << CSF);
 		}
 		break;
 		// dissolve into red energy
@@ -442,7 +447,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 		case STATE_DISSOLVE:
 		{
 			e->frame = 9;
-			e->x = e->x_mark;
+			e->x_next = e->x_mark;
 			
 			//e->ResetClip();
 			//e->clip_enable = TRUE;
@@ -455,13 +460,13 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			e->timer++;
 			
 			// shaking
-			e->x = e->x_mark;
-			if (!(e->timer & 2)) e->x += (1 << CSF);
+			e->x_next = e->x_mark;
+			if (!(e->timer & 2)) e->x_next += (1 << CSF);
 			
 			camera_shake(2);
 			
 			// sound
-			if ((e->timer % 6) == 3)
+			if ((e->timer & 7) == 3)
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
 			// move energy spawn point
@@ -477,7 +482,7 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			//for(int i=0;i<3;i++) {
 				//int x, y;
 				
-				s32 x = e->x + ((-16 + (random() & 31)) << CSF);
+				s32 x = e->x_next + ((-16 + (random() & 31)) << CSF);
 				//y = e->y + (e->clipy1 << CSF);
 				
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
@@ -520,12 +525,13 @@ void ai_boss_doctor_frenzied(Entity *e) {
 			crystal_xmark = e->x_mark;
 			crystal_ymark = e->y_mark;
 		} else {
-			crystal_xmark = e->x;
-			crystal_ymark = e->y;
+			crystal_xmark = e->x_next;
+			crystal_ymark = e->y_next;
 		}
 	}
 	
-	if (e->y_speed > 0x5ff) e->y_speed = 0x5ff;
+	if (!e->grounded) e->y_speed += SPEED(0x80);
+	if (e->y_speed > SPEED(0x5ff)) e->y_speed = SPEED(0x5ff);
 	
 	e->x = e->x_next;
 	e->y = e->y_next;
@@ -539,30 +545,30 @@ static void do_redsplode(Entity *e) {
 	e->frame = 6;
 	FACE_PLAYER(e);
 	
-	player.y_speed = -0x400;
-	player.x_speed = (e->x > player.x) ? -0x5ff : 0x5ff;
+	player.y_speed = -SPEED(0x400);
+	player.x_speed = (e->x_next > player.x) ? -SPEED(0x5ff) : SPEED(0x5ff);
 	
 	player_inflict_damage(5);
 	camera_shake(10);
 	
 	// big shower of red energy
 	for(int i=0;i<32;i++) {
-		int x = e->x + (random(-16, 16) << CSF);
-		int y = e->y + (random(-16, 16) << CSF);
+		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
+		int y = e->y_next + ((-16 + (random() & 31)) << CSF);
 		
 		Entity *spark = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		
-		spark->x_speed = random(-0x600, 0x600);
-		spark->y_speed = random(-0x600, 0x600);
+		spark->x_speed = -0x3FF + (random() & 0x7FF);
+		spark->y_speed = -0x3FF + (random() & 0x7FF);
 		spark->angle = A_DOWN;
 	}
 }
 
 // the red energy that oozes off of him during most of the battle
 static void run_red_drip(Entity *e) {
-	if ((random() & 3) == 2) {
-		int x = e->x + (random(-16, 16) << CSF);
-		int y = e->y + (random(-8, 4) << CSF);
+	if ((random() & 7) == 2) {
+		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
+		int y = e->y_next + ((-8 + (random() % 12)) << CSF);
 		
 		Entity *drip = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		drip->x_speed = e->x_speed;
