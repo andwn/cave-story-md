@@ -204,19 +204,6 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 }
 
 void tsc_call_event(u16 number) {
-	if(number == 0) {
-		if(tscState) {
-			tscState = TSC_IDLE;
-			if(!paused) {
-				gameFrozen = FALSE;
-				window_set_face(0, FALSE);
-				window_close();
-				controlsLocked = FALSE;
-				hud_show();
-			}
-		}
-		return;
-	}
 	// Events under 50 will be in Head.tsc
 	if(number < 50) {
 		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
