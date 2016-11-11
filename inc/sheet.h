@@ -59,23 +59,23 @@
 		if(tilocs[i]) {                                                                        \
 			freeCount = 0;                                                                     \
 			continue;                                                                          \
-		}                                                                                      \
-		if(++freeCount * 4 >= (framesize)) {                                                   \
+		} else freeCount++;                                                                    \
+		if(freeCount << 2 >= (framesize)) {                                                    \
 			myindex = i;                                                                       \
 			break;                                                                             \
 		}                                                                                      \
 	}                                                                                          \
 	if(myindex != NOTILOC) {                                                                   \
 		myindex -= freeCount-1;                                                                \
-		while(freeCount--) tilocs[myindex+freeCount] = TRUE;                                   \
+		while(freeCount--) tilocs[myindex+(freeCount-1)] = TRUE;                               \
 	}                                                                                          \
 }
 #define TILOC_FREE(myindex, framesize) {                                                       \
-	u8 freeCount = (framesize) / 4 + ((framesize) & 3 ? 1 : 0);                                \
-	while(freeCount--) tilocs[myindex+freeCount] = FALSE;                                      \
+	u8 freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);                           \
+	while(freeCount--) tilocs[(myindex)+(freeCount-1)] = FALSE;                                \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
-	DMA_queueDma(DMA_VRAM, (u32)(tiles), (index) * TILE_SIZE, (count) * 16, 2);                \
+	DMA_queueDma(DMA_VRAM, (u32)(tiles), (index) << 5, (count) << 4, 2);                       \
 }
 
 enum { 
@@ -93,7 +93,7 @@ enum {
 	SHEET_ZZZ,	   SHEET_GAUDID, SHEET_IKACHAN, SHEET_POWERS, SHEET_SMSTAL, SHEET_LGSTAL,
 	SHEET_SISHEAD, SHEET_BUYOB,  SHEET_BUYO,	SHEET_HOPPY,  SHEET_ACID,   SHEET_NIGHTSHOT,
 	SHEET_GUNFSHOT,SHEET_MIDO,   SHEET_PRESS,	SHEET_STUMPY, SHEET_CORES1, SHEET_CORES3,
-	SHEET_CORES4,  SHEET_REDDOT, SHEET_MIMI,
+	SHEET_CORES4,  SHEET_REDDOT, SHEET_MIMI,	SHEET_DOCSHOT,
 };
 
 u8 sheet_num;

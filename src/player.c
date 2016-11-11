@@ -360,7 +360,7 @@ void player_update_walk() {
 		fric = SPEED(0x20);
 	}
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
-			(water_entity && player.y > water_entity->y)) {
+			(stageBackgroundType == 4 && water_entity && player.y > water_entity->y)) {
 		player.underwater = TRUE;
 		acc >>= 1;
 		max_speed >>= 1;

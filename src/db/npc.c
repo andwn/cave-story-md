@@ -285,9 +285,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Chie (Caged)
 	{ &SPR_Chaco2, 	NOSHEET, PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Chaco (Caged)
 	{ &SPR_DoctorB, NOSHEET, PAL1, 1, &onspawn_persistent, &ai_boss_doctor, &ondeath_event }, // Doctor (Boss)
-	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_doctor_shot, &ai_null }, // Doctor Red Wave
-	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Fast)
-	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Slow)
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_shot, &ai_null }, // Doctor Red Wave
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Fast)
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Slow)
 	{ &SPR_DoctorM, NOSHEET, PAL1, 4, &onspawn_persistent, &ai_muscle_doctor, &ondeath_event }, // Muscle Doctor (Boss)
 	{ &SPR_Igor, 	NOSHEET, PAL3, 4, &ai_null, &ai_igor_balcony, &ondeath_default }, // Igor
 	{ NULL, SHEET_BAT, 		 PAL1, 1, &onspawn_persistent, &ai_doctor_bat, &ondeath_default }, // Red Energy Bat

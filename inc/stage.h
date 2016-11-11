@@ -44,7 +44,7 @@ u16 stageID;
 // Size of the stage - how many blocks wide/high
 u16 stageWidth, stageHeight;
 // A multiplication lookup table for each row of stageBlocks
-// Removes all mulu.w and __mulsci3 instructions in entity stage collision
+// Removes all mulu.w and __mulsi3 instructions in entity stage collision
 extern u16 *stageTable;
 // Copy of level layout data loaded into RAM
 // This takes up extra space, but there are times where scripts make modifications to the
@@ -55,6 +55,8 @@ u8 stageTileset;
 // Prepares to draw off-screen tiles when stage_update() is later called
 // Camera calls this each time it scrolls past 1 block length (16 pixels)
 s8 morphingRow, morphingColumn;
+
+u8 stageBackgroundType;
 
 // Clears previous stage and switches to one with the given ID
 void stage_load(u16 id);

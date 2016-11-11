@@ -130,9 +130,9 @@ void ai_boss_doctor(Entity *e) {
 				
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				
-				//for(u16 angle = 8; angle < 256; angle += 16) {
-				//	FIRE_ANGLED_SHOT(OBJ_DOCTOR_BLAST, e->x, e->y, angle, SPEED(0x400));
-				//}
+				for(u16 angle = 8; angle < 256; angle += 16) {
+					FIRE_ANGLED_SHOT(OBJ_DOCTOR_BLAST, e->x, e->y, angle, SPEED(0x400));
+				}
 			}
 		}
 		break;
@@ -162,8 +162,8 @@ void ai_boss_doctor(Entity *e) {
 				// can start moving towards it. But, it's important not to
 				// actually move until the last possible second, or we could
 				// drag our floattext along with us (and give away our position).
-				e->x_mark = (5 + (random() % 31)) << CSF << 4;
-				e->y_mark = (5 + (random() % 3)) << CSF << 4;
+				e->x_mark = (5 + (random() & 31)) << CSF << 4;
+				e->y_mark = (5 + (random() & 3)) << CSF << 4;
 			//}
 		}
 		break;
@@ -188,6 +188,7 @@ void ai_boss_doctor(Entity *e) {
 		case 103:
 		{
 			e->state++;
+			e->hidden = FALSE;
 			//dr_tp_in_init(o);
 		}
 		case 104:
@@ -277,8 +278,7 @@ void ai_doctor_shot(Entity *e) {
 		case 1:
 		{
 			// distance apart from each other
-			if (e->timer2 < 128)
-				e->timer2++;
+			if (e->timer2 < 128) e->timer2++;
 			
 			// spin
 			e->angle += 6;
@@ -328,18 +328,14 @@ void ai_doctor_blast(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	if (e->timer > TIME(250))
-		e->state = STATE_DELETE;
+	if (e->timer > TIME(250)) e->state = STATE_DELETE;
 }
 
-// The Doctor's red crystal.
-// There are actually two, one is behind him and one is in front
-// and they alternate visibility as they spin around him so it looks 3D.
-//
-// This function has to be an aftermove, otherwise, because one is in front
-// and the other behind, one will be checking crystal_xmark before the Doctor
-// updates it, and the other afterwards, and they will get out of sync.
-void aftermove_red_crystal(Entity *e) {
+void onspawn_red_crystal(Entity *e) {
+	crystal_entity = e;
+}
+
+void ai_red_crystal(Entity *e) {
 	ANIMATE(e, 4, 0,1);
 	
 	switch(e->state) {
@@ -347,23 +343,23 @@ void aftermove_red_crystal(Entity *e) {
 		{
 			if (crystal_xmark != 0) {
 				e->state = 1;
-				//crystal_tofront = true;
+				e->timer = 0;
+				crystal_state = CRYSTAL_TOFRONT;
 			}
 		}
 		break;
 		
 		case 1:
 		{
-			e->x_speed += (e->x < crystal_xmark) ? 0x55 : -0x55;
-			e->y_speed += (e->y < crystal_ymark) ? 0x55 : -0x55;
-			LIMIT_X(0x400);
-			LIMIT_Y(0x400);
+			e->x_speed += (e->x < crystal_xmark) ? SPEED(0x55) : -SPEED(0x55);
+			e->y_speed += (e->y < crystal_ymark) ? SPEED(0x55) : -SPEED(0x55);
+			LIMIT_X(SPEED(0x400));
+			LIMIT_Y(SPEED(0x400));
 			
-			if ((!e->dir && e->x_speed > 0) ||
-				(e->dir && e->x_speed < 0)) {
-				e->hidden = TRUE;
+			if ((!e->dir && e->x_speed > 0) || (e->dir && e->x_speed < 0)) {
+				if(crystal_state == CRYSTAL_INBACK) crystal_state = CRYSTAL_TOFRONT;
 			} else {
-				e->hidden = FALSE;
+				if(crystal_state == CRYSTAL_INFRONT) crystal_state = CRYSTAL_TOBACK;
 			}
 		}
 		break;
@@ -377,46 +373,39 @@ void aftermove_red_crystal(Entity *e) {
 
 // doctor as npc before fight
 void ai_doctor_crowned(Entity *e) {
+	enum { STAND1, STAND2, FLOAT, HAND1, HAND2, AWAY1, AWAY2 };
 	switch(e->state) {
 		case 0:
 		{
-			// do this manually instead of a spawn point,
-			// cause he's gonna transform.
-			//e->x -= (8 << CSF);
-			//e->y -= (16 << CSF);
-			
+			e->y -= (8 << CSF);
 			e->state = 1;
 			//crystal_xmark = crystal_ymark = 0;
 			//crystal_tofront = true;
 		}
 		case 1:		// faces away
 		{
-			e->frame = 0;
+			e->frame = AWAY1;
 		}
 		break;
 		
 		case 10:	// goes "ho ho ho" (while still facing away)
 		{
-			e->frame = 0;
+			e->frame = AWAY1;
 			e->animtime = 0;
 			e->timer = 0;
 			e->state = 11;
 		}
 		case 11:
 		{
-			ANIMATE(e, 8, 0,1);
-			// he has to show shrug frame exactly 6 times.
-			// ANIMATE(5) changes frame on every 6th tick
-			// so this is 6*6*nframes(2) = 72
-			if (++e->timer >= 128)
-				e->state = 1;
+			ANIMATE(e, 8, AWAY1,AWAY2);
+			if (++e->timer >= 128) e->state = 1;
 		}
 		break;
 		
 		case 20:	// turns around (faces screen instead of away)
 		{
 			e->state = 21;
-			e->frame = 2;
+			e->frame = STAND1;
 		}
 		break;
 		
@@ -433,22 +422,21 @@ void ai_doctor_crowned(Entity *e) {
 		}
 		case 41:
 		{
-			e->frame = 4;
+			e->frame = HAND1;
 		}
 		break;
 		
 		case 50:	// "ho ho ho" (while facing player)
 		{
-			e->frame = 4;
+			e->frame = HAND1;
 			e->animtime = 0;
 			e->timer = 0;
 			e->state = 51;
 		}
 		case 51:
 		{
-			ANIMATE(e, 8, 4,5);
-			if (++e->timer >= 72)
-				e->state = 41;
+			ANIMATE(e, 8, HAND1,HAND2);
+			if (++e->timer >= 72) e->state = 41;
 		}
 		break;
 	}

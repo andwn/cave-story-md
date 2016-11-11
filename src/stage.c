@@ -15,7 +15,7 @@
 #include "sheet.h"
 
 // Index of background in db/back.c and the effect type
-u8 stageBackground = 0xFF, stageBackgroundType;
+u8 stageBackground = 0xFF;
 
 u16 backScrollTimer;
 s16 backScrollTable[32];
@@ -50,7 +50,6 @@ void stage_load(u16 id) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
-	//water_screenlevel = WATER_DISABLE;
 	water_entity = NULL;
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {

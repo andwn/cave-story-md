@@ -139,6 +139,7 @@ SPRITE SPR_DoctorM		"sprite/musldr.png"		5 6 0 0 NONE
 SPRITE SPR_DoctorB		"sprite/docboss.png"	3 4 0 0 NONE
 SPRITE SPR_DocBat		"sprite/docbat.png"		2 2 0 0 NONE
 SPRITE SPR_RedDot		"sprite/reddot.png"		1 1 0 0 NONE
+SPRITE SPR_DocShot		"sprite/docshot.png"	2 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE

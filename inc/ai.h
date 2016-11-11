@@ -121,6 +121,14 @@ Entity *water_entity;
 u16 curly_target_time;
 s32 curly_target_x, curly_target_y;
 
+enum CrystalStates {
+	CRYSTAL_INFRONT,
+	CRYSTAL_INBACK,
+	CRYSTAL_TOFRONT,
+	CRYSTAL_TOBACK
+};
+#define crystal_entity	water_entity
+#define crystal_state	curly_target_time
 #define crystal_xmark	curly_target_x
 #define crystal_ymark	curly_target_y
 

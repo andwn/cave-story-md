@@ -23,6 +23,7 @@ void ai_jenka(Entity *e) {
 }
 
 void ai_doctor(Entity *e) {
+	enum { STAND1, STAND2, FLOAT, HAND1, HAND2 };
 	switch(e->state) {
 		case 10:	// he chuckles
 		{

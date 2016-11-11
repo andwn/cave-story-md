@@ -338,6 +338,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_BAT, &SPR_DocBat, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_REDDOT, &SPR_RedDot, 2,1,1, 0,0, 0,1);
 			SHEET_ADD(SHEET_MIMI, &SPR_ShovelMimi, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_DOCSHOT, &SPR_DocShot, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x44: // Black Space
 		{
