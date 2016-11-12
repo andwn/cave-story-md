@@ -58,21 +58,22 @@
 	for(u8 i = 0; i < MAX_TILOCS; i++) {                                                       \
 		if(tilocs[i]) {                                                                        \
 			freeCount = 0;                                                                     \
-			continue;                                                                          \
-		} else freeCount++;                                                                    \
-		if(freeCount << 2 >= (framesize)) {                                                    \
-			myindex = i;                                                                       \
-			break;                                                                             \
+		} else {                                                                               \
+			freeCount++;                                                                       \
+			if(freeCount << 2 >= (framesize)) {                                                \
+				myindex = i;                                                                   \
+				break;                                                                         \
+			}                                                                                  \
 		}                                                                                      \
 	}                                                                                          \
 	if(myindex != NOTILOC) {                                                                   \
 		myindex -= freeCount-1;                                                                \
-		while(freeCount--) tilocs[myindex+(freeCount-1)] = TRUE;                               \
+		while(freeCount--) tilocs[myindex+freeCount] = TRUE;                                   \
 	}                                                                                          \
 }
 #define TILOC_FREE(myindex, framesize) {                                                       \
 	u8 freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);                           \
-	while(freeCount--) tilocs[(myindex)+(freeCount-1)] = FALSE;                                \
+	while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;                                    \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
 	DMA_queueDma(DMA_VRAM, (u32)(tiles), (index) << 5, (count) << 4, 2);                       \
