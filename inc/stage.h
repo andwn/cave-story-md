@@ -37,7 +37,7 @@
 #define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
 // Shortcut version of above
 #define blk(xf, xoff, yf, yoff)                                                                \
-	stage_get_block_type((((xf)>>CSF)+(xoff))/16,(((yf)>>CSF)+(yoff))/16)
+	stage_get_block_type((((xf)>>CSF)+(xoff))>>4,(((yf)>>CSF)+(yoff))>>4)
 
 // Index of current stage in db/stage.c
 u16 stageID;

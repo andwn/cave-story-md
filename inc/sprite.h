@@ -36,7 +36,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 #define sprites_send() {                                                                       \
 	if(spr_num) {                                                                              \
 		sprites[spr_num-1].link = 0;                                                           \
-		DMA_doDma(DMA_VRAM, (u32)sprites, VDP_SPRITE_TABLE, spr_num*4, 2);                     \
+		DMA_doDma(DMA_VRAM, (u32)sprites, VDP_SPRITE_TABLE, spr_num<<2, 2);                    \
 		spr_num = 0;                                                                           \
 	}                                                                                          \
 }

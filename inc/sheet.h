@@ -37,9 +37,9 @@
 }
 // The end params are anim,frame value couples from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
-	const u8 fa[frames*2] = { __VA_ARGS__ };                                                   \
+	const u8 fa[frames<<1] = { __VA_ARGS__ };                                                  \
 	for(u8 i = 0; i < frames; i++) {                                                           \
-		VDP_loadTileData(SPR_TILES(sdef,fa[i*2],fa[i*2+1]),index+i*fsize,fsize,dma);           \
+		VDP_loadTileData(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),index+i*fsize,fsize,dma);       \
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \

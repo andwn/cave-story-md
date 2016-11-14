@@ -80,7 +80,7 @@ u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
 	u8 angle = 0;
 	s32 xdist = (tgtx - curx);
 	s32 ydist = (tgty - cury);
-	if (xdist==0) return (tgty > cury) ? 0x40 : 0xC0; // Undefined
+	if (!xdist) return (tgty > cury) ? 0x40 : 0xC0; // Undefined
 	u32 ratio = (abs(ydist) << 13) / abs(xdist);
 	while(tan_table[angle++] < ratio);
 	//angle += 1;

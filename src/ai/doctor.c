@@ -22,6 +22,8 @@
 #define angle		jump_time
 
 void ai_boss_doctor(Entity *e) {
+	enum { STAND1, STAND2, HOVER, SHOOT1, SHOOT2, BLAST1, BLAST2, DEFEAT };
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
@@ -33,8 +35,9 @@ void ai_boss_doctor(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->nflags &= ~NPC_SHOOTABLE;
 			e->y_next += (8 << CSF);
-			e->frame = 3;
+			e->frame = STAND1;
 			e->state = 1;
 			//e->BringToFront();		// make sure in front of doctor_crowned
 			//crystal_tofront = true;	// make sure front crystal is in front of us
@@ -44,10 +47,9 @@ void ai_boss_doctor(Entity *e) {
 		case 2:		// transforming (script)
 		{
 			e->timer++;
-			e->frame = (e->timer & 4) ? 0 : 3;
+			//e->frame = (e->timer & 4) ? 0 : 3;
 			
-			if (e->timer > TIME(50))
-				e->state = 10;
+			if (e->timer > TIME(50)) e->state = 10;
 		}
 		break;
 		
@@ -60,7 +62,7 @@ void ai_boss_doctor(Entity *e) {
 			if (e->grounded) {
 				e->state = 20;
 				e->timer = 0;
-				e->frame = 0;
+				e->frame = STAND1;
 				
 				e->savedhp = e->health;
 				FACE_PLAYER(e);
@@ -80,11 +82,11 @@ void ai_boss_doctor(Entity *e) {
 			
 			if (e->timer == TIME(50)) {	// arm across chest
 				FACE_PLAYER(e);
-				e->frame = 4;
+				e->frame = SHOOT1;
 			}
 			
 			if (e->timer == TIME(80)) {
-				e->frame = 5;	// arm cast out
+				e->frame = SHOOT2;	// arm cast out
 				
 				entity_create(e->x_next, e->y_next, OBJ_DOCTOR_SHOT, e->dir ? NPC_OPTION1 : 0);
 				entity_create(e->x_next, e->y_next, OBJ_DOCTOR_SHOT, (e->dir ? NPC_OPTION1 : 0) | NPC_OPTION2);
@@ -93,7 +95,7 @@ void ai_boss_doctor(Entity *e) {
 			}
 			
 			if (e->timer == TIME(120))
-				e->frame = 0;	// arm down
+				e->frame = STAND1;	// arm down
 			
 			if (e->timer > TIME(130)) {
 				if ((e->health - e->savedhp) > 50) {
@@ -114,7 +116,7 @@ void ai_boss_doctor(Entity *e) {
 		{
 			e->state = 31;
 			e->timer = 0;
-			e->frame = 6;
+			e->frame = BLAST1;
 			e->x_mark = e->x_next;
 			e->eflags |= NPC_SHOOTABLE;
 		}
@@ -126,7 +128,7 @@ void ai_boss_doctor(Entity *e) {
 			if (e->timer > TIME(50)) {
 				e->state = 32;
 				e->timer = 0;
-				e->frame = 7;
+				e->frame = BLAST2;
 				
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				
@@ -173,7 +175,7 @@ void ai_boss_doctor(Entity *e) {
 			if (++e->timer > TIME(40)) {
 				e->state = 103;
 				e->timer = 16;
-				e->frame = 2;
+				e->frame = HOVER;
 				e->y_speed = 0;
 				
 				e->x_next = e->x_mark;
@@ -212,7 +214,7 @@ void ai_boss_doctor(Entity *e) {
 		case 500:
 		{
 			e->eflags &= ~NPC_SHOOTABLE;
-			e->frame = 6;
+			e->frame = DEFEAT;
 			
 			// fall to earth
 			e->y_speed += SPEED(0x10);
@@ -229,7 +231,7 @@ void ai_boss_doctor(Entity *e) {
 		case 501:	// flashing (transforming into Doctor 2)
 		{
 			FACE_PLAYER(e);
-			e->frame = 8;
+			e->frame = DEFEAT;
 			
 			e->x_next = e->x_mark;
 			if (!(++e->timer & 2))
@@ -270,8 +272,8 @@ void ai_doctor_shot(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			if(e->eflags & NPC_OPTION2) e->dir = 1;
-			if(e->eflags & NPC_OPTION1) e->angle = 0x80;
+			if(e->eflags & NPC_OPTION2) e->angle = 0x80;
+			if(e->eflags & NPC_OPTION1) e->dir = 1;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 		}
@@ -309,24 +311,25 @@ void ai_doctor_shot(Entity *e) {
 // from his "explosion" attack
 void ai_doctor_blast(Entity *e) {
 	// they're bouncy
-	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) ||
-		(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x41)) {
-		e->x_speed = -e->x_speed;
-	}
+	if (e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41)
+		e->x_speed = abs(e->x_speed);
+		
+	if (e->x_speed > 0 && blk(e->x, 6, e->y, 0) == 0x41)
+		e->x_speed = -abs(e->x_speed);
 	
-	if (e->y_speed > 0 && blk(e->x, 0, e->y, -8) == 0x41)
+	if (e->y_speed > 0 && blk(e->x, 0, e->y, -6) == 0x41)
 		e->y_speed = -SPEED(0x200);
 	
-	if (e->y_speed < 0 && blk(e->x, 0, e->y, 8) == 0x41)
+	if (e->y_speed < 0 && blk(e->x, 0, e->y, 6) == 0x41)
 		e->y_speed = SPEED(0x200);
-	
-	ANIMATE(e, 2, 0,1);
-	
-	//if ((++e->timer % 4) == 1)
-	//	CreateEntity(e->x, e->y, OBJ_DOCTOR_SHOT_TRAIL)->PushBehind(o);
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+	
+	if(++e->timer & 1) e->frame ^= 1;
+	
+	//if ((e->timer % 4) == 1)
+	//	CreateEntity(e->x, e->y, OBJ_DOCTOR_SHOT_TRAIL)->PushBehind(o);
 	
 	if (e->timer > TIME(250)) e->state = STATE_DELETE;
 }

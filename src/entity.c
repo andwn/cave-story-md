@@ -85,7 +85,7 @@ void entity_reactivate(Entity *e) {
 		TILOC_ADD(e->tiloc, e->framesize);
 		if(e->tiloc != NOTILOC) {
 			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
-			e->vramindex = tiloc_index + e->tiloc * 4;
+			e->vramindex = tiloc_index + (e->tiloc << 2);
 			u16 tile_offset = 0;
 			for(u8 i = 0; i < e->sprite_count; i++) {
 				sprite_index(e->sprite[i], e->vramindex + tile_offset);
