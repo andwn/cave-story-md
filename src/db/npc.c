@@ -267,18 +267,18 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, SHEET_ACID, 	PAL3, 1, &onspawn_persistent, &ai_lava_drip, &ai_null }, // Acid Drop
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
-	{ &SPR_Misery, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Energy Shot
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Lightning Ball
-	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning
+	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
+	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
+	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Energy Shot
+	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Lightning Ball
+	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
 	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_helicopter, &ai_null }, // Helicopter
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_helicopter_blade, &ai_null }, // ???
 	/* 0x100 (256) */
 	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_doctor_crowned, &ai_null }, // Doctor (Before Fight)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Red Crystal
+	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_red_crystal, &ai_red_crystal, &ai_null }, // Red Crystal
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Sleeping Mimiga
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_carried, &ai_null }, // Curly (Carried)
 	{ NULL, SHEET_MIMI,		 PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Shovel Brigade (Caged)
@@ -301,22 +301,22 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_default }, // Red Demon
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Red Demon Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
-	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Spinning Shot
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Dot
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Smoke
+	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
+	{ &SPR_Sue2, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
+	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
+	{ NULL, 		NOSHEET, PAL2, 2, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
+	{ &SPR_MizaMisery,NOSHEET,PAL3,1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
+	{ &SPR_MizaSue, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Spinning Shot
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Dot
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Smoke
 	/* 0x120 (288) */
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_ud_pellet, &ai_null }, // Glowing Rock Shot
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
-	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Core (Before Fight)
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ai_null }, // Glowing Rock Shot
+	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
+	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
+	{ NULL, 		NOSHEET, PAL2, 2, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Quake
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
+	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_falling_block_spawner, &ai_null }, // Falling Block Generator
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Cloud
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Cloud Generator
@@ -324,7 +324,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Uncrowned)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Balrog/Misery (Bubble)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Demon Crown
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Fish Missile (Orange)
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Fish Missile (Orange)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x130 (304) */

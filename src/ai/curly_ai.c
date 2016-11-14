@@ -376,17 +376,17 @@ void ai_cai_gun(Entity *e) {
 	e->x = curly->x;// - (4 << CSF);
 	e->y = curly->y;// - (4 << CSF);
 	e->dir = curly->dir;
-	//if (curly_look) {
-	//	sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
-	//	sprite_index(e->sprite[0], e->vramindex + 3);
-	//	e->sprite[0].size = SPRITE_SIZE(1, 3);
-	//	e->display_box = (bounding_box) { 4, 12, 4, 12 };
-	//} else {
-	//	sprite_vflip(e->sprite[0], 0);
-	//	sprite_index(e->sprite[0], e->vramindex);
-	//	e->sprite[0].size = SPRITE_SIZE(3, 1);
-	//	e->display_box = (bounding_box) { 12, 4, 12, 4 };
-	//}
+	if (curly_look) {
+		sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
+		sprite_index(e->sprite[0], e->vramindex + 3);
+		e->sprite[0].size = SPRITE_SIZE(1, 3);
+		e->display_box = (bounding_box) { 4, 12, 4, 12 };
+	} else {
+		sprite_vflip(e->sprite[0], 0);
+		sprite_index(e->sprite[0], e->vramindex);
+		e->sprite[0].size = SPRITE_SIZE(3, 1);
+		e->display_box = (bounding_box) { 12, 4, 12, 4 };
+	}
 	
 	if (curly_target_time) {
 		// fire when we get close to the target

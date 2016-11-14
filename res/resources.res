@@ -20,6 +20,7 @@ PALETTE PAL_MazeM		"back/bkRed.bmp" 3
 PALETTE PAL_Eggs2		"sprite/babydragon.png" 3
 PALETTE PAL_Sisters		"sprite/sishead.png" 3
 PALETTE PAL_Red			"sprite/dripred.png" 3
+PALETTE PAL_Miza		"sprite/misery2.png" 3
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -297,6 +298,18 @@ SPRITE SPR_BatRed		"sprite/batred.png"		2 2 0 0 NONE
 SPRITE SPR_BubRed		"sprite/bubred.png"		1 1 0 0 NONE
 SPRITE SPR_DrollRed		"sprite/drollred.png"	4 5 0 0 NONE
 SPRITE SPR_DrollShotR	"sprite/drollshotred.png" 3 3 0 0 NONE
+
+# Use PAL_Miza
+SPRITE SPR_Misery2		"sprite/misery2.png" 	2 2 0 0 NONE
+SPRITE SPR_Sue2			"sprite/sue2.png" 		2 2 0 0 NONE
+SPRITE SPR_MizaMisery	"sprite/mizamisery.png" 4 4 0 0 NONE
+SPRITE SPR_MizaSue		"sprite/mizasue.png"	4 4 0 0 NONE
+SPRITE SPR_MizaBat		"sprite/mizabat.png"	2 2 0 0 NONE
+SPRITE SPR_MizaCritter	"sprite/mizacritter.png" 2 2 0 0 NONE
+SPRITE SPR_MizaRing		"sprite/mizaring.png"	2 2 0 0 NONE
+SPRITE SPR_MizaShock	"sprite/mizashock.png"	2 4 0 0 NONE
+SPRITE SPR_MizaFish		"sprite/mizafish.png"	2 2 0 0 NONE
+SPRITE SPR_MizaPellet	"sprite/mizapellet.png" 1 1 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory
