@@ -268,11 +268,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
+	{ NULL, SHEET_IGORSHOT, PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Misery Energy Shot
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
-	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Energy Shot
-	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Lightning Ball
-	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery Lightning
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Lightning Ball
+	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_black_lightning, &ai_null }, // Misery Lightning
+	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Ring
 	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
 	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_helicopter, &ai_null }, // Helicopter
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_helicopter_blade, &ai_null }, // ???

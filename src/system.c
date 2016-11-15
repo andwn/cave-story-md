@@ -34,12 +34,12 @@ u32 skip_flags = 0;
 
 void system_set_flag(u16 flag, u8 value) {
 	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
-	if(value) flags[flag/32] |= 1<<(flag%32);
-	else flags[flag/32] &= ~(1<<(flag%32));
+	if(value) flags[flag>>5] |= 1<<(flag&31);
+	else flags[flag>>5] &= ~(1<<(flag&31));
 }
 
 u8 system_get_flag(u16 flag) {
-	return (flags[flag/32] & (1<<(flag%32))) > 0;
+	return (flags[flag>>5] & (1<<(flag&31))) > 0;
 }
 
 void system_set_skip_flag(u16 flag, u8 value) {

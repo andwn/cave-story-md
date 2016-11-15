@@ -8,13 +8,7 @@ This file is where I list off the differences in this port and why.
  - Where Courier New was used in the original game I am using the default 8x8 SGDK font. The font may change but it will likely still be 8x8.
  - CSMD uses a simple palette fade instead of the original effect which is very difficult to emulate on the hardware.
  - The water "foreground" is in back of the foreground map tiles. I believe this is technically possible to fix but would add too much complication to the stage/background logic (swapping the planes they use for 2 maps only).
-
-#### Colors
  - The original game uses many off-shade colors that don't exist in a 9-bit colormap.
- - King's shirt is blue.
- - Misery's face images have a red background and her shirt is green.
- - Balrog is his normal color and not shaded green in the scene before he is transformed into Balfrog.
- - Balrog's face graphic in both Gum room and Jenka's house are slightly dis-colored.
 
 #### Sound
  - The BGM is not exactly the same for obvious reasons.

@@ -105,12 +105,11 @@ typedef void (*EntityMethod)(Entity*);
 	}                                                                                          \
 }
 
-// Due to a crash on hardware and BlastEm "VDP_waitVSync()" is put in here
-// If SGDK ever fixes VDP_fadeTo, don't forget to remove it
 #define SCREEN_FLASH(fadetime) {                                                               \
-	VDP_waitVSync();                                                                           \
+	SYS_disableInts();                                                                         \
 	VDP_setPaletteColors(0, PAL_FullWhite, 64);                                                \
 	VDP_fadeTo(0, 63, VDP_getCachedPalette(), fadetime, TRUE);                                 \
+	SYS_enableInts();                                                                          \
 }
 
 /* Shared Variables */

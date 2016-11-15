@@ -328,8 +328,12 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_ACID, &SPR_DripRed, 4,1,2, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_PRESS, &SPR_Press, 3,2,3, 0,0, 0,1, 0,2);
 		} break;
+		case 0x3E: // Balcony
+		{	SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
+		} break;
 		case 0x40: // Throne Room
-		{	SHEET_ADD(SHEET_RING, &SPR_MizaRing, 7,2,2, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6);
+		{	SHEET_ADD(SHEET_RING, &SPR_MizaRing, 4,2,2, 0,0, 0,1, 0,2, 0,3);
+			SHEET_ADD(SHEET_IGORSHOT, &SPR_MizaRing, 3,2,2, 0,4, 0,5, 0,6);
 			SHEET_ADD(SHEET_SHOCK, &SPR_MizaShock, 2,2,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,1, 0,2, 0,3);
 		} break;

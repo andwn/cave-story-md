@@ -96,7 +96,7 @@ void ai_misery_frenzied(Entity *e) {
 			
 			ANIMATE(e, 20, 0,1);
 			
-			if (++e->timer > 100) e->state = 30;
+			if (++e->timer > TIME(100)) e->state = 30;
 			
 			FACE_PLAYER(e);
 		}
@@ -111,9 +111,9 @@ void ai_misery_frenzied(Entity *e) {
 		}
 		case 31:
 		{
-			ANIMATE(e, 1, 2, 3);
+			ANIMATE(e, 4, 2,3);
 			
-			if (e->grounded) e->y_speed = -0x200;
+			if (e->grounded) e->y_speed = -SPEED(0x200);
 			
 			s32 core_x = bossEntity ? bossEntity->x : 0;
 			
@@ -160,11 +160,11 @@ void ai_misery_frenzied(Entity *e) {
 				int x, y;
 				
 				if (e->spawner) {
-					x = e->x + (random(-64, 64) << CSF);
-					y = e->y + (random(-32, 32) << CSF);
+					x = e->x - 64 + ((random() & 127) << CSF);
+					y = e->y - 32 + ((random() & 63) << CSF);
 				} else {
-					x = e->x + (random(-32, 32) << CSF);
-					y = e->y + (random(-64, 64) << CSF);
+					x = e->x - 32 + ((random() & 63) << CSF);
+					y = e->y - 64 + ((random() & 127) << CSF);
 				}
 				
 				if (x < block_to_sub(2)) x = block_to_sub(2);
@@ -229,6 +229,9 @@ void ai_misery_frenzied(Entity *e) {
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 /*
@@ -252,6 +255,16 @@ static Entity *fm_spawn_missile(Entity *e, u8 angindex) {
 }
 */
 void ai_misery_critter(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
+	if(e->state < 12) {
+		if(e->x_speed > 0) collide_stage_rightwall(e);
+		if(e->x_speed < 0) collide_stage_leftwall(e);
+		if(e->y_speed < 0) collide_stage_ceiling(e);
+		else if(!e->grounded) e->grounded = collide_stage_floor(e);
+	}
+	
 	switch(e->state) {
 		case 0:
 		{
@@ -300,14 +313,16 @@ void ai_misery_critter(Entity *e) {
 		
 		case 12:
 		{
-			e->eflags |= NPC_IGNORESOLID;
-			if (e->y > block_to_sub(stageWidth)) {
+			//e->eflags |= NPC_IGNORESOLID;
+			if (e->y > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
 			}
 		}
 		break;
 	}
 	
+	e->x = e->x_next;
+	e->y = e->y_next;
 	if (e->state >= 10) {
 		e->y_speed += SPEED(0x40);
 		LIMIT_Y(SPEED(0x5FF));
@@ -347,6 +362,9 @@ void ai_misery_bat(Entity *e) {
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 /*
 void ai_misery_missile(Entity *e) {
@@ -485,6 +503,9 @@ void ai_sue_frenzied(Entity *e) {
 	
 	sue_somersault(e);
 	sue_dash(e);
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 // somersault attack. this is the only time she can actually hurt you.

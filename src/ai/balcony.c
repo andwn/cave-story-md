@@ -80,6 +80,9 @@ void ai_helicopter_blade(Entity *e) {
 }
 
 void ai_igor_balcony(Entity *e) {
+	enum Frame { STAND1, STAND2, WALK1, WALK2, PUNCH1, PUNCH2, MOUTH1, 
+				 JUMP, LAND, DEFEAT1, MOUTH2, DEFEAT2, DEFEAT3, DEFEAT4 };
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
@@ -107,7 +110,7 @@ void ai_igor_balcony(Entity *e) {
 		case 10:		// walking towards player
 		{
 			e->state = 11;
-			e->frame = 0;
+			e->frame = STAND1;
 			e->animtime = 0;
 			FACE_PLAYER(e);
 		}
@@ -126,7 +129,7 @@ void ai_igor_balcony(Entity *e) {
 		
 		case 20:	// prepare to jump...
 		{
-			e->frame = 11;	// jump-prepare frame
+			e->frame = LAND;	// jump-prepare frame
 			
 			if (++e->timer > 10) {
 				e->state = 21;
@@ -140,7 +143,7 @@ void ai_igor_balcony(Entity *e) {
 		
 		case 21:	// jumping
 		{
-			e->frame = 10;	// in-air frame
+			e->frame = JUMP;	// in-air frame
 			MOVE_X(SPEED(0x200));
 			if (e->grounded) {
 				camera_shake(20);
@@ -148,7 +151,7 @@ void ai_igor_balcony(Entity *e) {
 				
 				e->state = 22;
 				e->timer = 0;
-				e->frame = 11;
+				e->frame = LAND;
 			}
 		}
 		break;
@@ -171,21 +174,19 @@ void ai_igor_balcony(Entity *e) {
 			e->timer++;
 			
 			// flash mouth
-			//e->frame = 8;
-			//if (e->timer < 50 && (e->timer & 2))
-			//	e->frame = 9;
+			e->frame = MOUTH1;
+			if (e->timer < TIME(50) && (e->timer & 4)) e->frame = MOUTH2;
 			
 			// fire shots
-			//if (e->timer > 30) {
-			//	if ((e->timer % 4) == 1) {
-			//		sound_play(SND_BLOCK_DESTROY, 5);
-			//		Entity *shot = SpawnEntityAtActionPoint(o, OBJ_IGOR_SHOT);
-			//		
-			//		int angle = (!e->dir) ? 136 : 248;
-			//		angle += random(-16, 16);
-			//		ThrowEntityAtAngle(shot, angle, 0x580);
-			//	}
-			//}
+			if (e->timer > 30) {
+				if ((e->timer & 3) == 1) {
+					sound_play(SND_BLOCK_DESTROY, 5);
+					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
+												 e->y, OBJ_IGOR_SHOT, 0);
+					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
+					shot->y_speed = SPEED(0x180) - (random() % SPEED(0x300));
+				}
+			}
 			
 			if (e->timer > 82) {
 				FACE_PLAYER(e);

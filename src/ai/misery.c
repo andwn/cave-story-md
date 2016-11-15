@@ -379,12 +379,17 @@ static void run_spells(Entity *e) {
 		// fire black shots at player
 		case STATE_FIRE_SHOTS:
 		{
-			if ((++e->timer % 6) == 0) {
-				//EmFireAngledShot(o, OBJ_MISERY_SHOT, 4, 0x800);
+			if ((++e->timer & 7) == 0) {
+				u8 angle = get_angle(e->x, e->y, player.x, player.y);
+				Entity *shot = entity_create(e->x, e->y, OBJ_MISERY_SHOT, 0);
+				angle -= 3;
+				angle += random() & 7;
+				shot->x_speed = (cos[angle] * SPEED(0x800)) >> CSF;
+				shot->y_speed = (sin[angle] * SPEED(0x800)) >> CSF;
 				sound_play(SND_FIREBALL, 3);
 			}
 			
-			if (e->timer > 30) {
+			if (e->timer > 40) {
 				e->timer = 0;
 				e->state = STATE_TP_AWAY;
 			}
@@ -424,7 +429,7 @@ static void run_spells(Entity *e) {
 			LIMIT_Y(SPEED(0x200));
 			
 			if ((++e->timer % 24) == 0) {
-				//CreateObject(e->x, e->y+(4<<CSF), OBJ_MISERY_BALL);
+				entity_create(e->x, e->y+(4<<CSF), OBJ_MISERY_BALL, 0);
 				sound_play(SND_FIREBALL, 3);
 			}
 			
@@ -582,7 +587,9 @@ static void run_defeated(Entity *e) {
 		case 1010:		// fall to ground and do defeated frame: "ergh"
 		{
 			e->y_speed += 10;
-			if (e->grounded) {
+			LIMIT_Y(SPEED(0x400));
+			e->y += e->y_speed;
+			if (blk(e->x, 0, e->y, 8) == 0x41) {
 				e->frame = 7;
 				e->state = 1011;
 			}
@@ -609,6 +616,7 @@ void ai_misery_ring(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->frame = 3;
 			e->state = 1;
 			e->timer = 0;
 		}
@@ -635,10 +643,14 @@ void ai_misery_ring(Entity *e) {
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			
-			//ThrowObjectAtPlayer(e, 3, 0x200);
+			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x200));
 			FACE_PLAYER(e);
 			
-			//e->sprite = SPR_ORANGE_BAT_FINAL;
+			// Change to bat sprite
+			SHEET_FIND(e->sheet, SHEET_BAT);
+			e->frame = 0;
+			e->oframe = 255;
+			
 			e->state = 11;
 		}
 		case 11:
@@ -702,13 +714,16 @@ void ai_misery_ball(Entity *e) {
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ai_black_lightning(Entity *e) {
 	ANIMATE(e, 2, 0,1);
 	e->y_speed = SPEED(0x1000);
 	
-	if (collide_stage_floor(e)) {
+	if (blk(e->x, 0, e->y, 15) == 0x41) {
 		//effect(e->CenterX(), e->Bottom(), EFFECT_BOOMFLASH);
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
