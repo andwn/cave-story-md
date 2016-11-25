@@ -243,6 +243,7 @@ void ai_sky_dragon(Entity *e) {
 		case 0:		// standing
 		{
 			ANIMATE(e, 30, 0,1);
+			e->dir = 1; // Dragon always faces right
 		}
 		break;
 		
@@ -264,7 +265,7 @@ void ai_sky_dragon(Entity *e) {
 		case 11:
 		{
 			if(++e->animtime > 8) {
-				e->frame ^= 1;
+				e->frame ^= 1; // swap between 2-3 or 4-5 for mimiga mask
 				e->animtime = 0;
 			}
 			e->x_speed += (e->x < e->x_mark) ? 0x08 : -0x08;
@@ -289,6 +290,8 @@ void ai_sky_dragon(Entity *e) {
 		}
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ai_pixel_cat(Entity *e) {
