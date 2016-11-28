@@ -23,6 +23,7 @@
 #define IRONH_DEFEATED			1000
 
 #define player_hit	curly_target_time
+#define dir2		jump_time
 
 void onspawn_ironhead(Entity *e) {
 	e->alwaysActive = TRUE;
@@ -47,6 +48,7 @@ void ai_ironhead(Entity *e) {
 	switch(e->state) {
 		case IRONH_SPAWN_FISHIES:
 		{
+			e->dir = 1;
 			e->timer = 0;
 			e->state++;
 		}
@@ -66,7 +68,7 @@ void ai_ironhead(Entity *e) {
 		case IRONH_SWIM:		// swimming attack
 		{
 			e->state++;
-			if (e->dir) {	// coming up on player from left
+			if (e->dir2) {	// coming up on player from left
 				e->x = 0x1e000;
 				e->y = player.y;
 			} else {	// returning from right side of screen
@@ -85,7 +87,7 @@ void ai_ironhead(Entity *e) {
 		case IRONH_SWIM+1:
 		{
 			ANIMATE(e, 8, 4,3,2,3,4,1,0,1);
-			if (e->dir) {
+			if (e->dir2) {
 				e->x_mark += SPEED(0x400);
 			} else {
 				e->x_mark -= SPEED(0x200);
@@ -97,19 +99,19 @@ void ai_ironhead(Entity *e) {
 			
 			LIMIT_Y(SPEED(0x200));
 			
-			if (e->dir) {
+			if (e->dir2) {
 				if (e->x > 0x5a000) {
-					e->dir = 0;
+					e->dir2 = 0;
 					e->state = IRONH_SPAWN_FISHIES;
 				}
 			} else {
 				if (e->x < 0x22000) {
-					e->dir = 1;
+					e->dir2 = 1;
 					e->state = IRONH_SPAWN_FISHIES;
 				}
 			}
 			
-			if (!e->dir) {
+			if (!e->dir2) {
 				// fire bullets at player when retreating
 				switch(++e->timer) {
 					case 300:
@@ -229,6 +231,7 @@ void ai_ironh_fishy(Entity *e) {
 
 void ai_ironh_shot(Entity *e) {
 	if (!e->state) {
+		e->dir = 1;
 		if (++e->timer > 20) {
 			e->state = 1;
 			e->x_speed = e->y_speed = 0;
