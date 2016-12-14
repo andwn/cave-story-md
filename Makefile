@@ -51,6 +51,7 @@ release: LIBMD = $(GENDEV)/m68k-elf/lib/libmd.a
 release: main-build
 release:
 	python2 savegen.py
+	tar czvf saves.tar.gz save
 debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
 debug: LIBMD = $(GENDEV)/m68k-elf/lib/libmd_debug.a
 debug: main-build
