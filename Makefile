@@ -35,7 +35,10 @@ OBJS = $(RESOURCES)
 .SECONDARY: doukutsu.elf
 
 all: ntsc
-
+saves: prof2sram
+saves:
+	python2 savegen.py
+	tar czvf saves.tar.gz save
 ntsc: release
 
 ntsc-debug: debug
@@ -49,11 +52,9 @@ pal-debug: debug
 release: CCFLAGS += -O3 -fomit-frame-pointer
 release: LIBMD = $(GENDEV)/m68k-elf/lib/libmd.a
 release: main-build
-
 debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
 debug: LIBMD = $(GENDEV)/m68k-elf/lib/libmd_debug.a
 debug: main-build
-
 main-build: head-gen doukutsu.bin symbol.txt
 
 symbol.txt: doukutsu.bin
