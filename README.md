@@ -1,6 +1,4 @@
 # Cave Story MD
-![Screenshot](doc/ss01.png)
-
 [![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
@@ -28,14 +26,8 @@ There may be an option to configure this in the future.
 - Start - Pause / Item Menu
 
 ### Save files
-There is an experimental tool to convert saves (one way only PC -> MD).
-Beware that SRAM formats differ between emulators.
-
-1. `make tools`
-2. Download & extract a Profile.dat from [here](http://www.cavestory.org/download/saves.php)
-3. Example (note the -g option for Gens):
-   - BlastEm: `./prof2sram ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.local/share/blastem/doukutsu/save.sram`
-   - Gens: `./prof2sram -g ~/Downloads/Profile.dat.beforeCoreBattleW-OBooster ~/.gens/doukutsu.srm`
+There are SRAM files for various points in the game to help debugging in the save directory.
+The `.srm` are for most emulators (skips even bytes), and `.sram` for BlastEm (doesn't skip bytes).
 
 ### Compilation
 Assuming you are running GNU/Linux. It might also work on BSDs
@@ -54,32 +46,22 @@ Assuming you are running GNU/Linux. It might also work on BSDs
 
 ## FAQ
 #### Why?
-I was learning about Genesis homebrew and wanted to make something, but I'm not creative enough 
-to make my own game. Also Cave Story is pretty cool.
-
-#### Where are the Windows build instructions?
-There aren't any. I used to have a Makefile and bat to build this on Windows, 
-however the build only succeeded ~30% of the time due to random build errors. 
-The game also lags much more often when built from Windows for some reason.
+¯\_(ツ)_/¯
 
 #### There are no save points. What's going on?
 The game detected that you have no SRAM. If this is not the case, open an issue.
 
-#### I found a discrepancy with the original, what do?
-Report it, but first make sure it's not in [this document](doc/DIFFERENCES.md)
+#### I found a discrepancy with the original, should I report it?
+Sure, as long as it isn't an obviously impossible fix because of hardware limitations.
 
-#### Will there be a physical release of this?
-Probably not. This is a fan port (not endorsed by Pixel or Nicalis), 
-and I'm not going to dance around copyright laws more than I already am.
-
-#### Isn't this just NXEngine ported to Genesis?
-The AI code is, but the rest I wrote from scratch with the help of various modding docs.
-
-#### Could I port mods to this?
-It would be extremely painful.
+#### Will this be released/sold on a cart?
+- Short answer: No
+- Long answer: My country enforces copyright law and Nicalis has the rights to Cave Story
 
 ## Shoutouts & Legal Stuff
 - Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
-- My music covers can be considered [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
-  - They were created using Deflemask tracker, based on conversions from the org2xm tool.
-- Cave Editor is cool.
+- Cave Editor is useful to investigate problematic objects and NPCs.
+- Most music covers are my own, created in Deflemask. Consider them CC-BY. Exceptions include:
+  - Eyes of Flame & Gestation: @DavisOlivier
+  - Access, Cave Story, Fanfare 1/2/3: Originally me, improved by @DavisOlivier
+
