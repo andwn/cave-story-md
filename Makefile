@@ -39,6 +39,12 @@ saves: prof2sram
 saves:
 	python2 savegen.py
 	tar czvf saves.tar.gz save
+	rm -rf save
+zipsaves: prof2sram
+zipsaves:
+	python2 savegen.py
+	zip -r saves.zip save
+	rm -rf save
 ntsc: release
 
 ntsc-debug: debug
