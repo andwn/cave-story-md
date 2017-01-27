@@ -35,13 +35,13 @@ OBJS = $(RESOURCES)
 .SECONDARY: doukutsu.elf
 
 all: ntsc
-saves: prof2sram
-saves:
+tarsaves: prof2sram
+tarsaves:
 	python2 savegen.py
 	tar czvf saves.tar.gz save
 	rm -rf save
-zipsaves: prof2sram
-zipsaves:
+saves: prof2sram
+saves:
 	python2 savegen.py
 	zip -r saves.zip save
 	rm -rf save
