@@ -128,8 +128,8 @@ void player_update() {
 				if(player.y_speed > SPEED(0x3FF)) player.y_speed = SPEED(0x3FF);
 				if(player.y_speed < SPEED(-0x4FF)) player.y_speed = SPEED(-0x4FF);
 			} else {
-				//if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
-				//if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
+				if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
+				if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
 				if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
 				if(player.y_speed < SPEED(-0x5FF)) player.y_speed = SPEED(-0x5FF);
 			}
