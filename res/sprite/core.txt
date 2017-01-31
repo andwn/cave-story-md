@@ -1,5 +1,0 @@
-input core.png
-output core.ts
-output2 core.map
-map 0 0 28 14
-
