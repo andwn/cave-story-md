@@ -46,7 +46,7 @@ Assuming you are running GNU/Linux. It might also work on BSDs
 
 ## FAQ
 #### Why?
-¯\_(ツ)_/¯
+¯\\_(ツ)_/¯
 
 #### There are no save points. What's going on?
 The game detected that you have no SRAM. If this is not the case, open an issue.
@@ -59,8 +59,10 @@ Sure, as long as it isn't an obviously impossible fix because of hardware limita
 - Long answer: My country enforces copyright law and Nicalis has the rights to Cave Story
 
 ## Shoutouts & Legal Stuff
-- Cave Story's game content (Graphics, sound, characters) is property of Studio Pixel, not me.
+- Cave Story's game content (Graphics, sound, characters) were created by Pixel.
+- Some of the code, namely the AI routines are heavily based on NXEngine.
 - Cave Editor is useful to investigate problematic objects and NPCs.
+- Sik made the font used ingame.
 - Most music covers are my own, created in Deflemask. Consider them CC-BY. Exceptions include:
   - Eyes of Flame & Gestation: @DavisOlivier
   - Access, Cave Story, Fanfare 1/2/3: Originally me, improved by @DavisOlivier
