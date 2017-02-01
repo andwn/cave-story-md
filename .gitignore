@@ -11,3 +11,4 @@ tscomp
 tileopt
 lutgen
 savegen_cache/
+save/

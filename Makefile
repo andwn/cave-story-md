@@ -35,10 +35,14 @@ OBJS = $(RESOURCES)
 .SECONDARY: doukutsu.elf
 
 all: ntsc
+tarsaves: prof2sram
+tarsaves:
+	python2 savegen.py
+	tar czvf saves.tar.gz save
 saves: prof2sram
 saves:
 	python2 savegen.py
-	tar czvf saves.tar.gz save
+	zip -r saves.zip save
 ntsc: release
 
 ntsc-debug: debug
@@ -107,6 +111,7 @@ clean:
 	rm -f src/boot/sega.o src/boot/rom_head.bin
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-
+	rm -rf save
+	rm -f saves.zip saves.tar.gz
 clean-tools:
 	rm -f prof2sram tileopt tscomp lutgen
