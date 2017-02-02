@@ -153,6 +153,12 @@ void game_reset(u8 load) {
 }
 
 void draw_itemmenu(u8 resetCursor) {
+	// Hide sprites
+	spr_num = 0;
+	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+	ready = TRUE;
+	VDP_waitVSync();
+	
 	SYS_disableInts();
 	// Fill the top part
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX), 1, 0);
@@ -247,6 +253,12 @@ void draw_itemmenu(u8 resetCursor) {
 u8 update_pause() {
 	// Start or B will close the menu and resume the game
 	if((joy_pressed(BUTTON_START) || joy_pressed(BUTTON_B)) && !tscState) {
+		// Hide the item sprites before loading the tiles back
+		// This way we won't see heart/energy overlap the items for a split second
+		spr_num = 0;
+		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+		ready = TRUE;
+		VDP_waitVSync();
 		// Reload shared sheets we clobbered
 		SYS_disableInts();
 		sheets_load_stage(stageID, TRUE, FALSE);
