@@ -15,6 +15,8 @@
 // Current and previous states, so the moment a button is pressed or released can be detected
 u16 joystate, oldstate;
 
+u8 controllerType;
+
 // Just sets the 2 states to 0
 void input_init();
 

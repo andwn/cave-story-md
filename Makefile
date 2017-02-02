@@ -10,7 +10,8 @@ OBJC = $(GENGCC_BIN)objcopy
 RESCOMP= $(GENBIN)rescomp
 
 INCS = -I$(GENDEV)/m68k-elf/include -I$(GENDEV)/m68k-elf/m68k-elf/include -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-missing-field-initializers -std=c99 -c -fno-builtin
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-char-subscripts -Wno-missing-field-initializers \
+			-std=c99 -c -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
 TOOLFLAGS = -std=c99 -O2 -Wall -Wextra
 LIBS = -L$(GENDEV)/m68k-elf/lib -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 

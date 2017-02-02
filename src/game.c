@@ -21,14 +21,14 @@
 
 // Item menu stuff
 VDPSprite itemSprite[MAX_ITEMS];
-u8 selectedItem = 0;
+s8 selectedItem = 0;
 
 // Prevents incomplete sprite list from being sent to VDP (flickering)
 volatile u8 ready;
 
 void draw_itemmenu(u8 resetCursor);
 u8 update_pause();
-void itemcursor_move(u8 oldindex, u8 index);
+void itemcursor_move(s8 oldindex, s8 index);
 void gen_maptile(u16 bx, u16 by, u16 index);
 
 // Initializes or re-initializes the game after "try again"
@@ -269,59 +269,114 @@ u8 update_pause() {
 		// Items are 5000 + ID
 		// Item descriptions are 6000 + ID
 		if(tscState) {
-			u8 overid = playerInventory[selectedItem];
-			tsc_update();
-			// Item was comsumed, have to adjust the icons
-			if(playerInventory[selectedItem] != overid) {
-				draw_itemmenu(FALSE);
+			if(selectedItem >= 0) { // Item
+				u8 overid = playerInventory[selectedItem];
+				tsc_update();
+				// Item was comsumed, have to adjust the icons
+				if(playerInventory[selectedItem] != overid) {
+					draw_itemmenu(FALSE);
+				}
+			} else { // Weapon
+				tsc_update();
 			}
-		} else if(joy_pressed(BUTTON_C) && playerInventory[selectedItem] > 0) {
-			tsc_call_event(6000 + playerInventory[selectedItem]);
+		} else if(joy_pressed(BUTTON_C)) {
+			if(selectedItem >= 0) { // Item
+				if(playerInventory[selectedItem] > 0) {
+					tsc_call_event(6000 + playerInventory[selectedItem]);
+				}
+			} else if(playerWeapon[selectedItem + 6].type > 0) { // Weapon
+				currentWeapon = selectedItem + 6;
+				sound_play(SND_SWITCH_WEAPON, 5);
+				if(weapon_info[playerWeapon[currentWeapon].type].sprite) {
+					TILES_QUEUE(
+						SPR_TILES(weapon_info[playerWeapon[currentWeapon].type].sprite,0,0),
+						TILE_WEAPONINDEX,6);
+				}
+			}
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			u8 newsel = selectedItem > 0 ? selectedItem - 1 : MAX_ITEMS - 1;
+			s8 newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
+			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem = newsel;
-			tsc_call_event(5000 + playerInventory[selectedItem]);
+			if(selectedItem >= 0) { // Item
+				tsc_call_event(5000 + playerInventory[selectedItem]);
+			} else { // Weapon
+				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+			}
 		} else if(joy_pressed(BUTTON_UP)) {
-			u8 newsel = selectedItem < 6 ? selectedItem + 18 : selectedItem - 6;
+			s8 newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
+			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem = newsel;
-			tsc_call_event(5000 + playerInventory[selectedItem]);
+			if(selectedItem >= 0) { // Item
+				tsc_call_event(5000 + playerInventory[selectedItem]);
+			} else { // Weapon
+				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+			}
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			u8 newsel = selectedItem + 1; newsel %= MAX_ITEMS;
+			s8 newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
+			if(newsel == -1) newsel = -6;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem = newsel;
-			tsc_call_event(5000 + playerInventory[selectedItem]);
+			if(selectedItem >= 0) { // Item
+				tsc_call_event(5000 + playerInventory[selectedItem]);
+			} else { // Weapon
+				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+			}
 		} else if(joy_pressed(BUTTON_DOWN)) {
-			u8 newsel = selectedItem + 6; newsel %= MAX_ITEMS;
+			s8 newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
+			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
 			selectedItem = newsel;
-			tsc_call_event(5000 + playerInventory[selectedItem]);
+			if(selectedItem >= 0) { // Item
+				tsc_call_event(5000 + playerInventory[selectedItem]);
+			} else { // Weapon
+				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+			}
 		}
 		for(u8 i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
 	}
 	return TRUE;
 }
 
-void itemcursor_move(u8 oldindex, u8 index) {
+void itemcursor_move(s8 oldindex, s8 index) {
 	// Erase old position
-	u16 x = 4 + (oldindex % 6) * 4;
-	u16 y = 11 + (oldindex / 6) * 2;
+	u16 x, y, w, h;
+	if(oldindex >= 0) {
+		x = 4 + (oldindex % 6) * 4;
+		y = 11 + (oldindex / 6) * 2;
+		w = 3; 
+		h = 1;
+	} else {
+		x = 3 + (oldindex + 6) * 6;
+		y = 4;
+		w = 5;
+		h = 4;
+	}
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+1);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+3, y+1);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+w, y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+h);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+w, y+h);
 	// Draw new position
-	x = 4 + (index % 6) * 4;
-	y = 11 + (index / 6) * 2;
+	if(index >= 0) {
+		x = 4 + (index % 6) * 4;
+		y = 11 + (index / 6) * 2;
+		w = 3; 
+		h = 1;
+	} else {
+		x = 3 + (index + 6) * 6;
+		y = 4;
+		w = 5;
+		h = 4;
+	}
 	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX,   x,   y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+3, y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+1);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+3, x+3, y+1);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+w, y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+h);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+3, x+w, y+h);
 }
 
 void do_map() {

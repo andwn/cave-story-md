@@ -293,10 +293,18 @@ void player_update() {
 		player_update_air_display();
 	}
 	// Weapon switching
-	if(joy_pressed(BUTTON_Y)) {
-		player_prev_weapon();
-	} else if(joy_pressed(BUTTON_Z)) {
-		player_next_weapon();
+	if(controllerType == JOY_TYPE_PAD3) {
+		// 3 button controller cycles with A
+		if(joy_pressed(BUTTON_A)) {
+			player_next_weapon();
+		}
+	} else {
+		// 6 button cycles with X/Y
+		if(joy_pressed(BUTTON_Y)) {
+			player_prev_weapon();
+		} else if(joy_pressed(BUTTON_Z)) {
+			player_next_weapon();
+		}
 	}
 	// Shooting
 	if(playerWeapon[currentWeapon].type == WEAPON_MACHINEGUN) {
