@@ -93,7 +93,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Mapi,		PXE_Mapi,	TSC_Mapi,	&PAL_Regu,	3,	0,	"Storage" },
 	{ PXM_Hell4,	PXE_Hell4,	TSC_Hell4,	&PAL_Regu,	10,	0,	"Passage?" },
 	{ PXM_Hell42,	PXE_Hell42,	TSC_Hell42,	&PAL_Regu,	10,	0,	"Passage?" },
-	{ PXM_Statue,	PXE_Statue,	TSC_Statue,	&PAL_Regu,	10,	0,	"Statue Chamber" },
+	{ PXM_Statue,	PXE_Statue,	TSC_Statue,	&PAL_Regu,	26,	0,	"Statue Chamber" },
 	{ PXM_Ballo1,	PXE_Ballo1,	TSC_Ballo1,	&PAL_Regu,	10,	0,	"Seal Chamber" },
 	{ PXM_Ostep,	PXE_Ostep,	TSC_Ostep,	&PAL_Regu,	21,	0,	"Corridor" },
 	{ PXM_e_Labo,	PXE_e_Labo,	TSC_e_Labo,	&PAL_Regu,	12,	0,	"Credits" },

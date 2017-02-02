@@ -30,4 +30,5 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 	{ &TS_Eggs2, &PAL_Eggs, PXA_Eggs2 },
 	{ &TS_MazeM, &PAL_Maze, PXA_MazeM },
 	{ &TS_Kings, &PAL_White, PXA_Kings },
+	{ &TS_Statue,&PAL_Hell, PXA_Statue },
 };

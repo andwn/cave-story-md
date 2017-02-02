@@ -29,7 +29,7 @@ typedef struct {
 extern const stage_info_def stage_info[STAGE_COUNT];
 
 // Information about each tileset, indexed by stageTileset
-#define TILESET_COUNT 26
+#define TILESET_COUNT 27
 typedef struct {
 	const TileSet *tileset; // The graphical tile data to load
 	const Palette *palette; // The palette, which will be loaded to PAL2

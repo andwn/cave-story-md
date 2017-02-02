@@ -451,6 +451,9 @@ BIN PXM_Hell4		"Stage/Hell/Hell4.pxm"
 BIN PXM_Hell42		"Stage/Hell/Hell42.pxm"
 BIN PXM_Ballo1		"Stage/Hell/Ballo1.pxm"
 BIN PXM_Ballo2		"Stage/Hell/Ballo2.pxm"
+TILESET TS_Statue	"Stage/Hell/PrtStatue.bmp" 2
+BIN PXA_Statue		"Stage/Hell/Statue.pxa"
+BIN PXM_Statue		"Stage/Hell/Statue.pxm"
 
 # ----------------------------------------------------------------------------------------------
 # Tileset Palettes
@@ -596,7 +599,6 @@ BIN PXM_SandE	"Stage/SandE.pxm"
 BIN PXM_Santa	"Stage/Santa.pxm"
 BIN PXM_Shelt	"Stage/Shelt.pxm"
 BIN PXM_Start	"Stage/Start.pxm"
-BIN PXM_Statue	"Stage/Statue.pxm"
 BIN PXM_Stream	"Stage/Stream.pxm"
 BIN PXM_Weed	"Stage/Weed.pxm"
 BIN PXM_WeedB	"Stage/WeedB.pxm"
