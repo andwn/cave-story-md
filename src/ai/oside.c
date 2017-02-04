@@ -19,6 +19,7 @@
 #define NS_FIRING				4
 #define NS_RETURN_TO_SET_POINT	5
 #define NS_GUARD_SET_POINT		6
+
 void ai_night_spirit(Entity *e) {
 	switch(e->state) {
 		case 0:
@@ -242,8 +243,13 @@ void ai_sky_dragon(Entity *e) {
 	switch(e->state) {
 		case 0:		// standing
 		{
+			e->state++;
+			e->dir = 0; // Sprite itself is facing right so don't flip it
+			e->y -= 4 << CSF; // Push up 4 pixels cause we in the ground
+		}
+		case 1:
+		{
 			ANIMATE(e, 30, 0,1);
-			e->dir = 1; // Dragon always faces right
 		}
 		break;
 		
@@ -264,6 +270,7 @@ void ai_sky_dragon(Entity *e) {
 		}
 		case 11:
 		{
+			e->dir = 0; // Script makes us face right, but sprite already does that
 			if(++e->animtime > 8) {
 				e->frame ^= 1; // swap between 2-3 or 4-5 for mimiga mask
 				e->animtime = 0;
@@ -275,6 +282,7 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 20:	// fly away
 		{
+			e->dir = 0; // STOP DOING THAT
 			if(++e->animtime > 8) {
 				e->frame ^= 1;
 				e->animtime = 0;
@@ -287,6 +295,7 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 30:	// spawn a Sue hanging from mouth
 		{
+			e->dir = 0; // Just in case the TSC gets any ideas...
 		}
 		break;
 	}
