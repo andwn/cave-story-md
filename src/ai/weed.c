@@ -400,7 +400,8 @@ void ai_press(Entity *e) {
 			if(e->grounded) {
 				//SmokeSide(o, 4, DOWN);
 				camera_shake(10);
-				e->state = 11;
+				//e->state = 11;
+				e->state = 0;
 				e->frame = 0;
 				e->attack = 0;
 				e->eflags |= NPC_SOLID;
