@@ -2,7 +2,6 @@
 This document is for the larger tasks. I removed the smaller ones, they should be issues anyway.
 
 - Big stuff
-  - Weapons in pause menu
   - Boss healthbar
   - Fog background
   - Moving smoke clouds

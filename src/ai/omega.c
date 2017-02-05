@@ -63,6 +63,7 @@ void onspawn_omega(Entity *e) {
 	e->enableSlopes = FALSE;
 	e->health = 400;
 	e->eflags |= NPC_SHOWDAMAGE | NPC_SOLID;
+	e->nflags = 0;
 	e->frame = 0;
 	e->attack = 5;
 	e->hurtSound = 52;
@@ -125,6 +126,7 @@ void ai_omega(Entity *e) {
 		
 		case OMG_APPEAR:
 		{
+			e->attack = 0; // First cycle was doing 5 damage. Don't do that
 			e->timer = 0;
 			e->frame = 0;
 			e->state = OMG_MOVE;
@@ -156,6 +158,7 @@ void ai_omega(Entity *e) {
 			e->state++;
 			e->frame = 0;
 			e->animtime = 0;
+			//e->eflags &= ~NPC_BOUNCYTOP;
 			sound_play(SND_JAWS, 5);
 			//e->sprite = SPR_OMG_OPENED;			// select "open" bounding box
 		}
@@ -185,11 +188,11 @@ void ai_omega(Entity *e) {
 					}
 					shot->y_speed = -SPEED(0x333);
 					if(e->form == 2 || !(random() & 7)) {
-						shot->frame = 0;
-						shot->nflags |= NPC_SHOOTABLE;
-					} else {
 						shot->frame = 2;
 						shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+					} else {
+						shot->frame = 0;
+						shot->nflags |= NPC_SHOOTABLE;
 					}
 					shot->timer = (random() & 1) ? (TIME(300) + (random() % TIME(100))) : 0;
 					shot->attack = 4;
@@ -211,6 +214,7 @@ void ai_omega(Entity *e) {
 					sound_play(SND_BLOCK_DESTROY, 6);
 					//o->sprite = SPR_OMG_CLOSED;		// select "closed" bounding box
 					e->eflags &= ~NPC_SHOOTABLE;
+					//e->eflags |= NPC_BOUNCYTOP;
 					e->attack = 0;
 					if (e->form == 1) {	// form 1: return to sand
 						e->state = OMG_WAIT;
@@ -359,7 +363,6 @@ void ai_omega(Entity *e) {
 
 void ondeath_omega(Entity *e) {
 	e->eflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
-	e->nflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
 	entities_clear_by_type(OBJ_OMEGA_SHOT);
 	e->state = OMG_EXPLODING;
 }
@@ -367,15 +370,20 @@ void ondeath_omega(Entity *e) {
 void ai_omega_shot(Entity *e) {
 	e->eflags ^= NPC_SHOOTABLE;
 	e->y_speed += 5;
-	if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) e->y_speed = -0x100;
-	if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = -e->y_speed;
-	if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) ||
-		(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x41)) {
-		e->x_speed = -e->x_speed;
-	}
-	if (++e->animtime > 3) { e->frame ^= 1; e->animtime = 0; }
-	if (++e->timer > 750) {
-		//effect(o->CenterX(), o->CenterY(), EFFECT_FISHY);
+	e->timer++;
+	if (e->timer & 1) {
+		if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) {
+			// Delete brown shots when they hit the ground, red ones bounce
+			e->y_speed = -0x100;
+			if (e->frame > 1) e->state = STATE_DELETE;
+		}
+		if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = -e->y_speed;
+		if ((e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) ||
+			(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x41)) {
+			e->x_speed = -e->x_speed;
+		}
+		e->frame ^= 1;
+	} else if(e->timer > 750) {
 		e->state = STATE_DELETE;
 	}
 	e->x += e->x_speed;
