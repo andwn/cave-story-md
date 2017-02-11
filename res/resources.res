@@ -424,19 +424,22 @@ BIN PXA_MazeM		"Stage/Maze/MazeM.pxa"
 BIN PXM_MazeM		"Stage/Maze/MazeM.pxm"
 
 # Balcony & Ring
-PALETTE PAL_White	"Stage/White/PrtWhite.bmp" 2
-TILESET TS_White	"Stage/White/PrtWhite.bmp" 2
-BIN PXA_White		"Stage/White/White.pxa"
+PALETTE PAL_Blcny	"Stage/White/PrtBlcny.bmp" 2
+TILESET TS_Blcny	"Stage/White/PrtBlcny.bmp" 2
+BIN PXA_Blcny		"Stage/White/Blcny.pxa"
 BIN PXM_e_Blcn		"Stage/White/e_Blcn.pxm"
 BIN PXM_Blcny1		"Stage/White/Blcny1.pxm"
 BIN PXM_Blcny2		"Stage/White/Blcny2.pxm"
-BIN PXM_Island		"Stage/White/Island.pxm"
-BIN PXM_Ostep		"Stage/White/Ostep.pxm"
 TILESET TS_Kings	"Stage/White/PrtKings.bmp" 2
 BIN PXA_Kings		"Stage/White/Kings.pxa"
 BIN PXM_Kings		"Stage/White/Kings.pxm"
 BIN PXM_Ring1		"Stage/White/Ring1.pxm"
+BIN PXM_Ostep		"Stage/White/Ostep.pxm"
+TILESET TS_Ring2	"Stage/White/PrtRing2.bmp" 2
+BIN PXA_Ring2		"Stage/White/Ring2.pxa"
 BIN PXM_Ring2		"Stage/White/Ring2.pxm"
+TILESET TS_Ring3	"Stage/White/PrtRing3.bmp" 2
+BIN PXA_Ring3		"Stage/White/Ring3.pxa"
 BIN PXM_Ring3		"Stage/White/Ring3.pxm"
 
 # Sacred Ground
@@ -574,6 +577,7 @@ BIN PXM_Fall	"Stage/Fall.pxm"
 BIN PXM_Frog	"Stage/Frog.pxm"
 BIN PXM_Gard	"Stage/Gard.pxm"
 BIN PXM_Itoh	"Stage/Itoh.pxm"
+BIN PXM_Island	"Stage/Island.pxm"
 BIN PXM_Jail1	"Stage/Jail1.pxm"
 BIN PXM_Jail2	"Stage/Jail2.pxm"
 BIN PXM_Jenka1	"Stage/Jenka1.pxm"
