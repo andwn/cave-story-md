@@ -539,11 +539,16 @@ TILESET BG_Red		"back/bkRed.bmp" 2
 TILESET BG_Water	"back/bkWater.bmp" 2
 TILESET BG_LabB		"back/bkMimiRegu.png" 2
 
-# Moon & Fog
+# Moon
 BIN MoonTopTiles	"back/bkMoonTop.bin"
 BIN MoonTopMap		"back/bkMoonTop.map"
 BIN MoonBtmTiles	"back/bkMoonBottom.bin"
 BIN MoonBtmMap		"back/bkMoonBottom.map"
+# Fog
+BIN FogTopTiles		"back/bkFogTop.bin"
+BIN FogTopMap		"back/bkFogTop.map"
+BIN FogBtmTiles		"back/bkFogBottom.bin"
+BIN FogBtmMap		"back/bkFogBottom.map"
 
 # ----------------------------------------------------------------------------------------------
 # Stages (PXM)

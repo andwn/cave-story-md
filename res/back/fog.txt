@@ -1,0 +1,12 @@
+input bkFogTop.png
+output bkFogTop.bin
+output2 bkFogTop.map
+
+map 0 0 40 10
+
+input bkFogBottom.png
+output bkFogBottom.bin
+output2 bkFogBottom.map
+
+map 0 0 32 18
+

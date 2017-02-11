@@ -61,6 +61,7 @@ void stage_load(u16 id) {
 	// Stage palette and shared NPC palette
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
+	VDP_setBackgroundColor(0); // Color index 0 for everything except fog
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
@@ -84,7 +85,9 @@ void stage_load(u16 id) {
 			stage_draw_waterback();
 		} else if(stageBackgroundType == 5) { // Fog
 			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
-			//stage_draw_moonback();
+			// Use background color from tileset
+			VDP_setBackgroundColor(32);
+			stage_draw_moonback();
 		}
 	}
 	// Load stage into RAM and draw it around camera position
@@ -218,13 +221,18 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
-		for(u8 y = 0; y < 32; y++) {
-			if(y < 10) backScrollTable[y] = 0;
-			else if(y < 14) backScrollTable[y] = backScrollTimer >> 2;
-			else if(y < 17) backScrollTable[y] = backScrollTimer >> 1;
-			else if(y < 21) backScrollTable[y] = backScrollTimer;
-			else backScrollTable[y] = backScrollTimer << 1;
-		}
+		u8 y = 27;
+		for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
+		for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
+		for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
+		for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
+		//for(u8 y = 0; y < 32; y++) {
+		//	if(y < 10) backScrollTable[y] = 0;
+		//	else if(y < 14) backScrollTable[y] = backScrollTimer >> 2;
+		//	else if(y < 17) backScrollTable[y] = backScrollTimer >> 1;
+		//	else if(y < 21) backScrollTable[y] = backScrollTimer;
+		//	else backScrollTable[y] = backScrollTimer << 1;
+		//}
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
 		VDP_setVerticalScroll(PLAN_B, 0);
 	} else if(stageBackgroundType == 3) {
@@ -345,17 +353,32 @@ void stage_draw_background() {
 
 void stage_draw_moonback() {
 	u16 mapBuffer[64];
+	const u32 *topTiles, *btmTiles;
+	const u8 *topMap, *btmMap;
+	if(stageBackgroundType == 1) {
+		// Moon
+		topTiles = (u32*)MoonTopTiles;
+		btmTiles = (u32*)MoonBtmTiles;
+		topMap = MoonTopMap;
+		btmMap = MoonBtmMap;
+	} else {
+		// Fog
+		topTiles = (u32*)FogTopTiles;
+		btmTiles = (u32*)FogBtmTiles;
+		topMap = FogTopMap;
+		btmMap = FogBtmMap;
+	}
 	// Load the top section in the designated background area
-	VDP_loadTileData((u32*)MoonTopTiles, TILE_BACKINDEX, 12, TRUE);
+	VDP_loadTileData(topTiles, TILE_BACKINDEX, 12, TRUE);
 	// Load the clouds under the map, it just fits
-	VDP_loadTileData((u32*)MoonBtmTiles, TILE_MOONINDEX, 188, TRUE);
+	VDP_loadTileData(btmTiles, TILE_MOONINDEX, 188, TRUE);
 	for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
 	// Top part
 	u16 cursor = 0;
 	for(u16 y = 0; y < 10; y++) {
 		for(u16 x = 0; x < 40; x++) {
 			mapBuffer[x] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_BACKINDEX + (MoonTopMap[cursor]<<8) + MoonTopMap[cursor+1]);
+					TILE_BACKINDEX + (topMap[cursor]<<8) + topMap[cursor+1]);
 			cursor += 2;
 		}
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 40, 1);
@@ -365,7 +388,7 @@ void stage_draw_moonback() {
 	for(u16 y = 10; y < 28; y++) {
 		for(u16 x = 0; x < 32; x++) {
 			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_MOONINDEX + (MoonBtmMap[cursor]<<8) + MoonBtmMap[cursor+1]);
+					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);
 			cursor += 2;
 		}
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 64, 1);
