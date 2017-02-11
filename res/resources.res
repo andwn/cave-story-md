@@ -438,6 +438,7 @@ BIN PXM_Ostep		"Stage/White/Ostep.pxm"
 TILESET TS_Ring2	"Stage/White/PrtRing2.bmp" 2
 BIN PXA_Ring2		"Stage/White/Ring2.pxa"
 BIN PXM_Ring2		"Stage/White/Ring2.pxm"
+PALETTE PAL_Ring3	"Stage/White/PrtRing3.bmp" 2
 TILESET TS_Ring3	"Stage/White/PrtRing3.bmp" 2
 BIN PXA_Ring3		"Stage/White/Ring3.pxa"
 BIN PXM_Ring3		"Stage/White/Ring3.pxm"
