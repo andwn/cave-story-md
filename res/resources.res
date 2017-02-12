@@ -181,6 +181,13 @@ SPRITE SPR_LgStal		"sprite/lgstal.png"		2 4 0 0 NONE
 SPRITE SPR_NightSpirit	"sprite/nightshade.png" 6 6 0 0 NONE
 SPRITE SPR_NightShot	"sprite/nightshot.png"	4 2 0 0 NONE
 SPRITE SPR_Croc2		"sprite/sandcroc2.png"	6 4 0 0 NONE
+SPRITE SPR_UCoreFront	"sprite/ucore.png"		8 12 0 0 NONE
+SPRITE SPR_UCoreBack	"sprite/ucoreback.png"	10 12 0 0 NONE
+SPRITE SPR_MUCoreFront	"sprite/ucoreminif.png"	4 4 0 0 NONE
+SPRITE SPR_MUCoreBack	"sprite/ucoreminib.png"	3 4 0 0 NONE
+SPRITE SPR_MUCoreBottom	"sprite/ucoreminit.png"	4 1 0 0 NONE
+SPRITE SPR_MUCoreEnd	"sprite/ucoreminie.png"	2 1 0 0 NONE
+SPRITE SPR_UCoreMouth	"sprite/ucoremouth.png"	7 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE
