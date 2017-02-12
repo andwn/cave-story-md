@@ -321,17 +321,18 @@ SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 3 2 0 0 NONE
 
 # Title Screen Logo
 TILESET TS_Title		"sprite/title.png" 2
+TILESET TS_SysFont		"font_tran.png" 0
 
 # Sound Test
-PALETTE PAL_SndTest	"back/soundtest.png" 0
-TILESET TS_SndTest	"back/soundtest.png" 0 # OOM when unpacking, don't compress
+PALETTE PAL_SndTest		"back/soundtest.png" 0
+TILESET TS_SndTest		"back/soundtest.png" 0 # OOM when unpacking, don't compress
 
 # Window
-TILESET TS_Window	"window.png" 2
-TILESET TS_MsgFont	"font_blue.png" 2
-SPRITE SPR_ItemWin	"itemwindow.png" 6 3 0 0 NONE
-SPRITE SPR_Prompt	"prompt.png" 8 3 0 0 NONE
-TILESET TS_ItemSel	"itemsel.png" 2
+TILESET TS_Window		"window.png" 2
+TILESET TS_MsgFont		"font_blue.png" 2
+SPRITE SPR_ItemWin		"itemwindow.png" 6 3 0 0 NONE
+SPRITE SPR_Prompt		"prompt.png" 8 3 0 0 NONE
+TILESET TS_ItemSel		"itemsel.png" 2
 
 # Number Font
 TILESET TS_Numbers		"sprite/numbers.png" 0
@@ -343,7 +344,7 @@ TILESET TS_HudBar		"sprite/hudfill.png" 0
 TILESET TS_Break		"sprite/breakable.png" 0
 
 # NPC Table
-BIN NPC_TABLE	"npc.tbl"
+BIN NPC_TABLE			"npc.tbl"
 
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets

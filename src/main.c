@@ -28,15 +28,13 @@
 int main() {
 	puts("Hi Plum");
     SYS_disableInts();
-#ifdef PAL
-	VDP_setScreenHeight240();
-#endif
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it
 	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800
 	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
     sound_init();
 	input_init();
+	VDP_loadTileSet(&TS_SysFont, TILE_FONTINDEX, TRUE);
 	SYS_enableInts();
     while(TRUE) {
 		splash_main();

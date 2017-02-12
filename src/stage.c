@@ -38,6 +38,7 @@ void stage_load(u16 id) {
 		SYS_disableInts();
 		VDP_setEnable(FALSE); // Turn the screen off, speeds up writes to VRAM
 	}
+	input_init();
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
