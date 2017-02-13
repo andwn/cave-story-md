@@ -29,6 +29,7 @@ u8 airDisplayTime = 0;
 u8 blockl, blocku, blockr, blockd;
 u8 ledge_time;
 u8 walk_time;
+u8 lookingDown;
 
 VDPSprite airTankSprite;
 
@@ -66,6 +67,7 @@ void player_init() {
 	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
 	player.frame = 255;
 	ledge_time = 0;
+	lookingDown = FALSE;
 	mgun_shoottime = 0;
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
@@ -472,6 +474,11 @@ void player_update_interaction() {
 			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
 				oldstate |= BUTTON_DOWN; // To avoid triggering it twice
 				if(e->event > 0) {
+					// Quote should look down while the game logic is frozen
+					// Manually send sprite frame since draw() is not called
+					lookingDown = TRUE;
+					player.frame = 6; // LOOKDN
+					TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
 					tsc_call_event(e->event);
 					return;
 				}
@@ -676,6 +683,7 @@ void player_draw() {
 	} else {
 		if(player.grounded) {
 			if(joy_down(BUTTON_UP) && !controlsLocked) {
+				lookingDown = FALSE;
 				if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
 					ANIMATE(&player, 7, UPWALK1, LOOKUP, UPWALK2, LOOKUP);
 				} else {
@@ -683,15 +691,18 @@ void player_draw() {
 					player.animtime = 0;
 				}
 			} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
+				lookingDown = FALSE;
 				ANIMATE(&player, 7, WALK1, STAND, WALK2, STAND);
-			} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
+			} else if(joy_pressed(BUTTON_DOWN) && !controlsLocked) {
+				lookingDown = TRUE;
 				player.frame = LOOKDN;
 				player.animtime = 0;
-			} else {
+			} else if(!lookingDown) {
 				player.frame = STAND;
 				player.animtime = 0;
 			}
 		} else {
+			lookingDown = FALSE;
 			player.animtime = 0;
 			if(joy_down(BUTTON_UP) && !controlsLocked) {
 				player.frame = UPWALK1;
