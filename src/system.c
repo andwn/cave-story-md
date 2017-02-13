@@ -194,6 +194,10 @@ u8 system_checkdata() {
 		if(test == STR_TEST) {
 			// Test passed, game can be saved but not loaded
 			sram_state = SRAM_VALID_EMPTY;
+			// Clear the hell timer just in case (thanks Fusion)
+			SRAM_enable();
+			for(u16 i = 0; i < 5; i++) SRAM_writeLong(0x48 + i*4, 0);
+			SRAM_disable();
 		} else {
 			// Test failed, SRAM is unusable
 			sram_state = SRAM_INVALID;
