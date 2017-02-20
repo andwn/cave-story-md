@@ -123,8 +123,10 @@ void ai_missile(Entity *e) {
 	} else {
 		e->hidden = FALSE;
 	}
-	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
-	else {ANIMATE(e, 4, 0,1);}
+	if(e->eflags & NPC_OPTION1) {
+		if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
+		else  {ANIMATE(e, 4, 0,1);}
+	} else e->frame = 0;
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
 	if(!e->state) {
 		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
@@ -169,8 +171,10 @@ void ai_heart(Entity *e) {
 	} else {
 		e->hidden = FALSE;
 	}
-	if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
-	else {ANIMATE(e, 4, 0,1);}
+	if(e->eflags & NPC_OPTION1) {
+		if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
+		else  {ANIMATE(e, 4, 0,1);}
+	} else e->frame = 0;
 	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
 	if(!e->state) {
 		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
