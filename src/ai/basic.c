@@ -47,6 +47,11 @@ void onspawn_persistent(Entity *e) {
 	e->alwaysActive = TRUE;
 }
 
+// Needed for save point after sisters fight
+void onspawn_interactive(Entity *e) {
+	e->eflags |= NPC_INTERACTIVE;
+}
+
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
 void onspawn_spike(Entity *e) {
@@ -601,5 +606,19 @@ void ai_scroll_controller(Entity *e) {
 			}
 		}
 		break;
+	}
+}
+
+void ai_xp_capsule(Entity *e) {
+	ANIMATE(e, 4, 0,1);
+	
+	if (e->health < 100) {
+		Entity *exp = entity_create(e->x, e->y, OBJ_XP,
+				e->id > 6 ? NPC_OPTION2 : 0);
+		exp->experience = e->id;
+		effect_create_smoke(e->x, e->y);
+		sound_play(SND_FUNNY_EXPLODE, 5);
+		
+		e->state = STATE_DELETE;
 	}
 }

@@ -22,7 +22,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_Key, NOSHEET, 	PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Santa's Key
 	{ &SPR_Chest, NOSHEET, 	PAL1, 1, &ai_null, &ai_chest, &ai_null }, // Chest
 	/* 0x010 (16) */
-	{ &SPR_Save, NOSHEET, 	PAL1, 1, &ai_null, &ai_savepoint, &ai_null }, // Save Point
+	{ &SPR_Save, NOSHEET, 	PAL1, 1, &onspawn_interactive, &ai_savepoint, &ai_null }, // Save Point
 	{ &SPR_Refill, NOSHEET, PAL1, 1, &ai_null, &ai_refill, &ai_null }, // Refill
 	{ &SPR_Door, NOSHEET, 	PAL1, 1, &onspawn_door, &ai_door, &ai_null }, // Door
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_bust_in, &ai_null }, // Balrog
@@ -273,7 +273,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Lightning Ball
 	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_black_lightning, &ai_null }, // Misery Lightning
 	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Ring
-	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Energy Capsule
+	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_xp_capsule, &ondeath_default }, // Energy Capsule
 	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_helicopter, &ai_null }, // Helicopter
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_helicopter_blade, &ai_null }, // ???
 	/* 0x100 (256) */
