@@ -187,12 +187,12 @@ void ai_omega(Entity *e) {
 						shot->x_speed = -SPEED(0x100) + (random() % SPEED(0x200));
 					}
 					shot->y_speed = -SPEED(0x333);
-					if(e->form == 2 || !(random() & 7)) {
-						shot->frame = 2;
-						shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
-					} else {
+					if(e->form == 2 || (random() & 7)) {
 						shot->frame = 0;
 						shot->nflags |= NPC_SHOOTABLE;
+					} else {
+						shot->frame = 2;
+						shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 					}
 					shot->timer = (random() & 1) ? (TIME(300) + (random() % TIME(100))) : 0;
 					shot->attack = 4;
