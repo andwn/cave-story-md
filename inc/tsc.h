@@ -18,6 +18,8 @@ u8 tscEventCount;
 
 u8 tscState;
 
+u8 inFade;
+
 // As teleporter locations are made available to the player, this list is populated
 // with which event is called when selecting a particular area.
 // This is in the header so that system_save() can write the values to SRAM

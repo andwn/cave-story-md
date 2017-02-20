@@ -38,7 +38,8 @@ void vblank() {
 	dqueued = FALSE;
 	//if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) {
-		sprites_send();
+		if(inFade) { spr_num = 0; }
+		else { sprites_send(); }
 		ready = FALSE;
 	} else {
 		puts("Vint before main loop finished!");

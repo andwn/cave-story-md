@@ -164,6 +164,7 @@ u16 tsc_read_word();
 
 // Load window tiles & the global "head" events
 void tsc_init() {
+	inFade = FALSE;
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
 	const u8 *TSC = TSC_Head;
@@ -919,6 +920,8 @@ u8 execute_command() {
 		case CMD_FAI: // Fading, in direction (1)
 		{
 			args[0] = tsc_read_word();
+			inFade = FALSE; // Unlock sprites from updating
+			VDP_waitVSync(); // Wait a frame to let the sprites redraw
 			SYS_disableInts();
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 			SYS_enableInts();
@@ -929,6 +932,15 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			VDP_waitVSync();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
+			SYS_disableInts();
+			// Blank the sprite list in VRAM
+			spr_num = 0;
+			VDPSprite blank = (VDPSprite) { 
+				.x = 128, .y = 128, .size = 0, .attribut = 0
+			};
+			DMA_doDma(DMA_VRAM, (u32) &blank, VDP_getSpriteListAddress(), 4, 2);
+			inFade = TRUE; // and set a flag not to update sprites anymore
+			SYS_enableInts();
 		}
 		break;
 		case CMD_FLA: // Flash screen white
