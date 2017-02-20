@@ -273,7 +273,7 @@ void bullet_update_polarstar(Bullet *b) {
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
-		sound_play(SND_TINK, 3);
+		sound_play(SND_SHOT_HIT, 3);
 		// TODO: Add the sprite and effect for hitting a wall
 	} else {
 		sprite_pos(b->sprite, 
@@ -342,7 +342,7 @@ void bullet_update_machinegun(Bullet *b) {
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
-		sound_play(SND_TINK, 3);
+		sound_play(SND_SHOT_HIT, 3);
 		// TODO: Add the sprite and effect for hitting a wall
 	} else {
 		////SPR_SAFEVISIBILITY(b->sprite, (b->ttl & 1) ? VISIBLE : HIDDEN);
