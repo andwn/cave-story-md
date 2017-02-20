@@ -235,6 +235,8 @@ void ai_red_demon(Entity *e) {
 				{
 					e->frame = 4;
 					//EmFireAngledShot(o, OBJ_RED_DEMON_SHOT, 0, 0x800);
+					Entity *shot = entity_create(e->x, e->y, OBJ_RED_DEMON_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, 0x800);
 					sound_play(SND_EM_FIRE, 5);
 				}
 				break;
@@ -281,6 +283,8 @@ void ai_red_demon(Entity *e) {
 				{
 					e->frame = 6;
 					//EmFireAngledShot(o, OBJ_RED_DEMON_SHOT, 0, 0x800);
+					Entity *shot = entity_create(e->x, e->y, OBJ_RED_DEMON_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, 0x800);
 					sound_play(SND_EM_FIRE, 5);
 				}
 				break;
@@ -361,4 +365,8 @@ void ai_red_demon(Entity *e) {
 		e->y_speed += SPEED(0x20);
 		LIMIT_Y(SPEED(0x5ff));
 	}
+}
+
+void ondeath_red_demon(Entity *e) {
+	tsc_call_event(e->event);
 }

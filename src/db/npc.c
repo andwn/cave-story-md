@@ -247,7 +247,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_Megane, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Megane
 	{ &SPR_Kanpachi2,NOSHEET,PAL3, 1, &ai_null, &ai_null, &ai_null }, // Kanpachi
 	{ &SPR_Bucket, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Bucket
-	{ &SPR_Droll2, 	NOSHEET, PAL0, 2, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
+	{ &SPR_Droll, 	NOSHEET, PAL3, 2, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
 	{ &SPR_RedFl3, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Blooming Red Flowers
 	{ &SPR_Rocket, 	NOSHEET, PAL0, 1, &ai_null, &ai_rocket, &ai_null }, // Rocket
@@ -298,7 +298,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Droll Projectile
 	{ &SPR_Droll, 	NOSHEET, PAL3, 2, &ai_null, &ai_droll, &ondeath_default }, // Droll
 	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (With Item)
-	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_default }, // Red Demon
+	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_red_demon }, // Red Demon
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Red Demon Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
 	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)

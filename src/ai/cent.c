@@ -373,8 +373,9 @@ void ai_droll(Entity *e) {
 					FACE_PLAYER(e);
 					e->timer2 = 1;
 					e->frame = 7;
-					
-					FIRE_ANGLED_SHOT(OBJ_DROLL_SHOT, e->x, e->y, e->dir ? A_RIGHT : A_LEFT, 0x600);
+					//FIRE_ANGLED_SHOT(OBJ_DROLL_SHOT, e->x, e->y, e->dir ? A_RIGHT : A_LEFT, 0x600);
+					Entity *shot = entity_create(e->x, e->y, OBJ_DROLL_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, 0x600);
 					sound_play(SND_EM_FIRE, 5);
 				} else if (e->y_speed > SPEED(0x200)) {	// after-fire frame
 					e->frame = 3;
