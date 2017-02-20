@@ -965,3 +965,28 @@ WAV SFX_98		"sfx/98.wav" 5
 WAV SFX_99		"sfx/99.wav" 5
 WAV SFX_9A		"sfx/9A.wav" 5
 WAV SFX_9B		"sfx/9B.wav" 5
+
+# ----------------------------------------------------------------------------------------------
+# Level Select Saves
+# ----------------------------------------------------------------------------------------------
+
+BIN LS_Mimi		"save/mimi.sram"
+BIN LS_Eggs		"save/eggs.sram"
+BIN LS_Weed		"save/weed.sram"
+BIN LS_Balfrog	"save/balfrog.sram"
+BIN LS_Sand		"save/sand.sram"
+BIN LS_Toroko	"save/toroko.sram"
+BIN LS_Maze		"save/maze.sram"
+BIN LS_Booster	"save/booster.sram"
+BIN LS_Core		"save/core.sram"
+BIN LS_Stream	"save/stream.sram"
+BIN LS_Mimi2	"save/mimi2.sram"
+BIN LS_Oside	"save/oside.sram"
+BIN LS_Cent		"save/cent.sram"
+BIN LS_Last		"save/last.sram"
+BIN LS_Blcny	"save/blcny.sram"
+BIN LS_Stream2	"save/stream2.sram"
+BIN LS_Pignon	"save/pignon.sram"
+BIN LS_Last2	"save/last2.sram"
+BIN LS_Hell		"save/hell.sram"
+BIN LS_Ballos	"save/ballos.sram"

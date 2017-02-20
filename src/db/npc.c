@@ -474,11 +474,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
 	{ NULL, SHEET_SISHEAD, PAL3, 1, // Sisters Head
 		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
-	{ NULL, NOSHEET, PAL2, 6, // Undead Core (Front)
+	{ &SPR_UCoreFront, NOSHEET, PAL3, 6, // Undead Core (Front)
 		&onspawn_persistent, &ai_undead_core_front, &ai_null },
-	{ NULL, NOSHEET, PAL2, 9, // Undead Core (Back)
+	{ &SPR_UCoreBack, NOSHEET, PAL3, 9, // Undead Core (Back)
 		&onspawn_persistent, &ai_undead_core_back, &ai_null },
-	{ NULL, NOSHEET, PAL2, 4, // Undead Core (Face)
+	{ &SPR_UCoreMouth, NOSHEET, PAL3, 2, // Undead Core (Face)
 		&onspawn_persistent, &ai_undead_core_face, &ai_null },
 		
 	// Extra stuff that does not belong to bosses

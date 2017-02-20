@@ -137,7 +137,8 @@ void game_reset(u8 load) {
 	sheets_load_stage(255, TRUE, TRUE);
 	gameFrozen = FALSE;
 	if(load) {
-		system_load();
+		if(load == 1) system_load();
+		if(load >= 4) system_load_levelselect(load - 4);
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
 		//sheets_refresh_weapons();

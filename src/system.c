@@ -7,6 +7,7 @@
 #include "tsc.h"
 #include "audio.h"
 #include "vdp_ext.h"
+#include "resources.h"
 
 #ifndef KDB_SYS
 #define puts(x) /**/
@@ -23,6 +24,12 @@
 
 typedef struct { u8 hour, minute, second, frame; } Time;
 
+static const uint8_t *FileList[] = {
+	LS_Mimi, LS_Eggs, LS_Weed, LS_Balfrog, LS_Sand, LS_Toroko, LS_Maze, LS_Booster,
+	NULL, LS_Core, LS_Stream, LS_Mimi2, LS_Oside, LS_Cent, LS_Last, LS_Blcny,
+	NULL, LS_Stream2, LS_Pignon, LS_Last2, LS_Hell, LS_Ballos,
+};
+
 u8 debuggingEnabled = FALSE;
 u8 sram_state = SRAM_UNCHECKED;
 
@@ -31,6 +38,10 @@ Time time, counter;
 
 u32 flags[FLAGS_LEN];
 u32 skip_flags = 0;
+
+static u8 LS_readByte(u8 file, u32 addr);
+static u16 LS_readWord(u8 file, u32 addr);
+static u32 LS_readLong(u8 file, u32 addr);
 
 void system_set_flag(u16 flag, u8 value) {
 	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
@@ -170,6 +181,46 @@ void system_load() {
 	song_play(song);
 }
 
+void system_load_levelselect(u8 file) {
+	puts("Loading game save from SRAM");
+	counterEnabled = FALSE;
+	player_init();
+	u16 rid = LS_readWord(file, 0x00);
+	u8 song = LS_readWord(file, 0x02);
+	player.x = block_to_sub(LS_readWord(file, 0x04)) + pixel_to_sub(8);
+	player.y = block_to_sub(LS_readWord(file, 0x06)) + pixel_to_sub(8);
+	playerMaxHealth = LS_readWord(file, 0x08);
+	player.health = LS_readWord(file, 0x0A);
+	currentWeapon = LS_readWord(file, 0x0C);
+	playerEquipment = LS_readWord(file, 0x0E);
+	time.hour = LS_readByte(file, 0x10);
+	time.minute = LS_readByte(file, 0x11);
+	time.second = LS_readByte(file, 0x12);
+	time.frame = LS_readByte(file, 0x13);
+	// Weapons
+	for(u8 i = 0; i < MAX_WEAPONS; i++) {
+		playerWeapon[i].type = LS_readByte(file, 0x20 + i*8);
+		playerWeapon[i].level = LS_readByte(file, 0x21 + i*8);
+		playerWeapon[i].energy = LS_readWord(file, 0x22 + i*8);
+		playerWeapon[i].maxammo = LS_readWord(file, 0x24 + i*8);
+		playerWeapon[i].ammo = LS_readWord(file, 0x26 + i*8);
+	}
+	// Inventory (0x20)
+	for(u8 i = 0; i < MAX_ITEMS; i++) {
+		playerInventory[i] = LS_readByte(file, 0x60 + i);
+	}
+	// Teleporter locations
+	for(u8 i = 0; i < 8; i++) {
+		teleportEvent[i] = LS_readWord(file, 0x80 + i*2);
+	}
+	// Flags
+	for (u16 i = 0; i < FLAGS_LEN; i++) {
+		flags[i] = LS_readLong(file, 0x100 + i * 4);
+	}
+	stage_load(rid);
+	song_play(song);
+}
+
 u8 system_checkdata() {
 	// Read a specific spot in SRAM
 	puts("Checking SRAM");
@@ -279,4 +330,16 @@ void system_save_counter(u32 ticks) {
 		SRAM_writeByte(0x48 + i, buffer[i]);
 	}
 	SRAM_disable();
+}
+
+static u8 LS_readByte(u8 file, u32 addr) {
+	return FileList[file][addr];
+}
+
+static u16 LS_readWord(u8 file, u32 addr) {
+	return (LS_readByte(file, addr) << 8) + LS_readByte(file, addr+1);
+}
+
+static u32 LS_readLong(u8 file, u32 addr) {
+	return (LS_readWord(file, addr) << 16) + LS_readWord(file, addr+2);
 }

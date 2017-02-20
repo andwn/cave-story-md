@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#define joy_pressed(b) (((joystate&b)&&((~oldstate)&b)))
-#define joy_released(b) ((((~joystate)&b)&&(oldstate&b)))
-#define joy_down(b) ((joystate&b))
+#define joy_pressed(b) (((joystate&(b))&&((~oldstate)&(b))))
+#define joy_released(b) ((((~joystate)&(b))&&(oldstate&(b))))
+#define joy_down(b) ((joystate&(b)))
 
 #define input_update() {                                                                       \
 	oldstate = joystate;                                                                       \

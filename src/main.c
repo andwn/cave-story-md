@@ -39,10 +39,11 @@ int main() {
     while(TRUE) {
 		splash_main();
 		u8 select = titlescreen_main();
-		switch(select) {
-			case 0:
-			case 1: game_main(select); credits_main(); break;
-			case 2: soundtest_main(); break;
+		if(select != 2) {
+			game_main(select);
+			credits_main();
+		} else {
+			soundtest_main(); break;
 		}
     }
 	return 0;

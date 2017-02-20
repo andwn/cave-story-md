@@ -21,10 +21,10 @@ const struct {
     char region[16];                /* Country Support (16) */
 } rom_header = {
     "SEGA MEGA DRIVE ",
-    "@DONTGRIND 2016 ",
+    "Andwn   2017.FEB",
+    "Doukutsu Monogatari MD                          ",
     "Cave Story MD                                   ",
-    "Cave Story MD                                   ",
-    "GM 47524E44-01",
+    "GM ANDYG002-A3",
     0x0000,
     "JD              ",
     0x00000000,
@@ -36,6 +36,6 @@ const struct {
     0x00200001,
     0x0020FFFF,
     "            ",
-    "                                        ",
+    "https://github.com/andwn/cave-story-md\0\0",
     "JUE             "
 };

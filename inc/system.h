@@ -32,6 +32,8 @@ void system_load();
 void system_save();
 // Validates whether any save data exists in SRAM
 u8 system_checkdata();
+// Load to a stock save file from the level select list
+void system_load_levelselect(u8 file);
 
 // Counter stuff
 void system_start_counter();
