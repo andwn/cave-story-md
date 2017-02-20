@@ -75,6 +75,7 @@ void ai_midorin(Entity *e) {
 			e->timer = 0;
 			e->frame = 0;
 			e->x_speed = 0;
+			e->eflags |= NPC_SPECIALSOLID;
 		}
 		case 1:
 		{
@@ -868,4 +869,9 @@ void ai_rocket(Entity *e) {
 // in the Statue Room, if you enter via the Plantation
 void ai_numahachi(Entity *e) {
 	ANIMATE(e, 50, 0,1);
+}
+
+// The graphic is a bit too low
+void onspawn_jailbars(Entity *e) {
+	e->display_box.top -= 8;
 }

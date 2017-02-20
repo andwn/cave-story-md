@@ -240,7 +240,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Smoke/Current Generator
 	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade
 	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Walking)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Prison Bars
+	{ &SPR_JailBars, NOSHEET, PAL1, 1, &onspawn_jailbars, &ai_null, &ai_null }, // Prison Bars
 	{ &SPR_Momo, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Momorin
 	/* 0x0E0 (224) */
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie

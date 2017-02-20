@@ -95,10 +95,9 @@ u8 titlescreen_main() {
 					levelSelect = TRUE;
 					sound_play(SND_COMPUTER_BEEP, 5);
 				}
-			} else {
-				u16 mask = BUTTON_LEFT | BUTTON_RIGHT | BUTTON_UP | BUTTON_DOWN | 
-						BUTTON_A | BUTTON_B;
-				//if(joy_pressed(mask)) cheatEntry = 0;
+			} else if(cheatEntry) {
+				if((joystate & (~cheat[cheatEntry-1])) &&
+					!joy_pressed(cheat[cheatEntry-1])) cheatEntry = 0;
 			}
 		}
 		if(joy_pressed(BUTTON_UP)) {

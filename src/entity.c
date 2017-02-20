@@ -259,14 +259,11 @@ void entities_update() {
 			if(collided || entity_overlapping(&player, e)) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
-				if(flags & NPC_FRONTATKONLY) {
-					if((e->dir == 0 && collision.right == 0) ||
-							(e->dir > 0 && collision.left == 0)) {
-						e = e->next;
-						continue;
-					}
-				}
-				if(player_inflict_damage(e->attack)) {
+				if((flags & NPC_FRONTATKONLY) &&
+					((e->dir == 0 && collision.right == 0) ||
+					(e->dir > 0 && collision.left == 0))) {
+						// Nothing
+				} else if(player_inflict_damage(e->attack)) {
 					// Player died, don't update entities anymore
 					return;
 				}
