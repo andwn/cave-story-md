@@ -656,6 +656,8 @@ void ai_curlys_mimigas(Entity *e) {
 	if(!e->grounded) e->y_speed += SPEED(0x20);
 	LIMIT_Y(SPEED(0x5ff));
 	LIMIT_X(SPEED(0x1ff));
+	collide_stage_leftwall(e);
+	collide_stage_rightwall(e);
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
 	
