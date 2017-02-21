@@ -99,6 +99,7 @@ void ai_midorin(Entity *e) {
 		
 		case 3:		// running
 		{
+			moveMeToFront = TRUE; // Stay in front of doors
 			e->state = 4;
 			e->frame = 0;	// this will be toggled into frame 2 just below
 			e->animtime = 0;
@@ -683,6 +684,10 @@ void ai_kanpachi_standing(Entity *e) {
 		}
 		break;
 		case 3:		// walking
+		{
+			e->state++;
+			moveMeToFront = TRUE; // Gotta be in front of the door
+		}
 		case 4:
 		{
 			ANIMATE(e, 8, 3,4);

@@ -80,6 +80,8 @@ extern Entity *bossEntity;
 // Heightmaps for slope tiles
 extern const u8 heightmap[4][16];
 
+extern u8 moveMeToFront;
+
 // Deletes entities based on a criteria, scripts sometimes call the bottom 2
 void entities_clear();
 void entities_clear_by_event(u16 event);

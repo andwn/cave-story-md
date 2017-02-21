@@ -65,6 +65,8 @@ const u8 heightmap[4][16] = {
 	{ 0x7,0x7,0x6,0x6,0x5,0x5,0x4,0x4,0x3,0x3,0x2,0x2,0x1,0x1,0x0,0x0 },
 };
 
+u8 moveMeToFront = FALSE;
+
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
 // Move to inactive list, delete sprite
@@ -328,7 +330,13 @@ void entities_update() {
 				}
 			}
 		}
-		e = e->next;
+		if(moveMeToFront) {
+			moveMeToFront = FALSE;
+			Entity *next = e->next;
+			LIST_REMOVE(entityList, e);
+			LIST_PUSH(entityList, e);
+			e = next;
+		} else e = e->next;
 	}
 }
 

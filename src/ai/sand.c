@@ -797,6 +797,8 @@ void onspawn_puppy(Entity *e) {
 
 void onspawn_puppyCarry(Entity *e) {
 	e->alwaysActive = TRUE;
+	e->x_mark = camera.x;
+	e->y_mark = camera.y;
 	// One's all you can manage. One's all you can manage. One's all you can manage.
 	e->eflags &= ~NPC_INTERACTIVE;
 	e->nflags &= ~NPC_INTERACTIVE;
@@ -806,6 +808,12 @@ void ai_puppyCarry(Entity *e) {
 	e->dir = player.dir;
 	e->x = player.x + ((e->dir ? -4 : 4) << CSF);
 	e->y = player.y - (6 << CSF);
+	// Keep dog in front of doors
+	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+		moveMeToFront = TRUE;
+		e->x_mark = camera.x;
+		e->y_mark = camera.y;
+	}
 }
 
 // these seem to be used for the the ones in jenka's house
