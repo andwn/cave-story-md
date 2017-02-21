@@ -142,6 +142,7 @@ void game_reset(u8 load) {
 		if(load >= 4) system_load_levelselect(load - 4);
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
+		playerHasMimiMask = player_has_item(18);
 		//sheets_refresh_weapons();
 	} else {
 		system_new();

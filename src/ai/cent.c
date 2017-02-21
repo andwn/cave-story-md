@@ -26,23 +26,23 @@ void ai_stumpy(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->frame &= ~2;
-			e->state = 1;
+			e->state++;
 			e->timer = 0;
 			FACE_PLAYER(e);
 		}
 		case 1:
 		{
-			if (++e->timer > TIME(50)) e->state = 2;
+			if (++e->timer > TIME(50)) e->state++;
 		}
 		break;
 		case 2:
 		{
-			e->state = 5;
-			e->frame |= 2;
+			e->state++;
+			//e->frame ^= 2;
 			e->timer = 0;
 			// TODO: throw ourselves at player
 			//ThrowEntityAtPlayer(o, 3, 0x400);
+			THROW_AT_TARGET(e, player.x, player.y, 0x400);
 			e->dir = e->x_speed >= 0;
 		}
 		case 3:
@@ -50,6 +50,7 @@ void ai_stumpy(Entity *e) {
 			if(blockl || blockr) e->x_speed = -e->x_mark;
 			if(blocku || blockd) e->y_speed = -e->y_mark;
 			if (++e->timer > TIME(50)) {
+				//e->frame ^= 2;
 				e->state = 0;
 				e->x_speed = 0;
 				e->y_speed = 0;
@@ -667,25 +668,49 @@ void ai_npc_itoh(Entity *e) {
 }
 
 void ai_kanpachi_standing(Entity *e) {
+	e->dir = 1;
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
 	switch(e->state) {
+		case 0:		// stand
+		{
+			e->frame = 1;
+			e->x_speed = 0;
+			e->y_speed = 0;
+			RANDBLINK(e, 2, 200);
+		}
+		break;
+		case 3:		// walking
+		case 4:
+		{
+			ANIMATE(e, 8, 3,4);
+			MOVE_X(SPEED(0x200));
+		}
+		break;
+		case 5:		// face away
+		{
+			e->x_speed = 0;
+			e->frame = 0;
+		}
+		break;
 		case 10:	// walking
 		case 11:
 		{
 			e->state = 3;
 		}
 		break;
-		
 		case 20:	// face away/enter door
 		{
 			e->x_speed = 0;
-			e->frame = 6;
+			e->frame = 0;
 		}
 		break;
-		
-		default:
-			generic_npc_states(e);
-		break;
 	}
+	e->x = e->x_next;
+	e->y = e->y_next;
+	e->dir = 0;
 }
 
 
@@ -874,5 +899,10 @@ void ai_numahachi(Entity *e) {
 
 // The graphic is a bit too low
 void onspawn_jailbars(Entity *e) {
+	e->display_box.top += 8;
+}
+
+void onspawn_cent_cage(Entity *e) {
 	e->display_box.top -= 8;
+	e->display_box.left -= 16;
 }

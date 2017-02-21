@@ -716,7 +716,8 @@ void player_draw() {
 	}
 	// Set frame if it changed
 	if(player.frame != player.oframe) {
-		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
+		u8 f = player.frame + (playerHasMimiMask ? 10 : 0);
+		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4);
 	}
 	// Blink during invincibility frames
 	if(!player.hidden && !(playerIFrames & 2)) {
@@ -953,6 +954,7 @@ void player_maxhealth_increase(u8 health) {
 }
 
 void player_give_item(u8 id) {
+	if(id == 18) playerHasMimiMask = TRUE;
 	for(u8 i = 0; i < MAX_ITEMS; i++) {
 		if(playerInventory[i] == 0) {
 			playerInventory[i] = id;
@@ -962,6 +964,7 @@ void player_give_item(u8 id) {
 }
 
 void player_take_item(u8 id) {
+	if(id == 18) playerHasMimiMask = FALSE;
 	u8 i = 0;
 	for(; i < MAX_ITEMS; i++) {
 		if(playerInventory[i] == id) {

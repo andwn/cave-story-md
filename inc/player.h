@@ -56,6 +56,8 @@ Entity *playerPlatform;
 
 u8 playerBoosterFuel, playerBoostState, lastBoostState;
 
+u8 playerHasMimiMask;
+
 // Initialize everything for the player, sets default values on game start
 void player_init();
 // Reloads the player sprites after calling SPR_reset() in stage_load()

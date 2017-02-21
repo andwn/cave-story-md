@@ -245,7 +245,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	/* 0x0E0 (224) */
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie
 	{ &SPR_Megane, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Megane
-	{ &SPR_Kanpachi2,NOSHEET,PAL3, 1, &ai_null, &ai_null, &ai_null }, // Kanpachi
+	{ &SPR_Kanpachi2,NOSHEET,PAL3, 1, &ai_null, &ai_kanpachi_standing, &ai_null }, // Kanpachi
 	{ &SPR_Bucket, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Bucket
 	{ &SPR_Droll, 	NOSHEET, PAL3, 2, &ai_null, &ai_droll_guard, &ai_null }, // Droll (Guard)
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Sprouts
@@ -258,7 +258,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
 	{ NULL, SHEET_GUNFSHOT,  PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Cage Bars
+	{ &SPR_Cage, 	NOSHEET, PAL1, 2, &onspawn_cent_cage, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
 	{ &SPR_JailedMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Red Critter
@@ -279,7 +279,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	/* 0x100 (256) */
 	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_doctor_crowned, &ai_null }, // Doctor (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_red_crystal, &ai_red_crystal, &ai_null }, // Red Crystal
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Sleeping Mimiga
+	{ &SPR_MimiSleep,NOSHEET, PAL0, 1, &onspawn_snap, &ai_null, &ai_null }, // Sleeping Mimiga
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_carried, &ai_null }, // Curly (Carried)
 	{ NULL, SHEET_MIMI,		 PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Shovel Brigade (Caged)
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Chie (Caged)
