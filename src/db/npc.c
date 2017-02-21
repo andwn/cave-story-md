@@ -337,7 +337,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Sword)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Archer)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Bute Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_ma_pignon, &ondeath_default }, // Ma Pignon
+	{ &SPR_MaPignon,NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ma_pignon, &ondeath_default }, // Ma Pignon
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Falling (?)
 	{ NULL, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Hopping Enemy (?)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Defeated)

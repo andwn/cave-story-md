@@ -90,7 +90,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Hell1,	PXE_Hell1,	TSC_Hell1,	&PAL_Regu,	10,	0,	"Sacred Ground B1" },
 	{ PXM_Hell2,	PXE_Hell2,	TSC_Hell2,	&PAL_Regu,	10,	0,	"Sacred Ground B2" },
 	{ PXM_Hell3,	PXE_Hell3,	TSC_Hell3,	&PAL_Regu,	10,	0,	"Sacred Ground B3" },
-	{ PXM_Mapi,		PXE_Mapi,	TSC_Mapi,	&PAL_Regu,	3,	0,	"Storage" },
+	{ PXM_Mapi,		PXE_Mapi,	TSC_Mapi,	&PAL_Mapi,	3,	0,	"Storage" },
 	{ PXM_Hell4,	PXE_Hell4,	TSC_Hell4,	&PAL_Regu,	10,	0,	"Passage?" },
 	{ PXM_Hell42,	PXE_Hell42,	TSC_Hell42,	&PAL_Regu,	10,	0,	"Passage?" },
 	{ PXM_Statue,	PXE_Statue,	TSC_Statue,	&PAL_Regu,	26,	0,	"Statue Chamber" },

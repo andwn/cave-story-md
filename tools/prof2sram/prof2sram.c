@@ -217,12 +217,15 @@ int read_profile_data(const char* filename) {
 	}
 	if(verbose) printf("\n");
 	// Teleporter Locations
+	if(verbose) printf("Warps: ");
 	for(int i = 0; i < 8; i++) {
 		fread(&ProfileData.teleport[i].menu, 2, 1, infile);
 		fskip(infile, 2);
 		fread(&ProfileData.teleport[i].location, 2, 1, infile);
 		fskip(infile, 2);
+		if(verbose) printf("%hu:%hu, ", ProfileData.item[i]);
 	}
+	if(verbose) printf("\n");
 	// Flags
 	fseek(infile, 0x218, SEEK_SET);
 	fread(ProfileData.flag_header, 1, 4, infile);
