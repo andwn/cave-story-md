@@ -986,8 +986,11 @@ u8 player_has_item(u8 id) {
 
 void player_equip(u16 id) {
 	playerEquipment |= id;
+	// Force the sprite to change so the mimiga mask will show immediately
+	player.oframe = 255;
 }
 
 void player_unequip(u16 id) {
 	playerEquipment &= ~id;
+	player.oframe = 255;
 }
