@@ -244,7 +244,6 @@ void ai_sky_dragon(Entity *e) {
 		case 0:		// standing
 		{
 			e->state++;
-			e->dir = 0; // Sprite itself is facing right so don't flip it
 			e->y -= 4 << CSF; // Push up 4 pixels cause we in the ground
 		}
 		case 1:
@@ -257,7 +256,7 @@ void ai_sky_dragon(Entity *e) {
 		{
 			e->state = 11;
 			// There is a separate 2 frames for the player wearing the Mimiga Mask
-			if(player_has_item(0x10))
+			if(playerEquipment & EQUIP_MIMIMASK)
 				e->frame = 4;
 			else
 				e->frame = 2;
@@ -270,7 +269,6 @@ void ai_sky_dragon(Entity *e) {
 		}
 		case 11:
 		{
-			e->dir = 0; // Script makes us face right, but sprite already does that
 			if(++e->animtime > 8) {
 				e->frame ^= 1; // swap between 2-3 or 4-5 for mimiga mask
 				e->animtime = 0;
@@ -282,7 +280,6 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 20:	// fly away
 		{
-			e->dir = 0; // STOP DOING THAT
 			if(++e->animtime > 8) {
 				e->frame ^= 1;
 				e->animtime = 0;
@@ -295,10 +292,11 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 30:	// spawn a Sue hanging from mouth
 		{
-			e->dir = 0; // Just in case the TSC gets any ideas...
+			
 		}
 		break;
 	}
+	e->dir = 0; // Script makes us face right, but sprite already does that
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

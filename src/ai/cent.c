@@ -903,6 +903,6 @@ void onspawn_jailbars(Entity *e) {
 }
 
 void onspawn_cent_cage(Entity *e) {
-	e->display_box.top -= 8;
-	e->display_box.left -= 16;
+	e->x += 8 << CSF;
+	e->y += 16 << CSF;
 }

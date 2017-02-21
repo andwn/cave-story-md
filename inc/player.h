@@ -13,7 +13,7 @@
 #define EQUIP_TURBOCHARGE	0x008
 #define EQUIP_AIRTANK		0x010
 #define EQUIP_BOOSTER20		0x020
-#define EQUIP_MAPIGNON		0x040
+#define EQUIP_MIMIMASK		0x040
 #define EQUIP_WHIMSICAL		0x080
 #define EQUIP_CLOCK			0x100
 
@@ -55,8 +55,6 @@ u8 mgun_shoottime, mgun_chargetime, playerNoBump;
 Entity *playerPlatform;
 
 u8 playerBoosterFuel, playerBoostState, lastBoostState;
-
-u8 playerHasMimiMask;
 
 // Initialize everything for the player, sets default values on game start
 void player_init();
