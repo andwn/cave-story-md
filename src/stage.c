@@ -62,10 +62,10 @@ void stage_load(u16 id) {
 	// Stage palette and shared NPC palette
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
-	VDP_setBackgroundColor(0); // Color index 0 for everything except fog
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
+		VDP_setBackgroundColor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0) { // Tiled image
 			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
 			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
