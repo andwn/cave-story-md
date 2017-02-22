@@ -36,6 +36,8 @@ For Ubuntu 16.04, other distros may vary slightly:
   - `texinfo` - Newer GCC might pull this in but make sure it is installed
   - `openjdk-8-jre-headless` - For the compression tool lz4w. I may do something about this eventually
   - `python` - Required to generate a header file, both 2 and 3 are known to work
+  - `wget` - Required to build gendev
+  - `unzip` - Required to build gendev
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
   - The command to build and install Gendev is `sudo make`
   - Compiling a GNU toolchain takes a very long time, over an hour on slow machines
