@@ -138,12 +138,18 @@ void game_reset(u8 load) {
 	sheets_load_stage(255, TRUE, TRUE);
 	gameFrozen = FALSE;
 	if(load) {
-		if(load == 1) system_load();
+		if(load == 1) {
+			// This redundant check is needed in case player hits "Yes" after game over
+			u8 ss = system_checkdata();
+			if(ss == SRAM_VALID_SAVE) system_load();
+			else goto TryAgainNoSave;
+		}
 		if(load >= 4) system_load_levelselect(load - 4);
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
 		//sheets_refresh_weapons();
 	} else {
+TryAgainNoSave:
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
 	}
@@ -190,7 +196,7 @@ void draw_itemmenu(u8 resetCursor) {
 		// X tile pos and VRAM index to put the ArmsImage tiles
 		u16 x = 4 + i*6, y = 4;
 		u16 index = TILE_FACEINDEX + 16 + i*4;
-		VDP_loadTileData(SPR_TILES(&SPR_ArmsImage, 0, w->type), index, 4, TRUE);
+		VDP_loadTileData(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4, TRUE);
 		// 4 mappings for ArmsImage icon
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   y);
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+2), x+1, y);

@@ -4,14 +4,14 @@
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
-It should work on any console or emulator.
+It should work on any console or emulator. Expect alpha quality and avoid PAL if you can.
 
 ### Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
-For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build. (thanks andwhyisit)
+For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build.
 
-Farthest reachable point in `master`: Balcony
+Farthest reachable point in `master`: Last Boss (Balcony, not Hell), which doesn't spawn and therefore cannot be defeated.
 
 ### Controls
 If you have a 6 button controller:
@@ -24,22 +24,23 @@ If you have a 6 button controller:
 
 For 3 button, A cycles through weapons. The rest is the same.
 
-### Save files
+### Level Select (Next release)
+🡩 🡫🡨 🡪  A+Start. Like Sonic. 
+In the future I want to make weapons, ammo, health, and specific items/equips configurable.
+
+This replaces the old method:
+
 There are SRAM files for various points in the game to help debugging in the save directory.
 The `.gens.srm` are for most emulators (odd bytes), and `.blastem.sram` for BlastEm (contiguous).
 
 ### Compilation
-For Ubuntu 16.04, other distros may vary slightly:
+I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 
 0. Dependencies for all this:
-  - `build-essential` - Need this to build anything in C
-  - `texinfo` - Newer GCC might pull this in but make sure it is installed
-  - `openjdk-8-jre-headless` - For the compression tool lz4w. I may do something about this eventually
-  - `python` - Required to generate a header file, both 2 and 3 are known to work
-  - `wget` - Required to build gendev
-  - `unzip` - Required to build gendev
+  - For Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo openjdk-8-jre-headless python`
+  - For Arch: `sudo pacman -Sy wget unzip base-devel texinfo jre8-openjdk python`
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
-  - The command to build and install Gendev is `sudo make`
+  - The command to build and install Gendev is `sudo make`. Yes, this is awful. No, I'm not fixing it.
   - Compiling a GNU toolchain takes a very long time, over an hour on slow machines
   - If after the fact you want to only update SGDK, run `sudo make sgdk-clean` then `sudo make sgdk`. This way you don't have to wait forever to rebuild the whole toolchain
 2. Clone this repository and do `make`.
@@ -51,9 +52,14 @@ For Ubuntu 16.04, other distros may vary slightly:
 
 #### There are no save points. What's going on?
 The game detected that you have no SRAM. If this is not the case, open an issue.
+Note that if you have no save, the game will restart from the beginning if you die.
 
-#### I found a discrepancy with the original, should I report it?
-Sure, as long as it isn't an obviously impossible fix because of hardware limitations.
+#### Bad things are happening what do?
+Open an issue if one doesn't already exist for said bad thing, unless
+
+- It's because of a hardware limitation, though I am open to suggestions on how to make stuff better without lagging the game
+- It has to do with the following parts which are not ready for testing: Undead Core, Ending Scene, Credits, Hell
+- It's a bug that exists in the original Cave Story. [1](https://www.youtube.com/watch?v=HFzS0bpc5kA) [2](http://cavestory.wikia.com/wiki/Sisters#Confrontation) [3](https://www.youtube.com/watch?v=wt7D3-COHJQ)
 
 #### Will this be released/sold on a cart?
 Short answer: No
@@ -66,9 +72,12 @@ You can do it yourself [without my permission](LICENSE). However, Cave Story is 
 Whenever I built on Windows the game lagged with way less objects on screen. This is for your own good.
 
 ## Thanks
-- Some of the code, namely the AI routines are heavily based on NXEngine.
-- Cave Editor is useful to investigate problematic objects and NPCs.
-- Sik made the font used ingame.
-- Most music covers are my own, created in Deflemask. Consider them CC-BY. Exceptions include:
-  - Gestation: @DavisOlivier
-  - Access, Cave Story, Fanfare 1/2/3: Originally me, improved by @DavisOlivier
+I did not know how to sort this list, so I did it alphabetically.
+
+- andwhyisit: A whole lot of testing. Automated builds.
+- DavisOlivier: Helped with a few music tracks, namely Gestation, Access, Cave Story, Fanfare 1/2/3
+- matteus: For reviving this project after I lost interest in 2015.
+- Noxid: The AI code is mostly taken from NXEngine and I often read the source to verify other parts.
+- Pixel: He made this video game.
+- Sik: Mega Drive tech support. Made the font used ingame.
+- Other people I probably forgot

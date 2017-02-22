@@ -104,11 +104,7 @@ void player_init() {
 
 void player_update() {
 	u8 tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
-	if(debuggingEnabled && (joystate&BUTTON_A)) { // Float - no collision
-		player_update_float();
-		player.x_next = player.x + player.x_speed;
-		player.y_next = player.y + player.y_speed;
-	} else if(playerMoveMode == 0) { // Normal movement
+	if(!playerMoveMode) { // Normal movement
 		// Wind/Water current
 		if(tile & 0x80) {
 			// This stops us fron getting stuck in ledges
@@ -160,7 +156,7 @@ void player_update() {
 		lastBoostState = playerBoostState;
 		// The above code to slow down the booster needs to always run. 
 		// As such we check again whether the booster is enabled
-		if(playerBoostState == BOOST_OFF) {
+		if(playerBoostState == BOOST_OFF && sub_to_block(player.y) < stageHeight - 1) {
 			u8 blockl_next, blocku_next, blockr_next, blockd_next;
 			// Ok so, making the collision with ceiling <= 0 pushes the player out of
 			// the ceiling during the opening scene with Kazuma on the computer.
@@ -214,8 +210,6 @@ void player_update() {
 				}
 			}
 		}
-		// Die when player goes OOB
-		player_update_bounds();
 	} else { // Move mode 1 - for ironhead
 		player_update_float();
 		player.x_next = player.x + player.x_speed;
@@ -241,10 +235,12 @@ void player_update() {
 		} else if(player.y_speed < 0) {
 			collide_stage_ceiling(&player);
 		}
-		player_update_bounds();
 	}
 	player.x = player.x_next;
 	player.y = player.y_next;
+	// Die when player goes OOB. Sometimes a H/V trigger does this already hence this
+	// tscState guard... or the game will just lock up
+	if (!tscState) player_update_bounds();
 	// Damage Tiles / Death check / IFrames
 	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)
@@ -301,7 +297,7 @@ void player_update() {
 			player_next_weapon();
 		}
 	} else {
-		// 6 button cycles with X/Y
+		// 6 button cycles with Y/Z
 		if(joy_pressed(BUTTON_Y)) {
 			player_prev_weapon();
 		} else if(joy_pressed(BUTTON_Z)) {
@@ -820,7 +816,7 @@ u8 player_inflict_damage(s16 damage) {
 }
 
 void player_update_bounds() {
-	if(player.y > block_to_sub(stageHeight)) {
+	if(sub_to_block(player.y) > stageHeight) {
 		player.health = 0;
 		tsc_call_event(PLAYER_OOB_EVENT);
 	}

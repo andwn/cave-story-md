@@ -10,8 +10,6 @@
 #include "camera.h"
 #include "system.h"
 
-#define ROCKET_ACTIVE 2222
-
 // dragonfly creature
 void ai_stumpy(Entity *e) {
 	e->frame ^= 1;
@@ -746,22 +744,18 @@ void ai_proximity_press_hoz(Entity *e) {
 		}
 		case 1:
 		{
-			if (PLAYER_DIST_Y2(0x800, 0x1000)) {
+			if (PLAYER_DIST_Y2(0x800, 0x800)) {
 				if (!e->dir) {
 					if (player.x < e->x) {
-						//if ((e->x - player.x) <= (192<<CSF)) {
-							e->state = 2;
-							e->frame = 2;
-							e->timer = 0;
-						//}
+						e->state = 2;
+						e->frame = 2;
+						e->timer = 0;
 					}
 				} else {
 					if (player.x > e->x) {
-						//if ((player.x - e->x) <= (192<<CSF)) {
-							e->state = 2;
-							e->frame = 2;
-							e->timer = 0;
-						//}
+						e->state = 2;
+						e->frame = 2;
+						e->timer = 0;
 					}
 				}
 			}
@@ -778,7 +772,7 @@ void ai_proximity_press_hoz(Entity *e) {
 				//SmokeSide(o, 4, e->dir);
 			//}
 			
-			if (++e->timer >= 9 + (curly_target_time == ROCKET_ACTIVE ? 0 : 2)) {
+			if (++e->timer > 10) {
 				sound_play(SND_BLOCK_DESTROY, 5);
 				e->attack = 0;
 				e->x_speed = 0;
@@ -830,8 +824,6 @@ void ai_rocket(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->alwaysActive = TRUE;
-			// Dirty hack to pretend presses collide with the rocket
-			curly_target_time = ROCKET_ACTIVE;
 		}
 		case 11:
 		{
@@ -881,7 +873,6 @@ void ai_rocket(Entity *e) {
 		{
 			e->y_speed += 8;
 			e->timer++;
-			if (!(PLAYER_DIST_X(0x2000) && PLAYER_DIST_Y(0x8000))) curly_target_time = 0;
 			if (e->y_speed < 0) {
 				if ((e->timer % 16) == 1) sound_play(SND_FIREBALL, 3);
 			} else if (collide_stage_floor(e)) {
@@ -892,7 +883,6 @@ void ai_rocket(Entity *e) {
 				e->frame = 0;
 				e->state = 0;
 				e->alwaysActive = FALSE;
-				curly_target_time = 0; // Put presses back to normal
 			}
 		}
 		break;

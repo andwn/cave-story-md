@@ -37,6 +37,7 @@ SPRITE SPR_Air			"sprite/air.png"		7 1 0 0 NONE
 SPRITE SPR_Hud2			"sprite/hud2.png"		8 4 0 0 NONE
 SPRITE SPR_Pointer		"sprite/pointer.png"	2 2 0 0 NONE
 SPRITE SPR_ArmsImage	"sprite/armsimage.png"	2 2 0 0 NONE
+SPRITE SPR_ArmsImageM	"sprite/armsimage_menu.png"	2 2 0 0 NONE
 SPRITE SPR_Misery		"sprite/misery.png"		2 2 0 0 NONE
 SPRITE SPR_TeleMenu		"sprite/telemenu.png"	4 2 0 0 NONE
 SPRITE SPR_Fish			"sprite/fish.png"		2 2 0 0 NONE
