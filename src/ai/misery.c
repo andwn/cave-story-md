@@ -721,11 +721,10 @@ void ai_misery_ball(Entity *e) {
 
 void ai_black_lightning(Entity *e) {
 	ANIMATE(e, 2, 0,1);
-	e->y_speed = SPEED(0x1000);
-	
 	if (blk(e->x, 0, e->y, 15) == 0x41) {
 		//effect(e->CenterX(), e->Bottom(), EFFECT_BOOMFLASH);
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	}
+	e->y += SPEED(0x1000);
 }

@@ -10,6 +10,8 @@
 #include "camera.h"
 #include "system.h"
 
+#define ROCKET_ACTIVE 2222
+
 // dragonfly creature
 void ai_stumpy(Entity *e) {
 	e->frame ^= 1;
@@ -737,9 +739,9 @@ void ai_proximity_press_hoz(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//if (!e->dir) e->x -= (8 << CSF);
+			if(e->eflags & NPC_OPTION2) e->dir = 1;
+			if (!e->dir) e->x -= (8 << CSF);
 			e->x_mark = e->x;
-			
 			e->state = 1;
 		}
 		case 1:
@@ -747,19 +749,19 @@ void ai_proximity_press_hoz(Entity *e) {
 			if (PLAYER_DIST_Y2(0x800, 0x1000)) {
 				if (!e->dir) {
 					if (player.x < e->x) {
-						if ((e->x - player.x) <= (192<<CSF)) {
+						//if ((e->x - player.x) <= (192<<CSF)) {
 							e->state = 2;
 							e->frame = 2;
 							e->timer = 0;
-						}
+						//}
 					}
 				} else {
 					if (player.x > e->x) {
-						if ((player.x - e->x) <= (192<<CSF)) {
+						//if ((player.x - e->x) <= (192<<CSF)) {
 							e->state = 2;
 							e->frame = 2;
 							e->timer = 0;
-						}
+						//}
 					}
 				}
 			}
@@ -769,14 +771,15 @@ void ai_proximity_press_hoz(Entity *e) {
 		case 2:		// activated
 		{
 			e->attack = 127;
-			MOVE_X(SPEED(0xC00));
+			MOVE_X(0x980);
 			
-			if (++e->timer == TIME(8)) {
-				sound_play(SND_BLOCK_DESTROY, 5);
+			//if (++e->timer == 10) {
+			//	sound_play(SND_BLOCK_DESTROY, 5);
 				//SmokeSide(o, 4, e->dir);
-			}
+			//}
 			
-			if (e->timer > TIME(8)) {
+			if (++e->timer >= 9 + (curly_target_time == ROCKET_ACTIVE ? 0 : 2)) {
+				sound_play(SND_BLOCK_DESTROY, 5);
 				e->attack = 0;
 				e->x_speed = 0;
 				e->state = 3;
@@ -787,7 +790,7 @@ void ai_proximity_press_hoz(Entity *e) {
 		
 		case 3:		// hit other press
 		{
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > 60) {
 				e->state = 4;	// return
 				e->frame = 1;
 				e->timer = 0;
@@ -797,9 +800,12 @@ void ai_proximity_press_hoz(Entity *e) {
 		
 		case 4:		// return to start pos
 		{
-			MOVE_X(-SPEED(0x800));
+			MOVE_X(-0x600);
 			
-			if (++e->timer > TIME(10)) {
+			//if(!e->dir) collide_stage_rightwall(e);
+			//else collide_stage_leftwall(e);
+			
+			if (++e->timer > 14) {
 				e->frame = 0;
 				e->x_speed = 0;
 				e->x = e->x_mark;
@@ -810,6 +816,7 @@ void ai_proximity_press_hoz(Entity *e) {
 		}
 		break;
 	}
+	e->x += e->x_speed;
 }
 
 void ai_rocket(Entity *e) {
@@ -823,6 +830,8 @@ void ai_rocket(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->alwaysActive = TRUE;
+			// Dirty hack to pretend presses collide with the rocket
+			curly_target_time = ROCKET_ACTIVE;
 		}
 		case 11:
 		{
@@ -863,6 +872,7 @@ void ai_rocket(Entity *e) {
 				
 				e->y_speed = 0;
 				e->state = 14;
+				
 			}
 		}
 		break;
@@ -871,7 +881,7 @@ void ai_rocket(Entity *e) {
 		{
 			e->y_speed += 8;
 			e->timer++;
-			
+			if (!(PLAYER_DIST_X(0x2000) && PLAYER_DIST_Y(0x8000))) curly_target_time = 0;
 			if (e->y_speed < 0) {
 				if ((e->timer % 16) == 1) sound_play(SND_FIREBALL, 3);
 			} else if (collide_stage_floor(e)) {
@@ -882,6 +892,7 @@ void ai_rocket(Entity *e) {
 				e->frame = 0;
 				e->state = 0;
 				e->alwaysActive = FALSE;
+				curly_target_time = 0; // Put presses back to normal
 			}
 		}
 		break;
