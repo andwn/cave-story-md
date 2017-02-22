@@ -205,7 +205,7 @@ void weapon_fire_missile(Weapon *w) {
 	}
 	if(b == NULL || w->ammo == 0) return;
 	w->ammo--;
-	b->type = w->type;
+	b->type = WEAPON_MISSILE; //w->type;
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
 	b->damage = 0; // 0 damage because an explosion object causes damage instead
