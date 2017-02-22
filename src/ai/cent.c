@@ -765,14 +765,14 @@ void ai_proximity_press_hoz(Entity *e) {
 		case 2:		// activated
 		{
 			e->attack = 127;
-			MOVE_X(0x980);
+			MOVE_X(0x900);
 			
 			//if (++e->timer == 10) {
 			//	sound_play(SND_BLOCK_DESTROY, 5);
 				//SmokeSide(o, 4, e->dir);
 			//}
 			
-			if (++e->timer > 10) {
+			if (++e->timer > 11) {
 				sound_play(SND_BLOCK_DESTROY, 5);
 				e->attack = 0;
 				e->x_speed = 0;
@@ -794,12 +794,12 @@ void ai_proximity_press_hoz(Entity *e) {
 		
 		case 4:		// return to start pos
 		{
-			MOVE_X(-0x600);
+			MOVE_X(-0x5A0);
 			
 			//if(!e->dir) collide_stage_rightwall(e);
 			//else collide_stage_leftwall(e);
 			
-			if (++e->timer > 14) {
+			if (++e->timer > 15) {
 				e->frame = 0;
 				e->x_speed = 0;
 				e->x = e->x_mark;
