@@ -623,7 +623,7 @@ void ai_misery_ring(Entity *e) {
 		case 1:
 		{
 			// distance from misery
-			if (e->timer < 192) e->timer++;
+			if (e->timer < 0x40) e->timer++;
 			
 			// angle
 			e->jump_time += 2;
@@ -642,12 +642,14 @@ void ai_misery_ring(Entity *e) {
 		{
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
+			e->nflags &= ~NPC_INVINCIBLE; // ugh
 			
 			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x200));
 			FACE_PLAYER(e);
 			
 			// Change to bat sprite
 			SHEET_FIND(e->sheet, SHEET_BAT);
+			e->vramindex = sheets[e->sheet].index;
 			e->frame = 0;
 			e->oframe = 255;
 			
@@ -656,6 +658,8 @@ void ai_misery_ring(Entity *e) {
 		case 11:
 		{
 			ANIMATE(e, 4, 0,1,2);
+			e->x += e->x_speed;
+			e->y += e->y_speed;
 			// Disappear when touching with any solid blocks
 			if (blk(e->x, 0, e->y, 0) == 0x41) {
 				effect_create_smoke(e->x >> CSF, e->y >> CSF);

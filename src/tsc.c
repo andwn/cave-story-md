@@ -963,17 +963,28 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
+			if(args[0] >= stageWidth || args[1] >= stageHeight) {
+				// Outside of the map -- don't do this
+				break;
+			}
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
 			// code so I can put in this hacky section which fixes specific scripts
-			if(stageID == 14) { // Mimiga Village Shack - when Balrog barges in
-				stage_replace_block(args[0], args[1], 
-					(args[2]==80 || args[2]==81 || args[2]==82) ? args[2]+32 : args[2]+19);
-				// TODO: Balcony tileset
-			} else {
-				stage_replace_block(args[0], args[1], args[2]);
+			if(stageID == 14) { // Mimiga Village Shack -- Balrog busts throug door
+				if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
+				else args[2] += 19;
+			} else if(stageTileset == 25) { // Throne Room / Ostep
+				if(args[2] == 18) args[2] = 49;
+				if(args[2] == 21) args[2] = 50;
+			} else if(stageTileset == 27) { // King's Table
+				if(args[2] == 18) args[2] = 40;
+				if(args[2] == 21) args[2] = 41;
+			} else if(stageTileset == 28) { // Black Space
+				if(args[2] == 18) args[2] = 33;
+				if(args[2] == 21) args[2] = 34;
 			}
 			// Puff of smoke
+			stage_replace_block(args[0], args[1], args[2]);
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
 		}
 		break;
@@ -1034,7 +1045,8 @@ u8 execute_command() {
 		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			stage_replace_block(args[0], args[1], stage_get_block(args[0], args[1]) - 1);
+			u8 b = stage_get_block(args[0], args[1]);
+			if (b > 0) stage_replace_block(args[0], args[1], b - 1);
 		}
 		break;
 		default: break;

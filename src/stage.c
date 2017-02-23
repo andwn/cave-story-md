@@ -26,7 +26,7 @@ void stage_load_tileset();
 void stage_load_blocks();
 void stage_load_entities();
 
-void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
+void stage_draw_block(u16 x, u16 y);
 void stage_draw_screen();
 void stage_draw_background();
 void stage_draw_moonback();
@@ -195,7 +195,10 @@ void stage_load_entities() {
 // Replaces a block with another (for <CMP, <SMP, and breakable blocks)
 void stage_replace_block(u16 bx, u16 by, u8 index) {
 	stageBlocks[stageTable[by] + bx] = index;
-	stage_draw_area(bx, by, 1, 1);
+	s16 cx = sub_to_block(camera.x), cy = sub_to_block(camera.y);
+	if(cx - 32 > bx || cx + 32 < bx || cy - 16 > by || cy + 16 < by) return;
+	// Only redraw if change was made onscreen
+	stage_draw_block(bx, by);
 }
 
 // Another tile gap, fits under both Almond and Cave
@@ -314,26 +317,19 @@ void stage_draw_screen() {
 	}
 }
 
-// This draws an arbitrary rectangular area of 16x16 tiles
-// It's used on stage load to draw the full screen area
-void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h) {
-	if(_x > stageWidth) _x = 0;
-	if(_y > stageHeight) _y = 0;
-	u16 t, b, xx, yy, pal; u8 p;
-	for(u16 y = _y; y < _y + _h; y++) {
-		for(u16 x = _x; x < _x + _w; x++) {
-			p = (stage_get_block_type(x, y) & 0x40) > 0;
-			pal = stage_get_block_type(x, y) == 0x43 ? PAL1 : PAL2;
-			t = block_to_tile(stage_get_block(x, y));
-			b = TILE_TSINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
-			xx = block_to_tile(x) % 64;
-			yy = block_to_tile(y) % 32;
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b), xx, yy);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+1), xx+1, yy);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH), xx, yy+1);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(pal, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
-		}
-	}
+// Draws just one block
+void stage_draw_block(u16 x, u16 y) {
+	if(x >= stageWidth || y >= stageHeight) return;
+	u16 t, b, xx, yy; u8 p;
+	p = (stage_get_block_type(x, y) & 0x40) > 0;
+	t = block_to_tile(stage_get_block(x, y));
+	b = TILE_TSINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
+	xx = block_to_tile(x) % 64;
+	yy = block_to_tile(y) % 32;
+	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b), xx, yy);
+	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+1), xx+1, yy);
+	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
+	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
 }
 
 // Fills PLAN_B with a tiled background
