@@ -38,7 +38,7 @@ typedef struct {
 
 // Information about each background, indexed by stageBackground
 // The IDs deviate from the original game. I do not know the "correct" order
-#define BACKGROUND_COUNT 16
+#define BACKGROUND_COUNT 17
 typedef struct {
 	const TileSet *tileset; // Graphical tile data to load
 	// Backgrounds do not use their own palette and instead "share" with any other of the
