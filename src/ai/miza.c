@@ -330,6 +330,7 @@ void ai_misery_critter(Entity *e) {
 }
 
 void ai_misery_bat(Entity *e) {
+	e->eflags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 		{
@@ -340,7 +341,8 @@ void ai_misery_bat(Entity *e) {
 				
 				e->state = 1;
 				e->attack = 2;
-				e->eflags |= (NPC_SHOOTABLE | NPC_IGNORESOLID);
+				e->eflags &= ~NPC_INVINCIBLE;
+				e->nflags &= ~NPC_INVINCIBLE;
 				
 				e->y_mark = e->y;
 				e->y_speed = 0x400;
@@ -350,7 +352,7 @@ void ai_misery_bat(Entity *e) {
 		
 		case 1:
 		{
-			ANIMATE(e, 2, 0, 2);
+			ANIMATE(e, 2, 0,1,2);
 			
 			e->y_speed += (e->y < e->y_mark) ? 0x40 : -0x40;
 			ACCEL_X(0x10);

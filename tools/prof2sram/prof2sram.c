@@ -319,7 +319,8 @@ int write_sram_data(const char *filename) {
 		sram_write_u8(outfile, ProfileData.item[i]);
 	}
 	// Teleporter Locations
-	for(int i = 0; i < 8; i++) {
+	fskip(outfile, 2); // Well
+	for(int i = 0; i < 7; i++) {
 		sram_write_u16(outfile, ProfileData.teleport[i].location);
 	}
 	// Flags

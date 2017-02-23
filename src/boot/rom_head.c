@@ -37,5 +37,9 @@ const struct {
     0x0020FFFF,
     "            ",
     "https://github.com/andwn/cave-story-md\0\0",
-    "JUE             "
+#ifdef PAL
+	"E               "
+#else
+    "JU              "
+#endif
 };

@@ -240,7 +240,7 @@ void player_update() {
 	player.y = player.y_next;
 	// Die when player goes OOB. Sometimes a H/V trigger does this already hence this
 	// tscState guard... or the game will just lock up
-	if (!tscState) player_update_bounds();
+	//if (!tscState) player_update_bounds();
 	// Damage Tiles / Death check / IFrames
 	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)

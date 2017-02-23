@@ -25,7 +25,7 @@ If you have a 6 button controller:
 For 3 button, A cycles through weapons. The rest is the same.
 
 ### Level Select (Next release)
-🡩 🡫🡨 🡪  A+Start. Like Sonic. 
+🡩 🡫🡨 🡪  A + Start. Like Sonic. 
 In the future I want to make weapons, ammo, health, and specific items/equips configurable.
 
 This replaces the old method:

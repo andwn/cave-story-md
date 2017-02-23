@@ -110,14 +110,20 @@ void ai_nothing(Entity *e) {
 	}
 }
 
-// Triggers will activate on player's collision
-// OPTION2 off: horizontal, on: vertical
-void ai_trigger(Entity *e) {
-	if(tscState) return;
-	if(!e->state) {
-		e->alwaysActive = TRUE;
-		e->state = 1;
-		if(e->eflags&NPC_OPTION2) { // Vertical
+void onspawn_trigger(Entity *e) {
+	if(e->eflags & NPC_OPTION2) { // Vertical
+		// First test if the trigger is placed outside of the map, if so change the type
+		// to OOB trigger which will activate based on player position instead of collision
+		s16 ex = sub_to_block(e->x);
+		if(ex <= 0) { // Left OOB
+			e->alwaysActive = TRUE;
+			e->type = OBJ_TRIGGER_SPECIAL;
+			e->eflags &= ~NPC_OPTION1;
+		} else if(ex >= stageWidth - 1) { // Right OOB
+			e->alwaysActive = TRUE;
+			e->type = OBJ_TRIGGER_SPECIAL;
+			e->eflags |= NPC_OPTION1;
+		} else { // Not OOB
 			e->hit_box.left = 2; e->hit_box.right = 2;
 			for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
 				if(stage_get_block_type((e->x>>CSF)/16, 
@@ -127,7 +133,18 @@ void ai_trigger(Entity *e) {
 				if(stage_get_block_type((e->x>>CSF)/16, 
 						((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
 			}
-		} else { // Horizontal
+		}
+	} else { // Horizontal
+		s16 ey = sub_to_block(e->y);
+		if(ey <= 0) { // Top OOB
+			e->alwaysActive = TRUE;
+			e->type = OBJ_TRIGGER_SPECIAL;
+			e->eflags &= ~NPC_OPTION1;
+		} else if(ey >= stageHeight - 1) { // Bottom OOB
+			e->alwaysActive = TRUE;
+			e->type = OBJ_TRIGGER_SPECIAL;
+			e->eflags |= NPC_OPTION1;
+		} else {  // Not OOB
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
 				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, 
@@ -139,9 +156,38 @@ void ai_trigger(Entity *e) {
 			}
 		}
 	}
+}
+
+// Triggers will activate on player's collision
+// OPTION2 off: horizontal, on: vertical
+void ai_trigger(Entity *e) {
+	if(tscState) return;
+	if(!e->state) {
+		e->alwaysActive = TRUE;
+		e->state = 1;
+	}
 	// Prevent getting stuck in the eggs in egg corridor
 	if((e->eflags & NPC_OPTION2) || player.y_speed < 0 || stageID != 0x02) {
 		if(entity_overlapping(&player, e)) tsc_call_event(e->event);
+	}
+}
+
+// Special H/V trigger logic for Outer Wall and Balcony
+// OPTION2 off: horizontal, on: vertical
+void ai_trigger_special(Entity *e) {
+	if(tscState) return;
+	if(e->eflags & NPC_OPTION2) { // Vertical
+		if(e->eflags & NPC_OPTION1) {
+			if(player.x > e->x) tsc_call_event(e->event); // Right
+		} else {
+			if(player.x < e->x) tsc_call_event(e->event); // Left
+		}
+	} else { // Horizontal
+		if(e->eflags & NPC_OPTION1) {
+			if(player.y > e->y) tsc_call_event(e->event); // Bottom
+		} else {
+			if(player.y < e->y) tsc_call_event(e->event); // Top
+		}
 	}
 }
 

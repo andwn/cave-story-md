@@ -4,7 +4,7 @@
 #include "resources.h"
 #include "sheet.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -53,7 +53,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 	{ &SPR_Board, NOSHEET, 	PAL1, 2, &onspawn_blackboard, &ai_null, &ai_null }, // Blackboard
 	{ NULL, SHEET_POLISH, 	PAL3, 1, &ai_null, &ai_polish, &ondeath_default }, // Polish
 	{ NULL, SHEET_BABY, 	PAL3, 1, &ai_null, &ai_baby, &ondeath_default }, // Baby
-	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger, &ai_null }, // Trigger
+	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_trigger, &ai_trigger, &ai_null }, // Trigger
 	{ &SPR_Sandcroc,NOSHEET,PAL3, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // Sandcroc
 	/* 0x030 (48) */
 	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ondeath_default }, // Omega Shot
@@ -488,4 +488,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3] = {
 		&onspawn_segalogo, &ai_segalogo, &ai_null },
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, // Balrog in splash screen
 		&onspawn_balrog_splash, &ai_balrog_splash, &ai_null },
+		
+	// Special Trigger
+	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Trigger
 };

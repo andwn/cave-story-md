@@ -426,6 +426,8 @@ enum {
 	OBJ_SEGALOGO,
 	OBJ_SEGALOGO2,
 	OBJ_BALROGSPLASH,
+	// Misc
+	OBJ_TRIGGER_SPECIAL,
 };
 
 // Locations in npc.tbl where data for each property begins

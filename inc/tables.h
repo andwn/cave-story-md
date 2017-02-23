@@ -101,7 +101,7 @@ extern const song_info_def song_info[SONG_COUNT];
 
 extern const sound_info_def sound_info[SOUND_COUNT];
 
-extern const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 3]; // 9 bosses, 14 boss pieces
+extern const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4]; // 9 bosses, 14 boss pieces
 
 extern const weapon_info_def weapon_info[WEAPON_COUNT];
 

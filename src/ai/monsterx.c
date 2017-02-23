@@ -90,6 +90,7 @@ static void spawn_fish(u8 index) {
 	Entity *fish = entity_create(bossEntity->x + xoffs[index], bossEntity->y + yoffs[index],
 								 OBJ_X_FISHY_MISSILE, 0);
 	fish->cur_angle = angles[index];
+	fish->nflags &= ~NPC_INVINCIBLE;
 	//FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
 	//				 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
 	//				 0x80 + index * 0x100, SPEED(0x400));
@@ -676,15 +677,16 @@ void ondeath_x_target(Entity *e) {
 }
 
 void ai_x_fishy_missile(Entity *e) {
-	if(e->timer & 1) {
-		Bullet *b = bullet_colliding(e);
-		if(b) {
-			b->ttl = 0;
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
-			e->state = STATE_DELETE;
-			return;
-		}
-	} else if(e->timer > TIME(600)) {
+	e->eflags ^= NPC_SHOOTABLE;
+	//if(e->timer & 1) {
+	//	Bullet *b = bullet_colliding(e);
+	//	if(b) {
+	//		b->ttl = 0;
+	//		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	//		e->state = STATE_DELETE;
+	//		return;
+	//	}
+	if(e->timer > TIME(600)) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 		return;
