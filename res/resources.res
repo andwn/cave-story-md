@@ -355,6 +355,7 @@ TILESET TS_Numbers		"sprite/numbers.png" 0
 
 # HUD Health/Energy Bar
 TILESET TS_HudBar		"sprite/hudfill.png" 0
+TILESET TS_HudMax		"sprite/hudmax.png" 0
 
 # Breakable Block Tile
 TILESET TS_Break		"sprite/breakable.png" 0

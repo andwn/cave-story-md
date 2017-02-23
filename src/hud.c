@@ -108,13 +108,20 @@ void hud_refresh_energy() {
 	hudLevel = playerWeapon[currentWeapon].level;
 	hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 1);
 	hudEnergy = playerWeapon[currentWeapon].energy;
-	// Same deal as HP with the bar
-	s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
-	for(u8 i = 0; i < 5; i++) {
-		s16 addrXP = min(fillXP*TSIZE, 7*TSIZE);
-		if(addrXP < 0) addrXP = 0;
-		memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
-		fillXP -= 8;
+	// Max energy draws "MAX"
+	if(hudEnergy == hudMaxEnergy) {
+		for(u8 i = 0; i < 5; i++) {
+			memcpy(tileData[i+3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
+		}
+	} else {
+		// Same deal as HP with the bar
+		s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
+		for(u8 i = 0; i < 5; i++) {
+			s16 addrXP = min(fillXP*TSIZE, 7*TSIZE);
+			if(addrXP < 0) addrXP = 0;
+			memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
+			fillXP -= 8;
+		}
 	}
 	// "Lv." and 1 digit for the level
 	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[2*TSIZE], TILE_SIZE);

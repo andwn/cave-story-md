@@ -289,7 +289,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		} break;
 		case 0x30: // Waterway
 		{	SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
-			SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
+			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 0,2, 0,3, 0,4, 0,1, 0,2, 0,5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 		} break;
 		case 0x1F: // Main Artery
