@@ -60,7 +60,11 @@ void stage_load(u16 id) {
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
 	// Stage palette and shared NPC palette
-	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	if(stageID == 0x30) {
+		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
+	} else {
+		VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	}
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;

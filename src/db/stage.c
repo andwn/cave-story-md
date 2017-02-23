@@ -53,7 +53,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Drain,	PXE_Drain,	TSC_Drain,	&PAL_Regu,	3,	11,	"Dark Place" },
 	{ PXM_Almond,	PXE_Almond,	TSC_Almond,	&PAL_Regu,	1,	11,	"Core" },
 	/* 0x30 (48) */
-	{ PXM_River,	PXE_River,	TSC_River,	&PAL_Regu,	17,	12,	"Waterway" },
+	{ PXM_River,	PXE_River,	TSC_River,	&PAL_Regu,	17,	15,	"Waterway" },
 	{ PXM_Eggs2,	PXE_Eggs2,	TSC_Eggs2,	&PAL_Eggs2,	23,	13,	"Egg Corridor?" },
 	{ PXM_Cthu2,	PXE_Cthu2,	TSC_Cthu2,	&PAL_Regu,	19,	0,	"Cthulhu's Abode?" },
 	{ PXM_EggR2,	PXE_EggR2,	TSC_EggR2,	&PAL_Sisters,19,0,	"Egg Observatory?" },

@@ -492,10 +492,13 @@ PALETTE PAL_Jail	"Stage/PrtJail.bmp" 2
 PALETTE PAL_Labo	"Stage/PrtLabo.bmp" 2
 PALETTE PAL_Oside	"Stage/PrtOside.png" 2
 PALETTE PAL_Pens	"Stage/PrtPens.bmp" 2
-PALETTE PAL_River	"back/bkGray.bmp" 2
+PALETTE PAL_River	"Stage/PrtRiver.bmp" 2
 PALETTE PAL_Sand	"Stage/PrtSand.bmp" 2
 PALETTE PAL_Store	"Stage/PrtStore.bmp" 2
 PALETTE PAL_Weed	"Stage/PrtWeed.bmp" 2
+
+# Alternate for waterway (Green background)
+PALETTE PAL_RiverAlt "Stage/PrtRiver_alt.bmp" 2
 
 # ----------------------------------------------------------------------------------------------
 # Tilesets
@@ -555,6 +558,7 @@ TILESET BG_Maze2	"back/bkMaze.bmp" 2
 TILESET BG_Red		"back/bkRed.bmp" 2
 TILESET BG_Water	"back/bkWater.bmp" 2
 TILESET BG_LabB		"back/bkMimiRegu.png" 2
+TILESET BG_Stream	"back/bkStream.png" 2
 
 # Moon
 BIN MoonTopTiles	"back/bkMoonTop.bin"
