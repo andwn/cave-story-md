@@ -93,7 +93,7 @@ void onspawn_sisters(Entity *e) {
 	e->hidden = TRUE;
 	
 	mainangle = 0;
-	e->x_mark = 180;
+	e->x_mark = 192;
 	e->y_mark = 61;
 	e->timer2 = (random() % TIME(500)) + TIME(700);
 	e->health = 500;
@@ -139,7 +139,7 @@ void ai_sisters(Entity *e) {
 		case 20:	// fight begin (script-triggered)
 		{
 			if (++e->timer > TIME(68)) {
-				e->x_mark = 112;		// bodies zoom onto screen via force of their interpolation
+				e->x_mark = 144;		// bodies zoom onto screen via force of their interpolation
 				e->timer = 0;
 				
 				e->state = STATE_CIRCLE_1;			// main begins turning angle
@@ -262,7 +262,15 @@ void ai_sisters(Entity *e) {
 					entity_overlapping(pieces[HEAD2], pieces[BODY1])) {
 					SCREEN_FLASH(30);
 					sound_play(SND_EXPLOSION1, 5);
+					// Do this before the fade wears off
+					entities_clear_by_type(OBJ_DRAGON_ZOMBIE_SHOT);
+					entities_clear_by_type(OBJ_SPIKE_SMALL);
 					
+					for(u8 i=0;i<2;i++) {
+						pieces[HEAD1+i]->state = STATE_DELETE;
+						pieces[BODY1+i]->state = STATE_DELETE;
+					}
+				
 					e->state = STATE_STARFLASH;
 					e->timer = 0;
 				} else {
@@ -277,14 +285,6 @@ void ai_sisters(Entity *e) {
 		case STATE_STARFLASH:
 		{
 			if (++e->timer > TIME(30)) {
-				entities_clear_by_type(OBJ_DRAGON_ZOMBIE_SHOT);
-				entities_clear_by_type(OBJ_SPIKE_SMALL);
-				
-				for(u8 i=0;i<2;i++) {
-					pieces[HEAD1+i]->state = STATE_DELETE;
-					pieces[BODY1+i]->state = STATE_DELETE;
-				}
-				
 				e->state = STATE_DELETE;
 				bossEntity = NULL;
 				
@@ -395,7 +395,7 @@ void ai_sisters_head(Entity *e) {
 			}
 			
 			// need at least 2 hits to get her to close mouth
-			if (e->damage_time) e->timer2++;
+			if (e->damage_time > 0) e->timer2++;
 			if (e->timer2 > TIME(10)) {
 				sound_play(SND_ENEMY_HURT, 5);
 				effect_create_smoke(e->x << CSF, e->y << CSF);
@@ -411,7 +411,9 @@ void ai_sisters_head(Entity *e) {
 		case STATE_HEAD_FIRE:
 		{
 			if ((++e->timer % 8) == 1) {
-				//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
+				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
+						e->dir ? A_RIGHT : A_LEFT, 0x200);
+				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
 			
@@ -435,7 +437,9 @@ void ai_sisters_head(Entity *e) {
 			
 			if (e->timer > TIME(20)) {
 				if ((e->timer % 32) == 1) {
-					//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, e->dir ? 12 : 500, 0x200);
+					FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
+							e->dir ? A_RIGHT : A_LEFT, 0x200);
+					
 					sound_play(SND_SNAKE_FIRE, 3);
 				}
 			}

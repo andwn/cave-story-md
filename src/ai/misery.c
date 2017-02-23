@@ -641,10 +641,11 @@ void ai_misery_ring(Entity *e) {
 		case 10:	// transform to bat
 		{
 			e->eflags |= NPC_SHOOTABLE;
+			e->nflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE; // ugh
 			
-			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x200));
+			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x280));
 			FACE_PLAYER(e);
 			
 			// Change to bat sprite

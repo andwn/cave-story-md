@@ -219,7 +219,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Underwater Current
 	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &ai_null, &ai_dragon_zombie, &ai_null }, // Dragon Zombie
 	{ &SPR_BabyDragon,NOSHEET,PAL3,2, &onspawn_deaddragon, &ai_null, &ai_null }, // Dragon Zombie (Dead)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Dragon Zombie Projectile
+	{ NULL, SHEET_FIRE, 	 PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Dragon Zombie Projectile
 	{ NULL, SHEET_CRITTER,   PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Blue Hopping Critter
 	{ NULL, SHEET_SMSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_small, &ondeath_default }, // Falling Spike (Small)
 	{ NULL, SHEET_LGSTAL, 	 PAL2, 1, &ai_null, &ai_falling_spike_large, &ondeath_default }, // Falling Spike (Large)
@@ -272,7 +272,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
 	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Lightning Ball
 	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_black_lightning, &ai_null }, // Misery Lightning
-	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ai_null }, // Misery Ring
+	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ondeath_default }, // Misery Ring
 	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_xp_capsule, &ondeath_default }, // Energy Capsule
 	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_helicopter, &ai_null }, // Helicopter
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_helicopter_blade, &ai_null }, // ???

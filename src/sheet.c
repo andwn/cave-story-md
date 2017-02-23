@@ -304,9 +304,11 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_BASUSHOT, &SPR_BasuShot, 2,2,2, 0,0, 1,0);
 			SHEET_ADD(SHEET_SMSTAL, &SPR_SmStal, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_LGSTAL, &SPR_LgStal, 2,2,4, 0,0, 0,1);
+			SHEET_ADD(SHEET_FIRE, &SPR_DraShot, 3,2,3, 0,0, 0,1, 0,2);
 		} break;
 		case 0x33: // Egg Observatory?
 		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 5,4,4, 0,0, 0,1, 0,2, 0,3, 0,4);
+			SHEET_ADD(SHEET_FIRE, &SPR_DraShot, 3,2,3, 0,0, 0,1, 0,2);
 		} break;
 		case 0x35: // Outer Wall
 		{	SHEET_ADD(SHEET_NIGHTSHOT, &SPR_NightShot, 3,4,2, 0,0, 0,1, 0,2);

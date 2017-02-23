@@ -76,6 +76,8 @@ void ai_dragon_zombie(Entity *e) {
 			if (e->timer < TIME(40) && (e->timer % 8) == 1) {
 				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
 				//ThrowEntity(fire, e->xmark, e->ymark, 6, 0x600);
+				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
+						e->dir ? A_RIGHT - 6 : A_LEFT + 6, 0x600);
 				
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
@@ -219,6 +221,7 @@ void ai_falling_spike_large(Entity *e) {
 		{
 			if (++e->timer > 4) {	// make it destroyable
 				e->eflags |= NPC_SHOOTABLE;
+				e->nflags |= NPC_SHOOTABLE;
 				e->eflags &= ~NPC_INVINCIBLE;
 				e->nflags &= ~NPC_INVINCIBLE;
 				e->state = 4;
