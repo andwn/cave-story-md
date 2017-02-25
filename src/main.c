@@ -20,17 +20,15 @@
 
 #include "audio.h"
 #include "common.h"
-#include "resources.h"
 #include "gamemode.h"
 #include "input.h"
+#include "resources.h"
 #include "system.h"
 
 int main() {
 	puts("Hi Plum");
     SYS_disableInts();
-#ifdef PAL
-    VDP_setScreenHeight240();
-#endif
+    VDP_setScreenHeight240(); // Only has any effect on PAL
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it
 	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800

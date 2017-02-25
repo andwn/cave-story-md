@@ -84,7 +84,7 @@ void camera_update() {
 	if(x_next - camera.x > CAMERA_MAX_SPEED) x_next = camera.x + CAMERA_MAX_SPEED;
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
-	if(stageID == 18) { // Special case for shelter
+	if(stageID == 18 && !IS_PALSYSTEM) { // Special case for shelter
 		x_next = pixel_to_sub(SCREEN_HALF_W + LIMIT);
 		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
 	} else {
@@ -129,7 +129,7 @@ void camera_update() {
 			}
 		}
 		if(morphingRow) {
-			s16 y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -14);
+			s16 y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
 			s16 x = sub_to_tile(x_next) - 31 + morphingColumn;
 			if(y >= 0 && y < stageHeight * 2) {
 				for(u8 i = 64; i--; ) {

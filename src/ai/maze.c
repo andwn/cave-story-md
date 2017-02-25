@@ -272,6 +272,7 @@ void ai_gaudi(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = (random() % TIME(75)) + TIME(25);		// how long to walk for
+			moveMeToFront = TRUE;
 		}
 		/* no break */
 		case 11:
@@ -302,6 +303,7 @@ void ai_gaudi(Entity *e) {
 				e->x_speed = 0;
 				e->state = 21;
 				e->timer = 0;
+				moveMeToFront = TRUE;
 				
 				if (!controlsLocked)	// no sound during ending cutscene
 					sound_play(SND_THUD, 5);
@@ -492,7 +494,7 @@ void ai_gaudiArmored(Entity *e) {
 			// throw attacks at player
 			if (e->timer == TIME(30) || e->timer == TIME(40)) {
 				FIRE_ANGLED_SHOT(OBJ_GAUDI_ARMORED_SHOT, e->x, e->y, 
-						e->dir ? A_RIGHT+64 : A_LEFT-64, 0x600);
+						e->dir ? A_RIGHT-16 : A_LEFT+16, 0x600);
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->frame = 3;

@@ -35,13 +35,13 @@ void hud_create() {
 	// Create the sprites
 	sprHUD[0] = (VDPSprite) {
 		.x = 16 + 128,
-		.y = 8 + 128,
+		.y = (IS_PALSYSTEM ? 16 : 8) + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX)
 	};
 	sprHUD[1] = (VDPSprite) {
 		.x = 16 + 32 + 128,
-		.y = 8 + 128,
+		.y = (IS_PALSYSTEM ? 16 : 8) + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};

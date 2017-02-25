@@ -96,6 +96,7 @@ void ai_igor_balcony(Entity *e) {
 		{
 			e->state = 1;
 			e->grounded = FALSE;
+			e->display_box.top += 8;
 		}
 		case 1:
 		{
@@ -113,6 +114,7 @@ void ai_igor_balcony(Entity *e) {
 			e->frame = STAND1;
 			e->animtime = 0;
 			FACE_PLAYER(e);
+			moveMeToFront = TRUE;
 		}
 		case 11:
 		{
@@ -137,6 +139,7 @@ void ai_igor_balcony(Entity *e) {
 				e->grounded = FALSE;
 				MOVE_X(SPEED(0x200));
 				sound_play(SND_IGOR_JUMP, 5);
+				moveMeToFront = TRUE;
 			}
 		}
 		break;
@@ -168,6 +171,7 @@ void ai_igor_balcony(Entity *e) {
 			e->state = 31;
 			e->timer = 0;
 			FACE_PLAYER(e);
+			moveMeToFront = TRUE;
 		}
 		case 31:
 		{

@@ -58,6 +58,7 @@ void ai_igor(Entity *e) {
 			}
 			e->x_speed = e->dir ? SPEED(1<<CSF) : -SPEED(1<<CSF);
 			e->state++;
+			moveMeToFront = TRUE;
 		}
 		case STATE_WALK+1:
 		{
@@ -82,6 +83,7 @@ void ai_igor(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
+			moveMeToFront = TRUE;
 		}
 		case STATE_PUNCH+1:
 		{
@@ -126,6 +128,7 @@ void ai_igor(Entity *e) {
 			e->x_mark = e->x_speed; // Remember x speed
 			e->timer = 0;
 			e->state++;
+			moveMeToFront = TRUE;
 		}
 		case STATE_JUMPING+1:
 		{
@@ -145,6 +148,7 @@ void ai_igor(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
+			moveMeToFront = TRUE;
 		}
 		case STATE_LANDED+1:
 		{
@@ -158,6 +162,7 @@ void ai_igor(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
+			moveMeToFront = TRUE;
 		}
 		case STATE_MOUTH_BLAST+1:
 		{

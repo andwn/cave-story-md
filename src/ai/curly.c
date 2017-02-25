@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "effect.h"
+#include "camera.h"
 
 #define CURLY_STAND				0
 #define CURLY_WALK				3
@@ -124,6 +125,12 @@ void ai_curly(Entity *e) {
 
 // curly being carried by Tow Rope
 void ai_curly_carried(Entity *e) {
+	// Keep in front of doors
+	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+		moveMeToFront = TRUE;
+		e->x_mark = camera.x;
+		e->y_mark = camera.y;
+	}
 	switch(e->state) {
 		case 0:
 		{
@@ -131,12 +138,6 @@ void ai_curly_carried(Entity *e) {
 			e->frame = 10;
 			e->eflags &= ~NPC_INTERACTIVE;
 			e->nflags &= ~NPC_INTERACTIVE;
-			// TODO: turn on the HVTrigger in Waterway that kills Curly if you haven't
-			// drained the water out of her
-			//if (game.curmap == STAGE_WATERWAY) {
-			//	Object *t = FindObjectByID2(220);
-			//	if (t) t->ChangeType(OBJ_HVTRIGGER);
-			//}
 		}
 		/* no break */
 		case 1:
