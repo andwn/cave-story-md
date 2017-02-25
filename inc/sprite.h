@@ -2,6 +2,9 @@
 #define INC_SPRITE_H_
 
 #include <genesis.h>
+#include "common.h"
+
+#define YCUTOFF (SCREEN_HEIGHT + 32)
 
 u8 spr_num;
 VDPSprite sprites[MAX_VDP_SPRITE];
@@ -9,7 +12,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 // Append sprite to the end of the list, order front -> back
 // Only adds if the sprite's coords are on screen
 #define sprite_add(s) {                                                                        \
-	if(spr_num < MAX_VDP_SPRITE && (unsigned)(s.x-96) < 352 && (unsigned)(s.y-96) < 256) {     \
+	if(spr_num < MAX_VDP_SPRITE && (unsigned)(s.x-96) < 352 && (unsigned)(s.y-96) < YCUTOFF) { \
 		sprites[spr_num] = s;                                                                  \
 		sprites[spr_num].link = spr_num+1;                                                     \
 		spr_num++;                                                                             \
