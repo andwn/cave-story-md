@@ -25,9 +25,9 @@
 typedef struct { u8 hour, minute, second, frame; } Time;
 
 static const uint8_t *FileList[] = {
-	LS_Mimi, LS_Eggs, LS_Weed, LS_Balfrog, LS_Sand, LS_Toroko, LS_Maze, LS_Booster,
-	NULL, LS_Core, LS_Stream, LS_Mimi2, LS_Oside, LS_Cent, LS_Last, LS_Blcny,
-	NULL, LS_Stream2, LS_Pignon, LS_Last2, LS_Hell, LS_Ballos,
+	LS_00, LS_01, LS_02, LS_03, LS_04, LS_05, LS_06, LS_07,
+	LS_08, LS_09, LS_10, LS_11, LS_12, LS_13, LS_14, LS_15,
+	LS_16, LS_17, LS_18, LS_19, LS_20, LS_21,
 };
 
 u8 debuggingEnabled = FALSE;

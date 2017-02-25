@@ -212,7 +212,7 @@ void ai_ma_pignon(Entity *e) {
 	u8 blockl = FALSE, blockr = FALSE;
 	
 	// Ma Pignon jumps off screen and should not collide with the map while doing so
-	if (e->y > block_to_sub(8)) {
+	if (e->y_next > block_to_sub(5)) {
 		blockl = e->x_speed < 0 && collide_stage_leftwall(e);
 		blockr = e->x_speed > 0 && collide_stage_rightwall(e);
 		if(!e->grounded) e->grounded = collide_stage_floor(e);
@@ -402,7 +402,7 @@ void ai_ma_pignon(Entity *e) {
 			e->frame = 2;
 			if (++e->timer > 4) {
 				e->state++;
-				e->frame = 12;
+				e->frame = 11;
 				e->y_speed = -SPEED(0x800);
 				e->grounded = FALSE;
 				sound_play(SND_FUNNY_EXPLODE, 5);
@@ -415,7 +415,7 @@ void ai_ma_pignon(Entity *e) {
 		break;
 		case MP_Fly_Up+1:		// flying up
 		{
-			ANIMATE(e, 4, 12,13);
+			ANIMATE(e, 4, 10,11);
 			
 			if (e->y < (16<<CSF))
 				e->state = MP_Spawn_Clones;
@@ -432,7 +432,7 @@ void ai_ma_pignon(Entity *e) {
 		}
 		case MP_Spawn_Clones+1:
 		{
-			ANIMATE(e, 4, 12,13);
+			ANIMATE(e, 4, 10,11);
 			
 			if ((++e->timer % 8) == 0) {
 				s32 x = block_to_sub(4 + (random() % 12));

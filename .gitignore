@@ -10,5 +10,5 @@ prof2sram
 tscomp
 tileopt
 lutgen
+savetrim
 savegen_cache/
-save/

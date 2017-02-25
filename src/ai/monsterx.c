@@ -94,7 +94,7 @@ static void spawn_fish(u8 index) {
 	fish->eflags &= ~NPC_INVINCIBLE;
 	fish->nflags &= ~NPC_SHOOTABLE;
 	fish->eflags |= NPC_SHOOTABLE;
-	fish->health = 10;
+	fish->health = 1;
 	//FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
 	//				 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
 	//				 0x80 + index * 0x100, SPEED(0x400));
@@ -392,6 +392,7 @@ void ai_monsterx(Entity *e) {
 				entities_clear_by_type(OBJ_X_DOOR);
 				entities_clear_by_type(OBJ_X_TREAD);
 				entities_clear_by_type(OBJ_X_INTERNALS);
+				player.grounded = FALSE; // Stop player from floating where treads were
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -717,6 +718,8 @@ void ai_x_fishy_missile(Entity *e) {
 	e->y_speed = sin[e->cur_angle];
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+	
+	e->dir = 0; // Never flip sprite, let angles handle it all
 }
 
 

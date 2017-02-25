@@ -185,7 +185,8 @@ void stage_load_entities() {
 		// each entity as it is loaded so the problematic NPC can be found
 		/*
 		{
-			VDP_setEnable(TRUE);
+			SYS_disableInts();
+			//VDP_setEnable(TRUE);
 			VDP_setPaletteColor(15, 0xEEE);
 			char str[2][36];
 			sprintf(str[0], "X:%hu Y:%hu I:%hu", x, y, id);
@@ -197,9 +198,11 @@ void stage_load_entities() {
 			while(!joy_pressed(BUTTON_C)) {
 				input_update();
 				VDP_waitVSync();
+				VDP_setHorizontalScroll(PLAN_A, 0);
+				VDP_setVerticalScroll(PLAN_A, 0);
 			}
-			SYS_disableInts();
-			VDP_setEnable(FALSE);
+			//SYS_disableInts();
+			//VDP_setEnable(FALSE);
 		}
 		*/
 		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 

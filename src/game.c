@@ -49,15 +49,20 @@ void vblank() {
 
 u8 game_main(u8 load) {
 	SYS_disableInts();
-	VDP_setEnable(FALSE);
+	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+	VDP_setPaletteColor(15, 0x000);
+	//VDP_setEnable(FALSE);
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
 	SYS_setVIntCallback(vblank);
 	//SYS_setHIntCallback(hblank_water);
 	effects_init();
+	SYS_enableInts();
+	
 	game_reset(load);
 	
-	VDP_setEnable(TRUE);
+	SYS_disableInts();
+	//VDP_setEnable(TRUE);
 	VDP_setWindowPos(0, 0);
 	
 	// Load game doesn't run a script that fades in and shows the HUD, so do it manually
@@ -110,6 +115,8 @@ u8 game_main(u8 load) {
 						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 						continue;
 					} else if(rtn == 3) {
+						VDP_setPaletteColors(0, PAL_FadeOut, 64);
+						VDP_setPaletteColor(15, 0x000);
 						game_reset(FALSE); // Start from beginning
 						continue;
 					} else { // End credits
@@ -131,11 +138,13 @@ u8 game_main(u8 load) {
 }
 
 void game_reset(u8 load) {
+	SYS_disableInts();
 	camera_init();
 	tsc_init();
 	hud_create();
 	// Default sprite sheets
 	sheets_load_stage(255, TRUE, TRUE);
+	SYS_enableInts();
 	gameFrozen = FALSE;
 	if(load) {
 		if(load == 1) {
@@ -153,11 +162,13 @@ TryAgainNoSave:
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
 	}
+	SYS_disableInts();
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	// Load up the main palettes
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+	SYS_enableInts();
 }
 
 void draw_itemmenu(u8 resetCursor) {

@@ -136,34 +136,37 @@ u8 titlescreen_main() {
 		VDP_setPaletteColor(12, 0x666);
 		VDP_setPaletteColor(16 + 15, 0xAAA);
 		static const char *levelStr[] = {
+			" First Cave",
 			" Mimiga Village",
 			" Egg Corridor",
 			" Grasstown",
+			" Malco",
 			" Balfrog",
 			" Sand Zone",
-			" Toroko",
+			" Omega",
+			" Storehouse",
 			" Labyrinth",
-			" Booster",
-			"=NORMAL END ROUTE=",
+			" Monster X",
+			" Labyrinth M",
 			" Core",
 			" Waterway",
-			" Empty Village",
+			" Egg Corridor 2",
 			" Outer Wall",
 			" Plantation",
 			" Last Cave",
-			" Balcony",
-			"= BEST END ROUTE =",
-			" Waterway 2",
-			" Ma Pignon",
 			" Last Cave 2",
+			" Balcony",
 			" Sacred Ground",
-			" Ballos",
+			" Seal Chamber",
 		};
-		static const u16 tx = 11, ty = 2;
+		u16 tx = 11, ty = 1;
+		if(IS_PALSYSTEM) ty++;
+		VDP_drawText("= Welcome to Warp Zone =", 7, ty);
+		ty += 2;
 		for(u8 i = 0; i < SAVES; i++) {
 			if(cursor == i) VDP_setTextPalette(PAL0);
 			else VDP_setTextPalette(PAL1);
-			VDP_drawText(levelStr[i], tx, 2+i);
+			VDP_drawText(levelStr[i], tx, ty+i);
 		}
 		SYS_enableInts();
 		while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
@@ -173,7 +176,7 @@ u8 titlescreen_main() {
 				VDP_drawText(levelStr[cursor], tx, ty + cursor);
 				if(cursor == 0) cursor = SAVES - 1;
 				else cursor--;
-				if(cursor == 8 || cursor == 16) cursor--;
+				//if(cursor == 8 || cursor == 16) cursor--;
 				VDP_setTextPalette(PAL0);
 				VDP_drawText(levelStr[cursor], tx, ty + cursor);
 				sound_play(SND_MENU_MOVE, 0);
@@ -182,7 +185,7 @@ u8 titlescreen_main() {
 				VDP_drawText(levelStr[cursor], tx, ty + cursor);
 				if(cursor == SAVES - 1) cursor = 0;
 				else cursor++;
-				if(cursor == 8 || cursor == 16) cursor++;
+				//if(cursor == 8 || cursor == 16) cursor++;
 				VDP_setTextPalette(PAL0);
 				VDP_drawText(levelStr[cursor], tx, ty + cursor);
 				sound_play(SND_MENU_MOVE, 0);

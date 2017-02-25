@@ -352,6 +352,10 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_CRITTER, &SPR_MizaCritter, 3,2,2, 0,1, 0,2, 0,3);
 			// Projectile
 		} break;
+		case 0x53: // Ma Pignon
+		{	SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
+					0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9, 0,10, 0,11);
+		} break;
 		default: printf("Stage %hu has no sheet set", sid);
 	}
 	// Weapons at the end

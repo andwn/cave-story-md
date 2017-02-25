@@ -106,6 +106,9 @@ lutgen:
 prof2sram:
 	gcc tools/prof2sram/prof2sram.c -o prof2sram $(TOOLFLAGS)
 
+savetrim:
+	gcc tools/savetrim/savetrim.c -o savetrim $(TOOLFLAGS)
+
 clean:
 	rm -f $(RESOURCES)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
