@@ -1,6 +1,6 @@
 /*
  * A "demake" of Cave Story for the Sega Mega Drive
- * Copyright (C) 2016 andwn
+ * Copyright (C) 2017 andwn
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@
 int main() {
 	puts("Hi Plum");
     SYS_disableInts();
+#ifdef PAL
+    VDP_setScreenHeight240();
+#endif
     VDP_setPlanSize(64, 32);
     // Sprite list overlaps the bottom of the window, so move it
 	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800

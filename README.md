@@ -4,14 +4,14 @@
 This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
-It should work on any console or emulator. Expect alpha quality and avoid PAL if you can.
+It should work on any console or emulator. Expect alpha quality.
 
 ### Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
-For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip) build.
+For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL (experimental)](http://www.cavestory.org/md/nightlypal.zip) <br/>
 
-Farthest reachable point in `master`: Last Boss (Balcony, not Hell), which doesn't spawn and therefore cannot be defeated.
+Farthest reachable point in `master`: Last Boss room (Black Space)
 
 ### Controls
 If you have a 6 button controller:
@@ -42,7 +42,7 @@ I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
   - The command to build and install Gendev is `sudo make`. Yes, this is awful. No, I'm not fixing it.
   - Compiling a GNU toolchain takes a very long time, over an hour on slow machines
-  - If after the fact you want to only update SGDK, run `sudo make sgdk-clean` then `sudo make sgdk`. This way you don't have to wait forever to rebuild the whole toolchain
+  - If after the fact you want to only update SGDK, run `sudo make sgdk_clean` then `sudo make sgdk_build`. This way you don't have to wait forever to rebuild the whole toolchain
 2. Clone this repository and do `make`.
 3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
@@ -58,8 +58,8 @@ Note that if you have no save, the game will restart from the beginning if you d
 Open an issue if one doesn't already exist for said bad thing, unless
 
 - It's because of a hardware limitation, though I am open to suggestions on how to make stuff better without lagging the game
-- It has to do with the following parts which are not ready for testing: Undead Core, Ending Scene, Credits, Hell
-- It's a bug that exists in the original Cave Story. [1](https://www.youtube.com/watch?v=HFzS0bpc5kA) [2](http://cavestory.wikia.com/wiki/Sisters#Confrontation) [3](https://www.youtube.com/watch?v=wt7D3-COHJQ)
+- It has to do with the following parts which are not ready for testing: Undead Core, Credits, Hell
+- It's a bug that exists in the original Cave Story. [Example](https://www.youtube.com/watch?v=HFzS0bpc5kA)
 
 #### Will this be released/sold on a cart?
 Short answer: No

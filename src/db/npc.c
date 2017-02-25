@@ -172,7 +172,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiShot, &ai_null }, // Gaudi Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockv, &ai_null }, // Moving Block (V)
-	{ NULL, SHEET_XFISHY, 	PAL3, 1, &onspawn_persistent, &ai_x_fishy_missile, &ai_null }, // Monster X Shot
+	{ NULL, SHEET_XFISHY, 	PAL3, 1, &onspawn_persistent, &ai_x_fishy_missile, &ondeath_default }, // Monster X Shot
 	{ &SPR_XCat, NOSHEET, 	PAL3, 6, &onspawn_persistent, &ai_x_defeated, &ai_null }, // Monster X Cat
 	/* 0x0A0 (160) */
 	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_pooh_black }, // Pooh Black
@@ -235,13 +235,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_NIGHTSHOT,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
 	{ &SPR_Croc2, 	NOSHEET, PAL2, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // White Sandcroc
 	{ &SPR_Cat, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat
-	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Itoh
+	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_npc_itoh, &ai_null }, // Itoh
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Smoke/Current Generator
-	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade
-	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ai_null }, // Shovel Brigade (Walking)
+	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_mimiga_farmer, &ai_null }, // Shovel Brigade
+	{ &SPR_ShovelMimi,NOSHEET,PAL3,1, &ai_null, &ai_mimiga_farmer, &ai_null }, // Shovel Brigade (Walking)
 	{ &SPR_JailBars, NOSHEET, PAL1, 1, &onspawn_jailbars, &ai_null, &ai_null }, // Prison Bars
-	{ &SPR_Momo, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Momorin
+	{ &SPR_Momo, 	NOSHEET, PAL3, 1, &ai_null, &ai_npc_momorin, &ai_null }, // Momorin
 	/* 0x0E0 (224) */
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Chie
 	{ &SPR_Megane, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Megane
@@ -260,7 +260,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
 	{ &SPR_JailBars2, NOSHEET, PAL2, 2, &onspawn_cent_cage, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
-	{ &SPR_JailedMimi,NOSHEET,PAL3,1, &ai_null, &ai_null, &ondeath_default }, // Jailed Mimiga
+	{ &SPR_JailedMimi,NOSHEET,PAL3,1, &ai_null, &ai_mimiga_caged, &ai_null }, // Jailed Mimiga
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Red Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_red_bat, &ondeath_default }, // Red Bat
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator

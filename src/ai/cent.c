@@ -76,7 +76,7 @@ void ai_midorin(Entity *e) {
 			e->timer = 0;
 			e->frame = 0;
 			e->x_speed = 0;
-			e->eflags |= NPC_SPECIALSOLID;
+			//e->eflags |= NPC_SPECIALSOLID; // no
 		}
 		case 1:
 		{

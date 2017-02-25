@@ -93,21 +93,21 @@ void onspawn_sisters(Entity *e) {
 	e->hidden = TRUE;
 	
 	mainangle = 0;
-	e->x_mark = 192;
-	e->y_mark = 61;
+	e->x_mark = 192; // Start outside of the room, changes to 112 when they appear
+	e->y_mark = 60;
 	e->timer2 = (random() % TIME(500)) + TIME(700);
 	e->health = 500;
 	e->event = 1000;
 	e->eflags |= NPC_EVENTONDEATH;
 	
 	// Create body before head, so the head will be on top
-	pieces[BODY1] = entity_create((64<<CSF), 80<<CSF, OBJ_SISTERS_BODY, 0);
-	pieces[HEAD1] = entity_create((64<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, 0);
+	pieces[BODY1] = entity_create(-(64<<CSF), 80<<CSF, OBJ_SISTERS_BODY, 0);
+	pieces[HEAD1] = entity_create(-(64<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, 0);
 	pieces[HEAD1]->linkedEntity = pieces[BODY1];
 	pieces[BODY1]->linkedEntity = pieces[HEAD1];
 	
-	pieces[BODY2] = entity_create((64<<CSF) + (50<<CSF), 80<<CSF, OBJ_SISTERS_BODY, NPC_OPTION2);
-	pieces[HEAD2] = entity_create((64<<CSF) + (50<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, NPC_OPTION2);
+	pieces[BODY2] = entity_create((320<<CSF) + (64<<CSF), 80<<CSF, OBJ_SISTERS_BODY, NPC_OPTION2);
+	pieces[HEAD2] = entity_create((320<<CSF) + (64<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, NPC_OPTION2);
 	pieces[HEAD2]->linkedEntity = pieces[BODY2];
 	pieces[BODY2]->linkedEntity = pieces[HEAD2];
 }
@@ -139,7 +139,7 @@ void ai_sisters(Entity *e) {
 		case 20:	// fight begin (script-triggered)
 		{
 			if (++e->timer > TIME(68)) {
-				e->x_mark = 144;		// bodies zoom onto screen via force of their interpolation
+				e->x_mark = 112;		// bodies zoom onto screen via force of their interpolation
 				e->timer = 0;
 				
 				e->state = STATE_CIRCLE_1;			// main begins turning angle
@@ -317,8 +317,8 @@ void ai_sisters_body(Entity *e) {
 		e->state = STATE_BODY_NOMOVE;
 	} else if (e->state != STATE_BODY_NOMOVE) {	
 		// smooth interpolation, they stay in this state throughout the fight
-		e->x += (desired_x - e->x) / 8;
-		e->y += (desired_y - e->y) / 8;
+		e->x += (desired_x - e->x) >> 4;
+		e->y += (desired_y - e->y) >> 4;
 	}
 	
 	// set direction facing
@@ -349,6 +349,7 @@ void ai_sisters_head(Entity *e) {
 			bossEntity->health -= 1000 - e->health;
 		}
 		e->health = 1000;
+		e->timer2++;
 	}
 	
 	// FSM
@@ -372,6 +373,7 @@ void ai_sisters_head(Entity *e) {
 			if (--e->timer <= 0) {
 				e->state = STATE_HEAD_OPEN;
 				e->timer = 0;
+				e->timer2 = 0;
 			}
 		}
 		break;
@@ -394,9 +396,9 @@ void ai_sisters_head(Entity *e) {
 				e->timer = 0;
 			}
 			
-			// need at least 2 hits to get her to close mouth
-			if (e->damage_time > 0) e->timer2++;
-			if (e->timer2 > TIME(10)) {
+			// Close mouth after 3 hits, minimum of 1 second open
+			// This might be wrong but it works better than before at least
+			if (e->timer2 > 2 && e->timer > TIME(50)) {
 				sound_play(SND_ENEMY_HURT, 5);
 				effect_create_smoke(e->x << CSF, e->y << CSF);
 				
@@ -411,9 +413,11 @@ void ai_sisters_head(Entity *e) {
 		case STATE_HEAD_FIRE:
 		{
 			if ((++e->timer % 8) == 1) {
-				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
-						e->dir ? A_RIGHT : A_LEFT, 0x200);
-				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
+				//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
+				//		e->dir ? A_RIGHT : A_LEFT, 0x200);
+				// Need to aim at the player
+				Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
+				THROW_AT_TARGET(fire, player.x, player.y, SPEED(0x200));
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
 			
@@ -437,9 +441,10 @@ void ai_sisters_head(Entity *e) {
 			
 			if (e->timer > TIME(20)) {
 				if ((e->timer % 32) == 1) {
-					FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
-							e->dir ? A_RIGHT : A_LEFT, 0x200);
-					
+					//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
+					//		e->dir ? A_RIGHT : A_LEFT, 0x200);
+					Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
+					THROW_AT_TARGET(fire, player.x, player.y, SPEED(0x200));
 					sound_play(SND_SNAKE_FIRE, 3);
 				}
 			}

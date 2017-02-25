@@ -921,8 +921,10 @@ void ai_fuzz(Entity *e) {
 				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				e->x = e->linkedEntity->x + (cos[e->jump_time] << 4);
-				e->y = e->linkedEntity->y + (sin[e->jump_time] << 4);
+				s16 xoff = cos[e->jump_time] * 24;
+				s16 yoff = sin[e->jump_time] << 5;
+				e->x = e->linkedEntity->x + xoff;
+				e->y = e->linkedEntity->y + yoff;
 			}
 		}
 		break;
