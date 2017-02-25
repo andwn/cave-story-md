@@ -1,6 +1,6 @@
 /*
  * A "demake" of Cave Story for the Sega Mega Drive
- * Copyright (C) 2017 andwn
+ * Copyright (C) 2017 Andy Grind
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

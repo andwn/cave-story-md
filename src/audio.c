@@ -22,7 +22,7 @@ void sound_init() {
 void sound_play(u8 id, u8 priority) {
 	if(id >= 0x90 && id < 0xA0) id -= 0x40;
 	if(id >= SOUND_COUNT || sound_info[id].length == 0) return;
-	SND_startPlayPCM_XGM(0x80 + id, priority, soundChannel++);
+	XGM_startPlayPCM(0x80 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }
 
@@ -32,9 +32,10 @@ void song_play(u8 id) {
 	// Track 0 in song_info is NULL, but others could be potentially
 	if(song_info[id].song == NULL) {
 		id = 0;
-		SND_stopPlay_XGM();
+		XGM_stopPlay();
 	} else {
-		SND_startPlay_XGM(song_info[id].song);
+		XGM_startPlay(song_info[id].song);
+		XGM_setMusicTempo(60);
 	}
 	songPlaying = id;
 }
