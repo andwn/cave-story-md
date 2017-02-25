@@ -239,6 +239,15 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
+#ifdef PAL
+		u8 y = 28;
+		for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
+		for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
+		for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
+		for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
+		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
+		VDP_setVerticalScroll(PLAN_B, -8);
+#else
 		u8 y = 27;
 		for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
 		for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
@@ -246,6 +255,7 @@ void stage_update() {
 		for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
 		VDP_setVerticalScroll(PLAN_B, 0);
+#endif
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
@@ -418,7 +428,7 @@ void stage_draw_moonback() {
 		}
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, 31, 40, 1);
 		// Duplicate bottom row in row 28
-		cursor = 32*17;
+		cursor = 32*17*2;
 		for(u16 x = 0; x < 32; x++) {
 			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
 					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);

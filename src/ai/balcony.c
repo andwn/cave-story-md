@@ -96,11 +96,11 @@ void ai_igor_balcony(Entity *e) {
 		{
 			e->state = 1;
 			e->grounded = FALSE;
-			e->display_box.top += 8;
+			e->display_box.top += 4;
 		}
 		case 1:
 		{
-			ANIMATE(e, 20, 0,1);
+			ANIMATE(e, 20, STAND1,STAND2);
 			
 			if ((PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y2(48<<CSF, 112<<CSF)) || e->damage_time) {
 				e->state = 10;
@@ -118,7 +118,7 @@ void ai_igor_balcony(Entity *e) {
 		}
 		case 11:
 		{
-			ANIMATE(e, 8, 2,3,4,5);
+			ANIMATE(e, 8, WALK1,STAND1,WALK2,STAND1);
 			MOVE_X(SPEED(0x200));
 			
 			if (blockr || blockl || PLAYER_DIST_X(64<<CSF)) {
