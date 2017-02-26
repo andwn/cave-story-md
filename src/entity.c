@@ -552,13 +552,13 @@ u8 collide_stage_ceiling(Entity *e) {
 		if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
 				pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
-					heightmap[pxa1%2][pixel_x1%16] + e->hit_box.top) + 0x100;
+					heightmap[pxa1%2][pixel_x1%16] + (e->hit_box.top - 1)) + 0x100;
 			result = TRUE;
 		}
 		if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
 				pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) +
-					heightmap[pxa2%2][pixel_x2%16] + e->hit_box.top) + 0x100;
+					heightmap[pxa2%2][pixel_x2%16] + (e->hit_box.top - 1)) + 0x100;
 			result = TRUE;
 		}
 	}
