@@ -28,13 +28,13 @@ void onspawn_fan(Entity *e) {
 }
 
 void ai_fan(Entity *e) {
-	u16 ex = sub_to_block(e->x), ey = sub_to_block(e->y);
-	u16 px = sub_to_block(player.x), py = sub_to_block(player.y);
+	u16 ex = e->x >> CSF, ey = e->y >> CSF;
+	u16 px = player.x >> CSF, py = player.y >> CSF;
 	switch(e->state) {
 		case 1: // Left
 		{
 			ANIMATE(e, 4, 3,4,5);
-			if(px > ex - 6 && px <= ex && py == ey) {
+			if(px > ex - (6<<4) && px < ex && py > ey - 12 && py < ey + 12) {
 				player.x_speed -= SPEED(0x88);
 				if(player.x_speed < -SPEED(0x6FF)) player.x_speed = -SPEED(0x6FF);
 			}
@@ -43,17 +43,17 @@ void ai_fan(Entity *e) {
 		case 2: // Up
 		{
 			ANIMATE(e, 4, 0,1,2);
-			if(py > ey - 6 && py <= ey && px == ex) {
+			if(py > ey - (6<<4) && py < ey && px > ex - 12 && px < ex + 12) {
 				player.y_speed -= SPEED(0x88);
 				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
-				if(player.y_speed < 0) player.jump_time = 12;
+				if(player.y_speed < 0) player.jump_time = 8;
 			}
 		}
 		break;
 		case 3: // Right
 		{
 			ANIMATE(e, 4, 3,4,5);
-			if(px >= ex && px < ex + 6 && py == ey) {
+			if(px > ex && px < ex + (6<<4) && py > ey - 12 && py < ey + 12) {
 				player.x_speed += SPEED(0x88);
 				if(player.x_speed > SPEED(0x6FF)) player.x_speed = SPEED(0x6FF);
 			}
@@ -62,7 +62,7 @@ void ai_fan(Entity *e) {
 		case 4: // Down
 		{
 			ANIMATE(e, 4, 0,1,2);
-			if(py >= ey && py < ey + 6 && px == ex) {
+			if(py > ey && py < ey + (6<<4) && px > ex - 12 && px < ex + 12) {
 				player.y_speed += SPEED(0x88);
 				if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
 			}
