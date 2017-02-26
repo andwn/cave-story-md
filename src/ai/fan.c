@@ -43,7 +43,7 @@ void ai_fan(Entity *e) {
 		case 2: // Up
 		{
 			ANIMATE(e, 4, 0,1,2);
-			if(py > ey - 8 && py <= ey && px == ex) {
+			if(py > ey - 6 && py <= ey && px == ex) {
 				player.y_speed -= SPEED(0x88);
 				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
 				if(player.y_speed < 0) player.jump_time = 12;

@@ -42,7 +42,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_LifeUp, NOSHEET, PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Life Capsule
 	{ NULL, SHEET_IGORSHOT, PAL1, 1, &ai_null, &ai_balrogShot, &ai_null }, // Balrog Shot
 	{ &SPR_Bed, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Bed
-	{ NULL, SHEET_MANNAN, 	PAL3, 1, &ai_null, &ai_mannan, &ai_null }, // Mannan
+	{ NULL, SHEET_MANNAN, 	PAL3, 1, &onspawn_op2flip, &ai_mannan, &ai_null }, // Mannan
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogFlying, &ondeath_balrogFlying },
 	{ &SPR_Sign, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Sign Post
 	{ &SPR_Fire, NOSHEET, 	PAL1, 1, &ai_null, &ai_fireplace, &ai_null }, // Fireplace
@@ -114,7 +114,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null }, // Grate
 	{ NULL, SHEET_POWERS, 	PAL1, 1, &ai_null, &ai_powers, &ai_null }, // Power Screen
 	{ NULL, SHEET_POWERF, 	PAL1, 1, &onspawn_powerf, &ai_powerf, &ai_null }, // Power Flow
-	{ &SPR_ManShot,NOSHEET, PAL1, 1, &ai_null, &ai_mannanShot, &ai_null }, // Mannan Shot
+	{ &SPR_ManShot,NOSHEET, PAL1, 1, &onspawn_persistent, &ai_mannanShot, &ai_null }, // Mannan Shot
 	{ NULL, SHEET_FROG, 	PAL3, 1, &onspawn_frog, &ai_frog, &ondeath_default }, // Frog
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!"
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &onspawn_hey, &ai_hey, &ai_null }, // "Hey!" Emitter
