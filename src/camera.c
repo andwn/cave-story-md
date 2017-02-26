@@ -130,7 +130,7 @@ void camera_update() {
 		}
 		if(morphingRow) {
 			s16 y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
-			s16 x = sub_to_tile(x_next) - 31 + morphingColumn;
+			s16 x = sub_to_tile(x_next) - 32 + morphingColumn;
 			if(y >= 0 && y < stageHeight * 2) {
 				for(u8 i = 64; i--; ) {
 					if(x >= stageWidth * 2) break;

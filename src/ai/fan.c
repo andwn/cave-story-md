@@ -46,7 +46,7 @@ void ai_fan(Entity *e) {
 			if(py > ey - (6<<4) && py < ey && px > ex - 12 && px < ex + 12) {
 				player.y_speed -= SPEED(0x88);
 				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
-				if(player.y_speed < 0) player.jump_time = 8;
+				if(player.y_speed < 0) player.jump_time = 6;
 			}
 		}
 		break;

@@ -49,7 +49,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_SaveSign,NOSHEET,PAL1, 1, &onspawn_op2anim, &ai_null, &ai_null }, // Save Sign
 	{ &SPR_Santa, NOSHEET, 	PAL3, 1, &ai_null, &ai_santa, &ai_null }, // Santa
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_door, &ai_null, &ai_null }, // Busted Doorway
-	{ &SPR_Sue, NOSHEET, 	PAL3, 1, &onspawn_sue, &ai_sue, &ai_null }, // Sue
+	{ &SPR_Sue, NOSHEET, 	PAL0, 1, &onspawn_sue, &ai_sue, &ai_null }, // Sue
 	{ &SPR_Board, NOSHEET, 	PAL1, 2, &onspawn_blackboard, &ai_null, &ai_null }, // Blackboard
 	{ NULL, SHEET_POLISH, 	PAL3, 1, &ai_null, &ai_polish, &ondeath_default }, // Polish
 	{ NULL, SHEET_BABY, 	PAL3, 1, &ai_null, &ai_baby, &ondeath_default }, // Baby
@@ -302,9 +302,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Red Demon Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
 	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
-	{ &SPR_Sue2, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
+	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
 	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
-	{ NULL, 		NOSHEET, PAL2, 2, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
+	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
 	{ &SPR_MizaMisery,NOSHEET,PAL3,1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
 	{ &SPR_MizaSue, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Spinning Shot
@@ -314,7 +314,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ai_null }, // Glowing Rock Shot
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
-	{ NULL, 		NOSHEET, PAL2, 2, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
+	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Quake
 	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_falling_block_spawner, &ai_null }, // Falling Block Generator
@@ -442,7 +442,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 		&onspawn_ironhead, &ai_ironhead, &ondeath_ironhead },
 	{ NULL, NOSHEET, PAL3, 3, // Sisters
 		&onspawn_sisters, &ai_sisters, &ondeath_sisters },
-	{ NULL, NOSHEET, PAL3, 3, // Undead Core
+	{ NULL, NOSHEET, PAL3, 0, // Undead Core
 		&onspawn_undead_core, &ai_undead_core, &ai_null },
 	{ NULL, NOSHEET, PAL3, 3, // Heavy Press
 		&ai_null, &ai_null, &ai_null },
@@ -474,11 +474,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 		&onspawn_sisters_body, &ai_sisters_body, &ai_null },
 	{ NULL, SHEET_SISHEAD, PAL3, 1, // Sisters Head
 		&onspawn_sisters_head, &ai_sisters_head, &ai_null },
-	{ &SPR_UCoreFront, NOSHEET, PAL3, 6, // Undead Core (Front)
+	{ &SPR_UCoreFront, NOSHEET, PAL2, 6, // Undead Core (Front)
 		&onspawn_persistent, &ai_undead_core_front, &ai_null },
-	{ &SPR_UCoreBack, NOSHEET, PAL3, 9, // Undead Core (Back)
+	{ &SPR_UCoreBack, NOSHEET, PAL2, 9, // Undead Core (Back)
 		&onspawn_persistent, &ai_undead_core_back, &ai_null },
-	{ &SPR_UCoreMouth, NOSHEET, PAL3, 2, // Undead Core (Face)
+	{ &SPR_UCoreMouth, NOSHEET, PAL2, 2, // Undead Core (Face)
 		&onspawn_persistent, &ai_undead_core_face, &ai_null },
 		
 	// Extra stuff that does not belong to bosses
