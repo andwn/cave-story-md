@@ -111,7 +111,7 @@ void camera_update() {
 		// Queue row and/or column mapping
 		if(morphingColumn) {
 			s16 x = sub_to_tile(x_next) + (morphingColumn == 1 ? 31 : -30);
-			s16 y = sub_to_tile(y_next) - 15 + morphingRow;
+			s16 y = sub_to_tile(y_next) - 16 + morphingRow;
 			if(x >= 0 && x < stageWidth * 2) {
 				for(u8 i = 32; i--; ) {
 					if(y >= stageHeight * 2) break;
