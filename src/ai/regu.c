@@ -11,11 +11,6 @@
 #include "system.h"
 #include "resources.h"
 
-#ifndef KDB_AI
-#define puts(x) /**/
-#define printf(...) /**/
-#endif
-
 void ai_jenka(Entity *e) {
 	e->dir = 1;
 	e->frame = 0;

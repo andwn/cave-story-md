@@ -58,7 +58,7 @@ release: CCFLAGS += -O3 -fomit-frame-pointer
 release: LIBMD = $(GENDEV)/m68k-elf/lib/libmd.a
 release: main-build
 debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
-debug: LIBMD = $(GENDEV)/m68k-elf/lib/libmd_debug.a
+debug: LIBMD = $(GENDEV)/m68k-elf/lib/libmd.a
 debug: main-build
 main-build: head-gen doukutsu.bin symbol.txt
 

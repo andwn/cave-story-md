@@ -9,11 +9,6 @@
 #include "vdp_ext.h"
 #include "resources.h"
 
-#ifndef KDB_SYS
-#define puts(x) /**/
-#define printf(...) /**/
-#endif
-
 // ASCII string "CSMD" used as a sort of checksum to verify save data exists
 #define STR_CSMD 0x43534D44
 // When save data is not found "TEST" is written to verify SRAM is usable

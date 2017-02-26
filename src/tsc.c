@@ -198,6 +198,7 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 			eventList[loadedEvents].number = TSC[i+2]+(TSC[i+3]<<8);
 			eventList[loadedEvents].data = &TSC[i+4];
 			loadedEvents++;
+			//printf("Ev: %hu, Ind: %hu", eventList[loadedEvents].number, i);
 			i += 3;
 		}
 	}

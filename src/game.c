@@ -42,7 +42,7 @@ void vblank() {
 		else { sprites_send(); }
 		ready = FALSE;
 	} else {
-		puts("Vint before main loop finished!");
+		//puts("Vint before main loop finished!");
 	}
 	stage_update(); // Scrolling
 }

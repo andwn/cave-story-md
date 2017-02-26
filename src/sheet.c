@@ -5,11 +5,6 @@
 #include "stage.h"
 #include "tables.h"
 
-#ifndef KDB_SHEET
-#define puts(x) /**/
-#define printf(...) /**/
-#endif
-
 void sheets_load_weapon(Weapon *w) {
 	if(!w) return;
 	w->sheet = sheet_num;

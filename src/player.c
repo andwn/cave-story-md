@@ -974,7 +974,9 @@ void player_take_item(u8 id) {
 }
 
 u8 player_has_item(u8 id) {
+	//printf("Polling for item %hu", id);
 	for(u8 i = 0; i < MAX_ITEMS; i++) {
+		//printf("See: %hu", playerInventory[i]);
 		if(playerInventory[i] == id) return TRUE;
 	}
 	return FALSE;
