@@ -345,7 +345,25 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		case 0x44: // Black Space
 		{	SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_CRITTER, &SPR_MizaCritter, 3,2,2, 0,1, 0,2, 0,3);
+			SHEET_ADD(SHEET_MUCORE, &SPR_MUCoreFront, 4,4,4, 0,0, 0,1, 0,2, 0,3);
+			SHEET_ADD(SHEET_MUCORE2, &SPR_MUCoreBack, 2,2,4, 0,0, 0,1);
+			SHEET_ADD(SHEET_MUCORE3, &SPR_MUCoreBottom, 2,4,1, 0,0, 0,1);
 			// Projectile
+		} break;
+		case 0x50: // Sacred Ground B1
+		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
+		} break;
+		case 0x51: // Sacred Ground B2
+		{	// Bute
+			// Falling blocks
+		} break;
+		case 0x52: // Sacred Ground B3
+		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
+			// Bute
+			// Mesa
+			// Rolling
+			// Delete
+			// Press
 		} break;
 		case 0x53: // Ma Pignon
 		{	SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
