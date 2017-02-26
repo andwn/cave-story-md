@@ -369,6 +369,11 @@ void ai_powers(Entity *e) {
 	ANIMATE(e, 8, 0,1);
 }
 
+void onspawn_press(Entity *e) {
+	// Press is 4 pixels too low
+	e->y -= 4 << CSF;
+}
+
 void ai_press(Entity *e) {
 	switch(e->state) {
 		case 0:

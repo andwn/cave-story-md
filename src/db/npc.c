@@ -126,7 +126,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	/* 0x070 (112) */
 	{ &SPR_Quotele,NOSHEET, PAL0, 1, &onspawn_teleIn, &ai_teleIn, &ai_null }, // Tele In
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &ai_null, &ai_booster, &ai_null }, // Prof. Booster
-	{ &SPR_Press, NOSHEET, 	PAL1, 1, &ai_null, &ai_press, &ondeath_default }, // Press
+	{ &SPR_Press, NOSHEET, 	PAL1, 1, &onspawn_press, &ai_press, &ondeath_default }, // Press
 	{ NULL, NOSHEET, 		PAL0, 2, &ai_null, &ai_null, &ondeath_default }, // Ravil
 	{ &SPR_RedFl2, NOSHEET, PAL1, 1, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Petals
 	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_curly, &ai_null }, // Curly
@@ -266,7 +266,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_persistent, &ai_red_bat_spawner, &ai_null }, // Red Bat Generator
 	{ NULL, SHEET_ACID, 	PAL3, 1, &onspawn_persistent, &ai_lava_drip, &ai_null }, // Acid Drop
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
-	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
+	{ NULL, 	SHEET_PRESS, PAL1, 1, &onspawn_press, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
 	{ NULL, SHEET_IGORSHOT, PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Misery Energy Shot
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)

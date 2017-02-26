@@ -138,7 +138,7 @@ void stage_load_tileset() {
 			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
 			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
 			SYS_enableInts();
-			break;
+			//break; // no
 		}
 	}
 }
