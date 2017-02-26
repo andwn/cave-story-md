@@ -919,8 +919,10 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 		w->type = id_give;
 		w->level = 1;
 		w->energy = 0;
-		w->maxammo = ammo;
-		w->ammo = ammo;
+		if(ammo != 0) { // Only change ammo if parameter is nonzero
+			w->maxammo = ammo;
+			w->ammo = ammo;
+		}
 		sheets_load_weapon(w);
 	}
 }

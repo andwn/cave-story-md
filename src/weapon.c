@@ -49,6 +49,8 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
+static void bullet_destroy_block(u16 x, u16 y);
+
 void weapon_fire_none(Weapon *w) { (void)(w); }
 
 void weapon_fire_snake(Weapon *w) {
@@ -203,7 +205,7 @@ void weapon_fire_missile(Weapon *w) {
 		b = &playerBullet[i];
 		break;
 	}
-	if(b == NULL || w->ammo == 0) return;
+	if(b == NULL || (w->ammo == 0 && w->maxammo != 0)) return;
 	w->ammo--;
 	b->type = WEAPON_MISSILE; //w->type;
 	b->level = w->level;
@@ -268,7 +270,7 @@ void bullet_update_polarstar(Bullet *b) {
 	// Check if bullet is colliding with a breakable block
 	if(block == 0x43) {
 		b->ttl = 0;
-		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
@@ -337,7 +339,7 @@ void bullet_update_machinegun(Bullet *b) {
 	u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 	if(block == 0x43) {
 		b->ttl = 0;
-		stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
@@ -364,7 +366,7 @@ void bullet_update_missile(Bullet *b) {
 			bullet_missile_explode(b);
 		} else if(block == 0x43) {
 			bullet_missile_explode(b);
-			stage_replace_block(sub_to_block(b->x), sub_to_block(b->y), 0);
+			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 			sound_play(SND_BLOCK_DESTROY, 5);
 		}
@@ -432,4 +434,16 @@ u8 bullet_missile_is_exploding() {
 		}
 	}
 	return FALSE;
+}
+
+static void bullet_destroy_block(u16 x, u16 y) {
+	u8 ind = 0;
+	// Usually the index should be incremented by 1, but this will cause problems
+	// on the modified tilesets, to we cherry pick which ones
+	if(stageTileset == 18 || // Sand Zone
+			stageTileset == 20 || // Grasstown
+			stageTileset == 3) { // First Cave
+		ind = stage_get_block(x, y) + 1;
+	}
+	stage_replace_block(x, y, ind);
 }
