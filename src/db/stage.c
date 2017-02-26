@@ -87,9 +87,9 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_e_Sky,	PXE_e_Sky,	TSC_e_Sky,	&PAL_Regu,	8,	0,	"Credits" },
 	{ PXM_Prefa2,	PXE_Prefa2,	TSC_Prefa2,	&PAL_Regu,	16,	0,	"Prefab House" },
 	/* 0x50 (80) */
-	{ PXM_Hell1,	PXE_Hell1,	TSC_Hell1,	&PAL_Regu,	10,	0,	"Sacred Ground B1" },
-	{ PXM_Hell2,	PXE_Hell2,	TSC_Hell2,	&PAL_Regu,	10,	0,	"Sacred Ground B2" },
-	{ PXM_Hell3,	PXE_Hell3,	TSC_Hell3,	&PAL_Regu,	10,	0,	"Sacred Ground B3" },
+	{ PXM_Hell1,	PXE_Hell1,	TSC_Hell1,	&PAL_Regu,	10,	10,	"Sacred Ground B1" },
+	{ PXM_Hell2,	PXE_Hell2,	TSC_Hell2,	&PAL_Regu,	10,	10,	"Sacred Ground B2" },
+	{ PXM_Hell3,	PXE_Hell3,	TSC_Hell3,	&PAL_Regu,	10,	10,	"Sacred Ground B3" },
 	{ PXM_Mapi,		PXE_Mapi,	TSC_Mapi,	&PAL_Mapi,	3,	0,	"Storage" },
 	{ PXM_Hell4,	PXE_Hell4,	TSC_Hell4,	&PAL_Regu,	10,	0,	"Passage?" },
 	{ PXM_Hell42,	PXE_Hell42,	TSC_Hell42,	&PAL_Regu,	10,	0,	"Passage?" },
@@ -101,5 +101,5 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Island,	PXE_Island,	TSC_Island,	&PAL_Regu,	21,	0,	"" },
 	{ PXM_Ballo2,	PXE_Ballo2,	TSC_Ballo2,	&PAL_Regu,	10,	14,	"Seal Chamber" },
 	{ PXM_e_Blcn,	PXE_e_Blcn,	TSC_e_Blcn,	&PAL_Regu,	21,	0,	"Credits" },
-	{ PXM_Clock,	PXE_Clock,	TSC_Clock,	&PAL_Regu,	15,	0,	"Clock" },
+	{ PXM_Clock,	PXE_Clock,	TSC_Clock,	&PAL_Regu,	15,	7,	"Clock" },
 };

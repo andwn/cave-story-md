@@ -194,6 +194,7 @@ SPRITE SPR_MUCoreBottom	"sprite/ucoreminit.png"	4 1 0 0 NONE
 SPRITE SPR_MUCoreEnd	"sprite/ucoreminie.png"	2 1 0 0 NONE
 SPRITE SPR_UCoreMouth	"sprite/ucoremouth.png"	7 4 0 0 NONE
 SPRITE SPR_JailBars2	"sprite/jailbars2.png" 	8 4 0 0 NONE
+SPRITE SPR_JailBars3	"sprite/cage2.png"		4 4 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"		2 3 0 0 NONE

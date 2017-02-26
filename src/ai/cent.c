@@ -911,4 +911,22 @@ void onspawn_jailbars(Entity *e) {
 void onspawn_cent_cage(Entity *e) {
 	e->x += 8 << CSF;
 	e->y += 16 << CSF;
+	// When reused in Balcony, things are a bit different
+	if(stageID == 65) {
+		e->x += 8 << CSF;
+		// Release the allocation
+		TILOC_FREE(e->tiloc, e->framesize);
+		e->tiloc = NOTILOC;
+		// Set sheet to the smaller cage bars
+		e->sprite_count = 1;
+		SHEET_FIND(e->sheet, SHEET_CAGE);
+		e->vramindex = sheets[e->sheet].index;
+		e->framesize = 16;
+		e->sprite[0] = (VDPSprite) {
+			.size = SPRITE_SIZE(4, 4),
+			.attribut = TILE_ATTR_FULL(PAL2,0,0,0,e->vramindex)
+		};
+		// And never deactivate
+		e->alwaysActive = TRUE;
+	}
 }

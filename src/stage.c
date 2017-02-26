@@ -62,10 +62,11 @@ void stage_load(u16 id) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
+	VDP_waitVSync();
+	SYS_disableInts();
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
 	// Stage palette and shared NPC palette
-	SYS_disableInts();
 	if(stageID == 0x30) {
 		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
 	} else {
@@ -339,7 +340,7 @@ void stage_draw_screen() {
 				}
 				x++;
 			}
-			DMA_doDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*64*2, 64, 2);
+			DMA_doDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*0x80, 64, 2);
 		}
 		y++;
 	}
