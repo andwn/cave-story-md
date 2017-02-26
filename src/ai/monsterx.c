@@ -393,6 +393,7 @@ void ai_monsterx(Entity *e) {
 				entities_clear_by_type(OBJ_X_TREAD);
 				entities_clear_by_type(OBJ_X_INTERNALS);
 				player.grounded = FALSE; // Stop player from floating where treads were
+				playerPlatform = NULL; // I SAID STOP DAMMIT
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -712,7 +713,7 @@ void ai_x_fishy_missile(Entity *e) {
 	//}
 	
 	//e->cur_angle %= 0x400;
-	e->frame = (e->cur_angle + (u8)0x20) >> 5;
+	e->frame = ((e->cur_angle + (u8)0x20) >> 5) & 7;
 	
 	e->x_speed = cos[e->cur_angle];
 	e->y_speed = sin[e->cur_angle];
