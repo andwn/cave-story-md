@@ -320,9 +320,11 @@ void stage_update() {
 }
 
 void stage_draw_screen() {
+	VDP_waitVSync();
 	SYS_disableInts();
+	VDP_setEnable(FALSE);
 	u16 maprow[64];
-	s16 y = sub_to_tile(camera.y) - 15;
+	s16 y = sub_to_tile(camera.y) - 16;
 	for(u8 i = 32; i--; ) {
 		if(y >= 0 && y < stageHeight * 2) {
 			s16 x = sub_to_tile(camera.x) - 31;
@@ -341,7 +343,9 @@ void stage_draw_screen() {
 		}
 		y++;
 	}
+	VDP_setEnable(TRUE);
 	SYS_enableInts();
+	VDP_waitVSync();
 }
 
 // Draws just one block

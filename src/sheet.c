@@ -343,8 +343,8 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			SHEET_ADD(SHEET_DOCSHOT, &SPR_DocShot, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x44: // Black Space
-		{	SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,1, 0,2, 0,3);
-			SHEET_ADD(SHEET_CRITTER, &SPR_MizaCritter, 3,2,2, 0,1, 0,2, 0,3);
+		{	SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_CRITTER, &SPR_MizaCritter, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_MUCORE, &SPR_MUCoreFront, 4,4,4, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_MUCORE2, &SPR_MUCoreBack, 2,2,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_MUCORE3, &SPR_MUCoreBottom, 2,4,1, 0,0, 0,1);
