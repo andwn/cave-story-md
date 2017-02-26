@@ -119,4 +119,4 @@ clean:
 	rm -f saves.zip saves.tar.gz
 	
 clean-tools:
-	rm -f prof2sram tileopt tscomp lutgen
+	rm -f prof2sram tileopt tscomp lutgen savetrim

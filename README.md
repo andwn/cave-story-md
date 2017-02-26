@@ -1,7 +1,7 @@
 # Cave Story MD
 [![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
-This is a rewrite/port of the popular freeware game Cave Story for Sega MegaDrive/Genesis.
+This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 The engine is built using SGDK, and written almost entirely in C.
 
 It should work on any console or emulator. Expect alpha quality.
@@ -9,7 +9,7 @@ It should work on any console or emulator. Expect alpha quality.
 ### Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
-For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL (experimental)](http://www.cavestory.org/md/nightlypal.zip) <br/>
+For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL](http://www.cavestory.org/md/nightlypal.zip) <br/>
 
 Farthest reachable point in `master`: Last Boss room (Black Space)
 
@@ -24,14 +24,7 @@ If you have a 6 button controller:
 
 For 3 button, A cycles through weapons. The rest is the same.
 
-### Level Select (Next release)
-🡩 🡫🡨 🡪  A + Start. Like Sonic. 
-In the future I want to make weapons, ammo, health, and specific items/equips configurable.
-
-This replaces the old method:
-
-There are SRAM files for various points in the game to help debugging in the save directory.
-The `.gens.srm` are for most emulators (odd bytes), and `.blastem.sram` for BlastEm (contiguous).
+To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic. 
 
 ### Compilation
 I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
@@ -43,7 +36,7 @@ I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
   - The command to build and install Gendev is `sudo make`. Yes, this is awful. No, I'm not fixing it.
   - Compiling a GNU toolchain takes a very long time, over an hour on slow machines
   - If after the fact you want to only update SGDK, run `sudo make sgdk_clean` then `sudo make sgdk_build`. This way you don't have to wait forever to rebuild the whole toolchain
-2. Clone this repository and do `make`.
+2. Clone this repository and do `make`, or `make pal`.
 3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
 ## FAQ
@@ -57,7 +50,7 @@ Note that if you have no save, the game will restart from the beginning if you d
 #### Bad things are happening what do?
 Open an issue if one doesn't already exist for said bad thing, unless
 
-- It's because of a hardware limitation, though I am open to suggestions on how to make stuff better without lagging the game
+- It's because of a hardware limitation, unless you have a realistic suggestion to improve it
 - It has to do with the following parts which are not ready for testing: Undead Core, Credits, Hell
 - It's a bug that exists in the original Cave Story. [Example](https://www.youtube.com/watch?v=HFzS0bpc5kA)
 
