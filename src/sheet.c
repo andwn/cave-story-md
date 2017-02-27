@@ -40,7 +40,7 @@ void sheets_load_weapon(Weapon *w) {
 		}
 		SHEET_ADD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
 							 : w->level == 2 ? &SPR_MGunB2 
-							 : &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+							 : &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_BUBBLER:
 		SHEET_ADD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
@@ -97,7 +97,7 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_MACHINEGUN:
 		SHEET_MOD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
 							 : w->level == 2 ? &SPR_MGunB2 
-							 : &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+							 : &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_BUBBLER:
 		SHEET_MOD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
@@ -258,7 +258,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
 				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
-				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
@@ -275,7 +275,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {
 				SHEET_ADD(SHEET_CGUN, &SPR_MGun, 1,6,1, 0,0);
-				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 2,2,2, 0,0, 1,0);
+				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,6,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
@@ -379,7 +379,7 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		u8 msheet = NOSHEET;
 		SHEET_FIND(msheet, SHEET_MGUN);
 		if(msheet == NOSHEET) {
-			SHEET_ADD(SHEET_MGUN, &SPR_MGunB1, 2,2,2, 0,0, 1,0);
+			SHEET_ADD(SHEET_MGUN, &SPR_MGunB1, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		}
 	}
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area

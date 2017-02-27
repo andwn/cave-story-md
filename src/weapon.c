@@ -163,7 +163,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	// check up/down first
 	u8 dir = FIREDIR;
 	if(dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+8);
 		if(!player.grounded && w->level == 3) {
 			player.y_speed += SPEED(0x100);
 			if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
@@ -173,7 +173,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x_speed = -SPEED(0x50) + (random() % 0xA0);
 		b->y_speed = -SPEED(0xC00);
 	} else if(dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
 			if(joy_down(BUTTON_C) || player.y_speed > 0) {
 				player.y_speed -= SPEED(0x400);
@@ -188,6 +188,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x_speed = -SPEED(0x50) + (random() % 0xA0);
 		b->y_speed = SPEED(0xC00);
 	} else {
+		b->level++; // Wonky use of this var, so the trail knows whether to be H/V
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,dir,sheets[w->sheet].index);
 		b->x = player.x + (dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
@@ -348,10 +349,25 @@ void bullet_update_machinegun(Bullet *b) {
 		sound_play(SND_SHOT_HIT, 3);
 		// TODO: Add the sprite and effect for hitting a wall
 	} else {
-		////SPR_SAFEVISIBILITY(b->sprite, (b->ttl & 1) ? VISIBLE : HIDDEN);
 		sprite_pos(b->sprite,
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		// Expand sprite of level 3 after a couple frames
+		if(b->level >= 3) {
+			if(b->ttl == TIME(24)) {
+				if(b->level == 3) {
+					b->sprite.size = SPRITE_SIZE(2, 4);
+					b->sprite.attribut += 4;
+					if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
+				} else {
+					b->sprite.size = SPRITE_SIZE(4, 2);
+					if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+				}
+			} else if(b->ttl < TIME(24)) {
+				if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
+				if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+			}
+		}
 		sprite_add(b->sprite);
 		b->ttl--;
 	}
