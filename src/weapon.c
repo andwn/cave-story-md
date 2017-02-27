@@ -205,8 +205,8 @@ void weapon_fire_missile(Weapon *w) {
 		b = &playerBullet[i];
 		break;
 	}
-	if(b == NULL || (w->ammo == 0 && w->maxammo != 0)) return;
-	w->ammo--;
+	if(b && (w->ammo || !w->maxammo)) w->ammo--;
+	else return;
 	b->type = WEAPON_MISSILE; //w->type;
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
@@ -438,12 +438,13 @@ u8 bullet_missile_is_exploding() {
 
 static void bullet_destroy_block(u16 x, u16 y) {
 	u8 ind = 0;
-	// Usually the index should be incremented by 1, but this will cause problems
+	// Usually the index should be decremented by 1, but this will cause problems
 	// on the modified tilesets, to we cherry pick which ones
 	if(stageTileset == 18 || // Sand Zone
 			stageTileset == 20 || // Grasstown
+			stageTileset == 19 || // Store
 			stageTileset == 3) { // First Cave
-		ind = stage_get_block(x, y) + 1;
+		ind = stage_get_block(x, y) - 1;
 	}
 	stage_replace_block(x, y, ind);
 }
