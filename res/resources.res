@@ -46,10 +46,10 @@ SPRITE SPR_Jelly		"sprite/jelly.png"		2 2 0 0 NONE
 SPRITE SPR_Kulala		"sprite/kulala.png"		6 3 0 0 NONE
 SPRITE SPR_MisslB1		"sprite/missileb1.png"	2 2 0 0 NONE
 SPRITE SPR_MisslB2		"sprite/missileb2.png"	2 2 0 0 NONE
-SPRITE SPR_BladeB1		"sprite/bladeb1.png"	2 2 0 8 NONE
+SPRITE SPR_BladeB1		"sprite/bladeb1.png"	5 2 0 0 NONE
 SPRITE SPR_BladeB2		"sprite/bladeb2.png"	3 3 0 0 NONE
-SPRITE SPR_BladeB3		"sprite/bladeb3.png"	3 3 0 0 NONE
-SPRITE SPR_BladeB3S		"sprite/bladeb3slash.png" 2 2 0 0 NONE
+SPRITE SPR_BladeB3k		"sprite/bladeb3king.png" 3 3 0 0 NONE
+SPRITE SPR_BladeB3s		"sprite/bladeb3slash.png" 3 3 0 0 NONE
 SPRITE SPR_Quotele		"sprite/quotele.png"	2 2 0 0 NONE
 SPRITE SPR_Bubble		"sprite/bubble.png"		3 3 0 0 NONE
 SPRITE SPR_MGun 		"sprite/mgun.png"		6 1 0 0 NONE

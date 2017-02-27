@@ -244,7 +244,49 @@ void weapon_fire_bubbler(Weapon *w) {
 }
 
 void weapon_fire_blade(Weapon *w) {
-	weapon_fire_polarstar(w);
+	// Blade is only 1 bullet at a time for every level
+	Bullet *b = &playerBullet[0];
+	if(b->ttl) return;
+	b->type = w->type;
+	b->level = w->level;
+	b->sheet = w->sheet;
+	switch(b->level) {
+		case 1: // Small 16x16 Blade
+			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
+			b->damage = 15;
+			b->ttl = TIME(30);
+			b->hit_box = (bounding_box) { 6, 6, 6, 6 };
+			break;
+		case 2: // Large 24x24 Blade, hits 6 times
+			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(3, 3) };
+			b->damage = 6;
+			b->ttl = TIME(18);
+			b->hit_box = (bounding_box) { 10, 10, 10, 10 };
+			break;
+		case 3: // King's Ghost, AOE on hit
+			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(3, 3) };
+			b->damage = 1;
+			b->ttl = TIME(30);
+			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
+			break;
+	}
+	sound_play(SND_FIREBALL, 5);
+	b->x = player.x;
+	b->y = player.y;
+	b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
+	u8 dir = FIREDIR;
+	if(dir == UP) {
+		b->x_speed = 0;
+		b->y_speed = -SPEED(0x800);
+	} else if(dir == DOWN) {
+		b->x_speed = 0;
+		b->y_speed = SPEED(0x800);
+	} else {
+		if(b->level == 3 && dir == RIGHT) sprite_hflip(b->sprite, 1);
+		b->x_speed = (dir ? SPEED(0x800) : -SPEED(0x800));
+		b->y_speed = 0;
+	}
+	// TODO: Replace level 3 tiles based on direction
 }
 
 void weapon_fire_supermissile(Weapon *w) {
@@ -399,7 +441,40 @@ void bullet_update_bubbler(Bullet *b) {
 }
 
 void bullet_update_blade(Bullet *b) {
-	bullet_update_polarstar(b);
+	b->ttl--;
+	if(b->x_speed | b->y_speed) {
+		b->x += b->x_speed;
+		b->y += b->y_speed;
+		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		if(block == 0x41) { // Hit wall/floor
+			b->ttl = 0;
+			sound_play(SND_SHOT_HIT, 3);
+			return;
+		} else if(block == 0x43) { // Hit breakable block
+			b->ttl = 0;
+			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			sound_play(SND_BLOCK_DESTROY, 5);
+			return;
+		}
+		// Level 1 and 2 spin
+		if(b->level < 3) {
+			u8 anim = b->ttl & 7;
+			if(anim == 6)      b->sprite.attribut |= (1<<12);
+			else if(anim == 4) b->sprite.attribut |= (1<<11);
+			else if(anim == 2) b->sprite.attribut &= ~(1<<12);
+			else if(anim == 0) b->sprite.attribut &= ~(1<<11);
+		}
+		sprite_pos(b->sprite, 
+			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		// Level 2 and 3 sprites are a bit larger so adjust the display position
+		if(b->level > 1) {
+			b->sprite.x -= 4;
+			b->sprite.y -= 4;
+		}
+		sprite_add(b->sprite);
+	}
 }
 
 void bullet_update_supermissile(Bullet *b) {
