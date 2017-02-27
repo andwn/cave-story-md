@@ -205,8 +205,9 @@ void weapon_fire_missile(Weapon *w) {
 		b = &playerBullet[i];
 		break;
 	}
-	if(b && (w->ammo || !w->maxammo)) w->ammo--;
-	else return;
+	if(!b) return;
+	if(w->ammo) w->ammo--;
+	else if(w->maxammo) return;
 	b->type = WEAPON_MISSILE; //w->type;
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
