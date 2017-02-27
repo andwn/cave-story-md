@@ -68,6 +68,9 @@ SPRITE SPR_Stumpy		"sprite/dragonfly.png"	2 2 0 0 NONE
 SPRITE SPR_Zzz			"sprite/z.png"			1 1 0 0 NONE
 SPRITE SPR_RedFl3		"sprite/redflowers3.png" 6 4 0 0 NONE
 SPRITE SPR_MimiSleep	"sprite/mimisleep.png"	2 2 0 0 NONE
+SPRITE SPR_BubB1		"sprite/bubb1.png"		1 1 0 0 NONE
+SPRITE SPR_BubB2		"sprite/bubb2.png"		1 1 0 0 NONE
+SPRITE SPR_BubB3		"sprite/bubb3.png"		1 1 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"		6 1 0 0 NONE

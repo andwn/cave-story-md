@@ -327,6 +327,13 @@ void player_update() {
 				}
 			}
 		}
+	} else if(playerWeapon[currentWeapon].type == WEAPON_BUBBLER) {
+		// Re-use machine gun var for automatic fire
+		if(mgun_shoottime > 0) mgun_shoottime--;
+		if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
+			weapon_fire(playerWeapon[currentWeapon]);
+			mgun_shoottime = 10;
+		}
 	} else {
 		if(joy_pressed(BUTTON_B)) {
 			weapon_fire(playerWeapon[currentWeapon]);

@@ -43,9 +43,9 @@ void sheets_load_weapon(Weapon *w) {
 							 : &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_BUBBLER:
-		SHEET_ADD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_BUBB,  w->level == 1 ? &SPR_BubB1 
+							 : w->level == 2 ? &SPR_BubB2 
+							 : &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_BLADE:
 		SHEET_ADD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 
@@ -100,9 +100,9 @@ void sheets_refresh_weapon(Weapon *w) {
 							 : &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_BUBBLER:
-		SHEET_MOD(SHEET_BUBB,  w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_MOD(SHEET_BUBB,  w->level == 1 ? &SPR_BubB1 
+							 : w->level == 2 ? &SPR_BubB2 
+							 : &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_BLADE:
 		SHEET_MOD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 

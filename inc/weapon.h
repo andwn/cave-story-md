@@ -54,6 +54,8 @@ typedef struct {
 	u8 damage;
 	u8 ttl;
 	u8 sheet;
+	u8 dir;
+	u8 hits;
 } Bullet;
 
 #define weapon_fire(w) weapon_fire_array[(w).type](&(w))

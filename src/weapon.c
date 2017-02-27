@@ -77,14 +77,14 @@ void weapon_fire_polarstar(Weapon *w) {
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	
-	u8 dir = FIREDIR;
-	if(dir == UP) {
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
-	} else if(dir == DOWN) {
+	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
@@ -92,9 +92,9 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y_speed = pixel_to_sub(4);
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
-		b->x = player.x + (dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (dir ? pixel_to_sub(4) : -pixel_to_sub(4));
+		b->x_speed = (b->dir ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
@@ -123,21 +123,21 @@ void weapon_fire_fireball(Weapon *w) {
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	
-	u8 dir = FIREDIR;
-	if(dir == UP) {
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
 		b->y_speed = -pixel_to_sub(3);
-	} else if(dir == DOWN) {
+	} else if(b->dir == DOWN) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = player.dir ? 0x300 : -0x300; // 1.5
 		b->y_speed = pixel_to_sub(2);
 	} else {
-		b->x = player.x + (dir ? pixel_to_sub(8) : -pixel_to_sub(8));
+		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(4);
-		b->x_speed = dir ? 0x500 : -0x500; // 2.5
+		b->x_speed = b->dir ? 0x500 : -0x500; // 2.5
 		b->y_speed = 0;
 	}
 }
@@ -161,8 +161,8 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	// check up/down first
-	u8 dir = FIREDIR;
-	if(dir == UP) {
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+8);
 		if(!player.grounded && w->level == 3) {
 			player.y_speed += SPEED(0x100);
@@ -172,7 +172,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = -SPEED(0x50) + (random() % 0xA0);
 		b->y_speed = -SPEED(0xC00);
-	} else if(dir == DOWN) {
+	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
 			if(joy_down(BUTTON_C) || player.y_speed > 0) {
@@ -188,11 +188,11 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x_speed = -SPEED(0x50) + (random() % 0xA0);
 		b->y_speed = SPEED(0xC00);
 	} else {
-		b->level++; // Wonky use of this var, so the trail knows whether to be H/V
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,dir,sheets[w->sheet].index);
-		b->x = player.x + (dir ? pixel_to_sub(10) : -pixel_to_sub(10));
+		//b->level++; // Wonky use of this var, so the trail knows whether to be H/V
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
+		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (dir ? SPEED(0xC00) : -SPEED(0xC00));
+		b->x_speed = (b->dir ? SPEED(0xC00) : -SPEED(0xC00));
 		b->y_speed = -SPEED(0x50) + (random() % 0xA0);
 	}
 }
@@ -217,30 +217,99 @@ void weapon_fire_missile(Weapon *w) {
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	
-	u8 dir = FIREDIR;
-	if(dir == UP) {
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(3);
-	} else if(dir == DOWN) {
+	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(3);
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,dir,sheets[w->sheet].index);
-		b->x = player.x + (dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
+		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (dir ? pixel_to_sub(3) : -pixel_to_sub(3));
+		b->x_speed = (b->dir ? pixel_to_sub(3) : -pixel_to_sub(3));
 		b->y_speed = 0;
 	}
 }
 
 void weapon_fire_bubbler(Weapon *w) {
-	weapon_fire_polarstar(w);
+	// Use all 10 for the bubbler too
+	Bullet *b = NULL;
+	for(u8 i = 0; i < 10; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(!b) return;
+	b->type = w->type;
+	b->level = w->level;
+	b->damage = w->level; // 1, 2, 3
+	b->sheet = w->sheet;
+	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
+	switch(b->level) {
+		case 1:
+			b->ttl = TIME(40);
+			break;
+		case 2:
+			b->ttl = TIME(60);
+			break;
+		case 3:
+			b->ttl = TIME(100);
+			break;
+	}
+	b->sprite = (VDPSprite) { 
+		.size = SPRITE_SIZE(1, 1),
+		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index)
+	};
+	sound_play(SND_BUBBLER_FIRE, 5);
+	// check up/down first
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
+		b->x = player.x;
+		b->y = player.y - pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = -SPEED(0x600);
+	} else if(b->dir == DOWN) {
+		b->x = player.x;
+		b->y = player.y + pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = SPEED(0x600);
+	} else {
+		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
+		b->y = player.y + pixel_to_sub(3);
+		b->x_speed = (b->dir ? SPEED(0x600) : -SPEED(0x600));
+		b->y_speed = 0;
+	}
+	// Level 3 starting velocity is random
+	if(b->level == 3) {
+		u16 bigspeed   = SPEED(0x200) + (random() % 0x200);
+		s16 smallspeed = (random() % 0x800) - 0x400;
+		switch(b->dir) {
+			case LEFT:
+				b->x_speed = -bigspeed;
+				b->y_speed = smallspeed;
+				break;
+			case RIGHT:
+				b->x_speed = bigspeed;
+				b->y_speed = smallspeed;
+				break;
+			case UP:
+				b->x_speed = smallspeed;
+				b->y_speed = -bigspeed;
+				break;
+			case DOWN:
+				b->x_speed = smallspeed;
+				b->y_speed = bigspeed;
+				break;
+		}
+	}
 }
 
 void weapon_fire_blade(Weapon *w) {
@@ -259,7 +328,7 @@ void weapon_fire_blade(Weapon *w) {
 			break;
 		case 2: // Large 24x24 Blade, hits 6 times
 			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(3, 3) };
-			b->damage = 6;
+			b->damage = 18;
 			b->ttl = TIME(18);
 			b->hit_box = (bounding_box) { 10, 10, 10, 10 };
 			break;
@@ -274,16 +343,16 @@ void weapon_fire_blade(Weapon *w) {
 	b->x = player.x;
 	b->y = player.y;
 	b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
-	u8 dir = FIREDIR;
-	if(dir == UP) {
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
 		b->x_speed = 0;
 		b->y_speed = -SPEED(0x800);
-	} else if(dir == DOWN) {
+	} else if(b->dir == DOWN) {
 		b->x_speed = 0;
 		b->y_speed = SPEED(0x800);
 	} else {
-		if(b->level == 3 && dir == RIGHT) sprite_hflip(b->sprite, 1);
-		b->x_speed = (dir ? SPEED(0x800) : -SPEED(0x800));
+		if(b->level == 3 && b->dir == RIGHT) sprite_hflip(b->sprite, 1);
+		b->x_speed = (b->dir ? SPEED(0x800) : -SPEED(0x800));
 		b->y_speed = 0;
 	}
 	// TODO: Replace level 3 tiles based on direction
@@ -395,9 +464,9 @@ void bullet_update_machinegun(Bullet *b) {
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		// Expand sprite of level 3 after a couple frames
-		if(b->level >= 3) {
+		if(b->level == 3) {
 			if(b->ttl == TIME(24)) {
-				if(b->level == 3) {
+				if(b->dir == UP || b->dir == DOWN) {
 					b->sprite.size = SPRITE_SIZE(2, 4);
 					b->sprite.attribut += 4;
 					if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
@@ -437,7 +506,85 @@ void bullet_update_missile(Bullet *b) {
 }
 
 void bullet_update_bubbler(Bullet *b) {
-	bullet_update_polarstar(b);
+	if(b->level < 3) { // Level 1 and 2 just move forward a bit
+		u8 decel = SPEED(0x10);
+		if(b->level == 1) decel += SPEED(0x16);
+		switch(b->dir) {
+			case LEFT: b->x_speed += decel; break;
+			case RIGHT: b->x_speed -= decel; break;
+			case UP: b->y_speed += decel; break;
+			case DOWN: b->y_speed -= decel; break;
+		}
+		// Half assed animation
+		u8 livetime = b->level == 1 ? TIME(40) : TIME(60);
+		u8 frame = (livetime - b->ttl) >> 3;
+		if(frame > 3) frame = 3;
+		sprite_index(b->sprite, sheets[b->sheet].index + frame);
+	} else if(b->ttl >= TIME(30)) { // Level 3 orbits around player
+		if(!joy_down(BUTTON_B) || b->ttl == TIME(30)) {
+			b->ttl = TIME(30);
+			sound_play(SND_BUBBLER_LAUNCH, 5);
+			b->dir = FIREDIR;
+			switch(b->dir) {
+				case LEFT: 
+					b->x_speed = -SPEED(0xC00);
+					b->y_speed = 0;
+					sprite_index(b->sprite, sheets[b->sheet].index + 2);
+					break;
+				case RIGHT: 
+					b->x_speed = SPEED(0xC00);
+					b->y_speed = 0;
+					sprite_index(b->sprite, sheets[b->sheet].index + 2);
+					break;
+				case UP: 
+					b->y_speed = -SPEED(0xC00);
+					b->x_speed = 0;
+					sprite_index(b->sprite, sheets[b->sheet].index + 3);
+					break;
+				case DOWN: 
+					b->y_speed = SPEED(0xC00);
+					b->x_speed = 0;
+					sprite_index(b->sprite, sheets[b->sheet].index + 3);
+					break;
+			}
+		} else {
+			// Just 2 frames for this part, when launched use 3rd or 4th based on dir
+			if(b->ttl == TIME(98)) sprite_index(b->sprite, sheets[b->sheet].index + 1);
+			// Follow player
+			if (b->x > player.x) {
+				b->x_speed -= SPEED(0x20);
+				if(b->x_speed < -SPEED(0x5FF)) b->x_speed = -SPEED(0x5FF);
+			} else if (b->x < player.x) {
+				b->x_speed += SPEED(0x20);
+				if(b->x_speed < SPEED(0x5FF)) b->x_speed = SPEED(0x5FF);
+			}
+			if (b->y > player.y) {
+				b->y_speed -= SPEED(0x20);
+				if(b->y_speed < -SPEED(0x5FF)) b->y_speed = -SPEED(0x5FF);
+			} else if (b->y < player.y) {
+				b->y_speed += SPEED(0x20);
+				if(b->y_speed < SPEED(0x5FF)) b->y_speed = SPEED(0x5FF);
+			}
+			// Bounce off walls
+			if (b->x_speed < 0 && (blk(b->x,-4, b->y,0) & 0x41)) b->x_speed = SPEED(0x400);
+			else if (blk(b->x,4, b->y,0) & 0x41) b->x_speed = -SPEED(0x400);
+			if (b->y_speed < 0 && (blk(b->x,0, b->y,-4) & 0x41)) b->y_speed = SPEED(0x400);
+			else if (blk(b->x,0, b->y,4) & 0x41) b->y_speed = -SPEED(0x400);
+		}
+	} else { // Level 3 being launched
+		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		if(block == 0x41) { // Bullet hit a wall
+			b->ttl = 0;
+			sound_play(SND_SHOT_HIT, 3);
+		}
+	}
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	sprite_pos(b->sprite, 
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
+	sprite_add(b->sprite);
+	b->ttl--;
 }
 
 void bullet_update_blade(Bullet *b) {
