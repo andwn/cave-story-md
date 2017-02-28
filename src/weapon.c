@@ -240,9 +240,10 @@ void weapon_fire_missile(Weapon *w) {
 }
 
 void weapon_fire_bubbler(Weapon *w) {
-	// Use all 10 for the bubbler too
+	// Limit level 1 to 4 bubbles, others use whole array
+	u8 limit = w->level == 1 ? 4 : 10;
 	Bullet *b = NULL;
-	for(u8 i = 0; i < 10; i++) {
+	for(u8 i = 0; i < limit; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -253,62 +254,55 @@ void weapon_fire_bubbler(Weapon *w) {
 	b->damage = w->level; // 1, 2, 3
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
-	switch(b->level) {
-		case 1:
-			b->ttl = TIME(40);
-			break;
-		case 2:
-			b->ttl = TIME(60);
-			break;
-		case 3:
-			b->ttl = TIME(100);
-			break;
-	}
 	b->sprite = (VDPSprite) { 
 		.size = SPRITE_SIZE(1, 1),
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index)
 	};
 	sound_play(SND_BUBBLER_FIRE, 5);
-	// check up/down first
-	b->dir = FIREDIR;
-	if(b->dir == UP) {
-		b->x = player.x;
-		b->y = player.y - pixel_to_sub(12);
-		b->x_speed = 0;
-		b->y_speed = -SPEED(0x600);
-	} else if(b->dir == DOWN) {
-		b->x = player.x;
-		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = 0;
-		b->y_speed = SPEED(0x600);
-	} else {
-		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
-		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (b->dir ? SPEED(0x600) : -SPEED(0x600));
-		b->y_speed = 0;
+	// Starting velocity based on level
+	s16 fwdspeed = 0, sidespeed = 0;
+	switch(b->level) {
+		case 1: 
+			b->ttl = TIME(40);
+			fwdspeed = SPEED(0x400); 
+			break;
+		case 2: 
+			b->ttl = TIME(60);
+			fwdspeed = SPEED(0x600);
+			sidespeed = -SPEED(0x100) + (random() % SPEED(0x200));
+			break;
+		case 3:
+			b->ttl = TIME(100);
+			fwdspeed = SPEED(0x200) + (random() % SPEED(0x200));
+			sidespeed = (random() % SPEED(0x800)) - SPEED(0x400);
+			break;
 	}
-	// Level 3 starting velocity is random
-	if(b->level == 3) {
-		u16 bigspeed   = SPEED(0x200) + (random() % 0x200);
-		s16 smallspeed = (random() % 0x800) - 0x400;
-		switch(b->dir) {
-			case LEFT:
-				b->x_speed = -bigspeed;
-				b->y_speed = smallspeed;
-				break;
-			case RIGHT:
-				b->x_speed = bigspeed;
-				b->y_speed = smallspeed;
-				break;
-			case UP:
-				b->x_speed = smallspeed;
-				b->y_speed = -bigspeed;
-				break;
-			case DOWN:
-				b->x_speed = smallspeed;
-				b->y_speed = bigspeed;
-				break;
-		}
+	b->dir = FIREDIR;
+	switch(b->dir) {
+		case LEFT:
+			b->x = player.x - (8 << CSF);
+			b->y = player.y + (3 << CSF);
+			b->x_speed = -fwdspeed;
+			b->y_speed = sidespeed;
+			break;
+		case RIGHT:
+			b->x = player.x + (8 << CSF);
+			b->y = player.y + (3 << CSF);
+			b->x_speed = fwdspeed;
+			b->y_speed = sidespeed;
+			break;
+		case UP:
+			b->x = player.x;
+			b->y = player.y - (10 << CSF);
+			b->x_speed = sidespeed;
+			b->y_speed = -fwdspeed;
+			break;
+		case DOWN:
+			b->x = player.x;
+			b->y = player.y + (10 << CSF);
+			b->x_speed = sidespeed;
+			b->y_speed = fwdspeed;
+			break;
 	}
 }
 
@@ -508,7 +502,7 @@ void bullet_update_missile(Bullet *b) {
 void bullet_update_bubbler(Bullet *b) {
 	if(b->level < 3) { // Level 1 and 2 just move forward a bit
 		u8 decel = SPEED(0x10);
-		if(b->level == 1) decel += SPEED(0x16);
+		if(b->level == 1) decel += SPEED(0x0A);
 		switch(b->dir) {
 			case LEFT: b->x_speed += decel; break;
 			case RIGHT: b->x_speed -= decel; break;
@@ -517,7 +511,7 @@ void bullet_update_bubbler(Bullet *b) {
 		}
 		// Half assed animation
 		u8 livetime = b->level == 1 ? TIME(40) : TIME(60);
-		u8 frame = (livetime - b->ttl) >> 3;
+		u8 frame = (livetime - b->ttl) >> 2;
 		if(frame > 3) frame = 3;
 		sprite_index(b->sprite, sheets[b->sheet].index + frame);
 	} else if(b->ttl >= TIME(30)) { // Level 3 orbits around player
@@ -556,14 +550,14 @@ void bullet_update_bubbler(Bullet *b) {
 				if(b->x_speed < -SPEED(0x5FF)) b->x_speed = -SPEED(0x5FF);
 			} else if (b->x < player.x) {
 				b->x_speed += SPEED(0x20);
-				if(b->x_speed < SPEED(0x5FF)) b->x_speed = SPEED(0x5FF);
+				if(b->x_speed > SPEED(0x5FF)) b->x_speed = SPEED(0x5FF);
 			}
 			if (b->y > player.y) {
 				b->y_speed -= SPEED(0x20);
 				if(b->y_speed < -SPEED(0x5FF)) b->y_speed = -SPEED(0x5FF);
 			} else if (b->y < player.y) {
 				b->y_speed += SPEED(0x20);
-				if(b->y_speed < SPEED(0x5FF)) b->y_speed = SPEED(0x5FF);
+				if(b->y_speed > SPEED(0x5FF)) b->y_speed = SPEED(0x5FF);
 			}
 			// Bounce off walls
 			if (b->x_speed < 0 && (blk(b->x,-4, b->y,0) & 0x41)) b->x_speed = SPEED(0x400);
@@ -573,9 +567,10 @@ void bullet_update_bubbler(Bullet *b) {
 		}
 	} else { // Level 3 being launched
 		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if(block == 0x41) { // Bullet hit a wall
+		if(block & 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
+			return;
 		}
 	}
 	b->x += b->x_speed;

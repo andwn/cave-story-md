@@ -305,38 +305,39 @@ void player_update() {
 		}
 	}
 	// Shooting
-	if(playerWeapon[currentWeapon].type == WEAPON_MACHINEGUN) {
+	Weapon *w = &playerWeapon[currentWeapon];
+	if(w->type == WEAPON_MACHINEGUN) {
 		if(mgun_shoottime > 0) mgun_shoottime--;
 		if(joy_down(BUTTON_B)) {
 			if(mgun_shoottime == 0) {
-				if(playerWeapon[currentWeapon].ammo > 0) {
-					weapon_fire(playerWeapon[currentWeapon]);
-					playerWeapon[currentWeapon].ammo--;
+				if(w->ammo > 0) {
+					weapon_fire(*w);
+					w->ammo--;
 				} else {
 					sound_play(SND_GUN_CLICK, 5);
 				}
 				mgun_shoottime = 9;
 			}
 		} else {
-			if(playerWeapon[currentWeapon].ammo < 100) {
+			if(w->ammo < 100) {
 				if(mgun_chargetime > 0) {
 					mgun_chargetime--;
 				} else {
-					playerWeapon[currentWeapon].ammo++;
+					w->ammo++;
 					mgun_chargetime = (playerEquipment & EQUIP_TURBOCHARGE) ? 2 : 4;
 				}
 			}
 		}
-	} else if(playerWeapon[currentWeapon].type == WEAPON_BUBBLER) {
+	} else if(w->type == WEAPON_BUBBLER && w->level > 1) {
 		// Re-use machine gun var for automatic fire
 		if(mgun_shoottime > 0) mgun_shoottime--;
 		if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
-			weapon_fire(playerWeapon[currentWeapon]);
+			weapon_fire(*w);
 			mgun_shoottime = 10;
 		}
 	} else {
 		if(joy_pressed(BUTTON_B)) {
-			weapon_fire(playerWeapon[currentWeapon]);
+			weapon_fire(*w);
 		}
 	}
 	player_update_bullets();

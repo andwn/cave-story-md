@@ -199,7 +199,7 @@ static void curlyboss_fire(Entity *e, u8 dir) {
 			shot->x = e->x;
 			shot->y = e->y - pixel_to_sub(10);
 			shot->y_speed = -4096;
-			shot->frame = 1;
+			shot->frame = 2;
 		break;
 	}
 	sound_play(SND_POLAR_STAR_L1_2, 4);
@@ -319,8 +319,7 @@ void ondeath_curlyBoss(Entity *e) {
 	//}
 }
 
-void ai_curlyBossShot(Entity *e)
-{
+void ai_curlyBossShot(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_ceiling(e)) {

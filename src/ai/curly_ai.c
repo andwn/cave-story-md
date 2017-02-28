@@ -313,11 +313,11 @@ static void fire_mgun(s32 x, s32 y, u8 dir) {
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[b->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[b->sheet].index+8);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
