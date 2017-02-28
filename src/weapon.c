@@ -562,14 +562,18 @@ void bullet_update_bubbler(Bullet *b) {
 				if(b->y_speed > SPEED(0x5FF)) b->y_speed = SPEED(0x5FF);
 			}
 			// Bounce off walls
-			if (b->x_speed < 0 && (blk(b->x,-4, b->y,0) & 0x41)) b->x_speed = SPEED(0x400);
-			else if (blk(b->x,4, b->y,0) & 0x41) b->x_speed = -SPEED(0x400);
-			if (b->y_speed < 0 && (blk(b->x,0, b->y,-4) & 0x41)) b->y_speed = SPEED(0x400);
-			else if (blk(b->x,0, b->y,4) & 0x41) b->y_speed = -SPEED(0x400);
+			if (b->x_speed < 0 && ((blk(b->x,-4, b->y,0) & 0x41) == 0x41)) 
+				b->x_speed = SPEED(0x400);
+			else if ((blk(b->x,4, b->y,0) & 0x41) == 0x41) 
+				b->x_speed = -SPEED(0x400);
+			if (b->y_speed < 0 && ((blk(b->x,0, b->y,-4) & 0x41) == 0x41)) 
+				b->y_speed = SPEED(0x400);
+			else if ((blk(b->x,0, b->y,4) & 0x41) == 0x41) 
+				b->y_speed = -SPEED(0x400);
 		}
 	} else { // Level 3 being launched
 		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if(block & 0x41) { // Bullet hit a wall
+		if((block & 0x41) == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
 			return;
