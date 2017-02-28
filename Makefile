@@ -76,10 +76,12 @@ src/boot/sega.o: out/rom_head.bin
 	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(LIBMD) $(ARCHIVES) $(OBJS) $(LIBS)
 
 %.o: %.c
-	$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
+	@echo "CC $<"
 
 %.o: %.s 
-	$(AS) $(ASFLAGS) $< -o $@
+	@$(AS) $(ASFLAGS) $< -o $@
+	@echo "AS $<"
 
 %.s: %.res
 	$(RESCOMP) $< $@

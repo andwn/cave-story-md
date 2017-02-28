@@ -328,17 +328,30 @@ void player_update() {
 				}
 			}
 		}
-	} else if(w->type == WEAPON_BUBBLER && w->level > 1) {
-		// Re-use machine gun var for automatic fire
-		if(mgun_shoottime > 0) mgun_shoottime--;
-		if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
-			weapon_fire(*w);
-			mgun_shoottime = 10;
+	} else if(w->type == WEAPON_BUBBLER) { // mgun_shoottime and mgun_chargetime reused here
+		w->maxammo = 100;
+		u8 chargespeed;
+		if(w->level == 1) {
+			chargespeed = TIME(25); // Twice per second
+			if(joy_pressed(BUTTON_B)) weapon_fire(*w);
+		} else {
+			chargespeed = 4; // Around 12-15 per second
+			if(mgun_shoottime > 0) mgun_shoottime--;
+			if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
+				weapon_fire(*w);
+				mgun_shoottime = 10;
+			}
+		}
+		if(!joy_down(BUTTON_B) && w->ammo < 100) {
+			if(mgun_chargetime > 0) {
+				mgun_chargetime--;
+			} else {
+				w->ammo++;
+				mgun_chargetime = chargespeed;
+			}
 		}
 	} else {
-		if(joy_pressed(BUTTON_B)) {
-			weapon_fire(*w);
-		}
+		if(joy_pressed(BUTTON_B)) weapon_fire(*w);
 	}
 	player_update_bullets();
 	if(player.grounded) {

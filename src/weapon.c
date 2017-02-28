@@ -249,6 +249,8 @@ void weapon_fire_bubbler(Weapon *w) {
 		break;
 	}
 	if(!b) return;
+	if(w->ammo) w->ammo--;
+	else if(w->maxammo) return;
 	b->type = w->type;
 	b->level = w->level;
 	b->damage = w->level; // 1, 2, 3
