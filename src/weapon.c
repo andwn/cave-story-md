@@ -596,9 +596,10 @@ void bullet_update_bubbler(Bullet *b) {
 
 void bullet_update_blade(Bullet *b) {
 	b->ttl--;
-	if(b->x_speed | b->y_speed) {
-		if(b->level == 3) {
-			if(b->hits) { // Hit an enemy, stop moving
+	if(b->level == 3) {
+		if(b->x_speed | b->y_speed) {
+			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+			if(b->hits || (block & 0x41) == 0x41) { // Hit something, stop moving
 				b->ttl = TIME(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
@@ -607,34 +608,27 @@ void bullet_update_blade(Bullet *b) {
 				// TODO: slashes surrounding L3 while moving
 			}
 		} else {
-			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-			// Level 1 and 2 hit walls, spin
-			if(b->level < 3) {
-				if(block == 0x41) { // Hit wall/floor
-					b->ttl = 0;
-					sound_play(SND_SHOT_HIT, 3);
-					return;
-				} else if(block == 0x43) { // Hit breakable block
-					b->ttl = 0;
-					bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-					effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
-					sound_play(SND_BLOCK_DESTROY, 5);
-					return;
-				}
-				u8 anim = b->ttl & 7;
-				if(anim == 6)      b->sprite.attribut |= (1<<12);
-				else if(anim == 4) b->sprite.attribut |= (1<<11);
-				else if(anim == 2) b->sprite.attribut &= ~(1<<12);
-				else if(anim == 0) b->sprite.attribut &= ~(1<<11);
-			} else if((block & 0x41) == 0x41) { // Hit a wall, stop moving
-				b->ttl = TIME(50);
-				b->x_speed = 0;
-				b->y_speed = 0;
-				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
-			}
+			// TODO: burst of slashes after hitting something
 		}
 	} else {
-		// TODO: burst of slashes after hitting something
+		// Level 1 and 2 hit walls, spin
+		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		if(block == 0x41) { // Hit wall/floor
+			b->ttl = 0;
+			sound_play(SND_SHOT_HIT, 3);
+			return;
+		} else if(block == 0x43) { // Hit breakable block
+			b->ttl = 0;
+			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			sound_play(SND_BLOCK_DESTROY, 5);
+			return;
+		}
+		u8 anim = b->ttl & 7;
+		if(anim == 6)      b->sprite.attribut |= (1<<12);
+		else if(anim == 4) b->sprite.attribut |= (1<<11);
+		else if(anim == 2) b->sprite.attribut &= ~(1<<12);
+		else if(anim == 0) b->sprite.attribut &= ~(1<<11);
 	}
 	b->x += b->x_speed;
 	b->y += b->y_speed;
