@@ -253,7 +253,6 @@ void weapon_fire_bubbler(Weapon *w) {
 	else if(w->maxammo) return;
 	b->type = w->type;
 	b->level = w->level;
-	b->damage = w->level; // 1, 2, 3
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
 	b->sprite = (VDPSprite) { 
@@ -264,16 +263,19 @@ void weapon_fire_bubbler(Weapon *w) {
 	// Starting velocity based on level
 	s16 fwdspeed = 0, sidespeed = 0;
 	switch(b->level) {
-		case 1: 
+		case 1:
+			b->damage = 1;
 			b->ttl = TIME(40);
 			fwdspeed = SPEED(0x400); 
 			break;
 		case 2: 
+			b->damage = 2;
 			b->ttl = TIME(60);
 			fwdspeed = SPEED(0x600);
 			sidespeed = -SPEED(0x100) + (random() % SPEED(0x200));
 			break;
 		case 3:
+			b->damage = 5;
 			b->ttl = TIME(100);
 			fwdspeed = SPEED(0x200) + (random() % SPEED(0x200));
 			sidespeed = (random() % SPEED(0x800)) - SPEED(0x400);

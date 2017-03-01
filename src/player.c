@@ -335,11 +335,15 @@ void player_update() {
 			chargespeed = TIME(25); // Twice per second
 			if(joy_pressed(BUTTON_B)) weapon_fire(*w);
 		} else {
-			chargespeed = 4; // Around 12-15 per second
+			chargespeed = 3; // Around 12-15 per second
 			if(mgun_shoottime > 0) mgun_shoottime--;
 			if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
 				weapon_fire(*w);
+				#ifdef PAL
 				mgun_shoottime = 10;
+				#else
+				mgun_shoottime = 11;
+				#endif
 			}
 		}
 		if(!joy_down(BUTTON_B) && w->ammo < 100) {
