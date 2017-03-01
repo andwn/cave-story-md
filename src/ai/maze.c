@@ -967,9 +967,9 @@ void ai_buyobuyo_base(Entity *e) {
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
 			// OPTION2 means we are on the ceiling
 			if(e->eflags & NPC_OPTION2) {
-				e->x -= 0x2000;
+				e->y -= 0x1000;
 			} else {
-				e->x += 0x2000;
+				e->y += 0x1000;
 			}
 			e->timer = TIME(10);
 			e->state = 1;
