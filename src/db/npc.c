@@ -194,10 +194,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	/* 0x0B0 (176) */
 	{ NULL,		SHEET_BUYOB, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
 	{ NULL, 	SHEET_BUYO, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
-	{ NULL, SHEET_CORES1,	PAL0, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
+	{ NULL, SHEET_CORES1,	PAL2, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
 	{ NULL, SHEET_CORES3,	PAL0, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)
-	{ NULL, SHEET_CGUN, 	 PAL0, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
+	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
 	{ &SPR_Bubble, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_cai_watershield, &ai_null }, // Curly Bubble Shield
 	{ &SPR_BigShutter,NOSHEET,PAL2,1, &onspawn_shutter, &ai_shutter, &ai_null }, // Shutter (Large)
@@ -232,7 +232,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
 	{ &SPR_SkyDragon, NOSHEET, PAL3, 4, &ai_null, &ai_sky_dragon, &ai_null }, // Sky Dragon
 	{ &SPR_NightSpirit,NOSHEET,PAL2,4, &onspawn_persistent, &ai_night_spirit, &ondeath_default }, // Night Spirit
-	{ NULL, SHEET_NIGHTSHOT,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ai_null }, // Night Spirit Projectile
+	{ NULL, SHEET_NIGHTSHOT,PAL2,1, &onspawn_persistent, &ai_night_spirit_shot, &ondeath_default }, // Night Spirit Projectile
 	{ &SPR_Croc2, 	NOSHEET, PAL2, 2, &ai_null, &ai_sandcroc, &ondeath_default }, // White Sandcroc
 	{ &SPR_Cat, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Debug Cat
 	{ &SPR_Itoh, 	NOSHEET, PAL3, 1, &ai_null, &ai_npc_itoh, &ai_null }, // Itoh

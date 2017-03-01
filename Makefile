@@ -65,7 +65,7 @@ main-build: head-gen doukutsu.bin symbol.txt
 symbol.txt: doukutsu.bin
 	$(NM) -n doukutsu.elf > symbol.txt
 
-src/boot/sega.o: out/rom_head.bin
+src/boot/sega.o: src/boot/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
 
 %.bin: %.elf
@@ -76,18 +76,17 @@ src/boot/sega.o: out/rom_head.bin
 	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(LIBMD) $(ARCHIVES) $(OBJS) $(LIBS)
 
 %.o: %.c
-	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
 	@echo "CC $<"
+	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
-	@$(AS) $(ASFLAGS) $< -o $@
 	@echo "AS $<"
+	@$(AS) $(ASFLAGS) $< -o $@
 
 %.s: %.res
 	$(RESCOMP) $< $@
 
-out/rom_head.bin: src/boot/rom_head.o
-	mkdir -p out/boot
+src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
 
 head-gen:

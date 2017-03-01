@@ -343,17 +343,21 @@ void weapon_fire_blade(Weapon *w) {
 	b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 1), b->sprite.attribut, 9);
 		b->x_speed = 0;
 		b->y_speed = -SPEED(0x800);
 	} else if(b->dir == DOWN) {
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 2), b->sprite.attribut, 9);
 		b->x_speed = 0;
 		b->y_speed = SPEED(0x800);
 	} else {
-		if(b->level == 3 && b->dir == RIGHT) sprite_hflip(b->sprite, 1);
+		if(b->level == 3) {
+			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attribut, 9);
+			if(b->dir == RIGHT) sprite_hflip(b->sprite, 1);
+		}
 		b->x_speed = (b->dir ? SPEED(0x800) : -SPEED(0x800));
 		b->y_speed = 0;
 	}
-	// TODO: Replace level 3 tiles based on direction
 }
 
 void weapon_fire_supermissile(Weapon *w) {
@@ -593,38 +597,56 @@ void bullet_update_bubbler(Bullet *b) {
 void bullet_update_blade(Bullet *b) {
 	b->ttl--;
 	if(b->x_speed | b->y_speed) {
-		b->x += b->x_speed;
-		b->y += b->y_speed;
-		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if(block == 0x41) { // Hit wall/floor
-			b->ttl = 0;
-			sound_play(SND_SHOT_HIT, 3);
-			return;
-		} else if(block == 0x43) { // Hit breakable block
-			b->ttl = 0;
-			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
-			sound_play(SND_BLOCK_DESTROY, 5);
-			return;
+		if(b->level == 3) {
+			if(b->hits) { // Hit an enemy, stop moving
+				b->ttl = TIME(50);
+				b->x_speed = 0;
+				b->y_speed = 0;
+				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
+			} else if((b->ttl & 7) == 0) {
+				// TODO: slashes surrounding L3 while moving
+			}
+		} else {
+			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+			// Level 1 and 2 hit walls, spin
+			if(b->level < 3) {
+				if(block == 0x41) { // Hit wall/floor
+					b->ttl = 0;
+					sound_play(SND_SHOT_HIT, 3);
+					return;
+				} else if(block == 0x43) { // Hit breakable block
+					b->ttl = 0;
+					bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+					effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+					sound_play(SND_BLOCK_DESTROY, 5);
+					return;
+				}
+				u8 anim = b->ttl & 7;
+				if(anim == 6)      b->sprite.attribut |= (1<<12);
+				else if(anim == 4) b->sprite.attribut |= (1<<11);
+				else if(anim == 2) b->sprite.attribut &= ~(1<<12);
+				else if(anim == 0) b->sprite.attribut &= ~(1<<11);
+			} else if((block & 0x41) == 0x41) { // Hit a wall, stop moving
+				b->ttl = TIME(50);
+				b->x_speed = 0;
+				b->y_speed = 0;
+				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
+			}
 		}
-		// Level 1 and 2 spin
-		if(b->level < 3) {
-			u8 anim = b->ttl & 7;
-			if(anim == 6)      b->sprite.attribut |= (1<<12);
-			else if(anim == 4) b->sprite.attribut |= (1<<11);
-			else if(anim == 2) b->sprite.attribut &= ~(1<<12);
-			else if(anim == 0) b->sprite.attribut &= ~(1<<11);
-		}
-		sprite_pos(b->sprite, 
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-		// Level 2 and 3 sprites are a bit larger so adjust the display position
-		if(b->level > 1) {
-			b->sprite.x -= 4;
-			b->sprite.y -= 4;
-		}
-		sprite_add(b->sprite);
+	} else {
+		// TODO: burst of slashes after hitting something
 	}
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	sprite_pos(b->sprite, 
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	// Level 2 and 3 sprites are a bit larger so adjust the display position
+	if(b->level > 1) {
+		b->sprite.x -= 4;
+		b->sprite.y -= 4;
+	}
+	sprite_add(b->sprite);
 }
 
 void bullet_update_supermissile(Bullet *b) {

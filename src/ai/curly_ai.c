@@ -374,7 +374,7 @@ void ai_cai_gun(Entity *e) {
 	
 	// Stick to curly
 	e->x = curly->x;// - (4 << CSF);
-	e->y = curly->y;// - (4 << CSF);
+	e->y = curly->y + 0x600;// - (4 << CSF);
 	e->dir = curly->dir;
 	if (curly_look) {
 		sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
