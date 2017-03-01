@@ -36,7 +36,7 @@ void ai_fan(Entity *e) {
 			ANIMATE(e, 4, 3,4,5);
 			if(px > ex - (6<<4) && px < ex && py > ey - 12 && py < ey + 12) {
 				player.x_speed -= SPEED(0x88);
-				if(player.x_speed < -SPEED(0x6FF)) player.x_speed = -SPEED(0x6FF);
+				if(player.x_speed < -SPEED(0x65F)) player.x_speed = -SPEED(0x65F);
 			}
 		}
 		break;
@@ -55,7 +55,7 @@ void ai_fan(Entity *e) {
 			ANIMATE(e, 4, 3,4,5);
 			if(px > ex && px < ex + (6<<4) && py > ey - 12 && py < ey + 12) {
 				player.x_speed += SPEED(0x88);
-				if(player.x_speed > SPEED(0x6FF)) player.x_speed = SPEED(0x6FF);
+				if(player.x_speed > SPEED(0x65F)) player.x_speed = SPEED(0x65F);
 			}
 		}
 		break;
