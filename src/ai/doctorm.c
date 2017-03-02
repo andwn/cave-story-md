@@ -319,10 +319,11 @@ void ai_muscle_doctor(Entity *e) {
 			e->frame = 6;
 			e->timer++;
 			
-			if (e->timer > TIME(20) && (e->timer & 3) == 1) {
+			if (e->timer > TIME(20) && (e->timer & 7) == 1) {
 				Entity *bat = entity_create(e->x + (8<<CSF),
 										   e->y - (4<<CSF), OBJ_DOCTOR_BAT, 0);
 				
+				bat->health <<= 1;
 				bat->x_speed = 0x400 + (random() & 0x3FF);
 				bat->y_speed = -0x200 + (random() & 0x3FF);
 				bat->dir = e->dir;

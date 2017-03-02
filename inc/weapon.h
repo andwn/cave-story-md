@@ -24,7 +24,7 @@ enum {
 	WEAPON_MISSILE, 
 	WEAPON_06, 
 	WEAPON_BUBBLER, 
-	WEAPON_08, 
+	WEAPON_BLADE_SLASH, 
 	WEAPON_BLADE, 
 	WEAPON_SUPERMISSILE, 
 	WEAPON_11, 
@@ -85,6 +85,7 @@ void bullet_update_machinegun(Bullet *b);
 void bullet_update_missile(Bullet *b);
 void bullet_update_bubbler(Bullet *b);
 void bullet_update_blade(Bullet *b);
+void bullet_update_blade_slash(Bullet *b);
 void bullet_update_supermissile(Bullet *b);
 void bullet_update_nemesis(Bullet *b);
 void bullet_update_spur(Bullet *b);

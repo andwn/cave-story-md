@@ -41,7 +41,7 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_missile,
 	&bullet_update_none,
 	&bullet_update_bubbler,
-	&bullet_update_none,
+	&bullet_update_blade_slash,
 	&bullet_update_blade,
 	&bullet_update_supermissile,
 	&bullet_update_none,
@@ -604,8 +604,21 @@ void bullet_update_blade(Bullet *b) {
 				b->x_speed = 0;
 				b->y_speed = 0;
 				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
-			} else if((b->ttl & 7) == 0) {
-				// TODO: slashes surrounding L3 while moving
+			} else if(!(b->ttl & 7)) {
+				Bullet *slash;
+				if(!(b->ttl & 15)) {
+					slash = &playerBullet[1];
+					slash->dir = LEFT;
+				} else {
+					slash = &playerBullet[2];
+					slash->dir = RIGHT;
+				}
+				slash->type = WEAPON_BLADE_SLASH;
+				slash->ttl = TIME(20);
+				slash->sprite = (VDPSprite) { 
+					.size = SPRITE_SIZE(1, 1), 
+					.attribut = TILE_ATTR_FULL(PAL0,0,0,slash->dir, 0xFE80 >> 5)
+				};
 			}
 		} else {
 			// TODO: burst of slashes after hitting something
@@ -640,6 +653,12 @@ void bullet_update_blade(Bullet *b) {
 		b->sprite.x -= 4;
 		b->sprite.y -= 4;
 	}
+	sprite_add(b->sprite);
+}
+
+void bullet_update_blade_slash(Bullet *b) {
+	b->ttl--;
+	
 	sprite_add(b->sprite);
 }
 

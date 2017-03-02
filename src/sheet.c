@@ -51,11 +51,15 @@ void sheets_load_weapon(Weapon *w) {
 		SHEET_ADD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 
 							 : w->level == 2 ? &SPR_BladeB2 
 							 : &SPR_BladeB3k, 1,3,3, 0,0);
+		SHEET_LOAD(&SPR_BladeB3s, 3,4, (0xFE80 >> 5), 1);
 		break;
 		case WEAPON_NEMESIS:
-		SHEET_ADD(SHEET_NEMES, w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_NEMES, w->level == 1 ? &SPR_NemB1h 
+							 : w->level == 2 ? &SPR_NemB2h 
+							 : &SPR_NemB3h, 2,3,2, 0,0, 1,0);
+		SHEET_LOAD(w->level == 1 ? &SPR_NemB1v 
+				 : w->level == 2 ? &SPR_NemB2v 
+				 : &SPR_NemB3v, 2,6, (0xFE80 >> 5), 1);
 		break;
 		case WEAPON_MISSILE:
 		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
@@ -108,11 +112,15 @@ void sheets_refresh_weapon(Weapon *w) {
 		SHEET_MOD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 
 							 : w->level == 2 ? &SPR_BladeB2 
 							 : &SPR_BladeB3k, 1,3,3, 0,0);
+		SHEET_LOAD(&SPR_BladeB3s, 3,4, (0xFE80 >> 5), 1);
 		break;
 		case WEAPON_NEMESIS:
-		SHEET_MOD(SHEET_NEMES, w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_MOD(SHEET_NEMES, w->level == 1 ? &SPR_NemB1h 
+							 : w->level == 2 ? &SPR_NemB2h 
+							 : &SPR_NemB3h, 2,3,2, 0,0, 1,0);
+		SHEET_LOAD(w->level == 1 ? &SPR_NemB1v 
+				 : w->level == 2 ? &SPR_NemB2v 
+				 : &SPR_NemB3v, 2,6, (0xFE80 >> 5), 1);
 		break;
 		case WEAPON_MISSILE:
 		SHEET_MOD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
