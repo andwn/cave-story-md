@@ -50,6 +50,7 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 };
 
 static void bullet_destroy_block(u16 x, u16 y);
+static void create_blade_slash(Bullet *b, u8 burst);
 
 void weapon_fire_none(Weapon *w) { (void)(w); }
 
@@ -579,9 +580,15 @@ void bullet_update_bubbler(Bullet *b) {
 		}
 	} else { // Level 3 being launched
 		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if((block & 0x41) == 0x41) { // Bullet hit a wall
+		if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
+			return;
+		} else if(block == 0x43) { // Breakable block
+			b->ttl = 0;
+			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			sound_play(SND_BLOCK_DESTROY, 5);
 			return;
 		}
 	}
@@ -599,29 +606,22 @@ void bullet_update_blade(Bullet *b) {
 	if(b->level == 3) {
 		if(b->x_speed | b->y_speed) {
 			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-			if(b->hits || (block & 0x41) == 0x41) { // Hit something, stop moving
+			if(b->hits || block == 0x41) { // Hit something, stop moving
 				b->ttl = TIME(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
 				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
+			} else if(block == 0x43) { // Breakable block
+				b->ttl = 0;
+				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+				effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+				sound_play(SND_BLOCK_DESTROY, 5);
+				return;
 			} else if(!(b->ttl & 7)) {
-				Bullet *slash;
-				if(!(b->ttl & 15)) {
-					slash = &playerBullet[1];
-					slash->dir = LEFT;
-				} else {
-					slash = &playerBullet[2];
-					slash->dir = RIGHT;
-				}
-				slash->type = WEAPON_BLADE_SLASH;
-				slash->ttl = TIME(20);
-				slash->sprite = (VDPSprite) { 
-					.size = SPRITE_SIZE(1, 1), 
-					.attribut = TILE_ATTR_FULL(PAL0,0,0,slash->dir, 0xFE80 >> 5)
-				};
+				create_blade_slash(b, FALSE);
 			}
-		} else {
-			// TODO: burst of slashes after hitting something
+		} else if(!(b->ttl & 3)) {
+			create_blade_slash(b, TRUE);
 		}
 	} else {
 		// Level 1 and 2 hit walls, spin
@@ -656,9 +656,50 @@ void bullet_update_blade(Bullet *b) {
 	sprite_add(b->sprite);
 }
 
+// Here be dragons
 void bullet_update_blade_slash(Bullet *b) {
 	b->ttl--;
-	
+	// Animate sprite
+	switch(b->ttl) {
+		case 16:
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 4);
+			b->sprite.size = SPRITE_SIZE(2, 2);
+			break;
+		case 12:
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 8);
+			break;
+		case 8:
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 1);
+			b->sprite.size = SPRITE_SIZE(1, 1);
+			break;
+		case 4:
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 2);
+			break;
+	}
+	// Adjust sprite offset and hit box based on which frame we are at
+	s8 xoff, yoff;
+	if(b->ttl > 16) {
+		yoff = -12;
+		b->hit_box = (bounding_box) { 12, 12, 0, 0 }; //8x8 top corner
+	} else if(b->ttl > 12) {
+		yoff = -10;
+		b->hit_box = (bounding_box) { 10, 10, 6, 6 }; //16x16 top corner
+	} else if(b->ttl > 8) {
+		yoff = -8;
+		b->hit_box = (bounding_box) { 8, 8, 8, 8 }; //16x16 mid/low corner
+	} else if(b->ttl > 4) {
+		yoff = 0;
+		b->hit_box = (bounding_box) { 0, 0, 8, 8 }; //8x8 mid/low corner
+	} else {
+		yoff = 4;
+		b->hit_box = (bounding_box) { 0, 0, 12, 12 }; //8x8 low corner
+	}
+	xoff = b->dir ? yoff : (12-yoff);
+	//b->x += b->x_speed;
+	//b->y += b->y_speed;
+	sprite_pos(b->sprite, 
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W + xoff,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H + yoff);
 	sprite_add(b->sprite);
 }
 
@@ -714,14 +755,49 @@ u8 bullet_missile_is_exploding() {
 }
 
 static void bullet_destroy_block(u16 x, u16 y) {
-	u8 ind = 0;
-	// Usually the index should be decremented by 1, but this will cause problems
-	// on the modified tilesets, to we cherry pick which ones
-	if(stageTileset == 18 || // Sand Zone
-			stageTileset == 20 || // Grasstown
-			stageTileset == 19 || // Store
-			stageTileset == 3) { // First Cave
-		ind = stage_get_block(x, y) - 1;
-	}
+	u8 ind;
+	if(stageTileset == 21) ind = 22; // Balcony
+	else ind = stage_get_block(x, y) - 1;
 	stage_replace_block(x, y, ind);
+}
+
+static void create_blade_slash(Bullet *b, u8 burst) {
+	Bullet *slash = NULL;
+	if(burst) {
+		if((b->ttl & 15) == 0) {
+			slash = &playerBullet[1];
+			slash->dir = LEFT;
+		} else if((b->ttl & 15) == 4) {
+			slash = &playerBullet[2];
+			slash->dir = RIGHT;
+		} else if((b->ttl & 15) == 8) {
+			slash = &playerBullet[3];
+			slash->dir = LEFT;
+		} else if((b->ttl & 15) == 12) {
+			slash = &playerBullet[4];
+			slash->dir = RIGHT;
+		}
+	} else {
+		if(!(b->ttl & 15)) {
+			slash = &playerBullet[1];
+			slash->dir = LEFT;
+		} else {
+			slash = &playerBullet[2];
+			slash->dir = RIGHT;
+		}
+	}
+	if(!slash) return;
+	slash->damage = 1;
+	slash->x = b->x;
+	slash->y = b->y;
+	if(burst) { // Spread them for AOE
+		slash->x += -0x1000 + (random() % 0x2000);
+		slash->y += -0x1000 + (random() % 0x2000);
+	}
+	slash->type = WEAPON_BLADE_SLASH;
+	slash->ttl = 20;
+	slash->sprite = (VDPSprite) { 
+		.size = SPRITE_SIZE(1, 1), 
+		.attribut = TILE_ATTR_FULL(PAL0,0,0,slash->dir, 0xFE80 >> 5)
+	};
 }

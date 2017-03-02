@@ -62,7 +62,7 @@ void onspawn_spike(Entity *e) {
 		return;
 	}
 	// Shrink hitbox slightly -- test this in First Cave
-	// Player should not collide with the first spike to the left when not jumping
+	// There are hidden spikes in the wall near the gunsmith room
 	e->hit_box.left -= 2;
 	e->hit_box.top -= 2;
 	e->hit_box.right -= 2;
@@ -78,6 +78,11 @@ void onspawn_spike(Entity *e) {
 		e->frame = 1;
 		e->dir = 1;
 	}
+}
+
+// The big spike, collision box is too high
+void onspawn_trap(Entity *e) {
+	e->hit_box.top -= 7;
 }
 
 void ondeath_event(Entity *e) {

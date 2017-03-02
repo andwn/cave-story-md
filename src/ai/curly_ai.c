@@ -380,11 +380,13 @@ void ai_cai_gun(Entity *e) {
 		sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
 		sprite_index(e->sprite[0], e->vramindex + 3);
 		e->sprite[0].size = SPRITE_SIZE(1, 3);
+		e->frame = 1;
 		e->display_box = (bounding_box) { 4, 12, 4, 12 };
 	} else {
 		sprite_vflip(e->sprite[0], 0);
 		sprite_index(e->sprite[0], e->vramindex);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
+		e->frame = 0;
 		e->display_box = (bounding_box) { 12, 4, 12, 4 };
 	}
 	

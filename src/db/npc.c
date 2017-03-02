@@ -33,7 +33,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_PCRITTER, PAL0, 1, &onspawn_snap, &ai_critter, &ondeath_default },// Power Critter
 	{ &SPR_Platform,NOSHEET,PAL1, 1, &onspawn_lift, &ai_lift, &ai_null }, // Lift Platform
 	{ NULL, SHEET_BAT, 		PAL3, 1, &ai_null, &ai_batCircle, &ondeath_default }, // Bat
-	{ NULL, SHEET_TRAP, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Death Trap
+	{ NULL, SHEET_TRAP, 	PAL1, 1, &onspawn_trap, &ai_null, &ai_null }, // Death Trap
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Critter
 	{ &SPR_Cthu, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Cthulhu
 	{ &SPR_Gunsmith,NOSHEET,PAL3, 1, &onspawn_op2snap, &ai_gunsmith, &ai_null }, // Gunsmith
