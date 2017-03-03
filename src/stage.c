@@ -103,6 +103,7 @@ void stage_load(u16 id) {
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
 	camera.x_offset = 0;
+	camera.y_offset = 0;
 	stage_draw_screen();
 	stage_load_entities();
 	if(stageBackgroundType == 3) {

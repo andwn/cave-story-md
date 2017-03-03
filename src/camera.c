@@ -69,16 +69,23 @@ void camera_update() {
 				if(camera.x_offset > PAN_SIZE) camera.x_offset = PAN_SIZE;
 			}
 			if(!controlsLocked && joy_down(BUTTON_UP) && player.y_speed <= 0) {
-				camera.y_offset = -pixel_to_sub(48);
+				camera.y_offset -= PAN_SPEED;
+				if(camera.y_offset < -PAN_SIZE) camera.y_offset = -PAN_SIZE;
 			} else {
-				camera.y_offset = 0;
+				camera.y_offset += PAN_SPEED;
+				if(camera.y_offset > 0) camera.y_offset = 0;
 			}
+			// Calculate where camera will be next frame
+			x_next = camera.x +
+					(((floor(camera.target->x) + camera.x_offset) - camera.x) >> 4);
+			y_next = camera.y +
+					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 4);
+		} else {
+			x_next = camera.x +
+					(((floor(camera.target->x) + camera.x_offset) - camera.x) >> 5);
+			y_next = camera.y +
+					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 5);
 		}
-		// Calculate where camera will be next frame
-		x_next = camera.x +
-				(((floor(camera.target->x) + camera.x_offset) - camera.x) >> FOCUS_SPEED);
-		y_next = camera.y +
-				(((floor(camera.target->y) + camera.y_offset) - camera.y) >> FOCUS_SPEED);
 		// Camera shaking
 		if(cameraShake) {
 			x_next += (random() % 0x800) - 0x400;
