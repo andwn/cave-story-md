@@ -38,11 +38,6 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(u16 id) {
-	//u8 vdpEnabled = VDP_getEnable();
-	//if(vdpEnabled) {
-	//	SYS_disableInts();
-	//	VDP_setEnable(FALSE); // Turn the screen off, speeds up writes to VRAM
-	//}
 	input_init();
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
@@ -107,6 +102,7 @@ void stage_load(u16 id) {
 	stage_load_blocks();
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
+	camera.x_offset = 0;
 	stage_draw_screen();
 	stage_load_entities();
 	if(stageBackgroundType == 3) {
@@ -118,11 +114,6 @@ void stage_load(u16 id) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
 	}
 	tsc_load_stage(id);
-	//hud_create();
-	//if(vdpEnabled) {
-	//	VDP_setEnable(TRUE);
-	//	SYS_enableInts();
-	//}
 }
 
 void stage_load_tileset() {

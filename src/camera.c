@@ -10,6 +10,11 @@
 #define CAMERA_MAX_SPEED 	0xFFF
 #define LIMIT 				8
 #define FOCUS_SPEED 		5
+// While following the player focus on a variable point left/right of the player
+// The idea is to move slowly along this line relative to the player, but not globally
+// limit the speed that way or we will fall behind
+#define PAN_SPEED	0x200
+#define PAN_SIZE	0x6000
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 u16 cameraShake;
@@ -20,6 +25,7 @@ void camera_init() {
 	camera.target = &player;
 	camera.x = pixel_to_sub(SCREEN_HALF_W);
 	camera.y = pixel_to_sub(SCREEN_HALF_H + 8);
+	camera.x_offset = 0;
 	cameraShake = 0;
 }
 
@@ -51,17 +57,21 @@ void camera_update() {
 	// Just stick to the target object
 	s32 x_next, y_next;
 	if(camera.target) {
-		camera.x_offset = 0;
-		camera.y_offset = 0;
 		// If following the player focus on where they are walking/looking
 		if(camera.target == &player) {
-			if(player.dir == 0) {
-				camera.x_offset = -pixel_to_sub(48);
+			if(player.dir == LEFT) {
+				//camera.x_offset = -pixel_to_sub(48);
+				camera.x_offset -= PAN_SPEED;
+				if(camera.x_offset < -PAN_SIZE) camera.x_offset = -PAN_SIZE;
 			} else {
-				camera.x_offset = pixel_to_sub(48);
+				//camera.x_offset = pixel_to_sub(48);
+				camera.x_offset += PAN_SPEED;
+				if(camera.x_offset > PAN_SIZE) camera.x_offset = PAN_SIZE;
 			}
 			if(!controlsLocked && joy_down(BUTTON_UP) && player.y_speed <= 0) {
 				camera.y_offset = -pixel_to_sub(48);
+			} else {
+				camera.y_offset = 0;
 			}
 		}
 		// Calculate where camera will be next frame
