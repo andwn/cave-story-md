@@ -615,6 +615,7 @@ u8 execute_command() {
 			} else if(args[0] == 2) { // Right
 				player.dir = 1;
 			}
+			player.x_speed = 0;
 		}
 		break;
 		case CMD_UNI: // Change movement type to (1)

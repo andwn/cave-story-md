@@ -329,8 +329,15 @@ void window_show_item(u16 item) {
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
-	TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
-	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
+	//TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
+	//TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
+	// For some strange mysterious reason, about 40% of the time, and only in
+	// Arthur's house, queueing these tiles just doesn't do anything.
+	// So, we just upload it to VRAM now
+	SYS_disableInts();
+	SHEET_LOAD(sprDef, 1, 6, TILE_PROMPTINDEX, 1, item,0);
+	SHEET_LOAD(&SPR_ItemWin, 1, 18, TILE_PROMPTINDEX+6, 1, 0,0);
+	SYS_enableInts();
 }
 
 void window_show_weapon(u16 item) {
