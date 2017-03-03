@@ -328,7 +328,7 @@ void stage_draw_screen() {
 	s16 y = sub_to_tile(camera.y) - 16;
 	for(u8 i = 32; i--; ) {
 		if(y >= 0 && y < stageHeight * 2) {
-			s16 x = sub_to_tile(camera.x) - 31;
+			s16 x = sub_to_tile(camera.x) - 32;
 			for(u8 j = 64; j--; ) {
 				if(x >= stageWidth * 2) break;
 				if(x >= 0) {

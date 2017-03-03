@@ -518,6 +518,11 @@ void bullet_update_bubbler(Bullet *b) {
 			case UP: b->y_speed += decel; break;
 			case DOWN: b->y_speed -= decel; break;
 		}
+		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		if((block & 0x41) == 0x41) { // Bullet hit a wall
+			b->ttl = 0;
+			return;
+		}
 		// Half assed animation
 		u8 livetime = b->level == 1 ? TIME(40) : TIME(60);
 		u8 frame = (livetime - b->ttl) >> 2;
@@ -606,7 +611,7 @@ void bullet_update_blade(Bullet *b) {
 	if(b->level == 3) {
 		if(b->x_speed | b->y_speed) {
 			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-			if(b->hits || block == 0x41) { // Hit something, stop moving
+			if(b->hits) { // Hit something, stop moving
 				b->ttl = TIME(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
@@ -616,6 +621,9 @@ void bullet_update_blade(Bullet *b) {
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 				effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 				sound_play(SND_BLOCK_DESTROY, 5);
+				return;
+			} else if(block == 0x41) {
+				b->ttl = 0;
 				return;
 			} else if(!(b->ttl & 7)) {
 				create_blade_slash(b, FALSE);

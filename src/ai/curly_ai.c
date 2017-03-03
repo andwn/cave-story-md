@@ -30,6 +30,7 @@ u8 curly_look = 0;
 
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
+		moveMeToFront = TRUE;
 		e->y_speed = -SPEED(0x300) - random(SPEED(0x300));
 		e->grounded = FALSE;
 		e->frame = WALK2;
@@ -376,18 +377,27 @@ void ai_cai_gun(Entity *e) {
 	e->x = curly->x;// - (4 << CSF);
 	e->y = curly->y + 0x600;// - (4 << CSF);
 	e->dir = curly->dir;
+	
+	const SpriteDefinition *sd = curly_mgun ? &SPR_MGun : &SPR_Polar;
+	
 	if (curly_look) {
-		sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
-		sprite_index(e->sprite[0], e->vramindex + 3);
-		e->sprite[0].size = SPRITE_SIZE(1, 3);
-		e->frame = 1;
-		e->display_box = (bounding_box) { 4, 12, 4, 12 };
-	} else {
+		if(!e->animtime) {
+			sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
+			e->sprite[0].size = SPRITE_SIZE(1, 3);
+			e->display_box = (bounding_box) { 4, 12, 4, 12 };
+			e->animtime = TRUE;
+			SYS_disableInts();
+			DMA_doDma(DMA_VRAM, (u32) (SPR_TILES(sd,0,0)+(96/4)), e->vramindex << 5, 48, 2);
+			SYS_enableInts();
+		}
+	} else if(e->animtime) {
 		sprite_vflip(e->sprite[0], 0);
-		sprite_index(e->sprite[0], e->vramindex);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
-		e->frame = 0;
 		e->display_box = (bounding_box) { 12, 4, 12, 4 };
+		e->animtime = FALSE;
+		SYS_disableInts();
+		DMA_doDma(DMA_VRAM, (u32) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
+		SYS_enableInts();
 	}
 	
 	if (curly_target_time) {

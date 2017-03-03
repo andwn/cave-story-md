@@ -557,6 +557,7 @@ void ai_mimiga_farmer(Entity *e) {
 
 
 void onspawn_mimiga_cage(Entity *e) {
+	e->alwaysActive = TRUE;
 	e->state = 1;
 	e->x -= (16 << CSF);
 }
@@ -909,6 +910,7 @@ void onspawn_jailbars(Entity *e) {
 }
 
 void onspawn_cent_cage(Entity *e) {
+	e->alwaysActive = TRUE;
 	e->x += 8 << CSF;
 	e->y += 16 << CSF;
 	// When reused in Balcony, things are a bit different
@@ -926,7 +928,5 @@ void onspawn_cent_cage(Entity *e) {
 			.size = SPRITE_SIZE(4, 4),
 			.attribut = TILE_ATTR_FULL(PAL2,0,0,0,e->vramindex)
 		};
-		// And never deactivate
-		e->alwaysActive = TRUE;
 	}
 }

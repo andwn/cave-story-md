@@ -68,6 +68,7 @@ void ai_batHang(Entity *e) {
 			e->state = 3;
 			e->timer = 0;
 			e->frame = 5;
+			moveMeToFront = TRUE;
 		}
 	} else if(e->state == 3) { // Falling
 		e->y_speed += SPEED(0x20);
