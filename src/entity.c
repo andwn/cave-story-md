@@ -611,41 +611,82 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		by1 = sub_to_pixel(b->y) - b->hit_box.top,
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return result;
-	// Wall reaction
-	ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
-	ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
-	ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
-	ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
-	if(ay1 < by2 && ay2 > by1) {
-		s16 move1 = pixel_to_sub(bx2 - ax1);
-		s16 move2 = pixel_to_sub(bx1 - ax2);
-		if(abs(move1) < abs(move2)) {
-			result.left = 1;
-			a->x_next += move1;
-			if(a->x_speed < 0) a->x_speed = 0;
-		} else {
-			result.right = 1;
-			a->x_next += move2;
-			if(a->x_speed > 0) a->x_speed = 0;
+	// This is an attempt to fix falling into platforms that are moving up
+	if(abs(a->y_speed - b->y_speed) <= SPEED(0x5FF)) {
+		// Wall reaction
+		ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
+		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
+		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
+		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
+		if(ay1 < by2 && ay2 > by1) {
+			s16 move1 = pixel_to_sub(bx2 - ax1);
+			s16 move2 = pixel_to_sub(bx1 - ax2);
+			if(abs(move1) < abs(move2)) {
+				result.left = 1;
+				a->x_next += move1;
+				if(a->x_speed < 0) a->x_speed = 0;
+			} else {
+				result.right = 1;
+				a->x_next += move2;
+				if(a->x_speed > 0) a->x_speed = 0;
+			}
 		}
-	}
-	// Floor reaction
-	ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 2;
-	ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 2;
-	ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
-	ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
-	if(ax1 < bx2 && ax2 > bx1) {
-		s16 move1 = pixel_to_sub(by2 - ay1);
-		s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
-		if(abs(move1) < abs(move2)) {
-			result.top = 1;
-			a->y_next += move1;
-			if(a->y_speed < 0) a->y_speed = 0;
-		} else {
-			result.bottom = 1;
-			a->y_next += move2;
-			if(a->y_speed > 0) a->y_speed = 0;
-			a->grounded = TRUE;
+		// Floor reaction
+		ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 2;
+		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 2;
+		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
+		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
+		if(ax1 < bx2 && ax2 > bx1) {
+			s16 move1 = pixel_to_sub(by2 - ay1);
+			s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
+			if(abs(move1) < abs(move2)) {
+				result.top = 1;
+				a->y_next += move1;
+				if(a->y_speed < 0) a->y_speed = 0;
+			} else {
+				result.bottom = 1;
+				a->y_next += move2;
+				if(a->y_speed > 0) a->y_speed = 0;
+				a->grounded = TRUE;
+			}
+		}
+	} else { // This is 100% copy paste but wall/floor reversed
+		// Floor reaction
+		ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 2;
+		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 2;
+		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
+		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
+		if(ax1 < bx2 && ax2 > bx1) {
+			s16 move1 = pixel_to_sub(by2 - ay1);
+			s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
+			if(abs(move1) < abs(move2)) {
+				result.top = 1;
+				a->y_next += move1;
+				if(a->y_speed < 0) a->y_speed = 0;
+			} else {
+				result.bottom = 1;
+				a->y_next += move2;
+				if(a->y_speed > 0) a->y_speed = 0;
+				a->grounded = TRUE;
+			}
+		}
+		// Wall reaction
+		ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
+		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
+		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
+		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
+		if(ay1 < by2 && ay2 > by1) {
+			s16 move1 = pixel_to_sub(bx2 - ax1);
+			s16 move2 = pixel_to_sub(bx1 - ax2);
+			if(abs(move1) < abs(move2)) {
+				result.left = 1;
+				a->x_next += move1;
+				if(a->x_speed < 0) a->x_speed = 0;
+			} else {
+				result.right = 1;
+				a->x_next += move2;
+				if(a->x_speed > 0) a->x_speed = 0;
+			}
 		}
 	}
 	return result;

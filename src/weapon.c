@@ -765,6 +765,7 @@ u8 bullet_missile_is_exploding() {
 static void bullet_destroy_block(u16 x, u16 y) {
 	u8 ind;
 	if(stageTileset == 21) ind = 22; // Balcony
+	else if(stageTileset == 13) ind = 0; // Labyrinth
 	else ind = stage_get_block(x, y) - 1;
 	stage_replace_block(x, y, ind);
 }
