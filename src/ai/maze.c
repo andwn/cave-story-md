@@ -494,7 +494,7 @@ void ai_gaudiArmored(Entity *e) {
 			// throw attacks at player
 			if (e->timer == TIME(30) || e->timer == TIME(40)) {
 				FIRE_ANGLED_SHOT(OBJ_GAUDI_ARMORED_SHOT, e->x, e->y, 
-						e->dir ? A_RIGHT-16 : A_LEFT+16, 0x600);
+						e->dir ? A_RIGHT - 12 : A_LEFT + 12, SPEED(0x500));
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->frame = 3;

@@ -77,7 +77,7 @@ void ai_dragon_zombie(Entity *e) {
 				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
 				//ThrowEntity(fire, e->xmark, e->ymark, 6, 0x600);
 				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
-						e->dir ? A_RIGHT - 6 : A_LEFT + 6, 0x600);
+						e->dir ? A_RIGHT + 6 : A_LEFT - 6, SPEED(0x500));
 				
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
