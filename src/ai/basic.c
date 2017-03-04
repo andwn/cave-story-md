@@ -198,12 +198,13 @@ void ai_trigger_special(Entity *e) {
 
 void ai_genericproj(Entity *e) {
 	ANIMATE(e, 4, 0,1);
-	Bullet *b = bullet_colliding(e);
-	if(b) {
-		b->ttl = 0;
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		e->state = STATE_DELETE;
-	} else if(++e->timer > TIME(250) ||
+	//Bullet *b = bullet_colliding(e);
+	//if(b) {
+		//b->ttl = 0;
+		//effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		//e->state = STATE_DELETE;
+	//	entity_handle_bullet(e, b);
+	if(++e->timer > TIME(250) ||
 			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
@@ -215,12 +216,13 @@ void ai_genericproj(Entity *e) {
 // Duplicate of above except drops powerups
 void ai_gaudiShot(Entity *e) {
 	ANIMATE(e, 4, 0,1);
-	Bullet *b = bullet_colliding(e);
-	if(b) {
-		b->ttl = 0;
+	//Bullet *b = bullet_colliding(e);
+	//if(b) {
+		//b->ttl = 0;
 		//effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		e->state = STATE_DESTROY;
-	} else if(++e->timer > TIME(250) ||
+		//e->state = STATE_DESTROY;
+		//entity_handle_bullet(e, b);
+	if(++e->timer > TIME(250) ||
 			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
@@ -232,6 +234,12 @@ void ai_gaudiShot(Entity *e) {
 
 void ondeath_default(Entity *e) {
 	e->state = STATE_DESTROY;
+}
+
+void ondeath_nodrop(Entity *e) {
+	sound_play(e->deathSound, 5);
+	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	e->state = STATE_DELETE;
 }
 
 void onspawn_teleIn(Entity *e) {

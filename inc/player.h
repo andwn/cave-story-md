@@ -68,10 +68,6 @@ void player_start_booster();
 // Sprite animation
 void player_draw();
 
-// This is called by entities to check if it got hit by any bullets
-// It will return the first bullet that is colliding with the given entity, if any
-Bullet *bullet_colliding(Entity *e);
-
 Weapon *player_find_weapon(u8 id);
 
 // Returns TRUE if the player is blinking or otherwise should not be damaged (cutscene)

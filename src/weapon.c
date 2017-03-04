@@ -318,6 +318,7 @@ void weapon_fire_blade(Weapon *w) {
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
+	b->hits = 0;
 	switch(b->level) {
 		case 1: // Small 16x16 Blade
 			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };

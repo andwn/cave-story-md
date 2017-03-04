@@ -16,7 +16,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default },
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog_drop_in, &ai_null }, // Balrog
 	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_null, &ai_null },
-	{ NULL, SHEET_IGORSHOT, PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Igor Shot
+	{ NULL, SHEET_IGORSHOT, PAL1, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Igor Shot
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrog, &ai_null }, // Balrog
 	{ NULL, SHEET_FFIELD, 	PAL1, 1, &ai_null, &ai_forcefield, &ai_null }, // Forcefield
 	{ &SPR_Key, NOSHEET, 	PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Santa's Key
@@ -40,7 +40,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_batHang, &ai_batHang, &ondeath_default }, // Bat
 	/* 0x020 (32) */
 	{ &SPR_LifeUp, NOSHEET, PAL1, 1, &ai_null, &ai_lifeup, &ai_null }, // Life Capsule
-	{ NULL, SHEET_IGORSHOT, PAL1, 1, &ai_null, &ai_balrogShot, &ai_null }, // Balrog Shot
+	{ NULL, SHEET_IGORSHOT, PAL1, 1, &ai_null, &ai_balrogShot, &ondeath_nodrop }, // Balrog Shot
 	{ &SPR_Bed, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Bed
 	{ NULL, SHEET_MANNAN, 	PAL3, 1, &onspawn_op2flip, &ai_mannan, &ai_null }, // Mannan
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, &onspawn_persistent, &ai_balrogFlying, &ondeath_balrogFlying },
@@ -58,7 +58,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	/* 0x030 (48) */
 	{ NULL, SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, &ai_omega_shot, &ondeath_default }, // Omega Shot
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
-	{ &SPR_Bone, NOSHEET,	PAL1, 1, &onspawn_persistent, &ai_skeleton_shot, &ai_null }, // Skeleton
+	{ &SPR_Bone, NOSHEET,	PAL1, 1, &onspawn_persistent, &ai_skeleton_shot, &ondeath_nodrop }, // Skeleton
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow & Skullhead
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL3, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
@@ -94,7 +94,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL,SHEET_PIGNONB, 	PAL1, 1, &ai_null, &ai_pignon, &ondeath_default }, // Big Pignon
 	{ &SPR_Misery, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_misery_stand, &ai_null }, // Misery
 	{ &SPR_Igor, NOSHEET, 	PAL3, 4, &onspawn_igor, &ai_igorscene, &ai_null }, // Igor
-	{ NULL, SHEET_BASUSHOT, PAL0, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Basu Shot
+	{ NULL, SHEET_BASUSHOT, PAL0, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Basu Shot
 	{ NULL, SHEET_TERM, 	PAL1, 1, &ai_null, &ai_terminal, &ai_null }, // Terminal
 	{ NULL, SHEET_MISSILE, 	PAL1, 1, &onspawn_op2anim, &ai_missile, &ai_null }, // Missile
 	{ NULL, SHEET_HEART, 	PAL1, 1, &onspawn_op2anim, &ai_heart, &ai_null }, // Heart
@@ -119,7 +119,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &ai_null, &ai_hey, &ai_null }, // "Hey!"
 	{ &SPR_Hey, NOSHEET, 	PAL1, 1, &onspawn_hey, &ai_hey, &ai_null }, // "Hey!" Emitter
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &ai_null, &ai_malco, &ai_null }, // Malco
-	{ NULL, SHEET_REDSHOT, 	PAL1, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Balfrog Shot
+	{ NULL, SHEET_REDSHOT, 	PAL1, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Balfrog Shot
 	{ &SPR_Malco, NOSHEET, 	PAL1, 1, &onspawn_malcoBroken, &ai_null, &ai_null }, // Malco
 	{ NULL, SHEET_PUCHI, 	PAL3, 1, &onspawn_frog, &ai_frog, &ondeath_default }, // Puchi
 	{ &SPR_Quotele,NOSHEET, PAL0, 1, &onspawn_teleOut, &ai_teleOut, &ai_null }, // Tele Out
@@ -162,7 +162,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null },
 	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Lightning
 	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
-	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Critter Shot
+	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)
 	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Quote
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
@@ -170,13 +170,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
-	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiShot, &ai_null }, // Gaudi Shot
+	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiShot, &ondeath_default }, // Gaudi Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockv, &ai_null }, // Moving Block (V)
 	{ NULL, SHEET_XFISHY, 	PAL3, 1, &onspawn_persistent, &ai_x_fishy_missile, &ondeath_default }, // Monster X Shot
 	{ &SPR_XCat, NOSHEET, 	PAL3, 6, &onspawn_persistent, &ai_x_defeated, &ai_null }, // Monster X Cat
 	/* 0x0A0 (160) */
 	{ &SPR_Dark, NOSHEET, 	PAL3, 2, &ai_null, &ai_pooh_black, &ondeath_pooh_black }, // Pooh Black
-	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ai_null }, // Pooh Black Bubble
+	{ NULL, SHEET_DARKBUB, 	PAL3, 1, &ai_null, &ai_pooh_black_bubble, &ondeath_nodrop }, // Pooh Black Bubble
 	{ &SPR_Dark, NOSHEET,	PAL3, 2, &ai_null, &ai_pooh_black_dying, &ai_null }, // Pooh Black (Dying)
 	{ &SPR_DrGero, NOSHEET, PAL3, 1, &onspawn_gero, &ai_gero, &ai_null }, // Dr. Gero
 	{ &SPR_Nurse, NOSHEET, 	PAL3, 1, &onspawn_gero, &ai_gero, &ai_null }, // Nurse Hasumi
@@ -189,13 +189,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_FireWhir,NOSHEET,PAL2, 1, &ai_null, &ai_firewhirr, &ondeath_default }, // Fire Whirr
 	{ NULL,SHEET_FIREWSHOT,PAL2,1, &onspawn_persistent, &ai_firewhirr_shot, &ai_null },
 	{ NULL, SHEET_GAUDI,	PAL2, 1, &ai_null, &ai_gaudiArmored, &ai_null },
-	{ NULL, SHEET_GAUDISHOT, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ai_null }, // Gaudi Shot
+	{ NULL, SHEET_GAUDISHOT, PAL2, 1, &onspawn_persistent, &ai_gaudiArmoredShot, &ondeath_nodrop }, // Gaudi Shot
 	{ NULL,SHEET_GAUDIEGG,	PAL2, 1, &ai_null, &ai_gaudi_egg, &ai_null }, // Gaudi Egg
 	/* 0x0B0 (176) */
 	{ NULL,		SHEET_BUYOB, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
 	{ NULL, 	SHEET_BUYO, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
-	{ NULL, SHEET_CORES1,	PAL2, 1, &onspawn_persistent, &ai_minicore_shot, &ai_null }, // Core Spinning Projectile
-	{ NULL, SHEET_CORES3,	PAL0, 1, &onspawn_persistent, &ai_core_ghostie, &ai_null }, // Core Wisp Projectile
+	{ NULL, SHEET_CORES1,	PAL2, 1, &onspawn_persistent, &ai_minicore_shot, &ondeath_nodrop }, // Core Spinning Projectile
+	{ NULL, SHEET_CORES3,	PAL0, 1, &onspawn_persistent, &ai_core_ghostie, &ondeath_nodrop }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
@@ -227,7 +227,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Countdown,NOSHEET,PAL3, 1, &onspawn_persistent, &ai_counter_bomb_number, &ai_null }, // Countdown Balloon
 	// 0x0D0 (208) */
 	{ NULL, SHEET_BASU, 	 PAL3, 1, &onspawn_basu, &ai_basu, &ondeath_default }, // Basu (2)
-	{ NULL, SHEET_BASUSHOT,  PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Basu Projectile (2)
+	{ NULL, SHEET_BASUSHOT,  PAL3, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Basu Projectile (2)
 	{ NULL, SHEET_BEETLE, 	 PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, &ondeath_default }, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 	NOSHEET, PAL1, 1, &onspawn_spike, &ai_null, &ai_null }, // Spikes
 	{ &SPR_SkyDragon, NOSHEET, PAL3, 4, &ai_null, &ai_sky_dragon, &ai_null }, // Sky Dragon
@@ -256,7 +256,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_RedFl, 	NOSHEET, PAL0, 2, &onspawn_snap, &ai_null, &ai_null }, // Picked Red Flowers
 	{ NULL, SHEET_MIDO, 	 PAL0, 1, &ai_null, &ai_midorin, &ondeath_default }, // Midorin
 	{ &SPR_Gunfish, NOSHEET, PAL0, 1, &ai_null, &ai_gunfish, &ondeath_default }, // Gunfish
-	{ NULL, SHEET_GUNFSHOT,  PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ai_null }, // Gunfish Projectile
+	{ NULL, SHEET_GUNFSHOT,  PAL0, 1, &onspawn_persistent, &ai_gunfish_shot, &ondeath_nodrop }, // Gunfish Projectile
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &ai_null, &ai_proximity_press_hoz, &ondeath_default }, // Lethal Press
 	{ &SPR_JailBars2,NOSHEET,PAL2,2, &onspawn_cent_cage, &ai_null, &ai_null }, // Cage Bars
 	/* 0x0F0 (240) */
@@ -268,7 +268,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_ACID, 	PAL3, 1, &ai_null, &ai_lava_drip_spawner, &ai_null }, // Acid Drop Generator
 	{ NULL, 	SHEET_PRESS, PAL1, 1, &onspawn_press, &ai_proximity_press_vert, &ondeath_default }, // Press (Proximity)
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_boss_misery, &ondeath_boss_misery }, // Misery (Boss)
-	{ NULL, SHEET_IGORSHOT, PAL3, 1, &onspawn_persistent, &ai_genericproj, &ai_null }, // Misery Energy Shot
+	{ NULL, SHEET_IGORSHOT, PAL3, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Misery Energy Shot
 	{ &SPR_Misery2, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Misery (Vanish)
 	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ball, &ai_null }, // Misery Lightning Ball
 	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_black_lightning, &ai_null }, // Misery Lightning
@@ -285,9 +285,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Chie, 	NOSHEET, PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Chie (Caged)
 	{ &SPR_Chaco2, 	NOSHEET, PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Chaco (Caged)
 	{ &SPR_DoctorB, NOSHEET, PAL1, 1, &onspawn_persistent, &ai_boss_doctor, &ondeath_event }, // Doctor (Boss)
-	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_shot, &ai_null }, // Doctor Red Wave
-	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Fast)
-	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ai_null }, // Doctor Red Ball (Slow)
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_shot, &ondeath_nodrop }, // Doctor Red Wave
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ondeath_nodrop }, // Doctor Red Ball (Fast)
+	{ NULL, SHEET_DOCSHOT, 	 PAL1, 1, &onspawn_persistent, &ai_doctor_blast, &ondeath_nodrop }, // Doctor Red Ball (Slow)
 	{ &SPR_DoctorM, NOSHEET, PAL1, 4, &onspawn_persistent, &ai_muscle_doctor, &ondeath_event }, // Muscle Doctor (Boss)
 	{ &SPR_Igor, 	NOSHEET, PAL3, 4, &ai_null, &ai_igor_balcony, &ondeath_default }, // Igor
 	{ NULL, SHEET_BAT, 		 PAL1, 1, &onspawn_persistent, &ai_doctor_bat, &ondeath_default }, // Red Energy Bat
@@ -295,11 +295,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_IRONHBLK,  PAL2, 1, &onspawn_persistent, &ai_ironh_brick, &ai_null }, // Underwater Block
 	/* 0x110 (272) */
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_brick_spawner, &ai_null }, // Water Block Generator
-	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Droll Projectile
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ondeath_nodrop }, // Droll Projectile
 	{ &SPR_Droll, 	NOSHEET, PAL3, 2, &ai_null, &ai_droll, &ondeath_default }, // Droll
 	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (With Item)
 	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_red_demon }, // Red Demon
-	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ai_null }, // Red Demon Projectile
+	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ondeath_nodrop }, // Red Demon Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
 	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
 	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
@@ -307,11 +307,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
 	{ &SPR_MizaMisery,NOSHEET,PAL3,1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
 	{ &SPR_MizaSue, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
-	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Spinning Shot
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ondeath_nodrop }, // Orange Spinning Shot
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Dot
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Smoke
 	/* 0x120 (288) */
-	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ai_null }, // Glowing Rock Shot
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ondeath_nodrop }, // Glowing Rock Shot
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
 	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
@@ -324,7 +324,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Uncrowned)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Balrog/Misery (Bubble)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Demon Crown
-	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Fish Missile (Orange)
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ondeath_nodrop }, // Fish Missile (Orange)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x130 (304) */

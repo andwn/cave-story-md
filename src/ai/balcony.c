@@ -183,7 +183,7 @@ void ai_igor_balcony(Entity *e) {
 			
 			// fire shots
 			if (e->timer > 30) {
-				if ((e->timer & 3) == 1) {
+				if ((e->timer & 7) == 1) {
 					sound_play(SND_BLOCK_DESTROY, 5);
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 												 e->y, OBJ_IGOR_SHOT, 0);

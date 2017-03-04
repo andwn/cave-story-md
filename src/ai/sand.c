@@ -666,12 +666,13 @@ void ai_curlys_mimigas(Entity *e) {
 }
 
 void ai_skeleton_shot(Entity *e) {
-	Bullet *b = bullet_colliding(e);
-	if(b) {
-		b->ttl = 0;
-		e->state = STATE_DELETE;
-		return;
-	}
+	//Bullet *b = bullet_colliding(e);
+	//if(b) {
+		//b->ttl = 0;
+		//e->state = STATE_DELETE;
+		//return;
+	//	entity_handle_bullet(e, b);
+	//}
 	
 	ANIMATE(e, 8, 0,1,2,3);
 	

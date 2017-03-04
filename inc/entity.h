@@ -3,6 +3,7 @@
 
 #include <genesis.h>
 #include "common.h"
+#include "weapon.h"
 
 /*
  * Apart from effects and player bullets, all game objects are entities.
@@ -92,6 +93,8 @@ void entities_update();
 // Reactivate entities when they come back on screen
 void entities_update_inactive();
 
+void entity_handle_bullet(Entity *e, Bullet *b);
+
 // Replaces existing entities of the specified event to one of another type
 // Called by CNP and INP commands
 void entities_replace(u16 event, u16 type, u8 direction, u16 flags);
@@ -136,6 +139,10 @@ u8 entity_overlapping(Entity *a, Entity *b);
 bounding_box entity_react_to_collision(Entity *a, Entity *b);
 
 void entity_default(Entity *e, u16 type, u16 flags);
+
+// This is called by entities to check if it got hit by any bullets
+// It will return the first bullet that is colliding with the given entity, if any
+Bullet *bullet_colliding(Entity *e);
 
 // Drawing
 void entities_draw();
