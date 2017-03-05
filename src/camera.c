@@ -81,6 +81,8 @@ void camera_update() {
 			y_next = camera.y +
 					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 4);
 		} else {
+			camera.x_offset = 0;
+			camera.y_offset = 0;
 			x_next = camera.x +
 					(((floor(camera.target->x) + camera.x_offset) - camera.x) >> 5);
 			y_next = camera.y +
@@ -128,7 +130,7 @@ void camera_update() {
 		// Queue row and/or column mapping
 		if(morphingColumn) {
 			s16 x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
-			s16 y = sub_to_tile(y_next) - 16 + morphingRow;
+			s16 y = sub_to_tile(y_next) - 16 /*+ morphingRow*/;
 			if(x >= 0 && x < stageWidth * 2) {
 				for(u8 i = 32; i--; ) {
 					if(y >= stageHeight * 2) break;
@@ -147,7 +149,7 @@ void camera_update() {
 		}
 		if(morphingRow) {
 			s16 y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
-			s16 x = sub_to_tile(x_next) - 32 + morphingColumn;
+			s16 x = sub_to_tile(x_next) - 32 /*+ morphingColumn*/;
 			if(y >= 0 && y < stageHeight * 2) {
 				for(u8 i = 64; i--; ) {
 					if(x >= stageWidth * 2) break;
