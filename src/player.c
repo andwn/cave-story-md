@@ -795,10 +795,6 @@ u8 player_invincible() {
 }
 
 u8 player_inflict_damage(s16 damage) {
-	// Halve damage if we have the arms barrier, however the arms barrier does not seem
-	// to effect death trap and press damage. This is probably not the right way to fix it
-	if((playerEquipment & EQUIP_ARMSBARRIER) && damage != 127) 
-		damage = (damage + 1) >> 1;
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
@@ -818,6 +814,8 @@ u8 player_inflict_damage(s16 damage) {
 	player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
 	playerIFrames = TIME(100);
+	// Halve damage applied to weapon energy if we have the arms barrier
+	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Decrease weapon exp
 	if(damage > 0 && playerWeapon[currentWeapon].type != 0) {
 		Weapon *w = &playerWeapon[currentWeapon];

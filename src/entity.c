@@ -265,7 +265,9 @@ void entities_update() {
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
 				if(e->frame != e->oframe) {
 					e->oframe = e->frame;
+					SYS_disableInts();
 					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
+					SYS_enableInts();
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {

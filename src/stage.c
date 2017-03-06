@@ -98,6 +98,7 @@ void stage_load(u16 id) {
 		}
 	}
 	SYS_enableInts();
+	VDP_waitVSync();
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));

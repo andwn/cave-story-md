@@ -36,13 +36,10 @@ void game_reset(u8 load);
 
 void vblank() {
 	dqueued = FALSE;
-	//if(water_screenlevel != WATER_DISABLE) vblank_water(); // Water effect
 	if(ready) {
 		if(inFade) { spr_num = 0; }
 		else { sprites_send(); }
 		ready = FALSE;
-	} else {
-		//puts("Vint before main loop finished!");
 	}
 	stage_update(); // Scrolling
 }
@@ -55,7 +52,6 @@ u8 game_main(u8 load) {
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
 	SYS_setVIntCallback(vblank);
-	//SYS_setHIntCallback(hblank_water);
 	effects_init();
 	SYS_enableInts();
 	
@@ -179,33 +175,36 @@ void draw_itemmenu(u8 resetCursor) {
 	VDP_waitVSync();
 	
 	SYS_disableInts();
+	u8 top = IS_PALSYSTEM ? 1 : 0;
 	// Fill the top part
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX), 1, 0);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+1), 2, 36);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+2), 38, 0);
-	for(u16 y = 1; y < 19; y++) { // Body
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+3), 1, y);
-		VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX), y*64 + 2, 36);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+5), 38, y);
+	u8 y = top;
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(0), (y<<6) + 1, 1);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (y<<6) + 2, 36);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(2), (y<<6) + 38, 1);
+	for(u8 i = 19; --i;) { // Body
+		y++;
+		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(3), (y<<6) + 1, 1);
+		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + 2, 36);
+		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(5), (y<<6) + 38, 1);
 	}
 	// Bottom
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+6), 1, 19);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+7), 19*64 + 2, 36);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,TILE_WINDOWINDEX+8), 38, 19);
+	y++;
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(6), (y<<6) + 1, 1);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(7), (y<<6) + 2, 36);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(8), (y<<6) + 38, 1);
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
 	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
 	// Weapons
-	VDP_drawTextWindow("--ARMS--", 4, 3);
-	//VDP_loadTileData(TS_Numbers.tiles, TILE_FACEINDEX+4, 10, TRUE);
-	//VDP_loadTileData(SPR_TILES(&SPR_Numbers, 0, 0), TILE_SHEETINDEX+10, 10, TRUE);
+	y = top + 3;
+	VDP_drawTextWindow("--ARMS--", 4, y++);
 	for(u16 i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
 		// X tile pos and VRAM index to put the ArmsImage tiles
-		u16 x = 4 + i*6, y = 4;
+		u16 x = 4 + i*6;
 		u16 index = TILE_FACEINDEX + 16 + i*4;
 		VDP_loadTileData(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4, TRUE);
 		// 4 mappings for ArmsImage icon
@@ -229,7 +228,8 @@ void draw_itemmenu(u8 resetCursor) {
 		}
 	}
 	// Items
-	VDP_drawTextWindow("--ITEM--", 4, 10);
+	y = top + 10;
+	VDP_drawTextWindow("--ITEM--", 4, y);
 	u8 held = 0;
 	for(u16 i = 0; i < MAX_ITEMS; i++) {
 		u16 item = playerInventory[i];
@@ -245,7 +245,7 @@ void draw_itemmenu(u8 resetCursor) {
 			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
 			itemSprite[i] = (VDPSprite){
 				.x = 36 + (i % 6) * 32 + 128, 
-				.y = 88 + (i / 6) * 16 + 128, 
+				.y = 88 + (i / 6) * 16 + 128 + (top * 8), 
 				.size = SPRITE_SIZE(3, 2),
 				.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_SHEETINDEX+held*6)
 			};
@@ -259,7 +259,7 @@ void draw_itemmenu(u8 resetCursor) {
 	itemcursor_move(0, selectedItem);
 	tsc_call_event(5000 + playerInventory[selectedItem]);
 	// Make the window plane fully overlap the game
-	VDP_setWindowPos(0, 28);
+	VDP_setWindowPos(0, IS_PALSYSTEM ? 30 : 28);
 	// Handle 0 items - if we don't draw any sprites at all, the non-menu sprites
 	// will keep drawing. Draw a blank sprite in the upper left corner to work around this
 	if(!held) {
@@ -375,16 +375,17 @@ u8 update_pause() {
 }
 
 void itemcursor_move(s8 oldindex, s8 index) {
+	u8 top = IS_PALSYSTEM ? 1 : 0;
 	// Erase old position
 	u16 x, y, w, h;
 	if(oldindex >= 0) {
 		x = 4 + (oldindex % 6) * 4;
-		y = 11 + (oldindex / 6) * 2;
+		y = 11 + (oldindex / 6) * 2 + top;
 		w = 3; 
 		h = 1;
 	} else {
 		x = 3 + (oldindex + 6) * 6;
-		y = 4;
+		y = 4 + top;
 		w = 5;
 		h = 4;
 	}
@@ -395,12 +396,12 @@ void itemcursor_move(s8 oldindex, s8 index) {
 	// Draw new position
 	if(index >= 0) {
 		x = 4 + (index % 6) * 4;
-		y = 11 + (index / 6) * 2;
+		y = 11 + (index / 6) * 2 + top;
 		w = 3; 
 		h = 1;
 	} else {
 		x = 3 + (index + 6) * 6;
-		y = 4;
+		y = 4 + top;
 		w = 5;
 		h = 4;
 	}

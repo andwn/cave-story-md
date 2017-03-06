@@ -13,13 +13,16 @@
 #include "sheet.h"
 #include "hud.h"
 
-#define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
-
 // Window location
 #define WINDOW_X1 1
 #define WINDOW_X2 38
+#ifdef PAL
+#define WINDOW_Y1 21
+#define WINDOW_Y2 28
+#else
 #define WINDOW_Y1 20
 #define WINDOW_Y2 27
+#endif
 // Text area location within window
 #define TEXT_X1 (WINDOW_X1 + 1)
 #define TEXT_X2 (WINDOW_X2 - 1)
@@ -65,8 +68,7 @@ void window_draw_face();
 
 void window_open(u8 mode) {
 	window_clear_text();
-	textRow = 0;
-	textColumn = 0;
+	textRow = textColumn = 0;
 	
 	windowOnTop = mode;
 	if(mode) hud_hide();
@@ -78,28 +80,22 @@ void window_open(u8 mode) {
 	SYS_disableInts();
 	
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
-	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(1), x, wy1);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (wy1<<6) + TEXT_X1, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, wy1);
 	for(u8 y = ty1; y <= ty2; y++) {
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), WINDOW_X1, y);
-		for(u8 x = TEXT_X1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
-		}
+		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + TEXT_X1, 36);
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), WINDOW_X2, y);
 	}
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, wy2);
-	for(u8 x = TEXT_X1; x <= TEXT_X2; x++)
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(7), x, wy2);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(7), (wy2<<6) + TEXT_X1, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, wy2);
 	
 	if(!paused) {
-		if(showingFace > 0) {
-			window_draw_face(showingFace);
-		}
-		VDP_setWindowPos(0, mode ? 8 : 244);
+		if(showingFace > 0) window_draw_face(showingFace);
+		VDP_setWindowPos(0, mode ? 8 : (IS_PALSYSTEM ? 245 : 244));
 	} else showingFace = 0;
-	
+
 	SYS_enableInts();
 	
 	windowOpen = TRUE;
@@ -111,26 +107,20 @@ u8 window_is_open() {
 
 void window_clear() {
 	SYS_disableInts();
-	u8 x1 = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
-		for(u8 x = x1; x <= TEXT_X2; x++) {
-			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
-		}
-	}
+	u8 x = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	u8 y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+	u8 w = showingFace ? 29 : 36;
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y)   << 6) + x, w);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+2) << 6) + x, w);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+4) << 6) + x, w);
 	window_clear_text();
 	SYS_enableInts();
 	textMode = TM_NORMAL;
 }
 
 void window_clear_text() {
-	textRow = 0;
-	textColumn = 0;
-	spaceCounter = spaceOffset = 0;
-	for(u8 row = 0; row < 3; row++) {
-		for(u8 col = 0; col < 36; col++) {
-			windowText[row][col] = ' ';
-		}
-	}
+	textRow = textColumn = spaceCounter = spaceOffset = 0;
+	memset(windowText, ' ', 36*3);
 }
 
 void window_close() {
@@ -153,11 +143,8 @@ void window_set_face(u16 face, u8 open) {
 	} else {
 		SYS_disableInts();
 		// Hack to clear face only
-		for(u8 y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1); y <= (windowOnTop ? TEXT_Y2_TOP:TEXT_Y2); y++) {
-			for(u8 x = TEXT_X1; x <= TEXT_X1_FACE; x++) {
-				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
-			}
-		}
+		VDP_fillTileMapRect(PLAN_WINDOW, WINDOW_ATTR(4),
+				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, TEXT_X1, 6, 6);
 		SYS_enableInts();
 	}
 }
@@ -182,9 +169,6 @@ void window_draw_char(u8 c) {
 			spaceCounter = 0;
 		}
 		windowText[textRow][textColumn - spaceOffset] = c;
-		// Don't draw text outside the window, hopefully this doesn't happen,
-		// because it means the text being cut off on the right
-		//if(textColumn >= 36 - (showingFace > 0) * 8) return;
 		// Figure out where this char is gonna go
 		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn - spaceOffset;
@@ -215,12 +199,8 @@ void window_scroll_text() {
 	// Clear third row
 	u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
-	for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
-		windowText[2][col] = ' ';
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
-				TILE_FONTINDEX), msgTextX, msgTextY);
-		msgTextX++;
-	}
+	u8 msgTextW = showingFace ? 29 : 36;
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
 	SYS_enableInts();
 	// Reset to beginning of third row
 	textRow = 2;
