@@ -611,3 +611,134 @@ void ai_motorbike(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
+
+void ai_ravil(Entity *e) {
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(!e->grounded) {
+		e->grounded = collide_stage_floor(e);
+		if(e->grounded) sound_play(SND_THUD, 5);
+	} else {
+		e->grounded = collide_stage_floor_grounded(e);
+	}
+	
+	switch(e->state) {
+		case 0:
+		{
+			e->x_speed = 0;
+			e->state = 1;
+			e->timer = 0;
+			e->timer2 = 0;
+		}
+		case 1:
+		{	// waiting-- attack once player gets too close or shoots us
+			if (++e->timer > 40) e->state = 2;
+		}
+		break;
+		case 2:
+		{
+			if(e->damage_time || (PLAYER_DIST_X(96<<CSF) && PLAYER_DIST_Y2(96<<CSF, 32<<CSF))) {
+				e->state = 10;
+				e->timer = 0;
+			}
+		}
+		break;
+		case 10:
+		{	// woken up-- preparing to attack
+			FACE_PLAYER(e);
+			e->frame = 1;
+			
+			if (++e->timer > 20) {
+				e->timer = 0;
+				e->state = 20;
+			}
+		}
+		break;
+		case 20:
+		{	// hop, hop, lunge...
+			e->attack = 0;
+			e->x_speed = 0;
+			
+			ANIMATE(e, 4, 1,2,3);
+			if (e->frame >= 3) {
+				FACE_PLAYER(e);
+				MOVE_X(SPEED(0x200));
+				
+				if (++e->timer2 >= 3) { // lunge/bite
+					e->timer2 = 0;
+					
+					sound_play(SND_JAWS, 5);
+					e->frame = 4;
+					e->attack = 5;
+					e->x_speed <<= 1;
+				} else {
+					sound_play(SND_ENEMY_JUMP, 5);
+				}
+				
+				e->state = 21;
+				e->y_speed = -SPEED(0x400);
+				e->grounded = FALSE;
+			}
+		}
+		break;
+		case 21:	// doing jump or lunge
+		{
+			if (e->grounded) {
+				e->state = 20;
+				e->frame = 1;
+				e->animtime = 0;
+				e->attack = 0;
+				
+				// if player too far away return to wait state
+				if (!PLAYER_DIST_X(144<<CSF) || !PLAYER_DIST_Y2(144<<CSF, 72<<CSF)) {
+					e->state = 0;
+				}
+			}
+		}
+		break;
+		case 30:		// jumping out of fireplace (set by script)
+		{
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			e->frame = 0;
+			e->state = 0;
+		}
+		break;
+		case 50:		// killed (as boss, in Grasstown Hut) (set by script)
+		{
+			sound_play(SND_ENEMY_HURT, 5);
+			e->frame = 4;
+			e->attack = 0;
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+			e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+			e->state = 51;
+			e->y_speed = -SPEED(0x200);
+		}
+		case 51:
+		{
+			if (e->grounded) {
+				e->frame = 5;
+				e->x_speed = 0;
+				e->state = 52;	// falls slower
+			}
+		}
+		break;
+	}
+	
+	if (e->state == 52)
+		e->y_speed += SPEED(0x20);
+	else
+		e->y_speed += SPEED(0x40);
+	
+	LIMIT_Y(SPEED(0x5ff));
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
+// Collapse in Grasstown Hut, explode in Balcony
+void ondeath_ravil(Entity *e) {
+	if(stageID == 30) tsc_call_event(e->event);
+	else e->state = STATE_DESTROY;
+}

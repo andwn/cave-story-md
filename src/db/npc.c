@@ -127,7 +127,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Quotele,NOSHEET, PAL0, 1, &onspawn_teleIn, &ai_teleIn, &ai_null }, // Tele In
 	{ &SPR_Booster,NOSHEET, PAL3, 1, &ai_null, &ai_booster, &ai_null }, // Prof. Booster
 	{ &SPR_Press, NOSHEET, 	PAL1, 1, &onspawn_press, &ai_press, &ondeath_default }, // Press
-	{ NULL, NOSHEET, 		PAL0, 2, &ai_null, &ai_null, &ondeath_default }, // Ravil
+	{ &SPR_Ravil, NOSHEET, 	PAL3, 1, &onspawn_persistent, &ai_ravil, &ondeath_ravil }, // Ravil
 	{ &SPR_RedFl2, NOSHEET, PAL1, 1, &onspawn_snap, &ai_null, &ai_null }, // Red Flower Petals
 	{ &SPR_Curly, NOSHEET, 	PAL3, 1, &onspawn_snap, &ai_curly, &ai_null }, // Curly
 	{ NULL, SHEET_CURLYB,	PAL3, 1, &onspawn_snap, &ai_curlyBoss, &ondeath_curlyBoss }, // Curly
