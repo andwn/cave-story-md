@@ -616,7 +616,9 @@ void bullet_update_blade(Bullet *b) {
 				b->ttl = TIME(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
+				SYS_disableInts();
 				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
+				SYS_enableInts();
 			} else if(block == 0x43) { // Breakable block
 				b->ttl = 0;
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
@@ -626,10 +628,10 @@ void bullet_update_blade(Bullet *b) {
 			} else if(block == 0x41) {
 				b->ttl = 0;
 				return;
-			} else if(!(b->ttl & 7)) {
+			} else {
 				create_blade_slash(b, FALSE);
 			}
-		} else if(!(b->ttl & 3)) {
+		} else {
 			create_blade_slash(b, TRUE);
 		}
 	} else {
@@ -671,18 +673,18 @@ void bullet_update_blade_slash(Bullet *b) {
 	// Animate sprite
 	switch(b->ttl) {
 		case 16:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 4);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+4);
 			b->sprite.size = SPRITE_SIZE(2, 2);
 			break;
 		case 12:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 8);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+8);
 			break;
 		case 8:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 1);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+1);
 			b->sprite.size = SPRITE_SIZE(1, 1);
 			break;
 		case 4:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0, 0, 0, b->dir, (0xFE80>>5) + 2);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+2);
 			break;
 	}
 	// Adjust sprite offset and hit box based on which frame we are at
@@ -703,7 +705,8 @@ void bullet_update_blade_slash(Bullet *b) {
 		yoff = 4;
 		b->hit_box = (bounding_box) { 0, 0, 12, 12 }; //8x8 low corner
 	}
-	xoff = b->dir ? yoff : (12-yoff);
+	xoff = (b->dir & 1) ? (12-yoff) : yoff;
+	yoff = (b->dir & 2) ? (12-yoff) : yoff;
 	//b->x += b->x_speed;
 	//b->y += b->y_speed;
 	sprite_pos(b->sprite, 
@@ -783,17 +786,20 @@ static void create_blade_slash(Bullet *b, u8 burst) {
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[3];
 			slash->dir = LEFT;
+			slash->dir |= 2;
 		} else if((b->ttl & 15) == 12) {
 			slash = &playerBullet[4];
 			slash->dir = RIGHT;
+			slash->dir |= 2;
 		}
 	} else {
-		if(!(b->ttl & 15)) {
+		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
-			slash->dir = LEFT;
-		} else {
+			slash->dir = !b->dir;
+		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[2];
-			slash->dir = RIGHT;
+			slash->dir = !b->dir;
+			slash->dir |= 2;
 		}
 	}
 	if(!slash) return;
@@ -801,13 +807,13 @@ static void create_blade_slash(Bullet *b, u8 burst) {
 	slash->x = b->x;
 	slash->y = b->y;
 	if(burst) { // Spread them for AOE
-		slash->x += -0x1000 + (random() % 0x2000);
-		slash->y += -0x1000 + (random() % 0x2000);
+		slash->x += -0x2000 + (random() % 0x4000);
+		slash->y += -0x2000 + (random() % 0x4000);
 	}
 	slash->type = WEAPON_BLADE_SLASH;
 	slash->ttl = 20;
 	slash->sprite = (VDPSprite) { 
 		.size = SPRITE_SIZE(1, 1), 
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,slash->dir, 0xFE80 >> 5)
+		.attribut = TILE_ATTR_FULL(PAL0,0,(slash->dir&2)>0,(slash->dir&1), 0xFE80 >> 5)
 	};
 }
