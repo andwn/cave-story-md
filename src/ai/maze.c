@@ -1,15 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 void onspawn_block(Entity *e) {
 	e->x += pixel_to_sub(8);
@@ -46,7 +35,7 @@ void ai_blockh(Entity *e) {
 		break;
 		case 30:
 		{
-			u16 dir = e->eflags & NPC_OPTION2;
+			uint16_t dir = e->eflags & NPC_OPTION2;
 			e->x_speed += dir ? SPEED(0x20) : -SPEED(0x20);
 			if(e->x_speed > SPEED(0x200)) e->x_speed = SPEED(0x200);
 			if(e->x_speed < -SPEED(0x200)) e->x_speed = -SPEED(0x200);
@@ -93,7 +82,7 @@ void ai_blockv(Entity *e) {
 		break;
 		case 30:
 		{
-			u16 dir = e->eflags & NPC_OPTION2;
+			uint16_t dir = e->eflags & NPC_OPTION2;
 			e->y_speed += dir ? SPEED(0x20) : -SPEED(0x20);
 			if(e->y_speed > SPEED(0x200)) e->y_speed = SPEED(0x200);
 			if(e->y_speed < -SPEED(0x200)) e->y_speed = -SPEED(0x200);
@@ -363,7 +352,7 @@ void ai_gaudiFlying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u8 angle = random();
+			uint8_t angle = random();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
@@ -540,7 +529,7 @@ void ai_gaudiArmoredShot(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u8 bounced = FALSE;
+			uint8_t bounced = FALSE;
 			if (e->x_speed <= 0 && collide_stage_leftwall(e)) { 
 				e->x_speed = SPEED(0x200);
 				bounced = TRUE; 
@@ -876,8 +865,8 @@ void ai_fuzz_core(Entity *e) {
 		case 0:
 		{
 			// spawn mini-fuzzes, use jump_time as the angle since it is u8
-			u8 angle = 0;
-			for(u16 i = 0; i < 5; i++) {
+			uint8_t angle = 0;
+			for(uint16_t i = 0; i < 5; i++) {
 				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
 				f->linkedEntity = e;
 				f->jump_time = angle;
@@ -923,8 +912,8 @@ void ai_fuzz(Entity *e) {
 				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				s16 xoff = cos[e->jump_time] * 24;
-				s16 yoff = sin[e->jump_time] << 5;
+				int16_t xoff = cos[e->jump_time] * 24;
+				int16_t yoff = sin[e->jump_time] << 5;
 				e->x = e->linkedEntity->x + xoff;
 				e->y = e->linkedEntity->y + yoff;
 			}

@@ -1,15 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 void ai_proximity_press_vert(Entity *e) {
 	switch(e->state) {
@@ -118,7 +107,7 @@ void ai_lava_drip(Entity *e) {
 	LIMIT_Y(SPEED(0x5ff));
 	e->y += e->y_speed;
 	
-	u8 blockd = blk(e->x, 0, e->y, 0);
+	uint8_t blockd = blk(e->x, 0, e->y, 0);
 	if (blockd == 0x41 || (blockd & BLOCK_WATER)) {
 		//for(int i=0;i<3;i++) {
 		//	Caret *c = effect(e->CenterX(), e->Bottom(), EFFECT_LAVA_SPLASH);

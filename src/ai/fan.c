@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "input.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 void onspawn_fan(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->state = e->type - 95;
@@ -28,8 +19,8 @@ void onspawn_fan(Entity *e) {
 }
 
 void ai_fan(Entity *e) {
-	u16 ex = e->x >> CSF, ey = e->y >> CSF;
-	u16 px = player.x >> CSF, py = player.y >> CSF;
+	uint16_t ex = e->x >> CSF, ey = e->y >> CSF;
+	uint16_t px = player.x >> CSF, py = player.y >> CSF;
 	switch(e->state) {
 		case 1: // Left
 		{

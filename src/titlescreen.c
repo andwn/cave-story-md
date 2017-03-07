@@ -1,32 +1,52 @@
-#include "gamemode.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "input.h"
-#include "system.h"
 #include "common.h"
+
+#include "ai.h"
+#include "audio.h"
+#include "camera.h"
+#include "dma.h"
+#include "effect.h"
+#include "entity.h"
+#include "hud.h"
+#include "input.h"
+#include "joy.h"
+#include "npc.h"
+#include "player.h"
 #include "resources.h"
-#include "sprite.h"
 #include "sheet.h"
+#include "sprite.h"
+#include "stage.h"
+#include "string.h"
+#include "system.h"
+#include "tables.h"
+#include "tsc.h"
+#include "vdp.h"
+#include "vdp_bg.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+#include "weapon.h"
+#include "window.h"
+
+#include "gamemode.h"
 
 #define OPTIONS		3
 #define SAVES		22
 #define ANIM_SPEED	7
 #define ANIM_FRAMES	4
 
-static const u16 cheat[] = {
+static const uint16_t cheat[] = {
 	BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT, NULL
 };
 
-u8 titlescreen_main() {
-	u8 cheatEntry = 0, levelSelect = FALSE;
-	u8 cursor = 0;
-	u32 besttime = 0xFFFFFFFF;
-	u8 tsong = SONG_TITLE;
+uint8_t titlescreen_main() {
+	uint8_t cheatEntry = 0, levelSelect = FALSE;
+	uint8_t cursor = 0;
+	uint32_t besttime = 0xFFFFFFFF;
+	uint8_t tsong = SONG_TITLE;
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
-	SYS_disableInts();
-	VDP_setEnable(FALSE);
+	
+	//VDP_setEnable(FALSE);
 	VDP_resetScreen(); // This brings back the default SGDK font with transparency
 	// No special scrolling for title screen
 	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
@@ -40,7 +60,7 @@ u8 titlescreen_main() {
 	// PAL_Regu, for King and Toroko
 	VDP_setPalette(PAL3, PAL_Regu.data);
 	// Check save data, only enable continue if save data exists
-	u8 sram_state = system_checkdata();
+	uint8_t sram_state = system_checkdata();
 	if(sram_state == SRAM_VALID_SAVE) {
 		VDP_drawText("Continue", 15, 14);
 		cursor = 1;
@@ -66,7 +86,7 @@ u8 titlescreen_main() {
 		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX),
 		.size = SPRITE_SIZE(2,2)
 	};
-	u8 sprFrame = 0, sprTime = ANIM_SPEED;
+	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
 	// Menu and version text
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
@@ -83,8 +103,8 @@ u8 titlescreen_main() {
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
-	VDP_setEnable(TRUE);
-	SYS_enableInts();
+	//VDP_setEnable(TRUE);
+	
 	song_play(tsong);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
@@ -121,15 +141,16 @@ u8 titlescreen_main() {
 		}
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
-		SYS_disableInts();
-		DMA_doDma(DMA_VRAM, (u32)(&sprCursor), VDP_SPRITE_TABLE, 4, 2);
-		SYS_enableInts();
-		VDP_waitVSync();
+		sprite_add(sprCursor);
+		
+		ready = TRUE;
+		vsync();
+		aftervblank();
 	}
 	if(levelSelect && (joystate&BUTTON_A) && joy_pressed(BUTTON_START)) {
 		cursor = 0;
 		input_update();
-		SYS_disableInts();
+		
 		VDP_clearPlan(PLAN_A, TRUE);
 		VDP_setPaletteColor(0, 0x222); // Darken background colors
 		VDP_setPaletteColor(8, 0x468);
@@ -159,16 +180,16 @@ u8 titlescreen_main() {
 			" Sacred Ground",
 			" Seal Chamber",
 		};
-		u16 tx = 11, ty = 1;
+		uint16_t tx = 11, ty = 1;
 		if(IS_PALSYSTEM) ty++;
 		VDP_drawText("= Welcome to Warp Zone =", 7, ty);
 		ty += 2;
-		for(u8 i = 0; i < SAVES; i++) {
+		for(uint8_t i = 0; i < SAVES; i++) {
 			if(cursor == i) VDP_setTextPalette(PAL0);
 			else VDP_setTextPalette(PAL1);
 			VDP_drawText(levelStr[i], tx, ty+i);
 		}
-		SYS_enableInts();
+		
 		while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 			input_update();
 			if(joy_pressed(BUTTON_UP)) {
@@ -198,10 +219,11 @@ u8 titlescreen_main() {
 			}
 			// Draw quote sprite at cursor position
 			sprite_pos(sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);
-			SYS_disableInts();
-			DMA_doDma(DMA_VRAM, (u32)(&sprCursor), VDP_SPRITE_TABLE, 4, 2);
-			SYS_enableInts();
-			VDP_waitVSync();
+			sprite_add(sprCursor);
+			
+			ready = TRUE;
+			vsync();
+			aftervblank();
 		}
 		VDP_setTextPalette(PAL0);
 		cursor += 4;

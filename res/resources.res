@@ -856,6 +856,8 @@ BIN PXE_WeedS	"Stage/WeedS.pxe"
 # Music
 # ----------------------------------------------------------------------------------------------
 
+BIN stop_xgm		"stop_xgm.bin"
+
 XGM BGM_Access		"bgm/access.vgm"
 XGM BGM_Balcony		"bgm/balcony.vgm"
 XGM BGM_Balrog		"bgm/balrog.vgm"

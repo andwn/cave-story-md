@@ -7,14 +7,17 @@ AS = $(GENGCC_BIN)as
 LD = $(GENGCC_BIN)ld
 NM = $(GENGCC_BIN)nm
 OBJC = $(GENGCC_BIN)objcopy
-RESCOMP= sgdk/bin/rescomp
+ASMZ80= $(GENBIN)/sjasm
+BINTOS= bin/bintos
+RESCOMP= bin/rescomp
+XGMTOOL= bin/xgmtool
+WAVTORAW= bin/wavtoraw
 
-INCS = -Isgdk/inc -Isgdk/res -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -Wno-char-subscripts -Wno-missing-field-initializers \
-			-std=c99 -c -fno-builtin
+INCS = -Isrc -Ires -Iinc
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
 TOOLFLAGS = -std=c99 -O2 -Wall -Wextra
-LIBS = -Lsgdk -L$(GENDEV)/m68k-elf/m68k-elf/lib -lmd -lnosys 
+LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
 
@@ -25,6 +28,7 @@ RESS=$(wildcard res/*.res)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
+CS+=$(windcard src/xgm/*.c)
 SS=$(wildcard src/*.s)
 RESOURCES=$(RESS:.res=.o)
 RESOURCES+=$(CS:.c=.o)
@@ -54,14 +58,14 @@ pal: release
 pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
-release: sgdk/libmd.a
+release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
 release: CCFLAGS += -O3
-release: LIBMD = sgdk/libmd.a
 release: main-build
-debug: sgdk/libmd_debug.a
+
+debug: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
 debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
-debug: LIBMD = sgdk/libmd_debug.a
 debug: main-build
+
 main-build: head-gen doukutsu.bin symbol.txt
 
 symbol.txt: doukutsu.bin
@@ -75,7 +79,7 @@ src/boot/sega.o: src/boot/rom_head.bin
 	dd if=temp.bin of=$@ bs=8K conv=sync
 
 %.elf: $(OBJS) $(BOOT_RESOURCES)
-	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(LIBMD) $(ARCHIVES) $(OBJS) $(LIBS)
+	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -112,23 +116,26 @@ prof2sram:
 savetrim:
 	gcc tools/savetrim/savetrim.c -o savetrim $(TOOLFLAGS)
 
-sgdk/libmd.a:
-	cd sgdk && make clean && make
+$(RESCOMP):
+	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP)
 
-sgdk/libmd_debug.a:
-	cd sgdk && make clean && make debug
+$(XGMTOOL):
+	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL)
 
-clean: clean-sgdk
+$(BINTOS):
+	gcc tools/bintos/bintos.c -o $(BINTOS)
+
+$(WAVTORAW):
+	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW)
+
+clean: clean-tools
 	rm -f $(RESOURCES)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-	#rm -rf save
 	rm -f saves.zip saves.tar.gz
-
-clean-sgdk:
-	cd sgdk && make clean
 
 clean-tools:
 	rm -f prof2sram tileopt tscomp lutgen savetrim
+	rm -f $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)

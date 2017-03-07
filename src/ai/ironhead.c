@@ -1,19 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "sprite.h"
-#include "resources.h"
-#include "npc.h"
-#include "vdp_ext.h"
+#include "ai_common.h"
 
 #define ARENA_TOP				2
 #define ARENA_BOTTOM			13
@@ -270,7 +255,7 @@ void ai_brick_spawner(Entity *e) {
 
 void ai_ironh_brick(Entity *e) {
 	if (!e->state) {
-		u8 r = random() % 10;
+		uint8_t r = random() % 10;
 		if (r) {
 			e->frame = e->oframe = 255;
 			e->vramindex = sheets[e->sheet].index + 16 + (r % 4) * 4;

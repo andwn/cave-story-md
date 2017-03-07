@@ -1,63 +1,59 @@
-#include "gamemode.h"
+#include "common.h"
 
-#include <genesis.h>
-#include "resources.h"
-#include "input.h"
-#include "system.h"
-#include "player.h"
-#include "stage.h"
-#include "camera.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
-#include "hud.h"
-#include "weapon.h"
-#include "window.h"
-#include "audio.h"
 #include "ai.h"
+#include "audio.h"
+#include "camera.h"
+#include "dma.h"
+#include "effect.h"
+#include "entity.h"
+#include "hud.h"
+#include "input.h"
+#include "joy.h"
+#include "player.h"
+#include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
+#include "stage.h"
+#include "string.h"
+#include "system.h"
+#include "tables.h"
+#include "tsc.h"
+#include "vdp.h"
+#include "vdp_bg.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+#include "weapon.h"
+#include "window.h"
+
+#include "gamemode.h"
 
 // Item menu stuff
 VDPSprite itemSprite[MAX_ITEMS];
-s8 selectedItem = 0;
+int8_t selectedItem = 0;
 
-// Prevents incomplete sprite list from being sent to VDP (flickering)
-volatile u8 ready;
-
-void draw_itemmenu(u8 resetCursor);
-u8 update_pause();
-void itemcursor_move(s8 oldindex, s8 index);
-void gen_maptile(u16 bx, u16 by, u16 index);
+void draw_itemmenu(uint8_t resetCursor);
+uint8_t update_pause();
+void itemcursor_move(int8_t oldindex, int8_t index);
+void gen_maptile(uint16_t bx, uint16_t by, uint16_t index);
 
 // Initializes or re-initializes the game after "try again"
-void game_reset(u8 load);
+void game_reset(uint8_t load);
 
-void vblank() {
-	dqueued = FALSE;
-	if(ready) {
-		if(inFade) { spr_num = 0; }
-		else { sprites_send(); }
-		ready = FALSE;
-	}
-	stage_update(); // Scrolling
-}
-
-u8 game_main(u8 load) {
-	SYS_disableInts();
+uint8_t game_main(uint8_t load) {
+	
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 	VDP_setPaletteColor(15, 0x000);
 	//VDP_setEnable(FALSE);
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
-	SYS_setVIntCallback(vblank);
+	//SYS_setVIntCallback(vblank);
 	effects_init();
-	SYS_enableInts();
+	
 	
 	game_reset(load);
 	
-	SYS_disableInts();
+	
 	//VDP_setEnable(TRUE);
 	VDP_setWindowPos(0, 0);
 	
@@ -66,10 +62,10 @@ u8 game_main(u8 load) {
 		hud_show();
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
-	SYS_enableInts();
+	
 	
 	paused = FALSE;
-	u8 ending = 0;
+	uint8_t ending = 0;
 	
 	while(TRUE) {
 		input_update();
@@ -86,7 +82,7 @@ u8 game_main(u8 load) {
 				// HUD on top
 				hud_update();
 				// Handle controller locking
-				u16 lockstate = joystate, oldlockstate = oldstate;
+				uint16_t lockstate = joystate, oldlockstate = oldstate;
 				if(controlsLocked) joystate = oldstate = 0;
 				// Don't update this stuff if a script is using <PRI
 				if(!gameFrozen) {
@@ -99,7 +95,7 @@ u8 game_main(u8 load) {
 				joystate = lockstate;
 				oldstate = oldlockstate;
 				// Run the next set of commands in a script if it is running
-				u8 rtn = tsc_update();
+				uint8_t rtn = tsc_update();
 				// Nonzero return values exit the game, or switch to the ending sequence
 				if(rtn > 0) {
 					if(rtn == 1) { // Return to title screen
@@ -128,24 +124,25 @@ u8 game_main(u8 load) {
 		}
 		system_update();
 		ready = TRUE;
-		VDP_waitVSync();
+		vsync();
+		aftervblank();
 	}
 	return ending;
 }
 
-void game_reset(u8 load) {
-	SYS_disableInts();
+void game_reset(uint8_t load) {
+	
 	camera_init();
 	tsc_init();
 	hud_create();
 	// Default sprite sheets
 	sheets_load_stage(255, TRUE, TRUE);
-	SYS_enableInts();
+	
 	gameFrozen = FALSE;
 	if(load) {
 		if(load == 1) {
 			// This redundant check is needed in case player hits "Yes" after game over
-			u8 ss = system_checkdata();
+			uint8_t ss = system_checkdata();
 			if(ss == SRAM_VALID_SAVE) system_load();
 			else goto TryAgainNoSave;
 		}
@@ -158,30 +155,30 @@ TryAgainNoSave:
 		system_new();
 		tsc_call_event(GAME_START_EVENT);
 	}
-	SYS_disableInts();
+	
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	// Load up the main palettes
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
-	SYS_enableInts();
+	
 }
 
-void draw_itemmenu(u8 resetCursor) {
+void draw_itemmenu(uint8_t resetCursor) {
 	// Hide sprites
 	spr_num = 0;
 	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	ready = TRUE;
 	VDP_waitVSync();
 	
-	SYS_disableInts();
-	u8 top = IS_PALSYSTEM ? 1 : 0;
+	
+	uint8_t top = IS_PALSYSTEM ? 1 : 0;
 	// Fill the top part
-	u8 y = top;
+	uint8_t y = top;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(0), (y<<6) + 1, 1);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (y<<6) + 2, 36);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(2), (y<<6) + 38, 1);
-	for(u8 i = 19; --i;) { // Body
+	for(uint8_t i = 19; --i;) { // Body
 		y++;
 		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(3), (y<<6) + 1, 1);
 		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + 2, 36);
@@ -200,12 +197,12 @@ void draw_itemmenu(u8 resetCursor) {
 	// Weapons
 	y = top + 3;
 	VDP_drawTextWindow("--ARMS--", 4, y++);
-	for(u16 i = 0; i < MAX_WEAPONS; i++) {
+	for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
 		// X tile pos and VRAM index to put the ArmsImage tiles
-		u16 x = 4 + i*6;
-		u16 index = TILE_FACEINDEX + 16 + i*4;
+		uint16_t x = 4 + i*6;
+		uint16_t index = TILE_FACEINDEX + 16 + i*4;
 		VDP_loadTileData(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4, TRUE);
 		// 4 mappings for ArmsImage icon
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   y);
@@ -230,13 +227,13 @@ void draw_itemmenu(u8 resetCursor) {
 	// Items
 	y = top + 10;
 	VDP_drawTextWindow("--ITEM--", 4, y);
-	u8 held = 0;
-	for(u16 i = 0; i < MAX_ITEMS; i++) {
-		u16 item = playerInventory[i];
+	uint8_t held = 0;
+	for(uint16_t i = 0; i < MAX_ITEMS; i++) {
+		uint16_t item = playerInventory[i];
 		if(item > 0) {
 			// Wonky workaround to use either PAL_Sym or PAL_Main
 			const SpriteDefinition *sprDef = &SPR_ItemImage;
-			u16 pal = PAL1;
+			uint16_t pal = PAL1;
 			if(ITEM_PAL[item]) {
 				sprDef = &SPR_ItemImageG;
 				pal = PAL0;
@@ -266,10 +263,10 @@ void draw_itemmenu(u8 resetCursor) {
 		spr_num = 0;
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	}
-	SYS_enableInts();
+	
 }
 
-u8 update_pause() {
+uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
 	if((joy_pressed(BUTTON_START) || joy_pressed(BUTTON_B)) && !tscState) {
 		// Hide the item sprites before loading the tiles back
@@ -279,9 +276,9 @@ u8 update_pause() {
 		ready = TRUE;
 		VDP_waitVSync();
 		// Reload shared sheets we clobbered
-		SYS_disableInts();
+		
 		sheets_load_stage(stageID, TRUE, FALSE);
-		SYS_enableInts();
+		
 		
 		selectedItem = 0;
 		// Reload TSC Events for the current stage
@@ -301,7 +298,7 @@ u8 update_pause() {
 		// Item descriptions are 6000 + ID
 		if(tscState) {
 			if(selectedItem >= 0) { // Item
-				u8 overid = playerInventory[selectedItem];
+				uint8_t overid = playerInventory[selectedItem];
 				tsc_update();
 				// Item was comsumed, have to adjust the icons
 				if(playerInventory[selectedItem] != overid) {
@@ -325,7 +322,7 @@ u8 update_pause() {
 				}
 			}
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			s8 newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
+			int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
 			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
@@ -336,7 +333,7 @@ u8 update_pause() {
 				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
 			}
 		} else if(joy_pressed(BUTTON_UP)) {
-			s8 newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
+			int8_t newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
 			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
@@ -347,7 +344,7 @@ u8 update_pause() {
 				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
 			}
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			s8 newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
+			int8_t newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
 			if(newsel == -1) newsel = -6;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
@@ -358,7 +355,7 @@ u8 update_pause() {
 				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
 			}
 		} else if(joy_pressed(BUTTON_DOWN)) {
-			s8 newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
+			int8_t newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
 			if(newsel == -1) newsel = -2;
 			itemcursor_move(selectedItem, newsel);
 			sound_play(SND_MENU_MOVE, 5);
@@ -369,15 +366,15 @@ u8 update_pause() {
 				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
 			}
 		}
-		for(u8 i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
+		for(uint8_t i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
 	}
 	return TRUE;
 }
 
-void itemcursor_move(s8 oldindex, s8 index) {
-	u8 top = IS_PALSYSTEM ? 1 : 0;
+void itemcursor_move(int8_t oldindex, int8_t index) {
+	uint8_t top = IS_PALSYSTEM ? 1 : 0;
 	// Erase old position
-	u16 x, y, w, h;
+	uint16_t x, y, w, h;
 	if(oldindex >= 0) {
 		x = 4 + (oldindex % 6) * 4;
 		y = 11 + (oldindex / 6) * 2 + top;
@@ -416,19 +413,19 @@ void do_map() {
 	spr_num = 0;
 	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	
-	u16 mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
-	u16 mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
+	uint16_t mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
+	uint16_t mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
 	
-	u16 index = TILE_SHEETINDEX;
+	uint16_t index = TILE_SHEETINDEX;
 	
-	for(u16 y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
-		SYS_disableInts();
-		for(u16 x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
+	for(uint16_t y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
+		
+		for(uint16_t x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
 			gen_maptile(x*8, y*8, index);
 			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
 			index++;
 		}
-		SYS_enableInts();
+		
 		ready = TRUE;
 		VDP_waitVSync();
 	}
@@ -439,7 +436,7 @@ void do_map() {
 		.size = SPRITE_SIZE(1,1),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
 	};
-	u16 blinkTimer = 0;
+	uint16_t blinkTimer = 0;
 	
 	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C)) {
 		input_update();
@@ -455,14 +452,14 @@ void do_map() {
 	draw_itemmenu(FALSE);
 }
 
-void gen_maptile(u16 bx, u16 by, u16 index) {
-	u32 tile[8];
-	for(u16 y = 0; y < 8; y++) {
+void gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
+	uint32_t tile[8];
+	for(uint16_t y = 0; y < 8; y++) {
 		if(by+y >= stageHeight) {
 			tile[y] = 0x11111111;
 		} else {
 			tile[y] = 0;
-			for(u16 x = 0; x < 8; x++) {
+			for(uint16_t x = 0; x < 8; x++) {
 				tile[y] |= bx+x >= stageWidth ? (1 << ((7-x)*4))
 						:  stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
 						:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
@@ -471,5 +468,5 @@ void gen_maptile(u16 bx, u16 by, u16 index) {
 			}
 		}
 	}
-	DMA_doDma(DMA_VRAM, (u32)tile, index*32, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)tile, index*32, 16, 2);
 }

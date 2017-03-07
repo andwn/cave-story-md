@@ -1,11 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
+#include "ai_common.h"
 
 void onspawn_flower(Entity *e) {
 	e->frame = random() % 6;

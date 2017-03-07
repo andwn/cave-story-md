@@ -1,4 +1,3 @@
-/out
 doukutsu.bin
 doukutsu.elf
 res/resources.h
@@ -6,9 +5,5 @@ inc/ai_gen.h
 temp.bin
 symbol.txt
 *.o
-prof2sram
-tscomp
-tileopt
-lutgen
-savetrim
 savegen_cache/
+bin/

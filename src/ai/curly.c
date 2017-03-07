@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
+#include "ai_common.h"
 
 #define CURLY_STAND				0
 #define CURLY_WALK				3
@@ -180,7 +171,7 @@ void ai_curly_carried(Entity *e) {
 #define CURLYB_FIRE_GUN			21
 #define CURLYB_SHIELD			30
 
-static void curlyboss_fire(Entity *e, u8 dir) {
+static void curlyboss_fire(Entity *e, uint8_t dir) {
 	Entity *shot = entity_create(e->x, e->y, OBJ_CURLYBOSS_SHOT, 0);
 	shot->dir = dir & 1;
 	shot->attack = 6;

@@ -1,19 +1,27 @@
-#include "entity.h"
-
-#include "input.h"
-#include "stage.h"
-#include "resources.h"
+#include "common.h"
+#include "ai.h"
+#include "audio.h"
 #include "camera.h"
+#include "dma.h"
+#include "effect.h"
+#include "input.h"
+#include "joy.h"
+#include "memory.h"
+#include "npc.h"
+#include "player.h"
+#include "resources.h"
+#include "sheet.h"
+#include "sprite.h"
+#include "stage.h"
 #include "system.h"
 #include "tables.h"
-#include "player.h"
-#include "effect.h"
-#include "audio.h"
+#include "tools.h"
 #include "tsc.h"
-#include "npc.h"
-#include "ai.h"
-#include "sprite.h"
-#include "sheet.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+#include "weapon.h"
+
+#include "entity.h"
 
 /* Linked List Macros */
 
@@ -58,14 +66,14 @@
 })
 
 // Heightmaps for slopes
-const u8 heightmap[4][16] = {
+const uint8_t heightmap[4][16] = {
 	{ 0x0,0x0,0x1,0x1,0x2,0x2,0x3,0x3,0x4,0x4,0x5,0x5,0x6,0x6,0x7,0x7 },
 	{ 0x8,0x8,0x9,0x9,0xA,0xA,0xB,0xB,0xC,0xC,0xD,0xD,0xE,0xE,0xF,0xF },
 	{ 0xF,0xF,0xE,0xE,0xD,0xD,0xC,0xC,0xB,0xB,0xA,0xA,0x9,0x9,0x8,0x8 },
 	{ 0x7,0x7,0x6,0x6,0x5,0x5,0x4,0x4,0x3,0x3,0x2,0x2,0x1,0x1,0x0,0x0 },
 };
 
-u8 moveMeToFront = FALSE;
+uint8_t moveMeToFront = FALSE;
 
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
 
@@ -88,8 +96,8 @@ void entity_reactivate(Entity *e) {
 		if(e->tiloc != NOTILOC) {
 			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
 			e->vramindex = tiloc_index + (e->tiloc << 2);
-			u16 tile_offset = 0;
-			for(u8 i = 0; i < e->sprite_count; i++) {
+			uint16_t tile_offset = 0;
+			for(uint8_t i = 0; i < e->sprite_count; i++) {
 				sprite_index(e->sprite[i], e->vramindex + tile_offset);
 				tile_offset += f->vdpSpritesInf[i]->numTile;
 			}
@@ -131,8 +139,8 @@ void entities_clear() {
 	LIST_CLEAR(inactiveList);
 }
 
-u16 entities_count_active() {
-	u16 count = 0;
+uint16_t entities_count_active() {
+	uint16_t count = 0;
 	Entity *e = entityList;
 	while(e) {
 		count++;
@@ -141,8 +149,8 @@ u16 entities_count_active() {
 	return count;
 }
 
-u16 entities_count_inactive() {
-	u16 count = 0;
+uint16_t entities_count_inactive() {
+	uint16_t count = 0;
 	Entity *e = inactiveList;
 	while(e) {
 		count++;
@@ -151,7 +159,7 @@ u16 entities_count_inactive() {
 	return count;
 }
 
-u16 entities_count() {
+uint16_t entities_count() {
 	return entities_count_active() + entities_count_inactive();
 }
 
@@ -173,7 +181,7 @@ void entities_update() {
 			e = entity_destroy(e);
 			continue;
 		}
-		u16 flags = e->nflags | e->eflags;
+		uint16_t flags = e->nflags | e->eflags;
 		// Handle Shootable flag - check for collision with player's bullets
 		if(flags & NPC_SHOOTABLE) {
 			Bullet *b = bullet_colliding(e);
@@ -225,7 +233,7 @@ void entities_update() {
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
-			u32 collided = *(u32*)&collision; // I do what I want
+			uint32_t collided = *(uint32_t*)&collision; // I do what I want
 			if(collided || entity_overlapping(&player, e)) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
@@ -265,16 +273,16 @@ void entities_update() {
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
 				if(e->frame != e->oframe) {
 					e->oframe = e->frame;
-					SYS_disableInts();
+					
 					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
-					SYS_enableInts();
+					
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
-					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left + e->xoff, 
+					int16_t bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left + e->xoff, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					s16 x = min(f->w, 32);
-					for(u8 i = 0; i < e->sprite_count; i++) {
+					int16_t x = min(f->w, 32);
+					for(uint8_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx - x, by);
 						sprite_hflip(e->sprite[i], 1);
 						if(x >= f->w) {
@@ -285,10 +293,10 @@ void entities_update() {
 						}
 					}
 				} else {
-					s16 bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff, 
+					int16_t bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff, 
 						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
-					s16 x = 0;
-					for(u8 i = 0; i < e->sprite_count; i++) {
+					int16_t x = 0;
+					for(uint8_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx + x, by);
 						sprite_hflip(e->sprite[i], 0);
 						x += 32;
@@ -311,7 +319,7 @@ void entities_update() {
 }
 
 void entity_handle_bullet(Entity *e, Bullet *b) {
-	u16 flags = e->nflags | e->eflags;
+	uint16_t flags = e->nflags | e->eflags;
 	// Destroy the bullet, or if it is a missile make it explode
 	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 		if(b->x_speed != 0 || b->y_speed != 0) {
@@ -382,9 +390,9 @@ void entity_update_collision(Entity *e) {
 	if(e->y_speed < 0) collide_stage_ceiling(e);
 }
 
-u8 collide_stage_leftwall(Entity *e) {
-	u16 block_x, block_y1, block_y2;
-	u8 pxa1, pxa2;
+uint8_t collide_stage_leftwall(Entity *e) {
+	uint16_t block_x, block_y1, block_y2;
+	uint8_t pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
 			(e->dir ? e->hit_box.right : e->hit_box.left));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
@@ -401,9 +409,9 @@ u8 collide_stage_leftwall(Entity *e) {
 	return FALSE;
 }
 
-u8 collide_stage_rightwall(Entity *e) {
-	u16 block_x, block_y1, block_y2;
-	u8 pxa1, pxa2;
+uint8_t collide_stage_rightwall(Entity *e) {
+	uint16_t block_x, block_y1, block_y2;
+	uint8_t pxa1, pxa2;
 	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
 			(e->dir ? e->hit_box.left : e->hit_box.right));
 	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
@@ -420,9 +428,9 @@ u8 collide_stage_rightwall(Entity *e) {
 	return FALSE;
 }
 
-u8 collide_stage_floor(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
-	u8 pxa1, pxa2, pxa3;
+uint8_t collide_stage_floor(Entity *e) {
+	uint16_t pixel_x1, pixel_x2, pixel_x3, pixel_y;
+	uint8_t pxa1, pxa2, pxa3;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
 	pixel_x3 = sub_to_pixel(e->x_next);
@@ -438,7 +446,7 @@ u8 collide_stage_floor(Entity *e) {
 		return TRUE;
 	}
 	if(!e->enableSlopes) return FALSE;
-	u8 result = FALSE;
+	uint8_t result = FALSE;
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
 			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
@@ -467,10 +475,10 @@ u8 collide_stage_floor(Entity *e) {
 	return result;
 }
 
-u8 collide_stage_slope_grounded(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_x3, pixel_y;
-	u8 pxa1, pxa2, pxa3;
-	u8 result = FALSE;
+uint8_t collide_stage_slope_grounded(Entity *e) {
+	uint16_t pixel_x1, pixel_x2, pixel_x3, pixel_y;
+	uint8_t pxa1, pxa2, pxa3;
+	uint8_t result = FALSE;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 1;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 1;
 	pixel_x3 = sub_to_pixel(e->x_next);
@@ -523,12 +531,12 @@ u8 collide_stage_slope_grounded(Entity *e) {
 	return result;
 }
 
-u8 collide_stage_floor_grounded(Entity *e) {
-	u8 result = FALSE;
+uint8_t collide_stage_floor_grounded(Entity *e) {
+	uint8_t result = FALSE;
 	// First see if we are still standing on a flat block
-	u8 pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
+	uint8_t pxa1 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) - e->hit_box.left),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
-	u8 pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
+	uint8_t pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 		(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
@@ -548,16 +556,16 @@ u8 collide_stage_floor_grounded(Entity *e) {
 	return result;
 }
 
-u8 collide_stage_ceiling(Entity *e) {
-	u16 pixel_x1, pixel_x2, pixel_y;
-	u8 pxa1, pxa2;
+uint8_t collide_stage_ceiling(Entity *e) {
+	uint16_t pixel_x1, pixel_x2, pixel_y;
+	uint8_t pxa1, pxa2;
 	pixel_x1 = sub_to_pixel(e->x_next) - e->hit_box.left + 2;
 	pixel_x2 = sub_to_pixel(e->x_next) + e->hit_box.right - 2;
 	// Without the +1 here, quote will clip to the left/right of ceiling tiles
 	pixel_y = sub_to_pixel(e->y_next) - e->hit_box.top + 1;
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
-	u8 result = FALSE;
+	uint8_t result = FALSE;
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top + 15) + 0x100;
@@ -602,8 +610,8 @@ u8 collide_stage_ceiling(Entity *e) {
 	return result;
 }
 
-u8 entity_overlapping(Entity *a, Entity *b) {
-	s16 ax1 = sub_to_pixel(a->x) - (a->dir ? a->hit_box.right : a->hit_box.left),
+uint8_t entity_overlapping(Entity *a, Entity *b) {
+	int16_t ax1 = sub_to_pixel(a->x) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y) + a->hit_box.bottom,
@@ -616,7 +624,7 @@ u8 entity_overlapping(Entity *a, Entity *b) {
 
 bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 	bounding_box result = { 0, 0, 0, 0 };
-	s16 ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
+	int16_t ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x_next) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom,
@@ -633,8 +641,8 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
 		if(ay1 < by2 && ay2 > by1) {
-			s16 move1 = pixel_to_sub(bx2 - ax1);
-			s16 move2 = pixel_to_sub(bx1 - ax2);
+			int16_t move1 = pixel_to_sub(bx2 - ax1);
+			int16_t move2 = pixel_to_sub(bx1 - ax2);
 			if(abs(move1) < abs(move2)) {
 				result.left = 1;
 				a->x_next += move1;
@@ -651,8 +659,8 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
 		if(ax1 < bx2 && ax2 > bx1) {
-			s16 move1 = pixel_to_sub(by2 - ay1);
-			s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
+			int16_t move1 = pixel_to_sub(by2 - ay1);
+			int16_t move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
 			if(abs(move1) < abs(move2)) {
 				result.top = 1;
 				a->y_next += move1;
@@ -671,8 +679,8 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top;
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom;
 		if(ax1 < bx2 && ax2 > bx1) {
-			s16 move1 = pixel_to_sub(by2 - ay1);
-			s16 move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
+			int16_t move1 = pixel_to_sub(by2 - ay1);
+			int16_t move2 = pixel_to_sub(by1 - ay2) + pixel_to_sub(1);
 			if(abs(move1) < abs(move2)) {
 				result.top = 1;
 				a->y_next += move1;
@@ -690,8 +698,8 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top + 2;
 		ay2 = sub_to_pixel(a->y_next) + a->hit_box.bottom - 3;
 		if(ay1 < by2 && ay2 > by1) {
-			s16 move1 = pixel_to_sub(bx2 - ax1);
-			s16 move2 = pixel_to_sub(bx1 - ax2);
+			int16_t move1 = pixel_to_sub(bx2 - ax1);
+			int16_t move2 = pixel_to_sub(bx1 - ax2);
 			if(abs(move1) < abs(move2)) {
 				result.left = 1;
 				a->x_next += move1;
@@ -706,7 +714,7 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 	return result;
 }
 
-Entity *entity_find_by_id(u16 id) {
+Entity *entity_find_by_id(uint16_t id) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->id == id) return e;
@@ -720,7 +728,7 @@ Entity *entity_find_by_id(u16 id) {
 	return NULL;
 }
 
-Entity *entity_find_by_event(u16 event) {
+Entity *entity_find_by_event(uint16_t event) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) return e;
@@ -734,7 +742,7 @@ Entity *entity_find_by_event(u16 event) {
 	return NULL;
 }
 
-Entity *entity_find_by_type(u16 type) {
+Entity *entity_find_by_type(uint16_t type) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->type == type) return e;
@@ -743,18 +751,18 @@ Entity *entity_find_by_type(u16 type) {
 	return NULL;
 }
 
-void entities_clear_by_event(u16 event) {
+void entities_clear_by_event(uint16_t event) {
 	LIST_CLEAR_BY_FILTER(entityList, event, event);
 	LIST_CLEAR_BY_FILTER(inactiveList, event, event);
 }
 
-void entities_clear_by_type(u16 type) {
+void entities_clear_by_type(uint16_t type) {
 	LIST_CLEAR_BY_FILTER(entityList, type, type);
 	LIST_CLEAR_BY_FILTER(inactiveList, type, type);
 }
 
 void entity_drop_powerup(Entity *e) {
-	u8 chance = random() % 5;
+	uint8_t chance = random() % 5;
 	if(chance >= 2) { // Weapon Energy
 		if(e->experience > 0) {
 			Entity *exp = entity_create(e->x, e->y, OBJ_XP,
@@ -779,7 +787,7 @@ void entity_drop_powerup(Entity *e) {
 	}
 }
 
-void entity_default(Entity *e, u16 type, u16 flags) {
+void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
 	e->eflags |= flags;
@@ -803,9 +811,9 @@ void entity_default(Entity *e, u16 type, u16 flags) {
 	}
 }
 
-Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
+Entity *entity_create(int32_t x, int32_t y, uint16_t type, uint16_t flags) {
 	// Allocate memory and start applying values
-	u8 sprite_count = npc_info[type].sprite_count;
+	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	e->x = x;
@@ -828,8 +836,8 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 			TILOC_ADD(e->tiloc, e->framesize);
 			if(e->tiloc != NOTILOC) {
 				e->vramindex = tiloc_index + e->tiloc * 4;
-				u16 tile_offset = 0;
-				for(u8 i = 0; i < e->sprite_count; i++) {
+				uint16_t tile_offset = 0;
+				for(uint8_t i = 0; i < e->sprite_count; i++) {
 					e->sprite[i] = (VDPSprite) {
 						.size = f->vdpSpritesInf[i]->size,
 						.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,
@@ -854,7 +862,7 @@ Entity *entity_create(s32 x, s32 y, u16 type, u16 flags) {
 	return e;
 }
 
-void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
+void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t flags) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
@@ -879,7 +887,7 @@ void entities_replace(u16 event, u16 type, u8 direction, u16 flags) {
 	}
 }
 
-void entities_set_state(u16 event, u16 state, u8 direction) {
+void entities_set_state(uint16_t event, uint16_t state, uint8_t direction) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
@@ -898,7 +906,7 @@ void entities_set_state(u16 event, u16 state, u8 direction) {
 	}
 }
 
-void entities_move(u16 event, u16 x, u16 y, u8 direction) {
+void entities_move(uint16_t event, uint16_t x, uint16_t y, uint8_t direction) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->event == event) {
@@ -923,7 +931,7 @@ void entities_move(u16 event, u16 x, u16 y, u8 direction) {
 	}
 }
 
-u8 entity_exists(u16 type) {
+uint8_t entity_exists(uint16_t type) {
 	Entity *e = entityList;
 	while(e) {
 		if(e->type == type) return TRUE;
@@ -939,5 +947,41 @@ void entities_draw() {
 			sprite_addq(e->sprite, e->sprite_count);
 		}
 		e = e->next;
+	}
+}
+
+void generic_npc_states(Entity *e) {
+	switch(e->state) {
+		case 0:		// stand
+		{
+			e->frame = 0;
+			e->x_speed = 0;
+			e->y_speed = 0;
+			if(e->type != OBJ_KAZUMA) {
+				RANDBLINK(e, 3, 200);
+			}
+		}
+		break;
+		case 3:		// walking
+		case 4:
+		{
+			ANIMATE(e, 8, 1,0,2,0);
+			MOVE_X(SPEED(0x200));
+		}
+		break;
+		case 5:		// face away
+		{
+			e->frame = e->type == OBJ_KAZUMA ? 3 : 4;
+			e->x_speed = 0;
+		}
+		break;
+		case 8:		// walk (alternate state used by OBJ_NPC_JACK)
+		{
+			if (e->type == OBJ_JACK) {
+				e->state = 4;
+				e->frame = 1;
+			}
+		}
+		break;
 	}
 }

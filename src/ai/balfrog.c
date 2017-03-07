@@ -1,15 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "camera.h"
-#include "effect.h"
-#include "resources.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 enum States {
 	STATE_TRANSFORM			= 20,			// script-triggered: must stay at this value
@@ -51,16 +40,16 @@ enum BBox_States {
 #define bbox_attack		curly_target_x
 #define bbox_mode		curly_target_y
 
-u8 frog_attack_count;
+uint8_t frog_attack_count;
 bounding_box bbox[2];
 
 void place_bboxes(Entity *e);
-void set_jump_sprite(Entity *e, u8 enable);
-u8 player_bbox_collide(Entity *e, u8 index);
-Bullet* bullets_bbox_collide(Entity *e, u8 index);
+void set_jump_sprite(Entity *e, uint8_t enable);
+uint8_t player_bbox_collide(Entity *e, uint8_t index);
+Bullet* bullets_bbox_collide(Entity *e, uint8_t index);
 void deflect_bullet(Bullet *b);
 void hurt_by_bullet(Entity *e, Bullet *b);
-void spawn_frogs(u16 objtype, u8 count);
+void spawn_frogs(uint16_t objtype, uint8_t count);
 
 void onspawn_balfrog(Entity *e) {
 	e->x = FROG_START_X;
@@ -84,7 +73,7 @@ void onspawn_balfrog(Entity *e) {
 	e->display_box = (bounding_box) { 40, 32, 40, 32 };
 	
 	// timer2 recycled for feet's VRAM index
-	u16 sheet = NOSHEET;
+	uint16_t sheet = NOSHEET;
 	SHEET_FIND(sheet, SHEET_FROGFEET);
 	e->timer2 = sheets[sheet].index;
 	
@@ -286,7 +275,7 @@ void ai_balfrog(Entity *e) {
 				}
 			}
 			if((e->timer % 16) == 1) {
-				u8 angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() % 32);
+				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() % 32);
 				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
@@ -443,7 +432,7 @@ void ai_balfrog(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	// Draw feet if jumping
-	static const s16 xoff1[2] = { -16, -32 },
+	static const int16_t xoff1[2] = { -16, -32 },
 					 xoff2[2] = { 8, -8 };
 	if(e->jump_time) {
 		VDPSprite feet[2] = {
@@ -493,7 +482,7 @@ void place_bboxes(Entity *e) {
 		break;
 	}
 	if(e->dir) { // Swap when facing right
-		u8 temp;
+		uint8_t temp;
 		temp = bbox[0].left;
 		bbox[0].left = bbox[0].right;
 		bbox[0].right = temp;
@@ -504,7 +493,7 @@ void place_bboxes(Entity *e) {
 }
 
 // shake loose frogs from the ceiling
-void spawn_frogs(u16 objtype, u8 count) {
+void spawn_frogs(uint16_t objtype, uint8_t count) {
 	for(int i=0;i<count;i++) {
 		entity_create(((SPAWN_RANGE_LEFT + random() % SPAWN_RANGE_RIGHT) << CSF) * 16,
 					  ((SPAWN_RANGE_TOP + random() % SPAWN_RANGE_BOTTOM) << CSF) * 16,
@@ -513,7 +502,7 @@ void spawn_frogs(u16 objtype, u8 count) {
 }
 
 // switches on and off the jumping frame/sprite
-void set_jump_sprite(Entity *e, u8 enable) {
+void set_jump_sprite(Entity *e, uint8_t enable) {
 	if(enable) {
 		e->jump_time = TRUE;
 		e->display_box.top += 8;
@@ -525,8 +514,8 @@ void set_jump_sprite(Entity *e, u8 enable) {
 	}
 }
 
-u8 player_bbox_collide(Entity *e, u8 index) {
-	s16 ax1 = sub_to_pixel(player.x) - (player.dir ? player.hit_box.right : player.hit_box.left),
+uint8_t player_bbox_collide(Entity *e, uint8_t index) {
+	int16_t ax1 = sub_to_pixel(player.x) - (player.dir ? player.hit_box.right : player.hit_box.left),
 		ax2 = sub_to_pixel(player.x) + (player.dir ? player.hit_box.left : player.hit_box.right),
 		ay1 = sub_to_pixel(player.y) - player.hit_box.top,
 		ay2 = sub_to_pixel(player.y) + player.hit_box.bottom,
@@ -537,8 +526,8 @@ u8 player_bbox_collide(Entity *e, u8 index) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-Bullet* bullets_bbox_collide(Entity *e, u8 index) {
-	for(u8 i = 0; i < MAX_BULLETS; i++) {
+Bullet* bullets_bbox_collide(Entity *e, uint8_t index) {
+	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl == 0) continue;
 		bounding_box bb = playerBullet[i].hit_box;
 		if(sub_to_pixel(playerBullet[i].x) - bb.left >= 

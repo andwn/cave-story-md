@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "camera.h"
-#include "effect.h"
+#include "ai_common.h"
 
 void ai_pignon(Entity *e) {
 	e->timer++;
@@ -26,7 +17,7 @@ void ai_pignon(Entity *e) {
 		{
 			if(e->timer > TIME(100) && (e->timer & 31) == 0) { 
 				// Either blink or walk in a random direction
-				u8 rnd = random() & 7;
+				uint8_t rnd = random() & 7;
 				if(rnd == 0) {
 					e->state = 1;
 					e->timer = 0;
@@ -209,7 +200,7 @@ void ai_ma_pignon(Entity *e) {
 	e->x_mark = e->x_speed;
 	e->y_mark = e->y_speed;
 	
-	u8 blockl = FALSE, blockr = FALSE;
+	uint8_t blockl = FALSE, blockr = FALSE;
 	
 	// Ma Pignon jumps off screen and should not collide with the map while doing so
 	if (e->y_next > block_to_sub(5)) {
@@ -361,7 +352,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, 6,7);
 			
 			if ((++e->timer % 8) == 0) {
-				s32 x = block_to_sub(4 + (random() % 12));
+				int32_t x = block_to_sub(4 + (random() % 12));
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_ROCK, 0);
 			}
 			
@@ -435,7 +426,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, 10,11);
 			
 			if ((++e->timer % 8) == 0) {
-				s32 x = block_to_sub(4 + (random() % 12));
+				int32_t x = block_to_sub(4 + (random() % 12));
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_CLONE, 0);
 			}
 			

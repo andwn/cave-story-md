@@ -1,9 +1,18 @@
-#include "sheet.h"
+#include "common.h"
 
+#include "dma.h"
+#include "entity.h"
+#include "memory.h"
 #include "player.h"
 #include "resources.h"
+#include "sprite.h"
 #include "stage.h"
 #include "tables.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+#include "weapon.h"
+
+#include "sheet.h"
 
 void sheets_load_weapon(Weapon *w) {
 	if(!w) return;
@@ -31,7 +40,7 @@ void sheets_load_weapon(Weapon *w) {
 		break;
 		case WEAPON_MACHINEGUN:
 		{
-			u8 mgun_sheet = NOSHEET;
+			uint8_t mgun_sheet = NOSHEET;
 			SHEET_FIND(mgun_sheet, SHEET_MGUN);
 			if(mgun_sheet != NOSHEET) {
 				w->sheet = mgun_sheet;
@@ -135,7 +144,7 @@ void sheets_refresh_weapon(Weapon *w) {
 	}
 }
 
-void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
+void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	// Reset values
 	if(init_base) {
 		sheet_num = 0;
@@ -381,10 +390,10 @@ void sheets_load_stage(u16 sid, u8 init_base, u8 init_tiloc) {
 		default: printf("Stage %hu has no sheet set", sid);
 	}
 	// Weapons at the end
-	for(u8 i = 0; i < MAX_WEAPONS; i++) sheets_load_weapon(&playerWeapon[i]);
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) sheets_load_weapon(&playerWeapon[i]);
 	// Special case for Sand Zone Bar because Curly uses the machine gun
 	if(sid == 0x1D) {
-		u8 msheet = NOSHEET;
+		uint8_t msheet = NOSHEET;
 		SHEET_FIND(msheet, SHEET_MGUN);
 		if(msheet == NOSHEET) {
 			SHEET_ADD(SHEET_MGUN, &SPR_MGunB1, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);

@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
+#include "ai_common.h"
 
 /*
 	From King's Table, here's the Doctor's first form.
@@ -132,7 +122,7 @@ void ai_boss_doctor(Entity *e) {
 				
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				
-				for(u16 angle = 8; angle < 256; angle += 16) {
+				for(uint16_t angle = 8; angle < 256; angle += 16) {
 					FIRE_ANGLED_SHOT(OBJ_DOCTOR_BLAST, e->x, e->y, angle, SPEED(0x400));
 				}
 			}

@@ -1,12 +1,10 @@
-#ifndef INC_SPRITE_H_
-#define INC_SPRITE_H_
+#define MAX_VDP_SPRITE          80
 
-#include <genesis.h>
-#include "common.h"
+#define SPRITE_SIZE(w, h)   ((((w) - 1) << 2) | ((h) - 1))
 
 #define YCUTOFF (SCREEN_HEIGHT + 32)
 
-u8 spr_num;
+uint8_t spr_num;
 VDPSprite sprites[MAX_VDP_SPRITE];
 
 // Append sprite to the end of the list, order front -> back
@@ -21,7 +19,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 
 // Perform sprite_add against an array of VDPSprites
 #define sprite_addq(arr, num) {                                                                \
-	for(u8 i = num; i--; ) sprite_add(arr[i]);                                                 \
+	for(uint8_t i = num; i--; ) sprite_add(arr[i]);                                            \
 }
 
 #define sprite_pos(s, px, py) {                                                                \
@@ -39,9 +37,7 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 #define sprites_send() {                                                                       \
 	if(spr_num) {                                                                              \
 		sprites[spr_num-1].link = 0;                                                           \
-		DMA_doDma(DMA_VRAM, (u32)sprites, VDP_SPRITE_TABLE, spr_num<<2, 2);                    \
+		DMA_doDma(DMA_VRAM, (uint32_t)sprites, VDP_SPRITE_TABLE, spr_num<<2, 2);               \
 		spr_num = 0;                                                                           \
 	}                                                                                          \
 }
-
-#endif

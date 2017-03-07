@@ -1,9 +1,3 @@
-#ifndef INC_AI_H_
-#define INC_AI_H_
-
-#include "common.h"
-#include "entity.h"
-
 /*
  * This module contains behavior or AI for entities specific to NPC type
  * There are 3 "methods" which may be indexed in the npc_info table for an NPC
@@ -15,8 +9,6 @@
 #define ENTITY_ONSPAWN(e) npc_info[e->type].onSpawn(e)
 #define ENTITY_ONFRAME(e) npc_info[e->type].onFrame(e)
 #define ENTITY_ONDEATH(e) npc_info[e->type].onDeath(e)
-
-typedef void (*EntityMethod)(Entity*);
 
 // Special states
 // Destroy signals the engine to make the entity explode and drop powerups
@@ -34,8 +26,8 @@ typedef void (*EntityMethod)(Entity*);
 /* Helper Macros */
 
 #define SNAP_TO_GROUND(e); {                                                                   \
-	u16 bx = sub_to_block(e->x);                                                               \
-	u16 by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF));                                \
+	uint16_t bx = sub_to_block(e->x);                                                          \
+	uint16_t by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF));                           \
 	if(stage_get_block_type(bx, by) != 0x41) {                                                 \
 		e->y += 16 << CSF;                                                                     \
 	} else {                                                                                   \
@@ -77,20 +69,20 @@ typedef void (*EntityMethod)(Entity*);
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
-	u8 angle = get_angle(shot->x, shot->y, tgtx, tgty);                                        \
+	uint8_t angle = get_angle(shot->x, shot->y, tgtx, tgty);                                   \
 	shot->x_speed = (cos[angle] * speed) >> CSF;                                               \
 	shot->y_speed = (sin[angle] * speed) >> CSF;                                               \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
-	for(u8 i = 0; i < (count); i++) {                                                          \
+	for(uint8_t i = 0; i < (count); i++) {                                                     \
 		effect_create_smoke((x) + (random() % (w)),                                            \
 							(y) + (random() % (h)));                                           \
 	}                                                                                          \
 }
 
 #define ANIMATE(e, spd, ...) {                                                                 \
-	static const u8 anim[] = { __VA_ARGS__ };                                                  \
+	static const uint8_t anim[] = { __VA_ARGS__ };                                             \
 	if(!((e)->animtime % spd)) (e)->frame = anim[(e)->animtime / spd];                         \
 	if(++(e)->animtime >= spd * sizeof(anim)) (e)->animtime = 0;                               \
 }
@@ -106,19 +98,15 @@ typedef void (*EntityMethod)(Entity*);
 }
 
 #define SCREEN_FLASH(fadetime) {                                                               \
-	SYS_disableInts();                                                                         \
 	VDP_setPaletteColors(0, PAL_FullWhite, 64);                                                \
 	VDP_fadeTo(0, 63, VDP_getCachedPalette(), fadetime, TRUE);                                 \
-	SYS_enableInts();                                                                          \
 }
 
 /* Shared Variables */
 
-Entity *water_entity;
-
 // These get aliased for other uses when curly isn't around
-u16 curly_target_time;
-s32 curly_target_x, curly_target_y;
+uint16_t curly_target_time;
+int32_t curly_target_x, curly_target_y;
 
 enum CrystalStates {
 	CRYSTAL_INFRONT,
@@ -131,12 +119,6 @@ enum CrystalStates {
 #define crystal_xmark	curly_target_x
 #define crystal_ymark	curly_target_y
 
-Entity *pieces[10]; // Most bosses use this
+uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty);
 
-void generic_npc_states(Entity *e);
-
-u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty);
-
-u8 mddir(u8 dir);
-
-#endif /* INC_AI_H_ */
+uint8_t mddir(uint8_t dir);

@@ -1,9 +1,3 @@
-#ifndef INC_WEAPON_H_
-#define INC_WEAPON_H_
-
-#include <genesis.h>
-#include "common.h"
-
 // Number of different weapon types
 #define WEAPON_COUNT 14
 // Maximum number of weapons the player can carry in their inventory
@@ -32,30 +26,33 @@ enum {
 };
 
 // Represents a weapon currently owned by the player
-typedef struct {
-	u16 energy;
-	u16 next;
-	u16 maxammo;
-	u16 ammo;
-	u8 type;
-	u8 level;
-	u8 sheet;
-} Weapon;
+struct Weapon {
+	uint16_t energy;
+	uint16_t next;
+	uint16_t maxammo;
+	uint16_t ammo;
+	uint8_t type;
+	uint8_t level;
+	uint8_t sheet;
+};
 
 // An active bullet created by the player (or curly)
-typedef struct {
+struct Bullet {
 	VDPSprite sprite;
 	bounding_box hit_box;
-	s32 x, y;
-	s16 x_speed, y_speed;
-	u8 type;
-	u8 level;
-	u8 damage;
-	u8 ttl;
-	u8 sheet;
-	u8 dir;
-	u8 hits;
-} Bullet;
+	int32_t x, y;
+	int16_t x_speed, y_speed;
+	uint8_t type;
+	uint8_t level;
+	uint8_t damage;
+	uint8_t ttl;
+	uint8_t sheet;
+	uint8_t dir;
+	uint8_t hits;
+};
+
+Weapon playerWeapon[MAX_WEAPONS];
+Bullet playerBullet[MAX_BULLETS];
 
 #define weapon_fire(w) weapon_fire_array[(w).type](&(w))
 
@@ -71,7 +68,6 @@ void weapon_fire_supermissile(Weapon *w);
 void weapon_fire_nemesis(Weapon *w);
 void weapon_fire_spur(Weapon *w);
 
-typedef void (*WeaponFunc)(Weapon *w);
 extern const WeaponFunc weapon_fire_array[WEAPON_COUNT];
 
 #define bullet_update(b); ({ if((b).ttl > 0) bullet_update_array[(b).type](&(b)); })
@@ -89,11 +85,8 @@ void bullet_update_supermissile(Bullet *b);
 void bullet_update_nemesis(Bullet *b);
 void bullet_update_spur(Bullet *b);
 
-typedef void (*BulletFunc)(Bullet *b);
 extern const BulletFunc bullet_update_array[WEAPON_COUNT];
 
 void bullet_missile_explode(Bullet *b);
 // Used by Curly boss to know when to enable her shield
-u8 bullet_missile_is_exploding();
-
-#endif
+uint8_t bullet_missile_is_exploding();

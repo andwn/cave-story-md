@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
-#include "camera.h"
+#include "ai_common.h"
 
 #define angle	jump_time
 
@@ -86,8 +76,8 @@ void ai_igor_balcony(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e);
-	u8 blockr = e->x_speed > 0 && collide_stage_rightwall(e);
+	uint8_t blockl = e->x_speed < 0 && collide_stage_leftwall(e);
+	uint8_t blockr = e->x_speed > 0 && collide_stage_rightwall(e);
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
 	
@@ -396,13 +386,13 @@ void ai_red_energy(Entity *e) {
 				//e->speed = (512 / random(16, 51));
 				
 				// x/y limit
-				u16 limit = SPEED(0x80) + (random() & 0x7F);
+				uint16_t limit = SPEED(0x80) + (random() & 0x7F);
 				
 				e->timer2 = limit << 1;			// x limit
 				e->id = limit + (limit << 1);	// y limit (form elongated sphere)
 			}
 			
-			s32 tgtx = e->linkedEntity->x + (4<<CSF);
+			int32_t tgtx = e->linkedEntity->x + (4<<CSF);
 			if (e->x < tgtx) 		e->x_speed += SPEED(6);
 			else if (e->x > tgtx)	e->x_speed -= SPEED(6);
 			

@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "resources.h"
-#include "sheet.h"
+#include "ai_common.h"
 
 void ai_critter(Entity *e) {
 	enum {

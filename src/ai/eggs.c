@@ -1,12 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "camera.h"
+#include "ai_common.h"
 
 void ai_behemoth(Entity *e) {
 	switch(e->state) {

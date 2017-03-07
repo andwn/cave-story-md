@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
-#include "camera.h"
+#include "ai_common.h"
 
 #define CFRONT				5
 #define CBACK				6
@@ -55,8 +45,8 @@ enum ROTR_STATES {
 };
 
 // Prototypes
-static void SpawnPellet(u8 angle);
-static u8 RunDefeated(Entity *e);
+static void SpawnPellet(uint8_t angle);
+static uint8_t RunDefeated(Entity *e);
 
 /*
 	Main core body:
@@ -221,9 +211,9 @@ void ai_undead_core(Entity *e) {
 			
 			// fire rotators
 			if ((e->timer & 63) == 1) {
-				//u8 i = random() & 3;
-				//s32 x = rotator[i]->x - (16<<CSF);
-				//s32 y = rotator[i]->y;
+				//uint8_t i = random() & 3;
+				//int32_t x = rotator[i]->x - (16<<CSF);
+				//int32_t y = rotator[i]->y;
 				
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				//CreateSpinner(x, y);
@@ -358,8 +348,8 @@ void ai_undead_core(Entity *e) {
 
 // spit a "pellet" shot out of the face. That's what I'm calling the flaming lava-rock
 // type things that are thrown out and trail along the ceiling or floor.
-static void SpawnPellet(u8 angle) {
-	//s32 y = bossEntity->y;
+static void SpawnPellet(uint8_t angle) {
+	//int32_t y = bossEntity->y;
 	
 	//if (dir == UP)
 	//	y -= (16 << CSF);
@@ -386,7 +376,7 @@ static void SpawnPellet(u8 angle) {
 //	}
 //}
 
-static u8 RunDefeated(Entity *e) {
+static uint8_t RunDefeated(Entity *e) {
 	switch(e->state) {
 		// defeated (descending)
 		case CR_Defeated:

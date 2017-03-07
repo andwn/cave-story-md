@@ -1,16 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "input.h"
-#include "system.h"
-#include "resources.h"
-#include "effect.h"
-#include "sheet.h"
+#include "ai_common.h"
 
 #define left_gravity	underwater
 
@@ -72,9 +60,9 @@ void ai_energy(Entity *e) {
 			if(e->x_speed < 0) e->x_speed++;
 			if(e->y_speed > 0x400) e->y_speed = 0x400;
 			// Check below / above first
-			u8 block_below = stage_get_block_type(
+			uint8_t block_below = stage_get_block_type(
 					sub_to_block(e->x), sub_to_block(e->y + 0x800));
-			u8 block_above = stage_get_block_type(
+			uint8_t block_above = stage_get_block_type(
 					sub_to_block(e->x), sub_to_block(e->y - 0x800));
 			if(block_below == 0x41 || block_below == 0x43) {
 				e->y -= sub_to_pixel(e->y + 0x800) % 16;
@@ -82,11 +70,11 @@ void ai_energy(Entity *e) {
 				if(e->y_speed > -0x400) e->y_speed = -0x400;
 				sound_play(SND_XP_BOUNCE, 0);
 			} else if(block_below & BLOCK_SLOPE) {
-				u8 index = block_below & 0xF;
+				uint8_t index = block_below & 0xF;
 				if(index >= 4) {
-					u16 xx = sub_to_pixel(e->x);
-					u16 yy = sub_to_pixel(e->y + 0x800);
-					s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+					uint16_t xx = sub_to_pixel(e->x);
+					uint16_t yy = sub_to_pixel(e->y + 0x800);
+					int8_t overlap = (yy % 16) - heightmap[index % 4][xx % 16];
 					if(overlap >= 0) {
 						e->y -= overlap;
 						if(e->y_speed >= 0x200) sound_play(SND_XP_BOUNCE, 0);
@@ -102,7 +90,7 @@ void ai_energy(Entity *e) {
 				//if(e->y_speed > 0x600) e->y_speed = 0x600;
 			}
 			// Check in front
-			u8 block_front = stage_get_block_type(
+			uint8_t block_front = stage_get_block_type(
 					sub_to_block(e->x + (e->x_speed > 0 ? 0x800 : -0x800)),
 					sub_to_block(e->y - 0x100));
 			if(block_front == 0x41 || block_front == 0x43) { // hit a wall

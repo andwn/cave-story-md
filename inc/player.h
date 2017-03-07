@@ -1,11 +1,3 @@
-#ifndef INC_PLAYER_H_
-#define INC_PLAYER_H_
-
-#include <genesis.h>
-#include "common.h"
-#include "entity.h"
-#include "weapon.h"
-
 // Equips are bit flags in the original Cave Story, even in the TSC commands
 #define EQUIP_BOOSTER08		0x001
 #define EQUIP_MAPSYSTEM		0x002
@@ -27,34 +19,31 @@ enum BoosterState {
 	BOOST_08
 };
 
-Weapon playerWeapon[MAX_WEAPONS];
-u8 currentWeapon; // Index 0-7 of which slot in the array the currently used weapon is
-
-Bullet playerBullet[MAX_BULLETS];
+uint8_t currentWeapon; // Index 0-7 of which slot in the array the currently used weapon is
 
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
 Entity player;
-// This is directly after player so player.sprite will refer to the same memory location
-VDPSprite playerSprite;
+// Padding for "player.sprite[0]"
+uint8_t __playerSprite[8];
 
-//u8 playerShow;
-u8 playerIFrames;
-u8 playerMoveMode;
+//uint8_t playerShow;
+uint8_t playerIFrames;
+uint8_t playerMoveMode;
 // Max health - current health is player.health (Entity)
-u16 playerMaxHealth;
+uint16_t playerMaxHealth;
 // When this is TRUE, quote can not be controlled by player input
-u8 controlsLocked;
+uint8_t controlsLocked;
 // What is currently equipped (see the flags at the top of this file)
-u16 playerEquipment;
+uint16_t playerEquipment;
 // What items the player has and will show up in the inventory screen
-u8 playerInventory[MAX_ITEMS];
+uint8_t playerInventory[MAX_ITEMS];
 
-u8 mgun_shoottime, mgun_chargetime, playerNoBump;
+uint8_t mgun_shoottime, mgun_chargetime, playerNoBump;
 
 Entity *playerPlatform;
 
-u8 playerBoosterFuel, playerBoostState, lastBoostState;
+uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
 
 // Initialize everything for the player, sets default values on game start
 void player_init();
@@ -68,13 +57,11 @@ void player_start_booster();
 // Sprite animation
 void player_draw();
 
-Weapon *player_find_weapon(u8 id);
-
 // Returns TRUE if the player is blinking or otherwise should not be damaged (cutscene)
-u8 player_invincible();
+uint8_t player_invincible();
 // Inflict damage on the player, will start the animation, knockback, red numbers,
 // sound, iframes, and check for death
-u8 player_inflict_damage(s16 damage);
+uint8_t player_inflict_damage(int16_t damage);
 
 // Makes the player sprite visible/invisible
 void player_show();
@@ -84,27 +71,22 @@ void player_unpause();
 
 // Shows the name of the map for a specified amount of time (frames)
 // This would make more sense in stage, but stage_update() is in vblank
-void player_show_map_name(u8 ttl);
+void player_show_map_name(uint8_t ttl);
 
 // TSC Stuff
-void player_give_weapon(u8 id, u8 ammo); // <AM+
-void player_take_weapon(u8 id); // <AM-
-u8 player_has_weapon(u8 id); // <AMJ
-void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo); // <TAM
+void player_give_weapon(uint8_t id, uint8_t ammo); // <AM+
+void player_take_weapon(uint8_t id); // <AM-
+uint8_t player_has_weapon(uint8_t id); // <AMJ
+void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo); // <TAM
 void player_refill_ammo(); // <AE+
 void player_delevel_weapons(); // <ZAM
 
-void player_heal(u8 health); // <LI+
-void player_maxhealth_increase(u8 health); // <ML+
+void player_heal(uint8_t health); // <LI+
+void player_maxhealth_increase(uint8_t health); // <ML+
 
-void player_give_item(u8 id); // <IT+
-void player_take_item(u8 id); // <IT-
-u8 player_has_item(u8 id); // <ITJ
+void player_give_item(uint8_t id); // <IT+
+void player_take_item(uint8_t id); // <IT-
+uint8_t player_has_item(uint8_t id); // <ITJ
 
-void player_equip(u16 id); // <EQ+
-void player_unequip(u16 id); // <EQ-
-
-//void player_lock_controls(); // <PRI and <KEY
-//void player_unlock_controls(); // <KEY and <FRE
-
-#endif /* INC_PLAYER_H_ */
+void player_equip(uint16_t id); // <EQ+
+void player_unequip(uint16_t id); // <EQ-

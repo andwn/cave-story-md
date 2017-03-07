@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "resources.h"
-#include "sheet.h"
+#include "ai_common.h"
 
 // Just up and down gotta go up and down
 void ai_batVertical(Entity *e) {
@@ -77,7 +68,7 @@ void ai_batHang(Entity *e) {
 		e->timer++;
 		e->x_next = e->x; // x_next needs to be set for collision to work properly
 		e->y_next = e->y + e->y_speed;
-		u8 collided = collide_stage_floor(e);
+		uint8_t collided = collide_stage_floor(e);
 		if(collided || (e->timer > TIME(20) && player.y - 0x2000 < e->y)) {
 			e->state = 4;
 			e->timer = 0;
@@ -123,7 +114,7 @@ void ai_batCircle(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u8 angle = random();
+			uint8_t angle = random();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);

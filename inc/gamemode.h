@@ -1,24 +1,19 @@
-#ifndef INC_GAMEMODE_H_
-#define INC_GAMEMODE_H_
-
-#include "common.h"
-
 /*
  * Entry points for each of the game modes, like title screen, sound test, gameplay, etc
  */
 
-u8 paused;
-u8 gameFrozen;
+uint8_t paused;
+uint8_t gameFrozen;
 
 // Sega screen
 void splash_main();
 
 // Displays title screen, returns which option was picked
-u8 titlescreen_main();
+uint8_t titlescreen_main();
 
 // Play the actual game. "load" is whether new game or continue was selected
 // The return value is 0 to return to title or >0 to show the credits (1, 2 different endings)
-u8 game_main(u8 load);
+uint8_t game_main(uint8_t load);
 // Show the map - called from <MLP
 void do_map();
 
@@ -26,5 +21,3 @@ void do_map();
 void soundtest_main();
 
 void credits_main();
-
-#endif /* INC_GAMEMODE_H_ */

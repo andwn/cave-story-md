@@ -1,6 +1,7 @@
-#include "input.h"
+#include "common.h"
+#include "joy.h"
 
-#include <genesis.h>
+#include "input.h"
 
 void input_init() {
 	joystate = 0;

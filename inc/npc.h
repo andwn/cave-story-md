@@ -1,10 +1,3 @@
-#ifndef INC_NPC_H_
-#define INC_NPC_H_
-
-#include <genesis.h>
-#include "common.h"
-#include "resources.h"
-
 /*
  * Cave Story has a file named npc.tbl that contains a bunch of information about each
  * NPC Type (361 of them). This file is included into the ROM without modification,
@@ -459,5 +452,3 @@ enum {
 	NPC_TABLE[(t)*4 + NPC_DBOXIND],   NPC_TABLE[(t)*4 + NPC_DBOXIND+1],                        \
 	NPC_TABLE[(t)*4 + NPC_DBOXIND+2], NPC_TABLE[(t)*4 + NPC_DBOXIND+3]                         \
 })
-
-#endif /* INC_NPC_H_ */

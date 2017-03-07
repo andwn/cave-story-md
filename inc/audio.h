@@ -1,8 +1,3 @@
-#ifndef INC_AUDIO_H_
-#define INC_AUDIO_H_
-
-#include "common.h"
-
 // IDs for sounds, identical to NXEngine for AI compatibility
 #define SND_MENU_MOVE		1
 #define SND_MSG				2
@@ -98,15 +93,13 @@
 // Initialize sound system
 void sound_init();
 // Play sound by ID, priority is 0-15, 15 is most important
-void sound_play(u8 id, u8 priority);
+void sound_play(uint8_t id, uint8_t priority);
 // Play a song by ID
-void song_play(u8 id);
+void song_play(uint8_t id);
 // Stops music if playing, same as song_play(0)
 void song_stop();
 // Resume previous song that was playing
 // TSC calls this after fanfare tracks
 void song_resume();
 // Returns ID of current song
-u8 song_get_playing();
-
-#endif /* INC_AUDIO_H_ */
+uint8_t song_get_playing();

@@ -1,8 +1,3 @@
-#ifndef INC_WINDOW_H_
-#define INC_WINDOW_H_
-
-#include "common.h"
-
 /*
  * The message window is drawn to the bottom of the window plane
  * The text uses the same plane as well rather than sprites
@@ -15,42 +10,40 @@
 #define TM_LINE		1 // CAT/SAT
 #define TM_ALL		2 // TUR
 
-extern const u8 ITEM_PAL[40];
+extern const uint8_t ITEM_PAL[40];
 
 // Opens the message window
-void window_open(u8 mode);
+void window_open(uint8_t mode);
 // Returns TRUE if the message window is open
-u8 window_is_open();
+uint8_t window_is_open();
 // Clears the text/face to plain blue
 void window_clear();
 // Closes the message window
 void window_close();
 // Sets the face to draw during the next message (0 erases the face)
 // The open parameter will force the window open when TRUE
-void window_set_face(u16 face, u8 open);
+void window_set_face(uint16_t face, uint8_t open);
 // Draws a single letter into the window, '\n' will do a new line
-void window_draw_char(u8 c);
+void window_draw_char(uint8_t c);
 // Moves the 2nd and 3rd text row to the top so dialog can continue
 void window_scroll_text();
 // Changes the text mode (show next line immediately or whole message)
-void window_set_textmode(u8 mode);
+void window_set_textmode(uint8_t mode);
 // Counts down until the next letter is to be printed, and will return TRUE
 // when the counter resets
-u8 window_tick();
+uint8_t window_tick();
 // Opens the Yes/No prompt
 void window_prompt_open();
 // Closes the Yes/No prompt
 void window_prompt_close();
 // Gets whether the player picked Yes (TRUE) or No (FALSE)
-u8 window_prompt_answer();
+uint8_t window_prompt_answer();
 // Updates the prompt according to player input if open
 // Returns TRUE if the player picked an option
-u8 window_prompt_update();
+uint8_t window_prompt_update();
 // Displays small window under the center of the screen that shows an item's image
-void window_show_item(u16 item);
+void window_show_item(uint16_t item);
 // Same as above but will show a weapon's image
-void window_show_weapon(u16 weapon);
+void window_show_weapon(uint16_t weapon);
 
 void window_update();
-
-#endif /* INC_WINDOW_H_ */

@@ -1,44 +1,8 @@
+#include "common.h"
+
 #include "ai.h"
 
-#include "npc.h"
-
-void generic_npc_states(Entity *e) {
-	switch(e->state) {
-		case 0:		// stand
-		{
-			e->frame = 0;
-			e->x_speed = 0;
-			e->y_speed = 0;
-			if(e->type != OBJ_KAZUMA) {
-				RANDBLINK(e, 3, 200);
-			}
-		}
-		break;
-		case 3:		// walking
-		case 4:
-		{
-			ANIMATE(e, 8, 1,0,2,0);
-			MOVE_X(SPEED(0x200));
-		}
-		break;
-		case 5:		// face away
-		{
-			e->frame = e->type == OBJ_KAZUMA ? 3 : 4;
-			e->x_speed = 0;
-		}
-		break;
-		case 8:		// walk (alternate state used by OBJ_NPC_JACK)
-		{
-			if (e->type == OBJ_JACK) {
-				e->state = 4;
-				e->frame = 1;
-			}
-		}
-		break;
-	}
-}
-
-static const u32 tan_table[33] = {
+static const uint32_t tan_table[33] = {
 	0,
 	402,
 	806,
@@ -76,12 +40,12 @@ static const u32 tan_table[33] = {
 };
 
 // My brain hurts... don't read this
-u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
-	u8 angle = 0;
-	s32 xdist = (tgtx - curx);
-	s32 ydist = (tgty - cury);
+uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty) {
+	uint8_t angle = 0;
+	int32_t xdist = (tgtx - curx);
+	int32_t ydist = (tgty - cury);
 	if (!xdist) return (tgty > cury) ? 0x40 : 0xC0; // Undefined
-	u32 ratio = (abs(ydist) << 13) / abs(xdist);
+	uint32_t ratio = (abs(ydist) << 13) / abs(xdist);
 	while(tan_table[angle++] < ratio);
 	//angle += 1;
 	angle <<= 1;
@@ -90,7 +54,7 @@ u8 get_angle(s32 curx, s32 cury, s32 tgtx, s32 tgty) {
 	return angle;
 }
 
-u8 mddir(u8 dir) {
+uint8_t mddir(uint8_t dir) {
 	switch(dir) {
 		case DIR_LEFT: 		return LEFT;
 		case DIR_UP: 		return UP;

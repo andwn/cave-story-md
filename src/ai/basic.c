@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 void ai_null(Entity *e) { (void)(e); }
 
@@ -68,7 +59,7 @@ void onspawn_spike(Entity *e) {
 	e->hit_box.right -= 2;
 	e->hit_box.bottom -= 2;
 	
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
 		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
@@ -119,7 +110,7 @@ void onspawn_trigger(Entity *e) {
 	if(e->eflags & NPC_OPTION2) { // Vertical
 		// First test if the trigger is placed outside of the map, if so change the type
 		// to OOB trigger which will activate based on player position instead of collision
-		s16 ex = sub_to_block(e->x);
+		int16_t ex = sub_to_block(e->x);
 		if(ex <= 0) { // Left OOB
 			e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
@@ -140,7 +131,7 @@ void onspawn_trigger(Entity *e) {
 			}
 		}
 	} else { // Horizontal
-		s16 ey = sub_to_block(e->y);
+		int16_t ey = sub_to_block(e->y);
 		if(ey <= 0) { // Top OOB
 			e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
@@ -354,7 +345,7 @@ void ai_player(Entity *e) {
 		case 10:	// he gets flattened
 		{
 			sound_play(SND_LITTLE_CRASH, 5);
-			for(u8 i = 0; i < 4; i++) {
+			for(uint8_t i = 0; i < 4; i++) {
 				effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() % 32), 
 					sub_to_pixel(e->y) - 16 + (random() % 32));
 			}
@@ -441,7 +432,7 @@ void ai_water_droplet(Entity *e) {
 	e->y += e->y_speed;
 	e->hidden ^= 1;
 	if (++e->timer > 10) {
-		u8 block = stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y));
+		uint8_t block = stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y));
 		if(block & BLOCK_WATER || (block & BLOCK_SOLID && !(block & BLOCK_SLOPE)))
 			e->state = STATE_DELETE;
 	}

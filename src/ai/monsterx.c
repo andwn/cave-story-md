@@ -1,19 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "resources.h"
-#include "npc.h"
-#include "sprite.h"
-#include "vdp_ext.h"
+#include "ai_common.h"
 
 #define STATE_X_APPEAR				1		// script-triggered: must stay constant
 #define STATE_X_FIGHT_BEGIN			10		// script-triggered: must stay constant
@@ -69,22 +54,22 @@ enum Pieces {
 
 // the treads start moving at slightly different times
 // which we change direction, etc.
-static const u16 tread_turnon_times[] = { 4, 8, 10, 12 };
+static const uint16_t tread_turnon_times[] = { 4, 8, 10, 12 };
 
 // return true if all the targets behind the doors have been destroyed.
-static u8 all_targets_destroyed() {
-	for(u8 i=TARGET1;i<TARGET1+4;i++) {
+static uint8_t all_targets_destroyed() {
+	for(uint8_t i=TARGET1;i<TARGET1+4;i++) {
 		if (!pieces[i]->hidden) return FALSE;
 	}
 	return TRUE;
 }
 
-static void spawn_fish(u8 index) {
+static void spawn_fish(uint8_t index) {
 	// keep appropriate position relative to main object
 	//                               UL          UR          LL          LR
-	static const s32 xoffs[]   = { -(64<<CSF),  (76<<CSF), -(64<<CSF),  (76<<CSF) };
-	static const s32 yoffs[]   = {  (27<<CSF),  (27<<CSF), -(16<<CSF), -(16<<CSF) };
-	static const u8 angles[]  = { A_LEFT+0x20,  A_UP+0x20,A_DOWN+0x20, A_RIGHT+0x20 };
+	static const int32_t xoffs[]   = { -(64<<CSF),  (76<<CSF), -(64<<CSF),  (76<<CSF) };
+	static const int32_t yoffs[]   = {  (27<<CSF),  (27<<CSF), -(16<<CSF), -(16<<CSF) };
+	static const uint8_t angles[]  = { A_LEFT+0x20,  A_UP+0x20,A_DOWN+0x20, A_RIGHT+0x20 };
 	// Create manually because cur_angle needs to be set
 	// Then let the missile itself deal with setting speeds with sin/cos
 	Entity *fish = entity_create(bossEntity->x + xoffs[index], bossEntity->y + yoffs[index],
@@ -102,8 +87,8 @@ static void spawn_fish(u8 index) {
 }
 
 // sets state on an array on objects
-static void set_states(Entity *e[], u8 n, u16 state) {
-	for(u8 i = 0; i < n; i++) e[i]->state = state;
+static void set_states(Entity *e[], uint8_t n, uint16_t state) {
+	for(uint8_t i = 0; i < n; i++) e[i]->state = state;
 }
 
 void onspawn_monsterx(Entity *e) {
@@ -125,8 +110,8 @@ void onspawn_x_target(Entity *e) {
 	if(e->eflags & NPC_OPTION1) e->frame += 1;
 	if(e->eflags & NPC_OPTION2) e->frame += 2;
 	
-	static const s32 xoffs[] = { -(22 <<CSF),  28 <<CSF, -(15 <<CSF),  17 <<CSF };
-	static const s32 yoffs[] = { -(16 <<CSF), -(16 <<CSF),  14 <<CSF,  14 <<CSF };
+	static const int32_t xoffs[] = { -(22 <<CSF),  28 <<CSF, -(15 <<CSF),  17 <<CSF };
+	static const int32_t yoffs[] = { -(16 <<CSF), -(16 <<CSF),  14 <<CSF,  14 <<CSF };
 	e->x_mark = xoffs[e->frame];
 	e->y_mark = yoffs[e->frame];
 }
@@ -219,7 +204,7 @@ void ai_monsterx(Entity *e) {
 			
 			// trigger the treads to start moving,
 			// and put them slightly out of sync with each-other.
-			for(u8 i=0;i<4;i++) {
+			for(uint8_t i=0;i<4;i++) {
 				if (e->timer == tread_turnon_times[i]) {
 					pieces[TREADUL+i]->state = STATE_TREAD_RUN;
 					pieces[TREADUL+i]->dir = e->dir;
@@ -259,7 +244,7 @@ void ai_monsterx(Entity *e) {
 			
 			// trigger the treads to start braking,
 			// and put them slightly out of sync with each-other.
-			for(u8 i=0;i<4;i++) {
+			for(uint8_t i=0;i<4;i++) {
 				if (e->timer == tread_turnon_times[i]) {
 					pieces[TREADUL+i]->state = STATE_TREAD_BRAKE;
 					pieces[TREADUL+i]->dir = e->dir;
@@ -409,7 +394,7 @@ void ai_monsterx(Entity *e) {
 	}
 	
 	// main object pulled along as treads move
-	s32 tread_center = (pieces[TREADUL]->x + pieces[TREADUR]->x +
+	int32_t tread_center = (pieces[TREADUL]->x + pieces[TREADUR]->x +
 					 	pieces[TREADLL]->x + pieces[TREADLR]->x) / 4;
 	e->x += (tread_center - e->x) / 16;
 	
@@ -713,7 +698,7 @@ void ai_x_fishy_missile(Entity *e) {
 	//}
 	
 	//e->cur_angle %= 0x400;
-	e->frame = ((e->cur_angle + (u8)0x20) >> 5) & 7;
+	e->frame = ((e->cur_angle + (uint8_t)0x20) >> 5) & 7;
 	
 	e->x_speed = cos[e->cur_angle];
 	e->y_speed = sin[e->cur_angle];

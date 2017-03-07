@@ -1,17 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "resources.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 void onspawn_jelly(Entity *e) {
 	e->enableSlopes = FALSE;
@@ -487,7 +474,7 @@ void ai_frog(Entity *e) {
 	}
 	// random jumping, and jump when shot
 	if (e->state < 3 && e->timer > TIME(10)) {
-		u8 dojump = FALSE;
+		uint8_t dojump = FALSE;
 		if(e->damage_time) {
 			dojump = TRUE;
 		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {

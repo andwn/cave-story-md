@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
+#include "ai_common.h"
 
 #define SUE_BASE				20
 #define SUE_PREPARE_ATTACK		30
@@ -24,15 +15,15 @@
 #define angle		jump_time
 #define spawner		underwater
 
-u8 sue_being_hurt;
-u8 sue_was_killed;
+uint8_t sue_being_hurt;
+uint8_t sue_was_killed;
 
 // Prototypes
-//static Entity *fm_spawn_missile(Entity *e, u8 angindex);
+//static Entity *fm_spawn_missile(Entity *e, uint8_t angindex);
 static void sue_somersault(Entity *e);
 static void sue_dash(Entity *e);
 static void set_ignore_solid(Entity *e);
-static void sidekick_run_defeated(Entity *e, u16 health);
+static void sidekick_run_defeated(Entity *e, uint16_t health);
 
 void ai_misery_frenzied(Entity *e) {
 	sidekick_run_defeated(e, 600);
@@ -115,7 +106,7 @@ void ai_misery_frenzied(Entity *e) {
 			
 			if (e->grounded) e->y_speed = -SPEED(0x200);
 			
-			s32 core_x = bossEntity ? bossEntity->x : 0;
+			int32_t core_x = bossEntity ? bossEntity->x : 0;
 			
 			e->x_speed += (e->x > core_x) ? -0x20 : 0x20;
 			e->y_speed += (e->y > player.y) ? -0x10 : 0x10;
@@ -213,11 +204,11 @@ void ai_misery_frenzied(Entity *e) {
 			e->timer++;
 			e->frame = (e->timer & 2) ? 4 : 5;
 			
-			//u8 rate = (playerEquipment & EQUIP_BOOSTER20) ? 10 : 24;
+			//uint8_t rate = (playerEquipment & EQUIP_BOOSTER20) ? 10 : 24;
 			
 			//if ((e->timer % rate) == 1) {
 				// pattern: booster=[0,1,3,1,2,0], no-booster=[0,0,0]:
-			//	u8 angindex = (e->timer >> 3) & 3;
+			//	uint8_t angindex = (e->timer >> 3) & 3;
 			//	fm_spawn_missile(e, angindex);
 			//}
 			
@@ -236,7 +227,7 @@ void ai_misery_frenzied(Entity *e) {
 
 /*
 // spawn a fishy missile in the given direction
-static Entity *fm_spawn_missile(Entity *e, u8 angindex) {
+static Entity *fm_spawn_missile(Entity *e, uint8_t angindex) {
 	static const int ang_table_left[]  = { 0xD8, 0xEC, 0x14, 0x28 };
 	static const int ang_table_right[] = { 0x58, 0x6C, 0x94, 0xA8 };
 
@@ -634,8 +625,8 @@ static void sue_dash(Entity *e) {
 // sets NPC_IGNORESOLID if the object is heading towards the center
 // of the room, clears it otherwise.
 static void set_ignore_solid(Entity *e) {
-	s32 map_right_half = block_to_sub(stageWidth) >> 1;
-	s32 map_bottom_half = block_to_sub(stageHeight) >> 1;
+	int32_t map_right_half = block_to_sub(stageWidth) >> 1;
+	int32_t map_bottom_half = block_to_sub(stageHeight) >> 1;
 	
 	e->eflags &= ~NPC_IGNORESOLID;
 	
@@ -649,7 +640,7 @@ static void set_ignore_solid(Entity *e) {
 }
 
 // shared between both Sue and Misery.
-static void sidekick_run_defeated(Entity *e, u16 health) {
+static void sidekick_run_defeated(Entity *e, uint16_t health) {
 	// die if still around when core explodes
 	if (e->state == SIDEKICK_CORE_DEFEATED_2) {
 		if (!bossEntity) e->health = 0;

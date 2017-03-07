@@ -1,15 +1,16 @@
-#include "tsc.h"
+#include "common.h"
 
-#include <genesis.h>
+#include "ai.h"
 #include "audio.h"
+#include "dma.h"
 #include "player.h"
 #include "entity.h"
 #include "stage.h"
 #include "input.h"
+#include "joy.h"
 #include "camera.h"
 #include "resources.h"
 #include "system.h"
-#include "vdp_ext.h"
 #include "tables.h"
 #include "hud.h"
 #include "window.h"
@@ -17,6 +18,13 @@
 #include "gamemode.h"
 #include "sprite.h"
 #include "sheet.h"
+#include "string.h"
+#include "vdp.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+
+#include "tsc.h"
 
 enum TSC_STATE {
 	TSC_IDLE,			// Not executing any script
@@ -127,63 +135,63 @@ enum TSC_STATE {
 #define LAST_CMD 0xda
 
 typedef struct {
-	u16 number;
-	const u8 *data;
+	uint16_t number;
+	const uint8_t *data;
 } Event;
 
 // Array of pointers to each event in the current TSC
 Event headEvents[HEAD_EVENT_COUNT];
 Event stageEvents[MAX_EVENTS];
 
-const u8 *curCommand = NULL;
+const uint8_t *curCommand = NULL;
 
-u16 waitTime;
+uint16_t waitTime;
 
-u16 promptJump = 0;
+uint16_t promptJump = 0;
 
-u8 teleMenuSlotCount = 0;
-u16 teleMenuEvent[8];
-u8 teleMenuSelection = 0;
-u8 teleMenuSheet = NOSHEET;
+uint8_t teleMenuSlotCount = 0;
+uint16_t teleMenuEvent[8];
+uint8_t teleMenuSelection = 0;
+uint8_t teleMenuSheet = NOSHEET;
 VDPSprite teleMenuSprite[8];
 
-u16 bossMaxHealth;
-u16 bossHealth;
+uint16_t bossMaxHealth;
+uint16_t bossHealth;
 
-u16 lastAmmoNum = 0;
+uint16_t lastAmmoNum = 0;
 
-u8 tsc_load(Event *eventList, const u8 *TSC, u8 max);
+uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max);
 
 void tsc_show_boss_health();
 void tsc_hide_boss_health();
 void tsc_show_teleport_menu();
 
-u8 execute_command();
-u8 tsc_read_byte();
-u16 tsc_read_word();
+uint8_t execute_command();
+uint8_t tsc_read_byte();
+uint16_t tsc_read_word();
 
 // Load window tiles & the global "head" events
 void tsc_init() {
 	inFade = FALSE;
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
-	const u8 *TSC = TSC_Head;
+	const uint8_t *TSC = TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
 
-void tsc_load_stage(u8 id) {
+void tsc_load_stage(uint8_t id) {
 	if(id == 255) { // Stage index 255 is a special case for the item menu
-		const u8 *TSC = TSC_ArmsItem;
+		const uint8_t *TSC = TSC_ArmsItem;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
-		const u8 *TSC = stage_info[id].TSC;
+		const uint8_t *TSC = stage_info[id].TSC;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	}
 }
 
-u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
+uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
 	// First byte of TSC is the number of events
-	u8 eventCount = TSC[0];
+	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled
 	if(eventCount > max) {
 		char str[32] = "Too many events: ";
@@ -191,8 +199,8 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 		SYS_die(str);
 	}
 	// Step through ROM data until finding all the events
-	u8 loadedEvents = 0;
-	for(u16 i = 1; loadedEvents < eventCount; i++) {
+	uint8_t loadedEvents = 0;
+	for(uint16_t i = 1; loadedEvents < eventCount; i++) {
 		// The event marker is a word 0xFFFF
 		if(TSC[i] == 0xFF && TSC[i+1] == 0xFF) {
 			eventList[loadedEvents].number = TSC[i+2]+(TSC[i+3]<<8);
@@ -205,10 +213,10 @@ u8 tsc_load(Event *eventList, const u8 *TSC, u8 max) {
 	return loadedEvents;
 }
 
-void tsc_call_event(u16 number) {
+void tsc_call_event(uint16_t number) {
 	// Events under 50 will be in Head.tsc
 	if(number < 50) {
-		for(u8 i = 0; i < HEAD_EVENT_COUNT; i++) {
+		for(uint8_t i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
 				tscState = TSC_RUNNING;
 				curCommand = headEvents[i].data;
@@ -216,7 +224,7 @@ void tsc_call_event(u16 number) {
 			}
 		}
 	} else {
-		for(u8 i = 0; i < tscEventCount; i++) {
+		for(uint8_t i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
 				tscState = TSC_RUNNING;
 				curCommand = stageEvents[i].data;
@@ -226,13 +234,13 @@ void tsc_call_event(u16 number) {
 	}
 }
 
-u8 tsc_update() {
+uint8_t tsc_update() {
 	switch(tscState) {
 		case TSC_IDLE: break; // Nothing to update
 		case TSC_RUNNING:
 		{
 			for(;;) {
-				u8 result = execute_command();
+				uint8_t result = execute_command();
 				if(result > 0) return result - 1;
 			}
 		}
@@ -342,7 +350,7 @@ void tsc_update_boss_health() {
 			tsc_hide_boss_health();
 			return;
 		}
-		u16 hp = bossHealth, inc = bossMaxHealth / 8, i;
+		uint16_t hp = bossHealth, inc = bossMaxHealth / 8, i;
 		// Draw filled tiles
 		for(i = 0; i < 8 && hp > inc; i++) {
 			hp -= inc;
@@ -374,7 +382,7 @@ void tsc_hide_boss_health() {
 void tsc_show_teleport_menu() {
 	teleMenuSlotCount = 0;
 	SHEET_FIND(teleMenuSheet, SHEET_TELE);
-	for(u8 i = 0; i < 8; i++) {
+	for(uint8_t i = 0; i < 8; i++) {
 		if(teleportEvent[i] == 0) continue;
 		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
 		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
@@ -397,9 +405,9 @@ void tsc_show_teleport_menu() {
 	bossHealth = 0;
 }
 
-u8 execute_command() {
-	u16 args[4];
-	u8 cmd = tsc_read_byte();
+uint8_t execute_command() {
+	uint16_t args[4];
+	uint8_t cmd = tsc_read_byte();
 	if(cmd >= 0x80) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
@@ -434,7 +442,7 @@ u8 execute_command() {
 			args[0] = tsc_read_word();
 			char str[12];
 			intToStr(lastAmmoNum, str, 1);
-			for(u8 i = 0; str[i] != 0 && i < 12; i++) {
+			for(uint8_t i = 0; str[i] != 0 && i < 12; i++) {
 				window_draw_char(str[i]);
 			}
 		}
@@ -923,26 +931,26 @@ u8 execute_command() {
 		{
 			args[0] = tsc_read_word();
 			inFade = FALSE; // Unlock sprites from updating
-			VDP_waitVSync(); // Wait a frame to let the sprites redraw
-			SYS_disableInts();
+			vsync(); // Wait a frame to let the sprites redraw
+			aftervblank();
+			
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
-			SYS_enableInts();
+			
 		}
 		break;
 		case CMD_FAO:
 		{
 			args[0] = tsc_read_word();
-			VDP_waitVSync();
 			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
-			SYS_disableInts();
+			
 			// Blank the sprite list in VRAM
 			spr_num = 0;
 			VDPSprite blank = (VDPSprite) { 
 				.x = 128, .y = 128, .size = 0, .attribut = 0
 			};
-			DMA_doDma(DMA_VRAM, (u32) &blank, VDP_getSpriteListAddress(), 4, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t) &blank, VDP_SPRITE_TABLE, 4, 2);
 			inFade = TRUE; // and set a flag not to update sprites anymore
-			SYS_enableInts();
+			
 		}
 		break;
 		case CMD_FLA: // Flash screen white
@@ -1047,7 +1055,7 @@ u8 execute_command() {
 		{
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
-			u8 b = stage_get_block(args[0], args[1]);
+			uint8_t b = stage_get_block(args[0], args[1]);
 			if (b > 0) stage_replace_block(args[0], args[1], b - 1);
 		}
 		break;
@@ -1064,14 +1072,14 @@ u8 execute_command() {
 	return 0;
 }
 
-u8 tsc_read_byte() {
-	u8 byte = curCommand[0];
+uint8_t tsc_read_byte() {
+	uint8_t byte = curCommand[0];
 	curCommand++;
 	return byte;
 }
 
-u16 tsc_read_word() {
-	u16 word = curCommand[0]+(curCommand[1]<<8);
+uint16_t tsc_read_word() {
+	uint16_t word = curCommand[0]+(curCommand[1]<<8);
 	curCommand += 2;
 	return word;
 }

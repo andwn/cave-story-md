@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
+#include "ai_common.h"
 
 #define CFRONT				5
 #define CBACK				6
@@ -62,7 +52,7 @@
 })
 
 // Minicore frame indeces
-static const u16 mframeindex[5] = {
+static const uint16_t mframeindex[5] = {
 	TILE_BACKINDEX, 		// Face - mouth closed
 	TILE_BACKINDEX + 16,	// Face - mouth open
 	TILE_BACKINDEX + 32,	// Back
@@ -121,7 +111,7 @@ void onspawn_core(Entity *e) {
 	pieces[4]->x = (e->x - 0x6000);
 	pieces[4]->y = (e->y - 0x4000);
 
-	for(u8 i = 0; i < 5; i++) {
+	for(uint8_t i = 0; i < 5; i++) {
 		pieces[i]->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		pieces[i]->health = 1000;
 		pieces[i]->state = MC_SLEEP;
@@ -130,21 +120,21 @@ void onspawn_core(Entity *e) {
 	}
 	
 	// Upload some tile data for the minicore sprites into the background section
-	SYS_disableInts();
+	
 	SHEET_LOAD(&SPR_MiniCore1, 1, 16, mframeindex[0], 1, 0,0);
 	SHEET_LOAD(&SPR_MiniCore2, 1, 16, mframeindex[1], 1, 0,0);
 	SHEET_LOAD(&SPR_MiniCore3, 1, 12, mframeindex[2], 1, 0,0);
 	SHEET_LOAD(&SPR_MiniCore4, 1, 4, mframeindex[3], 1, 0,0);
 	SHEET_LOAD(&SPR_MiniCore5, 1, 2, mframeindex[4], 1, 0,0);
-	SYS_enableInts();
+	
 }
 
-// We never need to know the core controller's ID but need an extra u16 variable to save hp
+// We never need to know the core controller's ID but need an extra uint16_t variable to save hp
 #define savedhp		id
 #define mouth_open	grounded
 
 void ai_core(Entity *e) {
-	u8 do_thrust = FALSE;
+	uint8_t do_thrust = FALSE;
 
 	switch(e->state) {
 		case CORE_SLEEP: break;			// core is asleep
@@ -273,7 +263,7 @@ void ai_core(Entity *e) {
 								(e->y >> CSF) - 64 + (random() % 128));
 			
 			// tell all the MC's to retreat
-			for(u8 i = 0; i < 5; i++) {
+			for(uint8_t i = 0; i < 5; i++) {
 				pieces[i]->eflags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
 				pieces[i]->state = MC_RETREAT;
 			}
@@ -312,7 +302,7 @@ void ai_core(Entity *e) {
 				pieces[CFRONT]->hidden = TRUE;
 				pieces[CBACK]->hidden = TRUE;
 				
-				for(u8 i = 0; i < 7; i++) pieces[i]->state = STATE_DELETE;
+				for(uint8_t i = 0; i < 7; i++) pieces[i]->state = STATE_DELETE;
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -322,7 +312,7 @@ void ai_core(Entity *e) {
 	
 	if (do_thrust) {
 		// tell all the minicores to jump to a new position
-		for(u8 i = 0; i < 5; i++) {
+		for(uint8_t i = 0; i < 5; i++) {
 			pieces[i]->state = MC_THRUST;
 		}
 		

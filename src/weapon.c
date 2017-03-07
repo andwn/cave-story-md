@@ -1,16 +1,23 @@
-#include "weapon.h"
+#include "common.h"
 
-#include "player.h"
-#include "stage.h"
-#include "camera.h"
 #include "audio.h"
-#include "resources.h"
-#include "tables.h"
+#include "camera.h"
+#include "dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "input.h"
+#include "joy.h"
+#include "player.h"
+#include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
+#include "stage.h"
+#include "tables.h"
+#include "tools.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+
+#include "weapon.h"
 
 #define FIREDIR	(playerMoveMode ? RIGHT : joy_down(BUTTON_UP) ? UP :                           \
 				 (!player.grounded && joy_down(BUTTON_DOWN)) ? DOWN : player.dir)
@@ -49,8 +56,8 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
-static void bullet_destroy_block(u16 x, u16 y);
-static void create_blade_slash(Bullet *b, u8 burst);
+static void bullet_destroy_block(uint16_t x, uint16_t y);
+static void create_blade_slash(Bullet *b, uint8_t burst);
 
 void weapon_fire_none(Weapon *w) { (void)(w); }
 
@@ -62,7 +69,7 @@ void weapon_fire_polarstar(Weapon *w) {
 	// Use first 3 slots for polar star
 	// Max bullets for lv 1,2,3: 3,3,2
 	Bullet *b = NULL;
-	for(u8 i = 0 + (w->level == 3 ? 1 : 0); i < 3; i++) {
+	for(uint8_t i = 0 + (w->level == 3 ? 1 : 0); i < 3; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -106,7 +113,7 @@ void weapon_fire_fireball(Weapon *w) {
 	// I try to simulate this by storing fireball bullets in a different part of the array
 	// Max bullets for lv 1,2,3: 2,3,4
 	Bullet *b = NULL;
-	for(u8 i = 2 + (3 - w->level); i < 6; i++) {
+	for(uint8_t i = 2 + (3 - w->level); i < 6; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -146,7 +153,7 @@ void weapon_fire_fireball(Weapon *w) {
 void weapon_fire_machinegun(Weapon *w) {
 	// Use all 10 slots for machine gun
 	Bullet *b = NULL;
-	for(u8 i = 0; i < 10; i++) {
+	for(uint8_t i = 0; i < 10; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -202,7 +209,7 @@ void weapon_fire_missile(Weapon *w) {
 	// Use end of array for missiles
 	// Max bullets for lv 1,2,3: 1,2,6
 	Bullet *b = NULL;
-	for(u8 i = 4 + (w->level == 1 ? 5 : w->level == 2 ? 4 : 0); i < 10; i++) {
+	for(uint8_t i = 4 + (w->level == 1 ? 5 : w->level == 2 ? 4 : 0); i < 10; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -242,9 +249,9 @@ void weapon_fire_missile(Weapon *w) {
 
 void weapon_fire_bubbler(Weapon *w) {
 	// Limit level 1 to 4 bubbles, others use whole array
-	u8 limit = w->level == 1 ? 4 : 10;
+	uint8_t limit = w->level == 1 ? 4 : 10;
 	Bullet *b = NULL;
-	for(u8 i = 0; i < limit; i++) {
+	for(uint8_t i = 0; i < limit; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -262,7 +269,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	};
 	sound_play(SND_BUBBLER_FIRE, 5);
 	// Starting velocity based on level
-	s16 fwdspeed = 0, sidespeed = 0;
+	int16_t fwdspeed = 0, sidespeed = 0;
 	switch(b->level) {
 		case 1:
 			b->damage = 1;
@@ -383,7 +390,7 @@ void bullet_update_snake(Bullet *b) {
 void bullet_update_polarstar(Bullet *b) {
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+	uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 	// Check if bullet is colliding with a breakable block
 	if(block == 0x43) {
 		b->ttl = 0;
@@ -405,19 +412,19 @@ void bullet_update_polarstar(Bullet *b) {
 
 void bullet_update_fireball(Bullet *b) {
 	// Check below / above first
-	u8 block_below = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y + 0x800));
-	u8 block_above = b->y_speed < 0
+	uint8_t block_below = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y + 0x800));
+	uint8_t block_above = b->y_speed < 0
 				? stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y - 0x800)) : 0;
 	if(block_below == 0x41 || block_below == 0x43) {
 		b->y -= sub_to_pixel(b->y + 0x800) % 16;
 		b->y_speed = -b->y_speed >> 1;
 		if(b->y_speed > -0x300) b->y_speed = -0x300;
 	} else if(block_below & BLOCK_SLOPE) {
-		u8 index = block_below & 0xF;
+		uint8_t index = block_below & 0xF;
 		if(index >= 4) {
-			u16 xx = sub_to_pixel(b->x);
-			u16 yy = sub_to_pixel(b->y + 0x800);
-			s8 overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+			uint16_t xx = sub_to_pixel(b->x);
+			uint16_t yy = sub_to_pixel(b->y + 0x800);
+			int8_t overlap = (yy % 16) - heightmap[index % 4][xx % 16];
 			if(overlap >= 0) {
 				b->y -= overlap;
 				b->y_speed = -b->y_speed;
@@ -432,7 +439,7 @@ void bullet_update_fireball(Bullet *b) {
 		if(b->y_speed > 0x600) b->y_speed = 0x600;
 	}
 	// Check in front
-	u8 block_front = stage_get_block_type(
+	uint8_t block_front = stage_get_block_type(
 			sub_to_block(b->x + (b->x_speed > 0 ? 0x800 : -0x800)),
 			sub_to_block(b->y - 0x100));
 	if(block_front == 0x41 || block_front == 0x43) { // Bullet hit a wall
@@ -444,7 +451,7 @@ void bullet_update_fireball(Bullet *b) {
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	if(!(b->ttl % 4)) {
-		sprite_index(b->sprite, sheets[b->sheet].index + ((u16)(80 - b->ttl) % 12));
+		sprite_index(b->sprite, sheets[b->sheet].index + ((uint16_t)(80 - b->ttl) % 12));
 	}
 	sprite_add(b->sprite);
 	b->ttl--;
@@ -453,7 +460,7 @@ void bullet_update_fireball(Bullet *b) {
 void bullet_update_machinegun(Bullet *b) {
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+	uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 	if(block == 0x43) {
 		b->ttl = 0;
 		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
@@ -493,7 +500,7 @@ void bullet_update_missile(Bullet *b) {
 	if(b->x_speed | b->y_speed) {
 		b->x += b->x_speed;
 		b->y += b->y_speed;
-		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Explode
 			bullet_missile_explode(b);
 		} else if(block == 0x43) {
@@ -511,7 +518,7 @@ void bullet_update_missile(Bullet *b) {
 
 void bullet_update_bubbler(Bullet *b) {
 	if(b->level < 3) { // Level 1 and 2 just move forward a bit
-		u8 decel = SPEED(0x10);
+		uint8_t decel = SPEED(0x10);
 		if(b->level == 1) decel += SPEED(0x0A);
 		switch(b->dir) {
 			case LEFT: b->x_speed += decel; break;
@@ -519,14 +526,14 @@ void bullet_update_bubbler(Bullet *b) {
 			case UP: b->y_speed += decel; break;
 			case DOWN: b->y_speed -= decel; break;
 		}
-		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if((block & 0x41) == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			return;
 		}
 		// Half assed animation
-		u8 livetime = b->level == 1 ? TIME(40) : TIME(60);
-		u8 frame = (livetime - b->ttl) >> 2;
+		uint8_t livetime = b->level == 1 ? TIME(40) : TIME(60);
+		uint8_t frame = (livetime - b->ttl) >> 2;
 		if(frame > 3) frame = 3;
 		sprite_index(b->sprite, sheets[b->sheet].index + frame);
 	} else if(b->ttl >= TIME(30)) { // Level 3 orbits around player
@@ -585,7 +592,7 @@ void bullet_update_bubbler(Bullet *b) {
 				b->y_speed = -SPEED(0x400);
 		}
 	} else { // Level 3 being launched
-		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
@@ -611,14 +618,14 @@ void bullet_update_blade(Bullet *b) {
 	b->ttl--;
 	if(b->level == 3) {
 		if(b->x_speed | b->y_speed) {
-			u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+			uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 			if(b->hits) { // Hit something, stop moving
 				b->ttl = TIME(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
-				SYS_disableInts();
+				
 				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
-				SYS_enableInts();
+				
 			} else if(block == 0x43) { // Breakable block
 				b->ttl = 0;
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
@@ -636,7 +643,7 @@ void bullet_update_blade(Bullet *b) {
 		}
 	} else {
 		// Level 1 and 2 hit walls, spin
-		u8 block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Hit wall/floor
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
@@ -648,7 +655,7 @@ void bullet_update_blade(Bullet *b) {
 			sound_play(SND_BLOCK_DESTROY, 5);
 			return;
 		}
-		u8 anim = b->ttl & 7;
+		uint8_t anim = b->ttl & 7;
 		if(anim == 6)      b->sprite.attribut |= (1<<12);
 		else if(anim == 4) b->sprite.attribut |= (1<<11);
 		else if(anim == 2) b->sprite.attribut &= ~(1<<12);
@@ -688,7 +695,7 @@ void bullet_update_blade_slash(Bullet *b) {
 			break;
 	}
 	// Adjust sprite offset and hit box based on which frame we are at
-	s8 xoff, yoff;
+	int8_t xoff, yoff;
 	if(b->ttl > 16) {
 		yoff = -12;
 		b->hit_box = (bounding_box) { 12, 12, 0, 0 }; //8x8 top corner
@@ -729,11 +736,11 @@ void bullet_update_spur(Bullet *b) {
 
 Bullet *bullet_colliding(Entity *e) {
 	// Keeping this in the registers should be a bit faster than always following the pointer
-	u16 ex = e->x >> CSF, ey = e->y >> CSF;
+	uint16_t ex = e->x >> CSF, ey = e->y >> CSF;
 	bounding_box eb = eb = e->hit_box;
-	for(u8 i = 0; i < MAX_BULLETS; i++) {
+	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(!playerBullet[i].ttl) continue;
-		u16 bx = playerBullet[i].x >> CSF, by = playerBullet[i].y >> CSF;
+		uint16_t bx = playerBullet[i].x >> CSF, by = playerBullet[i].y >> CSF;
 		bounding_box bb = playerBullet[i].hit_box;
 		if (bx - bb.left   <= ex + eb.right  &&
 			bx + bb.right  >= ex - eb.left   &&
@@ -750,14 +757,14 @@ void bullet_missile_explode(Bullet *b) {
 	b->ttl = 8;
 	b->damage = 1 + b->level;
 	b->hit_box = (bounding_box) { 12, 12, 12, 12 };
-	for(u8 i =  b->level; i < 4; i++) {
+	for(uint8_t i =  b->level; i < 4; i++) {
 		effect_create_smoke(sub_to_pixel(b->x) - 10 + (random() % 20), 
 							sub_to_pixel(b->y) - 10 + (random() % 20));
 	}
 }
 
-u8 bullet_missile_is_exploding() {
-	for(u8 i = 4; i < 10; i++) {
+uint8_t bullet_missile_is_exploding() {
+	for(uint8_t i = 4; i < 10; i++) {
 		if(playerBullet[i].ttl > 0 &&
 				playerBullet[i].x_speed == 0 && playerBullet[i].y_speed == 0) {
 			return TRUE;
@@ -766,15 +773,15 @@ u8 bullet_missile_is_exploding() {
 	return FALSE;
 }
 
-static void bullet_destroy_block(u16 x, u16 y) {
-	u8 ind;
+static void bullet_destroy_block(uint16_t x, uint16_t y) {
+	uint8_t ind;
 	if(stageTileset == 21) ind = 22; // Balcony
 	else if(stageTileset == 13) ind = 0; // Labyrinth
 	else ind = stage_get_block(x, y) - 1;
 	stage_replace_block(x, y, ind);
 }
 
-static void create_blade_slash(Bullet *b, u8 burst) {
+static void create_blade_slash(Bullet *b, uint8_t burst) {
 	Bullet *slash = NULL;
 	if(burst) {
 		if((b->ttl & 15) == 0) {

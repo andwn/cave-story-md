@@ -1,8 +1,3 @@
-#ifndef INC_SYSTEM_H_
-#define INC_SYSTEM_H_
-
-#include "common.h"
-
 #define SRAM_UNCHECKED		0x00
 #define SRAM_VALID_EMPTY	0x01
 #define SRAM_VALID_SAVE		0x02
@@ -11,15 +6,15 @@
 #define FLAG_EVENTONDROWN		4000
 #define FLAG_DISABLESAVE		4095
 
-extern u8 debuggingEnabled;
+extern uint8_t debuggingEnabled;
 
 // Global flags are persisted to save data
-void system_set_flag(u16 flag, u8 value);
-u8 system_get_flag(u16 flag);
+void system_set_flag(uint16_t flag, uint8_t value);
+uint8_t system_get_flag(uint16_t flag);
 // Skip flags remain in memory until power off, or new game
 // Used to skip boss cutscenes when retrying
-void system_set_skip_flag(u16 flag, u8 value);
-u8 system_get_skip_flag(u16 flag);
+void system_set_skip_flag(uint16_t flag, uint8_t value);
+uint8_t system_get_skip_flag(uint16_t flag);
 
 // Increments play time
 void system_update();
@@ -31,15 +26,18 @@ void system_load();
 // Stores variables and game state into SRAM
 void system_save();
 // Validates whether any save data exists in SRAM
-u8 system_checkdata();
+uint8_t system_checkdata();
 // Load to a stock save file from the level select list
-void system_load_levelselect(u8 file);
+void system_load_levelselect(uint8_t file);
 
 // Counter stuff
 void system_start_counter();
-u32 system_counter_ticks();
+uint32_t system_counter_ticks();
 void system_counter_draw();
-u32 system_load_counter();
-void system_save_counter(u32 ticks);
+uint32_t system_load_counter();
+void system_save_counter(uint32_t ticks);
 
-#endif // INC_SYSTEM_H_
+// SGDK sys.h stuff
+void SYS_assertReset();
+void SYS_hardReset();
+void SYS_die(char *err);

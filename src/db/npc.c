@@ -1,8 +1,10 @@
-#include "tables.h"
-
+#include "common.h"
+#include "entity.h"
 #include "ai_gen.h"
 #include "resources.h"
 #include "sheet.h"
+
+#include "tables.h"
 
 const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },

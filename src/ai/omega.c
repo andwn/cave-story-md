@@ -1,18 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "resources.h"
-#include "npc.h"
-#include "vdp_ext.h"
+#include "ai_common.h"
 
 #define OMEGA_RISE_HEIGHT			56
 #define OMEGA_SINK_DEPTH			60
@@ -336,7 +322,7 @@ void ai_omega(Entity *e) {
 			if (++e->timer > 50) {
 				bossEntity = NULL;
 				e->state = STATE_DELETE;
-				for(u8 i=0;i<NUM_PIECES;i++) pieces[i]->state = STATE_DELETE;
+				for(uint8_t i=0;i<NUM_PIECES;i++) pieces[i]->state = STATE_DELETE;
 				return;
 			}
 		}

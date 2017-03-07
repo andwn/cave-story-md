@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "input.h"
-#include "effect.h"
-#include "npc.h"
+#include "ai_common.h"
 
 #define fireatk curly_target_x
 

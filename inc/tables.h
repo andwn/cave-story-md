@@ -1,13 +1,3 @@
-#ifndef INC_TABLES_H_
-#define INC_TABLES_H_
-
-#include <genesis.h>
-#include "common.h"
-#include "npc.h"
-#include "ai.h"
-#include "weapon.h"
-#include "sheet.h"
-
 /*
  * This is a database of most of the game's content. Wherever possible, the indexes match
  * the IDs used by the original game.
@@ -17,14 +7,14 @@
 // Information about each stage, indexed by stageID
 #define STAGE_COUNT 95
 typedef struct {
-	const u8 *PXM; // PXM is the layout, each byte is an index of the current tileset
-	const u8 *PXE; // PXE is the entity list
-	const u8 *TSC; // TSC is the script
+	const uint8_t *PXM; // PXM is the layout, each byte is an index of the current tileset
+	const uint8_t *PXE; // PXE is the entity list
+	const uint8_t *TSC; // TSC is the script
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const Palette *npcPalette;
-	u8 tileset; // Which tileset in tileset_info to use
-	u8 background; // Which background in background_info to use
-	u8 name[24]; // The name of the map, as displayed to the player
+	uint8_t tileset; // Which tileset in tileset_info to use
+	uint8_t background; // Which background in background_info to use
+	uint8_t name[24]; // The name of the map, as displayed to the player
 } stage_info_def;
 extern const stage_info_def stage_info[STAGE_COUNT];
 
@@ -33,7 +23,7 @@ extern const stage_info_def stage_info[STAGE_COUNT];
 typedef struct {
 	const TileSet *tileset; // The graphical tile data to load
 	const Palette *palette; // The palette, which will be loaded to PAL2
-	const u8 *PXA; // Tile options, how objects interact with different tiles
+	const uint8_t *PXA; // Tile options, how objects interact with different tiles
 } tileset_info_def;
 
 // Information about each background, indexed by stageBackground
@@ -43,28 +33,28 @@ typedef struct {
 	const TileSet *tileset; // Graphical tile data to load
 	// Backgrounds do not use their own palette and instead "share" with any other of the
 	// 4 already loaded. This value specifies which, like PAL0, PAL1, etc
-	u16 palette;
+	uint16_t palette;
 	// The "type" is which behavior/algorithm to use when loading/scrolling the background
 	// 0 - Draw a plain tiled image into PLAN_B
 	// 1 - Moon/Fog - Draw from a specified pattern into PLAN_B and scroll the clouds
 	// 2 - Clear PLAN_B to black, no background
 	// 3 - Scroll tiled image automatically (Ironhead boss)
-	u8 type;
-	u8 width, height; // Size of tiled image for type 0
+	uint8_t type;
+	uint8_t width, height; // Size of tiled image for type 0
 } background_info_def;
 
 // Information about each music track for song_play()
 #define SONG_COUNT 42
 typedef struct {
-	const u8 *song; // Location of XGM to be loaded
+	const uint8_t *song; // Location of XGM to be loaded
 	char name[24]; // Name of the track (sound test)
 } song_info_def;
 
 // Information about each sound effect for sound_play()
 #define SOUND_COUNT 118
 typedef struct {
-	const u8 *sound; // Location of PCM data to playback
-	u32 length; // Number of frames (sound frames, not screen frames)
+	const uint8_t *sound; // Location of PCM data to playback
+	uint32_t length; // Number of frames (sound frames, not screen frames)
 } sound_info_def;
 
 // Information about each character face image
@@ -72,39 +62,37 @@ typedef struct {
 typedef struct {
 	const TileSet *tiles; // Graphical tile data
 	// Like backgrounds, faces share palettes. This is which of the 4 currently loaded to use
-	u16 palette;
+	uint16_t palette;
 } face_info_def;
 
 // Information about each NPC type, indexes are the same as npc.tbl
 typedef struct {
 	// SpriteDef containing tile data, ignored if a sheet is used
 	const SpriteDefinition *sprite;
-	u8 sheet; // Sheet ID or NOSHEET
-	u16 palette; // Any of the 4 loaded palettes to use for the sprite
-	u8 sprite_count; // Size of sprite[0], must be known beforehand
+	uint8_t sheet; // Sheet ID or NOSHEET
+	uint16_t palette; // Any of the 4 loaded palettes to use for the sprite
+	uint8_t sprite_count; // Size of sprite[0], must be known beforehand
 	EntityMethod onSpawn, onFrame, onDeath; // AI
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
 typedef struct {
 	const SpriteDefinition *sprite; // Sprite to display beneath player
-	u16 palette;
-	u8 experience[3]; // Amount of exp required to level up the weapon
-	u8 name[16];
+	uint16_t palette;
+	uint8_t experience[3]; // Amount of exp required to level up the weapon
+	uint8_t name[16];
 } weapon_info_def;
 
-extern const tileset_info_def tileset_info[TILESET_COUNT];
+extern const tileset_info_def tileset_info[];
 
-extern const background_info_def background_info[BACKGROUND_COUNT];
+extern const background_info_def background_info[];
 
-extern const song_info_def song_info[SONG_COUNT];
+extern const song_info_def song_info[];
 
-extern const sound_info_def sound_info[SOUND_COUNT];
+extern const sound_info_def sound_info[];
 
-extern const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4]; // 9 bosses, 14 boss pieces
+extern const npc_info_def npc_info[];
 
-extern const weapon_info_def weapon_info[WEAPON_COUNT];
+extern const weapon_info_def weapon_info[];
 
-extern const face_info_def face_info[FACE_COUNT];
-
-#endif /* INC_TABLES_H_ */
+extern const face_info_def face_info[];

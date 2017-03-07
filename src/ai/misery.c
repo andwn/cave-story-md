@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
+#include "ai_common.h"
 
 void ai_misery_float(Entity *e) {
 	e->x_next = e->x + e->x_speed;
@@ -245,8 +236,8 @@ void ai_misery_bubble(Entity *e) {
 		{
 			// Calculate the speed it will take to reach the target in 1 second
 			// Genesis can't divide 32 bit integers so here is a fun hack have fun deciphering it
-			e->x_speed = (((s32)((u16)(abs(target->x - e->x) >> 5)) / TIME(50))) << 5;
-			e->y_speed = (((s32)((u16)(abs(target->y - e->y) >> 5)) / TIME(50))) << 5;
+			e->x_speed = (((int32_t)((uint16_t)(abs(target->x - e->x) >> 5)) / TIME(50))) << 5;
+			e->y_speed = (((int32_t)((uint16_t)(abs(target->y - e->y) >> 5)) / TIME(50))) << 5;
 			if(e->x > target->x) e->x_speed = -e->x_speed;
 			if(e->y > target->y) e->y_speed = -e->y_speed;
 			e->state = 2;
@@ -297,7 +288,7 @@ static void run_spells(Entity *e);
 static void run_teleport(Entity *e);
 static void run_defeated(Entity *e);
 
-static Entity* CreateRing(Entity *e, u8 angle);
+static Entity* CreateRing(Entity *e, uint8_t angle);
 
 void ai_boss_misery(Entity *e) {
 	switch(e->state) {
@@ -380,7 +371,7 @@ static void run_spells(Entity *e) {
 		case STATE_FIRE_SHOTS:
 		{
 			if ((++e->timer & 7) == 0) {
-				u8 angle = get_angle(e->x, e->y, player.x, player.y);
+				uint8_t angle = get_angle(e->x, e->y, player.x, player.y);
 				Entity *shot = entity_create(e->x, e->y, OBJ_MISERY_SHOT, 0);
 				angle -= 3;
 				angle += random() & 7;
@@ -598,7 +589,7 @@ static void run_defeated(Entity *e) {
 	}
 }
 
-static Entity *CreateRing(Entity *e, u8 angle) {
+static Entity *CreateRing(Entity *e, uint8_t angle) {
 	Entity *ring = entity_create(0, 0, OBJ_MISERY_RING, 0);
 	ring->jump_time = angle;
 	ring->linkedEntity = e;

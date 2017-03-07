@@ -1,9 +1,3 @@
-#ifndef INC_STAGE_H_
-#define INC_STAGE_H_
-
-#include <genesis.h>
-#include "common.h"
-
 /*
  * "Stage" refers to a level map. SGDK has a "Map" structure that is not used here,
  * so stage was chosen to avoid conflict
@@ -40,32 +34,30 @@
 	stage_get_block_type((((xf)>>CSF)+(xoff))>>4,(((yf)>>CSF)+(yoff))>>4)
 
 // Index of current stage in db/stage.c
-u16 stageID;
+uint16_t stageID;
 // Size of the stage - how many blocks wide/high
-u16 stageWidth, stageHeight;
+uint16_t stageWidth, stageHeight;
 // A multiplication lookup table for each row of stageBlocks
 // Removes all mulu.w and __mulsi3 instructions in entity stage collision
-extern u16 *stageTable;
+extern uint16_t *stageTable;
 // Copy of level layout data loaded into RAM
 // This takes up extra space, but there are times where scripts make modifications to the
 // level layout (allowing player to reach some areas) so it is necessary to do this
-extern u8 *stageBlocks;
+extern uint8_t *stageBlocks;
 // Which tileset (db/tileset.c) is used by the current stage
-u8 stageTileset;
+uint8_t stageTileset;
 // Prepares to draw off-screen tiles when stage_update() is later called
 // Camera calls this each time it scrolls past 1 block length (16 pixels)
-s8 morphingRow, morphingColumn;
+int8_t morphingRow, morphingColumn;
 
-u8 stageBackgroundType;
+uint8_t stageBackgroundType;
 
 // Clears previous stage and switches to one with the given ID
-void stage_load(u16 id);
+void stage_load(uint16_t id);
 // Called by TSC, replaces one block with another and creates smoke
-void stage_replace_block(u16 bx, u16 by, u8 index);
+void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
 void stage_update();
 // Immediately draws a rectangular area of the stage (slow)
-//void stage_draw_area(u16 _x, u16 _y, u8 _w, u8 _h);
-
-#endif
+//void stage_draw_area(uint16_t _x, uint16_t _y, uint8_t _w, uint8_t _h);

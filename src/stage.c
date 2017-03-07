@@ -1,18 +1,29 @@
-#include "stage.h"
+#include "common.h"
 
-#include "entity.h"
-#include "resources.h"
-#include "tables.h"
-#include "camera.h"
-#include "tsc.h"
-#include "player.h"
-#include "input.h"
-#include "system.h"
-#include "effect.h"
-#include "hud.h"
-#include "vdp_ext.h"
 #include "ai.h"
+#include "camera.h"
+#include "dma.h"
+#include "effect.h"
+#include "entity.h"
+#include "hud.h"
+#include "input.h"
+#include "joy.h"
+#include "memory.h"
+#include "npc.h"
+#include "player.h"
+#include "resources.h"
 #include "sheet.h"
+#include "system.h"
+#include "tables.h"
+#include "tools.h"
+#include "tsc.h"
+#include "vdp.h"
+#include "vdp_bg.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+
+#include "stage.h"
 
 // Could fit under the Oside map (192 tile gap)
 #define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
@@ -21,23 +32,23 @@
 #define TILE_WATERINDEX (TILE_TSINDEX + 384)
 
 // Index of background in db/back.c and the effect type
-u8 stageBackground = 0xFF;
+uint8_t stageBackground = 0xFF;
 
-u16 backScrollTimer;
-s16 backScrollTable[32];
-u8 *stageBlocks = NULL;
-u16 *stageTable = NULL;
+uint16_t backScrollTimer;
+int16_t backScrollTable[32];
+uint8_t *stageBlocks = NULL;
+uint16_t *stageTable = NULL;
 
 void stage_load_tileset();
 void stage_load_blocks();
 void stage_load_entities();
 
-void stage_draw_block(u16 x, u16 y);
+void stage_draw_block(uint16_t x, uint16_t y);
 void stage_draw_screen();
 void stage_draw_background();
 void stage_draw_moonback();
 
-void stage_load(u16 id) {
+void stage_load(uint16_t id) {
 	input_init();
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
@@ -58,7 +69,7 @@ void stage_load(u16 id) {
 		stage_load_tileset();
 	}
 	VDP_waitVSync();
-	SYS_disableInts();
+	
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
 	// Stage palette and shared NPC palette
@@ -97,7 +108,7 @@ void stage_load(u16 id) {
 			stage_draw_moonback();
 		}
 	}
-	SYS_enableInts();
+	
 	VDP_waitVSync();
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
@@ -119,26 +130,26 @@ void stage_load(u16 id) {
 }
 
 void stage_load_tileset() {
-	SYS_disableInts();
+	
 	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, TRUE);
-	SYS_enableInts();
+	
 	// Inject the breakable block sprite into the tileset
-	const u8 *PXA = tileset_info[stageTileset].PXA;
-	for(u16 i = 0; i < 160; i++) {
+	const uint8_t *PXA = tileset_info[stageTileset].PXA;
+	for(uint16_t i = 0; i < 160; i++) {
 		if(PXA[i] == 0x43) {
-			u32 addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
+			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			SYS_disableInts();
+			
 			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
 			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
-			SYS_enableInts();
+			
 			//break; // no
 		}
 	}
 }
 
 void stage_load_blocks() {
-	const u8 *PXM = stage_info[stageID].PXM;
+	const uint8_t *PXM = stage_info[stageID].PXM;
 	stageWidth = PXM[4] + (PXM[5] << 8);
 	stageHeight = PXM[6] + (PXM[7] << 8);
 	PXM += 8;
@@ -146,18 +157,18 @@ void stage_load_blocks() {
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 	// Multiplication table for stage rows
 	stageTable = MEM_alloc(stageHeight * 2);
-	u16 blockTotal = 0;
-	for(u16 y = 0; y < stageHeight; y++) {
+	uint16_t blockTotal = 0;
+	for(uint16_t y = 0; y < stageHeight; y++) {
 		stageTable[y] = blockTotal;
 		blockTotal += stageWidth;
 	}
 }
 
 void stage_load_entities() {
-	const u8 *PXE = stage_info[stageID].PXE;
+	const uint8_t *PXE = stage_info[stageID].PXE;
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
-	for(u8 i = 0; i < PXE[4]; i++) {
-		u16 x, y, id, event, type, flags;
+	for(uint8_t i = 0; i < PXE[4]; i++) {
+		uint16_t x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
 		x     = PXE[8  + i * 12] + (PXE[9  + i * 12]<<8);
 		y     = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
@@ -179,7 +190,7 @@ void stage_load_entities() {
 		// each entity as it is loaded so the problematic NPC can be found
 		/*
 		{
-			SYS_disableInts();
+			
 			//VDP_setEnable(TRUE);
 			VDP_setPaletteColor(15, 0xEEE);
 			char str[2][36];
@@ -187,7 +198,7 @@ void stage_load_entities() {
 			sprintf(str[1], "E:%hu T:%hu F:%hu", event, type, flags);
 			VDP_drawText(str[0], 2, 2);
 			VDP_drawText(str[1], 2, 4);
-			SYS_enableInts();
+			
 			input_update();
 			while(!joy_pressed(BUTTON_C)) {
 				input_update();
@@ -195,7 +206,7 @@ void stage_load_entities() {
 				VDP_setHorizontalScroll(PLAN_A, 0);
 				VDP_setVerticalScroll(PLAN_A, 0);
 			}
-			//SYS_disableInts();
+			//
 			//VDP_setEnable(FALSE);
 		}
 		*/
@@ -207,9 +218,9 @@ void stage_load_entities() {
 }
 
 // Replaces a block with another (for <CMP, <SMP, and breakable blocks)
-void stage_replace_block(u16 bx, u16 by, u8 index) {
+void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index) {
 	stageBlocks[stageTable[by] + bx] = index;
-	s16 cx = sub_to_block(camera.x), cy = sub_to_block(camera.y);
+	int16_t cx = sub_to_block(camera.x), cy = sub_to_block(camera.y);
 	if(cx - 16 > bx || cx + 16 < bx || cy - 8 > by || cy + 8 < by) return;
 	// Only redraw if change was made onscreen
 	stage_draw_block(bx, by);
@@ -217,7 +228,7 @@ void stage_replace_block(u16 bx, u16 by, u8 index) {
 
 // Stage vblank drawing routine
 void stage_update() {
-	SYS_disableInts();
+	
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -227,9 +238,9 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
-		s16 off[32];
+		int16_t off[32];
 		off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
-		for(u8 i = 1; i < 32; i++) {
+		for(uint8_t i = 1; i < 32; i++) {
 			off[i] = off[0];
 		}
 		VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, TRUE);
@@ -237,7 +248,7 @@ void stage_update() {
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
 #ifdef PAL
-		u8 y = 28;
+		uint8_t y = 28;
 		for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
 		for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
 		for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
@@ -245,7 +256,7 @@ void stage_update() {
 		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
 		VDP_setVerticalScroll(PLAN_B, -8);
 #else
-		u8 y = 27;
+		uint8_t y = 27;
 		for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
 		for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
 		for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
@@ -262,41 +273,41 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
-		static const s16 rowc = SCREEN_HEIGHT >> 3;
-		static const s16 rowgap = 31 - rowc;
+		static const int16_t rowc = SCREEN_HEIGHT >> 3;
+		static const int16_t rowgap = 31 - rowc;
 		// Water surface relative to top of screen
-		s16 scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
-		s16 row = scroll >> 3;
-		s16 oldrow = backScrollTable[0];
-		u16 baddr = VDP_getBPlanAddress();
+		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
+		int16_t row = scroll >> 3;
+		int16_t oldrow = backScrollTable[0];
+		uint16_t baddr = VDP_getBPlanAddress();
 		while(row < oldrow) { // Water is rising (Y decreasing)
 			oldrow--;
-			u8 rowup = 31 - ((oldrow + rowgap) & 31);// Row that will be updated
+			uint8_t rowup = 31 - ((oldrow + rowgap) & 31);// Row that will be updated
 			if(oldrow > rowc) { // Below Screen
-				u16 mapBuffer[64] = {};
-				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (rowup << 7), 64, 2);
+				uint16_t mapBuffer[64] = {};
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
 			} else { // On screen or above
-				u16 mapBuffer[64];
-				for(u16 x = 0; x < 64; x++) {
+				uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
 			}
 		}
 		while(row > oldrow) { // Water is lowering (Y increasing)
 			oldrow++;
-			u8 rowup = 31 - (oldrow & 31); // Row that will be updated
+			uint8_t rowup = 31 - (oldrow & 31); // Row that will be updated
 			if(oldrow <= 0) { // Above screen
-				u16 mapBuffer[64];
-				for(u16 x = 0; x < 64; x++) {
+				uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
 			} else { // On screen or below
-				u16 mapBuffer[64] = {};
-				DMA_doDma(DMA_VRAM, (u32)mapBuffer, baddr + (rowup << 7), 64, 2);
+				uint16_t mapBuffer[64] = {};
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
 			}
 		}
 		
@@ -310,84 +321,84 @@ void stage_update() {
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
-	SYS_enableInts();
+	
 }
 
 void stage_draw_screen() {
 	VDP_waitVSync();
-	SYS_disableInts();
+	
 	VDP_setEnable(FALSE);
-	u16 maprow[64];
-	s16 y = sub_to_tile(camera.y) - 16;
-	for(u8 i = 32; i--; ) {
+	uint16_t maprow[64];
+	int16_t y = sub_to_tile(camera.y) - 16;
+	for(uint8_t i = 32; i--; ) {
 		if(y >= 0 && y < stageHeight * 2) {
-			s16 x = sub_to_tile(camera.x) - 32;
-			for(u8 j = 64; j--; ) {
+			int16_t x = sub_to_tile(camera.x) - 32;
+			for(uint8_t j = 64; j--; ) {
 				if(x >= stageWidth * 2) break;
 				if(x >= 0) {
-					u8 b = stage_get_block(x/2, y/2);
-					u16 t = (b%16) * 2 + (b/16) * 64;
-					u8 ta = stage_get_block_type(x/2, y/2);
+					uint8_t b = stage_get_block(x/2, y/2);
+					uint16_t t = (b%16) * 2 + (b/16) * 64;
+					uint8_t ta = stage_get_block_type(x/2, y/2);
 					maprow[x%64] = TILE_ATTR_FULL(ta == 0x43 ? PAL1 : PAL2, (ta&0x40) > 0, 
 							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
 				}
 				x++;
 			}
-			DMA_doDma(DMA_VRAM, (u32)maprow, VDP_getAPlanAddress() + (y%32)*0x80, 64, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_getAPlanAddress() + (y%32)*0x80, 64, 2);
 		}
 		y++;
 	}
 	VDP_setEnable(TRUE);
-	SYS_enableInts();
+	
 	VDP_waitVSync();
 }
 
 // Draws just one block
-void stage_draw_block(u16 x, u16 y) {
+void stage_draw_block(uint16_t x, uint16_t y) {
 	if(x >= stageWidth || y >= stageHeight) return;
-	u16 t, b, xx, yy; u8 p;
+	uint16_t t, b, xx, yy; uint8_t p;
 	p = (stage_get_block_type(x, y) & 0x40) > 0;
 	t = block_to_tile(stage_get_block(x, y));
 	b = TILE_TSINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
-	SYS_disableInts();
+	
 	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b), xx, yy);
 	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+1), xx+1, yy);
 	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
 	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
-	SYS_enableInts();
+	
 }
 
 // Fills PLAN_B with a tiled background
 void stage_draw_background() {
-	u8 w = background_info[stageBackground].width;
-	u8 h = background_info[stageBackground].height;
-	u16 pal = background_info[stageBackground].palette;
-	SYS_disableInts();
-	for(u8 y = 0; y < 32; y++) {
-		for(u8 x = 0; x < 64; x++) {
-			u16 b = TILE_BACKINDEX + (x%w) + ((y%h) * w);
+	uint8_t w = background_info[stageBackground].width;
+	uint8_t h = background_info[stageBackground].height;
+	uint16_t pal = background_info[stageBackground].palette;
+	
+	for(uint8_t y = 0; y < 32; y++) {
+		for(uint8_t x = 0; x < 64; x++) {
+			uint16_t b = TILE_BACKINDEX + (x%w) + ((y%h) * w);
 			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(pal, 0, 0, 0, b), x, y);
 		}
 	}
-	SYS_enableInts();
+	
 }
 
 void stage_draw_moonback() {
-	u16 mapBuffer[64];
-	const u32 *topTiles, *btmTiles;
-	const u8 *topMap, *btmMap;
+	uint16_t mapBuffer[64];
+	const uint32_t *topTiles, *btmTiles;
+	const uint8_t *topMap, *btmMap;
 	if(stageBackgroundType == 1) {
 		// Moon
-		topTiles = (u32*)MoonTopTiles;
-		btmTiles = (u32*)MoonBtmTiles;
+		topTiles = (uint32_t*)MoonTopTiles;
+		btmTiles = (uint32_t*)MoonBtmTiles;
 		topMap = MoonTopMap;
 		btmMap = MoonBtmMap;
 	} else {
 		// Fog
-		topTiles = (u32*)FogTopTiles;
-		btmTiles = (u32*)FogBtmTiles;
+		topTiles = (uint32_t*)FogTopTiles;
+		btmTiles = (uint32_t*)FogBtmTiles;
 		topMap = FogTopMap;
 		btmMap = FogBtmMap;
 	}
@@ -395,11 +406,11 @@ void stage_draw_moonback() {
 	VDP_loadTileData(topTiles, TILE_BACKINDEX, 12, TRUE);
 	// Load the clouds under the map, it just fits
 	VDP_loadTileData(btmTiles, TILE_MOONINDEX, 188, TRUE);
-	for(u8 y = 0; y < 32; y++) backScrollTable[y] = 0;
+	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
 	// Top part
-	u16 cursor = 0;
-	for(u16 y = 0; y < 10; y++) {
-		for(u16 x = 0; x < 40; x++) {
+	uint16_t cursor = 0;
+	for(uint16_t y = 0; y < 10; y++) {
+		for(uint16_t x = 0; x < 40; x++) {
 			mapBuffer[x] = TILE_ATTR_FULL(PAL2,0,0,0,
 					TILE_BACKINDEX + (topMap[cursor]<<8) + topMap[cursor+1]);
 			cursor += 2;
@@ -408,8 +419,8 @@ void stage_draw_moonback() {
 	}
 	// Bottom part
 	cursor = 0;
-	for(u16 y = 10; y < 28; y++) {
-		for(u16 x = 0; x < 32; x++) {
+	for(uint16_t y = 10; y < 28; y++) {
+		for(uint16_t x = 0; x < 32; x++) {
 			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
 					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);
 			cursor += 2;
@@ -422,7 +433,7 @@ void stage_draw_moonback() {
 		VDP_setVerticalScroll(PLAN_B, -8);
 		// Duplicate top line in row 31 (-1)
 		cursor = 0;
-		for(u16 x = 0; x < 40; x++) {
+		for(uint16_t x = 0; x < 40; x++) {
 			mapBuffer[x] = TILE_ATTR_FULL(PAL2,0,0,0,
 					TILE_BACKINDEX + (topMap[cursor]<<8) + topMap[cursor+1]);
 			cursor += 2;
@@ -430,7 +441,7 @@ void stage_draw_moonback() {
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, 31, 40, 1);
 		// Duplicate bottom row in row 28
 		cursor = 32*17*2;
-		for(u16 x = 0; x < 32; x++) {
+		for(uint16_t x = 0; x < 32; x++) {
 			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
 					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);
 			cursor += 2;

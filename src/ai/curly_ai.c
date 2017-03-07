@@ -1,16 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "resources.h"
-#include "camera.h"
-#include "sheet.h"
-#include "sprite.h"
+#include "ai_common.h"
 
 #define CAI_INIT			20			// ANP'd to this by the entry script in Lab M
 #define CAI_START			21			// ANP'd to this by Almond script
@@ -20,13 +8,13 @@
 
 enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 
-u8 curly_mgun = 0;
-u8 curly_watershield = 0;
-u8 curly_impjump = 0;
-u8 curly_reachptimer = 0;
-u8 curly_blockedtime = 0;
-u16 curly_tryjumptime = 0;
-u8 curly_look = 0;
+uint8_t curly_mgun = 0;
+uint8_t curly_watershield = 0;
+uint8_t curly_impjump = 0;
+uint8_t curly_reachptimer = 0;
+uint8_t curly_blockedtime = 0;
+uint16_t curly_tryjumptime = 0;
+uint8_t curly_look = 0;
 
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
@@ -42,11 +30,11 @@ const char porn[1] = {""};
 
 // curly that fights beside you
 void ai_curly_ai(Entity *e) {
-	s32 xdist, ydist;
-	u8 reached_p;
-	u16 otiley;
-	u8 seeking_player = 0;
-	u8 wantdir;
+	int32_t xdist, ydist;
+	uint8_t reached_p;
+	uint16_t otiley;
+	uint8_t seeking_player = 0;
+	uint8_t wantdir;
 
 	// Spawn air tank if it doesn't exist yet
 	if (!curly_watershield) {
@@ -112,8 +100,8 @@ void ai_curly_ai(Entity *e) {
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
 	else e->grounded = collide_stage_floor(e);
 	
-	u8 blockl = collide_stage_leftwall(e);
-	u8 blockr = collide_stage_rightwall(e);
+	uint8_t blockl = collide_stage_leftwall(e);
+	uint8_t blockr = collide_stage_rightwall(e);
 	
 	// Handle underwater
 	if((stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) & BLOCK_WATER) ||
@@ -280,18 +268,18 @@ void ai_curly_ai(Entity *e) {
 	LIMIT_Y(SPEED(0x5ff));
 }
 
-static void fire_mgun(s32 x, s32 y, u8 dir) {
+static void fire_mgun(int32_t x, int32_t y, uint8_t dir) {
 	// Curly shares the bullet array with the player so don't use up the whole thing
 	// Use slots 2-4 and 7-8 backwards
 	// This leaves room in the worst case for 1 missile, 2 polar star, and 2 fireball
 	Bullet *b = NULL;
-	for(u8 i = 8; i > 6; i--) {
+	for(uint8_t i = 8; i > 6; i--) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
 	}
 	if(!b) {
-		for(u8 i = 4; i > 1; i--) {
+		for(uint8_t i = 4; i > 1; i--) {
 			if(playerBullet[i].ttl > 0) continue;
 			b = &playerBullet[i];
 			break;
@@ -328,10 +316,10 @@ static void fire_mgun(s32 x, s32 y, u8 dir) {
 	}
 }
 
-static void fire_pstar(s32 x, s32 y, u8 dir) {
+static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 	// Use slot 7 and 8, this messes with player's missiles slightly
 	Bullet *b = NULL;
-	for(u8 i = 7; i < 9; i++) {
+	for(uint8_t i = 7; i < 9; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -386,23 +374,23 @@ void ai_cai_gun(Entity *e) {
 			e->sprite[0].size = SPRITE_SIZE(1, 3);
 			e->display_box = (bounding_box) { 4, 12, 4, 12 };
 			e->animtime = TRUE;
-			SYS_disableInts();
-			DMA_doDma(DMA_VRAM, (u32) (SPR_TILES(sd,0,0)+(96/4)), e->vramindex << 5, 48, 2);
-			SYS_enableInts();
+			
+			DMA_doDma(DMA_VRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96/4)), e->vramindex << 5, 48, 2);
+			
 		}
 	} else if(e->animtime) {
 		sprite_vflip(e->sprite[0], 0);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
 		e->display_box = (bounding_box) { 12, 4, 12, 4 };
 		e->animtime = FALSE;
-		SYS_disableInts();
-		DMA_doDma(DMA_VRAM, (u32) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
-		SYS_enableInts();
+		
+		DMA_doDma(DMA_VRAM, (uint32_t) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
+		
 	}
 	
 	if (curly_target_time) {
 		// fire when we get close to the target
-		u8 fire;
+		uint8_t fire;
 		if (!curly_look) {
 			// firing LR-- fire when lined up vertically and close by horizontally
 			fire = ((abs(curly->x - curly_target_x) <= BIGDIST) && (abs(curly->y - curly_target_y) <= SMALLDIST));

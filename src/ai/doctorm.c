@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "vdp_ext.h"
-#include "effect.h"
-#include "camera.h"
+#include "ai_common.h"
 
 enum STATES {
 	// 0-9 are used by in-game scripts during intro
@@ -39,7 +29,7 @@ enum STATES {
 
 // the Doctor repeats this series of attacks over and over,
 // when he reaches the -1, it starts over at the beginning.
-static const u16 attack_pattern[] = {
+static const uint16_t attack_pattern[] = {
 	STATE_JUMP_WITH_GP,
 	STATE_TELEPORT,
 	STATE_RED_DASH,
@@ -62,8 +52,8 @@ void ai_muscle_doctor(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e);
-	u8 blockr = e->x_speed > 0 && collide_stage_rightwall(e);
+	uint8_t blockl = e->x_speed < 0 && collide_stage_leftwall(e);
+	uint8_t blockr = e->x_speed > 0 && collide_stage_rightwall(e);
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
 	
@@ -483,7 +473,7 @@ void ai_muscle_doctor(Entity *e) {
 			//for(int i=0;i<3;i++) {
 				//int x, y;
 				
-				s32 x = e->x_next + ((-16 + (random() & 31)) << CSF);
+				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
 				//y = e->y + (e->clipy1 << CSF);
 				
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);

@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "camera.h"
-#include "effect.h"
+#include "ai_common.h"
 
 void onspawn_torokoAtk(Entity *e) {
 	e->y -= 16 << CSF;
@@ -87,8 +78,8 @@ void ai_torokoBoss(Entity *e) {
 		block->x = e->x;                                                                       \
 		block->y = e->y;                                                                       \
 		block->eflags |= NPC_INVINCIBLE;                                                       \
-		block->x_speed = (((s32)((u16)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5;      \
-		block->y_speed = (((s32)((u16)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5;      \
+		block->x_speed = (((int32_t)((uint16_t)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5;      \
+		block->y_speed = (((int32_t)((uint16_t)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5;      \
 		if(block->x > player.x) block->x_speed = -block->x_speed;                              \
 		if(block->y > player.y) block->y_speed = -block->y_speed;                              \
 		sound_play(SND_EM_FIRE, 5);                                                            \

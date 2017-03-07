@@ -1,9 +1,4 @@
-#ifndef INC_COMMON_H_
-#define INC_COMMON_H_
-
-#include <types.h>
-
-//#define KDEBUG
+#include <stdint.h>
 #ifdef KDEBUG
 #include <kdebug.h>
 #define puts(x) KDebug_Alert(x)
@@ -36,8 +31,8 @@
 #define FPS 60
 #define SCREEN_HEIGHT 224
 #define SCREEN_HALF_H 112
-#define TIME(x)		((x) * 60 / 50)
-#define SPEED(x)	((x) * 50 / 60)
+#define TIME(x)		((x) * 6 / 5)
+#define SPEED(x)	((x) * 5 / 6)
 #endif
 
 // Direction
@@ -51,52 +46,8 @@ enum MDDIR { LEFT, RIGHT, UP, DOWN, CENTER };
 #define A_UP	0xC0
 
 // Sine & cosine lookup tables
-const s16 sin[0x100];
-const s16 cos[0x100];
-
-// Tileset width/height
-#define TS_WIDTH 32
-#define TS_HEIGHT 16
-
-// Stage tileset is first in USERINDEX
-#define TILE_TSINDEX TILE_USERINDEX
-#define TILE_TSSIZE (TS_WIDTH * TS_HEIGHT)
-// Face graphics
-#define TILE_FACEINDEX (TILE_TSINDEX + TILE_TSSIZE)
-#define TILE_FACESIZE 36
-// 16 tiles for the map name display
-#define TILE_NAMEINDEX (TILE_FACEINDEX + TILE_FACESIZE)
-#define TILE_NAMESIZE 16
-// Space for shared sprite sheets
-#define TILE_SHEETINDEX (TILE_NAMEINDEX + TILE_NAMESIZE)
-#define TILE_SHEETSIZE (TILE_FONTINDEX - TILE_SHEETINDEX)
-// Space for prompt/item display at the end of the sprite tiles
-#define TILE_PROMPTINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE - 28)
-#define TILE_AIRTANKINDEX (TILE_PROMPTINDEX - 9)
-// PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
-// also moved to the end as to not overlap the window plane (0xF800)
-// These index the 2 unused areas between for some extra tile space
-#define TILE_EXTRA1INDEX (0xD000 >> 5)
-#define TILE_EXTRA2INDEX (0xF000 >> 5)
-// Allocation of EXTRA1 (128 tiles) - background & HUD
-#define TILE_BACKINDEX TILE_EXTRA1INDEX
-#define TILE_BACKSIZE 96
-#define TILE_HUDINDEX (TILE_BACKINDEX + TILE_BACKSIZE)
-#define TILE_HUDSIZE 32
-// Allocation of EXTRA2 (64 tiles) - Effects, window, misc
-#define TILE_NUMBERINDEX TILE_EXTRA2INDEX
-#define TILE_NUMBERSIZE 16
-#define TILE_SMOKEINDEX (TILE_NUMBERINDEX + TILE_NUMBERSIZE)
-#define TILE_SMOKESIZE 28
-#define TILE_WINDOWINDEX (TILE_SMOKEINDEX + TILE_SMOKESIZE)
-#define TILE_WINDOWSIZE 9
-#define TILE_AIRINDEX (TILE_WINDOWINDEX + TILE_WINDOWSIZE)
-#define TILE_AIRSIZE 7
-// Unused palette color tiles area
-#define TILE_PLAYERINDEX (TILE_SYSTEMINDEX + 2)
-#define TILE_PLAYERSIZE 4
-#define TILE_WEAPONINDEX (TILE_PLAYERINDEX + TILE_PLAYERSIZE)
-#define TILE_WEAPONSIZE 6
+const int16_t sin[0x100];
+const int16_t cos[0x100];
 
 // Unit conversions
 // Bit shifting "CSF" is how NXEngine converts units. I kind of like it better than my way
@@ -126,15 +77,106 @@ const s16 cos[0x100];
 #define round(x) (((x)+0x100)&~0x1FF)
 #define ceil(x)  (((x)+0x1FF)&~0x1FF)
 
+#define min(X, Y)   (((X) < (Y))?(X):(Y))
+#define max(X, Y)   (((X) > (Y))?(X):(Y))
+#define abs(X)      (((X) < 0)?-(X):(X))
+
 // Get tiles from SpriteDefinition
 #define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
 
 // Bounding box used for collision and relative area to display sprites
 typedef struct {
-	u8 left;
-	u8 top;
-	u8 right;
-	u8 bottom;
+	uint8_t left;
+	uint8_t top;
+	uint8_t right;
+	uint8_t bottom;
 } bounding_box;
 
-#endif // INC_COMMON_H_
+typedef struct Entity Entity;
+typedef struct Weapon Weapon;
+typedef struct Bullet Bullet;
+
+typedef void (*EntityMethod)(Entity*);
+typedef void (*WeaponFunc)(Weapon*);
+typedef void (*BulletFunc)(Bullet*);
+
+// SGDK / Rescomp Types
+typedef int8_t		s8;
+typedef int16_t		s16;
+typedef int32_t		s32;
+
+typedef uint8_t		u8;
+typedef uint16_t	u16;
+typedef uint32_t	u32;
+
+typedef struct {
+    uint16_t value;
+} VDPPlan;
+
+typedef struct {
+    uint16_t compression;
+    uint16_t numTile;
+    uint32_t *tiles;
+} TileSet;
+
+typedef struct {
+    uint16_t index;
+    uint16_t length;
+    uint16_t *data;
+} Palette;
+
+typedef struct {
+    int16_t y;
+    union {
+        struct {
+            uint8_t size;
+            uint8_t link;
+        };
+        uint16_t size_link;
+    };
+    uint16_t attribut;
+    int16_t x;
+} VDPSprite;
+
+typedef struct {
+    int16_t y;          // respect VDP sprite field order
+    uint16_t size;
+    int16_t x;
+    uint16_t numTile;
+} VDPSpriteInf;
+
+typedef struct {
+    uint16_t numSprite;
+    VDPSpriteInf **vdpSpritesInf;
+    uint16_t UNUSED_numCollision;
+    uint32_t UNUSED_collisions;
+    TileSet *tileset;
+    int16_t w;
+    int16_t h;
+    uint16_t timer;
+} AnimationFrame;
+
+typedef struct {
+    uint16_t numFrame;
+    AnimationFrame **frames;
+    uint16_t length;
+    uint8_t *sequence;
+    int16_t loop;
+} Animation;
+
+typedef struct {
+    Palette *palette;
+    uint16_t numAnimation;
+    Animation **animations;
+    uint16_t maxNumTile;
+    uint16_t maxNumSprite;
+} SpriteDefinition;
+
+// VBlank stuff
+extern volatile uint8_t vblank;
+
+// Prevents incomplete sprite list from being sent to VDP (flickering)
+volatile uint8_t ready;
+
+void vsync();
+void aftervblank();

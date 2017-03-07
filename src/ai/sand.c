@@ -1,13 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
+#include "ai_common.h"
 
 void onspawn_sunstone(Entity *e) {
 	e->x += pixel_to_sub(8);
@@ -48,10 +39,10 @@ void ai_polish(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	u8 blockl = collide_stage_leftwall(e);
-	u8 blockr = collide_stage_rightwall(e);
-	u8 blocku = collide_stage_ceiling(e);
-	u8 blockd = collide_stage_floor(e);
+	uint8_t blockl = collide_stage_leftwall(e);
+	uint8_t blockr = collide_stage_rightwall(e);
+	uint8_t blocku = collide_stage_ceiling(e);
+	uint8_t blockd = collide_stage_floor(e);
 
 	switch(e->state) {
 		case 0:		// initilization
@@ -381,7 +372,7 @@ void ai_crow(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u8 angle = random();
+			uint8_t angle = random();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
@@ -714,7 +705,7 @@ void ai_skeleton_shot(Entity *e) {
 #define SKNEAR_ABOVE	(64<<CSF)
 
 void ai_skeleton(Entity *e) {
-	u8 pnear = PLAYER_DIST_Y2(SKNEAR_ABOVE, SKNEAR_BELOW);
+	uint8_t pnear = PLAYER_DIST_Y2(SKNEAR_ABOVE, SKNEAR_BELOW);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;

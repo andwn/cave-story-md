@@ -1,14 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
+#include "ai_common.h"
 
 // dragonfly creature
 void ai_stumpy(Entity *e) {
@@ -18,7 +8,7 @@ void ai_stumpy(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	e->x_mark = e->x_speed; // Remember speed
 	e->y_mark = e->y_speed;
-	u8 blockl = e->x_speed < 0 && collide_stage_leftwall(e),
+	uint8_t blockl = e->x_speed < 0 && collide_stage_leftwall(e),
 		blockr = e->x_speed > 0 && collide_stage_rightwall(e),
 		blocku = e->y_speed < 0 && collide_stage_ceiling(e),
 		blockd = e->y_speed > 0 && collide_stage_floor(e);
@@ -142,7 +132,7 @@ void ai_orangebell(Entity *e) {
 			e->y_speed = SPEED(0x200);
 			
 			// create baby bats
-			for(u8 i=0;i<8;i++) {
+			for(uint8_t i=0;i<8;i++) {
 				Entity *bat = entity_create(e->x - 0x1000 + (random() % 0x2000),
 										   e->y - 0x1000 + (random() % 0x2000),
 										   OBJ_ORANGEBELL_BABY, 0);
@@ -173,7 +163,7 @@ void ai_orangebell_baby(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			u8 angle = random();
+			uint8_t angle = random();
 			e->x_speed = cos[angle] << CSF;
 			e->y_speed = sin[angle] << CSF;
 			
@@ -314,7 +304,7 @@ void ai_gunfish_shot(Entity *e) {
 		(e->y_speed < 0 && collide_stage_ceiling(e)) ||
 		(e->y_speed > 0 && collide_stage_floor(e)) ||
 		(blk(e->x, 0, e->y, -4) & 0x10)) {
-		//for(u8 i=0;i<5;i++) {
+		//for(uint8_t i=0;i<5;i++) {
 		//	Caret *c = effect(e->CenterX(), e->CenterY(), EFFECT_GUNFISH_BUBBLE);
 		//	c->x_speed = random(-0x400, 0x400);
 		//	c->y_speed = random(-0x400, 0);

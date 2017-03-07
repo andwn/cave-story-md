@@ -1,17 +1,24 @@
-#include "window.h"
+#include "common.h"
 
-#include <genesis.h>
-#include "vdp_ext.h"
-#include "input.h"
 #include "audio.h"
+#include "dma.h"
+#include "gamemode.h"
+#include "hud.h"
+#include "input.h"
+#include "joy.h"
+#include "memory.h"
+#include "resources.h"
+#include "sheet.h"
+#include "sprite.h"
 #include "system.h"
 #include "tables.h"
-#include "resources.h"
-#include "gamemode.h"
 #include "tsc.h"
-#include "sprite.h"
-#include "sheet.h"
-#include "hud.h"
+#include "vdp.h"
+#include "vdp_bg.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+
+#include "window.h"
 
 // Window location
 #define WINDOW_X1 1
@@ -38,7 +45,7 @@
 #define PROMPT_X 27
 #define PROMPT_Y 18
 
-const u8 ITEM_PAL[40] = {
+const uint8_t ITEM_PAL[40] = {
 	0, 0, 1, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 1, 0, 0,
 	0, 0, 1, 1, 0, 1, 1, 1,
@@ -46,43 +53,43 @@ const u8 ITEM_PAL[40] = {
 	0, 0, 0, 1, 0, 1, 1, 1,
 };
 
-u8 windowOnTop = FALSE;
-u8 windowOpen = FALSE;
-u16 showingFace = 0;
+uint8_t windowOnTop = FALSE;
+uint8_t windowOpen = FALSE;
+uint16_t showingFace = 0;
 
-u8 textMode = TM_NORMAL;
+uint8_t textMode = TM_NORMAL;
 
-u8 windowText[3][36];
-u8 textRow, textColumn;
-u8 windowTextTick = 0;
-u8 spaceCounter = 0, spaceOffset = 0;
+uint8_t windowText[3][36];
+uint8_t textRow, textColumn;
+uint8_t windowTextTick = 0;
+uint8_t spaceCounter = 0, spaceOffset = 0;
 
-u8 promptShowing = FALSE;
-u8 promptAnswer = TRUE;
+uint8_t promptShowing = FALSE;
+uint8_t promptAnswer = TRUE;
 VDPSprite promptSpr[2], handSpr;
 
-u16 showingItem = 0;
+uint16_t showingItem = 0;
 
 void window_clear_text();
 void window_draw_face();
 
-void window_open(u8 mode) {
+void window_open(uint8_t mode) {
 	window_clear_text();
 	textRow = textColumn = 0;
 	
 	windowOnTop = mode;
 	if(mode) hud_hide();
-	u16 wy1 = mode ? WINDOW_Y1_TOP : WINDOW_Y1,
+	uint16_t wy1 = mode ? WINDOW_Y1_TOP : WINDOW_Y1,
 		wy2 = mode ? WINDOW_Y2_TOP : WINDOW_Y2,
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
 		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
 	
-	SYS_disableInts();
+	
 	
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (wy1<<6) + TEXT_X1, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, wy1);
-	for(u8 y = ty1; y <= ty2; y++) {
+	for(uint8_t y = ty1; y <= ty2; y++) {
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), WINDOW_X1, y);
 		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + TEXT_X1, 36);
 		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), WINDOW_X2, y);
@@ -96,25 +103,25 @@ void window_open(u8 mode) {
 		VDP_setWindowPos(0, mode ? 8 : (IS_PALSYSTEM ? 245 : 244));
 	} else showingFace = 0;
 
-	SYS_enableInts();
+	
 	
 	windowOpen = TRUE;
 }
 
-u8 window_is_open() {
+uint8_t window_is_open() {
 	return windowOpen;
 }
 
 void window_clear() {
-	SYS_disableInts();
-	u8 x = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	u8 y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
-	u8 w = showingFace ? 29 : 36;
+	
+	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+	uint8_t w = showingFace ? 29 : 36;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y)   << 6) + x, w);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+2) << 6) + x, w);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+4) << 6) + x, w);
 	window_clear_text();
-	SYS_enableInts();
+	
 	textMode = TM_NORMAL;
 }
 
@@ -134,22 +141,22 @@ void window_close() {
 	textMode = TM_NORMAL;
 }
 
-void window_set_face(u16 face, u8 open) {
+void window_set_face(uint16_t face, uint8_t open) {
 	if(paused) return;
 	if(open && !windowOpen) window_open(windowOnTop);
 	showingFace = face;
 	if(face > 0) {
 		window_draw_face();
 	} else {
-		SYS_disableInts();
+		
 		// Hack to clear face only
 		VDP_fillTileMapRect(PLAN_WINDOW, WINDOW_ATTR(4),
 				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, TEXT_X1, 6, 6);
-		SYS_enableInts();
+		
 	}
 }
 
-void window_draw_char(u8 c) {
+void window_draw_char(uint8_t c) {
 	if(c == '\n') {
 		textRow++;
 		textColumn = 0;
@@ -170,26 +177,26 @@ void window_draw_char(u8 c) {
 		}
 		windowText[textRow][textColumn - spaceOffset] = c;
 		// Figure out where this char is gonna go
-		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		msgTextX += textColumn - spaceOffset;
-		u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
+		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
 		// And draw it
-		SYS_disableInts();
+		
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
-		SYS_enableInts();
+		
 		textColumn++;
 		if(spaceCounter % 5 == 1 || spaceCounter == 2) spaceOffset++;
 	}
 }
 
 void window_scroll_text() {
-	SYS_disableInts();
+	
 	// Push bottom 2 rows to top
-	for(u8 row = 0; row < 2; row++) {
-		u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-		u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
-		for(u8 col = 0; col < 36 - (showingFace > 0) * 8; col++) {
+	for(uint8_t row = 0; row < 2; row++) {
+		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
+		for(uint8_t col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
 			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
 					TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
@@ -197,22 +204,22 @@ void window_scroll_text() {
 		}
 	}
 	// Clear third row
-	u8 msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	u8 msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
-	u8 msgTextW = showingFace ? 29 : 36;
+	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
+	uint8_t msgTextW = showingFace ? 29 : 36;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
-	SYS_enableInts();
+	
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;
 	spaceCounter = spaceOffset = 0;
 }
 
-void window_set_textmode(u8 mode) {
+void window_set_textmode(uint8_t mode) {
 	textMode = mode;
 }
 
-u8 window_tick() {
+uint8_t window_tick() {
 	if(textMode > 0) return TRUE;
 	windowTextTick++;
 	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&BUTTON_C))) {
@@ -253,11 +260,11 @@ void window_prompt_close() {
 	window_clear();
 }
 
-u8 window_prompt_answer() {
+uint8_t window_prompt_answer() {
 	return promptAnswer;
 }
 
-u8 window_prompt_update() {
+uint8_t window_prompt_update() {
 	if(joy_pressed(BUTTON_C)) {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
@@ -273,20 +280,20 @@ u8 window_prompt_update() {
 }
 
 void window_draw_face() {
-	SYS_disableInts();
+	
 	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_WINDOW, 
 		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 		TEXT_X1, (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1), 6, 6);
-	SYS_enableInts();
+	
 }
 
-void window_show_item(u16 item) {
+void window_show_item(uint16_t item) {
 	showingItem = item;
 	if(item == 0) return;
 	// Wonky workaround to use either PAL_Sym or PAL_Main
 	const SpriteDefinition *sprDef = &SPR_ItemImage;
-	u16 pal = PAL1;
+	uint16_t pal = PAL1;
 	if(ITEM_PAL[item]) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
@@ -314,13 +321,13 @@ void window_show_item(u16 item) {
 	// For some strange mysterious reason, about 40% of the time, and only in
 	// Arthur's house, queueing these tiles just doesn't do anything.
 	// So, we just upload it to VRAM now
-	SYS_disableInts();
+	
 	SHEET_LOAD(sprDef, 1, 6, TILE_PROMPTINDEX, 1, item,0);
 	SHEET_LOAD(&SPR_ItemWin, 1, 18, TILE_PROMPTINDEX+6, 1, 0,0);
-	SYS_enableInts();
+	
 }
 
-void window_show_weapon(u16 item) {
+void window_show_weapon(uint16_t item) {
 	showingItem = item;
 	if(item == 0) return;
 	handSpr = (VDPSprite) {

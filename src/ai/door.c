@@ -1,16 +1,9 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
+#include "ai_common.h"
 
 void onspawn_door(Entity *e) {
 	// When the door's direction is changed to be facing right it becomes transparent
 	if(e->dir) e->hidden = TRUE;
-	u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y + 1) != 0x41) { // Push down if too high
 		e->y += block_to_sub(1);
 	} else if(stage_get_block_type(x, y) == 0x41) { // Push up if too low

@@ -1,8 +1,3 @@
-#ifndef INC_TSC_H_
-#define INC_TSC_H_
-
-#include "common.h"
-
 // This is the first event after hitting "New Game"
 #define GAME_START_EVENT 200
 // Events that get called when killed, drowned, out of bounds, etc
@@ -14,32 +9,30 @@
 #define ALMOND_DROWN_EVENT	1100
 
 // Number of events loaded by tsc_load(), for debugging
-u8 tscEventCount;
+uint8_t tscEventCount;
 
-u8 tscState;
+uint8_t tscState;
 
-u8 inFade;
+uint8_t inFade;
 
 // As teleporter locations are made available to the player, this list is populated
 // with which event is called when selecting a particular area.
 // This is in the header so that system_save() can write the values to SRAM
-u16 teleportEvent[8];
+uint16_t teleportEvent[8];
 
 // True while boss health is being displayed in the corner
-u8 showingBossHealth;
+uint8_t showingBossHealth;
 
 // Initialize default values to avoid strange glitches
 // Also loads persistent head.tsc and arms.tsc events
 void tsc_init();
 // Called by stage_load(), fills up the event list with pointers to each event
-void tsc_load_stage(u8 id);
+void tsc_load_stage(uint8_t id);
 // Per frame update, will advance the script or wait for something based on whats happening
-u8 tsc_update();
+uint8_t tsc_update();
 // This will begin executing a scripted event if it exists
-void tsc_call_event(u16 number);
+void tsc_call_event(uint16_t number);
 
 void tsc_unpause_debug();
 
 void tsc_update_boss_health();
-
-#endif /* INC_TSC_H_ */

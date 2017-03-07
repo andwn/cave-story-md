@@ -16,30 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <genesis.h>
+#include "common.h"
 
 #include "audio.h"
-#include "common.h"
+#include "dma.h"
+#include "effect.h"
 #include "gamemode.h"
 #include "input.h"
+#include "joy.h"
 #include "resources.h"
+#include "sprite.h"
+#include "stage.h"
 #include "system.h"
+#include "timer.h"
+#include "tsc.h"
+#include "vdp.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "xgm.h"
+
+void vsync() {
+	vblank = 0;
+	while(!vblank);
+}
+
+void aftervblank() {
+	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	if (XGM_getForceDelayDMA()) waitSubTick(10);
+	DMA_flushQueue();
+	XGM_set68KBUSProtection(FALSE);
+	if(fading_cnt > 0) VDP_doStepFading(FALSE);
+	
+	dqueued = FALSE;
+	if(ready) {
+		if(inFade) { spr_num = 0; }
+		else { sprites_send(); }
+		ready = FALSE;
+	}
+	stage_update(); // Scrolling
+	
+	JOY_update();
+}
 
 int main() {
 	puts("Hi Plum");
-    SYS_disableInts();
     VDP_setScreenHeight240(); // Only has any effect on PAL
-    VDP_setPlanSize(64, 32);
-    // Sprite list overlaps the bottom of the window, so move it
-	VDP_setHScrollTableAddress(0xF800); // Default: 0xB800
-	VDP_setSpriteListAddress(0xFC00); // Default: 0xBC00
     sound_init();
 	input_init();
-	VDP_loadTileSet(&TS_SysFont, TILE_FONTINDEX, TRUE);
-	SYS_enableInts();
+	//VDP_loadTileSet(&TS_SysFont, TILE_FONTINDEX, TRUE);
     while(TRUE) {
 		splash_main();
-		u8 select = titlescreen_main();
+		uint8_t select = titlescreen_main();
 		if(select != 2) {
 			game_main(select);
 			credits_main();

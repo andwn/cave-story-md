@@ -1,17 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "resources.h"
-#include "npc.h"
+#include "ai_common.h"
 
 #define NS_WAIT					1
 #define NS_SEEK_PLAYER			2
@@ -31,7 +18,7 @@ void ai_night_spirit(Entity *e) {
 		case NS_WAIT:
 		{
 			if (PLAYER_DIST_Y(8 << CSF)) {
-				static const s32 distance = (240 << CSF);
+				static const int32_t distance = (240 << CSF);
 				e->y += e->dir ? distance : -distance;
 				
 				e->state = NS_SEEK_PLAYER;

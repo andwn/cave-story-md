@@ -1,31 +1,37 @@
-#include "effect.h"
+#include "common.h"
 
-#include <genesis.h>
-#include "tables.h"
-#include "resources.h"
 #include "camera.h"
-#include "vdp_ext.h"
+#include "dma.h"
+#include "memory.h"
+#include "resources.h"
+#include "sheet.h"
 #include "sprite.h"
+#include "tables.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+
+#include "effect.h"
 
 typedef struct {
 	VDPSprite sprite;
-	u8 type, ttl;
-	s16 x, y;
+	uint8_t type, ttl;
+	int16_t x, y;
 } Effect;
 
 Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
 
 // Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 // Then copy to VRAM via DMA transfer
-u32 dtiles[4][8];
+uint32_t dtiles[4][8];
 
 void effects_init() {
-	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect){};
-	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect){};
-	for(u8 i = 0; i < MAX_MISC; i++) effMisc[i] = (Effect){};
+	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect){};
+	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect){};
+	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i] = (Effect){};
 	// Load each frame of the small smoke sprite
-	u32 stiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(u32))]
-	for(u8 i = 0; i < 7; i++) {
+	uint32_t stiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(uint32_t))]
+	for(uint8_t i = 0; i < 7; i++) {
 		memcpy(stiles[i], SPR_TILES(&SPR_Smoke, 0, i), 128);
 	}
 	// Transfer to VRAM
@@ -33,17 +39,17 @@ void effects_init() {
 }
 
 void effects_clear() {
-	for(u8 i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
-	for(u8 i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
+	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
+	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_clear_smoke();
 }
 
 void effects_clear_smoke() {
-	for(u8 i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
+	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 }
 
 void effects_update() {
-	for(u8 i = 0; i < MAX_DAMAGE; i++) {
+	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(!effDamage[i].ttl) continue;
 		effDamage[i].ttl--;
 		effDamage[i].y -= effDamage[i].ttl & 1;
@@ -52,7 +58,7 @@ void effects_update() {
 			effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
 		sprite_add(effDamage[i].sprite);
 	}
-	for(u8 i = 0; i < MAX_SMOKE; i++) {
+	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(!effSmoke[i].ttl) continue;
 		effSmoke[i].ttl--;
 		// Half assed animation
@@ -63,7 +69,7 @@ void effects_update() {
 			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(effSmoke[i].sprite);
 	}
-	for(u8 i = 0; i < MAX_MISC; i++) {
+	for(uint8_t i = 0; i < MAX_MISC; i++) {
 		if(!effMisc[i].ttl) continue;
 		effMisc[i].ttl--;
 		switch(effMisc[i].type) {
@@ -121,17 +127,17 @@ void effects_update() {
 	}
 }
 
-void effect_create_damage(s16 num, s16 x, s16 y) {
+void effect_create_damage(int16_t num, int16_t x, int16_t y) {
 	if(dqueued) return;
-	for(u8 i = 0; i < MAX_DAMAGE; i++) {
+	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(effDamage[i].ttl) continue;
 		// Negative numbers are red and show '-' (Damage)
 		// Positive are white and show '+' (Weapon energy)
-		u8 negative = (num < 0);
+		uint8_t negative = (num < 0);
 		num = abs(num);
-		u8 digitCount = 0; // Number of digit tiles: 1, 2, or 3 after loop
+		uint8_t digitCount = 0; // Number of digit tiles: 1, 2, or 3 after loop
 		// Create right to left, otherwise digits show up backwards
-		u16 tileIndex;
+		uint16_t tileIndex;
 		for(; num; digitCount++) {
 			tileIndex = ((negative ? 11 : 0) + (num % 10)) * 8;
 			memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32);
@@ -153,8 +159,8 @@ void effect_create_damage(s16 num, s16 x, s16 y) {
 	}
 }
 
-void effect_create_smoke(s16 x, s16 y) {
-	for(u8 i = 0; i < MAX_SMOKE; i++) {
+void effect_create_smoke(int16_t x, int16_t y) {
+	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(effSmoke[i].ttl) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
@@ -167,8 +173,8 @@ void effect_create_smoke(s16 x, s16 y) {
 	}
 }
 
-void effect_create_misc(u8 type, s16 x, s16 y) {
-	for(u8 i = 0; i < MAX_MISC; i++) {
+void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
+	for(uint8_t i = 0; i < MAX_MISC; i++) {
 		if(effMisc[i].ttl) continue;
 		effMisc[i].type = type;
 		effMisc[i].x = x;
@@ -186,7 +192,7 @@ void effect_create_misc(u8 type, s16 x, s16 y) {
 			break;
 			case EFF_ZZZ: // Zzz shown above sleeping NPCs like gunsmith, mimiga, etc
 			{
-				u8 sheet = NOSHEET;
+				uint8_t sheet = NOSHEET;
 				SHEET_FIND(sheet, SHEET_ZZZ);
 				if(sheet == NOSHEET) break;
 				effMisc[i].ttl = TIME(100);

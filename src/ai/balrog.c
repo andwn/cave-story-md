@@ -1,12 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "camera.h"
+#include "ai_common.h"
 
 enum Frame {
 	STAND, GASP, DUCK, ARMSUP, BLINK, PAINED, SMILE, WORRY, 
@@ -25,7 +17,7 @@ static void balrog_grab_player(Entity *e) {
 // shake and toss the player away. call balrog_grab_player first.
 // returns true when complete.
 // used in boss battles in Shack and at end of Labyrinth.
-static u8 balrog_toss_player_away(Entity *e) {
+static uint8_t balrog_toss_player_away(Entity *e) {
 	// keep player locked in position while balrog has him
 	if (e->state <= STATE_GRAB+1) {
 		player.x = e->x;
@@ -73,7 +65,7 @@ static u8 balrog_toss_player_away(Entity *e) {
 #define balrog_smoketimer	y_mark
 
 void ai_balrog(Entity *e) {
-	u8 fall = TRUE;
+	uint8_t fall = TRUE;
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 	
@@ -265,7 +257,7 @@ void ai_balrog(Entity *e) {
 		{
 			fall = FALSE;
 			// bust through ceiling
-			u16 y = sub_to_block(e->y + (4<<9));
+			uint16_t y = sub_to_block(e->y + (4<<9));
 			if (y < 35) {
 				if (stage_get_block(sub_to_block(e->x), y) != 0) {
 					// smoke needs to go at the bottom of z-order or you can't
@@ -325,7 +317,7 @@ void ai_balrog_drop_in(Entity *e) {
 		{
 			// since balrog often falls through the ceiling we must wait until he is 
 			// free-falling before we start checking to see if he hit the floor
-			u16 x = sub_to_block(e->x), y = sub_to_block(e->y);
+			uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 			if(((stage_get_block_type(x, y-1) | stage_get_block_type(x, y+1)) & 0x41) != 0x41) {
 				e->state = 2;
 			}

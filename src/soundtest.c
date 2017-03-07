@@ -1,12 +1,20 @@
-#include "gamemode.h"
+#include "common.h"
 
-#include <genesis.h>
-#include "resources.h"
-#include "input.h"
-#include "tables.h"
 #include "audio.h"
-#include "vdp_ext.h"
+#include "dma.h"
+#include "input.h"
+#include "joy.h"
+#include "resources.h"
 #include "sprite.h"
+#include "system.h"
+#include "tables.h"
+#include "vdp.h"
+#include "vdp_bg.h"
+#include "vdp_pal.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+
+#include "gamemode.h"
 
 enum { STOPPED, PLAYING, PAUSED };
 
@@ -14,13 +22,13 @@ enum { STOPPED, PLAYING, PAUSED };
 #define FIRST_SOUND 0x80
 
 // Track # and name
-void draw_track_info(u8 track) {
+void draw_track_info(uint8_t track) {
 	VDP_drawByte(track, 2, 6);
 	VDP_clearText(5, 6, 33);
 	VDP_drawText(song_info[track].name, 5, 6);
 }
 
-void draw_status(u8 status) {
+void draw_status(uint8_t status) {
 	switch(status) {
 		case STOPPED: VDP_drawText("Stopped", 2, 4); break;
 		case PLAYING: VDP_drawText("Playing", 2, 4); break;
@@ -29,10 +37,10 @@ void draw_status(u8 status) {
 }
 
 void soundtest_main() {
-	u8 track = 0;
-	u8 status = STOPPED, oldstatus = STOPPED;
+	uint8_t track = 0;
+	uint8_t status = STOPPED, oldstatus = STOPPED;
 	song_stop();
-	SYS_disableInts();
+	
 	VDP_setEnable(FALSE);
 	//Kill all sprites
 	spr_num = 1;
@@ -54,7 +62,7 @@ void soundtest_main() {
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	VDP_drawByte(track, 10, 8);
 	VDP_setEnable(TRUE);
-	SYS_enableInts();
+	
     while(TRUE) {
 		input_update();
 		// Switch between tracks

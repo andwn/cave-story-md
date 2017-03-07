@@ -1,34 +1,46 @@
-#include "player.h"
+#include "common.h"
 
-#include "input.h"
-#include "camera.h"
-#include "resources.h"
-#include "tsc.h"
-#include "system.h"
+#include "ai.h"
 #include "audio.h"
+#include "camera.h"
+#include "dma.h"
 #include "effect.h"
-#include "stage.h"
-#include "tables.h"
-#include "vdp_ext.h"
+#include "entity.h"
+#include "input.h"
+#include "joy.h"
+#include "memory.h"
+#include "npc.h"
+#include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
+#include "stage.h"
+#include "system.h"
+#include "tables.h"
+#include "tools.h"
+#include "tsc.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+#include "weapon.h"
+
+#include "player.h"
 
 VDPSprite weaponSprite;
-u8 playerWeaponCount = 0;
+uint8_t playerWeaponCount = 0;
 
-u8 mapNameSpriteNum;
+uint8_t mapNameSpriteNum;
 VDPSprite mapNameSprite[4];
-u16 mapNameTTL = 0;
+uint16_t mapNameTTL = 0;
 
 VDPSprite airSprite[2];
-u8 airPercent = 100;
-u8 airTick = 0;
-u8 airDisplayTime = 0;
+uint8_t airPercent = 100;
+uint8_t airTick = 0;
+uint8_t airDisplayTime = 0;
 
-u8 blockl, blocku, blockr, blockd;
-u8 ledge_time;
-u8 walk_time;
-u8 lookingDown;
+uint8_t blockl, blocku, blockr, blockd;
+uint8_t ledge_time;
+uint8_t walk_time;
+uint8_t lookingDown;
 
 VDPSprite airTankSprite;
 
@@ -44,6 +56,8 @@ void player_update_float();
 
 void player_prev_weapon();
 void player_next_weapon();
+
+Weapon *player_find_weapon(uint8_t id);
 
 // Default values for player
 void player_init() {
@@ -70,8 +84,8 @@ void player_init() {
 	mgun_shoottime = 0;
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
-	for(u8 i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
-	for(u8 i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
+	for(uint8_t i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
 	playerMoveMode = 0;
 	currentWeapon = 0;
 	airPercent = 100;
@@ -95,14 +109,14 @@ void player_init() {
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_AIRTANKINDEX)
 	};
 	// Player sprite
-	playerSprite = (VDPSprite) {
+	player.sprite[0] = (VDPSprite) {
 		.size = SPRITE_SIZE(2,2),
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_PLAYERINDEX)
 	};
 }
 
 void player_update() {
-	u8 tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
+	uint8_t tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
 	if(!playerMoveMode) { // Normal movement
 		// Wind/Water current
 		if(tile & 0x80) {
@@ -156,7 +170,7 @@ void player_update() {
 		// The above code to slow down the booster needs to always run. 
 		// As such we check again whether the booster is enabled
 		if(playerBoostState == BOOST_OFF && sub_to_block(player.y) < stageHeight - 1) {
-			u8 blockl_next, blocku_next, blockr_next, blockd_next;
+			uint8_t blockl_next, blocku_next, blockr_next, blockd_next;
 			// Ok so, making the collision with ceiling <= 0 pushes the player out of
 			// the ceiling during the opening scene with Kazuma on the computer.
 			// Hi Kazuma!
@@ -329,7 +343,7 @@ void player_update() {
 		}
 	} else if(w->type == WEAPON_BUBBLER) { // mgun_shoottime and mgun_chargetime reused here
 		w->maxammo = 100;
-		u8 chargespeed;
+		uint8_t chargespeed;
 		if(w->level == 1) {
 			chargespeed = TIME(25); // Twice per second
 			if(joy_pressed(BUTTON_B)) weapon_fire(*w);
@@ -376,10 +390,10 @@ void player_update_movement() {
 }
 
 void player_update_walk() {
-	u16 acc;
-	u16 dec;
-	u16 fric;
-	u16 max_speed = SPEED(0x32C);
+	uint16_t acc;
+	uint16_t dec;
+	uint16_t fric;
+	uint16_t max_speed = SPEED(0x32C);
 	if(player.grounded) {
 		acc = SPEED(0x55);
 		dec = SPEED(0x55);
@@ -414,10 +428,10 @@ void player_update_walk() {
 }
 
 void player_update_jump() {
-	u16 jumpSpeed = 	SPEED(0x500);
-	u16 gravity = 		SPEED(0x50);
-	u16 gravityJump = 	SPEED(0x20);
-	u16 maxFallSpeed = 	SPEED(0x5FF);
+	uint16_t jumpSpeed = 	SPEED(0x500);
+	uint16_t gravity = 		SPEED(0x50);
+	uint16_t gravityJump = 	SPEED(0x20);
+	uint16_t maxFallSpeed = 	SPEED(0x5FF);
 	if(player.underwater) {
 		jumpSpeed >>= 1;
 		gravity >>= 1;
@@ -453,9 +467,9 @@ void player_update_jump() {
 }
 
 void player_update_float() {
-	u16 acc = 		SPEED(0x55);
-	u16 fric = 		SPEED(0x33);
-	u16 max_speed = SPEED(0x32C);
+	uint16_t acc = 		SPEED(0x55);
+	uint16_t fric = 		SPEED(0x33);
+	uint16_t max_speed = SPEED(0x32C);
 	if (joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
 		if (player.x_speed < -max_speed) player.x_speed = -max_speed;
@@ -481,7 +495,7 @@ void player_update_float() {
 }
 
 void player_update_bullets() {
-	for(u8 i = 0; i < MAX_BULLETS; i++) {
+	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		bullet_update(playerBullet[i]);
 	}
 }
@@ -568,12 +582,12 @@ void player_update_booster() {
 		playerBoosterFuel--;
 	}
 	// ok so then, booster is active right now
-	u8 sputtering = FALSE;
+	uint8_t sputtering = FALSE;
 	
 	if (joy_down(BUTTON_LEFT)) player.dir = 0;
 	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
 
-	u8 blockl = collide_stage_leftwall(&player),
+	uint8_t blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
 	// Don't bump in the opposite direction when hitting the ceiling
 	if(player.y_speed <= 0 && collide_stage_ceiling(&player)) player.y_speed = 0;
@@ -626,24 +640,24 @@ void player_update_booster() {
 	}
 }
 
-void player_show_map_name(u8 ttl) {
+void player_show_map_name(uint8_t ttl) {
 	// Create a string of tiles in RAM
-	u32 nameTiles[16][8];
-	u8 len = 0;
-	for(u8 i = 0; i < 16; i++) {
-		u8 chr = stage_info[stageID].name[i] - 0x20;
+	uint32_t nameTiles[16][8];
+	uint8_t len = 0;
+	for(uint8_t i = 0; i < 16; i++) {
+		uint8_t chr = stage_info[stageID].name[i] - 0x20;
 		if(chr < 0x60) len++;
 		else break;
 		memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
 	}
 	// Transfer tile array to VRAM
 	if(len > 0) {
-		SYS_disableInts();
+		
 		VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, TRUE);
-		SYS_enableInts();
+		
 		mapNameSpriteNum = 0;
-		u16 x = SCREEN_HALF_W - len * 4;
-		for(u8 i = 0; i < len; i += 4) {
+		uint16_t x = SCREEN_HALF_W - len * 4;
+		for(uint8_t i = 0; i < len; i += 4) {
 			mapNameSprite[i/4] = (VDPSprite) {
 				.x = x + 128,
 				.y = SCREEN_HALF_H - 32 + 128,
@@ -658,13 +672,13 @@ void player_show_map_name(u8 ttl) {
 }
 
 void draw_air_percent() {
-	u32 numberTiles[3][8];
+	uint32_t numberTiles[3][8];
 	memcpy(numberTiles[0], airPercent == 100 ? &TS_Numbers.tiles[8] : TILE_BLANK, 32);
 	memcpy(numberTiles[1], &TS_Numbers.tiles[((airPercent / 10) % 10) * 8], 32);
 	memcpy(numberTiles[2], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
-	SYS_disableInts();
+	
 	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, TRUE);
-	SYS_enableInts();
+	
 }
 
 void player_update_air_display() {
@@ -678,13 +692,13 @@ void player_update_air_display() {
 	} else {
 		airDisplayTime++;
 		if((airDisplayTime % 32) == 0) {
-			SYS_disableInts();
+			
 			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
-			SYS_enableInts();
+			
 		} else if((airDisplayTime % 32) == 15) {
-			SYS_disableInts();
+			
 			VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 1, TRUE);
-			SYS_enableInts();
+			
 		}
 		// Calculate air percent and display the value
 		if(airTick == TIME(10)) draw_air_percent();
@@ -736,7 +750,7 @@ void player_draw() {
 	}
 	// Set frame if it changed
 	if(player.frame != player.oframe) {
-		u8 f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0);
+		uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0);
 		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4);
 	}
 	// Blink during invincibility frames
@@ -751,13 +765,13 @@ void player_draw() {
 				player.dir = 0;
 			}
 		}
-		sprite_hflip(playerSprite, player.dir);
-		sprite_pos(playerSprite,
+		sprite_hflip(player.sprite[0], player.dir);
+		sprite_pos(player.sprite[0],
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(playerSprite);
+		sprite_add(player.sprite[0]);
 		if(playerWeapon[currentWeapon].type > 0) {
-			u8 vert = 0, vdir = 0;
+			uint8_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
 				vert = 1;
 				vdir = 0;
@@ -789,11 +803,11 @@ void player_unpause() {
 	playerIFrames = 0;
 }
 
-u8 player_invincible() {
+uint8_t player_invincible() {
 	return playerIFrames > 0 || tscState;
 }
 
-u8 player_inflict_damage(s16 damage) {
+uint8_t player_inflict_damage(int16_t damage) {
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
@@ -802,7 +816,7 @@ u8 player_inflict_damage(s16 damage) {
 		player.health = 0;
 		// Clear smoke & fill up with smoke around player
 		effects_clear_smoke();
-		for(u8 i = MAX_SMOKE; i--; ) {
+		for(uint8_t i = MAX_SMOKE; i--; ) {
 			effect_create_smoke(sub_to_pixel(player.x) + (random() % 90 ) - 45, 
 								sub_to_pixel(player.y) + (random() % 90 ) - 45);
 		}
@@ -845,7 +859,7 @@ void player_update_bounds() {
 }
 
 void player_prev_weapon() {
-	for(s16 i = currentWeapon - 1; i % MAX_WEAPONS != currentWeapon; i--) {
+	for(int16_t i = currentWeapon - 1; i % MAX_WEAPONS != currentWeapon; i--) {
 		if(i < 0) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
@@ -860,7 +874,7 @@ void player_prev_weapon() {
 }
 
 void player_next_weapon() {
-	for(s16 i = currentWeapon + 1; i % MAX_WEAPONS != currentWeapon; i++) {
+	for(int16_t i = currentWeapon + 1; i % MAX_WEAPONS != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
@@ -874,17 +888,17 @@ void player_next_weapon() {
 	}
 }
 
-Weapon *player_find_weapon(u8 id) {
-	for(u8 i = 0; i < MAX_WEAPONS; i++) {
+Weapon *player_find_weapon(uint8_t id) {
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		if(playerWeapon[i].type == id) return &playerWeapon[i];
 	}
 	return NULL;
 }
 
-void player_give_weapon(u8 id, u8 ammo) {
+void player_give_weapon(uint8_t id, uint8_t ammo) {
 	Weapon *w = player_find_weapon(id);
 	if(!w) {
-		for(u8 i = 0; i < MAX_WEAPONS; i++) {
+		for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 			if(playerWeapon[i].type > 0) continue;
 			w = &playerWeapon[i];
 			w->type = id;
@@ -908,7 +922,7 @@ void player_give_weapon(u8 id, u8 ammo) {
 	}
 }
 
-void player_take_weapon(u8 id) {
+void player_take_weapon(uint8_t id) {
 	Weapon *w = player_find_weapon(id);
 	if(w) {
 		if(playerWeapon[currentWeapon].type == id) {
@@ -922,14 +936,14 @@ void player_take_weapon(u8 id) {
 	}
 }
 
-u8 player_has_weapon(u8 id) {
-	for(u8 i = 0; i < MAX_WEAPONS; i++) {
+uint8_t player_has_weapon(uint8_t id) {
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		if(playerWeapon[i].type == id) return TRUE;
 	}
 	return FALSE;
 }
 
-void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
+void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 	Weapon *w = player_find_weapon(id_take);
 	if(w) {
 		if(id_take == playerWeapon[currentWeapon].type) {
@@ -950,31 +964,31 @@ void player_trade_weapon(u8 id_take, u8 id_give, u8 ammo) {
 }
 
 void player_refill_ammo() {
-	for(u8 i = 0; i < MAX_WEAPONS; i++) {
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].ammo = playerWeapon[i].maxammo;
 	}
 }
 
 void player_delevel_weapons() {
-	for(u8 i = 0; i < MAX_WEAPONS; i++) {
+	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].level = 1;
 		playerWeapon[i].energy = 0;
 		sheets_refresh_weapon(&playerWeapon[i]);
 	}
 }
 
-void player_heal(u8 health) {
+void player_heal(uint8_t health) {
 	player.health += health;
 	if(player.health > playerMaxHealth) player.health = playerMaxHealth;
 }
 
-void player_maxhealth_increase(u8 health) {
+void player_maxhealth_increase(uint8_t health) {
 	player.health += health;
 	playerMaxHealth += health;
 }
 
-void player_give_item(u8 id) {
-	for(u8 i = 0; i < MAX_ITEMS; i++) {
+void player_give_item(uint8_t id) {
+	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
 		if(playerInventory[i] == 0) {
 			playerInventory[i] = id;
 			break;
@@ -982,8 +996,8 @@ void player_give_item(u8 id) {
 	}
 }
 
-void player_take_item(u8 id) {
-	u8 i = 0;
+void player_take_item(uint8_t id) {
+	uint8_t i = 0;
 	for(; i < MAX_ITEMS; i++) {
 		if(playerInventory[i] == id) {
 			playerInventory[i] = 0;
@@ -997,22 +1011,22 @@ void player_take_item(u8 id) {
 	playerInventory[MAX_ITEMS - 1] = 0; // Don't duplicate, blank the last one
 }
 
-u8 player_has_item(u8 id) {
+uint8_t player_has_item(uint8_t id) {
 	//printf("Polling for item %hu", id);
-	for(u8 i = 0; i < MAX_ITEMS; i++) {
+	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
 		//printf("See: %hu", playerInventory[i]);
 		if(playerInventory[i] == id) return TRUE;
 	}
 	return FALSE;
 }
 
-void player_equip(u16 id) {
+void player_equip(uint16_t id) {
 	playerEquipment |= id;
 	// Force the sprite to change so the mimiga mask will show immediately
 	player.oframe = 255;
 }
 
-void player_unequip(u16 id) {
+void player_unequip(uint16_t id) {
 	playerEquipment &= ~id;
 	player.oframe = 255;
 }

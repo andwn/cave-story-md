@@ -1,19 +1,4 @@
-#include "ai.h"
-
-#include <genesis.h>
-#include "audio.h"
-#include "player.h"
-#include "stage.h"
-#include "tables.h"
-#include "tsc.h"
-#include "effect.h"
-#include "camera.h"
-#include "system.h"
-#include "sheet.h"
-#include "resources.h"
-#include "npc.h"
-#include "sprite.h"
-#include "vdp_ext.h"
+#include "ai_common.h"
 
 // mainstates
 #define STATE_CIRCLE_1		100		// circling right
@@ -49,8 +34,8 @@ enum Pieces {
 // these are all for the right-facing frame and are automatically flipped-over
 // at runtime if the dragon is facing left.
 const struct {
-	u8 left, top, right, bottom;
-	u16 flags;
+	uint8_t left, top, right, bottom;
+	uint16_t flags;
 } head_bboxes[] = {
 	{ 12, 12, 12, 12,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// closed
 	{ 12, 12, 12, 12,  NPC_SHOOTABLE | NPC_INVINCIBLE },	// partway open
@@ -61,13 +46,13 @@ const struct {
 
 #define mainangle	curly_target_x
 
-static void SetHeadStates(u16 newstate) {
-	for(u8 i=0;i<2;i++)
+static void SetHeadStates(uint16_t newstate) {
+	for(uint8_t i=0;i<2;i++)
 		pieces[HEAD1+i]->state = newstate;
 }
 
-static void SetBodyStates(u16 newstate) {
-	for(u8 i=0;i<2;i++)
+static void SetBodyStates(uint16_t newstate) {
+	for(uint8_t i=0;i<2;i++)
 		pieces[BODY1+i]->state = newstate;
 }
 
@@ -223,7 +208,7 @@ void ai_sisters(Entity *e) {
 		{
 			//SpawnScreenSmoke(40);
 			
-			for(u16 i=0;i<2;i++) {
+			for(uint16_t i=0;i<2;i++) {
 				pieces[HEAD1+i]->attack = 0;
 				pieces[BODY1+i]->attack = 0;
 			}
@@ -266,7 +251,7 @@ void ai_sisters(Entity *e) {
 					entities_clear_by_type(OBJ_DRAGON_ZOMBIE_SHOT);
 					entities_clear_by_type(OBJ_SPIKE_SMALL);
 					
-					for(u8 i=0;i<2;i++) {
+					for(uint8_t i=0;i<2;i++) {
 						pieces[HEAD1+i]->state = STATE_DELETE;
 						pieces[BODY1+i]->state = STATE_DELETE;
 					}
@@ -299,16 +284,16 @@ void ai_sisters(Entity *e) {
 
 void ai_sisters_body(Entity *e) {
 	// mainangle works in a range of 1024 so the sisters can circle more slowly
-	u8 angle = mainangle >> 2;
+	uint8_t angle = mainangle >> 2;
 	if(e->eflags & NPC_OPTION2) angle ^= 0x80;
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
-	s32 xoff = cos[angle] * bossEntity->x_mark;
-	s32 yoff = sin[angle] * bossEntity->y_mark;
+	int32_t xoff = cos[angle] * bossEntity->x_mark;
+	int32_t yoff = sin[angle] * bossEntity->y_mark;
 	
 	// figure out where we are supposed to be
-	s32 desired_x = bossEntity->x + xoff;
-	s32 desired_y = bossEntity->y + yoff;
+	int32_t desired_x = bossEntity->x + xoff;
+	int32_t desired_y = bossEntity->y + yoff;
 	
 	// motion
 	if (e->state == 0) { // this places them offscreen before the fight

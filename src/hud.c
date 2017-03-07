@@ -1,25 +1,32 @@
-#include "hud.h"
+#include "common.h"
 
-#include <genesis.h>
+#include "dma.h"
+#include "entity.h"
+#include "memory.h"
 #include "player.h"
 #include "resources.h"
-#include "tables.h"
-#include "vdp_ext.h"
 #include "sprite.h"
+#include "tables.h"
+#include "vdp.h"
+#include "vdp_tile.h"
+#include "vdp_ext.h"
+#include "weapon.h"
+
+#include "hud.h"
 
 #define TSIZE 8
 #define SPR_TILE(x, y) (((x)*4)+(y))
 
 VDPSprite sprHUD[2];
-u32 tileData[8][8];
+uint32_t tileData[8][8];
 
 // Values used to draw parts of the HUD
 // If the originator's value changes that part of the HUD will be updated
-u8 hudMaxHealth, hudHealth;
-u8 hudWeapon, hudMaxAmmo, hudAmmo;
-u8 hudLevel, hudMaxEnergy, hudEnergy;
+uint8_t hudMaxHealth, hudHealth;
+uint8_t hudWeapon, hudMaxAmmo, hudAmmo;
+uint8_t hudLevel, hudMaxEnergy, hudEnergy;
 
-u8 showing = FALSE;
+uint8_t showing = FALSE;
 
 void hud_refresh_health();
 void hud_refresh_energy();
@@ -79,11 +86,11 @@ void hud_refresh_health() {
 	// Redraw health if it changed
 	hudMaxHealth = max(playerMaxHealth, 1); // Just so it's impossible to divide zero
 	hudHealth = player.health;
-	s16 fillHP = 40 * hudHealth / hudMaxHealth;
-	for(u8 i = 0; i < 5; i++) {
+	int16_t fillHP = 40 * hudHealth / hudMaxHealth;
+	for(uint8_t i = 0; i < 5; i++) {
 		// The TS_HudBar tileset has two rows of 8 tiles, where the section of the
 		// bar is empty at tile 0 and full at tile 7
-		s16 addrHP = min(fillHP*TSIZE, 7*TSIZE);
+		int16_t addrHP = min(fillHP*TSIZE, 7*TSIZE);
 		if(addrHP < 0) addrHP = 0;
 		// Fill in the bar
 		memcpy(tileData[i+3], &TS_HudBar.tiles[addrHP], TILE_SIZE);
@@ -91,7 +98,7 @@ void hud_refresh_health() {
 	}
 	// Heart icon and two digits displaying current health
 	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
-	u8 digit = hudHealth / 10;
+	uint8_t digit = hudHealth / 10;
 	if(digit) {
 		memcpy(tileData[1], &TS_Numbers.tiles[(digit)*TSIZE], TILE_SIZE);
 	} else {
@@ -99,8 +106,8 @@ void hud_refresh_health() {
 	}
 	memcpy(tileData[2], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
-	for(u8 i = 0; i < 8; i++)
-		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
+	for(uint8_t i = 0; i < 8; i++)
+		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_energy() {
@@ -110,14 +117,14 @@ void hud_refresh_energy() {
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	// Max energy draws "MAX"
 	if(hudEnergy == hudMaxEnergy) {
-		for(u8 i = 0; i < 5; i++) {
+		for(uint8_t i = 0; i < 5; i++) {
 			memcpy(tileData[i+3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
 		}
 	} else {
 		// Same deal as HP with the bar
-		s16 fillXP = 40 * hudEnergy / hudMaxEnergy;
-		for(u8 i = 0; i < 5; i++) {
-			s16 addrXP = min(fillXP*TSIZE, 7*TSIZE);
+		int16_t fillXP = 40 * hudEnergy / hudMaxEnergy;
+		for(uint8_t i = 0; i < 5; i++) {
+			int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
 			if(addrXP < 0) addrXP = 0;
 			memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
 			fillXP -= 8;
@@ -128,8 +135,8 @@ void hud_refresh_energy() {
 	memcpy(tileData[1], &SPR_TILES(&SPR_Hud2, 0, 0)[6*TSIZE], TILE_SIZE);
 	memcpy(tileData[2], &TS_Numbers.tiles[hudLevel*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for level/energy display
-	for(u8 i = 0; i < 8; i++)
-		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+2+i*4)*TILE_SIZE, 16, 2);
+	for(uint8_t i = 0; i < 8; i++)
+		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+2+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_weapon() {
@@ -138,8 +145,8 @@ void hud_refresh_weapon() {
 	memcpy(tileData[0], SPR_TILES(&SPR_ArmsImage, 0, hudWeapon), TILE_SIZE*2);
 	memcpy(tileData[2], &SPR_TILES(&SPR_ArmsImage, 0, hudWeapon)[TSIZE*2], TILE_SIZE*2);
 	// Queue DMA transfer for icon
-	DMA_queueDma(DMA_VRAM, (u32)tileData[0], (TILE_HUDINDEX)*TILE_SIZE, 32, 2);
-	DMA_queueDma(DMA_VRAM, (u32)tileData[2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t)tileData[0], (TILE_HUDINDEX)*TILE_SIZE, 32, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t)tileData[2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
 }
 
 void hud_refresh_ammo() {
@@ -160,8 +167,8 @@ void hud_refresh_ammo() {
 		memcpy(tileData[2], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for ammo
-	for(u8 i = 0; i < 4; i++)
-		DMA_queueDma(DMA_VRAM, (u32)tileData[i], (TILE_HUDINDEX+16+i*4)*TILE_SIZE, 16, 2);
+	for(uint8_t i = 0; i < 4; i++)
+		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+16+i*4)*TILE_SIZE, 16, 2);
 }
 
 void hud_refresh_maxammo() {
@@ -181,6 +188,6 @@ void hud_refresh_maxammo() {
 		memcpy(tileData[6], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for max ammo
-	for(u8 i = 0; i < 4; i++)
-		DMA_queueDma(DMA_VRAM, (u32)tileData[i+4], (TILE_HUDINDEX+17+i*4)*TILE_SIZE, 16, 2);
+	for(uint8_t i = 0; i < 4; i++)
+		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i+4], (TILE_HUDINDEX+17+i*4)*TILE_SIZE, 16, 2);
 }
