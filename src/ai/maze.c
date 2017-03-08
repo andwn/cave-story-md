@@ -868,6 +868,7 @@ void ai_fuzz_core(Entity *e) {
 			uint8_t angle = 0;
 			for(uint16_t i = 0; i < 5; i++) {
 				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
+				e->nflags &= ~NPC_SHOOTABLE;
 				f->linkedEntity = e;
 				f->jump_time = angle;
 				angle += 0x100 / 5;
@@ -900,37 +901,35 @@ void ai_fuzz_core(Entity *e) {
 }
 
 void ai_fuzz(Entity *e) {
-	FACE_PLAYER(e);
-	e->nflags ^= NPC_SHOOTABLE;
+	e->eflags ^= NPC_SHOOTABLE;
 	
-	switch(e->state) {
-		case 0:
-		{
-			e->jump_time++;
+	if (e->state) {
+		// base destroyed, simple sinusoidal player-seek
+		e->x_speed += (e->x > player.x) ? SPEED(-0x20) : SPEED(0x20);
+		e->y_speed += (e->y > player.y) ? SPEED(-0x20) : SPEED(0x20);
+		LIMIT_X(SPEED(0x800));
+		LIMIT_Y(SPEED(0x200));
+		e->x += e->x_speed;
+		e->y += e->y_speed;
+		FACE_PLAYER(e);
+	} else {
+		e->jump_time++; // Always update angle to stay in sync with the rest
+		if (entity_on_screen(e)) {
 			if (e->linkedEntity->state == STATE_DESTROY) {
-				e->x_speed = SPEED(-0x200) + (random() % SPEED(0x400));
-				e->y_speed = SPEED(-0x200) + (random() % SPEED(0x400));
+				e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+				e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
 				e->state = 1;
 			} else {
-				int16_t xoff = cos[e->jump_time] * 24;
+				int16_t xoff = cos2[e->jump_time] << 4; // cosine * 24
 				int16_t yoff = sin[e->jump_time] << 5;
 				e->x = e->linkedEntity->x + xoff;
 				e->y = e->linkedEntity->y + yoff;
+				FACE_PLAYER(e);
 			}
+		} else {
+			// Disable bullet collision off screen to prevent lag
+			e->eflags &= ~NPC_SHOOTABLE;
 		}
-		break;
-		// base destroyed, simple sinusoidal player-seek
-		case 1:
-		{
-			e->x_speed += (e->x > player.x) ? SPEED(-0x20) : SPEED(0x20);
-			e->y_speed += (e->y > player.y) ? SPEED(-0x20) : SPEED(0x20);
-			
-			LIMIT_X(SPEED(0x800));
-			LIMIT_Y(SPEED(0x200));
-			e->x += e->x_speed;
-			e->y += e->y_speed;
-		}
-		break;
 	}
 }
 
@@ -982,8 +981,12 @@ void ai_buyobuyo_base(Entity *e) {
 		{
 			if (++e->timer > TIME(10)) {
 				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, e->eflags & NPC_OPTION2);
-				buyo->x = e->x;
-				buyo->y = e->y;
+				if(e->eflags & NPC_OPTION2) {
+					// On ceiling, buyo are fine
+				} else {
+					// On floor, buyo delete immediately, so push them up
+					buyo->y -= 0x800;
+				}
 				
 				sound_play(SND_EM_FIRE, 5);
 				CURLY_TARGET_HERE(e);

@@ -40,6 +40,7 @@ struct Weapon {
 struct Bullet {
 	VDPSprite sprite;
 	bounding_box hit_box;
+	extent_box extent;
 	int32_t x, y;
 	int16_t x_speed, y_speed;
 	uint8_t type;
@@ -70,7 +71,7 @@ void weapon_fire_spur(Weapon *w);
 
 extern const WeaponFunc weapon_fire_array[WEAPON_COUNT];
 
-#define bullet_update(b); ({ if((b).ttl > 0) bullet_update_array[(b).type](&(b)); })
+#define bullet_update(b); bullet_update_array[(b).type](&(b))
 
 void bullet_update_none(Bullet *b);
 void bullet_update_snake(Bullet *b);

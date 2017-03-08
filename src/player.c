@@ -494,7 +494,15 @@ void player_update_float() {
 
 void player_update_bullets() {
 	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
-		bullet_update(playerBullet[i]);
+		if(playerBullet[i].ttl) {
+			bullet_update(playerBullet[i]);
+			playerBullet[i].extent = (extent_box) {
+				.x1 = playerBullet[i].x - (playerBullet[i].hit_box.left << CSF),
+				.y1 = playerBullet[i].y - (playerBullet[i].hit_box.top << CSF),
+				.x2 = playerBullet[i].x + (playerBullet[i].hit_box.right << CSF),
+				.y2 = playerBullet[i].y + (playerBullet[i].hit_box.bottom << CSF),
+			};
+		}
 	}
 }
 

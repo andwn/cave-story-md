@@ -48,6 +48,10 @@ enum MDDIR { LEFT, RIGHT, UP, DOWN, CENTER };
 // Sine & cosine lookup tables
 const int16_t sin[0x100];
 const int16_t cos[0x100];
+// Above tables but every value multiplied by 1.5, quick reference:
+// <<1 == *3, <<2 == *6, <<3 == *12, <<4 == *24, <<5 == *48
+const int16_t sin2[0x100];
+const int16_t cos2[0x100];
 
 // Unit conversions
 // Bit shifting "CSF" is how NXEngine converts units. I kind of like it better than my way
@@ -91,6 +95,13 @@ typedef struct {
 	uint8_t right;
 	uint8_t bottom;
 } bounding_box;
+// Used for player bullets to reduce cpu load
+typedef struct {
+	int32_t x1;
+	int32_t y1;
+	int32_t x2;
+	int32_t y2;
+} extent_box;
 
 typedef struct Entity Entity;
 typedef struct Weapon Weapon;
