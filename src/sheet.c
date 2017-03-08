@@ -7,6 +7,7 @@
 #include "resources.h"
 #include "sprite.h"
 #include "stage.h"
+#include "string.h"
 #include "tables.h"
 #include "vdp.h"
 #include "vdp_tile.h"

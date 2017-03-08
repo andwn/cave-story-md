@@ -1,5 +1,10 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+#include "vdp.h"
+#include "weapon.h"
+
+#include "tables.h"
 
 const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ NULL,       PAL0, { 0, 0, 0} },

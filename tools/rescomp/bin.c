@@ -79,7 +79,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
 void outBIN(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "uint8_t", id, size, align, TRUE);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

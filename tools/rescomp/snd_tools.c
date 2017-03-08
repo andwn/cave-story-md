@@ -27,7 +27,7 @@ int dpcmPack(char* fin, char* fout)
     strcat(cmd, fout);
     strcat(cmd, "\"");
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 
@@ -78,7 +78,7 @@ int wavToRawEx(char* fin, char* fout, int outRate)
         strcat(cmd, tmp);
     }
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 
@@ -121,7 +121,7 @@ int xgmtool(char* fin, char* fout, int timing, char* opt)
         strcat(cmd, opt);
     }
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 

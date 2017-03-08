@@ -1,5 +1,8 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+
+#include "tables.h"
 
 const song_info_def song_info[SONG_COUNT] = {
 	{ NULL, 			"Silence" },

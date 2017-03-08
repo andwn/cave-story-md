@@ -1,5 +1,9 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+#include "vdp.h"
+
+#include "tables.h"
 
 const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ NULL, 	PAL2, 2, 0, 0 },

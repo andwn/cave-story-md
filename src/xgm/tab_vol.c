@@ -1,5 +1,4 @@
-#include "config.h"
-#include "types.h"
+#include <stdint.h>
 
 const uint8_t tab_vol[0x1000] =
 {

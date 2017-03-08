@@ -101,14 +101,6 @@ typedef void (*WeaponFunc)(Weapon*);
 typedef void (*BulletFunc)(Bullet*);
 
 // SGDK / Rescomp Types
-typedef int8_t		s8;
-typedef int16_t		s16;
-typedef int32_t		s32;
-
-typedef uint8_t		u8;
-typedef uint16_t	u16;
-typedef uint32_t	u32;
-
 typedef struct {
     uint16_t value;
 } VDPPlan;

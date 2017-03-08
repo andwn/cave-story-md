@@ -64,14 +64,14 @@
 
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (cos[angle] * speed) >> CSF;                                               \
-	shot->y_speed = (sin[angle] * speed) >> CSF;                                               \
+	shot->x_speed = (cos[(uint8_t)angle] * speed) >> CSF;                                      \
+	shot->y_speed = (sin[(uint8_t)angle] * speed) >> CSF;                                      \
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
 	uint8_t angle = get_angle(shot->x, shot->y, tgtx, tgty);                                   \
-	shot->x_speed = (cos[angle] * speed) >> CSF;                                               \
-	shot->y_speed = (sin[angle] * speed) >> CSF;                                               \
+	shot->x_speed = (cos[(uint8_t)angle] * speed) >> CSF;                                      \
+	shot->y_speed = (sin[(uint8_t)angle] * speed) >> CSF;                                      \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \

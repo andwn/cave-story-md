@@ -24,8 +24,7 @@ uint8_t currentWeapon; // Index 0-7 of which slot in the array the currently use
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
 Entity player;
-// Padding for "player.sprite[0]"
-uint8_t __playerSprite[8];
+VDPSprite playerSprite;
 
 //uint8_t playerShow;
 uint8_t playerIFrames;
@@ -80,6 +79,8 @@ uint8_t player_has_weapon(uint8_t id); // <AMJ
 void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo); // <TAM
 void player_refill_ammo(); // <AE+
 void player_delevel_weapons(); // <ZAM
+
+Weapon *player_find_weapon(uint8_t id);
 
 void player_heal(uint8_t health); // <LI+
 void player_maxhealth_increase(uint8_t health); // <ML+

@@ -1,10 +1,8 @@
-#include "config.h"
-#include "types.h"
-
-#include "psg.h"
+#include "common.h"
 
 #include "vdp.h"
 
+#include "psg.h"
 
 void PSG_init()
 {

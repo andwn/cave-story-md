@@ -41,7 +41,7 @@ void soundtest_main() {
 	uint8_t status = STOPPED, oldstatus = STOPPED;
 	song_stop();
 	
-	VDP_setEnable(FALSE);
+	//VDP_setEnable(FALSE);
 	//Kill all sprites
 	spr_num = 1;
 	sprites[0] = (VDPSprite) {};
@@ -61,7 +61,7 @@ void soundtest_main() {
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	VDP_drawByte(track, 10, 8);
-	VDP_setEnable(TRUE);
+	//VDP_setEnable(TRUE);
 	
     while(TRUE) {
 		input_update();
@@ -110,7 +110,9 @@ void soundtest_main() {
 			draw_status(status);
 			oldstatus = status;
 		}
-		VDP_waitVSync();
+		ready = TRUE;
+		vsync();
+		aftervblank();
     }
     SYS_hardReset(); // eh
 }

@@ -29,7 +29,7 @@ static int isSupported(char *type)
 static int execute(char *info, FILE *fs, FILE *fh)
 {
     char temp[MAX_PATH_LEN];
-    char temp2[MAX_PATH_LEN];
+    //char temp2[MAX_PATH_LEN];
     char id[50];
     char fileIn[MAX_PATH_LEN];
     char driverStr[256];
@@ -83,19 +83,6 @@ static int execute(char *info, FILE *fs, FILE *fh)
     // determine output rate
     switch(driver)
     {
-        case DRIVER_2ADPCM:
-            outRate = 22050;
-            break;
-
-        case DRIVER_4PCM:
-            outRate = 16000;
-            break;
-
-        case DRIVER_VGM:
-            outRate = 8000;
-            unsign = 1;
-            break;
-
         case DRIVER_XGM:
             outRate = 14000;
             break;
@@ -123,25 +110,6 @@ static int execute(char *info, FILE *fs, FILE *fh)
             if (data)
                 data = sizeAlign(data, size, 256, 0, &size);
             break;
-
-        case DRIVER_2ADPCM:
-            strcpy(temp2, fileIn);
-            removeExtension(temp2);
-            strcat(temp2, ".t2");
-
-            // do DPCM conversion and size data alignment
-            if (!dpcmPack(temp, temp2))
-            {
-                printf("Error while compressing '%s' to DPCM format\n", fileIn);
-                return FALSE;
-            }
-
-            // read data from DPCM file
-            data = in(temp2, &size);
-            // clean
-            remove(temp);
-            remove(temp2);
-            break;
     }
 
     // error while reading data
@@ -152,7 +120,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         unsign8b(data, size);
 
     // EXPORT WAV
-    outWAV(data, size, (driver==DRIVER_2ADPCM)?128:256, fs, fh, id, TRUE);
+    outWAV(data, size, 256, fs, fh, id, TRUE);
 
     return TRUE;
 }
@@ -161,7 +129,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
 void outWAV(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "uint8_t", id, size, align, TRUE);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

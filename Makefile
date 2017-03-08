@@ -16,21 +16,24 @@ WAVTORAW= bin/wavtoraw
 INCS = -Isrc -Ires -Iinc
 CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin
 ASFLAGS = -m68000 --register-prefix-optional
-TOOLFLAGS = -std=c99 -O2 -Wall -Wextra
-LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lnosys 
+LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
+FLAGSZ80 = -isrc/xgm
 
 BOOTSS=$(wildcard src/boot/*.s)
 BOOT_RESOURCES=$(BOOTSS:.s=.o)
 
 RESS=$(wildcard res/*.res)
+Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-CS+=$(windcard src/xgm/*.c)
+CS+=$(wildcard src/xgm/*.c)
 SS=$(wildcard src/*.s)
+SS+=$(wildcard src/xgm/*.s)
 RESOURCES=$(RESS:.res=.o)
+RESOURCES+=$(Z80S:.s80=.o)
 RESOURCES+=$(CS:.c=.o)
 RESOURCES+=$(SS:.s=.o)
 
@@ -59,7 +62,7 @@ pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
 release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-release: CCFLAGS += -O3
+release: CCFLAGS += -O2
 release: main-build
 
 debug: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
@@ -92,6 +95,12 @@ src/boot/sega.o: src/boot/rom_head.bin
 %.s: %.res
 	$(RESCOMP) $< $@
 
+%.o80: %.s80
+	$(ASMZ80) $(FLAGSZ80) $< $@ out.lst
+
+%.s: %.o80
+	$(BINTOS) $<
+
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
 
@@ -102,19 +111,19 @@ head-gen:
 tools: prof2sram
 
 tscomp:
-	gcc tools/tscomp/tscomp.c -o tscomp $(TOOLFLAGS)
+	gcc tools/tscomp/tscomp.c -o tscomp -std=c99
 
 tileopt:
-	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt $(TOOLFLAGS)
+	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt -std=c99
 
 lutgen:
-	gcc tools/lutgen/lutgen.c -lm -o lutgen $(TOOLFLAGS)
+	gcc tools/lutgen/lutgen.c -lm -o lutgen -std=c99
 
 prof2sram:
-	gcc tools/prof2sram/prof2sram.c -o prof2sram $(TOOLFLAGS)
+	gcc tools/prof2sram/prof2sram.c -o prof2sram -std=c99
 
 savetrim:
-	gcc tools/savetrim/savetrim.c -o savetrim $(TOOLFLAGS)
+	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
 
 $(RESCOMP):
 	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP)
@@ -132,6 +141,7 @@ clean: clean-tools
 	rm -f $(RESOURCES)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
+	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
 	rm -f saves.zip saves.tar.gz

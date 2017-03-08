@@ -5,15 +5,10 @@
 #define FALSE           0
 #define TRUE            1
 
-#define DRIVER_PCM      0
-#define DRIVER_2ADPCM   1
-#define DRIVER_4PCM     2
-#define DRIVER_VGM      3
 #define DRIVER_XGM      4
 
 #define PACK_AUTO       -1
 #define PACK_NONE       0
-#define PACK_APLIB      1
 #define PACK_LZ4W       2
 
 #define PACK_MAX_IND    PACK_LZ4W

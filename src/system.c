@@ -353,11 +353,8 @@ static uint32_t LS_readLong(uint8_t file, uint32_t addr) {
 
 // SGDK sys.c stuff
 
-
 // main function
 extern int main();
-
-static void internal_reset();
 
 // exception state consumes 78 bytes of memory
 uint32_t registerState[8+8];
@@ -627,26 +624,18 @@ void _exception_cb()
 void _start_entry() {
     // initiate random number generator
     setRandomSeed(0xC427);
-    
-    internal_reset();
-	
-    // let's the fun go on !
-    main(1);
-}
-
-static void internal_reset()
-{
+    // enable interrupts
+    __asm__("move #0x2300,%sr");
     // init part
     MEM_init();
     VDP_init();
     DMA_init(0, 0);
-    PSG_init();
+    //PSG_init();
     JOY_init();
     // reseting z80 also reset the ym2612
     Z80_init();
-
-    // enable interrupts
-    __asm__("move #0x2300,%sr");
+    // let's the fun go on !
+    main();
 }
 
 void SYS_die(char *err)

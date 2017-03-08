@@ -34,6 +34,7 @@
 #include "vdp_pal.h"
 #include "vdp_tile.h"
 #include "xgm.h"
+#include "z80_ctrl.h"
 
 void vsync() {
 	vblank = 0;
@@ -43,7 +44,7 @@ void vsync() {
 void aftervblank() {
 	XGM_doVBlankProcess();
 	XGM_set68KBUSProtection(TRUE);
-	if (XGM_getForceDelayDMA()) waitSubTick(10);
+	waitSubTick(10);
 	DMA_flushQueue();
 	XGM_set68KBUSProtection(FALSE);
 	if(fading_cnt > 0) VDP_doStepFading(FALSE);
@@ -54,7 +55,7 @@ void aftervblank() {
 		else { sprites_send(); }
 		ready = FALSE;
 	}
-	stage_update(); // Scrolling
+	if(stageBackground != 0xFF) stage_update(); // Scrolling
 	
 	JOY_update();
 }
@@ -64,7 +65,6 @@ int main() {
     VDP_setScreenHeight240(); // Only has any effect on PAL
     sound_init();
 	input_init();
-	//VDP_loadTileSet(&TS_SysFont, TILE_FONTINDEX, TRUE);
     while(TRUE) {
 		splash_main();
 		uint8_t select = titlescreen_main();

@@ -11,13 +11,6 @@
  */
 
 /**
- * Internal use
- */
-#define DRIVER_FLAG_MANUALSYNC_XGM  (1 << 0)
-#define DRIVER_FLAG_DELAYDMA_XGM    (1 << 1)
-
-
-/**
  * \brief
  *      Returns play music state (XGM music player driver).
  */
@@ -156,19 +149,7 @@ void XGM_stopPlayPCM(const uint16_t channel);
  *  \see XGM_setMusicTempo()
  */
 uint32_t XGM_getElapsed();
-/**
- *  \brief
- *      Get the current music tempo (in tick per second).<br>
- *      Default value is 60 or 50 depending the system is NTSC or PAL.<br>
- *      This method is meaningful only if you use the automatic music sync mode (see XGM_setManualSync() method)
- *      which is the default mode.<br>
- *      Note that using specific tempo (not 60 or 50) will affect performance of DMA contention and external command parsing
- *      so it's recommended to stand with default one.
- *
- *  \see XGM_setManualSync()
- *  \see XGM_setMusicTempo()
- */
-uint16_t XGM_getMusicTempo();
+
 /**
  *  \brief
  *      Set the music tempo (in tick per second).<br>
@@ -183,22 +164,6 @@ uint16_t XGM_getMusicTempo();
  */
 void XGM_setMusicTempo(uint16_t value);
 
-/**
- *  \brief
- *      Returns manual sync mode state of XGM driver (by default auto sync is used).
- *
- *  \see XGM_setManualSync()
- */
-uint16_t XGM_getManualSync();
-/**
- *  \brief
- *      Set manual sync mode of XGM driver (by default auto sync is used).
- *
- *  \param value TRUE or FALSE
- *  \see XGM_getManualSync()
- *  \see XGM_nextFrame()
- */
-void XGM_setManualSync(uint16_t value);
 /**
  *  \brief
  *      Notify the Z80 a new frame just happened (XGM music player driver).
@@ -228,61 +193,6 @@ void XGM_setManualSync(uint16_t value);
  */
 void XGM_nextXFrame(uint16_t num);
 
-/**
- *  \brief
- *      Set the loop number for music with loop command.<br>
- *      Default value is -1 for pseudo unfinite (255) loops plays.
- *      A value of 0 means single play without any loop, 1 = single play + 1 loop...
- */
-void XGM_setLoopNumber(int8_t value);
-
-/**
- *  \brief
- *      Set temporary 68K BUS protection from Z80 (XGM music player driver).<br>
- *      You should protect BUS Access during DMA and restore it after:<br>
- *      XGM_set68KBUSProtection(TRUE);
- *      VDP_doVRamDMA(data, 0x1000, 0x100);
- *      XGM_set68KBUSProtection(FALSE);
- *
- *      This way the XGM driver will *try* to avoid using 68K BUS during DMA to
- *      avoid execution interruption and so preserve PCM playback quality.<br>
- *      Note that the success of the operation is not 100% garantee and can fails in some conditions
- *      (heavy Z80 load, lot of PSG data in XGM music), you can also improve the PCM playblack by using the #XGM_setForceDelayDMA() method.
- *
- *  \see XGM_setForceDelayDMA(..)
- */
 void XGM_set68KBUSProtection(uint8_t value);
-/**
- *  \brief
- *      Returns #TRUE if DMA delay is enabled to improve PCM playback.
- *
- *  \see XGM_setForceDelayDMA()
- */
-uint16_t XGM_getForceDelayDMA();
-/**
- *  \brief
- *      This method can be used to improve the PCM playback during XGM music play and while DMA queue is used.<br>
- *      Even using the BUS protection with #XGM_set68KBUSProtection you may experience some altered PCM when the
- *      XGM music contains PSG data, this is because the Z80 uses the main BUS to access PSG.<br>
- *      By delaying a bit the DMA execution from the DMA queue we let the Z80 to execute all PSG commands and avoid any stall.
- *      The delay is about 3 scanlines so using the force delay DMA will reduce the DMA bandwidth for about 3 vblank lines.
- *
- *  \param value TRUE or FALSE
- *  \see XGM_getForceDelayDMA()
- *  \see XGM_set68KBUSProtection()
- */
-void XGM_setForceDelayDMA(uint16_t value);
-/**
- *  \brief
- *      Returns an estimation of the Z80 CPU load (XGM driver).<br>
- *      The low 16 bits returns the estimated Z80 CPU load where the high 16 bits returns the part
- *      spent waiting in the DMA contention (see #XGM_set68KBUSProtection method).<br>
- *      The method computes CPU load mean over 32 frames and so it's important to call it at
- *      each frame (on VInt for instance) to get meaningful value.<br>
- *      Note that it returns CPu load only for the XGM music parsing part as PCM channel mixing is always ON.<br>
- *      Idle usage is 40% on NTSC and 30% on PAL, 100% usage usually mean overrun and may result in music slowdown
- *      and incorrect PCM operations.
- */
-uint32_t XGM_getCPULoad();
 
 void XGM_doVBlankProcess();

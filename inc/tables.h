@@ -80,7 +80,6 @@ typedef struct {
 	const SpriteDefinition *sprite; // Sprite to display beneath player
 	uint16_t palette;
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
-	uint8_t name[16];
 } weapon_info_def;
 
 extern const tileset_info_def tileset_info[];

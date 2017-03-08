@@ -45,13 +45,7 @@ uint8_t titlescreen_main() {
 	uint8_t tsong = SONG_TITLE;
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
-	
-	//VDP_setEnable(FALSE);
-	VDP_resetScreen(); // This brings back the default SGDK font with transparency
-	// No special scrolling for title screen
-	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-	VDP_setHorizontalScroll(PLAN_A, 0);
-	VDP_setVerticalScroll(PLAN_A, 0);
+	//VDP_resetScreen();
 	// Main palette
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_Main.data);
@@ -103,8 +97,7 @@ uint8_t titlescreen_main() {
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
-	//VDP_setEnable(TRUE);
-	
+
 	song_play(tsong);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();

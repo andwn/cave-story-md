@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     // default
     FileName = "";
     FileNameOut = "";
-    format = "u8";
+    format = "uint8_t";
     formatint = 1;
     formatasm = "w";
     formatintasm = 2;
@@ -66,44 +66,44 @@ int main(int argc, char **argv)
     // parse parmeters
     for (ii = 1; ii < argc; ii++)
     {
-        if (!strcmp(argv[ii], "-u8"))
+        if (!strcmp(argv[ii], "-uint8_t"))
         {
-            format = "u8";
+            format = "uint8_t";
             formatint = 1;
             formatasm = "w";
             formatintasm = 2;
         }
-        else if (!strcmp(argv[ii], "-s8"))
+        else if (!strcmp(argv[ii], "-int8_t"))
         {
-            format = "s8";
+            format = "int8_t";
             formatint = 1;
             formatasm = "w";
             formatintasm = 2;
         }
-        else if (!strcmp(argv[ii], "-u16"))
+        else if (!strcmp(argv[ii], "-uint16_t"))
         {
-            format = "u16";
+            format = "uint16_t";
             formatint = 2;
             formatasm = "w";
             formatintasm = 2;
         }
-        else if (!strcmp(argv[ii], "-s16"))
+        else if (!strcmp(argv[ii], "-int16_t"))
         {
-            format = "s16";
+            format = "int16_t";
             formatint = 2;
             formatasm = "w";
             formatintasm = 2;
         }
-        else if (!strcmp(argv[ii], "-u32"))
+        else if (!strcmp(argv[ii], "-uint32_t"))
         {
-            format = "u32";
+            format = "uint32_t";
             formatint = 4;
             formatasm = "l";
             formatintasm = 4;
         }
-        else if (!strcmp(argv[ii], "-s32"))
+        else if (!strcmp(argv[ii], "-int32_t"))
         {
-            format = "s32";
+            format = "int32_t";
             formatint = 4;
             formatasm = "l";
             formatintasm = 4;

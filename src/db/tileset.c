@@ -1,5 +1,8 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+
+#include "tables.h"
 
 const tileset_info_def tileset_info[TILESET_COUNT] = {
 	{ NULL, NULL, NULL },

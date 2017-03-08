@@ -1,28 +1,17 @@
 #include "common.h"
+
 #include "resources.h"
 #include "smp_null.h"
 #include "system.h"
+#include "vdp.h"
 #include "z80_ctrl.h"
 
 #include "xgm.h"
 
-// allow to access it without "public" share
-extern int16_t currentDriver;
-extern uint16_t driverFlags;
-
 // specific for the XGM driver
 static uint16_t xgmTempo;
 static uint16_t xgmTempoDef;
-// can be nice to alter it from external
-int16_t xgmTempoCnt = 0;
-
-// Z80 cpu load calculation for XGM driver
-static uint16_t xgmIdleTab[32];
-static uint16_t xgmWaitTab[32];
-static uint16_t xgmTabInd;
-static uint16_t xgmIdleMean;
-static uint16_t xgmWaitMean;
-
+static int16_t xgmTempoCnt = 0;
 
 // Z80_DRIVER_XGM
 // XGM driver
@@ -33,12 +22,6 @@ uint8_t XGM_isPlaying()
     volatile uint8_t *pb;
     uint8_t ret;
 
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
-
     // point to Z80 status
     pb = (uint8_t *) Z80_DRV_STATUS;
 
@@ -46,9 +29,6 @@ uint8_t XGM_isPlaying()
     // play status
     ret = *pb & (1 << 6);
     Z80_releaseBus();
-
-    // re-enable ints
-    
 
     return ret;
 }
@@ -59,12 +39,6 @@ void XGM_startPlay(const uint8_t *song)
     uint32_t addr;
     uint16_t i;
     volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     // prepare sample id table
     for(i = 0; i < 0x3F; i++)
@@ -119,21 +93,12 @@ void XGM_startPlay(const uint8_t *song)
     *pb = 0;
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_stopPlay()
 {
     volatile uint8_t *pb;
     uint32_t addr;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     Z80_requestBus(TRUE);
 
@@ -160,20 +125,11 @@ void XGM_stopPlay()
     *pb = 0;
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_pausePlay()
 {
     volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     Z80_requestBus(TRUE);
 
@@ -183,21 +139,12 @@ void XGM_pausePlay()
     *pb |= (1 << 4);
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_resumePlay()
 {
     volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
     
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
-
     Z80_requestBus(TRUE);
 
     // point to Z80 command
@@ -211,21 +158,12 @@ void XGM_resumePlay()
     *pb = 0;
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 uint8_t XGM_isPlayingPCM(const uint16_t channel_mask)
 {
     volatile uint8_t *pb;
     uint8_t ret;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     Z80_requestBus(TRUE);
 
@@ -236,37 +174,21 @@ uint8_t XGM_isPlayingPCM(const uint16_t channel_mask)
 
     Z80_releaseBus();
 
-    // re-enable ints
-    
-
     return ret;
 }
 
 void XGM_setPCM(const uint8_t id, const uint8_t *sample, const uint32_t len)
 {
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
-
     Z80_requestBus(TRUE);
-
     XGM_setPCMFast(id, sample, len);
-
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_setPCMFast(const uint8_t id, const uint8_t *sample, const uint32_t len)
 {
     volatile uint8_t *pb;
-
     // point to sample id table
     pb = (uint8_t *) (0xA01C00 + (id * 4));
-
     // write sample addr
     pb[0x00] = ((uint32_t) sample) >> 8;
     pb[0x01] = ((uint32_t) sample) >> 16;
@@ -277,12 +199,6 @@ void XGM_setPCMFast(const uint8_t id, const uint8_t *sample, const uint32_t len)
 void XGM_startPlayPCM(const uint8_t id, const uint8_t priority, const uint16_t channel)
 {
     volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     Z80_requestBus(TRUE);
 
@@ -299,20 +215,11 @@ void XGM_startPlayPCM(const uint8_t id, const uint8_t priority, const uint16_t c
     *pb |= (Z80_DRV_COM_PLAY << channel);
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_stopPlayPCM(const uint16_t channel)
 {
     volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
 
     Z80_requestBus(TRUE);
 
@@ -329,33 +236,6 @@ void XGM_stopPlayPCM(const uint16_t channel)
     *pb |= (Z80_DRV_COM_PLAY << channel);
 
     Z80_releaseBus();
-
-    // re-enable ints
-    
-}
-
-void XGM_setLoopNumber(int8_t value)
-{
-    volatile uint8_t *pb;
-
-    // disable ints when requesting Z80 BUS
-    
-
-    // load the appropriate driver if not already done
-    Z80_loadDriver(Z80_DRIVER_XGM, TRUE);
-
-    Z80_requestBus(TRUE);
-
-    // point to Z80 PCM parameters
-    pb = (uint8_t *) (Z80_DRV_PARAMS + 0x0C);
-
-    // set loop argument (+1 as internally 0 = infinite)
-    *pb = value + 1;
-
-    Z80_releaseBus();
-
-    // re-enable ints
-    
 }
 
 void XGM_set68KBUSProtection(uint8_t value)
@@ -363,8 +243,6 @@ void XGM_set68KBUSProtection(uint8_t value)
     volatile uint16_t *pw_bus;
     volatile uint16_t *pw_reset;
     volatile uint8_t *pb;
-
-    // driver should be loaded here
 
     // point on bus req and reset ports
     pw_bus = (uint16_t *) Z80_HALT_PORT;
@@ -391,8 +269,6 @@ void XGM_nextXFrame(uint16_t num)
     volatile uint16_t *pw_reset;
     volatile uint8_t *pb;
 
-    // driver should be loaded here
-
     // point on bus req and reset ports
     pw_bus = (uint16_t *) Z80_HALT_PORT;
     pw_reset = (uint16_t *) Z80_RESET_PORT;
@@ -414,8 +290,8 @@ void XGM_nextXFrame(uint16_t num)
         *pw_bus = 0x0000;
 
         // wait a bit (about 80 cycles)
-        asm volatile ("\t\tmovm.l %d0-%d3,-(%sp)\n");
-        asm volatile ("\t\tmovm.l (%sp)+,%d0-%d3\n");
+        __asm__ volatile ("\t\tmovm.l %d0-%d3,-(%sp)\n");
+        __asm__ volatile ("\t\tmovm.l (%sp)+,%d0-%d3\n");
 
         // wait for bus released before requesting it again
         while (!(*pw_bus & 0x0100));
@@ -428,54 +304,6 @@ void XGM_nextXFrame(uint16_t num)
 
     // release bus
     *pw_bus = 0x0000;
-}
-
-
-uint16_t XGM_getManualSync()
-{
-    return driverFlags & DRIVER_FLAG_MANUALSYNC_XGM;
-}
-
-void XGM_setManualSync(uint16_t value)
-{
-    // nothing to do
-    if (currentDriver != Z80_DRIVER_XGM)
-        return;
-
-    if (value)
-    {
-        driverFlags |= DRIVER_FLAG_MANUALSYNC_XGM;
-        // remove VInt XGM process
-        VIntProcess &= ~PROCESS_XGM_TASK;
-    }
-    else
-    {
-        driverFlags &= ~DRIVER_FLAG_MANUALSYNC_XGM;
-        // set VInt XGM process
-        VIntProcess |= PROCESS_XGM_TASK;
-    }
-}
-
-uint16_t XGM_getForceDelayDMA()
-{
-    return driverFlags & DRIVER_FLAG_DELAYDMA_XGM;
-}
-
-void XGM_setForceDelayDMA(uint16_t value)
-{
-    // nothing to do
-    if (currentDriver != Z80_DRIVER_XGM)
-        return;
-
-    if (value)
-        driverFlags |= DRIVER_FLAG_DELAYDMA_XGM;
-    else
-        driverFlags &= ~DRIVER_FLAG_DELAYDMA_XGM;
-}
-
-uint16_t XGM_getMusicTempo()
-{
-    return xgmTempo;
 }
 
 void XGM_setMusicTempo(uint16_t value)
@@ -496,9 +324,6 @@ uint32_t XGM_getElapsed()
     pb = (uint8_t *) (Z80_DRV_PARAMS + 0x90);
     dst = values;
 
-    // disable ints when requesting Z80 BUS
-    
-
     Z80_requestBus(TRUE);
 
     // copy quickly elapsed time
@@ -508,87 +333,12 @@ uint32_t XGM_getElapsed()
 
     Z80_releaseBus();
 
-    // re-enable ints
-    
-
     result = (values[0] << 0) | (values[1] << 8) | (values[2] << 16);
 
     // fix possible 24 bit negative value (parsing first extra frame)
     if (result >= 0xFFFFF0) return 0;
 
     return result;
-}
-
-uint32_t XGM_getCPULoad()
-{
-    volatile uint8_t *pb;
-    uint16_t idle;
-    uint16_t wait;
-    uint16_t ind;
-    int16_t load;
-
-    // driver should be loaded here
-
-    // point to Z80 'idle wait loop' value
-    pb = (uint8_t *) (Z80_DRV_PARAMS + 0x7C);
-
-    // disable ints when requesting Z80 BUS
-    
-
-    Z80_requestBus(TRUE);
-
-    // get idle
-    idle = pb[0] + (pb[1] << 8);
-    // reset it and point on 'dma wait loop'
-    *pb++ = 0;
-    *pb++ = 0;
-
-    // get dma wait
-    wait = pb[0] + (pb[1] << 8);
-    // and reset it
-    *pb++ = 0;
-    *pb = 0;
-
-    Z80_releaseBus();
-
-    // re-enable ints
-    
-
-    ind = xgmTabInd;
-
-    xgmIdleMean -= xgmIdleTab[ind];
-    xgmIdleMean += idle;
-    xgmIdleTab[ind] = idle;
-
-    xgmWaitMean -= xgmWaitTab[ind];
-    xgmWaitMean += wait;
-    xgmWaitTab[ind] = wait;
-
-    xgmTabInd = (ind + 1) & 0x1F;
-
-    load = 105 - (xgmIdleMean >> 5);
-
-    return load | ((xgmWaitMean >> 5) << 16);
-}
-
-void XGM_resetLoadCalculation()
-{
-    uint16_t i;
-    uint16_t *s1;
-    uint16_t *s2;
-
-    s1 = xgmIdleTab;
-    s2 = xgmWaitTab;
-    i = 32;
-    while(i--)
-    {
-        *s1++ = 0;
-        *s2++ = 0;
-    }
-
-    xgmTabInd = 0;
-    xgmIdleMean = 0;
-    xgmWaitMean = 0;
 }
 
 // VInt processing for XGM driver
@@ -633,8 +383,8 @@ void XGM_doVBlankProcess()
         *pw_bus = 0x0000;
 
         // wait a bit (about 80 cycles)
-        asm volatile ("\t\tmovm.l %d0-%d3,-(%sp)\n");
-        asm volatile ("\t\tmovm.l (%sp)+,%d0-%d3\n");
+        __asm__ volatile ("\t\tmovm.l %d0-%d3,-(%sp)\n");
+        __asm__ volatile ("\t\tmovm.l (%sp)+,%d0-%d3\n");
 
         // wait for bus released before requesting it again
         while (!(*pw_bus & 0x0100));

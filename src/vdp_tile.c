@@ -1,10 +1,10 @@
 #include "common.h"
-#include "vdp.h"
-#include "memory.h"
-#include "vdp_pal.h"
-#include "vdp_dma.h"
+
 #include "dma.h"
+#include "memory.h"
 #include "tools.h"
+#include "vdp.h"
+#include "vdp_pal.h"
 
 #include "vdp_tile.h"
 
@@ -29,11 +29,6 @@ uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma
         VDP_loadTileData(tileset->tiles, index, tileset->numTile, use_dma);
 
     return TRUE;
-}
-
-void VDP_loadFontData(const uint32_t *font, uint16_t length, uint8_t use_dma)
-{
-    VDP_loadTileData(font, TILE_FONTINDEX, length, use_dma);
 }
 
 uint16_t VDP_loadFont(const TileSet *font, uint8_t use_dma)
@@ -96,11 +91,6 @@ void VDP_setTileMapXY(VDPPlan plan, uint16_t tile, uint16_t x, uint16_t y)
 
     *plctrl = GFX_WRITE_VRAM_ADDR(addr);
     *pwdata = tile;
-}
-
-void VDP_fillTileMapRectByIndex(uint16_t plan, uint16_t tile, uint16_t ind, uint16_t num)
-{
-    VDP_fillTileMap(plan, tile, ind, num);
 }
 
 void VDP_fillTileMap(uint16_t plan, uint16_t tile, uint16_t ind, uint16_t num)
@@ -186,11 +176,6 @@ void VDP_fillTileMapRect(VDPPlan plan, uint16_t tile, uint16_t x, uint16_t y, ui
     }
 }
 
-void VDP_clearTileMapRectByIndex(uint16_t plan, uint16_t ind, uint16_t num, uint16_t wait)
-{
-    VDP_clearTileMap(plan, ind, num, wait);
-}
-
 void VDP_clearTileMap(uint16_t plan, uint16_t ind, uint16_t num, uint16_t wait)
 {
     // do DMA fill
@@ -203,11 +188,6 @@ void VDP_clearTileMap(uint16_t plan, uint16_t ind, uint16_t num, uint16_t wait)
 void VDP_clearTileMapRect(VDPPlan plan, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     VDP_fillTileMapRect(plan, 0, x, y, w, h);
-}
-
-void VDP_fillTileMapRectIncByIndex(uint16_t plan, uint16_t basetile, uint16_t ind, uint16_t num)
-{
-    VDP_fillTileMapInc(plan, basetile, ind, num);
 }
 
 void VDP_fillTileMapInc(uint16_t plan, uint16_t basetile, uint16_t ind, uint16_t num)
@@ -305,11 +285,6 @@ void VDP_fillTileMapRectInc(VDPPlan plan, uint16_t basetile, uint16_t x, uint16_
     }
 }
 
-void VDP_setTileMapRectByIndex(uint16_t plan, const uint16_t *data, uint16_t ind, uint16_t num, uint8_t use_dma)
-{
-    VDP_setTileMapData(plan, data, ind, num, use_dma);
-}
-
 void VDP_setTileMapData(uint16_t plan, const uint16_t *data, uint16_t ind, uint16_t num, uint8_t use_dma)
 {
     if (use_dma)
@@ -317,7 +292,7 @@ void VDP_setTileMapData(uint16_t plan, const uint16_t *data, uint16_t ind, uint1
         // wait for previous DMA completion
         VDP_waitDMACompletion();
         // then do DMA
-        VDP_doVRamDMA((uint32_t) data, plan + (ind * 2), num);
+        DMA_doDma(DMA_VRAM, (uint32_t) data, plan + (ind * 2), num, 2);
     }
     else
     {
@@ -407,11 +382,6 @@ void VDP_setTileMapDataRect(VDPPlan plan, const uint16_t *data, uint16_t x, uint
 
         addr += width * 2;
     }
-}
-
-void VDP_setTileMapRectExByIndex(uint16_t plan, const uint16_t *data, uint16_t baseindex, uint16_t baseflags, uint16_t ind, uint16_t num)
-{
-    VDP_setTileMapDataEx(plan, data, baseflags | baseindex, ind, num);
 }
 
 void VDP_setTileMapDataEx(uint16_t plan, const uint16_t *data, uint16_t basetile, uint16_t ind, uint16_t num)

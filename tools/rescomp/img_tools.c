@@ -353,7 +353,7 @@ static unsigned short *Png_getPalette(char* fileName, int *size)
     // error ?
     if (errcode)
     {
-        printf(lodepng_error_text(errcode));
+        printf("%s", lodepng_error_text(errcode));
         *size = 0;
         return NULL;
     }
@@ -402,7 +402,7 @@ static unsigned char *Png_getData(char* fileName, int *size, int wAlign, int hAl
     // error ?
     if (errcode)
     {
-        printf(lodepng_error_text(errcode));
+        printf("%s", lodepng_error_text(errcode));
         *size = 0;
         return NULL;
     }

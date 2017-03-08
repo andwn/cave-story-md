@@ -384,15 +384,6 @@ void VDP_init();
 
 /**
  *  \brief
- *      Get VDP register value.
- *
- *  \param reg
- *      Register number we want to retrieve value.
- *  \return specified register value.
- */
-uint8_t   VDP_getReg(uint16_t reg);
-/**
- *  \brief
  *      Set VDP register value.
  *
  *  \param reg
@@ -400,13 +391,9 @@ uint8_t   VDP_getReg(uint16_t reg);
  *  \param value
  *      value to set.
  */
+uint8_t VDP_getReg(uint16_t reg);
 void VDP_setReg(uint16_t reg, uint8_t value);
 
-/**
- *  \brief
- *      Returns VDP enable state.
- */
-uint8_t   VDP_getEnable();
 /**
  *  \brief
  *      Set VDP enable state.
@@ -422,21 +409,7 @@ void VDP_setEnable(uint8_t value);
  *  312 for PAL system and 262 for NTSC system.
  */
 uint16_t  VDP_getScanlineNumber();
-/**
- *  \brief
- *      Returns vertical screen resolution.
- *
- *  Always returns 224 on NTSC system as they only support this mode.<br>
- *  PAL system supports 240 pixels mode.
- */
-uint16_t  VDP_getScreenHeight();
-/**
- *  \brief
- *      Set vertical resolution to 224 pixels.
- *
- *  This is the only accepted mode for NTSC system.
- */
-void VDP_setScreenHeight224();
+
 /**
  *  \brief
  *      Set vertical resolution to 240 pixels.
@@ -444,63 +417,7 @@ void VDP_setScreenHeight224();
  *  Only work on PAL system.
  */
 void VDP_setScreenHeight240();
-/**
- *  \brief
- *      Returns horizontal screen resolution.
- *
- *  Returns 320 or 256 depending current horizontal resolution mode.
- */
-uint16_t  VDP_getScreenWidth();
-/**
- *  \brief
- *      Set horizontal resolution to 256 pixels.
- */
-void VDP_setScreenWidth256();
-/**
- *  \brief
- *      Set horizontal resolution to 320 pixels.
- */
-void VDP_setScreenWidth320();
 
-/**
- *  \deprecated Use the <i>planWidth</i> variable directly.
- */
-uint16_t  VDP_getPlanWidth();
-/**
- *  \deprecated Use the <i>planHeight</i> variable directly.
- */
-uint16_t  VDP_getPlanHeight();
-/**
- *  \brief
- *      Set background plan size (in tile).
- *
- *  \param w
- *      width in tile.<br>
- *      Possible values are 32, 64 or 128.
- *  \param h
- *      height in tile.<br>
- *      Possible values are 32, 64 or 128.
- */
-void VDP_setPlanSize(uint16_t w, uint16_t h);
-
-/**
- *  \brief
- *      Returns plan horizontal scrolling mode.
- *
- *  Possible values are: HSCROLL_PLANE, HSCROLL_TILE, HSCROLL_LINE
- *
- *  \see VDP_setScrollingMode for more informations about scrolling mode.
- */
-uint8_t VDP_getHorizontalScrollingMode();
-/**
- *  \brief
- *      Returns plan vertical scrolling mode.
- *
- *  Possible values are: VSCROLL_PLANE, VSCROLL_2TILE
- *
- *  \see VDP_setScrollingMode for more informations about scrolling mode.
- */
-uint8_t VDP_getVerticalScrollingMode();
 /**
  *  \brief
  *      Set plan scrolling mode.
@@ -523,12 +440,6 @@ uint8_t VDP_getVerticalScrollingMode();
  */
 void VDP_setScrollingMode(uint16_t hscroll, uint16_t vscroll);
 
-
-/**
- *  \brief
- *      Returns the background color index.
- */
-uint8_t VDP_getBackgroundColor();
 /**
  *  \brief
  *      Set the background color index.
@@ -548,192 +459,6 @@ void VDP_setAutoInc(uint8_t value);
 
 /**
  *  \brief
- *      Enable or Disable Horizontal interrupt.
- *
- *  \see VDP_setHIntCounter()
- */
-void VDP_setHInterrupt(uint8_t value);
-/**
- *  \brief
- *      Enable or Disable Hilight / Shadow effect.
- */
-void VDP_setHilightShadow(uint8_t value);
-
-/**
- *  \brief
- *      Get Horizontal interrupt counter value.
- */
-uint8_t   VDP_getHIntCounter();
-/**
- *  \brief
- *      Set Horizontal interrupt counter value.
- *
- *  When Horizontal interrupt is enabled, setting 5 here means that H int will occurs each (5+1) scanline.<br>
- *  Set value 0 to get H int at each scanline.
- */
-void VDP_setHIntCounter(uint8_t value);
-
-/**
- *  \brief
- *      Get VRAM address (location) of Plan A tilemap.
- */
-uint16_t VDP_getAPlanAddress();
-/**
- *  \brief
- *      Get VRAM address (location) of Plan B tilemap.
- */
-uint16_t VDP_getBPlanAddress();
-/**
- *  \brief
- *      Get VRAM address (location) of Window tilemap.
- */
-uint16_t VDP_getWindowAddress();
-/**
- *  \deprecated
- *      Use #VDP_getWindowAddress(..) instead.
- */
-uint16_t VDP_getWindowPlanAddress();
-/**
- *  \brief
- *      Get VRAM address (location) of Sprite list.
- */
-uint16_t VDP_getSpriteListAddress();
-/**
- *  \brief
- *      Get VRAM address (location) of H SCroll table.
- */
-uint16_t VDP_getHScrollTableAddress();
-
-/**
- *  \brief
- *      Set VRAM address (location) of Plan A tilemap.
- *      <br>
- *      WARNING: the window tilemap should always be the first object attribute in VRAM:<br>
- *      | system tiles<br>
- *      | user tiles<br>
- *      | window plan<br>
- *      v others (plan a, plan b, ...)<br>
- *      <br>
- *      The window tilemap address is used internally to calculated how much space is available for tiles.
- *
- *  EX:<br>
- *      VDP_setAPlanAddress(0xC000)<br>
- *      Will set the Plan A to at address 0xC000 in VRAM.
- */
-void VDP_setAPlanAddress(uint16_t value);
-/**
- *  \brief
- *      Set VRAM address (location) of Window tilemap.<br>
- *      <br>
- *      WARNING: the window tilemap should always be the first object attribute in VRAM:<br>
- *      | system tiles<br>
- *      | user tiles<br>
- *      | window plan<br>
- *      v others (plan a, plan b, ...)<br>
- *      <br>
- *      The window tilemap address is used internally to calculated how much space is available for tiles.
- *
- *  EX:<br>
- *      VDP_setWindowAddress(0xA000)<br>
- *      Will set the Window tilemap to at address 0xA000 in VRAM.
- */
-void VDP_setWindowAddress(uint16_t value);
-/**
- *  \deprecated
- *      Use #VDP_setWindowAddress(..) instead.
- */
-void VDP_setWindowPlanAddress(uint16_t value);
-/**
- *  \brief
- *      Set VRAM address (location) of Plan B tilemap.<br>
- *      <br>
- *      WARNING: the window tilemap should always be the first object attribute in VRAM:<br>
- *      | system tiles<br>
- *      | user tiles<br>
- *      | window plan<br>
- *      v others (plan a, plan b, ...)<br>
- *      <br>
- *      The window tilemap address is used internally to calculated how much space is available for tiles.
- *
- *  EX:<br>
- *      VDP_setBPlanAddress(0xE000)<br>
- *      Will set the Plan B to at address 0xE000 in VRAM.
- */
-void VDP_setBPlanAddress(uint16_t value);
-/**
- *  \brief
- *      Set VRAM address (location) of Sprite list.<br>
- *      <br>
- *      WARNING: the window tilemap should always be the first object attribute in VRAM:<br>
- *      | system tiles<br>
- *      | user tiles<br>
- *      | window plan<br>
- *      v others (plan a, plan b, ...)<br>
- *      <br>
- *      The window tilemap address is used internally to calculated how much space is available for tiles.
- *
- *  EX:<br>
- *      VDP_setSpriteListAddress(0xB800)<br>
- *      Will set the Sprite list to at address 0xB800 in VRAM.
- */
-void VDP_setSpriteListAddress(uint16_t value);
-/**
- *  \brief
- *      Set VRAM address (location) of H Scroll table.<br>
- *      <br>
- *      WARNING: the window tilemap should always be the first object attribute in VRAM:<br>
- *      | system tiles<br>
- *      | user tiles<br>
- *      | window plan<br>
- *      v others (plan a, plan b, ...)<br>
- *      <br>
- *      The the window tilemap address is used internally to calculated how much space is available for tiles.
- *
- *  EX:<br>
- *      VDP_setHScrollTableAddress(0xB400)<br>
- *      Will set the HScroll table to at address 0xB400 in VRAM.
- */
-void VDP_setHScrollTableAddress(uint16_t value);
-
-/**
- *  \brief
- *      Sets the scan mode of the display.
- *
- *  \param mode
- *      Accepted values : #INTERLACED_NONE, #INTERLACED_MODE1, #INTERLACED_MODE2
- *
- * This function changes the scanning mode on the next display blanking period.<br>
- * In Interlaced Mode 1, the same pattern will be displayed on the adjacent lines of even and odd numbered fields.<br>
- * In Interlaced Mode 2, different patterns can be displayed on the adjacent lines of even and odd numbered fields.<br>
- * The number of cells on the screen stays the same regardless of which scanning mode is active.
- */
-void VDP_setScanMode(uint16_t mode);
-
-/**
- *  \brief
- *      Sets the window Horizontal position.
- *
- *  \param right
- *      If set to <i>FALSE</i> the window is displayed from column 0 up to column <i>pos</i>
- *      If set to <i>TRUE</i> the window is displayed from column <i>pos</i> up to last column
- *  \param pos
- *      The Horizontal position of the window in 2 tiles unit (16 pixels).
- */
-void VDP_setWindowHPos(uint16_t right, uint16_t pos);
-/**
- *  \brief
- *      Sets the window Vertical position.
- *
- *  \param down
- *      If set to <i>FALSE</i> the window is displayed from row 0 up to row <i>pos</i>
- *      If set to <i>TRUE</i> the window is displayed from row <i>pos</i> up to last row
- *  \param pos
- *      The Vertical position of the window in 1 tile unit (8 pixels).
- */
-void VDP_setWindowVPos(uint16_t down, uint16_t pos);
-
-/**
- *  \brief
  *      Wait for DMA operation to complete.
  *  \deprecated Use #DMA_waitCompletion() instead
  */
@@ -743,14 +468,6 @@ void VDP_waitDMACompletion();
  *      Wait for VDP FIFO to be empty.
  */
 void VDP_waitFIFOEmpty();
-
-/**
- *  \brief
- *      Wait for Vertical Synchro.
- *
- *  The method actually wait for the next start of Vertical blanking.
- */
-void VDP_waitVSync();
 
 /**
  *  \brief

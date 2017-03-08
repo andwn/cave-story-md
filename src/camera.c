@@ -152,7 +152,7 @@ void camera_update() {
 					}
 					y++;
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t)mapcol, VDP_getAPlanAddress() + (x%64)*2, 32, 128);
+				DMA_queueDma(DMA_VRAM, (uint32_t)mapcol, VDP_PLAN_A + (x%64)*2, 32, 128);
 			}
 		}
 		if(morphingRow) {
@@ -170,7 +170,7 @@ void camera_update() {
 					}
 					x++;
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t)maprow, VDP_getAPlanAddress() + (y%32)*64*2, 64, 2);
+				DMA_queueDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + (y%32)*64*2, 64, 2);
 			}
 		}
 	}

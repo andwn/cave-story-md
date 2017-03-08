@@ -50,6 +50,7 @@ uint8_t stageTileset;
 // Camera calls this each time it scrolls past 1 block length (16 pixels)
 int8_t morphingRow, morphingColumn;
 
+extern uint8_t stageBackground;
 uint8_t stageBackgroundType;
 
 // Clears previous stage and switches to one with the given ID

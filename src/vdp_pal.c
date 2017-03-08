@@ -30,13 +30,13 @@ const uint16_t palette_grey[16] =
 };
 
 // used for palette fading (consumes 902 bytes of memory)
-static int16_t final_pal[64];
-static int16_t fading_palR[64];
-static int16_t fading_palG[64];
-static int16_t fading_palB[64];
-static int16_t fading_stepR[64];
-static int16_t fading_stepG[64];
-static int16_t fading_stepB[64];
+static uint16_t final_pal[64];
+static uint16_t fading_palR[64];
+static uint16_t fading_palG[64];
+static uint16_t fading_palB[64];
+static uint16_t fading_stepR[64];
+static uint16_t fading_stepG[64];
+static uint16_t fading_stepB[64];
 static uint16_t fading_from;
 static uint16_t fading_to;
 
@@ -77,9 +77,9 @@ void VDP_setPaletteColor(uint16_t index, uint16_t value)
 
 static void setFadePalette()
 {
-    int16_t *palR;
-    int16_t *palG;
-    int16_t *palB;
+    uint16_t *palR;
+    uint16_t *palG;
+    uint16_t *palB;
     volatile uint16_t *pw;
     volatile uint32_t *pl;
     uint16_t addr;
@@ -125,12 +125,12 @@ uint16_t VDP_doStepFading()
         return 0;
     }
 
-    int16_t *palR;
-    int16_t *palG;
-    int16_t *palB;
-    int16_t *stepR;
-    int16_t *stepG;
-    int16_t *stepB;
+    uint16_t *palR;
+    uint16_t *palG;
+    uint16_t *palB;
+    uint16_t *stepR;
+    uint16_t *stepG;
+    uint16_t *stepB;
     uint16_t i;
 
     i = fading_from;
@@ -161,12 +161,12 @@ uint16_t VDP_initFading(uint16_t fromcol, uint16_t tocol, const uint16_t *palsrc
     const uint16_t *src;
     const uint16_t *dst;
     uint16_t *save;
-    int16_t *palR;
-    int16_t *palG;
-    int16_t *palB;
-    int16_t *stepR;
-    int16_t *stepG;
-    int16_t *stepB;
+    uint16_t *palR;
+    uint16_t *palG;
+    uint16_t *palB;
+    uint16_t *stepR;
+    uint16_t *stepG;
+    uint16_t *stepB;
     uint16_t i;
 
     // can't do a fade on 0 frame !
@@ -192,9 +192,9 @@ uint16_t VDP_initFading(uint16_t fromcol, uint16_t tocol, const uint16_t *palsrc
         const uint16_t s = *src++;
         const uint16_t d = *dst++;
 
-        const int16_t R = ((s & VDPPALETTE_REDMASK) >> VDPPALETTE_REDSFT) << PALETTEFADE_FRACBITS;
-        const int16_t G = ((s & VDPPALETTE_GREENMASK) >> VDPPALETTE_GREENSFT) << PALETTEFADE_FRACBITS;
-        const int16_t B = ((s & VDPPALETTE_BLUEMASK) >> VDPPALETTE_BLUESFT) << PALETTEFADE_FRACBITS;
+        const uint16_t R = ((s & VDPPALETTE_REDMASK) >> VDPPALETTE_REDSFT) << PALETTEFADE_FRACBITS;
+        const uint16_t G = ((s & VDPPALETTE_GREENMASK) >> VDPPALETTE_GREENSFT) << PALETTEFADE_FRACBITS;
+        const uint16_t B = ((s & VDPPALETTE_BLUEMASK) >> VDPPALETTE_BLUESFT) << PALETTEFADE_FRACBITS;
 
         // fix detination palette
         *save++ = d;

@@ -16,7 +16,7 @@ DMAOpInfo *dmaQueues = NULL;
 
 // DMA queue settings
 static uint16_t queueSize;
-static int16_t maxTransferPerFrame;
+static uint16_t maxTransferPerFrame;
 
 // current queue index (0 = empty / queueSize = full)
 static uint16_t queueIndex;

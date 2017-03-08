@@ -68,7 +68,8 @@ void stage_load(uint16_t id) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
-	VDP_waitVSync();
+	vsync();
+	aftervblank();
 	
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
@@ -109,7 +110,8 @@ void stage_load(uint16_t id) {
 		}
 	}
 	
-	VDP_waitVSync();
+	vsync();
+	aftervblank();
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
@@ -202,7 +204,8 @@ void stage_load_entities() {
 			input_update();
 			while(!joy_pressed(BUTTON_C)) {
 				input_update();
-				VDP_waitVSync();
+				vsync();
+				aftervblank();
 				VDP_setHorizontalScroll(PLAN_A, 0);
 				VDP_setVerticalScroll(PLAN_A, 0);
 			}
@@ -279,20 +282,19 @@ void stage_update() {
 		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
 		int16_t row = scroll >> 3;
 		int16_t oldrow = backScrollTable[0];
-		uint16_t baddr = VDP_getBPlanAddress();
 		while(row < oldrow) { // Water is rising (Y decreasing)
 			oldrow--;
 			uint8_t rowup = 31 - ((oldrow + rowgap) & 31);// Row that will be updated
 			if(oldrow > rowc) { // Below Screen
 				uint16_t mapBuffer[64] = {};
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or above
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
 		}
 		while(row > oldrow) { // Water is lowering (Y increasing)
@@ -304,10 +306,10 @@ void stage_update() {
 					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or below
 				uint16_t mapBuffer[64] = {};
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, baddr + (rowup << 7), 64, 2);
+				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
 		}
 		
@@ -325,7 +327,8 @@ void stage_update() {
 }
 
 void stage_draw_screen() {
-	VDP_waitVSync();
+	vsync();
+	aftervblank();
 	
 	VDP_setEnable(FALSE);
 	uint16_t maprow[64];
@@ -344,13 +347,14 @@ void stage_draw_screen() {
 				}
 				x++;
 			}
-			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_getAPlanAddress() + (y%32)*0x80, 64, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + (y%32)*0x80, 64, 2);
 		}
 		y++;
 	}
 	VDP_setEnable(TRUE);
 	
-	VDP_waitVSync();
+	vsync();
+	aftervblank();
 }
 
 // Draws just one block

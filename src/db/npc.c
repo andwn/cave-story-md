@@ -1,8 +1,11 @@
 #include "common.h"
-#include "entity.h"
+
 #include "ai_gen.h"
+#include "entity.h"
+#include "npc.h"
 #include "resources.h"
 #include "sheet.h"
+#include "vdp.h"
 
 #include "tables.h"
 

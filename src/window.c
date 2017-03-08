@@ -84,8 +84,6 @@ void window_open(uint8_t mode) {
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
 		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
 	
-	
-	
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (wy1<<6) + TEXT_X1, 36);
 	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, wy1);
@@ -103,8 +101,6 @@ void window_open(uint8_t mode) {
 		VDP_setWindowPos(0, mode ? 8 : (IS_PALSYSTEM ? 245 : 244));
 	} else showingFace = 0;
 
-	
-	
 	windowOpen = TRUE;
 }
 
@@ -113,7 +109,6 @@ uint8_t window_is_open() {
 }
 
 void window_clear() {
-	
 	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
@@ -148,11 +143,9 @@ void window_set_face(uint16_t face, uint8_t open) {
 	if(face > 0) {
 		window_draw_face();
 	} else {
-		
 		// Hack to clear face only
-		VDP_fillTileMapRect(PLAN_WINDOW, WINDOW_ATTR(4),
-				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, TEXT_X1, 6, 6);
-		
+		VDP_fillTileMapRect(PLAN_WINDOW, WINDOW_ATTR(4), TEXT_X1,
+				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6);
 	}
 }
 
@@ -280,12 +273,10 @@ uint8_t window_prompt_update() {
 }
 
 void window_draw_face() {
-	
 	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_WINDOW, 
 		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 		TEXT_X1, (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1), 6, 6);
-	
 }
 
 void window_show_item(uint16_t item) {
@@ -316,15 +307,8 @@ void window_show_item(uint16_t item) {
 		.size = SPRITE_SIZE(3, 3),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
-	//TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
-	//TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
-	// For some strange mysterious reason, about 40% of the time, and only in
-	// Arthur's house, queueing these tiles just doesn't do anything.
-	// So, we just upload it to VRAM now
-	
-	SHEET_LOAD(sprDef, 1, 6, TILE_PROMPTINDEX, 1, item,0);
-	SHEET_LOAD(&SPR_ItemWin, 1, 18, TILE_PROMPTINDEX+6, 1, 0,0);
-	
+	TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
+	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
 }
 
 void window_show_weapon(uint16_t item) {

@@ -53,7 +53,7 @@ void VDP_setHorizontalScrollTile(VDPPlan plan, uint16_t tile, int16_t* values, u
 
         *pl = GFX_WRITE_VRAM_ADDR(addr);
 
-        src = values;
+        src = (uint16_t*) values;
 
         i = len;
         while(i--) *pw = *src++;
@@ -83,7 +83,7 @@ void VDP_setHorizontalScrollLine(VDPPlan plan, uint16_t line, int16_t* values, u
 
         *pl = GFX_WRITE_VRAM_ADDR(addr);
 
-        src = values;
+        src = (uint16_t*) values;
 
         i = len;
         while(i--) *pw = *src++;
@@ -130,7 +130,7 @@ void VDP_setVerticalScrollTile(VDPPlan plan, uint16_t tile, int16_t* values, uin
 
         *pl = GFX_WRITE_VSRAM_ADDR(addr);
 
-        src = values;
+        src = (uint16_t*) values;
 
         i = len;
         while(i--) *pw = *src++;
@@ -201,7 +201,7 @@ void VDP_drawTextBG(VDPPlan plan, const char *str, uint16_t x, uint16_t y)
     len = strlen(str);
 
     // if string don't fit in plan, we cut it
-    if (len > (i - x))
+    if (len > (uint16_t) (i - x))
         len = i - x;
 
     s = (char*) str;

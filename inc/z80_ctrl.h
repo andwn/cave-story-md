@@ -125,29 +125,6 @@
  */
 #define Z80_DRV_CH3                     (1 << Z80_DRV_CH3_SFT)
 
-
-/**
- *  \brief
- *      NULL Z80 driver.
- */
-#define Z80_DRIVER_NULL                 0
-/**
- *  \brief
- *      eXtended VGM music player driver.<br>
- *      This driver takes VGM (or XGM) file as input to play music.<br>
- *      It supports 4 PCM channels at a fixed 14 Khz and allows to play SFX through PCM with 16 level of priority.<br>
- *      The driver is designed to avoid DMA contention when possible (depending CPU load).
- */
-#define Z80_DRIVER_XGM                  8
-/**
- *  \brief
- *      CUSTOM Z80 driver.
- */
-#define Z80_DRIVER_CUSTOM               -1
-
-#define Z80_DRIVER_DEFAULT              Z80_DRIVER_PCM
-
-
 /**
  *  \brief
  *      Initialize Z80 sub system.
@@ -254,56 +231,6 @@ void Z80_upload(const uint16_t dest, const uint8_t *data, const uint16_t size, c
  *      Size in byte of data to read.
  */
 void Z80_download(const uint16_t from, uint8_t *dest, const uint16_t size);
-
-/**
- *  \brief
- *      Return currently loaded Z80 driver.
- *
- *  Possible returned values are:<br>
- *  - #Z80_DRIVER_NULL<br>
- *  - #Z80_DRIVER_PCM<br>
- *  - #Z80_DRIVER_2ADPCM<br>
- *  - #Z80_DRIVER_4PCM_ENV<br>
- *  - #Z80_DRIVER_MVS<br>
- *  - #Z80_DRIVER_TFM<br>
- *  - #Z80_DRIVER_VGM<br>
- *  - #Z80_DRIVER_XGM<br>
- *  - #Z80_DRIVER_CUSTOM<br>
- */
-uint16_t  Z80_getLoadedDriver();
-/**
- *  \brief
- *      Unload Z80 driver (actually clear Z80 ram).
- */
-void Z80_unloadDriver();
-/**
- *  \brief
- *      Load a Z80 driver.
- *
- *  \param driver
- *      Driver to load, possible values are:<br>
- *      - #Z80_DRIVER_NULL<br>
- *      - #Z80_DRIVER_PCM<br>
- *      - #Z80_DRIVER_2ADPCM<br>
- *      - #Z80_DRIVER_4PCM_ENV<br>
- *      - #Z80_DRIVER_MVS<br>
- *      - #Z80_DRIVER_TFM<br>
- *      - #Z80_DRIVER_VGM<br>
- *      - #Z80_DRIVER_XGM<br>
- *  \param waitReady
- *      Wait for driver to be ready.
- */
-void Z80_loadDriver(const uint16_t driver, const uint16_t waitReady);
-/**
- *  \brief
- *      Load a custom Z80 driver.
- *
- *  \param drv
- *      Pointer to the driver binary to load.
- *  \param size
- *      Size (in bytes) of the driver binary.
- */
-void Z80_loadCustomDriver(const uint8_t *drv, uint16_t size);
 
 /**
  *  \brief

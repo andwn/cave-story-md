@@ -1,47 +1,53 @@
-#include "config.h"
-#include "types.h"
+#include "common.h"
+
+#include "memory.h"
+#include "psg.h"
+#include "smp_null.h"
+#include "smp_null_pcm.h"
+#include "system.h"
+#include "tab_vol.h"
+#include "timer.h"
+#include "vdp.h"
+#include "xgm.h"
+#include "ym2612.h"
+#include "z80_xgm.h"
 
 #include "z80_ctrl.h"
 
-#include "ym2612.h"
-#include "psg.h"
-#include "memory.h"
-#include "timer.h"
-#include "sys.h"
-#include "vdp.h"
-#include "xgm.h"
-
-// Z80 drivers
-#include "z80_xgm.h"
-
-#include "tab_vol.h"
-#include "smp_null.h"
-#include "smp_null_pcm.h"
-
-
-// we don't want to share it
-extern volatile uint32_t VIntProcess;
-
-int16_t currentDriver;
-uint16_t driverFlags;
-
-
-// we don't want to share it
-extern void XGM_resetLoadCalculation();
-
-
-void Z80_init()
-{
+void Z80_init() {
+	uint8_t *pb;
+    uint32_t addr;
     // request Z80 bus
     Z80_requestBus(TRUE);
     // set bank to 0
     Z80_setBank(0);
+    // clear z80 memory
+    Z80_clear(0, Z80_RAM_LEN, FALSE);
+    // upload Z80 driver and reset Z80
+    Z80_upload(0, z80_xgm, sizeof(z80_xgm), 1);
+	// reset sound chips
+	YM2612_reset();
+	PSG_init();
+	// misc parameters initialisation
+	Z80_requestBus(TRUE);
+	// point to Z80 sample id table (first entry = silent sample)
+	pb = (uint8_t *) (0xA01C00);
 
-    // no loaded driver
-    currentDriver = Z80_DRIVER_NULL;
-    driverFlags = 0;
+	addr = (uint32_t) smp_null;
+	// null sample address (256 bytes aligned)
+	pb[0] = addr >> 8;
+	pb[1] = addr >> 16;
+	// null sample length (256 bytes aligned)
+	pb[2] = sizeof(smp_null) >> 8;
+	pb[3] = sizeof(smp_null) >> 16;
+	Z80_releaseBus();
+	// wait bus released
+	while(Z80_isBusTaken());
+	// just wait for it
+	while(!Z80_isDriverReady())
+		while(Z80_isBusTaken());
+    XGM_setMusicTempo(IS_PALSYSTEM ? 50 : 60);
 }
-
 
 uint16_t Z80_isBusTaken()
 {
@@ -124,12 +130,11 @@ void Z80_write(const uint16_t addr, const uint8_t value)
     ((uint8_t*) Z80_RAM)[addr] = value;
 }
 
-
 void Z80_clear(const uint16_t to, const uint16_t size, const uint16_t resetz80)
 {
     Z80_requestBus(TRUE);
 
-    const uint8_t zero = getZeroU8();
+    const uint8_t zero = 0;
     uint8_t* dst = (uint8_t*) (Z80_RAM + to);
     uint16_t len = size;
 
@@ -172,255 +177,6 @@ void Z80_download(const uint16_t from, uint8_t *to, const uint16_t size)
     while(len--) *dst++ = *src++;
 
     Z80_releaseBus();
-}
-
-
-uint16_t Z80_getLoadedDriver()
-{
-    return currentDriver;
-}
-
-void Z80_unloadDriver()
-{
-    // already unloaded
-    if (currentDriver == Z80_DRIVER_NULL) return;
-
-    // clear Z80 RAM
-    Z80_clear(0, Z80_RAM_LEN, TRUE);
-
-    currentDriver = Z80_DRIVER_NULL;
-
-    // remove XGM task if present
-    VIntProcess &= ~PROCESS_XGM_TASK;
-}
-
-void Z80_loadDriver(const uint16_t driver, const uint16_t waitReady)
-{
-    const uint8_t *drv;
-    uint16_t len;
-
-    // already loaded
-    if (currentDriver == driver) return;
-
-    switch(driver)
-    {
-		/*
-        case Z80_DRIVER_PCM:
-            drv = z80_drv1;
-            len = sizeof(z80_drv1);
-            break;
-
-        case Z80_DRIVER_2ADPCM:
-            drv = z80_drv2;
-            len = sizeof(z80_drv2);
-            break;
-
-        case Z80_DRIVER_4PCM_ENV:
-            drv = z80_drv3;
-            len = sizeof(z80_drv3);
-            break;
-
-        case Z80_DRIVER_MVS:
-            drv = z80_mvs;
-            len = sizeof(z80_mvs);
-            break;
-
-        case Z80_DRIVER_TFM:
-            drv = z80_tfm;
-            len = sizeof(z80_tfm);
-            break;
-
-        case Z80_DRIVER_VGM:
-            drv = z80_vgm;
-            len = sizeof(z80_vgm);
-            break;
-		*/
-        case Z80_DRIVER_XGM:
-            drv = z80_xgm;
-            len = sizeof(z80_xgm);
-            break;
-
-        default:
-            // no valid driver to load
-            return;
-    }
-
-    // clear z80 memory
-    Z80_clear(0, Z80_RAM_LEN, FALSE);
-    // upload Z80 driver and reset Z80
-    Z80_upload(0, drv, len, 1);
-
-    // driver initialisation
-    switch(driver)
-    {
-        uint8_t *pb;
-        uint32_t addr;
-		/*
-        case Z80_DRIVER_2ADPCM:
-            // misc parameters initialisation
-            Z80_requestBus(TRUE);
-            // point to Z80 null sample parameters
-            pb = (uint8_t *) (Z80_DRV_PARAMS + 0x20);
-
-            addr = (uint32_t) smp_null_pcm;
-            // null sample address (128 bytes aligned)
-            pb[0] = addr >> 7;
-            pb[1] = addr >> 15;
-            // null sample length (128 bytes aligned)
-            pb[2] = sizeof(smp_null_pcm) >> 7;
-            pb[3] = sizeof(smp_null_pcm) >> 15;
-            Z80_releaseBus();
-            break;
-
-        case Z80_DRIVER_PCM:
-            // misc parameters initialisation
-            Z80_requestBus(TRUE);
-            // point to Z80 null sample parameters
-            pb = (uint8_t *) (Z80_DRV_PARAMS + 0x20);
-
-            addr = (uint32_t) smp_null;
-            // null sample address (256 bytes aligned)
-            pb[0] = addr >> 8;
-            pb[1] = addr >> 16;
-            // null sample length (256 bytes aligned)
-            pb[2] = sizeof(smp_null) >> 8;
-            pb[3] = sizeof(smp_null) >> 16;
-            Z80_releaseBus();
-            break;
-
-        case Z80_DRIVER_4PCM_ENV:
-            // load volume table
-            Z80_upload(0x1000, tab_vol, 0x1000, 0);
-
-            // misc parameters initialisation
-            Z80_requestBus(TRUE);
-            // point to Z80 null sample parameters
-            pb = (uint8_t *) (Z80_DRV_PARAMS + 0x20);
-
-            addr = (uint32_t) smp_null;
-            // null sample address (256 bytes aligned)
-            pb[4] = addr >> 8;
-            pb[5] = addr >> 16;
-            // null sample length (256 bytes aligned)
-            pb[6] = sizeof(smp_null) >> 8;
-            pb[7] = sizeof(smp_null) >> 16;
-            Z80_releaseBus();
-            break;
-
-        case Z80_DRIVER_MVS:
-            // put driver in stop state
-            Z80_requestBus(TRUE);
-
-            // point to Z80 FM command
-            pb = (uint8_t *) MVS_FM_CMD;
-            // stop command for FM
-            *pb++ = MVS_FM_STOP;
-            *pb = MVS_FM_RESET;
-
-            // point to Z80 DACcommand
-            pb = (uint8_t *) MVS_DAC_CMD;
-            // stop command for DAC
-            *pb = MVS_DAC_STOP;
-
-            // point to Z80 PSG command
-            pb = (uint8_t *) MVS_PSG_CMD;
-            // stop command for PSG
-            *pb = MVS_PSG_STOP;
-
-            Z80_releaseBus();
-            break;
-
-        case Z80_DRIVER_VGM:
-            // just reset sound chips
-            YM2612_reset();
-            PSG_init();
-            break;
-		*/
-        case Z80_DRIVER_XGM:
-            // reset sound chips
-            YM2612_reset();
-            PSG_init();
-
-            // misc parameters initialisation
-            Z80_requestBus(TRUE);
-            // point to Z80 sample id table (first entry = silent sample)
-            pb = (uint8_t *) (0xA01C00);
-
-            addr = (uint32_t) smp_null;
-            // null sample address (256 bytes aligned)
-            pb[0] = addr >> 8;
-            pb[1] = addr >> 16;
-            // null sample length (256 bytes aligned)
-            pb[2] = sizeof(smp_null) >> 8;
-            pb[3] = sizeof(smp_null) >> 16;
-            Z80_releaseBus();
-            break;
-    }
-
-    // wait driver for being ready
-    if (waitReady)
-    {
-        switch(driver)
-        {
-			/*
-            // drivers supporting ready status
-            case Z80_DRIVER_2ADPCM:
-            case Z80_DRIVER_PCM:
-            case Z80_DRIVER_4PCM_ENV:
-            * */
-            case Z80_DRIVER_XGM:
-                Z80_releaseBus();
-                // wait bus released
-                while(Z80_isBusTaken());
-
-                // just wait for it
-                while(!Z80_isDriverReady())
-                    while(Z80_isBusTaken());
-                break;
-			/*
-            // others drivers
-            case Z80_DRIVER_TFM:
-            case Z80_DRIVER_MVS:
-            case Z80_DRIVER_VGM:
-                // just wait a bit of time
-                waitMs(100);
-                break;
-            */
-        }
-    }
-
-    // new driver set
-    currentDriver = driver;
-
-    // post init stuff
-    switch(driver)
-    {
-        // XGM driver
-        case Z80_DRIVER_XGM:
-            // using auto sync --> enable XGM task on VInt
-            if (!(driverFlags & DRIVER_FLAG_MANUALSYNC_XGM))
-                VIntProcess |= PROCESS_XGM_TASK;
-            // define default tempo
-            if (IS_PALSYSTEM) XGM_setMusicTempo(50);
-            else XGM_setMusicTempo(60);
-            // reset load calculation
-            XGM_resetLoadCalculation();
-            break;
-    }
-}
-
-void Z80_loadCustomDriver(const uint8_t *drv, uint16_t size)
-{
-    // clear z80 memory
-    Z80_clear(0, Z80_RAM_LEN, FALSE);
-    // upload Z80 driver and reset Z80
-    Z80_upload(0, drv, size, 1);
-
-    // custom driver set
-    currentDriver = Z80_DRIVER_CUSTOM;
-
-    // remove XGM task if present
-    VIntProcess &= ~PROCESS_XGM_TASK;
 }
 
 uint16_t Z80_isDriverReady()

@@ -29,16 +29,9 @@
 
 #include "gamemode.h"
 
-//void splash_vblank() {
-//	sprites_send();
-//}
-
 void splash_main() {
-	//return; // lol nah
-	
-	VDP_resetScreen();
+	//VDP_resetScreen();
 	// Init screen stuff
-	//SYS_setVIntCallback(&splash_vblank);
 	VDP_setPalette(PAL0, PAL_Sega.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
 	// Init some subsystems used
@@ -57,10 +50,11 @@ void splash_main() {
 		entities_update();
 		entities_draw();
 		effects_update(); // Draw Smoke
-		VDP_waitVSync();
+		ready = TRUE;
+		vsync();
+		aftervblank();
 	}
 	input_update(); // This pushes the joy state to avoid skipping the next menu
-	//SYS_setVIntCallback(NULL);
 	VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
 	entities_clear();
 	effects_clear();

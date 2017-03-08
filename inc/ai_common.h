@@ -19,6 +19,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
+#include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "vdp_bg.h"

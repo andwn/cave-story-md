@@ -1,5 +1,8 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+
+#include "tables.h"
 
 const stage_info_def stage_info[STAGE_COUNT] = {
 	{ NULL,			NULL,		NULL,		&PAL_Regu,	0,	0,	"" },

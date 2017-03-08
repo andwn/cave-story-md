@@ -57,8 +57,6 @@ void player_update_float();
 void player_prev_weapon();
 void player_next_weapon();
 
-Weapon *player_find_weapon(uint8_t id);
-
 // Default values for player
 void player_init() {
 	controlsLocked = FALSE;
@@ -109,7 +107,7 @@ void player_init() {
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_AIRTANKINDEX)
 	};
 	// Player sprite
-	player.sprite[0] = (VDPSprite) {
+	playerSprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2,2),
 		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_PLAYERINDEX)
 	};
@@ -304,7 +302,7 @@ void player_update() {
 		player_update_air_display();
 	}
 	// Weapon switching
-	if(controllerType == JOY_TYPE_PAD3) {
+	if(JOY_getJoypadType(JOY_1) == JOY_TYPE_PAD3) {
 		// 3 button controller cycles with A
 		if(joy_pressed(BUTTON_A)) {
 			player_next_weapon();
@@ -765,11 +763,11 @@ void player_draw() {
 				player.dir = 0;
 			}
 		}
-		sprite_hflip(player.sprite[0], player.dir);
-		sprite_pos(player.sprite[0],
+		sprite_hflip(playerSprite, player.dir);
+		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(player.sprite[0]);
+		sprite_add(playerSprite);
 		if(playerWeapon[currentWeapon].type > 0) {
 			uint8_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {

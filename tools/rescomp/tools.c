@@ -7,21 +7,6 @@
 #include "tools.h"
 #include "img_tools.h"
 
-
-//#ifdef _WIN32
-//  #define FILE_SEPARATOR              "\\"
-//  #define FILE_SEPARATOR_CHAR         '\\'
-//#else
-//    #ifdef _WIN64
-//      #define FILE_SEPARATOR          "\\"
-//      #define FILE_SEPARATOR_CHAR     '\\'
-//    #else
-//      #define FILE_SEPARATOR          "/"
-//      #define FILE_SEPARATOR_CHAR     '/'
-//    #endif
-//#endif
-//
-
 // forward
 static int appack(char* fin, char* fout);
 static int lz4wpack(char* fin, char* fout);
@@ -78,24 +63,6 @@ void strreplace(char* text, char chr, char repl_chr)
     }
 }
 
-//int isAbsolutePathSystem(char* path)
-//{
-//    int len = strlen(path);
-//
-//    if (len > 0)
-//    {
-//        if (path[0] == FILE_SEPARATOR_CHAR) return TRUE;
-//
-//        if (len > 2)
-//        {
-//            // windows
-//            if ((path[1] == ':') && (path[2] == FILE_SEPARATOR_CHAR))  return TRUE;
-//        }
-//    }
-//
-//    return FALSE;
-//}
-
 int isAbsolutePath(char* path)
 {
     int len = strlen(path);
@@ -122,24 +89,6 @@ int isAbsolutePath(char* path)
     return FALSE;
 }
 
-//char* getDirectorySystem(char* path)
-//{
-//    char* result = strdup(path);
-//    char* fdir = strrchr(result, FILE_SEPARATOR_CHAR);
-//
-//    if (fdir) *fdir = 0;
-//    else
-//    {
-//        fdir = strrchr(result, ':');
-//
-//        if (fdir) fdir[1] = 0;
-//        // no directory
-//        else return strdup("");
-//    }
-//
-//    return result;
-//}
-
 char* getDirectory(char* path)
 {
     char* result = strdup(path);
@@ -163,21 +112,6 @@ char* getDirectory(char* path)
 
     return result;
 }
-
-//char* getFilenameSystem(char* path)
-//{
-//    char* fname = strrchr(path, FILE_SEPARATOR_CHAR);
-//
-//    if (fname) return fname + 1;
-//    else
-//    {
-//        fname = strrchr(path, ':');
-//
-//        if (fname) return fname + 1;
-//    }
-//
-//    return path;
-//}
 
 char* getFilename(char* path)
 {
@@ -216,21 +150,6 @@ void removeExtension(char* path)
 
     if (fext) *fext = 0;
 }
-
-//void adjustPathSystem(char* dir, char* path, char* dst)
-//{
-//    if (isAbsolutePathSystem(path)) strcpy(dst, path);
-//    else
-//    {
-//        if (strlen(dir) > 0)
-//        {
-//            strcpy(dst, dir);
-//            strcat(dst, FILE_SEPARATOR);
-//            strcat(dst, path);
-//        }
-//        else strcpy(dst, path);
-//    }
-//}
 
 void adjustPath(char* dir, char* path, char* dst)
 {
@@ -284,7 +203,10 @@ unsigned char *readFile(char *fileName, int *size)
     }
 
     data = malloc(*size);
-    fread(data, 1, *size, f);
+    if(fread(data, 1, *size, f) < *size) {
+		printf("Error: Unexpected end of stream\n");
+		return NULL;
+	}
     fclose(f);
 
     return data;
@@ -528,10 +450,6 @@ int getDriver(char *str)
 {
     char *upstr = strupper(str);
 
-    if (!strcmp(upstr, "PCM") || !strcmp(upstr, "0")) return DRIVER_PCM;
-    if (!strcmp(upstr, "2ADPCM") || !strcmp(upstr, "1")) return DRIVER_2ADPCM;
-    if (!strcmp(upstr, "4PCM") || !strcmp(upstr, "2") || !strcmp(upstr, "3")) return DRIVER_4PCM;
-    if (!strcmp(upstr, "VGM") || !strcmp(upstr, "4")) return DRIVER_VGM;
     if (!strcmp(upstr, "XGM") || !strcmp(upstr, "5")) return DRIVER_XGM;
 
     return 0;
@@ -543,7 +461,6 @@ int getCompression(char *str)
 
     if (!strcmp(upstr, "AUTO") || !strcmp(upstr, "BEST") || !strcmp(upstr, "-1")) return PACK_AUTO;
     if (!strcmp(upstr, "NONE") || !strcmp(upstr, "0")) return PACK_NONE;
-    if (!strcmp(upstr, "APLIB") || !strcmp(upstr, "1")) return PACK_APLIB;
     if (!strcmp(upstr, "LZ4W") || !strcmp(upstr, "2") || !strcmp(upstr, "FAST")) return PACK_LZ4W;
 
     // not recognized --> use AUTO
@@ -600,11 +517,6 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
         {
             switch(i)
             {
-                case PACK_APLIB:
-                    if (appack("pack.in", "pack.out"))
-                        results[PACK_APLIB] = in("pack.out", &sizes[PACK_APLIB]);
-                    break;
-
                 case PACK_LZ4W:
                     if (lz4wpack("pack.in", "pack.out"))
                         results[PACK_LZ4W] = in("pack.out", &sizes[PACK_LZ4W]);
@@ -632,12 +544,8 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
 
     switch(*method)
     {
-        case PACK_APLIB:
-            printf("Packed with APLIB, ");
-            break;
-
         case PACK_LZ4W:
-            printf("Packed with LZ4W, ");
+            printf("LZ4W: ");
             break;
 
         default:
@@ -682,7 +590,7 @@ int maccer(char* fin, char* fout)
     strcat(cmd, fin);
     strcat(cmd, "\"");
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 
@@ -713,7 +621,7 @@ int tfmcom(char* fin, char* fout)
     strcat(cmd, fin);
     strcat(cmd, "\"");
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 
@@ -778,41 +686,6 @@ int tfmcom(char* fin, char* fout)
     return FALSE;
 }
 
-
-static int appack(char* fin, char* fout)
-{
-    char cmd[MAX_PATH_LEN * 2];
-    FILE *f;
-
-    // better to remove output file for appack
-    remove(fout);
-
-    // command
-//    adjustPathSystem(currentDirSystem, "appack", cmd);
-    adjustPath(currentDir, "appack", cmd);
-
-    // arguments
-    strcat(cmd, " c \"");
-    strcat(cmd, fin);
-    strcat(cmd, "\" \"");
-    strcat(cmd, fout);
-    strcat(cmd, "\"");
-    strcat(cmd, " -s");
-
-    printf("Executing %s\n", cmd);
-
-    system(cmd);
-
-    // we test for the out file existence
-    f = fopen(fout, "rb");
-    fclose(f);
-
-    // file exist --> ok
-    if (f != NULL) return TRUE;
-
-    return FALSE;
-}
-
 static int lz4wpack(char* fin, char* fout)
 {
     char tmp[MAX_PATH_LEN * 2];
@@ -836,7 +709,7 @@ static int lz4wpack(char* fin, char* fout)
     strcat(cmd, fout);
     strcat(cmd, "\" -s");
 
-    printf("Executing %s\n", cmd);
+    //printf("Executing %s\n", cmd);
 
     system(cmd);
 

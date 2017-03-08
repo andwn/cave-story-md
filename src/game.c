@@ -169,8 +169,8 @@ void draw_itemmenu(uint8_t resetCursor) {
 	spr_num = 0;
 	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	ready = TRUE;
-	VDP_waitVSync();
-	
+	vsync();
+	aftervblank();
 	
 	uint8_t top = IS_PALSYSTEM ? 1 : 0;
 	// Fill the top part
@@ -274,7 +274,8 @@ uint8_t update_pause() {
 		spr_num = 0;
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 		ready = TRUE;
-		VDP_waitVSync();
+		vsync();
+		aftervblank();
 		// Reload shared sheets we clobbered
 		
 		sheets_load_stage(stageID, TRUE, FALSE);
@@ -427,7 +428,8 @@ void do_map() {
 		}
 		
 		ready = TRUE;
-		VDP_waitVSync();
+		vsync();
+		aftervblank();
 	}
 	
 	VDPSprite whereami = (VDPSprite) {
@@ -447,7 +449,8 @@ void do_map() {
 		if(++blinkTimer & 16) whereami.attribut |= 1;
 		sprite_add(whereami);
 		ready = TRUE;
-		VDP_waitVSync();
+		vsync();
+		aftervblank();
 	}
 	draw_itemmenu(FALSE);
 }

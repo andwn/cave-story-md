@@ -1,5 +1,8 @@
-#include "tables.h"
+#include "common.h"
+
 #include "resources.h"
+
+#include "tables.h"
 
 const sound_info_def sound_info[SOUND_COUNT] = {
 	{ NULL, 0 },

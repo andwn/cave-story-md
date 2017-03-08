@@ -1,11 +1,9 @@
-#include "config.h"
-#include "types.h"
-
-#include "ym2612.h"
+#include "common.h"
 
 #include "vdp.h"
 #include "z80_ctrl.h"
 
+#include "ym2612.h"
 
 void YM2612_reset()
 {
@@ -63,7 +61,7 @@ void YM2612_write(const uint16_t port, const uint8_t data)
 {
     volatile int8_t *pb;
 
-    pb = (uint8_t*) YM2612_BASEPORT;
+    pb = (int8_t*) YM2612_BASEPORT;
 
     // wait while YM2612 busy
     while (*pb < 0);
@@ -81,7 +79,7 @@ void YM2612_writeReg(const uint16_t part, const uint8_t reg, const uint8_t data)
     volatile int8_t *pb;
     uint16_t port;
 
-    pb = (uint8_t*) YM2612_BASEPORT;
+    pb = (int8_t*) YM2612_BASEPORT;
     port = (part << 1) & 2;
 
     // wait while YM2612 busy
@@ -90,11 +88,11 @@ void YM2612_writeReg(const uint16_t part, const uint8_t reg, const uint8_t data)
     pb[port + 0] = reg;
 
     // busy flag is not updated immediatly, force wait (needed on MD2)
-    asm volatile ("nop");
-    asm volatile ("nop");
-    asm volatile ("nop");
-    asm volatile ("nop");
-    asm volatile ("nop");
+    __asm__ volatile ("nop");
+    __asm__ volatile ("nop");
+    __asm__ volatile ("nop");
+    __asm__ volatile ("nop");
+    __asm__ volatile ("nop");
 
     // wait while YM2612 busy
     while (*pb < 0);
