@@ -2,7 +2,7 @@
 [![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
-The engine is built using SGDK, and written almost entirely in C.
+The engine uses many parts of SGDK, and written mostly in C.
 
 It should work on any console or emulator. Expect alpha quality.
 
@@ -11,7 +11,7 @@ It should work on any console or emulator. Expect alpha quality.
 
 For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL](http://www.cavestory.org/md/nightlypal.zip) <br/>
 
-Farthest reachable point in `master`: Last Boss room (Black Space)
+Farthest reachable point in `master`: Last Boss room (hardware hang on entry)
 
 ### Controls
 If you have a 6 button controller:
@@ -32,10 +32,9 @@ I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 0. Dependencies for all this:
   - For Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo openjdk-8-jre-headless python`
   - For Arch: `sudo pacman -Sy wget unzip base-devel texinfo jre8-openjdk python`
-1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Both the toolchain and SGDK are customized)
-  - The command to build and install Gendev is `sudo make`. Yes, this is awful. No, I'm not fixing it.
-  - Compiling a GNU toolchain takes a very long time, over an hour on slow machines
-  - If after the fact you want to only update SGDK, run `sudo make sgdk_clean` then `sudo make sgdk_build`. This way you don't have to wait forever to rebuild the whole toolchain
+1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Customized GCC 6.3.0 toolchain)
+  - The command to build and install Gendev is `sudo make`. You likely don't want to do that on an important production machine, so if you can run 32-bit programs grab the tarball on the releases page instead.
+  - The `sgdk-build` step is now optional as the parts of SGDK used are merged into CSMD.
 2. Clone this repository and do `make`, or `make pal`.
 3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
@@ -43,23 +42,27 @@ I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 #### Why?
 ¯\\\_(ツ)\_/¯
 
-#### There are no save points. What's going on?
-The game detected that you have no SRAM. If this is not the case, open an issue.
-Note that if you have no save, the game will restart from the beginning if you die.
+#### Something is wrong. What DO?
+Open an issue if one doesn't already exist, unless
 
-#### Bad things are happening what do?
-Open an issue if one doesn't already exist for said bad thing, unless
-
-- It's because of a hardware limitation, unless you have a realistic suggestion to improve it
+- It's because of a hardware limitation, but if you have a realistic suggestion to improve it go ahead.
 - It has to do with the following parts which are not ready for testing: Undead Core, Credits, Hell
 - It's a bug that exists in the original Cave Story. [Example](https://www.youtube.com/watch?v=HFzS0bpc5kA)
 
-#### Will this be released/sold on a cart?
-Short answer: No
+#### When can I buy a pretty cart with a pretty box and a pretty manual with a COOL BIG POSTER?
+Short answer: Probably never
 
-Long answer: I will not do it. <br />
+Long answer: I'm not interested in getting involved with this process. <br />
 You can do it yourself [without my permission](LICENSE). However, Cave Story is *not* my IP. 
 [These guys](http://www.nicalis.com/) are the current owners, and perhaps you will need [the creator](http://studiopixel.jp/)'s permission too.
+
+#### The music slows down when the gameplay slows down in 0.4 but 0.3 didn't do that
+My reasoning: It's better than the random crashes that would happen every time I forgot to disable interrupts. 
+This also motivates me more to actually get rid of the lag in the few parts where it is still present.
+
+#### There are no save points. What's going on?
+The game detected that you have no SRAM. If this is not the case, open an issue.
+Note that if you have no save, the game will restart from the beginning if you die.
 
 #### No Windows build instructions, what the HECK?
 Whenever I built on Windows the game lagged with way less objects on screen. This is for your own good.

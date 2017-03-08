@@ -149,7 +149,7 @@ clean: clean-tools
 	rm -f $(RESOURCES) $(XGMO)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
-	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80
+	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80 src/xgm/z80_drv.h
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
 	rm -f saves.zip saves.tar.gz
