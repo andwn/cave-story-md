@@ -198,21 +198,22 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		if(flags & NPC_SPECIALSOLID) {
-			// Apply x_next/y_next so player is completely outside us
-			collision = entity_react_to_collision(&player, e);
-			player.x = player.x_next;
-			player.y = player.y_next;
-			if(collision.bottom) {
-				if(flags & NPC_BOUNCYTOP) {
-					player.y_speed = -(1 << CSF);
-					player.grounded = FALSE;
-				} else {
-					playerPlatform = e;
-				}
-			}
-		} // "Smushy" Solid Entities
-		else if(flags & NPC_SOLID) {
+		//if(flags & NPC_SPECIALSOLID) {
+		//	// Apply x_next/y_next so player is completely outside us
+		//	collision = entity_react_to_collision(&player, e);
+		//	player.x = player.x_next;
+		//	player.y = player.y_next;
+		//	if(collision.bottom) {
+		//		if(flags & NPC_BOUNCYTOP) {
+		//			player.y_speed = -(1 << CSF);
+		//			player.grounded = FALSE;
+		//		} else {
+		//			playerPlatform = e;
+		//		}
+		//	}
+		//} // "Smushy" Solid Entities
+		// else
+		if(flags & (NPC_SOLID | NPC_SPECIALSOLID)) {
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			collision = entity_react_to_collision(&player, e);
 			if(collision.bottom && e->y > player.y) {
@@ -265,8 +266,8 @@ void entities_update() {
 		if(!e->hidden) {
 			if(e->sheet != NOSHEET) {
 				sprite_pos(e->sprite[0],
-						(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff,
-						(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+						(e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff,
+						(e->y>>CSF) - camera.y_shifted - e->display_box.top);
 				sprite_index(e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
 				sprite_hflip(e->sprite[0], e->dir);
 			} else if(e->tiloc != NOTILOC) {
@@ -279,8 +280,8 @@ void entities_update() {
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
-					int16_t bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + e->display_box.left + e->xoff, 
-						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
+					int16_t bx = (e->x>>CSF) - camera.x_shifted + e->display_box.left + e->xoff, 
+							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = min(f->w, 32);
 					for(uint8_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx - x, by);
@@ -293,8 +294,8 @@ void entities_update() {
 						}
 					}
 				} else {
-					int16_t bx = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left + e->xoff, 
-						by = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top;
+					int16_t bx = (e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff, 
+							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = 0;
 					for(uint8_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx + x, by);

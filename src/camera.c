@@ -33,6 +33,8 @@ void camera_init() {
 	camera.target = &player;
 	camera.x = pixel_to_sub(SCREEN_HALF_W);
 	camera.y = pixel_to_sub(SCREEN_HALF_H + 8);
+	camera.x_shifted = 0;
+	camera.y_shifted = 8;
 	camera.x_offset = 0;
 	cameraShake = 0;
 }
@@ -50,6 +52,8 @@ void camera_set_position(int32_t x, int32_t y) {
 	// Apply
 	camera.x = x;
 	camera.y = y;
+	camera.x_shifted = (x >> CSF) - SCREEN_HALF_W;
+	camera.y_shifted = (y >> CSF) - SCREEN_HALF_H;
 	// Update quick fetch cutoff values
 	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
 	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);
@@ -124,6 +128,9 @@ void camera_update() {
 		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
 	}
+	// Shifted values
+	camera.x_shifted = (x_next >> CSF) - SCREEN_HALF_W;
+	camera.y_shifted = (y_next >> CSF) - SCREEN_HALF_H;
 	// Update quick fetch cutoff values
 	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
 	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);

@@ -15,6 +15,7 @@ WAVTORAW= bin/wavtoraw
 
 INCS = -Isrc -Ires -Iinc
 CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin
+EXFLAGS = 
 ASFLAGS = -m68000 --register-prefix-optional
 LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
@@ -29,7 +30,7 @@ Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-CS+=$(wildcard src/xgm/*.c)
+#CS+=$(wildcard src/xgm/*.c)
 SS=$(wildcard src/*.s)
 SS+=$(wildcard src/xgm/*.s)
 RESOURCES=$(RESS:.res=.o)
@@ -38,6 +39,9 @@ RESOURCES+=$(CS:.c=.o)
 RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
+
+XGMS=$(wildcard src/xgm/*.c)
+XGMO=$(XGMS:.c=.o)
 
 .PHONY: all release debug ntsc pal ntsc-debug pal-debug tools clean clean-tools
 .SECONDARY: doukutsu.elf
@@ -62,7 +66,7 @@ pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
 release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-release: CCFLAGS += -O2
+release: CCFLAGS += -O3
 release: main-build
 
 debug: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
@@ -70,6 +74,10 @@ debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
 debug: main-build
 
 main-build: head-gen doukutsu.bin symbol.txt
+
+# Music PCM is messed up with -O3
+$(XGMO): EXFLAGS := -O2
+$(XGMO): $(OBJS)
 
 symbol.txt: doukutsu.bin
 	$(NM) -n doukutsu.elf > symbol.txt
@@ -81,12 +89,12 @@ src/boot/sega.o: src/boot/rom_head.bin
 	$(OBJC) -O binary $< temp.bin
 	dd if=temp.bin of=$@ bs=8K conv=sync
 
-%.elf: $(OBJS) $(BOOT_RESOURCES)
-	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(LIBS)
+%.elf: $(OBJS) $(XGMO) $(BOOT_RESOURCES)
+	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(XGMO) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
-	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(EXFLAGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
 	@echo "AS $<"
@@ -138,7 +146,7 @@ $(WAVTORAW):
 	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW)
 
 clean: clean-tools
-	rm -f $(RESOURCES)
+	rm -f $(RESOURCES) $(XGMO)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80

@@ -735,14 +735,13 @@ void bullet_update_spur(Bullet *b) {
 }
 
 Bullet *bullet_colliding(Entity *e) {
-	// Should be faster than the old way
 	extent_box ee = (extent_box) {
-		.x1 = e->x - (e->hit_box.left << CSF),
-		.y1 = e->y - (e->hit_box.top << CSF),
-		.x2 = e->x + (e->hit_box.right << CSF),
-		.y2 = e->y + (e->hit_box.bottom << CSF),
+		.x1 = (e->x >> CSF) - (e->hit_box.left),
+		.y1 = (e->y >> CSF) - (e->hit_box.top),
+		.x2 = (e->x >> CSF) + (e->hit_box.right),
+		.y2 = (e->y >> CSF) + (e->hit_box.bottom),
 	};
-	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
+	for(uint8_t i = MAX_BULLETS; --i;) {
 		if(!playerBullet[i].ttl) continue;
 		if (playerBullet[i].extent.x1 <= ee.x2 &&
 			playerBullet[i].extent.x2 >= ee.x1 &&
@@ -750,18 +749,6 @@ Bullet *bullet_colliding(Entity *e) {
 			playerBullet[i].extent.y2 >= ee.y1) return &playerBullet[i];
 	}
 	return NULL;
-	//uint16_t ex = e->x >> CSF, ey = e->y >> CSF;
-	//bounding_box eb = eb = e->hit_box;
-	//for(uint8_t i = 0; i < MAX_BULLETS; i++) {
-	//	if(!playerBullet[i].ttl) continue;
-	//	uint16_t bx = playerBullet[i].x >> CSF, by = playerBullet[i].y >> CSF;
-	//	bounding_box bb = playerBullet[i].hit_box;
-	//	if (bx - bb.left   <= ex + eb.right  &&
-	//		bx + bb.right  >= ex - eb.left   &&
-	//		by - bb.top    <= ey + eb.bottom &&
-	//		by + bb.bottom >= ey - eb.top) return &playerBullet[i];
-	//}
-	//return NULL;
 }
 
 void bullet_missile_explode(Bullet *b) {

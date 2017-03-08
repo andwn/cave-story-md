@@ -905,8 +905,8 @@ void ai_fuzz(Entity *e) {
 	
 	if (e->state) {
 		// base destroyed, simple sinusoidal player-seek
-		e->x_speed += (e->x > player.x) ? SPEED(-0x20) : SPEED(0x20);
-		e->y_speed += (e->y > player.y) ? SPEED(-0x20) : SPEED(0x20);
+		e->x_speed += (e->x > player.x) ? -SPEED(0x20) : SPEED(0x20);
+		e->y_speed += (e->y > player.y) ? -SPEED(0x20) : SPEED(0x20);
 		LIMIT_X(SPEED(0x800));
 		LIMIT_Y(SPEED(0x200));
 		e->x += e->x_speed;

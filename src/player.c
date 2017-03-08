@@ -497,10 +497,10 @@ void player_update_bullets() {
 		if(playerBullet[i].ttl) {
 			bullet_update(playerBullet[i]);
 			playerBullet[i].extent = (extent_box) {
-				.x1 = playerBullet[i].x - (playerBullet[i].hit_box.left << CSF),
-				.y1 = playerBullet[i].y - (playerBullet[i].hit_box.top << CSF),
-				.x2 = playerBullet[i].x + (playerBullet[i].hit_box.right << CSF),
-				.y2 = playerBullet[i].y + (playerBullet[i].hit_box.bottom << CSF),
+				.x1 = (playerBullet[i].x >> CSF) - (playerBullet[i].hit_box.left),
+				.y1 = (playerBullet[i].y >> CSF) - (playerBullet[i].hit_box.top),
+				.x2 = (playerBullet[i].x >> CSF) + (playerBullet[i].hit_box.right),
+				.y2 = (playerBullet[i].y >> CSF) + (playerBullet[i].hit_box.bottom),
 			};
 		}
 	}

@@ -8,6 +8,8 @@ struct {
 	// Offset is the point relative to the target's position
 	// that the camera tries to center on
 	int16_t x_offset, y_offset;
+	// Apply some math ahead of time to speed up sprite positioning
+	uint16_t x_shifted, y_shifted;
 } camera;
 
 // Initialize the camera with default values (upper left, no target)

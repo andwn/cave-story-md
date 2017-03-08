@@ -97,10 +97,10 @@ typedef struct {
 } bounding_box;
 // Used for player bullets to reduce cpu load
 typedef struct {
-	int32_t x1;
-	int32_t y1;
-	int32_t x2;
-	int32_t y2;
+	uint16_t x1;
+	uint16_t y1;
+	uint16_t x2;
+	uint16_t y2;
 } extent_box;
 
 typedef struct Entity Entity;
