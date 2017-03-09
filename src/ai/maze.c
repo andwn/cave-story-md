@@ -913,6 +913,7 @@ void ai_fuzz_core(Entity *e) {
 		case 3:
 		{	// Respawn minis
 			spawn_minifuzz(e);
+			moveMeToFront = TRUE;
 			e->state = 2;
 		}
 		break;

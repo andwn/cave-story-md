@@ -175,10 +175,13 @@ void ai_omega(Entity *e) {
 					shot->y_speed = -SPEED(0x333);
 					if(e->form == 2 || (random() & 7)) {
 						shot->frame = 0;
-						shot->nflags |= NPC_SHOOTABLE;
+						shot->nflags = shot->eflags = 0;
+						//shot->nflags |= NPC_SHOOTABLE;
 					} else {
 						shot->frame = 2;
-						shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+						//shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+						shot->nflags = shot->eflags = 0;
+						shot->eflags |= NPC_INVINCIBLE;
 					}
 					shot->timer = (random() & 1) ? (TIME(300) + (random() % TIME(100))) : 0;
 					shot->attack = 4;
@@ -360,7 +363,7 @@ void ai_omega_shot(Entity *e) {
 	if (e->timer & 1) {
 		if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) {
 			// Delete brown shots when they hit the ground, red ones bounce
-			e->y_speed = -0x100;
+			e->y_speed = -SPEED(0x100);
 			if (e->frame > 1) e->state = STATE_DELETE;
 		}
 		if (e->y_speed < 0 && blk(e->x, 0, e->y, -8) == 0x41) e->y_speed = -e->y_speed;
@@ -369,7 +372,7 @@ void ai_omega_shot(Entity *e) {
 			e->x_speed = -e->x_speed;
 		}
 		e->frame ^= 1;
-	} else if(e->timer > 750) {
+	} else if(e->timer > TIME(600)) {
 		e->state = STATE_DELETE;
 	}
 	e->x += e->x_speed;
