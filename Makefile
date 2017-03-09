@@ -134,16 +134,16 @@ savetrim:
 	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
 
 $(RESCOMP):
-	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP)
+	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP) -std=gnu11
 
 $(XGMTOOL):
-	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL)
+	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL) -std=gnu11
 
 $(BINTOS):
-	gcc tools/bintos/bintos.c -o $(BINTOS)
+	gcc tools/bintos/bintos.c -o $(BINTOS) -std=gnu11
 
 $(WAVTORAW):
-	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW)
+	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=gnu11
 
 clean: clean-tools
 	rm -f $(RESOURCES) $(XGMO)
