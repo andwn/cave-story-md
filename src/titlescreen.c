@@ -45,7 +45,8 @@ uint8_t titlescreen_main() {
 	uint8_t tsong = SONG_TITLE;
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
-	//VDP_resetScreen();
+	VDP_setEnable(FALSE);
+	
 	// Main palette
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_Main.data);
@@ -91,12 +92,14 @@ uint8_t titlescreen_main() {
 		VDP_drawText(vstr, 4, 26);
 	}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.3.3 2017.02", 4, 26);
+	//VDP_drawText("Mega Drive Version 0.4.0 2017.03", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
+	
+	VDP_setEnable(TRUE);
 
 	song_play(tsong);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {

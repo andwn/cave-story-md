@@ -40,7 +40,7 @@ I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 
 ## FAQ
 #### Why?
-¯\\\_(ツ)\_/¯
+I thought it would be fun.
 
 #### Something is wrong. What DO?
 Open an issue if one doesn't already exist, unless
@@ -55,10 +55,6 @@ Short answer: Probably never
 Long answer: I'm not interested in getting involved with this process. <br />
 You can do it yourself [without my permission](LICENSE). However, Cave Story is *not* my IP. 
 [These guys](http://www.nicalis.com/) are the current owners, and perhaps you will need [the creator](http://studiopixel.jp/)'s permission too.
-
-#### The music slows down when the gameplay slows down in 0.4 but 0.3 didn't do that
-My reasoning: It's better than the random crashes that would happen every time I forgot to disable interrupts. 
-This also motivates me more to actually get rid of the lag in the few parts where it is still present.
 
 #### There are no save points. What's going on?
 The game detected that you have no SRAM. If this is not the case, open an issue.
