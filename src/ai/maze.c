@@ -860,19 +860,30 @@ void ai_gaudi_egg(Entity *e) {
 	}
 }
 
+// I do something a bit weird with the Fuzzes. We want them to always be in sync,
+// rotating the same distance between eachother. Easy, just mark them "alwaysActive" right?
+// Yes, but if the player runs through that bottom section without killing anything the game 
+// will lag. To get around this I signal the mini fuzz to delete themselves after the fuzz core 
+// leaves the screen, then the core will respawn them after coming back on screen.
+
+static void spawn_minifuzz(Entity *e) {
+	uint8_t angle = 0;
+	for(uint16_t i = 0; i < 5; i++) {
+		Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
+		e->nflags &= ~NPC_SHOOTABLE;
+		f->linkedEntity = e;
+		f->jump_time = angle;
+		angle += 0x100 / 5;
+	}
+}
+
 void ai_fuzz_core(Entity *e) {
+	e->alwaysActive = TRUE;
 	switch(e->state) {
 		case 0:
-		{
-			// spawn mini-fuzzes, use jump_time as the angle since it is u8
-			uint8_t angle = 0;
-			for(uint16_t i = 0; i < 5; i++) {
-				Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
-				e->nflags &= ~NPC_SHOOTABLE;
-				f->linkedEntity = e;
-				f->jump_time = angle;
-				angle += 0x100 / 5;
-			}
+		{	// spawn mini-fuzzes, use jump_time as the angle since it is u8
+			spawn_minifuzz(e);
+			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
 			e->timer = random() % TIME(50);
 			e->state = 1;
 		}
@@ -888,11 +899,21 @@ void ai_fuzz_core(Entity *e) {
 		break;
 		case 2:
 		{
-			FACE_PLAYER(e);
-			
-			if (e->y > e->y_mark) e->y_speed -= SPEED(0x10);
-			if (e->y < e->y_mark) e->y_speed += SPEED(0x10);
-			LIMIT_Y(SPEED(0x355));
+			if(entity_on_screen(e)) {
+				FACE_PLAYER(e);
+				if (e->y > e->y_mark) e->y_speed -= SPEED(0x10);
+				if (e->y < e->y_mark) e->y_speed += SPEED(0x10);
+				LIMIT_Y(SPEED(0x355));
+			} else {
+				e->alwaysActive = FALSE; // Next frame we will deactivate
+				e->state = 3; // This'll run the below case after reactivation
+			}
+		}
+		break;
+		case 3:
+		{	// Respawn minis
+			spawn_minifuzz(e);
+			e->state = 2;
 		}
 		break;
 	}
@@ -913,22 +934,20 @@ void ai_fuzz(Entity *e) {
 		e->y += e->y_speed;
 		FACE_PLAYER(e);
 	} else {
-		e->jump_time++; // Always update angle to stay in sync with the rest
-		if (entity_on_screen(e)) {
-			if (e->linkedEntity->state == STATE_DESTROY) {
-				e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
-				e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
-				e->state = 1;
-			} else {
-				int16_t xoff = cos2[e->jump_time] << 4; // cosine * 24
-				int16_t yoff = sin[e->jump_time] << 5;
-				e->x = e->linkedEntity->x + xoff;
-				e->y = e->linkedEntity->y + yoff;
-				FACE_PLAYER(e);
-			}
+		if (e->linkedEntity->state == STATE_DESTROY) {
+			e->alwaysActive = TRUE;
+			e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+			e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+			e->state = 1;
+		} else if(!e->linkedEntity->alwaysActive) {
+			e->state = STATE_DELETE;
 		} else {
-			// Disable bullet collision off screen to prevent lag
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->jump_time++;
+			int16_t xoff = cos2[e->jump_time] << 4; // cosine * 24
+			int16_t yoff = sin[e->jump_time] << 5;
+			e->x = e->linkedEntity->x + xoff;
+			e->y = e->linkedEntity->y + yoff;
+			FACE_PLAYER(e);
 		}
 	}
 }
