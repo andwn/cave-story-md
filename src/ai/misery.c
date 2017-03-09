@@ -391,11 +391,8 @@ static void run_spells(Entity *e) {
 		case STATE_SUMMON_BLOCK:
 		{
 			if (++e->timer == 10) {
-				//int x = player->x - (8 << CSF);
-				//int y = player->y - (64 << CSF);
-				//CreateObject(x, y, OBJ_FALLING_BLOCK);
-				//e->sprite = SPR_BALCONY_BLOCK_LARGE;
-				//e->dir = DOWN;	// tell block it was spawned by Misery
+				entity_create(player.x - (8<<CSF), player.y - (64<<CSF), 
+						OBJ_FALLING_BLOCK, NPC_OPTION1);
 			}
 			
 			if (e->timer > 30) {

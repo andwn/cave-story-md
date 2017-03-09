@@ -741,9 +741,9 @@ Bullet *bullet_colliding(Entity *e) {
 		.x2 = (e->x >> CSF) + (e->hit_box.right),
 		.y2 = (e->y >> CSF) + (e->hit_box.bottom),
 	};
-	for(uint8_t i = MAX_BULLETS; --i;) {
-		if(!playerBullet[i].ttl) continue;
-		if (playerBullet[i].extent.x1 <= ee.x2 &&
+	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
+		if (playerBullet[i].ttl &&
+			playerBullet[i].extent.x1 <= ee.x2 &&
 			playerBullet[i].extent.x2 >= ee.x1 &&
 			playerBullet[i].extent.y1 <= ee.y2 &&
 			playerBullet[i].extent.y2 >= ee.y1) return &playerBullet[i];

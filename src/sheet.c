@@ -352,6 +352,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_MizaRing, 3,2,2, 0,4, 0,5, 0,6);
 			SHEET_ADD(SHEET_SHOCK, &SPR_MizaShock, 2,2,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
 		} break;
 		case 0x41: // King's Table
 		{

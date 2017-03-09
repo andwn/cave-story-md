@@ -306,7 +306,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_red_demon }, // Red Demon
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ondeath_nodrop }, // Red Demon Projectile
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
-	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Falling Block (Large)
+	{ NULL, 	SHEET_BLOCK, PAL2, 1, &onspawn_persistent, &ai_falling_block, &ai_null }, // Falling Block (Large)
 	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
 	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
 	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core

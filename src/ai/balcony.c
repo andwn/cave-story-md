@@ -261,7 +261,7 @@ void ai_falling_block(Entity *e) {
 			} else { // small Hell or Balcony block
 				//e->sprite = (in_hell) ? SPR_HELL_BLOCK_SMALL : SPR_BALCONY_BLOCK_SMALL;
 				e->eflags |= (NPC_INVINCIBLE | NPC_IGNORESOLID);
-				e->state = 10;
+				e->state = 10; 
 			}
 		}
 		break;
@@ -284,11 +284,11 @@ void ai_falling_block(Entity *e) {
 		}
 		case 11:	// passed thru ceiling in Hell B2
 		{
-			e->y_speed += 0x40;
-			LIMIT_Y(0x700);
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x700));
 			
-			if (e->grounded) {
-				e->y_speed = -0x200;
+			if (blk(e->x, 0, e->y, 8) == 0x41) {
+				e->y_speed = -SPEED(0x200);
 				e->eflags |= NPC_IGNORESOLID;
 				e->state = 20;
 				
@@ -300,8 +300,8 @@ void ai_falling_block(Entity *e) {
 		
 		case 20:	// already bounced on ground, falling offscreen
 		{
-			e->y_speed += 0x40;
-			LIMIT_Y(0x700);
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x700));
 			
 			if (e->y > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
@@ -312,7 +312,6 @@ void ai_falling_block(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
-
 
 // The Doctor in his red energy form.
 // there is no "move" state, when he takes over Misery,
