@@ -107,7 +107,7 @@ void ai_undead_core(Entity *e) {
 	//Entity *e = main;
 	//if (!e) return;
 
-	if (RunDefeated(e)) return;
+	if (!e->health && RunDefeated(e)) return;
 	
 	switch(e->state) {
 		// fight begin (scripted)
@@ -510,44 +510,13 @@ void ai_undead_core_face(Entity *e) {
 }
 
 void ai_undead_core_front(Entity *e) {
-	// 0 open (should make a face visible at the same time to go into the gap)
-	// 1 open/hurt
-	// 2 closed
-	
-	switch(e->state) {
-		case 0:
-		{
-			//e->sprite = SPR_UD_FRONT;
-			e->state = 1;
-			e->frame = 2;
-		}
-		case 1:
-		{
-			e->x = bossEntity->x - (36<<CSF);
-			e->y = bossEntity->y;
-		}
-		break;
-	}
+	e->x = bossEntity->x - (36<<CSF);
+	e->y = bossEntity->y;
 }
 
 void ai_undead_core_back(Entity *e) {
-	// 0 normal
-	// 1 hurt
-	
-	switch(e->state) {
-		case 0:
-		{
-			//e->sprite = SPR_UD_BACK;
-			e->state = 1;
-			e->frame = 0;
-		}
-		case 1:
-		{
-			e->x = bossEntity->x + (44<<CSF);
-			e->y = bossEntity->y;
-		}
-		break;
-	}
+	e->x = bossEntity->x + (44<<CSF);
+	e->y = bossEntity->y;
 }
 
 // "front" refers to whether they are doing the pieces[CFRONT] (left) or rear (right)
@@ -683,7 +652,7 @@ int i;
 
 // minicores by entrance seen before fight
 void onspawn_ud_minicore_idle(Entity *e) {
-	if (e->dir) e->nflags &= ~NPC_SPECIALSOLID;
+	if (e->eflags & NPC_OPTION2) e->nflags &= ~NPC_SPECIALSOLID;
 }
 
 // these are the ones you can ride

@@ -175,7 +175,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
-	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_gaudiShot, &ondeath_default }, // Gaudi Shot
+	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ondeath_default }, // Gaudi Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockv, &ai_null }, // Moving Block (V)
 	{ NULL, SHEET_XFISHY, 	PAL3, 1, &onspawn_persistent, &ai_x_fishy_missile, &ondeath_default }, // Monster X Shot
 	{ &SPR_XCat, NOSHEET, 	PAL3, 6, &onspawn_persistent, &ai_x_defeated, &ai_null }, // Monster X Cat

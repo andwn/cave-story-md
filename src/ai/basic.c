@@ -188,31 +188,8 @@ void ai_trigger_special(Entity *e) {
 }
 
 void ai_genericproj(Entity *e) {
+	e->nflags ^= NPC_SHOOTABLE;
 	ANIMATE(e, 4, 0,1);
-	//Bullet *b = bullet_colliding(e);
-	//if(b) {
-		//b->ttl = 0;
-		//effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		//e->state = STATE_DELETE;
-	//	entity_handle_bullet(e, b);
-	if(++e->timer > TIME(250) ||
-			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		e->state = STATE_DELETE;
-	} else {
-		e->x += e->x_speed;
-		e->y += e->y_speed;
-	}
-}
-// Duplicate of above except drops powerups
-void ai_gaudiShot(Entity *e) {
-	ANIMATE(e, 4, 0,1);
-	//Bullet *b = bullet_colliding(e);
-	//if(b) {
-		//b->ttl = 0;
-		//effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		//e->state = STATE_DESTROY;
-		//entity_handle_bullet(e, b);
 	if(++e->timer > TIME(250) ||
 			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);

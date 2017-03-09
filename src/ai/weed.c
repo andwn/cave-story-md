@@ -5,13 +5,14 @@ void onspawn_jelly(Entity *e) {
 	e->timer = random() % 32;
 	e->x_mark = e->x;
 	e->y_mark = e->y;
+	e->nflags &= ~NPC_SHOOTABLE;
 	if(e->eflags & NPC_OPTION2) e->dir = 1;
 	MOVE_X(SPEED(0x100));
 }
 
 void ai_jelly(Entity *e) {
 	// VERY dirty hack - only checks collision with player bullets every other frame
-	e->nflags ^= NPC_SHOOTABLE;
+	e->eflags ^= NPC_SHOOTABLE;
 	
 	if(++e->animtime >= 12) {
 		e->animtime = 0;
@@ -189,7 +190,25 @@ void ondeath_kulala(Entity *e) {
 }
 
 void ai_mannan(Entity *e) {
-	if(e->state < 3 && e->health < 90) {
+	if(e->health >= 90) { // Alive
+		if(e->state) { // Firing
+			if(++e->timer > TIME(25)) {
+				e->state = 0;
+				e->timer = 0;
+				e->frame = 0;
+			}
+		} else { // Waiting
+			if(e->damage_time) {
+				// Got hit, start firing
+				e->state = 1;
+				e->timer = 0;
+				e->frame = 1;
+				Entity *shot = entity_create(e->x, e->y + 0x400, OBJ_MANNAN_SHOT, 0);
+				shot->dir = e->dir;
+				shot->alwaysActive = TRUE;
+			}
+		}
+	} else if(e->state < 3) { // Just got killed
 		sound_play(e->deathSound, 5);
 		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		entity_drop_powerup(e);
@@ -199,19 +218,6 @@ void ai_mannan(Entity *e) {
 		e->frame = 2;
 		e->attack = 0;
 		e->state = 3;
-		return;
-	} else if(e->state == 0 && e->damage_time == 29) {
-		e->state = 1;
-		e->timer = 0;
-		e->frame = 1;
-		Entity *shot = entity_create(e->x, e->y, OBJ_MANNAN_SHOT, 0);
-		shot->dir = e->dir;
-		// We want the bullet to delete itself offscreen, it can't do this while inactive
-		shot->alwaysActive = TRUE;
-	} else if(e->state == 1 && ++e->timer > 24) {
-		e->state = 0;
-		e->timer = 0;
-		e->frame = 0;
 	}
 }
 
@@ -416,6 +422,7 @@ void onspawn_frog(Entity *e) {
 		e->eflags &= ~NPC_IGNORESOLID;
 		e->state = 1;
 	}
+	e->nflags &= ~NPC_SHOOTABLE;
 }
 
 void ai_frog(Entity *e) {
@@ -424,6 +431,8 @@ void ai_frog(Entity *e) {
 
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+	
+	e->eflags ^= NPC_SHOOTABLE;
 
 	switch(e->state) {
 		case 0:

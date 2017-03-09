@@ -22,6 +22,7 @@
 #include "vdp_pal.h"
 #include "vdp_tile.h"
 #include "vdp_ext.h"
+#include "xgm.h"
 
 #include "stage.h"
 
@@ -49,6 +50,8 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(uint16_t id) {
+	VDP_setEnable(FALSE);
+	
 	input_init();
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
@@ -64,16 +67,16 @@ void stage_load(uint16_t id) {
 	}
 	water_entity = NULL;
 	// Load the tileset
+	XGM_doVBlankProcess();
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
 	}
-	vsync();
-	aftervblank();
-	
+	XGM_doVBlankProcess();
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
 	// Stage palette and shared NPC palette
+	XGM_doVBlankProcess();
 	if(stageID == 0x30) {
 		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
 	} else {
@@ -109,17 +112,18 @@ void stage_load(uint16_t id) {
 			stage_draw_moonback();
 		}
 	}
-	
-	vsync();
-	aftervblank();
+	XGM_doVBlankProcess();
 	// Load stage into RAM and draw it around camera position
 	stage_load_blocks();
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
+	XGM_doVBlankProcess();
 	stage_draw_screen();
+	XGM_doVBlankProcess();
 	stage_load_entities();
+	XGM_doVBlankProcess();
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
 	} else if(stageBackgroundType == 4) {
@@ -129,22 +133,21 @@ void stage_load(uint16_t id) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
 	}
 	tsc_load_stage(id);
+	XGM_doVBlankProcess();
+	
+	VDP_setEnable(TRUE);
 }
 
 void stage_load_tileset() {
-	
 	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, TRUE);
-	
 	// Inject the breakable block sprite into the tileset
 	const uint8_t *PXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < 160; i++) {
 		if(PXA[i] == 0x43) {
 			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			
 			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
 			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
-			
 			//break; // no
 		}
 	}
@@ -231,7 +234,6 @@ void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index) {
 
 // Stage vblank drawing routine
 void stage_update() {
-	
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -323,14 +325,9 @@ void stage_update() {
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
-	
 }
 
 void stage_draw_screen() {
-	vsync();
-	aftervblank();
-	
-	VDP_setEnable(FALSE);
 	uint16_t maprow[64];
 	int16_t y = sub_to_tile(camera.y) - 16;
 	for(uint8_t i = 32; i--; ) {
@@ -351,10 +348,6 @@ void stage_draw_screen() {
 		}
 		y++;
 	}
-	VDP_setEnable(TRUE);
-	
-	vsync();
-	aftervblank();
 }
 
 // Draws just one block
@@ -379,11 +372,9 @@ void stage_draw_background() {
 	uint8_t w = background_info[stageBackground].width;
 	uint8_t h = background_info[stageBackground].height;
 	uint16_t pal = background_info[stageBackground].palette;
-	
-	for(uint8_t y = 0; y < 32; y++) {
-		for(uint8_t x = 0; x < 64; x++) {
-			uint16_t b = TILE_BACKINDEX + (x%w) + ((y%h) * w);
-			VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(pal, 0, 0, 0, b), x, y);
+	for(uint8_t y = 0; y < 32; y += h) {
+		for(uint8_t x = 0; x < 64; x += w) {
+			VDP_fillTileMapRectInc(PLAN_B, TILE_ATTR_FULL(pal,0,0,0,TILE_BACKINDEX), x, y, w, h);
 		}
 	}
 	
