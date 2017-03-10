@@ -449,8 +449,7 @@ void do_map() {
 		if(++blinkTimer & 16) whereami.attribut |= 1;
 		sprite_add(whereami);
 		ready = TRUE;
-		vsync();
-		aftervsync();
+		vsync(); aftervsync();
 	}
 	draw_itemmenu(FALSE);
 }

@@ -52,7 +52,7 @@ void stage_draw_moonback();
 void stage_load(uint16_t id) {
 	VDP_setEnable(FALSE);
 	
-	input_init();
+	input_update(); // Prevent menu from opening after loading save
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
