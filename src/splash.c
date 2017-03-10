@@ -52,7 +52,7 @@ void splash_main() {
 		effects_update(); // Draw Smoke
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
 	}
 	input_update(); // This pushes the joy state to avoid skipping the next menu
 	VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);

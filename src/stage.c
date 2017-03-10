@@ -208,7 +208,7 @@ void stage_load_entities() {
 			while(!joy_pressed(BUTTON_C)) {
 				input_update();
 				vsync();
-				aftervblank();
+				aftervsync();
 				VDP_setHorizontalScroll(PLAN_A, 0);
 				VDP_setVerticalScroll(PLAN_A, 0);
 			}

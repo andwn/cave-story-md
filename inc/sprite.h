@@ -41,3 +41,10 @@ VDPSprite sprites[MAX_VDP_SPRITE];
 		spr_num = 0;                                                                           \
 	}                                                                                          \
 }
+
+#define sprites_clear() {                                                                      \
+	spr_num = 0;                                                                               \
+	VDPSprite s = (VDPSprite) { .x=128, .y=128, .size=0 };                                     \
+	sprite_add(s);                                                                             \
+	sprites_send();                                                                            \
+}

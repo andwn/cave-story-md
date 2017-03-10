@@ -932,7 +932,7 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 			inFade = FALSE; // Unlock sprites from updating
 			vsync(); // Wait a frame to let the sprites redraw
-			aftervblank();
+			aftervsync();
 			
 			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 			

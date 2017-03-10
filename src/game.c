@@ -125,7 +125,7 @@ uint8_t game_main(uint8_t load) {
 		system_update();
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
 	}
 	return ending;
 }
@@ -170,7 +170,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	ready = TRUE;
 	vsync();
-	aftervblank();
+	aftervsync();
 	
 	uint8_t top = IS_PALSYSTEM ? 1 : 0;
 	// Fill the top part
@@ -275,7 +275,7 @@ uint8_t update_pause() {
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
 		// Reload shared sheets we clobbered
 		
 		sheets_load_stage(stageID, TRUE, FALSE);
@@ -429,7 +429,7 @@ void do_map() {
 		
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
 	}
 	
 	VDPSprite whereami = (VDPSprite) {
@@ -450,7 +450,7 @@ void do_map() {
 		sprite_add(whereami);
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
 	}
 	draw_itemmenu(FALSE);
 }

@@ -65,11 +65,8 @@ void ai_dragon_zombie(Entity *e) {
 			e->timer++;
 			
 			if (e->timer < TIME(40) && (e->timer % 8) == 1) {
-				//Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
-				//ThrowEntity(fire, e->xmark, e->ymark, 6, 0x600);
-				FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
-						e->dir ? A_RIGHT + 6 : A_LEFT - 6, SPEED(0x500));
-				
+				Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
+				THROW_AT_TARGET(fire, e->x_mark, e->y_mark, SPEED(0x500));
 				sound_play(SND_SNAKE_FIRE, 3);
 			}
 			

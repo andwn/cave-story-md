@@ -47,13 +47,7 @@ uint8_t titlescreen_main() {
 	
 	VDP_setEnable(FALSE);
 	
-	// Main palette
-	VDP_setPalette(PAL0, PAL_Main.data);
-	VDP_setPalette(PAL1, PAL_Main.data);
-	VDP_setPaletteColor(PAL0, 0x444); // Gray background
-	VDP_setPaletteColor(PAL0 + 8, 0x8CE); // Yellow text
-	// PAL_Regu, for King and Toroko
-	VDP_setPalette(PAL3, PAL_Regu.data);
+	sprites_clear();
 	// Check save data, only enable continue if save data exists
 	uint8_t sram_state = system_checkdata();
 	if(sram_state == SRAM_VALID_SAVE) {
@@ -99,6 +93,14 @@ uint8_t titlescreen_main() {
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
 	
+	// Set palettes last
+	VDP_setPalette(PAL0, PAL_Main.data);
+	VDP_setPalette(PAL1, PAL_Main.data);
+	VDP_setPaletteColor(PAL0, 0x444); // Gray background
+	VDP_setPaletteColor(PAL0 + 8, 0x8CE); // Yellow text
+	// PAL_Regu, for King and Toroko
+	VDP_setPalette(PAL3, PAL_Regu.data);
+	
 	VDP_setEnable(TRUE);
 
 	song_play(tsong);
@@ -140,8 +142,7 @@ uint8_t titlescreen_main() {
 		sprite_add(sprCursor);
 		
 		ready = TRUE;
-		vsync();
-		aftervblank();
+		vsync(); aftervsync();
 	}
 	if(levelSelect && (joystate&BUTTON_A) && joy_pressed(BUTTON_START)) {
 		cursor = 0;
@@ -218,14 +219,12 @@ uint8_t titlescreen_main() {
 			sprite_add(sprCursor);
 			
 			ready = TRUE;
-			vsync();
-			aftervblank();
+			vsync(); aftervsync();
 		}
 		VDP_setTextPalette(PAL0);
 		cursor += 4;
 	}
 	song_stop();
 	sound_play(SND_MENU_SELECT, 0);
-	//VDP_waitVSync();
 	return cursor;
 }

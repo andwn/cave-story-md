@@ -27,7 +27,7 @@ void credits_main() {
 			break;
 		}
 		vsync();
-		aftervblank();
+		aftervsync();
     }
     SYS_hardReset();
 }

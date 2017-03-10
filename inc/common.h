@@ -182,4 +182,4 @@ extern volatile uint8_t vblank;
 volatile uint8_t ready;
 
 void vsync();
-void aftervblank();
+void aftervsync();

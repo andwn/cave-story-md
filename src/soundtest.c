@@ -39,16 +39,11 @@ void draw_status(uint8_t status) {
 void soundtest_main() {
 	uint8_t track = 0;
 	uint8_t status = STOPPED, oldstatus = STOPPED;
-	song_stop();
 	
-	//VDP_setEnable(FALSE);
-	//Kill all sprites
-	spr_num = 1;
-	sprites[0] = (VDPSprite) {};
-	sprites_send();
+	VDP_setEnable(FALSE);
+	
+	sprites_clear();
 	VDP_clearPlan(PLAN_A, TRUE);
-	VDP_setPalette(PAL0, PAL_Main.data);
-	VDP_setPalette(PAL1, PAL_SndTest.data);
 	// Background picture
 	if(!VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE)) {
 		SYS_die("Not enough memory to unpack tileset.");
@@ -61,7 +56,11 @@ void soundtest_main() {
 	VDP_drawText("C-Play B-Stop", 2, 14);
 	VDP_drawText("A-Pause Start-Quit", 2, 16);
 	VDP_drawByte(track, 10, 8);
-	//VDP_setEnable(TRUE);
+	
+	VDP_setPalette(PAL0, PAL_Main.data);
+	VDP_setPalette(PAL1, PAL_SndTest.data);
+	
+	VDP_setEnable(TRUE);
 	
     while(TRUE) {
 		input_update();
@@ -112,7 +111,7 @@ void soundtest_main() {
 		}
 		ready = TRUE;
 		vsync();
-		aftervblank();
+		aftervsync();
     }
     SYS_hardReset(); // eh
 }

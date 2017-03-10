@@ -41,7 +41,7 @@ void vsync() {
 	while(!vblank);
 }
 
-void aftervblank() {
+void aftervsync() {
 	XGM_doVBlankProcess();
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
