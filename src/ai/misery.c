@@ -326,6 +326,9 @@ void ai_boss_misery(Entity *e) {
 	
 	LIMIT_X(SPEED(0x200));
 	LIMIT_Y(SPEED(0x400));
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ondeath_boss_misery(Entity *e) {
@@ -527,9 +530,10 @@ static void run_intro(Entity *e) {
 		
 		case 20:		// fall from throne (script-triggered)
 		{
-			if (e->grounded) {
+			if (blk(e->x, 0, e->y, 8) == 0x41) {
 				e->state = 21;
 				e->frame = 2;
+				e->y_speed = 0;
 			} else {
 				e->y_speed += SPEED(0x40);
 			}
@@ -575,11 +579,12 @@ static void run_defeated(Entity *e) {
 		case 1010:		// fall to ground and do defeated frame: "ergh"
 		{
 			e->y_speed += 10;
-			LIMIT_Y(SPEED(0x400));
-			e->y += e->y_speed;
+			//LIMIT_Y(SPEED(0x400));
+			//e->y += e->y_speed;
 			if (blk(e->x, 0, e->y, 8) == 0x41) {
 				e->frame = 7;
 				e->state = 1011;
+				e->y_speed = 0;
 			}
 		}
 		break;
@@ -607,16 +612,21 @@ void ai_misery_ring(Entity *e) {
 			e->frame = 3;
 			e->state = 1;
 			e->timer = 0;
+			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE); // Rings block bullets
 		}
 		case 1:
 		{
-			// distance from misery
-			if (e->timer < 0x40) e->timer++;
-			
 			// angle
 			e->jump_time += 2;
-			e->x = e->linkedEntity->x + cos[e->jump_time] * e->timer;
-			e->y = e->linkedEntity->y + sin[e->jump_time] * e->timer;
+			// distance from misery
+			if (e->timer < 0x40) {
+				e->timer++;
+				e->x = e->linkedEntity->x + cos2[e->jump_time] * (e->timer >> 1);
+				e->y = e->linkedEntity->y + sin2[e->jump_time] * (e->timer >> 1);
+			} else {
+				e->x = e->linkedEntity->x + (cos2[e->jump_time] << 5);
+				e->y = e->linkedEntity->y + (sin2[e->jump_time] << 5);
+			}
 			
 			// turn to bats when misery teleports
 			if (e->linkedEntity->state >= STATE_TP_AWAY &&
@@ -628,8 +638,6 @@ void ai_misery_ring(Entity *e) {
 		
 		case 10:	// transform to bat
 		{
-			e->eflags |= NPC_SHOOTABLE;
-			e->nflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE; // ugh
 			
