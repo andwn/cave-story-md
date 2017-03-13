@@ -357,7 +357,7 @@ static void run_spells(Entity *e) {
 				e->timer = 0;
 				e->frame = 4;
 				
-				if (++e->timer >= 3) {
+				if (++e->timer2 >= 3) {
 					e->state = STATE_SUMMON_BLOCK;
 					e->timer2 = 0;
 				} else {
