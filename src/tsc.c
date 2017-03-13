@@ -27,16 +27,6 @@
 
 #include "tsc.h"
 
-enum TSC_STATE {
-	TSC_IDLE,			// Not executing any script
-	TSC_RUNNING,		// Executing event commands
-	TSC_WAITTIME,		// Waiting on a timer before continuing
-	TSC_WAITINPUT,		// Waiting for player to press C
-	TSC_PROMPT,			// Prompting yes/no
-	TSC_TELEMENU, 		// Displaying the teleporter menu
-	TSC_WAITGROUNDED, 	// Waiting for the player to touch the ground
-};
-
 #define HEAD_EVENT_COUNT 14 // There are exactly 14
 #define MAX_EVENTS 106 // Largest is ArmsItem with 106
 
@@ -275,6 +265,7 @@ uint8_t tsc_update() {
 		{
 			if(joy_pressed(BUTTON_C) || (joystate & BUTTON_A)) {
 				tscState = TSC_RUNNING;
+				window_draw_char(' '); // Clear blinking cursor
 			}
 		}
 		break;

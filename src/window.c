@@ -70,6 +70,8 @@ VDPSprite promptSpr[2], handSpr;
 
 uint16_t showingItem = 0;
 
+uint8_t blinkTime = 0;
+
 void window_clear_text();
 void window_draw_face();
 
@@ -340,5 +342,17 @@ void window_update() {
 	if(showingItem) {
 		sprite_add(handSpr);
 		sprite_addq(promptSpr, 2);
+	} else if(tscState == TSC_WAITINPUT) {
+		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
+		x += textColumn - spaceOffset;
+		uint8_t y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
+		if(++blinkTime == 8) {
+			VDP_setTileMapXY(PLAN_WINDOW, 
+					TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX - 0x20 + '_'), x, y);
+		} else if(blinkTime == 16) {
+			VDP_setTileMapXY(PLAN_WINDOW, 
+					TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX - 0x20 + ' '), x, y);
+			blinkTime = 0;
+		}
 	}
 }

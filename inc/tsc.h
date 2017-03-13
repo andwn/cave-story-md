@@ -11,6 +11,16 @@
 #define ID_ARMSITEM	0xFF
 #define ID_TELEPORT	0xFE
 
+enum TSC_STATE {
+	TSC_IDLE,			// Not executing any script
+	TSC_RUNNING,		// Executing event commands
+	TSC_WAITTIME,		// Waiting on a timer before continuing
+	TSC_WAITINPUT,		// Waiting for player to press C
+	TSC_PROMPT,			// Prompting yes/no
+	TSC_TELEMENU, 		// Displaying the teleporter menu
+	TSC_WAITGROUNDED, 	// Waiting for the player to touch the ground
+};
+
 // Number of events loaded by tsc_load(), for debugging
 uint8_t tscEventCount;
 
