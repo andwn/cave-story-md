@@ -13,13 +13,16 @@ RESCOMP= bin/rescomp
 XGMTOOL= bin/xgmtool
 WAVTORAW= bin/wavtoraw
 
+GCC_VER := $(shell gcc -dumpversion)
+GENGCC_VER := $(shell $(CC) -dumpversion)
+
 INCS = -Isrc -Ires -Iinc
 CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin
 EXFLAGS = 
 ASFLAGS = -m68000 --register-prefix-optional
 LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys 
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
-ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/*/libgcc.a 
+ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER)/libgcc.a 
 FLAGSZ80 = -isrc/xgm
 
 BOOTSS=$(wildcard src/boot/*.s)
@@ -134,22 +137,22 @@ savetrim:
 	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
 
 $(RESCOMP):
-	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP) -std=gnu11
+	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP) -std=gnu99
 
 $(XGMTOOL):
-	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL) -std=gnu11
+	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL) -std=c99
 
 $(BINTOS):
-	gcc tools/bintos/bintos.c -o $(BINTOS) -std=gnu11
+	gcc tools/bintos/bintos.c -o $(BINTOS) -std=c99
 
 $(WAVTORAW):
-	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=gnu11
+	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=c99
 
 clean: clean-tools
 	rm -f $(RESOURCES) $(XGMO)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
-	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80 src/xgm/z80_drv.h
+	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80 src/xgm/z80_drv.h out.lst
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
 	rm -f saves.zip saves.tar.gz

@@ -41,29 +41,18 @@ void gen_maptile(uint16_t bx, uint16_t by, uint16_t index);
 void game_reset(uint8_t load);
 
 uint8_t game_main(uint8_t load) {
-	
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 	VDP_setPaletteColor(15, 0x000);
-	//VDP_setEnable(FALSE);
 	// This is the SGDK font with a blue background for the message window
 	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
-	//SYS_setVIntCallback(vblank);
 	effects_init();
-	
-	
 	game_reset(load);
-	
-	
-	//VDP_setEnable(TRUE);
 	VDP_setWindowPos(0, 0);
-	
 	// Load game doesn't run a script that fades in and shows the HUD, so do it manually
 	if(load) {
 		hud_show();
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
-	
-	
 	paused = FALSE;
 	uint8_t ending = 0;
 	
@@ -165,13 +154,8 @@ TryAgainNoSave:
 }
 
 void draw_itemmenu(uint8_t resetCursor) {
-	// Hide sprites
-	spr_num = 0;
-	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
-	ready = TRUE;
-	vsync();
-	aftervsync();
-	
+	VDP_setEnable(FALSE);
+	sprites_clear();
 	uint8_t top = IS_PALSYSTEM ? 1 : 0;
 	// Fill the top part
 	uint8_t y = top;
@@ -263,34 +247,32 @@ void draw_itemmenu(uint8_t resetCursor) {
 		spr_num = 0;
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	}
-	
+	VDP_setEnable(TRUE);
 }
 
 uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
 	if((joy_pressed(BUTTON_START) || joy_pressed(BUTTON_B)) && !tscState) {
-		// Hide the item sprites before loading the tiles back
-		// This way we won't see heart/energy overlap the items for a split second
-		spr_num = 0;
-		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
-		ready = TRUE;
-		vsync();
-		aftervsync();
+		VDP_setEnable(FALSE);
+		// Make sure the sprites get cleared or things will look weird for a split second
+		sprites_clear();
 		// Reload shared sheets we clobbered
-		
 		sheets_load_stage(stageID, TRUE, FALSE);
-		
-		
 		selectedItem = 0;
 		// Reload TSC Events for the current stage
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
+		player_draw();
+		entities_draw();
+		hud_show();
+		sprites_send();
+		
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
-		hud_show();
 		VDP_setWindowPos(0, 0);
 		window_close();
+		VDP_setEnable(TRUE);
 		return FALSE;
 	} else {
 		// Every cursor move and item selection runs a script
