@@ -10,7 +10,7 @@ void onspawn_fan(Entity *e) {
 		break;
 	case 98: // Right
 		e->frame = 3;
-		e->dir = 1;
+		e->odir = e->dir = 1;
 		break;
 	case 99: // Down
 		sprite_vflip(e->sprite[0], 1);
@@ -21,6 +21,8 @@ void onspawn_fan(Entity *e) {
 void ai_fan(Entity *e) {
 	uint16_t ex = e->x >> CSF, ey = e->y >> CSF;
 	uint16_t px = player.x >> CSF, py = player.y >> CSF;
+	// Script in Egg Corridor turns on fan by switching direction
+	if(e->dir != e->odir) e->state = 2;
 	switch(e->state) {
 		case 1: // Left
 		{

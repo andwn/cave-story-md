@@ -318,6 +318,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_SMSTAL, &SPR_SmStal, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_LGSTAL, &SPR_LgStal, 2,2,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_FIRE, &SPR_DraShot, 3,2,3, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_FAN, &SPR_Fan, 3,2,2, 3,0, 3,1, 3,2);
 		} break;
 		case 0x33: // Egg Observatory?
 		{	SHEET_ADD(SHEET_SISHEAD, &SPR_SisHead, 5,4,4, 0,0, 0,1, 0,2, 0,3, 0,4);
