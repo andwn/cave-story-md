@@ -33,7 +33,7 @@ Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-#CS+=$(wildcard src/xgm/*.c)
+#CS+=$(wildcard src/xgm/*.c) # Moved to workaround an issue, find "$(XGMO)" target
 SS=$(wildcard src/*.s)
 SS+=$(wildcard src/xgm/*.s)
 RESOURCES=$(RESS:.res=.o)
@@ -50,14 +50,7 @@ XGMO=$(XGMS:.c=.o)
 .SECONDARY: doukutsu.elf
 
 all: ntsc
-tarsaves: prof2sram
-tarsaves:
-	python2 savegen.py
-	tar czvf saves.tar.gz save
-saves: prof2sram
-saves:
-	python2 savegen.py
-	zip -r saves.zip save
+
 ntsc: release
 
 ntsc-debug: debug
@@ -72,16 +65,28 @@ release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
 release: CCFLAGS += -O3
 release: main-build
 
+# Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
 debug: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
 debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
 debug: main-build
 
 main-build: head-gen doukutsu.bin symbol.txt
 
+# This will generate a big folder of SRAM data based on Profile.dat saves on cavestory.org
+tarsaves: prof2sram
+tarsaves:
+	python2 savegen.py
+	tar czvf saves.tar.gz save
+saves: prof2sram
+saves:
+	python2 savegen.py
+	zip -r saves.zip save
+
 # Music PCM is messed up with -O3
-$(XGMO): EXFLAGS := -O2
+$(XGMO): EXFLAGS = -O2
 $(XGMO): $(OBJS)
 
+# Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
 	$(NM) -n doukutsu.elf > symbol.txt
 
@@ -118,7 +123,9 @@ src/boot/rom_head.bin: src/boot/rom_head.o
 head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
-	
+
+# CSMD TOOLS
+
 tools: prof2sram
 
 tscomp:
@@ -136,6 +143,9 @@ prof2sram:
 savetrim:
 	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
 
+# SGDK TOOLS
+
+# gnu99 to remove warnings about strdup()
 $(RESCOMP):
 	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP) -std=gnu99
 

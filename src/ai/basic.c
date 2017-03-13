@@ -213,6 +213,8 @@ void ondeath_nodrop(Entity *e) {
 void onspawn_teleIn(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y += pixel_to_sub(8);
+	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
+	e->display_box = (bounding_box) { 8, 8, 8, 8 };
 }
 
 void ai_teleIn(Entity *e) {
@@ -222,12 +224,13 @@ void ai_teleIn(Entity *e) {
 			sound_play(SND_TELEPORT, 5);
 			e->timer = 5*15;
 			e->state++;
+			e->grounded = TRUE;
 		}
 		case 1:
 		{
 			e->timer--;
 			e->frame = e->timer / 5;
-			e->x += e->timer & 1 ? 0x200 : -0x200;
+			e->x += (e->timer & 1) ? 0x200 : -0x200;
 			if(!e->timer) {
 				e->state++;
 				e->grounded = FALSE;
@@ -240,6 +243,7 @@ void ai_teleIn(Entity *e) {
 			e->y_next = e->y + e->y_speed;
 			if((e->grounded = collide_stage_floor(e))) {
 				e->state++;
+				e->y_speed = 0;
 			} else {
 				e->y_speed += SPEED(0x40);
 			}
@@ -251,9 +255,11 @@ void ai_teleIn(Entity *e) {
 }
 
 void onspawn_teleOut(Entity *e) {
-	e->y -= pixel_to_sub(32);
+	e->y -= 32 << CSF;
 	SNAP_TO_GROUND(e);
-	e->y_speed = SPEED(-0x400);
+	// PAL was jumping too high here
+	if(IS_PALSYSTEM) e->y_speed = -0x360;
+	else e->y_speed = -SPEED(0x3E0);
 }
 
 void ai_teleOut(Entity *e) {
@@ -277,7 +283,7 @@ void ai_teleOut(Entity *e) {
 		{
 			e->timer++;
 			e->frame = e->timer / 5;
-			e->x += e->timer & 1 ? 0x200 : -0x200;
+			e->x += (e->timer & 1) ? 0x200 : -0x200;
 			if(e->timer >= 5*15) {
 				e->state++;
 				e->hidden = TRUE;
