@@ -3,6 +3,7 @@
 #include "ai.h"
 #include "audio.h"
 #include "dma.h"
+#include "memory.h"
 #include "player.h"
 #include "entity.h"
 #include "stage.h"
@@ -149,6 +150,7 @@ uint16_t waitTime;
 
 uint16_t promptJump = 0;
 
+uint8_t teleMenuActive = FALSE;
 uint8_t teleMenuSlotCount = 0;
 uint16_t teleMenuEvent[8];
 uint8_t teleMenuSelection = 0;
@@ -180,8 +182,11 @@ void tsc_init() {
 }
 
 void tsc_load_stage(uint8_t id) {
-	if(id == 255) { // Stage index 255 is a special case for the item menu
+	if(id == ID_ARMSITEM) { // Stage index 255 is a special case for the item menu
 		const uint8_t *TSC = TSC_ArmsItem;
+		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+	} else if(id == ID_TELEPORT) {
+		const uint8_t *TSC = TSC_StageSelect;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
 		const uint8_t *TSC = stage_info[id].TSC;
@@ -285,9 +290,14 @@ uint8_t tsc_update() {
 		case TSC_TELEMENU:
 		{
 			if(joy_pressed(BUTTON_C)) {
+				// Reload current stage's TSC, and run event for warp
+				teleMenuActive = FALSE;
+				tsc_load_stage(stageID);
 				tsc_call_event(teleMenuEvent[teleMenuSelection]);
 				tscState = TSC_RUNNING;
 			} else if(joy_pressed(BUTTON_B)) { // Cancel
+				teleMenuActive = FALSE;
+				tsc_load_stage(stageID);
 				tscState = TSC_RUNNING;
 			} else if(joy_pressed(BUTTON_LEFT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
@@ -298,6 +308,10 @@ uint8_t tsc_update() {
 					teleMenuSelection--;
 				}
 				sound_play(SND_MENU_MOVE, 5);
+				// Writes location name in the window
+				tsc_call_event(1000 + teleMenuSelection + 1);
+				while(tscState != TSC_IDLE) execute_command();
+				tscState = TSC_TELEMENU; // Don't break away from the menu
 			} else if(joy_pressed(BUTTON_RIGHT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
@@ -307,12 +321,19 @@ uint8_t tsc_update() {
 					teleMenuSelection++;
 				}
 				sound_play(SND_MENU_MOVE, 5);
+				
+				tsc_call_event(1000 + teleMenuSelection + 1);
+				while(tscState != TSC_IDLE) execute_command();
+				tscState = TSC_TELEMENU;
 			} else { // Doing nothing, blink cursor
 				bossHealth ^= 8;
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16 + bossHealth);
 			}
 			sprite_addq(teleMenuSprite, teleMenuSlotCount);
+			// --WARP-- text
+			sprite_add(teleMenuSprite[6]);
+			sprite_add(teleMenuSprite[7]);
 		}
 		break;
 		case TSC_WAITGROUNDED:
@@ -379,7 +400,30 @@ void tsc_hide_boss_health() {
 	VDP_setTileMapXY(PLAN_WINDOW, 39, 27, 0);
 }
 
+static void tsc_render_warp_text() {
+	uint8_t text[8][TILE_SIZE];
+	static const char string[8] = "--WARP--";
+	// Copy tiles for ascii string "--WARP--" into memory
+	for(uint8_t i = 0; i < 8; i++) {
+		memcpy(text[i], &TS_SysFont.tiles[(string[i] - 0x20) * 8], TILE_SIZE);
+	}
+	// Copy our string to VRAM
+	DMA_doDma(DMA_VRAM, (uint32_t) text[0], TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
+	// Create sprites to display the string
+	teleMenuSprite[6] = (VDPSprite) { 
+		.x = 160 - 32 + 128, .y = 32 + 128,
+		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+	};
+	teleMenuSprite[7] = (VDPSprite) { 
+		.x = 160 + 128, .y = 32 + 128,
+		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+4)
+	};
+}
+
 void tsc_show_teleport_menu() {
+	//mapNameTTL = 0; // We will be clobbering the tiles that display the map name
+	tsc_render_warp_text();
+	
 	teleMenuSlotCount = 0;
 	SHEET_FIND(teleMenuSheet, SHEET_TELE);
 	for(uint8_t i = 0; i < 8; i++) {
@@ -392,17 +436,22 @@ void tsc_show_teleport_menu() {
 		};
 		teleMenuSlotCount++;
 	}
+	tsc_load_stage(ID_TELEPORT);
 	if(teleMenuSlotCount > 0) {
+		teleMenuActive = TRUE;
+		tsc_call_event(1000 + teleMenuSelection + 1);
+		while(tscState != TSC_IDLE) execute_command();
 		tscState = TSC_TELEMENU;
+		VDP_setWindowPos(0, IS_PALSYSTEM ? 245 : 244);
+		controlsLocked = TRUE;
+		// I use bossHealth to tick back and forth between 0 and 8 so the cursor will flash
+		// since bosses don't happen in Arthur's house
+		bossHealth = 0;
 	} else {
-		// Don't bother with the menu if we can't teleport
-		// Skip a command to avoid having to press C multiple times
-		execute_command();
-		tscState = TSC_RUNNING;
+		tsc_call_event(1000);
+		while(tscState != TSC_IDLE) execute_command();
+		tsc_load_stage(stageID);
 	}
-	// I use bossHealth to tick back and forth between 0 and 8 so the cursor will flash
-	// since bosses don't happen in Arthur's house
-	bossHealth = 0;
 }
 
 uint8_t execute_command() {
@@ -490,7 +539,7 @@ uint8_t execute_command() {
 		case CMD_END: // End the event
 		{
 			tscState = TSC_IDLE;
-			if(!paused) {
+			if(!paused && !teleMenuActive) {
 				gameFrozen = FALSE;
 				window_set_face(0, FALSE);
 				window_close();

@@ -658,6 +658,7 @@ BIN PXM_WeedS	"Stage/WeedS.pxm"
 # Global
 BIN TSC_ArmsItem	"ArmsItem.tsb"
 BIN TSC_Head		"Head.tsb"
+BIN TSC_StageSelect	"StageSelect.tsb"
 
 # Stage Specific
 BIN TSC_Almond	"Stage/Almond.tsb"

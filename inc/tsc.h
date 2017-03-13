@@ -8,6 +8,9 @@
 #define ALMOND_DROWN_FLAG	4000
 #define ALMOND_DROWN_EVENT	1100
 
+#define ID_ARMSITEM	0xFF
+#define ID_TELEPORT	0xFE
+
 // Number of events loaded by tsc_load(), for debugging
 uint8_t tscEventCount;
 
