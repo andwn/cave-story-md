@@ -15,6 +15,7 @@
 #include "sheet.h"
 #include "system.h"
 #include "tables.h"
+#include "timer.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
@@ -67,25 +68,40 @@ void stage_load(uint16_t id) {
 	}
 	water_entity = NULL;
 	// Load the tileset
-	XGM_doVBlankProcess();
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
+		
+		XGM_doVBlankProcess();
+		XGM_set68KBUSProtection(TRUE); // Decompression should give enough time for Z80
+		
 		stage_load_tileset();
+		
+		XGM_set68KBUSProtection(FALSE);
 	}
-	XGM_doVBlankProcess();
 	// Load sprite sheets
-	sheets_load_stage(id, FALSE, TRUE);
-	// Stage palette and shared NPC palette
 	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
+	sheets_load_stage(id, FALSE, TRUE);
+	
+	XGM_set68KBUSProtection(FALSE);
+	// Stage palette and shared NPC palette
 	if(stageID == 0x30) {
 		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
 	} else {
 		VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
 	}
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
+	// Load backgrounds
 	if(stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
+		
+		XGM_doVBlankProcess();
+		XGM_set68KBUSProtection(TRUE);
+		waitSubTick(10);
+		
 		VDP_setBackgroundColor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0) { // Tiled image
 			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
@@ -111,19 +127,42 @@ void stage_load(uint16_t id) {
 			VDP_setBackgroundColor(32);
 			stage_draw_moonback();
 		}
+		XGM_set68KBUSProtection(FALSE);
 	}
+	// Load stage into RAM
 	XGM_doVBlankProcess();
-	// Load stage into RAM and draw it around camera position
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	stage_load_blocks();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
+	
 	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	stage_draw_screen();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
 	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	stage_load_entities();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
 	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
 	} else if(stageBackgroundType == 4) {
@@ -133,7 +172,8 @@ void stage_load(uint16_t id) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
 	}
 	tsc_load_stage(id);
-	XGM_doVBlankProcess();
+	
+	XGM_set68KBUSProtection(FALSE);
 	
 	VDP_setEnable(TRUE);
 }
@@ -148,7 +188,6 @@ void stage_load_tileset() {
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
 			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
 			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
-			//break; // no
 		}
 	}
 }
