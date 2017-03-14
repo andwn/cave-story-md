@@ -186,8 +186,8 @@ void window_draw_char(uint8_t c) {
 }
 
 void window_scroll_text() {
-	
 	// Push bottom 2 rows to top
+	memset(windowText[2], ' ', 36);
 	for(uint8_t row = 0; row < 2; row++) {
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
@@ -203,7 +203,6 @@ void window_scroll_text() {
 	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
 	uint8_t msgTextW = showingFace ? 29 : 36;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
-	
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;
@@ -342,7 +341,7 @@ void window_update() {
 	if(showingItem) {
 		sprite_add(handSpr);
 		sprite_addq(promptSpr, 2);
-	} else if(tscState == TSC_WAITINPUT) {
+	} else if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		x += textColumn - spaceOffset;
 		uint8_t y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;

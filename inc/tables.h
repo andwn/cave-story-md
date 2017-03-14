@@ -82,6 +82,32 @@ typedef struct {
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
 } weapon_info_def;
 
+typedef struct {
+	uint8_t	cmd; // Determines which member of the union is used
+	union {
+		struct { // Add a string of text ([)
+			char string[16];
+		} text;
+		struct  { // Show an icon from casts.pbm (])
+			uint8_t id;
+			uint8_t pal;
+		} icon;
+		struct { // Delay until next instruction (-)
+			uint16_t ticks;
+		} wait;
+		struct { // I think the sets the text X position? (+)
+			uint16_t x;
+		} pos;
+		struct { // Change the music (!)
+			uint8_t id;
+		} song;
+		struct { // Swap one of the palettes (no CS equivalent)
+			uint8_t id;
+			const uint16_t *data;
+		} palette;
+	};
+} credits_info_def;
+
 extern const tileset_info_def tileset_info[];
 
 extern const background_info_def background_info[];
