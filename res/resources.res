@@ -411,6 +411,45 @@ TILESET TS_Face28	"face/face28.png" 2
 TILESET TS_Face29	"face/face29.png" 2
 
 # ----------------------------------------------------------------------------------------------
+# Credits Illustrations
+# ----------------------------------------------------------------------------------------------
+
+PALETTE PAL_Ill01	"credits/ill01.png" 2
+TILESET TS_Ill01	"credits/ill01.png" 2
+PALETTE PAL_Ill02	"credits/ill02.png" 2
+TILESET TS_Ill02	"credits/ill02.png" 2
+PALETTE PAL_Ill03	"credits/ill03.png" 2
+TILESET TS_Ill03	"credits/ill03.png" 2
+PALETTE PAL_Ill04	"credits/ill04.png" 2
+TILESET TS_Ill04	"credits/ill04.png" 2
+PALETTE PAL_Ill05	"credits/ill05.png" 2
+TILESET TS_Ill05	"credits/ill05.png" 2
+PALETTE PAL_Ill06	"credits/ill06.png" 2
+TILESET TS_Ill06	"credits/ill06.png" 2
+PALETTE PAL_Ill07	"credits/ill07.png" 2
+TILESET TS_Ill07	"credits/ill07.png" 2
+PALETTE PAL_Ill08	"credits/ill08.png" 2
+TILESET TS_Ill08	"credits/ill08.png" 2
+PALETTE PAL_Ill09	"credits/ill09.png" 2
+TILESET TS_Ill09	"credits/ill09.png" 2
+PALETTE PAL_Ill10	"credits/ill10.png" 2
+TILESET TS_Ill10	"credits/ill10.png" 2
+PALETTE PAL_Ill11	"credits/ill11.png" 2
+TILESET TS_Ill11	"credits/ill11.png" 2
+PALETTE PAL_Ill12	"credits/ill12.png" 2
+TILESET TS_Ill12	"credits/ill12.png" 2
+
+PALETTE PAL_Ill14	"credits/ill14.png" 2
+TILESET TS_Ill14	"credits/ill14.png" 2
+PALETTE PAL_Ill15	"credits/ill15.png" 2
+TILESET TS_Ill15	"credits/ill15.png" 2
+# TODO: Find the monochrome island image (16)
+PALETTE PAL_Ill17	"credits/ill17.png" 2
+TILESET TS_Ill17	"credits/ill17.png" 2
+PALETTE PAL_Ill18	"credits/ill18.png" 2
+TILESET TS_Ill18	"credits/ill18.png" 2
+
+# ----------------------------------------------------------------------------------------------
 # Optimized Tilesets, Attributes & Stages
 # ----------------------------------------------------------------------------------------------
 
@@ -659,7 +698,7 @@ BIN PXM_WeedS	"Stage/WeedS.pxm"
 BIN TSC_ArmsItem	"ArmsItem.tsb"
 BIN TSC_Head		"Head.tsb"
 BIN TSC_StageSelect	"StageSelect.tsb"
-BIN TSC_Credits		"credits.tsb" # Actually Stage/0.tsc, but eh
+BIN TSC_Credits		"credits/credits.tsb" # Actually Stage/0.tsc, but eh
 
 # Stage Specific
 BIN TSC_Almond	"Stage/Almond.tsb"

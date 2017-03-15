@@ -83,26 +83,36 @@ typedef struct {
 } weapon_info_def;
 
 typedef struct {
-	uint8_t	cmd; // Determines which member of the union is used
+	uint16_t cmd; 
 	union {
-		struct { // Add a string of text ([)
-			char string[16];
+		struct { 
+			char string[36];
 		} text;
-		struct  { // Show an icon from casts.pbm (])
-			uint8_t id;
-			uint8_t pal;
+		struct  { 
+			uint16_t id;
+			uint16_t pal;
 		} icon;
-		struct { // Delay until next instruction (-)
+		struct { 
 			uint16_t ticks;
 		} wait;
-		struct { // I think the sets the text X position? (+)
-			uint16_t x;
-		} pos;
-		struct { // Change the music (!)
-			uint8_t id;
+		struct { 
+			uint16_t pos;
+		} move;
+		struct { 
+			uint16_t id;
 		} song;
-		struct { // Swap one of the palettes (no CS equivalent)
-			uint8_t id;
+		struct {
+			uint16_t flag;
+			uint16_t label;
+		} fjump;
+		struct {
+			uint16_t label;
+		} jump;
+		struct {
+			uint16_t value;
+		} label;
+		struct { 
+			uint16_t id;
 			const uint16_t *data;
 		} palette;
 	};
@@ -121,3 +131,5 @@ extern const npc_info_def npc_info[];
 extern const weapon_info_def weapon_info[];
 
 extern const face_info_def face_info[];
+
+extern const credits_info_def credits_info[];
