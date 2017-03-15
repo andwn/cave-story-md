@@ -7,3 +7,5 @@ symbol.txt
 *.o
 savegen_cache/
 bin/
+out.lst
+src/boot/rom_head.bin
