@@ -7,14 +7,14 @@ The engine uses many parts of SGDK, and written mostly in C.
 
 It should work on any console or emulator. Expect alpha quality.
 
-### Download
+## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
 For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL](http://www.cavestory.org/md/nightlypal.zip) <br/>
 
 Farthest reachable point in `master`: Undead Core
 
-### Controls
+## Controls
 If you have a 6 button controller:
 
 - `C` - Jump, confirm
@@ -27,12 +27,12 @@ For 3 button, `A` cycles through weapons. The rest is the same.
 
 To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic. 
 
-### Compilation
+## Compilation
 I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
 
 0. Dependencies for all this:
-  - For Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo openjdk-8-jre-headless python`
-  - For Arch: `sudo pacman -Sy wget unzip base-devel texinfo jre8-openjdk python`
+  - Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo openjdk-8-jre-headless python`
+  - Arch: `sudo pacman -Sy wget unzip base-devel texinfo jre8-openjdk python`
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Customized GCC 6.3.0 toolchain)
   - The command to build and install Gendev is `sudo make`. You likely don't want to do that on an important production machine, so if you can run 32-bit programs grab the tarball on the releases page instead.
   - The `sgdk-build` step is now optional as the parts of SGDK used are merged into CSMD.

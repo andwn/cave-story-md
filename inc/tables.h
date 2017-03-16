@@ -82,6 +82,7 @@ typedef struct {
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
 } weapon_info_def;
 
+// Instructions on how to display text/icons in the credits
 typedef struct {
 	uint16_t cmd; 
 	union {
@@ -113,10 +114,16 @@ typedef struct {
 		} label;
 		struct { 
 			uint16_t id;
-			const uint16_t *data;
+			const Palette *data;
 		} palette;
 	};
 } credits_info_def;
+
+// Credits illustrations
+typedef struct {
+	const TileSet *tileset;
+	const Palette *palette;
+} illustration_info_def;
 
 extern const tileset_info_def tileset_info[];
 
@@ -133,3 +140,5 @@ extern const weapon_info_def weapon_info[];
 extern const face_info_def face_info[];
 
 extern const credits_info_def credits_info[];
+
+extern const illustration_info_def illustration_info[];
