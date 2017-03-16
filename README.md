@@ -1,5 +1,6 @@
 # Cave Story MD
-[![Video](http://img.youtube.com/vi/aZU133ekDVk/0.jpg)](http://www.youtube.com/watch?v=aZU133ekDVk)
+![Comparison Shot](doc/screen01.png)
+[Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 The engine uses many parts of SGDK, and written mostly in C.
