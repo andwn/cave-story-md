@@ -387,7 +387,7 @@ const illustration_info_def illustration_info[20] = {
 	{ NULL,      NULL       },
 	{ &TS_Ill14, &PAL_Ill14 },
 	{ &TS_Ill15, &PAL_Ill15 },
-	{ NULL,      NULL       },
+	{ &TS_Ill16, &PAL_Ill16 },
 	{ &TS_Ill17, &PAL_Ill17 },
 	{ &TS_Ill18, &PAL_Ill18 },
 	{ NULL,      NULL       },

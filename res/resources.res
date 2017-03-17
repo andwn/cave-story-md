@@ -443,7 +443,8 @@ PALETTE PAL_Ill14	"credits/ill14.png" 2
 TILESET TS_Ill14	"credits/ill14.png" 2
 PALETTE PAL_Ill15	"credits/ill15.png" 2
 TILESET TS_Ill15	"credits/ill15.png" 2
-# TODO: Find the monochrome island image (16)
+PALETTE PAL_Ill16	"credits/ill16.png" 2
+TILESET TS_Ill16	"credits/ill16.png" 2
 PALETTE PAL_Ill17	"credits/ill17.png" 2
 TILESET TS_Ill17	"credits/ill17.png" 2
 PALETTE PAL_Ill18	"credits/ill18.png" 2

@@ -830,7 +830,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 		tsc_call_event(PLAYER_DEFEATED_EVENT);
 		return TRUE;
 	}
-	player.health -= damage;
+	if(!iSuckAtThisGameSHIT) player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
 	playerIFrames = TIME(100);
 	// Halve damage applied to weapon energy if we have the arms barrier

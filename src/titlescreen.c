@@ -34,12 +34,14 @@
 #define ANIM_SPEED	7
 #define ANIM_FRAMES	4
 
-static const uint16_t cheat[] = {
-	BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT, NULL
+static const uint16_t cheat[2][10] = {
+	{ BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT, NULL },
+	{ BUTTON_UP, BUTTON_UP, BUTTON_DOWN, BUTTON_DOWN, 
+	  BUTTON_LEFT, BUTTON_RIGHT, BUTTON_LEFT, BUTTON_RIGHT, NULL },
 };
 
 uint8_t titlescreen_main() {
-	uint8_t cheatEntry = 0, levelSelect = FALSE;
+	uint8_t cheatEntry[2] = { 0, 0 }, cheatEnable[2] = { FALSE, FALSE };
 	uint8_t cursor = 0;
 	uint32_t besttime = 0xFFFFFFFF;
 	uint8_t tsong = SONG_TITLE;
@@ -106,16 +108,18 @@ uint8_t titlescreen_main() {
 	song_play(tsong);
 	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
-		if(!levelSelect) {
-			if(joy_pressed(cheat[cheatEntry])) {
-				cheatEntry++;
-				if(cheat[cheatEntry] == NULL) {
-					levelSelect = TRUE;
-					sound_play(SND_COMPUTER_BEEP, 5);
+		for(uint8_t i = 0; i < 2; i++) {
+			if(!cheatEnable[i]) {
+				if(joy_pressed(cheat[i][cheatEntry[i]])) {
+					cheatEntry[i]++;
+					if(cheat[i][cheatEntry[i]] == NULL) {
+						cheatEnable[i] = TRUE;
+						sound_play(SND_COMPUTER_BEEP, 5);
+					}
+				} else if(cheatEntry[i]) {
+					if((joystate & (~cheat[i][cheatEntry[i]-1])) &&
+						!joy_pressed(cheat[i][cheatEntry[i]-1])) cheatEntry[i] = 0;
 				}
-			} else if(cheatEntry) {
-				if((joystate & (~cheat[cheatEntry-1])) &&
-					!joy_pressed(cheat[cheatEntry-1])) cheatEntry = 0;
 			}
 		}
 		if(joy_pressed(BUTTON_UP)) {
@@ -144,7 +148,7 @@ uint8_t titlescreen_main() {
 		ready = TRUE;
 		vsync(); aftervsync();
 	}
-	if(levelSelect && (joystate&BUTTON_A) && joy_pressed(BUTTON_START)) {
+	if(cheatEnable[0] && (joystate&BUTTON_A) && joy_pressed(BUTTON_START)) {
 		cursor = 0;
 		input_update();
 		
@@ -226,5 +230,6 @@ uint8_t titlescreen_main() {
 	}
 	song_stop();
 	sound_play(SND_MENU_SELECT, 0);
+	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
 	return cursor;
 }

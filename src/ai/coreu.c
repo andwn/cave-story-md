@@ -69,10 +69,10 @@ void onspawn_undead_core(Entity *e) {
 	e->hurtSound = SND_CORE_HURT;
 	
 	e->health = 700;
-	e->x = (592 << CSF);
+	e->x = (632 << CSF);
 	e->y = (120 << CSF);
 	e->event = 1000;	// defeated script
-	e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
+	//e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
 	
 	// create rear rotators
 	//rotator[2] = create_rotator(0, 1);
@@ -80,11 +80,17 @@ void onspawn_undead_core(Entity *e) {
 	
 	// create front & back
 	pieces[CFRONT] = entity_create(0, 0, OBJ_UDCORE_FRONT, 0);
+	pieces[CFRONT]->display_box = (bounding_box) { 32, 48, 32, 48 };
+	
 	pieces[CBACK] = entity_create(0, 0, OBJ_UDCORE_BACK, 0);
+	pieces[CBACK]->display_box = (bounding_box) { 40, 48, 40, 48 };
 	
 	// create face
 	pieces[CFACE] = entity_create(0, 0, OBJ_UDCORE_FACE, 0);
 	pieces[CFACE]->state = FC_Closed;
+	pieces[CFACE]->hit_box = (bounding_box) { 24, 14, 24, 14 };
+	pieces[CFACE]->display_box = (bounding_box) { 28, 16, 28, 16 };
+	pieces[CFACE]->health = 1000;
 
 	// create front rotators
 	//rotator[0] = create_rotator(0, 0);
@@ -128,8 +134,8 @@ void ai_undead_core(Entity *e) {
 			e->timer = 0;
 			
 			pieces[CFACE]->state = FC_Closed;
-			pieces[CFRONT]->frame = 2;		// closed
-			pieces[CBACK]->frame = 0;		// not orange
+			pieces[CFRONT]->frame = 0;		// closed
+			//pieces[CBACK]->frame = 0;		// not orange
 			
 			//set_bbox_shootable(FALSE);
 			//SetRotatorStates(RT_Spin_Closed);
@@ -261,10 +267,10 @@ void ai_undead_core(Entity *e) {
 	
 	// move back and forth
 	if (e->state >= CR_FightBegin && e->state < CR_Defeated) {
-		if (e->x < block_to_sub(12))
+		if (e->x < block_to_sub(20))
 			e->dir = 1;
 		
-		if (e->x > block_to_sub(stageWidth - 4))
+		if (e->x > block_to_sub(stageWidth))
 			e->dir = 0;
 		
 		ACCEL_X(4);
@@ -357,8 +363,8 @@ static void SpawnPellet(uint8_t angle) {
 	//	y += (16 << CSF);
 	
 	//entity_create(main->x - (32<<CSF), y, OBJ_UD_PELLET)->dir = dir;
-	entity_create(bossEntity->x - (32<<CSF), bossEntity->y, OBJ_UD_PELLET, 
-				  angle == A_UP ? 0 : NPC_OPTION2);
+	//entity_create(bossEntity->x - (32<<CSF), bossEntity->y, OBJ_UD_PELLET, 
+	//			  angle == A_UP ? 0 : NPC_OPTION2);
 }
 
 
@@ -388,7 +394,7 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			pieces[CFACE]->state = FC_Closed;
 			pieces[CFRONT]->frame = 0;		// pieces[CFRONT] closed
-			pieces[CBACK]->frame = 0;		// not flashing
+			//pieces[CBACK]->frame = 0;		// not flashing
 			//SetRotatorStates(RT_Spin_Slow_Closed);
 			
 			camera_shake(20);
@@ -463,13 +469,28 @@ static uint8_t RunDefeated(Entity *e) {
 void ai_undead_core_face(Entity *e) {
 	//e->sprite = SPR_UD_FACES;
 	e->hidden = FALSE;
+	e->eflags = NPC_SHOWDAMAGE;
 	
 	switch(e->state) {
 		// to "show" the closed face, we go invisible and the
 		// face area of the main core shows through.
-		case FC_Closed: e->hidden = TRUE; break;
-		case FC_Skull: e->frame = 0; break;
-		case FC_Teeth: e->frame = 1; break;
+		case FC_Closed:
+		{
+			e->hidden = TRUE;
+		}
+		break;
+		case FC_Skull:
+		{
+			e->eflags |= NPC_SHOOTABLE;
+			e->frame = 0;
+		}
+		break;
+		case FC_Teeth:
+		{
+			e->eflags |= NPC_SHOOTABLE;
+			e->frame = 1;
+		}
+		break;
 		
 		// mouth blasts of doom. Once started, it's perpetual blasting
 		// until told otherwise.
@@ -480,6 +501,8 @@ void ai_undead_core_face(Entity *e) {
 		}
 		case FC_Mouth+1:
 		{
+			e->eflags |= NPC_SHOOTABLE;
+			
 			if (++e->timer > TIME(300))
 				e->timer = 0;
 			
@@ -488,7 +511,7 @@ void ai_undead_core_face(Entity *e) {
 					sound_play(SND_QUAKE, 5);
 				
 				if ((e->timer & 31) == 7) {
-					entity_create(e->x, e->y, OBJ_UD_BLAST, 0);
+					//entity_create(e->x, e->y, OBJ_UD_BLAST, 0);
 					sound_play(SND_LIGHTNING_STRIKE, 5);
 				}
 			}
@@ -497,12 +520,23 @@ void ai_undead_core_face(Entity *e) {
 				sound_play(SND_CORE_CHARGE, 5);
 			
 			if (e->timer >= TIME(200)) { //&& (e->timer & 1))
-				//e->frame = 3;	// mouth lit
-			//else
+				e->frame = 3;	// mouth lit
+			} else {
 				e->frame = 2;	// mouth norm
 			}
 		}
 		break;
+	}
+	
+	// Transfer damage to main object
+	if(e->health < 1000) {
+		if(bossEntity->health > 1000 - e->health) {
+			bossEntity->health -= 1000 - e->health;
+		} else { // ded
+			bossEntity->health = 0;
+			tsc_call_event(1000);
+		}
+		e->health = 1000;
 	}
 	
 	e->x = bossEntity->x - (36 << CSF);
@@ -510,12 +544,12 @@ void ai_undead_core_face(Entity *e) {
 }
 
 void ai_undead_core_front(Entity *e) {
-	e->x = bossEntity->x - (36<<CSF);
+	e->x = bossEntity->x - (32<<CSF);
 	e->y = bossEntity->y;
 }
 
 void ai_undead_core_back(Entity *e) {
-	e->x = bossEntity->x + (44<<CSF);
+	e->x = bossEntity->x + (40<<CSF);
 	e->y = bossEntity->y;
 }
 
