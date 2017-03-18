@@ -96,6 +96,7 @@ void ai_misery_float(Entity *e) {
 		{
 			ANIMATE(e, 2, 4, 5);
 			if (++e->timer >= TIME(20)) {
+				entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
 				sound_play(SND_LIGHTNING_STRIKE, 5);
 				SCREEN_FLASH(10);
 				e->state = 27;
@@ -154,9 +155,9 @@ void ai_misery_stand(Entity *e) {
 		{
 			ANIMATE(e, 2, 4, 5);
 			if (++e->timer >= TIME(20)) {
+				entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
 				sound_play(SND_LIGHTNING_STRIKE, 5);
-				// Flash screen white
-				VDP_flashWhite();
+				SCREEN_FLASH(10);
 				e->state = 27;
 				e->timer = 0;
 			}
@@ -194,10 +195,7 @@ void ai_misery_stand(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer == 30 || \
-				e->timer == 40 || \
-				e->timer == 50)
-			{
+			if (e->timer == 30 || e->timer == 40 || e->timer == 50) {
 				Entity *shot = entity_create(e->x+(16<<CSF), e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = 0x600;
 				shot->y_speed = -(random() % 0x200);
@@ -238,6 +236,7 @@ void ai_misery_bubble(Entity *e) {
 			// Genesis can't divide 32 bit integers so here is a fun hack have fun deciphering it
 			e->x_speed = (((int32_t)((uint16_t)(abs(target->x - e->x) >> 5)) / TIME(50))) << 5;
 			e->y_speed = (((int32_t)((uint16_t)(abs(target->y - e->y) >> 5)) / TIME(50))) << 5;
+			//THROW_AT_TARGET(e, target->x, target->y, SPEED(0x500));
 			if(e->x > target->x) e->x_speed = -e->x_speed;
 			if(e->y > target->y) e->y_speed = -e->y_speed;
 			e->state = 2;

@@ -613,10 +613,10 @@ void ai_scroll_controller(Entity *e) {
 		case 20:
 		{
 			switch(e->dir) {
-				case A_LEFT:	e->x -= (2 << CSF); break;
-				case A_UP:		e->y -= (2 << CSF); break;
-				case A_RIGHT: 	e->x += (2 << CSF); break;
-				case A_DOWN:	e->y += (2 << CSF); break;
+				case LEFT:	e->x -= (2 << CSF); break;
+				case UP:	e->y -= (2 << CSF); break;
+				case RIGHT: e->x += (2 << CSF); break;
+				case DOWN:	e->y += (2 << CSF); break;
 			}
 			
 			// player is invisible during this part. dragging him along is
@@ -670,5 +670,23 @@ void ai_xp_capsule(Entity *e) {
 		sound_play(SND_FUNNY_EXPLODE, 5);
 		
 		e->state = STATE_DELETE;
+	}
+}
+
+void onspawn_lightning(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
+	e->display_box = (bounding_box) { 8, 23*8, 8, 8 };
+	e->x -= 32 << CSF;
+	SNAP_TO_GROUND(e);
+}
+
+void ai_lightning(Entity *e) {
+	e->animtime++;
+	if(e->animtime > 5) {
+		SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF), 32, 16, 2);
+		e->animtime = 0;
+		e->frame++;
+		if(e->frame > 3) e->state = STATE_DELETE;
 	}
 }

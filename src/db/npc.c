@@ -165,7 +165,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	/* 0x090 (144) */
 	{ &SPR_Toroko, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_toroko_teleport_in, &ai_null },
 	{ &SPR_King, NOSHEET, 	PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Sword?
-	{ NULL, NOSHEET, 		PAL0, 4, &onspawn_persistent, &ai_null, &ai_null }, // Lightning
+	{ &SPR_Lightning,NOSHEET,PAL1,6, &onspawn_lightning, &ai_lightning, &ai_null }, // Lightning
 	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)

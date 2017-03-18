@@ -24,7 +24,7 @@ const struct {
     "Andwn   2017.MAR",
     "Doukutsu Monogatari MD                          ",
     "Cave Story MD                                   ",
-    "GM ANDYG002-A3",
+    "GM ANDYG002-A4",
     0x0000,
     "JD              ",
     0x00000000,
