@@ -311,6 +311,7 @@ void ai_balrog_drop_in(Entity *e) {
 			e->state = 1;
 			e->grounded = FALSE;
 			e->frame = ARMSUP;	// falling;
+			//e->x -= 16 << CSF;
 		}
 		/* no break */
 		case 1:

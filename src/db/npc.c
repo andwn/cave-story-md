@@ -159,13 +159,13 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_BigDoor,NOSHEET, PAL1, 1, &onspawn_doorway, &ai_doorway, &ai_null }, // Large Door
 	{ &SPR_Doctor, NOSHEET, PAL3, 1, &onspawn_snap, &ai_doctor, &ai_null }, // Doctor
 	{ &SPR_ToroBoss,NOSHEET,PAL3, 2, &onspawn_torokoBoss, &ai_torokoBoss, &ondeath_torokoBoss },
-	{ &SPR_ToroBlock,NOSHEET,PAL1,1, &onspawn_persistent, &ai_torokoBlock, &ai_null },
-	{ &SPR_ToroFlower,NOSHEET,PAL3,1,&onspawn_persistent, &ai_torokoFlower, &ondeath_default },
+	{ NULL,	SHEET_BLOCK,	PAL1, 1, &onspawn_persistent, &ai_torokoBlock, &ai_null },
+	{ NULL, SHEET_FLOWER,	PAL3, 1, &onspawn_persistent, &ai_torokoFlower, &ondeath_default },
 	{ &SPR_Jenka, NOSHEET, 	PAL3, 1, &onspawn_jenka, &ai_null, &ai_null }, // Jenka
 	/* 0x090 (144) */
-	{ &SPR_Toroko, NOSHEET, PAL3, 1, &ai_null, &ai_toroko_teleport_in, &ai_null },
-	{ NULL, NOSHEET, 		PAL0, 1, &ai_null, &ai_null, &ai_null },
-	{ NULL, NOSHEET, 		PAL0, 4, &ai_null, &ai_null, &ai_null }, // Lightning
+	{ &SPR_Toroko, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_toroko_teleport_in, &ai_null },
+	{ &SPR_King, NOSHEET, 	PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Sword?
+	{ NULL, NOSHEET, 		PAL0, 4, &onspawn_persistent, &ai_null, &ai_null }, // Lightning
 	{ NULL, SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, &ai_critter, &ondeath_default }, // Purple Critter
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)

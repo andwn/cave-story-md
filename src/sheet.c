@@ -235,6 +235,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8);
 			SHEET_ADD(SHEET_CURLYB, &SPR_CurlyB, 5,4,3, 0,0, 1,0, 1,2, 2,0, 4,0);
 		} break;
+		case 0x23: // Sand Zone Storehouse
+		{	SHEET_ADD(SHEET_BLOCK, &SPR_ToroBlock, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_FLOWER, &SPR_ToroFlower, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+		} break;
 		case 0x09: // Labyrinth I
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 		}

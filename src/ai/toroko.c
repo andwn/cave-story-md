@@ -65,23 +65,22 @@ void ai_torokoBoss(Entity *e) {
 	Entity *block = e->linkedEntity;
 
 #define SPAWNBLOCK ({                                                                          \
-	block = entity_create(e->x, e->y, OBJ_TOROKO_BLOCK, 0);	                                   \
-	e->linkedEntity = block;                                                                   \
-	block->dir = e->dir;                                                                       \
-	block->linkedEntity = e;                                                                   \
-	block->eflags &= ~NPC_INVINCIBLE;                                                          \
-	block->nflags &= ~NPC_INVINCIBLE;                                                          \
+	if(!block) {                                                                               \
+		block = entity_create(e->x, e->y, OBJ_TOROKO_BLOCK, 0);	                               \
+		e->linkedEntity = block;                                                               \
+		block->dir = e->dir;                                                                   \
+		block->linkedEntity = e;                                                               \
+		block->eflags &= ~NPC_INVINCIBLE;                                                      \
+		block->nflags &= ~NPC_INVINCIBLE;                                                      \
+	}                                                                                          \
 })
 
 #define THROWBLOCK ({                                                                          \
 	if(block) {                                                                                \
 		block->x = e->x;                                                                       \
-		block->y = e->y;                                                                       \
+		block->y = e->y - (16 << CSF);                                                         \
 		block->eflags |= NPC_INVINCIBLE;                                                       \
-		block->x_speed = (((int32_t)((uint16_t)(abs(player.x - block->x) >> 5)) / TIME(25))) << 5;      \
-		block->y_speed = (((int32_t)((uint16_t)(abs(player.y - block->y) >> 5)) / TIME(25))) << 5;      \
-		if(block->x > player.x) block->x_speed = -block->x_speed;                              \
-		if(block->y > player.y) block->y_speed = -block->y_speed;                              \
+		THROW_AT_TARGET(block, player.x, player.y, SPEED(0x600));                              \
 		sound_play(SND_EM_FIRE, 5);                                                            \
 		e->linkedEntity = NULL;                                                                \
 		block->linkedEntity = NULL;                                                            \
@@ -347,16 +346,20 @@ void ondeath_torokoBoss(Entity *e) {
 // the blocks Frenzied Toroko throws
 void ai_torokoBlock(Entity *e) {
 	if(e->linkedEntity) {
-		e->x = e->linkedEntity->x + (e->linkedEntity->dir ? 16 << CSF : -(16 << CSF));
+		e->x = e->linkedEntity->x + (e->linkedEntity->dir ? 8 << CSF : -(8 << CSF));
 		e->y = e->linkedEntity->y - (16 << CSF);
 		return;
 	}
-	ANIMATE(e, 4, 0,1);
+	e->frame ^= 1;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_floor(e)) {
 		sound_play(SND_BLOCK_DESTROY, 5);
 		e->type = OBJ_TOROKO_FLOWER;
+		// Make sure we show the right graphic/palette
+		SHEET_FIND(e->sheet, SHEET_FLOWER);
+		e->vramindex = sheets[e->sheet].index;
+		sprite_pal(e->sprite[0], PAL3);
 		e->oframe = 255;
 		e->frame = 0;
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
@@ -408,7 +411,7 @@ void ai_torokoFlower(Entity *e) {
 		break;
 		case 20:	// falling/jumping
 		{
-			if ((e->grounded = collide_stage_floor(e))) {
+			if (e->y_speed > 0 && (e->grounded = collide_stage_floor(e))) {
 				e->state = 21;
 				e->timer = e->x_speed = 0;
 				sound_play(SND_THUD, 3);

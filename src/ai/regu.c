@@ -100,14 +100,14 @@ void ai_toroko(Entity *e) {
 				(e->y_speed > 0 && collide_stage_rightwall(e))) { 
 				TURN_AROUND(e);
 			}
-			MOVE_X(SPEED(0x400));
+			MOVE_X(SPEED(0x3E0));
 		}
 		break;
 		case 6:		// hop and run away!!
 		{
 			e->state = 7;
 			e->frame = 1;
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
 		/* no break */
@@ -161,7 +161,7 @@ void ai_toroko(Entity *e) {
 		default: // Toroko getting up after you shoot her, don't know the real state
 			FACE_PLAYER(e);
 			e->alwaysActive = TRUE;
-			e->frame = 0;
+			if(stageID != 0x23) e->frame = 0;
 	}
 	if(e->state != 500) {
 		e->x = e->x_next;
@@ -445,12 +445,18 @@ void ai_kazuma(Entity *e) {
 }
 
 void ai_king(Entity *e) {
+	Entity *sword = e->linkedEntity;
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	entity_update_collision(e);
+	
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+	
 	switch(e->state) {
 		case 0:
 		{
+			e->enableSlopes = TRUE;
 			e->frame = 0;
 			e->x_speed = e->y_speed = 0;
 		}
@@ -465,7 +471,7 @@ void ai_king(Entity *e) {
 		{
 			e->state = 7;
 			e->timer = 0;
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
 		/* no break */
@@ -492,17 +498,16 @@ void ai_king(Entity *e) {
 		break;
 		case 20:		// pull out sword
 		{
-			if (!e->linkedEntity) {
-				Entity *sword = entity_create(e->x, e->y, OBJ_KINGS_SWORD, 0);
-				sword->linkedEntity = e;
-				e->linkedEntity = sword;
-			}
-			e->frame = 0;
+			sword = entity_create(e->x, e->y, OBJ_KINGS_SWORD, 0);
+			sword->frame = 6;
+			sword->dir = 1;
+			e->linkedEntity = sword;
 			e->state = 0;
 		}
 		break;
 		case 30:		// he goes flying in spec'd direction and smacks wall
 		{
+			e->enableSlopes = FALSE;
 			e->state = 31;
 			e->timer = 0;
 			e->frame = 4;
@@ -517,15 +522,15 @@ void ai_king(Entity *e) {
 			e->y_speed = 0;
 			e->y_next = e->y;
 			// Hit the wall
-			if (e->x_speed == 0) {
+			if (collide_stage_leftwall(e)) {
 				e->dir = 1;
 				e->state = 7;
 				e->timer = 0;
-				e->y_speed = SPEED(-0x400);
+				e->y_speed = -SPEED(0x400);
 				e->grounded = FALSE;
 				e->x_speed = SPEED(0x280);
 				sound_play(SND_LITTLE_CRASH, 5);
-				//SmokeClouds(o, 4, 8, 8);
+				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			}
 		}
 		break;
@@ -539,7 +544,7 @@ void ai_king(Entity *e) {
 		{
 			e->hidden ^= 1;
 			if (++e->timer > 100) {
-				//SmokeClouds(o, 4, 8, 8);
+				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 				e->state = 42;
 				e->hidden = 0;
 				e->frame = 6; // Sword
@@ -550,25 +555,28 @@ void ai_king(Entity *e) {
 		case 60:		// jump (used when he lunges with sword)
 			e->frame = 0;
 			e->state = 61;
-			e->y_speed = SPEED(-0x5FF);
+			e->y_speed = -SPEED(0x5FF);
 			e->x_speed = SPEED(0x380);
-			e->linkedEntity->dir = 1;
+			sword->dir = 0;
 		break;
 		case 61:		// jumping
 			e->y_speed += SPEED(0x80);
 			if (e->grounded) {
 				e->state = 0;
 				e->x_speed = 0;
-				e->linkedEntity->dir = 0;
+				sword->dir = 1;
 			}
 		break;
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
-	if(e->linkedEntity) {
-		e->linkedEntity->x = e->x;
-		e->linkedEntity->y = e->y;
+	
+	if(sword) {
+		sword->x = e->x + (sword->dir ? (10 << CSF) : -(10 << CSF));
+		sword->y = e->y;
 	}
+	
+	if(stageID == 0x23) e->dir = 1; // Stop turning left asshole
 	
 	LIMIT_Y(SPEED(0x5FF));
 }
