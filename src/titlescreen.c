@@ -228,8 +228,8 @@ uint8_t titlescreen_main() {
 		VDP_setTextPalette(PAL0);
 		cursor += 4;
 	}
+	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
 	song_stop();
 	sound_play(SND_MENU_SELECT, 0);
-	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
 	return cursor;
 }

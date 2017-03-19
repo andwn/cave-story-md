@@ -342,10 +342,20 @@ void ai_player(Entity *e) {
 		break;
 		case 20:	// he teleports away
 		{
-			Entity *new = entity_create(e->x, e->y, 0x6F, 0);
-			new->id = e->id;
-			new->event = e->event;
-			e->state = STATE_DELETE;
+			e->timer = 0;
+			sound_play(SND_TELEPORT, 5);
+			e->state++;
+			//Entity *new = entity_create(e->x, e->y, 0x6F, 0);
+			//new->id = e->id;
+			//new->event = e->event;
+			//e->state = STATE_DELETE;
+		}
+		case 21:
+		{
+			e->hidden ^= 1;
+			if(++e->timer > TIME(50)) {
+				e->state = STATE_DELETE;
+			}
 		}
 		break;
 		case 50:	// walking

@@ -110,6 +110,7 @@ void ai_shutter_stuck(Entity *e) {
 	if(!e->state) {
 		e->state++;
 		e->x -= 4 << CSF;
+		e->eflags |= NPC_SHOOTABLE;
 	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them
 	// to think they're shooting the regular shutter object, so go invisible
