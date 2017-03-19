@@ -28,11 +28,10 @@ For 3 button, `A` cycles through weapons. The rest is the same.
 To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic. 
 
 ## Compilation
-I've built on Ubuntu 16.04, Debian 8 and Arch, 32 and 64 bit:
-
 0. Dependencies for all this:
-  - Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo openjdk-8-jre-headless python`
-  - Arch: `sudo pacman -Sy wget unzip base-devel texinfo jre8-openjdk python`
+  - Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo python`
+  - RedHat/CentOS: `sudo yum groupinstall "Development Tools" && sudo yum install wget unzip texinfo python`
+  - Arch: `sudo pacman -Sy wget unzip base-devel texinfo python`
 1. Set up my fork of [Gendev](https://github.com/andwn/gendev.git) (Customized GCC 6.3.0 toolchain)
   - The command to build and install Gendev is `sudo make`. You likely don't want to do that on an important production machine, so if you can run 32-bit programs grab the tarball on the releases page instead.
   - The `sgdk-build` step is now optional as the parts of SGDK used are merged into CSMD.

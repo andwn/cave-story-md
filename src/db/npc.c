@@ -171,7 +171,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)
 	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Quote
 	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
-	{ NULL, NOSHEET, 		PAL2, 1, &ai_null, &ai_shutter_stuck, &ondeath_default }, // Shutter (Stuck)
+	{ NULL, NOSHEET, 		PAL2, 0, &ai_null, &ai_shutter_stuck, &ondeath_default }, // Shutter (Stuck)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiFlying, &ondeath_default }, // Gaudi (Flying)
