@@ -94,7 +94,8 @@ void stage_load(uint16_t id) {
 	}
 	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
 	// Load backgrounds
-	if(stageBackground != stage_info[id].background) {
+	if(background_info[stage_info[id].background].type == 4 || 
+			stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
 		
