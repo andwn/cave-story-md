@@ -65,7 +65,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullhead
 	{ &SPR_Bone, NOSHEET,	PAL1, 1, &onspawn_persistent, &ai_skeleton_shot, &ondeath_nodrop }, // Skeleton
 	{ NULL, SHEET_CROW, 	PAL3, 1, &ai_null, &ai_crow, &ondeath_default }, // Crow & Skullhead
-	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot
+	{ &SPR_Robot, NOSHEET, 	PAL1, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL3, 1, &ai_null, &ai_null, &ai_null }, // ???UNKNOWN???
 	{ NULL, SHEET_SKULLH,	PAL1, 1, &ai_null, &ai_skullhead, &ondeath_default }, // Skullstep
 	{ &SPR_Kazuma, NOSHEET, PAL3, 1, &onspawn_snap, &ai_kazuma, &ai_null }, // Kazuma
@@ -170,7 +170,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_LabShot,NOSHEET, PAL2, 1, &onspawn_persistent, &ai_genericproj, &ondeath_nodrop }, // Critter Shot
 	{ &SPR_MazeBlock,NOSHEET,PAL2,1, &onspawn_block, &ai_blockh, &ai_null }, // Moving Block (H)
 	{ &SPR_Quote, NOSHEET, 	PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Quote
-	{ &SPR_Robot, NOSHEET, 	PAL3, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
+	{ &SPR_Robot, NOSHEET, 	PAL1, 1, &ai_null, &ai_blue_robot, &ai_null }, // Blue Robot
 	{ NULL, NOSHEET, 		PAL2, 0, &ai_null, &ai_shutter_stuck, &ondeath_default }, // Shutter (Stuck)
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudi, &ondeath_default }, // Gaudi
 	{ NULL, SHEET_GAUDI, 	PAL2, 1, &ai_null, &ai_gaudiDying, &ondeath_default }, // Gaudi (Dying)
@@ -200,7 +200,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL,		SHEET_BUYOB, PAL2, 1, &ai_null, &ai_buyobuyo_base, &ai_null }, // Buyobuyo Base
 	{ NULL, 	SHEET_BUYO, PAL2, 1, &ai_null, &ai_buyobuyo, &ondeath_default }, // Buyobuyo
 	{ NULL, SHEET_CORES1,	PAL2, 1, &onspawn_persistent, &ai_minicore_shot, &ondeath_nodrop }, // Core Spinning Projectile
-	{ NULL, SHEET_CORES3,	PAL0, 1, &onspawn_persistent, &ai_core_ghostie, &ondeath_nodrop }, // Core Wisp Projectile
+	{ NULL, SHEET_CORES3,	PAL2, 1, &onspawn_persistent, &ai_core_ghostie, &ondeath_nodrop }, // Core Wisp Projectile
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_ai, &ai_null }, // Curly (AI)
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Polar Star
 	{ NULL, SHEET_CGUN, 	 PAL1, 1, &onspawn_persistent, &ai_cai_gun, &ai_null }, // Curly Machine Gun
@@ -216,7 +216,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	/* 0x0C0 (192) */
 	{ &SPR_Buggy, 	NOSHEET, PAL3, 1, &onspawn_pushup, &ai_motorbike, &ai_null }, // Scooter
 	{ &SPR_Buggy2, 	NOSHEET, PAL3, 2, &ai_null, &ai_null, &ai_null }, // Scooter (Pieces)
-	{ &SPR_Robot, 	NOSHEET, PAL3, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
+	{ &SPR_Robot, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ai_null }, // Blue Robot (Pieces)
 	{ &SPR_GrateMouth,NOSHEET,PAL2,1, &ai_null, &ai_null, &ai_null }, // Grate Mouth
 	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Motion Wall
 	{ NULL, SHEET_BLOWFISH,  PAL3, 1, &onspawn_persistent, &ai_ironh_fishy, &ondeath_default }, // Porcupine Fish
@@ -316,12 +316,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Dot
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Orange Smoke
 	/* 0x120 (288) */
-	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ondeath_nodrop }, // Glowing Rock Shot
+	{ NULL, SHEET_ROCK, 	PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ondeath_nodrop }, // Glowing Rock Shot
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
-	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_null, &ai_null }, // Mini Core (Before Fight)
+	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_udmini_idle, &ai_null }, // Mini Core (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Quake
-	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
+	{ NULL, SHEET_CORES4, 	PAL2, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_falling_block_spawner, &ai_null }, // Falling Block Generator
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Cloud
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Cloud Generator

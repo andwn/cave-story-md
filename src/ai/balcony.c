@@ -63,7 +63,7 @@ void ai_helicopter_blade(Entity *e) {
 		
 		case 10:
 		{
-			ANIMATE(e, 2, 0,1,2,3);
+			//ANIMATE(e, 2, 0,1,2,3);
 		}
 		break;
 	}

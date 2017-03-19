@@ -611,7 +611,7 @@ void ai_npc_itoh(Entity *e) {
 		case 40:	// small vertical hop (from when he jumps out of helicopter at end)
 		{
 			e->state = 41;
-			e->y_speed = -0x200;
+			e->y_speed = -SPEED(0x200);
 			e->frame = 2;
 		}
 		case 41:
@@ -637,12 +637,12 @@ void ai_npc_itoh(Entity *e) {
 			e->timer = 0;
 			e->animtime = 0;
 			e->dir = 1;
-			e->frame = 5;
+			//e->frame = 5;
 		}
 		case 51:
 		{
-			ANIMATE(e, 4, 4,5,6,7);
-			MOVE_X(0x200);
+			//ANIMATE(e, 4, 4,5,6,7);
+			MOVE_X(SPEED(0x200));
 			
 			if (++e->timer > 32) {
 				e->frame = 0;
@@ -653,7 +653,7 @@ void ai_npc_itoh(Entity *e) {
 		break;
 	}
 	
-	if(!e->grounded) e->y_speed += 0x40;
+	if(!e->grounded) e->y_speed += SPEED(0x40);
 	LIMIT_Y(SPEED(0x5ff));
 	e->x = e->x_next;
 	e->y = e->y_next;

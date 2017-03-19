@@ -302,7 +302,6 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,3,1, 0,0);
 				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 			}
-			// Wisp projectile
 		} break;
 		case 0x30: // Waterway
 		{	SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
@@ -361,8 +360,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
 		} break;
 		case 0x41: // King's Table
-		{
-			SHEET_ADD(SHEET_BAT, &SPR_DocBat, 3,2,2, 0,0, 0,1, 0,2);
+		{	SHEET_ADD(SHEET_BAT, &SPR_DocBat, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_REDDOT, &SPR_RedDot, 2,1,1, 0,0, 0,1);
 			SHEET_ADD(SHEET_MIMI, &SPR_ShovelMimi, 3,2,2, 0,0, 0,1, 0,8);
 			SHEET_ADD(SHEET_DOCSHOT, &SPR_DocShot, 4,2,2, 0,0, 0,1, 0,2, 0,3);
@@ -374,7 +372,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_MUCORE, &SPR_MUCoreFront, 4,4,4, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_MUCORE2, &SPR_MUCoreBack, 2,2,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_MUCORE3, &SPR_MUCoreBottom, 2,4,1, 0,0, 0,1);
-			// Projectile
+			SHEET_ADD(SHEET_ROCK, &SPR_MizaRock, 5,3,3, 0,0, 0,1, 0,2, 0,3, 0,4);
+			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
 		} break;
 		case 0x50: // Sacred Ground B1
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);

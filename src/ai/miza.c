@@ -110,12 +110,12 @@ void ai_misery_frenzied(Entity *e) {
 			
 			e->x_speed += (e->x > core_x) ? -0x20 : 0x20;
 			e->y_speed += (e->y > player.y) ? -0x10 : 0x10;
-			LIMIT_X(0x200);
-			LIMIT_Y(0x200);
+			LIMIT_X(SPEED(0x200));
+			LIMIT_Y(SPEED(0x200));
 			
 			FACE_PLAYER(e);
 			
-			if (++e->timer > 150) {
+			if (++e->timer > TIME(150)) {
 				// she attacks with normal critters if you attack either her or Sue.
 				if ((e->savedhp - e->health) > 20 || sue_being_hurt) {
 					sue_being_hurt = FALSE;
@@ -124,7 +124,7 @@ void ai_misery_frenzied(Entity *e) {
 			}
 			
 			// she attacks periodically with fishy missiles if you killed Sue.
-			if (e->timer > 250 && sue_was_killed)
+			if (e->timer > TIME(250) && sue_was_killed)
 				e->state = 50;
 		}
 		break;
@@ -147,7 +147,7 @@ void ai_misery_frenzied(Entity *e) {
 			e->timer++;
 			e->frame = (e->timer & 2) ? 4 : 5;
 			
-			if ((e->timer & 7) == 1) {
+			if ((e->timer & 15) == 1) {
 				int x, y;
 				
 				if (e->spawner) {
@@ -246,14 +246,16 @@ static Entity *fm_spawn_missile(Entity *e, uint8_t angindex) {
 }
 */
 void ai_misery_critter(Entity *e) {
+	e->eflags ^= NPC_SHOOTABLE;
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
 	if(e->state < 12) {
 		if(e->x_speed > 0) collide_stage_rightwall(e);
 		if(e->x_speed < 0) collide_stage_leftwall(e);
-		if(e->y_speed < 0) collide_stage_ceiling(e);
-		else if(!e->grounded) e->grounded = collide_stage_floor(e);
+		//if(e->y_speed < 0) collide_stage_ceiling(e);
+		if(!e->grounded) e->grounded = collide_stage_floor(e);
 	}
 	
 	switch(e->state) {
@@ -266,7 +268,6 @@ void ai_misery_critter(Entity *e) {
 				
 				e->state = 10;
 				e->attack = 2;
-				e->eflags |= NPC_SHOOTABLE;
 			}
 		}
 		break;
@@ -304,7 +305,6 @@ void ai_misery_critter(Entity *e) {
 		
 		case 12:
 		{
-			//e->eflags |= NPC_IGNORESOLID;
 			if (e->y > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
 			}
@@ -332,11 +332,10 @@ void ai_misery_bat(Entity *e) {
 				
 				e->state = 1;
 				e->attack = 2;
-				e->eflags &= ~NPC_INVINCIBLE;
 				e->nflags &= ~NPC_INVINCIBLE;
 				
 				e->y_mark = e->y;
-				e->y_speed = 0x400;
+				e->y_speed = SPEED(0x400);
 			}
 		}
 		break;
@@ -422,7 +421,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			if (e->timer == 2) {	// frenzied sue
 				//e->sprite = SPR_SUE_FRENZIED;
-				e->frame = 11;
+				e->frame = 12;
 				e->x -= 0x1000;
 				e->y -= 0x1800;
 			}
@@ -431,7 +430,7 @@ void ai_sue_frenzied(Entity *e) {
 				e->timer = 0;
 				
 				//e->sprite = SPR_SUE;
-				e->frame = 12;
+				e->frame = 0;
 				e->x += 0x1000;
 				e->y += 0x1800;
 			}

@@ -12,7 +12,7 @@ It should work on any console or emulator. Expect alpha quality.
 
 For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL](http://www.cavestory.org/md/nightlypal.zip) <br/>
 
-Farthest reachable point in `master`: Undead Core
+Farthest reachable point in `master`: Escaping Balcony (camera stops following player)
 
 ## Controls
 If you have a 6 button controller:

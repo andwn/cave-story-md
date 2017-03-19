@@ -340,6 +340,7 @@ SPRITE SPR_MizaRing		"sprite/mizaring.png"	2 2 0 0 NONE
 SPRITE SPR_MizaShock	"sprite/mizashock.png"	2 4 0 0 NONE
 SPRITE SPR_MizaFish		"sprite/mizafish.png"	2 2 0 0 NONE
 SPRITE SPR_MizaPellet	"sprite/mizapellet.png" 1 1 0 0 NONE
+SPRITE SPR_MizaRock		"sprite/mizarock.png"	3 3 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

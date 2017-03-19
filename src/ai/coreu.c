@@ -9,16 +9,6 @@
 #define savedhp		id
 #define angle		jump_time
 
-//static const struct {
-//	SIFPoint offset;	// offset from main object
-//	SIFRect rect;		// actual bbox rect
-//} core_bboxes[] = {
-//	{  { 0, -32 },  { -40, -16, 40, 16 }  },	// upper
-//	{  { 28, 0 },   { -36, -24, 36, 24 }  },	// back/main body
-//	{  { 4, 32 },   { -44, -8, 44, 8 }    },	// lower
-//	{  { -28, 4 },  { -20, -20, 20, 20 }  }		// shoot target
-//};
-
 enum CORE_STATES {
 	CR_FightBegin		= 20,		// scripted
 	CR_FaceClosed		= 200,
@@ -44,9 +34,19 @@ enum ROTR_STATES {
 	RT_Spin_Fast_Closed		= 40
 };
 
+// Minicore frame indeces
+static const uint16_t mframeindex[4] = {
+	TILE_BACKINDEX, 		// Back - dark
+	TILE_BACKINDEX + 12,	// Back - bright
+	TILE_BACKINDEX + 24,	// Bottom - dark
+	TILE_BACKINDEX + 28,	// Bottom - bright
+};
+
 // Prototypes
 static void SpawnPellet(uint8_t angle);
+static void RunHurtFlash(uint16_t timer);
 static uint8_t RunDefeated(Entity *e);
+static void DrawMinicoreBack(Entity *e);
 
 /*
 	Main core body:
@@ -64,15 +64,19 @@ static uint8_t RunDefeated(Entity *e);
 */
 
 void onspawn_undead_core(Entity *e) {
+	// Flag 1340 is set after the Undead Core is defeated. Then there is a scene with
+	// Momo and Itoh at the helicopter, and this stage gets reloaded again.
+	// So anyways we need this here, otherwise there is gonna be an Unundead Core
+	if(system_get_flag(1340)) {
+		e->state = STATE_DELETE;
+		return;
+	}
 	e->alwaysActive = TRUE;
-	//e->sprite = SPR_NULL;//SPR_MARKER;
 	e->hurtSound = SND_CORE_HURT;
-	
 	e->health = 700;
 	e->x = (632 << CSF);
 	e->y = (120 << CSF);
 	e->event = 1000;	// defeated script
-	//e->eflags = (NPC_SHOWDAMAGE | NPC_IGNORESOLID | NPC_EVENTONDEATH);
 	
 	// create rear rotators
 	//rotator[2] = create_rotator(0, 1);
@@ -96,23 +100,13 @@ void onspawn_undead_core(Entity *e) {
 	//rotator[0] = create_rotator(0, 0);
 	//rotator[1] = create_rotator(0x80, 0);
 	
-	// initilize bboxes
-	//for(int i=0;i<NUM_BBOXES;i++)
-	//{
-	//	bbox[i] = entity_create(0, 0, OBJ_UDMINI_BBOX);
-	//	bbox[i]->sprite = SPR_BBOX_PUPPET_1 + i;
-	//	bbox[i]->hp = 1000;
-	//	
-	//	sprites[bbox[i]->sprite].bbox = core_bboxes[i].rect;
-	//}
+	// Upload some tile data for the minicore sprites into the background section
 	
-	//e->BringToFront();
+	SHEET_LOAD(&SPR_MUCoreBack, 2, 12, mframeindex[0], 1, 0,0, 0,1);
+	SHEET_LOAD(&SPR_MUCoreBottom, 2, 4, mframeindex[2], 1, 0,0, 0,1);
 }
 
 void ai_undead_core(Entity *e) {
-	//Entity *e = main;
-	//if (!e) return;
-
 	if (!e->health && RunDefeated(e)) return;
 	
 	switch(e->state) {
@@ -135,7 +129,7 @@ void ai_undead_core(Entity *e) {
 			
 			pieces[CFACE]->state = FC_Closed;
 			pieces[CFRONT]->frame = 0;		// closed
-			//pieces[CBACK]->frame = 0;		// not orange
+			RunHurtFlash(0); 
 			
 			//set_bbox_shootable(FALSE);
 			//SetRotatorStates(RT_Spin_Closed);
@@ -170,6 +164,7 @@ void ai_undead_core(Entity *e) {
 			e->timer = 0;
 			
 			pieces[CFACE]->state = FC_Skull;
+			pieces[CFRONT]->frame = 1;
 			//SpawnFaceSmoke();
 			
 			e->savedhp = e->health;
@@ -178,14 +173,13 @@ void ai_undead_core(Entity *e) {
 		case CR_FaceSkull+1:
 		{
 			e->timer++;
-			//RunHurtFlash(e->timer);
+			RunHurtFlash(e->timer);
 			
 			if (e->timer < TIME(300)) {
-				if ((e->timer & 127) == 1) {
-					SpawnPellet(A_UP);
-				}
-				if ((e->timer & 127) == 61) {
-					SpawnPellet(A_DOWN);
+				if ((e->timer % TIME(120)) == 0) {
+					SpawnPellet(1);
+				} else if ((e->timer % TIME(120)) == TIME(60)) {
+					SpawnPellet(0);
 				}
 			}
 			
@@ -202,6 +196,7 @@ void ai_undead_core(Entity *e) {
 			e->timer = 0;
 			
 			pieces[CFACE]->state = FC_Teeth;
+			pieces[CFRONT]->frame = 1;
 			//SpawnFaceSmoke();
 			
 			//SetRotatorStates(RT_Spin_Open);
@@ -213,7 +208,7 @@ void ai_undead_core(Entity *e) {
 		case CR_FaceTeeth+1:
 		{
 			e->timer++;
-			//RunHurtFlash(e->timer);
+			RunHurtFlash(e->timer);
 			
 			// fire rotators
 			if ((e->timer & 63) == 1) {
@@ -238,6 +233,7 @@ void ai_undead_core(Entity *e) {
 			e->timer = 0;
 			
 			pieces[CFACE]->state = FC_Mouth;
+			pieces[CFRONT]->frame = 1;
 			//SpawnFaceSmoke();
 			//SetRotatorStates(RT_Spin_Fast_Closed);
 			
@@ -254,13 +250,13 @@ void ai_undead_core(Entity *e) {
 		case CR_FaceDoom+1:
 		{
 			e->timer++;
-			//RunHurtFlash(e->timer);
+			RunHurtFlash(e->timer);
 			
-			if ((e->timer & 127) == 1)
-				SpawnPellet(A_UP);
-			
-			if ((e->timer & 127) == 61)
-				SpawnPellet(A_DOWN);
+			if ((e->timer % TIME(120)) == 0) {
+				SpawnPellet(1);
+			} else if ((e->timer % TIME(120)) == TIME(60)) {
+				SpawnPellet(0);
+			}
 		}
 		break;
 	}
@@ -283,25 +279,19 @@ void ai_undead_core(Entity *e) {
 		case CR_FaceSkull+1:
 		case CR_FaceDoom+1:
 		{
-			// while I don't think there's any way to get her there without
-			// a map editor, if you put Curly in the Black Space core room,
-			// she WILL fight the core, just as she did the first time.
-			//if (e->state != 221 && (e->timer % 100) == 1)
-			//	bbox[BB_TARGET]->CurlyTargetHere();
-			
 			e->jump_time++;
 			
 			// upper platforms
 			if (e->jump_time == TIME(75)) {
 				entity_create(block_to_sub(stageWidth) + 40,
-							 block_to_sub(random() & 3), OBJ_UDMINI_PLATFORM, 0);
+							 block_to_sub(1 + (random() & 3)), OBJ_UDMINI_PLATFORM, 0);
 			}
 			
 			// lower platforms
 			if (e->jump_time == TIME(150)) {
 				e->jump_time = 0;
 				entity_create(block_to_sub(stageWidth) + 40,
-							 block_to_sub(9 + (random() % 5)), OBJ_UDMINI_PLATFORM, 0);
+							 block_to_sub(10 + (random() % 5)), OBJ_UDMINI_PLATFORM, 0);
 				
 				break;
 			}
@@ -309,33 +299,12 @@ void ai_undead_core(Entity *e) {
 		break;
 	}
 	
-	LIMIT_X(0x80);
-	LIMIT_Y(0x80);
+	LIMIT_X(SPEED(0x80));
+	LIMIT_Y(SPEED(0x80));
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	
-	//run_face(pieces[CFACE]);
-	//run_front(pieces[CFRONT]);
-	//run_back(pieces[CBACK]);
 }
-
-
-//void UDCoreBoss::RunAftermove()
-//{
-//int i;
-
-	//Entity *e = main;
-	//if (!o) return;
-	
-	
-	
-	//for(i=0;i<4;i++)
-	//	run_rotator(rotator[i]);
-	
-	//move_bboxes();
-//}
-
 
 // spawn smoke puffs from face that come when face opens/closes
 //void UDCoreBoss::SpawnFaceSmoke()
@@ -354,33 +323,21 @@ void ai_undead_core(Entity *e) {
 
 // spit a "pellet" shot out of the face. That's what I'm calling the flaming lava-rock
 // type things that are thrown out and trail along the ceiling or floor.
-static void SpawnPellet(uint8_t angle) {
-	//int32_t y = bossEntity->y;
-	
-	//if (dir == UP)
-	//	y -= (16 << CSF);
-	//else
-	//	y += (16 << CSF);
-	
-	//entity_create(main->x - (32<<CSF), y, OBJ_UD_PELLET)->dir = dir;
-	//entity_create(bossEntity->x - (32<<CSF), bossEntity->y, OBJ_UD_PELLET, 
-	//			  angle == A_UP ? 0 : NPC_OPTION2);
+static void SpawnPellet(uint8_t dir) {
+	entity_create(bossEntity->x - (32<<CSF), bossEntity->y, OBJ_UD_PELLET, 
+				  dir ? NPC_OPTION2 : 0);
 }
 
-
-//void UDCoreBoss::RunHurtFlash(int timer)
-//{
-//	if (main->shaketime && (timer & 2))
-//	{
-//		pieces[CFRONT]->frame = 1;
-//		pieces[CBACK]->frame = 1;
-//	}
-//	else
-//	{
-//		pieces[CFRONT]->frame = 0;
-//		pieces[CBACK]->frame = 0;
-//	}
-//}
+// Swap palette back and forth between orange and normal blue color
+static void RunHurtFlash(uint16_t timer) {
+	uint16_t pal = (pieces[CFACE]->damage_time && (timer & 2)) ? PAL3 : PAL2;
+	for(uint8_t i = 0; i < pieces[CFRONT]->sprite_count; i++) {
+		sprite_pal(pieces[CFRONT]->sprite[i], pal);
+	}
+	for(uint8_t i = 0; i < pieces[CBACK]->sprite_count; i++) {
+		sprite_pal(pieces[CBACK]->sprite[i], pal);
+	}
+}
 
 static uint8_t RunDefeated(Entity *e) {
 	switch(e->state) {
@@ -394,7 +351,6 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			pieces[CFACE]->state = FC_Closed;
 			pieces[CFRONT]->frame = 0;		// pieces[CFRONT] closed
-			//pieces[CBACK]->frame = 0;		// not flashing
 			//SetRotatorStates(RT_Spin_Slow_Closed);
 			
 			camera_shake(20);
@@ -435,8 +391,14 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			if (e->timer > TIME(100)) {
 				sound_play(SND_EXPLOSION1, 5);
-				//starflash.Start(e->x, e->y);
 				SCREEN_FLASH(30);
+				// Delete this stuff now while the screen is white
+				entities_clear_by_type(OBJ_MISERY_MISSILE);
+				pieces[CFRONT]->state = STATE_DELETE;
+				pieces[CBACK]->state = STATE_DELETE;
+				pieces[CFACE]->state = STATE_DELETE;
+				//for(int i=0;i<NUM_ROTATORS;i++) rotator[i]->Delete();
+				//for(int i=0;i<NUM_BBOXES;i++) bbox[i]->Delete();
 				
 				e->state++;
 				e->timer = 0;
@@ -447,13 +409,6 @@ static uint8_t RunDefeated(Entity *e) {
 		{
 			camera_shake(40);
 			if (++e->timer > TIME(5)) {
-				entities_clear_by_type(OBJ_MISERY_MISSILE);
-				
-				pieces[CFRONT]->state = STATE_DELETE;
-				pieces[CBACK]->state = STATE_DELETE;
-				pieces[CFACE]->state = STATE_DELETE;
-				//for(int i=0;i<NUM_ROTATORS;i++) rotator[i]->Delete();
-				//for(int i=0;i<NUM_BBOXES;i++) bbox[i]->Delete();
 				e->state = STATE_DELETE;
 				bossEntity = NULL;
 				
@@ -511,7 +466,7 @@ void ai_undead_core_face(Entity *e) {
 					sound_play(SND_QUAKE, 5);
 				
 				if ((e->timer & 31) == 7) {
-					//entity_create(e->x, e->y, OBJ_UD_BLAST, 0);
+					entity_create(e->x, e->y, OBJ_UD_BLAST, 0);
 					sound_play(SND_LIGHTNING_STRIKE, 5);
 				}
 			}
@@ -540,7 +495,7 @@ void ai_undead_core_face(Entity *e) {
 	}
 	
 	e->x = bossEntity->x - (36 << CSF);
-	e->y = bossEntity->y - (4 << CSF);
+	e->y = bossEntity->y;
 }
 
 void ai_undead_core_front(Entity *e) {
@@ -689,6 +644,10 @@ void onspawn_ud_minicore_idle(Entity *e) {
 	if (e->eflags & NPC_OPTION2) e->nflags &= ~NPC_SPECIALSOLID;
 }
 
+void ai_udmini_idle(Entity *e) {
+	DrawMinicoreBack(e);
+}
+
 // these are the ones you can ride
 void ai_udmini_platform(Entity *e) {
 	switch(e->state) {
@@ -737,6 +696,25 @@ void ai_udmini_platform(Entity *e) {
 	}
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+	
+	DrawMinicoreBack(e);
+}
+
+// The face of the minicores have 4 different frames for light/dark and faces, but the
+// backs just use 2 for dark/light, so we draw them separately from the engine
+static void DrawMinicoreBack(Entity *e) {
+	e->sprite[1] = (VDPSprite) { // Back
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 4 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.size = SPRITE_SIZE(3, 4),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->frame >> 1])
+	};
+	e->sprite[2] = (VDPSprite) { // Bottom
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.size = SPRITE_SIZE(4, 1),
+		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
+	};
 }
 
 // falling lava-rock thing from Skull face
@@ -744,20 +722,19 @@ void ai_ud_pellet(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->sprite = SPR_UD_PELLET;
 			e->x_speed = -SPEED(0x200);
 			e->state = 1;
 		}
 		case 1:		// falling
 		{
-			if (e->angle == A_UP) {
-				e->y_speed -= 0x20;
-				LIMIT_Y(0x5ff);
+			if (e->eflags & NPC_OPTION2) {
+				e->y_speed -= SPEED(0x20);
+				LIMIT_Y(SPEED(0x5ff));
 				
 				if (blk(e->x, 0, e->y, -4) == 0x41) e->state = 2;
-			} else if (e->angle == A_DOWN) {
-				e->y_speed += 0x20;
-				LIMIT_Y(0x5ff);
+			} else {
+				e->y_speed += SPEED(0x20);
+				LIMIT_Y(SPEED(0x5ff));
 				
 				if (blk(e->x, 0, e->y, 4) == 0x41) e->state = 2;
 			}
@@ -774,28 +751,18 @@ void ai_ud_pellet(Entity *e) {
 			
 			e->state = 3;
 			e->timer = 0;
-			e->eflags |= NPC_IGNORESOLID;
 			
-			//e->sprite = SPR_UD_BANG;
 			e->x -= (4 << CSF);
 			e->y -= (4 << CSF);
 		}
 		case 3:
 		{
-			ANIMATE(e, 2, 0,1,2);
+			ANIMATE(e, 2, 2,3,4);
 			
-			//if ((++e->timer % 3) == 1)
-			//{
-				//Entity *smoke = entity_create(e->CenterX(), e->CenterY(), OBJ_UD_SMOKE);
+			if ((++e->timer & 3) == 1) {
+				SMOKE_AREA((e->x >> CSF) - 8, (e->y >> CSF) - 8, 16, 16, 1);
+			}
 				
-				//if (e->dir == UP)
-				//	smoke->y_speed = 0x400;
-				//else
-				//	smoke->y_speed = -0x400;
-				
-				//smoke->x += e->x_speed;
-			//}
-			
 			if (e->x < block_to_sub(1) || e->x > block_to_sub(stageWidth - 1)) {
 				e->state = STATE_DELETE;
 			}
@@ -881,10 +848,10 @@ void ai_ud_spinner_trail(Entity *e)
 */
 void ai_ud_blast(Entity *e) {
 	e->x += -SPEED(0x1000);
-	e->frame ^= 1;
+	//e->frame ^= 1;
 
 	//SmokePuff(e->CenterX() + (random(0, 16) << CSF),
 	//		  e->CenterY() + (random(-16, 16) << CSF));
 	
-	if (e->x < -0x4000) e->state = STATE_DELETE;
+	if (e->x < -(8 << CSF)) e->state = STATE_DELETE;
 }

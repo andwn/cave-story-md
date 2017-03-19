@@ -143,7 +143,7 @@ void ai_core(Entity *e) {
 		// This is also the state set via BOA to awaken the core.
 		case CORE_CLOSED:
 		{
-			e->state = CORE_CLOSED+1;
+			e->state++;
 			e->timer = 0;
 			
 			STOP_WATER_STREAM;
@@ -173,7 +173,7 @@ void ai_core(Entity *e) {
 		// Core fires ghosties, and curly targets it.
 		case CORE_OPEN:
 		{
-			e->state = CORE_OPEN+1;
+			e->state++;
 			e->timer = 0;
 			// gonna open mouth, so save the current HP so we'll
 			// know how much damage we've taken this time.
@@ -197,7 +197,7 @@ void ai_core(Entity *e) {
 			// spawn ghosties
 			if (e->timer < TIME(200)) {
 				if ((e->timer % TIME(20))==0) {
-					entity_create(e->x + ((-48 + (random() + 64)) << CSF),
+					entity_create(e->x + ((-48 + (random() & 63)) << CSF),
 						     	  e->y + ((-64 + (random() & 127)) << CSF),
 							 	  OBJ_CORE_GHOSTIE, 0);
 				}
@@ -213,7 +213,7 @@ void ai_core(Entity *e) {
 		break;
 		case CORE_GUST:
 		{
-			e->state = CORE_GUST+1;
+			e->state++;
 			e->timer = 0;
 			
 			START_WATER_STREAM;
@@ -259,8 +259,8 @@ void ai_core(Entity *e) {
 			CLOSE_MOUTH;
 			
 			camera_shake(20);
-			effect_create_smoke((e->x >> CSF) - 80 + (random() % 160), 
-								(e->y >> CSF) - 64 + (random() % 128));
+			effect_create_smoke((e->x >> CSF) - 64 + (random() % 160), 
+								(e->y >> CSF) - 64 + (random() % 100));
 			
 			// tell all the MC's to retreat
 			for(uint8_t i = 0; i < 5; i++) {
@@ -424,8 +424,8 @@ void ai_minicore(Entity *e) {
 			e->state = MC_FIRE+1;
 			e->mouth_open = FALSE;	// close mouth again;
 			e->timer = 0;
-			e->x_mark = e->x + ((24 + (random() % 16)) << CSF);
-			e->y_mark = e->y + ((-4 + (random() % 8)) << CSF);
+			e->x_mark = e->x + ((24 + (random() & 15)) << CSF);
+			e->y_mark = e->y + ((-4 + (random() & 7)) << CSF);
 		}
 		/* no break */
 		case MC_FIRE+1:
@@ -509,15 +509,22 @@ void ai_minicore(Entity *e) {
 void ai_minicore_shot(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	if (++e->timer2 > TIME(150)) e->state = STATE_DELETE;
+	ANIMATE(e, 4, 0,1,2);
+	if (blk(e->x, 0, e->y, 0) == 0x41) {
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		e->state = STATE_DELETE;
+	}
 }
 
 void ai_core_ghostie(Entity *e) {
 	e->x_speed -= SPEED(0x20);
-	LIMIT_X(SPEED(0x400));
+	if(e->x_speed < -SPEED(0x400)) e->x_speed = -SPEED(0x400);
 	e->x += e->x_speed;
-	e->y += e->y_speed;
-	if (blk(e->x, 0, e->y, 0) == 0x41) e->state = STATE_DELETE;
+	ANIMATE(e, 4, 0,1,2);
+	if (blk(e->x, 0, e->y, 0) == 0x41) {
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		e->state = STATE_DELETE;
+	}
 }
 
 void ai_core_blast(Entity *e) {
