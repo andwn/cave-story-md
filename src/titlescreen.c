@@ -41,6 +41,8 @@ static const uint16_t cheat[2][10] = {
 };
 
 uint8_t titlescreen_main() {
+	gamemode = GM_TITLE;
+	
 	uint8_t cheatEntry[2] = { 0, 0 }, cheatEnable[2] = { FALSE, FALSE };
 	uint8_t cursor = 0;
 	uint32_t besttime = 0xFFFFFFFF;

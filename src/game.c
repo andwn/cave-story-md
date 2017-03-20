@@ -40,7 +40,9 @@ void gen_maptile(uint16_t bx, uint16_t by, uint16_t index);
 // Initializes or re-initializes the game after "try again"
 void game_reset(uint8_t load);
 
-uint8_t game_main(uint8_t load) {
+void game_main(uint8_t load) {
+	gamemode = GM_GAME;
+	
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 	VDP_setPaletteColor(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
@@ -54,7 +56,6 @@ uint8_t game_main(uint8_t load) {
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
 	paused = FALSE;
-	uint8_t ending = 0;
 	
 	while(TRUE) {
 		input_update();
@@ -116,7 +117,7 @@ uint8_t game_main(uint8_t load) {
 		vsync();
 		aftervsync();
 	}
-	return ending;
+	return;
 }
 
 void game_reset(uint8_t load) {

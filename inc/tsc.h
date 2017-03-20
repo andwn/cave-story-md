@@ -8,8 +8,10 @@
 #define ALMOND_DROWN_FLAG	4000
 #define ALMOND_DROWN_EVENT	1100
 
+// Special "stage" IDs to load TSCs for menu/credits
 #define ID_ARMSITEM	0xFF
 #define ID_TELEPORT	0xFE
+#define ID_CREDITS	0xFD
 
 enum TSC_STATE {
 	TSC_IDLE,			// Not executing any script

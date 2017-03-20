@@ -55,7 +55,7 @@ enum Casts {
 };
 
 const credits_info_def credits_info[] = {
-	C_MOVE(192),
+	C_MOVE(144),
 	C_SONG(33),
 	C_TEXT("  = CAST =  "),
 	C_WAIT(320),
@@ -195,7 +195,7 @@ const credits_info_def credits_info[] = {
 	C_SONG_FADE(),
 	C_WAIT(250),
 	C_SONG(1),
-	C_MOVE(64),
+	C_MOVE(48),
 	
 	C_TEXT(" = Monsters = "),											C_WAIT(32),
 	C_WAIT(64),
@@ -302,7 +302,7 @@ const credits_info_def credits_info[] = {
 	C_LABEL(300),
 	
 	C_WAIT(80),
-	C_MOVE(40),
+	C_MOVE(32),
 	C_TEXT(" = BGM = "),								C_WAIT(32),
 	C_WAIT(32),
 	C_TEXT("Access"),				C_ICON(MUSIC,	3), C_WAIT(32),
@@ -349,7 +349,7 @@ const credits_info_def credits_info[] = {
 	
 	C_WAIT(100),
 	C_TEXT("= Special Thanks ="),						C_WAIT(32),
-	C_MOVE(48),
+	C_MOVE(32),
 	C_WAIT(32),
 	C_TEXT("Torai"),				C_ICON(DEBUGCAT,3), C_WAIT(40),
 	C_TEXT("Naoku"),				C_ICON(SWORD,	3), C_WAIT(40),
@@ -364,7 +364,7 @@ const credits_info_def credits_info[] = {
 	C_WAIT(64),
 	C_TEXT("Thank you very much."), C_ICON(THANKS,	3), C_WAIT(32),
 	C_WAIT(240),
-	C_MOVE(120),
+	C_MOVE(80),
 	C_TEXT("Cave Story ~ The End"),
 	C_WAIT(280),
 	C_END()

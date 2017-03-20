@@ -37,6 +37,8 @@ void draw_status(uint8_t status) {
 }
 
 void soundtest_main() {
+	gamemode = GM_SOUNDTEST;
+	
 	uint8_t track = 0;
 	uint8_t status = STOPPED, oldstatus = STOPPED;
 	

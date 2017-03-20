@@ -330,7 +330,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Balrog/Misery (Bubble)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Demon Crown
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ondeath_nodrop }, // Fish Missile (Orange)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_scroll_controller, &ai_null }, // Scroll controller
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x130 (304) */
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Gaudi (Sitting)

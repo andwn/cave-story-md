@@ -375,12 +375,17 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_ROCK, &SPR_MizaRock, 5,3,3, 0,0, 0,1, 0,2, 0,3, 0,4);
 			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
 		} break;
+		case 0x46: // Balcony 2
+		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
+		} break;
 		case 0x50: // Sacred Ground B1
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
 		case 0x51: // Sacred Ground B2
 		{	// Bute
-			// Falling blocks
+			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
 		} break;
 		case 0x52: // Sacred Ground B3
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);

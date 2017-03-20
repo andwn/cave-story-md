@@ -338,15 +338,17 @@ void ai_muscle_doctor(Entity *e) {
 			e->attack = 0;
 			
 			e->state++;
+			e->timer = 0;
 			//dr_tp_out_init(o);
 		}
 		case STATE_TELEPORT+1:
 		{
 			//if (dr_tp_out(o))
-			//{
+			e->hidden ^= 1;
+			if(++e->timer > TIME(30)) {
 				e->state++;
 				e->timer = 0;
-				
+				e->hidden = TRUE;
 				// mark the location above player's head where we'll reappear
 				e->x_mark = player.x;
 				e->y_mark = player.y - (32<<CSF);
@@ -359,13 +361,13 @@ void ai_muscle_doctor(Entity *e) {
 				if (e->x_mark < TP_X_MIN) e->x_mark = TP_X_MIN;
 				if (e->x_mark > TP_X_MAX) e->x_mark = TP_X_MAX;
 				if (e->y_mark < TP_Y_MIN) e->y_mark = TP_Y_MIN;
-			//}
+			}
 		}
 		break;
 		// invisible...waiting to reappear
 		case STATE_TELEPORT+2:
 		{
-			if (++e->timer > 40) {
+			if (++e->timer > TIME(40)) {
 				e->x_next = e->x_mark;
 				e->y_next = e->y_mark;
 				e->frame = 4;
@@ -386,15 +388,16 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_TELEPORT+4:
 		{
 			//if (dr_tp_in(o))
-			//{
+			e->hidden ^= 1;
+			if(++e->timer > TIME(30)) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->attack = DAMAGE_NORMAL;
-				
+				e->hidden = FALSE;
 				e->grounded = FALSE;
 				e->x_speed = 0;
 				e->y_speed = -SPEED(0x200);
 				e->state = STATE_IN_AIR;
-			//}
+			}
 		}
 		break;
 		
@@ -460,41 +463,22 @@ void ai_muscle_doctor(Entity *e) {
 			if ((e->timer & 7) == 3)
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
-			// move energy spawn point
-			if (++e->timer2 >= 8) {
-				e->timer2 = 0;
-				
-				//e->clipy1++;
-				//if (e->clipy1 >= sprites[e->sprite].h)
-					e->hidden = TRUE;
-			}
-			
 			// spawn copious amount of energy
-			//for(int i=0;i<3;i++) {
-				//int x, y;
-				
-				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
-				//y = e->y + (e->clipy1 << CSF);
-				
-				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
-				
-				drip->x_speed = -0x200 + (random() & 0x3FF);
-				drip->y_speed = -(random() & 0x3FF);
-				drip->angle = A_DOWN;
-				// otherwise during the last few frames they'll get stuck in the floor
-				// (they still delete themselves once they hit the floor, just are
-				// able to come up out of it then back down during last few moments).
-				drip->eflags |= NPC_IGNORESOLID;
-			//}
+			int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
+			Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
+			drip->x_speed = -0x200 + (random() & 0x3FF);
+			drip->y_speed = -(random() & 0x3FF);
+			drip->angle = A_DOWN;
+			
+			e->hidden ^= 1;
 			
 			// he doesn't take up the entire height of the sprite,
 			// so we stop a little bit early.
-			//if (e->clipy1 >= 44)
-			//{
+			if (e->timer >= TIME(150)) {
 				e->hidden = TRUE;
 				e->frame = 0;
 				e->state++;
-			//}
+			}
 		}
 		break;
 		// script: crystal up and away

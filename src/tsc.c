@@ -178,6 +178,9 @@ void tsc_load_stage(uint8_t id) {
 	} else if(id == ID_TELEPORT) {
 		const uint8_t *TSC = TSC_StageSelect;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
+	} else if(id == ID_CREDITS) {
+		const uint8_t *TSC = TSC_Credits;
+		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
 		const uint8_t *TSC = stage_info[id].TSC;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
@@ -552,6 +555,9 @@ uint8_t execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
+			if(args[0] == 0) {
+				return 5; // Room ID 0 is credits
+			}
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 			player.x_speed = 0;

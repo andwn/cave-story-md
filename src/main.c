@@ -55,7 +55,7 @@ void aftervsync() {
 		else { sprites_send(); }
 		ready = FALSE;
 	}
-	if(stageBackground != 0xFF) stage_update(); // Scrolling
+	if(gamemode == GM_GAME) stage_update(); // Scrolling
 	
 	JOY_update();
 }
