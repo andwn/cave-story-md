@@ -23,9 +23,10 @@ void ai_curly(Entity *e) {
 		/* no break */
 		case 1:
 		{
-			// important that state 1 does not change look-away frame for Drain cutscene
-			if(e->frame != 6) e->frame = 0;
 			e->x_speed = 0;
+			// important that state 1 does not change look-away frame for Drain cutscene
+			if(e->frame == 9) e->state = 32;
+			else e->frame = 0;
 		}
 		break;
 		case 3:							// state 3: walk forward

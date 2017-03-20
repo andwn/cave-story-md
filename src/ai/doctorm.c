@@ -464,13 +464,15 @@ void ai_muscle_doctor(Entity *e) {
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
 			// spawn copious amount of energy
-			int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
-			Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
-			drip->x_speed = -0x200 + (random() & 0x3FF);
-			drip->y_speed = -(random() & 0x3FF);
-			drip->angle = A_DOWN;
-			
-			e->hidden ^= 1;
+			if(e->timer & 1) {
+				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
+				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
+				drip->x_speed = -0x200 + (random() & 0x3FF);
+				drip->y_speed = -(random() & 0x3FF);
+				drip->angle = A_DOWN;
+				
+				e->hidden ^= 1;
+			}
 			
 			// he doesn't take up the entire height of the sprite,
 			// so we stop a little bit early.
