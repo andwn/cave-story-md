@@ -65,8 +65,8 @@ void ai_muscle_doctor(Entity *e) {
 			// put ourselves at correct position over the other doctor
 			e->dir = (crystal_xmark < player.x);
 			
-			e->x = crystal_xmark + ((e->dir) ? (6<<CSF) : -(6<<CSF));
-			e->y = crystal_ymark;
+			e->x_next = crystal_xmark + ((e->dir) ? (6<<CSF) : -(6<<CSF));
+			e->y_next = crystal_ymark;
 			
 			// make sure we're front of other doctor
 			//e->BringToFront();
