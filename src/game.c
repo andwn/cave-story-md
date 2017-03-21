@@ -68,6 +68,21 @@ void game_main(uint8_t load) {
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
+			} else if(joy_pressed(BUTTON_X) && !tscState && player_has_item(2)) {
+				// Shorthand to open map system
+				VDP_setEnable(FALSE);
+				VDP_clearPlan(PLAN_WINDOW, TRUE);
+				VDP_setWindowPos(0, IS_PALSYSTEM ? 30 : 28);
+				VDP_setEnable(TRUE);
+				do_map();
+				VDP_setEnable(FALSE);
+				sheets_load_stage(stageID, TRUE, FALSE);
+				player_draw();
+				entities_draw();
+				hud_show();
+				sprites_send();
+				VDP_setWindowPos(0, 0);
+				VDP_setEnable(TRUE);
 			} else {
 				// HUD on top
 				hud_update();
@@ -393,9 +408,7 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 }
 
 void do_map() {
-	// Disable sprites
-	spr_num = 0;
-	sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+	sprites_clear();
 	
 	uint16_t mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
 	uint16_t mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
@@ -411,8 +424,7 @@ void do_map() {
 		}
 		
 		ready = TRUE;
-		vsync();
-		aftervsync();
+		vsync(); aftervsync();
 	}
 	
 	VDPSprite whereami = (VDPSprite) {
@@ -428,8 +440,8 @@ void do_map() {
 		system_update();
 		// Alternate between the small plus and transparency
 		// We can't simply "not draw" the sprite because the VDP will draw it anyway
-		whereami.attribut &= ~1;
-		if(++blinkTimer & 16) whereami.attribut |= 1;
+		//whereami.attribut &= ~1;
+		if((++blinkTimer & 15) == 0) whereami.attribut ^= 1;
 		sprite_add(whereami);
 		ready = TRUE;
 		vsync(); aftervsync();

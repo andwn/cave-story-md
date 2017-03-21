@@ -51,6 +51,7 @@ uint8_t stageTileset;
 int8_t morphingRow, morphingColumn;
 
 extern uint8_t stageBackground;
+uint16_t backScrollTimer;
 uint8_t stageBackgroundType;
 
 // Clears previous stage and switches to one with the given ID

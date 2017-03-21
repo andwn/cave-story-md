@@ -13,6 +13,7 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
+#include "sprite.h"
 #include "system.h"
 #include "tables.h"
 #include "timer.h"
@@ -36,7 +37,6 @@
 // Index of background in db/back.c and the effect type
 uint8_t stageBackground = 0xFF;
 
-uint16_t backScrollTimer;
 int16_t backScrollTable[32];
 uint8_t *stageBlocks = NULL;
 uint16_t *stageTable = NULL;
@@ -51,7 +51,11 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(uint16_t id) {
+	VDP_setPaletteColor(15, 0x000); // Hide the white crap on the screen
 	VDP_setEnable(FALSE);
+	
+	// Prevents an issue where a column of the previous map would get drawn over the new one
+	DMA_flushQueue();
 	
 	input_update(); // Prevent menu from opening after loading save
 	stageID = id;
@@ -66,13 +70,15 @@ void stage_load(uint16_t id) {
 		MEM_free(stageTable);
 		stageTable = NULL;
 	}
+	sprites_clear();
 	water_entity = NULL;
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		
 		XGM_doVBlankProcess();
-		XGM_set68KBUSProtection(TRUE); // Decompression should give enough time for Z80
+		XGM_set68KBUSProtection(TRUE);
+		waitSubTick(10);
 		
 		stage_load_tileset();
 		
@@ -177,6 +183,7 @@ void stage_load(uint16_t id) {
 	XGM_set68KBUSProtection(FALSE);
 	
 	VDP_setEnable(TRUE);
+	VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
 }
 
 void stage_load_tileset() {
@@ -357,7 +364,7 @@ void stage_update() {
 		
 		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_B, -scroll);
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		backScrollTable[0] = row;
 	} else {

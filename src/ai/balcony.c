@@ -250,18 +250,20 @@ void ai_falling_block(Entity *e) {
 	
 	switch(e->state) {
 		case 0:
-		{
+		{	
 			if(e->eflags & NPC_OPTION2) { // large Hell or Balcony block
-				//e->sprite = (in_hell) ? SPR_HELL_BLOCK_LARGE : SPR_BALCONY_BLOCK_LARGE;
-				e->eflags |= (NPC_INVINCIBLE | NPC_IGNORESOLID);
+				e->eflags |= NPC_INVINCIBLE;
 				e->state = 10;
 			} else if(e->eflags & NPC_OPTION1) { // Misery-spawned block
 				e->state = 1;
 				e->timer = 0;
 			} else { // small Hell or Balcony block
-				//e->sprite = (in_hell) ? SPR_HELL_BLOCK_SMALL : SPR_BALCONY_BLOCK_SMALL;
-				e->eflags |= (NPC_INVINCIBLE | NPC_IGNORESOLID);
+				e->eflags |= NPC_INVINCIBLE;
 				e->state = 10; 
+				e->hit_box = (bounding_box) { 8,8,8,8 };
+				e->display_box = (bounding_box) { 8,8,8,8 };
+				e->sheet++; // SHEET_BLOCKM always after SHEET_BLOCK
+				e->sprite[0].size = SPRITE_SIZE(2, 2);
 			}
 		}
 		break;

@@ -210,7 +210,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_CoreLift,NOSHEET, PAL2, 1, &ai_null, &ai_shutter, &ai_null }, // Lift Block
 	{ &SPR_FuzzCore,NOSHEET, PAL2, 1, &ai_null, &ai_fuzz_core, &ondeath_default }, // Fuzz Core
 	{ &SPR_Fuzz, 	NOSHEET, PAL2, 1, &onspawn_persistent, &ai_fuzz, &ondeath_default }, // Fuzz
-	{ NULL, SHEET_CORES4,	PAL0, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
+	{ NULL, SHEET_CORES4,	PAL1, 1, &onspawn_persistent, &ai_core_blast, &ai_null }, // Homing Flame Projectile
 	{ &SPR_Robot3, 	NOSHEET, PAL1, 1, &ai_null, &ai_almond_robot, &ai_null }, // Surface Robot
 	{ NULL, 		NOSHEET, PAL0, 2, &onspawn_persistent, &ai_waterlevel, &ai_null }, // Water Level
 	/* 0x0C0 (192) */
@@ -305,7 +305,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Puppy, 	NOSHEET, PAL1, 1, &onspawn_puppy, &ai_puppy_wag, &ai_null }, // Puppy (With Item)
 	{ &SPR_DrollRed, NOSHEET, PAL3, 2, &ai_null, &ai_red_demon, &ondeath_red_demon }, // Red Demon
 	{ &SPR_DrollShot, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_droll_shot, &ondeath_nodrop }, // Red Demon Projectile
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Little Family
+	{ &SPR_Littles, NOSHEET, PAL3, 1, &ai_null, &ai_little_family, &ai_null }, // Little Family
 	{ NULL, 	SHEET_BLOCK, PAL2, 1, &onspawn_persistent, &ai_falling_block, &ai_null }, // Falling Block (Large)
 	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
 	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
@@ -320,8 +320,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
 	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_udmini_idle, &ai_null }, // Mini Core (Before Fight)
-	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Quake
-	{ NULL, SHEET_CORES4, 	PAL2, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
+	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_quake, &ai_null }, // Quake
+	{ NULL, SHEET_CORES4, 	PAL1, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_falling_block_spawner, &ai_null }, // Falling Block Generator
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_persistent, &ai_null, &ai_null }, // Cloud
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_null, &ai_null }, // Cloud Generator

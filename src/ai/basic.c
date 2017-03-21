@@ -654,19 +654,30 @@ void ai_scroll_controller(Entity *e) {
 			} else {
 				e->linkedEntity = bossEntity;
 			}
-			if (!e->linkedEntity) e->state = STATE_DELETE;
+			//if (!e->linkedEntity) e->state = STATE_DELETE;
 		}
 		case 101:
 		{
-			if(e->linkedEntity->state == STATE_DELETE) {
-				e->state = STATE_DELETE;
-			} else {
-				e->x = (player.x + e->linkedEntity->x) >> 1;
-				e->y = (player.y + e->linkedEntity->y) >> 1;
+			if(e->linkedEntity) {
+				if(e->linkedEntity->state == STATE_DELETE) {
+					e->linkedEntity = NULL;
+				} else {
+					e->x = (player.x + e->linkedEntity->x) >> 1;
+					e->y = (player.y + e->linkedEntity->y) >> 1;
+				}
+			} else { // Fallback to follow player in case something went wrong
+				e->x = player.x;
+				e->y = player.y;
 			}
 		}
 		break;
 	}
+}
+
+// Makes the screen constantly shake
+void ai_quake(Entity *e) {
+	(void)(e); // So we don't trip unused parameter warning
+	camera_shake(10);
 }
 
 void ai_xp_capsule(Entity *e) {

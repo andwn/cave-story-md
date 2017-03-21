@@ -383,9 +383,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
 		case 0x51: // Sacred Ground B2
-		{	// Bute
+		{	// Conveniently the palette indeces for Balcony and Hell blocks are the same
 			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
+			// Bute
 		} break;
 		case 0x52: // Sacred Ground B3
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
@@ -396,7 +397,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			// Delete
 		} break;
 		case 0x53: // Ma Pignon
-		{	SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
+		{	// Makes copies of itself, better to have a common sheet
+			SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
 					0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9, 0,10, 0,11);
 		} break;
 		default: printf("Stage %hu has no sheet set", sid);

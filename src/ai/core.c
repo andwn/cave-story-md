@@ -221,11 +221,9 @@ void ai_core(Entity *e) {
 		/* no break */
 		case CORE_GUST+1:
 		{
-			// spawn water droplet effects and push player
-			//Entity *droplet = CreateEntity(player->x + ((random(-50, 150)<<CSF)*2),
-			//					   		   player->y + (random(-160, 160)<<CSF),
-			//					   		   OBJ_FAN_DROPLET);
-			//droplet->dir = LEFT;
+			// Instead of spawning a bunch of laggy 1 pixel objects push the water to the left
+			backScrollTimer++;
+			
 			player.x_speed -= SPEED(0x20);
 			
 			OPEN_MOUTH;
