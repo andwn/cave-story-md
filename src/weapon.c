@@ -678,47 +678,13 @@ void bullet_update_blade(Bullet *b) {
 void bullet_update_blade_slash(Bullet *b) {
 	b->ttl--;
 	// Animate sprite
-	switch(b->ttl) {
-		case 16:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+4);
-			b->sprite.size = SPRITE_SIZE(2, 2);
-			break;
-		case 12:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+8);
-			break;
-		case 8:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+1);
-			b->sprite.size = SPRITE_SIZE(1, 1);
-			break;
-		case 4:
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&2)>0,(b->dir&1), (0xFE80>>5)+2);
-			break;
-	}
-	// Adjust sprite offset and hit box based on which frame we are at
-	int8_t xoff, yoff;
-	if(b->ttl > 16) {
-		yoff = -12;
-		b->hit_box = (bounding_box) { 12, 12, 0, 0 }; //8x8 top corner
-	} else if(b->ttl > 12) {
-		yoff = -10;
-		b->hit_box = (bounding_box) { 10, 10, 6, 6 }; //16x16 top corner
-	} else if(b->ttl > 8) {
-		yoff = -8;
-		b->hit_box = (bounding_box) { 8, 8, 8, 8 }; //16x16 mid/low corner
-	} else if(b->ttl > 4) {
-		yoff = 0;
-		b->hit_box = (bounding_box) { 0, 0, 8, 8 }; //8x8 mid/low corner
-	} else {
-		yoff = 4;
-		b->hit_box = (bounding_box) { 0, 0, 12, 12 }; //8x8 low corner
-	}
-	xoff = (b->dir & 1) ? (12-yoff) : yoff;
-	yoff = (b->dir & 2) ? (12-yoff) : yoff;
-	//b->x += b->x_speed;
-	//b->y += b->y_speed;
+	if(b->ttl == 10) b->sprite.attribut += 4;
+	
+	b->x += b->x_speed;
+	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W + xoff,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H + yoff);
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	sprite_add(b->sprite);
 }
 
@@ -803,25 +769,28 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 	} else {
 		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
-			slash->dir = !b->dir;
+			slash->dir = b->dir;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[2];
-			slash->dir = !b->dir;
+			slash->dir = b->dir;
 			slash->dir |= 2;
 		}
 	}
 	if(!slash) return;
+	slash->x_speed = (slash->dir & 1) ? SPEED(0x400) : -SPEED(0x400);
+	slash->y_speed = (slash->dir & 2) ? -SPEED(0x400) : SPEED(0x400);
 	slash->damage = 1;
 	slash->x = b->x;
-	slash->y = b->y;
+	slash->y = b->y + ((slash->dir & 2) ? 0x2000 : -0x2000);
 	if(burst) { // Spread them for AOE
 		slash->x += -0x2000 + (random() % 0x4000);
 		slash->y += -0x2000 + (random() % 0x4000);
 	}
 	slash->type = WEAPON_BLADE_SLASH;
 	slash->ttl = 20;
+	slash->hit_box = (bounding_box) { 6, 6, 6, 6 };
 	slash->sprite = (VDPSprite) { 
-		.size = SPRITE_SIZE(1, 1), 
-		.attribut = TILE_ATTR_FULL(PAL0,0,(slash->dir&2)>0,(slash->dir&1), 0xFE80 >> 5)
+		.size = SPRITE_SIZE(2, 2), 
+		.attribut = TILE_ATTR_FULL(PAL0,0,(slash->dir&2)>0,(slash->dir&1), TILE_SLASHINDEX)
 	};
 }

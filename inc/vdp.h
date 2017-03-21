@@ -176,6 +176,10 @@
 #define TILE_WINDOWSIZE 9
 #define TILE_AIRINDEX (TILE_WINDOWINDEX + TILE_WINDOWSIZE)
 #define TILE_AIRSIZE 7
+// 12 tiles at the end for nemesis vertical frames
+#define TILE_NEMINDEX (0xFE80 >> 5)
+// 8 tiles after window plane for blade L3
+#define TILE_SLASHINDEX ((0xC000 >> 5) - 8)
 // Unused palette color tiles area
 #define TILE_PLAYERINDEX (TILE_SYSTEMINDEX + 2)
 #define TILE_PLAYERSIZE 4
