@@ -617,6 +617,7 @@ TILESET BG_Water	"back/bkWater.bmp" 0
 TILESET BG_LabB		"back/bkMimiRegu.png" 0
 TILESET BG_Stream	"back/bkStream.png" 0
 TILESET BG_Sand		"back/bkSand.png" 0
+TILESET BG_Hell		"back/bkHell.png" 0
 
 # Moon
 BIN MoonTopTiles	"back/bkMoonTop.bin"
