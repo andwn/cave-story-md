@@ -362,9 +362,9 @@ void stage_update() {
 			}
 		}
 		
-		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
 		VDP_setVerticalScroll(PLAN_B, -scroll);
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
+		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		backScrollTable[0] = row;
 	} else {
