@@ -374,7 +374,59 @@ void weapon_fire_supermissile(Weapon *w) {
 }
 
 void weapon_fire_nemesis(Weapon *w) {
-	weapon_fire_polarstar(w);
+	// Use last 2 slots, less likely to conflict with other weapons
+	Bullet *b = NULL;
+	for(uint8_t i = 8; i < 10; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(!b) return;
+	sound_play(SND_NEMESIS_FIRE, 5);
+	b->type = w->type;
+	b->level = w->level;
+	b->sheet = w->sheet;
+	uint16_t speed = 0;
+	switch(b->level) {
+		case 1:
+		b->damage = 12;
+		b->ttl = TIME(35);
+		speed = SPEED(0x800);
+		break;
+		case 2:
+		b->damage = 6;
+		b->ttl = TIME(30);
+		speed = SPEED(0x600);
+		break;
+		case 3:
+		b->damage = 1;
+		b->ttl = TIME(25);
+		speed = SPEED(0x300);
+		break;
+	}
+	b->dir = FIREDIR;
+	switch(b->dir) {
+		case LEFT:
+		case RIGHT:
+		b->sprite.size = SPRITE_SIZE(3, 2);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[w->sheet].index);
+		b->x = player.x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->y = player.y + pixel_to_sub(3);
+		b->x_speed = ((b->dir&1) ? speed : -speed);
+		b->y_speed = 0;
+		b->hit_box = (bounding_box) { 5, 3, 5, 3 };
+		break;
+		case UP:
+		case DOWN:
+		b->sprite.size = SPRITE_SIZE(2, 3);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
+		b->x = player.x;
+		b->y = player.y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->x_speed = 0;
+		b->y_speed = ((b->dir&1) ? speed : -speed);
+		b->hit_box = (bounding_box) { 3, 5, 3, 5 };
+		break;
+	}
 }
 
 void weapon_fire_spur(Weapon *w) {
@@ -693,7 +745,21 @@ void bullet_update_supermissile(Bullet *b) {
 }
 
 void bullet_update_nemesis(Bullet *b) {
-	bullet_update_polarstar(b);
+	b->ttl--;
+	
+	uint16_t t = b->ttl & 3;
+	uint16_t i = (b->dir & 2) ? TILE_NEMINDEX : sheets[b->sheet].index;
+	switch(t) {
+		case 0: sprite_index(b->sprite, i); break;
+		case 2: sprite_index(b->sprite, i+6); break;
+	}
+	
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	sprite_pos(b->sprite, 
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
+	sprite_add(b->sprite);
 }
 
 void bullet_update_spur(Bullet *b) {

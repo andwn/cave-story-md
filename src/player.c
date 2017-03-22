@@ -817,7 +817,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
-	if(player.health <= damage) {
+	if((!iSuckAtThisGameSHIT || damage > 99) && player.health <= damage) {
 		// If health reached 0 we are dead
 		player.health = 0;
 		// Clear smoke & fill up with smoke around player
@@ -836,7 +836,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 	// Halve damage applied to weapon energy if we have the arms barrier
 	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Decrease weapon exp
-	if(damage > 0 && playerWeapon[currentWeapon].type != 0) {
+	if(!iSuckAtThisGameSHIT && damage > 0 && playerWeapon[currentWeapon].type != 0) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->energy < damage) {
 			if(w->level > 1) {
