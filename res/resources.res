@@ -376,6 +376,12 @@ TILESET TS_HudMax		"sprite/hudmax.png" 0
 # Breakable Block Tile
 TILESET TS_Break		"sprite/breakable.png" 0
 
+# Island Effect
+PALETTE PAL_XX			"xxBack.png" 3
+TILESET TS_XXBack		"xxBack.png" 0
+TILESET TS_XXFore		"xxFore.png" 0
+SPRITE SPR_XXIsland		"xxIsland.png" 5 3 0 0 NONE
+
 # NPC Table
 BIN NPC_TABLE			"npc.tbl"
 

@@ -421,6 +421,7 @@ enum {
 	OBJ_BALROGSPLASH,
 	// Misc
 	OBJ_TRIGGER_SPECIAL,
+	OBJ_ISLAND,
 };
 
 // Locations in npc.tbl where data for each property begins

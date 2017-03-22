@@ -442,3 +442,25 @@ void ai_mimiga_caged(Entity *e) {
 		break;
 	}
 }
+
+void ai_island(Entity *e) {
+	switch(e->state) {
+		case 0: // Fall
+		{
+			if(++e->timer > TIME(5)) {
+				e->timer = 0;
+				e->y += 1 << CSF;
+			}
+		}
+		break;
+		case 1: // Fall a bit then stop
+		{
+			if(++e->timer > TIME(5)) {
+				e->timer = 0;
+				e->y += 1 << CSF;
+				if(++e->timer2 > 32) e->state++;
+			}
+		}
+		break;
+	}
+}

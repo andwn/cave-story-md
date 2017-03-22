@@ -68,7 +68,8 @@ void game_main(uint8_t load) {
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
-			} else if(joy_pressed(BUTTON_X) && !tscState && player_has_item(2)) {
+			} else if(joy_pressed(BUTTON_X) && !tscState 
+					&& (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				VDP_setEnable(FALSE);
 				VDP_clearPlan(PLAN_WINDOW, TRUE);

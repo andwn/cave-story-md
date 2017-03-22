@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -494,6 +494,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 4] = {
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, // Balrog in splash screen
 		&onspawn_balrog_splash, &ai_balrog_splash, &ai_null },
 		
-	// Special Trigger
-	{ NULL, NOSHEET, 		PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Trigger
+	// Misc
+	{ NULL, NOSHEET, PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Special Trigger
+	{ &SPR_XXIsland, NOSHEET, PAL3, 2, &ai_null, &ai_island, &ai_null }, // Island
 };

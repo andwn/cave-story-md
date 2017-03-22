@@ -2,28 +2,30 @@
 
 #include "ai.h"
 #include "audio.h"
-#include "dma.h"
-#include "memory.h"
-#include "player.h"
-#include "entity.h"
-#include "stage.h"
-#include "input.h"
-#include "joy.h"
 #include "camera.h"
-#include "resources.h"
-#include "system.h"
-#include "tables.h"
-#include "hud.h"
-#include "window.h"
+#include "dma.h"
+#include "entity.h"
 #include "effect.h"
 #include "gamemode.h"
-#include "sprite.h"
+#include "hud.h"
+#include "input.h"
+#include "joy.h"
+#include "memory.h"
+#include "npc.h"
+#include "player.h"
+#include "resources.h"
 #include "sheet.h"
+#include "sprite.h"
+#include "stage.h"
 #include "string.h"
+#include "system.h"
+#include "tables.h"
 #include "vdp.h"
+#include "vdp_bg.h"
 #include "vdp_pal.h"
 #include "vdp_tile.h"
 #include "vdp_ext.h"
+#include "window.h"
 
 #include "tsc.h"
 
@@ -1091,10 +1093,42 @@ uint8_t execute_command() {
 			system_save_counter(system_counter_ticks());
 		}
 		break;
-		case CMD_XX1: // TODO: Island effect
+		case CMD_XX1: // Island effect
 		{
 			args[0] = tsc_read_word();
 			
+			VDP_setEnable(FALSE);
+			// Disable camera
+			camera.target = NULL;
+			camera.x = SCREEN_HALF_W << CSF;
+			camera.y = SCREEN_HALF_H << CSF;
+			// Reset plane positions
+			VDP_setHorizontalScroll(PLAN_A, 0);
+			VDP_setVerticalScroll(PLAN_A, 0);
+			VDP_setHorizontalScroll(PLAN_B, 0);
+			VDP_setVerticalScroll(PLAN_B, 0);
+			// Background sky/mountains
+			VDP_loadTileSet(&TS_XXBack, TILE_TSINDEX, TRUE);
+			VDP_fillTileMapRectInc(PLAN_B, 
+					TILE_ATTR_FULL(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10);
+			// Foreground trees
+			VDP_loadTileSet(&TS_XXFore, TILE_BACKINDEX, TRUE);
+			VDP_fillTileMapRectInc(PLAN_A, 
+					TILE_ATTR_FULL(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4);
+			// Draw high prio black tiles over the top to hide island
+			static const uint32_t blackTile[8] = { 
+				0x11111111,0x11111111,0x11111111,0x11111111,
+				0x11111111,0x11111111,0x11111111,0x11111111
+			};
+			VDP_loadTileData(blackTile, 1, 1, FALSE);
+			VDP_fillTileMapRect(PLAN_A, 
+					TILE_ATTR_FULL(PAL0,1,0,0,1), 10, 6, 20, 4);
+			
+			VDP_setPalette(PAL3, PAL_XX.data);
+			VDP_setEnable(TRUE);
+			
+			Entity *island = entity_create(160<<CSF, 64<<CSF, OBJ_ISLAND, 0);
+			island->state = args[0];
 		}
 		break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
