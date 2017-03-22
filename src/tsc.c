@@ -348,52 +348,66 @@ uint8_t tsc_update() {
 
 void tsc_show_boss_health() {
 	showingBossHealth = TRUE;
-	VDP_setWindowPos(0, 254);
-	VDP_drawTextWindow("Boss[        ]  ", 24, 26);
-	VDP_drawTextWindow("                ", 24, 27);
-	// Face tiles are unused during boss battles, upload the tiles there
-	VDP_loadTileData(TS_HudBar.tiles, TILE_FACEINDEX, 9, TRUE);
+	// Fill map name space with boss bar
+	static const char boss[4] = "Boss";
+	for(uint8_t i = 0; i < 4; i++) {
+		VDP_loadTileData(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1, TRUE);
+	}
+	for(uint8_t i = 0; i < 8; i++) {
+		VDP_loadTileData(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1, TRUE);
+	}
+	// Create sprites to display the string
+	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
+	teleMenuSprite[5] = (VDPSprite) { 
+		.x = 160 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+	};
+	teleMenuSprite[6] = (VDPSprite) { 
+		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+4)
+	};
+	teleMenuSprite[7] = (VDPSprite) { 
+		.x = 160 + 64 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+8)
+	};
 }
 
 void tsc_update_boss_health() {
 	if(!bossEntity) {
-		tsc_hide_boss_health();
-	} else if(bossEntity->health > bossMaxHealth) {
-		VDP_drawTextWindow("?HP>MHP?", 29, 26);
-	} else if(bossHealth != bossEntity->health) {
+		showingBossHealth = FALSE;
+		return;
+	}
+	if(bossHealth != bossEntity->health) {
 		bossHealth = bossEntity->health;
 		if(bossHealth == 0) {
 			// Boss is dead hide the bar
-			tsc_hide_boss_health();
+			showingBossHealth = FALSE;
 			return;
 		}
 		uint16_t hp = bossHealth, inc = bossMaxHealth / 8, i;
-		// Draw filled tiles
-		for(i = 0; i < 8 && hp > inc; i++) {
+		// Filled tiles
+		for(i = 0; i < 8 && hp >= inc; i++) {
 			hp -= inc;
-			VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
-				TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX + 8));
 		}
 		// If boss health is full no need to go any further
 		if(bossHealth == bossMaxHealth) return;
 		// Draw a partial filled tile
-		i++;
-		VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
-			TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX + hp / 8));
-		// draw empty tiles
-		for(; i < 8; i++) {
-			VDP_setTileMapXY(PLAN_WINDOW, 29 + i, 26, 
-				TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_FACEINDEX));
+		if(inc) {
+			uint16_t index = min(((hp << 3) / inc) << 3, 72);
+			VDP_loadTileData(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1, TRUE);
+		} else {
+			// Don't divide by zero
+			VDP_loadTileData(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1, TRUE);
+		}
+		// Draw empty tile after it
+		if(++i < 8) {
+			VDP_loadTileData(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1, TRUE);
 		}
 	}
-}
-
-void tsc_hide_boss_health() {
-	showingBossHealth = FALSE;
-	VDP_setWindowPos(0, 0);
-	// Blank out these 2 tiles in the corner
-	VDP_setTileMapXY(PLAN_WINDOW, 39, 26, 0);
-	VDP_setTileMapXY(PLAN_WINDOW, 39, 27, 0);
+	
+	sprite_add(teleMenuSprite[5]);
+	sprite_add(teleMenuSprite[6]);
+	sprite_add(teleMenuSprite[7]);
 }
 
 static void tsc_render_warp_text() {
@@ -418,6 +432,7 @@ static void tsc_render_warp_text() {
 
 void tsc_show_teleport_menu() {
 	//mapNameTTL = 0; // We will be clobbering the tiles that display the map name
+	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
 	tsc_render_warp_text();
 	
 	teleMenuSlotCount = 0;
@@ -822,11 +837,10 @@ uint8_t execute_command() {
 		case CMD_BSL: // Start boss fight with entity (1)
 		{
 			args[0] = tsc_read_word();
-			//bossEntity = entity_find_by_event(args[0]);
-			//if(bossEntity) {
-			//	bossMaxHealth = bossHealth = bossEntity->health;
-			//	tsc_show_boss_health();
-			//}
+			if(bossEntity || (bossEntity = entity_find_by_event(args[0]))) {
+				bossMaxHealth = bossHealth = bossEntity->health;
+				tsc_show_boss_health();
+			}
 		}
 		break;
 		case CMD_NCJ: // If entity type (1) exists jump to event (2)
@@ -1059,15 +1073,15 @@ uint8_t execute_command() {
 			return 5;
 		}
 		break;
-		case CMD_SIL: // TODO: Show illustration (1) in the credits
+		case CMD_SIL: // Show illustration (1) in the credits
 		{
 			args[0] = tsc_read_word();
-			
+			credits_show_image(args[0]);
 		}
 		break;
-		case CMD_CIL: // TODO: Clear illustration in the credits
+		case CMD_CIL: // Clear illustration in the credits
 		{
-			
+			credits_clear_image();
 		}
 		break;
 		case CMD_SLP: // Show the teleporter menu

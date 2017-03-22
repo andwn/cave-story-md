@@ -198,22 +198,22 @@ void entities_update() {
 		}
 		// Solid Entities
 		bounding_box collision = { 0, 0, 0, 0 };
-		//if(flags & NPC_SPECIALSOLID) {
-		//	// Apply x_next/y_next so player is completely outside us
-		//	collision = entity_react_to_collision(&player, e);
-		//	player.x = player.x_next;
-		//	player.y = player.y_next;
-		//	if(collision.bottom) {
-		//		if(flags & NPC_BOUNCYTOP) {
-		//			player.y_speed = -(1 << CSF);
-		//			player.grounded = FALSE;
-		//		} else {
-		//			playerPlatform = e;
-		//		}
-		//	}
-		//} // "Smushy" Solid Entities
-		// else
-		if(flags & (NPC_SOLID | NPC_SPECIALSOLID)) {
+		if(flags & NPC_SPECIALSOLID) {
+			// Apply x_next/y_next so player is completely outside us
+			collision = entity_react_to_collision(&player, e);
+			player.x = player.x_next;
+			player.y = player.y_next;
+			if(collision.bottom) {
+				if(flags & NPC_BOUNCYTOP) {
+					player.y_speed = -(1 << CSF);
+					player.grounded = FALSE;
+				} else {
+					playerPlatform = e;
+					playerPlatformTime = 0;
+				}
+			}
+		} // "Smushy" Solid Entities
+		else if(flags & NPC_SOLID) {
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			collision = entity_react_to_collision(&player, e);
 			if(collision.bottom && e->y > player.y) {
@@ -223,6 +223,7 @@ void entities_update() {
 					player.grounded = FALSE;
 				} else {
 					playerPlatform = e;
+					playerPlatformTime = 0;
 				}
 			} else if(collision.top && e->y < player.y) {
 				player.y += 1<<CSF;

@@ -57,7 +57,7 @@
 
 /**
  *  \brief
- *      SGDL font length
+ *      SGDK font length
  */
 #define FONT_LEN    96
 

@@ -41,6 +41,7 @@ uint8_t playerInventory[MAX_ITEMS];
 uint8_t mgun_shoottime, mgun_chargetime, playerNoBump;
 
 Entity *playerPlatform;
+uint8_t playerPlatformTime;
 
 uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
 

@@ -80,7 +80,7 @@ const stage_info_def stage_info[STAGE_COUNT] = {
 	{ PXM_Ring3,	PXE_Ring3,	TSC_Ring3,	&PAL_Miza,	28,	0,	"Black Space" },
 	{ PXM_Little,	PXE_Little,	TSC_Little,	&PAL_Regu,	16,	0,	"Little House" },
 	{ PXM_Blcny2,	PXE_Blcny2,	TSC_Blcny2,	&PAL_Regu,	21,	4,	"Balcony" },
-	{ PXM_Fall,		PXE_Fall,	TSC_Fall,	&PAL_Regu,	8,	0,	"Ending" },
+	{ PXM_Fall,		PXE_Fall,	TSC_Fall,	&PAL_Regu,	8,	15,	"Ending" },
 	{ PXM_Kings,	PXE_Kings,	TSC_Kings,	&PAL_Regu,	25,	0,	"Intro" },
 	{ PXM_Pixel,	PXE_Pixel,	TSC_Pixel,	&PAL_Regu,	16,	0,	"Waterway Cabin" },
 	{ PXM_e_Maze,	PXE_e_Maze,	TSC_e_Maze,	&PAL_Regu,	13,	0,	"Credits" },

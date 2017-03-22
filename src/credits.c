@@ -22,6 +22,8 @@ enum CreditCmd {
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, END 
 };
 
+static int8_t illScrolling = 0;
+
 void credits_main() {
 	gamemode = GM_CREDITS;
 	
@@ -30,13 +32,12 @@ void credits_main() {
 	
 	uint16_t waitTime = 0;
 	uint16_t backScroll = 0;
-	//uint16_t illScroll = 0;
+	uint16_t illScroll = 0;
 	
 #ifndef PAL
 	uint8_t skipScroll = FALSE;
 #endif
 	
-	//song_stop();
 	sprites_clear();
 	vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	
@@ -54,6 +55,8 @@ void credits_main() {
 	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
 	VDP_setHorizontalScroll(PLAN_B, 0);
 	VDP_setVerticalScroll(PLAN_B, 0);
+	VDP_setHorizontalScroll(PLAN_A, 0);
+	VDP_setVerticalScroll(PLAN_A, 0);
 	// Text on background plane, priority 1
 	VDP_loadFont(&TS_SysFont, TRUE);
 	VDP_setTextPlan(PLAN_B);
@@ -121,7 +124,33 @@ void credits_main() {
 			textY++;
 			VDP_clearTextBG(PLAN_B, 0, textY & 31, 40);
 		}
+		// Scrolling for illustrations
+		illScroll += illScrolling;
+		if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+		
 		VDP_setVerticalScroll(PLAN_B, backScroll >> 1);
+		VDP_setHorizontalScroll(PLAN_A, -illScroll);
 		vsync(); aftervsync();
     }
+}
+
+void credits_show_image(uint16_t id) {
+	if(id > 19) return;
+	if(illustration_info[id].tileset == NULL) return; // Can't draw null tileset
+	VDP_setEnable(FALSE);
+	VDP_setPalette(PAL2, illustration_info[id].palette->data);
+	VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
+#ifdef PAL
+	VDP_fillTileMapRectInc(PLAN_A, 
+			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX), 0, 0, 20, 30);
+#else
+	VDP_fillTileMapRectInc(PLAN_A, 
+			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX+20), 0, 0, 20, 28);
+#endif
+	VDP_setEnable(TRUE);
+	illScrolling = 4;
+}
+
+void credits_clear_image() {
+	illScrolling = -4;
 }

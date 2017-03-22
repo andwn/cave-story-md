@@ -72,7 +72,18 @@ void game_main(uint8_t load) {
 					&& (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				VDP_setEnable(FALSE);
-				VDP_clearPlan(PLAN_WINDOW, TRUE);
+				if(stageBackgroundType == 4) {
+					// Hide water
+					static const uint32_t black[8] = {
+						0x11111111,0x11111111,0x11111111,0x11111111,
+						0x11111111,0x11111111,0x11111111,0x11111111
+					};
+					VDP_loadTileData(black, TILE_FACEINDEX, 1, TRUE);
+					VDP_fillTileMap(VDP_PLAN_WINDOW, 
+							TILE_ATTR_FULL(PAL0,1,0,0,TILE_FACEINDEX), 0, 64*30);
+				} else {
+					VDP_clearPlan(PLAN_WINDOW, TRUE);
+				}
 				VDP_setWindowPos(0, IS_PALSYSTEM ? 30 : 28);
 				VDP_setEnable(TRUE);
 				do_map();
@@ -92,10 +103,10 @@ void game_main(uint8_t load) {
 				if(controlsLocked) joystate = oldstate = 0;
 				// Don't update this stuff if a script is using <PRI
 				if(!gameFrozen) {
+					if(showingBossHealth) tsc_update_boss_health();
 					camera_update();
 					player_update();
 					entities_update();
-					//if(showingBossHealth) tsc_update_boss_health();
 				}
 				// Restore controller locking if it was locked
 				joystate = lockstate;
@@ -155,7 +166,6 @@ void game_reset(uint8_t load) {
 		if(load >= 4) system_load_levelselect(load - 4);
 		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
-		//sheets_refresh_weapons();
 	} else {
 TryAgainNoSave:
 		system_new();
@@ -436,7 +446,8 @@ void do_map() {
 	};
 	uint16_t blinkTimer = 0;
 	
-	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C)) {
+	input_update();
+	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_X)) {
 		input_update();
 		system_update();
 		// Alternate between the small plus and transparency

@@ -421,7 +421,8 @@ void stage_draw_background() {
 	uint16_t pal = background_info[stageBackground].palette;
 	for(uint8_t y = 0; y < 32; y += h) {
 		for(uint8_t x = 0; x < 64; x += w) {
-			VDP_fillTileMapRectInc(PLAN_B, TILE_ATTR_FULL(pal,0,0,0,TILE_BACKINDEX), x, y, w, h);
+			VDP_fillTileMapRectInc(PLAN_B, TILE_ATTR_FULL(pal,0,0,0,TILE_BACKINDEX), x, y, 
+					(x+w > 64) ? (64-x) : w, (y+h > 32) ? (32-y) : h);
 		}
 	}
 	

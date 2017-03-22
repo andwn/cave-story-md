@@ -21,6 +21,6 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ &BG_Hell, PAL2, 0, 4, 4 }, // Hell B1 / B2 / B3
 	{ &BG_Eggs, PAL2, 0, 8, 8 }, // Egg Corridor
 	{ &BG_LabB, PAL3, 0, 8, 8 }, // Labyrinth B, Storehouse
-	{ &BG_Stream,PAL2,0, 8, 8 }, // UNUSED
+	{ &BG_Fall, PAL2, 0, 8, 8 }, // Fall
 	{ &BG_Sand, PAL2, 0, 8, 8 }, // Sand Zone
 };

@@ -213,11 +213,14 @@ void player_update() {
 				player.hit_box.bottom++;
 				bounding_box box = entity_react_to_collision(&player, playerPlatform);
 				player.hit_box.bottom--;
-				if(box.bottom == 0) {
+				// playerPlatformTime prevents the player from being too "loose" with platforms
+				// They would slip off if the platform moves diagonally
+				if(box.bottom == 0 && ++playerPlatformTime > 1) {
 					playerPlatform = NULL;
 				} else {
 					player.grounded = TRUE;
 					player.y_next += pixel_to_sub(1);
+					playerPlatformTime = 0;
 				}
 			}
 		}
@@ -249,9 +252,6 @@ void player_update() {
 	}
 	player.x = player.x_next;
 	player.y = player.y_next;
-	// Die when player goes OOB. Sometimes a H/V trigger does this already hence this
-	// tscState guard... or the game will just lock up
-	//if (!tscState) player_update_bounds();
 	// Damage Tiles / Death check / IFrames
 	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)

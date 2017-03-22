@@ -238,7 +238,7 @@ void ai_falling_block_spawner(Entity *e) {
 				entity_create(x, (player.y - block_to_sub(14)), 
 							OBJ_FALLING_BLOCK, (random() & 1) ? NPC_OPTION2 : 0);
 									  
-				e->timer = 9 + (random() & 15);
+				e->timer = TIME(15) + (random() & 15);
 			}
 		}
 		break;
@@ -263,6 +263,7 @@ void ai_falling_block(Entity *e) {
 				e->hit_box = (bounding_box) { 8,8,8,8 };
 				e->display_box = (bounding_box) { 8,8,8,8 };
 				e->sheet++; // SHEET_BLOCKM always after SHEET_BLOCK
+				e->vramindex = sheets[e->sheet].index;
 				e->sprite[0].size = SPRITE_SIZE(2, 2);
 			}
 		}
@@ -280,21 +281,19 @@ void ai_falling_block(Entity *e) {
 		case 10:	// falling
 		{	// allow to pass thru Hell/Balcony ceiling
 			if (e->y > 128<<CSF) {
-				e->eflags &= ~NPC_IGNORESOLID;
 				e->state = 11;
 			}
 		}
 		case 11:	// passed thru ceiling in Hell B2
 		{
 			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0x700));
+			LIMIT_Y(SPEED(0x5FF));
 			
-			if (blk(e->x, 0, e->y, 8) == 0x41) {
+			if (blk(e->x, 0, e->y, NPC_OPTION2 ? 8 : 16) == 0x41) {
 				e->y_speed = -SPEED(0x200);
-				e->eflags |= NPC_IGNORESOLID;
 				e->state = 20;
 				
-				//SmokeSide(o, 4, DOWN);
+				SMOKE_AREA((e->x >> CSF) - 8, (e->y >> CSF) + (NPC_OPTION2 ? 8 : 16), 16, 1, 1);
 				camera_shake(10);
 			}
 		}
@@ -303,7 +302,7 @@ void ai_falling_block(Entity *e) {
 		case 20:	// already bounced on ground, falling offscreen
 		{
 			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0x700));
+			LIMIT_Y(SPEED(0x5FF));
 			
 			if (e->y > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;

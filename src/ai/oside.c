@@ -298,23 +298,28 @@ void ai_pixel_cat(Entity *e) {
 void ai_little_family(Entity *e) {
 	e->frame &= 1;
 	
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(!e->grounded) e->grounded = collide_stage_floor(e);
+	else e->grounded = collide_stage_floor_grounded(e);
+	
 	switch(e->state) {
-		case 0:
+		case 0: // Standing
 		{
+			e->enableSlopes = TRUE;
 			e->state = 1;
 			e->frame = 0;
 			e->x_speed = 0;
 		}
 		case 1:
 		{
-			if (!(random() % 60)) {
+			if (!(random() % TIME(60))) {
 				e->state = (random() & 1) ? 2 : 10;
 				e->timer = 0;
 				e->frame = 1;
 			}
 		}
 		break;
-		
 		case 2:
 		{
 			if (++e->timer > 8) {
@@ -323,8 +328,7 @@ void ai_little_family(Entity *e) {
 			}
 		}
 		break;
-		
-		case 10:
+		case 10: // Walking
 		{
 			e->state = 11;
 			e->frame = 0;
@@ -353,6 +357,9 @@ void ai_little_family(Entity *e) {
 		case 220: e->frame += 4; break;		// little son
 	}
 	
-	e->y_speed += SPEED(0x20);
+	if(!e->grounded) e->y_speed += SPEED(0x20);
 	LIMIT_Y(SPEED(0x5ff));
+	
+	e->x = e->x_next;
+	e->y = e->y_next;
 }

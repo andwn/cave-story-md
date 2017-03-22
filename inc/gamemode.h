@@ -32,3 +32,5 @@ void do_map();
 void soundtest_main();
 
 void credits_main();
+void credits_show_image(uint16_t id);
+void credits_clear_image();
