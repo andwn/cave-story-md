@@ -343,7 +343,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Archer)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Bute Projectile
 	{ NULL,		SHEET_MAPI, PAL3, 1, &onspawn_persistent, &ai_ma_pignon, &ondeath_default }, // Ma Pignon
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Falling (?)
+	{ &SPR_Quote, NOSHEET, PAL0, 1, &onspawn_persistent, &ai_player, &ai_null }, // Falling (?)
 	{ NULL, 	NOSHEET, PAL1, 1, &ai_null, &ai_null, &ondeath_default }, // Hopping Enemy (?)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Defeated)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Mesa
@@ -351,7 +351,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x140 (320) */
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (Hell)
-		&ai_null, &ai_null, &ai_null },
+		&onspawn_persistent, &ai_curly_carried, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Deleet
@@ -496,5 +496,5 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 		
 	// Misc
 	{ NULL, NOSHEET, PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Special Trigger
-	{ &SPR_XXIsland, NOSHEET, PAL3, 2, &ai_null, &ai_island, &ai_null }, // Island
+	{ &SPR_XXIsland, NOSHEET, PAL3, 2, &onspawn_persistent, &ai_island, &ai_null }, // Island
 };

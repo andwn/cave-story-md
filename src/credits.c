@@ -129,7 +129,7 @@ void credits_main() {
 		if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
 		
 		VDP_setVerticalScroll(PLAN_B, backScroll >> 1);
-		VDP_setHorizontalScroll(PLAN_A, -illScroll);
+		VDP_setHorizontalScroll(PLAN_A, illScroll);
 		vsync(); aftervsync();
     }
 }
@@ -142,15 +142,15 @@ void credits_show_image(uint16_t id) {
 	VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
 #ifdef PAL
 	VDP_fillTileMapRectInc(PLAN_A, 
-			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX), 0, 0, 20, 30);
+			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX), 44, 0, 20, 30);
 #else
 	VDP_fillTileMapRectInc(PLAN_A, 
-			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX+20), 0, 0, 20, 28);
+			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX+20), 44, 0, 20, 28);
 #endif
 	VDP_setEnable(TRUE);
-	illScrolling = 4;
+	illScrolling = 8;
 }
 
 void credits_clear_image() {
-	illScrolling = -4;
+	illScrolling = -8;
 }

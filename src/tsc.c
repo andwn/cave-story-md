@@ -358,16 +358,17 @@ void tsc_show_boss_health() {
 	}
 	// Create sprites to display the string
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
+	uint8_t yoff = IS_PALSYSTEM ? 24 : 16;
 	teleMenuSprite[5] = (VDPSprite) { 
-		.x = 160 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
 	teleMenuSprite[6] = (VDPSprite) { 
-		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.x = 160 + 64 + 128, .y = SCREEN_HEIGHT - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
 	teleMenuSprite[7] = (VDPSprite) { 
-		.x = 160 + 64 + 128, .y = SCREEN_HEIGHT - 24 + 128,
+		.x = 160 + 96 + 128, .y = SCREEN_HEIGHT - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+8)
 	};
 }
@@ -1116,6 +1117,8 @@ uint8_t execute_command() {
 			camera.target = NULL;
 			camera.x = SCREEN_HALF_W << CSF;
 			camera.y = SCREEN_HALF_H << CSF;
+			camera.x_shifted = 0;
+			camera.y_shifted = 0;
 			// Reset plane positions
 			VDP_setHorizontalScroll(PLAN_A, 0);
 			VDP_setVerticalScroll(PLAN_A, 0);
@@ -1138,6 +1141,7 @@ uint8_t execute_command() {
 			VDP_fillTileMapRect(PLAN_A, 
 					TILE_ATTR_FULL(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
+			VDP_setCachedPalette(PAL3, PAL_XX.data);
 			VDP_setPalette(PAL3, PAL_XX.data);
 			VDP_setEnable(TRUE);
 			
