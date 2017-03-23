@@ -35,7 +35,7 @@ int8_t selectedItem = 0;
 void draw_itemmenu(uint8_t resetCursor);
 uint8_t update_pause();
 void itemcursor_move(int8_t oldindex, int8_t index);
-void gen_maptile(uint16_t bx, uint16_t by, uint16_t index);
+uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index);
 
 // Initializes or re-initializes the game after "try again"
 void game_reset(uint8_t load);
@@ -426,12 +426,30 @@ void do_map() {
 	
 	uint16_t index = TILE_SHEETINDEX;
 	
+	// Upload a completely blank & completely solid tile
+	static const uint32_t blank[8] = {
+		0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,
+	};
+	DMA_doDma(DMA_VRAM, (uint32_t)blank, index*32, 16, 2);
+	index++;
+	static const uint32_t solid[8] = {
+		0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,
+	};
+	DMA_doDma(DMA_VRAM, (uint32_t)solid, index*32, 16, 2);
+	index++;
+	
 	for(uint16_t y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
 		
 		for(uint16_t x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
-			gen_maptile(x*8, y*8, index);
-			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
-			index++;
+			uint8_t result = gen_maptile(x*8, y*8, index);
+			if(!result) {
+				VDP_setTileMapXY(PLAN_WINDOW, 
+						TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
+				index++;
+			} else {
+				VDP_setTileMapXY(PLAN_WINDOW, 
+						TILE_ATTR_FULL(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
+			}
 		}
 		
 		ready = TRUE;
@@ -461,7 +479,10 @@ void do_map() {
 	draw_itemmenu(FALSE);
 }
 
-void gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
+uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
+	static const uint32_t blank = 0x11111111;
+	static const uint32_t solid = 0xBBBBBBBB;
+	
 	uint32_t tile[8];
 	for(uint16_t y = 0; y < 8; y++) {
 		if(by+y >= stageHeight) {
@@ -477,5 +498,15 @@ void gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
 			}
 		}
 	}
+	// Check if completely blank or solid area, do not duplicate
+	uint8_t blank_c = 0, solid_c = 0;
+	for(uint8_t y = 0; y < 8; y++) {
+		if(tile[y] == blank) blank_c++;
+		if(tile[y] == solid) solid_c++;
+	}
+	if(blank_c == 8) return 1;
+	if(solid_c == 8) return 2;
+	// Otherwise upload tile
 	DMA_doDma(DMA_VRAM, (uint32_t)tile, index*32, 16, 2);
+	return 0;
 }

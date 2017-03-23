@@ -158,7 +158,7 @@ SPRITE SPR_DraShot		"sprite/dragonshot.png" 2 3 0 0 NONE
 SPRITE SPR_Lightning	"sprite/lightning.png"	2 24 0 0 NONE
 SPRITE SPR_Heli			"sprite/heli.png"		16 8 0 0 NONE
 SPRITE SPR_HeliBlade	"sprite/heliblade.png"	14 2 0 0 NONE
-SPRITE SPR_HeliBlade2	"sprite/heliblade2.png"	10 2 0 0 NONE
+SPRITE SPR_HeliBlade2	"sprite/heliblade2.png"	9 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE

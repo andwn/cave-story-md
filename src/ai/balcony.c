@@ -3,16 +3,19 @@
 #define angle	jump_time
 
 void ai_helicopter(Entity *e) {
-	Entity *b;
+	if(e->dir) { // STOP changing direction!
+		e->dir = 0;
+		e->frame = 1;
+	}
 	
 	switch(e->state) {
 		case 0:		// stopped
 		{
-			b = entity_create(e->x + (16<<CSF), e->y - (9<<CSF) - (48<<CSF), 
+			Entity *b = entity_create(e->x + (16<<CSF), e->y - (9<<CSF) - (48<<CSF), 
 					OBJ_HELICOPTER_BLADE, 0);
 			b->linkedEntity = e;
 			
-			b = entity_create(e->x - (32<<CSF), e->y - (4<<CSF) - (48<<CSF), 
+			b = entity_create(e->x - (36<<CSF), e->y - (4<<CSF) - (48<<CSF), 
 					OBJ_HELICOPTER_BLADE2, 0);
 			b->linkedEntity = e;
 			
@@ -21,10 +24,6 @@ void ai_helicopter(Entity *e) {
 		break;
 		
 		case 20:	// blades running
-		{
-			e->frame = 1;
-			e->state++;
-		}
 		break;
 		
 		case 30:	// blades running, spawn momorin
