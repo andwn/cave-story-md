@@ -149,6 +149,8 @@ uint8_t teleMenuSelection = 0;
 uint8_t teleMenuSheet = NOSHEET;
 VDPSprite teleMenuSprite[8];
 
+
+Entity *bossBarEntity = NULL;
 uint16_t bossMaxHealth;
 uint16_t bossHealth;
 
@@ -374,12 +376,12 @@ void tsc_show_boss_health() {
 }
 
 void tsc_update_boss_health() {
-	if(!bossEntity) {
+	if(!bossBarEntity) {
 		showingBossHealth = FALSE;
 		return;
 	}
-	if(bossHealth != bossEntity->health) {
-		bossHealth = bossEntity->health;
+	if(bossHealth != bossBarEntity->health) {
+		bossHealth = bossBarEntity->health;
 		if(bossHealth == 0) {
 			// Boss is dead hide the bar
 			showingBossHealth = FALSE;
@@ -838,9 +840,11 @@ uint8_t execute_command() {
 		case CMD_BSL: // Start boss fight with entity (1)
 		{
 			args[0] = tsc_read_word();
-			if(bossEntity || (bossEntity = entity_find_by_event(args[0]))) {
-				bossMaxHealth = bossHealth = bossEntity->health;
+			if(args[0] && (bossBarEntity = entity_find_by_event(args[0]))) {
+				bossMaxHealth = bossHealth = bossBarEntity->health;
 				tsc_show_boss_health();
+			} else {
+				bossBarEntity = NULL;
 			}
 		}
 		break;
