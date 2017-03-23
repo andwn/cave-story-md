@@ -422,6 +422,7 @@ enum {
 	// Misc
 	OBJ_TRIGGER_SPECIAL,
 	OBJ_ISLAND,
+	OBJ_HELICOPTER_BLADE2,
 };
 
 // Locations in npc.tbl where data for each property begins

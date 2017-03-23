@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 6] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -279,8 +279,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, SHEET_SHOCK, 	PAL3, 1, &onspawn_persistent, &ai_black_lightning, &ai_null }, // Misery Lightning
 	{ NULL, SHEET_RING, 	PAL3, 1, &onspawn_persistent, &ai_misery_ring, &ondeath_default }, // Misery Ring
 	{ &SPR_EnCap, 	NOSHEET, PAL1, 1, &ai_null, &ai_xp_capsule, &ondeath_default }, // Energy Capsule
-	{ NULL, 		NOSHEET, PAL0, 4, &ai_null, &ai_helicopter, &ai_null }, // Helicopter
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_helicopter_blade, &ai_null }, // ???
+	{ &SPR_Heli, 	NOSHEET, PAL1, 8, &onspawn_persistent, &ai_helicopter, &ai_null }, // Helicopter
+	{ &SPR_HeliBlade,NOSHEET, PAL1, 4, &onspawn_heliblade1, &ai_helicopter_blade, &ai_null }, // Helicopter blade
 	/* 0x100 (256) */
 	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_doctor_crowned, &ai_null }, // Doctor (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_red_crystal, &ai_red_crystal, &ai_null }, // Red Crystal
@@ -497,4 +497,6 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	// Misc
 	{ NULL, NOSHEET, PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Special Trigger
 	{ &SPR_XXIsland, NOSHEET, PAL3, 2, &onspawn_persistent, &ai_island, &ai_null }, // Island
+	{ &SPR_HeliBlade2, NOSHEET, PAL1, 3, // Helicopter blade (smaller)
+		&onspawn_heliblade2, &ai_helicopter_blade, &ai_null },
 };
