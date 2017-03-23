@@ -41,6 +41,14 @@ int16_t backScrollTable[32];
 uint8_t *stageBlocks = NULL;
 uint16_t *stageTable = NULL;
 
+typedef struct {
+	uint8_t index;
+	uint8_t dir;
+} Current;
+Current currents[4];
+uint8_t currentsCount = 0;
+uint8_t currentsTimer = 0;
+
 void stage_load_tileset();
 void stage_load_blocks();
 void stage_load_entities();
@@ -178,6 +186,7 @@ void stage_load(uint16_t id) {
 	if(stageID == 68) { // Black Space
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
 	}
+	
 	tsc_load_stage(id);
 	
 	XGM_set68KBUSProtection(FALSE);
@@ -197,6 +206,13 @@ void stage_load_tileset() {
 			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
 			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
 		}
+	}
+	// Search for any "wind" tiles and note their index to animate later
+	currentsCount = 0;
+	for(uint16_t i = 0; i < 160; i++) {
+		if(!(PXA[i] & 0x80)) continue;
+		currents[currentsCount] = (Current) { .index = i, .dir = PXA[i] & 0x3 };
+		if(++currentsCount == 4) break;
 	}
 }
 
@@ -371,6 +387,15 @@ void stage_update() {
 		// Only scroll foreground
 		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+	}
+	if(currentsCount) { // Waterway currents
+		currentsTimer++;
+		uint8_t t = currentsTimer & 3;
+		if(t < currentsCount) {
+			//VDP_setEnable(FALSE);
+			// I'll do this later
+			//VDP_setEnable(TRUE);
+		}
 	}
 }
 

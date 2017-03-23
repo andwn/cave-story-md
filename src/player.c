@@ -215,8 +215,8 @@ void player_update() {
 				player.hit_box.bottom--;
 				// playerPlatformTime prevents the player from being too "loose" with platforms
 				// They would slip off if the platform moves diagonally
-				if(box.bottom == 0 && ++playerPlatformTime > 1) {
-					playerPlatform = NULL;
+				if(box.bottom == 0) {
+					if(++playerPlatformTime > 1) playerPlatform = NULL;
 				} else {
 					player.grounded = TRUE;
 					player.y_next += pixel_to_sub(1);
