@@ -553,6 +553,8 @@ void onspawn_mimiga_cage(Entity *e) {
 }
 
 void ai_npc_itoh(Entity *e) {
+	enum Frame { STAND, BLINK, LEAP, COWER, WALK1, WALK2 };
+	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
@@ -565,14 +567,14 @@ void ai_npc_itoh(Entity *e) {
 		case 1:
 		{
 			e->x_speed = 0;
-			e->frame = 0;
-			RANDBLINK(e, 1, 200);
+			e->frame = STAND;
+			RANDBLINK(e, BLINK, 200);
 		}
 		break;
 		
 		case 10:		// cower
 		{
-			e->frame = 2;
+			e->frame = COWER;
 			e->x_speed = 0;
 		}
 		break;
@@ -580,16 +582,17 @@ void ai_npc_itoh(Entity *e) {
 		case 20:		// leap away
 		{
 			e->state = 21;
-			e->frame = 2;
-			e->x_speed = 0x200;
-			e->y_speed = -0x400;
+			e->frame = LEAP;
+			e->x_speed = SPEED(0x200);
+			e->y_speed = -SPEED(0x400);
+			e->grounded = FALSE;
 		}
 		case 21:
 		{
-			if (e->grounded && e->y_speed >= 0) {
+			if (e->grounded) {
 				e->x_speed = 0;
 				
-				e->frame = 3;
+				e->frame = COWER;
 				e->state = 30;
 				e->timer = 0;
 			}
@@ -612,21 +615,22 @@ void ai_npc_itoh(Entity *e) {
 		{
 			e->state = 41;
 			e->y_speed = -SPEED(0x200);
-			e->frame = 2;
+			e->frame = LEAP;
+			e->grounded = FALSE;
 		}
 		case 41:
 		{
-			if (e->grounded && e->y_speed > 0) {
+			if (e->grounded) {
 				e->x_speed = 0;
 				e->state = 42;
-				e->frame = 0;
+				e->frame = STAND;
 				e->dir = 1;
 			}
 		}
 		break;
 		case 42:	// stop begin shocked after blocks fall (same as 0 except he doesn't blink)
 		{
-			e->frame = 0;
+			e->frame = STAND;
 			e->dir = 1;
 		}
 		break;
@@ -637,15 +641,15 @@ void ai_npc_itoh(Entity *e) {
 			e->timer = 0;
 			e->animtime = 0;
 			e->dir = 1;
-			//e->frame = 5;
+			e->frame = WALK1;
 		}
 		case 51:
 		{
-			//ANIMATE(e, 4, 4,5,6,7);
+			ANIMATE(e, 4, WALK1,STAND,WALK2,STAND);
 			MOVE_X(SPEED(0x200));
 			
-			if (++e->timer > 32) {
-				e->frame = 0;
+			if (++e->timer > TIME(32)) {
+				e->frame = STAND;
 				e->x_speed = 0;
 				e->state = 52;
 			}
