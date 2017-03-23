@@ -20,17 +20,24 @@ uint8_t sue_was_killed;
 
 // Prototypes
 //static Entity *fm_spawn_missile(Entity *e, uint8_t angindex);
-static void sue_somersault(Entity *e);
-static void sue_dash(Entity *e);
 static void set_ignore_solid(Entity *e);
 static void sidekick_run_defeated(Entity *e, uint16_t health);
 
 void ai_misery_frenzied(Entity *e) {
+	enum Frame {
+		STAND1, STAND2, FLOAT1, FLOAT2, SPELL1, SPELL2, SPELL3,
+		IDK1, IDK2, IDK3, EGADS, KNOCKOUT, IDK4, IDK5, DASH,
+		MISSL1, MISSL2, IDK6
+	};
+	
 	sidekick_run_defeated(e, 600);
 	
 	switch(e->state) {
 		case 0:
 		{
+			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
+			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			
 			e->state = 1;
 			sue_being_hurt = sue_was_killed = FALSE;
 			
@@ -42,42 +49,32 @@ void ai_misery_frenzied(Entity *e) {
 		case 1:		// transforming
 		{
 			e->timer++;
-			
 			if (e->timer == 2) {	// frenzied
-				//e->sprite = SPR_MISERY_FRENZIED;
-				e->frame = 9;
-				e->x -= 0x1000;
-				e->y -= 0x2000;
+				e->frame = EGADS;
+				e->hidden = FALSE;
 			}
-			
 			if (e->timer == 4) {	// normal
 				e->timer = 0;
-				
-				//e->sprite = SPR_MISERY;
-				e->frame = 2;
-				e->x += 0x1000;
-				e->y += 0x2000;
+				e->hidden = TRUE;
 			}
 			
-			if (++e->timer2 >= 50) {
+			if (++e->timer2 >= TIME(50)) {
 				e->timer2 = 0;
 				e->state = 2;
 			}
 		}
 		break;
-		
 		case 10:	// hold at "being transformed" frame
 		{
 			e->state = 11;
-			e->frame = 9;
+			e->frame = EGADS;
 		}
 		break;
-		
 		case 20:	// fight begin / base state
 		{
 			e->state = 21;
 			e->timer = 0;
-			e->frame = 0;
+			e->frame = FLOAT1;
 			e->animtime = 0;
 		}
 		case 21:
@@ -85,31 +82,30 @@ void ai_misery_frenzied(Entity *e) {
 			e->x_speed *= 7; e->x_speed /= 8;
 			e->y_speed *= 7; e->y_speed /= 8;
 			
-			ANIMATE(e, 20, 0,1);
+			ANIMATE(e, 20, FLOAT1,FLOAT2);
 			
 			if (++e->timer > TIME(100)) e->state = 30;
 			
 			FACE_PLAYER(e);
 		}
 		break;
-		
-		case 30:
+		case 30: // Charging spell
 		{
 			e->state = 31;
 			e->timer = 0;
-			e->frame = 2;
+			e->frame = SPELL1;
 			e->savedhp = e->health;
 		}
 		case 31:
 		{
-			ANIMATE(e, 4, 2,3);
+			e->frame = (e->timer & 4) ? SPELL1 : SPELL2;
 			
 			if (e->grounded) e->y_speed = -SPEED(0x200);
 			
 			int32_t core_x = bossEntity ? bossEntity->x : 0;
 			
-			e->x_speed += (e->x > core_x) ? -0x20 : 0x20;
-			e->y_speed += (e->y > player.y) ? -0x10 : 0x10;
+			e->x_speed += (e->x > core_x) ? -SPEED(0x20) : SPEED(0x20);
+			e->y_speed += (e->y > player.y) ? -SPEED(0x10) : SPEED(0x10);
 			LIMIT_X(SPEED(0x200));
 			LIMIT_Y(SPEED(0x200));
 			
@@ -145,7 +141,7 @@ void ai_misery_frenzied(Entity *e) {
 		case 41:
 		{
 			e->timer++;
-			e->frame = (e->timer & 2) ? 4 : 5;
+			e->frame = (e->timer & 4) ? SPELL1 : SPELL2;
 			
 			if ((e->timer & 15) == 1) {
 				int x, y;
@@ -169,7 +165,7 @@ void ai_misery_frenzied(Entity *e) {
 						e->spawner ? OBJ_MISERY_CRITTER : OBJ_MISERY_BAT, 0)->hidden = TRUE;
 			}
 			
-			if (e->timer > 50) {
+			if (e->timer > TIME(50)) {
 				e->state = 42;
 				e->timer = 0;
 				FACE_PLAYER(e);
@@ -179,11 +175,11 @@ void ai_misery_frenzied(Entity *e) {
 		
 		case 42:
 		{
-			e->frame = 6;
+			e->frame = DASH;
 			
-			if (++e->timer > 50) {
-				e->y_speed = -0x200;
-				MOVE_X(-0x200);
+			if (++e->timer > TIME(50)) {
+				e->y_speed = -SPEED(0x200);
+				MOVE_X(-SPEED(0x200));
 				
 				e->state = 30;
 			}
@@ -202,7 +198,7 @@ void ai_misery_frenzied(Entity *e) {
 		case 51:
 		{
 			e->timer++;
-			e->frame = (e->timer & 2) ? 4 : 5;
+			e->frame = (e->timer & 4) ? SPELL1 : SPELL2;
 			
 			//uint8_t rate = (playerEquipment & EQUIP_BOOSTER20) ? 10 : 24;
 			
@@ -212,7 +208,7 @@ void ai_misery_frenzied(Entity *e) {
 			//	fm_spawn_missile(e, angindex);
 			//}
 			
-			if (++e->timer > 50) {
+			if (++e->timer > TIME(50)) {
 				e->state = 42;
 				e->timer = 0;
 				FACE_PLAYER(e);
@@ -261,9 +257,10 @@ void ai_misery_critter(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if (++e->timer > 16) {
+			if (++e->timer > TIME(16)) {
 				e->frame = 2;
 				e->hidden = FALSE;
+				e->grounded = FALSE;
 				FACE_PLAYER(e);
 				
 				e->state = 10;
@@ -287,7 +284,7 @@ void ai_misery_critter(Entity *e) {
 		
 		case 11:
 		{
-			if (++e->timer > 10) {
+			if (++e->timer > TIME(10)) {
 				if (++e->timer2 > 4)
 					e->state = 12;
 				else
@@ -305,7 +302,7 @@ void ai_misery_critter(Entity *e) {
 		
 		case 12:
 		{
-			if (e->y > block_to_sub(stageHeight)) {
+			if (e->y_next > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -315,7 +312,7 @@ void ai_misery_critter(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	if (e->state >= 10) {
-		e->y_speed += SPEED(0x40);
+		if(!e->grounded) e->y_speed += SPEED(0x40);
 		LIMIT_Y(SPEED(0x5FF));
 	}
 }
@@ -325,7 +322,7 @@ void ai_misery_bat(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if (++e->timer > 16) {
+			if (++e->timer > TIME(16)) {
 				e->frame = 2;
 				e->hidden = FALSE;
 				FACE_PLAYER(e);
@@ -344,8 +341,8 @@ void ai_misery_bat(Entity *e) {
 		{
 			ANIMATE(e, 2, 0,1,2);
 			
-			e->y_speed += (e->y < e->y_mark) ? 0x40 : -0x40;
-			ACCEL_X(0x10);
+			e->y_speed += (e->y < e->y_mark) ? SPEED(0x40) : -SPEED(0x40);
+			ACCEL_X(SPEED(0x10));
 			
 			if (e->x < 0 || e->x > block_to_sub(stageWidth) ||
 				e->y < 0 || e->y > block_to_sub(stageHeight)) {
@@ -402,11 +399,20 @@ void ai_misery_missile(Entity *e) {
 */
 
 void ai_sue_frenzied(Entity *e) {
+	enum Frame { 
+		TRANSF1, TRANSF2, STILL1, STILL2, PREPARE, DASH, 
+		SPIN1, SPIN2, SPIN3, SPIN4, EGADS, KNOCKOUT, 
+		IDK1, IDK2, IDK3, IDK4, IDK5
+	};
+	
 	sidekick_run_defeated(e, 500);
 	
 	switch(e->state) {
 		case 0:
 		{
+			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
+			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			
 			e->state = 1;
 			sue_being_hurt = sue_was_killed = FALSE;
 			
@@ -418,37 +424,27 @@ void ai_sue_frenzied(Entity *e) {
 		case 1:		// transforming
 		{
 			e->timer++;
-			
 			if (e->timer == 2) {	// frenzied sue
-				//e->sprite = SPR_SUE_FRENZIED;
-				e->frame = 12;
-				e->x -= 0x1000;
-				e->y -= 0x1800;
+				e->frame = TRANSF2;
 			}
-			
 			if (e->timer == 4) {	// normal sue
 				e->timer = 0;
-				
-				//e->sprite = SPR_SUE;
-				e->frame = 0;
-				e->x += 0x1000;
-				e->y += 0x1800;
+				e->frame = TRANSF1;
 			}
 			
-			if (++e->timer2 >= 50) {
+			if (++e->timer2 >= TIME(50)) {
 				entities_clear_by_type(OBJ_RED_CRYSTAL);
 				e->timer2 = 0;
 				e->state = 2;
 			}
 		}
 		break;
-		
 		// fight begin/base state (script-triggered)
 		case SUE_BASE:
 		{
 			e->state++;
 			e->timer = 0;
-			e->frame = 0;
+			e->frame = STILL1;
 			e->animtime = 0;
 			e->attack = 0;
 			
@@ -457,7 +453,7 @@ void ai_sue_frenzied(Entity *e) {
 		}
 		case SUE_BASE+1:
 		{
-			ANIMATE(e, 20, 0,1);
+			ANIMATE(e, 20, STILL1,STILL2);
 			FACE_PLAYER(e);
 			
 			e->x_speed = (e->x_speed << 1) + (e->x_speed << 2); e->x_speed >>= 3;
@@ -468,47 +464,37 @@ void ai_sue_frenzied(Entity *e) {
 				sue_being_hurt = TRUE;	// trigger Misery to spawn monsters
 			}
 			
-			if (++e->timer > 80)
+			if (++e->timer > TIME(80))
 				e->state = SUE_PREPARE_ATTACK;
 		}
 		break;
-		
 		// prepare to attack
 		case SUE_PREPARE_ATTACK:
 		{
 			e->state++;
 			e->timer = 0;
-			e->frame = 2;
+			e->frame = PREPARE;
 			
 			e->x_speed = 0;
 			e->y_speed = 0;
 		}
 		case SUE_PREPARE_ATTACK+1:
 		{
-			if (++e->timer > 16) {
+			if (++e->timer > TIME(16)) {
 				e->state = (e->timer2 ^= 1) ? SUE_SOMERSAULT : SUE_DASH;
 				e->timer = 0;
 			}
 		}
 		break;
-	}
-	
-	sue_somersault(e);
-	sue_dash(e);
-	
-	e->x += e->x_speed;
-	e->y += e->y_speed;
-}
-
-// somersault attack. this is the only time she can actually hurt you.
-static void sue_somersault(Entity *e) {
-	switch(e->state) {
+		
+		// somersault attack. this is the only time she can actually hurt you.
+		
 		case SUE_SOMERSAULT:
 		{
 			e->state++;
 			e->timer = 0;
 			e->attack = 4;
-			e->frame = 2;
+			e->frame = PREPARE;
 			
 			FACE_PLAYER(e);
 			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x600));
@@ -517,31 +503,34 @@ static void sue_somersault(Entity *e) {
 		case SUE_SOMERSAULT+1:
 		{
 			// passes through frame 3 (prepare/dash) before entering anim loop
-			ANIMATE(e, 2, 4,5,6,7);
+			ANIMATE(e, 4, SPIN1,SPIN2,SPIN3,SPIN4);
 			e->timer++;
 			
-			if (e->damage_time && e->timer > 20) {	// hurt fall
+			if (e->damage_time && e->timer > TIME(20)) {	// hurt fall
 				e->state = SUE_SOMERSAULT_HIT;
 				break;
 			}
 			
-			// hit wall or timeout?
-			if (e->timer > 50 || (blk(e->x, -16, e->y, 0) == 0x41) || 
-					(blk(e->x, 16, e->y, 0) == 0x41)) {	// back to base state
+			// hit wall?
+			// have to manually check ignore solid flag
+			if (!(e->eflags & NPC_IGNORESOLID) &&
+					((blk(e->x, -12, e->y, 0) == 0x41) || (blk(e->x, 12, e->y, 0) == 0x41)))
 				e->state = SUE_BASE;
-			}
+			
+			// timeout?
+			if (e->timer > TIME(50)) 
+				e->state = SUE_BASE;
 			
 			if ((e->timer & 7) == 1)
 				sound_play(SND_CRITTER_FLY, 3);
 		}
 		break;
-		
 		// hit during somersault
 		case SUE_SOMERSAULT_HIT:
 		{
 			e->state++;
 			e->timer = 0;
-			e->frame = 2;	// stop somersault; back to normal stand frame
+			e->frame = STILL1;	// stop somersault; back to normal stand frame
 			e->attack = 0;
 			e->eflags &= ~NPC_IGNORESOLID;
 		}
@@ -550,75 +539,79 @@ static void sue_somersault(Entity *e) {
 			e->x_speed = (e->x_speed << 1) + (e->x_speed << 2); e->x_speed >>= 3;
 			e->y_speed = (e->y_speed << 1) + (e->y_speed << 2); e->y_speed >>= 3;
 			
-			if (++e->timer > 6) {
+			if (++e->timer > TIME(6)) {
 				e->state++;
 				e->timer = 0;
-				e->y_speed = -0x200;
-				MOVE_X(-0x200);
+				e->y_speed = -SPEED(0x200);
+				MOVE_X(-SPEED(0x200));
 			}
 		}
 		break;
-		
 		// falling/egads
 		case SUE_SOMERSAULT_HIT+2:
 		{
-			e->frame = 9;	// egads!
+			e->frame = EGADS;	// egads!
 			
 			if (e->grounded) {
 				e->state++;
 				e->timer = 0;
-				e->frame = 2;	// standing
+				e->frame = STILL1;	// standing
 				
 				FACE_PLAYER(e);
 			}
 			
-			e->y_speed += 0x20;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED(0x20);
+			LIMIT_Y(SPEED(0x5ff));
 		}
 		break;
-		
 		// hit ground: slide a bit then recover
 		case SUE_SOMERSAULT_HIT+3:
 		{
-			if (++e->timer > 16)
+			if (++e->timer > TIME(16))
 				e->state = 20;
 		}
 		break;
-	}
-}
-
-// non-harmful dash. she cannot be hurt, but cannot hurt you, either.
-static void sue_dash(Entity *e) {
-	int x;
-
-	switch(e->state) {
+		
+		// non-harmful dash. she cannot be hurt, but cannot hurt you, either.
+		
 		case SUE_DASH:
 		{
 			e->state++;
 			e->timer = 0;
+			e->frame = DASH;
 			
 			FACE_PLAYER(e);
 			e->eflags &= ~NPC_SHOOTABLE;
 			
+			int32_t x;
 			if (player.x < e->x) x = player.x - (160<<CSF);
 							 else x = player.x + (160<<CSF);
-			
 			THROW_AT_TARGET(e, x, player.y, SPEED(0x600));
 			set_ignore_solid(e);
 		}
 		case SUE_DASH+1:
 		{
 			// flash
-			e->frame = (++e->timer & 2) ? 8 : 3;	// frame 8 is invisible
+			e->hidden = (++e->timer & 2) > 0;
 			
-			if (e->timer > 50 || (blk(e->x, -16, e->y, 0) == 0x41) || 
-					(blk(e->x, 16, e->y, 0) == 0x41)) {
-				e->hidden = FALSE;
+			// hit wall?
+			if (!(e->eflags & NPC_IGNORESOLID) &&
+					((blk(e->x, -12, e->y, 0) == 0x41) || (blk(e->x, 12, e->y, 0) == 0x41))) {
 				e->state = SUE_BASE;
+				e->hidden = FALSE;
+			}
+			
+			// timeout?
+			if (e->timer > TIME(50)) {
+				e->state = SUE_BASE;
+				e->hidden = FALSE;
 			}
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 // sets NPC_IGNORESOLID if the object is heading towards the center
@@ -669,7 +662,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 				
 				e->x_speed = 0;
 				e->y_speed = 0;
-				e->frame = 9;
+				e->frame = 10;
 				
 				e->state = SIDEKICK_CORE_DEFEATED_2; // cannot "state++"; that is SIDEKICK_DEFEATED
 			}
@@ -679,12 +672,12 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 		case SIDEKICK_DEFEATED:
 		{
 			e->state++;
-			e->frame = 9;
+			e->frame = 10;
 			e->attack = 0;
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_IGNORESOLID;
 			
-			e->y_speed = -0x200;
+			e->y_speed = -SPEED(0x200);
 			e->damage_time += 50;
 			
 			if (e->type == OBJ_SUE_FRENZIED)
@@ -692,13 +685,13 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 		}
 		case SIDEKICK_DEFEATED+1:
 		{
-			e->y_speed += 0x20;
+			e->y_speed += SPEED(0x20);
 			
 			#define FLOOR	(((13 * 16) - 13) << CSF)
 			if (e->y_speed > 0 && e->y > FLOOR) {
 				e->y = FLOOR;
 				e->state++;
-				e->frame = 10;
+				e->frame = 11;
 				e->x_speed = 0;
 				e->y_speed = 0;
 			}
