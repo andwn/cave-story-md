@@ -61,6 +61,7 @@ void ai_misery_frenzied(Entity *e) {
 			if (++e->timer2 >= TIME(50)) {
 				e->timer2 = 0;
 				e->state = 2;
+				e->hidden = FALSE;	// let's not leave misery invisible the whole fight
 			}
 		}
 		break;
