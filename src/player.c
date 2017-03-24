@@ -426,10 +426,17 @@ void player_update_walk() {
 }
 
 void player_update_jump() {
+	#ifdef PAL
+	uint16_t jumpSpeed = 	0x500;
+	uint16_t gravity = 		0x50;
+	uint16_t gravityJump = 	0x22;
+	uint16_t maxFallSpeed = 0x5FF;
+	#else
 	uint16_t jumpSpeed = 	SPEED(0x500);
 	uint16_t gravity = 		SPEED(0x50);
 	uint16_t gravityJump = 	SPEED(0x20);
-	uint16_t maxFallSpeed = 	SPEED(0x5FF);
+	uint16_t maxFallSpeed = SPEED(0x5FF);
+	#endif
 	if(player.underwater) {
 		jumpSpeed >>= 1;
 		gravity >>= 1;
@@ -466,7 +473,7 @@ void player_update_jump() {
 
 void player_update_float() {
 	uint16_t acc = 		SPEED(0x55);
-	uint16_t fric = 		SPEED(0x33);
+	uint16_t fric = 	SPEED(0x33);
 	uint16_t max_speed = SPEED(0x32C);
 	if (joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;

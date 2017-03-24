@@ -72,9 +72,8 @@ void credits_main() {
 	
     while(TRUE) {
 		tsc_update();
-		if(waitTime) {
-			waitTime--;
-		} else while(!waitTime) {
+		if(waitTime) waitTime--;
+		while(!waitTime) {
 			switch(credits_info[pc].cmd) {
 				case TEXT:
 					VDP_drawTextBG(PLAN_B, credits_info[pc].text.string, textX, textY & 31);

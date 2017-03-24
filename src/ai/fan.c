@@ -1,5 +1,11 @@
 #include "ai_common.h"
 
+#ifdef PAL
+#define FAN_HSPEED 0x680
+#else
+#define FAN_HSPEED 0x550
+#endif
+
 void onspawn_fan(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->state = e->type - 95;
 	switch(e->type) {
@@ -29,7 +35,7 @@ void ai_fan(Entity *e) {
 			ANIMATE(e, 4, 3,4,5);
 			if(px > ex - (6<<4) && px < ex && py > ey - 12 && py < ey + 12) {
 				player.x_speed -= SPEED(0x88);
-				if(player.x_speed < -SPEED(0x65F)) player.x_speed = -SPEED(0x65F);
+				if(player.x_speed < -FAN_HSPEED) player.x_speed = -FAN_HSPEED;
 			}
 		}
 		break;
@@ -48,7 +54,7 @@ void ai_fan(Entity *e) {
 			ANIMATE(e, 4, 3,4,5);
 			if(px > ex && px < ex + (6<<4) && py > ey - 12 && py < ey + 12) {
 				player.x_speed += SPEED(0x88);
-				if(player.x_speed > SPEED(0x65F)) player.x_speed = SPEED(0x65F);
+				if(player.x_speed > FAN_HSPEED) player.x_speed = FAN_HSPEED;
 			}
 		}
 		break;
