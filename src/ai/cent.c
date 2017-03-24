@@ -587,7 +587,7 @@ void ai_npc_itoh(Entity *e) {
 			if (e->grounded) {
 				e->x_speed = 0;
 				
-				e->frame = COWER;
+				e->frame = LEAP;
 				e->state = 30;
 				e->timer = 0;
 			}
