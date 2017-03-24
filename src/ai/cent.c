@@ -567,9 +567,9 @@ void ai_npc_itoh(Entity *e) {
 		}
 		break;
 		
-		case 10:		// cower
+		case 10:		// shock
 		{
-			e->frame = COWER;
+			e->frame = LEAP;
 			e->x_speed = 0;
 		}
 		break;
@@ -582,12 +582,12 @@ void ai_npc_itoh(Entity *e) {
 			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
-		case 21:
+		case 21:		// cower after leap
 		{
 			if (e->grounded) {
 				e->x_speed = 0;
 				
-				e->frame = LEAP;
+				e->frame = COWER;
 				e->state = 30;
 				e->timer = 0;
 			}
