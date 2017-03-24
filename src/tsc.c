@@ -840,11 +840,22 @@ uint8_t execute_command() {
 		case CMD_BSL: // Start boss fight with entity (1)
 		{
 			args[0] = tsc_read_word();
-			if(args[0] && (bossBarEntity = entity_find_by_event(args[0]))) {
+			// Value of 0 always hides the bar
+			if(!args[0]) {
+				bossBarEntity = NULL;
+				break;
+			}
+			// Search for entity with event # of the parameter
+			if((bossBarEntity = entity_find_by_event(args[0]))) {
 				bossMaxHealth = bossHealth = bossBarEntity->health;
 				tsc_show_boss_health();
-			} else {
-				bossBarEntity = NULL;
+				break;
+			}
+			// Couldn't find it, check if a major boss exists right now
+			if((bossBarEntity = bossEntity)) {
+				bossMaxHealth = bossHealth = bossBarEntity->health;
+				tsc_show_boss_health();
+				break;
 			}
 		}
 		break;
