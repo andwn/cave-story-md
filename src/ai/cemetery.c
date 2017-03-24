@@ -252,7 +252,7 @@ void ai_ma_pignon(Entity *e) {
 		case MP_Jump:		// pause a moment and jump
 		{
 			e->frame = 2;
-			if (++e->timer > 4) {
+			if (++e->timer > TIME(5)) {
 				e->state = MP_In_Air;
 				e->frame = 3;
 				
@@ -320,7 +320,7 @@ void ai_ma_pignon(Entity *e) {
 		case MP_ChargeAttack:		// charge attack
 		{
 			e->frame = 5;
-			if (++e->timer > 10) {
+			if (++e->timer > TIME(10)) {
 				e->state = MP_ChargeAttack+1;
 				e->frame = 6;
 				
@@ -351,7 +351,7 @@ void ai_ma_pignon(Entity *e) {
 			e->attack = 4;
 			ANIMATE(e, 4, 6,7);
 			
-			if ((++e->timer % 8) == 0) {
+			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(4 + (random() % 12));
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_ROCK, 0);
 			}
@@ -425,7 +425,7 @@ void ai_ma_pignon(Entity *e) {
 		{
 			ANIMATE(e, 4, 10,11);
 			
-			if ((++e->timer % 8) == 0) {
+			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(4 + (random() % 12));
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_CLONE, 0);
 			}
@@ -521,14 +521,14 @@ void ai_ma_pignon_rock(Entity *e) {
 		{
 			e->timer3 = 0;
 			e->state = 1;
-			e->eflags |= NPC_INVINCIBLE;
-			e->animtime = random() % (3 * 8);
+			e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+			e->animtime = random() % 24;
 			e->attack = 10;
 		}
 		case 1:
 		{
 			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0x700));
+			LIMIT_Y(SPEED(0x600));
 			
 			if (e->grounded) {
 				e->y_speed = -SPEED(0x200);

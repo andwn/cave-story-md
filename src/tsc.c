@@ -575,7 +575,7 @@ uint8_t execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			if(args[0] == 0) {
+			if(args[0] == 0 && gamemode != GM_CREDITS) {
 				return 5; // Room ID 0 is credits
 			}
 			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
