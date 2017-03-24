@@ -552,7 +552,7 @@ PALETTE PAL_Cave	"Stage/PrtCave.bmp" 2
 PALETTE PAL_Cent	"Stage/PrtCent.bmp" 2
 PALETTE PAL_EggIn	"Stage/PrtEggIn.bmp" 2
 PALETTE PAL_EggX	"Stage/PrtEggX1.bmp" 2
-PALETTE PAL_Fall	"Stage/PrtFall.bmp" 2
+PALETTE PAL_Fall	"Stage/PrtFall.png" 2
 PALETTE PAL_Gard	"Stage/PrtGard.bmp" 2
 PALETTE PAL_Jail	"Stage/PrtJail.bmp" 2
 PALETTE PAL_Labo	"Stage/PrtLabo.bmp" 2

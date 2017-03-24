@@ -1128,6 +1128,9 @@ uint8_t execute_command() {
 			VDP_setVerticalScroll(PLAN_A, 0);
 			VDP_setHorizontalScroll(PLAN_B, 0);
 			VDP_setVerticalScroll(PLAN_B, 0);
+			// Clear planes
+			VDP_clearPlan(PLAN_B, TRUE);
+			VDP_clearPlan(PLAN_A, TRUE);
 			// Background sky/mountains
 			VDP_loadTileSet(&TS_XXBack, TILE_TSINDEX, TRUE);
 			VDP_fillTileMapRectInc(PLAN_B, 
@@ -1145,12 +1148,35 @@ uint8_t execute_command() {
 			VDP_fillTileMapRect(PLAN_A, 
 					TILE_ATTR_FULL(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
+			// Island sprite
+			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_HUDINDEX, 1, 0,0);
+			VDPSprite island[2] = {
+				(VDPSprite) { 
+					.x = 160 - 20 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(4, 3),
+					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_HUDINDEX)
+				},
+				(VDPSprite) {
+					.x = 160 + 12 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(1, 3),
+					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_HUDINDEX+12)
+				}
+			};
+			
 			VDP_setCachedPalette(PAL3, PAL_XX.data);
 			VDP_setPalette(PAL3, PAL_XX.data);
 			VDP_setEnable(TRUE);
 			
-			Entity *island = entity_create(160<<CSF, 64<<CSF, OBJ_ISLAND, 0);
-			island->state = args[0];
+			uint16_t t = TIME(350);
+			while(--t) {
+				if(t > TIME(200) || !args[0]) {
+					if((t % TIME(5)) == 0) {
+						island[0].y++;
+						island[1].y++;
+					}
+				}
+				sprite_addq(island, 2);
+				vsync();
+				sprites_send();
+			}
 		}
 		break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)

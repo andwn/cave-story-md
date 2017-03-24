@@ -11,7 +11,7 @@
 // Special "stage" IDs to load TSCs for menu/credits
 #define ID_ARMSITEM	0xFF
 #define ID_TELEPORT	0xFE
-#define ID_CREDITS	0xFD
+#define ID_CREDITS	0x00
 
 enum TSC_STATE {
 	TSC_IDLE,			// Not executing any script

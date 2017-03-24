@@ -13,10 +13,12 @@
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
 							  : TILE_SHEETINDEX;                                               \
-		sheets[sheet_num] = (Sheet) { sheetid, frames*width*height, index, width, height };    \
+		sheets[sheet_num] = (Sheet) {                                                          \
+			sheetid, (frames)*(width)*(height), index, width, height                           \
+		};                                                                                     \
 		tiloc_index = sheets[sheet_num].index + sheets[sheet_num].size;                        \
 		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sheet_num].index, 1, __VA_ARGS__);   \
-		for(uint8_t i = 0; i < 16; i++) frameOffset[sheet_num][i] = width * height * i;        \
+		for(uint8_t i = 0; i < 16; i++) frameOffset[sheet_num][i] = (width)*(height)*i;        \
 		sheet_num++;                                                                           \
 	}                                                                                          \
 }
@@ -32,7 +34,7 @@
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
 	const uint8_t fa[frames<<1] = { __VA_ARGS__ };                                             \
 	for(uint8_t i = 0; i < frames; i++) {                                                      \
-		VDP_loadTileData(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),index+i*fsize,fsize,dma);       \
+		VDP_loadTileData(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize,dma);   \
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \

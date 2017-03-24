@@ -28,10 +28,7 @@ void ai_stumpy(Entity *e) {
 		case 2:
 		{
 			e->state++;
-			//e->frame ^= 2;
 			e->timer = 0;
-			// TODO: throw ourselves at player
-			//ThrowEntityAtPlayer(o, 3, 0x400);
 			THROW_AT_TARGET(e, player.x, player.y, 0x400);
 			e->dir = e->x_speed >= 0;
 		}
@@ -40,7 +37,6 @@ void ai_stumpy(Entity *e) {
 			if(blockl || blockr) e->x_speed = -e->x_mark;
 			if(blocku || blockd) e->y_speed = -e->y_mark;
 			if (++e->timer > TIME(50)) {
-				//e->frame ^= 2;
 				e->state = 0;
 				e->x_speed = 0;
 				e->y_speed = 0;
@@ -66,7 +62,6 @@ void ai_midorin(Entity *e) {
 			e->timer = 0;
 			e->frame = 0;
 			e->x_speed = 0;
-			//e->eflags |= NPC_SPECIALSOLID; // no
 		}
 		case 1:
 		{

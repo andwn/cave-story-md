@@ -6,6 +6,8 @@
 
 #include "tables.h"
 
+// Keep wait times divisible by 16
+
 // Determines which member of the union in credits_info is used
 enum CreditCmd {
 	TEXT,		// Add a string of text ([)
@@ -23,7 +25,7 @@ enum CreditCmd {
 
 #define C_TEXT(str)			{ .cmd = TEXT, .text = { str } }
 #define C_ICON(id, pal)		{ .cmd = ICON, .icon = { id, pal } }
-#define C_WAIT(ticks)		{ .cmd = WAIT, .wait = { TIME(ticks) } }
+#define C_WAIT(ticks)		{ .cmd = WAIT, .wait = { ticks } }
 #define C_SONG(id)			{ .cmd = SONG, .song = { id } }
 #define C_SONG_FADE()		{ .cmd = SONG_FADE }
 #define C_FLAG_JUMP(f, l)	{ .cmd = FLAG_JUMP, .fjump = { f, l } }
@@ -191,9 +193,9 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  Ballos"),				C_ICON(BALLOS,	3), C_WAIT(64),
 	C_LABEL(100),
 	// Transition to second part which has short silent cutscenes in various stages
-	C_WAIT(100),
+	C_WAIT(96),
 	C_SONG_FADE(),
-	C_WAIT(250),
+	C_WAIT(248),
 	C_SONG(1),
 	C_MOVE(48),
 	
@@ -255,7 +257,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT(" Blocks passages: Deleet"),				C_ICON(DELEET,	3), C_WAIT(48),
 	C_LABEL(200),
 	
-	C_WAIT(100),
+	C_WAIT(96),
 	C_TEXT("= Bosses ="),								C_WAIT(32),
 	C_WAIT(64),
 	C_TEXT("Frenzied Mimiga that"), 					C_WAIT(16),
@@ -347,7 +349,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT("Seal Chamber"),			C_ICON(MUSIC,	3), C_WAIT(32),
 	C_TEXT("The Way Back Home"),	C_ICON(MUSIC,	3), C_WAIT(32),
 	
-	C_WAIT(100),
+	C_WAIT(96),
 	C_TEXT("= Special Thanks ="),						C_WAIT(32),
 	C_MOVE(32),
 	C_WAIT(32),
@@ -366,7 +368,7 @@ const credits_info_def credits_info[] = {
 	C_WAIT(240),
 	C_MOVE(80),
 	C_TEXT("Cave Story ~ The End"),
-	C_WAIT(280),
+	C_WAIT(260),
 	C_END()
 };
 

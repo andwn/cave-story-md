@@ -115,6 +115,7 @@ void credits_main() {
 		// Slow the scrolling down slightly for NTSC
 		if((backScroll % 6) == 0 && !skipScroll) {
 			backScroll--;
+			waitTime++;
 			skipScroll = TRUE;
 		} else {
 			skipScroll = FALSE;
