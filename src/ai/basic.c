@@ -699,6 +699,7 @@ void onspawn_lightning(Entity *e) {
 	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 	e->display_box = (bounding_box) { 8, 23*8, 8, 8 };
 	e->x -= 32 << CSF;
+	if(stageID == 0x1C) e->x -= 40 << CSF; // Balrog is a bit farther away
 	SNAP_TO_GROUND(e);
 }
 
