@@ -517,7 +517,7 @@ void player_update_interaction() {
 					// Quote should look down while the game logic is frozen
 					// Manually send sprite frame since draw() is not called
 					lookingDown = TRUE;
-					player.frame = 6; // LOOKDN
+					player.frame = (playerEquipment & EQUIP_MIMIMASK) ? 16 : 6; // LOOKDN
 					TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
 					tsc_call_event(e->event);
 					return;
