@@ -207,6 +207,8 @@ void ondeath_default(Entity *e) {
 void ondeath_nodrop(Entity *e) {
 	sound_play(e->deathSound, 5);
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
+	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	e->state = STATE_DELETE;
 }
 
