@@ -189,6 +189,11 @@ enum {
 	MP_Defeated			= 500		// scripted
 };
 
+enum Frame {
+	STAND, BLINK, DUCK, HOP, LAND, SMILE, CHARGE1, CHARGE2,
+	HURT, WALK1, WALK2, WHITE
+};
+
 // NXEngine has a 3rd timer, we don't. Alias the unused jump_time
 #define timer3	jump_time
 
@@ -213,14 +218,14 @@ void ai_ma_pignon(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			SNAP_TO_GROUND(e);
+			e->y_next += 8 << CSF;
 			e->state = 1;
 		}
 		case 1:
 		{
 			FACE_PLAYER(e);
-			e->frame = 0;
-			RANDBLINK(e, 1, 200);
+			e->frame = STAND;
+			RANDBLINK(e, BLINK, 200);
 		}
 		break;
 		
@@ -235,7 +240,7 @@ void ai_ma_pignon(Entity *e) {
 		{
 			FACE_PLAYER(e);
 			e->attack = 1;
-			e->frame = 0;
+			e->frame = STAND;
 			
 			if (++e->timer > 4) {
 				e->timer = 0;
@@ -251,10 +256,10 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_Jump:		// pause a moment and jump
 		{
-			e->frame = 2;
+			e->frame = DUCK;
 			if (++e->timer > TIME(5)) {
 				e->state = MP_In_Air;
-				e->frame = 3;
+				e->frame = HOP;
 				
 				e->x_speed = -SPEED(0x400) + (random() % SPEED(0x800));
 				e->y_speed = -SPEED(0x800);
@@ -283,17 +288,17 @@ void ai_ma_pignon(Entity *e) {
 			
 			// select frame
 			if (e->y_speed < -SPEED(0x200)) {
-				e->frame = 3;
+				e->frame = HOP;
 			} else if (e->y_speed > SPEED(0x200)) {
-				e->frame = 4;
+				e->frame = LAND;
 			} else {
-				e->frame = 0;
+				e->frame = STAND;
 			}
 			
 			if (e->grounded) {
 				e->state = MP_Landed;
 				e->timer = 0;
-				e->frame = 2;
+				e->frame = DUCK;
 				e->x_speed = 0;
 			}
 			
@@ -310,7 +315,7 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_Landed:
 		{
-			e->frame = 2;
+			e->frame = DUCK;
 			if (++e->timer > 4) {
 				e->state = MP_BaseState;
 			}
@@ -319,10 +324,10 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_ChargeAttack:		// charge attack
 		{
-			e->frame = 5;
+			e->frame = SMILE;
 			if (++e->timer > TIME(10)) {
 				e->state = MP_ChargeAttack+1;
-				e->frame = 6;
+				e->frame = CHARGE1;
 				
 				MOVE_X(SPEED(0x5ff));
 				sound_play(SND_FUNNY_EXPLODE, 5);
@@ -335,7 +340,7 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_ChargeAttack+1:		// in-air during charge attack
 		{
-			ANIMATE(e, 4, 6,7);
+			ANIMATE(e, 4, CHARGE1, CHARGE2);
 			if (blockl || blockr) e->state = MP_Hit_Wall;
 		}
 		break;
@@ -349,7 +354,7 @@ void ai_ma_pignon(Entity *e) {
 		case MP_Hit_Wall+1:
 		{
 			e->attack = 4;
-			ANIMATE(e, 4, 6,7);
+			ANIMATE(e, 4, CHARGE1,CHARGE2);
 			
 			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(4 + (random() % 12));
@@ -371,18 +376,18 @@ void ai_ma_pignon(Entity *e) {
 		case MP_CloneAttack:	// begin clone-attack sequence
 		{
 			e->state++;
-			e->frame = 9;
+			e->frame = WALK1;
 			FACE_PLAYER(e);
 		}
 		case MP_CloneAttack+1:	// walk at player before attack
 		{
-			ANIMATE(e, 4, 9,11);
+			ANIMATE(e, 4, WALK1,WALK2);
 			
 			MOVE_X(SPEED(0x400));
 			if (PLAYER_DIST_X(3 << CSF)) {
 				e->state = MP_Fly_Up;
 				e->timer = 0;
-				e->frame = 2;
+				e->frame = DUCK;
 				e->x_speed = 0;
 			}
 		}
@@ -390,10 +395,10 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_Fly_Up:		// jump and fly up for clone attack
 		{
-			e->frame = 2;
+			e->frame = DUCK;
 			if (++e->timer > 4) {
 				e->state++;
-				e->frame = 11;
+				e->frame = HOP;
 				e->y_speed = -SPEED(0x800);
 				e->grounded = FALSE;
 				sound_play(SND_FUNNY_EXPLODE, 5);
@@ -406,7 +411,7 @@ void ai_ma_pignon(Entity *e) {
 		break;
 		case MP_Fly_Up+1:		// flying up
 		{
-			ANIMATE(e, 4, 10,11);
+			ANIMATE(e, 4, HOP,WHITE);
 			
 			if (e->y < (16<<CSF))
 				e->state = MP_Spawn_Clones;
@@ -423,7 +428,7 @@ void ai_ma_pignon(Entity *e) {
 		}
 		case MP_Spawn_Clones+1:
 		{
-			ANIMATE(e, 4, 10,11);
+			ANIMATE(e, 4, HOP,WHITE);
 			
 			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(4 + (random() % 12));
@@ -445,7 +450,7 @@ void ai_ma_pignon(Entity *e) {
 			e->eflags &= ~NPC_SHOOTABLE;
 			e->state++;
 			e->timer = 0;
-			e->frame = 8;
+			e->frame = HURT;
 			e->attack = 0;
 		}
 		case MP_Defeated+1:
@@ -565,6 +570,7 @@ void ai_ma_pignon_clone(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->eflags |= NPC_SHOOTABLE;
 			e->frame = 3;
 			e->y_speed += SPEED(0x80);
 			LIMIT_Y(SPEED(0x5ff));

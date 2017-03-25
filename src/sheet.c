@@ -399,7 +399,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x53: // Ma Pignon
 		{	// Makes copies of itself, better to have a common sheet
 			SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
-					0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9, 0,10, 0,11);
+					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9, 0,10, 0,11);
 			SHEET_ADD(SHEET_ROCK, &SPR_Rock, 3,2,2, 0,0, 0,1, 0,2);
 		} break;
 		default: printf("Stage %hu has no sheet set", sid);
