@@ -58,49 +58,26 @@ void ai_muscle_doctor(Entity *e) {
 	else e->grounded = collide_stage_floor_grounded(e);
 	
 	switch(e->state) {
-		// INIT
-		
 		case 0:
-		{
-			// put ourselves at correct position over the other doctor
+		{	// put ourselves at correct position over the other doctor
 			e->dir = (crystal_xmark < player.x);
 			
 			e->x_next = crystal_xmark + ((e->dir) ? (6<<CSF) : -(6<<CSF));
 			e->y_next = crystal_ymark;
 			
-			// make sure we're front of other doctor
-			//e->BringToFront();
 			// make sure front crystal is in front of us
 			//crystal_tofront = TRUE;
 			
-			// because we moved our x/y directly
-			//e->UpdateBlockStates(ALLDIRMASK);
 			e->state = 1;
 		}
 		case 1:		// appearing/transforming
 		{
-			//e->y_speed += SPEED(0x80);
-			
 			e->timer++;
 			e->frame = (e->timer & 2) ? 0 : 3;
 		}
 		break;
-		// standing idle & panting
-		// this state doesn't seem to ever be used;
-		// AFAIK can only be triggered by modifying the script.
 		case 5:
-		{
-			e->frame = 1;
-			e->animtime = 0;
-			e->state = 6;
-		}
 		case 6:
-		{
-			//e->y_speed += SPEED(0x80);
-			ANIMATE(e, 30, 1,2);
-		}
-		break;
-		
 		case 7: 	// prepare-to-fight pause
 		{
 			e->state = 8;
@@ -109,8 +86,6 @@ void ai_muscle_doctor(Entity *e) {
 		}
 		case 8:
 		{
-			//e->y_speed += SPEED(0x40);
-			
 			if (++e->timer > TIME(40)) e->state = STATE_BASE;
 		}
 		break;
@@ -119,6 +94,7 @@ void ai_muscle_doctor(Entity *e) {
 		
 		case STATE_BASE:
 		{
+			e->nflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			
@@ -152,7 +128,7 @@ void ai_muscle_doctor(Entity *e) {
 			}
 			
 			// after a moment select next attack in the loop
-			if (++e->timer > 30 || (e->savedhp - e->health) > 20) {
+			if (++e->timer > TIME(30) || (e->savedhp - e->health) > 20) {
 				e->state = attack_pattern[e->timer2];
 				e->timer = 0;
 				
@@ -173,6 +149,7 @@ void ai_muscle_doctor(Entity *e) {
 			if (++e->timer > TIME(20)) {
 				e->grounded = FALSE;
 				e->state = STATE_IN_AIR;
+				e->timer = 0;
 				e->frame = 4;
 				e->animtime = 0;
 				
@@ -188,6 +165,7 @@ void ai_muscle_doctor(Entity *e) {
 			FACE_PLAYER(e);
 			e->grounded = FALSE;
 			e->state = STATE_IN_AIR_WITH_GP;
+			e->timer = 0;
 			e->frame = 4;
 			e->animtime = 0;
 			
@@ -199,8 +177,9 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_IN_AIR:			// in air (normal)
 		case STATE_IN_AIR_WITH_GP:	// in air; can "ground pound" if we pass over player
 		{
-			ANIMATE(e, 1, 4, 5);
+			ANIMATE(e, 8, 4,5);
 			e->y_speed += SPEED(0x40);
+			e->timer++; // Not used by state, but for spawning red drips
 			
 			if (e->state == STATE_IN_AIR_WITH_GP) {
 				if (PLAYER_DIST_X(8<<CSF) && player.y >= e->y_next) {
@@ -227,8 +206,6 @@ void ai_muscle_doctor(Entity *e) {
 		}
 		case STATE_LANDED+1:
 		{
-			//e->y_speed += 0x80;
-			
 			e->x_speed += (e->x_speed << 2) + (e->x_speed << 1);
 			e->x_speed >>= 3;
 			
@@ -272,11 +249,13 @@ void ai_muscle_doctor(Entity *e) {
 			
 			// time to stop?
 			if (blockl || blockr || e->timer > TIME(30)) {
-				if (e->timer > TIME(30))		// stopped because timeout
+				if (e->timer > TIME(30)) {		// stopped because timeout
 					e->state++;
-				else					// stopped because hit a wall
+					e->grounded = FALSE;
+					e->frame = 3;
+				} else {					// stopped because hit a wall
 					e->state = STATE_JUMP;
-				
+				}
 				e->eflags &= ~(NPC_SOLID | NPC_FRONTATKONLY | NPC_INVINCIBLE);
 				e->attack = DAMAGE_NORMAL;
 				e->timer = 0;
@@ -286,10 +265,6 @@ void ai_muscle_doctor(Entity *e) {
 		// dash ending due to timeout
 		case STATE_RED_DASH+3:
 		{
-			e->grounded = FALSE;
-			//e->y_speed += 0x80;
-			e->frame = 3;
-			
 			e->x_speed += (e->x_speed << 2) + (e->x_speed << 1);
 			e->x_speed >>= 3;
 			
@@ -303,13 +278,13 @@ void ai_muscle_doctor(Entity *e) {
 		{
 			e->state++;
 			e->timer = 0;
+			e->frame = 6;
 		}
 		case STATE_MEGA_BATS+1:
 		{
-			e->frame = 6;
 			e->timer++;
 			
-			if (e->timer > TIME(20) && (e->timer & 7) == 1) {
+			if (e->timer > TIME(20) && (e->timer % TIME(5)) == 1) {
 				Entity *bat = entity_create(e->x + (8<<CSF),
 										   e->y - (4<<CSF), OBJ_DOCTOR_BAT, 0);
 				
@@ -413,14 +388,15 @@ void ai_muscle_doctor(Entity *e) {
 			e->frame = 4;
 			e->x_speed = 0;
 			e->state++;
+			e->timer = 0;
 		}
 		case STATE_DEFEATED+1:		// wait till we hit ground
 		{
-			//e->y_speed += SPEED(0x20);
-			
+			e->timer++; // For red dots only
 			if (e->grounded) {
 				e->state++;
 				e->timer = 0;
+				e->frame = 9;
 				e->x_mark = e->x_next;
 				FACE_PLAYER(e);
 			}
@@ -429,7 +405,6 @@ void ai_muscle_doctor(Entity *e) {
 		// shaking (script tells us when to stop)
 		case STATE_DEFEATED+2:
 		{
-			e->frame = 9;
 			e->timer++;
 			
 			e->x_next = e->x_mark;
@@ -476,7 +451,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			// he doesn't take up the entire height of the sprite,
 			// so we stop a little bit early.
-			if (e->timer >= TIME(150)) {
+			if (e->timer >= TIME(300)) {
 				e->hidden = TRUE;
 				e->frame = 0;
 				e->state++;
@@ -494,8 +469,6 @@ void ai_muscle_doctor(Entity *e) {
 	if (e->state < STATE_DISSOLVE) run_red_drip(e);
 	
 	// set crystal follow position
-	// still set it on first 2 DEFEATED states (falling to ground)
-	// but not after that (alert: this seems pretty damn bug prone, fixme)
 	if (e->state >= STATE_BASE && e->state <= STATE_DEFEATED+1) {
 		if (e->hidden)	// in middle of teleport: after tp out, before tp in
 		{
@@ -505,6 +478,12 @@ void ai_muscle_doctor(Entity *e) {
 			crystal_xmark = e->x_next;
 			crystal_ymark = e->y_next;
 		}
+	}
+	
+	// Move in front of crystal if it needs to go behind
+	if(crystal_state == CRYSTAL_TOBACK) {
+		moveMeToFront = TRUE;
+		crystal_state = CRYSTAL_INBACK;
 	}
 	
 	if (!e->grounded) e->y_speed += SPEED(0x80);
@@ -529,7 +508,7 @@ static void do_redsplode(Entity *e) {
 	camera_shake(10);
 	
 	// big shower of red energy
-	for(int i=0;i<32;i++) {
+	for(int i=0;i<20;i++) { // Less to avoid OOM
 		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
 		int y = e->y_next + ((-16 + (random() & 31)) << CSF);
 		
@@ -543,7 +522,7 @@ static void do_redsplode(Entity *e) {
 
 // the red energy that oozes off of him during most of the battle
 static void run_red_drip(Entity *e) {
-	if ((random() & 7) == 2) {
+	if ((e->timer & 7) == 2) {
 		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
 		int y = e->y_next + ((-8 + (random() % 12)) << CSF);
 		
@@ -554,6 +533,7 @@ static void run_red_drip(Entity *e) {
 }
 
 void ai_doctor_bat(Entity *e) {
+	e->eflags ^= NPC_SHOOTABLE;
 	ANIMATE(e, 2, 0,1,2);
 	
 	if ((blk(e->x, -8, e->y, 0) == 0x41) || (blk(e->x, 8, e->y, 0) == 0x41)) {

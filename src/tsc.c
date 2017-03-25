@@ -169,6 +169,8 @@ uint16_t tsc_read_word();
 // Load window tiles & the global "head" events
 void tsc_init() {
 	inFade = FALSE;
+	showingBossHealth = FALSE;
+	bossBarEntity = FALSE;
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
 	const uint8_t *TSC = TSC_Head;
@@ -384,6 +386,7 @@ void tsc_update_boss_health() {
 		bossHealth = bossBarEntity->health;
 		if(bossHealth == 0) {
 			// Boss is dead hide the bar
+			bossBarEntity = NULL;
 			showingBossHealth = FALSE;
 			return;
 		}
@@ -843,6 +846,7 @@ uint8_t execute_command() {
 			// Value of 0 always hides the bar
 			if(!args[0]) {
 				bossBarEntity = NULL;
+				showingBossHealth = FALSE;
 				break;
 			}
 			// Search for entity with event # of the parameter

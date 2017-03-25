@@ -230,9 +230,6 @@ void ai_boss_doctor(Entity *e) {
 		break;
 	}
 	
-	// enable per-frame bbox
-	//COPY_PFBOX;
-	
 	// set crystal follow position
 	if (e->state >= 10) {
 		if (e->hidden)	// teleporting
@@ -243,6 +240,12 @@ void ai_boss_doctor(Entity *e) {
 			crystal_xmark = e->x_next;
 			crystal_ymark = e->y_next;
 		}
+	}
+	
+	// Move in front of crystal if it needs to go behind
+	if(crystal_state == CRYSTAL_TOBACK) {
+		moveMeToFront = TRUE;
+		crystal_state = CRYSTAL_INBACK;
 	}
 	
 	e->x = e->x_next;
@@ -277,54 +280,46 @@ void ai_doctor_shot(Entity *e) {
 			
 			// travel
 			e->x_speed += (e->dir) ? 0x15 : -0x15;
-			//e->x += e->x_speed;
 			e->x_mark += e->x_speed;
 			
 			e->x = e->x_mark + ((cos[e->angle] * e->timer2) >> 3);
 			e->y = e->y_mark + ((sin[e->angle] * e->timer2) >> 1);
-			
-			//Entity *trail = CreateEntity(e->x, e->y, OBJ_DOCTOR_SHOT_TRAIL);
-			//trail->sprite = SPR_DOCTOR_SHOT;
-			//trail->frame = 1;
-			//trail->PushBehind(o);
 		}
 		break;
 	}
 }
 
-//void ai_doctor_shot_trail(Entity *e) {
-	//ANIMATE_FWD(3);
-	//if (e->frame > 3)
-	//	e->Delete();
-//}
-
 // from his "explosion" attack
 void ai_doctor_blast(Entity *e) {
+	e->timer++;
 	// they're bouncy
-	if (e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41)
-		e->x_speed = abs(e->x_speed);
+	if (e->timer & 1) {
+		if (e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41)
+			e->x_speed = abs(e->x_speed);
+			
+		if (e->x_speed > 0 && blk(e->x, 6, e->y, 0) == 0x41)
+			e->x_speed = -abs(e->x_speed);
 		
-	if (e->x_speed > 0 && blk(e->x, 6, e->y, 0) == 0x41)
-		e->x_speed = -abs(e->x_speed);
-	
-	if (e->y_speed > 0 && blk(e->x, 0, e->y, -6) == 0x41)
-		e->y_speed = -SPEED(0x200);
-	
-	if (e->y_speed < 0 && blk(e->x, 0, e->y, 6) == 0x41)
-		e->y_speed = SPEED(0x200);
+		if (e->y_speed < 0 && blk(e->x, 0, e->y, -6) == 0x41)
+			e->y_speed = SPEED(0x200);
+		
+		if (e->y_speed > 0 && blk(e->x, 0, e->y, 6) == 0x41)
+			e->y_speed = -SPEED(0x200);
+	}
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	if(++e->timer & 1) e->frame ^= 1;
+	if (e->timer & 2) e->frame ^= 1;
 	
-	//if ((e->timer % 4) == 1)
-	//	CreateEntity(e->x, e->y, OBJ_DOCTOR_SHOT_TRAIL)->PushBehind(o);
-	
-	if (e->timer > TIME(250)) e->state = STATE_DELETE;
+	if (e->timer > TIME(250)) {
+		e->state = STATE_DELETE;
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	}
 }
 
 void onspawn_red_crystal(Entity *e) {
+	e->alwaysActive = TRUE;
 	crystal_entity = e;
 }
 
@@ -358,10 +353,12 @@ void ai_red_crystal(Entity *e) {
 		break;
 	}
 	
-	//if (crystal_tofront && e->dir == LEFT) {
-	//	e->BringToFront();
-	//	crystal_tofront = FALSE;
-	//}
+	if(crystal_state == CRYSTAL_TOFRONT) {
+		moveMeToFront = TRUE;
+		crystal_state = CRYSTAL_INFRONT;
+	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 // doctor as npc before fight
@@ -372,8 +369,7 @@ void ai_doctor_crowned(Entity *e) {
 		{
 			e->y -= (8 << CSF);
 			e->state = 1;
-			//crystal_xmark = crystal_ymark = 0;
-			//crystal_tofront = true;
+			crystal_xmark = crystal_ymark = 0;
 		}
 		case 1:		// faces away
 		{
@@ -405,13 +401,7 @@ void ai_doctor_crowned(Entity *e) {
 		case 40:	// arm up--presents red crystal
 		{
 			e->state = 41;
-			
-			// spawn the red crystal
-			// one is for when it's behind him, the other is in front.
-			//int x = e->x - (6 << CSF);
-			//int y = e->y - (8 << CSF);
-			
-			//dr_create_red_crystal(x, y);
+			entity_create(e->x - (6 << CSF), e->y - (8 << CSF), OBJ_RED_CRYSTAL, 0);
 		}
 		case 41:
 		{
@@ -432,5 +422,10 @@ void ai_doctor_crowned(Entity *e) {
 			if (++e->timer >= 72) e->state = 41;
 		}
 		break;
+	}
+	
+	if(crystal_state == CRYSTAL_TOBACK) {
+		moveMeToFront = TRUE;
+		crystal_state = CRYSTAL_INBACK;
 	}
 }

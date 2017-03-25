@@ -382,7 +382,10 @@ void ai_red_energy(Entity *e) {
 		
 		case A_RIGHT:
 		{
-			if (e->linkedEntity->state == STATE_DELETE) { e->state = STATE_DELETE; return; }
+			if (!e->linkedEntity || e->linkedEntity->state == STATE_DELETE) { 
+				e->state = STATE_DELETE; 
+				return; 
+			}
 			
 			if (e->state == 0) {
 				e->state = 1;

@@ -283,7 +283,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ &SPR_HeliBlade,NOSHEET, PAL1, 4, &onspawn_heliblade1, &ai_helicopter_blade, &ai_null }, // Helicopter blade
 	/* 0x100 (256) */
 	{ &SPR_Doctor, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_doctor_crowned, &ai_null }, // Doctor (Before Fight)
-	{ NULL, 		NOSHEET, PAL0, 1, &onspawn_red_crystal, &ai_red_crystal, &ai_null }, // Red Crystal
+	{ NULL, SHEET_CRYSTAL, 	PAL1, 1, &onspawn_red_crystal, &ai_red_crystal, &ai_null }, // Red Crystal
 	{ &SPR_MimiSleep,NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Sleeping Mimiga
 	{ &SPR_Curly, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_carried, &ai_null }, // Curly (Carried)
 	{ NULL, SHEET_MIMI,		 PAL3, 1, &ai_null, &ai_mimiga_caged, &ai_null }, // Shovel Brigade (Caged)

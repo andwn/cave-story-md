@@ -365,6 +365,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_MIMI, &SPR_ShovelMimi, 3,2,2, 0,0, 0,1, 0,8);
 			SHEET_ADD(SHEET_DOCSHOT, &SPR_DocShot, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_CAGE, &SPR_JailBars3, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_CRYSTAL, &SPR_RedCrystal, 2,1,2, 0,0, 0,1);
 		} break;
 		case 0x44: // Black Space
 		{	SHEET_ADD(SHEET_BAT, &SPR_MizaBat, 3,2,2, 0,0, 0,1, 0,2);
@@ -374,6 +375,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_MUCORE3, &SPR_MUCoreBottom, 2,4,1, 0,0, 0,1);
 			SHEET_ADD(SHEET_ROCK, &SPR_MizaRock, 5,3,3, 0,0, 0,1, 0,2, 0,3, 0,4);
 			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
+			SHEET_ADD(SHEET_CRYSTAL, &SPR_RedCrystal, 2,1,2, 0,0, 0,1);
 		} break;
 		case 0x46: // Balcony 2
 		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
