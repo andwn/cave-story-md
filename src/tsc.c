@@ -378,7 +378,8 @@ void tsc_show_boss_health() {
 }
 
 void tsc_update_boss_health() {
-	if(!bossBarEntity) {
+	if(!bossBarEntity || bossBarEntity->state == STATE_DELETE) {
+		bossBarEntity = NULL;
 		showingBossHealth = FALSE;
 		return;
 	}
@@ -843,20 +844,15 @@ uint8_t execute_command() {
 		case CMD_BSL: // Start boss fight with entity (1)
 		{
 			args[0] = tsc_read_word();
-			// Value of 0 always hides the bar
+			// Value of 0 looks for major boss
 			if(!args[0]) {
-				bossBarEntity = NULL;
-				showingBossHealth = FALSE;
-				break;
-			}
-			// Search for entity with event # of the parameter
-			if((bossBarEntity = entity_find_by_event(args[0]))) {
-				bossMaxHealth = bossHealth = bossBarEntity->health;
-				tsc_show_boss_health();
-				break;
-			}
-			// Couldn't find it, check if a major boss exists right now
-			if((bossBarEntity = bossEntity)) {
+				if((bossBarEntity = bossEntity)) {
+					bossMaxHealth = bossHealth = bossBarEntity->health;
+					tsc_show_boss_health();
+					break;
+				}
+			} // Other values search for entity with event # of the parameter
+			else if((bossBarEntity = entity_find_by_event(args[0]))) {
 				bossMaxHealth = bossHealth = bossBarEntity->health;
 				tsc_show_boss_health();
 				break;
