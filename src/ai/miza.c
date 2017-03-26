@@ -560,16 +560,16 @@ void ai_sue_frenzied(Entity *e) {
 		{
 			e->frame = EGADS;	// egads!
 			
-			if (e->grounded) {
+			if (blk(e->x, 0, e->y, e->hit_box.bottom << CSF) == 0x41) {
 				e->state++;
 				e->timer = 0;
 				e->frame = STILL1;	// standing
-				
+				e->y_speed = 0;
 				FACE_PLAYER(e);
+			} else {
+				e->y_speed += SPEED(0x20);
+				LIMIT_Y(SPEED(0x5ff));
 			}
-			
-			e->y_speed += SPEED(0x20);
-			LIMIT_Y(SPEED(0x5ff));
 		}
 		break;
 		// hit ground: slide a bit then recover
@@ -619,8 +619,8 @@ void ai_sue_frenzied(Entity *e) {
 	}
 	
 	// Stay within bounds
-	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 3)) e->y_speed = 0;
-	if(e->y_speed < 0 && e->y < block_to_sub(3)) e->y_speed = 0;
+	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 2)) e->y_speed = 0;
+	if(e->y_speed < 0 && e->y < block_to_sub(2)) e->y_speed = 0;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;

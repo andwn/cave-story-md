@@ -75,8 +75,8 @@ void onspawn_undead_core(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->hurtSound = SND_CORE_HURT;
 	e->health = 700;
-	e->x = (632 << CSF);
-	e->y = (120 << CSF);
+	e->x = (624 << CSF);
+	e->y = (128 << CSF);
 	e->event = 1000;	// defeated script
 	
 	// create rear rotators
@@ -264,10 +264,10 @@ void ai_undead_core(Entity *e) {
 	
 	// move back and forth
 	if (e->state >= CR_FightBegin && e->state < CR_Defeated) {
-		if (e->x < block_to_sub(20))
+		if (e->x < block_to_sub(19))
 			e->dir = 1;
 		
-		if (e->x > block_to_sub(stageWidth))
+		if (e->x > block_to_sub(stageWidth - 1))
 			e->dir = 0;
 		
 		ACCEL_X(4);
@@ -495,7 +495,7 @@ void ai_undead_core_face(Entity *e) {
 		e->health = 1000;
 	}
 	
-	e->x = bossEntity->x - (36 << CSF);
+	e->x = bossEntity->x - (32 << CSF);
 	e->y = bossEntity->y;
 }
 
@@ -644,7 +644,7 @@ int i;
 void onspawn_ud_minicore(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
-	e->hit_box = (bounding_box) { 16, 8, 16, 16 };
+	e->hit_box = (bounding_box) { 10, 10, 24, 16 };
 	if (e->eflags & NPC_OPTION2) FadeMinicore(e);
 }
 
@@ -695,9 +695,9 @@ void ai_udmini_platform(Entity *e) {
 	// Fade & desolidify if we are about to squish the player
 	if(e->frame < 3) {
 		bounding_box c = entity_react_to_collision(&player, e);
-		if(c.bottom && player.grounded)
+		if(c.top && blk(player.x, 0, player.y, 10) == 0x41)
 			FadeMinicore(e);
-		else if(c.left && blk(player.x, -7, player.y, 0) == 0x41)
+		else if(c.right && blk(player.x, -8, player.y, 0) == 0x41)
 			FadeMinicore(e);
 	}
 }
@@ -712,7 +712,7 @@ static void DrawMinicoreBack(Entity *e) {
 		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->frame >> 1])
 	};
 	e->sprite[2] = (VDPSprite) { // Bottom
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12 + 128,
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 8 + 128,
 		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 16 + 128,
 		.size = SPRITE_SIZE(4, 1),
 		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
