@@ -2,10 +2,13 @@
 
 #include "ai.h"
 #include "audio.h"
+#include "camera.h"
 #include "dma.h"
+#include "entity.h"
 #include "input.h"
 #include "joy.h"
 #include "resources.h"
+#include "sheet.h"
 #include "sprite.h"
 #include "stage.h"
 #include "system.h"
@@ -18,6 +21,8 @@
 
 #include "gamemode.h"
 
+#define TILE_ICONINDEX	(tiloc_index + 128)
+
 enum CreditCmd { 
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, END 
 };
@@ -26,6 +31,8 @@ static int8_t illScrolling = 0;
 
 void credits_main() {
 	gamemode = GM_CREDITS;
+	
+	VDPSprite icon[16] = {};
 	
 	uint16_t pc = 0;
 	uint16_t textX = 0, textY = 0;
@@ -38,6 +45,8 @@ void credits_main() {
 	uint8_t skipScroll = FALSE;
 #endif
 	
+	inFade = FALSE;
+	ready = TRUE;
 	sprites_clear();
 	vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	
@@ -48,6 +57,13 @@ void credits_main() {
 	VDP_setPalette(PAL0, PAL_Main.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
 	VDP_setPalette(PAL3, PAL_Regu.data);
+	// Stick camera to upper right
+	camera.target = NULL;
+	camera.x = SCREEN_HALF_W << CSF;
+	camera.y = SCREEN_HALF_H << CSF;
+	camera.x_offset = camera.y_offset = 0;
+	camera.x_shifted = camera.y_shifted = 0;
+	camera_xmin = camera_ymin = 0;
 	// Reset background and scrolling
 	VDP_setPaletteColor(0, 0x200); // Dark blue background
 	VDP_setBackgroundColor(0);
@@ -78,7 +94,21 @@ void credits_main() {
 				case TEXT:
 					VDP_drawTextBG(PLAN_B, credits_info[pc].text.string, textX, textY & 31);
 					break;
-				case ICON: /* TODO */ break;
+				case ICON:
+					for(uint8_t i = 0; i < 16; i++) {
+						if(icon[i].size) continue;
+						icon[i] = (VDPSprite) {
+							.x = textX * 8 - 16 + 128,
+							.y = SCREEN_HEIGHT - 4 + 128,
+							.size = SPRITE_SIZE(3, 3),
+							.attribut = TILE_ATTR_FULL(credits_info[pc].icon.pal,
+									1,0,0,TILE_ICONINDEX + i * 9)
+						};
+						TILES_QUEUE(SPR_TILES(&SPR_Casts, 
+								credits_info[pc].icon.id, 0), TILE_ICONINDEX + i * 9, 9);
+						break;
+					}
+					break;
 				case WAIT:
 					waitTime = credits_info[pc].wait.ticks;
 					break;
@@ -109,6 +139,10 @@ void credits_main() {
 			}
 			pc++;
 		}
+		
+		entities_update();
+		entities_draw();
+		
 		backScroll++;
 #ifndef PAL
 		// Slow the scrolling down slightly for NTSC
@@ -127,9 +161,18 @@ void credits_main() {
 		// Scrolling for illustrations
 		illScroll += illScrolling;
 		if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+		// Icon sprites
+		for(uint8_t i = 0; i < 16; i++) {
+			if(!icon[i].size) continue;
+			if((backScroll & 1) == 0) {
+				if(--icon[i].y < -12 + 128) icon[i].size = 0;
+			}
+			sprite_add(icon[i]);
+		}
 		
 		VDP_setVerticalScroll(PLAN_B, backScroll >> 1);
 		VDP_setHorizontalScroll(PLAN_A, illScroll);
+		ready = TRUE;
 		vsync(); aftervsync();
     }
 }

@@ -644,7 +644,7 @@ int i;
 void onspawn_ud_minicore(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
-	e->hit_box = (bounding_box) { 10, 10, 24, 16 };
+	e->hit_box = (bounding_box) { 10, 10, 32, 16 };
 	if (e->eflags & NPC_OPTION2) FadeMinicore(e);
 }
 

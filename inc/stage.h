@@ -56,6 +56,7 @@ uint8_t stageBackgroundType;
 
 // Clears previous stage and switches to one with the given ID
 void stage_load(uint16_t id);
+void stage_load_credits(uint8_t id);
 // Called by TSC, replaces one block with another and creates smoke
 void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index);
 // Updates scrolling for the stage and draws blocks as they get near the screen

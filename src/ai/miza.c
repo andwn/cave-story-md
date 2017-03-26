@@ -590,6 +590,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			FACE_PLAYER(e);
 			e->eflags &= ~NPC_SHOOTABLE;
+			e->nflags &= ~NPC_SHOOTABLE;
 			
 			int32_t x;
 			if (player.x < e->x) x = player.x - (160<<CSF);
@@ -653,6 +654,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 	// trigger die
 	if (e->health < (1000 - health)) {
 		e->eflags &= ~NPC_SHOOTABLE;
+		e->nflags &= ~NPC_SHOOTABLE;
 		e->health = 9999;	// don't re-trigger
 		e->state = SIDEKICK_DEFEATED;
 	}
@@ -660,9 +662,6 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 	switch(e->state) {
 		// the script triggers this if you defeat the core
 		// without killing one or both sidekicks.
-		//
-		// once the core explodes and game.stageboss.object becomes NULL,
-		// the sidekicks then enter the full defeated state and collapse.
 		case SIDEKICK_CORE_DEFEATED:
 		{
 			if (e->health == 9999)
@@ -670,6 +669,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 				e->state = SIDEKICK_DEFEATED+1;
 			} else {
 				e->eflags &= ~NPC_SHOOTABLE;
+				e->nflags &= ~NPC_SHOOTABLE;
 				e->health = 9999;
 				
 				e->x_speed = 0;
@@ -687,6 +687,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 			e->frame = 10;
 			e->attack = 0;
 			e->eflags &= ~NPC_SHOOTABLE;
+			e->nflags &= ~NPC_SHOOTABLE;
 			e->eflags |= NPC_IGNORESOLID;
 			
 			e->y_speed = -SPEED(0x200);
@@ -699,7 +700,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 		{
 			e->y_speed += SPEED(0x20);
 			
-			#define FLOOR	(((13 * 16) - 13) << CSF)
+			#define FLOOR	(((14 * 16) - 13) << CSF)
 			if (e->y_speed > 0 && e->y > FLOOR) {
 				e->y = FLOOR;
 				e->state++;

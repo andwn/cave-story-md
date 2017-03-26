@@ -55,6 +55,7 @@ void stage_load_entities();
 
 void stage_draw_block(uint16_t x, uint16_t y);
 void stage_draw_screen();
+void stage_draw_screen_credits();
 void stage_draw_background();
 void stage_draw_moonback();
 
@@ -193,6 +194,59 @@ void stage_load(uint16_t id) {
 	
 	VDP_setEnable(TRUE);
 	VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
+}
+
+void stage_load_credits(uint8_t id) {
+	stageID = id;
+	
+	entities_clear();
+	sprites_clear();
+	if(stageBlocks) {
+		MEM_free(stageBlocks);
+		stageBlocks = NULL;
+	}
+	if(stageTable) {
+		MEM_free(stageTable);
+		stageTable = NULL;
+	}
+	
+	VDP_setEnable(FALSE);
+	
+	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
+	stageTileset = stage_info[id].tileset;
+	stage_load_tileset();
+	sheets_load_stage(id, FALSE, TRUE);
+	
+	XGM_set68KBUSProtection(FALSE);
+	
+	//VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
+	stage_load_blocks();
+	
+	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
+	stage_draw_screen_credits();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
+	stage_load_entities();
+	
+	XGM_doVBlankProcess();
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
+	DMA_flushQueue();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
+	tsc_load_stage(id);
+	
+	VDP_setEnable(TRUE);
 }
 
 void stage_load_tileset() {
@@ -419,6 +473,18 @@ void stage_draw_screen() {
 			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + (y%32)*0x80, 64, 2);
 		}
 		y++;
+	}
+}
+
+void stage_draw_screen_credits() {
+	uint16_t maprow[20];
+	for(uint8_t y = 0; y < 30; y++) {
+		for(uint8_t x = 20; x < 40; x++) {
+			uint8_t b = stage_get_block(x/2, y/2);
+			uint16_t t = (b%16) * 2 + (b/16) * 64;
+			maprow[x-20] = TILE_ATTR_FULL(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+		}
+		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 20, 20, 2);
 	}
 }
 

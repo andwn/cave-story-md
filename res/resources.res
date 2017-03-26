@@ -278,6 +278,7 @@ SPRITE SPR_Bucket		"sprite/bucket.png"		2 2 0 0 NONE
 SPRITE SPR_Chaco2		"sprite/chako2.png"		2 2 0 0 NONE
 SPRITE SPR_Ravil		"sprite/ravil.png"		3 3 0 0 NONE
 SPRITE SPR_Littles		"sprite/littles.png"	1 1 0 0 NONE
+SPRITE SPR_Casts		"credits/casts.png"		3 3 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"	2 2 0 0 NONE

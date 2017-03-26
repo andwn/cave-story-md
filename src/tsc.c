@@ -579,20 +579,31 @@ uint8_t execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			if(args[0] == 0 && gamemode != GM_CREDITS) {
-				return 5; // Room ID 0 is credits
+			if(gamemode == GM_CREDITS) {
+				if(args[0] == 0) {
+					VDP_clearPlan(PLAN_A, TRUE);
+					entities_clear();
+					sprites_clear();
+					tsc_load_stage(ID_CREDITS);
+				} else {
+					stage_load_credits(args[0]);
+				}
+				tsc_call_event(args[1]);
+				return 1;
+			} else {
+				if(args[0] == 0) return 5; // Room ID 0 is credits
+				player.x = block_to_sub(args[2]) + pixel_to_sub(8);
+				player.y = block_to_sub(args[3]) + pixel_to_sub(8);
+				player.x_speed = 0;
+				player.y_speed = 0;
+				player.grounded = FALSE;
+				gameFrozen = FALSE;
+				window_set_face(0, FALSE);
+				window_close();
+				stage_load(args[0]);
+				tsc_call_event(args[1]);
+				return 1;
 			}
-			player.x = block_to_sub(args[2]) + pixel_to_sub(8);
-			player.y = block_to_sub(args[3]) + pixel_to_sub(8);
-			player.x_speed = 0;
-			player.y_speed = 0;
-			player.grounded = FALSE;
-			gameFrozen = FALSE;
-			window_set_face(0, FALSE);
-			window_close();
-			stage_load(args[0]);
-			tsc_call_event(args[1]);
-			return 1;
 		}
 		break;
 		case CMD_INI: // Start from beginning (try again without save data)
@@ -1008,26 +1019,30 @@ uint8_t execute_command() {
 		case CMD_FAI: // Fading, in direction (1)
 		{
 			args[0] = tsc_read_word();
-			inFade = FALSE; // Unlock sprites from updating
-			vsync(); // Wait a frame to let the sprites redraw
-			aftervsync();
-			
-			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+			if(gamemode != GM_CREDITS) {
+				inFade = FALSE; // Unlock sprites from updating
+				vsync(); // Wait a frame to let the sprites redraw
+				aftervsync();
+				
+				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+			}
 			
 		}
 		break;
 		case CMD_FAO:
 		{
 			args[0] = tsc_read_word();
-			VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
-			
-			// Blank the sprite list in VRAM
-			spr_num = 0;
-			VDPSprite blank = (VDPSprite) { 
-				.x = 128, .y = 128, .size = 0, .attribut = 0
-			};
-			DMA_doDma(DMA_VRAM, (uint32_t) &blank, VDP_SPRITE_TABLE, 4, 2);
-			inFade = TRUE; // and set a flag not to update sprites anymore
+			if(gamemode != GM_CREDITS) {
+				VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
+				
+				// Blank the sprite list in VRAM
+				spr_num = 0;
+				VDPSprite blank = (VDPSprite) { 
+					.x = 128, .y = 128, .size = 0, .attribut = 0
+				};
+				DMA_doDma(DMA_VRAM, (uint32_t) &blank, VDP_SPRITE_TABLE, 4, 2);
+				inFade = TRUE; // and set a flag not to update sprites anymore
+			}
 			
 		}
 		break;
