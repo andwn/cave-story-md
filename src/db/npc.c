@@ -309,7 +309,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 	SHEET_BLOCK, PAL2, 1, &onspawn_persistent, &ai_falling_block, &ai_null }, // Falling Block (Large)
 	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
 	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
-	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_persistent, &ai_udmini_platform, &ai_null }, // Mini Undead Core
+	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_ud_minicore, &ai_udmini_platform, &ai_null }, // Mini Undead Core
 	{ &SPR_MizaMisery,NOSHEET,PAL3,1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
 	{ &SPR_MizaSue, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ondeath_nodrop }, // Orange Spinning Shot
@@ -319,7 +319,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, SHEET_ROCK, 	PAL3, 1, &onspawn_persistent, &ai_ud_pellet, &ondeath_nodrop }, // Glowing Rock Shot
 	{ NULL, SHEET_CRITTER, 	PAL3, 1, &onspawn_persistent, &ai_misery_critter, &ondeath_default }, // Orange Critter
 	{ NULL, SHEET_BAT, 		PAL3, 1, &onspawn_persistent, &ai_misery_bat, &ondeath_default }, // Orange Bat
-	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_persistent, &ai_udmini_idle, &ai_null }, // Mini Core (Before Fight)
+	{ NULL, SHEET_MUCORE, 	PAL2, 3, &onspawn_ud_minicore, &ai_udmini_idle, &ai_null }, // Mini Core (Before Fight)
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_quake, &ai_null }, // Quake
 	{ NULL, SHEET_CORES4, 	PAL1, 1, &onspawn_persistent, &ai_ud_blast, &ai_null }, // Huge Energy Shot
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_falling_block_spawner, &ai_null }, // Falling Block Generator

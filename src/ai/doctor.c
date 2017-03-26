@@ -401,7 +401,7 @@ void ai_doctor_crowned(Entity *e) {
 		case 40:	// arm up--presents red crystal
 		{
 			e->state = 41;
-			entity_create(e->x - (6 << CSF), e->y - (8 << CSF), OBJ_RED_CRYSTAL, 0);
+			entity_create(e->x - (14 << CSF), e->y - (16 << CSF), OBJ_RED_CRYSTAL, 0);
 		}
 		case 41:
 		{

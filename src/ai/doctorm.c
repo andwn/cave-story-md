@@ -439,7 +439,7 @@ void ai_muscle_doctor(Entity *e) {
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
 			// spawn copious amount of energy
-			if(e->timer & 1) {
+			if(e->timer % 3) {
 				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
 				drip->x_speed = -0x200 + (random() & 0x3FF);
@@ -473,10 +473,10 @@ void ai_muscle_doctor(Entity *e) {
 		if (e->hidden)	// in middle of teleport: after tp out, before tp in
 		{
 			crystal_xmark = e->x_mark;
-			crystal_ymark = e->y_mark;
+			crystal_ymark = e->y_mark - (8 << CSF);
 		} else {
 			crystal_xmark = e->x_next;
-			crystal_ymark = e->y_next;
+			crystal_ymark = e->y_next - (8 << CSF);
 		}
 	}
 	

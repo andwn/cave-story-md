@@ -47,6 +47,7 @@ static void SpawnPellet(uint8_t angle);
 static void RunHurtFlash(uint16_t timer);
 static uint8_t RunDefeated(Entity *e);
 static void DrawMinicoreBack(Entity *e);
+static void FadeMinicore(Entity *e);
 
 /*
 	Main core body:
@@ -640,8 +641,11 @@ int i;
 */
 
 // minicores by entrance seen before fight
-void onspawn_ud_minicore_idle(Entity *e) {
-	if (e->eflags & NPC_OPTION2) e->nflags &= ~NPC_SPECIALSOLID;
+void onspawn_ud_minicore(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->display_box = (bounding_box) { 16, 16, 16, 16 };
+	e->hit_box = (bounding_box) { 16, 8, 16, 16 };
+	if (e->eflags & NPC_OPTION2) FadeMinicore(e);
 }
 
 void ai_udmini_idle(Entity *e) {
@@ -672,49 +676,52 @@ void ai_udmini_platform(Entity *e) {
 			// moving their Y to align with the core.
 			if (playerPlatform == e) {
 				e->y_mark = block_to_sub(9);
-				e->frame = 2;
-			} else if (e->eflags & NPC_SPECIALSOLID)	// don't reset frame if dimmed
-			{
 				e->frame = 0;
+				// Don't squish player into ceiling
+				if(e->y <= block_to_sub(6)) {
+					playerPlatform = NULL;
+					FadeMinicore(e);
+				}
 			}
-			
-			// don't try to squish the player into anything, rather, dim and go non-solid.
-			// our bbox is set slightly larger than our solidbox so that we can detect if
-			// the player is near.
-			//if (hitdetect(o, player))
-			//{
-			//	if ((player.blockl && player.Right() < e->CenterX()) ||
-			//		(e->y_speed > 0 && player.blockd && player.Top() >= e->CenterY() - (1<<CSF)) ||
-			//		(e->y_speed < 0 && player.blocku && player.Bottom() < e->CenterY()))
-			//	{
-			//		e->eflags &= ~NPC_SPECIALSOLID;
-			//		e->frame = 1;
-			//	}
-			//}
 		}
 		break;
 	}
+	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
 	DrawMinicoreBack(e);
+	
+	// Fade & desolidify if we are about to squish the player
+	if(e->frame < 3) {
+		bounding_box c = entity_react_to_collision(&player, e);
+		if(c.bottom && player.grounded)
+			FadeMinicore(e);
+		else if(c.left && blk(player.x, -7, player.y, 0) == 0x41)
+			FadeMinicore(e);
+	}
 }
 
 // The face of the minicores have 4 different frames for light/dark and faces, but the
 // backs just use 2 for dark/light, so we draw them separately from the engine
 static void DrawMinicoreBack(Entity *e) {
 	e->sprite[1] = (VDPSprite) { // Back
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 4 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 16 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 16 + 128,
 		.size = SPRITE_SIZE(3, 4),
 		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->frame >> 1])
 	};
 	e->sprite[2] = (VDPSprite) { // Bottom
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 16 + 128,
 		.size = SPRITE_SIZE(4, 1),
 		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
 	};
+}
+
+static void FadeMinicore(Entity *e) {
+	e->nflags &= ~NPC_SPECIALSOLID;
+	e->frame = 3;
 }
 
 // falling lava-rock thing from Skull face

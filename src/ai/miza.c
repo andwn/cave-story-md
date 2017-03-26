@@ -37,6 +37,7 @@ void ai_misery_frenzied(Entity *e) {
 		{
 			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->y -= 8 <<CSF;
 			
 			e->state = 1;
 			sue_being_hurt = sue_was_killed = FALSE;
@@ -217,6 +218,10 @@ void ai_misery_frenzied(Entity *e) {
 		}
 		break;
 	}
+	
+	// Stay within bounds
+	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 3)) e->y_speed = 0;
+	if(e->y_speed < 0 && e->y < block_to_sub(3)) e->y_speed = 0;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -413,6 +418,7 @@ void ai_sue_frenzied(Entity *e) {
 		{
 			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->y -= 4 <<CSF;
 			
 			e->state = 1;
 			sue_being_hurt = sue_was_killed = FALSE;
@@ -435,6 +441,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			if (++e->timer2 >= TIME(50)) {
 				entities_clear_by_type(OBJ_RED_CRYSTAL);
+				e->frame = TRANSF2;
 				e->timer2 = 0;
 				e->state = 2;
 			}
@@ -610,6 +617,10 @@ void ai_sue_frenzied(Entity *e) {
 		}
 		break;
 	}
+	
+	// Stay within bounds
+	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 3)) e->y_speed = 0;
+	if(e->y_speed < 0 && e->y < block_to_sub(3)) e->y_speed = 0;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
