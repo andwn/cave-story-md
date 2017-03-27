@@ -7,6 +7,7 @@ extern const uint32_t TILE_BLANK[8];
 // FadeOut is almost completely black, except index 15 which is white
 // This allows text to still be displayed after the screen fades to black
 extern const uint16_t PAL_FadeOut[64];
+extern const uint16_t PAL_FadeOutBlue[64];
 // FullWhite is used for a TSC instruction that flashes the screen white
 extern const uint16_t PAL_FullWhite[64];
 // Palette data

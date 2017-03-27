@@ -310,6 +310,7 @@ void ai_teleLight(Entity *e) {
 }
 
 void ai_player(Entity *e) {
+	uint8_t collide = TRUE;
 	if(!e->grounded) e->y_speed += SPEED(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -371,6 +372,7 @@ void ai_player(Entity *e) {
 		{
 			e->frame = 0;
 			sprite_vflip(e->sprite[0], 1);
+			e->grounded = FALSE;
 		}
 		break;
 		case 80:	// face away
@@ -384,11 +386,21 @@ void ai_player(Entity *e) {
 		case 101:
 		case 102:
 		{
-			ANIMATE(e, 16, 0,1,0,2);
+			collide = FALSE;
+			e->grounded = FALSE;
+			if(++e->timer > TIME(25)) e->state = 103;
+		}
+		break;
+		case 103:
+		{
+			collide = FALSE;
+			e->grounded = TRUE;
+			e->y_speed = 0;
+			ANIMATE(e, 10, 0,1,0,2);
 		}
 		break;
 	}
-	entity_update_collision(e);
+	if(collide) entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
 }

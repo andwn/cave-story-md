@@ -584,6 +584,7 @@ uint8_t execute_command() {
 					VDP_clearPlan(PLAN_A, TRUE);
 					entities_clear();
 					sprites_clear();
+					entity_create(240 << CSF, 120 << CSF, OBJ_NPC_PLAYER, 0)->state = 100;
 					tsc_load_stage(ID_CREDITS);
 				} else {
 					stage_load_credits(args[0]);
@@ -705,6 +706,7 @@ uint8_t execute_command() {
 				player.dir = 1;
 			}
 			player.x_speed = 0;
+			lookingDown = FALSE;
 		}
 		break;
 		case CMD_UNI: // Change movement type to (1)
@@ -1023,10 +1025,8 @@ uint8_t execute_command() {
 				inFade = FALSE; // Unlock sprites from updating
 				vsync(); // Wait a frame to let the sprites redraw
 				aftervsync();
-				
-				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 			}
-			
+			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 		}
 		break;
 		case CMD_FAO:
@@ -1034,16 +1034,14 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 			if(gamemode != GM_CREDITS) {
 				VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
-				
 				// Blank the sprite list in VRAM
-				spr_num = 0;
-				VDPSprite blank = (VDPSprite) { 
-					.x = 128, .y = 128, .size = 0, .attribut = 0
-				};
-				DMA_doDma(DMA_VRAM, (uint32_t) &blank, VDP_SPRITE_TABLE, 4, 2);
-				inFade = TRUE; // and set a flag not to update sprites anymore
+				sprites_clear();
+				inFade = TRUE;
+			} else {
+				VDP_fadeTo(0, 63, PAL_FadeOutBlue, 20, TRUE);
+				waitTime = 20;
+				return 1;
 			}
-			
 		}
 		break;
 		case CMD_FLA: // Flash screen white

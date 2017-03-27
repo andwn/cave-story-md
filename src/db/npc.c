@@ -336,7 +336,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Gaudi (Sitting)
 	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Puppy (Small)
 	{ NULL, 		NOSHEET, PAL1, 2, &onspawn_persistent, &ai_null, &ai_null }, // Balrog (Nurse)
-	{ &SPR_Santa, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Santa (Caged)
+	{ &SPR_Santa, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_mimiga_caged, &ai_null }, // Santa (Caged)
 	{ NULL, 	SHEET_STUMPY, PAL0, 1, &ai_null, &ai_stumpy, &ondeath_default }, // Stumpy
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Sword)

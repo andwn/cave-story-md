@@ -225,8 +225,8 @@ void stage_load_credits(uint8_t id) {
 	
 	XGM_set68KBUSProtection(FALSE);
 	
-	//VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
-	VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
+	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	//VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
 	stage_load_blocks();
 	
 	XGM_doVBlankProcess();

@@ -5,8 +5,7 @@
 
 #include "ym2612.h"
 
-void YM2612_reset()
-{
+void YM2612_reset() {
     uint16_t i;
     uint16_t bus_taken;
 
@@ -15,8 +14,7 @@ void YM2612_reset()
         Z80_requestBus(TRUE);
 
     // enable left and right output for all channel
-    for(i = 0; i < 3; i++)
-    {
+    for(i = 0; i < 3; i++) {
         YM2612_write(0, 0xB4 | i);
         YM2612_write(1, 0xC0);
         YM2612_write(2, 0xB4 | i);
@@ -33,8 +31,7 @@ void YM2612_reset()
 
     // ALL KEY OFF
     YM2612_write(0, 0x28);
-    for (i = 0; i < 3; i++)
-    {
+    for (i = 0; i < 3; i++) {
         YM2612_write(1, 0x00 | i);
         YM2612_write(1, 0x04 | i);
     }
@@ -47,9 +44,7 @@ void YM2612_reset()
         Z80_releaseBus();
 }
 
-
-uint8_t YM2612_read(const uint16_t port)
-{
+uint8_t YM2612_read(const uint16_t port) {
     volatile uint8_t *pb;
 
     pb = (uint8_t*) YM2612_BASEPORT;
@@ -57,8 +52,7 @@ uint8_t YM2612_read(const uint16_t port)
     return pb[port & 3];
 }
 
-void YM2612_write(const uint16_t port, const uint8_t data)
-{
+void YM2612_write(const uint16_t port, const uint8_t data) {
     volatile int8_t *pb;
 
     pb = (int8_t*) YM2612_BASEPORT;
@@ -69,13 +63,7 @@ void YM2612_write(const uint16_t port, const uint8_t data)
     pb[port & 3] = data;
 }
 
-void YM2612_writeSafe(const uint16_t port, const uint8_t data)
-{
-    YM2612_write(port, data);
-}
-
-void YM2612_writeReg(const uint16_t part, const uint8_t reg, const uint8_t data)
-{
+void YM2612_writeReg(const uint16_t part, const uint8_t reg, const uint8_t data) {
     volatile int8_t *pb;
     uint16_t port;
 
@@ -100,21 +88,13 @@ void YM2612_writeReg(const uint16_t part, const uint8_t reg, const uint8_t data)
     pb[port + 1] = data;
 }
 
-void YM2612_writeRegSafe(const uint16_t part, const uint8_t reg, const uint8_t data)
-{
-    YM2612_writeReg(part, reg, data);
-}
-
-
-void YM2612_enableDAC()
-{
+void YM2612_enableDAC() {
     // enable DAC
     YM2612_write(0, 0x2B);
     YM2612_write(1, 0x80);
 }
 
-void YM2612_disableDAC()
-{
+void YM2612_disableDAC() {
     // disable DAC
     YM2612_write(0, 0x2B);
     YM2612_write(1, 0x00);

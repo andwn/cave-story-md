@@ -40,7 +40,6 @@ uint8_t airDisplayTime = 0;
 uint8_t blockl, blocku, blockr, blockd;
 uint8_t ledge_time;
 uint8_t walk_time;
-uint8_t lookingDown;
 
 VDPSprite airTankSprite;
 

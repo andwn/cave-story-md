@@ -29,6 +29,7 @@ VDPSprite playerSprite;
 //uint8_t playerShow;
 uint8_t playerIFrames;
 uint8_t playerMoveMode;
+uint8_t lookingDown;
 // Max health - current health is player.health (Entity)
 uint16_t playerMaxHealth;
 // When this is TRUE, quote can not be controlled by player input

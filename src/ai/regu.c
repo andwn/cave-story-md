@@ -338,7 +338,7 @@ void ai_sue(Entity *e) {
 		// spawn red crystal and call it to us (Undead Core intro)
 		case 15:
 		{
-			//e->PushBehind(dr_create_red_crystal(e->x+(128<<CSF), e->y));
+			entity_create(e->x+(128<<CSF), e->y, OBJ_RED_CRYSTAL, 0);
 			e->state = 16;
 			e->x_speed = 0;
 			e->frame = 0;
@@ -381,7 +381,7 @@ void ai_sue(Entity *e) {
 		case 40:	// she jumps off the island
 		{
 			e->state = 41;
-			e->frame = 10;
+			e->frame = 8;
 			e->y_speed = SPEED(-0x400);
 			e->grounded = FALSE;
 		}
@@ -396,6 +396,7 @@ void ai_sue(Entity *e) {
 }
 
 void ai_sue_teleport_in(Entity *e) {
+	e->x_next = e->x;
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
