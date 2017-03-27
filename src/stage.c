@@ -14,6 +14,7 @@
 #include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
+#include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "timer.h"
@@ -60,7 +61,7 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(uint16_t id) {
-	VDP_setPaletteColor(15, 0x000); // Hide the white crap on the screen
+	//VDP_setPaletteColor(15, 0x000); // Hide the white crap on the screen
 	VDP_setEnable(FALSE);
 	
 	// Prevents an issue where a column of the previous map would get drawn over the new one
@@ -167,11 +168,13 @@ void stage_load(uint16_t id) {
 	
 	XGM_set68KBUSProtection(FALSE);
 	
+	stage_load_entities();
+	
 	XGM_doVBlankProcess();
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
-	stage_load_entities();
+	DMA_flushQueue();
 	
 	XGM_set68KBUSProtection(FALSE);
 	
@@ -193,7 +196,7 @@ void stage_load(uint16_t id) {
 	XGM_set68KBUSProtection(FALSE);
 	
 	VDP_setEnable(TRUE);
-	VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
+	//VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
 }
 
 void stage_load_credits(uint8_t id) {
@@ -311,9 +314,8 @@ void stage_load_entities() {
 		// loading it will crash BlastEm and possibly hardware too. This steps through
 		// each entity as it is loaded so the problematic NPC can be found
 		/*
-		{
-			
-			//VDP_setEnable(TRUE);
+		if(joy_down(BUTTON_A)) {
+			VDP_setEnable(TRUE);
 			VDP_setPaletteColor(15, 0xEEE);
 			char str[2][36];
 			sprintf(str[0], "X:%hu Y:%hu I:%hu", x, y, id);
@@ -329,8 +331,7 @@ void stage_load_entities() {
 				VDP_setHorizontalScroll(PLAN_A, 0);
 				VDP_setVerticalScroll(PLAN_A, 0);
 			}
-			//
-			//VDP_setEnable(FALSE);
+			VDP_setEnable(FALSE);
 		}
 		*/
 		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 

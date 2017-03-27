@@ -682,7 +682,7 @@ void ai_udmini_platform(Entity *e) {
 					playerPlatform = NULL;
 					FadeMinicore(e);
 				}
-			} else if(frame == 0) {
+			} else if(e->frame == 0) {
 				e->frame = 1;
 			}
 		}

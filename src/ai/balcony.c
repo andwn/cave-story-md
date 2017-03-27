@@ -335,11 +335,14 @@ void ai_doctor_ghost(Entity *e) {
 		}
 		case 11:
 		{
-			Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
-			r->angle = A_RIGHT;
-			r->linkedEntity = e;
+			e->timer++;
+			if((e->timer % TIME(5)) == 0) {
+				Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
+				r->angle = A_RIGHT;
+				r->linkedEntity = e;
+			}
 			
-			if (++e->timer > 150)
+			if (e->timer > TIME(150))
 				e->state++;
 		}
 		break;
@@ -351,7 +354,7 @@ void ai_doctor_ghost(Entity *e) {
 		}
 		case 21:
 		{
-			if (++e->timer > 250) {
+			if (++e->timer > TIME(250)) {
 				entities_clear_by_type(OBJ_RED_ENERGY);
 				e->state++;
 			}

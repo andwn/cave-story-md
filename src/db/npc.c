@@ -424,7 +424,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Wind)
 		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Water Drop Generator
+	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Water Drop Generator
 	{ NULL, 		NOSHEET, PAL0, 2, &ai_null, &ai_null, &ai_null }, // Thank You
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
