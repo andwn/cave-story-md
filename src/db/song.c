@@ -38,7 +38,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Balcony, 		"Balcony" },
 	{ BGM_Charge, 		"Charge" },
 	{ BGM_LastBoss, 	"Last Battle" }, // 0x20
-	{ BGM_Balcony, 		"The Way Back Home" },
+	{ BGM_WayBackHome, 	"The Way Back Home" },
 	{ BGM_Zombie, 		"Zombie" },
 	{ BGM_BreakDown, 	"Break Down" },
 	{ BGM_Balcony, 		"Running Hell" },

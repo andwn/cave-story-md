@@ -21,7 +21,7 @@
 
 #include "gamemode.h"
 
-#define TILE_ICONINDEX	(tiloc_index + 128)
+#define TILE_ICONINDEX	(tiloc_index + 192)
 
 enum CreditCmd { 
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, END 
@@ -98,8 +98,8 @@ void credits_main() {
 					for(uint8_t i = 0; i < 16; i++) {
 						if(icon[i].size) continue;
 						icon[i] = (VDPSprite) {
-							.x = textX * 8 - 16 + 128,
-							.y = SCREEN_HEIGHT - 4 + 128,
+							.x = textX * 8 - 20 + 128,
+							.y = SCREEN_HEIGHT + 128,
 							.size = SPRITE_SIZE(3, 3),
 							.attribut = TILE_ATTR_FULL(credits_info[pc].icon.pal,
 									1,0,0,TILE_ICONINDEX + i * 9)
@@ -165,7 +165,7 @@ void credits_main() {
 		for(uint8_t i = 0; i < 16; i++) {
 			if(!icon[i].size) continue;
 			if((backScroll & 1) == 0) {
-				if(--icon[i].y < -12 + 128) icon[i].size = 0;
+				if(--icon[i].y < -22 + 128) icon[i].size = 0;
 			}
 			sprite_add(icon[i]);
 		}

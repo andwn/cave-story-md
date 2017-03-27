@@ -954,6 +954,7 @@ XGM BGM_Safety		"bgm/safety.vgm"
 XGM BGM_Scorching	"bgm/scorching.vgm"
 XGM BGM_Tyrant		"bgm/tyrant.vgm"
 XGM BGM_Waterway	"bgm/waterway.vgm"
+XGM BGM_WayBackHome	"bgm/credits.vgm"
 XGM BGM_Zombie		"bgm/zombie.vgm"
 
 # ----------------------------------------------------------------------------------------------

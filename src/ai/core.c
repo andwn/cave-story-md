@@ -257,8 +257,6 @@ void ai_core(Entity *e) {
 			CLOSE_MOUTH;
 			
 			camera_shake(20);
-			effect_create_smoke((e->x >> CSF) - 64 + (random() % 160), 
-								(e->y >> CSF) - 64 + (random() % 100));
 			
 			// tell all the MC's to retreat
 			for(uint8_t i = 0; i < 5; i++) {
@@ -272,7 +270,7 @@ void ai_core(Entity *e) {
 			e->timer++;
 			if ((e->timer & 15) == 1) {
 				effect_create_smoke((e->x >> CSF) - 80 + (random() % 160), 
-									(e->y >> CSF) - 64 + (random() % 128));
+									(e->y >> CSF) - 50 + (random() % 100));
 			}
 			
 			if (e->timer & 2)

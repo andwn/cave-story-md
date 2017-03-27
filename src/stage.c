@@ -484,7 +484,7 @@ void stage_draw_screen_credits() {
 			uint16_t t = (b%16) * 2 + (b/16) * 64;
 			maprow[x-20] = TILE_ATTR_FULL(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
 		}
-		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 20, 20, 2);
+		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
 	}
 }
 

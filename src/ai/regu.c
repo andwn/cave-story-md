@@ -414,6 +414,7 @@ void ai_sue_teleport_in(Entity *e) {
 			//if (DoTeleportIn(o, 2)) {
 				e->state = 2;
 				e->timer = 0;
+				e->grounded = FALSE;
 			//}
 		}
 		break;

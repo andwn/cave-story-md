@@ -308,7 +308,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ &SPR_Littles, NOSHEET, PAL3, 1, &ai_null, &ai_little_family, &ai_null }, // Little Family
 	{ NULL, 	SHEET_BLOCK, PAL2, 1, &onspawn_persistent, &ai_falling_block, &ai_null }, // Falling Block (Large)
 	{ &SPR_Sue, 	NOSHEET, PAL0, 1, &onspawn_persistent, &ai_sue_teleport_in, &ai_null }, // Sue (Teleport In)
-	{ NULL, 		NOSHEET, PAL1, 1, &onspawn_persistent, &ai_null, &ai_null }, // Doctor (Red Energy)
+	{ NULL, 		NOSHEET, PAL1, 0, &onspawn_persistent, &ai_doctor_ghost, &ai_null }, // Doctor (Red Energy)
 	{ NULL, 	SHEET_MUCORE, PAL2, 3, &onspawn_ud_minicore, &ai_udmini_platform, &ai_null }, // Mini Undead Core
 	{ &SPR_MizaMisery,NOSHEET,PAL3,1, &onspawn_persistent, &ai_misery_frenzied, &ai_null }, // Misery (Transformed)
 	{ &SPR_MizaSue, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_sue_frenzied, &ai_null }, // Sue (Transformed)
@@ -333,10 +333,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_scroll_controller, &ai_null }, // Scroll controller
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x130 (304) */
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Gaudi (Sitting)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Puppy (Small)
-	{ NULL, 		NOSHEET, PAL0, 2, &ai_null, &ai_null, &ai_null }, // Balrog (Nurse)
-	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // Santa (Caged)
+	{ NULL, 		NOSHEET, PAL2, 1, &onspawn_persistent, &ai_null, &ai_null }, // Gaudi (Sitting)
+	{ NULL, 		NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Puppy (Small)
+	{ NULL, 		NOSHEET, PAL1, 2, &onspawn_persistent, &ai_null, &ai_null }, // Balrog (Nurse)
+	{ &SPR_Santa, 	NOSHEET, PAL3, 1, &onspawn_persistent, &ai_null, &ai_null }, // Santa (Caged)
 	{ NULL, 	SHEET_STUMPY, PAL0, 1, &ai_null, &ai_stumpy, &ondeath_default }, // Stumpy
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Bute (Sword)
@@ -350,8 +350,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ondeath_default }, // Mesa (Defeated)
 	{ NULL, 		NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // ???
 	/* 0x140 (320) */
-	{ &SPR_Curly, 	NOSHEET, PAL3, 1, // Curly (Hell)
-		&onspawn_persistent, &ai_curly_carried, &ai_null },
+	{ &SPR_Curly, NOSHEET, PAL3, 1, &onspawn_persistent, &ai_curly_carried, &ai_null }, // Curly (Hell)
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Deleet
@@ -383,8 +382,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, SHEET_IKACHAN,   PAL0, 1, &onspawn_persistent, &ai_ikachan, &ai_null }, // Ika-chan
 	/* 0x150 (336) */
 	{ NULL, 		NOSHEET, PAL0, 0, &onspawn_persistent, &ai_ikachan_spawner, &ai_null }, // Ika-chan Generator
-	{ NULL, 		NOSHEET, PAL0, 1, // Numahachi
-		&ai_null, &ai_null, &ondeath_default },
+	{ &SPR_Droll3, 	NOSHEET, PAL3, 2, &ai_null, &ai_numahachi, &ai_null }, // Numahachi
 	{ NULL, 		NOSHEET, PAL0, 1, // Green Devil
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 0, // Green Devil Generator
@@ -403,8 +401,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // ???
 		&ai_null, &ai_null, &ai_null },
-	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, // Hoppy
-		&ai_null, &ai_hoppy, &ondeath_default },
+	{ &SPR_Hoppy, 	NOSHEET, PAL1, 1, &ai_null, &ai_hoppy, &ondeath_default }, // Hoppy
 	{ NULL, 		NOSHEET, PAL0, 1, // Ballos Spikes
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Statue
@@ -414,8 +411,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, 		NOSHEET, PAL0, 2, // Statue (Breakable)
 		&ai_null, &ai_null, &ondeath_default },
 	/* 0x160 (352) */
-	{ NULL, 		NOSHEET, PAL0, 1, // King (Sword)
-		&ai_null, &ai_null, &ai_null },
+	{ NULL, NOSHEET, PAL0, 1, &ai_null, &ai_null, &ai_null }, // King (Sword)
 	{ NULL, 		NOSHEET, PAL0, 1, // Red Bute (Sword)
 		&ai_null, &ai_null, &ondeath_default },
 	{ NULL, 		NOSHEET, PAL0, 0, // Kill Zone
@@ -428,10 +424,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 		&ai_null, &ai_null, &ai_null },
 	{ NULL, 		NOSHEET, PAL0, 1, // Misery (Wind)
 		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 0, // Water Drop Generator
-		&ai_null, &ai_null, &ai_null },
-	{ NULL, 		NOSHEET, PAL0, 2, // Thank You
-		&ai_null, &ai_null, &ai_null },
+	{ NULL, 		NOSHEET, PAL0, 0, &ai_null, &ai_null, &ai_null }, // Water Drop Generator
+	{ NULL, 		NOSHEET, PAL0, 2, &ai_null, &ai_null, &ai_null }, // Thank You
 	/* ^ 0x168 (360) ^ */
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */
@@ -486,7 +480,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ &SPR_UCoreMouth, NOSHEET, PAL2, 2, // Undead Core (Face)
 		&onspawn_persistent, &ai_undead_core_face, &ai_null },
 		
-	// Extra stuff that does not belong to bosses
+	// Splash screen
 	{ &SPR_Sega, NOSHEET, PAL0, 6, // Sega Logo
 		&onspawn_segalogo, &ai_segalogo, &ai_null },
 	{ &SPR_Sega2, NOSHEET, PAL0, 6, // Sega Logo being crushed

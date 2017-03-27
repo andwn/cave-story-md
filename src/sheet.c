@@ -376,6 +376,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_ROCK, &SPR_MizaRock, 5,3,3, 0,0, 0,1, 0,2, 0,3, 0,4);
 			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_CRYSTAL, &SPR_RedCrystal, 2,1,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_REDDOT, &SPR_RedDot, 2,1,1, 0,0, 0,1);
 		} break;
 		case 0x46: // Balcony 2
 		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
