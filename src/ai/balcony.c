@@ -340,6 +340,7 @@ void ai_doctor_ghost(Entity *e) {
 				Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
 				r->angle = A_RIGHT;
 				r->linkedEntity = e;
+				if((e->timer % TIME(10)) == 0) r->timer = 200;
 			}
 			
 			if (e->timer > TIME(150))
@@ -388,6 +389,11 @@ void ai_red_energy(Entity *e) {
 			if (!e->linkedEntity || e->linkedEntity->state == STATE_DELETE) { 
 				e->state = STATE_DELETE; 
 				return; 
+			}
+			
+			if(e->linkedEntity->state == 21 && ++e->timer > 200) {
+				e->state = STATE_DELETE; 
+				return;
 			}
 			
 			if (e->state == 0) {
