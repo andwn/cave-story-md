@@ -5,7 +5,7 @@ This file is where I list off the differences in this port and why.
  - The resolution is 320x224 on NTSC, so there will be an extra bit of scrolling.
  - I got a bit creative with the sprinkler effect to avoid lag. There are less particles and they alternate visibility.
  - The message box disappears on fade out, but text is still visible. The way that works is actually that the color white in the main palette is kept white, as a result you can see the white of the HUD during fades too.
- - Where Courier New was used in the original game I am using the default 8x8 SGDK font. The font may change but it will likely still be 8x8.
+ - The font is 8x8 where the original was more like 6x8.
  - CSMD uses a simple palette fade instead of the original effect which is very difficult to emulate on the hardware.
  - The water "foreground" is in back of the foreground map tiles. I believe this is technically possible to fix but would add too much complication to the stage/background logic (swapping the planes they use for 2 maps only).
  - The original game uses many off-shade colors that don't exist in a 9-bit colormap.
@@ -25,4 +25,4 @@ This file is where I list off the differences in this port and why.
  - EggX and EggX2 are the same PXM with the tileset split into 2.
  - TSC are converted to a custom [bytecode](../tools/tscomp/tscomp.c).
  - The game is using the Aeon Genesis English translation. I have no plans on supporting other languages, but might if I get bored one day.
- - One line of text has been edited for length (Silver Locket description).
+ - Some bits of text (mainly item descriptions and credits text) have been edited to reduce length

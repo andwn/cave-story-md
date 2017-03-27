@@ -816,6 +816,8 @@ void ai_firewhirr(Entity *e) {
 		}
 		break;
 	}
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 void ai_firewhirr_shot(Entity *e) {

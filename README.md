@@ -40,14 +40,7 @@ To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
 
 ## FAQ
 #### Why?
-Not sure myself but it's fun in a way.
-
-#### Something is wrong. What DO?
-Open an issue if one doesn't already exist, unless
-
-- It's because of a hardware limitation, but if you have a realistic suggestion to improve it go ahead.
-- It has to do with the following parts which are not ready for testing: Undead Core, Credits, Hell
-- It's a bug that exists in the original Cave Story. [Example](https://www.youtube.com/watch?v=HFzS0bpc5kA)
+To learn MD dev mostly.
 
 #### Will you release this on cartridge?
 No. Nicalis would sue me.

@@ -46,10 +46,13 @@ The window uses this area to display the "Yes/No" prompt, cursor, or the item pi
 It could potentially collide with the above I'm just hoping that doesn't happen for now.
 
 #### TILE_FONTINDEX
-This is the 32-127 ASCII font included with SGDK. In game a blue background version is used.
+Glyphs to represent the ASCII range 32-127. In game a blue background version is used.
 The blue version also replaces the equal sign with a filled circle.
 
-#### Address 0xB000 - PLAN_W (64x32)
+#### Address 0xB000 - PLAN_WINDOW (64x32)
+
+#### Bottom 2 rows of PLAN_WINDOW (TILE_SLASHINDEX)
+Since this never gets displayed on the screen I put the Blade Lv3 slash here (8 tiles)
 
 #### Address 0xC000 - PLAN_B (64x32)
 
@@ -67,6 +70,11 @@ Space for 64 tiles between PLAN_A and the sprite list/hscroll table.
 - 16 tiles to display float text (numbers like '-127') for up to 4 objects at once
 - 28 tiles for smoke animation
 - 9 tiles for the blue window border/skin
-- 7 tiles for the AIR display (during hell, replaced by timer)
+- 8 tiles for either the AIR display or the counter in Hell
+- 1 tile for question mark (TODO)
+- 2 tiles for Whimsical Star (TODO)
 
 #### Address 0xF800 - HSCROLL and sprite list
+
+#### Address 0xFE80 (TILE_NEMINDEX)
+Similarly to the Blade slashes, the vertical sprite tiles for Nemesis bullets go here (12 tiles)

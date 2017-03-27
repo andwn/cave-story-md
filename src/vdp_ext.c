@@ -63,10 +63,8 @@ uint16_t* VDP_getCachedPalette() {
 }
 
 void VDP_flashWhite() {
-	
 	VDP_setPaletteColors(0, PAL_FullWhite, 64);
 	VDP_fadeTo(0, 63, VDP_getCachedPalette(), 10, TRUE);
-	
 }
 
 // Number draw functions
