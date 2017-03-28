@@ -817,12 +817,9 @@ Entity *entity_create(int32_t x, int32_t y, uint16_t type, uint16_t flags) {
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	if(!e) { 
-		// If the allocation failed, stop with a meaningful message
-		// instead of leaving the game crash later
-		SYS_die("Not enough memory to create new entity!");
-	}
+	if(!e) SYS_die("Out of memory creating new entity!");
 	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	
 	e->x = x;
 	e->y = y;
 	e->sprite_count = sprite_count;

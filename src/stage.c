@@ -65,7 +65,7 @@ void stage_load(uint16_t id) {
 	VDP_setEnable(FALSE);
 	
 	// Prevents an issue where a column of the previous map would get drawn over the new one
-	DMA_flushQueue();
+	DMA_clearQueue();
 	
 	input_update(); // Prevent menu from opening after loading save
 	stageID = id;
@@ -279,9 +279,11 @@ void stage_load_blocks() {
 	stageHeight = PXM[6] + (PXM[7] << 8);
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
+	if(!stageBlocks) SYS_die("Out of memory loading stage layout!");
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 	// Multiplication table for stage rows
 	stageTable = MEM_alloc(stageHeight * 2);
+	if(!stageTable) SYS_die("Out of memory creating stage table!");
 	uint16_t blockTotal = 0;
 	for(uint16_t y = 0; y < stageHeight; y++) {
 		stageTable[y] = blockTotal;

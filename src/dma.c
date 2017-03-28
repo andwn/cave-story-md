@@ -35,7 +35,8 @@ void DMA_init(uint16_t size, uint16_t capacity)
     if (dmaQueues) MEM_free(dmaQueues);
     // allocate DMA queue
     dmaQueues = MEM_alloc(queueSize * sizeof(DMAOpInfo));
-
+	if (!dmaQueues) SYS_die("Out of memory creating DMA queue!");
+	
     // clear queue
     DMA_clearQueue();
 }
