@@ -438,7 +438,6 @@ void ai_mimiga_caged(Entity *e) {
 			e->state = 1;
 			e->x -= (1 << CSF);
 			e->y -= (2 << CSF);
-			if(e->type == OBJ_SANTA_CAGED) e->y -= 4 << CSF;
 		}
 		case 1:
 		{
