@@ -188,8 +188,7 @@ void VDP_setTextPriority(uint16_t prio)
     text_basetile |= (prio & 1) << 15;
 }
 
-void VDP_drawTextBG(VDPPlan plan, const char *str, uint16_t x, uint16_t y)
-{
+void VDP_drawTextBG(VDPPlan plan, const char *str, uint16_t x, uint16_t y) {
     uint32_t len;
     uint16_t data[128];
     char *s;
@@ -206,8 +205,28 @@ void VDP_drawTextBG(VDPPlan plan, const char *str, uint16_t x, uint16_t y)
 
     s = (char*) str;
     d = data;
-    while(i--)
-        *d++ = TILE_FONTINDEX + (*s++ - 32);
+    
+    //static const char *b = "CDFJKLMNPQSTVZcdfjklmnpqstvz\0";
+    while(i--) {
+		//if(*s == 'b' || *s == 'G' || *s == 'g') {
+		//	*d++ = TILE_FONTINDEX + ('B' - 32);
+		//	s++;
+		//} else if(s == str || *(s-1) == ' ') {
+		//	uint8_t j;
+		//	for(j = 0; j < strlen(b); j++) {
+		//		if(*s == b[j]) {
+		//			*d++ = TILE_FONTINDEX + ('B' - 32);
+		//			s++;
+		//			break;
+		//		}
+		//	}
+		//	if(j == strlen(b)) {
+		//		*d++ = TILE_FONTINDEX + (*s++ - 32);
+		//	}
+		//} else {
+			*d++ = TILE_FONTINDEX + (*s++ - 32);
+		//}
+	}
 
     VDP_setTileMapDataRectEx(plan, data, text_basetile, x, y, len, 1, len);
 }

@@ -10,6 +10,7 @@
 #include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
+#include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
@@ -170,6 +171,21 @@ void window_draw_char(uint8_t c) {
 		} else {
 			spaceCounter = 0;
 		}
+		
+		static const char *b = "CDFJKLMNPQSTVZcdfjklmnpqstvz\0";
+		if(c == 'b' || c == 'G' || c == 'g') {
+			c = 'B';
+		} else if(textColumn - spaceOffset == 0 || 
+				windowText[textRow][textColumn - spaceOffset - 1] == ' ') {
+			uint8_t j;
+			for(j = 0; j < strlen(b); j++) {
+				if(c == b[j]) {
+					c = 'B';
+					break;
+				}
+			}
+		}
+		
 		windowText[textRow][textColumn - spaceOffset] = c;
 		// Figure out where this char is gonna go
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;

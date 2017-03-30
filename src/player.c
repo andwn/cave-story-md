@@ -14,6 +14,7 @@
 #include "sheet.h"
 #include "sprite.h"
 #include "stage.h"
+#include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tools.h"
@@ -657,7 +658,22 @@ void player_show_map_name(uint8_t ttl) {
 	uint32_t nameTiles[16][8];
 	uint8_t len = 0;
 	for(uint8_t i = 0; i < 16; i++) {
-		uint8_t chr = stage_info[stageID].name[i] - 0x20;
+		uint8_t chr = stage_info[stageID].name[i];
+		
+		static const char *b = "CDFJKLMNPQSTVZcdfjklmnpqstvz\0";
+		if(chr == 'b' || chr == 'G' || chr == 'g') {
+			chr = 'B';
+		} else if(i == 0 || stage_info[stageID].name[i-1] == ' ') {
+			uint8_t j;
+			for(j = 0; j < strlen(b); j++) {
+				if(chr == b[j]) {
+					chr = 'B';
+					break;
+				}
+			}
+		}
+		
+		chr -= 0x20;
 		if(chr < 0x60) len++;
 		else break;
 		memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
