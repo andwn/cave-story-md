@@ -298,7 +298,13 @@ uint8_t tsc_update() {
 			} else if(joy_pressed(BUTTON_B)) { // Cancel
 				teleMenuActive = FALSE;
 				tsc_load_stage(stageID);
-				tscState = TSC_RUNNING;
+				// Manually force event to end
+				tscState = TSC_IDLE;
+				gameFrozen = FALSE;
+				window_set_face(0, FALSE);
+				window_close();
+				controlsLocked = FALSE;
+				hud_show();
 			} else if(joy_pressed(BUTTON_LEFT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
