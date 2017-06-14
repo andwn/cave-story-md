@@ -29,7 +29,7 @@
 
 #include "gamemode.h"
 
-#define OPTIONS		3
+#define OPTIONS		4
 #define SAVES		22
 #define ANIM_SPEED	7
 #define ANIM_FRAMES	4
@@ -74,7 +74,7 @@ uint8_t titlescreen_main() {
 		tsong = 36; // Running Hell
 	}
 	// Load quote sprite
-	SHEET_LOAD(tsprite, 4, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0);
+	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
 	VDPSprite sprCursor = { 
 		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX),
 		.size = SPRITE_SIZE(2,2)
@@ -83,6 +83,7 @@ uint8_t titlescreen_main() {
 	// Menu and version text
 	VDP_drawText("New Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
+	VDP_drawText("Config", 15, 18);
 	// Debug
 	{
 		char vstr[40];
@@ -90,7 +91,7 @@ uint8_t titlescreen_main() {
 		VDP_drawText(vstr, 4, 26);
 	}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.4.0 2017.03", 4, 26);
+	//VDP_drawText("Mega Drive Version 0.4.1 2017.07", 4, 26);
 	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
@@ -231,7 +232,9 @@ uint8_t titlescreen_main() {
 		cursor += 4;
 	}
 	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
-	song_stop();
-	sound_play(SND_MENU_SELECT, 0);
+	if(cursor != 3) {
+		song_stop();
+		sound_play(SND_MENU_SELECT, 0);
+	}
 	return cursor;
 }

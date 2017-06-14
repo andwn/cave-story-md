@@ -68,11 +68,13 @@ int main() {
     while(TRUE) {
 		splash_main();
 		uint8_t select = titlescreen_main();
-		if(select != 2) {
+		if(select == 2) {
+			soundtest_main(); break;
+		} else if(select == 3) {
+			config_main(); break;
+		} else {
 			game_main(select);
 			credits_main();
-		} else {
-			soundtest_main(); break;
 		}
     }
 	return 0;

@@ -625,7 +625,7 @@ void _start_entry() {
     // initiate random number generator
     setRandomSeed(0xC427);
     // enable interrupts
-    __asm__("move #0x2300,%sr");
+    __asm__("move #0x2500,%sr");
     // init part
     MEM_init();
     VDP_init();

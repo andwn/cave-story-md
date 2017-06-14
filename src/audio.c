@@ -2,6 +2,7 @@
 
 #include "tables.h"
 #include "xgm.h"
+#include "z80_ctrl.h"
 
 #include "audio.h"
 
@@ -34,7 +35,8 @@ void song_play(uint8_t id) {
 	// Track 0 in song_info is NULL, but others could be potentially
 	if(song_info[id].song == NULL) {
 		id = 0;
-		XGM_stopPlay();
+		//XGM_stopPlay();
+		Z80_init();
 	} else {
 		XGM_startPlay(song_info[id].song);
 		XGM_setMusicTempo(60);

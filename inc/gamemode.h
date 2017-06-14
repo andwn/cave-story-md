@@ -31,6 +31,9 @@ void do_map();
 // Listen to music, sound effects
 void soundtest_main();
 
+// Change controls and stuff
+void config_main();
+
 void credits_main();
 void credits_show_image(uint16_t id);
 void credits_clear_image();
