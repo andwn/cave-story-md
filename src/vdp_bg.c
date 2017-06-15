@@ -143,15 +143,15 @@ void VDP_clearPlan(VDPPlan plan, uint16_t wait)
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            VDP_clearTileMap(VDP_PLAN_A, 0, 1 << (planWidthSft + planHeightSft), wait);
+            VDP_clearTileMap(VDP_PLAN_A, 0, 1 << (PLAN_WIDTH_SFT + PLAN_HEIGHT_SFT), wait);
             break;
 
         case CONST_PLAN_B:
-            VDP_clearTileMap(VDP_PLAN_B, 0, 1 << (planWidthSft + planHeightSft), wait);
+            VDP_clearTileMap(VDP_PLAN_B, 0, 1 << (PLAN_WIDTH_SFT + PLAN_HEIGHT_SFT), wait);
             break;
 
         case CONST_PLAN_WINDOW:
-            VDP_clearTileMap(VDP_PLAN_WINDOW, 0, 1 << (windowWidthSft + 5), wait);
+            VDP_clearTileMap(VDP_PLAN_WINDOW, 0, 1 << (WINDOW_WIDTH_SFT + 5), wait);
             break;
     }
 }
@@ -197,7 +197,7 @@ void VDP_drawTextBG(VDPPlan plan, const char *str, uint16_t x, uint16_t y)
     uint16_t i;
 
     // get the horizontal plan size (in cell)
-    i = (plan.value == CONST_PLAN_WINDOW)?windowWidth:planWidth;
+    i = (plan.value == CONST_PLAN_WINDOW)?WINDOW_WIDTH:PLAN_WIDTH;
     len = strlen(str);
 
     // if string don't fit in plan, we cut it
@@ -224,7 +224,7 @@ void VDP_clearTextAreaBG(VDPPlan plan, uint16_t x, uint16_t y, uint16_t w, uint1
 
 void VDP_clearTextLineBG(VDPPlan plan, uint16_t y)
 {
-    VDP_fillTileMapRect(plan, 0, 0, y, (plan.value == CONST_PLAN_WINDOW)?windowWidth:planWidth, 1);
+    VDP_fillTileMapRect(plan, 0, 0, y, (plan.value == CONST_PLAN_WINDOW)?WINDOW_WIDTH:PLAN_WIDTH, 1);
 }
 
 void VDP_drawText(const char *str, uint16_t x, uint16_t y)

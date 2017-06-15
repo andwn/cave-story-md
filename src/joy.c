@@ -2,7 +2,6 @@
 
 #include "memory.h"
 #include "system.h"
-#include "timer.h"
 #include "vdp.h"
 
 #include "joy.h"

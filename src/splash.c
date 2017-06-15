@@ -37,7 +37,7 @@ void splash_main() {
 	VDP_setPalette(PAL1, PAL_Sym.data);
 	// Init some subsystems used
 	sheets_load_splash();
-	effects_init();
+	//effects_init();
 	camera_init();
 	camera.y -= 8 << CSF; // Cancel the offset, we want to use absolute positions
 	camera.target = NULL;
@@ -50,7 +50,7 @@ void splash_main() {
 		input_update();
 		entities_update();
 		entities_draw();
-		effects_update(); // Draw Smoke
+		//effects_update(); // Draw Smoke
 		ready = TRUE;
 		vsync();
 		aftervsync();
@@ -58,5 +58,5 @@ void splash_main() {
 	input_update(); // This pushes the joy state to avoid skipping the next menu
 	VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
 	entities_clear();
-	effects_clear();
+	//effects_clear();
 }

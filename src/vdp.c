@@ -20,15 +20,6 @@
 
 static uint8_t regValues[0x13];
 
-uint16_t screenWidth;
-uint16_t screenHeight;
-uint16_t planWidth;
-uint16_t planHeight;
-uint16_t windowWidth;
-uint16_t planWidthSft;
-uint16_t planHeightSft;
-uint16_t windowWidthSft;
-
 // constants for plan
 const VDPPlan PLAN_A = { CONST_PLAN_A };
 const VDPPlan PLAN_B = { CONST_PLAN_B };
@@ -41,16 +32,6 @@ void VDP_init()
 
     // wait for DMA completion
     VDP_waitDMACompletion();
-
-    // default resolution
-    screenWidth = 320;
-    screenHeight = 224;
-    planWidth = 64;
-    planHeight = 32;
-    windowWidth = 64;
-    planWidthSft = 6;
-    planHeightSft = 5;
-    windowWidthSft = 6;
 
     regValues[0x00] = 0x04;
     regValues[0x01] = 0x74;                     /* reg. 1 - Enable display, VBL, DMA + VCell size */
@@ -71,6 +52,10 @@ void VDP_init()
     regValues[0x10] = 0x01;                     /* reg 16 - scrl screen v&h size (64x32) */
     regValues[0x11] = 0x00;                     /* reg 17 - window hpos */
     regValues[0x12] = 0x00;                     /* reg 18 - window vpos */
+    
+#ifdef PAL
+    regValues[0x01] |= 0x08; // 240 screen height
+#endif
 
     // set registers
     pw = (uint16_t *) GFX_CTRL_PORT;
@@ -124,20 +109,6 @@ void VDP_setEnable(uint8_t value)
 
     pw = (uint16_t *) GFX_CTRL_PORT;
     *pw = 0x8100 | regValues[0x01];
-}
-
-void VDP_setScreenHeight240()
-{
-    volatile uint16_t *pw;
-
-    if (IS_PALSYSTEM)
-    {
-        regValues[0x01] |= 0x08;
-        screenHeight = 240;
-
-        pw = (uint16_t *) GFX_CTRL_PORT;
-        *pw = 0x8100 | regValues[0x01];
-    }
 }
 
 void VDP_setScrollingMode(uint16_t hscroll, uint16_t vscroll)

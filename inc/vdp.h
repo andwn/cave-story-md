@@ -138,6 +138,14 @@
  */
 #define TILE_FONT               (TILE_FONTINDEX * TILE_SIZE)
 
+// Plane sizes
+#define PLAN_WIDTH				64
+#define PLAN_HEIGHT				32
+#define WINDOW_WIDTH			64
+#define PLAN_WIDTH_SFT			6
+#define PLAN_HEIGHT_SFT			5
+#define WINDOW_WIDTH_SFT		6
+
 // Tileset width/height
 #define TS_WIDTH 32
 #define TS_HEIGHT 16
@@ -309,60 +317,6 @@
 
 /**
  *  \brief
- *      Current screen width (horizontale resolution)
- */
-extern uint16_t screenWidth;
-/**
- *  \brief
- *      Current screen height (verticale resolution)
- */
-extern uint16_t screenHeight;
-/**
- *  \brief
- *      Current background plan width (in tile)
- *
- *  Possible values are: 32, 64, 128
- */
-extern uint16_t planWidth;
-/**
- *  \brief
- *      Current background plan height (in tile)
- *
- *  Possible values are: 32, 64, 128
- */
-extern uint16_t planHeight;
-/**
- *  \brief
- *      Current window width (in tile)
- *
- *  Possible values are: 32, 64
- */
-extern uint16_t windowWidth;
-/**
- *  \brief
- *      Current background plan width bit shift
- *
- *  Possible values are: 5, 6 or 7 (corresponding to plan width 32, 64 and 128)
- */
-extern uint16_t planWidthSft;
-/**
- *  \brief
- *      Current background plan height bit shift
- *
- *  Possible values are: 5, 6 or 7 (corresponding to plan height 32, 64 and 128)
- */
-extern uint16_t planHeightSft;
-/**
- *  \brief
- *      Current window width bit shift
- *
- *  Possible values are: 5 or 6 (corresponding to window width 32 or 64)
- */
-extern uint16_t windowWidthSft;
-
-
-/**
- *  \brief
  *      Constante to represent VDP background A plan (used by some methods)
  */
 extern const VDPPlan PLAN_A;
@@ -376,7 +330,6 @@ extern const VDPPlan PLAN_B;
  *      Constante to represent VDP window plan (used by some methods)
  */
 extern const VDPPlan PLAN_WINDOW;
-
 
 /**
  *  \brief
@@ -416,14 +369,6 @@ uint16_t  VDP_getScanlineNumber();
 
 /**
  *  \brief
- *      Set vertical resolution to 240 pixels.
- *
- *  Only work on PAL system.
- */
-void VDP_setScreenHeight240();
-
-/**
- *  \brief
  *      Set plan scrolling mode.
  *
  *  \param hscroll
@@ -454,7 +399,7 @@ void VDP_setBackgroundColor(uint8_t value);
  *  \brief
  *      Returns auto increment register value.
  */
-uint8_t   VDP_getAutoInc();
+uint8_t VDP_getAutoInc();
 /**
  *  \brief
  *      Set auto increment register value.
@@ -480,15 +425,3 @@ void VDP_waitFIFOEmpty();
  *  Clear background plans, reset palette to grey / red / green / blue and reset scrolls.
  */
 void VDP_resetScreen();
-
-/**
- *  \brief
- *      Display number of Frame Per Second.
- *
- *  \param float_display
- *      Display as float number.
- *
- * This function actually display the number of time it was called in the last second.<br>
- * i.e: for benchmarking you should call this method only once per frame update.
- */
-void VDP_showFPS(uint16_t float_display);

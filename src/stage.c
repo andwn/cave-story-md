@@ -17,7 +17,6 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "timer.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"

@@ -481,9 +481,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 		&onspawn_persistent, &ai_undead_core_face, &ai_null },
 		
 	// Splash screen
-	{ &SPR_Sega, NOSHEET, PAL0, 6, // Sega Logo
+	{ &SPR_Sega, NOSHEET, PAL0, 3, // Sega Logo
 		&onspawn_segalogo, &ai_segalogo, &ai_null },
-	{ &SPR_Sega2, NOSHEET, PAL0, 6, // Sega Logo being crushed
+	{ &SPR_Sega2, NOSHEET, PAL0, 3, // Sega Logo being crushed
 		&onspawn_segalogo, &ai_segalogo, &ai_null },
 	{ &SPR_Balrog, NOSHEET, PAL1, 2, // Balrog in splash screen
 		&onspawn_balrog_splash, &ai_balrog_splash, &ai_null },

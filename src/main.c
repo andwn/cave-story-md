@@ -28,7 +28,7 @@
 #include "sprite.h"
 #include "stage.h"
 #include "system.h"
-#include "timer.h"
+#include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "vdp_pal.h"
@@ -62,7 +62,6 @@ void aftervsync() {
 
 int main() {
 	puts("Hi Plum");
-    VDP_setScreenHeight240(); // Only has any effect on PAL
     sound_init();
 	input_init();
     while(TRUE) {

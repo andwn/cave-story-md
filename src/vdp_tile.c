@@ -8,26 +8,9 @@
 
 #include "vdp_tile.h"
 
-uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma)
+uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma) 
 {
-    const uint16_t comp = tileset->compression;
-
-    // compressed tileset ?
-    if (comp != COMPRESSION_NONE)
-    {
-        // unpack first
-        TileSet *t = unpackTileSet(tileset, NULL);
-
-        if (t == NULL) return FALSE;
-
-        // tiles
-        VDP_loadTileData(t->tiles, index, t->numTile, use_dma);
-        MEM_free(t);
-    }
-    else
-        // tiles
-        VDP_loadTileData(tileset->tiles, index, tileset->numTile, use_dma);
-
+    VDP_loadTileData(tileset->tiles, index, tileset->numTile, use_dma);
     return TRUE;
 }
 
@@ -70,15 +53,15 @@ void VDP_setTileMapXY(VDPPlan plan, uint16_t tile, uint16_t x, uint16_t y)
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            addr = VDP_PLAN_A + ((x + (y << planWidthSft)) * 2);
+            addr = VDP_PLAN_A + ((x + (y << PLAN_WIDTH_SFT)) * 2);
             break;
 
         case CONST_PLAN_B:
-            addr = VDP_PLAN_B + ((x + (y << planWidthSft)) * 2);
+            addr = VDP_PLAN_B + ((x + (y << PLAN_WIDTH_SFT)) * 2);
             break;
 
         case CONST_PLAN_WINDOW:
-            addr = VDP_PLAN_WINDOW + ((x + (y << windowWidthSft)) * 2);
+            addr = VDP_PLAN_WINDOW + ((x + (y << WINDOW_WIDTH_SFT)) * 2);
             break;
 
         default:
@@ -139,18 +122,18 @@ void VDP_fillTileMapRect(VDPPlan plan, uint16_t tile, uint16_t x, uint16_t y, ui
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            addr = VDP_PLAN_A + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_A + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_B:
-            addr = VDP_PLAN_B + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_B + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_WINDOW:
-            addr = VDP_PLAN_WINDOW + ((x + (y << windowWidthSft)) * 2);
-            width = windowWidth;
+            addr = VDP_PLAN_WINDOW + ((x + (y << WINDOW_WIDTH_SFT)) * 2);
+            width = WINDOW_WIDTH;
             break;
 
         default:
@@ -246,18 +229,18 @@ void VDP_fillTileMapRectInc(VDPPlan plan, uint16_t basetile, uint16_t x, uint16_
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            addr = VDP_PLAN_A + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_A + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_B:
-            addr = VDP_PLAN_B + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_B + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_WINDOW:
-            addr = VDP_PLAN_WINDOW + ((x + (y << windowWidthSft)) * 2);
-            width = windowWidth;
+            addr = VDP_PLAN_WINDOW + ((x + (y << WINDOW_WIDTH_SFT)) * 2);
+            width = WINDOW_WIDTH;
             break;
 
         default:
@@ -346,18 +329,18 @@ void VDP_setTileMapDataRect(VDPPlan plan, const uint16_t *data, uint16_t x, uint
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            addr = VDP_PLAN_A + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_A + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_B:
-            addr = VDP_PLAN_B + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_B + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_WINDOW:
-            addr = VDP_PLAN_WINDOW + ((x + (y << windowWidthSft)) * 2);
-            width = windowWidth;
+            addr = VDP_PLAN_WINDOW + ((x + (y << WINDOW_WIDTH_SFT)) * 2);
+            width = WINDOW_WIDTH;
             break;
 
         default:
@@ -450,18 +433,18 @@ void VDP_setTileMapDataRectEx(VDPPlan plan, const uint16_t *data, uint16_t baset
     switch(plan.value)
     {
         case CONST_PLAN_A:
-            addr = VDP_PLAN_A + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_A + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_B:
-            addr = VDP_PLAN_B + ((x + (y << planWidthSft)) * 2);
-            width = planWidth;
+            addr = VDP_PLAN_B + ((x + (y << PLAN_WIDTH_SFT)) * 2);
+            width = PLAN_WIDTH;
             break;
 
         case CONST_PLAN_WINDOW:
-            addr = VDP_PLAN_WINDOW + ((x + (y << windowWidthSft)) * 2);
-            width = windowWidth;
+            addr = VDP_PLAN_WINDOW + ((x + (y << WINDOW_WIDTH_SFT)) * 2);
+            width = WINDOW_WIDTH;
             break;
 
         default:

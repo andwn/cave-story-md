@@ -6,7 +6,7 @@
 #include "smp_null_pcm.h"
 #include "system.h"
 #include "tab_vol.h"
-#include "timer.h"
+#include "tools.h"
 #include "vdp.h"
 #include "xgm.h"
 #include "ym2612.h"
