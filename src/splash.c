@@ -32,7 +32,6 @@
 void splash_main() {
 	gamemode = GM_SPLASH;
 	
-	//VDP_resetScreen();
 	// Init screen stuff
 	VDP_setPalette(PAL0, PAL_Sega.data);
 	VDP_setPalette(PAL1, PAL_Sym.data);
