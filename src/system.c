@@ -357,12 +357,12 @@ static uint32_t LS_readLong(uint8_t file, uint32_t addr) {
 extern int main();
 
 // exception state consumes 78 bytes of memory
-uint32_t registerState[8+8];
-uint32_t pcState;
-uint32_t addrState;
-uint16_t ext1State;
-uint16_t ext2State;
-uint16_t srState;
+__attribute__((externally_visible)) uint32_t registerState[8+8];
+__attribute__((externally_visible)) uint32_t pcState;
+__attribute__((externally_visible)) uint32_t addrState;
+__attribute__((externally_visible)) uint16_t ext1State;
+__attribute__((externally_visible)) uint16_t ext2State;
+__attribute__((externally_visible)) uint16_t srState;
 
 static void addValueU8(char *dst, char *str, uint8_t value)
 {

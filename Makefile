@@ -16,11 +16,12 @@ WAVTORAW= bin/wavtoraw
 GCC_VER := $(shell gcc -dumpversion)
 GENGCC_VER := $(shell $(CC) -dumpversion)
 
+PLUGIN=$(GENDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GENGCC_VER)
+
 INCS = -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin
-EXFLAGS = 
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin 
 ASFLAGS = -m68000 --register-prefix-optional
-LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys 
+LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER)/libgcc.a 
 FLAGSZ80 = -isrc/xgm
@@ -33,7 +34,7 @@ Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-#CS+=$(wildcard src/xgm/*.c) # Moved to workaround an issue, find "$(XGMO)" target
+CS+=$(wildcard src/xgm/*.c) # Moved to workaround an issue, find "$(XGMO)" target
 SS=$(wildcard src/*.s)
 SS+=$(wildcard src/xgm/*.s)
 RESOURCES=$(RESS:.res=.o)
@@ -42,9 +43,6 @@ RESOURCES+=$(CS:.c=.o)
 RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
-
-XGMS=$(wildcard src/xgm/*.c)
-XGMO=$(XGMS:.c=.o)
 
 .PHONY: all release debug ntsc pal ntsc-debug pal-debug tools clean clean-tools
 .SECONDARY: doukutsu.elf
@@ -62,7 +60,7 @@ pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
 release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-release: CCFLAGS += -O3
+release: CCFLAGS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
 release: main-build
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
@@ -82,13 +80,9 @@ saves:
 	python2 savegen.py
 	zip -r saves.zip save
 
-# Music PCM is messed up with -O3
-$(XGMO): EXFLAGS = -O2
-$(XGMO): $(OBJS)
-
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
-	$(NM) -n doukutsu.elf > symbol.txt
+	$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n doukutsu.elf > symbol.txt
 
 src/boot/sega.o: src/boot/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
@@ -97,12 +91,12 @@ src/boot/sega.o: src/boot/rom_head.bin
 	$(OBJC) -O binary $< temp.bin
 	dd if=temp.bin of=$@ bs=8K conv=sync
 
-%.elf: $(OBJS) $(XGMO) $(BOOT_RESOURCES)
-	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(XGMO) $(LIBS)
+%.elf: $(OBJS) $(BOOT_RESOURCES)
+	$(CC) -o $@ $(LINKFLAGS) $(BOOT_RESOURCES) $(ARCHIVES) $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
-	@$(CC) $(CCFLAGS) $(EXFLAGS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
 	@echo "AS $<"
@@ -116,6 +110,9 @@ src/boot/sega.o: src/boot/rom_head.bin
 
 %.s: %.o80
 	$(BINTOS) $<
+
+src/boot/rom_head.o: src/boot/rom_head.c
+	$(CC) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -o $@ $<
 
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
@@ -159,7 +156,7 @@ $(WAVTORAW):
 	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=c99
 
 clean: clean-tools
-	rm -f $(RESOURCES) $(XGMO)
+	rm -f $(RESOURCES)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_drv.s src/xgm/z80_drv.o80 src/xgm/z80_drv.h out.lst

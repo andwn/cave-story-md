@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+__attribute__((externally_visible))
 const struct {
     char console[16];               /* Console Name (16) */
     char copyright[16];             /* Copyright Information (16) */

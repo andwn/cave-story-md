@@ -15,12 +15,11 @@
  *  \brief
  *      DMA transfer definition (used for DMA queue)
  */
-typedef struct
-{
-    uint32_t regStepLenL;    // (0x8F00 | step) | ((0x9300 | (len & 0xFF)) << 16)
-    uint32_t regLenHAddrL;   // (0x9400 | ((len >> 8) & 0xFF)) | ((0x9500 | ((addr >> 1) & 0xFF)) << 16)
-    uint32_t regAddrMAddrH;  // (0x9600 | ((addr >> 9) & 0xFF)) | ((0x9700 | ((addr >> 17) & 0x7F)) << 16)
-    uint32_t regCtrlWrite;   // GFX_DMA_VRAMCOPY_ADDR(to)
+typedef struct {
+    uint32_t regLen;        // ((len | (len << 8)) & 0xFF00FF) | 0x94009300;
+    uint32_t regAddrMStep;  // (((addr << 7) & 0xFF0000) | 0x96008F00) + step;
+    uint32_t regAddrHAddrL; // ((addr >> 1) & 0x7F00FF) | 0x97009500;
+    uint32_t regCtrlWrite;  // GFX_DMA_VRAMCOPY_ADDR(to)
 } DMAOpInfo;
 
 /**
