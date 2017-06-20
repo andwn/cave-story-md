@@ -29,12 +29,12 @@ FLAGSZ80 = -isrc/xgm
 BOOTSS=$(wildcard src/boot/*.s)
 BOOT_RESOURCES=$(BOOTSS:.s=.o)
 
-RESS=$(wildcard res/*.res)
+RESS=res/resources.res res/tsc_en.res res/bgm_ntsc.res #res/tsc_ja.res
 Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)
 CS+=$(wildcard src/db/*.c)
-CS+=$(wildcard src/xgm/*.c) # Moved to workaround an issue, find "$(XGMO)" target
+CS+=$(wildcard src/xgm/*.c)
 SS=$(wildcard src/*.s)
 SS+=$(wildcard src/xgm/*.s)
 RESOURCES=$(RESS:.res=.o)

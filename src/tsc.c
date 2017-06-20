@@ -20,6 +20,8 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
+#include "tsc_en.h"
+//#include "tsc_ja.h"
 #include "vdp.h"
 #include "vdp_bg.h"
 #include "vdp_pal.h"

@@ -1,6 +1,8 @@
 #include "common.h"
 
 #include "resources.h"
+#include "tsc_en.h"
+//#include "tsc_ja.h"
 
 #include "tables.h"
 

@@ -1,6 +1,10 @@
 #include "common.h"
 
-#include "resources.h"
+//#ifdef PAL
+//#include "bgm_pal.h"
+//#else
+#include "bgm_ntsc.h"
+//#endif
 
 #include "tables.h"
 

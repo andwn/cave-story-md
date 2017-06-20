@@ -63,7 +63,37 @@
 
 enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA };
 
-const char btnName[8][4] = { "A", "B", "C", "X", "Y", "Z", "St", "Md" };
+enum { MI_LABEL, MI_INPUT, MI_TOGGLE, MI_ACTION };
+
+typedef struct {
+	uint8_t y;
+	uint8_t type;
+	char caption[37];
+	uint8_t defaultVal;
+} MenuItem;
+
+const MenuItem menu[3][16] = {
+	{
+		{ 4,  MI_INPUT, "Jump / Confirm", 5 },
+		{ 6,  MI_INPUT, "Shoot / Cancel", 4 },
+		{ 8,  MI_INPUT, "Switch (3btn) / FFwd", 6 },
+		{ 10, MI_INPUT, "Switch Right (6btn)", 8 },
+		{ 12, MI_INPUT, "Switch Left (6btn)", 9 },
+		{ 14, MI_INPUT, "Open Map (6btn)", 10 },
+		{ 16, MI_INPUT, "Pause Menu", 7 },
+	},
+	{
+		{ 4,  MI_TOGGLE, "Fast Fwd with A", TRUE },
+		{ 6,  MI_TOGGLE, "Use Up to Interact", FALSE },
+		{ 8,  MI_TOGGLE, "Screen Shake in Hell", TRUE },
+		
+		{ 11, MI_LABEL, "Reset Invincibility Frames in the", 0 },
+		{ 12, MI_TOGGLE, "Pause Menu", TRUE },
+	},
+	{
+		
+	},
+};
 
 uint8_t set_page(uint8_t page) {
 	uint8_t maxCursor = 0;

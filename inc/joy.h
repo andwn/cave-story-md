@@ -36,6 +36,10 @@
 #define JOY_TYPE_PAD6           0x01
 #define JOY_TYPE_UNKNOWN        0x0F
 
+extern const uint16_t btn[12];
+
+extern const char btnName[12][4];
+
 void JOY_init();
 uint8_t JOY_getJoypadType(uint16_t joy);
 uint16_t  JOY_readJoypad(uint16_t joy);

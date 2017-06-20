@@ -8,6 +8,18 @@
 
 #define JOY_TYPE_SHIFT          12
 
+const uint16_t btn[12] = {
+	BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT,
+	BUTTON_B, BUTTON_C, BUTTON_A, BUTTON_START,
+	BUTTON_Z, BUTTON_Y, BUTTON_X, BUTTON_MODE
+};
+
+const char btnName[12][4] = {
+	"Up", "Dn", "Lt", "Rt",
+	"B", "C", "A", "St",
+	"Z", "Y", "X", "Md"
+};
+
 static uint8_t joyType[JOY_NUM];
 static uint16_t joyState[JOY_NUM];
 
