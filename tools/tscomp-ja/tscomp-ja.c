@@ -5,9 +5,10 @@
  * gcc tscomp-ja.c -o tscomp-ja
  * 
  * Usage:
- * ./tscomp-ja <tsc file> <kanji list file> <output file>
+ * ./tscomp-ja [-t] <tsc file[s ...]> <kanji list file>
  */
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -17,10 +18,9 @@
 #define MAX_EVENTS 		106
 #define COMMAND_COUNT 	93
 
-#define PAGE_HIRAGANA	0x1E
-#define PAGE_KATAKANA	0x1F
-#define PAGE_KANJIBEGIN	0xE0
-#define PAGE_KANJIEND	0xFE
+// Chars starting with 0xE0-0xFE are a 2 byte sequence
+#define MULTIBYTE_BEGIN	0xE0
+#define MULTIBYTE_END	0xFE
 
 #define SYM_EVENT		'#'
 #define SYM_COMMENT		'-'
@@ -38,11 +38,14 @@
 #define OP_EVENT		0xFFFF
 
 enum {
-	CT_INVALID = -1,
-	CT_ASCII = 0,
-	CT_HIRAGANA,
-	CT_KATAKANA,
-	CT_KANJI
+	CT_COMMAND,
+	CT_EVENT,
+	CT_ASCII,
+	CT_KANJI,
+	CT_SKIP,
+	CT_SKIP2BYTE,
+	CT_INVALID,
+	CT_INVALID2BYTE,
 };
 
 // TSC Command Definition
@@ -162,39 +165,208 @@ const CommandDef command_table[COMMAND_COUNT] = {
 	{ "NOP", 0xDB, 0, 0 },
 };
 
-// Full width kana and characters in the kanji list are also "valid"
 const char *ValidChars = 
 	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ,.?=!@$%^&*()[]{}|_-+:;'\"\n";
 
 uint8_t *tsc = NULL;
-int tscSize = 0;
-int pc = 0;
+uint16_t tscSize = 0;
+uint16_t pc = 0;
 
 uint16_t *kanji = NULL;
-int kanjiCount = 0;
+uint16_t kanjiCount = 0;
+
+bool trace = false;
 
 void tsc_open(const char *filename) {
+	if(trace) printf("TRACE: Opening '%s'\n", filename);
+	
 	FILE *tscFile = fopen(filename, "rb");
 	fseek(tscFile, 0, SEEK_END);
 	tscSize = ftell(tscFile);
 	tsc = malloc(tscSize);
 	fseek(tscFile, 0, SEEK_SET);
 	fread(tsc, 1, tscSize, tscFile);
+	fclose(tscFile);
 	// Obtain the key from the center of the file
 	uint8_t key = tsc[tscSize / 2];
 	// Apply key to all bytes except where the key itself was
-	for(int i = 0; i < tscSize; i++) {
+	for(uint16_t i = 0; i < tscSize; i++) {
 		if(i != tscSize / 2) tsc[i] -= key;
-		//fputc(tsc[i], debug);
+		if(trace) fputc(tsc[i], stdout);
 	}
 	pc = 0;
-	fclose(tscFile);
 }
 
 void tsc_close() {
+	if(trace) printf("TRACE: Closing TSC\n");
+	
 	if(tsc) {
 		free(tsc);
 		tsc = NULL;
+	}
+}
+
+uint8_t get_char_type() {
+	// Command symbol '<'
+	if(tsc[pc] == SYM_COMMAND) return CT_COMMAND;
+	// Event symbol '#'
+	if(tsc[pc] == SYM_EVENT) return CT_EVENT;
+	// First check the valid ASCII chars list
+	for(uint16_t i = 0; i < strlen(ValidChars); i++) {
+		if(tsc[pc] == ValidChars[i]) return CT_ASCII;
+	}
+	// Skip '\r'
+	if(tsc[pc] == '\r') return CT_SKIP;
+	// Double byte char?
+	if((tsc[pc] >= 0x81 && tsc[pc] <= 0x9F) || (tsc[pc] >= 0xE0 && tsc[pc] <= 0xFC)) {
+		//uint16_t wc = (tsc[pc] << 8) | tsc[pc+1];
+		// Kanji
+		//for(int i = 0; i < kanjiCount; i++) {
+		//	if(wc == kanji[i]) return CT_KANJI;
+		//}
+		//return CT_INVALID2BYTE;
+		return CT_KANJI;
+	}
+	return CT_INVALID;
+}
+
+uint16_t read_number() {
+	char str[LEN_NUMBER + 1];
+	for(int i = 0; i < 4; i++) {
+		char c = tsc[pc++];
+		if(!isdigit(c)) {
+			printf("WARN: Parameter should be 4 digits but is only %hu.\n", i);
+			str[i] = '\0';
+			pc--;
+			break;
+		}
+		str[i] = c;
+	}
+	str[LEN_NUMBER] = '\0';
+	
+	return atoi(str);
+}
+
+uint16_t do_command(FILE *fout) {
+	uint8_t opcode = 0xDB; // NOP
+	uint8_t params = 0;
+	uint16_t flags = 0;
+	char str[LEN_COMMAND + 1];
+	// Find command from 3 character string
+	for(int i = 0; i < LEN_COMMAND; i++) str[i] = tsc[pc++];
+	str[LEN_COMMAND] = '\0';
+	for(int i = 0; i < COMMAND_COUNT; i++) {
+		if(strcmp(str, command_table[i].name) == 0) {
+			opcode = command_table[i].opcode;
+			params = command_table[i].params;
+			flags = command_table[i].flags;
+			break;
+		}
+	}
+	if(opcode == 0xDB) {
+		printf("ERROR: Bad command '%s'\n", str);
+		return flags;
+	}
+	
+	if(trace) printf("TRACE: Command: '<%s", str);
+	
+	//printf("TRACE: Command %s matches %hhu.\n", str, opcode);
+	fwrite(&opcode, 1, 1, fout);
+	// Parse parameters
+	for(int i = 0; i < params; i++) {
+		uint16_t val = read_number();
+		
+		if(trace) printf("%04hu", val);
+		
+		fwrite(&val, 1, 2, fout);
+		// Parameters should be separated by ':', CS doesn't actually check though
+		if(i != params - 1) {
+			if(tsc[pc++] != ':') {
+				if(trace) printf("\n");
+				printf("WARN: No ':' between parameters.\n");
+			} else {
+				if(trace) printf(":");
+			}
+		}
+	}
+	
+	if(trace) printf("'\n");
+	
+	return flags;
+}
+
+void do_event(FILE *fout) {
+	bool msgWindowOpen = false;
+	uint16_t id = read_number();
+	uint16_t commandCount = 0;
+	
+	if(trace) printf("TRACE: Event: #%04hu\n", id);
+	
+	fwrite(&id, 1, 2, fout);
+	while(pc < tscSize) {
+		uint8_t ct = get_char_type();
+		switch(ct) {
+			case CT_COMMAND: {
+				pc++;
+				commandCount++;
+				uint16_t flags = do_command(fout);
+				if(flags & CFLAG_MSGOPEN) msgWindowOpen = true;
+				else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = false;
+				if(flags & CFLAG_END) return;
+			}
+			break;
+			case CT_EVENT: {
+				if(commandCount != 0) {
+					printf("WARN: Non-empty event #%04hu has no ending!\n", id);
+				}
+				//pc++;
+				return;
+			}
+			break;
+			case CT_ASCII: {
+				if(msgWindowOpen) {
+					fwrite(&tsc[pc], 1, 1, fout);
+				} else if(tsc[pc] != '\n') {
+					printf("WARN: Printable text char '%c' is never displayed.\n", tsc[pc]);
+				}
+				pc++;
+			}
+			break;
+			case CT_KANJI: {
+				uint16_t wc = (tsc[pc] << 8) | tsc[pc+1];
+				int k;
+				for(k = 0; k < kanjiCount; k++) {
+					if(wc == kanji[k]) break;
+				}
+				if(k == kanjiCount) {
+					printf("WARN: Unknown kanji: 0x%04hx\n", wc);
+				} else {
+					// Index by appearance in the list, and fit that number into banks
+					// of 0x60 for each 'page'
+					uint8_t page = k / 0x60;
+					uint8_t word = k % 0x60;
+					uint8_t b = MULTIBYTE_BEGIN + page; // First byte
+					fwrite(&b, 1, 1, fout);
+					b = word + 0x20; // Second byte
+					fwrite(&b, 1, 1, fout);
+				}
+				pc += 2;
+			}
+			break;
+			case CT_SKIP: pc++; break;
+			case CT_SKIP2BYTE: pc += 2; break;
+			case CT_INVALID: {
+				printf("WARN: Invalid character: '%c' (0x%02hx)\n", tsc[pc], tsc[pc]);
+				pc++;
+			}
+			break;
+			case CT_INVALID2BYTE: {
+				uint16_t wc = (tsc[pc] << 8) | tsc[pc+1];
+				printf("WARN: Invalid double byte character: 0x%04hx\n", wc);
+				pc += 2;
+			}
+			break;
+		}
 	}
 }
 
@@ -218,112 +390,42 @@ void do_script(FILE *fout) {
 	fwrite(&eventCount, 1, 1, fout);
 }
 
-void do_event(FILE *fout) {
-	bool msgWindowOpen;
-	uint16_t id, commandCount;
-	msgWindowOpen = false;
-	id = read_number();
-	commandCount = 0;
-	fwrite(&id, 1, 2, fout);
-	while(!feof(fin)) {
-		char c = fgetc(fin);
-		if(c == SYM_COMMAND) {
-			commandCount++;
-			unsigned short flags = do_command(fin, fout);
-			if(flags & CFLAG_MSGOPEN) msgWindowOpen = TRUE;
-			else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = FALSE;
-			if(flags & CFLAG_END) break;
-		} else if(is_valid_char(c)) {
-			if(msgWindowOpen) {
-				fwrite(&c, 1, 1, fout);
-			} else if(c != '\n') {
-				printf("Warning: Printable text char '%c' is never displayed.\n", c);
-			}
-		} else if(c == SYM_EVENT) {
-			if(commandCount != 0) {
-				printf("Warning: Non-empty event #%04hu has no ending!\n", id);
-			}
-			fseek(fin, -1, SEEK_CUR);
-			break;
-		} else {
-			if(c == '\r') continue;
-			printf("Warning: Invalid char '%c' in event #%04hu.\n", c, id);
-		}
-	}
-}
-
-unsigned short do_command(FILE *fout) {
-	unsigned char opcode, params;
-	unsigned short flags;
-	char str[LEN_COMMAND + 1];
-	// Find command from 3 character string
-	fread(&str, 1, LEN_COMMAND, fin);
-	str[LEN_COMMAND] = '\0';
-	for(int i = 0; i < COMMAND_COUNT; i++) {
-		if(strcmp(str, command_table[i].name) == 0) {
-			opcode = command_table[i].opcode;
-			params = command_table[i].params;
-			flags = command_table[i].flags;
-			break;
-		}
-	}
-	//printf("TRACE: Command %s matches %hhu.\n", str, opcode);
-	fwrite(&opcode, 1, 1, fout);
-	// Parse parameters
-	for(int i = 0; i < params; i++) {
-		uint16_t val = read_number(fin);
-		fwrite(&val, 1, 2, fout);
-		// Parameters should be separated by ':', CS doesn't actually check though
-		if(i != params - 1) {
-			if(fgetc(fin) != ':') {
-				printf("Warning: No ':' between parameters.\n");
-			}
-		}
-	}
-	return flags;
-}
-
-uint16_t read_number() {
-	uint8_t str[LEN_NUMBER + 1];
-	for(int i = 0; i < 4; i++) {
-		uint8_t c = tsc[pc++];
-		if(!isdigit(c)) {
-			printf("Warning: Parameter is %hu digits. Expected 4.\n", i);
-			str[i] = '\0';
-			pc--;
-			break;
-		}
-		str[i] = c;
-	}
-	str[LEN_NUMBER] = '\0';
-	return atoi(str);
-}
-
-int8_t get_char_type() {
-	// First check the valid ASCII chars list
-	for(int i = 0; i < strlen(ValidChars); i++) {
-		if(c == ValidChars[i]) return CT_ASCII;
-	}
-	// Full width hiragana
-	
-	// Full width katakana
-	
-	// Kanji
-	
-	return false;
-}
-
 int main(int argc,char *argv[]) {
 	if(argc < 3) {
-		printf("Usage: tscomp <tsc file [more tsc files ...]> <kanji list file>\n");
+		printf("Usage: tscomp-ja [-t] <tsc file [more tsc files ...]> <kanji list file>\n");
 		return 0;
 	}
+	if(argv[1][0] == '-' && argv[1][1] == 't' && argv[1][2] == '\0') {
+		trace = true;
+	}
 	
+	// Load the kanji list
+	FILE *kfile = fopen(argv[argc-1], "rb");
+	if(!kfile) {
+		printf("ERROR: Failed to open '%s'.\n", argv[argc-1]);
+		return EXIT_FAILURE;
+	}
+	fseek(kfile, 0, SEEK_END);
+	kanjiCount = ftell(kfile) / 2; // Each iteration is 2 bytes
+	fseek(kfile, 0, SEEK_SET);
+	kanji = malloc(kanjiCount * 2);
+	fread(kanji, 1, kanjiCount * 2, kfile);
+	fclose(kfile);
+	// Endianness is a bitch
+	for(uint16_t i = 0; i < kanjiCount; i++) {
+		uint8_t hi = kanji[i] >> 8;
+		uint8_t lo = kanji[i] & 0xFF;
+		kanji[i] = (lo << 8) | hi;
+	}
+	
+	printf("INFO: Loaded kanji list.\n");
+	
+	// Go through each of the TSC files given
 	char outstr[256];
-	for(int i = 1; i < argc-1; i++) {
+	for(int i = 1 + trace; i < argc-1; i++) {
 		tsc_open(argv[i]);
 		
-		sprintf(outstr, argv[i]);
+		sprintf(outstr, "%s", argv[i]);
 		outstr[strlen(outstr)-1] = 'b';
 		FILE *outfile = fopen(outstr, "wb");
 		do_script(outfile);
@@ -331,6 +433,8 @@ int main(int argc,char *argv[]) {
 		
 		tsc_close();
 	}
+	
+	free(kanji);
 	
 	return EXIT_SUCCESS;
 }
