@@ -6,6 +6,7 @@
 #define FLAG_EVENTONDROWN		4000
 #define FLAG_DISABLESAVE		4095
 
+extern uint8_t cfg_language;
 extern uint8_t debuggingEnabled;
 
 // Global flags are persisted to save data

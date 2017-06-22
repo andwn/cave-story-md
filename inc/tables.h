@@ -10,6 +10,7 @@ typedef struct {
 	const uint8_t *PXM; // PXM is the layout, each byte is an index of the current tileset
 	const uint8_t *PXE; // PXE is the entity list
 	const uint8_t *TSC; // TSC is the script
+	const uint8_t *JTSC; // Japanese version of the Stage TSC
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const Palette *npcPalette;
 	uint8_t tileset; // Which tileset in tileset_info to use

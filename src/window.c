@@ -185,6 +185,10 @@ void window_draw_char(uint8_t c) {
 	}
 }
 
+void window_draw_jchar(uint8_t iskanji, uint16_t index) {
+	// TODO
+}
+
 void window_scroll_text() {
 	// Push bottom 2 rows to top
 	for(uint8_t row = 0; row < 2; row++) {

@@ -37,6 +37,7 @@ static const uint8_t *FileList[] = {
 	LS_16, LS_17, LS_18, LS_19, LS_20, LS_21,
 };
 
+uint8_t cfg_language = 0;
 uint8_t debuggingEnabled = FALSE;
 uint8_t sram_state = SRAM_UNCHECKED;
 

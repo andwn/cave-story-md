@@ -20,8 +20,6 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "tsc_en.h"
-//#include "tsc_ja.h"
 #include "vdp.h"
 #include "vdp_bg.h"
 #include "vdp_pal.h"
@@ -175,22 +173,22 @@ void tsc_init() {
 	bossBarEntity = FALSE;
 	tscState = TSC_IDLE;
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
-	const uint8_t *TSC = TSC_Head;
+	const uint8_t *TSC = cfg_language ? JTSC_Head : TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
 
 void tsc_load_stage(uint8_t id) {
 	if(id == ID_ARMSITEM) { // Stage index 255 is a special case for the item menu
-		const uint8_t *TSC = TSC_ArmsItem;
+		const uint8_t *TSC = cfg_language ? JTSC_ArmsItem : TSC_ArmsItem;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else if(id == ID_TELEPORT) {
-		const uint8_t *TSC = TSC_StageSelect;
+		const uint8_t *TSC = cfg_language ? JTSC_StageSelect : TSC_StageSelect;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else if(id == ID_CREDITS) {
-		const uint8_t *TSC = TSC_Credits;
+		const uint8_t *TSC = cfg_language ? JTSC_Credits : TSC_Credits;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
-		const uint8_t *TSC = stage_info[id].TSC;
+		const uint8_t *TSC = cfg_language ? stage_info[id].JTSC : stage_info[id].TSC;
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	}
 }
@@ -483,7 +481,7 @@ void tsc_show_teleport_menu() {
 uint8_t execute_command() {
 	uint16_t args[4];
 	uint8_t cmd = tsc_read_byte();
-	if(cmd >= 0x80) {
+	if(cmd >= 0x80 && cmd < 0xE0) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
 		{
@@ -1221,12 +1219,28 @@ uint8_t execute_command() {
 		break;
 		default: break;
 		}
-	} else if(window_is_open()) {
-		if(window_tick() || (joystate & BUTTON_A)) {
-			window_draw_char(cmd);
-		} else {
-			curCommand -= 1;
-			return 1;
+	} else {
+		uint16_t kanji = 0;
+		uint8_t doublebyte = TRUE;
+		if(cmd >= 0xE0 && cmd < 0xFF) {
+			doublebyte = TRUE;
+			if(cfg_language) { // Get kanji index from cmd and next byte
+				kanji = (cmd - 0xE0) * 0x60 + tsc_read_byte() - 0x20;
+			} else {
+				cmd = '?';
+			}
+		}
+		if(window_is_open()) {
+			if(window_tick() || (joystate & BUTTON_A)) {
+				if(cfg_language) {
+					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);
+				} else {
+					window_draw_char(cmd);
+				}
+			} else {
+				curCommand -= doublebyte ? 2 : 1;
+				return 1;
+			}
 		}
 	}
 	return 0;
