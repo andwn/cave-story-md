@@ -6,6 +6,7 @@
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
+#include "kanji.h"
 #include "memory.h"
 #include "resources.h"
 #include "sheet.h"
@@ -60,6 +61,7 @@ uint16_t showingFace = 0;
 uint8_t textMode = TM_NORMAL;
 
 uint8_t windowText[3][36];
+uint16_t jwindowText[2][18];
 uint8_t textRow, textColumn;
 uint8_t windowTextTick = 0;
 uint8_t spaceCounter = 0, spaceOffset = 0;
@@ -115,7 +117,9 @@ void window_clear() {
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y)   << 6) + x, w);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+1) << 6) + x, w);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+2) << 6) + x, w);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+3) << 6) + x, w);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+4) << 6) + x, w);
 	window_clear_text();
 	
@@ -125,6 +129,7 @@ void window_clear() {
 void window_clear_text() {
 	textRow = textColumn = spaceCounter = spaceOffset = 0;
 	memset(windowText, ' ', 36*3);
+	memset(jwindowText, '\0', 36*2);
 }
 
 void window_close() {
@@ -185,8 +190,66 @@ void window_draw_char(uint8_t c) {
 	}
 }
 
-void window_draw_jchar(uint8_t iskanji, uint16_t index) {
-	// TODO
+static uint16_t getKanjiIndexForPos(uint8_t row, uint8_t col) {
+	if(row) col += 18*4; // Second row
+	col <<= 2; // 4 tiles per char
+	if(col < 96) {
+		return TILE_FONTINDEX + col;
+	} else if(col < 96+28) {
+		col -= 96;
+		return (0xB003 >> 5) + 4 * col;
+	} else {
+		return TILE_NUMBERINDEX + col - (96+28);
+	}
+}
+
+void window_draw_jchar(uint8_t iskanji, uint16_t c) {
+	// For the 16x16 text, pretend the text array is [2][18]
+	if(!iskanji) {
+		if(c == '\n') {
+			textRow++;
+			textColumn = 0;
+			spaceCounter = spaceOffset = 0;
+			if(textRow > 1) {
+				if(textMode == TM_ALL) textMode = TM_NORMAL;
+				window_scroll_jtext();
+			} else if(textMode == TM_LINE) {
+				textMode = TM_NORMAL;
+			}
+		// Check if the line has leading spaces, and skip drawing a space occasionally,
+		// so that the sign text will be centered
+		} else if(textColumn == spaceCounter && c == ' ') {
+			spaceCounter++;
+		} else {
+			spaceCounter = 0;
+		}
+	}
+	// Don't let the text run off the end of the window
+	if(textColumn - spaceOffset > 18 - (showingFace ? 4 : 0)) {
+		textRow++;
+		textColumn = 0;
+		spaceCounter = spaceOffset = 0;
+		if(textRow > 1) {
+			if(textMode == TM_ALL) textMode = TM_NORMAL;
+			window_scroll_jtext();
+		} else if(textMode == TM_LINE) {
+			textMode = TM_NORMAL;
+		}
+	}
+	jwindowText[textRow][textColumn - spaceOffset] = iskanji ? c + 0x100 : c;
+	// Figure out where this char is gonna go
+	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	msgTextX += (textColumn - spaceOffset) * 2;
+	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 3;
+	// And draw it
+	
+	//VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+	//		TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
+	uint16_t vramIndex = getKanjiIndexForPos(textRow, textColumn - spaceOffset);
+	kanji_draw(PLAN_WINDOW, vramIndex, c, msgTextX, msgTextY, 2);
+	
+	textColumn++;
+	if(spaceCounter % 4 == 1 || spaceCounter == 2) spaceOffset++;
 }
 
 void window_scroll_text() {
@@ -209,6 +272,31 @@ void window_scroll_text() {
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
 	// Reset to beginning of third row
 	textRow = 2;
+	textColumn = 0;
+	spaceCounter = spaceOffset = 0;
+}
+
+void window_scroll_jtext() {
+	// Push bottom row to top
+	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	uint8_t msgTextY = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1;
+	for(uint8_t col = 0; col < 18 - (showingFace > 0) * 4; col++) {
+		jwindowText[0][col] = jwindowText[1][col];
+		//VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+		//		TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
+		uint16_t vramIndex = getKanjiIndexForPos(0, col);
+		kanji_draw(PLAN_WINDOW, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2);
+		msgTextX += 2;
+	}
+	// Clear bottom row
+	msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+	msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 3;
+	uint8_t msgTextW = showingFace ? 12 : 18;
+	memset(windowText[1], ' ', 36);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
+	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((msgTextY+1)<<6) + msgTextX, msgTextW);
+	// Reset to beginning of bottom row
+	textRow = 1;
 	textColumn = 0;
 	spaceCounter = spaceOffset = 0;
 }

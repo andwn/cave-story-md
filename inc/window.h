@@ -26,9 +26,11 @@ void window_set_face(uint16_t face, uint8_t open);
 // Draws a single letter into the window, '\n' will do a new line
 void window_draw_char(uint8_t c);
 // Draws a 16x16 letter or ideograph
-void window_draw_jchar(uint8_t iskanji, uint16_t index);
+void window_draw_jchar(uint8_t iskanji, uint16_t c);
 // Moves the 2nd and 3rd text row to the top so dialog can continue
 void window_scroll_text();
+
+void window_scroll_jtext();
 // Changes the text mode (show next line immediately or whole message)
 void window_set_textmode(uint8_t mode);
 // Counts down until the next letter is to be printed, and will return TRUE
