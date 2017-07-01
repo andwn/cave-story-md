@@ -274,7 +274,11 @@ uint8_t tsc_update() {
 		{
 			if(joy_pressed(BUTTON_C) || (joystate & BUTTON_A)) {
 				tscState = TSC_RUNNING;
-				window_draw_char(' '); // Clear blinking cursor
+				if(cfg_language) {
+					window_draw_jchar(FALSE, ' '); // Clear blinking cursor
+				} else {
+					window_draw_char(' '); // Clear blinking cursor
+				}
 			}
 		}
 		break;

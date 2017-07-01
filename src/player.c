@@ -697,19 +697,21 @@ void player_show_map_name(uint8_t ttl) {
 	if(len > 0) {
 		uint8_t charwidth = cfg_language ? 2 : 1;
 		mapNameSpriteNum = 0;
-		uint16_t x = SCREEN_HALF_W - len * (4 / charwidth);
+		uint16_t x = SCREEN_HALF_W - len * 4 * charwidth;
 		for(uint8_t i = 0; i < len; i += (4 / charwidth)) {
-			mapNameSprite[i/4] = (VDPSprite) {
+			uint8_t sindex = i / (4 / charwidth);
+			mapNameSprite[sindex] = (VDPSprite) {
 				.x = x + 128,
 				.y = SCREEN_HALF_H - 32 + 128,
-				.size = SPRITE_SIZE(min(4,len-i), charwidth)
+				.size = SPRITE_SIZE(min(4,(len-i) * charwidth), charwidth)
 			};
+			uint16_t tindex = i * (cfg_language ? 4 : 1);
 			if(cfg_language && i >= 4) {
-				mapNameSprite[i/4].attribut = 
-						TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX+(i-4)*4);
+				mapNameSprite[sindex].attribut = 
+						TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX+tindex-16);
 			} else {
-				mapNameSprite[i/4].attribut = 
-						TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+i*(charwidth*2));
+				mapNameSprite[sindex].attribut = 
+						TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+tindex);
 			}
 			x += 32;
 			mapNameSpriteNum++;

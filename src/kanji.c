@@ -21,7 +21,6 @@
 #define TILECHAR_LONGS	32
 
 void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol) {
-	// Read the 1bpp bitmap to create a glyph, note bitmaps are upside down
 	const uint8_t *bmp;
 	if(chr > 0xFF) {
 		chr -= 0x100;
@@ -57,7 +56,6 @@ void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint
 }
 
 void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) {
-	// Read the 1bpp bitmap to create a glyph, note bitmaps are upside down
 	uint16_t c[2] = { chr1, chr2 };
 	const uint8_t *bmp[2];
 	for(uint8_t i = 0; i < 2; i++ ) {
@@ -77,13 +75,18 @@ void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) 
 			8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31
 		};
 		for(uint8_t k = 0; k < TILECHAR_LONGS; k++) {
-			uint8_t row = bmp[i][order[k]];
-			for(uint8_t column = 0; column < 8; column++) {
-				// Palette indeces: 15 is white, 2 is texbox blue, 0 is transparency
-				uint32_t color = row & (1 << column) ? 15 : 0;
-				tiles[k] |= color << (column * 4);
-			}
-		}
+            uint8_t row = bmp[i][order[k]];
+            uint8_t column = 8;
+            uint8_t last = 0;
+            do {
+				column--;
+                // Palette indeces: 15 is white, 2 is texbox blue, 1 is black, 0 is transparency
+                uint8_t pixel = row & (1 << column);
+                uint32_t color = pixel ? 15 : (last ? 1 : 0);
+                last = pixel;
+                tiles[k] |= color << (column * 4);
+            } while(column > 0);
+        }
 		VDP_loadTileData(tiles, vramIndex + i*4, 4, TRUE);
 	}
 }
