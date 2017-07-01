@@ -2,12 +2,14 @@
 
 #include "audio.h"
 #include "dma.h"
+#include "entity.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
 #include "kanji.h"
 #include "memory.h"
+#include "player.h"
 #include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
@@ -78,6 +80,7 @@ void window_clear_text();
 void window_draw_face();
 
 void window_open(uint8_t mode) {
+	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	window_clear_text();
 	textRow = textColumn = 0;
 	

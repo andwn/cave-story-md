@@ -8,6 +8,7 @@
 #include "entity.h"
 #include "input.h"
 #include "joy.h"
+#include "kanji.h"
 #include "memory.h"
 #include "npc.h"
 #include "resources.h"
@@ -30,7 +31,6 @@ uint8_t playerWeaponCount = 0;
 
 uint8_t mapNameSpriteNum;
 VDPSprite mapNameSprite[4];
-uint16_t mapNameTTL = 0;
 
 VDPSprite airSprite[2];
 uint8_t airPercent = 100;
@@ -652,30 +652,65 @@ void player_update_booster() {
 	}
 }
 
+static uint16_t GetKanjiIndex(uint8_t len) {
+	if(len < 4) {
+		return TILE_NAMEINDEX + len * 4;
+	} else {
+		return TILE_FONTINDEX + (len - 4) * 4;
+	}
+}
+
+static uint16_t GetNextChar(uint8_t index) {
+	uint16_t chr = JStageName[stageID * 16 + index];
+	if(chr >= 0xE0 && chr < 0xFF) {
+		return (chr - 0xE0) * 0x60 + (JStageName[stageID * 16 + index + 1] - 0x20) + 0x100;
+	} else {
+		return chr;
+	}
+}
+
 void player_show_map_name(uint8_t ttl) {
 	// Create a string of tiles in RAM
 	uint32_t nameTiles[16][8];
 	uint8_t len = 0;
-	for(uint8_t i = 0; i < 16; i++) {
-		uint8_t chr = stage_info[stageID].name[i] - 0x20;
-		if(chr < 0x60) len++;
-		else break;
-		memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
+	if(cfg_language) {
+		uint8_t i = 0;
+		while(i < 16) {
+			uint16_t chr1 = GetNextChar(i++);
+			if(chr1 == 0) break; // End of string
+			if(chr1 > 0xFF) i++;
+			uint16_t chr2 = GetNextChar(i++);
+			if(chr2 > 0xFF) i++;
+			kanji_loadtilesforsprite(GetKanjiIndex(len), chr1, chr2);
+			len += chr2 ? 2 : 1;
+		}
+	} else {
+		for(uint8_t i = 0; i < 16; i++) {
+			uint8_t chr = stage_info[stageID].name[i] - 0x20;
+			if(chr < 0x60) len++;
+			else break;
+			memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
+		}
+		if(len) VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, TRUE);
 	}
 	// Transfer tile array to VRAM
 	if(len > 0) {
-		
-		VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, TRUE);
-		
+		uint8_t charwidth = cfg_language ? 2 : 1;
 		mapNameSpriteNum = 0;
-		uint16_t x = SCREEN_HALF_W - len * 4;
-		for(uint8_t i = 0; i < len; i += 4) {
+		uint16_t x = SCREEN_HALF_W - len * (4 / charwidth);
+		for(uint8_t i = 0; i < len; i += (4 / charwidth)) {
 			mapNameSprite[i/4] = (VDPSprite) {
 				.x = x + 128,
 				.y = SCREEN_HALF_H - 32 + 128,
-				.size = SPRITE_SIZE(min(4,len-i), 1),
-				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+i)
+				.size = SPRITE_SIZE(min(4,len-i), charwidth)
 			};
+			if(cfg_language && i >= 4) {
+				mapNameSprite[i/4].attribut = 
+						TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX+(i-4)*4);
+			} else {
+				mapNameSprite[i/4].attribut = 
+						TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+i*(charwidth*2));
+			}
 			x += 32;
 			mapNameSpriteNum++;
 		}

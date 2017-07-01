@@ -56,30 +56,34 @@ void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint
 	}
 }
 
-void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr) {
+void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) {
 	// Read the 1bpp bitmap to create a glyph, note bitmaps are upside down
-	const uint8_t *bmp;
-	if(chr > 0xFF) {
-		chr -= 0x100;
-		bmp = BMP_Kanji + chr * 32;
-	} else {
-		chr -= 0x20;
-		bmp = BMP_Ascii + chr * 32;
-	}
-	// Convert chunks to 4bpp tiles, using a set foreground and background color
-	uint32_t tiles[TILECHAR_LONGS] = {};
-	// Sprite tiles are up->down before left->right so fix the order
-	static const uint8_t order[32] = {
-		0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23,
-		8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31
-	};
-	for(uint8_t i = 0; i < TILECHAR_LONGS; i++) {
-		uint8_t row = bmp[order[i]];
-		for(uint8_t column = 0; column < 8; column++) {
-			// Palette indeces: 15 is white, 2 is texbox blue, 0 is transparency
-			uint32_t color = row & (1 << column) ? 15 : 0;
-			tiles[i] |= color << (column * 4);
+	uint16_t c[2] = { chr1, chr2 };
+	const uint8_t *bmp[2];
+	for(uint8_t i = 0; i < 2; i++ ) {
+		if(c[i] == 0) return;
+		if(c[i] > 0xFF) {
+			c[i] -= 0x100;
+			bmp[i] = BMP_Kanji + c[i] * 32;
+		} else {
+			c[i] -= 0x20;
+			bmp[i] = BMP_Ascii + c[i] * 32;
 		}
+		// Convert chunks to 4bpp tiles, using a set foreground and background color
+		uint32_t tiles[TILECHAR_LONGS] = {};
+		// Sprite tiles are up->down before left->right so fix the order
+		static const uint8_t order[32] = {
+			0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23,
+			8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31
+		};
+		for(uint8_t k = 0; k < TILECHAR_LONGS; k++) {
+			uint8_t row = bmp[i][order[k]];
+			for(uint8_t column = 0; column < 8; column++) {
+				// Palette indeces: 15 is white, 2 is texbox blue, 0 is transparency
+				uint32_t color = row & (1 << column) ? 15 : 0;
+				tiles[k] |= color << (column * 4);
+			}
+		}
+		VDP_loadTileData(tiles, vramIndex + i*4, 4, TRUE);
 	}
-	VDP_loadTileData(tiles, vramIndex, 4, TRUE);
 }

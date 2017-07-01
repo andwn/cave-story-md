@@ -46,6 +46,8 @@ uint8_t playerPlatformTime;
 
 uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
 
+uint16_t mapNameTTL;
+
 uint8_t iSuckAtThisGameSHIT;
 
 // Initialize everything for the player, sets default values on game start

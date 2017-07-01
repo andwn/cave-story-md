@@ -395,6 +395,9 @@ BIN NPC_TABLE			"npc.tbl"
 BIN BMP_Ascii		"ja_ascii.dat"
 BIN BMP_Kanji		"ja_kanji.dat"
 
+# Japanese stage names
+BIN JStageName		"ja_stagename.dat"
+
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets
 # ----------------------------------------------------------------------------------------------
