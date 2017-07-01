@@ -392,8 +392,8 @@ SPRITE SPR_XXIsland		"xxIsland.png" 5 3 0 0 NONE
 BIN NPC_TABLE			"npc.tbl"
 
 # Japanese Font - 1bpp bitmap data, too lazy to strip the header
-BIN BMP_Ascii		"ja_ascii.bmp"
-BIN BMP_Kanji		"ja_kanji.bmp"
+BIN BMP_Ascii		"ja_ascii.dat"
+BIN BMP_Kanji		"ja_kanji.dat"
 
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets

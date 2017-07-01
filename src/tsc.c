@@ -1225,7 +1225,7 @@ uint8_t execute_command() {
 		if(cmd >= 0xE0 && cmd < 0xFF) {
 			doublebyte = TRUE;
 			if(cfg_language) { // Get kanji index from cmd and next byte
-				kanji = (cmd - 0xE0) * 0x60 + tsc_read_byte() - 0x20;
+				kanji = (cmd - 0xE0) * 0x60 + (tsc_read_byte() - 0x20);
 			} else {
 				tsc_read_byte();
 				cmd = '?';

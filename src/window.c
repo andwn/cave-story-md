@@ -133,11 +133,7 @@ void window_clear_text() {
 }
 
 void window_close() {
-	if(!paused) {
-		//if(showingBossHealth) VDP_setWindowPos(0, 253);
-		//else 
-		VDP_setWindowPos(0, 0);
-	}
+	if(!paused) VDP_setWindowPos(0, 0);
 	showingItem = 0;
 	windowOpen = FALSE;
 	textMode = TM_NORMAL;
@@ -191,15 +187,17 @@ void window_draw_char(uint8_t c) {
 }
 
 static uint16_t getKanjiIndexForPos(uint8_t row, uint8_t col) {
-	if(row) col += 18*4; // Second row
+	if(row) col += 18; // Second row
 	col <<= 2; // 4 tiles per char
 	if(col < 96) {
 		return TILE_FONTINDEX + col;
 	} else if(col < 96+28) {
 		col -= 96;
-		return (0xB003 >> 5) + 4 * col;
+		return (0xB000 >> 5) + 3 + 4 * col;
+	} else if(col < 96+28+16) {
+		return TILE_NAMEINDEX + col - (96+28);
 	} else {
-		return TILE_NUMBERINDEX + col - (96+28);
+		return TILE_NUMBERINDEX + col - (96+28+16);
 	}
 }
 
@@ -236,7 +234,8 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 			textMode = TM_NORMAL;
 		}
 	}
-	jwindowText[textRow][textColumn - spaceOffset] = iskanji ? c + 0x100 : c;
+	if(iskanji) c += 0x100;
+	jwindowText[textRow][textColumn - spaceOffset] = c;
 	// Figure out where this char is gonna go
 	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	msgTextX += (textColumn - spaceOffset) * 2;
@@ -291,8 +290,8 @@ void window_scroll_jtext() {
 	// Clear bottom row
 	msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 3;
-	uint8_t msgTextW = showingFace ? 12 : 18;
-	memset(windowText[1], ' ', 36);
+	uint8_t msgTextW = showingFace ? 24 : 36;
+	memset(jwindowText[1], '\0', 36);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((msgTextY+1)<<6) + msgTextX, msgTextW);
 	// Reset to beginning of bottom row
@@ -435,8 +434,14 @@ void window_update() {
 		sprite_addq(promptSpr, 2);
 	} else if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
-		x += textColumn - spaceOffset;
-		uint8_t y = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
+		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+		if(cfg_language) {
+			x += (textColumn - spaceOffset) * 2;
+			y += textRow * 3;
+		} else {
+			x += textColumn - spaceOffset;
+			y += textRow * 2;
+		}
 		if(++blinkTime == 8) {
 			VDP_setTileMapXY(PLAN_WINDOW, 
 					TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX - 0x20 + '_'), x, y);
