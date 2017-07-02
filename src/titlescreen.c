@@ -59,6 +59,7 @@ uint8_t titlescreen_main() {
 		cursor = 1;
 		besttime = system_load_counter(); // 290.rec data
 	}
+	if(sram_state != SRAM_INVALID) system_load_config();
 	// Change character & song based on 290.rec value
 	if(besttime <= 3*3000) {
 		tsprite = &SPR_Sue;

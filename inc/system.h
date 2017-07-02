@@ -6,8 +6,19 @@
 #define FLAG_EVENTONDROWN		4000
 #define FLAG_DISABLESAVE		4095
 
+extern uint8_t cfg_btn_jump;
+extern uint8_t cfg_btn_shoot;
+extern uint8_t cfg_btn_ffwd;
+extern uint8_t cfg_btn_rswap;
+extern uint8_t cfg_btn_lswap;
+extern uint8_t cfg_btn_map;
+extern uint8_t cfg_btn_pause;
+
 extern uint8_t cfg_language;
-extern uint8_t debuggingEnabled;
+extern uint8_t cfg_ffwd;
+extern uint8_t cfg_updoor;
+extern uint8_t cfg_hellquake;
+extern uint8_t cfg_iframebug;
 
 // Global flags are persisted to save data
 void system_set_flag(uint16_t flag, uint8_t value);
@@ -26,6 +37,9 @@ void system_new();
 void system_load();
 // Stores variables and game state into SRAM
 void system_save();
+
+void system_load_config();
+void system_save_config();
 // Validates whether any save data exists in SRAM
 uint8_t system_checkdata();
 // Load to a stock save file from the level select list

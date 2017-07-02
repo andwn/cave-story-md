@@ -26,6 +26,8 @@
 // When save data is not found "TEST" is written to verify SRAM is usable
 #define STR_TEST 0x54455354
 
+#define CFG_MAGIC 0x12345678
+
 // Supports 0-4095, official game uses 0-4000
 #define FLAGS_LEN 128
 
@@ -37,8 +39,20 @@ static const uint8_t *FileList[] = {
 	LS_16, LS_17, LS_18, LS_19, LS_20, LS_21,
 };
 
-uint8_t cfg_language = 1;
-uint8_t debuggingEnabled = FALSE;
+uint8_t cfg_btn_jump = 5;
+uint8_t cfg_btn_shoot = 4;
+uint8_t cfg_btn_ffwd = 6;
+uint8_t cfg_btn_rswap = 8;
+uint8_t cfg_btn_lswap = 9;
+uint8_t cfg_btn_map = 10;
+uint8_t cfg_btn_pause = 7;
+
+uint8_t cfg_language = 0;
+uint8_t cfg_ffwd = TRUE;
+uint8_t cfg_updoor = FALSE;
+uint8_t cfg_hellquake = TRUE;
+uint8_t cfg_iframebug = TRUE;
+
 uint8_t sram_state = SRAM_UNCHECKED;
 
 uint8_t counterEnabled = FALSE;
@@ -187,6 +201,55 @@ void system_load() {
 	SRAM_disable();
 	stage_load(rid);
 	song_play(song);
+}
+
+void system_load_config() {
+	static const uint16_t start = 0x300;
+	
+	SRAM_enableRO();
+	uint32_t magic = SRAM_readLong(start);
+	if(magic != CFG_MAGIC) {
+		// No settings saved, keep defaults
+		SRAM_disable();
+		return;
+	}
+	
+	uint8_t index = 4;
+	cfg_btn_jump  = SRAM_readByte(start + index++);
+	cfg_btn_shoot = SRAM_readByte(start + index++);
+	cfg_btn_ffwd  = SRAM_readByte(start + index++);
+	cfg_btn_rswap = SRAM_readByte(start + index++);
+	cfg_btn_lswap = SRAM_readByte(start + index++);
+	cfg_btn_map   = SRAM_readByte(start + index++);
+	cfg_btn_pause = SRAM_readByte(start + index++);
+	cfg_language  = SRAM_readByte(start + index++);
+	cfg_ffwd      = SRAM_readByte(start + index++);
+	cfg_updoor    = SRAM_readByte(start + index++);
+	cfg_hellquake = SRAM_readByte(start + index++);
+	cfg_iframebug = SRAM_readByte(start + index++);
+	SRAM_disable();
+}
+
+void system_save_config() {
+	static const uint16_t start = 0x300;
+	
+	SRAM_enable();
+	SRAM_writeLong(start, CFG_MAGIC);
+	
+	uint8_t index = 4;
+	SRAM_writeByte(start + index++, cfg_btn_jump);
+	SRAM_writeByte(start + index++, cfg_btn_shoot);
+	SRAM_writeByte(start + index++, cfg_btn_ffwd);
+	SRAM_writeByte(start + index++, cfg_btn_rswap);
+	SRAM_writeByte(start + index++, cfg_btn_lswap);
+	SRAM_writeByte(start + index++, cfg_btn_map);
+	SRAM_writeByte(start + index++, cfg_btn_pause);
+	SRAM_writeByte(start + index++, cfg_language);
+	SRAM_writeByte(start + index++, cfg_ffwd);
+	SRAM_writeByte(start + index++, cfg_updoor);
+	SRAM_writeByte(start + index++, cfg_hellquake);
+	SRAM_writeByte(start + index++, cfg_iframebug);
+	SRAM_disable();
 }
 
 void system_load_levelselect(uint8_t file) {

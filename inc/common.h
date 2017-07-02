@@ -110,6 +110,7 @@ typedef struct Bullet Bullet;
 typedef void (*EntityMethod)(Entity*);
 typedef void (*WeaponFunc)(Weapon*);
 typedef void (*BulletFunc)(Bullet*);
+typedef void (*ActionFunc)(uint8_t page);
 
 // SGDK / Rescomp Types
 typedef struct {
