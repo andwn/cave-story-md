@@ -63,12 +63,12 @@ void game_main(uint8_t load) {
 			paused = update_pause();
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
-			if(joy_pressed(BUTTON_START) && !tscState) {
+			if(joy_pressed(btn[cfg_btn_pause]) && !tscState) {
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
-			} else if(joy_pressed(BUTTON_X) && !tscState 
+			} else if(joy_pressed(btn[cfg_btn_map]) && !tscState 
 					&& (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				VDP_setEnable(FALSE);
@@ -279,7 +279,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 
 uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
-	if((joy_pressed(BUTTON_START) || joy_pressed(BUTTON_B)) && !tscState) {
+	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot])) && !tscState) {
 		VDP_setEnable(FALSE);
 		// Make sure the sprites get cleared or things will look weird for a split second
 		sprites_clear();
@@ -317,7 +317,7 @@ uint8_t update_pause() {
 			} else { // Weapon
 				tsc_update();
 			}
-		} else if(joy_pressed(BUTTON_C)) {
+		} else if(joy_pressed(btn[cfg_btn_jump])) {
 			if(selectedItem >= 0) { // Item
 				if(playerInventory[selectedItem] > 0) {
 					tsc_call_event(6000 + playerInventory[selectedItem]);
@@ -465,7 +465,8 @@ void do_map() {
 	uint16_t blinkTimer = 0;
 	
 	input_update();
-	while(!joy_pressed(BUTTON_B) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_X)) {
+	while(!joy_pressed(btn[cfg_btn_shoot]) && !joy_pressed(btn[cfg_btn_jump]) 
+			&& !joy_pressed(btn[cfg_btn_map])) {
 		input_update();
 		system_update();
 		// Alternate between the small plus and transparency

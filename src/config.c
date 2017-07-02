@@ -130,11 +130,15 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 		case MI_INPUT: {
 			sound_play(SND_MENU_SELECT, 5);
 			uint8_t released = FALSE;
-			input_update();
 			VDP_drawText("Press..", 30, item->y);
-			while(!joy_pressed(BUTTON_BTN)) {
-				if(joy_released(BUTTON_C)) released = TRUE;
+			while(TRUE) {
+				if(!(joystate & btn[cfg_btn_jump])) released = TRUE;
 				input_update();
+				if(joy_pressed(BUTTON_BTN)) {
+					// Just in case player never releases confirm before hitting something else
+					if(released) break;
+					if(!(joystate & btn[cfg_btn_jump])) break;
+				}
 				// Animate quote sprite
 				if(--sprTime == 0) {
 					sprTime = ANIM_SPEED;
@@ -146,8 +150,6 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 				vsync(); aftervsync();
 			}
 			sound_play(SND_MENU_SELECT, 5);
-			// Just in case player never releases confirm before hitting something else
-			if(!released) joystate &= ~BUTTON_C;
 			switch(joystate & BUTTON_BTN) {
 				case BUTTON_A: *item->valptr = 6; break;
 				case BUTTON_B: *item->valptr = 4; break;
@@ -222,7 +224,7 @@ void config_main() {
 	
 	set_page(page);
 	
-	while(!joy_pressed(BUTTON_B)) {
+	while(TRUE) {
 		input_update();
 		if(waitButton) {
 			// Show looking up frame
@@ -252,7 +254,7 @@ void config_main() {
 				cursor = 0;
 				set_page(page);
 				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(BUTTON_C)) {
+			} else if(joy_pressed(btn[cfg_btn_jump])) {
 				press_menuitem(&menu[page][cursor], page, &sprCursor);
 			}
 			// Animate quote sprite

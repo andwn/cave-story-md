@@ -110,7 +110,7 @@ uint8_t titlescreen_main() {
 	VDP_setEnable(TRUE);
 
 	song_play(tsong);
-	while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
+	while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
 		input_update();
 		for(uint8_t i = 0; i < 2; i++) {
 			if(!cheatEnable[i]) {
@@ -152,7 +152,7 @@ uint8_t titlescreen_main() {
 		ready = TRUE;
 		vsync(); aftervsync();
 	}
-	if(cheatEnable[0] && (joystate&BUTTON_A) && joy_pressed(BUTTON_START)) {
+	if(cheatEnable[0] && (joystate&BUTTON_A) && joy_pressed(btn[cfg_btn_pause])) {
 		cursor = 0;
 		input_update();
 		
@@ -195,7 +195,7 @@ uint8_t titlescreen_main() {
 			VDP_drawText(levelStr[i], tx, ty+i);
 		}
 		
-		while(!joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
+		while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
 			input_update();
 			if(joy_pressed(BUTTON_UP)) {
 				VDP_setTextPalette(PAL1);

@@ -12,6 +12,7 @@
 #include "sheet.h"
 #include "sprite.h"
 #include "stage.h"
+#include "system.h"
 #include "tables.h"
 #include "tools.h"
 #include "vdp.h"
@@ -183,7 +184,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
-			if(joy_down(BUTTON_C) || player.y_speed > 0) {
+			if(joy_down(btn[cfg_btn_jump]) || player.y_speed > 0) {
 				player.y_speed -= SPEED(0x400);
 				if (player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
 			} else {
@@ -589,7 +590,7 @@ void bullet_update_bubbler(Bullet *b) {
 		if(frame > 3) frame = 3;
 		sprite_index(b->sprite, sheets[b->sheet].index + frame);
 	} else if(b->ttl >= TIME(30)) { // Level 3 orbits around player
-		if(!joy_down(BUTTON_B) || b->ttl == TIME(30)) {
+		if(!joy_down(btn[cfg_btn_shoot]) || b->ttl == TIME(30)) {
 			b->ttl = TIME(30);
 			sound_play(SND_BUBBLER_LAUNCH, 5);
 			b->dir = FIREDIR;

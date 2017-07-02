@@ -79,7 +79,7 @@ void soundtest_main() {
 			else track++;
 			VDP_drawByte(track, 10, 8);
 		}
-		if(joy_pressed(BUTTON_C)) {
+		if(joy_pressed(btn[cfg_btn_jump])) {
 			// Play
 			if(track < SONG_COUNT) {
 				song_play(track);
@@ -88,23 +88,23 @@ void soundtest_main() {
 			} else if(track >= FIRST_SOUND && track < FIRST_SOUND + SOUND_COUNT){
 				sound_play(track - FIRST_SOUND, 0);
 			}
-		} else if(joy_pressed(BUTTON_B)) {
+		} else if(joy_pressed(btn[cfg_btn_shoot])) {
 			// Stop
 			song_stop();
 			status = STOPPED;
-		} else if(joy_pressed(BUTTON_A)) {
+		//} else if(joy_pressed(BUTTON_A)) {
 			// Pause
-			if(status == PLAYING) {
-				song_stop();
-				status = PAUSED;
-			} else if(status == PAUSED) {
-				song_resume();
-				status = PLAYING;
-			}
+		//	if(status == PLAYING) {
+		//		song_stop();
+		//		status = PAUSED;
+		//	} else if(status == PAUSED) {
+		//		song_resume();
+		//		status = PLAYING;
+		//	}
 		}
-		if(joy_pressed(BUTTON_START)) {
+		if(joy_pressed(btn[cfg_btn_pause])) {
 			song_stop();
-			oldstate |= BUTTON_START;
+			oldstate |= btn[cfg_btn_pause];
 			break;
 		}
 		if(status != oldstatus) {

@@ -691,6 +691,10 @@ void ai_scroll_controller(Entity *e) {
 // Makes the screen constantly shake
 void ai_quake(Entity *e) {
 	(void)(e); // So we don't trip unused parameter warning
+	if(!cfg_hellquake && (stageID == 0x50 || stageID == 0x51 || stageID == 0x52
+						  || stageID == 0x58)) {
+		return;
+	}
 	camera_shake(10);
 }
 

@@ -261,18 +261,20 @@ uint8_t tsc_update() {
 				if(paused) {
 					waitTime = 0;
 				// Check the wait time again to prevent underflowing
-				} else if(waitTime > 0 && joy_down(BUTTON_A)) {
-					// Fast forward while holding A, update active entities a second time
-					// to double their movement speed (unless <PRI is set)
-					waitTime--;
-					if(!gameFrozen) entities_update();
+				} else if(waitTime > 0 && joy_down(btn[cfg_btn_ffwd])) {
+					if(cfg_ffwd) {
+						// Fast forward while holding A, update active entities a second time
+						// to double their movement speed (unless <PRI is set)
+						waitTime--;
+						if(!gameFrozen) entities_update();
+					}
 				}
 			}
 		}
 		break;
 		case TSC_WAITINPUT:
 		{
-			if(joy_pressed(BUTTON_C) || (joystate & BUTTON_A)) {
+			if(joy_pressed(btn[cfg_btn_jump]) || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				tscState = TSC_RUNNING;
 				if(cfg_language) {
 					window_draw_jchar(FALSE, ' '); // Clear blinking cursor
@@ -293,13 +295,13 @@ uint8_t tsc_update() {
 		break;
 		case TSC_TELEMENU:
 		{
-			if(joy_pressed(BUTTON_C)) {
+			if(joy_pressed(btn[cfg_btn_jump])) {
 				// Reload current stage's TSC, and run event for warp
 				teleMenuActive = FALSE;
 				tsc_load_stage(stageID);
 				tsc_call_event(teleMenuEvent[teleMenuSelection]);
 				tscState = TSC_RUNNING;
-			} else if(joy_pressed(BUTTON_B)) { // Cancel
+			} else if(joy_pressed(btn[cfg_btn_shoot])) { // Cancel
 				teleMenuActive = FALSE;
 				tsc_load_stage(stageID);
 				// Manually force event to end
@@ -1236,7 +1238,7 @@ uint8_t execute_command() {
 			}
 		}
 		if(window_is_open()) {
-			if(window_tick() || (joystate & BUTTON_A)) {
+			if(window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);
 				} else {

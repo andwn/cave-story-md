@@ -304,7 +304,7 @@ void window_set_textmode(uint8_t mode) {
 uint8_t window_tick() {
 	if(textMode > 0) return TRUE;
 	windowTextTick++;
-	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&BUTTON_C))) {
+	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&btn[cfg_btn_jump]))) {
 		windowTextTick = 0;
 		return TRUE;
 	} else {
@@ -347,7 +347,7 @@ uint8_t window_prompt_answer() {
 }
 
 uint8_t window_prompt_update() {
-	if(joy_pressed(BUTTON_C)) {
+	if(joy_pressed(btn[cfg_btn_jump])) {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
 		return TRUE;

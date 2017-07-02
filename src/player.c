@@ -198,7 +198,7 @@ void player_update() {
 				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : FALSE;
 				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : FALSE;
 				player.y_next -= 0x600;
-			} else if(!joy_down(BUTTON_C) && !blockd_next && blockd) {
+			} else if(!joy_down(btn[cfg_btn_jump]) && !blockd_next && blockd) {
 				player.y_speed += 0x80;
 				ledge_time = 4;
 			}
@@ -303,14 +303,14 @@ void player_update() {
 	// Weapon switching
 	if(JOY_getJoypadType(JOY_1) == JOY_TYPE_PAD3) {
 		// 3 button controller cycles with A
-		if(joy_pressed(BUTTON_A)) {
+		if(joy_pressed(btn[cfg_btn_ffwd])) {
 			player_next_weapon();
 		}
 	} else {
 		// 6 button cycles with Y/Z
-		if(joy_pressed(BUTTON_Y)) {
+		if(joy_pressed(btn[cfg_btn_lswap])) {
 			player_prev_weapon();
-		} else if(joy_pressed(BUTTON_Z)) {
+		} else if(joy_pressed(btn[cfg_btn_rswap])) {
 			player_next_weapon();
 		}
 	}
@@ -318,7 +318,7 @@ void player_update() {
 	Weapon *w = &playerWeapon[currentWeapon];
 	if(w->type == WEAPON_MACHINEGUN) {
 		if(mgun_shoottime > 0) mgun_shoottime--;
-		if(joy_down(BUTTON_B)) {
+		if(joy_down(btn[cfg_btn_shoot])) {
 			if(mgun_shoottime == 0) {
 				if(w->ammo > 0) {
 					weapon_fire(*w);
@@ -343,11 +343,11 @@ void player_update() {
 		uint8_t chargespeed;
 		if(w->level == 1) {
 			chargespeed = TIME(25); // Twice per second
-			if(joy_pressed(BUTTON_B)) weapon_fire(*w);
+			if(joy_pressed(btn[cfg_btn_shoot])) weapon_fire(*w);
 		} else {
 			chargespeed = 3; // Around 12-15 per second
 			if(mgun_shoottime > 0) mgun_shoottime--;
-			if(joy_down(BUTTON_B) && mgun_shoottime == 0) {
+			if(joy_down(btn[cfg_btn_shoot]) && mgun_shoottime == 0) {
 				weapon_fire(*w);
 				#ifdef PAL
 				mgun_shoottime = 10;
@@ -356,7 +356,7 @@ void player_update() {
 				#endif
 			}
 		}
-		if(!joy_down(BUTTON_B) && w->ammo < 100) {
+		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
 			if(mgun_chargetime > 0) {
 				mgun_chargetime--;
 			} else {
@@ -365,7 +365,7 @@ void player_update() {
 			}
 		}
 	} else {
-		if(joy_pressed(BUTTON_B)) weapon_fire(*w);
+		if(joy_pressed(btn[cfg_btn_shoot])) weapon_fire(*w);
 	}
 	player_update_bullets();
 	if(player.grounded) {
@@ -443,7 +443,7 @@ void player_update_jump() {
 		maxFallSpeed >>= 1;
 	}
 	if(player.jump_time > 0) {
-		if(joy_down(BUTTON_C)) {
+		if(joy_down(btn[cfg_btn_jump])) {
 			player.jump_time--;
 		} else {
 			player.jump_time = 0;
@@ -451,17 +451,17 @@ void player_update_jump() {
 	}
 	if(player.jump_time > 0) return;
 	if(player.grounded) {
-		if(joy_pressed(BUTTON_C)) {
+		if(joy_pressed(btn[cfg_btn_jump])) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
 			player.jump_time = TIME(5);
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
-			joy_pressed(BUTTON_C)) {
+			joy_pressed(btn[cfg_btn_jump])) {
 		player_start_booster();
 	} else if(playerBoostState == BOOST_OFF) {
-		if(joy_down(BUTTON_C) && (player.y_speed <= 0 || player.underwater)) {
+		if(joy_down(btn[cfg_btn_jump]) && (player.y_speed <= 0 || player.underwater)) {
 			player.y_speed += gravityJump;
 		} else {
 			player.y_speed += gravity;
@@ -514,11 +514,12 @@ void player_update_bullets() {
 
 void player_update_interaction() {
 	// Interaction with entities when pressing down
-	if(joy_pressed(BUTTON_DOWN)) {
+	if(cfg_updoor ? joy_pressed(BUTTON_UP) : joy_pressed(BUTTON_DOWN)) {
 		Entity *e = entityList;
 		while(e) {
 			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
-				oldstate |= BUTTON_DOWN; // To avoid triggering it twice
+				// To avoid triggering it twice
+				oldstate |= cfg_updoor ? BUTTON_UP : BUTTON_DOWN;
 				if(e->event > 0) {
 					// Quote should look down while the game logic is frozen
 					// Manually send sprite frame since draw() is not called
@@ -584,7 +585,7 @@ void player_start_booster() {
 
 void player_update_booster() {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
-	if(!joy_down(BUTTON_C)) playerBoostState = BOOST_OFF;
+	if(!joy_down(btn[cfg_btn_jump])) playerBoostState = BOOST_OFF;
 	if(playerBoostState == BOOST_OFF) return;
 	// player seems to want it active...check the fuel
 	if(playerBoosterFuel == 0) {
@@ -849,7 +850,7 @@ void player_unpause() {
 	// Sometimes player is left stuck after pausing
 	controlsLocked = FALSE;
 	// Simulates a bug which allows skipping Chako's fireplace in Grasstown
-	playerIFrames = 0;
+	if(cfg_iframebug) playerIFrames = 0;
 }
 
 uint8_t player_invincible() {
