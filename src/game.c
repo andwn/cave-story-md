@@ -46,7 +46,9 @@ void game_main(uint8_t load) {
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
 	VDP_setPaletteColor(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
-	VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
+	if(!cfg_language) {
+		VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
+	}
 	effects_init();
 	game_reset(load);
 	VDP_setWindowPos(0, 0);
