@@ -3,7 +3,7 @@
 #include "dma.h"
 #include "memory.h"
 #include "resources.h"
-#include "string.h"
+//#include "string.h"
 #include "tools.h"
 #include "vdp.h"
 #include "vdp_pal.h"
