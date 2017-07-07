@@ -2,6 +2,7 @@
 
 #include "dma.h"
 #include "entity.h"
+#include "gamemode.h"
 #include "memory.h"
 #include "player.h"
 #include "resources.h"
@@ -36,6 +37,7 @@ void hud_refresh_maxammo();
 
 // Expected to happen while the screen is off
 void hud_create() {
+	//if(paused) return;
 	// Invalidate all values, forces a redraw
 	hudMaxHealth = hudHealth = hudWeapon = hudLevel = 
 			hudMaxEnergy = hudEnergy = hudMaxAmmo = hudAmmo = 255;
@@ -54,6 +56,19 @@ void hud_create() {
 	};
 }
 
+void hud_force_redraw() {
+	hud_refresh_health();
+	DMA_flushQueue();
+	hud_refresh_weapon();
+	DMA_flushQueue();
+	hud_refresh_energy();
+	DMA_flushQueue();
+	hud_refresh_maxammo();
+	DMA_flushQueue();
+	hud_refresh_ammo();
+	DMA_flushQueue();
+}
+
 void hud_show() {
 	showing = TRUE;
 }
@@ -63,6 +78,7 @@ void hud_hide() {
 }
 
 void hud_update() {
+	//if(paused) return;
 	if(!showing) return;
 	sprite_addq(sprHUD, 2);
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent

@@ -1,4 +1,3 @@
-#define KDEBUG
 #include "common.h"
 
 #include "dma.h"

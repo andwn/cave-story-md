@@ -205,9 +205,44 @@ void draw_itemmenu(uint8_t resetCursor) {
 	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
+	// Load tiles for the font letters
+#define LOAD_LETTER(c,in) (VDP_loadTileData(TS_MsgFont.tiles+((c-0x20)<<3),                    \
+						   TILE_HUDINDEX+in,1,1))
+#define DRAW_LETTER(in,xx,yy) (VDP_setTileMapXY(PLAN_WINDOW,                                   \
+							TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
+	LOAD_LETTER('0', 0);
+	LOAD_LETTER('1', 1);
+	LOAD_LETTER('2', 2);
+	LOAD_LETTER('3', 3);
+	LOAD_LETTER('4', 4);
+	LOAD_LETTER('5', 5);
+	LOAD_LETTER('6', 6);
+	LOAD_LETTER('7', 7);
+	LOAD_LETTER('8', 8);
+	LOAD_LETTER('9', 9);
+	LOAD_LETTER('A', 10);
+	LOAD_LETTER('R', 11);
+	LOAD_LETTER('M', 12);
+	LOAD_LETTER('S', 13);
+	LOAD_LETTER('L', 14);
+	LOAD_LETTER('v', 15);
+	LOAD_LETTER('/', 16);
+	LOAD_LETTER('I', 17);
+	LOAD_LETTER('T', 18);
+	LOAD_LETTER('E', 19);
+	LOAD_LETTER('-', 20);
 	// Weapons
 	y = top + 3;
-	VDP_drawTextWindow("--ARMS--", 4, y++);
+	//VDP_drawTextWindow("--ARMS--", 4, y++);
+	DRAW_LETTER(20,4,y);
+	DRAW_LETTER(20,5,y);
+	DRAW_LETTER(10,6,y);
+	DRAW_LETTER(11,7,y);
+	DRAW_LETTER(12,8,y);
+	DRAW_LETTER(13,9,y);
+	DRAW_LETTER(20,10,y);
+	DRAW_LETTER(20,11,y);
+	y++;
 	for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
@@ -221,23 +256,50 @@ void draw_itemmenu(uint8_t resetCursor) {
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+1), x,   y+1);
 		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+3), x+1, y+1);
 		// Level
-		char str[6];
-		sprintf(str, "Lv %hu", w->level);
-		VDP_drawTextWindow(str, x, y+2);
+		//char str[6];
+		//sprintf(str, "Lv %hu", w->level);
+		//VDP_drawTextWindow(str, x, y+2);
+		DRAW_LETTER(14,			x,	y+2);
+		DRAW_LETTER(15,			x+1,y+2);
+		DRAW_LETTER(w->level,	x+3,y+2);
+		
 		// Ammo & Max Ammo
 		if(w->maxammo) {
-			sprintf(str, " %3hu", w->ammo);
-			VDP_drawTextWindow(str, x, y+3);
-			sprintf(str, "/%3hu", w->maxammo);
-			VDP_drawTextWindow(str, x, y+4);
+			//sprintf(str, " %3hu", w->ammo);
+			//VDP_drawTextWindow(str, x, y+3);
+			//sprintf(str, "/%3hu", w->maxammo);
+			//VDP_drawTextWindow(str, x, y+4);
+			uint8_t ammo = w->ammo;
+			DRAW_LETTER(ammo % 10, 			x+3, y+3);
+			DRAW_LETTER((ammo / 10) % 10, 	x+2, y+3);
+			if(ammo >= 100) DRAW_LETTER(1, 	x+1, y+3);
+			ammo = w->maxammo;
+			DRAW_LETTER(ammo % 10, 			x+3, y+4);
+			DRAW_LETTER((ammo / 10) % 10, 	x+2, y+4);
+			if(ammo >= 100) DRAW_LETTER(1, 	x+1, y+4);
+			DRAW_LETTER(16,	x,	y+4);
 		} else {
-			VDP_drawTextWindow("  --", x, y+3);
-			VDP_drawTextWindow("/ --", x, y+4);
+			//VDP_drawTextWindow("  --", x, y+3);
+			//VDP_drawTextWindow("/ --", x, y+4);
+			DRAW_LETTER(20,	x+2,y+3);
+			DRAW_LETTER(20,	x+3,y+3);
+			
+			DRAW_LETTER(16,	x,	y+4);
+			DRAW_LETTER(20,	x+2,y+4);
+			DRAW_LETTER(20,	x+3,y+4);
 		}
 	}
 	// Items
 	y = top + 10;
-	VDP_drawTextWindow("--ITEM--", 4, y);
+	//VDP_drawTextWindow("--ITEM--", 4, y);
+	DRAW_LETTER(20,4,y);
+	DRAW_LETTER(20,5,y);
+	DRAW_LETTER(17,6,y);
+	DRAW_LETTER(18,7,y);
+	DRAW_LETTER(19,8,y);
+	DRAW_LETTER(12,9,y);
+	DRAW_LETTER(20,10,y);
+	DRAW_LETTER(20,11,y);
 	uint8_t held = 0;
 	for(uint16_t i = 0; i < MAX_ITEMS; i++) {
 		uint16_t item = playerInventory[i];
@@ -281,19 +343,25 @@ uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
 	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot])) && !tscState) {
 		VDP_setEnable(FALSE);
-		// Make sure the sprites get cleared or things will look weird for a split second
+		// Fix HUD since we clobbered it
+		hud_show();
+		hud_force_redraw();
 		sprites_clear();
+		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+8,1,1);
+		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+9,1,1);
+		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+12,1,1);
+		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+13,1,1);
+		aftervsync();
 		// Reload shared sheets we clobbered
 		sheets_load_stage(stageID, TRUE, FALSE);
 		selectedItem = 0;
+		aftervsync();
 		// Reload TSC Events for the current stage
 		tsc_load_stage(stageID);
 		// Put the sprites for player/entities/HUD back
 		player_unpause();
 		player_draw();
 		entities_draw();
-		hud_show();
-		sprites_send();
 		
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
@@ -396,10 +464,10 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 		w = 5;
 		h = 4;
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+w, y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x,   y+h);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FONTINDEX, x+w, y+h);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x,   y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x+w, y);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x,   y+h);
+	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x+w, y+h);
 	// Draw new position
 	if(index >= 0) {
 		x = 4 + (index % 6) * 4;

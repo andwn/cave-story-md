@@ -209,6 +209,7 @@ static uint16_t getKanjiIndexForPos(uint8_t row, uint8_t col) {
 }
 
 void window_draw_jchar(uint8_t iskanji, uint16_t c) {
+	VDP_setEnable(FALSE);
 	// For the 16x16 text, pretend the text array is [2][18]
 	if(!iskanji && c == '\n') {
 		textRow++;
@@ -219,6 +220,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 		} else if(textMode == TM_LINE) {
 			textMode = TM_NORMAL;
 		}
+		VDP_setEnable(TRUE);
 		return;
 	}
 	// Don't let the text run off the end of the window
@@ -245,6 +247,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	if(textColumn < 18 - (showingFace ? 4 : 0) && (iskanji || c != ' ')) {
 		textColumn++;
 	}
+	VDP_setEnable(TRUE);
 }
 
 void window_scroll_text() {
