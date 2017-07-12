@@ -107,49 +107,54 @@ void ai_nothing(Entity *e) {
 }
 
 void onspawn_trigger(Entity *e) {
+	e->alwaysActive = TRUE;
 	if(e->eflags & NPC_OPTION2) { // Vertical
 		// First test if the trigger is placed outside of the map, if so change the type
 		// to OOB trigger which will activate based on player position instead of collision
 		int16_t ex = sub_to_block(e->x);
 		if(ex <= 0) { // Left OOB
-			e->alwaysActive = TRUE;
+			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags &= ~NPC_OPTION1;
 		} else if(ex >= stageWidth - 1) { // Right OOB
-			e->alwaysActive = TRUE;
+			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags |= NPC_OPTION1;
 		} else { // Not OOB
 			e->hit_box.left = 2; e->hit_box.right = 2;
-			for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
-				if(stage_get_block_type((e->x>>CSF)/16, 
-						((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
-			}
-			for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
-				if(stage_get_block_type((e->x>>CSF)/16, 
-						((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
-			}
+			// Don't expand immediately
+			e->hit_box.top = 1; e->hit_box.bottom = 1;
+			//for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
+			//	if(stage_get_block_type((e->x>>CSF)/16, 
+			//			((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
+			//}
+			//for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
+			//	if(stage_get_block_type((e->x>>CSF)/16, 
+			//			((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
+			//}
 		}
 	} else { // Horizontal
 		int16_t ey = sub_to_block(e->y);
 		if(ey <= 0) { // Top OOB
-			e->alwaysActive = TRUE;
+			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags &= ~NPC_OPTION1;
 		} else if(ey >= stageHeight - 1) { // Bottom OOB
-			e->alwaysActive = TRUE;
+			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags |= NPC_OPTION1;
 		} else {  // Not OOB
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
-			for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
-				if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, 
-						(e->y>>CSF)/16) == 0x41) break;
-			}
-			for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
-				if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, 
-						(e->y>>CSF)/16) == 0x41) break;
-			}
+			// Don't expand immediately so Sisters skip works
+			e->hit_box.left = 1; e->hit_box.right = 1;
+			//for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
+			//	if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, 
+			//			(e->y>>CSF)/16) == 0x41) break;
+			//}
+			//for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
+			//	if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, 
+			//			(e->y>>CSF)/16) == 0x41) break;
+			//}
 		}
 	}
 }
@@ -158,14 +163,25 @@ void onspawn_trigger(Entity *e) {
 // OPTION2 off: horizontal, on: vertical
 void ai_trigger(Entity *e) {
 	if(tscState) return;
-	if(!e->state) {
+	if(e->state == 0) {
 		e->alwaysActive = TRUE;
-		e->state = 1;
+		e->state++;
+		e->timer = 0;
+	} else if(e->state == 1) { // Expansion
+		if(e->eflags & NPC_OPTION2) {
+			if(blk(e->x, 0, e->y, -e->hit_box.top) != 0x41) e->hit_box.top += 2;
+			if(blk(e->x, 0, e->y, e->hit_box.bottom) != 0x41) e->hit_box.bottom += 2;
+			if(++e->timer >= 126) e->state++;
+		} else {
+			if(blk(e->x, -e->hit_box.left, e->y, 0) != 0x41) e->hit_box.left += 2;
+			if(blk(e->x, e->hit_box.right, e->y, 0) != 0x41) e->hit_box.right += 2;
+			if(++e->timer >= 126) e->state++;
+		}
 	}
 	// Prevent getting stuck in the eggs in egg corridor
-	if((e->eflags & NPC_OPTION2) || player.y_speed < 0 || stageID != 0x02) {
-		if(entity_overlapping(&player, e)) tsc_call_event(e->event);
-	}
+	//if((e->eflags & NPC_OPTION2) || player.y_speed < 0 || stageID != 0x02) {
+	if(e->timer > 8 && entity_overlapping(&player, e)) tsc_call_event(e->event);
+	//}
 }
 
 // Special H/V trigger logic for Outer Wall and Balcony
