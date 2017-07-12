@@ -172,8 +172,10 @@ void player_update() {
 			// the ceiling during the opening scene with Kazuma on the computer.
 			// Hi Kazuma!
 			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
-			blockl_next = player.x_speed <= 0 ? collide_stage_leftwall(&player) : FALSE;
-			blockr_next = player.x_speed >= 0 ? collide_stage_rightwall(&player) : FALSE;
+			blockl_next = (player.x_speed <= 0 || playerPlatform) ? 
+							collide_stage_leftwall(&player) : FALSE;
+			blockr_next = (player.x_speed >= 0 || playerPlatform) ? 
+							collide_stage_rightwall(&player) : FALSE;
 			if(ledge_time == 0) {
 				if(player.grounded) {
 					player.grounded = collide_stage_floor_grounded(&player);
@@ -409,13 +411,19 @@ void player_update_walk() {
 	} else {
 		player.underwater = FALSE;
 	}
+	// Player maintains fan/stream boosted speed in the air, and will slow down on the ground
 	if(joy_down(BUTTON_LEFT)) {
-		player.x_speed -= acc;
-		if(player.x_speed < -max_speed) player.x_speed = min(player.x_speed + dec, -max_speed);
+		if(player.x_speed > -max_speed) player.x_speed -= acc;
+		//else if(player.grounded) player.x_speed += dec;
+		//if(player.x_speed < -max_speed) {
+		//	player.x_speed = min(player.x_speed + dec, -max_speed);
+		//}
 	}
 	if(joy_down(BUTTON_RIGHT)) {
-		player.x_speed += acc;
-		if(player.x_speed > max_speed) player.x_speed = max(player.x_speed - dec, max_speed);
+		if(player.x_speed < max_speed) player.x_speed += acc;
+		//else if(player.grounded) player.x_speed -= dec;
+		//player.x_speed += acc;
+		//if(player.x_speed > max_speed) player.x_speed = max(player.x_speed - dec, max_speed);
 	}
 	if(player.grounded) {
 		if(player.x_speed < fric && player.x_speed > -fric) player.x_speed = 0;

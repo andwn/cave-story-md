@@ -20,8 +20,8 @@ const char btnName[12][4] = {
 	"Z", "Y", "X", "Md"
 };
 
-static uint8_t joyType[JOY_NUM];
-static uint16_t joyState[JOY_NUM];
+static volatile uint8_t joyType[JOY_NUM];
+static volatile uint16_t joyState[JOY_NUM];
 
 void JOY_init() {
 	/*
