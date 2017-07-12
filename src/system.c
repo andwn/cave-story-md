@@ -17,6 +17,7 @@
 #include "vdp_bg.h"
 #include "vdp_ext.h"
 #include "weapon.h"
+#include "xgm.h"
 #include "z80_ctrl.h"
 
 #include "system.h"
@@ -124,6 +125,10 @@ void system_new() {
 void system_save() {
 	if(sram_state == SRAM_INVALID) return;
 	puts("Writing game save to SRAM");
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	SRAM_enable();
 	SRAM_writeWord(0x000, stageID);
 	SRAM_writeWord(0x002, song_get_playing());
@@ -159,12 +164,18 @@ void system_save() {
 		SRAM_writeLong(0x100 + i * 4, flags[i]);
 	}
 	SRAM_disable();
+	
+	XGM_set68KBUSProtection(FALSE);
 }
 
 void system_load() {
 	puts("Loading game save from SRAM");
 	counterEnabled = FALSE;
 	player_init();
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	
 	SRAM_enableRO();
 	uint16_t rid = SRAM_readWord(0x00);
 	uint8_t song = SRAM_readWord(0x02);
@@ -199,12 +210,18 @@ void system_load() {
 		flags[i] = SRAM_readLong(0x100 + i * 4);
 	}
 	SRAM_disable();
+	
+	XGM_set68KBUSProtection(FALSE);
+	
 	stage_load(rid);
 	song_play(song);
 }
 
 void system_load_config() {
 	static const uint16_t start = 0x300;
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
 	
 	SRAM_enableRO();
 	uint32_t magic = SRAM_readLong(start);
@@ -228,10 +245,15 @@ void system_load_config() {
 	cfg_hellquake = SRAM_readByte(start + index++);
 	cfg_iframebug = SRAM_readByte(start + index++);
 	SRAM_disable();
+	
+	XGM_set68KBUSProtection(FALSE);
 }
 
 void system_save_config() {
 	static const uint16_t start = 0x300;
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
 	
 	SRAM_enable();
 	SRAM_writeLong(start, CFG_MAGIC);
@@ -250,6 +272,8 @@ void system_save_config() {
 	SRAM_writeByte(start + index++, cfg_hellquake);
 	SRAM_writeByte(start + index++, cfg_iframebug);
 	SRAM_disable();
+	
+	XGM_set68KBUSProtection(FALSE);
 }
 
 void system_load_levelselect(uint8_t file) {

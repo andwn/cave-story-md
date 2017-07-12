@@ -146,13 +146,7 @@ void stage_load(uint16_t id) {
 		XGM_set68KBUSProtection(FALSE);
 	}
 	// Load stage into RAM
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	stage_load_blocks();
-	
-	XGM_set68KBUSProtection(FALSE);
 	
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;

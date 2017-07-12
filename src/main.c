@@ -45,8 +45,9 @@ void aftervsync() {
 	XGM_doVBlankProcess();
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
+	
 	DMA_flushQueue();
-	XGM_set68KBUSProtection(FALSE);
+	
 	if(fading_cnt > 0) VDP_doStepFading(FALSE);
 	
 	dqueued = FALSE;
@@ -56,6 +57,8 @@ void aftervsync() {
 		ready = FALSE;
 	}
 	if(gamemode == GM_GAME) stage_update(); // Scrolling
+	
+	XGM_set68KBUSProtection(FALSE);
 	
 	JOY_update();
 }
