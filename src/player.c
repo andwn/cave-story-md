@@ -390,16 +390,16 @@ void player_update_movement() {
 
 void player_update_walk() {
 	uint16_t acc;
-	uint16_t dec;
+	//uint16_t dec;
 	uint16_t fric;
 	uint16_t max_speed = SPEED(0x32C);
 	if(player.grounded) {
 		acc = SPEED(0x55);
-		dec = SPEED(0x55);
+		//dec = SPEED(0x55);
 		fric = SPEED(0x33);
 	} else {
 		acc = SPEED(0x20);
-		dec = SPEED(0x20);
+		//dec = SPEED(0x20);
 		fric = SPEED(0x20);
 	}
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
@@ -754,8 +754,8 @@ void player_update_air_display() {
 			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
 			
 		} else if((airDisplayTime % 32) == 15) {
-			
-			VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 1, TRUE);
+			const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
+			VDP_loadTileData(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1, TRUE);
 			
 		}
 		// Calculate air percent and display the value
@@ -896,6 +896,8 @@ uint8_t player_inflict_damage(int16_t damage) {
 				w->energy += weapon_info[w->type].experience[w->level - 1];
 				w->energy -= damage;
 				sheets_refresh_weapon(w);
+				entity_create(player.x, player.y, 
+						cfg_language ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
 			} else {
 				w->energy = 0;
 			}

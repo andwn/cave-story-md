@@ -93,7 +93,7 @@ uint8_t titlescreen_main() {
 	}
 	// Release
 	//VDP_drawText("Mega Drive Version 0.4.1 2017.07", 4, 26);
-	VDP_loadTileSet(&TS_Title, TILE_USERINDEX, TRUE);
+	VDP_loadTileSet(cfg_language ? &TS_J_Title : &TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
 	VDP_fillTileMapRectInc(PLAN_B,

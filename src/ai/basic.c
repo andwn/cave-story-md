@@ -746,3 +746,19 @@ void ai_lightning(Entity *e) {
 		if(e->frame > 3) e->state = STATE_DELETE;
 	}
 }
+
+void onspawn_lvlupdn(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->timer = TIME(100);
+	e->y_speed = -0x200;
+}
+
+void ai_lvlupdn(Entity *e) {
+	if(!--e->timer) {
+		e->state = STATE_DELETE;
+	} else {
+		if((e->timer & 3) == 0) e->frame ^= 1;
+		if(e->y_speed < 0) e->y_speed += 0x10;
+		e->y += e->y_speed;
+	}
+}

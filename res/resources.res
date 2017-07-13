@@ -34,6 +34,7 @@ SPRITE SPR_Sega2		"sprite/sega2.png"		12 4 0 0 NONE
 # Use PAL_Main
 SPRITE SPR_Quote		"sprite/quote.png"		2 2 0 0 NONE
 SPRITE SPR_Air			"sprite/air.png"		7 1 0 0 NONE
+SPRITE SPR_J_Air		"sprite/air_ja.png"		7 1 0 0 NONE
 SPRITE SPR_Hud2			"sprite/hud2.png"		8 4 0 0 NONE
 SPRITE SPR_Pointer		"sprite/pointer.png"	2 2 0 0 NONE
 SPRITE SPR_ArmsImage	"sprite/armsimage.png"	2 2 0 0 NONE
@@ -160,6 +161,10 @@ SPRITE SPR_Heli			"sprite/heli.png"		16 8 0 0 NONE
 SPRITE SPR_HeliBlade	"sprite/heliblade.png"	14 2 0 0 NONE
 SPRITE SPR_HeliBlade2	"sprite/heliblade2.png"	9 2 0 0 NONE
 SPRITE SPR_RedCrystal	"sprite/redcrystal.png" 1 2 0 0 NONE
+SPRITE SPR_LevelUp		"sprite/levelup.png"	7 2 0 0 NONE
+SPRITE SPR_J_LevelUp	"sprite/levelup_ja.png"	7 2 0 0 NONE
+SPRITE SPR_LevelDown	"sprite/leveldown.png"	7 2 0 0 NONE
+SPRITE SPR_J_LevelDown	"sprite/leveldown_ja.png" 7 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"	2 2 0 0 NONE
@@ -359,6 +364,7 @@ SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 3 2 0 0 NONE
 
 # Title Screen Logo
 TILESET TS_Title		"sprite/title.png" 0
+TILESET TS_J_Title		"sprite/title_ja.png" 0
 TILESET TS_SysFont		"font_tran.png" 0
 
 # Sound Test
@@ -370,6 +376,7 @@ TILESET TS_Window		"window.png" 0
 TILESET TS_MsgFont		"font_blue.png" 0
 SPRITE SPR_ItemWin		"itemwindow.png" 6 3 0 0 NONE
 SPRITE SPR_Prompt		"prompt.png" 8 3 0 0 NONE
+SPRITE SPR_J_Prompt		"prompt_ja.png" 8 3 0 0 NONE
 TILESET TS_ItemSel		"itemsel.png" 0
 
 # Number Font

@@ -422,6 +422,10 @@ enum {
 	// Misc
 	OBJ_TRIGGER_SPECIAL,
 	OBJ_HELICOPTER_BLADE2,
+	OBJ_LEVELUP,
+	OBJ_LEVELUP_JA,
+	OBJ_LEVELDOWN,
+	OBJ_LEVELDOWN_JA,
 };
 
 // Locations in npc.tbl where data for each property begins

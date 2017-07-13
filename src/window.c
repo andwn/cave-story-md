@@ -337,7 +337,8 @@ void window_prompt_open() {
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+16)
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
-	TILES_QUEUE(SPR_TILES(&SPR_Prompt,0,0), TILE_PROMPTINDEX+4, 24);
+	const SpriteDefinition *spr = cfg_language ? &SPR_J_Prompt : &SPR_Prompt;
+	TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
 	promptAnswer = TRUE; // Yes is default
 }
 

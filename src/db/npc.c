@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 9] = {
 	{ NULL, NOSHEET, 		PAL0, 0, &onspawn_op2snap, &ai_nothing, &ai_null },
 	{ NULL, SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, &ai_energy, &ai_null }, // Weapon Energy
 	{ NULL, SHEET_BEHEM, 	PAL1, 1, &ai_null, &ai_behemoth, &ondeath_default }, // Behemoth
@@ -492,4 +492,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 14 + 5] = {
 	{ NULL, NOSHEET, PAL0, 0, &ai_null, &ai_trigger_special, &ai_null }, // Special Trigger
 	{ &SPR_HeliBlade2, NOSHEET, PAL1, 3, // Helicopter blade (smaller)
 		&onspawn_heliblade2, &ai_helicopter_blade, &ai_null },
+	// Level up/down indicator
+	{ &SPR_LevelUp, 	NOSHEET, PAL1, 2, &onspawn_lvlupdn, &ai_lvlupdn, &ai_null },
+	{ &SPR_J_LevelUp, 	NOSHEET, PAL1, 2, &onspawn_lvlupdn, &ai_lvlupdn, &ai_null },
+	{ &SPR_LevelDown, 	NOSHEET, PAL1, 2, &onspawn_lvlupdn, &ai_lvlupdn, &ai_null },
+	{ &SPR_J_LevelDown, NOSHEET, PAL1, 2, &onspawn_lvlupdn, &ai_lvlupdn, &ai_null },
 };
