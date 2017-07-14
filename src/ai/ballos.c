@@ -1,673 +1,1208 @@
 #include "ai_common.h"
 
-#define savedhp		id
-#define timer3		jump_time
+//static int platform_speed;
+//static int rotators_left;
 
-enum STATES
+#define platform_speed	curly_target_x
+#define rotators_left	curly_target_y
+
+#define FLOOR_Y			0x26000						// Y coord of floor
+#define CRASH_Y			(FLOOR_Y - (40 << CSF))		// Y coord of main when body hits floor
+
+enum EYE_STATES
 {
-	BP_FIGHTING_STANCE		= 100,		// show fighting stance, then prepare to fly lr
-	
-	BP_PREPARE_FLY_LR		= 110,		// duck a moment, then fly horizontally at player
-	BP_PREPARE_FLY_UD		= 120,		// duck a moment, then fly vertically at player
-	
-	BP_FLY_LR				= 130,		// flying horizontally
-	BP_FLY_UP				= 140,		// flying up
-	BP_FLY_DOWN				= 150,		// flying down
-	
-	BP_HIT_WALL				= 160,		// hit wall while flying horizontally
-	BP_HIT_CEILING			= 170,		// hit ceiling while flying up
-	BP_HIT_FLOOR			= 180,		// hit floor while flying down
-	
-	BP_RETURN_TO_GROUND		= 190,		// faces screen and floats down to ground
-	BP_LIGHTNING_STRIKE		= 200,		// lightning attack
-	
-	BP_DEFEATED				= 1000		// defeated (script-triggered)
+	EYE_OPENING		= 10,
+	EYE_CLOSING		= 20,
+	EYE_INVISIBLE	= 30,
+	EYE_EXPLODING	= 40
 };
 
-#define DMG_NORMAL		3		// normal damage for touching him
-#define DMG_RUSH		10		// damage when he is rushing/flying at you
-
-#define RUSH_SPEED		0x800		// how fast he flies
-#define RUSH_DIST		(16<<CSF)	// how close he gets to you before changing direction
-
-#define FLOAT_Y			block_to_sub(11)	// Y position to rise to during lightning attack
-#define LIGHTNING_Y		block_to_sub(19)	// Y position lightning strikes hit (i.e., the floor)
-
-// creates the two bone spawners which appear when he crashes into the floor or ceiling.
-// pass UP if he has hit the ceiling, DOWN if he has hit the floor.
-static void spawn_bones(Entity *e, uint8_t up) {
-	int32_t y;
-
-	if (up)
-		y = (e->y - (12 << CSF));
-	else
-		y = (e->y + (12 << CSF));
+enum BS_STATES
+{
+	// Form 1 states
+	AS_COME_DOWN	= 100,		// scripted
+	AS_BEGIN_FIGHT	= 200,		// scripted
+	AS_PREPARE_JUMP	= 210,
+	AS_JUMPING		= 215,
+	AS_DEFEATED		= 220,		// scripted
 	
-	entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
-	entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
+	// Form 2 states.
+	BS_ENTER_FORM	= 300,		// scripted
+	BS_FIGHT_BEGIN	= 311,		// scripted
+	BS_LEFT			= 320,
+	BS_UP			= 330,
+	BS_RIGHT		= 340,
+	BS_DOWN			= 350,
+	
+	// Form 3 states
+	CS_ENTER_FORM		= 400,
+	CS_SPAWN_SPIKES 	= 410,
+	CS_EXPLODE_BLOODY	= 420,
+	CS_SPIN_PLATFORMS	= 430
+};
+/*
+void BallosBoss::OnMapEntry(void)
+{
+	// create (invisible) main controller object
+	main = CreateObject(0, 0, OBJ_BALLOS_MAIN);
+	game.stageboss.object = main;
+	
+	main->id2 = 1000;	// defeated script (has a flagjump in it to handle each form)
+	main->flags = (FLAG_SHOW_FLOATTEXT | FLAG_SCRIPTONDEATH | \
+				   FLAG_SOLID_BRICK | FLAG_IGNORE_SOLID);
+	
+	main->x = ((map.xsize / 2) * TILE_W) << CSF;
+	main->y = -(64 << CSF);
+	
+	main->damage = 0;
+	main->hp = 800;
+	
+	objprop[main->type].hurt_sound = SND_ENEMY_HURT_COOL;
+	main->invisible = true;
+	
+	// create body (the big rock)
+	body = CreateObject(0, 0, OBJ_BALLOS_BODY);
+	body->hp = 1000;	// not his real HP, we're using damage transfer
+	body->flags = (FLAG_SOLID_MUSHY | FLAG_SHOOTABLE | FLAG_INVULNERABLE | FLAG_IGNORE_SOLID);
+	
+	// create eyes (open/close animations)
+	for(int i=0;i<NUM_EYES;i++)
+	{
+		eye[i] = CreateObject(0, 0, OBJ_BALLOS_EYE);
+		eye[i]->dir = i;
+		eye[i]->hp = 1000;
+	}
+	
+	// create a top shield to cover eyes from above
+	shield = CreateObject(0, 0, OBJ_BBOX_PUPPET);
+	shield->sprite = SPR_BBOX_PUPPET_1;
+	shield->invisible = true;
+	shield->hp = 1000;
+	shield->flags = (FLAG_SOLID_MUSHY | FLAG_SHOOTABLE | FLAG_INVULNERABLE | FLAG_IGNORE_SOLID);
+	
+	// initilize bboxes
+	sprites[body->sprite].bbox.set(-48, -24, 48, 32);
+	sprites[shield->sprite].bbox.set(-32, -8, 32, 8);
+	sprites[main->sprite].bbox.set(-32, -48, 32, 48);
+	
+	sprites[main->sprite].solidbox = sprites[main->sprite].bbox;
+	sprites[body->sprite].solidbox = sprites[body->sprite].bbox;
+	sprites[shield->sprite].solidbox = sprites[shield->sprite].bbox;
+	
+	// body and eyes are both directly shootable during one form or another
+	// but should not shake as their damage is to be transferred to main object.
+	objprop[OBJ_BALLOS_MAIN].shaketime = 8;
+	objprop[OBJ_BALLOS_BODY].shaketime = 0;
+	objprop[OBJ_BALLOS_EYE].shaketime = 0;
+	
+	// initilize parameters
+	NX_LOG("BallosBoss::OnMapEntry()\n");
 }
 
-// handles his "looping" flight/rush attacks
-static void run_flight(Entity *e)
+void BallosBoss::Run()
 {
-	switch(e->state)
+	if (!main) return;
+	//AIDEBUG;
+	
+	transfer_damage(body, main);
+	transfer_damage(eye[LEFT], main);
+	transfer_damage(eye[RIGHT], main);
+	transfer_damage(shield, main);
+	
+	RunForm1(main);
+	RunForm2(main);
+	RunForm3(main);
+	RunDefeated(main);
+	
+	run_eye(LEFT);
+	run_eye(RIGHT);
+	
+	// flash red when hurt
+	if (main->shaketime & 2)
+		body->frame |= 1;
+	else
+		body->frame &= ~1;
+}
+
+
+void BallosBoss::RunAftermove()
+{
+	if (!main)
+		return;
+	
+	// place eyes
+	place_eye(LEFT);
+	place_eye(RIGHT);
+	
+	// place body
+	body->x = main->x;
+	body->y = main->y;
+	
+	// place shield
+	shield->x = main->x;
+	shield->y = main->y - (44 << CSF);
+	
+	// riding on platform by eye? Player can sort of stay on this platform
+	// when he jumps. We don't do this for the shield up top though, in order that
+	// he gets kind of slid off--what happens is he'll fall through the shield
+	// onto the main body (a SOLID_BRICK), and then now that he's embedded in
+	// the shield (a SOLID_MUSHY), it'll repel him to the side.
+	if (player->riding == body)
 	{
-		// flying left or right
-		case BP_FLY_LR:
+		player->apply_xinertia(main->xinertia);
+		player->apply_yinertia(main->yinertia);
+	}
+}
+
+// left and right maximums during form 1
+static const int F1_LEFT = (88 << CSF);
+static const int F1_RIGHT = (552 << CSF);
+
+// runs arrival of first form as a stage-boss
+void BallosBoss::RunComeDown(Object *o)
+{
+	switch(o->state)
+	{
+		case AS_COME_DOWN:
 		{
-			e->state++;
-			e->animtime = 0;
-			e->frame = 6;		// flying horizontally
+			o->savedhp = o->hp;
 			
-			e->y_speed = 0;
-			e->attack = DMG_RUSH;
+			o->x = player->CenterX();
+			o->y = -(64 << CSF);
+			o->frame = 0;
 			
-			FACE_PLAYER(e);
-			MOVE_X(RUSH_SPEED);
+			// create the targeter
+			// setting dir to right tells it don't spawn any lightning
+			CreateObject(o->x, FLOOR_Y, OBJ_BALLOS_TARGET)->dir = RIGHT;
+			o->timer = 0;
+			
+			if (o->x < F1_LEFT) o->x = F1_LEFT;
+			if (o->x > F1_RIGHT) o->x = F1_RIGHT;
+			
+			o->state++;
 		}
-		case BP_FLY_LR+1:
+		case AS_COME_DOWN+1:
 		{
-			ANIMATE(e, 4, 6,7);
-			
-			// smacked into wall?
-			if ((!e->dir && collide_stage_leftwall(e)) || 
-				(e->dir && collide_stage_rightwall(e))) {
-				e->x_speed = 0;
-				e->state = BP_HIT_WALL;
-				e->attack = DMG_NORMAL;
-				e->timer = 0;
-				camera_shake(10);
-			}
-			
-			// reached player?
-			// this has to be AFTER smacked-into-wall check for proper behavior
-			// if player stands in spikes at far left/right of arena.
-			if (PLAYER_DIST_X(RUSH_DIST))
-				e->state = BP_PREPARE_FLY_UD;
-		}
-		break;
-		
-		// smacked into wall while flying L/R
-		case BP_HIT_WALL:
-		{
-			e->frame = 6;
-			
-			if (++e->timer > 30)
-			{
-				if (e->timer2 <= 3)
-					e->state = BP_PREPARE_FLY_LR;
-				else
-					e->state = BP_RETURN_TO_GROUND;
-			}
+			if (++o->timer > 30)
+				o->state++;
 		}
 		break;
 		
-		
-		// flying up
-		case BP_FLY_UP:
+		// falling
+		case AS_COME_DOWN+2:
 		{
-			e->state++;
-			e->timer = 0;
-			e->animtime = 0;
+			o->yinertia += 0x40;
+			LIMITY(0xC00);
 			
-			e->frame = 8;		// vertical flight
-			e->dir = 0;		// up-facing frame
-			
-			e->y_speed = -RUSH_SPEED;
-			e->x_speed = 0;
-			e->attack = DMG_RUSH;
-		}
-		case BP_FLY_UP+1:
-		{
-			ANIMATE(e, 4, 8,9);
-			
-			// hit ceiling? (to make this happen, break his loop and jump ABOVE him
-			// while he is in the air, at the part where he would normally be
-			// coming back down at you).
-			if (collide_stage_ceiling(e))
+			if (passed_ycoord(GREATER_THAN, CRASH_Y))
 			{
-				e->state = BP_HIT_CEILING;
-				e->attack = DMG_NORMAL;
-				e->timer = 0;
+				o->yinertia = 0;
+				o->timer = 0;
+				o->state++;
 				
-				//SmokeXY(e->x, e->Top(), 8);
-				camera_shake(10);
+				megaquake(30, SND_MISSILE_HIT);
 				
-				spawn_bones(e, UP);
-			}
-			
-			// reached player? (this check here isn't exactly the same as pdistly;
-			// it's important that it checks the player's top and not his center).
-			if ((abs(player.y - e->y) < RUSH_DIST) && e->timer2 < 4)
-				e->state = BP_PREPARE_FLY_LR;
-		}
-		break;
-		
-		case BP_HIT_CEILING:	// hit ceiling
-		{
-			e->frame = 8;
-			
-			if (++e->timer > 30)
-			{
-				if (e->timer2 <= 3)
-					e->state = BP_PREPARE_FLY_LR;
-				else
-					e->state = BP_RETURN_TO_GROUND;
-			}
-		}
-		break;
-		
-		
-		// flying down
-		case BP_FLY_DOWN:
-		{
-			e->state++;
-			e->timer = 0;
-			e->animtime = 0;
-			
-			e->frame = 8;		// vertical flight
-			e->dir = RIGHT;		// down-facing frame
-			
-			e->y_speed = RUSH_SPEED;
-			e->x_speed = 0;
-			e->attack = DMG_RUSH;
-		}
-		case BP_FLY_DOWN+1:
-		{
-			ANIMATE(e, 4, 8, 9);
-			
-			if (collide_stage_floor(e))
-			{
-				e->state = BP_HIT_FLOOR;
-				e->attack = DMG_NORMAL;
-				e->timer = 0;
+				// player smush damage
+				// (he could only get that low if he had been pushed into the floor)
+				if (player->y > (o->y + (48<<CSF)))
+					hurtplayer(16);
 				
-				//SmokeXY(e->x, e->Bottom(), 8);
-				camera_shake(10);
+				SmokeXY(o->x, o->y + (40<<CSF), 16, 40, 0);
 				
-				spawn_bones(e, DOWN);
-				FACE_PLAYER(e);
-			}
-			
-			if (PLAYER_DIST_Y(RUSH_DIST) && e->timer2 < 4)
-				e->state = BP_PREPARE_FLY_LR;
-		}
-		break;
-		
-		case BP_HIT_FLOOR:	// hit floor
-		{
-			e->frame = 3;
-			
-			if (++e->timer > 30)
-			{
-				e->state = BP_FIGHTING_STANCE;
-				e->timer = 120;
+				if (player->blockd)
+					player->yinertia = -0x200;
 			}
 		}
 		break;
 		
-		
-		// come back to ground while facing head on
-		case BP_RETURN_TO_GROUND:
+		case AS_COME_DOWN+3:
 		{
-			e->frame = 4;		// face screen frame
-			e->dir = LEFT;		// non-flashing version
-			
-			e->state++;
-		}
-		case BP_RETURN_TO_GROUND+1:
-		{
-			ANIMATE(e, 4, 4,5);
-			
-			e->y_speed += 0x40;
-			LIMIT_Y(0x5ff);
-			
-			if (e->y_speed >= 0 && collide_stage_floor(e))
+			if (++o->timer > 31)
 			{
-				e->state++;
-				e->timer = 0;
-				e->frame = 3; 	// landed
-				
-				FACE_PLAYER(e);
-			}
-		}
-		break;
-		
-		case BP_RETURN_TO_GROUND+2:
-		{
-			e->x_speed *= 3;
-			e->x_speed /= 4;
-			
-			if (++e->timer > 10)
-			{
-				e->state = BP_FIGHTING_STANCE;
-				e->timer = 140;
+				SetEyeStates(EYE_OPENING);
+				o->state++;
 			}
 		}
 		break;
 	}
 }
 
-// his lightning-strike attack
-static void run_lightning(Entity *e)
+
+// 1st form as a stageboss.
+// the one where he jumps around as a rock.
+void BallosBoss::RunForm1(Object *o)
 {
-	switch(e->state)
+	RunComeDown(o);
+	
+	switch(o->state)
 	{
-		// lightning strikes (targeting player)
-		case BP_LIGHTNING_STRIKE:
+		case AS_BEGIN_FIGHT:
 		{
-			e->x_mark = player.x;
-			e->y_speed = -0x600;
-			
-			e->timer = 0;
-			e->timer2 = 0;
-			e->animtime = 0;
-			
-			e->frame = 4;		// facing screen
-			e->dir = LEFT;		// not flashing
-			
-			e->state++;
+			// can be damaged between eyes opening and boss bar appearing,
+			// but it is not counted.
+			o->hp = o->savedhp;
+			o->state = AS_PREPARE_JUMP;
 		}
-		case BP_LIGHTNING_STRIKE+1:
+		case AS_PREPARE_JUMP:	// delay, then jump at player
 		{
-			ANIMATE(e, 4, 4,5);
+			o->xinertia = 0;
+			o->damage = 0;
+			o->state++;
 			
-			e->x_speed += (e->x < e->x_mark) ? 0x40 : -0x40;
-			e->y_speed += (e->y < FLOAT_Y) ? 0x40 : -0x40;
-			LIMIT_X(0x400);
-			LIMIT_Y(0x400);
-			
-			// run firing
-			if (++e->timer > 200)
+			// he makes two jumps then a pause,
+			// after that it's three jumps before pausing.
+			// this corresponds to:
+			if ((++o->timer2 % 3) == 0)
+				o->timer = 150;
+			else
+				o->timer = 50;
+		}
+		case AS_PREPARE_JUMP+1:
+		{
+			if (--o->timer <= 0)
 			{
-				uint8_t pos = (e->timer % 40);
+				o->yinertia = -0xC00;
+				o->xinertia = (o->x < player->x) ? 0x200 : -0x200;
+				o->state = AS_JUMPING;
+			}
+		}
+		break;
+		
+		case AS_JUMPING:
+		{
+			o->yinertia += 0x55;
+			LIMITY(0xC00);
+			
+			if (passed_xcoord(LESS_THAN, F1_LEFT)) o->xinertia = 0x200;
+			if (passed_xcoord(GREATER_THAN, F1_RIGHT)) o->xinertia = -0x200;
+			
+			if (passed_ycoord(GREATER_THAN, CRASH_Y))
+			{
+				// player smush damage
+				if (player->y > (o->y + (48<<CSF)))
+					hurtplayer(16);
 				
-				if (pos == 1)
+				// player hopping from the vibration
+				if (player->blockd)
+					player->yinertia = -0x200;
+				
+				megaquake(30, SND_MISSILE_HIT);
+				
+				CreateObject(o->x - (12<<CSF), o->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER)->dir = LEFT;
+				CreateObject(o->x + (12<<CSF), o->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER)->dir = RIGHT;
+				
+				SmokeXY(o->x, o->y + (40<<CSF), 16, 40, 0);
+				
+				o->yinertia = 0;
+				o->state = AS_PREPARE_JUMP;
+			}
+		}
+		break;
+		
+		// 1st form defeated
+		case AS_DEFEATED:
+		{
+			SetEyeStates(EYE_CLOSING);
+			game.bossbar.defeated = true;
+			o->hp = 1200;
+			
+			o->state++;
+			
+			o->xinertia = 0;
+			o->shaketime = 0;
+		}
+		case AS_DEFEATED+1:
+		{
+			o->yinertia += 0x40;
+			LIMITY(0xC00);
+			
+			if (passed_ycoord(GREATER_THAN, CRASH_Y))
+			{
+				o->yinertia = 0;
+				o->state++;
+				
+				megaquake(30, SND_MISSILE_HIT);
+				SmokeXY(o->x, o->y + 0x5000, 16, 40, 0);
+				
+				if (player->blockd)
+					player->yinertia = -0x200;
+				
+				// ... and wait for script to trigger form 2
+			}
+		}
+		break;
+	}
+}
+
+
+// 2nd form as a stageboss.
+// the one where he spawns spiky rotators and circles around the room.
+void BallosBoss::RunForm2(Object *o)
+{
+	static const int BS_SPEED = 0x3AA;
+	static const int ARENA_LEFT = (119 << CSF);
+	static const int ARENA_TOP = (119 << CSF);
+	static const int ARENA_RIGHT = (521 << CSF);
+	static const int ARENA_BOTTOM = (233 << CSF);
+	
+	switch(o->state)
+	{
+		// enter 2nd form (script-triggered)
+		case BS_ENTER_FORM:
+		{
+			o->timer = 0;
+			o->state++;
+			
+			rotators_left = 0;
+			for(int angle=0;angle<=0x100;angle+=0x20)
+			{
+				Object *r = CreateObject(o->x, o->y, OBJ_BALLOS_ROTATOR);
+				r->angle = angle;
+				r->dir = (rotators_left & 1) ? RIGHT : LEFT;
+				
+				rotators_left++;
+			}
+		}
+		case BS_ENTER_FORM+1:
+		{
+			o->y += (ARENA_BOTTOM - o->y) / 8;
+			
+			if (passed_xcoord(LESS_THAN, ARENA_LEFT, false))
+				o->x += (ARENA_LEFT - o->x) / 8;
+			
+			if (passed_xcoord(GREATER_THAN, ARENA_RIGHT, false))
+				o->x += (ARENA_RIGHT - o->x) / 8;
+		}
+		break;
+		
+		case BS_FIGHT_BEGIN:	// script-triggered
+		{
+			SetRotatorStates(10);	// spin CCW, work as treads
+			o->state = BS_LEFT;
+			o->timer = 0;
+		}
+		case BS_LEFT:		// left on floor
+		{
+			o->xinertia = -BS_SPEED;
+			o->yinertia = 0;
+			o->dirparam = LEFT;
+			
+			if (passed_xcoord(LESS_THAN, ARENA_LEFT))
+				o->state = BS_UP;
+		}
+		break;
+		
+		// up on wall
+		case BS_UP:
+		{
+			o->xinertia = 0;
+			o->yinertia = -BS_SPEED;
+			o->dirparam = UP;
+			
+			if (passed_ycoord(LESS_THAN, ARENA_TOP))
+				o->state = BS_RIGHT;
+		}
+		break;
+		
+		// right on ceiling
+		case BS_RIGHT:
+		{
+			o->xinertia = BS_SPEED;
+			o->yinertia = 0;
+			o->dirparam = RIGHT;
+			
+			// all rotators destroyed?
+			if (rotators_left <= 0 && ++o->timer > 3)
+			{
+				// center of room
+				if (o->x >= (312<<CSF) && o->x <= (344<<CSF))
 				{
-					// spawn lightning target
-					entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
-					e->dir = RIGHT;		// switch to flashing frames
-					e->animtime = 0;
+					o->state = CS_ENTER_FORM;
+				}
+			}
+			
+			if (passed_xcoord(GREATER_THAN, ARENA_RIGHT))
+				o->state = BS_DOWN;
+		}
+		break;
+		
+		// down on wall
+		case BS_DOWN:
+		{
+			o->xinertia = 0;
+			o->yinertia = BS_SPEED;
+			o->dirparam = DOWN;
+			
+			if (passed_ycoord(GREATER_THAN, ARENA_BOTTOM))
+			{
+				o->state = BS_LEFT;
+			}
+		}
+		break;
+	}
+}
+
+
+// form 3 as a stageboss, the final form.
+// he reaches the center of the room, platforms come out, spikes go up,
+// and he explodes into a really bloody version of himself.
+//
+// then the platforms spin in various speeds and directions while he
+// spawns red butes from the sides and his top.
+void BallosBoss::RunForm3(Object *o)
+{
+	static const int YPOSITION = (167 << CSF);
+	
+	// platform spin speeds and how long they travel at each speed.
+	// it's a repeating pattern.
+	static const struct
+	{
+		int length, speed;
+	}
+	platform_pattern[] =
+	{
+		500, 2,
+		200, 1,
+		20,  0,
+		200, -1,
+		500, -2,
+		200, -1,
+		20,  0,
+		200, 1,
+		0,   0
+	};
+	
+	switch(o->state)
+	{
+		// enter form 3
+		case CS_ENTER_FORM:
+		{
+			o->timer = 0;
+			o->xinertia = 0;
+			o->yinertia = 0;
+			o->state++;
+			
+			DeleteObjectsOfType(OBJ_GREEN_DEVIL_SPAWNER);
+			SetRotatorStates(20);	// fast spin CCW
+		}
+		case CS_ENTER_FORM+1:
+		{
+			// come down into center of room
+			o->y += (YPOSITION - o->y) / 8;
+			o->timer++;
+			
+			if (o->timer == 50)
+			{
+				// create platforms
+				platform_speed = 0;
+				
+				for(int angle=0;angle<0x100;angle+=0x20)
+				{
+					Object *p = CreateObject(o->x, o->y, OBJ_BALLOS_PLATFORM);
+					p->dirparam = angle;
+				}
+			}
+			
+			if (o->timer > 100)
+			{
+				platform_speed = -1;
+				
+				o->state = CS_SPAWN_SPIKES;
+				o->timer = 0;
+			}
+		}
+		break;
+		
+		case CS_SPAWN_SPIKES:
+		{
+			o->timer = 0;
+			o->xmark = 0;
+			o->state++;
+		}
+		case CS_SPAWN_SPIKES+1:
+		{
+			o->timer++;
+			
+			if ((o->timer % 3) == 0)
+				sound(SND_QUAKE);
+			
+			if ((o->timer % 30) == 1)
+			{
+				o->xmark += 2;
+				CreateObject((o->xmark * TILE_W) << CSF, \
+							 FLOOR_Y + (48 << CSF), OBJ_BALLOS_SPIKES);
+				
+				if (o->xmark == 38)
+					o->state = CS_EXPLODE_BLOODY;
+			}
+		}
+		break;
+		
+		// explode into all bloody
+		case CS_EXPLODE_BLOODY:
+		{
+			SetEyeStates(EYE_INVISIBLE);
+			SetRotatorStates(30);			// slow spin CW, alternate open/closed
+			
+			SmokeClouds(o, 256, 60, 60);	// ka boom!
+			sound(SND_EXPLOSION1);
+			megaquake(30);
+			
+			body->frame |= 2;		// go all bloody
+			body->flags &= ~FLAG_INVULNERABLE;
+			shield->flags &= ~FLAG_INVULNERABLE;
+			
+			o->state = CS_SPIN_PLATFORMS;
+		}
+		// fall-through
+		case CS_SPIN_PLATFORMS:
+		{
+			o->state++;
+			o->timer = 0;
+			o->timer2 = 0;
+			o->timer3 = 0;
+			
+			platform_speed = platform_pattern[o->timer2].speed;
+		}
+		case CS_SPIN_PLATFORMS+1:
+		{
+			// spin platforms
+			if (++o->timer3 > platform_pattern[o->timer2].length)
+			{
+				o->timer3 = 0;
+				o->timer2++;
+				
+				if (!platform_pattern[o->timer2].length)
+					o->timer2 = 0;
+				
+				platform_speed = platform_pattern[o->timer2].speed;
+			}
+			
+			// spawn butes
+			switch(++o->timer)
+			{
+				case 270:	// spawn swordsmen from face
+				case 280:
+				case 290:
+				{
+					SmokeXY(o->x, o->y - (52<<CSF), 4);
+					CreateObject(o->x, o->y - (52<<CSF), OBJ_BUTE_SWORD_RED)->dir = UP;
+					sound(SND_EM_FIRE);
+				}
+				break;
+				
+				case 300:	// spawn archers on side
+				{
+					o->timer = 0;
+					// direction butes will be facing, not side of screen
+					int dir = (player->CenterX() > o->x) ? LEFT : RIGHT;
 					
-					// after 8 attacks, switch to even-spaced strikes
-					if (++e->timer2 >= 8)
+					for(int i=0;i<8;i++)
 					{
-						e->x_speed = 0;
-						e->y_speed = 0;
+						// give some granularity to the coords,
+						// so that they can't overlap too closely.
+						int x = (random(-TILE_W, TILE_W) & ~3) << CSF;
+						int y = (random(2 * TILE_H, 17 * TILE_H) & ~3) << CSF;
+						if (dir == LEFT) x += MAPX(map.xsize - 1);
 						
-						e->dir = 1;		// flashing
-						e->frame = 5;		// flash red then white during screen flash
-						e->animtime = 1;	// desync animation from screen flashes so it's visible
-						
-						e->state++;
-						e->timer = 0;
-						e->timer2 = 0;
+						CreateObject(x, y, OBJ_BUTE_ARCHER_RED)->dir = dir;
 					}
 				}
-				else if (pos == 20)
-				{
-					e->dir = 0;		// stop flashing
-				}
+				break;
+			}
+			
+			// spawn blood
+			int prob = (o->hp <= 500) ? 4 : 10;
+			if (!random(0, prob))
+			{
+				CreateObject(o->x + random(-40<<CSF, 40<<CSF), \
+							 o->y + random(0, 40<<CSF),
+							 OBJ_RED_ENERGY)->angle = DOWN;
+			}
+		}
+		break;
+	}
+	
+}
+
+
+void BallosBoss::RunDefeated(Object *o)
+{
+	switch(o->state)
+	{
+		case 1000:
+		{
+			o->state = 1001;
+			o->timer = 0;
+			
+			SetEyeStates(EYE_EXPLODING);	// blow out eyes
+			SetRotatorStates(1000);			// explode rotators
+			
+			uint32_t mask = ~(FLAG_SOLID_BRICK | FLAG_SOLID_MUSHY | \
+							  FLAG_SHOOTABLE | FLAG_INVULNERABLE);
+			main->flags &= mask;
+			body->flags &= mask;
+			shield->flags &= mask;
+			eye[LEFT]->flags &= mask;
+			eye[RIGHT]->flags &= mask;
+		}
+		case 1001:
+		{
+			int x = o->x + random(-60<<CSF, 60<<CSF);
+			int y = o->y + random(-60<<CSF, 60<<CSF);
+			SmokePuff(x, y);
+			effect(x, y, EFFECT_BOOMFLASH);
+			
+			o->timer++;
+			
+			if ((o->timer % 12) == 0)
+				sound(SND_MISSILE_HIT);
+			
+			if (o->timer > 150)
+			{
+				o->timer = 0;
+				o->state = 1002;
+				
+				starflash.Start(o->x, o->y);
+				sound(SND_EXPLOSION1);
 			}
 		}
 		break;
 		
-		// lightning strikes (evenly-spaced everywhere)
-		case BP_LIGHTNING_STRIKE+2:
+		case 1002:
 		{
-			ANIMATE(e, 4, 4,5);
-			e->timer++;
+			megaquake(40);
 			
-			if (e->timer == 40)
-				SCREEN_FLASH(20);
-				//flashscreen.Start();
-			
-			if (e->timer > 50) {
-				if ((e->timer % 10) == 1) {
-					entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
-					e->timer2 += 4;
-					
-					if (e->timer2 >= 40)
-						e->state = BP_RETURN_TO_GROUND;
-				}
+			if (++o->timer >= 50)
+			{
+				KillObjectsOfType(OBJ_BUTE_ARCHER_RED);
+				KillObjectsOfType(OBJ_BALLOS_SPIKES);
+				
+				body->invisible = true;
+				eye[LEFT]->invisible = true;
+				eye[RIGHT]->invisible = true;
+				o->state = 1003;
 			}
 		}
 		break;
 	}
 }
 
-// intro cinematic sequence
-static void run_intro(Entity *e)
+void ondeath_ballos(Object *o)
 {
-	switch(e->state)
+	// as soon as one of his forms is defeated make him non-killable
+	// until the init for the next form runs and makes him killable again.
+	// intended to fix the extremely rare possibility of killing him completely
+	// after his 1st form instead of moving on to the spiky rotators like he should.
+	o->hp = 999999;
+}
+
+// Handles his eyes.
+//
+// When closed, the eyes are like "overlay" objects that replace the open eyes
+// drawn on the body, and allow animating them seperately from the body.
+//
+// When open, the eyes turn invisible and are used as shoot-points to detect shots
+// hitting the eyes drawn on the body.
+void BallosBoss::run_eye(int index)
+{
+	Object *o = eye[index];
+	
+	switch(o->state)
 	{
-		// idle/talking to player
 		case 0:
 		{
-			// setup
-			e->y -= (6<<CSF);
-			e->dir = 0;
-			e->attack = 0;
-			
-			// ensure copy pfbox first time
-			//e->dirparam = -1;
-			
-			// closed eyes/mouth
-			e->linkedEntity = entity_create(e->x, e->y - (16 << CSF), OBJ_BALLOS_SMILE, 0);
-			e->state = 1;
+			o->flags = (FLAG_SHOOTABLE | FLAG_INVULNERABLE);
+			o->state = 1;
 		}
 		break;
 		
-		// fight begin
-		// he smiles, then enters base attack state
+		// open eyes
+		case EYE_OPENING:
+		{
+			o->frame = 0;
+			o->animtimer = 0;
+			o->state++;
+		}
+		case EYE_OPENING+1:
+		{
+			if (++o->animtimer > 2)
+			{
+				o->animtimer = 0;
+				if (++o->frame >= 3)
+				{
+					o->flags &= ~FLAG_INVULNERABLE;
+					o->invisible = true;
+					o->state++;
+				}
+			}
+		}
+		break;
+		
+		// close eyes
+		case EYE_CLOSING:
+		{
+			o->frame = 3;
+			o->invisible = false;
+			o->flags |= FLAG_INVULNERABLE;
+			
+			o->animtimer = 0;
+			o->state++;
+		}
+		case EYE_CLOSING+1:
+		{
+			if (++o->animtimer > 2)
+			{
+				o->animtimer = 0;
+				if (--o->frame <= 0)
+				{
+					o->frame = 0;
+					o->state++;
+				}
+			}
+		}
+		break;
+		
+		// invisible (the underlying eyes drawn on the body are what are seen)
+		case EYE_INVISIBLE:
+		{
+			o->flags &= ~FLAG_INVULNERABLE;
+			o->invisible = true;
+			o->state++;
+		}
+		break;
+		
+		// explode eyes (final defeat sequence)
+		case EYE_EXPLODING:
+		{
+			o->frame = 4;	// empty eyes
+			o->invisible = false;
+			
+			o->flags &= ~(FLAG_SHOOTABLE | FLAG_INVULNERABLE);
+			o->state++;
+			
+			if (o->dir == LEFT)
+				SmokeXY(o->x - (4<<CSF), o->y, 10, 4, 4);
+			else
+				SmokeXY(o->x + (4<<CSF), o->y, 10, 4, 4);
+		}
+		break;
+	}
+	
+}
+
+void BallosBoss::place_eye(int index)
+{
+	Object *o = eye[index];
+	
+	if (o->dir == LEFT)
+		o->x = main->x - (24 << CSF);
+	else
+		o->x = main->x + (24 << CSF);
+	
+	o->y = main->y - (36 << CSF);
+}
+
+void BallosBoss::SetEyeStates(int newstate)
+{
+	eye[LEFT]->state = newstate;
+	eye[RIGHT]->state = newstate;
+}
+
+void ai_ballos_rotator(Object *o)
+{
+	switch(o->state)
+	{
+		case 0:		// just spawned
+		{
+			o->state = 1;
+			o->timer2 = o->angle * 2;
+			
+			o->timer3 = 0xC0;
+			o->damage = 14;
+		}
+		case 1:		// expanding outward; overshoot a bit
+		{
+			if (o->timer3 < 0x140)
+				o->timer3 += 0x08;
+			else
+				o->state = 2;
+		}
+		break;
+		case 2:		// come back in to correct distance
+		{
+			if (o->timer3 > 0x130)
+				o->timer3 -= 0x04;
+			else
+				o->state = 3;
+		}
+		break;
+		
+		// spinning CCW during form 2 (working like treads)
 		case 10:
 		{
-			e->timer++;
+			o->state = 11;
 			
-			// animate smile/open eyes
-			if (e->timer > 50)
+			o->flags |= FLAG_SHOOTABLE;
+			o->flags &= ~FLAG_INVULNERABLE;
+			o->hp = 1000;
+		}
+		case 11:		// spinning during phase 2, alive
+		{
+			o->timer2 -= 2;
+			if (o->timer2 < 0) o->timer2 += 0x200;
+			
+			if (o->frame != 2)		// still undestroyed?
 			{
-				Entity *smile = e->linkedEntity;
-				if (smile)
-				{
-					if (++smile->animtime > 4)
-					{
-						smile->animtime = 0;
-						smile->frame++;
-						
-						if (smile->frame > 2)
-							smile->state = STATE_DELETE;
-					}
-				}
+				o->frame = (o->shaketime & 2) ? 1 : 0;
 				
-				if (e->timer > 100)
+				if (o->hp <= (1000 - 100))
 				{
-					e->state = BP_FIGHTING_STANCE;
-					e->timer = 150;
+					o->flags &= ~FLAG_SHOOTABLE;
+					o->frame = 2;	// close eye
 					
-					e->eflags |= NPC_SHOOTABLE;
-					e->eflags &= ~NPC_INVINCIBLE;
+					SmokeClouds(o, 32, 16, 16);
+					sound(SND_LITTLE_CRASH);
+					
+					rotators_left--;
 				}
+			}
+			
+			spawn_impact_puffs(o);
+		}
+		break;
+		
+		case 20:	// spinning fast CCW while spikes come up
+		{
+			o->frame = 2;
+			
+			o->timer2 -= 4;
+			if (o->timer2 < 0) o->timer2 += 0x200;
+		}
+		break;
+		
+		case 30:	// beginning form 3
+		{
+			o->state = 31;
+			o->hp = 1000;
+			o->damage = 10;
+			
+			// this dir was set when they were created and
+			// alternates left/right around the circle
+			if (o->dir == LEFT)
+			{
+				o->flags |= FLAG_SHOOTABLE;
+				o->frame = 0;
+			}
+			else
+			{
+				o->flags |= FLAG_INVULNERABLE;
+				o->frame = 2;
+			}
+		}
+		case 31:		// form 3 CW slow spin
+		{
+			// come in closer to main object
+			if (o->timer3 > 0x100)
+				o->timer3--;
+			
+			// spin CW
+			if (++o->timer2 > 0x200)
+				o->timer2 -= 0x200;
+			
+			if (o->flags & FLAG_SHOOTABLE)
+			{
+				o->frame = (o->shaketime & 2) ? 1 : 0;
+				
+				if (o->hp < (1000 - 100))
+				{
+					o->xinertia = 0;
+					o->yinertia = 0;
+					
+					o->flags &= ~(FLAG_SHOOTABLE | FLAG_IGNORE_SOLID);
+					SmokeClouds(o, 32, 16, 16);
+					sound(SND_LITTLE_CRASH);
+					
+					o->frame = 2;
+					o->state = 40;
+					o->damage = 5;
+					
+					// blow up immediately if Ballos is defeated
+					o->timer2 = 0;
+				}
+			}
+		}
+		break;
+		
+		case 40:	// destroyed during phase 3, bouncing
+		{
+			o->yinertia += 0x20;
+			LIMITY(0x5ff);
+			
+			if (o->blockl) o->xinertia = 0x100;
+			if (o->blockr) o->xinertia = -0x100;
+			
+			if (o->blockd && o->yinertia >= 0)
+			{
+				// first time they hit they head toward player, after that
+				// they keep going in same direction until hit wall
+				if (o->xinertia == 0)
+					o->xinertia = (o->CenterX() < player->CenterX()) ? 0x100 : -0x100;
+				
+				o->yinertia = -0x800;
+				sound(SND_QUAKE);
+			}
+		}
+		break;
+		
+		case 1000:		// Ballos was defeated
+		{
+			o->state = 1001;
+			o->xinertia = 0;
+			o->yinertia = 0;
+			
+			o->frame = 2;
+			o->flags &= ~(FLAG_SHOOTABLE | FLAG_IGNORE_SOLID);
+			o->damage = 0;
+			
+			o->timer2 /= 4;
+		}
+		case 1001:
+		{
+			// explode one by one going clockwise
+			if (o->timer2 <= 0)
+			{
+				SmokeClouds(o, 32, 16, 16);
+				sound(SND_LITTLE_CRASH);
+				effect(o->CenterX(), o->CenterY(), EFFECT_BOOMFLASH);
+				o->Delete();
+			}
+			else
+			{
+				o->timer2--;
+				o->frame = (o->timer2 & 2) ? 1 : 0;
 			}
 		}
 		break;
 	}
 }
 
-
-// defeat sequence
-// he flies away, then the script triggers the next form
-static void run_defeated(Entity *e)
+void aftermove_ballos_rotator(Object *o)
 {
-	switch(e->state)
+	if (o->state < 40)
 	{
-		// defeated (script triggered; constant value 1000)
-		case BP_DEFEATED:
-		{
-			e->state++;
-			e->timer = 0;
-			e->frame = 10;
-			
-			e->eflags &= ~NPC_SHOOTABLE;
-			//effect(e->x, e->y, EFFECT_BOOMFLASH);
-			//SmokeClouds(o, 16, 16, 16);
-			sound_play(SND_BIG_CRASH, 5);
-			
-			e->x_mark = e->x;
-			e->x_speed = 0;
-		}
-		case BP_DEFEATED+1:		// fall to ground, shaking
-		{
-			e->y_speed += 0x20;
-			LIMIT_Y(0x5ff);
-			
-			e->x = e->x_mark;
-			if (++e->timer & 2) e->x += (1 << CSF);
-						   else e->x -= (1 << CSF);
-			
-			if (e->y_speed >= 0 && collide_stage_floor(e))
-			{
-				if (++e->timer > 150)
-				{
-					e->state++;
-					e->timer = 0;
-					e->frame = 3;
-					FACE_PLAYER(e);
-				}
-			}
-		}
-		break;
+		Object *ballos = game.stageboss.object;
+		if (!ballos) return;
 		
-		case BP_DEFEATED+2:		// prepare to jump
-		{
-			if (++e->timer > 30)
-			{
-				e->y_speed = -0xA00;
-				
-				e->state++;
-				e->frame = 8;
-				e->eflags |= NPC_IGNORESOLID;
-			}
-		}
-		break;
+		uint8_t angle = (o->timer2 / 2);
+		int dist = (o->timer3 / 4) << CSF;
 		
-		case BP_DEFEATED+3:		// jumping
-		{
-			ANIMATE(e, 1, 8, 9);
-			e->dir = LEFT;		// up frame
-			
-			if (e->y < 0)
-			{
-				//flashscreen.Start();
-				SCREEN_FLASH(20);
-				sound_play(SND_TELEPORT, 5);
-				
-				e->x_speed = 0;
-				e->y_speed = 0;
-				e->state++;
-			}
-		}
-		break;
+		o->x = ballos->x + (xinertia_from_angle(angle, dist));
+		o->y = ballos->y + (yinertia_from_angle(angle, dist));
 	}
 }
 
-void ai_ballos_priest(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	
-	run_intro(e);
-	run_defeated(e);
-	
-	run_flight(e);
-	run_lightning(e);
-	
-	switch(e->state)
-	{
-		// show "ninja" stance for "timer" ticks,
-		// then prepare to fly horizontally
-		case BP_FIGHTING_STANCE:
-		{
-			e->frame = 1;
-			e->animtime = 0;
-			e->state++;
-			
-			e->attack = DMG_NORMAL;
-			e->savedhp = e->health;
-		}
-		case BP_FIGHTING_STANCE+1:
-		{
-			ANIMATE(e, 10, 1, 2);
-			FACE_PLAYER(e);
-			
-			if (e->timer-- == 0 || (e->savedhp - e->health) > 50)
-			{
-				if (++e->timer3 > 4)
-				{
-					e->state = BP_LIGHTNING_STRIKE;
-					e->timer3 = 0;
-				}
-				else
-				{
-					e->state = BP_PREPARE_FLY_LR;
-					e->timer2 = 0;
-				}
-			}
-		}
-		break;
-		
-		// prepare for flight attack
-		case BP_PREPARE_FLY_LR:
-		case BP_PREPARE_FLY_UD:
-		{
-			e->timer2++;
-			e->state++;
-			
-			e->timer = 0;
-			e->frame = 3;	// fists in
-			e->attack = DMG_NORMAL;
-			
-			// Fly/UD faces player only once, at start
-			FACE_PLAYER(e);
-		}
-		case BP_PREPARE_FLY_LR+1:
-		{
-			FACE_PLAYER(e);
-		}
-		case BP_PREPARE_FLY_UD+1:
-		{
-			// braking, if we came here out of another fly state
-			e->x_speed *= 8; e->x_speed /= 9;
-			e->y_speed *= 8; e->y_speed /= 9;
-			
-			if (++e->timer > 20)
-			{
-				sound_play(SND_FUNNY_EXPLODE, 5);
-				
-				if (e->state == BP_PREPARE_FLY_LR+1)
-				{
-					e->state = BP_FLY_LR;		// flying left/right
-				}
-				else if (player.y < (e->y + (12 << CSF)))
-				{
-					e->state = BP_FLY_UP;		// flying up
-				}
-				else
-				{
-					e->state = BP_FLY_DOWN;		// flying down
-				}
-			}
-		}
-		break;
-	}
-	
-	e->x = e->x_next;
-	e->y = e->y_next;
-	
-	// his bounding box is in a slightly different place on L/R frames
-	//if (e->dirparam != e->dir)
-	//{
-	//	sprites[e->sprite].bbox = sprites[e->sprite].frame[0].dir[e->dir].pf_bbox;
-	//	e->dirparam = e->dir;
-	//}
-}
 
-// targeter for lightning strikes
-void ai_ballos_target(Entity *e)
+static void SetRotatorStates(int newstate)
 {
-	switch(e->state)
+	Object *o;
+	FOREACH_OBJECT(o)
 	{
-		case 0:
+		if (o->type == OBJ_BALLOS_ROTATOR)
+			o->state = newstate;
+	}
+}
+
+
+// spawns impact smokeclouds/skulls as the rotators hit the ground/walls
+static void spawn_impact_puffs(Object *o)
+{
+	Object *ballos = game.stageboss.object;
+	
+	#define SHORT		(8<<CSF)
+	#define LONG		(12<<CSF)
+	#define HITANGLE	12
+	static const struct
+	{
+		int wallangle;
+		int xoffs1, xoffs2;
+		int yoffs1, yoffs2;
+	}
+	hitdata[] =
+	{
+		0x180, SHORT, -SHORT, -LONG, -LONG,		// RIGHT on ceiling
+		0x80,  SHORT, -SHORT, LONG, LONG,		// LEFT on floor
+		0x100, -LONG, -LONG, SHORT, -SHORT,		// UP left wall
+		0x00,  LONG, LONG,   SHORT, -SHORT		// DOWN right wall
+	};
+	
+	int bd = ballos->dirparam;
+	if (o->timer2 == hitdata[bd].wallangle + HITANGLE)
+	{
+		make_puff(o->x + hitdata[bd].xoffs1, o->y + hitdata[bd].yoffs1, bd);
+		make_puff(o->x + hitdata[bd].xoffs2, o->y + hitdata[bd].yoffs2, bd);
+		sound(SND_QUAKE);
+		
+		if (bd == RIGHT)		// on ceiling
 		{
-			// position to shoot lightning at passed as x,y
-			e->x_mark = e->x - (8 << CSF); //((sprites[SPR_LIGHTNING].w / 2) << CSF);
-			e->y_mark = e->y;
-			
-			// adjust our Y coordinate to match player's
-			e->y = player.y;
-			
-			sound_play(SND_CHARGE_GUN, 5);
-			e->state = 1;
+			CreateObject(o->x - SHORT, o->y - LONG, OBJ_BALLOS_SKULL);
 		}
-		case 1:
+	}
+}
+
+static void make_puff(int x, int y, int bd)
+{
+	Object *o = SmokePuff(x, y);
+	
+	// make sure the smoke puff is traveling away from floor/wall
+	switch(bd)
+	{
+		case LEFT:	o->yinertia = -abs(o->yinertia); break;
+		case UP:	o->xinertia = abs(o->xinertia); break;
+		case RIGHT: o->yinertia = abs(o->yinertia); break;
+		case DOWN:	o->xinertia = -abs(o->xinertia); break;
+	}
+}
+
+void ai_ballos_platform(Object *o)
+{
+	Object *ballos = game.stageboss.object;
+	if (!ballos) return;
+	
+	if (ballos->state >= 1000)		// defeated
+	{
+		if (o->state < 1000)
+			o->state = 1000;
+	}
+	
+	switch(o->state)
+	{
+		case 0:		// just spawned
 		{
-			ANIMATE(e, 4, 0,1);
-			e->timer++;
+			o->timer2 = (o->dirparam * 4);
+			o->timer3 = 0xC0;
+			o->state = 1;
+		}
+		case 1:		// expanding outward
+		{
+			if (o->timer3 < 0x1C0)
+				o->timer3 += 8;
+			else
+				o->state = 2;
+		}
+		break;
+		
+		// running - the direction/speed is set by the global variable,
+		// controlled by Ballos.
+		case 2:
+		{
+			o->timer2 += platform_speed;
+			if (o->timer2 < 0) o->timer2 += 0x400;
+			if (o->timer2 >= 0x400) o->timer2 -= 0x400;
+		}
+		break;
+		
+		case 1000:	// ballos defeated!
+		{
+			o->state = 1001;
+			o->xinertia = 0;
+			o->yinertia = 0;
+			o->flags &= ~FLAG_SOLID_BRICK;
+		}
+		case 1001:
+		{
+			o->yinertia += 0x40;
 			
-			if (e->timer == 20 && !e->dir)
-			{	// lightning attack
-				// setting lightning dir=left: tells it do not flash screen
-				entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, 0);
-			}
-			
-			if (e->timer > 40)
-				e->state = STATE_DELETE;
+			if (o->Top() > (map.ysize * TILE_H) << CSF)
+				o->Delete();
 		}
 		break;
 	}
 	
-}
-
-
-// white sparky thing that moves along floor throwing out bones,
-// spawned he hits the ground.
-// similar to the red smoke-spawning ones from Undead Core.
-void ai_ballos_bone_spawner(Entity *e) {
-	e->x += e->x_speed;
+	if (o->state >= 1000)
+		return;
 	
-	switch(e->state)
+	// let player jump up through platforms, but be solid when he is standing on them
+	if (player->yinertia < 0 || player->CenterY() > o->Top())
 	{
-		case 0:
-		{
-			sound_play(SND_MISSILE_HIT, 5);
-			e->state = 1;
-			
-			MOVE_X(0x400);
-		}
+		o->flags &= ~FLAG_SOLID_BRICK;
+	}
+	else
+	{
+		o->flags |= FLAG_SOLID_BRICK;
+	}
+	
+	// spin
+	uint8_t angle = o->timer2 / 4;
+	int xoff, yoff;
+	
+	xoff = xinertia_from_angle(angle, o->timer3 << CSF);
+	yoff = yinertia_from_angle(angle, o->timer3 << CSF);
+	
+	o->xmark = (xoff / 4) + ballos->x;
+	o->ymark = ((yoff / 4) + (16 << CSF)) + ballos->y;
+	
+	switch(abs(platform_speed))
+	{
 		case 1:
-		{
-			ANIMATE(e, 4, 0,1,2);
-			e->timer++;
-			
-			if ((e->timer % 6) == 1) {
-				int16_t xi = 4 + ((random() % 12) << (CSF-3));
-				
-				if (!e->dir)
-					xi = -xi;
-				
-				Entity *bone = entity_create(e->x, e->y, OBJ_BALLOS_BONE, 0);
-				bone->x_speed = xi;
-				bone->y_speed = -0x400;
-				sound_play(SND_BLOCK_DESTROY, 5);
+			if ((o->timer2 % 4) == 0)
+			{
+				o->speed = (o->ymark - o->y) / 4;
 			}
-			
-			if (blk(e->x, 0, e->y, -2) == 0x41) {
-				e->state = STATE_DELETE;
+		break;
+		
+		case 2:
+			if ((o->timer2 & 2) == 0)
+			{
+				o->speed = (o->ymark - o->y) / 2;
 			}
-		}
+		break;
+		
+		default:
+			o->speed = (o->ymark - o->y);
 		break;
 	}
 	
+	o->xinertia = (o->xmark - o->x);
+	o->yinertia = o->speed;
 }
 
-
-// bones emitted by bone spawner
-void ai_ballos_bone(Entity *e) {
-	e->x += e->x_speed;
-	e->y += e->y_speed;
+bool BallosBoss::passed_xcoord(bool ltgt, int xcoord, bool reset)
+{
+	int next_x = main->x + main->xinertia;
+	bool result;
 	
-	ANIMATE(e, 3, 0, 2);
+	if (ltgt == LESS_THAN)
+		result = (next_x <= xcoord);
+	else
+		result = (next_x >= xcoord);
 	
-	if (e->y_speed >= 0 && blk(e->x, 0, e->y, 6) == 0x41) {
-		if (e->state == 0) {
-			e->y_speed = -0x200;
-			e->state = 1;
-		} else {
-			//effect(e->x, e->y, EFFECT_FISHY);
-			e->state = STATE_DELETE;
-		}
+	if (result && reset)
+	{
+		main->x = xcoord;
+		main->xinertia = 0;
 	}
 	
-	e->y_speed += 0x40;
-	LIMIT_Y(0x5ff);
+	return result;
 }
 
+
+bool BallosBoss::passed_ycoord(bool ltgt, int ycoord, bool reset)
+{
+	int next_y = main->y + main->yinertia;
+	bool result;
+	
+	if (ltgt == LESS_THAN)
+		result = (next_y <= ycoord);
+	else
+		result = (next_y >= ycoord);
+	
+	if (result && reset)
+	{
+		main->y = ycoord;
+		main->yinertia = 0;
+	}
+	
+	return result;
+}
+*/
