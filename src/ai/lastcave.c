@@ -1,6 +1,6 @@
 #include "ai_common.h"
 
-void ai_proximity_press_vert(Entity *e) {
+void ai_prox_press_vert(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -59,7 +59,7 @@ void ai_proximity_press_vert(Entity *e) {
 // lava drip spawner in Last Cave (hidden) and used extensively in Final Cave.
 // the id1 tag sets the frequency of the drip, the id2 tag sets an amount to
 // delay the first drip in order to desync a group of drips.
-void ai_lava_drip_spawner(Entity *e) {
+void ai_lava_spawner(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{

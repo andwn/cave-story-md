@@ -668,7 +668,7 @@ void ai_balrogShot(Entity *e) {
 #define STATE_PAUSE				30
 #define STATE_CAUGHT_PLAYER		40
 
-void ai_balrog_boss_missiles(Entity *e) {
+void ai_balrog_boss_msl(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(e->x_speed < 0) collide_stage_leftwall(e);

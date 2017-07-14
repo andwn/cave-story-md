@@ -638,7 +638,7 @@ void ai_balrog_splash(Entity *e) {
 // this object is used in a few places, such as during the Red Demon fight (last cave),
 // and during some of the end sequences. It seems to be primarily involved with providing
 // "extra" map scrolling modes. Generally you'll <FON on it, then set the mode you desire.
-void ai_scroll_controller(Entity *e) {
+void ai_scroll_ctrl(Entity *e) {
 	switch(e->state) {
 		// stay above player's head. This is used during the "mad run" Balcony2 stage;
 		// you'll notice there is not normal scrolling during this part.

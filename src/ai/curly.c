@@ -4,7 +4,7 @@
 #define CURLY_WALK				3
 #define CURLY_WALKING			4
 
-void onspawn_curly_collapsed(Entity *e) {
+void onspawn_curly_down(Entity *e) {
 	e->state = 32;
 	e->y += 8 << CSF;
 }

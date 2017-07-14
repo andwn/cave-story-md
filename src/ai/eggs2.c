@@ -80,7 +80,7 @@ void ai_dragon_zombie(Entity *e) {
 	}
 }
 
-void ai_falling_spike_small(Entity *e) {
+void ai_fallingspike_sm(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -128,7 +128,7 @@ void ai_falling_spike_small(Entity *e) {
 }
 
 
-void ai_falling_spike_large(Entity *e) {
+void ai_fallingspike_lg(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -219,7 +219,7 @@ void ai_falling_spike_large(Entity *e) {
 	}
 }
 
-void ai_counter_bomb(Entity *e) {
+void ai_counterbomb(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
@@ -302,7 +302,7 @@ void ai_counter_bomb(Entity *e) {
 	}
 }
 
-void ai_counter_bomb_number(Entity *e) {
+void ai_counterbomb_num(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{

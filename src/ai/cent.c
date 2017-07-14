@@ -658,7 +658,7 @@ void ai_npc_itoh(Entity *e) {
 	e->y = e->y_next;
 }
 
-void ai_kanpachi_standing(Entity *e) {
+void ai_kanpachi_stand(Entity *e) {
 	e->dir = 1;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -723,7 +723,7 @@ void ai_npc_momorin(Entity *e) {
 	}
 }
 
-void ai_proximity_press_hoz(Entity *e) {
+void ai_prox_press_hoz(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{

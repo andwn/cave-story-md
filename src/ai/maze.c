@@ -402,7 +402,7 @@ void ai_gaudiFlying(Entity *e) {
 	e->y += e->y_speed;
 }
 
-void ai_gaudiArmored(Entity *e) {
+void ai_gaudiArmor(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
 		e->type = OBJ_GAUDI_DYING;
 		e->attack = 0;
@@ -522,7 +522,7 @@ void ai_gaudiArmored(Entity *e) {
 	LIMIT_Y(SPEED(0x5ff));
 }
 
-void ai_gaudiArmoredShot(Entity *e) {
+void ai_gaudiArmorShot(Entity *e) {
 	ANIMATE(e, 4, 0,1,2);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -687,7 +687,7 @@ void ai_pooh_black(Entity *e) {
 }
 
 
-void ai_pooh_black_bubble(Entity *e) {
+void ai_poohblk_bubble(Entity *e) {
 	if (e->health < 100 || (e->state && e->y < 0)) {
 		e->state = STATE_DELETE;
 		return;
@@ -711,7 +711,7 @@ void ondeath_pooh_black(Entity *e) {
 	tsc_call_event(e->event);
 }
 
-void ai_pooh_black_dying(Entity *e) {
+void ai_poohblk_dying(Entity *e) {
 	bubble_xmark = e->x;
 	bubble_ymark = -(10000 << CSF);
 

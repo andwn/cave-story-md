@@ -127,7 +127,7 @@ void ai_night_spirit(Entity *e) {
 	LIMIT_Y(SPEED(0x400));
 }
 
-void ai_night_spirit_shot(Entity *e) {
+void ai_night_spirit_sh(Entity *e) {
 	ANIMATE(e, 4, 0,1,2);
 	e->x_speed -= SPEED(0x19);
 	e->x_next = e->x + e->x_speed;

@@ -2,7 +2,7 @@
 
 #define angle	jump_time
 
-void ai_helicopter(Entity *e) {
+void ai_heli(Entity *e) {
 	if(e->dir) { // STOP changing direction!
 		e->dir = 0;
 		e->frame = 1;
@@ -60,7 +60,7 @@ void onspawn_heliblade2(Entity *e) {
 	e->display_box = (bounding_box) { 36, 8, 36, 8 };
 }
 
-void ai_helicopter_blade(Entity *e) {
+void ai_heli_blade(Entity *e) {
 	switch(e->state) {
 		case 0:
 		case 1:
@@ -206,7 +206,7 @@ void ai_igor_balcony(Entity *e) {
 	LIMIT_Y(SPEED(0x5ff));
 }
 
-void ai_falling_block_spawner(Entity *e) {
+void ai_block_spawner(Entity *e) {
 	switch(e->state) {
 		// wait till player leaves "safe zone" at start of Balcony
 		// does nothing in Hell--you enter from the left.

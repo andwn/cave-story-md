@@ -172,7 +172,7 @@ void ai_toroko(Entity *e) {
 }
 
 
-void ai_toroko_teleport_in(Entity *e) {
+void ai_toroko_tele_in(Entity *e) {
 	e->x_next = e->x;
 	e->y_next = e->y + e->y_speed;
 	e->grounded = collide_stage_floor(e);
@@ -595,7 +595,7 @@ void ai_blue_robot(Entity *e) {
 	LIMIT_Y(SPEED(0x5FF));
 }
 
-void ai_kanpachi_fishing(Entity *e) {
+void ai_kanpachi_fish(Entity *e) {
 	if (!e->state) {
 		SNAP_TO_GROUND(e);
 		e->state = 1;

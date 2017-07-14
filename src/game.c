@@ -327,7 +327,9 @@ void draw_itemmenu(uint8_t resetCursor) {
 		}
 	}
 	// Draw item cursor at first index (default selection)
-	if(resetCursor) selectedItem = 0;
+	if(resetCursor) {
+		selectedItem = -6 + currentWeapon;
+	}
 	itemcursor_move(0, selectedItem);
 	tsc_call_event(5000 + playerInventory[selectedItem]);
 	// Make the window plane fully overlap the game
@@ -343,8 +345,21 @@ void draw_itemmenu(uint8_t resetCursor) {
 
 uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
-	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot])) && !tscState) {
+	// Pressing C over a weapon will too, and switch to that weapon
+	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot]) ||
+		(selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) && !tscState) {
 		VDP_setEnable(FALSE);
+		// Change weapon
+		if((selectedItem < 0 && joy_pressed(btn[cfg_btn_jump])) &&
+				playerWeapon[selectedItem + 6].type > 0) { // Weapon
+			currentWeapon = selectedItem + 6;
+			sound_play(SND_SWITCH_WEAPON, 5);
+			if(weapon_info[playerWeapon[currentWeapon].type].sprite) {
+				TILES_QUEUE(
+					SPR_TILES(weapon_info[playerWeapon[currentWeapon].type].sprite,0,0),
+					TILE_WEAPONINDEX,6);
+			}
+		}
 		// Fix HUD since we clobbered it
 		hud_show();
 		hud_force_redraw();
@@ -391,14 +406,6 @@ uint8_t update_pause() {
 			if(selectedItem >= 0) { // Item
 				if(playerInventory[selectedItem] > 0) {
 					tsc_call_event(6000 + playerInventory[selectedItem]);
-				}
-			} else if(playerWeapon[selectedItem + 6].type > 0) { // Weapon
-				currentWeapon = selectedItem + 6;
-				sound_play(SND_SWITCH_WEAPON, 5);
-				if(weapon_info[playerWeapon[currentWeapon].type].sprite) {
-					TILES_QUEUE(
-						SPR_TILES(weapon_info[playerWeapon[currentWeapon].type].sprite,0,0),
-						TILE_WEAPONINDEX,6);
 				}
 			}
 		} else if(joy_pressed(BUTTON_LEFT)) {
