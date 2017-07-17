@@ -390,79 +390,65 @@ void player_update_movement() {
 
 void player_update_walk() {
 	uint16_t acc;
-	//uint16_t dec;
 	uint16_t fric;
-	uint16_t max_speed = SPEED(0x32C);
+	uint16_t max_speed = SPEED(810);
 	if(player.grounded) {
-		acc = SPEED(0x55);
-		//dec = SPEED(0x55);
-		fric = SPEED(0x33);
+		acc = SPEED(85);
+		fric = SPEED(51);
 	} else {
-		acc = SPEED(0x20);
-		//dec = SPEED(0x20);
-		fric = SPEED(0x20);
+		acc = SPEED(32);
+		fric = 0;
 	}
+	// 2 kinds of water, actual water blocks & background water in Core
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
 			(stageBackgroundType == 4 && water_entity && player.y > water_entity->y)) {
 		player.underwater = TRUE;
+		// Half everything, maybe inaccurate?
 		acc >>= 1;
 		max_speed >>= 1;
 		fric >>= 1;
 	} else {
 		player.underwater = FALSE;
 	}
-	// Player maintains fan/stream boosted speed in the air, and will slow down on the ground
+	// Stop player from moving faster if they exceed max speed
 	if(joy_down(BUTTON_LEFT)) {
-		if(player.x_speed > -max_speed) player.x_speed -= acc;
-		//else if(player.grounded) player.x_speed += dec;
-		//if(player.x_speed < -max_speed) {
-		//	player.x_speed = min(player.x_speed + dec, -max_speed);
-		//}
+		if(player.x_speed >= -max_speed) player.x_speed -= acc;
 	}
 	if(joy_down(BUTTON_RIGHT)) {
-		if(player.x_speed < max_speed) player.x_speed += acc;
-		//else if(player.grounded) player.x_speed -= dec;
-		//player.x_speed += acc;
-		//if(player.x_speed > max_speed) player.x_speed = max(player.x_speed - dec, max_speed);
+		if(player.x_speed <= max_speed) player.x_speed += acc;
 	}
+	// But only slow them down on the ground
 	if(player.grounded) {
-		if(player.x_speed < fric && player.x_speed > -fric) player.x_speed = 0;
+		if(abs(player.x_speed) <= fric) player.x_speed = 0;
 		else if(player.x_speed < 0) player.x_speed += fric;
 		else if(player.x_speed > 0) player.x_speed -= fric;
 	}
 }
 
 void player_update_jump() {
-	#ifdef PAL
-	uint16_t jumpSpeed = 	0x500;
-	uint16_t gravity = 		0x50;
-	uint16_t gravityJump = 	0x22;
-	uint16_t maxFallSpeed = 0x5FF;
-	#else
 	uint16_t jumpSpeed = 	SPEED(0x500);
 	uint16_t gravity = 		SPEED(0x50);
 	uint16_t gravityJump = 	SPEED(0x20);
 	uint16_t maxFallSpeed = SPEED(0x5FF);
-	#endif
 	if(player.underwater) {
 		jumpSpeed >>= 1;
 		gravity >>= 1;
 		gravityJump >>= 1;
 		maxFallSpeed >>= 1;
 	}
-	if(player.jump_time > 0) {
-		if(joy_down(btn[cfg_btn_jump])) {
-			player.jump_time--;
-		} else {
-			player.jump_time = 0;
-		}
-	}
-	if(player.jump_time > 0) return;
+	//if(player.jump_time > 0) {
+	//	if(joy_down(btn[cfg_btn_jump])) {
+	//		player.jump_time--;
+	//	} else {
+	//		player.jump_time = 0;
+	//	}
+	//}
+	//if(player.jump_time > 0) return;
 	if(player.grounded) {
 		if(joy_pressed(btn[cfg_btn_jump])) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
-			player.jump_time = TIME(5);
+			//player.jump_time = TIME(5);
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
@@ -479,9 +465,9 @@ void player_update_jump() {
 }
 
 void player_update_float() {
-	uint16_t acc = 		SPEED(0x55);
-	uint16_t fric = 	SPEED(0x33);
-	uint16_t max_speed = SPEED(0x32C);
+	uint16_t acc = 		SPEED(0x100);
+	uint16_t fric = 	SPEED(0x80);
+	uint16_t max_speed = SPEED(0x400);
 	if (joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
 		if (player.x_speed < -max_speed) player.x_speed = -max_speed;
@@ -540,8 +526,8 @@ void player_update_interaction() {
 			}
 			e = e->next;
 		}
-		// TODO: Question mark above head
-		
+		// Question mark above head
+		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 8);
 	}
 }
 

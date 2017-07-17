@@ -123,6 +123,18 @@ void effects_update() {
 				sprite_add(effMisc[i].sprite);
 			}
 			break;
+			case EFF_QMARK:
+			{
+				if(effMisc[i].ttl > TIME(20) && (effMisc[i].ttl & 3) == 0) {
+					effMisc[i].sprite.x--;
+				}
+				effMisc[i].ttl--;
+				sprite_pos(effMisc[i].sprite,
+					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_add(effMisc[i].sprite);
+			}
+			break;
 		}
 	}
 }
@@ -210,8 +222,17 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,12)
 				};
-			};
+			}
+			break;
+			case EFF_QMARK:
+			{
+				effMisc[i].ttl = TIME(80);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_QMARKINDEX)
+				};
+			} 
+			break;
 		}
-		break;
 	}
 }

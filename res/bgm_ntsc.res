@@ -33,8 +33,10 @@ XGM BGM_Plant		"bgm/plant.vgm"			0
 XGM BGM_Pulse		"bgm/pulse.vgm"			0
 XGM BGM_Quiet		"bgm/quiet.vgm"			0
 XGM BGM_Run			"bgm/run.vgm"			0
+XGM BGM_RunningHell	"bgm/running_hell.vgm"	0
 XGM BGM_Safety		"bgm/safety.vgm"		0
 XGM BGM_Scorching	"bgm/scorching.vgm"		0
+XGM BGM_SealChamber	"bgm/seal_chamber.vgm"	0
 XGM BGM_Tyrant		"bgm/tyrant.vgm"		0
 XGM BGM_Waterway	"bgm/waterway.vgm"		0
 XGM BGM_WayBackHome	"bgm/credits.vgm"		0

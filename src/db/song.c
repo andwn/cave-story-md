@@ -45,10 +45,10 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_WayBackHome, 	"The Way Back Home" },
 	{ BGM_Zombie, 		"Zombie" },
 	{ BGM_BreakDown, 	"Break Down" },
-	{ BGM_Balcony, 		"Running Hell" },
+	{ BGM_RunningHell, 	"Running Hell" },
 	{ BGM_Jenka2, 		"Jenka 2" },
 	{ BGM_Waterway, 	"Living Waterway" },
-	{ BGM_Balcony, 		"Seal Chamber" },
+	{ BGM_SealChamber, 	"Seal Chamber" },
 	{ BGM_Balcony, 		"Toroko's Theme" },
 	{ BGM_Balcony, 		"White Stone Wall" },
 };
