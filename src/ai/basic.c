@@ -53,19 +53,23 @@ void onspawn_spike(Entity *e) {
 		return;
 	}
 	// Shrink hitbox slightly -- test this in First Cave
-	// There are hidden spikes in the wall near the gunsmith room
-	e->hit_box.left -= 2;
-	e->hit_box.top -= 2;
-	e->hit_box.right -= 2;
-	e->hit_box.bottom -= 2;
+	// Walk left over the first spike and it should not kill you
+	e->hit_box.left = 2;
+	e->hit_box.top = 2;
+	e->hit_box.right = 2;
+	e->hit_box.bottom = 2;
 	
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
+		//e->hit_box.top -= 3;
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
+		//e->hit_box.bottom -= 3;
 		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
+		//e->hit_box.left -= 3;
 		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
+		//e->hit_box.right -= 3;
 		e->frame = 1;
 		e->dir = 1;
 	}

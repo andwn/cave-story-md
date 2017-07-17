@@ -90,6 +90,11 @@ void game_main(uint8_t load) {
 				VDP_setEnable(TRUE);
 				do_map();
 				VDP_setEnable(FALSE);
+				hud_force_redraw();
+				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+8,1,1);
+				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+9,1,1);
+				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+12,1,1);
+				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+13,1,1);
 				sheets_load_stage(stageID, TRUE, FALSE);
 				player_draw();
 				entities_draw();
