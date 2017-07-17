@@ -750,7 +750,8 @@ void ai_lightning(Entity *e) {
 void onspawn_lvlupdn(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->timer = TIME(100);
-	e->y_speed = -0x200;
+	e->y_speed = -0x300;
+	e->display_box.left = 28;
 }
 
 void ai_lvlupdn(Entity *e) {

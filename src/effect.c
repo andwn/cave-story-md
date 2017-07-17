@@ -125,8 +125,8 @@ void effects_update() {
 			break;
 			case EFF_QMARK:
 			{
-				if(effMisc[i].ttl > TIME(20) && (effMisc[i].ttl & 3) == 0) {
-					effMisc[i].sprite.x--;
+				if(effMisc[i].ttl > TIME(60) && (effMisc[i].ttl & 3) == 0) {
+					effMisc[i].y--;
 				}
 				effMisc[i].ttl--;
 				sprite_pos(effMisc[i].sprite,
@@ -234,5 +234,6 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			} 
 			break;
 		}
+		break;
 	}
 }

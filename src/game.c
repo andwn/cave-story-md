@@ -175,6 +175,7 @@ TryAgainNoSave:
 	}
 	
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
+	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0,0);
 	// Load up the main palettes
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
