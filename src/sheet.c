@@ -400,12 +400,16 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	// Conveniently the palette indeces for Balcony and Hell blocks are the same
 			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
-			// Bute
+			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 18,3,2, 
+					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 
+					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15, 0,16, 0,17);
 		} break;
 		case 0x52: // Sacred Ground B3
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 			SHEET_ADD(SHEET_PRESS, &SPR_Press, 3,2,3, 0,0, 0,1, 0,2);
-			// Bute
+			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 18,3,2, 
+					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 
+					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15, 0,16, 0,17);
 			// Mesa
 			// Rolling
 			// Delete
