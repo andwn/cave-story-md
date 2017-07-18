@@ -378,6 +378,17 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_CRYSTAL, &SPR_RedCrystal, 2,1,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_REDDOT, &SPR_RedDot, 2,1,1, 0,0, 0,1);
 		} break;
+		case 0x45: // Little House
+		{	// Make sure both Blade and Nemesis sheets are loaded
+			if(player_has_weapon(WEAPON_BLADE)) {
+				Weapon w = (Weapon) { .type = WEAPON_NEMESIS, .level = 1 };
+				sheets_load_weapon(&w);
+			}
+			if(player_has_weapon(WEAPON_NEMESIS)) {
+				Weapon w = (Weapon) { .type = WEAPON_BLADE, .level = 1 };
+				sheets_load_weapon(&w);
+			}
+		} break;
 		case 0x46: // Balcony 2
 		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);

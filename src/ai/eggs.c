@@ -33,9 +33,7 @@ void ai_behemoth(Entity *e) {
 					e->attack = 1;
 					MOVE_X(SPEED(0x100));
 				}
-			} //else { // Shake
-			//	e->x += (e->timer & 1) ? 0x200 : -0x200;
-			//}
+			}
 		}
 		break;
 		case 2: // Charging
@@ -106,8 +104,8 @@ void ai_beetleFollow(Entity *e) {
 	ANIMATE(e, 4, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
-	e->x_speed += e->dir ? 7 : -7;
-	if(abs(e->x_speed) > SPEED(0x400)) e->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
+	e->x_speed += e->dir ? SPEED(12) : -SPEED(12);
+	if(abs(e->x_speed) > SPEED(0x380)) e->x_speed = e->dir ? SPEED(0x380) : -SPEED(0x380);
 	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -4 : 4;
 	e->x += e->x_speed;
 	e->y += e->y_speed;

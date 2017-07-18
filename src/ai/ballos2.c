@@ -1,4 +1,5 @@
 #include "ai_common.h"
+extern uint8_t windowOpen;
 
 #define savedhp		id
 #define timer3		jump_time
@@ -669,49 +670,43 @@ void ai_ballos_bone(Entity *e) {
 	e->y_speed += 0x40;
 	LIMIT_Y(0x5ff);
 }
-/*
-void ai_ballos_skull(Entity *e)
-{
-	ANIMATE(8, 0, 3);
+
+void ai_ballos_skull(Entity *e) {
+	ANIMATE(e, 8, 0,1,2,3);
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			e->state = 100;
-			e->frame = random(0, 16) & 3;
+			e->frame = random() & 3;
 		}
 		case 100:
 		{
 			e->y_speed += 0x40;
 			LIMIT_Y(0x700);
 			
-			if (e->timer++ & 2)
-			{
-				(SmokePuff(e->x, e->y))->PushBehind(o);
-			}
+			e->timer++;
+			//if (e->timer & 2) {
+			//	(SmokePuff(e->x, e->y))->PushBehind(o);
+			//}
 			
-			if (e->y > 0x10000)
-			{
+			if (e->y > 0x10000) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				
-				if (e->blockd)
-				{
+				if (blk(e->x, 0, e->y, 7) == 0x41) {
 					e->y_speed = -0x200;
 					e->state = 110;
 					e->eflags |= NPC_IGNORESOLID;
 					
-					quake(10, SND_BLOCK_DESTROY);
+					//quake(10, SND_BLOCK_DESTROY);
 					
-					for(int i=0;i<4;i++)
-					{
-						Entity *s = SmokePuff(e->x + random(-12<<CSF, 12<<CSF), \
-											  e->y + 0x2000);
-						
-						s->x_speed = random(-0x155, 0x155);
-						s->y_speed = random(-0x600, 0);
-						s->PushBehind(o);
-					}
+					//for(int i=0;i<4;i++) {
+					//	Entity *s = SmokePuff(e->x + random(-12<<CSF, 12<<CSF), e->y + 0x2000);
+					//	
+					//	s->x_speed = random(-0x155, 0x155);
+					//	s->y_speed = random(-0x600, 0);
+					//	s->PushBehind(o);
+					//}
 				}
 			}
 		}
@@ -721,8 +716,7 @@ void ai_ballos_skull(Entity *e)
 		{
 			e->y_speed += 0x40;
 			
-			if (e->Top() >= (map.ysize * TILE_H) << CSF)
-			{
+			if (e->y >= block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -730,42 +724,35 @@ void ai_ballos_skull(Entity *e)
 	}
 }
 
-void ai_ballos_spikes(Entity *e)
-{
-	switch(e->state)
-	{
+void ai_ballos_spikes(Entity *e) {
+	switch(e->state) {
 		case 0:
 		{
-			if (++e->timer < 128)
-			{
-				e->y -= 0x80;
+			if (++e->timer < TIME(128)) {
+				e->y -= SPEED(0x80);
 				e->frame = (e->timer & 2) ? 0 : 1;
-			}
-			else
-			{
+			} else {
 				e->state = 1;
-				e->damage = 2;
+				e->attack = 2;
 			}
 		}
 		break;
 	}
 }
 
-void ai_green_devil_spawner(Entity *e)
-{
-	switch(e->state)
-	{
+void ai_green_devil_spawner(Entity *e) {
+	switch(e->state) {
 		case 0:
 		{
-			e->timer = random(0, 40);
+			e->timer = random() % TIME(40);
 			e->state = 1;
 		}
 		case 1:
 		{
-			if (--e->timer < 0)
-			{
-				Entity *dv = CreateEntity(e->x, e->y, OBJ_GREEN_DEVIL, 0, 0, e->dir);
-				dv->x_speed = random(-16<<CSF, 16<<CSF);
+			if (e->timer-- == 0) {
+				Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
+				dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
+				dv->dir = e->dir;
 				
 				e->state = 0;
 			}
@@ -775,35 +762,28 @@ void ai_green_devil_spawner(Entity *e)
 	
 }
 
-void ai_green_devil(Entity *e)
-{
-	switch(e->state)
-	{
+void ai_green_devil(Entity *e) {
+	e->nflags ^= NPC_SHOOTABLE;
+	switch(e->state) {
 		case 0:
 		{
-			e->eflags |= NPC_SHOOTABLE;
 			e->y_mark = e->y;
-			e->y_speed = random(-5<<CSF, 5<<CSF);
-			e->damage = 3;
+			e->y_speed = (random() % (10<<CSF)) - (5<<CSF);
+			e->attack = 3;
 			e->state = 1;
 		}
 		case 1:
 		{
-			ANIMATE(2, 0, 1);
+			ANIMATE(e, 4, 0,1);
 			e->y_speed += (e->y < e->y_mark) ? 0x80 : -0x80;
 			
-			XACCEL(0x20);
+			ACCEL_X(0x20);
 			LIMIT_X(0x400);
 			
-			if (e->dir == LEFT)
-			{
-				if (e->x < -e->Width())
-					e->state = STATE_DELETE;
-			}
-			else
-			{
-				if (e->x > ((map.xsize * TILE_W) << CSF) + e->Width())
-					e->state = STATE_DELETE;
+			if (!e->dir) {
+				if (e->x < 0) e->state = STATE_DELETE;
+			} else {
+				if (e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
 			}
 		}
 		break;
@@ -811,63 +791,55 @@ void ai_green_devil(Entity *e)
 	
 }
 
-void ai_bute_sword_red(Entity *e)
-{
-	switch(e->state)
-	{
+void ai_bute_sword_red(Entity *e) {
+	switch(e->state) {
 		case 0:
 		{
 			e->state = 1;
-			e->sprite = SPR_BUTE_SWORD_RED_FALLING;
-			e->MoveAtDir(e->dir, 0x600);
+			//e->sprite = SPR_BUTE_SWORD_RED_FALLING;
+			//e->MoveAtDir(e->dir, 0x600);
 			e->dir = 0;
 		}
 		case 1:
 		{
-			ANIMATE(2, 0, 3);
+			ANIMATE(e, 4, 0,1,2,3);
 			
 			if (++e->timer == 8)
 				e->eflags &= ~NPC_IGNORESOLID;
 			
-			if (e->timer >= 16)
-			{
+			if (e->timer >= 16) {
 				e->state = 10;
-				e->sprite = SPR_BUTE_SWORD_RED;
+				//e->sprite = SPR_BUTE_SWORD_RED;
 				e->frame = 0;
 				
 				e->eflags |= NPC_SHOOTABLE;
-				e->damage = 5;
+				e->attack = 5;
 			}
 		}
 		break;
 		
 		case 10:
 		{
-			ANIMATE(1, 0, 1);
-			FACEPLAYER;
+			ANIMATE(e, 4, 0,1);
+			FACE_PLAYER(e);
 			
 			// when player is below them, they come towards him,
 			// when player is above, they sweep away.
-			if (player.y > (e->y + (24 << CSF)))
-			{
-				XACCEL(0x10);
-			}
-			else
-			{
-				XACCEL(-0x10);
+			if (player.y > (e->y + (24 << CSF))) {
+				ACCEL_X(0x10);
+			} else {
+				ACCEL_X(-0x10);
 			}
 			
 			e->y_speed += (e->y <= player.y) ? 0x10 : -0x10;
 			
-			if ((e->blockl && e->x_speed < 0) || \
-				(e->blockr && e->x_speed > 0))
-			{
+			if ((e->x_speed < 0 && blk(e->x, -7, e->y, 0) == 0x41) || 
+				(e->x_speed > 0 && blk(e->x,  7, e->y, 0) == 0x41)) {
 				e->x_speed = -e->x_speed;
 			}
 			
-			if ((e->blocku && e->y_speed <= 0) || \
-				(e->blockd && e->y_speed >= 0))
-			{
+			if ((e->y_speed < 0 && blk(e->x, 0, e->y, -7) == 0x41) || 
+				(e->y_speed > 0 && blk(e->x, 0, e->y,  7) == 0x41)) {
 				e->y_speed = -e->y_speed;
 			}
 			
@@ -878,12 +850,10 @@ void ai_bute_sword_red(Entity *e)
 	}
 }
 
-void ai_bute_archer_red(Entity *e)
-{
+void ai_bute_archer_red(Entity *e) {
 	//DebugCrosshair(e->x, e->y, 0, 255, 255);
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			e->state = 1;
@@ -891,21 +861,19 @@ void ai_bute_archer_red(Entity *e)
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			
-			if (e->dir == LEFT)
+			if (!e->dir)
 				e->x_mark -= (128<<CSF);
 			else
 				e->x_mark += (128<<CSF);
 			
-			e->x_speed = random(-0x400, 0x400);
-			e->y_speed = random(-0x400, 0x400);
+			e->x_speed = (random() % 0x800) - 0x400;
+			e->y_speed = (random() % 0x800) - 0x400;
 		}
 		case 1:		// come on screen
 		{
-			ANIMATE(1, 0, 1);
+			ANIMATE(e, 4, 0,1);
 			
-			if ((e->dir == LEFT && e->x < e->x_mark) || \
-				(e->dir == RIGHT && e->x > e->x_mark))
-			{
+			if ((!e->dir && e->x < e->x_mark) || (e->dir && e->x > e->x_mark)) {
 				e->state = 20;
 			}
 		}
@@ -914,18 +882,16 @@ void ai_bute_archer_red(Entity *e)
 		case 20:	// aiming
 		{
 			e->state = 21;
-			e->timer = random(0, 150);
+			e->timer = random() % TIME(150);
 			
 			e->frame = 2;
 			e->animtime = 0;
 		}
 		case 21:
 		{
-			ANIMATE(2, 2, 3);
+			ANIMATE(e, 4, 2,3);
 			
-			if (++e->timer > 300 || \
-				(pdistlx(112<<CSF) && pdistly(16<<CSF)))
-			{
+			if (++e->timer > 300 || (PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y(16<<CSF))) {
 				e->state = 30;
 			}
 		}
@@ -940,16 +906,15 @@ void ai_bute_archer_red(Entity *e)
 		}
 		case 31:
 		{
-			ANIMATE(1, 3, 4);
+			ANIMATE(e, 4, 3,4);
 			
-			if (++e->timer > 30)
-			{
+			if (++e->timer > 30) {
 				e->state = 40;
 				e->frame = 5;
 				
-				Entity *arrow = CreateEntity(e->x, e->y, OBJ_BUTE_ARROW);
+				Entity *arrow = entity_create(e->x, e->y, OBJ_BUTE_ARROW, 0);
 				arrow->dir = e->dir;
-				arrow->x_speed = (e->dir == RIGHT) ? 0x800 : -0x800;
+				arrow->x_speed = e->dir ? 0x800 : -0x800;
 			}
 		}
 		break;
@@ -962,10 +927,9 @@ void ai_bute_archer_red(Entity *e)
 		}
 		case 41:
 		{
-			ANIMATE(2, 5, 6);
+			ANIMATE(e, 4, 5,6);
 			
-			if (++e->timer > 40)
-			{
+			if (++e->timer > 40) {
 				e->state = 50;
 				e->timer = 0;
 				e->x_speed = 0;
@@ -976,18 +940,16 @@ void ai_bute_archer_red(Entity *e)
 		
 		case 50:	// retreat offscreen
 		{
-			ANIMATE(1, 0, 1);
-			XACCEL(-0x20);
+			ANIMATE(e, 4, 0,1);
+			ACCEL_X(-0x20);
 			
-			if (e->Right() < 0 || e->Left() > ((map.xsize * TILE_W) << CSF))
-				e->state = STATE_DELETE;
+			if (e->x < 0 || e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
 		}
 		break;
 	}
 	
 	// sinusoidal hover around set point
-	if (e->state != 50)
-	{
+	if (e->state != 50) {
 		e->x_speed += (e->x < e->x_mark) ? 0x2A : -0x2A;
 		e->y_speed += (e->y < e->y_mark) ? 0x2A : -0x2A;
 		LIMIT_X(0x400);
@@ -1014,15 +976,11 @@ void ai_bute_archer_red(Entity *e)
 // them collapse onto Balrog before he makes it to the exit. Because there are no triggers
 // in the script and I can't change the script, I had to do a bit of sneaky spying on program
 // state to implement them.
-void ai_wall_collapser(Entity *e)
-{
-int y;
-	
-	switch(e->state)
-	{
+void ai_wall_collapser(Entity *e) {
+	switch(e->state) {
 		case 0:
 		{
-			e->invisible = true;
+			e->hidden = TRUE;
 			e->timer = 0;
 			e->state = 1;
 		}
@@ -1030,35 +988,31 @@ int y;
 		
 		case 10:	// trigger
 		{
-			if (++e->timer > 100)
-			{
+			if (++e->timer > TIME(100)) {
 				e->timer2++;
 				e->timer = 0;
 				
-				int xa = (e->x >> CSF) / TILE_W;
-				int ya = (e->y >> CSF) / TILE_H;
-				for(y=0;y<20;y++)
-				{
+				uint16_t xa = sub_to_block(e->x);
+				uint16_t ya = sub_to_block(e->y);
+				for(uint16_t y=0;y<20;y++) {
 					// pushing the smoke behind all objects prevents it from covering
 					// up the NPC's on the collapse just before takeoff.
-					map_ChangeTileWithSmoke(xa, ya+y, 109, 4, false, lowestobject);
+					stage_replace_block(xa, ya+y, 109);
 				}
 				
 				sound_play(SND_BLOCK_DESTROY, 5);
-				quake(20);
+				camera_shake(20);
 				
-				if (e->dir == LEFT) e->x -= (TILE_W << CSF);
-							   else e->x += (TILE_W << CSF);
+				if (!e->dir) e->x -= (16 << CSF);
+						else e->x += (16 << CSF);
 				
 				// reached the solid tile in the center of the throne.
 				// it isn't supposed to cover this tile until after Curly
 				// says we're gonna get crushed.
-				if (e->timer2 == 6)
-					e->state = 20;
+				if (e->timer2 == TIME(6)) e->state = 20;
 				
 				// balrog is about to take off/rescue you.
-				if (e->timer2 == 9)
-					e->state = 30;
+				if (e->timer2 == TIME(9)) e->state = 30;
 			}
 		}
 		break;
@@ -1067,17 +1021,15 @@ int y;
 		case 20:
 		{
 			// wait for text to come up
-			if (textbox.IsVisible())
-				e->state = 21;
+			if (windowOpen) e->state = 21;
 		}
 		break;
 		case 21:
 		{
 			// wait for text to dismiss, then tile immediately collapses
-			if (!textbox.IsVisible())
-			{
+			if (!windowOpen) {
 				e->state = 10;
-				e->timer = 1000;
+				e->timer = TIME(1000);
 			}
 		}
 		break;
@@ -1087,21 +1039,18 @@ int y;
 		// exact same frame that he breaks the first ceiling tile.
 		case 30:
 		{
-			e->linkedEntity = Entitys::FindByType(OBJ_BALROG_DROP_IN);
-			if (e->linkedEntity)
-				e->state = 31;
+			e->linkedEntity = entity_find_by_type(OBJ_BALROG_DROP_IN);
+			if (e->linkedEntity) e->state = 31;
 		}
 		break;
 		case 31:
 		{
 			//debug("%x", e->linkedEntity->y);
-			if (e->linkedEntity && e->linkedEntity->y <= 0x45800)
-			{
+			if (e->linkedEntity && e->linkedEntity->y <= 0x45800) {
 				e->state = 10;
-				e->timer = 1000;
+				e->timer = TIME(1000);
 			}
 		}
 		break;
 	}
 }
-*/
