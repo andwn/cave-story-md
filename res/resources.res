@@ -833,106 +833,106 @@ BIN PXE_WeedS	"Stage/WeedS.pxe"
 # ----------------------------------------------------------------------------------------------
 
 # Global
-BIN TSC_ArmsItem	"ArmsItem.tsb"
-BIN TSC_Head		"Head.tsb"
-BIN TSC_StageSelect	"StageSelect.tsb"
-BIN TSC_Credits		"credits/credits.tsb" # Actually Stage/0.tsc, but eh
+BIN TSC_ArmsItem	"TSB_en/ArmsItem.tsb"
+BIN TSC_Head		"TSB_en/Head.tsb"
+BIN TSC_StageSelect	"TSB_en/StageSelect.tsb"
+BIN TSC_Credits		"TSB_en/credits.tsb" # Actually Stage/0.tsc, but eh
 
 # Stage Specific
-BIN TSC_Almond	"Stage/Almond.tsb"
-BIN TSC_Ballo1	"Stage/Ballo1.tsb"
-BIN TSC_Ballo2	"Stage/Ballo2.tsb"
-BIN TSC_Barr	"Stage/Barr.tsb"
-BIN TSC_Blcny1	"Stage/Blcny1.tsb"
-BIN TSC_Blcny2	"Stage/Blcny2.tsb"
-BIN TSC_Cave	"Stage/Cave.tsb"
-BIN TSC_Cemet	"Stage/Cemet.tsb"
-BIN TSC_Cent	"Stage/Cent.tsb"
-BIN TSC_CentW	"Stage/CentW.tsb"
-BIN TSC_Chako	"Stage/Chako.tsb"
-BIN TSC_Clock	"Stage/Clock.tsb"
-BIN TSC_Comu	"Stage/Comu.tsb"
-BIN TSC_Cthu	"Stage/Cthu.tsb"
-BIN TSC_Cthu2	"Stage/Cthu2.tsb"
-BIN TSC_Curly	"Stage/Curly.tsb"
-BIN TSC_CurlyS	"Stage/CurlyS.tsb"
-BIN TSC_Dark	"Stage/Dark.tsb"
-BIN TSC_Drain	"Stage/Drain.tsb"
-BIN TSC_e_Blcn	"Stage/e_Blcn.tsb"
-BIN TSC_e_Ceme	"Stage/e_Ceme.tsb"
-BIN TSC_e_Jenk	"Stage/e_Jenk.tsb"
-BIN TSC_e_Labo	"Stage/e_Labo.tsb"
-BIN TSC_e_Malc	"Stage/e_Malc.tsb"
-BIN TSC_e_Maze	"Stage/e_Maze.tsb"
-BIN TSC_e_Sky	"Stage/e_Sky.tsb"
-BIN TSC_EgEnd1	"Stage/EgEnd1.tsb"
-BIN TSC_EgEnd2	"Stage/EgEnd2.tsb"
-BIN TSC_Egg1	"Stage/Egg1.tsb"
-BIN TSC_Egg6	"Stage/Egg6.tsb"
-BIN TSC_EggR	"Stage/EggR.tsb"
-BIN TSC_EggR2	"Stage/EggR2.tsb"
-BIN TSC_Eggs	"Stage/Eggs.tsb"
-BIN TSC_Eggs2	"Stage/Eggs2.tsb"
-BIN TSC_EggX	"Stage/EggX.tsb"
-BIN TSC_EggX2	"Stage/EggX2.tsb"
-BIN TSC_Fall	"Stage/Fall.tsb"
-BIN TSC_Frog	"Stage/Frog.tsb"
-BIN TSC_Gard	"Stage/Gard.tsb"
-BIN TSC_Hell1	"Stage/Hell1.tsb"
-BIN TSC_Hell2	"Stage/Hell2.tsb"
-BIN TSC_Hell3	"Stage/Hell3.tsb"
-BIN TSC_Hell4	"Stage/Hell4.tsb"
-BIN TSC_Hell42	"Stage/Hell42.tsb"
-BIN TSC_Island	"Stage/Island.tsb"
-BIN TSC_Itoh	"Stage/Itoh.tsb"
-BIN TSC_Jail1	"Stage/Jail1.tsb"
-BIN TSC_Jail2	"Stage/Jail2.tsb"
-BIN TSC_Jenka1	"Stage/Jenka1.tsb"
-BIN TSC_Jenka2	"Stage/Jenka2.tsb"
-BIN TSC_Kings	"Stage/Kings.tsb"
-BIN TSC_Little	"Stage/Little.tsb"
-BIN TSC_Lounge	"Stage/Lounge.tsb"
-BIN TSC_Malco	"Stage/Malco.tsb"
-BIN TSC_Mapi	"Stage/Mapi.tsb"
-BIN TSC_MazeA	"Stage/MazeA.tsb"
-BIN TSC_MazeB	"Stage/MazeB.tsb"
-BIN TSC_MazeD	"Stage/MazeD.tsb"
-BIN TSC_MazeH	"Stage/MazeH.tsb"
-BIN TSC_MazeI	"Stage/MazeI.tsb"
-BIN TSC_MazeM	"Stage/MazeM.tsb"
-BIN TSC_MazeO	"Stage/MazeO.tsb"
-BIN TSC_MazeS	"Stage/MazeS.tsb"
-BIN TSC_MazeW	"Stage/MazeW.tsb"
-BIN TSC_MiBox	"Stage/MiBox.tsb"
-BIN TSC_Mimi	"Stage/Mimi.tsb"
-BIN TSC_Momo	"Stage/Momo.tsb"
-BIN TSC_Oside	"Stage/Oside.tsb"
-BIN TSC_Ostep	"Stage/Ostep.tsb"
-BIN TSC_Pens1	"Stage/Pens1.tsb"
-BIN TSC_Pens2	"Stage/Pens2.tsb"
-BIN TSC_Pixel	"Stage/Pixel.tsb"
-BIN TSC_Plant	"Stage/Plant.tsb"
-BIN TSC_Pole	"Stage/Pole.tsb"
-BIN TSC_Pool	"Stage/Pool.tsb"
-BIN TSC_Prefa1	"Stage/Prefa1.tsb"
-BIN TSC_Prefa2	"Stage/Prefa2.tsb"
-BIN TSC_Priso1	"Stage/Priso1.tsb"
-BIN TSC_Priso2	"Stage/Priso2.tsb"
-BIN TSC_Ring1	"Stage/Ring1.tsb"
-BIN TSC_Ring2	"Stage/Ring2.tsb"
-BIN TSC_Ring3	"Stage/Ring3.tsb"
-BIN TSC_River	"Stage/River.tsb"
-BIN TSC_Sand	"Stage/Sand.tsb"
-BIN TSC_SandE	"Stage/SandE.tsb"
-BIN TSC_Santa	"Stage/Santa.tsb"
-BIN TSC_Shelt	"Stage/Shelt.tsb"
-BIN TSC_Start	"Stage/Start.tsb"
-BIN TSC_Statue	"Stage/Statue.tsb"
-BIN TSC_Stream	"Stage/Stream.tsb"
-BIN TSC_Weed	"Stage/Weed.tsb"
-BIN TSC_WeedB	"Stage/WeedB.tsb"
-BIN TSC_WeedD	"Stage/WeedD.tsb"
-BIN TSC_WeedS	"Stage/WeedS.tsb"
+BIN TSC_Almond	"TSB_en/Stage/Almond.tsb"
+BIN TSC_Ballo1	"TSB_en/Stage/Ballo1.tsb"
+BIN TSC_Ballo2	"TSB_en/Stage/Ballo2.tsb"
+BIN TSC_Barr	"TSB_en/Stage/Barr.tsb"
+BIN TSC_Blcny1	"TSB_en/Stage/Blcny1.tsb"
+BIN TSC_Blcny2	"TSB_en/Stage/Blcny2.tsb"
+BIN TSC_Cave	"TSB_en/Stage/Cave.tsb"
+BIN TSC_Cemet	"TSB_en/Stage/Cemet.tsb"
+BIN TSC_Cent	"TSB_en/Stage/Cent.tsb"
+BIN TSC_CentW	"TSB_en/Stage/CentW.tsb"
+BIN TSC_Chako	"TSB_en/Stage/Chako.tsb"
+BIN TSC_Clock	"TSB_en/Stage/Clock.tsb"
+BIN TSC_Comu	"TSB_en/Stage/Comu.tsb"
+BIN TSC_Cthu	"TSB_en/Stage/Cthu.tsb"
+BIN TSC_Cthu2	"TSB_en/Stage/Cthu2.tsb"
+BIN TSC_Curly	"TSB_en/Stage/Curly.tsb"
+BIN TSC_CurlyS	"TSB_en/Stage/CurlyS.tsb"
+BIN TSC_Dark	"TSB_en/Stage/Dark.tsb"
+BIN TSC_Drain	"TSB_en/Stage/Drain.tsb"
+BIN TSC_e_Blcn	"TSB_en/Stage/e_Blcn.tsb"
+BIN TSC_e_Ceme	"TSB_en/Stage/e_Ceme.tsb"
+BIN TSC_e_Jenk	"TSB_en/Stage/e_Jenk.tsb"
+BIN TSC_e_Labo	"TSB_en/Stage/e_Labo.tsb"
+BIN TSC_e_Malc	"TSB_en/Stage/e_Malc.tsb"
+BIN TSC_e_Maze	"TSB_en/Stage/e_Maze.tsb"
+BIN TSC_e_Sky	"TSB_en/Stage/e_Sky.tsb"
+BIN TSC_EgEnd1	"TSB_en/Stage/EgEnd1.tsb"
+BIN TSC_EgEnd2	"TSB_en/Stage/EgEnd2.tsb"
+BIN TSC_Egg1	"TSB_en/Stage/Egg1.tsb"
+BIN TSC_Egg6	"TSB_en/Stage/Egg6.tsb"
+BIN TSC_EggR	"TSB_en/Stage/EggR.tsb"
+BIN TSC_EggR2	"TSB_en/Stage/EggR2.tsb"
+BIN TSC_Eggs	"TSB_en/Stage/Eggs.tsb"
+BIN TSC_Eggs2	"TSB_en/Stage/Eggs2.tsb"
+BIN TSC_EggX	"TSB_en/Stage/EggX.tsb"
+BIN TSC_EggX2	"TSB_en/Stage/EggX2.tsb"
+BIN TSC_Fall	"TSB_en/Stage/Fall.tsb"
+BIN TSC_Frog	"TSB_en/Stage/Frog.tsb"
+BIN TSC_Gard	"TSB_en/Stage/Gard.tsb"
+BIN TSC_Hell1	"TSB_en/Stage/Hell1.tsb"
+BIN TSC_Hell2	"TSB_en/Stage/Hell2.tsb"
+BIN TSC_Hell3	"TSB_en/Stage/Hell3.tsb"
+BIN TSC_Hell4	"TSB_en/Stage/Hell4.tsb"
+BIN TSC_Hell42	"TSB_en/Stage/Hell42.tsb"
+BIN TSC_Island	"TSB_en/Stage/Island.tsb"
+BIN TSC_Itoh	"TSB_en/Stage/Itoh.tsb"
+BIN TSC_Jail1	"TSB_en/Stage/Jail1.tsb"
+BIN TSC_Jail2	"TSB_en/Stage/Jail2.tsb"
+BIN TSC_Jenka1	"TSB_en/Stage/Jenka1.tsb"
+BIN TSC_Jenka2	"TSB_en/Stage/Jenka2.tsb"
+BIN TSC_Kings	"TSB_en/Stage/Kings.tsb"
+BIN TSC_Little	"TSB_en/Stage/Little.tsb"
+BIN TSC_Lounge	"TSB_en/Stage/Lounge.tsb"
+BIN TSC_Malco	"TSB_en/Stage/Malco.tsb"
+BIN TSC_Mapi	"TSB_en/Stage/Mapi.tsb"
+BIN TSC_MazeA	"TSB_en/Stage/MazeA.tsb"
+BIN TSC_MazeB	"TSB_en/Stage/MazeB.tsb"
+BIN TSC_MazeD	"TSB_en/Stage/MazeD.tsb"
+BIN TSC_MazeH	"TSB_en/Stage/MazeH.tsb"
+BIN TSC_MazeI	"TSB_en/Stage/MazeI.tsb"
+BIN TSC_MazeM	"TSB_en/Stage/MazeM.tsb"
+BIN TSC_MazeO	"TSB_en/Stage/MazeO.tsb"
+BIN TSC_MazeS	"TSB_en/Stage/MazeS.tsb"
+BIN TSC_MazeW	"TSB_en/Stage/MazeW.tsb"
+BIN TSC_MiBox	"TSB_en/Stage/MiBox.tsb"
+BIN TSC_Mimi	"TSB_en/Stage/Mimi.tsb"
+BIN TSC_Momo	"TSB_en/Stage/Momo.tsb"
+BIN TSC_Oside	"TSB_en/Stage/Oside.tsb"
+BIN TSC_Ostep	"TSB_en/Stage/Ostep.tsb"
+BIN TSC_Pens1	"TSB_en/Stage/Pens1.tsb"
+BIN TSC_Pens2	"TSB_en/Stage/Pens2.tsb"
+BIN TSC_Pixel	"TSB_en/Stage/Pixel.tsb"
+BIN TSC_Plant	"TSB_en/Stage/Plant.tsb"
+BIN TSC_Pole	"TSB_en/Stage/Pole.tsb"
+BIN TSC_Pool	"TSB_en/Stage/Pool.tsb"
+BIN TSC_Prefa1	"TSB_en/Stage/Prefa1.tsb"
+BIN TSC_Prefa2	"TSB_en/Stage/Prefa2.tsb"
+BIN TSC_Priso1	"TSB_en/Stage/Priso1.tsb"
+BIN TSC_Priso2	"TSB_en/Stage/Priso2.tsb"
+BIN TSC_Ring1	"TSB_en/Stage/Ring1.tsb"
+BIN TSC_Ring2	"TSB_en/Stage/Ring2.tsb"
+BIN TSC_Ring3	"TSB_en/Stage/Ring3.tsb"
+BIN TSC_River	"TSB_en/Stage/River.tsb"
+BIN TSC_Sand	"TSB_en/Stage/Sand.tsb"
+BIN TSC_SandE	"TSB_en/Stage/SandE.tsb"
+BIN TSC_Santa	"TSB_en/Stage/Santa.tsb"
+BIN TSC_Shelt	"TSB_en/Stage/Shelt.tsb"
+BIN TSC_Start	"TSB_en/Stage/Start.tsb"
+BIN TSC_Statue	"TSB_en/Stage/Statue.tsb"
+BIN TSC_Stream	"TSB_en/Stage/Stream.tsb"
+BIN TSC_Weed	"TSB_en/Stage/Weed.tsb"
+BIN TSC_WeedB	"TSB_en/Stage/WeedB.tsb"
+BIN TSC_WeedD	"TSB_en/Stage/WeedD.tsb"
+BIN TSC_WeedS	"TSB_en/Stage/WeedS.tsb"
 
 # ----------------------------------------------------------------------------------------------
 # Scripts (TSC) - Japanese
@@ -1039,6 +1039,50 @@ BIN JTSC_Weed	"TSB_ja/Stage/Weed.tsb"
 BIN JTSC_WeedB	"TSB_ja/Stage/WeedB.tsb"
 BIN JTSC_WeedD	"TSB_ja/Stage/WeedD.tsb"
 BIN JTSC_WeedS	"TSB_ja/Stage/WeedS.tsb"
+
+# ----------------------------------------------------------------------------------------------
+# Music
+# ----------------------------------------------------------------------------------------------
+
+XGM BGM_Access		"bgm/access.vgm"		0
+XGM BGM_Balcony		"bgm/balcony.vgm"		0
+XGM BGM_Balrog		"bgm/balrog.vgm"		0
+XGM BGM_BreakDown	"bgm/breakdown.vgm"		0
+XGM BGM_CaveStory	"bgm/cavestory.vgm"		0
+XGM BGM_Cemetery	"bgm/cemetery.vgm"		0
+XGM BGM_Charge		"bgm/charge.vgm"		0
+XGM BGM_EyesOfFlame	"bgm/eyesofflame.vgm"	0
+XGM BGM_Fanfare1	"bgm/fanfare1.vgm"		0
+XGM BGM_Fanfare2	"bgm/fanfare2.vgm"		0
+XGM BGM_Fanfare3	"bgm/fanfare3.vgm"		0
+XGM BGM_GameOver	"bgm/gameover.vgm"		0
+XGM BGM_Geothermal	"bgm/geothermal.vgm"	0
+XGM BGM_Gestation	"bgm/gestation.vgm"		0
+XGM BGM_Grasstown	"bgm/grasstown.vgm"		0
+XGM BGM_Gravity		"bgm/gravity.vgm"		0
+XGM BGM_HerosEnd	"bgm/herosend.vgm"		0
+XGM BGM_Jenka1		"bgm/jenka1.vgm"		0
+XGM BGM_Jenka2		"bgm/jenka2.vgm"		0
+XGM BGM_LabFight	"bgm/labfight.vgm"		0
+XGM BGM_LastBoss	"bgm/lastboss.vgm"		0
+XGM BGM_LastCave	"bgm/lastcave.vgm"		0
+XGM BGM_Meltdown2	"bgm/meltdown2.vgm"		0
+XGM BGM_Mischievous	"bgm/mischievous.vgm"	0
+XGM BGM_Mimiga		"bgm/mimiga.vgm"		0
+XGM BGM_MoonSong	"bgm/moonsong.vgm"		0
+XGM BGM_Oppression	"bgm/oppression.vgm"	0
+XGM BGM_Plant		"bgm/plant.vgm"			0
+XGM BGM_Pulse		"bgm/pulse.vgm"			0
+XGM BGM_Quiet		"bgm/quiet.vgm"			0
+XGM BGM_Run			"bgm/run.vgm"			0
+XGM BGM_RunningHell	"bgm/running_hell.vgm"	0
+XGM BGM_Safety		"bgm/safety.vgm"		0
+XGM BGM_Scorching	"bgm/scorching.vgm"		0
+XGM BGM_SealChamber	"bgm/seal_chamber.vgm"	0
+XGM BGM_Tyrant		"bgm/tyrant.vgm"		0
+XGM BGM_Waterway	"bgm/waterway.vgm"		0
+XGM BGM_WayBackHome	"bgm/credits.vgm"		0
+XGM BGM_Zombie		"bgm/zombie.vgm"		0
 
 # ----------------------------------------------------------------------------------------------
 # Sound Effects

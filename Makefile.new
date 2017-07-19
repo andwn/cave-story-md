@@ -26,7 +26,7 @@ FLAGSZ80 = -isrc/xgm
 BOOTSS=$(wildcard src/boot/*.s)
 BOOT_RESOURCES=$(BOOTSS:.s=.o)
 
-RESS=res/resources.res res/bgm_ntsc.res
+RESS=res/resources.res
 Z80S=$(wildcard src/xgm/*.s80)
 CS=$(wildcard src/*.c)
 CS+=$(wildcard src/ai/*.c)

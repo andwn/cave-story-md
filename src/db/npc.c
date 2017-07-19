@@ -11,8 +11,8 @@
 
 const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			}, // OBJ_NULL
-	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // Weapon Energy
-	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // Behemoth
+	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
+	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
 	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			},
 	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			},
 	{ NULL,				SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // Critter
@@ -369,9 +369,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	/* 0x150 (336) */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_ikachan_spawner,&ai_null 			}, // Ika-chan Generator
 	{ &SPR_Droll3, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Green Devil
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Green Devil Generator
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Ballos (Boss)
+	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
+	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
@@ -402,7 +402,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Ironh, 		NOSHEET, 		PAL3, 2, &onspawn_ironhead, 	&ai_ironhead, 		&ondeath_ironhead 	}, // Ironhead
 	{ NULL, 			NOSHEET, 		PAL3, 3, &onspawn_sisters, 		&ai_sisters, 		&ondeath_sisters 	}, // Sisters
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_undead_core, 	&ai_undead_core, 	&ai_null 			}, // Undead Core
-	{ NULL, 			NOSHEET, 		PAL3, 6, &onspawn_heavypress, 	&ai_heavypress, 	&ai_null 			}, // Heavy Press
+	{ NULL, 			NOSHEET, 		PAL3, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ai_null 			}, // Heavy Press
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos, 		&ondeath_ballos 	}, // Ballos
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
@@ -421,7 +421,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_UCoreBack, 	NOSHEET, 		PAL2, 9, &onspawn_persistent, 	&ai_undead_core_back,&ai_null 			}, // Undead Core (Back)
 	{ &SPR_UCoreMouth, 	NOSHEET, 		PAL2, 2, &onspawn_persistent, 	&ai_undead_core_face,&ai_null 			}, // Undead Core (Face)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Heavy Press Shield
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
+	{ NULL, 			NOSHEET, 		PAL0, 15,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Shield
 	/* Splash screen */
