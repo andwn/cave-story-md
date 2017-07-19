@@ -436,19 +436,19 @@ void player_update_jump() {
 		gravityJump >>= 1;
 		maxFallSpeed >>= 1;
 	}
-	//if(player.jump_time > 0) {
-	//	if(joy_down(btn[cfg_btn_jump])) {
-	//		player.jump_time--;
-	//	} else {
-	//		player.jump_time = 0;
-	//	}
-	//}
-	//if(player.jump_time > 0) return;
+	if(player.jump_time > 0) {
+		if(joy_down(btn[cfg_btn_jump])) {
+			player.jump_time--;
+		} else {
+			player.jump_time = 0;
+		}
+	}
+	if(player.jump_time > 0) return;
 	if(player.grounded) {
 		if(joy_pressed(btn[cfg_btn_jump])) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
-			//player.jump_time = TIME(5);
+			player.jump_time = 3;
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
