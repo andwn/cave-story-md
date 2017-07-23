@@ -1,0 +1,2 @@
+all: 
+	gcc -std=gnu99 -O3 -flto -fuse-linker-plugin $(wildcard *.c) -o ../../bin/rescomp.exe

@@ -1,0 +1,152 @@
+GDK?=C:/SGDK
+PYTHON?=C:/Users/Grind/AppData/Local/Programs/Python/Python36-32
+
+BIN= $(GDK)/bin
+LIB= $(GDK)/lib
+
+#LIBSRC= $(GDK)/src
+#LIBRES= $(GDK)/res
+#LIBINCLUDE= $(GDK)/inc
+
+SRC= src
+RES= res
+INCLUDE= inc
+
+SHELL= $(BIN)/sh
+RM= $(BIN)/rm
+CP= $(BIN)/cp
+CC= $(BIN)/gcc
+LD= $(BIN)/ld
+NM= $(BIN)/nm
+ECHO= echo
+OBJCPY= $(BIN)/objcopy
+ASMZ80= $(BIN)/sjasm
+MACCER= $(BIN)/mac68k
+SIZEBND= $(BIN)/sizebnd
+BINTOS= bin/bintos
+RESCOMP= bin/rescomp
+MKDIR= $(BIN)/mkdir
+
+SRC_C= $(wildcard *.c)
+SRC_C+= $(wildcard $(SRC)/*.c)
+SRC_C+= $(wildcard $(SRC)/ai/*.c)
+SRC_C+= $(wildcard $(SRC)/db/*.c)
+SRC_C+= $(wildcard $(SRC)/xgm/*.c)
+SRC_S= $(wildcard *.s)
+SRC_S+= $(wildcard $(SRC)/*.s)
+SRC_S+= $(wildcard $(SRC)/xgm/*.s)
+SRC_ASM= $(wildcard *.asm)
+SRC_ASM+= $(wildcard $(SRC)/*.asm)
+SRC_S80= $(wildcard *.s80)
+SRC_S80+= $(wildcard $(SRC)/*.s80)
+SRC_S80+= $(wildcard $(SRC)/xgm/*.s80)
+
+RES_C= $(wildcard $(RES)/*.c)
+RES_S= $(wildcard $(RES)/*.s)
+RES_RES= $(wildcard *.res)
+RES_RES+= $(wildcard $(RES)/*.res)
+
+OBJ= $(RES_RES:.res=.o)
+OBJ+= $(RES_S:.s=.o)
+OBJ+= $(RES_C:.c=.o)
+OBJ+= $(SRC_S80:.s80=.o)
+OBJ+= $(SRC_ASM:.asm=.o)
+OBJ+= $(SRC_S:.s=.o)
+OBJ+= $(SRC_C:.c=.o)
+
+OBJS= $(addprefix out/, $(OBJ))
+
+INCS= -I$(INCLUDE) -I$(SRC) -I$(SRC)/xgm -I$(RES) 
+#-I$(LIBINCLUDE) -I$(LIBRES)
+DEFAULT_FLAGS= -m68000 -Wall -Wextra -fno-builtin $(INCS) -B$(BIN)
+FLAGSZ80= -i$(SRC) -i$(SRC)/xgm -i$(INCLUDE) -i$(RES) 
+#-i$(LIBSRC) -i$(LIBINCLUDE)
+
+release: FLAGS= $(DEFAULT_FLAGS) -O3 -flto -fuse-linker-plugin -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+release: LIBMD= $(LIB)/libmd.a
+release: pre-build out/rom.bin
+
+debug: FLAGS= $(DEFAULT_FLAGS) -O2 -fno-omit-frme-pointer -ggdb -DDEBUG=1
+debug: LIBMD= $(LIB)/libmd_debug.a
+debug: pre-build out/rom.bin out/rom.out out/symbol.txt
+
+all: release
+default: release
+
+Default: release
+Debug: debug
+Release: release
+
+.PHONY: clean
+
+cleanobj:
+	$(RM) -f $(OBJS) out/sega.o out/rom_head.bin out/rom_head.o out/rom.out
+
+clean: cleanobj
+	$(RM) -f out.lst out/cmd_ out/rom.nm out/rom.wch out/rom.bin
+
+cleanrelease: clean
+
+cleandebug: clean
+	$(RM) -f  out/symbol.txt
+
+cleandefault: clean
+cleanDefault: clean
+cleanRelease: cleanrelease
+cleanDebug: cleandebug
+
+
+pre-build:
+	$(MKDIR) -p out/src/ai
+	$(MKDIR) -p out/src/db
+	$(MKDIR) -p out/src/xgm
+	$(MKDIR) -p out/res
+	$(PYTHON)/python aigen.py
+
+out/rom.bin: out/rom.out
+	$(OBJCPY) -O binary out/rom.out out/rom.bin
+	$(SIZEBND) out/rom.bin -sizealign 131072
+
+out/symbol.txt: out/rom.out
+	$(NM) --plugin=liblto_plugin-0.dll -n out/rom.out > out/symbol.txt
+
+out/rom.out: out/sega.o out/cmd_
+	$(CC) -B$(BIN) -n -T $(GDK)/md.ld -nostdlib out/sega.o @out/cmd_ $(LIB)/libgcc.a -o out/rom.out
+	$(RM) out/cmd_
+
+out/cmd_: $(OBJS)
+	$(ECHO) "$(OBJS)" > out/cmd_
+
+out/sega.o: $(SRC)/boot/sega.s src/boot/rom_head.bin
+	$(CC) $(DEFAULT_FLAGS) -c $(SRC)/boot/sega.s -o $@
+
+src/boot/rom_head.bin: src/boot/rom_head.o
+	$(LD) -T $(GDK)/md.ld -nostdlib --oformat binary -o $@ $<
+
+src/boot/rom_head.o: $(SRC)/boot/rom_head.c
+	$(CC) $(DEFAULT_FLAGS) -c $< -o $@
+
+#$(SRC)/boot/sega.s: $(LIBSRC)/boot/sega.s
+#	$(CP) $< $@
+#
+#$(SRC)/boot/rom_head.c: $(LIBSRC)/boot/rom_head.c
+#	$(CP) $< $@
+
+
+out/%.o: %.c
+	$(CC) $(FLAGS) -c $< -o $@
+
+out/%.o: %.s
+	$(CC) $(FLAGS) -c $< -o $@
+
+%.s: %.res
+	$(RESCOMP) $< $@
+
+%.s: %.asm
+	$(MACCER) -o $@ $<
+
+%.o80: %.s80
+	$(ASMZ80) $(FLAGSZ80) $< $@ out.lst
+
+%.s: %.o80
+	$(BINTOS) $<
