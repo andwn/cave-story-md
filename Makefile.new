@@ -5,7 +5,7 @@ AS     = $(GENDEV)/bin/m68k-elf-as
 LD     = $(GENDEV)/bin/m68k-elf-ld
 NM     = $(GENDEV)/bin/m68k-elf-nm
 OBJC   = $(GENDEV)/bin/m68k-elf-objcopy
-ASMZ80 = $(GENDEV)/bin/sjasm
+ASMZ80 = bin/sjasm
 BINTOS = bin/bintos
 RESCOMP= bin/rescomp
 XGMTOOL= bin/xgmtool
@@ -17,7 +17,8 @@ GENGCC_VER := $(shell $(CC) -dumpversion)
 PLUGIN=$(GENDEV)/libexec/gcc/m68k-elf/$(GENGCC_VER)
 
 INCS = -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin 
+CCFLAGS = -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -fshort-enums
+OPTIONS = 
 ASFLAGS = -m68000 --register-prefix-optional
 LIBS = -L$(GENDEV)/m68k-elf/lib -lgcc
 LINKFLAGS = -T $(GENDEV)/sgdk/md.ld -nostdlib
@@ -41,41 +42,38 @@ RESOURCES+=$(SS:.s=.o)
 
 OBJS = $(RESOURCES)
 
-.PHONY: all release debug ntsc pal ntsc-debug pal-debug tools clean clean-tools
 .SECONDARY: doukutsu.elf
+
+.PHONY: all ntsc ntsc-debug ntsc-profile pal pal-debug pal-profile
 
 all: ntsc
 
 ntsc: release
-
+ntsc-profile: profile
 ntsc-debug: debug
 
 pal: CCFLAGS += -DPAL
 pal: release
-
+pal-profile: CCFLAGS += -DPAL
+pal-profile: profile
 pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
-release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-release: CCFLAGS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
+.PHONY: release profile debug main-build head-gen sgdk-tools
+
+release: OPTIONS = -s -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
+release: LINKFLAGS += -s
 release: main-build
 
+profile: OPTIONS = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
+profile: OPTIONS += -fno-omit-frame-pointer
+profile: main-build symbol.txt
+
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
-debug: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-debug: CCFLAGS += -g -O1 -DDEBUG -DKDEBUG
-debug: main-build
+debug: OPTIONS += -g -O2 -DDEBUG -DKDEBUG
+debug: main-build symbol.txt
 
-main-build: head-gen doukutsu.bin
-
-# This will generate a big folder of SRAM data based on Profile.dat saves on cavestory.org
-tarsaves: prof2sram
-tarsaves:
-	python2 savegen.py
-	tar czvf saves.tar.gz save
-saves: prof2sram
-saves:
-	python2 savegen.py
-	zip -r saves.zip save
+main-build: sgdk-tools head-gen doukutsu.bin
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
@@ -93,7 +91,7 @@ src/boot/sega.o: src/boot/rom_head.bin
 
 %.o: %.c
 	@echo "CC $<"
-	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -c $< -o $@
 
 %.o: %.s 
 	@echo "AS $<"
@@ -109,7 +107,7 @@ src/boot/sega.o: src/boot/rom_head.bin
 	$(BINTOS) $<
 
 src/boot/rom_head.o: src/boot/rom_head.c
-	$(CC) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -o $@ $<
+	$(CC) $(CCFLAGS) -o $@ $<
 
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LINKFLAGS) --oformat binary -o $@ $<
@@ -118,26 +116,13 @@ head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
 
-# CSMD TOOLS
-
-tools: prof2sram
-
-tscomp:
-	gcc tools/tscomp/tscomp.c -o tscomp -std=c99
-
-tileopt:
-	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt -std=c99
-
-lutgen:
-	gcc tools/lutgen/lutgen.c -lm -o lutgen -std=c99
-
-prof2sram:
-	gcc tools/prof2sram/prof2sram.c -o prof2sram -std=c99
-
-savetrim:
-	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
-
 # SGDK TOOLS
+
+sgdk-tools: $(ASMZ80) $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
+
+$(ASMZ80):
+	make -C tools/sjasm
+	cp -f tools/sjasm/sjasm $(ASMZ80)
 
 # gnu99 to remove warnings about strdup()
 $(RESCOMP):
@@ -152,15 +137,16 @@ $(BINTOS):
 $(WAVTORAW):
 	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=c99
 
-clean: clean-tools
+
+.PHONY: clean super-clean
+
+clean:
 	rm -f $(RESOURCES)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-	rm -f saves.zip saves.tar.gz
 
-clean-tools:
-	rm -f prof2sram tileopt tscomp lutgen savetrim
-	rm -f $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
+super-clean: clean
+	rm -f $(ASMZ80) $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)

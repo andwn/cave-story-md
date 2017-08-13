@@ -29,10 +29,11 @@ To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
 
 ## Compilation
 0. Dependencies for all this:
-  - Ubuntu/Debian: `sudo apt install wget unzip openjdk-8-jre-headless build-essential texinfo python`
-  - RedHat/CentOS: `sudo yum groupinstall "Development Tools" && sudo yum install wget unzip java-1.8.0-openjdk-headless texinfo python`
-  - Arch: `sudo pacman -Sy wget unzip jre8-openjdk-headless base-devel texinfo python`
-1. Set up [Gendev](https://github.com/kubilus1/gendev) following the instructions on that page
+  - Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo python`
+  - RedHat/CentOS: `sudo yum groupinstall "Development Tools" && sudo yum install wget unzip texinfo python`
+  - Arch: `sudo pacman -Sy wget unzip base-devel texinfo python`
+1. Install [Gendev](https://github.com/kubilus1/gendev)
+  - If you decide to build it yourself note that SGDK requires Java. You will have to either install Java or skip SGDK with `make toolchain-build && sudo make install`
 2. Clone this repository and do `make -f Makefile.new`, or `make -f Makefile.new pal`.
 3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
 
