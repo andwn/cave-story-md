@@ -19,9 +19,9 @@ GENGCC_VER := $(shell $(CC) -dumpversion)
 PLUGIN=$(GENDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GENGCC_VER)
 
 INCS = -Isrc -Ires -Iinc
-CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin 
+CCFLAGS = $(OPTION) -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -fshort-enums
 ASFLAGS = -m68000 --register-prefix-optional
-LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc -lnosys
+LIBS = -L$(GENDEV)/m68k-elf/m68k-elf/lib -lgcc
 LINKFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
 ARCHIVES = $(GENDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER)/libgcc.a 
 FLAGSZ80 = -isrc/xgm
@@ -60,7 +60,7 @@ pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
 release: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-release: CCFLAGS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
+release: CCFLAGS += -s -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
 release: main-build
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target

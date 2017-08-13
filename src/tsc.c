@@ -666,6 +666,7 @@ uint8_t execute_command() {
 		case CMD_NOD: // Wait for player input
 		{
 			tscState = TSC_WAITINPUT;
+			linesSinceLastNOD = 0;
 			return 1;
 		}
 		break;
@@ -1238,6 +1239,12 @@ uint8_t execute_command() {
 			}
 		}
 		if(window_is_open()) {
+			if(cfg_language && cmd == '\n' && linesSinceLastNOD > 1) {
+				tscState = TSC_WAITINPUT;
+				linesSinceLastNOD = 0;
+				curCommand--;
+				return 1;
+			}
 			if(window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);

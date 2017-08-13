@@ -10,6 +10,7 @@
 #define TM_LINE		1 // CAT/SAT
 #define TM_ALL		2 // TUR
 
+uint8_t linesSinceLastNOD;
 extern const uint8_t ITEM_PAL[40];
 
 // Opens the message window

@@ -81,26 +81,25 @@ void stage_load(uint16_t id) {
 	}
 	sprites_clear();
 	water_entity = NULL;
+	
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
+	
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		
-		XGM_doVBlankProcess();
-		XGM_set68KBUSProtection(TRUE);
-		waitSubTick(10);
-		
 		stage_load_tileset();
 		
-		XGM_set68KBUSProtection(FALSE);
+		if(vblank) aftervsync(); // So we don't lag the music
+		vblank = 0;
 	}
 	// Load sprite sheets
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	sheets_load_stage(id, FALSE, TRUE);
 	
-	XGM_set68KBUSProtection(FALSE);
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
+	
 	// Stage palette and shared NPC palette
 	if(stageID == 0x30) {
 		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
@@ -113,10 +112,6 @@ void stage_load(uint16_t id) {
 			stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
-		
-		XGM_doVBlankProcess();
-		XGM_set68KBUSProtection(TRUE);
-		waitSubTick(10);
 		
 		VDP_setBackgroundColor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0) { // Tiled image
@@ -143,7 +138,9 @@ void stage_load(uint16_t id) {
 			VDP_setBackgroundColor(32);
 			stage_draw_moonback();
 		}
-		XGM_set68KBUSProtection(FALSE);
+		
+		if(vblank) aftervsync(); // So we don't lag the music
+		vblank = 0;
 	}
 	// Load stage into RAM
 	stage_load_blocks();
@@ -153,27 +150,15 @@ void stage_load(uint16_t id) {
 	camera.x_offset = 0;
 	camera.y_offset = 0;
 	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	stage_draw_screen();
 	
-	XGM_set68KBUSProtection(FALSE);
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
 	
 	stage_load_entities();
 	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
-	DMA_flushQueue();
-	
-	XGM_set68KBUSProtection(FALSE);
-	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
 	
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
@@ -186,7 +171,8 @@ void stage_load(uint16_t id) {
 	
 	tsc_load_stage(id);
 	
-	XGM_set68KBUSProtection(FALSE);
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
 	
 	VDP_setEnable(TRUE);
 	//VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
@@ -453,6 +439,9 @@ void stage_draw_screen() {
 	uint16_t maprow[64];
 	int16_t y = sub_to_tile(camera.y) - 16;
 	for(uint8_t i = 32; i--; ) {
+		if(vblank) aftervsync(); // So we don't lag the music
+		vblank = 0;
+		
 		if(y >= 0 && y < stageHeight * 2) {
 			int16_t x = sub_to_tile(camera.x) - 32;
 			for(uint8_t j = 64; j--; ) {
@@ -547,6 +536,10 @@ void stage_draw_moonback() {
 		}
 		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 40, 1);
 	}
+	
+	if(vblank) aftervsync(); // So we don't lag the music
+	vblank = 0;
+	
 	// Bottom part
 	cursor = 0;
 	for(uint16_t y = 10; y < 28; y++) {

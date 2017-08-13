@@ -8,6 +8,7 @@
 #include "sprite.h"
 #include "stage.h"
 #include "string.h"
+#include "system.h"
 #include "tables.h"
 #include "vdp.h"
 #include "vdp_tile.h"

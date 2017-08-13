@@ -39,6 +39,7 @@
 void vsync() {
 	vblank = 0;
 	while(!vblank);
+	vblank = 0;
 }
 
 void aftervsync() {

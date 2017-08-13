@@ -83,8 +83,8 @@ void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	window_clear_text();
 	if(cfg_language) {
-		const uint32_t *data = TS_MsgFont.tiles + TILE_SIZE * ('_' - 0x20);
-		VDP_loadTileData(data, (0xB000 >> 5) + 3 + (28 << 2), 1, TRUE);
+		const uint32_t *data = &TS_MsgFont.tiles[('_' - 0x20) << 3];
+		VDP_loadTileData(data, (0xB000 >> 5) + 3 + (29 << 2), 1, TRUE);
 	}
 	textRow = textColumn = 0;
 	
@@ -209,7 +209,10 @@ static uint16_t getKanjiIndexForPos(uint8_t row, uint8_t col) {
 }
 
 void window_draw_jchar(uint8_t iskanji, uint16_t c) {
-	VDP_setEnable(FALSE);
+	if(vblank) aftervsync();
+	vblank = 0;
+	
+	//VDP_setEnable(FALSE);
 	// For the 16x16 text, pretend the text array is [2][18]
 	if(!iskanji && c == '\n') {
 		textRow++;
@@ -220,7 +223,8 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 		} else if(textMode == TM_LINE) {
 			textMode = TM_NORMAL;
 		}
-		VDP_setEnable(TRUE);
+		//VDP_setEnable(TRUE);
+		linesSinceLastNOD++;
 		return;
 	}
 	// Don't let the text run off the end of the window
@@ -247,12 +251,15 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	if(textColumn < 18 - (showingFace ? 4 : 0) && (iskanji || c != ' ')) {
 		textColumn++;
 	}
-	VDP_setEnable(TRUE);
+	//VDP_setEnable(TRUE);
 }
 
 void window_scroll_text() {
 	// Push bottom 2 rows to top
 	for(uint8_t row = 0; row < 2; row++) {
+		if(vblank) aftervsync(); // So we don't lag the music
+		vblank = 0;
+		
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
 		for(uint8_t col = 0; col < 36 - (showingFace > 0) * 8; col++) {
@@ -278,7 +285,11 @@ void window_scroll_jtext() {
 	// Push bottom row to top
 	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t msgTextY = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1;
+	
 	for(uint8_t col = 0; col < 18 - (showingFace ? 4 : 0); col++) {
+		if(vblank) aftervsync(); // So we don't lag the music
+		vblank = 0;
+		
 		jwindowText[0][col] = jwindowText[1][col];
 		uint16_t vramIndex = getKanjiIndexForPos(0, col);
 		if(jwindowText[0][col] == 0) {
@@ -440,7 +451,7 @@ void window_update() {
 		if(cfg_language) {
 			x += textColumn * 2;
 			y += textRow * 3;
-			index = (0xB000 >> 5) + 3 + (28 << 2);
+			index = (0xB000 >> 5) + 3 + (29 << 2);
 		} else {
 			x += textColumn - spaceOffset;
 			y += textRow * 2;

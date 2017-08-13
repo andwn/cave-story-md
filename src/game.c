@@ -310,6 +310,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 	DRAW_LETTER(20,11,y);
 	uint8_t held = 0;
 	for(uint16_t i = 0; i < MAX_ITEMS; i++) {
+		//playerInventory[i] = 35; // :^)
 		uint16_t item = playerInventory[i];
 		if(item > 0) {
 			// Wonky workaround to use either PAL_Sym or PAL_Main
