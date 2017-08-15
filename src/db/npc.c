@@ -14,8 +14,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
 	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			},
-	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			},
-	{ NULL,				SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // Critter
+	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // OBJ_SMOKE_CLOUD
+	{ NULL,				SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // OBJ_CRITTER_HOPPING_GREEN
 	{ NULL,				SHEET_BEETLE, 	PAL3, 1, &onspawn_op2flip, 		&ai_beetle, 		&ondeath_default 	}, // Beetle
 	{ NULL,				SHEET_BASIL, 	PAL1, 1, &onspawn_basil, 		&ai_basil, 			&ai_null 			}, // Basil
 	{ NULL,				SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, 	&ondeath_default 	},
@@ -338,22 +338,22 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Balrog (Nurse)
 	{ &SPR_Santa, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_mimiga_caged, 	&ai_null 			}, // Santa (Caged)
 	{ NULL, 			SHEET_STUMPY, 	PAL0, 1, &ai_null, 				&ai_stumpy, 		&ondeath_default 	}, // Stumpy
-	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &ai_null, 				&ai_bute_flying, 	&ondeath_default 	}, // Bute
-	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &ai_null, 				&ai_bute_sword, 	&ondeath_default 	}, // Bute (Sword)
-	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &ai_null, 				&ai_bute_archer, 	&ondeath_default 	}, // Bute (Archer)
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_flying, 	&ondeath_default 	}, // Bute
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_sword, 	&ondeath_default 	}, // Bute (Sword)
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_archer, 	&ondeath_default 	}, // Bute (Archer)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_bute_arrow, 	&ai_null 			}, // Bute Projectile
 	{ NULL,				SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon, 		&ondeath_default 	}, // Ma Pignon
 	{ NULL, 			SHEET_ROCK, 	PAL2, 1, &onspawn_persistent, 	&ai_ma_pignon_rock, &ondeath_default 	}, // Rock
 	{ NULL, 			SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon_clone,&ondeath_default 	}, // Clone
-	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Bute (Defeated)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_mesa, 			&ondeath_default 	}, // Mesa
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Bute (Defeated)
+	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_mesa, 			&ondeath_default 	}, // Mesa
+	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	/* 0x140 (320) */
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_carried, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_deleet, 		&ondeath_default 	}, // Deleet
-	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_bute_spawner, 	&ai_null 			}, // Bute Generator
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Heavy Press Projectile
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Itoh/Sue (Ending)
@@ -376,19 +376,19 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Skull Shot
+	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Skull Shot
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ &SPR_Hoppy, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	}, // Hoppy
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Spikes
+	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Spikes
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Statue
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
+	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
 	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Statue (Breakable)
 	/* 0x160 (352) */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // King (Sword)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Kill Zone
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ai_null 			}, // Balrog (Rescue)
+	{ &SPR_Balrog, 		NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog, 		&ai_null 			}, // Balrog (Rescue)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Puppy (Ghost)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Misery (Wind)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Water Drop Generator

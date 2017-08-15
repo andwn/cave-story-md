@@ -42,5 +42,5 @@ extern const char btnName[12][4];
 
 void JOY_init();
 uint8_t JOY_getJoypadType(uint16_t joy);
-uint16_t  JOY_readJoypad(uint16_t joy);
+uint16_t JOY_readJoypad(uint16_t joy);
 void JOY_update();

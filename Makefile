@@ -64,9 +64,9 @@ pal-debug: debug
 
 .PHONY: release profile debug main-build head-gen tools
 
-release: OPTIONS = -s -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
-release: LINKFLAGS += -s
-release: main-build
+release: OPTIONS = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
+#release: LINKFLAGS += -s
+release: main-build symbol.txt
 
 profile: OPTIONS = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -flto -fuse-linker-plugin
 profile: OPTIONS += -fno-omit-frame-pointer
