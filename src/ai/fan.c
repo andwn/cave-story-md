@@ -1,7 +1,7 @@
 #include "ai_common.h"
 
 #ifdef PAL
-#define FAN_HSPEED 0x680
+#define FAN_HSPEED 0x5FF
 #else
 #define FAN_HSPEED 0x550
 #endif

@@ -448,7 +448,12 @@ void player_update_jump() {
 		if(joy_pressed(btn[cfg_btn_jump])) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
+#ifdef PAL
+			// Maybe possibly fix jump height?
+			player.jump_time = 0;
+#else
 			player.jump_time = 3;
+#endif
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&
