@@ -143,9 +143,9 @@ uint16_t waitTime;
 uint16_t promptJump = 0;
 
 uint8_t teleMenuActive = FALSE;
-uint8_t teleMenuSlotCount = 0;
+uint8_t teleMenuSlotCount;
 uint16_t teleMenuEvent[8];
-uint8_t teleMenuSelection = 0;
+uint8_t teleMenuSelection;
 uint8_t teleMenuSheet = NOSHEET;
 VDPSprite teleMenuSprite[8];
 
@@ -171,7 +171,11 @@ void tsc_init() {
 	inFade = FALSE;
 	showingBossHealth = FALSE;
 	bossBarEntity = FALSE;
+	bossHealth = 0;
 	tscState = TSC_IDLE;
+	teleMenuSlotCount = 0;
+	teleMenuSelection = 0;
+	memset(teleMenuEvent, 0, 16);
 	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
 	const uint8_t *TSC = cfg_language ? JTSC_Head : TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
