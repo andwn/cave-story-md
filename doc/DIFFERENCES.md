@@ -24,5 +24,5 @@ This file is where I list off the differences in this port and why.
  - About half of the tilesets have been crushed to remove unused tiles (saving VRAM space for other things). This means the related PXA and PXM files were also modified to use those tilesets.
  - EggX and EggX2 are the same PXM with the tileset split into 2.
  - TSC are converted to a custom [bytecode](../tools/tscomp/tscomp.c).
- - The game is using the Aeon Genesis English translation. I have no plans on supporting other languages, but might if I get bored one day.
+ - The English dialog is from the Aeon Genesis translation.
  - Some bits of text (mainly item descriptions and credits text) have been edited to reduce length

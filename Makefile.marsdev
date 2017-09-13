@@ -67,17 +67,6 @@ debug: main-build symbol.txt
 
 main-build: sgdk-tools head-gen doukutsu.bin
 
-.PHONY: tarsaves saves
-# This will generate a big folder of SRAM data based on Profile.dat saves on cavestory.org
-tarsaves: prof2sram
-tarsaves:
-	python2 savegen.py
-	tar czvf saves.tar.gz save
-saves: prof2sram
-saves:
-	python2 savegen.py
-	zip -r saves.zip save
-
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
 	$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n doukutsu.elf > symbol.txt

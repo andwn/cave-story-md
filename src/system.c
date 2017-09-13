@@ -54,6 +54,17 @@ uint8_t cfg_updoor = FALSE;
 uint8_t cfg_hellquake = TRUE;
 uint8_t cfg_iframebug = TRUE;
 
+#define SRAM_TEST_POS		0x1FFC
+#define SRAM_COUNTER_POS	0x0000
+#define SRAM_CONFIG_POS		0x0020
+#define SRAM_FILE_START		0x0080
+
+#define SRAM_BACKUP_OFFSET	0x0280
+#define SRAM_FILE_LEN		0x0500
+
+#define SRAM_FILE_MAX		3
+uint8_t sram_file = 0;
+
 uint8_t sram_state = SRAM_UNCHECKED;
 
 uint8_t counterEnabled = FALSE;
@@ -129,45 +140,68 @@ void system_save() {
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
+	// Start of save data in SRAM
+	uint16_t loc_start = SRAM_FILE_START; // + SRAM_FILE_LEN * sram_file;
+	// Counters to increment while reading/writing
+	uint16_t loc = loc_start, loc_chk = loc_start;
+	
 	SRAM_enable();
-	SRAM_writeWord(0x000, stageID);
-	SRAM_writeWord(0x002, song_get_playing());
-	SRAM_writeWord(0x004, sub_to_block(player.x));
-	SRAM_writeWord(0x006, sub_to_block(player.y));
-	SRAM_writeWord(0x008, playerMaxHealth);
-	SRAM_writeWord(0x00A, player.health);
-	SRAM_writeWord(0x00C, currentWeapon);
-	SRAM_writeWord(0x00E, playerEquipment);
-	SRAM_writeByte(0x010, time.hour); // Play time
-	SRAM_writeByte(0x011, time.minute);
-	SRAM_writeByte(0x012, time.second);
-	SRAM_writeByte(0x013, time.frame);
-	// Weapons (0x40)
+	
+	SRAM_writeLong(loc, STR_CSMD);					loc += 4;
+	SRAM_writeWord(loc, stageID); 					loc += 2;
+	SRAM_writeWord(loc, song_get_playing()); 		loc += 2;
+	SRAM_writeWord(loc, sub_to_block(player.x)); 	loc += 2;
+	SRAM_writeWord(loc, sub_to_block(player.y)); 	loc += 2;
+	SRAM_writeWord(loc, playerMaxHealth);			loc += 2;
+	SRAM_writeWord(loc, player.health);				loc += 2;
+	SRAM_writeWord(loc, currentWeapon);				loc += 2;
+	SRAM_writeWord(loc, playerEquipment);			loc += 2;
+	SRAM_writeByte(loc, time.hour);					loc++;
+	SRAM_writeByte(loc, time.minute);				loc++;
+	SRAM_writeByte(loc, time.second);				loc++;
+	SRAM_writeByte(loc, time.frame);				loc++;
+	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
-		SRAM_writeByte(0x20 + i*8, playerWeapon[i].type);
-		SRAM_writeByte(0x21 + i*8, playerWeapon[i].level);
-		SRAM_writeWord(0x22 + i*8, playerWeapon[i].energy);
-		SRAM_writeWord(0x24 + i*8, playerWeapon[i].maxammo);
-		SRAM_writeWord(0x26 + i*8, playerWeapon[i].ammo);
+		SRAM_writeByte(loc, playerWeapon[i].type);		loc++;
+		SRAM_writeByte(loc, playerWeapon[i].level);		loc++;
+		SRAM_writeWord(loc, playerWeapon[i].energy);	loc += 2;
+		SRAM_writeWord(loc, playerWeapon[i].maxammo);	loc += 2;
+		SRAM_writeWord(loc, playerWeapon[i].ammo);		loc += 2;
 	}
-	SRAM_writeLong(0x5C, STR_CSMD);
-	// Inventory (0x20)
+	// Inventory
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
-		SRAM_writeByte(0x60 + i, playerInventory[i]);
+		SRAM_writeByte(loc, playerInventory[i]); loc++;
 	}
 	// Teleporter locations
 	for(uint8_t i = 0; i < 8; i++) {
-		SRAM_writeWord(0x80 + i*2, teleportEvent[i]);
+		SRAM_writeWord(loc, teleportEvent[i]); loc += 2;
 	}
 	// Flags
 	for (uint16_t i = 0; i < FLAGS_LEN; i++) {
-		SRAM_writeLong(0x100 + i * 4, flags[i]);
+		SRAM_writeLong(loc, flags[i]); loc += 4;
 	}
+	// Checksum
+	//uint32_t checksum = 0x10101010;
+	//while(loc_chk < loc) {
+	//	checksum += SRAM_readLong(loc_chk); loc_chk += 4;
+	//}
+	//SRAM_writeLong(loc, checksum); loc += 4;
+	// Backup
+	//loc = loc_start;
+	//while(loc < loc_chk) {
+	//	uint32_t dat = SRAM_readLong(loc);
+	//	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, dat);
+	//	loc += 4;
+	//}
+	
 	SRAM_disable();
 	
 	XGM_set68KBUSProtection(FALSE);
 }
 
+// TODO: Another function like this that does not start the game, but just
+// peeks at the data for a save select screen
+// TODO again: Take a parameter for the id of the save file to load
 void system_load() {
 	puts("Loading game save from SRAM");
 	counterEnabled = FALSE;
@@ -176,38 +210,54 @@ void system_load() {
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
+	// Start of save data in SRAM
+	uint16_t loc_start = SRAM_FILE_START; // + SRAM_FILE_LEN * sram_file;
+	// Counters to increment while reading/writing
+	uint16_t loc = loc_start, loc_chk = loc_start;
+	
 	SRAM_enableRO();
-	uint16_t rid = SRAM_readWord(0x00);
-	uint8_t song = SRAM_readWord(0x02);
-	player.x = block_to_sub(SRAM_readWord(0x04)) + pixel_to_sub(8);
-	player.y = block_to_sub(SRAM_readWord(0x06)) + pixel_to_sub(8);
-	playerMaxHealth = SRAM_readWord(0x08);
-	player.health = SRAM_readWord(0x0A);
-	currentWeapon = SRAM_readWord(0x0C);
-	playerEquipment = SRAM_readWord(0x0E);
-	time.hour = SRAM_readByte(0x10);
-	time.minute = SRAM_readByte(0x11);
-	time.second = SRAM_readByte(0x12);
-	time.frame = SRAM_readByte(0x13);
+	// Test magic
+	uint32_t magic = SRAM_readLong(loc); loc += 4;
+	if(magic != STR_CSMD) {
+		// Invalid save
+		SRAM_disable();
+		XGM_set68KBUSProtection(FALSE);
+		SYS_die("Save data invalid or outdated");
+		return;
+	}
+	// TODO: Checksum verification, restore from backup if it fails
+	
+	uint16_t rid = SRAM_readWord(loc);			loc += 2;
+	uint8_t song = SRAM_readWord(loc);			loc += 2;
+	player.x = block_to_sub(SRAM_readWord(loc)) + (8<<CSF); loc += 2;
+	player.y = block_to_sub(SRAM_readWord(loc)) + (8<<CSF); loc += 2;
+	playerMaxHealth = SRAM_readWord(loc); 		loc += 2;
+	player.health = SRAM_readWord(loc); 		loc += 2;
+	currentWeapon = SRAM_readWord(loc); 		loc += 2;
+	playerEquipment = SRAM_readWord(loc); 		loc += 2;
+	time.hour = SRAM_readByte(loc); 			loc++;
+	time.minute = SRAM_readByte(loc);			loc++;
+	time.second = SRAM_readByte(loc);			loc++;
+	time.frame = SRAM_readByte(loc);			loc++;
 	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
-		playerWeapon[i].type = SRAM_readByte(0x20 + i*8);
-		playerWeapon[i].level = SRAM_readByte(0x21 + i*8);
-		playerWeapon[i].energy = SRAM_readWord(0x22 + i*8);
-		playerWeapon[i].maxammo = SRAM_readWord(0x24 + i*8);
-		playerWeapon[i].ammo = SRAM_readWord(0x26 + i*8);
+		playerWeapon[i].type = SRAM_readByte(loc);		loc++;
+		playerWeapon[i].level = SRAM_readByte(loc);		loc++;
+		playerWeapon[i].energy = SRAM_readWord(loc);	loc += 2;
+		playerWeapon[i].maxammo = SRAM_readWord(loc);	loc += 2;
+		playerWeapon[i].ammo = SRAM_readWord(loc);		loc += 2;
 	}
-	// Inventory (0x20)
+	// Inventory
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
-		playerInventory[i] = SRAM_readByte(0x60 + i);
+		playerInventory[i] = SRAM_readByte(loc); loc++;
 	}
 	// Teleporter locations
 	for(uint8_t i = 0; i < 8; i++) {
-		teleportEvent[i] = SRAM_readWord(0x80 + i*2);
+		teleportEvent[i] = SRAM_readWord(loc); loc += 2;
 	}
 	// Flags
 	for (uint16_t i = 0; i < FLAGS_LEN; i++) {
-		flags[i] = SRAM_readLong(0x100 + i * 4);
+		flags[i] = SRAM_readLong(loc); loc += 4;
 	}
 	SRAM_disable();
 	
@@ -218,66 +268,67 @@ void system_load() {
 }
 
 void system_load_config() {
-	static const uint16_t start = 0x300;
-	
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
+	uint16_t loc = SRAM_CONFIG_POS;
+	
 	SRAM_enableRO();
-	uint32_t magic = SRAM_readLong(start);
+	
+	uint32_t magic = SRAM_readLong(loc); loc += 4;
 	if(magic != CFG_MAGIC) {
 		// No settings saved, keep defaults
 		SRAM_disable();
+		XGM_set68KBUSProtection(FALSE);
 		return;
 	}
 	
-	uint8_t index = 4;
-	cfg_btn_jump  = SRAM_readByte(start + index++);
-	cfg_btn_shoot = SRAM_readByte(start + index++);
-	cfg_btn_ffwd  = SRAM_readByte(start + index++);
-	cfg_btn_rswap = SRAM_readByte(start + index++);
-	cfg_btn_lswap = SRAM_readByte(start + index++);
-	cfg_btn_map   = SRAM_readByte(start + index++);
-	cfg_btn_pause = SRAM_readByte(start + index++);
-	cfg_language  = SRAM_readByte(start + index++);
-	cfg_ffwd      = SRAM_readByte(start + index++);
-	cfg_updoor    = SRAM_readByte(start + index++);
-	cfg_hellquake = SRAM_readByte(start + index++);
-	cfg_iframebug = SRAM_readByte(start + index++);
+	cfg_btn_jump  = SRAM_readByte(loc++);
+	cfg_btn_shoot = SRAM_readByte(loc++);
+	cfg_btn_ffwd  = SRAM_readByte(loc++);
+	cfg_btn_rswap = SRAM_readByte(loc++);
+	cfg_btn_lswap = SRAM_readByte(loc++);
+	cfg_btn_map   = SRAM_readByte(loc++);
+	cfg_btn_pause = SRAM_readByte(loc++);
+	cfg_language  = SRAM_readByte(loc++);
+	cfg_ffwd      = SRAM_readByte(loc++);
+	cfg_updoor    = SRAM_readByte(loc++);
+	cfg_hellquake = SRAM_readByte(loc++);
+	cfg_iframebug = SRAM_readByte(loc++);
 	SRAM_disable();
 	
 	XGM_set68KBUSProtection(FALSE);
 }
 
 void system_save_config() {
-	static const uint16_t start = 0x300;
-	
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
-	SRAM_enable();
-	SRAM_writeLong(start, CFG_MAGIC);
+	uint16_t loc = SRAM_CONFIG_POS;
 	
-	uint8_t index = 4;
-	SRAM_writeByte(start + index++, cfg_btn_jump);
-	SRAM_writeByte(start + index++, cfg_btn_shoot);
-	SRAM_writeByte(start + index++, cfg_btn_ffwd);
-	SRAM_writeByte(start + index++, cfg_btn_rswap);
-	SRAM_writeByte(start + index++, cfg_btn_lswap);
-	SRAM_writeByte(start + index++, cfg_btn_map);
-	SRAM_writeByte(start + index++, cfg_btn_pause);
-	SRAM_writeByte(start + index++, cfg_language);
-	SRAM_writeByte(start + index++, cfg_ffwd);
-	SRAM_writeByte(start + index++, cfg_updoor);
-	SRAM_writeByte(start + index++, cfg_hellquake);
-	SRAM_writeByte(start + index++, cfg_iframebug);
+	SRAM_enable();
+	SRAM_writeLong(loc, CFG_MAGIC); loc += 4;
+	
+	SRAM_writeByte(loc++, cfg_btn_jump);
+	SRAM_writeByte(loc++, cfg_btn_shoot);
+	SRAM_writeByte(loc++, cfg_btn_ffwd);
+	SRAM_writeByte(loc++, cfg_btn_rswap);
+	SRAM_writeByte(loc++, cfg_btn_lswap);
+	SRAM_writeByte(loc++, cfg_btn_map);
+	SRAM_writeByte(loc++, cfg_btn_pause);
+	SRAM_writeByte(loc++, cfg_language);
+	SRAM_writeByte(loc++, cfg_ffwd);
+	SRAM_writeByte(loc++, cfg_updoor);
+	SRAM_writeByte(loc++, cfg_hellquake);
+	SRAM_writeByte(loc++, cfg_iframebug);
 	SRAM_disable();
 	
 	XGM_set68KBUSProtection(FALSE);
 }
 
+// Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
-	puts("Loading game save from SRAM");
+	puts("Loading game save from stage select data");
 	counterEnabled = FALSE;
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);
@@ -317,32 +368,38 @@ void system_load_levelselect(uint8_t file) {
 }
 
 uint8_t system_checkdata() {
+	sram_state = SRAM_INVALID; // Default invalid
 	// Read a specific spot in SRAM
 	puts("Checking SRAM");
 	SRAM_enableRO();
-	uint32_t test = SRAM_readLong(0x5C);
-	SRAM_disable();
+	uint32_t test = SRAM_readLong(SRAM_TEST_POS);
 	// Anything there?
-	if(test == STR_CSMD) {
-		// Save data exists, this is the only state that should allow selecting "continue"
-		sram_state = SRAM_VALID_SAVE;
-	} else if(test == STR_TEST) {
-		// No save data, but SRAM was validated before
-		sram_state = SRAM_VALID_EMPTY;
-	} else {
+	if(test == STR_TEST) {
+		// Read first file pos for CSMD magic
+		test = SRAM_readLong(SRAM_FILE_START); 
+		if(test == STR_CSMD) {
+			// Save data exists, this is the only state that should allow selecting "continue"
+			sram_state = SRAM_VALID_SAVE;
+		} else {
+			// No save data, but SRAM was validated before
+			sram_state = SRAM_VALID_EMPTY;
+		}
+	}
+	SRAM_disable();
+	if(sram_state == SRAM_INVALID) {
 		// Nothing is there, try to write "TEST" and re-read
 		SRAM_enable();
-		SRAM_writeLong(0x5C, STR_TEST);
+		SRAM_writeLong(SRAM_TEST_POS, STR_TEST);
 		SRAM_disable();
 		SRAM_enableRO();
-		test = SRAM_readLong(0x5C);
+		test = SRAM_readLong(SRAM_TEST_POS);
 		SRAM_disable();
 		if(test == STR_TEST) {
 			// Test passed, game can be saved but not loaded
 			sram_state = SRAM_VALID_EMPTY;
 			// Clear the hell timer just in case (thanks Fusion)
 			SRAM_enable();
-			for(uint16_t i = 0; i < 5; i++) SRAM_writeLong(0x48 + i*4, 0);
+			for(uint16_t i = 0; i < 5; i++) SRAM_writeLong(SRAM_COUNTER_POS + i*4, 0);
 			SRAM_disable();
 		} else {
 			// Test failed, SRAM is unusable
@@ -376,7 +433,7 @@ uint32_t system_load_counter() {
 	// Read 20 bytes of 290.rec from SRAM
 	SRAM_enableRO();
 	for(uint16_t i = 0; i < 20; i++) {
-		buffer[i] = SRAM_readByte(0x48 + i);
+		buffer[i] = SRAM_readByte(SRAM_COUNTER_POS + i);
 	}
 	SRAM_disable();
 	// Apply key
@@ -422,7 +479,7 @@ void system_save_counter(uint32_t ticks) {
 	// Write to SRAM
 	SRAM_enable();
 	for(uint16_t i = 0; i < 20; i++) {
-		SRAM_writeByte(0x48 + i, buffer[i]);
+		SRAM_writeByte(SRAM_COUNTER_POS + i, buffer[i]);
 	}
 	SRAM_disable();
 }

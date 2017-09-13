@@ -2,6 +2,8 @@
 ![Comparison Shot](doc/screen01.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
+**Nightly/master is in the middle of an overhaul for the save data, expect things to break**
+
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 The engine uses many parts of SGDK, and written mostly in C.
 
@@ -28,14 +30,8 @@ For 3 button, `A` cycles through weapons. The rest is the same.
 To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic. 
 
 ## Compilation
-0. Dependencies for all this:
-  - Ubuntu/Debian: `sudo apt install wget unzip build-essential texinfo python`
-  - RedHat/CentOS: `sudo yum groupinstall "Development Tools" && sudo yum install wget unzip texinfo python`
-  - Arch: `sudo pacman -Sy wget unzip base-devel texinfo python`
-1. Install [Gendev](https://github.com/kubilus1/gendev)
-  - If you decide to build it yourself note that SGDK requires Java. You will have to either install Java or skip SGDK with `make toolchain-build && sudo make install`
-2. Clone this repository and do `make -f Makefile.new`, or `make -f Makefile.new pal`.
-3. Open `doukutsu.bin` in your emulator of choice, or put it on a flash cart.
+1. Setup [marsdev](https://github.com/andwn/marsdev) and `python`
+2. Clone & `make -f Makefile.marsdev`
 
 ## FAQ
 #### Why?

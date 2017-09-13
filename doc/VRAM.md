@@ -1,6 +1,9 @@
 ### CSMD VRAM layout
 My VRAM map has become too elaborate to remember in my head so hopefully this document helps.
 
+Some things are different from this when drawing Japanese text. Maybe I'll document it
+eventually.
+
 #### 0x000 (TILE_SYSTEMINDEX)
 First 16 tiles set by SGDK as plain palette colors.
 I leave the first (transparency) alone and overwrite the rest like this:
