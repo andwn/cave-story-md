@@ -163,21 +163,13 @@ void game_reset(uint8_t load) {
 	sheets_load_stage(255, TRUE, TRUE);
 	
 	gameFrozen = FALSE;
-	if(load) {
-		if(load == 1) {
-			// This redundant check is needed in case player hits "Yes" after game over
-			uint8_t ss = system_checkdata();
-			if(ss == SRAM_VALID_SAVE) system_load();
-			else goto TryAgainNoSave;
-		}
-		if(load >= 4) system_load_levelselect(load - 4);
-		const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
-		if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
+	if(load >= 4) {
+		system_load_levelselect(load - 4);
 	} else {
-TryAgainNoSave:
-		system_new();
-		tsc_call_event(GAME_START_EVENT);
+		system_load(sram_file);
 	}
+	const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
+	if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
 	
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0,0);

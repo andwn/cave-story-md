@@ -7,8 +7,8 @@ enum GameMode {
 	GM_INTRO, // Studio Pixel presents
 	GM_TITLE, // Title screen
 	GM_SOUNDTEST, // Sound Test
-	GM_CONFIG, // TODO: Settings like control mapping / bug toggling / clear SRAM
-	GM_SAVESEL, // TODO: If I ever add capability for multisave
+	GM_CONFIG, // Settings like control mapping / bug toggling / clear SRAM
+	GM_SAVESEL, // Save picker
 	GM_GAME, // Play the game
 	GM_CREDITS // End credits
 };
@@ -22,6 +22,8 @@ void splash_main();
 
 // Displays title screen, returns which option was picked
 uint8_t titlescreen_main();
+
+uint8_t saveselect_main();
 
 // Play the actual game. "load" is whether new game or continue was selected
 void game_main(uint8_t load);

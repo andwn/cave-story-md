@@ -54,15 +54,25 @@ uint8_t cfg_updoor = FALSE;
 uint8_t cfg_hellquake = TRUE;
 uint8_t cfg_iframebug = TRUE;
 
+// 8KB save file map, like this:
+// 0000 - Counter
+// 0020 - Config (global, maybe should have per file?)
+// 0100 - First save file
+// 0400 - backup of first save
+// 0700 - Second save
+// ...
+// 1900 - End of saves (room for 4)
+// 1FFC - Last 4 bytes, used to test if SRAM is working
+// There are extra bytes of padding between, so more things can be added if necessary
 #define SRAM_TEST_POS		0x1FFC
 #define SRAM_COUNTER_POS	0x0000
 #define SRAM_CONFIG_POS		0x0020
-#define SRAM_FILE_START		0x0080
+#define SRAM_FILE_START		0x0100
 
-#define SRAM_BACKUP_OFFSET	0x0280
-#define SRAM_FILE_LEN		0x0500
+#define SRAM_BACKUP_OFFSET	0x0300
+#define SRAM_FILE_LEN		0x0600
 
-#define SRAM_FILE_MAX		3
+#define SRAM_FILE_MAX		4
 uint8_t sram_file = 0;
 
 uint8_t sram_state = SRAM_UNCHECKED;
@@ -125,12 +135,13 @@ void system_update() {
 
 void system_new() {
 	puts("Starting a new game");
-	counterEnabled = FALSE;
+	//counterEnabled = FALSE;
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
-	player_init();
+	//player_init();
 	stage_load(13);
+	tsc_call_event(GAME_START_EVENT);
 }
 
 void system_save() {
@@ -141,7 +152,7 @@ void system_save() {
 	waitSubTick(10);
 	
 	// Start of save data in SRAM
-	uint16_t loc_start = SRAM_FILE_START; // + SRAM_FILE_LEN * sram_file;
+	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start, loc_chk = loc_start;
 	
@@ -199,19 +210,52 @@ void system_save() {
 	XGM_set68KBUSProtection(FALSE);
 }
 
-// TODO: Another function like this that does not start the game, but just
-// peeks at the data for a save select screen
-// TODO again: Take a parameter for the id of the save file to load
-void system_load() {
+void system_peekdata(uint8_t index, SaveEntry *file) {
+	puts("Peeking save file");
+	
+	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	SRAM_enableRO();
+	
+	// Save exists
+	uint32_t magic = SRAM_readLong(loc); loc += 4;
+	if(magic != STR_CSMD) {
+		file->used = FALSE;
+		SRAM_disable();
+		XGM_set68KBUSProtection(FALSE);
+		return;
+	}
+	
+	file->used = TRUE;
+	file->stage_id = SRAM_readWord(loc); 	loc += 8;
+	file->max_health = SRAM_readWord(loc); 	loc += 2;
+	file->health = SRAM_readWord(loc); 		loc += 6;
+	file->hour = SRAM_readByte(loc);		loc++;
+	file->minute = SRAM_readByte(loc);		loc++;
+	file->second = SRAM_readByte(loc);		loc += 2;
+	file->weapon[0] = SRAM_readByte(loc);	loc += 8;
+	file->weapon[1] = SRAM_readByte(loc);	loc += 8;
+	file->weapon[2] = SRAM_readByte(loc);	loc += 8;
+	file->weapon[3] = SRAM_readByte(loc);	loc += 8;
+	file->weapon[4] = SRAM_readByte(loc);	loc += 8;
+	
+	SRAM_disable();
+	XGM_set68KBUSProtection(FALSE);
+}
+
+void system_load(uint8_t index) {
 	puts("Loading game save from SRAM");
 	counterEnabled = FALSE;
 	player_init();
+	sram_file = index;
 	
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	
 	// Start of save data in SRAM
-	uint16_t loc_start = SRAM_FILE_START; // + SRAM_FILE_LEN * sram_file;
+	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start, loc_chk = loc_start;
 	
@@ -219,10 +263,10 @@ void system_load() {
 	// Test magic
 	uint32_t magic = SRAM_readLong(loc); loc += 4;
 	if(magic != STR_CSMD) {
-		// Invalid save
+		// Empty
 		SRAM_disable();
 		XGM_set68KBUSProtection(FALSE);
-		SYS_die("Save data invalid or outdated");
+		system_new();
 		return;
 	}
 	// TODO: Checksum verification, restore from backup if it fails

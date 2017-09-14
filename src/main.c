@@ -65,16 +65,21 @@ void aftervsync() {
 }
 
 int main() {
-	puts("Hi Plum");
+	puts("Hi June");
     sound_init();
 	input_init();
     while(TRUE) {
 		splash_main();
 		uint8_t select = titlescreen_main();
-		if(select == 2) {
-			soundtest_main(); break;
+		if(select == 0) {
+			select = saveselect_main();
+			if(select >= 4) continue;
+			game_main(select);
+			credits_main();
+		} else if(select == 2) {
+			soundtest_main(); continue;
 		} else if(select == 3) {
-			config_main(); break;
+			config_main(); continue;
 		} else {
 			game_main(select);
 			credits_main();

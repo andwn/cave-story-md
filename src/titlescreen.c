@@ -55,8 +55,8 @@ uint8_t titlescreen_main() {
 	// Check save data, only enable continue if save data exists
 	uint8_t sram_state = system_checkdata();
 	if(sram_state == SRAM_VALID_SAVE) {
-		VDP_drawText("Continue", 15, 14);
-		cursor = 1;
+	//	VDP_drawText("Continue", 15, 14);
+	//	cursor = 1;
 		besttime = system_load_counter(); // 290.rec data
 	}
 	if(sram_state != SRAM_INVALID) system_load_config();
@@ -82,7 +82,7 @@ uint8_t titlescreen_main() {
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
 	// Menu and version text
-	VDP_drawText("New Game", 15, 12);
+	VDP_drawText("Start Game", 15, 12);
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("Config", 15, 18);
 	// Debug
@@ -92,7 +92,7 @@ uint8_t titlescreen_main() {
 		VDP_drawText(vstr, 4, 26);
 	}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.4.1 2017.07", 4, 26);
+	//VDP_drawText("Mega Drive Version 0.4.1 2017.09", 4, 26);
 	VDP_loadTileSet(cfg_language ? &TS_J_Title : &TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
@@ -130,13 +130,13 @@ uint8_t titlescreen_main() {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
 			// Skip over "continue" if no save data
-			if(sram_state != SRAM_VALID_SAVE && cursor == 1) cursor--;
+			if(/*sram_state != SRAM_VALID_SAVE &&*/ cursor == 1) cursor--;
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
 			// Skip over "continue" if no save data
-			if(sram_state != SRAM_VALID_SAVE && cursor == 1) cursor++;
+			if(/*sram_state != SRAM_VALID_SAVE &&*/ cursor == 1) cursor++;
 			sound_play(SND_MENU_MOVE, 0);
 		}
 		// Animate quote sprite
@@ -233,9 +233,9 @@ uint8_t titlescreen_main() {
 		cursor += 4;
 	}
 	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
-	if(cursor != 3) {
+	if(cursor > 3) {
 		song_stop();
-		sound_play(SND_MENU_SELECT, 0);
 	}
+	sound_play(SND_MENU_SELECT, 0);
 	return cursor;
 }
