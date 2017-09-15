@@ -54,27 +54,7 @@ uint8_t cfg_updoor = FALSE;
 uint8_t cfg_hellquake = TRUE;
 uint8_t cfg_iframebug = TRUE;
 
-// 8KB save file map, like this:
-// 0000 - Counter
-// 0020 - Config (global, maybe should have per file?)
-// 0100 - First save file
-// 0400 - backup of first save
-// 0700 - Second save
-// ...
-// 1900 - End of saves (room for 4)
-// 1FFC - Last 4 bytes, used to test if SRAM is working
-// There are extra bytes of padding between, so more things can be added if necessary
-#define SRAM_TEST_POS		0x1FFC
-#define SRAM_COUNTER_POS	0x0000
-#define SRAM_CONFIG_POS		0x0020
-#define SRAM_FILE_START		0x0100
-
-#define SRAM_BACKUP_OFFSET	0x0300
-#define SRAM_FILE_LEN		0x0600
-
-#define SRAM_FILE_MAX		4
 uint8_t sram_file = 0;
-
 uint8_t sram_state = SRAM_UNCHECKED;
 
 uint8_t counterEnabled = FALSE;
@@ -309,6 +289,42 @@ void system_load(uint8_t index) {
 	
 	stage_load(rid);
 	song_play(song);
+}
+
+void system_copy(uint8_t from, uint8_t to) {
+	puts("Copying save data");
+	
+	uint16_t loc_from     = SRAM_FILE_START + SRAM_FILE_LEN * from;
+	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
+	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	SRAM_enable();
+	
+	while(loc_from < loc_from_end) {
+		uint32_t data = SRAM_readLong(loc_from);
+		SRAM_writeLong(loc_to, data);
+		loc_from += 4; loc_to += 4;
+	}
+	
+	SRAM_disable();
+	XGM_set68KBUSProtection(FALSE);
+}
+
+void system_delete(uint8_t index) {
+	puts("Deleting save data");
+	
+	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
+	
+	XGM_set68KBUSProtection(TRUE);
+	waitSubTick(10);
+	SRAM_enable();
+	
+	SRAM_writeLong(loc, 0); // Erase the "CSMD" magic to invalidate file
+	
+	SRAM_disable();
+	XGM_set68KBUSProtection(FALSE);
 }
 
 void system_load_config() {
