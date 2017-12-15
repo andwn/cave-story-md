@@ -20,7 +20,7 @@ void ai_curly(Entity *e) {
 			e->frame = 0;
 			e->eflags |= NPC_INTERACTIVE;	// needed for after Almond battle
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->x_speed = 0;
@@ -35,7 +35,7 @@ void ai_curly(Entity *e) {
 			if (e->state == 10) FACE_PLAYER(e);
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case 4:
 		case 11:
 		{
@@ -54,7 +54,7 @@ void ai_curly(Entity *e) {
 			e->state = 6;
 			//SmokeClouds(e, 8, 0, 0);
 		}
-		/* no break */
+		/* fallthrough */
 		case 6:
 		{
 			e->frame = 10;
@@ -81,13 +81,13 @@ void ai_curly(Entity *e) {
 			e->grounded = FALSE;
 			MOVE_X(SPEED(-0x200));
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:
 		{
 			if (e->grounded) e->state = 32;
 			else break;
 		}
-		/* no break */
+		/* fallthrough */
 		case 32:			// state 32: curly is laying knocked out
 		{
 			e->frame = 9;
@@ -102,7 +102,7 @@ void ai_curly(Entity *e) {
 			e->timer = 0;
 			e->frame = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 71:
 		{
 			MOVE_X(SPEED(-0x100));
@@ -131,7 +131,7 @@ void ai_curly_carried(Entity *e) {
 			e->eflags &= ~NPC_INTERACTIVE;
 			e->nflags &= ~NPC_INTERACTIVE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{	// carried by player
 			e->dir = player.dir;
@@ -146,7 +146,7 @@ void ai_curly_carried(Entity *e) {
 			e->y_speed = SPEED(-0x20);
 			e->state = 11;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			if (e->y < block_to_sub(4))	{
@@ -209,7 +209,7 @@ void ai_curlyBoss(Entity *e) {
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->nflags &= ~NPC_INVINCIBLE;
 		}
-		/* no break */
+		/* fallthrough */
 		case CURLYB_WAIT:
 		{
 			if(!e->timer--) e->state = CURLYB_WALK_PLAYER;
@@ -222,7 +222,7 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = (random() % 50) + 50;
 			FACE_PLAYER(e);
 		}
-		/* no break */
+		/* fallthrough */
 		case CURLYB_WALKING_PLAYER:
 		{
 			ANIMATE(e, 8, 1,0,2,0);

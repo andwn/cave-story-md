@@ -150,7 +150,7 @@ void ai_core(Entity *e) {
 			e->x_mark = player.x;
 			e->y_mark = player.y;
 		}
-		/* no break */
+		/* fallthrough */
 		case CORE_CLOSED+1:
 		{
 			// open mouth after 400 ticks
@@ -179,7 +179,7 @@ void ai_core(Entity *e) {
 			// know how much damage we've taken this time.
 			e->savedhp = e->health;
 		}
-		/* no break */
+		/* fallthrough */
 		case CORE_OPEN+1:
 		{
 			e->x_mark = player.x;
@@ -218,7 +218,7 @@ void ai_core(Entity *e) {
 			
 			START_WATER_STREAM;
 		}
-		/* no break */
+		/* fallthrough */
 		case CORE_GUST+1:
 		{
 			// Instead of spawning a bunch of laggy 1 pixel objects push the water to the left
@@ -264,7 +264,7 @@ void ai_core(Entity *e) {
 				pieces[i]->state = MC_RETREAT;
 			}
 		}
-		/* no break */
+		/* fallthrough */
 		case 501:
 		{
 			e->timer++;
@@ -291,7 +291,7 @@ void ai_core(Entity *e) {
 			e->state++;
 			e->timer = 60;
 		}
-		/* no break */
+		/* fallthrough */
 		case 601:
 		{
 			if (--e->timer == 0) {
@@ -383,7 +383,7 @@ void ai_minicore(Entity *e) {
 			e->mouth_open = FALSE;
 			e->state = MC_SLEEP+1;
 		}
-		/* no break */
+		/* fallthrough */
 		case MC_SLEEP+1:
 		{
 			e->x_mark = e->x;
@@ -398,7 +398,7 @@ void ai_minicore(Entity *e) {
 			e->x_mark = e->x + ((-128 + (random() % 160)) << CSF);
 			e->y_mark = e->y + ((-64 + (random() % 128)) << CSF);
 		}
-		/* no break */
+		/* fallthrough */
 		case MC_THRUST+1:
 		{
 			if (++e->timer > TIME(50)) e->mouth_open = TRUE;
@@ -409,7 +409,7 @@ void ai_minicore(Entity *e) {
 			e->state = MC_CHARGE_FIRE+1;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case MC_CHARGE_FIRE+1:			// flash blue
 		{
 			if(++e->timer > TIME(20)) e->state = MC_FIRE;
@@ -423,7 +423,7 @@ void ai_minicore(Entity *e) {
 			e->x_mark = e->x + ((24 + (random() & 15)) << CSF);
 			e->y_mark = e->y + ((-4 + (random() & 7)) << CSF);
 		}
-		/* no break */
+		/* fallthrough */
 		case MC_FIRE+1:
 		{
 			if (++e->timer > TIME(50)) {
@@ -444,7 +444,7 @@ void ai_minicore(Entity *e) {
 			e->mouth_open = FALSE;
 			e->x_speed = e->y_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case MC_RETREAT+1:		// retreat back into the abyss
 		{
 			e->x_speed += SPEED(0x20);

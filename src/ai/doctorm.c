@@ -69,7 +69,7 @@ void ai_muscle_doctor(Entity *e) {
 			//crystal_tofront = TRUE;
 			
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:		// appearing/transforming
 		{
 			e->timer++;
@@ -83,7 +83,7 @@ void ai_muscle_doctor(Entity *e) {
 			e->state = 8;
 			e->timer = 0;
 			e->frame = 3;
-		}
+		} /* fallthrough */
 		case 8:
 		{
 			if (++e->timer > TIME(40)) e->state = STATE_BASE;
@@ -106,7 +106,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			e->savedhp = e->health;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_BASE+1:
 		{
 			e->y_speed += SPEED(0x80);
@@ -203,7 +203,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_LANDED+1:
 		{
 			e->x_speed += (e->x_speed << 2) + (e->x_speed << 1);
@@ -222,7 +222,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_RED_DASH+1:
 		{
 			if (++e->timer > TIME(20)) {
@@ -279,7 +279,7 @@ void ai_muscle_doctor(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			e->frame = 6;
-		}
+		} /* fallthrough */
 		case STATE_MEGA_BATS+1:
 		{
 			e->timer++;
@@ -315,7 +315,7 @@ void ai_muscle_doctor(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			//dr_tp_out_init(o);
-		}
+		} /* fallthrough */
 		case STATE_TELEPORT+1:
 		{
 			//if (dr_tp_out(o))
@@ -359,7 +359,7 @@ void ai_muscle_doctor(Entity *e) {
 			//dr_tp_in_init(o);
 			e->y_speed = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_TELEPORT+4:
 		{
 			//if (dr_tp_in(o))
@@ -389,7 +389,7 @@ void ai_muscle_doctor(Entity *e) {
 			e->x_speed = 0;
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case STATE_DEFEATED+1:		// wait till we hit ground
 		{
 			e->timer++; // For red dots only
@@ -423,7 +423,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case STATE_DISSOLVE+1:
 		{
 			e->timer++;

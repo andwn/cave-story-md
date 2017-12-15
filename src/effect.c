@@ -113,7 +113,7 @@ void effects_update() {
 			case EFF_BOOST8:
 			{
 				effMisc[i].y++;
-			} /* no break */
+			} /* fallthrough */
 			case EFF_BOOST2:
 			{
 				if(!(effMisc[i].ttl % TIME(5))) effMisc[i].sprite.attribut++;

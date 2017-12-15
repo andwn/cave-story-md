@@ -19,7 +19,7 @@ void ai_bute_dying(Entity *e) {
 			e->state = 1;
 			
 			e->y_speed = -0x200;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
@@ -82,7 +82,7 @@ void ai_bute_flying(Entity *e) {
 		{
 			e->hidden = TRUE;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->dir == LEFT) {
@@ -103,7 +103,7 @@ void ai_bute_flying(Entity *e) {
 			e->hidden = FALSE;
 			e->eflags |= NPC_SHOOTABLE;
 			e->attack = 5;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			FACE_PLAYER(e);
@@ -138,7 +138,7 @@ void ai_bute_spawner(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->timer++;
@@ -165,7 +165,7 @@ void ai_bute_falling(Entity *e) {
 			//e->MoveAtDir(e->dir, 0x600);
 			MOVE_X(0x600);
 			e->eflags |= NPC_IGNORESOLID;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->timer++;
@@ -230,7 +230,7 @@ void ai_bute_sword(Entity *e) {
 			//e->nxflags |= NXFLAG_FOLLOW_SLOPE;
 			e->attack = 0;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:		// lying in wait
 		{
 			FACE_PLAYER(e);
@@ -250,7 +250,7 @@ void ai_bute_sword(Entity *e) {
 			
 			e->state = 11;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if (++e->timer > 30) {
@@ -266,7 +266,7 @@ void ai_bute_sword(Entity *e) {
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->state = 21;
 			FACE_PLAYER(e);
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			ANIMATE(e, 3, 0, 1);
@@ -397,7 +397,7 @@ void ai_bute_archer(Entity *e) {
 			
 			// frame: arrow away
 			e->frame = (e->timer2 == 1) ? 6 : 3;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			if (++e->timer > 30) {
@@ -443,7 +443,7 @@ void ai_bute_arrow(Entity *e) {
 			e->dir = e->x_speed > 0;
 			e->frame = (e->y_speed < 0) ? 0 : 2;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (++e->timer == 4)
@@ -464,7 +464,7 @@ void ai_bute_arrow(Entity *e) {
 			
 			e->y_speed *= 3;
 			e->y_speed /= 4;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->y_speed += 0x20;
@@ -485,7 +485,7 @@ void ai_bute_arrow(Entity *e) {
 			e->attack = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			e->timer++;
@@ -511,7 +511,7 @@ void ai_mesa(Entity *e) {
 		{
 			e->y += (4<<CSF);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 40, 0, 1);
@@ -535,7 +535,7 @@ void ai_mesa(Entity *e) {
 			
 			e->linkedEntity = entity_create(x, y, OBJ_MESA_BLOCK, 0);
 			e->linkedEntity->linkedEntity = e;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if (++e->timer > 50) {
@@ -635,7 +635,7 @@ void ai_deleet(Entity *e) {
 				e->x += (8<<CSF);
 			
 			//e->dir = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->damage_time)
@@ -805,7 +805,7 @@ void ai_statue(Entity *e) {
 				e->state = 11;
 				e->eflags |= NPC_SHOOTABLE;
 			}
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if (e->health < (1000 - STATUE_HP)) {
@@ -834,7 +834,7 @@ void ai_puppy_ghost(Entity *e) {
 			e->state = 11;
 			e->timer = 2;
 			sound_play(SND_TELEPORT, 5);
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->hidden = (e->timer & 2);

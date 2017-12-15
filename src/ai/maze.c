@@ -119,7 +119,7 @@ void ai_boulder(Entity *e) {
 			e->timer = 0;
 			e->x_mark = e->x;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			if ((++e->timer % 3) != 0)
@@ -139,7 +139,7 @@ void ai_boulder(Entity *e) {
 			e->state = 21;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:
 		{
 			e->y_speed += SPEED(0x10);
@@ -242,7 +242,7 @@ void ai_gaudi(Entity *e) {
 			e->x_speed = 0;
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->frame = 0;
@@ -263,7 +263,7 @@ void ai_gaudi(Entity *e) {
 			e->timer = (random() % TIME(75)) + TIME(25);		// how long to walk for
 			moveMeToFront = TRUE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
@@ -360,13 +360,13 @@ void ai_gaudiFlying(Entity *e) {
 			e->state = 1;
 			e->timer2 = 120;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->timer = TIME(70) + (random() % TIME(80));
 			e->state = 2;
 		}
-		/* no break */
+		/* fallthrough */
 		case 2:
 		{
 			ANIMATE(e, 4, 7,8);
@@ -424,7 +424,7 @@ void ai_gaudiArmor(Entity *e) {
 			e->x_mark = e->x;
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->x_speed = 0;
@@ -780,7 +780,7 @@ void ai_firewhirr(Entity *e) {
 			e->timer = random() % TIME(50);
 			e->y_mark = e->y;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			if (!e->timer) {
@@ -790,7 +790,7 @@ void ai_firewhirr(Entity *e) {
 			}
 			else e->timer--;
 		}
-		/* no break */
+		/* fallthrough */
 		case 10:
 		{
 			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : SPEED(-0x10);
@@ -891,7 +891,7 @@ void ai_fuzz_core(Entity *e) {
 			e->timer = random() % TIME(50);
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:		// de-syncs the Y positions when multiple cores are present at once
 		{
 			if (e->timer == 0) {
@@ -986,7 +986,7 @@ void ai_buyobuyo_base(Entity *e) {
 			e->timer = TIME(10);
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			if (PLAYER_DIST_X(0x14000)) {
@@ -1044,7 +1044,7 @@ void ai_buyobuyo(Entity *e) {
 			e->state = 1;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->timer++;		// inc fly time
@@ -1053,7 +1053,7 @@ void ai_buyobuyo(Entity *e) {
 				e->state = 2;
 			} else break;
 		}
-		/* no break */
+		/* fallthrough */
 		case 2:
 		{
 			// this slight "minimum fly time" keeps the underwater ones from

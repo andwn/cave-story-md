@@ -15,7 +15,7 @@ void ai_doctor(Entity *e) {
 			e->timer2 = 0;
 			ANIMATE(e, 10, 1,0);
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			if (++e->timer2 > TIME(8*6)) {
@@ -31,7 +31,7 @@ void ai_doctor(Entity *e) {
 			e->frame = 2;
 			e->y_mark = e->y - (32 << CSF);
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:
 		{
 			e->y_speed += (e->y > e->y_mark) ? SPEED(-0x20) : SPEED(0x20);
@@ -45,7 +45,7 @@ void ai_doctor(Entity *e) {
 			e->y_speed = 0;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:
 		{
 			//if (DoTeleportOut(e, 1)) {
@@ -59,7 +59,7 @@ void ai_doctor(Entity *e) {
 			e->state = 41;
 			e->frame = 2;
 		}
-		/* no break */
+		/* fallthrough */
 		case 41:
 		{
 			//if (DoTeleportIn(o, 1)) {
@@ -85,7 +85,7 @@ void ai_toroko(Entity *e) {
 			e->x_speed = 0;
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->frame = 0;
@@ -110,7 +110,7 @@ void ai_toroko(Entity *e) {
 			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 7:
 		{
 			MOVE_X(SPEED(0x100));
@@ -127,7 +127,7 @@ void ai_toroko(Entity *e) {
 			e->y_speed = SPEED(-0x200);
 			e->grounded = FALSE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 9:
 		{
 			if(e->grounded) e->state = 0;
@@ -185,7 +185,7 @@ void ai_toroko_tele_in(Entity *e) {
 			e->timer = 0;
 			e->nflags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 2)) {
@@ -257,7 +257,7 @@ void ai_sue(Entity *e) {
 			e->timer = 0;
 			sound_play(SND_ENEMY_SQUEAK, 5);
 		}
-		/* no break */
+		/* fallthrough */
 		case 7:
 		{
 			if (++e->timer > TIME(10)) e->state = 0;
@@ -274,7 +274,7 @@ void ai_sue(Entity *e) {
 			e->y_speed = SPEED(-0x200);
 			MOVE_X(SPEED(-0x400));
 		}
-		/* no break */
+		/* fallthrough */
 		case 9:
 		{
 			if (++e->timer > 3 && e->grounded) {
@@ -295,7 +295,7 @@ void ai_sue(Entity *e) {
 			e->state = 12;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 12:
 		{
 			e->timer++;
@@ -324,7 +324,7 @@ void ai_sue(Entity *e) {
 			}
 			e->alwaysActive = TRUE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 14:	// being carried
 		{
 			Entity *link = e->linkedEntity;
@@ -343,7 +343,7 @@ void ai_sue(Entity *e) {
 			e->x_speed = 0;
 			e->frame = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 16:
 		{
 			crystal_xmark = e->x - (18<<CSF);
@@ -409,7 +409,7 @@ void ai_sue_teleport_in(Entity *e) {
 			e->state = 1;
 			e->frame = 7;	// her "hanging on a hook" frame
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 2)) {
@@ -476,7 +476,7 @@ void ai_king(Entity *e) {
 			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 7:			// he falls and is knocked out
 		{
 			e->frame = 4;
@@ -516,7 +516,7 @@ void ai_king(Entity *e) {
 			MOVE_X(SPEED(0x600));
 			e->y_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:
 		{
 			// Don't follow slopes
@@ -541,7 +541,7 @@ void ai_king(Entity *e) {
 			e->state = 41;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 41:
 		{
 			e->hidden ^= 1;
@@ -622,7 +622,7 @@ void ai_booster(Entity *e) {
 			e->timer = 0;
 			e->x_speed = e->y_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->frame = 0;
@@ -640,7 +640,7 @@ void ai_booster(Entity *e) {
 			e->state++;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:	// teleporting-in animation
 		{
 			//if (DoTeleportIn(o, 2)) {
@@ -699,7 +699,7 @@ void ai_booster_falling(Entity *e) {
 			e->state = 21;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:
 		{
 			e->hidden ^= 1;
@@ -728,7 +728,7 @@ void ai_npc_at_computer(Entity *e) {
 			e->state = TYPING;
 			e->frame = 0;
 			e->x -= 4<<CSF;
-		}
+		} /* fallthrough */
 		case TYPING:
 		{
 			ANIMATE(e, 3, 0,1);

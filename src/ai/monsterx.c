@@ -177,7 +177,7 @@ void ai_monsterx(Entity *e) {
 			bossEntity = e;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_X_FIGHT_BEGIN+1:
 		{
 			if (++e->timer > 100) {
@@ -197,7 +197,7 @@ void ai_monsterx(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_X_TRAVEL+1:
 		{
 			e->timer++;
@@ -237,7 +237,7 @@ void ai_monsterx(Entity *e) {
 		{
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_X_BRAKE+1:
 		{
 			e->timer++;
@@ -317,7 +317,7 @@ void ai_monsterx(Entity *e) {
 			e->state++;
 			
 			set_states(&pieces[DOORL], 2, STATE_DOOR_CLOSING);
-		}
+		} /* fallthrough */
 		case STATE_X_CLOSE_DOORS+1:
 		{
 			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
@@ -344,7 +344,7 @@ void ai_monsterx(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_X_EXPLODING+1:
 		{
 			camera_shake(2);
@@ -431,7 +431,7 @@ void ai_x_tread(Entity *e) {
 		{
 			e->eflags |= (NPC_SOLID | NPC_INVINCIBLE | NPC_FRONTATKONLY);
 			e->state = STATE_TREAD_STOPPED;
-		}
+		} /* fallthrough */
 		case STATE_TREAD_STOPPED:
 		{
 			e->frame = 0;
@@ -447,7 +447,7 @@ void ai_x_tread(Entity *e) {
 			e->animtime = 0;
 			
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_TREAD_RUN+1:
 		{
 			ANIMATE(e, 8, 1,0);
@@ -477,7 +477,7 @@ void ai_x_tread(Entity *e) {
 			
 			e->eflags |= NPC_BOUNCYTOP;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_TREAD_BRAKE+1:
 		{
 			ACCEL_X(0x20);
@@ -628,7 +628,7 @@ void ai_x_target(Entity *e) {
 			e->timer = 40 + (NPC_OPTION1 ? 10 : 0) + (NPC_OPTION2 ? 20 : 0);
 			e->eflags |= NPC_SHOOTABLE;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_TARGET_FIRE+1:
 		{
 			if (--e->timer <= 16) {
@@ -721,7 +721,7 @@ void ai_x_defeated(Entity *e) {
 		{
 			//SmokeClouds(o, 8, 16, 16);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->timer > TIME(50)) {

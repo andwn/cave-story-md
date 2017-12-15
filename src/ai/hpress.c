@@ -35,7 +35,7 @@ static void run_defeated(Entity *e) {
 			// get rid of enemies--the butes can stay, though.
 			entities_clear_by_type(OBJ_HP_LIGHTNING);
 			entities_clear_by_type(OBJ_ROLLING);
-		}
+		} /* fallthrough */
 		case 501:
 		{
 			e->timer++;
@@ -79,7 +79,7 @@ static void run_defeated(Entity *e) {
 				
 				if (e->y > HELL_BOTTOM) e->state = 0;
 			}
-		}
+		} /* fallthrough */
 		case 503:	// falling, and hit floor already
 		{
 			e->y_speed += 0x40;
@@ -102,7 +102,7 @@ static void run_passageway(Entity *e) {
 			e->y = PWAY_BOTTOM;
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_SPECIALSOLID);
 			e->attack = 0;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			if ((++e->timer % 16) == 0)
@@ -125,7 +125,7 @@ static void run_passageway(Entity *e) {
 			
 			e->x = PWAY_X;
 			e->y = PWAY_TOP;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			e->y += (4 << CSF);
@@ -197,12 +197,12 @@ void ai_heavypress(Entity *e) {
 			
 			e->state = 101;
 			e->timer = 0;	// pause a moment before Butes come
-		}
+		} /* fallthrough */
 		case 101:
 		{	// fire lightning
 			entity_create(e->x, e->y+0x7800, OBJ_HP_LIGHTNING, 0);
 			e->state = 102;
-		}
+		} /* fallthrough */
 		case 102:
 		{
 			// spawn butes on alternating sides
@@ -252,7 +252,7 @@ void ai_hp_lightning(Entity *e) {
 			sound_play(SND_TELEPORT, 5);
 			//e->sprite = SPR_HP_CHARGE;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1,2);

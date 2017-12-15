@@ -10,7 +10,7 @@ void ai_waterlevel(Entity *e) {
 			e->y_mark = e->y;
 			e->y_speed = SPEED(0x200);
 		}
-		/* no break */
+		/* fallthrough */
 		case WL_CALM:	// calm waves around set point
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
@@ -22,7 +22,7 @@ void ai_waterlevel(Entity *e) {
 			e->state = WL_DOWN;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case WL_DOWN:
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
@@ -73,7 +73,7 @@ void ai_shutter(Entity *e) {
 			e->timer2 = e->dir;
 			e->dir = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->x_next = e->x;

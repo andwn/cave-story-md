@@ -14,7 +14,7 @@ void ai_night_spirit(Entity *e) {
 			e->state = NS_WAIT;
 			e->hidden = TRUE;
 			e->y_mark = e->y + (12 << CSF);
-		}
+		} /* fallthrough */
 		case NS_WAIT:
 		{
 			if (PLAYER_DIST_Y(8 << CSF)) {
@@ -151,7 +151,7 @@ void ai_hoppy(Entity *e) {
 			e->state = 1;
 			e->enableSlopes = FALSE;
 			e->grounded = TRUE;
-		}
+		} /* fallthrough */
 		case 1:		// wait for player...
 		{
 			e->frame = 0;
@@ -232,7 +232,7 @@ void ai_sky_dragon(Entity *e) {
 		{
 			e->state++;
 			e->y -= 4 << CSF; // Push up 4 pixels cause we in the ground
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 30, 0,1);
@@ -253,7 +253,7 @@ void ai_sky_dragon(Entity *e) {
 			e->y_mark = e->y - (16 << CSF);
 			
 			e->y_speed = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if(++e->animtime > 8) {
@@ -310,7 +310,7 @@ void ai_little_family(Entity *e) {
 			e->state = 1;
 			e->frame = 0;
 			e->x_speed = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (!(random() % TIME(60))) {
@@ -335,7 +335,7 @@ void ai_little_family(Entity *e) {
 			e->animtime = 0;
 			e->dir = random() & 1;
 			e->timer = 16 + (random() % 16);
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if ((!e->dir && collide_stage_leftwall(e)) ||

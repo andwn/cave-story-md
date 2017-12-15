@@ -19,7 +19,7 @@ void ai_stumpy(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			FACE_PLAYER(e);
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (++e->timer > TIME(50)) e->state++;
@@ -31,7 +31,7 @@ void ai_stumpy(Entity *e) {
 			e->timer = 0;
 			THROW_AT_TARGET(e, player.x, player.y, 0x400);
 			e->dir = e->x_speed >= 0;
-		}
+		} /* fallthrough */
 		case 3:
 		{
 			if(blockl || blockr) e->x_speed = -e->x_mark;
@@ -62,7 +62,7 @@ void ai_midorin(Entity *e) {
 			e->timer = 0;
 			e->frame = 0;
 			e->x_speed = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (!(random() % 32)) {
@@ -91,7 +91,7 @@ void ai_midorin(Entity *e) {
 			
 			e->timer = 32 + (random() % 24);		// how long to run
 			e->dir = random() & 1;
-		}
+		} /* fallthrough */
 		case 4:
 		{
 			if (e->animtime ^= 1) e->frame ^= 2;
@@ -133,7 +133,7 @@ void ai_orangebell(Entity *e) {
 										   OBJ_ORANGEBELL_BABY, 0);
 				bat->linkedEntity = e;
 			}
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 5, 0,1,2);
@@ -167,7 +167,7 @@ void ai_orangebell_baby(Entity *e) {
 			e->y_next = -(32<<CSF) + (random() & ((32<<CSF)-1));
 			
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1,2);
@@ -224,7 +224,7 @@ void ai_gunfish(Entity *e) {
 			
 			e->state = 1;
 			e->timer = random() % TIME(50);
-		}
+		} /* fallthrough */
 		case 1:		// desync
 		{
 			if (e->timer == 0) {
@@ -324,7 +324,7 @@ void ai_droll(Entity *e) {
 		{
 			e->x_mark = e->x;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 40, 0,1);
@@ -339,7 +339,7 @@ void ai_droll(Entity *e) {
 			e->state = 11;
 			e->frame = 2;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if (++e->timer > 10) {	// jump
@@ -423,7 +423,7 @@ void ai_droll_guard(Entity *e) {
 		{
 			e->x += (8 << CSF);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 30, 0,1);
@@ -435,7 +435,7 @@ void ai_droll_guard(Entity *e) {
 		{
 			e->timer = 0;
 			e->state = 11;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->frame = 2;
@@ -487,7 +487,7 @@ void ai_mimiga_farmer(Entity *e) {
 			e->frame = 0;
 			e->x_speed = 0;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (!(random() % 60)) {
@@ -517,7 +517,7 @@ void ai_mimiga_farmer(Entity *e) {
 			
 			e->timer = 16 + (random() % 16);
 			e->dir = random() & 1;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			if ((!e->dir && collide_stage_leftwall(e)) ||
@@ -558,7 +558,7 @@ void ai_npc_itoh(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->x_speed = 0;
@@ -581,7 +581,7 @@ void ai_npc_itoh(Entity *e) {
 			e->x_speed = SPEED(0x200);
 			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
-		}
+		} /* fallthrough */
 		case 21:		// cower after leap
 		{
 			if (e->grounded) {
@@ -598,7 +598,7 @@ void ai_npc_itoh(Entity *e) {
 		{
 			e->x_mark = e->x;
 			e->state = 31;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			e->x = e->x_mark;
@@ -612,7 +612,7 @@ void ai_npc_itoh(Entity *e) {
 			e->y_speed = -SPEED(0x200);
 			e->frame = LEAP;
 			e->grounded = FALSE;
-		}
+		} /* fallthrough */
 		case 41:
 		{
 			if (e->grounded) {
@@ -637,7 +637,7 @@ void ai_npc_itoh(Entity *e) {
 			e->animtime = 0;
 			e->dir = 1;
 			e->frame = WALK1;
-		}
+		} /* fallthrough */
 		case 51:
 		{
 			ANIMATE(e, 4, WALK1,STAND,WALK2,STAND);
@@ -677,7 +677,7 @@ void ai_kanpachi_stand(Entity *e) {
 		{
 			e->state++;
 			moveMeToFront = TRUE; // Gotta be in front of the door
-		}
+		} /* fallthrough */
 		case 4:
 		{
 			ANIMATE(e, 8, 3,4);
@@ -731,7 +731,7 @@ void ai_prox_press_hoz(Entity *e) {
 			if (!e->dir) e->x -= (8 << CSF);
 			e->x_mark = e->x;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (PLAYER_DIST_Y2(0x800, 0x800)) {
@@ -814,7 +814,7 @@ void ai_rocket(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->alwaysActive = TRUE;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->timer++;
@@ -839,7 +839,7 @@ void ai_rocket(Entity *e) {
 			
 			//SmokeClouds(o, 10, 16, 8);
 			sound_play(SND_BLOCK_DESTROY, 5);
-		}
+		} /* fallthrough */
 		case 13:
 		{
 			e->y_speed -= SPEED(0x08);

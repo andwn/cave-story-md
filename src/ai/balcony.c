@@ -96,7 +96,7 @@ void ai_igor_balcony(Entity *e) {
 			e->state = 1;
 			e->grounded = FALSE;
 			e->display_box.top += 4;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 20, STAND1,STAND2);
@@ -114,7 +114,7 @@ void ai_igor_balcony(Entity *e) {
 			e->animtime = 0;
 			FACE_PLAYER(e);
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			ANIMATE(e, 8, WALK1,STAND1,WALK2,STAND1);
@@ -171,7 +171,7 @@ void ai_igor_balcony(Entity *e) {
 			e->timer = 0;
 			FACE_PLAYER(e);
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			e->timer++;
@@ -292,7 +292,7 @@ void ai_falling_block(Entity *e) {
 			if (e->y > 128<<CSF) {
 				e->state = 11;
 			}
-		}
+		} /* fallthrough */
 		case 11:	// passed thru ceiling in Hell B2
 		{
 			e->y_speed += SPEED(0x40);
@@ -332,7 +332,7 @@ void ai_doctor_ghost(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			e->timer++;
@@ -352,7 +352,7 @@ void ai_doctor_ghost(Entity *e) {
 		{
 			e->state = 21;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			if (++e->timer > TIME(250)) {
@@ -438,7 +438,7 @@ void ai_mimiga_caged(Entity *e) {
 			e->state = 1;
 			e->x -= (1 << CSF);
 			e->y -= (2 << CSF);
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->frame = 0;
@@ -454,7 +454,7 @@ void ai_mimiga_caged(Entity *e) {
 			e->frame = 2;
 			
 			entity_create(e->x, e->y-(16<<CSF), OBJ_HEART, 0);
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			FACE_PLAYER(e);

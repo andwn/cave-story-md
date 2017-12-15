@@ -81,7 +81,7 @@ void ai_balrog(Entity *e) {
 			e->x_speed = 0;
 			e->balrog_smoking = FALSE;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			e->frame = STAND;
@@ -95,7 +95,7 @@ void ai_balrog(Entity *e) {
 			e->timer = 0;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			if (++e->timer <= TIME(20)) break;
@@ -104,7 +104,7 @@ void ai_balrog(Entity *e) {
 			e->y_speed = SPEED(-0x800);
 			e->eflags |= NPC_IGNORESOLID;
 		}
-		/* no break */
+		/* fallthrough */
 		case 12:
 		{
 			fall = FALSE;
@@ -128,7 +128,7 @@ void ai_balrog(Entity *e) {
 			sound_play(SND_BIG_CRASH, 5);
 			e->balrog_smoking = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:
 		{
 			e->timer2++;
@@ -146,7 +146,7 @@ void ai_balrog(Entity *e) {
 			e->timer = 0;
 			e->state = 31;
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:
 		{
 			if (++e->timer > TIME(100)) {
@@ -168,7 +168,7 @@ void ai_balrog(Entity *e) {
 			bossEntity = entity_create(e->x, e->y, 360 + BOSS_BALFROG, 0);
 			bossEntity->event = 1000;
 		}
-		/* no break */
+		/* fallthrough */
 		case 43:
 		{
 			// flashing visibility
@@ -200,7 +200,7 @@ void ai_balrog(Entity *e) {
 			e->frame = WORRY;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case 71:
 		{
 			fall = FALSE;
@@ -216,7 +216,7 @@ void ai_balrog(Entity *e) {
 			e->frame = PAINED;
 			e->state = 81;
 		}
-		/* no break */
+		/* fallthrough */
 		case 81:
 		{
 			fall = FALSE;
@@ -235,7 +235,7 @@ void ai_balrog(Entity *e) {
 			e->timer = 0;
 			e->frame = DUCK;	// prepare for jump;
 		}
-		/* no break */
+		/* fallthrough */
 		case 101:
 		{
 			if (++e->timer > TIME(20)) {
@@ -313,7 +313,7 @@ void ai_balrog_drop_in(Entity *e) {
 			e->frame = ARMSUP;	// falling;
 			//e->x -= 16 << CSF;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			// since balrog often falls through the ceiling we must wait until he is 
@@ -364,7 +364,7 @@ void ai_balrog_bust_in(Entity *e) {
 			e->frame = ARMSUP;
 			sound_play(SND_BLOCK_DESTROY, 5);
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:		// falling the short distance to ground
 		{
 			e->y_speed += SPEED(0x10);
@@ -428,7 +428,7 @@ void ai_balrogRunning(Entity *e) {
 			e->frame = STAND;
 			e->timer = 0;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (++e->timer > TIME(30)) {
@@ -443,7 +443,7 @@ void ai_balrogRunning(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case STATE_CHARGE+1:
 		{
 			ACCEL_X(0x10);
@@ -699,7 +699,7 @@ void ai_balrog_boss_msl(Entity *e) {
 			e->frame = STAND;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			if (++e->timer > TIME(30)) {
@@ -715,7 +715,7 @@ void ai_balrog_boss_msl(Entity *e) {
 			e->animtime = 0;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_CHARGE+1:
 		{
 			ANIMATE(e, 16, WALK1,STAND,WALK2,STAND);
@@ -751,7 +751,7 @@ void ai_balrog_boss_msl(Entity *e) {
 			e->frame = ARMSUP;
 			e->y_speed = -SPEED(0x5ff);
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_JUMP_FIRE+1:
 		{
 			FACE_PLAYER(e);

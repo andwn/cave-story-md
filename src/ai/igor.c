@@ -29,7 +29,7 @@ void ai_igor(Entity *e) {
 			e->attack = 0;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_STAND+1:
 		{
 			ANIMATE(e, 16, STAND1, STAND2);
@@ -49,7 +49,7 @@ void ai_igor(Entity *e) {
 			e->x_speed = e->dir ? SPEED(1<<CSF) : -SPEED(1<<CSF);
 			e->state++;
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case STATE_WALK+1:
 		{
 			ANIMATE(e, 12, WALK1,STAND1,WALK2,STAND1);
@@ -74,7 +74,7 @@ void ai_igor(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case STATE_PUNCH+1:
 		{
 			if(++e->timer > TIME(16)) e->state++;
@@ -93,7 +93,7 @@ void ai_igor(Entity *e) {
 			e->attack = 5;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_PUNCH+3:
 		{
 			if(++e->timer > TIME(14)) {
@@ -119,7 +119,7 @@ void ai_igor(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case STATE_JUMPING+1:
 		{
 			if(e->grounded) {
@@ -139,7 +139,7 @@ void ai_igor(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case STATE_LANDED+1:
 		{
 			if(++e->timer > TIME(12)) e->state = STATE_STAND;
@@ -153,7 +153,7 @@ void ai_igor(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			moveMeToFront = TRUE;
-		}
+		} /* fallthrough */
 		case STATE_MOUTH_BLAST+1:
 		{
 			e->frame = (++e->timer > TIME(50) && (e->timer & 4)) ? MOUTH2 : MOUTH1;
@@ -205,7 +205,7 @@ void ai_igorscene(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 16, STAND1,STAND2);
@@ -214,7 +214,7 @@ void ai_igorscene(Entity *e) {
 		case 2:
 		{
 			MOVE_X(SPEED(0x200));
-		}
+		} /* fallthrough */
 		case 3:
 		{
 			ANIMATE(e, 12, WALK1,STAND1,WALK2,STAND1);
@@ -226,7 +226,7 @@ void ai_igorscene(Entity *e) {
 			e->frame = PUNCH1;
 			e->timer = 20;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 5:
 		{
 			e->timer--;

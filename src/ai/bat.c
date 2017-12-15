@@ -8,7 +8,7 @@ void ai_batVertical(Entity *e) {
 			e->y_mark = e->y;
 			e->timer = random() % 50;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (!e->timer) {
@@ -121,7 +121,7 @@ void ai_batCircle(Entity *e) {
 			e->y_mark = e->y + (e->x_speed << 3);
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 			// circle around our target point
 			if(++e->animtime >= 4) {

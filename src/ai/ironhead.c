@@ -36,7 +36,7 @@ void ai_ironhead(Entity *e) {
 			e->dir = 1;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case IRONH_SPAWN_FISHIES+1:		// wave of fishies comes in
 		{
 			if (++e->timer > 50) {
@@ -68,7 +68,7 @@ void ai_ironhead(Entity *e) {
 			e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
 			
 			e->eflags |= NPC_SHOOTABLE;
-		}
+		} /* fallthrough */
 		case IRONH_SWIM+1:
 		{
 			ANIMATE(e, 8, 4,3,2,3,4,1,0,1);
@@ -133,7 +133,7 @@ void ai_ironhead(Entity *e) {
 			
 			//for(int i=0;i<32;i++)
 			//	ironh_smokecloud(o);
-		}
+		} /* fallthrough */
 		case IRONH_DEFEATED+1:			// retreat back to left...
 		{
 			e->x_mark -= (1<<CSF);
@@ -187,7 +187,7 @@ void ai_ironh_fishy(Entity *e) {
 			e->animtime = 0;
 			e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
 			e->x_speed = SPEED(0x800);
-		}
+		} /* fallthrough */
 		case 10:			// harmless fishy
 		{
 			ANIMATE(e, 8, 0,1);
@@ -331,7 +331,7 @@ void ai_ikachan(Entity *e) {
 		{
 			e->state = 1;
 			e->timer = 3 + (random() % 17);
-		}
+		} /* fallthrough */
 		case 1:		// he pushes ahead
 		{
 			if (--e->timer == 0) {

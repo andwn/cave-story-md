@@ -247,7 +247,7 @@ void ai_teleIn(Entity *e) {
 			e->timer = 5*15;
 			e->state++;
 			e->grounded = TRUE;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->timer--;
@@ -357,7 +357,7 @@ void ai_player(Entity *e) {
 			}
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			e->frame = 9;
@@ -372,7 +372,7 @@ void ai_player(Entity *e) {
 			//new->id = e->id;
 			//new->event = e->event;
 			//e->state = STATE_DELETE;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			e->hidden ^= 1;
@@ -472,6 +472,7 @@ void ai_chinfish(Entity *e) {
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			e->y_speed = 0x88;
+			/* fallthrough */
 		case 1:
 			e->y_speed += (e->y > e->y_mark) ? -8:8;
 			LIMIT_Y(0x100);
@@ -489,6 +490,7 @@ void ai_fireplace(Entity *e) {
 			e->frame = 0;
 			e->state = 1;
 			e->hidden = 0;
+			/* fallthrough */
 		case 1:
 			ANIMATE(e, 8, 0,1,2);
 		break;
@@ -497,6 +499,7 @@ void ai_fireplace(Entity *e) {
 			e->state = 11;
 			//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
 			SMOKE_AREA((e->x>>CSF) - 8, (e->y>>CSF) - 8, 16, 16, 2);
+			/* fallthrough */
 		case 11:
 			e->hidden = 1;
 		break;
@@ -560,7 +563,7 @@ void ai_segalogo(Entity *e) {
 			e->frame = 0;
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 2:
 		{
 			if(++e->timer > 2) {
@@ -689,7 +692,7 @@ void ai_scroll_ctrl(Entity *e) {
 				e->linkedEntity = bossEntity;
 			}
 			//if (!e->linkedEntity) e->state = STATE_DELETE;
-		}
+		} /* fallthrough */
 		case 101:
 		{
 			if(e->linkedEntity) {

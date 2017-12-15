@@ -65,7 +65,7 @@ static void run_flight(Entity *e)
 			
 			FACE_PLAYER(e);
 			MOVE_X(RUSH_SPEED);
-		}
+		} /* fallthrough */
 		case BP_FLY_LR+1:
 		{
 			ANIMATE(e, 4, 6,7);
@@ -117,7 +117,7 @@ static void run_flight(Entity *e)
 			e->y_speed = -RUSH_SPEED;
 			e->x_speed = 0;
 			e->attack = DMG_RUSH;
-		}
+		} /* fallthrough */
 		case BP_FLY_UP+1:
 		{
 			ANIMATE(e, 4, 8,9);
@@ -172,7 +172,7 @@ static void run_flight(Entity *e)
 			e->y_speed = RUSH_SPEED;
 			e->x_speed = 0;
 			e->attack = DMG_RUSH;
-		}
+		} /* fallthrough */
 		case BP_FLY_DOWN+1:
 		{
 			ANIMATE(e, 4, 8, 9);
@@ -215,7 +215,7 @@ static void run_flight(Entity *e)
 			e->dir = LEFT;		// non-flashing version
 			
 			e->state++;
-		}
+		} /* fallthrough */
 		case BP_RETURN_TO_GROUND+1:
 		{
 			ANIMATE(e, 4, 4,5);
@@ -268,7 +268,7 @@ static void run_lightning(Entity *e)
 			e->dir = LEFT;		// not flashing
 			
 			e->state++;
-		}
+		} /* fallthrough */
 		case BP_LIGHTNING_STRIKE+1:
 		{
 			ANIMATE(e, 4, 4,5);
@@ -416,7 +416,7 @@ static void run_defeated(Entity *e)
 			
 			e->x_mark = e->x;
 			e->x_speed = 0;
-		}
+		} /* fallthrough */
 		case BP_DEFEATED+1:		// fall to ground, shaking
 		{
 			e->y_speed += 0x20;
@@ -494,7 +494,7 @@ void ai_ballos_priest(Entity *e) {
 			
 			e->attack = DMG_NORMAL;
 			e->savedhp = e->health;
-		}
+		} /* fallthrough */
 		case BP_FIGHTING_STANCE+1:
 		{
 			ANIMATE(e, 10, 1, 2);
@@ -529,11 +529,11 @@ void ai_ballos_priest(Entity *e) {
 			
 			// Fly/UD faces player only once, at start
 			FACE_PLAYER(e);
-		}
+		} /* fallthrough */
 		case BP_PREPARE_FLY_LR+1:
 		{
 			FACE_PLAYER(e);
-		}
+		} /* fallthrough */
 		case BP_PREPARE_FLY_UD+1:
 		{
 			// braking, if we came here out of another fly state
@@ -588,7 +588,7 @@ void ai_ballos_target(Entity *e)
 			
 			sound_play(SND_CHARGE_GUN, 5);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1);
@@ -623,7 +623,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 			e->state = 1;
 			
 			MOVE_X(0x400);
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1,2);
@@ -679,7 +679,7 @@ void ai_ballos_skull(Entity *e) {
 		{
 			e->state = 100;
 			e->frame = random() & 3;
-		}
+		} /* fallthrough */
 		case 100:
 		{
 			e->y_speed += 0x40;
@@ -746,7 +746,7 @@ void ai_green_devil_spawner(Entity *e) {
 		{
 			e->timer = random() % TIME(40);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->timer-- == 0) {
@@ -771,7 +771,7 @@ void ai_green_devil(Entity *e) {
 			e->y_speed = (random() % (10<<CSF)) - (5<<CSF);
 			e->attack = 3;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1);
@@ -799,7 +799,7 @@ void ai_bute_sword_red(Entity *e) {
 			//e->sprite = SPR_BUTE_SWORD_RED_FALLING;
 			//e->MoveAtDir(e->dir, 0x600);
 			e->dir = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1,2,3);
@@ -868,7 +868,7 @@ void ai_bute_archer_red(Entity *e) {
 			
 			e->x_speed = (random() % 0x800) - 0x400;
 			e->y_speed = (random() % 0x800) - 0x400;
-		}
+		} /* fallthrough */
 		case 1:		// come on screen
 		{
 			ANIMATE(e, 4, 0,1);
@@ -886,7 +886,7 @@ void ai_bute_archer_red(Entity *e) {
 			
 			e->frame = 2;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			ANIMATE(e, 4, 2,3);
@@ -903,7 +903,7 @@ void ai_bute_archer_red(Entity *e) {
 			e->timer = 0;
 			e->animtime = 0;
 			e->frame = 3;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			ANIMATE(e, 4, 3,4);
@@ -924,7 +924,7 @@ void ai_bute_archer_red(Entity *e) {
 			e->state = 41;
 			e->timer = 0;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case 41:
 		{
 			ANIMATE(e, 4, 5,6);

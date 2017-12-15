@@ -46,7 +46,7 @@ void ai_misery_frenzied(Entity *e) {
 			
 			sound_play(SND_TELEPORT, 5);
 			e->timer = 1;
-		}
+		} /* fallthrough */
 		case 1:		// transforming
 		{
 			e->timer++;
@@ -78,7 +78,7 @@ void ai_misery_frenzied(Entity *e) {
 			e->timer = 0;
 			e->frame = FLOAT1;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			e->x_speed *= 7; e->x_speed /= 8;
@@ -97,7 +97,7 @@ void ai_misery_frenzied(Entity *e) {
 			e->timer = 0;
 			e->frame = SPELL1;
 			e->savedhp = e->health;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			e->frame = (e->timer & 4) ? SPELL1 : SPELL2;
@@ -139,7 +139,7 @@ void ai_misery_frenzied(Entity *e) {
 			// if you are below the 2nd little platform on the left,
 			// she spawns critters, else bats.
 			e->spawner = player.y >= block_to_sub(10);
-		}
+		} /* fallthrough */
 		case 41:
 		{
 			e->timer++;
@@ -196,7 +196,7 @@ void ai_misery_frenzied(Entity *e) {
 			e->y_speed = 0;
 			FACE_PLAYER(e);
 			sound_play(SND_CHARGE_GUN, 5);
-		}
+		} /* fallthrough */
 		case 51:
 		{
 			e->timer++;
@@ -427,7 +427,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			sound_play(SND_TELEPORT, 5);
 			e->timer = 1;
-		}
+		} /* fallthrough */
 		case 1:		// transforming
 		{
 			e->timer++;
@@ -458,7 +458,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_IGNORESOLID;
-		}
+		} /* fallthrough */
 		case SUE_BASE+1:
 		{
 			ANIMATE(e, 20, STILL1,STILL2);
@@ -485,7 +485,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			e->x_speed = 0;
 			e->y_speed = 0;
-		}
+		} /* fallthrough */
 		case SUE_PREPARE_ATTACK+1:
 		{
 			if (++e->timer > TIME(16)) {
@@ -507,7 +507,7 @@ void ai_sue_frenzied(Entity *e) {
 			FACE_PLAYER(e);
 			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x600));
 			set_ignore_solid(e);
-		}
+		} /* fallthrough */
 		case SUE_SOMERSAULT+1:
 		{
 			// passes through frame 3 (prepare/dash) before entering anim loop
@@ -541,7 +541,7 @@ void ai_sue_frenzied(Entity *e) {
 			e->frame = STILL1;	// stop somersault; back to normal stand frame
 			e->attack = 0;
 			e->eflags &= ~NPC_IGNORESOLID;
-		}
+		} /* fallthrough */
 		case SUE_SOMERSAULT_HIT+1:	// slowing down
 		{
 			e->x_speed = (e->x_speed << 1) + (e->x_speed << 2); e->x_speed >>= 3;
@@ -597,7 +597,7 @@ void ai_sue_frenzied(Entity *e) {
 							 else x = player.x + (160<<CSF);
 			THROW_AT_TARGET(e, x, player.y, SPEED(0x600));
 			set_ignore_solid(e);
-		}
+		} /* fallthrough */
 		case SUE_DASH+1:
 		{
 			// flash
@@ -695,7 +695,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 			
 			if (e->type == OBJ_SUE_FRENZIED)
 				sue_was_killed = TRUE;	// trigger Misery to start spawning missiles
-		}
+		} /* fallthrough */
 		case SIDEKICK_DEFEATED+1:
 		{
 			e->y_speed += SPEED(0x20);

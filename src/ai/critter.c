@@ -27,7 +27,7 @@ void ai_critter(Entity *e) {
 			e->frame = 0;
 			e->x_speed = e->y_speed = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_WAITING+1:
 		{
 			if(e->damage_time || (PLAYER_DIST_X(0x60 << CSF) && PLAYER_DIST_Y(0x40 << CSF))) {
@@ -41,7 +41,7 @@ void ai_critter(Entity *e) {
 			e->frame = 1;
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case STATE_ATTENTION+1:
 		{
 			if(++e->timer > TIME(25)) {
@@ -57,7 +57,7 @@ void ai_critter(Entity *e) {
 			sound_play(SND_ENEMY_JUMP, 5);
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case STATE_HOPPING+1:
 		{
 			// Keep trying to move after hitting a wall
@@ -74,7 +74,7 @@ void ai_critter(Entity *e) {
 		case STATE_FLYING:
 		{
 			e->frame = 3;
-		}
+		} /* fallthrough */
 		case STATE_FLYING+1:
 		{
 			if(!(++e->timer % 8)) {

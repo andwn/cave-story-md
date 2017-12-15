@@ -220,7 +220,7 @@ void ai_ma_pignon(Entity *e) {
 		{
 			e->y_next += 8 << CSF;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			FACE_PLAYER(e);
@@ -235,7 +235,7 @@ void ai_ma_pignon(Entity *e) {
 			e->timer = 0;
 			e->timer2 = 0;
 			e->eflags |= NPC_SHOOTABLE;
-		}
+		} /* fallthrough */
 		case MP_BaseState:
 		{
 			FACE_PLAYER(e);
@@ -350,7 +350,7 @@ void ai_ma_pignon(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			camera_shake(16);
-		}
+		} /* fallthrough */
 		case MP_Hit_Wall+1:
 		{
 			e->attack = 4;
@@ -378,7 +378,7 @@ void ai_ma_pignon(Entity *e) {
 			e->state++;
 			e->frame = WALK1;
 			FACE_PLAYER(e);
-		}
+		} /* fallthrough */
 		case MP_CloneAttack+1:	// walk at player before attack
 		{
 			ANIMATE(e, 4, WALK1,WALK2);
@@ -425,7 +425,7 @@ void ai_ma_pignon(Entity *e) {
 			e->timer = 0;
 			
 			camera_shake(10);
-		}
+		} /* fallthrough */
 		case MP_Spawn_Clones+1:
 		{
 			ANIMATE(e, 4, HOP,WHITE);
@@ -452,7 +452,7 @@ void ai_ma_pignon(Entity *e) {
 			e->timer = 0;
 			e->frame = HURT;
 			e->attack = 0;
-		}
+		} /* fallthrough */
 		case MP_Defeated+1:
 		{
 			e->y_speed += SPEED(0x20);
@@ -529,7 +529,7 @@ void ai_ma_pignon_rock(Entity *e) {
 			e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 			e->animtime = random() % 24;
 			e->attack = 10;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->y_speed += SPEED(0x40);

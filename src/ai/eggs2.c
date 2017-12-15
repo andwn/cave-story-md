@@ -59,7 +59,7 @@ void ai_dragon_zombie(Entity *e) {
 			// the position of their target for each shot
 			e->x_mark = player.x;
 			e->y_mark = player.y;
-		}
+		} /* fallthrough */
 		case 4:
 		{
 			e->timer++;
@@ -228,7 +228,7 @@ void ai_counterbomb(Entity *e) {
 			
 			e->timer = random() % 50;
 			e->timer2 = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{	// desync if multiple enemies
 			if (e->timer == 0) {
@@ -308,7 +308,7 @@ void ai_counterbomb_num(Entity *e) {
 		{
 			sound_play(SND_COMPUTER_BEEP, 5);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->x += (1 << CSF);

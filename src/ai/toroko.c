@@ -97,7 +97,7 @@ void ai_torokoBoss(Entity *e) {
 			e->state = 1;
 			e->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:		// wait a sec before morphing
 		{
 			if (++e->timer > TIME(50)) {
@@ -132,7 +132,7 @@ void ai_torokoBoss(Entity *e) {
 			e->timer = (random() % TIME(110)) + TIME(20);
 			e->x_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			ANIMATE(e, 8, 0,1);
@@ -149,7 +149,7 @@ void ai_torokoBoss(Entity *e) {
 			e->frame = 2;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:	// preparing to jump
 		{
 			if (++e->timer > TIME(10)) {
@@ -219,7 +219,7 @@ void ai_torokoBoss(Entity *e) {
 			e->frame = 4;
 			SPAWNBLOCK;
 		}
-		/* no break */
+		/* fallthrough */
 		case 51:
 		{
 			if (++e->timer > TIME(30)) {
@@ -247,7 +247,7 @@ void ai_torokoBoss(Entity *e) {
 			e->eflags &= ~NPC_SHOOTABLE;
 			SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF) - 16, 32, 32, 4);
 		}
-		/* no break */
+		/* fallthrough */
 		case 101:		// wait till fall to ground
 		{
 			if ((e->grounded = collide_stage_floor(e))) {
@@ -309,7 +309,7 @@ void ai_torokoBoss(Entity *e) {
 			e->timer = 0;
 			sound_play(SND_TELEPORT, 5);
 		}
-		/* no break */
+		/* fallthrough */
 		case 141:
 		{
 			e->hidden ^= 1;
@@ -389,7 +389,7 @@ void ai_torokoFlower(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 11:
 		{
 			if (++e->timer > TIME(30)) {

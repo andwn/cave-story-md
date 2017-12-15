@@ -69,7 +69,7 @@ void ai_lava_spawner(Entity *e) {
 			e->state = 1;
 			e->frame = 1;
 			e->hidden = TRUE;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->timer == 0) {
@@ -153,7 +153,7 @@ void ai_red_bat(Entity *e) {
 			e->state = 1;
 			e->y_mark = e->y;
 			e->timer = random() % TIME(50);
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->timer == 0) {
@@ -163,7 +163,7 @@ void ai_red_bat(Entity *e) {
 				e->timer--;
 				break;
 			}
-		}
+		} /* fallthrough */
 		case 2:
 		{
 			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : -SPEED(0x10);
@@ -199,7 +199,7 @@ void ai_red_demon(Entity *e) {
 			e->x_speed = 0;
 			e->frame = 0;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 20, 0,1);
@@ -213,7 +213,7 @@ void ai_red_demon(Entity *e) {
 			e->state = 11;
 			e->frame = 3;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			switch(++e->timer)

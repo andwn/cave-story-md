@@ -212,8 +212,7 @@ void ai_sandcroc(Entity *e) {
 			e->y_mark = e->y;
 			e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 			e->nflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
-		}
-		/* no break */
+		} /* fallthrough */
 		case 1:
 		{
 			// track player invisibly underground
@@ -324,8 +323,7 @@ void ai_sunstone(Entity *e) {
 			e->dir = 0;
 			e->timer = 0;
 			e->state++;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 11:
 		{
 			e->x += e->x_speed;
@@ -348,8 +346,7 @@ void ai_armadillo(Entity *e) {
 		{
 			FACE_PLAYER(e);
 			e->state = 1;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 1:
 		{
 			if((!e->dir && collide_stage_leftwall(e)) ||
@@ -378,8 +375,7 @@ void ai_crow(Entity *e) {
 			e->x_mark = e->x + (e->x_speed << 3);
 			e->y_mark = e->y + (e->y_speed << 3);
 			e->state = 1;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 1:
 		case 101:
 		{
@@ -443,8 +439,7 @@ void ai_skullhead(Entity *e) {
 		{
 			e->state = 1;
 			e->timer = random() % 5;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 1:
 		{
 			if(++e->timer > 8) {
@@ -455,8 +450,7 @@ void ai_skullhead(Entity *e) {
 			} else {
 				break;
 			}
-		}
-		/* no break */
+		} /* fallthrough */
 		case 2:
 		{
 			e->y_speed += 0x40;
@@ -542,7 +536,7 @@ void ai_curlys_mimigas(Entity *e) {
 		{
 			e->state = 3;
 		}
-		/* no break */
+		/* fallthrough */
 		case 3:		// stand and blink
 		{
 			e->frame = 0;
@@ -570,8 +564,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->state = 11;
 			e->timer = random() % 50;
 			e->frame = 0;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 11:
 			if(e->timer) e->timer--;
 			else e->state = 13;
@@ -582,8 +575,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->timer = random() % 50;
 			FACE_PLAYER(e);
 			e->frame = 1;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 14:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
@@ -729,13 +721,14 @@ void ai_skeleton(Entity *e) {
 		case 10:	// prepare for jump
 			e->timer = e->timer2 = e->frame = e->x_speed = 0;
 			e->state = 11;
+			/* fallthrough */
 		case 11:
 			if (++e->timer > 5 && e->grounded) {
 				// jump if player near, else go to idle
 				e->state = pnear ? 20:0;
 			}
 		if (e->state != 20) break;
-		
+		/* fallthrough */
 		case 20:
 		{
 			e->state = 21;
@@ -750,7 +743,7 @@ void ai_skeleton(Entity *e) {
 			} else {
 				e->x_speed += (e->x_next > player.x) ? SPEED(0x100):-SPEED(0x100);
 			}
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			if (e->y_speed > 0) {
@@ -842,6 +835,7 @@ void ai_puppy_bark(Entity *e) {
 		case 100:
 			e->state++;
 			e->timer2 = 0;
+			/* fallthrough */
 		case 1:
 		case 101:
 			// bark when player is near

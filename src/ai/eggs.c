@@ -69,7 +69,7 @@ void ai_beetle(Entity *e) {
 			}
 			e->alwaysActive = FALSE;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 1: // wait for player on the wall
 		{
 			if(++e->timer > TIME(50) && PLAYER_DIST_Y(16 << CSF)) {

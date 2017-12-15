@@ -122,8 +122,8 @@ void credits_main() {
 					song_stop(); // TODO: Figure out how to fade
 					break;
 				case FLAG_JUMP:
-					if(!system_get_flag(credits_info[pc].fjump.flag))
-						break;
+					if(!system_get_flag(credits_info[pc].fjump.flag)) break;
+					/* fallthrough */
 				case JUMP:
 				{
 					uint16_t label = credits_info[pc].jump.label;

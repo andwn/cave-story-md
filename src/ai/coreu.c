@@ -135,7 +135,7 @@ void ai_undead_core(Entity *e) {
 			//set_bbox_shootable(FALSE);
 			//SetRotatorStates(RT_Spin_Closed);
 			//SpawnFaceSmoke();
-		}
+		} /* fallthrough */
 		case CR_FaceClosed+1:
 		{
 			e->timer++;
@@ -170,7 +170,7 @@ void ai_undead_core(Entity *e) {
 			
 			e->savedhp = e->health;
 			//set_bbox_shootable(TRUE);
-		}
+		} /* fallthrough */
 		case CR_FaceSkull+1:
 		{
 			e->timer++;
@@ -205,7 +205,7 @@ void ai_undead_core(Entity *e) {
 			
 			e->savedhp = e->health;
 			//set_bbox_shootable(TRUE);
-		}
+		} /* fallthrough */
 		case CR_FaceTeeth+1:
 		{
 			e->timer++;
@@ -247,7 +247,7 @@ void ai_undead_core(Entity *e) {
 			
 			e->savedhp = e->health;
 			//set_bbox_shootable(TRUE);
-		}
+		} /* fallthrough */
 		case CR_FaceDoom+1:
 		{
 			e->timer++;
@@ -359,7 +359,7 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			entities_clear_by_type(OBJ_UDMINI_PLATFORM);
 			//set_bbox_shootable(FALSE);
-		}
+		} /* fallthrough */
 		case CR_Defeated+1:
 		{
 			//SmokeXY(e->x, e->y, 1, 64, 32);
@@ -454,7 +454,7 @@ void ai_undead_core_face(Entity *e) {
 		{
 			e->state++;
 			e->timer = 100;
-		}
+		} /* fallthrough */
 		case FC_Mouth+1:
 		{
 			e->eflags |= NPC_SHOOTABLE;
@@ -663,7 +663,7 @@ void ai_udmini_platform(Entity *e) {
 			e->x_speed = -SPEED(0x200);
 			e->y_speed = SPEED(0x100);
 			if (random() & 1) e->y_speed = -e->y_speed;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if (e->x < -(64 << CSF)) e->state = STATE_DELETE;
@@ -733,7 +733,7 @@ void ai_ud_pellet(Entity *e) {
 		{
 			e->x_speed = -SPEED(0x200);
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:		// falling
 		{
 			if (e->eflags & NPC_OPTION2) {
@@ -763,7 +763,7 @@ void ai_ud_pellet(Entity *e) {
 			
 			e->x -= (4 << CSF);
 			e->y -= (4 << CSF);
-		}
+		} /* fallthrough */
 		case 3:
 		{
 			ANIMATE(e, 2, 2,3,4);

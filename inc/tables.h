@@ -15,7 +15,7 @@ typedef struct {
 	const Palette *npcPalette;
 	uint8_t tileset; // Which tileset in tileset_info to use
 	uint8_t background; // Which background in background_info to use
-	uint8_t name[24]; // The name of the map, as displayed to the player
+	char name[24]; // The name of the map, as displayed to the player
 } stage_info_def;
 extern const stage_info_def stage_info[STAGE_COUNT];
 

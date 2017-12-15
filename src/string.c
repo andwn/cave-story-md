@@ -2,8 +2,8 @@
 
 #include "string.h"
 
-static const char const uppercase_hexchars[] = "0123456789ABCDEF";
-static const char const lowercase_hexchars[] = "0123456789abcdef";
+static const char uppercase_hexchars[] = "0123456789ABCDEF";
+static const char lowercase_hexchars[] = "0123456789abcdef";
 
 // FORWARD
 static uint32_t uintToStr_(uint32_t value, char *str, int16_t minsize, int16_t maxsize);

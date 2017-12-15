@@ -218,7 +218,7 @@ void ai_sisters(Entity *e) {
 			
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case STATE_DEFEATED+1:
 		{
 			if (++e->timer > TIME(100)) {
@@ -352,7 +352,7 @@ void ai_sisters_head(Entity *e) {
 			e->frame = 0;
 			e->timer = (random() % TIME(100)) + TIME(100);
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_HEAD_CLOSED+1:
 		{
 			if (--e->timer <= 0) {
@@ -369,7 +369,7 @@ void ai_sisters_head(Entity *e) {
 			e->timer = 0;
 			e->timer2 = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_HEAD_OPEN+1:
 		{
 			e->timer++;
@@ -417,7 +417,7 @@ void ai_sisters_head(Entity *e) {
 			e->state++;
 			e->timer = 0;
 			e->frame = 0;
-		}
+		} /* fallthrough */
 		case STATE_HEAD_MEGAFIRE+1:
 		{
 			e->timer++;

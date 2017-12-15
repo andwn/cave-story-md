@@ -128,7 +128,7 @@ static void RunComeDown(Entity *e) {
 			if (e->x > F1_RIGHT) e->x = F1_RIGHT;
 			
 			e->state++;
-		}
+		} /* fallthrough */
 		case AS_COME_DOWN+1:
 		{
 			if (++e->timer > TIME(30)) e->state++;
@@ -182,7 +182,7 @@ static void RunForm1(Entity *e) {
 			// but it is not counted.
 			e->health = e->savedhp;
 			e->state = AS_PREPARE_JUMP;
-		}
+		} /* fallthrough */
 		case AS_PREPARE_JUMP:	// delay, then jump at player
 		{
 			e->x_speed = 0;
@@ -196,7 +196,7 @@ static void RunForm1(Entity *e) {
 				e->timer = TIME(150);
 			else
 				e->timer = TIME(50);
-		}
+		} /* fallthrough */
 		case AS_PREPARE_JUMP+1:
 		{
 			if (e->timer-- == 0) {
@@ -246,7 +246,7 @@ static void RunForm1(Entity *e) {
 			
 			e->x_speed = 0;
 			e->damage_time = 0;
-		}
+		} /* fallthrough */
 		case AS_DEFEATED+1:
 		{
 			e->y_speed += SPEED(0x40);
@@ -292,7 +292,7 @@ static void RunForm2(Entity *e) {
 				
 				rotators_left++;
 			}
-		}
+		} /* fallthrough */
 		case BS_ENTER_FORM+1:
 		{
 			e->y += (ARENA_BOTTOM - e->y) / 8;
@@ -310,7 +310,7 @@ static void RunForm2(Entity *e) {
 			//SetRotatorStates(10);	// spin CCW, work as treads
 			e->state = BS_LEFT;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case BS_LEFT:		// left on floor
 		{
 			e->x_speed = -BS_SPEED;
@@ -406,7 +406,7 @@ static void RunForm3(Entity *e) {
 			
 			entities_clear_by_type(OBJ_GREEN_DEVIL_SPAWNER);
 			//SetRotatorStates(20);	// fast spin CCW
-		}
+		} /* fallthrough */
 		case CS_ENTER_FORM+1:
 		{
 			// come down into center of room
@@ -437,7 +437,7 @@ static void RunForm3(Entity *e) {
 			e->timer = 0;
 			e->x_mark = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case CS_SPAWN_SPIKES+1:
 		{
 			e->timer++;
@@ -468,7 +468,7 @@ static void RunForm3(Entity *e) {
 			//shield->eflags &= ~NPC_INVINCIBLE;
 			
 			e->state = CS_SPIN_PLATFORMS;
-		}
+		} /* fallthrough */
 		// fall-through
 		case CS_SPIN_PLATFORMS:
 		{
@@ -478,7 +478,7 @@ static void RunForm3(Entity *e) {
 			e->timer3 = 0;
 			
 			platform_speed = platform_pattern[e->timer2].speed;
-		}
+		} /* fallthrough */
 		case CS_SPIN_PLATFORMS+1:
 		{
 			// spin platforms
@@ -550,7 +550,7 @@ static void RunDefeated(Entity *e) {
 			//shield->eflags &= mask;
 			eye[0]->eflags &= mask;
 			eye[1]->eflags &= mask;
-		}
+		} /* fallthrough */
 		case 1001:
 		{
 			//int x = e->x + random(-60<<CSF, 60<<CSF);
@@ -727,7 +727,7 @@ void ai_ballos_eye(Entity *e) {
 			e->frame = 0;
 			e->animtime = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case EYE_OPENING+1:
 		{
 			if (++e->animtime > 2) {
@@ -750,7 +750,7 @@ void ai_ballos_eye(Entity *e) {
 			
 			e->animtime = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case EYE_CLOSING+1:
 		{
 			if (++e->animtime > 2) {
@@ -808,7 +808,7 @@ void ai_ballos_rotator(Entity *e) {
 			
 			e->timer3 = 0xC0;
 			e->attack = 14;
-		}
+		} /* fallthrough */
 		case 1:		// expanding outward; overshoot a bit
 		{
 			if (e->timer3 < 0x140)
@@ -834,7 +834,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
 			e->health = 1000;
-		}
+		} /* fallthrough */
 		case 11:		// spinning during phase 2, alive
 		{
 			if (e->timer2 <= 1) e->timer2 += 0x200;
@@ -883,7 +883,7 @@ void ai_ballos_rotator(Entity *e) {
 				e->eflags |= NPC_INVINCIBLE;
 				e->frame = 2;
 			}
-		}
+		} /* fallthrough */
 		case 31:		// form 3 CW slow spin
 		{
 			// come in closer to main object
@@ -947,7 +947,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->attack = 0;
 			
 			e->timer2 /= 4;
-		}
+		} /* fallthrough */
 		case 1001:
 		{
 			// explode one by one going clockwise
@@ -991,7 +991,7 @@ void ai_ballos_platform(Entity *e) {
 			e->timer2 = (e->angle * 4);
 			e->timer3 = 0xC0;
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:		// expanding outward
 		{
 			if (e->timer3 < 0x1C0)
@@ -1017,7 +1017,7 @@ void ai_ballos_platform(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 			e->eflags &= ~NPC_SPECIALSOLID;
-		}
+		} /* fallthrough */
 		case 1001:
 		{
 			e->y_speed += 0x40;

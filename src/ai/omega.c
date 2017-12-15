@@ -100,7 +100,7 @@ void ai_omega(Entity *e) {
 		{
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case OMG_WAIT+1:
 		{
 			if (++e->timer >= OMEGA_WAIT_TIME) {
@@ -118,7 +118,7 @@ void ai_omega(Entity *e) {
 			e->state = OMG_MOVE;
 			e->y_speed = -OMEGA_SPEED;
 			e->eflags |= NPC_SOLID;
-		}
+		} /* fallthrough */
 		case OMG_MOVE:	// rising up/going back into ground
 		{
 			e->frame = 0;
@@ -147,7 +147,7 @@ void ai_omega(Entity *e) {
 			//e->eflags &= ~NPC_BOUNCYTOP;
 			sound_play(SND_JAWS, 5);
 			//e->sprite = SPR_OMG_OPENED;			// select "open" bounding box
-		}
+		} /* fallthrough */
 		case OMG_JAWS_OPEN+1:
 		{
 			if (++e->animtime > 4) {
@@ -251,7 +251,7 @@ void ai_omega(Entity *e) {
 			omgorgy = e->y;
 			e->state++;
 			e->timer = 0;
-		}
+		} /* fallthrough */
 		case OMG_JUMP+1:	// jumping
 		{
 			e->y_speed += SPEED(0x24);
@@ -298,7 +298,7 @@ void ai_omega(Entity *e) {
 		{
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case OMG_EXPLODING+1:
 		{
 			e->x_speed = e->y_speed = 0;

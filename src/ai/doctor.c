@@ -109,7 +109,7 @@ void ai_boss_doctor(Entity *e) {
 			e->frame = BLAST1;
 			e->x_mark = e->x_next;
 			e->eflags |= NPC_SHOOTABLE;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			e->x_next = e->x_mark;
@@ -142,7 +142,7 @@ void ai_boss_doctor(Entity *e) {
 			e->attack = 0;
 			
 			//dr_tp_out_init(o);
-		}
+		} /* fallthrough */
 		case 101:
 		{
 			//if (dr_tp_out(o)) {
@@ -182,7 +182,7 @@ void ai_boss_doctor(Entity *e) {
 			e->state++;
 			e->hidden = FALSE;
 			//dr_tp_in_init(o);
-		}
+		} /* fallthrough */
 		case 104:
 		{
 			//if (dr_tp_in(o))
@@ -269,7 +269,7 @@ void ai_doctor_shot(Entity *e) {
 			if(e->eflags & NPC_OPTION1) e->dir = 1;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			// distance apart from each other
@@ -370,7 +370,7 @@ void ai_doctor_crowned(Entity *e) {
 			e->y -= (8 << CSF);
 			e->state = 1;
 			crystal_xmark = crystal_ymark = 0;
-		}
+		} /* fallthrough */
 		case 1:		// faces away
 		{
 			e->frame = AWAY1;
@@ -383,7 +383,7 @@ void ai_doctor_crowned(Entity *e) {
 			e->animtime = 0;
 			e->timer = 0;
 			e->state = 11;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			ANIMATE(e, 8, AWAY1,AWAY2);
@@ -402,7 +402,7 @@ void ai_doctor_crowned(Entity *e) {
 		{
 			e->state = 41;
 			entity_create(e->x - (14 << CSF), e->y - (16 << CSF), OBJ_RED_CRYSTAL, 0);
-		}
+		} /* fallthrough */
 		case 41:
 		{
 			e->frame = HAND1;
@@ -415,7 +415,7 @@ void ai_doctor_crowned(Entity *e) {
 			e->animtime = 0;
 			e->timer = 0;
 			e->state = 51;
-		}
+		} /* fallthrough */
 		case 51:
 		{
 			ANIMATE(e, 8, HAND1,HAND2);

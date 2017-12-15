@@ -80,7 +80,7 @@ void ai_kulala(Entity *e) {
 			e->frame = 4;
 			e->state = 1;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:
 		{
 			if(e->damage_time) {
@@ -247,6 +247,7 @@ void ai_malco(Entity *e) {
 			e->timer = 0;
 			e->timer = 0;
 			effect_create_smoke(e->x << CSF, e->y << CSF);
+			/* fallthrough */
 		case 11:	// beeping and eyes flickering
 			if (++e->timer < TIME(100)) {
 				if (!(e->timer & 3)) {
@@ -275,6 +276,7 @@ void ai_malco(Entity *e) {
 			e->timer = 0;
 			sound_play(SND_BLOCK_DESTROY, 5);
 			effect_create_smoke(e->x << CSF, e->y << CSF);
+			/* fallthrough */
 		case 17:
 			if (++e->timer > TIME(150)) {
 				e->state = 18;
@@ -286,6 +288,7 @@ void ai_malco(Entity *e) {
 			e->timer = 0;
 			// go into gawk frame first time
 			e->animtime = 3; e->frame = 9;
+			/* fallthrough */
 		case 19:
 			if (++e->animtime > 3) {
 				e->animtime = 0;
@@ -314,7 +317,7 @@ void ai_malco(Entity *e) {
 			e->state = 101;
 			e->frame = 3;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case 101:
 		{
 			ANIMATE(e, 4, 3,4);
@@ -441,7 +444,7 @@ void ai_frog(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case 1:		// standing
 		case 2:
 		{
@@ -549,7 +552,7 @@ void ai_motorbike(Entity *e) {
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 		}
-		/* no break */
+		/* fallthrough */
 		case 21:
 		{
 			e->x = e->x_mark + 0x200 - (random() % 0x400);
@@ -567,7 +570,7 @@ void ai_motorbike(Entity *e) {
 			e->y_mark = e->y;
 			sound_play(SND_MISSILE_HIT, 5);
 		}
-		/* no break */
+		/* fallthrough */
 		case 31:
 		{
 			e->x_speed += 0x20;
@@ -586,7 +589,7 @@ void ai_motorbike(Entity *e) {
 			e->y -= pixel_to_sub(48);		// move up...
 			e->x_speed = -0x1000;		// ...and fly fast
 		}
-		/* no break */
+		/* fallthrough */
 		case 41:
 		{
 			e->timer += 2;	// makes exhaust sound go faster
@@ -628,7 +631,7 @@ void ai_ravil(Entity *e) {
 			e->state = 1;
 			e->timer = 0;
 			e->timer2 = 0;
-		}
+		} /* fallthrough */
 		case 1:
 		{	// waiting-- attack once player gets too close or shoots us
 			if (++e->timer > 40) e->state = 2;
@@ -711,7 +714,7 @@ void ai_ravil(Entity *e) {
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
 			e->state = 51;
 			e->y_speed = -SPEED(0x200);
-		}
+		} /* fallthrough */
 		case 51:
 		{
 			if (e->grounded) {

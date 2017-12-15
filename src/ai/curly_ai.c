@@ -58,7 +58,7 @@ void ai_curly_ai(Entity *e) {
 			e->x = player.x;
 			e->y = player.y;
 		}
-		/* no break */
+		/* fallthrough */
 		case CAI_START:			// set here after she stops being knocked out in Almond
 		{
 			e->alwaysActive = TRUE;
@@ -81,7 +81,7 @@ void ai_curly_ai(Entity *e) {
 			e->state = CAI_KNOCKEDOUT+1;
 			e->frame = 9;
 		}
-		/* no break */
+		/* fallthrough */
 		case CAI_KNOCKEDOUT+1:
 		{
 			if (++e->timer > TIME(1000)) {	// start fighting

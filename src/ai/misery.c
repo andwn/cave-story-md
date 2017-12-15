@@ -12,8 +12,7 @@ void ai_misery_float(Entity *e) {
 			e->y_mark = e->y_next;
 			e->frame = 0;
 			e->timer = 0;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 1:
 		{
 			//if (DoTeleportIn(o, 1)) {
@@ -26,8 +25,7 @@ void ai_misery_float(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->y_speed = SPEED(1 << CSF);
-		}
-		/* no break */
+		} /* fallthrough */
 		case 11:
 		{
 			e->frame = 0;
@@ -55,8 +53,7 @@ void ai_misery_float(Entity *e) {
 			e->frame = 4;
 			e->timer = 0;
 			e->state = 16;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 16:
 		{
 			if (++e->timer >= TIME(20)) {
@@ -70,15 +67,13 @@ void ai_misery_float(Entity *e) {
 		case 17:
 		{
 			if (++e->timer >= TIME(50)) e->state = 14;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 20: 	// fly away
 		{
 			e->state = 21;
 			e->frame = 0;
 			e->y_speed = 0;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 21:
 		{
 			e->y_speed -= SPEED(0x20);
@@ -90,8 +85,7 @@ void ai_misery_float(Entity *e) {
 			e->state = 26;
 			e->timer = 0;
 			e->frame = 4;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 26:	// she flashes, then a clap of thunder
 		{
 			ANIMATE(e, 2, 4, 5);
@@ -121,7 +115,7 @@ void ai_misery_stand(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->frame = 2;
@@ -134,7 +128,7 @@ void ai_misery_stand(Entity *e) {
 			e->frame = 0;
 			e->y_speed = 0;
 			e->eflags |= NPC_IGNORESOLID;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			e->y_speed -= 0x20;
@@ -150,7 +144,7 @@ void ai_misery_stand(Entity *e) {
 			e->timer = 0;
 			e->frame = 5;
 			e->animtime = 0;
-		}
+		} /* fallthrough */
 		case 26:
 		{
 			ANIMATE(e, 2, 4, 5);
@@ -176,7 +170,7 @@ void ai_misery_stand(Entity *e) {
 			e->timer = 0;
 			e->state++;
 			e->frame = 2;
-		}
+		} /* fallthrough */
 		case 31:
 		{
 			if (e->timer==10) e->frame = 4;
@@ -190,7 +184,7 @@ void ai_misery_stand(Entity *e) {
 			e->state = 41;
 			e->timer = 0;
 			e->frame = 4;
-		}
+		} /* fallthrough */
 		case 41:
 		{
 			e->timer++;
@@ -241,8 +235,7 @@ void ai_misery_bubble(Entity *e) {
 			if(e->y > target->y) e->y_speed = -e->y_speed;
 			e->state = 2;
 			e->timer = 0;
-		}
-		/* no break */
+		} /* fallthrough */
 		case 2:
 		{
 			e->x += e->x_speed;
@@ -301,7 +294,7 @@ void ai_boss_misery(Entity *e) {
 			e->frame = 0;
 			e->x_speed = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_FIGHTING+1:
 		{
 			FACE_PLAYER(e);
@@ -349,7 +342,7 @@ static void run_spells(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_FLASH_FOR_SPELL+1:
 		{
 			e->timer++;
@@ -412,7 +405,7 @@ static void run_spells(Entity *e) {
 			
 			e->timer = 0;
 			e->state++;
-		}
+		} /* fallthrough */
 		case STATE_SUMMON_BALLS+1:
 		{
 			e->y_speed += (e->y < e->y_mark) ? SPEED(0x20) : -SPEED(0x20);
@@ -448,7 +441,7 @@ static void run_teleport(Entity *e) {
 			//CreateObject(e->x, e->y, OBJ_MISERY_PHASE)->dir = RIGHT;
 			
 			sound_play(SND_TELEPORT, 5);
-		}
+		} /* fallthrough */
 		case STATE_TP_AWAY+1:
 		{
 			e->timer++;
@@ -519,7 +512,7 @@ static void run_intro(Entity *e) {
 			e->y_mark = (64 << CSF);
 			
 			e->state = 1;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			e->frame = 0;
@@ -566,7 +559,7 @@ static void run_defeated(Entity *e) {
 			e->timer = 0;
 			e->frame = 4;
 			e->x_mark = e->x;
-		}
+		} /* fallthrough */
 		case 1001:		// shake until script tells us otherwise
 		{
 			e->x = e->x_mark;
@@ -612,7 +605,7 @@ void ai_misery_ring(Entity *e) {
 			e->state = 1;
 			e->timer = 0;
 			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE); // Rings block bullets
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			// angle
@@ -650,7 +643,7 @@ void ai_misery_ring(Entity *e) {
 			e->oframe = 255;
 			
 			e->state = 11;
-		}
+		} /* fallthrough */
 		case 11:
 		{
 			ANIMATE(e, 4, 0,1,2);
@@ -685,7 +678,7 @@ void ai_misery_ball(Entity *e) {
 			e->y_mark = e->y;
 			e->x_speed = 0;
 			e->y_speed = -0x200;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 2, 0,1);

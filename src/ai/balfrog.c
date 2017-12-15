@@ -105,7 +105,7 @@ void ai_balfrog(Entity *e) {
 			e->timer = 0;
 			e->frame = 2;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_TRANSFORM+1:
 		{
 			e->timer++;
@@ -132,7 +132,7 @@ void ai_balfrog(Entity *e) {
 			e->timer = 0;
 			e->x_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_FIGHTING+1:
 		{
 			e->timer++;
@@ -163,7 +163,7 @@ void ai_balfrog(Entity *e) {
 			e->timer = 0;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_JUMPING+1:
 		{
 			// turn around at walls
@@ -199,7 +199,7 @@ void ai_balfrog(Entity *e) {
 			e->timer = 0;
 			e->x_speed = 0;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_BIG_JUMP+1:		// animation of preparing to jump
 		{
 			e->timer++;
@@ -249,7 +249,7 @@ void ai_balfrog(Entity *e) {
 			e->timer = 0;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_OPEN_MOUTH+1:
 		{
 			e->timer++;
@@ -314,7 +314,7 @@ void ai_balfrog(Entity *e) {
 			e->state++;
 			SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 4);
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_DEATH+1:			// shaking with mouth open
 		{
 			e->timer++;
@@ -340,7 +340,7 @@ void ai_balfrog(Entity *e) {
 			balrog->frame = 5;
 			e->state++;
 		}
-		/* no break */
+		/* fallthrough */
 		case STATE_DEATH+3:		// flashing
 		{
 			e->timer++;
