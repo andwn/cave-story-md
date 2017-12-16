@@ -371,7 +371,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Droll3, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
+	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
@@ -421,7 +421,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_UCoreBack, 	NOSHEET, 		PAL2, 9, &onspawn_persistent, 	&ai_undead_core_back,&ai_null 			}, // Undead Core (Back)
 	{ &SPR_UCoreMouth, 	NOSHEET, 		PAL2, 2, &onspawn_persistent, 	&ai_undead_core_face,&ai_null 			}, // Undead Core (Face)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Heavy Press Shield
-	{ NULL, 			NOSHEET, 		PAL0, 15,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
+	{ &SPR_Ballos, 		NOSHEET, 		PAL0, 15,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Shield
 	/* Splash screen */

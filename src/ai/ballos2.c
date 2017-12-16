@@ -44,8 +44,8 @@ static void spawn_bones(Entity *e, uint8_t up) {
 	else
 		y = (e->y + (12 << CSF));
 	
-	entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
-	entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
+	//entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
+	//entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
 }
 
 // handles his "looping" flight/rush attacks
@@ -286,7 +286,7 @@ static void run_lightning(Entity *e)
 				if (pos == 1)
 				{
 					// spawn lightning target
-					entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
+					//entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
 					e->dir = RIGHT;		// switch to flashing frames
 					e->animtime = 0;
 					
@@ -325,7 +325,7 @@ static void run_lightning(Entity *e)
 			
 			if (e->timer > 50) {
 				if ((e->timer % 10) == 1) {
-					entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
+					//entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
 					e->timer2 += 4;
 					
 					if (e->timer2 >= 40)
@@ -388,6 +388,7 @@ static void run_intro(Entity *e)
 					
 					e->eflags |= NPC_SHOOTABLE;
 					e->eflags &= ~NPC_INVINCIBLE;
+					e->nflags &= ~NPC_INVINCIBLE;
 				}
 			}
 		}
@@ -597,7 +598,7 @@ void ai_ballos_target(Entity *e)
 			if (e->timer == 20 && !e->dir)
 			{	// lightning attack
 				// setting lightning dir=left: tells it do not flash screen
-				entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, 0);
+				//entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, 0);
 			}
 			
 			if (e->timer > 40)
@@ -750,9 +751,9 @@ void ai_green_devil_spawner(Entity *e) {
 		case 1:
 		{
 			if (e->timer-- == 0) {
-				Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
-				dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
-				dv->dir = e->dir;
+				//Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
+				//dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
+				//dv->dir = e->dir;
 				
 				e->state = 0;
 			}

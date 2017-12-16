@@ -9,6 +9,7 @@
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
+#include "memory.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -51,9 +52,55 @@ static uint8_t refresh_file(uint8_t index) {
 	system_peekdata(index, &file);
 	VDP_clearText(6, y, 16); // Erase any previous stage name text
 	if(file.used) {
+		// Map name
 		VDP_drawText(stage_info[file.stage_id].name, 6, y);
+		// Play time
+		char timeStr[10] = {};
+		sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
+		VDP_drawText(timeStr, 26, y);
+		// Health bar
+		{
+			uint32_t tileData[8][8];
+			int16_t fillHP = 40 * file.health / max(file.max_health, 1);
+			for(uint8_t i = 0; i < 5; i++) {
+				int16_t addrHP = min(fillHP*8, 7*8);
+				if(addrHP < 0) addrHP = 0;
+				memcpy(tileData[i+3], &TS_HudBar.tiles[addrHP], 32);
+				fillHP -= 8;
+			}
+			memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*8], 32);
+			uint8_t digit = file.health / 10;
+			if(digit) {
+				memcpy(tileData[1], &TS_Numbers.tiles[(digit)*8], 32);
+			} else {
+				memcpy(tileData[1], TILE_BLANK, 32);
+			}
+			memcpy(tileData[2], &TS_Numbers.tiles[(file.health % 10)*8], 32);
+			uint16_t tile = TILE_HUDINDEX + index*8;
+			DMA_doDma(DMA_VRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
+			for(int i = 0; i < 8; i++) {
+				VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+i), 6+i, y+2);
+			}
+		}
+		// Weapon list
+		for(uint16_t i = 0; i < 5; i++) {
+			if(!file.weapon[i]) continue;
+			// X tile pos and VRAM index to put the ArmsImage tiles
+			uint16_t x = 24 + i*2;
+			uint16_t tile = TILE_FACEINDEX + index*20 + i*4;
+			VDP_loadTileData(SPR_TILES(&SPR_ArmsImage, 0, file.weapon[i]), tile, 4, TRUE);
+			// 4 mappings for ArmsImage icon
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile),   x,   y+2);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+2), x+1, y+2);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+1), x,   y+3);
+			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+3), x+1, y+3);
+		}
 	} else {
 		VDP_drawText("New Game", 6, y);
+		VDP_clearText(26, y, 10);
+		VDP_clearText(6, y+2, 8);
+		VDP_clearText(24, y+2, 12);
+		VDP_clearText(24, y+3, 12);
 	}
 	return file.used;
 }

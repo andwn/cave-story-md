@@ -80,6 +80,7 @@ SPRITE SPR_NemB3h		"sprite/nemb3h.png"			3 2 0 0 NONE
 SPRITE SPR_NemB3v		"sprite/nemb3v.png"			2 3 0 0 NONE
 SPRITE SPR_QMark		"sprite/qmark.png"			1 1 0 0 NONE
 SPRITE SPR_Ballos		"sprite/ballos.png"			15 15 0 0 NONE
+SPRITE SPR_BallosP		"sprite/ballosp.png"		6 5 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE

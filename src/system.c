@@ -125,6 +125,7 @@ void system_new() {
 }
 
 void system_save() {
+	if(sram_file >= SRAM_FILE_MAX) return;
 	if(sram_state == SRAM_INVALID) return;
 	puts("Writing game save to SRAM");
 	
@@ -226,6 +227,10 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 }
 
 void system_load(uint8_t index) {
+	if(index >= SRAM_FILE_CHEAT) {
+		system_load_levelselect(index - SRAM_FILE_CHEAT);
+		return;
+	}
 	puts("Loading game save from SRAM");
 	counterEnabled = FALSE;
 	player_init();
@@ -425,6 +430,7 @@ void system_load_levelselect(uint8_t file) {
 	}
 	stage_load(rid);
 	song_play(song);
+	sram_file = SRAM_FILE_CHEAT + file;
 }
 
 uint8_t system_checkdata() {

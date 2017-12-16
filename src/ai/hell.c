@@ -13,6 +13,7 @@ void ai_bute_dying(Entity *e) {
 		case 0:
 		{
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			e->frame = 0;
 			e->animtime = 0;
@@ -22,10 +23,14 @@ void ai_bute_dying(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
+			e->y_speed += 0x20;
+			LIMIT_Y(0x5ff);
+			
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				e->state = 2;
 				e->timer = 0;
 				e->frame = 1;
+				e->y_speed = 0;
 			}
 		}
 		break;
@@ -43,8 +48,6 @@ void ai_bute_dying(Entity *e) {
 		break;
 	}
 	
-	e->y_speed += 0x20;
-	LIMIT_Y(0x5ff);
 }
 
 static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
@@ -79,24 +82,6 @@ void ai_bute_flying(Entity *e) {
 	
 	switch(e->state) {
 		case 0:
-		{
-			e->hidden = TRUE;
-			e->state = 1;
-		} /* fallthrough */
-		case 1:
-		{
-			if (e->dir == LEFT) {
-				if (player.x > (e->x - (288<<CSF)) && player.x < (e->x - (272<<CSF))) {
-					e->state = 10;
-				}
-			} else {
-				if (player.x < (e->x + (288<<CSF)) && player.x > (e->x + (272<<CSF))) {
-					e->state = 10;
-				}
-			}
-		}
-		break;
-		
 		case 10:
 		{
 			e->state = 11;
@@ -109,11 +94,11 @@ void ai_bute_flying(Entity *e) {
 			FACE_PLAYER(e);
 			ANIMATE(e, 4, 0,1);
 			
-			ACCEL_X(0x10);
-			e->y_speed += (e->y > player.y) ? -0x10 : 0x10;
+			ACCEL_X(SPEED(0x10));
+			e->y_speed += (e->y > player.y) ? -SPEED(0x10) : SPEED(0x10);
 			
-			LIMIT_X(0x5ff);
-			LIMIT_Y(0x5ff);
+			//LIMIT_X(0x5ff);
+			//LIMIT_Y(0x5ff);
 			
 			if ((e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41) || 
 				(e->x_speed > 0 && blk(e->x,  6, e->y, 0) == 0x41)) {
@@ -126,7 +111,8 @@ void ai_bute_flying(Entity *e) {
 		}
 		break;
 	}
-	
+	LIMIT_X(SPEED(0x200));
+	LIMIT_Y(SPEED(0x200));
 }
 
 // Butes that come down from ceiling

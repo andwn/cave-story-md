@@ -292,16 +292,20 @@ void ai_falling_block(Entity *e) {
 			if (e->y > 128<<CSF) {
 				e->state = 11;
 			}
-		} /* fallthrough */
+			e->y_speed += SPEED(0x40);
+			LIMIT_Y(SPEED(0x5FF));
+		}
+		break;
+		
 		case 11:	// passed thru ceiling in Hell B2
 		{
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
-			if (blk(e->x, 0, e->y, NPC_OPTION2 ? 8 : 16) == 0x41) {
-				e->y_speed = -SPEED(0x200);
-				e->state = 20;
+			if (blk(e->x, 0, e->y, (NPC_OPTION2 ? 8 : 20)) == 0x41) {
+				e->y_speed = -SPEED(0x280);
 				
+				e->state = 20;
 				SMOKE_AREA((e->x >> CSF) - 8, (e->y >> CSF) + (NPC_OPTION2 ? 8 : 16), 16, 1, 1);
 				camera_shake(10);
 			}
@@ -310,10 +314,11 @@ void ai_falling_block(Entity *e) {
 		
 		case 20:	// already bounced on ground, falling offscreen
 		{
+			e->attack = 0;
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
-			if (e->y > block_to_sub(stageHeight)) {
+			if (e->y >= block_to_sub(stageHeight + 1)) {
 				e->state = STATE_DELETE;
 			}
 		}

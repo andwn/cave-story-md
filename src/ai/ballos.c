@@ -12,7 +12,7 @@
 
 #define eye			pieces
 #define body		pieces[2]
-//#define shield		pieces[3]
+#define shield		pieces[3]
 
 #define FLOOR_Y			0x26000						// Y coord of floor
 #define CRASH_Y			(FLOOR_Y - (40 << CSF))		// Y coord of main when body hits floor
@@ -598,7 +598,7 @@ void onspawn_ballos(Entity *e) {
 	//game.stageboss.object = main;
 	
 	//e->event = 1000;	
-	e->eflags = (NPC_SHOWDAMAGE | NPC_EVENTONDEATH | NPC_SPECIALSOLID | NPC_IGNORESOLID);
+	e->eflags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
 	
 	e->x = block_to_sub(stageWidth >> 1);
 	e->y = -(64 << CSF);
@@ -608,27 +608,35 @@ void onspawn_ballos(Entity *e) {
 	
 	e->hidden = TRUE;
 	
+	e->hit_box = (bounding_box) { 32, 48, 32, 48 };
+	//e->display_box = (bounding_box) { 60, 60, 60, 60 };
+	
 	//objprop[main->type].hurt_sound = SND_ENEMY_HURT_COOL;
 	//main->invisible = true;
 	
 	// create body (the big rock)
 	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
 	body->health = 1000;	// not his real HP, we're using damage transfer
-	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	body->hit_box = (bounding_box) { 48, 24, 48, 32 };
+	body->display_box = (bounding_box) { 60, 60, 60, 60 };
 	
 	// create eyes (open/close animations)
 	for(uint8_t i=0;i<2;i++) {
 		eye[i] = entity_create(0, 0, OBJ_BALLOS_EYE, 0);
 		eye[i]->dir = i;
 		eye[i]->health = 1000;
+		eye[i]->hit_box = (bounding_box) { 6, 6, 6, 6 };
+		eye[i]->display_box = (bounding_box) { 8, 8, 8, 8 };
 	}
 	
 	// create a top shield to cover eyes from above
-	//shield = entity_create(0, 0, OBJ_BBOX_PUPPET, 0);
+	shield = entity_create(0, 0, OBJ_BALLOS_SHIELD, 0);
 	//shield->sprite = SPR_BBOX_PUPPET_1;
-	//shield->hidden = TRUE;
-	//shield->health = 1000;
-	//shield->flags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+	shield->hidden = TRUE;
+	shield->health = 1000;
+	shield->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	shield->hit_box = (bounding_box) { 32, 8, 32, 8 };
 	
 	// initilize bboxes
 	//sprites[body->sprite].bbox.set(-48, -24, 48, 32);
@@ -663,6 +671,9 @@ void ai_ballos(Entity *e) {
 	RunForm3(e);
 	RunDefeated(e);
 	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	
 	//run_eye(0);
 	//run_eye(1);
 	
@@ -682,8 +693,8 @@ void ai_ballos(Entity *e) {
 	body->y = e->y;
 	
 	// place shield
-	//shield->x = e->x;
-	//shield->y = e->y - (44 << CSF);
+	shield->x = e->x;
+	shield->y = e->y - (44 << CSF);
 	
 	// riding on platform by eye? Player can sort of stay on this platform
 	// when he jumps. We don't do this for the shield up top though, in order that
