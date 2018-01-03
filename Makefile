@@ -59,7 +59,7 @@ pal: release
 pal-debug: CCFLAGS += -DPAL
 pal-debug: debug
 
-.PHONY: release debug main-build head-gen
+.PHONY: release debug main-build
 
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -flto -fuse-linker-plugin
@@ -108,50 +108,12 @@ src/boot/rom_head.o: src/boot/rom_head.c
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LDFLAGS) --oformat binary $< -o $@
 
+
+.PHONY: head-gen clean
+
 head-gen:
 	rm -f inc/ai_gen.h
 	python aigen.py
-
-
-#.PHONY: tools sgdk-tools
-# CSMD TOOLS
-
-#tools: prof2sram
-#
-#tscomp:
-#	gcc tools/tscomp/tscomp.c -o tscomp -std=c99
-#
-#tileopt:
-#	gcc tools/tileopt/tileopt.c -lSDL2 -lSDL2_image -o tileopt -std=c99
-#
-#lutgen:
-#	gcc tools/lutgen/lutgen.c -lm -o lutgen -std=c99
-#
-#prof2sram:
-#	gcc tools/prof2sram/prof2sram.c -o prof2sram -std=c99
-#
-#savetrim:
-#	gcc tools/savetrim/savetrim.c -o savetrim -std=c99
-
-# SGDK TOOLS
-
-#sgdk-tools: $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
-
-# gnu99 to remove warnings about strdup()
-#$(RESCOMP):
-#	gcc $(wildcard tools/rescomp/*.c) -Itools/rescomp -o $(RESCOMP) -std=gnu99
-#
-#$(XGMTOOL):
-#	gcc $(wildcard tools/xgmtool/*.c) -Itools/xgmtool -lm -o $(XGMTOOL) -std=c99
-#
-#$(BINTOS):
-#	gcc tools/bintos/bintos.c -o $(BINTOS) -std=c99
-#
-#$(WAVTORAW):
-#	gcc tools/wavtoraw/wavtoraw.c -lm -o $(WAVTORAW) -std=c99
-
-
-.PHONY: clean super-clean
 
 clean:
 	rm -f $(OBJS)
@@ -160,8 +122,3 @@ clean:
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s
 	rm -f inc/ai_gen.h
-
-super-clean: clean
-	rm -f saves.zip saves.tar.gz
-	rm -f prof2sram tileopt tscomp lutgen savetrim
-	rm -f $(RESCOMP) $(BINTOS) $(XGMTOOL) $(WAVTORAW)
