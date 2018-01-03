@@ -152,8 +152,7 @@ typedef struct {
 typedef struct {
     uint16_t numSprite;
     VDPSpriteInf **vdpSpritesInf;
-    uint16_t UNUSED_numCollision;
-    uint32_t UNUSED_collisions;
+    uint32_t UNUSED_collision;
     TileSet *tileset;
     int16_t w;
     int16_t h;
