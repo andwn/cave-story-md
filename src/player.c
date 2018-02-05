@@ -94,6 +94,7 @@ void player_init() {
 	airPercent = 100;
 	airTick = 0;
 	airDisplayTime = 0;
+	playerIFrames = 0;
 	// Booster trail sprite tiles
 	VDP_loadTileData(SPR_TILES(&SPR_Boost, 0, 0), 12, 4, TRUE);
 	// AIR Sprite
@@ -770,6 +771,7 @@ void player_draw() {
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(playerSprite);
+		return;
 	} else if(!player.health) {
 		return; // Don't draw the player if we died in a way that is not drowning
 	}
