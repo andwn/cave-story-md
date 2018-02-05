@@ -26,16 +26,21 @@
 
 #include "player.h"
 
+#define PLAYER_SPRITE_TILES_QUEUE() ({ \
+	uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0); \
+	TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4); \
+})
+
 VDPSprite weaponSprite;
-uint8_t playerWeaponCount = 0;
+uint8_t playerWeaponCount;
 
 uint8_t mapNameSpriteNum;
 VDPSprite mapNameSprite[4];
 
 VDPSprite airSprite[2];
-uint8_t airPercent = 100;
-uint8_t airTick = 0;
-uint8_t airDisplayTime = 0;
+uint8_t airPercent;
+uint8_t airTick;
+uint8_t airDisplayTime;
 
 uint8_t blockl, blocku, blockr, blockd;
 uint8_t ledge_time;
@@ -82,11 +87,13 @@ void player_init() {
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
+	playerWeaponCount = 0;
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
 	playerMoveMode = 0;
 	currentWeapon = 0;
 	airPercent = 100;
 	airTick = 0;
+	airDisplayTime = 0;
 	// Booster trail sprite tiles
 	VDP_loadTileData(SPR_TILES(&SPR_Boost, 0, 0), 12, 4, TRUE);
 	// AIR Sprite
@@ -286,6 +293,7 @@ void player_update() {
 					} else {
 						player.health = 0;
 						player.frame = 8;
+						PLAYER_SPRITE_TILES_QUEUE();
 						tsc_call_event(PLAYER_DROWN_EVENT);
 						return;
 					}
@@ -523,8 +531,8 @@ void player_update_interaction() {
 					// Quote should look down while the game logic is frozen
 					// Manually send sprite frame since draw() is not called
 					lookingDown = TRUE;
-					player.frame = (playerEquipment & EQUIP_MIMIMASK) ? 16 : 6; // LOOKDN
-					TILES_QUEUE(SPR_TILES(&SPR_Quote,0,player.frame),TILE_PLAYERINDEX,4);
+					player.frame = 6;
+					PLAYER_SPRITE_TILES_QUEUE();
 					tsc_call_event(e->event);
 					return;
 				}
@@ -756,8 +764,15 @@ void player_update_air_display() {
 }
 
 void player_draw() {
-	// Don't draw the player if we died
-	if(!player.health) return;
+	// Special case when player drowns
+	if(!airPercent) {
+		sprite_pos(playerSprite,
+				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_add(playerSprite);
+	} else if(!player.health) {
+		return; // Don't draw the player if we died in a way that is not drowning
+	}
 	enum { STAND, WALK1, WALK2, LOOKUP, UPWALK1, UPWALK2, LOOKDN, JUMPDN };
 	// Sprite Animation
 	player.oframe = player.frame;
@@ -798,10 +813,7 @@ void player_draw() {
 		if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
 	}
 	// Set frame if it changed
-	if(player.frame != player.oframe) {
-		uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0);
-		TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4);
-	}
+	if(player.frame != player.oframe) PLAYER_SPRITE_TILES_QUEUE();
 	// Blink during invincibility frames
 	if(!player.hidden && !(playerIFrames & 2)) {
 		// Change direction if pressing left or right
@@ -1074,10 +1086,10 @@ uint8_t player_has_item(uint8_t id) {
 void player_equip(uint16_t id) {
 	playerEquipment |= id;
 	// Force the sprite to change so the mimiga mask will show immediately
-	player.oframe = 255;
+	if(id & EQUIP_MIMIMASK) PLAYER_SPRITE_TILES_QUEUE();
 }
 
 void player_unequip(uint16_t id) {
 	playerEquipment &= ~id;
-	player.oframe = 255;
+	if(id & EQUIP_MIMIMASK) PLAYER_SPRITE_TILES_QUEUE();
 }

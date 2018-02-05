@@ -35,8 +35,15 @@ To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
 #### Why?
 To learn MD dev mostly.
 
-#### Will you release this on cartridge?
-No. Nicalis would sue me.
+#### When is the next release?
+Whenever Hell is beatable. There is no deadline. I work on this for fun and deadlines are extremely not fun.
+
+#### Will you or can I release this on cartridge?
+Short answer: No. Nicalis would sue and/or send a Cease & Desist order.
+
+Long answer: If you would like to get together with a group of people to pitch in for a batch of cartridges (not for profit) I would be willing to join this effort.
+However, keep in mind I neither created the original Cave Story nor do I own the rights. Never *SELL* cartridges unless you somehow got permission from the copyright holders.
+Stay out of trouble, and keep me out of trouble.
 
 ## Thanks
 I did not know how to sort this list, so I did it alphabetically.
