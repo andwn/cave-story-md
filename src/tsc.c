@@ -137,6 +137,7 @@ Event headEvents[HEAD_EVENT_COUNT];
 Event stageEvents[MAX_EVENTS];
 
 const uint8_t *curCommand = NULL;
+uint8_t cmd, prevCmd;
 
 uint16_t waitTime;
 
@@ -173,6 +174,7 @@ void tsc_init() {
 	bossBarEntity = FALSE;
 	bossHealth = 0;
 	tscState = TSC_IDLE;
+	cmd = prevCmd = '\n';
 	teleMenuSlotCount = 0;
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
@@ -490,7 +492,8 @@ void tsc_show_teleport_menu() {
 
 uint8_t execute_command() {
 	uint16_t args[4];
-	uint8_t cmd = tsc_read_byte();
+	prevCmd = cmd;
+	cmd = tsc_read_byte();
 	if(cmd >= 0x80 && cmd < 0xE0) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
@@ -1248,7 +1251,7 @@ uint8_t execute_command() {
 			}
 		}
 		if(window_is_open()) {
-			if(cfg_language && cmd == '\n' && linesSinceLastNOD > 1) {
+			if(cfg_language && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
 				tscState = TSC_WAITINPUT;
 				linesSinceLastNOD = 0;
 				curCommand--;
