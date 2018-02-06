@@ -21,19 +21,40 @@
 // Try to only use constant values instead of variables, otherwise the compiler
 // will not be able to optimize out the DIV and MUL operations
 //#define PAL
-#ifdef PAL
-#define FPS 50
-#define SCREEN_HEIGHT 240
-#define SCREEN_HALF_H 120
-#define TIME(x)		(x)
-#define SPEED(x)	(x)
-#else
-#define FPS 60
-#define SCREEN_HEIGHT 224
-#define SCREEN_HALF_H 112
-#define TIME(x)		((x) * 6 / 5)
-#define SPEED(x)	((x) * 5 / 6)
-#endif
+//#ifdef PAL
+//#define FPS 50
+//#define SCREEN_HEIGHT 240
+//#define SCREEN_HALF_H 120
+//#define TIME(x)		(x)
+//#define SPEED(x)	(x)
+//#else
+//#define FPS 60
+//#define SCREEN_HEIGHT 224
+//#define SCREEN_HALF_H 112
+//#define TIME(x)		((x) * 6 / 5)
+//#define SPEED(x)	((x) * 5 / 6)
+//#endif
+
+// The "new way" for handling framerate difference. Put a small table in
+// memory that can be referred to, to get the time or speed adjusted.
+// On PAL all values will match the index, on NTSC they will be adjusted
+// similarly to how TIME() and SPEED() worked with the old method.
+// Now instead of having separate ROMs, a single ROM will work with both.
+// One caveat, to save memory only 0-127 range is available
+
+#define SCREEN_HEIGHT (IS_PALSYSTEM ? 240 : 224)
+#define SCREEN_HALF_H (IS_PALSYSTEM ? 120 : 112)
+#define FPS (IS_PALSYSTEM ? 50 : 60)
+
+#define TIME(x) (time_tab[(x)&0x7F])
+#define SPEED(x) (speed_tab[(x)&0x7F])
+
+#define TAB_ASSERT(x) ({ \
+	if(x < 0 || x >= 0x80) printf("%s: %d - Bad time or speed.", __FILE__, __LINE__); \
+})
+
+uint8_t time_tab[0x80];
+uint8_t speed_tab[0x80];
 
 // Direction
 enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
