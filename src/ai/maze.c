@@ -132,7 +132,7 @@ void ai_boulder(Entity *e) {
 		// thrown away by Balrog
 		case 20:
 		{
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->x_speed = SPEED(0x100);
 			sound_play(SND_FUNNY_EXPLODE, 5);
 			
@@ -175,8 +175,8 @@ void ai_gaudiDying(Entity *e) {
 			
 			e->frame = 4;
 			
-			e->y_speed = SPEED(-0x200);
-			MOVE_X(SPEED(-0x100));
+			e->y_speed = -SPEED(0x200);
+			MOVE_X(-SPEED(0x100));
 			sound_play(SND_ENEMY_HURT_SMALL, 5);
 			e->grounded = FALSE;
 			
@@ -394,8 +394,8 @@ void ai_gaudiFlying(Entity *e) {
 	
 	FACE_PLAYER(e);
 	// sinusoidal circling pattern
-	e->x_speed += (e->x > e->x_mark) ? SPEED(-0x10) : SPEED(0x10);
-	e->y_speed += (e->y > e->y_mark) ? SPEED(-0x10) : SPEED(0x10);
+	e->x_speed += (e->x > e->x_mark) ? -SPEED(0x10) : SPEED(0x10);
+	e->y_speed += (e->y > e->y_mark) ? -SPEED(0x10) : SPEED(0x10);
 	LIMIT_X(SPEED(0x200));
 	LIMIT_Y(SPEED(0x5ff));
 	e->x += e->x_speed;
@@ -447,14 +447,14 @@ void ai_gaudiArmor(Entity *e) {
 				
 				if (++e->timer2 < 3) {	// hopping back and forth
 					e->state = 20;
-					e->y_speed = SPEED(-0x200);
+					e->y_speed = -SPEED(0x200);
 					e->grounded = FALSE;
-					e->x_speed = (e->x < e->x_mark) ? SPEED(0x200) : SPEED(-0x200);
+					e->x_speed = (e->x < e->x_mark) ? SPEED(0x200) : -SPEED(0x200);
 				} else {	// big jump and attack
 					e->state = 30;
-					e->y_speed = SPEED(-0x600);
+					e->y_speed = -SPEED(0x600);
 					e->grounded = FALSE;
-					e->x_speed = (e->x < e->x_mark) ? SPEED(0x80) : SPEED(-0x80);
+					e->x_speed = (e->x < e->x_mark) ? SPEED(0x80) : -SPEED(0x80);
 					
 					e->timer2 = 0;
 				}
@@ -786,14 +786,14 @@ void ai_firewhirr(Entity *e) {
 			if (!e->timer) {
 				e->state = 10;
 				e->timer = TIME(100);
-				e->y_speed = SPEED(-0x200);
+				e->y_speed = -SPEED(0x200);
 			}
 			else e->timer--;
 		}
 		/* fallthrough */
 		case 10:
 		{
-			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : SPEED(-0x10);
+			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : -SPEED(0x10);
 			LIMIT_Y(SPEED(0x200));
 			
 			// inc time-to-fire while player near
@@ -822,7 +822,7 @@ void ai_firewhirr(Entity *e) {
 
 void ai_firewhirr_shot(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
-	e->x_next = e->x + (!e->dir ? SPEED(-0x200) : SPEED(0x200));
+	e->x_next = e->x + (!e->dir ? -SPEED(0x200) : SPEED(0x200));
 	e->y_next = e->y;
 	
 	if ((!e->dir && collide_stage_leftwall(e)) ||

@@ -33,7 +33,7 @@ void ai_misery_float(Entity *e) {
 			if (e->y_next > e->y_mark) e->y_speed -= SPEED(16);
 			if (e->y_next < e->y_mark) e->y_speed += SPEED(16);
 			if (e->y_speed > SPEED(0x100)) e->y_speed = SPEED(0x100);
-			if (e->y_speed < SPEED(-0x100)) e->y_speed = SPEED(-0x100);
+			if (e->y_speed < -SPEED(0x100)) e->y_speed = -SPEED(0x100);
 		}
 		break;
 		case 13:	// fall from floaty

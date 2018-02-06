@@ -280,8 +280,8 @@ void ai_core(Entity *e) {
 			
 			#define CORE_DEATH_TARGET_X		0x72000
 			#define CORE_DEATH_TARGET_Y		0x16000
-			e->x_speed += (e->x > CORE_DEATH_TARGET_X) ? SPEED(-0x80) : SPEED(0x80);
-			e->y_speed += (e->y > CORE_DEATH_TARGET_Y) ? SPEED(-0x80) : SPEED(0x80);
+			e->x_speed += (e->x > CORE_DEATH_TARGET_X) ? -SPEED(0x80) : SPEED(0x80);
+			e->y_speed += (e->y > CORE_DEATH_TARGET_Y) ? -SPEED(0x80) : SPEED(0x80);
 		}
 		break;
 		case 600:			// teleported away by Misery

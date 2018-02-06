@@ -101,7 +101,7 @@ void ai_balrog(Entity *e) {
 			if (++e->timer <= TIME(20)) break;
 			e->frame = ARMSUP;
 			e->state++;
-			e->y_speed = SPEED(-0x800);
+			e->y_speed = -SPEED(0x800);
 			e->eflags |= NPC_IGNORESOLID;
 		}
 		/* fallthrough */
@@ -247,7 +247,7 @@ void ai_balrog(Entity *e) {
 				// TODO: OBJ_BALROG_PASSENGER
 				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, LEFT)->linkedobject = o;
 				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, RIGHT)->linkedobject = o;
-				e->y_speed = SPEED(-0x800);
+				e->y_speed = -SPEED(0x800);
 				e->eflags |= NPC_IGNORESOLID;	// so can fly through ceiling
 				fall = FALSE;
 			}
@@ -358,7 +358,7 @@ void ai_balrog_bust_in(Entity *e) {
 		case 0:
 		{
 			e->y += (2 << CSF);
-			e->y_speed = SPEED(-0x100);
+			e->y_speed = -SPEED(0x100);
 			camera_shake(30);
 			e->state = 1;
 			e->frame = ARMSUP;

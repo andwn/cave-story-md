@@ -139,15 +139,15 @@ void player_update() {
 			if(player.underwater) {
 				// This makes it possible to reach the cabin... but now it's
 				// impossible to jump over 2 of the spike areas...
-				if(player.x_speed > SPEED(0x480)) player.x_speed = SPEED(0x480);
-				if(player.x_speed < SPEED(-0x480)) player.x_speed = SPEED(-0x480);
-				if(player.y_speed > SPEED(0x3FF)) player.y_speed = SPEED(0x3FF);
-				if(player.y_speed < SPEED(-0x4FF)) player.y_speed = SPEED(-0x4FF);
+				if(player.x_speed >  SPEED(0x480)) player.x_speed =  SPEED(0x480);
+				if(player.x_speed < -SPEED(0x480)) player.x_speed = -SPEED(0x480);
+				if(player.y_speed >  SPEED(0x3FF)) player.y_speed =  SPEED(0x3FF);
+				if(player.y_speed < -SPEED(0x4FF)) player.y_speed = -SPEED(0x4FF);
 			} else {
-				if(player.x_speed > SPEED(0x5FF)) player.x_speed = SPEED(0x5FF);
-				if(player.x_speed < SPEED(-0x5FF)) player.x_speed = SPEED(-0x5FF);
-				if(player.y_speed > SPEED(0x5FF)) player.y_speed = SPEED(0x5FF);
-				if(player.y_speed < SPEED(-0x5FF)) player.y_speed = SPEED(-0x5FF);
+				if(player.x_speed >  SPEED(0x5FF)) player.x_speed =  SPEED(0x5FF);
+				if(player.x_speed < -SPEED(0x5FF)) player.x_speed = -SPEED(0x5FF);
+				if(player.y_speed >  SPEED(0x5FF)) player.y_speed =  SPEED(0x5FF);
+				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
 			}
 		}
 		player_update_movement();
@@ -905,7 +905,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 		}
 	}
 	// Don't knock back in <UNI:0001 mode
-	if(!playerMoveMode) player.y_speed = SPEED(-0x400);
+	if(!playerMoveMode) player.y_speed = -SPEED(0x400);
 	player.grounded = FALSE;
 	return FALSE;
 }

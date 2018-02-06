@@ -157,7 +157,7 @@ void ai_torokoBoss(Entity *e) {
 				e->timer = 0;
 				e->frame = 3;
 				e->grounded = FALSE;
-				e->y_speed = SPEED(-0x5ff);
+				e->y_speed = -SPEED(0x5ff);
 				MOVE_X(SPEED(0x200));
 			}
 		}
@@ -402,7 +402,7 @@ void ai_torokoFlower(Entity *e) {
 		{
 			if (++e->timer > TIME(30)) {
 				e->state = 20;
-				e->y_speed = SPEED(-0x200);
+				e->y_speed = -SPEED(0x200);
 				e->grounded = FALSE;
 				FACE_PLAYER(e);
 				MOVE_X(SPEED(0x200));

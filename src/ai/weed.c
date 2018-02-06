@@ -68,7 +68,7 @@ void ai_jelly(Entity *e) {
 	}
 	// & 0x41 will include the 0x43 (breakable)
 	if(e->y_speed < 0 && (blk(e->x, 0, e->y, -8) & 0x41) == 0x41) e->y_speed = SPEED(0x100);
-	if(e->y_speed > 0 && (blk(e->x, 0, e->y, 8) & 0x41) == 0x41) e->y_speed = SPEED(-0x200);
+	if(e->y_speed > 0 && (blk(e->x, 0, e->y, 8) & 0x41) == 0x41) e->y_speed = -SPEED(0x200);
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -113,7 +113,7 @@ void ai_kulala(Entity *e) {
 		break;
 		case 12:	// thrusting upwards
 		{
-			e->y_speed = SPEED(-0x155);
+			e->y_speed = -SPEED(0x155);
 			if(++e->timer > TIME(20)) {
 				e->state = 10;
 				e->frame = 0;
@@ -152,7 +152,7 @@ void ai_kulala(Entity *e) {
 		e->y_speed += SPEED(0x10);
 		// Have to make an extra check because we are wide
 		if(collide_stage_floor(e) || ((blk(e->x, 0, e->y, e->hit_box.bottom) & 0x41) == 0x41)) 
-			e->y_speed = SPEED(-0x300);
+			e->y_speed = -SPEED(0x300);
 		else if(e->y_speed < 0) {
 			if(!collide_stage_ceiling(e)) {
 				if(((blk(e->x, 0, e->y, -e->hit_box.top) & 0x41) == 0x41)) e->y_speed = 0x100;
@@ -498,7 +498,7 @@ void ai_frog(Entity *e) {
 			FACE_PLAYER(e);
 			e->state = 10;
 			e->frame = 2;
-			e->y_speed = SPEED(-0x5ff);
+			e->y_speed = -SPEED(0x5ff);
 			e->grounded = FALSE;
 
 			// no jumping sound in cutscenes at ending

@@ -77,9 +77,9 @@ void ai_curly(Entity *e) {
 			e->state = 31;
 			e->frame = 10;
 			e->timer2 = 0;
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
-			MOVE_X(SPEED(-0x200));
+			MOVE_X(-SPEED(0x200));
 		}
 		/* fallthrough */
 		case 31:
@@ -105,7 +105,7 @@ void ai_curly(Entity *e) {
 		/* fallthrough */
 		case 71:
 		{
-			MOVE_X(SPEED(-0x100));
+			MOVE_X(-SPEED(0x100));
 		}
 		break;
 	}
@@ -143,7 +143,7 @@ void ai_curly_carried(Entity *e) {
 		case 10:
 		{
 			e->x_speed = SPEED(0x40);
-			e->y_speed = SPEED(-0x20);
+			e->y_speed = -SPEED(0x20);
 			e->state = 11;
 		}
 		/* fallthrough */

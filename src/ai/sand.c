@@ -418,9 +418,9 @@ void ai_crow(Entity *e) {
 			}
 			// bounce off walls
 			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
-			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = SPEED(-0x200);
+			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -SPEED(0x200);
 			if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x200);
-			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = SPEED(-0x200);
+			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -SPEED(0x200);
 			
 			LIMIT_X(SPEED(0x5ff));
 			LIMIT_Y(SPEED(0x5ff));

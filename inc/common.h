@@ -46,12 +46,22 @@
 #define SCREEN_HALF_H (IS_PALSYSTEM ? 120 : 112)
 #define FPS (IS_PALSYSTEM ? 50 : 60)
 
-#define TIME(x) ((((x)&0xFF) == (x)) ? (time_tab[x]) : (time_tab[(x) >> 4] << 4))
-#define SPEED(x) ((((x)&0xFF) == (x)) ? (speed_tab[x]) : (speed_tab[(x) >> 4] << 4))
+// Default is a bit slow due to branching, but compensates in case x is too large
+// Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
+#define TIME(x) (((x) < 0x100) ? (time_tab[x]) : (time_tab[(x) >> 4] << 4))
+#define SPEED(x) (((x) < 0x100) ? (speed_tab[x]) : (speed_tab[(x) >> 4] << 4))
 
-#define TAB_ASSERT(x) ({ \
-	if(x < 0 || x > 0xFF) printf("%s: %d - Bad time or speed.", __FILE__, __LINE__); \
-})
+// These are like the above without the branching, when you know what the
+// range of possible values of X will be
+// 0x000-0x0FF
+#define TIME_8(x) (time_tab[x])
+#define SPEED_8(x) (speed_tab[x])
+// 0x000-0x3FF, 4 frames/units of inaccuracy
+#define TIME_10(x) (time_tab[(x) >> 2] << 2)
+#define SPEED_10(x) (speed_tab[(x) >> 2] << 2)
+// 0x000-0xFFF, 16 frames/units of inaccuracy
+#define TIME_12(x) (time_tab[(x) >> 4] << 4)
+#define SPEED_12(x) (speed_tab[(x) >> 4] << 4)
 
 uint16_t time_tab[0x100];
 uint16_t speed_tab[0x100];

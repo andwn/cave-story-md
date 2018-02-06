@@ -34,7 +34,7 @@ void ai_doctor(Entity *e) {
 		/* fallthrough */
 		case 21:
 		{
-			e->y_speed += (e->y > e->y_mark) ? SPEED(-0x20) : SPEED(0x20);
+			e->y_speed += (e->y > e->y_mark) ? -SPEED(0x20) : SPEED(0x20);
 			LIMIT_Y(SPEED(0x200));
 		}
 		break;
@@ -64,7 +64,7 @@ void ai_doctor(Entity *e) {
 		{
 			//if (DoTeleportIn(o, 1)) {
 				e->state = 20;
-				e->y_speed = SPEED(-0x200);
+				e->y_speed = -SPEED(0x200);
 			//}
 		}
 		break;
@@ -124,7 +124,7 @@ void ai_toroko(Entity *e) {
 			e->frame = 1;
 			e->timer = 0;
 			e->state = 9;
-			e->y_speed = SPEED(-0x200);
+			e->y_speed = -SPEED(0x200);
 			e->grounded = FALSE;
 		}
 		/* fallthrough */
@@ -137,7 +137,7 @@ void ai_toroko(Entity *e) {
 		{
 			e->state = 11;
 			e->frame = 5;
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 			sound_play(SND_ENEMY_SQUEAK, 5);
 			MOVE_X(SPEED(0x200));
@@ -271,8 +271,8 @@ void ai_sue(Entity *e) {
 			e->frame = 5;
 			e->timer = 0;
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			e->y_speed = SPEED(-0x200);
-			MOVE_X(SPEED(-0x400));
+			e->y_speed = -SPEED(0x200);
+			MOVE_X(-SPEED(0x400));
 		}
 		/* fallthrough */
 		case 9:
@@ -382,7 +382,7 @@ void ai_sue(Entity *e) {
 		{
 			e->state = 41;
 			e->frame = 8;
-			e->y_speed = SPEED(-0x400);
+			e->y_speed = -SPEED(0x400);
 			e->grounded = FALSE;
 		}
 		break;

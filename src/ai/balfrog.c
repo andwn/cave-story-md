@@ -393,7 +393,7 @@ void ai_balfrog(Entity *e) {
 				// it's all over, destroy ourselves and clean up
 				if(balrog) {
 					balrog->frame = 3;
-					balrog->y_speed = SPEED(-0x5FF);
+					balrog->y_speed = -SPEED(0x5FF);
 					balrog->y_next = balrog->y + balrog->y_speed;
 					balrog->y = balrog->y_next;
 					balrog->eflags |= NPC_IGNORESOLID;
