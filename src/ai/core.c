@@ -321,13 +321,11 @@ void ai_core(Entity *e) {
 		e->timer++;
 		
 		// fire off each minicore sequentially...
-		switch(e->timer) {
-			case TIME(80+0):   pieces[0]->state = MC_CHARGE_FIRE; break;
-			case TIME(80+30):  pieces[1]->state = MC_CHARGE_FIRE; break;
-			case TIME(80+60):  pieces[2]->state = MC_CHARGE_FIRE; break;
-			case TIME(80+90):  pieces[3]->state = MC_CHARGE_FIRE; break;
-			case TIME(80+120): pieces[4]->state = MC_CHARGE_FIRE; break;
-		}
+		if(e->timer == TIME(80+  0)) pieces[0]->state = MC_CHARGE_FIRE;
+		if(e->timer == TIME(80+ 30)) pieces[1]->state = MC_CHARGE_FIRE;
+		if(e->timer == TIME(80+ 60)) pieces[2]->state = MC_CHARGE_FIRE;
+		if(e->timer == TIME(80+ 90)) pieces[3]->state = MC_CHARGE_FIRE;
+		if(e->timer == TIME(80+120)) pieces[4]->state = MC_CHARGE_FIRE;
 		
 		// move main core towards a spot in front of target
 		e->x_speed += (e->x > (e->x_mark + (48<<CSF))) ? -4 : 4;

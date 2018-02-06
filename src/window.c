@@ -26,13 +26,8 @@
 // Window location
 #define WINDOW_X1 1
 #define WINDOW_X2 38
-#ifdef PAL
-#define WINDOW_Y1 21
-#define WINDOW_Y2 28
-#else
-#define WINDOW_Y1 20
-#define WINDOW_Y2 27
-#endif
+#define WINDOW_Y1 (IS_PALSYSTEM ? 21 : 20)
+#define WINDOW_Y2 (IS_PALSYSTEM ? 28 : 27)
 // Text area location within window
 #define TEXT_X1 (WINDOW_X1 + 1)
 #define TEXT_X2 (WINDOW_X2 - 1)

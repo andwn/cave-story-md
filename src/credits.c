@@ -41,9 +41,7 @@ void credits_main() {
 	uint16_t backScroll = 0;
 	uint16_t illScroll = 0;
 	
-#ifndef PAL
 	uint8_t skipScroll = FALSE;
-#endif
 	
 	inFade = FALSE;
 	ready = TRUE;
@@ -144,16 +142,16 @@ void credits_main() {
 		entities_draw();
 		
 		backScroll++;
-#ifndef PAL
-		// Slow the scrolling down slightly for NTSC
-		if((backScroll % 6) == 0 && !skipScroll) {
-			backScroll--;
-			waitTime++;
-			skipScroll = TRUE;
-		} else {
-			skipScroll = FALSE;
+		if(IS_PALSYSTEM) {
+			// Slow the scrolling down slightly for NTSC
+			if((backScroll % 6) == 0 && !skipScroll) {
+				backScroll--;
+				waitTime++;
+				skipScroll = TRUE;
+			} else {
+				skipScroll = FALSE;
+			}
 		}
-#endif
 		if((backScroll & 15) == 0) {
 			textY++;
 			VDP_clearTextBG(PLAN_B, 0, textY & 31, 40);
@@ -183,13 +181,10 @@ void credits_show_image(uint16_t id) {
 	VDP_setEnable(FALSE);
 	VDP_setPalette(PAL2, illustration_info[id].palette->data);
 	VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
-#ifdef PAL
+	uint8_t off = IS_PALSYSTEM ? 0 : 20;
+	uint8_t set = IS_PALSYSTEM ? 2 : 0;
 	VDP_fillTileMapRectInc(PLAN_A, 
-			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX), 44, 0, 20, 30);
-#else
-	VDP_fillTileMapRectInc(PLAN_A, 
-			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX+20), 44, 0, 20, 28);
-#endif
+			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX + off), 44, 0, 20, 28 + set);
 	VDP_setEnable(TRUE);
 	illScrolling = 8;
 }

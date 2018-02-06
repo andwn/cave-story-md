@@ -63,6 +63,9 @@ Time time, counter;
 uint32_t flags[FLAGS_LEN];
 uint32_t skip_flags = 0;
 
+extern const uint16_t time_tab_ntsc[0x100];
+extern const uint16_t speed_tab_ntsc[0x100];
+
 static uint8_t LS_readByte(uint8_t file, uint32_t addr);
 static uint16_t LS_readWord(uint8_t file, uint32_t addr);
 static uint32_t LS_readLong(uint8_t file, uint32_t addr);
@@ -845,6 +848,18 @@ void _start_entry() {
     JOY_init();
     // reseting z80 also reset the ym2612
     Z80_init();
+    // Initialize time and speed tables (framerate adjusted)
+    if(IS_PALSYSTEM) {
+		for(uint16_t i = 0; i < 0x100; i++) {
+			time_tab[i] = i;
+			speed_tab[i] = i;
+		}
+	} else {
+		for(uint16_t i = 0; i < 0x100; i++) {
+			time_tab[i] = time_tab_ntsc[i];
+			speed_tab[i] = speed_tab_ntsc[i];
+		}
+	}
     // let's the fun go on !
     main();
 }

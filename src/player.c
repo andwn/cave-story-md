@@ -360,11 +360,8 @@ void player_update() {
 			if(mgun_shoottime > 0) mgun_shoottime--;
 			if(joy_down(btn[cfg_btn_shoot]) && mgun_shoottime == 0) {
 				weapon_fire(*w);
-				#ifdef PAL
-				mgun_shoottime = 10;
-				#else
-				mgun_shoottime = 11;
-				#endif
+				
+				mgun_shoottime = TIME(10);
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -457,12 +454,9 @@ void player_update_jump() {
 		if(joy_pressed(btn[cfg_btn_jump])) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
-#ifdef PAL
 			// Maybe possibly fix jump height?
-			player.jump_time = 0;
-#else
-			player.jump_time = 3;
-#endif
+			player.jump_time = IS_PALSYSTEM ? 0 : 3;
+			
 			sound_play(SND_PLAYER_JUMP, 3);
 		}
 	} else if((playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20)) &&

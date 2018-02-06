@@ -351,23 +351,24 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
-#ifdef PAL
-		uint8_t y = 28;
-		for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
-		for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
-		for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
-		for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
-		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-		VDP_setVerticalScroll(PLAN_B, -8);
-#else
-		uint8_t y = 27;
-		for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
-		for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
-		for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
-		for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
-		VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-		VDP_setVerticalScroll(PLAN_B, 0);
-#endif
+		
+		if(IS_PALSYSTEM) {
+			uint8_t y = 28;
+			for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
+			for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
+			for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
+			for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
+			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
+			VDP_setVerticalScroll(PLAN_B, -8);
+		} else {
+			uint8_t y = 27;
+			for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
+			for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
+			for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
+			for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
+			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
+			VDP_setVerticalScroll(PLAN_B, 0);
+		}
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
@@ -377,8 +378,8 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
-		static const int16_t rowc = SCREEN_HEIGHT >> 3;
-		static const int16_t rowgap = 31 - rowc;
+		int16_t rowc = SCREEN_HEIGHT >> 3;
+		int16_t rowgap = 31 - rowc;
 		// Water surface relative to top of screen
 		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
 		int16_t row = scroll >> 3;

@@ -383,14 +383,14 @@ static void RunForm3(Entity *e) {
 	static const struct {
 		int16_t length, speed;
 	} platform_pattern[] = {
-		{ TIME(500), 2, },
-		{ TIME(200), 1, },
-		{ TIME(20),  0, },
-		{ TIME(200), -1, },
-		{ TIME(500), -2, },
-		{ TIME(200), -1, },
-		{ TIME(20),  0, },
-		{ TIME(200), 1, },
+		{ 500, 2, },
+		{ 200, 1, },
+		{ 20,  0, },
+		{ 200, -1, },
+		{ 500, -2, },
+		{ 200, -1, },
+		{ 20,  0, },
+		{ 200, 1, },
 		{ 0,   0, },
 	};
 	

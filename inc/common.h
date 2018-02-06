@@ -40,21 +40,21 @@
 // On PAL all values will match the index, on NTSC they will be adjusted
 // similarly to how TIME() and SPEED() worked with the old method.
 // Now instead of having separate ROMs, a single ROM will work with both.
-// One caveat, to save memory only 0-127 range is available
+// One caveat, to save memory only 0-255 range is available
 
 #define SCREEN_HEIGHT (IS_PALSYSTEM ? 240 : 224)
 #define SCREEN_HALF_H (IS_PALSYSTEM ? 120 : 112)
 #define FPS (IS_PALSYSTEM ? 50 : 60)
 
-#define TIME(x) (time_tab[(x)&0x7F])
-#define SPEED(x) (speed_tab[(x)&0x7F])
+#define TIME(x) ((((x)&0xFF) == (x)) ? (time_tab[x]) : (time_tab[(x) >> 4] << 4))
+#define SPEED(x) ((((x)&0xFF) == (x)) ? (speed_tab[x]) : (speed_tab[(x) >> 4] << 4))
 
 #define TAB_ASSERT(x) ({ \
-	if(x < 0 || x >= 0x80) printf("%s: %d - Bad time or speed.", __FILE__, __LINE__); \
+	if(x < 0 || x > 0xFF) printf("%s: %d - Bad time or speed.", __FILE__, __LINE__); \
 })
 
-uint8_t time_tab[0x80];
-uint8_t speed_tab[0x80];
+uint16_t time_tab[0x100];
+uint16_t speed_tab[0x100];
 
 // Direction
 enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };

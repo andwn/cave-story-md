@@ -53,9 +53,7 @@ void VDP_init()
     regValues[0x11] = 0x00;                     /* reg 17 - window hpos */
     regValues[0x12] = 0x00;                     /* reg 18 - window vpos */
     
-#ifdef PAL
-    regValues[0x01] |= 0x08; // 240 screen height
-#endif
+    if(IS_PALSYSTEM) regValues[0x01] |= 0x08; // 240 screen height
 
     // set registers
     pw = (uint16_t *) GFX_CTRL_PORT;
