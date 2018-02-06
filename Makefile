@@ -47,19 +47,10 @@ OBJS += $(SS:.s=.o)
 
 .SECONDARY: doukutsu.elf
 
-.PHONY: all ntsc ntsc-debug pal pal-debug
+.PHONY: all pal release debug main-build
 
-all: ntsc
-
-ntsc: release
-ntsc-debug: debug
-
-pal: CCFLAGS += -DPAL
+all: release
 pal: release
-pal-debug: CCFLAGS += -DPAL
-pal-debug: debug
-
-.PHONY: release debug main-build
 
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -flto -fuse-linker-plugin

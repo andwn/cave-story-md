@@ -5,13 +5,13 @@
 all:
 	make
 ntsc:
-	make ntsc
+	make
 ntsc-debug:
-	make ntsc-debug
+	make debug
 pal:
-	make pal
+	make
 pal-debug:
-	make pal-debug
+	make debug
 release:
 	make release
 debug:

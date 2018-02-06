@@ -10,7 +10,7 @@ It should work on any console or emulator. Expect alpha quality.
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
-For something more bleeding edge, try the Nightly: [NTSC](http://www.cavestory.org/md/nightly.zip) / [PAL](http://www.cavestory.org/md/nightlypal.zip) <br/>
+For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip).
 
 Farthest reachable point in `master`: Normal Ending / Hell B3
 
