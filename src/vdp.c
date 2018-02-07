@@ -25,14 +25,13 @@ const VDPPlan PLAN_A = { CONST_PLAN_A };
 const VDPPlan PLAN_B = { CONST_PLAN_B };
 const VDPPlan PLAN_WINDOW = { CONST_PLAN_WINDOW };
 
-void VDP_init()
-{
+void VDP_init() {
     volatile uint16_t *pw;
     uint16_t i;
 
     // wait for DMA completion
     VDP_waitDMACompletion();
-
+    
     regValues[0x00] = 0x04;
     regValues[0x01] = 0x74;                     /* reg. 1 - Enable display, VBL, DMA + VCell size */
     regValues[0x02] = APLAN_DEFAULT / 0x400;       /* reg. 2 - Plane A =$30*$400=$C000 */
@@ -53,7 +52,9 @@ void VDP_init()
     regValues[0x11] = 0x00;                     /* reg 17 - window hpos */
     regValues[0x12] = 0x00;                     /* reg 18 - window vpos */
     
-    if(IS_PALSYSTEM) regValues[0x01] |= 0x08; // 240 screen height
+    pal_mode = GET_VDPSTATUS(VDP_PALMODE_FLAG);
+    
+    if(pal_mode) regValues[0x01] |= 0x08; // 240 screen height
 
     // set registers
     pw = (uint16_t *) GFX_CTRL_PORT;

@@ -293,7 +293,7 @@
  *  \brief
  *      Tests if current system is a PAL system (50 Hz).
  */
-#define IS_PALSYSTEM                GET_VDPSTATUS(VDP_PALMODE_FLAG)
+#define IS_PALSYSTEM                (pal_mode)
 
 /**
  *  \brief
@@ -334,6 +334,9 @@ extern const VDPPlan PLAN_B;
  *      Constante to represent VDP window plan (used by some methods)
  */
 extern const VDPPlan PLAN_WINDOW;
+
+// Remember the pal mode flag so we don't have to read the control port every time
+uint8_t pal_mode;
 
 /**
  *  \brief
