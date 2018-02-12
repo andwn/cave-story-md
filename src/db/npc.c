@@ -361,15 +361,15 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
 	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Bone Shot
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Shockwave
+	{ NULL, 			SHEET_BONE, 	PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone, 	&ai_null 			}, // Ballos Bone Shot
+	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone_spawner,&ai_null 		}, // Ballos Shockwave
 	{ NULL, 			NOSHEET, 		PAL0, 4, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Lightning
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Sweat
 	{ NULL, 			SHEET_IKACHAN,  PAL0, 1, &onspawn_persistent, 	&ai_ikachan, 		&ai_null 			}, // Ika-chan
 	/* 0x150 (336) */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_ikachan_spawner,&ai_null 			}, // Ika-chan Generator
 	{ &SPR_Droll3, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
+	{ NULL, 			SHEET_DEVIL, 	PAL3, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
 	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
@@ -384,7 +384,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
 	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Statue (Breakable)
 	/* 0x160 (352) */
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // King (Sword)
+	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // King (Sword)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Kill Zone
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
@@ -402,7 +402,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Ironh, 		NOSHEET, 		PAL3, 2, &onspawn_ironhead, 	&ai_ironhead, 		&ondeath_ironhead 	}, // Ironhead
 	{ NULL, 			NOSHEET, 		PAL3, 3, &onspawn_sisters, 		&ai_sisters, 		&ondeath_sisters 	}, // Sisters
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_undead_core, 	&ai_undead_core, 	&ai_null 			}, // Undead Core
-	{ NULL, 			NOSHEET, 		PAL3, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ai_null 			}, // Heavy Press
+	{ &SPR_HeavyPress, 	NOSHEET, 		PAL1, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ai_null 			}, // Heavy Press
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos, 		&ondeath_ballos 	}, // Ballos
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */

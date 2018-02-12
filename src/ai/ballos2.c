@@ -44,8 +44,8 @@ static void spawn_bones(Entity *e, uint8_t up) {
 	else
 		y = (e->y + (12 << CSF));
 	
-	//entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
-	//entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
+	entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
+	entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
 }
 
 // handles his "looping" flight/rush attacks
@@ -623,22 +623,21 @@ void ai_ballos_bone_spawner(Entity *e) {
 			sound_play(SND_MISSILE_HIT, 5);
 			e->state = 1;
 			
-			MOVE_X(0x400);
+			MOVE_X(SPEED_10(0x3FF));
 		} /* fallthrough */
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1,2);
 			e->timer++;
 			
-			if ((e->timer % 6) == 1) {
-				int16_t xi = 4 + ((random() % 12) << (CSF-3));
+			if ((e->timer & 7) == 1) {
+				int16_t xi = SPEED_10(random() & 0x3FF);
 				
-				if (!e->dir)
-					xi = -xi;
+				if (!e->dir) xi = -xi;
 				
 				Entity *bone = entity_create(e->x, e->y, OBJ_BALLOS_BONE, 0);
 				bone->x_speed = xi;
-				bone->y_speed = -0x400;
+				bone->y_speed = -SPEED_10(0x3FF);
 				sound_play(SND_BLOCK_DESTROY, 5);
 			}
 			
@@ -656,11 +655,11 @@ void ai_ballos_bone(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	ANIMATE(e, 3, 0, 2);
+	ANIMATE(e, 4, 0,1,2,3);
 	
 	if (e->y_speed >= 0 && blk(e->x, 0, e->y, 6) == 0x41) {
 		if (e->state == 0) {
-			e->y_speed = -0x200;
+			e->y_speed = -SPEED_10(0x200);
 			e->state = 1;
 		} else {
 			//effect(e->x, e->y, EFFECT_FISHY);
@@ -668,8 +667,8 @@ void ai_ballos_bone(Entity *e) {
 		}
 	}
 	
-	e->y_speed += 0x40;
-	LIMIT_Y(0x5ff);
+	e->y_speed += SPEED_8(0x40);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_ballos_skull(Entity *e) {

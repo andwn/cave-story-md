@@ -295,6 +295,7 @@ SPRITE SPR_Littles		"sprite/littles.png"		1 1 0 0 NONE
 SPRITE SPR_Bute			"sprite/bute.png"			3 2 0 0 NONE
 SPRITE SPR_Mesa			"sprite/mesa.png"			4 4 0 0 NONE
 SPRITE SPR_Casts		"credits/casts.png"			3 3 0 0 NONE
+SPRITE SPR_GrnDevil		"sprite/grndevil.png"		2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"		2 2 0 0 NONE
