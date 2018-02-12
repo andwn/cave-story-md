@@ -412,9 +412,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 
 					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15, 0,16, 0,17);
 			SHEET_ADD(SHEET_BUTEARW, &SPR_ButeArw, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
-			// Mesa
-			// Rolling
-			// Delete
+			SHEET_ADD(SHEET_ROLLING, &SPR_Rolling, 3,2,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_DELEET, &SPR_Deleet, 3,3,3, 0,1, 0,2, 0,0);
 		} break;
 		case 0x53: // Ma Pignon
 		{	// Makes copies of itself, better to have a common sheet

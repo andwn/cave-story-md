@@ -13,9 +13,17 @@ enum ButeFrame {
 	BF_DYING1, BF_DYING2, BF_DYING3
 };
 
+enum MesaFrame {
+	MS_STAND1, MS_STAND2,
+	MS_THROW1, MS_THROW2,
+	MS_DYING1, MS_DYING2, MS_DYING3
+};
+
 void ai_bute_dying(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+	
+	uint16_t baseframe = (e->type == OBJ_MESA_DYING) ? MS_DYING1 : BF_DYING1;
 
 	switch(e->state) {
 		case 0:
@@ -23,7 +31,7 @@ void ai_bute_dying(Entity *e) {
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
-			e->frame = BF_DYING1;
+			e->frame = baseframe;
 			e->animtime = 0;
 			e->state = 1;
 			
@@ -37,7 +45,7 @@ void ai_bute_dying(Entity *e) {
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				e->state = 2;
 				e->timer = 0;
-				e->frame = BF_DYING2;
+				e->frame = baseframe + 1;
 				e->y_speed = 0;
 			}
 		}
@@ -45,14 +53,14 @@ void ai_bute_dying(Entity *e) {
 		
 		case 2:
 		{
-			//e->x_speed <<= 3;
 			e->x_speed -= (e->x_speed >> 3) + 1;
-			//e->x_speed *= 8;
-			//e->x_speed /= 9;
 			
-			ANIMATE(e, 4, BF_DYING2, BF_DYING3);
-			
-			if (++e->timer > TIME_8(50)) e->state = STATE_DESTROY;
+			if (++e->timer > TIME_8(50)) {
+				e->state = STATE_DESTROY;
+			} else {
+				if((e->timer & 15) == 1) e->frame = baseframe + 2;
+				if((e->timer & 15) == 9) e->frame = baseframe + 1;
+			}
 		}
 		break;
 	}
@@ -494,8 +502,7 @@ void ai_bute_arrow(Entity *e) {
 }
 
 void ai_mesa(Entity *e) {
-	if (run_bute_defeated(e, MESA_HP))
-		return;
+	if (run_bute_defeated(e, MESA_HP)) return;
 	
 	switch(e->state) {
 		case 0:
@@ -505,12 +512,11 @@ void ai_mesa(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 40, 0, 1);
+			ANIMATE(e, 32, MS_STAND1, MS_STAND2);
 			FACE_PLAYER(e);
 			
 			if (PLAYER_DIST_X(320<<CSF) && PLAYER_DIST_Y(160<<CSF)) {
-				if (++e->timer > 50)
-					e->state = 10;
+				if (++e->timer > TIME_8(50)) e->state = 10;
 			}
 		}
 		break;
@@ -519,7 +525,7 @@ void ai_mesa(Entity *e) {
 		{
 			e->state = 11;
 			e->timer = 0;
-			e->frame = 2;	// hand down
+			e->frame = MS_THROW1;	// hand down
 			
 			int32_t x = e->x + ((!e->dir) ? (7<<CSF) : -(7<<CSF));
 			int32_t y = e->y + (10<<CSF);
@@ -529,17 +535,17 @@ void ai_mesa(Entity *e) {
 		} /* fallthrough */
 		case 11:
 		{
-			if (++e->timer > 50) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = 20;
 				e->timer = 0;
-				e->frame = 3;	// hand up, throwing
+				e->frame = MS_THROW2;	// hand up, throwing
 				
 				if (e->linkedEntity) {
 					Entity *block = e->linkedEntity;
 					
 					block->y = (e->y - (4<<CSF));
-					block->x_speed = (e->dir) ? 0x400 : -0x400;
-					block->y_speed = -0x400;
+					block->x_speed = (e->dir) ? SPEED_10(0x3FF) : -SPEED_10(0x3FF);
+					block->y_speed = -SPEED_10(0x3FF);
 					block->state = 1;
 					
 					sound_play(SND_EM_FIRE, 5);
@@ -552,7 +558,7 @@ void ai_mesa(Entity *e) {
 		
 		case 20:
 		{
-			if (++e->timer > 20) {	// throw again, if player still near
+			if (++e->timer > TIME_8(20)) {	// throw again, if player still near
 				e->state = 1;
 				e->timer = 0;
 			}
@@ -560,8 +566,8 @@ void ai_mesa(Entity *e) {
 		break;
 	}
 	
-	e->y_speed += 0x55;
-	LIMIT_Y(0x5ff);
+	e->y_speed += SPEED_8(0x55);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_mesa_block(Entity *e) {
@@ -575,6 +581,7 @@ void ai_mesa_block(Entity *e) {
 		{
 			if (!e->linkedEntity || e->linkedEntity->type == OBJ_MESA_DYING) {
 				e->state = STATE_DELETE;
+				effect_create_smoke(e->x>>CSF, e->y>>CSF);
 			}
 		}
 		break;
@@ -584,22 +591,18 @@ void ai_mesa_block(Entity *e) {
 			if (++e->timer == 4)
 				e->eflags &= ~NPC_IGNORESOLID;
 			
-			e->y_speed += 0x2A;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED_8(0x2A);
+			LIMIT_Y(SPEED_12(0x5ff));
 			
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				sound_play(SND_BLOCK_DESTROY, 5);
+				effect_create_smoke(e->x>>CSF, e->y>>CSF);
 				e->state = STATE_DELETE;
 			}
 		}
 		break;
 	}
 	
-	if (e->state == STATE_DELETE) {
-		effect_create_smoke(e->x>>CSF, e->y>>CSF);
-		//SmokeClouds(o, 3, 0, 0);
-		//effect(e->x, e->y, EFFECT_BOOMFLASH);
-	}
 }
 
 void ai_deleet(Entity *e) {
@@ -629,10 +632,8 @@ void ai_deleet(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (e->damage_time)
-				e->timer2++;
-			else
-				e->timer2 = 0;
+			if (e->damage_time) e->timer2++;
+			else e->timer2 = 0;
 			
 			e->frame = (e->timer2 & 2) ? 1 : 0;
 		}
@@ -642,51 +643,46 @@ void ai_deleet(Entity *e) {
 		{
 			int16_t counter = -1;
 			
-			switch(e->timer) {
-				case 0:		counter = 0; break;	// 5
-				case 50:	counter = 1; break;	// 4
-				case 100:	counter = 2; break;	// 3
-				case 150:	counter = 3; break;	// 2
-				case 200:	counter = 4; break;	// 1
+			if(e->timer == 0) counter = 0;
+			if(e->timer == TIME_8(50)) counter = 1;
+			if(e->timer == TIME_8(100)) counter = 2;
+			if(e->timer == TIME_8(150)) counter = 3;
+			if(e->timer == TIME_8(200)) counter = 4;
+			
+			if(e->timer >= TIME_8(250)) {
+				e->state = 3;
+				//e->sprite = SPR_BBOX_PUPPET_1;
+				e->hidden = TRUE;
 				
-				case 250:
-				{
-					e->state = 3;
-					//e->sprite = SPR_BBOX_PUPPET_1;
-					e->hidden = TRUE;
+				//sprites[e->sprite].bbox.x1 = -48;
+				//sprites[e->sprite].bbox.x2 = 48;
+				//sprites[e->sprite].bbox.y1 = -48;
+				//sprites[e->sprite].bbox.y2 = 48;
+				e->hit_box.left = 48;
+				e->hit_box.right = 48;
+				e->hit_box.top = 48;
+				e->hit_box.bottom = 48;
+				e->attack = 12;
+				
+				camera_shake(10);
+				SMOKE_AREA((e->x>>CSF) - 48, (e->y>>CSF) - 48, 96, 96, 10);
+				
+				e->eflags &= ~NPC_SHOOTABLE;
+				e->eflags &= ~NPC_INVINCIBLE;
+				
+				if (!e->dir) {
+					int16_t x = (e->x >> CSF) >> 4;
+					int16_t y = ((e->y >> CSF) - 8) >> 4;
 					
-					//sprites[e->sprite].bbox.x1 = -48;
-					//sprites[e->sprite].bbox.x2 = 48;
-					//sprites[e->sprite].bbox.y1 = -48;
-					//sprites[e->sprite].bbox.y2 = 48;
-					e->hit_box.left = 48;
-					e->hit_box.right = 48;
-					e->hit_box.top = 48;
-					e->hit_box.bottom = 48;
-					e->attack = 12;
+					stage_replace_block(x, y,   0);
+					stage_replace_block(x, y+1, 0);
+				} else {
+					int16_t x = ((e->x >> CSF) - 8) >> 4;
+					int16_t y = (e->y >> CSF) >> 4;
 					
-					camera_shake(10);
-					SMOKE_AREA((e->x>>CSF) - 48, (e->y>>CSF) - 48, 96, 96, 10);
-					//SmokeXY(e->x, e->y, 40, 48, 48);
-					
-					e->eflags &= ~NPC_SHOOTABLE;
-					e->eflags &= ~NPC_INVINCIBLE;
-					
-					if (!e->dir) {
-						int16_t x = (e->x >> CSF) >> 4;
-						int16_t y = ((e->y >> CSF) - 8) >> 4;
-						
-						stage_replace_block(x, y,   0);
-						stage_replace_block(x, y+1, 0);
-					} else {
-						int16_t x = ((e->x >> CSF) - 8) >> 4;
-						int16_t y = (e->y >> CSF) >> 4;
-						
-						stage_replace_block(x,   y, 0);
-						stage_replace_block(x+1, y, 0);
-					}
+					stage_replace_block(x,   y, 0);
+					stage_replace_block(x+1, y, 0);
 				}
-				break;
 			}
 			
 			if (counter != -1) {
@@ -724,37 +720,37 @@ void ai_rolling(Entity *e) {
 		
 		case 1:
 		{
-			e->x_speed -= 0x40;
+			e->x_speed -= SPEED_8(0x40);
 			e->y_speed = 0;
 			if (collide_stage_leftwall(e)) e->state++;
 		}
 		break;
 		case 2:
 		{
-			e->y_speed -= 0x40;
+			e->y_speed -= SPEED_8(0x40);
 			e->x_speed = 0;
 			if (collide_stage_ceiling(e)) e->state++;
 		}
 		break;
 		case 3:
 		{
-			e->x_speed += 0x40;
+			e->x_speed += SPEED_8(0x40);
 			e->y_speed = 0;
 			if (collide_stage_rightwall(e)) e->state++;
 		}
 		break;
 		case 4:
 		{
-			e->y_speed += 0x40;
+			e->y_speed += SPEED_8(0x40);
 			e->x_speed = 0;
 			if (collide_stage_floor(e)) e->state = 1;
 		}
 		break;
 	}
 	
-	ANIMATE(e, 4, 0,2);
-	LIMIT_X(0x400);
-	LIMIT_Y(0x400);
+	ANIMATE(e, 4, 0,1,2);
+	LIMIT_X(SPEED_10(0x3FF));
+	LIMIT_Y(SPEED_10(0x3FF));
 	
 	e->x = e->x_next;
 	e->y = e->y_next;

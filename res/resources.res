@@ -172,6 +172,8 @@ SPRITE SPR_HeavyPress	"sprite/heavypress.png"		10 15 0 0 NONE
 SPRITE SPR_HPLightning	"sprite/hp_lightning.png" 	2 12 0 0 NONE
 SPRITE SPR_HPCharge		"sprite/hp_charge.png"		2 2 0 0 NONE
 SPRITE SPR_ButeArw		"sprite/butearw.png"		2 2 0 0 NONE
+SPRITE SPR_Rolling		"sprite/rolling.png"		2 2 0 0 NONE
+SPRITE SPR_Deleet		"sprite/deleet.png"			3 3 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE

@@ -348,11 +348,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Bute (Defeated)
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_mesa, 			&ondeath_default 	}, // Mesa
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
+	{ &SPR_ToroBlock, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_mesa_block, 	&ai_null 			}, // Mesa Block
 	/* 0x140 (320) */
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_carried, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_deleet, 		&ondeath_default 	}, // Deleet
+	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &ai_null, 				&ai_deleet, 		&ondeath_default 	}, // Deleet
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_bute_spawner, 	&ai_null 			}, // Bute Generator
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Heavy Press Projectile
@@ -360,7 +360,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Rolling
+	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Bone Shot
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Shockwave
 	{ NULL, 			NOSHEET, 		PAL0, 4, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Lightning
