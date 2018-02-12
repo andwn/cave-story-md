@@ -327,6 +327,7 @@ void player_update() {
 	}
 	// Shooting
 	Weapon *w = &playerWeapon[currentWeapon];
+	if(iSuckAtThisGameSHIT) w->ammo = w->maxammo;
 	if(w->type == WEAPON_MACHINEGUN) {
 		if(mgun_shoottime > 0) mgun_shoottime--;
 		if(joy_down(btn[cfg_btn_shoot])) {
