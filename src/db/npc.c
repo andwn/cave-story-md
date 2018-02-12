@@ -341,7 +341,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_flying, 	&ondeath_default 	}, // Bute
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_sword, 	&ondeath_default 	}, // Bute (Sword)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_archer, 	&ondeath_default 	}, // Bute (Archer)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_bute_arrow, 	&ai_null 			}, // Bute Projectile
+	{ NULL, 			SHEET_BUTEARW, 	PAL1, 1, &onspawn_persistent, 	&ai_bute_arrow, 	&ai_null 			}, // Bute Projectile
 	{ NULL,				SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon, 		&ondeath_default 	}, // Ma Pignon
 	{ NULL, 			SHEET_ROCK, 	PAL2, 1, &onspawn_persistent, 	&ai_ma_pignon_rock, &ondeath_default 	}, // Rock
 	{ NULL, 			SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon_clone,&ondeath_default 	}, // Clone

@@ -5,6 +5,14 @@
 #define DELEET_HP		32
 #define STATUE_HP		100
 
+enum ButeFrame {
+	BF_FLYING1, BF_FLYING2,
+	BF_SWORD1, BF_SWORD2, BF_SWORD3, BF_SWORD4, BF_SWORD5,
+	BF_ARCHER1, BF_ARCHER2, BF_ARCHER3, BF_ARCHER4, BF_ARCHER5, BF_ARCHER6, BF_ARCHER7,
+	BF_FALLING1, BF_FALLING2, 
+	BF_DYING1, BF_DYING2, BF_DYING3
+};
+
 void ai_bute_dying(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -15,21 +23,21 @@ void ai_bute_dying(Entity *e) {
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
-			e->frame = 0;
+			e->frame = BF_DYING1;
 			e->animtime = 0;
 			e->state = 1;
 			
-			e->y_speed = -0x200;
+			e->y_speed = -SPEED_10(0x1FF);
 		} /* fallthrough */
 		case 1:
 		{
-			e->y_speed += 0x20;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED_8(0x20);
+			LIMIT_Y(SPEED_12(0x5ff));
 			
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				e->state = 2;
 				e->timer = 0;
-				e->frame = 1;
+				e->frame = BF_DYING2;
 				e->y_speed = 0;
 			}
 		}
@@ -37,13 +45,14 @@ void ai_bute_dying(Entity *e) {
 		
 		case 2:
 		{
-			e->x_speed *= 8;
-			e->x_speed /= 9;
+			//e->x_speed <<= 3;
+			e->x_speed -= (e->x_speed >> 3) + 1;
+			//e->x_speed *= 8;
+			//e->x_speed /= 9;
 			
-			ANIMATE(e, 3, 1, 2);
+			ANIMATE(e, 4, BF_DYING2, BF_DYING3);
 			
-			if (++e->timer > 50)
-				e->state = STATE_DESTROY;
+			if (++e->timer > TIME_8(50)) e->state = STATE_DESTROY;
 		}
 		break;
 	}
@@ -60,7 +69,7 @@ static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
 			e->type = OBJ_BUTE_DYING;
 			
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			MOVE_X(-0x100);
+			MOVE_X(-SPEED_8(0xFF));
 		}
 		
 		e->attack = 0;
@@ -74,8 +83,7 @@ static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
 }
 
 void ai_bute_flying(Entity *e) {
-	if (run_bute_defeated(e, BUTE_HP))
-		return;
+	if (run_bute_defeated(e, BUTE_HP)) return;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -92,10 +100,10 @@ void ai_bute_flying(Entity *e) {
 		case 11:
 		{
 			FACE_PLAYER(e);
-			ANIMATE(e, 4, 0,1);
+			ANIMATE(e, 4, BF_FLYING1,BF_FLYING2);
 			
-			ACCEL_X(SPEED(0x10));
-			e->y_speed += (e->y > player.y) ? -SPEED(0x10) : SPEED(0x10);
+			ACCEL_X(SPEED_8(0x10));
+			e->y_speed += (e->y > player.y) ? -SPEED_8(0x10) : SPEED_8(0x10);
 			
 			//LIMIT_X(0x5ff);
 			//LIMIT_Y(0x5ff);
@@ -111,8 +119,8 @@ void ai_bute_flying(Entity *e) {
 		}
 		break;
 	}
-	LIMIT_X(SPEED(0x200));
-	LIMIT_Y(SPEED(0x200));
+	LIMIT_X(SPEED_12(0x3FF));
+	LIMIT_Y(SPEED_12(0x3FF));
 }
 
 // Butes that come down from ceiling
@@ -123,46 +131,47 @@ void ai_bute_spawner(Entity *e) {
 		case 10:	// script trigger (dir set by script at same time)
 		{
 			e->state = 11;
-			e->timer = 0;
+			e->timer2 = 0;
 		} /* fallthrough */
 		case 11:
 		{
-			e->timer++;
+			e->timer = 0;
+			e->timer2++;
 			
-			if ((e->timer % TIME(50)) == 1) {
-				Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, 0);
-				bute->dir = e->dir;
+			Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, 0);
+			bute->dir = e->dir;
 				
-				if (e->timer == ((NUM_BUTES - 1) * TIME(50)) + 1)
-					e->state = 0;
-			}
+			if(e->timer2 >= NUM_BUTES) e->state = 0;
+		}
+		break;
+		case 12:
+		{
+			if(++e->timer >= TIME_8(50)) e->state = 11;
 		}
 		break;
 	}
 }
 
 void ai_bute_falling(Entity *e) {
-	ANIMATE(e, 4, 0,3);
+	ANIMATE(e, 4, BF_FALLING1,BF_FALLING2);
 	
 	switch(e->state) {
 		case 0:
 		{
 			e->state = 1;
 			//e->MoveAtDir(e->dir, 0x600);
-			MOVE_X(0x600);
+			MOVE_X(SPEED_12(0x600));
 			e->eflags |= NPC_IGNORESOLID;
 		} /* fallthrough */
 		case 1:
 		{
 			e->timer++;
 			
-			if (e->timer == 16) {
-				e->eflags &= ~NPC_IGNORESOLID;
-			} else if (e->timer > 16 && blk(e->x, 0, e->y, 0) == 0x41) {
+			if (e->timer > TIME_8(16) && blk(e->x, 0, e->y, 0) == 0x41) {
 				e->state = 10;
 			}
 			
-			if (e->timer > 20) {
+			if (e->timer > TIME_8(20)) {
 				switch(e->dir) {
 					case LEFT:
 						if (e->x <= player.x + (32<<CSF))
@@ -203,8 +212,7 @@ void ai_bute_falling(Entity *e) {
 }
 
 void ai_bute_sword(Entity *e) {
-	if (run_bute_defeated(e, BUTE_HP))
-		return;
+	if (run_bute_defeated(e, BUTE_HP)) return;
 		
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -219,6 +227,7 @@ void ai_bute_sword(Entity *e) {
 		} /* fallthrough */
 		case 1:		// lying in wait
 		{
+			e->frame = BF_SWORD1;
 			FACE_PLAYER(e);
 			
 			if (PLAYER_DIST_X(128<<CSF) && PLAYER_DIST_Y2(128<<CSF, 16<<CSF)) {
@@ -232,7 +241,7 @@ void ai_bute_sword(Entity *e) {
 		{
 			e->eflags |= NPC_INVINCIBLE;
 			e->attack = 0;
-			e->frame = 0;
+			e->frame = BF_SWORD1;
 			
 			e->state = 11;
 			e->timer = 0;
@@ -255,17 +264,17 @@ void ai_bute_sword(Entity *e) {
 		} /* fallthrough */
 		case 21:
 		{
-			ANIMATE(e, 3, 0, 1);
-			MOVE_X(0x400);
+			ANIMATE(e, 4, BF_SWORD1, BF_SWORD2);
+			MOVE_X(SPEED_10(0x3FF));
 			
 			if (PLAYER_DIST_X(40<<CSF)) {
 				e->x_speed /= 2;
-				e->y_speed = -0x300;
+				e->y_speed = -SPEED_10(0x2FF);
 				
 				e->state = 30;
-				e->frame = 2;	// sword back, jumping
+				e->frame = BF_SWORD3;	// sword back, jumping
 				sound_play(SND_ENEMY_JUMP, 5);
-			} else if (++e->timer > 50) {	// timeout, p got away
+			} else if (++e->timer > TIME_8(50)) {	// timeout, p got away
 				e->state = 10;
 				e->x_speed = 0;
 			}
@@ -275,8 +284,8 @@ void ai_bute_sword(Entity *e) {
 		// jumping up
 		case 30:
 		{
-			if (e->y_speed > -0x80) {
-				e->frame = 3;	// sword swipe fwd
+			if (e->y_speed > -SPEED_8(0x80)) {
+				e->frame = BF_SWORD4;	// sword swipe fwd
 				e->attack = 9;
 				
 				e->state = 31;
@@ -290,7 +299,7 @@ void ai_bute_sword(Entity *e) {
 		{
 			if (++e->timer > 2) {
 				e->timer = 0;
-				e->frame = 4;	// sword down, in front
+				e->frame = BF_SWORD5;	// sword down, in front
 			}
 			
 			if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) {
@@ -305,7 +314,7 @@ void ai_bute_sword(Entity *e) {
 		
 		case 32:
 		{
-			if (++e->timer > 30) {
+			if (++e->timer > TIME_8(30)) {
 				e->state = 10;
 				e->timer = 0;
 			}
@@ -313,14 +322,13 @@ void ai_bute_sword(Entity *e) {
 		break;
 	}
 	
-	e->y_speed += 0x20;
-	LIMIT_Y(0x5ff);
+	e->y_speed += SPEED_8(0x20);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 
 void ai_bute_archer(Entity *e) {
-	if (run_bute_defeated(e, BUTE_HP))
-		return;
+	if (run_bute_defeated(e, BUTE_HP)) return;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -328,6 +336,7 @@ void ai_bute_archer(Entity *e) {
 	switch(e->state) {
 		case 0:		// waiting for player (when haven't seen him yet)
 		{
+			e->frame = BF_ARCHER1;
 			if ((!e->dir && player.x < e->x) || (e->dir && player.x > e->x)) {
 				if (PLAYER_DIST_X(320<<CSF) && PLAYER_DIST_Y(160<<CSF)) {
 					e->state = 10;
@@ -342,10 +351,10 @@ void ai_bute_archer(Entity *e) {
 			FACE_PLAYER(e);
 			
 			if (!PLAYER_DIST_X(224<<CSF) || player.y <= (e->y - (8<<CSF))) {
-				e->frame = 4;	// shooting up
+				e->frame = BF_ARCHER5;	// shooting up
 				e->timer2 = 1;
 			} else {
-				e->frame = 1;	// shooting straight
+				e->frame = BF_ARCHER2;	// shooting straight
 				e->timer2 = 0;
 			}
 			
@@ -360,11 +369,11 @@ void ai_bute_archer(Entity *e) {
 		case 20:
 		{
 			if (e->timer2 == 0)
-				ANIMATE(e, 4, 1,2)
+				ANIMATE(e, 4, BF_ARCHER2,BF_ARCHER3)
 			else
-				ANIMATE(e, 4, 4,5)
+				ANIMATE(e, 4, BF_ARCHER5,BF_ARCHER6)
 			
-			if (++e->timer > 30)
+			if (++e->timer > TIME_8(30))
 				e->state = 30;
 		}
 		break;
@@ -376,20 +385,20 @@ void ai_bute_archer(Entity *e) {
 			e->timer = 0;
 			
 			Entity *arrow = entity_create(e->x, e->y, OBJ_BUTE_ARROW, 0);
-			arrow->x_speed = (e->dir) ? 0x600 : -0x600;
+			arrow->x_speed = (e->dir) ? SPEED_12(0x5FF) : -SPEED_12(0x5FF);
 			
 			if (e->timer2 == 1)		// shooting up
-				arrow->y_speed = -0x600;
+				arrow->y_speed = -SPEED_12(0x5FF);
 			
 			// frame: arrow away
-			e->frame = (e->timer2 == 1) ? 6 : 3;
+			e->frame = (e->timer2 == 1) ? BF_ARCHER7 : BF_ARCHER4;
 		} /* fallthrough */
 		case 31:
 		{
-			if (++e->timer > 30) {
+			if (++e->timer > TIME_8(30)) {
 				e->state = 40;
-				e->frame = 0;
-				e->timer = 50 + (random() % 100);
+				e->frame = BF_ARCHER1;
+				e->timer = TIME_8(50) + (random() % TIME_8(100));
 			}
 		}
 		break;
@@ -414,12 +423,7 @@ void ai_bute_arrow(Entity *e) {
 	e->y += e->y_speed;
 	// check for hit wall/floor etc
 	if (e->state < 20 && !(e->eflags & NPC_IGNORESOLID)) {
-		if ((e->x_speed < 0 && blk(e->x, -6, e->y,  0) == 0x41) || 
-			(e->x_speed > 0 && blk(e->x,  6, e->y,  0) == 0x41) ||
-			(e->y_speed < 0 && blk(e->x,  0, e->y, -6) == 0x41) || 
-			(e->y_speed > 0 && blk(e->x,  0, e->y,  6) == 0x41)) {
-				e->state = 20;
-		}
+		if(blk(e->x, 0, e->y, 0) == 0x41) e->state = 20;
 	}
 	
 	switch(e->state) {
@@ -445,18 +449,19 @@ void ai_bute_arrow(Entity *e) {
 			e->state = 11;
 			
 			// slow down a bit (was going real fast from bow)
-			e->x_speed *= 3;
-			e->x_speed /= 4;
-			
-			e->y_speed *= 3;
-			e->y_speed /= 4;
+			e->x_speed -= e->x_speed >> 2;
+			//e->x_speed *= 3;
+			//e->x_speed /= 4;
+			e->y_speed -= e->y_speed >> 2;
+			//e->y_speed *= 3;
+			//e->y_speed /= 4;
 		} /* fallthrough */
 		case 11:
 		{
-			e->y_speed += 0x20;
+			e->y_speed += SPEED_8(0x20);
 			
 			//ANIMATE_FWD(10);
-			if (++e->animtime > 10) {
+			if (++e->animtime > TIME_8(10)) {
 				e->frame++;
 				e->animtime = 0;
 			}
@@ -476,16 +481,16 @@ void ai_bute_arrow(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer > 30)
+			if (e->timer > TIME_8(30))
 				e->hidden = (e->timer & 2);
 				
-			if (e->timer > 61)
+			if (e->timer > TIME_8(61))
 				e->state = STATE_DELETE;
 		}
 		break;
 	}
 	
-	LIMIT_Y(0x5ff);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_mesa(Entity *e) {
