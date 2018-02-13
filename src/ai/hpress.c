@@ -161,6 +161,11 @@ void onspawn_heavypress(Entity *e) {
 	e->health = 700;
 	e->event = 1000;	// defeated script
 	
+	e->hit_box =     (bounding_box) { 36, 56, 36, 56 };
+	e->display_box = (bounding_box) { 40, 60, 40, 60 };
+	
+	entities_clear_by_type(OBJ_ROLLING);
+	
 	// setup bboxes
 	//center_bbox = sprites[e->sprite].frame[0].dir[0].pf_bbox;
 	//fullwidth_bbox = sprites[e->sprite].frame[2].dir[0].pf_bbox;
@@ -194,13 +199,14 @@ void ai_heavypress(Entity *e) {
 			
 			e->eflags |= NPC_SHOOTABLE;
 			e->eflags &= ~NPC_INVINCIBLE;
+			e->nflags &= ~NPC_INVINCIBLE;
 			
 			e->state = 101;
 			e->timer = 0;	// pause a moment before Butes come
 		} /* fallthrough */
 		case 101:
 		{	// fire lightning
-			entity_create(e->x, e->y+0x7800, OBJ_HP_LIGHTNING, 0);
+			//entity_create(e->x, e->y+0x7800, OBJ_HP_LIGHTNING, 0);
 			e->state = 102;
 		} /* fallthrough */
 		case 102:
@@ -215,7 +221,7 @@ void ai_heavypress(Entity *e) {
 				
 				case 180:
 				case 340:
-					entity_create(block_to_sub(3), block_to_sub(15), OBJ_BUTE_FALLING, 0);
+					entity_create(block_to_sub(3), block_to_sub(15), OBJ_BUTE_FALLING, 0)->dir = 1;
 				break;
 				
 				case 398:
@@ -237,12 +243,18 @@ void ai_heavypress(Entity *e) {
 		break;
 	}
 	
-	// flashing when hit. note, setting frame to 0 would mess up the
-	// defeated sequence, except that damage_time is always expired by the time
-	// the eye is opened, and this way we can still flash on the last shot.
-	// TODO: Look into palette flickering this
-	//if (e->damage_time)
-	//	e->frame = (e->damage_time & 2) ? 3 : 0;
+	// Flicker the gray part of PAL_Sym to make the body flash.
+	// This will cause some other things to flash, but whatever.
+	static const uint16_t bright_sym[4] = { 0x888, 0xAAA, 0xCCC, 0xEEE };
+	if(e->damage_time) {
+		if((e->damage_time & 3) == 3) {
+			// Flash bright
+			DMA_queueDma(DMA_CRAM, (uint32_t) bright_sym, 22*2, 4, 2);
+		} else if((e->damage_time & 3) == 1) {
+			// Flash normal
+			DMA_queueDma(DMA_CRAM, (uint32_t) &PAL_Sym.data[6], 22*2, 4, 2);
+		}
+	}
 }
 
 void ai_hp_lightning(Entity *e) {

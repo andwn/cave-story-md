@@ -9,8 +9,7 @@ enum ButeFrame {
 	BF_FLYING1, BF_FLYING2,
 	BF_SWORD1, BF_SWORD2, BF_SWORD3, BF_SWORD4, BF_SWORD5,
 	BF_ARCHER1, BF_ARCHER2, BF_ARCHER3, BF_ARCHER4, BF_ARCHER5, BF_ARCHER6, BF_ARCHER7,
-	BF_FALLING1, BF_FALLING2, 
-	BF_DYING1, BF_DYING2, BF_DYING3
+	BF_FALLING1, BF_FALLING2
 };
 
 enum MesaFrame {
@@ -23,7 +22,7 @@ void ai_bute_dying(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	uint16_t baseframe = (e->type == OBJ_MESA_DYING) ? MS_DYING1 : BF_DYING1;
+	uint16_t baseframe = (e->type == OBJ_MESA_DYING) ? MS_DYING1 : 0;
 
 	switch(e->state) {
 		case 0:
@@ -147,7 +146,8 @@ void ai_bute_spawner(Entity *e) {
 			e->timer2++;
 			
 			Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, 0);
-			bute->dir = e->dir;
+			bute->dir = e->dir & 1;
+			if(e->dir == UP) e->eflags |= NPC_OPTION2;
 				
 			if(e->timer2 >= NUM_BUTES) {
 				e->state = 0;
@@ -171,7 +171,11 @@ void ai_bute_falling(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			//e->MoveAtDir(e->dir, 0x600);
+			if(e->eflags & NPC_OPTION2) {
+				e->y_speed = -SPEED_12(0x600);
+			} else {
+				e->y_speed = SPEED_12(0x600);
+			}
 			MOVE_X(SPEED_12(0x600));
 			e->eflags |= NPC_IGNORESOLID;
 		} /* fallthrough */
@@ -354,8 +358,8 @@ void ai_bute_sword(Entity *e) {
 void ai_bute_archer(Entity *e) {
 	if (run_bute_defeated(e, BUTE_HP)) return;
 	
-	e->x += e->x_speed;
-	e->y += e->y_speed;
+	//e->x += e->x_speed;
+	//e->y += e->y_speed;
 	
 	switch(e->state) {
 		case 0:		// waiting for player (when haven't seen him yet)

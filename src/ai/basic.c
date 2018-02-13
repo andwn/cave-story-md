@@ -97,8 +97,14 @@ void ai_grav(Entity *e) {
 	e->y = e->y_next;
 }
 
-// For type 0, this actually does something with OPTION1 apparently
+// Type 0, used for many invisible things that are sometimes useful.
+// Outer Wall and Balcony use it as a kill plane when you fall into the void.
+// Hell B3 also apparently had a hidden trigger to warp to the boss too.
 void ai_nothing(Entity *e) {
+	if(stageID == STAGE_HELL_B3 && e->event == 302) {
+		e->state = STATE_DELETE;
+		return;
+	}
 	if(!e->state) {
 		e->state = 1;
 		if(e->eflags & NPC_OPTION1) {

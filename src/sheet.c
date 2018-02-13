@@ -408,9 +408,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x52: // Sacred Ground B3
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 			SHEET_ADD(SHEET_PRESS, &SPR_Press, 3,2,3, 0,0, 0,1, 0,2);
-			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 19,3,2, 
+			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 16,3,2, 
 					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 
-					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15, 0,16, 0,17, 0,18);
+					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15);
+			SHEET_ADD(SHEET_BUTEDIE, &SPR_Bute, 3,3,2, 0,16, 0,17, 0,18);
 			SHEET_ADD(SHEET_BUTEARW, &SPR_ButeArw, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			SHEET_ADD(SHEET_ROLLING, &SPR_Rolling, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_DELEET, &SPR_Deleet, 3,3,3, 0,1, 0,2, 0,0);

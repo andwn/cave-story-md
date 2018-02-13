@@ -345,7 +345,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL,				SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon, 		&ondeath_default 	}, // Ma Pignon
 	{ NULL, 			SHEET_ROCK, 	PAL2, 1, &onspawn_persistent, 	&ai_ma_pignon_rock, &ondeath_default 	}, // Rock
 	{ NULL, 			SHEET_MAPI, 	PAL3, 1, &onspawn_persistent, 	&ai_ma_pignon_clone,&ondeath_default 	}, // Clone
-	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Bute (Defeated)
+	{ NULL, 			SHEET_BUTEDIE, 	PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Bute (Defeated)
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_mesa, 			&ondeath_default 	}, // Mesa
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
 	{ &SPR_ToroBlock, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_mesa_block, 	&ai_null 			}, // Mesa Block

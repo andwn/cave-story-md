@@ -11,6 +11,9 @@
 
 #define MAX_ITEMS 24
 
+#define PLAYER_HARD_HIT_BOX ((bounding_box) { 6, 6, 5, 8 })
+#define PLAYER_SOFT_HIT_BOX ((bounding_box) { 4, 4, 4, 4 })
+
 enum BoosterState {
 	BOOST_OFF = 0,
 	BOOST_UP,

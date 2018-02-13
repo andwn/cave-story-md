@@ -196,11 +196,10 @@ void entities_update() {
 				}
 			}
 		}
-		// Solid Entities
-		bounding_box collision = { 0, 0, 0, 0 };
+		// Hard Solids
 		if(flags & NPC_SPECIALSOLID) {
 			// Apply x_next/y_next so player is completely outside us
-			collision = entity_react_to_collision(&player, e);
+			bounding_box collision = entity_react_to_collision(&player, e);
 			player.x = player.x_next;
 			player.y = player.y_next;
 			if(collision.bottom) {
@@ -212,10 +211,10 @@ void entities_update() {
 					playerPlatformTime = 0;
 				}
 			}
-		} // "Smushy" Solid Entities
+		} // Soft solids
 		else if(flags & NPC_SOLID) {
+			bounding_box collision = entity_react_to_collision(&player, e);
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
-			collision = entity_react_to_collision(&player, e);
 			if(collision.bottom && e->y > player.y) {
 				player.y -= 1<<CSF;
 				if(flags & NPC_BOUNCYTOP) {
@@ -235,18 +234,25 @@ void entities_update() {
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
-			uint32_t collided = *(uint32_t*)&collision; // I do what I want
-			if(collided || entity_overlapping(&player, e)) {
+			// This uses a smaller hitbox
+			player.hit_box = PLAYER_SOFT_HIT_BOX;
+			uint8_t collided = entity_overlapping(&player, e);
+			player.hit_box = PLAYER_HARD_HIT_BOX;
+			if(collided) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
-				if((flags & NPC_FRONTATKONLY) &&
-					((e->dir == 0 && collision.right == 0) ||
-					(e->dir > 0 && collision.left == 0))) {
-						// Nothing
-				} else if(player_inflict_damage(e->attack)) {
-					// Player died, don't update entities anymore
-					return;
+				if(flags & NPC_FRONTATKONLY) {
+					if(!PLAYER_DIST_Y((e->hit_box.top + 3) << CSF)) {
+						collided = FALSE;
+					} else {
+						if(e->dir) {
+							if(player.x < e->x) collided = FALSE;
+						} else {
+							if(player.x > e->x) collided = FALSE;
+						}
+					}
 				}
+				if(collided && player_inflict_damage(e->attack)) return;
 			}
 		}
 		// Damage timer and shaking

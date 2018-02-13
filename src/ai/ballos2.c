@@ -672,18 +672,24 @@ void ai_ballos_bone(Entity *e) {
 }
 
 void ai_ballos_skull(Entity *e) {
-	ANIMATE(e, 8, 0,1,2,3);
+	if(++e->animtime > 8) {
+		if(++e->frame > 3) {
+			e->frame = 0;
+		}
+	}
 	
 	switch(e->state) {
 		case 0:
 		{
 			e->state = 100;
+			e->timer = 0;
 			e->frame = random() & 3;
+			e->animtime = 0;
 		} /* fallthrough */
 		case 100:
 		{
-			e->y_speed += 0x40;
-			LIMIT_Y(0x700);
+			e->y_speed += SPEED_8(0x40);
+			LIMIT_Y(SPEED_12(0x700));
 			
 			e->timer++;
 			//if (e->timer & 2) {
@@ -694,7 +700,7 @@ void ai_ballos_skull(Entity *e) {
 				e->eflags &= ~NPC_IGNORESOLID;
 				
 				if (blk(e->x, 0, e->y, 7) == 0x41) {
-					e->y_speed = -0x200;
+					e->y_speed = -SPEED_10(0x200);
 					e->state = 110;
 					e->eflags |= NPC_IGNORESOLID;
 					
@@ -714,7 +720,7 @@ void ai_ballos_skull(Entity *e) {
 		
 		case 110:
 		{
-			e->y_speed += 0x40;
+			e->y_speed += SPEED_8(0x40);
 			
 			if (e->y >= block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
@@ -728,12 +734,14 @@ void ai_ballos_spikes(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if (++e->timer < TIME(128)) {
-				e->y -= SPEED(0x80);
+			if (++e->timer < TIME_8(128)) {
+				e->y -= SPEED_8(0x80);
 				e->frame = (e->timer & 2) ? 0 : 1;
 			} else {
-				e->state = 1;
-				e->attack = 2;
+				//e->state = 1;
+				//e->attack = 2;
+				stage_replace_block(sub_to_block(e->x), sub_to_block(e->y), 1);
+				e->state = STATE_DELETE;
 			}
 		}
 		break;
@@ -744,7 +752,7 @@ void ai_green_devil_spawner(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->timer = random() % TIME(40);
+			e->timer = random() % TIME_8(40);
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
@@ -767,6 +775,7 @@ void ai_green_devil(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			if(e->eflags & NPC_OPTION2) e->dir = 1;
 			e->y_mark = e->y;
 			e->y_speed = (random() % (10<<CSF)) - (5<<CSF);
 			e->attack = 3;
@@ -775,10 +784,10 @@ void ai_green_devil(Entity *e) {
 		case 1:
 		{
 			ANIMATE(e, 4, 0,1);
-			e->y_speed += (e->y < e->y_mark) ? 0x80 : -0x80;
+			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x80) : -SPEED_8(0x80);
 			
-			ACCEL_X(0x20);
-			LIMIT_X(0x400);
+			ACCEL_X(SPEED_8(0x20));
+			LIMIT_X(SPEED_10(0x3FF));
 			
 			if (!e->dir) {
 				if (e->x < 0) e->state = STATE_DELETE;

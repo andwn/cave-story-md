@@ -33,6 +33,105 @@
 #define blk(xf, xoff, yf, yoff)                                                                \
 	stage_get_block_type((((xf)>>CSF)+(xoff))>>4,(((yf)>>CSF)+(yoff))>>4)
 
+// I should have made this a long time ago
+enum StageIndex {
+	STAGE_0,
+	STAGE_ARTHURS_HOUSE,
+	STAGE_EGG_CORRIDOR,
+	STAGE_EGG_NO_00,
+	STAGE_EGG_NO_06,
+	STAGE_EGG_OBSERVATORY,
+	STAGE_GRASSTOWN,
+	STAGE_SANTAS_HOUSE,
+	STAGE_CHAKOS_HOUSE,
+	STAGE_LABYRINTH_I,			// The room Misery warps you to with a high up switch
+	STAGE_SAND_ZONE,
+	STAGE_MIMIGA_VILLAGE,
+	STAGE_FIRST_CAVE,
+	STAGE_START_POINT,
+	STAGE_MIMIGA_SHACK,			// Room with first Balrog boss (the one you can skip)
+	STAGE_MIMIGA_RESERVOIR,
+	STAGE_MIMIGA_GRAVEYARD,
+	STAGE_MIMIGA_GARDEN,
+	STAGE_GRASSTOWN_SHELTER,	// Where Kazuma gets stuck
+	STAGE_MIMIGA_TOWN_HALL,
+	STAGE_MIMIGA_SAVE_POINT,	// Small room with save & refill
+	STAGE_EGG_SAVE_POINT,		// Save room at the very end
+	STAGE_EGG_PASSAGEWAY,		// Cthulhu's Abode
+	STAGE_EGG_NO_01,
+	STAGE_ARTHURS_HOUSE_2,		// Scene after Egg Corridor
+	STAGE_POWER_ROOM,			// Grasstown, second Balrog fight
+	STAGE_GRASSTOWN_SAVE,		// Small save & refill room
+	STAGE_EXECUTION_CHAMBER,	// Press puzzle in Grasstown
+	STAGE_GRASSTOWN_GUM,		// Where you fight Balfrog
+	STAGE_SAND_ZONE_BAR,		// Where you fight Curly
+	STAGE_GRASSTOWN_HUT,		// House where Ravil attacks you
+	STAGE_WATERWAY_BOSS,
+	STAGE_SAND_ZONE_BAR_2,		// Save room with puppy
+	STAGE_JENKA_1,				// Jenka's House
+	STAGE_SAND_ZONE_HOUSE,		// Dark house with a puppy
+	STAGE_SAND_ZONE_STOREHOUSE,	// Toroko boss
+	STAGE_JENKA_2,				// For the scene with Balrog, I think
+	STAGE_SAND_ZONE_2,			// For the scene where Misery warps you
+	STAGE_LABYRINTH_H,			// Room after I, before W
+	STAGE_LABYRINTH_W,			// Main room with Monster X
+	STAGE_LABYRINTH_O,			// Clinic
+	STAGE_LABYRINTH_D,			// Pooh Black
+	STAGE_LABYRINTH_A,			// Shop
+	STAGE_LABYRINTH_B,			// Booster
+	STAGE_LABYRINTH_S,			// Last Balrog fight
+	STAGE_LABYRINTH_M,			// Large section with AI Curly
+	STAGE_DARK_PLACE,			// Room before core, entrance to Waterway
+	STAGE_CORE,
+	STAGE_WATERWAY,
+	STAGE_EGG_CORRIDOR_2,		// Busted up Egg Corridor
+	STAGE_EGG_PASSAGEWAY_2,
+	STAGE_EGG_OBSERVATORY_2,
+	STAGE_EGG_NO_00_2,
+	STAGE_OUTER_WALL,
+	STAGE_EGG_SAVE_POINT_2,
+	STAGE_OUTER_WALL_STORAGE,	// Room with Itoh, connects Outer Wall and Plantation
+	STAGE_PLANTATION,
+	STAGE_PLANTATION_JAIL_1,	// Jail room where you get Sue's letter
+	STAGE_MOMORIN_HIDEOUT,
+	STAGE_PLANTATION_LOUNGE,
+	STAGE_PLANTATION_TELEROOM,	// Lower west room with teleporter
+	STAGE_PLANTATION_JAIL_2,	// West room with jail cells
+	STAGE_BALCONY,
+	STAGE_LAST_CAVE_1,			// Normal ending route
+	STAGE_THRONE_ROOM,			// Misery boss
+	STAGE_KINGS_TABLE,			// Muscle Doctor boss
+	STAGE_PREFAB_HOUSE,			// House in Balcony with save & bed
+	STAGE_LAST_CAVE_2,			// Best Ending route
+	STAGE_BLACK_SPACE,			// Undead Core boss
+	STAGE_LITTLE_HOUSE,
+	STAGE_BALCONY_2,			// When escaping before ending sequence
+	STAGE_FALLING,				// Quote falls and gets caught by Kazuma
+	STAGE_INTRO,				// Intro scene when the game is launched
+	STAGE_WATERWAY_CABIN,		// Where you drain Curly
+	STAGE_ENDING_LABYRINTH,		// These are small maps made for the credits
+	STAGE_ENDING_JENKA,
+	STAGE_ENDING_POWER_ROOM,
+	STAGE_ENDING_GRAVEYARD,
+	STAGE_ENDING_SKY,			// Scene with everyone in the helicopter
+	STAGE_PREFAB_HOUSE_2,		// Hell entrance
+	STAGE_HELL_B1,
+	STAGE_HELL_B2,
+	STAGE_HELL_B3,
+	STAGE_MA_PIGNON,
+	STAGE_HELL_PASSAGEWAY,		// When you enter from Plantation
+	STAGE_HELL_PASSAGEWAY_2,	// When you enter after defeating Heavy Press
+	STAGE_HELL_STATUE,
+	STAGE_SEAL_CHAMBER,
+	STAGE_HELL_OUTER_PASSAGE,	// Room before Seal Chamber with the hologram dog
+	STAGE_ENDING_LAB,			// Laboratory scene
+	STAGE_GUNSMITH,
+	STAGE_ISLAND,				// Displays an image of the island falling
+	STAGE_SEAL_CHAMBER_2,		// Scene after defeating Ballos
+	STAGE_ENDING_BALCONY,
+	STAGE_CLOCK,				// Room in Outer Wall with the counter
+};
+
 // Index of current stage in db/stage.c
 uint16_t stageID;
 // Size of the stage - how many blocks wide/high

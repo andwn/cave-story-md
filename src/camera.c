@@ -66,6 +66,8 @@ void camera_shake(uint16_t time) {
 }
 
 void camera_update() {
+	// The stage border is usually a half tile, but reduces while shaking
+	uint16_t border = LIMIT;
 	// Just stick to the target object
 	int32_t x_next, y_next;
 	if(camera.target) {
@@ -102,6 +104,7 @@ void camera_update() {
 		}
 		// Camera shaking
 		if(cameraShake) {
+			border = 1;
 			x_next += (random() % 0x800) - 0x400;
 			y_next += (random() % 0x800) - 0x400;
 			if(cameraShake != 9999) cameraShake--;
@@ -116,17 +119,17 @@ void camera_update() {
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
 	if(stageID == 18 && !IS_PALSYSTEM) { // Special case for shelter
-		x_next = pixel_to_sub(SCREEN_HALF_W + LIMIT);
+		x_next = pixel_to_sub(SCREEN_HALF_W + border);
 		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
 	} else {
-		if(x_next < pixel_to_sub(SCREEN_HALF_W + LIMIT))
-			x_next = pixel_to_sub(SCREEN_HALF_W + LIMIT);
-		else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT))
-			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + LIMIT);
-		if(y_next < pixel_to_sub(SCREEN_HALF_H + LIMIT))
-			y_next = pixel_to_sub(SCREEN_HALF_H + LIMIT);
-		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT))
-			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + LIMIT);
+		if(x_next < pixel_to_sub(SCREEN_HALF_W + border))
+			x_next = pixel_to_sub(SCREEN_HALF_W + border);
+		else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + border))
+			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + border);
+		if(y_next < pixel_to_sub(SCREEN_HALF_H + border))
+			y_next = pixel_to_sub(SCREEN_HALF_H + border);
+		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + border))
+			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + border);
 	}
 	// Shifted values
 	camera.x_shifted = (x_next >> CSF) - SCREEN_HALF_W;
