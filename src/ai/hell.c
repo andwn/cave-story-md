@@ -149,7 +149,11 @@ void ai_bute_spawner(Entity *e) {
 			Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, 0);
 			bute->dir = e->dir;
 				
-			if(e->timer2 >= NUM_BUTES) e->state = 0;
+			if(e->timer2 >= NUM_BUTES) {
+				e->state = 0;
+			} else {
+				e->state = 12;
+			}
 		}
 		break;
 		case 12:
@@ -232,6 +236,7 @@ void ai_bute_sword(Entity *e) {
 			//e->nxflags |= NXFLAG_FOLLOW_SLOPE;
 			e->attack = 0;
 			e->state = 1;
+			e->y_speed = 0;
 		} /* fallthrough */
 		case 1:		// lying in wait
 		{
@@ -312,6 +317,7 @@ void ai_bute_sword(Entity *e) {
 			
 			if (e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) {
 				e->x_speed = 0;
+				e->y_speed = 0;
 				e->attack = 3;
 				
 				e->state = 32;
@@ -330,8 +336,18 @@ void ai_bute_sword(Entity *e) {
 		break;
 	}
 	
-	e->y_speed += SPEED_8(0x20);
-	LIMIT_Y(SPEED_12(0x5ff));
+	if(e->x_speed < 0 && blk(e->x, -8, e->y, 0) == 0x41) {
+		e->x_speed = 0;
+	} else if(e->x_speed > 0 && blk(e->x, 8, e->y, 0) == 0x41) {
+		e->x_speed = 0;
+	}
+
+	if(e->y_speed > 0 && blk(e->x, 0, e->y, 8) == 0x41) {
+		e->y_speed = 0;
+	} else {
+		e->y_speed += SPEED_8(0x20);
+		LIMIT_Y(SPEED_12(0x5ff));
+	}
 }
 
 
@@ -344,7 +360,12 @@ void ai_bute_archer(Entity *e) {
 	switch(e->state) {
 		case 0:		// waiting for player (when haven't seen him yet)
 		{
+			e->y += 4<<CSF;
 			e->frame = BF_ARCHER1;
+			e->state++;
+		}
+		case 1:
+		{
 			if ((!e->dir && player.x < e->x) || (e->dir && player.x > e->x)) {
 				if (PLAYER_DIST_X(320<<CSF) && PLAYER_DIST_Y(160<<CSF)) {
 					e->state = 10;
@@ -620,10 +641,10 @@ void ai_deleet(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->x += 8 << CSF;
-			e->y += 8 << CSF;
+			//e->x += 8 << CSF;
+			//e->y += 8 << CSF;
 			
-			if (!e->dir)
+			if (!(e->eflags & NPC_OPTION2))
 				e->y += (8<<CSF);
 			else
 				e->x += (8<<CSF);
