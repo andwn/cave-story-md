@@ -197,9 +197,11 @@ void entities_update() {
 			}
 		}
 		// Hard Solids
+		uint8_t collided = FALSE;
 		if(flags & NPC_SPECIALSOLID) {
 			// Apply x_next/y_next so player is completely outside us
 			bounding_box collision = entity_react_to_collision(&player, e);
+			collided = *((uint32_t*) &collision) > 0;
 			player.x = player.x_next;
 			player.y = player.y_next;
 			if(collision.bottom) {
@@ -214,6 +216,7 @@ void entities_update() {
 		} // Soft solids
 		else if(flags & NPC_SOLID) {
 			bounding_box collision = entity_react_to_collision(&player, e);
+			collided = *((uint32_t*) &collision) > 0;
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			if(collision.bottom && e->y > player.y) {
 				player.y -= 1<<CSF;
@@ -234,10 +237,12 @@ void entities_update() {
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
-			// This uses a smaller hitbox
-			player.hit_box = PLAYER_SOFT_HIT_BOX;
-			uint8_t collided = entity_overlapping(&player, e);
-			player.hit_box = PLAYER_HARD_HIT_BOX;
+			if(!(flags & (NPC_SOLID | NPC_SPECIALSOLID))) {
+				// Smaller hitbox if they are pass-through
+				player.hit_box = PLAYER_SOFT_HIT_BOX;
+				collided = entity_overlapping(&player, e);
+				player.hit_box = PLAYER_HARD_HIT_BOX;
+			}
 			if(collided) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
