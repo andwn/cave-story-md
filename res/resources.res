@@ -375,8 +375,8 @@ SPRITE SPR_ItemImage	"sprite/itemimage.png"		3 2 0 0 NONE
 SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 	3 2 0 0 NONE
 
 # Title Screen Logo
-TILESET TS_Title		"sprite/title.png" 		0
-TILESET TS_J_Title		"sprite/title_ja.png" 	0
+TILESET TS_Title		"sprite/title.png" 		2
+TILESET TS_J_Title		"sprite/title_ja.png" 	2
 TILESET TS_SysFont		"font_tran.png" 		0
 
 # Sound Test
@@ -498,7 +498,7 @@ TILESET TS_Ill18	"credits/ill18.png" 0
 # Mimiga Village
 # Crushed to 256x112
 PALETTE PAL_Mimi	"Stage/Mimi/PrtMimi.bmp" 2
-TILESET TS_Mimi		"Stage/Mimi/PrtMimi.bmp" 0
+TILESET TS_Mimi		"Stage/Mimi/PrtMimi.bmp" 2
 BIN PXA_Mimi		"Stage/Mimi/Mimi.pxa"
 BIN PXM_Barr		"Stage/Mimi/Barr.pxm"
 BIN PXM_Cemet		"Stage/Mimi/Cemet.pxm"
@@ -511,8 +511,8 @@ BIN PXM_Pool		"Stage/Mimi/Pool.pxm"
 # Egg Corridor
 # Split into 2 tilesets, crushed to fit 256x112
 PALETTE PAL_Eggs	"Stage/Eggs/PrtEggs.bmp" 2
-TILESET TS_Eggs		"Stage/Eggs/PrtEggs.bmp" 0
-TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2.bmp" 0
+TILESET TS_Eggs		"Stage/Eggs/PrtEggs.bmp" 2
+TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2.bmp" 2
 BIN PXA_Eggs		"Stage/Eggs/Eggs.pxa"
 BIN PXA_Eggs2		"Stage/Eggs/Eggs2.pxa"
 BIN PXM_Eggs		"Stage/Eggs/Eggs.pxm"
@@ -521,7 +521,7 @@ BIN PXM_Eggs2		"Stage/Eggs/Eggs2.pxm"
 # Labyrinth
 # Split MazeM out, crushed to fit 256x112
 PALETTE PAL_Maze	"Stage/Maze/PrtMaze.bmp" 2
-TILESET TS_Maze		"Stage/Maze/PrtMaze.bmp" 0
+TILESET TS_Maze		"Stage/Maze/PrtMaze.bmp" 2
 BIN PXA_Maze		"Stage/Maze/Maze.pxa"
 BIN PXM_e_Maze		"Stage/Maze/e_Maze.pxm"
 BIN PXM_MazeB		"Stage/Maze/MazeB.pxm"
@@ -531,34 +531,34 @@ BIN PXM_MazeI		"Stage/Maze/MazeI.pxm"
 BIN PXM_MazeO		"Stage/Maze/MazeO.pxm"
 BIN PXM_MazeS		"Stage/Maze/MazeS.pxm"
 BIN PXM_MazeW		"Stage/Maze/MazeW.pxm"
-TILESET TS_MazeM	"Stage/Maze/PrtMazeM.bmp" 0
+TILESET TS_MazeM	"Stage/Maze/PrtMazeM.bmp" 2
 BIN PXA_MazeM		"Stage/Maze/MazeM.pxa"
 BIN PXM_MazeM		"Stage/Maze/MazeM.pxm"
 
 # Balcony & Ring
 PALETTE PAL_Blcny	"Stage/White/PrtBlcny.bmp" 2
-TILESET TS_Blcny	"Stage/White/PrtBlcny.bmp" 0
+TILESET TS_Blcny	"Stage/White/PrtBlcny.bmp" 2
 BIN PXA_Blcny		"Stage/White/Blcny.pxa"
 BIN PXM_e_Blcn		"Stage/White/e_Blcn.pxm"
 BIN PXM_Blcny1		"Stage/White/Blcny1.pxm"
 BIN PXM_Blcny2		"Stage/White/Blcny2.pxm"
-TILESET TS_Kings	"Stage/White/PrtKings.bmp" 0
+TILESET TS_Kings	"Stage/White/PrtKings.bmp" 2
 BIN PXA_Kings		"Stage/White/Kings.pxa"
 BIN PXM_Kings		"Stage/White/Kings.pxm"
 BIN PXM_Ring1		"Stage/White/Ring1.pxm"
 BIN PXM_Ostep		"Stage/White/Ostep.pxm"
-TILESET TS_Ring2	"Stage/White/PrtRing2.bmp" 0
+TILESET TS_Ring2	"Stage/White/PrtRing2.bmp" 2
 BIN PXA_Ring2		"Stage/White/Ring2.pxa"
 BIN PXM_Ring2		"Stage/White/Ring2.pxm"
 PALETTE PAL_Ring3	"Stage/White/PrtRing3.bmp" 2
-TILESET TS_Ring3	"Stage/White/PrtRing3.bmp" 0
+TILESET TS_Ring3	"Stage/White/PrtRing3.bmp" 2
 BIN PXA_Ring3		"Stage/White/Ring3.pxa"
 BIN PXM_Ring3		"Stage/White/Ring3.pxm"
 
 # Sacred Ground
 # Crushed to fit 256x112
 PALETTE PAL_Hell	"Stage/Hell/PrtHell.bmp" 2
-TILESET TS_Hell		"Stage/Hell/PrtHell.bmp" 0
+TILESET TS_Hell		"Stage/Hell/PrtHell.bmp" 2
 BIN PXA_Hell		"Stage/Hell/Hell.pxa"
 BIN PXM_Hell1		"Stage/Hell/Hell1.pxm"
 BIN PXM_Hell2		"Stage/Hell/Hell2.pxm"
@@ -567,7 +567,7 @@ BIN PXM_Hell4		"Stage/Hell/Hell4.pxm"
 BIN PXM_Hell42		"Stage/Hell/Hell42.pxm"
 BIN PXM_Ballo1		"Stage/Hell/Ballo1.pxm"
 BIN PXM_Ballo2		"Stage/Hell/Ballo2.pxm"
-TILESET TS_Statue	"Stage/Hell/PrtStatue.bmp" 0
+TILESET TS_Statue	"Stage/Hell/PrtStatue.bmp" 2
 BIN PXA_Statue		"Stage/Hell/Statue.pxa"
 BIN PXM_Statue		"Stage/Hell/Statue.pxm"
 
@@ -599,23 +599,23 @@ PALETTE PAL_RiverAlt "Stage/PrtRiver_alt.bmp" 2
 # Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET TS_Almond	"Stage/PrtAlmond.bmp" 0
-TILESET TS_Barr		"Stage/PrtBarr.bmp" 0
-TILESET TS_Cave		"Stage/PrtCave.bmp" 0
-TILESET TS_Cent		"Stage/PrtCent.bmp" 0
-TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 0
-TILESET TS_EggX		"Stage/PrtEggX1.bmp" 0
-TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 0
-TILESET TS_Fall		"Stage/PrtFall.png" 0
-TILESET TS_Gard		"Stage/PrtGard.bmp" 0
-TILESET TS_Jail		"Stage/PrtJail.bmp" 0
-TILESET TS_Labo		"Stage/PrtLabo.bmp" 0
-TILESET TS_Oside	"Stage/PrtOside.png" 0
-TILESET TS_Pens		"Stage/PrtPens.bmp" 0
-TILESET TS_River	"Stage/PrtRiver.bmp" 0
-TILESET TS_Sand		"Stage/PrtSand.bmp" 0
-TILESET TS_Store	"Stage/PrtStore.bmp" 0
-TILESET TS_Weed		"Stage/PrtWeed.bmp" 0
+TILESET TS_Almond	"Stage/PrtAlmond.bmp" 2
+TILESET TS_Barr		"Stage/PrtBarr.bmp" 2
+TILESET TS_Cave		"Stage/PrtCave.bmp" 2
+TILESET TS_Cent		"Stage/PrtCent.bmp" 2
+TILESET TS_EggIn	"Stage/PrtEggIn.bmp" 2
+TILESET TS_EggX		"Stage/PrtEggX1.bmp" 2
+TILESET TS_EggX2	"Stage/PrtEggX2.bmp" 2
+TILESET TS_Fall		"Stage/PrtFall.png" 2
+TILESET TS_Gard		"Stage/PrtGard.bmp" 2
+TILESET TS_Jail		"Stage/PrtJail.bmp" 2
+TILESET TS_Labo		"Stage/PrtLabo.bmp" 2
+TILESET TS_Oside	"Stage/PrtOside.png" 2
+TILESET TS_Pens		"Stage/PrtPens.bmp" 2
+TILESET TS_River	"Stage/PrtRiver.bmp" 2
+TILESET TS_Sand		"Stage/PrtSand.bmp" 2
+TILESET TS_Store	"Stage/PrtStore.bmp" 2
+TILESET TS_Weed		"Stage/PrtWeed.bmp" 2
 
 # ----------------------------------------------------------------------------------------------
 # Tile Attributes
@@ -642,21 +642,21 @@ BIN PXA_Weed	"Stage/Weed.pxa"
 # Background Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET BG_Arthur	"back/bkGrass.png" 0
-TILESET BG_Blue		"back/bkMimi.png" 0
-TILESET BG_Eggs		"back/bkEggs.png" 0
-TILESET BG_Gard		"back/bkGard.bmp" 0
-TILESET BG_Gray		"back/bkGrayRegu.png" 0
-TILESET BG_Cent		"back/bkCent.png" 0
-TILESET BG_Maze		"back/bkMaze.png" 0
-TILESET BG_Maze2	"back/bkMaze.bmp" 0
-TILESET BG_Red		"back/bkRed.bmp" 0
-TILESET BG_Water	"back/bkWater.bmp" 0
-TILESET BG_LabB		"back/bkMimiRegu.png" 0
-TILESET BG_Stream	"back/bkStream.png" 0
-TILESET BG_Sand		"back/bkSand.png" 0
-TILESET BG_Hell		"back/bkHell.png" 0
-TILESET BG_Fall		"back/bkFall.png" 0
+TILESET BG_Arthur	"back/bkGrass.png" 2
+TILESET BG_Blue		"back/bkMimi.png" 2
+TILESET BG_Eggs		"back/bkEggs.png" 2
+TILESET BG_Gard		"back/bkGard.bmp" 2
+TILESET BG_Gray		"back/bkGrayRegu.png" 2
+TILESET BG_Cent		"back/bkCent.png" 2
+TILESET BG_Maze		"back/bkMaze.png" 2
+TILESET BG_Maze2	"back/bkMaze.bmp" 2
+TILESET BG_Red		"back/bkRed.bmp" 2
+TILESET BG_Water	"back/bkWater.bmp" 2
+TILESET BG_LabB		"back/bkMimiRegu.png" 2
+TILESET BG_Stream	"back/bkStream.png" 2
+TILESET BG_Sand		"back/bkSand.png" 2
+TILESET BG_Hell		"back/bkHell.png" 2
+TILESET BG_Fall		"back/bkFall.png" 2
 
 # Moon
 BIN MoonTopTiles	"back/bkMoonTop.bin"

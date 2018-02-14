@@ -2,15 +2,22 @@
 
 #include "dma.h"
 #include "memory.h"
+#include "system.h"
 #include "tools.h"
 #include "vdp.h"
 #include "vdp_pal.h"
 
 #include "vdp_tile.h"
 
-uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma) 
-{
-    VDP_loadTileData(tileset->tiles, index, tileset->numTile, use_dma);
+uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma) {
+    uint32_t *tiles = tileset->tiles;
+    if(tileset->compression) {
+        tiles = MEM_alloc(tileset->numTile * TILE_SIZE);
+        if(!tiles) SYS_die("Out of memory unpacking tileset!");
+        lz4w_unpack((uint8_t*) tileset->tiles, (uint8_t*) tiles);
+    }
+    VDP_loadTileData(tiles, index, tileset->numTile, use_dma);
+    if(tileset->compression) MEM_free(tiles);
     return TRUE;
 }
 

@@ -29,3 +29,5 @@ uint16_t random();
  * Also you cannot use this method from the V-Int callback (the method will return immediatly).
  */
 void waitSubTick(uint32_t subtick);
+
+uint16_t lz4w_unpack(const uint8_t *src, uint8_t *dest);
