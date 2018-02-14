@@ -8,12 +8,19 @@ LD   = $(MARSBIN)/m68k-elf-ld
 NM   = $(MARSBIN)/m68k-elf-nm
 OBJC = $(MARSBIN)/m68k-elf-objcopy
 
+# Z80 Assembler to build XGM driver
 ASMZ80   = $(TOOLSBIN)/sjasm
+# SGDK Tools
 BINTOS   = $(TOOLSBIN)/bintos
+LZ4W     = java -jar $(TOOLSBIN)/lz4w.jar
 RESCOMP  = $(TOOLSBIN)/rescomp
-XGMTOOL  = $(TOOLSBIN)/xgmtool
 WAVTORAW = $(TOOLSBIN)/wavtoraw
+XGMTOOL  = $(TOOLSBIN)/xgmtool
+# Sik's Tools
+MDTILER  = $(TOOLSBIN)/mdtiler
+SLZ      = $(TOOLSBIN)/slz
 
+# Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
 PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
@@ -31,6 +38,15 @@ Z80FLAGS = -isrc/xgm
 
 BOOTSS    = $(wildcard src/boot/*.s)
 BOOT_OBJS = $(BOOTSS:.s=.o)
+
+# Stage layout files to compress
+PXMS  = $(wildcard res/Stage/*.pxm)
+PXMS += $(wildcard res/Stage/Mimi/*.pxm)
+PXMS += $(wildcard res/Stage/Eggs/*.pxm)
+PXMS += $(wildcard res/Stage/Maze/*.pxm)
+PXMS += $(wildcard res/Stage/White/*.pxm)
+PXMS += $(wildcard res/Stage/Hell/*.pxm)
+CPXMS = $(PXMS:.pxm=.cpxm)
 
 RESS  = res/resources.res
 Z80S  = $(wildcard src/xgm/*.s80)
@@ -99,6 +115,8 @@ src/boot/rom_head.o: src/boot/rom_head.c
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LDFLAGS) --oformat binary $< -o $@
 
+%.cpxm: %.pxm
+	$(LZ4W) p "$<" "$@"
 
 .PHONY: head-gen clean
 
@@ -107,7 +125,7 @@ head-gen:
 	python aigen.py
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(CPXMS) $(OBJS)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
