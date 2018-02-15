@@ -75,7 +75,7 @@ void VDP_drawInt(uint32_t n, uint16_t x, uint16_t y) {
 }
 
 void VDP_drawByte(uint8_t n, uint16_t x, uint16_t y) {
-	char b[2] = { (n>>4)+0x30, (n&0xF)+0x30 };
+	char b[3] = { (n>>4)+0x30, (n&0xF)+0x30, 0 };
 	for(uint8_t i=0;i<2;i++) { 
 		if(b[i] > 0x39) b[i] += 0x7;
 	}

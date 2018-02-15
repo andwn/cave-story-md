@@ -47,9 +47,7 @@ void soundtest_main() {
 	sprites_clear();
 	VDP_clearPlan(PLAN_A, TRUE);
 	// Background picture
-	if(!VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE)) {
-		SYS_die("Not enough memory to unpack tileset.");
-	}
+	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
 	draw_status(status);
@@ -63,6 +61,8 @@ void soundtest_main() {
 	VDP_setPalette(PAL1, PAL_SndTest.data);
 	
 	VDP_setEnable(TRUE);
+
+	song_stop();
 	
     while(TRUE) {
 		input_update();
