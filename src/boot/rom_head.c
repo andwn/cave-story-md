@@ -22,10 +22,10 @@ const struct {
     char region[16];                /* Country Support (16) */
 } rom_header = {
     "SEGA MEGA DRIVE ",
-    "Andwn   2017.AUG",
+    "Andwn   2018.FEB",
     "Doukutsu Monogatari MD                          ",
     "Cave Story MD                                   ",
-    "GM ANDYG002-A4",
+    "GM ANDYG002-A5",
     0x0000,
     "JD              ",
     0x00000000,

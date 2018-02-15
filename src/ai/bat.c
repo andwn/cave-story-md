@@ -6,24 +6,24 @@ void ai_batVertical(Entity *e) {
 		case 0:
 		{
 			e->y_mark = e->y;
-			e->timer = random() % 50;
+			e->timer = random() % TIME_8(50);
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
 		{
 			if (!e->timer) {
 				e->state = 2;
-				e->y_speed = SPEED(0x300);
+				e->y_speed = SPEED_10(0x300);
 			} else e->timer--;
 		}
 		break;
 		case 2:
 		{
 			if (e->y >= e->y_mark)
-				e->y_speed -= SPEED(0x10);
+				e->y_speed -= SPEED_8(0x10);
 			else
-				e->y_speed += SPEED(0x10);
-			LIMIT_Y(0x300);
+				e->y_speed += SPEED_8(0x10);
+			LIMIT_Y(SPEED_10(0x300));
 		}
 		break;
 	}
@@ -38,7 +38,7 @@ void onspawn_batHang(Entity *e) {
 
 void ai_batHang(Entity *e) {
 	if(e->state == 0) { // Hanging and waiting
-		if(random() % TIME(100) == 0) {
+		if(random() % TIME_8(100) == 0) {
 			e->state = 1;
 			e->timer = 0;
 			e->frame = 4;
@@ -62,19 +62,19 @@ void ai_batHang(Entity *e) {
 			moveMeToFront = TRUE;
 		}
 	} else if(e->state == 3) { // Falling
-		e->y_speed += SPEED(0x20);
-		if(e->y_speed > SPEED(0x5FF)) e->y_speed = SPEED(0x5FF);
+		e->y_speed += SPEED_8(0x20);
+		if(e->y_speed > SPEED_12(0x5FF)) e->y_speed = SPEED_12(0x5FF);
 		
 		e->timer++;
 		e->x_next = e->x; // x_next needs to be set for collision to work properly
 		e->y_next = e->y + e->y_speed;
 		uint8_t collided = collide_stage_floor(e);
-		if(collided || (e->timer > TIME(20) && player.y - 0x2000 < e->y)) {
+		if(collided || (e->timer > TIME_8(20) && player.y - 0x2000 < e->y)) {
 			e->state = 4;
 			e->timer = 0;
 			e->y_mark = e->y;
 			e->frame = 0;
-			if(collided) e->y_speed = -SPEED(0x200);
+			if(collided) e->y_speed = -SPEED_10(0x200);
 		} else {
 			e->y = e->y_next;
 		}
@@ -84,11 +84,11 @@ void ai_batHang(Entity *e) {
 			e->timer2 = 0;
 		}
 		FACE_PLAYER(e);
-		e->x_speed += (e->x > player.x) ? -SPEED(0x20) : SPEED(0x20);
-		e->y_speed += (e->y > e->y_mark) ? -SPEED(0x10) : SPEED(0x10);
+		e->x_speed += (e->x > player.x) ? -SPEED_8(0x20) : SPEED_8(0x20);
+		e->y_speed += (e->y > e->y_mark) ? -SPEED_8(0x10) : SPEED_8(0x10);
 		// Limit speed
-		LIMIT_X(SPEED(0x200));
-		LIMIT_Y(SPEED(0x200));
+		LIMIT_X(SPEED_10(0x200));
+		LIMIT_Y(SPEED_10(0x200));
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		// Bounce against floor and walls
@@ -98,7 +98,7 @@ void ai_batHang(Entity *e) {
 			collide_stage_rightwall(e);
 		}
 		if(collide_stage_floor(e)) {
-			e->y_speed = -SPEED(0x200);
+			e->y_speed = -SPEED_10(0x200);
 		}
 		if(e->y_speed <= 0) {
 			collide_stage_ceiling(e);
@@ -131,8 +131,8 @@ void ai_batCircle(Entity *e) {
 			FACE_PLAYER(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
-			LIMIT_X(SPEED(0x200));
-			LIMIT_Y(SPEED(0x200));
+			LIMIT_X(SPEED_10(0x200));
+			LIMIT_Y(SPEED_10(0x200));
 			if(!e->timer) {
 				if(PLAYER_DIST_X(0x1000) && PLAYER_DIST_Y2(0, 64<<CSF)) {
 					// dive attack
@@ -147,12 +147,12 @@ void ai_batCircle(Entity *e) {
 		break;
 		
 		case 2:	// dive attack
-			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0x5ff));
+			e->y_speed += SPEED_8(0x40);
+			LIMIT_Y(SPEED_12(0x5ff));
 			if(blk(e->x_next, 0, e->y_next, 8) == 0x41) {
 				e->y_speed = 0;
 				e->x_speed *= 2;
-				e->timer = TIME(100);		// delay before can dive again
+				e->timer = TIME_8(100);		// delay before can dive again
 				e->state = 1;
 				e->frame = 0;
 			}

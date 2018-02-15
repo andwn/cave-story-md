@@ -6,7 +6,7 @@ void ai_behemoth(Entity *e) {
 		{
 			ANIMATE(e, 12, 0,1,0,2);
 			if(e->x_speed == 0) TURN_AROUND(e);
-			MOVE_X(SPEED(0x100));
+			MOVE_X(SPEED_8(0xFF));
 			if(e->damage_time) {
 				e->frame = 3;
 				e->state = 1;
@@ -26,12 +26,12 @@ void ai_behemoth(Entity *e) {
 					e->timer = 0;
 					e->animtime = 0;
 					e->attack = 5;
-					MOVE_X(SPEED(0x300));
+					MOVE_X(SPEED_10(0x300));
 				} else {
 					e->state = 0;
 					e->animtime = 0;
 					e->attack = 1;
-					MOVE_X(SPEED(0x100));
+					MOVE_X(SPEED_8(0xFF));
 				}
 			}
 		}
@@ -40,8 +40,8 @@ void ai_behemoth(Entity *e) {
 		{
 			ANIMATE(e, 8, 4,5);
 			if(e->x_speed == 0) TURN_AROUND(e);
-			MOVE_X(SPEED(0x300));
-			if(++e->timer > TIME(200)) {
+			MOVE_X(SPEED_10(0x300));
+			if(++e->timer > TIME_8(200)) {
 				e->state = 0;
 				e->attack = 1;
 				e->frame = 0;
@@ -50,8 +50,8 @@ void ai_behemoth(Entity *e) {
 		break;
 	}
 	
-	if(!e->grounded) e->y_speed += SPEED(0x40);
-	LIMIT_Y(SPEED(0x5FF));
+	if(!e->grounded) e->y_speed += SPEED_8(0x40);
+	LIMIT_Y(SPEED_12(0x5FF));
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -72,9 +72,9 @@ void ai_beetle(Entity *e) {
 		} /* fallthrough */
 		case 1: // wait for player on the wall
 		{
-			if(++e->timer > TIME(50) && PLAYER_DIST_Y(16 << CSF)) {
+			if(++e->timer > TIME_8(50) && PLAYER_DIST_Y(16 << CSF)) {
 				TURN_AROUND(e);
-				MOVE_X(SPEED(0x200));
+				MOVE_X(SPEED_10(0x200));
 				e->state = 2;
 			}
 		}
@@ -95,7 +95,7 @@ void ai_beetle(Entity *e) {
 }
 
 void onspawn_beetleFollow(Entity *e) {
-	e->timer = TIME(25);
+	e->timer = TIME_8(25);
 }
 
 void ai_beetleFollow(Entity *e) {
@@ -104,9 +104,10 @@ void ai_beetleFollow(Entity *e) {
 	ANIMATE(e, 4, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
-	e->x_speed += e->dir ? SPEED(12) : -SPEED(12);
-	if(abs(e->x_speed) > SPEED(0x380)) e->x_speed = e->dir ? SPEED(0x380) : -SPEED(0x380);
-	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -4 : 4;
+	e->x_speed += e->dir ? SPEED_8(12) : -SPEED_8(12);
+	if(abs(e->x_speed) > SPEED_10(0x380)) 
+		e->x_speed = e->dir ? SPEED_10(0x380) : -SPEED_10(0x380);
+	e->y_speed += (e->timer % TIME_8(100)) >= TIME_8(50) ? -4 : 4;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

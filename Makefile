@@ -19,6 +19,7 @@ XGMTOOL  = $(TOOLSBIN)/xgmtool
 # Sik's Tools
 MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
+UFTC     = $(TOOLSBIN)/uftc
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -41,12 +42,14 @@ BOOT_OBJS = $(BOOTSS:.s=.o)
 
 # Stage layout files to compress
 PXMS  = $(wildcard res/Stage/*.pxm)
-PXMS += $(wildcard res/Stage/Mimi/*.pxm)
-PXMS += $(wildcard res/Stage/Eggs/*.pxm)
-PXMS += $(wildcard res/Stage/Maze/*.pxm)
-PXMS += $(wildcard res/Stage/White/*.pxm)
-PXMS += $(wildcard res/Stage/Hell/*.pxm)
+PXMS += $(wildcard res/Stage/*/*.pxm)
 CPXMS = $(PXMS:.pxm=.cpxm)
+
+# mdtiler scripts to generate tile patterns & mappings
+MDTS  = $(wildcard res/*.mdt)
+MDTS += $(wildcard res/*/*.mdt)
+PATS  = $(MDTS:.mdt=.pat)
+MAPS  = $(MDTS:.mdt=.map)
 
 RESS  = res/resources.res
 Z80S  = $(wildcard src/xgm/*.s80)
@@ -116,7 +119,10 @@ src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LDFLAGS) --oformat binary $< -o $@
 
 %.cpxm: %.pxm
-	$(LZ4W) p "$<" "$@"
+	$(SLZ) -c "$<" "$@"
+
+%.pat: %.mdt
+	$(MDTILER) -b "$<"
 
 .PHONY: head-gen clean
 
@@ -125,7 +131,7 @@ head-gen:
 	python aigen.py
 
 clean:
-	rm -f $(CPXMS) $(OBJS)
+	rm -f $(CPXMS) $(PATS) $(MAPS) $(OBJS)
 	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst

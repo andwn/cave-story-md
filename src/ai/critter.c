@@ -44,7 +44,7 @@ void ai_critter(Entity *e) {
 		} /* fallthrough */
 		case STATE_ATTENTION+1:
 		{
-			if(++e->timer > TIME(25)) {
+			if(++e->timer > TIME_8(25)) {
 				e->state = STATE_HOPPING;
 			}
 		}
@@ -53,7 +53,7 @@ void ai_critter(Entity *e) {
 		{
 			e->frame = 2;
 			e->grounded = FALSE;
-			e->y_speed = -SPEED(0x600);
+			e->y_speed = -SPEED_12(0x600);
 			sound_play(SND_ENEMY_JUMP, 5);
 			e->state++;
 			e->timer = 0;
@@ -61,9 +61,9 @@ void ai_critter(Entity *e) {
 		case STATE_HOPPING+1:
 		{
 			// Keep trying to move after hitting a wall
-			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED(0x100));
+			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) MOVE_X(SPEED_8(0xFF));
 			// Handle critters that can hover
-			if(e->y_speed > SPEED(0x100) && (e->type == OBJ_CRITTER_FLYING || 
+			if(e->y_speed > SPEED_8(0xFF) && (e->type == OBJ_CRITTER_FLYING || 
 					e->type == OBJ_POWER_CRITTER || e->type == OBJ_CRITTER_SHOOTING_PURPLE)) {
 				e->state = STATE_FLYING;
 			} else if(e->grounded) {
@@ -81,14 +81,14 @@ void ai_critter(Entity *e) {
 				sound_play(SND_CRITTER_FLY, 2);
 				if(++e->frame > 5) e->frame = 3;
 			}
-			e->y_speed -= SPEED(0x50);
-			if(e->timer == TIME(25)) {
+			e->y_speed -= SPEED_8(0x50);
+			if(e->timer == TIME_8(25)) {
 				if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {
 					sound_play(SND_EM_FIRE, 3);
 					Entity *shot = entity_create(e->x, e->y, OBJ_CRITTER_SHOT, 0);
 					THROW_AT_TARGET(shot, player.x, player.y, 0x200);
 				}
-			} else if(e->timer > TIME(50)) {
+			} else if(e->timer > TIME_8(50)) {
 				e->frame = 1;
 				e->state++;
 			}
@@ -113,7 +113,7 @@ void ai_critter(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	if(!e->grounded) {
-		e->y_speed += SPEED(0x40);
-		LIMIT_Y(SPEED(0x5FF));
+		e->y_speed += SPEED_8(0x40);
+		LIMIT_Y(SPEED_12(0x5FF));
 	}
 }
