@@ -78,7 +78,7 @@ static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
 			sound_play(SND_ENEMY_SQUEAK, 5);
 			MOVE_X(-SPEED_8(0xFF));
 
-			SHEET_FIND(e->sheet, SHEET_BUTEDIE);
+			e->vramindex += 16*6;
 			e->frame = 0;
 			e->oframe = 255;
 		}
@@ -375,7 +375,7 @@ void ai_bute_archer(Entity *e) {
 			e->y += 4<<CSF;
 			e->frame = BF_ARCHER1;
 			e->state++;
-		}
+		} /* fallthrough */
 		case 1:
 		{
 			if ((!e->dir && player.x < e->x) || (e->dir && player.x > e->x)) {

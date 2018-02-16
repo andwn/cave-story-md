@@ -265,7 +265,11 @@ void player_update() {
 	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)
 		if((tile & 0xDF) == 0x42) {
-			player_inflict_damage(10);
+			// To reduce the number of objects on screen, the spikes that
+			// Ballos creates in the last phase merge with the stage once
+			// they rise fully. They should only do 2 damage though, so I
+			// added this check.
+			player_inflict_damage((stageID == STAGE_SEAL_CHAMBER) ? 2 : 10);
 		}
 		if(player.health == 0) return;
 	} else {

@@ -83,6 +83,7 @@ SPRITE SPR_Ballos		"sprite/ballos.png"			15 15 0 0 NONE
 SPRITE SPR_BallosP		"sprite/ballosp.png"		6 5 0 0 NONE
 SPRITE SPR_BallosEye	"sprite/ballos_eye.png"		3 2 0 0 NONE
 SPRITE SPR_BallosPlat	"sprite/ballos_plat.png"	4 2 0 0 NONE
+SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE

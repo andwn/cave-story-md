@@ -6,13 +6,13 @@
 #define platform_speed	curly_target_x
 #define rotators_left	curly_target_y
 
-//#define savedhp		id
 #define angle		jump_time
-#define timer3		event
+#define timer3		id
 
 #define eye			pieces
-#define body		pieces[2]
-#define shield		pieces[3]
+#define body		e->linkedEntity
+#define shield		body->linkedEntity
+#define rotator(i)	pieces[2+(i)]
 
 #define FLOOR_Y			0x26000						// Y coord of floor
 #define CRASH_Y			(FLOOR_Y - (40 << CSF))		// Y coord of main when body hits floor
@@ -87,6 +87,12 @@ static uint8_t passed_ycoord(Entity *e, uint8_t ltgt, int32_t ycoord, uint8_t re
 static void SetEyeStates(uint16_t newstate) {
 	eye[0]->state = newstate;
 	eye[1]->state = newstate;
+}
+
+static void SetRotatorStates(uint16_t newstate) {
+	for(uint16_t i = 0; i < 8; i++) {
+		rotator(i)->state = newstate;
+	}
 }
 
 static uint8_t transfer_damage(Entity *src, Entity *tgt) {
@@ -286,9 +292,9 @@ static void RunForm2(Entity *e) {
 			
 			rotators_left = 0;
 			for(uint16_t angle=0;angle<=0x100;angle+=0x20) {
-				Entity *r = entity_create(e->x, e->y, OBJ_BALLOS_ROTATOR, 0);
-				r->angle = angle;
-				r->dir = (rotators_left & 1) ? 1 : 0;
+				rotator(rotators_left) = entity_create(e->x, e->y, OBJ_BALLOS_ROTATOR, 0);
+				rotator(rotators_left)->angle = angle;
+				rotator(rotators_left)->dir = (rotators_left & 1) ? 1 : 0;
 				
 				rotators_left++;
 			}
@@ -307,13 +313,13 @@ static void RunForm2(Entity *e) {
 		
 		case BS_FIGHT_BEGIN:	// script-triggered
 		{
-			//SetRotatorStates(10);	// spin CCW, work as treads
+			SetRotatorStates(10);	// spin CCW, work as treads
 			e->state = BS_LEFT;
 			e->timer = 0;
 		} /* fallthrough */
 		case BS_LEFT:		// left on floor
 		{
-			e->x_speed = -BS_SPEED;
+			e->x_speed = -SPEED_10(BS_SPEED);
 			e->y_speed = 0;
 			//e->dirparam = LEFT;
 			
@@ -326,7 +332,7 @@ static void RunForm2(Entity *e) {
 		case BS_UP:
 		{
 			e->x_speed = 0;
-			e->y_speed = -BS_SPEED;
+			e->y_speed = -SPEED_10(BS_SPEED);
 			//e->dirparam = UP;
 			
 			if (passed_ycoord(e, LESS_THAN, ARENA_TOP, FALSE))
@@ -337,7 +343,7 @@ static void RunForm2(Entity *e) {
 		// right on ceiling
 		case BS_RIGHT:
 		{
-			e->x_speed = BS_SPEED;
+			e->x_speed = SPEED_10(BS_SPEED);
 			e->y_speed = 0;
 			//e->dirparam = RIGHT;
 			
@@ -358,7 +364,7 @@ static void RunForm2(Entity *e) {
 		case BS_DOWN:
 		{
 			e->x_speed = 0;
-			e->y_speed = BS_SPEED;
+			e->y_speed = SPEED_10(BS_SPEED);
 			//e->dirparam = DOWN;
 			
 			if (passed_ycoord(e, GREATER_THAN, ARENA_BOTTOM, FALSE)) {
@@ -405,7 +411,7 @@ static void RunForm3(Entity *e) {
 			e->state++;
 			
 			entities_clear_by_type(OBJ_GREEN_DEVIL_SPAWNER);
-			//SetRotatorStates(20);	// fast spin CCW
+			SetRotatorStates(20);	// fast spin CCW
 		} /* fallthrough */
 		case CS_ENTER_FORM+1:
 		{
@@ -413,7 +419,7 @@ static void RunForm3(Entity *e) {
 			e->y += (YPOSITION - e->y) / 8;
 			e->timer++;
 			
-			if (e->timer == TIME(50)) {
+			if (e->timer == TIME_8(50)) {
 				// create platforms
 				platform_speed = 0;
 				
@@ -423,7 +429,7 @@ static void RunForm3(Entity *e) {
 				}
 			}
 			
-			if (e->timer > TIME(100)) {
+			if (e->timer > TIME_8(100)) {
 				platform_speed = -1;
 				
 				e->state = CS_SPAWN_SPIKES;
@@ -434,6 +440,7 @@ static void RunForm3(Entity *e) {
 		
 		case CS_SPAWN_SPIKES:
 		{
+			entities_clear_by_type(OBJ_SPIKE_SMALL);
 			e->timer = 0;
 			e->x_mark = 0;
 			e->state++;
@@ -442,9 +449,9 @@ static void RunForm3(Entity *e) {
 		{
 			e->timer++;
 			
-			if ((e->timer % 3) == 0) sound_play(SND_QUAKE, 5);
+			if ((e->timer & 3) == 0) sound_play(SND_QUAKE, 2);
 			
-			if ((e->timer % 30) == 1) {
+			if ((e->timer & 31) == 1) {
 				e->x_mark += 2;
 				entity_create(block_to_sub(e->x_mark), FLOOR_Y + (48 << CSF), OBJ_BALLOS_SPIKES, 0);
 				
@@ -457,13 +464,13 @@ static void RunForm3(Entity *e) {
 		case CS_EXPLODE_BLOODY:
 		{
 			SetEyeStates(EYE_INVISIBLE);
-			//SetRotatorStates(30);			// slow spin CW, alternate open/closed
+			SetRotatorStates(30);			// slow spin CW, alternate open/closed
 			
 			//SmokeClouds(o, 256, 60, 60);	// ka boom!
 			sound_play(SND_EXPLOSION1, 5);
 			camera_shake(30);
 			
-			body->frame |= 2;		// go all bloody
+			body->frame = 1;		// go all bloody
 			body->eflags &= ~NPC_INVINCIBLE;
 			//shield->eflags &= ~NPC_INVINCIBLE;
 			
@@ -498,8 +505,8 @@ static void RunForm3(Entity *e) {
 				case 290:
 				{
 					//SmokeXY(e->x, e->y - (52<<CSF), 4);
-					entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0)->dir = UP;
-					sound_play(SND_EM_FIRE, 5);
+					//entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0)->dir = UP;
+					//sound_play(SND_EM_FIRE, 5);
 				}
 				break;
 				
@@ -507,17 +514,17 @@ static void RunForm3(Entity *e) {
 				{
 					e->timer = 0;
 					// direction butes will be facing, not side of screen
-					int dir = (player.x > e->x) ? 0 : 1;
+					//int dir = (player.x > e->x) ? 0 : 1;
 					
-					for(uint8_t i=0;i<8;i++) {
+					//for(uint8_t i=0;i<8;i++) {
 						// give some granularity to the coords,
 						// so that they can't overlap too closely.
-						int32_t x = ((random() & 3) << (CSF+2));
-						int32_t y = ((random() & 63) << (CSF+2)) + 4;
-						if (!dir) x += block_to_sub(stageWidth - 1);
+						//int32_t x = ((random() & 3) << (CSF+2));
+						//int32_t y = ((random() & 63) << (CSF+2)) + 4;
+						//if (!dir) x += block_to_sub(stageWidth - 1);
 						
-						entity_create(x, y, OBJ_BUTE_ARCHER_RED, 0)->dir = dir;
-					}
+						//entity_create(x, y, OBJ_BUTE_ARCHER_RED, 0)->dir = dir;
+					//}
 				}
 				break;
 			}
@@ -542,7 +549,7 @@ static void RunDefeated(Entity *e) {
 			e->timer = 0;
 			
 			SetEyeStates(EYE_EXPLODING);	// blow out eyes
-			//SetRotatorStates(1000);			// explode rotators
+			SetRotatorStates(1000);			// explode rotators
 			
 			uint16_t mask = ~(NPC_SPECIALSOLID | NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->eflags &= mask;
@@ -560,10 +567,10 @@ static void RunDefeated(Entity *e) {
 			
 			e->timer++;
 			
-			if ((e->timer % TIME(12)) == 0)
+			if ((e->timer % TIME_8(12)) == 0)
 				sound_play(SND_MISSILE_HIT, 5);
 			
-			if (e->timer > TIME(150)) {
+			if (e->timer > TIME_8(150)) {
 				e->timer = 0;
 				e->state = 1002;
 				
@@ -577,7 +584,7 @@ static void RunDefeated(Entity *e) {
 		{
 			camera_shake(40);
 			
-			if (++e->timer >= 50) {
+			if (++e->timer >= TIME_8(50)) {
 				entities_clear_by_type(OBJ_BUTE_ARCHER_RED);
 				entities_clear_by_type(OBJ_BALLOS_SPIKES);
 				
@@ -837,8 +844,8 @@ void ai_ballos_rotator(Entity *e) {
 		{
 			e->state = 11;
 			
-			e->eflags |= NPC_SHOOTABLE;
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->nflags |= NPC_SHOOTABLE;
+			e->nflags &= ~NPC_INVINCIBLE;
 			e->health = 1000;
 		} /* fallthrough */
 		case 11:		// spinning during phase 2, alive
@@ -851,7 +858,7 @@ void ai_ballos_rotator(Entity *e) {
 				e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health <= (1000 - 100)) {
-					e->eflags &= ~NPC_SHOOTABLE;
+					e->nflags &= ~NPC_SHOOTABLE;
 					e->frame = 2;	// close eye
 					
 					//SmokeClouds(o, 32, 16, 16);
@@ -1074,16 +1081,8 @@ void ai_ballos_platform(Entity *e) {
 	//e->y_speed = e->speed;
 }
 
+
 /*
-static void SetRotatorStates(int newstate) {
-	Entity *e;
-	FOREACH_OBJECT(e) {
-		if (e->type == OBJ_BALLOS_ROTATOR)
-			e->state = newstate;
-	}
-}
-
-
 // spawns impact smokeclouds/skulls as the rotators hit the ground/walls
 static void spawn_impact_puffs(Entity *e)
 {

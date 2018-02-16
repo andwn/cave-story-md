@@ -740,7 +740,7 @@ void ai_ballos_spikes(Entity *e) {
 			} else {
 				//e->state = 1;
 				//e->attack = 2;
-				stage_replace_block(sub_to_block(e->x), sub_to_block(e->y), 1);
+				stage_replace_block(sub_to_block(e->x), sub_to_block(e->y), 54);
 				e->state = STATE_DELETE;
 			}
 		}
@@ -758,9 +758,9 @@ void ai_green_devil_spawner(Entity *e) {
 		case 1:
 		{
 			if (e->timer-- == 0) {
-				//Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
-				//dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
-				//dv->dir = e->dir;
+				Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
+				dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
+				dv->dir = e->dir;
 				
 				e->state = 0;
 			}
@@ -775,7 +775,7 @@ void ai_green_devil(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if(e->eflags & NPC_OPTION2) e->dir = 1;
+			//if(e->eflags & NPC_OPTION2) e->dir = 1;
 			e->y_mark = e->y;
 			e->y_speed = (random() % (10<<CSF)) - (5<<CSF);
 			e->attack = 3;

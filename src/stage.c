@@ -165,8 +165,11 @@ void stage_load(uint16_t id) {
 	} else if(stageBackgroundType == 4) {
 		backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
 	}
-	if(stageID == 68) { // Black Space
+	if(stageID == STAGE_BLACK_SPACE) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
+	}
+	if(stageID == STAGE_HELL_PASSAGEWAY_2) {
+		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
 	
 	tsc_load_stage(id);
