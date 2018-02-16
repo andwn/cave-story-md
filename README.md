@@ -12,7 +12,7 @@ It should work on any console or emulator. Expect alpha quality.
 
 For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip).
 
-Farthest reachable point in `master`: Normal Ending / Hell B3
+Farthest reachable point in `master`: Normal Ending / Ballos Phase 2
 
 ## Control Defaults
 If you have a 6 button controller:

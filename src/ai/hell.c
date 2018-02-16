@@ -77,6 +77,10 @@ static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
 			
 			sound_play(SND_ENEMY_SQUEAK, 5);
 			MOVE_X(-SPEED_8(0xFF));
+
+			SHEET_FIND(e->sheet, SHEET_BUTEDIE);
+			e->frame = 0;
+			e->oframe = 255;
 		}
 		
 		e->attack = 0;
@@ -133,6 +137,8 @@ void ai_bute_flying(Entity *e) {
 // Butes that come down from ceiling
 void ai_bute_spawner(Entity *e) {
 	static const int NUM_BUTES = 8;
+
+	return; // Skip this for now
 	
 	switch(e->state) {
 		case 10:	// script trigger (dir set by script at same time)
@@ -238,6 +244,8 @@ void ai_bute_sword(Entity *e) {
 		{
 			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			//e->nxflags |= NXFLAG_FOLLOW_SLOPE;
+			e->enableSlopes = TRUE;
+			e->y -= 1 << CSF;
 			e->attack = 0;
 			e->state = 1;
 			e->y_speed = 0;
@@ -553,7 +561,7 @@ void ai_mesa(Entity *e) {
 			e->frame = MS_THROW1;	// hand down
 			
 			int32_t x = e->x + ((!e->dir) ? (7<<CSF) : -(7<<CSF));
-			int32_t y = e->y + (10<<CSF);
+			int32_t y = e->y + (2<<CSF);
 			
 			e->linkedEntity = entity_create(x, y, OBJ_MESA_BLOCK, 0);
 			e->linkedEntity->linkedEntity = e;
@@ -568,7 +576,7 @@ void ai_mesa(Entity *e) {
 				if (e->linkedEntity) {
 					Entity *block = e->linkedEntity;
 					
-					block->y = (e->y - (4<<CSF));
+					block->y = e->y - 0x800;
 					block->x_speed = (e->dir) ? SPEED_10(0x3FF) : -SPEED_10(0x3FF);
 					block->y_speed = -SPEED_10(0x3FF);
 					block->state = 1;
@@ -630,6 +638,22 @@ void ai_mesa_block(Entity *e) {
 	
 }
 
+void onspawn_deleet(Entity *e) {
+	if (!(e->eflags & NPC_OPTION2)) {
+		int16_t x = (e->x >> CSF) >> 4;
+		int16_t y = ((e->y >> CSF) - 8) >> 4;
+		
+		stage_replace_block(x, y,   1);
+		stage_replace_block(x, y+1, 1);
+	} else {
+		int16_t x = ((e->x >> CSF) - 8) >> 4;
+		int16_t y = (e->y >> CSF) >> 4;
+		
+		stage_replace_block(x,   y, 1);
+		stage_replace_block(x+1, y, 1);
+	}
+}
+
 void ai_deleet(Entity *e) {
 	// trigger counter
 	if (e->health < (1000 - DELEET_HP) && e->state < 2) {
@@ -637,7 +661,7 @@ void ai_deleet(Entity *e) {
 		e->timer = 0;
 		e->frame = 2;
 		
-		e->eflags |= NPC_INVINCIBLE;
+		e->nflags |= NPC_INVINCIBLE;
 		sound_play(SND_CHEST_OPEN, 5);
 	}
 	
@@ -692,10 +716,10 @@ void ai_deleet(Entity *e) {
 				camera_shake(10);
 				SMOKE_AREA((e->x>>CSF) - 48, (e->y>>CSF) - 48, 96, 96, 10);
 				
-				e->eflags &= ~NPC_SHOOTABLE;
-				e->eflags &= ~NPC_INVINCIBLE;
+				e->nflags &= ~NPC_SHOOTABLE;
+				e->nflags &= ~NPC_INVINCIBLE;
 				
-				if (!e->dir) {
+				if (!(e->eflags & NPC_OPTION2)) {
 					int16_t x = (e->x >> CSF) >> 4;
 					int16_t y = ((e->y >> CSF) - 8) >> 4;
 					

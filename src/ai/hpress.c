@@ -1,19 +1,19 @@
 #include "ai_common.h"
 
 // position in Hell (note this is the center position, because there is a draw point)
-#define HELL_X			(160<<CSF)
-#define HELL_Y			(74<<CSF)
-#define HELL_FLOOR		(160<<CSF)
-#define HELL_BOTTOM		(480<<CSF)
+#define HELL_X			(168<<CSF)
+#define HELL_Y			(80<<CSF)
+#define HELL_FLOOR		(168<<CSF)
+#define HELL_BOTTOM		(488<<CSF)
 
 // positions of stuff for Passageway scene
-#define PWAY_X			(160<<CSF)		// X position of corridor
-#define PWAY_TOP		(64<<CSF)		// starting position for falling scene
-#define PWAY_BOTTOM		(413<<CSF)		// resting position after fall
+#define PWAY_X			(168<<CSF)		// X position of corridor
+#define PWAY_TOP		(70<<CSF)		// starting position for falling scene
+#define PWAY_BOTTOM		(420<<CSF)		// resting position after fall
 
 // Some aliases
-#define uncover_left	10
-#define uncover_right	20
+#define uncover_left	8
+#define uncover_right	12
 #define uncover_y		curly_target_time
 //#define shield_left		pieces[0]
 //#define shield_right	pieces[1]
@@ -23,7 +23,7 @@ static void run_defeated(Entity *e) {
 		// defeated (set by ondeath script, after a brief pause)
 		case 500:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->nflags &= ~NPC_SHOOTABLE;
 			e->state = 501;
 			e->timer = 0;
 			e->frame = 0;
@@ -68,10 +68,10 @@ static void run_defeated(Entity *e) {
 			// solid to NPC's so we can't use blockd.
 			if (e->y > HELL_FLOOR) {
 				e->state = 503;
-				e->y_speed = -0x200;
+				e->y_speed = -SPEED_10(0x200);
 				
 				// kill floor
-				uint16_t y = sub_to_block(HELL_FLOOR);
+				uint16_t y = sub_to_block(HELL_FLOOR) + 4;
 				for(uint16_t x=uncover_left-1;x<=uncover_right+1;x++) {
 					stage_replace_block(x, y, 0);
 				}
@@ -82,7 +82,8 @@ static void run_defeated(Entity *e) {
 		} /* fallthrough */
 		case 503:	// falling, and hit floor already
 		{
-			e->y_speed += 0x40;
+			e->y_speed += SPEED_8(0x40);
+			e->y += e->y_speed;
 		}
 		break;
 	}
@@ -100,7 +101,7 @@ static void run_passageway(Entity *e) {
 			e->state = 21;
 			e->x = PWAY_X;
 			e->y = PWAY_BOTTOM;
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_SPECIALSOLID);
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_SPECIALSOLID);
 			e->attack = 0;
 		} /* fallthrough */
 		case 21:
@@ -128,7 +129,7 @@ static void run_passageway(Entity *e) {
 		} /* fallthrough */
 		case 31:
 		{
-			e->y += (4 << CSF);
+			e->y += SPEED_12(0x800);
 			
 			if (e->y >= PWAY_BOTTOM) {
 				e->y = PWAY_BOTTOM;
@@ -155,7 +156,7 @@ void onspawn_heavypress(Entity *e) {
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	//e->damage_time = 8;
 	
-	e->eflags = (NPC_SHOWDAMAGE | NPC_EVENTONDEATH | NPC_SPECIALSOLID | NPC_IGNORESOLID);
+	e->nflags = (NPC_SHOWDAMAGE | NPC_EVENTONDEATH | NPC_SPECIALSOLID | NPC_IGNORESOLID);
 	
 	e->attack = 10;
 	e->health = 700;
@@ -197,8 +198,7 @@ void ai_heavypress(Entity *e) {
 			e->frame = 0;
 			//sprites[e->sprite].bbox = center_bbox;
 			
-			e->eflags |= NPC_SHOOTABLE;
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->nflags |= NPC_SHOOTABLE;
 			e->nflags &= ~NPC_INVINCIBLE;
 			
 			e->state = 101;
@@ -216,12 +216,12 @@ void ai_heavypress(Entity *e) {
 			{
 				case 100:
 				case 260:
-					entity_create(block_to_sub(17), block_to_sub(15), OBJ_BUTE_FALLING, 0);
+					//entity_create(block_to_sub(17), block_to_sub(15), OBJ_BUTE_FALLING, 0);
 				break;
 				
 				case 180:
 				case 340:
-					entity_create(block_to_sub(3), block_to_sub(15), OBJ_BUTE_FALLING, 0)->dir = 1;
+					//entity_create(block_to_sub(3), block_to_sub(15), OBJ_BUTE_FALLING, 0)->dir = 1;
 				break;
 				
 				case 398:
@@ -255,6 +255,11 @@ void ai_heavypress(Entity *e) {
 			DMA_queueDma(DMA_CRAM, (uint32_t) &PAL_Sym.data[6], 22*2, 4, 2);
 		}
 	}
+}
+
+void ondeath_heavypress(Entity *e) {
+	tsc_call_event(e->event);
+	e->nflags &= ~NPC_SHOOTABLE;
 }
 
 void ai_hp_lightning(Entity *e) {

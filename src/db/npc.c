@@ -352,7 +352,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	/* 0x140 (320) */
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_carried, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &ai_null, 				&ai_deleet, 		&ondeath_default 	}, // Deleet
+	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &onspawn_deleet, 		&ai_deleet, 		&ondeath_default 	}, // Deleet
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_bute_spawner, 	&ai_null 			}, // Bute Generator
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Heavy Press Projectile
@@ -372,12 +372,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_DEVIL, 	PAL3, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
 	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Smile
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_ballos_rotator, &ai_null 			}, // Ballos Rotator
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Skull Shot
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
+	{ NULL, 			SHEET_PLATF, 	PAL0, 1, &onspawn_persistent, 	&ai_ballos_platform, &ai_null 			}, // Ballos Platform
 	{ &SPR_Hoppy, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	}, // Hoppy
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Spikes
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Statue
@@ -402,7 +402,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Ironh, 		NOSHEET, 		PAL3, 2, &onspawn_ironhead, 	&ai_ironhead, 		&ondeath_ironhead 	}, // Ironhead
 	{ NULL, 			NOSHEET, 		PAL3, 3, &onspawn_sisters, 		&ai_sisters, 		&ondeath_sisters 	}, // Sisters
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_undead_core, 	&ai_undead_core, 	&ai_null 			}, // Undead Core
-	{ &SPR_HeavyPress, 	NOSHEET, 		PAL1, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ai_null 			}, // Heavy Press
+	{ &SPR_HeavyPress, 	NOSHEET, 		PAL1, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ondeath_heavypress }, // Heavy Press
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos, 		&ondeath_ballos 	}, // Ballos
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
@@ -422,7 +422,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_UCoreMouth, 	NOSHEET, 		PAL2, 2, &onspawn_persistent, 	&ai_undead_core_face,&ai_null 			}, // Undead Core (Face)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Heavy Press Shield
 	{ &SPR_Ballos, 		NOSHEET, 		PAL0, 15,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
+	{ &SPR_BallosEye, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Shield
 	/* Splash screen */
 	{ &SPR_Sega, 		NOSHEET, 		PAL0, 3, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			}, // Sega Logo

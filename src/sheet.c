@@ -425,6 +425,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x57: // Seal Chamber
 		{	SHEET_ADD(SHEET_BONE, &SPR_Bone, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_DEVIL, &SPR_GrnDevil, 2,2,2, 0,0, 0,1);
+			SHEET_ADD(SHEET_PLATF, &SPR_BallosPlat, 1,4,2, 0,0);
 			//SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 10,3,2, 
 			//		0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9);
 		} break;

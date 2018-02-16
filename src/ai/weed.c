@@ -372,11 +372,10 @@ void ai_powers(Entity *e) {
 void onspawn_press(Entity *e) {
 	// Press is 4 pixels too low
 	e->y -= 4 << CSF;
-	e->nflags &= ~NPC_SHOOTABLE;
 }
 
 void ai_press(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->nflags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 			if((blk(e->x, 0, e->y, 14) & 0x41) != 0x41) {

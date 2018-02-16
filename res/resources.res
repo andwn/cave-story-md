@@ -81,6 +81,8 @@ SPRITE SPR_NemB3v		"sprite/nemb3v.png"			2 3 0 0 NONE
 SPRITE SPR_QMark		"sprite/qmark.png"			1 1 0 0 NONE
 SPRITE SPR_Ballos		"sprite/ballos.png"			15 15 0 0 NONE
 SPRITE SPR_BallosP		"sprite/ballosp.png"		6 5 0 0 NONE
+SPRITE SPR_BallosEye	"sprite/ballos_eye.png"		3 2 0 0 NONE
+SPRITE SPR_BallosPlat	"sprite/ballos_plat.png"	4 2 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE
@@ -375,12 +377,12 @@ SPRITE SPR_ItemImage	"sprite/itemimage.png"		3 2 0 0 NONE
 SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 	3 2 0 0 NONE
 
 # Title Screen Logo
-TILESET TS_Title		"sprite/title.png" 		2
-TILESET TS_J_Title		"sprite/title_ja.png" 	2
+TILESET TS_Title		"sprite/title.png" 		0
+TILESET TS_J_Title		"sprite/title_ja.png" 	0
 TILESET TS_SysFont		"font_tran.png" 		0
 
 # Sound Test
-PALETTE PAL_SndTest		"back/soundtest.png" 	0
+PALETTE PAL_SndTest		"back/soundtest.png"
 TILESET TS_SndTest		"back/soundtest.png" 	0 # OOM when unpacking, don't compress
 
 # Window
@@ -402,7 +404,7 @@ TILESET TS_HudMax		"sprite/hudmax.png" 	0
 TILESET TS_Break		"sprite/breakable.png" 	0
 
 # Island Effect
-PALETTE PAL_XX			"xxBack.png" 			3
+PALETTE PAL_XX			"xxBack.png"
 TILESET TS_XXBack		"xxBack.png" 			0
 TILESET TS_XXFore		"xxFore.png" 			0
 SPRITE SPR_XXIsland		"xxIsland.png" 			5 3 0 0 NONE

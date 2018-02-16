@@ -6,7 +6,7 @@
 #define platform_speed	curly_target_x
 #define rotators_left	curly_target_y
 
-#define savedhp		id
+//#define savedhp		id
 #define angle		jump_time
 #define timer3		event
 
@@ -90,9 +90,9 @@ static void SetEyeStates(uint16_t newstate) {
 }
 
 static uint8_t transfer_damage(Entity *src, Entity *tgt) {
-	if(src->health < src->savedhp) {
-		uint16_t dmg = src->savedhp - src->health;
-		src->health = src->savedhp;
+	if(src->health < 1000) {
+		uint16_t dmg = 1000 - src->health;
+		src->health = 1000;
 		if(tgt->health > dmg) {
 			tgt->health -= dmg;
 			return FALSE;
@@ -113,7 +113,7 @@ static void RunComeDown(Entity *e) {
 	switch(e->state) {
 		case AS_COME_DOWN:
 		{
-			e->savedhp = e->health;
+			//e->savedhp = e->health;
 			
 			e->x = player.x;
 			e->y = -(64 << CSF);
@@ -180,7 +180,7 @@ static void RunForm1(Entity *e) {
 		{
 			// can be damaged between eyes opening and boss bar appearing,
 			// but it is not counted.
-			e->health = e->savedhp;
+			e->health = 800;
 			e->state = AS_PREPARE_JUMP;
 		} /* fallthrough */
 		case AS_PREPARE_JUMP:	// delay, then jump at player
@@ -618,17 +618,17 @@ void onspawn_ballos(Entity *e) {
 	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
 	body->health = 1000;	// not his real HP, we're using damage transfer
 	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	body->hit_box = (bounding_box) { 48, 24, 48, 32 };
+	body->hit_box = (bounding_box) { 48, 20, 48, 36 };
 	body->display_box = (bounding_box) { 60, 60, 60, 60 };
 	
 	// create eyes (open/close animations)
 	for(uint8_t i=0;i<2;i++) {
 		eye[i] = entity_create(0, 0, OBJ_BALLOS_EYE, 0);
-		eye[i]->dir = i;
 		eye[i]->health = 1000;
-		eye[i]->hit_box = (bounding_box) { 6, 6, 6, 6 };
-		eye[i]->display_box = (bounding_box) { 8, 8, 8, 8 };
+		eye[i]->hit_box = (bounding_box) { 12, 8, 12, 8 };
+		eye[i]->display_box = (bounding_box) { 12, 8, 12, 8 };
 	}
+	eye[1]->eflags |= NPC_OPTION2;
 	
 	// create a top shield to cover eyes from above
 	shield = entity_create(0, 0, OBJ_BALLOS_SHIELD, 0);
@@ -636,7 +636,7 @@ void onspawn_ballos(Entity *e) {
 	shield->hidden = TRUE;
 	shield->health = 1000;
 	shield->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	shield->hit_box = (bounding_box) { 32, 8, 32, 8 };
+	shield->hit_box = (bounding_box) { 32, 6, 32, 4 };
 	
 	// initilize bboxes
 	//sprites[body->sprite].bbox.set(-48, -24, 48, 32);
@@ -657,13 +657,23 @@ void onspawn_ballos(Entity *e) {
 	//NX_LOG("BallosBoss::OnMapEntry()\n");
 }
 
+void ondeath_ballos(Entity *e) {
+	// as soon as one of his forms is defeated make him non-killable
+	// until the init for the next form runs and makes him killable again.
+	// intended to fix the extremely rare possibility of killing him completely
+	// after his 1st form instead of moving on to the spiky rotators like he should.
+	e->health = 0xFFFF;
+	tsc_call_event(1000); // defeated script (has a flagjump in it to handle each form)
+}
+
 void ai_ballos(Entity *e) {
 	//if (!main) return;
 	//AIDEBUG;
 	
-	if(transfer_damage(body, e)) return;
-	if(transfer_damage(eye[0], e)) return;
-	if(transfer_damage(eye[1], e)) return;
+	if(transfer_damage(body, e) || transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
+		ondeath_ballos(e);
+		return;
+	}
 	//transfer_damage(shield, e);
 	
 	RunForm1(e);
@@ -685,8 +695,9 @@ void ai_ballos(Entity *e) {
 	//	body->frame &= ~1;
 	
 	// place eyes
-	//place_eye(0);
-	//place_eye(1);
+	eye[0]->x = e->x - (24 << CSF);
+	eye[1]->x = e->x + (24 << CSF);
+	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
 	
 	// place body
 	body->x = e->x;
@@ -707,15 +718,6 @@ void ai_ballos(Entity *e) {
 	//}
 }
 
-void ondeath_ballos(Entity *e) {
-	// as soon as one of his forms is defeated make him non-killable
-	// until the init for the next form runs and makes him killable again.
-	// intended to fix the extremely rare possibility of killing him completely
-	// after his 1st form instead of moving on to the spiky rotators like he should.
-	e->health = 0xFFFF;
-	tsc_call_event(1000); // defeated script (has a flagjump in it to handle each form)
-}
-
 // Handles his eyes.
 //
 // When closed, the eyes are like "overlay" objects that replace the open eyes
@@ -727,7 +729,8 @@ void ai_ballos_eye(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->frame = (e->eflags & NPC_OPTION2) ? 4 : 0;
+			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state = 1;
 		}
 		break;
@@ -735,15 +738,16 @@ void ai_ballos_eye(Entity *e) {
 		// open eyes
 		case EYE_OPENING:
 		{
-			e->frame = 0;
+			e->frame = (e->eflags & NPC_OPTION2) ? 4 : 0;
 			e->animtime = 0;
 			e->state++;
 		} /* fallthrough */
 		case EYE_OPENING+1:
 		{
-			if (++e->animtime > 2) {
+			if (++e->animtime > 4) {
 				e->animtime = 0;
-				if (++e->frame >= 3) {
+				e->frame++;
+				if ((e->frame & 3) == 3) {
 					e->eflags &= ~NPC_INVINCIBLE;
 					e->hidden = TRUE;
 					e->state++;
@@ -755,7 +759,7 @@ void ai_ballos_eye(Entity *e) {
 		// close eyes
 		case EYE_CLOSING:
 		{
-			e->frame = 3;
+			e->frame = (e->eflags & NPC_OPTION2) ? 6 : 2;
 			e->hidden = FALSE;
 			e->eflags |= NPC_INVINCIBLE;
 			
@@ -764,10 +768,10 @@ void ai_ballos_eye(Entity *e) {
 		} /* fallthrough */
 		case EYE_CLOSING+1:
 		{
-			if (++e->animtime > 2) {
+			if (++e->animtime > 4) {
 				e->animtime = 0;
-				if (e->frame-- == 0) {
-					e->frame = 0;
+				e->frame--;
+				if ((e->frame & 3) == 0) {
 					e->state++;
 				}
 			}
@@ -786,7 +790,7 @@ void ai_ballos_eye(Entity *e) {
 		// explode eyes (final defeat sequence)
 		case EYE_EXPLODING:
 		{
-			e->frame = 4;	// empty eyes
+			e->frame = (e->eflags & NPC_OPTION2) ? 7 : 3;	// empty eyes
 			e->hidden = FALSE;
 			
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
@@ -799,15 +803,6 @@ void ai_ballos_eye(Entity *e) {
 		}
 		break;
 	}
-	
-	Entity *b = bossEntity;
-	
-	if (e->dir == LEFT)
-		e->x = b->x - (24 << CSF);
-	else
-		e->x = b->x + (24 << CSF);
-	
-	e->y = b->y - (36 << CSF);
 }
 
 void ai_ballos_rotator(Entity *e) {
