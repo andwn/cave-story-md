@@ -1168,12 +1168,9 @@ uint8_t execute_command() {
 		case CMD_XX1: // Island effect
 		{
 			args[0] = tsc_read_word();
-			
-			// Stop music if playing
-			if(song_get_playing()) {
-				song_stop();
-				vsync(); aftervsync();
-			}
+
+			ready = TRUE;
+			vsync(); aftervsync();
 
 			VDP_setEnable(FALSE);
 			// Disable camera
@@ -1223,18 +1220,20 @@ uint8_t execute_command() {
 			VDP_setCachedPalette(PAL3, PAL_XX.data);
 			VDP_setPalette(PAL3, PAL_XX.data);
 			VDP_setEnable(TRUE);
+
+			song_stop();
 			
-			uint16_t t = TIME(350);
+			uint16_t t = TIME_10(350);
 			while(--t) {
-				if(t > TIME(200) || !args[0]) {
-					if((t % TIME(5)) == 0) {
+				if(t > TIME_8(150) || !args[0]) {
+					if((t % TIME_8(5)) == 0) {
 						island[0].y++;
 						island[1].y++;
 					}
 				}
 				sprite_addq(island, 2);
-				vsync();
-				sprites_send();
+				ready = TRUE;
+				vsync(); aftervsync();
 			}
 		}
 		break;

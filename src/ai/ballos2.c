@@ -344,6 +344,15 @@ static void run_intro(Entity *e) {
 		// he smiles, then enters base attack state
 		case 10:
 		{
+			// When entering Seal Chamber from the stage select, Curly is missing.
+			// If that happens, spawn her at teh start of the fight
+			if(!entity_find_by_type(OBJ_CURLY_CARRIED_SHOOTING)) {
+				entity_create(player.x, player.y, OBJ_CURLY_CARRIED_SHOOTING, 0);
+			}
+			e->state++;
+		} /* fallthrough */
+		case 11:
+		{
 			e->timer++;
 			
 			// animate smile/open eyes
@@ -551,7 +560,7 @@ void ai_ballos_target(Entity *e) {
 		{
 			e->hidden ^= 1;
 			if (++e->timer == TIME_8(20)) {	// lightning attack
-				if(!e->dir) entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, NPC_OPTION2);
+				if(!e->dir) entity_create(e->x_mark, e->y_mark - 0x2000, OBJ_LIGHTNING, NPC_OPTION2);
 			} else if(e->timer >= TIME_8(30)) {
 				e->state = STATE_DELETE;
 			}
@@ -688,8 +697,8 @@ void ai_ballos_skull(Entity *e) {
 }
 
 void ai_ballos_spikes(Entity *e) {
-	if (++e->timer < TIME_8(128)) {
-		e->y -= SPEED_8(0x80);
+	if (++e->timer < 128) {
+		e->y -= 0x80;
 	} else {
 		stage_replace_block(sub_to_block(e->x), sub_to_block(e->y) - 1, 54);
 		stage_replace_block(sub_to_block(e->x) + 1, sub_to_block(e->y) - 1, 54);
@@ -961,7 +970,7 @@ void ai_wall_collapser(Entity *e) {
 				for(uint16_t y=0;y<20;y++) {
 					// pushing the smoke behind all objects prevents it from covering
 					// up the NPC's on the collapse just before takeoff.
-					stage_replace_block(xa, ya+y, 109);
+					stage_replace_block(xa, ya+y, 1);
 				}
 				
 				sound_play(SND_BLOCK_DESTROY, 5);

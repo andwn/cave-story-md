@@ -179,6 +179,7 @@ SPRITE SPR_ButeArw		"sprite/butearw.png"		2 2 0 0 NONE
 SPRITE SPR_Rolling		"sprite/rolling.png"		2 2 0 0 NONE
 SPRITE SPR_Deleet		"sprite/deleet.png"			3 3 0 0 NONE
 SPRITE SPR_Target		"sprite/target.png"			3 3 0 0 NONE
+SPRITE SPR_PuppyGhost	"sprite/ghostdog.png"		2 2 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE

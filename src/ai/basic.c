@@ -676,6 +676,7 @@ void ai_scroll_ctrl(Entity *e) {
 			// what makes all the monsters, falling spikes etc react.
 			player.x = e->x;
 			player.y = e->y;
+			player.y_speed = 0;
 		}
 		break;
 		
@@ -691,13 +692,25 @@ void ai_scroll_ctrl(Entity *e) {
 		// used during the Red Demon fight in Last Cave (hidden).
 		case 100:
 		{
-			e->state = 101;
-			if (e->eflags & NPC_OPTION2) {
-				e->linkedEntity = entity_find_by_event(e->id);
+			// The real game uses the dir parameter of ANP to tell this object the event # 
+			// of the target. It's too late to change how my engine works to really handle
+			// that, so here are some case-by-case hacks to fix it
+			uint16_t target = e->id;
+			if(stageID == STAGE_SEAL_CHAMBER) {
+				if(entity_find_by_event(900)) {
+					target = 900;
+				} else {
+					target = 0;
+				}
+			} else if(stageID == STAGE_LAST_CAVE_2) {
+				target = 250;
+			}
+			if (target) {
+				e->linkedEntity = entity_find_by_event(target);
 			} else {
 				e->linkedEntity = bossEntity;
 			}
-			//if (!e->linkedEntity) e->state = STATE_DELETE;
+			e->state++;
 		} /* fallthrough */
 		case 101:
 		{

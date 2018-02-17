@@ -592,6 +592,7 @@ static void RunDefeated(Entity *e) {
 				body->hidden = TRUE;
 				eye[0]->hidden = TRUE;
 				eye[1]->hidden = TRUE;
+				bossEntity = NULL;
 				e->state = 1003;
 			}
 		}
@@ -933,21 +934,24 @@ void ai_ballos_rotator(Entity *e) {
 		
 		case 40:	// destroyed during phase 3, bouncing
 		{
-			e->y_speed += 0x20;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED_8(0x20);
+			LIMIT_Y(SPEED_12(0x5ff));
 			
-			if (blk(e->x, -e->hit_box.left, e->y, 0) == 0x41) e->x_speed = 0x100;
-			if (blk(e->x, e->hit_box.right, e->y, 0) == 0x41) e->x_speed = -0x100;
+			if (blk(e->x, -16, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
+			if (blk(e->x, 16, e->y, 0) == 0x41) e->x_speed = -SPEED_8(0xFF);
 			
-			if (e->y_speed >= 0 && blk(e->x, 0, e->y, e->hit_box.bottom) == 0x41) {
+			if (e->y_speed >= 0 && blk(e->x, 0, e->y, 16) == 0x41) {
 				// first time they hit they head toward player, after that
 				// they keep going in same direction until hit wall
-				if (e->x_speed == 0)
-					e->x_speed = (e->x < player.x) ? 0x100 : -0x100;
-				
-				e->y_speed = -0x800;
+				if(e->x_speed == 0) {
+					e->x_speed = (e->x < player.x) ? SPEED_8(0xFF) : -SPEED_8(0xFF);
+				}
+				e->y_speed = -SPEED_12(0x800);
 				sound_play(SND_QUAKE, 5);
 			}
+
+			e->x += e->x_speed;
+			e->y += e->y_speed;
 		}
 		break;
 		
@@ -966,8 +970,7 @@ void ai_ballos_rotator(Entity *e) {
 		case 1001:
 		{
 			// explode one by one going clockwise
-			if (e->timer2 <= 0)
-			{
+			if (e->timer2 <= 0) {
 				//SmokeClouds(o, 32, 16, 16);
 				sound_play(SND_LITTLE_CRASH, 5);
 				//effect(e->x, e->y, EFFECT_BOOMFLASH);
@@ -984,11 +987,18 @@ void ai_ballos_rotator(Entity *e) {
 		Entity *ballos = bossEntity;
 		if (!ballos) return;
 		
-		uint8_t angle = (e->timer2 >> 1) & 0xFF;
-		uint16_t dist = (e->timer3 >> 2);
-		
-		e->x = ballos->x + (cos[angle] * dist); //(x_speed_from_angle(angle, dist));
-		e->y = ballos->y + (sin[angle] * dist); //(y_speed_from_angle(angle, dist));
+		uint8_t angle = e->timer2 >> 1;
+		if(e->state < 3) {
+			uint16_t dist = e->timer3 >> 2;
+			e->x = ballos->x + (4<<CSF) + (cos[angle] * dist);
+			e->y = ballos->y + (4<<CSF) + (sin[angle] * dist);
+		} else if(e->state < 30) {
+			e->x = ballos->x + (4<<CSF) + (cos[angle] << 6) + (cos[angle] << 4);
+			e->y = ballos->y + (4<<CSF) + (sin[angle] << 6) + (sin[angle] << 4);
+		} else {
+			e->x = ballos->x + (4<<CSF) + (cos[angle] << 6);
+			e->y = ballos->y + (4<<CSF) + (sin[angle] << 6);
+		}
 	}
 }
 
@@ -1064,8 +1074,8 @@ void ai_ballos_platform(Entity *e) {
 		yoff = (sin[angle] << 9) /* 0x200 */ - (sin[angle] << 6) /* 0x40 */;
 	}
 	
-	e->x_mark = (xoff >> 2) - (8 << CSF) + ballos->x;
-	e->y_mark = (yoff >> 2) + (10 << CSF) + ballos->y;
+	e->x_mark = (xoff >> 2) + ballos->x;
+	e->y_mark = (yoff >> 2) + (8 << CSF) + ballos->y;
 	
 	switch(abs(platform_speed)) {
 		case 1:

@@ -386,10 +386,10 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	/* 0x160 (352) */
 	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // King (Sword)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Kill Zone
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_wall_collapser, &ai_null 			}, // Wall Collapser
+	{ NULL, 			NOSHEET, 		PAL3, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Balrog Passenger
 	{ &SPR_Balrog, 		NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog, 		&ai_null 			}, // Balrog (Rescue)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Puppy (Ghost)
+	{ &SPR_PuppyGhost, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_puppy_ghost, 	&ai_null 			}, // Puppy (Ghost)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Misery (Wind)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Water Drop Generator
 	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ai_null 			}, // Thank You

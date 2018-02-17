@@ -269,7 +269,7 @@ void player_update() {
 			// Ballos creates in the last phase merge with the stage once
 			// they rise fully. They should only do 2 damage though, so I
 			// added this check.
-			player_inflict_damage((stageID == STAGE_SEAL_CHAMBER) ? 2 : 10);
+			if(!tscState) player_inflict_damage((stageID == STAGE_SEAL_CHAMBER) ? 2 : 10);
 		}
 		if(player.health == 0) return;
 	} else {
