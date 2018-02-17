@@ -291,7 +291,7 @@ static void RunForm2(Entity *e) {
 			e->state++;
 			
 			rotators_left = 0;
-			for(uint16_t angle=0;angle<=0x100;angle+=0x20) {
+			for(uint16_t angle=0;angle<0x100;angle+=0x20) {
 				rotator(rotators_left) = entity_create(e->x, e->y, OBJ_BALLOS_ROTATOR, 0);
 				rotator(rotators_left)->angle = angle;
 				rotator(rotators_left)->dir = (rotators_left & 1) ? 1 : 0;
@@ -301,13 +301,13 @@ static void RunForm2(Entity *e) {
 		} /* fallthrough */
 		case BS_ENTER_FORM+1:
 		{
-			e->y += (ARENA_BOTTOM - e->y) / 8;
+			//e->y += (ARENA_BOTTOM - e->y) / 8;
 			
-			if (passed_xcoord(e, LESS_THAN, ARENA_LEFT, FALSE))
-				e->x += (ARENA_LEFT - e->x) / 8;
+			//if (passed_xcoord(e, LESS_THAN, ARENA_LEFT, FALSE))
+			//	e->x += (ARENA_LEFT - e->x) / 8;
 			
-			if (passed_xcoord(e, GREATER_THAN, ARENA_RIGHT, FALSE))
-				e->x += (ARENA_RIGHT - e->x) / 8;
+			//if (passed_xcoord(e, GREATER_THAN, ARENA_RIGHT, FALSE))
+			//	e->x += (ARENA_RIGHT - e->x) / 8;
 		}
 		break;
 		
@@ -816,6 +816,7 @@ void ai_ballos_rotator(Entity *e) {
 	switch(e->state) {
 		case 0:		// just spawned
 		{
+			e->frame = 0;
 			e->state = 1;
 			e->timer2 = e->angle * 2;
 			
@@ -853,13 +854,13 @@ void ai_ballos_rotator(Entity *e) {
 			if (e->timer2 <= 1) e->timer2 += 0x200;
 			e->timer2 -= 2;
 			
-			if (e->frame != 2)		// still undestroyed?
+			if (e->frame != 1)		// still undestroyed?
 			{
-				e->frame = (e->damage_time & 2) ? 1 : 0;
+				//e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health <= (1000 - 100)) {
 					e->nflags &= ~NPC_SHOOTABLE;
-					e->frame = 2;	// close eye
+					e->frame = 1;	// close eye
 					
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
@@ -874,7 +875,7 @@ void ai_ballos_rotator(Entity *e) {
 		
 		case 20:	// spinning fast CCW while spikes come up
 		{
-			e->frame = 2;
+			e->frame = 1;
 			
 			if (e->timer2 <= 3) e->timer2 += 0x200;
 			e->timer2 -= 4;
@@ -894,7 +895,7 @@ void ai_ballos_rotator(Entity *e) {
 				e->frame = 0;
 			} else {
 				e->eflags |= NPC_INVINCIBLE;
-				e->frame = 2;
+				e->frame = 1;
 			}
 		} /* fallthrough */
 		case 31:		// form 3 CW slow spin
@@ -908,7 +909,7 @@ void ai_ballos_rotator(Entity *e) {
 				e->timer2 -= 0x200;
 			
 			if (e->eflags & NPC_SHOOTABLE) {
-				e->frame = (e->damage_time & 2) ? 1 : 0;
+				//e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health < (1000 - 100)) {
 					e->x_speed = 0;
@@ -918,7 +919,7 @@ void ai_ballos_rotator(Entity *e) {
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
 					
-					e->frame = 2;
+					e->frame = 1;
 					e->state = 40;
 					e->attack = 5;
 					
@@ -955,7 +956,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 			
-			e->frame = 2;
+			e->frame = 1;
 			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
 			e->attack = 0;
 			
@@ -972,7 +973,7 @@ void ai_ballos_rotator(Entity *e) {
 				e->state = STATE_DELETE;
 			} else {
 				e->timer2--;
-				e->frame = (e->timer2 & 2) ? 1 : 0;
+				//e->frame = (e->timer2 & 2) ? 1 : 0;
 			}
 		}
 		break;
@@ -1079,6 +1080,9 @@ void ai_ballos_platform(Entity *e) {
 	
 	e->x_speed = (e->x_mark - e->x);
 	//e->y_speed = e->speed;
+
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 

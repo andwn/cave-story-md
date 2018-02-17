@@ -16,6 +16,7 @@
 #include "tsc.h"
 #include "vdp.h"
 #include "vdp_bg.h"
+#include "vdp_ext.h"
 #include "vdp_pal.h"
 #include "vdp_tile.h"
 
@@ -46,6 +47,7 @@ void credits_main() {
 	inFade = FALSE;
 	ready = TRUE;
 	sprites_clear();
+	VDP_setWindowPos(0, 0);
 	vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	
 	VDP_setEnable(FALSE);
@@ -88,6 +90,7 @@ void credits_main() {
 		tsc_update();
 		if(waitTime) waitTime--;
 		while(!waitTime) {
+			uint16_t label = 0;
 			switch(credits_info[pc].cmd) {
 				case TEXT:
 					VDP_drawTextBG(PLAN_B, credits_info[pc].text.string, textX, textY & 31);
@@ -121,10 +124,11 @@ void credits_main() {
 					break;
 				case FLAG_JUMP:
 					if(!system_get_flag(credits_info[pc].fjump.flag)) break;
+					label = credits_info[pc].fjump.label;
 					/* fallthrough */
 				case JUMP:
 				{
-					uint16_t label = credits_info[pc].jump.label;
+					if(!label) label = credits_info[pc].jump.label;
 					do {
 						pc++;
 					} while(credits_info[pc].cmd != LABEL || credits_info[pc].label.value != label);
@@ -133,7 +137,18 @@ void credits_main() {
 				case LABEL: /* Ignore */ break;
 				case PALETTE: /* Unused */ break;
 				// The End
-				case END: while(TRUE) { vsync(); aftervsync(); } break;
+				case END: while(TRUE) {
+					// It's possible for the credits to end before the script
+					// So keep updating the script & illustration scrolling
+					tsc_update();
+					// Scrolling for illustrations
+					illScroll += illScrolling;
+					if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+					entities_update();
+					entities_draw();
+					vsync(); aftervsync(); 
+				}
+				break;
 			}
 			pc++;
 		}

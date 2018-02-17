@@ -1171,6 +1171,11 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 			
 			VDP_setEnable(FALSE);
+			// Stop music if playing
+			if(song_get_playing()) {
+				song_stop();
+				XGM_doVBlankProcess();
+			}
 			// Disable camera
 			camera.target = NULL;
 			camera.x = SCREEN_HALF_W << CSF;

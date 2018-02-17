@@ -346,7 +346,7 @@ static void run_intro(Entity *e)
 		case 0:
 		{
 			// setup
-			e->y -= (6<<CSF);
+			e->y -= (16<<CSF);
 			e->dir = 0;
 			e->attack = 0;
 			
@@ -630,7 +630,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 			ANIMATE(e, 4, 0,1,2);
 			e->timer++;
 			
-			if ((e->timer & 7) == 1) {
+			if ((e->timer & 15) == 1 && entity_on_screen(e)) {
 				int16_t xi = SPEED_10(random() & 0x3FF);
 				
 				if (!e->dir) xi = -xi;
@@ -752,15 +752,17 @@ void ai_green_devil_spawner(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->timer = random() % TIME_8(40);
+			e->timer = TIME_8(50);
+			e->timer += random() & 63;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
 		{
-			if (e->timer-- == 0) {
-				Entity *dv = entity_create(e->x, e->y, OBJ_GREEN_DEVIL, 0);
-				dv->x_speed = (random() % (32<<CSF)) - (16<<CSF);
+			if (--e->timer == 0) {
+				Entity *dv = entity_create(e->x, e->y - 0x1000, OBJ_GREEN_DEVIL, 0);
+				dv->x_speed = (random() % (8<<CSF)) - (4<<CSF);
 				dv->dir = e->dir;
+				if(!e->dir) dv->x_speed = -dv->x_speed;
 				
 				e->state = 0;
 			}
@@ -772,12 +774,16 @@ void ai_green_devil_spawner(Entity *e) {
 
 void ai_green_devil(Entity *e) {
 	e->nflags ^= NPC_SHOOTABLE;
+
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+
 	switch(e->state) {
 		case 0:
 		{
 			//if(e->eflags & NPC_OPTION2) e->dir = 1;
 			e->y_mark = e->y;
-			e->y_speed = (random() % (10<<CSF)) - (5<<CSF);
+			e->y_speed = (random() % (8<<CSF)) - (4<<CSF);
 			e->attack = 3;
 			e->state = 1;
 		} /* fallthrough */
