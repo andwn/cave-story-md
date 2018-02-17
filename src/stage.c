@@ -168,7 +168,7 @@ void stage_load(uint16_t id) {
 	if(stageID == STAGE_BLACK_SPACE) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
 	}
-	if(stageID == STAGE_HELL_PASSAGEWAY_2) {
+	if(stageID == STAGE_HELL_B3 || stageID == STAGE_HELL_PASSAGEWAY_2) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
 	

@@ -165,7 +165,7 @@ void onspawn_heavypress(Entity *e) {
 	e->hit_box =     (bounding_box) { 36, 56, 36, 56 };
 	e->display_box = (bounding_box) { 40, 60, 40, 60 };
 	
-	entities_clear_by_type(OBJ_ROLLING);
+	//entities_clear_by_type(OBJ_ROLLING);
 	
 	// setup bboxes
 	//center_bbox = sprites[e->sprite].frame[0].dir[0].pf_bbox;

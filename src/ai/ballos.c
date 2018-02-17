@@ -423,7 +423,7 @@ static void RunForm3(Entity *e) {
 				// create platforms
 				platform_speed = 0;
 				
-				for(uint16_t angle=0;angle<0x100;angle+=0x20) {
+				for(uint16_t angle=0x10;angle<0x100;angle+=0x20) {
 					Entity *p = entity_create(e->x, e->y, OBJ_BALLOS_PLATFORM, 0);
 					p->angle = angle;
 				}
@@ -449,7 +449,7 @@ static void RunForm3(Entity *e) {
 		{
 			e->timer++;
 			
-			if ((e->timer & 3) == 0) sound_play(SND_QUAKE, 2);
+			if ((e->timer & 7) == 0) sound_play(SND_QUAKE, 2);
 			
 			if ((e->timer & 31) == 1) {
 				e->x_mark += 2;
@@ -585,6 +585,7 @@ static void RunDefeated(Entity *e) {
 			camera_shake(40);
 			
 			if (++e->timer >= TIME_8(50)) {
+				tsc_hide_boss_health(); // Health bar sticks around if we don't do this
 				entities_clear_by_type(OBJ_BUTE_ARCHER_RED);
 				entities_clear_by_type(OBJ_BALLOS_SPIKES);
 				
@@ -1002,16 +1003,17 @@ void ai_ballos_platform(Entity *e) {
 	switch(e->state) {
 		case 0:		// just spawned
 		{
-			e->timer2 = (e->angle * 4);
+			e->timer2 = (e->angle << 2);
 			e->timer3 = 0xC0;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:		// expanding outward
 		{
-			if (e->timer3 < 0x1C0)
+			if (e->timer3 < 0x1C0) {
 				e->timer3 += 8;
-			else
+			} else {
 				e->state = 2;
+			}
 		}
 		break;
 		
@@ -1019,9 +1021,7 @@ void ai_ballos_platform(Entity *e) {
 		// controlled by Ballos.
 		case 2:
 		{
-			e->timer2 += platform_speed;
-			if (e->timer2 == 0) e->timer2 += 0x400;
-			if (e->timer2 >= 0x400) e->timer2 -= 0x400;
+			e->timer2 = (e->timer2 + platform_speed) & 0x3FF;
 		}
 		break;
 		
@@ -1034,7 +1034,7 @@ void ai_ballos_platform(Entity *e) {
 		} /* fallthrough */
 		case 1001:
 		{
-			e->y_speed += 0x40;
+			e->y_speed += SPEED_8(0x40);
 			
 			if (e->x > block_to_sub(stageHeight + 1)) e->state = STATE_DELETE;
 		}
@@ -1044,32 +1044,39 @@ void ai_ballos_platform(Entity *e) {
 	if (e->state >= 1000) return;
 	
 	// let player jump up through platforms, but be solid when he is standing on them
-	if (player.y_speed < 0 || player.y > e->x - (e->hit_box.top << CSF)) {
-		e->eflags &= ~NPC_SPECIALSOLID;
+	if (player.y_speed < 0 || player.y > e->y - (e->hit_box.top << CSF)) {
+		e->nflags &= ~NPC_SPECIALSOLID;
 	} else {
-		e->eflags |= NPC_SPECIALSOLID;
+		e->nflags |= NPC_SPECIALSOLID;
 	}
 	
 	// spin
-	uint8_t angle = (e->timer2 >> 2) & 0xFF;
+	uint8_t angle = e->timer2 >> 2;
 	int32_t xoff, yoff;
+	if(e->state < 2) {
+		// While expanding out use the extra cpu cycles to make it smooth
+		xoff = cos[angle] * e->timer3;
+		yoff = sin[angle] * e->timer3;
+	} else {
+		// After expanding the distance will always be 0x1C0, this effectively multiplies by that,
+		// with bit shifts instead of multiplying a signed int 16 times per frame
+		xoff = (cos[angle] << 9) /* 0x200 */ - (cos[angle] << 6) /* 0x40 */;
+		yoff = (sin[angle] << 9) /* 0x200 */ - (sin[angle] << 6) /* 0x40 */;
+	}
 	
-	xoff = cos[angle] * e->timer3; //x_speed_from_angle(angle, e->timer3 << CSF);
-	yoff = sin[angle] * e->timer3; //y_speed_from_angle(angle, e->timer3 << CSF);
-	
-	e->x_mark = (xoff / 4) + ballos->x;
-	e->y_mark = ((yoff / 4) + (16 << CSF)) + ballos->y;
+	e->x_mark = (xoff >> 2) - (8 << CSF) + ballos->x;
+	e->y_mark = (yoff >> 2) + (10 << CSF) + ballos->y;
 	
 	switch(abs(platform_speed)) {
 		case 1:
-			if ((e->timer2 % 4) == 0) {
-				e->y_speed = (e->y_mark - e->y) / 4;
+			if ((e->timer2 & 3) == 0) {
+				e->y_speed = (e->y_mark - e->y) >> 2;
 			}
 		break;
 		
 		case 2:
 			if ((e->timer2 & 2) == 0) {
-				e->y_speed = (e->y_mark - e->y) / 2;
+				e->y_speed = (e->y_mark - e->y) >> 1;
 			}
 		break;
 		
@@ -1079,7 +1086,6 @@ void ai_ballos_platform(Entity *e) {
 	}
 	
 	e->x_speed = (e->x_mark - e->x);
-	//e->y_speed = e->speed;
 
 	e->x += e->x_speed;
 	e->y += e->y_speed;

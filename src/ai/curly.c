@@ -126,7 +126,7 @@ void ai_curly_carried(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->state = 1;
+			e->state++;
 			e->frame = 10;
 			e->eflags &= ~NPC_INTERACTIVE;
 			e->nflags &= ~NPC_INTERACTIVE;
@@ -142,8 +142,8 @@ void ai_curly_carried(Entity *e) {
 		// floating away after Ironhead battle
 		case 10:
 		{
-			e->x_speed = SPEED(0x40);
-			e->y_speed = -SPEED(0x20);
+			e->x_speed = SPEED_8(0x40);
+			e->y_speed = -SPEED_8(0x20);
 			e->state = 11;
 		}
 		/* fallthrough */
@@ -151,7 +151,7 @@ void ai_curly_carried(Entity *e) {
 		{
 			if (e->y < block_to_sub(4))	{
 				// if in top part of screen, reverse before hitting wall
-				e->y_speed = SPEED(0x20);
+				e->y_speed = SPEED_8(0x20);
 			}
 		}
 		break;
@@ -161,7 +161,53 @@ void ai_curly_carried(Entity *e) {
 		}
 		break;
 	}
-	
+}
+
+void ai_curly_hell(Entity *e) {
+	// Keep in front of doors
+	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+		moveMeToFront = TRUE;
+		e->x_mark = camera.x;
+		e->y_mark = camera.y;
+	}
+
+	if(!e->state) {
+		e->state++;
+		e->frame = 10;
+		e->eflags &= ~NPC_INTERACTIVE;
+		e->nflags &= ~NPC_INTERACTIVE;
+	}
+
+	e->dir = player.dir ^ 1;
+	e->x = player.x + (e->dir ? (4<<CSF) : -(4<<CSF));
+	e->y = player.y - (4<<CSF);
+
+	//int16_t sx = 0, sy = 0;
+	switch(player.frame) {
+		case 0: // Standing / Walking / Jumping
+			e->y -= (1 << CSF); // Bounce while player is walking
+		case 1:
+		case 2:
+			// Aim back
+			break;
+		case 3: // Looking up
+		case 4:
+		case 5:
+			if(e->grounded) {
+				// Aim up
+			} else {
+				// Aim down
+			}
+			break;
+		case 6: // Looking down
+		case 7:
+			if(e->grounded) {
+				// Aim back
+			} else {
+				// Aim up
+			}
+			break;
+	}
 }
 
 #define CURLYB_FIGHT_START		10

@@ -401,9 +401,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	// Conveniently the palette indeces for Balcony and Hell blocks are the same
 			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
-			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 18,3,2, 
+			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 16,3,2, 
 					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 
-					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15, 0,16, 0,17);
+					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15);
+			SHEET_ADD(SHEET_BUTEDIE, &SPR_Bute, 3,3,2, 0,16, 0,17, 0,18);
 		} break;
 		case 0x52: // Sacred Ground B3
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
@@ -427,6 +428,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_DEVIL, &SPR_GrnDevil, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_PLATF, &SPR_BallosPlat, 1,4,2, 0,0);
 			SHEET_ADD(SHEET_ROT, &SPR_BallosRot, 2,4,4, 0,0, 0,1);
+			SHEET_ADD(SHEET_TARGET, &SPR_Target, 1,3,3, 0,0);
 			//SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 10,3,2, 
 			//		0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9);
 		} break;

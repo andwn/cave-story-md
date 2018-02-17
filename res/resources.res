@@ -84,6 +84,7 @@ SPRITE SPR_BallosP		"sprite/ballosp.png"		6 5 0 0 NONE
 SPRITE SPR_BallosEye	"sprite/ballos_eye.png"		3 2 0 0 NONE
 SPRITE SPR_BallosPlat	"sprite/ballos_plat.png"	4 2 0 0 NONE
 SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 0 0 NONE
+SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE
@@ -177,6 +178,7 @@ SPRITE SPR_HPCharge		"sprite/hp_charge.png"		2 2 0 0 NONE
 SPRITE SPR_ButeArw		"sprite/butearw.png"		2 2 0 0 NONE
 SPRITE SPR_Rolling		"sprite/rolling.png"		2 2 0 0 NONE
 SPRITE SPR_Deleet		"sprite/deleet.png"			3 3 0 0 NONE
+SPRITE SPR_Target		"sprite/target.png"			3 3 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE

@@ -49,16 +49,14 @@ static void spawn_bones(Entity *e, uint8_t up) {
 }
 
 // handles his "looping" flight/rush attacks
-static void run_flight(Entity *e)
-{
-	switch(e->state)
-	{
+static void run_flight(Entity *e) {
+	switch(e->state) {
 		// flying left or right
 		case BP_FLY_LR:
 		{
 			e->state++;
 			e->animtime = 0;
-			e->frame = 6;		// flying horizontally
+			e->frame = 8;		// flying horizontally
 			
 			e->y_speed = 0;
 			e->attack = DMG_RUSH;
@@ -68,7 +66,7 @@ static void run_flight(Entity *e)
 		} /* fallthrough */
 		case BP_FLY_LR+1:
 		{
-			ANIMATE(e, 4, 6,7);
+			ANIMATE(e, 4, 8,9);
 			
 			// smacked into wall?
 			if ((!e->dir && collide_stage_leftwall(e)) || 
@@ -91,10 +89,9 @@ static void run_flight(Entity *e)
 		// smacked into wall while flying L/R
 		case BP_HIT_WALL:
 		{
-			e->frame = 6;
+			e->frame = 8;
 			
-			if (++e->timer > 30)
-			{
+			if (++e->timer > TIME_8(30)) {
 				if (e->timer2 <= 3)
 					e->state = BP_PREPARE_FLY_LR;
 				else
@@ -111,8 +108,8 @@ static void run_flight(Entity *e)
 			e->timer = 0;
 			e->animtime = 0;
 			
-			e->frame = 8;		// vertical flight
-			e->dir = 0;		// up-facing frame
+			e->frame = 10;		// vertical flight
+			//e->dir = 0;		// up-facing frame
 			
 			e->y_speed = -RUSH_SPEED;
 			e->x_speed = 0;
@@ -120,13 +117,12 @@ static void run_flight(Entity *e)
 		} /* fallthrough */
 		case BP_FLY_UP+1:
 		{
-			ANIMATE(e, 4, 8,9);
+			ANIMATE(e, 4, 10,11);
 			
 			// hit ceiling? (to make this happen, break his loop and jump ABOVE him
 			// while he is in the air, at the part where he would normally be
 			// coming back down at you).
-			if (collide_stage_ceiling(e))
-			{
+			if (collide_stage_ceiling(e)) {
 				e->state = BP_HIT_CEILING;
 				e->attack = DMG_NORMAL;
 				e->timer = 0;
@@ -146,10 +142,9 @@ static void run_flight(Entity *e)
 		
 		case BP_HIT_CEILING:	// hit ceiling
 		{
-			e->frame = 8;
+			e->frame = 10;
 			
-			if (++e->timer > 30)
-			{
+			if (++e->timer > TIME_8(30)) {
 				if (e->timer2 <= 3)
 					e->state = BP_PREPARE_FLY_LR;
 				else
@@ -166,8 +161,8 @@ static void run_flight(Entity *e)
 			e->timer = 0;
 			e->animtime = 0;
 			
-			e->frame = 8;		// vertical flight
-			e->dir = RIGHT;		// down-facing frame
+			e->frame = 13;		// vertical flight
+			//e->dir = RIGHT;		// down-facing frame
 			
 			e->y_speed = RUSH_SPEED;
 			e->x_speed = 0;
@@ -175,7 +170,7 @@ static void run_flight(Entity *e)
 		} /* fallthrough */
 		case BP_FLY_DOWN+1:
 		{
-			ANIMATE(e, 4, 8, 9);
+			ANIMATE(e, 4, 13, 14);
 			
 			if (collide_stage_floor(e))
 			{
@@ -199,10 +194,9 @@ static void run_flight(Entity *e)
 		{
 			e->frame = 3;
 			
-			if (++e->timer > 30)
-			{
+			if (++e->timer > TIME_8(30)) {
 				e->state = BP_FIGHTING_STANCE;
-				e->timer = 120;
+				e->timer = TIME_8(120);
 			}
 		}
 		break;
@@ -211,20 +205,19 @@ static void run_flight(Entity *e)
 		// come back to ground while facing head on
 		case BP_RETURN_TO_GROUND:
 		{
-			e->frame = 4;		// face screen frame
+			e->frame = 1;		// face screen frame
 			e->dir = LEFT;		// non-flashing version
 			
 			e->state++;
 		} /* fallthrough */
 		case BP_RETURN_TO_GROUND+1:
 		{
-			ANIMATE(e, 4, 4,5);
+			ANIMATE(e, 4, 1,2);
 			
-			e->y_speed += 0x40;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED_8(0x40);
+			LIMIT_Y(SPEED_12(0x5ff));
 			
-			if (e->y_speed >= 0 && collide_stage_floor(e))
-			{
+			if (e->y_speed >= 0 && collide_stage_floor(e)) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 3; 	// landed
@@ -239,8 +232,7 @@ static void run_flight(Entity *e)
 			e->x_speed *= 3;
 			e->x_speed /= 4;
 			
-			if (++e->timer > 10)
-			{
+			if (++e->timer > TIME_8(10)) {
 				e->state = BP_FIGHTING_STANCE;
 				e->timer = 140;
 			}
@@ -250,65 +242,57 @@ static void run_flight(Entity *e)
 }
 
 // his lightning-strike attack
-static void run_lightning(Entity *e)
-{
-	switch(e->state)
-	{
+static void run_lightning(Entity *e) {
+	switch(e->state) {
 		// lightning strikes (targeting player)
 		case BP_LIGHTNING_STRIKE:
 		{
 			e->x_mark = player.x;
-			e->y_speed = -0x600;
+			e->y_speed = -SPEED_12(0x600);
 			
 			e->timer = 0;
 			e->timer2 = 0;
 			e->animtime = 0;
 			
 			e->frame = 4;		// facing screen
-			e->dir = LEFT;		// not flashing
+			//e->dir = LEFT;		// not flashing
 			
 			e->state++;
 		} /* fallthrough */
 		case BP_LIGHTNING_STRIKE+1:
 		{
 			ANIMATE(e, 4, 4,5);
-			
-			e->x_speed += (e->x < e->x_mark) ? 0x40 : -0x40;
-			e->y_speed += (e->y < FLOAT_Y) ? 0x40 : -0x40;
-			LIMIT_X(0x400);
-			LIMIT_Y(0x400);
+			e->x_speed += (e->x < e->x_mark) ? SPEED_8(0x40) : -SPEED_8(0x40);
+			e->y_speed += (e->y < FLOAT_Y) ? SPEED_8(0x40) : -SPEED_8(0x40);
+			LIMIT_X(SPEED_10(0x3FF));
+			LIMIT_Y(SPEED_10(0x3FF));
 			
 			// run firing
-			if (++e->timer > 200)
-			{
+			if(++e->timer > TIME_8(200)) {
 				uint8_t pos = (e->timer % 40);
 				
-				if (pos == 1)
-				{
+				if (pos == 1) {
 					// spawn lightning target
-					//entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
-					e->dir = RIGHT;		// switch to flashing frames
+					entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
+					//e->dir = 1;		// switch to flashing frames
 					e->animtime = 0;
 					
 					// after 8 attacks, switch to even-spaced strikes
-					if (++e->timer2 >= 8)
-					{
+					if (++e->timer2 >= 8) {
 						e->x_speed = 0;
 						e->y_speed = 0;
 						
-						e->dir = 1;		// flashing
-						e->frame = 5;		// flash red then white during screen flash
+						//e->dir = 1;		// flashing
+						e->frame = 7;		// flash red then white during screen flash
 						e->animtime = 1;	// desync animation from screen flashes so it's visible
 						
 						e->state++;
 						e->timer = 0;
 						e->timer2 = 0;
 					}
-				}
-				else if (pos == 20)
-				{
-					e->dir = 0;		// stop flashing
-				}
+				} //else if (pos == 20) {
+					//e->dir = 0;		// stop flashing
+				//}
 			}
 		}
 		break;
@@ -316,20 +300,19 @@ static void run_lightning(Entity *e)
 		// lightning strikes (evenly-spaced everywhere)
 		case BP_LIGHTNING_STRIKE+2:
 		{
-			ANIMATE(e, 4, 4,5);
+			ANIMATE(e, 4, 6,7);
 			e->timer++;
 			
-			if (e->timer == 40)
+			if (e->timer == TIME_8(40)) {
 				SCREEN_FLASH(20);
-				//flashscreen.Start();
+			}
 			
-			if (e->timer > 50) {
-				if ((e->timer % 10) == 1) {
-					//entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
+			if (e->timer > TIME_8(50)) {
+				if ((e->timer % TIME_8(10)) == 1) {
+					entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
 					e->timer2 += 4;
 					
-					if (e->timer2 >= 40)
-						e->state = BP_RETURN_TO_GROUND;
+					if (e->timer2 >= 40) e->state = BP_RETURN_TO_GROUND;
 				}
 			}
 		}
@@ -338,15 +321,13 @@ static void run_lightning(Entity *e)
 }
 
 // intro cinematic sequence
-static void run_intro(Entity *e)
-{
-	switch(e->state)
-	{
+static void run_intro(Entity *e) {
+	switch(e->state) {
 		// idle/talking to player
 		case 0:
 		{
 			// setup
-			e->y -= (16<<CSF);
+			e->y_next -= (6<<CSF);
 			e->dir = 0;
 			e->attack = 0;
 			
@@ -354,7 +335,7 @@ static void run_intro(Entity *e)
 			//e->dirparam = -1;
 			
 			// closed eyes/mouth
-			e->linkedEntity = entity_create(e->x, e->y - (16 << CSF), OBJ_BALLOS_SMILE, 0);
+			e->linkedEntity = entity_create(e->x, e->y_next - (16 << CSF), OBJ_BALLOS_SMILE, 0);
 			e->state = 1;
 		}
 		break;
@@ -366,13 +347,10 @@ static void run_intro(Entity *e)
 			e->timer++;
 			
 			// animate smile/open eyes
-			if (e->timer > 50)
-			{
+			if (e->timer > TIME_8(50)) {
 				Entity *smile = e->linkedEntity;
-				if (smile)
-				{
-					if (++smile->animtime > 4)
-					{
+				if (smile) {
+					if (++smile->animtime > 4) {
 						smile->animtime = 0;
 						smile->frame++;
 						
@@ -381,10 +359,9 @@ static void run_intro(Entity *e)
 					}
 				}
 				
-				if (e->timer > 100)
-				{
+				if (e->timer > TIME_8(100)) {
 					e->state = BP_FIGHTING_STANCE;
-					e->timer = 150;
+					e->timer = TIME_8(150);
 					
 					e->eflags |= NPC_SHOOTABLE;
 					e->eflags &= ~NPC_INVINCIBLE;
@@ -399,16 +376,14 @@ static void run_intro(Entity *e)
 
 // defeat sequence
 // he flies away, then the script triggers the next form
-static void run_defeated(Entity *e)
-{
-	switch(e->state)
-	{
+static void run_defeated(Entity *e) {
+	switch(e->state) {
 		// defeated (script triggered; constant value 1000)
 		case BP_DEFEATED:
 		{
 			e->state++;
 			e->timer = 0;
-			e->frame = 10;
+			e->frame = 12;
 			
 			e->eflags &= ~NPC_SHOOTABLE;
 			//effect(e->x, e->y, EFFECT_BOOMFLASH);
@@ -420,17 +395,15 @@ static void run_defeated(Entity *e)
 		} /* fallthrough */
 		case BP_DEFEATED+1:		// fall to ground, shaking
 		{
-			e->y_speed += 0x20;
-			LIMIT_Y(0x5ff);
+			e->y_speed += SPEED_8(0x20);
+			LIMIT_Y(SPEED_12(0x5ff));
 			
 			e->x = e->x_mark;
 			if (++e->timer & 2) e->x += (1 << CSF);
 						   else e->x -= (1 << CSF);
 			
-			if (e->y_speed >= 0 && collide_stage_floor(e))
-			{
-				if (++e->timer > 150)
-				{
+			if (e->y_speed >= 0 && collide_stage_floor(e)) {
+				if (++e->timer > TIME_8(150)) {
 					e->state++;
 					e->timer = 0;
 					e->frame = 3;
@@ -442,12 +415,11 @@ static void run_defeated(Entity *e)
 		
 		case BP_DEFEATED+2:		// prepare to jump
 		{
-			if (++e->timer > 30)
-			{
-				e->y_speed = -0xA00;
+			if (++e->timer > TIME_8(30)) {
+				e->y_speed = -SPEED_12(0xA00);
 				
 				e->state++;
-				e->frame = 8;
+				e->frame = 10;
 				e->eflags |= NPC_IGNORESOLID;
 			}
 		}
@@ -455,11 +427,9 @@ static void run_defeated(Entity *e)
 		
 		case BP_DEFEATED+3:		// jumping
 		{
-			ANIMATE(e, 1, 8, 9);
-			e->dir = LEFT;		// up frame
+			ANIMATE(e, 4, 10, 11);
 			
-			if (e->y < 0)
-			{
+			if (e->y < 0) {
 				//flashscreen.Start();
 				SCREEN_FLASH(20);
 				sound_play(SND_TELEPORT, 5);
@@ -483,8 +453,7 @@ void ai_ballos_priest(Entity *e) {
 	run_flight(e);
 	run_lightning(e);
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		// show "ninja" stance for "timer" ticks,
 		// then prepare to fly horizontally
 		case BP_FIGHTING_STANCE:
@@ -501,15 +470,11 @@ void ai_ballos_priest(Entity *e) {
 			ANIMATE(e, 10, 1, 2);
 			FACE_PLAYER(e);
 			
-			if (e->timer-- == 0 || (e->savedhp - e->health) > 50)
-			{
-				if (++e->timer3 > 4)
-				{
+			if (e->timer-- == 0 || (e->savedhp - e->health) > 50) {
+				if (++e->timer3 > 4) {
 					e->state = BP_LIGHTNING_STRIKE;
 					e->timer3 = 0;
-				}
-				else
-				{
+				} else {
 					e->state = BP_PREPARE_FLY_LR;
 					e->timer2 = 0;
 				}
@@ -529,7 +494,7 @@ void ai_ballos_priest(Entity *e) {
 			e->attack = DMG_NORMAL;
 			
 			// Fly/UD faces player only once, at start
-			FACE_PLAYER(e);
+			//FACE_PLAYER(e);
 		} /* fallthrough */
 		case BP_PREPARE_FLY_LR+1:
 		{
@@ -541,20 +506,14 @@ void ai_ballos_priest(Entity *e) {
 			e->x_speed *= 8; e->x_speed /= 9;
 			e->y_speed *= 8; e->y_speed /= 9;
 			
-			if (++e->timer > 20)
-			{
+			if (++e->timer > TIME_8(20)) {
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				
-				if (e->state == BP_PREPARE_FLY_LR+1)
-				{
+				if (e->state == BP_PREPARE_FLY_LR+1) {
 					e->state = BP_FLY_LR;		// flying left/right
-				}
-				else if (player.y < (e->y + (12 << CSF)))
-				{
+				} else if (player.y < (e->y + (12 << CSF))) {
 					e->state = BP_FLY_UP;		// flying up
-				}
-				else
-				{
+				} else {
 					e->state = BP_FLY_DOWN;		// flying down
 				}
 			}
@@ -574,14 +533,12 @@ void ai_ballos_priest(Entity *e) {
 }
 
 // targeter for lightning strikes
-void ai_ballos_target(Entity *e)
-{
-	switch(e->state)
-	{
+void ai_ballos_target(Entity *e) {
+	switch(e->state) {
 		case 0:
 		{
 			// position to shoot lightning at passed as x,y
-			e->x_mark = e->x - (8 << CSF); //((sprites[SPR_LIGHTNING].w / 2) << CSF);
+			e->x_mark = e->x; //((sprites[SPR_LIGHTNING].w / 2) << CSF);
 			e->y_mark = e->y;
 			
 			// adjust our Y coordinate to match player's
@@ -592,17 +549,12 @@ void ai_ballos_target(Entity *e)
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 4, 0,1);
-			e->timer++;
-			
-			if (e->timer == 20 && !e->dir)
-			{	// lightning attack
-				// setting lightning dir=left: tells it do not flash screen
-				//entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, 0);
-			}
-			
-			if (e->timer > 40)
+			e->hidden ^= 1;
+			if (++e->timer == TIME_8(20)) {	// lightning attack
+				if(!e->dir) entity_create(e->x_mark, e->y_mark, OBJ_LIGHTNING, NPC_OPTION2);
+			} else if(e->timer >= TIME_8(30)) {
 				e->state = STATE_DELETE;
+			}
 		}
 		break;
 	}
@@ -616,8 +568,7 @@ void ai_ballos_target(Entity *e)
 void ai_ballos_bone_spawner(Entity *e) {
 	e->x += e->x_speed;
 	
-	switch(e->state)
-	{
+	switch(e->state) {
 		case 0:
 		{
 			sound_play(SND_MISSILE_HIT, 5);
@@ -655,7 +606,12 @@ void ai_ballos_bone(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	ANIMATE(e, 4, 0,1,2,3);
+	if(++e->animtime > 4) {
+		e->animtime = 0;
+		if(++e->frame > 3) {
+			e->frame = 0;
+		}
+	}
 	
 	if (e->y_speed >= 0 && blk(e->x, 0, e->y, 6) == 0x41) {
 		if (e->state == 0) {
@@ -673,6 +629,7 @@ void ai_ballos_bone(Entity *e) {
 
 void ai_ballos_skull(Entity *e) {
 	if(++e->animtime > 8) {
+		e->animtime = 0;
 		if(++e->frame > 3) {
 			e->frame = 0;
 		}
@@ -731,20 +688,12 @@ void ai_ballos_skull(Entity *e) {
 }
 
 void ai_ballos_spikes(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			if (++e->timer < TIME_8(128)) {
-				e->y -= SPEED_8(0x80);
-				e->frame = (e->timer & 2) ? 0 : 1;
-			} else {
-				//e->state = 1;
-				//e->attack = 2;
-				stage_replace_block(sub_to_block(e->x), sub_to_block(e->y), 54);
-				e->state = STATE_DELETE;
-			}
-		}
-		break;
+	if (++e->timer < TIME_8(128)) {
+		e->y -= SPEED_8(0x80);
+	} else {
+		stage_replace_block(sub_to_block(e->x), sub_to_block(e->y) - 1, 54);
+		stage_replace_block(sub_to_block(e->x) + 1, sub_to_block(e->y) - 1, 54);
+		e->state = STATE_DELETE;
 	}
 }
 

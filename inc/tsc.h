@@ -48,6 +48,7 @@ uint8_t tsc_update();
 // This will begin executing a scripted event if it exists
 void tsc_call_event(uint16_t number);
 
-void tsc_unpause_debug();
+//void tsc_unpause_debug();
 
+void tsc_hide_boss_health();
 void tsc_update_boss_health();

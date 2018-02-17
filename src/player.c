@@ -342,7 +342,7 @@ void player_update() {
 				} else {
 					sound_play(SND_GUN_CLICK, 5);
 				}
-				mgun_shoottime = 9;
+				mgun_shoottime = IS_PALSYSTEM ? 9 : 10;
 			}
 		} else {
 			if(w->ammo < 100) {
@@ -365,8 +365,7 @@ void player_update() {
 			if(mgun_shoottime > 0) mgun_shoottime--;
 			if(joy_down(btn[cfg_btn_shoot]) && mgun_shoottime == 0) {
 				weapon_fire(*w);
-				
-				mgun_shoottime = TIME(10);
+				mgun_shoottime = IS_PALSYSTEM ? 9 : 10;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {

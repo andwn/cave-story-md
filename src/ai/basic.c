@@ -54,10 +54,10 @@ void onspawn_spike(Entity *e) {
 	}
 	// Shrink hitbox slightly -- test this in First Cave
 	// Walk left over the first spike and it should not kill you
-	e->hit_box.left = 2;
-	e->hit_box.top = 2;
-	e->hit_box.right = 2;
-	e->hit_box.bottom = 2;
+	//e->hit_box.left = 2;
+	//e->hit_box.top = 2;
+	//e->hit_box.right = 2;
+	//e->hit_box.bottom = 2;
 	
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
@@ -743,16 +743,17 @@ void ai_xp_capsule(Entity *e) {
 
 void onspawn_lightning(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
+	e->hit_box = (bounding_box) { 6, 22*8, 6, 8 };
 	e->display_box = (bounding_box) { 8, 23*8, 8, 8 };
-	e->x -= 32 << CSF;
-	if(stageID == 0x1C) e->x -= 40 << CSF; // Balrog is a bit farther away
+	if(stageID != STAGE_SEAL_CHAMBER) e->x -= 32 << CSF;
+	if(stageID == STAGE_GRASSTOWN_GUM) e->x -= 40 << CSF; // Balrog is a bit farther away
 	SNAP_TO_GROUND(e);
 }
 
 void ai_lightning(Entity *e) {
 	e->animtime++;
-	if(e->animtime > 5) {
+	if(e->animtime > TIME_8(5)) {
+		if(e->eflags & NPC_OPTION2) e->attack = 10;
 		SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF), 32, 16, 2);
 		e->animtime = 0;
 		e->frame++;
@@ -762,8 +763,8 @@ void ai_lightning(Entity *e) {
 
 void onspawn_lvlupdn(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->timer = TIME(100);
-	e->y_speed = -0x300;
+	e->timer = TIME_8(100);
+	e->y_speed = -SPEED_10(0x300);
 	e->display_box.left = 28;
 }
 
@@ -772,7 +773,7 @@ void ai_lvlupdn(Entity *e) {
 		e->state = STATE_DELETE;
 	} else {
 		if((e->timer & 3) == 0) e->frame ^= 1;
-		if(e->y_speed < 0) e->y_speed += 0x10;
+		if(e->y_speed < 0) e->y_speed += SPEED_8(0x10);
 		e->y += e->y_speed;
 	}
 }

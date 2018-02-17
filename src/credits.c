@@ -157,7 +157,7 @@ void credits_main() {
 		entities_draw();
 		
 		backScroll++;
-		if(IS_PALSYSTEM) {
+		if(!IS_PALSYSTEM) {
 			// Slow the scrolling down slightly for NTSC
 			if((backScroll % 6) == 0 && !skipScroll) {
 				backScroll--;

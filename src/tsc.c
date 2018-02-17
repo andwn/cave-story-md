@@ -160,7 +160,6 @@ uint16_t lastAmmoNum = 0;
 uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max);
 
 void tsc_show_boss_health();
-void tsc_hide_boss_health();
 void tsc_show_teleport_menu();
 
 uint8_t execute_command();
@@ -393,6 +392,11 @@ void tsc_show_boss_health() {
 		.x = 160 + 96 + 128, .y = SCREEN_HEIGHT - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+8)
 	};
+}
+
+void tsc_hide_boss_health() {
+	bossBarEntity = NULL;
+	showingBossHealth = FALSE;
 }
 
 void tsc_update_boss_health() {
@@ -869,11 +873,6 @@ uint8_t execute_command() {
 				bossEntity = entity_create(0, 0, 360 + BOSS_SISTERS, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 20;
-			} else if(stageID == 0x52 && args[0] == 100) {
-				// Heavy Press
-				bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
-				bossEntity->event = 1000;
-				bossEntity->state = 100;
 			} else if(stageID == 87 && args[0] == 100) {
 				// Ballos
 				bossEntity = entity_create(0, 0, 360 + BOSS_BALLOS, 0);
@@ -1170,12 +1169,13 @@ uint8_t execute_command() {
 		{
 			args[0] = tsc_read_word();
 			
-			VDP_setEnable(FALSE);
 			// Stop music if playing
 			if(song_get_playing()) {
 				song_stop();
-				XGM_doVBlankProcess();
+				vsync(); aftervsync();
 			}
+
+			VDP_setEnable(FALSE);
 			// Disable camera
 			camera.target = NULL;
 			camera.x = SCREEN_HALF_W << CSF;

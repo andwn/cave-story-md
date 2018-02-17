@@ -350,7 +350,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
 	{ &SPR_ToroBlock, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_mesa_block, 	&ai_null 			}, // Mesa Block
 	/* 0x140 (320) */
-	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_carried, 	&ai_null 			}, // Curly (Hell)
+	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_hell, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &onspawn_deleet, 		&ai_deleet, 		&ondeath_default 	}, // Deleet
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
@@ -363,7 +363,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
 	{ NULL, 			SHEET_BONE, 	PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone, 	&ai_null 			}, // Ballos Bone Shot
 	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone_spawner,&ai_null 		}, // Ballos Shockwave
-	{ NULL, 			NOSHEET, 		PAL0, 4, &ai_null, 				&ai_null, 			&ai_null 			}, // Ballos Lightning
+	{ NULL, 			SHEET_TARGET, 	PAL1, 1, &onspawn_persistent, 	&ai_ballos_target, 	&ai_null 			}, // Ballos Target
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Sweat
 	{ NULL, 			SHEET_IKACHAN,  PAL0, 1, &onspawn_persistent, 	&ai_ikachan, 		&ai_null 			}, // Ika-chan
 	/* 0x150 (336) */
@@ -372,14 +372,14 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_DEVIL, 	PAL3, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
 	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Smile
+	{ &SPR_BallosSm, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Smile
 	{ NULL, 			SHEET_ROT, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_rotator, &ai_null 			}, // Ballos Rotator
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Skull Shot
 	{ NULL, 			SHEET_PLATF, 	PAL0, 1, &onspawn_persistent, 	&ai_ballos_platform, &ai_null 			}, // Ballos Platform
 	{ &SPR_Hoppy, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	}, // Hoppy
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Spikes
+	{ &SPR_Spikes, 		NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_ballos_spikes, 	&ai_null 			}, // Ballos Spikes
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Statue
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
 	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Statue (Breakable)

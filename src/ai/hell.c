@@ -655,6 +655,9 @@ void onspawn_deleet(Entity *e) {
 }
 
 void ai_deleet(Entity *e) {
+	// Draw above the wall
+	sprite_pri(e->sprite[0], 1); 
+
 	// trigger counter
 	if (e->health < (1000 - DELEET_HP) && e->state < 2) {
 		e->state = 2;
@@ -875,8 +878,7 @@ void ai_puppy_ghost(Entity *e) {
 		{
 			e->hidden = (e->timer & 2);
 			
-			if (e->timer > 50)
-				e->state = STATE_DELETE;
+			if (e->timer > TIME_8(50)) e->state = STATE_DELETE;
 		}
 		break;
 	}
