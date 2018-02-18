@@ -233,9 +233,9 @@ uint8_t titlescreen_main() {
 		cursor += 4;
 	}
 	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;
-	if(cursor > 3) {
-		song_stop();
-	}
+	//if(cursor > 3) {
+	//	song_stop();
+	//}
 	sound_play(SND_MENU_SELECT, 0);
 	return cursor;
 }

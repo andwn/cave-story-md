@@ -127,6 +127,37 @@ void system_new() {
 	tsc_call_event(GAME_START_EVENT);
 }
 
+static uint8_t checksum_verify(uint8_t file_num, uint8_t is_backup) {
+	uint16_t save_loc = SRAM_FILE_START + (SRAM_FILE_LEN * file_num);
+	uint16_t checksum_loc = SRAM_CHECKSUM_POS + (file_num * 8);
+	if(is_backup) {
+		save_loc += SRAM_BACKUP_OFFSET;
+		checksum_loc += 4;
+	}
+
+	uint32_t checksum = SRAM_readLong(checksum_loc);
+	uint32_t recheck = 0x10101010;
+	for(uint16_t i = save_loc; i < save_loc + SRAM_BACKUP_OFFSET; i += 4) {
+		recheck += SRAM_readLong(i);
+	}
+	return checksum == recheck;
+}
+
+static void checksum_write(uint8_t file_num, uint8_t is_backup) {
+	uint16_t save_loc = SRAM_FILE_START + (SRAM_FILE_LEN * file_num);
+	uint16_t checksum_loc = SRAM_CHECKSUM_POS + (file_num * 8);
+	if(is_backup) {
+		save_loc += SRAM_BACKUP_OFFSET;
+		checksum_loc += 4;
+	}
+
+	uint32_t checksum = 0x10101010;
+	for(uint16_t i = save_loc; i < save_loc + SRAM_BACKUP_OFFSET; i += 4) {
+		checksum += SRAM_readLong(i);
+	}
+	SRAM_writeLong(SRAM_CHECKSUM_POS + (file_num * 8), checksum);
+}
+
 void system_save() {
 	if(sram_file >= SRAM_FILE_MAX) return;
 	if(sram_state == SRAM_INVALID) return;
@@ -138,7 +169,7 @@ void system_save() {
 	// Start of save data in SRAM
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
 	// Counters to increment while reading/writing
-	uint16_t loc = loc_start, loc_chk = loc_start;
+	uint16_t loc = loc_start;
 	
 	SRAM_enable();
 	
@@ -176,18 +207,16 @@ void system_save() {
 		SRAM_writeLong(loc, flags[i]); loc += 4;
 	}
 	// Checksum
-	//uint32_t checksum = 0x10101010;
-	//while(loc_chk < loc) {
-	//	checksum += SRAM_readLong(loc_chk); loc_chk += 4;
-	//}
-	//SRAM_writeLong(loc, checksum); loc += 4;
+	checksum_write(sram_file, FALSE);
+
 	// Backup
-	//loc = loc_start;
-	//while(loc < loc_chk) {
-	//	uint32_t dat = SRAM_readLong(loc);
-	//	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, dat);
-	//	loc += 4;
-	//}
+	loc = loc_start;
+	while(loc < loc_start + SRAM_FILE_LEN / 2) {
+		uint32_t dat = SRAM_readLong(loc);
+		SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, dat);
+		loc += 4;
+	}
+	checksum_write(sram_file, TRUE);
 	
 	SRAM_disable();
 	
@@ -210,6 +239,18 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		SRAM_disable();
 		XGM_set68KBUSProtection(FALSE);
 		return;
+	}
+	// Checksum failed?
+	if(!checksum_verify(index, FALSE)) {
+		// Checksum for backup failed too?
+		if(!checksum_verify(index, TRUE)) {
+			file->used = FALSE;
+			SRAM_disable();
+			XGM_set68KBUSProtection(FALSE);
+			return;
+		}
+		// Load backup
+		loc += SRAM_BACKUP_OFFSET;
 	}
 	
 	file->used = TRUE;
@@ -244,8 +285,13 @@ void system_load(uint8_t index) {
 	
 	// Start of save data in SRAM
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
+	// Checksum failed?
+	if(!checksum_verify(index, FALSE)) {
+		// Load backup
+		loc_start += SRAM_BACKUP_OFFSET;
+	}
 	// Counters to increment while reading/writing
-	uint16_t loc = loc_start, loc_chk = loc_start;
+	uint16_t loc = loc_start;
 	
 	SRAM_enableRO();
 	// Test magic
@@ -257,7 +303,6 @@ void system_load(uint8_t index) {
 		system_new();
 		return;
 	}
-	// TODO: Checksum verification, restore from backup if it fails
 	
 	uint16_t rid = SRAM_readWord(loc);			loc += 2;
 	uint8_t song = SRAM_readWord(loc);			loc += 2;
@@ -309,13 +354,21 @@ void system_copy(uint8_t from, uint8_t to) {
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
 	SRAM_enable();
-	
+
+	// Copy data
 	while(loc_from < loc_from_end) {
 		uint32_t data = SRAM_readLong(loc_from);
 		SRAM_writeLong(loc_to, data);
 		loc_from += 4; loc_to += 4;
 	}
-	
+	// Copy checksum
+	loc_from = SRAM_CHECKSUM_POS + from * 8;
+	loc_to = SRAM_CHECKSUM_POS + to * 8;
+	uint32_t checksum = SRAM_readLong(loc_from);
+	SRAM_writeLong(loc_to, checksum);
+	checksum = SRAM_readLong(loc_from + 4);
+	SRAM_writeLong(loc_to + 4, checksum);
+
 	SRAM_disable();
 	XGM_set68KBUSProtection(FALSE);
 }
@@ -330,6 +383,7 @@ void system_delete(uint8_t index) {
 	SRAM_enable();
 	
 	SRAM_writeLong(loc, 0); // Erase the "CSMD" magic to invalidate file
+	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
 	
 	SRAM_disable();
 	XGM_set68KBUSProtection(FALSE);

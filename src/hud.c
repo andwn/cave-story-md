@@ -37,7 +37,6 @@ void hud_refresh_maxammo();
 
 // Expected to happen while the screen is off
 void hud_create() {
-	//if(paused) return;
 	// Invalidate all values, forces a redraw
 	hudMaxHealth = hudHealth = hudWeapon = hudLevel = 
 			hudMaxEnergy = hudEnergy = hudMaxAmmo = hudAmmo = 255;
@@ -54,6 +53,11 @@ void hud_create() {
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
+	// Draw blank tiles next to weapon
+	DMA_doDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
 }
 
 void hud_force_redraw() {

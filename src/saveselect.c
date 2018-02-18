@@ -34,14 +34,15 @@
 #define ANIM_FRAMES	4
 #define OPTIONS (SRAM_FILE_MAX + 2)
 
-enum { CM_LOAD, CM_COPY, CM_PASTE, CM_DELETE };
+enum { CM_LOAD, CM_COPY, CM_PASTE, CM_DELETE, CM_CONFIRM };
 
 static void draw_cursor_mode(uint8_t mode) {
 	switch(mode) {
-		case CM_LOAD:   VDP_drawText(" Load Save Data ", 12, 2); break;
-		case CM_COPY:   VDP_drawText(" Copy Save Data ", 12, 2); break;
-		case CM_PASTE:  VDP_drawText("Paste Save Data ", 12, 2); break;
-		case CM_DELETE: VDP_drawText("Delete Save Data", 12, 2); break;
+		case CM_LOAD:    VDP_drawText(" Load Save Data ", 12, 2); break;
+		case CM_COPY:    VDP_drawText(" Copy Save Data ", 12, 2); break;
+		case CM_PASTE:   VDP_drawText("Paste Save Data ", 12, 2); break;
+		case CM_DELETE:  VDP_drawText("Delete Save Data", 12, 2); break;
+		case CM_CONFIRM: VDP_drawText(" Are you sure?  ", 12, 2); break;
 	}
 }
 
@@ -149,7 +150,7 @@ uint8_t saveselect_main() {
 			if(cursor < SRAM_FILE_MAX) {
 				switch(cursorMode) {
 					case CM_LOAD: { // Load/New Game on file over cursor
-						song_stop();
+						//song_stop();
 						sound_play(SND_MENU_SELECT, 0);
 						sram_file = cursor;
 						return file_used[cursor];
@@ -170,6 +171,11 @@ uint8_t saveselect_main() {
 						break;
 					}
 					case CM_DELETE: { // Clear file
+						sound_play(SND_MENU_PROMPT, 0);
+						cursorMode = CM_CONFIRM;
+						break;
+					}
+					case CM_CONFIRM: { // Clear file
 						sound_play(SND_PLAYER_DIE, 0);
 						system_delete(cursor);
 						file_used[cursor] = refresh_file(cursor);
@@ -189,11 +195,11 @@ uint8_t saveselect_main() {
 			cursorMode = CM_LOAD;
 			draw_cursor_mode(cursorMode);
 		}
-		if(joy_pressed(BUTTON_UP)) {
+		if(joy_pressed(BUTTON_UP) || joy_pressed(BUTTON_LEFT)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
 			sound_play(SND_MENU_MOVE, 0);
-		} else if(joy_pressed(BUTTON_DOWN)) {
+		} else if(joy_pressed(BUTTON_DOWN) || joy_pressed(BUTTON_RIGHT)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
 			sound_play(SND_MENU_MOVE, 0);
