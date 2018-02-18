@@ -280,6 +280,22 @@ void ai_teleIn(Entity *e) {
 		break;
 		case 3: break;
 	}
+	// Force a specific direction
+	switch(stageID) {
+		case STAGE_ARTHURS_HOUSE:
+		case STAGE_EGG_CORRIDOR:
+		case STAGE_GRASSTOWN:
+		case STAGE_LABYRINTH_M:
+		case STAGE_EGG_CORRIDOR_2:
+			e->dir = 1;
+		break;
+		case STAGE_GRASSTOWN_SHELTER:
+		case STAGE_SAND_ZONE:
+		case STAGE_SAND_ZONE_2:
+		case STAGE_LABYRINTH_A:
+			e->dir = 0;
+		break;
+	}
 }
 
 void onspawn_teleOut(Entity *e) {
@@ -287,13 +303,14 @@ void onspawn_teleOut(Entity *e) {
 	SNAP_TO_GROUND(e);
 	// PAL was jumping too high here
 	if(IS_PALSYSTEM) e->y_speed = -0x360;
-	else e->y_speed = -SPEED(0x3E0);
+	else e->y_speed = -SPEED_10(0x3E0);
 }
 
 void ai_teleOut(Entity *e) {
 	switch(e->state) {
 		case 0: // Hopping up
 		{
+			e->dir = player.dir;
 			if(++e->timer >= TIME_8(20)) {
 				e->state++;
 				e->timer = 0;

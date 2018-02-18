@@ -75,9 +75,9 @@ uint8_t titlescreen_main() {
 		tsong = 36; // Running Hell
 	}
 	// Load quote sprite
-	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
+	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX),
+		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
@@ -143,7 +143,7 @@ uint8_t titlescreen_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(sprCursor, TILE_SHEETINDEX+sprFrame*4);
+			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
@@ -220,7 +220,7 @@ uint8_t titlescreen_main() {
 			if(--sprTime == 0) {
 				sprTime = ANIM_SPEED;
 				if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				sprite_index(sprCursor, TILE_SHEETINDEX+sprFrame*4);
+				sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 			}
 			// Draw quote sprite at cursor position
 			sprite_pos(sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);

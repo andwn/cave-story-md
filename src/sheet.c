@@ -265,6 +265,9 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x29: // Clinic Ruins
 		{	SHEET_ADD(SHEET_DARKBUB, &SPR_DarkBub, 2,2,2, 0,0, 1,0);
 		} break;
+		case STAGE_LABYRINTH_S:
+		{	SHEET_ADD(SHEET_BLGMISL, &SPR_MisslB2, 1,2,2, 0,0);
+		} break;
 		case 0x2D: // Labyrinth M
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiArmor, 7,3,3, 

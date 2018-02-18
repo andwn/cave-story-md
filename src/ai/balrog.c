@@ -702,7 +702,7 @@ void ai_balrog_boss_msl(Entity *e) {
 		/* fallthrough */
 		case 1:
 		{
-			if (++e->timer > TIME(30)) {
+			if (++e->timer > TIME_8(30)) {
 				e->state = STATE_CHARGE;
 				e->timer2 ^= 1;	// affects how we react if we miss the player
 			}
@@ -719,7 +719,7 @@ void ai_balrog_boss_msl(Entity *e) {
 		case STATE_CHARGE+1:
 		{
 			ANIMATE(e, 16, WALK1,STAND,WALK2,STAND);
-			e->x_speed += e->dir ? SPEED(0x20) : -SPEED(0x20);
+			e->x_speed += e->dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 			//walking_animation(o);
 			
 			// stuck against the wall?
@@ -732,12 +732,12 @@ void ai_balrog_boss_msl(Entity *e) {
 			//}
 			// he behaves differently after every other time he pauses
 			if (e->timer2) {
-				if (++e->timer > TIME(75)) {
+				if (++e->timer > TIME_8(75)) {
 					e->frame = STAND;
 					e->state = STATE_PAUSE;
 				}
 			} else {
-				if (++e->timer > TIME(24)) e->state = STATE_JUMP_FIRE;
+				if (++e->timer > TIME_8(24)) e->state = STATE_JUMP_FIRE;
 			}
 		}
 		break;
@@ -749,19 +749,22 @@ void ai_balrog_boss_msl(Entity *e) {
 			e->grounded = FALSE;
 			e->timer = 0;
 			e->frame = ARMSUP;
-			e->y_speed = -SPEED(0x5ff);
+			e->y_speed = -SPEED_12(0x5ff);
 		}
 		/* fallthrough */
 		case STATE_JUMP_FIRE+1:
 		{
 			FACE_PLAYER(e);
 			// fire missiles
-			if (++e->timer < 30) {
-				if ((e->timer % 6) == 1) {
+			if (++e->timer < TIME_8(30)) {
+				if ((e->timer & 7) == 1) {
 					sound_play(SND_EM_FIRE, 5);
-					//Entity *shot = SpawnEntityAtActionPoint(o, OBJ_BALROG_MISSILE);
-					//shot->dir = e->dir;
-					//shot->xinertia = 0x100;
+					Entity *shot = entity_create(e->x, e->y, OBJ_BALROG_MISSILE, 0);
+					shot->dir = e->dir;
+					shot->hit_box = (bounding_box) { 6,6,6,6 };
+					shot->display_box = (bounding_box) { 8,8,8,8 };
+					//shot->x_speed = SPEED_8(0xFF);
+					//if(shot->dir) shot->x_speed = -shot->x_speed;
 				}
 			}
 			// landed?
@@ -791,16 +794,15 @@ void ai_balrog_boss_msl(Entity *e) {
 	}
 	e->x = e->x_next;
 	e->y = e->y_next;
-	if(!e->grounded) e->y_speed += 0x20;
-	LIMIT_X(0x300);
-	LIMIT_Y(0x5ff);
+	if(!e->grounded) e->y_speed += SPEED_8(0x20);
+	LIMIT_X(SPEED_10(0x300));
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_balrog_missile(Entity *e) {
-	if ((e->dir == 1 && collide_stage_rightwall(e)) ||
-		(e->dir == 0 && collide_stage_leftwall(e)))
-	{
-		//SmokeClouds(o, 3, 0, 0);
+	if ((e->dir && blk(e->x, 6, e->y, 0) == 0x41) ||
+		(!e->dir && blk(e->x, -6, e->y, 0) == 0x41)) {
+		SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF) - 16, 32, 32, 3);
 		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
 		sound_play(SND_MISSILE_HIT, 5);
 		
@@ -808,18 +810,16 @@ void ai_balrog_missile(Entity *e) {
 		return;
 	}
 	
-	if (e->state == 0)
-	{
+	if (e->state == 0) {
 		// recoil in oppisite direction
-		e->x_speed = random(-2, -1) << 9;
-		if (e->dir == 0) e->x_speed = -e->x_speed;
+		e->x_speed = SPEED_10(((random() & 1) - 2) << CSF);
+		if (!e->dir) e->x_speed = -e->x_speed;
 		
-		e->y_speed = random(-2, 0) << 9;
-		
+		e->y_speed = SPEED_10(((random() & 1) - 2) << CSF);
 		e->state = 1;
 	}
 	
-	e->x_speed += e->dir ? 0x20 : -0x20;
+	e->x_speed += e->dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 	
 	//if ((++e->timer2 % 4) == 1)
 	//{
@@ -827,24 +827,19 @@ void ai_balrog_missile(Entity *e) {
 	//}
 	
 	// heat-seeking at start, then level out straight
-	if (e->timer2 < 50)
-	{
-		if (e->y < player.y)
-			e->y_speed += 0x20;
-		else
-			e->y_speed -= 0x20;
-	}
-	else
-	{
+	if (e->timer2 < TIME_8(50)) {
+		if (e->y < player.y) e->y_speed += SPEED_8(0x20);
+		else e->y_speed -= SPEED_8(0x20);
+	} else {
 		e->y_speed = 0;
 	}
 	
 	// flash
 	//e->frame ^= 1;
 	
-	if (e->x_speed < -0x400)
-		e->x_speed = -0x600;
-	
-	if (e->x_speed > 0x400)
-		e->x_speed = 0x600;
+	if (e->x_speed < -SPEED_12(0x400)) e->x_speed = -SPEED_12(0x600);
+	if (e->x_speed >  SPEED_12(0x400)) e->x_speed =  SPEED_12(0x600);
+
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

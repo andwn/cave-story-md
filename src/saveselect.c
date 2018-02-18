@@ -132,7 +132,7 @@ uint8_t saveselect_main() {
 	VDP_clearPlan(PLAN_B, TRUE);
 	sprites_clear();
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX),
+		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
@@ -208,7 +208,7 @@ uint8_t saveselect_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(sprCursor, TILE_SHEETINDEX+sprFrame*4);
+			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		if(cursorMode == CM_PASTE && (sprTime & 1)) {
 			// Blink quote between source and destination of a copy

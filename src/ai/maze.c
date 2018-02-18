@@ -590,7 +590,7 @@ void ai_pooh_black(Entity *e) {
 			e->frame = FRAME_FLYING;
 			FACE_PLAYER(e);
 			
-			e->y_speed = SPEED(0xA00);
+			e->y_speed = SPEED_12(0xA00);
 			e->eflags |= NPC_IGNORESOLID;
 			
 			if (e->y >= block_to_sub(8)) {
@@ -602,7 +602,7 @@ void ai_pooh_black(Entity *e) {
 		case 1:
 		{
 			e->frame = FRAME_FLYING;
-			e->y_speed = SPEED(0xA00);
+			e->y_speed = SPEED_12(0xA00);
 			
 			if ((e->grounded = collide_stage_floor(e))) {
 				//SmokeSide(o, 8, DOWN);
@@ -620,7 +620,7 @@ void ai_pooh_black(Entity *e) {
 		{
 			e->frame = FRAME_LANDED;
 			e->attack = 0;
-			if (++e->timer > TIME(24)) {
+			if (++e->timer > TIME_8(24)) {
 				e->state = 3;
 				e->timer = 0;
 			}
@@ -633,22 +633,22 @@ void ai_pooh_black(Entity *e) {
 			bubble_ymark = e->y;
 			
 			// spawn bubbles when hit
-			if (e->damage_time && (e->damage_time % TIME(5)) == 1) {
+			if (e->damage_time && (e->damage_time % TIME_8(5)) == 1) {
 				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 				bubble->alwaysActive = TRUE;
 				bubble->x = e->x - 0x1800 + (random() % 0x3000);
 				bubble->y = e->y - 0x1800 + (random() % 0x3000);
 				// Don't wrap the whole thing in 1 SPEED(), gcc can't optimize that
-				bubble->x_speed = -SPEED(0x600) + (random() % SPEED(0xC00));
-				bubble->y_speed = -SPEED(0x600) + (random() % SPEED(0xC00));
+				bubble->x_speed = -SPEED_12(0x600) + (random() % SPEED_12(0xC00));
+				bubble->y_speed = -SPEED_12(0x600) + (random() % SPEED_12(0xC00));
 				
 				// fly away after hit enough times
-				if (++e->timer > TIME(30)) {
+				if (++e->timer > TIME_8(30)) {
 					e->state = 4;
 					e->timer = 0;
 					
 					e->eflags |= NPC_IGNORESOLID;
-					e->y_speed = -SPEED(0xC00);
+					e->y_speed = -SPEED_12(0xC00);
 				}
 			}
 		}
@@ -660,20 +660,20 @@ void ai_pooh_black(Entity *e) {
 			
 			// bubbles shoot down past player just before
 			// he falls.
-			if (e->timer == TIME(60)) {
+			if (e->timer == TIME_8(60)) {
 				bubble_xmark = player.x;
 				bubble_ymark = (10000 << CSF);
-			} else if (e->timer < TIME(60)) {
+			} else if (e->timer < TIME_8(60)) {
 				bubble_xmark = e->x;
 				bubble_ymark = e->y;
 			}
-			if (e->timer >= TIME(170)) {
+			if (e->timer >= TIME_8(170)) {
 				// Fall on player, but keep outside the walls
 				e->x_next = player.x;
 				if(e->x_next < (5 * 16) << CSF) e->x_next = (5 * 16) << CSF;
 				if(e->x_next > (15 * 16) << CSF) e->x_next = (15 * 16) << CSF;
 				e->y_next = 0;
-				e->y_speed = SPEED(0x5ff);
+				e->y_speed = SPEED_12(0x5ff);
 				
 				e->state = 0;
 				e->timer = 0;
@@ -692,12 +692,12 @@ void ai_poohblk_bubble(Entity *e) {
 		e->state = STATE_DELETE;
 		return;
 	}
-	if (!(random() % 8)) e->frame = 0;
+	if (!(random() & 7)) e->frame = 0;
 	else e->frame = 1;
-	e->x_speed += (e->x > bubble_xmark) ? -SPEED(0x40) : SPEED(0x40);
-	e->y_speed += (e->y > bubble_ymark) ? -SPEED(0x40) : SPEED(0x40);
-	LIMIT_X(SPEED(0x1000));
-	LIMIT_Y(SPEED(0x1000));
+	e->x_speed += (e->x > bubble_xmark) ? -SPEED_8(0x40) : SPEED_8(0x40);
+	e->y_speed += (e->y > bubble_ymark) ? -SPEED_8(0x40) : SPEED_8(0x40);
+	LIMIT_X(SPEED_12(0xFFF));
+	LIMIT_Y(SPEED_12(0xFFF));
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -777,7 +777,7 @@ void ai_firewhirr(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->timer = random() % TIME(50);
+			e->timer = random() % TIME_8(50);
 			e->y_mark = e->y;
 		}
 		/* fallthrough */
@@ -785,16 +785,16 @@ void ai_firewhirr(Entity *e) {
 		{
 			if (!e->timer) {
 				e->state = 10;
-				e->timer = TIME(100);
-				e->y_speed = -SPEED(0x200);
+				e->timer = TIME_8(100);
+				e->y_speed = -SPEED_10(0x200);
 			}
 			else e->timer--;
 		}
 		/* fallthrough */
 		case 10:
 		{
-			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : -SPEED(0x10);
-			LIMIT_Y(SPEED(0x200));
+			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x10) : -SPEED_8(0x10);
+			LIMIT_Y(SPEED_10(0x200));
 			
 			// inc time-to-fire while player near
 			if (PLAYER_DIST_Y(80 << 9)) {
@@ -809,7 +809,7 @@ void ai_firewhirr(Entity *e) {
 				shot->alwaysActive = TRUE;
 				shot->x = e->x;
 				shot->y = e->y;
-				e->timer2 = random() % TIME(20);
+				e->timer2 = random() % TIME_8(20);
 				// tell Curly to acquire us as a target
 				CURLY_TARGET_HERE(e);
 			}
@@ -822,7 +822,7 @@ void ai_firewhirr(Entity *e) {
 
 void ai_firewhirr_shot(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
-	e->x_next = e->x + (!e->dir ? -SPEED(0x200) : SPEED(0x200));
+	e->x_next = e->x + (!e->dir ? -SPEED_10(0x200) : SPEED_10(0x200));
 	e->y_next = e->y;
 	
 	if ((!e->dir && collide_stage_leftwall(e)) ||
@@ -888,7 +888,7 @@ void ai_fuzz_core(Entity *e) {
 			// spawn mini-fuzzes, use jump_time as the angle since it is u8
 			spawn_minifuzz(e);
 			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
-			e->timer = random() % TIME(50);
+			e->timer = random() % TIME_8(50);
 			e->state = 1;
 		}
 		/* fallthrough */
@@ -896,7 +896,7 @@ void ai_fuzz_core(Entity *e) {
 		{
 			if (e->timer == 0) {
 				e->state = 2;
-				e->y_speed = SPEED(0x300);
+				e->y_speed = SPEED_10(0x300);
 				e->y_mark = e->y;
 			} else e->timer--;
 		}
@@ -905,9 +905,9 @@ void ai_fuzz_core(Entity *e) {
 		{
 			if(entity_on_screen(e)) {
 				FACE_PLAYER(e);
-				if (e->y > e->y_mark) e->y_speed -= SPEED(0x10);
-				if (e->y < e->y_mark) e->y_speed += SPEED(0x10);
-				LIMIT_Y(SPEED(0x355));
+				if (e->y > e->y_mark) e->y_speed -= SPEED_8(0x10);
+				if (e->y < e->y_mark) e->y_speed += SPEED_8(0x10);
+				LIMIT_Y(SPEED_10(0x355));
 			} else {
 				e->alwaysActive = FALSE; // Next frame we will deactivate
 				e->state = 3; // This'll run the below case after reactivation
@@ -931,18 +931,18 @@ void ai_fuzz(Entity *e) {
 	
 	if (e->state) {
 		// base destroyed, simple sinusoidal player-seek
-		e->x_speed += (e->x > player.x) ? -SPEED(0x20) : SPEED(0x20);
-		e->y_speed += (e->y > player.y) ? -SPEED(0x20) : SPEED(0x20);
-		LIMIT_X(SPEED(0x800));
-		LIMIT_Y(SPEED(0x200));
+		e->x_speed += (e->x > player.x) ? -SPEED_8(0x20) : SPEED_8(0x20);
+		e->y_speed += (e->y > player.y) ? -SPEED_8(0x20) : SPEED_8(0x20);
+		LIMIT_X(SPEED_12(0x800));
+		LIMIT_Y(SPEED_10(0x200));
 		e->x += e->x_speed;
 		e->y += e->y_speed;
 		FACE_PLAYER(e);
 	} else {
 		if (e->linkedEntity->state == STATE_DESTROY) {
 			e->alwaysActive = TRUE;
-			e->x_speed = -SPEED(0x200) + (random() % SPEED(0x400));
-			e->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+			e->x_speed = -SPEED_10(0x1FF) + (random() % SPEED_10(0x3FF));
+			e->y_speed = -SPEED_10(0x1FF) + (random() % SPEED_10(0x3FF));
 			e->state = 1;
 		} else if(!e->linkedEntity->alwaysActive) {
 			e->state = STATE_DELETE;
@@ -1071,17 +1071,17 @@ void ai_buyobuyo(Entity *e) {
 		break;
 		case 3:
 		{
-			if (e->x > e->x_mark) e->x_speed -= SPEED(0x20);
-			if (e->x < e->x_mark) e->x_speed += SPEED(0x20);
-			if (e->y > e->y_mark) e->y_speed -= SPEED(0x20);
-			if (e->y < e->y_mark) e->y_speed += SPEED(0x20);
-			LIMIT_X(SPEED(0x400));
-			LIMIT_Y(SPEED(0x400));
+			if (e->x > e->x_mark) e->x_speed -= SPEED_8(0x20);
+			if (e->x < e->x_mark) e->x_speed += SPEED_8(0x20);
+			if (e->y > e->y_mark) e->y_speed -= SPEED_8(0x20);
+			if (e->y < e->y_mark) e->y_speed += SPEED_8(0x20);
+			LIMIT_X(SPEED_10(0x3FF));
+			LIMIT_Y(SPEED_10(0x3FF));
 			
 			// move the point we are bobbling around
-			e->x_mark += e->dir ? SPEED(0x200) : -SPEED(0x200);
+			e->x_mark += e->dir ? SPEED_10(0x200) : -SPEED_10(0x200);
 			
-			if (++e->timer > TIME(300)) {
+			if (++e->timer > TIME_10(300)) {
 				e->state = STATE_DELETE;
 				return;
 			}

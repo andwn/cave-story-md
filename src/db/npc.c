@@ -190,7 +190,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Booster,		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_booster_falling,&ai_null 			}, // Booster
 	{ &SPR_Boulder,		NOSHEET, 		PAL3, 4, &ai_null, 				&ai_boulder, 		&ai_null 			}, // Boulder
 	{ &SPR_Balrog, 		NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_boss_msl,&ondeath_balrogFlying },
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_balrog_missile, &ai_null 			}, // Balrog Missile
+	{ NULL, 			SHEET_BLGMISL,  PAL1, 1, &onspawn_persistent, 	&ai_balrog_missile, &ai_null 			}, // Balrog Missile
 	{ &SPR_FireWhir,	NOSHEET,		PAL2, 1, &ai_null, 				&ai_firewhirr, 		&ondeath_default 	}, // Fire Whirr
 	{ NULL,				SHEET_FIREWSHOT,PAL2, 1, &onspawn_persistent, 	&ai_firewhirr_shot, &ai_null 			},
 	{ NULL, 			SHEET_GAUDI,	PAL2, 1, &ai_null, 				&ai_gaudiArmor, 	&ai_null 			},

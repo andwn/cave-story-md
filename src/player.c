@@ -259,6 +259,13 @@ void player_update() {
 			collide_stage_ceiling(&player);
 		}
 	}
+	// If somehow the player gets stuck in a wall, push them out
+	if(blk(player.x, 0, player.y, 0) == 0x41) {
+		if     (blk(player.x, -16, player.y,   0) != 0x41) player.x -= 0x2000;
+		else if(blk(player.x,  16, player.y,   0) != 0x41) player.x += 0x2000;
+		else if(blk(player.x,   0, player.y, -16) != 0x41) player.y -= 0x2000;
+		else if(blk(player.x,   0, player.y,  16) != 0x41) player.y += 0x2000;
+	}
 	player.x = player.x_next;
 	player.y = player.y_next;
 	// Damage Tiles / Death check / IFrames
