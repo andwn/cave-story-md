@@ -366,6 +366,13 @@ void ai_armadillo(Entity *e) {
 void ai_crow(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+
+	// for crows carrying skullheads
+	if (e->state >= 100) {
+		// if our skullhead dies, go into attack mode
+		if (!e->linkedEntity) e->state = 2;
+	}
+
 	switch(e->state) {
 		case 0:
 		{
@@ -374,25 +381,25 @@ void ai_crow(Entity *e) {
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
 			e->y_mark = e->y + (e->y_speed << 3);
+			e->frame = 0;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
 		case 101:
 		{
-			if 		(e->x > e->x_mark) e->x_speed -= SPEED(16);
-			else if (e->x < e->x_mark) e->x_speed += SPEED(16);
-			if 		(e->y > e->y_mark) e->y_speed -= SPEED(16);
-			else if (e->y < e->y_mark) e->y_speed += SPEED(16);
+			if 		(e->x > e->x_mark) e->x_speed -= SPEED_8(16);
+			else if (e->x < e->x_mark) e->x_speed += SPEED_8(16);
+			if 		(e->y > e->y_mark) e->y_speed -= SPEED_8(16);
+			else if (e->y < e->y_mark) e->y_speed += SPEED_8(16);
 			
 			FACE_PLAYER(e);
-			LIMIT_X(SPEED(0x200));
-			LIMIT_Y(SPEED(0x200));
-			ANIMATE(e, 8, 0,1);
-			
+			LIMIT_X(SPEED_10(0x200));
+			LIMIT_Y(SPEED_10(0x200));
+
 			if (e->damage_time) {
 				e->state++;		// state 2/102
-				e->frame = 2;
-				e->timer = 0;
+				//e->timer = 0;
+				if (!e->linkedEntity) MOVE_X(SPEED_10(0x200));
 				e->y_speed = 0;
 			}
 		}
@@ -402,81 +409,164 @@ void ai_crow(Entity *e) {
 		{
 			FACE_PLAYER(e);
 			if (e->damage_time) {
-				e->frame = 2;
 				// fall while hurt
 				e->y_speed += SPEED(0x20);
 				e->x_speed = 0;
-				e->timer = 0;
+				//e->timer = 0;
 			} else {
-				ANIMATE(e, 8, 0,1);
-				// move towards player
-				if(e->x < player.x) e->x_speed += SPEED(0x10);
-				else e->x_speed -= SPEED(0x10);
-				if(e->y < player.y) e->y_speed += SPEED(0x10);
-				else e->y_speed -= SPEED(0x10);
-				if(!e->timer) e->timer++;
+				if(!e->linkedEntity) {
+					// move towards player
+					if(e->x < player.x) e->x_speed += SPEED_8(0x10);
+					else e->x_speed -= SPEED_8(0x10);
+					if(e->y < player.y) e->y_speed += SPEED_8(0x10);
+					else e->y_speed -= SPEED_8(0x10);
+				} else {
+					// carrying a skull; don't chase him
+					e->state--; // state 1/101
+				}
+				//if(!e->timer) e->timer++;
 			}
 			// bounce off walls
-			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
-			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -SPEED(0x200);
-			if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED(0x200);
-			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -SPEED(0x200);
+			if (e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED_10(0x200);
+			if (e->x_speed > 0 && collide_stage_rightwall(e)) e->x_speed = -SPEED_10(0x200);
+			if (e->y_speed < 0 && collide_stage_ceiling(e)) e->y_speed = SPEED_10(0x200);
+			if (e->y_speed > 0 && collide_stage_floor(e)) e->y_speed = -SPEED_10(0x200);
 			
-			LIMIT_X(SPEED(0x5ff));
-			LIMIT_Y(SPEED(0x5ff));
+			LIMIT_X(SPEED_12(0x5ff));
+			LIMIT_Y(SPEED_12(0x5ff));
 		}
 		break;
 	}
+
+	if(e->damage_time) e->frame = 2;
+	else if((++e->animtime & 3) == 0 && ++e->frame > 1) e->frame = 0;
+
 	e->x = e->x_next;
 	e->y = e->y_next;
 }
 
+void ai_crow_with_skull(Entity *e) {
+	// create the skullhead we're carrying
+	Entity *skull = entity_create(e->x, e->y, OBJ_SKULLHEAD, 0);
+	skull->linkedEntity = e;
+	skull->timer = TIME_8(50);
+	e->linkedEntity = skull;
+	
+	// switch over to the main crow AI, but only move up & down
+	e->y_speed = -SPEED_10(0x100 + (random() & 0xFF));
+	e->x_mark = e->x;
+	e->y_mark = e->y - (28<<CSF) + (random() % (38<<CSF));
+	e->state = 101;
+	e->type = OBJ_CROW;
+	
+	// run the ai for the normal crow for this first frame
+	ai_crow(e);
+}
+
 void ai_skullhead(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	switch(e->state) {
-		case 0:
-		{
-			e->state = 1;
-			e->timer = random() % 5;
-		} /* fallthrough */
-		case 1:
-		{
-			if(++e->timer > 8) {
-				e->y_speed = -0x350;
-				e->state = 2;
-				e->frame = 1;
-				MOVE_X(0x100);
-			} else {
-				break;
-			}
-		} /* fallthrough */
-		case 2:
-		{
-			e->y_speed += 0x40;
-			LIMIT_Y(0x5ff);
-			if(e->y_speed > 0) {
-				if(collide_stage_floor(e)) {
-					e->x_speed = 0;
-					e->y_speed = 0;
-					e->state = 1;
-					e->timer = 0;
-					e->frame = 0;
-				//} else {
-				//	e->frame = 0;
+	if(e->linkedEntity) {
+		e->x = e->linkedEntity->x;
+		e->y = e->linkedEntity->y + 0x2000;
+		// Carried by crow
+		switch(e->state) {
+			case 0:
+			{
+				e->frame = 0;
+				e->state = 101;
+			} /* fallthrough */
+			case 101:			// mouth closed
+			{
+				// shoot only when player near
+				if ((abs(player.x - e->x) < (130 << CSF)) && (abs(player.y - e->y) < (100 << CSF))) {
+					e->timer++;
+				} else {
+					e->timer = TIME_8(49);
 				}
-			} else {
-				collide_stage_ceiling(e);
+				
+				if (e->timer >= TIME_8(50)) {
+					FACE_PLAYER(e);
+					e->frame = 1;
+					e->state = 102;
+					e->timer = 0;
+				}
 			}
+			break;
+			case 102:			// mouth opened
+			{
+				e->timer++;
+				if (e->timer == TIME_8(30)) {
+					Entity *shot = entity_create(e->x, e->y, OBJ_SKELETON_SHOT, 0);
+					THROW_AT_TARGET(shot, player.x, player.y, SPEED_10(0x300));
+					sound_play(SND_EM_FIRE, 5);
+				} else if (e->timer > TIME_8(50)) {
+					e->frame = 0;
+					e->state = 101;
+					e->timer = 0;
+				}
+			}
+			break;
 		}
-		break;
+	} else {
+		// Normal skullhead
+		e->x_next = e->x + e->x_speed;
+		e->y_next = e->y + e->y_speed;
+		switch(e->state) {
+			case 0:
+			{
+				e->state = 1;
+				e->timer = random() % 5;
+			} /* fallthrough */
+			case 1:
+			{
+				if(++e->timer > 8) {
+					e->y_speed = -0x350;
+					e->state = 2;
+					e->frame = 1;
+					MOVE_X(0x100);
+				} else {
+					break;
+				}
+			} /* fallthrough */
+			case 2:
+			{
+				e->y_speed += 0x40;
+				LIMIT_Y(0x5ff);
+				if(e->y_speed > 0) {
+					if(collide_stage_floor(e)) {
+						e->x_speed = 0;
+						e->y_speed = 0;
+						e->state = 1;
+						e->timer = 0;
+						e->frame = 0;
+					}
+				} else {
+					collide_stage_ceiling(e);
+				}
+			}
+			break;
+			default: // Crow was killed
+			{
+				e->state = 2;
+				MOVE_X(SPEED_10(0x200));
+				ai_skullhead(e);
+				return;
+			}
+			break;
+		}
+		if(e->x_speed) {
+			if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
+			if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
+		}
+		e->x = e->x_next;
+		e->y = e->y_next;
 	}
-	if(e->x_speed) {
-		if (collide_stage_leftwall(e)) { e->dir = 1; e->x_speed = 0x100; }
-		if (collide_stage_rightwall(e)) { e->dir = 0; e->x_speed = -0x100; }
-	}
-	e->x = e->x_next;
-	e->y = e->y_next;
+}
+
+extern void ondeath_default(Entity *e);
+
+void ondeath_crowskull(Entity *e) {
+	if(e->linkedEntity) e->linkedEntity->linkedEntity = NULL;
+	ondeath_default(e);
 }
 
 void ai_skelShot(Entity *e) {

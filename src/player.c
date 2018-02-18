@@ -539,7 +539,7 @@ void player_update_interaction() {
 			e = e->next;
 		}
 		// Question mark above head
-		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 8);
+		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 12);
 	}
 }
 

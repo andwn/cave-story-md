@@ -273,7 +273,7 @@ void ai_teleIn(Entity *e) {
 				e->state++;
 				e->y_speed = 0;
 			} else {
-				e->y_speed += SPEED(0x40);
+				e->y_speed += SPEED_8(0x40);
 			}
 			e->y = e->y_next;
 		}
@@ -294,7 +294,7 @@ void ai_teleOut(Entity *e) {
 	switch(e->state) {
 		case 0: // Hopping up
 		{
-			if(++e->timer >= TIME(20)) {
+			if(++e->timer >= TIME_8(20)) {
 				e->state++;
 				e->timer = 0;
 				e->y_speed = 0;
@@ -302,7 +302,7 @@ void ai_teleOut(Entity *e) {
 				if(light) light->state = 1;
 				sound_play(SND_TELEPORT, 5);
 			} else {
-				e->y_speed += SPEED(0x43);
+				e->y_speed += SPEED_8(0x43);
 				e->y += e->y_speed;
 			}
 		}
@@ -331,7 +331,7 @@ void onspawn_teleLight(Entity *e) {
 }
 
 void ai_teleLight(Entity *e) {
-	if(e->state) e->hidden = ++e->timer & 1;
+	if(e->state) e->hidden ^= 1;
 	else e->hidden = TRUE;
 }
 
@@ -452,15 +452,20 @@ void ai_sprinkler(Entity *e) {
 	// Make sure this is an odd number so half the drops will show at once
 	if (++e->timer == 7) { 
 		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
-		drop->x_speed = -SPEED(2 << CSF) + random() % SPEED(4 << CSF);
-		drop->y_speed = -SPEED(3 << CSF) + random() % SPEED(1 << CSF);
+		drop->x_speed = -0x3FF + (random() & 0x7FF);
+		drop->y_speed = -0x7FF + (random() & 0x3FF);
 		e->timer = 0;
 	}
 }
 
 void ai_water_droplet(Entity *e) {
-	e->y_speed += SPEED(0x20);
-	if (e->y_speed > SPEED(0x5ff)) e->y_speed = SPEED(0x5ff);
+	if(e->x_speed > 0) {
+		e->x_speed -= 4;
+	} else {
+		e->x_speed += 4;
+	}
+	e->y_speed += 0x20;
+	if (e->y_speed > 0x5ff) e->y_speed = 0x5ff;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	e->hidden ^= 1;
@@ -690,6 +695,7 @@ void ai_scroll_ctrl(Entity *e) {
 		
 		// stay mid-way between player and the specified object.
 		// used during the Red Demon fight in Last Cave (hidden).
+		// every phase of Ballos also uses this.
 		case 100:
 		{
 			// The real game uses the dir parameter of ANP to tell this object the event # 
@@ -733,8 +739,10 @@ void ai_scroll_ctrl(Entity *e) {
 // Makes the screen constantly shake
 void ai_quake(Entity *e) {
 	(void)(e); // So we don't trip unused parameter warning
-	if(!cfg_hellquake && (stageID == 0x50 || stageID == 0x51 || stageID == 0x52
-						  || stageID == 0x58)) {
+	if(!cfg_hellquake && (stageID == STAGE_HELL_B1 || 
+						  stageID == STAGE_HELL_B2 || 
+						  stageID == STAGE_HELL_B3 || 
+						  stageID == STAGE_SEAL_CHAMBER)) {
 		return;
 	}
 	camera_shake(10);

@@ -372,8 +372,7 @@ static void run_intro(Entity *e) {
 					e->state = BP_FIGHTING_STANCE;
 					e->timer = TIME_8(150);
 					
-					e->eflags |= NPC_SHOOTABLE;
-					e->eflags &= ~NPC_INVINCIBLE;
+					e->nflags |= NPC_SHOOTABLE;
 					e->nflags &= ~NPC_INVINCIBLE;
 				}
 			}
@@ -394,7 +393,7 @@ static void run_defeated(Entity *e) {
 			e->timer = 0;
 			e->frame = 12;
 			
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->nflags &= ~NPC_SHOOTABLE;
 			//effect(e->x, e->y, EFFECT_BOOMFLASH);
 			//SmokeClouds(o, 16, 16, 16);
 			sound_play(SND_BIG_CRASH, 5);
@@ -429,7 +428,7 @@ static void run_defeated(Entity *e) {
 				
 				e->state++;
 				e->frame = 10;
-				e->eflags |= NPC_IGNORESOLID;
+				e->nflags |= NPC_IGNORESOLID;
 			}
 		}
 		break;
@@ -539,6 +538,11 @@ void ai_ballos_priest(Entity *e) {
 	//	sprites[e->sprite].bbox = sprites[e->sprite].frame[0].dir[e->dir].pf_bbox;
 	//	e->dirparam = e->dir;
 	//}
+}
+
+void ondeath_ballosp(Entity *e) {
+	e->nflags &= ~NPC_SHOOTABLE;
+	tsc_call_event(e->event);
 }
 
 // targeter for lightning strikes
@@ -663,12 +667,9 @@ void ai_ballos_skull(Entity *e) {
 			//}
 			
 			if (e->y > 0x10000) {
-				e->eflags &= ~NPC_IGNORESOLID;
-				
 				if (blk(e->x, 0, e->y, 7) == 0x41) {
 					e->y_speed = -SPEED_10(0x200);
 					e->state = 110;
-					e->eflags |= NPC_IGNORESOLID;
 					
 					//quake(10, SND_BLOCK_DESTROY);
 					
@@ -739,7 +740,6 @@ void ai_green_devil(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//if(e->eflags & NPC_OPTION2) e->dir = 1;
 			e->y_mark = e->y;
 			e->y_speed = (random() % (8<<CSF)) - (4<<CSF);
 			e->attack = 3;
@@ -777,15 +777,12 @@ void ai_bute_sword_red(Entity *e) {
 		{
 			ANIMATE(e, 4, 0,1,2,3);
 			
-			if (++e->timer == 8)
-				e->eflags &= ~NPC_IGNORESOLID;
-			
 			if (e->timer >= 16) {
 				e->state = 10;
 				//e->sprite = SPR_BUTE_SWORD_RED;
 				e->frame = 0;
 				
-				e->eflags |= NPC_SHOOTABLE;
+				e->nflags |= NPC_SHOOTABLE;
 				e->attack = 5;
 			}
 		}

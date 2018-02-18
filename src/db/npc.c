@@ -62,15 +62,15 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Sandcroc,	NOSHEET,		PAL3, 2, &ai_null, 				&ai_sandcroc, 		&ondeath_default 	}, // Sandcroc
 	/* 0x030 (48) */
 	{ NULL,				SHEET_OMGSHOT,  PAL3, 1, &onspawn_persistent, 	&ai_omega_shot, 	&ondeath_default 	}, // Omega Shot
-	{ NULL,				SHEET_SKULLH,	PAL1, 1, &ai_null, 				&ai_skullhead, 		&ondeath_default 	}, // Skullhead
+	{ NULL,				SHEET_SKULLH,	PAL1, 1, &ai_null, 				&ai_skullhead, 		&ondeath_crowskull 	}, // Skullhead
 	{ &SPR_Bone,		NOSHEET,		PAL1, 1, &onspawn_persistent, 	&ai_skeleton_shot, 	&ondeath_nodrop 	}, // Skeleton
-	{ NULL,				SHEET_CROW, 	PAL3, 1, &ai_null, 				&ai_crow, 			&ondeath_default 	}, // Crow & Skullhead
+	{ NULL,				SHEET_CROW, 	PAL3, 1, &ai_null, 				&ai_crow_with_skull,&ondeath_crowskull 	}, // Crow & Skullhead
 	{ &SPR_Robot,		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Blue Robot
 	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???UNKNOWN???
 	{ NULL,				SHEET_SKULLH,	PAL1, 1, &ai_null, 				&ai_skullhead, 		&ondeath_default 	}, // Skullstep
 	{ &SPR_Kazuma,		NOSHEET, 		PAL3, 1, &onspawn_snap, 		&ai_kazuma, 		&ai_null 			}, // Kazuma
 	{ NULL,				SHEET_BEETLE, 	PAL3, 1, &ai_null, 				&ai_beetle, 		&ondeath_default 	}, // Beetle
-	{ NULL,				SHEET_CROW, 	PAL3, 1, &ai_null, 				&ai_crow, 			&ondeath_default 	}, // Crow
+	{ NULL,				SHEET_CROW, 	PAL3, 1, &ai_null, 				&ai_crow, 			&ondeath_crowskull 	}, // Crow
 	{ &SPR_Basu,		NOSHEET, 		PAL3, 1, &onspawn_basu, 		&ai_basu, 			&ondeath_default 	}, // Basu
 	{ &SPR_DoorE,		NOSHEET,  		PAL1, 1, &ai_null, 				&ai_theDoor, 		&ondeath_default 	}, // The Door
 	{ &SPR_Toroko,		NOSHEET, 		PAL3, 1, &onspawn_op2flip, 		&ai_toroko, 		&ai_null 			}, // Toroko
@@ -229,7 +229,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_SMSTAL, 	PAL2, 1, &ai_null, 				&ai_fallingspike_sm,&ondeath_default 	}, // Falling Spike (Small)
 	{ NULL, 			SHEET_LGSTAL, 	PAL2, 1, &ai_null, 				&ai_fallingspike_lg,&ondeath_default 	}, // Falling Spike (Large)
 	{ &SPR_Cloud, 		NOSHEET, 		PAL3, 4, &ai_null, 				&ai_counterbomb, 	&ondeath_default 	}, // Counter Bomb
-	{ &SPR_Countdown,	NOSHEET,		PAL3, 1, &onspawn_persistent, 	&ai_counterbomb_num,&ai_null 			}, // Countdown Balloon
+	{ &SPR_Countdown,	NOSHEET,		PAL1, 1, &onspawn_persistent, 	&ai_counterbomb_num,&ai_null 			}, // Countdown Balloon
 	// 0x0D0 (208) */
 	{ NULL, 			SHEET_BASU, 	PAL3, 1, &onspawn_basu, 		&ai_basu, 			&ondeath_default 	}, // Basu (2)
 	{ NULL, 			SHEET_BASUSHOT, PAL3, 1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	}, // Basu Projectile (2)
@@ -371,7 +371,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Droll3, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
 	{ NULL, 			SHEET_DEVIL, 	PAL3, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
-	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_default 	}, // Ballos (Boss)
+	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_ballosp 	}, // Ballos (Boss)
 	{ &SPR_BallosSm, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Smile
 	{ NULL, 			SHEET_ROT, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_rotator, &ai_null 			}, // Ballos Rotator
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???

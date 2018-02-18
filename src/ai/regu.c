@@ -169,6 +169,9 @@ void ai_toroko(Entity *e) {
 		if(!e->grounded) e->y_speed += SPEED(0x40);
 		LIMIT_Y(SPEED(0x5FF));
 	}
+
+	// I hate this
+	if(stageID == STAGE_MIMIGA_SHACK && e->frame == 0) e->dir = 0;
 }
 
 
