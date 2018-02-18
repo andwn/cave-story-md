@@ -185,10 +185,10 @@ void ai_kulala(Entity *e) {
 }
 
 void ondeath_kulala(Entity *e) {
-	if(!system_get_flag(e->id)) {
+	//if(!system_get_flag(e->id)) {
 		Entity *chest = entity_create(e->x, e->y, OBJ_CHEST_CLOSED, NPC_INTERACTIVE);
 		chest->event = e->event;
-	}
+	//}
 	e->eflags &= ~NPC_EVENTONDEATH;
 	e->state = STATE_DESTROY;
 }

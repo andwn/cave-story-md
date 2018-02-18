@@ -5,14 +5,12 @@
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 The engine uses many parts of SGDK, and written mostly in C.
 
-It should work on any console or emulator. Expect alpha quality.
+It should work on any console or emulator. It's fairly stable at this point but gets buggier as the game progresses.
 
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
 For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip).
-
-Farthest reachable point in `master`: All Endings
 
 ## Control Defaults
 If you have a 6 button controller:
@@ -25,7 +23,7 @@ If you have a 6 button controller:
 
 For 3 button, `A` cycles through weapons. The rest is the same.
 
-To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic. 
+To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
 
 ## Compilation
 1. Setup [marsdev](https://github.com/andwn/marsdev) and `python`
@@ -36,14 +34,13 @@ To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
 To learn MD dev mostly.
 
 #### When is the next release?
-Whenever Hell is beatable. There is no deadline. I work on this for fun and deadlines are extremely not fun.
+Soon(tm)
 
-#### Will you or can I release this on cartridge?
-Short answer: No. Nicalis would sue and/or send a Cease & Desist order.
+#### Will you release this on cartridge?
+No.
 
-Long answer: If you would like to get together with a group of people to pitch in for a batch of cartridges (not for profit) I would be willing to join this effort.
-However, keep in mind I neither created the original Cave Story nor do I own the rights. Never *SELL* cartridges unless you somehow got permission from the copyright holders.
-Stay out of trouble, and keep me out of trouble.
+#### Can I release this on cartridge?
+Not if you plan on selling it, unless you somehow got Nicalis permission.
 
 ## Thanks
 I did not know how to sort this list, so I did it alphabetically.
