@@ -720,10 +720,10 @@ void ai_scroll_ctrl(Entity *e) {
 			// that, so here are some case-by-case hacks to fix it
 			uint16_t target = e->id;
 			if(stageID == STAGE_SEAL_CHAMBER) {
-				if(entity_find_by_event(900)) {
-					target = 900;
-				} else {
+				if(bossEntity) {
 					target = 0;
+				} else {
+					target = 900;
 				}
 			} else if(stageID == STAGE_LAST_CAVE_2) {
 				target = 250;

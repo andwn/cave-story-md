@@ -119,8 +119,6 @@ static void RunComeDown(Entity *e) {
 	switch(e->state) {
 		case AS_COME_DOWN:
 		{
-			//e->savedhp = e->health;
-			
 			e->x = player.x;
 			e->y = -(64 << CSF);
 			e->frame = 0;
@@ -144,8 +142,8 @@ static void RunComeDown(Entity *e) {
 		// falling
 		case AS_COME_DOWN+2:
 		{
-			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0xC00));
+			e->y_speed += SPEED_8(0x40);
+			LIMIT_Y(SPEED_12(0xC00));
 			
 			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
 				e->y_speed = 0;
@@ -160,7 +158,7 @@ static void RunComeDown(Entity *e) {
 				
 				//SmokeXY(e->x, e->y + (40<<CSF), 16, 40, 0);
 				
-				if (player.grounded) player.y_speed = -SPEED(0x200);
+				if (player.grounded) player.y_speed = -SPEED_10(0x200);
 			}
 		}
 		break;
