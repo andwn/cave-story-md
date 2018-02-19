@@ -407,6 +407,10 @@ TILESET TS_HudMax		"sprite/hudmax.png" 	0
 # Breakable Block Tile
 TILESET TS_Break		"sprite/breakable.png" 	0
 
+# Wind/Current Tiles
+TILESET TS_WindH		"wind_h.png"			0
+TILESET TS_WindV		"wind_v.png"			0
+
 # Island Effect
 PALETTE PAL_XX			"xxBack.png"
 TILESET TS_XXBack		"xxBack.png" 			0

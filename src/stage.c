@@ -429,12 +429,36 @@ void stage_update() {
 		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
 	if(currentsCount) { // Waterway currents
-		currentsTimer++;
+		currentsTimer = (currentsTimer + 1) & 0x1F;
 		uint8_t t = currentsTimer & 3;
 		if(t < currentsCount) {
-			//VDP_setEnable(FALSE);
-			// I'll do this later
-			//VDP_setEnable(TRUE);
+			uint16_t from_index = 0;
+			uint8_t *from_ts = NULL;
+			uint16_t to_index = TILE_TSINDEX + ((currents[t].index & 15) << 1) + ((currents[t].index >> 4) << 6);
+			switch(currents[t].dir) {
+				case 0: // Left
+					from_ts = (uint8_t*) TS_WindH.tiles;
+					from_index += (currentsTimer >> 1) & ~1;
+				break;
+				case 1: // Up
+					from_ts = (uint8_t*) TS_WindV.tiles;
+					from_index += (currentsTimer >> 1) & ~1;
+				break;
+				case 2: // Right
+					from_ts = (uint8_t*) TS_WindH.tiles;
+					from_index += 14 - ((currentsTimer >> 1) & ~1);
+				break;
+				case 3: // Down
+					from_ts = (uint8_t*) TS_WindV.tiles;
+					from_index += 14 - ((currentsTimer >> 1) & ~1);
+				break;
+				default: return;
+			}
+			// Replace the tile in the tileset
+			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+			from_index += 16;
+			to_index += 32;
+			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
 }
@@ -442,20 +466,21 @@ void stage_update() {
 void stage_draw_screen() {
 	uint16_t maprow[64];
 	int16_t y = sub_to_tile(camera.y) - 16;
-	for(uint8_t i = 32; i--; ) {
+	for(uint16_t i = 32; i--; ) {
 		if(vblank) aftervsync(); // So we don't lag the music
 		vblank = 0;
 		
-		if(y >= 0 && y < stageHeight * 2) {
+		if(y >= 0 && y < stageHeight << 1) {
 			int16_t x = sub_to_tile(camera.x) - 32;
-			for(uint8_t j = 64; j--; ) {
-				if(x >= stageWidth * 2) break;
+			for(uint16_t j = 64; j--; ) {
+				if(x >= stageWidth << 1) break;
 				if(x >= 0) {
-					uint8_t b = stage_get_block(x/2, y/2);
-					uint16_t t = (b%16) * 2 + (b/16) * 64;
-					uint8_t ta = stage_get_block_type(x/2, y/2);
-					maprow[x%64] = TILE_ATTR_FULL(ta == 0x43 ? PAL1 : PAL2, (ta&0x40) > 0, 
-							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+					uint16_t b = stage_get_block(x>>1, y>>1);
+					uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+					uint16_t ta = stage_get_block_type(x>>1, y>>1);
+					uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+					maprow[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
 				}
 				x++;
 			}

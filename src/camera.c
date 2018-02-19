@@ -145,38 +145,40 @@ void camera_update() {
 		if(morphingColumn) {
 			int16_t x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
 			int16_t y = sub_to_tile(y_next) - 16 /*+ morphingRow*/;
-			if(x >= 0 && x < stageWidth * 2) {
-				for(uint8_t i = 32; i--; ) {
-					if(y >= stageHeight * 2) break;
+			if(x >= 0 && x < stageWidth << 1) {
+				for(uint16_t i = 32; i--; ) {
+					if(y >= stageHeight << 1) break;
 					if(y >= 0) {
 						// Fuck math tbh
-						uint8_t b = stage_get_block(x/2, y/2);
-						uint16_t t = (b%16) * 2 + (b/16) * 64;
-						uint8_t ta = stage_get_block_type(x/2, y/2);
-						mapcol[y%32] = TILE_ATTR_FULL(ta == 0x43 ? PAL1 : PAL2, (ta&0x40) > 0, 
-								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+						uint16_t b = stage_get_block(x>>1, y>>1);
+						uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+						uint16_t ta = stage_get_block_type(x>>1, y>>1);
+						uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+						mapcol[y&31] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
 					}
 					y++;
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t)mapcol, VDP_PLAN_A + (x%64)*2, 32, 128);
+				DMA_queueDma(DMA_VRAM, (uint32_t) mapcol, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
 			}
 		}
 		if(morphingRow) {
 			int16_t y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
 			int16_t x = sub_to_tile(x_next) - 32 /*+ morphingColumn*/;
-			if(y >= 0 && y < stageHeight * 2) {
-				for(uint8_t i = 64; i--; ) {
-					if(x >= stageWidth * 2) break;
+			if(y >= 0 && y < stageHeight << 1) {
+				for(uint16_t i = 64; i--; ) {
+					if(x >= stageWidth << 1) break;
 					if(x >= 0) {
-						uint8_t b = stage_get_block(x/2, y/2);
-						uint16_t t = (b%16) * 2 + (b/16) * 64;
-						uint8_t ta = stage_get_block_type(x/2, y/2);
-						maprow[x%64] = TILE_ATTR_FULL(ta == 0x43 ? PAL1 : PAL2, (ta&0x40) > 0, 
-								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+						uint16_t b = stage_get_block(x>>1, y>>1);
+						uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+						uint16_t ta = stage_get_block_type(x>>1, y>>1);
+						uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+						maprow[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
 					}
 					x++;
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + (y%32)*64*2, 64, 2);
+				DMA_queueDma(DMA_VRAM, (uint32_t) maprow, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
 			}
 		}
 	}
