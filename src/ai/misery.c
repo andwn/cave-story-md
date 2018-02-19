@@ -621,7 +621,7 @@ void ai_misery_ball(Entity *e) {
 			if (PLAYER_DIST_X(8<<CSF) && player.y > e->y) {
 				e->state = 10;
 				e->timer = 0;
-			} else if(++e->timer > TIME(750)) {
+			} else if(++e->timer > TIME_10(750)) {
 				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 				e->state = STATE_DELETE;
 			}
@@ -652,5 +652,5 @@ void ai_black_lightning(Entity *e) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	}
-	e->y += SPEED(0x1000);
+	e->y += SPEED_12(0xFFF);
 }

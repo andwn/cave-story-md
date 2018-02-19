@@ -412,7 +412,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->sprite.size = SPRITE_SIZE(3, 2);
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[w->sheet].index);
 		b->x = player.x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
-		b->y = player.y + pixel_to_sub(3);
+		b->y = player.y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? speed : -speed);
 		b->y_speed = 0;
 		b->hit_box = (bounding_box) { 5, 3, 5, 3 };
@@ -421,7 +421,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		case DOWN:
 		b->sprite.size = SPRITE_SIZE(2, 3);
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
-		b->x = player.x;
+		b->x = player.x - (4<<CSF);
 		b->y = player.y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
 		b->y_speed = ((b->dir&1) ? speed : -speed);
@@ -790,6 +790,7 @@ void bullet_missile_explode(Bullet *b) {
 	b->y_speed = 0;
 	b->ttl = 8;
 	b->damage = 1 + b->level;
+	if(b->type == WEAPON_SUPERMISSILE) b->damage += b->level;
 	b->hit_box = (bounding_box) { 12, 12, 12, 12 };
 	for(uint8_t i =  b->level; i < 4; i++) {
 		effect_create_smoke(sub_to_pixel(b->x) - 10 + (random() % 20), 
@@ -821,9 +822,11 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
 			slash->dir = LEFT;
+			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 4) {
 			slash = &playerBullet[2];
 			slash->dir = RIGHT;
+			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[3];
 			slash->dir = LEFT;
@@ -837,6 +840,7 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
 			slash->dir = b->dir;
+			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[2];
 			slash->dir = b->dir;

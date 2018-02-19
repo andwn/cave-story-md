@@ -141,7 +141,7 @@ void ai_undead_core(Entity *e) {
 			e->timer++;
 			
 			if (e->dir || e->frame > 0 || e->health < 200) {
-				if (e->timer > TIME(200)) {
+				if (e->timer > TIME_8(200)) {
 					e->timer2++;
 					sound_play(SND_CORE_THRUST, 5);
 					
@@ -176,15 +176,15 @@ void ai_undead_core(Entity *e) {
 			e->timer++;
 			RunHurtFlash(e->timer);
 			
-			if (e->timer < TIME(300)) {
-				if ((e->timer % TIME(120)) == 0) {
+			if (e->timer < TIME_10(300)) {
+				if ((e->timer % TIME_8(120)) == 0) {
 					SpawnPellet(1);
-				} else if ((e->timer % TIME(120)) == TIME(60)) {
+				} else if ((e->timer % TIME_8(120)) == TIME_8(60)) {
 					SpawnPellet(0);
 				}
 			}
 			
-			if (e->timer > TIME(400) || (e->savedhp - e->health) > 50) {
+			if (e->timer > TIME_10(400) || (e->savedhp - e->health) > 50) {
 				e->state = CR_FaceClosed;
 			}
 		}
@@ -221,7 +221,7 @@ void ai_undead_core(Entity *e) {
 				//CreateSpinner(x, y);
 			}
 			
-			if (e->timer > TIME(400) || (e->savedhp - e->health) > 150 || e->health < 200) {
+			if (e->timer > TIME_10(400) || (e->savedhp - e->health) > 150 || e->health < 200) {
 				e->state = CR_FaceClosed;
 			}
 		}
@@ -253,9 +253,9 @@ void ai_undead_core(Entity *e) {
 			e->timer++;
 			RunHurtFlash(e->timer);
 			
-			if ((e->timer % TIME(120)) == 0) {
+			if ((e->timer % TIME_8(120)) == 0) {
 				SpawnPellet(1);
-			} else if ((e->timer % TIME(120)) == TIME(60)) {
+			} else if ((e->timer % TIME_8(120)) == TIME_8(60)) {
 				SpawnPellet(0);
 			}
 		}
@@ -283,13 +283,13 @@ void ai_undead_core(Entity *e) {
 			e->jump_time++;
 			
 			// upper platforms
-			if (e->jump_time == TIME(75)) {
+			if (e->jump_time == TIME_8(75)) {
 				entity_create(block_to_sub(stageWidth) + 40,
 							 block_to_sub(1 + (random() & 3)), OBJ_UDMINI_PLATFORM, 0);
 			}
 			
 			// lower platforms
-			if (e->jump_time == TIME(150)) {
+			if (e->jump_time == TIME_8(150)) {
 				e->jump_time = 0;
 				entity_create(block_to_sub(stageWidth) + 40,
 							 block_to_sub(10 + (random() % 5)), OBJ_UDMINI_PLATFORM, 0);
@@ -300,8 +300,8 @@ void ai_undead_core(Entity *e) {
 		break;
 	}
 	
-	LIMIT_X(SPEED(0x80));
-	LIMIT_Y(SPEED(0x80));
+	LIMIT_X(SPEED_8(0x80));
+	LIMIT_Y(SPEED_8(0x80));
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -367,7 +367,7 @@ static uint8_t RunDefeated(Entity *e) {
 			e->x_speed = 0x40;
 			e->y_speed = 0x80;
 			
-			if (++e->timer > TIME(200)) {
+			if (++e->timer > TIME_8(200)) {
 				e->state = CR_Exploding;
 				e->x_speed = 0;
 				e->y_speed = 0;
@@ -390,7 +390,7 @@ static uint8_t RunDefeated(Entity *e) {
 			//SmokePuff(x, y);
 			//effect(x, y, EFFECT_BOOMFLASH);
 			
-			if (e->timer > TIME(100)) {
+			if (e->timer > TIME_8(100)) {
 				sound_play(SND_EXPLOSION1, 5);
 				SCREEN_FLASH(30);
 				// Delete this stuff now while the screen is white
@@ -409,7 +409,7 @@ static uint8_t RunDefeated(Entity *e) {
 		case CR_Exploding+1:
 		{
 			camera_shake(40);
-			if (++e->timer > TIME(5)) {
+			if (++e->timer > TIME_8(5)) {
 				e->state = STATE_DELETE;
 				bossEntity = NULL;
 				
@@ -459,10 +459,10 @@ void ai_undead_core_face(Entity *e) {
 		{
 			e->eflags |= NPC_SHOOTABLE;
 			
-			if (++e->timer > TIME(300))
+			if (++e->timer > TIME_10(300))
 				e->timer = 0;
 			
-			if (e->timer > TIME(250)) {
+			if (e->timer > TIME_8(250)) {
 				if ((e->timer & 31) == 1)
 					sound_play(SND_QUAKE, 5);
 				
@@ -472,10 +472,10 @@ void ai_undead_core_face(Entity *e) {
 				}
 			}
 			
-			if (e->timer == TIME(200))
+			if (e->timer == TIME_8(200))
 				sound_play(SND_CORE_CHARGE, 5);
 			
-			if (e->timer >= TIME(200)) { //&& (e->timer & 1))
+			if (e->timer >= TIME_8(200)) { //&& (e->timer & 1))
 				e->frame = 3;	// mouth lit
 			} else {
 				e->frame = 2;	// mouth norm
@@ -660,8 +660,8 @@ void ai_udmini_platform(Entity *e) {
 			e->state = 1;
 			e->y_mark = e->y;
 			
-			e->x_speed = -SPEED(0x200);
-			e->y_speed = SPEED(0x100);
+			e->x_speed = -SPEED_10(0x200);
+			e->y_speed = SPEED_10(0x100);
 			if (random() & 1) e->y_speed = -e->y_speed;
 		} /* fallthrough */
 		case 1:
@@ -670,7 +670,7 @@ void ai_udmini_platform(Entity *e) {
 			
 			if (e->y > e->y_mark) e->y_speed -= 0x10;
 			if (e->y < e->y_mark) e->y_speed += 0x10;
-			LIMIT_Y(SPEED(0x100));
+			LIMIT_Y(SPEED_8(0xFF));
 			
 			// when player jumps on them, they open up and start
 			// moving their Y to align with the core.
@@ -731,19 +731,19 @@ void ai_ud_pellet(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->x_speed = -SPEED(0x200);
+			e->x_speed = -SPEED_10(0x200);
 			e->state = 1;
 		} /* fallthrough */
 		case 1:		// falling
 		{
 			if (e->eflags & NPC_OPTION2) {
-				e->y_speed -= SPEED(0x20);
-				LIMIT_Y(SPEED(0x5ff));
+				e->y_speed -= SPEED_8(0x20);
+				LIMIT_Y(SPEED_12(0x5ff));
 				
 				if (blk(e->x, 0, e->y, -4) == 0x41) e->state = 2;
 			} else {
-				e->y_speed += SPEED(0x20);
-				LIMIT_Y(SPEED(0x5ff));
+				e->y_speed += SPEED_8(0x20);
+				LIMIT_Y(SPEED_12(0x5ff));
 				
 				if (blk(e->x, 0, e->y, 4) == 0x41) e->state = 2;
 			}
@@ -755,7 +755,7 @@ void ai_ud_pellet(Entity *e) {
 		case 2:		// hit ground/ceiling
 		{
 			sound_play(SND_MISSILE_HIT, 5);
-			e->x_speed = (e->x > player.x) ? -SPEED(0x400) : SPEED(0x400);
+			e->x_speed = (e->x > player.x) ? -SPEED_10(0x3FF) : SPEED_10(0x3FF);
 			e->y_speed = 0;
 			
 			e->state = 3;
@@ -856,7 +856,7 @@ void ai_ud_spinner_trail(Entity *e)
 }
 */
 void ai_ud_blast(Entity *e) {
-	e->x += -SPEED(0x1000);
+	e->x += -SPEED_12(0xFFF);
 	//e->frame ^= 1;
 
 	//SmokePuff(e->CenterX() + (random(0, 16) << CSF),

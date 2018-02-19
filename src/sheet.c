@@ -67,7 +67,7 @@ void sheets_load_weapon(Weapon *w) {
 		case WEAPON_NEMESIS:
 		SHEET_ADD(SHEET_NEMES, w->level == 1 ? &SPR_NemB1h 
 							 : w->level == 2 ? &SPR_NemB2h 
-							 : &SPR_NemB3h, 2,3,2, 0,0, 1,0);
+							 : &SPR_NemB3h, 2,3,2, 0,0, 0,1);
 		SHEET_LOAD(w->level == 1 ? &SPR_NemB1v 
 				 : w->level == 2 ? &SPR_NemB2v 
 				 : &SPR_NemB3v, 2,6, TILE_NEMINDEX, 1);
@@ -128,7 +128,7 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_NEMESIS:
 		SHEET_MOD(SHEET_NEMES, w->level == 1 ? &SPR_NemB1h 
 							 : w->level == 2 ? &SPR_NemB2h 
-							 : &SPR_NemB3h, 2,3,2, 0,0, 1,0);
+							 : &SPR_NemB3h, 2,3,2, 0,0, 0,1);
 		SHEET_LOAD(w->level == 1 ? &SPR_NemB1v 
 				 : w->level == 2 ? &SPR_NemB2v 
 				 : &SPR_NemB3v, 2,6, TILE_NEMINDEX, 1);
