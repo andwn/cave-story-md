@@ -142,3 +142,7 @@ Bullet *bullet_colliding(Entity *e);
 void entities_draw();
 
 void generic_npc_states(Entity *e);
+
+uint16_t entities_count_active();
+uint16_t entities_count_inactive();
+uint16_t entities_count();

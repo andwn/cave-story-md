@@ -123,6 +123,8 @@ uint16_t DMA_queueDma(uint8_t location, uint32_t from, uint16_t to, uint16_t len
     uint32_t banklimitw;
     DMAOpInfo *info;
 
+    PF_TICK();
+
     // queue is full --> error
     if (queueIndex >= queueSize)
     {

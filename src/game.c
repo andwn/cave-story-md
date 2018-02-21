@@ -58,8 +58,12 @@ void game_main(uint8_t load) {
 		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 	}
 	paused = FALSE;
+
+	PF_INIT();
 	
 	while(TRUE) {
+		PF_START_FRAME();
+
 		input_update();
 		if(paused) {
 			paused = update_pause();
@@ -148,8 +152,13 @@ void game_main(uint8_t load) {
 		}
 		system_update();
 		ready = TRUE;
+
+		PF_END_FRAME();
+
 		vsync();
 		aftervsync();
+		
+		PF_DRAW();
 	}
 	return;
 }

@@ -12,6 +12,46 @@
 #define printf(...) /**/
 #endif
 
+//#define PROFILE
+#ifdef PROFILE
+char pf_text[38];
+uint16_t pf_count[32];
+uint16_t pf_frame;
+uint16_t pf_avg;
+uint16_t pf_peak;
+#define PF_INIT() ({ \
+    pf_frame = 0; \
+})
+#define PF_START_FRAME() ({ \
+    pf_count[pf_frame] = 0; \
+})
+#define PF_TICK() ({ \
+    pf_count[pf_frame]++; \
+})
+#define PF_END_FRAME() ({ \
+    if(pf_count[pf_frame] > pf_peak) pf_peak = pf_count[pf_frame]; \
+    if(++pf_frame == 32) { \
+        pf_frame = pf_avg = 0; \
+        for(uint16_t i = 0; i < 32; i++) pf_avg += pf_count[i]; \
+        pf_avg >>= 5; \
+        sprintf(pf_text, "OBJ:%03hu+%03hu AVG:%04hu PEAK:%04hu", \
+                entities_count_active(), entities_count_inactive(), pf_avg, pf_peak); \
+        pf_peak = 0; \
+    } \
+})
+#define PF_DRAW() ({ \
+    if(pf_frame == 0) { \
+        VDP_drawTextWindow(pf_text, 4, 0); \
+    } \
+})
+#else
+#define PF_INIT() /**/
+#define PF_START_FRAME() /**/
+#define PF_TICK() /**/
+#define PF_END_FRAME() /**/
+#define PF_DRAW() /**/
+#endif
+
 // Screen size
 #define SCREEN_WIDTH 320
 #define SCREEN_HALF_W 160

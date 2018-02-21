@@ -11,6 +11,9 @@ const uint32_t TILE_BLANK[8] = {0,0,0,0,0,0,0,0};
 
 // Window functions
 void VDP_setWindowPos(uint8_t x, uint8_t y) {
+	#ifdef PROFILE
+	if(y == 0) y = 1;
+	#endif
 	VDP_setReg(0x11, x);
 	VDP_setReg(0x12, y);
 }

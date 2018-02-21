@@ -143,7 +143,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 				if(--sprTime == 0) {
 					sprTime = ANIM_SPEED;
 					if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-					sprite_index((*sprCursor), TILE_SHEETINDEX+sprFrame*4);
+					sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
 				}
 				sprite_add((*sprCursor));
 				ready = TRUE;
@@ -218,7 +218,7 @@ void config_main() {
 	uint8_t maxCursor = set_page(page);
 	
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX),
+		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
@@ -228,7 +228,7 @@ void config_main() {
 		input_update();
 		if(waitButton) {
 			// Show looking up frame
-			sprite_index(sprCursor, TILE_SHEETINDEX+16);
+			sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
 		} else {
 			if(joy_pressed(BUTTON_UP)) {
 				do {
@@ -261,7 +261,7 @@ void config_main() {
 			if(--sprTime == 0) {
 				sprTime = ANIM_SPEED;
 				if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				sprite_index(sprCursor, TILE_SHEETINDEX+sprFrame*4);
+				sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 			}
 		}
 		
