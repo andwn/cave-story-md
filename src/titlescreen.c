@@ -50,7 +50,8 @@ uint8_t titlescreen_main() {
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
 	VDP_setEnable(FALSE);
-	
+	VDP_clearPlan(PLAN_A, TRUE);
+	VDP_clearPlan(PLAN_B, TRUE);
 	sprites_clear();
 	// Check save data, only enable continue if save data exists
 	uint8_t sram_state = system_checkdata();
@@ -92,7 +93,7 @@ uint8_t titlescreen_main() {
 		VDP_drawText(vstr, 4, 26);
 	}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.5.0a 2018.02", 4, 26);
+	//VDP_drawText("Mega Drive Version 0.5.0b 2018.02", 4, 26);
 	VDP_loadTileSet(cfg_language ? &TS_J_Title : &TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
@@ -110,6 +111,7 @@ uint8_t titlescreen_main() {
 	VDP_setEnable(TRUE);
 
 	song_play(tsong);
+	oldstate = ~0;
 	while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
 		input_update();
 		for(uint8_t i = 0; i < 2; i++) {

@@ -68,8 +68,9 @@ int main() {
 	puts("Hi June");
     sound_init();
 	input_init();
+
+	splash_main();
     while(TRUE) {
-		splash_main();
 		uint8_t select = titlescreen_main();
 		if(select == 0) {
 			select = saveselect_main();
@@ -77,9 +78,9 @@ int main() {
 			game_main(select);
 			credits_main();
 		} else if(select == 2) {
-			soundtest_main(); continue;
+			soundtest_main();
 		} else if(select == 3) {
-			config_main(); continue;
+			config_main();
 		} else {
 			game_main(select);
 			credits_main();

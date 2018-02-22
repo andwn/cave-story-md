@@ -63,7 +63,7 @@ void soundtest_main() {
 	VDP_setEnable(TRUE);
 
 	song_stop();
-	
+	oldstate = ~0;
     while(TRUE) {
 		input_update();
 		// Switch between tracks
@@ -103,9 +103,9 @@ void soundtest_main() {
 		//	}
 		}
 		if(joy_pressed(btn[cfg_btn_pause])) {
-			song_stop();
-			oldstate |= btn[cfg_btn_pause];
-			break;
+			//song_stop();
+			//oldstate |= btn[cfg_btn_pause];
+			return;
 		}
 		if(status != oldstatus) {
 			draw_status(status);
@@ -115,5 +115,5 @@ void soundtest_main() {
 		vsync();
 		aftervsync();
     }
-    SYS_hardReset(); // eh
+    //SYS_hardReset(); // eh
 }

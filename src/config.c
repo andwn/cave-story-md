@@ -37,7 +37,7 @@
 
 enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA };
 
-enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION };
+enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN };
 
 // Forward & array for actions, implementations farther down
 void act_default(uint8_t page);
@@ -68,7 +68,7 @@ const MenuItem menu[3][12] = {
 		
 		{ 20, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_ACTION, "Return to Title", (uint8_t*)2 },
+		{ 24, MI_RETURN, "Return to Title", NULL },
 	},{
 		{ 4,  MI_LANG,   "Language", &cfg_language },
 		
@@ -81,7 +81,7 @@ const MenuItem menu[3][12] = {
 		
 		{ 20, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_ACTION, "Return to Title", (uint8_t*)2 },
+		{ 24, MI_RETURN, "Return to Title", NULL },
 	},{
 		{ 4,  MI_ACTION, "Reset Nikumaru Counter", (uint8_t*)3 },
 		{ 6,  MI_ACTION, "Format SRAM (!)", (uint8_t*)4 },
@@ -223,7 +223,7 @@ void config_main() {
 	};
 	
 	set_page(page);
-	
+	oldstate = ~0;
 	while(TRUE) {
 		input_update();
 		if(waitButton) {
@@ -255,7 +255,10 @@ void config_main() {
 				set_page(page);
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(btn[cfg_btn_jump])) {
+				if(menu[page][cursor].type == MI_RETURN) return;
 				press_menuitem(&menu[page][cursor], page, &sprCursor);
+			} else if(joy_pressed(btn[cfg_btn_shoot])) {
+				return;
 			}
 			// Animate quote sprite
 			if(--sprTime == 0) {
@@ -273,7 +276,7 @@ void config_main() {
 		vsync(); aftervsync();
 	}
 	
-	SYS_hardReset(); // eh
+	//SYS_hardReset(); // eh
 }
 
 void act_default(uint8_t page) {

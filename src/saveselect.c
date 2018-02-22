@@ -192,8 +192,12 @@ uint8_t saveselect_main() {
 			}
 			draw_cursor_mode(cursorMode);
 		} else if(joy_pressed(BUTTON_B)) { // Cancel copy/delete
-			cursorMode = CM_LOAD;
-			draw_cursor_mode(cursorMode);
+			if(cursorMode != CM_LOAD) {
+				cursorMode = CM_LOAD;
+				draw_cursor_mode(cursorMode);
+			} else {
+				return 0xFF;
+			}
 		}
 		if(joy_pressed(BUTTON_UP) || joy_pressed(BUTTON_LEFT)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
