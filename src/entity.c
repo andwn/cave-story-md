@@ -197,7 +197,7 @@ void entities_update() {
 			}
 		}
 		// Hard Solids
-		uint8_t collided = FALSE;
+		uint16_t collided = FALSE;
 		if(flags & NPC_SPECIALSOLID) {
 			// Apply x_next/y_next so player is completely outside us
 			bounding_box collision = entity_react_to_collision(&player, e);
@@ -320,6 +320,7 @@ void entities_update() {
 					}
 				}
 			}
+			sprite_addq(e->sprite, e->sprite_count);
 		}
 		if(moveMeToFront) {
 			moveMeToFront = FALSE;

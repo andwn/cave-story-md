@@ -109,8 +109,7 @@ void ai_batHang(Entity *e) {
 }
 
 void ai_batCircle(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
+	//PF_BGCOLOR(0x000);
 	switch(e->state) {
 		case 0:
 		{
@@ -119,45 +118,40 @@ void ai_batCircle(Entity *e) {
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
 			e->y_mark = e->y + (e->x_speed << 3);
-			e->state = 1;
+			e->state++;
 		}
 		/* fallthrough */
 		case 1:
 			// circle around our target point
-			if(++e->animtime >= 4) {
-				e->animtime = 0;
+			if((++e->animtime & 3) == 0) {
+				FACE_PLAYER(e);
+				LIMIT_X(SPEED_10(0x1E0));
+				LIMIT_Y(SPEED_10(0x1E0));
 				if(++e->frame > 2) e->frame = 0;
 			}
-			FACE_PLAYER(e);
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
-			LIMIT_X(SPEED_10(0x200));
-			LIMIT_Y(SPEED_10(0x200));
 			if(!e->timer) {
 				if(PLAYER_DIST_X(0x1000) && PLAYER_DIST_Y2(0, 64<<CSF)) {
 					// dive attack
-					e->x_speed /= 2;
+					e->x_speed >>= 1;
 					e->y_speed = 0;
-					e->state = 2;
+					e->state++;
 					e->frame = 5;
 				}
-			} else {
-				e->timer--;
-			}
+			} else e->timer--;
 		break;
-		
 		case 2:	// dive attack
-			e->y_speed += SPEED_8(0x40);
-			LIMIT_Y(SPEED_12(0x5ff));
-			if(blk(e->x_next, 0, e->y_next, 8) == 0x41) {
+			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
+			if(blk(e->x, 0, e->y, 8) == 0x41) {
 				e->y_speed = 0;
-				e->x_speed *= 2;
+				e->x_speed <<= 1;
 				e->timer = TIME_8(100);		// delay before can dive again
 				e->state = 1;
 				e->frame = 0;
 			}
 		break;
 	}
-	e->x = e->x_next;
-	e->y = e->y_next;
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }

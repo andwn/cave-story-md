@@ -46,30 +46,20 @@ void onspawn_interactive(Entity *e) {
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
 void onspawn_spike(Entity *e) {
-	if(stageID == 0x2D) {
+	if(stageID == STAGE_LABYRINTH_M) {
 		// Disable sprite in Labyrinth M
 		// The map has a brown version overlapping us so it's pointless
 		e->hidden = TRUE;
 		return;
 	}
-	// Shrink hitbox slightly -- test this in First Cave
-	// Walk left over the first spike and it should not kill you
-	//e->hit_box.left = 2;
-	//e->hit_box.top = 2;
-	//e->hit_box.right = 2;
-	//e->hit_box.bottom = 2;
 	
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
-		//e->hit_box.top -= 3;
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
-		//e->hit_box.bottom -= 3;
 		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
-		//e->hit_box.left -= 3;
 		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
-		//e->hit_box.right -= 3;
 		e->frame = 1;
 		e->dir = 1;
 	}
@@ -77,7 +67,7 @@ void onspawn_spike(Entity *e) {
 
 // The big spike, collision box is too high
 void onspawn_trap(Entity *e) {
-	e->hit_box.top -= 7;
+	e->hit_box.top -= 2;
 }
 
 void ondeath_event(Entity *e) {
@@ -215,9 +205,8 @@ void ai_trigger_special(Entity *e) {
 
 void ai_genericproj(Entity *e) {
 	e->nflags ^= NPC_SHOOTABLE;
-	ANIMATE(e, 4, 0,1);
-	if(++e->timer > TIME(250) ||
-			stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x41) {
+	if((++e->animtime & 3) == 0) e->frame ^= 1;
+	if(++e->timer > TIME_8(250) || blk(e->x, 0, e->y, 0) == 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	} else {
@@ -354,7 +343,7 @@ void ai_teleLight(Entity *e) {
 
 void ai_player(Entity *e) {
 	uint8_t collide = TRUE;
-	if(!e->grounded) e->y_speed += SPEED(0x40);
+	if(!e->grounded) e->y_speed += SPEED_8(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -375,8 +364,8 @@ void ai_player(Entity *e) {
 		{
 			sound_play(SND_LITTLE_CRASH, 5);
 			for(uint8_t i = 0; i < 4; i++) {
-				effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() % 32), 
-					sub_to_pixel(e->y) - 16 + (random() % 32));
+				effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
+					sub_to_pixel(e->y) - 16 + (random() & 31));
 			}
 			e->state++;
 		}
@@ -399,14 +388,14 @@ void ai_player(Entity *e) {
 		case 21:
 		{
 			e->hidden ^= 1;
-			if(++e->timer > TIME(50)) {
+			if(++e->timer > TIME_8(50)) {
 				e->state = STATE_DELETE;
 			}
 		}
 		break;
 		case 50:	// walking
 		{
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED_10(0x200));
 			e->frame = 1;
 		}
 		break;
@@ -431,7 +420,7 @@ void ai_player(Entity *e) {
 		{
 			collide = FALSE;
 			e->grounded = FALSE;
-			if(++e->timer > TIME(25)) e->state = 103;
+			if(++e->timer > TIME_8(25)) e->state = 103;
 		}
 		break;
 		case 103:
@@ -449,16 +438,16 @@ void ai_player(Entity *e) {
 }
 
 void ai_computer(Entity *e) {
-	ANIMATE(e, 5, 1,2);
+	if((++e->animtime & 3) == 0) if(++e->frame >= 2) e->frame = 1;
 }
 
 void ai_savepoint(Entity *e) {
-	ANIMATE(e, 4, 0,1,2,3,4,5,6,7);
+	if((++e->animtime & 3) == 0) if(++e->frame >= 8) e->frame = 0;
 	ai_grav(e);
 }
 
 void ai_refill(Entity *e) {
-	ANIMATE(e, 2, 0,1);
+	e->frame = (++e->animtime & 2) >> 1;
 	ai_grav(e);
 }
 
@@ -470,7 +459,7 @@ void ai_sprinkler(Entity *e) {
 	if (++e->timer == 7) { 
 		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
 		drop->x_speed = -0x3FF + (random() & 0x7FF);
-		drop->y_speed = -0x7FF + (random() & 0x3FF);
+		drop->y_speed = -0x6FF + (random() & 0x3FF);
 		e->timer = 0;
 	}
 }
@@ -538,7 +527,7 @@ void ai_gunsmith(Entity *e) {
 	if (e->eflags & NPC_OPTION2) {
 		// Animate Zzz effect above head
 		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8);
-		if(++e->timer > TIME(100)) e->timer = 0;
+		if(++e->timer > TIME_8(100)) e->timer = 0;
 	} else {
 		e->frame = 1;
 		RANDBLINK(e, 2, 200);

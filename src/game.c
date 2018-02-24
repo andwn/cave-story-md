@@ -63,6 +63,10 @@ void game_main(uint8_t load) {
 	
 	while(TRUE) {
 		PF_START_FRAME();
+		PF_BGCOLOR(0x000);
+		#ifdef PROFILE_BG
+		VDP_setBackgroundColor(0);
+		#endif
 
 		input_update();
 		if(paused) {
@@ -109,19 +113,11 @@ void game_main(uint8_t load) {
 			} else {
 				// HUD on top
 				hud_update();
-				// Handle controller locking
-				uint16_t lockstate = joystate, oldlockstate = oldstate;
-				if(controlsLocked) joystate = oldstate = 0;
-				// Don't update this stuff if a script is using <PRI
+				// Boss health, camera
 				if(!gameFrozen) {
 					if(showingBossHealth) tsc_update_boss_health();
 					camera_update();
-					player_update();
-					entities_update();
 				}
-				// Restore controller locking if it was locked
-				joystate = lockstate;
-				oldstate = oldlockstate;
 				// Run the next set of commands in a script if it is running
 				uint8_t rtn = tsc_update();
 				// Nonzero return values exit the game, or switch to the ending sequence
@@ -143,21 +139,36 @@ void game_main(uint8_t load) {
 						break;
 					}
 				}
-				window_update();
-				// Get the sprites ready
+				// Handle controller locking
+				uint16_t lockstate = joystate, oldlockstate = oldstate;
+				if(controlsLocked) joystate = oldstate = 0;
+				// Don't update this stuff if a script is using <PRI
 				effects_update();
-				player_draw();
-				entities_draw();
+				if(!gameFrozen) {
+					player_update();
+					entities_update();
+				} else {
+					player_draw();
+					entities_draw();
+				}
+				// Restore controller locking if it was locked
+				joystate = lockstate;
+				oldstate = oldlockstate;
+				
+				window_update();
 			}
 		}
+		PF_BGCOLOR(0xEEE);
 		system_update();
 		ready = TRUE;
 
 		PF_END_FRAME();
+		PF_BGCOLOR(0x000);
 
 		vsync();
+		PF_BGCOLOR(0x00E);
 		aftervsync();
-		
+
 		PF_DRAW();
 	}
 	return;

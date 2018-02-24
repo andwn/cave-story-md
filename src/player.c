@@ -391,7 +391,7 @@ void player_update() {
 		playerBoosterFuel = TIME(51);
 		player_update_interaction();
 	}
-	//player_draw();
+	player_draw();
 	if(mapNameTTL > 0) {
 		mapNameTTL--;
 		sprite_addq(mapNameSprite, mapNameSpriteNum);

@@ -140,7 +140,7 @@ void camera_update() {
 	morphingRow = sub_to_tile(y_next) - sub_to_tile(camera.y);
 	if(morphingColumn | morphingRow) {
 		// Reactivate any entities that are approaching the screen
-		entities_update_inactive();
+		//entities_update_inactive();
 		// Queue row and/or column mapping
 		if(morphingColumn) {
 			int16_t x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
@@ -181,6 +181,10 @@ void camera_update() {
 				DMA_queueDma(DMA_VRAM, (uint32_t) maprow, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
 			}
 		}
+	} else {
+		uint16_t px = x_next >> CSF, cx = camera.x >> CSF;
+		uint16_t py = y_next >> CSF, cy = camera.y >> CSF;
+		if((px != cx && (px & 15) == 4) || (py != cy && (py & 15) == 4)) entities_update_inactive();
 	}
 	// Apply camera position
 	camera.x = x_next;

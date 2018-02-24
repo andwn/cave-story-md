@@ -52,6 +52,13 @@ uint16_t pf_peak;
 #define PF_DRAW() /**/
 #endif
 
+//#define PROFILE_BG
+#ifdef PROFILE_BG
+#define PF_BGCOLOR(c) ({ VDP_setPaletteColor(0, c); })
+#else
+#define PF_BGCOLOR(c) /**/
+#endif
+
 // Screen size
 #define SCREEN_WIDTH 320
 #define SCREEN_HALF_W 160
