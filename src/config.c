@@ -37,7 +37,7 @@
 
 enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA };
 
-enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN };
+enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
 
 // Forward & array for actions, implementations farther down
 void act_default(uint8_t page);
@@ -66,9 +66,10 @@ const MenuItem menu[3][12] = {
 		{ 14, MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
 		{ 16, MI_INPUT, "Pause Menu", &cfg_btn_pause },
 		
-		{ 20, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_RETURN, "Return to Title", NULL },
+		{ 19, MI_MODE, "Force Button Mode", &cfg_force_btn },
+
+		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		//{ 24, MI_ACTION, "Apply", (uint8_t*)1 },
 	},{
 		{ 4,  MI_LANG,   "Language", &cfg_language },
 		
@@ -79,9 +80,8 @@ const MenuItem menu[3][12] = {
 		{ 15, MI_LABEL,  "Reset Invincibility", NULL },
 		{ 16, MI_TOGGLE, "Frames on Pause", &cfg_iframebug },
 		
-		{ 20, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_RETURN, "Return to Title", NULL },
+		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		//{ 24, MI_ACTION, "Apply", (uint8_t*)1 },
 	},{
 		{ 4,  MI_ACTION, "Reset Nikumaru Counter", (uint8_t*)3 },
 		{ 6,  MI_ACTION, "Format SRAM (!)", (uint8_t*)4 },
@@ -90,6 +90,7 @@ const MenuItem menu[3][12] = {
 };
 
 const char boolstr[2][4] = { "OFF", "ON " };
+const char modestr[3][6] = { "OFF ", "3BTN", "6BTN" };
 
 void draw_menuitem(const MenuItem *item) {
 	VDP_clearText(2, item->y, 36);
@@ -113,6 +114,9 @@ void draw_menuitem(const MenuItem *item) {
 		VDP_drawText(boolstr[*item->valptr], 30, item->y);
 		break;
 		case MI_ACTION: break;
+		case MI_MODE:
+		VDP_drawText(modestr[*item->valptr], 30, item->y);
+		break;
 	}
 }
 
@@ -165,6 +169,12 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 		case MI_ACTION: {
 			sound_play(SND_MENU_SELECT, 5);
 			action[(uint32_t)item->valptr](page);
+		}
+		break;
+		case MI_MODE: {
+			sound_play(SND_MENU_SELECT, 5);
+			(*item->valptr) += 1;
+			if((*item->valptr) > 2) (*item->valptr) = 0;
 		}
 	}
 	draw_menuitem(item);
@@ -288,6 +298,7 @@ void act_default(uint8_t page) {
 		cfg_btn_lswap = 9;
 		cfg_btn_map = 10;
 		cfg_btn_pause = 7;
+		cfg_force_btn = 0;
 	} else if(page == 1) {
 		cfg_language = 0;
 		cfg_ffwd = TRUE;

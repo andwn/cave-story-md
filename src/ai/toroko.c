@@ -21,17 +21,17 @@ void ai_torokoAtk(Entity *e) {
 			e->attack = 0; // Don't hurt the player anymore
 			e->eflags |= NPC_INTERACTIVE; // Enable interaction
 			e->state = 10; // Change animation to falling on ground
-			e->y_speed = -SPEED(0x200);
+			e->y_speed = -SPEED_10(0x200);
 			e->x_speed >>= 1;
 			e->grounded = FALSE;
 			e->frame = 5;
 			b->ttl = 0;
 		}
 		// Switch direction in specific range
-		if((e->x_speed > 0 && e->x > block_to_sub(15)) || 
-			(e->x_speed < 0 && e->x < block_to_sub(11))) {
+		if((e->x_speed > 0 && e->x > block_to_sub(14)) || 
+			(e->x_speed < 0 && e->x < block_to_sub(12))) {
 			e->dir ^= 1;
-			e->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
+			e->x_speed = e->dir ? SPEED_10(0x3FF) : -SPEED_10(0x3FF);
 		}
 		break;
 	case 10: // Falling down
@@ -48,7 +48,7 @@ void ai_torokoAtk(Entity *e) {
 		e->dir = 0;
 		e->frame = 0;
 	}
-	if(!e->grounded) e->y_speed += SPEED(0x20);
+	if(!e->grounded) e->y_speed += SPEED_8(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);

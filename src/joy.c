@@ -98,19 +98,6 @@ static uint16_t TH_CONTROL_PHASE(volatile uint8_t *pb) {
     return val;
 }
 
-static uint16_t read3Btn(uint16_t port) {
-    volatile uint8_t *pb;
-    uint16_t val;
-
-    pb = (volatile uint8_t *)0xa10003 + port*2;
-
-    val = TH_CONTROL_PHASE(pb);                   /* - 0 s a 0 0 d u - 1 c b r l d u */
-    val = ((val & 0x3000) >> 6) | (val & 0x003F); /* 0 0 0 0 0 0 0 0 s a c b r l d u */
-    val ^= 0x00FF;                                /* 0 0 0 0 0 0 0 0 S A C B R L D U */
-
-    return val | (JOY_TYPE_PAD3 << JOY_TYPE_SHIFT);
-}
-
 static uint16_t read6Btn() {
     uint16_t val, v1, v2;
     volatile uint8_t *pb = (volatile uint8_t *)0xa10003;
@@ -131,6 +118,7 @@ static uint16_t read6Btn() {
 
 void JOY_update() {
 	uint16_t val = read6Btn();
-	joyType[JOY_1] = val >> JOY_TYPE_SHIFT;
+	joyType[JOY_1] = cfg_force_btn == 0 ? (val >> JOY_TYPE_SHIFT) :
+                     cfg_force_btn == 1 ? JOY_TYPE_PAD3 : JOY_TYPE_PAD6;
 	joyState[JOY_1] = val & BUTTON_ALL;
 }

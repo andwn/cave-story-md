@@ -50,6 +50,8 @@ extern uint8_t cfg_updoor;
 extern uint8_t cfg_hellquake;
 extern uint8_t cfg_iframebug;
 
+extern uint8_t cfg_force_btn;
+
 extern uint8_t sram_file;
 
 // Global flags are persisted to save data

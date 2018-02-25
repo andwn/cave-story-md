@@ -78,8 +78,8 @@ void game_main(uint8_t load) {
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
-			} else if(joy_pressed(btn[cfg_btn_map]) && !tscState 
-					&& (playerEquipment & EQUIP_MAPSYSTEM)) {
+			} else if(joy_pressed(btn[cfg_btn_map]) && JOY_getJoypadType(JOY_1) == JOY_TYPE_PAD6 
+					&& !tscState && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				VDP_setEnable(FALSE);
 				if(stageBackgroundType == 4) {
