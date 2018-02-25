@@ -182,9 +182,9 @@ void camera_update() {
 			}
 		}
 	} else {
-		uint16_t px = x_next >> CSF, cx = camera.x >> CSF;
-		uint16_t py = y_next >> CSF, cy = camera.y >> CSF;
-		if((px != cx && (px & 15) == 4) || (py != cy && (py & 15) == 4)) entities_update_inactive();
+		uint16_t col = sub_to_block(x_next + 0x800) - sub_to_block(camera.x + 0x800);
+		uint16_t row = sub_to_block(y_next + 0x800) - sub_to_block(camera.y + 0x800);
+		if(col | row) entities_update_inactive();
 	}
 	// Apply camera position
 	camera.x = x_next;

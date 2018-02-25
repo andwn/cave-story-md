@@ -838,7 +838,7 @@ void player_draw() {
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(playerSprite);
-		if(playerWeapon[currentWeapon].type > 0) {
+		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
 			uint8_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
 				vert = 1;

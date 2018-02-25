@@ -1,8 +1,5 @@
 #include "ai_common.h"
 
-//static int platform_speed;
-//static int rotators_left;
-
 #define platform_speed	curly_target_x
 #define rotators_left	curly_target_y
 
@@ -149,15 +146,11 @@ static void RunComeDown(Entity *e) {
 				e->y_speed = 0;
 				e->timer = 0;
 				e->state++;
+				// player smush damage
+				if(PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) player_inflict_damage(16);
 				
 				camera_shake(30);
-				
-				// player smush damage
-				// (he could only get that low if he had been pushed into the floor)
-				if (player.y > (e->y + (48<<CSF))) player_inflict_damage(16);
-				
-				//SmokeXY(e->x, e->y + (40<<CSF), 16, 40, 0);
-				
+				SMOKE_AREA((e->x >> CSF) - 40, (e->y >> CSF) + 40, 80, 16, 6);
 				if (player.grounded) player.y_speed = -SPEED_10(0x200);
 			}
 		}

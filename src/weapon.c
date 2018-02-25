@@ -749,7 +749,7 @@ void bullet_update_nemesis(Bullet *b) {
 	b->ttl--;
 	
 	uint16_t t = b->ttl & 3;
-	uint16_t i = (b->dir & 2) ? TILE_NEMINDEX : sheets[b->sheet].index;
+	uint16_t i = (b->dir > 1) ? TILE_NEMINDEX : sheets[b->sheet].index;
 	switch(t) {
 		case 0: sprite_index(b->sprite, i); break;
 		case 2: sprite_index(b->sprite, i+6); break;
