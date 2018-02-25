@@ -163,7 +163,7 @@ uint16_t entities_count() {
 	return entities_count_active() + entities_count_inactive();
 }
 
-void entities_update() {
+void entities_update(uint8_t draw) {
 	Entity *e = entityList;
 	while(e) {
 		if(!e->alwaysActive && !entity_on_screen(e)) {
@@ -275,7 +275,7 @@ void entities_update() {
 			}
 		}
 		// Handle sprite movement/changes
-		if(!e->hidden) {
+		if(draw && !e->hidden) {
 			if(e->sheet != NOSHEET) {
 				sprite_pos(e->sprite[0],
 						(e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff,
@@ -286,16 +286,14 @@ void entities_update() {
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
 				if(e->frame != e->oframe) {
 					e->oframe = e->frame;
-					
 					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
-					
 				}
 				// We can't just flip the vdpsprites, gotta draw them in backwards order too
 				if(e->dir) {
 					int16_t bx = (e->x>>CSF) - camera.x_shifted + e->display_box.left + e->xoff, 
 							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = min(f->w, 32);
-					for(uint8_t i = 0; i < e->sprite_count; i++) {
+					for(uint16_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx - x, by);
 						sprite_hflip(e->sprite[i], 1);
 						if(x >= f->w) {
@@ -309,7 +307,7 @@ void entities_update() {
 					int16_t bx = (e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff, 
 							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = 0;
-					for(uint8_t i = 0; i < e->sprite_count; i++) {
+					for(uint16_t i = 0; i < e->sprite_count; i++) {
 						sprite_pos(e->sprite[i], bx + x, by);
 						sprite_hflip(e->sprite[i], 0);
 						x += 32;
@@ -982,7 +980,7 @@ void generic_npc_states(Entity *e) {
 		case 4:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED_10(0x200));
 		}
 		break;
 		case 5:		// face away

@@ -470,8 +470,7 @@ void ai_water_droplet(Entity *e) {
 	} else {
 		e->x_speed += 4;
 	}
-	e->y_speed += 0x20;
-	if (e->y_speed > 0x5ff) e->y_speed = 0x5ff;
+	if(e->y_speed < 0x5E0) e->y_speed += 0x20;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	e->hidden ^= 1;

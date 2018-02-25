@@ -1,11 +1,12 @@
 #include <math.h>
 #include <stdio.h>
 
-// Rather than truncating the values we want them rounded
-// otherwise low values (like less than 30) will be really off
-
 #define TABLE_SIZE	0x100
 #define COLUMNS		8
+
+int truncate(double x) {
+	return (x - (int)x) < 0.75 ? (int)x : (int)(x + 1);
+}
 
 int main() {
 	printf("#include \"stdint.h\"\n\n");
@@ -14,7 +15,7 @@ int main() {
 		printf("\t");
 		for(int j = i; j < i + 8; j++) {
 			double time = ((double)j) * 6.0 / 5.0;
-			printf("0x%04x, ", (int)(round(time)));
+			printf("0x%04x, ", truncate(time));
 		}
 		printf("\n");
 	}
@@ -24,7 +25,7 @@ int main() {
 		printf("\t");
 		for(int j = i; j < i + 8; j++) {
 			double speed = ((double)j) * 5.0 / 6.0;
-			printf("0x%04x, ", (int)(round(speed)));
+			printf("0x%04x, ", truncate(speed));
 		}
 		printf("\n");
 	}

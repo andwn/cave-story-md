@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "MegaDrive",
+            "includePath": [
+                "${workspaceRoot}/inc",
+				"${workspaceRoot}/res"
+            ],
+            "defines": [],
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                	"${workspaceRoot}/inc",
+					"${workspaceRoot}/res",
+					"${workspaceRoot}/src/*"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+		}
+    ],
+    "version": 3
+}

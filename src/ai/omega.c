@@ -3,7 +3,7 @@
 #define OMEGA_RISE_HEIGHT			56
 #define OMEGA_SINK_DEPTH			60
 #define OMEGA_WAIT_TIME				7
-#define OMEGA_SPEED					(SPEED(0x200))
+#define OMEGA_SPEED					(SPEED_10(0x200))
 
 #define OMG_APPEAR					20  // this MUST be 20 because misery sets this to begin the battle
 #define OMG_WAIT					30
@@ -42,8 +42,6 @@ enum Pieces {
 void onspawn_omega(Entity *e) {
 	// Trying something
 	entities_clear_by_type(OBJ_BEETLE_BROWN);
-	//entities_clear_by_type(OBJ_SANDCROC);
-	//entities_clear_by_type(OBJ_POLISH);
 	
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;

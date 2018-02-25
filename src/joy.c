@@ -87,8 +87,8 @@ static uint16_t TH_CONTROL_PHASE(volatile uint8_t *pb) {
     uint16_t val;
 
     *pb = 0x00; /* TH (select) low */
-    __asm__ volatile ("nop");
-    __asm__ volatile ("nop");
+    __asm__("nop");
+    __asm__("nop");
     val = *pb;
 
     *pb = 0x40; /* TH (select) high */
@@ -111,12 +111,9 @@ static uint16_t read3Btn(uint16_t port) {
     return val | (JOY_TYPE_PAD3 << JOY_TYPE_SHIFT);
 }
 
-static uint16_t read6Btn(uint16_t port) {
-    volatile uint8_t *pb;
+static uint16_t read6Btn() {
     uint16_t val, v1, v2;
-
-    pb = (volatile uint8_t *)0xa10003 + port*2;
-
+    volatile uint8_t *pb = (volatile uint8_t *)0xa10003;
     v1 = TH_CONTROL_PHASE(pb);                    /* - 0 s a 0 0 d u - 1 c b r l d u */
     val = TH_CONTROL_PHASE(pb);                   /* - 0 s a 0 0 d u - 1 c b r l d u */
     v2 = TH_CONTROL_PHASE(pb);                    /* - 0 s a 0 0 0 0 - 1 c b m x y z */
@@ -133,16 +130,7 @@ static uint16_t read6Btn(uint16_t port) {
 }
 
 void JOY_update() {
-    uint16_t val;
-    uint16_t newstate;
-	// Joy 1
-	val = (joyType[JOY_1] == JOY_TYPE_PAD6) ? read6Btn(PORT_1) : read3Btn(PORT_1);
-	newstate = val & BUTTON_ALL;
+	uint16_t val = read6Btn();
 	joyType[JOY_1] = val >> JOY_TYPE_SHIFT;
-	joyState[JOY_1] = newstate;
-	// Joy 2
-	//val = read6Btn(PORT_2);
-	//newstate = val & BUTTON_ALL;
-	//joyType[JOY_2] = val >> JOY_TYPE_SHIFT;
-	//joyState[JOY_2] = newstate;
+	joyState[JOY_1] = val & BUTTON_ALL;
 }

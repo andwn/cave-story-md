@@ -81,6 +81,7 @@ void stage_load(uint16_t id) {
 	}
 	sprites_clear();
 	water_entity = NULL;
+	bossEntity = NULL;
 	
 	if(vblank) aftervsync(); // So we don't lag the music
 	vblank = 0;

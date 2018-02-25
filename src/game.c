@@ -146,7 +146,7 @@ void game_main(uint8_t load) {
 				effects_update();
 				if(!gameFrozen) {
 					player_update();
-					entities_update();
+					entities_update(TRUE);
 				} else {
 					player_draw();
 					entities_draw();

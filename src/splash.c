@@ -48,8 +48,7 @@ void splash_main() {
 	uint16_t timer = 0;
 	while(++timer <= TIME(250) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
 		input_update();
-		entities_update();
-		entities_draw();
+		entities_update(TRUE);
 		//effects_update(); // Draw Smoke
 		ready = TRUE;
 		vsync();

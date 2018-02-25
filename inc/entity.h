@@ -83,7 +83,7 @@ void entities_clear_by_event(uint16_t event);
 void entities_clear_by_type(uint16_t type);
 
 // Per frame update for active entities
-void entities_update();
+void entities_update(uint8_t draw);
 // Reactivate entities when they come back on screen
 void entities_update_inactive();
 

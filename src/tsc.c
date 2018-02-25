@@ -271,7 +271,7 @@ uint8_t tsc_update() {
 						// Fast forward while holding A, update active entities a second time
 						// to double their movement speed (unless <PRI is set)
 						waitTime--;
-						if(!gameFrozen) entities_update();
+						if(!gameFrozen) entities_update(FALSE);
 					}
 				}
 			}

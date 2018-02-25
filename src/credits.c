@@ -144,8 +144,7 @@ void credits_main() {
 					// Scrolling for illustrations
 					illScroll += illScrolling;
 					if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
-					entities_update();
-					entities_draw();
+					entities_update(TRUE);
 					vsync(); aftervsync(); 
 				}
 				break;
@@ -153,8 +152,7 @@ void credits_main() {
 			pc++;
 		}
 		
-		entities_update();
-		entities_draw();
+		entities_update(TRUE);
 		
 		backScroll++;
 		if(!IS_PALSYSTEM) {

@@ -17,6 +17,7 @@ RESCOMP  = $(TOOLSBIN)/rescomp
 WAVTORAW = $(TOOLSBIN)/wavtoraw
 XGMTOOL  = $(TOOLSBIN)/xgmtool
 # Sik's Tools
+MDTOOLS  = mdtools
 MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
@@ -64,6 +65,8 @@ OBJS += $(Z80S:.s80=.o)
 OBJS += $(CS:.c=.o)
 OBJS += $(SS:.s=.o)
 
+ASMO  = $(CS:%.c=asmout/%.s)
+
 .SECONDARY: doukutsu.elf
 
 .PHONY: all pal release debug main-build
@@ -74,6 +77,9 @@ pal: release
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -flto -fuse-linker-plugin
 release: main-build symbol.txt
+
+asm: OPTIONS = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+asm: head-gen asm-dir $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
 debug: OPTIONS = -g -O2 -DDEBUG -DKDEBUG
@@ -89,8 +95,10 @@ src/boot/sega.o: src/boot/rom_head.bin
 	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
 
 %.bin: %.elf
-	$(OBJC) -O binary $< temp.bin
-	dd if=temp.bin of=$@ bs=8K conv=sync
+	@echo "Replacing ELF header with MegaDrive header..."
+	@$(OBJC) -O binary $< temp.bin
+	@dd if=temp.bin of=$@ bs=8K conv=sync
+	@rm -f temp.bin
 
 %.elf: $(BOOT_OBJS) $(OBJS)
 	$(CC) -o $@ $(LDFLAGS) $(BOOT_OBJS) $(OBJS) $(LIBS)
@@ -118,11 +126,37 @@ src/boot/rom_head.o: src/boot/rom_head.c
 src/boot/rom_head.bin: src/boot/rom_head.o
 	$(LD) $(LDFLAGS) --oformat binary $< -o $@
 
+# For asm target
+asm-dir:
+	mkdir -p asmout/src/{ai,db,xgm}
+
+asmout/%.s: %.c
+	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@
+
+# Compression of stage layouts
+%.cpxm: $(SLZ)
 %.cpxm: %.pxm
 	$(SLZ) -c "$<" "$@"
 
+%.pat: $(MDTILER)
 %.pat: %.mdt
 	$(MDTILER) -b "$<"
+
+# Build the mdtools we need if they aren't there
+$(MDTILER): $(MDTOOLS)
+	make -C $(MDTOOLS)/mdtiler/tool
+	mv $(MDTOOLS)/mdtiler/tool/mdtiler $(MDTILER)
+
+$(SLZ): $(MDTOOLS)
+	make -C $(MDTOOLS)/slz/tool
+	mv $(MDTOOLS)/slz/tool/slz $(SLZ)
+
+$(UFTC): $(MDTOOLS)
+	make -C $(MDTOOLS)/uftc/tool
+	mv $(MDTOOLS)/uftc/tool/uftc $(UFTC)
+
+$(MDTOOLS):
+	git clone https://github.com/andwn/mdtools
 
 .PHONY: head-gen clean
 
@@ -132,8 +166,8 @@ head-gen:
 
 clean:
 	rm -f $(CPXMS) $(PATS) $(MAPS) $(OBJS)
-	rm -f doukutsu.bin doukutsu.elf temp.bin symbol.txt
+	rm -f doukutsu.bin doukutsu.elf symbol.txt
 	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
-	rm -f res/resources.h res/resources.s
-	rm -f inc/ai_gen.h
+	rm -f res/resources.h res/resources.s inc/ai_gen.h
+	rm -rf asmout
