@@ -122,7 +122,10 @@ typedef struct {
 
 // Credits illustrations
 typedef struct {
-	const TileSet *tileset;
+	//const TileSet *tileset;
+	const uint32_t *pat;
+	const uint16_t pat_size;
+	const uint16_t *map;
 	const Palette *palette;
 } illustration_info_def;
 

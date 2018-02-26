@@ -100,7 +100,7 @@ src/boot/sega.o: src/boot/rom_head.bin
 	@dd if=temp.bin of=$@ bs=8K conv=sync
 	@rm -f temp.bin
 
-%.elf: $(BOOT_OBJS) $(OBJS)
+%.elf: $(BOOT_OBJS) $(PATS) $(OBJS)
 	$(CC) -o $@ $(LDFLAGS) $(BOOT_OBJS) $(OBJS) $(LIBS)
 
 %.o: %.c

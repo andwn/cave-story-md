@@ -466,40 +466,74 @@ TILESET TS_Face29	"face/face29.png" 0
 # ----------------------------------------------------------------------------------------------
 
 PALETTE PAL_Ill01	"credits/ill01.png"
-TILESET TS_Ill01	"credits/ill01.png" 0
+BIN		PAT_Ill01	"credits/ill01.pat"
+BIN		MAP_Ill01	"credits/ill01.map"
+#TILESET TS_Ill01	"credits/ill01.png" 0
 PALETTE PAL_Ill02	"credits/ill02.png"
-TILESET TS_Ill02	"credits/ill02.png" 0
+BIN		PAT_Ill02	"credits/ill02.pat"
+BIN		MAP_Ill02	"credits/ill02.map"
+#TILESET TS_Ill02	"credits/ill02.png" 0
 PALETTE PAL_Ill03	"credits/ill03.png"
-TILESET TS_Ill03	"credits/ill03.png" 0
+BIN		PAT_Ill03	"credits/ill03.pat"
+BIN		MAP_Ill03	"credits/ill03.map"
+#TILESET TS_Ill03	"credits/ill03.png" 0
 PALETTE PAL_Ill04	"credits/ill04.png"
-TILESET TS_Ill04	"credits/ill04.png" 0
+BIN		PAT_Ill04	"credits/ill04.pat"
+BIN		MAP_Ill04	"credits/ill04.map"
+#TILESET TS_Ill04	"credits/ill04.png" 0
 PALETTE PAL_Ill05	"credits/ill05.png"
-TILESET TS_Ill05	"credits/ill05.png" 0
+BIN		PAT_Ill05	"credits/ill05.pat"
+BIN		MAP_Ill05	"credits/ill05.map"
+#TILESET TS_Ill05	"credits/ill05.png" 0
 PALETTE PAL_Ill06	"credits/ill06.png"
-TILESET TS_Ill06	"credits/ill06.png" 0
+BIN		PAT_Ill06	"credits/ill06.pat"
+BIN		MAP_Ill06	"credits/ill06.map"
+#TILESET TS_Ill06	"credits/ill06.png" 0
 PALETTE PAL_Ill07	"credits/ill07.png"
-TILESET TS_Ill07	"credits/ill07.png" 0
+BIN		PAT_Ill07	"credits/ill07.pat"
+BIN		MAP_Ill07	"credits/ill07.map"
+#TILESET TS_Ill07	"credits/ill07.png" 0
 PALETTE PAL_Ill08	"credits/ill08.png"
-TILESET TS_Ill08	"credits/ill08.png" 0
+BIN		PAT_Ill08	"credits/ill08.pat"
+BIN		MAP_Ill08	"credits/ill08.map"
+#TILESET TS_Ill08	"credits/ill08.png" 0
 PALETTE PAL_Ill09	"credits/ill09.png"
-TILESET TS_Ill09	"credits/ill09.png" 0
+BIN		PAT_Ill09	"credits/ill09.pat"
+BIN		MAP_Ill09	"credits/ill09.map"
+#TILESET TS_Ill09	"credits/ill09.png" 0
 PALETTE PAL_Ill10	"credits/ill10.png"
-TILESET TS_Ill10	"credits/ill10.png" 0
+BIN		PAT_Ill10	"credits/ill10.pat"
+BIN		MAP_Ill10	"credits/ill10.map"
+#TILESET TS_Ill10	"credits/ill10.png" 0
 PALETTE PAL_Ill11	"credits/ill11.png"
-TILESET TS_Ill11	"credits/ill11.png" 0
+BIN		PAT_Ill11	"credits/ill11.pat"
+BIN		MAP_Ill11	"credits/ill11.map"
+#TILESET TS_Ill11	"credits/ill11.png" 0
 PALETTE PAL_Ill12	"credits/ill12.png"
-TILESET TS_Ill12	"credits/ill12.png" 0
+BIN		PAT_Ill12	"credits/ill12.pat"
+BIN		MAP_Ill12	"credits/ill12.map"
+#TILESET TS_Ill12	"credits/ill12.png" 0
 
 PALETTE PAL_Ill14	"credits/ill14.png"
-TILESET TS_Ill14	"credits/ill14.png" 0
+BIN		PAT_Ill14	"credits/ill14.pat"
+BIN		MAP_Ill14	"credits/ill14.map"
+#TILESET TS_Ill14	"credits/ill14.png" 0
 PALETTE PAL_Ill15	"credits/ill15.png"
-TILESET TS_Ill15	"credits/ill15.png" 0
+BIN		PAT_Ill15	"credits/ill15.pat"
+BIN		MAP_Ill15	"credits/ill15.map"
+#TILESET TS_Ill15	"credits/ill15.png" 0
 PALETTE PAL_Ill16	"credits/ill16.png"
-TILESET TS_Ill16	"credits/ill16.png" 0
+BIN		PAT_Ill16	"credits/ill16.pat"
+BIN		MAP_Ill16	"credits/ill16.map"
+#TILESET TS_Ill16	"credits/ill16.png" 0
 PALETTE PAL_Ill17	"credits/ill17.png"
-TILESET TS_Ill17	"credits/ill17.png" 0
+BIN		PAT_Ill17	"credits/ill17.pat"
+BIN		MAP_Ill17	"credits/ill17.map"
+#TILESET TS_Ill17	"credits/ill17.png" 0
 PALETTE PAL_Ill18	"credits/ill18.png"
-TILESET TS_Ill18	"credits/ill18.png" 0
+BIN		PAT_Ill18	"credits/ill18.pat"
+BIN		MAP_Ill18	"credits/ill18.map"
+#TILESET TS_Ill18	"credits/ill18.png" 0
 
 # ----------------------------------------------------------------------------------------------
 # Optimized Tilesets, Attributes & Stages

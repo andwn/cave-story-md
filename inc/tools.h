@@ -30,4 +30,4 @@ uint16_t random();
  */
 void waitSubTick(uint32_t subtick);
 
-uint16_t lz4w_unpack(const uint8_t *src, uint8_t *dest);
+//uint16_t lz4w_unpack(const uint8_t *src, uint8_t *dest);

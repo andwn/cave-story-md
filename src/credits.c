@@ -190,14 +190,21 @@ void credits_main() {
 
 void credits_show_image(uint16_t id) {
 	if(id > 19) return;
-	if(illustration_info[id].tileset == NULL) return; // Can't draw null tileset
+	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
 	VDP_setEnable(FALSE);
 	VDP_setPalette(PAL2, illustration_info[id].palette->data);
-	VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
-	uint8_t off = IS_PALSYSTEM ? 0 : 20;
-	uint8_t set = IS_PALSYSTEM ? 2 : 0;
-	VDP_fillTileMapRectInc(PLAN_A, 
-			TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX + off), 44, 0, 20, 28 + set);
+	//VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
+	VDP_loadTileData(illustration_info[id].pat, 16, illustration_info[id].pat_size, TRUE);
+	uint16_t index = pal_mode ? 0 : 20;
+	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
+		uint16_t maps[20];
+		for(uint16_t x = 0; x < 20; x++) {
+			maps[x] = illustration_info[id].map[index++] | (PAL2 << TILE_ATTR_PALETTE_SFT);
+		}
+		DMA_doDma(DMA_VRAM, (uint32_t) maps, VDP_PLAN_A + (y << 7) + (44 << 1), 20, 2);
+	}
+	//VDP_fillTileMapRectInc(PLAN_A, 
+	//		TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX + off), 44, 0, 20, 28 + set);
 	VDP_setEnable(TRUE);
 	illScrolling = 8;
 }

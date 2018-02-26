@@ -136,6 +136,9 @@ enum StageIndex {
 uint16_t stageID;
 // Size of the stage - how many blocks wide/high
 uint16_t stageWidth, stageHeight;
+//extern uint8_t *PXM;
+//#define stageWidth	(((uint16_t*)PXM)[2])
+//#define stageHeight	(((uint16_t*)PXM)[3])
 // A multiplication lookup table for each row of stageBlocks
 // Removes all mulu.w and __mulsi3 instructions in entity stage collision
 extern uint16_t *stageTable;

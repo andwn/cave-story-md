@@ -132,7 +132,7 @@ static void RunComeDown(Entity *e) {
 		} /* fallthrough */
 		case AS_COME_DOWN+1:
 		{
-			if (++e->timer > TIME(30)) e->state++;
+			if (++e->timer > TIME_8(30)) e->state++;
 		}
 		break;
 		
@@ -148,7 +148,7 @@ static void RunComeDown(Entity *e) {
 				e->state++;
 				// player smush damage
 				if(PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) player_inflict_damage(16);
-				
+
 				camera_shake(30);
 				SMOKE_AREA((e->x >> CSF) - 40, (e->y >> CSF) + 40, 80, 16, 6);
 				if (player.grounded) player.y_speed = -SPEED_10(0x200);

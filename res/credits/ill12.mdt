@@ -1,0 +1,5 @@
+input res/credits/ill12.png
+output res/credits/ill12.pat
+output2 res/credits/ill12.map
+offset 16
+map 0 0 20 30

@@ -38,6 +38,7 @@
 uint8_t stageBackground = 0xFF;
 
 int16_t backScrollTable[32];
+//uint8_t *PXM = NULL;
 uint8_t *stageBlocks = NULL;
 uint16_t *stageTable = NULL;
 
@@ -75,6 +76,11 @@ void stage_load(uint16_t id) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
 	}
+	//if(PXM) {
+	//	MEM_free(PXM);
+	//	PXM = NULL;
+	//	stageBlocks = NULL;
+	//}
 	if(stageTable) {
 		MEM_free(stageTable);
 		stageTable = NULL;
@@ -191,6 +197,11 @@ void stage_load_credits(uint8_t id) {
 		MEM_free(stageBlocks);
 		stageBlocks = NULL;
 	}
+	//if(PXM) {
+	//	MEM_free(PXM);
+	//	PXM = NULL;
+	//	stageBlocks = NULL;
+	//}
 	if(stageTable) {
 		MEM_free(stageTable);
 		stageTable = NULL;
@@ -258,12 +269,32 @@ void stage_load_tileset() {
 
 void stage_load_blocks() {
 	const uint8_t *PXM = stage_info[stageID].PXM;
-	stageWidth = PXM[4] + (PXM[5] << 8);
-	stageHeight = PXM[6] + (PXM[7] << 8);
+	stageWidth = PXM[4] | (PXM[5] << 8);
+	stageHeight = PXM[6] | (PXM[7] << 8);
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
 	if(!stageBlocks) SYS_die("Out of memory loading stage layout!");
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
+
+	//PXM = decompress_slz(stage_info[stageID].PXM);
+	//if(!PXM) SYS_die("Out of memory loading stage layout!");
+	//stageWidth = PXM[4] | (PXM[5] << 8);
+	//stageHeight = PXM[6] | (PXM[7] << 8);
+	//stageBlocks = &PXM[8];
+
+	//uint16_t size = stage_info[stageID].PXM[0] << 8 | stage_info[stageID].PXM[1];
+	//PXM = MEM_alloc(size);
+	//if(!PXM) SYS_die("Out of memory loading stage layout!");
+	//__asm__("movem.l %%d5-%%d7/%%a5-%%a6,-(%%sp)\n\t"
+	//		"move.l %0,%%a5\n\t"
+	//		"move.l %1,%%a6\n\t"
+	//		"jsr (DecompressSlz)\n\t"
+	//		"movem.l (%%sp)+,%%d5-%%d7/%%a5-%%a6" 
+	//		: : "g" (stage_info[stageID].PXM), "g" (PXM));
+	//stageWidth = PXM[4] | (PXM[5] << 8);
+	//stageHeight = PXM[6] | (PXM[7] << 8);
+	//stageBlocks = &PXM[8];
+
 	// Multiplication table for stage rows
 	stageTable = MEM_alloc(stageHeight * 2);
 	if(!stageTable) SYS_die("Out of memory creating stage table!");

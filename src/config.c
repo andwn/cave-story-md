@@ -68,8 +68,8 @@ const MenuItem menu[3][12] = {
 		
 		{ 19, MI_MODE, "Force Button Mode", &cfg_force_btn },
 
+		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-		//{ 24, MI_ACTION, "Apply", (uint8_t*)1 },
 	},{
 		{ 4,  MI_LANG,   "Language", &cfg_language },
 		
@@ -79,9 +79,9 @@ const MenuItem menu[3][12] = {
 		
 		{ 15, MI_LABEL,  "Reset Invincibility", NULL },
 		{ 16, MI_TOGGLE, "Frames on Pause", &cfg_iframebug },
-		
+
+		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-		//{ 24, MI_ACTION, "Apply", (uint8_t*)1 },
 	},{
 		{ 4,  MI_ACTION, "Reset Nikumaru Counter", (uint8_t*)3 },
 		{ 6,  MI_ACTION, "Format SRAM (!)", (uint8_t*)4 },
@@ -265,10 +265,10 @@ void config_main() {
 				set_page(page);
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(btn[cfg_btn_jump])) {
-				if(menu[page][cursor].type == MI_RETURN) return;
+				if(menu[page][cursor].type == MI_RETURN) break;
 				press_menuitem(&menu[page][cursor], page, &sprCursor);
 			} else if(joy_pressed(btn[cfg_btn_shoot])) {
-				return;
+				break;
 			}
 			// Animate quote sprite
 			if(--sprTime == 0) {
@@ -286,7 +286,7 @@ void config_main() {
 		vsync(); aftervsync();
 	}
 	
-	//SYS_hardReset(); // eh
+	system_load_config();
 }
 
 void act_default(uint8_t page) {
