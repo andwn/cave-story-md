@@ -394,7 +394,7 @@ void stage_update() {
 			for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
 			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-			VDP_setVerticalScroll(PLAN_B, -8);
+			//VDP_setVerticalScroll(PLAN_B, -8);
 		} else {
 			uint8_t y = 27;
 			for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
@@ -402,7 +402,7 @@ void stage_update() {
 			for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
 			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-			VDP_setVerticalScroll(PLAN_B, 0);
+			//VDP_setVerticalScroll(PLAN_B, 0);
 		}
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
@@ -566,71 +566,43 @@ void stage_draw_background() {
 }
 
 void stage_draw_moonback() {
-	uint16_t mapBuffer[64];
 	const uint32_t *topTiles, *btmTiles;
-	const uint8_t *topMap, *btmMap;
+	const uint16_t *topMap, *btmMap;
 	if(stageBackgroundType == 1) {
 		// Moon
-		topTiles = (uint32_t*)MoonTopTiles;
-		btmTiles = (uint32_t*)MoonBtmTiles;
-		topMap = MoonTopMap;
-		btmMap = MoonBtmMap;
+		topTiles = (uint32_t*) PAT_MoonTop;
+		btmTiles = (uint32_t*) PAT_MoonBtm;
+		topMap = (uint16_t*) MAP_MoonTop;
+		btmMap = (uint16_t*) MAP_MoonBtm;
 	} else {
 		// Fog
-		topTiles = (uint32_t*)FogTopTiles;
-		btmTiles = (uint32_t*)FogBtmTiles;
-		topMap = FogTopMap;
-		btmMap = FogBtmMap;
+		topTiles = (uint32_t*) PAT_FogTop;
+		btmTiles = (uint32_t*) PAT_FogBtm;
+		topMap = (uint16_t*) MAP_FogTop;
+		btmMap = (uint16_t*) MAP_FogBtm;
 	}
 	// Load the top section in the designated background area
 	VDP_loadTileData(topTiles, TILE_BACKINDEX, 12, TRUE);
 	// Load the clouds under the map, it just fits
 	VDP_loadTileData(btmTiles, TILE_MOONINDEX, 188, TRUE);
 	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
+	VDP_setVerticalScroll(PLAN_B, 0);
 	// Top part
-	uint16_t cursor = 0;
-	for(uint16_t y = 0; y < 10; y++) {
-		for(uint16_t x = 0; x < 40; x++) {
-			mapBuffer[x] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_BACKINDEX + (topMap[cursor]<<8) + topMap[cursor+1]);
-			cursor += 2;
-		}
-		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 40, 1);
+	uint16_t index = pal_mode ? 0 : 40;
+	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {
+		DMA_doDma(DMA_VRAM, (uint32_t) &topMap[index], VDP_PLAN_B + (y << 7), 40, 2);
+		index += 40;
 	}
 	
 	if(vblank) aftervsync(); // So we don't lag the music
 	vblank = 0;
 	
 	// Bottom part
-	cursor = 0;
-	for(uint16_t y = 10; y < 28; y++) {
-		for(uint16_t x = 0; x < 32; x++) {
-			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);
-			cursor += 2;
-		}
-		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, y, 64, 1);
-	}
-	// For 240 mode
-	if(IS_PALSYSTEM) {
-		// Shift the vscroll down 8 pixels
-		VDP_setVerticalScroll(PLAN_B, -8);
-		// Duplicate top line in row 31 (-1)
-		cursor = 0;
-		for(uint16_t x = 0; x < 40; x++) {
-			mapBuffer[x] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_BACKINDEX + (topMap[cursor]<<8) + topMap[cursor+1]);
-			cursor += 2;
-		}
-		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, 31, 40, 1);
-		// Duplicate bottom row in row 28
-		cursor = 32*17*2;
-		for(uint16_t x = 0; x < 32; x++) {
-			mapBuffer[x] = mapBuffer[x+32] = TILE_ATTR_FULL(PAL2,0,0,0,
-					TILE_MOONINDEX + (btmMap[cursor]<<8) + btmMap[cursor+1]);
-			cursor += 2;
-		}
-		VDP_setTileMapDataRect(PLAN_B, mapBuffer, 0, 28, 64, 1);
+	index = 0;
+	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 32 : 28); y++) {
+		DMA_doDma(DMA_VRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7),             32, 2);
+		DMA_doDma(DMA_VRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7) + (32 << 1), 32, 2);
+		index += 32;
 	}
 	backScrollTimer = 0;
 }

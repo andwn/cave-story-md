@@ -47,9 +47,16 @@ void soundtest_main() {
 	sprites_clear();
 	VDP_clearPlan(PLAN_A, TRUE);
 	// Background picture
-	VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE);
-	VDP_fillTileMapRectInc(PLAN_B,
-			TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
+	//VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE);
+	//VDP_fillTileMapRectInc(PLAN_B,
+	//		TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
+	VDP_loadTileData((uint32_t*) PAT_SndTest, 16, sizeof(PAT_SndTest) / TILE_SIZE, TRUE);
+	uint16_t index = pal_mode ? 0 : 80 << 1;
+	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
+		DMA_doDma(DMA_VRAM, (uint32_t) &MAP_SndTest[index], VDP_PLAN_B + (y << 7), 40, 2);
+		index += 40 << 1;
+	}
+
 	draw_status(status);
 	VDP_drawText("Sound Test", 15, 2);
 	VDP_drawText("Track: ", 2, 8);

@@ -387,7 +387,9 @@ TILESET TS_SysFont		"font_tran.png" 		0
 
 # Sound Test
 PALETTE PAL_SndTest		"back/soundtest.png"
-TILESET TS_SndTest		"back/soundtest.png" 	0 # OOM when unpacking, don't compress
+BIN		PAT_SndTest		"back/soundtest.pat"
+BIN		MAP_SndTest		"back/soundtest.map"
+#TILESET TS_SndTest		"back/soundtest.png" 	0 # OOM when unpacking, don't compress
 
 # Window
 TILESET TS_Window		"window.png" 			0
@@ -703,15 +705,23 @@ TILESET BG_Hell		"back/bkHell.png" 0
 TILESET BG_Fall		"back/bkFall.png" 0
 
 # Moon
-BIN MoonTopTiles	"back/bkMoonTop.bin"
-BIN MoonTopMap		"back/bkMoonTop.map"
-BIN MoonBtmTiles	"back/bkMoonBottom.bin"
-BIN MoonBtmMap		"back/bkMoonBottom.map"
+BIN		PAT_MoonTop		"back/bkMoonTop.pat"
+BIN		MAP_MoonTop		"back/bkMoonTop.map"
+BIN		PAT_MoonBtm		"back/bkMoonBottom.pat"
+BIN		MAP_MoonBtm		"back/bkMoonBottom.map"
+#BIN MoonTopTiles	"back/bkMoonTop.bin"
+#BIN MoonTopMap		"back/bkMoonTop.map"
+#BIN MoonBtmTiles	"back/bkMoonBottom.bin"
+#BIN MoonBtmMap		"back/bkMoonBottom.map"
 # Fog
-BIN FogTopTiles		"back/bkFogTop.bin"
-BIN FogTopMap		"back/bkFogTop.map"
-BIN FogBtmTiles		"back/bkFogBottom.bin"
-BIN FogBtmMap		"back/bkFogBottom.map"
+BIN		PAT_FogTop		"back/bkFogTop.pat"
+BIN		MAP_FogTop		"back/bkFogTop.map"
+BIN		PAT_FogBtm		"back/bkFogBottom.pat"
+BIN		MAP_FogBtm		"back/bkFogBottom.map"
+#BIN FogTopTiles		"back/bkFogTop.bin"
+#BIN FogTopMap		"back/bkFogTop.map"
+#BIN FogBtmTiles		"back/bkFogBottom.bin"
+#BIN FogBtmMap		"back/bkFogBottom.map"
 
 # ----------------------------------------------------------------------------------------------
 # Stages (PXM)

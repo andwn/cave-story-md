@@ -20,10 +20,20 @@ def gen_mdt(fn, offset):
 		f.write("map 0 0 " + str(width) + " " + str(height) + "\n")
 
 if __name__ == '__main__':
-	width = 0
-	height = 0
 	# Credits Illustrations
 	folder = "res/credits/"
 	for fn in os.listdir(folder):
 		if fn.startswith("ill") and fn.endswith(".png"):
-			gen_mdt(folder + fn, 16)
+			gen_mdt(folder + fn, 0x4000 + 16)
+	
+	# Sound Test Background
+	gen_mdt("res/back/soundtest.png", 0x2000 + 16)
+	
+	# Moon Background
+	gen_mdt("res/back/bkMoonTop.png", 0x4000 + (0xD000 >> 5))
+	gen_mdt("res/back/bkMoonBottom.png", 0x4000 + (16 + 32 * 8))
+	
+	# Fog Background
+	gen_mdt("res/back/bkFogTop.png", 0x4000 + (0xD000 >> 5))
+	gen_mdt("res/back/bkFogBottom.png", 0x4000 + (16 + 32 * 8))
+	
