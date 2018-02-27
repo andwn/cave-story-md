@@ -69,7 +69,7 @@ ASMO  = $(CS:%.c=asmout/%.s)
 
 .SECONDARY: doukutsu.elf
 
-.PHONY: all pal release debug main-build
+.PHONY: all pal release asm debug prereq main-build
 
 all: release
 pal: release
@@ -85,7 +85,9 @@ asm: head-gen asm-dir $(ASMO)
 debug: OPTIONS = -g -O2 -DDEBUG -DKDEBUG
 debug: main-build symbol.txt
 
-main-build: head-gen doukutsu.bin
+main-build: prereq head-gen doukutsu.bin
+
+prereq: $(LIBPNG) $(MDTILER)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
@@ -134,11 +136,9 @@ asmout/%.s: %.c
 	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@
 
 # Compression of stage layouts
-%.cpxm: $(SLZ)
 %.cpxm: %.pxm
 	$(SLZ) -c "$<" "$@"
 
-%.pat: $(MDTILER)
 %.pat: %.mdt
 	$(MDTILER) -b "$<"
 
