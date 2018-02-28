@@ -17,10 +17,12 @@ RESCOMP  = $(TOOLSBIN)/rescomp
 WAVTORAW = $(TOOLSBIN)/wavtoraw
 XGMTOOL  = $(TOOLSBIN)/xgmtool
 # Sik's Tools
-MDTOOLS  = mdtools
 MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
+ifeq ($(shell test -e $(MDTILER) || echo -n no),no)
+    MDTILER = bin/mdtiler
+endif
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -141,22 +143,6 @@ asmout/%.s: %.c
 
 %.pat: %.mdt
 	$(MDTILER) -b "$<"
-
-# Build the mdtools we need if they aren't there
-$(MDTILER): $(MDTOOLS)
-	make -C $(MDTOOLS)/mdtiler/tool
-	mv $(MDTOOLS)/mdtiler/tool/mdtiler $(MDTILER)
-
-$(SLZ): $(MDTOOLS)
-	make -C $(MDTOOLS)/slz/tool
-	mv $(MDTOOLS)/slz/tool/slz $(SLZ)
-
-$(UFTC): $(MDTOOLS)
-	make -C $(MDTOOLS)/uftc/tool
-	mv $(MDTOOLS)/uftc/tool/uftc $(UFTC)
-
-$(MDTOOLS):
-	git clone https://github.com/andwn/mdtools
 
 .PHONY: head-gen clean
 
