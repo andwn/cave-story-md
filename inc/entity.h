@@ -75,6 +75,7 @@ Entity *water_entity;
 // Heightmaps for slope tiles
 extern const uint8_t heightmap[4][16];
 
+uint16_t entity_active_count;
 extern uint8_t moveMeToFront;
 
 // Deletes entities based on a criteria, scripts sometimes call the bottom 2
@@ -109,7 +110,8 @@ void entity_reactivate(Entity *e);
 
 // Creates an entity and makes it head of active or inactive list
 // Called internally everywhere and by SNP command
-Entity *entity_create(int32_t x, int32_t y, uint16_t type, uint16_t flags);
+#define entity_create(x, y, type, flags) (entity_create_ext(x, y, type, flags, 0, 0))
+Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, uint16_t id, uint16_t event);
 
 // Finds entity matching an ID or event and returns it
 Entity *entity_find_by_id(uint16_t id);

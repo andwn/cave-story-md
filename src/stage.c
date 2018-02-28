@@ -350,10 +350,7 @@ void stage_load_entities() {
 			VDP_setEnable(FALSE);
 		}
 		*/
-		Entity *e = entity_create((x<<CSF)*16 + (8<<CSF), 
-								  (y<<CSF)*16 + (8<<CSF), type, flags);
-		e->id = id;
-		e->event = event;
+		entity_create_ext(block_to_sub(x) + 0x1000, block_to_sub(y) + 0x1000, type, flags, id, event);
 	}
 }
 

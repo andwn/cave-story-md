@@ -353,14 +353,14 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_hell, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &onspawn_deleet, 		&ai_deleet, 		&ondeath_default 	}, // Deleet
-	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_bute_flying, 	&ondeath_default 	}, // Bute (Generated)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_bute_spawner, 	&ai_null 			}, // Bute Generator
+	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_bute_falling, &ai_bute_falling, 	&ondeath_default 	}, // Bute (Generated)
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_bute_spawner, &ai_bute_spawner, 	&ai_null 			}, // Bute Generator
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Heavy Press Projectile
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Itoh/Sue (Ending)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
-	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
+	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &ai_null, 				&ai_rolling, 		&ondeath_default 	}, // Rolling
 	{ NULL, 			SHEET_BONE, 	PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone, 	&ai_null 			}, // Ballos Bone Shot
 	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone_spawner,&ai_null 		}, // Ballos Shockwave
 	{ NULL, 			SHEET_TARGET, 	PAL1, 1, &onspawn_persistent, 	&ai_ballos_target, 	&ai_null 			}, // Ballos Target
@@ -380,9 +380,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_PLATF, 	PAL0, 1, &onspawn_persistent, 	&ai_ballos_platform, &ai_null 			}, // Ballos Platform
 	{ &SPR_Hoppy, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	}, // Hoppy
 	{ &SPR_Spikes, 		NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_ballos_spikes, 	&ai_null 			}, // Ballos Spikes
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Statue
+	{ NULL, 			NOSHEET, 		PAL2, 0, &onspawn_statue_base, 	&ai_null,	 		&ai_null 			}, // Statue (Base)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
-	{ NULL, 			NOSHEET, 		PAL0, 2, &ai_null, 				&ai_null, 			&ondeath_default 	}, // Statue (Breakable)
+	{ &SPR_Statue, 		NOSHEET, 		PAL2, 2, &onspawn_statue,	 	&ai_statue, 		&ai_null 			}, // Statue (Breakable)
 	/* 0x160 (352) */
 	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // King (Sword)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)

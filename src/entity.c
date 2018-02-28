@@ -164,6 +164,7 @@ uint16_t entities_count() {
 }
 
 void entities_update(uint8_t draw) {
+	uint16_t new_active_count = 0;
 	Entity *e = entityList;
 	while(e) {
 		if(!e->alwaysActive && !entity_on_screen(e)) {
@@ -172,6 +173,7 @@ void entities_update(uint8_t draw) {
 			e = next;
 			continue;
 		}
+		new_active_count++;
 		// AI onUpdate method - may set STATE_DELETE
 		ENTITY_ONFRAME(e);
 		if(e->state == STATE_DELETE) {
@@ -328,6 +330,7 @@ void entities_update(uint8_t draw) {
 			e = next;
 		} else e = e->next;
 	}
+	entity_active_count = new_active_count;
 }
 
 void entity_handle_bullet(Entity *e, Bullet *b) {
@@ -823,7 +826,7 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 	}
 }
 
-Entity *entity_create(int32_t x, int32_t y, uint16_t type, uint16_t flags) {
+Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, uint16_t id, uint16_t event) {
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
@@ -832,6 +835,8 @@ Entity *entity_create(int32_t x, int32_t y, uint16_t type, uint16_t flags) {
 	
 	e->x = x;
 	e->y = y;
+	e->id = id;
+	e->event = event;
 	e->sprite_count = sprite_count;
 	entity_default(e, type, flags);
 	if(sprite_count) {
