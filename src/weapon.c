@@ -383,7 +383,6 @@ void weapon_fire_nemesis(Weapon *w) {
 		break;
 	}
 	if(!b) return;
-	sound_play(SND_NEMESIS_FIRE, 5);
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
@@ -393,11 +392,13 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->damage = 12;
 		b->ttl = TIME(35);
 		speed = SPEED(0x800);
+		sound_play(SND_NEMESIS_FIRE, 5);
 		break;
 		case 2:
 		b->damage = 6;
 		b->ttl = TIME(30);
 		speed = SPEED(0x600);
+		sound_play(SND_POLAR_STAR_L3, 5);
 		break;
 		case 3:
 		b->damage = 1;

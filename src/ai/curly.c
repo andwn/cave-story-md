@@ -163,26 +163,70 @@ void ai_curly_carried(Entity *e) {
 	}
 }
 
+static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
+	// Use slot 7 and 8, this messes with player's missiles slightly
+	Bullet *b = NULL;
+	for(uint8_t i = 7; i < 9; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(!b) return;
+	sound_play(SND_NEMESIS_FIRE, 5);
+	b->type = WEAPON_NEMESIS;
+	b->level = 1;
+	b->damage = 12;
+	b->ttl = TIME_8(35);
+	b->dir = dir & 1;
+	switch(dir) {
+		case LEFT:
+		case RIGHT: {
+			SHEET_FIND(b->sheet, SHEET_NEMES);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[b->sheet].index);
+			b->sprite.size = SPRITE_SIZE(3, 2);
+			b->x = x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+			b->y = y + pixel_to_sub(1);
+			b->x_speed = b->dir&1 ? SPEED_12(0x800) : -SPEED_12(0x800);
+			b->y_speed = 0;
+			b->hit_box = (bounding_box) { 5, 3, 5, 3 };
+		}
+		break;
+		case UP:
+		case DOWN: {
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_NEMINDEX);
+			b->sprite.size = SPRITE_SIZE(2, 3);
+			b->x = x - (4<<CSF);
+			b->y = y + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+			b->x_speed = 0;
+			b->y_speed = b->dir ? SPEED_12(0x800) : -SPEED_12(0x800);
+			b->hit_box = (bounding_box) { 3, 5, 3, 5 };
+		}
+		break;
+	}
+}
+
+void onspawn_curly_hell(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->frame = 2;
+	e->eflags &= ~NPC_INTERACTIVE;
+	e->nflags &= ~NPC_INTERACTIVE;
+}
+
 void ai_curly_hell(Entity *e) {
 	// Keep in front of doors
-	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+	if(stageID == STAGE_HELL_PASSAGEWAY_2 && 
+			(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H)) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;
 		e->y_mark = camera.y;
 	}
 
-	if(!e->state) {
-		e->state++;
-		e->frame = 10;
-		e->eflags &= ~NPC_INTERACTIVE;
-		e->nflags &= ~NPC_INTERACTIVE;
-	}
-
 	e->dir = player.dir ^ 1;
-	e->x = player.x + (e->dir ? (4<<CSF) : -(4<<CSF));
-	e->y = player.y - (4<<CSF);
+	e->x = player.x + (e->dir ? (8<<CSF) : -(8<<CSF));
+	e->y = player.y - (6<<CSF);
 
-	//int16_t sx = 0, sy = 0;
+	uint8_t shoot_dir = e->dir;
+	e->frame = 2;
 	switch(player.frame) {
 		case 0: // Standing / Walking / Jumping
 			e->y -= (1 << CSF); // Bounce while player is walking
@@ -193,20 +237,32 @@ void ai_curly_hell(Entity *e) {
 		case 3: // Looking up
 		case 4:
 		case 5:
-			if(e->grounded) {
+			if(player.grounded) {
 				// Aim up
+				shoot_dir = UP;
+				e->frame = 5;
 			} else {
 				// Aim down
+				shoot_dir = DOWN;
+				e->frame = 7;
 			}
 			break;
 		case 6: // Looking down
 		case 7:
-			if(e->grounded) {
+			if(player.grounded) {
 				// Aim back
 			} else {
 				// Aim up
+				shoot_dir = UP;
+				e->frame = 5;
 			}
 			break;
+	}
+
+	if(e->timer) {
+		e->timer--;
+	} else if(joy_pressed(btn[cfg_btn_shoot])) {
+		curly_fire_nemesis(e->x, e->y, shoot_dir);
 	}
 }
 

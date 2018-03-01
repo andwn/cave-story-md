@@ -350,12 +350,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_Mesa, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_bute_dying, 	&ondeath_default 	}, // Mesa (Defeated)
 	{ &SPR_ToroBlock, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_mesa_block, 	&ai_null 			}, // Mesa Block
 	/* 0x140 (320) */
-	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_curly_hell, 	&ai_null 			}, // Curly (Hell)
+	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_curly_hell, 	&ai_curly_hell, 	&ai_null 			}, // Curly (Hell)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			SHEET_DELEET, 	PAL1, 1, &onspawn_deleet, 		&ai_deleet, 		&ondeath_default 	}, // Deleet
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_bute_falling, &ai_bute_falling, 	&ondeath_default 	}, // Bute (Generated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_bute_spawner, &ai_bute_spawner, 	&ai_null 			}, // Bute Generator
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Heavy Press Projectile
+	{ NULL, 			SHEET_HPLIT, 	PAL1, 1, &onspawn_hp_lightning, &ai_hp_lightning, 	&ai_null 			}, // Heavy Press Projectile
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Itoh/Sue (Ending)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
@@ -420,8 +420,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_UCoreFront, 	NOSHEET, 		PAL2, 6, &onspawn_persistent, 	&ai_undead_core_front,&ai_null 			}, // Undead Core (Front)
 	{ &SPR_UCoreBack, 	NOSHEET, 		PAL2, 9, &onspawn_persistent, 	&ai_undead_core_back,&ai_null 			}, // Undead Core (Back)
 	{ &SPR_UCoreMouth, 	NOSHEET, 		PAL2, 2, &onspawn_persistent, 	&ai_undead_core_face,&ai_null 			}, // Undead Core (Face)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Heavy Press Shield
-	{ &SPR_Ballos, 		NOSHEET, 		PAL0, 15,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_hpress_shield,&ai_null, 			&ai_null 			}, // Heavy Press Shield
+	{ &SPR_Ballos, 		NOSHEET, 		PAL0, 16,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
 	{ &SPR_BallosEye, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Shield
 	/* Splash screen */

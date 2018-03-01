@@ -397,10 +397,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
 		} break;
-		case 0x50: // Sacred Ground B1
+		case STAGE_HELL_B1:
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
-		case 0x51: // Sacred Ground B2
+		case STAGE_HELL_B2:
 		{	// Conveniently the palette indeces for Balcony and Hell blocks are the same
 			SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
@@ -409,7 +409,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 					0,9, 0,10, 0,11, 0,12, 0,13, 0,14, 0,15);
 			SHEET_ADD(SHEET_BUTEDIE, &SPR_Bute, 3,3,2, 0,16, 0,17, 0,18);
 		} break;
-		case 0x52: // Sacred Ground B3
+		case STAGE_HELL_B3:
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 			SHEET_ADD(SHEET_PRESS, &SPR_Press, 3,2,3, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_BUTE, &SPR_Bute, 16,3,2, 
@@ -419,19 +419,37 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_BUTEARW, &SPR_ButeArw, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			SHEET_ADD(SHEET_ROLLING, &SPR_Rolling, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_DELEET, &SPR_Deleet, 3,3,3, 0,1, 0,2, 0,0);
+			SHEET_ADD(SHEET_HPLIT, &SPR_HeavyPressL, 3,4,4, 0,0, 0,1, 0,2);
+			if(player_has_weapon(WEAPON_BLADE)) {
+				Weapon w = (Weapon) { .type = WEAPON_NEMESIS, .level = 1 };
+				sheets_load_weapon(&w);
+			}
 		} break;
-		case 0x53: // Ma Pignon
+		case STAGE_MA_PIGNON:
 		{	// Makes copies of itself, better to have a common sheet
 			SHEET_ADD(SHEET_MAPI, &SPR_MaPignon, 12,2,2, 
 					0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9, 0,10, 0,11);
 			SHEET_ADD(SHEET_ROCK, &SPR_Rock, 3,2,2, 0,0, 0,1, 0,2);
 		} break;
-		case 0x57: // Seal Chamber
+		case STAGE_HELL_PASSAGEWAY_2:
+		case STAGE_HELL_STATUE:
+		case STAGE_HELL_OUTER_PASSAGE:
+		{
+			if(player_has_weapon(WEAPON_BLADE)) {
+				Weapon w = (Weapon) { .type = WEAPON_NEMESIS, .level = 1 };
+				sheets_load_weapon(&w);
+			}
+		} break;
+		case STAGE_SEAL_CHAMBER:
 		{	SHEET_ADD(SHEET_BONE, &SPR_Bone, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 			SHEET_ADD(SHEET_DEVIL, &SPR_GrnDevil, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_PLATF, &SPR_BallosPlat, 1,4,2, 0,0);
 			SHEET_ADD(SHEET_ROT, &SPR_BallosRot, 2,4,4, 0,0, 0,1);
 			SHEET_ADD(SHEET_TARGET, &SPR_Target, 1,3,3, 0,0);
+			if(player_has_weapon(WEAPON_BLADE)) {
+				Weapon w = (Weapon) { .type = WEAPON_NEMESIS, .level = 1 };
+				sheets_load_weapon(&w);
+			}
 			//SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 10,3,2, 
 			//		0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9);
 		} break;
