@@ -368,7 +368,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_IKACHAN,  PAL0, 1, &onspawn_persistent, 	&ai_ikachan, 		&ai_null 			}, // Ika-chan
 	/* 0x150 (336) */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_ikachan_spawner,&ai_null 			}, // Ika-chan Generator
-	{ &SPR_Droll3, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
+	{ &SPR_Droll3, 		NOSHEET, 		PAL0, 2, &ai_null, 				&ai_numahachi, 		&ai_null 			}, // Numahachi
 	{ NULL, 			SHEET_DEVIL, 	PAL3, 1, &onspawn_persistent, 	&ai_green_devil, 	&ondeath_default 	}, // Green Devil
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_green_devil_spawner,&ai_null 		}, // Green Devil Generator
 	{ &SPR_BallosP, 	NOSHEET, 		PAL0, 4, &onspawn_persistent, 	&ai_ballos_priest, 	&ondeath_ballosp 	}, // Ballos (Boss)
