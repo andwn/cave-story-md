@@ -8,6 +8,7 @@
 #include "player.h"
 #include "psg.h"
 #include "resources.h"
+#include "sprite.h"
 #include "sram.h"
 #include "stage.h"
 #include "string.h"
@@ -16,6 +17,7 @@
 #include "vdp.h"
 #include "vdp_bg.h"
 #include "vdp_ext.h"
+#include "vdp_tile.h"
 #include "weapon.h"
 #include "xgm.h"
 #include "z80_ctrl.h"
@@ -59,7 +61,10 @@ uint8_t cfg_force_btn = 0;
 uint8_t sram_file = 0;
 uint8_t sram_state = SRAM_UNCHECKED;
 
-uint8_t counterEnabled = FALSE;
+// Put the counter tiles in a "blank spot" of Hell's tileset
+#define TILE_COUNTERINDEX 400
+uint8_t counterShow = FALSE;
+uint8_t counterTick = FALSE;
 Time time, counter;
 
 uint32_t flags[FLAGS_LEN];
@@ -89,39 +94,78 @@ uint8_t system_get_skip_flag(uint16_t flag) {
 	return (skip_flags & (1<<flag)) > 0;
 }
 
+static void counter_draw_minute() {
+	// Maybe faster than dividing twice
+	uint16_t min1 = counter.minute;
+	uint16_t min10 = 0;
+	while(min1 > 9) {
+		min1 -= 10;
+		min10++;
+	}
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min10 << 5], 
+			(TILE_COUNTERINDEX+1) << 5, 16, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min1 << 5], 
+			(TILE_COUNTERINDEX+2) << 5, 16, 2);
+}
+
+static void counter_draw_second() {
+	uint16_t sec1 = counter.second;
+	uint16_t sec10 = 0;
+	while(sec1 > 9) {
+		sec1 -= 10;
+		sec10++;
+	}
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec10 << 5], 
+			(TILE_COUNTERINDEX+4) << 5, 16, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec1 << 5], 
+			(TILE_COUNTERINDEX+5) << 5, 16, 2);
+}
+
 void system_update() {
 	if(++time.frame >= FPS) {
 		time.frame = 0;
 		if(++time.second >= 60) {
 			time.second = 0;
 			if(++time.minute >= 60) {
-				time.hour++;
+				if(!(++time.hour)) time.hour = 255;
 				time.minute = 0;
-				printf("You have been playing for %hu hour(s)", time.hour);
 			}
 		}
 	}
-	if(counterEnabled) {
+	if(counterTick) {
 		if(++counter.frame >= FPS) {
 			counter.frame = 0;
 			if(++counter.second >= 60) {
 				counter.second = 0;
-				if(++counter.minute >= 60) {
-					counter.hour++;
-					counter.minute = 0;
-				}
+				if(++counter.minute > 99) counter.minute = 99;
+				counter_draw_minute();
 			}
+			counter_draw_second();
 		}
+	}
+	if(counterShow) {
+		VDPSprite spr[2] = {
+			{ 
+				.x = 0x80 + 256, 
+				.y = 0x80 + 16, 
+				.size = SPRITE_SIZE(3,1),
+				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
+			}, { 
+				.x = 0x80 + 280, 
+				.y = 0x80 + 16, 
+				.size = SPRITE_SIZE(3,1),
+				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+3),
+			},
+		};
+		sprite_addq(spr, 2);
 	}
 }
 
 void system_new() {
 	puts("Starting a new game");
-	//counterEnabled = FALSE;
 	time.hour = time.minute = time.second = time.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
-	//player_init();
 	stage_load(13);
 	tsc_call_event(GAME_START_EVENT);
 }
@@ -275,7 +319,8 @@ void system_load(uint8_t index) {
 		return;
 	}
 	puts("Loading game save from SRAM");
-	counterEnabled = FALSE;
+	counterTick = FALSE;
+	counterShow = FALSE;
 	player_init();
 	sram_file = index;
 	
@@ -455,7 +500,8 @@ void system_save_config() {
 // Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
 	puts("Loading game save from stage select data");
-	counterEnabled = FALSE;
+	counterTick = FALSE;
+	counterShow = FALSE;
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);
 	uint8_t song = LS_readWord(file, 0x02);
@@ -543,15 +589,29 @@ uint8_t system_checkdata() {
 
 void system_start_counter() {
 	counter = (Time) { 0,0,0,0 };
-	counterEnabled = TRUE;
+	counterTick = TRUE;
+	counterShow = TRUE;
+}
+
+void system_stop_counter() {
+	counterTick = FALSE;
+}
+
+void system_resume_counter() {
+	counterTick = TRUE;
+}
+
+void system_show_counter() {
+	counterShow = TRUE;
+}
+
+void system_hide_counter() {
+	counterShow = FALSE;
 }
 
 uint32_t system_counter_ticks() {
-	return counter.frame + counter.second*FPS + counter.minute*FPS*60 + counter.hour*FPS*60*60;
-}
-
-void system_counter_draw() {
-	
+	// Counter considers a second 50 frames, even for NTSC
+	return SPEED_8(counter.frame) + counter.second*50 + counter.minute*60*50;
 }
 
 uint32_t system_load_counter() {

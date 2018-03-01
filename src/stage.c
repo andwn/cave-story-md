@@ -384,7 +384,7 @@ void stage_update() {
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
 		
-		if(IS_PALSYSTEM) {
+		if(pal_mode) {
 			uint8_t y = 28;
 			for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
 			for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
