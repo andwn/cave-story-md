@@ -690,7 +690,7 @@ BIN PXA_Weed	"Stage/Weed.pxa"
 # Background Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET BG_Arthur	"back/bkGrass.png" 0
+#TILESET BG_Arthur	"back/bkGrass.png" 0
 TILESET BG_Blue		"back/bkMimi.png" 0
 TILESET BG_Eggs		"back/bkEggs.png" 0
 TILESET BG_Gard		"back/bkGard.bmp" 0

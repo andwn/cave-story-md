@@ -24,6 +24,7 @@
 #include "gamemode.h"
 #include "input.h"
 #include "joy.h"
+#include "memory.h"
 #include "resources.h"
 #include "sprite.h"
 #include "stage.h"
@@ -35,6 +36,9 @@
 #include "vdp_tile.h"
 #include "xgm.h"
 #include "z80_ctrl.h"
+
+extern const uint16_t time_tab_ntsc[0x100];
+extern const uint16_t speed_tab_ntsc[0x100];
 
 void vsync() {
 	vblank = 0;
@@ -65,9 +69,40 @@ void aftervsync() {
 }
 
 int main() {
+	// initiate random number generator
+    setRandomSeed(0xC427);
+    // enable interrupts
+    __asm__("move #0x2500,%sr");
+    // init part
+    MEM_init();
+    VDP_init();
+    DMA_init(0, 0);
+    //PSG_init();
+    JOY_init();
+    // reseting z80 also reset the ym2612
+    Z80_init();
+    // Initialize time and speed tables (framerate adjusted)
+    if(pal_mode) {
+		for(uint16_t i = 0; i < 0x100; i++) {
+			time_tab[i] = i;
+			speed_tab[i] = i;
+		}
+	} else {
+		for(uint16_t i = 0; i < 0x100; i++) {
+			time_tab[i] = time_tab_ntsc[i];
+			speed_tab[i] = speed_tab_ntsc[i];
+		}
+	}
+    // let's the fun go on !
+    
 	puts("Hi June");
     sound_init();
 	input_init();
+	
+	// Error Tests
+	//__asm__("move.w (1),%d0"); // Address Error
+	//__asm__("illegal"); // Illegal Instruction
+	//__asm__("divu #0,%d0"); // Zero Divide
 
 	splash_main();
     while(TRUE) {

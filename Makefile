@@ -40,9 +40,6 @@ ASFLAGS  = -m68000 --register-prefix-optional
 LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
 Z80FLAGS = -isrc/xgm
 
-BOOTSS    = $(wildcard src/boot/*.s)
-BOOT_OBJS = $(BOOTSS:.s=.o)
-
 # Stage layout files to compress
 PXMS  = $(wildcard res/Stage/*.pxm)
 PXMS += $(wildcard res/Stage/*/*.pxm)
@@ -95,8 +92,8 @@ prereq: $(LIBPNG) $(MDTILER)
 symbol.txt: doukutsu.bin
 	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n doukutsu.elf > symbol.txt
 
-src/boot/sega.o: src/boot/rom_head.bin
-	$(AS) $(ASFLAGS) src/boot/sega.s -o $@
+boot.o:
+	$(AS) $(ASFLAGS) boot.s -o $@
 
 %.bin: %.elf
 	@echo "Replacing ELF header with MegaDrive header..."
@@ -104,8 +101,8 @@ src/boot/sega.o: src/boot/rom_head.bin
 	@dd if=temp.bin of=$@ bs=8K conv=sync
 	@rm -f temp.bin
 
-%.elf: $(BOOT_OBJS) $(PATS) $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) $(BOOT_OBJS) $(OBJS) $(LIBS)
+%.elf: boot.o $(PATS) $(OBJS)
+	$(CC) -o $@ $(LDFLAGS) boot.o $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -123,12 +120,6 @@ src/boot/sega.o: src/boot/rom_head.bin
 
 %.s: %.o80
 	$(BINTOS) $<
-
-src/boot/rom_head.o: src/boot/rom_head.c
-	$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
-
-src/boot/rom_head.bin: src/boot/rom_head.o
-	$(LD) $(LDFLAGS) --oformat binary $< -o $@
 
 # For asm target
 asm-dir:
@@ -152,8 +143,7 @@ head-gen:
 
 clean:
 	rm -f $(CPXMS) $(PATS) $(MAPS) $(OBJS)
-	rm -f doukutsu.bin doukutsu.elf symbol.txt
-	rm -f src/boot/sega.o src/boot/rom_head.o src/boot/rom_head.bin
+	rm -f doukutsu.bin doukutsu.elf symbol.txt boot.o
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s inc/ai_gen.h
 	rm -rf asmout
