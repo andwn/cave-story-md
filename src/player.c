@@ -817,7 +817,7 @@ void player_draw() {
 				player.frame = WALK1;
 			}
 		}
-		if(player.animtime % 14 == 7) sound_play(SND_PLAYER_WALK, 2);
+		if((player.animtime & 15) == 7) sound_play(SND_PLAYER_WALK, 2);
 	}
 	// Set frame if it changed
 	if(player.frame != player.oframe) PLAYER_SPRITE_TILES_QUEUE();
@@ -839,7 +839,7 @@ void player_draw() {
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(playerSprite);
 		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
-			uint8_t vert = 0, vdir = 0;
+			uint16_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
 				vert = 1;
 				vdir = 0;
@@ -847,12 +847,21 @@ void player_draw() {
 				vert = 1;
 				vdir = 1;
 			}
-			weaponSprite = (VDPSprite){
-				.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - (vert?4:12) + 128,
-				.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - (vert?8:0) + 128,
-				.size = SPRITE_SIZE(vert ? 1 : 3, vert ? 3 : 1),
-				.attribut = TILE_ATTR_FULL(PAL1,0,vdir,player.dir,TILE_WEAPONINDEX+vert*3)
-			};
+			if(vert) {
+				weaponSprite = (VDPSprite) {
+					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 4 + 128,
+					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 8 + 128,
+					.size = SPRITE_SIZE(1, 3),
+					.attribut = TILE_ATTR_FULL(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
+				};
+			} else {
+				weaponSprite = (VDPSprite) {
+					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12 + 128,
+					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 0 + 128,
+					.size = SPRITE_SIZE(3, 1),
+					.attribut = TILE_ATTR_FULL(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
+				};
+			}
 			sprite_add(weaponSprite);
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {

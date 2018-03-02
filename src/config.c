@@ -121,8 +121,8 @@ void draw_menuitem(const MenuItem *item) {
 }
 
 void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
-	uint8_t sprFrame = 0;
-	uint8_t sprTime = ANIM_SPEED;
+	//uint8_t sprFrame = 0;
+	//uint8_t sprTime = ANIM_SPEED;
 	
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
@@ -144,11 +144,12 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 					if(!(joystate & btn[cfg_btn_jump])) break;
 				}
 				// Animate quote sprite
-				if(--sprTime == 0) {
-					sprTime = ANIM_SPEED;
-					if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-					sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
-				}
+				//if(--sprTime == 0) {
+				//	sprTime = ANIM_SPEED;
+				//	if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
+				//	sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
+				//}
+				sprite_index((*sprCursor), TILE_SHEETINDEX+32+16);
 				sprite_add((*sprCursor));
 				ready = TRUE;
 				vsync(); aftervsync();
@@ -215,6 +216,8 @@ uint8_t set_page(uint8_t page) {
 	return maxCursor;
 }
 
+extern uint8_t tpal;
+
 void config_main() {
 	gamemode = GM_CONFIG;
 	
@@ -223,12 +226,12 @@ void config_main() {
 	uint8_t sprFrame = 0;
 	uint8_t sprTime = ANIM_SPEED;
 	uint8_t page = PAGE_CONTROL;
-	uint8_t waitButton = FALSE;
+	//uint8_t waitButton = FALSE;
 	uint8_t cursor = 0;
 	uint8_t maxCursor = set_page(page);
 	
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
+		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
@@ -236,47 +239,47 @@ void config_main() {
 	oldstate = ~0;
 	while(TRUE) {
 		input_update();
-		if(waitButton) {
+		//if(waitButton) {
 			// Show looking up frame
-			sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
-		} else {
-			if(joy_pressed(BUTTON_UP)) {
-				do {
-					if(cursor == 0) cursor = maxCursor - 1;
-					else cursor--;
-				} while(menu[page][cursor].type == MI_LABEL);
-				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(BUTTON_DOWN)) {
-				do {
-					if(cursor == maxCursor - 1) cursor = 0;
-					else cursor++;
-				} while(menu[page][cursor].type == MI_LABEL);
-				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(BUTTON_LEFT)) {
-				if(page == 0) page = 2;
-				else page--;
-				cursor = 0;
-				set_page(page);
-				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(BUTTON_RIGHT)) {
-				if(page == 2) page = 0;
-				else page++;
-				cursor = 0;
-				set_page(page);
-				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(btn[cfg_btn_jump])) {
-				if(menu[page][cursor].type == MI_RETURN) break;
-				press_menuitem(&menu[page][cursor], page, &sprCursor);
-			} else if(joy_pressed(btn[cfg_btn_shoot])) {
-				break;
-			}
-			// Animate quote sprite
-			if(--sprTime == 0) {
-				sprTime = ANIM_SPEED;
-				if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
-			}
+		//	sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
+		//} else {
+		if(joy_pressed(BUTTON_UP)) {
+			do {
+				if(cursor == 0) cursor = maxCursor - 1;
+				else cursor--;
+			} while(menu[page][cursor].type == MI_LABEL);
+			sound_play(SND_MENU_MOVE, 0);
+		} else if(joy_pressed(BUTTON_DOWN)) {
+			do {
+				if(cursor == maxCursor - 1) cursor = 0;
+				else cursor++;
+			} while(menu[page][cursor].type == MI_LABEL);
+			sound_play(SND_MENU_MOVE, 0);
+		} else if(joy_pressed(BUTTON_LEFT)) {
+			if(page == 0) page = 2;
+			else page--;
+			cursor = 0;
+			set_page(page);
+			sound_play(SND_MENU_MOVE, 0);
+		} else if(joy_pressed(BUTTON_RIGHT)) {
+			if(page == 2) page = 0;
+			else page++;
+			cursor = 0;
+			set_page(page);
+			sound_play(SND_MENU_MOVE, 0);
+		} else if(joy_pressed(btn[cfg_btn_jump])) {
+			if(menu[page][cursor].type == MI_RETURN) break;
+			press_menuitem(&menu[page][cursor], page, &sprCursor);
+		} else if(joy_pressed(btn[cfg_btn_shoot])) {
+			break;
 		}
+		// Animate quote sprite
+		if(--sprTime == 0) {
+			sprTime = ANIM_SPEED;
+			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
+			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+		}
+		//}
 		
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);

@@ -242,11 +242,11 @@ void ai_hp_lightning(Entity *e) {
 void onspawn_hpress_shield(Entity *e) {
 	e->alwaysActive = TRUE;
 	if(e->eflags & NPC_OPTION2) {
-		e->x = bossEntity->x + (24 << CSF);
+		e->x = bossEntity->x + (28 << CSF);
 	} else {
-		e->x = bossEntity->x - (24 << CSF);
+		e->x = bossEntity->x - (28 << CSF);
 	}
-	e->y = bossEntity->y + (24 << CSF);
+	e->y = bossEntity->y + (40 << CSF);
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
 	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->health = 1000;

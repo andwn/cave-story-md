@@ -117,6 +117,8 @@ const struct {
 	{ 14*8,  5*8 + 20*8 },
 };
 
+extern uint8_t tpal;
+
 uint8_t saveselect_main() {
 	gamemode = GM_SAVESEL;
 	
@@ -132,7 +134,7 @@ uint8_t saveselect_main() {
 	VDP_clearPlan(PLAN_B, TRUE);
 	sprites_clear();
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
+		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	

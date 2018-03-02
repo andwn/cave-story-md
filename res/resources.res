@@ -403,6 +403,7 @@ TILESET TS_ItemSel		"itemsel.png" 			0
 
 # Number Font
 TILESET TS_Numbers		"sprite/numbers.png" 	0
+TILESET TS_Clock		"clock.png"				0
 
 # HUD Health/Energy Bar
 TILESET TS_HudBar		"sprite/hudfill.png" 	0

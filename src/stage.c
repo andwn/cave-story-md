@@ -178,6 +178,8 @@ void stage_load(uint16_t id) {
 	if(stageID == STAGE_HELL_B3 || stageID == STAGE_HELL_PASSAGEWAY_2) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
+
+	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	
 	tsc_load_stage(id);
 	

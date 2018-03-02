@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "dma.h"
 #include "entity.h"
+#include "gamemode.h"
 #include "joy.h"
 #include "memory.h"
 #include "player.h"
@@ -62,10 +63,23 @@ uint8_t sram_file = 0;
 uint8_t sram_state = SRAM_UNCHECKED;
 
 // Put the counter tiles in a "blank spot" of Hell's tileset
-#define TILE_COUNTERINDEX 400
-uint8_t counterShow = FALSE;
-uint8_t counterTick = FALSE;
+#define TILE_COUNTERINDEX 416
+//uint8_t counterShow = FALSE;
+//uint8_t counterTick = FALSE;
 Time time, counter;
+static const VDPSprite counterSprite[2] = {
+	{ 
+		.x = 0x80 + 256, 
+		.y = 0x80 + 16, 
+		.size = SPRITE_SIZE(3,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
+	}, { 
+		.x = 0x80 + 280, 
+		.y = 0x80 + 16, 
+		.size = SPRITE_SIZE(3,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+3),
+	},
+};
 
 uint32_t flags[FLAGS_LEN];
 uint32_t skip_flags = 0;
@@ -102,9 +116,9 @@ static void counter_draw_minute() {
 		min1 -= 10;
 		min10++;
 	}
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min10 << 5], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min10 << 3], 
 			(TILE_COUNTERINDEX+1) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min1 << 5], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min1 << 3], 
 			(TILE_COUNTERINDEX+2) << 5, 16, 2);
 }
 
@@ -115,10 +129,20 @@ static void counter_draw_second() {
 		sec1 -= 10;
 		sec10++;
 	}
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec10 << 5], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[(sec1 & 1) << 3], 
+			(TILE_COUNTERINDEX) << 5, 16, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec10 << 3], 
 			(TILE_COUNTERINDEX+4) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec1 << 5], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec1 << 3], 
 			(TILE_COUNTERINDEX+5) << 5, 16, 2);
+}
+
+void system_draw_counter() {
+	counter_draw_minute();
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[2 << 3], 
+			(TILE_COUNTERINDEX+3) << 5, 16, 2);
+	counter_draw_second();
+	sprite_addq(counterSprite, 2);
 }
 
 void system_update() {
@@ -132,8 +156,8 @@ void system_update() {
 			}
 		}
 	}
-	if(counterTick) {
-		if(++counter.frame >= FPS) {
+	if(playerEquipment & EQUIP_CLOCK) {
+		if(!gameFrozen && ++counter.frame >= FPS) {
 			counter.frame = 0;
 			if(++counter.second >= 60) {
 				counter.second = 0;
@@ -142,28 +166,14 @@ void system_update() {
 			}
 			counter_draw_second();
 		}
-	}
-	if(counterShow) {
-		VDPSprite spr[2] = {
-			{ 
-				.x = 0x80 + 256, 
-				.y = 0x80 + 16, 
-				.size = SPRITE_SIZE(3,1),
-				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
-			}, { 
-				.x = 0x80 + 280, 
-				.y = 0x80 + 16, 
-				.size = SPRITE_SIZE(3,1),
-				.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+3),
-			},
-		};
-		sprite_addq(spr, 2);
+		sprite_addq(counterSprite, 2);
 	}
 }
 
 void system_new() {
 	puts("Starting a new game");
 	time.hour = time.minute = time.second = time.frame = 0;
+	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
 	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
 	stage_load(13);
@@ -319,8 +329,8 @@ void system_load(uint8_t index) {
 		return;
 	}
 	puts("Loading game save from SRAM");
-	counterTick = FALSE;
-	counterShow = FALSE;
+	//counterTick = FALSE;
+	//counterShow = FALSE;
 	player_init();
 	sram_file = index;
 	
@@ -360,6 +370,7 @@ void system_load(uint8_t index) {
 	time.minute = SRAM_readByte(loc);			loc++;
 	time.second = SRAM_readByte(loc);			loc++;
 	time.frame = SRAM_readByte(loc);			loc++;
+	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].type = SRAM_readByte(loc);		loc++;
@@ -500,8 +511,8 @@ void system_save_config() {
 // Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
 	puts("Loading game save from stage select data");
-	counterTick = FALSE;
-	counterShow = FALSE;
+	//counterTick = FALSE;
+	//counterShow = FALSE;
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);
 	uint8_t song = LS_readWord(file, 0x02);
@@ -515,6 +526,7 @@ void system_load_levelselect(uint8_t file) {
 	time.minute = LS_readByte(file, 0x11);
 	time.second = LS_readByte(file, 0x12);
 	time.frame = LS_readByte(file, 0x13);
+	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].type = LS_readByte(file, 0x20 + i*8);
@@ -587,28 +599,6 @@ uint8_t system_checkdata() {
 	return sram_state;
 }
 
-void system_start_counter() {
-	counter = (Time) { 0,0,0,0 };
-	counterTick = TRUE;
-	counterShow = TRUE;
-}
-
-void system_stop_counter() {
-	counterTick = FALSE;
-}
-
-void system_resume_counter() {
-	counterTick = TRUE;
-}
-
-void system_show_counter() {
-	counterShow = TRUE;
-}
-
-void system_hide_counter() {
-	counterShow = FALSE;
-}
-
 uint32_t system_counter_ticks() {
 	// Counter considers a second 50 frames, even for NTSC
 	return SPEED_8(counter.frame) + counter.second*50 + counter.minute*60*50;
@@ -641,10 +631,19 @@ uint32_t system_load_counter() {
 		return 0xFFFFFFFF;
 	}
 	// Convert LE -> BE
-    return (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[3];
+	uint32_t rtn = (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[3];
+	// Split out so the time can be displayed on the title screen
+	counter.frame = rtn % 50;
+	counter.second = (rtn / 50) % 60;
+	counter.minute = rtn / 50 / 60;
+
+    return rtn;
 }
 
 void system_save_counter(uint32_t ticks) {
+	// Don't save counter if cheating
+	if(iSuckAtThisGameSHIT || sram_file >= SRAM_FILE_CHEAT) return;
+
 	uint8_t buffer[20];
 	uint32_t *result = (uint32_t*)buffer;
 	uint8_t *tickbuf = (uint8_t*)&ticks;

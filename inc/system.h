@@ -87,7 +87,7 @@ void system_load_levelselect(uint8_t file);
 // Counter stuff
 void system_start_counter();
 uint32_t system_counter_ticks();
-void system_counter_draw();
+void system_draw_counter();
 uint32_t system_load_counter();
 void system_save_counter(uint32_t ticks);
 

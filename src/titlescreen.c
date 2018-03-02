@@ -40,6 +40,8 @@ static const uint16_t cheat[2][10] = {
 	  BUTTON_LEFT, BUTTON_RIGHT, BUTTON_LEFT, BUTTON_RIGHT, NULL },
 };
 
+uint8_t tpal = PAL1;
+
 uint8_t titlescreen_main() {
 	gamemode = GM_TITLE;
 	
@@ -55,30 +57,32 @@ uint8_t titlescreen_main() {
 	sprites_clear();
 	// Check save data, only enable continue if save data exists
 	uint8_t sram_state = system_checkdata();
-	if(sram_state == SRAM_VALID_SAVE) {
-	//	VDP_drawText("Continue", 15, 14);
-	//	cursor = 1;
+	if(sram_state != SRAM_INVALID) {
 		besttime = system_load_counter(); // 290.rec data
+		system_load_config();
 	}
-	if(sram_state != SRAM_INVALID) system_load_config();
 	// Change character & song based on 290.rec value
 	if(besttime <= 3*3000) {
 		tsprite = &SPR_Sue;
+		tpal = PAL1;
 		tsong = 2; // Safety
 	} else if(besttime <= 4*3000) {
 		tsprite = &SPR_King;
+		tpal = PAL3;
 		tsong = 41; // White Stone Wall
 	} else if(besttime <= 5*3000) {
 		tsprite = &SPR_Toroko;
+		tpal = PAL3;
 		tsong = 40; // Toroko's Theme
 	} else if(besttime <= 6*3000) {
 		tsprite = &SPR_Curly;
+		tpal = PAL3;
 		tsong = 36; // Running Hell
 	}
 	// Load quote sprite
 	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,1,TILE_SHEETINDEX+32),
+		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
@@ -150,6 +154,8 @@ uint8_t titlescreen_main() {
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
 		sprite_add(sprCursor);
+
+		if(besttime > 0 && besttime < 100*60*50) system_draw_counter();
 		
 		ready = TRUE;
 		vsync(); aftervsync();
