@@ -235,7 +235,7 @@ void ai_gaudi_patient(Entity *e) {
 		{
 			e->state = 21;
 			e->frame = 2;
-		}
+		} /* fallthrough */
 		case 21:
 		{
 			ANIMATE(e, 16, 2,3);

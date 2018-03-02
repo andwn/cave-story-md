@@ -34,7 +34,7 @@ endif
 
 INCS     = -Isrc -Ires -Iinc
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -fno-builtin -fshort-enums
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -fno-builtin
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
 LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
@@ -73,15 +73,17 @@ ASMO  = $(CS:%.c=asmout/%.s)
 all: release
 pal: release
 
-release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+release: OPTIONS  = -Ofast -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+release: OPTIONS += -frename-registers -fshort-enums
 release: OPTIONS += -flto -fuse-linker-plugin
 release: main-build symbol.txt
 
-asm: OPTIONS = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+asm: OPTIONS  = -Ofast -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+asm: OPTIONS += -frename-registers -fshort-enums
 asm: head-gen asm-dir $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
-debug: OPTIONS = -g -O2 -DDEBUG -DKDEBUG
+debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
 debug: main-build symbol.txt
 
 main-build: prereq head-gen doukutsu.bin
