@@ -27,6 +27,7 @@
 #include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
+#include "z80_ctrl.h"
 
 #include "gamemode.h"
 
@@ -83,9 +84,8 @@ const MenuItem menu[3][12] = {
 		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-		{ 4,  MI_ACTION, "Reset Nikumaru Counter", (uint8_t*)3 },
-		{ 6,  MI_ACTION, "Format SRAM (!)", (uint8_t*)4 },
-		{ 8,  MI_LABEL,  "(!) This will erase all save data", NULL },
+		{ 4,  MI_ACTION, "Erase Counter", (uint8_t*)3 },
+		{ 6,  MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
 	},
 };
 
@@ -324,8 +324,38 @@ void act_title(uint8_t page) {
 
 void act_resetcounter(uint8_t page) {
 	(void)(page);
+	system_save_counter(0xFFFFFFFF);
 }
 
 void act_format(uint8_t page) {
 	(void)(page);
+	uint8_t starts = 0;
+	uint16_t timer = 0;
+	VDP_drawText("Are you sure?", 13, 12);
+	VDP_drawText("Press start three times", 8, 14);
+	song_stop();
+	while(!joy_pressed(btn[cfg_btn_shoot])) {
+		input_update();
+		if(joy_pressed(BUTTON_START) && ++starts >= 3) {
+			VDP_init();
+			system_format_sram();
+			sound_play(0xE5-0x80, 15);
+			uint16_t timer = TIME_8(150);
+			while(--timer) {
+				vsync(); aftervsync();
+			}
+			SYS_hardReset();
+		} else {
+			timer++;
+			switch(starts) {
+				case 0: if((timer & 3) == 0) sound_play(0xBB-0x80, 5); break;
+				case 1: if((timer & 3) == 0) sound_play(0xBC-0x80, 5); break;
+				case 2: if((timer & 3) == 0) sound_play(0xBD-0x80, 5); break;
+			}
+		}
+		vsync(); aftervsync();
+	}
+	VDP_clearText(13, 12, 13);
+	VDP_clearText(8, 14, 23);
+	song_resume();
 }

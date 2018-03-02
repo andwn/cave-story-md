@@ -91,6 +91,8 @@ void system_draw_counter();
 uint32_t system_load_counter();
 void system_save_counter(uint32_t ticks);
 
+void system_format_sram();
+
 // SGDK sys.h stuff
 void SYS_assertReset();
 void SYS_hardReset();

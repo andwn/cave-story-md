@@ -670,6 +670,14 @@ void system_save_counter(uint32_t ticks) {
 	SRAM_disable();
 }
 
+void system_format_sram() {
+	SRAM_enable();
+	for(uint16_t i = 0; i < 0x2000; i += 4) {
+		SRAM_writeLong(i, 0);
+	}
+	SRAM_disable();
+}
+
 static uint8_t LS_readByte(uint8_t file, uint32_t addr) {
 	return FileList[file][addr];
 }

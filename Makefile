@@ -96,7 +96,7 @@ boot.o:
 	$(AS) $(ASFLAGS) boot.s -o $@
 
 %.bin: %.elf
-	@echo "Replacing ELF header with MegaDrive header..."
+	@echo "Stripping ELF header..."
 	@$(OBJC) -O binary $< temp.bin
 	@dd if=temp.bin of=$@ bs=8K conv=sync
 	@rm -f temp.bin

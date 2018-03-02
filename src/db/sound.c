@@ -64,9 +64,9 @@ const sound_info_def sound_info[SOUND_COUNT] = {
 	{ SFX_38, 9642 }, // Splash
 	{ SFX_39, 3102 },
 	{ SFX_3A, 1270 },
-	{ SFX_3B, 239 }, // Spur charge 1
-	{ SFX_3C, 241 }, // 2
-	{ SFX_3D, 241 }, // 3
+	{ SFX_3B, 256 }, // Spur charge 1
+	{ SFX_3C, 256 }, // 2
+	{ SFX_3D, 256 }, // 3
 	{ SFX_3E, 4972 },
 	{ SFX_3F, 4968 },
 	{ SFX_40, 4997 }, // 64 - Spur fire max

@@ -40,7 +40,7 @@ static const uint16_t cheat[2][10] = {
 	  BUTTON_LEFT, BUTTON_RIGHT, BUTTON_LEFT, BUTTON_RIGHT, NULL },
 };
 
-uint8_t tpal = PAL1;
+uint8_t tpal;
 
 uint8_t titlescreen_main() {
 	gamemode = GM_TITLE;
@@ -62,9 +62,9 @@ uint8_t titlescreen_main() {
 		system_load_config();
 	}
 	// Change character & song based on 290.rec value
+	tpal = PAL1;
 	if(besttime <= 3*3000) {
 		tsprite = &SPR_Sue;
-		tpal = PAL1;
 		tsong = 2; // Safety
 	} else if(besttime <= 4*3000) {
 		tsprite = &SPR_King;
