@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
@@ -324,7 +324,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ NULL, 			SHEET_CORES4, 	PAL1, 1, &onspawn_persistent, 	&ai_ud_blast, 		&ai_null 			}, // Huge Energy Shot
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_block_spawner, 	&ai_null 			}, // Falling Block Generator
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Cloud
-	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Cloud Generator
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_cloud_spawner,&ai_cloud_spawner, 	&ai_null 			}, // Cloud Generator
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Doctor (Uncrowned)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Balrog/Misery (Bubble)
@@ -435,4 +435,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 9] = {
 	{ &SPR_J_LevelUp, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Up (Japanese)
 	{ &SPR_LevelDown, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Down (English)
 	{ &SPR_J_LevelDown, NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Down (Japanese)
+	{ NULL, 			NOSHEET, 		PAL2, 12,&onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
+	{ NULL, 			NOSHEET, 		PAL2, 3, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
+	{ NULL, 			NOSHEET, 		PAL2, 3, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
+	{ NULL, 			NOSHEET, 		PAL2, 1, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
 };

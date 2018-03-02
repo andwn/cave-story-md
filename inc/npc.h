@@ -330,7 +330,7 @@
 #define OBJ_QUAKE					292
 #define OBJ_UD_BLAST				293
 #define OBJ_FALLING_BLOCK_SPAWNER	294
-#define OBJ_CLOUD					295
+#define OBJ_CLOUD_UNUSED			295
 #define OBJ_CLOUD_SPAWNER			296		// clouds from prtFall (ending sequence)
 #define OBJ_INTRO_DOCTOR			298		// from intro
 #define OBJ_INTRO_KINGS				299		// balrog/misery in bubble (from intro)
@@ -430,6 +430,10 @@ enum {
 	OBJ_LEVELUP_JA,
 	OBJ_LEVELDOWN,
 	OBJ_LEVELDOWN_JA,
+	OBJ_CLOUD,
+	OBJ_CLOUD2,
+	OBJ_CLOUD3,
+	OBJ_CLOUD4,
 };
 
 // Locations in npc.tbl where data for each property begins

@@ -842,9 +842,14 @@ uint8_t execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
-			Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
-									  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
-			e->dir = mddir(args[3]);
+			if(args[0] == OBJ_THE_CAST) {
+				entity_create_ext((args[1]<<CSF)*16+(8<<CSF), 
+								  (args[2]<<CSF)*16+(8<<CSF), args[0], 0, args[3], 0);
+			} else {
+				Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
+										  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
+				e->dir = mddir(args[3]);
+			}
 		}
 		break;
 		case CMD_BOA: // Set boss state to (1)
