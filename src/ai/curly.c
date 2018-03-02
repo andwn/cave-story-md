@@ -176,7 +176,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 	b->type = WEAPON_NEMESIS;
 	b->level = 1;
 	b->damage = 12;
-	b->ttl = TIME_8(35);
+	b->ttl = pal_mode ? 35 : 41;
 	b->dir = dir & 1;
 	switch(dir) {
 		case LEFT:
@@ -188,18 +188,18 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 			b->y = y + pixel_to_sub(1);
 			b->x_speed = b->dir&1 ? SPEED_12(0x800) : -SPEED_12(0x800);
 			b->y_speed = 0;
-			b->hit_box = (bounding_box) { 5, 3, 5, 3 };
+			b->hit_box = (bounding_box) { 10, 6, 10, 6 };
 		}
 		break;
 		case UP:
 		case DOWN: {
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_NEMINDEX);
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,dir==DOWN,0,TILE_NEMINDEX);
 			b->sprite.size = SPRITE_SIZE(2, 3);
 			b->x = x - (4<<CSF);
 			b->y = y + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 			b->x_speed = 0;
 			b->y_speed = b->dir ? SPEED_12(0x800) : -SPEED_12(0x800);
-			b->hit_box = (bounding_box) { 3, 5, 3, 5 };
+			b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		}
 		break;
 	}

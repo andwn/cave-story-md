@@ -57,6 +57,44 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
+// Table from Nxengine
+typedef struct {
+	int maxspeed;		// max speed of missile
+	int accel;			// rate of acceleration
+	int smokeamt;		// how much smoke to make on explosion (higher = more)
+	int num_booms;		// number of boomflashes to create on impact
+	int boomrange;		// max dist away to create the boomflashes
+	int damage;			// damage dealt by a direct hit of the missile itself
+	int boomdamage;		// damage dealt by contact with a boomflash (AoE damage)
+} MissileSettings;
+static const MissileSettings missile_settings[2][6] = {
+	{ // NTSC
+	//  Level 1-3 regular missile
+	//  have on record here for damage 4, 6, 4; check if that's correct
+	//    maxspd        accel        smoke, nboom, range,   dmg,   bmdmg
+		{ 0xA00*50/60,  0x80*50/60,  2,     4,	   16,		8,	   1, },
+		{ 0xA00*50/60,  0x100*50/60, 4,     6,	   32,		15,	   2, },
+		{ 0xA00*50/60,  0x80*50/60,  2,     2,	   40,		8,	   2, },
+	//  Level 1-3 super missile
+	//    maxspd        accel        smoke, nboom, range,   dmg,   bmdmg
+		{ 0x1400*50/60, 0x200*50/60, 2,     4,     16,		18,	   1, },
+		{ 0x1400*50/60, 0x200*50/60, 4,     5,     32,		30,	   2, },
+		{ 0x1400*50/60, 0x200*50/60, 2,     3,     40,		18,    2, },
+	}, { // PAL
+	//  Level 1-3 regular missile
+	//  have on record here for damage 4, 6, 4; check if that's correct
+	//    maxspd  accel  smoke, nboom, range,  dmg,  bmdmg
+		{ 0xA00,  0x80,  2,     4,	   16,	   8,	 1, },
+		{ 0xA00,  0x100, 4,     6,	   32,	   15,   2, },
+		{ 0xA00,  0x80,  2,     2,	   40,	   8,	 2, },
+	//  Level 1-3 super missile
+	//    maxspd  accel  smoke, nboom, range, dmg,  bmdmg
+		{ 0x1400, 0x200, 2,     4,     16,	  18,	1, },
+		{ 0x1400, 0x200, 4,     5,     32,	  30,	2, },
+		{ 0x1400, 0x200, 2,     3,     40,	  18,   2, },
+	}
+};
+
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
 
@@ -207,44 +245,65 @@ void weapon_fire_machinegun(Weapon *w) {
 }
 
 void weapon_fire_missile(Weapon *w) {
-	// Use end of array for missiles
-	// Max bullets for lv 1,2,3: 1,2,6
-	Bullet *b = NULL;
-	for(uint8_t i = 4 + (w->level == 1 ? 5 : w->level == 2 ? 4 : 0); i < 10; i++) {
-		if(playerBullet[i].ttl > 0) continue;
-		b = &playerBullet[i];
-		break;
-	}
-	if(!b) return;
-	if(w->ammo) w->ammo--;
-	else if(w->maxammo) return;
-	b->type = WEAPON_MISSILE; //w->type;
-	b->level = w->level;
-	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
-	b->damage = 0; // 0 damage because an explosion object causes damage instead
-	b->ttl = 120;
-	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
-	
-	b->dir = FIREDIR;
-	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
-		b->x = player.x;
-		b->y = player.y - pixel_to_sub(12);
+	// Launch 3 for level 3 missile
+	for(uint8_t count = 0; count < (w->level == 3 ? 3 : 1); count++) {
+		// Use end of array for missiles
+		// Max bullets for lv 1,2,3: 1,2,6
+		Bullet *b = NULL;
+		for(uint8_t i = 4 + (w->level == 1 ? 5 : w->level == 2 ? 4 : 0); i < 10; i++) {
+			if(playerBullet[i].ttl > 0) continue;
+			b = &playerBullet[i];
+			break;
+		}
+		if(!b) return;
+		if(w->ammo) w->ammo--;
+		else if(w->maxammo) return;
+		b->type = w->type;
+		b->level = w->level;
+		b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
+		b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+		b->sheet = w->sheet;
+		b->hits = 0;
+		b->state = 0;
+		// Index for the table
+		uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
+		b->damage = missile_settings[pal_mode][index].damage;
+		b->ttl = TIME_8(100);
 		b->x_speed = 0;
-		b->y_speed = -pixel_to_sub(3);
-	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
-		b->x = player.x;
-		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(3);
-	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
-		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
-		b->y = player.y + pixel_to_sub(2);
-		b->x_speed = (b->dir ? pixel_to_sub(3) : -pixel_to_sub(3));
 		b->y_speed = 0;
+		
+		b->dir = FIREDIR;
+		if(b->dir == UP) {
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
+			b->x = player.x;
+			b->y = player.y - pixel_to_sub(12);
+			if(b->level == 3) {
+				b->x_speed = (random() & 0xFFF) - 0x7FF;
+				b->y_speed = (random() & 0x3FF) - 0x1FF;
+			}
+			//b->x_speed = 0;
+			//b->y_speed = -pixel_to_sub(3);
+		} else if(b->dir == DOWN) {
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
+			b->x = player.x;
+			b->y = player.y + pixel_to_sub(12);
+			if(b->level == 3) {
+				b->x_speed = (random() & 0xFFF) - 0x7FF;
+				b->y_speed = (random() & 0x3FF) - 0x1FF;
+			}
+			//b->x_speed = 0;
+			//b->y_speed = pixel_to_sub(3);
+		} else {
+			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
+			b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+			b->y = player.y + pixel_to_sub(2);
+			if(b->level == 3) {
+				b->y_speed = (random() & 0xFFF) - 0x7FF;
+				b->x_speed = (random() & 0x3FF) - 0x1FF;
+			}
+			//b->x_speed = (b->dir ? pixel_to_sub(3) : -pixel_to_sub(3));
+			//b->y_speed = 0;
+		}
 	}
 }
 
@@ -390,20 +449,20 @@ void weapon_fire_nemesis(Weapon *w) {
 	switch(b->level) {
 		case 1:
 		b->damage = 12;
-		b->ttl = TIME(35);
-		speed = SPEED(0x800);
+		b->ttl = pal_mode ? 35 : 41;
+		speed = SPEED_12(0x800);
 		sound_play(SND_NEMESIS_FIRE, 5);
 		break;
 		case 2:
 		b->damage = 6;
-		b->ttl = TIME(30);
-		speed = SPEED(0x600);
+		b->ttl = pal_mode ? 31 : 37;
+		speed = SPEED_12(0x600);
 		sound_play(SND_POLAR_STAR_L3, 5);
 		break;
 		case 3:
 		b->damage = 1;
-		b->ttl = TIME(25);
-		speed = SPEED(0x300);
+		b->ttl = pal_mode ? 27 : 33;
+		speed = SPEED_10(0x300);
 		break;
 	}
 	b->dir = FIREDIR;
@@ -411,12 +470,12 @@ void weapon_fire_nemesis(Weapon *w) {
 		case LEFT:
 		case RIGHT:
 		b->sprite.size = SPRITE_SIZE(3, 2);
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[w->sheet].index);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
 		b->x = player.x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? speed : -speed);
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 5, 3, 5, 3 };
+		b->hit_box = (bounding_box) { 10, 6, 10, 6 };
 		break;
 		case UP:
 		case DOWN:
@@ -426,7 +485,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->y = player.y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
 		b->y_speed = ((b->dir&1) ? speed : -speed);
-		b->hit_box = (bounding_box) { 3, 5, 3, 5 };
+		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
 }
@@ -551,7 +610,29 @@ void bullet_update_machinegun(Bullet *b) {
 
 void bullet_update_missile(Bullet *b) {
 	b->ttl--;
-	if(b->x_speed | b->y_speed) {
+	if(!b->state) {
+		uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
+		uint16_t accel = missile_settings[pal_mode][index].accel;
+		uint16_t maxspeed = missile_settings[pal_mode][index].maxspeed;
+		switch(b->dir) {
+			case LEFT: 
+			if(b->x_speed > -(maxspeed + accel)) b->x_speed -= accel; 
+			if(b->ttl & 1) b->y_speed >>= 1;
+			break;
+			case RIGHT: 
+			if(b->x_speed < (maxspeed + accel)) b->x_speed += accel; 
+			if(b->ttl & 1) b->y_speed >>= 1;
+			break;
+			case UP: 
+			if(b->y_speed > -(maxspeed + accel)) b->y_speed -= accel; 
+			if(b->ttl & 1) b->x_speed >>= 1;
+			break;
+			case DOWN: 
+			if(b->y_speed < (maxspeed + accel)) b->y_speed += accel; 
+			if(b->ttl & 1) b->x_speed >>= 1;
+			break;
+		}
+		if((b->ttl & 7) == 0) effect_create_misc(EFF_BOOST2, b->x >> CSF, b->y >> CSF);
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
@@ -572,8 +653,8 @@ void bullet_update_missile(Bullet *b) {
 
 void bullet_update_bubbler(Bullet *b) {
 	if(b->level < 3) { // Level 1 and 2 just move forward a bit
-		uint8_t decel = SPEED(0x10);
-		if(b->level == 1) decel += SPEED(0x0A);
+		uint8_t decel = SPEED_8(0x10);
+		if(b->level == 1) decel += SPEED_8(0x0A);
 		switch(b->dir) {
 			case LEFT: b->x_speed += decel; break;
 			case RIGHT: b->x_speed -= decel; break;
@@ -586,64 +667,60 @@ void bullet_update_bubbler(Bullet *b) {
 			return;
 		}
 		// Half assed animation
-		uint8_t livetime = b->level == 1 ? TIME(40) : TIME(60);
+		uint8_t livetime = b->level == 1 ? TIME_8(40) : TIME_8(60);
 		uint8_t frame = (livetime - b->ttl) >> 2;
 		if(frame > 3) frame = 3;
 		sprite_index(b->sprite, sheets[b->sheet].index + frame);
-	} else if(b->ttl >= TIME(30)) { // Level 3 orbits around player
-		if(!joy_down(btn[cfg_btn_shoot]) || b->ttl == TIME(30)) {
-			b->ttl = TIME(30);
+	} else if(b->ttl >= TIME_8(30)) { // Level 3 orbits around player
+		if(!joy_down(btn[cfg_btn_shoot]) || b->ttl == TIME_8(30)) {
+			b->ttl = TIME_8(30);
 			sound_play(SND_BUBBLER_LAUNCH, 5);
 			b->dir = FIREDIR;
 			switch(b->dir) {
 				case LEFT: 
-					b->x_speed = -SPEED(0xC00);
+					b->x_speed = -SPEED_12(0xC00);
 					b->y_speed = 0;
 					sprite_index(b->sprite, sheets[b->sheet].index + 2);
 					break;
 				case RIGHT: 
-					b->x_speed = SPEED(0xC00);
+					b->x_speed = SPEED_12(0xC00);
 					b->y_speed = 0;
 					sprite_index(b->sprite, sheets[b->sheet].index + 2);
 					break;
 				case UP: 
-					b->y_speed = -SPEED(0xC00);
+					b->y_speed = -SPEED_12(0xC00);
 					b->x_speed = 0;
 					sprite_index(b->sprite, sheets[b->sheet].index + 3);
 					break;
 				case DOWN: 
-					b->y_speed = SPEED(0xC00);
+					b->y_speed = SPEED_12(0xC00);
 					b->x_speed = 0;
 					sprite_index(b->sprite, sheets[b->sheet].index + 3);
 					break;
 			}
 		} else {
 			// Just 2 frames for this part, when launched use 3rd or 4th based on dir
-			if(b->ttl == TIME(98)) sprite_index(b->sprite, sheets[b->sheet].index + 1);
+			if(b->ttl == TIME_8(98)) sprite_index(b->sprite, sheets[b->sheet].index + 1);
 			// Follow player
 			if (b->x > player.x) {
-				b->x_speed -= SPEED(0x20);
-				if(b->x_speed < -SPEED(0x5FF)) b->x_speed = -SPEED(0x5FF);
+				if(b->x_speed > -SPEED_12(0x5E0)) b->x_speed -= SPEED_8(0x20);
 			} else if (b->x < player.x) {
-				b->x_speed += SPEED(0x20);
-				if(b->x_speed > SPEED(0x5FF)) b->x_speed = SPEED(0x5FF);
+				if(b->x_speed < SPEED_12(0x5E0)) b->x_speed += SPEED_8(0x20);
 			}
 			if (b->y > player.y) {
-				b->y_speed -= SPEED(0x20);
-				if(b->y_speed < -SPEED(0x5FF)) b->y_speed = -SPEED(0x5FF);
+				if(b->y_speed > -SPEED_12(0x5E0)) b->y_speed -= SPEED_8(0x20);
 			} else if (b->y < player.y) {
-				b->y_speed += SPEED(0x20);
-				if(b->y_speed > SPEED(0x5FF)) b->y_speed = SPEED(0x5FF);
+				if(b->y_speed < SPEED_12(0x5E0)) b->y_speed += SPEED_8(0x20);
 			}
 			// Bounce off walls
 			if (b->x_speed < 0 && ((blk(b->x,-4, b->y,0) & 0x41) == 0x41)) 
-				b->x_speed = SPEED(0x400);
+				b->x_speed = SPEED_10(0x3FF);
 			else if ((blk(b->x,4, b->y,0) & 0x41) == 0x41) 
-				b->x_speed = -SPEED(0x400);
+				b->x_speed = -SPEED_10(0x3FF);
 			if (b->y_speed < 0 && ((blk(b->x,0, b->y,-4) & 0x41) == 0x41)) 
-				b->y_speed = SPEED(0x400);
+				b->y_speed = SPEED_10(0x3FF);
 			else if ((blk(b->x,0, b->y,4) & 0x41) == 0x41) 
-				b->y_speed = -SPEED(0x400);
+				b->y_speed = -SPEED_10(0x3FF);
 		}
 	} else { // Level 3 being launched
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
@@ -748,14 +825,7 @@ void bullet_update_supermissile(Bullet *b) {
 
 void bullet_update_nemesis(Bullet *b) {
 	b->ttl--;
-	
-	uint16_t t = b->ttl & 3;
-	uint16_t i = (b->dir > 1) ? TILE_NEMINDEX : sheets[b->sheet].index;
-	switch(t) {
-		case 0: sprite_index(b->sprite, i); break;
-		case 2: sprite_index(b->sprite, i+6); break;
-	}
-	
+	b->sprite.attribut += (b->ttl & 1) ? -6 : 6;
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
@@ -787,22 +857,23 @@ Bullet *bullet_colliding(Entity *e) {
 
 void bullet_missile_explode(Bullet *b) {
 	sound_play(SND_MISSILE_HIT, 5);
+	b->state = 1;
 	b->x_speed = 0;
 	b->y_speed = 0;
-	b->ttl = 8;
-	b->damage = 1 + b->level;
-	if(b->type == WEAPON_SUPERMISSILE) b->damage += b->level;
-	b->hit_box = (bounding_box) { 12, 12, 12, 12 };
-	for(uint8_t i =  b->level; i < 4; i++) {
-		effect_create_smoke(sub_to_pixel(b->x) - 10 + (random() % 20), 
-							sub_to_pixel(b->y) - 10 + (random() % 20));
+	uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
+	b->ttl = missile_settings[pal_mode][index].num_booms;
+	b->damage = missile_settings[pal_mode][index].boomdamage;
+	uint8_t size = missile_settings[pal_mode][index].boomrange;
+	b->hit_box = (bounding_box) { size, size, size, size };
+	for(uint8_t i = 0; i < missile_settings[pal_mode][index].smokeamt; i++) {
+		effect_create_smoke(sub_to_pixel(b->x) - 15 + (random() & 31), 
+							sub_to_pixel(b->y) - 15 + (random() & 31));
 	}
 }
 
 uint8_t bullet_missile_is_exploding() {
 	for(uint8_t i = 4; i < 10; i++) {
-		if(playerBullet[i].ttl > 0 &&
-				playerBullet[i].x_speed == 0 && playerBullet[i].y_speed == 0) {
+		if(playerBullet[i].ttl && playerBullet[i].state) {
 			return TRUE;
 		}
 	}
@@ -849,8 +920,8 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 		}
 	}
 	if(!slash) return;
-	slash->x_speed = (slash->dir & 1) ? SPEED(0x400) : -SPEED(0x400);
-	slash->y_speed = (slash->dir & 2) ? -SPEED(0x400) : SPEED(0x400);
+	slash->x_speed = (slash->dir & 1) ? SPEED_10(0x3FF) : -SPEED_10(0x3FF);
+	slash->y_speed = (slash->dir & 2) ? -SPEED_10(0x3FF) : SPEED_10(0x3FF);
 	slash->damage = 1;
 	slash->x = b->x;
 	slash->y = b->y + ((slash->dir & 2) ? 0x2000 : -0x2000);

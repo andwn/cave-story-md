@@ -50,6 +50,7 @@ struct Bullet {
 	uint8_t sheet;
 	uint8_t dir;
 	uint8_t hits;
+	uint8_t state;
 };
 
 Weapon playerWeapon[MAX_WEAPONS];

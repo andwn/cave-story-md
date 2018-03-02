@@ -337,7 +337,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 	uint16_t flags = e->nflags | e->eflags;
 	// Destroy the bullet, or if it is a missile make it explode
 	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
-		if(b->x_speed != 0 || b->y_speed != 0) {
+		if(!b->state) {
 			bullet_missile_explode(b);
 			if(e->eflags & NPC_INVINCIBLE) {
 				sound_play(SND_TINK, 5);
