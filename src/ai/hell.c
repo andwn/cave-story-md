@@ -357,12 +357,12 @@ void ai_bute_archer(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if((!e->dir && player.x < e->x) || (e->dir && player.x > e->x)) e->state = 10;
+			if((!e->dir && player.x < e->x) || (e->dir && player.x > e->x)) e->state = 2;
 		}
 		break;
 		
 		// aiming--can track player here for a brief period
-		case 10:
+		case 2:
 		{
 			if(!PLAYER_DIST_X(224<<CSF) || player.y <= (e->y - (8<<CSF))) {
 				e->frame = BF_ARCHER5;	// shooting up
@@ -373,18 +373,18 @@ void ai_bute_archer(Entity *e) {
 			}
 			
 			if (++e->timer > TIME_8(10)) {
-				e->state = 20;
+				e->state++;
 				e->timer = 0;
 			}
 		}
 		break;
 		
 		// flashing to fire
-		case 20:
+		case 3:
 		{
 			e->frame = e->timer2 ? BF_ARCHER5 : BF_ARCHER2;
 			if(++e->timer > TIME_8(30)) {
-				e->state = 30;
+				e->state++;
 			} else if(e->timer & 2) {
 				e->frame++;
 			}
@@ -392,9 +392,9 @@ void ai_bute_archer(Entity *e) {
 		break;
 		
 		// fire
-		case 30:
+		case 4:
 		{
-			e->state = 31;
+			e->state++;
 			e->timer = 0;
 			
 			Entity *arrow = entity_create(e->x, e->y, OBJ_BUTE_ARROW, 0);
@@ -404,10 +404,10 @@ void ai_bute_archer(Entity *e) {
 			// frame: arrow away
 			e->frame = e->timer2 ? BF_ARCHER7 : BF_ARCHER4;
 		} /* fallthrough */
-		case 31:
+		case 5:
 		{
 			if (++e->timer > TIME_8(30)) {
-				e->state = 40;
+				e->state++;
 				e->frame = BF_ARCHER1;
 				e->timer = TIME_8(50) + (random() & 127);
 			}
@@ -415,10 +415,10 @@ void ai_bute_archer(Entity *e) {
 		break;
 		
 		// after fire, and the "woken up" waiting-for-player state
-		case 40:
+		case 6:
 		{
 			if(--e->timer == 0) {
-				e->state = 10;	// fire again
+				e->state = 2;	// fire again
 				FACE_PLAYER(e);
 			}
 		}
