@@ -344,8 +344,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_DROP, &SPR_Drop, 1,1,1, 0,0);
 			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
-		case 0x3F: // Last Cave
-		case 0x43:
+		case STAGE_LAST_CAVE_1:
+		{	SHEET_ADD(SHEET_FAN, &SPR_Fan, 3,2,2, 3,0, 3,1, 3,2);
+		} /* fallthrough */
+		case STAGE_LAST_CAVE_2:
 		{	SHEET_ADD(SHEET_BAT, &SPR_BatRed, 6,2,2, 0,2, 0,3, 0,4, 0,0, 0,1, 0,5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritRed, 3,2,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0,0, 0,1, 0,2, 0,3);
@@ -396,6 +398,13 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x46: // Balcony 2
 		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0,0);
 			SHEET_ADD(SHEET_BLOCKM, &SPR_BlockM, 1,2,2, 0,0);
+		} break;
+		case STAGE_FALLING:
+		case STAGE_ENDING_SKY:
+		{	SHEET_LOAD(&SPR_Cloud1, 12, 16, TILE_CLOUDINDEX, TRUE, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 1,0, 1,1, 1,2, 1,3, 1,4, 1,5);
+			SHEET_LOAD(&SPR_Cloud2, 3, 16, TILE_CLOUD2INDEX, TRUE, 0,0, 0,1, 0,2);
+			SHEET_LOAD(&SPR_Cloud3, 3, 9, TILE_CLOUD3INDEX, TRUE, 0,0, 0,1, 0,2);
+			SHEET_LOAD(&SPR_Cloud4, 1, 8, TILE_CLOUD4INDEX, TRUE, 0,0);
 		} break;
 		case STAGE_HELL_B1:
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);

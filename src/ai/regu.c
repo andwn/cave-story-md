@@ -226,7 +226,12 @@ void onspawn_sue(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->dir = TRUE;
 	SNAP_TO_GROUND(e);
 	// This keeps Sue behind the cage in Mimiga Village
-	if(stageID == 0x0B) e->alwaysActive = TRUE;
+	if(stageID == STAGE_MIMIGA_VILLAGE) e->alwaysActive = TRUE;
+	if(stageID == STAGE_FALLING) {
+		e->alwaysActive = TRUE;
+		e->state = 50;
+		e->frame = 7;
+	}
 }
 
 void ai_sue(Entity *e) {
@@ -263,7 +268,7 @@ void ai_sue(Entity *e) {
 		/* fallthrough */
 		case 7:
 		{
-			if (++e->timer > TIME(10)) e->state = 0;
+			if (++e->timer > TIME_8(10)) e->state = 0;
 		}
 		break;
 		// got punched extra hard by Igor
@@ -274,8 +279,8 @@ void ai_sue(Entity *e) {
 			e->frame = 5;
 			e->timer = 0;
 			sound_play(SND_ENEMY_SQUEAK, 5);
-			e->y_speed = -SPEED(0x200);
-			MOVE_X(-SPEED(0x400));
+			e->y_speed = -SPEED_10(0x200);
+			MOVE_X(-SPEED_10(0x3FF));
 		}
 		/* fallthrough */
 		case 9:
@@ -302,7 +307,7 @@ void ai_sue(Entity *e) {
 		case 12:
 		{
 			e->timer++;
-			if((e->timer % 16) == 8) {
+			if((e->timer & 15) == 8) {
 				e->frame = 8;
 			} else if((e->timer % 16) == 0) {
 				e->frame = 0;
@@ -366,7 +371,7 @@ void ai_sue(Entity *e) {
 		case 21:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			MOVE_X(SPEED(0x400));
+			MOVE_X(SPEED_10(0x3FF));
 			if (e->x < player.x - (8<<CSF)) {
 				e->dir = 1;
 				e->state = 0;
@@ -378,17 +383,24 @@ void ai_sue(Entity *e) {
 		case 31:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			MOVE_X(SPEED(0x400));
+			MOVE_X(SPEED_10(0x3FF));
 		}
 		break;
 		case 40:	// she jumps off the island
 		{
 			e->state = 41;
 			e->frame = 8;
-			e->y_speed = -SPEED(0x400);
+			e->y_speed = -SPEED_10(0x3FF);
 			e->grounded = FALSE;
 		}
 		break;
+		case 50:
+		{
+			e->dir = !e->linkedEntity->dir;
+			e->x_next = e->linkedEntity->x + (e->dir ? (16 << CSF) : -(16 << CSF));
+			e->y_next = e->linkedEntity->y + (4 << CSF);
+			e->y_speed = 0;
+		} break;
 	}
 
 	e->x = e->x_next;

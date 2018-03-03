@@ -23,7 +23,13 @@ If you have a 6 button controller:
 
 For 3 button, `A` cycles through weapons. The rest is the same.
 
-To activate Stage Select: 🡩 🡫🡨 🡪  A + Start. Like Sonic.
+### Cheats
+- Stage Select: up, down, left, right, A + Start. Like Sonic.
+- Infinite health/ammo: up, up, down, down, left, right, left, right, A + Start.
+
+You can still get crushed and fall out of bounds.
+
+Note that you can't load or save the game while cheating (including the counter).
 
 ## Compilation
 1. Setup [marsdev](https://github.com/andwn/marsdev) and `python`

@@ -375,65 +375,44 @@ void ai_red_energy(Entity *e) {
 	switch(e->angle) {
 		case A_UP:
 		{
-			e->y_speed -= SPEED(0x40);
+			e->frame = random() & 1;
+			e->y_speed -= SPEED_8(0x40);
+			e->y += e->y_speed;
 			if (blk(e->x, 0, e->y, 0) == 0x41) e->state = STATE_DELETE;
 		}
 		break;
 		
 		case A_DOWN:
 		{
-			e->y_speed += SPEED(0x40);
-			if (blk(e->x, 0, e->y, 0) == 0x41) e->state = STATE_DELETE;
-			if (++e->timer > TIME(50)) e->state = STATE_DELETE;
-			if (e->y_speed > SPEED(0x5ff)) e->y_speed = SPEED(0x5ff);
+			e->frame = random() & 1;
+			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
+			e->y += e->y_speed;
+			if((++e->timer > TIME_8(50)) || (blk(e->x, 0, e->y, 0) == 0x41)) e->state = STATE_DELETE;
 		}
 		break;
 		
 		case A_RIGHT:
 		{
-			if (!e->linkedEntity || e->linkedEntity->state == STATE_DELETE) { 
+			if (!e->linkedEntity || (e->linkedEntity->state == 21 && ++e->timer > 200)) { 
 				e->state = STATE_DELETE; 
 				return; 
 			}
-			
-			if(e->linkedEntity->state == 21 && ++e->timer > 200) {
-				e->state = STATE_DELETE; 
-				return;
-			}
-			
-			if (e->state == 0) {
-				e->state = 1;
-				e->eflags |= NPC_IGNORESOLID;
-				
-				e->x_speed = -0x600 + (random() % 0x1200);
-				e->y_speed = -0x600 + (random() % 0x1200);
-				
-				// accel speed
-				//e->speed = (512 / random(16, 51));
-				
-				// x/y limit
-				uint16_t limit = SPEED(0x80) + (random() & 0x7F);
-				
-				e->timer2 = limit << 1;			// x limit
-				e->id = limit + (limit << 1);	// y limit (form elongated sphere)
+			if(!e->state) {
+				e->state++;
+				e->x_speed = -0x600 + (random() & 0x1200);
+				e->y_speed = -0x600 + (random() & 0x1200);
 			}
 			
 			int32_t tgtx = e->linkedEntity->x + (4<<CSF);
-			if (e->x < tgtx) 		e->x_speed += SPEED(6);
-			else if (e->x > tgtx)	e->x_speed -= SPEED(6);
+			if(e->x < tgtx) 		e->x_speed += 6;
+			else if(e->x > tgtx)	e->x_speed -= 6;
+			if(e->y < e->linkedEntity->y) 	   e->y_speed += 6;
+			else if(e->y > e->linkedEntity->y) e->y_speed -= 6;
 			
-			if (e->y < e->linkedEntity->y) 		e->y_speed += SPEED(6);
-			else if (e->y > e->linkedEntity->y) e->y_speed -= SPEED(6);
-			
-			LIMIT_X(e->timer2);
-			LIMIT_Y(e->id);
+			e->x += e->x_speed;
+			e->y += e->y_speed;
 		}
 	}
-	
-	e->x += e->x_speed;
-	e->y += e->y_speed;
-	
-	e->frame = random() & 1;
 }
 
 void ai_mimiga_caged(Entity *e) {

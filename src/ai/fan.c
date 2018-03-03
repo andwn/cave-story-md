@@ -25,6 +25,10 @@ void ai_fan(Entity *e) {
 	uint16_t px = player.x >> CSF, py = player.y >> CSF;
 	// Script in Egg Corridor turns on fan by switching direction
 	if(e->dir != e->odir) e->state = 2;
+	// Fans in Last Cave turn on when player touches them (they use NPC_OPTION1)
+	if(e->eflags & NPC_OPTION1) {
+		if(PLAYER_DIST_X(8 << CSF) && PLAYER_DIST_Y(18 << CSF)) e->state = 2;
+	}
 	switch(e->state) {
 		case 1: // Left
 		{

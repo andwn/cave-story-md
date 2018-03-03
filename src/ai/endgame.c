@@ -9,21 +9,22 @@ void onspawn_cloud_spawner(Entity *e) {
 // makes the clouds from the falling scene (good ending)
 void ai_cloud_spawner(Entity *e) {
 	if(!e->timer) {
-		e->timer = TIME_8(10) + (random() & 31);
+		e->timer = TIME_8(e->dir ? 100 : 50);
 		e->timer2 = random() & 3;
+		//if(e->timer2 == 0) e->timer2++;
 		
 		//Entity *cloud = entity_create(0, 0, OBJ_CLOUD, 
 		//	((e->timer2 & 1) ? NPC_OPTION1 : 0) | ((e->timer2 & 2) ? NPC_OPTION2 : 0));
 		Entity *cloud = entity_create(0, 0, OBJ_CLOUD + e->timer2, 0);
 		
-		// horizontal clouds (flying with Kazuma)
-		if(e->dir)	{
-			cloud->x = e->x + block_to_sub(-10 + (random() % 20));
+		// vertical clouds (falling)
+		if(!e->dir)	{
+			cloud->x = e->x + block_to_sub(-7 + (random() & 15));
 			cloud->y = e->y;
 			cloud->y_speed = -SPEED_12(0xFFF >> e->timer2);	// each type half as fast as the last
-		} else { // vertical clouds (falling)
+		} else { // horizontal clouds (flying with Kazuma)
 			cloud->x = e->x;
-			cloud->y = e->y + block_to_sub(-7 + (random() & 15));
+			cloud->y = e->y + block_to_sub(-15 + (random() & 15));
 			cloud->x_speed = -SPEED_10(0x3FF >> e->timer2);
 		}
 		
@@ -39,13 +40,9 @@ void ai_cloud_spawner(Entity *e) {
 
 }
 
-#define TILE_CLOUDINDEX		(16 + 4)
-#define TILE_CLOUD2INDEX	(TILE_CLOUDINDEX + (16*12))
-#define TILE_CLOUD3INDEX	(TILE_CLOUD2INDEX + (16*3))
-#define TILE_CLOUD4INDEX	(TILE_CLOUD3INDEX + (9*3))
-
 void onspawn_cloud(Entity *e) {
 	e->alwaysActive = TRUE;
+	e->hidden = TRUE;
 	// Which cloud sprite/size to use
 	uint8_t ssize = SPRITE_SIZE(4,4);
 	uint8_t num_tiles = 16;
@@ -97,7 +94,7 @@ void ai_cloud(Entity *e) {
 			|| e->y < -(e->display_box.bottom << CSF)) {
 		e->state = STATE_DELETE;
 	} else {
-		if(e->timer2 == 0) moveMeToFront = TRUE;
+		if(e->type == OBJ_CLOUD) moveMeToFront = TRUE;
 		// Sprite positions
 		int16_t xoff = -e->display_box.left;
 		int16_t yoff = -e->display_box.top;

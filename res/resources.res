@@ -234,6 +234,10 @@ SPRITE SPR_Block		"sprite/block.png"			4 4 0 0 NONE
 SPRITE SPR_BlockM		"sprite/blockm.png"			2 2 0 0 NONE
 SPRITE SPR_Rock			"sprite/rock.png"			2 2 0 0 NONE
 SPRITE SPR_Statue		"sprite/statue.png"			4 5 0 0 NONE
+SPRITE SPR_Cloud1		"sprite/cloud1.png"			4 4 0 0 NONE
+SPRITE SPR_Cloud2		"sprite/cloud2.png"			4 4 0 0 NONE
+SPRITE SPR_Cloud3		"sprite/cloud3.png"			3 3 0 0 NONE
+SPRITE SPR_Cloud4		"sprite/cloud4.png"			4 2 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"			2 3 0 0 NONE
@@ -1141,9 +1145,11 @@ XGM BGM_RunningHell	"bgm/running_hell.vgm"	0
 XGM BGM_Safety		"bgm/safety.vgm"		0
 XGM BGM_Scorching	"bgm/scorching.vgm"		0
 XGM BGM_SealChamber	"bgm/seal_chamber.vgm"	0
+XGM BGM_Toroko		"bgm/toroko.vgm"		0
 XGM BGM_Tyrant		"bgm/tyrant.vgm"		0
 XGM BGM_Waterway	"bgm/waterway.vgm"		0
 XGM BGM_WayBackHome	"bgm/credits.vgm"		0
+XGM BGM_White		"bgm/white.vgm"			0
 XGM BGM_Zombie		"bgm/zombie.vgm"		0
 
 # ----------------------------------------------------------------------------------------------

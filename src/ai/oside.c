@@ -257,6 +257,7 @@ void ai_sky_dragon(Entity *e) {
 		case 11:
 		{
 			if(++e->animtime > 8) {
+				moveMeToFront = TRUE; // For normal ending, stay above clouds
 				e->frame ^= 1; // swap between 2-3 or 4-5 for mimiga mask
 				e->animtime = 0;
 			}
@@ -279,7 +280,9 @@ void ai_sky_dragon(Entity *e) {
 		
 		case 30:	// spawn a Sue hanging from mouth
 		{
-			
+			Entity *sue = entity_create(e->x, e->y, OBJ_SUE, 0);
+			sue->linkedEntity = e;
+			e->state++;
 		}
 		break;
 	}

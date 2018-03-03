@@ -47,6 +47,7 @@ void credits_main() {
 	inFade = FALSE;
 	ready = TRUE;
 	sprites_clear();
+	entities_clear();
 	VDP_setWindowPos(0, 0);
 	vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	

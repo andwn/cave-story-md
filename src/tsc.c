@@ -1210,15 +1210,15 @@ uint8_t execute_command() {
 					TILE_ATTR_FULL(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
 			// Island sprite
-			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_HUDINDEX, 1, 0,0);
+			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
 			VDPSprite island[2] = {
 				(VDPSprite) { 
 					.x = 160 - 20 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(4, 3),
-					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_HUDINDEX)
+					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_SHEETINDEX)
 				},
 				(VDPSprite) {
 					.x = 160 + 12 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(1, 3),
-					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_HUDINDEX+12)
+					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_SHEETINDEX+12)
 				}
 			};
 			
@@ -1238,7 +1238,8 @@ uint8_t execute_command() {
 				}
 				sprite_addq(island, 2);
 				ready = TRUE;
-				vsync(); aftervsync();
+				vsync(); //aftervsync();
+				sprites_send();
 			}
 		}
 		break;

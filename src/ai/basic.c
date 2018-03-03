@@ -352,6 +352,8 @@ void ai_player(Entity *e) {
 		{
 			e->x_speed = 0;
 			e->frame = 0;
+			e->grounded = TRUE;
+			collide = FALSE;
 		}
 		break;
 		case 2:		// looking up
@@ -403,8 +405,11 @@ void ai_player(Entity *e) {
 		case 60:
 		{
 			e->frame = 0;
+			e->hidden = FALSE;
 			sprite_vflip(e->sprite[0], 1);
 			e->grounded = FALSE;
+			collide = FALSE;
+			if(e->y_speed > SPEED_10(0x1FF)) e->y_speed = SPEED_10(0x1FF);
 		}
 		break;
 		case 80:	// face away
