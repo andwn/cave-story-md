@@ -49,7 +49,7 @@ No.
 Not if you plan on selling it, unless you somehow got Nicalis permission.
 
 ## License
-Various, details [here](doc/LICESNE.md)
+Various, details [here](doc/LICENSE.md)
 
 ## Thanks
 I did not know how to sort this list, so I did it alphabetically.
