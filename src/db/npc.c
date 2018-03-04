@@ -333,9 +333,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_scroll_ctrl, 	&ai_null 			}, // Scroll controller
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
 	/* 0x130 (304) */
-	{ NULL, 			NOSHEET, 		PAL2, 1, &onspawn_persistent, 	&ai_gaudi_patient, 	&ai_null 			}, // Gaudi (Sitting)
-	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_baby_puppy, 	&ai_null 			}, // Puppy (Small)
-	{ NULL, 			NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_medic, 	&ai_null 			}, // Balrog (Nurse)
+	{ NULL, 			SHEET_GAUDI, 	PAL2, 1, &onspawn_gaudi_patient,&ai_gaudi_patient, 	&ai_null 			}, // Gaudi (Sitting)
+	{ &SPR_BabyPuppy, 	NOSHEET, 		PAL1, 1, &onspawn_baby_puppy, 	&ai_baby_puppy, 	&ai_null 			}, // Puppy (Small)
+	{ &SPR_BalrogMedic, NOSHEET, 		PAL1, 2, &onspawn_balrog_medic, &ai_balrog_medic, 	&ai_null 			}, // Balrog (Nurse)
 	{ &SPR_Santa, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_mimiga_caged, 	&ai_null 			}, // Santa (Caged)
 	{ NULL, 			SHEET_STUMPY, 	PAL0, 1, &ai_null, 				&ai_stumpy, 		&ondeath_default 	}, // Stumpy
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &ai_null, 				&ai_bute_flying, 	&ondeath_default 	}, // Bute
@@ -356,8 +356,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_bute_falling, &ai_bute_falling, 	&ondeath_default 	}, // Bute (Generated)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_bute_spawner, &ai_bute_spawner, 	&ai_null 			}, // Bute Generator
 	{ NULL, 			SHEET_HPLIT, 	PAL1, 1, &onspawn_hp_lightning, &ai_hp_lightning, 	&ai_null 			}, // Heavy Press Projectile
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_turning_human, 	&ai_null 			}, // Itoh/Sue (Ending)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_ahchoo, 		&ai_null 			}, // "Ah-choo!"
+	{ &SPR_TurnHuman, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_turning_human, 	&ai_null 			}, // Itoh/Sue (Ending)
+	{ NULL, 			SHEET_AHCHOO, 	PAL3, 1, &onspawn_persistent, 	&ai_ahchoo, 		&ai_null 			}, // "Ah-choo!"
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
 	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &ai_null, 				&ai_rolling, 		&ondeath_default 	}, // Rolling
@@ -387,11 +387,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // King (Sword)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_wall_collapser, &ai_null 			}, // Wall Collapser
-	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_balrog_passenger,&ai_null 			}, // Balrog Passenger
-	{ &SPR_Balrog, 		NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_flying, 	&ai_null 			}, // Balrog (Rescue)
+	{ &SPR_BlgPassngr, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_balrog_passenger,&ai_null 			}, // Balrog Passenger
+	{ &SPR_BalrogFly, 	NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_flying, 	&ai_null 			}, // Balrog (Rescue)
 	{ &SPR_PuppyGhost, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_puppy_ghost, 	&ai_null 			}, // Puppy (Ghost)
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_misery_wind, 	&ai_null 			}, // Misery (Wind)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Water Drop Generator
+	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Water Drop Generator
 	{ NULL, 			NOSHEET, 		PAL0, 2, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Thank You
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */

@@ -24,7 +24,7 @@ void ai_cloud_spawner(Entity *e) {
 			cloud->y_speed = -SPEED_12(0xFFF >> e->timer2);	// each type half as fast as the last
 		} else { // horizontal clouds (flying with Kazuma)
 			cloud->x = e->x;
-			cloud->y = e->y + block_to_sub(-15 + (random() & 15));
+			cloud->y = e->y + block_to_sub(-7 + (random() & 15));
 			cloud->x_speed = -SPEED_10(0x3FF >> e->timer2);
 		}
 		
@@ -132,8 +132,7 @@ void ai_balrog_flying(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 4, 0,1);
-			
+			if((++e->animtime & 3) == 0) e->frame ^= 1;
 			e->x_speed += (e->x < e->x_mark) ? 0x08 : -0x08;
 			e->y_speed += (e->y < e->y_mark) ? 0x08 : -0x08;
 		}
@@ -146,7 +145,7 @@ void ai_balrog_flying(Entity *e) {
 		} /* fallthrough */
 		case 21:
 		{
-			ANIMATE(e, 2, 0,1);
+			if((++e->animtime & 1) == 0) e->frame ^= 1;
 			
 			e->x_speed += 0x10;
 			e->y_speed -= 0x08;
@@ -163,15 +162,13 @@ void ai_balrog_flying(Entity *e) {
 	e->y += e->y_speed;
 }
 
-
-
 // player/curly when rescued by Balrog during best-ending
 void ai_balrog_passenger(Entity *e) {
 	if(!e->linkedEntity) {
 		e->state = STATE_DELETE;
 		return;
 	}
-
+	e->dir = 1;
 	switch(e->state) {
 		case 0:		// being rescued from Seal Chamber
 		{
@@ -209,9 +206,16 @@ void ai_balrog_passenger(Entity *e) {
 }
 
 // seen in credits
+void onspawn_balrog_medic(Entity *e) {
+	e->y += 16 << CSF;
+}
+
 void ai_balrog_medic(Entity *e) {
 	e->frame = 0;
 	RANDBLINK(e, 1, 200);
+}
+void onspawn_gaudi_patient(Entity *e) {
+	e->y += 16 << CSF;
 }
 
 void ai_gaudi_patient(Entity *e) {
@@ -239,6 +243,10 @@ void ai_gaudi_patient(Entity *e) {
 		}
 		break;
 	}
+}
+
+void onspawn_baby_puppy(Entity *e) {
+	e->y -= 8 << CSF;
 }
 
 void ai_baby_puppy(Entity *e) {
@@ -294,8 +302,7 @@ void ai_turning_human(Entity *e) {
 			
 			if (e->timer > TIME_8(50)) {
 				e->state = 20;
-				e->frame = (e->frame & ~1) + 2;
-				
+				e->frame = (e->eflags & NPC_OPTION2) ? 12 : 4;
 				// wait for slightly different times before falling
 				e->timer = (e->eflags & NPC_OPTION2) ? 40 : 60;
 			}
@@ -336,7 +343,7 @@ void ai_turning_human(Entity *e) {
 		{
 			e->state = 41;
 			e->timer = 0;
-			e->frame -= 7;
+			e->frame = (e->eflags & NPC_OPTION2) ? 8 : 0;
 		} /* fallthrough */
 		case 51:	// ..and blink
 		{

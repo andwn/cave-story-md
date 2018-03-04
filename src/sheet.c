@@ -462,6 +462,13 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			//SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 10,3,2, 
 			//		0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9);
 		} break;
+		case STAGE_ENDING_LABYRINTH:
+		{
+			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiEnd, 4,3,2, 0,0, 0,1, 0,2, 0,3);
+		} break;
+		case STAGE_ENDING_LAB: 
+		{	SHEET_ADD(SHEET_AHCHOO, cfg_language ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
+		} break;
 		default: printf("Stage %hu has no sheet set", sid);
 	}
 	// Weapons at the end

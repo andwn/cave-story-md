@@ -85,6 +85,8 @@ SPRITE SPR_BallosEye	"sprite/ballos_eye.png"		3 2 0 0 NONE
 SPRITE SPR_BallosPlat	"sprite/ballos_plat.png"	4 2 0 0 NONE
 SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 0 0 NONE
 SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 0 0 NONE
+SPRITE SPR_MenuTextE	"sprite/menutext_en.png"	8 1 0 0 NONE
+SPRITE SPR_MenuTextJ	"sprite/menutext_ja.png"	8 1 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE
@@ -181,6 +183,9 @@ SPRITE SPR_Deleet		"sprite/deleet.png"			3 3 0 0 NONE
 SPRITE SPR_Target		"sprite/target.png"			3 3 0 0 NONE
 SPRITE SPR_PuppyGhost	"sprite/ghostdog.png"		2 2 0 0 NONE
 SPRITE SPR_HeavyPressL	"sprite/hp_lit.png"			4 4 0 0 NONE
+SPRITE SPR_BalrogFly	"sprite/balrog_fly.png"		5 3 0 0 NONE
+SPRITE SPR_BalrogMedic	"sprite/balrog_medic.png"	5 3 0 0 NONE
+SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE
@@ -238,6 +243,7 @@ SPRITE SPR_Cloud1		"sprite/cloud1.png"			4 4 0 0 NONE
 SPRITE SPR_Cloud2		"sprite/cloud2.png"			4 4 0 0 NONE
 SPRITE SPR_Cloud3		"sprite/cloud3.png"			3 3 0 0 NONE
 SPRITE SPR_Cloud4		"sprite/cloud4.png"			4 2 0 0 NONE
+SPRITE SPR_GaudiEnd		"sprite/gaudi_end.png"		3 2 0 0 NONE
 
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"			2 3 0 0 NONE
@@ -308,6 +314,10 @@ SPRITE SPR_Bute			"sprite/bute.png"			3 2 0 0 NONE
 SPRITE SPR_Mesa			"sprite/mesa.png"			4 4 0 0 NONE
 SPRITE SPR_Casts		"credits/casts.png"			3 3 0 0 NONE
 SPRITE SPR_GrnDevil		"sprite/grndevil.png"		2 2 0 0 NONE
+SPRITE SPR_TurnHuman	"sprite/turning_human.png"	2 3 0 0 NONE
+SPRITE SPR_AhchooE		"sprite/ahchoo_en.png"		2 2 0 0 NONE
+SPRITE SPR_AhchooJ		"sprite/ahchoo_ja.png"		2 2 0 0 NONE
+SPRITE SPR_BlgPassngr	"sprite/balrog_passngr.png"	2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"		2 2 0 0 NONE
