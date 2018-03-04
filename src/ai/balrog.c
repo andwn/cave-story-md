@@ -238,16 +238,19 @@ void ai_balrog(Entity *e) {
 		/* fallthrough */
 		case 101:
 		{
-			if (++e->timer > TIME(20)) {
+			if (++e->timer > TIME_8(20)) {
 				e->state = 102;
 				e->timer = 0;
 				e->frame = ARMSUP;	// fly up;
 				entities_clear_by_type(OBJ_NPC_PLAYER);
 				entities_clear_by_type(OBJ_CURLY);
-				// TODO: OBJ_BALROG_PASSENGER
-				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, LEFT)->linkedobject = o;
-				//CreateEntity(0, 0, OBJ_BALROG_PASSENGER, 0, 0, RIGHT)->linkedobject = o;
-				e->y_speed = -SPEED(0x800);
+				Entity *curly = entity_create(e->x, e->y, OBJ_BALROG_PASSENGER, 0);
+				Entity *quote = entity_create(e->x, e->y, OBJ_BALROG_PASSENGER, NPC_OPTION1);
+				quote->linkedEntity = e;
+				curly->linkedEntity = e;
+				// Workaround because the <CNP after <FON seems to mess this up
+				camera.target = e;
+				e->y_speed = -SPEED_12(0x800);
 				e->eflags |= NPC_IGNORESOLID;	// so can fly through ceiling
 				fall = FALSE;
 			}
@@ -256,23 +259,19 @@ void ai_balrog(Entity *e) {
 		case 102:	// flying up during escape seq
 		{
 			fall = FALSE;
-			// bust through ceiling
-			uint16_t y = sub_to_block(e->y + (4<<9));
-			if (y < 35) {
-				if (stage_get_block(sub_to_block(e->x), y) != 0) {
-					// smoke needs to go at the bottom of z-order or you can't
-					// see any of the characters through all the smoke.
-					//map_ChangeTileWithSmoke(x, y, 0, 4, FALSE, lowestobject);
-					//map_ChangeTileWithSmoke(x-1, y, 0, 4, FALSE, lowestobject);
-					//map_ChangeTileWithSmoke(x+1, y, 0, 4, FALSE, lowestobject);
-					camera_shake(10);
-					sound_play(SND_MISSILE_HIT, 5);
-				}
-			}
-			if (e->y + pixel_to_sub(e->hit_box.bottom) < -pixel_to_sub(20)) {
-				camera_shake(30);
+			if(e->y <= 0) {
 				e->state = STATE_DELETE;
 				return;
+			}
+			// bust through ceiling
+			uint16_t x = sub_to_block(e->x);
+			uint16_t y = sub_to_block(e->y);
+			if(y < 35 && stage_get_block(x, y)) {
+				stage_replace_block(x,   y, 0);
+				stage_replace_block(x-1, y, 0);
+				stage_replace_block(x+1, y, 0);
+				camera_shake(10);
+				sound_play(SND_MISSILE_HIT, 5);
 			}
 		}
 		break;

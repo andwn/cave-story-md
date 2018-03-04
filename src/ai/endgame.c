@@ -178,14 +178,14 @@ void ai_balrog_passenger(Entity *e) {
 				//e->sprite = player->sprite;
 				//e->frame = 4;
 				e->frame = 0;
-				e->x = e->linkedEntity->x - (2<<CSF);
+				e->x = e->linkedEntity->x - (12<<CSF);
 			} else {
 				//e->sprite = SPR_CURLY;
 				//e->frame = 7;
 				e->frame = 2;
-				e->x = e->linkedEntity->x + (26<<CSF);
+				e->x = e->linkedEntity->x + (8<<CSF);
 			}
-			e->y = e->linkedEntity->y + (14<<CSF);
+			e->y = e->linkedEntity->y - (4<<CSF);
 		}
 		break;
 		case 1:		// flying in clouds
@@ -209,7 +209,7 @@ void ai_balrog_passenger(Entity *e) {
 
 // seen in credits
 void onspawn_balrog_medic(Entity *e) {
-	e->y += 16 << CSF;
+	e->y += 12 << CSF;
 }
 
 void ai_balrog_medic(Entity *e) {
@@ -217,7 +217,7 @@ void ai_balrog_medic(Entity *e) {
 	RANDBLINK(e, 1, 200);
 }
 void onspawn_gaudi_patient(Entity *e) {
-	e->y += 16 << CSF;
+	e->y += 8 << CSF;
 }
 
 void ai_gaudi_patient(Entity *e) {
@@ -336,7 +336,8 @@ void ai_turning_human(Entity *e) {
 		
 		case 40:	// sneezing
 		{
-			if(++e->timer == TIME_8(30)) e->frame++;
+			e->timer++;
+			if(e->timer == TIME_8(30)) e->frame++;
 			else if(e->timer > TIME_8(40)) e->state = 50;
 		}
 		break;
@@ -349,7 +350,8 @@ void ai_turning_human(Entity *e) {
 		} /* fallthrough */
 		case 51:	// ..and blink
 		{
-			if(++e->timer == TIME_8(30)) e->frame++;
+			e->timer++;
+			if(e->timer == TIME_8(30)) e->frame++;
 			else if(e->timer == TIME_8(40)) e->frame--;
 		}
 		break;
@@ -368,8 +370,9 @@ void ai_ahchoo(Entity *e) {
 		{
 			if(e->timer < 4) e->y -= (2 << CSF);
 			// sneezing frame
-			if((e->linkedEntity->frame & 7) == 7) {
+			if(e->timer > TIME_8(30)) {
 				e->frame = 1;	// "choo!"
+				e->timer = 0;
 				e->state = 1;
 				e->x_mark = e->x;
 				e->y_mark = e->y;

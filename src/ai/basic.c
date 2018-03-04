@@ -353,6 +353,10 @@ void ai_player(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:
+		{
+			if(stageID == STAGE_SEAL_CHAMBER_2) e->dir = 1;
+			e->state++;
+		} /* fallthrough */
 		case 1:
 		{
 			e->x_speed = 0;
@@ -618,7 +622,7 @@ void ai_balrog_splash(Entity *e) {
 	switch(e->state) {
 		case 0: // Waiting above screen
 		{
-			if(++e->timer > TIME(50)) {
+			if(++e->timer > TIME_8(50)) {
 				e->timer = 0;
 				e->state++;
 				e->frame = ARMSUP;
@@ -627,8 +631,7 @@ void ai_balrog_splash(Entity *e) {
 		break;
 		case 1: // Falling
 		{
-			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0x5FF));
+			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 			e->y += e->y_speed;
 			if(e->y >= (SCREEN_HALF_H - 24) << CSF) {
 				e->y_speed = 0x320;
@@ -644,12 +647,15 @@ void ai_balrog_splash(Entity *e) {
 			if(e->y >= (SCREEN_HALF_H + 4) << CSF) {
 				e->state++;
 				e->frame = DUCK;
+				sound_play(SND_LITTLE_CRASH, 5);
+				SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) + 4, 64, 4, 4);
+				SMOKE_AREA((e->x>>CSF)     , (e->y>>CSF) + 4, 64, 4, 4);
 			}
 		}
 		break;
 		case 3: // Hit ground
 		{
-			if(++e->timer > TIME(25)) {
+			if(++e->timer > TIME_8(25)) {
 				e->timer = 0;
 				e->state++;
 				e->frame = STAND;
@@ -658,7 +664,7 @@ void ai_balrog_splash(Entity *e) {
 		break;
 		case 4: // Standing
 		{
-			if(++e->timer > TIME(50)) {
+			if(++e->timer > TIME_8(50)) {
 				e->state++;
 				e->frame = SMILE;
 			}
@@ -812,5 +818,126 @@ void ai_lvlupdn(Entity *e) {
 		if((e->timer & 3) == 0) e->frame ^= 1;
 		if(e->y_speed < 0) e->y_speed += SPEED_8(0x10);
 		e->y += e->y_speed;
+	}
+}
+
+// misery/balrog in bubble
+void ai_intro_kings(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			e->state++;
+			if(!(e->eflags & NPC_OPTION2)) {
+				e->frame = 1;
+				e->timer = TIME_8(25);
+				e->y -= 0x640;
+			}
+		} /* fallthrough */
+		case 1:
+		{
+			if(++e->timer >= TIME_8(50)) {
+				e->timer = 0;
+				e->timer2 ^= 1;
+			}
+			if(e->timer2) {
+				e->y += SPEED_8(0x40);
+			} else {
+				e->y -= SPEED_8(0x40);
+			}
+		}
+		break;
+	}
+}
+
+// demon crown on throne
+void ai_intro_crown(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			//e->x += (8 << CSF);
+			e->y += (8 << CSF);
+			e->state++;
+		} /* fallthrough */
+		case 1:
+		{
+			//if((++e->timer & 7) == 1) {
+			//	effect(o->x + random(-8<<CSF, 8<<CSF),
+			//			o->y + (8<<CSF),
+			//			   EFFECT_GHOST_SPARKLE);
+			//}
+		}
+		break;
+	}
+}
+
+
+void ai_intro_doctor(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			e->y -= (8 << CSF);
+			e->state++;
+		} /* fallthrough */
+		case 1:
+		{
+			e->frame = 0;
+		}
+		break;
+		
+		case 10:	// chuckle; facing screen
+		{
+			e->state = 11;
+			e->frame = 0;
+			e->animtime = 0;
+			e->timer2 = 0;
+		} /* fallthrough */
+		case 11:
+		{
+			if(++e->animtime > 6) {
+				if(++e->frame > 1) {
+					e->frame = 0;
+					if(++e->timer2 > 7) e->state = 1;
+				}
+			}
+		}
+		break;
+		
+		case 20:	// walk
+		{
+			e->state++;
+			e->frame = 2;
+			e->animtime = 0;
+		} /* fallthrough */
+		case 21:
+		{
+			ANIMATE(e, 10, 2,0,3,0);
+			e->x += SPEED_8(0xFF);
+		}
+		break;
+		
+		case 30:	// face away
+		{
+			e->frame = 4;
+			e->state++;
+		}
+		break;
+		
+		case 40:	// chuckle; facing away
+		{
+			e->state++;
+			e->frame = 4;
+			e->animtime = 0;
+			e->timer2 = 0;
+		} /* fallthrough */
+		case 41:
+		{
+			if(++e->animtime > 6) {
+				if(++e->frame > 5) {
+					e->frame = 4;
+					if(++e->timer2 > 7) e->state = 30;
+				}
+			}
+		}
+		break;
 	}
 }

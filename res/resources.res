@@ -22,6 +22,7 @@ PALETTE PAL_Sisters		"sprite/sishead.png"
 PALETTE PAL_Red			"sprite/dripred.png"
 PALETTE PAL_Mapi		"sprite/mapignon.png"
 PALETTE PAL_Miza		"sprite/misery2.png"
+PALETTE PAL_Intro		"sprite/bubbleintro.png"
 
 # ----------------------------------------------------------------------------------------------
 # Sprites
@@ -318,6 +319,8 @@ SPRITE SPR_TurnHuman	"sprite/turning_human.png"	2 3 0 0 NONE
 SPRITE SPR_AhchooE		"sprite/ahchoo_en.png"		2 2 0 0 NONE
 SPRITE SPR_AhchooJ		"sprite/ahchoo_ja.png"		2 2 0 0 NONE
 SPRITE SPR_BlgPassngr	"sprite/balrog_passngr.png"	2 2 0 0 NONE
+SPRITE SPR_DoctorIntro	"sprite/doctorintro.png"	2 4 0 0 NONE
+SPRITE SPR_CrownIntro	"sprite/crownintro.png"		2 2 0 0 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"		2 2 0 0 NONE
@@ -387,6 +390,9 @@ SPRITE SPR_MizaShock	"sprite/mizashock.png"		2 4 0 0 NONE
 SPRITE SPR_MizaFish		"sprite/mizafish.png"		2 2 0 0 NONE
 SPRITE SPR_MizaPellet	"sprite/mizapellet.png" 	1 1 0 0 NONE
 SPRITE SPR_MizaRock		"sprite/mizarock.png"		3 3 0 0 NONE
+
+# Use PAL_Intro
+SPRITE SPR_BubbleIntro	"sprite/bubbleintro.png"	6 6 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory

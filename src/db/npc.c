@@ -326,9 +326,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Cloud
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_cloud_spawner,&ai_cloud_spawner, 	&ai_null 			}, // Cloud Generator
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Doctor (Uncrowned)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Balrog/Misery (Bubble)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Demon Crown
+	{ &SPR_DoctorIntro, NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_intro_doctor, 	&ai_null 			}, // Doctor (Uncrowned)
+	{ &SPR_BubbleIntro, NOSHEET, 		PAL1, 4, &onspawn_persistent, 	&ai_intro_kings, 	&ai_null 			}, // Balrog/Misery (Bubble)
+	{ &SPR_CrownIntro, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_intro_crown, 	&ai_null 			}, // Demon Crown
 	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_nodrop 	}, // Fish Missile (Orange)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_scroll_ctrl, 	&ai_null 			}, // Scroll controller
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
@@ -384,7 +384,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
 	{ &SPR_Statue, 		NOSHEET, 		PAL2, 2, &onspawn_statue,	 	&ai_statue, 		&ai_null 			}, // Statue (Breakable)
 	/* 0x160 (352) */
-	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // King (Sword)
+	{ NULL, 			NOSHEET, 		PAL3, 2, &onspawn_the_cast, 	&ai_the_cast, 		&ai_null 			}, // Cast (End of credits)
 	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_wall_collapser, &ai_null 			}, // Wall Collapser
 	{ &SPR_BlgPassngr, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_balrog_passenger,&ai_null 			}, // Balrog Passenger

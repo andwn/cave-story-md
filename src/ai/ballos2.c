@@ -958,7 +958,7 @@ void ai_wall_collapser(Entity *e) {
 		
 		case 10:	// trigger
 		{
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(100)) {
 				e->timer2++;
 				e->timer = 0;
 				
@@ -967,7 +967,7 @@ void ai_wall_collapser(Entity *e) {
 				for(uint16_t y=0;y<20;y++) {
 					// pushing the smoke behind all objects prevents it from covering
 					// up the NPC's on the collapse just before takeoff.
-					stage_replace_block(xa, ya+y, 1);
+					stage_replace_block(xa, ya+y, 100);
 				}
 				
 				sound_play(SND_BLOCK_DESTROY, 5);
@@ -979,10 +979,10 @@ void ai_wall_collapser(Entity *e) {
 				// reached the solid tile in the center of the throne.
 				// it isn't supposed to cover this tile until after Curly
 				// says we're gonna get crushed.
-				if (e->timer2 == TIME(6)) e->state = 20;
+				//if (e->timer2 == TIME(6)) e->state = 20;
 				
 				// balrog is about to take off/rescue you.
-				if (e->timer2 == TIME(9)) e->state = 30;
+				//if (e->timer2 == TIME(9)) e->state = 30;
 			}
 		}
 		break;

@@ -194,8 +194,11 @@ const credits_info_def credits_info[] = {
 	C_LABEL(100),
 	// Transition to second part which has short silent cutscenes in various stages
 	C_WAIT(144),
+	//C_SONG_FADE(),
+	//C_WAIT(200),
+	C_WAIT(100),
 	C_SONG_FADE(),
-	C_WAIT(200),
+	C_WAIT(100),
 	C_SONG(1),
 	C_MOVE(48),
 	

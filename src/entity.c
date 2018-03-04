@@ -186,17 +186,33 @@ void entities_update(uint8_t draw) {
 		uint16_t flags = e->nflags | e->eflags;
 		// Handle Shootable flag - check for collision with player's bullets
 		if(flags & NPC_SHOOTABLE) {
-			Bullet *b = bullet_colliding(e);
-			if(b) {
-				entity_handle_bullet(e, b);
-				if(e->state == STATE_DESTROY) {
-					e = entity_destroy(e);
-					continue;
-				} else if(e->state == STATE_DELETE) {
-					e = entity_delete(e);
-					continue;
+			extent_box ee = (extent_box) {
+				.x1 = (e->x >> CSF) - (e->hit_box.left),
+				.y1 = (e->y >> CSF) - (e->hit_box.top),
+				.x2 = (e->x >> CSF) + (e->hit_box.right),
+				.y2 = (e->y >> CSF) + (e->hit_box.bottom),
+			};
+			uint8_t cont = FALSE;
+			for(uint16_t i = 0; i < MAX_BULLETS; i++) {
+				if (playerBullet[i].ttl &&
+					playerBullet[i].extent.x1 <= ee.x2 &&
+					playerBullet[i].extent.x2 >= ee.x1 &&
+					playerBullet[i].extent.y1 <= ee.y2 &&
+					playerBullet[i].extent.y2 >= ee.y1)
+				{	// Collided
+					entity_handle_bullet(e, &playerBullet[i]);
+					if(e->state == STATE_DESTROY) {
+						e = entity_destroy(e);
+						cont = TRUE;
+						break;
+					} else if(e->state == STATE_DELETE) {
+						e = entity_delete(e);
+						cont = TRUE;
+						break;
+					}
 				}
 			}
+			if(cont) continue;
 		}
 		// Hard Solids
 		uint16_t collided = FALSE;
@@ -339,11 +355,14 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 		if(!b->state) {
 			bullet_missile_explode(b);
-			if(e->eflags & NPC_INVINCIBLE) {
+			if((flags & NPC_INVINCIBLE) || e->type == OBJ_MA_PIGNON) {
 				sound_play(SND_TINK, 5);
 			} else {
 				if(b->damage < e->health) sound_play(e->hurtSound, 5);
 			}
+		} else if(e->type == OBJ_MA_PIGNON) {
+			// Ma Pignon is invulnerable to missiles
+			return;
 		}
 	} else if(b->type == WEAPON_SPUR || (b->type == WEAPON_BLADE && b->level == 3)) {
 		// Don't destroy Spur or Blade L3

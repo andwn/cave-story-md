@@ -494,3 +494,10 @@ void sheets_load_splash() {
 	memset(tilocs, 0, MAX_TILOCS);
 	tiloc_index = TILE_USERINDEX;
 }
+
+void sheets_load_intro() {
+	sheet_num = 0;
+	memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
+	memset(tilocs, 0, MAX_TILOCS);
+	tiloc_index = TILE_USERINDEX;
+}

@@ -20,6 +20,8 @@ uint8_t gameFrozen;
 // Sega screen
 void splash_main();
 
+void intro_main();
+
 // Displays title screen, returns which option was picked
 uint8_t titlescreen_main();
 
