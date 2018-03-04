@@ -57,41 +57,38 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
-// Table from Nxengine
+// Based on similar table from NXengine
 typedef struct {
-	int maxspeed;		// max speed of missile
-	int accel;			// rate of acceleration
-	int smokeamt;		// how much smoke to make on explosion (higher = more)
-	int num_booms;		// number of boomflashes to create on impact
-	int boomrange;		// max dist away to create the boomflashes
-	int damage;			// damage dealt by a direct hit of the missile itself
-	int boomdamage;		// damage dealt by contact with a boomflash (AoE damage)
+	uint16_t maxspeed;
+	uint16_t accel;
+	uint8_t eff_range;
+	uint8_t boom_time;
 } MissileSettings;
 static const MissileSettings missile_settings[2][6] = {
 	{ // NTSC
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
-	//    maxspd        accel        smoke, nboom, range,   dmg,   bmdmg
-		{ 0xA00*50/60,  0x80*50/60,  2,     4,	   16,		8,	   1, },
-		{ 0xA00*50/60,  0x100*50/60, 4,     6,	   32,		15,	   2, },
-		{ 0xA00*50/60,  0x80*50/60,  2,     2,	   40,		8,	   2, },
+	//    maxspd        accel        range, time
+		{ 0xA00*50/60,  0x80*50/60,  16,	10,	},
+		{ 0xA00*50/60,  0x100*50/60, 32,	15,	},
+		{ 0xA00*50/60,  0x80*50/60,  40,	5,	},
 	//  Level 1-3 super missile
-	//    maxspd        accel        smoke, nboom, range,   dmg,   bmdmg
-		{ 0x1400*50/60, 0x200*50/60, 2,     4,     16,		18,	   1, },
-		{ 0x1400*50/60, 0x200*50/60, 4,     5,     32,		30,	   2, },
-		{ 0x1400*50/60, 0x200*50/60, 2,     3,     40,		18,    2, },
+	//    maxspd        accel        range, time
+		{ 0x1400*50/60, 0x200*50/60, 16,	10,	},
+		{ 0x1400*50/60, 0x200*50/60, 32,	16,	},
+		{ 0x1400*50/60, 0x200*50/60, 40,	4, },
 	}, { // PAL
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
-	//    maxspd  accel  smoke, nboom, range,  dmg,  bmdmg
-		{ 0xA00,  0x80,  2,     4,	   16,	   8,	 1, },
-		{ 0xA00,  0x100, 4,     6,	   32,	   15,   2, },
-		{ 0xA00,  0x80,  2,     2,	   40,	   8,	 2, },
+	//    maxspd  accel  range, time
+		{ 0xA00,  0x80,  16,	10,	},
+		{ 0xA00,  0x100, 32,	15,	},
+		{ 0xA00,  0x80,  40,	5,	},
 	//  Level 1-3 super missile
-	//    maxspd  accel  smoke, nboom, range, dmg,  bmdmg
-		{ 0x1400, 0x200, 2,     4,     16,	  18,	1, },
-		{ 0x1400, 0x200, 4,     5,     32,	  30,	2, },
-		{ 0x1400, 0x200, 2,     3,     40,	  18,   2, },
+	//    maxspd  accel  range, time
+		{ 0x1400, 0x200, 16,	10,	},
+		{ 0x1400, 0x200, 32,	16,	},
+		{ 0x1400, 0x200, 40,	4, },
 	}
 };
 
@@ -263,11 +260,9 @@ void weapon_fire_missile(Weapon *w) {
 		b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
 		b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 		b->sheet = w->sheet;
+		b->damage = (b->type == WEAPON_SUPERMISSILE) ? 2 : 1;
 		b->hits = 0;
 		b->state = 0;
-		// Index for the table
-		uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
-		b->damage = missile_settings[pal_mode][index].damage;
 		b->ttl = TIME_8(100);
 		b->x_speed = 0;
 		b->y_speed = 0;
@@ -281,8 +276,6 @@ void weapon_fire_missile(Weapon *w) {
 				b->x_speed = (random() & 0xFFF) - 0x7FF;
 				b->y_speed = (random() & 0x3FF) - 0x1FF;
 			}
-			//b->x_speed = 0;
-			//b->y_speed = -pixel_to_sub(3);
 		} else if(b->dir == DOWN) {
 			b->sprite.attribut = TILE_ATTR_FULL(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
 			b->x = player.x;
@@ -291,8 +284,6 @@ void weapon_fire_missile(Weapon *w) {
 				b->x_speed = (random() & 0xFFF) - 0x7FF;
 				b->y_speed = (random() & 0x3FF) - 0x1FF;
 			}
-			//b->x_speed = 0;
-			//b->y_speed = pixel_to_sub(3);
 		} else {
 			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
 			b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
@@ -301,8 +292,6 @@ void weapon_fire_missile(Weapon *w) {
 				b->y_speed = (random() & 0xFFF) - 0x7FF;
 				b->x_speed = (random() & 0x3FF) - 0x1FF;
 			}
-			//b->x_speed = (b->dir ? pixel_to_sub(3) : -pixel_to_sub(3));
-			//b->y_speed = 0;
 		}
 	}
 }
@@ -610,8 +599,8 @@ void bullet_update_machinegun(Bullet *b) {
 
 void bullet_update_missile(Bullet *b) {
 	b->ttl--;
+	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 	if(!b->state) {
-		uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 		uint16_t accel = missile_settings[pal_mode][index].accel;
 		uint16_t maxspeed = missile_settings[pal_mode][index].maxspeed;
 		switch(b->dir) {
@@ -648,6 +637,12 @@ void bullet_update_missile(Bullet *b) {
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		sprite_add(b->sprite);
+	} else {
+		if(b->ttl & 3) {
+			uint16_t range = missile_settings[pal_mode][index].eff_range;
+			effect_create_smoke((b->x>>CSF) - range + (random() & (range<<1)), 
+								(b->y>>CSF) - range + (random() & (range<<1)));
+		}
 	}
 }
 
@@ -860,12 +855,12 @@ void bullet_missile_explode(Bullet *b) {
 	b->state = 1;
 	b->x_speed = 0;
 	b->y_speed = 0;
-	uint8_t index = b->level + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
-	b->ttl = missile_settings[pal_mode][index].num_booms;
-	b->damage = missile_settings[pal_mode][index].boomdamage;
-	uint8_t size = missile_settings[pal_mode][index].boomrange;
+	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
+	b->ttl = missile_settings[pal_mode][index].boom_time;
+	uint8_t size = (b->type == WEAPON_SUPERMISSILE) ? 24 : 32;
 	b->hit_box = (bounding_box) { size, size, size, size };
-	for(uint8_t i = 0; i < missile_settings[pal_mode][index].smokeamt; i++) {
+	// TODO: Explosion graphic instead of smoke
+	for(uint8_t i = 0; i < 2; i++) {
 		effect_create_smoke(sub_to_pixel(b->x) - 15 + (random() & 31), 
 							sub_to_pixel(b->y) - 15 + (random() & 31));
 	}

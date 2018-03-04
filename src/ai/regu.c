@@ -230,7 +230,6 @@ void onspawn_sue(Entity *e) {
 	if(stageID == STAGE_FALLING) {
 		e->alwaysActive = TRUE;
 		e->state = 50;
-		e->frame = 7;
 	}
 }
 
@@ -397,9 +396,11 @@ void ai_sue(Entity *e) {
 		case 50:
 		{
 			e->dir = !e->linkedEntity->dir;
+			e->frame = 7;
 			e->x_next = e->linkedEntity->x + (e->dir ? (16 << CSF) : -(16 << CSF));
 			e->y_next = e->linkedEntity->y + (4 << CSF);
 			e->y_speed = 0;
+			e->grounded = TRUE;
 		} break;
 	}
 

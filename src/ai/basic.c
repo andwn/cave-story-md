@@ -232,6 +232,7 @@ void onspawn_teleIn(Entity *e) {
 	e->y += pixel_to_sub(8);
 	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 	e->display_box = (bounding_box) { 8, 8, 8, 8 };
+	if(playerEquipment & EQUIP_MIMIMASK) e->frame = 15;
 }
 
 void ai_teleIn(Entity *e) {
@@ -285,14 +286,17 @@ void ai_teleIn(Entity *e) {
 			e->dir = 0;
 		break;
 	}
+	if(e->frame > 29) e->frame = 29; // Prevent any address error just in case
 }
 
 void onspawn_teleOut(Entity *e) {
 	e->y -= 32 << CSF;
 	SNAP_TO_GROUND(e);
 	// PAL was jumping too high here
-	if(IS_PALSYSTEM) e->y_speed = -0x360;
+	if(pal_mode) e->y_speed = -0x360;
 	else e->y_speed = -SPEED_10(0x3E0);
+	// Mimiga mask
+	if(playerEquipment & EQUIP_MIMIMASK) e->frame = 15;
 }
 
 void ai_teleOut(Entity *e) {
@@ -328,6 +332,7 @@ void ai_teleOut(Entity *e) {
 		break;
 		case 2: break;
 	}
+	if(e->frame > 29) e->frame = 29; // Prevent any address error just in case
 }
 
 void onspawn_teleLight(Entity *e) {
@@ -351,6 +356,7 @@ void ai_player(Entity *e) {
 		case 1:
 		{
 			e->x_speed = 0;
+			e->y_speed = 0;
 			e->frame = 0;
 			e->grounded = TRUE;
 			collide = FALSE;

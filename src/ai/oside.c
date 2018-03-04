@@ -256,8 +256,8 @@ void ai_sky_dragon(Entity *e) {
 		} /* fallthrough */
 		case 11:
 		{
+			moveMeToFront = TRUE; // For normal ending, stay above clouds
 			if(++e->animtime > 8) {
-				moveMeToFront = TRUE; // For normal ending, stay above clouds
 				e->frame ^= 1; // swap between 2-3 or 4-5 for mimiga mask
 				e->animtime = 0;
 			}
@@ -282,6 +282,7 @@ void ai_sky_dragon(Entity *e) {
 		{
 			Entity *sue = entity_create(e->x, e->y, OBJ_SUE, 0);
 			sue->linkedEntity = e;
+			sue->state = 50;
 			e->state++;
 		}
 		break;

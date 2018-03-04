@@ -158,6 +158,7 @@ void ai_balrog_flying(Entity *e) {
 		}
 		break;
 	}
+	moveMeToFront = TRUE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -169,6 +170,7 @@ void ai_balrog_passenger(Entity *e) {
 		return;
 	}
 	e->dir = 1;
+	moveMeToFront = TRUE;
 	switch(e->state) {
 		case 0:		// being rescued from Seal Chamber
 		{
@@ -192,14 +194,14 @@ void ai_balrog_passenger(Entity *e) {
 				//e->sprite = SPR_MYCHAR;
 				//e->frame = 12;
 				e->frame = 1;
-				e->x = e->linkedEntity->x - (15<<CSF);
+				e->x = e->linkedEntity->x - (8<<CSF);
 			} else {
 				//e->sprite = SPR_CURLY;
 				//e->frame = 18;
 				e->frame = 3;
-				e->x = e->linkedEntity->x - (4<<CSF);
+				e->x = e->linkedEntity->x + (4<<CSF);
 			}
-			e->y = e->linkedEntity->y - (23<<CSF);
+			e->y = e->linkedEntity->y - (18<<CSF);
 		}
 		break;
 	}
