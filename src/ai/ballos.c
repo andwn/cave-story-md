@@ -189,35 +189,34 @@ static void RunForm1(Entity *e) {
 			// he makes two jumps then a pause,
 			// after that it's three jumps before pausing.
 			// this corresponds to:
-			if ((++e->timer2 % 3) == 0)
-				e->timer = TIME(150);
+			if ((++e->timer2 > 3) == 0)
+				e->timer = TIME_8(150);
 			else
-				e->timer = TIME(50);
+				e->timer = TIME_8(50);
 		} /* fallthrough */
 		case AS_PREPARE_JUMP+1:
 		{
-			if (e->timer-- == 0) {
-				e->y_speed = -SPEED(0xC00);
-				e->x_speed = (e->x < player.x) ? SPEED(0x200) : -SPEED(0x200);
+			if(e->timer == 0) {
+				e->y_speed = -SPEED_12(0xC00);
+				e->x_speed = (e->x < player.x) ? SPEED_10(0x200) : -SPEED_10(0x200);
 				e->state = AS_JUMPING;
-			}
+			} else e->timer--;
 		}
 		break;
 		
 		case AS_JUMPING:
 		{
-			e->y_speed += SPEED(0x55);
-			LIMIT_Y(SPEED(0xC00));
+			if(e->y_speed < SPEED_12(0xBB0)) e->y_speed += SPEED_8(0x55);
 			
-			if (passed_xcoord(e, LESS_THAN, F1_LEFT, FALSE)) e->x_speed = SPEED(0x200);
-			if (passed_xcoord(e, GREATER_THAN, F1_RIGHT, FALSE)) e->x_speed = -SPEED(0x200);
+			if (passed_xcoord(e, LESS_THAN, F1_LEFT, FALSE)) e->x_speed = SPEED_10(0x200);
+			if (passed_xcoord(e, GREATER_THAN, F1_RIGHT, FALSE)) e->x_speed = -SPEED_10(0x200);
 			
 			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
 				// player smush damage
 				if (player.y > (e->y + (48<<CSF))) player_inflict_damage(16);
 				
 				// player hopping from the vibration
-				if (player.grounded) player.y_speed = -SPEED(0x200);
+				if (player.grounded) player.y_speed = -SPEED_10(0x200);
 				
 				camera_shake(30);
 				
@@ -246,8 +245,7 @@ static void RunForm1(Entity *e) {
 		} /* fallthrough */
 		case AS_DEFEATED+1:
 		{
-			e->y_speed += SPEED(0x40);
-			LIMIT_Y(SPEED(0xC00));
+			if(e->y_speed < SPEED_12(0xBC0)) e->y_speed += SPEED_8(0x40);
 			
 			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
 				e->y_speed = 0;
@@ -256,7 +254,7 @@ static void RunForm1(Entity *e) {
 				camera_shake(30);
 				//SmokeXY(e->x, e->y + 0x5000, 16, 40, 0);
 				
-				if (player.grounded) player.y_speed = -SPEED(0x200);
+				if (player.grounded) player.y_speed = -SPEED_10(0x200);
 				
 				// ... and wait for script to trigger form 2
 			}
@@ -407,7 +405,7 @@ static void RunForm3(Entity *e) {
 		case CS_ENTER_FORM+1:
 		{
 			// come down into center of room
-			e->y += (YPOSITION - e->y) / 8;
+			e->y += (YPOSITION - e->y) >> 3;
 			e->timer++;
 			
 			if (e->timer == TIME_8(50)) {
@@ -558,10 +556,10 @@ static void RunDefeated(Entity *e) {
 			
 			e->timer++;
 			
-			if ((e->timer % TIME_8(12)) == 0)
+			if((e->timer & 15) == 0)
 				sound_play(SND_MISSILE_HIT, 5);
 			
-			if (e->timer > TIME_8(150)) {
+			if(e->timer > TIME_8(150)) {
 				e->timer = 0;
 				e->state = 1002;
 				
@@ -575,7 +573,7 @@ static void RunDefeated(Entity *e) {
 		{
 			camera_shake(40);
 			
-			if (++e->timer >= TIME_8(50)) {
+			if(++e->timer >= TIME_8(50)) {
 				tsc_hide_boss_health(); // Health bar sticks around if we don't do this
 				entities_clear_by_type(OBJ_BUTE_ARCHER_RED);
 				entities_clear_by_type(OBJ_BALLOS_SPIKES);
@@ -811,7 +809,7 @@ void ai_ballos_rotator(Entity *e) {
 		{
 			e->frame = 0;
 			e->state = 1;
-			e->timer2 = e->angle * 2;
+			e->timer2 = e->angle << 1;
 			
 			e->timer3 = 0xC0;
 			e->attack = 14;
@@ -883,32 +881,33 @@ void ai_ballos_rotator(Entity *e) {
 			
 			// this dir was set when they were created and
 			// alternates left/right around the circle
-			if (!e->dir) {
-				e->eflags |= NPC_SHOOTABLE;
+			if(!e->dir) {
+				e->nflags |= NPC_SHOOTABLE;
 				e->frame = 0;
 			} else {
-				e->eflags |= NPC_INVINCIBLE;
+				e->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 				e->frame = 1;
 			}
 		} /* fallthrough */
 		case 31:		// form 3 CW slow spin
 		{
 			// come in closer to main object
-			if (e->timer3 > 0x100)
+			if(e->timer3 > 0x100)
 				e->timer3--;
 			
 			// spin CW
-			if (++e->timer2 > 0x200)
+			if(++e->timer2 > 0x200)
 				e->timer2 -= 0x200;
 			
-			if (e->eflags & NPC_SHOOTABLE) {
+			e->nflags ^= NPC_SHOOTABLE;
+			if(!(e->nflags & NPC_INVINCIBLE)) {
 				//e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health < (1000 - 100)) {
 					e->x_speed = 0;
 					e->y_speed = 0;
 					
-					e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
+					e->nflags &= ~NPC_SHOOTABLE;
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
 					
@@ -925,13 +924,12 @@ void ai_ballos_rotator(Entity *e) {
 		
 		case 40:	// destroyed during phase 3, bouncing
 		{
-			e->y_speed += SPEED_8(0x20);
-			LIMIT_Y(SPEED_12(0x5ff));
+			if(e->y_speed > SPEED_12(0x5E0)) e->y_speed += SPEED_8(0x20);
 			
-			if (blk(e->x, -16, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
-			if (blk(e->x, 16, e->y, 0) == 0x41) e->x_speed = -SPEED_8(0xFF);
+			if(blk(e->x, -16, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
+			if(blk(e->x, 16, e->y, 0) == 0x41) e->x_speed = -SPEED_8(0xFF);
 			
-			if (e->y_speed >= 0 && blk(e->x, 0, e->y, 16) == 0x41) {
+			if(e->y_speed >= 0 && blk(e->x, 0, e->y, 16) == 0x41) {
 				// first time they hit they head toward player, after that
 				// they keep going in same direction until hit wall
 				if(e->x_speed == 0) {
@@ -953,7 +951,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->y_speed = 0;
 			
 			e->frame = 1;
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
+			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
 			e->attack = 0;
 			
 			e->timer2 /= 4;

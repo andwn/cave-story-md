@@ -414,7 +414,7 @@ void tsc_update_boss_health() {
 			showingBossHealth = FALSE;
 			return;
 		}
-		uint16_t hp = bossHealth, inc = bossMaxHealth / 8, i;
+		uint16_t hp = bossHealth, inc = bossMaxHealth >> 3, i;
 		// Filled tiles
 		for(i = 0; i < 8 && hp >= inc; i++) {
 			hp -= inc;

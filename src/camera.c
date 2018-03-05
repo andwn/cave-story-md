@@ -101,8 +101,8 @@ void camera_update() {
 		}
 		// Camera shaking
 		if(cameraShake) {
-			x_next += (random() % 0x800) - 0x400;
-			y_next += (random() % 0x800) - 0x400;
+			x_next += (random() & 0x7FF) - 0x400;
+			y_next += (random() & 0x7FF) - 0x400;
 			if(cameraShake != 9999) cameraShake--;
 		}
 	} else { // Camera isn't following anything

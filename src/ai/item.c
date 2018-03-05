@@ -14,8 +14,8 @@ void onspawn_energy(Entity *e) {
 		e->framesize = 4;
 		e->sprite[0].size = SPRITE_SIZE(2, 2);
 	}
-	e->left_gravity = (stageID == 0x1F || stageID == 0x35);
-	e->x_speed = 0x200 - (random() % 0x400);
+	e->left_gravity = (stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL);
+	e->x_speed = 0x1FF - (random() & 0x3FF);
 	e->alwaysActive = TRUE;
 }
 
@@ -47,48 +47,47 @@ void ai_energy(Entity *e) {
 		e->state = STATE_DELETE;
 	} else {
 		e->timer++;
-		if(e->timer > 10 * FPS) {
+		if(e->timer > TIME_10(500)) {
 			e->state = STATE_DELETE;
 			return;
-		} else if(e->timer > 7 * FPS) {
+		} else if(e->timer > TIME_10(350)) {
 			e->hidden = (e->timer & 3) > 1;
 		}
 		if(e->left_gravity) {
-			e->x_speed -= SPEED(6);
-			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED(0x100);
+			e->x_speed -= SPEED_8(6);
+			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
 		} else {
-			e->y_speed += SPEED(0x12);
+			if(e->y_speed < SPEED_10(0x3EE)) e->y_speed += SPEED_8(0x12);
 			if(e->x_speed > 0) e->x_speed--;
 			if(e->x_speed < 0) e->x_speed++;
-			if(e->y_speed > 0x400) e->y_speed = 0x400;
 			// Check below / above first
 			uint8_t block_below = stage_get_block_type(
 					sub_to_block(e->x), sub_to_block(e->y + 0x800));
 			uint8_t block_above = stage_get_block_type(
 					sub_to_block(e->x), sub_to_block(e->y - 0x800));
 			if(block_below == 0x41 || block_below == 0x43) {
-				e->y -= sub_to_pixel(e->y + 0x800) % 16;
+				//e->y -= sub_to_pixel(e->y + 0x800) % 16;
 				e->y_speed = -e->y_speed >> 1;
-				if(e->y_speed > -0x400) e->y_speed = -0x400;
+				if(e->y_speed > -SPEED_10(0x3FF)) e->y_speed = -SPEED_10(0x3FF);
 				sound_play(SND_XP_BOUNCE, 0);
 			} else if(block_below & BLOCK_SLOPE) {
 				uint8_t index = block_below & 0xF;
 				if(index >= 4) {
 					uint16_t xx = sub_to_pixel(e->x);
 					uint16_t yy = sub_to_pixel(e->y + 0x800);
-					int8_t overlap = (yy % 16) - heightmap[index % 4][xx % 16];
+					int8_t overlap = (yy & 15) - heightmap[index & 3][xx & 15];
 					if(overlap >= 0) {
 						e->y -= overlap;
-						if(e->y_speed >= 0x200) sound_play(SND_XP_BOUNCE, 0);
+						if(e->y_speed >= SPEED_10(0x200)) sound_play(SND_XP_BOUNCE, 0);
 						e->y_speed = -e->y_speed;
-						if(e->y_speed > -0x400) e->y_speed = -0x400;
+						if(e->y_speed > -SPEED_10(0x3FF)) e->y_speed = -SPEED_10(0x3FF);
 					}
 				}
 			} else if(block_above == 0x41 || block_above == 0x43) {
 				e->y_speed = -e->y_speed >> 1;
-				if(e->y_speed < 0x300) e->y_speed = 0x300;
+				if(e->y_speed < SPEED_10(0x300)) e->y_speed = SPEED_10(0x300);
 			} else {
-				e->y_speed += SPEED(0x50);
+				e->y_speed += SPEED_8(0x50);
 				//if(e->y_speed > 0x600) e->y_speed = 0x600;
 			}
 			// Check in front
@@ -104,27 +103,40 @@ void ai_energy(Entity *e) {
 	}
 }
 
-void ai_missile(Entity *e) {
-	// Hide the sprite when under a breakable block
-	// Reduces unnecessary lag in sand zone
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
-		e->hidden = TRUE;
-		return;
-	} else {
-		e->hidden = FALSE;
-	}
+void onspawn_powerup(Entity *e) {
 	if(e->eflags & NPC_OPTION1) {
-		if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
-		else  {ANIMATE(e, 4, 0,1);}
-	} else e->frame = 0;
-	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
-	if(!e->state) {
-		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
-		e->state = 1;
+		e->alwaysActive = TRUE;
+	} else {
+		e->x_mark = sub_to_block(e->x);
+		e->y_mark = sub_to_block(e->y);
+		e->hidden = TRUE;
+	}
+	e->frame = (e->eflags & NPC_OPTION2) ? 2 : 0;
+}
+
+void ai_missile(Entity *e) {
+	if(e->eflags & NPC_OPTION1) {
+		if((++e->animtime & 3) == 0) e->frame ^= 1;
+		if(stageID == STAGE_WATERWAY_BOSS) {
+			e->x_speed -= SPEED_8(6);
+			e->x += e->x_speed;
+		}
+		if(e->timer > TIME_10(500)) {
+			e->state = STATE_DELETE;
+			return;
+		} else if(e->timer > TIME_10(350)) {
+			e->hidden ^= 1;
+		}
+	} else if(!e->state) {
+		// Hide the sprite when under a breakable block
+		// Reduces unnecessary lag in sand zone
+		if(stage_get_block_type(e->x_mark, e->y_mark) != 0x43) {
+			e->hidden = FALSE;
+			e->state++;
+		}
 	}
 	// Increases missile ammo, plays sound and deletes itself
-	e->timer++;
-	if((e->timer & 1) && entity_overlapping(&player, e)) {
+	if((++e->timer & 1) && entity_overlapping(&player, e)) {
 		// Find missile or super missile
 		Weapon *w = player_find_weapon(WEAPON_MISSILE);
 		if(!w) w = player_find_weapon(WEAPON_SUPERMISSILE);
@@ -136,43 +148,32 @@ void ai_missile(Entity *e) {
 		}
 		sound_play(SND_GET_MISSILE, 5);
 		e->state = STATE_DELETE;
-	} else {
-		if(stageID == 0x1F) {
-			e->x_speed -= SPEED(6);
-			e->x += e->x_speed;
-		}
-		if(e->eflags & NPC_OPTION1) {
-			if(e->timer > 10 * FPS) {
-				e->state = STATE_DELETE;
-				return;
-			} else if(e->timer > 7 * FPS) {
-				e->hidden ^= 1;
-			}
-		}
 	}
 }
 
 void ai_heart(Entity *e) {
-	// Hide the sprite when under a breakable block
-	// Reduces unnecessary lag in sand zone
-	if(stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y)) == 0x43) {
-		e->hidden = TRUE;
-		return;
-	} else {
-		e->hidden = FALSE;
-	}
 	if(e->eflags & NPC_OPTION1) {
-		if(e->eflags & NPC_OPTION2) {ANIMATE(e, 4, 2,3);}
-		else  {ANIMATE(e, 4, 0,1);}
-	} else e->frame = 0;
-	// Dropped health/missiles should be deleted after 10 seconds, even if it is offscreen
-	if(!e->state) {
-		e->alwaysActive = (e->eflags & NPC_OPTION1) > 0;
-		e->state = 1;
+		if((++e->animtime & 3) == 0) e->frame ^= 1;
+		if(stageID == STAGE_WATERWAY_BOSS) {
+			e->x_speed -= SPEED_8(6);
+			e->x += e->x_speed;
+		}
+		if(e->timer > TIME_10(500)) {
+			e->state = STATE_DELETE;
+			return;
+		} else if(e->timer > TIME_10(350)) {
+			e->hidden ^= 1;
+		}
+	} else if(!e->state) {
+		// Hide the sprite when under a breakable block
+		// Reduces unnecessary lag in sand zone
+		if(stage_get_block_type(e->x_mark, e->y_mark) != 0x43) {
+			e->hidden = FALSE;
+			e->state++;
+		}
 	}
 	// Increases health, plays sound and deletes itself
-	e->timer++;
-	if((e->timer & 1) && entity_overlapping(&player, e)) {
+	if((++e->timer & 1) && entity_overlapping(&player, e)) {
 		if(e->eflags & NPC_OPTION1) {
 			player.health += e->health;
 		} else if(e->eflags & NPC_OPTION2) {
@@ -184,19 +185,6 @@ void ai_heart(Entity *e) {
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
 		sound_play(SND_HEALTH_REFILL, 5);
 		e->state = STATE_DELETE;
-	} else {
-		if(stageID == 0x1F) {
-			e->x_speed -= SPEED(6);
-			e->x += e->x_speed;
-		}
-		if(e->eflags & NPC_OPTION1) {
-			if(e->timer > 10 * FPS) {
-				e->state = STATE_DELETE;
-				return;
-			} else if(e->timer > 7 * FPS) {
-				e->hidden ^= 1;
-			}
-		}
 	}
 }
 

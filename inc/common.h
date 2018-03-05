@@ -113,6 +113,10 @@ uint16_t pf_peak;
 uint16_t time_tab[0x100];
 uint16_t speed_tab[0x100];
 
+// Div/mod tables to help math when displaying digits
+const uint8_t div10[100];
+const uint8_t mod10[100];
+
 // Direction
 enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 enum MDDIR { LEFT, RIGHT, UP, DOWN, CENTER };

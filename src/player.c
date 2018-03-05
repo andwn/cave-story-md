@@ -607,23 +607,23 @@ void player_start_booster() {
 		
 		switch(playerBoostState) {
 			case BOOST_UP:
-				player.y_speed = -SPEED(0x5ff);
+				player.y_speed = -SPEED_12(0x600);
 			break;
 			case BOOST_DOWN:
-				player.y_speed = SPEED(0x5ff);
+				player.y_speed = SPEED_12(0x600);
 			break;
 			case BOOST_HOZ:
 				player.y_speed = 0;
 				if (joy_down(BUTTON_LEFT))
-					player.x_speed = -SPEED(0x5ff);
+					player.x_speed = -SPEED_12(0x600);
 				else
-					player.x_speed = SPEED(0x5ff);
+					player.x_speed = SPEED_12(0x600);
 			break;
 		}
 	} else {
 		playerBoostState = BOOST_08;
 		// help it overcome gravity
-		if (player.y_speed > SPEED(0x100))
+		if (player.y_speed > SPEED_8(0xFF))
 			player.y_speed >>= 1;
 	}
 	sound_play(SND_BOOSTER, 3);
@@ -656,7 +656,7 @@ void player_update_booster() {
 		case BOOST_HOZ:
 		{
 			if ((!player.dir && blockl) || (player.dir && blockr)) {
-				player.y_speed = -SPEED(0x100);
+				player.y_speed = -SPEED_8(0xFF);
 			}
 			// I believe the player should not constantly fly upward after
 			// getting hit but need to verify what the original CS does
@@ -670,29 +670,29 @@ void player_update_booster() {
 		break;
 		case BOOST_UP:
 		{
-			player.y_speed -= SPEED(0x20);
-			if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+			player.y_speed -= SPEED_8(0x20);
+			if(player.y_speed < -SPEED_12(0x600)) player.y_speed = -SPEED_12(0x600);
 		}
 		break;
 		case BOOST_DOWN:
 		{
-			player.y_speed += SPEED(0x20);
+			player.y_speed += SPEED_8(0x20);
 		}
 		break;
 		case BOOST_08:
 		{
 			// top speed and sputtering
-			if (player.y_speed < -SPEED(0x400)) {
-				player.y_speed += SPEED(0x20);
+			if (player.y_speed < -SPEED_10(0x3FF)) {
+				player.y_speed += SPEED_8(0x20);
 				sputtering = TRUE;	// no sound/smoke this frame
 			} else {
-				player.y_speed -= SPEED(0x20);
+				player.y_speed -= SPEED_8(0x20);
 			}
 		}
 		break;
 	}
 	// smoke and sound effects
-	if ((playerBoosterFuel % 5) == 1 && !sputtering) {
+	if((++player.timer2 > 5) && !sputtering) {
 		sound_play(SND_BOOSTER, 3);
 		effect_create_misc(playerBoostState == BOOST_08 ? EFF_BOOST8 : EFF_BOOST2, 
 				player.x >> CSF, (player.y >> CSF) + 6);
@@ -768,10 +768,16 @@ void player_show_map_name(uint8_t ttl) {
 }
 
 void draw_air_percent() {
+	uint8_t airTemp = airPercent;
 	uint32_t numberTiles[3][8];
-	memcpy(numberTiles[0], airPercent == 100 ? &TS_Numbers.tiles[8] : TILE_BLANK, 32);
-	memcpy(numberTiles[1], &TS_Numbers.tiles[((airPercent / 10) % 10) * 8], 32);
-	memcpy(numberTiles[2], &TS_Numbers.tiles[(airPercent % 10) * 8], 32);
+	if(airTemp >= 100) {
+		airTemp -= 100;
+		memcpy(numberTiles[0], &TS_Numbers.tiles[8], 32);
+	} else {
+		memcpy(numberTiles[0], TILE_BLANK, 32);
+	}
+	memcpy(numberTiles[1], &TS_Numbers.tiles[div10[airTemp] * 8], 32);
+	memcpy(numberTiles[2], &TS_Numbers.tiles[mod10[airTemp] * 8], 32);
 	
 	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, TRUE);
 	
@@ -780,24 +786,24 @@ void draw_air_percent() {
 void player_update_air_display() {
 	// Blink for a second after getting out of the water
 	if(airPercent == 100) {
-		if(airDisplayTime == TIME(50)) {
+		if(airDisplayTime == TIME_8(50)) {
 			draw_air_percent();
 		} else if(airDisplayTime & 8) {
 			sprite_addq(airSprite, 2);
 		}
 	} else {
 		airDisplayTime++;
-		if((airDisplayTime % 32) == 0) {
+		if((airDisplayTime & 31) == 0) {
 			
 			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
 			
-		} else if((airDisplayTime % 32) == 15) {
+		} else if((airDisplayTime & 31) == 15) {
 			const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
 			VDP_loadTileData(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1, TRUE);
 			
 		}
 		// Calculate air percent and display the value
-		if(airTick == TIME(10)) draw_air_percent();
+		if(airTick == TIME_8(10)) draw_air_percent();
 		sprite_addq(airSprite, 2);
 	}
 }
@@ -936,7 +942,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 	}
 	if(!iSuckAtThisGameSHIT) player.health -= damage;
 	sound_play(SND_PLAYER_HURT, 5);
-	playerIFrames = TIME(100);
+	playerIFrames = TIME_8(100);
 	// Halve damage applied to weapon energy if we have the arms barrier
 	if(playerEquipment & EQUIP_ARMSBARRIER) damage = (damage + 1) >> 1;
 	// Decrease weapon exp
@@ -958,7 +964,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 		}
 	}
 	// Don't knock back in <UNI:0001 mode
-	if(!playerMoveMode) player.y_speed = -SPEED(0x400);
+	if(!playerMoveMode) player.y_speed = -SPEED_10(0x3FF);
 	player.grounded = FALSE;
 	return FALSE;
 }

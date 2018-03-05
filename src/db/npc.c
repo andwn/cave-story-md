@@ -101,8 +101,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ &SPR_Igor,		NOSHEET, 		PAL3, 4, &onspawn_igor, 		&ai_igorscene, 		&ai_null 			}, // Igor
 	{ NULL,				SHEET_BASUSHOT, PAL0, 1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	}, // Basu Shot
 	{ NULL,				SHEET_TERM, 	PAL1, 1, &ai_null, 				&ai_terminal, 		&ai_null 			}, // Terminal
-	{ NULL,				SHEET_MISSILE, 	PAL1, 1, &onspawn_op2anim, 		&ai_missile, 		&ai_null 			}, // Missile
-	{ NULL,				SHEET_HEART, 	PAL1, 1, &onspawn_op2anim, 		&ai_heart, 			&ai_null 			}, // Heart
+	{ NULL,				SHEET_MISSILE, 	PAL1, 1, &onspawn_powerup, 		&ai_missile, 		&ai_null 			}, // Missile
+	{ NULL,				SHEET_HEART, 	PAL1, 1, &onspawn_powerup, 		&ai_heart, 			&ai_null 			}, // Heart
 	{ &SPR_Igor,		NOSHEET, 		PAL3, 4, &onspawn_igor, 		&ai_igor, 			&ondeath_igor 		}, // Igor
 	{ &SPR_Igor,		NOSHEET, 		PAL3, 4, &onspawn_igor, 		&ai_igordead, 		&ai_null 			}, // Igor
 	{ NULL,				NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			},

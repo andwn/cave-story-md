@@ -70,13 +70,13 @@ static uint8_t refresh_file(uint8_t index) {
 				fillHP -= 8;
 			}
 			memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*8], 32);
-			uint8_t digit = file.health / 10;
+			uint8_t digit = div10[file.health];
 			if(digit) {
 				memcpy(tileData[1], &TS_Numbers.tiles[(digit)*8], 32);
 			} else {
 				memcpy(tileData[1], TILE_BLANK, 32);
 			}
-			memcpy(tileData[2], &TS_Numbers.tiles[(file.health % 10)*8], 32);
+			memcpy(tileData[2], &TS_Numbers.tiles[mod10[file.health]*8], 32);
 			uint16_t tile = TILE_HUDINDEX + index*8;
 			DMA_doDma(DMA_VRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {

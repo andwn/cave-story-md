@@ -16,7 +16,7 @@
 
 typedef struct {
 	VDPSprite sprite;
-	uint8_t type, ttl;
+	uint8_t type, ttl, timer, timer2;
 	int16_t x, y;
 	int8_t x_speed, y_speed;
 } Effect;
@@ -107,7 +107,10 @@ void effects_update() {
 			break;
 			case EFF_ZZZ:
 			{
-				if(!(effMisc[i].ttl % TIME(25))) effMisc[i].sprite.attribut++;
+				if(++effMisc[i].timer >= TIME_8(25)) {
+					effMisc[i].timer = 0;
+					effMisc[i].sprite.attribut++;
+				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
@@ -120,7 +123,10 @@ void effects_update() {
 			} /* fallthrough */
 			case EFF_BOOST2:
 			{
-				if(!(effMisc[i].ttl % TIME(5))) effMisc[i].sprite.attribut++;
+				if(++effMisc[i].timer >= TIME_8(5)) {
+					effMisc[i].timer = 0;
+					effMisc[i].sprite.attribut++;
+				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
@@ -129,7 +135,7 @@ void effects_update() {
 			break;
 			case EFF_QMARK:
 			{
-				if(effMisc[i].ttl > TIME(60) && (effMisc[i].ttl & 3) == 0) {
+				if(effMisc[i].ttl > TIME_8(60) && (effMisc[i].ttl & 3) == 0) {
 					effMisc[i].y--;
 				}
 				effMisc[i].ttl--;
@@ -180,8 +186,16 @@ void effect_create_smoke(int16_t x, int16_t y) {
 		if(effSmoke[i].ttl) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
-		effSmoke[i].x_speed = (random() & 2) - 1;
-		effSmoke[i].y_speed = (random() & 2) - 1;
+		switch(random() & 7) {
+			case 0: effSmoke[i].x_speed = 0; break;
+			case 1:	effSmoke[i].y_speed = 0; break;
+			case 2: effSmoke[i].x_speed = 1; break;
+			case 3: effSmoke[i].y_speed = 1; break;
+			case 4: effSmoke[i].x_speed = -1; break;
+			case 5:	effSmoke[i].y_speed = -1; break;
+			case 6: effSmoke[i].x_speed ^= 1; break;
+			case 7: effSmoke[i].y_speed ^= 1; break;
+		}
 		effSmoke[i].ttl = 24;
 		effSmoke[i].sprite = (VDPSprite) {
 			.size = SPRITE_SIZE(2, 2),

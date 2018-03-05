@@ -80,7 +80,7 @@ void ai_grav(Entity *e) {
 	if(e->grounded) {
 		e->grounded = collide_stage_floor_grounded(e);
 	} else {
-		e->y_speed += SPEED(0x40);
+		e->y_speed += SPEED_8(0x40);
 		e->grounded = collide_stage_floor(e);
 	}
 	e->x = e->x_next;

@@ -515,7 +515,7 @@ void stage_draw_screen() {
 				}
 				x++;
 			}
-			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + (y%32)*0x80, 64, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + ((y&31)<<7), 64, 2);
 		}
 		y++;
 	}

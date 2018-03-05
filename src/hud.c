@@ -106,7 +106,8 @@ void hud_refresh_health() {
 	// Redraw health if it changed
 	hudMaxHealth = max(playerMaxHealth, 1); // Just so it's impossible to divide zero
 	hudHealth = player.health;
-	int16_t fillHP = 40 * hudHealth / hudMaxHealth;
+	// 40 * hudHealth / hudMaxHealth
+	int16_t fillHP = ((hudHealth<<5) + (hudHealth<<3)) / hudMaxHealth;
 	for(uint8_t i = 0; i < 5; i++) {
 		// The TS_HudBar tileset has two rows of 8 tiles, where the section of the
 		// bar is empty at tile 0 and full at tile 7
@@ -118,13 +119,13 @@ void hud_refresh_health() {
 	}
 	// Heart icon and two digits displaying current health
 	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
-	uint8_t digit = hudHealth / 10;
+	uint8_t digit = div10[hudHealth];
 	if(digit) {
 		memcpy(tileData[1], &TS_Numbers.tiles[(digit)*TSIZE], TILE_SIZE);
 	} else {
 		memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
 	}
-	memcpy(tileData[2], &TS_Numbers.tiles[(hudHealth % 10)*TSIZE], TILE_SIZE);
+	memcpy(tileData[2], &TS_Numbers.tiles[mod10[hudHealth]*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
 	for(uint8_t i = 0; i < 8; i++)
 		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
@@ -142,7 +143,7 @@ void hud_refresh_energy() {
 		}
 	} else {
 		// Same deal as HP with the bar
-		int16_t fillXP = 40 * hudEnergy / hudMaxEnergy;
+		int16_t fillXP = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
 		for(uint8_t i = 0; i < 5; i++) {
 			int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
 			if(addrXP < 0) addrXP = 0;
@@ -174,13 +175,15 @@ void hud_refresh_ammo() {
 	hudAmmo = playerWeapon[currentWeapon].ammo;
 	if(hudMaxAmmo > 0) {
 		memcpy(tileData[0], TILE_BLANK, TILE_SIZE);
-		if(hudAmmo >= 100) {
+		uint8_t ammoTemp = hudAmmo;
+		if(ammoTemp >= 100) {
+			ammoTemp -= 100;
 			memcpy(tileData[1], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {
 			memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
 		}
-		memcpy(tileData[2], &TS_Numbers.tiles[((hudAmmo / 10) % 10)*TSIZE], TILE_SIZE);
-		memcpy(tileData[3], &TS_Numbers.tiles[(hudAmmo % 10)*TSIZE], TILE_SIZE);
+		memcpy(tileData[2], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[3], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[0], TILE_BLANK, TILE_SIZE);
 		memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
@@ -196,13 +199,15 @@ void hud_refresh_maxammo() {
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	memcpy(tileData[4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE);
 	if(hudMaxAmmo > 0) {
-		if(hudMaxAmmo >= 100) {
+		uint8_t ammoTemp = hudMaxAmmo;
+		if(ammoTemp >= 100) {
+			ammoTemp -= 100;
 			memcpy(tileData[5], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {
 			memcpy(tileData[5], TILE_BLANK, TILE_SIZE);
 		}
-		memcpy(tileData[6], &TS_Numbers.tiles[((hudMaxAmmo / 10) % 10)*TSIZE], TILE_SIZE);
-		memcpy(tileData[7], &TS_Numbers.tiles[(hudMaxAmmo % 10)*TSIZE], TILE_SIZE);
+		memcpy(tileData[6], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[7], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[5], TILE_BLANK, TILE_SIZE);
 		memcpy(tileData[6], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);

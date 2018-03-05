@@ -482,15 +482,15 @@ uint8_t collide_stage_floor(Entity *e) {
 	if(!e->enableSlopes) return FALSE;
 	uint8_t result = FALSE;
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
-			pixel_y%16 >= heightmap[pxa1%2][pixel_x1%16]) {
+			(pixel_y&15) >= heightmap[pxa1&1][pixel_x1&15]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
-				heightmap[pxa1%2][pixel_x1%16] - e->hit_box.bottom);
+				heightmap[pxa1&1][pixel_x1&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
-			pixel_y%16 >= 0xF - heightmap[pxa2%2][pixel_x2%16]) {
+			(pixel_y&15) >= 0xF - heightmap[pxa2&1][pixel_x2&15]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
 				heightmap[pxa2%2][pixel_x2%16] - e->hit_box.bottom);
@@ -621,20 +621,20 @@ uint8_t collide_stage_ceiling(Entity *e) {
 	if(result) {
 		if(e == &player) {
 			e->jump_time = 0;
-			if(!playerNoBump && e->y_speed < -SPEED(0x200)) {
+			if(!playerNoBump && e->y_speed < -SPEED_10(0x200)) {
 				sound_play(SND_BONK_HEAD, 2);
 				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
 				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
 				if(mgun_shoottime) {
 					playerNoBump = TRUE;
 				} else {
-					e->y_speed = min(-e->y_speed / 2, e->underwater ? SPEED(0x80) : SPEED(0x100));
+					e->y_speed = min(-e->y_speed >> 1, e->underwater ? SPEED_8(0x80) : SPEED_8(0xFF));
 				}
 			} else if(!mgun_shoottime || !joy_down(BUTTON_DOWN)) {
 				e->y_speed = 0;
 			}
-		} else if(e->y_speed < -SPEED(0x200)) {
-			e->y_speed = min(-e->y_speed / 2, e->underwater ? SPEED(0x80) : SPEED(0x100));
+		} else if(e->y_speed < -SPEED_10(0x200)) {
+			e->y_speed = min(-e->y_speed >> 1, e->underwater ? SPEED_8(0x80) : SPEED_8(0xFF));
 		} else {
 			e->y_speed = 0;
 		}
@@ -668,7 +668,7 @@ bounding_box entity_react_to_collision(Entity *a, Entity *b) {
 		by2 = sub_to_pixel(b->y) + b->hit_box.bottom;
 	if(!(ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1)) return result;
 	// This is an attempt to fix falling into platforms that are moving up
-	if(abs(a->y_speed - b->y_speed) <= SPEED(0x5FF)) {
+	if(abs(a->y_speed - b->y_speed) < SPEED_12(0x600)) {
 		// Wall reaction
 		ax1 = sub_to_pixel(a->x_next) - a->hit_box.left + 1;
 		ax2 = sub_to_pixel(a->x_next) + a->hit_box.right - 1;
