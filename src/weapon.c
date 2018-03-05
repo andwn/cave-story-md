@@ -69,14 +69,14 @@ static const MissileSettings missile_settings[2][6] = {
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
 	//    maxspd        accel        range, time
-		{ 0xA00*50/60,  0x80*50/60,  16,	10,	},
-		{ 0xA00*50/60,  0x100*50/60, 32,	15,	},
-		{ 0xA00*50/60,  0x80*50/60,  40,	5,	},
+		{ 0xA00*5/6,  0x80*50/60,  16,	10,	},
+		{ 0xA00*5/6,  0x100*50/60, 32,	15,	},
+		{ 0xA00*5/6,  0x80*50/60,  40,	5,	},
 	//  Level 1-3 super missile
 	//    maxspd        accel        range, time
-		{ 0x1400*50/60, 0x200*50/60, 16,	10,	},
-		{ 0x1400*50/60, 0x200*50/60, 32,	16,	},
-		{ 0x1400*50/60, 0x200*50/60, 40,	4, },
+		{ 0x1400*5/6, 0x200*50/60, 16,	10,	},
+		{ 0x1400*5/6, 0x200*50/60, 32,	16,	},
+		{ 0x1400*5/6, 0x200*50/60, 40,	4, },
 	}, { // PAL
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
@@ -97,8 +97,60 @@ static void create_blade_slash(Bullet *b, uint8_t burst);
 
 void weapon_fire_none(Weapon *w) { (void)(w); }
 
+static const uint8_t snake_ttl[4] = { 0, 20, 23, 30 };
+static const uint16_t snake_speed[4] = { 0, 0x600, 0x200, 0x200 };
+static uint8_t wave_dir = 0;
+
 void weapon_fire_snake(Weapon *w) {
-	weapon_fire_polarstar(w);
+	Bullet *b = NULL;
+	uint8_t i;
+	for(i = 2 + (3 - w->level); i < 6; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(b == NULL) return;
+	sound_play(SND_SNAKE_FIRE, 5);
+	b->type = w->type;
+	b->level = w->level;
+	b->sheet = w->sheet;
+	b->sprite = (VDPSprite) {
+		.size = SPRITE_SIZE(2, 2),
+		.attribut = TILE_ATTR_FULL(PAL1,0,0,0,sheets[b->sheet].index)
+	};
+	b->damage = 2 + (b->level << 1); // 4, 6, 8
+	b->ttl = TIME_8(snake_ttl[b->level]);
+	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
+		b->x = player.x;
+		b->y = player.y - pixel_to_sub(10);
+		b->x_speed = 0;
+		b->y_speed = -SPEED_12(snake_speed[b->level]);
+	} else if(b->dir == DOWN) {
+		b->x = player.x;
+		b->y = player.y + pixel_to_sub(10);
+		b->x_speed = 0;
+		b->y_speed = SPEED_12(snake_speed[b->level]);
+	} else {
+		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = b->dir ? SPEED_12(snake_speed[b->level]) : -SPEED_12(snake_speed[b->level]);
+		b->y_speed = 0;
+	}
+	if(b->level > 1) {
+		// start moving off at an angle to our direction.
+		// whether we start off going up or down alternates with each shot.
+		int16_t wavespeed = (wave_dir & 1) ? -SPEED_10(0x3FF) : SPEED_10(0x3FF);
+		wave_dir ^= 1;
+		if(b->dir == LEFT || b->dir == RIGHT) {
+			b->y_speed = wavespeed;
+		} else {
+			b->x_speed = wavespeed;
+		}
+		b->state = 2;
+	}
 }
 
 void weapon_fire_polarstar(Weapon *w) {
@@ -480,13 +532,97 @@ void weapon_fire_nemesis(Weapon *w) {
 }
 
 void weapon_fire_spur(Weapon *w) {
+	uint8_t lv = w->level;
+	w->level = 3;
 	weapon_fire_polarstar(w);
+	w->level = lv;
+	/*
+	Bullet *b = NULL;
+	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
+		if(playerBullet[i].ttl > 0) continue;
+		b = &playerBullet[i];
+		break;
+	}
+	if(!b) return;
+	
+	b->level = w->level;
+	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
+	b->sheet = w->sheet;
+	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	if(w->level == 1) {
+		b->type = WEAPON_POLARSTAR;
+		b->level = 3;
+		sound_play(SND_POLAR_STAR_L3, 5);
+		b->damage = 4;
+		b->ttl = TIME_8(30);
+	} else { // Charged shot
+		b->type = w->type;
+		b->level = w->level - 1;
+		if(w->energy == w->next) b->level++;
+	}
+	
+	b->dir = FIREDIR;
+	if(b->dir == UP) {
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->x = player.x;
+		b->y = player.y - pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = -pixel_to_sub(4);
+	} else if(b->dir == DOWN) {
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->x = player.x;
+		b->y = player.y + pixel_to_sub(12);
+		b->x_speed = 0;
+		b->y_speed = pixel_to_sub(4);
+	} else {
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
+		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->y = player.y + pixel_to_sub(3);
+		b->x_speed = (b->dir ? pixel_to_sub(4) : -pixel_to_sub(4));
+		b->y_speed = 0;
+	}
+	*/
 }
 
 void bullet_update_none(Bullet *b) { (void)(b); }
 
 void bullet_update_snake(Bullet *b) {
-	bullet_update_polarstar(b);
+	b->ttl--;
+	uint16_t index = 0;
+	if(b->level > 1) {
+		// accelerate the shot
+		switch(b->dir) {
+			case LEFT:  b->x_speed -= SPEED_8(0x80); break;
+			case UP:    b->y_speed -= SPEED_8(0x80); break;
+			case RIGHT: b->x_speed += SPEED_8(0x80); break;
+			case DOWN:  b->y_speed += SPEED_8(0x80); break;
+		}
+		// periodically abruptly change the wave's direction
+		// use "state" as a timer
+		if((++b->state > TIME_8(5))) {
+			b->state = 0;
+			if(b->dir == LEFT || b->dir == RIGHT) {
+				b->y_speed = -b->y_speed;
+			} else {
+				b->x_speed = -b->x_speed;
+			}
+		}
+	}
+	// spin in shot direction
+	if(b->dir == LEFT) {
+		index = 12 - ((b->ttl & 3) << 2);
+	} else {
+		index = (b->ttl & 3) << 2;
+	}
+	if(index >= 12) index = 0;
+
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	sprite_pos(b->sprite,
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	sprite_index(b->sprite, sheets[b->sheet].index + index);
+	sprite_add(b->sprite);
 }
 
 void bullet_update_polarstar(Bullet *b) {
@@ -552,9 +688,8 @@ void bullet_update_fireball(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	if(!(b->ttl % 4)) {
-		sprite_index(b->sprite, sheets[b->sheet].index + ((uint16_t)(80 - b->ttl) % 12));
-	}
+	uint16_t index = (b->ttl & 3) << 2;
+	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
 	sprite_add(b->sprite);
 	b->ttl--;
 }

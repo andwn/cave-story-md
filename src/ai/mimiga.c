@@ -18,6 +18,11 @@ void ai_jack(Entity *e) {
 void ai_santa(Entity *e) {
 	if(!tscState) FACE_PLAYER(e);
 	generic_npc_states(e);
+	// Keep Santa above the sign and door in front of his house
+	if(e->state == 3 && !e->timer2) {
+		moveMeToFront = TRUE;
+		e->timer2++;
+	}
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

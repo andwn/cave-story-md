@@ -4,6 +4,7 @@
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
+#include "effect.h"
 #include "entity.h"
 #include "input.h"
 #include "joy.h"
@@ -48,6 +49,7 @@ void credits_main() {
 	ready = TRUE;
 	sprites_clear();
 	entities_clear();
+	effects_init();
 	VDP_setWindowPos(0, 0);
 	vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	
@@ -145,6 +147,7 @@ void credits_main() {
 					// Scrolling for illustrations
 					illScroll += illScrolling;
 					if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+					effects_update();
 					entities_update(TRUE);
 					vsync(); aftervsync(); 
 				}
@@ -153,6 +156,7 @@ void credits_main() {
 			pc++;
 		}
 		
+		effects_update();
 		entities_update(TRUE);
 		
 		backScroll++;

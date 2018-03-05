@@ -139,6 +139,7 @@ void game_main(uint8_t load) {
 						break;
 					}
 				}
+				window_update();
 				// Handle controller locking
 				uint16_t lockstate = joystate, oldlockstate = oldstate;
 				if(controlsLocked) joystate = oldstate = 0;
@@ -154,8 +155,6 @@ void game_main(uint8_t load) {
 				// Restore controller locking if it was locked
 				joystate = lockstate;
 				oldstate = oldlockstate;
-				
-				window_update();
 			}
 		}
 		PF_BGCOLOR(0xEEE);

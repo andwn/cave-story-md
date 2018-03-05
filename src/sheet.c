@@ -31,9 +31,9 @@ void sheets_load_weapon(Weapon *w) {
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
-		SHEET_ADD(SHEET_SNAKE, w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB2 
+							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_FIREBALL:
 		SHEET_ADD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
@@ -100,9 +100,9 @@ void sheets_refresh_weapon(Weapon *w) {
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
-		SHEET_MOD(SHEET_SNAKE, w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_MOD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 
+							 : w->level == 2 ? &SPR_FirebB2 
+							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_FIREBALL:
 		SHEET_MOD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
@@ -261,6 +261,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x2A: // Labyrinth Shop
 		{	SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 4,3,3, 0,0, 1,0, 1,2, 2,0);
+			if(!player_has_weapon(WEAPON_SNAKE)) {
+				Weapon w = (Weapon) { .type = WEAPON_SNAKE, .level = 1 };
+				sheets_load_weapon(&w);
+			}
 		} break;
 		case 0x29: // Clinic Ruins
 		{	SHEET_ADD(SHEET_DARKBUB, &SPR_DarkBub, 2,2,2, 0,0, 1,0);

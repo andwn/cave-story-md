@@ -1,4 +1,5 @@
 #include "ai_common.h"
+#include "gamemode.h"
 
 void onspawn_jelly(Entity *e) {
 	e->timer = random() & 31;
@@ -346,6 +347,9 @@ void onspawn_malcoBroken(Entity *e) {
 			
 			if (!controlsLocked) {
 				FACE_PLAYER(e);
+			}
+			if(gamemode == GM_CREDITS) {
+				e->dir = 1;
 			}
 		}
 		break;

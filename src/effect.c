@@ -7,6 +7,7 @@
 #include "sheet.h"
 #include "sprite.h"
 #include "tables.h"
+#include "tools.h"
 #include "vdp.h"
 #include "vdp_tile.h"
 #include "vdp_ext.h"
@@ -17,6 +18,7 @@ typedef struct {
 	VDPSprite sprite;
 	uint8_t type, ttl;
 	int16_t x, y;
+	int8_t x_speed, y_speed;
 } Effect;
 
 Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
@@ -61,9 +63,11 @@ void effects_update() {
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(!effSmoke[i].ttl) continue;
 		effSmoke[i].ttl--;
+		effSmoke[i].x += effSmoke[i].x_speed;
+		effSmoke[i].y += effSmoke[i].y_speed;
 		// Half assed animation
 		sprite_index(effSmoke[i].sprite,
-			TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 3) << 2));
+			TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 2) << 2));
 		sprite_pos(effSmoke[i].sprite,
 			effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
@@ -176,7 +180,9 @@ void effect_create_smoke(int16_t x, int16_t y) {
 		if(effSmoke[i].ttl) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
-		effSmoke[i].ttl = 48;
+		effSmoke[i].x_speed = (random() & 2) - 1;
+		effSmoke[i].y_speed = (random() & 2) - 1;
+		effSmoke[i].ttl = 24;
 		effSmoke[i].sprite = (VDPSprite) {
 			.size = SPRITE_SIZE(2, 2),
 			.attribut = TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX)

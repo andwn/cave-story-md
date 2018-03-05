@@ -95,6 +95,7 @@ void player_init() {
 	airTick = 0;
 	airDisplayTime = 0;
 	playerIFrames = 0;
+	mapNameTTL = 0;
 	// Booster trail sprite tiles
 	VDP_loadTileData(SPR_TILES(&SPR_Boost, 0, 0), 12, 4, TRUE);
 	// AIR Sprite
@@ -365,7 +366,7 @@ void player_update() {
 		w->maxammo = 100;
 		uint8_t chargespeed;
 		if(w->level == 1) {
-			chargespeed = TIME(25); // Twice per second
+			chargespeed = TIME_8(25); // Twice per second
 			if(joy_pressed(btn[cfg_btn_shoot])) weapon_fire(*w);
 		} else {
 			chargespeed = 3; // Around 12-15 per second
@@ -408,13 +409,25 @@ void player_update_movement() {
 void player_update_walk() {
 	uint16_t acc;
 	uint16_t fric;
-	uint16_t max_speed = SPEED(810);
-	if(player.grounded) {
-		acc = SPEED(85);
-		fric = SPEED(51);
+	uint16_t max_speed;
+	if(pal_mode) {
+		max_speed = 810;
+		if(player.grounded) {
+			acc = 85;
+			fric = 51;
+		} else {
+			acc = 32;
+			fric = 0;
+		}
 	} else {
-		acc = SPEED(32);
-		fric = 0;
+		max_speed = 675;
+		if(player.grounded) {
+			acc = 71;
+			fric = 42;
+		} else {
+			acc = 27;
+			fric = 0;
+		}
 	}
 	// 2 kinds of water, actual water blocks & background water in Core
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
@@ -443,10 +456,21 @@ void player_update_walk() {
 }
 
 void player_update_jump() {
-	uint16_t jumpSpeed = 	SPEED(0x500);
-	uint16_t gravity = 		SPEED(0x50);
-	uint16_t gravityJump = 	SPEED(0x20);
-	uint16_t maxFallSpeed = SPEED(0x5FF);
+	uint16_t jumpSpeed;
+	uint16_t gravity;
+	uint16_t gravityJump;
+	uint16_t maxFallSpeed;
+	if(pal_mode) {
+		jumpSpeed = 	0x500;
+		gravity = 		0x50;
+		gravityJump = 	0x20;
+		maxFallSpeed =	0x5FF;
+	} else {
+		jumpSpeed = 	0x42A;
+		gravity = 		0x42;
+		gravityJump = 	0x1A;
+		maxFallSpeed =	0x4FF;
+	}
 	if(player.underwater) {
 		jumpSpeed >>= 1;
 		gravity >>= 1;
@@ -484,9 +508,18 @@ void player_update_jump() {
 }
 
 void player_update_float() {
-	uint16_t acc = 		SPEED(0x100);
-	uint16_t fric = 	SPEED(0x80);
-	uint16_t max_speed = SPEED(0x400);
+	uint16_t acc;
+	uint16_t fric;
+	uint16_t max_speed;
+	if(pal_mode) {
+		acc =		256;
+		fric =		128;
+		max_speed =	1024;
+	} else {
+		acc =		213;
+		fric =		106;
+		max_speed =	853;
+	}
 	if (joy_down(BUTTON_LEFT)) {
 		player.x_speed -= acc;
 		if (player.x_speed < -max_speed) player.x_speed = -max_speed;

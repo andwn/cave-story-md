@@ -98,17 +98,17 @@ void ai_balrog(Entity *e) {
 		/* fallthrough */
 		case 11:
 		{
-			if (++e->timer <= TIME(20)) break;
+			if (++e->timer <= TIME_8(20)) break;
 			e->frame = ARMSUP;
 			e->state++;
-			e->y_speed = -SPEED(0x800);
+			e->y_speed = -SPEED_12(0x800);
 			e->eflags |= NPC_IGNORESOLID;
 		}
 		/* fallthrough */
 		case 12:
 		{
 			fall = FALSE;
-			e->y_speed -= SPEED(0x10);
+			e->y_speed -= SPEED_8(0x10);
 			if (e->y < 0) {
 				e->state = STATE_DELETE;
 				sound_play(SND_QUAKE, 5);
@@ -133,10 +133,10 @@ void ai_balrog(Entity *e) {
 		{
 			e->timer2++;
 			e->x += ((e->timer2 >> 1) & 1) ? (1<<9) : -(1<<9);
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(120)) {
 				e->state = 10;
 			}
-			e->y_speed += SPEED(0x20);
+			e->y_speed += SPEED_8(0x20);
 			LIMIT_Y(SPEED(0x5FF));
 		}
 		break;
@@ -149,7 +149,7 @@ void ai_balrog(Entity *e) {
 		/* fallthrough */
 		case 31:
 		{
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(100)) {
 				e->state = 0;
 			}
 		}
