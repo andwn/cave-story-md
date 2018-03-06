@@ -43,13 +43,13 @@ void hud_create() {
 	// Create the sprites
 	sprHUD[0] = (VDPSprite) {
 		.x = 16 + 128,
-		.y = (IS_PALSYSTEM ? 16 : 8) + 128,
+		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX)
 	};
 	sprHUD[1] = (VDPSprite) {
 		.x = 16 + 32 + 128,
-		.y = (IS_PALSYSTEM ? 16 : 8) + 128,
+		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
@@ -134,7 +134,11 @@ void hud_refresh_health() {
 void hud_refresh_energy() {
 	// Energy or level changed
 	hudLevel = playerWeapon[currentWeapon].level;
-	hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 1);
+	if(playerWeapon[currentWeapon].type == WEAPON_SPUR) {
+		hudMaxEnergy = spur_time[pal_mode][playerWeapon[currentWeapon].level];
+	} else {
+		hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 1);
+	}
 	hudEnergy = playerWeapon[currentWeapon].energy;
 	// Max energy draws "MAX"
 	if(hudEnergy == hudMaxEnergy) {

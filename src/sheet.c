@@ -26,8 +26,8 @@ void sheets_load_weapon(Weapon *w) {
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SPUR:
-		SHEET_ADD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
+		SHEET_ADD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
+							 : w->level == 2 ? &SPR_PolarB3 
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
@@ -95,8 +95,8 @@ void sheets_refresh_weapon(Weapon *w) {
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SPUR:
-		SHEET_MOD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB1 
-							 : w->level == 2 ? &SPR_PolarB2 
+		SHEET_MOD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
+							 : w->level == 2 ? &SPR_PolarB3 
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:

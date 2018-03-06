@@ -626,12 +626,12 @@ uint8_t collide_stage_ceiling(Entity *e) {
 				sound_play(SND_BONK_HEAD, 2);
 				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
 				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
-				if(mgun_shoottime) {
+				if(shoot_cooldown) {
 					playerNoBump = TRUE;
 				} else {
 					e->y_speed = min(-e->y_speed >> 1, e->underwater ? SPEED_8(0x80) : SPEED_8(0xFF));
 				}
-			} else if(!mgun_shoottime || !joy_down(BUTTON_DOWN)) {
+			} else if(!shoot_cooldown || !joy_down(BUTTON_DOWN)) {
 				e->y_speed = 0;
 			}
 		} else if(e->y_speed < -SPEED_10(0x200)) {

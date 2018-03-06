@@ -167,7 +167,7 @@ void weapon_fire_polarstar(Weapon *w) {
 	if(!b) return;
 	if(w->level == 3) sound_play(SND_POLAR_STAR_L3, 5);
 	else sound_play(SND_POLAR_STAR_L1_2, 5);
-	b->type = w->type;
+	b->type = WEAPON_POLARSTAR;
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
 	b->damage = w->level + (w->level == 3 ? 1 : 0); // 1, 2, 4

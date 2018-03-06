@@ -23,6 +23,7 @@ enum BoosterState {
 };
 
 uint8_t currentWeapon; // Index 0-7 of which slot in the array the currently used weapon is
+const uint8_t spur_time[2][4];
 
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
@@ -42,7 +43,7 @@ uint16_t playerEquipment;
 // What items the player has and will show up in the inventory screen
 uint8_t playerInventory[MAX_ITEMS];
 
-uint8_t mgun_shoottime, mgun_chargetime, playerNoBump;
+uint8_t shoot_cooldown, mgun_chargetime, playerNoBump;
 
 Entity *playerPlatform;
 uint8_t playerPlatformTime;

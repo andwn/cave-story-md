@@ -31,6 +31,11 @@
 	TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4); \
 })
 
+const uint8_t spur_time[2][4] = {
+	{ 0, 60, 90, 120 }, // NTSC
+	{ 0, 50, 75, 100 }, // PAL
+};
+
 VDPSprite weaponSprite;
 uint8_t playerWeaponCount;
 
@@ -83,7 +88,7 @@ void player_init() {
 	player.frame = 255;
 	ledge_time = 0;
 	lookingDown = FALSE;
-	mgun_shoottime = 0;
+	shoot_cooldown = 0;
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
@@ -341,18 +346,19 @@ void player_update() {
 	Weapon *w = &playerWeapon[currentWeapon];
 	if(iSuckAtThisGameSHIT) w->ammo = w->maxammo;
 	if(w->type == WEAPON_MACHINEGUN) {
-		if(mgun_shoottime > 0) mgun_shoottime--;
+		if(shoot_cooldown > 0) shoot_cooldown--;
 		if(joy_down(btn[cfg_btn_shoot])) {
-			if(mgun_shoottime == 0) {
+			if(shoot_cooldown == 0) {
 				if(w->ammo > 0) {
 					weapon_fire(*w);
 					w->ammo--;
 				} else {
 					sound_play(SND_GUN_CLICK, 5);
 				}
-				mgun_shoottime = IS_PALSYSTEM ? 9 : 10;
+				shoot_cooldown = pal_mode ? 9 : 10;
 			}
 		} else {
+			shoot_cooldown = 0;
 			if(w->ammo < 100) {
 				if(mgun_chargetime > 0) {
 					mgun_chargetime--;
@@ -370,10 +376,10 @@ void player_update() {
 			if(joy_pressed(btn[cfg_btn_shoot])) weapon_fire(*w);
 		} else {
 			chargespeed = 3; // Around 12-15 per second
-			if(mgun_shoottime > 0) mgun_shoottime--;
-			if(joy_down(btn[cfg_btn_shoot]) && mgun_shoottime == 0) {
+			if(shoot_cooldown > 0) shoot_cooldown--;
+			if(joy_down(btn[cfg_btn_shoot]) && shoot_cooldown == 0) {
 				weapon_fire(*w);
-				mgun_shoottime = IS_PALSYSTEM ? 9 : 10;
+				shoot_cooldown = IS_PALSYSTEM ? 9 : 10;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -384,12 +390,55 @@ void player_update() {
 				mgun_chargetime = chargespeed;
 			}
 		}
+	} else if(w->type == WEAPON_SPUR) {
+		if(joy_pressed(btn[cfg_btn_shoot])) {
+			weapon_fire(*w);
+			shoot_cooldown = 4;
+		} else if(joystate & btn[cfg_btn_shoot]) {
+			uint8_t maxenergy = spur_time[pal_mode][w->level];
+			if(!(w->level == 3 && w->energy == maxenergy)) {
+				w->energy += (playerEquipment & EQUIP_TURBOCHARGE) ? 3 : 2;
+				if(w->energy >= maxenergy) {
+					if(w->level == 3) {
+						w->energy = maxenergy;
+						sound_play(SND_SPUR_MAXED, 5);
+					} else {
+						w->level++;
+						w->energy = 0;
+					}
+				} else {
+					mgun_chargetime++;
+					if((mgun_chargetime & 3) == 1) {
+						sound_play(SND_SPUR_CHARGE_1 + w->level - 1, 2);
+					}
+				}
+			} else {	// keep flashing even once at max
+				//statusbar.xpflashcount = FLASH_TIME;
+				//
+				//if (player->equipmask & EQUIP_WHIMSTAR)
+				//	add_whimstar(&player->whimstar);
+			}
+		} else {
+			if(mgun_chargetime) {
+				if(w->level > 1) {
+					weapon_fire(*w);
+				}
+				mgun_chargetime = 0;
+			}
+			w->level = 1;
+			w->energy = 0;
+		}
+	} else if(shoot_cooldown) {
+		shoot_cooldown--;
 	} else {
-		if(joy_pressed(btn[cfg_btn_shoot])) weapon_fire(*w);
+		if(joy_pressed(btn[cfg_btn_shoot])) {
+			weapon_fire(*w);
+			shoot_cooldown = 4;
+		}
 	}
 	player_update_bullets();
 	if(player.grounded) {
-		playerBoosterFuel = TIME(51);
+		playerBoosterFuel = pal_mode ? 51 : 61;
 		player_update_interaction();
 	}
 	player_draw();
@@ -692,7 +741,8 @@ void player_update_booster() {
 		break;
 	}
 	// smoke and sound effects
-	if((++player.timer2 > 5) && !sputtering) {
+	if((++player.timer2 >= TIME_8(5)) && !sputtering) {
+		player.timer2 = 0;
 		sound_play(SND_BOOSTER, 3);
 		effect_create_misc(playerBoostState == BOOST_08 ? EFF_BOOST8 : EFF_BOOST2, 
 				player.x >> CSF, (player.y >> CSF) + 6);
@@ -915,7 +965,7 @@ void player_draw() {
 void player_unpause() {
 	// Sometimes player is left stuck after pausing
 	controlsLocked = FALSE;
-	// Simulates a bug which allows skipping Chako's fireplace in Grasstown
+	// Simulates a bug where you can get damaged, and pushed upwards, multiple times in succession (Chaco house skip)
 	if(cfg_iframebug) playerIFrames = 0;
 }
 

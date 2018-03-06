@@ -106,12 +106,12 @@ void ai_energy(Entity *e) {
 void onspawn_powerup(Entity *e) {
 	if(e->eflags & NPC_OPTION1) {
 		e->alwaysActive = TRUE;
+		e->frame = (e->eflags & NPC_OPTION2) ? 2 : 0;
 	} else {
 		e->x_mark = sub_to_block(e->x);
 		e->y_mark = sub_to_block(e->y);
 		e->hidden = TRUE;
 	}
-	e->frame = (e->eflags & NPC_OPTION2) ? 2 : 0;
 }
 
 void ai_missile(Entity *e) {

@@ -67,18 +67,38 @@ uint8_t sram_state = SRAM_UNCHECKED;
 //uint8_t counterShow = FALSE;
 //uint8_t counterTick = FALSE;
 Time time, counter;
-static const VDPSprite counterSprite[2] = {
+static const VDPSprite counterSpriteNTSC[2] = {
 	{ 
-		.x = 0x80 + 256, 
-		.y = 0x80 + 16, 
-		.size = SPRITE_SIZE(3,1),
+		.x = 0x80 + 16, 
+		.y = 0x80 + 8, 
+		.size = SPRITE_SIZE(4,1),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
 	}, { 
-		.x = 0x80 + 280, 
-		.y = 0x80 + 16, 
-		.size = SPRITE_SIZE(3,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+3),
+		.x = 0x80 + 48, 
+		.y = 0x80 + 8, 
+		.size = SPRITE_SIZE(4,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+4),
 	},
+};
+static const VDPSprite counterSpritePAL[2] = {
+	{ 
+		.x = 0x80 + 16, 
+		.y = 0x80 + 16, 
+		.size = SPRITE_SIZE(4,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
+	}, { 
+		.x = 0x80 + 48, 
+		.y = 0x80 + 16, 
+		.size = SPRITE_SIZE(4,1),
+		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+4),
+	},
+};
+uint8_t counter_decisec;
+static const uint8_t decisec[2][60] = {
+	{ 0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,
+	  5,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,9,9,9,8 },
+	{ 0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,
+	  5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9 },
 };
 
 uint32_t flags[FLAGS_LEN];
@@ -109,32 +129,24 @@ uint8_t system_get_skip_flag(uint16_t flag) {
 }
 
 static void counter_draw_minute() {
-	// Maybe faster than dividing twice
-	uint16_t min1 = counter.minute;
-	uint16_t min10 = 0;
-	while(min1 > 9) {
-		min1 -= 10;
-		min10++;
-	}
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min10 << 3], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.minute] << 3], 
 			(TILE_COUNTERINDEX+1) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[min1 << 3], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.minute] << 3], 
 			(TILE_COUNTERINDEX+2) << 5, 16, 2);
 }
 
 static void counter_draw_second() {
-	uint16_t sec1 = counter.second;
-	uint16_t sec10 = 0;
-	while(sec1 > 9) {
-		sec1 -= 10;
-		sec10++;
-	}
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[(sec1 & 1) << 3], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[(counter.second & 1) << 3], 
 			(TILE_COUNTERINDEX) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec10 << 3], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.second] << 3], 
 			(TILE_COUNTERINDEX+4) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[sec1 << 3], 
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.second] << 3], 
 			(TILE_COUNTERINDEX+5) << 5, 16, 2);
+}
+
+static void counter_draw_decisecond() {
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[counter_decisec << 3], 
+			(TILE_COUNTERINDEX+7) << 5, 16, 2);
 }
 
 void system_draw_counter() {
@@ -142,7 +154,11 @@ void system_draw_counter() {
 	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[2 << 3], 
 			(TILE_COUNTERINDEX+3) << 5, 16, 2);
 	counter_draw_second();
-	sprite_addq(counterSprite, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[3 << 3], 
+			(TILE_COUNTERINDEX+6) << 5, 16, 2);
+	counter_draw_decisecond();
+	const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
+	sprite_addq(spr, 2);
 }
 
 void system_update() {
@@ -157,16 +173,23 @@ void system_update() {
 		}
 	}
 	if(playerEquipment & EQUIP_CLOCK) {
-		if(!gameFrozen && ++counter.frame >= FPS) {
-			counter.frame = 0;
-			if(++counter.second >= 60) {
-				counter.second = 0;
-				if(++counter.minute > 99) counter.minute = 99;
-				counter_draw_minute();
+		if(!gameFrozen) {
+			if(++counter.frame >= FPS) {
+				counter.frame = 0;
+				if(++counter.second >= 60) {
+					counter.second = 0;
+					if(++counter.minute > 99) counter.minute = 99;
+					counter_draw_minute();
+				}
+				counter_draw_second();
 			}
-			counter_draw_second();
+			if(counter_decisec != decisec[pal_mode][counter.frame]) {
+				counter_decisec = decisec[pal_mode][counter.frame];
+				counter_draw_decisecond();
+			}
 		}
-		sprite_addq(counterSprite, 2);
+		const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
+		sprite_addq(spr, 2);
 	}
 }
 
