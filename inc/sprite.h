@@ -2,7 +2,7 @@
 
 #define SPRITE_SIZE(w, h)   ((((w) - 1) << 2) | ((h) - 1))
 
-#define YCUTOFF (SCREEN_HEIGHT + 32)
+uint16_t YCUTOFF;
 
 uint8_t spr_num;
 VDPSprite sprites[MAX_VDP_SPRITE];

@@ -13,7 +13,7 @@ uint16_t VDP_loadTileSet(const TileSet *tileset, uint16_t index, uint8_t use_dma
     uint32_t *tiles = tileset->tiles;
     //if(tileset->compression) {
     //    tiles = MEM_alloc(tileset->numTile * TILE_SIZE);
-    //    if(!tiles) SYS_die("Out of memory unpacking tileset!");
+    //    if(!tiles) error_oom();
     //    lz4w_unpack((uint8_t*) tileset->tiles, (uint8_t*) tiles);
     //}
     VDP_loadTileData(tiles, index, tileset->numTile, use_dma);

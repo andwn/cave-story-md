@@ -6,6 +6,7 @@
 #include "dma.h"
 #include "entity.h"
 #include "effect.h"
+#include "error.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "input.h"
@@ -204,9 +205,9 @@ uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
 	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled
 	if(eventCount > max) {
-		char str[32] = "Too many events: ";
-		intToStr(eventCount, &str[17], 1);
-		SYS_die(str);
+		char str[40];
+		sprintf(str, "Too many events: %hhu\nIn TSC at: %06X", eventCount, (uint32_t) TSC);
+		error_other(str);
 	}
 	// Step through ROM data until finding all the events
 	uint8_t loadedEvents = 0;
@@ -267,7 +268,7 @@ uint8_t tsc_update() {
 				if(paused) {
 					waitTime = 0;
 				// Check the wait time again to prevent underflowing
-				} else if(waitTime > 0 && joy_down(btn[cfg_btn_ffwd])) {
+				} else if(waitTime > 0 && (cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) && gamemode == GM_GAME) {
 					if(cfg_ffwd) {
 						// Fast forward while holding A, update active entities a second time
 						// to double their movement speed (unless <PRI is set)

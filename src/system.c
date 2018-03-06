@@ -95,10 +95,13 @@ static const VDPSprite counterSpritePAL[2] = {
 };
 uint8_t counter_decisec;
 static const uint8_t decisec[2][60] = {
-	{ 0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,
-	  5,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,9,9,9,8 },
-	{ 0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,
-	  5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9 },
+	{ // NTSC
+		0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,
+		5,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,9,9,9,9 
+	},{ // PAL
+		0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,
+		5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9
+	},
 };
 
 uint32_t flags[FLAGS_LEN];
@@ -167,29 +170,45 @@ void system_update() {
 		if(++time.second >= 60) {
 			time.second = 0;
 			if(++time.minute >= 60) {
-				if(!(++time.hour)) time.hour = 255;
-				time.minute = 0;
+				// Limit 255:59:59.9
+				if(!(++time.hour)) {
+					time.hour = 255;
+					time.minute = 59;
+					time.second = 59;
+					time.frame = FPS - 1;
+				} else {
+					time.minute = 0;
+				}
 			}
 		}
 	}
 	if(playerEquipment & EQUIP_CLOCK) {
 		if(!gameFrozen) {
 			if(++counter.frame >= FPS) {
-				counter.frame = 0;
 				if(++counter.second >= 60) {
-					counter.second = 0;
-					if(++counter.minute > 99) counter.minute = 99;
-					counter_draw_minute();
+					// Limit 99'59"9
+					if(++counter.minute > 99) {
+						counter.minute = 99;
+						counter.second = 59;
+						counter.frame = FPS - 1;
+					} else {
+						counter.second = 0;
+						counter.frame = 0;
+						counter_draw_minute();
+						counter_draw_second();
+					}
+				} else {
+					counter.frame = 0;
+					counter_draw_second();
 				}
-				counter_draw_second();
 			}
 			if(counter_decisec != decisec[pal_mode][counter.frame]) {
 				counter_decisec = decisec[pal_mode][counter.frame];
 				counter_draw_decisecond();
 			}
+			const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
+			sprite_addq(spr, 2);
 		}
-		const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
-		sprite_addq(spr, 2);
 	}
 }
 
@@ -711,13 +730,4 @@ static uint16_t LS_readWord(uint8_t file, uint32_t addr) {
 
 static uint32_t LS_readLong(uint8_t file, uint32_t addr) {
 	return (LS_readWord(file, addr) << 16) + LS_readWord(file, addr+2);
-}
-
-void SYS_die(char *err) {
-    VDP_init();
-    VDP_drawText("A fatal error occured !", 2, 2);
-    VDP_drawText("cannot continue...", 4, 3);
-    if (err) VDP_drawText(err, 0, 5);
-
-    while(1);
 }

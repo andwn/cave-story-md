@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
+#include "error.h"
 #include "input.h"
 #include "joy.h"
 #include "memory.h"
@@ -850,7 +851,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
-	if(!e) SYS_die("Out of memory creating new entity!");
+	if(!e) error_oom();
 	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	
 	e->x = x;

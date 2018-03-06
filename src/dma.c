@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "error.h"
 #include "memory.h"
 #include "system.h"
 #include "tools.h"
@@ -35,7 +36,7 @@ void DMA_init(uint16_t size, uint16_t capacity)
     if (dmaQueues) MEM_free(dmaQueues);
     // allocate DMA queue
     dmaQueues = MEM_alloc(queueSize * sizeof(DMAOpInfo));
-	if (!dmaQueues) SYS_die("Out of memory creating DMA queue!");
+	if (!dmaQueues) error_oom();
 	
     // clear queue
     DMA_clearQueue();

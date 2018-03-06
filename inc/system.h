@@ -96,4 +96,3 @@ void system_format_sram();
 // SGDK sys.h stuff
 void SYS_assertReset();
 void SYS_hardReset();
-void SYS_die(char *err);

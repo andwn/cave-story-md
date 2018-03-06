@@ -5,6 +5,7 @@
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
+#include "error.h"
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
@@ -275,18 +276,18 @@ void stage_load_blocks() {
 	stageHeight = PXM[6] | (PXM[7] << 8);
 	PXM += 8;
 	stageBlocks = MEM_alloc(stageWidth * stageHeight);
-	if(!stageBlocks) SYS_die("Out of memory loading stage layout!");
+	if(!stageBlocks) error_oom();
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 
 	//PXM = decompress_slz(stage_info[stageID].PXM);
-	//if(!PXM) SYS_die("Out of memory loading stage layout!");
+	//if(!PXM) error_oom();
 	//stageWidth = PXM[4] | (PXM[5] << 8);
 	//stageHeight = PXM[6] | (PXM[7] << 8);
 	//stageBlocks = &PXM[8];
 
 	//uint16_t size = stage_info[stageID].PXM[0] << 8 | stage_info[stageID].PXM[1];
 	//PXM = MEM_alloc(size);
-	//if(!PXM) SYS_die("Out of memory loading stage layout!");
+	//if(!PXM) error_oom();
 	//__asm__("movem.l %%d5-%%d7/%%a5-%%a6,-(%%sp)\n\t"
 	//		"move.l %0,%%a5\n\t"
 	//		"move.l %1,%%a6\n\t"
@@ -299,7 +300,7 @@ void stage_load_blocks() {
 
 	// Multiplication table for stage rows
 	stageTable = MEM_alloc(stageHeight * 2);
-	if(!stageTable) SYS_die("Out of memory creating stage table!");
+	if(!stageTable) error_oom();
 	uint16_t blockTotal = 0;
 	for(uint16_t y = 0; y < stageHeight; y++) {
 		stageTable[y] = blockTotal;

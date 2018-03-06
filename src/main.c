@@ -1,26 +1,9 @@
-/*
- * A "demake" of Cave Story for the Sega Mega Drive
- * Copyright (C) 2017 Andy Grind
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "common.h"
 
 #include "audio.h"
 #include "dma.h"
 #include "effect.h"
+#include "error.h"
 #include "gamemode.h"
 #include "input.h"
 #include "joy.h"
@@ -82,6 +65,10 @@ int main() {
     // reseting z80 also reset the ym2612
     Z80_init();
     // Initialize time and speed tables (framerate adjusted)
+    SCREEN_HEIGHT = pal_mode ? 240 : 224;
+	SCREEN_HALF_H = SCREEN_HEIGHT >> 1;
+	YCUTOFF = SCREEN_HEIGHT + 32;
+	FPS = pal_mode ? 50 : 60;
     if(pal_mode) {
 		for(uint16_t i = 0; i < 0x100; i++) {
 			time_tab[i] = i;
@@ -103,6 +90,8 @@ int main() {
 	//__asm__("move.w (1),%d0"); // Address Error
 	//__asm__("illegal"); // Illegal Instruction
 	//__asm__("divu #0,%d0"); // Zero Divide
+	//error_oom(); // Out of memory
+	//error_other("Test test!\nTest!"); // Fatal message
 
 	splash_main();
 	intro_main();

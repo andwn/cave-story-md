@@ -63,35 +63,16 @@ uint16_t pf_peak;
 #define SCREEN_WIDTH 320
 #define SCREEN_HALF_W 160
 
-// The original cave story is 50 FPS, so in NTSC mode TIME() and SPEED() are used
-// to make the game play at (almost) the same speed as if it were 50 FPS.
-// Try to only use constant values instead of variables, otherwise the compiler
-// will not be able to optimize out the DIV and MUL operations
-//#define PAL
-//#ifdef PAL
-//#define FPS 50
-//#define SCREEN_HEIGHT 240
-//#define SCREEN_HALF_H 120
-//#define TIME(x)		(x)
-//#define SPEED(x)	(x)
-//#else
-//#define FPS 60
-//#define SCREEN_HEIGHT 224
-//#define SCREEN_HALF_H 112
-//#define TIME(x)		((x) * 6 / 5)
-//#define SPEED(x)	((x) * 5 / 6)
-//#endif
+// On PAL the screen height is 16 pixels more, so these can't be constants
+uint8_t SCREEN_HEIGHT;
+uint8_t SCREEN_HALF_H;
+uint8_t FPS;
 
-// The "new way" for handling framerate difference. Put a small table in
-// memory that can be referred to, to get the time or speed adjusted.
-// On PAL all values will match the index, on NTSC they will be adjusted
-// similarly to how TIME() and SPEED() worked with the old method.
-// Now instead of having separate ROMs, a single ROM will work with both.
-// One caveat, to save memory only 0-255 range is available
-
-#define SCREEN_HEIGHT (IS_PALSYSTEM ? 240 : 224)
-#define SCREEN_HALF_H (IS_PALSYSTEM ? 120 : 112)
-#define FPS (IS_PALSYSTEM ? 50 : 60)
+// The original Cave Story is 50 FPS, and an MD can either run at 50 or 60 FPS
+// depending on region. To try and keep the speed of the game (mostly) the same,
+// a table for time and speed adjustments are loaded in memory. On PAL, the values
+// just match the index, and on NTSC they are roughly index*5/6 for speed and 
+// index*6/5 for time respectively.
 
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
