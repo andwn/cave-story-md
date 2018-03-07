@@ -5,7 +5,9 @@
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 The engine uses many parts of SGDK, and written mostly in C.
 
-It should work on any console or emulator. It's fairly stable at this point but gets buggier as the game progresses.
+It should work on any console or emulator*. It's fairly stable at this point but gets buggier as the game progresses.
+
+(*) The current version of Genesis Plus GX is known to have a major issue with the game.
 
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
@@ -55,6 +57,6 @@ Various, details [here](doc/LICENSE.md)
 I did not know how to sort this list, so I did it alphabetically.
 
 - andwhyisit: A whole lot of testing. Automated builds.
-- DavisOlivier: Helped with a few music tracks, namely Gestation, Access, Cave Story, Fanfare 1/2/3
+- DavisOlivier: Helped with a few music tracks.
 - Sik: Mega Drive tech support. Made the font used ingame.
 - Other people I probably forgot
