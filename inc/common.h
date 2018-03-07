@@ -58,6 +58,23 @@ uint16_t pf_peak;
 #else
 #define PF_BGCOLOR(c) /**/
 #endif
+/*
+#define MUSIC_TICK() ({ \
+	if(vblank) { \
+		XGM_set68KBUSProtection(FALSE); \
+		XGM_doVBlankProcess(); \
+		XGM_set68KBUSProtection(TRUE); \
+		waitSubTick(10); \
+		vblank = 0; \
+	} \
+})
+*/
+#define MUSIC_TICK() ({ \
+	if(vblank) { \
+		XGM_doVBlankProcess(); \
+		vblank = 0; \
+	} \
+})
 
 // Screen size
 #define SCREEN_WIDTH 320

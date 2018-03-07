@@ -133,27 +133,27 @@ void player_update() {
 		if(tile & 0x80) {
 			// This stops us fron getting stuck in ledges
 			if((blk(player.x, 0, player.y, 6) & 0x83) == 0x81) {
-				player.y_speed -= SPEED(0x80);
+				player.y_speed -= SPEED_8(0x80);
 			} else {
 				switch(tile & 0x03) {
-					case 0: player.x_speed -= SPEED(0x88); break;
-					case 1: player.y_speed -= SPEED(0x80); break;
-					case 2: player.x_speed += SPEED(0x88); break;
-					case 3: player.y_speed += SPEED(0x50); break;
+					case 0: player.x_speed -= SPEED_8(0x88); break;
+					case 1: player.y_speed -= SPEED_8(0x80); break;
+					case 2: player.x_speed += SPEED_8(0x88); break;
+					case 3: player.y_speed += SPEED_8(0x50); break;
 				}
 			}
 			if(player.underwater) {
 				// This makes it possible to reach the cabin... but now it's
 				// impossible to jump over 2 of the spike areas...
-				if(player.x_speed >  SPEED(0x480)) player.x_speed =  SPEED(0x480);
-				if(player.x_speed < -SPEED(0x480)) player.x_speed = -SPEED(0x480);
-				if(player.y_speed >  SPEED(0x3FF)) player.y_speed =  SPEED(0x3FF);
-				if(player.y_speed < -SPEED(0x4FF)) player.y_speed = -SPEED(0x4FF);
+				if(player.x_speed >  SPEED_12(0x480)) player.x_speed =  SPEED_12(0x480);
+				if(player.x_speed < -SPEED_12(0x480)) player.x_speed = -SPEED_12(0x480);
+				if(player.y_speed >  SPEED_10(0x3FF)) player.y_speed =  SPEED_10(0x3FF);
+				if(player.y_speed < -SPEED_12(0x4FF)) player.y_speed = -SPEED_12(0x4FF);
 			} else {
-				if(player.x_speed >  SPEED(0x5FF)) player.x_speed =  SPEED(0x5FF);
-				if(player.x_speed < -SPEED(0x5FF)) player.x_speed = -SPEED(0x5FF);
-				if(player.y_speed >  SPEED(0x5FF)) player.y_speed =  SPEED(0x5FF);
-				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+				if(player.x_speed >  SPEED_12(0x5FF)) player.x_speed =  SPEED_12(0x5FF);
+				if(player.x_speed < -SPEED_12(0x5FF)) player.x_speed = -SPEED_12(0x5FF);
+				if(player.y_speed >  SPEED_12(0x5FF)) player.y_speed =  SPEED_12(0x5FF);
+				if(player.y_speed < -SPEED_12(0x5FF)) player.y_speed = -SPEED_12(0x5FF);
 			}
 		}
 		player_update_movement();
@@ -379,7 +379,7 @@ void player_update() {
 			if(shoot_cooldown > 0) shoot_cooldown--;
 			if(joy_down(btn[cfg_btn_shoot]) && shoot_cooldown == 0) {
 				weapon_fire(*w);
-				shoot_cooldown = IS_PALSYSTEM ? 9 : 10;
+				shoot_cooldown = pal_mode ? 9 : 10;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -412,11 +412,6 @@ void player_update() {
 						sound_play(SND_SPUR_CHARGE_1 + w->level - 1, 2);
 					}
 				}
-			} else {	// keep flashing even once at max
-				//statusbar.xpflashcount = FLASH_TIME;
-				//
-				//if (player->equipmask & EQUIP_WHIMSTAR)
-				//	add_whimstar(&player->whimstar);
 			}
 		} else {
 			if(mgun_chargetime) {

@@ -1,20 +1,20 @@
 #include "ai_common.h"
 
+void onspawn_waterlevel(Entity *e) {
+	e->alwaysActive = TRUE;
+	water_entity = e;
+	e->state = WL_CALM;
+	e->y += 4 << CSF;
+	e->y_mark = e->y;
+	e->y_speed = SPEED_8(0xFF);
+}
+
 void ai_waterlevel(Entity *e) {
 	switch(e->state) {
-		case 0:
-		{
-			water_entity = e;
-			e->state = WL_CALM;
-			e->y += 8 << CSF;
-			e->y_mark = e->y;
-			e->y_speed = SPEED(0x200);
-		}
-		/* fallthrough */
 		case WL_CALM:	// calm waves around set point
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
-			LIMIT_Y(SPEED(0x100));
+			LIMIT_Y(SPEED_8(0xFF));
 		}
 		break;
 		case WL_CYCLE:	// wait 1000 ticks, then rise all the way to top come down and repeat
@@ -26,8 +26,8 @@ void ai_waterlevel(Entity *e) {
 		case WL_DOWN:
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;
-			LIMIT_Y(SPEED(0x200));
-			if (++e->timer > TIME(1000)) {
+			LIMIT_Y(SPEED_10(0x200));
+			if (++e->timer > TIME_10(1000)) {
 				e->state = WL_UP;
 			}
 		}
@@ -35,7 +35,7 @@ void ai_waterlevel(Entity *e) {
 		case WL_UP:			// rise all the way to top then come back down
 		{
 			e->y_speed += (e->y > 0) ? -4 : 4;
-			LIMIT_Y(SPEED(0x200));
+			LIMIT_Y(SPEED_10(0x200));
 			// when we reach the top return to normal level
 			if (e->y < (64<<9)) {
 				e->state = WL_CYCLE;
@@ -45,7 +45,7 @@ void ai_waterlevel(Entity *e) {
 		case WL_STAY_UP:	// rise quickly all the way to top and stay there
 		{
 			e->y_speed += (e->y > 0) ? -4 : 4;
-			LIMIT_Y(SPEED(0x200));
+			LIMIT_Y(SPEED_10(0x200));
 		}
 		break;
 	}

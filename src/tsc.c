@@ -206,7 +206,7 @@ uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
 	// Make sure it isn't more than can be handled
 	if(eventCount > max) {
 		char str[40];
-		sprintf(str, "Too many events: %hhu\nIn TSC at: %06X", eventCount, (uint32_t) TSC);
+		sprintf(str, "Too many events: %hu\nIn TSC at: %06X", eventCount, (uint32_t) TSC);
 		error_other(str);
 	}
 	// Step through ROM data until finding all the events

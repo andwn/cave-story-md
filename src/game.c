@@ -17,6 +17,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
+#include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "vdp_bg.h"
@@ -25,6 +26,7 @@
 #include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
+#include "xgm.h"
 
 #include "gamemode.h"
 
@@ -103,12 +105,15 @@ void game_main(uint8_t load) {
 				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+9,1,1);
 				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+12,1,1);
 				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+13,1,1);
+				MUSIC_TICK();
 				sheets_load_stage(stageID, TRUE, FALSE);
+				MUSIC_TICK();
 				player_draw();
 				entities_draw();
 				hud_show();
 				sprites_send();
 				VDP_setWindowPos(0, 0);
+				XGM_set68KBUSProtection(FALSE);
 				VDP_setEnable(TRUE);
 			} else {
 				// HUD on top
@@ -219,11 +224,14 @@ void draw_itemmenu(uint8_t resetCursor) {
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(6), (y<<6) + 1, 1);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(7), (y<<6) + 2, 36);
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(8), (y<<6) + 38, 1);
+
+	MUSIC_TICK();
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
 	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
+	MUSIC_TICK();
 	// Load tiles for the font letters
 #define LOAD_LETTER(c,in) (VDP_loadTileData(TS_MsgFont.tiles+((c-0x20)<<3),                    \
 						   TILE_HUDINDEX+in,1,1))
@@ -262,6 +270,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 	DRAW_LETTER(20,10,y);
 	DRAW_LETTER(20,11,y);
 	y++;
+	MUSIC_TICK();
 	for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
@@ -307,6 +316,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 			DRAW_LETTER(20,	x+2,y+4);
 			DRAW_LETTER(20,	x+3,y+4);
 		}
+		MUSIC_TICK();
 	}
 	// Items
 	y = top + 10;
@@ -343,6 +353,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 		} else {
 			itemSprite[i] = (VDPSprite){};
 		}
+		MUSIC_TICK();
 	}
 	// Draw item cursor at first index (default selection)
 	if(resetCursor) {
@@ -358,6 +369,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 		spr_num = 0;
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	}
+	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
 }
 
@@ -534,7 +546,6 @@ void do_map() {
 	index++;
 	
 	for(uint16_t y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
-		
 		for(uint16_t x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
 			uint8_t result = gen_maptile(x*8, y*8, index);
 			if(!result) {
@@ -545,8 +556,11 @@ void do_map() {
 				VDP_setTileMapXY(PLAN_WINDOW, 
 						TILE_ATTR_FULL(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
 			}
+			if(vblank) {
+				XGM_doVBlankProcess();
+				vblank = 0;
+			}
 		}
-		
 		ready = TRUE;
 		vsync(); aftervsync();
 	}

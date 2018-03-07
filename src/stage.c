@@ -31,7 +31,6 @@
 
 // Could fit under the Oside map (192 tile gap)
 #define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
-
 // Another tile gap, fits under both Almond and Cave
 #define TILE_WATERINDEX (TILE_TSINDEX + 384)
 
@@ -62,12 +61,9 @@ void stage_draw_background();
 void stage_draw_moonback();
 
 void stage_load(uint16_t id) {
-	//VDP_setPaletteColor(15, 0x000); // Hide the white crap on the screen
 	VDP_setEnable(FALSE);
-	
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	DMA_clearQueue();
-	
 	input_update(); // Prevent menu from opening after loading save
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
@@ -90,24 +86,16 @@ void stage_load(uint16_t id) {
 	water_entity = NULL;
 	bossEntity = NULL;
 	
-	if(vblank) aftervsync(); // So we don't lag the music
-	vblank = 0;
-	
+	MUSIC_TICK();
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
-		
 		stage_load_tileset();
-		
-		if(vblank) aftervsync(); // So we don't lag the music
-		vblank = 0;
+		MUSIC_TICK();
 	}
 	// Load sprite sheets
 	sheets_load_stage(id, FALSE, TRUE);
-	
-	if(vblank) aftervsync(); // So we don't lag the music
-	vblank = 0;
-	
+	MUSIC_TICK();
 	// Stage palette and shared NPC palette
 	if(stageID == 0x30) {
 		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
@@ -139,6 +127,14 @@ void stage_load(uint16_t id) {
 		} else if(stageBackgroundType == 4) { // Almond Water
 			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
 			VDP_clearPlan(PLAN_B, TRUE);
+			// Your guess is as good as mine as to why these numbers specifically
+			// fix the stupid water background drawing over the wrong rows.
+			// Yeah there's even a fucking PAL specific number nice awesomenfweroqvnerbn
+			if(stageID == STAGE_DARK_PLACE) {
+				backScrollTable[0] = -13;
+			} else {
+				backScrollTable[0] = pal_mode ? -20 : -21;
+			}
 			VDP_loadTileSet(&BG_Water, TILE_WATERINDEX, TRUE);
 		} else if(stageBackgroundType == 5) { // Fog
 			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -146,28 +142,22 @@ void stage_load(uint16_t id) {
 			VDP_setBackgroundColor(32);
 			stage_draw_moonback();
 		}
-		
-		if(vblank) aftervsync(); // So we don't lag the music
-		vblank = 0;
+		MUSIC_TICK();
 	}
-	// Load stage into RAM
+	// Load stage PXM into RAM
 	stage_load_blocks();
-	
+	MUSIC_TICK();
+	// Move camera to player's new position
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
-	
-	stage_draw_screen();
-	
-	if(vblank) aftervsync(); // So we don't lag the music
-	vblank = 0;
-	
-	stage_load_entities();
-	
-	if(vblank) aftervsync(); // So we don't lag the music
-	vblank = 0;
-	
+	MUSIC_TICK();
+	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
+	MUSIC_TICK();
+	stage_load_entities(); // Create entities defined in the stage's PXE
+	MUSIC_TICK();
+	// For rooms where the boss is always loaded
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
 	} else if(stageBackgroundType == 4) {
@@ -179,16 +169,13 @@ void stage_load(uint16_t id) {
 	if(stageID == STAGE_HELL_B3 || stageID == STAGE_HELL_PASSAGEWAY_2) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
-
+	DMA_flushQueue();
+	MUSIC_TICK();
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
-	
 	tsc_load_stage(id);
-	
-	if(vblank) aftervsync(); // So we don't lag the music
-	vblank = 0;
-	
+	MUSIC_TICK();
+	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
-	//VDP_setPaletteColor(15, 0xEEE); // Restore white color for text
 }
 
 void stage_load_credits(uint8_t id) {
@@ -211,41 +198,24 @@ void stage_load_credits(uint8_t id) {
 	}
 	
 	VDP_setEnable(FALSE);
-	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
+	MUSIC_TICK();
 	stageTileset = stage_info[id].tileset;
 	stage_load_tileset();
+	MUSIC_TICK();
 	sheets_load_stage(id, FALSE, TRUE);
-	
-	XGM_set68KBUSProtection(FALSE);
-	
+	MUSIC_TICK();
 	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
-	//VDP_setPalette(PAL2, tileset_info[stageTileset].palette->data);
 	stage_load_blocks();
-	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
+	MUSIC_TICK();
 	stage_draw_screen_credits();
-	
-	XGM_set68KBUSProtection(FALSE);
-	
+	MUSIC_TICK();
 	stage_load_entities();
-	
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
+	MUSIC_TICK();
 	DMA_flushQueue();
-	
-	XGM_set68KBUSProtection(FALSE);
-	
+	MUSIC_TICK();
 	tsc_load_stage(id);
-	
+	MUSIC_TICK();
+	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
 }
 

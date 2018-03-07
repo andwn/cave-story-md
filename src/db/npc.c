@@ -212,7 +212,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ &SPR_Fuzz, 		NOSHEET, 		PAL2, 1, &onspawn_persistent, 	&ai_fuzz, 			&ondeath_default 	}, // Fuzz
 	{ NULL, 			SHEET_CORES4,	PAL1, 1, &onspawn_persistent, 	&ai_core_blast, 	&ai_null 			}, // Homing Flame Projectile
 	{ &SPR_Robot3, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_almond_robot, 	&ai_null 			}, // Surface Robot
-	{ NULL, 			NOSHEET, 		PAL0, 2, &onspawn_persistent, 	&ai_waterlevel, 	&ai_null 			}, // Water Level
+	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_waterlevel, 	&ai_waterlevel, 	&ai_null 			}, // Water Level
 	/* 0x0C0 (192) */
 	{ &SPR_Buggy, 		NOSHEET, 		PAL3, 1, &onspawn_pushup, 		&ai_motorbike, 		&ai_null 			}, // Scooter
 	{ &SPR_Buggy2, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_null, 			&ai_null 			}, // Scooter (Pieces)
