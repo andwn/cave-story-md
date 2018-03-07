@@ -366,7 +366,8 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			// Ma Pignon is invulnerable to missiles
 			return;
 		}
-	} else if(b->type == WEAPON_SPUR || (b->type == WEAPON_BLADE && b->level == 3)) {
+	} else if(b->type == WEAPON_SPUR || b->type == WEAPON_SPUR_TAIL 
+			|| (b->type == WEAPON_BLADE && b->level == 3)) {
 		// Don't destroy Spur or Blade L3
 		b->hits++;
 		if(!(flags & NPC_INVINCIBLE) && !(e->damage_time) && b->damage < e->health) 
@@ -389,12 +390,18 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			// Killed enemy
 			e->health = 0;
 			ENTITY_ONDEATH(e);
+			if(b->type == WEAPON_SPUR || b->type == WEAPON_SPUR_TAIL) {
+				if(--b->damage == 0) b->ttl = 0;
+			}
 			return;
 		} else if((flags & NPC_SHOWDAMAGE) || e->shakeWhenHit) {
 			e->damage_value -= b->damage;
 			e->damage_time = 30;
 		}
 		e->health -= b->damage;
+		if(b->type == WEAPON_SPUR || b->type == WEAPON_SPUR_TAIL) {
+			if(--b->damage == 0) b->ttl = 0;
+		}
 	}
 }
 

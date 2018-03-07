@@ -8,23 +8,28 @@ enum CritterState {
 };
 
 void ai_critter(Entity *e) {
-	//PF_BGCOLOR(0xE80);
-
 	e->nflags ^= NPC_SHOOTABLE;
 
-	if(e->x_speed < 0 && blk(e->x, -e->hit_box.left, e->y, 0) == 0x41) {
-		e->x_speed = 0;
-		e->x += 0xFF;
+	if(e->x_speed < 0) {
+		uint8_t block = blk(e->x, -e->hit_box.left, e->y, 0);
+		if(block == 0x41 || block == 0x43 || block == 0x44) {
+			e->x_speed = 0;
+			e->x += 0xFF;
+		}
+	} else if(e->x_speed > 0) {
+		uint8_t block = blk(e->x, e->hit_box.right, e->y, 0);
+		if(block == 0x41 || block == 0x43 || block == 0x44) {
+			e->x_speed = 0;
+			e->x -= 0xFF;
+		}
 	}
-	if(e->x_speed > 0 && blk(e->x, e->hit_box.right, e->y, 0) == 0x41) {
-		e->x_speed = 0;
-		e->x -= 0xFF;
-	}
-	if(e->y_speed < 0 && blk(e->x, 0, e->y, -e->hit_box.top) == 0x41) {
-		e->y_speed = 0;
-		e->y += 0xFF;
-	}
-	if(e->y_speed > 0) {
+	if(e->y_speed < 0) {
+		uint8_t block = blk(e->x, 0, e->y, -e->hit_box.top);
+		if(block == 0x41 || block == 0x43) {
+			e->y_speed = 0;
+			e->y += 0xFF;
+		}
+	} else if(e->y_speed > 0) {
 		e->x_next = e->x;
 		e->y_next = e->y;
 		e->grounded = collide_stage_floor(e);
@@ -57,7 +62,7 @@ void ai_critter(Entity *e) {
 				e->frame = 2;
 				e->timer = 0;
 				e->grounded = FALSE;
-				e->y_speed = -SPEED_12(0x600);
+				e->y_speed = -SPEED_12(0x640);
 				sound_play(SND_ENEMY_JUMP, 5);
 			}
 		}
@@ -112,8 +117,6 @@ void ai_critter(Entity *e) {
 	}
 	
 	if(!e->grounded && e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
-	//e->x = e->x_next;
-	//e->y = e->y_next;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

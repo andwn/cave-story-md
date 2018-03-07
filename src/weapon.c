@@ -52,7 +52,7 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_blade_slash,
 	&bullet_update_blade,
 	&bullet_update_supermissile,
-	&bullet_update_none,
+	&bullet_update_spur_tail,
 	&bullet_update_nemesis,
 	&bullet_update_spur
 };
@@ -153,7 +153,7 @@ void weapon_fire_snake(Weapon *w) {
 	}
 }
 
-static const uint8_t pstar_ttl[4] = { 0, 25, 30, 35 };
+static const uint8_t pstar_ttl[4] = { 0, 8, 12, 16 };
 
 void weapon_fire_polarstar(Weapon *w) {
 	// Use first 3 slots for polar star
@@ -171,33 +171,33 @@ void weapon_fire_polarstar(Weapon *w) {
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
 	b->damage = w->level + (w->level == 3 ? 1 : 0); // 1, 2, 4
-	b->ttl = pstar_ttl[b->level];
+	b->ttl = TIME_8(pstar_ttl[b->level]);
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
-		b->y = player.y - pixel_to_sub(12);
+		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
-		b->y_speed = -SPEED_12(0x800);
+		b->y_speed = -SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
 	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
-		b->y = player.y + pixel_to_sub(12);
+		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
-		b->y_speed = SPEED_12(0x800);
+		b->y_speed = SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
-		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
-		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (b->dir ? SPEED_12(0x800) : -SPEED_12(0x800));
+		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
+		b->hit_box = (bounding_box) { 6, 1 + w->level, 6, 1 + w->level };
 	}
 }
-
-static const uint8_t fball_ttl[4] = { 0, 60, 70, 80 };
 
 void weapon_fire_fireball(Weapon *w) {
 	// The real cave story stores bullets for weapons in separate lists most likely,
@@ -219,7 +219,7 @@ void weapon_fire_fireball(Weapon *w) {
 		.attribut = TILE_ATTR_FULL(PAL1,0,0,0,sheets[w->sheet].index)
 	};
 	b->damage = b->level << 1; // 2, 4, 6
-	b->ttl = fball_ttl[b->level];
+	b->ttl = TIME_8(100);
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	
@@ -227,17 +227,19 @@ void weapon_fire_fireball(Weapon *w) {
 	if(b->dir == UP) {
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
-		b->x_speed = player.dir ? SPEED_10(0x300) : -SPEED_12(0x300);
-		b->y_speed = -SPEED_12(0x600);
+		b->x_speed = player.x_speed + (player.dir ? SPEED_8(0x80) : -SPEED_8(0x80));
+		b->dir = player.dir;
+		b->y_speed = -SPEED_12(0x5FF);
 	} else if(b->dir == DOWN) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = player.dir ? SPEED_10(0x300) : -SPEED_10(0x300);
-		b->y_speed = SPEED_10(0x3FF);
+		b->x_speed = player.x_speed + (player.dir ? SPEED_8(0x80) : -SPEED_8(0x80));
+		b->dir = player.dir;
+		b->y_speed = SPEED_12(0x5FF);
 	} else {
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(4);
-		b->x_speed = b->dir ? SPEED_12(0x500) : -SPEED_12(0x500);
+		b->x_speed = b->dir ? SPEED_12(0x400) : -SPEED_12(0x400);
 		b->y_speed = 0;
 	}
 }
@@ -257,7 +259,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->level = w->level;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
 	b->damage = b->level << 1; // 2, 4, 6
-	b->ttl = TIME_8(26);
+	b->ttl = TIME_8(20);
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
 	// check up/down first
@@ -270,8 +272,8 @@ void weapon_fire_machinegun(Weapon *w) {
 		}
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
-		b->x_speed = -0x3F + (random() & 0x7F);
-		b->y_speed = -SPEED_12(0xC00);
+		b->x_speed = -0x7F + (random() & 0xFF);
+		b->y_speed = -SPEED_12(0xFFF);
 	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
@@ -285,15 +287,15 @@ void weapon_fire_machinegun(Weapon *w) {
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = -0x3F + (random() & 0x7F);
-		b->y_speed = SPEED_12(0xC00);
+		b->x_speed = -0x7F + (random() & 0xFF);
+		b->y_speed = SPEED_12(0xFFF);
 	} else {
 		//b->level++; // Wonky use of this var, so the trail knows whether to be H/V
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (b->dir ? SPEED_12(0xC00) : -SPEED_12(0xC00));
-		b->y_speed = -0x3F + (random() & 0x7F);
+		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
+		b->y_speed = -0x7F + (random() & 0xFF);
 	}
 }
 
@@ -431,6 +433,7 @@ void weapon_fire_blade(Weapon *w) {
 	b->level = w->level;
 	b->sheet = w->sheet;
 	b->hits = 0;
+	sound_play(SND_FIREBALL, 5);
 	switch(b->level) {
 		case 1: // Small 16x16 Blade
 			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
@@ -451,9 +454,8 @@ void weapon_fire_blade(Weapon *w) {
 			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
 			break;
 	}
-	sound_play(SND_FIREBALL, 5);
 	b->x = player.x;
-	b->y = player.y;
+	b->y = player.y - (3 << CSF);
 	b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -468,6 +470,12 @@ void weapon_fire_blade(Weapon *w) {
 		if(b->level == 3) {
 			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attribut, 9);
 			if(b->dir == RIGHT) sprite_hflip(b->sprite, 1);
+		}
+		// Spawn slightly behind the player
+		if(b->level == 2) {
+			b->x += b->dir ? -(3 << CSF) : (3 << CSF);
+		} else {
+			b->x += b->dir ? -(6 << CSF) : (6 << CSF);
 		}
 		b->x_speed = (b->dir ? SPEED_12(0x800) : -SPEED_12(0x800));
 		b->y_speed = 0;
@@ -490,24 +498,22 @@ void weapon_fire_nemesis(Weapon *w) {
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
+	b->ttl = TIME_8(20);
 	uint16_t speed = 0;
 	switch(b->level) {
 		case 1:
 		b->damage = 12;
-		b->ttl = pal_mode ? 35 : 41;
-		speed = SPEED_12(0x800);
+		speed = SPEED_12(0xFFF);
 		sound_play(SND_NEMESIS_FIRE, 5);
 		break;
 		case 2:
 		b->damage = 6;
-		b->ttl = pal_mode ? 31 : 37;
-		speed = SPEED_12(0x600);
+		speed = SPEED_12(0xFFF);
 		sound_play(SND_POLAR_STAR_L3, 5);
 		break;
 		case 3:
 		b->damage = 1;
-		b->ttl = pal_mode ? 27 : 33;
-		speed = SPEED_10(0x300);
+		speed = SPEED_10(0x555);
 		break;
 	}
 	b->dir = FIREDIR;
@@ -535,12 +541,20 @@ void weapon_fire_nemesis(Weapon *w) {
 	}
 }
 
+static int16_t spur_xmark;
+static int16_t spur_ymark;
+
 void weapon_fire_spur(Weapon *w) {
-	uint8_t lv = w->level;
-	w->level = 3;
-	weapon_fire_polarstar(w);
-	w->level = lv;
-	/*
+	sheets_refresh_weapon(w);
+	// Uncharged shot (Polar Star Lv3)
+	if(w->level == 1) {
+		uint8_t lv = w->level;
+		w->level = 3;
+		weapon_fire_polarstar(w);
+		w->level = lv;
+		return;
+	}
+	// Charged shot
 	Bullet *b = NULL;
 	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl > 0) continue;
@@ -548,44 +562,43 @@ void weapon_fire_spur(Weapon *w) {
 		break;
 	}
 	if(!b) return;
-	
-	b->level = w->level;
+	// Since Lv1 is a special case for the polar star shot, and Lv4 is a special
+	// case for max charge, subtract 1 to get the "real" level
+	b->level = w->level - 1;
+	b->type = w->type;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
-	if(w->level == 1) {
-		b->type = WEAPON_POLARSTAR;
-		b->level = 3;
-		sound_play(SND_POLAR_STAR_L3, 5);
-		b->damage = 4;
-		b->ttl = TIME_8(30);
-	} else { // Charged shot
-		b->type = w->type;
-		b->level = w->level - 1;
-		if(w->energy == w->next) b->level++;
-	}
-	
+	b->ttl = TIME_8(30);
+	b->damage = b->level << 2; // 4, 8, 12
+	b->hits = 0;
+	b->state = 0;
+	sound_play(SND_SPUR_FIRE_1 + b->level - 1, 5);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
-		b->y = player.y - pixel_to_sub(12);
+		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
-		b->y_speed = -pixel_to_sub(4);
+		b->y_speed = -SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
 	} else if(b->dir == DOWN) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
 		b->x = player.x;
-		b->y = player.y + pixel_to_sub(12);
+		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
-		b->y_speed = pixel_to_sub(4);
+		b->y_speed = SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
-		b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
-		b->y = player.y + pixel_to_sub(3);
-		b->x_speed = (b->dir ? pixel_to_sub(4) : -pixel_to_sub(4));
+		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
+		b->y = player.y + pixel_to_sub(2);
+		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
+		b->hit_box = (bounding_box) { 6, 1 + w->level, 6, 1 + w->level };
 	}
-	*/
+	spur_xmark = b->x >> CSF;
+	spur_ymark = b->y >> CSF;
 }
 
 void bullet_update_none(Bullet *b) { (void)(b); }
@@ -654,33 +667,34 @@ void bullet_update_polarstar(Bullet *b) {
 
 void bullet_update_fireball(Bullet *b) {
 	// Check below / above first
-	uint8_t block_below = blk(b->x, 0, b->y, 4);
-	uint8_t block_above = b->y_speed < 0 ? blk(b->x, 0, b->y, -4) : 0;
-	if((block_below & 0x41) == 0x41) {
+	uint8_t block_below = blk(b->x, 0, b->y, 6);
+	uint8_t block_above = b->y_speed < 0 ? blk(b->x, 0, b->y, -6) : 0;
+	if(block_below == 0x41 || block_below == 0x43) {
 		//b->y -= sub_to_pixel(b->y + 0x800) & 15;
 		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed > -SPEED_10(0x300)) b->y_speed = -SPEED_10(0x300);
+		if(b->y_speed > -SPEED_10(0x3FF)) b->y_speed = -SPEED_10(0x3FF);
 	} else if(block_below & BLOCK_SLOPE) {
 		uint8_t index = block_below & 0xF;
 		if(index >= 4) {
 			uint16_t xx = sub_to_pixel(b->x);
-			uint16_t yy = sub_to_pixel(b->y + 0x800);
+			uint16_t yy = sub_to_pixel(b->y + 0xA00);
 			int8_t overlap = (yy & 15) - heightmap[index & 3][xx & 15];
 			if(overlap >= 0) {
 				b->y -= overlap;
 				b->y_speed = -b->y_speed;
-				if(b->y_speed > -SPEED_10(0x300)) b->y_speed = -SPEED_10(0x300);
+				//if(b->y_speed > -SPEED_10(0x3FF)) 
+				b->y_speed = -SPEED_10(0x3FF);
 			}
 		}
-	} else if((block_above & 0x41) == 0x41) {
+	} else if(block_above == 0x41 || block_above == 0x43) {
 		b->y_speed = -b->y_speed >> 1;
-		if(b->y_speed < SPEED_10(0x200)) b->y_speed = SPEED_10(0x200);
+		if(b->y_speed < SPEED_8(0xFF)) b->y_speed = SPEED_8(0xFF);
 	} else {
-		if(b->y_speed < SPEED_12(0x5C0)) b->y_speed += SPEED_8(0x50);
+		if(b->y_speed < SPEED_12(0x3C0)) b->y_speed += SPEED_8(0x55);
 	}
 	// Check in front
-	uint8_t block_front = blk(b->x, b->x_speed > 0 ? 4 : -4, b->y, -1);
-	if((block_front & 0x41) == 0x41) { // Bullet hit a wall
+	uint8_t block_front = blk(b->x, b->x_speed > 0 ? 6 : -6, b->y, -1);
+	if(block_front == 0x41 || block_front == 0x43) { // Bullet hit a wall
 		b->x_speed = -b->x_speed;
 	}
 	b->x += b->x_speed;
@@ -713,7 +727,7 @@ void bullet_update_machinegun(Bullet *b) {
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		// Expand sprite of level 3 after a couple frames
 		if(b->level == 3) {
-			if(b->ttl == TIME_8(24)) {
+			if(b->ttl == TIME_8(18)) {
 				if(b->dir == UP || b->dir == DOWN) {
 					b->sprite.size = SPRITE_SIZE(2, 4);
 					b->sprite.attribut += 4;
@@ -722,7 +736,7 @@ void bullet_update_machinegun(Bullet *b) {
 					b->sprite.size = SPRITE_SIZE(4, 2);
 					if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
 				}
-			} else if(b->ttl < TIME_8(24)) {
+			} else if(b->ttl < TIME_8(18)) {
 				if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
 				if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
 			}
@@ -792,7 +806,7 @@ void bullet_update_bubbler(Bullet *b) {
 			case DOWN: b->y_speed -= decel; break;
 		}
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
-		if((block & 0x41) == 0x41) { // Bullet hit a wall
+		if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			return;
 		}
@@ -881,7 +895,7 @@ void bullet_update_blade(Bullet *b) {
 		if(b->x_speed | b->y_speed) {
 			uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 			if(b->hits) { // Hit something, stop moving
-				b->ttl = TIME(50);
+				b->ttl = TIME_8(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
 				
@@ -965,7 +979,67 @@ void bullet_update_nemesis(Bullet *b) {
 }
 
 void bullet_update_spur(Bullet *b) {
-	bullet_update_polarstar(b);
+	uint8_t block = blk(b->x, 0, b->y, 0);
+	if(block == 0x41) {
+		sound_play(SND_SHOT_HIT, 2);
+		b->ttl = 0;
+	} else if(block == 0x43) {
+		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+		sound_play(SND_BLOCK_DESTROY, 5);
+		b->ttl = 0;
+	} else {
+		if(++b->state >= TIME_8(5)) {
+			// Spawn tail
+			Bullet *t = NULL;
+			for(uint8_t i = 0; i < MAX_BULLETS; i++) {
+				if(playerBullet[i].ttl > 0) continue;
+				t = &playerBullet[i];
+				break;
+			}
+			if(t) {
+				b->state = 0;
+				t->type = WEAPON_SPUR_TAIL;
+				t->level = b->level;
+				t->sheet = b->sheet;
+				t->damage = (t->level << 2) - 1;
+				t->ttl = TIME_8(20);
+				t->dir = b->dir;
+				t->x = spur_xmark << CSF;
+				t->y = spur_ymark << CSF;
+				t->x_speed = b->x_speed;
+				t->y_speed = b->y_speed;
+				t->hit_box = b->hit_box;
+				t->sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(2,2),
+					.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 4)),
+				};
+				//switch(t->dir) {
+				//	case LEFT:  t->x += (b->state<<11); break;
+				//	case RIGHT: t->x -= (b->state<<11); break;
+				//	case UP:    t->y += (b->state<<11); break;
+				//	case DOWN:  t->y -= (b->state<<11); break;
+				//}
+			}
+		}
+		b->ttl--;
+		b->x += b->x_speed;
+		b->y += b->y_speed;
+		sprite_pos(b->sprite, 
+			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		sprite_add(b->sprite);
+	}
+}
+
+void bullet_update_spur_tail(Bullet *b) {
+	b->ttl--;
+	b->x += b->x_speed;
+	b->y += b->y_speed;
+	sprite_pos(b->sprite, 
+		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	sprite_add(b->sprite);
 }
 
 Bullet *bullet_colliding(Entity *e) {

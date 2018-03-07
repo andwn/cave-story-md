@@ -20,7 +20,7 @@ enum {
 	WEAPON_BLADE_SLASH, 
 	WEAPON_BLADE, 
 	WEAPON_SUPERMISSILE, 
-	WEAPON_11, 
+	WEAPON_SPUR_TAIL, 
 	WEAPON_NEMESIS, 
 	WEAPON_SPUR
 };
@@ -86,6 +86,7 @@ void bullet_update_blade_slash(Bullet *b);
 void bullet_update_supermissile(Bullet *b);
 void bullet_update_nemesis(Bullet *b);
 void bullet_update_spur(Bullet *b);
+void bullet_update_spur_tail(Bullet *b);
 
 extern const BulletFunc bullet_update_array[WEAPON_COUNT];
 

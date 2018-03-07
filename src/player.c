@@ -355,7 +355,7 @@ void player_update() {
 				} else {
 					sound_play(SND_GUN_CLICK, 5);
 				}
-				shoot_cooldown = pal_mode ? 9 : 10;
+				shoot_cooldown = pal_mode ? 7 : 8;
 			}
 		} else {
 			shoot_cooldown = 0;
@@ -379,7 +379,7 @@ void player_update() {
 			if(shoot_cooldown > 0) shoot_cooldown--;
 			if(joy_down(btn[cfg_btn_shoot]) && shoot_cooldown == 0) {
 				weapon_fire(*w);
-				shoot_cooldown = pal_mode ? 9 : 10;
+				shoot_cooldown = pal_mode ? 8 : 9;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -416,6 +416,7 @@ void player_update() {
 		} else {
 			if(mgun_chargetime) {
 				if(w->level > 1) {
+					if(w->energy == spur_time[pal_mode][3]) w->level = 4;
 					weapon_fire(*w);
 				}
 				mgun_chargetime = 0;

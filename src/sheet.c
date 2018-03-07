@@ -27,7 +27,8 @@ void sheets_load_weapon(Weapon *w) {
 		break;
 		case WEAPON_SPUR:
 		SHEET_ADD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
-							 : w->level == 2 ? &SPR_PolarB3 
+							 : w->level == 2 ? &SPR_PolarB1 
+							 : w->level == 3 ? &SPR_PolarB2
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
@@ -96,7 +97,8 @@ void sheets_refresh_weapon(Weapon *w) {
 		break;
 		case WEAPON_SPUR:
 		SHEET_MOD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
-							 : w->level == 2 ? &SPR_PolarB3 
+							 : w->level == 2 ? &SPR_PolarB1 
+							 : w->level == 3 ? &SPR_PolarB2
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
@@ -168,7 +170,16 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHB, 3,2,2, 0,0, 1,0, 2,0);
 		} break;
 		case 0x5A: // Gunsmith
-		{	SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0,0, 0,1, 0,2, 0,3);
+		{	
+			if(!player_has_weapon(WEAPON_SPUR)) {
+				Weapon w = (Weapon) { .type = WEAPON_SPUR, .level = 1 };
+				sheets_load_weapon(&w);
+			}
+			if(!player_has_weapon(WEAPON_POLARSTAR)) {
+				Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
+				sheets_load_weapon(&w);
+			}
+			SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x10: // Graveyard
 		{	SHEET_ADD(SHEET_PIGNON, &SPR_Pignon, 5,2,2, 0,0, 1,0, 1,2, 2,0, 3,0);
