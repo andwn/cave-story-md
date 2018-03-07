@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
@@ -403,7 +403,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ NULL, 			NOSHEET, 		PAL3, 3, &onspawn_sisters, 		&ai_sisters, 		&ondeath_sisters 	}, // Sisters
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_undead_core, 	&ai_undead_core, 	&ai_null 			}, // Undead Core
 	{ &SPR_HeavyPress, 	NOSHEET, 		PAL1, 12,&onspawn_heavypress, 	&ai_heavypress, 	&ondeath_heavypress }, // Heavy Press
-	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos, 		&ondeath_ballos 	}, // Ballos
+	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos_f1, 		&ondeath_ballos 	}, // Ballos (Form 1)
 	/* BOSS PARTS - Separate entities belonging to the bosses which don't already exist in the NPC table, for whatever reason */
 	/* 0x172 (370) */
 	{ &SPR_CoreFront, 	NOSHEET, 		PAL2, 6, &onspawn_persistent, 	&ai_core_front, 	&ai_null 			}, // Core (Front)
@@ -424,6 +424,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 18 + 13] = {
 	{ &SPR_Ballos, 		NOSHEET, 		PAL0, 16,&onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Body
 	{ &SPR_BallosEye, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ballos_eye, 	&ai_null 			}, // Ballos Eye
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Ballos Shield
+	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos_f2, 		&ondeath_ballos 	}, // Ballos (Form 2)
+	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos_f3, 		&ondeath_ballos 	}, // Ballos (Form 3)
 	/* Splash screen */
 	{ &SPR_Sega, 		NOSHEET, 		PAL0, 3, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			}, // Sega Logo
 	{ &SPR_Sega2, 		NOSHEET, 		PAL0, 3, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			}, // Sega Logo being crushed

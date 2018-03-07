@@ -111,8 +111,65 @@ static uint8_t transfer_damage(Entity *src, Entity *tgt) {
 static const int F1_LEFT = (88 << CSF);
 static const int F1_RIGHT = (552 << CSF);
 
-// runs arrival of first form as a stage-boss
-static void RunComeDown(Entity *e) {
+void onspawn_ballos(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->eflags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
+	
+	e->x = block_to_sub(stageWidth >> 1);
+	e->y = -(64 << CSF);
+	
+	e->attack = 0;
+	e->health = 800;
+	
+	e->hidden = TRUE;
+	
+	e->hit_box = (bounding_box) { 32, 48, 32, 48 };
+	
+	//objprop[main->type].hurt_sound = SND_ENEMY_HURT_COOL;
+	//main->invisible = true;
+	
+	// create body (the big rock)
+	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
+	body->health = 1000;	// not his real HP, we're using damage transfer
+	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	body->hit_box = (bounding_box) { 48, 20, 48, 36 };
+	body->display_box = (bounding_box) { 60, 60, 60, 60 };
+	
+	// create eyes (open/close animations)
+	for(uint8_t i=0;i<2;i++) {
+		eye[i] = entity_create(0, 0, OBJ_BALLOS_EYE, 0);
+		eye[i]->health = 1000;
+		eye[i]->hit_box = (bounding_box) { 12, 8, 12, 8 };
+		eye[i]->display_box = (bounding_box) { 12, 8, 12, 8 };
+	}
+	eye[1]->eflags |= NPC_OPTION2;
+	
+	// create a top shield to cover eyes from above
+	shield = entity_create(0, 0, OBJ_BALLOS_SHIELD, 0);
+	//shield->sprite = SPR_BBOX_PUPPET_1;
+	shield->hidden = TRUE;
+	shield->health = 1000;
+	shield->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	shield->hit_box = (bounding_box) { 32, 6, 32, 4 };
+}
+
+void ondeath_ballos(Entity *e) {
+	// as soon as one of his forms is defeated make him non-killable
+	// until the init for the next form runs and makes him killable again.
+	// intended to fix the extremely rare possibility of killing him completely
+	// after his 1st form instead of moving on to the spiky rotators like he should.
+	e->health = 0xFFFF;
+	tsc_call_event(1000); // defeated script (has a flagjump in it to handle each form)
+}
+
+// 1st form as a stageboss.
+// the one where he jumps around as a rock.
+void ai_ballos_f1(Entity *e) {
+	/*transfer_damage(body, e) || */
+	if(transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
+		ondeath_ballos(e);
+		return;
+	}
 	switch(e->state) {
 		case AS_COME_DOWN:
 		{
@@ -164,15 +221,6 @@ static void RunComeDown(Entity *e) {
 			}
 		}
 		break;
-	}
-}
-
-// 1st form as a stageboss.
-// the one where he jumps around as a rock.
-static void RunForm1(Entity *e) {
-	RunComeDown(e);
-	
-	switch(e->state) {
 		case AS_BEGIN_FIGHT:
 		{
 			// can be damaged between eyes opening and boss bar appearing,
@@ -260,17 +308,51 @@ static void RunForm1(Entity *e) {
 			}
 		}
 		break;
+		case BS_ENTER_FORM:
+		{
+			e->type = OBJ_BALLOS_FORM2;
+		}
+		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	// place eyes
+	eye[0]->x = e->x - (24 << CSF);
+	eye[1]->x = e->x + (24 << CSF);
+	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
+	// place body
+	body->x = e->x;
+	body->y = e->y;
+	// place shield
+	shield->x = e->x;
+	shield->y = e->y - (44 << CSF);
+	
+	// riding on platform by eye? Player can sort of stay on this platform
+	// when he jumps. We don't do this for the shield up top though, in order that
+	// he gets kind of slid off--what happens is he'll fall through the shield
+	// onto the main body (a SPECIALSOLID), and then now that he's embedded in
+	// the shield (a SOLID), it'll repel him to the side.
+	//if (playerPlatform == body) {
+	//	player.apply_x_speed(e->x_speed);
+	//	player.apply_y_speed(e->y_speed);
+	//}
 }
 
 // 2nd form as a stageboss.
 // the one where he spawns spiky rotators and circles around the room.
-static void RunForm2(Entity *e) {
+void ai_ballos_f2(Entity *e) {
 	static const uint16_t BS_SPEED = 0x3AA;
 	static const uint32_t ARENA_LEFT = (119 << CSF);
 	static const uint32_t ARENA_TOP = (119 << CSF);
 	static const uint32_t ARENA_RIGHT = (521 << CSF);
 	static const uint32_t ARENA_BOTTOM = (233 << CSF);
+	
+	/*transfer_damage(body, e) || */
+	if(transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
+		ondeath_ballos(e);
+		return;
+	}
 	
 	switch(e->state) {
 		// enter 2nd form (script-triggered)
@@ -341,6 +423,7 @@ static void RunForm2(Entity *e) {
 				// center of room
 				if (e->x >= (312<<CSF) && e->x <= (344<<CSF)) {
 					e->state = CS_ENTER_FORM;
+					e->type = OBJ_BALLOS_FORM3;
 				}
 			}
 			
@@ -362,6 +445,19 @@ static void RunForm2(Entity *e) {
 		}
 		break;
 	}
+	
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	// place eyes
+	eye[0]->x = e->x - (24 << CSF);
+	eye[1]->x = e->x + (24 << CSF);
+	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
+	// place body
+	body->x = e->x;
+	body->y = e->y;
+	// place shield
+	shield->x = e->x;
+	shield->y = e->y - (44 << CSF);
 }
 
 // form 3 as a stageboss, the final form.
@@ -370,9 +466,8 @@ static void RunForm2(Entity *e) {
 //
 // then the platforms spin in various speeds and directions while he
 // spawns red butes from the sides and his top.
-static void RunForm3(Entity *e) {
+void ai_ballos_f3(Entity *e) {
 	static const int YPOSITION = (167 << CSF);
-	
 	// platform spin speeds and how long they travel at each speed.
 	// it's a repeating pattern.
 	static const struct {
@@ -389,8 +484,13 @@ static void RunForm3(Entity *e) {
 		{ 0,   0, },
 	};
 	
-	switch(e->state)
-	{
+	/*transfer_damage(body, e) || */
+	if(transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
+		ondeath_ballos(e);
+		return;
+	}
+	
+	switch(e->state) {
 		// enter form 3
 		case CS_ENTER_FORM:
 		{
@@ -527,11 +627,7 @@ static void RunForm3(Entity *e) {
 			//}
 		}
 		break;
-	}
-}
-
-static void RunDefeated(Entity *e) {
-	switch(e->state) {
+		// Defeated
 		case 1000:
 		{
 			e->state = 1001;
@@ -587,133 +683,19 @@ static void RunDefeated(Entity *e) {
 		}
 		break;
 	}
-}
-
-void onspawn_ballos(Entity *e) {
-	e->alwaysActive = TRUE;
-	// create (invisible) main controller object
-	//main = CreateEntity(0, 0, OBJ_BALLOS_MAIN);
-	//game.stageboss.object = main;
-	
-	//e->event = 1000;	
-	e->eflags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
-	
-	e->x = block_to_sub(stageWidth >> 1);
-	e->y = -(64 << CSF);
-	
-	e->attack = 0;
-	e->health = 800;
-	
-	e->hidden = TRUE;
-	
-	e->hit_box = (bounding_box) { 32, 48, 32, 48 };
-	//e->display_box = (bounding_box) { 60, 60, 60, 60 };
-	
-	//objprop[main->type].hurt_sound = SND_ENEMY_HURT_COOL;
-	//main->invisible = true;
-	
-	// create body (the big rock)
-	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
-	body->health = 1000;	// not his real HP, we're using damage transfer
-	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	body->hit_box = (bounding_box) { 48, 20, 48, 36 };
-	body->display_box = (bounding_box) { 60, 60, 60, 60 };
-	
-	// create eyes (open/close animations)
-	for(uint8_t i=0;i<2;i++) {
-		eye[i] = entity_create(0, 0, OBJ_BALLOS_EYE, 0);
-		eye[i]->health = 1000;
-		eye[i]->hit_box = (bounding_box) { 12, 8, 12, 8 };
-		eye[i]->display_box = (bounding_box) { 12, 8, 12, 8 };
-	}
-	eye[1]->eflags |= NPC_OPTION2;
-	
-	// create a top shield to cover eyes from above
-	shield = entity_create(0, 0, OBJ_BALLOS_SHIELD, 0);
-	//shield->sprite = SPR_BBOX_PUPPET_1;
-	shield->hidden = TRUE;
-	shield->health = 1000;
-	shield->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	shield->hit_box = (bounding_box) { 32, 6, 32, 4 };
-	
-	// initilize bboxes
-	//sprites[body->sprite].bbox.set(-48, -24, 48, 32);
-	//sprites[shield->sprite].bbox.set(-32, -8, 32, 8);
-	//sprites[main->sprite].bbox.set(-32, -48, 32, 48);
-	
-	//sprites[main->sprite].solidbox = sprites[main->sprite].bbox;
-	//sprites[body->sprite].solidbox = sprites[body->sprite].bbox;
-	//sprites[shield->sprite].solidbox = sprites[shield->sprite].bbox;
-	
-	// body and eyes are both directly shootable during one form or another
-	// but should not shake as their damage is to be transferred to main object.
-	//objprop[OBJ_BALLOS_MAIN].damage_time = 8;
-	//objprop[OBJ_BALLOS_BODY].damage_time = 0;
-	//objprop[OBJ_BALLOS_EYE].damage_time = 0;
-	
-	// initilize parameters
-	//NX_LOG("BallosBoss::OnMapEntry()\n");
-}
-
-void ondeath_ballos(Entity *e) {
-	// as soon as one of his forms is defeated make him non-killable
-	// until the init for the next form runs and makes him killable again.
-	// intended to fix the extremely rare possibility of killing him completely
-	// after his 1st form instead of moving on to the spiky rotators like he should.
-	e->health = 0xFFFF;
-	tsc_call_event(1000); // defeated script (has a flagjump in it to handle each form)
-}
-
-void ai_ballos(Entity *e) {
-	//if (!main) return;
-	//AIDEBUG;
-	
-	if(transfer_damage(body, e) || transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
-		ondeath_ballos(e);
-		return;
-	}
-	//transfer_damage(shield, e);
-	
-	RunForm1(e);
-	RunForm2(e);
-	RunForm3(e);
-	RunDefeated(e);
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	
-	//run_eye(0);
-	//run_eye(1);
-	
-	// flash red when hurt
-	// TODO: palettes again
-	//if (e->damage_time & 2)
-	//	body->frame |= 1;
-	//else
-	//	body->frame &= ~1;
-	
 	// place eyes
 	eye[0]->x = e->x - (24 << CSF);
 	eye[1]->x = e->x + (24 << CSF);
 	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
-	
 	// place body
 	body->x = e->x;
 	body->y = e->y;
-	
 	// place shield
 	shield->x = e->x;
 	shield->y = e->y - (44 << CSF);
-	
-	// riding on platform by eye? Player can sort of stay on this platform
-	// when he jumps. We don't do this for the shield up top though, in order that
-	// he gets kind of slid off--what happens is he'll fall through the shield
-	// onto the main body (a SPECIALSOLID), and then now that he's embedded in
-	// the shield (a SOLID), it'll repel him to the side.
-	//if (playerPlatform == body) {
-	//	player.apply_x_speed(e->x_speed);
-	//	player.apply_y_speed(e->y_speed);
-	//}
 }
 
 // Handles his eyes.

@@ -1012,7 +1012,9 @@ void generic_npc_states(Entity *e) {
 		case 3:		// walking
 		case 4:
 		{
-			ANIMATE(e, 8, 1,0,2,0);
+			static const uint8_t f[] = { 1, 0, 2, 0 };
+			if(++e->animtime >= 32) e->animtime = 0;
+			e->frame = f[e->animtime >> 3];
 			MOVE_X(SPEED_10(0x200));
 		}
 		break;

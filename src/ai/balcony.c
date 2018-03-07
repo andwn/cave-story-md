@@ -72,7 +72,9 @@ void ai_heli_blade(Entity *e) {
 		
 		case 10:
 		{
-			ANIMATE(e, 2, 0,1,2,1);
+			static const uint8_t f[] = { 0, 1, 2, 1 };
+			if(++e->animtime >= 16) e->animtime = 0;
+			e->frame = f[e->animtime >> 2];
 		}
 		break;
 	}
@@ -88,7 +90,7 @@ void ai_igor_balcony(Entity *e) {
 	uint8_t blockl = e->x_speed < 0 && collide_stage_leftwall(e);
 	uint8_t blockr = e->x_speed > 0 && collide_stage_rightwall(e);
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
-	else e->grounded = collide_stage_floor_grounded(e);
+	else if(e->x_speed != 0) e->grounded = collide_stage_floor_grounded(e);
 	
 	switch(e->state) {
 		case 0:
@@ -96,10 +98,14 @@ void ai_igor_balcony(Entity *e) {
 			e->state = 1;
 			e->grounded = FALSE;
 			e->display_box.top += 4;
+			e->frame = STAND1;
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 20, STAND1,STAND2);
+			if(++e->animtime >= TIME_8(20)) {
+				e->animtime = 0;
+				if(++e->frame > STAND2) e->frame = STAND1;
+			}
 			
 			if ((PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y2(48<<CSF, 112<<CSF)) || e->damage_time) {
 				e->state = 10;
@@ -110,14 +116,16 @@ void ai_igor_balcony(Entity *e) {
 		case 10:		// walking towards player
 		{
 			e->state = 11;
-			e->frame = STAND1;
+			//e->frame = STAND1;
 			e->animtime = 0;
 			FACE_PLAYER(e);
 			moveMeToFront = TRUE;
 		} /* fallthrough */
 		case 11:
 		{
-			ANIMATE(e, 8, WALK1,STAND1,WALK2,STAND1);
+			static const uint8_t f[] = { WALK1,STAND1,WALK2,STAND1 };
+			if(++e->animtime >= 32) e->animtime = 0;
+			e->frame = f[e->animtime >> 3];
 			MOVE_X(SPEED(0x200));
 			
 			if (blockr || blockl || PLAYER_DIST_X(64<<CSF)) {
@@ -134,9 +142,9 @@ void ai_igor_balcony(Entity *e) {
 			
 			if (++e->timer > 10) {
 				e->state = 21;
-				e->y_speed = -SPEED(0x5ff);
+				e->y_speed = -SPEED_12(0x5ff);
 				e->grounded = FALSE;
-				MOVE_X(SPEED(0x200));
+				MOVE_X(SPEED_10(0x200));
 				sound_play(SND_IGOR_JUMP, 5);
 				moveMeToFront = TRUE;
 			}
@@ -146,7 +154,7 @@ void ai_igor_balcony(Entity *e) {
 		case 21:	// jumping
 		{
 			e->frame = JUMP;	// in-air frame
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED_10(0x200));
 			if (e->grounded) {
 				camera_shake(20);
 				e->x_speed = 0;
@@ -202,8 +210,8 @@ void ai_igor_balcony(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	if(!e->grounded) e->y_speed += SPEED(0x33);
-	LIMIT_Y(SPEED(0x5ff));
+	if(!e->grounded) e->y_speed += SPEED_8(0x33);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_block_spawner(Entity *e) {
@@ -247,7 +255,7 @@ void ai_block_spawner(Entity *e) {
 				entity_create(x, (player.y - block_to_sub(14)), 
 							OBJ_FALLING_BLOCK, (random() & 1) ? NPC_OPTION2 : 0);
 									  
-				e->timer = TIME(15) + (random() & 15);
+				e->timer = TIME_8(15) + (random() & 15);
 			}
 		}
 		break;

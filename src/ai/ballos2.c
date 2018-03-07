@@ -708,60 +708,42 @@ void ai_ballos_spikes(Entity *e) {
 }
 
 void ai_green_devil_spawner(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			e->timer = TIME_8(50);
-			e->timer += random() & 63;
-			e->state = 1;
-		} /* fallthrough */
-		case 1:
-		{
-			if (--e->timer == 0) {
-				Entity *dv = entity_create(e->x, e->y - 0x1000, OBJ_GREEN_DEVIL, 0);
-				dv->x_speed = (random() % (8<<CSF)) - (4<<CSF);
-				dv->dir = e->dir;
-				if(!e->dir) dv->x_speed = -dv->x_speed;
-				
-				e->state = 0;
-			}
-		}
-		break;
+	if(e->timer == 0) {
+		Entity *dv = entity_create(e->x, e->y - 0x1000, OBJ_GREEN_DEVIL, 0);
+		dv->dir = e->dir;
+		dv->x_speed = SPEED_10(0x3FF) + (random() & 0x3FF);
+		dv->y_speed = (random() & 0x7FF) - 0x3FF;
+		if(!dv->dir) dv->x_speed = -dv->x_speed;
+		dv->y_mark = dv->y;
+		dv->attack = 3;
+		
+		e->timer = TIME_8(50) + (random() & 0x3F);
+	} else {
+		e->timer--;
 	}
-	
 }
 
 void ai_green_devil(Entity *e) {
 	e->nflags ^= NPC_SHOOTABLE;
-
+	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-
-	switch(e->state) {
-		case 0:
-		{
-			e->y_mark = e->y;
-			e->y_speed = (random() % (8<<CSF)) - (4<<CSF);
-			e->attack = 3;
-			e->state = 1;
-		} /* fallthrough */
-		case 1:
-		{
-			ANIMATE(e, 4, 0,1);
-			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x80) : -SPEED_8(0x80);
-			
-			ACCEL_X(SPEED_8(0x20));
-			LIMIT_X(SPEED_10(0x3FF));
-			
-			if (!e->dir) {
-				if (e->x < 0) e->state = STATE_DELETE;
-			} else {
-				if (e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
-			}
-		}
-		break;
-	}
 	
+	if((++e->animtime & 3) == 0) e->frame ^= 1;
+	e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x80) : -SPEED_8(0x80);
+	if(!e->dir) {
+		if(e->x < 0) //{
+			e->state = STATE_DELETE;
+		//} else if(e->x_speed > -SPEED_10(0x3FF)) {
+		//	e->x_speed -= SPEED_8(0x20);
+		//}
+	} else {
+		if(e->x > block_to_sub(stageWidth)) //{
+			e->state = STATE_DELETE;
+		//} else if(e->x_speed < SPEED_10(0x3FF)) {
+		//	e->x_speed += SPEED_8(0x20);
+		//}
+	}
 }
 
 void ai_bute_sword_red(Entity *e) {

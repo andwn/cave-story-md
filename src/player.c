@@ -875,14 +875,18 @@ void player_draw() {
 			if(joy_down(BUTTON_UP) && !controlsLocked) {
 				lookingDown = FALSE;
 				if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
-					ANIMATE(&player, 7, UPWALK1, LOOKUP, UPWALK2, LOOKUP);
+					static const uint8_t f[] = { UPWALK1, LOOKUP, UPWALK2, LOOKUP };
+					if(++player.animtime >= 16) player.animtime = 0;
+					player.frame = f[player.animtime >> 2];
 				} else {
 					player.frame = LOOKUP;
 					player.animtime = 0;
 				}
 			} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
 				lookingDown = FALSE;
-				ANIMATE(&player, 7, WALK1, STAND, WALK2, STAND);
+				static const uint8_t f[] = { WALK1, STAND, WALK2, STAND };
+				if(++player.animtime >= 16) player.animtime = 0;
+				player.frame = f[player.animtime >> 2];
 			} else if(joy_pressed(BUTTON_DOWN) && !controlsLocked) {
 				lookingDown = TRUE;
 				player.frame = LOOKDN;
