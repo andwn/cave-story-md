@@ -61,14 +61,11 @@ void game_main(uint8_t load) {
 	}
 	paused = FALSE;
 
-	PF_INIT();
-	
 	while(TRUE) {
-		PF_START_FRAME();
 		PF_BGCOLOR(0x000);
-		#ifdef PROFILE_BG
-		VDP_setBackgroundColor(0);
-		#endif
+		//#ifdef PROFILE_BG
+		//VDP_setBackgroundColor(0);
+		//#endif
 
 		input_update();
 		if(paused) {
@@ -165,21 +162,16 @@ void game_main(uint8_t load) {
 		PF_BGCOLOR(0xEEE);
 		system_update();
 		ready = TRUE;
-
-		PF_END_FRAME();
 		PF_BGCOLOR(0x000);
-
 		vsync();
 		PF_BGCOLOR(0x00E);
 		aftervsync();
-
-		PF_DRAW();
 	}
 	return;
 }
 
 void game_reset(uint8_t load) {
-	
+	VDP_clearPlan(PLAN_B, TRUE);
 	camera_init();
 	tsc_init();
 	hud_create();
@@ -201,7 +193,6 @@ void game_reset(uint8_t load) {
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Sym.data);
 	VDP_setPaletteColors(0, PAL_FadeOut, 64);
-	
 }
 
 void draw_itemmenu(uint8_t resetCursor) {

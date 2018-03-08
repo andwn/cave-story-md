@@ -408,7 +408,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 void entities_update_inactive() {
 	Entity *e = inactiveList;
 	while(e) {
-		if(e->alwaysActive || entity_on_screen(e)) {
+		if(/*e->alwaysActive ||*/ entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_reactivate(e);
 			e = next;

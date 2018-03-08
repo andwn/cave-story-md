@@ -39,7 +39,7 @@ void ai_critter(Entity *e) {
 	switch(e->state) {
 		case STATE_WAITING:
 		{
-			if(stageID == STAGE_GRASSTOWN) e->nflags &= ~NPC_SOLID;
+			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) e->nflags &= ~NPC_SOLID;
 			if(e->type == OBJ_POWER_CRITTER) e->attack = 2;
 			e->frame = 0;
 			e->timer = 0;

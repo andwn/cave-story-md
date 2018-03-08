@@ -11,8 +11,6 @@ void onspawn_jelly(Entity *e) {
 }
 
 void ai_jelly(Entity *e) {
-	//PF_BGCOLOR(0xEEE);
-
 	e->eflags ^= NPC_SHOOTABLE;
 	e->attack ^= 5;
 	

@@ -5,14 +5,14 @@
 void onspawn_energy(Entity *e) {
 	if(!(e->eflags & NPC_OPTION2)) {
 		// Small energy
-		e->display_box.left -= 4;
-		e->display_box.right -= 4;
+		e->display_box = (bounding_box) { 4,4,4,4 };
 	} else {
 		// Big energy
 		SHEET_FIND(e->sheet, SHEET_ENERGYL);
 		e->vramindex = sheets[e->sheet].index;
 		e->framesize = 4;
 		e->sprite[0].size = SPRITE_SIZE(2, 2);
+		e->display_box = (bounding_box) { 8,8,8,8 };
 	}
 	e->left_gravity = (stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL);
 	e->x_speed = 0x1FF - (random() & 0x3FF);
@@ -24,7 +24,7 @@ void ai_energy(Entity *e) {
 		e->animtime = 0;
 		if(++e->frame > 5) e->frame = 0;
 	}
-	if((e->timer & 1) && entity_overlapping(&player, e)) {
+	if((e->timer & 1) && PLAYER_DIST_X((7+e->display_box.left)<<CSF) && PLAYER_DIST_Y((7+e->display_box.top)<<CSF)) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
 				weapon_info[w->type].experience[w->level-1]) {
@@ -53,20 +53,20 @@ void ai_energy(Entity *e) {
 		} else if(e->timer > TIME_10(350)) {
 			e->hidden = (e->timer & 3) > 1;
 		}
+
+		e->x += e->x_speed;
+		e->y += e->y_speed;
 		if(e->left_gravity) {
 			e->x_speed -= SPEED_8(6);
 			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
 		} else {
-			if(e->y_speed < SPEED_10(0x3EE)) e->y_speed += SPEED_8(0x12);
+			if(e->y_speed < SPEED_10(0x3E0)) e->y_speed += SPEED_8(0x40);
 			if(e->x_speed > 0) e->x_speed--;
 			if(e->x_speed < 0) e->x_speed++;
 			// Check below / above first
-			uint8_t block_below = stage_get_block_type(
-					sub_to_block(e->x), sub_to_block(e->y + 0x800));
-			uint8_t block_above = stage_get_block_type(
-					sub_to_block(e->x), sub_to_block(e->y - 0x800));
+			uint8_t block_below = blk(e->x, 0, e->y, e->display_box.top);
+			uint8_t block_above = blk(e->x, 0, e->y, -e->display_box.top);
 			if(block_below == 0x41 || block_below == 0x43) {
-				//e->y -= sub_to_pixel(e->y + 0x800) % 16;
 				e->y_speed = -e->y_speed >> 1;
 				if(e->y_speed > -SPEED_10(0x3FF)) e->y_speed = -SPEED_10(0x3FF);
 				sound_play(SND_XP_BOUNCE, 0);
@@ -86,20 +86,13 @@ void ai_energy(Entity *e) {
 			} else if(block_above == 0x41 || block_above == 0x43) {
 				e->y_speed = -e->y_speed >> 1;
 				if(e->y_speed < SPEED_10(0x300)) e->y_speed = SPEED_10(0x300);
-			} else {
-				e->y_speed += SPEED_8(0x50);
-				//if(e->y_speed > 0x600) e->y_speed = 0x600;
 			}
 			// Check in front
-			uint8_t block_front = stage_get_block_type(
-					sub_to_block(e->x + (e->x_speed > 0 ? 0x800 : -0x800)),
-					sub_to_block(e->y - 0x100));
+			uint8_t block_front = blk(e->x, e->x_speed > 0 ? 4 : -4, e->y, -1);
 			if(block_front == 0x41 || block_front == 0x43) { // hit a wall
 				e->x_speed = -e->x_speed;
 			}
 		}
-		e->x += e->x_speed;
-		e->y += e->y_speed;
 	}
 }
 

@@ -484,18 +484,17 @@ void ai_mesa(Entity *e) {
 			e->nflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
 			e->y += (4<<CSF);
 			e->frame = MS_STAND1;
-			e->state = 1;
+			e->state++;
 		} /* fallthrough */
 		case 1:
 		{
-			if (++e->timer > TIME_8(50)) e->state = 10;
+			if (++e->timer > TIME_8(50)) e->state++;
 			else if((++e->animtime & 31) == 0 && ++e->frame > MS_STAND2) e->frame = MS_STAND1;
 		}
 		break;
-		
-		case 10:
+		case 2:
 		{
-			e->state = 11;
+			e->state++;
 			e->timer = 0;
 			e->frame = MS_THROW1;	// hand down
 			FACE_PLAYER(e);
@@ -506,10 +505,10 @@ void ai_mesa(Entity *e) {
 			e->linkedEntity = entity_create(x, y, OBJ_MESA_BLOCK, 0);
 			e->linkedEntity->linkedEntity = e;
 		} /* fallthrough */
-		case 11:
+		case 3:
 		{
 			if (++e->timer > TIME_8(50)) {
-				e->state = 20;
+				e->state++;
 				e->timer = 0;
 				e->frame = MS_THROW2;	// hand up, throwing
 				
@@ -528,8 +527,7 @@ void ai_mesa(Entity *e) {
 			}
 		}
 		break;
-		
-		case 20:
+		case 4:
 		{
 			if (++e->timer > TIME_8(20)) {	// throw again, if player still near
 				e->state = 1;

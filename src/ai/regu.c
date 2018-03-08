@@ -324,11 +324,6 @@ void ai_sue(Entity *e) {
 			Entity *find = entityList;
 			while(find && find->event != 501) find = find->next;
 			e->linkedEntity = find;
-			if(e->linkedEntity) {
-				puts("Found Igor");
-			} else {
-				puts("Couldn't find Igor");
-			}
 			e->alwaysActive = TRUE;
 		}
 		/* fallthrough */

@@ -876,8 +876,11 @@ void player_draw() {
 				lookingDown = FALSE;
 				if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
 					static const uint8_t f[] = { UPWALK1, LOOKUP, UPWALK2, LOOKUP };
-					if(++player.animtime >= 16) player.animtime = 0;
-					player.frame = f[player.animtime >> 2];
+					if(++player.timer2 > TIME_8(5)) {
+						player.timer2 = 0;
+						if(++player.animtime > 3) player.animtime = 0;
+					}
+					player.frame = f[player.animtime];
 				} else {
 					player.frame = LOOKUP;
 					player.animtime = 0;
@@ -885,8 +888,11 @@ void player_draw() {
 			} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
 				lookingDown = FALSE;
 				static const uint8_t f[] = { WALK1, STAND, WALK2, STAND };
-				if(++player.animtime >= 16) player.animtime = 0;
-				player.frame = f[player.animtime >> 2];
+				if(++player.timer2 > TIME_8(5)) {
+					player.timer2 = 0;
+					if(++player.animtime > 3) player.animtime = 0;
+				}
+				player.frame = f[player.animtime];
 			} else if(joy_pressed(BUTTON_DOWN) && !controlsLocked) {
 				lookingDown = TRUE;
 				player.frame = LOOKDN;
@@ -906,7 +912,7 @@ void player_draw() {
 				player.frame = WALK1;
 			}
 		}
-		if((player.animtime & 15) == 7) sound_play(SND_PLAYER_WALK, 2);
+		if((player.animtime & 1) && player.timer2 == 1) sound_play(SND_PLAYER_WALK, 2);
 	}
 	// Set frame if it changed
 	if(player.frame != player.oframe) PLAYER_SPRITE_TILES_QUEUE();

@@ -82,7 +82,6 @@ int main() {
 	}
     // let's the fun go on !
     
-	puts("Hi June");
     sound_init();
 	input_init();
 	

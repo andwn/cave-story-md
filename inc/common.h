@@ -1,74 +1,15 @@
 #include <stdint.h>
-#ifdef KDEBUG
-#include <kdebug.h>
-#define puts(x) KDebug_Alert(x)
-#define printf(...) {                                                                          \
-	char str[80];                                                                              \
-	sprintf(str, __VA_ARGS__);                                                                 \
-	KDebug_Alert(str);                                                                         \
-}
-#else
-#define puts(x) /**/
-#define printf(...) /**/
-#endif
-
-//#define PROFILE
-#ifdef PROFILE
-char pf_text[38];
-uint16_t pf_count[32];
-uint16_t pf_frame;
-uint16_t pf_avg;
-uint16_t pf_peak;
-#define PF_INIT() ({ \
-    pf_frame = 0; \
-})
-#define PF_START_FRAME() ({ \
-    pf_count[pf_frame] = 0; \
-})
-#define PF_TICK() ({ \
-    pf_count[pf_frame]++; \
-})
-#define PF_END_FRAME() ({ \
-    if(pf_count[pf_frame] > pf_peak) pf_peak = pf_count[pf_frame]; \
-    if(++pf_frame == 32) { \
-        pf_frame = pf_avg = 0; \
-        for(uint16_t i = 0; i < 32; i++) pf_avg += pf_count[i]; \
-        pf_avg >>= 5; \
-        sprintf(pf_text, "OBJ:%03hu+%03hu AVG:%04hu PEAK:%04hu", \
-                entities_count_active(), entities_count_inactive(), pf_avg, pf_peak); \
-        pf_peak = 0; \
-    } \
-})
-#define PF_DRAW() ({ \
-    if(pf_frame == 0) { \
-        VDP_drawTextWindow(pf_text, 4, 0); \
-    } \
-})
-#else
-#define PF_INIT() /**/
-#define PF_START_FRAME() /**/
-#define PF_TICK() /**/
-#define PF_END_FRAME() /**/
-#define PF_DRAW() /**/
-#endif
 
 //#define PROFILE_BG
 #ifdef PROFILE_BG
-#define PF_BGCOLOR(c) ({ VDP_setPaletteColor(0, c); })
-#else
-#define PF_BGCOLOR(c) /**/
-#endif
-/*
-#define MUSIC_TICK() ({ \
-	if(vblank) { \
-		XGM_set68KBUSProtection(FALSE); \
-		XGM_doVBlankProcess(); \
-		XGM_set68KBUSProtection(TRUE); \
-		waitSubTick(10); \
-		vblank = 0; \
-	} \
+#define PF_BGCOLOR(c) ({ \
+    *((volatile uint32_t*) 0xC00004) = GFX_WRITE_CRAM_ADDR(0); \
+    *((volatile uint16_t*) 0xC00000) = c; \
 })
-*/
+#else
+#define PF_BGCOLOR(c) ({})
+#endif
+
 #define MUSIC_TICK() ({ \
 	if(vblank) { \
 		XGM_doVBlankProcess(); \
@@ -90,6 +31,8 @@ uint8_t FPS;
 // a table for time and speed adjustments are loaded in memory. On PAL, the values
 // just match the index, and on NTSC they are roughly index*5/6 for speed and 
 // index*6/5 for time respectively.
+uint16_t time_tab[0x100];
+uint16_t speed_tab[0x100];
 
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
@@ -107,9 +50,6 @@ uint8_t FPS;
 // 0x000-0xFFF, 16 frames/units of inaccuracy
 #define TIME_12(x) (time_tab[(x) >> 4] << 4)
 #define SPEED_12(x) (speed_tab[(x) >> 4] << 4)
-
-uint16_t time_tab[0x100];
-uint16_t speed_tab[0x100];
 
 // Div/mod tables to help math when displaying digits
 const uint8_t div10[100];

@@ -26,12 +26,14 @@
 // each frame until it becomes zero again
 uint16_t cameraShake;
 // Tile attr buffer to draw offscreen during map scroll
-uint16_t mapcol[32], maprow[64];
+uint16_t mapbuf[64];
+// Alternates between drawing row and column each frame when moving diagonally
+uint8_t diag_tick;
 
 void camera_init() {
 	camera.target = &player;
-	camera.x = pixel_to_sub(SCREEN_HALF_W);
-	camera.y = pixel_to_sub(SCREEN_HALF_H + 8);
+	camera.x = camera.x_mark = pixel_to_sub(SCREEN_HALF_W);
+	camera.y = camera.y_mark = pixel_to_sub(SCREEN_HALF_H + 8);
 	camera.x_shifted = 0;
 	camera.y_shifted = 8;
 	camera.x_offset = 0;
@@ -49,8 +51,8 @@ void camera_set_position(int32_t x, int32_t y) {
 	if(y < (SCREEN_HALF_H+2)<<CSF) 
 		y = (SCREEN_HALF_H+2)<<CSF;
 	// Apply
-	camera.x = x;
-	camera.y = y;
+	camera.x = camera.x_mark = x;
+	camera.y = camera.y_mark = y;
 	camera.x_shifted = (x >> CSF) - SCREEN_HALF_W;
 	camera.y_shifted = (y >> CSF) - SCREEN_HALF_H;
 	// Update quick fetch cutoff values
@@ -65,7 +67,7 @@ void camera_shake(uint16_t time) {
 }
 
 void camera_update() {
-	// Just stick to the target object
+	PF_BGCOLOR(0x08E);
 	int32_t x_next, y_next;
 	if(camera.target) {
 		// If following the player focus on where they are walking/looking
@@ -92,6 +94,7 @@ void camera_update() {
 			y_next = camera.y +
 					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 4);
 		} else {
+			// Just stick to the target object without any offset
 			camera.x_offset = 0;
 			camera.y_offset = 0;
 			x_next = camera.x +
@@ -100,10 +103,12 @@ void camera_update() {
 					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 5);
 		}
 		// Camera shaking
-		if(cameraShake) {
-			x_next += (random() & 0x7FF) - 0x400;
-			y_next += (random() & 0x7FF) - 0x400;
-			if(cameraShake != 9999) cameraShake--;
+		// stay within the same (pre-shake) 8x8 area to avoid pointless map redraw
+		if(cameraShake && (--cameraShake & 1)) {
+			int16_t x_shake = (random() & 0x7FF) - 0x400;
+			int16_t y_shake = (random() & 0x7FF) - 0x400;
+			if((x_next & 0xF000) == ((x_next + x_shake) & 0xF000)) x_next += x_shake;
+			if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
 		}
 	} else { // Camera isn't following anything
 		return;
@@ -114,7 +119,7 @@ void camera_update() {
 	if(x_next - camera.x > CAMERA_MAX_SPEED) x_next = camera.x + CAMERA_MAX_SPEED;
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
-	if(stageID == 18 && !IS_PALSYSTEM) { // Special case for shelter
+	if(stageID == 18) { // Special case for shelter
 		x_next = pixel_to_sub(SCREEN_HALF_W + 8);
 		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
 	} else {
@@ -139,54 +144,68 @@ void camera_update() {
 	morphingColumn = sub_to_tile(x_next) - sub_to_tile(camera.x);
 	morphingRow = sub_to_tile(y_next) - sub_to_tile(camera.y);
 	if(morphingColumn | morphingRow) {
-		// Reactivate any entities that are approaching the screen
-		//entities_update_inactive();
+		const uint8_t *pxa = tileset_info[stageTileset].PXA;
 		// Queue row and/or column mapping
 		if(morphingColumn) {
-			int16_t x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
-			int16_t y = sub_to_tile(y_next) - 16 /*+ morphingRow*/;
-			if(x >= 0 && x < stageWidth << 1) {
-				for(uint16_t i = 32; i--; ) {
-					if(y >= stageHeight << 1) break;
-					if(y >= 0) {
-						// Fuck math tbh
-						uint16_t b = stage_get_block(x>>1, y>>1);
-						uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
-						uint16_t ta = stage_get_block_type(x>>1, y>>1);
-						uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-						mapcol[y&31] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
-								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+			// Draw row OR column, and when going diagonally, alternate
+			if(morphingRow && (++diag_tick & 1)) {
+				morphingColumn = 0;
+				x_next = camera.x;
+			} else {
+				int16_t x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
+				int16_t y = sub_to_tile(y_next) - 16 /*+ morphingRow*/;
+				if(x >= 0 && x < stageWidth << 1) {
+					for(uint16_t i = 32; i--; ) {
+						// It's actually faster to just draw garbage than have these checks
+						//if(y >= stageHeight << 1) break;
+						//if(y >= 0) {
+							// Fuck math tbh
+							uint16_t b = stage_get_block(x>>1, y>>1);
+							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
+							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+							mapbuf[y&31] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+						//}
+						y++;
 					}
-					y++;
+					DMA_queueDma(DMA_VRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t) mapcol, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
 			}
 		}
 		if(morphingRow) {
-			int16_t y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
-			int16_t x = sub_to_tile(x_next) - 32 /*+ morphingColumn*/;
-			if(y >= 0 && y < stageHeight << 1) {
-				for(uint16_t i = 64; i--; ) {
-					if(x >= stageWidth << 1) break;
-					if(x >= 0) {
-						uint16_t b = stage_get_block(x>>1, y>>1);
-						uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
-						uint16_t ta = stage_get_block_type(x>>1, y>>1);
-						uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-						maprow[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
-								0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+			if(morphingColumn && !(diag_tick & 1)) {
+				morphingRow = 0;
+				y_next = camera.y;
+			} else {
+				int16_t y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
+				int16_t x = sub_to_tile(x_next) - 32 /*+ morphingColumn*/;
+				if(y >= 0 && y < stageHeight << 1) {
+					for(uint16_t i = 64; i--; ) {
+						//if(x >= stageWidth << 1) break;
+						//if(x >= 0) {
+							uint16_t b = stage_get_block(x>>1, y>>1);
+							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
+							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+							mapbuf[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+						//}
+						x++;
 					}
-					x++;
+					DMA_queueDma(DMA_VRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
 				}
-				DMA_queueDma(DMA_VRAM, (uint32_t) maprow, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
 			}
 		}
-	} else {
-		uint16_t col = sub_to_block(x_next + 0x800) - sub_to_block(camera.x + 0x800);
-		uint16_t row = sub_to_block(y_next + 0x800) - sub_to_block(camera.y + 0x800);
-		if(col | row) entities_update_inactive();
+	}
+	if(!morphingColumn && (abs(camera.x_mark - x_next) > 0x1FFF || abs(camera.y_mark - y_next) > 0x1FFF)) {
+		camera.x_mark = x_next;
+		camera.y_mark = y_next;
+		entities_update_inactive();
 	}
 	// Apply camera position
 	camera.x = x_next;
 	camera.y = y_next;
+
+	PF_BGCOLOR(0x000);
 }

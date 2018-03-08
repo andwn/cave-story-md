@@ -109,7 +109,6 @@ void ai_batHang(Entity *e) {
 }
 
 void ai_batCircle(Entity *e) {
-	//PF_BGCOLOR(0x000);
 	switch(e->state) {
 		case 0:
 		{

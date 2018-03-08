@@ -484,7 +484,6 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case STAGE_ENDING_LAB: 
 		{	SHEET_ADD(SHEET_AHCHOO, cfg_language ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
 		} break;
-		default: printf("Stage %hu has no sheet set", sid);
 	}
 	// Weapons at the end
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) sheets_load_weapon(&playerWeapon[i]);

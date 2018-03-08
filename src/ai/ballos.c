@@ -43,7 +43,7 @@ enum BS_STATES {
 	CS_EXPLODE_BLOODY	= 420,
 	CS_SPIN_PLATFORMS	= 430
 };
-
+/*
 enum { LESS_THAN, GREATER_THAN };
 
 static uint8_t passed_xcoord(Entity *e, uint8_t ltgt, int32_t xcoord, uint8_t reset) {
@@ -80,7 +80,7 @@ static uint8_t passed_ycoord(Entity *e, uint8_t ltgt, int32_t ycoord, uint8_t re
 	
 	return result;
 }
-
+*/
 static void SetEyeStates(uint16_t newstate) {
 	eye[0]->state = newstate;
 	eye[1]->state = newstate;
@@ -108,8 +108,8 @@ static uint8_t transfer_damage(Entity *src, Entity *tgt) {
 }
 
 // left and right maximums during form 1
-static const int F1_LEFT = (88 << CSF);
-static const int F1_RIGHT = (552 << CSF);
+static const int32_t F1_LEFT = (88 << CSF);
+static const int32_t F1_RIGHT = (552 << CSF);
 
 void onspawn_ballos(Entity *e) {
 	e->alwaysActive = TRUE;
@@ -199,16 +199,17 @@ void ai_ballos_f1(Entity *e) {
 			e->y_speed += SPEED_8(0x40);
 			LIMIT_Y(SPEED_12(0xC00));
 			
-			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
+			if(e->y + e->y_speed > CRASH_Y) {
 				e->y_speed = 0;
 				e->timer = 0;
 				e->state++;
 				// player smush damage
-				if(PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) player_inflict_damage(16);
-
+				if(!playerIFrames && PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) {
+					player_inflict_damage(16);
+				}
 				camera_shake(30);
 				SMOKE_AREA((e->x >> CSF) - 40, (e->y >> CSF) + 40, 80, 16, 6);
-				if (player.grounded) player.y_speed = -SPEED_10(0x200);
+				if(player.grounded) player.y_speed = -SPEED_10(0x200);
 			}
 		}
 		break;
@@ -233,14 +234,15 @@ void ai_ballos_f1(Entity *e) {
 			e->x_speed = 0;
 			e->attack = 0;
 			e->state++;
-			
 			// he makes two jumps then a pause,
 			// after that it's three jumps before pausing.
 			// this corresponds to:
-			if ((++e->timer2 > 3) == 0)
+			if(++e->timer2 >= 3) {
+				e->timer2 = 0;
 				e->timer = TIME_8(150);
-			else
+			} else {
 				e->timer = TIME_8(50);
+			}
 		} /* fallthrough */
 		case AS_PREPARE_JUMP+1:
 		{
@@ -256,21 +258,20 @@ void ai_ballos_f1(Entity *e) {
 		{
 			if(e->y_speed < SPEED_12(0xBB0)) e->y_speed += SPEED_8(0x55);
 			
-			if (passed_xcoord(e, LESS_THAN, F1_LEFT, FALSE)) e->x_speed = SPEED_10(0x200);
-			if (passed_xcoord(e, GREATER_THAN, F1_RIGHT, FALSE)) e->x_speed = -SPEED_10(0x200);
+			if(e->x + e->x_speed < F1_LEFT) e->x_speed = SPEED_10(0x200);
+			if(e->x + e->x_speed > F1_RIGHT) e->x_speed = -SPEED_10(0x200);
 			
-			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
+			if(e->y + e->y_speed > CRASH_Y) {
 				// player smush damage
-				if (player.y > (e->y + (48<<CSF))) player_inflict_damage(16);
-				
+				if(!playerIFrames && PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) {
+					player_inflict_damage(16);
+				}
 				// player hopping from the vibration
-				if (player.grounded) player.y_speed = -SPEED_10(0x200);
-				
+				if(player.grounded) player.y_speed = -SPEED_10(0x200);
 				camera_shake(30);
 				
 				entity_create(e->x - (12<<CSF), e->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
 				entity_create(e->x + (12<<CSF), e->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
-				
 				//SmokeXY(e->x, e->y + (40<<CSF), 16, 40, 0);
 				
 				e->y_speed = 0;
@@ -283,11 +284,8 @@ void ai_ballos_f1(Entity *e) {
 		case AS_DEFEATED:
 		{
 			SetEyeStates(EYE_CLOSING);
-			//game.bossbar.defeated = true;
 			e->health = 1200;
-			
 			e->state++;
-			
 			e->x_speed = 0;
 			e->damage_time = 0;
 		} /* fallthrough */
@@ -295,15 +293,12 @@ void ai_ballos_f1(Entity *e) {
 		{
 			if(e->y_speed < SPEED_12(0xBC0)) e->y_speed += SPEED_8(0x40);
 			
-			if (passed_ycoord(e, GREATER_THAN, CRASH_Y, FALSE)) {
+			if(e->y + e->y_speed > CRASH_Y) {
 				e->y_speed = 0;
 				e->state++;
-				
 				camera_shake(30);
 				//SmokeXY(e->x, e->y + 0x5000, 16, 40, 0);
-				
 				if (player.grounded) player.y_speed = -SPEED_10(0x200);
-				
 				// ... and wait for script to trigger form 2
 			}
 		}
@@ -342,11 +337,11 @@ void ai_ballos_f1(Entity *e) {
 // 2nd form as a stageboss.
 // the one where he spawns spiky rotators and circles around the room.
 void ai_ballos_f2(Entity *e) {
-	static const uint16_t BS_SPEED = 0x3AA;
-	static const uint32_t ARENA_LEFT = (119 << CSF);
-	static const uint32_t ARENA_TOP = (119 << CSF);
-	static const uint32_t ARENA_RIGHT = (521 << CSF);
-	static const uint32_t ARENA_BOTTOM = (233 << CSF);
+	static const int16_t BS_SPEED = 0x3AA;
+	static const int32_t ARENA_LEFT = (119 << CSF);
+	static const int32_t ARENA_TOP = (119 << CSF);
+	static const int32_t ARENA_RIGHT = (521 << CSF);
+	static const int32_t ARENA_BOTTOM = (233 << CSF);
 	
 	/*transfer_damage(body, e) || */
 	if(transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
@@ -360,25 +355,13 @@ void ai_ballos_f2(Entity *e) {
 		{
 			e->timer = 0;
 			e->state++;
-			
 			rotators_left = 0;
 			for(uint16_t angle=0;angle<0x100;angle+=0x20) {
 				rotator(rotators_left) = entity_create(e->x, e->y, OBJ_BALLOS_ROTATOR, 0);
 				rotator(rotators_left)->angle = angle;
 				rotator(rotators_left)->dir = (rotators_left & 1) ? 1 : 0;
-				
 				rotators_left++;
 			}
-		} /* fallthrough */
-		case BS_ENTER_FORM+1:
-		{
-			//e->y += (ARENA_BOTTOM - e->y) / 8;
-			
-			//if (passed_xcoord(e, LESS_THAN, ARENA_LEFT, FALSE))
-			//	e->x += (ARENA_LEFT - e->x) / 8;
-			
-			//if (passed_xcoord(e, GREATER_THAN, ARENA_RIGHT, FALSE))
-			//	e->x += (ARENA_RIGHT - e->x) / 8;
 		}
 		break;
 		
@@ -392,32 +375,22 @@ void ai_ballos_f2(Entity *e) {
 		{
 			e->x_speed = -SPEED_10(BS_SPEED);
 			e->y_speed = 0;
-			//e->dirparam = LEFT;
-			
-			if (passed_xcoord(e, LESS_THAN, ARENA_LEFT, FALSE))
-				e->state = BS_UP;
+			if(e->x + e->x_speed < ARENA_LEFT) e->state = BS_UP;
 		}
 		break;
-		
 		// up on wall
 		case BS_UP:
 		{
 			e->x_speed = 0;
 			e->y_speed = -SPEED_10(BS_SPEED);
-			//e->dirparam = UP;
-			
-			if (passed_ycoord(e, LESS_THAN, ARENA_TOP, FALSE))
-				e->state = BS_RIGHT;
+			if(e->y + e->y_speed < ARENA_TOP) e->state = BS_RIGHT;
 		}
 		break;
-		
 		// right on ceiling
 		case BS_RIGHT:
 		{
 			e->x_speed = SPEED_10(BS_SPEED);
 			e->y_speed = 0;
-			//e->dirparam = RIGHT;
-			
 			// all rotators destroyed?
 			if (rotators_left <= 0 && ++e->timer > 3) {
 				// center of room
@@ -427,21 +400,15 @@ void ai_ballos_f2(Entity *e) {
 				}
 			}
 			
-			if (passed_xcoord(e, GREATER_THAN, ARENA_RIGHT, FALSE))
-				e->state = BS_DOWN;
+			if(e->x + e->x_speed > ARENA_RIGHT) e->state = BS_DOWN;
 		}
 		break;
-		
 		// down on wall
 		case BS_DOWN:
 		{
 			e->x_speed = 0;
 			e->y_speed = SPEED_10(BS_SPEED);
-			//e->dirparam = DOWN;
-			
-			if (passed_ycoord(e, GREATER_THAN, ARENA_BOTTOM, FALSE)) {
-				e->state = BS_LEFT;
-			}
+			if(e->y + e->y_speed > ARENA_BOTTOM) e->state = BS_LEFT;
 		}
 		break;
 	}
@@ -467,7 +434,7 @@ void ai_ballos_f2(Entity *e) {
 // then the platforms spin in various speeds and directions while he
 // spawns red butes from the sides and his top.
 void ai_ballos_f3(Entity *e) {
-	static const int YPOSITION = (167 << CSF);
+	static const int32_t YPOSITION = (167 << CSF);
 	// platform spin speeds and how long they travel at each speed.
 	// it's a repeating pattern.
 	static const struct {
@@ -1046,7 +1013,7 @@ void ai_ballos_platform(Entity *e) {
 	}
 	
 	e->x_mark = (xoff >> 2) + ballos->x;
-	e->y_mark = (yoff >> 2) + (8 << CSF) + ballos->y;
+	e->y_mark = (yoff >> 2) + (12 << CSF) + ballos->y;
 	
 	switch(abs(platform_speed)) {
 		case 1:

@@ -112,7 +112,6 @@ static uint16_t LS_readWord(uint8_t file, uint32_t addr);
 static uint32_t LS_readLong(uint8_t file, uint32_t addr);
 
 void system_set_flag(uint16_t flag, uint8_t value) {
-	printf("Setting flag %hu %s", flag, value ? "ON" : "OFF");
 	if(value) flags[flag>>5] |= 1<<(flag&31);
 	else flags[flag>>5] &= ~(1<<(flag&31));
 }
@@ -122,7 +121,6 @@ uint8_t system_get_flag(uint16_t flag) {
 }
 
 void system_set_skip_flag(uint16_t flag, uint8_t value) {
-	printf("Setting skip flag %hu %s", flag, value ? "ON" : "OFF");
 	if(value) skip_flags |= (1<<flag);
 	else skip_flags &= ~(1<<flag);
 }
@@ -213,7 +211,6 @@ void system_update() {
 }
 
 void system_new() {
-	puts("Starting a new game");
 	time.hour = time.minute = time.second = time.frame = 0;
 	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
@@ -256,7 +253,6 @@ static void checksum_write(uint8_t file_num, uint8_t is_backup) {
 void system_save() {
 	if(sram_file >= SRAM_FILE_MAX) return;
 	if(sram_state == SRAM_INVALID) return;
-	puts("Writing game save to SRAM");
 	
 	XGM_set68KBUSProtection(TRUE);
 	waitSubTick(10);
@@ -319,8 +315,6 @@ void system_save() {
 }
 
 void system_peekdata(uint8_t index, SaveEntry *file) {
-	puts("Peeking save file");
-	
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 	
 	XGM_set68KBUSProtection(TRUE);
@@ -370,9 +364,6 @@ void system_load(uint8_t index) {
 		system_load_levelselect(index - SRAM_FILE_CHEAT);
 		return;
 	}
-	puts("Loading game save from SRAM");
-	//counterTick = FALSE;
-	//counterShow = FALSE;
 	player_init();
 	sram_file = index;
 	
@@ -442,8 +433,6 @@ void system_load(uint8_t index) {
 }
 
 void system_copy(uint8_t from, uint8_t to) {
-	puts("Copying save data");
-	
 	uint16_t loc_from     = SRAM_FILE_START + SRAM_FILE_LEN * from;
 	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
@@ -471,8 +460,6 @@ void system_copy(uint8_t from, uint8_t to) {
 }
 
 void system_delete(uint8_t index) {
-	puts("Deleting save data");
-	
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 	
 	XGM_set68KBUSProtection(TRUE);
@@ -552,9 +539,6 @@ void system_save_config() {
 
 // Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
-	puts("Loading game save from stage select data");
-	//counterTick = FALSE;
-	//counterShow = FALSE;
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);
 	uint8_t song = LS_readWord(file, 0x02);
@@ -597,7 +581,6 @@ void system_load_levelselect(uint8_t file) {
 uint8_t system_checkdata() {
 	sram_state = SRAM_INVALID; // Default invalid
 	// Read a specific spot in SRAM
-	puts("Checking SRAM");
 	SRAM_enableRO();
 	uint32_t test = SRAM_readLong(SRAM_TEST_POS);
 	// Anything there?
@@ -632,11 +615,6 @@ uint8_t system_checkdata() {
 			// Test failed, SRAM is unusable
 			sram_state = SRAM_INVALID;
 		}
-	}
-	switch(sram_state) {
-		case SRAM_VALID_EMPTY:	puts("SRAM valid - no save data"); break;
-		case SRAM_VALID_SAVE:	puts("SRAM valid - save exists"); break;
-		case SRAM_INVALID:		puts("SRAM read/write test FAILED! Saving disabled"); break;
 	}
 	return sram_state;
 }
