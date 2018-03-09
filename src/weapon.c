@@ -1077,7 +1077,8 @@ void bullet_missile_explode(Bullet *b) {
 
 uint8_t bullet_missile_is_exploding() {
 	for(uint8_t i = 4; i < 10; i++) {
-		if(playerBullet[i].ttl && playerBullet[i].state) {
+		if(playerBullet[i].ttl && (playerBullet[i].type == WEAPON_MISSILE
+				|| playerBullet[i].type == WEAPON_SUPERMISSILE) && playerBullet[i].state) {
 			return TRUE;
 		}
 	}

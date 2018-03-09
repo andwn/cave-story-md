@@ -574,7 +574,6 @@ void ai_ballos_target(Entity *e) {
 	
 }
 
-
 // white sparky thing that moves along floor throwing out bones,
 // spawned he hits the ground.
 // similar to the red smoke-spawning ones from Undead Core.
@@ -585,18 +584,14 @@ void ai_ballos_bone_spawner(Entity *e) {
 		case 0:
 		{
 			sound_play(SND_MISSILE_HIT, 5);
-			e->state = 1;
-			
+			e->state++;
 			MOVE_X(SPEED_10(0x3FF));
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 4, 0,1,2);
 			e->timer++;
-			
-			if ((e->timer & 15) == 1 && entity_on_screen(e)) {
+			if((e->timer & 15) == 1 && entity_on_screen(e)) {
 				int16_t xi = SPEED_10(random() & 0x3FF);
-				
 				if (!e->dir) xi = -xi;
 				
 				Entity *bone = entity_create(e->x, e->y, OBJ_BALLOS_BONE, 0);
@@ -605,7 +600,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 				sound_play(SND_BLOCK_DESTROY, 5);
 			}
 			
-			if (blk(e->x, 0, e->y, -2) == 0x41) {
+			if(blk(e->x, 0, e->y, -2) == 0x41) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -636,8 +631,7 @@ void ai_ballos_bone(Entity *e) {
 		}
 	}
 	
-	e->y_speed += SPEED_8(0x40);
-	LIMIT_Y(SPEED_12(0x5ff));
+	if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 }
 
 void ai_ballos_skull(Entity *e) {

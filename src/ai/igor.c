@@ -8,8 +8,10 @@ enum Frame { STAND1, STAND2, WALK1, WALK2, PUNCH1, PUNCH2, MOUTH1,
 void onspawn_igor(Entity *e) {
 	fireatk = 0;
 	e->attack = 0;
+	e->hit_box = (bounding_box) { 10, 4, 10, 20 };
+	e->display_box = (bounding_box) { 20, 20, 20, 20 };
 	e->hit_box.bottom += 4;
-	e->hit_box.top -= 4;
+	e->hit_box.top -= 6;
 	if(e->type == 0x59) e->frame = 7;
 }
 
@@ -33,7 +35,7 @@ void ai_igor(Entity *e) {
 		case STATE_STAND+1:
 		{
 			ANIMATE(e, 16, STAND1, STAND2);
-			if(++e->timer > TIME(50)) e->state = STATE_WALK;
+			if(++e->timer > TIME_8(50)) e->state = STATE_WALK;
 		}
 		break;
 		case STATE_WALK:
@@ -54,10 +56,10 @@ void ai_igor(Entity *e) {
 		{
 			ANIMATE(e, 12, WALK1,STAND1,WALK2,STAND1);
 			if(fireatk == -1) {	// begin mouth-blast attack
-				if(++e->timer > TIME(20)) e->state = STATE_MOUTH_BLAST;
+				if(++e->timer > TIME_8(20)) e->state = STATE_MOUTH_BLAST;
 			} else {
 				// if we don't reach him after a while, do a jump
-				if(++e->timer > TIME(50)) {
+				if(++e->timer > TIME_8(50)) {
 					e->state = STATE_JUMPING;
 				} else if(e->dir) {
 					if(e->x >= player.x - pixel_to_sub(22)) e->state = STATE_PUNCH;
@@ -77,7 +79,7 @@ void ai_igor(Entity *e) {
 		} /* fallthrough */
 		case STATE_PUNCH+1:
 		{
-			if(++e->timer > TIME(16)) e->state++;
+			if(++e->timer > TIME_8(16)) e->state++;
 		}
 		break;
 		case STATE_PUNCH+2:

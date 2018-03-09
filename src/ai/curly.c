@@ -172,35 +172,33 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		break;
 	}
 	if(!b) return;
-	sound_play(SND_NEMESIS_FIRE, 5);
 	b->type = WEAPON_NEMESIS;
 	b->level = 1;
+	b->ttl = TIME_8(20);
 	b->damage = 12;
-	b->ttl = pal_mode ? 35 : 41;
-	b->dir = dir & 1;
-	switch(dir) {
+	sound_play(SND_NEMESIS_FIRE, 5);
+	b->dir = dir;
+	switch(b->dir) {
 		case LEFT:
-		case RIGHT: {
-			SHEET_FIND(b->sheet, SHEET_NEMES);
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[b->sheet].index);
-			b->sprite.size = SPRITE_SIZE(3, 2);
-			b->x = x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
-			b->y = y + pixel_to_sub(1);
-			b->x_speed = b->dir&1 ? SPEED_12(0x800) : -SPEED_12(0x800);
-			b->y_speed = 0;
-			b->hit_box = (bounding_box) { 10, 6, 10, 6 };
-		}
+		case RIGHT:
+		b->sprite.size = SPRITE_SIZE(3, 2);
+		SHEET_FIND(b->sheet, SHEET_NEMES);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
+		b->x = x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->y = y + pixel_to_sub(1);
+		b->x_speed = ((b->dir&1) ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
+		b->y_speed = 0;
+		b->hit_box = (bounding_box) { 10, 6, 10, 6 };
 		break;
 		case UP:
-		case DOWN: {
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,dir==DOWN,0,TILE_NEMINDEX);
-			b->sprite.size = SPRITE_SIZE(2, 3);
-			b->x = x - (4<<CSF);
-			b->y = y + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
-			b->x_speed = 0;
-			b->y_speed = b->dir ? SPEED_12(0x800) : -SPEED_12(0x800);
-			b->hit_box = (bounding_box) { 6, 10, 6, 10 };
-		}
+		case DOWN:
+		b->sprite.size = SPRITE_SIZE(2, 3);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
+		b->x = x - (4<<CSF);
+		b->y = y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
+		b->x_speed = 0;
+		b->y_speed = ((b->dir&1) ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
+		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
 }
