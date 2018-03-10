@@ -267,7 +267,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	if(b->dir == UP) {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+8);
 		if(!player.grounded && w->level == 3) {
-			player.y_speed += SPEED_10(0x2C0);
+			player.y_speed += SPEED_10(0x240);
 			if(player.y_speed > SPEED_12(0x600)) player.y_speed = SPEED_12(0x600);
 		}
 		b->x = player.x;

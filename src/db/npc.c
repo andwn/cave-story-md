@@ -381,11 +381,11 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_Hoppy, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	}, // Hoppy
 	{ &SPR_Spikes, 		NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_ballos_spikes, 	&ai_null 			}, // Ballos Spikes
 	{ NULL, 			NOSHEET, 		PAL2, 0, &onspawn_statue_base, 	&ai_null,	 		&ai_null 			}, // Statue (Base)
-	{ NULL, 			NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Archer)
+	{ NULL, 			SHEET_BUTE, 	PAL0, 1, &onspawn_bute_archer_red,&ai_bute_archer_red,&ondeath_default 	}, // Red Bute (Archer)
 	{ &SPR_Statue, 		NOSHEET, 		PAL2, 2, &onspawn_statue,	 	&ai_statue, 		&ai_null 			}, // Statue (Breakable)
 	/* 0x160 (352) */
 	{ NULL, 			NOSHEET, 		PAL3, 2, &onspawn_the_cast, 	&ai_the_cast, 		&ai_null 			}, // Cast (End of credits)
-	{ NULL, 			SHEET_BUTE, 	PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ondeath_default 	}, // Red Bute (Sword)
+	{ NULL, 			SHEET_BUTEDIE, 	PAL0, 1, &onspawn_bute_sword_red,&ai_bute_sword_red,&ondeath_default 	}, // Red Bute (Sword)
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_wall_collapser, &ai_null 			}, // Wall Collapser
 	{ &SPR_BlgPassngr, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_balrog_passenger,&ai_null 			}, // Balrog Passenger
 	{ &SPR_BalrogFly, 	NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_flying, 	&ai_null 			}, // Balrog (Rescue)

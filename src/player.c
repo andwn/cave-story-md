@@ -143,9 +143,9 @@ void player_update() {
 				}
 			}
 			if(player.underwater) {
-				if(player.x_speed >  SPEED_12(0x4C0)) player.x_speed =  SPEED_12(0x4C0);
-				if(player.x_speed < -SPEED_12(0x4C0)) player.x_speed = -SPEED_12(0x4C0);
-				if(player.y_speed >  SPEED_10(0x3FF)) player.y_speed =  SPEED_10(0x3FF);
+				if(player.x_speed >  SPEED_12(0x4E0)) player.x_speed =  SPEED_12(0x4E0);
+				if(player.x_speed < -SPEED_12(0x4E0)) player.x_speed = -SPEED_12(0x4E0);
+				if(player.y_speed >  SPEED_12(0x420)) player.y_speed =  SPEED_12(0x420);
 				if(player.y_speed < -SPEED_12(0x4FF)) player.y_speed = -SPEED_12(0x4FF);
 			} else {
 				if(player.x_speed >  SPEED_12(0x5FF)) player.x_speed =  SPEED_12(0x5FF);

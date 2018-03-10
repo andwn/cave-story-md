@@ -557,30 +557,38 @@ void ai_ballos_f3(Entity *e) {
 			// spawn butes
 			switch(++e->timer) {
 				case 270:	// spawn swordsmen from face
-				case 280:
-				case 290:
+				case 281:
+				case 292:
 				{
-					//SmokeXY(e->x, e->y - (52<<CSF), 4);
-					//entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0)->dir = UP;
-					//sound_play(SND_EM_FIRE, 5);
+					effect_create_smoke(e->x >> CSF, (e->y >> CSF) - 52);
+					entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0);
+					sound_play(SND_EM_FIRE, 5);
 				}
 				break;
 				
-				case 300:	// spawn archers on side
+				case 303:	// spawn archers on side
+				case 304:
 				{
-					e->timer = 0;
 					// direction butes will be facing, not side of screen
-					//int dir = (player.x > e->x) ? 0 : 1;
-					
-					//for(uint8_t i=0;i<8;i++) {
+					uint16_t flags = (player.x > e->x) ? 0 : NPC_OPTION2;
+					for(uint16_t i = 0; i < 8; i++) {
 						// give some granularity to the coords,
 						// so that they can't overlap too closely.
-						//int32_t x = ((random() & 3) << (CSF+2));
-						//int32_t y = ((random() & 63) << (CSF+2)) + 4;
-						//if (!dir) x += block_to_sub(stageWidth - 1);
-						
-						//entity_create(x, y, OBJ_BUTE_ARCHER_RED, 0)->dir = dir;
-					//}
+						int32_t x = ((random() & 3) << (CSF+2));
+						int32_t y = ((random() & 63) << (CSF+2)) + 4;
+						if(!flags) x += block_to_sub(stageWidth - 1);
+						entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
+					}
+				}
+				break;
+				case 310:
+				{
+					if(pal_mode) e->timer = 0;
+				}
+				break;
+				case 380:
+				{
+					e->timer = 0;
 				}
 				break;
 			}
@@ -873,7 +881,7 @@ void ai_ballos_rotator(Entity *e) {
 		
 		case 40:	// destroyed during phase 3, bouncing
 		{
-			if(e->y_speed > SPEED_12(0x5E0)) e->y_speed += SPEED_8(0x20);
+			if(e->y_speed < SPEED_12(0x5E0)) e->y_speed += SPEED_8(0x20);
 			
 			if(blk(e->x, -16, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
 			if(blk(e->x, 16, e->y, 0) == 0x41) e->x_speed = -SPEED_8(0xFF);

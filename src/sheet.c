@@ -474,8 +474,9 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				Weapon w = (Weapon) { .type = WEAPON_NEMESIS, .level = 1 };
 				sheets_load_weapon(&w);
 			}
-			//SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 10,3,2, 
-			//		0,0, 0,1, 0,2, 0,3, 0,4, 0,5, 0,6, 0,7, 0,8, 0,9);
+			SHEET_ADD(SHEET_BUTE, &SPR_ButeRed, 6,3,2, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+			SHEET_ADD(SHEET_BUTEDIE, &SPR_ButeRed2, 4,2,2, 0,0, 0,1, 0,2, 0,3);
+			SHEET_ADD(SHEET_BUTEARW, &SPR_ButeArw, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		} break;
 		case STAGE_ENDING_LABYRINTH:
 		{

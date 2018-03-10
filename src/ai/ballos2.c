@@ -726,277 +726,151 @@ void ai_green_devil(Entity *e) {
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
 	e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x80) : -SPEED_8(0x80);
 	if(!e->dir) {
-		if(e->x < 0) //{
-			e->state = STATE_DELETE;
-		//} else if(e->x_speed > -SPEED_10(0x3FF)) {
-		//	e->x_speed -= SPEED_8(0x20);
-		//}
+		if(e->x < 0) e->state = STATE_DELETE;
 	} else {
-		if(e->x > block_to_sub(stageWidth)) //{
-			e->state = STATE_DELETE;
-		//} else if(e->x_speed < SPEED_10(0x3FF)) {
-		//	e->x_speed += SPEED_8(0x20);
-		//}
+		if(e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
 	}
+}
+
+void onspawn_bute_sword_red(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	MOVE_X(SPEED_12(0x600));
+	e->hit_box = (bounding_box) { 6,6,6,6 };
+	e->display_box = (bounding_box) { 8,8,8,8 };
 }
 
 void ai_bute_sword_red(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			e->state = 1;
-			//e->sprite = SPR_BUTE_SWORD_RED_FALLING;
-			//e->MoveAtDir(e->dir, 0x600);
-			e->dir = 0;
-		} /* fallthrough */
-		case 1:
-		{
-			ANIMATE(e, 4, 0,1,2,3);
-			
-			if (e->timer >= 16) {
-				e->state = 10;
-				//e->sprite = SPR_BUTE_SWORD_RED;
-				e->frame = 0;
-				
-				e->nflags |= NPC_SHOOTABLE;
-				e->attack = 5;
-			}
+	e->nflags ^= NPC_SHOOTABLE;
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+	if((++e->animtime & 3) == 0) e->frame ^= 1;
+	if(!e->state) {
+		if(++e->timer >= TIME_8(16)) {
+			e->state++;
+			e->frame = 2;
+			e->nflags |= NPC_SHOOTABLE;
+			e->attack = 5;
 		}
-		break;
+	} else {
+		e->nflags ^= NPC_SHOOTABLE;
+		FACE_PLAYER(e);
+		// when player is below them, they come towards him,
+		// when player is above, they sweep away.
+		if(player.y > (e->y + (24 << CSF))) {
+			if(e->x_speed < SPEED_12(0x5F0)) ACCEL_X(SPEED_8(0x10));
+		} else {
+			if(e->x_speed > -SPEED_12(0x5F0)) ACCEL_X(-SPEED_8(0x10));
+		}
+		e->y_speed += (e->y <= player.y) ? 0x10 : -0x10;
 		
-		case 10:
-		{
-			ANIMATE(e, 4, 0,1);
-			FACE_PLAYER(e);
-			
-			// when player is below them, they come towards him,
-			// when player is above, they sweep away.
-			if (player.y > (e->y + (24 << CSF))) {
-				ACCEL_X(0x10);
-			} else {
-				ACCEL_X(-0x10);
-			}
-			
-			e->y_speed += (e->y <= player.y) ? 0x10 : -0x10;
-			
-			if ((e->x_speed < 0 && blk(e->x, -7, e->y, 0) == 0x41) || 
-				(e->x_speed > 0 && blk(e->x,  7, e->y, 0) == 0x41)) {
-				e->x_speed = -e->x_speed;
-			}
-			
-			if ((e->y_speed < 0 && blk(e->x, 0, e->y, -7) == 0x41) || 
-				(e->y_speed > 0 && blk(e->x, 0, e->y,  7) == 0x41)) {
-				e->y_speed = -e->y_speed;
-			}
-			
-			LIMIT_X(0x5ff);
-			LIMIT_Y(0x5ff);
+		if ((e->x_speed < 0 && blk(e->x, -7, e->y, 0) == 0x41) || 
+			(e->x_speed > 0 && blk(e->x,  7, e->y, 0) == 0x41)) {
+			e->x_speed = -e->x_speed;
 		}
-		break;
+		if ((e->y_speed < 0 && blk(e->x, 0, e->y, -7) == 0x41) || 
+			(e->y_speed > 0 && blk(e->x, 0, e->y,  7) == 0x41)) {
+			e->y_speed = -e->y_speed;
+		}
 	}
 }
 
+void onspawn_bute_archer_red(Entity *e) {
+	e->alwaysActive = TRUE;
+	if(e->eflags & NPC_OPTION2) {
+		e->dir = 1;
+		e->x_mark = e->x + (128<<CSF);
+	} else {
+		e->x_mark = e->x - (128<<CSF);
+	}
+	e->x_speed = (random() & 0x7FF) - 0x400;
+	e->y_speed = (random() & 0x7FF) - 0x400;
+	e->hit_box = (bounding_box) { 6,6,6,6 };
+	e->display_box = (bounding_box) { 12,8,12,8 };
+}
+
 void ai_bute_archer_red(Entity *e) {
-	//DebugCrosshair(e->x, e->y, 0, 255, 255);
-	
+	e->nflags ^= NPC_SHOOTABLE;
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 	switch(e->state) {
-		case 0:
+		case 0:		// come on screen
 		{
-			e->state = 1;
-			
-			e->x_mark = e->x;
-			e->y_mark = e->y;
-			
-			if (!e->dir)
-				e->x_mark -= (128<<CSF);
-			else
-				e->x_mark += (128<<CSF);
-			
-			e->x_speed = (random() % 0x800) - 0x400;
-			e->y_speed = (random() % 0x800) - 0x400;
-		} /* fallthrough */
-		case 1:		// come on screen
-		{
-			ANIMATE(e, 4, 0,1);
-			
-			if ((!e->dir && e->x < e->x_mark) || (e->dir && e->x > e->x_mark)) {
-				e->state = 20;
+			if((++e->animtime & 3) == 0) e->frame ^= 1;
+			if((!e->dir && e->x < e->x_mark) || (e->dir && e->x > e->x_mark)) {
+				e->state++;
+				e->timer = TIME_8(random() & 0x7F);
+				e->frame = 2;
 			}
 		}
 		break;
-		
-		case 20:	// aiming
+		case 1: // aiming
 		{
-			e->state = 21;
-			e->timer = random() % TIME(150);
-			
-			e->frame = 2;
-			e->animtime = 0;
-		} /* fallthrough */
-		case 21:
-		{
-			ANIMATE(e, 4, 2,3);
-			
-			if (++e->timer > 300 || (PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y(16<<CSF))) {
-				e->state = 30;
+			if((++e->animtime & 3) == 0) e->frame ^= 1;
+			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y(16<<CSF))) {
+				e->state++;
+				e->timer = 0;
+				e->frame = 3;
 			}
 		}
 		break;
-		
-		case 30:	// flashing to fire
+		case 2: // flashing
 		{
-			e->state = 31;
-			e->timer = 0;
-			e->animtime = 0;
-			e->frame = 3;
-		} /* fallthrough */
-		case 31:
-		{
-			ANIMATE(e, 4, 3,4);
-			
-			if (++e->timer > 30) {
-				e->state = 40;
+			if((++e->animtime & 3) == 0 && ++e->frame > 4) e->frame = 3;
+			if(++e->timer > TIME_8(30)) {
+				e->state++;
+				e->timer = 0;
 				e->frame = 5;
-				
 				Entity *arrow = entity_create(e->x, e->y, OBJ_BUTE_ARROW, 0);
 				arrow->dir = e->dir;
-				arrow->x_speed = e->dir ? 0x800 : -0x800;
+				arrow->x_speed = e->dir ? SPEED_12(0x800) : -SPEED_12(0x800);
 			}
 		}
 		break;
-		
-		case 40:	// fired
+		case 3: // fired
 		{
-			e->state = 41;
-			e->timer = 0;
-			e->animtime = 0;
-		} /* fallthrough */
-		case 41:
-		{
-			ANIMATE(e, 4, 5,6);
-			
-			if (++e->timer > 40) {
-				e->state = 50;
+			if((++e->animtime & 3) == 0 && ++e->frame > 6) e->frame = 5;
+			if (++e->timer > TIME_8(40)) {
+				e->state++;
 				e->timer = 0;
+				e->frame = 0;
 				e->x_speed = 0;
 				e->y_speed = 0;
 			}
 		}
 		break;
 		
-		case 50:	// retreat offscreen
+		case 4:	// retreat offscreen
 		{
-			ANIMATE(e, 4, 0,1);
-			ACCEL_X(-0x20);
-			
-			if (e->x < 0 || e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
+			if((++e->animtime & 3) == 0) e->frame ^= 1;
+			ACCEL_X(-SPEED_8(0x20));
+			if(e->x < 0 || e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
 		}
 		break;
 	}
-	
 	// sinusoidal hover around set point
-	if (e->state != 50) {
-		e->x_speed += (e->x < e->x_mark) ? 0x2A : -0x2A;
-		e->y_speed += (e->y < e->y_mark) ? 0x2A : -0x2A;
-		LIMIT_X(0x400);
-		LIMIT_Y(0x400);
+	if (e->state < 4) {
+		e->x_speed += (e->x < e->x_mark) ? SPEED_8(0x2A) : -SPEED_8(0x2A);
+		e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x2A) : -SPEED_8(0x2A);
+		//LIMIT_X(0x400);
+		//LIMIT_Y(0x400);
 	}
 	
 }
 
 // This object is responsible for collapsing the walls in the final best-ending sequence.
-// All the original object does is collapse one tile further every 101 frames.
-// However, since it's triggered at the beginning of the cinematic and then is let to run
-// through almost the entire thing it needs to be sync'd really-really perfect with a
-// number of other systems; the textboxes, etc.
-//
-// I spent several hours trying to get my events to run in perfect frame-by-frame
-// exactness with the original engine, and found several things that were slightly off.
-// However, I've decided that even if I got it absolutely perfect, it's too liable to
-// get broken by some minor innocent change in the future, and requires too much of
-// the engine to be tuned just so.
-//
-// So, I've added some event-based triggers to the object, that are NOT technically supposed
-// to be there. These will make extra sure that nothing embarrassing happens during this great
-// finale, such as the walls being one tile too far at one point, or even worse, having
-// them collapse onto Balrog before he makes it to the exit. Because there are no triggers
-// in the script and I can't change the script, I had to do a bit of sneaky spying on program
-// state to implement them.
 void ai_wall_collapser(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			e->hidden = TRUE;
-			e->timer = 0;
-			e->state = 1;
-		}
-		break;
+	if(++e->timer > TIME_8(102)) {
+		e->timer = 0;
 		
-		case 10:	// trigger
-		{
-			if (++e->timer > TIME_8(100)) {
-				e->timer2++;
-				e->timer = 0;
-				
-				uint16_t xa = sub_to_block(e->x);
-				uint16_t ya = sub_to_block(e->y);
-				for(uint16_t y=0;y<20;y++) {
-					// pushing the smoke behind all objects prevents it from covering
-					// up the NPC's on the collapse just before takeoff.
-					stage_replace_block(xa, ya+y, 100);
-				}
-				
-				sound_play(SND_BLOCK_DESTROY, 5);
-				camera_shake(20);
-				
-				if (!e->dir) e->x -= (16 << CSF);
-						else e->x += (16 << CSF);
-				
-				// reached the solid tile in the center of the throne.
-				// it isn't supposed to cover this tile until after Curly
-				// says we're gonna get crushed.
-				//if (e->timer2 == TIME(6)) e->state = 20;
-				
-				// balrog is about to take off/rescue you.
-				//if (e->timer2 == TIME(9)) e->state = 30;
-			}
-		}
-		break;
+		uint16_t xa = sub_to_block(e->x);
+		uint16_t ya = sub_to_block(e->y);
+		for(uint16_t y = 0; y < 20; y++) stage_replace_block(xa, ya+y, 100);
 		
-		// "gonna get crushed" event
-		case 20:
-		{
-			// wait for text to come up
-			if (windowOpen) e->state = 21;
-		}
-		break;
-		case 21:
-		{
-			// wait for text to dismiss, then tile immediately collapses
-			if (!windowOpen) {
-				e->state = 10;
-				e->timer = TIME(1000);
-			}
-		}
-		break;
+		sound_play(SND_BLOCK_DESTROY, 5);
+		camera_shake(20);
 		
-		// balrog is about to take off. the video I took shows that
-		// the walls are supposed to collapse into your space on the
-		// exact same frame that he breaks the first ceiling tile.
-		case 30:
-		{
-			e->linkedEntity = entity_find_by_type(OBJ_BALROG_DROP_IN);
-			if (e->linkedEntity) e->state = 31;
-		}
-		break;
-		case 31:
-		{
-			//debug("%x", e->linkedEntity->y);
-			if (e->linkedEntity && e->linkedEntity->y <= 0x45800) {
-				e->state = 10;
-				e->timer = TIME(1000);
-			}
-		}
-		break;
+		if (!e->dir) e->x -= (16 << CSF);
+				else e->x += (16 << CSF);
 	}
 }
