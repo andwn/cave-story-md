@@ -143,10 +143,8 @@ void player_update() {
 				}
 			}
 			if(player.underwater) {
-				// This makes it possible to reach the cabin... but now it's
-				// impossible to jump over 2 of the spike areas...
-				if(player.x_speed >  SPEED_12(0x480)) player.x_speed =  SPEED_12(0x480);
-				if(player.x_speed < -SPEED_12(0x480)) player.x_speed = -SPEED_12(0x480);
+				if(player.x_speed >  SPEED_12(0x4C0)) player.x_speed =  SPEED_12(0x4C0);
+				if(player.x_speed < -SPEED_12(0x4C0)) player.x_speed = -SPEED_12(0x4C0);
 				if(player.y_speed >  SPEED_10(0x3FF)) player.y_speed =  SPEED_10(0x3FF);
 				if(player.y_speed < -SPEED_12(0x4FF)) player.y_speed = -SPEED_12(0x4FF);
 			} else {
@@ -536,6 +534,7 @@ void player_update_jump() {
 			player.y_speed = -jumpSpeed;
 			// Maybe possibly fix jump height?
 			player.jump_time = pal_mode ? 0 : 3;
+			player.jump_time += player.underwater ? 2 : 0;
 			
 			sound_play(SND_PLAYER_JUMP, 3);
 		}

@@ -325,11 +325,15 @@ void window_prompt_open() {
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
 	handSpr = (VDPSprite) {
-		.x = tile_to_pixel(PROMPT_X) - 4 + 128,
-		.y = tile_to_pixel(PROMPT_Y + 1) - 4 + 128,
+		//.x = tile_to_pixel(PROMPT_X) - 4 + 128,
+		//.y = tile_to_pixel(PROMPT_Y + 1) - 4 + 128,
 		.size = SPRITE_SIZE(2, 2),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
+	int16_t cursor_x = (PROMPT_X << 3) - 9;
+	if(!promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
+	int16_t cursor_y = (PROMPT_Y << 3) + 4;
+	sprite_pos(handSpr, cursor_x, cursor_y);
 	promptSpr[0] = (VDPSprite) {
 		.x = tile_to_pixel(PROMPT_X) + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
@@ -364,8 +368,8 @@ uint8_t window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) || joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
-		int16_t cursor_x = (PROMPT_X << 3) - 10;
-		if(promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
+		int16_t cursor_x = (PROMPT_X << 3) - 9;
+		if(!promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
 		int16_t cursor_y = (PROMPT_Y << 3) + 4;
 		sprite_pos(handSpr, cursor_x, cursor_y);
 	}
