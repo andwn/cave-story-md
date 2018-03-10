@@ -194,7 +194,7 @@ uint8_t titlescreen_main() {
 			" Seal Chamber",
 		};
 		uint16_t tx = 11, ty = 1;
-		if(IS_PALSYSTEM) ty++;
+		if(pal_mode) ty++;
 		VDP_drawText("= Welcome to Warp Zone =", 7, ty);
 		ty += 2;
 		for(uint8_t i = 0; i < SAVES; i++) {

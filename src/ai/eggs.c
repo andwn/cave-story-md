@@ -108,8 +108,13 @@ void ai_beetleFollow(Entity *e) {
 	if(abs(e->x_speed) > SPEED_10(0x380)) 
 		e->x_speed = e->dir ? SPEED_10(0x380) : -SPEED_10(0x380);
 	e->y_speed += (e->timer % TIME_8(100)) >= TIME_8(50) ? -4 : 4;
-	e->x += e->x_speed;
-	e->y += e->y_speed;
+	if(e->damage_time) {
+		e->x += e->x_speed >> 1;
+		e->y += e->y_speed >> 1;
+	} else {
+		e->x += e->x_speed;
+		e->y += e->y_speed;
+	}
 }
 
 void onspawn_basu(Entity *e) {

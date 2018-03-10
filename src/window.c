@@ -26,8 +26,8 @@
 // Window location
 #define WINDOW_X1 1
 #define WINDOW_X2 38
-#define WINDOW_Y1 (IS_PALSYSTEM ? 21 : 20)
-#define WINDOW_Y2 (IS_PALSYSTEM ? 28 : 27)
+#define WINDOW_Y1 (pal_mode ? 21 : 20)
+#define WINDOW_Y2 (pal_mode ? 28 : 27)
 // Text area location within window
 #define TEXT_X1 (WINDOW_X1 + 1)
 #define TEXT_X2 (WINDOW_X2 - 1)
@@ -41,7 +41,7 @@
 #define TEXT_Y2_TOP (WINDOW_Y2_TOP - 1)
 // Prompt window location
 #define PROMPT_X 27
-#define PROMPT_Y 18
+#define PROMPT_Y 17
 
 const uint8_t ITEM_PAL[40] = {
 	0, 0, 1, 0, 0, 0, 0, 0,
@@ -104,7 +104,7 @@ void window_open(uint8_t mode) {
 	
 	if(!paused) {
 		if(showingFace > 0) window_draw_face(showingFace);
-		VDP_setWindowPos(0, mode ? 8 : (IS_PALSYSTEM ? 245 : 244));
+		VDP_setWindowPos(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
 	windowOpen = TRUE;
@@ -364,7 +364,10 @@ uint8_t window_prompt_update() {
 	} else if(joy_pressed(BUTTON_LEFT) || joy_pressed(BUTTON_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
-		sprite_pos(handSpr, tile_to_pixel(31-(promptAnswer*4))-4, tile_to_pixel(PROMPT_Y+1)-4);
+		int16_t cursor_x = (PROMPT_X << 3) - 10;
+		if(promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
+		int16_t cursor_y = (PROMPT_Y << 3) + 4;
+		sprite_pos(handSpr, cursor_x, cursor_y);
 	}
 	sprite_add(handSpr);
 	sprite_addq(promptSpr, 2);

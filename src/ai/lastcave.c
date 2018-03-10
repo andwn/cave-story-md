@@ -4,55 +4,38 @@ void ai_prox_press_vert(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->grounded = TRUE;
-			if (PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(8<<CSF, 128<<CSF) && 
-					!(blk(e->x, 0, e->y, e->hit_box.bottom + 1) == 0x41)) {
-				e->state = 10;
-				e->grounded = FALSE;
+			if(PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(8<<CSF, 128<<CSF)) {
+				e->nflags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
+				e->state++;
 				e->animtime = 0;
 				e->frame = 1;
 			}
 		}
 		break;
-		
-		case 10:
+		case 1:
 		{
-			if (e->frame < 2 && ++e->animtime > 4) {
+			if(e->frame < 2 && ++e->animtime > TIME_8(4)) {
 				e->animtime = 0;
 				e->frame++;
 			}
-			
-			e->x_next = e->x;
-			e->y_next = e->y + e->y_speed;
-			if ((e->grounded = collide_stage_floor(e))) {
-				if (e->frame >= 2) { // make sure eye fully open
-					effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
-					camera_shake(10);
-				}
-				
+			if(e->y_speed <= SPEED_12(0x580)) e->y_speed += SPEED_8(0x80);
+			e->y += e->y_speed;
+			if(blk(e->x, 0, e->y, e->hit_box.bottom + 1) == 0x41) {
+				camera_shake(10);
+				effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
+				e->state++;
+				e->frame = 0;
 				e->eflags |= NPC_SPECIALSOLID;
 				e->attack = 0;
-				
-				e->state = 11;
-				e->frame = 0;
+			} else if(player.y - (player.hit_box.top << CSF) > e->y) {
+				e->eflags &= ~NPC_SPECIALSOLID;
+				e->attack = 127;
 			} else {
-				if (player.y - (player.hit_box.top << CSF) > e->y) {
-					e->eflags &= ~NPC_SPECIALSOLID;
-					e->attack = 127;
-				} else {
-					e->eflags |= NPC_SPECIALSOLID;
-					e->attack = 0;
-				}
+				e->eflags |= NPC_SPECIALSOLID;
+				e->attack = 0;
 			}
-			e->x = e->x_next;
-			e->y = e->y_next;
 		}
 		break;
-	}
-	
-	if (e->state >= 5) {
-		if(!e->grounded) e->y_speed += SPEED(0x80);
-		LIMIT_Y(SPEED(0x5ff));
 	}
 }
 

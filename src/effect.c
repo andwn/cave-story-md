@@ -145,6 +145,28 @@ void effects_update() {
 				sprite_add(effMisc[i].sprite);
 			}
 			break;
+			case EFF_FANL:
+			case EFF_FANR:
+			{
+				effMisc[i].x += effMisc[i].x_speed;
+				effMisc[i].ttl--;
+				sprite_pos(effMisc[i].sprite,
+					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_add(effMisc[i].sprite);
+			}
+			break;
+			case EFF_FANU:
+			case EFF_FAND:
+			{
+				effMisc[i].y += effMisc[i].y_speed;
+				effMisc[i].ttl--;
+				sprite_pos(effMisc[i].sprite,
+					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_add(effMisc[i].sprite);
+			}
+			break;
 		}
 	}
 }
@@ -227,7 +249,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				uint8_t sheet = NOSHEET;
 				SHEET_FIND(sheet, SHEET_ZZZ);
 				if(sheet == NOSHEET) break;
-				effMisc[i].ttl = TIME(100);
+				effMisc[i].ttl = TIME_8(100);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[sheet].index)
@@ -237,7 +259,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			case EFF_BOOST8: // Smoke that emits while using the booster
 			case EFF_BOOST2:
 			{
-				effMisc[i].ttl = TIME(20);
+				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,12)
@@ -246,12 +268,52 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			break;
 			case EFF_QMARK:
 			{
-				effMisc[i].ttl = TIME(80);
+				effMisc[i].ttl = TIME_8(80);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_QMARKINDEX)
 				};
 			} 
+			break;
+			case EFF_FANL:
+			{
+				effMisc[i].x_speed = -(random() & 3) - 1;
+				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
+			break;
+			case EFF_FANU:
+			{
+				effMisc[i].y_speed = -(random() & 3) - 1;
+				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
+			break;
+			case EFF_FANR:
+			{
+				effMisc[i].x_speed = (random() & 3) + 1;
+				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
+			break;
+			case EFF_FAND:
+			{
+				effMisc[i].y_speed = (random() & 3) + 1;
+				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
 			break;
 		}
 		break;

@@ -93,7 +93,7 @@ void game_main(uint8_t load) {
 				} else {
 					VDP_clearPlan(PLAN_WINDOW, TRUE);
 				}
-				VDP_setWindowPos(0, IS_PALSYSTEM ? 30 : 28);
+				VDP_setWindowPos(0, pal_mode ? 30 : 28);
 				VDP_setEnable(TRUE);
 				do_map();
 				VDP_setEnable(FALSE);
@@ -198,7 +198,7 @@ void game_reset(uint8_t load) {
 void draw_itemmenu(uint8_t resetCursor) {
 	VDP_setEnable(FALSE);
 	sprites_clear();
-	uint8_t top = IS_PALSYSTEM ? 1 : 0;
+	uint8_t top = pal_mode ? 1 : 0;
 	// Fill the top part
 	uint8_t y = top;
 	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(0), (y<<6) + 1, 1);
@@ -351,9 +351,13 @@ void draw_itemmenu(uint8_t resetCursor) {
 		selectedItem = -6 + currentWeapon;
 	}
 	itemcursor_move(0, selectedItem);
-	tsc_call_event(5000 + playerInventory[selectedItem]);
+	if(selectedItem < 0) {
+		tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+	} else {
+		tsc_call_event(5000 + playerInventory[selectedItem]);
+	}
 	// Make the window plane fully overlap the game
-	VDP_setWindowPos(0, IS_PALSYSTEM ? 30 : 28);
+	VDP_setWindowPos(0, pal_mode ? 30 : 28);
 	// Handle 0 items - if we don't draw any sprites at all, the non-menu sprites
 	// will keep drawing. Draw a blank sprite in the upper left corner to work around this
 	if(!held) {
@@ -480,7 +484,7 @@ uint8_t update_pause() {
 }
 
 void itemcursor_move(int8_t oldindex, int8_t index) {
-	uint8_t top = IS_PALSYSTEM ? 1 : 0;
+	uint8_t top = pal_mode ? 1 : 0;
 	// Erase old position
 	uint16_t x, y, w, h;
 	if(oldindex >= 0) {

@@ -513,7 +513,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		break;
 		case 3:
 		b->damage = 1;
-		speed = SPEED_10(0x555);
+		speed = SPEED_12(0x555);
 		break;
 	}
 	b->dir = FIREDIR;

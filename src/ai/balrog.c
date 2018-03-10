@@ -167,6 +167,7 @@ void ai_balrog(Entity *e) {
 			// Spawn the Balfrog boss
 			bossEntity = entity_create(e->x, e->y, 360 + BOSS_BALFROG, 0);
 			bossEntity->event = 1000;
+			bossEntity->state = 20; // Blinking
 		}
 		/* fallthrough */
 		case 43:

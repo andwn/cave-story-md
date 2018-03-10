@@ -380,7 +380,7 @@ void tsc_show_boss_health() {
 	}
 	// Create sprites to display the string
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
-	uint8_t yoff = IS_PALSYSTEM ? 24 : 16;
+	uint8_t yoff = pal_mode ? 24 : 16;
 	teleMenuSprite[5] = (VDPSprite) { 
 		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
@@ -483,7 +483,7 @@ void tsc_show_teleport_menu() {
 		tsc_call_event(1000 + teleMenuSelection + 1);
 		while(tscState != TSC_IDLE) execute_command();
 		tscState = TSC_TELEMENU;
-		VDP_setWindowPos(0, IS_PALSYSTEM ? 245 : 244);
+		VDP_setWindowPos(0, pal_mode ? 245 : 244);
 		controlsLocked = TRUE;
 		// I use bossHealth to tick back and forth between 0 and 8 so the cursor will flash
 		// since bosses don't happen in Arthur's house

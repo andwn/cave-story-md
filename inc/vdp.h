@@ -294,11 +294,6 @@
  *      Tests VDP status against specified flag (see VDP_XXX_FLAG).
  */
 #define GET_VDPSTATUS(flag)         ((*(volatile uint16_t*)(GFX_CTRL_PORT)) & (flag))
-/**
- *  \brief
- *      Tests if current system is a PAL system (50 Hz).
- */
-#define IS_PALSYSTEM                (pal_mode)
 
 /**
  *  \brief

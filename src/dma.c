@@ -221,7 +221,7 @@ uint16_t DMA_queueDma(uint8_t location, uint32_t from, uint16_t to, uint16_t len
 #if (LIB_DEBUG != 0)
     else
     {
-        if ((IS_PALSYSTEM) && (queueTransferSize > 17600))
+        if ((pal_mode) && (queueTransferSize > 17600))
             KDebug_Alert("DMA_queueDma(..) warning: transfer size is above 17600 bytes.");
         else if (queueTransferSize > 7500)
             KDebug_Alert("DMA_queueDma(..) warning: transfer size is above 7500 bytes.");

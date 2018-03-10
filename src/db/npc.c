@@ -125,7 +125,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_Hey, 		NOSHEET, 		PAL1, 1, &onspawn_hey, 			&ai_hey, 			&ai_null 			}, // "Hey!" Emitter
 	{ &SPR_Malco, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_malco, 			&ai_null 			}, // Malco
 	{ NULL, 			SHEET_REDSHOT, 	PAL1, 1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	}, // Balfrog Shot
-	{ &SPR_Malco, 		NOSHEET, 		PAL1, 1, &onspawn_malcoBroken, 	&ai_null, 			&ai_null 			}, // Malco
+	{ &SPR_Malco, 		NOSHEET, 		PAL1, 1, &ai_null,				&ai_malcoBroken, 	&ai_null 			}, // Malco (broken)
 	{ NULL, 			SHEET_PUCHI, 	PAL3, 1, &onspawn_frog, 		&ai_frog, 			&ondeath_default 	}, // Puchi
 	{ &SPR_Quotele,		NOSHEET, 		PAL0, 1, &onspawn_teleOut, 		&ai_teleOut, 		&ai_null 			}, // Tele Out
 	/* 0x070 (112) */

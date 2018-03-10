@@ -36,11 +36,11 @@ enum BBox_States {
 // between normal and jumping sprites.
 #define JUMP_SPRITE_ADJ			(pixel_to_sub(16))
 
-#define bbox_damage		curly_target_time
-#define bbox_attack		curly_target_x
-#define bbox_mode		curly_target_y
+#define frog_attack_count	underwater
+#define bbox_damage			curly_target_time
+#define bbox_attack			curly_target_x
+#define bbox_mode			curly_target_y
 
-uint8_t frog_attack_count;
 bounding_box bbox[2];
 
 void place_bboxes(Entity *e);
@@ -60,12 +60,10 @@ void onspawn_balfrog(Entity *e) {
 	e->experience = 1;
 	e->dir = 1;
 	e->enableSlopes = FALSE;
-	e->eflags |= NPC_IGNORE44;
-	e->eflags |= NPC_SHOWDAMAGE;
+	e->eflags |= NPC_IGNORE44 | NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
-	e->eflags &= ~NPC_SHOOTABLE;
-	e->nflags &= ~NPC_SHOOTABLE;
-	e->eflags &= ~NPC_SOLID;
+	e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+	e->nflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
 	
 	e->hurtSound = 52;
 	e->deathSound = 72;
@@ -86,13 +84,11 @@ void onspawn_balfrog(Entity *e) {
 	bbox_mode = BM_DISABLED;
 	bbox_damage = 0;
 	
-	frog_attack_count = 0;
+	e->frog_attack_count = 0;
 }
 
 void ai_balfrog(Entity *e) {
-	if(!e->grounded) e->y_speed += SPEED(0x40);
-	// don't limit upwards inertia or Big Jump will fail
-	if(e->y_speed > SPEED(0x5FF)) e->y_speed = SPEED(0x5FF);
+	if(!e->grounded && e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
@@ -118,9 +114,6 @@ void ai_balfrog(Entity *e) {
 			e->state++;
 			e->frame = 2;
 			e->hidden = FALSE;
-			// Feet
-			TILES_QUEUE(SPR_TILES(&SPR_Balfrog2,0,0), TILE_FACEINDEX+4, 9);
-			TILES_QUEUE(SPR_TILES(&SPR_Balfrog2,0,1), TILE_FACEINDEX+4+9, 9);
 		}
 		break;
 		
@@ -295,8 +288,8 @@ void ai_balfrog(Entity *e) {
 				e->timer = 0;
 				e->frame = 0;
 				// Big jump after 3 attacks
-				if(++frog_attack_count >= 3) {
-					frog_attack_count = 0;
+				if(++e->frog_attack_count >= 3) {
+					e->frog_attack_count = 0;
 					e->state = STATE_BIG_JUMP;
 				} else {
 					e->state = STATE_FIGHTING;
@@ -325,7 +318,7 @@ void ai_balfrog(Entity *e) {
 			// slowly between 2 X coordinates, but in fact, it
 			// alternates quickly between 3.
 			e->x += (e->timer & 2) ? 0x200 : -0x200;
-			if(e->timer > 100) {
+			if(e->timer > TIME_8(100)) {
 				e->timer = 0;
 				e->state++;
 			}
@@ -347,14 +340,14 @@ void ai_balfrog(Entity *e) {
 			if((e->timer % 16) == 0) {
 				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
-			if(e->timer <= 150) {
+			if(e->timer <= TIME_8(150)) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				if(balrog) {
 					e->hidden ^= 1;
 					balrog->hidden = !e->hidden;
 				}
 			}
-			if(e->timer > 156) {
+			if(e->timer > TIME_8(156)) {
 				e->timer = 0;
 				e->state++;
 			}
@@ -370,13 +363,13 @@ void ai_balfrog(Entity *e) {
 			if(balrog) {
 				e->hidden = TRUE;
 				balrog->hidden = FALSE;
-				balrog->y_speed += 0x40;
+				balrog->y_speed += SPEED_8(0x40);
 				balrog->y_next = balrog->y + balrog->y_speed;
 				balrog->x_next = balrog->x;
 				if(collide_stage_floor(balrog)) {
 					balrog->y_speed = 0;
 					balrog->frame = 2;
-					if(++e->timer > TIME(30)) {
+					if(++e->timer > TIME_8(30)) {
 						balrog->frame = 0;
 						balrog->grounded = TRUE;
 						e->state++;
@@ -388,12 +381,12 @@ void ai_balfrog(Entity *e) {
 		break;
 		case STATE_DEATH+5:		// balrog flying away
 		{
-			if(++e->timer > TIME(30)) {
+			if(++e->timer > TIME_8(30)) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				// it's all over, destroy ourselves and clean up
 				if(balrog) {
 					balrog->frame = 3;
-					balrog->y_speed = -SPEED(0x5FF);
+					balrog->y_speed = -SPEED_12(0x5FF);
 					balrog->y_next = balrog->y + balrog->y_speed;
 					balrog->y = balrog->y_next;
 					balrog->eflags |= NPC_IGNORESOLID;
@@ -410,7 +403,7 @@ void ai_balfrog(Entity *e) {
 	}
 	// Player collision
 	if(bbox_mode != BM_DISABLED) {
-		if(!player_invincible() && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
+		if(!playerIFrames && (player_bbox_collide(e, 0) || player_bbox_collide(e, 1))) {
 			player_inflict_damage(5);
 		}
 		Bullet *b1 = bullets_bbox_collide(e, 0);

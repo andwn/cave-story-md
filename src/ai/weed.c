@@ -330,25 +330,24 @@ void ai_malco(Entity *e) {
 	}
 }
 
-void onspawn_malcoBroken(Entity *e) {
+void ai_malcoBroken(Entity *e) {
 	switch(e->state) {
-		case 10:	// set when pulled out of ground
-			sound_play(SND_BLOCK_DESTROY, 5);
-			effect_create_smoke(e->x << CSF, e->y << CSF);
-			e->state = 0;
-		break;
-		
 		case 0:
 		{
 			e->frame = 6;
 			RANDBLINK(e, 7, 200);
-			
-			if (!controlsLocked) {
-				FACE_PLAYER(e);
-			}
 			if(gamemode == GM_CREDITS) {
 				e->dir = 1;
+			} else {
+				FACE_PLAYER(e);
 			}
+		}
+		break;
+		case 10:	// set when pulled out of ground
+		{
+			sound_play(SND_BLOCK_DESTROY, 5);
+			effect_create_smoke(e->x << CSF, e->y << CSF);
+			e->state = 0;
 		}
 		break;
 	}
@@ -556,9 +555,9 @@ void ai_motorbike(Entity *e) {
 		/* fallthrough */
 		case 21:
 		{
-			e->x = e->x_mark + 0x200 - (random() % 0x400);
-			e->y = e->y_mark + 0x200 - (random() % 0x400);
-			if(++e->timer > 30) {
+			e->x = e->x_mark + 0x200 - (random() & 0x3FF);
+			e->y = e->y_mark + 0x200 - (random() & 0x3FF);
+			if(++e->timer > TIME_8(30)) {
 				e->state = 30;
 			}
 		}
@@ -567,18 +566,18 @@ void ai_motorbike(Entity *e) {
 		{
 			e->state = 31;
 			e->timer = 1;
-			e->x_speed = -0x800;
+			e->x_speed = -SPEED_12(0x800);
 			e->y_mark = e->y;
 			sound_play(SND_MISSILE_HIT, 5);
 		}
 		/* fallthrough */
 		case 31:
 		{
-			e->x_speed += 0x20;
+			e->x_speed += SPEED_8(0x20);
 			e->timer++;
-			e->y = e->y_mark + 0x200 - (random() % 0x400);
-			if (e->timer > 10)  e->dir = 1;
-			if (e->timer > 200) e->state = 40;
+			e->y = e->y_mark + 0x200 - (random() & 0x3FF);
+			if (e->timer > TIME_8(10))  e->dir = 1;
+			if (e->timer > TIME_8(200)) e->state = 40;
 		}
 		break;
 		
@@ -588,13 +587,13 @@ void ai_motorbike(Entity *e) {
 			e->timer = 2;
 			e->dir = 0;
 			e->y -= pixel_to_sub(48);		// move up...
-			e->x_speed = -0x1000;		// ...and fly fast
+			e->x_speed = -SPEED_12(0xFFF);		// ...and fly fast
 		}
 		/* fallthrough */
 		case 41:
 		{
 			e->timer += 2;	// makes exhaust sound go faster
-			if(e->timer > 1200) {
+			if(e->timer > TIME_10(1000)) {
 				e->state = STATE_DELETE;
 			}
 		}

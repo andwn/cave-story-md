@@ -10,8 +10,8 @@ void onspawn_igor(Entity *e) {
 	e->attack = 0;
 	e->hit_box = (bounding_box) { 10, 4, 10, 20 };
 	e->display_box = (bounding_box) { 20, 20, 20, 20 };
-	e->hit_box.bottom += 4;
-	e->hit_box.top -= 6;
+	//e->hit_box.bottom += 4;
+	//e->hit_box.top -= 6;
 	if(e->type == 0x59) e->frame = 7;
 }
 
@@ -48,7 +48,7 @@ void ai_igor(Entity *e) {
 				fireatk = -1;
 				e->dir ^= 1;	// walk away from player
 			}
-			e->x_speed = e->dir ? SPEED(1<<CSF) : -SPEED(1<<CSF);
+			e->x_speed = e->dir ? SPEED_10(0x200) : -SPEED_10(0x200);
 			e->state++;
 			moveMeToFront = TRUE;
 		} /* fallthrough */
@@ -85,12 +85,8 @@ void ai_igor(Entity *e) {
 		case STATE_PUNCH+2:
 		{
 			sound_play(SND_EXPL_SMALL, 5);
-			// sprite appears identical, but has a wider bounding box.
-			if(e->dir) {
-				e->hit_box.right += 10;
-			} else {
-				e->hit_box.left += 10;
-			}
+			// Hit box is reversed when facing right, so left is still correct
+			e->hit_box.left += 10;
 			e->frame = PUNCH2;
 			e->attack = 5;
 			e->timer = 0;
@@ -98,13 +94,9 @@ void ai_igor(Entity *e) {
 		} /* fallthrough */
 		case STATE_PUNCH+3:
 		{
-			if(++e->timer > TIME(14)) {
+			if(++e->timer > TIME_8(14)) {
 				// return to normal-size bounding box
-				if(e->dir) {
-					e->hit_box.right -= 10;
-				} else {
-					e->hit_box.left -= 10;
-				}
+				e->hit_box.left -= 10;
 				e->state = STATE_STAND;
 			}
 		}
@@ -115,8 +107,9 @@ void ai_igor(Entity *e) {
 			e->y_speed = -SPEED(2<<CSF);
 			e->grounded = FALSE;
 			e->attack = 2;
-			e->x_speed *= 2;
-			e->x_speed /= 3;
+			e->x_speed -= e->x_speed >> 2;
+			//e->x_speed *= 2;
+			//e->x_speed /= 3;
 			e->x_mark = e->x_speed; // Remember x speed
 			e->timer = 0;
 			e->state++;
@@ -126,7 +119,10 @@ void ai_igor(Entity *e) {
 		{
 			if(e->grounded) {
 				sound_play(SND_ENEMY_JUMP, 5);
-				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y) + e->hit_box.bottom);
+				int16_t xx = e->x >> CSF, yy = (e->y >> CSF) + e->hit_box.bottom;
+				effect_create_smoke(xx - 12, yy);
+				effect_create_smoke(xx, yy);
+				effect_create_smoke(xx + 12, yy);
 				e->state = STATE_LANDED;
 			} else {
 				// Don't stop momentum if we hit the step on the left
@@ -144,7 +140,7 @@ void ai_igor(Entity *e) {
 		} /* fallthrough */
 		case STATE_LANDED+1:
 		{
-			if(++e->timer > TIME(12)) e->state = STATE_STAND;
+			if(++e->timer > TIME_8(12)) e->state = STATE_STAND;
 		}
 		break;
 		case STATE_MOUTH_BLAST:
@@ -158,23 +154,23 @@ void ai_igor(Entity *e) {
 		} /* fallthrough */
 		case STATE_MOUTH_BLAST+1:
 		{
-			e->frame = (++e->timer > TIME(50) && (e->timer & 4)) ? MOUTH2 : MOUTH1;
+			e->frame = (++e->timer > TIME_8(50) && (e->timer & 4)) ? MOUTH2 : MOUTH1;
 			// fire shots
-			if(e->timer > TIME(100)) {
-				if((e->timer % 8) == 1) {
+			if(e->timer > TIME_8(100)) {
+				if((e->timer & 7) == 1) {
 					sound_play(SND_BLOCK_DESTROY, 5);
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 							e->y, OBJ_IGOR_SHOT, 0);
-					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
-					shot->y_speed = SPEED(0x180) - (random() % SPEED(0x300));
+					shot->x_speed = e->dir ? SPEED_12(0x500) : -SPEED_12(0x500);
+					shot->y_speed = SPEED_10(random() & 0x3FF) - SPEED_10(0x1FF);
 				}
 				// fires 6 shots
-				if(e->timer > TIME(135)) e->state = STATE_STAND;
+				if(e->timer > TIME_8(135)) e->state = STATE_STAND;
 			}
 		}
 		break;
 	}
-	if(!e->grounded) e->y_speed += SPEED(0x20);
+	if(!e->grounded) e->y_speed += SPEED_8(0x20);
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	entity_update_collision(e);
@@ -274,7 +270,7 @@ void ai_igordead(Entity *e) {
 		} else if((e->timer & 3) == 3) {
 			e->display_box.left += 1;
 		}
-		if(e->timer > 100) {
+		if(e->timer > TIME_8(100)) {
 			e->timer = 0;
 			e->state = 2;
 		}
@@ -292,14 +288,14 @@ void ai_igordead(Entity *e) {
 		} else if((e->timer & 3) == 3) {
 			e->frame = DEFEAT1;
 		}
-		if(e->timer > 160) {
+		if(e->timer > TIME_8(160)) {
 			e->frame = DEFEAT2;
 			e->state = 3;
 			e->timer = 0;
 		}
 		break;
 		case 3:
-		if(++e->timer > 60) {
+		if(++e->timer > TIME_8(60)) {
 			e->frame++;
 			e->timer = 0;
 			if(e->frame > DEFEAT4) {

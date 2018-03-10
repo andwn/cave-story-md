@@ -46,7 +46,7 @@ void Z80_init() {
 	// just wait for it
 	while(!Z80_isDriverReady())
 		while(Z80_isBusTaken());
-    XGM_setMusicTempo(IS_PALSYSTEM ? 50 : 60);
+    XGM_setMusicTempo(60);
 }
 
 uint16_t Z80_isBusTaken()

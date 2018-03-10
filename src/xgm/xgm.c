@@ -309,7 +309,7 @@ void XGM_nextXFrame(uint16_t num)
 void XGM_setMusicTempo(uint16_t value)
 {
     xgmTempo = value;
-    if (IS_PALSYSTEM) xgmTempoDef = 50;
+    if (pal_mode) xgmTempoDef = 50;
     else xgmTempoDef = 60;
 }
 

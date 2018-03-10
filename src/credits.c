@@ -160,7 +160,7 @@ void credits_main() {
 		entities_update(TRUE);
 		
 		backScroll++;
-		if(!IS_PALSYSTEM) {
+		if(!pal_mode) {
 			// Slow the scrolling down slightly for NTSC
 			if((backScroll % 6) == 0 && !skipScroll) {
 				backScroll--;

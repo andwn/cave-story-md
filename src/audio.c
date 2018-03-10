@@ -39,7 +39,7 @@ void song_play(uint8_t id) {
 		//Z80_init();
 	} else {
 		XGM_startPlay(song_info[id].song);
-		XGM_setMusicTempo(60);
+		//XGM_setMusicTempo(60);
 	}
 	songPlaying = id;
 }

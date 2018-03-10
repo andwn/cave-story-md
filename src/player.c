@@ -535,7 +535,7 @@ void player_update_jump() {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
 			// Maybe possibly fix jump height?
-			player.jump_time = IS_PALSYSTEM ? 0 : 3;
+			player.jump_time = pal_mode ? 0 : 3;
 			
 			sound_play(SND_PLAYER_JUMP, 3);
 		}

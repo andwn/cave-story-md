@@ -734,15 +734,15 @@ void ai_prox_press_hoz(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (PLAYER_DIST_Y2(0x800, 0x800)) {
-				if (!e->dir) {
-					if (player.x < e->x) {
+			if(PLAYER_DIST_Y2(0x800, 0x800)) {
+				if(!e->dir) {
+					if(player.x < e->x) {
 						e->state = 2;
 						e->frame = 2;
 						e->timer = 0;
 					}
 				} else {
-					if (player.x > e->x) {
+					if(player.x > e->x) {
 						e->state = 2;
 						e->frame = 2;
 						e->timer = 0;
@@ -763,6 +763,8 @@ void ai_prox_press_hoz(Entity *e) {
 			//}
 			
 			if (++e->timer > 11) {
+				int16_t xx = (e->x >> CSF) + e->dir ? 12 : -12, yy = e->y >> CSF;
+				effect_create_smoke(xx, yy);
 				sound_play(SND_BLOCK_DESTROY, 5);
 				e->attack = 0;
 				e->x_speed = 0;
