@@ -756,12 +756,11 @@ void ai_bute_sword_red(Entity *e) {
 		FACE_PLAYER(e);
 		// when player is below them, they come towards him,
 		// when player is above, they sweep away.
-		if(player.y > (e->y + (24 << CSF))) {
-			if(e->x_speed < SPEED_12(0x5F0)) ACCEL_X(SPEED_8(0x10));
-		} else {
-			if(e->x_speed > -SPEED_12(0x5F0)) ACCEL_X(-SPEED_8(0x10));
-		}
-		e->y_speed += (e->y <= player.y) ? 0x10 : -0x10;
+		if(player.y > e->y) ACCEL_X(SPEED_8(0x20));
+		else ACCEL_X(-SPEED_8(0x20));
+		e->y_speed += (e->y <= player.y) ? SPEED_8(0x20) : -SPEED_8(0x20);
+		LIMIT_X(SPEED_10(0x3FF));
+		LIMIT_Y(SPEED_10(0x3FF));
 		
 		if ((e->x_speed < 0 && blk(e->x, -7, e->y, 0) == 0x41) || 
 			(e->x_speed > 0 && blk(e->x,  7, e->y, 0) == 0x41)) {
@@ -782,8 +781,9 @@ void onspawn_bute_archer_red(Entity *e) {
 	} else {
 		e->x_mark = e->x - (128<<CSF);
 	}
-	e->x_speed = (random() & 0x7FF) - 0x400;
-	e->y_speed = (random() & 0x7FF) - 0x400;
+	e->y_mark = e->y;
+	e->x_speed = (e->x > e->x_mark) ? -0xFF - (random() & 0x1FF) : 0xFF + (random() & 0x1FF);
+	e->y_speed = (random() & 0x3FF) - 0x1FF;
 	e->hit_box = (bounding_box) { 6,6,6,6 };
 	e->display_box = (bounding_box) { 12,8,12,8 };
 }
@@ -828,7 +828,7 @@ void ai_bute_archer_red(Entity *e) {
 		break;
 		case 3: // fired
 		{
-			if((++e->animtime & 3) == 0 && ++e->frame > 6) e->frame = 5;
+			//if((++e->animtime & 3) == 0 && ++e->frame > 6) e->frame = 5;
 			if (++e->timer > TIME_8(40)) {
 				e->state++;
 				e->timer = 0;
@@ -849,27 +849,23 @@ void ai_bute_archer_red(Entity *e) {
 	}
 	// sinusoidal hover around set point
 	if (e->state < 4) {
-		e->x_speed += (e->x < e->x_mark) ? SPEED_8(0x2A) : -SPEED_8(0x2A);
-		e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x2A) : -SPEED_8(0x2A);
-		//LIMIT_X(0x400);
-		//LIMIT_Y(0x400);
+		if(e->x < e->x_mark && e->x_speed <  SPEED_10(0x3E0)) e->x_speed += SPEED_8(0x2A);
+		if(e->x > e->x_mark && e->x_speed > -SPEED_10(0x3E0)) e->x_speed -= SPEED_8(0x2A);
+		if(e->y < e->y_mark && e->y_speed <  SPEED_10(0x3E0)) e->y_speed += SPEED_8(0x2A);
+		if(e->y > e->y_mark && e->y_speed > -SPEED_10(0x3E0)) e->y_speed -= SPEED_8(0x2A);
 	}
 	
 }
 
 // This object is responsible for collapsing the walls in the final best-ending sequence.
 void ai_wall_collapser(Entity *e) {
-	if(++e->timer > TIME_8(102)) {
+	if(e->state == 10 && ++e->timer > TIME_8(102)) {
 		e->timer = 0;
-		
 		uint16_t xa = sub_to_block(e->x);
 		uint16_t ya = sub_to_block(e->y);
 		for(uint16_t y = 0; y < 20; y++) stage_replace_block(xa, ya+y, 100);
-		
 		sound_play(SND_BLOCK_DESTROY, 5);
 		camera_shake(20);
-		
-		if (!e->dir) e->x -= (16 << CSF);
-				else e->x += (16 << CSF);
+		e->x += e->dir ? (16 << CSF) : -(16 << CSF);
 	}
 }

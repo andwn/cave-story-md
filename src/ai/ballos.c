@@ -555,42 +555,44 @@ void ai_ballos_f3(Entity *e) {
 			}
 			
 			// spawn butes
-			switch(++e->timer) {
-				case 270:	// spawn swordsmen from face
-				case 281:
-				case 292:
-				{
-					effect_create_smoke(e->x >> CSF, (e->y >> CSF) - 52);
-					entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0);
-					sound_play(SND_EM_FIRE, 5);
-				}
-				break;
-				
-				case 303:	// spawn archers on side
-				case 314:
-				{
-					// direction butes will be facing, not side of screen
-					uint16_t flags = (player.x > e->x) ? 0 : NPC_OPTION2;
-					for(uint16_t i = 0; i < 3; i++) {
-						// give some granularity to the coords,
-						// so that they can't overlap too closely.
-						int32_t x = (random() & 3) << (CSF+2);
-						int32_t y = (4 + (random() & 63)) << (CSF+2);
-						if(!flags) x += block_to_sub(stageWidth - 1);
-						entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
+			if(entity_active_count < 28) {
+				switch(++e->timer) {
+					case 270:	// spawn swordsmen from face
+					case 281:
+					case 292:
+					{
+						effect_create_smoke(e->x >> CSF, (e->y >> CSF) - 52);
+						entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0);
+						sound_play(SND_EM_FIRE, 5);
 					}
+					break;
+					
+					case 303:	// spawn archers on side
+					case 314:
+					{
+						// direction butes will be facing, not side of screen
+						uint16_t flags = (player.x > e->x) ? 0 : NPC_OPTION2;
+						for(uint16_t i = 0; i < 2; i++) {
+							// give some granularity to the coords,
+							// so that they can't overlap too closely.
+							int32_t x = (random() & 3) << (CSF+2);
+							int32_t y = (4 + (random() & 63)) << (CSF+2);
+							if(!flags) x += block_to_sub(stageWidth - 1);
+							entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
+						}
+					}
+					break;
+					case 320:
+					{
+						if(pal_mode) e->timer = 0;
+					}
+					break;
+					case 390:
+					{
+						e->timer = 0;
+					}
+					break;
 				}
-				break;
-				case 320:
-				{
-					if(pal_mode) e->timer = 0;
-				}
-				break;
-				case 390:
-				{
-					e->timer = 0;
-				}
-				break;
 			}
 			
 			// spawn blood

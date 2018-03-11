@@ -323,7 +323,7 @@ void ai_malco(Entity *e) {
 		break;
 		case 110:	// the one that blows up
 		{
-			effect_create_smoke(e->x << CSF, e->y << CSF);
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			e->state = STATE_DELETE;
 		}
 		break;

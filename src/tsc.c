@@ -1060,8 +1060,11 @@ uint8_t execute_command() {
 				inFade = FALSE; // Unlock sprites from updating
 				vsync(); // Wait a frame to let the sprites redraw
 				aftervsync();
+				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+			} else {
+				VDP_setPaletteColors(16, &PAL_FadeOutBlue[16], 48);
+				VDP_fadeTo(16, 63, &VDP_getCachedPalette()[16], 20, TRUE);
 			}
-			VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
 		}
 		break;
 		case CMD_FAO:
@@ -1073,7 +1076,7 @@ uint8_t execute_command() {
 				sprites_clear();
 				inFade = TRUE;
 			} else {
-				VDP_fadeTo(0, 63, PAL_FadeOutBlue, 20, TRUE);
+				VDP_fadeTo(16, 63, &PAL_FadeOutBlue[16], 20, TRUE);
 				waitTime = 20;
 				return 1;
 			}
@@ -1281,7 +1284,10 @@ uint8_t execute_command() {
 				} else {
 					window_draw_char(cmd);
 				}
-				if(cfg_msg_blip && !(cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) sound_play(SND_MSG, 2);
+				if(cfg_msg_blip && !(cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) 
+						&& window_get_textmode() == TM_NORMAL) {
+					sound_play(SND_MSG, 2);
+				}
 			} else {
 				curCommand -= doublebyte ? 2 : 1;
 				return 1;

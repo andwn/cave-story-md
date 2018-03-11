@@ -300,7 +300,7 @@ void player_update() {
 	if(!tscState) {
 		if(player.underwater && !(playerEquipment & EQUIP_AIRTANK)) {
 			if(airTick == 0) {
-				airTick = TIME(10);
+				airTick = TIME_8(10) - 1;
 				airPercent--;
 				if(airPercent == 0) {
 					// Spoilers
@@ -1098,14 +1098,14 @@ void player_give_weapon(uint8_t id, uint8_t ammo) {
 void player_take_weapon(uint8_t id) {
 	Weapon *w = player_find_weapon(id);
 	if(w) {
-		if(playerWeapon[currentWeapon].type == id) {
-			player_next_weapon();
-		}
 		w->type = 0;
 		w->level = 0;
 		w->energy = 0;
 		w->maxammo = 0;
 		w->ammo = 0;
+		if(playerWeapon[currentWeapon].type == id) {
+			player_next_weapon();
+		}
 	}
 }
 

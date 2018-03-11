@@ -309,6 +309,10 @@ void window_scroll_jtext() {
 	textColumn = 0;
 }
 
+uint8_t window_get_textmode() {
+	return textMode;
+}
+
 void window_set_textmode(uint8_t mode) {
 	textMode = mode;
 }

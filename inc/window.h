@@ -33,6 +33,7 @@ void window_scroll_text();
 
 void window_scroll_jtext();
 // Changes the text mode (show next line immediately or whole message)
+uint8_t window_get_textmode();
 void window_set_textmode(uint8_t mode);
 // Counts down until the next letter is to be printed, and will return TRUE
 // when the counter resets
