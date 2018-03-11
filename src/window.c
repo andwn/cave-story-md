@@ -43,6 +43,9 @@
 #define PROMPT_X 27
 #define PROMPT_Y 17
 
+#define ITEM_Y_START	(SCREEN_HALF_H + 128)
+#define ITEM_Y_END		(SCREEN_HALF_H + 12 + 128)
+
 const uint8_t ITEM_PAL[40] = {
 	0, 0, 1, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 1, 0, 0,
@@ -397,7 +400,7 @@ void window_show_item(uint16_t item) {
 	}
 	handSpr = (VDPSprite) {
 		.x = SCREEN_HALF_W - 12 + 128,
-		.y = SCREEN_HALF_H + 12 + 128,
+		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(3, 2),
 		.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_PROMPTINDEX)
 	};
@@ -422,7 +425,7 @@ void window_show_weapon(uint16_t item) {
 	if(item == 0) return;
 	handSpr = (VDPSprite) {
 		.x = SCREEN_HALF_W - 8 + 128,
-		.y = SCREEN_HALF_H + 12 + 128,
+		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(2, 2),
 		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
@@ -444,6 +447,7 @@ void window_show_weapon(uint16_t item) {
 
 void window_update() {
 	if(showingItem) {
+		if(handSpr.y < ITEM_Y_END) handSpr.y++;
 		sprite_add(handSpr);
 		sprite_addq(promptSpr, 2);
 	} else if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
