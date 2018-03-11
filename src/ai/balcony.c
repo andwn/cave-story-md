@@ -349,14 +349,14 @@ void ai_doctor_ghost(Entity *e) {
 		case 11:
 		{
 			e->timer++;
-			if((e->timer % TIME(5)) == 0) {
+			if((e->timer % TIME_8(5)) == 0) {
 				Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
 				r->angle = A_RIGHT;
 				r->linkedEntity = e;
-				if((e->timer % TIME(10)) == 0) r->timer = 200;
+				if((e->timer % TIME_8(10)) == 0) r->timer = 200;
 			}
 			
-			if (e->timer > TIME(150))
+			if(e->timer > TIME_8(150))
 				e->state++;
 		}
 		break;
@@ -368,7 +368,7 @@ void ai_doctor_ghost(Entity *e) {
 		} /* fallthrough */
 		case 21:
 		{
-			if (++e->timer > TIME(250)) {
+			if (++e->timer > TIME_8(250)) {
 				entities_clear_by_type(OBJ_RED_ENERGY);
 				e->state++;
 			}
@@ -407,15 +407,13 @@ void ai_red_energy(Entity *e) {
 			}
 			if(!e->state) {
 				e->state++;
-				e->x_speed = -0x600 + (random() & 0x1200);
-				e->y_speed = -0x600 + (random() & 0x1200);
+				e->x_speed = -0xFF + (random() & 0x1FF);
+				e->y_speed = -0xFF + (random() & 0x1FF);
 			}
-			
-			int32_t tgtx = e->linkedEntity->x + (4<<CSF);
-			if(e->x < tgtx) 		e->x_speed += 6;
-			else if(e->x > tgtx)	e->x_speed -= 6;
-			if(e->y < e->linkedEntity->y) 	   e->y_speed += 6;
-			else if(e->y > e->linkedEntity->y) e->y_speed -= 6;
+			if(e->x < e->linkedEntity->x)		e->x_speed += SPEED_8(12);
+			else if(e->x > e->linkedEntity->x)	e->x_speed -= SPEED_8(12);
+			if(e->y < e->linkedEntity->y)		e->y_speed += SPEED_8(12);
+			else if(e->y > e->linkedEntity->y)	e->y_speed -= SPEED_8(12);
 			
 			e->x += e->x_speed;
 			e->y += e->y_speed;
@@ -435,8 +433,7 @@ void ai_mimiga_caged(Entity *e) {
 		{
 			e->frame = 0;
 			RANDBLINK(e, 1, 200);
-			
-			if (e->frame == 0) FACE_PLAYER(e);
+			if(e->frame == 0) FACE_PLAYER(e);
 		}
 		break;
 		
@@ -444,7 +441,6 @@ void ai_mimiga_caged(Entity *e) {
 		{
 			e->state = 11;
 			e->frame = 2;
-			
 			entity_create(e->x, e->y-(16<<CSF), OBJ_HEART, 0);
 		} /* fallthrough */
 		case 11:

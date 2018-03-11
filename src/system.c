@@ -58,6 +58,7 @@ uint8_t cfg_hellquake = TRUE;
 uint8_t cfg_iframebug = TRUE;
 
 uint8_t cfg_force_btn = 0;
+uint8_t cfg_msg_blip = TRUE;
 
 uint8_t sram_file = 0;
 uint8_t sram_state = SRAM_UNCHECKED;
@@ -502,6 +503,7 @@ void system_load_config() {
 	cfg_hellquake = SRAM_readByte(loc++);
 	cfg_iframebug = SRAM_readByte(loc++);
 	cfg_force_btn = SRAM_readByte(loc++);
+	cfg_msg_blip  = SRAM_readByte(loc++);
 	// Just in case
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
 
@@ -532,6 +534,7 @@ void system_save_config() {
 	SRAM_writeByte(loc++, cfg_hellquake);
 	SRAM_writeByte(loc++, cfg_iframebug);
 	SRAM_writeByte(loc++, cfg_force_btn);
+	SRAM_writeByte(loc++, cfg_msg_blip);
 	SRAM_disable();
 	
 	XGM_set68KBUSProtection(FALSE);

@@ -734,8 +734,7 @@ void ai_green_devil(Entity *e) {
 
 void onspawn_bute_sword_red(Entity *e) {
 	e->alwaysActive = TRUE;
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
-	MOVE_X(SPEED_12(0x600));
+	e->y_speed = -SPEED_12(0x600);
 	e->hit_box = (bounding_box) { 6,6,6,6 };
 	e->display_box = (bounding_box) { 8,8,8,8 };
 }

@@ -343,7 +343,7 @@ void ai_boss_misery(Entity *e) {
 			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x20) : -SPEED_8(0x20);
 			LIMIT_Y(SPEED_10(0x200));
 			
-			if (++e->timer > TIME_8(200) || (e->health - savedhp) >= 80) {
+			if (++e->timer > TIME_8(200) || (savedhp - e->health) >= 80) {
 				e->state = STATE_FLASH_FOR_SPELL;
 				e->timer = 0;
 			}

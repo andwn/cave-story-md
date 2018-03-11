@@ -77,9 +77,8 @@ const MenuItem menu[3][12] = {
 		{ 8,  MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
 		{ 10, MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
 		{ 12, MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
-		
-		{ 15, MI_LABEL,  "Reset Invincibility", NULL },
-		{ 16, MI_TOGGLE, "Frames on Pause", &cfg_iframebug },
+		{ 14, MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
+		{ 16, MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
 
 		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
@@ -308,6 +307,7 @@ void act_default(uint8_t page) {
 		cfg_updoor = FALSE;
 		cfg_hellquake = TRUE;
 		cfg_iframebug = TRUE;
+		cfg_msg_blip = TRUE;
 	}
 	set_page(page);
 }

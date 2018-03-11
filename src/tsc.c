@@ -1239,6 +1239,7 @@ uint8_t execute_command() {
 					}
 				}
 				sprite_addq(island, 2);
+				if(playerEquipment & EQUIP_CLOCK) system_draw_counter();
 				ready = TRUE;
 				vsync(); //aftervsync();
 				sprites_send();
@@ -1280,6 +1281,7 @@ uint8_t execute_command() {
 				} else {
 					window_draw_char(cmd);
 				}
+				if(!(cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) sound_play(SND_MSG, 2);
 			} else {
 				curCommand -= doublebyte ? 2 : 1;
 				return 1;

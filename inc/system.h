@@ -51,6 +51,7 @@ extern uint8_t cfg_hellquake;
 extern uint8_t cfg_iframebug;
 
 extern uint8_t cfg_force_btn;
+extern uint8_t cfg_msg_blip;
 
 extern uint8_t sram_file;
 

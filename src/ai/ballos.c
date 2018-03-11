@@ -567,26 +567,26 @@ void ai_ballos_f3(Entity *e) {
 				break;
 				
 				case 303:	// spawn archers on side
-				case 304:
+				case 314:
 				{
 					// direction butes will be facing, not side of screen
 					uint16_t flags = (player.x > e->x) ? 0 : NPC_OPTION2;
-					for(uint16_t i = 0; i < 8; i++) {
+					for(uint16_t i = 0; i < 3; i++) {
 						// give some granularity to the coords,
 						// so that they can't overlap too closely.
-						int32_t x = ((random() & 3) << (CSF+2));
-						int32_t y = ((random() & 63) << (CSF+2)) + 4;
+						int32_t x = (random() & 3) << (CSF+2);
+						int32_t y = (4 + (random() & 63)) << (CSF+2);
 						if(!flags) x += block_to_sub(stageWidth - 1);
 						entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
 					}
 				}
 				break;
-				case 310:
+				case 320:
 				{
 					if(pal_mode) e->timer = 0;
 				}
 				break;
-				case 380:
+				case 390:
 				{
 					e->timer = 0;
 				}
