@@ -210,7 +210,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_CoreLift,	NOSHEET, 		PAL2, 1, &ai_null, 				&ai_shutter, 		&ai_null 			}, // Lift Block
 	{ &SPR_FuzzCore,	NOSHEET, 		PAL2, 1, &ai_null, 				&ai_fuzz_core, 		&ondeath_default 	}, // Fuzz Core
 	{ &SPR_Fuzz, 		NOSHEET, 		PAL2, 1, &onspawn_persistent, 	&ai_fuzz, 			&ondeath_default 	}, // Fuzz
-	{ NULL, 			SHEET_CORES4,	PAL1, 1, &onspawn_persistent, 	&ai_core_blast, 	&ai_null 			}, // Homing Flame Projectile
+	{ NULL, 			NOSHEET,		PAL1, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Almond robot
 	{ &SPR_Robot3, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_almond_robot, 	&ai_null 			}, // Surface Robot
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_waterlevel, 	&ai_waterlevel, 	&ai_null 			}, // Water Level
 	/* 0x0C0 (192) */
@@ -241,7 +241,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_Croc2, 		NOSHEET, 		PAL2, 2, &ai_null, 				&ai_sandcroc, 		&ondeath_default 	}, // White Sandcroc
 	{ &SPR_Cat, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Debug Cat
 	{ &SPR_Itoh, 		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_npc_itoh, 		&ai_null 			}, // Itoh
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // ???
+	{ NULL, 			SHEET_CORES4, 	PAL1, 1, &onspawn_persistent, 	&ai_core_blast, 	&ai_null 			}, // Core Blast
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Smoke/Current Generator
 	{ &SPR_ShovelMimi,	NOSHEET,		PAL3, 1, &ai_null, 				&ai_mimiga_farmer, 	&ai_null 			}, // Shovel Brigade
 	{ &SPR_ShovelMimi,	NOSHEET,		PAL3, 1, &ai_null, 				&ai_mimiga_farmer, 	&ai_null 			}, // Shovel Brigade (Walking)

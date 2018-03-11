@@ -300,7 +300,7 @@ void player_update() {
 	if(!tscState) {
 		if(player.underwater && !(playerEquipment & EQUIP_AIRTANK)) {
 			if(airTick == 0) {
-				airTick = TIME_8(10) - 1;
+				airTick = TIME_8(9);
 				airPercent--;
 				if(airPercent == 0) {
 					// Spoilers
@@ -833,22 +833,19 @@ void player_update_air_display() {
 	if(airPercent == 100) {
 		if(airDisplayTime == TIME_8(50)) {
 			draw_air_percent();
-		} else if(airDisplayTime & 8) {
+		} else if(airDisplayTime & 4) {
 			sprite_addq(airSprite, 2);
 		}
 	} else {
 		airDisplayTime++;
 		if((airDisplayTime & 31) == 0) {
-			
 			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
-			
 		} else if((airDisplayTime & 31) == 15) {
 			const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
 			VDP_loadTileData(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1, TRUE);
-			
 		}
 		// Calculate air percent and display the value
-		if(airTick == TIME_8(10)) draw_air_percent();
+		if(airTick == TIME_8(9)) draw_air_percent();
 		sprite_addq(airSprite, 2);
 	}
 }
@@ -904,11 +901,11 @@ void player_draw() {
 			lookingDown = FALSE;
 			player.animtime = 0;
 			if(joy_down(BUTTON_UP) && !controlsLocked) {
-				player.frame = (player.x_speed > 0) ? UPWALK2 : UPWALK1;
+				player.frame = (player.y_speed > 0) ? UPWALK2 : UPWALK1;
 			} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
 				player.frame = JUMPDN;
 			} else {
-				player.frame = (player.x_speed > 0) ? WALK2 : WALK1;
+				player.frame = (player.y_speed > 0) ? WALK2 : WALK1;
 			}
 		}
 		if((player.animtime & 1) && player.timer2 == 1) sound_play(SND_PLAYER_WALK, 2);
