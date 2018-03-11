@@ -311,7 +311,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x2F: // Core
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 2,2,3, 0,0, 0,1);
 			SHEET_ADD(SHEET_CORES1, &SPR_CoreShot1, 3,2,2, 0,0, 0,1, 0,2);
-			SHEET_ADD(SHEET_CORES3, &SPR_CoreShot3, 3,1,2, 0,0, 0,1, 0,2);
+			SHEET_ADD(SHEET_CORES3, &SPR_CoreShot2, 3,3,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_CORES4, &SPR_CoreShot4, 1,4,4, 0,0);
 			// Curly's gun
 			if(!player_has_weapon(WEAPON_MACHINEGUN)) {

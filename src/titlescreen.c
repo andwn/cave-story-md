@@ -91,13 +91,13 @@ uint8_t titlescreen_main() {
 	VDP_drawText("Sound Test", 15, 16);
 	VDP_drawText("Config", 15, 18);
 	// Debug
-	{
-		char vstr[40];
-		sprintf(vstr, "Test Build - %s", __DATE__);
-		VDP_drawText(vstr, 4, 26);
-	}
+	//{
+	//	char vstr[40];
+	//	sprintf(vstr, "Test Build - %s", __DATE__);
+	//	VDP_drawText(vstr, 4, 26);
+	//}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.5.0b 2018.02", 4, 26);
+	VDP_drawText("Mega Drive Version 0.5.1 2018.03", 4, 26);
 	VDP_loadTileSet(cfg_language ? &TS_J_Title : &TS_Title, TILE_USERINDEX, TRUE);
 	VDP_fillTileMapRectInc(PLAN_B,
 			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);

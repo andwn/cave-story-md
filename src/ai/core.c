@@ -188,7 +188,7 @@ void ai_core(Entity *e) {
 			// must call constantly for red-flashing when hit
 			OPEN_MOUTH;
 			
-			e->timer++;
+			//e->timer++;
 			// hint curly to target us
 			if ((e->timer & 63) == 1) {
 				CURLY_TARGET_HERE(e);
@@ -227,7 +227,7 @@ void ai_core(Entity *e) {
 			
 			OPEN_MOUTH;
 			
-			e->timer++;
+			//e->timer++;
 			// spawn the big white blasts
 			if(e->timer==TIME_10(300) || e->timer==TIME_10(350) || e->timer==TIME_10(400)) {
 				Entity *shot = entity_create(pieces[CFRONT]->x, pieces[CFRONT]->y, OBJ_CORE_BLAST, 0);
