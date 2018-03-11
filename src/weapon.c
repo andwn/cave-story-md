@@ -192,7 +192,7 @@ void weapon_fire_polarstar(Weapon *w) {
 	} else {
 		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
-		b->y = player.y + pixel_to_sub(2);
+		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
 		b->hit_box = (bounding_box) { 6, 1 + w->level, 6, 1 + w->level };

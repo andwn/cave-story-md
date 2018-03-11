@@ -329,6 +329,7 @@ uint8_t window_tick() {
 }
 
 void window_prompt_open() {
+	promptAnswer = TRUE; // Yes is default
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
 	handSpr = (VDPSprite) {
@@ -356,7 +357,6 @@ void window_prompt_open() {
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
 	const SpriteDefinition *spr = cfg_language ? &SPR_J_Prompt : &SPR_Prompt;
 	TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
-	promptAnswer = TRUE; // Yes is default
 }
 
 void window_prompt_close() {

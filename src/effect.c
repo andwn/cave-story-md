@@ -2,7 +2,9 @@
 
 #include "camera.h"
 #include "dma.h"
+#include "entity.h"
 #include "memory.h"
+#include "player.h"
 #include "resources.h"
 #include "sheet.h"
 #include "sprite.h"
@@ -138,7 +140,6 @@ void effects_update() {
 				if(effMisc[i].ttl > TIME_8(60) && (effMisc[i].ttl & 3) == 0) {
 					effMisc[i].y--;
 				}
-				effMisc[i].ttl--;
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
@@ -149,7 +150,6 @@ void effects_update() {
 			case EFF_FANR:
 			{
 				effMisc[i].x += effMisc[i].x_speed;
-				effMisc[i].ttl--;
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
@@ -160,11 +160,26 @@ void effects_update() {
 			case EFF_FAND:
 			{
 				effMisc[i].y += effMisc[i].y_speed;
-				effMisc[i].ttl--;
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
 				sprite_add(effMisc[i].sprite);
+			}
+			break;
+			case EFF_SPLASH:
+			{
+				if(++effMisc[i].timer >= 5) {
+					effMisc[i].timer = 0;
+					effMisc[i].y_speed++;
+				}
+				effMisc[i].x += effMisc[i].x_speed;
+				effMisc[i].y += effMisc[i].y_speed;
+				if(effMisc[i].ttl & 1) {
+					sprite_pos(effMisc[i].sprite,
+						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_add(effMisc[i].sprite);
+				}
 			}
 			break;
 		}
@@ -278,7 +293,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			case EFF_FANL:
 			{
 				effMisc[i].x_speed = -(random() & 3) - 1;
-				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
@@ -288,7 +303,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			case EFF_FANU:
 			{
 				effMisc[i].y_speed = -(random() & 3) - 1;
-				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
@@ -298,7 +313,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			case EFF_FANR:
 			{
 				effMisc[i].x_speed = (random() & 3) + 1;
-				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
@@ -308,7 +323,23 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 			case EFF_FAND:
 			{
 				effMisc[i].y_speed = (random() & 3) + 1;
-				effMisc[i].ttl = TIME_8(25);
+				effMisc[i].ttl = TIME_8(20);
+				effMisc[i].sprite = (VDPSprite) {
+					.size = SPRITE_SIZE(1, 1),
+					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+				};
+			}
+			break;
+			case EFF_SPLASH:
+			{
+				if(random() & 1) {
+					effMisc[i].y_speed = -2;
+					effMisc[i].ttl = 18;
+				} else {
+					effMisc[i].y_speed = -3;
+					effMisc[i].ttl = 29;
+				}
+				effMisc[i].x_speed = (player.x_speed >> CSF) - 1 + (random() & 3);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)

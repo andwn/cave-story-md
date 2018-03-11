@@ -475,7 +475,13 @@ void player_update_walk() {
 	// 2 kinds of water, actual water blocks & background water in Core
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
 			(stageBackgroundType == 4 && water_entity && player.y > water_entity->y)) {
-		player.underwater = TRUE;
+		if(!player.underwater) {
+			player.underwater = TRUE;
+			sound_play(SND_SPLASH, 5);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
+		}
 		// Half everything, maybe inaccurate?
 		acc >>= 1;
 		max_speed >>= 1;
