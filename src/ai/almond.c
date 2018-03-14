@@ -5,6 +5,7 @@ void onspawn_waterlevel(Entity *e) {
 	water_entity = e;
 	e->state = WL_CALM;
 	e->y += 4 << CSF;
+	if(stageID == STAGE_CORE) e->y += 8 << CSF;
 	e->y_mark = e->y;
 	e->y_speed = SPEED_8(0xFF);
 }
