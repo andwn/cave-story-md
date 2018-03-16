@@ -20,6 +20,7 @@
 #include "vdp_ext.h"
 #include "vdp_tile.h"
 #include "weapon.h"
+#include "window.h"
 #include "xgm.h"
 #include "z80_ctrl.h"
 
@@ -182,7 +183,10 @@ void system_update() {
 		}
 	}
 	if(playerEquipment & EQUIP_CLOCK) {
-		if(!gameFrozen) {
+		// Stop the counter during scripts that lock controls or freeze the gameplay.
+		// Notice how the counter stops when talking to Ballos and the ghost puppy,
+		// but not in the scene when Ballos transforms (since you can move).
+		if(!gameFrozen && !controlsLocked && !paused) {
 			if(++counter.frame >= FPS) {
 				if(++counter.second >= 60) {
 					// Limit 99'59"9
@@ -205,6 +209,10 @@ void system_update() {
 				counter_decisec = decisec[pal_mode][counter.frame];
 				counter_draw_decisecond();
 			}
+		}
+		// Don't display the counter when a message window is open on top
+		// because it overlaps the text making it hard to read
+		if(!(window_is_open() && windowOnTop)) {
 			const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
 			sprite_addq(spr, 2);
 		}

@@ -54,7 +54,6 @@ const uint8_t ITEM_PAL[40] = {
 	1, 0, 0, 1, 0, 1, 1, 1,
 };
 
-uint8_t windowOnTop = FALSE;
 uint8_t windowOpen = FALSE;
 uint16_t showingFace = 0;
 

@@ -1242,7 +1242,7 @@ uint8_t execute_command() {
 					}
 				}
 				sprite_addq(island, 2);
-				if(playerEquipment & EQUIP_CLOCK) system_draw_counter();
+				system_update();
 				ready = TRUE;
 				vsync(); //aftervsync();
 				sprites_send();
