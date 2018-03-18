@@ -125,14 +125,11 @@ void ai_ironhead(Entity *e) {
 			e->x_speed = e->y_speed = 0;
 			e->timer = 0;
 			// I believe the screen should flash here since objects get deleted
-			SCREEN_FLASH(10);
+			SCREEN_FLASH(20);
 			entities_clear_by_type(OBJ_IRONH_FISHY);
 			entities_clear_by_type(OBJ_IRONH_BRICK);
 			entities_clear_by_type(OBJ_BRICK_SPAWNER);
 			camera_shake(20);
-			
-			//for(int i=0;i<32;i++)
-			//	ironh_smokecloud(o);
 		} /* fallthrough */
 		case IRONH_DEFEATED+1:			// retreat back to left...
 		{
@@ -141,41 +138,16 @@ void ai_ironhead(Entity *e) {
 			e->x = e->x_mark - 1 + ((random() & 1) << CSF);
 			e->y = e->y_mark - 1 + ((random() & 1) << CSF);
 			
-			e->timer++;
-			//if ((e->timer & 3)==0) ironh_smokecloud(o);
+			if((++e->timer & 3) == 0) {
+				effect_create_smoke((e->x>>CSF) - 32 + (random() & 63), (e->y>>CSF) - 16 + (random() & 31));
+			}
 		}
 		break;
 	}
 	
-	// show pink "hit" frame when he's taking damage
-	//e->sprite = SPR_IRONH;
-	//if (e->shaketime)
-	//{
-	//	this->hittimer++;
-	//	if (this->hittimer & 2)
-	//	{
-	//		e->sprite = SPR_IRONH_HURT;
-	//	}
-	//}
-	//else
-	//{
-	//	this->hittimer = 0;
-	//}
-	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
-
-//static void ironh_smokecloud(Entity *e) {
-//	Entity *smoke;
-//
-//	smoke = CreateEntity(e->CenterX() + (random(-128, 128)<<CSF),
-//						 e->CenterY() + (random(-64, 64)<<CSF),
-//						 OBJ_SMOKE_CLOUD);
-//	
-//	smoke->x_speed = random(-128, 128);
-//	smoke->y_speed = random(-128, 128);
-//}
 
 void ai_ironh_fishy(Entity *e) {
 	e->x_next = e->x + e->x_speed;

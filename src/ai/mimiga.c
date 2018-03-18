@@ -1,7 +1,7 @@
 #include "ai_common.h"
 
 void onspawn_flower(Entity *e) {
-	e->frame = e->id;
+	e->frame = e->event;
 	if(e->frame >= 6) e->frame = random() & 3;
 }
 

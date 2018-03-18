@@ -16,56 +16,65 @@
 
 #include "sheet.h"
 
+#define WEP_FIND_SHEET(fsheet) { \
+	uint8_t sht = NOSHEET; \
+	SHEET_FIND(sht, fsheet); \
+	if(sht != NOSHEET) { \
+		w->sheet = sht; \
+		return; \
+	} \
+}
+
 void sheets_load_weapon(Weapon *w) {
 	if(!w) return;
 	w->sheet = sheet_num;
 	switch(w->type) {
 		case WEAPON_POLARSTAR:
+		WEP_FIND_SHEET(SHEET_PSTAR);
 		SHEET_ADD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
 							 : w->level == 2 ? &SPR_PolarB2 
 							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SPUR:
-		SHEET_ADD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
-							 : w->level == 2 ? &SPR_PolarB1 
-							 : w->level == 3 ? &SPR_PolarB2
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		WEP_FIND_SHEET(SHEET_SPUR);
+		SHEET_ADD(SHEET_SPUR, w->level == 1 ? &SPR_PolarB3 
+							: w->level == 2 ? &SPR_PolarB1 
+							: w->level == 3 ? &SPR_PolarB2
+							: &SPR_PolarB3, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SNAKE:
+		WEP_FIND_SHEET(SHEET_SNAKE);
 		SHEET_ADD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
 							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_FIREBALL:
+		WEP_FIND_SHEET(SHEET_FBALL);
 		SHEET_ADD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
 							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
 		break;
 		case WEAPON_MACHINEGUN:
-		{
-			uint8_t mgun_sheet = NOSHEET;
-			SHEET_FIND(mgun_sheet, SHEET_MGUN);
-			if(mgun_sheet != NOSHEET) {
-				w->sheet = mgun_sheet;
-				return;
-			}
-		}
-		SHEET_ADD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 
-							 : w->level == 2 ? &SPR_MGunB2 
-							 : &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+		WEP_FIND_SHEET(SHEET_MGUN);
+		SHEET_ADD(SHEET_MGUN, w->level == 1 ? &SPR_MGunB1 
+							: w->level == 2 ? &SPR_MGunB2 
+							: &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_BUBBLER:
-		SHEET_ADD(SHEET_BUBB,  w->level == 1 ? &SPR_BubB1 
-							 : w->level == 2 ? &SPR_BubB2 
-							 : &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
+		WEP_FIND_SHEET(SHEET_BUBB);
+		SHEET_ADD(SHEET_BUBB, w->level == 1 ? &SPR_BubB1 
+							: w->level == 2 ? &SPR_BubB2 
+							: &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_BLADE:
+		WEP_FIND_SHEET(SHEET_BLADE);
 		SHEET_ADD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 
 							 : w->level == 2 ? &SPR_BladeB2 
 							 : &SPR_BladeB3k, 1,3,3, 0,0);
 		SHEET_LOAD(&SPR_BladeB3s, 2,4, TILE_SLASHINDEX, 1);
 		break;
 		case WEAPON_NEMESIS:
+		WEP_FIND_SHEET(SHEET_NEMES);
 		SHEET_ADD(SHEET_NEMES, w->level == 1 ? &SPR_NemB1h 
 							 : w->level == 2 ? &SPR_NemB2h 
 							 : &SPR_NemB3h, 2,3,2, 0,0, 0,1);
@@ -74,11 +83,13 @@ void sheets_load_weapon(Weapon *w) {
 				 : &SPR_NemB3v, 2,6, TILE_NEMINDEX, 1);
 		break;
 		case WEAPON_MISSILE:
+		WEP_FIND_SHEET(SHEET_MISSL);
 		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
 							 : &SPR_MisslB1, 2,2,2, 0,0, 1,0);
 		break;
 		case WEAPON_SUPERMISSILE:
+		WEP_FIND_SHEET(SHEET_MISSL);
 		SHEET_ADD(SHEET_MISSL, w->level == 1 ? &SPR_MisslB1 
 							 : w->level == 2 ? &SPR_MisslB2 
 							 : &SPR_MisslB1, 2,2,2, 0,0, 1,0);
@@ -89,6 +100,10 @@ void sheets_load_weapon(Weapon *w) {
 
 void sheets_refresh_weapon(Weapon *w) {
 	if(!w) return;
+	if(w->sheet == NOSHEET) {
+		sheets_load_weapon(w);
+		return;
+	}
 	switch(w->type) {
 		case WEAPON_POLARSTAR:
 		SHEET_MOD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
