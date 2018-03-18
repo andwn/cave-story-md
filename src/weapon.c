@@ -316,8 +316,11 @@ void weapon_fire_missile(Weapon *w) {
 			break;
 		}
 		if(!b) return;
-		if(w->ammo) w->ammo--;
-		else if(w->maxammo) return;
+		// Only consume 1 ammo for Lv 3
+		if(count == 0) {
+			if(w->ammo) w->ammo--;
+			else if(w->maxammo) return;
+		}
 		b->type = w->type;
 		b->level = w->level;
 		b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
