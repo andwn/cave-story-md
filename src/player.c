@@ -768,6 +768,8 @@ static uint16_t GetNextChar(uint8_t index) {
 }
 
 void player_show_map_name(uint8_t ttl) {
+	// Boss bar overwrites the name
+	if(stageID == STAGE_WATERWAY_BOSS) return;
 	// Create a string of tiles in RAM
 	uint32_t nameTiles[16][8];
 	uint8_t len = 0;
