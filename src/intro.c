@@ -31,7 +31,6 @@
 
 void intro_main() {
 	gamemode = GM_INTRO;
-	
 	// Init screen stuff
 	VDP_setCachedPalette(PAL0, PAL_Main.data);
 	VDP_setCachedPalette(PAL1, PAL_Intro.data);
@@ -41,14 +40,12 @@ void intro_main() {
 	effects_init();
 	camera_init();
 	tsc_init();
-	//camera.y -= 8 << CSF; // Cancel the offset, we want to use absolute positions
+	camera.x += 6 << CSF; // Cancel the offset, we want to use absolute positions
 	camera.target = NULL;
 	stage_load(STAGE_INTRO);
 	tsc_call_event(100);
 	// Create "Studio Pixel Presents" text
 	VDP_drawText("Studio Pixel Presents", 10, 8);
-	//Entity *text = entity_create((SCREEN_HALF_W<<CSF) - (64<<CSF), SCREEN_HEIGHT - (64<<CSF), OBJ_INTROTEXT, 0);
-	//blg->linkedEntity = entity_create(SCREEN_HALF_W<<CSF, SCREEN_HALF_H<<CSF, OBJ_SEGALOGO, 0);
 	
 	uint16_t timer = 0;
 	while(++timer <= TIME_10(400) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {

@@ -224,6 +224,12 @@ void entities_update(uint8_t draw) {
 			collided = *((uint32_t*) &collision) > 0;
 			player.x = player.x_next;
 			player.y = player.y_next;
+			if(collided && player.health > 0 && (e->type == OBJ_BLOCK_MOVEH || e->type == OBJ_BLOCK_MOVEV)) {
+				if(blk(player.x, 0, player.y, 0) == 0x41) {
+					// Player got crushed
+					if(player_inflict_damage(100)) return;
+				}
+			}
 			if(collision.bottom) {
 				if(flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
