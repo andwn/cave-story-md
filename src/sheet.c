@@ -33,14 +33,21 @@ void sheets_load_weapon(Weapon *w) {
 		WEP_FIND_SHEET(SHEET_PSTAR);
 		SHEET_ADD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
 							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+							 : &SPR_PolarB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_SPUR:
+		{	// Need to load both Polar Star Lv 3 and Spur
+			uint8_t pstar_sheet = NOSHEET;
+			SHEET_FIND(pstar_sheet, SHEET_PSTAR);
+			if(pstar_sheet == NOSHEET) {
+				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+			}
+		}
 		WEP_FIND_SHEET(SHEET_SPUR);
-		SHEET_ADD(SHEET_SPUR, w->level == 1 ? &SPR_PolarB3 
-							: w->level == 2 ? &SPR_PolarB1 
-							: w->level == 3 ? &SPR_PolarB2
-							: &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_ADD(SHEET_SPUR, w->level == 1 ? &SPR_SpurB1 
+							: w->level == 2 ? &SPR_SpurB2
+							: &SPR_SpurB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
+		w->sheet = sheet_num - 1;
 		break;
 		case WEAPON_SNAKE:
 		WEP_FIND_SHEET(SHEET_SNAKE);
@@ -108,13 +115,12 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_POLARSTAR:
 		SHEET_MOD(SHEET_PSTAR, w->level == 1 ? &SPR_PolarB1 
 							 : w->level == 2 ? &SPR_PolarB2 
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+							 : &SPR_PolarB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_SPUR:
-		SHEET_MOD(SHEET_SPUR,  w->level == 1 ? &SPR_PolarB3 
-							 : w->level == 2 ? &SPR_PolarB1 
-							 : w->level == 3 ? &SPR_PolarB2
-							 : &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+		SHEET_MOD(SHEET_SPUR, w->level == 1 ? &SPR_SpurB1 
+							: w->level == 2 ? &SPR_SpurB2
+							: &SPR_SpurB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 		break;
 		case WEAPON_SNAKE:
 		SHEET_MOD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 

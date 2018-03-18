@@ -172,30 +172,35 @@ void weapon_fire_polarstar(Weapon *w) {
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
 	b->damage = w->level + (w->level == 3 ? 1 : 0); // 1, 2, 4
 	b->ttl = TIME_8(pstar_ttl[b->level]);
-	b->sheet = w->sheet;
+	// Polar Star or Spur?
+	if(w->type == WEAPON_POLARSTAR) {
+		b->sheet = w->sheet;
+	} else {
+		SHEET_FIND(b->sheet, SHEET_PSTAR);
+	}
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
+		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
 	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
+		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 6, 1 + w->level, 6, 1 + w->level };
+		b->hit_box = (bounding_box) { 6, 1 + b->level, 6, 1 + b->level };
 	}
 }
 
@@ -545,7 +550,6 @@ static int16_t spur_xmark;
 static int16_t spur_ymark;
 
 void weapon_fire_spur(Weapon *w) {
-	sheets_refresh_weapon(w);
 	// Uncharged shot (Polar Star Lv3)
 	if(w->level == 1) {
 		uint8_t lv = w->level;
@@ -562,13 +566,18 @@ void weapon_fire_spur(Weapon *w) {
 		break;
 	}
 	if(!b) return;
+	// Reload the sprite sheet (bullet looks different depending on charge)
+	w->level--;
+	sheets_refresh_weapon(w);
 	// Since Lv1 is a special case for the polar star shot, and Lv4 is a special
 	// case for max charge, subtract 1 to get the "real" level
-	b->level = w->level - 1;
+	b->level = w->level;
+	w->level++;
+	
 	b->type = w->type;
 	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	//b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	b->ttl = TIME_8(30);
 	b->damage = b->level << 2; // 4, 8, 12
 	b->hits = 0;
@@ -576,26 +585,26 @@ void weapon_fire_spur(Weapon *w) {
 	sound_play(SND_SPUR_FIRE_1 + b->level - 1, 5);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
+		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
 	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+4);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + w->level, 6, 1 + w->level, 6 };
+		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
+		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(2);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 6, 1 + w->level, 6, 1 + w->level };
+		b->hit_box = (bounding_box) { 6, 2 + b->level, 6, 2 + b->level };
 	}
 	spur_xmark = b->x >> CSF;
 	spur_ymark = b->y >> CSF;
@@ -1012,7 +1021,7 @@ void bullet_update_spur(Bullet *b) {
 				t->hit_box = b->hit_box;
 				t->sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(2,2),
-					.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 4)),
+					.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
 				};
 				//switch(t->dir) {
 				//	case LEFT:  t->x += (b->state<<11); break;
@@ -1028,6 +1037,29 @@ void bullet_update_spur(Bullet *b) {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		if(b->ttl == TIME_8(28)) {
+			if(b->dir == UP || b->dir == DOWN) {
+				b->sprite.size = SPRITE_SIZE(2, 4);
+				b->sprite.attribut += 4;
+				if(b->sprite.attribut & (1<<12)) {
+					b->sprite.y -= 16;
+					b->hit_box.top += 16;
+				} else {
+					b->hit_box.bottom += 16;
+				}
+			} else {
+				b->sprite.size = SPRITE_SIZE(4, 2);
+				if(b->sprite.attribut & (1<<11)) {
+					b->sprite.x -= 16;
+					b->hit_box.right += 16;
+				} else {
+					b->hit_box.left += 16;
+				}
+			}
+		} else if(b->ttl < TIME_8(28)) {
+			if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
+			if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+		}
 		sprite_add(b->sprite);
 	}
 }
@@ -1039,6 +1071,29 @@ void bullet_update_spur_tail(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	if(b->ttl == TIME_8(18)) {
+		if(b->dir == UP || b->dir == DOWN) {
+			b->sprite.size = SPRITE_SIZE(2, 4);
+			b->sprite.attribut += 4;
+			if(b->sprite.attribut & (1<<12)) {
+				b->sprite.y -= 16;
+				b->hit_box.top += 16;
+			} else {
+				b->hit_box.bottom += 16;
+			}
+		} else {
+			b->sprite.size = SPRITE_SIZE(4, 2);
+			if(b->sprite.attribut & (1<<11)) {
+				b->sprite.x -= 16;
+				b->hit_box.right += 16;
+			} else {
+				b->hit_box.left += 16;
+			}
+		}
+	} else if(b->ttl < TIME_8(18)) {
+		if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
+		if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+	}
 	sprite_add(b->sprite);
 }
 

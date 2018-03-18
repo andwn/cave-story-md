@@ -90,6 +90,9 @@ SPRITE SPR_MenuTextE	"sprite/menutext_en.png"	8 1 0 0 NONE
 SPRITE SPR_MenuTextJ	"sprite/menutext_ja.png"	8 1 0 0 NONE
 SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 0 0 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 0 0 NONE
+SPRITE SPR_SpurB1		"sprite/spurb1.png"			2 2 0 0 NONE
+SPRITE SPR_SpurB2		"sprite/spurb2.png"			2 2 0 0 NONE
+SPRITE SPR_SpurB3		"sprite/spurb3.png"			2 2 0 0 NONE
 
 # Use PAL_sym
 SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE
