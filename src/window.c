@@ -244,7 +244,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	// And draw it
 	
 	uint16_t vramIndex = getKanjiIndexForPos(textRow, textColumn);
-	kanji_draw(PLAN_WINDOW, vramIndex, c, msgTextX, msgTextY, 2);
+	kanji_draw(PLAN_WINDOW, vramIndex, c, msgTextX, msgTextY, 2, FALSE);
 	if(textColumn < 18 - (showingFace ? 4 : 0) && (iskanji || c != ' ')) {
 		textColumn++;
 	}
@@ -290,9 +290,9 @@ void window_scroll_jtext() {
 		jwindowText[0][col] = jwindowText[1][col];
 		uint16_t vramIndex = getKanjiIndexForPos(0, col);
 		if(jwindowText[0][col] == 0) {
-			kanji_draw(PLAN_WINDOW, vramIndex, ' ', msgTextX, msgTextY, 2);
+			kanji_draw(PLAN_WINDOW, vramIndex, ' ', msgTextX, msgTextY, 2, FALSE);
 		} else {
-			kanji_draw(PLAN_WINDOW, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2);
+			kanji_draw(PLAN_WINDOW, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2, FALSE);
 		}
 		msgTextX += 2;
 	}

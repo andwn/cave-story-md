@@ -19,7 +19,7 @@
 
 #define TILECHAR_LONGS	32
 
-void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol) {
+void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol, uint8_t shadow) {
 	const uint8_t *bmp;
 	if(chr > 0xFF) {
 		chr -= 0x100;
@@ -32,11 +32,16 @@ void kanji_draw(VDPPlan plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint
 	uint32_t tiles[TILECHAR_LONGS] = {};
 	for(uint8_t i = 0; i < TILECHAR_LONGS; i++) {
 		uint8_t row = bmp[i];
-		for(uint8_t column = 0; column < 8; column++) {
-			// Palette indeces: 15 is white, 2 is texbox blue, 0 is transparency
-			uint32_t color = row & (1 << column) ? 15 : backCol;
+		uint8_t column = 8;
+		uint8_t last = 0;
+		do {
+			column--;
+			// Palette indeces: 15 is white, 2 is texbox blue, 1 is black, 0 is transparency
+			uint8_t pixel = row & (1 << column);
+			uint32_t color = pixel ? 15 : ((last && shadow) ? 1 : backCol);
+			last = pixel;
 			tiles[i] |= color << (column * 4);
-		}
+		} while(column > 0);
 	}
 	if(vramIndex >= (0xB000 >> 5) && vramIndex < (0xC000 >> 5)) {
 		// Between gaps in the window mapping, can't load in sequence

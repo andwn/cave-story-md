@@ -230,9 +230,14 @@ void ondeath_nodrop(Entity *e) {
 void onspawn_teleIn(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y += pixel_to_sub(8);
+	e->x_mark = e->x;
 	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 	e->display_box = (bounding_box) { 8, 8, 8, 8 };
-	if(playerEquipment & EQUIP_MIMIMASK) e->frame = 15;
+	if(playerEquipment & EQUIP_MIMIMASK) {
+		e->frame = 29;
+	} else {
+		e->frame = 14;
+	}
 }
 
 void ai_teleIn(Entity *e) {
@@ -240,19 +245,21 @@ void ai_teleIn(Entity *e) {
 		case 0: // Appear
 		{
 			sound_play(SND_TELEPORT, 5);
-			e->timer = 5*15;
 			e->state++;
 			e->grounded = TRUE;
 		} /* fallthrough */
 		case 1:
 		{
-			e->timer--;
-			e->frame = e->timer / 5;
-			e->x += (e->timer & 1) ? 0x200 : -0x200;
-			if(!e->timer) {
-				e->state++;
-				e->grounded = FALSE;
+			if(++e->timer > TIME_8(5)) {
+				e->timer = 0;
+				if(e->frame != 0 && e->frame != 15) {
+					e->frame--;
+				} else {
+					e->state++;
+					e->grounded = FALSE;
+				}
 			}
+			e->x = e->x_mark + ((e->timer & 1) ? 0x200 : -0x200);
 		}
 		break;
 		case 2: // Drop
@@ -286,7 +293,6 @@ void ai_teleIn(Entity *e) {
 			e->dir = 0;
 		break;
 	}
-	if(e->frame > 29) e->frame = 29; // Prevent any address error just in case
 }
 
 void onspawn_teleOut(Entity *e) {
@@ -308,6 +314,7 @@ void ai_teleOut(Entity *e) {
 				e->state++;
 				e->timer = 0;
 				e->y_speed = 0;
+				e->x_mark = e->x;
 				Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
 				if(light) light->state = 1;
 				sound_play(SND_TELEPORT, 5);
@@ -319,20 +326,22 @@ void ai_teleOut(Entity *e) {
 		break;
 		case 1: // Show teleport animation
 		{
-			e->timer++;
-			e->frame = e->timer / 5;
-			e->x += (e->timer & 1) ? 0x200 : -0x200;
-			if(e->timer >= 5*15) {
-				e->state++;
-				e->hidden = TRUE;
-				Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
-				if(light) light->state = 0;
+			if(++e->timer > TIME_8(5)) {
+				e->timer = 0;
+				e->frame++;
+				if(e->frame == 15 || e->frame == 30) {
+					e->frame = 14;
+					e->state++;
+					e->hidden = TRUE;
+					Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
+					if(light) light->state = 0;
+				}
 			}
+			e->x = e->x_mark + ((e->timer & 1) ? 0x200 : -0x200);
 		}
 		break;
 		case 2: break;
 	}
-	if(e->frame > 29) e->frame = 29; // Prevent any address error just in case
 }
 
 void onspawn_teleLight(Entity *e) {

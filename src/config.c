@@ -101,9 +101,9 @@ void draw_menuitem(const MenuItem *item) {
 		break;
 		case MI_LANG:
 		if(*item->valptr) {
-			kanji_draw(PLAN_A, TILE_BACKINDEX,   0x100+794, 30, item->y, 0); // 日
-			kanji_draw(PLAN_A, TILE_BACKINDEX+4, 0x100+909, 32, item->y, 0); // 本
-			kanji_draw(PLAN_A, TILE_BACKINDEX+8, 0x100+417, 34, item->y, 0); // 語
+			kanji_draw(PLAN_A, TILE_BACKINDEX,   0x100+794, 30, item->y, 0, TRUE); // 日
+			kanji_draw(PLAN_A, TILE_BACKINDEX+4, 0x100+909, 32, item->y, 0, TRUE); // 本
+			kanji_draw(PLAN_A, TILE_BACKINDEX+8, 0x100+417, 34, item->y, 0, TRUE); // 語
 		} else {
 			VDP_drawText("English", 30, item->y);
 			VDP_clearText(30, item->y + 1, 6); // Hide kanji
@@ -332,7 +332,7 @@ void act_format(uint8_t page) {
 	uint8_t starts = 0;
 	uint16_t timer = 0;
 	VDP_drawText("Are you sure?", 13, 12);
-	VDP_drawText("Press start three times", 8, 14);
+	VDP_drawText("Press Start three times", 8, 14);
 	song_stop();
 	while(!joy_pressed(btn[cfg_btn_shoot])) {
 		input_update();
