@@ -24,10 +24,11 @@ void ai_critter(Entity *e) {
 		}
 	}
 	if(e->y_speed < 0) {
-		uint8_t block = blk(e->x, 0, e->y, -e->hit_box.top);
-		if(block == 0x41 || block == 0x43) {
-			e->y_speed = 0;
-			e->y += 0xFF;
+		e->x_next = e->x;
+		e->y_next = e->y;
+		if(collide_stage_ceiling(e)) {
+			e->y = e->y_next;
+			e->y_speed = SPEED_8(0xFF);
 		}
 	} else if(e->y_speed > 0) {
 		e->x_next = e->x;
