@@ -267,8 +267,8 @@ void ai_core(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 15) == 1) {
-				effect_create_smoke((e->x >> CSF) - 80 + (random() % 160), 
-									(e->y >> CSF) - 50 + (random() % 100));
+				effect_create_smoke((e->x >> CSF) - 32 + (random() & 127), 
+									(e->y >> CSF) - 64 + (random() & 127));
 			}
 			
 			if (e->timer & 2)
@@ -391,13 +391,13 @@ void ai_minicore(Entity *e) {
 			e->state = MC_THRUST+1;
 			e->mouth_open = FALSE;
 			e->timer = 0;
-			e->x_mark = e->x + ((-128 + (random() % 160)) << CSF);
-			e->y_mark = e->y + ((-64 + (random() % 128)) << CSF);
+			e->x_mark = e->x + ((-96 + (random() & 127)) << CSF);
+			e->y_mark = e->y + ((-64 + (random() & 127)) << CSF);
 		}
 		/* fallthrough */
 		case MC_THRUST+1:
 		{
-			if (++e->timer > TIME(50)) e->mouth_open = TRUE;
+			if (++e->timer > TIME_8(50)) e->mouth_open = TRUE;
 		}
 		break;
 		case MC_CHARGE_FIRE:			// charging for fire
@@ -408,7 +408,7 @@ void ai_minicore(Entity *e) {
 		/* fallthrough */
 		case MC_CHARGE_FIRE+1:			// flash blue
 		{
-			if(++e->timer > TIME(20)) e->state = MC_FIRE;
+			if(++e->timer > TIME_8(20)) e->state = MC_FIRE;
 		}
 		break;
 		case MC_FIRE:			// firing

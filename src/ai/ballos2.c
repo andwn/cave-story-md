@@ -268,10 +268,17 @@ static void run_lightning(Entity *e) {
 			LIMIT_Y(SPEED_10(0x3FF));
 			
 			// run firing
-			if(++e->timer > TIME_8(200)) {
-				uint8_t pos = (e->timer % 40);
-				
-				if (pos == 1) {
+			e->timer++;
+			switch(e->timer) {
+				case 200:
+				case 200+40:
+				case 200+80:
+				case 200+120:
+				case 200+160:
+				case 200+200:
+				case 200+240:
+				case 200+280:
+				{
 					// spawn lightning target
 					entity_create(player.x, LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
 					//e->dir = 1;		// switch to flashing frames
@@ -290,9 +297,8 @@ static void run_lightning(Entity *e) {
 						e->timer = 0;
 						e->timer2 = 0;
 					}
-				} //else if (pos == 20) {
-					//e->dir = 0;		// stop flashing
-				//}
+				}
+				break;
 			}
 		}
 		break;
@@ -308,7 +314,7 @@ static void run_lightning(Entity *e) {
 			}
 			
 			if (e->timer > TIME_8(50)) {
-				if ((e->timer % TIME_8(10)) == 1) {
+				if ((e->timer & 15) == 1) {
 					entity_create(block_to_sub(e->timer2), LIGHTNING_Y, OBJ_BALLOS_TARGET, 0);
 					e->timer2 += 4;
 					

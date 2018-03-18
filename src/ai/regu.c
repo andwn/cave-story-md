@@ -308,7 +308,7 @@ void ai_sue(Entity *e) {
 			e->timer++;
 			if((e->timer & 15) == 8) {
 				e->frame = 8;
-			} else if((e->timer % 16) == 0) {
+			} else if((e->timer & 15) == 0) {
 				e->frame = 0;
 			}
 		}
@@ -742,14 +742,13 @@ void ai_npc_at_computer(Entity *e) {
 		} /* fallthrough */
 		case TYPING:
 		{
-			ANIMATE(e, 3, 0,1);
-			
-			if (!(random() % TIME(80))) {
+			ANIMATE(e, 4, 0,1);
+			if(!(random() & 63)) {
 				e->state = PAUSE_SLOUCH;
 				e->frame = 1;
 				e->timer = 0;
 			}
-			else if (!(random() % TIME(120))) {
+			else if(!(random() & 127)) {
 				e->state = PAUSE_UPRIGHT;
 				e->frame = 2;
 				e->timer = 0;
@@ -759,7 +758,7 @@ void ai_npc_at_computer(Entity *e) {
 		
 		case PAUSE_SLOUCH:
 		{
-			if (++e->timer > TIME(40)) {
+			if (++e->timer > TIME_8(40)) {
 				e->state = PAUSE_UPRIGHT;
 				e->frame = 2;
 				e->timer = 0;
@@ -769,7 +768,7 @@ void ai_npc_at_computer(Entity *e) {
 		
 		case PAUSE_UPRIGHT:
 		{
-			if (++e->timer > TIME(80)) {
+			if (++e->timer > TIME_8(80)) {
 				e->state = TYPING;
 				e->frame = 0;
 				e->timer = 0;

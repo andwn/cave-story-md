@@ -33,8 +33,8 @@ ifeq ($(OS),Windows_NT)
 endif
 
 INCS     = -Isrc -Ires -Iinc
-LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -fno-builtin
+LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
 LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib

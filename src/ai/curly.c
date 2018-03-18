@@ -302,7 +302,7 @@ void ai_curlyBoss(Entity *e) {
 		case CURLYB_FIGHT_START:
 		{
 			e->state = CURLYB_WAIT;
-			e->timer = (random() % 50) + 50;
+			e->timer = (random() & 31) + 60;
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
 			e->eflags |= NPC_SHOOTABLE;
@@ -319,7 +319,7 @@ void ai_curlyBoss(Entity *e) {
 		{
 			e->state = CURLYB_WALKING_PLAYER;
 			e->frame = 1;
-			e->timer = (random() % 50) + 50;
+			e->timer = (random() & 31) + 60;
 			FACE_PLAYER(e);
 		}
 		/* fallthrough */
@@ -342,16 +342,19 @@ void ai_curlyBoss(Entity *e) {
 			FACE_PLAYER(e);
 			e->x_speed -= e->x_speed >> 3;
 			e->frame = 0;
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = CURLYB_FIRE_GUN;
 				e->x_speed = 0;
 				e->timer = 0;
+				e->timer2 = 0;
 			}
 		}
 		break;
 		case CURLYB_FIRE_GUN:
 		{
-			if (e->timer % TIME(5) == 0) {	// time to fire
+			if(++e->timer > TIME_8(5)) {	// time to fire
+				e->timer = 0;
+				e->timer2++;
 				// check if player is trying to jump over
 				if (abs(e->x - player.x) < pixel_to_sub(32) && player.y + pixel_to_sub(10) < e->y) {
 					// shoot up instead
@@ -362,13 +365,13 @@ void ai_curlyBoss(Entity *e) {
 					curlyboss_fire(e, e->dir);
 				}
 			}
-			if (++e->timer > TIME(30)) e->state = CURLYB_FIGHT_START;
+			if(e->timer2 > 10) e->state = CURLYB_FIGHT_START;
 		}
 		break;
 		case CURLYB_SHIELD:
 		{
 			e->x_speed = 0;
-			if (++e->timer > TIME(30)) e->state = CURLYB_FIGHT_START;
+			if (++e->timer > TIME_8(30)) e->state = CURLYB_FIGHT_START;
 		}
 		break;
 	}

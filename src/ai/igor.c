@@ -260,9 +260,9 @@ void ai_igordead(Entity *e) {
 		break;
 		case 1:
 		// Puffs of smoke
-		if((++e->timer % 10) == 1) {
-			effect_create_smoke(sub_to_pixel(e->x) - 24 + (random() % 48), 
-				sub_to_pixel(e->y) - 32 + (random() % 64));
+		if((++e->timer & 7) == 1) {
+			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
+				sub_to_pixel(e->y) - 32 + (random() & 63));
 		}
 		// Shake
 		if((e->timer & 3) == 1) {
@@ -276,10 +276,10 @@ void ai_igordead(Entity *e) {
 		}
 		break;
 		case 2:
-		// Slower smoke puff
-		if((++e->timer & 15) == 0) {
-			effect_create_smoke(sub_to_pixel(e->x) - 24 + (random() % 48), 
-				sub_to_pixel(e->y) - 32 + (random() % 64));
+		// Puffs of smoke
+		if((++e->timer & 15) == 1) {
+			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
+				sub_to_pixel(e->y) - 32 + (random() & 63));
 		}
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)

@@ -6,7 +6,7 @@ void ai_batVertical(Entity *e) {
 		case 0:
 		{
 			e->y_mark = e->y;
-			e->timer = random() % TIME_8(50);
+			e->timer = random() & 63;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
@@ -38,7 +38,7 @@ void onspawn_batHang(Entity *e) {
 
 void ai_batHang(Entity *e) {
 	if(e->state == 0) { // Hanging and waiting
-		if(random() % TIME_8(100) == 0) {
+		if(!(random() & 127)) {
 			e->state = 1;
 			e->timer = 0;
 			e->frame = 4;

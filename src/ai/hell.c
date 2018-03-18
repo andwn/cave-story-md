@@ -801,7 +801,7 @@ void ai_puppy_ghost(Entity *e) {
 		break;
 	}
 	
-	//if ((e->timer % 8) == 1) {
+	//if ((e->timer & 7) == 1) {
 	//	effect(random(e->Left(), e->Right()), e->Bottom(), EFFECT_GHOST_SPARKLE);
 	//}
 }

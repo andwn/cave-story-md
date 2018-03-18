@@ -177,9 +177,9 @@ void ai_undead_core(Entity *e) {
 			RunHurtFlash(e->timer);
 			
 			if (e->timer < TIME_10(300)) {
-				if ((e->timer % TIME_8(120)) == 0) {
+				if ((e->timer & 127) == 0) {
 					SpawnPellet(1);
-				} else if ((e->timer % TIME_8(120)) == TIME_8(60)) {
+				} else if ((e->timer & 127) == 63) {
 					SpawnPellet(0);
 				}
 			}
@@ -253,9 +253,9 @@ void ai_undead_core(Entity *e) {
 			e->timer++;
 			RunHurtFlash(e->timer);
 			
-			if ((e->timer % TIME_8(120)) == 0) {
+			if ((e->timer & 127) == 0) {
 				SpawnPellet(1);
-			} else if ((e->timer % TIME_8(120)) == TIME_8(60)) {
+			} else if ((e->timer & 127) == 63) {
 				SpawnPellet(0);
 			}
 		}
@@ -292,7 +292,7 @@ void ai_undead_core(Entity *e) {
 			if (e->jump_time == TIME_8(150)) {
 				e->jump_time = 0;
 				entity_create(block_to_sub(stageWidth) + 40,
-							 block_to_sub(10 + (random() % 5)), OBJ_UDMINI_PLATFORM, 0);
+							 block_to_sub(11 + (random() & 3)), OBJ_UDMINI_PLATFORM, 0);
 				
 				break;
 			}

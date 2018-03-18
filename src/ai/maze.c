@@ -36,9 +36,9 @@ void ai_blockh(Entity *e) {
 		case 30:
 		{
 			uint16_t dir = e->eflags & NPC_OPTION2;
-			e->x_speed += dir ? SPEED(0x20) : -SPEED(0x20);
-			if(e->x_speed > SPEED(0x200)) e->x_speed = SPEED(0x200);
-			if(e->x_speed < -SPEED(0x200)) e->x_speed = -SPEED(0x200);
+			e->x_speed += dir ? SPEED_8(0x20) : -SPEED_8(0x20);
+			if(e->x_speed > SPEED_10(0x200)) e->x_speed = SPEED_10(0x200);
+			if(e->x_speed < -SPEED_10(0x200)) e->x_speed = -SPEED_10(0x200);
 			e->x_next = e->x + e->x_speed;
 			// hit edge
 			if((e->x_speed > 0 && stage_get_block_type(
@@ -51,7 +51,7 @@ void ai_blockh(Entity *e) {
 				e->state = dir ? 10 : 20;
 			} else {
 				e->x = e->x_next;
-				if((++e->timer % TIME(10)) == 6) {
+				if((++e->timer & 15) == 6) {
 					sound_play(SND_BLOCK_MOVE, 2);
 				}
 			}
@@ -83,9 +83,9 @@ void ai_blockv(Entity *e) {
 		case 30:
 		{
 			uint16_t dir = e->eflags & NPC_OPTION2;
-			e->y_speed += dir ? SPEED(0x20) : -SPEED(0x20);
-			if(e->y_speed > SPEED(0x200)) e->y_speed = SPEED(0x200);
-			if(e->y_speed < -SPEED(0x200)) e->y_speed = -SPEED(0x200);
+			e->y_speed += dir ? SPEED_8(0x20) : -SPEED_8(0x20);
+			if(e->y_speed > SPEED_10(0x200)) e->y_speed = SPEED_10(0x200);
+			if(e->y_speed < -SPEED_10(0x200)) e->y_speed = -SPEED_10(0x200);
 			e->y_next = e->y + e->y_speed;
 			// hit edge
 			if((e->y_speed > 0 && stage_get_block_type(
@@ -98,7 +98,7 @@ void ai_blockv(Entity *e) {
 				e->state = dir ? 10 : 20;
 			} else {
 				e->y = e->y_next;
-				if((++e->timer % TIME(10)) == 6) {
+				if((++e->timer & 15) == 6) {
 					sound_play(SND_BLOCK_MOVE, 2);
 				}
 			}
@@ -122,7 +122,7 @@ void ai_boulder(Entity *e) {
 		/* fallthrough */
 		case 11:
 		{
-			if ((++e->timer % 3) != 0)
+			if ((++e->timer & 2) != 0)
 				e->x = e->x_mark + (1 << 9);
 			else
 				e->x = e->x_mark;
@@ -197,7 +197,7 @@ void ai_gaudiDying(Entity *e) {
 		case 2:		// landed, shake
 		{
 			e->x_speed -= e->x_speed >> 4;
-			e->frame = (e->timer % 8) > 3 ? 6 : 5;
+			e->frame = (e->timer & 7) > 3 ? 6 : 5;
 			
 			if (++e->timer > TIME(50)) {
 				// this deletes Entity while generating smoke effects and boom
@@ -247,9 +247,8 @@ void ai_gaudi(Entity *e) {
 		{
 			e->frame = 0;
 			RANDBLINK(e, 3, 200);
-			
-			if (!(random() % TIME(100))) {
-				if (random() & 1) {
+			if(!(random() & 127)) {
+				if(random() & 1) {
 					TURN_AROUND(e);
 				} else {
 					e->state = 10;
@@ -260,7 +259,7 @@ void ai_gaudi(Entity *e) {
 		case 10:		// walking
 		{
 			e->state = 11;
-			e->timer = (random() % TIME(75)) + TIME(25);		// how long to walk for
+			e->timer = TIME_8(random() & 63) + TIME_8(30);		// how long to walk for
 			moveMeToFront = TRUE;
 		}
 		/* fallthrough */
@@ -270,12 +269,12 @@ void ai_gaudi(Entity *e) {
 			// time to stop walking?
 			if (--e->timer <= 0) e->state = 0;
 				
-			MOVE_X(SPEED(0x200));
+			MOVE_X(SPEED_10(0x200));
 			
 			// try to jump over any walls we come to
-			if ((e->x_speed < 0 && collide_stage_leftwall(e)) || \
+			if ((e->x_speed < 0 && collide_stage_leftwall(e)) ||
 				(e->x_speed > 0 && collide_stage_rightwall(e))) {
-				e->y_speed = -SPEED(0x5ff);
+				e->y_speed = -SPEED_12(0x5ff);
 				e->grounded = FALSE;
 				e->state = 20;
 				e->timer = 0;
@@ -303,7 +302,7 @@ void ai_gaudi(Entity *e) {
 			// go the other way.
 			if ((e->dir == 0 && collide_stage_leftwall(e)) ||
 				(e->dir == 1 && collide_stage_rightwall(e))) {
-				if (++e->timer > TIME(10)) {
+				if (++e->timer > TIME_8(10)) {
 					e->timer = 0;
 					TURN_AROUND(e);
 				}
@@ -311,12 +310,12 @@ void ai_gaudi(Entity *e) {
 				e->timer = 0;
 			}
 			
-			MOVE_X(SPEED(0x100));
+			MOVE_X(SPEED_10(0x100));
 		}
 		break;
 		case 21:	// landed from jump
 		{
-			if (++e->timer > TIME(10)) e->state = 0;
+			if (++e->timer > TIME_8(10)) e->state = 0;
 		}
 		break;
 	}
@@ -330,8 +329,8 @@ void ai_gaudi(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	if(!e->grounded) e->y_speed += SPEED(0x40);
-	LIMIT_Y(SPEED(0x5ff));
+	if(!e->grounded) e->y_speed += SPEED_8(0x40);
+	LIMIT_Y(SPEED_12(0x5ff));
 }
 
 void ai_gaudiFlying(Entity *e) {
@@ -363,7 +362,7 @@ void ai_gaudiFlying(Entity *e) {
 		/* fallthrough */
 		case 1:
 		{
-			e->timer = TIME(70) + (random() % TIME(80));
+			e->timer = TIME_8(80) + TIME_8(random() & 63);
 			e->state = 2;
 		}
 		/* fallthrough */
@@ -382,9 +381,9 @@ void ai_gaudiFlying(Entity *e) {
 			ANIMATE(e, 4, 9,8);
 			
 			e->timer++;
-			if (++e->timer > TIME(30)) {
+			if (++e->timer > TIME_8(30)) {
 				Entity *shot = entity_create(e->x, e->y, OBJ_GAUDI_FLYING_SHOT, 0);
-				THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x400));
+				THROW_AT_TARGET(shot, player.x, player.y, SPEED_12(0x400));
 				sound_play(SND_EM_FIRE, 5);
 				
 				e->state = 1;
@@ -394,10 +393,10 @@ void ai_gaudiFlying(Entity *e) {
 	
 	FACE_PLAYER(e);
 	// sinusoidal circling pattern
-	e->x_speed += (e->x > e->x_mark) ? -SPEED(0x10) : SPEED(0x10);
-	e->y_speed += (e->y > e->y_mark) ? -SPEED(0x10) : SPEED(0x10);
-	LIMIT_X(SPEED(0x200));
-	LIMIT_Y(SPEED(0x5ff));
+	e->x_speed += (e->x > e->x_mark) ? -SPEED_8(0x10) : SPEED_8(0x10);
+	e->y_speed += (e->y > e->y_mark) ? -SPEED_8(0x10) : SPEED_8(0x10);
+	LIMIT_X(SPEED_10(0x200));
+	LIMIT_Y(SPEED_12(0x5ff));
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }
@@ -633,14 +632,13 @@ void ai_pooh_black(Entity *e) {
 			bubble_ymark = e->y;
 			
 			// spawn bubbles when hit
-			if (e->damage_time && (e->damage_time % TIME_8(5)) == 1) {
+			if (e->damage_time && (e->damage_time & 7) == 1) {
 				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 				bubble->alwaysActive = TRUE;
-				bubble->x = e->x - 0x1800 + (random() % 0x3000);
-				bubble->y = e->y - 0x1800 + (random() % 0x3000);
-				// Don't wrap the whole thing in 1 SPEED(), gcc can't optimize that
-				bubble->x_speed = -SPEED_12(0x600) + (random() % SPEED_12(0xC00));
-				bubble->y_speed = -SPEED_12(0x600) + (random() % SPEED_12(0xC00));
+				bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
+				bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
+				bubble->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+				bubble->y_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
 				
 				// fly away after hit enough times
 				if (++e->timer > TIME_8(30)) {
@@ -738,10 +736,10 @@ void ai_poohblk_dying(Entity *e) {
 			if (++e->timer > 200) {
 				e->state = 2;
 				e->timer2++;
-				if ((e->timer2 % 6) == 3) {
+				if ((e->timer2 & 7) == 3) {
 					e->hidden = FALSE;
 					sound_play(SND_BUBBLE, 5);
-				} else if((e->timer2 % 6) == 0) {
+				} else if((e->timer2 & 7) == 0) {
 					e->hidden = TRUE;
 				}
 				if(e->timer2 > 60) {
@@ -754,14 +752,14 @@ void ai_poohblk_dying(Entity *e) {
 		break;
 	}
 	
-	if ((e->timer % 4) == 1) {
-		Entity *bubble = entity_create(
-				e->x - 0x1800 + (random() % 0x3000), 
-				e->y - 0x1800 + (random() % 0x3000), OBJ_POOH_BLACK_BUBBLE, 0);
+	if ((e->timer & 3) == 1) {
+		Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 		bubble->alwaysActive = TRUE;
+		bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
+		bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
 		bubble->attack = 0;
 		bubble->state = 1;
-		bubble->x_speed = -0x200 + (random() % 0x400);
+		bubble->x_speed = -0x200 + (random() & 0x3FF);
 		bubble->y_speed = -0x100;
 	}
 
@@ -777,7 +775,7 @@ void ai_firewhirr(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->timer = random() % TIME_8(50);
+			e->timer = random() & 63;
 			e->y_mark = e->y;
 		}
 		/* fallthrough */
@@ -809,7 +807,7 @@ void ai_firewhirr(Entity *e) {
 				shot->alwaysActive = TRUE;
 				shot->x = e->x;
 				shot->y = e->y;
-				e->timer2 = random() % TIME_8(20);
+				e->timer2 = random() & 15;
 				// tell Curly to acquire us as a target
 				CURLY_TARGET_HERE(e);
 			}
@@ -888,7 +886,7 @@ void ai_fuzz_core(Entity *e) {
 			// spawn mini-fuzzes, use jump_time as the angle since it is u8
 			spawn_minifuzz(e);
 			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
-			e->timer = random() % TIME_8(50);
+			e->timer = random() & 63;
 			e->state = 1;
 		}
 		/* fallthrough */
@@ -941,8 +939,8 @@ void ai_fuzz(Entity *e) {
 	} else {
 		if (e->linkedEntity->state == STATE_DESTROY) {
 			e->alwaysActive = TRUE;
-			e->x_speed = -SPEED_10(0x1FF) + (random() % SPEED_10(0x3FF));
-			e->y_speed = -SPEED_10(0x1FF) + (random() % SPEED_10(0x3FF));
+			e->x_speed = -SPEED_10(0x1FF) + SPEED_10((random() & 0x3FF));
+			e->y_speed = -SPEED_10(0x1FF) + SPEED_10((random() & 0x3FF));
 			e->state = 1;
 		} else if(!e->linkedEntity->alwaysActive) {
 			e->state = STATE_DELETE;

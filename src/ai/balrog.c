@@ -287,7 +287,7 @@ void ai_balrog(Entity *e) {
 	e->y = e->y_next;
 
 	if (e->balrog_smoking) {
-		if (++e->balrog_smoketimer > 20 || !(random() % 16)) {
+		if (++e->balrog_smoketimer > 20 || !(random() & 15)) {
 			//SmokeClouds(e, 1, 4, 4);
 			e->balrog_smoketimer = 0;
 		}
@@ -539,12 +539,12 @@ void ai_balrogFlying(Entity *e) {
 		case SHOOT_PLAYER:
 			e->timer++;
 			FACE_PLAYER(e);
-			if((e->timer % 16) == 15) {
+			if((e->timer & 15) == 15) {
 				e->frame = GASP;
 				// Fire shot
 				Entity *shot = entity_create(e->x, e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = e->dir ? 0x400 : -0x400;
-				shot->y_speed = -0x100 + (random() % 0x200);
+				shot->y_speed = -0x100 + (random() & 0x1FF);
 
 				sound_play(SND_EM_FIRE, 5);
 				if(e->timer > 32) {	// 3 shots
@@ -583,7 +583,7 @@ void ai_balrogFlying(Entity *e) {
 		case FLYING:
 			ANIMATE(e, 8, FLY1,FLY2);
 			e->timer++;
-			if(e->timer % 16 == 0) {
+			if((e->timer & 15) == 0) {
 				sound_play(SND_EXPLOSION2, 3);
 			}
 			if(e->timer >= 128) {
@@ -608,8 +608,8 @@ void ai_balrogFlying(Entity *e) {
 				camera_shake(30);
 				for(int i=0;i<4;i++) {
 					Entity *shot = entity_create(e->x, e->y, OBJ_BALROG_SHOT_BOUNCE, 0);
-					shot->x_speed = -0x400 + (random() % 0x800);
-					shot->y_speed = -0x400 + (random() % 0x400);
+					shot->x_speed = -0x400 + (random() & 0x7FF);
+					shot->y_speed = -0x400 + (random() & 0x3FF);
 				}
 				e->state = LANDED;
 				e->timer = 0;
@@ -821,7 +821,7 @@ void ai_balrog_missile(Entity *e) {
 	
 	e->x_speed += e->dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 	
-	//if ((++e->timer2 % 4) == 1)
+	//if ((++e->timer2 & 3) == 1)
 	//{
 	//	effect(e->CenterX() - e->x_speed, e->CenterY(), EFFECT_SMOKETRAIL_SLOW);
 	//}

@@ -281,6 +281,7 @@ void ai_misery_bubble(Entity *e) {
 #define STATE_DEFEATED			1000	// script-triggered, must be constant
 
 #define savedhp		curly_target_time
+#define timer3		curly_target_x
 
 static Entity *CreateRing(Entity *e, uint8_t angle) {
 	Entity *ring = entity_create(0, 0, OBJ_MISERY_RING, 0);
@@ -419,6 +420,7 @@ void ai_boss_misery(Entity *e) {
 			e->frame = 4;
 			
 			e->timer = 0;
+			timer3 = 0;
 			e->state++;
 		} /* fallthrough */
 		case STATE_SUMMON_BALLS+1:
@@ -426,12 +428,13 @@ void ai_boss_misery(Entity *e) {
 			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x20) : -SPEED_8(0x20);
 			LIMIT_Y(SPEED_10(0x200));
 			
-			if ((++e->timer % TIME_8(24)) == 0) {
+			if(++timer3 > TIME_8(24)) {
+				timer3 = 0;
 				entity_create(e->x, e->y+(4<<CSF), OBJ_MISERY_BALL, 0);
 				sound_play(SND_FIREBALL, 3);
 			}
 			
-			if (e->timer > TIME_8(72)) {
+			if(++e->timer > TIME_8(72)) {
 				e->state = 100;
 				e->timer = 0;
 			}
@@ -452,8 +455,12 @@ void ai_boss_misery(Entity *e) {
 			ANIMATE(e, 2, 8,9);
 			e->timer++;
 			if (e->timer == TIME_8(30)) {
-				e->x_mark = e->x = block_to_sub(9 + (random() % 23));
-				e->y_mark = e->y = block_to_sub(5 + (random() % 3));
+				static const uint8_t xpos[32] = {
+					 0, 1, 2, 2, 3, 4, 5, 5, 6, 7, 8, 8, 9,10,11,11,
+					12,13,13,14,15,15,16,17,17,18,19,19,20,21,21,22
+				};
+				e->x_mark = e->x = block_to_sub(9 + xpos[random() & 31]);
+				e->y_mark = e->y = tile_to_sub(9 + (random() & 3));
 			} else if (e->timer == TIME_8(50)) {
 				// switch back to showing real misery instead of the phase-in effect
 				e->eflags |= NPC_SHOOTABLE;

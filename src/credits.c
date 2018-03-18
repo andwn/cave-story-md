@@ -43,7 +43,7 @@ void credits_main() {
 	uint16_t backScroll = 0;
 	uint16_t illScroll = 0;
 	
-	uint8_t skipScroll = FALSE;
+	uint8_t skipScroll = 0;
 	
 	inFade = FALSE;
 	ready = TRUE;
@@ -162,12 +162,11 @@ void credits_main() {
 		backScroll++;
 		if(!pal_mode) {
 			// Slow the scrolling down slightly for NTSC
-			if((backScroll % 6) == 0 && !skipScroll) {
+			skipScroll++;
+			if(skipScroll == 6) {
 				backScroll--;
 				waitTime++;
-				skipScroll = TRUE;
-			} else {
-				skipScroll = FALSE;
+				skipScroll = 0;
 			}
 		}
 		if((backScroll & 15) == 0) {
@@ -198,19 +197,12 @@ void credits_show_image(uint16_t id) {
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
 	VDP_setEnable(FALSE);
 	VDP_setPalette(PAL2, illustration_info[id].palette->data);
-	//VDP_loadTileSet(illustration_info[id].tileset, TILE_TSINDEX, TRUE);
 	VDP_loadTileData(illustration_info[id].pat, 16, illustration_info[id].pat_size, TRUE);
 	uint16_t index = pal_mode ? 0 : 20;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
-		//uint16_t maps[20];
-		//for(uint16_t x = 0; x < 20; x++) {
-		//	maps[x] = illustration_info[id].map[index++] | (PAL2 << TILE_ATTR_PALETTE_SFT);
-		//}
 		DMA_doDma(DMA_VRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLAN_A + (y << 7) + (44 << 1), 20, 2);
 		index += 20;
 	}
-	//VDP_fillTileMapRectInc(PLAN_A, 
-	//		TILE_ATTR_FULL(PAL2,0,0,0,TILE_TSINDEX + off), 44, 0, 20, 28 + set);
 	VDP_setEnable(TRUE);
 	illScrolling = 8;
 }

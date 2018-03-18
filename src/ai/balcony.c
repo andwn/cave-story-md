@@ -195,7 +195,7 @@ void ai_igor_balcony(Entity *e) {
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 												 e->y, OBJ_IGOR_SHOT, 0);
 					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
-					shot->y_speed = SPEED(0x180) - (random() % SPEED(0x300));
+					shot->y_speed = -SPEED_10(0x180) + ((uint16_t) SPEED_8((random() & 0xFF))) * 3;
 				}
 			}
 			
@@ -220,7 +220,7 @@ void ai_block_spawner(Entity *e) {
 		// does nothing in Hell--you enter from the left.
 		case 0:
 		{
-			if (player.x < block_to_sub(stageWidth - 6)) {
+			if(player.x < block_to_sub(stageWidth - 6)) {
 				e->state = 1;
 				e->timer = 24;
 			}
@@ -229,10 +229,8 @@ void ai_block_spawner(Entity *e) {
 		
 		case 1:
 		{
-			if (--e->timer == 0) {
-				//Entity *block;
-				int x;
-				
+			if(--e->timer == 0) {
+				int32_t x;
 				// blocks tend to follow behind the player--this goes along
 				// with the text that tells you to run so as not to get squashed.
 				if (playerEquipment & EQUIP_BOOSTER20) {
@@ -247,9 +245,17 @@ void ai_block_spawner(Entity *e) {
 					x = block_to_sub(stageWidth - 10);
 				
 				if (playerEquipment & EQUIP_BOOSTER20) {
-					x += block_to_sub(-14 + (random() % 29));
+					static const int8_t pos[32] = {
+						-14, -13, -11, -10, -8, -6, -4, -3, -2,  0,  2,  3,  4,  6,  7,  8,  
+						 10,  11,  12,  14, 15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28
+					};
+					x += block_to_sub(pos[random() & 31]);
 				} else {
-					x += block_to_sub(-11 + (random() % 23));
+					static const int8_t pos[32] = {
+						-11, -10,  -9,  -8, -7, -6, -4, -3, -2,  0,  1,  2,  3,  4,  5,  6,  
+						  7,   8,   9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+					};
+					x += block_to_sub(pos[random() & 31]);
 				}
 				
 				entity_create(x, (player.y - block_to_sub(14)), 
@@ -349,11 +355,11 @@ void ai_doctor_ghost(Entity *e) {
 		case 11:
 		{
 			e->timer++;
-			if((e->timer % TIME_8(5)) == 0) {
+			if((e->timer & 7) == 0) {
 				Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
 				r->angle = A_RIGHT;
 				r->linkedEntity = e;
-				if((e->timer % TIME_8(10)) == 0) r->timer = 200;
+				if((e->timer & 15) == 0) r->timer = 200;
 			}
 			
 			if(e->timer > TIME_8(150))
@@ -410,10 +416,10 @@ void ai_red_energy(Entity *e) {
 				e->x_speed = -0xFF + (random() & 0x1FF);
 				e->y_speed = -0xFF + (random() & 0x1FF);
 			}
-			if(e->x < e->linkedEntity->x)		e->x_speed += SPEED_8(12);
-			else if(e->x > e->linkedEntity->x)	e->x_speed -= SPEED_8(12);
-			if(e->y < e->linkedEntity->y)		e->y_speed += SPEED_8(12);
-			else if(e->y > e->linkedEntity->y)	e->y_speed -= SPEED_8(12);
+			if(e->x < e->linkedEntity->x)		{ if(e->x_speed < SPEED_10(0x3ff)) e->x_speed += SPEED_8(12); }
+			else if(e->x > e->linkedEntity->x)	{ if(e->x_speed > SPEED_10(0x3ff)) e->x_speed -= SPEED_8(12); }
+			if(e->y < e->linkedEntity->y)		{ if(e->y_speed < SPEED_10(0x3ff)) e->y_speed += SPEED_8(12); }
+			else if(e->y > e->linkedEntity->y)	{ if(e->y_speed > SPEED_10(0x3ff)) e->y_speed -= SPEED_8(12); }
 			
 			e->x += e->x_speed;
 			e->y += e->y_speed;

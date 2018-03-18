@@ -39,7 +39,8 @@ void onspawn_doorway(Entity *e) {
 void ai_doorway(Entity *e) {
 	e->dir = 0;
 	if(e->state) {
-		if(++e->timer % TIME(10) == 1) {
+		if(++e->animtime > TIME_8(10)) {
+			e->animtime = 0;
 			e->frame++;
 			if(e->frame == 11 || e->frame == 22) e->state = STATE_DELETE;
 		}

@@ -174,14 +174,14 @@ void ai_baby(Entity *e) {
 	if(!e->state) {
 		e->state = 1;
 		if(random() & 1) {
-			e->x_speed = (random() % 0x100) + 0x100;
+			e->x_speed = (random() & 0xFF) + 0x100;
 		} else {
-			e->x_speed = (random() % 0x100) - 0x300;
+			e->x_speed = (random() & 0xFF) - 0x300;
 		}
 		if(random() & 1) {
-			e->y_speed = (random() % 0x100) + 0x100;
+			e->y_speed = (random() & 0xFF) + 0x100;
 		} else {
-			e->y_speed = (random() % 0x100) - 0x300;
+			e->y_speed = (random() & 0xFF) - 0x300;
 		}
 	}
 	
@@ -455,7 +455,7 @@ void ai_crow_with_skull(Entity *e) {
 	// switch over to the main crow AI, but only move up & down
 	e->y_speed = -SPEED_10(0x100 + (random() & 0xFF));
 	e->x_mark = e->x;
-	e->y_mark = e->y - (28<<CSF) + (random() % (38<<CSF));
+	e->y_mark = e->y - (32<<CSF) + (random() & 0x7FFF);
 	e->state = 101;
 	e->type = OBJ_CROW;
 	
@@ -514,7 +514,7 @@ void ai_skullhead(Entity *e) {
 			case 0:
 			{
 				e->state = 1;
-				e->timer = random() % 5;
+				e->timer = random() & 3;
 			} /* fallthrough */
 			case 1:
 			{
@@ -652,7 +652,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->eflags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
-			e->timer = random() % 50;
+			e->timer = random() & 63;
 			e->frame = 0;
 		} /* fallthrough */
 		case 11:
@@ -662,7 +662,7 @@ void ai_curlys_mimigas(Entity *e) {
 		case 13:
 		{
 			e->state = 14;
-			e->timer = random() % 50;
+			e->timer = random() & 63;
 			FACE_PLAYER(e);
 			e->frame = 1;
 		} /* fallthrough */
@@ -699,7 +699,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->x_speed = 0;
 				e->state = 21;
 				if(e->frame < 7) e->frame += 2;
-				e->timer = 300 + (random() % 100);
+				e->timer = 280 + (random() & 127);
 			}
 		}
 		break;
@@ -711,7 +711,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->health = 1000;
 				e->state = 11;
-				e->timer = random() % 50;
+				e->timer = random() & 63;
 				e->frame = 0;
 			}
 		}
@@ -824,7 +824,7 @@ void ai_skeleton(Entity *e) {
 			e->state = 21;
 			e->frame = 1;
 			e->timer2 = 0;
-			e->y_speed = -(SPEED(0x200) + (random() % SPEED(0x400)));
+			e->y_speed = -(SPEED_10(0x200) + SPEED_10(random() & 0x3FF));
 			e->grounded = FALSE;
 			
 			// jump towards player, unless we've been hurt; in that case jump away
@@ -942,7 +942,7 @@ void ai_puppy_bark(Entity *e) {
 					} else {
 						e->frame = NOBARK;
 						
-						if (!(random() % 8) || ++e->timer2 > 5) { 
+						if (!(random() & 7) || ++e->timer2 > 5) { 
 							// stop barking for a sec
 							e->state++;
 							e->timer = e->timer2 = 0;

@@ -65,7 +65,7 @@ void ai_midorin(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (!(random() % 32)) {
+			if (!(random() & 31)) {
 				e->state = 2 + (random() & 1);
 				e->frame = 1;
 			}
@@ -74,7 +74,7 @@ void ai_midorin(Entity *e) {
 		
 		case 2:		// blinking
 		{
-			if (++e->timer > TIME(8)) {
+			if (++e->timer > TIME_8(8)) {
 				e->state = 1;
 				e->timer = 0;
 				e->frame = 0;
@@ -89,7 +89,7 @@ void ai_midorin(Entity *e) {
 			e->frame = 0;	// this will be toggled into frame 2 just below
 			e->animtime = 0;
 			
-			e->timer = 32 + (random() % 24);		// how long to run
+			e->timer = 40 + (random() & 15);		// how long to run
 			e->dir = random() & 1;
 		} /* fallthrough */
 		case 4:
@@ -128,8 +128,8 @@ void ai_orangebell(Entity *e) {
 			
 			// create baby bats
 			for(uint8_t i=0;i<8;i++) {
-				Entity *bat = entity_create(e->x - 0x1000 + (random() % 0x2000),
-										   e->y - 0x1000 + (random() % 0x2000),
+				Entity *bat = entity_create(e->x - 0x1000 + (random() & 0x1FFF),
+										   e->y - 0x1000 + (random() & 0x1FFF),
 										   OBJ_ORANGEBELL_BABY, 0);
 				bat->linkedEntity = e;
 			}
@@ -223,12 +223,12 @@ void ai_gunfish(Entity *e) {
 			e->y_mark = e->y;
 			
 			e->state = 1;
-			e->timer = random() % TIME(50);
+			e->timer = random() & 63;
 		} /* fallthrough */
 		case 1:		// desync
 		{
 			if (e->timer == 0) {
-				e->y_speed = SPEED(0x200);
+				e->y_speed = SPEED_8(0x200);
 				e->state = 2;
 				e->timer = 0;
 			} else e->timer--;
@@ -241,7 +241,7 @@ void ai_gunfish(Entity *e) {
 			FACE_PLAYER(e);
 			
 			if (PLAYER_DIST_X(128<<CSF) && PLAYER_DIST_Y2(160<<CSF, 20<<CSF)) {
-				if (++e->timer > TIME(80)) {
+				if (++e->timer > TIME_8(80)) {
 					e->state = 10;
 					e->timer = 0;
 					e->frame += 2;
@@ -254,9 +254,10 @@ void ai_gunfish(Entity *e) {
 		{
 			ANIMATE(e, 4, 2,3);
 			
-			if (++e->timer > TIME(20)) {
+			if (++e->timer > TIME_8(20)) {
 				e->state = 20;
 				e->timer = 0;
+				e->timer2 = 0;
 				e->frame += 2;
 			}
 		}
@@ -266,7 +267,9 @@ void ai_gunfish(Entity *e) {
 		{
 			ANIMATE(e, 4, 4,5);
 			
-			if ((++e->timer % 10) == 3) {
+			if(++e->timer > TIME_8(10)) {
+				e->timer = 0;
+				e->timer2++;
 				Entity *shot = entity_create(e->x, e->y, OBJ_GUNFISH_SHOT, 0);
 				
 				shot->x_speed = e->dir ? SPEED(0x400) : -SPEED(0x400);
@@ -275,7 +278,7 @@ void ai_gunfish(Entity *e) {
 				sound_play(SND_EM_FIRE, 3);
 			}
 			
-			if (e->timer > TIME(60)) {
+			if (e->timer2 > 6) {
 				e->state = 2;
 				e->timer = 0;
 				e->frame -= 4;
@@ -403,7 +406,7 @@ void ai_droll_shot(Entity *e) {
 	e->y += e->y_speed;
 	ANIMATE(e, 4, 0,1,2);
 	
-	if ((++e->timer % 8) == 0) sound_play(SND_DROLL_SHOT_FLY, 3);
+	if ((++e->timer & 7) == 0) sound_play(SND_DROLL_SHOT_FLY, 3);
 	
 	if (blk(e->x, 0, e->y, 0) & 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
@@ -490,7 +493,7 @@ void ai_mimiga_farmer(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (!(random() % 60)) {
+			if (!(random() & 63)) {
 				if (e->type != OBJ_MIMIGA_FARMER_STANDING && (random() & 1)) {	// walk
 					e->state = 10;
 				} else {	// blink
@@ -515,7 +518,7 @@ void ai_mimiga_farmer(Entity *e) {
 			e->frame = 2;
 			e->animtime = 0;
 			
-			e->timer = 16 + (random() % 16);
+			e->timer = 16 + (random() & 15);
 			e->dir = random() & 1;
 		} /* fallthrough */
 		case 11:
@@ -848,7 +851,7 @@ void ai_rocket(Entity *e) {
 			e->timer++;
 			//SpawnRocketTrail(o, (e->timer & 1) ? RIGHT : LEFT);
 			
-			if ((e->timer % 4) == 1) sound_play(SND_FIREBALL, 3);
+			if ((e->timer & 3) == 1) sound_play(SND_FIREBALL, 3);
 			
 			if (collide_stage_ceiling(e)) {
 				//SmokeClouds(o, 6, 16, 8);
@@ -866,7 +869,7 @@ void ai_rocket(Entity *e) {
 			e->y_speed += 8;
 			e->timer++;
 			if (e->y_speed < 0) {
-				if ((e->timer % 16) == 1) sound_play(SND_FIREBALL, 3);
+				if ((e->timer & 15) == 1) sound_play(SND_FIREBALL, 3);
 			} else if (collide_stage_floor(e)) {
 				// Apply this now, since it won't happen when the state is 0
 				e->x = e->x_next;

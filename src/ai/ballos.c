@@ -913,7 +913,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
 			e->attack = 0;
 			
-			e->timer2 /= 4;
+			e->timer2 >>= 2;
 		} /* fallthrough */
 		case 1001:
 		{

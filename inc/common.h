@@ -52,8 +52,8 @@ uint16_t speed_tab[0x100];
 #define SPEED_12(x) (speed_tab[(x) >> 4] << 4)
 
 // Div/mod tables to help math when displaying digits
-const uint8_t div10[100];
-const uint8_t mod10[100];
+const uint8_t div10[0x400];
+const uint8_t mod10[0x400];
 
 // Direction
 enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };

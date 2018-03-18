@@ -197,6 +197,10 @@ enum Frame {
 // NXEngine has a 3rd timer, we don't. Alias the unused jump_time
 #define timer3	jump_time
 
+static const uint8_t xpos[16] = {
+	4,5,5,6,7,7,8,9,10,11,11,12,13,13,14,15
+};
+
 void ai_ma_pignon(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -257,12 +261,12 @@ void ai_ma_pignon(Entity *e) {
 		case MP_Jump:		// pause a moment and jump
 		{
 			e->frame = DUCK;
-			if (++e->timer > TIME(5)) {
+			if (++e->timer > TIME_8(5)) {
 				e->state = MP_In_Air;
 				e->frame = HOP;
 				
-				e->x_speed = -SPEED(0x400) + (random() % SPEED(0x800));
-				e->y_speed = -SPEED(0x800);
+				e->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+				e->y_speed = -SPEED_12(0x800);
 				e->grounded = FALSE;
 				
 				sound_play(SND_ENEMY_JUMP, 5);
@@ -273,7 +277,7 @@ void ai_ma_pignon(Entity *e) {
 		
 		case MP_In_Air:		// jumping or falling after clone attack
 		{
-			e->y_speed += SPEED(0x80);
+			e->y_speed += SPEED_8(0x80);
 			
 			// for when falling back onscreen after clone attack
 			//if (e->y > (8 * TILE_H) << CSF)
@@ -287,9 +291,9 @@ void ai_ma_pignon(Entity *e) {
 			FACE_PLAYER(e);
 			
 			// select frame
-			if (e->y_speed < -SPEED(0x200)) {
+			if (e->y_speed < -SPEED_10(0x200)) {
 				e->frame = HOP;
-			} else if (e->y_speed > SPEED(0x200)) {
+			} else if (e->y_speed > SPEED_10(0x200)) {
 				e->frame = LAND;
 			} else {
 				e->frame = STAND;
@@ -325,11 +329,11 @@ void ai_ma_pignon(Entity *e) {
 		case MP_ChargeAttack:		// charge attack
 		{
 			e->frame = SMILE;
-			if (++e->timer > TIME(10)) {
+			if (++e->timer > TIME_8(10)) {
 				e->state = MP_ChargeAttack+1;
 				e->frame = CHARGE1;
 				
-				MOVE_X(SPEED(0x5ff));
+				MOVE_X(SPEED_12(0x5ff));
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				
 				e->eflags |= NPC_INVINCIBLE;
@@ -357,11 +361,11 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, CHARGE1,CHARGE2);
 			
 			if ((++e->timer & 7) == 0) {
-				int32_t x = block_to_sub(4 + (random() % 12));
+				int32_t x = block_to_sub(xpos[random() & 15]);
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_ROCK, 0);
 			}
 			
-			if (e->timer > TIME(30)) {
+			if (e->timer > TIME_8(30)) {
 				e->timer2 = 0;
 				e->state = MP_In_Air;
 				
@@ -383,7 +387,7 @@ void ai_ma_pignon(Entity *e) {
 		{
 			ANIMATE(e, 4, WALK1,WALK2);
 			
-			MOVE_X(SPEED(0x400));
+			MOVE_X(SPEED_12(0x400));
 			if (PLAYER_DIST_X(3 << CSF)) {
 				e->state = MP_Fly_Up;
 				e->timer = 0;
@@ -431,7 +435,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, HOP,WHITE);
 			
 			if ((++e->timer & 7) == 0) {
-				int32_t x = block_to_sub(4 + (random() % 12));
+				int32_t x = block_to_sub(xpos[random() & 15]);
 				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_CLONE, 0);
 			}
 			
@@ -514,7 +518,7 @@ void ai_ma_pignon(Entity *e) {
 }
 
 void ai_ma_pignon_rock(Entity *e) {
-	ANIMATE(e, 8, 0,1,2);
+	ANIMATE(e, 8, 0,1,2,1);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -527,7 +531,7 @@ void ai_ma_pignon_rock(Entity *e) {
 			e->timer3 = 0;
 			e->state = 1;
 			e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
-			e->animtime = random() % 24;
+			e->animtime = random() & 31;
 			e->attack = 10;
 		} /* fallthrough */
 		case 1:

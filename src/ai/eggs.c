@@ -95,19 +95,20 @@ void ai_beetle(Entity *e) {
 }
 
 void onspawn_beetleFollow(Entity *e) {
-	e->timer = TIME_8(25);
+	e->y_mark = e->y;
+	e->y -= 0xC00;
 }
 
 void ai_beetleFollow(Entity *e) {
 	// Don't deactivate immediately when offscreen, but do if really far away
 	e->alwaysActive = TRUE;
 	ANIMATE(e, 4, 1,0);
-	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? SPEED_8(12) : -SPEED_8(12);
-	if(abs(e->x_speed) > SPEED_10(0x380)) 
-		e->x_speed = e->dir ? SPEED_10(0x380) : -SPEED_10(0x380);
-	e->y_speed += (e->timer % TIME_8(100)) >= TIME_8(50) ? -4 : 4;
+	if(abs(e->x_speed) > SPEED_10(0x360)) 
+		e->x_speed = e->dir ? SPEED_10(0x360) : -SPEED_10(0x360);
+	e->y_speed += (e->y > e->y_mark) ? -4 : 4;
+	LIMIT_Y(SPEED_10(0x1FF));
 	if(e->damage_time) {
 		e->x += e->x_speed >> 1;
 		e->y += e->y_speed >> 1;
@@ -118,8 +119,9 @@ void ai_beetleFollow(Entity *e) {
 }
 
 void onspawn_basu(Entity *e) {
-	e->timer = TIME(25);
 	e->attack = 5;
+	e->y_mark = e->y;
+	e->y -= 0xC00;
 }
 
 void ai_basu(Entity *e) {
@@ -127,8 +129,9 @@ void ai_basu(Entity *e) {
 	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? 5 : -5;
-	e->y_speed += (e->timer % TIME(100)) >= TIME(50) ? -2 : 2;
-	LIMIT_X(SPEED(0x2FF));
+	LIMIT_X(SPEED_10(0x2FF));
+	e->y_speed += (e->y > e->y_mark) ? -2 : 2;
+	LIMIT_Y(SPEED_10(0x1FF));
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(e->x_speed < 0 && collide_stage_leftwall(e)) e->x_speed = SPEED(0x200);
@@ -136,12 +139,11 @@ void ai_basu(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	// Fire projectile
-	if (!(e->timer % TIME(158))) {
-		if (PLAYER_DIST_X(0x14000)) {
-			sound_play(SND_EM_FIRE, 5);
-			Entity *shot = entity_create(e->x, e->y, OBJ_GIANT_BEETLE_SHOT, 0);
-			THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x300));
-		}
+	if(e->timer > TIME_8(150) && PLAYER_DIST_X(0x14000)) {
+		e->timer = 0;
+		sound_play(SND_EM_FIRE, 5);
+		Entity *shot = entity_create(e->x, e->y, OBJ_GIANT_BEETLE_SHOT, 0);
+		THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x300));
 	}
 }
 

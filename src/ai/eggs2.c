@@ -64,7 +64,7 @@ void ai_dragon_zombie(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer < TIME(40) && (e->timer % 8) == 1) {
+			if (e->timer < TIME(40) && (e->timer & 7) == 1) {
 				Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);
 				THROW_AT_TARGET(fire, e->x_mark, e->y_mark, SPEED(0x500));
 				sound_play(SND_SNAKE_FIRE, 3);
@@ -73,7 +73,7 @@ void ai_dragon_zombie(Entity *e) {
 			if (e->timer > TIME(60)) {
 				e->state = 1;
 				e->frame = 0;
-				e->timer = (random() % TIME(100)) + TIME(100);	// random time till can fire again
+				e->timer = (random() & 127) + TIME(90);	// random time till can fire again
 			}
 		}
 		break;
@@ -226,7 +226,7 @@ void ai_counterbomb(Entity *e) {
 			e->state = 1;
 			e->y_mark = e->y;
 			
-			e->timer = random() % 50;
+			e->timer = random() & 63;
 			e->timer2 = 0;
 		} /* fallthrough */
 		case 1:

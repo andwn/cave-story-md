@@ -423,7 +423,7 @@ void tsc_update_boss_health() {
 		if(bossHealth == bossMaxHealth) return;
 		// Draw a partial filled tile
 		if(inc) {
-			uint16_t index = min(((hp << 3) / inc) << 3, 72);
+			uint16_t index = min((((uint16_t)(hp << 3)) / inc) << 3, 72);
 			VDP_loadTileData(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1, TRUE);
 		} else {
 			// Don't divide by zero

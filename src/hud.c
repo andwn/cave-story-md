@@ -107,7 +107,7 @@ void hud_refresh_health() {
 	hudMaxHealth = max(playerMaxHealth, 1); // Just so it's impossible to divide zero
 	hudHealth = player.health;
 	// 40 * hudHealth / hudMaxHealth
-	int16_t fillHP = ((hudHealth<<5) + (hudHealth<<3)) / hudMaxHealth;
+	int16_t fillHP = ((uint16_t)((hudHealth<<5) + (hudHealth<<3))) / hudMaxHealth;
 	for(uint8_t i = 0; i < 5; i++) {
 		// The TS_HudBar tileset has two rows of 8 tiles, where the section of the
 		// bar is empty at tile 0 and full at tile 7
@@ -147,7 +147,7 @@ void hud_refresh_energy() {
 		}
 	} else {
 		// Same deal as HP with the bar
-		int16_t fillXP = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
+		int16_t fillXP = ((uint16_t)((hudEnergy<<5) + (hudEnergy<<3))) / hudMaxEnergy;
 		for(uint8_t i = 0; i < 5; i++) {
 			int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
 			if(addrXP < 0) addrXP = 0;

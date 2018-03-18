@@ -154,7 +154,7 @@ void ai_curly_ai(Entity *e) {
 			e->y_mark = curly_target_y;
 			
 			curly_target_time--;
-			if (curly_target_time==60 && !(random() % 2)) CaiJUMP(e);
+			if (curly_target_time==60 && !(random() & 1)) CaiJUMP(e);
 		} else {
 			e->x_mark = player.x;
 			e->y_mark = player.y;
@@ -412,8 +412,8 @@ void ai_cai_gun(Entity *e) {
 			}
 			if (curly_mgun) {	// she has the Machine Gun
 				if (!e->timer2) {
-					e->timer2 = 2 + (random() % 4);		// no. shots to fire
-					e->timer = 40 + (random() % 10);
+					e->timer2 = 2 + (random() & 3);		// no. shots to fire
+					e->timer = 36 + (random() & 15);
 				}
 				if (e->timer) {
 					e->timer--;
@@ -423,13 +423,13 @@ void ai_cai_gun(Entity *e) {
 					// curly->dir is either 0 or 1, where 1 means right but DIR_RIGHT is 2
 					// So we do this weird thing to fix it
 					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
-					e->timer = 40 + (random() % 10);
+					e->timer = 36 + (random() & 15);
 					e->timer2--;
 				}
 			} else {	// she has the Polar Star
 				if (!e->timer) {
-					e->timer = 4 + (random() % 12);
-					if (random() % 10 == 0) e->timer += 20 + random() % 10;
+					e->timer = 4 + (random() & 15);
+					if ((random() & 7) == 0) e->timer += 20 + (random() & 15);
 					// create the shot
 					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
 				} else {

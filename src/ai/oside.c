@@ -35,7 +35,7 @@ void ai_night_spirit(Entity *e) {
 		{
 			ANIMATE(e, 4, 0,1,2);
 			
-			if (++e->timer > TIME(200)) {
+			if (++e->timer > TIME_8(200)) {
 				e->state = NS_PREPARE_FIRE;
 				e->timer = 0;
 				e->frame += 3;
@@ -46,7 +46,7 @@ void ai_night_spirit(Entity *e) {
 		case NS_PREPARE_FIRE:
 		{
 			ANIMATE(e, 4, 3,4,5);
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = NS_FIRING;
 				e->timer = 0;
 				e->frame += 3;
@@ -58,10 +58,10 @@ void ai_night_spirit(Entity *e) {
 		{
 			ANIMATE(e, 4, 6,7,8);
 			
-			if (!(e->timer % 8)) {
+			if (!(e->timer & 7)) {
 				Entity *shot = entity_create(e->x, e->y, OBJ_NIGHT_SPIRIT_SHOT, 0);
-				shot->x_speed = SPEED(0x100) + (random() % SPEED(0x500));
-				shot->y_speed = -SPEED(0x200) + (random() % SPEED(0x400));
+				shot->x_speed = SPEED_10(0x180) + SPEED_10(random() & 0x3FF);
+				shot->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
 				
 				sound_play(SND_BUBBLE, 3);
 			}
@@ -82,7 +82,7 @@ void ai_night_spirit(Entity *e) {
 			e->y_speed += (e->y > e->y_mark) ? -SPEED(0x40) : SPEED(0x40);
 			LIMIT_Y(SPEED(0x400));
 			
-			if (abs(e->y - e->y_mark) < (SCREEN_HEIGHT/2)<<CSF) {
+			if (abs(e->y - e->y_mark) < (SCREEN_HALF_H)<<CSF) {
 				e->state = NS_GUARD_SET_POINT;
 			}
 		}
@@ -317,7 +317,7 @@ void ai_little_family(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (!(random() % TIME(60))) {
+			if(!(random() & 63)) {
 				e->state = (random() & 1) ? 2 : 10;
 				e->timer = 0;
 				e->frame = 1;
@@ -338,7 +338,7 @@ void ai_little_family(Entity *e) {
 			e->frame = 0;
 			e->animtime = 0;
 			e->dir = random() & 1;
-			e->timer = 16 + (random() % 16);
+			e->timer = 16 + (random() & 15);
 		} /* fallthrough */
 		case 11:
 		{

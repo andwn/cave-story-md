@@ -111,14 +111,14 @@ void ai_red_bat_spawner(Entity *e) {
 			//if(PLAYER_DIST_Y(64 << CSF)) {
 				if(e->eflags & NPC_OPTION2) e->dir = 1;
 				e->state = 1;
-				e->timer = TIME(200) + (random() % TIME(200));
+				e->timer = TIME_8(160) + TIME_8(random() & 0xFF);
 			//}
 		}
 		break;
 		case 1:
 		{
 			if (e->timer == 0) {
-				Entity *bat = entity_create(e->x, e->y - (32 << CSF) + (random() % (64 << CSF)),
+				Entity *bat = entity_create(e->x, e->y - 0x4000 + (random() & 0x7FFF),
 											OBJ_RED_BAT, 0);
 				bat->dir = e->dir;
 				e->state = 0;
@@ -135,13 +135,13 @@ void ai_red_bat(Entity *e) {
 		{
 			e->state = 1;
 			e->y_mark = e->y;
-			e->timer = random() % TIME(50);
+			e->timer = random() & 63;
 		} /* fallthrough */
 		case 1:
 		{
 			if (e->timer == 0) {
 				e->state = 2;
-				e->y_speed = SPEED(0x400);
+				e->y_speed = SPEED_10(0x3FF);
 			} else {
 				e->timer--;
 				break;
@@ -149,7 +149,7 @@ void ai_red_bat(Entity *e) {
 		} /* fallthrough */
 		case 2:
 		{
-			e->y_speed += (e->y < e->y_mark) ? SPEED(0x10) : -SPEED(0x10);
+			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x10) : -SPEED_8(0x10);
 			LIMIT_Y(SPEED(0x300));
 			MOVE_X(SPEED(0x100));
 		}

@@ -502,13 +502,13 @@ uint8_t collide_stage_floor(Entity *e) {
 			(pixel_y&15) >= 0xF - heightmap[pxa2&1][pixel_x2&15]) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
-				heightmap[pxa2%2][pixel_x2%16] - e->hit_box.bottom);
+				heightmap[pxa2&1][pixel_x2&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
 	// Extra check in the center
 	if(!result && (pxa3 & 0x10)) {
-		if((pxa3 & 0xF) >= 4 && (pixel_y + 2) % 16 >= heightmap[pxa3%4][pixel_x3%16]) {
+		if((pxa3 & 0xF) >= 4 && ((pixel_y + 2) & 15) >= heightmap[pxa3&3][pixel_x3&15]) {
 			if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 			e->y_next = e->y;
 			e->y_speed = 0;
@@ -530,16 +530,16 @@ uint8_t collide_stage_slope_grounded(Entity *e) {
 	pxa1 = stage_get_block_type(pixel_to_block(pixel_x1), pixel_to_block(pixel_y));
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
-			pixel_y%16 >= heightmap[pxa1%4][pixel_x1%16]) {
+			(pixel_y&15) >= heightmap[pxa1&3][pixel_x1&15]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
-				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
+				heightmap[pxa1&3][pixel_x1&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
-			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
+			(pixel_y&15) >= heightmap[pxa2&3][pixel_x2&15]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
-				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
+				heightmap[pxa2&3][pixel_x2&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
@@ -550,22 +550,22 @@ uint8_t collide_stage_slope_grounded(Entity *e) {
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	pxa3 = stage_get_block_type(pixel_to_block(pixel_x3), pixel_to_block(pixel_y + 2));
 	if((pxa1&0x10) && (pxa1&0xF) >= 4 && (pxa1&0xF) < 6 &&
-			pixel_y%16 >= heightmap[pxa1%4][pixel_x1%16]) {
+			(pixel_y&15) >= heightmap[pxa1&3][pixel_x1&15]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
-				heightmap[pxa1%4][pixel_x1%16] - e->hit_box.bottom);
+				heightmap[pxa1&3][pixel_x1&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
-			pixel_y%16 >= heightmap[pxa2%4][pixel_x2%16]) {
+			(pixel_y&15) >= heightmap[pxa2&3][pixel_x2&15]) {
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 1 +
-				heightmap[pxa2%4][pixel_x2%16] - e->hit_box.bottom);
+				heightmap[pxa2&3][pixel_x2&15] - e->hit_box.bottom);
 		e->y_speed = 0;
 		result = TRUE;
 	}
 	// Extra check in the center
 	if(!result && (pxa3 & 0x10)) {
-		if((pxa3 & 0xF) >= 4 && (pixel_y + 2) % 16 >= heightmap[pxa3%4][pixel_x3%16]) {
+		if((pxa3 & 0xF) >= 4 && ((pixel_y + 2) & 15) >= heightmap[pxa3&3][pixel_x3&15]) {
 			e->y_next = e->y;
 			e->y_speed = 0;
 			result = TRUE;
@@ -587,7 +587,7 @@ uint8_t collide_stage_floor_grounded(Entity *e) {
 		// two pixels too low. This causes the player to ignore new upward slopes
 		// which is bad, so this is a dumb hack to push us back up if we are
 		// a bit too low
-		if((sub_to_pixel(e->y_next) + e->hit_box.bottom) % 16 < 4) {
+		if(((sub_to_pixel(e->y_next) + e->hit_box.bottom) & 15) < 4) {
 			e->y_next = pixel_to_sub(((sub_to_pixel(e->y_next) + e->hit_box.bottom)&~0xF) -
 				e->hit_box.bottom);
 		}
@@ -615,15 +615,15 @@ uint8_t collide_stage_ceiling(Entity *e) {
 		result = TRUE;
 	} else {
 		if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
-				pixel_y%16 <= 0xF - heightmap[pxa1%2][pixel_x1%16]) {
+				(pixel_y&15) <= 0xF - heightmap[pxa1&1][pixel_x1&15]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
-					heightmap[pxa1%2][pixel_x1%16] + (e->hit_box.top - 1)) + 0x100;
+					heightmap[pxa1&1][pixel_x1&15] + (e->hit_box.top - 1)) + 0x100;
 			result = TRUE;
 		}
 		if((pxa2&0x10) && (pxa2&0xF) >= 2 && (pxa2&0xF) < 4 &&
-				pixel_y%16 <= heightmap[pxa2%2][pixel_x2%16]) {
+				(pixel_y&15) <= heightmap[pxa2&1][pixel_x2&15]) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) +
-					heightmap[pxa2%2][pixel_x2%16] + (e->hit_box.top - 1)) + 0x100;
+					heightmap[pxa2&1][pixel_x2&15] + (e->hit_box.top - 1)) + 0x100;
 			result = TRUE;
 		}
 	}
@@ -805,7 +805,7 @@ void entities_clear_by_type(uint16_t type) {
 }
 
 void entity_drop_powerup(Entity *e) {
-	uint8_t chance = random() % 5;
+	uint8_t chance = mod10[random() & 0x3FF] >> 1;
 	if(chance >= 2) { // Weapon Energy
 		if(e->experience > 0) {
 			Entity *exp = entity_create(e->x, e->y, OBJ_XP,

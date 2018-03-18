@@ -284,7 +284,7 @@ void ai_muscle_doctor(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer > TIME(20) && (e->timer % TIME(5)) == 1) {
+			if (e->timer > TIME_8(15) && (e->timer & 7) == 1) {
 				Entity *bat = entity_create(e->x + (8<<CSF),
 										   e->y - (4<<CSF), OBJ_DOCTOR_BAT, 0);
 				
@@ -301,7 +301,7 @@ void ai_muscle_doctor(Entity *e) {
 				sound_play(SND_EM_FIRE, 3);
 			}
 			
-			if (e->timer > TIME(90)) e->state = STATE_BASE;
+			if (e->timer > TIME_8(100)) e->state = STATE_BASE;
 		}
 		break;
 		
@@ -439,7 +439,7 @@ void ai_muscle_doctor(Entity *e) {
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
 			// spawn copious amount of energy
-			if((e->timer % 3) == 0) {
+			if((e->timer & 3) == 0) {
 				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
 				drip->x_speed = -0x200 + (random() & 0x3FF);
@@ -524,7 +524,7 @@ static void do_redsplode(Entity *e) {
 static void run_red_drip(Entity *e) {
 	if ((e->timer & 7) == 2) {
 		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
-		int y = e->y_next + ((-8 + (random() % 12)) << CSF);
+		int y = e->y_next + ((-6 + (random() & 15)) << CSF);
 		
 		Entity *drip = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		drip->x_speed = e->x_speed;

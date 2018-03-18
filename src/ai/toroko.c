@@ -61,32 +61,28 @@ void onspawn_torokoBoss(Entity *e) {
 	e->y -= 8 << CSF;
 }
 
-void ai_torokoBoss(Entity *e) {
-	Entity *block = e->linkedEntity;
-
 #define SPAWNBLOCK ({                                                                          \
-	if(!block) {                                                                               \
-		block = entity_create(e->x, e->y, OBJ_TOROKO_BLOCK, 0);	                               \
-		e->linkedEntity = block;                                                               \
+	if(!e->linkedEntity) {                                                                     \
+		Entity *block = entity_create(e->x, e->y, OBJ_TOROKO_BLOCK, 0);	                       \
 		block->dir = e->dir;                                                                   \
 		block->linkedEntity = e;                                                               \
-		block->eflags &= ~NPC_INVINCIBLE;                                                      \
-		block->nflags &= ~NPC_INVINCIBLE;                                                      \
+		e->linkedEntity = block;                                                               \
 	}                                                                                          \
 })
 
 #define THROWBLOCK ({                                                                          \
-	if(block) {                                                                                \
-		block->x = e->x;                                                                       \
-		block->y = e->y - (16 << CSF);                                                         \
-		block->eflags |= NPC_INVINCIBLE;                                                       \
-		THROW_AT_TARGET(block, player.x, player.y, SPEED(0x600));                              \
+	if(e->linkedEntity) {                                                                      \
+		e->linkedEntity->x = e->x;                                                             \
+		e->linkedEntity->y = e->y - (16 << CSF);                                               \
+		e->linkedEntity->eflags |= NPC_INVINCIBLE;                                             \
+		THROW_AT_TARGET(e->linkedEntity, player.x, player.y, SPEED_12(0x600));                 \
 		sound_play(SND_EM_FIRE, 5);                                                            \
+		e->linkedEntity->linkedEntity = NULL;                                                  \
 		e->linkedEntity = NULL;                                                                \
-		block->linkedEntity = NULL;                                                            \
 	}                                                                                          \
 })
 
+void ai_torokoBoss(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 
@@ -100,7 +96,7 @@ void ai_torokoBoss(Entity *e) {
 		/* fallthrough */
 		case 1:		// wait a sec before morphing
 		{
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->timer = 0;
 				e->state = 2;
 				e->frame = 12;
@@ -110,7 +106,7 @@ void ai_torokoBoss(Entity *e) {
 		case 2:		// morph into big toroko
 		{
 			e->frame = (e->timer & 1) ? 12 : 8;
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = 3;
 				e->timer = 0;
 				e->eflags |= NPC_SHOOTABLE;
@@ -120,7 +116,7 @@ void ai_torokoBoss(Entity *e) {
 		case 3:		// rest a moment, then jump
 		{
 			ANIMATE(e, 8, 0,1);
-			if (++e->timer > TIME(5)) {
+			if (++e->timer > TIME_8(5)) {
 				e->state = 10;
 				e->eflags |= NPC_SHOOTABLE;
 			}
@@ -129,7 +125,7 @@ void ai_torokoBoss(Entity *e) {
 		case 10:	// wait a moment then ATTACK!!
 		{
 			e->state = 11;
-			e->timer = (random() % TIME(110)) + TIME(20);
+			e->timer = TIME_8(random() & 0x7F) + TIME_8(20);
 			e->x_speed = 0;
 		}
 		/* fallthrough */
@@ -152,19 +148,19 @@ void ai_torokoBoss(Entity *e) {
 		/* fallthrough */
 		case 21:	// preparing to jump
 		{
-			if (++e->timer > TIME(10)) {
+			if (++e->timer > TIME_8(10)) {
 				e->state = 22;
 				e->timer = 0;
 				e->frame = 3;
 				e->grounded = FALSE;
-				e->y_speed = -SPEED(0x5ff);
-				MOVE_X(SPEED(0x200));
+				e->y_speed = -SPEED_12(0x5ff);
+				MOVE_X(SPEED_10(0x200));
 			}
 		}
 		break;
 		case 22:	// jumping up
 		{
-			if (++e->timer > TIME(10)) {
+			if (++e->timer > TIME_8(10)) {
 				e->state = 23;
 				e->timer = 0;
 				e->frame = 6;
@@ -174,7 +170,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 23:	// preparing to throw block
 		{
-			if (++e->timer > TIME(30)) {
+			if (++e->timer > TIME_8(30)) {
 				e->state = 24;
 				e->timer = 0;
 				FACE_PLAYER(e);
@@ -185,7 +181,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 24:	// threw block
 		{
-			if (++e->timer > TIME(5)) {
+			if (++e->timer > TIME_8(5)) {
 				e->state = 25;
 				e->frame = 3;
 			}
@@ -222,7 +218,7 @@ void ai_torokoBoss(Entity *e) {
 		/* fallthrough */
 		case 51:
 		{
-			if (++e->timer > TIME(30)) {
+			if (++e->timer > TIME_8(30)) {
 				e->state = 52;
 				e->timer = 0;
 				FACE_PLAYER(e);
@@ -234,7 +230,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 52:
 		{
-			if (++e->timer > TIME(5)) {
+			if (++e->timer > TIME_8(5)) {
 				e->state = 10;
 				e->frame = 0;
 			}
@@ -263,7 +259,7 @@ void ai_torokoBoss(Entity *e) {
 		{
 			e->x_speed *= 8;
 			e->x_speed /= 9;
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = 103;
 				e->timer = 0;
 				e->frame = 8;
@@ -272,7 +268,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 103:		// looks pained
 		{
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = 104;
 				e->timer = 0;
 				e->frame = 9;
@@ -282,7 +278,7 @@ void ai_torokoBoss(Entity *e) {
 		case 104:		// morphing back into normal toroko
 		{
 			e->frame = (e->timer & 1) ? 12 : 8;
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(100)) {
 				e->state = 105;
 				e->timer = 0;
 				e->frame = 12;
@@ -291,7 +287,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 105:		// back to normal
 		{
-			if (++e->timer > TIME(50)) {
+			if (++e->timer > TIME_8(50)) {
 				e->state = 106;
 				e->timer = 0;
 				e->frame = 9;
@@ -300,7 +296,7 @@ void ai_torokoBoss(Entity *e) {
 		break;
 		case 106:		// red goes out of her eyes, she falls down
 		{
-			if (++e->timer > TIME(50)) e->frame = 10;
+			if (++e->timer > TIME_8(50)) e->frame = 10;
 		}
 		break;
 		case 140:		// disappear
@@ -313,7 +309,7 @@ void ai_torokoBoss(Entity *e) {
 		case 141:
 		{
 			e->hidden ^= 1;
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(100)) {
 				SMOKE_AREA((e->x >> CSF) - 8, e->y >> CSF, 16, 16, 2);
 				e->state = STATE_DELETE;
 			}
@@ -328,7 +324,7 @@ void ai_torokoBoss(Entity *e) {
 	e->y = e->y_next;
 
 	if (e->state > 100 && e->state <= 105) {
-		if (!(e->timer % 16)) {
+		if (!(e->timer & 15)) {
 			SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF) - 16, 32, 32, 3);
 		}
 	}

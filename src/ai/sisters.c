@@ -80,7 +80,7 @@ void onspawn_sisters(Entity *e) {
 	mainangle = 0;
 	e->x_mark = 192; // Start outside of the room, changes to 112 when they appear
 	e->y_mark = 60;
-	e->timer2 = (random() % TIME(500)) + TIME(700);
+	e->timer2 = TIME_10(random() & 511) + TIME_10(700);
 	e->health = 500;
 	e->event = 1000;
 	e->eflags |= NPC_EVENTONDEATH;
@@ -123,7 +123,7 @@ void ai_sisters(Entity *e) {
 	switch(e->state) {
 		case 20:	// fight begin (script-triggered)
 		{
-			if (++e->timer > TIME(68)) {
+			if (++e->timer > TIME_8(68)) {
 				e->x_mark = 112;		// bodies zoom onto screen via force of their interpolation
 				e->timer = 0;
 				
@@ -138,15 +138,15 @@ void ai_sisters(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer < TIME(100))					mainangle += 1;
-			else if (e->timer < TIME(120))				mainangle += 2;
+			if (e->timer < TIME_8(100))					mainangle += 1;
+			else if (e->timer < TIME_8(120))			mainangle += 2;
 			else if (e->timer < e->timer2)				mainangle += 4;
-			else if (e->timer < e->timer2 + TIME(40))	mainangle += 2;
-			else if (e->timer < e->timer2 + TIME(60))	mainangle += 1;
+			else if (e->timer < e->timer2 + TIME_8(40))	mainangle += 2;
+			else if (e->timer < e->timer2 + TIME_8(60))	mainangle += 1;
 			else {
 				e->timer = 0;
 				e->state = STATE_CIRCLE_0;
-				e->timer2 = (random() % TIME(300)) + TIME(400);
+				e->timer2 = TIME_8(random() & 0xFF) + TIME_10(420);
 			}
 		}
 		break;
@@ -155,11 +155,11 @@ void ai_sisters(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer < TIME(20))					mainangle -= 1;
-			else if (e->timer < TIME(60))				mainangle -= 2;
+			if (e->timer < TIME_8(20))					mainangle -= 1;
+			else if (e->timer < TIME_8(60))				mainangle -= 2;
 			else if (e->timer < e->timer2)				mainangle -= 4;
-			else if (e->timer < e->timer2 + TIME(40))	mainangle -= 2;
-			else if (e->timer < e->timer2 + TIME(60))	mainangle -= 1;
+			else if (e->timer < e->timer2 + TIME_8(40))	mainangle -= 2;
+			else if (e->timer < e->timer2 + TIME_8(60))	mainangle -= 1;
 			else {
 				if (e->health < SISTERS_ATTACK2_HP) {
 					e->state = STATE_MEGAFIRING;
@@ -167,7 +167,7 @@ void ai_sisters(Entity *e) {
 					e->timer = 0;
 				} else {
 					e->state = STATE_CIRCLE_1;
-					e->timer2 = (random() % TIME(300)) + TIME(400);
+					e->timer2 = TIME_8(random() & 0xFF) + TIME_10(420);
 					e->timer = 0;
 				}
 			}
@@ -178,7 +178,7 @@ void ai_sisters(Entity *e) {
 		// first they stop completely, then spin around and around clockwise for a while.
 		case STATE_MEGAFIRING:
 		{
-			if (++e->timer > TIME(100)) {
+			if (++e->timer > TIME_8(100)) {
 				e->state++;
 				e->timer = 0;
 			}
@@ -188,11 +188,11 @@ void ai_sisters(Entity *e) {
 		{
 			e->timer++;
 			
-			if (e->timer < TIME(100))	   mainangle += 1;
-			else if (e->timer < TIME(120)) mainangle += 2;
-			else if (e->timer < TIME(500)) mainangle += 4;
-			else if (e->timer < TIME(540)) mainangle += 2;
-			else if (e->timer < TIME(560)) mainangle += 1;
+			if (e->timer < TIME_8(100))	       mainangle += 1;
+			else if (e->timer < TIME_8(120))   mainangle += 2;
+			else if (e->timer < TIME_10(500))  mainangle += 4;
+			else if (e->timer < TIME_10(540))  mainangle += 2;
+			else if (e->timer < TIME_10(560))  mainangle += 1;
 			else
 			{
 				e->state = STATE_CIRCLE_0;
@@ -279,7 +279,7 @@ void ai_sisters(Entity *e) {
 		break;
 	}
 	
-	//mainangle %= 1024;
+	//mainangle &= 1023;
 }
 
 void ai_sisters_body(Entity *e) {
@@ -350,7 +350,7 @@ void ai_sisters_head(Entity *e) {
 		case STATE_HEAD_CLOSED:
 		{
 			e->frame = 0;
-			e->timer = (random() % TIME(100)) + TIME(100);
+			e->timer = TIME_8(random() & 127) + TIME_8(80);
 			e->state++;
 		} /* fallthrough */
 		case STATE_HEAD_CLOSED+1:
@@ -397,7 +397,7 @@ void ai_sisters_head(Entity *e) {
 		// firing (normal)
 		case STATE_HEAD_FIRE:
 		{
-			if ((++e->timer % 8) == 1) {
+			if ((++e->timer & 7) == 1) {
 				//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
 				//		e->dir ? A_RIGHT : A_LEFT, 0x200);
 				// Need to aim at the player
@@ -425,7 +425,7 @@ void ai_sisters_head(Entity *e) {
 			if (e->timer == 6) e->frame = 2;
 			
 			if (e->timer > TIME(20)) {
-				if ((e->timer % 32) == 1) {
+				if ((e->timer & 31) == 1) {
 					//FIRE_ANGLED_SHOT(OBJ_DRAGON_ZOMBIE_SHOT, e->x, e->y, 
 					//		e->dir ? A_RIGHT : A_LEFT, 0x200);
 					Entity *fire = entity_create(e->x, e->y, OBJ_DRAGON_ZOMBIE_SHOT, 0);

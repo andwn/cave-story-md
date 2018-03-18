@@ -198,9 +198,9 @@ void effect_create_damage(int16_t num, int16_t x, int16_t y) {
 		// Create right to left, otherwise digits show up backwards
 		uint16_t tileIndex;
 		for(; num; digitCount++) {
-			tileIndex = ((negative ? 11 : 0) + (num % 10)) * 8;
+			tileIndex = ((negative ? 11 : 0) + mod10[num]) << 3;
 			memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32);
-			num /= 10;
+			num = div10[num];
 		}
 		tileIndex = ((negative ? 11 : 0) + 10) * 8;
 		memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32); // - or +
@@ -210,9 +210,9 @@ void effect_create_damage(int16_t num, int16_t x, int16_t y) {
 		effDamage[i].y = y;
 		effDamage[i].sprite = (VDPSprite) {
 			.size = SPRITE_SIZE(digitCount+1, 1),
-			.attribut = TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + i*4)
+			.attribut = TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i<<2))
 		};
-		TILES_QUEUE(dtiles[3-digitCount], TILE_NUMBERINDEX + i*4, digitCount+1);
+		TILES_QUEUE(dtiles[3-digitCount], TILE_NUMBERINDEX + (i<<2), digitCount+1);
 		dqueued = TRUE;
 		break;
 	}

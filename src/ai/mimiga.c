@@ -1,7 +1,8 @@
 #include "ai_common.h"
 
 void onspawn_flower(Entity *e) {
-	e->frame = random() % 6;
+	e->frame = e->id;
+	if(e->frame >= 6) e->frame = random() & 3;
 }
 
 void ai_jack(Entity *e) {

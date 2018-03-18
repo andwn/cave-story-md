@@ -221,7 +221,7 @@ void ai_mannan(Entity *e) {
 
 void ai_mannanShot(Entity *e) {
 	ACCEL_X(SPEED(0x20));
-	if((e->timer % 8) == 1) {
+	if((e->timer & 7) == 1) {
 		sound_play(SND_IRONH_SHOT_FLY, 2);
 	}
 	if(++e->timer > TIME(120)) e->state = STATE_DELETE;
@@ -485,12 +485,12 @@ void ai_frog(Entity *e) {
 		break;
 	}
 	// random jumping, and jump when shot
-	if (e->state < 3 && e->timer > TIME_8(10)) {
+	if (e->state < 3 && e->timer > TIME_8(15)) {
 		uint8_t dojump = FALSE;
 		if(e->damage_time) {
 			dojump = TRUE;
 		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {
-			if((random() % TIME_8(50)) == 0) {
+			if((random() & 31) == 0) {
 				dojump = TRUE;
 			}
 		}
@@ -626,7 +626,9 @@ void ai_ravil(Entity *e) {
 	
 	switch(e->state) {
 		case 0:
-		{
+		{	// Don't push the player into walls
+			e->eflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
+			e->nflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
 			e->x_speed = 0;
 			e->state = 1;
 			e->timer = 0;

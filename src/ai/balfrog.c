@@ -261,18 +261,18 @@ void ai_balfrog(Entity *e) {
 		{
 			e->timer++;
 			if(e->damage_time > 0) {
-				if((e->damage_time % 8) == 1) {
+				if((e->damage_time & 7) == 1) {
 					e->frame = 2;
-				} else if((e->damage_time % 8) == 5) {
+				} else if((e->damage_time & 7) == 5) {
 					e->frame = 3;
 				}
 			}
-			if((e->timer % 16) == 1) {
-				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() % 32);
+			if((e->timer & 15) == 1) {
+				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() & 31);
 				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
-				if(e->timer > 160 || bbox_damage > 90) {
+				if(e->timer > TIME_8(160) || bbox_damage > 90) {
 					e->frame = 1;
 					e->state = STATE_CLOSE_MOUTH;
 					bbox_mode = BM_STAND;
@@ -284,7 +284,7 @@ void ai_balfrog(Entity *e) {
 		break;
 		case STATE_CLOSE_MOUTH:
 		{
-			if(++e->timer > 10) {
+			if(++e->timer > TIME_8(10)) {
 				e->timer = 0;
 				e->frame = 0;
 				// Big jump after 3 attacks
@@ -311,7 +311,7 @@ void ai_balfrog(Entity *e) {
 		case STATE_DEATH+1:			// shaking with mouth open
 		{
 			e->timer++;
-			if((e->timer % 8) == 0) {
+			if((e->timer & 7) == 0) {
 				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
 			// at a glance it might seem like this has it alternate
@@ -337,7 +337,7 @@ void ai_balfrog(Entity *e) {
 		case STATE_DEATH+3:		// flashing
 		{
 			e->timer++;
-			if((e->timer % 16) == 0) {
+			if((e->timer & 15) == 0) {
 				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
 			}
 			if(e->timer <= TIME_8(150)) {
@@ -488,9 +488,8 @@ void place_bboxes(Entity *e) {
 // shake loose frogs from the ceiling
 void spawn_frogs(uint16_t objtype, uint8_t count) {
 	for(int i=0;i<count;i++) {
-		entity_create(((SPAWN_RANGE_LEFT + random() % SPAWN_RANGE_RIGHT) << CSF) * 16,
-					  ((SPAWN_RANGE_TOP + random() % SPAWN_RANGE_BOTTOM) << CSF) * 16,
-						objtype, NPC_OPTION1);
+		entity_create(((7 + (random() & 31)) << CSF) << 3,
+					  block_to_sub(1 + (random() & 3)), objtype, NPC_OPTION1);
 	}
 }
 
