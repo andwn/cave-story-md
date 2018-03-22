@@ -110,7 +110,6 @@ void game_main(uint8_t load) {
 				hud_show();
 				sprites_send();
 				VDP_setWindowPos(0, 0);
-				XGM_set68KBUSProtection(FALSE);
 				VDP_setEnable(TRUE);
 			} else {
 				// HUD on top
@@ -364,7 +363,6 @@ void draw_itemmenu(uint8_t resetCursor) {
 		spr_num = 0;
 		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	}
-	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
 }
 
@@ -552,7 +550,7 @@ void do_map() {
 						TILE_ATTR_FULL(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
 			}
 			if(vblank) {
-				XGM_doVBlankProcess();
+				xgm_vblank();
 				vblank = 0;
 			}
 		}

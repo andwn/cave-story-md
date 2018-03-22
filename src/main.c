@@ -18,7 +18,6 @@
 #include "vdp_pal.h"
 #include "vdp_tile.h"
 #include "xgm.h"
-#include "z80_ctrl.h"
 
 extern const uint16_t time_tab_ntsc[0x100];
 extern const uint16_t speed_tab_ntsc[0x100];
@@ -30,14 +29,9 @@ void vsync() {
 }
 
 void aftervsync() {
-	XGM_doVBlankProcess();
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
+	xgm_vblank();
 	DMA_flushQueue();
-	
 	if(fading_cnt > 0) VDP_doStepFading(FALSE);
-	
 	dqueued = FALSE;
 	if(ready) {
 		if(inFade) { spr_num = 0; }
@@ -45,9 +39,6 @@ void aftervsync() {
 		ready = FALSE;
 	}
 	if(gamemode == GM_GAME) stage_update(); // Scrolling
-	
-	XGM_set68KBUSProtection(FALSE);
-	
 	JOY_update();
 }
 
@@ -60,10 +51,8 @@ int main() {
     MEM_init();
     VDP_init();
     DMA_init(0, 0);
-    //PSG_init();
     JOY_init();
-    // reseting z80 also reset the ym2612
-    Z80_init();
+    xgm_init();
     // Initialize time and speed tables (framerate adjusted)
     SCREEN_HEIGHT = pal_mode ? 240 : 224;
 	SCREEN_HALF_H = SCREEN_HEIGHT >> 1;

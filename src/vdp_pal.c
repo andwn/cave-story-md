@@ -224,7 +224,7 @@ void VDP_fade(uint16_t fromcol, uint16_t tocol, const uint16_t *palsrc, const ui
         // process fading immediatly
         while (VDP_doStepFading(TRUE)) {
 			vsync();
-			XGM_doVBlankProcess();
+			xgm_vblank();
 		}
     }
 }

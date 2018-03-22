@@ -768,7 +768,6 @@ void ai_poohblk_dying(Entity *e) {
 // MazeM enemies
 
 void ai_firewhirr(Entity *e) {
-	Entity *shot;
 	FACE_PLAYER(e);
 	
 	switch(e->state) {
@@ -802,7 +801,7 @@ void ai_firewhirr(Entity *e) {
 			
 			// if time to fire, spawn a shot
 			if (e->timer2 > TIME(120)) {
-				shot = entity_create(e->x, e->y, OBJ_FIREWHIRR_SHOT, 0);
+				Entity *shot = entity_create(e->x, e->y, OBJ_FIREWHIRR_SHOT, 0);
 				shot->dir = e->dir;
 				shot->alwaysActive = TRUE;
 				shot->x = e->x;

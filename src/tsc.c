@@ -1231,7 +1231,7 @@ uint8_t execute_command() {
 			VDP_setEnable(TRUE);
 
 			song_stop();
-			XGM_doVBlankProcess();
+			xgm_vblank();
 			
 			uint16_t t = TIME_10(350);
 			while(--t) {

@@ -27,7 +27,6 @@
 #include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
-#include "z80_ctrl.h"
 
 #include "gamemode.h"
 

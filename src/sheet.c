@@ -323,7 +323,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,3,1, 0,0);
-				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 0,1);
 			}
 		} break;
 		case 0x2E: // Dark Place
@@ -340,7 +340,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0,0, 0,1, 0,2, 0,3, 0,4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,3,1, 0,0);
-				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 1,0);
+				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0,0, 0,1);
 			}
 		} break;
 		case 0x30: // Waterway

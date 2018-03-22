@@ -174,7 +174,6 @@ void stage_load(uint16_t id) {
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
 	MUSIC_TICK();
-	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
 }
 
@@ -215,7 +214,6 @@ void stage_load_credits(uint8_t id) {
 	MUSIC_TICK();
 	tsc_load_stage(id);
 	MUSIC_TICK();
-	XGM_set68KBUSProtection(FALSE);
 	VDP_setEnable(TRUE);
 }
 

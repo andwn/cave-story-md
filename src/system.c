@@ -7,7 +7,6 @@
 #include "joy.h"
 #include "memory.h"
 #include "player.h"
-#include "psg.h"
 #include "resources.h"
 #include "sprite.h"
 #include "sram.h"
@@ -22,7 +21,6 @@
 #include "weapon.h"
 #include "window.h"
 #include "xgm.h"
-#include "z80_ctrl.h"
 
 #include "system.h"
 
@@ -263,14 +261,12 @@ void system_save() {
 	if(sram_file >= SRAM_FILE_MAX) return;
 	if(sram_state == SRAM_INVALID) return;
 	
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	// Start of save data in SRAM
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start;
 	
+	z80_request();
 	SRAM_enable();
 	
 	SRAM_writeLong(loc, STR_CSMD);					loc += 4;
@@ -319,15 +315,13 @@ void system_save() {
 	checksum_write(sram_file, TRUE);
 	
 	SRAM_disable();
-	
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 void system_peekdata(uint8_t index, SaveEntry *file) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 	
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
+	z80_request();
 	SRAM_enableRO();
 	
 	// Save exists
@@ -335,7 +329,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	if(magic != STR_CSMD) {
 		file->used = FALSE;
 		SRAM_disable();
-		XGM_set68KBUSProtection(FALSE);
+		z80_release();
 		return;
 	}
 	// Checksum failed?
@@ -344,7 +338,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		if(!checksum_verify(index, TRUE)) {
 			file->used = FALSE;
 			SRAM_disable();
-			XGM_set68KBUSProtection(FALSE);
+			z80_release();
 			return;
 		}
 		// Load backup
@@ -365,7 +359,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	file->weapon[4] = SRAM_readByte(loc);	loc += 8;
 	
 	SRAM_disable();
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 void system_load(uint8_t index) {
@@ -376,8 +370,8 @@ void system_load(uint8_t index) {
 	player_init();
 	sram_file = index;
 	
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
+	z80_request();
+	SRAM_enableRO();
 	
 	// Start of save data in SRAM
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
@@ -389,13 +383,12 @@ void system_load(uint8_t index) {
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start;
 	
-	SRAM_enableRO();
 	// Test magic
 	uint32_t magic = SRAM_readLong(loc); loc += 4;
 	if(magic != STR_CSMD) {
 		// Empty
 		SRAM_disable();
-		XGM_set68KBUSProtection(FALSE);
+		z80_release();
 		system_new();
 		return;
 	}
@@ -434,8 +427,7 @@ void system_load(uint8_t index) {
 		flags[i] = SRAM_readLong(loc); loc += 4;
 	}
 	SRAM_disable();
-	
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 	
 	stage_load(rid);
 	song_play(song);
@@ -446,8 +438,7 @@ void system_copy(uint8_t from, uint8_t to) {
 	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
 	
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
+	z80_request();
 	SRAM_enable();
 
 	// Copy data
@@ -465,36 +456,33 @@ void system_copy(uint8_t from, uint8_t to) {
 	SRAM_writeLong(loc_to + 4, checksum);
 
 	SRAM_disable();
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 void system_delete(uint8_t index) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 	
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
+	z80_request();
 	SRAM_enable();
 	
 	SRAM_writeLong(loc, 0); // Erase the "CSMD" magic to invalidate file
 	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
 	
 	SRAM_disable();
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 void system_load_config() {
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	uint16_t loc = SRAM_CONFIG_POS;
-	
+
+	z80_request();
 	SRAM_enableRO();
 	
 	uint32_t magic = SRAM_readLong(loc); loc += 4;
 	if(magic != CFG_MAGIC) {
 		// No settings saved, keep defaults
 		SRAM_disable();
-		XGM_set68KBUSProtection(FALSE);
+		z80_release();
 		return;
 	}
 	
@@ -516,19 +504,16 @@ void system_load_config() {
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
 
 	SRAM_disable();
-	
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 void system_save_config() {
-	XGM_set68KBUSProtection(TRUE);
-	waitSubTick(10);
-	
 	uint16_t loc = SRAM_CONFIG_POS;
-	
+
+	z80_request();
 	SRAM_enable();
+
 	SRAM_writeLong(loc, CFG_MAGIC); loc += 4;
-	
 	SRAM_writeByte(loc++, cfg_btn_jump);
 	SRAM_writeByte(loc++, cfg_btn_shoot);
 	SRAM_writeByte(loc++, cfg_btn_ffwd);
@@ -543,9 +528,9 @@ void system_save_config() {
 	SRAM_writeByte(loc++, cfg_iframebug);
 	SRAM_writeByte(loc++, cfg_force_btn);
 	SRAM_writeByte(loc++, cfg_msg_blip);
+
 	SRAM_disable();
-	
-	XGM_set68KBUSProtection(FALSE);
+	z80_release();
 }
 
 // Level select is still the old style format... don't care enough to fix it

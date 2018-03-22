@@ -2,7 +2,6 @@
 
 #include "tables.h"
 #include "xgm.h"
-#include "z80_ctrl.h"
 
 #include "audio.h"
 
@@ -17,7 +16,7 @@ void sound_init() {
 	// Here we are pointing the XGM driver to each sound effect in the game
 	// and their length (in frames) indexed in sound_info
 	for(uint8_t i = 1; i < SOUND_COUNT; i++) {
-		XGM_setPCM(0x80 + i, sound_info[i].sound, sound_info[i].length);
+		xgm_pcm_set(0x80 + i, sound_info[i].sound, sound_info[i].length);
 	}
 	soundChannel = 1;
 }
@@ -25,7 +24,7 @@ void sound_init() {
 void sound_play(uint8_t id, uint8_t priority) {
 	if(id >= 0x90 && id < 0xA0) id -= 0x40;
 	if(id >= SOUND_COUNT || sound_info[id].length == 0) return;
-	XGM_startPlayPCM(0x80 + id, priority, soundChannel++);
+	xgm_pcm_play(0x80 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }
 
@@ -35,11 +34,9 @@ void song_play(uint8_t id) {
 	// Track 0 in song_info is NULL, but others could be potentially
 	if(song_info[id].song == NULL) {
 		id = 0;
-		XGM_stopPlay();
-		//Z80_init();
+		xgm_music_stop();
 	} else {
-		XGM_startPlay(song_info[id].song);
-		//XGM_setMusicTempo(60);
+		xgm_music_play(song_info[id].song);
 	}
 	songPlaying = id;
 }
