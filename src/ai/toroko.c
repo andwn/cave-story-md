@@ -308,8 +308,8 @@ void ai_torokoBoss(Entity *e) {
 		/* fallthrough */
 		case 141:
 		{
-			e->hidden ^= 1;
-			if (++e->timer > TIME_8(100)) {
+			e->hidden = (++e->timer & 2);
+			if (e->timer > TIME_8(100)) {
 				SMOKE_AREA((e->x >> CSF) - 8, e->y >> CSF, 16, 16, 2);
 				e->state = STATE_DELETE;
 			}

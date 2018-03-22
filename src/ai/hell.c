@@ -465,8 +465,8 @@ void ai_bute_arrow(Entity *e) {
 		
 		case 20:	// hit something
 		{
-			e->hidden ^= 1;
-			if(++e->timer > TIME_8(30)) e->state = STATE_DELETE;
+			e->hidden = (++e->timer & 2);
+			if(e->timer > TIME_8(30)) e->state = STATE_DELETE;
 		}
 		break;
 	}

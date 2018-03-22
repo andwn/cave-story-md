@@ -42,14 +42,12 @@ void camera_init() {
 
 void camera_set_position(int32_t x, int32_t y) {
 	// Don't let the camera leave the stage
-	if(x > block_to_sub(stageWidth) - (SCREEN_HALF_W<<CSF))
-		x = block_to_sub(stageWidth) - (SCREEN_HALF_W<<CSF);
-	if(y > block_to_sub(stageHeight) - ((SCREEN_HALF_H+2)<<CSF))
-		y = block_to_sub(stageHeight) - ((SCREEN_HALF_H+2)<<CSF);
-	if(x < SCREEN_HALF_W<<CSF) 
-		x = SCREEN_HALF_W<<CSF;
-	if(y < (SCREEN_HALF_H+2)<<CSF) 
-		y = (SCREEN_HALF_H+2)<<CSF;
+	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
+		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
+	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H+2))
+		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H+2);
+	if(x < pixel_to_sub(SCREEN_HALF_W)) x = pixel_to_sub(SCREEN_HALF_W);
+	if(y < pixel_to_sub(SCREEN_HALF_H+2)) y = pixel_to_sub(SCREEN_HALF_H+2);
 	// Apply
 	camera.x = camera.x_mark = x;
 	camera.y = camera.y_mark = y;
@@ -123,14 +121,16 @@ void camera_update() {
 		x_next = pixel_to_sub(SCREEN_HALF_W + 8);
 		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
 	} else {
-		if(x_next < pixel_to_sub(SCREEN_HALF_W + 2))
+		if(x_next < pixel_to_sub(SCREEN_HALF_W + 2)) {
 			x_next = pixel_to_sub(SCREEN_HALF_W + 2);
-		else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 2))
+		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 2)) {
 			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 2);
-		if(y_next < pixel_to_sub(SCREEN_HALF_H + 2))
+		}
+		if(y_next < pixel_to_sub(SCREEN_HALF_H + 2)) {
 			y_next = pixel_to_sub(SCREEN_HALF_H + 2);
-		else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2))
+		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2)) {
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2);
+		}
 	}
 	// Shifted values
 	camera.x_shifted = (x_next >> CSF) - SCREEN_HALF_W;
@@ -154,7 +154,7 @@ void camera_update() {
 			} else {
 				int16_t x = sub_to_tile(x_next) + (morphingColumn == 1 ? 30 : -30);
 				int16_t y = sub_to_tile(y_next) - 16 /*+ morphingRow*/;
-				if(x >= 0 && x < stageWidth << 1) {
+				if(x >= 0 && x < (int16_t)(stageWidth) << 1) {
 					for(uint16_t i = 32; i--; ) {
 						// It's actually faster to just draw garbage than have these checks
 						//if(y >= stageHeight << 1) break;
@@ -180,7 +180,7 @@ void camera_update() {
 			} else {
 				int16_t y = sub_to_tile(y_next) + (morphingRow == 1 ? 15 : -15);
 				int16_t x = sub_to_tile(x_next) - 32 /*+ morphingColumn*/;
-				if(y >= 0 && y < stageHeight << 1) {
+				if(y >= 0 && y < (int16_t)(stageHeight) << 1) {
 					for(uint16_t i = 64; i--; ) {
 						//if(x >= stageWidth << 1) break;
 						//if(x >= 0) {

@@ -568,8 +568,8 @@ void ai_ballos_target(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			e->hidden ^= 1;
-			if (++e->timer == TIME_8(20)) {	// lightning attack
+			e->hidden = (++e->timer & 2);
+			if (e->timer == TIME_8(20)) {	// lightning attack
 				if(!e->dir) entity_create(e->x_mark, e->y_mark - 0x2000, OBJ_LIGHTNING, NPC_OPTION2);
 			} else if(e->timer >= TIME_8(30)) {
 				e->state = STATE_DELETE;

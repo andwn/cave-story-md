@@ -118,7 +118,7 @@ void ai_missile(Entity *e) {
 			e->state = STATE_DELETE;
 			return;
 		} else if(e->timer > TIME_10(350)) {
-			e->hidden ^= 1;
+			e->hidden = (e->timer & 2);
 		}
 	} else if(!e->state) {
 		// Hide the sprite when under a breakable block
@@ -155,7 +155,7 @@ void ai_heart(Entity *e) {
 			e->state = STATE_DELETE;
 			return;
 		} else if(e->timer > TIME_10(350)) {
-			e->hidden ^= 1;
+			e->hidden = (e->timer & 2);
 		}
 	} else if(!e->state) {
 		// Hide the sprite when under a breakable block

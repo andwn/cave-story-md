@@ -343,7 +343,7 @@ void ai_balfrog(Entity *e) {
 			if(e->timer <= TIME_8(150)) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
 				if(balrog) {
-					e->hidden ^= 1;
+					e->hidden = (e->timer & 2);
 					balrog->hidden = !e->hidden;
 				}
 			}

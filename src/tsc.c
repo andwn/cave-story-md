@@ -206,7 +206,7 @@ uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
 	// Make sure it isn't more than can be handled
 	if(eventCount > max) {
 		char str[40];
-		sprintf(str, "Too many events: %hu\nIn TSC at: %06X", eventCount, (uint32_t) TSC);
+		sprintf(str, "Too many events: %hu\nIn TSC at: %06lX", eventCount, (uint32_t) TSC);
 		error_other(str);
 	}
 	// Step through ROM data until finding all the events
@@ -608,7 +608,7 @@ uint8_t execute_command() {
 					VDP_clearPlan(PLAN_A, TRUE);
 					entities_clear();
 					sprites_clear();
-					entity_create(240 << CSF, 120 << CSF, OBJ_NPC_PLAYER, 0)->state = 100;
+					entity_create((int32_t) 240 << CSF, (int32_t) 120 << CSF, OBJ_NPC_PLAYER, 0)->state = 100;
 					tsc_load_stage(ID_CREDITS);
 				} else {
 					stage_load_credits(args[0]);
@@ -1184,8 +1184,8 @@ uint8_t execute_command() {
 			VDP_setEnable(FALSE);
 			// Disable camera
 			camera.target = NULL;
-			camera.x = SCREEN_HALF_W << CSF;
-			camera.y = SCREEN_HALF_H << CSF;
+			camera.x = (int32_t)SCREEN_HALF_W << CSF;
+			camera.y = (int32_t)SCREEN_HALF_H << CSF;
 			camera.x_shifted = 0;
 			camera.y_shifted = 0;
 			// Reset plane positions

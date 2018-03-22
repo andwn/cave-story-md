@@ -70,7 +70,7 @@ void player_draw();
 uint8_t player_invincible();
 // Inflict damage on the player, will start the animation, knockback, red numbers,
 // sound, iframes, and check for death
-uint8_t player_inflict_damage(int16_t damage);
+uint8_t player_inflict_damage(uint16_t damage);
 
 // Makes the player sprite visible/invisible
 void player_show();

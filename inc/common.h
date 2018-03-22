@@ -32,7 +32,7 @@ uint8_t FPS;
 // just match the index, and on NTSC they are roughly index*5/6 for speed and 
 // index*6/5 for time respectively.
 uint16_t time_tab[0x100];
-uint16_t speed_tab[0x100];
+int16_t speed_tab[0x100];
 
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
@@ -81,19 +81,19 @@ const int16_t cos2[0x100];
 // pixel - single dot on screen (1x1)
 // tile - genesis VDP tile (8x8)
 // block - Cave Story tile (16x16)
-#define sub_to_pixel(x)   ((x)>>CSF)
+#define sub_to_pixel(x)   ((x)>>9)
 #define sub_to_tile(x)    ((x)>>12)
 #define sub_to_block(x)   ((x)>>13)
 
-#define pixel_to_sub(x)   ((x)<<CSF)
+#define pixel_to_sub(x)   (((int32_t)(x))<<9)
 #define pixel_to_tile(x)  ((x)>>3)
 #define pixel_to_block(x) ((x)>>4)
 
-#define tile_to_sub(x)    ((x)<<12)
+#define tile_to_sub(x)    (((int32_t)(x))<<12)
 #define tile_to_pixel(x)  ((x)<<3)
 #define tile_to_block(x)  ((x)>>1)
 
-#define block_to_sub(x)   ((x)<<13)
+#define block_to_sub(x)   (((int32_t)(x))<<13)
 #define block_to_pixel(x) ((x)<<4)
 #define block_to_tile(x)  ((x)<<1)
 

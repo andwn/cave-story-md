@@ -155,7 +155,7 @@ uint8_t titlescreen_main() {
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
 		sprite_add(sprCursor);
 
-		if(besttime > 0 && besttime < 100*60*50) system_draw_counter();
+		if(besttime > 0 && besttime < 300000) system_draw_counter();
 		
 		ready = TRUE;
 		vsync(); aftervsync();

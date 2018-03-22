@@ -662,7 +662,8 @@ uint32_t system_load_counter() {
 		return 0xFFFFFFFF;
 	}
 	// Convert LE -> BE
-	uint32_t rtn = (buffer[0]<<24) + (buffer[1]<<16) + (buffer[2]<<8) + buffer[3];
+	uint32_t rtn = (((uint32_t)(buffer[0]))<<24) + (((uint32_t)(buffer[1]))<<16) 
+				 + (((uint32_t)(buffer[2]))<<8) + buffer[3];
 	// Split out so the time can be displayed on the title screen
 	counter.frame = rtn % 50;
 	counter.second = (rtn / 50) % 60;
@@ -718,5 +719,5 @@ static uint16_t LS_readWord(uint8_t file, uint32_t addr) {
 }
 
 static uint32_t LS_readLong(uint8_t file, uint32_t addr) {
-	return (LS_readWord(file, addr) << 16) + LS_readWord(file, addr+2);
+	return (((uint32_t)(LS_readWord(file, addr))) << 16) + LS_readWord(file, addr+2);
 }

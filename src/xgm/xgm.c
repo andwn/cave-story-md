@@ -45,7 +45,7 @@ void XGM_startPlay(const uint8_t *song)
     {
         // sample address in sample bank data
         addr = song[(i * 4) + 0] << 8;
-        addr |= song[(i * 4) + 1] << 16;
+        addr |= (uint32_t)(song[(i * 4) + 1]) << 16;
 
         // silent sample ? use null sample address
         if (addr == 0xFFFF00) addr = (uint32_t) smp_null;
@@ -67,7 +67,7 @@ void XGM_startPlay(const uint8_t *song)
     addr = ((uint32_t) song) + 0x100;
     // bypass sample data (use the sample data size)
     addr += song[0xFC] << 8;
-    addr += song[0xFD] << 16;
+    addr += ((uint32_t)song[0xFD]) << 16;
     // and bypass the music data size field
     addr += 4;
 
@@ -333,7 +333,7 @@ uint32_t XGM_getElapsed()
 
     Z80_releaseBus();
 
-    result = (values[0] << 0) | (values[1] << 8) | (values[2] << 16);
+    result = (values[0] << 0) | (values[1] << 8) | ((uint32_t)(values[2]) << 16);
 
     // fix possible 24 bit negative value (parsing first extra frame)
     if (result >= 0xFFFFF0) return 0;

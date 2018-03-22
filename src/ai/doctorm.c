@@ -319,8 +319,8 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_TELEPORT+1:
 		{
 			//if (dr_tp_out(o))
-			e->hidden ^= 1;
-			if(++e->timer > TIME(30)) {
+			e->hidden = (++e->timer & 2);
+			if(e->timer > TIME(30)) {
 				e->state++;
 				e->timer = 0;
 				e->hidden = TRUE;
@@ -363,8 +363,8 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_TELEPORT+4:
 		{
 			//if (dr_tp_in(o))
-			e->hidden ^= 1;
-			if(++e->timer > TIME(30)) {
+			e->hidden = (++e->timer & 2);
+			if(e->timer > TIME(30)) {
 				e->eflags |= NPC_SHOOTABLE;
 				e->attack = DAMAGE_NORMAL;
 				e->hidden = FALSE;

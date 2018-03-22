@@ -101,7 +101,7 @@ void VDP_fillTileMap(uint16_t plan, uint16_t tile, uint16_t ind, uint16_t num)
 
     *plctrl = GFX_WRITE_VRAM_ADDR(addr);
 
-    const uint32_t tile32 = (tile << 16) | tile;
+    const uint32_t tile32 = (((uint32_t)(tile)) << 16) | tile;
 
     i = num >> 3;
     while (i--)
@@ -202,7 +202,7 @@ void VDP_fillTileMapInc(uint16_t plan, uint16_t basetile, uint16_t ind, uint16_t
     *plctrl = GFX_WRITE_VRAM_ADDR(addr);
 
     tile = basetile;
-    tile32 = (tile << 16) | tile;
+    tile32 = (((uint32_t)(tile)) << 16) | tile;
     step = 0x10001;
 
     i = num >> 3;
@@ -401,8 +401,8 @@ void VDP_setTileMapDataEx(uint16_t plan, const uint16_t *data, uint16_t basetile
     src32 = (uint32_t*) data;
     baseindex = basetile & TILE_INDEX_MASK;
     baseflags = basetile & TILE_ATTR_MASK;
-    bi32 = (baseindex << 16) | baseindex;
-    bf32 = (baseflags << 16) | baseflags;
+    bi32 = (((uint32_t)(baseindex)) << 16) | baseindex;
+    bf32 = (((uint32_t)(baseflags)) << 16) | baseflags;
 
     i = num >> 3;
     while (i--)

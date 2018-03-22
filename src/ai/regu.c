@@ -555,11 +555,11 @@ void ai_king(Entity *e) {
 		/* fallthrough */
 		case 41:
 		{
-			e->hidden ^= 1;
-			if (++e->timer > 100) {
+			e->hidden = (++e->timer & 2);
+			if (e->timer > TIME_8(100)) {
 				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 				e->state = 42;
-				e->hidden = 0;
+				e->hidden = FALSE;
 				e->frame = 6; // Sword
 			}
 		}
@@ -713,8 +713,8 @@ void ai_booster_falling(Entity *e) {
 		/* fallthrough */
 		case 21:
 		{
-			e->hidden ^= 1;
-			if (++e->timer > TIME(100)) {
+			e->hidden = (++e->timer & 2);
+			if (e->timer > TIME(100)) {
 				//SmokeClouds(o, 4, 16, 16);
 				e->state = STATE_DELETE;
 			}

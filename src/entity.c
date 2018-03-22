@@ -440,38 +440,38 @@ void entity_update_collision(Entity *e) {
 }
 
 uint8_t collide_stage_leftwall(Entity *e) {
-	uint16_t block_x, block_y1, block_y2;
-	uint8_t pxa1, pxa2;
-	block_x = pixel_to_block(sub_to_pixel(e->x_next) - 
-			(e->dir ? e->hit_box.right : e->hit_box.left));
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
-	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
-	pxa1 = stage_get_block_type(block_x, block_y1);
-	pxa2 = stage_get_block_type(block_x, block_y2);
+	int16_t xoff = e->dir ? e->hit_box.right : e->hit_box.left;
+	uint16_t pixel_x = (e->x_next >> CSF) - xoff;
+	uint16_t pixel_y = (e->y_next >> CSF);
+	uint16_t block_x = pixel_to_block(pixel_x);
+	uint16_t block_y1 = pixel_to_block(pixel_y - e->hit_box.top + 3);
+	uint16_t block_y2 = pixel_to_block(pixel_y + e->hit_box.bottom - 3);
+	uint8_t pxa1 = stage_get_block_type(block_x, block_y1);
+	uint8_t pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
-		e->x_next = pixel_to_sub(
-			block_to_pixel(block_x) + block_to_pixel(1) + e->hit_box.left);
+		e->x_next &= ~0x1FF; // Align to pixel
+		e->x_next += pixel_to_sub(min((pixel_x & ~0xF) + 16 - pixel_x, 3));
 		return TRUE;
 	}
 	return FALSE;
 }
 
 uint8_t collide_stage_rightwall(Entity *e) {
-	uint16_t block_x, block_y1, block_y2;
-	uint8_t pxa1, pxa2;
-	block_x = pixel_to_block(sub_to_pixel(e->x_next) + 
-			(e->dir ? e->hit_box.left : e->hit_box.right));
-	block_y1 = pixel_to_block(sub_to_pixel(e->y_next) - e->hit_box.top + 3);
-	block_y2 = pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom - 3);
-	pxa1 = stage_get_block_type(block_x, block_y1);
-	pxa2 = stage_get_block_type(block_x, block_y2);
+	int16_t xoff = e->dir ? e->hit_box.left : e->hit_box.right;
+	uint16_t pixel_x = (e->x_next >> CSF) + xoff;
+	uint16_t pixel_y = (e->y_next >> CSF);
+	uint16_t block_x = pixel_to_block(pixel_x);
+	uint16_t block_y1 = pixel_to_block(pixel_y - e->hit_box.top + 3);
+	uint16_t block_y2 = pixel_to_block(pixel_y + e->hit_box.bottom - 3);
+	uint8_t pxa1 = stage_get_block_type(block_x, block_y1);
+	uint8_t pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
 			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
-		e->x_next = pixel_to_sub(
-				block_to_pixel(block_x) - e->hit_box.right);
+		e->x_next &= ~0x1FF;
+		e->x_next -= pixel_to_sub(min(pixel_x - (pixel_x & ~0xF), 3));
 		return TRUE;
 	}
 	return FALSE;

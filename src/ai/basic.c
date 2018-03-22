@@ -351,7 +351,7 @@ void onspawn_teleLight(Entity *e) {
 }
 
 void ai_teleLight(Entity *e) {
-	if(e->state) e->hidden ^= 1;
+	if(e->state) e->hidden = (++e->timer & 2);
 	else e->hidden = TRUE;
 }
 
@@ -408,8 +408,8 @@ void ai_player(Entity *e) {
 		} /* fallthrough */
 		case 21:
 		{
-			e->hidden ^= 1;
-			if(++e->timer > TIME_8(50)) {
+			e->hidden = (++e->timer & 2);
+			if(e->timer > TIME_8(50)) {
 				e->state = STATE_DELETE;
 			}
 		}

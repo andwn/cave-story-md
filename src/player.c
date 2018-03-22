@@ -53,18 +53,17 @@ uint8_t walk_time;
 
 VDPSprite airTankSprite;
 
-void player_update_bounds();
-void player_update_booster();
-void player_update_interaction();
-void player_update_air_display();
+static void player_update_booster();
+static void player_update_interaction();
+static void player_update_air_display();
 
-void player_update_movement();
-void player_update_walk();
-void player_update_jump();
-void player_update_float();
+static void player_update_movement();
+static void player_update_walk();
+static void player_update_jump();
+static void player_update_float();
 
-void player_prev_weapon();
-void player_next_weapon();
+static void player_prev_weapon();
+static void player_next_weapon();
 
 // Default values for player
 void player_init() {
@@ -178,16 +177,16 @@ void player_update() {
 		lastBoostState = playerBoostState;
 		// The above code to slow down the booster needs to always run. 
 		// As such we check again whether the booster is enabled
-		if(playerBoostState == BOOST_OFF && sub_to_block(player.y) < stageHeight - 1) {
+		uint16_t px = player.x_next >> CSF, py = player.y_next >> CSF;
+		uint16_t bx = px >> 4, by = py >> 4;
+		if(playerBoostState == BOOST_OFF && bx > 0 && bx < stageWidth - 1 && by > 0 && by < stageHeight - 1) {
 			uint8_t blockl_next, blocku_next, blockr_next, blockd_next;
 			// Ok so, making the collision with ceiling <= 0 pushes the player out of
 			// the ceiling during the opening scene with Kazuma on the computer.
 			// Hi Kazuma!
 			blocku_next = player.y_speed < 0 ? collide_stage_ceiling(&player) : FALSE;
-			blockl_next = (player.x_speed <= 0 || playerPlatform) ? 
-							collide_stage_leftwall(&player) : FALSE;
-			blockr_next = (player.x_speed >= 0 || playerPlatform) ? 
-							collide_stage_rightwall(&player) : FALSE;
+			blockl_next = (player.x_speed <= 0 || playerPlatform) ? collide_stage_leftwall(&player) : FALSE;
+			blockr_next = (player.x_speed >= 0 || playerPlatform) ? collide_stage_rightwall(&player) : FALSE;
 			if(ledge_time == 0) {
 				if(player.grounded) {
 					player.grounded = collide_stage_floor_grounded(&player);
@@ -442,17 +441,17 @@ void player_update() {
 	}
 }
 
-void player_update_movement() {
+static void player_update_movement() {
 	player_update_walk();
 	player_update_jump();
 	player.x_next = player.x + player.x_speed;
 	player.y_next = player.y + player.y_speed;
 }
 
-void player_update_walk() {
-	uint16_t acc;
-	uint16_t fric;
-	uint16_t max_speed;
+static void player_update_walk() {
+	int16_t acc;
+	int16_t fric;
+	int16_t max_speed;
 	if(pal_mode) {
 		max_speed = 810;
 		if(player.grounded) {
@@ -504,11 +503,11 @@ void player_update_walk() {
 	}
 }
 
-void player_update_jump() {
-	uint16_t jumpSpeed;
-	uint16_t gravity;
-	uint16_t gravityJump;
-	uint16_t maxFallSpeed;
+static void player_update_jump() {
+	int16_t jumpSpeed;
+	int16_t gravity;
+	int16_t gravityJump;
+	int16_t maxFallSpeed;
 	if(pal_mode) {
 		jumpSpeed = 	0x500;
 		gravity = 		0x50;
@@ -557,10 +556,10 @@ void player_update_jump() {
 	}
 }
 
-void player_update_float() {
-	uint16_t acc;
-	uint16_t fric;
-	uint16_t max_speed;
+static void player_update_float() {
+	int16_t acc;
+	int16_t fric;
+	int16_t max_speed;
 	if(pal_mode) {
 		acc =		256;
 		fric =		128;
@@ -608,7 +607,7 @@ void player_update_bullets() {
 	}
 }
 
-void player_update_interaction() {
+static void player_update_interaction() {
 	// Interaction with entities when pressing down
 	if(cfg_updoor ? joy_pressed(BUTTON_UP) : joy_pressed(BUTTON_DOWN)) {
 		Entity *e = entityList;
@@ -679,7 +678,7 @@ void player_start_booster() {
 	sound_play(SND_BOOSTER, 3);
 }
 
-void player_update_booster() {
+static void player_update_booster() {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
 	if(!joy_down(btn[cfg_btn_jump])) playerBoostState = BOOST_OFF;
 	if(playerBoostState == BOOST_OFF) return;
@@ -696,10 +695,10 @@ void player_update_booster() {
 	if (joy_down(BUTTON_LEFT)) player.dir = 0;
 	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
 
-	uint8_t blockl = collide_stage_leftwall(&player),
-			blockr = collide_stage_rightwall(&player);
 	// Don't bump in the opposite direction when hitting the ceiling
 	if(player.y_speed <= 0 && collide_stage_ceiling(&player)) player.y_speed = 0;
+	uint8_t blockl = collide_stage_leftwall(&player),
+			blockr = collide_stage_rightwall(&player);
 	collide_stage_floor(&player);
 
 	switch(playerBoostState) {
@@ -821,7 +820,7 @@ void player_show_map_name(uint8_t ttl) {
 	}
 }
 
-void draw_air_percent() {
+static void draw_air_percent() {
 	uint8_t airTemp = airPercent;
 	uint32_t numberTiles[3][8];
 	if(airTemp >= 100) {
@@ -837,7 +836,7 @@ void draw_air_percent() {
 	
 }
 
-void player_update_air_display() {
+static void player_update_air_display() {
 	// Blink for a second after getting out of the water
 	if(airPercent == 100) {
 		if(airDisplayTime == TIME_8(50)) {
@@ -984,7 +983,7 @@ uint8_t player_invincible() {
 	return playerIFrames > 0 || tscState;
 }
 
-uint8_t player_inflict_damage(int16_t damage) {
+uint8_t player_inflict_damage(uint16_t damage) {
 	// Show damage numbers
 	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
 	// Take health
@@ -1030,14 +1029,7 @@ uint8_t player_inflict_damage(int16_t damage) {
 	return FALSE;
 }
 
-void player_update_bounds() {
-	if(sub_to_block(player.y) > stageHeight) {
-		player.health = 0;
-		tsc_call_event(PLAYER_OOB_EVENT);
-	}
-}
-
-void player_prev_weapon() {
+static void player_prev_weapon() {
 	for(int16_t i = currentWeapon - 1; i % MAX_WEAPONS != currentWeapon; i--) {
 		if(i < 0) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
@@ -1052,7 +1044,7 @@ void player_prev_weapon() {
 	}
 }
 
-void player_next_weapon() {
+static void player_next_weapon() {
 	for(int16_t i = currentWeapon + 1; i % MAX_WEAPONS != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {

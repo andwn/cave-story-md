@@ -158,9 +158,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_BigDoorFrame,NOSHEET,		PAL1, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Large Door (Frame)
 	{ &SPR_BigDoor,		NOSHEET, 		PAL1, 1, &onspawn_doorway, 		&ai_doorway, 		&ai_null 			}, // Large Door
 	{ &SPR_Doctor, 		NOSHEET, 		PAL3, 1, &onspawn_snap, 		&ai_doctor, 		&ai_null 			}, // Doctor
-	{ &SPR_ToroBoss,	NOSHEET,		PAL3, 2, &onspawn_torokoBoss, 	&ai_torokoBoss, 	&ondeath_torokoBoss },
-	{ NULL,				SHEET_BLOCK,	PAL1, 1, &onspawn_persistent, 	&ai_torokoBlock, 	&ai_null 			},
-	{ NULL, 			SHEET_FLOWER,	PAL3, 1, &onspawn_persistent, 	&ai_torokoFlower, 	&ondeath_default 	},
+	{ &SPR_ToroBoss,	NOSHEET,		PAL3, 1, &onspawn_torokoBoss, 	&ai_torokoBoss, 	&ondeath_torokoBoss }, // Toroko+
+	{ NULL,				SHEET_BLOCK,	PAL1, 1, &onspawn_persistent, 	&ai_torokoBlock, 	&ai_null 			}, // Block she throws
+	{ NULL, 			SHEET_FLOWER,	PAL3, 1, &onspawn_persistent, 	&ai_torokoFlower, 	&ondeath_default 	}, // That turn into flowers
 	{ &SPR_Jenka, 		NOSHEET, 		PAL3, 1, &onspawn_jenka, 		&ai_null, 			&ai_null 			}, // Jenka
 	/* 0x090 (144) */
 	{ &SPR_Toroko, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_toroko_tele_in, &ai_null 			},
