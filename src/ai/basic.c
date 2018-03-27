@@ -26,7 +26,7 @@ void onspawn_op2snap(Entity *e) {
 }
 
 void onspawn_pushup(Entity *e) {
-	e->y -= 16 << CSF;
+	e->y -= pixel_to_sub(16);
 }
 
 void onspawn_blackboard(Entity *e) {
@@ -56,7 +56,7 @@ void onspawn_spike(Entity *e) {
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
-		e->sprite[0].attribut |= TILE_ATTR_VFLIP_MASK;
+		sprite_vflip(e->sprite[0], TRUE);
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
 		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
@@ -111,50 +111,30 @@ void onspawn_trigger(Entity *e) {
 	if(e->eflags & NPC_OPTION2) { // Vertical
 		// First test if the trigger is placed outside of the map, if so change the type
 		// to OOB trigger which will activate based on player position instead of collision
-		int16_t ex = sub_to_block(e->x);
+		uint16_t ex = sub_to_block(e->x);
 		if(ex <= 0) { // Left OOB
-			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags &= ~NPC_OPTION1;
 		} else if(ex >= stageWidth - 1) { // Right OOB
-			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags |= NPC_OPTION1;
 		} else { // Not OOB
 			e->hit_box.left = 2; e->hit_box.right = 2;
 			// Don't expand immediately
 			e->hit_box.top = 1; e->hit_box.bottom = 1;
-			//for(; e->hit_box.top <= 240; e->hit_box.top += 16) {
-			//	if(stage_get_block_type((e->x>>CSF)/16, 
-			//			((e->y>>CSF)-e->hit_box.top)/16) == 0x41) break;
-			//}
-			//for(; e->hit_box.bottom <= 240; e->hit_box.bottom += 16) {
-			//	if(stage_get_block_type((e->x>>CSF)/16, 
-			//			((e->y>>CSF)+e->hit_box.bottom)/16) == 0x41) break;
-			//}
 		}
 	} else { // Horizontal
-		int16_t ey = sub_to_block(e->y);
+		uint16_t ey = sub_to_block(e->y);
 		if(ey <= 0) { // Top OOB
-			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags &= ~NPC_OPTION1;
 		} else if(ey >= stageHeight - 1) { // Bottom OOB
-			//e->alwaysActive = TRUE;
 			e->type = OBJ_TRIGGER_SPECIAL;
 			e->eflags |= NPC_OPTION1;
 		} else {  // Not OOB
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			// Don't expand immediately so Sisters skip works
 			e->hit_box.left = 1; e->hit_box.right = 1;
-			//for(; e->hit_box.left <= 240; e->hit_box.left += 16) {
-			//	if(stage_get_block_type(((e->x>>CSF)-e->hit_box.left)/16, 
-			//			(e->y>>CSF)/16) == 0x41) break;
-			//}
-			//for(; e->hit_box.right <= 240; e->hit_box.right += 16) {
-			//	if(stage_get_block_type(((e->x>>CSF)+e->hit_box.right)/16, 
-			//			(e->y>>CSF)/16) == 0x41) break;
-			//}
 		}
 	}
 }
@@ -296,7 +276,7 @@ void ai_teleIn(Entity *e) {
 }
 
 void onspawn_teleOut(Entity *e) {
-	e->y -= 32 << CSF;
+	e->y -= pixel_to_sub(32);
 	SNAP_TO_GROUND(e);
 	// PAL was jumping too high here
 	if(pal_mode) e->y_speed = -0x360;
@@ -549,7 +529,7 @@ void ai_fireplace(Entity *e) {
 void ai_gunsmith(Entity *e) {
 	if (e->eflags & NPC_OPTION2) {
 		// Animate Zzz effect above head
-		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8);
+		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8, FALSE);
 		if(++e->timer > TIME_8(100)) e->timer = 0;
 	} else {
 		e->frame = 1;
@@ -642,7 +622,7 @@ void ai_balrog_splash(Entity *e) {
 		{
 			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 			e->y += e->y_speed;
-			if(e->y >= (SCREEN_HALF_H - 24) << CSF) {
+			if(e->y >= pixel_to_sub(SCREEN_HALF_H - 24)) {
 				e->y_speed = 0x320;
 				e->state++;
 				e->linkedEntity->state++;
@@ -653,7 +633,7 @@ void ai_balrog_splash(Entity *e) {
 		case 2: // Crushing logo
 		{
 			e->y += e->y_speed;
-			if(e->y >= (SCREEN_HALF_H + 4) << CSF) {
+			if(e->y >= pixel_to_sub(SCREEN_HALF_H + 4)) {
 				e->state++;
 				e->frame = DUCK;
 				sound_play(SND_LITTLE_CRASH, 5);
@@ -694,7 +674,7 @@ void ai_scroll_ctrl(Entity *e) {
 		case 10:
 		{
 			e->x = player.x;
-			e->y = player.y - (32 << CSF);
+			e->y = player.y - pixel_to_sub(32);
 		}
 		break;
 		// pan in the specified direction. used when you get the good ending
@@ -702,10 +682,10 @@ void ai_scroll_ctrl(Entity *e) {
 		case 20:
 		{
 			switch(e->dir) {
-				case LEFT:	e->x -= (2 << CSF); break;
-				case UP:	e->y -= (2 << CSF); break;
-				case RIGHT: e->x += (2 << CSF); break;
-				case DOWN:	e->y += (2 << CSF); break;
+				case LEFT:	e->x -= pixel_to_sub(2); break;
+				case UP:	e->y -= pixel_to_sub(2); break;
+				case RIGHT: e->x += pixel_to_sub(2); break;
+				case DOWN:	e->y += pixel_to_sub(2); break;
 			}
 			
 			// player is invisible during this part. dragging him along is
@@ -720,7 +700,7 @@ void ai_scroll_ctrl(Entity *e) {
 		case 30:
 		{
 			e->x = player.x;
-			e->y = player.y + (80 << CSF);
+			e->y = player.y + pixel_to_sub(80);
 		}
 		break;
 		
@@ -797,8 +777,8 @@ void onspawn_lightning(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->hit_box = (bounding_box) { 6, 22*8, 6, 8 };
 	e->display_box = (bounding_box) { 8, 23*8, 8, 8 };
-	if(stageID != STAGE_SEAL_CHAMBER) e->x -= 32 << CSF;
-	if(stageID == STAGE_GRASSTOWN_GUM) e->x -= 40 << CSF; // Balrog is a bit farther away
+	if(stageID != STAGE_SEAL_CHAMBER) e->x -= pixel_to_sub(32);
+	if(stageID == STAGE_GRASSTOWN_GUM) e->x -= pixel_to_sub(40); // Balrog is a bit farther away
 	SNAP_TO_GROUND(e);
 }
 
@@ -863,8 +843,8 @@ void ai_intro_crown(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->x += (8 << CSF);
-			e->y += (8 << CSF);
+			//e->x += pixel_to_sub(8);
+			e->y += pixel_to_sub(8);
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -884,7 +864,7 @@ void ai_intro_doctor(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y -= (8 << CSF);
+			e->y -= pixel_to_sub(8);
 			e->state++;
 		} /* fallthrough */
 		case 1:

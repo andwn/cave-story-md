@@ -224,7 +224,7 @@ void ai_sandcroc(Entity *e) {
 				collide_stage_rightwall(e);
 				e->x = e->x_next;
 			}
-			if(PLAYER_DIST_X(pixel_to_sub(19))) {
+			if(PLAYER_DIST_X(e, pixel_to_sub(19))) {
 				// check if bottoms of player and croc are near
 				if(player.y < e->y + 0x200 && sub_to_pixel(player.y) + 
 					player.hit_box.bottom + 12 > sub_to_pixel(e->y) + e->hit_box.bottom) {
@@ -477,7 +477,7 @@ void ai_skullhead(Entity *e) {
 			case 101:			// mouth closed
 			{
 				// shoot only when player near
-				if ((abs(player.x - e->x) < (130 << CSF)) && (abs(player.y - e->y) < (100 << CSF))) {
+				if ((abs(player.x - e->x) < pixel_to_sub(130)) && (abs(player.y - e->y) < pixel_to_sub(100))) {
 					e->timer++;
 				} else {
 					e->timer = TIME_8(49);
@@ -783,11 +783,11 @@ void ai_skeleton_shot(Entity *e) {
 	}
 }
 
-#define SKNEAR_BELOW	(160<<CSF)
-#define SKNEAR_ABOVE	(64<<CSF)
+#define SKNEAR_BELOW	pixel_to_sub(160)
+#define SKNEAR_ABOVE	pixel_to_sub(64)
 
 void ai_skeleton(Entity *e) {
-	uint8_t pnear = PLAYER_DIST_Y2(SKNEAR_ABOVE, SKNEAR_BELOW);
+	uint8_t pnear = PLAYER_DIST_Y2(e, SKNEAR_ABOVE, SKNEAR_BELOW);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -902,7 +902,7 @@ void ai_puppy_wag(Entity *e) {
 	e->eflags |= NPC_INTERACTIVE;
 	
 	// only wag when player is near
-	if (PLAYER_DIST_X(56 << CSF)) {
+	if (PLAYER_DIST_X(e, 56 << CSF)) {
 		if (++e->animtime >= 4) {
 			e->animtime = 0;
 			e->frame ^= 1;
@@ -932,7 +932,7 @@ void ai_puppy_bark(Entity *e) {
 			// note: this is also supposed to run at jenka's house when balrog appears
 			// but it's ok:
 			// the player is always near enough because of the way the cutscene is set up
-			if (PLAYER_DIST_X(64 << CSF) && PLAYER_DIST_Y(16 << CSF)) {
+			if (PLAYER_DIST_X(e, 64 << CSF) && PLAYER_DIST_Y(e, 16 << CSF)) {
 				if (++e->animtime > 6) {
 					e->animtime = 0;
 					
@@ -981,12 +981,12 @@ void ai_puppy_run(Entity *e) {
 			FACE_PLAYER(e);
 			e->frame = 0;		// necessary for randblink
 			
-			if (PLAYER_DIST_Y2((32 << CSF), (16 << CSF))) {
-				if (PLAYER_DIST_X(32 << CSF)) {	// run away!!!
+			if (PLAYER_DIST_Y2(e, (32 << CSF), (16 << CSF))) {
+				if (PLAYER_DIST_X(e, 32 << CSF)) {	// run away!!!
 					FACE_PLAYER(e); TURN_AROUND(e);
 					e->state = 10;
 					e->animtime = 0;
-				} else if (PLAYER_DIST_X(96 << CSF)) {
+				} else if (PLAYER_DIST_X(e, pixel_to_sub(96))) {
 					// wag tail
 					if (++e->animtime >= 4) {
 						e->animtime = 0;

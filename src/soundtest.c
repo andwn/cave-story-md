@@ -5,16 +5,18 @@
 #include "input.h"
 #include "joy.h"
 #include "resources.h"
-#include "sprite.h"
+#include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 
 #include "gamemode.h"
+
+#define DRAW_BYTE(b, x, y) { \
+	char byte[4]; \
+	sprintf(byte, "%02hX", b); \
+	vdp_puts(VDP_PLAN_A, byte, x, y); \
+}
 
 enum { STOPPED, PLAYING, PAUSED };
 
@@ -23,16 +25,16 @@ enum { STOPPED, PLAYING, PAUSED };
 
 // Track # and name
 void draw_track_info(uint8_t track) {
-	VDP_drawByte(track, 2, 6);
-	VDP_clearText(5, 6, 33);
-	VDP_drawText(song_info[track].name, 5, 6);
+	DRAW_BYTE(track, 2, 6);
+	vdp_text_clear(VDP_PLAN_A, 5, 6, 33);
+	vdp_puts(VDP_PLAN_A, song_info[track].name, 5, 6);
 }
 
 void draw_status(uint8_t status) {
 	switch(status) {
-		case STOPPED: VDP_drawText("Stopped", 2, 4); break;
-		case PLAYING: VDP_drawText("Playing", 2, 4); break;
-		case PAUSED:  VDP_drawText("Paused ", 2, 4); break;
+		case STOPPED: vdp_puts(VDP_PLAN_A, "Stopped", 2, 4); break;
+		case PLAYING: vdp_puts(VDP_PLAN_A, "Playing", 2, 4); break;
+		case PAUSED:  vdp_puts(VDP_PLAN_A, "Paused ", 2, 4); break;
 	}
 }
 
@@ -42,15 +44,12 @@ void soundtest_main() {
 	uint8_t track = 0;
 	uint8_t status = STOPPED, oldstatus = STOPPED;
 	
-	VDP_setEnable(FALSE);
+	vdp_set_display(FALSE);
 	
-	sprites_clear();
-	VDP_clearPlan(PLAN_A, TRUE);
+	vdp_sprites_clear();
+	vdp_map_clear(VDP_PLAN_A);
 	// Background picture
-	//VDP_loadTileSet(&TS_SndTest, TILE_USERINDEX, TRUE);
-	//VDP_fillTileMapRectInc(PLAN_B,
-	//		TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USERINDEX), 0, 0, 40, 28);
-	VDP_loadTileData((uint32_t*) PAT_SndTest, 16, sizeof(PAT_SndTest) / TILE_SIZE, TRUE);
+	vdp_tiles_load_from_rom((uint32_t*) PAT_SndTest, 16, sizeof(PAT_SndTest) / TILE_SIZE);
 	uint16_t index = pal_mode ? 0 : 80 << 1;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		DMA_doDma(DMA_VRAM, (uint32_t) &MAP_SndTest[index], VDP_PLAN_B + (y << 7), 40, 2);
@@ -58,33 +57,32 @@ void soundtest_main() {
 	}
 
 	draw_status(status);
-	VDP_drawText("Sound Test", 15, 2);
-	VDP_drawText("Track: ", 2, 8);
-	VDP_drawText("C-Play B-Stop", 2, 14);
-	VDP_drawText("A-Pause Start-Quit", 2, 16);
-	VDP_drawByte(track, 10, 8);
+	vdp_puts(VDP_PLAN_A, "Sound Test", 15, 2);
+	vdp_puts(VDP_PLAN_A, "Track: ", 2, 8);
+	vdp_puts(VDP_PLAN_A, "C-Play B-Stop", 2, 14);
+	vdp_puts(VDP_PLAN_A, "A-Pause Start-Quit", 2, 16);
+	DRAW_BYTE(track, 10, 8);
 	
-	VDP_setPalette(PAL0, PAL_Main.data);
-	VDP_setPalette(PAL1, PAL_SndTest.data);
+	vdp_colors(0, PAL_Main.data, 16);
+	vdp_colors(16, PAL_SndTest.data, 16);
 	
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 
 	song_stop();
 	oldstate = ~0;
     while(TRUE) {
-		input_update();
 		// Switch between tracks
 		// Skip the gap between the last song and first sfx
 		if(joy_pressed(BUTTON_LEFT)) {
 			if(track == 0) track = FIRST_SOUND + SOUND_COUNT - 1;
 			else if(track == FIRST_SOUND) track = SONG_COUNT - 1;
 			else track--;
-			VDP_drawByte(track, 10, 8);
+			DRAW_BYTE(track, 10, 8);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
 			if(track == SONG_COUNT - 1) track = FIRST_SOUND;
 			else if(track == FIRST_SOUND + SOUND_COUNT - 1) track = 0;
 			else track++;
-			VDP_drawByte(track, 10, 8);
+			DRAW_BYTE(track, 10, 8);
 		}
 		if(joy_pressed(btn[cfg_btn_jump])) {
 			// Play
@@ -99,19 +97,8 @@ void soundtest_main() {
 			// Stop
 			song_stop();
 			status = STOPPED;
-		//} else if(joy_pressed(BUTTON_A)) {
-			// Pause
-		//	if(status == PLAYING) {
-		//		song_stop();
-		//		status = PAUSED;
-		//	} else if(status == PAUSED) {
-		//		song_resume();
-		//		status = PLAYING;
-		//	}
 		}
 		if(joy_pressed(btn[cfg_btn_pause])) {
-			//song_stop();
-			//oldstate |= btn[cfg_btn_pause];
 			return;
 		}
 		if(status != oldstatus) {
@@ -119,8 +106,7 @@ void soundtest_main() {
 			oldstatus = status;
 		}
 		ready = TRUE;
-		vsync();
+		vdp_vsync();
 		aftervsync();
     }
-    //SYS_hardReset(); // eh
 }

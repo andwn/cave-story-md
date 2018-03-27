@@ -98,7 +98,7 @@ void ai_misery_float(Entity *e) {
 			if (++e->timer >= TIME_8(20)) {
 				entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
 				sound_play(SND_LIGHTNING_STRIKE, 5);
-				SCREEN_FLASH(10);
+				SCREEN_FLASH(3);
 				e->state = 27;
 				e->timer = 0;
 			}
@@ -162,7 +162,7 @@ void ai_misery_stand(Entity *e) {
 			if (++e->timer >= TIME_8(20)) {
 				entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
 				sound_play(SND_LIGHTNING_STRIKE, 5);
-				SCREEN_FLASH(10);
+				SCREEN_FLASH(3);
 				e->state = 27;
 				e->timer = 0;
 			}
@@ -297,7 +297,7 @@ void ai_boss_misery(Entity *e) {
 		case 0:
 		{
 			// her initial target height when fight begins
-			e->y_mark = (64 << CSF);
+			e->y_mark = pixel_to_sub(64);
 			
 			e->state = 1;
 		} /* fallthrough */
@@ -403,7 +403,7 @@ void ai_boss_misery(Entity *e) {
 		case STATE_SUMMON_BLOCK:
 		{
 			if (++e->timer == TIME_8(10)) {
-				entity_create(player.x - (8<<CSF), player.y - (64<<CSF), 
+				entity_create(player.x - pixel_to_sub(8), player.y - pixel_to_sub(64), 
 						OBJ_FALLING_BLOCK, NPC_OPTION1);
 			}
 			
@@ -478,7 +478,7 @@ void ai_boss_misery(Entity *e) {
 				}
 				// after tp we can summon the black balls if the player
 				// is far enough away from us that they won't immediately trigger
-				if (abs(player.x - e->x) > 112<<CSF) {
+				if (abs(player.x - e->x) > pixel_to_sub(112)) {
 					e->state = STATE_SUMMON_BALLS;
 				} else {
 					e->state = STATE_FIGHTING;
@@ -625,7 +625,7 @@ void ai_misery_ball(Entity *e) {
 			LIMIT_X(0x200);
 			LIMIT_Y(0x200);
 			
-			if (PLAYER_DIST_X(8<<CSF) && player.y > e->y) {
+			if (PLAYER_DIST_X(e, 8<<CSF) && player.y > e->y) {
 				e->state = 10;
 				e->timer = 0;
 			} else if(++e->timer > TIME_10(750)) {

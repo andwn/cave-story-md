@@ -53,6 +53,9 @@ extern uint8_t cfg_iframebug;
 extern uint8_t cfg_force_btn;
 extern uint8_t cfg_msg_blip;
 
+extern uint8_t cfg_music_mute;
+extern uint8_t cfg_sfx_mute;
+
 extern uint8_t sram_file;
 
 // Global flags are persisted to save data
@@ -93,7 +96,3 @@ uint32_t system_load_counter();
 void system_save_counter(uint32_t ticks);
 
 void system_format_sram();
-
-// SGDK sys.h stuff
-void SYS_assertReset();
-void SYS_hardReset();

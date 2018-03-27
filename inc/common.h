@@ -1,3 +1,7 @@
+#define SYS_hardReset() __asm__("move   #0x2700,%sr\n\t" \
+                                "move.l (0),%a7\n\t"     \
+                                "jmp    _hard_reset")
+
 #define FALSE   0
 #define TRUE    1
 #define NULL    0
@@ -178,7 +182,7 @@ typedef struct {
         };
         uint16_t size_link;
     };
-    uint16_t attribut;
+    uint16_t attr;
     int16_t x;
 } VDPSprite;
 
@@ -221,5 +225,4 @@ extern volatile uint8_t vblank;
 // Prevents incomplete sprite list from being sent to VDP (flickering)
 volatile uint8_t ready;
 
-void vsync();
 void aftervsync();

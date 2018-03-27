@@ -16,16 +16,11 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "window.h"
 #include "xgm.h"
 
@@ -179,7 +174,7 @@ void tsc_init() {
 	teleMenuSlotCount = 0;
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
-	VDP_loadTileSet(&TS_Window, TILE_WINDOWINDEX, TRUE);
+	vdp_tiles_load_from_rom(TS_Window.tiles, TILE_WINDOWINDEX, TS_Window.numTile);
 	const uint8_t *TSC = cfg_language ? JTSC_Head : TSC_Head;
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
@@ -348,10 +343,10 @@ uint8_t tsc_update() {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16 + bossHealth);
 			}
-			sprite_addq(teleMenuSprite, teleMenuSlotCount);
+		vdp_sprites_add(teleMenuSprite, teleMenuSlotCount);
 			// --WARP-- text
-			sprite_add(teleMenuSprite[6]);
-			sprite_add(teleMenuSprite[7]);
+		vdp_sprite_add(&teleMenuSprite[6]);
+		vdp_sprite_add(&teleMenuSprite[7]);
 		}
 		break;
 		case TSC_WAITGROUNDED:
@@ -373,25 +368,25 @@ void tsc_show_boss_health() {
 	// Fill map name space with boss bar
 	static const char boss[4] = "Boss";
 	for(uint8_t i = 0; i < 4; i++) {
-		VDP_loadTileData(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1, TRUE);
+		vdp_tiles_load_from_rom(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1);
 	}
 	for(uint8_t i = 0; i < 8; i++) {
-		VDP_loadTileData(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1, TRUE);
+		vdp_tiles_load_from_rom(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1);
 	}
 	// Create sprites to display the string
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
 	uint8_t yoff = pal_mode ? 24 : 16;
 	teleMenuSprite[5] = (VDPSprite) { 
 		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - yoff + 128,
-		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
 	teleMenuSprite[6] = (VDPSprite) { 
 		.x = 160 + 64 + 128, .y = SCREEN_HEIGHT - yoff + 128,
-		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+4)
+		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
 	teleMenuSprite[7] = (VDPSprite) { 
 		.x = 160 + 96 + 128, .y = SCREEN_HEIGHT - yoff + 128,
-		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+8)
+		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+8)
 	};
 }
 
@@ -424,20 +419,20 @@ void tsc_update_boss_health() {
 		// Draw a partial filled tile
 		if(inc) {
 			uint16_t index = min((((uint16_t)(hp << 3)) / inc) << 3, 72);
-			VDP_loadTileData(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1, TRUE);
+			vdp_tiles_load_from_rom(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1);
 		} else {
 			// Don't divide by zero
-			VDP_loadTileData(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1, TRUE);
+			vdp_tiles_load_from_rom(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1);
 		}
 		// Draw empty tile after it
 		if(++i < 8) {
-			VDP_loadTileData(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1, TRUE);
+			vdp_tiles_load_from_rom(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1);
 		}
 	}
 	
-	sprite_add(teleMenuSprite[5]);
-	sprite_add(teleMenuSprite[6]);
-	sprite_add(teleMenuSprite[7]);
+vdp_sprite_add(&teleMenuSprite[5]);
+vdp_sprite_add(&teleMenuSprite[6]);
+vdp_sprite_add(&teleMenuSprite[7]);
 }
 
 static void tsc_render_warp_text() {
@@ -452,11 +447,11 @@ static void tsc_render_warp_text() {
 	// Create sprites to display the string
 	teleMenuSprite[6] = (VDPSprite) { 
 		.x = 160 - 32 + 128, .y = 32 + 128,
-		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX)
+		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
 	teleMenuSprite[7] = (VDPSprite) { 
 		.x = 160 + 128, .y = 32 + 128,
-		.size = SPRITE_SIZE(4,1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+4)
+		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
 }
 
@@ -473,7 +468,7 @@ void tsc_show_teleport_menu() {
 		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
 			.x = 24 + i*40 + 128, .y = 96 + 128,
 			.size = SPRITE_SIZE(4, 2),
-			.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
+			.attr = TILE_ATTR(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
 		};
 		teleMenuSlotCount++;
 	}
@@ -483,7 +478,7 @@ void tsc_show_teleport_menu() {
 		tsc_call_event(1000 + teleMenuSelection + 1);
 		while(tscState != TSC_IDLE) execute_command();
 		tscState = TSC_TELEMENU;
-		VDP_setWindowPos(0, pal_mode ? 245 : 244);
+		vdp_set_window(0, pal_mode ? 245 : 244);
 		controlsLocked = TRUE;
 		// I use bossHealth to tick back and forth between 0 and 8 so the cursor will flash
 		// since bosses don't happen in Arthur's house
@@ -531,9 +526,9 @@ uint8_t execute_command() {
 		case CMD_NUM: // Show number (1) in message box
 		{
 			args[0] = tsc_read_word();
-			char str[12];
-			intToStr(lastAmmoNum, str, 1);
-			for(uint8_t i = 0; str[i] != 0 && i < 12; i++) {
+			char str[6];
+			sprintf(str, "%u", lastAmmoNum);
+			for(uint8_t i = 0; str[i] != 0 && i < 6; i++) {
 				window_draw_char(str[i]);
 			}
 		}
@@ -605,10 +600,10 @@ uint8_t execute_command() {
 			args[3] = tsc_read_word();
 			if(gamemode == GM_CREDITS) {
 				if(args[0] == 0) {
-					VDP_clearPlan(PLAN_A, TRUE);
+					vdp_map_clear(VDP_PLAN_A);
 					entities_clear();
-					sprites_clear();
-					entity_create((int32_t) 240 << CSF, (int32_t) 120 << CSF, OBJ_NPC_PLAYER, 0)->state = 100;
+					vdp_sprites_clear();
+					entity_create(pixel_to_sub(240), pixel_to_sub(120), OBJ_NPC_PLAYER, 0)->state = 100;
 					tsc_load_stage(ID_CREDITS);
 				} else {
 					stage_load_credits(args[0]);
@@ -844,11 +839,11 @@ uint8_t execute_command() {
 			args[2] = tsc_read_word();
 			args[3] = tsc_read_word();
 			if(args[0] == OBJ_THE_CAST) {
-				entity_create_ext((args[1]<<CSF)*16+(8<<CSF), 
-								  (args[2]<<CSF)*16+(8<<CSF), args[0], 0, args[3], 0);
+				entity_create_ext(block_to_sub(args[1])+(8<<CSF), 
+								  block_to_sub(args[2])+(8<<CSF), args[0], 0, args[3], 0);
 			} else {
-				Entity *e = entity_create((args[1]<<CSF)*16+(8<<CSF), 
-										  (args[2]<<CSF)*16+(8<<CSF), args[0], 0);
+				Entity *e = entity_create(block_to_sub(args[1])+(8<<CSF), 
+										  block_to_sub(args[2])+(8<<CSF), args[0], 0);
 				e->dir = mddir(args[3]);
 			}
 		}
@@ -1056,14 +1051,15 @@ uint8_t execute_command() {
 		case CMD_FAI: // Fading, in direction (1)
 		{
 			args[0] = tsc_read_word();
+			stage_setup_palettes();
 			if(gamemode != GM_CREDITS) {
 				inFade = FALSE; // Unlock sprites from updating
-				vsync(); // Wait a frame to let the sprites redraw
+				vdp_vsync(); // Wait a frame to let the sprites redraw
 				aftervsync();
-				VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+				vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
 			} else {
-				VDP_setPaletteColors(16, &PAL_FadeOutBlue[16], 48);
-				VDP_fadeTo(16, 63, &VDP_getCachedPalette()[16], 20, TRUE);
+				vdp_color_next(0, 0x200);
+				vdp_fade(PAL_FadeOutBlue, NULL, 4, TRUE);
 			}
 		}
 		break;
@@ -1071,12 +1067,12 @@ uint8_t execute_command() {
 		{
 			args[0] = tsc_read_word();
 			if(gamemode != GM_CREDITS) {
-				VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
+				vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 				// Blank the sprite list in VRAM
-				sprites_clear();
+				//vdp_sprites_clear();
 				inFade = TRUE;
 			} else {
-				VDP_fadeTo(16, 63, &PAL_FadeOutBlue[16], 20, TRUE);
+				vdp_fade(NULL, PAL_FadeOutBlue, 4, TRUE);
 				waitTime = 20;
 				return 1;
 			}
@@ -1084,7 +1080,7 @@ uint8_t execute_command() {
 		break;
 		case CMD_FLA: // Flash screen white
 		{
-			VDP_flashWhite();
+			vdp_fade(PAL_FullWhite, NULL, 4, TRUE);
 		}
 		break;
 		case CMD_MLP: // Show the map
@@ -1179,56 +1175,59 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 
 			ready = TRUE;
-			vsync(); aftervsync();
+			vdp_vsync(); aftervsync();
 
-			VDP_setEnable(FALSE);
+			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
-			camera.x = (int32_t)SCREEN_HALF_W << CSF;
-			camera.y = (int32_t)SCREEN_HALF_H << CSF;
+			camera.x = pixel_to_sub(SCREEN_HALF_W);
+			camera.y = pixel_to_sub(SCREEN_HALF_H);
 			camera.x_shifted = 0;
 			camera.y_shifted = 0;
 			// Reset plane positions
-			VDP_setHorizontalScroll(PLAN_A, 0);
-			VDP_setVerticalScroll(PLAN_A, 0);
-			VDP_setHorizontalScroll(PLAN_B, 0);
-			VDP_setVerticalScroll(PLAN_B, 0);
+			vdp_hscroll(VDP_PLAN_A, 0);
+			vdp_vscroll(VDP_PLAN_A, 0);
+			vdp_hscroll(VDP_PLAN_B, 0);
+			vdp_vscroll(VDP_PLAN_B, 0);
 			// Clear planes
-			VDP_clearPlan(PLAN_B, TRUE);
-			VDP_clearPlan(PLAN_A, TRUE);
+			vdp_map_clear(VDP_PLAN_B);
+			vdp_map_clear(VDP_PLAN_A);
 			// Background sky/mountains
-			VDP_loadTileSet(&TS_XXBack, TILE_TSINDEX, TRUE);
-			VDP_fillTileMapRectInc(PLAN_B, 
-					TILE_ATTR_FULL(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10);
+			vdp_tiles_load_from_rom(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
+			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10, 1);
+			//VDP_fillTileMapRectInc(VDP_PLAN_B, 
+			//		TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10);
 			// Foreground trees
-			VDP_loadTileSet(&TS_XXFore, TILE_BACKINDEX, TRUE);
-			VDP_fillTileMapRectInc(PLAN_A, 
-					TILE_ATTR_FULL(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4);
+			vdp_tiles_load_from_rom(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
+			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,0,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
+			//VDP_fillTileMapRectInc(VDP_PLAN_A, 
+			//		TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4);
 			// Draw high prio black tiles over the top to hide island
 			static const uint32_t blackTile[8] = { 
 				0x11111111,0x11111111,0x11111111,0x11111111,
 				0x11111111,0x11111111,0x11111111,0x11111111
 			};
-			VDP_loadTileData(blackTile, 1, 1, FALSE);
-			VDP_fillTileMapRect(PLAN_A, 
-					TILE_ATTR_FULL(PAL0,1,0,0,1), 10, 6, 20, 4);
+			vdp_tiles_load_from_rom(blackTile, 1, 1);
+			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,1), 10, 6, 20, 4, 0);
+			//VDP_fillTileMapRect(VDP_PLAN_A, 
+			//		TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
 			// Island sprite
 			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
 			VDPSprite island[2] = {
 				(VDPSprite) { 
 					.x = 160 - 20 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(4, 3),
-					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_SHEETINDEX)
+					.attr = TILE_ATTR(PAL3,0,0,0,TILE_SHEETINDEX)
 				},
 				(VDPSprite) {
 					.x = 160 + 12 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(1, 3),
-					.attribut = TILE_ATTR_FULL(PAL3,0,0,0,TILE_SHEETINDEX+12)
+					.attr = TILE_ATTR(PAL3,0,0,0,TILE_SHEETINDEX+12)
 				}
 			};
 			
-			VDP_setCachedPalette(PAL3, PAL_XX.data);
-			VDP_setPalette(PAL3, PAL_XX.data);
-			VDP_setEnable(TRUE);
+			vdp_colors_next(48, PAL_XX.data, 16);
+			vdp_colors(48, PAL_XX.data, 16);
+			vdp_set_display(TRUE);
 
 			song_stop();
 			xgm_vblank();
@@ -1241,11 +1240,11 @@ uint8_t execute_command() {
 						island[1].y++;
 					}
 				}
-				sprite_addq(island, 2);
+				vdp_sprites_add(island, 2);
 				system_update();
 				ready = TRUE;
-				vsync(); //aftervsync();
-				sprites_send();
+				vdp_vsync(); //aftervsync();
+				vdp_sprites_update();
 			}
 		}
 		break;

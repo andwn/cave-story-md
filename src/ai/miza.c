@@ -149,11 +149,11 @@ void ai_misery_frenzied(Entity *e) {
 				int x, y;
 				
 				if (e->spawner) {
-					x = e->x - 64 + ((random() & 127) << CSF);
-					y = e->y - 32 + ((random() & 63) << CSF);
+					x = e->x - pixel_to_sub(64 + ((random() & 127)));
+					y = e->y - pixel_to_sub(32 + ((random() & 63)));
 				} else {
-					x = e->x - 32 + ((random() & 63) << CSF);
-					y = e->y - 64 + ((random() & 127) << CSF);
+					x = e->x - pixel_to_sub(32 + ((random() & 63)));
+					y = e->y - pixel_to_sub(64 + ((random() & 127)));
 				}
 				
 				if (x < block_to_sub(2)) x = block_to_sub(2);
@@ -167,7 +167,7 @@ void ai_misery_frenzied(Entity *e) {
 						e->spawner ? OBJ_MISERY_CRITTER : OBJ_MISERY_BAT, 0)->hidden = TRUE;
 			}
 			
-			if (e->timer > TIME(50)) {
+			if (e->timer > TIME_8(50)) {
 				e->state = 42;
 				e->timer = 0;
 				FACE_PLAYER(e);
@@ -179,9 +179,9 @@ void ai_misery_frenzied(Entity *e) {
 		{
 			e->frame = DASH;
 			
-			if (++e->timer > TIME(50)) {
-				e->y_speed = -SPEED(0x200);
-				MOVE_X(-SPEED(0x200));
+			if (++e->timer > TIME_8(50)) {
+				e->y_speed = -SPEED_10(0x200);
+				MOVE_X(-SPEED_10(0x200));
 				
 				e->state = 30;
 			}
@@ -560,7 +560,7 @@ void ai_sue_frenzied(Entity *e) {
 		{
 			e->frame = EGADS;	// egads!
 			
-			if (blk(e->x, 0, e->y, e->hit_box.bottom << CSF) == 0x41) {
+			if (blk(e->x, 0, e->y, pixel_to_sub(e->hit_box.bottom)) == 0x41) {
 				e->state++;
 				e->timer = 0;
 				e->frame = STILL1;	// standing
@@ -593,8 +593,8 @@ void ai_sue_frenzied(Entity *e) {
 			e->nflags &= ~NPC_SHOOTABLE;
 			
 			int32_t x;
-			if (player.x < e->x) x = player.x - (160<<CSF);
-							 else x = player.x + (160<<CSF);
+			if (player.x < e->x) x = player.x - pixel_to_sub(160);
+							 else x = player.x + pixel_to_sub(160);
 			THROW_AT_TARGET(e, x, player.y, SPEED(0x600));
 			set_ignore_solid(e);
 		} /* fallthrough */
@@ -700,7 +700,7 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 		{
 			e->y_speed += SPEED(0x20);
 			
-			#define FLOOR	(((14 * 16) - 13) << CSF)
+			#define FLOOR	pixel_to_sub(((14 * 16) - 13))
 			if (e->y_speed > 0 && e->y > FLOOR) {
 				e->y = FLOOR;
 				e->state++;

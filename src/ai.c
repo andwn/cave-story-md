@@ -1,6 +1,7 @@
 #include "common.h"
-
 #include "ai.h"
+#include "entity.h"
+#include "player.h"
 
 static const uint32_t tan_table[33] = {
 	0,
@@ -63,4 +64,20 @@ uint8_t mddir(uint8_t dir) {
 		case DIR_CENTER: 	return CENTER;
 		default: 			return LEFT;
 	}
+}
+
+uint8_t PLAYER_DIST_X(Entity *e, int32_t dist) {
+	return player.x > e->x - dist && player.x < e->x + dist;
+}
+
+uint8_t PLAYER_DIST_Y(Entity *e, int32_t dist) {
+	return player.y > e->y - dist && player.y < e->y + dist;
+}
+
+uint8_t PLAYER_DIST_X2(Entity *e, int32_t dist1, int32_t dist2) {
+	return player.x > e->x - dist1 && player.x < e->x + dist2;
+}
+
+uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
+	return player.y > e->y - dist1 && player.y < e->y + dist2;
 }

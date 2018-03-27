@@ -8,6 +8,17 @@
 
 #include "dma.h"
 
+#define GFX_DATA_PORT           0xC00000
+#define GFX_CTRL_PORT           0xC00004
+
+#define GFX_DMA_VRAM_ADDR(adr)      ((0x4000 + ((uint32_t)(adr) & 0x3FFF)) << 16) + (((uint32_t)(adr) >> 14) | 0x80)
+#define GFX_DMA_CRAM_ADDR(adr)      ((0xC000 + ((uint32_t)(adr) & 0x3FFF)) << 16) + (((uint32_t)(adr) >> 14) | 0x80)
+#define GFX_DMA_VSRAM_ADDR(adr)     ((0x4000 + ((uint32_t)(adr) & 0x3FFF)) << 16) + (((uint32_t)(adr) >> 14) | 0x90)
+#define GFX_DMA_VRAMCOPY_ADDR(adr)  ((0x4000 + ((uint32_t)(adr) & 0x3FFF)) << 16) + (((uint32_t)(adr) >> 14) | 0xC0)
+
+#define GET_VDPSTATUS(flag)         ((*(volatile uint16_t*)(GFX_CTRL_PORT)) & (flag))
+#define VDP_DMABUSY_FLAG            (1 << 1)
+
 //#define DMA_DEBUG
 
 #define DMA_DEFAULT_QUEUE_SIZE      64
@@ -33,9 +44,9 @@ void DMA_init(uint16_t size, uint16_t capacity)
     maxTransferPerFrame = capacity;
 
     // already allocated ?
-    if (dmaQueues) MEM_free(dmaQueues);
+    if (dmaQueues) free(dmaQueues);
     // allocate DMA queue
-    dmaQueues = MEM_alloc(queueSize * sizeof(DMAOpInfo));
+    dmaQueues = malloc(queueSize * sizeof(DMAOpInfo));
 	if (!dmaQueues) error_oom();
 	
     // clear queue
@@ -104,7 +115,7 @@ void DMA_flushQueue()
     }
 
     // we do that to fix cached auto inc value (instead of losing time in updating it during queue flush)
-    VDP_setAutoInc(2);
+    vdp_set_autoinc(2);
 }
 
 uint16_t DMA_getQueueSize()
@@ -245,7 +256,7 @@ void DMA_doDma(uint8_t location, uint32_t from, uint16_t to, uint16_t len, int16
     uint32_t banklimitw;
 
     if (step != -1)
-        VDP_setAutoInc(step);
+        vdp_set_autoinc(step);
 
     // DMA works on 64 KW bank
     banklimitb = 0x20000 - (from & 0x1FFFF);
@@ -299,7 +310,7 @@ void DMA_doVRamFill(uint16_t to, uint16_t len, uint8_t value, int16_t step)
     uint16_t l;
 
     if (step != -1)
-        VDP_setAutoInc(step);
+        vdp_set_autoinc(step);
 
     // need to do some adjustement because of the way VRAM fill is done
     if (len)
@@ -347,7 +358,7 @@ void DMA_doVRamCopy(uint16_t from, uint16_t to, uint16_t len, int16_t step)
     volatile uint32_t *pl;
 
     if (step != -1)
-        VDP_setAutoInc(step);
+        vdp_set_autoinc(step);
 
     pw = (uint16_t *) GFX_CTRL_PORT;
 

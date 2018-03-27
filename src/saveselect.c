@@ -14,17 +14,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
 
@@ -38,11 +33,11 @@ enum { CM_LOAD, CM_COPY, CM_PASTE, CM_DELETE, CM_CONFIRM };
 
 static void draw_cursor_mode(uint8_t mode) {
 	switch(mode) {
-		case CM_LOAD:    VDP_drawText(" Load Save Data ", 12, 2); break;
-		case CM_COPY:    VDP_drawText(" Copy Save Data ", 12, 2); break;
-		case CM_PASTE:   VDP_drawText("Paste Save Data ", 12, 2); break;
-		case CM_DELETE:  VDP_drawText("Delete Save Data", 12, 2); break;
-		case CM_CONFIRM: VDP_drawText(" Are you sure?  ", 12, 2); break;
+		case CM_LOAD:    vdp_puts(VDP_PLAN_A, " Load Save Data ", 12, 2); break;
+		case CM_COPY:    vdp_puts(VDP_PLAN_A, " Copy Save Data ", 12, 2); break;
+		case CM_PASTE:   vdp_puts(VDP_PLAN_A, "Paste Save Data ", 12, 2); break;
+		case CM_DELETE:  vdp_puts(VDP_PLAN_A, "Delete Save Data", 12, 2); break;
+		case CM_CONFIRM: vdp_puts(VDP_PLAN_A, " Are you sure?  ", 12, 2); break;
 	}
 }
 
@@ -51,14 +46,14 @@ static uint8_t refresh_file(uint8_t index) {
 	SaveEntry file;
 	
 	system_peekdata(index, &file);
-	VDP_clearText(6, y, 16); // Erase any previous stage name text
+	vdp_text_clear(VDP_PLAN_A, 6, y, 16); // Erase any previous stage name text
 	if(file.used) {
 		// Map name
-		VDP_drawText(stage_info[file.stage_id].name, 6, y);
+		vdp_puts(VDP_PLAN_A, stage_info[file.stage_id].name, 6, y);
 		// Play time
 		char timeStr[10] = {};
 		sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
-		VDP_drawText(timeStr, 26, y);
+		vdp_puts(VDP_PLAN_A, timeStr, 26, y);
 		// Health bar
 		{
 			uint32_t tileData[8][8];
@@ -80,7 +75,7 @@ static uint8_t refresh_file(uint8_t index) {
 			uint16_t tile = TILE_HUDINDEX + index*8;
 			DMA_doDma(DMA_VRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {
-				VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+i), 6+i, y+2);
+				vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+i), 6+i, y+2);
 			}
 		}
 		// Weapon list
@@ -89,19 +84,19 @@ static uint8_t refresh_file(uint8_t index) {
 			// X tile pos and VRAM index to put the ArmsImage tiles
 			uint16_t x = 24 + i*2;
 			uint16_t tile = TILE_FACEINDEX + index*20 + i*4;
-			VDP_loadTileData(SPR_TILES(&SPR_ArmsImage, 0, file.weapon[i]), tile, 4, TRUE);
+			vdp_tiles_load_from_rom(SPR_TILES(&SPR_ArmsImage, 0, file.weapon[i]), tile, 4);
 			// 4 mappings for ArmsImage icon
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile),   x,   y+2);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+2), x+1, y+2);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+1), x,   y+3);
-			VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(PAL0,0,0,0,tile+3), x+1, y+3);
+			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile),   x,   y+2);
+			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+2), x+1, y+2);
+			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+1), x,   y+3);
+			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+3), x+1, y+3);
 		}
 	} else {
-		VDP_drawText("New Game", 6, y);
-		VDP_clearText(26, y, 10);
-		VDP_clearText(6, y+2, 8);
-		VDP_clearText(24, y+2, 12);
-		VDP_clearText(24, y+3, 12);
+		vdp_puts(VDP_PLAN_A, "New Game", 6, y);
+		vdp_text_clear(VDP_PLAN_A, 26, y, 10);
+		vdp_text_clear(VDP_PLAN_A, 6, y+2, 8);
+		vdp_text_clear(VDP_PLAN_A, 24, y+2, 12);
+		vdp_text_clear(VDP_PLAN_A, 24, y+3, 12);
 	}
 	return file.used;
 }
@@ -128,26 +123,25 @@ uint8_t saveselect_main() {
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
 	uint8_t file_used[SRAM_FILE_MAX];
 	
-	VDP_setEnable(FALSE);
+	vdp_set_display(FALSE);
 	// Keep stuff from the title screen
-	VDP_clearPlan(PLAN_A, TRUE);
-	VDP_clearPlan(PLAN_B, TRUE);
-	sprites_clear();
+	vdp_map_clear(VDP_PLAN_A);
+	vdp_map_clear(VDP_PLAN_B);
+	vdp_sprites_clear();
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
 	draw_cursor_mode(cursorMode);
 	for(uint16_t i = 0; i < SRAM_FILE_MAX; i++) file_used[i] = refresh_file(i);
-	VDP_drawText("Copy", 6, 25);
-	VDP_drawText("Delete", 16, 25);
+	vdp_puts(VDP_PLAN_A, "Copy", 6, 25);
+	vdp_puts(VDP_PLAN_A, "Delete", 16, 25);
 	
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 	
 	oldstate = ~0;
 	while(TRUE) {
-		input_update();
 		if(joy_pressed(BUTTON_C) || joy_pressed(BUTTON_START)) { // Confirm action
 			if(cursor < SRAM_FILE_MAX) {
 				switch(cursorMode) {
@@ -223,10 +217,10 @@ uint8_t saveselect_main() {
 			// Draw quote sprite at cursor position
 			sprite_pos(sprCursor, cursor_pos[cursor].x, cursor_pos[cursor].y);
 		}
-		sprite_add(sprCursor);
+	vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
 	return file_used[cursor];
 }

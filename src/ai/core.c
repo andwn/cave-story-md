@@ -66,8 +66,8 @@ void onspawn_core(Entity *e) {
 	e->state = CORE_SLEEP;
 	e->eflags = NPC_SHOWDAMAGE;
 	
-	e->x = (1150 << CSF);
-	e->y = (212 << CSF);
+	e->x = pixel_to_sub(1150);
+	e->y = pixel_to_sub(212);
 	e->x_speed = 0;
 	e->y_speed = 0;
 	e->health = 650;
@@ -197,8 +197,8 @@ void ai_core(Entity *e) {
 			// spawn ghosties
 			if(e->timer < TIME_8(200)) {
 				if((e->timer & 31) == 0) {
-					entity_create(e->x + ((-48 + (random() & 63)) << CSF),
-						     	  e->y + ((-64 + (random() & 127)) << CSF),
+					entity_create(e->x + pixel_to_sub(-48 + (random() & 63)),
+						     	  e->y + pixel_to_sub(-64 + (random() & 127)),
 							 	  OBJ_CORE_GHOSTIE, 0);
 				}
 			}
@@ -272,9 +272,9 @@ void ai_core(Entity *e) {
 			}
 			
 			if (e->timer & 2)
-				e->x -= (1 << CSF);
+				e->x -= pixel_to_sub(1);
 			else
-				e->x += (1 << CSF);
+				e->x += pixel_to_sub(1);
 			
 			#define CORE_DEATH_TARGET_X		0x72000
 			#define CORE_DEATH_TARGET_Y		0x16000
@@ -366,13 +366,14 @@ void ai_core_front(Entity *e) {
 void ai_core_back(Entity *e) {
 	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	// Align with front so we look like one big entity
-	e->x = bossEntity->x + ((pieces[CFRONT]->display_box.right + e->display_box.left) << CSF);
+	e->x = bossEntity->x + pixel_to_sub(pieces[CFRONT]->display_box.right + e->display_box.left);
 	e->y = bossEntity->y;
 }
 
 void ai_minicore(Entity *e) {
 	if (!bossEntity) { e->state = STATE_DELETE; return; }
 	
+	uint16_t px = e->x >> CSF, py = e->y >> CSF;
 	switch(e->state) {
 		case MC_SLEEP:		// idle & mouth closed
 		{
@@ -391,8 +392,10 @@ void ai_minicore(Entity *e) {
 			e->state = MC_THRUST+1;
 			e->mouth_open = FALSE;
 			e->timer = 0;
-			e->x_mark = e->x + ((-96 + (random() & 127)) << CSF);
-			e->y_mark = e->y + ((-64 + (random() & 127)) << CSF);
+			uint16_t xx = px - 96 + (random() & 127);
+			uint16_t yy = py - 64 + (random() & 127);
+			e->x_mark = pixel_to_sub(xx);
+			e->y_mark = pixel_to_sub(yy);
 		}
 		/* fallthrough */
 		case MC_THRUST+1:
@@ -416,8 +419,10 @@ void ai_minicore(Entity *e) {
 			e->state = MC_FIRE+1;
 			e->mouth_open = FALSE;	// close mouth again;
 			e->timer = 0;
-			e->x_mark = e->x + ((24 + (random() & 15)) << CSF);
-			e->y_mark = e->y + ((-4 + (random() & 7)) << CSF);
+			uint16_t xx = px + 24 + (random() & 15);
+			uint16_t yy = py - 4 + (random() & 7);
+			e->x_mark = pixel_to_sub(xx);
+			e->y_mark = pixel_to_sub(yy);
 		}
 		/* fallthrough */
 		case MC_FIRE+1:
@@ -427,8 +432,7 @@ void ai_minicore(Entity *e) {
 				e->mouth_open = TRUE;
 			} else if (e->timer==1 || e->timer==3) {
 				// fire at player at speed (2<<CSF) with 2 degrees of variance
-				Entity *shot = entity_create(e->x - 0x1000, e->y,
-											 OBJ_MINICORE_SHOT, 0);
+				Entity *shot = entity_create(e->x - 0x1000, e->y, OBJ_MINICORE_SHOT, 0);
 				THROW_AT_TARGET(shot, player.x, player.y, SPEED(0x400));
 				sound_play(SND_EM_FIRE, 5);
 			}
@@ -461,31 +465,28 @@ void ai_minicore(Entity *e) {
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	
+	px = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W; 
+	py = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H;
 	// Have to deal with sprites manually
 	e->sprite[0] = (VDPSprite) { // Face
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.x = px - 28 + 128, .y = py - 20 + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->mouth_open])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[e->mouth_open])
 	};
 	e->sprite[1] = (VDPSprite) { // Back
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 4 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 20 + 128,
+		.x = px + 4 + 128, .y = py - 20 + 128,
 		.size = SPRITE_SIZE(3, 4),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[2])
 	};
 	e->sprite[2] = (VDPSprite) { // Bottom-Face
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 28 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.x = px- 28 + 128, .y = py + 12 + 128,
 		.size = SPRITE_SIZE(4, 1),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[3])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[3])
 	};
 	e->sprite[3] = (VDPSprite) { // Bottom-Back
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 4 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 12 + 128,
+		.x = px + 4 + 128, .y = py + 12 + 128,
 		.size = SPRITE_SIZE(2, 1),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[4])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[4])
 	};
 	
 	// don't let them kill us

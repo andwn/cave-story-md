@@ -13,15 +13,12 @@
 #include "npc.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 
 #include "player.h"
@@ -101,27 +98,27 @@ void player_init() {
 	playerIFrames = 0;
 	mapNameTTL = 0;
 	// Booster trail sprite tiles
-	VDP_loadTileData(SPR_TILES(&SPR_Boost, 0, 0), 12, 4, TRUE);
+	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
-	VDP_loadTileData(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4, TRUE);
+	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4);
 	airSprite[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
-		.size = SPRITE_SIZE(4, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX)
+		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
 	};
 	airSprite[1] = (VDPSprite){
 		.x = SCREEN_HALF_W + 8 + 128, .y = SCREEN_HALF_H - 24 + 128, 
-		.size = SPRITE_SIZE(3, 1), .attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_AIRINDEX+4)
+		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
-	VDP_loadTileData(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9, TRUE);
+	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9);
 	airTankSprite = (VDPSprite) {
 		.size = SPRITE_SIZE(3,3),
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,TILE_AIRTANKINDEX)
+		.attr = TILE_ATTR(PAL0,0,0,0,TILE_AIRTANKINDEX)
 	};
 	// Player sprite
 	playerSprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2,2),
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,1,TILE_PLAYERINDEX)
+		.attr = TILE_ATTR(PAL0,0,0,1,TILE_PLAYERINDEX)
 	};
 }
 
@@ -211,7 +208,7 @@ void player_update() {
 				blockl_next = player.x_speed < 0 ? collide_stage_leftwall(&player) : FALSE;
 				blockr_next = player.x_speed > 0 ? collide_stage_rightwall(&player) : FALSE;
 				player.y_next -= 0x600;
-			} else if(!joy_down(btn[cfg_btn_jump]) && !blockd_next && blockd) {
+			} else if(!joy_down(btn[cfg_btn_jump]) && !blockd_next && blockd && !playerPlatform) {
 				player.y_speed += 0x80;
 				ledge_time = 4;
 			}
@@ -290,8 +287,7 @@ void player_update() {
 	if(player.damage_time > 0) {
 		player.damage_time--;
 		if(player.damage_time == 0) {
-			effect_create_damage(player.damage_value,
-					sub_to_pixel(player.x) - 8, sub_to_pixel(player.y) - 4);
+			effect_create_damage(player.damage_value, &player, -8, -4);
 			player.damage_value = 0;
 		}
 	}
@@ -326,7 +322,7 @@ void player_update() {
 		player_update_air_display();
 	}
 	// Weapon switching
-	if(JOY_getJoypadType(JOY_1) == JOY_TYPE_PAD3) {
+	if(joytype == JOY_TYPE_PAD3) {
 		// 3 button controller cycles with A
 		if(joy_pressed(btn[cfg_btn_ffwd])) {
 			player_next_weapon();
@@ -437,7 +433,7 @@ void player_update() {
 	player_draw();
 	if(mapNameTTL > 0) {
 		mapNameTTL--;
-		sprite_addq(mapNameSprite, mapNameSpriteNum);
+	vdp_sprites_add(mapNameSprite, mapNameSpriteNum);
 	}
 }
 
@@ -477,9 +473,9 @@ static void player_update_walk() {
 		if(!player.underwater) {
 			player.underwater = TRUE;
 			sound_play(SND_SPLASH, 5);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
+			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
 		}
 		// Half everything, maybe inaccurate?
 		acc >>= 1;
@@ -628,7 +624,7 @@ static void player_update_interaction() {
 			e = e->next;
 		}
 		// Question mark above head
-		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 12);
+		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 12, TRUE);
 	}
 }
 
@@ -745,7 +741,7 @@ static void player_update_booster() {
 		player.timer2 = 0;
 		sound_play(SND_BOOSTER, 3);
 		effect_create_misc(playerBoostState == BOOST_08 ? EFF_BOOST8 : EFF_BOOST2, 
-				player.x >> CSF, (player.y >> CSF) + 6);
+				player.x >> CSF, (player.y >> CSF) + 6, FALSE);
 	}
 }
 
@@ -790,7 +786,7 @@ void player_show_map_name(uint8_t ttl) {
 			else break;
 			memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
 		}
-		if(len) VDP_loadTileData(nameTiles[0], TILE_NAMEINDEX, 16, TRUE);
+		if(len) vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
 	}
 	// Transfer tile array to VRAM
 	if(len > 0) {
@@ -807,11 +803,11 @@ void player_show_map_name(uint8_t ttl) {
 			};
 			uint16_t tindex = i * (cfg_language ? 4 : 1);
 			if(cfg_language && i >= 4) {
-				mapNameSprite[sindex].attribut = 
-						TILE_ATTR_FULL(PAL0,1,0,0,TILE_FONTINDEX+tindex-16);
+				mapNameSprite[sindex].attr = 
+						TILE_ATTR(PAL0,1,0,0,TILE_FONTINDEX+tindex-16);
 			} else {
-				mapNameSprite[sindex].attribut = 
-						TILE_ATTR_FULL(PAL0,1,0,0,TILE_NAMEINDEX+tindex);
+				mapNameSprite[sindex].attr = 
+						TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+tindex);
 			}
 			x += 32;
 			mapNameSpriteNum++;
@@ -832,7 +828,7 @@ static void draw_air_percent() {
 	memcpy(numberTiles[1], &TS_Numbers.tiles[div10[airTemp] * 8], 32);
 	memcpy(numberTiles[2], &TS_Numbers.tiles[mod10[airTemp] * 8], 32);
 	
-	VDP_loadTileData(numberTiles[0], TILE_AIRINDEX + 4, 3, TRUE);
+	vdp_tiles_load(numberTiles[0], TILE_AIRINDEX + 4, 3);
 	
 }
 
@@ -842,19 +838,19 @@ static void player_update_air_display() {
 		if(airDisplayTime == TIME_8(50)) {
 			draw_air_percent();
 		} else if(airDisplayTime & 4) {
-			sprite_addq(airSprite, 2);
+		vdp_sprites_add(airSprite, 2);
 		}
 	} else {
 		airDisplayTime++;
 		if((airDisplayTime & 31) == 0) {
-			VDP_loadTileData(TILE_BLANK, TILE_AIRINDEX, 1, TRUE);
+			vdp_tiles_load_from_rom(TILE_BLANK, TILE_AIRINDEX, 1);
 		} else if((airDisplayTime & 31) == 15) {
 			const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
-			VDP_loadTileData(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1, TRUE);
+			vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
 		}
 		// Calculate air percent and display the value
 		if(airTick == TIME_8(9)) draw_air_percent();
-		sprite_addq(airSprite, 2);
+	vdp_sprites_add(airSprite, 2);
 	}
 }
 
@@ -864,7 +860,7 @@ void player_draw() {
 		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(playerSprite);
+	vdp_sprite_add(&playerSprite);
 		return;
 	} else if(!player.health) {
 		return; // Don't draw the player if we died in a way that is not drowning
@@ -936,7 +932,7 @@ void player_draw() {
 		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(playerSprite);
+	vdp_sprite_add(&playerSprite);
 		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
 			uint16_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
@@ -951,23 +947,23 @@ void player_draw() {
 					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 4 + 128,
 					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 8 + 128,
 					.size = SPRITE_SIZE(1, 3),
-					.attribut = TILE_ATTR_FULL(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
+					.attr = TILE_ATTR(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
 				};
 			} else {
 				weaponSprite = (VDPSprite) {
 					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12 + 128,
 					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 0 + 128,
 					.size = SPRITE_SIZE(3, 1),
-					.attribut = TILE_ATTR_FULL(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
+					.attr = TILE_ATTR(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
 				};
 			}
-			sprite_add(weaponSprite);
+		vdp_sprite_add(&weaponSprite);
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
 			sprite_pos(airTankSprite, 
 					(player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12,
 					(player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 12);
-			sprite_add(airTankSprite);
+		vdp_sprite_add(&airTankSprite);
 		}
 	}
 }
@@ -985,7 +981,7 @@ uint8_t player_invincible() {
 
 uint8_t player_inflict_damage(uint16_t damage) {
 	// Show damage numbers
-	effect_create_damage(-damage, sub_to_pixel(player.x), sub_to_pixel(player.y));
+	effect_create_damage(-damage, &player, 0, 0);
 	// Take health
 	if((!iSuckAtThisGameSHIT || damage > 99) && player.health <= damage) {
 		// If health reached 0 we are dead

@@ -8,9 +8,9 @@ void onspawn_deaddragon(Entity *e) {
 void ai_dragon_zombie(Entity *e) {
 	if (e->health < 950 && e->state < 50) {
 		sound_play(SND_BIG_CRASH, 5);
-		effect_create_damage(e->damage_value, sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_damage(e->damage_value, e, 0, 0);
 		e->damage_time = e->damage_value = 0;
-		effect_create_smoke(e->x << CSF, e->y << CSF);
+		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		entity_drop_powerup(e);
 		
 		e->nflags &= ~NPC_SHOOTABLE;
@@ -27,7 +27,7 @@ void ai_dragon_zombie(Entity *e) {
 			ANIMATE(e, 30, 0,1);
 			
 			if (e->timer == 0) {
-				if (PLAYER_DIST_X(112 << CSF)) {
+				if (PLAYER_DIST_X(e, pixel_to_sub(112))) {
 					e->state = 2;
 					e->timer = 0;
 				}
@@ -86,7 +86,7 @@ void ai_fallingspike_sm(Entity *e) {
 		{
 			e->x_mark = e->x;
 			
-			if (PLAYER_DIST_X(12 << CSF))
+			if (PLAYER_DIST_X(e, 12 << CSF))
 				e->state = 1;
 		}
 		break;
@@ -134,7 +134,7 @@ void ai_fallingspike_lg(Entity *e) {
 		{
 			e->x_mark = e->x;
 			
-			if (PLAYER_DIST_X(12 << CSF))
+			if (PLAYER_DIST_X(e, 12 << CSF))
 				e->state = 1;
 		}
 		break;
@@ -169,7 +169,7 @@ void ai_fallingspike_lg(Entity *e) {
 			e->y_speed += SPEED(0x20);
 			LIMIT_Y(SPEED(0xC00));
 			
-			if (e->y + (e->hit_box.bottom<<CSF) < player.y + (player.hit_box.top<<CSF)) {	
+			if (e->y + pixel_to_sub(e->hit_box.bottom) < player.y + pixel_to_sub(player.hit_box.top)) {	
 				// could fall on player
 				e->nflags &= ~NPC_SPECIALSOLID;
 				e->attack = 127;	// ouch!
@@ -243,7 +243,7 @@ void ai_counterbomb(Entity *e) {
 		
 		case 2:		// ready
 		{
-			if (PLAYER_DIST_X(80 << CSF) || e->damage_time) {
+			if (PLAYER_DIST_X(e, pixel_to_sub(80)) || e->damage_time) {
 				e->state = 3;
 				e->timer = 0;
 				e->alwaysActive = TRUE;

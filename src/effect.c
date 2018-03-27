@@ -7,12 +7,9 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "tables.h"
 #include "tools.h"
 #include "vdp.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 
 #include "effect.h"
 
@@ -23,23 +20,27 @@ typedef struct {
 	int8_t x_speed, y_speed;
 } Effect;
 
-Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
+static Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
+static struct {
+	Entity *e;
+	int16_t xoff, yoff;
+} damageFollow[MAX_DAMAGE];
 
 // Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 // Then copy to VRAM via DMA transfer
 uint32_t dtiles[4][8];
 
 void effects_init() {
-	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i] = (Effect){};
-	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i] = (Effect){};
-	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i] = (Effect){};
+	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
+	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
+	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	// Load each frame of the small smoke sprite
 	uint32_t stiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(uint32_t))]
 	for(uint8_t i = 0; i < 7; i++) {
 		memcpy(stiles[i], SPR_TILES(&SPR_Smoke, 0, i), 128);
 	}
 	// Transfer to VRAM
-	VDP_loadTileData(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE, TRUE);
+	vdp_tiles_load(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE);
 }
 
 void effects_clear() {
@@ -56,11 +57,16 @@ void effects_update() {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(!effDamage[i].ttl) continue;
 		effDamage[i].ttl--;
-		effDamage[i].y -= effDamage[i].ttl & 1;
+		if(damageFollow[i].e) {
+			effDamage[i].x = (damageFollow[i].e->x >> CSF) + (damageFollow[i].xoff - 8);
+			effDamage[i].y = (damageFollow[i].e->y >> CSF) + (damageFollow[i].yoff) - (30 - (effDamage[i].ttl >> 1));
+		} else {
+			effDamage[i].y -= effDamage[i].ttl & 1;
+		}
 		sprite_pos(effDamage[i].sprite,
 			effDamage[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
 			effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
-		sprite_add(effDamage[i].sprite);
+	vdp_sprite_add(&effDamage[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(!effSmoke[i].ttl) continue;
@@ -73,7 +79,7 @@ void effects_update() {
 		sprite_pos(effSmoke[i].sprite,
 			effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(effSmoke[i].sprite);
+	vdp_sprite_add(&effSmoke[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_MISC; i++) {
 		if(!effMisc[i].ttl) continue;
@@ -89,7 +95,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-					sprite_add(effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -103,7 +109,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-					sprite_add(effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -111,12 +117,12 @@ void effects_update() {
 			{
 				if(++effMisc[i].timer >= TIME_8(25)) {
 					effMisc[i].timer = 0;
-					effMisc[i].sprite.attribut++;
+					effMisc[i].sprite.attr++;
 				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				sprite_add(effMisc[i].sprite);
+			vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_BOOST8:
@@ -127,12 +133,12 @@ void effects_update() {
 			{
 				if(++effMisc[i].timer >= TIME_8(5)) {
 					effMisc[i].timer = 0;
-					effMisc[i].sprite.attribut++;
+					effMisc[i].sprite.attr++;
 				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				sprite_add(effMisc[i].sprite);
+			vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_QMARK:
@@ -143,7 +149,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				sprite_add(effMisc[i].sprite);
+			vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_FANL:
@@ -153,7 +159,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				sprite_add(effMisc[i].sprite);
+			vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_FANU:
@@ -163,7 +169,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				sprite_add(effMisc[i].sprite);
+			vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_SPLASH:
@@ -178,7 +184,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-					sprite_add(effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -186,7 +192,7 @@ void effects_update() {
 	}
 }
 
-void effect_create_damage(int16_t num, int16_t x, int16_t y) {
+void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yoff) {
 	if(dqueued) return;
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(effDamage[i].ttl) continue;
@@ -205,12 +211,21 @@ void effect_create_damage(int16_t num, int16_t x, int16_t y) {
 		tileIndex = ((negative ? 11 : 0) + 10) * 8;
 		memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32); // - or +
 		
+		if(follow) {
+			damageFollow[i].e = follow;
+			damageFollow[i].xoff = xoff;
+			damageFollow[i].yoff = yoff;
+			effDamage[i].x = (damageFollow[i].e->x >> CSF) + (xoff - 8);
+			effDamage[i].y = (damageFollow[i].e->y >> CSF) + (yoff);
+		} else {
+			damageFollow[i].e = NULL;
+			effDamage[i].x = xoff - 8;
+			effDamage[i].y = yoff;
+		}
 		effDamage[i].ttl = 60; // 1 second
-		effDamage[i].x = x - 8;
-		effDamage[i].y = y;
 		effDamage[i].sprite = (VDPSprite) {
 			.size = SPRITE_SIZE(digitCount+1, 1),
-			.attribut = TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i<<2))
+			.attr = TILE_ATTR(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i<<2))
 		};
 		TILES_QUEUE(dtiles[3-digitCount], TILE_NUMBERINDEX + (i<<2), digitCount+1);
 		dqueued = TRUE;
@@ -236,15 +251,18 @@ void effect_create_smoke(int16_t x, int16_t y) {
 		effSmoke[i].ttl = 24;
 		effSmoke[i].sprite = (VDPSprite) {
 			.size = SPRITE_SIZE(2, 2),
-			.attribut = TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
+			.attr = TILE_ATTR(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
 		};
 		break;
 	}
 }
 
-void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
+void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 	for(uint8_t i = 0; i < MAX_MISC; i++) {
-		if(effMisc[i].ttl) continue;
+		if(effMisc[i].ttl) {
+			if(only_one && effMisc[i].type == type) break;
+			continue;
+		}
 		effMisc[i].type = type;
 		effMisc[i].x = x;
 		effMisc[i].y = y;
@@ -255,7 +273,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = 30;
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;
@@ -267,7 +285,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(100);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,sheets[sheet].index)
+					.attr = TILE_ATTR(PAL0,1,0,0,sheets[sheet].index)
 				};
 			}
 			break;
@@ -277,7 +295,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,12)
+					.attr = TILE_ATTR(PAL0,1,0,0,12)
 				};
 			}
 			break;
@@ -286,7 +304,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(80);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_QMARKINDEX)
+					.attr = TILE_ATTR(PAL0,1,0,0,TILE_QMARKINDEX)
 				};
 			} 
 			break;
@@ -296,7 +314,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;
@@ -306,7 +324,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;
@@ -316,7 +334,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;
@@ -326,7 +344,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;
@@ -342,7 +360,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y) {
 				effMisc[i].x_speed = (player.x_speed >> CSF) - 1 + (random() & 3);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
-					.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
 			}
 			break;

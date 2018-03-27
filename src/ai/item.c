@@ -19,12 +19,23 @@ void onspawn_energy(Entity *e) {
 	e->alwaysActive = TRUE;
 }
 
+static uint8_t collide_player(Entity *e) {
+	uint16_t px = player.x >> CSF;
+	uint16_t py = player.y >> CSF;
+	uint16_t ex = e->x >> CSF;
+	uint16_t ey = e->y >> CSF;
+	uint16_t box = 7 + e->display_box.left;
+	return px > ex - box && px < ex + box && py > ey - box && py < ey + box;
+}
+
 void ai_energy(Entity *e) {
 	if(++e->animtime >= 4) {
 		e->animtime = 0;
 		if(++e->frame > 5) e->frame = 0;
 	}
-	if((e->timer & 1) && PLAYER_DIST_X((7+e->display_box.left)<<CSF) && PLAYER_DIST_Y((7+e->display_box.top)<<CSF)) {
+	e->timer++;
+	if((e->timer & 1) && collide_player(e)) {
+		//&& PLAYER_DIST_X(e, pixel_to_sub(7+e->display_box.left)) && PLAYER_DIST_Y(e, pixel_to_sub(7+e->display_box.top))) {
 		Weapon *w = &playerWeapon[currentWeapon];
 		if(w->level == 3 && w->energy + e->experience > 
 				weapon_info[w->type].experience[w->level-1]) {
@@ -46,7 +57,6 @@ void ai_energy(Entity *e) {
 		}
 		e->state = STATE_DELETE;
 	} else {
-		e->timer++;
 		if(e->timer > TIME_10(500)) {
 			e->state = STATE_DELETE;
 			return;

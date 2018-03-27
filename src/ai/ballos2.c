@@ -40,9 +40,9 @@ static void spawn_bones(Entity *e, uint8_t up) {
 	int32_t y;
 
 	if (up)
-		y = (e->y - (12 << CSF));
+		y = (e->y - pixel_to_sub(12));
 	else
-		y = (e->y + (12 << CSF));
+		y = (e->y + pixel_to_sub(12));
 	
 	entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
 	entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
@@ -81,7 +81,7 @@ static void run_flight(Entity *e) {
 			// reached player?
 			// this has to be AFTER smacked-into-wall check for proper behavior
 			// if player stands in spikes at far left/right of arena.
-			if (PLAYER_DIST_X(RUSH_DIST))
+			if (PLAYER_DIST_X(e, RUSH_DIST))
 				e->state = BP_PREPARE_FLY_UD;
 		}
 		break;
@@ -185,7 +185,7 @@ static void run_flight(Entity *e) {
 				FACE_PLAYER(e);
 			}
 			
-			if (PLAYER_DIST_Y(RUSH_DIST) && e->timer2 < 4)
+			if (PLAYER_DIST_Y(e, RUSH_DIST) && e->timer2 < 4)
 				e->state = BP_PREPARE_FLY_LR;
 		}
 		break;
@@ -310,7 +310,7 @@ static void run_lightning(Entity *e) {
 			e->timer++;
 			
 			if (e->timer == TIME_8(40)) {
-				SCREEN_FLASH(20);
+				SCREEN_FLASH(3);
 			}
 			
 			if (e->timer > TIME_8(50)) {
@@ -341,7 +341,7 @@ static void run_intro(Entity *e) {
 			//e->dirparam = -1;
 			
 			// closed eyes/mouth
-			e->linkedEntity = entity_create(e->x, e->y_next - (16 << CSF), OBJ_BALLOS_SMILE, 0);
+			e->linkedEntity = entity_create(e->x, e->y_next - pixel_to_sub(16), OBJ_BALLOS_SMILE, 0);
 			e->state = 1;
 		}
 		break;
@@ -413,8 +413,8 @@ static void run_defeated(Entity *e) {
 			LIMIT_Y(SPEED_12(0x5ff));
 			
 			e->x = e->x_mark;
-			if (++e->timer & 2) e->x += (1 << CSF);
-						   else e->x -= (1 << CSF);
+			if (++e->timer & 2) e->x += pixel_to_sub(1);
+						   else e->x -= pixel_to_sub(1);
 			
 			if (e->y_speed >= 0 && collide_stage_floor(e)) {
 				if (++e->timer > TIME_8(150)) {
@@ -445,7 +445,7 @@ static void run_defeated(Entity *e) {
 			
 			if (e->y < 0) {
 				//flashscreen.Start();
-				SCREEN_FLASH(20);
+				SCREEN_FLASH(3);
 				sound_play(SND_TELEPORT, 5);
 				
 				e->x_speed = 0;
@@ -525,7 +525,7 @@ void ai_ballos_priest(Entity *e) {
 				
 				if (e->state == BP_PREPARE_FLY_LR+1) {
 					e->state = BP_FLY_LR;		// flying left/right
-				} else if (player.y < (e->y + (12 << CSF))) {
+				} else if (player.y < (e->y + pixel_to_sub(12))) {
 					e->state = BP_FLY_UP;		// flying up
 				} else {
 					e->state = BP_FLY_DOWN;		// flying down
@@ -783,9 +783,9 @@ void onspawn_bute_archer_red(Entity *e) {
 	e->alwaysActive = TRUE;
 	if(e->eflags & NPC_OPTION2) {
 		e->dir = 1;
-		e->x_mark = e->x + (128<<CSF);
+		e->x_mark = e->x + pixel_to_sub(128);
 	} else {
-		e->x_mark = e->x - (128<<CSF);
+		e->x_mark = e->x - pixel_to_sub(128);
 	}
 	e->y_mark = e->y;
 	e->x_speed = (e->x > e->x_mark) ? -0xFF - (random() & 0x1FF) : 0xFF + (random() & 0x1FF);
@@ -812,7 +812,7 @@ void ai_bute_archer_red(Entity *e) {
 		case 1: // aiming
 		{
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
-			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y(16<<CSF))) {
+			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y(e, 16<<CSF))) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 3;
@@ -872,6 +872,6 @@ void ai_wall_collapser(Entity *e) {
 		for(uint16_t y = 0; y < 20; y++) stage_replace_block(xa, ya+y, 100);
 		sound_play(SND_BLOCK_DESTROY, 5);
 		camera_shake(20);
-		e->x += e->dir ? (16 << CSF) : -(16 << CSF);
+		e->x += e->dir ? pixel_to_sub(16) : -pixel_to_sub(16);
 	}
 }

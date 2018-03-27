@@ -26,8 +26,8 @@ void effects_update();
 // Creates a damage string (maximum of 4)
 // Positive values will be white, negative will be red, zero is ignored
 // Values must be limited to 3 digits
-void effect_create_damage(int16_t num, int16_t x, int16_t y);
+void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yoff);
 // Creates a single puff of smoke
 void effect_create_smoke(int16_t x, int16_t y);
 
-void effect_create_misc(uint8_t type, int16_t x, int16_t y);
+void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one);

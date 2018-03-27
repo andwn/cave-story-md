@@ -8,16 +8,12 @@
 #include "memory.h"
 #include "player.h"
 #include "resources.h"
-#include "sprite.h"
 #include "sram.h"
 #include "stage.h"
 #include "string.h"
 #include "tsc.h"
 #include "tools.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_ext.h"
-#include "vdp_tile.h"
 #include "weapon.h"
 #include "window.h"
 #include "xgm.h"
@@ -59,6 +55,9 @@ uint8_t cfg_iframebug = TRUE;
 uint8_t cfg_force_btn = 0;
 uint8_t cfg_msg_blip = TRUE;
 
+uint8_t cfg_music_mute = FALSE;
+uint8_t cfg_sfx_mute = FALSE;
+
 uint8_t sram_file = 0;
 uint8_t sram_state = SRAM_UNCHECKED;
 
@@ -72,12 +71,12 @@ static const VDPSprite counterSpriteNTSC[2] = {
 		.x = 0x80 + 16, 
 		.y = 0x80 + 8, 
 		.size = SPRITE_SIZE(4,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_COUNTERINDEX),
 	}, { 
 		.x = 0x80 + 48, 
 		.y = 0x80 + 8, 
 		.size = SPRITE_SIZE(4,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+4),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_COUNTERINDEX+4),
 	},
 };
 static const VDPSprite counterSpritePAL[2] = {
@@ -85,12 +84,12 @@ static const VDPSprite counterSpritePAL[2] = {
 		.x = 0x80 + 16, 
 		.y = 0x80 + 16, 
 		.size = SPRITE_SIZE(4,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_COUNTERINDEX),
 	}, { 
 		.x = 0x80 + 48, 
 		.y = 0x80 + 16, 
 		.size = SPRITE_SIZE(4,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_COUNTERINDEX+4),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_COUNTERINDEX+4),
 	},
 };
 uint8_t counter_decisec;
@@ -112,21 +111,21 @@ static uint16_t LS_readWord(uint8_t file, uint32_t addr);
 static uint32_t LS_readLong(uint8_t file, uint32_t addr);
 
 void system_set_flag(uint16_t flag, uint8_t value) {
-	if(value) flags[flag>>5] |= 1<<(flag&31);
-	else flags[flag>>5] &= ~(1<<(flag&31));
+	if(value) flags[flag>>5] |= ((uint32_t)1)<<(flag&31);
+	else flags[flag>>5] &= ~(((uint32_t)1)<<(flag&31));
 }
 
 uint8_t system_get_flag(uint16_t flag) {
-	return (flags[flag>>5] & (1<<(flag&31))) > 0;
+	return (flags[flag>>5] & (((uint32_t)1)<<(flag&31))) > 0;
 }
 
 void system_set_skip_flag(uint16_t flag, uint8_t value) {
-	if(value) skip_flags |= (1<<flag);
-	else skip_flags &= ~(1<<flag);
+	if(value) skip_flags |= (((uint32_t)1)<<flag);
+	else skip_flags &= ~(((uint32_t)1)<<flag);
 }
 
 uint8_t system_get_skip_flag(uint16_t flag) {
-	return (skip_flags & (1<<flag)) > 0;
+	return (skip_flags & (((uint32_t)1)<<flag)) > 0;
 }
 
 static void counter_draw_minute() {
@@ -159,7 +158,7 @@ void system_draw_counter() {
 			(TILE_COUNTERINDEX+6) << 5, 16, 2);
 	counter_draw_decisecond();
 	const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
-	sprite_addq(spr, 2);
+vdp_sprites_add(spr, 2);
 }
 
 void system_update() {
@@ -212,7 +211,7 @@ void system_update() {
 		// because it overlaps the text making it hard to read
 		if(!(window_is_open() && windowOnTop)) {
 			const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
-			sprite_addq(spr, 2);
+		vdp_sprites_add(spr, 2);
 		}
 	}
 }
@@ -500,8 +499,12 @@ void system_load_config() {
 	cfg_iframebug = SRAM_readByte(loc++);
 	cfg_force_btn = SRAM_readByte(loc++);
 	cfg_msg_blip  = SRAM_readByte(loc++);
+	cfg_music_mute= SRAM_readByte(loc++);
+	cfg_sfx_mute  = SRAM_readByte(loc++);
 	// Just in case
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
+	if(cfg_music_mute > 1) cfg_music_mute = 0;
+	if(cfg_sfx_mute > 1) cfg_sfx_mute = 0;
 
 	SRAM_disable();
 	z80_release();
@@ -528,6 +531,8 @@ void system_save_config() {
 	SRAM_writeByte(loc++, cfg_iframebug);
 	SRAM_writeByte(loc++, cfg_force_btn);
 	SRAM_writeByte(loc++, cfg_msg_blip);
+	SRAM_writeByte(loc++, cfg_music_mute);
+	SRAM_writeByte(loc++, cfg_sfx_mute);
 
 	SRAM_disable();
 	z80_release();
@@ -668,7 +673,8 @@ void system_save_counter(uint32_t ticks) {
 	result[4] = random();
 	// Write to buffer BE -> LE 4 times
 	for(uint16_t i = 0; i < 4; i++) {
-		result[i] = (tickbuf[0]<<24) + (tickbuf[1]<<16) + (tickbuf[2]<<8) + tickbuf[3];
+		result[i] = (((uint32_t)(tickbuf[0]))<<24) + (((uint32_t)(tickbuf[1]))<<16) 
+				  + (((uint32_t)(tickbuf[2]))<<8) + tickbuf[3];
 	}
 	// Apply the key to each
 	for(uint16_t i = 0; i < 4; i++) {

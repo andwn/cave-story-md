@@ -87,5 +87,5 @@ void ai_cthulu(Entity *e) {
 		e->state = 1;
 	}
 	// open eyes when player comes near
-	e->frame = (PLAYER_DIST_X((48<<CSF)) && PLAYER_DIST_Y2((48<<CSF), (16<<CSF))) ? 1 : 0;
+	e->frame = (PLAYER_DIST_X(e, (48<<CSF)) && PLAYER_DIST_Y2(e, (48<<CSF), (16<<CSF))) ? 1 : 0;
 }

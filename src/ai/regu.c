@@ -340,7 +340,7 @@ void ai_sue(Entity *e) {
 		// spawn red crystal and call it to us (Undead Core intro)
 		case 15:
 		{
-			entity_create(e->x+(128<<CSF), e->y, OBJ_RED_CRYSTAL, 0);
+			entity_create(e->x+pixel_to_sub(128), e->y, OBJ_RED_CRYSTAL, 0);
 			e->state = 16;
 			e->x_speed = 0;
 			e->frame = 0;
@@ -612,7 +612,7 @@ void ai_kanpachi_fish(Entity *e) {
 		e->state = 1;
 	}
 	// open eyes when player comes near
-	if(PLAYER_DIST_X(64<<CSF) && PLAYER_DIST_Y2(64<<CSF, 16<<CSF)) {
+	if(PLAYER_DIST_X(e, 64<<CSF) && PLAYER_DIST_Y2(e, 64<<CSF, 16<<CSF)) {
 		e->frame = 1;
 		RANDBLINK(e, 0, 200);
 	} else {

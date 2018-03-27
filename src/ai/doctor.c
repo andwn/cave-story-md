@@ -154,8 +154,8 @@ void ai_boss_doctor(Entity *e) {
 				// can start moving towards it. But, it's important not to
 				// actually move until the last possible second, or we could
 				// drag our floattext along with us (and give away our position).
-				e->x_mark = (5 + (random() & 31)) << CSF << 4;
-				e->y_mark = (5 + (random() & 3)) << CSF << 4;
+				e->x_mark = block_to_sub(5 + (random() & 31));
+				e->y_mark = block_to_sub(5 + (random() & 3));
 			//}
 		}
 		break;

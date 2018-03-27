@@ -6,6 +6,7 @@
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
+#include "error.h"
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
@@ -13,17 +14,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
 
@@ -51,10 +47,10 @@ uint8_t titlescreen_main() {
 	uint8_t tsong = SONG_TITLE;
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
-	VDP_setEnable(FALSE);
-	VDP_clearPlan(PLAN_A, TRUE);
-	VDP_clearPlan(PLAN_B, TRUE);
-	sprites_clear();
+	vdp_set_display(FALSE);
+	vdp_map_clear(VDP_PLAN_A);
+	vdp_map_clear(VDP_PLAN_B);
+	vdp_sprites_clear();
 	// Check save data, only enable continue if save data exists
 	uint8_t sram_state = system_checkdata();
 	if(sram_state != SRAM_INVALID) {
@@ -82,42 +78,39 @@ uint8_t titlescreen_main() {
 	// Load quote sprite
 	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
 	// Menu and version text
-	VDP_drawText("Start Game", 15, 12);
-	VDP_drawText("Sound Test", 15, 16);
-	VDP_drawText("Config", 15, 18);
+	vdp_puts(VDP_PLAN_A, "Start Game", 15, 12);
+	vdp_puts(VDP_PLAN_A, "Sound Test", 15, 16);
+	vdp_puts(VDP_PLAN_A, "Config", 15, 18);
 	// Debug
 	{
 		char vstr[40];
 		sprintf(vstr, "Test Build - %s", __DATE__);
-		VDP_drawText(vstr, 4, 26);
+		vdp_puts(VDP_PLAN_A, vstr, 4, 26);
 	}
 	// Release
-	//VDP_drawText("Mega Drive Version 0.5.1a 2018.03", 4, 26);
-	VDP_loadTileSet(cfg_language ? &TS_J_Title : &TS_Title, TILE_USERINDEX, TRUE);
-	VDP_fillTileMapRectInc(PLAN_B,
-			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX), 11, 3, 18, 4);
-	VDP_fillTileMapRectInc(PLAN_B,
-			TILE_ATTR_FULL(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2);
+	//vdp_puts("Mega Drive Version 0.5.1a 2018.03", 4, 26);
+	vdp_tiles_load_from_rom(cfg_language ? TS_J_Title.tiles : TS_Title.tiles, TILE_USERINDEX, TS_Title.numTile);
+	vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL0,0,0,0,TILE_USERINDEX),        11,  3, 18, 4, 1);
+	vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2, 1);
 	
 	// Set palettes last
-	VDP_setPalette(PAL0, PAL_Main.data);
-	VDP_setPalette(PAL1, PAL_Main.data);
-	VDP_setPaletteColor(PAL0, 0x444); // Gray background
-	VDP_setPaletteColor(PAL0 + 8, 0x8CE); // Yellow text
+	vdp_colors(0, PAL_Main.data, 16);
+	vdp_colors(16, PAL_Main.data, 16);
+	vdp_color(PAL0, 0x444); // Gray background
+	vdp_color(PAL0 + 8, 0x8CE); // Yellow text
 	// PAL_Regu, for King and Toroko
-	VDP_setPalette(PAL3, PAL_Regu.data);
+	vdp_colors(48, PAL_Regu.data, 16);
 	
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 
 	song_play(tsong);
 	oldstate = ~0;
 	while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
-		input_update();
 		for(uint8_t i = 0; i < 2; i++) {
 			if(!cheatEnable[i]) {
 				if(joy_pressed(cheat[i][cheatEntry[i]])) {
@@ -153,22 +146,21 @@ uint8_t titlescreen_main() {
 		}
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
-		sprite_add(sprCursor);
+	vdp_sprite_add(&sprCursor);
 
 		if(besttime > 0 && besttime < 300000) system_draw_counter();
 		
 		ready = TRUE;
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
 	if(cheatEnable[0] && (joystate&BUTTON_A) && joy_pressed(btn[cfg_btn_pause])) {
 		cursor = 0;
-		input_update();
 		
-		VDP_clearPlan(PLAN_A, TRUE);
-		VDP_setPaletteColor(0, 0x222); // Darken background colors
-		VDP_setPaletteColor(8, 0x468);
-		VDP_setPaletteColor(12, 0x666);
-		VDP_setPaletteColor(16 + 15, 0xAAA);
+		vdp_map_clear(VDP_PLAN_A);
+		vdp_color(0, 0x222); // Darken background colors
+		vdp_color(8, 0x468);
+		vdp_color(12, 0x666);
+		vdp_color(16 + 15, 0xAAA);
 		static const char *levelStr[] = {
 			" First Cave",
 			" Mimiga Village",
@@ -195,33 +187,33 @@ uint8_t titlescreen_main() {
 		};
 		uint16_t tx = 11, ty = 1;
 		if(pal_mode) ty++;
-		VDP_drawText("= Welcome to Warp Zone =", 7, ty);
+		vdp_puts(VDP_PLAN_A, "= Welcome to Warp Zone =", 7, ty);
 		ty += 2;
 		for(uint8_t i = 0; i < SAVES; i++) {
-			if(cursor == i) VDP_setTextPalette(PAL0);
-			else VDP_setTextPalette(PAL1);
-			VDP_drawText(levelStr[i], tx, ty+i);
+			if(cursor == i) vdp_font_pal(PAL0);
+			else vdp_font_pal(PAL1);
+			vdp_puts(VDP_PLAN_A, levelStr[i], tx, ty+i);
 		}
 		
+		oldstate = ~0;
 		while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
-			input_update();
 			if(joy_pressed(BUTTON_UP)) {
-				VDP_setTextPalette(PAL1);
-				VDP_drawText(levelStr[cursor], tx, ty + cursor);
+				vdp_font_pal(PAL1);
+				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				if(cursor == 0) cursor = SAVES - 1;
 				else cursor--;
 				//if(cursor == 8 || cursor == 16) cursor--;
-				VDP_setTextPalette(PAL0);
-				VDP_drawText(levelStr[cursor], tx, ty + cursor);
+				vdp_font_pal(PAL0);
+				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(BUTTON_DOWN)) {
-				VDP_setTextPalette(PAL1);
-				VDP_drawText(levelStr[cursor], tx, ty + cursor);
+				vdp_font_pal(PAL1);
+				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				if(cursor == SAVES - 1) cursor = 0;
 				else cursor++;
 				//if(cursor == 8 || cursor == 16) cursor++;
-				VDP_setTextPalette(PAL0);
-				VDP_drawText(levelStr[cursor], tx, ty + cursor);
+				vdp_font_pal(PAL0);
+				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				sound_play(SND_MENU_MOVE, 0);
 			}
 			// Animate quote sprite
@@ -232,12 +224,12 @@ uint8_t titlescreen_main() {
 			}
 			// Draw quote sprite at cursor position
 			sprite_pos(sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);
-			sprite_add(sprCursor);
+		vdp_sprite_add(&sprCursor);
 			
 			ready = TRUE;
-			vsync(); aftervsync();
+			vdp_vsync(); aftervsync();
 		}
-		VDP_setTextPalette(PAL0);
+		vdp_font_pal(PAL0);
 		cursor += 4;
 	}
 	if(cheatEnable[1]) iSuckAtThisGameSHIT = TRUE;

@@ -122,7 +122,7 @@ void ai_muscle_doctor(Entity *e) {
 				
 				// "redsplode" attack if possible
 				if ((e->savedhp - e->health) > 20) {
-					if (PLAYER_DIST_X(48<<CSF) && player.grounded)
+					if (PLAYER_DIST_X(e, 48<<CSF) && player.grounded)
 						do_redsplode(e);
 				}
 			}
@@ -182,7 +182,7 @@ void ai_muscle_doctor(Entity *e) {
 			e->timer++; // Not used by state, but for spawning red drips
 			
 			if (e->state == STATE_IN_AIR_WITH_GP) {
-				if (PLAYER_DIST_X(8<<CSF) && player.y >= e->y_next) {
+				if (PLAYER_DIST_X(e, 8<<CSF) && player.y >= e->y_next) {
 					e->x_speed = 0;
 					e->y_speed = SPEED(0x5ff);
 					e->state = STATE_IN_AIR;
@@ -329,9 +329,9 @@ void ai_muscle_doctor(Entity *e) {
 				e->y_mark = player.y - (32<<CSF);
 				
 				// don't be fooled into going off bounds of map
-				#define TP_X_MIN	((4 * 16) << CSF)
-				#define TP_X_MAX	((36 * 16) << CSF)
-				#define TP_Y_MIN	((4 * 16) << CSF)
+				#define TP_X_MIN	pixel_to_sub((4 * 16))
+				#define TP_X_MAX	pixel_to_sub((36 * 16))
+				#define TP_Y_MIN	pixel_to_sub((4 * 16))
 				
 				if (e->x_mark < TP_X_MIN) e->x_mark = TP_X_MIN;
 				if (e->x_mark > TP_X_MAX) e->x_mark = TP_X_MAX;
@@ -342,7 +342,7 @@ void ai_muscle_doctor(Entity *e) {
 		// invisible...waiting to reappear
 		case STATE_TELEPORT+2:
 		{
-			if (++e->timer > TIME(40)) {
+			if (++e->timer > TIME_8(40)) {
 				e->x_next = e->x_mark;
 				e->y_next = e->y_mark;
 				e->frame = 4;
@@ -440,7 +440,7 @@ void ai_muscle_doctor(Entity *e) {
 			
 			// spawn copious amount of energy
 			if((e->timer & 3) == 0) {
-				int32_t x = e->x_next + ((-16 + (random() & 31)) << CSF);
+				int32_t x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
 				drip->x_speed = -0x200 + (random() & 0x3FF);
 				drip->y_speed = -(random() & 0x3FF);
@@ -509,8 +509,8 @@ static void do_redsplode(Entity *e) {
 	
 	// big shower of red energy
 	for(int i=0;i<20;i++) { // Less to avoid OOM
-		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
-		int y = e->y_next + ((-16 + (random() & 31)) << CSF);
+		int x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
+		int y = e->y_next + pixel_to_sub((-16 + (random() & 31)));
 		
 		Entity *spark = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		
@@ -523,8 +523,8 @@ static void do_redsplode(Entity *e) {
 // the red energy that oozes off of him during most of the battle
 static void run_red_drip(Entity *e) {
 	if ((e->timer & 7) == 2) {
-		int x = e->x_next + ((-16 + (random() & 31)) << CSF);
-		int y = e->y_next + ((-6 + (random() & 15)) << CSF);
+		int x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
+		int y = e->y_next + pixel_to_sub((-6 + (random() & 15)));
 		
 		Entity *drip = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		drip->x_speed = e->x_speed;

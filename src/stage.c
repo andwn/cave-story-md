@@ -14,17 +14,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "xgm.h"
 
 #include "stage.h"
@@ -60,29 +55,43 @@ void stage_draw_screen_credits();
 void stage_draw_background();
 void stage_draw_moonback();
 
+uint8_t stage_get_block(uint16_t x, uint16_t y) {
+	return stageBlocks[stageTable[y] + x];
+}
+
+uint8_t stage_get_block_type(uint16_t x, uint16_t y) {
+	return tileset_info[stageTileset].PXA[stage_get_block(x, y)];
+}
+
+uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {
+	uint16_t x = (xf >> CSF) + xoff;
+	uint16_t y = (yf >> CSF) + yoff;
+	return stage_get_block_type(x >> 4, y >> 4);
+}
+
 void stage_load(uint16_t id) {
-	VDP_setEnable(FALSE);
+	vdp_set_display(FALSE);
+	oldstate = ~0;
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	DMA_clearQueue();
-	input_update(); // Prevent menu from opening after loading save
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
 	if(stageBlocks) {
-		MEM_free(stageBlocks);
+		free(stageBlocks);
 		stageBlocks = NULL;
 	}
 	//if(PXM) {
-	//	MEM_free(PXM);
+	//	free(PXM);
 	//	PXM = NULL;
 	//	stageBlocks = NULL;
 	//}
 	if(stageTable) {
-		MEM_free(stageTable);
+		free(stageTable);
 		stageTable = NULL;
 	}
-	sprites_clear();
+	vdp_sprites_clear();
 	water_entity = NULL;
 	bossEntity = NULL;
 	
@@ -94,39 +103,56 @@ void stage_load(uint16_t id) {
 		MUSIC_TICK();
 	}
 	// Load sprite sheets
+#if DEBUG
+	if(joy_down(BUTTON_A)) {
+		vdp_color(0, 0xE00);
+		while(!joy_pressed(BUTTON_C)) {
+			vdp_vsync();
+			xgm_vblank();
+			joy_update();
+		}
+		vdp_color(0, 0);
+	}
+#endif
 	sheets_load_stage(id, FALSE, TRUE);
 	MUSIC_TICK();
-	// Stage palette and shared NPC palette
-	if(stageID == 0x30) {
-		VDP_setCachedPalette(PAL2, PAL_RiverAlt.data); // For Waterway green background
-	} else {
-		VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
-	}
-	VDP_setCachedPalette(PAL3, stage_info[id].npcPalette->data);
 	// Load backgrounds
+#if DEBUG
+	if(joy_down(BUTTON_A)) {
+		vdp_color(0, 0x0E0);
+		while(!joy_pressed(BUTTON_C)) {
+			vdp_vsync();
+			xgm_vblank();
+			joy_update();
+		}
+		vdp_color(0, 0);
+	}
+#endif
 	if(background_info[stage_info[id].background].type == 4 || 
 			stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
 		
-		VDP_setBackgroundColor(0); // Color index 0 for everything except fog
+		vdp_set_backcolor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0) { // Tiled image
-			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
+			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+			vdp_tiles_load_from_rom(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX, 
+						background_info[stageBackground].tileset->numTile);
 			stage_draw_background();
 		} else if(stageBackgroundType == 1) { // Moon
-			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
+			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
 			stage_draw_moonback();
 		} else if(stageBackgroundType == 2) { // Solid Color
-			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-			VDP_clearPlan(PLAN_B, TRUE);
+			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+			vdp_map_clear(VDP_PLAN_B);
 		} else if(stageBackgroundType == 3) { // Tiled image, auto scroll
-			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-			VDP_loadTileSet(background_info[stageBackground].tileset, TILE_BACKINDEX, TRUE);
+			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+			vdp_tiles_load_from_rom(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX, 
+						background_info[stageBackground].tileset->numTile);
 			stage_draw_background();
 		} else if(stageBackgroundType == 4) { // Almond Water
-			VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-			VDP_clearPlan(PLAN_B, TRUE);
+			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+			vdp_map_clear(VDP_PLAN_B);
 			// Your guess is as good as mine as to why these numbers specifically
 			// fix the stupid water background drawing over the wrong rows.
 			// Yeah there's even a fucking PAL specific number nice awesomenfweroqvnerbn
@@ -135,16 +161,27 @@ void stage_load(uint16_t id) {
 			} else {
 				backScrollTable[0] = pal_mode ? -20 : -21;
 			}
-			VDP_loadTileSet(&BG_Water, TILE_WATERINDEX, TRUE);
+			vdp_tiles_load_from_rom(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
-			VDP_setScrollingMode(HSCROLL_TILE, VSCROLL_PLANE);
+			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
 			// Use background color from tileset
-			VDP_setBackgroundColor(32);
+			vdp_set_backcolor(32);
 			stage_draw_moonback();
 		}
 		MUSIC_TICK();
 	}
 	// Load stage PXM into RAM
+#if DEBUG
+	if(joy_down(BUTTON_A)) {
+		vdp_color(0, 0x00E);
+		while(!joy_pressed(BUTTON_C)) {
+			vdp_vsync();
+			xgm_vblank();
+			joy_update();
+		}
+		vdp_color(0, 0);
+	}
+#endif
 	stage_load_blocks();
 	MUSIC_TICK();
 	// Move camera to player's new position
@@ -174,36 +211,36 @@ void stage_load(uint16_t id) {
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
 	MUSIC_TICK();
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 }
 
 void stage_load_credits(uint8_t id) {
 	stageID = id;
 	
 	entities_clear();
-	sprites_clear();
+	vdp_sprites_clear();
 	if(stageBlocks) {
-		MEM_free(stageBlocks);
+		free(stageBlocks);
 		stageBlocks = NULL;
 	}
 	//if(PXM) {
-	//	MEM_free(PXM);
+	//	free(PXM);
 	//	PXM = NULL;
 	//	stageBlocks = NULL;
 	//}
 	if(stageTable) {
-		MEM_free(stageTable);
+		free(stageTable);
 		stageTable = NULL;
 	}
 	
-	VDP_setEnable(FALSE);
+	vdp_set_display(FALSE);
 	MUSIC_TICK();
 	stageTileset = stage_info[id].tileset;
 	stage_load_tileset();
 	MUSIC_TICK();
 	sheets_load_stage(id, FALSE, TRUE);
 	MUSIC_TICK();
-	VDP_setCachedPalette(PAL2, tileset_info[stageTileset].palette->data);
+	//vdp_colors_next(32, tileset_info[stageTileset].palette->data, 16);
 	stage_load_blocks();
 	MUSIC_TICK();
 	stage_draw_screen_credits();
@@ -214,19 +251,20 @@ void stage_load_credits(uint8_t id) {
 	MUSIC_TICK();
 	tsc_load_stage(id);
 	MUSIC_TICK();
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 }
 
 void stage_load_tileset() {
-	VDP_loadTileSet(tileset_info[stageTileset].tileset, TILE_TSINDEX, TRUE);
+	vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, 
+				tileset_info[stageTileset].tileset->numTile);
 	// Inject the breakable block sprite into the tileset
 	const uint8_t *PXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < 160; i++) {
 		if(PXA[i] == 0x43) {
 			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			VDP_loadTileData(TS_Break.tiles, TILE_TSINDEX + addr1, 2, TRUE);
-			VDP_loadTileData(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2, TRUE);
+			vdp_tiles_load_from_rom(TS_Break.tiles, TILE_TSINDEX + addr1, 2);
+			vdp_tiles_load_from_rom(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2);
 		}
 	}
 	// Search for any "wind" tiles and note their index to animate later
@@ -243,7 +281,7 @@ void stage_load_blocks() {
 	stageWidth = PXM[4] | (PXM[5] << 8);
 	stageHeight = PXM[6] | (PXM[7] << 8);
 	PXM += 8;
-	stageBlocks = MEM_alloc(stageWidth * stageHeight);
+	stageBlocks = malloc(stageWidth * stageHeight);
 	if(!stageBlocks) error_oom();
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
 
@@ -254,7 +292,7 @@ void stage_load_blocks() {
 	//stageBlocks = &PXM[8];
 
 	//uint16_t size = stage_info[stageID].PXM[0] << 8 | stage_info[stageID].PXM[1];
-	//PXM = MEM_alloc(size);
+	//PXM = malloc(size);
 	//if(!PXM) error_oom();
 	//__asm__("movem.l %%d5-%%d7/%%a5-%%a6,-(%%sp)\n\t"
 	//		"move.l %0,%%a5\n\t"
@@ -267,7 +305,7 @@ void stage_load_blocks() {
 	//stageBlocks = &PXM[8];
 
 	// Multiplication table for stage rows
-	stageTable = MEM_alloc(stageHeight * 2);
+	stageTable = malloc(stageHeight << 1);
 	if(!stageTable) error_oom();
 	uint16_t blockTotal = 0;
 	for(uint16_t y = 0; y < stageHeight; y++) {
@@ -279,7 +317,7 @@ void stage_load_blocks() {
 void stage_load_entities() {
 	const uint8_t *PXE = stage_info[stageID].PXE;
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
-	for(uint8_t i = 0; i < PXE[4]; i++) {
+	for(uint16_t i = 0; i < PXE[4]; i++) {
 		uint16_t x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
 		x     = PXE[8  + i * 12] + (PXE[9  + i * 12]<<8);
@@ -300,33 +338,36 @@ void stage_load_entities() {
 		// When an NPC is assigned the improper number of sprites for their metasprite
 		// loading it will crash BlastEm and possibly hardware too. This steps through
 		// each entity as it is loaded so the problematic NPC can be found
-		/*
+	#if DEBUG
 		if(joy_down(BUTTON_A)) {
-			VDP_setEnable(TRUE);
-			VDP_setPaletteColor(15, 0xEEE);
-			char str[2][36];
-			sprintf(str[0], "X:%hu Y:%hu I:%hu", x, y, id);
-			sprintf(str[1], "E:%hu T:%hu F:%hu", event, type, flags);
-			VDP_drawText(str[0], 2, 2);
-			VDP_drawText(str[1], 2, 4);
+			vdp_set_display(TRUE);
+			vdp_color(0, 0x444);
+			vdp_color(15, 0xEEE);
+			char str[40];
+			sprintf(str, "Debug Entity # %03hu", i);
+			vdp_puts(VDP_PLAN_A, str, 2, 2);
+			sprintf(str, "X:%04hu Y:%04hu I:%04hu", x, y, id);
+			vdp_puts(VDP_PLAN_A, str, 2, 5);
+			sprintf(str, "E:%04hu T:%04hu F:%04hX", event, type, flags);
+			vdp_puts(VDP_PLAN_A, str, 2, 7);
 			
-			input_update();
 			while(!joy_pressed(BUTTON_C)) {
-				input_update();
-				vsync();
-				aftervsync();
-				VDP_setHorizontalScroll(PLAN_A, 0);
-				VDP_setVerticalScroll(PLAN_A, 0);
+				vdp_vsync();
+				xgm_vblank();
+				joy_update();
+				vdp_hscroll(VDP_PLAN_A, 0);
+				vdp_vscroll(VDP_PLAN_A, 0);
 			}
-			VDP_setEnable(FALSE);
+			vdp_color(0, 0);
+			vdp_set_display(FALSE);
 		}
-		*/
+	#endif
 		entity_create_ext(block_to_sub(x) + 0x1000, block_to_sub(y) + 0x1000, type, flags, id, event);
 	}
 }
 
 // Replaces a block with another (for <CMP, <SMP, and breakable blocks)
-void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index) {
+void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 	stageBlocks[stageTable[by] + bx] = index;
 	int16_t cx = sub_to_block(camera.x), cy = sub_to_block(camera.y);
 	if(cx - 16 > bx || cx + 16 < bx || cy - 8 > by || cy + 8 < by) return;
@@ -339,10 +380,10 @@ void stage_update() {
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
-		VDP_setVerticalScroll(PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLAN_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
 		int16_t off[32];
@@ -350,8 +391,8 @@ void stage_update() {
 		for(uint8_t i = 1; i < 32; i++) {
 			off[i] = off[0];
 		}
-		VDP_setHorizontalScrollTile(PLAN_A, 0, off, 32, TRUE);
-		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll_tile(VDP_PLAN_A, off);
+		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
 		
@@ -361,25 +402,25 @@ void stage_update() {
 			for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
 			for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
-			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-			//VDP_setVerticalScroll(PLAN_B, -8);
+			vdp_hscroll_tile(VDP_PLAN_B, backScrollTable);
+			//VDP_setVerticalScroll(VDP_PLAN_B, -8);
 		} else {
 			uint8_t y = 27;
 			for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
 			for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
 			for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
-			VDP_setHorizontalScrollTile(PLAN_B, 0, backScrollTable, 32, TRUE);
-			//VDP_setVerticalScroll(PLAN_B, 0);
+			vdp_hscroll_tile(VDP_PLAN_B, backScrollTable);
+			//VDP_setVerticalScroll(VDP_PLAN_B, 0);
 		}
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		VDP_setHorizontalScroll(PLAN_B, backScrollTable[0]);
+		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLAN_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
 		int16_t rowc = SCREEN_HEIGHT >> 3;
 		int16_t rowgap = 31 - rowc;
@@ -391,12 +432,13 @@ void stage_update() {
 			oldrow--;
 			uint8_t rowup = 31 - ((oldrow + rowgap) & 31);// Row that will be updated
 			if(oldrow > rowc) { // Below Screen
-				uint16_t mapBuffer[64] = {};
+				uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
 				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or above
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
-					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
+					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (random()&15)));
 				}
 				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
@@ -408,25 +450,26 @@ void stage_update() {
 			if(oldrow <= 0) { // Above screen
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
-					mapBuffer[x] = TILE_ATTR_FULL(PAL0,1,0,0,
+					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (random()&15)));
 				}
 				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or below
-				uint16_t mapBuffer[64] = {};
+				uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
 				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
 		}
 		
-		VDP_setHorizontalScroll(PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
-		VDP_setVerticalScroll(PLAN_B, -scroll);
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
+		vdp_vscroll(VDP_PLAN_B, -scroll);
+		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		backScrollTable[0] = row;
 	} else {
 		// Only scroll foreground
-		VDP_setHorizontalScroll(PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		VDP_setVerticalScroll(PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
 	if(currentsCount) { // Waterway currents
 		currentsTimer = (currentsTimer + 1) & 0x1F;
@@ -463,25 +506,41 @@ void stage_update() {
 	}
 }
 
+void stage_setup_palettes() {
+	// Stage palette and shared NPC palette
+	vdp_colors_next(0, PAL_Main.data, 16);
+	if(stageID == STAGE_INTRO) {
+		vdp_colors_next(16, PAL_Intro.data, 16);
+	} else {
+		vdp_colors_next(16, PAL_Sym.data, 16);
+	}
+	if(stageID == STAGE_WATERWAY) {
+		vdp_colors_next(32, PAL_RiverAlt.data, 16); // For Waterway green background
+	} else {
+		vdp_colors_next(32, tileset_info[stage_info[stageID].tileset].palette->data, 16);
+	}
+	vdp_colors_next(48, stage_info[stageID].npcPalette->data, 16);
+}
+
 void stage_draw_screen() {
 	uint16_t maprow[64];
-	int16_t y = sub_to_tile(camera.y) - 16;
+	uint16_t y = sub_to_tile(camera.y) - 16;
 	for(uint16_t i = 32; i--; ) {
 		if(vblank) aftervsync(); // So we don't lag the music
 		vblank = 0;
 		
-		if(y >= 0 && y < stageHeight << 1) {
-			int16_t x = sub_to_tile(camera.x) - 32;
+		if(y < stageHeight << 1) {
+			uint16_t x = sub_to_tile(camera.x) - 32;
 			for(uint16_t j = 64; j--; ) {
-				if(x >= stageWidth << 1) break;
-				if(x >= 0) {
+				//if(x >= stageWidth << 1) break;
+				//if(x >= 0) {
 					uint16_t b = stage_get_block(x>>1, y>>1);
 					uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
 					uint16_t ta = stage_get_block_type(x>>1, y>>1);
 					uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-					maprow[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+					maprow[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
 							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
-				}
+				//}
 				x++;
 			}
 			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + ((y&31)<<7), 64, 2);
@@ -496,7 +555,7 @@ void stage_draw_screen_credits() {
 		for(uint8_t x = 20; x < 40; x++) {
 			uint8_t b = stage_get_block(x/2, y/2);
 			uint16_t t = (b%16) * 2 + (b/16) * 64;
-			maprow[x-20] = TILE_ATTR_FULL(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
 		}
 		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
 	}
@@ -512,25 +571,29 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
 	
-	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b), xx, yy);
-	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+1), xx+1, yy);
-	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
-	VDP_setTileMapXY(PLAN_A, TILE_ATTR_FULL(2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+1), xx+1, yy);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
 	
 }
 
-// Fills PLAN_B with a tiled background
+// Fills VDP_PLAN_B with a tiled background
 void stage_draw_background() {
-	uint8_t w = background_info[stageBackground].width;
-	uint8_t h = background_info[stageBackground].height;
+	uint16_t w = background_info[stageBackground].width;
+	uint16_t h = background_info[stageBackground].height;
 	uint16_t pal = background_info[stageBackground].palette;
-	for(uint8_t y = 0; y < 32; y += h) {
-		for(uint8_t x = 0; x < 64; x += w) {
-			VDP_fillTileMapRectInc(PLAN_B, TILE_ATTR_FULL(pal,0,0,0,TILE_BACKINDEX), x, y, 
-					(x+w > 64) ? (64-x) : w, (y+h > 32) ? (32-y) : h);
+	for(uint16_t y = 0; y < 32; y += h) {
+		for(uint16_t x = 0; x < 64; x += w) {
+			//vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(pal,0,0,0,TILE_BACKINDEX), x, y, w, h, 1);
+			uint16_t tile = TILE_ATTR(pal,0,0,0,TILE_BACKINDEX);
+			for(uint16_t yy = 0; yy < h; yy++) {
+				for(uint16_t xx = 0; xx < w; xx++) {
+					vdp_map_xy(VDP_PLAN_B, tile++, x+xx, y+yy);
+				}
+			}
 		}
 	}
-	
 }
 
 void stage_draw_moonback() {
@@ -550,11 +613,11 @@ void stage_draw_moonback() {
 		btmMap = (uint16_t*) MAP_FogBtm;
 	}
 	// Load the top section in the designated background area
-	VDP_loadTileData(topTiles, TILE_BACKINDEX, 12, TRUE);
+	vdp_tiles_load_from_rom(topTiles, TILE_BACKINDEX, 12);
 	// Load the clouds under the map, it just fits
-	VDP_loadTileData(btmTiles, TILE_MOONINDEX, 188, TRUE);
+	vdp_tiles_load_from_rom(btmTiles, TILE_MOONINDEX, 188);
 	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
-	VDP_setVerticalScroll(PLAN_B, 0);
+	vdp_vscroll(VDP_PLAN_B, 0);
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;
 	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {

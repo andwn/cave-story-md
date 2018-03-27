@@ -6,11 +6,8 @@
 #include "memory.h"
 #include "player.h"
 #include "resources.h"
-#include "sprite.h"
 #include "tables.h"
 #include "vdp.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 
 #include "hud.h"
@@ -27,10 +24,13 @@ uint8_t hudMaxHealth, hudHealth;
 uint8_t hudWeapon, hudMaxAmmo, hudAmmo;
 uint8_t hudLevel, hudMaxEnergy, hudEnergy;
 
+// Used for bar animation
+uint8_t hudEnergyPixel, hudEnergyStep, hudEnergyTimer, hudEnergyDest;
+
 uint8_t showing = FALSE;
 
 void hud_refresh_health();
-void hud_refresh_energy();
+void hud_refresh_energy(uint8_t hard);
 void hud_refresh_weapon();
 void hud_refresh_ammo();
 void hud_refresh_maxammo();
@@ -40,18 +40,19 @@ void hud_create() {
 	// Invalidate all values, forces a redraw
 	hudMaxHealth = hudHealth = hudWeapon = hudLevel = 
 			hudMaxEnergy = hudEnergy = hudMaxAmmo = hudAmmo = 255;
+	hudEnergyPixel = hudEnergyStep = hudEnergyTimer = hudEnergyDest = 0;
 	// Create the sprites
 	sprHUD[0] = (VDPSprite) {
 		.x = 16 + 128,
 		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX)
 	};
 	sprHUD[1] = (VDPSprite) {
 		.x = 16 + 32 + 128,
 		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+16)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
 	// Draw blank tiles next to weapon
 	DMA_doDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
@@ -65,7 +66,7 @@ void hud_force_redraw() {
 	DMA_flushQueue();
 	hud_refresh_weapon();
 	DMA_flushQueue();
-	hud_refresh_energy();
+	hud_refresh_energy(TRUE);
 	DMA_flushQueue();
 	hud_refresh_maxammo();
 	DMA_flushQueue();
@@ -84,15 +85,16 @@ void hud_hide() {
 void hud_update() {
 	//if(paused) return;
 	if(!showing) return;
-	sprite_addq(sprHUD, 2);
+	vdp_sprites_add(sprHUD, 2);
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent
 	if(hudMaxHealth != playerMaxHealth || hudHealth != player.health) {
 		hud_refresh_health();
 	} else if(hudWeapon != playerWeapon[currentWeapon].type) {
 		hud_refresh_weapon();
-	} else if(hudLevel != playerWeapon[currentWeapon].level ||
-			hudEnergy != playerWeapon[currentWeapon].energy) {
-		hud_refresh_energy();
+	} else if(hudLevel != playerWeapon[currentWeapon].level) {
+		hud_refresh_energy(TRUE);
+	} else if(hudEnergy != playerWeapon[currentWeapon].energy) {
+		hud_refresh_energy(FALSE);
 	} else if(hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
 		// Max ammo changed refresh both
 		hud_refresh_maxammo();
@@ -131,28 +133,66 @@ void hud_refresh_health() {
 		DMA_queueDma(DMA_VRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
 }
 
-void hud_refresh_energy() {
+void hud_refresh_energy(uint8_t hard) {
 	// Energy or level changed
-	hudLevel = playerWeapon[currentWeapon].level;
+	if(hudLevel != playerWeapon[currentWeapon].level) {
+		hudLevel = playerWeapon[currentWeapon].level;
+		hard = TRUE;
+	}
 	if(playerWeapon[currentWeapon].type == WEAPON_SPUR) {
 		hudMaxEnergy = spur_time[pal_mode][playerWeapon[currentWeapon].level];
 	} else {
 		hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 1);
 	}
-	hudEnergy = playerWeapon[currentWeapon].energy;
-	// Max energy draws "MAX"
-	if(hudEnergy == hudMaxEnergy) {
-		for(uint8_t i = 0; i < 5; i++) {
-			memcpy(tileData[i+3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
+	if(!hard) {
+		if(hudEnergyTimer == 0) {
+			hudEnergyPixel = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
+			hudEnergyDest = ((playerWeapon[currentWeapon].energy<<5) + (playerWeapon[currentWeapon].energy<<3)) / hudMaxEnergy;
+			hudEnergyTimer = 3;
+		} else {
+			hudEnergyTimer--;
 		}
 	} else {
-		// Same deal as HP with the bar
-		int16_t fillXP = ((uint16_t)((hudEnergy<<5) + (hudEnergy<<3))) / hudMaxEnergy;
+		hudEnergy = playerWeapon[currentWeapon].energy;
+		hudEnergyPixel = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
+		hudEnergyDest = hudEnergyPixel;
+		hudEnergyTimer = 0;
+	}
+	if(hudEnergyTimer == 0) {
+		// Max energy draws "MAX"
+		if(playerWeapon[currentWeapon].energy == hudMaxEnergy) {
+			for(uint8_t i = 0; i < 5; i++) {
+				memcpy(tileData[i+3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
+			}
+			hudEnergy = hudMaxEnergy;
+			hudEnergyDest = hudEnergyPixel;
+		} else {
+			// Even if these values are equal, we need to redraw the bar after it flashes
+			if(hudEnergyPixel > hudEnergyDest) {
+				// Energy decreasing
+				hudEnergyPixel--;
+			} else if(hudEnergyPixel < hudEnergyDest) {
+				// Energy increasing
+				hudEnergyPixel++;
+			}
+			int16_t fillXP = hudEnergyPixel;
+			for(uint8_t i = 0; i < 5; i++) {
+				int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
+				if(addrXP < 0) addrXP = 0;
+				memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
+				fillXP -= 8;
+			}
+			if(hudEnergyPixel == hudEnergyDest) {
+				// Finished increasing / decreasing energy
+				hudEnergy = playerWeapon[currentWeapon].energy;
+			} else {
+				hudEnergyTimer = 3;
+			}
+		}
+	} else if(hudEnergyTimer == 2) {
+		// Flashing while increasing / decreasing
 		for(uint8_t i = 0; i < 5; i++) {
-			int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
-			if(addrXP < 0) addrXP = 0;
-			memcpy(tileData[i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
-			fillXP -= 8;
+			memcpy(tileData[i+3], &TS_HudFlash.tiles[i * TSIZE], TILE_SIZE);
 		}
 	}
 	// "Lv." and 1 digit for the level

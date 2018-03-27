@@ -13,17 +13,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
 
@@ -33,8 +28,8 @@ void splash_main() {
 	gamemode = GM_SPLASH;
 	
 	// Init screen stuff
-	VDP_setPalette(PAL0, PAL_Sega.data);
-	VDP_setPalette(PAL1, PAL_Sym.data);
+	vdp_colors(0, PAL_Sega.data, 16);
+	vdp_colors(16, PAL_Sym.data, 16);
 	// Init some subsystems used
 	sheets_load_splash();
 	effects_init();
@@ -46,16 +41,15 @@ void splash_main() {
 	blg->linkedEntity = entity_create(pixel_to_sub(SCREEN_HALF_W), pixel_to_sub(SCREEN_HALF_H), OBJ_SEGALOGO, 0);
 	
 	uint16_t timer = 0;
+	oldstate = ~0;
 	while(++timer <= TIME(250) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
-		input_update();
 		entities_update(TRUE);
 		effects_update(); // Draw Smoke
 		ready = TRUE;
-		vsync();
+		vdp_vsync();
 		aftervsync();
 	}
-	input_update(); // This pushes the joy state to avoid skipping the next menu
-	VDP_fadeTo(0, 63, PAL_FadeOut, 20, FALSE);
+	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 	entities_clear();
 	effects_clear();
 }

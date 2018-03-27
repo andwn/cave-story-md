@@ -40,7 +40,7 @@ void ai_curly(Entity *e) {
 		case 11:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			if (e->state == 11 && PLAYER_DIST_X(20<<CSF)) {
+			if (e->state == 11 && PLAYER_DIST_X(e, 20<<CSF)) {
 				e->state = 0;
 				break;
 			}
@@ -183,7 +183,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		case RIGHT:
 		b->sprite.size = SPRITE_SIZE(3, 2);
 		SHEET_FIND(b->sheet, SHEET_NEMES);
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
 		b->x = x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
@@ -193,7 +193,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		case UP:
 		case DOWN:
 		b->sprite.size = SPRITE_SIZE(2, 3);
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
+		b->sprite.attr = TILE_ATTR(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
 		b->x = x - (4<<CSF);
 		b->y = y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
@@ -365,7 +365,7 @@ void ai_curlyBoss(Entity *e) {
 					curlyboss_fire(e, e->dir);
 				}
 			}
-			if(e->timer2 > 10) e->state = CURLYB_FIGHT_START;
+			if(e->timer2 > 8) e->state = CURLYB_FIGHT_START;
 		}
 		break;
 		case CURLYB_SHIELD:

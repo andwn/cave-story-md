@@ -14,17 +14,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
 
@@ -33,9 +28,9 @@
 #define ANIM_SPEED	7
 #define ANIM_FRAMES	4
 
-#define VAL_DEFAULT 0xFF
+#define MAX_OPTIONS	12
 
-enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA };
+enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
 
 enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
 
@@ -56,7 +51,7 @@ typedef struct {
 	uint8_t *valptr;
 } MenuItem;
 
-const MenuItem menu[3][12] = {
+const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 	{
 		{ 4,  MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
 		{ 6,  MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
@@ -72,12 +67,13 @@ const MenuItem menu[3][12] = {
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
 		{ 4,  MI_LANG,   "Language", &cfg_language },
-		
-		{ 8,  MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
-		{ 10, MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
-		{ 12, MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
-		{ 14, MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
-		{ 16, MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
+		{ 7,  MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
+		{ 9,  MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
+		{ 11, MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
+		{ 13, MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
+		{ 15, MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
+		{ 17, MI_TOGGLE, "Mute BGM", &cfg_music_mute },
+		{ 19, MI_TOGGLE, "Mute SFX", &cfg_sfx_mute },
 
 		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
@@ -91,29 +87,29 @@ const char boolstr[2][4] = { "OFF", "ON " };
 const char modestr[3][6] = { "OFF ", "3BTN", "6BTN" };
 
 void draw_menuitem(const MenuItem *item) {
-	VDP_clearText(2, item->y, 36);
-	VDP_drawText(item->caption, 4, item->y);
+	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
+	vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
 	switch(item->type) {
 		case MI_LABEL: break; // Nothing
 		case MI_INPUT:
-		VDP_drawText(btnName[*item->valptr], 30, item->y);
+		vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
 		break;
 		case MI_LANG:
 		if(*item->valptr) {
-			kanji_draw(PLAN_A, TILE_BACKINDEX,   0x100+794, 30, item->y, 0, TRUE); // 日
-			kanji_draw(PLAN_A, TILE_BACKINDEX+4, 0x100+909, 32, item->y, 0, TRUE); // 本
-			kanji_draw(PLAN_A, TILE_BACKINDEX+8, 0x100+417, 34, item->y, 0, TRUE); // 語
+			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX,   0x100+794, 30, item->y, 0, TRUE); // 日
+			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX+4, 0x100+909, 32, item->y, 0, TRUE); // 本
+			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX+8, 0x100+417, 34, item->y, 0, TRUE); // 語
 		} else {
-			VDP_drawText("English", 30, item->y);
-			VDP_clearText(30, item->y + 1, 6); // Hide kanji
+			vdp_puts(VDP_PLAN_A, "English", 30, item->y);
+			vdp_text_clear(VDP_PLAN_A, 30, item->y + 1, 6); // Hide kanji
 		}
 		break;
 		case MI_TOGGLE:
-		VDP_drawText(boolstr[*item->valptr], 30, item->y);
+		vdp_puts(VDP_PLAN_A, boolstr[*item->valptr], 30, item->y);
 		break;
 		case MI_ACTION: break;
 		case MI_MODE:
-		VDP_drawText(modestr[*item->valptr], 30, item->y);
+		vdp_puts(VDP_PLAN_A, modestr[*item->valptr], 30, item->y);
 		break;
 	}
 }
@@ -132,10 +128,9 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 		case MI_INPUT: {
 			sound_play(SND_MENU_SELECT, 5);
 			uint8_t released = FALSE;
-			VDP_drawText("Press..", 30, item->y);
+			vdp_puts(VDP_PLAN_A, "Press..", 30, item->y);
 			while(TRUE) {
 				if(!(joystate & btn[cfg_btn_jump])) released = TRUE;
-				input_update();
 				if(joy_pressed(BUTTON_BTN)) {
 					// Just in case player never releases confirm before hitting something else
 					if(released) break;
@@ -148,9 +143,9 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 				//	sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
 				//}
 				sprite_index((*sprCursor), TILE_SHEETINDEX+32+16);
-				sprite_add((*sprCursor));
+			vdp_sprite_add(sprCursor);
 				ready = TRUE;
-				vsync(); aftervsync();
+				vdp_vsync(); aftervsync();
 			}
 			sound_play(SND_MENU_SELECT, 5);
 			switch(joystate & BUTTON_BTN) {
@@ -180,38 +175,32 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 }
 
 uint8_t set_page(uint8_t page) {
-	uint8_t maxCursor = 0;
+	uint8_t numItems = 0;
 	
-	VDP_setEnable(FALSE);
-	VDP_clearPlan(PLAN_A, TRUE);
+	vdp_set_display(FALSE);
+	vdp_map_clear(VDP_PLAN_A);
 	
 	switch(page) {
 		case PAGE_CONTROL:
-		maxCursor = 10;
-		VDP_drawText("(1) Controller Config", 8, 2);
-		for(uint8_t i = 0; i < maxCursor; i++) {
-			draw_menuitem(&menu[page][i]);
-		}
+		vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 2);
 		break;
 		case PAGE_GAMEPLAY:
-		maxCursor = 9;
-		VDP_drawText("(2) Gameplay Config", 8, 2);
-		for(uint8_t i = 0; i < maxCursor; i++) {
-			draw_menuitem(&menu[page][i]);
-		}
+		vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 2);
 		break;
 		case PAGE_SAVEDATA:
-		maxCursor = 3;
-		VDP_drawText("(3) Save Data", 8, 2);
-		for(uint8_t i = 0; i < maxCursor; i++) {
-			draw_menuitem(&menu[page][i]);
-		}
+		vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 2);
 		break;
 	}
+	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
+		if(menu[page][i].caption[0]) {
+			draw_menuitem(&menu[page][i]);
+			numItems++;
+		}
+	}
+
+	vdp_set_display(TRUE);
 	
-	VDP_setEnable(TRUE);
-	
-	return maxCursor;
+	return numItems;
 }
 
 extern uint8_t tpal;
@@ -219,49 +208,46 @@ extern uint8_t tpal;
 void config_main() {
 	gamemode = GM_CONFIG;
 	
-	VDP_clearPlan(PLAN_B, TRUE);
+	vdp_map_clear(VDP_PLAN_B);
 	
 	uint8_t sprFrame = 0;
 	uint8_t sprTime = ANIM_SPEED;
 	uint8_t page = PAGE_CONTROL;
 	//uint8_t waitButton = FALSE;
 	uint8_t cursor = 0;
-	uint8_t maxCursor = set_page(page);
+	uint8_t numItems = set_page(page);
 	
 	VDPSprite sprCursor = { 
-		.attribut = TILE_ATTR_FULL(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
 	set_page(page);
 	oldstate = ~0;
 	while(TRUE) {
-		input_update();
 		//if(waitButton) {
 			// Show looking up frame
 		//	sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
 		//} else {
 		if(joy_pressed(BUTTON_UP)) {
 			do {
-				if(cursor == 0) cursor = maxCursor - 1;
+				if(cursor == 0) cursor = numItems - 1;
 				else cursor--;
 			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			do {
-				if(cursor == maxCursor - 1) cursor = 0;
+				if(cursor == numItems - 1) cursor = 0;
 				else cursor++;
 			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_LEFT)) {
-			if(page == 0) page = 2;
-			else page--;
+			if(--page >= NUM_PAGES) page = NUM_PAGES - 1;
 			cursor = 0;
 			set_page(page);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
-			if(page == 2) page = 0;
-			else page++;
+			if(++page >= NUM_PAGES) page = 0;
 			cursor = 0;
 			set_page(page);
 			sound_play(SND_MENU_MOVE, 0);
@@ -281,10 +267,10 @@ void config_main() {
 		
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);
-		sprite_add(sprCursor);
+		vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
 	
 	system_load_config();
@@ -307,6 +293,8 @@ void act_default(uint8_t page) {
 		cfg_hellquake = TRUE;
 		cfg_iframebug = TRUE;
 		cfg_msg_blip = TRUE;
+		cfg_music_mute = TRUE;
+		cfg_sfx_mute = TRUE;
 	}
 	set_page(page);
 }
@@ -330,18 +318,17 @@ void act_format(uint8_t page) {
 	(void)(page);
 	uint8_t starts = 0;
 	uint16_t timer = 0;
-	VDP_drawText("Are you sure?", 13, 12);
-	VDP_drawText("Press Start three times", 8, 14);
+	vdp_puts(VDP_PLAN_A, "Are you sure?", 13, 12);
+	vdp_puts(VDP_PLAN_A, "Press Start three times", 8, 14);
 	song_stop();
 	while(!joy_pressed(btn[cfg_btn_shoot])) {
-		input_update();
 		if(joy_pressed(BUTTON_START) && ++starts >= 3) {
-			VDP_init();
+			vdp_init();
 			system_format_sram();
 			sound_play(0xE5-0x80, 15);
 			uint16_t timer = TIME_8(150);
 			while(--timer) {
-				vsync(); aftervsync();
+				vdp_vsync(); aftervsync();
 			}
 			SYS_hardReset();
 		} else {
@@ -352,9 +339,9 @@ void act_format(uint8_t page) {
 				case 2: if((timer & 3) == 0) sound_play(0xBD-0x80, 5); break;
 			}
 		}
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
-	VDP_clearText(13, 12, 13);
-	VDP_clearText(8, 14, 23);
+	vdp_text_clear(VDP_PLAN_A, 13, 12, 13);
+	vdp_text_clear(VDP_PLAN_A, 8, 14, 23);
 	song_resume();
 }

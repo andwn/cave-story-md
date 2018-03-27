@@ -11,8 +11,8 @@
 #define shield		body->linkedEntity
 #define rotator(i)	pieces[2+(i)]
 
-#define FLOOR_Y			0x26000						// Y coord of floor
-#define CRASH_Y			(FLOOR_Y - (40 << CSF))		// Y coord of main when body hits floor
+#define FLOOR_Y			0x26000							// Y coord of floor
+#define CRASH_Y			(FLOOR_Y - pixel_to_sub(40))	// Y coord of main when body hits floor
 
 enum EYE_STATES {
 	EYE_OPENING		= 10,
@@ -108,15 +108,15 @@ static uint8_t transfer_damage(Entity *src, Entity *tgt) {
 }
 
 // left and right maximums during form 1
-static const int32_t F1_LEFT = (88 << CSF);
-static const int32_t F1_RIGHT = (552 << CSF);
+static const int32_t F1_LEFT = pixel_to_sub(88);
+static const int32_t F1_RIGHT = pixel_to_sub(552);
 
 void onspawn_ballos(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->eflags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
 	
 	e->x = block_to_sub(stageWidth >> 1);
-	e->y = -(64 << CSF);
+	e->y = -pixel_to_sub(64);
 	
 	e->attack = 0;
 	e->health = 800;
@@ -174,7 +174,7 @@ void ai_ballos_f1(Entity *e) {
 		case AS_COME_DOWN:
 		{
 			e->x = player.x;
-			e->y = -(64 << CSF);
+			e->y = -pixel_to_sub(64);
 			e->frame = 0;
 			
 			// create the targeter
@@ -204,7 +204,7 @@ void ai_ballos_f1(Entity *e) {
 				e->timer = 0;
 				e->state++;
 				// player smush damage
-				if(!playerIFrames && PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) {
+				if(!playerIFrames && PLAYER_DIST_X(e, pixel_to_sub(48)) && PLAYER_DIST_Y2(e, 0, pixel_to_sub(64))) {
 					player_inflict_damage(16);
 				}
 				camera_shake(30);
@@ -263,7 +263,7 @@ void ai_ballos_f1(Entity *e) {
 			
 			if(e->y + e->y_speed > CRASH_Y) {
 				// player smush damage
-				if(!playerIFrames && PLAYER_DIST_X(48 << CSF) && PLAYER_DIST_Y2(0, 64 << CSF)) {
+				if(!playerIFrames && PLAYER_DIST_X(e, pixel_to_sub(48)) && PLAYER_DIST_Y2(e, 0, pixel_to_sub(64))) {
 					player_inflict_damage(16);
 				}
 				// player hopping from the vibration
@@ -313,15 +313,15 @@ void ai_ballos_f1(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	// place eyes
-	eye[0]->x = e->x - (24 << CSF);
-	eye[1]->x = e->x + (24 << CSF);
-	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
+	eye[0]->x = e->x - pixel_to_sub(24);
+	eye[1]->x = e->x + pixel_to_sub(24);
+	eye[0]->y = eye[1]->y = e->y - pixel_to_sub(28);
 	// place body
 	body->x = e->x;
 	body->y = e->y;
 	// place shield
 	shield->x = e->x;
-	shield->y = e->y - (44 << CSF);
+	shield->y = e->y - pixel_to_sub(44);
 	
 	// riding on platform by eye? Player can sort of stay on this platform
 	// when he jumps. We don't do this for the shield up top though, in order that
@@ -338,10 +338,10 @@ void ai_ballos_f1(Entity *e) {
 // the one where he spawns spiky rotators and circles around the room.
 void ai_ballos_f2(Entity *e) {
 	static const int16_t BS_SPEED = 0x3AA;
-	static const int32_t ARENA_LEFT = (119 << CSF);
-	static const int32_t ARENA_TOP = (119 << CSF);
-	static const int32_t ARENA_RIGHT = (521 << CSF);
-	static const int32_t ARENA_BOTTOM = (233 << CSF);
+	static const int32_t ARENA_LEFT = pixel_to_sub(119);
+	static const int32_t ARENA_TOP = pixel_to_sub(119);
+	static const int32_t ARENA_RIGHT = pixel_to_sub(521);
+	static const int32_t ARENA_BOTTOM = pixel_to_sub(233);
 	
 	/*transfer_damage(body, e) || */
 	if(transfer_damage(eye[0], e) || transfer_damage(eye[1], e)) {
@@ -394,7 +394,7 @@ void ai_ballos_f2(Entity *e) {
 			// all rotators destroyed?
 			if (rotators_left <= 0 && ++e->timer > 3) {
 				// center of room
-				if (e->x >= (312<<CSF) && e->x <= (344<<CSF)) {
+				if (e->x >= pixel_to_sub(312) && e->x <= pixel_to_sub(344)) {
 					e->state = CS_ENTER_FORM;
 					e->type = OBJ_BALLOS_FORM3;
 				}
@@ -416,15 +416,15 @@ void ai_ballos_f2(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	// place eyes
-	eye[0]->x = e->x - (24 << CSF);
-	eye[1]->x = e->x + (24 << CSF);
-	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
+	eye[0]->x = e->x - pixel_to_sub(24);
+	eye[1]->x = e->x + pixel_to_sub(24);
+	eye[0]->y = eye[1]->y = e->y - pixel_to_sub(28);
 	// place body
 	body->x = e->x;
 	body->y = e->y;
 	// place shield
 	shield->x = e->x;
-	shield->y = e->y - (44 << CSF);
+	shield->y = e->y - pixel_to_sub(44);
 }
 
 // form 3 as a stageboss, the final form.
@@ -434,11 +434,12 @@ void ai_ballos_f2(Entity *e) {
 // then the platforms spin in various speeds and directions while he
 // spawns red butes from the sides and his top.
 void ai_ballos_f3(Entity *e) {
-	static const int32_t YPOSITION = (167 << CSF);
+	static const int32_t YPOSITION = pixel_to_sub(167);
 	// platform spin speeds and how long they travel at each speed.
 	// it's a repeating pattern.
 	static const struct {
-		int16_t length, speed;
+		uint16_t length;
+		int16_t speed;
 	} platform_pattern[] = {
 		{ 500, 2, },
 		{ 200, 1, },
@@ -509,7 +510,7 @@ void ai_ballos_f3(Entity *e) {
 			
 			if ((e->timer & 31) == 1) {
 				e->x_mark += 2;
-				entity_create(block_to_sub(e->x_mark), FLOOR_Y + (48 << CSF), OBJ_BALLOS_SPIKES, 0);
+				entity_create(block_to_sub(e->x_mark), FLOOR_Y + pixel_to_sub(48), OBJ_BALLOS_SPIKES, 0);
 				
 				if (e->x_mark == 38) e->state = CS_EXPLODE_BLOODY;
 			}
@@ -562,7 +563,7 @@ void ai_ballos_f3(Entity *e) {
 					case 292:
 					{
 						effect_create_smoke(e->x >> CSF, (e->y >> CSF) - 52);
-						entity_create(e->x, e->y - (52<<CSF), OBJ_BUTE_SWORD_RED, 0);
+						entity_create(e->x, e->y - pixel_to_sub(52), OBJ_BUTE_SWORD_RED, 0);
 						sound_play(SND_EM_FIRE, 5);
 					}
 					break;
@@ -664,15 +665,15 @@ void ai_ballos_f3(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	// place eyes
-	eye[0]->x = e->x - (24 << CSF);
-	eye[1]->x = e->x + (24 << CSF);
-	eye[0]->y = eye[1]->y = e->y - (28 << CSF);
+	eye[0]->x = e->x - pixel_to_sub(24);
+	eye[1]->x = e->x + pixel_to_sub(24);
+	eye[0]->y = eye[1]->y = e->y - pixel_to_sub(28);
 	// place body
 	body->x = e->x;
 	body->y = e->y;
 	// place shield
 	shield->x = e->x;
-	shield->y = e->y - (44 << CSF);
+	shield->y = e->y - pixel_to_sub(44);
 }
 
 // Handles his eyes.
@@ -1002,7 +1003,7 @@ void ai_ballos_platform(Entity *e) {
 	if (e->state >= 1000) return;
 	
 	// let player jump up through platforms, but be solid when he is standing on them
-	if (player.y_speed < 0 || player.y > e->y - (e->hit_box.top << CSF)) {
+	if (player.y_speed < 0 || player.y > e->y - pixel_to_sub(e->hit_box.top)) {
 		e->nflags &= ~NPC_SPECIALSOLID;
 	} else {
 		e->nflags |= NPC_SPECIALSOLID;
@@ -1023,7 +1024,7 @@ void ai_ballos_platform(Entity *e) {
 	}
 	
 	e->x_mark = (xoff >> 2) + ballos->x;
-	e->y_mark = (yoff >> 2) + (12 << CSF) + ballos->y;
+	e->y_mark = (yoff >> 2) + pixel_to_sub(12) + ballos->y;
 	
 	switch(abs(platform_speed)) {
 		case 1:

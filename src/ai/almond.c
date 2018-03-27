@@ -4,8 +4,8 @@ void onspawn_waterlevel(Entity *e) {
 	e->alwaysActive = TRUE;
 	water_entity = e;
 	e->state = WL_CALM;
-	e->y += 4 << CSF;
-	if(stageID == STAGE_CORE) e->y += 8 << CSF;
+	e->y += pixel_to_sub(4);
+	if(stageID == STAGE_CORE) e->y += pixel_to_sub(8);
 	e->y_mark = e->y;
 	e->y_speed = SPEED_8(0xFF);
 }
@@ -56,9 +56,9 @@ void ai_waterlevel(Entity *e) {
 void onspawn_shutter(Entity *e) {
 	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->alwaysActive = TRUE;
-	e->y += 8 << CSF;
+	e->y += pixel_to_sub(8);
 	if(e->type == OBJ_SHUTTER_BIG) {
-		e->x += 8 << CSF;
+		e->x += pixel_to_sub(8);
 	}
 }
 
@@ -108,8 +108,8 @@ void ai_shutter(Entity *e) {
 void ai_shutter_stuck(Entity *e) {
 	if(!e->state) {
 		e->state++;
-		e->x -= 4 << CSF;
-		e->y += 2 << CSF;
+		e->x -= pixel_to_sub(4);
+		e->y += pixel_to_sub(2);
 		e->eflags |= NPC_SHOOTABLE;
 	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them

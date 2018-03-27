@@ -44,8 +44,8 @@ void ai_ironhead(Entity *e) {
 				e->state = IRONH_SWIM;
 			}
 			if (!(e->timer & 7)) {
-				entity_create(((14 + (random() & 3)) << 4) << CSF,
-						  	((1 + (random() & 15)) << 4) << CSF,
+				entity_create(pixel_to_sub((14 + (random() & 3)) << 4),
+						  	pixel_to_sub((1 + (random() & 15)) << 4),
 						  	OBJ_IRONH_FISHY, 0);
 			}
 		}
@@ -58,7 +58,7 @@ void ai_ironhead(Entity *e) {
 				e->y = player.y;
 			} else {	// returning from right side of screen
 				e->x = 0x5a000;
-				e->y = ((5 + (random() & 7)) << 4) << CSF;
+				e->y = pixel_to_sub((5 + (random() & 7)) << 4);
 			}
 			
 			e->x_mark = e->x;
@@ -125,7 +125,7 @@ void ai_ironhead(Entity *e) {
 			e->x_speed = e->y_speed = 0;
 			e->timer = 0;
 			// I believe the screen should flash here since objects get deleted
-			SCREEN_FLASH(20);
+			SCREEN_FLASH(3);
 			entities_clear_by_type(OBJ_IRONH_FISHY);
 			entities_clear_by_type(OBJ_IRONH_BRICK);
 			entities_clear_by_type(OBJ_BRICK_SPAWNER);
@@ -182,7 +182,7 @@ void ai_ironh_fishy(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	if (e->x_speed < 0 && e->x < camera.x - (SCREEN_HALF_W << CSF)) 
+	if (e->x_speed < 0 && e->x < camera.x - pixel_to_sub(SCREEN_HALF_W)) 
 			e->state = STATE_DELETE;
 }
 
@@ -219,7 +219,7 @@ void ai_brick_spawner(Entity *e) {
 	
 	if (!e->timer) {	// time to spawn a block
 		e->state = 0;
-		Entity *brick = entity_create(e->x, e->y - (16<<CSF) + ((random() & 31)<<CSF), 
+		Entity *brick = entity_create(e->x, e->y - pixel_to_sub(16) + pixel_to_sub((random() & 31)), 
 				OBJ_IRONH_BRICK, 0);
 		brick->dir = e->dir;
 	} else e->timer--;
@@ -232,7 +232,7 @@ void ai_ironh_brick(Entity *e) {
 			e->frame = e->oframe = 255;
 			e->vramindex = sheets[e->sheet].index + 16 + (r & 3) * 4;
 			e->sprite[0].size = SPRITE_SIZE(2, 2);
-			e->sprite[0].attribut = TILE_ATTR_FULL(PAL2,0,0,0,e->vramindex);
+			e->sprite[0].attr = TILE_ATTR(PAL2,0,0,0,e->vramindex);
 			e->hit_box = e->display_box = (bounding_box) { 8, 8, 8, 8 };
 			e->sheet = NOSHEET;
 		} else {
@@ -252,14 +252,14 @@ void ai_ironh_brick(Entity *e) {
 		e->y_speed = -e->y_speed;
 	}
 	
-	if (e->y_speed > 0 && (e->y + (e->hit_box.bottom<<CSF) >= (239<<CSF))) {
+	if (e->y_speed > 0 && (e->y + pixel_to_sub(e->hit_box.bottom) >= pixel_to_sub(239))) {
 		//effect(e->CenterX(), e->Bottom(), EFFECT_BONKPLUS);
 		e->y_speed = -e->y_speed;
 	}
 	
 	
 	if ((e->x_speed < 0 && (e->x < -0x2000)) ||
-		(e->x > (stageWidth * 16) << CSF)) {
+		(e->x > pixel_to_sub(stageWidth * 16))) {
 		e->state = STATE_DELETE;
 	}
 	e->x += e->x_speed;
@@ -270,7 +270,7 @@ void ai_ironh_brick(Entity *e) {
 		sprite_pos(e->sprite[0],
 				(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
 				(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
-		sprite_add(e->sprite[0]);
+	vdp_sprite_add(&e->sprite[0]);
 	}
 }
 
@@ -290,7 +290,7 @@ void ai_ikachan_spawner(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 3) == 1) {
-				entity_create(e->x, e->y + (-1 + (((random() & 15) << 4) << CSF)), OBJ_IKACHAN, 0);
+				entity_create(e->x, e->y + pixel_to_sub(-1 + (((random() & 15) << 4))), OBJ_IKACHAN, 0);
 			}
 		}
 		break;
@@ -342,5 +342,5 @@ void ai_ikachan(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	if (e->x > 720<<CSF) e->state = STATE_DELETE;
+	if (e->x > pixel_to_sub(720)) e->state = STATE_DELETE;
 }

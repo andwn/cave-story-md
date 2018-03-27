@@ -31,7 +31,7 @@ void ai_cloud_spawner(Entity *e) {
 		// cut down on the amount of time Kazuma is flying
 		// against plain blue when he appears in the credits
 		if(gamemode == GM_CREDITS && e->state < 10) {
-			cloud->x -= (128 << CSF);
+			cloud->x -= pixel_to_sub(128);
 			e->state++;
 		}
 	} else {
@@ -76,7 +76,7 @@ void onspawn_cloud(Entity *e) {
 			.x = 0x80 + (e->x>>CSF) - camera.x_shifted + xoff,
 			.y = 0x80 + (e->y>>CSF) - camera.y_shifted + yoff,
 			.size = ssize,
-			.attribut = TILE_ATTR_FULL(PAL2,0,0,0,index),
+			.attr = TILE_ATTR(PAL2,0,0,0,index),
 		};
 		index += num_tiles;
 		xoff += (e->type == OBJ_CLOUD3) ? 24 : 32;
@@ -90,8 +90,8 @@ void onspawn_cloud(Entity *e) {
 void ai_cloud(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	if(e->x < -(e->display_box.right << CSF) 
-			|| e->y < -(e->display_box.bottom << CSF)) {
+	if(e->x < -(pixel_to_sub(e->display_box.right)) 
+			|| e->y < -(pixel_to_sub(e->display_box.bottom))) {
 		e->state = STATE_DELETE;
 	} else {
 		if(e->type == OBJ_CLOUD) moveMeToFront = TRUE;
@@ -107,7 +107,7 @@ void ai_cloud(Entity *e) {
 				yoff += (e->type == OBJ_CLOUD3) ? 24 : 32;
 			}
 		}
-		sprite_addq(e->sprite, e->sprite_count);
+	vdp_sprites_add(e->sprite, e->sprite_count);
 	}
 }
 
@@ -467,7 +467,7 @@ void onspawn_the_cast(Entity *e) {
 		for(uint8_t i = 0; i < e->sprite_count; i++) {
 			e->sprite[i] = (VDPSprite) {
 				.size = f->vdpSpritesInf[i]->size,
-				.attribut = TILE_ATTR_FULL(npc_info[obj].palette,
+				.attr = TILE_ATTR(npc_info[obj].palette,
 						0,0,0,e->vramindex + tile_offset)
 			};
 			tile_offset += f->vdpSpritesInf[i]->numTile;

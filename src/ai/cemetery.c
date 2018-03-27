@@ -104,8 +104,8 @@ void ai_gkeeper(Entity *e) {
 		e->frame = 0;
 		FACE_PLAYER(e);
 		// start walking when player comes near
-		if(PLAYER_DIST_X(pixel_to_sub(128)) && 
-			PLAYER_DIST_Y2(pixel_to_sub(48), pixel_to_sub(32))) {
+		if(PLAYER_DIST_X(e, pixel_to_sub(128)) && 
+			PLAYER_DIST_Y2(e, pixel_to_sub(48), pixel_to_sub(32))) {
 			e->state = 1;
 			e->frame = 1;
 		}
@@ -121,7 +121,7 @@ void ai_gkeeper(Entity *e) {
 		FACE_PLAYER(e);
 		e->x_speed = e->dir ? 0x100 : -0x100;
 		// reached knife range of player?
-		if(PLAYER_DIST_X(pixel_to_sub(10))) {
+		if(PLAYER_DIST_X(e, pixel_to_sub(10))) {
 			e->state = 2;
 			e->timer = 0;
 			e->x_speed = 0;
@@ -222,7 +222,7 @@ void ai_ma_pignon(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y_next += 8 << CSF;
+			e->y_next += pixel_to_sub(8);
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
@@ -280,7 +280,7 @@ void ai_ma_pignon(Entity *e) {
 			e->y_speed += SPEED_8(0x80);
 			
 			// for when falling back onscreen after clone attack
-			//if (e->y > (8 * TILE_H) << CSF)
+			//if (e->y > pixel_to_sub(8 * TILE_H))
 			//	e->eflags &= ~NPC_IGNORE_SOLID;
 			//else
 			//	e->blockd = false;
@@ -362,7 +362,7 @@ void ai_ma_pignon(Entity *e) {
 			
 			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(xpos[random() & 15]);
-				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_ROCK, 0);
+				entity_create(x, pixel_to_sub(16), OBJ_MA_PIGNON_ROCK, 0);
 			}
 			
 			if (e->timer > TIME_8(30)) {
@@ -388,7 +388,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, WALK1,WALK2);
 			
 			MOVE_X(SPEED_12(0x400));
-			if (PLAYER_DIST_X(3 << CSF)) {
+			if (PLAYER_DIST_X(e, pixel_to_sub(3))) {
 				e->state = MP_Fly_Up;
 				e->timer = 0;
 				e->frame = DUCK;
@@ -436,7 +436,7 @@ void ai_ma_pignon(Entity *e) {
 			
 			if ((++e->timer & 7) == 0) {
 				int32_t x = block_to_sub(xpos[random() & 15]);
-				entity_create(x, (16 << CSF), OBJ_MA_PIGNON_CLONE, 0);
+				entity_create(x, pixel_to_sub(16), OBJ_MA_PIGNON_CLONE, 0);
 			}
 			
 			if (e->timer > TIME(30)) {

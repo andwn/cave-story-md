@@ -121,7 +121,7 @@ void ai_curly_ai(Entity *e) {
 	
 	// hack in case player REALLY leaves her behind. this works because of the way
 	// the level is in a Z shape. first we check to see if the player is on the level below ours.
-	if (player.y - e->y_next > (160<<CSF) || e->state==999) {
+	if (player.y - e->y_next > pixel_to_sub(160) || e->state==999) {
 		// if we're on the top section, head all the way to right, else if we're on the
 		// middle section, head for the trap door that was destroyed by the button
 		otiley = sub_to_block(e->y_next);
@@ -129,24 +129,24 @@ void ai_curly_ai(Entity *e) {
 		curly_target_time = 0;
 		
 		if (otiley < 22) {
-			e->x_mark = ((126 * 16) + 8) << CSF;		// center of big chute on right top
+			e->x_mark = pixel_to_sub((126 * 16) + 8);		// center of big chute on right top
 		} else if (otiley > 36 && otiley < 47) {	
 			// fell down chute in center of middle section
 			// continue down chute, don't get hung up on sides
-			e->x_mark = (26 * 16) << CSF;
+			e->x_mark = pixel_to_sub(26 * 16);
 		} else if (otiley >= 47) {	
 			// bottom section - head for exit door
 			// (this shouldn't ever execute, though, because player can't be lower than this)
-			e->x_mark = (81 * 16) << CSF;
+			e->x_mark = pixel_to_sub(81 * 16);
 			seeking_player = 1;		// stop when reach exit door
 		} else {	
 			// on middle section
-			e->x_mark = ((7 * 16) + 8) << CSF;		// trap door which was destroyed by switch
+			e->x_mark = pixel_to_sub((7 * 16) + 8);		// trap door which was destroyed by switch
 		}
 		e->y_mark = e->y_next;
 	} else {
 		// if we get real far away from the player leave the enemies alone and come find him
-		if (!PLAYER_DIST_X(160<<CSF)) curly_target_time = 0;
+		if (!PLAYER_DIST_X(e, pixel_to_sub(160))) curly_target_time = 0;
 		
 		// if we're attacking an enemy head towards the enemy else return to the player
 		if (curly_target_time) {
@@ -164,7 +164,7 @@ void ai_curly_ai(Entity *e) {
 	
 	// do not fall off the middle railing in Almond
 	if (stageID == 0x2F) {
-		#define END_OF_RAILING		(((72*16)-8)<<CSF)
+		#define END_OF_RAILING		pixel_to_sub(((72*16)-8))
 		if (e->x_mark > END_OF_RAILING) {
 			e->x_mark = END_OF_RAILING;
 		}
@@ -187,7 +187,7 @@ void ai_curly_ai(Entity *e) {
 	
 	// if trying to return to the player then go into a rest state when we've reached him
 	reached_p = 0;
-	if (seeking_player && xdist < (32<<CSF) && ydist < (64<<CSF)) {
+	if (seeking_player && xdist < pixel_to_sub(32) && ydist < pixel_to_sub(64)) {
 		if (++curly_reachptimer > 80) {
 			e->x_speed *= 7;
 			e->x_speed /= 8;
@@ -205,7 +205,7 @@ void ai_curly_ai(Entity *e) {
 		// jump if we hit a wall, jump higher if off camera
 		if (e->grounded && (blockr || blockl)) {
 			CaiJUMP(e);
-			curly_impjump = abs(e->x - camera.x) > 240 << CSF;
+			curly_impjump = abs(e->x - camera.x) > pixel_to_sub(240);
 		}
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<CSF)) {
@@ -223,16 +223,16 @@ void ai_curly_ai(Entity *e) {
 		e->y_speed += SPEED(0x10);
 		// deactivate Improbable Jump once we clear the wall or hit the ground
 		if (e->grounded || (!blockl && !blockr)) curly_impjump = 0;
-		else curly_impjump = abs(e->x - camera.x) > 240 << CSF;
+		else curly_impjump = abs(e->x - camera.x) > pixel_to_sub(240);
 	}
 	else e->y_speed += SPEED(0x33);
 	
 	// look up/down at target
 	curly_look = 0;
-	if (!reached_p || abs(e->y_next - player.y) > (48<<CSF)) {
-		if (e->y_next > e->y_mark && ydist >= (12<<CSF) && 
-				(!seeking_player || ydist >= (80<<CSF))) curly_look = DIR_UP;
-		else if (e->y_next < e->y_mark && !e->grounded && ydist >= (80<<CSF)) 
+	if (!reached_p || abs(e->y_next - player.y) > pixel_to_sub(48)) {
+		if (e->y_next > e->y_mark && ydist >= pixel_to_sub(12) && 
+				(!seeking_player || ydist >= pixel_to_sub(80))) curly_look = DIR_UP;
+		else if (e->y_next < e->y_mark && !e->grounded && ydist >= pixel_to_sub(80)) 
 				curly_look = DIR_DOWN;
 	}
 	
@@ -302,15 +302,15 @@ static void fire_mgun(int32_t x, int32_t y, uint8_t dir) {
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[b->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,1,0,sheets[b->sheet].index+8);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x_speed = (dir > 0 ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
@@ -340,22 +340,22 @@ static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x_speed = 0;
 		b->y_speed = -pixel_to_sub(4);
 	} else if(dir == DIR_DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x_speed = 0;
 		b->y_speed = pixel_to_sub(4);
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x_speed = (dir > 0 ? pixel_to_sub(4) : -pixel_to_sub(4));
 		b->y_speed = 0;
 	}
 }
 
-#define SMALLDIST		(32 << CSF)
-#define BIGDIST			(160 << CSF)
+#define SMALLDIST		pixel_to_sub(32)
+#define BIGDIST			pixel_to_sub(160)
 
 void ai_cai_gun(Entity *e) {
 	Entity *curly = e->linkedEntity;

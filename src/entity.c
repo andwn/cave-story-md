@@ -12,14 +12,12 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_tile.h"
 #include "weapon.h"
 
 #include "entity.h"
@@ -49,7 +47,7 @@
 	while(list) {                                                                              \
 		temp = list;                                                                           \
 		LIST_REMOVE(list, list);                                                               \
-		MEM_free(temp);                                                                        \
+		free(temp);                                                                        \
 	}                                                                                          \
 })
 
@@ -60,7 +58,7 @@
 		if(obj->var == match) {                                                                \
 			LIST_REMOVE(list, obj);                                                            \
 			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);                \
-			MEM_free(obj);                                                                     \
+			free(obj);                                                                     \
 		}                                                                                      \
 		obj = temp;                                                                            \
 	}                                                                                          \
@@ -77,6 +75,11 @@ const uint8_t heightmap[4][16] = {
 uint8_t moveMeToFront = FALSE;
 
 Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
+
+uint8_t entity_on_screen(Entity *e) {
+	uint32_t x = e->x, y = e->y;
+	return x - camera_xmin < camera_xsize && y - camera_ymin < camera_ysize;
+}
 
 // Move to inactive list, delete sprite
 void entity_deactivate(Entity *e) {
@@ -115,14 +118,14 @@ Entity *entity_delete(Entity *e) {
 		TILOC_FREE(e->tiloc, e->framesize);
 		e->tiloc = NOTILOC;
 	}
-	MEM_free(e);
+	free(e);
 	return next;
 }
 
 Entity *entity_delete_inactive(Entity *e) {
 	Entity *next = e->next;
 	LIST_REMOVE(inactiveList, e);
-	MEM_free(e);
+	free(e);
 	return next;
 }
 
@@ -273,7 +276,7 @@ void entities_update(uint8_t draw) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
 				if(flags & NPC_FRONTATKONLY) {
-					if(!PLAYER_DIST_Y((e->hit_box.top + 3) << CSF)) {
+					if(!PLAYER_DIST_Y(e, pixel_to_sub(e->hit_box.top + 3))) {
 						collided = FALSE;
 					} else {
 						if(e->dir) {
@@ -294,7 +297,7 @@ void entities_update(uint8_t draw) {
 			}
 			if(!e->damage_time) {
 				if(flags & NPC_SHOWDAMAGE) {
-					effect_create_damage(e->damage_value, e->x >> CSF, e->y >> CSF);
+					effect_create_damage(e->damage_value, e, 0, 0);
 				}
 				e->damage_value = 0;
 				e->xoff = 0;
@@ -344,7 +347,7 @@ void entities_update(uint8_t draw) {
 					}
 				}
 			}
-			sprite_addq(e->sprite, e->sprite_count);
+			vdp_sprites_add(e->sprite, e->sprite_count);
 		}
 		if(moveMeToFront) {
 			moveMeToFront = FALSE;
@@ -389,8 +392,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 	if(!(flags & NPC_INVINCIBLE)) {
 		if(e->health <= b->damage) {
 			if(flags & NPC_SHOWDAMAGE) {
-				effect_create_damage(e->damage_value - b->damage,
-						sub_to_pixel(e->x), sub_to_pixel(e->y));
+				effect_create_damage(e->damage_value - b->damage, NULL, e->x >> CSF, e->y >> CSF);
 				e->damage_time = e->damage_value = 0;
 			}
 			// Killed enemy
@@ -505,7 +507,7 @@ uint8_t collide_stage_floor(Entity *e) {
 		result = TRUE;
 	}
 	if((pxa2&0x10) && (pxa2&0xF) >= 6 && (pxa2&0xF) < 8 &&
-			(pixel_y&15) >= 0xF - heightmap[pxa2&1][pixel_x2&15]) {
+			(pixel_y&15) >= (uint16_t)(0xF - heightmap[pxa2&1][pixel_x2&15])) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_next = pixel_to_sub((pixel_y&0xFFF0) + 0xF + 1 -
 				heightmap[pxa2&1][pixel_x2&15] - e->hit_box.bottom);
@@ -621,7 +623,7 @@ uint8_t collide_stage_ceiling(Entity *e) {
 		result = TRUE;
 	} else {
 		if((pxa1&0x10) && (pxa1&0xF) >= 0 && (pxa1&0xF) < 2 &&
-				(pixel_y&15) <= 0xF - heightmap[pxa1&1][pixel_x1&15]) {
+				(pixel_y&15) <= (uint16_t)(0xF - heightmap[pxa1&1][pixel_x1&15])) {
 			e->y_next = pixel_to_sub((pixel_y&~0xF) + 0xF -
 					heightmap[pxa1&1][pixel_x1&15] + (e->hit_box.top - 1)) + 0x100;
 			result = TRUE;
@@ -638,8 +640,8 @@ uint8_t collide_stage_ceiling(Entity *e) {
 			e->jump_time = 0;
 			if(!playerNoBump && e->y_speed < -SPEED_10(0x200)) {
 				sound_play(SND_BONK_HEAD, 2);
-				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6);
-				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6);
+				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6, FALSE);
+				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6, FALSE);
 				if(shoot_cooldown) {
 					playerNoBump = TRUE;
 				} else {
@@ -863,7 +865,7 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, uint16_t id, uint16_t event) {
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
-	Entity *e = MEM_alloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	Entity *e = malloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	if(!e) error_oom();
 	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
 	
@@ -880,7 +882,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 			e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
 			e->sprite[0] = (VDPSprite) {
 				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
-				.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,e->vramindex)
+				.attr = TILE_ATTR(npc_info[type].palette,0,0,0,e->vramindex)
 			};
 			e->oframe = 255;
 		} else if(npc_info[type].sprite) { // Use our own tiles
@@ -893,7 +895,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 				for(uint8_t i = 0; i < e->sprite_count; i++) {
 					e->sprite[i] = (VDPSprite) {
 						.size = f->vdpSpritesInf[i]->size,
-						.attribut = TILE_ATTR_FULL(npc_info[type].palette,0,0,0,
+						.attr = TILE_ATTR(npc_info[type].palette,0,0,0,
 								e->vramindex + tile_offset)
 					};
 					tile_offset += f->vdpSpritesInf[i]->numTile;
@@ -997,7 +999,7 @@ void entities_draw() {
 	const Entity *e = entityList;
 	while(e) {
 		if(!e->hidden) {
-			sprite_addq(e->sprite, e->sprite_count);
+		vdp_sprites_add(e->sprite, e->sprite_count);
 		}
 		e = e->next;
 	}

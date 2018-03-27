@@ -22,8 +22,8 @@
 #define STATE_FISHSPAWNER_FIRE		10
 #define STATE_TARGET_FIRE			10
 
-#define DOORS_OPEN_DIST			(32 << CSF)		// how far the doors open
-#define DOORS_OPEN_FISHY_DIST	(20 << CSF)		// how far the doors open during fish-missile phase
+#define DOORS_OPEN_DIST			pixel_to_sub(32)		// how far the doors open
+#define DOORS_OPEN_FISHY_DIST	pixel_to_sub(20)		// how far the doors open during fish-missile phase
 
 #define BODY_UL_X	-64
 #define BODY_UL_Y	-40
@@ -66,9 +66,9 @@ static uint8_t all_targets_destroyed() {
 
 static void spawn_fish(uint8_t index) {
 	// keep appropriate position relative to main object
-	//                               UL          UR          LL          LR
-	static const int32_t xoffs[]   = { -(64<<CSF),  (76<<CSF), -(64<<CSF),  (76<<CSF) };
-	static const int32_t yoffs[]   = {  (27<<CSF),  (27<<CSF), -(16<<CSF), -(16<<CSF) };
+	// 									UL					UR					LL					LR
+	static const int32_t xoffs[]   = { -pixel_to_sub(64),  pixel_to_sub(76), -pixel_to_sub(64),  pixel_to_sub(76) };
+	static const int32_t yoffs[]   = {  pixel_to_sub(27),  pixel_to_sub(27), -pixel_to_sub(16), -pixel_to_sub(16) };
 	static const uint8_t angles[]  = { A_LEFT+0x20,  A_UP+0x20,A_DOWN+0x20, A_RIGHT+0x20 };
 	// Create manually because cur_angle needs to be set
 	// Then let the missile itself deal with setting speeds with sin/cos
@@ -95,8 +95,8 @@ void onspawn_monsterx(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->health = 700;
 	e->state = STATE_X_APPEAR;
-	e->x = (130 * 16) << CSF;
-	e->y = (208 << CSF);
+	e->x = pixel_to_sub(130 * 16);
+	e->y = pixel_to_sub(208);
 	e->eflags = NPC_IGNORESOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XBODY);
 }
@@ -355,7 +355,7 @@ void ai_monsterx(Entity *e) {
 				SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) - 64, 128, 128, 4);
 			}
 			if (e->timer > TIME_8(100)) {
-				SCREEN_FLASH(30);
+				SCREEN_FLASH(3);
 				sound_play(SND_EXPLOSION1, 5);
 				e->timer = 0;
 				e->state++;
@@ -397,29 +397,27 @@ void ai_monsterx(Entity *e) {
 	e->x += (tread_center - e->x) >> 4;
 	
 	// Fill in sprites for the body
+	int16_t xx = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W;
+	int16_t yy = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H;
 	e->sprite[0] = (VDPSprite) {
-		.x = (e->x >> CSF) - (camera.x>>CSF) + SCREEN_HALF_W + BODY_UL_X + 128, 
-		.y = (e->y >> CSF) - (camera.y>>CSF) + SCREEN_HALF_H + BODY_UL_Y + 128, 
+		.x = xx + BODY_UL_X + 128, .y = yy + BODY_UL_Y + 128, 
 		.size = SPRITE_SIZE(4, 4), 
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,0,sheets[e->alt_sheet].index),
+		.attr = TILE_ATTR(PAL3,0,0,0,sheets[e->alt_sheet].index),
 	};
 	e->sprite[1] = (VDPSprite) {
-		.x = (e->x >> CSF) - (camera.x>>CSF) + SCREEN_HALF_W + BODY_UR_X + 128,
-		.y = (e->y >> CSF) - (camera.y>>CSF) + SCREEN_HALF_H + BODY_UR_Y + 128,
+		.x = xx + BODY_UR_X + 128, .y = yy + BODY_UR_Y + 128,
 		.size = SPRITE_SIZE(4, 4), 
-		.attribut = TILE_ATTR_FULL(PAL3,0,0,1,sheets[e->alt_sheet].index),
+		.attr = TILE_ATTR(PAL3,0,0,1,sheets[e->alt_sheet].index),
 	};
 	e->sprite[2] = (VDPSprite) {
-		.x = (e->x >> CSF) - (camera.x>>CSF) + SCREEN_HALF_W + BODY_LL_X + 128,
-		.y = (e->y >> CSF) - (camera.y>>CSF) + SCREEN_HALF_H + BODY_LL_Y + 128,
+		.x = xx + BODY_LL_X + 128, .y = yy + BODY_LL_Y + 128,
 		.size = SPRITE_SIZE(4, 4), 
-		.attribut = TILE_ATTR_FULL(PAL3,0,1,0,sheets[e->alt_sheet].index),
+		.attr = TILE_ATTR(PAL3,0,1,0,sheets[e->alt_sheet].index),
 	};
 	e->sprite[3] = (VDPSprite) {
-		.x = (e->x >> CSF) - (camera.x>>CSF) + SCREEN_HALF_W + BODY_LR_X + 128,
-		.y = (e->y >> CSF) - (camera.y>>CSF) + SCREEN_HALF_H + BODY_LR_Y + 128,
+		.x = xx + BODY_LR_X + 128, .y = yy + BODY_LR_Y + 128,
 		.size = SPRITE_SIZE(4, 4), 
-		.attribut = TILE_ATTR_FULL(PAL3,0,1,1,sheets[e->alt_sheet].index),
+		.attr = TILE_ATTR(PAL3,0,1,1,sheets[e->alt_sheet].index),
 	};
 }
 
@@ -521,19 +519,18 @@ void ai_x_tread(Entity *e) {
 	e->x += e->x_speed;
 	
 	// Sprite
+	int16_t xx = (e->x >> CSF) - e->display_box.left - (camera.x >> CSF) + SCREEN_HALF_W;
+	int16_t yy = (e->y >> CSF) - e->display_box.top - (camera.y >> CSF) + SCREEN_HALF_H;
+	uint16_t attr = TILE_ATTR(PAL3, 0, 0 ,0, sheets[e->alt_sheet].index);
+	if(e->y < 0x18000) attr |= 0x1000;
+	if(e->frame) attr += 32;
 	e->sprite[0] = (VDPSprite) {
-		.x = (e->x>>CSF) - e->display_box.left - (camera.x>>CSF) + SCREEN_HALF_W + 128,
-		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
-		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,e->y < 0x18000,0,
-				sheets[e->alt_sheet].index + (e->frame?32:0)),
+		.x = xx + 128, .y = yy + 128,
+		.size = SPRITE_SIZE(4, 4), .attr = attr,
 	};
 	e->sprite[1] = (VDPSprite) {
-		.x = (e->x>>CSF) - e->display_box.left + 32 - (camera.x>>CSF) + SCREEN_HALF_W + 128,
-		.y = (e->y>>CSF) - e->display_box.top - (camera.y>>CSF) + SCREEN_HALF_H + 128,
-		.size = SPRITE_SIZE(4, 4),
-		.attribut = TILE_ATTR_FULL(PAL3,0,e->y < 0x18000,0,
-				sheets[e->alt_sheet].index+16 + (e->frame?32:0)),
+		.x = xx + 32 + 128, .y = yy + 128,
+		.size = SPRITE_SIZE(4, 4), .attr = attr + 16,
 	};
 }
 
@@ -736,7 +733,7 @@ void ai_x_defeated(Entity *e) {
 		case 2:
 		{
 			e->y_speed += SPEED(0x40);
-			if (e->y > (stageHeight * 16) << CSF) e->state = STATE_DELETE;
+			if (e->y > block_to_sub(stageHeight)) e->state = STATE_DELETE;
 		}
 		break;
 	}

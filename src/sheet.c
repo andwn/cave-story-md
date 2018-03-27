@@ -2,16 +2,15 @@
 
 #include "dma.h"
 #include "entity.h"
+#include "error.h"
 #include "memory.h"
 #include "player.h"
 #include "resources.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
 #include "tables.h"
 #include "vdp.h"
-#include "vdp_tile.h"
 #include "weapon.h"
 
 #include "sheet.h"
@@ -212,7 +211,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x01: // Arthur's House
 		{	SHEET_ADD(SHEET_TELE, &SPR_TeleMenu, 10,4,2, 
-					0,1, 1,1, 0,2, 1,2, 0,3, 1,3, 0,4, 1,4, 0,5, 1,5);
+					0,0, 1,0, 0,1, 1,1, 0,2, 1,2, 0,3, 1,3, 0,4, 1,4);
 		} break;
 		case 0x02: // Egg Corridor
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 3,2,2, 0,0, 1,0, 2,0);

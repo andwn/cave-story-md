@@ -72,7 +72,7 @@ void ai_beetle(Entity *e) {
 		} /* fallthrough */
 		case 1: // wait for player on the wall
 		{
-			if(++e->timer > TIME_8(50) && PLAYER_DIST_Y(16 << CSF)) {
+			if(++e->timer > TIME_8(50) && PLAYER_DIST_Y(e, 16 << CSF)) {
 				TURN_AROUND(e);
 				MOVE_X(SPEED_10(0x200));
 				e->state = 2;
@@ -139,7 +139,7 @@ void ai_basu(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	// Fire projectile
-	if(e->timer > TIME_8(150) && PLAYER_DIST_X(0x14000)) {
+	if(e->timer > TIME_8(150) && PLAYER_DIST_X(e, 0x14000)) {
 		e->timer = 0;
 		sound_play(SND_EM_FIRE, 5);
 		Entity *shot = entity_create(e->x, e->y, OBJ_GIANT_BEETLE_SHOT, 0);
@@ -228,7 +228,7 @@ void ai_terminal(Entity *e) {
 		case 1:
 		{
 			e->frame = 0;
-			if (PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(16<<CSF, 8<<CSF)) {
+			if (PLAYER_DIST_X(e, 8<<CSF) && PLAYER_DIST_Y2(e, 16<<CSF, 8<<CSF)) {
 				sound_play(SND_COMPUTER_BEEP, 5);
 				if(e->eflags & NPC_OPTION2) e->frame = 2;
 				e->state = 10;

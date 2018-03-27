@@ -12,14 +12,10 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 
 #include "window.h"
 
@@ -81,7 +77,7 @@ void window_open(uint8_t mode) {
 	window_clear_text();
 	if(cfg_language) {
 		const uint32_t *data = &TS_MsgFont.tiles[('_' - 0x20) << 3];
-		VDP_loadTileData(data, (0xB000 >> 5) + 3 + (29 << 2), 1, TRUE);
+		vdp_tiles_load_from_rom(data, (0xB000 >> 5) + 3 + (29 << 2), 1);
 	}
 	textRow = textColumn = 0;
 	
@@ -92,21 +88,21 @@ void window_open(uint8_t mode) {
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
 		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
 	
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(0), WINDOW_X1, wy1);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (wy1<<6) + TEXT_X1, 36);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(2), WINDOW_X2, wy1);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), WINDOW_X1, wy1);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), TEXT_X1, wy1, 36, 1, 0);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), WINDOW_X2, wy1);
 	for(uint8_t y = ty1; y <= ty2; y++) {
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(3), WINDOW_X1, y);
-		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + TEXT_X1, 36);
-		VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(5), WINDOW_X2, y);
+		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), WINDOW_X1, y);
+		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
+		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), WINDOW_X2, y);
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(6), WINDOW_X1, wy2);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(7), (wy2<<6) + TEXT_X1, 36);
-	VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(8), WINDOW_X2, wy2);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), WINDOW_X1, wy2);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), TEXT_X1, wy2, 36, 1, 0);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), WINDOW_X2, wy2);
 	
 	if(!paused) {
 		if(showingFace > 0) window_draw_face(showingFace);
-		VDP_setWindowPos(0, mode ? 8 : (pal_mode ? 245 : 244));
+		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
 	windowOpen = TRUE;
@@ -120,11 +116,11 @@ void window_clear() {
 	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y)   << 6) + x, w);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+1) << 6) + x, w);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+2) << 6) + x, w);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+3) << 6) + x, w);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((y+4) << 6) + x, w);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y,   w, 1, 0);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+1, w, 1, 0);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+2, w, 1, 0);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+3, w, 1, 0);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+4, w, 1, 0);
 	window_clear_text();
 	
 	textMode = TM_NORMAL;
@@ -137,7 +133,7 @@ void window_clear_text() {
 }
 
 void window_close() {
-	if(!paused) VDP_setWindowPos(0, 0);
+	if(!paused) vdp_set_window(0, 0);
 	showingItem = 0;
 	windowOpen = FALSE;
 	textMode = TM_NORMAL;
@@ -151,8 +147,16 @@ void window_set_face(uint16_t face, uint8_t open) {
 		window_draw_face();
 	} else {
 		// Hack to clear face only
-		VDP_fillTileMapRect(PLAN_WINDOW, WINDOW_ATTR(4), TEXT_X1,
-				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6);
+		//uint16_t y1 = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+		//for(uint16_t y = y1; y < y1 + 6; y++) {
+		//	for(uint16_t x = TEXT_X1; x < TEXT_X1 + 6; x++) {
+		//		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
+		//	}
+		//}
+		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, 
+				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6, 0);
+		//VDP_fillTileMapRect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1,
+		//		windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6);
 	}
 }
 
@@ -182,7 +186,7 @@ void window_draw_char(uint8_t c) {
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
 		// And draw it
 		
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
 				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
 		
 		textColumn++;
@@ -209,7 +213,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	if(vblank) aftervsync();
 	vblank = 0;
 	
-	//VDP_setEnable(FALSE);
+	//vdp_set_display(FALSE);
 	// For the 16x16 text, pretend the text array is [2][18]
 	if(!iskanji && c == '\n') {
 		textRow++;
@@ -220,7 +224,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 		} else if(textMode == TM_LINE) {
 			textMode = TM_NORMAL;
 		}
-		//VDP_setEnable(TRUE);
+		//vdp_set_display(TRUE);
 		linesSinceLastNOD++;
 		return;
 	}
@@ -244,11 +248,11 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	// And draw it
 	
 	uint16_t vramIndex = getKanjiIndexForPos(textRow, textColumn);
-	kanji_draw(PLAN_WINDOW, vramIndex, c, msgTextX, msgTextY, 2, FALSE);
+	kanji_draw(VDP_PLAN_W, vramIndex, c, msgTextX, msgTextY, 2, FALSE);
 	if(textColumn < 18 - (showingFace ? 4 : 0) && (iskanji || c != ' ')) {
 		textColumn++;
 	}
-	//VDP_setEnable(TRUE);
+	//vdp_set_display(TRUE);
 }
 
 void window_scroll_text() {
@@ -261,7 +265,7 @@ void window_scroll_text() {
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
 		for(uint8_t col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
-			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0, 1, 0, 0,
+			vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
 					TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
 			msgTextX++;
 		}
@@ -271,7 +275,7 @@ void window_scroll_text() {
 	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
 	uint8_t msgTextW = showingFace ? 29 : 36;
 	memset(windowText[2], ' ', 36);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY, msgTextW, 1, 0);
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;
@@ -290,9 +294,9 @@ void window_scroll_jtext() {
 		jwindowText[0][col] = jwindowText[1][col];
 		uint16_t vramIndex = getKanjiIndexForPos(0, col);
 		if(jwindowText[0][col] == 0) {
-			kanji_draw(PLAN_WINDOW, vramIndex, ' ', msgTextX, msgTextY, 2, FALSE);
+			kanji_draw(VDP_PLAN_W, vramIndex, ' ', msgTextX, msgTextY, 2, FALSE);
 		} else {
-			kanji_draw(PLAN_WINDOW, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2, FALSE);
+			kanji_draw(VDP_PLAN_W, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2, FALSE);
 		}
 		msgTextX += 2;
 	}
@@ -301,8 +305,7 @@ void window_scroll_jtext() {
 	msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 3;
 	uint8_t msgTextW = showingFace ? 28 : 36;
 	memset(jwindowText[1], '\0', 36);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (msgTextY<<6) + msgTextX, msgTextW);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), ((msgTextY+1)<<6) + msgTextX, msgTextW);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY, msgTextW, 2, 0);
 	// Reset to beginning of bottom row
 	textRow = 1;
 	textColumn = 0;
@@ -335,7 +338,7 @@ void window_prompt_open() {
 		//.x = tile_to_pixel(PROMPT_X) - 4 + 128,
 		//.y = tile_to_pixel(PROMPT_Y + 1) - 4 + 128,
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
 	int16_t cursor_x = (PROMPT_X << 3) - 9;
 	if(!promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
@@ -345,13 +348,13 @@ void window_prompt_open() {
 		.x = tile_to_pixel(PROMPT_X) + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
 		.size = SPRITE_SIZE(4, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+4)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+4)
 	};
 	promptSpr[1] = (VDPSprite) {
 		.x = tile_to_pixel(PROMPT_X) + 32 + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
 		.size = SPRITE_SIZE(4, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+16)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+16)
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
 	const SpriteDefinition *spr = cfg_language ? &SPR_J_Prompt : &SPR_Prompt;
@@ -379,16 +382,22 @@ uint8_t window_prompt_update() {
 		int16_t cursor_y = (PROMPT_Y << 3) + 4;
 		sprite_pos(handSpr, cursor_x, cursor_y);
 	}
-	sprite_add(handSpr);
-	sprite_addq(promptSpr, 2);
+vdp_sprite_add(&handSpr);
+vdp_sprites_add(promptSpr, 2);
 	return FALSE;
 }
 
 void window_draw_face() {
-	VDP_loadTileSet(face_info[showingFace].tiles, TILE_FACEINDEX, TRUE);
-	VDP_fillTileMapRectInc(PLAN_WINDOW, 
-		TILE_ATTR_FULL(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
-		TEXT_X1, (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1), 6, 6);
+	vdp_tiles_load_from_rom(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
+	vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
+			TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
+	//uint16_t y1 = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+	//uint16_t tile = TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX);
+	//for(uint16_t y = y1; y < y1 + 6; y++) {
+	//	for(uint16_t x = TEXT_X1; x < TEXT_X1 + 6; x++) {
+	//		vdp_map_xy(VDP_PLAN_W, tile++, x, y);
+	//	}
+	//}
 }
 
 void window_show_item(uint16_t item) {
@@ -405,19 +414,19 @@ void window_show_item(uint16_t item) {
 		.x = SCREEN_HALF_W - 12 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(3, 2),
-		.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_PROMPTINDEX)
+		.attr = TILE_ATTR(pal,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 24 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
 		.x = SCREEN_HALF_W + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
 	TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
 	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
@@ -430,19 +439,19 @@ void window_show_weapon(uint16_t item) {
 		.x = SCREEN_HALF_W - 8 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 24 + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+6)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
 		.x = SCREEN_HALF_W + 128,
 		.y = SCREEN_HALF_H + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,TILE_PROMPTINDEX+15)
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_ArmsImage,0,item), TILE_PROMPTINDEX, 6);
 	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
@@ -451,8 +460,8 @@ void window_show_weapon(uint16_t item) {
 void window_update() {
 	if(showingItem) {
 		if(handSpr.y < ITEM_Y_END) handSpr.y++;
-		sprite_add(handSpr);
-		sprite_addq(promptSpr, 2);
+	vdp_sprite_add(&handSpr);
+	vdp_sprites_add(promptSpr, 2);
 	} else if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
@@ -467,14 +476,14 @@ void window_update() {
 			index = TILE_FONTINDEX - 0x20 + '_';
 		}
 		if(++blinkTime == 8) {
-			VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), x, y);
+			vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
 			if(cfg_language) {
-				VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index), x, y + 1);
+				vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
 			}
 		} else if(blinkTime == 16) {
-			VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y);
+			vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
 			if(cfg_language) {
-				VDP_setTileMapXY(PLAN_WINDOW, WINDOW_ATTR(4), x, y + 1);
+				vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
 			}
 			blinkTime = 0;
 		}

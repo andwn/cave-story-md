@@ -1,15 +1,15 @@
 #include "ai_common.h"
 
 // position in Hell (note this is the center position, because there is a draw point)
-#define HELL_X			(168<<CSF)
-#define HELL_Y			(80<<CSF)
-#define HELL_FLOOR		(168<<CSF)
-#define HELL_BOTTOM		(488<<CSF)
+#define HELL_X			pixel_to_sub(168)
+#define HELL_Y			pixel_to_sub(80)
+#define HELL_FLOOR		pixel_to_sub(168)
+#define HELL_BOTTOM		pixel_to_sub(488)
 
 // positions of stuff for Passageway scene
-#define PWAY_X			(168<<CSF)		// X position of corridor
-#define PWAY_TOP		(70<<CSF)		// starting position for falling scene
-#define PWAY_BOTTOM		(420<<CSF)		// resting position after fall
+#define PWAY_X			pixel_to_sub(168)		// X position of corridor
+#define PWAY_TOP		pixel_to_sub(70)		// starting position for falling scene
+#define PWAY_BOTTOM		pixel_to_sub(420)		// resting position after fall
 
 // Some aliases
 #define uncover_left	8
@@ -232,7 +232,7 @@ void ai_hp_lightning(Entity *e) {
 	
 	if(e->timer > TIME_8(50)) {
 		sound_play(SND_LIGHTNING_STRIKE, 5);
-		entity_create(e->x + (16 << CSF), e->y + (72 << CSF), OBJ_LIGHTNING, 0);
+		entity_create(e->x + pixel_to_sub(16), e->y + pixel_to_sub(72), OBJ_LIGHTNING, 0);
 		e->state = STATE_DELETE;
 		// smoke on floor where it struck
 		//SmokeXY(e->x, e->Bottom() - (7<<CSF), 3, 0, 0);
@@ -242,11 +242,11 @@ void ai_hp_lightning(Entity *e) {
 void onspawn_hpress_shield(Entity *e) {
 	e->alwaysActive = TRUE;
 	if(e->eflags & NPC_OPTION2) {
-		e->x = bossEntity->x + (28 << CSF);
+		e->x = bossEntity->x + pixel_to_sub(28);
 	} else {
-		e->x = bossEntity->x - (28 << CSF);
+		e->x = bossEntity->x - pixel_to_sub(28);
 	}
-	e->y = bossEntity->y + (40 << CSF);
+	e->y = bossEntity->y + pixel_to_sub(40);
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
 	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->health = 1000;

@@ -11,8 +11,10 @@ enum {
 	BOSS_IRONHEAD, BOSS_SISTERS, BOSS_UNDEADCORE, BOSS_HEAVYPRESS, BOSS_BALLOS
 };
 
-#define entity_on_screen(e) ((unsigned)((e)->x - camera_xmin) < camera_xsize && \
-							(unsigned)((e)->y - camera_ymin) < camera_ysize)
+//#define entity_on_screen(e) ((uint32_t)((e)->x - camera_xmin) < camera_xsize && 
+//							(uint32_t)((e)->y - camera_ymin) < camera_ysize)
+
+uint8_t entity_on_screen(Entity *e);
 
 struct Entity {
 	// Next and previous linked list nodes. NULL at the end/beginning of the list

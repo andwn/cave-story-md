@@ -27,7 +27,8 @@ SRAM_readLong:
 SRAM_writeWord:
     move.l  4(%sp),%d1
     add.l   %d1,%d1
-    move.l  8(%sp),%d0              | values on stack are always long
+*    move.l  8(%sp),%d0              | values on stack are always long
+    move.w  8(%sp),%d0              | No you fool!
     lea     0x200001,%a0
     lea     (%a0,%d1.l),%a0
     movep.w %d0,0(%a0)
@@ -39,7 +40,7 @@ SRAM_writeWord:
 SRAM_writeLong:
     move.l  4(%sp),%d1
     add.l   %d1,%d1
-    move.l  8(%sp),%d0              | values on stack are always long
+    move.l  8(%sp),%d0
     lea     0x200001,%a0
     lea     (%a0,%d1.l),%a0
     movep.l %d0,0(%a0)

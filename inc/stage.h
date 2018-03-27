@@ -26,12 +26,20 @@
 
 // Helper macros
 // This will get the block (in the tileset) that is at a specific location in the stage grid
-#define stage_get_block(x, y) (stageBlocks[stageTable[y] + (x)])
+//#define stage_get_block(x, y) 
+//	(stageBlocks[((uint16_t) stageTable[(uint16_t)(y)]) + ((uint16_t)(x))])
 // Like above, but will return the attributes (solid, water, damage, etc)
-#define stage_get_block_type(x, y) (tileset_info[stageTileset].PXA[stage_get_block(x, y)])
+//#define stage_get_block_type(x, y) 
+//	(tileset_info[stageTileset].PXA[stage_get_block(((uint16_t)(x)), ((uint16_t)(y)))])
 // Shortcut version of above
-#define blk(xf, xoff, yf, yoff)                                                                \
-	stage_get_block_type((((xf)>>CSF)+(xoff))>>4,(((yf)>>CSF)+(yoff))>>4)
+//#define blk(xf, xoff, yf, yoff) 
+//	stage_get_block_type(((((int32_t)(xf))>>CSF)+((int32_t)(xoff)))>>4,((((int32_t)(yf))>>CSF)+((int32_t)(yoff)))>>4)
+
+uint8_t stage_get_block(uint16_t x, uint16_t y);
+
+uint8_t stage_get_block_type(uint16_t x, uint16_t y);
+
+uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff);
 
 // I should have made this a long time ago
 enum StageIndex {
@@ -160,9 +168,9 @@ uint8_t stageBackgroundType;
 void stage_load(uint16_t id);
 void stage_load_credits(uint8_t id);
 // Called by TSC, replaces one block with another and creates smoke
-void stage_replace_block(uint16_t bx, uint16_t by, uint8_t index);
+void stage_replace_block(int16_t bx, int16_t by, uint8_t index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
 void stage_update();
-// Immediately draws a rectangular area of the stage (slow)
-//void stage_draw_area(uint16_t _x, uint16_t _y, uint8_t _w, uint8_t _h);
+// Put the palettes expected by the current stage into "next" cache
+void stage_setup_palettes();

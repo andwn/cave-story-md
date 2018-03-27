@@ -3,7 +3,7 @@
  * The text uses the same plane as well rather than sprites
  */
  
- #define WINDOW_ATTR(x) TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
+ #define WINDOW_ATTR(x) TILE_ATTR(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
 // Instant text mode
 #define TM_NORMAL	0

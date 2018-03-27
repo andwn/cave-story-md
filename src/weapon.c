@@ -10,13 +10,11 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
 #include "tools.h"
 #include "vdp.h"
-#include "vdp_tile.h"
 
 #include "weapon.h"
 
@@ -59,8 +57,8 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 
 // Based on similar table from NXengine
 typedef struct {
-	uint16_t maxspeed;
-	uint16_t accel;
+	int16_t maxspeed;
+	int16_t accel;
 	uint8_t eff_range;
 	uint8_t boom_time;
 } MissileSettings;
@@ -116,7 +114,7 @@ void weapon_fire_snake(Weapon *w) {
 	b->sheet = w->sheet;
 	b->sprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,0,sheets[b->sheet].index)
+		.attr = TILE_ATTR(PAL1,0,0,0,sheets[b->sheet].index)
 	};
 	b->damage = 2 + (b->level << 1); // 4, 6, 8
 	b->ttl = TIME_8(snake_ttl[b->level]);
@@ -181,21 +179,21 @@ void weapon_fire_polarstar(Weapon *w) {
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
 		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
 	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+4);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
 		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
@@ -221,7 +219,7 @@ void weapon_fire_fireball(Weapon *w) {
 	b->level = w->level;
 	b->sprite = (VDPSprite) {
 		.size = SPRITE_SIZE(2, 2),
-		.attribut = TILE_ATTR_FULL(PAL1,0,0,0,sheets[w->sheet].index)
+		.attr = TILE_ATTR(PAL1,0,0,0,sheets[w->sheet].index)
 	};
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(100);
@@ -270,7 +268,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	// check up/down first
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index+8);
 		if(!player.grounded && w->level == 3) {
 			player.y_speed += SPEED_10(0x240);
 			if(player.y_speed > SPEED_12(0x600)) player.y_speed = SPEED_12(0x600);
@@ -280,7 +278,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x_speed = -0x7F + (random() & 0xFF);
 		b->y_speed = -SPEED_12(0xFFF);
 	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,1,0,sheets[w->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
 			if(joy_down(btn[cfg_btn_jump]) || player.y_speed > 0) {
 				player.y_speed -= SPEED_10(0x3FF);
@@ -296,7 +294,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y_speed = SPEED_12(0xFFF);
 	} else {
 		//b->level++; // Wonky use of this var, so the trail knows whether to be H/V
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,b->dir,sheets[w->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
@@ -335,7 +333,7 @@ void weapon_fire_missile(Weapon *w) {
 		
 		b->dir = FIREDIR;
 		if(b->dir == UP) {
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
+			b->sprite.attr = TILE_ATTR(PAL0,0,0,player.dir,sheets[w->sheet].index+4);
 			b->x = player.x;
 			b->y = player.y - pixel_to_sub(12);
 			if(b->level == 3) {
@@ -343,7 +341,7 @@ void weapon_fire_missile(Weapon *w) {
 				b->y_speed = (random() & 0x3FF) - 0x1FF;
 			}
 		} else if(b->dir == DOWN) {
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
+			b->sprite.attr = TILE_ATTR(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
 			b->x = player.x;
 			b->y = player.y + pixel_to_sub(12);
 			if(b->level == 3) {
@@ -351,7 +349,7 @@ void weapon_fire_missile(Weapon *w) {
 				b->y_speed = (random() & 0x3FF) - 0x1FF;
 			}
 		} else {
-			b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,b->dir,sheets[w->sheet].index);
+			b->sprite.attr = TILE_ATTR(PAL0,0,0,b->dir,sheets[w->sheet].index);
 			b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 			b->y = player.y + pixel_to_sub(2);
 			if(b->level == 3) {
@@ -380,7 +378,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
 	b->sprite = (VDPSprite) { 
 		.size = SPRITE_SIZE(1, 1),
-		.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index)
+		.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index)
 	};
 	sound_play(SND_BUBBLER_FIRE, 5);
 	// Starting velocity based on level
@@ -464,19 +462,19 @@ void weapon_fire_blade(Weapon *w) {
 	}
 	b->x = player.x;
 	b->y = player.y - (3 << CSF);
-	b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[w->sheet].index);
+	b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 1), b->sprite.attribut, 9);
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 1), b->sprite.attr, 9);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0x800);
 	} else if(b->dir == DOWN) {
-		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 2), b->sprite.attribut, 9);
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 2), b->sprite.attr, 9);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0x800);
 	} else {
 		if(b->level == 3) {
-			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attribut, 9);
+			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attr, 9);
 			if(b->dir == RIGHT) sprite_hflip(b->sprite, 1);
 		}
 		// Spawn slightly behind the player
@@ -529,7 +527,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		case LEFT:
 		case RIGHT:
 		b->sprite.size = SPRITE_SIZE(3, 2);
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,(b->dir&1),sheets[b->sheet].index);
 		b->x = player.x + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->y = player.y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? speed : -speed);
@@ -539,7 +537,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		case UP:
 		case DOWN:
 		b->sprite.size = SPRITE_SIZE(2, 3);
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
+		b->sprite.attr = TILE_ATTR(PAL0,0,(b->dir&1),0,TILE_NEMINDEX);
 		b->x = player.x - (4<<CSF);
 		b->y = player.y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
@@ -588,21 +586,21 @@ void weapon_fire_spur(Weapon *w) {
 	sound_play(SND_SPUR_FIRE_1 + b->level - 1, 5);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
 		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
 	} else if(b->dir == DOWN) {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index+8);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
 		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
 	} else {
-		b->sprite.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[b->sheet].index);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(2);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
@@ -651,7 +649,7 @@ void bullet_update_snake(Bullet *b) {
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	sprite_index(b->sprite, sheets[b->sheet].index + index);
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_polarstar(Bullet *b) {
@@ -672,7 +670,7 @@ void bullet_update_polarstar(Bullet *b) {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(b->sprite);
+	vdp_sprite_add(&b->sprite);
 		b->ttl--;
 	}
 }
@@ -716,7 +714,7 @@ void bullet_update_fireball(Bullet *b) {
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	uint16_t index = (b->ttl & 3) << 2;
 	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 	b->ttl--;
 }
 
@@ -742,18 +740,18 @@ void bullet_update_machinegun(Bullet *b) {
 			if(b->ttl == TIME_8(18)) {
 				if(b->dir == UP || b->dir == DOWN) {
 					b->sprite.size = SPRITE_SIZE(2, 4);
-					b->sprite.attribut += 4;
-					if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
+					b->sprite.attr += 4;
+					if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
 				} else {
 					b->sprite.size = SPRITE_SIZE(4, 2);
-					if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+					if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 				}
 			} else if(b->ttl < TIME_8(18)) {
-				if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
-				if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+				if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
+				if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 			}
 		}
-		sprite_add(b->sprite);
+	vdp_sprite_add(&b->sprite);
 		b->ttl--;
 	}
 }
@@ -762,8 +760,8 @@ void bullet_update_missile(Bullet *b) {
 	b->ttl--;
 	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 	if(!b->state) {
-		uint16_t accel = missile_settings[pal_mode][index].accel;
-		uint16_t maxspeed = missile_settings[pal_mode][index].maxspeed;
+		int16_t accel = missile_settings[pal_mode][index].accel;
+		int16_t maxspeed = missile_settings[pal_mode][index].maxspeed;
 		switch(b->dir) {
 			case LEFT: 
 			if(b->x_speed > -(maxspeed + accel)) b->x_speed -= accel; 
@@ -782,7 +780,7 @@ void bullet_update_missile(Bullet *b) {
 			if(b->ttl & 1) b->x_speed >>= 1;
 			break;
 		}
-		if((b->ttl & 7) == 0) effect_create_misc(EFF_BOOST2, b->x >> CSF, b->y >> CSF);
+		if((b->ttl & 7) == 0) effect_create_misc(EFF_BOOST2, b->x >> CSF, b->y >> CSF, FALSE);
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
@@ -797,7 +795,7 @@ void bullet_update_missile(Bullet *b) {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-		sprite_add(b->sprite);
+	vdp_sprite_add(&b->sprite);
 	} else {
 		if(b->ttl & 3) {
 			uint16_t range = missile_settings[pal_mode][index].eff_range;
@@ -897,7 +895,7 @@ void bullet_update_bubbler(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 	b->ttl--;
 }
 
@@ -943,10 +941,10 @@ void bullet_update_blade(Bullet *b) {
 			return;
 		}
 		uint8_t anim = b->ttl & 7;
-		if(anim == 6)      b->sprite.attribut |= (1<<12);
-		else if(anim == 4) b->sprite.attribut |= (1<<11);
-		else if(anim == 2) b->sprite.attribut &= ~(1<<12);
-		else if(anim == 0) b->sprite.attribut &= ~(1<<11);
+		if(anim == 6)      b->sprite.attr |= (1<<12);
+		else if(anim == 4) b->sprite.attr |= (1<<11);
+		else if(anim == 2) b->sprite.attr &= ~(1<<12);
+		else if(anim == 0) b->sprite.attr &= ~(1<<11);
 	}
 	b->x += b->x_speed;
 	b->y += b->y_speed;
@@ -958,21 +956,21 @@ void bullet_update_blade(Bullet *b) {
 		b->sprite.x -= 4;
 		b->sprite.y -= 4;
 	}
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 }
 
 // Here be dragons
 void bullet_update_blade_slash(Bullet *b) {
 	b->ttl--;
 	// Animate sprite
-	if(b->ttl == 10) b->sprite.attribut += 4;
+	if(b->ttl == 10) b->sprite.attr += 4;
 	
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_supermissile(Bullet *b) {
@@ -981,13 +979,13 @@ void bullet_update_supermissile(Bullet *b) {
 
 void bullet_update_nemesis(Bullet *b) {
 	b->ttl--;
-	b->sprite.attribut += (b->ttl & 1) ? -6 : 6;
+	b->sprite.attr += (b->ttl & 1) ? -6 : 6;
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_spur(Bullet *b) {
@@ -1017,14 +1015,14 @@ void bullet_update_spur(Bullet *b) {
 				t->damage = (t->level << 2) - 1;
 				t->ttl = TIME_8(20);
 				t->dir = b->dir;
-				t->x = spur_xmark << CSF;
-				t->y = spur_ymark << CSF;
+				t->x = pixel_to_sub(spur_xmark);
+				t->y = pixel_to_sub(spur_ymark);
 				t->x_speed = b->x_speed;
 				t->y_speed = b->y_speed;
 				t->hit_box = b->hit_box;
 				t->sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(2,2),
-					.attribut = TILE_ATTR_FULL(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
+					.attr = TILE_ATTR(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
 				};
 				//switch(t->dir) {
 				//	case LEFT:  t->x += (b->state<<11); break;
@@ -1043,8 +1041,8 @@ void bullet_update_spur(Bullet *b) {
 		if(b->ttl == TIME_8(28)) {
 			if(b->dir == UP || b->dir == DOWN) {
 				b->sprite.size = SPRITE_SIZE(2, 4);
-				b->sprite.attribut += 4;
-				if(b->sprite.attribut & (1<<12)) {
+				b->sprite.attr += 4;
+				if(b->sprite.attr & (1<<12)) {
 					b->sprite.y -= 16;
 					b->hit_box.top += 16;
 				} else {
@@ -1052,7 +1050,7 @@ void bullet_update_spur(Bullet *b) {
 				}
 			} else {
 				b->sprite.size = SPRITE_SIZE(4, 2);
-				if(b->sprite.attribut & (1<<11)) {
+				if(b->sprite.attr & (1<<11)) {
 					b->sprite.x -= 16;
 					b->hit_box.right += 16;
 				} else {
@@ -1060,10 +1058,10 @@ void bullet_update_spur(Bullet *b) {
 				}
 			}
 		} else if(b->ttl < TIME_8(28)) {
-			if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
-			if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+			if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
+			if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 		}
-		sprite_add(b->sprite);
+	vdp_sprite_add(&b->sprite);
 	}
 }
 
@@ -1077,8 +1075,8 @@ void bullet_update_spur_tail(Bullet *b) {
 	if(b->ttl == TIME_8(18)) {
 		if(b->dir == UP || b->dir == DOWN) {
 			b->sprite.size = SPRITE_SIZE(2, 4);
-			b->sprite.attribut += 4;
-			if(b->sprite.attribut & (1<<12)) {
+			b->sprite.attr += 4;
+			if(b->sprite.attr & (1<<12)) {
 				b->sprite.y -= 16;
 				b->hit_box.top += 16;
 			} else {
@@ -1086,7 +1084,7 @@ void bullet_update_spur_tail(Bullet *b) {
 			}
 		} else {
 			b->sprite.size = SPRITE_SIZE(4, 2);
-			if(b->sprite.attribut & (1<<11)) {
+			if(b->sprite.attr & (1<<11)) {
 				b->sprite.x -= 16;
 				b->hit_box.right += 16;
 			} else {
@@ -1094,10 +1092,10 @@ void bullet_update_spur_tail(Bullet *b) {
 			}
 		}
 	} else if(b->ttl < TIME_8(18)) {
-		if(b->sprite.attribut & (1<<12)) b->sprite.y -= 16;
-		if(b->sprite.attribut & (1<<11)) b->sprite.x -= 16;
+		if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
+		if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 	}
-	sprite_add(b->sprite);
+vdp_sprite_add(&b->sprite);
 }
 
 Bullet *bullet_colliding(Entity *e) {
@@ -1197,6 +1195,6 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 	slash->hit_box = (bounding_box) { 6, 6, 6, 6 };
 	slash->sprite = (VDPSprite) { 
 		.size = SPRITE_SIZE(2, 2), 
-		.attribut = TILE_ATTR_FULL(PAL0,0,(slash->dir&2)>0,(slash->dir&1), TILE_SLASHINDEX)
+		.attr = TILE_ATTR(PAL0,0,(slash->dir&2)>0,(slash->dir&1), TILE_SLASHINDEX)
 	};
 }

@@ -1,53 +1,13 @@
-/**
- *  \file vdp.h
- *  \brief VDP main
- *  \author Stephane Dallongeville
- *  \date 08/2011
- *
- * This unit provides general VDP methods :<br>
- * - initialisation<br>
- * - get / set register<br>
- * - get / set resolution<br>
- * - enable / disable VDP features<br>
- * <br>
- * VRAM should always be organized in a way that tile data are always located before map in VRAM:<br>
- * 0000-XXXX = tile data<br>
- * XXXX-FFFF = maps & tables (H scroll table, sprite table, B/A plan and window plan).
- */
+#define VDP_PLAN_W				((uint16_t)0xB000)
+#define VDP_PLAN_A              ((uint16_t)0xC000)
+#define VDP_PLAN_B              ((uint16_t)0xE000)
+#define VDP_SPRITE_TABLE        ((uint16_t)0xF800)
+#define VDP_HSCROLL_TABLE       ((uint16_t)0xFC00)
 
-/**
- *  \brief
- *      VDP Data port address.
- */
-#define GFX_DATA_PORT           0xC00000
-/**
- *  \brief
- *      VDP Control port address.
- */
-#define GFX_CTRL_PORT           0xC00004
-/**
- *  \brief
- *      VDP HV counter port address.
- */
-#define GFX_HVCOUNTER_PORT      0xC00008
-
-#define VDP_FIFOEMPTY_FLAG      (1 << 9)
-#define VDP_FIFOFULL_FLAG       (1 << 8)
-#define VDP_VINTPENDING_FLAG    (1 << 7)
-#define VDP_SPROVERFLOW_FLAG    (1 << 6)
-#define VDP_SPRCOLLISION_FLAG   (1 << 5)
-#define VDP_ODDFRAME_FLAG       (1 << 4)
-#define VDP_VBLANK_FLAG         (1 << 3)
-#define VDP_HBLANK_FLAG         (1 << 2)
-#define VDP_DMABUSY_FLAG        (1 << 1)
-#define VDP_PALMODE_FLAG        (1 << 0)
-
-#define VDP_PLAN_A              0xE000
-#define VDP_PLAN_B              0xC000
-#define VDP_PLAN_WINDOW         0xB000
-#define VDP_HSCROLL_TABLE       0xF800
-#define VDP_SPRITE_TABLE        0xFC00
-#define VDP_MAPS_START          VDP_PLAN_WINDOW
+#define PLAN_WIDTH				64
+#define PLAN_HEIGHT				32
+#define PLAN_WIDTH_SFT			6
+#define PLAN_HEIGHT_SFT			5
 
 #define HSCROLL_PLANE           0
 #define HSCROLL_TILE            2
@@ -55,101 +15,23 @@
 #define VSCROLL_PLANE           0
 #define VSCROLL_2TILE           1
 
-/**
- *  \brief
- *      SGDK font length
- */
-#define FONT_LEN    96
+#define PAL0					0
+#define PAL1					1
+#define PAL2					2
+#define PAL3					3
 
-/**
- *  \brief
- *      Size of a single tile in byte.
- */
-#define TILE_SIZE               32
-#define TILE_INDEX_MASK         (0xFFFF / TILE_SIZE)
+#define TILE_SIZE				32
+#define TILE_INDEX_MASK         0x7FF
 
-/**
- *  \brief
- *      Space in byte for tile in VRAM (tile space ends where maps starts)
- */
-#define TILE_SPACE              VDP_MAPS_START
-
-/**
- *  \brief
- *      Maximum number of tile in VRAM (related to TILE_SPACE).
- */
-#define TILE_MAXNUM             (TILE_SPACE / TILE_SIZE)
-/**
- *  \brief
- *      Maximum tile index in VRAM (related to TILE_MAXNUM).
- */
-#define TILE_MAXINDEX           (TILE_MAXNUM - 1)
-/**
- *  \brief
- *      System base tile index in VRAM.
- */
 #define TILE_SYSTEMINDEX        0x0000
-/**
- *  \brief
- *      Number of system tile.
- */
-#define TILE_SYSTEMLENGTH       16
-/**
- *  \deprecated Use TILE_SYSTEMLENGTH instead.
- */
-#define TILE_SYSTEMLENGHT       TILE_SYSTEMLENGTH
-/**
- *  \brief
- *      User base tile index.
- */
-#define TILE_USERINDEX          (TILE_SYSTEMINDEX + TILE_SYSTEMLENGTH)
-/**
- *  \brief
- *      Font base tile index.
- */
-#define TILE_FONTINDEX          (TILE_MAXNUM - FONT_LEN)
-/**
- *  \brief
- *      Number of available user tile.
- */
-#define TILE_USERLENGTH         (TILE_FONTINDEX - TILE_USERINDEX)
-/**
- *  \deprecated Use TILE_USERLENGTH instead.
- */
-#define TILE_USERLENGHT         TILE_USERLENGTH
-/**
- *  \brief
- *      Maximum tile index in VRAM for user.
- */
-#define TILE_USERMAXINDEX       (TILE_USERINDEX + TILE_USERLENGTH - 1)
-/**
- *  \brief
- *      System tile address in VRAM.
- */
-#define TILE_SYSTEM             (TILE_SYSTEMINDEX * TILE_SIZE)
-/**
- *  \brief
- *      User tile address in VRAM.
- */
-#define TILE_USER               (TILE_USERINDEX * TILE_SIZE)
-/**
- *  \brief
- *      Font tile address in VRAM.
- */
-#define TILE_FONT               (TILE_FONTINDEX * TILE_SIZE)
-
-// Plane sizes
-#define PLAN_WIDTH				64
-#define PLAN_HEIGHT				32
-#define WINDOW_WIDTH			64
-#define PLAN_WIDTH_SFT			6
-#define PLAN_HEIGHT_SFT			5
-#define WINDOW_WIDTH_SFT		6
+#define TILE_USERINDEX			0x0010
+#define TILE_FONTINDEX			((VDP_PLAN_W >> 5) - 96)
+#define TILE_EXTRA1INDEX		(((uint16_t)0xD000) >> 5) // 128 tiles after PLAN_A
+#define TILE_EXTRA2INDEX		(((uint16_t)0xF000) >> 5) // 64 tiles after PLAN_B
 
 // Tileset width/height
 #define TS_WIDTH 32
 #define TS_HEIGHT 16
-
 // Stage tileset is first in USERINDEX
 #define TILE_TSINDEX TILE_USERINDEX
 #define TILE_TSSIZE (TS_WIDTH * TS_HEIGHT)
@@ -165,11 +47,6 @@
 // Space for prompt/item display at the end of the sprite tiles
 #define TILE_PROMPTINDEX (TILE_SHEETINDEX + TILE_SHEETSIZE - 28)
 #define TILE_AIRTANKINDEX (TILE_PROMPTINDEX - 9)
-// PLAN_A and PLAN_B are resized to 64x32 instead of 64x64, sprite list + hscroll table is
-// also moved to the end as to not overlap the window plane (0xF800)
-// These index the 2 unused areas between for some extra tile space
-#define TILE_EXTRA1INDEX (0xD000 >> 5)
-#define TILE_EXTRA2INDEX (0xF000 >> 5)
 // Allocation of EXTRA1 (128 tiles) - background & HUD
 #define TILE_BACKINDEX TILE_EXTRA1INDEX
 #define TILE_BACKSIZE 96
@@ -203,232 +80,85 @@
 #define TILE_CLOUD3INDEX	(TILE_CLOUD2INDEX + (16*3))
 #define TILE_CLOUD4INDEX	(TILE_CLOUD3INDEX + (9*3))
 
-/**
- *  \brief
- *      Palette 0
- */
-#define PAL0                    0
-/**
- *  \brief
- *      Palette 1
- */
-#define PAL1                    1
-/**
- *  \brief
- *      Palette 2
- */
-#define PAL2                    2
-/**
- *  \brief
- *      Palette 3
- */
-#define PAL3                    3
+#define TILE_ATTR(pal, prio, flipV, flipH, index)                               \
+	((((uint16_t)flipH) << 11) | (((uint16_t)flipV) << 12) |                    \
+	(((uint16_t)pal) << 13) | (((uint16_t)prio) << 15) | ((uint16_t)index))
 
-/**
- *  \brief
- *      Set VDP command to read specified VRAM address.
- */
-#define GFX_READ_VRAM_ADDR(adr)     ((0x0000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x00)
-/**
- *  \brief
- *      Set VDP command to read specified CRAM address.
- */
-#define GFX_READ_CRAM_ADDR(adr)     ((0x0000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x20)
-/**
- *  \brief
- *      Set VDP command to read specified VSRAM address.
- */
-#define GFX_READ_VSRAM_ADDR(adr)    ((0x0000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x10)
+#define SPRITE_SIZE(w, h)   ((((w) - 1) << 2) | ((h) - 1))
 
-/**
- *  \brief
- *      Set VDP command to write at specified VRAM address.
- */
-#define GFX_WRITE_VRAM_ADDR(adr)    ((0x4000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x00)
-/**
- *  \brief
- *      Set VDP command to write at specified CRAM address.
- */
-#define GFX_WRITE_CRAM_ADDR(adr)    ((0xC000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x00)
-/**
- *  \brief
- *      Set VDP command to write at specified VSRAM address.
- */
-#define GFX_WRITE_VSRAM_ADDR(adr)   ((0x4000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x10)
+#define sprite_pos(s, px, py) { (s).x = 0x80 + (px); (s).y = 0x80 + (py); }
+#define sprite_size(s, w, h) { (s).size = ((((w) - 1) << 2) | ((h) - 1)); }
+#define sprite_pri(s, pri)   { (s).attr &= ~(1<<15); (s).attr |= ((pri)&1) << 15; }
+#define sprite_pal(s, pal)   { (s).attr &= ~(3<<13); (s).attr |= ((pal)&3) << 13; }
+#define sprite_vflip(s, flp) { (s).attr &= ~(1<<12); (s).attr |= ((flp)&1) << 12; }
+#define sprite_hflip(s, flp) { (s).attr &= ~(1<<11); (s).attr |= ((flp)&1) << 11; }
+#define sprite_index(s, ind) { (s).attr &= ~0x7FF;   (s).attr |= (ind)&0x7FF; }
 
-/**
- *  \brief
- *      Set VDP command to issue a DMA transfert to specified VRAM address.
- */
-#define GFX_DMA_VRAM_ADDR(adr)      ((0x4000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x80)
-/**
- *  \brief
- *      Set VDP command to issue a DMA transfert to specified CRAM address.
- */
-#define GFX_DMA_CRAM_ADDR(adr)      ((0xC000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x80)
-/**
- *  \brief
- *      Set VDP command to issue a DMA transfert to specified VSRAM address.
- */
-#define GFX_DMA_VSRAM_ADDR(adr)     ((0x4000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0x90)
-
-/**
- *  \brief
- *      Set VDP command to issue a DMA VRAM copy to specified VRAM address.
- */
-#define GFX_DMA_VRAMCOPY_ADDR(adr)  ((0x4000 + (((uint32_t)(adr)) & 0x3FFF)) << 16) + ((((uint32_t)(adr)) >> 14) | 0xC0)
-
-/**
- *  \brief
- *      Helper to write in vertical scroll table (same as GFX_WRITE_VSRAM_ADDR).
- */
-#define GFX_VERT_SCROLL(adr)        GFX_WRITE_VSRAM_ADDR(adr)
-/**
- *  \brief
- *      Helper to write in horizontal scroll table (same as GFX_WRITE_VRAM_ADDR(VDP_SCROLL_H + adr)).
- */
-#define GFX_HORZ_SCROLL(adr)        GFX_WRITE_VRAM_ADDR(VDP_SCROLL_H + (adr))
-
-/**
- *  \brief
- *      Tests VDP status against specified flag (see VDP_XXX_FLAG).
- */
-#define GET_VDPSTATUS(flag)         ((*(volatile uint16_t*)(GFX_CTRL_PORT)) & (flag))
-
-/**
- *  \brief
- *      Returns HV counter.
- */
-#define GET_HVCOUNTER               (*(volatile uint16_t*)(GFX_HVCOUNTER_PORT))
-/**
- *  \brief
- *      Returns Horizontal counter.
- */
-#define GET_HCOUNTER                (GET_HVCOUNTER & 0xFF)
-/**
- *  \brief
- *      Returns Vertical counter.
- */
-#define GET_VCOUNTER                (GET_HVCOUNTER >> 8)
-
-
-/**
- * Internal use
- */
-#define CONST_PLAN_A                0
-#define CONST_PLAN_B                1
-#define CONST_PLAN_WINDOW           2
-
-/**
- *  \brief
- *      Constante to represent VDP background A plan (used by some methods)
- */
-extern const VDPPlan PLAN_A;
-/**
- *  \brief
- *      Constante to represent VDP background B plan (used by some methods)
- */
-extern const VDPPlan PLAN_B;
-/**
- *  \brief
- *      Constante to represent VDP window plan (used by some methods)
- */
-extern const VDPPlan PLAN_WINDOW;
-
+// 32 bytes of zero, can be sent to VDP to clear any tile
+extern const uint32_t TILE_BLANK[8];
+// FadeOut is almost completely black, except index 15 which is white
+// This allows text to still be displayed after the screen fades to black
+extern const uint16_t PAL_FadeOut[64];
+extern const uint16_t PAL_FadeOutBlue[64];
+// FullWhite is used for a TSC instruction that flashes the screen white
+extern const uint16_t PAL_FullWhite[64];
 // Remember the pal mode flag so we don't have to read the control port every time
 uint8_t pal_mode;
 
-/**
- *  \brief
- *      Initialize the VDP sub system.
- *
- * Reset VDP registers, clear VRAM, set defaults grey, red, green & blue palette.
- */
-void VDP_init();
+// Set defaults, clear everything
+void vdp_init();
+// Wait until next vblank
+void vdp_vsync();
 
-/**
- *  \brief
- *      Set VDP register value.
- *
- *  \param reg
- *      Register number we want to set value.
- *  \param value
- *      value to set.
- */
-uint8_t VDP_getReg(uint16_t reg);
-void VDP_setReg(uint16_t reg, uint8_t value);
+// Register stuff
+void vdp_set_display(uint8_t enabled);
+void vdp_set_autoinc(uint8_t val);
+void vdp_set_scrollmode(uint8_t hoz, uint8_t vert);
+void vdp_set_highlight(uint8_t enabled);
+void vdp_set_backcolor(uint8_t index);
+void vdp_set_window(uint8_t x, uint8_t y);
 
-/**
- *  \brief
- *      Set VDP enable state.
- *
- *  You can temporary disable VDP to speed up VDP memory transfert.
- */
-void VDP_setEnable(uint8_t value);
+// Status
+uint16_t vdp_get_palmode();
+uint16_t vdp_get_vblank();
 
-/**
- *  \brief
- *      Returns number of total scanline.
- *
- *  312 for PAL system and 262 for NTSC system.
- */
-uint16_t  VDP_getScanlineNumber();
+// DMA stuff
+void vdp_dma_vram(uint32_t from, uint16_t to, uint16_t len);
+void vdp_dma_cram(uint32_t from, uint16_t to, uint16_t len);
+void vdp_dma_vsram(uint32_t from, uint16_t to, uint16_t len);
 
-/**
- *  \brief
- *      Set plan scrolling mode.
- *
- *  \param hscroll
- *      Horizontal scrolling mode :<br>
- *      <b>HSCROLL_PLANE</b> = Scroll offset is applied to the whole plan.<br>
- *      <b>HSCROLL_TILE</b> = Scroll offset is applied on a tile basis granularity (8 pixels bloc).<br>
- *      <b>HSCROLL_LINE</b> = Scroll offset is applied on a line basis granularity (1 pixel).<br>
- *  \param vscroll
- *      Vertical scrolling mode :<br>
- *      <b>VSCROLL_PLANE</b> = Scroll offset is applied to the whole plan.<br>
- *      <b>VSCROLL_2TILE</b> = Scroll offset is applied on 2 tiles basis granularity (16 pixels bloc).<br>
- *
- *  \see VDP_setHorizontalScroll() to set horizontal scroll offset in mode plane.<br>
- *  \see VDP_setHorizontalScrollTile() to set horizontal scroll offset(s) in mode tile.<br>
- *  \see VDP_setHorizontalScrollLine() to set horizontal scroll offset(s) in mode line.<br>
- *  \see VDP_setVerticalScroll() to set vertical scroll offset in mode plane.<br>
- *  \see VDP_setVerticalScrollTile() to set vertical scroll offset(s) in mode 2-tile.<br>
- */
-void VDP_setScrollingMode(uint16_t hscroll, uint16_t vscroll);
+// Tile patterns
+void vdp_tiles_load(volatile const uint32_t *data, uint16_t index, uint16_t num);
+void vdp_tiles_load_from_rom(volatile const uint32_t *data, uint16_t index, uint16_t num);
 
-/**
- *  \brief
- *      Set the background color index.
- */
-void VDP_setBackgroundColor(uint8_t value);
+// Tile maps
+void vdp_map_xy(uint16_t plan, uint16_t tile, uint16_t x, uint16_t y);
+void vdp_map_hline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y, uint16_t len);
+void vdp_map_vline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y, uint16_t len);
+void vdp_map_fill_rect(uint16_t plan, uint16_t index, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t inc);
+void vdp_map_clear(uint16_t plan);
 
-/**
- *  \brief
- *      Returns auto increment register value.
- */
-uint8_t VDP_getAutoInc();
-/**
- *  \brief
- *      Set auto increment register value.
- */
-void VDP_setAutoInc(uint8_t value);
+// Palettes
+void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count);
+void vdp_color(uint16_t index, uint16_t color);
+void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count);
+void vdp_color_next(uint16_t index, uint16_t color);
+uint16_t vdp_fade_step();
+void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async);
 
-/**
- *  \brief
- *      Wait for DMA operation to complete.
- *  \deprecated Use #DMA_waitCompletion() instead
- */
-void VDP_waitDMACompletion();
-/**
- *  \brief
- *      Wait for VDP FIFO to be empty.
- */
-void VDP_waitFIFOEmpty();
+// Scrolling
+void vdp_hscroll(uint16_t plan, int16_t hscroll);
+void vdp_hscroll_tile(uint16_t plan, int16_t *hscroll);
+void vdp_vscroll(uint16_t plan, int16_t vscroll);
 
-/**
- *  \brief
- *      Reset background plan and palette.
- *
- *  Clear background plans, reset palette to grey / red / green / blue and reset scrolls.
- */
-void VDP_resetScreen();
+// Sprites
+void vdp_sprite_add(const VDPSprite *spr);
+void vdp_sprites_add(const VDPSprite *spr, uint16_t num);
+void vdp_sprites_clear();
+void vdp_sprites_update();
+
+// Text
+void vdp_font_load(const uint32_t *tiles);
+void vdp_font_pal(uint16_t pal);
+void vdp_puts(uint16_t plan, const char *str, uint16_t x, uint16_t y);
+void vdp_text_clear(uint16_t plan, uint16_t x, uint16_t y, uint16_t len);

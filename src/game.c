@@ -6,13 +6,13 @@
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
+#include "error.h"
 #include "hud.h"
 #include "input.h"
 #include "joy.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "sprite.h"
 #include "stage.h"
 #include "string.h"
 #include "system.h"
@@ -20,10 +20,6 @@
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
-#include "vdp_ext.h"
 #include "weapon.h"
 #include "window.h"
 #include "xgm.h"
@@ -45,29 +41,29 @@ void game_reset(uint8_t load);
 void game_main(uint8_t load) {
 	gamemode = GM_GAME;
 	
-	VDP_setPaletteColors(0, PAL_FadeOut, 64);
-	VDP_setPaletteColor(15, 0x000);
+	vdp_colors(0, PAL_FadeOut, 64);
+	vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
 	if(!cfg_language) {
-		VDP_loadTileSet(&TS_MsgFont, TILE_FONTINDEX, TRUE);
+		vdp_font_load(TS_MsgFont.tiles);
 	}
 	effects_init();
 	game_reset(load);
-	VDP_setWindowPos(0, 0);
+	vdp_set_window(0, 0);
 	// Load game doesn't run a script that fades in and shows the HUD, so do it manually
 	if(load) {
 		hud_show();
-		VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+		stage_setup_palettes();
+		vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
 	}
 	paused = FALSE;
 
 	while(TRUE) {
 		PF_BGCOLOR(0x000);
 		//#ifdef PROFILE_BG
-		//VDP_setBackgroundColor(0);
+		//vdp_set_backcolor(0);
 		//#endif
 
-		input_update();
 		if(paused) {
 			paused = update_pause();
 		} else {
@@ -77,40 +73,39 @@ void game_main(uint8_t load) {
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
-			} else if(joy_pressed(btn[cfg_btn_map]) && JOY_getJoypadType(JOY_1) == JOY_TYPE_PAD6 
+			} else if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
 					&& !tscState && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
-				VDP_setEnable(FALSE);
+				vdp_set_display(FALSE);
 				if(stageBackgroundType == 4) {
 					// Hide water
 					static const uint32_t black[8] = {
 						0x11111111,0x11111111,0x11111111,0x11111111,
 						0x11111111,0x11111111,0x11111111,0x11111111
 					};
-					VDP_loadTileData(black, TILE_FACEINDEX, 1, TRUE);
-					VDP_fillTileMap(VDP_PLAN_WINDOW, 
-							TILE_ATTR_FULL(PAL0,1,0,0,TILE_FACEINDEX), 0, 64*30);
+					vdp_tiles_load_from_rom(black, TILE_FACEINDEX, 1);
+					vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,TILE_FACEINDEX), 0, 0, 40, 30, 0);
 				} else {
-					VDP_clearPlan(PLAN_WINDOW, TRUE);
+					vdp_map_clear(VDP_PLAN_W);
 				}
-				VDP_setWindowPos(0, pal_mode ? 30 : 28);
-				VDP_setEnable(TRUE);
+				vdp_set_window(0, pal_mode ? 30 : 28);
+				vdp_set_display(TRUE);
 				do_map();
-				VDP_setEnable(FALSE);
+				vdp_set_display(FALSE);
 				hud_force_redraw();
-				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+8,1,1);
-				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+9,1,1);
-				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+12,1,1);
-				VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+13,1,1);
+				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+8,1);
+				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+9,1);
+				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+12,1);
+				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+13,1);
 				MUSIC_TICK();
 				sheets_load_stage(stageID, TRUE, FALSE);
 				MUSIC_TICK();
 				player_draw();
 				entities_draw();
 				hud_show();
-				sprites_send();
-				VDP_setWindowPos(0, 0);
-				VDP_setEnable(TRUE);
+				vdp_sprites_update();
+				vdp_set_window(0, 0);
+				vdp_set_display(TRUE);
 			} else {
 				// HUD on top
 				hud_update();
@@ -126,14 +121,18 @@ void game_main(uint8_t load) {
 					if(rtn == 1) { // Return to title screen
 						SYS_hardReset();
 					} else if(rtn == 2) {
+						vdp_colors(0, PAL_FadeOut, 64);
+						vdp_color(15, 0x000);
+						stageBackground = 255; // Force background redraw
 						game_reset(TRUE); // Reload save
 						hud_show();
 						playerIFrames = 0;
-						VDP_fadeTo(0, 63, VDP_getCachedPalette(), 20, TRUE);
+						stage_setup_palettes();
+						vdp_fade(NULL, NULL, 4, TRUE);
 						continue;
 					} else if(rtn == 3) {
-						VDP_setPaletteColors(0, PAL_FadeOut, 64);
-						VDP_setPaletteColor(15, 0x000);
+						vdp_colors(0, PAL_FadeOut, 64);
+						vdp_color(15, 0x000);
 						game_reset(FALSE); // Start from beginning
 						continue;
 					} else { // End credits
@@ -162,7 +161,7 @@ void game_main(uint8_t load) {
 		system_update();
 		ready = TRUE;
 		PF_BGCOLOR(0x000);
-		vsync();
+		vdp_vsync();
 		PF_BGCOLOR(0x00E);
 		aftervsync();
 	}
@@ -170,7 +169,7 @@ void game_main(uint8_t load) {
 }
 
 void game_reset(uint8_t load) {
-	VDP_clearPlan(PLAN_B, TRUE);
+	vdp_map_clear(VDP_PLAN_B);
 	camera_init();
 	tsc_init();
 	hud_create();
@@ -189,44 +188,44 @@ void game_reset(uint8_t load) {
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0,0);
 	// Load up the main palettes
-	VDP_setCachedPalette(PAL0, PAL_Main.data);
-	VDP_setCachedPalette(PAL1, PAL_Sym.data);
-	VDP_setPaletteColors(0, PAL_FadeOut, 64);
+	//vdp_colors_next(0, PAL_Main.data, 16);
+	//vdp_colors_next(16, PAL_Sym.data, 16);
+	//vdp_colors(0, PAL_FadeOut, 64);
 }
 
 void draw_itemmenu(uint8_t resetCursor) {
-	VDP_setEnable(FALSE);
-	sprites_clear();
+	vdp_set_display(FALSE);
+	vdp_sprites_clear();
 	uint8_t top = pal_mode ? 1 : 0;
 	// Fill the top part
-	uint8_t y = top;
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(0), (y<<6) + 1, 1);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(1), (y<<6) + 2, 36);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(2), (y<<6) + 38, 1);
-	for(uint8_t i = 19; --i;) { // Body
+	uint16_t y = top;
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), 1, y);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), 2, y, 36, 1, 0);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), 38, y);
+	for(uint16_t i = 19; --i;) { // Body
 		y++;
-		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(3), (y<<6) + 1, 1);
-		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(4), (y<<6) + 2, 36);
-		VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(5), (y<<6) + 38, 1);
+		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), 1, y);
+		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), 2, y, 36, 1, 0);
+		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), 38, y);
 	}
 	// Bottom
 	y++;
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(6), (y<<6) + 1, 1);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(7), (y<<6) + 2, 36);
-	VDP_fillTileMap(VDP_PLAN_WINDOW, WINDOW_ATTR(8), (y<<6) + 38, 1);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), 1, y);
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), 2, y, 36, 1, 0);
+	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
 
 	MUSIC_TICK();
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
-	VDP_loadTileSet(&TS_ItemSel, TILE_FACEINDEX, TRUE);
+	vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
 	MUSIC_TICK();
 	// Load tiles for the font letters
-#define LOAD_LETTER(c,in) (VDP_loadTileData(TS_MsgFont.tiles+((c-0x20)<<3),                    \
-						   TILE_HUDINDEX+in,1,1))
-#define DRAW_LETTER(in,xx,yy) (VDP_setTileMapXY(PLAN_WINDOW,                                   \
-							TILE_ATTR_FULL(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
+#define LOAD_LETTER(c,in) (vdp_tiles_load_from_rom(TS_MsgFont.tiles+((c-0x20)<<3),      \
+						   TILE_HUDINDEX+in,1))
+#define DRAW_LETTER(in,xx,yy) (vdp_map_xy(VDP_PLAN_W,                                   \
+							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
 	LOAD_LETTER('0', 0);
 	LOAD_LETTER('1', 1);
 	LOAD_LETTER('2', 2);
@@ -267,12 +266,12 @@ void draw_itemmenu(uint8_t resetCursor) {
 		// X tile pos and VRAM index to put the ArmsImage tiles
 		uint16_t x = 4 + i*6;
 		uint16_t index = TILE_FACEINDEX + 16 + i*4;
-		VDP_loadTileData(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4, TRUE);
+		vdp_tiles_load_from_rom(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4);
 		// 4 mappings for ArmsImage icon
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index),   x,   y);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+2), x+1, y);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+1), x,   y+1);
-		VDP_setTileMapXY(PLAN_WINDOW, TILE_ATTR_FULL(PAL0,1,0,0,index+3), x+1, y+1);
+		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index),   x,   y);
+		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+2), x+1, y);
+		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+1), x,   y+1);
+		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+3), x+1, y+1);
 		// Level
 		//char str[6];
 		//sprintf(str, "Lv %hu", w->level);
@@ -332,16 +331,17 @@ void draw_itemmenu(uint8_t resetCursor) {
 				pal = PAL0;
 			}
 			// Clobber the entity/bullet shared sheets
-			SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
+			vdp_tiles_load_from_rom(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+held*6, 6);
+			//SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
 			itemSprite[i] = (VDPSprite){
 				.x = 36 + (i % 6) * 32 + 128, 
 				.y = 88 + (i / 6) * 16 + 128 + (top * 8), 
 				.size = SPRITE_SIZE(3, 2),
-				.attribut = TILE_ATTR_FULL(pal,1,0,0,TILE_SHEETINDEX+held*6)
+				.attr = TILE_ATTR(pal,1,0,0,TILE_SHEETINDEX+held*6)
 			};
 			held++;
 		} else {
-			itemSprite[i] = (VDPSprite){};
+			itemSprite[i] = (VDPSprite) {};
 		}
 		MUSIC_TICK();
 	}
@@ -356,14 +356,15 @@ void draw_itemmenu(uint8_t resetCursor) {
 		tsc_call_event(5000 + playerInventory[selectedItem]);
 	}
 	// Make the window plane fully overlap the game
-	VDP_setWindowPos(0, pal_mode ? 30 : 28);
+	vdp_set_window(0, pal_mode ? 30 : 28);
 	// Handle 0 items - if we don't draw any sprites at all, the non-menu sprites
 	// will keep drawing. Draw a blank sprite in the upper left corner to work around this
 	if(!held) {
-		spr_num = 0;
-		sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
+		vdp_sprites_clear();
+		//spr_num = 0;
+		//vdp_sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
 	}
-	VDP_setEnable(TRUE);
+	vdp_set_display(TRUE);
 }
 
 uint8_t update_pause() {
@@ -371,7 +372,7 @@ uint8_t update_pause() {
 	// Pressing C over a weapon will too, and switch to that weapon
 	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot]) ||
 		(selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) && !tscState) {
-		VDP_setEnable(FALSE);
+		vdp_set_display(FALSE);
 		// Change weapon
 		if((selectedItem < 0 && joy_pressed(btn[cfg_btn_jump])) &&
 				playerWeapon[selectedItem + 6].type > 0) { // Weapon
@@ -386,11 +387,11 @@ uint8_t update_pause() {
 		// Fix HUD since we clobbered it
 		hud_show();
 		hud_force_redraw();
-		sprites_clear();
-		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+8,1,1);
-		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+9,1,1);
-		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+12,1,1);
-		VDP_loadTileData(TILE_BLANK,TILE_HUDINDEX+13,1,1);
+		vdp_sprites_clear();
+		vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+8,1);
+		vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+9,1);
+		vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+12,1);
+		vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+13,1);
 		aftervsync();
 		// Reload shared sheets we clobbered
 		sheets_load_stage(stageID, TRUE, FALSE);
@@ -405,9 +406,9 @@ uint8_t update_pause() {
 		
 		controlsLocked = FALSE;
 		gameFrozen = FALSE;
-		VDP_setWindowPos(0, 0);
+		vdp_set_window(0, 0);
 		window_close();
-		VDP_setEnable(TRUE);
+		vdp_set_display(TRUE);
 		return FALSE;
 	} else {
 		// Every cursor move and item selection runs a script
@@ -476,7 +477,7 @@ uint8_t update_pause() {
 				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
 			}
 		}
-		for(uint8_t i = MAX_ITEMS; i--; ) if(itemSprite[i].y) sprite_add(itemSprite[i]);
+		for(uint8_t i = MAX_ITEMS; i--; ) if(itemSprite[i].y) vdp_sprite_add(&itemSprite[i]);
 	}
 	return TRUE;
 }
@@ -496,10 +497,10 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 		w = 5;
 		h = 4;
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x,   y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x+w, y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x,   y+h);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_WINDOWINDEX+4, x+w, y+h);
+	vdp_map_xy(VDP_PLAN_W, TILE_WINDOWINDEX+4, x,   y);
+	vdp_map_xy(VDP_PLAN_W, TILE_WINDOWINDEX+4, x+w, y);
+	vdp_map_xy(VDP_PLAN_W, TILE_WINDOWINDEX+4, x,   y+h);
+	vdp_map_xy(VDP_PLAN_W, TILE_WINDOWINDEX+4, x+w, y+h);
 	// Draw new position
 	if(index >= 0) {
 		x = 4 + (index % 6) * 4;
@@ -512,14 +513,14 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 		w = 5;
 		h = 4;
 	}
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX,   x,   y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+1, x+w, y);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+2, x,   y+h);
-	VDP_setTileMapXY(PLAN_WINDOW, TILE_FACEINDEX+3, x+w, y+h);
+	vdp_map_xy(VDP_PLAN_W, TILE_FACEINDEX,   x,   y);
+	vdp_map_xy(VDP_PLAN_W, TILE_FACEINDEX+1, x+w, y);
+	vdp_map_xy(VDP_PLAN_W, TILE_FACEINDEX+2, x,   y+h);
+	vdp_map_xy(VDP_PLAN_W, TILE_FACEINDEX+3, x+w, y+h);
 }
 
 void do_map() {
-	sprites_clear();
+	vdp_sprites_clear();
 	
 	uint16_t mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
 	uint16_t mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
@@ -530,24 +531,22 @@ void do_map() {
 	static const uint32_t blank[8] = {
 		0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,
 	};
-	DMA_doDma(DMA_VRAM, (uint32_t)blank, index*32, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)blank, index << 5, 16, 2);
 	index++;
 	static const uint32_t solid[8] = {
 		0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,
 	};
-	DMA_doDma(DMA_VRAM, (uint32_t)solid, index*32, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)solid, index << 5, 16, 2);
 	index++;
 	
 	for(uint16_t y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
 		for(uint16_t x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
 			uint8_t result = gen_maptile(x*8, y*8, index);
 			if(!result) {
-				VDP_setTileMapXY(PLAN_WINDOW, 
-						TILE_ATTR_FULL(PAL0,1,0,0,index), mapx+x, mapy+y);
+				vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), mapx+x, mapy+y);
 				index++;
 			} else {
-				VDP_setTileMapXY(PLAN_WINDOW, 
-						TILE_ATTR_FULL(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
+				vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
 			}
 			if(vblank) {
 				xgm_vblank();
@@ -555,49 +554,56 @@ void do_map() {
 			}
 		}
 		ready = TRUE;
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
 	
 	VDPSprite whereami = (VDPSprite) {
-		.x = mapx * 8 + sub_to_block(player.x) - 4 + 128,
-		.y = mapy * 8 + sub_to_block(player.y) - 4 + 128,
+		.x = (mapx << 3) + sub_to_block(player.x) - 4 + 128,
+		.y = (mapy << 3) + sub_to_block(player.y) - 4 + 128,
 		.size = SPRITE_SIZE(1,1),
-		.attribut = TILE_ATTR_FULL(PAL0,1,0,0,1)
+		.attr = TILE_ATTR(PAL0,1,0,0,1)
 	};
 	uint16_t blinkTimer = 0;
 	
-	input_update();
 	while(!joy_pressed(btn[cfg_btn_shoot]) && !joy_pressed(btn[cfg_btn_jump]) 
 			&& !joy_pressed(btn[cfg_btn_map])) {
-		input_update();
 		system_update();
 		// Alternate between the small plus and transparency
 		// We can't simply "not draw" the sprite because the VDP will draw it anyway
-		//whereami.attribut &= ~1;
-		if((++blinkTimer & 15) == 0) whereami.attribut ^= 1;
-		sprite_add(whereami);
+		//whereami.attr &= ~1;
+		if((++blinkTimer & 15) == 0) whereami.attr ^= 1;
+		vdp_sprite_add(&whereami);
 		ready = TRUE;
-		vsync(); aftervsync();
+		vdp_vsync(); aftervsync();
 	}
-	draw_itemmenu(FALSE);
+	if(paused) draw_itemmenu(FALSE);
 }
 
 uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
 	static const uint32_t blank = 0x11111111;
 	static const uint32_t solid = 0xBBBBBBBB;
+	static const uint32_t colors[6] = {9, 11, 10, 1, 0, 2};
 	
+	uint8_t borderColor = paused ? 5 : (stageBackgroundType == 4) ? 3 : 4;
+	uint32_t borderLine = paused ? 0x22222222 : (stageBackgroundType == 4) ? 0x11111111 : 0x00000000;
 	uint32_t tile[8];
 	for(uint16_t y = 0; y < 8; y++) {
 		if(by+y >= stageHeight) {
-			tile[y] = 0x11111111;
+			tile[y] = borderLine;
 		} else {
 			tile[y] = 0;
 			for(uint16_t x = 0; x < 8; x++) {
-				tile[y] |= bx+x >= stageWidth ? (1 << ((7-x)*4))
-						:  stage_get_block_type(bx+x, by+y) == 0x41 ? (11 << ((7-x)*4)) 
-						:  stage_get_block_type(bx+x, by+y) == 0x43 ? (10 << ((7-x)*4))
-						:  stage_get_block_type(bx+x, by+y) == 0x01 ? (9 << ((7-x)*4)) 
-						:  (1 << ((7-x)*4));
+				if(bx+x >= stageWidth) {
+					tile[y] |= colors[borderColor] << ((7 - x) << 2);
+				} else {
+					uint8_t block = stage_get_block_type(bx+x, by+y);
+					switch(block) {
+						case 0x01: tile[y] |= colors[0] << ((7 - x) << 2); break;
+						case 0x41: tile[y] |= colors[1] << ((7 - x) << 2); break;
+						case 0x43: tile[y] |= colors[2] << ((7 - x) << 2); break;
+						default:   tile[y] |= colors[3] << ((7 - x) << 2); break;
+					}
+				}
 			}
 		}
 	}
@@ -610,6 +616,6 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
 	if(blank_c == 8) return 1;
 	if(solid_c == 8) return 2;
 	// Otherwise upload tile
-	DMA_doDma(DMA_VRAM, (uint32_t)tile, index*32, 16, 2);
+	DMA_doDma(DMA_VRAM, (uint32_t)tile, index << 5, 16, 2);
 	return 0;
 }

@@ -4,7 +4,7 @@ void ai_prox_press_vert(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if(PLAYER_DIST_X(8<<CSF) && PLAYER_DIST_Y2(8<<CSF, 128<<CSF)) {
+			if(PLAYER_DIST_X(e, 8<<CSF) && PLAYER_DIST_Y2(e, 8<<CSF, pixel_to_sub(128))) {
 				e->nflags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
 				e->state++;
 				e->animtime = 0;
@@ -27,7 +27,7 @@ void ai_prox_press_vert(Entity *e) {
 				e->frame = 0;
 				e->eflags |= NPC_SPECIALSOLID;
 				e->attack = 0;
-			} else if(player.y - (player.hit_box.top << CSF) > e->y) {
+			} else if(player.y - pixel_to_sub(player.hit_box.top) > e->y) {
 				e->eflags &= ~NPC_SPECIALSOLID;
 				e->attack = 127;
 			} else {
@@ -48,7 +48,7 @@ void ai_lava_spawner(Entity *e) {
 		{
 			//e->sprite = SPR_LAVA_DRIP;
 			e->x += (4 << CSF);
-			e->timer = abs(e->event - e->id) + 20;
+			e->timer = (e->event > e->id) ? (e->event - e->id + 20) : 20;
 			e->state = 1;
 			e->frame = 1;
 			e->hidden = TRUE;
@@ -108,7 +108,7 @@ void ai_red_bat_spawner(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//if(PLAYER_DIST_Y(64 << CSF)) {
+			//if(PLAYER_DIST_Y(e, 64 << CSF)) {
 				if(e->eflags & NPC_OPTION2) e->dir = 1;
 				e->state = 1;
 				e->timer = TIME_8(160) + TIME_8(random() & 0xFF);

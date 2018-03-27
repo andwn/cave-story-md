@@ -1,20 +1,3 @@
-/**
- *  \file joy.h
- *  \brief General controller support.
- *  \author Chilly Willy & Stephane Dallongeville
- *  \date 05/2012
- *
- * This unit provides methods to read controller state.<br>
- */
-
-#define PORT_1          0x0000
-#define PORT_2          0x0001
-
-#define JOY_1           0x0000
-#define JOY_2           0x0001
-#define JOY_NUM         0x0002
-#define JOY_ALL         0xFFFF
-
 #define BUTTON_UP       0x0001
 #define BUTTON_DOWN     0x0002
 #define BUTTON_LEFT     0x0004
@@ -30,17 +13,19 @@
 
 #define BUTTON_DIR      0x000F
 #define BUTTON_BTN      0x0FF0
-#define BUTTON_ALL      0x0FFF
 
 #define JOY_TYPE_PAD3           0x00
 #define JOY_TYPE_PAD6           0x01
-#define JOY_TYPE_UNKNOWN        0x0F
 
 extern const uint16_t btn[12];
-
 extern const char btnName[12][4];
 
-void JOY_init();
-uint8_t JOY_getJoypadType(uint16_t joy);
-uint16_t JOY_readJoypad(uint16_t joy);
-void JOY_update();
+#define joy_pressed(b) (((joystate&(b))&&((~oldstate)&(b))))
+#define joy_released(b) ((((~joystate)&(b))&&(oldstate&(b))))
+#define joy_down(b) ((joystate&(b)))
+
+uint8_t joytype;
+uint16_t joystate, oldstate;
+
+void joy_init();
+void joy_update();

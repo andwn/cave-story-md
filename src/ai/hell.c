@@ -163,7 +163,7 @@ void ai_bute_spawner(Entity *e) {
 			bute->dir = e->dir & 1;
 			if(e->dir == UP) e->eflags |= NPC_OPTION2;
 				
-			if(e->timer2 >= NUM_BUTES) {
+			if(e->timer2 >= (uint16_t) NUM_BUTES) {
 				e->state = STATE_DELETE;
 			} else {
 				e->state = 12;
@@ -246,7 +246,7 @@ void ai_bute_sword(Entity *e) {
 		} /* fallthrough */
 		case 1:		// lying in wait
 		{
-			if (PLAYER_DIST_X(128<<CSF) && PLAYER_DIST_Y2(128<<CSF, 16<<CSF)) {
+			if (PLAYER_DIST_X(e, pixel_to_sub(128)) && PLAYER_DIST_Y2(e, pixel_to_sub(128), 16<<CSF)) {
 				FACE_PLAYER(e);
 				e->state = 10;
 			}
@@ -285,7 +285,7 @@ void ai_bute_sword(Entity *e) {
 			if((++e->animtime & 3) == 0 && ++e->frame > BF_SWORD2) e->frame = BF_SWORD1;
 			MOVE_X(SPEED_10(0x3FF));
 			
-			if(PLAYER_DIST_X(40<<CSF)) {
+			if(PLAYER_DIST_X(e, 40<<CSF)) {
 				e->x_speed >>= 1;
 				e->y_speed = -SPEED_10(0x2FF);
 				e->grounded = FALSE;
@@ -364,7 +364,7 @@ void ai_bute_archer(Entity *e) {
 		// aiming--can track player here for a brief period
 		case 2:
 		{
-			if(!PLAYER_DIST_X(224<<CSF) || player.y <= (e->y - (8<<CSF))) {
+			if(!PLAYER_DIST_X(e, pixel_to_sub(224)) || player.y <= (e->y - (8<<CSF))) {
 				e->frame = BF_ARCHER5;	// shooting up
 				e->timer2 = 1;
 			} else {

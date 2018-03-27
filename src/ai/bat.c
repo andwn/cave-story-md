@@ -131,7 +131,7 @@ void ai_batCircle(Entity *e) {
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
 			if(!e->timer) {
-				if(PLAYER_DIST_X(0x1000) && PLAYER_DIST_Y2(0, 64<<CSF)) {
+				if(PLAYER_DIST_X(e, 0x1000) && PLAYER_DIST_Y2(e, 0, pixel_to_sub(64))) {
 					// dive attack
 					e->x_speed >>= 1;
 					e->y_speed = 0;

@@ -9,37 +9,28 @@
 #include "joy.h"
 #include "memory.h"
 #include "resources.h"
-#include "sprite.h"
 #include "stage.h"
 #include "system.h"
 #include "tools.h"
 #include "tsc.h"
 #include "vdp.h"
-#include "vdp_pal.h"
-#include "vdp_tile.h"
 #include "xgm.h"
 
 extern const uint16_t time_tab_ntsc[0x100];
 extern const uint16_t speed_tab_ntsc[0x100];
 
-void vsync() {
-	vblank = 0;
-	while(!vblank);
-	vblank = 0;
-}
-
 void aftervsync() {
 	xgm_vblank();
 	DMA_flushQueue();
-	if(fading_cnt > 0) VDP_doStepFading(FALSE);
+	vdp_fade_step();
 	dqueued = FALSE;
 	if(ready) {
-		if(inFade) { spr_num = 0; }
-		else { sprites_send(); }
+		if(inFade) vdp_sprites_clear();
+		vdp_sprites_update();
 		ready = FALSE;
 	}
 	if(gamemode == GM_GAME) stage_update(); // Scrolling
-	JOY_update();
+	joy_update();
 }
 
 int main() {
@@ -48,16 +39,12 @@ int main() {
     // enable interrupts
     __asm__("move #0x2500,%sr");
     // init part
-    MEM_init();
-    VDP_init();
+    mem_init();
+    vdp_init();
     DMA_init(0, 0);
-    JOY_init();
+    joy_init();
     xgm_init();
     // Initialize time and speed tables (framerate adjusted)
-    SCREEN_HEIGHT = pal_mode ? 240 : 224;
-	SCREEN_HALF_H = SCREEN_HEIGHT >> 1;
-	YCUTOFF = SCREEN_HEIGHT + 32;
-	FPS = pal_mode ? 50 : 60;
     if(pal_mode) {
 		for(uint16_t i = 0; i < 0x100; i++) {
 			time_tab[i] = i;
@@ -72,7 +59,6 @@ int main() {
     // let's the fun go on !
     
     sound_init();
-	input_init();
 	
 	// Error Tests
 	//__asm__("move.w (1),%d0"); // Address Error

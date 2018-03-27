@@ -2,7 +2,6 @@
 
 #include "resources.h"
 #include "vdp.h"
-#include "vdp_pal.h"
 
 #include "tables.h"
 

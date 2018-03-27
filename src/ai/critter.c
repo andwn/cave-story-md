@@ -49,7 +49,7 @@ void ai_critter(Entity *e) {
 		} /* fallthrough */
 		case STATE_WAITING+1:
 		{
-			if(e->damage_time || (PLAYER_DIST_X(0x60 << CSF) && PLAYER_DIST_Y(0x40 << CSF))) {
+			if(e->damage_time || (PLAYER_DIST_X(e, pixel_to_sub(0x60)) && PLAYER_DIST_Y(e, pixel_to_sub(0x40)))) {
 				FACE_PLAYER(e);
 				e->state = STATE_ATTENTION;
 				e->frame = 1;

@@ -159,8 +159,8 @@ void ai_orangebell_baby(Entity *e) {
 		case 0:
 		{
 			uint8_t angle = random();
-			e->x_speed = cos[angle] << CSF;
-			e->y_speed = sin[angle] << CSF;
+			e->x_speed = pixel_to_sub(cos[angle]);
+			e->y_speed = pixel_to_sub(sin[angle]);
 			
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat
@@ -185,8 +185,8 @@ void ai_orangebell_baby(Entity *e) {
 			
 			// dive-bomb
 			if (e->timer) e->timer--;
-			if (PLAYER_DIST_X(8 << CSF) && !e->timer) {
-				if (player.y > e->y && ((player.y - e->y) < 175<<CSF)) {
+			if (PLAYER_DIST_X(e, pixel_to_sub(8)) && !e->timer) {
+				if (player.y > e->y && ((player.y - e->y) < pixel_to_sub(175))) {
 					e->x_speed /= 4;
 					e->y_speed = 0;
 					e->state = 2;
@@ -240,7 +240,7 @@ void ai_gunfish(Entity *e) {
 			ANIMATE(e, 4, 0,1);
 			FACE_PLAYER(e);
 			
-			if (PLAYER_DIST_X(128<<CSF) && PLAYER_DIST_Y2(160<<CSF, 20<<CSF)) {
+			if (PLAYER_DIST_X(e, pixel_to_sub(128)) && PLAYER_DIST_Y2(e, pixel_to_sub(160), 20<<CSF)) {
 				if (++e->timer > TIME_8(80)) {
 					e->state = 10;
 					e->timer = 0;
@@ -424,7 +424,7 @@ void ai_droll_guard(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->x += (8 << CSF);
+			e->x += pixel_to_sub(8);
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
@@ -547,7 +547,7 @@ void ai_mimiga_farmer(Entity *e) {
 void onspawn_mimiga_cage(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->state = 1;
-	e->x -= (16 << CSF);
+	e->x -= pixel_to_sub(16);
 }
 
 void ai_npc_itoh(Entity *e) {
@@ -605,7 +605,7 @@ void ai_npc_itoh(Entity *e) {
 		case 31:
 		{
 			e->x = e->x_mark;
-			if (++e->timer & 2) e->x += (1 << CSF);
+			if (++e->timer & 2) e->x += pixel_to_sub(1);
 		}
 		break;
 		
@@ -731,13 +731,13 @@ void ai_prox_press_hoz(Entity *e) {
 		case 0:
 		{
 			if(e->eflags & NPC_OPTION2) e->dir = 1;
-			if (!e->dir) e->x -= (8 << CSF);
+			if (!e->dir) e->x -= pixel_to_sub(8);
 			e->x_mark = e->x;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
 		{
-			if(PLAYER_DIST_Y2(0x800, 0x800)) {
+			if(PLAYER_DIST_Y2(e, 0x800, 0x800)) {
 				if(!e->dir) {
 					if(player.x < e->x) {
 						e->state = 2;
@@ -887,7 +887,7 @@ void ai_rocket(Entity *e) {
 		e->x = e->x_next;
 		e->y = e->y_next;
 		// Hack to prevent player from clipping off to the side
-		if(!player.jump_time && PLAYER_DIST_X(16 << CSF) && PLAYER_DIST_Y(20 << CSF)) {
+		if(!player.jump_time && PLAYER_DIST_X(e, pixel_to_sub(16)) && PLAYER_DIST_Y(e, pixel_to_sub(20))) {
 			playerPlatform = e;
 		}
 	}
@@ -905,11 +905,11 @@ void onspawn_jailbars(Entity *e) {
 
 void onspawn_cent_cage(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->x += 8 << CSF;
-	e->y += 16 << CSF;
+	e->x += pixel_to_sub(8);
+	e->y += pixel_to_sub(16);
 	// When reused in Balcony, things are a bit different
 	if(stageID == 65) {
-		e->x += 8 << CSF;
+		e->x += pixel_to_sub(8);
 		// Release the allocation
 		TILOC_FREE(e->tiloc, e->framesize);
 		e->tiloc = NOTILOC;
@@ -920,7 +920,7 @@ void onspawn_cent_cage(Entity *e) {
 		e->framesize = 16;
 		e->sprite[0] = (VDPSprite) {
 			.size = SPRITE_SIZE(4, 4),
-			.attribut = TILE_ATTR_FULL(PAL2,0,0,0,e->vramindex)
+			.attr = TILE_ATTR(PAL2,0,0,0,e->vramindex)
 		};
 	}
 }

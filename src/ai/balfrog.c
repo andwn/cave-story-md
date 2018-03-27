@@ -182,7 +182,7 @@ void ai_balfrog(Entity *e) {
 				}
 				// shake a small frog loose from the ceiling on every landing
 				spawn_frogs(OBJ_MINIFROG, 1);
-				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 2);
+				SMOKE_AREA((e->x >> CSF) - 32, (e->y >> CSF) + 16, 64, 8, 2);
 			}
 		}
 		break;
@@ -222,7 +222,7 @@ void ai_balfrog(Entity *e) {
 				camera_shake(60);
 				spawn_frogs(OBJ_MINIFROG, 4);
 				spawn_frogs(OBJ_FROG, 2);
-				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) + 16, 64, 8, 4);
+				SMOKE_AREA((e->x >> CSF) - 32, (e->y >> CSF) + 16, 64, 8, 4);
 				// player ran under us? turn around and fire!
 				if((e->dir && e->x >= player.x) ||
 					(!e->dir && e->x <= player.x)) {
@@ -305,14 +305,14 @@ void ai_balfrog(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->state++;
-			SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 4);
+			SMOKE_AREA((e->x >> CSF) - 32, (e->y >> CSF) - 24, 64, 48, 4);
 		}
 		/* fallthrough */
 		case STATE_DEATH+1:			// shaking with mouth open
 		{
 			e->timer++;
 			if((e->timer & 7) == 0) {
-				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
+				SMOKE_AREA((e->x >> CSF) - 32, (e->y >> CSF) - 24, 64, 48, 1);
 			}
 			// at a glance it might seem like this has it alternate
 			// slowly between 2 X coordinates, but in fact, it
@@ -338,7 +338,7 @@ void ai_balfrog(Entity *e) {
 		{
 			e->timer++;
 			if((e->timer & 15) == 0) {
-				SMOKE_AREA((e->x << CSF) - 32, (e->y << CSF) - 24, 64, 48, 1);
+				SMOKE_AREA((e->x >> CSF) - 32, (e->y >> CSF) - 24, 64, 48, 1);
 			}
 			if(e->timer <= TIME_8(150)) {
 				Entity *balrog = entity_find_by_type(OBJ_BALROG);
@@ -433,16 +433,16 @@ void ai_balfrog(Entity *e) {
 				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff1[e->dir] + 128,
 				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
+				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
 			},
 			(VDPSprite) {
 				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff2[e->dir] + 128,
 				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
-				.attribut = TILE_ATTR_FULL(PAL3,0,0,e->dir,e->timer2+(e->dir?0:9)),
+				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?0:9)),
 			},
 		};
-		sprite_addq(feet, 2);
+	vdp_sprites_add(feet, 2);
 	}
 	// link bboxes to our real object
 	place_bboxes(e);
@@ -488,7 +488,7 @@ void place_bboxes(Entity *e) {
 // shake loose frogs from the ceiling
 void spawn_frogs(uint16_t objtype, uint8_t count) {
 	for(int i=0;i<count;i++) {
-		entity_create(((7 + (random() & 31)) << CSF) << 3,
+		entity_create((pixel_to_sub(7 + (random() & 31))) << 3,
 					  block_to_sub(1 + (random() & 3)), objtype, NPC_OPTION1);
 	}
 }
@@ -554,11 +554,8 @@ void hurt_by_bullet(Entity *e, Bullet *b) {
 		if(b->damage < e->health) sound_play(e->hurtSound, 5);
 	}
 	if(e->health <= b->damage) {
-		//if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
-			effect_create_damage(e->damage_value - b->damage,
-					sub_to_pixel(e->x), sub_to_pixel(e->y));
-			e->damage_time = e->damage_value = 0;
-		//}
+		effect_create_damage(e->damage_value - b->damage, e, 0, 0);
+		e->damage_time = e->damage_value = 0;
 		// Killed enemy
 		e->health = 0;
 		ENTITY_ONDEATH(e);

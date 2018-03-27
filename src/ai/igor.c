@@ -44,7 +44,7 @@ void ai_igor(Entity *e) {
 			e->timer = 0;
 			// when health is less than halfway, then use
 			// the mouth blast attack every third time.
-			if(++fireatk >= 3 && e->health <= npc_hp(e->type) / 2) {
+			if(++fireatk >= 3 && e->health <= (uint16_t)(npc_hp(e->type) >> 1)) {
 				fireatk = -1;
 				e->dir ^= 1;	// walk away from player
 			}

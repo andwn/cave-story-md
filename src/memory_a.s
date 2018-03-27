@@ -1,10 +1,12 @@
     .globl	memset
 memset:
-    move.w  14(%sp),%d0         | d0 = len
+*    move.w  14(%sp),%d0         | d0 = len
+    move.w  10(%sp),%d0
     jeq     .L02
 
     move.l  4(%sp),%a0          | a0 = to
-    move.b  11(%sp),%d1         | d1 = value
+*    move.b  11(%sp),%d1         | d1 = value
+    move.b  9(%sp),%d1
 
     cmpi.w  #15,%d0             | len < 16 ?
     jhi     .L30
@@ -80,120 +82,10 @@ memset:
     rts
 
 
-    .globl	memsetU16
-memsetU16:
-    move.w  14(%sp),%d0         | d0 = len
-    jeq     .L53
-
-    move.l  4(%sp),%a0          | a0 = to
-    move.w  10(%sp),%d1         | d1 = value
-
-    cmpi.w  #15,%d0             | len < 16 ?
-    jhi     .L52
-
-    subq.w  #1,%d0
-
-.L54:
-    move.w  %d1,(%a0)+          | normal copy
-    dbra    %d0,.L54
-
-.L53:
-    rts
-
-.L52:
-    move.w  %d2,-(%sp)
-
-    move.w  %d1,%d2
-    swap    %d1
-    move.w  %d2,%d1             | d1 = value | (value << 16)
-
-    btst    #0,%d0              | len & 1 ?
-    jbeq    .L56
-
-    move.w  %d1,(%a0)+          | align len on dword
-
-.L56:
-    lsr.w   #1,%d0              | len >> 1
-
-    move.w  %d0,%d2
-    lsr.w   #3,%d2              | d2 = len >> 3
-    jeq     .L66
-
-    subq.w  #1,%d2
-
-.L59:
-    move.l  %d1,(%a0)+          | fast set
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    dbra    %d2,.L59
-
-.L66:
-    andi.w  #7,%d0              | d0 = len & 7
-    jeq     .L51
-
-    subq.w  #1,%d0
-
-.L62:
-    move.l  %d1,(%a0)+
-    dbra    %d0,.L62
-
-.L51:
-    move.w  (%sp)+,%d2
-    rts
-
-
-    .globl    memsetU32
-memsetU32:
-    move.w  14(%sp),%d0         | d0 = len
-    jeq     .L73
-
-    move.l  4(%sp),%a0          | a0 = to
-    move.l  8(%sp),%d1          | d1 = value
-
-    move.w  %d2,-(%sp)
-
-    move.w  %d0,%d2
-    lsr.w   #3,%d2              | d2 = len >> 3
-    jeq     .L76
-
-    subq.w  #1,%d2
-
-.L71:
-    move.l  %d1,(%a0)+          | fast set
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    move.l  %d1,(%a0)+
-    dbra    %d2,.L71
-
-.L76:
-    andi.w  #7,%d0              | d0 = len & 7
-    jeq     .L78
-
-    subq.w  #1,%d0
-
-.L74:
-    move.l  %d1,(%a0)+
-    dbra    %d0,.L74
-
-.L78:
-    move.w  (%sp)+,%d2
-
-.L73:
-    rts
-
-
     .globl	memcpy
 memcpy:
-    move.w  14(%sp),%d0         | d0 = len
+*    move.w  14(%sp),%d0         | d0 = len
+    move.w  12(%sp),%d0
     jeq     .L82
 
     move.l  4(%sp),%a1          | a1 = dst

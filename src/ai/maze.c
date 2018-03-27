@@ -18,7 +18,7 @@ void ai_blockh(Entity *e) {
 		case 10:
 		if((player.x > e->x && player.x - e->x < 0x3200) ||
 			(player.x < e->x && e->x - player.x < 0x32000)) {
-			if(PLAYER_DIST_Y(0x3200)) {
+			if(PLAYER_DIST_Y(e, 0x3200)) {
 				e->state = 30;
 				e->timer = 0;
 			}
@@ -27,7 +27,7 @@ void ai_blockh(Entity *e) {
 		case 20:
 		if((player.x > e->x && player.x - e->x < 0x32000) ||
 			(player.x < e->x && e->x - player.x < 0x3200)) {
-			if(PLAYER_DIST_Y(0x3200)) {
+			if(PLAYER_DIST_Y(e, 0x3200)) {
 				e->state = 30;
 				e->timer = 0;
 			}
@@ -65,7 +65,7 @@ void ai_blockv(Entity *e) {
 		case 10:
 		if((player.y > e->y && player.y - e->y < 0x3200) ||
 			(player.y < e->y && e->y - player.y < 0x32000)) {
-			if(PLAYER_DIST_X(0x3200)) {
+			if(PLAYER_DIST_X(e, 0x3200)) {
 				e->state = 30;
 				e->timer = 0;
 			}
@@ -74,7 +74,7 @@ void ai_blockv(Entity *e) {
 		case 20:
 		if((player.y > e->y && player.y - e->y < 0x32000) ||
 			(player.y < e->y && e->y - player.y < 0x3200)) {
-			if(PLAYER_DIST_X(0x3200)) {
+			if(PLAYER_DIST_X(e, 0x3200)) {
 				e->state = 30;
 				e->timer = 0;
 			}
@@ -429,7 +429,7 @@ void ai_gaudiArmor(Entity *e) {
 			e->x_speed = 0;
 			
 			if (++e->timer >= TIME(5)) {
-				if (PLAYER_DIST_X(192 << 9) && PLAYER_DIST_Y(160 << 9)) {	// begin hopping
+				if (PLAYER_DIST_X(e, pixel_to_sub(192)) && PLAYER_DIST_Y(e, pixel_to_sub(160))) {	// begin hopping
 					e->state = 10;
 					e->timer = 0;
 					e->frame = 1;
@@ -660,7 +660,7 @@ void ai_pooh_black(Entity *e) {
 			// he falls.
 			if (e->timer == TIME_8(60)) {
 				bubble_xmark = player.x;
-				bubble_ymark = (10000 << CSF);
+				bubble_ymark = pixel_to_sub(10000);
 			} else if (e->timer < TIME_8(60)) {
 				bubble_xmark = e->x;
 				bubble_ymark = e->y;
@@ -668,8 +668,8 @@ void ai_pooh_black(Entity *e) {
 			if (e->timer >= TIME_8(170)) {
 				// Fall on player, but keep outside the walls
 				e->x_next = player.x;
-				if(e->x_next < (5 * 16) << CSF) e->x_next = (5 * 16) << CSF;
-				if(e->x_next > (15 * 16) << CSF) e->x_next = (15 * 16) << CSF;
+				if(e->x_next < pixel_to_sub(5 * 16)) e->x_next = pixel_to_sub(5 * 16);
+				if(e->x_next > pixel_to_sub(15 * 16)) e->x_next = pixel_to_sub(15 * 16);
 				e->y_next = 0;
 				e->y_speed = SPEED_12(0x5ff);
 				
@@ -711,7 +711,7 @@ void ondeath_pooh_black(Entity *e) {
 
 void ai_poohblk_dying(Entity *e) {
 	bubble_xmark = e->x;
-	bubble_ymark = -(10000 << CSF);
+	bubble_ymark = -pixel_to_sub(10000);
 
 	switch(e->state) {
 		case 0:
@@ -794,9 +794,9 @@ void ai_firewhirr(Entity *e) {
 			LIMIT_Y(SPEED_10(0x200));
 			
 			// inc time-to-fire while player near
-			if (PLAYER_DIST_Y(80 << 9)) {
-				if (!e->dir && player.x < e->x && PLAYER_DIST_X(160 << 9)) e->timer2++;
-				if (e->dir && player.x > e->x && PLAYER_DIST_X(160 << 9)) e->timer2++;
+			if (PLAYER_DIST_Y(e, 80 << 9)) {
+				if (!e->dir && player.x < e->x && PLAYER_DIST_X(e, pixel_to_sub(160))) e->timer2++;
+				if (e->dir && player.x > e->x && PLAYER_DIST_X(e, pixel_to_sub(160))) e->timer2++;
 			}
 			
 			// if time to fire, spawn a shot
@@ -986,9 +986,9 @@ void ai_buyobuyo_base(Entity *e) {
 		/* fallthrough */
 		case 1:
 		{
-			if (PLAYER_DIST_X(0x14000)) {
-				if ((!(e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(0x14000, 0x2000)) ||
-					((e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(0x2000, 0x14000))) {
+			if (PLAYER_DIST_X(e, 0x14000)) {
+				if ((!(e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x14000, 0x2000)) ||
+					((e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x2000, 0x14000))) {
 					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;
@@ -1046,7 +1046,7 @@ void ai_buyobuyo(Entity *e) {
 		{
 			e->timer++;		// inc fly time
 			// reached height of player yet?
-			if (PLAYER_DIST_Y(0x2000)) {
+			if (PLAYER_DIST_Y(e, 0x2000)) {
 				e->state = 2;
 			} else break;
 		}

@@ -9,8 +9,6 @@
 #include "tables.h"
 #include "tools.h"
 #include "vdp.h"
-#include "vdp_bg.h"
-#include "vdp_tile.h"
 
 #include "camera.h"
 
@@ -164,7 +162,7 @@ void camera_update() {
 							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
 							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
 							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-							mapbuf[y&31] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+							mapbuf[y&31] = TILE_ATTR(pal, (ta&0x40) > 0, 
 									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
 						//}
 						y++;
@@ -188,7 +186,7 @@ void camera_update() {
 							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
 							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
 							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-							mapbuf[x&63] = TILE_ATTR_FULL(pal, (ta&0x40) > 0, 
+							mapbuf[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
 									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
 						//}
 						x++;

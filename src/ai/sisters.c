@@ -73,8 +73,8 @@ static void head_set_bbox(Entity *e) {
 
 void onspawn_sisters(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->x = (10*16)<<CSF;
-	e->y = ((8*16)-4)<<CSF;
+	e->x = pixel_to_sub(160);
+	e->y = pixel_to_sub((8*16)-4);
 	e->hidden = TRUE;
 	
 	mainangle = 0;
@@ -86,13 +86,13 @@ void onspawn_sisters(Entity *e) {
 	e->eflags |= NPC_EVENTONDEATH;
 	
 	// Create body before head, so the head will be on top
-	pieces[BODY1] = entity_create(-(64<<CSF), 80<<CSF, OBJ_SISTERS_BODY, 0);
-	pieces[HEAD1] = entity_create(-(64<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, 0);
+	pieces[BODY1] = entity_create(-pixel_to_sub(64), pixel_to_sub(80), OBJ_SISTERS_BODY, 0);
+	pieces[HEAD1] = entity_create(-pixel_to_sub(64), pixel_to_sub(64), OBJ_SISTERS_HEAD, 0);
 	pieces[HEAD1]->linkedEntity = pieces[BODY1];
 	pieces[BODY1]->linkedEntity = pieces[HEAD1];
 	
-	pieces[BODY2] = entity_create((320<<CSF) + (64<<CSF), 80<<CSF, OBJ_SISTERS_BODY, NPC_OPTION2);
-	pieces[HEAD2] = entity_create((320<<CSF) + (64<<CSF), 64<<CSF, OBJ_SISTERS_HEAD, NPC_OPTION2);
+	pieces[BODY2] = entity_create(pixel_to_sub(384), pixel_to_sub(80), OBJ_SISTERS_BODY, NPC_OPTION2);
+	pieces[HEAD2] = entity_create(pixel_to_sub(384), pixel_to_sub(64), OBJ_SISTERS_HEAD, NPC_OPTION2);
 	pieces[HEAD2]->linkedEntity = pieces[BODY2];
 	pieces[BODY2]->linkedEntity = pieces[HEAD2];
 }
@@ -245,7 +245,7 @@ void ai_sisters(Entity *e) {
 				if (entity_overlapping(pieces[HEAD1], pieces[HEAD2]) ||
 					entity_overlapping(pieces[HEAD1], pieces[BODY2]) ||
 					entity_overlapping(pieces[HEAD2], pieces[BODY1])) {
-					SCREEN_FLASH(30);
+					SCREEN_FLASH(3);
 					sound_play(SND_EXPLOSION1, 5);
 					// Do this before the fade wears off
 					entities_clear_by_type(OBJ_DRAGON_ZOMBIE_SHOT);
@@ -385,7 +385,7 @@ void ai_sisters_head(Entity *e) {
 			// This might be wrong but it works better than before at least
 			if (e->timer2 > 2 && e->timer > TIME(50)) {
 				sound_play(SND_ENEMY_HURT, 5);
-				effect_create_smoke(e->x << CSF, e->y << CSF);
+				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 				
 				e->state = STATE_HEAD_BIT_TONGUE;
 				e->timer = 0;

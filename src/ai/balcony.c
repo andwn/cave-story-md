@@ -11,14 +11,10 @@ void ai_heli(Entity *e) {
 	switch(e->state) {
 		case 0:		// stopped
 		{
-			Entity *b = entity_create(e->x + (16<<CSF), e->y - (9<<CSF) - (48<<CSF), 
-					OBJ_HELICOPTER_BLADE, 0);
+			Entity *b = entity_create(e->x + pixel_to_sub(16), e->y - pixel_to_sub(57), OBJ_HELICOPTER_BLADE, 0);
 			b->linkedEntity = e;
-			
-			b = entity_create(e->x - (36<<CSF), e->y - (4<<CSF) - (48<<CSF), 
-					OBJ_HELICOPTER_BLADE2, 0);
+			b = entity_create(e->x - pixel_to_sub(36), e->y - pixel_to_sub(52), OBJ_HELICOPTER_BLADE2, 0);
 			b->linkedEntity = e;
-			
 			e->state++;
 		}
 		break;
@@ -28,9 +24,7 @@ void ai_heli(Entity *e) {
 		
 		case 30:	// blades running, spawn momorin
 		{
-			entity_create(e->x + (45<<CSF) - (56<<CSF), e->y + (34<<CSF) - (48<<CSF), 
-					OBJ_MOMORIN, 0)->dir = 0;
-			
+			entity_create(e->x - pixel_to_sub(11), e->y - pixel_to_sub(14), OBJ_MOMORIN, 0)->dir = 0;
 			e->frame = 1;		// open hatch
 			e->state++;
 		}
@@ -38,13 +32,9 @@ void ai_heli(Entity *e) {
 		
 		case 40:	// blades running, spawn momorin, santa, and chako (from credits)
 		{
-			entity_create(e->x + (47<<CSF) - (56<<CSF), e->y + (34<<CSF) - (48<<CSF), 
-					OBJ_MOMORIN, 0)->dir = 0;
-			entity_create(e->x + (34<<CSF) - (56<<CSF), e->y + (34<<CSF) - (48<<CSF), 
-					OBJ_SANTA, 0)->dir = 0;
-			entity_create(e->x + (21<<CSF) - (56<<CSF), e->y + (34<<CSF) - (48<<CSF), 
-					OBJ_CHACO, 0)->dir = 0;
-			
+			entity_create(e->x - pixel_to_sub(9), e->y - pixel_to_sub(14), OBJ_MOMORIN, 0)->dir = 0;
+			entity_create(e->x - pixel_to_sub(22), e->y - pixel_to_sub(14), OBJ_SANTA, 0)->dir = 0;
+			entity_create(e->x - pixel_to_sub(35), e->y - pixel_to_sub(14), OBJ_CHACO, 0)->dir = 0;
 			e->frame = 1;		// open hatch
 			e->state++;
 		}
@@ -107,7 +97,7 @@ void ai_igor_balcony(Entity *e) {
 				if(++e->frame > STAND2) e->frame = STAND1;
 			}
 			
-			if ((PLAYER_DIST_X(112<<CSF) && PLAYER_DIST_Y2(48<<CSF, 112<<CSF)) || e->damage_time) {
+			if ((PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y2(e, 48<<CSF, pixel_to_sub(112))) || e->damage_time) {
 				e->state = 10;
 			}
 		}
@@ -128,7 +118,7 @@ void ai_igor_balcony(Entity *e) {
 			e->frame = f[e->animtime >> 3];
 			MOVE_X(SPEED(0x200));
 			
-			if (blockr || blockl || PLAYER_DIST_X(64<<CSF)) {
+			if (blockr || blockl || PLAYER_DIST_X(e, 64<<CSF)) {
 				e->x_speed = 0;
 				e->state = 20;
 				e->timer = 0;
@@ -303,7 +293,7 @@ void ai_falling_block(Entity *e) {
 		
 		case 10:	// falling
 		{	// allow to pass thru Hell/Balcony ceiling
-			if (e->y > 128<<CSF) {
+			if (e->y > pixel_to_sub(128)) {
 				e->state = 11;
 			}
 			e->y_speed += SPEED(0x40);
@@ -356,7 +346,7 @@ void ai_doctor_ghost(Entity *e) {
 		{
 			e->timer++;
 			if((e->timer & 7) == 0) {
-				Entity *r = entity_create(e->x, e->y+(128<<CSF), OBJ_RED_ENERGY, 0);
+				Entity *r = entity_create(e->x, e->y+pixel_to_sub(128), OBJ_RED_ENERGY, 0);
 				r->angle = A_RIGHT;
 				r->linkedEntity = e;
 				if((e->timer & 15) == 0) r->timer = 200;
@@ -432,8 +422,8 @@ void ai_mimiga_caged(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->x -= (1 << CSF);
-			e->y -= (2 << CSF);
+			e->x -= pixel_to_sub(1);
+			e->y -= pixel_to_sub(2);
 		} /* fallthrough */
 		case 1:
 		{

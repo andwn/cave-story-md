@@ -17,8 +17,8 @@ void ai_night_spirit(Entity *e) {
 		} /* fallthrough */
 		case NS_WAIT:
 		{
-			if (PLAYER_DIST_Y(8 << CSF)) {
-				static const int32_t distance = (240 << CSF);
+			if (PLAYER_DIST_Y(e, 8 << CSF)) {
+				static const int32_t distance = pixel_to_sub(240);
 				e->y += e->dir ? distance : -distance;
 				
 				e->state = NS_SEEK_PLAYER;
@@ -82,7 +82,7 @@ void ai_night_spirit(Entity *e) {
 			e->y_speed += (e->y > e->y_mark) ? -SPEED(0x40) : SPEED(0x40);
 			LIMIT_Y(SPEED(0x400));
 			
-			if (abs(e->y - e->y_mark) < (SCREEN_HALF_H)<<CSF) {
+			if (abs(e->y - e->y_mark) < pixel_to_sub(SCREEN_HALF_H)) {
 				e->state = NS_GUARD_SET_POINT;
 			}
 		}
@@ -97,7 +97,7 @@ void ai_night_spirit(Entity *e) {
 			LIMIT_Y(SPEED(0x400));
 			
 			// and if player appears again...
-			if (PLAYER_DIST_Y(SCREEN_HEIGHT << CSF)) {	
+			if (PLAYER_DIST_Y(e, pixel_to_sub(SCREEN_HEIGHT))) {	
 				// ..jump out and fire immediately
 				e->state = NS_PREPARE_FIRE;
 				e->timer = 0;
@@ -118,7 +118,7 @@ void ai_night_spirit(Entity *e) {
 		e->y = e->y_next;
 		
 		// avoid leaving designated area
-		if (abs(e->y - e->y_mark) > SCREEN_HEIGHT<<CSF) {
+		if (abs(e->y - e->y_mark) > pixel_to_sub(SCREEN_HEIGHT)) {
 			if (e->state != NS_FIRING) {
 				e->state = NS_RETURN_TO_SET_POINT;
 			}
@@ -155,7 +155,7 @@ void ai_hoppy(Entity *e) {
 		case 1:		// wait for player...
 		{
 			e->frame = 0;
-			if (PLAYER_DIST_Y(0x10000)) {
+			if (PLAYER_DIST_Y(e, 0x10000)) {
 				e->state = 2;
 				e->timer = 0;
 				e->frame = 1;

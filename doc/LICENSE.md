@@ -1,12 +1,15 @@
 # License & Copying
 
-### CS Engine and SGDK - [MIT](LICENSE-MIT)
+### SGDK modules & XGM Driver - [MIT](LICENSE-MIT)
 
-All the CS engine code, as well as SGDK source uses the MIT license. That's everything in the `src`, `inc`, and `tools` directories, EXCEPT for the files `src/ai/*.c`, which are covered below.
+The DMA queue (`src/dma.c`) and XGM driver (`src/xgm.c`, `src/xgm/*`) are from SGDK, and SGDK uses the MIT license.
 
-### NXengine-based AI routines - [GPLv3](LICENSE-GPL3)
+### CS Engine and NXengine-based AI routines - [GPLv3](LICENSE-GPL3)
 
-The source files in `src/ai` are heavily based on NXengine AI code. Though I've made major changes everywhere, both to optimize for speed and to workaround my own engine's quirks, the same underlying structure and logic are used. Therefore, to be safe I am keeping these as GPLv3 which is the license used by NXengine.
+Consider all code except those explicitly mentioned above (and their respective headers) to to GPLv3.
+Most of the code in this engine is original, except for the AI routines in `src/ai/`.
+Even is places where an AI function is entirely different, NXEngine's version was still used as a starting point.
+There are other bits and pieces I took, such as the booster code, proper speeds/logic for weapons, etc.
 
 ### Graphics, Story, and Characters - Property of Studio Pixel
 

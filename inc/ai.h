@@ -27,22 +27,27 @@
 
 #define SNAP_TO_GROUND(e); {                                                                   \
 	uint16_t bx = sub_to_block(e->x);                                                          \
-	uint16_t by = sub_to_block(e->y + ((e->hit_box.bottom+1)<<CSF));                           \
+	uint16_t by = sub_to_block(e->y + (pixel_to_sub(e->hit_box.bottom+1)));                    \
 	if(stage_get_block_type(bx, by) != 0x41) {                                                 \
-		e->y += 16 << CSF;                                                                     \
+		e->y += pixel_to_sub(16);                                                              \
 	} else {                                                                                   \
-		by = sub_to_block(e->y + ((e->hit_box.bottom-1)<<CSF));                                \
-		if(stage_get_block_type(bx, by) == 0x41) e->y -= 8 << CSF;                             \
+		by = sub_to_block(e->y + (pixel_to_sub(e->hit_box.bottom-1)));                         \
+		if(stage_get_block_type(bx, by) == 0x41) e->y -= pixel_to_sub(8);                      \
 	}                                                                                          \
 }
 
 #define FACE_PLAYER(e) (e->dir = e->x < player.x)
 #define TURN_AROUND(e) (e->dir ^= 1)
 
-#define PLAYER_DIST_X(dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
-#define PLAYER_DIST_Y(dist) (player.y > e->y - (dist) && player.y < e->y + (dist))
-#define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - (dist1) && player.x < e->x + (dist2))
-#define PLAYER_DIST_Y2(dist1, dist2) (player.y > e->y - (dist1) && player.y < e->y + (dist2))
+//#define PLAYER_DIST_X(e, dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
+//#define PLAYER_DIST_Y(e, dist) (player.y > e->y - (dist) && player.y < e->y + (dist))
+//#define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - (dist1) && player.x < e->x + (dist2))
+//#define PLAYER_DIST_Y2(e, dist1, dist2) (player.y > e->y - (dist1) && player.y < e->y + (dist2))
+
+uint8_t PLAYER_DIST_X(Entity *e, int32_t dist);
+uint8_t PLAYER_DIST_Y(Entity *e, int32_t dist);
+uint8_t PLAYER_DIST_X2(Entity *e, int32_t dist1, int32_t dist2);
+uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2);
 
 #define LIMIT_X(v) {                                                                           \
 	if(e->x_speed > (v)) e->x_speed = (v);                                                     \
@@ -64,14 +69,14 @@
 
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = (cos[(uint8_t)angle] * speed) >> CSF;                                      \
-	shot->y_speed = (sin[(uint8_t)angle] * speed) >> CSF;                                      \
+	shot->x_speed = ((uint32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->y_speed = ((uint32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
 	uint8_t angle = get_angle(shot->x, shot->y, tgtx, tgty);                                   \
-	shot->x_speed = (cos[(uint8_t)angle] * speed) >> CSF;                                      \
-	shot->y_speed = (sin[(uint8_t)angle] * speed) >> CSF;                                      \
+	shot->x_speed = ((uint32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->y_speed = ((uint32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
@@ -97,10 +102,7 @@
 	}                                                                                          \
 }
 
-#define SCREEN_FLASH(fadetime) {                                                               \
-	VDP_setPaletteColors(0, PAL_FullWhite, 64);                                                \
-	VDP_fadeTo(0, 63, VDP_getCachedPalette(), fadetime, TRUE);                                 \
-}
+#define SCREEN_FLASH(numframes) vdp_fade(PAL_FullWhite, NULL, numframes, TRUE);
 
 /* Shared Variables */
 

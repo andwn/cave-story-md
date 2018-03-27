@@ -244,7 +244,7 @@ void ai_malco(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->timer = 0;
-			effect_create_smoke(e->x << CSF, e->y << CSF);
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			/* fallthrough */
 		case 11:	// beeping and eyes flickering
 			if (++e->timer < TIME(100)) {
@@ -273,7 +273,7 @@ void ai_malco(Entity *e) {
 			e->frame = 2;
 			e->timer = 0;
 			sound_play(SND_BLOCK_DESTROY, 5);
-			effect_create_smoke(e->x << CSF, e->y << CSF);
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			/* fallthrough */
 		case 17:
 			if (++e->timer > TIME(150)) {
@@ -295,7 +295,7 @@ void ai_malco(Entity *e) {
 			} if (++e->timer > 100) {
 				e->state = 20;
 				sound_play(SND_DOOR, 5);
-				effect_create_smoke(e->x << CSF, e->y << CSF);
+				effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			}
 		break;
 		
@@ -346,7 +346,7 @@ void ai_malcoBroken(Entity *e) {
 		case 10:	// set when pulled out of ground
 		{
 			sound_play(SND_BLOCK_DESTROY, 5);
-			effect_create_smoke(e->x << CSF, e->y << CSF);
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			e->state = 0;
 		}
 		break;
@@ -489,7 +489,7 @@ void ai_frog(Entity *e) {
 		uint8_t dojump = FALSE;
 		if(e->damage_time) {
 			dojump = TRUE;
-		} else if(PLAYER_DIST_X(0x14000) && PLAYER_DIST_Y(0x8000)) {
+		} else if(PLAYER_DIST_X(e, 0x14000) && PLAYER_DIST_Y(e, 0x8000)) {
 			if((random() & 31) == 0) {
 				dojump = TRUE;
 			}
@@ -641,7 +641,7 @@ void ai_ravil(Entity *e) {
 		break;
 		case 2:
 		{
-			if(e->damage_time || (PLAYER_DIST_X(96<<CSF) && PLAYER_DIST_Y2(96<<CSF, 32<<CSF))) {
+			if(e->damage_time || (PLAYER_DIST_X(e, pixel_to_sub(96)) && PLAYER_DIST_Y2(e, pixel_to_sub(96), 32<<CSF))) {
 				e->state = 10;
 				e->timer = 0;
 			}
@@ -694,7 +694,7 @@ void ai_ravil(Entity *e) {
 				e->attack = 0;
 				
 				// if player too far away return to wait state
-				if (!PLAYER_DIST_X(144<<CSF) || !PLAYER_DIST_Y2(144<<CSF, 72<<CSF)) {
+				if (!PLAYER_DIST_X(e, pixel_to_sub(144)) || !PLAYER_DIST_Y2(e, pixel_to_sub(144), pixel_to_sub(72))) {
 					e->state = 0;
 				}
 			}

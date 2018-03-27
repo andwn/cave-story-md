@@ -36,9 +36,9 @@ typedef struct {
 	// 4 already loaded. This value specifies which, like PAL0, PAL1, etc
 	uint16_t palette;
 	// The "type" is which behavior/algorithm to use when loading/scrolling the background
-	// 0 - Draw a plain tiled image into PLAN_B
-	// 1 - Moon/Fog - Draw from a specified pattern into PLAN_B and scroll the clouds
-	// 2 - Clear PLAN_B to black, no background
+	// 0 - Draw a plain tiled image into VDP_PLAN_B
+	// 1 - Moon/Fog - Draw from a specified pattern into VDP_PLAN_B and scroll the clouds
+	// 2 - Clear VDP_PLAN_B to black, no background
 	// 3 - Scroll tiled image automatically (Ironhead boss)
 	uint8_t type;
 	uint8_t width, height; // Size of tiled image for type 0

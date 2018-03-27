@@ -27,14 +27,14 @@ void ai_fan(Entity *e) {
 	if(e->dir != e->odir) e->state = 2;
 	// Fans in Last Cave turn on when player touches them (they use NPC_OPTION1)
 	if(e->eflags & NPC_OPTION1) {
-		if(PLAYER_DIST_X(8 << CSF) && PLAYER_DIST_Y(18 << CSF)) e->state = 2;
+		if(PLAYER_DIST_X(e, 8 << CSF) && PLAYER_DIST_Y(e, 18 << CSF)) e->state = 2;
 	}
 	switch(e->state) {
 		case 1: // Left
 		{
 			if((++e->animtime & 3) == 0 && ++e->frame > 5) {
 				e->frame = 3;
-				effect_create_misc(EFF_FANL, ex - 8, ey + ((random() & 15) - 8));
+				effect_create_misc(EFF_FANL, ex - 8, ey + ((random() & 15) - 8), FALSE);
 			}
 			if(px > ex - (6<<4) && px < ex && py > ey - 12 && py < ey + 12) {
 				player.x_speed -= SPEED_8(0x88);
@@ -46,7 +46,7 @@ void ai_fan(Entity *e) {
 		{
 			if((++e->animtime & 3) == 0 && ++e->frame > 2) {
 				e->frame = 0;
-				effect_create_misc(EFF_FANU, ex + ((random() & 15) - 8), ey - 8);
+				effect_create_misc(EFF_FANU, ex + ((random() & 15) - 8), ey - 8, FALSE);
 			}
 			if(py > ey - (6<<4) && py < ey && px > ex - 12 && px < ex + 12) {
 				player.y_speed -= SPEED_8(0x88);
@@ -59,7 +59,7 @@ void ai_fan(Entity *e) {
 		{
 			if((++e->animtime & 3) == 0 && ++e->frame > 5) {
 				e->frame = 3;
-				effect_create_misc(EFF_FANR, ex + 8, ey + ((random() & 15) - 8));
+				effect_create_misc(EFF_FANR, ex + 8, ey + ((random() & 15) - 8), FALSE);
 			}
 			if(px > ex && px < ex + (6<<4) && py > ey - 12 && py < ey + 12) {
 				player.x_speed += SPEED_8(0x88);
@@ -71,7 +71,7 @@ void ai_fan(Entity *e) {
 		{
 			if((++e->animtime & 3) == 0 && ++e->frame > 2) {
 				e->frame = 0;
-				effect_create_misc(EFF_FAND, ex + ((random() & 15) - 8), ey + 8);
+				effect_create_misc(EFF_FAND, ex + ((random() & 15) - 8), ey + 8, FALSE);
 			}
 			if(py > ey && py < ey + (6<<4) && px > ex - 12 && px < ex + 12) {
 				player.y_speed += SPEED_8(0x88);

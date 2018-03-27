@@ -43,9 +43,9 @@ static uint8_t balrog_toss_player_away(Entity *e) {
 				controlsLocked = FALSE;
 				player.hidden = FALSE;
 				player.dir = e->dir ^ 1;
-				player.x += player.dir ? (4 << CSF) : -(4 << CSF);
+				player.x += player.dir ? pixel_to_sub(4) : -pixel_to_sub(4);
 				player.x_speed = player.dir ? SPEED(0x5FF) : -SPEED(0x5FF);
-				player.y -= 8 << CSF;
+				player.y -= pixel_to_sub(8);
 				player.y_speed = -SPEED(0x200);
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				e->dir = player.dir;
@@ -311,7 +311,7 @@ void ai_balrog_drop_in(Entity *e) {
 			e->state = 1;
 			e->grounded = FALSE;
 			e->frame = ARMSUP;	// falling;
-			//e->x -= 16 << CSF;
+			//e->x -= pixel_to_sub(16);
 		}
 		/* fallthrough */
 		case 1:
@@ -357,7 +357,7 @@ void ai_balrog_bust_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y += (2 << CSF);
+			e->y += pixel_to_sub(2);
 			e->y_speed = -SPEED(0x100);
 			camera_shake(30);
 			e->state = 1;
@@ -681,7 +681,7 @@ void ai_balrog_boss_msl(Entity *e) {
 		case STATE_CHARGE+1:
 		case STATE_JUMP_FIRE+1:
 		{
-			if (PLAYER_DIST_X(12<<CSF) && PLAYER_DIST_Y2(12<<CSF, 8<<CSF)) {
+			if (PLAYER_DIST_X(e, 12<<CSF) && PLAYER_DIST_Y2(e, 12<<CSF, 8<<CSF)) {
 				balrog_grab_player(e);
 				if(!playerIFrames) player_inflict_damage(5);
 				//e->state = STATE_CAUGHT_PLAYER;

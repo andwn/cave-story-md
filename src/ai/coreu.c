@@ -75,8 +75,8 @@ void onspawn_undead_core(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->hurtSound = SND_CORE_HURT;
 	e->health = 700;
-	e->x = (624 << CSF);
-	e->y = (128 << CSF);
+	e->x = pixel_to_sub(624);
+	e->y = pixel_to_sub(128);
 	e->event = 1000;	// defeated script
 	
 	// create rear rotators
@@ -392,7 +392,7 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			if (e->timer > TIME_8(100)) {
 				sound_play(SND_EXPLOSION1, 5);
-				SCREEN_FLASH(30);
+				SCREEN_FLASH(3);
 				// Delete this stuff now while the screen is white
 				entities_clear_by_type(OBJ_MISERY_MISSILE);
 				pieces[CFRONT]->state = STATE_DELETE;
@@ -495,7 +495,7 @@ void ai_undead_core_face(Entity *e) {
 		e->health = 1000;
 	}
 	
-	e->x = bossEntity->x - (32 << CSF);
+	e->x = bossEntity->x - pixel_to_sub(32);
 	e->y = bossEntity->y;
 }
 
@@ -666,7 +666,7 @@ void ai_udmini_platform(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (e->x < -(64 << CSF)) e->state = STATE_DELETE;
+			if (e->x < -pixel_to_sub(64)) e->state = STATE_DELETE;
 			
 			if (e->y > e->y_mark) e->y_speed -= 0x10;
 			if (e->y < e->y_mark) e->y_speed += 0x10;
@@ -711,13 +711,13 @@ static void DrawMinicoreBack(Entity *e) {
 		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 16 + 128,
 		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 16 + 128,
 		.size = SPRITE_SIZE(3, 4),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[e->frame >> 1])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[e->frame >> 1])
 	};
 	e->sprite[2] = (VDPSprite) { // Bottom
 		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 8 + 128,
 		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 16 + 128,
 		.size = SPRITE_SIZE(4, 1),
-		.attribut = TILE_ATTR_FULL(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
+		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
 	};
 }
 
@@ -761,8 +761,8 @@ void ai_ud_pellet(Entity *e) {
 			e->state = 3;
 			e->timer = 0;
 			
-			e->x -= (4 << CSF);
-			e->y -= (4 << CSF);
+			e->x -= pixel_to_sub(4);
+			e->y -= pixel_to_sub(4);
 		} /* fallthrough */
 		case 3:
 		{
@@ -862,5 +862,5 @@ void ai_ud_blast(Entity *e) {
 	//SmokePuff(e->CenterX() + (random(0, 16) << CSF),
 	//		  e->CenterY() + (random(-16, 16) << CSF));
 	
-	if (e->x < -(8 << CSF)) e->state = STATE_DELETE;
+	if (e->x < -pixel_to_sub(8)) e->state = STATE_DELETE;
 }

@@ -8,7 +8,7 @@
 #define NOSHEET 255
 #define NOTILOC 255
  
-// Reduces the copy paste mess of VDP_loadTileData calls
+// Reduces the copy paste mess of vdp_tiles_load calls
 #define SHEET_ADD(sheetid, sdef, frames, width, height, ...) {                                            \
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
@@ -32,9 +32,13 @@
 }
 // The end params are anim,frame value couples from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
-	const uint8_t fa[frames<<1] = { __VA_ARGS__ };                                             \
-	for(uint8_t i = 0; i < frames; i++) {                                                      \
-		VDP_loadTileData(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize,dma);   \
+	static const uint8_t fa[frames<<1] = { __VA_ARGS__ };                                      \
+	for(uint16_t i = 0; i < frames; i++) {                                                     \
+		if(fa[i<<1] >= (sdef)->numAnimation)                                                   \
+			error_other("Anim out of range");                                                  \
+		if(fa[(i<<1)+1] >= (sdef)->animations[fa[i<<1]]->numFrame)                             \
+			error_other("Frame out of range");                                                 \
+		vdp_tiles_load_from_rom(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize);\
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \
