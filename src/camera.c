@@ -2,7 +2,6 @@
 
 #include "dma.h"
 #include "entity.h"
-#include "input.h"
 #include "joy.h"
 #include "player.h"
 #include "stage.h"

@@ -297,6 +297,11 @@ static void curlyboss_fire(Entity *e, uint8_t dir) {
 	sound_play(SND_POLAR_STAR_L1_2, 4);
 }
 
+void onspawn_curlyBoss(Entity *e) {
+	e->alwaysActive = TRUE;
+	e->x -= 0x400;
+}
+
 void ai_curlyBoss(Entity *e) {
 	switch(e->state) {
 		case CURLYB_FIGHT_START:

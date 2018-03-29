@@ -1,12 +1,10 @@
 #include "common.h"
 
-#include "ai.h"
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "input.h"
 #include "joy.h"
 #include "kanji.h"
 #include "memory.h"
@@ -505,9 +503,10 @@ static void player_update_jump() {
 	int16_t gravityJump;
 	int16_t maxFallSpeed;
 	if(pal_mode) {
-		jumpSpeed = 	0x500;
+		// See issue #270 for the reason these values are off
+		jumpSpeed = 	0x4E0; // 0x500
 		gravity = 		0x50;
-		gravityJump = 	0x20;
+		gravityJump = 	0x21; // 0x20
 		maxFallSpeed =	0x5FF;
 	} else {
 		jumpSpeed = 	0x42A;
@@ -543,7 +542,7 @@ static void player_update_jump() {
 			joy_pressed(btn[cfg_btn_jump])) {
 		player_start_booster();
 	} else if(playerBoostState == BOOST_OFF) {
-		if(joy_down(btn[cfg_btn_jump]) && (player.y_speed <= 0 || player.underwater)) {
+		if(joy_down(btn[cfg_btn_jump]) && (player.y_speed < 0 || player.underwater)) {
 			player.y_speed += gravityJump;
 		} else {
 			player.y_speed += gravity;

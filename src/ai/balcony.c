@@ -97,7 +97,7 @@ void ai_igor_balcony(Entity *e) {
 				if(++e->frame > STAND2) e->frame = STAND1;
 			}
 			
-			if ((PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y2(e, 48<<CSF, pixel_to_sub(112))) || e->damage_time) {
+			if((PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y2(e, pixel_to_sub(48), pixel_to_sub(112))) || e->damage_time) {
 				e->state = 10;
 			}
 		}
@@ -118,7 +118,7 @@ void ai_igor_balcony(Entity *e) {
 			e->frame = f[e->animtime >> 3];
 			MOVE_X(SPEED(0x200));
 			
-			if (blockr || blockl || PLAYER_DIST_X(e, 64<<CSF)) {
+			if (blockr || blockl || PLAYER_DIST_X(e, pixel_to_sub(64))) {
 				e->x_speed = 0;
 				e->state = 20;
 				e->timer = 0;
@@ -185,7 +185,7 @@ void ai_igor_balcony(Entity *e) {
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 												 e->y, OBJ_IGOR_SHOT, 0);
 					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
-					shot->y_speed = -SPEED_10(0x180) + ((uint16_t) SPEED_8((random() & 0xFF))) * 3;
+					shot->y_speed = -SPEED_10(0x180) + SPEED_8((random() & 0xFF)) * 3;
 				}
 			}
 			
@@ -437,7 +437,7 @@ void ai_mimiga_caged(Entity *e) {
 		{
 			e->state = 11;
 			e->frame = 2;
-			entity_create(e->x, e->y-(16<<CSF), OBJ_HEART, 0);
+			entity_create(e->x, e->y - pixel_to_sub(16), OBJ_HEART, 0);
 		} /* fallthrough */
 		case 11:
 		{

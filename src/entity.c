@@ -1,11 +1,9 @@
 #include "common.h"
-#include "ai.h"
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
 #include "error.h"
-#include "input.h"
 #include "joy.h"
 #include "memory.h"
 #include "npc.h"
@@ -21,6 +19,7 @@
 #include "weapon.h"
 
 #include "entity.h"
+#include "ai.h"
 
 /* Linked List Macros */
 

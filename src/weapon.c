@@ -5,7 +5,6 @@
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "input.h"
 #include "joy.h"
 #include "player.h"
 #include "resources.h"

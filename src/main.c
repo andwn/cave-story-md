@@ -5,7 +5,6 @@
 #include "effect.h"
 #include "error.h"
 #include "gamemode.h"
-#include "input.h"
 #include "joy.h"
 #include "memory.h"
 #include "resources.h"

@@ -1,13 +1,11 @@
 #include "common.h"
 
-#include "ai.h"
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
-#include "input.h"
 #include "joy.h"
 #include "npc.h"
 #include "player.h"

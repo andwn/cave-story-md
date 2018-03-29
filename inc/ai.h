@@ -36,18 +36,21 @@
 	}                                                                                          \
 }
 
-#define FACE_PLAYER(e) (e->dir = e->x < player.x)
-#define TURN_AROUND(e) (e->dir ^= 1)
+static inline void FACE_PLAYER(Entity *e) { e->dir = e->x < player.x; }
+static inline void TURN_AROUND(Entity *e) { e->dir ^= 1; }
 
-//#define PLAYER_DIST_X(e, dist) (player.x > e->x - (dist) && player.x < e->x + (dist))
-//#define PLAYER_DIST_Y(e, dist) (player.y > e->y - (dist) && player.y < e->y + (dist))
-//#define PLAYER_DIST_X2(dist1, dist2) (player.x > e->x - (dist1) && player.x < e->x + (dist2))
-//#define PLAYER_DIST_Y2(e, dist1, dist2) (player.y > e->y - (dist1) && player.y < e->y + (dist2))
-
-uint8_t PLAYER_DIST_X(Entity *e, int32_t dist);
-uint8_t PLAYER_DIST_Y(Entity *e, int32_t dist);
-uint8_t PLAYER_DIST_X2(Entity *e, int32_t dist1, int32_t dist2);
-uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2);
+static inline uint8_t PLAYER_DIST_X(Entity *e, int32_t dist) {
+	return player.x > e->x - dist && player.x < e->x + dist;
+}
+static inline uint8_t PLAYER_DIST_Y(Entity *e, int32_t dist) {
+	return player.y > e->y - dist && player.y < e->y + dist;
+}
+static inline uint8_t PLAYER_DIST_X2(Entity *e, int32_t dist1, int32_t dist2) {
+	return player.x > e->x - dist1 && player.x < e->x + dist2;
+}
+static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
+	return player.y > e->y - dist1 && player.y < e->y + dist2;
+}
 
 #define LIMIT_X(v) {                                                                           \
 	if(e->x_speed > (v)) e->x_speed = (v);                                                     \
@@ -122,5 +125,3 @@ enum CrystalStates {
 #define crystal_ymark	curly_target_y
 
 uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty);
-
-uint8_t mddir(uint8_t dir);

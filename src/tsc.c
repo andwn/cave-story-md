@@ -1,6 +1,5 @@
 #include "common.h"
 
-#include "ai.h"
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
@@ -9,7 +8,6 @@
 #include "error.h"
 #include "gamemode.h"
 #include "hud.h"
-#include "input.h"
 #include "joy.h"
 #include "memory.h"
 #include "npc.h"
@@ -24,6 +22,7 @@
 #include "window.h"
 #include "xgm.h"
 
+#include "ai.h"
 #include "tsc.h"
 
 #define HEAD_EVENT_COUNT 14 // There are exactly 14

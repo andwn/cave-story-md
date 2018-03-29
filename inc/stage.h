@@ -35,12 +35,6 @@
 //#define blk(xf, xoff, yf, yoff) 
 //	stage_get_block_type(((((int32_t)(xf))>>CSF)+((int32_t)(xoff)))>>4,((((int32_t)(yf))>>CSF)+((int32_t)(yoff)))>>4)
 
-uint8_t stage_get_block(uint16_t x, uint16_t y);
-
-uint8_t stage_get_block_type(uint16_t x, uint16_t y);
-
-uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff);
-
 // I should have made this a long time ago
 enum StageIndex {
 	STAGE_0,
@@ -154,6 +148,7 @@ extern uint16_t *stageTable;
 // This takes up extra space, but there are times where scripts make modifications to the
 // level layout (allowing player to reach some areas) so it is necessary to do this
 extern uint8_t *stageBlocks;
+extern const uint8_t *stagePXA;
 // Which tileset (db/tileset.c) is used by the current stage
 uint8_t stageTileset;
 // Prepares to draw off-screen tiles when stage_update() is later called
@@ -163,6 +158,20 @@ int8_t morphingRow, morphingColumn;
 extern uint8_t stageBackground;
 uint16_t backScrollTimer;
 uint8_t stageBackgroundType;
+
+static inline uint8_t stage_get_block(uint16_t x, uint16_t y) {
+	return stageBlocks[stageTable[y] + x];
+}
+
+static inline uint8_t stage_get_block_type(uint16_t x, uint16_t y) {
+	return stagePXA[stage_get_block(x, y)];
+}
+
+static inline uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {
+	uint16_t x = (xf >> CSF) + xoff;
+	uint16_t y = (yf >> CSF) + yoff;
+	return stage_get_block_type(x >> 4, y >> 4);
+}
 
 // Clears previous stage and switches to one with the given ID
 void stage_load(uint16_t id);

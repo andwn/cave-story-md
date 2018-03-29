@@ -135,7 +135,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_Ravil,		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_ravil, 			&ondeath_ravil 		}, // Ravil
 	{ &SPR_RedFl2, 		NOSHEET, 		PAL1, 1, &onspawn_snap, 		&ai_null, 			&ai_null 			}, // Red Flower Petals
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_snap, 		&ai_curly, 			&ai_null 			}, // Curly
-	{ NULL, 			SHEET_CURLYB,	PAL3, 1, &onspawn_snap, 		&ai_curlyBoss, 		&ondeath_curlyBoss 	}, // Curly
+	{ NULL, 			SHEET_CURLYB,	PAL3, 1, &onspawn_curlyBoss, 	&ai_curlyBoss, 		&ondeath_curlyBoss 	}, // Curly
 	{ &SPR_Table, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Table & Chair
 	{ NULL, 			SHEET_BARMIMI, 	PAL3, 1, &ai_null, 				&ai_curlys_mimigas, &ondeath_default 	},
 	{ NULL, 			SHEET_BARMIMI, 	PAL3, 1, &ai_null, 				&ai_curlys_mimigas, &ondeath_default 	},

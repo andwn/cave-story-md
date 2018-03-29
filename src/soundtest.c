@@ -2,7 +2,6 @@
 
 #include "audio.h"
 #include "dma.h"
-#include "input.h"
 #include "joy.h"
 #include "resources.h"
 #include "string.h"

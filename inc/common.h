@@ -83,6 +83,17 @@ const uint8_t mod10[0x400];
 enum CSDIR { DIR_LEFT, DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_CENTER };
 enum MDDIR { LEFT, RIGHT, UP, DOWN, CENTER };
 
+static inline uint8_t mddir(uint8_t dir) {
+	switch(dir) {
+		case DIR_LEFT: 		return LEFT;
+		case DIR_UP: 		return UP;
+		case DIR_RIGHT: 	return RIGHT;
+		case DIR_DOWN: 		return DOWN;
+		case DIR_CENTER: 	return CENTER;
+		default: 			return LEFT;
+	}
+}
+
 // Angles
 #define A_RIGHT	0x00
 #define A_DOWN	0x40

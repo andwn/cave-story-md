@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "common.h"
 
 const uint8_t div10[0x400] = {
 	0,0,0,0,0,0,0,0,0,0,

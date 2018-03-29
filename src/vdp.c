@@ -45,9 +45,15 @@ static uint16_t sprite_ymax;
 static uint16_t font_pal;
 
 void vdp_init() {
+	// Store pal_mode and adjust some stuff based on it
+    pal_mode = *vdp_ctrl_port & 1;
+    SCREEN_HEIGHT = pal_mode ? 240 : 224;
+	SCREEN_HALF_H = SCREEN_HEIGHT >> 1;
+	sprite_ymax = SCREEN_HEIGHT + 32;
+	FPS = pal_mode ? 50 : 60;
 	// Set the registers
 	*vdp_ctrl_port = 0x8004;
-	*vdp_ctrl_port = 0x8174; // Enable display
+	*vdp_ctrl_port = 0x8174 | (pal_mode ? 8 : 0); // Enable display
 	*vdp_ctrl_port = 0x8200 | (VDP_PLAN_A >> 10); // Plane A address
 	*vdp_ctrl_port = 0x8300 | (VDP_PLAN_W >> 10); // Window address
 	*vdp_ctrl_port = 0x8400 | (VDP_PLAN_B >> 13); // Plane B address
@@ -79,12 +85,6 @@ void vdp_init() {
 	vdp_font_load(TS_SysFont.tiles);
 	vdp_color(1, 0x000);
 	vdp_color(15, 0xEEE);
-    // Store pal_mode and adjust some stuff based on it
-    pal_mode = *vdp_ctrl_port & 1;
-    SCREEN_HEIGHT = pal_mode ? 240 : 224;
-	SCREEN_HALF_H = SCREEN_HEIGHT >> 1;
-	sprite_ymax = SCREEN_HEIGHT + 32;
-	FPS = pal_mode ? 50 : 60;
 }
 
 void vdp_vsync() {
@@ -96,7 +96,7 @@ void vdp_vsync() {
 // Register stuff
 
 void vdp_set_display(uint8_t enabled) {
-	*vdp_ctrl_port = 0x8134 | (enabled << 6);
+	*vdp_ctrl_port = 0x8134 | (enabled ? 0x40 : 0) | (pal_mode ? 0x08 : 0);
 }
 
 void vdp_set_autoinc(uint8_t val) {

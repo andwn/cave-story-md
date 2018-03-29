@@ -1,6 +1,5 @@
 #include "common.h"
 
-#include "ai.h"
 #include "audio.h"
 #include "camera.h"
 #include "dma.h"
@@ -8,7 +7,6 @@
 #include "entity.h"
 #include "error.h"
 #include "hud.h"
-#include "input.h"
 #include "joy.h"
 #include "memory.h"
 #include "npc.h"
@@ -24,3 +22,5 @@
 #include "vdp.h"
 #include "weapon.h"
 #include "window.h"
+
+#include "ai.h"

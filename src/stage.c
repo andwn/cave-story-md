@@ -1,13 +1,11 @@
 #include "common.h"
 
-#include "ai.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "error.h"
 #include "hud.h"
-#include "input.h"
 #include "joy.h"
 #include "memory.h"
 #include "npc.h"
@@ -33,9 +31,9 @@
 uint8_t stageBackground = 0xFF;
 
 int16_t backScrollTable[32];
-//uint8_t *PXM = NULL;
 uint8_t *stageBlocks = NULL;
 uint16_t *stageTable = NULL;
+const uint8_t *stagePXA = NULL;
 
 typedef struct {
 	uint8_t index;
@@ -55,20 +53,6 @@ void stage_draw_screen_credits();
 void stage_draw_background();
 void stage_draw_moonback();
 
-uint8_t stage_get_block(uint16_t x, uint16_t y) {
-	return stageBlocks[stageTable[y] + x];
-}
-
-uint8_t stage_get_block_type(uint16_t x, uint16_t y) {
-	return tileset_info[stageTileset].PXA[stage_get_block(x, y)];
-}
-
-uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {
-	uint16_t x = (xf >> CSF) + xoff;
-	uint16_t y = (yf >> CSF) + yoff;
-	return stage_get_block_type(x >> 4, y >> 4);
-}
-
 void stage_load(uint16_t id) {
 	vdp_set_display(FALSE);
 	oldstate = ~0;
@@ -82,11 +66,6 @@ void stage_load(uint16_t id) {
 		free(stageBlocks);
 		stageBlocks = NULL;
 	}
-	//if(PXM) {
-	//	free(PXM);
-	//	PXM = NULL;
-	//	stageBlocks = NULL;
-	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -223,11 +202,6 @@ void stage_load_credits(uint8_t id) {
 		free(stageBlocks);
 		stageBlocks = NULL;
 	}
-	//if(PXM) {
-	//	free(PXM);
-	//	PXM = NULL;
-	//	stageBlocks = NULL;
-	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -258,9 +232,9 @@ void stage_load_tileset() {
 	vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, 
 				tileset_info[stageTileset].tileset->numTile);
 	// Inject the breakable block sprite into the tileset
-	const uint8_t *PXA = tileset_info[stageTileset].PXA;
+	stagePXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < 160; i++) {
-		if(PXA[i] == 0x43) {
+		if(stagePXA[i] == 0x43) {
 			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
 			vdp_tiles_load_from_rom(TS_Break.tiles, TILE_TSINDEX + addr1, 2);
@@ -270,8 +244,8 @@ void stage_load_tileset() {
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
 	for(uint16_t i = 0; i < 160; i++) {
-		if(!(PXA[i] & 0x80)) continue;
-		currents[currentsCount] = (Current) { .index = i, .dir = PXA[i] & 0x3 };
+		if(!(stagePXA[i] & 0x80)) continue;
+		currents[currentsCount] = (Current) { .index = i, .dir = stagePXA[i] & 0x3 };
 		if(++currentsCount == 4) break;
 	}
 }
@@ -284,26 +258,6 @@ void stage_load_blocks() {
 	stageBlocks = malloc(stageWidth * stageHeight);
 	if(!stageBlocks) error_oom();
 	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
-
-	//PXM = decompress_slz(stage_info[stageID].PXM);
-	//if(!PXM) error_oom();
-	//stageWidth = PXM[4] | (PXM[5] << 8);
-	//stageHeight = PXM[6] | (PXM[7] << 8);
-	//stageBlocks = &PXM[8];
-
-	//uint16_t size = stage_info[stageID].PXM[0] << 8 | stage_info[stageID].PXM[1];
-	//PXM = malloc(size);
-	//if(!PXM) error_oom();
-	//__asm__("movem.l %%d5-%%d7/%%a5-%%a6,-(%%sp)\n\t"
-	//		"move.l %0,%%a5\n\t"
-	//		"move.l %1,%%a6\n\t"
-	//		"jsr (DecompressSlz)\n\t"
-	//		"movem.l (%%sp)+,%%d5-%%d7/%%a5-%%a6" 
-	//		: : "g" (stage_info[stageID].PXM), "g" (PXM));
-	//stageWidth = PXM[4] | (PXM[5] << 8);
-	//stageHeight = PXM[6] | (PXM[7] << 8);
-	//stageBlocks = &PXM[8];
-
 	// Multiplication table for stage rows
 	stageTable = malloc(stageHeight << 1);
 	if(!stageTable) error_oom();

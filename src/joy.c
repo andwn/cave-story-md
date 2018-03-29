@@ -36,7 +36,9 @@ void joy_init() {
 
 void joy_update() {
 	volatile uint8_t *pb = (volatile uint8_t*) 0xa10003;
-	uint16_t v[4];
+    // On hardware, the C button did not work, but it did in emulators
+    // Making this volatile fixed it for...reasons?
+	volatile uint16_t v[4];
     for(uint16_t i = 0; i < 4; i++) {
 		*pb = 0x00; /* TH (select) low */
 		__asm__("nop");

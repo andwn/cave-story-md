@@ -2,12 +2,9 @@
 ![Comparison Shot](doc/screen01.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
-This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
-The engine uses many parts of SGDK, and written mostly in C.
+This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis. It should work on any console or emulator*. It's fairly stable at this point but gets buggier as the game progresses.
 
-It should work on any console or emulator*. It's fairly stable at this point but gets buggier as the game progresses.
-
-(*) The current version of Genesis Plus GX is known to have a major issue with the game.
+(*) Genesis Plus GX crashes at startup. This is the only emulator known to have the issue.
 
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
@@ -38,17 +35,26 @@ Note that you can't load or save the game while cheating (including the counter)
 2. Clone & `make`
 
 ## FAQ
-#### Why?
+### Why?
 To learn MD dev mostly.
 
-#### When is the next release?
+#### Why not SNES?
+I'm not very interested in developing for that console. Why not give it a shot yourself?
+
+### When is the next release?
 Soon(tm)
 
-#### Will you release this on cartridge?
+### Will you release this on cartridge?
 No.
 
 #### Can I release this on cartridge?
-Not if you plan on selling it, unless you somehow got Nicalis permission.
+I'm not the one you [should be asking](https://www.nicalis.com/).
+
+#### Someone is selling cartridges though
+It's a bootleg.
+
+### Can you add new languages and game modes and redo the soundtrack? Also port Jenka's Nightmare next
+Please stop I just want to finish this and move on to something original.
 
 ## License
 Various, details [here](doc/LICENSE.md)

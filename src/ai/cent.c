@@ -164,7 +164,7 @@ void ai_orangebell_baby(Entity *e) {
 			
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat
-			e->y_next = -(32<<CSF) + (random() & ((32<<CSF)-1));
+			e->y_next = -pixel_to_sub(random() & 31);
 			
 			e->state = 1;
 		} /* fallthrough */

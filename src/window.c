@@ -5,7 +5,6 @@
 #include "entity.h"
 #include "gamemode.h"
 #include "hud.h"
-#include "input.h"
 #include "joy.h"
 #include "kanji.h"
 #include "memory.h"

@@ -270,9 +270,9 @@ void ai_ballos_f1(Entity *e) {
 				if(player.grounded) player.y_speed = -SPEED_10(0x200);
 				camera_shake(30);
 				
-				entity_create(e->x - (12<<CSF), e->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
-				entity_create(e->x + (12<<CSF), e->y + (52<<CSF), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
-				//SmokeXY(e->x, e->y + (40<<CSF), 16, 40, 0);
+				entity_create(e->x - pixel_to_sub(12), e->y + pixel_to_sub(52), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
+				entity_create(e->x + pixel_to_sub(12), e->y + pixel_to_sub(52), OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
+				//SmokeXY(e->x, e->y + pixel_to_sub(40), 16, 40, 0);
 				
 				e->y_speed = 0;
 				e->state = AS_PREPARE_JUMP;
@@ -939,14 +939,14 @@ void ai_ballos_rotator(Entity *e) {
 		uint8_t angle = e->timer2 >> 1;
 		if(e->state < 3) {
 			uint16_t dist = e->timer3 >> 2;
-			e->x = ballos->x + (4<<CSF) + (cos[angle] * dist);
-			e->y = ballos->y + (4<<CSF) + (sin[angle] * dist);
+			e->x = ballos->x + 0x800 + (((int32_t)cos[angle]) * dist);
+			e->y = ballos->y + 0x800 + (((int32_t)sin[angle]) * dist);
 		} else if(e->state < 30) {
-			e->x = ballos->x + (4<<CSF) + (cos[angle] << 6) + (cos[angle] << 4);
-			e->y = ballos->y + (4<<CSF) + (sin[angle] << 6) + (sin[angle] << 4);
+			e->x = ballos->x + 0x800 + (((int32_t)cos[angle]) << 6) + (((int32_t)cos[angle]) << 4);
+			e->y = ballos->y + 0x800 + (((int32_t)sin[angle]) << 6) + (((int32_t)sin[angle]) << 4);
 		} else {
-			e->x = ballos->x + (4<<CSF) + (cos[angle] << 6);
-			e->y = ballos->y + (4<<CSF) + (sin[angle] << 6);
+			e->x = ballos->x + 0x800 + (((int32_t)cos[angle]) << 6);
+			e->y = ballos->y + 0x800 + (((int32_t)sin[angle]) << 6);
 		}
 	}
 }
@@ -1014,13 +1014,13 @@ void ai_ballos_platform(Entity *e) {
 	int32_t xoff, yoff;
 	if(e->state < 2) {
 		// While expanding out use the extra cpu cycles to make it smooth
-		xoff = cos[angle] * e->timer3;
-		yoff = sin[angle] * e->timer3;
+		xoff = ((int32_t)cos[angle]) * e->timer3;
+		yoff = ((int32_t)sin[angle]) * e->timer3;
 	} else {
 		// After expanding the distance will always be 0x1C0, this effectively multiplies by that,
 		// with bit shifts instead of multiplying a signed int 16 times per frame
-		xoff = (cos[angle] << 9) /* 0x200 */ - (cos[angle] << 6) /* 0x40 */;
-		yoff = (sin[angle] << 9) /* 0x200 */ - (sin[angle] << 6) /* 0x40 */;
+		xoff = (((int32_t)cos[angle]) << 9) /* 0x200 */ - (((int32_t)cos[angle]) << 6) /* 0x40 */;
+		yoff = (((int32_t)sin[angle]) << 9) /* 0x200 */ - (((int32_t)sin[angle]) << 6) /* 0x40 */;
 	}
 	
 	e->x_mark = (xoff >> 2) + ballos->x;

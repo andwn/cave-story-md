@@ -794,7 +794,7 @@ void ai_firewhirr(Entity *e) {
 			LIMIT_Y(SPEED_10(0x200));
 			
 			// inc time-to-fire while player near
-			if (PLAYER_DIST_Y(e, 80 << 9)) {
+			if (PLAYER_DIST_Y(e, pixel_to_sub(80))) {
 				if (!e->dir && player.x < e->x && PLAYER_DIST_X(e, pixel_to_sub(160))) e->timer2++;
 				if (e->dir && player.x > e->x && PLAYER_DIST_X(e, pixel_to_sub(160))) e->timer2++;
 			}

@@ -29,7 +29,7 @@ enum STATES
 #define DMG_RUSH		10		// damage when he is rushing/flying at you
 
 #define RUSH_SPEED		0x800		// how fast he flies
-#define RUSH_DIST		(16<<CSF)	// how close he gets to you before changing direction
+#define RUSH_DIST		0x2000	// how close he gets to you before changing direction
 
 #define FLOAT_Y			block_to_sub(11)	// Y position to rise to during lightning attack
 #define LIGHTNING_Y		block_to_sub(19)	// Y position lightning strikes hit (i.e., the floor)
@@ -44,8 +44,8 @@ static void spawn_bones(Entity *e, uint8_t up) {
 	else
 		y = (e->y + pixel_to_sub(12));
 	
-	entity_create(e->x - (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
-	entity_create(e->x + (12<<CSF), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
+	entity_create(e->x - pixel_to_sub(12), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 0;
+	entity_create(e->x + pixel_to_sub(12), y, OBJ_BALLOS_BONE_SPAWNER, 0)->dir = 1;
 }
 
 // handles his "looping" flight/rush attacks
@@ -812,7 +812,7 @@ void ai_bute_archer_red(Entity *e) {
 		case 1: // aiming
 		{
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
-			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y(e, 16<<CSF))) {
+			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y(e, pixel_to_sub(16)))) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 3;
