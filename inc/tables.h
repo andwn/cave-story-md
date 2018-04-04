@@ -89,6 +89,7 @@ typedef struct {
 	union {
 		struct { 
 			char string[36];
+			uint16_t jstring;
 		} text;
 		struct  { 
 			uint16_t id;
