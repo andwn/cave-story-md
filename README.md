@@ -44,17 +44,20 @@ I'm not very interested in developing for that console. Why not give it a shot y
 ### When is the next release?
 Soon(tm)
 
-### Will you release this on cartridge?
-No.
+### I bought a cartridge of this and-
+There is no cartridge release, and I have nothing to do with anyone who makes them. All are bootlegs, the game isn't even complete.
 
-#### Can I release this on cartridge?
-I'm not the one you [should be asking](https://www.nicalis.com/).
+#### When will you release this on cart then?
+Never. Unless I am given both Pixel's and Nicalis' blessing.
 
-#### Someone is selling cartridges though
-It's a bootleg.
+#### Hello, (2 paragraphs of sucking up). By the way can I sell this on cartridge?
+I can't stop you but I'm also not the one you should be asking. See the question right above this one. They can stop you.
 
 ### Can you add new languages and game modes and redo the soundtrack? Also port Jenka's Nightmare next
-Please stop I just want to finish this and move on to something original.
+[Uhh bye](https://twitter.com/plum_0313/status/981489218198237184)
+
+#### But you added X so Y should be easy
+An easy time sink that I could instead spend not being bored out of my mind with payless work.
 
 ## License
 Various, details [here](doc/LICENSE.md)

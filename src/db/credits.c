@@ -361,13 +361,15 @@ const credits_info_def credits_info[] = {
 	C_TEXT("BA2", 222),					C_ICON(BA2,		3), C_WAIT(48),
 	C_TEXT("Okami", 223),				C_ICON(OKAMI,	3), C_WAIT(48),
 	C_TEXT("Nao", 224),					C_ICON(NAO,		3), C_WAIT(48),
-	C_TEXT("Shih Tzu", 225),			C_ICON(PUPPY,	3), C_WAIT(48),
-	C_TEXT("Gideon Zhi", 226),			C_ICON(GIDEON,	3), C_WAIT(48),
+	// Pixel's credits don't include these two, I think AGT added them
+	//C_TEXT("Shih Tzu", 225),			C_ICON(PUPPY,	3), C_WAIT(48),
+	//C_TEXT("Gideon Zhi", 226),			C_ICON(GIDEON,	3), C_WAIT(48),
 	C_TEXT("And many others", 227),							C_WAIT(48),
 	// TODO: Probably add some MD specific credits before the end
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 228),C_ICON(THANKS,	3), C_WAIT(32),
 	C_WAIT(232),
+	//C_WAIT(128),
 	C_MOVE(80),
 	C_TEXT("Cave Story ~ The End", 229),
 	C_WAIT(264),

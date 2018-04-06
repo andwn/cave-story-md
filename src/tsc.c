@@ -1207,7 +1207,7 @@ uint8_t execute_command() {
 				0x11111111,0x11111111,0x11111111,0x11111111
 			};
 			vdp_tiles_load_from_rom(blackTile, 1, 1);
-			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,1), 10, 6, 20, 4, 0);
+			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4, 0);
 			//VDP_fillTileMapRect(VDP_PLAN_A, 
 			//		TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
@@ -1224,6 +1224,7 @@ uint8_t execute_command() {
 				}
 			};
 			
+			//vdp_color(1, 0);
 			vdp_colors_next(48, PAL_XX.data, 16);
 			vdp_colors(48, PAL_XX.data, 16);
 			vdp_set_display(TRUE);
@@ -1270,12 +1271,12 @@ uint8_t execute_command() {
 			}
 		}
 		if(window_is_open()) {
-			if(cfg_language && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
-				tscState = TSC_WAITINPUT;
-				linesSinceLastNOD = 0;
-				curCommand--;
-				return 1;
-			}
+			//if(cfg_language && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
+			//	tscState = TSC_WAITINPUT;
+			//	linesSinceLastNOD = 0;
+			//	curCommand--;
+			//	return 1;
+			//}
 			if(window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);

@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "dma.h"
+#include "gamemode.h"
 #include "memory.h"
 #include "resources.h"
 #include "tools.h"
@@ -41,7 +42,7 @@ void kanji_draw(uint16_t plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uin
 			tiles[i] |= color << (column * 4);
 		} while(column > 0);
 	}
-	if(vramIndex >= (0xB000 >> 5) && vramIndex < (0xC000 >> 5)) {
+	if(gamemode == GM_GAME && vramIndex >= (0xB000 >> 5) && vramIndex < (0xC000 >> 5)) {
 		// Between gaps in the window mapping, can't load in sequence
 		vdp_tiles_load(&tiles[0],  vramIndex,   1);
 		vdp_tiles_load(&tiles[8],  vramIndex+4, 1);

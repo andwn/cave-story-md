@@ -54,6 +54,8 @@ uint16_t mapNameTTL;
 
 uint8_t iSuckAtThisGameSHIT;
 
+uint8_t missileEmptyFlag;
+
 // Initialize everything for the player, sets default values on game start
 void player_init();
 // Reloads the player sprites after calling SPR_reset() in stage_load()

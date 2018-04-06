@@ -6,6 +6,7 @@
 #include "effect.h"
 #include "entity.h"
 #include "joy.h"
+#include "npc.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
@@ -89,8 +90,18 @@ static const MissileSettings missile_settings[2][6] = {
 	}
 };
 
+
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
+
+static void set_extent_box(Bullet *b) {
+	b->extent = (extent_box) {
+		.x1 = (b->x >> CSF) - (b->hit_box.left),
+		.y1 = (b->y >> CSF) - (b->hit_box.top),
+		.x2 = (b->x >> CSF) + (b->hit_box.right),
+		.y2 = (b->y >> CSF) + (b->hit_box.bottom),
+	};
+}
 
 void weapon_fire_none(Weapon *w) { (void)(w); }
 
@@ -148,6 +159,7 @@ void weapon_fire_snake(Weapon *w) {
 		}
 		b->state = 2;
 	}
+	set_extent_box(b);
 }
 
 static const uint8_t pstar_ttl[4] = { 0, 8, 12, 16 };
@@ -199,6 +211,7 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y_speed = 0;
 		b->hit_box = (bounding_box) { 6, 1 + b->level, 6, 1 + b->level };
 	}
+	set_extent_box(b);
 }
 
 void weapon_fire_fireball(Weapon *w) {
@@ -244,6 +257,7 @@ void weapon_fire_fireball(Weapon *w) {
 		b->x_speed = b->dir ? SPEED_12(0x400) : -SPEED_12(0x400);
 		b->y_speed = 0;
 	}
+	set_extent_box(b);
 }
 
 void weapon_fire_machinegun(Weapon *w) {
@@ -299,6 +313,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = -0x7F + (random() & 0xFF);
 	}
+	set_extent_box(b);
 }
 
 void weapon_fire_missile(Weapon *w) {
@@ -316,8 +331,17 @@ void weapon_fire_missile(Weapon *w) {
 		// Only consume 1 ammo for Lv 3
 		if(count == 0) {
 			if(w->ammo) w->ammo--;
-			else if(w->maxammo) return;
+			else if(w->maxammo) { // Out of ammo
+				sound_play(SND_GUN_CLICK, 5);
+				if(!missileEmptyFlag) {
+					missileEmptyFlag = TRUE;
+					entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+				}
+				return;
+			}
 		}
+		missileEmptyFlag = FALSE;
+
 		b->type = w->type;
 		b->level = w->level;
 		b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
@@ -356,6 +380,7 @@ void weapon_fire_missile(Weapon *w) {
 				b->x_speed = (random() & 0x3FF) - 0x1FF;
 			}
 		}
+		set_extent_box(b);
 	}
 }
 
@@ -428,6 +453,7 @@ void weapon_fire_bubbler(Weapon *w) {
 			b->y_speed = fwdspeed;
 			break;
 	}
+	set_extent_box(b);
 }
 
 void weapon_fire_blade(Weapon *w) {
@@ -485,6 +511,7 @@ void weapon_fire_blade(Weapon *w) {
 		b->x_speed = (b->dir ? SPEED_12(0x800) : -SPEED_12(0x800));
 		b->y_speed = 0;
 	}
+	set_extent_box(b);
 }
 
 void weapon_fire_supermissile(Weapon *w) {
@@ -544,6 +571,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
+	set_extent_box(b);
 }
 
 static int16_t spur_xmark;
@@ -608,6 +636,7 @@ void weapon_fire_spur(Weapon *w) {
 	}
 	spur_xmark = b->x >> CSF;
 	spur_ymark = b->y >> CSF;
+	set_extent_box(b);
 }
 
 void bullet_update_none(Bullet *b) { (void)(b); }
@@ -648,7 +677,7 @@ void bullet_update_snake(Bullet *b) {
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	sprite_index(b->sprite, sheets[b->sheet].index + index);
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_polarstar(Bullet *b) {
@@ -669,7 +698,7 @@ void bullet_update_polarstar(Bullet *b) {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	vdp_sprite_add(&b->sprite);
+		vdp_sprite_add(&b->sprite);
 		b->ttl--;
 	}
 }
@@ -713,7 +742,7 @@ void bullet_update_fireball(Bullet *b) {
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	uint16_t index = (b->ttl & 3) << 2;
 	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 	b->ttl--;
 }
 
@@ -750,7 +779,7 @@ void bullet_update_machinegun(Bullet *b) {
 				if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 			}
 		}
-	vdp_sprite_add(&b->sprite);
+		vdp_sprite_add(&b->sprite);
 		b->ttl--;
 	}
 }
@@ -794,7 +823,7 @@ void bullet_update_missile(Bullet *b) {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	vdp_sprite_add(&b->sprite);
+		vdp_sprite_add(&b->sprite);
 	} else {
 		if(b->ttl & 3) {
 			uint16_t range = missile_settings[pal_mode][index].eff_range;
@@ -894,7 +923,7 @@ void bullet_update_bubbler(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 	b->ttl--;
 }
 
@@ -955,7 +984,7 @@ void bullet_update_blade(Bullet *b) {
 		b->sprite.x -= 4;
 		b->sprite.y -= 4;
 	}
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 }
 
 // Here be dragons
@@ -969,7 +998,7 @@ void bullet_update_blade_slash(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_supermissile(Bullet *b) {
@@ -984,7 +1013,7 @@ void bullet_update_nemesis(Bullet *b) {
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_spur(Bullet *b) {
@@ -1060,7 +1089,7 @@ void bullet_update_spur(Bullet *b) {
 			if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
 			if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 		}
-	vdp_sprite_add(&b->sprite);
+		vdp_sprite_add(&b->sprite);
 	}
 }
 
@@ -1094,7 +1123,7 @@ void bullet_update_spur_tail(Bullet *b) {
 		if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
 		if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
 	}
-vdp_sprite_add(&b->sprite);
+	vdp_sprite_add(&b->sprite);
 }
 
 Bullet *bullet_colliding(Entity *e) {

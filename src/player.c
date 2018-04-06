@@ -95,6 +95,7 @@ void player_init() {
 	airDisplayTime = 0;
 	playerIFrames = 0;
 	mapNameTTL = 0;
+	missileEmptyFlag = FALSE;
 	// Booster trail sprite tiles
 	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
@@ -333,6 +334,8 @@ void player_update() {
 			player_next_weapon();
 		}
 	}
+	// Bullets before shooting, fixes enemies in the wall not getting hit
+	player_update_bullets();
 	// Shooting
 	Weapon *w = &playerWeapon[currentWeapon];
 	if(iSuckAtThisGameSHIT) w->ammo = w->maxammo;
@@ -423,7 +426,7 @@ void player_update() {
 			shoot_cooldown = 4;
 		}
 	}
-	player_update_bullets();
+	
 	if(player.grounded) {
 		playerBoosterFuel = pal_mode ? 51 : 61;
 		player_update_interaction();
@@ -431,7 +434,7 @@ void player_update() {
 	player_draw();
 	if(mapNameTTL > 0) {
 		mapNameTTL--;
-	vdp_sprites_add(mapNameSprite, mapNameSpriteNum);
+		vdp_sprites_add(mapNameSprite, mapNameSpriteNum);
 	}
 }
 
@@ -630,6 +633,7 @@ static void player_update_interaction() {
 void player_start_booster() {
 	if(playerBoosterFuel == 0) return;
 	player.jump_time = 0;
+	player.grounded = FALSE;
 	// Pick a direction with Booster 2.0, default up
 	if ((playerEquipment & EQUIP_BOOSTER20)) {
 		playerBoostState = BOOST_UP;
@@ -695,6 +699,7 @@ static void player_update_booster() {
 	uint8_t blockl = collide_stage_leftwall(&player),
 			blockr = collide_stage_rightwall(&player);
 	collide_stage_floor(&player);
+	player.grounded = FALSE;
 
 	switch(playerBoostState) {
 		case BOOST_HOZ:
@@ -931,7 +936,7 @@ void player_draw() {
 		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-	vdp_sprite_add(&playerSprite);
+		vdp_sprite_add(&playerSprite);
 		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
 			uint16_t vert = 0, vdir = 0;
 			if(player.frame==LOOKUP || player.frame==UPWALK1 || player.frame==UPWALK2) {
@@ -956,13 +961,13 @@ void player_draw() {
 					.attr = TILE_ATTR(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
 				};
 			}
-		vdp_sprite_add(&weaponSprite);
+			vdp_sprite_add(&weaponSprite);
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
 			sprite_pos(airTankSprite, 
 					(player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12,
 					(player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 12);
-		vdp_sprite_add(&airTankSprite);
+			vdp_sprite_add(&airTankSprite);
 		}
 	}
 }

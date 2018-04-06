@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 15] = {
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
@@ -46,12 +46,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	/* 0x020 (32) */
 	{ &SPR_LifeUp,		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_lifeup, 		&ai_null 			}, // Life Capsule
 	{ NULL,				SHEET_IGORSHOT, PAL1, 1, &ai_null, 				&ai_balrogShot, 	&ondeath_nodrop 	}, // Balrog Shot
-	{ &SPR_Bed,			NOSHEET, 		PAL1, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Bed
+	{ &SPR_Bed,			NOSHEET, 		PAL1, 1, &onspawn_op2frame, 	&ai_null, 			&ai_null 			}, // Bed
 	{ NULL,				SHEET_MANNAN, 	PAL3, 1, &onspawn_op2flip, 		&ai_mannan, 		&ai_null 			}, // Mannan
 	{ &SPR_Balrog,		NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrogFlying, 	&ondeath_balrogFlying },
 	{ &SPR_Sign,		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Sign Post
 	{ &SPR_Fire,		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_fireplace, 		&ai_null 			}, // Fireplace
-	{ &SPR_SaveSign,	NOSHEET,		PAL1, 1, &onspawn_op2anim, 		&ai_null, 			&ai_null 			}, // Save Sign
+	{ &SPR_SaveSign,	NOSHEET,		PAL1, 1, &onspawn_op2frame, 	&ai_null, 			&ai_null 			}, // Save Sign
 	{ &SPR_Santa,		NOSHEET, 		PAL3, 1, &ai_null, 				&ai_santa, 			&ai_null 			}, // Santa
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_door, 		&ai_null, 			&ai_null 			}, // Busted Doorway
 	{ &SPR_Sue,			NOSHEET, 		PAL0, 1, &onspawn_sue, 			&ai_sue, 			&ai_null 			}, // Sue
@@ -92,7 +92,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ &SPR_Kanpachi,	NOSHEET,		PAL3, 1, &ai_null, 				&ai_kanpachi_fish,	&ai_null 			}, // Kanpachi
 	{ NULL,				SHEET_FLOWER, 	PAL3, 1, &onspawn_flower, 		&ai_null, 			&ai_null 			}, // Flowers
 	{ &SPR_Sanda,		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_sanda, 			&ai_null 			}, // Sandame
-	{ &SPR_Pot,			NOSHEET, 		PAL1, 1, &onspawn_op2anim, 		&ai_null, 			&ai_null 			}, // Pot
+	{ &SPR_Pot,			NOSHEET, 		PAL1, 1, &onspawn_op2frame, 	&ai_null, 			&ai_null 			}, // Pot
 	{ &SPR_Mahin,		NOSHEET, 		PAL3, 1, &onspawn_snap, 		&ai_mahin, 			&ai_null 			}, // Mahin
 	/* 0x050 (80) */
 	{ &SPR_Keeper,		NOSHEET, 		PAL1, 1, &onspawn_gkeeper, 		&ai_gkeeper, 		&ondeath_default 	}, // Gravekeeper
@@ -360,7 +360,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	{ NULL, 			SHEET_AHCHOO, 	PAL3, 1, &onspawn_persistent, 	&ai_ahchoo, 		&ai_null 			}, // "Ah-choo!"
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
-	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &ai_null, 				&ai_rolling, 		&ondeath_default 	}, // Rolling
+	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
 	{ NULL, 			SHEET_BONE, 	PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone, 	&ai_null 			}, // Ballos Bone Shot
 	{ NULL, 			NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone_spawner,&ai_null 		}, // Ballos Shockwave
 	{ NULL, 			SHEET_TARGET, 	PAL1, 1, &onspawn_persistent, 	&ai_ballos_target, 	&ai_null 			}, // Ballos Target
@@ -433,10 +433,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 13] = {
 	/* Misc */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_trigger_special,&ai_null 			}, // Out of bounds trigger
 	{ &SPR_HeliBlade2, 	NOSHEET, 		PAL1, 3, &onspawn_heliblade2, 	&ai_heli_blade, 	&ai_null 			}, // Helicopter blade (smaller)
-	{ &SPR_LevelUp, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Up (English)
-	{ &SPR_J_LevelUp, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Up (Japanese)
-	{ &SPR_LevelDown, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Down (English)
-	{ &SPR_J_LevelDown, NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Down (Japanese)
+	{ &SPR_LevelUp, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Up!
+	{ &SPR_J_LevelUp, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // レベルアップ！
+	{ &SPR_LevelDown, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Level Down!
+	{ &SPR_J_LevelDown, NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // レベルダウン！
+	{ &SPR_Empty, 		NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // Empty!
+	{ &SPR_J_Empty, 	NOSHEET, 		PAL1, 2, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			}, // からっぽ！
 	{ NULL, 			NOSHEET, 		PAL2, 12,&onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
 	{ NULL, 			NOSHEET, 		PAL2, 3, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
 	{ NULL, 			NOSHEET, 		PAL2, 3, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud

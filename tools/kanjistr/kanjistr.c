@@ -5,7 +5,7 @@
  * gcc kanjistr.c -o kanjistr
  * 
  * Usage:
- * ./kanjistr <kanji list file> <string file> <out file>
+ * ./kanjistr <kanji list file> <string file> <out file> [linelen]
  */
 
 #include <ctype.h>

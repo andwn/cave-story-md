@@ -593,7 +593,7 @@ void ai_deleet(Entity *e) {
 		e->state = 2;
 		e->timer = 0;
 		e->frame = 2;
-		
+		e->alwaysActive = TRUE;
 		e->nflags |= NPC_INVINCIBLE;
 		sound_play(SND_CHEST_OPEN, 5);
 	}

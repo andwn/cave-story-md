@@ -192,6 +192,8 @@ SPRITE SPR_HeavyPressL	"sprite/hp_lit.png"			4 4 0 0 NONE
 SPRITE SPR_BalrogFly	"sprite/balrog_fly.png"		5 3 0 0 NONE
 SPRITE SPR_BalrogMedic	"sprite/balrog_medic.png"	5 3 0 0 NONE
 SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 0 0 NONE
+SPRITE SPR_Empty		"sprite/empty.png"			5 1 0 0 NONE
+SPRITE SPR_J_Empty		"sprite/empty_ja.png"		5 1 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE
@@ -456,8 +458,9 @@ BIN NPC_TABLE			"npc.tbl"
 BIN BMP_Ascii		"ja_ascii.dat"
 BIN BMP_Kanji		"ja_kanji.dat"
 
-# Japanese stage names
+# Japanese stage names and credits text
 BIN JStageName		"ja_stagename.dat"
+BIN JCreditStr		"ja_credits.dat"
 
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets

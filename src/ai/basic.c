@@ -15,7 +15,7 @@ void onspawn_snapflip(Entity *e) {
 	SNAP_TO_GROUND(e);
 }
 
-void onspawn_op2anim(Entity *e) {
+void onspawn_op2frame(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->frame = 1;
 }
 
