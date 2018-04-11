@@ -873,6 +873,9 @@ uint8_t execute_command() {
 				bossEntity = entity_create(0, 0, 360 + BOSS_SISTERS, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 20;
+				bossBarEntity = bossEntity;
+				bossMaxHealth = bossHealth = bossBarEntity->health;
+				tsc_show_boss_health();
 			} else if(stageID == 87 && args[0] == 100) {
 				// Ballos
 				bossEntity = entity_create(0, 0, 360 + BOSS_BALLOS, 0);

@@ -95,7 +95,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				vdp_sprite_add(&effMisc[i].sprite);
+					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -109,7 +109,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				vdp_sprite_add(&effMisc[i].sprite);
+					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -122,7 +122,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-			vdp_sprite_add(&effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_BOOST8:
@@ -138,18 +138,18 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-			vdp_sprite_add(&effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_QMARK:
 			{
-				if(effMisc[i].ttl > TIME_8(60) && (effMisc[i].ttl & 3) == 0) {
+				if(effMisc[i].ttl > TIME_8(40) && (effMisc[i].ttl & 1) == 0) {
 					effMisc[i].y--;
 				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-			vdp_sprite_add(&effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_FANL:
@@ -159,7 +159,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-			vdp_sprite_add(&effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_FANU:
@@ -169,7 +169,7 @@ void effects_update() {
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-			vdp_sprite_add(&effMisc[i].sprite);
+				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
 			case EFF_SPLASH:
@@ -184,7 +184,7 @@ void effects_update() {
 					sprite_pos(effMisc[i].sprite,
 						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
 						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
-				vdp_sprite_add(&effMisc[i].sprite);
+					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
 			break;
@@ -301,7 +301,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_QMARK:
 			{
-				effMisc[i].ttl = TIME_8(80);
+				effMisc[i].ttl = TIME_8(50);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,TILE_QMARKINDEX)

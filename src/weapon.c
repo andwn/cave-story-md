@@ -394,8 +394,17 @@ void weapon_fire_bubbler(Weapon *w) {
 		break;
 	}
 	if(!b) return;
-	if(w->ammo) w->ammo--;
-	else if(w->maxammo) return;
+	if(w->ammo) {
+		missileEmptyFlag = FALSE;
+		w->ammo--;
+	} else if(w->maxammo) {
+		if(!missileEmptyFlag) {
+			missileEmptyFlag = TRUE;
+			entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+		}
+		sound_play(SND_GUN_CLICK, 5);
+		return;
+	}
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;

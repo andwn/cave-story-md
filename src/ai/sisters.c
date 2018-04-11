@@ -95,6 +95,8 @@ void onspawn_sisters(Entity *e) {
 	pieces[HEAD2] = entity_create(pixel_to_sub(384), pixel_to_sub(64), OBJ_SISTERS_HEAD, NPC_OPTION2);
 	pieces[HEAD2]->linkedEntity = pieces[BODY2];
 	pieces[BODY2]->linkedEntity = pieces[HEAD2];
+
+	//bossEntity = e;
 }
 
 void onspawn_sisters_body(Entity *e) {
@@ -110,7 +112,7 @@ void onspawn_sisters_head(Entity *e) {
 	e->health = 1000;
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->damage_time = 10;
-	sound_play(e->hurtSound, 5);
+	//sound_play(e->hurtSound, 5);
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
 }
 

@@ -232,7 +232,7 @@ void ai_hp_lightning(Entity *e) {
 	
 	if(e->timer > TIME_8(50)) {
 		sound_play(SND_LIGHTNING_STRIKE, 5);
-		entity_create(e->x + pixel_to_sub(16), e->y + pixel_to_sub(72), OBJ_LIGHTNING, 0);
+		entity_create(e->x + pixel_to_sub(32), e->y + pixel_to_sub(72), OBJ_LIGHTNING, 0);
 		e->state = STATE_DELETE;
 		// smoke on floor where it struck
 		//SmokeXY(e->x, e->Bottom() - (7<<CSF), 3, 0, 0);

@@ -344,10 +344,15 @@ void player_update() {
 		if(joy_down(btn[cfg_btn_shoot])) {
 			if(shoot_cooldown == 0) {
 				if(w->ammo > 0) {
+					missileEmptyFlag = FALSE;
 					weapon_fire(*w);
 					w->ammo--;
 				} else {
 					sound_play(SND_GUN_CLICK, 5);
+					if(!missileEmptyFlag) {
+						missileEmptyFlag = TRUE;
+						entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+					}
 				}
 				shoot_cooldown = pal_mode ? 7 : 8;
 			}
@@ -634,6 +639,8 @@ void player_start_booster() {
 	if(playerBoosterFuel == 0) return;
 	player.jump_time = 0;
 	player.grounded = FALSE;
+	playerPlatform = NULL;
+	playerPlatformTime = 0;
 	// Pick a direction with Booster 2.0, default up
 	if ((playerEquipment & EQUIP_BOOSTER20)) {
 		playerBoostState = BOOST_UP;
@@ -700,6 +707,8 @@ static void player_update_booster() {
 			blockr = collide_stage_rightwall(&player);
 	collide_stage_floor(&player);
 	player.grounded = FALSE;
+	playerPlatform = NULL;
+	playerPlatformTime = 0;
 
 	switch(playerBoostState) {
 		case BOOST_HOZ:
@@ -854,7 +863,7 @@ static void player_update_air_display() {
 		}
 		// Calculate air percent and display the value
 		if(airTick == TIME_8(9)) draw_air_percent();
-	vdp_sprites_add(airSprite, 2);
+		vdp_sprites_add(airSprite, 2);
 	}
 }
 
@@ -864,7 +873,7 @@ void player_draw() {
 		sprite_pos(playerSprite,
 				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
 				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
-	vdp_sprite_add(&playerSprite);
+		vdp_sprite_add(&playerSprite);
 		return;
 	} else if(!player.health) {
 		return; // Don't draw the player if we died in a way that is not drowning

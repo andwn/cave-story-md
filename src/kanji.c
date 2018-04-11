@@ -42,6 +42,7 @@ void kanji_draw(uint16_t plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uin
 			tiles[i] |= color << (column * 4);
 		} while(column > 0);
 	}
+	// Game mode is checked because the credits override the whole window plane, not just the offscreen section
 	if(gamemode == GM_GAME && vramIndex >= (0xB000 >> 5) && vramIndex < (0xC000 >> 5)) {
 		// Between gaps in the window mapping, can't load in sequence
 		vdp_tiles_load(&tiles[0],  vramIndex,   1);

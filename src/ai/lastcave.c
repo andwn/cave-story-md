@@ -5,6 +5,8 @@ void ai_prox_press_vert(Entity *e) {
 		case 0:
 		{
 			if(PLAYER_DIST_X(e, 8<<CSF) && PLAYER_DIST_Y2(e, 8<<CSF, pixel_to_sub(128))) {
+				e->hit_box.left++;
+				e->hit_box.right++;
 				e->nflags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
 				e->state++;
 				e->animtime = 0;
