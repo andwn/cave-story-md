@@ -461,6 +461,7 @@ BIN BMP_Kanji		"ja_kanji.dat"
 # Japanese stage names and credits text
 BIN JStageName		"ja_stagename.dat"
 BIN JCreditStr		"ja_credits.dat"
+BIN JConfigText		"ja_config.dat"
 
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets

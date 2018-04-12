@@ -44,70 +44,133 @@ ActionFunc action[5] = {
 
 typedef struct {
 	uint8_t y;
+	uint8_t jstr_index;
+	uint16_t jtile_index;
 	uint8_t type;
 	char caption[36];
 	uint8_t *valptr;
 } MenuItem;
 
+#define AKI (0x6000 >> 5)
+#define WKI (0xB000 >> 5)
+#define BKI (0xD000 >> 5)
+
 const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 	{
-		{ 4,  MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
-		{ 6,  MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
-		{ 8,  MI_INPUT, "Switch (3btn) / FFwd", &cfg_btn_ffwd },
-		{ 10, MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
-		{ 12, MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
-		{ 14, MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
-		{ 16, MI_INPUT, "Pause Menu", &cfg_btn_pause },
+		{ 4,  1,  AKI,    MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
+		{ 6,  2,  AKI+60, MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
+		{ 8,  3,  AKI+120,MI_INPUT, "Switch (3btn) / FFwd", &cfg_btn_ffwd },
+		{ 10, 4,  AKI+180,MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
+		{ 12, 5,  AKI+240,MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
+		{ 14, 6,  AKI+300,MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
+		{ 16, 7,  AKI+360,MI_INPUT, "Pause Menu", &cfg_btn_pause },
 		
-		{ 19, MI_MODE, "Force Button Mode", &cfg_force_btn },
+		{ 19, 8,  AKI+420,MI_MODE,  "Force Button Mode", &cfg_force_btn },
 
-		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
+		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-		{ 4,  MI_LANG,   "Language", &cfg_language },
-		{ 7,  MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
-		{ 9,  MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
-		{ 11, MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
-		{ 13, MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
-		{ 15, MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
-		{ 17, MI_TOGGLE, "Mute BGM", &cfg_music_mute },
-		{ 19, MI_TOGGLE, "Mute SFX", &cfg_sfx_mute },
+		{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
+		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
+		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
+		{ 11, 12, AKI+180,MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
+		{ 13, 13, AKI+240,MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
+		{ 15, 14, AKI+300,MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
+		{ 17, 15, AKI+360,MI_TOGGLE, "Mute BGM", &cfg_music_mute },
+		{ 19, 16, AKI+420,MI_TOGGLE, "Mute SFX", &cfg_sfx_mute },
 
-		{ 22, MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 24, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
+		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-		{ 4,  MI_ACTION, "Erase Counter", (uint8_t*)3 },
-		{ 6,  MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
+		{ 4,  17, AKI,    MI_ACTION, "Erase Counter", (uint8_t*)3 },
+		{ 6,  18, AKI+60, MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
 	},
 };
 
 const char boolstr[2][4] = { "OFF", "ON " };
 const char modestr[3][6] = { "OFF ", "3BTN", "6BTN" };
 
+const uint16_t jboolstr[2][2] = { 
+	{ 0x100+80, 0x100+61 },  // なし
+	{ 0x100+40, 0x100+110 }, // ある
+};
+const uint16_t jmodestr[3][2] = { 
+	{ 0x100+80, 0x100+61 },  // なし
+	{ '3', 'B' }, { '6', 'B' },
+};
+
+static uint16_t GetNextChar(uint16_t option, uint16_t index) {
+	uint16_t chr = JConfigText[(option - 1) * 24 + index];
+	if(chr >= 0xE0 && chr < 0xFF) {
+		return (chr - 0xE0) * 0x60 + (JConfigText[(option - 1) * 24 + index + 1] - 0x20) + 0x100;
+	} else {
+		return chr;
+	}
+}
+
+static void DrawJStr(uint16_t x, uint16_t y, uint16_t tile_index, uint16_t item_index) {
+	uint16_t str_index = 0;
+	while(str_index < 24) {
+		uint16_t c = GetNextChar(item_index, str_index++);
+		if(c == 0) break; // End of string
+		if(c > 0xFF) str_index++;
+		kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
+		x += 2;
+		tile_index += 4;
+	}
+}
+
 void draw_menuitem(const MenuItem *item) {
 	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
-	vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
+	vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
+	if(cfg_language && item->jstr_index) {
+		DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
+	} else {
+		vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
+	}
 	switch(item->type) {
 		case MI_LABEL: break; // Nothing
 		case MI_INPUT:
-		vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
+		if(cfg_language) {
+			uint16_t tile_index = item->jtile_index + 40;
+			uint16_t c1 = btnName[*item->valptr][0];
+			uint16_t c2 = btnName[*item->valptr][1];
+			if(!c2) c2 = ' ';
+			kanji_draw(VDP_PLAN_A, tile_index,   c1, 30, item->y, 0, TRUE);
+			kanji_draw(VDP_PLAN_A, tile_index+4, c2, 32, item->y, 0, TRUE);
+		} else {
+			vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
+		}
 		break;
 		case MI_LANG:
 		if(*item->valptr) {
-			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX,   0x100+794, 30, item->y, 0, TRUE); // 日
-			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX+4, 0x100+909, 32, item->y, 0, TRUE); // 本
-			kanji_draw(VDP_PLAN_A, TILE_BACKINDEX+8, 0x100+417, 34, item->y, 0, TRUE); // 語
+			uint16_t tile_index = item->jtile_index + 40;
+			kanji_draw(VDP_PLAN_A, tile_index,   0x100+794, 30, item->y, 0, TRUE); // 日
+			kanji_draw(VDP_PLAN_A, tile_index+4, 0x100+909, 32, item->y, 0, TRUE); // 本
+			kanji_draw(VDP_PLAN_A, tile_index+8, 0x100+417, 34, item->y, 0, TRUE); // 語
 		} else {
 			vdp_puts(VDP_PLAN_A, "English", 30, item->y);
 			vdp_text_clear(VDP_PLAN_A, 30, item->y + 1, 6); // Hide kanji
 		}
 		break;
 		case MI_TOGGLE:
-		vdp_puts(VDP_PLAN_A, boolstr[*item->valptr], 30, item->y);
+		if(cfg_language) {
+			uint16_t tile_index = item->jtile_index + 40;
+			kanji_draw(VDP_PLAN_A, tile_index,   jboolstr[*item->valptr][0], 32, item->y, 0, TRUE);
+			kanji_draw(VDP_PLAN_A, tile_index+4, jboolstr[*item->valptr][1], 34, item->y, 0, TRUE);
+		} else {
+			vdp_puts(VDP_PLAN_A, boolstr[*item->valptr], 30, item->y);
+		}
 		break;
 		case MI_ACTION: break;
 		case MI_MODE:
-		vdp_puts(VDP_PLAN_A, modestr[*item->valptr], 30, item->y);
+		if(cfg_language) {
+			uint16_t tile_index = item->jtile_index + 40;
+			kanji_draw(VDP_PLAN_A, tile_index,   jmodestr[*item->valptr][0], 30, item->y, 0, TRUE);
+			kanji_draw(VDP_PLAN_A, tile_index+4, jmodestr[*item->valptr][1], 32, item->y, 0, TRUE);
+		} else {
+			vdp_puts(VDP_PLAN_A, modestr[*item->valptr], 30, item->y);
+		}
 		break;
 	}
 }
@@ -180,13 +243,25 @@ uint8_t set_page(uint8_t page) {
 	
 	switch(page) {
 		case PAGE_CONTROL:
-		vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 2);
+		if(cfg_language) {
+			DrawJStr(8, 1, WKI, 21);
+		} else {
+			vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
+		}
 		break;
 		case PAGE_GAMEPLAY:
-		vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 2);
+		if(cfg_language) {
+			DrawJStr(8, 1, WKI, 22);
+		} else {
+			vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 1);
+		}
 		break;
 		case PAGE_SAVEDATA:
-		vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 2);
+		if(cfg_language) {
+			DrawJStr(8, 1, WKI, 23);
+		} else {
+			vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 1);
+		}
 		break;
 	}
 	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
