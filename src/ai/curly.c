@@ -18,7 +18,7 @@ void ai_curly(Entity *e) {
 		case 0:							// state 0: stand and do nothing
 		{
 			e->frame = 0;
-			e->eflags |= NPC_INTERACTIVE;	// needed for after Almond battle
+			e->nflags |= NPC_INTERACTIVE;	// needed for after Almond battle
 		}
 		/* fallthrough */
 		case 1:
@@ -163,10 +163,18 @@ void ai_curly_carried(Entity *e) {
 	}
 }
 
+static inline void set_extent_box(Bullet *b) {
+	b->extent = (extent_box) {
+		.x1 = (b->x >> CSF) - (b->hit_box.left),
+		.y1 = (b->y >> CSF) - (b->hit_box.top),
+		.x2 = (b->x >> CSF) + (b->hit_box.right),
+		.y2 = (b->y >> CSF) + (b->hit_box.bottom),
+	};
+}
+
 static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
-	// Use slot 7 and 8, this messes with player's missiles slightly
 	Bullet *b = NULL;
-	for(uint8_t i = 7; i < 9; i++) {
+	for(uint8_t i = 6; i < 8; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
@@ -175,6 +183,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 	b->type = WEAPON_NEMESIS;
 	b->level = 1;
 	b->ttl = TIME_8(20);
+	b->state = 0;
 	b->damage = 12;
 	sound_play(SND_NEMESIS_FIRE, 5);
 	b->dir = dir;
@@ -201,6 +210,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
+	set_extent_box(b);
 }
 
 void onspawn_curly_hell(Entity *e) {
@@ -212,7 +222,7 @@ void onspawn_curly_hell(Entity *e) {
 
 void ai_curly_hell(Entity *e) {
 	// Keep in front of doors
-	if(stageID == STAGE_HELL_PASSAGEWAY_2 && 
+	if((stageID == STAGE_HELL_PASSAGEWAY_2 || stageID == STAGE_HELL_OUTER_PASSAGE) && 
 			(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H)) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;
@@ -220,7 +230,7 @@ void ai_curly_hell(Entity *e) {
 	}
 
 	e->dir = player.dir ^ 1;
-	e->x = player.x + (e->dir ? (8<<CSF) : -(8<<CSF));
+	e->x = player.x + (e->dir ? (7<<CSF) : -(7<<CSF));
 	e->y = player.y - (6<<CSF);
 
 	uint8_t shoot_dir = e->dir;

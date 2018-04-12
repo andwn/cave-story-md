@@ -86,8 +86,6 @@ SPRITE SPR_BallosEye	"sprite/ballos_eye.png"		3 2 0 0 NONE
 SPRITE SPR_BallosPlat	"sprite/ballos_plat.png"	4 2 0 0 NONE
 SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 0 0 NONE
 SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 0 0 NONE
-SPRITE SPR_MenuTextE	"sprite/menutext_en.png"	8 1 0 0 NONE
-SPRITE SPR_MenuTextJ	"sprite/menutext_ja.png"	8 1 0 0 NONE
 SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 0 0 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 0 0 NONE
 SPRITE SPR_SpurB1		"sprite/spurb1.png"			2 2 0 0 NONE
@@ -428,6 +426,8 @@ SPRITE SPR_ItemWin		"itemwindow.png" 		6 3 0 0 NONE
 SPRITE SPR_Prompt		"prompt.png" 			8 3 0 0 NONE
 SPRITE SPR_J_Prompt		"prompt_ja.png" 		8 3 0 0 NONE
 TILESET TS_ItemSel		"itemsel.png" 			0
+TILESET TS_MenuTextE	"menutext_en.png"		0
+TILESET TS_MenuTextJ	"menutext_ja.png"		0
 
 # Number Font
 TILESET TS_Numbers		"sprite/numbers.png" 	0

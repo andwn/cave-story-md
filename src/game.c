@@ -224,38 +224,28 @@ void draw_itemmenu(uint8_t resetCursor) {
 						   TILE_HUDINDEX+in,1))
 #define DRAW_LETTER(in,xx,yy) (vdp_map_xy(VDP_PLAN_W,                                   \
 							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
-	LOAD_LETTER('0', 0);
-	LOAD_LETTER('1', 1);
-	LOAD_LETTER('2', 2);
-	LOAD_LETTER('3', 3);
-	LOAD_LETTER('4', 4);
-	LOAD_LETTER('5', 5);
-	LOAD_LETTER('6', 6);
-	LOAD_LETTER('7', 7);
-	LOAD_LETTER('8', 8);
-	LOAD_LETTER('9', 9);
-	LOAD_LETTER('A', 10);
-	LOAD_LETTER('R', 11);
-	LOAD_LETTER('M', 12);
-	LOAD_LETTER('S', 13);
+	// Load 8x8 numbers
+	vdp_tiles_load_from_rom(TS_MsgFont.tiles+(('0'-0x20)<<3),TILE_HUDINDEX,10);
+	// Lv, slash for weapon display
 	LOAD_LETTER('L', 14);
 	LOAD_LETTER('v', 15);
 	LOAD_LETTER('/', 16);
-	LOAD_LETTER('I', 17);
-	LOAD_LETTER('T', 18);
-	LOAD_LETTER('E', 19);
-	LOAD_LETTER('-', 20);
+	LOAD_LETTER('-', 17);
+	// ARMSITEM or ぶきもちもの
+	const uint32_t *ts = cfg_language ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+	vdp_tiles_load_from_rom(ts + (2<<3), TILE_HUDINDEX + 10, 4);
+	vdp_tiles_load_from_rom(ts + (10<<3), TILE_HUDINDEX + 18, 4);
 	// Weapons
 	y = top + 3;
-	//VDP_drawTextWindow("--ARMS--", 4, y++);
-	DRAW_LETTER(20,4,y);
-	DRAW_LETTER(20,5,y);
+	// --ARMS-- or --ぶき--
+	DRAW_LETTER(17,4,y);
+	DRAW_LETTER(17,5,y);
 	DRAW_LETTER(10,6,y);
 	DRAW_LETTER(11,7,y);
 	DRAW_LETTER(12,8,y);
 	DRAW_LETTER(13,9,y);
-	DRAW_LETTER(20,10,y);
-	DRAW_LETTER(20,11,y);
+	DRAW_LETTER(17,10,y);
+	DRAW_LETTER(17,11,y);
 	y++;
 	MUSIC_TICK();
 	for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
@@ -270,52 +260,44 @@ void draw_itemmenu(uint8_t resetCursor) {
 		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+2), x+1, y);
 		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+1), x,   y+1);
 		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+3), x+1, y+1);
-		// Level
-		//char str[6];
-		//sprintf(str, "Lv %hu", w->level);
-		//VDP_drawTextWindow(str, x, y+2);
+		// Lv
 		DRAW_LETTER(14,			x,	y+2);
 		DRAW_LETTER(15,			x+1,y+2);
 		DRAW_LETTER(w->level,	x+3,y+2);
 		
 		// Ammo & Max Ammo
 		if(w->maxammo) {
-			//sprintf(str, " %3hu", w->ammo);
-			//VDP_drawTextWindow(str, x, y+3);
-			//sprintf(str, "/%3hu", w->maxammo);
-			//VDP_drawTextWindow(str, x, y+4);
 			uint8_t ammo = w->ammo;
-			DRAW_LETTER(ammo % 10, 			x+3, y+3);
-			DRAW_LETTER((ammo / 10) % 10, 	x+2, y+3);
+			DRAW_LETTER(mod10[ammo], 		x+3, y+3);
+			DRAW_LETTER(mod10[div10[ammo]], x+2, y+3);
 			if(ammo >= 100) DRAW_LETTER(1, 	x+1, y+3);
 			ammo = w->maxammo;
-			DRAW_LETTER(ammo % 10, 			x+3, y+4);
-			DRAW_LETTER((ammo / 10) % 10, 	x+2, y+4);
+			DRAW_LETTER(mod10[ammo], 		x+3, y+4);
+			DRAW_LETTER(mod10[div10[ammo]], x+2, y+4);
 			if(ammo >= 100) DRAW_LETTER(1, 	x+1, y+4);
 			DRAW_LETTER(16,	x,	y+4);
 		} else {
-			//VDP_drawTextWindow("  --", x, y+3);
-			//VDP_drawTextWindow("/ --", x, y+4);
-			DRAW_LETTER(20,	x+2,y+3);
-			DRAW_LETTER(20,	x+3,y+3);
-			
+			//   --
+			DRAW_LETTER(17,	x+2,y+3);
+			DRAW_LETTER(17,	x+3,y+3);
+			// / --
 			DRAW_LETTER(16,	x,	y+4);
-			DRAW_LETTER(20,	x+2,y+4);
-			DRAW_LETTER(20,	x+3,y+4);
+			DRAW_LETTER(17,	x+2,y+4);
+			DRAW_LETTER(17,	x+3,y+4);
 		}
 		MUSIC_TICK();
 	}
 	// Items
 	y = top + 10;
-	//VDP_drawTextWindow("--ITEM--", 4, y);
-	DRAW_LETTER(20,4,y);
-	DRAW_LETTER(20,5,y);
-	DRAW_LETTER(17,6,y);
-	DRAW_LETTER(18,7,y);
-	DRAW_LETTER(19,8,y);
-	DRAW_LETTER(12,9,y);
-	DRAW_LETTER(20,10,y);
-	DRAW_LETTER(20,11,y);
+	// --ITEM-- or --もちもの--
+	DRAW_LETTER(17,4,y);
+	DRAW_LETTER(17,5,y);
+	DRAW_LETTER(18,6,y);
+	DRAW_LETTER(19,7,y);
+	DRAW_LETTER(20,8,y);
+	DRAW_LETTER(21,9,y);
+	DRAW_LETTER(17,10,y);
+	DRAW_LETTER(17,11,y);
 	uint8_t held = 0;
 	for(uint16_t i = 0; i < MAX_ITEMS; i++) {
 		//playerInventory[i] = 35; // :^)

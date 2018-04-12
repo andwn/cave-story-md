@@ -67,14 +67,14 @@ static const MissileSettings missile_settings[2][6] = {
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
 	//    maxspd        accel        range, time
-		{ 0xA00*5/6,  0x80*50/60,  16,	10,	},
-		{ 0xA00*5/6,  0x100*50/60, 32,	15,	},
-		{ 0xA00*5/6,  0x80*50/60,  40,	5,	},
+		{ 0xA00*5/6,  0x80*5/6,  16,	10,	},
+		{ 0xA00*5/6,  0x100*5/6, 32,	15,	},
+		{ 0xA00*5/6,  0x80*5/6,  40,	5,	},
 	//  Level 1-3 super missile
 	//    maxspd        accel        range, time
-		{ 0x1400*5/6, 0x200*50/60, 16,	10,	},
-		{ 0x1400*5/6, 0x200*50/60, 32,	16,	},
-		{ 0x1400*5/6, 0x200*50/60, 40,	4, },
+		{ 0x1400*5/6, 0x200*5/6, 16,	10,	},
+		{ 0x1400*5/6, 0x200*5/6, 32,	16,	},
+		{ 0x1400*5/6, 0x200*5/6, 40,	4, },
 	}, { // PAL
 	//  Level 1-3 regular missile
 	//  have on record here for damage 4, 6, 4; check if that's correct
@@ -94,7 +94,7 @@ static const MissileSettings missile_settings[2][6] = {
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
 
-static void set_extent_box(Bullet *b) {
+static inline void set_extent_box(Bullet *b) {
 	b->extent = (extent_box) {
 		.x1 = (b->x >> CSF) - (b->hit_box.left),
 		.y1 = (b->y >> CSF) - (b->hit_box.top),
@@ -540,6 +540,7 @@ void weapon_fire_nemesis(Weapon *w) {
 	b->level = w->level;
 	b->sheet = w->sheet;
 	b->ttl = TIME_8(20);
+	b->state = 0;
 	uint16_t speed = 0;
 	switch(b->level) {
 		case 1:
@@ -1016,7 +1017,8 @@ void bullet_update_supermissile(Bullet *b) {
 
 void bullet_update_nemesis(Bullet *b) {
 	b->ttl--;
-	b->sprite.attr += (b->ttl & 1) ? -6 : 6;
+	b->state ^= 1;
+	b->sprite.attr += b->state ? 6 : -6;
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 

@@ -435,14 +435,9 @@ vdp_sprite_add(&teleMenuSprite[7]);
 }
 
 static void tsc_render_warp_text() {
-	uint8_t text[8][TILE_SIZE];
-	static const char string[8] = "--WARP--";
-	// Copy tiles for ascii string "--WARP--" into memory
-	for(uint8_t i = 0; i < 8; i++) {
-		memcpy(text[i], &TS_SysFont.tiles[(string[i] - 0x20) * 8], TILE_SIZE);
-	}
+	const uint32_t *ts = cfg_language ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	// Copy our string to VRAM
-	DMA_doDma(DMA_VRAM, (uint32_t) text[0], TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
+	DMA_queueDma(DMA_VRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
 	// Create sprites to display the string
 	teleMenuSprite[6] = (VDPSprite) { 
 		.x = 160 - 32 + 128, .y = 32 + 128,
@@ -1280,14 +1275,14 @@ uint8_t execute_command() {
 			//	curCommand--;
 			//	return 1;
 			//}
-			if(window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
+			if(cmd == '\n' || window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);
 				} else {
 					window_draw_char(cmd);
 				}
 				if(cfg_msg_blip && !(cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) 
-						&& window_get_textmode() == TM_NORMAL) {
+						&& window_get_textmode() == TM_NORMAL && cmd != '\n') {
 					sound_play(SND_MSG, 2);
 				}
 			} else {

@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "hud.h"
 #include "joy.h"
+#include "kanji.h"
 #include "memory.h"
 #include "npc.h"
 #include "player.h"
@@ -39,15 +40,39 @@ static void draw_cursor_mode(uint8_t mode) {
 	}
 }
 
+static uint16_t GetNextChar(uint16_t stage, uint16_t index) {
+	uint16_t chr = JStageName[(stage << 4) + index];
+	if(chr >= 0xE0 && chr < 0xFF) {
+		return (chr - 0xE0) * 0x60 + (JStageName[(stage << 4) + index + 1] - 0x20) + 0x100;
+	} else {
+		return chr;
+	}
+}
+
 static uint8_t refresh_file(uint8_t index) {
 	uint16_t y = 4 + index * 5;
 	SaveEntry file;
 	
 	system_peekdata(index, &file);
 	vdp_text_clear(VDP_PLAN_A, 6, y, 16); // Erase any previous stage name text
+	if(cfg_language) vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
 	if(file.used) {
 		// Map name
-		vdp_puts(VDP_PLAN_A, stage_info[file.stage_id].name, 6, y);
+		if(cfg_language) {
+			uint16_t x = 6;
+			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
+			uint16_t name_index = 0;
+			while(name_index < 16) {
+				uint16_t c = GetNextChar(file.stage_id, name_index++);
+				if(c == 0) break; // End of string
+				if(c > 0xFF) name_index++;
+				kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
+				x += 2;
+				tile_index += 4;
+			}
+		} else {
+			vdp_puts(VDP_PLAN_A, stage_info[file.stage_id].name, 6, y);
+		}
 		// Play time
 		char timeStr[10] = {};
 		sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
@@ -90,7 +115,14 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+3), x+1, y+3);
 		}
 	} else {
-		vdp_puts(VDP_PLAN_A, "New Game", 6, y);
+		if(cfg_language) {
+			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
+			kanji_draw(VDP_PLAN_A, tile_index,   0x100+584, 6, y, 0, 1); // 新
+			kanji_draw(VDP_PLAN_A, tile_index+4, 0x100+61,  8, y, 0, 1); // し
+			kanji_draw(VDP_PLAN_A, tile_index+8, 0x100+42, 10, y, 0, 1); // い
+		} else {
+			vdp_puts(VDP_PLAN_A, "New Game", 6, y);
+		}
 		vdp_text_clear(VDP_PLAN_A, 26, y, 10);
 		vdp_text_clear(VDP_PLAN_A, 6, y+2, 8);
 		vdp_text_clear(VDP_PLAN_A, 24, y+2, 12);

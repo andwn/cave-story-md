@@ -99,7 +99,8 @@ void player_init() {
 	// Booster trail sprite tiles
 	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
-	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Air, 0, 0), TILE_AIRINDEX, 4);
+	const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
+	vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
 	airSprite[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
@@ -851,7 +852,7 @@ static void player_update_air_display() {
 		if(airDisplayTime == TIME_8(50)) {
 			draw_air_percent();
 		} else if(airDisplayTime & 4) {
-		vdp_sprites_add(airSprite, 2);
+			vdp_sprites_add(airSprite, 2);
 		}
 	} else {
 		airDisplayTime++;
