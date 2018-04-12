@@ -35,10 +35,9 @@ void ai_energy(Entity *e) {
 	}
 	e->timer++;
 	if((e->timer & 1) && collide_player(e)) {
-		//&& PLAYER_DIST_X(e, pixel_to_sub(7+e->display_box.left)) && PLAYER_DIST_Y(e, pixel_to_sub(7+e->display_box.top))) {
 		Weapon *w = &playerWeapon[currentWeapon];
-		if(w->level == 3 && w->energy + e->experience > 
-				weapon_info[w->type].experience[w->level-1]) {
+		if(w->type != WEAPON_SPUR && w->level == 3 && 
+				w->energy + e->experience > weapon_info[w->type].experience[w->level-1]) {
 			w->energy = weapon_info[w->type].experience[w->level-1];
 		} else {
 			w->energy += e->experience;

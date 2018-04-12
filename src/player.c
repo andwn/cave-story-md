@@ -5,6 +5,7 @@
 #include "dma.h"
 #include "effect.h"
 #include "entity.h"
+#include "hud.h"
 #include "joy.h"
 #include "kanji.h"
 #include "memory.h"
@@ -423,6 +424,7 @@ void player_update() {
 			}
 			w->level = 1;
 			w->energy = 0;
+			hud_force_energy();
 		}
 	} else if(shoot_cooldown) {
 		shoot_cooldown--;
@@ -754,8 +756,15 @@ static void player_update_booster() {
 	if((++player.timer2 >= TIME_8(5)) && !sputtering) {
 		player.timer2 = 0;
 		sound_play(SND_BOOSTER, 3);
-		effect_create_misc(playerBoostState == BOOST_08 ? EFF_BOOST8 : EFF_BOOST2, 
-				player.x >> CSF, (player.y >> CSF) + 6, FALSE);
+		switch(playerBoostState) {
+			case BOOST_08: effect_create_misc(EFF_BOOST8, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
+			case BOOST_HOZ: 
+				if(player.dir) effect_create_misc(EFF_BOOST2, (player.x >> CSF) - 12, (player.y >> CSF) + 2, 0); 
+				else effect_create_misc(EFF_BOOST2, (player.x >> CSF) + 12, (player.y >> CSF) + 2, 0); 
+			break;
+			case BOOST_UP: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
+			case BOOST_DOWN: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) - 4, 0); break;
+		}
 	}
 }
 

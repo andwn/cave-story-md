@@ -41,6 +41,7 @@ struct Bullet {
 	VDPSprite sprite;
 	bounding_box hit_box;
 	extent_box extent;
+	Entity *last_hit;
 	int32_t x, y;
 	int16_t x_speed, y_speed;
 	uint8_t type;

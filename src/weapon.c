@@ -581,6 +581,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
+	b->last_hit = NULL;
 	set_extent_box(b);
 }
 
@@ -1016,15 +1017,25 @@ void bullet_update_supermissile(Bullet *b) {
 }
 
 void bullet_update_nemesis(Bullet *b) {
-	b->ttl--;
-	b->state ^= 1;
-	b->sprite.attr += b->state ? 6 : -6;
-	b->x += b->x_speed;
-	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
-	vdp_sprite_add(&b->sprite);
+	uint8_t block = blk(b->x, 0, b->y, 0);
+	if(block == 0x41) {
+		b->ttl = 0;
+	} else if(block == 0x43) {
+		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+		sound_play(SND_BLOCK_DESTROY, 5);
+		b->ttl = 0;
+	} else {
+		b->ttl--;
+		b->state ^= 1;
+		b->sprite.attr += b->state ? 6 : -6;
+		b->x += b->x_speed;
+		b->y += b->y_speed;
+		sprite_pos(b->sprite, 
+			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
+			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
+		vdp_sprite_add(&b->sprite);
+	}
 }
 
 void bullet_update_spur(Bullet *b) {

@@ -378,8 +378,16 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			|| (b->type == WEAPON_BLADE && b->level == 3)) {
 		// Don't destroy Spur or Blade L3
 		b->hits++;
-		if(!(flags & NPC_INVINCIBLE) && !(e->damage_time) && b->damage < e->health) 
+		if(!(flags & NPC_INVINCIBLE) && !(e->damage_time) && b->damage < e->health) {
 			sound_play(e->hurtSound, 5);
+		}
+	} else if(b->type == WEAPON_NEMESIS && b->level < 3) {
+		if(b->last_hit != e) {
+			b->last_hit = e;
+			if(b->damage < e->health) sound_play(e->hurtSound, 5);
+		} else {
+			return;
+		}
 	} else {
 		b->ttl = 0;
 		if(flags & NPC_INVINCIBLE) {

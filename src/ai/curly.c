@@ -210,6 +210,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
+	b->last_hit = NULL;
 	set_extent_box(b);
 }
 

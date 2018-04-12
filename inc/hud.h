@@ -2,6 +2,7 @@
 void hud_create();
 
 void hud_force_redraw();
+void hud_force_energy(); // Force redraw but only for weapon energy
 // Makes the HUD visible
 void hud_show();
 // Hides the HUD (doesn't unload)

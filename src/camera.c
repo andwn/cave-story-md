@@ -97,14 +97,6 @@ void camera_update() {
 			y_next = camera.y +
 					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 5);
 		}
-		// Camera shaking
-		// stay within the same (pre-shake) 8x8 area to avoid pointless map redraw
-		if(cameraShake && (--cameraShake & 1)) {
-			int16_t x_shake = (random() & 0x7FF) - 0x400;
-			int16_t y_shake = (random() & 0x7FF) - 0x400;
-			if((x_next & 0xF000) == ((x_next + x_shake) & 0xF000)) x_next += x_shake;
-			if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
-		}
 	} else { // Camera isn't following anything
 		return;
 	}
@@ -128,6 +120,14 @@ void camera_update() {
 		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2)) {
 			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2);
 		}
+	}
+	// Camera shaking
+	// stay within the same (pre-shake) 8x8 area to avoid pointless map redraw
+	if(cameraShake && (--cameraShake & 1)) {
+		int16_t x_shake = (random() & 0x7FF) - 0x400;
+		int16_t y_shake = (random() & 0x7FF) - 0x400;
+		if((x_next & 0xF000) == ((x_next + x_shake) & 0xF000)) x_next += x_shake;
+		if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
 	}
 	// Shifted values
 	camera.x_shifted = (x_next >> CSF) - SCREEN_HALF_W;

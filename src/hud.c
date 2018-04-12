@@ -74,6 +74,10 @@ void hud_force_redraw() {
 	DMA_flushQueue();
 }
 
+void hud_force_energy() {
+	hudLevel = 9;
+}
+
 void hud_show() {
 	showing = TRUE;
 }
