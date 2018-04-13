@@ -698,11 +698,44 @@ void ai_ballos_skull(Entity *e) {
 }
 
 void ai_ballos_spikes(Entity *e) {
+	uint16_t x = sub_to_block(e->x) & ~1; // Even number
+	if(x >= stageWidth - 2) {
+		e->state = STATE_DELETE;
+		return;
+	}
 	if (++e->timer < 128) {
 		e->y -= 0x80;
 	} else {
-		stage_replace_block(sub_to_block(e->x), sub_to_block(e->y) - 1, 54);
-		stage_replace_block(sub_to_block(e->x) + 1, sub_to_block(e->y) - 1, 54);
+		// Need to use some special tiles which are blended with foreground objects
+		// Otherwise the bottom will look cut off and bad
+		uint16_t blk1 = 54, blk2 = 54;
+		switch(x) {
+			case 10: case 16: case 20: case 24: // Pillar
+			blk1 = 101;
+			blk2 = 102;
+			break;
+
+			case 30: case 34: // Pillar (left)
+			blk2 = 101;
+			break;
+
+			case 32: case 36: // Pillar (right)
+			blk1 = 102;
+			break;
+
+			case 26: // Throne (left)
+			blk2 = 103;
+			break;
+
+			case 28: // Throne (right)
+			blk1 = 104;
+			blk2 = 105;
+			break;
+		}
+		stage_replace_block(x, sub_to_block(e->y) - 1, blk1);
+		stage_replace_block(x + 1, sub_to_block(e->y) - 1, blk2);
+		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create_smoke(sub_to_pixel(e->x) + 16, sub_to_pixel(e->y));
 		e->state = STATE_DELETE;
 	}
 }

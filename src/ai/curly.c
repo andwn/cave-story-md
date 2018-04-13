@@ -173,8 +173,17 @@ static inline void set_extent_box(Bullet *b) {
 }
 
 static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
+	// There isn't any perfect part of the array that works with every weapon
+	// So use a different one depending on what the player is using
+	uint8_t start_index;
+	switch(playerWeapon[currentWeapon].type) {
+		case WEAPON_NEMESIS: case WEAPON_SUPERMISSILE: case WEAPON_MISSILE:
+		start_index = 0; 
+		break;
+		default: start_index = 8; break;
+	}
 	Bullet *b = NULL;
-	for(uint8_t i = 6; i < 8; i++) {
+	for(uint8_t i = start_index; i < start_index+2; i++) {
 		if(playerBullet[i].ttl > 0) continue;
 		b = &playerBullet[i];
 		break;
