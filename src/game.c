@@ -40,7 +40,7 @@ void game_main(uint8_t load) {
 	gamemode = GM_GAME;
 	
 	vdp_colors(0, PAL_FadeOut, 64);
-	vdp_color(15, 0x000);
+	//vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
 	if(!cfg_language) {
 		vdp_font_load(TS_MsgFont.tiles);
