@@ -99,7 +99,7 @@ boot.o:
 %.bin: %.elf
 	@echo "Stripping ELF header..."
 	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=8K conv=sync
+	@dd if=temp.bin of=$@ bs=8192 conv=sync
 	@rm -f temp.bin
 
 %.elf: boot.o $(PATS) $(OBJS)
