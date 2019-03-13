@@ -70,7 +70,7 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-		//{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
+		{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
 		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
 		{ 11, 12, AKI+180,MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },

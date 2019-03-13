@@ -2,6 +2,7 @@
                                 "move.l (0),%a7\n\t"     \
                                 "jmp    _hard_reset")
 
+// bool and stdint types
 #define FALSE   0
 #define TRUE    1
 #define NULL    0
