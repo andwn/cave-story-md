@@ -2,14 +2,10 @@
 ![Comparison Shot](doc/screen01.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
-This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis. It should work on any console or emulator*. The main story is "finished", only little things and bugfixes remain.
-
-(*) Genesis Plus GX crashes at startup. This is the only emulator known to have the issue.
+This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis. It should work on any console or emulator. The main story is "finished", only little things and bugfixes remain.
 
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
-
-For something more bleeding edge, try the [Nightly](http://www.cavestory.org/md/nightly.zip).
 
 ## Control Defaults
 If you have a 6 button controller:
