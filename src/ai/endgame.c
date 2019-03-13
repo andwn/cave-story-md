@@ -466,11 +466,11 @@ void onspawn_the_cast(Entity *e) {
 		uint16_t tile_offset = 0;
 		for(uint8_t i = 0; i < e->sprite_count; i++) {
 			e->sprite[i] = (VDPSprite) {
-				.size = f->vdpSpritesInf[i]->size,
+				.size = f->frameInfos[0].frameSprites[i]->size,
 				.attr = TILE_ATTR(npc_info[obj].palette,
 						0,0,0,e->vramindex + tile_offset)
 			};
-			tile_offset += f->vdpSpritesInf[i]->numTile;
+			tile_offset += f->frameInfos[0].frameSprites[i]->numTile;
 		}
 		e->oframe = 255;
 	}

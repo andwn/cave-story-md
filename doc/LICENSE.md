@@ -13,13 +13,13 @@ There are other bits and pieces I took, such as the booster code, proper speeds/
 
 ### Graphics, Story, and Characters - Property of Studio Pixel
 
-All created by Pixel, unless specified otherwise. I used them without permission. You absolutely can't use these in anything commercial. Nicalis owns the exclusive rights (in the west at least). Not to mention it would be pretty disrespectful to the original creator.
+All created by Pixel, unless specified otherwise. I used them without permission. You absolutely can't use these in anything commercial.
 
 ### Music Covers - [CC-BY-NC](https://creativecommons.org/licenses/by-nc/4.0/legalcode)
 
 Most of [these](../res/bgm/) are created by me in Deflemask and are CC-BY-NC (give me credit, and don't use it in a commercial product).
 
-A few were remade or modified DavisOlivier. No license was mentioned. Ask them if you want to use these in something:
+A few were remade or modified by DavisOlivier. No license was mentioned. Ask them if you want to use these in something:
 - Cave Story
 - Eyes of Flame
 - Gestation

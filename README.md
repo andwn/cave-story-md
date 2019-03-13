@@ -2,7 +2,7 @@
 ![Comparison Shot](doc/screen01.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
-This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis. It should work on any console or emulator*. It's fairly stable at this point but gets buggier as the game progresses.
+This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis. It should work on any console or emulator*. The main story is "finished", only little things and bugfixes remain.
 
 (*) Genesis Plus GX crashes at startup. This is the only emulator known to have the issue.
 
@@ -39,25 +39,18 @@ Note that you can't load or save the game while cheating (including the counter)
 To learn MD dev mostly.
 
 #### Why not SNES?
-I'm not very interested in developing for that console. Why not give it a shot yourself?
+While I think the SNES could possibly run CS, I'm not very interested in developing for that console.
+Why not give it a shot yourself? With enough patience it could be a fun project.
 
 ### When is the next release?
 Soon(tm)
 
-### I bought a cartridge of this and-
-There is no cartridge release, and I have nothing to do with anyone who makes them. All are bootlegs, the game isn't even complete.
-
-#### When will you release this on cart then?
-Never. Unless I am given both Pixel's and Nicalis' blessing.
-
-#### Hello, (2 paragraphs of sucking up). By the way can I sell this on cartridge?
-I can't stop you but I'm also not the one you should be asking. See the question right above this one. They can stop you.
+### Any physical release?
+There is no cartridge release. You could make your own if you want, but don't sell it.
+I am not responsible for issues you have with some bootleg cart.
 
 ### Can you add new languages and game modes and redo the soundtrack? Also port Jenka's Nightmare next
 [Uhh bye](https://twitter.com/plum_0313/status/981489218198237184)
-
-#### But you added X so Y should be easy
-An easy time sink that I could instead spend not being bored out of my mind with payless work.
 
 ## License
 Various, details [here](doc/LICENSE.md)

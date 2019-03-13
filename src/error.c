@@ -126,9 +126,9 @@ void _error() {
 	
 	// Message
 	x = 2; y = 23;
-	vdp_puts(VDP_PLAN_A, "This shouldn't happen. Report it!", x, y++);
-	vdp_puts(VDP_PLAN_A, "andy@skychase.zone", x + 8, y++);
-	vdp_puts(VDP_PLAN_A, "twitter.com/donutgrind", x + 8, y++);
+	//vdp_puts(VDP_PLAN_A, "This shouldn't happen. Report it!", x, y++);
+	//vdp_puts(VDP_PLAN_A, "andy@skychase.zone", x + 8, y++);
+	//vdp_puts(VDP_PLAN_A, "twitter.com/donutgrind", x + 8, y++);
 	
 	// R.I.P
 	while(TRUE);
