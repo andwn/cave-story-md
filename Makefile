@@ -68,13 +68,12 @@ ASMO  = $(CS:%.c=asmout/%.s)
 all: release
 pal: release
 
-release: OPTIONS  = -Ofast -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-release: OPTIONS += -frename-registers -fshort-enums
-release: OPTIONS += -flto -fuse-linker-plugin
+release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
 release: main-build symbol.txt
 
-asm: OPTIONS  = -Ofast -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-asm: OPTIONS += -frename-registers -fshort-enums
+asm: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+asm: OPTIONS += -fshort-enums
 asm: head-gen asm-dir $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
@@ -119,16 +118,19 @@ boot.o:
 	$(BINTOS) $<
 
 # Old SGDK tools
-$(BINTOS):
+bin:
+	mkdir -p bin
+
+$(BINTOS): bin
 	cc tools/bintos/src/*.c -o $@
 	
-$(RESCOMP):
+$(RESCOMP): bin
 	cc tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
 
-$(XGMTOOL):
+$(XGMTOOL): bin
 	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@
 
-$(WAVTORAW):
+$(WAVTORAW): bin
 	cc tools/wavtoraw/src/*.c -o $@
 
 # For asm target
