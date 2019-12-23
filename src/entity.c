@@ -102,7 +102,7 @@ void entity_reactivate(Entity *e) {
 			uint16_t tile_offset = 0;
 			for(uint8_t i = 0; i < e->sprite_count; i++) {
 				sprite_index(e->sprite[i], e->vramindex + tile_offset);
-				tile_offset += f->frameInfos[0].frameSprites[i]->numTile;
+				tile_offset += f->vdpSpritesInf[i]->numTile;
 			}
 			e->oframe = 255;
 		}
@@ -901,11 +901,11 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 				uint16_t tile_offset = 0;
 				for(uint8_t i = 0; i < e->sprite_count; i++) {
 					e->sprite[i] = (VDPSprite) {
-						.size = f->frameInfos[0].frameSprites[i]->size,
+						.size = f->vdpSpritesInf[i]->size,
 						.attr = TILE_ATTR(npc_info[type].palette,0,0,0,
 								e->vramindex + tile_offset)
 					};
-					tile_offset += f->frameInfos[0].frameSprites[i]->numTile;
+					tile_offset += f->vdpSpritesInf[i]->numTile;
 				}
 				e->oframe = 255;
 			}

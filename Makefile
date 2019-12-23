@@ -11,18 +11,14 @@ OBJC = $(MARSBIN)/m68k-elf-objcopy
 # Z80 Assembler to build XGM driver
 ASMZ80   = $(TOOLSBIN)/sjasm
 # SGDK Tools
-BINTOS   = $(TOOLSBIN)/bintos
-LZ4W     = java -jar $(TOOLSBIN)/lz4w.jar
-RESCOMP  = $(TOOLSBIN)/rescomp
-WAVTORAW = $(TOOLSBIN)/wavtoraw
-XGMTOOL  = $(TOOLSBIN)/xgmtool
+BINTOS   = bin/bintos
+RESCOMP  = bin/rescomp
+WAVTORAW = bin/wavtoraw
+XGMTOOL  = bin/xgmtool
 # Sik's Tools
 MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
-ifeq ($(shell test -e $(MDTILER) || echo -n no),no)
-    MDTILER = bin/mdtiler
-endif
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -87,7 +83,7 @@ debug: main-build symbol.txt
 
 main-build: prereq head-gen doukutsu.bin
 
-prereq: $(LIBPNG) $(MDTILER)
+prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
@@ -121,6 +117,19 @@ boot.o:
 
 %.s: %.o80
 	$(BINTOS) $<
+
+# Old SGDK tools
+$(BINTOS):
+	cc tools/bintos/src/*.c -o $@
+	
+$(RESCOMP):
+	cc tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
+
+$(XGMTOOL):
+	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@
+
+$(WAVTORAW):
+	cc tools/wavtoraw/src/*.c -o $@
 
 # For asm target
 asm-dir:

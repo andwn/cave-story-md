@@ -180,7 +180,7 @@ typedef struct {
 } TileSet;
 
 typedef struct {
-    //uint16_t index;
+    uint16_t index;
     uint16_t length;
     uint16_t *data;
 } Palette;
@@ -203,18 +203,12 @@ typedef struct {
     uint16_t size;
     int16_t x;
     uint16_t numTile;
-} FrameVDPSprite;
-
-typedef struct {
-    FrameVDPSprite** frameSprites;
-    uint32_t UNUSED_collision;
-} FrameInfo;
+} VDPSpriteInf;
 
 typedef struct {
     uint16_t numSprite;
-    FrameInfo frameInfos[4];
-    //VDPSpriteInf **vdpSpritesInf;
-    //uint32_t UNUSED_collision;
+	VDPSpriteInf **vdpSpritesInf;
+    uint32_t UNUSED_collision;
     TileSet *tileset;
     int16_t w;
     int16_t h;
