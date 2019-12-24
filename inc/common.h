@@ -56,20 +56,19 @@ const int16_t *speed_tab;
 
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
-#define TIME(x) (((x) < 0x100) ? (time_tab[x]) : (time_tab[(x) >> 4] << 4))
-#define SPEED(x) (((x) < 0x100) ? (speed_tab[x]) : (speed_tab[(x) >> 4] << 4))
+#define TIME(x) (((x) < 0x400) ? (time_tab[x]) : (time_tab[(x) >> 2] << 2))
+#define SPEED(x) (((x) < 0x400) ? (speed_tab[x]) : (speed_tab[(x) >> 2] << 2))
 
 // These are like the above without the branching, when you know what the
 // range of possible values of X will be
-// 0x000-0x0FF
+// 0x000-0x3FF
 #define TIME_8(x) (time_tab[x])
 #define SPEED_8(x) (speed_tab[x])
-// 0x000-0x3FF, 4 frames/units of inaccuracy
-#define TIME_10(x) (time_tab[(x) >> 2] << 2)
-#define SPEED_10(x) (speed_tab[(x) >> 2] << 2)
-// 0x000-0xFFF, 16 frames/units of inaccuracy
-#define TIME_12(x) (time_tab[(x) >> 4] << 4)
-#define SPEED_12(x) (speed_tab[(x) >> 4] << 4)
+#define TIME_10(x) TIME_8(x)
+#define SPEED_10(x) SPEED_8(x)
+// 0x000-0xFFF, 4 frames/units of inaccuracy
+#define TIME_12(x) (time_tab[(x) >> 2] << 2)
+#define SPEED_12(x) (speed_tab[(x) >> 2] << 2)
 
 // Div/mod tables to help math when displaying digits
 const uint8_t div10[0x400];

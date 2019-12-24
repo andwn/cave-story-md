@@ -101,12 +101,12 @@ void player_init() {
 	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
 	const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
-	vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
+	vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
 	airSprite[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
 	};
-	airSprite[1] = (VDPSprite){
+	airSprite[1] = (VDPSprite) {
 		.x = SCREEN_HALF_W + 8 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
