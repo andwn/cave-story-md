@@ -238,7 +238,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 uint8_t set_page(uint8_t page) {
 	uint8_t numItems = 0;
 	
-	vdp_set_display(FALSE);
+	//vdp_set_display(FALSE);
 	vdp_map_clear(VDP_PLAN_A);
 	
 	switch(page) {
@@ -271,7 +271,7 @@ uint8_t set_page(uint8_t page) {
 		}
 	}
 
-	vdp_set_display(TRUE);
+	//vdp_set_display(TRUE);
 	
 	return numItems;
 }
@@ -317,13 +317,13 @@ void config_main() {
 		} else if(joy_pressed(BUTTON_LEFT)) {
 			if(--page >= NUM_PAGES) page = NUM_PAGES - 1;
 			cursor = 0;
+            sound_play(SND_MENU_MOVE, 0);
 			set_page(page);
-			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_RIGHT)) {
 			if(++page >= NUM_PAGES) page = 0;
 			cursor = 0;
+            sound_play(SND_MENU_MOVE, 0);
 			set_page(page);
-			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(btn[cfg_btn_jump])) {
 			if(menu[page][cursor].type == MI_RETURN) break;
 			press_menuitem(&menu[page][cursor], page, &sprCursor);
