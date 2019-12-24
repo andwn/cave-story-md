@@ -2,6 +2,9 @@
                                 "move.l (0),%a7\n\t"     \
                                 "jmp    _hard_reset")
 
+#define enable_ints __asm__("move #0x2500,%sr")
+#define disable_ints __asm__("move #0x2700,%sr")
+
 // bool and stdint types
 #define FALSE   0
 #define TRUE    1
@@ -46,11 +49,10 @@ uint8_t FPS;
 
 // The original Cave Story is 50 FPS, and an MD can either run at 50 or 60 FPS
 // depending on region. To try and keep the speed of the game (mostly) the same,
-// a table for time and speed adjustments are loaded in memory. On PAL, the values
-// just match the index, and on NTSC they are roughly index*5/6 for speed and 
-// index*6/5 for time respectively.
-uint16_t time_tab[0x100];
-int16_t speed_tab[0x100];
+// a table for time and speed are used. On PAL, the values just match the index,
+// and on NTSC they are roughly index*5/6 for speed and index*6/5 for time respectively.
+const uint16_t *time_tab;
+const int16_t *speed_tab;
 
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)

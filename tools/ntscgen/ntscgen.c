@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#define TABLE_SIZE	0x100
+#define TABLE_SIZE	0x400
 #define COLUMNS		8
 
 int truncate(double x) {
@@ -9,8 +9,9 @@ int truncate(double x) {
 }
 
 int main() {
-	printf("#include \"stdint.h\"\n\n");
-	printf("const uint16_t time_tab_ntsc[0x%x] = {\n", TABLE_SIZE);
+	printf("#include <stdint.h>\n\n");
+	// NTSC Time/Speeds
+	printf("const uint16_t time_tab_ntsc[0x%X] = {\n", TABLE_SIZE);
 	for(int i = 0; i < TABLE_SIZE; i += 8) {
 		printf("\t");
 		for(int j = i; j < i + 8; j++) {
@@ -20,13 +21,28 @@ int main() {
 		printf("\n");
 	}
 	printf("};\n\n");
-	printf("const uint16_t speed_tab_ntsc[0x%x] = {\n", TABLE_SIZE);
+	printf("const uint16_t speed_tab_ntsc[0x%X] = {\n", TABLE_SIZE);
 	for(int i = 0; i < TABLE_SIZE; i += 8) {
 		printf("\t");
 		for(int j = i; j < i + 8; j++) {
 			double speed = ((double)j) * 5.0 / 6.0;
 			printf("0x%04x, ", truncate(speed));
 		}
+		printf("\n");
+	}
+	printf("};\n\n");
+	// PAL Time/Speeds (same as index)
+	printf("const uint16_t time_tab_pal[0x%X] = {\n", TABLE_SIZE);
+	for(int i = 0; i < TABLE_SIZE; i += 8) {
+		printf("\t");
+		for(int j = i; j < i + 8; j++) printf("0x%04X, ", j);
+		printf("\n");
+	}
+	printf("};\n\n");
+	printf("const uint16_t speed_tab_pal[0x%X] = {\n", TABLE_SIZE);
+	for(int i = 0; i < TABLE_SIZE; i += 8) {
+		printf("\t");
+		for(int j = i; j < i + 8; j++) printf("0x%04x, ", j);
 		printf("\n");
 	}
 	printf("};\n\n");
