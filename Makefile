@@ -59,7 +59,9 @@ OBJS += $(Z80S:.s80=.o)
 OBJS += $(CS:.c=.o)
 OBJS += $(SS:.s=.o)
 
-ASMO  = $(CS:%.c=asmout/%.s)
+ASMO  = $(RESS:.res=.o)
+ASMO += $(Z80S:.s80=.o)
+ASMO += $(CS:%.c=asmout/%.s)
 
 .SECONDARY: doukutsu.elf
 
@@ -74,7 +76,7 @@ release: main-build symbol.txt
 
 asm: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 asm: OPTIONS += -fshort-enums
-asm: head-gen asm-dir $(ASMO)
+asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
 debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG

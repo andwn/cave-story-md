@@ -1228,7 +1228,7 @@ uint8_t execute_command() {
 			vdp_set_display(TRUE);
 
 			song_stop();
-			xgm_vblank();
+			//xgm_vblank();
 			
 			uint16_t t = TIME_10(350);
 			while(--t) {

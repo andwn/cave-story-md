@@ -19,7 +19,7 @@ extern const uint16_t time_tab_ntsc[0x100];
 extern const uint16_t speed_tab_ntsc[0x100];
 
 void aftervsync() {
-	xgm_vblank();
+	//xgm_vblank();
 	DMA_flushQueue();
 	vdp_fade_step();
 	dqueued = FALSE;
@@ -33,16 +33,13 @@ void aftervsync() {
 }
 
 int main() {
-	// initiate random number generator
-    setRandomSeed(0xC427);
-    // enable interrupts
-    __asm__("move #0x2500,%sr");
-    // init part
+    setRandomSeed(0xC427); // initiate random number generator
     mem_init();
     vdp_init();
     DMA_init(0, 0);
-    joy_init();
     xgm_init();
+    __asm__("move #0x2500,%sr"); // enable interrupts
+	joy_init();
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
 		for(uint16_t i = 0; i < 0x100; i++) {

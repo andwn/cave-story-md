@@ -85,6 +85,8 @@ void vdp_init() {
 	vdp_font_load(TS_SysFont.tiles);
 	vdp_color(1, 0x000);
 	vdp_color(15, 0xEEE);
+	// Put blank tile in index 0
+	vdp_tiles_load(TILE_BLANK, 0, 1);
 }
 
 void vdp_vsync() {
@@ -253,7 +255,7 @@ void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t 
     if(!async) {
         while(vdp_fade_step()) {
 			vdp_vsync();
-			xgm_vblank();
+			//xgm_vblank();
 		}
     }
 }

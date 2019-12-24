@@ -36,7 +36,7 @@ void song_play(uint8_t id) {
 	if(cfg_music_mute && gamemode != GM_SOUNDTEST) {
 		if(songPlaying) {
 			xgm_music_stop();
-			xgm_vblank();
+			//xgm_vblank();
 			songPlaying = 0;
 		}
 		return;
@@ -47,7 +47,7 @@ void song_play(uint8_t id) {
 	if(song_info[id].song == NULL) {
 		id = 0;
 		xgm_music_stop();
-		xgm_vblank();
+		//xgm_vblank();
 	} else {
 		xgm_music_play(song_info[id].song);
 	}

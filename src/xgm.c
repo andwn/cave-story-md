@@ -7,9 +7,9 @@
 static const uint8_t smp_null[0x100] __attribute__((aligned(256))) = {};
 
 // Variables
-static uint16_t xgmTempo;
-static uint16_t xgmTempoDef;
-static int16_t xgmTempoCnt;
+extern volatile uint16_t xgmTempo;
+extern volatile uint16_t xgmTempoDef;
+extern volatile int16_t xgmTempoCnt;
 
 // default command and status value
 #define Z80_DRV_COM_PLAY                1
@@ -242,7 +242,7 @@ void xgm_pcm_play(const uint8_t id, const uint8_t priority, const uint16_t chann
     *z80_drv_command |= (Z80_DRV_COM_PLAY << channel);
     z80_release();
 }
-
+/*
 // VInt processing for XGM driver
 void xgm_vblank() {
     int16_t cnt = xgmTempoCnt;
@@ -277,3 +277,4 @@ void xgm_vblank() {
     // release bus
     *z80_halt_port = 0x0000;
 }
+*/

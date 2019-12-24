@@ -74,12 +74,10 @@ void stage_load(uint16_t id) {
 	water_entity = NULL;
 	bossEntity = NULL;
 	
-	MUSIC_TICK();
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
 		stage_load_tileset();
-		MUSIC_TICK();
 	}
 	// Load sprite sheets
 #if DEBUG
@@ -87,21 +85,20 @@ void stage_load(uint16_t id) {
 		vdp_color(0, 0xE00);
 		while(!joy_pressed(BUTTON_C)) {
 			vdp_vsync();
-			xgm_vblank();
+			//xgm_vblank();
 			joy_update();
 		}
 		vdp_color(0, 0);
 	}
 #endif
 	sheets_load_stage(id, FALSE, TRUE);
-	MUSIC_TICK();
 	// Load backgrounds
 #if DEBUG
 	if(joy_down(BUTTON_A)) {
 		vdp_color(0, 0x0E0);
 		while(!joy_pressed(BUTTON_C)) {
 			vdp_vsync();
-			xgm_vblank();
+			//xgm_vblank();
 			joy_update();
 		}
 		vdp_color(0, 0);
@@ -147,7 +144,6 @@ void stage_load(uint16_t id) {
 			vdp_set_backcolor(32);
 			stage_draw_moonback();
 		}
-		MUSIC_TICK();
 	}
 	// Load stage PXM into RAM
 #if DEBUG
@@ -155,24 +151,20 @@ void stage_load(uint16_t id) {
 		vdp_color(0, 0x00E);
 		while(!joy_pressed(BUTTON_C)) {
 			vdp_vsync();
-			xgm_vblank();
+			//xgm_vblank();
 			joy_update();
 		}
 		vdp_color(0, 0);
 	}
 #endif
 	stage_load_blocks();
-	MUSIC_TICK();
 	// Move camera to player's new position
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
-	MUSIC_TICK();
 	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
-	MUSIC_TICK();
 	stage_load_entities(); // Create entities defined in the stage's PXE
-	MUSIC_TICK();
 	// For rooms where the boss is always loaded
 	if(stageBackgroundType == 3) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
@@ -186,10 +178,8 @@ void stage_load(uint16_t id) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
 	DMA_flushQueue();
-	MUSIC_TICK();
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
-	MUSIC_TICK();
 	vdp_set_display(TRUE);
 }
 
@@ -208,23 +198,15 @@ void stage_load_credits(uint8_t id) {
 	}
 	
 	vdp_set_display(FALSE);
-	MUSIC_TICK();
 	stageTileset = stage_info[id].tileset;
 	stage_load_tileset();
-	MUSIC_TICK();
 	sheets_load_stage(id, FALSE, TRUE);
-	MUSIC_TICK();
 	//vdp_colors_next(32, tileset_info[stageTileset].palette->data, 16);
 	stage_load_blocks();
-	MUSIC_TICK();
 	stage_draw_screen_credits();
-	MUSIC_TICK();
 	stage_load_entities();
-	MUSIC_TICK();
 	DMA_flushQueue();
-	MUSIC_TICK();
 	tsc_load_stage(id);
-	MUSIC_TICK();
 	vdp_set_display(TRUE);
 }
 
@@ -307,7 +289,7 @@ void stage_load_entities() {
 			
 			while(!joy_pressed(BUTTON_C)) {
 				vdp_vsync();
-				xgm_vblank();
+				//xgm_vblank();
 				joy_update();
 				vdp_hscroll(VDP_PLAN_A, 0);
 				vdp_vscroll(VDP_PLAN_A, 0);

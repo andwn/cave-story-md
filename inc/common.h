@@ -35,13 +35,6 @@ typedef uint32_t u32;
 #define PF_BGCOLOR(c) ({})
 #endif
 
-#define MUSIC_TICK() ({ \
-	if(vblank) { \
-		xgm_vblank(); \
-		vblank = 0; \
-	} \
-})
-
 // Screen size
 #define SCREEN_WIDTH 320
 #define SCREEN_HALF_W 160

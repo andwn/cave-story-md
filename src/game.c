@@ -95,9 +95,7 @@ void game_main(uint8_t load) {
 				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+9,1);
 				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+12,1);
 				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+13,1);
-				MUSIC_TICK();
 				sheets_load_stage(stageID, TRUE, FALSE);
-				MUSIC_TICK();
 				player_draw();
 				entities_draw();
 				hud_show();
@@ -212,13 +210,11 @@ void draw_itemmenu(uint8_t resetCursor) {
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), 2, y, 36, 1, 0);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
 
-	MUSIC_TICK();
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
 	vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
 	// Redraw message box at the bottom of the screen
 	window_open(FALSE);
-	MUSIC_TICK();
 	// Load tiles for the font letters
 #define LOAD_LETTER(c,in) (vdp_tiles_load_from_rom(TS_MsgFont.tiles+((c-0x20)<<3),      \
 						   TILE_HUDINDEX+in,1))
@@ -247,7 +243,6 @@ void draw_itemmenu(uint8_t resetCursor) {
 	DRAW_LETTER(17,10,y);
 	DRAW_LETTER(17,11,y);
 	y++;
-	MUSIC_TICK();
 	for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
 		Weapon *w = &playerWeapon[i];
 		if(!w->type) continue;
@@ -285,7 +280,6 @@ void draw_itemmenu(uint8_t resetCursor) {
 			DRAW_LETTER(17,	x+2,y+4);
 			DRAW_LETTER(17,	x+3,y+4);
 		}
-		MUSIC_TICK();
 	}
 	// Items
 	y = top + 10;
@@ -323,7 +317,6 @@ void draw_itemmenu(uint8_t resetCursor) {
 		} else {
 			itemSprite[i] = (VDPSprite) {};
 		}
-		MUSIC_TICK();
 	}
 	// Draw item cursor at first index (default selection)
 	if(resetCursor) {
@@ -528,10 +521,10 @@ void do_map() {
 			} else {
 				vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,TILE_SHEETINDEX+(result-1)), mapx+x, mapy+y);
 			}
-			if(vblank) {
-				xgm_vblank();
-				vblank = 0;
-			}
+			//if(vblank) {
+			//	xgm_vblank();
+			//	vblank = 0;
+			//}
 		}
 		ready = TRUE;
 		vdp_vsync(); aftervsync();
