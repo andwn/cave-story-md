@@ -130,10 +130,10 @@ $(RESCOMP): bin
 	cc tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
 
 $(XGMTOOL): bin
-	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@
+	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@ -lm
 
 $(WAVTORAW): bin
-	cc tools/wavtoraw/src/*.c -o $@
+	cc tools/wavtoraw/src/*.c -o $@ -lm
 
 # For asm target
 asm-dir:
