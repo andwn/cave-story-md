@@ -75,7 +75,7 @@ void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) 
 			bmp[i] = BMP_Ascii + (c[i] << 5);
 		}
 		// Convert chunks to 4bpp tiles, using a set foreground and background color
-		uint32_t tiles[TILECHAR_LONGS];
+		volatile uint32_t tiles[TILECHAR_LONGS];
 		// Sprite tiles are up->down before left->right so fix the order
 		static const uint8_t order[32] = {
 			0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23,
@@ -88,7 +88,7 @@ void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) 
 			tiles[k] = 0;
             do {
 				column--;
-                // Palette indeces: 15 is white, 2 is texbox blue, 1 is black, 0 is transparency
+                // Palette indices: 15 is white, 2 is textbox blue, 1 is black, 0 is transparency
                 uint8_t pixel = row & (1 << column);
                 uint32_t color = pixel ? 15 : (last ? 1 : 0);
                 last = pixel;

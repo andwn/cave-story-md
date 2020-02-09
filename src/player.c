@@ -785,58 +785,75 @@ static uint16_t GetNextChar(uint8_t index) {
 	}
 }
 
+static void show_map_jname(uint8_t ttl) {
+    uint16_t len = 0;
+    uint16_t i = 0;
+    while(i < 16) {
+        uint16_t chr1 = GetNextChar(i++);
+        if(chr1 == 0) break; // End of string
+        if(chr1 > 0xFF) i++;
+        uint16_t chr2 = GetNextChar(i++);
+        if(chr2 > 0xFF) i++;
+        kanji_loadtilesforsprite(GetKanjiIndex(len), chr1, chr2);
+        len += chr2 ? 2 : 1;
+    }
+    if(!len) return;
+    mapNameSpriteNum = 0;
+    uint16_t x = SCREEN_HALF_W - (len<<3) + 128;
+    uint16_t y = SCREEN_HALF_H - 32 + 128;
+    for(i = 0; i < len; i += 2) {
+        uint16_t sind = i>>1;
+        uint16_t tind = i<<2;
+        mapNameSprite[sind] = (VDPSprite) {
+                .x = x, .y = y, .size = SPRITE_SIZE(min(4,(len-i)<<1), 2)
+        };
+        if(tind >= 16) {
+            mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_FONTINDEX+tind-16);
+        } else {
+            mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+tind);
+        }
+        x += 32;
+        mapNameSpriteNum++;
+    }
+    mapNameTTL = ttl;
+}
+
 void player_show_map_name(uint8_t ttl) {
 	// Boss bar overwrites the name
 	if(stageID == STAGE_WATERWAY_BOSS) return;
-	// Create a string of tiles in RAM
-	uint32_t nameTiles[16][8];
-	uint8_t len = 0;
+	// Show kanji name
 	if(cfg_language) {
-		uint8_t i = 0;
-		while(i < 16) {
-			uint16_t chr1 = GetNextChar(i++);
-			if(chr1 == 0) break; // End of string
-			if(chr1 > 0xFF) i++;
-			uint16_t chr2 = GetNextChar(i++);
-			if(chr2 > 0xFF) i++;
-			kanji_loadtilesforsprite(GetKanjiIndex(len), chr1, chr2);
-			len += chr2 ? 2 : 1;
-		}
-	} else {
-		for(uint8_t i = 0; i < 16; i++) {
-			uint8_t chr = stage_info[stageID].name[i] - 0x20;
-			if(chr < 0x60) len++;
-			else break;
-			memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
-		}
-		if(len) vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
-	}
+        show_map_jname(ttl);
+        return;
+    }
+	// English name
+	uint32_t nameTiles[16][8];
+	uint16_t len = 0;
+    for(uint16_t i = 0; i < 16; i++) {
+        uint8_t chr = stage_info[stageID].name[i] - 0x20;
+        if(chr < 0x60) len++;
+        else break;
+        memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
+    }
+    if(len) {
+        vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
+    } else {
+        return;
+    }
 	// Transfer tile array to VRAM
-	if(len > 0) {
-		uint8_t charwidth = cfg_language ? 2 : 1;
-		uint8_t chardiv = cfg_language ? 2 : 4;
-		mapNameSpriteNum = 0;
-		uint16_t x = SCREEN_HALF_W - len * 4 * charwidth;
-		for(uint8_t i = 0; i < len; i += chardiv) {
-			uint8_t sindex = i / chardiv;
-			mapNameSprite[sindex] = (VDPSprite) {
-				.x = x + 128,
-				.y = SCREEN_HALF_H - 32 + 128,
-				.size = SPRITE_SIZE(min(4,(len-i) * charwidth), charwidth)
-			};
-			uint16_t tindex = i * (cfg_language ? 4 : 1);
-			if(cfg_language && i >= 4) {
-				mapNameSprite[sindex].attr = 
-						TILE_ATTR(PAL0,1,0,0,TILE_FONTINDEX+tindex-16);
-			} else {
-				mapNameSprite[sindex].attr = 
-						TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+tindex);
-			}
-			x += 32;
-			mapNameSpriteNum++;
-		}
-		mapNameTTL = ttl;
-	}
+    mapNameSpriteNum = 0;
+    uint16_t x = SCREEN_HALF_W - (len<<2) + 128;
+    uint16_t y = SCREEN_HALF_H - 32 + 128;
+    for(uint16_t i = 0; i < len; i += 4) {
+        uint8_t sind = i>>2;
+        mapNameSprite[sind] = (VDPSprite) {
+            .x = x, .y = y, .size = SPRITE_SIZE(min(4,len-i), 1)
+        };
+        mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+i);
+        x += 32;
+        mapNameSpriteNum++;
+    }
+    mapNameTTL = ttl;
 }
 
 static void draw_air_percent() {
