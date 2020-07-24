@@ -45,7 +45,7 @@ typedef struct {
 } background_info_def;
 
 // Information about each music track for song_play()
-#define SONG_COUNT 42
+#define SONG_COUNT 43
 typedef struct {
 	const uint8_t *song; // Location of XGM to be loaded
 	char name[24]; // Name of the track (sound test)
@@ -55,7 +55,7 @@ typedef struct {
 #define SOUND_COUNT 118
 typedef struct {
 	const uint8_t *sound; // Location of PCM data to playback
-	uint32_t length; // Number of frames (sound frames, not screen frames)
+	uint16_t length; // Number of frames (sound frames, not screen frames)
 } sound_info_def;
 
 // Information about each character face image

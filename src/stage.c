@@ -31,7 +31,7 @@
 uint8_t stageBackground = 0xFF;
 
 int16_t backScrollTable[32];
-uint8_t *stageBlocks = NULL;
+//uint8_t *stageBlocks = NULL;
 uint16_t *stageTable = NULL;
 const uint8_t *stagePXA = NULL;
 
@@ -62,10 +62,10 @@ void stage_load(uint16_t id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	if(stageBlocks) {
-		free(stageBlocks);
-		stageBlocks = NULL;
-	}
+	//if(stageBlocks) {
+	//	free(stageBlocks);
+	//	stageBlocks = NULL;
+	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -188,10 +188,10 @@ void stage_load_credits(uint8_t id) {
 	
 	entities_clear();
 	vdp_sprites_clear();
-	if(stageBlocks) {
-		free(stageBlocks);
-		stageBlocks = NULL;
-	}
+	//if(stageBlocks) {
+	//	free(stageBlocks);
+	//	stageBlocks = NULL;
+	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -233,13 +233,9 @@ void stage_load_tileset() {
 }
 
 void stage_load_blocks() {
-	const uint8_t *PXM = stage_info[stageID].PXM;
-	stageWidth = PXM[4] | (PXM[5] << 8);
-	stageHeight = PXM[6] | (PXM[7] << 8);
-	PXM += 8;
-	stageBlocks = malloc(stageWidth * stageHeight);
-	if(!stageBlocks) error_oom();
-	memcpy(stageBlocks, PXM, stageWidth * stageHeight);
+    DecompressSlzC(stage_info[stageID].PXM, stagePXM);
+    stageWidth = stagePXM[4] | (stagePXM[5] << 8);
+    stageHeight = stagePXM[6] | (stagePXM[7] << 8);
 	// Multiplication table for stage rows
 	stageTable = malloc(stageHeight << 1);
 	if(!stageTable) error_oom();

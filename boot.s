@@ -1,5 +1,13 @@
 .section .data
 
+/* Outer Wall is the largest stage file at 18008 bytes */
+/* 18008 - 4 (header) - 4 (size) - 76 (error vars) = 17924 */
+    .globl stagePXM
+    .globl stageBlocks
+stagePXM:    ds.b 8
+stageBlocks: ds.b 17924
+
+/* Error Handling Stuff */
 	.globl v_err_reg
 	.globl v_err_pc
 	.globl v_err_addr
@@ -7,12 +15,6 @@
 	.globl v_err_ext2
 	.globl v_err_sr
 	.globl v_err_type
-	.globl vblank
-	
-	.globl xgmTempo
-	.globl xgmTempoCnt
-	.globl xgmTempoDef
-	
 v_err_reg:	ds.l 16
 v_err_pc:	ds.l 1
 v_err_addr:	ds.l 1
@@ -20,8 +22,15 @@ v_err_ext1:	ds.w 1
 v_err_ext2: ds.w 1
 v_err_sr:	ds.w 1
 v_err_type:	ds.b 1
+
+/* VSync */
+    .globl vblank
 vblank:		ds.b 1
 
+/* Sound Driver Stuff */
+	.globl xgmTempo
+	.globl xgmTempoCnt
+	.globl xgmTempoDef
 xgmTempo:   ds.w 1
 xgmTempoCnt:ds.w 1
 xgmTempoDef:ds.w 1
@@ -44,10 +53,10 @@ RomStart:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "
-		.ascii	"GRIND   2019.DEC"
+		.ascii	"GRIND   2020.SEP"
 		.ascii	"Doukutsu Monogatari MD                          "
 		.ascii	"Cave Story MD                                   "
-		.ascii	"GM ANDYG002-A6"
+		.ascii	"GM ANDYG002-00"
 		dc.w	0
 		.ascii	"J               "
 		dc.l	0x000000

@@ -23,6 +23,7 @@
 #include "gamemode.h"
 
 void splash_main() {
+#ifdef SEGA_LOGO
 	gamemode = GM_SPLASH;
 	
 	// Init screen stuff
@@ -50,4 +51,5 @@ void splash_main() {
 	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 	entities_clear();
 	effects_clear();
+#endif
 }

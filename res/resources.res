@@ -2,7 +2,7 @@
 # Global palettes
 # ----------------------------------------------------------------------------------------------
 
-PALETTE PAL_Sega		"sprite/sega.png"
+#PALETTE PAL_Sega		"sprite/sega.png"
 PALETTE PAL_Main		"sprite/quote.png"
 PALETTE PAL_Sym			"sprite/door.png"
 PALETTE PAL_Regu		"sprite/kazuma.png"
@@ -29,8 +29,8 @@ PALETTE PAL_Intro		"sprite/bubbleintro.png"
 # ----------------------------------------------------------------------------------------------
 
 # Use PAL_Sega
-SPRITE SPR_Sega			"sprite/sega.png"			12 4 0 0 NONE
-SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 0 0 NONE
+#SPRITE SPR_Sega			"sprite/sega.png"			12 4 0 0 NONE
+#SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 0 0 NONE
 
 # Use PAL_Main
 SPRITE SPR_Quote		"sprite/quote.png"			2 2 0 0 NONE
@@ -580,13 +580,13 @@ BIN		MAP_Ill18	"credits/ill18.map"
 PALETTE PAL_Mimi	"Stage/Mimi/PrtMimi.bmp"
 TILESET TS_Mimi		"Stage/Mimi/PrtMimi.bmp" 0
 BIN PXA_Mimi		"Stage/Mimi/Mimi.pxa"
-BIN PXM_Barr		"Stage/Mimi/Barr.pxm"
-BIN PXM_Cemet		"Stage/Mimi/Cemet.pxm"
-BIN PXM_e_Ceme		"Stage/Mimi/e_Ceme.pxm"
-BIN PXM_MiBox		"Stage/Mimi/MiBox.pxm"
-BIN PXM_Mimi		"Stage/Mimi/Mimi.pxm"
-BIN PXM_Plant		"Stage/Mimi/Plant.pxm"
-BIN PXM_Pool		"Stage/Mimi/Pool.pxm"
+BIN PXM_Barr		"Stage/Mimi/Barr.cpxm"
+BIN PXM_Cemet		"Stage/Mimi/Cemet.cpxm"
+BIN PXM_e_Ceme		"Stage/Mimi/e_Ceme.cpxm"
+BIN PXM_MiBox		"Stage/Mimi/MiBox.cpxm"
+BIN PXM_Mimi		"Stage/Mimi/Mimi.cpxm"
+BIN PXM_Plant		"Stage/Mimi/Plant.cpxm"
+BIN PXM_Pool		"Stage/Mimi/Pool.cpxm"
 
 # Egg Corridor
 # Split into 2 tilesets, crushed to fit 256x112
@@ -595,61 +595,61 @@ TILESET TS_Eggs		"Stage/Eggs/PrtEggs.bmp" 0
 TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2.bmp" 0
 BIN PXA_Eggs		"Stage/Eggs/Eggs.pxa"
 BIN PXA_Eggs2		"Stage/Eggs/Eggs2.pxa"
-BIN PXM_Eggs		"Stage/Eggs/Eggs.pxm"
-BIN PXM_Eggs2		"Stage/Eggs/Eggs2.pxm"
+BIN PXM_Eggs		"Stage/Eggs/Eggs.cpxm"
+BIN PXM_Eggs2		"Stage/Eggs/Eggs2.cpxm"
 
 # Labyrinth
 # Split MazeM out, crushed to fit 256x112
 PALETTE PAL_Maze	"Stage/Maze/PrtMaze.bmp"
 TILESET TS_Maze		"Stage/Maze/PrtMaze.bmp" 0
 BIN PXA_Maze		"Stage/Maze/Maze.pxa"
-BIN PXM_e_Maze		"Stage/Maze/e_Maze.pxm"
-BIN PXM_MazeB		"Stage/Maze/MazeB.pxm"
-BIN PXM_MazeD		"Stage/Maze/MazeD.pxm"
-BIN PXM_MazeH		"Stage/Maze/MazeH.pxm"
-BIN PXM_MazeI		"Stage/Maze/MazeI.pxm"
-BIN PXM_MazeO		"Stage/Maze/MazeO.pxm"
-BIN PXM_MazeS		"Stage/Maze/MazeS.pxm"
-BIN PXM_MazeW		"Stage/Maze/MazeW.pxm"
+BIN PXM_e_Maze		"Stage/Maze/e_Maze.cpxm"
+BIN PXM_MazeB		"Stage/Maze/MazeB.cpxm"
+BIN PXM_MazeD		"Stage/Maze/MazeD.cpxm"
+BIN PXM_MazeH		"Stage/Maze/MazeH.cpxm"
+BIN PXM_MazeI		"Stage/Maze/MazeI.cpxm"
+BIN PXM_MazeO		"Stage/Maze/MazeO.cpxm"
+BIN PXM_MazeS		"Stage/Maze/MazeS.cpxm"
+BIN PXM_MazeW		"Stage/Maze/MazeW.cpxm"
 TILESET TS_MazeM	"Stage/Maze/PrtMazeM.bmp" 0
 BIN PXA_MazeM		"Stage/Maze/MazeM.pxa"
-BIN PXM_MazeM		"Stage/Maze/MazeM.pxm"
+BIN PXM_MazeM		"Stage/Maze/MazeM.cpxm"
 
 # Balcony & Ring
 PALETTE PAL_Blcny	"Stage/White/PrtBlcny.bmp"
 TILESET TS_Blcny	"Stage/White/PrtBlcny.bmp" 0
 BIN PXA_Blcny		"Stage/White/Blcny.pxa"
-BIN PXM_e_Blcn		"Stage/White/e_Blcn.pxm"
-BIN PXM_Blcny1		"Stage/White/Blcny1.pxm"
-BIN PXM_Blcny2		"Stage/White/Blcny2.pxm"
+BIN PXM_e_Blcn		"Stage/White/e_Blcn.cpxm"
+BIN PXM_Blcny1		"Stage/White/Blcny1.cpxm"
+BIN PXM_Blcny2		"Stage/White/Blcny2.cpxm"
 TILESET TS_Kings	"Stage/White/PrtKings.bmp" 0
 BIN PXA_Kings		"Stage/White/Kings.pxa"
-BIN PXM_Kings		"Stage/White/Kings.pxm"
-BIN PXM_Ring1		"Stage/White/Ring1.pxm"
-BIN PXM_Ostep		"Stage/White/Ostep.pxm"
+BIN PXM_Kings		"Stage/White/Kings.cpxm"
+BIN PXM_Ring1		"Stage/White/Ring1.cpxm"
+BIN PXM_Ostep		"Stage/White/Ostep.cpxm"
 TILESET TS_Ring2	"Stage/White/PrtRing2.bmp" 0
 BIN PXA_Ring2		"Stage/White/Ring2.pxa"
-BIN PXM_Ring2		"Stage/White/Ring2.pxm"
+BIN PXM_Ring2		"Stage/White/Ring2.cpxm"
 PALETTE PAL_Ring3	"Stage/White/PrtRing3.bmp"
 TILESET TS_Ring3	"Stage/White/PrtRing3.bmp" 0
 BIN PXA_Ring3		"Stage/White/Ring3.pxa"
-BIN PXM_Ring3		"Stage/White/Ring3.pxm"
+BIN PXM_Ring3		"Stage/White/Ring3.cpxm"
 
 # Sacred Ground
 # Crushed to fit 256x112
 PALETTE PAL_Hell	"Stage/Hell/PrtHell.bmp"
 TILESET TS_Hell		"Stage/Hell/PrtHell.bmp" 0
 BIN PXA_Hell		"Stage/Hell/Hell.pxa"
-BIN PXM_Hell1		"Stage/Hell/Hell1.pxm"
-BIN PXM_Hell2		"Stage/Hell/Hell2.pxm"
-BIN PXM_Hell3		"Stage/Hell/Hell3.pxm"
-BIN PXM_Hell4		"Stage/Hell/Hell4.pxm"
-BIN PXM_Hell42		"Stage/Hell/Hell42.pxm"
-BIN PXM_Ballo1		"Stage/Hell/Ballo1.pxm"
-BIN PXM_Ballo2		"Stage/Hell/Ballo2.pxm"
+BIN PXM_Hell1		"Stage/Hell/Hell1.cpxm"
+BIN PXM_Hell2		"Stage/Hell/Hell2.cpxm"
+BIN PXM_Hell3		"Stage/Hell/Hell3.cpxm"
+BIN PXM_Hell4		"Stage/Hell/Hell4.cpxm"
+BIN PXM_Hell42		"Stage/Hell/Hell42.cpxm"
+BIN PXM_Ballo1		"Stage/Hell/Ballo1.cpxm"
+BIN PXM_Ballo2		"Stage/Hell/Ballo2.cpxm"
 TILESET TS_Statue	"Stage/Hell/PrtStatue.bmp" 0
 BIN PXA_Statue		"Stage/Hell/Statue.pxa"
-BIN PXM_Statue		"Stage/Hell/Statue.pxm"
+BIN PXM_Statue		"Stage/Hell/Statue.cpxm"
 
 # ----------------------------------------------------------------------------------------------
 # Tileset Palettes
@@ -761,66 +761,66 @@ BIN		MAP_FogBtm		"back/bkFogBottom.map"
 # Stages (PXM)
 # ----------------------------------------------------------------------------------------------
 
-BIN PXM_Almond	"Stage/Almond.pxm"
-BIN PXM_Cave	"Stage/Cave.pxm"
-BIN PXM_Cent	"Stage/Cent.pxm"
-BIN PXM_CentW	"Stage/CentW.pxm"
-BIN PXM_Chako	"Stage/Chako.pxm"
-BIN PXM_Clock	"Stage/Clock.pxm"
-BIN PXM_Comu	"Stage/Comu.pxm"
-BIN PXM_Cthu	"Stage/Cthu.pxm"
-BIN PXM_Cthu2	"Stage/Cthu2.pxm"
-BIN PXM_Curly	"Stage/Curly.pxm"
-BIN PXM_CurlyS	"Stage/CurlyS.pxm"
-BIN PXM_Dark	"Stage/Dark.pxm"
-BIN PXM_Drain	"Stage/Drain.pxm"
-BIN PXM_e_Jenk	"Stage/e_Jenk.pxm"
-BIN PXM_e_Labo	"Stage/e_Labo.pxm"
-BIN PXM_e_Malc	"Stage/e_Malc.pxm"
-BIN PXM_e_Sky	"Stage/e_Sky.pxm"
-BIN PXM_EgEnd1	"Stage/EgEnd1.pxm"
-BIN PXM_EgEnd2	"Stage/EgEnd2.pxm"
-BIN PXM_Egg1	"Stage/Egg1.pxm"
-BIN PXM_Egg6	"Stage/Egg6.pxm"
-BIN PXM_EggR	"Stage/EggR.pxm"
-BIN PXM_EggR2	"Stage/EggR2.pxm"
-BIN PXM_EggX	"Stage/EggX.pxm"
-BIN PXM_EggX2	"Stage/EggX2.pxm"
-BIN PXM_Fall	"Stage/Fall.pxm"
-BIN PXM_Frog	"Stage/Frog.pxm"
-BIN PXM_Gard	"Stage/Gard.pxm"
-BIN PXM_Itoh	"Stage/Itoh.pxm"
-BIN PXM_Island	"Stage/Island.pxm"
-BIN PXM_Jail1	"Stage/Jail1.pxm"
-BIN PXM_Jail2	"Stage/Jail2.pxm"
-BIN PXM_Jenka1	"Stage/Jenka1.pxm"
-BIN PXM_Jenka2	"Stage/Jenka2.pxm"
-BIN PXM_Little	"Stage/Little.pxm"
-BIN PXM_Lounge	"Stage/Lounge.pxm"
-BIN PXM_Malco	"Stage/Malco.pxm"
-BIN PXM_Mapi	"Stage/Mapi.pxm"
-BIN PXM_MazeA	"Stage/MazeA.pxm"
-BIN PXM_Momo	"Stage/Momo.pxm"
-BIN PXM_Oside	"Stage/Oside.pxm"
-BIN PXM_Pens1	"Stage/Pens1.pxm"
-BIN PXM_Pens2	"Stage/Pens2.pxm"
-BIN PXM_Pixel	"Stage/Pixel.pxm"
-BIN PXM_Pole	"Stage/Pole.pxm"
-BIN PXM_Prefa1	"Stage/Prefa1.pxm"
-BIN PXM_Prefa2	"Stage/Prefa2.pxm"
-BIN PXM_Priso1	"Stage/Priso1.pxm"
-BIN PXM_Priso2	"Stage/Priso2.pxm"
-BIN PXM_River	"Stage/River.pxm"
-BIN PXM_Sand	"Stage/Sand.pxm"
-BIN PXM_SandE	"Stage/SandE.pxm"
-BIN PXM_Santa	"Stage/Santa.pxm"
-BIN PXM_Shelt	"Stage/Shelt.pxm"
-BIN PXM_Start	"Stage/Start.pxm"
-BIN PXM_Stream	"Stage/Stream.pxm"
-BIN PXM_Weed	"Stage/Weed.pxm"
-BIN PXM_WeedB	"Stage/WeedB.pxm"
-BIN PXM_WeedD	"Stage/WeedD.pxm"
-BIN PXM_WeedS	"Stage/WeedS.pxm"
+BIN PXM_Almond	"Stage/Almond.cpxm"
+BIN PXM_Cave	"Stage/Cave.cpxm"
+BIN PXM_Cent	"Stage/Cent.cpxm"
+BIN PXM_CentW	"Stage/CentW.cpxm"
+BIN PXM_Chako	"Stage/Chako.cpxm"
+BIN PXM_Clock	"Stage/Clock.cpxm"
+BIN PXM_Comu	"Stage/Comu.cpxm"
+BIN PXM_Cthu	"Stage/Cthu.cpxm"
+BIN PXM_Cthu2	"Stage/Cthu2.cpxm"
+BIN PXM_Curly	"Stage/Curly.cpxm"
+BIN PXM_CurlyS	"Stage/CurlyS.cpxm"
+BIN PXM_Dark	"Stage/Dark.cpxm"
+BIN PXM_Drain	"Stage/Drain.cpxm"
+BIN PXM_e_Jenk	"Stage/e_Jenk.cpxm"
+BIN PXM_e_Labo	"Stage/e_Labo.cpxm"
+BIN PXM_e_Malc	"Stage/e_Malc.cpxm"
+BIN PXM_e_Sky	"Stage/e_Sky.cpxm"
+BIN PXM_EgEnd1	"Stage/EgEnd1.cpxm"
+BIN PXM_EgEnd2	"Stage/EgEnd2.cpxm"
+BIN PXM_Egg1	"Stage/Egg1.cpxm"
+BIN PXM_Egg6	"Stage/Egg6.cpxm"
+BIN PXM_EggR	"Stage/EggR.cpxm"
+BIN PXM_EggR2	"Stage/EggR2.cpxm"
+BIN PXM_EggX	"Stage/EggX.cpxm"
+BIN PXM_EggX2	"Stage/EggX2.cpxm"
+BIN PXM_Fall	"Stage/Fall.cpxm"
+BIN PXM_Frog	"Stage/Frog.cpxm"
+BIN PXM_Gard	"Stage/Gard.cpxm"
+BIN PXM_Itoh	"Stage/Itoh.cpxm"
+BIN PXM_Island	"Stage/Island.cpxm"
+BIN PXM_Jail1	"Stage/Jail1.cpxm"
+BIN PXM_Jail2	"Stage/Jail2.cpxm"
+BIN PXM_Jenka1	"Stage/Jenka1.cpxm"
+BIN PXM_Jenka2	"Stage/Jenka2.cpxm"
+BIN PXM_Little	"Stage/Little.cpxm"
+BIN PXM_Lounge	"Stage/Lounge.cpxm"
+BIN PXM_Malco	"Stage/Malco.cpxm"
+BIN PXM_Mapi	"Stage/Mapi.cpxm"
+BIN PXM_MazeA	"Stage/MazeA.cpxm"
+BIN PXM_Momo	"Stage/Momo.cpxm"
+BIN PXM_Oside	"Stage/Oside.cpxm"
+BIN PXM_Pens1	"Stage/Pens1.cpxm"
+BIN PXM_Pens2	"Stage/Pens2.cpxm"
+BIN PXM_Pixel	"Stage/Pixel.cpxm"
+BIN PXM_Pole	"Stage/Pole.cpxm"
+BIN PXM_Prefa1	"Stage/Prefa1.cpxm"
+BIN PXM_Prefa2	"Stage/Prefa2.cpxm"
+BIN PXM_Priso1	"Stage/Priso1.cpxm"
+BIN PXM_Priso2	"Stage/Priso2.cpxm"
+BIN PXM_River	"Stage/River.cpxm"
+BIN PXM_Sand	"Stage/Sand.cpxm"
+BIN PXM_SandE	"Stage/SandE.cpxm"
+BIN PXM_Santa	"Stage/Santa.cpxm"
+BIN PXM_Shelt	"Stage/Shelt.cpxm"
+BIN PXM_Start	"Stage/Start.cpxm"
+BIN PXM_Stream	"Stage/Stream.cpxm"
+BIN PXM_Weed	"Stage/Weed.cpxm"
+BIN PXM_WeedB	"Stage/WeedB.cpxm"
+BIN PXM_WeedD	"Stage/WeedD.cpxm"
+BIN PXM_WeedS	"Stage/WeedS.cpxm"
 
 # ----------------------------------------------------------------------------------------------
 # Entities (PXE)
@@ -1178,6 +1178,8 @@ XGM BGM_Waterway	"bgm/waterway.vgm"		0
 XGM BGM_WayBackHome	"bgm/credits.vgm"		0
 XGM BGM_White		"bgm/white.vgm"			0
 XGM BGM_Zombie		"bgm/zombie.vgm"		0
+
+XGM BGM_TimeTable   "bgm/timetable.vgm"     0
 
 # ----------------------------------------------------------------------------------------------
 # Sound Effects

@@ -264,7 +264,8 @@ void system_save() {
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start;
-	
+
+	disable_ints;
 	z80_request();
 	SRAM_enable();
 	
@@ -315,11 +316,13 @@ void system_save() {
 	
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 void system_peekdata(uint8_t index, SaveEntry *file) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
-	
+
+	disable_ints;
 	z80_request();
 	SRAM_enableRO();
 	
@@ -329,6 +332,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		file->used = FALSE;
 		SRAM_disable();
 		z80_release();
+        enable_ints;
 		return;
 	}
 	// Checksum failed?
@@ -338,6 +342,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 			file->used = FALSE;
 			SRAM_disable();
 			z80_release();
+            enable_ints;
 			return;
 		}
 		// Load backup
@@ -359,6 +364,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 void system_load(uint8_t index) {
@@ -368,7 +374,8 @@ void system_load(uint8_t index) {
 	}
 	player_init();
 	sram_file = index;
-	
+
+	disable_ints;
 	z80_request();
 	SRAM_enableRO();
 	
@@ -388,6 +395,7 @@ void system_load(uint8_t index) {
 		// Empty
 		SRAM_disable();
 		z80_release();
+        enable_ints;
 		system_new();
 		return;
 	}
@@ -427,6 +435,7 @@ void system_load(uint8_t index) {
 	}
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 	
 	stage_load(rid);
 	song_play(song);
@@ -436,7 +445,8 @@ void system_copy(uint8_t from, uint8_t to) {
 	uint16_t loc_from     = SRAM_FILE_START + SRAM_FILE_LEN * from;
 	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
-	
+
+	disable_ints;
 	z80_request();
 	SRAM_enable();
 
@@ -456,11 +466,13 @@ void system_copy(uint8_t from, uint8_t to) {
 
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 void system_delete(uint8_t index) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
-	
+
+	disable_ints;
 	z80_request();
 	SRAM_enable();
 	
@@ -469,11 +481,13 @@ void system_delete(uint8_t index) {
 	
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 void system_load_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
+	disable_ints;
 	z80_request();
 	SRAM_enableRO();
 	
@@ -482,6 +496,7 @@ void system_load_config() {
 		// No settings saved, keep defaults
 		SRAM_disable();
 		z80_release();
+        enable_ints;
 		return;
 	}
 	
@@ -508,11 +523,13 @@ void system_load_config() {
 
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 void system_save_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
+	disable_ints;
 	z80_request();
 	SRAM_enable();
 
@@ -536,6 +553,7 @@ void system_save_config() {
 
 	SRAM_disable();
 	z80_release();
+	enable_ints;
 }
 
 // Level select is still the old style format... don't care enough to fix it

@@ -183,6 +183,7 @@ void xgm_music_play(const uint8_t *song) {
         ids[(i * 4) + 3] = song[(i * 4) + 3];
     }
     // request Z80 BUS
+    disable_ints;
     z80_request();
     // upload sample id table (first entry is silent sample, we don't transfer it)
     z80_upload(0x1C00 + 4, ids, 0x100 - 4);
@@ -203,9 +204,11 @@ void xgm_music_play(const uint8_t *song) {
     // clear pending frame
     z80_drv_params[0x0F] = 0;
     z80_release();
+    enable_ints;
 }
 
 void xgm_music_stop() {
+    disable_ints;
     z80_request();
     // special xgm sequence to stop any sound
     uint32_t addr = ((uint32_t) stop_xgm);
@@ -219,21 +222,21 @@ void xgm_music_stop() {
     // clear pending frame
     z80_drv_params[0x0F] = 0;
     z80_release();
+    enable_ints;
 }
 
 void xgm_pcm_set(const uint8_t id, const uint8_t *sample, const uint32_t len) {
-	//z80_request();
     // point to sample id table
-    volatile uint8_t *pb = (uint8_t*) (0xA01C00 + (id * 4));
+    volatile uint8_t *pb = (uint8_t*) (0xA01C00 + (uint32_t)(id << 2));
     // write sample addr
     pb[0x00] = ((uint32_t) sample) >> 8;
     pb[0x01] = ((uint32_t) sample) >> 16;
     pb[0x02] = len >> 8;
     pb[0x03] = len >> 16;
-	//z80_release();
 }
 
 void xgm_pcm_play(const uint8_t id, const uint8_t priority, const uint16_t channel) {
+    disable_ints;
     z80_request();
     // set PCM priority and id
     z80_drv_params[0x04 + (channel * 2)] = priority & 0xF;
@@ -241,6 +244,7 @@ void xgm_pcm_play(const uint8_t id, const uint8_t priority, const uint16_t chann
     // set play PCM channel command
     *z80_drv_command |= (Z80_DRV_COM_PLAY << channel);
     z80_release();
+    enable_ints;
 }
 /*
 // VInt processing for XGM driver

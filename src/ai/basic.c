@@ -554,6 +554,7 @@ void ai_forcefield(Entity *e) {
 	ANIMATE(e, 2, 0,1,2,3);
 }
 
+#ifdef SEGA_LOGO
 void onspawn_segalogo(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 48, 16, 48, 16 };
@@ -663,6 +664,7 @@ void ai_balrog_splash(Entity *e) {
 		break;
 	}
 }
+#endif
 
 // this object is used in a few places, such as during the Red Demon fight (last cave),
 // and during some of the end sequences. It seems to be primarily involved with providing

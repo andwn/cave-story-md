@@ -25,7 +25,7 @@ GCC_VER := $(shell $(CC) -dumpversion)
 PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
 ifeq ($(OS),Windows_NT)
-	LTO_SO = liblto_plugin-0.dll
+    LTO_SO = liblto_plugin-0.dll
 endif
 
 INCS     = -Isrc -Ires -Iinc
@@ -33,7 +33,7 @@ LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
 CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -mshort
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
+LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk-old.ld -nostdlib
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
@@ -84,7 +84,7 @@ debug: main-build symbol.txt
 
 main-build: prereq head-gen doukutsu.bin
 
-prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW)
+prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(CPXMS)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin

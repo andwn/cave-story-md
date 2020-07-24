@@ -147,7 +147,8 @@ extern uint16_t *stageTable;
 // Copy of level layout data loaded into RAM
 // This takes up extra space, but there are times where scripts make modifications to the
 // level layout (allowing player to reach some areas) so it is necessary to do this
-extern uint8_t *stageBlocks;
+extern uint8_t stagePXM[];
+extern uint8_t stageBlocks[];
 extern const uint8_t *stagePXA;
 // Which tileset (db/tileset.c) is used by the current stage
 uint8_t stageTileset;

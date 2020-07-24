@@ -1,4 +1,4 @@
-; eXtended Genesis Music (XGM) Z80 driver - Stéphane Dallongeville @2014-2016
+; eXtended Genesis Music (XGM) Z80 driver - Stï¿½phane Dallongeville @2014-2016
 ;
 ; XGM is a music format dedicated to the Sega Megadrive/Genesis system.
 ; It has been designed to minimize CPU decoding resource and keep reasonable data size (should be smaller than VGM file).
@@ -724,8 +724,6 @@ main_loop
 ; ------------------
 
 ; $00
-
-
             sampleOutput                ;                       ' 36    | 36
 
             LD      DE, XGM_BUFFER      ; DE point to XGM buf   ' 10    |
@@ -2067,7 +2065,7 @@ com_pcm_p0_ch1                          ; 51                    ' 80
 
 com_pcm_p1_ch1                          ; 55                    ' 80
             LD      C, 1                ; C = prio              ' 7     |
-            JP      com_pcm_ch0         ; execute PCM com       ' 10    | 17 (97)
+            JP      com_pcm_ch1         ; execute PCM com       ' 10    | 17 (97)
 
 com_pcm_p2_ch1                          ; 59                    ' 80
             LD      C, 2                ; C = prio              ' 7     |

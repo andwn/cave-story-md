@@ -427,9 +427,15 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 15] = {
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos_f2, 		&ondeath_ballos 	}, // Ballos (Form 2)
 	{ NULL, 			NOSHEET, 		PAL3, 0, &onspawn_ballos, 		&ai_ballos_f3, 		&ondeath_ballos 	}, // Ballos (Form 3)
 	/* Splash screen */
+#ifdef SEGA_LOGO
 	{ &SPR_Sega, 		NOSHEET, 		PAL0, 3, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			}, // Sega Logo
 	{ &SPR_Sega2, 		NOSHEET, 		PAL0, 3, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			}, // Sega Logo being crushed
 	{ &SPR_Balrog, 		NOSHEET, 		PAL1, 2, &onspawn_balrog_splash,&ai_balrog_splash, 	&ai_null 			}, // Balrog in splash screen
+#else
+    { NULL, 		    NOSHEET, 		PAL0, 0, &ai_null, 	            &ai_null, 		    &ai_null 			}, // Sega Logo
+    { NULL, 		    NOSHEET, 		PAL0, 0, &ai_null, 	            &ai_null, 		    &ai_null 			}, // Sega Logo being crushed
+    { NULL, 		    NOSHEET, 		PAL1, 0, &ai_null,              &ai_null, 	        &ai_null 			}, // Balrog in splash screen
+#endif
 	/* Misc */
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_trigger_special,&ai_null 			}, // Out of bounds trigger
 	{ &SPR_HeliBlade2, 	NOSHEET, 		PAL1, 3, &onspawn_heliblade2, 	&ai_heli_blade, 	&ai_null 			}, // Helicopter blade (smaller)

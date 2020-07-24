@@ -58,8 +58,8 @@ void soundtest_main() {
 	draw_status(status);
 	vdp_puts(VDP_PLAN_A, "Sound Test", 15, 2);
 	vdp_puts(VDP_PLAN_A, "Track: ", 2, 8);
-	vdp_puts(VDP_PLAN_A, "C-Play B-Stop", 2, 14);
-	vdp_puts(VDP_PLAN_A, "A-Pause Start-Quit", 2, 16);
+	vdp_puts(VDP_PLAN_A, "C-Play B-Stop", 2, 13);
+	vdp_puts(VDP_PLAN_A, "A-Pause Start-Quit", 2, 15);
 	DRAW_BYTE(track, 10, 8);
 	
 	vdp_colors(0, PAL_Main.data, 16);
@@ -90,7 +90,7 @@ void soundtest_main() {
 				status = PLAYING;
 				draw_track_info(track);
 			} else if(track >= FIRST_SOUND && track < FIRST_SOUND + SOUND_COUNT){
-				sound_play(track - FIRST_SOUND, 0);
+				sound_play(track - FIRST_SOUND, 5);
 			}
 		} else if(joy_pressed(btn[cfg_btn_shoot])) {
 			// Stop

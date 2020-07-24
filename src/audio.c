@@ -15,11 +15,13 @@ void sound_init() {
 	songPlaying = songResume = 0;
 	// Here we are pointing the XGM driver to each sound effect in the game
 	// and their length (in frames) indexed in sound_info
+    disable_ints;
 	z80_request();
 	for(uint8_t i = 1; i < SOUND_COUNT; i++) {
-		xgm_pcm_set(0x80 + i, sound_info[i].sound, sound_info[i].length);
+		xgm_pcm_set(0x40 + i, sound_info[i].sound, sound_info[i].length);
 	}
 	z80_release();
+    enable_ints;
 	soundChannel = 1;
 }
 
@@ -27,7 +29,7 @@ void sound_play(uint8_t id, uint8_t priority) {
 	if(cfg_sfx_mute && gamemode != GM_SOUNDTEST) return;
 	if(id >= 0x90 && id < 0xA0) id -= 0x40;
 	if(id >= SOUND_COUNT || sound_info[id].length == 0) return;
-	xgm_pcm_play(0x80 + id, priority, soundChannel++);
+	xgm_pcm_play(0x40 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }
 
