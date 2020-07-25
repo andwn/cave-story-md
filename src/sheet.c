@@ -191,14 +191,13 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x5A: // Gunsmith
 		{	
-			if(!player_has_weapon(WEAPON_SPUR)) {
+			if(!player_has_weapon(WEAPON_SPUR) && (playerEquipment & EQUIP_BOOSTER20)) {
 				Weapon w = (Weapon) { .type = WEAPON_SPUR, .level = 1 };
 				sheets_load_weapon(&w);
-			}
-			if(!player_has_weapon(WEAPON_POLARSTAR)) {
-				Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
-				sheets_load_weapon(&w);
-			}
+			} //else if(!player_has_weapon(WEAPON_POLARSTAR)) {
+			//	Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
+			//	sheets_load_weapon(&w);
+			//}
 			SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case 0x10: // Graveyard

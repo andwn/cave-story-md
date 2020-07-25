@@ -459,9 +459,10 @@ void window_show_weapon(uint16_t item) {
 void window_update() {
 	if(showingItem) {
 		if(handSpr.y < ITEM_Y_END) handSpr.y++;
-	vdp_sprite_add(&handSpr);
-	vdp_sprites_add(promptSpr, 2);
-	} else if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
+	    vdp_sprite_add(&handSpr);
+	    vdp_sprites_add(promptSpr, 2);
+	}
+	if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 		uint16_t index;
@@ -474,17 +475,17 @@ void window_update() {
 			y += textRow * 2;
 			index = TILE_FONTINDEX - 0x20 + '_';
 		}
-		if(++blinkTime == 8) {
-			vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
-			if(cfg_language) {
-				vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
-			}
-		} else if(blinkTime == 16) {
-			vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
-			if(cfg_language) {
-				vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
-			}
-			blinkTime = 0;
-		}
+        if(++blinkTime == 8) {
+            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
+            if(cfg_language) {
+                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
+            }
+        } else if(blinkTime == 16) {
+            vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
+            if(cfg_language) {
+                vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
+            }
+            blinkTime = 0;
+        }
 	}
 }
