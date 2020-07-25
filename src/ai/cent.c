@@ -159,8 +159,8 @@ void ai_orangebell_baby(Entity *e) {
 		case 0:
 		{
 			uint8_t angle = random();
-			e->x_speed = pixel_to_sub(cos[angle]);
-			e->y_speed = pixel_to_sub(sin[angle]);
+			e->x_speed = cos[angle];//pixel_to_sub();
+			e->y_speed = sin[angle];//pixel_to_sub();
 			
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat

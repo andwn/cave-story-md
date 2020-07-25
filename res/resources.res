@@ -192,6 +192,7 @@ SPRITE SPR_BalrogMedic	"sprite/balrog_medic.png"	5 3 0 0 NONE
 SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 0 0 NONE
 SPRITE SPR_Empty		"sprite/empty.png"			5 1 0 0 NONE
 SPRITE SPR_J_Empty		"sprite/empty_ja.png"		5 1 0 0 NONE
+SPRITE SPR_DoctorBlood  "sprite/blood.png"          7 4 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE

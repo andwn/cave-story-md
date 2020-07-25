@@ -72,14 +72,14 @@ static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
 
 #define FIRE_ANGLED_SHOT(type, xx, yy, angle, speed) {                                         \
 	Entity *shot = entity_create(xx, yy, (type), 0);                                           \
-	shot->x_speed = ((uint32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
-	shot->y_speed = ((uint32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->x_speed = ((int32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->y_speed = ((int32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
 }
 
 #define THROW_AT_TARGET(shot, tgtx, tgty, speed) {                                             \
 	uint8_t angle = get_angle(shot->x, shot->y, tgtx, tgty);                                   \
-	shot->x_speed = ((uint32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
-	shot->y_speed = ((uint32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->x_speed = ((int32_t)cos[(uint8_t)angle] * speed) >> CSF;                            \
+	shot->y_speed = ((int32_t)sin[(uint8_t)angle] * speed) >> CSF;                            \
 }
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \

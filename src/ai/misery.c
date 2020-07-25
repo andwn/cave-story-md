@@ -388,8 +388,8 @@ void ai_boss_misery(Entity *e) {
 				Entity *shot = entity_create(e->x, e->y, OBJ_MISERY_SHOT, 0);
 				angle -= 3;
 				angle += random() & 7;
-				shot->x_speed = (cos[angle] * SPEED_12(0x800)) >> CSF;
-				shot->y_speed = (sin[angle] * SPEED_12(0x800)) >> CSF;
+				shot->x_speed = ((int32_t)cos[angle] * (int32_t)SPEED_12(0x800)) >> CSF;
+				shot->y_speed = ((int32_t)sin[angle] * (int32_t)SPEED_12(0x800)) >> CSF;
 				sound_play(SND_FIREBALL, 3);
 			}
 			
@@ -561,8 +561,8 @@ void ai_misery_ring(Entity *e) {
 			// distance from misery
 			if (e->timer < 0x40) {
 				e->timer++;
-				e->x = e->linkedEntity->x + cos2[e->jump_time] * (e->timer >> 1);
-				e->y = e->linkedEntity->y + sin2[e->jump_time] * (e->timer >> 1);
+				e->x = e->linkedEntity->x + (int32_t)cos2[e->jump_time] * (e->timer >> 1);
+				e->y = e->linkedEntity->y + (int32_t)sin2[e->jump_time] * (e->timer >> 1);
 			} else {
 				e->x = e->linkedEntity->x + (cos2[e->jump_time] << 5);
 				e->y = e->linkedEntity->y + (sin2[e->jump_time] << 5);

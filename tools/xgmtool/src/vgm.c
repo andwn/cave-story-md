@@ -640,15 +640,17 @@ static void VGM_buildSamples(VGM* vgm, bool convert)
                 int sampleId = VGMCommand_getStreamBlockId(command);
                 Sample* sample = SampleBank_getSampleById(bank, sampleId);
 
-                // sample found --> adjust frequency
+                // sample found ?
                 if (sample != NULL)
+                {
+                    // adjust frequency
                     Sample_setRate(sample, sampleIdFrequencies[VGMCommand_getStreamId(command)]);
+                    // convert to long command as we use single data block
+                    if (convert)
+                        curCom->element = Sample_getStartLongCommandEx(bank, sample, sample->len);
+                }
                 else if (!silent)
                     printf("Warning: sample id %2X not found !\n", sampleId);
-
-                // convert to long command as we use single data block
-                if (convert)
-                    curCom->element = Sample_getStartLongCommandEx(bank, sample, sample->len);
             }
             else if (!silent)
                 printf("Warning: sample bank id %2X not found !\n", bankId);
@@ -763,13 +765,13 @@ static LList* VGM_extractSampleFromSeek(VGM* vgm, LList* command, bool convert)
                         if (verbose)
                             printf("Sample at %6X is too small (%d) --> ignored\n", sampleAddr, len);
                     }
-                    // ignore sample with too small dynamic
+                        // ignore sample with too small dynamic
                     else if (((sampleMaxData - sampleMinData) < SAMPLE_MIN_DYNAMIC) && sampleIgnore)
                     {
                         if (verbose)
                             printf("Sample at %6X has a too quiet global dynamic (%d) --> ignored\n", sampleAddr, sampleMaxData - sampleMinData);
                     }
-                    // ignore sample too quiet
+                        // ignore sample too quiet
                     else if (((sampleMeanDelta / len) < SAMPLE_MIN_MEAN_DELTA) && sampleIgnore)
                     {
                         if (verbose)
@@ -828,16 +830,16 @@ static LList* VGM_extractSampleFromSeek(VGM* vgm, LList* command, bool convert)
             if (sampleRateFix)
             {
                 // need a minimal length before applying correction
-    //            if ((len > 100) && (wait > 200))
-    //            {
-    //                int mean = wait / len;
-    //
-    //                // correct abnormal delta
-    //                if (delta < (mean - 2))
-    //                    wait += (mean - delta);
-    //                else if (delta > (mean + 2))
-    //                    wait -= (delta - mean);
-    //            }
+                //            if ((len > 100) && (wait > 200))
+                //            {
+                //                int mean = wait / len;
+                //
+                //                // correct abnormal delta
+                //                if (delta < (mean - 2))
+                //                    wait += (mean - delta);
+                //                else if (delta > (mean + 2))
+                //                    wait -= (delta - mean);
+                //            }
 
                 // can correct ?
                 if (deltaMean != 0)
@@ -868,7 +870,7 @@ static LList* VGM_extractSampleFromSeek(VGM* vgm, LList* command, bool convert)
             wait += VGMCommand_getWaitValue(command);
             len++;
         }
-        // playing ?
+            // playing ?
         else if (wait != -1)
             wait += VGMCommand_getWaitValue(command);
 
@@ -884,13 +886,13 @@ static LList* VGM_extractSampleFromSeek(VGM* vgm, LList* command, bool convert)
             if (verbose)
                 printf("Sample at %6X is too small (%d) --> ignored\n", sampleAddr, len);
         }
-        // ignore sample with too small dynamic
+            // ignore sample with too small dynamic
         else if (((sampleMaxData - sampleMinData) < SAMPLE_MIN_DYNAMIC) && sampleIgnore)
         {
             if (verbose)
                 printf("Sample at %6X has a too quiet global dynamic (%d) --> ignored\n", sampleAddr, sampleMaxData - sampleMinData);
         }
-        // ignore sample too quiet
+            // ignore sample too quiet
         else if (((sampleMeanDelta / len) < SAMPLE_MIN_MEAN_DELTA) && sampleIgnore)
         {
             if (verbose)
@@ -954,7 +956,7 @@ static SampleBank* VGM_addDataBlock(VGM* vgm, VGMCommand* command)
         result = SampleBank_create(command);
         vgm->sampleBanks = getHeadLList(insertAfterLList(curBank, result));
     }
-    // same id --> concat block
+        // same id --> concat block
     else
     {
         if (verbose)
@@ -1055,7 +1057,7 @@ static void VGM_removeSeekAndPlayPCMCommands(VGM* vgm)
         // remove Seek command
         if (VGMCommand_isSeek(command))
             removeFromLList(curCom);
-        // replace PCM command by simple wait command
+            // replace PCM command by simple wait command
         else if (VGMCommand_isPCM(command))
         {
             // remove or just replace by wait command
@@ -1155,7 +1157,7 @@ void VGM_cleanCommands(VGM* vgm)
                     keyOnOffCommands = insertAfterLList(keyOnOffCommands, command);
                     hasKeyCom = true;
                 }
-                // other write
+                    // other write
                 else
                 {
                     // need accurate order of key event / register write so we transfer commands now
@@ -1524,7 +1526,7 @@ void VGM_fixKeyCommands(VGM* vgm)
                             }
                         }
                     }
-                    // key on command ?
+                        // key on command ?
                     else
                     {
                         keyOnTime[ch] = command->time;

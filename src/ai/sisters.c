@@ -290,8 +290,8 @@ void ai_sisters_body(Entity *e) {
 	if(e->eflags & NPC_OPTION2) angle ^= 0x80;
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
-	int32_t xoff = cos[angle] * bossEntity->x_mark;
-	int32_t yoff = sin[angle] * bossEntity->y_mark;
+	int32_t xoff = (int32_t)cos[angle] * bossEntity->x_mark;
+	int32_t yoff = (int32_t)sin[angle] * bossEntity->y_mark;
 	
 	// figure out where we are supposed to be
 	int32_t desired_x = bossEntity->x + xoff;

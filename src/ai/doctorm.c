@@ -417,7 +417,8 @@ void ai_muscle_doctor(Entity *e) {
 		{
 			e->frame = 9;
 			e->x_next = e->x_mark;
-			
+
+			e->linkedEntity = entity_create(e->x - (24<<CSF), e->y + (8<<CSF), OBJ_DOCTORM_BLEED, 0);
 			//e->ResetClip();
 			//e->clip_enable = TRUE;
 			
@@ -429,8 +430,12 @@ void ai_muscle_doctor(Entity *e) {
 			e->timer++;
 			
 			// shaking
+			e->hidden = FALSE;
 			e->x_next = e->x_mark;
-			if (!(e->timer & 2)) e->x_next += (1 << CSF);
+			if (!(e->timer & 2)) {
+			    e->x_next += (1 << CSF);
+                e->hidden = TRUE;
+			}
 			
 			camera_shake(2);
 			
@@ -438,15 +443,13 @@ void ai_muscle_doctor(Entity *e) {
 			if ((e->timer & 7) == 3)
 				sound_play(SND_FUNNY_EXPLODE, 5);
 			
-			// spawn copious amount of energy
-			if((e->timer & 3) == 0) {
+			// spawn some energy
+			if((e->timer & 7) == 0) {
 				int32_t x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
 				drip->x_speed = -0x200 + (random() & 0x3FF);
 				drip->y_speed = -(random() & 0x3FF);
 				drip->angle = A_DOWN;
-				
-				e->hidden ^= 1;
 			}
 			
 			// he doesn't take up the entire height of the sprite,
@@ -454,6 +457,8 @@ void ai_muscle_doctor(Entity *e) {
 			if (e->timer >= TIME(300)) {
 				e->hidden = TRUE;
 				e->frame = 0;
+                e->linkedEntity->state = STATE_DELETE;
+                e->linkedEntity = NULL;
 				e->state++;
 			}
 		}
@@ -546,4 +551,8 @@ void ai_doctor_bat(Entity *e) {
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+}
+
+void ai_doctorm_bleed(Entity *e) {
+    ANIMATE(e, 2, 0,1,2,3,4,5,6,7,8,9);
 }

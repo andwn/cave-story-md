@@ -398,7 +398,7 @@
 // Then the bosses (360 + BOSS_???), boss enum is in entity.h
 
 // NXEngine goes wild with the IDs after this point,
-// but here IDs are array indeces so I do my own thing
+// but here IDs are array indices so I do my own thing
 enum {
 	// Parts of bosses
 	OBJ_CORE_FRONT = 370,
@@ -438,6 +438,7 @@ enum {
 	OBJ_CLOUD2,
 	OBJ_CLOUD3,
 	OBJ_CLOUD4,
+    OBJ_DOCTORM_BLEED,
 };
 
 // Locations in npc.tbl where data for each property begins

@@ -282,8 +282,8 @@ void ai_doctor_shot(Entity *e) {
 			e->x_speed += (e->dir) ? 0x15 : -0x15;
 			e->x_mark += e->x_speed;
 			
-			e->x = e->x_mark + ((cos[e->angle] * e->timer2) >> 3);
-			e->y = e->y_mark + ((sin[e->angle] * e->timer2) >> 1);
+			e->x = e->x_mark + (((int32_t)cos[e->angle] * e->timer2) >> 3);
+			e->y = e->y_mark + (((int32_t)sin[e->angle] * e->timer2) >> 1);
 		}
 		break;
 	}

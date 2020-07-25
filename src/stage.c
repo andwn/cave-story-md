@@ -225,7 +225,7 @@ void stage_load_tileset() {
 	}
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
-	for(uint16_t i = 0; i < 160; i++) {
+	for(uint16_t i = 0; i < tileset_info[stageTileset].tileset->numTile >> 2; i++) {
 		if(!(stagePXA[i] & 0x80)) continue;
 		currents[currentsCount] = (Current) { .index = i, .dir = stagePXA[i] & 0x3 };
 		if(++currentsCount == 4) break;
