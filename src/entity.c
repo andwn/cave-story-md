@@ -46,20 +46,7 @@
 	while(list) {                                                                              \
 		temp = list;                                                                           \
 		LIST_REMOVE(list, list);                                                               \
-		free(temp);                                                                        \
-	}                                                                                          \
-})
-
-#define LIST_CLEAR_BY_FILTER(list, var, match) ({                                              \
-	Entity *obj = list, *temp;                                                                 \
-	while(obj) {                                                                               \
-		temp = obj->next;                                                                      \
-		if(obj->var == match) {                                                                \
-			LIST_REMOVE(list, obj);                                                            \
-			if((obj->eflags&NPC_DISABLEONFLAG)) system_set_flag(obj->id, TRUE);                \
-			free(obj);                                                                     \
-		}                                                                                      \
-		obj = temp;                                                                            \
+		free(temp);                                                                            \
 	}                                                                                          \
 })
 
@@ -810,13 +797,45 @@ Entity *entity_find_by_type(uint16_t type) {
 }
 
 void entities_clear_by_event(uint16_t event) {
-	LIST_CLEAR_BY_FILTER(entityList, event, event);
-	LIST_CLEAR_BY_FILTER(inactiveList, event, event);
+    Entity *e = entityList;
+    while(e) {
+		if(e->event == event) {
+            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+			e = entity_delete(e);
+		} else {
+            e = e->next;
+        }
+	}
+    e = inactiveList;
+    while(e) {
+        if(e->event == event) {
+            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            e = entity_delete_inactive(e);
+        } else {
+            e = e->next;
+        }
+    }
 }
 
 void entities_clear_by_type(uint16_t type) {
-	LIST_CLEAR_BY_FILTER(entityList, type, type);
-	LIST_CLEAR_BY_FILTER(inactiveList, type, type);
+    Entity *e = entityList;
+    while(e) {
+        if(e->type == type) {
+            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            e = entity_delete(e);
+        } else {
+            e = e->next;
+        }
+    }
+    e = inactiveList;
+    while(e) {
+        if(e->type == type) {
+            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            e = entity_delete_inactive(e);
+        } else {
+            e = e->next;
+        }
+    }
 }
 
 void entity_drop_powerup(Entity *e) {
@@ -930,21 +949,25 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 		if(e->event == event) {
 			// Need to re-create the structure, the replaced entity may have a different
 			// number of sprites
-			Entity *new = entity_create(e->x, e->y, type, e->eflags | flags);
+			int32_t x = e->x;
+			int32_t y = e->y;
+			flags |= e->eflags;
+			uint16_t id = e->id;
+            e = entity_delete(e);
+			Entity *new = entity_create_ext(x, y, type, flags, id, event);
 			new->dir = direction;
-			new->id = e->id;
-			new->event = event;
-			e = entity_delete(e);
 		} else e = e->next;
 	}
 	e = inactiveList;
 	while(e) {
 		if(e->event == event) {
-			Entity *new = entity_create(e->x, e->y, type, e->eflags | flags);
-			new->dir = direction;
-			new->id = e->id;
-			new->event = event;
-			e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
+            int32_t x = e->x;
+            int32_t y = e->y;
+            flags |= e->eflags;
+            uint16_t id = e->id;
+            e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
+            Entity *new = entity_create_ext(x, y, type, flags, id, event);
+            new->dir = direction;
 		} else e = e->next;
 	}
 }

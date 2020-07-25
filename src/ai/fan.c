@@ -48,10 +48,20 @@ void ai_fan(Entity *e) {
 				e->frame = 0;
 				effect_create_misc(EFF_FANU, ex + ((random() & 15) - 8), ey - 8, FALSE);
 			}
-			if(py > ey - (6<<4) && py < ey && px > ex - 12 && px < ex + 12) {
-				player.y_speed -= SPEED_8(0x88);
-				if(player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
-				if(player.y_speed < 0) player.jump_time = 4;
+			if(py > ey - (6<<4) && py < ey - 8 && px > ex - 16 && px < ex + 16) {
+			    // Fix for player getting pushed back when walking up to fan from a slope
+			    if(py > ey - 16) {
+			        player.y -= 0x200;
+                    player.grounded = FALSE;
+			    }
+			    // In lift range
+			    if(px > ex - 12 && px < ex + 12) {
+                    player.y_speed -= SPEED_8(0x88);
+                    if (player.y_speed < -SPEED(0x5FF)) player.y_speed = -SPEED(0x5FF);
+                    if (player.y_speed < 0) player.jump_time = 4;
+                    // Fix player not being able to jump off edge next to a slope
+                    player.grounded = FALSE;
+                }
 			}
 		}
 		break;

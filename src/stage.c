@@ -211,11 +211,11 @@ void stage_load_credits(uint8_t id) {
 }
 
 void stage_load_tileset() {
-	vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, 
-				tileset_info[stageTileset].tileset->numTile);
+    uint16_t numtile = tileset_info[stageTileset].tileset->numTile;
+	vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, numtile);
 	// Inject the breakable block sprite into the tileset
 	stagePXA = tileset_info[stageTileset].PXA;
-	for(uint16_t i = 0; i < 160; i++) {
+	for(uint16_t i = 0; i < numtile >> 2; i++) {
 		if(stagePXA[i] == 0x43) {
 			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
 			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
@@ -225,7 +225,7 @@ void stage_load_tileset() {
 	}
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
-	for(uint16_t i = 0; i < tileset_info[stageTileset].tileset->numTile >> 2; i++) {
+	for(uint16_t i = 0; i < numtile >> 2; i++) {
 		if(!(stagePXA[i] & 0x80)) continue;
 		currents[currentsCount] = (Current) { .index = i, .dir = stagePXA[i] & 0x3 };
 		if(++currentsCount == 4) break;
