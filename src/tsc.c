@@ -429,9 +429,9 @@ void tsc_update_boss_health() {
 		}
 	}
 	
-vdp_sprite_add(&teleMenuSprite[5]);
-vdp_sprite_add(&teleMenuSprite[6]);
-vdp_sprite_add(&teleMenuSprite[7]);
+    vdp_sprite_add(&teleMenuSprite[5]);
+    vdp_sprite_add(&teleMenuSprite[6]);
+    vdp_sprite_add(&teleMenuSprite[7]);
 }
 
 static void tsc_render_warp_text() {
@@ -453,19 +453,25 @@ void tsc_show_teleport_menu() {
 	//mapNameTTL = 0; // We will be clobbering the tiles that display the map name
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
 	tsc_render_warp_text();
-	
-	teleMenuSlotCount = 0;
+
 	SHEET_FIND(teleMenuSheet, SHEET_TELE);
+    teleMenuSlotCount = 0;
 	for(uint8_t i = 0; i < 8; i++) {
-		if(teleportEvent[i] == 0) continue;
-		teleMenuEvent[teleMenuSlotCount] = teleportEvent[i];
-		teleMenuSprite[teleMenuSlotCount] = (VDPSprite) {
-			.x = 24 + i*40 + 128, .y = 96 + 128,
-			.size = SPRITE_SIZE(4, 2),
-			.attr = TILE_ATTR(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
-		};
-		teleMenuSlotCount++;
+        if(teleportEvent[i]) teleMenuSlotCount++;
 	}
+	uint16_t spr_x = 160 - (teleMenuSlotCount * 20);
+	uint8_t iterCount = 0;
+    for(uint8_t i = 0; i < 8; i++) {
+        if(teleportEvent[i] == 0) continue;
+        teleMenuEvent[iterCount] = teleportEvent[i];
+        teleMenuSprite[iterCount] = (VDPSprite) {
+                .x = spr_x + 128, .y = 48 + 128,
+                .size = SPRITE_SIZE(4, 2),
+                .attr = TILE_ATTR(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
+        };
+        iterCount++;
+        spr_x += 40;
+    }
 	tsc_load_stage(ID_TELEPORT);
 	if(teleMenuSlotCount > 0) {
 		teleMenuActive = TRUE;

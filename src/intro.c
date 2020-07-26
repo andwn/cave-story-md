@@ -36,12 +36,17 @@ void intro_main() {
 	//vdp_colors_next(16, PAL_Intro.data, 16);
 	tsc_call_event(100);
 	// Create "Studio Pixel Presents" text
-	vdp_puts(VDP_PLAN_A, "Studio Pixel Presents", 10, 8);
+	//vdp_puts(VDP_PLAN_A, "Studio Pixel Presents", 10, 8);
+    vdp_puts(VDP_PLAN_A, "Based on the Work of", 10, 6);
+    vdp_puts(VDP_PLAN_A, "    Studio Pixel    ", 10, 8);
 	
 	uint16_t timer = 0;
 	oldstate = ~0;
 	while(++timer <= TIME_10(400) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
-		if(timer == TIME_8(100)) vdp_text_clear(VDP_PLAN_A, 10, 8, 22);
+		if(timer == TIME_8(150)) {
+            vdp_text_clear(VDP_PLAN_A, 10, 6, 20);
+            vdp_text_clear(VDP_PLAN_A, 10, 8, 20);
+		}
 		tsc_update();
 		entities_update(TRUE);
 		effects_update(); // Draw Smoke

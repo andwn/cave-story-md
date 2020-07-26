@@ -88,7 +88,9 @@ void game_main(uint8_t load) {
 				}
 				vdp_set_window(0, pal_mode ? 30 : 28);
 				vdp_set_display(TRUE);
+				paused = TRUE; // This will stop the counter in Hell
 				do_map();
+				paused = FALSE;
 				vdp_set_display(FALSE);
 				hud_force_redraw();
 				vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+8,1);
