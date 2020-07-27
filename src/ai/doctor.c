@@ -256,7 +256,7 @@ void ai_boss_doctor(Entity *e) {
 
 // wave shot
 void ai_doctor_shot(Entity *e) {
-	if (e->x < 0 || e->x > stageWidth << 13) {
+	if (e->x < 0 || e->x > (int32_t)stageWidth << 13) {
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -282,8 +282,8 @@ void ai_doctor_shot(Entity *e) {
 			e->x_speed += (e->dir) ? 0x15 : -0x15;
 			e->x_mark += e->x_speed;
 			
-			e->x = e->x_mark + (((int32_t)cos[e->angle] * e->timer2) >> 3);
-			e->y = e->y_mark + (((int32_t)sin[e->angle] * e->timer2) >> 1);
+			e->x = e->x_mark + (((int32_t)cos[e->angle] * (int32_t)e->timer2) >> 3);
+			e->y = e->y_mark + (((int32_t)sin[e->angle] * (int32_t)e->timer2) >> 1);
 		}
 		break;
 	}

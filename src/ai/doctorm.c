@@ -417,8 +417,14 @@ void ai_muscle_doctor(Entity *e) {
 		{
 			e->frame = 9;
 			e->x_next = e->x_mark;
-
-			e->linkedEntity = entity_create(e->x - (24<<CSF), e->y + (8<<CSF), OBJ_DOCTORM_BLEED, 0);
+			// Create dying animation object
+            e->hidden = TRUE;
+            Entity *die = entity_create(e->x - (4<<CSF), e->y - (20<<CSF), OBJ_DOCTORM_DIE, 0);
+            die->x_mark = e->x - (4<<CSF);
+            die->y_mark = e->y - (20<<CSF);
+            FACE_PLAYER(die);
+            // Create blood animation object
+			e->linkedEntity = entity_create(e->x - (8<<CSF), e->y - (4<<CSF), OBJ_DOCTORM_BLEED, 0);
 			//e->ResetClip();
 			//e->clip_enable = TRUE;
 			
@@ -428,15 +434,6 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_DISSOLVE+1:
 		{
 			e->timer++;
-			
-			// shaking
-			e->hidden = FALSE;
-			e->x_next = e->x_mark;
-			if (!(e->timer & 2)) {
-			    e->x_next += (1 << CSF);
-                e->hidden = TRUE;
-			}
-			
 			camera_shake(2);
 			
 			// sound
@@ -455,7 +452,7 @@ void ai_muscle_doctor(Entity *e) {
 			// he doesn't take up the entire height of the sprite,
 			// so we stop a little bit early.
 			if (e->timer >= TIME(300)) {
-				e->hidden = TRUE;
+				//e->hidden = TRUE;
 				e->frame = 0;
                 e->linkedEntity->state = STATE_DELETE;
                 e->linkedEntity = NULL;
@@ -498,6 +495,19 @@ void ai_muscle_doctor(Entity *e) {
 	e->y = e->y_next;
 }
 
+void ai_doctorm_die(Entity *e) {
+    e->timer++;
+    e->x = e->x_mark;
+    if (!(e->timer & 2)) {
+        e->x += (1 << CSF);
+    }
+    if(e->timer >= 24) {
+        e->timer = 0;
+        e->frame++;
+        if(e->frame >= 20) e->state = STATE_DELETE;
+    }
+}
+
 // this is a lesser-seen attack in which he pushes you away amongst
 // a shower of red sparks. To trigger it, immediately after he lands
 // you must walk directly up to him and deal more than 20 damage.
@@ -528,8 +538,8 @@ static void do_redsplode(Entity *e) {
 // the red energy that oozes off of him during most of the battle
 static void run_red_drip(Entity *e) {
 	if ((e->timer & 7) == 2) {
-		int x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
-		int y = e->y_next + pixel_to_sub((-6 + (random() & 15)));
+		int32_t x = e->x_next + ((int32_t)(-16 + (random() & 31)) << CSF);
+        int32_t y = e->y_next + ((int32_t)(-6 + (random() & 15)) << CSF);
 		
 		Entity *drip = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		drip->x_speed = e->x_speed;

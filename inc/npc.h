@@ -439,6 +439,7 @@ enum {
 	OBJ_CLOUD3,
 	OBJ_CLOUD4,
     OBJ_DOCTORM_BLEED,
+    OBJ_DOCTORM_DIE,
 };
 
 // Locations in npc.tbl where data for each property begins

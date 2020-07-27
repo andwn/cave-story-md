@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 16] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL,				NOSHEET, 		PAL0, 0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	PAL1, 1, &onspawn_energy, 		&ai_energy, 		&ai_null 			}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	PAL1, 1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	}, // OBJ_BEHEMOTH
@@ -450,4 +450,5 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 16] = {
 	{ NULL, 			NOSHEET, 		PAL2, 3, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
 	{ NULL, 			NOSHEET, 		PAL2, 1, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			}, // Cloud
     { &SPR_DoctorBlood, NOSHEET, 		PAL1, 2, &ai_null, 		        &ai_doctorm_bleed, 	&ai_null 			}, // Blood particles
+    { &SPR_DocDie, 	    NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_doctorm_die, 	&ai_null    		}, // Muscle Doctor (Die)
 };
