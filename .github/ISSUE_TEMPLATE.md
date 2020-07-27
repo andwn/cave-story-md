@@ -1,5 +1,5 @@
 Please check before continuing:
 - [ ] I've searched my issue or question to make sure it has not been reported/answered already
-- [ ] If the issue happens on emulator, it happens on more than one emulator
+- [ ] I've checked [COMPATIBILITY.md](doc/COMPATIBILITY.md) to make sure my emulator or system is known to work
 - [ ] I understand there is no physical release and you are not responsible for issues with bootlegs
-- [ ] This is a functional problem or general question, not an opinion or suggestion
+- [ ] This is a bug or question and not a feature request

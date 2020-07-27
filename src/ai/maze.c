@@ -632,7 +632,7 @@ void ai_pooh_black(Entity *e) {
 			bubble_ymark = e->y;
 			
 			// spawn bubbles when hit
-			if (e->damage_time && (e->damage_time & 7) == 1) {
+			if (e->damage_time /*&& (e->damage_time & 7) == 1*/) {
 				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 				bubble->alwaysActive = TRUE;
 				bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
@@ -641,7 +641,7 @@ void ai_pooh_black(Entity *e) {
 				bubble->y_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
 				
 				// fly away after hit enough times
-				if (++e->timer > TIME_8(30)) {
+				if (++e->timer > TIME_8(50)) {
 					e->state = 4;
 					e->timer = 0;
 					
@@ -684,7 +684,6 @@ void ai_pooh_black(Entity *e) {
 	e->y = e->y_next;
 }
 
-
 void ai_poohblk_bubble(Entity *e) {
 	if (e->health < 100 || (e->state && e->y < 0)) {
 		e->state = STATE_DELETE;
@@ -716,7 +715,8 @@ void ai_poohblk_dying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->frame = FRAME_DYING;
+		    //e->x += 4 << CSF; // Sprite is 8px thinner so push forward a bit
+			e->frame = 0; //FRAME_DYING;
 			FACE_PLAYER(e);
 			
 			sound_play(SND_BIG_CRASH, 5);
@@ -733,16 +733,17 @@ void ai_poohblk_dying(Entity *e) {
 		case 2:
 		{
 			camera_shake(2);
-			if (++e->timer > 200) {
+			if (++e->timer > TIME(150)) {
 				e->state = 2;
 				e->timer2++;
 				if ((e->timer2 & 7) == 3) {
-					e->hidden = FALSE;
+					//e->hidden = FALSE;
 					sound_play(SND_BUBBLE, 5);
 				} else if((e->timer2 & 7) == 0) {
-					e->hidden = TRUE;
+				    if(e->frame < 11) e->frame++;
+					//e->hidden = TRUE;
 				}
-				if(e->timer2 > 60) {
+				if(e->timer2 > TIME(80)) {
 					//entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
 					e->state = STATE_DELETE;
 					return;

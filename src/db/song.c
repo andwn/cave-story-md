@@ -46,6 +46,6 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_Waterway, 	"Living Waterway" },
 	{ BGM_SealChamber, 	"Seal Chamber" },
 	{ BGM_Toroko, 		"Toroko's Theme" },
-	{ BGM_White, 		"White Stone Wall" },
+	{ BGM_White, 		"White" },
     { BGM_TimeTable,    "Time Table" },
 };

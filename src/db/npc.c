@@ -182,7 +182,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 16] = {
 	/* 0x0A0 (160) */
 	{ &SPR_Dark, 		NOSHEET, 		PAL3, 2, &ai_null, 				&ai_pooh_black, 	&ondeath_pooh_black }, // Pooh Black
 	{ NULL, 			SHEET_DARKBUB, 	PAL3, 1, &ai_null, 				&ai_poohblk_bubble, &ondeath_nodrop 	}, // Pooh Black Bubble
-	{ &SPR_Dark, 		NOSHEET,		PAL3, 2, &ai_null, 				&ai_poohblk_dying, 	&ai_null 			}, // Pooh Black (Dying)
+	{ &SPR_DarkDie, 	NOSHEET,		PAL3, 1, &ai_null, 				&ai_poohblk_dying, 	&ai_null 			}, // Pooh Black (Dying)
 	{ &SPR_DrGero, 		NOSHEET, 		PAL3, 1, &onspawn_gero, 		&ai_gero, 			&ai_null 			}, // Dr. Gero
 	{ &SPR_Nurse, 		NOSHEET, 		PAL3, 1, &onspawn_gero, 		&ai_gero, 			&ai_null 			}, // Nurse Hasumi
 	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_curly_down, 	&ai_curly, 			&ai_null 			}, // Curly (Collapsed)

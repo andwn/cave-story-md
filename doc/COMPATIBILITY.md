@@ -1,5 +1,5 @@
 ## Flash Cart and Emulator Compatibility
-This is to keep track of what emulators
+This is to keep track of what emulators or hardware CSMD works on
 
 ### Official Consoles
 All Mega Drive and Genesis consoles manufactured by Sega should work 100%.

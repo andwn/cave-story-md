@@ -38,7 +38,7 @@ Space for shared sprite sheets - the first 4 are always power ups:
 The remaining depend on the current map and which weapons the player currently owns. The maximum number of sheets is 24, but the allocation space is not limited or bounds checked in any way. Be careful.
 
 #### Sprite Tile allocation "Tiloc" space
-This either begins at `TILE_SHEETINDEX + 24 * 6`, or after the last sheet. Whichever is smaller.
+This either begins at `TILE_SHEETINDEX + 24 * 6`, or after the last sheet. Whichever is larger.
 The reason for the minimum index is to prevent the item menu & map system from overwriting it.
 This space is controlled by an allocation array, each index represents an "in use" or "not in use" state for a segment of 4 tiles.
 A game object must "ask" for a location large enough to store it's own sprite and on every

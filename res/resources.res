@@ -102,6 +102,10 @@ SPRITE SPR_FirebB1		"sprite/fireballb1.png"		2 2 0 0 NONE
 SPRITE SPR_FirebB2		"sprite/fireballb2.png"		2 2 0 0 NONE
 SPRITE SPR_FirebB3		"sprite/fireballb3.png"		2 2 0 0 NONE
 SPRITE SPR_Missl		"sprite/missiles.png"		6 1 0 0 NONE
+SPRITE SPR_Missl2		"sprite/supermissl.png"		6 1 0 0 NONE
+SPRITE SPR_Snake		"sprite/snake.png"			6 1 0 0 NONE
+SPRITE SPR_Bubbl		"sprite/bubbler.png"		6 1 0 0 NONE
+SPRITE SPR_Nemes		"sprite/nemesis.png"		6 1 0 0 NONE
 SPRITE SPR_Chest		"sprite/chest.png"			2 2 0 0 NONE
 SPRITE SPR_Save			"sprite/save.png"			2 2 0 0 NONE
 SPRITE SPR_Refill		"sprite/refill.png"			2 2 0 0 NONE
@@ -193,6 +197,7 @@ SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 0 0 NONE
 SPRITE SPR_Empty		"sprite/empty.png"			5 1 0 0 NONE
 SPRITE SPR_J_Empty		"sprite/empty_ja.png"		5 1 0 0 NONE
 SPRITE SPR_DoctorBlood  "sprite/blood.png"          7 4 0 0 NONE
+SPRITE SPR_DocDie       "sprite/docdie.png"         4 6 0 0 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 0 0 NONE
@@ -349,6 +354,7 @@ SPRITE SPR_Jenka		"sprite/jenka.png"			2 2 0 0 NONE
 # Use PAL_Dark
 SPRITE SPR_Dark			"sprite/dark.png"			5 3 0 0 NONE
 SPRITE SPR_DarkBub		"sprite/darkbubble.png"		2 2 0 0 NONE
+SPRITE SPR_DarkDie      "sprite/darkdie.png"        4 3 0 0 NONE
 
 # Use PAL_X
 SPRITE SPR_XFishy		"sprite/xfishy.png"			2 2 0 0 NONE
