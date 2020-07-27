@@ -13,8 +13,8 @@ uint8_t curly_watershield = 0;
 uint8_t curly_impjump = 0;
 uint8_t curly_reachptimer = 0;
 uint8_t curly_blockedtime = 0;
-uint16_t curly_tryjumptime = 0;
 uint8_t curly_look = 0;
+uint16_t curly_tryjumptime = 0;
 
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
@@ -55,6 +55,7 @@ void ai_curly_ai(Entity *e) {
 		case CAI_INIT:			// set to this by an ANP in Maze M
 		{
 			e->alwaysActive = TRUE;
+			e->eflags |= NPC_IGNORE44;
 			e->x = player.x;
 			e->y = player.y;
 		}
@@ -73,6 +74,8 @@ void ai_curly_ai(Entity *e) {
 			Entity *gun = entity_create(e->x, e->y, OBJ_CAI_GUN + curly_mgun, 0);
 			gun->alwaysActive = TRUE;
 			gun->linkedEntity = e;
+            gun->display_box = (bounding_box) { 12, 4, 12, 4 };
+			moveMeToFront = TRUE;
 		}
 		break;
 		case CAI_KNOCKEDOUT:
@@ -360,11 +363,11 @@ static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 void ai_cai_gun(Entity *e) {
 	Entity *curly = e->linkedEntity;
 	if (!curly) { e->state = STATE_DELETE; return; }
-	
-	// Stick to curly
-	e->x = curly->x;// - (4 << CSF);
-	e->y = curly->y + 0x600;// - (4 << CSF);
+
+    // Stick to curly
 	e->dir = curly->dir;
+    e->x = curly->x;
+    e->y = curly->y + 0x600;
 	
 	const SpriteDefinition *sd = curly_mgun ? &SPR_MGun : &SPR_Polar;
 	
@@ -372,10 +375,10 @@ void ai_cai_gun(Entity *e) {
 		if(!e->animtime) {
 			sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
 			e->sprite[0].size = SPRITE_SIZE(1, 3);
-			e->display_box = (bounding_box) { 4, 12, 4, 12 };
+			e->display_box = curly_mgun ? (bounding_box){ 4, 14, 4, 10 } : (bounding_box){ 4, 18, 4, 6 };
 			e->animtime = TRUE;
 			
-			DMA_doDma(DMA_VRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96/4)), e->vramindex << 5, 48, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96>>2)), e->vramindex << 5, 48, 2);
 			
 		}
 	} else if(e->animtime) {

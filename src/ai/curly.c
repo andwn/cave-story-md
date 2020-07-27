@@ -6,7 +6,7 @@
 
 void onspawn_curly_down(Entity *e) {
 	e->state = 32;
-	e->y += 8 << CSF;
+	e->y += 10 << CSF;
 }
 
 void ai_curly(Entity *e) {

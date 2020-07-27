@@ -632,16 +632,17 @@ void ai_pooh_black(Entity *e) {
 			bubble_ymark = e->y;
 			
 			// spawn bubbles when hit
-			if (e->damage_time /*&& (e->damage_time & 7) == 1*/) {
-				Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
-				bubble->alwaysActive = TRUE;
-				bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
-				bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
-				bubble->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
-				bubble->y_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
-				
+			if (e->damage_time) {
+			    if((e->damage_time & 7) == 1) {
+                    Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
+                    bubble->alwaysActive = TRUE;
+                    bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
+                    bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
+                    bubble->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+                    bubble->y_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+			    }
 				// fly away after hit enough times
-				if (++e->timer > TIME_8(50)) {
+				if (++e->timer > TIME_8(100)) {
 					e->state = 4;
 					e->timer = 0;
 					
@@ -658,10 +659,10 @@ void ai_pooh_black(Entity *e) {
 			
 			// bubbles shoot down past player just before
 			// he falls.
-			if (e->timer == TIME_8(60)) {
+			if (e->timer == TIME_8(50)) {
 				bubble_xmark = player.x;
 				bubble_ymark = pixel_to_sub(10000);
-			} else if (e->timer < TIME_8(60)) {
+			} else if (e->timer < TIME_8(50)) {
 				bubble_xmark = e->x;
 				bubble_ymark = e->y;
 			}
@@ -693,8 +694,8 @@ void ai_poohblk_bubble(Entity *e) {
 	else e->frame = 1;
 	e->x_speed += (e->x > bubble_xmark) ? -SPEED_8(0x40) : SPEED_8(0x40);
 	e->y_speed += (e->y > bubble_ymark) ? -SPEED_8(0x40) : SPEED_8(0x40);
-	LIMIT_X(SPEED_12(0xFFF));
-	LIMIT_Y(SPEED_12(0xFFF));
+	LIMIT_X(SPEED_12(0xAFF));
+	LIMIT_Y(SPEED_12(0xAFF));
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

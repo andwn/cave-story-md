@@ -689,7 +689,11 @@ void player_start_booster() {
 
 static void player_update_booster() {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
-	if(!joy_down(btn[cfg_btn_jump])) playerBoostState = BOOST_OFF;
+	if(!joy_down(btn[cfg_btn_jump])) {
+	    // Decellerate after boosting down
+	    if(playerBoostState == BOOST_DOWN) player.y_speed >>= 2;
+	    playerBoostState = BOOST_OFF;
+	}
 	if(playerBoostState == BOOST_OFF) return;
 	// player seems to want it active...check the fuel
 	if(playerBoosterFuel == 0) {
@@ -759,8 +763,8 @@ static void player_update_booster() {
 		switch(playerBoostState) {
 			case BOOST_08: effect_create_misc(EFF_BOOST8, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
 			case BOOST_HOZ: 
-				if(player.dir) effect_create_misc(EFF_BOOST2, (player.x >> CSF) - 12, (player.y >> CSF) + 2, 0); 
-				else effect_create_misc(EFF_BOOST2, (player.x >> CSF) + 12, (player.y >> CSF) + 2, 0); 
+				if(player.dir) effect_create_misc(EFF_BOOST2, (player.x >> CSF) - 0, (player.y >> CSF) + 2, 0);
+				else effect_create_misc(EFF_BOOST2, (player.x >> CSF) + 0, (player.y >> CSF) + 2, 0);
 			break;
 			case BOOST_UP: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
 			case BOOST_DOWN: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) - 4, 0); break;
