@@ -369,12 +369,25 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			sound_play(e->hurtSound, 5);
 		}
 	} else if(b->type == WEAPON_NEMESIS && b->level < 3) {
-		if(b->last_hit != e) {
-			b->last_hit = e;
-			if(b->damage < e->health) sound_play(e->hurtSound, 5);
-		} else {
-			return;
-		}
+        if(flags & NPC_INVINCIBLE) {
+            b->ttl = 0;
+            sound_play(SND_TINK, 5);
+            return;
+        }
+        if(b->damage < e->health) {
+            if (b->last_hit[0] == e || b->last_hit[1] == e) {
+                return;
+            } else {
+                if (b->last_hit[0] == NULL) {
+                    b->last_hit[0] = e;
+                } else if (b->last_hit[1] == NULL) {
+                    b->last_hit[1] = e;
+                } else {
+                    b->last_hit[0] = e;
+                }
+                sound_play(e->hurtSound, 5);
+            }
+        }
 	} else {
 		b->ttl = 0;
 		if(flags & NPC_INVINCIBLE) {

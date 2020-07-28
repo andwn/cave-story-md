@@ -90,7 +90,6 @@ static const MissileSettings missile_settings[2][6] = {
 	}
 };
 
-
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
 
@@ -581,7 +580,8 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
-	b->last_hit = NULL;
+	b->last_hit[0] = NULL;
+    b->last_hit[1] = NULL;
 	set_extent_box(b);
 }
 
@@ -704,7 +704,7 @@ void bullet_update_polarstar(Bullet *b) {
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		sound_play(SND_SHOT_HIT, 3);
-		// TODO: Add the sprite and effect for hitting a wall
+        effect_create_misc(EFF_BULLET_HIT, b->x, b->y, FALSE);
 	} else {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
@@ -769,7 +769,7 @@ void bullet_update_machinegun(Bullet *b) {
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		sound_play(SND_SHOT_HIT, 3);
-		// TODO: Add the sprite and effect for hitting a wall
+		effect_create_misc(EFF_BULLET_HIT, b->x, b->y, FALSE);
 	} else {
 		sprite_pos(b->sprite,
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,

@@ -495,7 +495,7 @@ void ai_undead_core_face(Entity *e) {
 		e->health = 1000;
 	}
 	
-	e->x = bossEntity->x - pixel_to_sub(30);
+	e->x = bossEntity->x - pixel_to_sub(28);
 	e->y = bossEntity->y + pixel_to_sub(2);
 }
 

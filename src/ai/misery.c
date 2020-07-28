@@ -200,7 +200,7 @@ void ai_misery_stand(Entity *e) {
 		{
 			e->timer++;
 			if (e->timer == TIME_8(30) || e->timer == TIME_8(40) || e->timer == TIME_8(50)) {
-				Entity *shot = entity_create(e->x+(16<<CSF), e->y, OBJ_IGOR_SHOT, 0);
+				Entity *shot = entity_create(e->x+pixel_to_sub(16), e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = SPEED_12(0x600);
 				shot->y_speed = -SPEED_10(random() & 0x1FF);
 				

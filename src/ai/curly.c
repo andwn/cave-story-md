@@ -124,7 +124,8 @@ void ai_curly_down(Entity *e) {
     switch (e->state) {
         case 0:
             e->frame = 12;
-        case 1: /* fallthrough */
+        /* fallthrough */
+        case 1:
             if (e->dir && PLAYER_DIST_X(e, 32<<CSF) && PLAYER_DIST_Y(e, 16<<CSF)) {
                 e->frame = 13;
             } else {
@@ -238,7 +239,8 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
 		break;
 	}
-	b->last_hit = NULL;
+	b->last_hit[0] = NULL;
+    b->last_hit[1] = NULL;
 	set_extent_box(b);
 }
 

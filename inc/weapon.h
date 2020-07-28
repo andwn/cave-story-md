@@ -41,17 +41,19 @@ struct Bullet {
 	VDPSprite sprite;
 	bounding_box hit_box;
 	extent_box extent;
-	Entity *last_hit;
+	Entity *last_hit[1];
+
+    uint8_t sheet;
+    uint8_t dir;
+    uint8_t hits;
+    uint8_t state;
+
 	int32_t x, y;
 	int16_t x_speed, y_speed;
 	uint8_t type;
 	uint8_t level;
 	uint8_t damage;
 	uint8_t ttl;
-	uint8_t sheet;
-	uint8_t dir;
-	uint8_t hits;
-	uint8_t state;
 };
 
 Weapon playerWeapon[MAX_WEAPONS];

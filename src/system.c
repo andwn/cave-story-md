@@ -62,7 +62,8 @@ uint8_t sram_file = 0;
 uint8_t sram_state = SRAM_UNCHECKED;
 
 // Put the counter tiles in a "blank spot" of Hell's tileset
-#define TILE_COUNTERINDEX 416
+#define TILE_COUNTERINDEX TILE_AIRINDEX
+//416
 //uint8_t counterShow = FALSE;
 //uint8_t counterTick = FALSE;
 Time time, counter;

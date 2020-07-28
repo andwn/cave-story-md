@@ -419,12 +419,12 @@ void ai_muscle_doctor(Entity *e) {
 			e->x_next = e->x_mark;
 			// Create dying animation object
             e->hidden = TRUE;
-            Entity *die = entity_create(e->x - (4<<CSF), e->y - (20<<CSF), OBJ_DOCTORM_DIE, 0);
-            die->x_mark = e->x - (4<<CSF);
+            Entity *die = entity_create(e->x /*+ (4<<CSF)*/, e->y - (20<<CSF), OBJ_DOCTORM_DIE, 0);
+            die->x_mark = e->x /*+ (4<<CSF)*/;
             die->y_mark = e->y - (20<<CSF);
             FACE_PLAYER(die);
             // Create blood animation object
-			e->linkedEntity = entity_create(e->x - (8<<CSF), e->y - (4<<CSF), OBJ_DOCTORM_BLEED, 0);
+			e->linkedEntity = entity_create(e->x - (20<<CSF), e->y - (4<<CSF), OBJ_DOCTORM_BLEED, 0);
 			//e->ResetClip();
 			//e->clip_enable = TRUE;
 			
@@ -501,7 +501,7 @@ void ai_doctorm_die(Entity *e) {
     if (!(e->timer & 2)) {
         e->x += (1 << CSF);
     }
-    if(e->timer >= 24) {
+    if(e->timer >= TIME_8(15)) {
         e->timer = 0;
         e->frame++;
         if(e->frame >= 20) e->state = STATE_DELETE;

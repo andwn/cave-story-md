@@ -188,6 +188,17 @@ void effects_update() {
 				}
 			}
 			break;
+            case EFF_BULLET_HIT:
+            {
+                if((effMisc[i].ttl & 3) == 0) {
+                    effMisc[i].sprite.attr += 4;
+                }
+                sprite_pos(effMisc[i].sprite,
+                   effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+                   effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+                vdp_sprite_add(&effMisc[i].sprite);
+            }
+            break;
 		}
 	}
 }
@@ -364,6 +375,17 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 				};
 			}
 			break;
+		    case EFF_BULLET_HIT:
+            {
+                effMisc[i].ttl = 12;
+                //uint8_t loc = 0;
+                //SHEET_FIND(loc, SHEET_PSTAR);
+                effMisc[i].sprite = (VDPSprite) {
+                    .size = SPRITE_SIZE(2, 2),
+                    .attr = TILE_ATTR(PAL0,1,0,0,80)
+                };
+            }
+            break;
 		}
 		break;
 	}

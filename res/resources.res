@@ -2,7 +2,7 @@
 # Global palettes
 # ----------------------------------------------------------------------------------------------
 
-#PALETTE PAL_Sega		"sprite/sega.png"
+PALETTE PAL_Sega		"sprite/sega.png"
 PALETTE PAL_Main		"sprite/quote.png"
 PALETTE PAL_Sym			"sprite/door.png"
 PALETTE PAL_Regu		"sprite/kazuma.png"
@@ -29,8 +29,8 @@ PALETTE PAL_Intro		"sprite/bubbleintro.png"
 # ----------------------------------------------------------------------------------------------
 
 # Use PAL_Sega
-#SPRITE SPR_Sega			"sprite/sega.png"			12 4 0 0 NONE
-#SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 0 0 NONE
+SPRITE SPR_Sega			"sprite/sega.png"			12 4 0 0 NONE
+SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 0 0 NONE
 
 # Use PAL_Main
 SPRITE SPR_Quote		"sprite/quote.png"			2 2 0 0 NONE

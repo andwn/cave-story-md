@@ -346,7 +346,7 @@ void ai_doctor_ghost(Entity *e) {
 		{
 			e->timer++;
 			if((e->timer & 7) == 0) {
-				Entity *r = entity_create(e->x, e->y+pixel_to_sub(128), OBJ_RED_ENERGY, 0);
+				Entity *r = entity_create(e->x, e->y/*+pixel_to_sub(128)*/, OBJ_RED_ENERGY, 0);
 				r->angle = A_RIGHT;
 				r->linkedEntity = e;
 				if((e->timer & 15) == 0) r->timer = 200;
@@ -407,9 +407,9 @@ void ai_red_energy(Entity *e) {
 				e->y_speed = -0xFF + (random() & 0x1FF);
 			}
 			if(e->x < e->linkedEntity->x)		{ if(e->x_speed < SPEED_10(0x3ff)) e->x_speed += SPEED_8(12); }
-			else if(e->x > e->linkedEntity->x)	{ if(e->x_speed > SPEED_10(0x3ff)) e->x_speed -= SPEED_8(12); }
+			else if(e->x > e->linkedEntity->x)	{ if(e->x_speed > -SPEED_10(0x3ff)) e->x_speed -= SPEED_8(12); }
 			if(e->y < e->linkedEntity->y)		{ if(e->y_speed < SPEED_10(0x3ff)) e->y_speed += SPEED_8(12); }
-			else if(e->y > e->linkedEntity->y)	{ if(e->y_speed > SPEED_10(0x3ff)) e->y_speed -= SPEED_8(12); }
+			else if(e->y > e->linkedEntity->y)	{ if(e->y_speed > -SPEED_10(0x3ff)) e->y_speed -= SPEED_8(12); }
 			
 			e->x += e->x_speed;
 			e->y += e->y_speed;
