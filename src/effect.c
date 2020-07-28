@@ -188,9 +188,10 @@ void effects_update() {
 				}
 			}
 			break;
-            case EFF_BULLET_HIT:
+            case EFF_PSTAR_HIT:
+            case EFF_MGUN_HIT:
             {
-                if((effMisc[i].ttl & 3) == 0) {
+                if(effMisc[i].ttl && (effMisc[i].ttl & 3) == 0) {
                     effMisc[i].sprite.attr += 4;
                 }
                 sprite_pos(effMisc[i].sprite,
@@ -375,14 +376,25 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 				};
 			}
 			break;
-		    case EFF_BULLET_HIT:
+		    case EFF_PSTAR_HIT:
             {
                 effMisc[i].ttl = 12;
-                //uint8_t loc = 0;
-                //SHEET_FIND(loc, SHEET_PSTAR);
+                uint8_t loc = 0;
+                SHEET_FIND(loc, SHEET_PSTAR);
                 effMisc[i].sprite = (VDPSprite) {
                     .size = SPRITE_SIZE(2, 2),
-                    .attr = TILE_ATTR(PAL0,1,0,0,80)
+                    .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+8)
+                };
+            }
+            break;
+            case EFF_MGUN_HIT:
+            {
+                effMisc[i].ttl = 12;
+                uint8_t loc = 0;
+                SHEET_FIND(loc, SHEET_MGUN);
+                effMisc[i].sprite = (VDPSprite) {
+                    .size = SPRITE_SIZE(2, 2),
+                    .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+8)
                 };
             }
             break;

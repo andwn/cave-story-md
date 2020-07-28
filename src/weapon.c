@@ -704,13 +704,15 @@ void bullet_update_polarstar(Bullet *b) {
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		sound_play(SND_SHOT_HIT, 3);
-        effect_create_misc(EFF_BULLET_HIT, b->x, b->y, FALSE);
+        effect_create_misc(EFF_PSTAR_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
 	} else {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		vdp_sprite_add(&b->sprite);
-		b->ttl--;
+		if(!--b->ttl) {
+		    effect_create_misc(EFF_PSTAR_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
+		}
 	}
 }
 
@@ -769,7 +771,7 @@ void bullet_update_machinegun(Bullet *b) {
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		sound_play(SND_SHOT_HIT, 3);
-		effect_create_misc(EFF_BULLET_HIT, b->x, b->y, FALSE);
+        //effect_create_misc(EFF_MGUN_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
 	} else {
 		sprite_pos(b->sprite,
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
