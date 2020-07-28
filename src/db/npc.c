@@ -185,7 +185,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_DarkDie, 	NOSHEET,		PAL3, 1, &ai_null, 				&ai_poohblk_dying, 	&ai_null 			}, // Pooh Black (Dying)
 	{ &SPR_DrGero, 		NOSHEET, 		PAL3, 1, &onspawn_gero, 		&ai_gero, 			&ai_null 			}, // Dr. Gero
 	{ &SPR_Nurse, 		NOSHEET, 		PAL3, 1, &onspawn_gero, 		&ai_gero, 			&ai_null 			}, // Nurse Hasumi
-	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_curly_down, 	&ai_curly, 			&ai_null 			}, // Curly (Collapsed)
+	{ &SPR_Curly, 		NOSHEET, 		PAL3, 1, &onspawn_curly_down, 	&ai_curly_down, 	&ai_null 			}, // Curly (Collapsed)
 	{ &SPR_GaudiMerch,	NOSHEET,		PAL3, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Chaba
 	{ &SPR_Booster,		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_booster_falling,&ai_null 			}, // Booster
 	{ &SPR_Boulder,		NOSHEET, 		PAL3, 4, &ai_null, 				&ai_boulder, 		&ai_null 			}, // Boulder

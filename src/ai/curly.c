@@ -4,11 +4,6 @@
 #define CURLY_WALK				3
 #define CURLY_WALKING			4
 
-void onspawn_curly_down(Entity *e) {
-	e->state = 32;
-	e->y += 10 << CSF;
-}
-
 void ai_curly(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -52,12 +47,12 @@ void ai_curly(Entity *e) {
 		case 5:
 		{
 			e->state = 6;
-			//SmokeClouds(e, 8, 0, 0);
+			effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		}
 		/* fallthrough */
 		case 6:
 		{
-			e->frame = 10;
+			e->frame = 9;
 		}
 		break;
 		case 20:			// face away
@@ -84,7 +79,10 @@ void ai_curly(Entity *e) {
 		/* fallthrough */
 		case 31:
 		{
-			if (e->grounded) e->state = 32;
+			if (e->grounded) {
+			    e->state = 32;
+			    e->frame = 9;
+			}
 			else break;
 		}
 		/* fallthrough */
@@ -113,6 +111,27 @@ void ai_curly(Entity *e) {
 	e->x = e->x_next;
 	if(!e->grounded && e->state != 32) e->y_speed += SPEED(0x40);
 	LIMIT_Y(SPEED(0x5ff));
+}
+
+// collapsed curly (on bed in camp)
+void onspawn_curly_down(Entity *e) {
+    //e->state = 32;
+    e->y += 10 << CSF;
+    if(e->eflags & NPC_OPTION2) e->dir = 1;
+}
+
+void ai_curly_down(Entity *e) {
+    switch (e->state) {
+        case 0:
+            e->frame = 12;
+        case 1: /* fallthrough */
+            if (e->dir && PLAYER_DIST_X(e, 32<<CSF) && PLAYER_DIST_Y(e, 16<<CSF)) {
+                e->frame = 13;
+            } else {
+                e->frame = 12;
+            }
+            break;
+    }
 }
 
 // curly being carried by Tow Rope
@@ -319,7 +338,7 @@ static void curlyboss_fire(Entity *e, uint8_t dir) {
 
 void onspawn_curlyBoss(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->x -= 0x400;
+	e->x -= 0x200;
 }
 
 void ai_curlyBoss(Entity *e) {
