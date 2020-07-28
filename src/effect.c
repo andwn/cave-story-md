@@ -143,8 +143,8 @@ void effects_update() {
 			break;
 			case EFF_QMARK:
 			{
-				if(effMisc[i].ttl > TIME_8(40) && (effMisc[i].ttl & 1) == 0) {
-					effMisc[i].y--;
+				if(effMisc[i].ttl > TIME_8(20) && (effMisc[i].ttl & 1) == 0) {
+					effMisc[i].y -= 2;
 				}
 				sprite_pos(effMisc[i].sprite,
 					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
@@ -301,7 +301,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_QMARK:
 			{
-				effMisc[i].ttl = TIME_8(50);
+				effMisc[i].ttl = TIME_8(30);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,TILE_QMARKINDEX)

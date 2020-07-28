@@ -68,13 +68,14 @@ static void spawn_fish(uint8_t index) {
 	// keep appropriate position relative to main object
 	// 									UL					UR					LL					LR
 	static const int32_t xoffs[]   = { -pixel_to_sub(64),  pixel_to_sub(76), -pixel_to_sub(64),  pixel_to_sub(76) };
-	static const int32_t yoffs[]   = {  pixel_to_sub(27),  pixel_to_sub(27), -pixel_to_sub(16), -pixel_to_sub(16) };
-	static const uint8_t angles[]  = { A_LEFT+0x20,  A_UP+0x20,A_DOWN+0x20, A_RIGHT+0x20 };
+	static const int32_t yoffs[]   = { -pixel_to_sub(16), -pixel_to_sub(16),  pixel_to_sub(27),  pixel_to_sub(27) };
+	static const uint8_t angles[]  = {       A_LEFT-0x20,      A_RIGHT+0x20,       A_LEFT+0x20,      A_RIGHT-0x20 };
 	// Create manually because cur_angle needs to be set
 	// Then let the missile itself deal with setting speeds with sin/cos
 	Entity *fish = entity_create(bossEntity->x + xoffs[index], bossEntity->y + yoffs[index],
 								 OBJ_X_FISHY_MISSILE, 0);
 	fish->cur_angle = angles[index];
+    fish->want_angle = angles[index];
 	fish->nflags &= ~NPC_INVINCIBLE;
 	fish->eflags &= ~NPC_INVINCIBLE;
 	fish->nflags &= ~NPC_SHOOTABLE;
@@ -301,7 +302,7 @@ void ai_monsterx(Entity *e) {
 			if (++e->timer > TIME_10(300) || (saved_health - e->health) > 200) {
 				e->state = STATE_X_CLOSE_DOORS;
 				e->timer = 0;
-			} else if(++e->animtime > TIME_8(50)) {
+			} else if(++e->animtime > TIME_8(40)) {
 				e->animtime = 0;
 				// Recycling useless underwater var to cycle fish index
 				if(e->underwater > 3) e->underwater = 0;
@@ -440,13 +441,14 @@ void ai_x_tread(Entity *e) {
 		{
 			e->eflags |= NPC_BOUNCYTOP;
 			e->timer = 0;
+			e->frame = 2;
 			e->animtime = 0;
 			
 			e->state++;
 		} /* fallthrough */
 		case STATE_TREAD_RUN+1:
 		{
-			ANIMATE(e, 8, 1,0);
+			ANIMATE(e, 4, 2,3);
 			ACCEL_X(0x20);
 			
 			if (++e->timer > 30) {
@@ -459,7 +461,7 @@ void ai_x_tread(Entity *e) {
 		break;
 		case STATE_TREAD_RUN+2:
 		{
-			ANIMATE(e, 8, 0,1);
+			ANIMATE(e, 4, 0,1);
 			ACCEL_X(0x20);
 			
 			e->timer++;
@@ -468,7 +470,7 @@ void ai_x_tread(Entity *e) {
 		
 		case STATE_TREAD_BRAKE:
 		{
-			e->frame = 0;
+			e->frame = 2;
 			e->animtime = 0;
 			
 			e->eflags |= NPC_BOUNCYTOP;
@@ -476,11 +478,13 @@ void ai_x_tread(Entity *e) {
 		} /* fallthrough */
 		case STATE_TREAD_BRAKE+1:
 		{
+            ANIMATE(e, 2, 2,3);
 			ACCEL_X(0x20);
 			
 			if ((e->dir == 1 && e->x_speed > 0) ||
 				(e->dir == 0 && e->x_speed < 0)) {
 				e->x_speed = 0;
+				//e->frame = 0;
 				e->state = STATE_TREAD_STOPPED;
 			}
 		}
@@ -523,7 +527,7 @@ void ai_x_tread(Entity *e) {
 	int16_t yy = (e->y >> CSF) - e->display_box.top - (camera.y >> CSF) + SCREEN_HALF_H;
 	uint16_t attr = TILE_ATTR(PAL3, 0, 0 ,0, sheets[e->alt_sheet].index);
 	if(e->y < 0x18000) attr |= 0x1000;
-	if(e->frame) attr += 32;
+	attr += e->frame << 5;
 	e->sprite[0] = (VDPSprite) {
 		.x = xx + 128, .y = yy + 128,
 		.size = SPRITE_SIZE(4, 4), .attr = attr,
@@ -672,32 +676,32 @@ void ai_x_fishy_missile(Entity *e) {
 	
 	// Find angle needed to reach player
 	// Don't do this every frame, arctan is expensive
-	if(++e->animtime > TIME_8(20)) {
-		e->animtime = 0;
+	e->timer2++;
+	if(e->timer2 == TIME_8(9)) {
+	    e->x_mark = e->x;
+        e->y_mark = e->y;
+	} else if(e->timer2 > TIME_8(10)) {
+		e->timer2 = 0;
 		e->want_angle = get_angle(e->x, e->y, player.x, player.y);
+        // smoke trails
+        effect_create_misc(EFF_BOOST2, sub_to_pixel(e->x_mark), sub_to_pixel(e->y_mark), FALSE);
 	}
 	// Turn towards desired angle
-	if(e->cur_angle < e->want_angle) {
-		if(abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle++;
-		else e->cur_angle--;
-	} else {
-		if(abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle--;
-		else e->cur_angle++;
-	}
-	
-	// smoke trails
-	//if (++e->timer2 > 2) {
-	//	e->timer2 = 0;
-		//Caret *c = effect(e->ActionPointX(), e->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
-		//c->x_speed = -e->x_speed >> 2;
-		//c->y_speed = -e->y_speed >> 2;
-	//}
-	
+	//if(e->timer & 1) {
+    if (e->cur_angle < e->want_angle) {
+        if (abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle++;
+        else e->cur_angle--;
+    } else {
+        if (abs(e->cur_angle - e->want_angle) < 0x80) e->cur_angle--;
+        else e->cur_angle++;
+    }
+    //}
+
 	//e->cur_angle &= 0x3FF;
 	e->frame = ((e->cur_angle + (uint8_t)0x20) >> 5) & 7;
 	
-	e->x_speed = cos[e->cur_angle];
-	e->y_speed = sin[e->cur_angle];
+	e->x_speed = cos2[e->cur_angle];
+	e->y_speed = sin2[e->cur_angle];
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	

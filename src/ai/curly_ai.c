@@ -20,6 +20,7 @@ static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
 		moveMeToFront = TRUE;
 		e->y_speed = -SPEED(0x300) - random(SPEED(0x300));
+		e->y_next -= SPEED(0x300);
 		e->grounded = FALSE;
 		e->frame = WALK2;
 		sound_play(SND_PLAYER_JUMP, 5);
@@ -49,7 +50,7 @@ void ai_curly_ai(Entity *e) {
 		{
 			e->alwaysActive = TRUE;
 			e->x_speed = 0;
-			e->y_speed += SPEED(0x20);
+			e->y_speed += SPEED(0x1F);
 		}
 		break;
 		case CAI_INIT:			// set to this by an ANP in Maze M
@@ -208,7 +209,7 @@ void ai_curly_ai(Entity *e) {
 		// jump if we hit a wall, jump higher if off camera
 		if (e->grounded && (blockr || blockl)) {
 			CaiJUMP(e);
-			curly_impjump = abs(e->x - camera.x) > pixel_to_sub(240);
+			curly_impjump = abs(e->x - camera.x) > pixel_to_sub(168);
 		}
 		// if we're below the target try jumping around randomly
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<CSF)) {
@@ -226,7 +227,7 @@ void ai_curly_ai(Entity *e) {
 		e->y_speed += SPEED(0x10);
 		// deactivate Improbable Jump once we clear the wall or hit the ground
 		if (e->grounded || (!blockl && !blockr)) curly_impjump = 0;
-		else curly_impjump = abs(e->x - camera.x) > pixel_to_sub(240);
+		else curly_impjump = abs(e->x - camera.x) > pixel_to_sub(168);
 	}
 	else e->y_speed += SPEED(0x33);
 	

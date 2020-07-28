@@ -180,6 +180,8 @@ void stage_load(uint16_t id) {
 	DMA_flushQueue();
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
+	//player.oframe = 255;
+	//player.frame = 0; // Reset player graphic
 	vdp_set_display(TRUE);
 }
 

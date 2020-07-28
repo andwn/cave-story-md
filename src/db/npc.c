@@ -220,7 +220,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_GrateMouth,	NOSHEET,		PAL2, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Grate Mouth
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Motion Wall
 	{ NULL, 			SHEET_BLOWFISH, PAL3, 1, &onspawn_persistent, 	&ai_ironh_fishy, 	&ondeath_default 	}, // Porcupine Fish
-	{ &SPR_ManShot, 	NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_ironh_shot, 	&ai_null 			}, // Ironhead Projectile
+	{ &SPR_ManShot, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_ironh_shot, 	&ai_null 			}, // Ironhead Projectile
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Underwater Current
 	{ &SPR_BabyDragon,	NOSHEET,		PAL3, 2, &ai_null, 				&ai_dragon_zombie, 	&ai_null 			}, // Dragon Zombie
 	{ &SPR_BabyDragon,	NOSHEET,		PAL3, 2, &onspawn_deaddragon, 	&ai_null, 			&ai_null 			}, // Dragon Zombie (Dead)

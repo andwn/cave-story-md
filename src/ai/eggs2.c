@@ -119,6 +119,7 @@ void ai_fallingspike_sm(Entity *e) {
 				
 				//SmokeClouds(o, 4, 2, 2);
 				//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 				e->state = STATE_DELETE;
 			}
 			e->y = e->y_next;
@@ -255,7 +256,7 @@ void ai_counterbomb(Entity *e) {
 		{
 			if (e->timer == 0) {
 				if (e->timer2 < 5) {
-					Entity *number = entity_create(e->x + (8 << CSF), e->y + (16 << CSF),
+					Entity *number = entity_create(e->x + pixel_to_sub(8), e->y + pixel_to_sub(16),
 												  OBJ_COUNTER_BOMB_NUMBER, 0);
 					number->frame = e->timer2++;
 					e->timer = 60;

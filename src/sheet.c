@@ -280,7 +280,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 10,3,3, 
 					0,0, 1,0, 1,2, 2,0, 7,0, 8,0, 9,0, 10,0, 10,1, 11,0);
 			if(stageID == 0x27) {
-				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 2,8,4, 0,0, 1,0 /*, 0,1, 1,1*/);
+				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0,0, 1,0, 0,1, 1,1);
 				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0,0);
 				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
 						0,0, 0,1, 0,2, 0,3, 1,0, 1,1, 1,2, 1,3);

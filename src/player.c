@@ -691,7 +691,7 @@ static void player_update_booster() {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
 	if(!joy_down(btn[cfg_btn_jump])) {
 	    // Decellerate after boosting down
-	    if(playerBoostState == BOOST_DOWN) player.y_speed >>= 2;
+	    //if(playerBoostState == BOOST_DOWN) player.y_speed >>= 2;
 	    playerBoostState = BOOST_OFF;
 	}
 	if(playerBoostState == BOOST_OFF) return;
