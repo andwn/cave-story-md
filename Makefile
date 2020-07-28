@@ -65,16 +65,19 @@ ASMO += $(CS:%.c=asmout/%.s)
 
 .SECONDARY: doukutsu.elf
 
-.PHONY: all pal release asm debug prereq main-build
+.PHONY: all pal sega release asm debug prereq main-build
 
 all: release
 pal: release
 
-release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+sega: OPTIONS += -DSEGA_LOGO
+sega: release
+
+release: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
 release: main-build symbol.txt
 
-asm: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
+asm: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 asm: OPTIONS += -fshort-enums
 asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 

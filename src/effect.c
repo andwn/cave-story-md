@@ -195,8 +195,8 @@ void effects_update() {
                     effMisc[i].sprite.attr += 4;
                 }
                 sprite_pos(effMisc[i].sprite,
-                   effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-                   effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+                   effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
+                   effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
                 vdp_sprite_add(&effMisc[i].sprite);
             }
             break;

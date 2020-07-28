@@ -694,24 +694,35 @@ void bullet_update_snake(Bullet *b) {
 void bullet_update_polarstar(Bullet *b) {
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
+	uint16_t bx = sub_to_pixel(b->x);
+    uint16_t by = sub_to_pixel(b->y);
+	uint8_t block = stage_get_block_type(pixel_to_block(bx), pixel_to_block(by));
 	// Check if bullet is colliding with a breakable block
 	if(block == 0x43) {
 		b->ttl = 0;
-		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+		bullet_destroy_block(pixel_to_block(bx), pixel_to_block(by));
+		effect_create_smoke(bx, by);
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
 		b->ttl = 0;
 		sound_play(SND_SHOT_HIT, 3);
-        effect_create_misc(EFF_PSTAR_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
-	} else {
+        effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+	} else if(block & BLOCK_SLOPE) {
+        int8_t height = heightmap[block & 3][bx & 15];
+        if(block & 4) height = -height;
+        int8_t overlap = (by & 15) + height;
+        if(overlap > 0) {
+            b->ttl = 0;
+            sound_play(SND_SHOT_HIT, 3);
+            effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+        }
+    } else {
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		vdp_sprite_add(&b->sprite);
 		if(!--b->ttl) {
-		    effect_create_misc(EFF_PSTAR_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
+		    effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
 		}
 	}
 }
