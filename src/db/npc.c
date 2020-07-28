@@ -263,9 +263,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Gunfish, 	NOSHEET, 		PAL0, 1, &ai_null, 				&ai_gunfish, 		&ondeath_default 	}, // Gunfish
 	{ NULL, 			SHEET_GUNFSHOT, PAL0, 1, &onspawn_persistent, 	&ai_gunfish_shot, 	&ondeath_nodrop 	}, // Gunfish Projectile
 	{ NULL, 			SHEET_PRESS, 	PAL1, 1, &ai_null, 				&ai_prox_press_hoz, &ondeath_default 	}, // Lethal Press
-	{ &SPR_JailBars2,	NOSHEET,		PAL2, 2, &onspawn_cent_cage, 	&ai_null, 			&ai_null 			}, // Cage Bars
+	{ &SPR_JailBars2,	NOSHEET,		PAL2, 2, &onspawn_cent_cage, 	&ai_null, 		    &ai_null 			}, // Cage Bars
 	/* 0x0F0 (240) */
-	{ &SPR_JailedMimi,	NOSHEET,		PAL3, 1, &ai_null, 				&ai_mimiga_caged, 	&ai_null 			}, // Jailed Mimiga
+	{ &SPR_JailedMimi,	NOSHEET,		PAL3, 1, &onspawn_persistent, 	&ai_mimiga_farmer, 	&ai_null 			}, // Jailed Mimiga
 	{ NULL, 			SHEET_CRITTER, 	PAL3, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // Red Critter
 	{ NULL, 			SHEET_BAT, 		PAL3, 1, &onspawn_persistent, 	&ai_red_bat, 		&ondeath_default 	}, // Red Bat
 	{ NULL, 			NOSHEET, 		PAL0, 0, &onspawn_persistent, 	&ai_red_bat_spawner,&ai_null 			}, // Red Bat Generator

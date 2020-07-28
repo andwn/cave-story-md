@@ -487,6 +487,9 @@ void ai_mimiga_farmer(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+		    if(e->x > block_to_sub(18)) {
+		        e->timer2 = 1;
+		    }
 			e->frame = 0;
 			e->x_speed = 0;
 			e->state = 1;
@@ -515,7 +518,7 @@ void ai_mimiga_farmer(Entity *e) {
 		case 10:	// walk
 		{
 			e->state = 11;
-			e->frame = 2;
+			e->frame = 1;
 			e->animtime = 0;
 			
 			e->timer = 16 + (random() & 15);
@@ -523,13 +526,24 @@ void ai_mimiga_farmer(Entity *e) {
 		} /* fallthrough */
 		case 11:
 		{
-			if ((!e->dir && collide_stage_leftwall(e)) ||
-				(e->dir && collide_stage_rightwall(e))) {
-				e->dir ^= 1;
-			}
+		    if(e->type == OBJ_MIMIGA_JAILED) {
+		        if(e->timer2) { // I give up
+		            if(sub_to_pixel(e->x) < block_to_pixel(21) + 8) e->dir = 1;
+                    if(sub_to_pixel(e->x) > block_to_pixel(25) - 8) e->dir = 0;
+		        } else {
+                    if(sub_to_pixel(e->x) < block_to_pixel(13) + 8) e->dir = 1;
+                    if(sub_to_pixel(e->x) > block_to_pixel(17) - 8) e->dir = 0;
+		        }
+		    } else {
+                if(blk(e->x, e->dir ? 9 : -9, e->y, 0) == 0x41) e->dir ^= 1;
+		    }
+			//if ((!e->dir && collide_stage_leftwall(e)) ||
+			//	(e->dir && collide_stage_rightwall(e))) {
+			//	e->dir ^= 1;
+			//}
 			
 			MOVE_X(SPEED(0x200));
-			ANIMATE(e, 4, 2,3,4,5);
+			ANIMATE(e, 8, 2,0,3,0);
 			
 			if (!--e->timer)
 				e->state = 0;
@@ -901,6 +915,7 @@ void ai_numahachi(Entity *e) {
 // The graphic is a bit too low
 void onspawn_jailbars(Entity *e) {
 	e->display_box.top += 8;
+	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 }
 
 void onspawn_cent_cage(Entity *e) {

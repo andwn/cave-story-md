@@ -259,7 +259,7 @@ void ai_counterbomb(Entity *e) {
 					Entity *number = entity_create(e->x + pixel_to_sub(8), e->y + pixel_to_sub(16),
 												  OBJ_COUNTER_BOMB_NUMBER, 0);
 					number->frame = e->timer2++;
-					e->timer = 60;
+					e->timer = TIME_8(50);
 				} else {
 					// expand bounding box to cover explosion area
 					e->hidden = TRUE;
