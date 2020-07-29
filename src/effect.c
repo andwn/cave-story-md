@@ -209,6 +209,16 @@ void effects_update() {
                 vdp_sprite_add(&effMisc[i].sprite);
             }
             break;
+            case EFF_FIRETRAIL:
+            case EFF_SNAKETRAIL:
+            {
+                if((effMisc[i].ttl & 3) == 0) effMisc[i].sprite.attr++;
+                sprite_pos(effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+                vdp_sprite_add(&effMisc[i].sprite);
+            }
+            break;
 		}
 	}
 }
@@ -415,6 +425,28 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].sprite = (VDPSprite) {
                         .size = SPRITE_SIZE(1, 1),
                         .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+4)
+                };
+            }
+            break;
+            case EFF_FIRETRAIL:
+            {
+                effMisc[i].ttl = 12;
+                uint8_t loc = 0;
+                SHEET_FIND(loc, SHEET_FBALL);
+                effMisc[i].sprite = (VDPSprite) {
+                        .size = SPRITE_SIZE(1, 1),
+                        .attr = TILE_ATTR(PAL1,1,0,0,sheets[loc].index+12)
+                };
+            }
+            break;
+            case EFF_SNAKETRAIL:
+            {
+                effMisc[i].ttl = 12;
+                uint8_t loc = 0;
+                SHEET_FIND(loc, SHEET_SNAKE);
+                effMisc[i].sprite = (VDPSprite) {
+                    .size = SPRITE_SIZE(1, 1),
+                    .attr = TILE_ATTR(PAL1,1,0,0,sheets[loc].index+12)
                 };
             }
             break;

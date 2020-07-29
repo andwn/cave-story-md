@@ -689,6 +689,9 @@ void bullet_update_snake(Bullet *b) {
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 	sprite_index(b->sprite, sheets[b->sheet].index + index);
 	vdp_sprite_add(&b->sprite);
+    if(b->level > 1 && (b->ttl & 3) == 0) {
+        effect_create_misc(EFF_SNAKETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
+    };
 }
 
 void bullet_update_polarstar(Bullet *b) {
@@ -768,6 +771,9 @@ void bullet_update_fireball(Bullet *b) {
 	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
 	vdp_sprite_add(&b->sprite);
 	b->ttl--;
+	if(b->level > 1 && (b->ttl & 3) == 0) {
+	    effect_create_misc(EFF_FIRETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
+	};
 }
 
 void bullet_update_machinegun(Bullet *b) {

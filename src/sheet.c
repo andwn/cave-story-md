@@ -52,13 +52,13 @@ void sheets_load_weapon(Weapon *w) {
 		WEP_FIND_SHEET(SHEET_SNAKE);
 		SHEET_ADD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
-							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+							 : &SPR_FirebB3, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_FIREBALL:
 		WEP_FIND_SHEET(SHEET_FBALL);
 		SHEET_ADD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
-							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+							 : &SPR_FirebB3, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_MACHINEGUN:
 		WEP_FIND_SHEET(SHEET_MGUN);
@@ -124,12 +124,12 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_SNAKE:
 		SHEET_MOD(SHEET_SNAKE, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
-							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+							 : &SPR_FirebB3, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_FIREBALL:
 		SHEET_MOD(SHEET_FBALL, w->level == 1 ? &SPR_FirebB1 
 							 : w->level == 2 ? &SPR_FirebB2 
-							 : &SPR_FirebB3, 3,2,2, 0,0, 0,1, 0,2);
+							 : &SPR_FirebB3, 4,2,2, 0,0, 0,1, 0,2, 0,3);
 		break;
 		case WEAPON_MACHINEGUN:
 		SHEET_MOD(SHEET_MGUN,  w->level == 1 ? &SPR_MGunB1 

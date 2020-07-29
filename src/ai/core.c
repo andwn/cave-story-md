@@ -292,7 +292,11 @@ void ai_core(Entity *e) {
 		/* fallthrough */
 		case 601:
 		{
-			if (--e->timer == 0) {
+		    e->timer--;
+		    if(e->timer & 2) {
+                pieces[CFRONT]->hidden = FALSE;
+                pieces[CBACK]->hidden = FALSE;
+		    } else if (e->timer == 0) {
 				pieces[CFRONT]->hidden = TRUE;
 				pieces[CBACK]->hidden = TRUE;
 				
