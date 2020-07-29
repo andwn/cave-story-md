@@ -70,7 +70,7 @@ void sheets_load_weapon(Weapon *w) {
 		WEP_FIND_SHEET(SHEET_BUBB);
 		SHEET_ADD(SHEET_BUBB, w->level == 1 ? &SPR_BubB1 
 							: w->level == 2 ? &SPR_BubB2 
-							: &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
+							: &SPR_BubB3, 6,1,1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 		break;
 		case WEAPON_BLADE:
 		WEP_FIND_SHEET(SHEET_BLADE);
@@ -139,7 +139,7 @@ void sheets_refresh_weapon(Weapon *w) {
 		case WEAPON_BUBBLER:
 		SHEET_MOD(SHEET_BUBB,  w->level == 1 ? &SPR_BubB1 
 							 : w->level == 2 ? &SPR_BubB2 
-							 : &SPR_BubB3, 4,1,1, 0,0, 0,1, 0,2, 0,3);
+							 : &SPR_BubB3, 6,1,1, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 		break;
 		case WEAPON_BLADE:
 		SHEET_MOD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 

@@ -870,6 +870,7 @@ void bullet_update_bubbler(Bullet *b) {
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
+			effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
 		}
 		// Half assed animation
@@ -933,6 +934,7 @@ void bullet_update_bubbler(Bullet *b) {
 		if(block == 0x41) { // Bullet hit a wall
 			b->ttl = 0;
 			sound_play(SND_SHOT_HIT, 3);
+            effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
 		} else if(block == 0x43) { // Breakable block
 			b->ttl = 0;
@@ -948,7 +950,7 @@ void bullet_update_bubbler(Bullet *b) {
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
 	vdp_sprite_add(&b->sprite);
-	b->ttl--;
+	if(!--b->ttl) effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 }
 
 void bullet_update_blade(Bullet *b) {

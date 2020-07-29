@@ -395,6 +395,9 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 		} else {
 			if(b->damage < e->health) sound_play(e->hurtSound, 5);
 		}
+        if(b->type == WEAPON_POLARSTAR) {
+            effect_create_misc(EFF_PSTAR_HIT, b->x >> CSF, b->y >> CSF, FALSE);
+        }
 	}
 	if(!(flags & NPC_INVINCIBLE)) {
 		if(e->health <= b->damage) {
