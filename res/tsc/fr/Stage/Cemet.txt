@@ -1,0 +1,41 @@
+
+#0090
+<MNA<CMU0012<FAI0000<END
+#0091
+<MNA<CMU0012<FAI0001<END
+#0092
+<MNA<CMU0012<FAI0002<END
+#0093
+<MNA<CMU0012<FAI0003<END
+#0094
+<MNA<CMU0012<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0056:0033
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002
+<FAO0004<TRA0083:0094:0007:0010
+
+
+#0200
+<PRI
+<FLJ1371:0201
+<MSGOuais ? Tu veux quoi ?<NOD<END
+#0201
+<PRI<MSGMa femme me cherche,
+tu dis ?<NOD<CLR
+Ouaip, t'as raison,<NOD
+J'suis pas revenu a la maison
+depuis un bail.<NOD
+Okay, j'y retourne.<NOD<GIT1032<DNP0200<IT+0032<CLRTu vas me ramener,
+j'imagine ?<NOD<END
+
+#0300
+<CNP0300:0000:0000
+<PRI<MSGLa Tombe d'Arthur.<NOD
+Il y est écrit:<NOD<CLR<MSG<TURCi-git le noble Arthur,
+Véritable héros des Mimigas.<NOD<FLJ0390:0000<CLR<MSG<FL+0390
+<CMU0010<GIT1001<IT+0001Trouvé =Clé d'Arthur=<WAI0160<NOD<CLO
+<RMU<END
+

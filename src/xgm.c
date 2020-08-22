@@ -1,10 +1,9 @@
 #include "common.h"
 #include "vdp.h"
 #include "xgm.h"
-#include "xgm/z80_xgm.h" /* z80 program blob */
-#include "resources.h"
+#include "bank_data.h"
 
-static const uint8_t smp_null[0x100] __attribute__((aligned(256))) = {};
+extern const uint8_t smp_null[0x100];
 
 // Variables
 extern volatile uint16_t xgmTempo;
@@ -135,7 +134,7 @@ void xgm_init() {
 	z80_set_bank(0);
 	// upload Z80 driver and reset Z80
     z80_clear();
-	z80_upload(0, z80_xgm, sizeof(z80_xgm));
+	z80_upload(0, z80_xgm, (uint16_t)(z80_xgm_end-z80_xgm));
     z80_reset_start();
     z80_release();
     // wait bus released
@@ -206,7 +205,7 @@ void xgm_music_play(const uint8_t *song) {
     z80_release();
     enable_ints;
 }
-
+/*
 void xgm_music_stop() {
     disable_ints;
     z80_request();
@@ -221,6 +220,15 @@ void xgm_music_stop() {
     *z80_drv_command |= (1 << 6);
     // clear pending frame
     z80_drv_params[0x0F] = 0;
+    z80_release();
+    enable_ints;
+}
+*/
+void xgm_music_pause() {
+    disable_ints;
+    z80_request();
+    // set play XGM command
+    *z80_drv_command |= (1 << 4);
     z80_release();
     enable_ints;
 }
@@ -246,39 +254,3 @@ void xgm_pcm_play(const uint8_t id, const uint8_t priority, const uint16_t chann
     z80_release();
     enable_ints;
 }
-/*
-// VInt processing for XGM driver
-void xgm_vblank() {
-    int16_t cnt = xgmTempoCnt;
-    uint16_t step = xgmTempoDef;
-    uint16_t num = 0;
-    while(cnt <= 0) {
-        num++;
-        cnt += step;
-    }
-    xgmTempoCnt = cnt - xgmTempo;
-    // directly do the frame here as we want this code to be as fast as possible 
-    // (to not waste vint time) driver should be loaded here
-    // point on bus req and reset ports
-    while(TRUE) {
-        // take bus and end reset (fast method)
-        *z80_halt_port = 0x0100;
-        *z80_reset_port = 0x0100;
-        // wait for bus taken
-        while (*z80_halt_port & 0x100);
-        // Z80 not accessing ?
-        if (!z80_drv_params[0x0E]) break;
-        // release bus
-        *z80_halt_port = 0x0000;
-        // wait a bit (about 80 cycles)
-        __asm__("\t\tmovm.l %d0-%d3,-(%sp)\n");
-        __asm__("\t\tmovm.l (%sp)+,%d0-%d3\n");
-        // wait for bus released before requesting it again
-        while (!(*z80_halt_port & 0x0100));
-    }
-    // increment frame to process
-    z80_drv_params[0x0F] += num;
-    // release bus
-    *z80_halt_port = 0x0000;
-}
-*/

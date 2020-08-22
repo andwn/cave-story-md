@@ -11,6 +11,11 @@ typedef struct {
 	const uint8_t *PXE; // PXE is the entity list
 	const uint8_t *TSC; // TSC is the script
 	const uint8_t *JTSC; // Japanese version of the Stage TSC
+    const uint8_t *STSC; // Spanish version of the Stage TSC
+    const uint8_t *PTSC; // Portuges version of the Stage TSC
+    const uint8_t *FTSC; // French version of the Stage TSC
+    const uint8_t *ITSC; // Italian version of the Stage TSC
+    const uint8_t *GTSC; // German version of the Stage TSC
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const Palette *npcPalette;
 	uint8_t tileset; // Which tileset in tileset_info to use
@@ -54,8 +59,8 @@ typedef struct {
 // Information about each sound effect for sound_play()
 #define SOUND_COUNT 118
 typedef struct {
-	const uint8_t *sound; // Location of PCM data to playback
-	uint16_t length; // Number of frames (sound frames, not screen frames)
+    const uint8_t *sound; // Location of PCM data to playback
+    const uint8_t *end; // Pointer to the end, to calculate length
 } sound_info_def;
 
 // Information about each character face image

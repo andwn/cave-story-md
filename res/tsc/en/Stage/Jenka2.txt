@@ -1,0 +1,74 @@
+
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<FLJ0595:0095<KEY<CMU0011<FAI0004<EVE0200
+#0095
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+
+#0200
+<KEY<MYD0000<ANP0400:0030:0000
+<MSG<FAC0014The storehouse key?
+Why, THANK you,
+you shouldn't have!<NOD
+Catch you later!<NOD<CLR
+<FAC0013Wait!!<NOD<CLO
+<ANP0400:0030:0002<WAI0030
+<ANP0400:0010:0002<FL+0595<FL+0278<WAI0200<CMU0019<END
+
+#0220
+<KEY
+<FLJ0596:0230
+<FL+0596<FL+0594<IT-0014
+<MSG<FAC0013Oohhh...<NOD...You?<NOD<FAC0000<CLO
+<WAI0050
+<CNP0220:0133:0000<WAI0050
+<MSG<GIT1014<FAC0000Gave her the =Puppy=.<NOD<GIT0000<CNP0300:0130:0000<DNP0401<FL-0274<CLR
+<FAC0013The key...<NOD
+They stole the key...<NOD
+Please.
+You must stop them.<NOD<CLRThey plan to enrage the
+Mimigas and release them
+onto the surface.<NOD<CLROh, yes...<NOD
+You might want this...<NOD<GIT1015<IT+0015<CLR
+<FAC0000<CMU0010Got a =Life Pot=!<WAI0160<NOD<RMU<CLR<FAC0013You can use this once,
+but only once, to
+restore your health.<NOD<END
+
+#0230
+<KEY<FLJ0830:0231<MSG<FAC0013Please!<NOD
+You must stop them!<NOD<CLRThey plan to enrage the
+Mimigas and release them
+onto the surface!<NOD<END
+#0231
+<KEY<ITJ0015:0232
+<MSG<FAC0013Ah, you come at a
+good time.<NOD<GIT1015<IT+0015<CLR
+<FAC0000Received a =Life Pot=!<WAI0030<NOD<GIT0000<CLR<FAC0013Come back if you ever
+need another one.<NOD
+It's the least this
+old woman can do...<NOD<END
+#0232
+<KEY<MSG<FAC0013Even a witch like me
+grows old and frail...<NOD
+All I can do now is
+place my faith in you...<NOD<END
+
+#0300
+<KEY<MSG*whine*...<NOD<END
+
+
+#0400
+#0401
+

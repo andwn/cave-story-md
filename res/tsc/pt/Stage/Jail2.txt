@@ -1,0 +1,50 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0002<DNP0301<SMC<END
+
+#0100
+<KEY<FAO0002<TRA0056:0092:0008:0049
+
+#0200
+<KEY<MSGO destino é desconhecido.<NOD
+Queres te teleportar na mesma?<YNJ0000<CLO<FL+0524
+<CNP0300:0111:0000<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0018:0099:0015:0010
+
+
+#0400
+<PRI<MSGO quê, és um robot assassino?<NOD<CLREstás aqui para nos matar?<NOD<END
+#0401
+<PRI<MSGDeixem-me sair!<NOD<END
+#0402
+<PRI<MSGO Doutor Burro pode-se ir lixar!<NOD<END
+
+#0403
+<PRI<MSGAndam a mentir aos Mimigas
+ali nos campos!<NOD<CLRO Doutor vai nos fazer
+lutar contra os robots!<NOD<END
+#0404
+<PRI<MSGConheces uma "Sakamoto"?<NOD
+Ela é susposto estar escondida
+algures na plantação...<NOD<END
+#0405
+<PRI<MSGEstavam aqui alguns humanos
+há um tempo atrás, mas não
+os tenho visto por aí...<NOD
+Será que fugiram?<NOD<END
+

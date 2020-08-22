@@ -1,0 +1,89 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0009<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0009<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0009<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0009<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0009<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0011:0094:0043:0034
+
+
+#0200
+<FLJ0327:0201
+<KEY<MSG<FAC0007A chave para a
+casa do Arthur...<NOD
+Pensei que tivessem
+sido feitas pelo
+menos duas.<NOD
+Raios, Toroko, a agir
+como se não soubesses...<NOD<CLRBom, talvez o Jack saiba
+onde a encontrar...<NOD<END
+#0201
+<KEY<MSG<FAC0007Toroko...
+Não consigo acreditar...<NOD
+O irmão mais velho da
+Toroko, o Arthur, era
+um excelente guerreiro.<NOD
+Mas ele foi morto por um
+dos gajos do Doutor.<NOD
+E agora, eu... eu não a
+pude proteger...<NOD<END
+
+#0210
+<KEY<MSG<FAC0009Há duas chaves para a
+casa do Arthur.<NOD
+A Toroko tem uma delas.<NOD
+A outra está escondida
+no cemitério Mimiga.<NOD<END
+
+#0220
+<KEY<MSG<FAC0009O irmão da Toroko, o
+Arthur, lutou contra um
+horrível monstro vermelho.<NOD<CLRHá um terrível demónio
+nesta ilha que se
+alimenta de Mimigas.<NOD<CLRNão é o Doutor, é...
+Algo diferente.<NOD
+Este demónio vive
+na ilha há anos.<NOD<CLRVeio aqui à vila,<NOD
+mas o Arthur venceu-o
+sozinho.<NOD
+A sua figura elegante,
+a defender a nossa vila
+do perigo...<NOD<CLRIsso nunca irei
+esquecer, até ao
+dia em que morra.<NOD<CLREle pode ter sido
+morto pelo Doutor,
+mas ele era um herói.<NOD<END
+
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Estalido* *Quebra!*<NOD<FLJ0442:0000<CLRVês algo do outro lado
+das chamas.<NOD<END
+#0301
+<KEY<GIT1008<MSGQueres usar o =Sumo de Alforreca=?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0442:0302<FL+0442
+<MSGTu vês algo nas cinzas...<NOD<CLR<GIT0007<AM+0007:0100
+<CMU0010Encontraste o =Bubbler=!<WAI0160<NOD<CLO<RMU<DNP0300<END
+#0302
+<KEY<DNP0300<END

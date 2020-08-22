@@ -1,0 +1,68 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<FAO0000<TRA0056:0090:0102:0055
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0099:0044
+
+
+#0200
+<KEY
+<FLJ1081:0202
+<FLJ1080:0201
+<MSG*Mg Mg*...<NOD<CLR!<NOD<CLO
+<MYB0000<ANP0200:0002:0004<WAI0030<MYD0000<FL+1080<FL-1025<FL+1026
+<MSGOha, kuck mal wer da
+wieder bei sich ist.<NOD<CLRUnd ich dachte schon dich
+hats erwischt.<NOD Sue
+wollte dich schon grün
+und blau hauen,<NOD
+aber du hast nicht mal
+gezuckt.<NOD<CLRDu bist hier im Kittchen.<NOD
+Hier landen alle, die
+sich gegen den Doktor
+auflehnen.<NOD
+Quasi als seine
+"Versuchskaninchen",
+kapiert...?<NOD<CLR...das hat Sue zumindest
+so gesagt.<NOD<CLRKennst du Sue?<NOD
+Dann biste leider zu
+spät.<NOD
+Sie war hier mit uns
+eingesperrt.<NOD<CLRHat sich riesige Sorgen
+um dich gemacht,<NOD und ist
+keine Minute von
+deiner Seite gewichen.<NOD
+Aber gerade vor kurzem
+hat man sie mitgenommen.<NOD<EVE0209
+
+#0201
+<MSG<FL+1081Ah, genau.<NOD<CLRKurz bevor sie Sue abgeschleppt
+haben, hat sie noch irgendwas
+in deine Tasche gestopft.<NOD<CMP0024:0016:0066<EVE0209
+
+#0202
+<KEY<MSGWas war das überhaupt?<NOD
+'N Liebesbrief oder so?<NOD<CMP0024:0016:0066<EVE0209
+
+#0209
+<KEY<ANP0200:0000:0002<END
+
+
+#0220
+<KEY<HMC<CNP0221:0150:0002<ANP0221:0010:0002<WAI0050
+<MSG<SOU0070Hey!<NOD<CLR<SOU0070Komm schon!
+Wach doch auf!<NOD<CLRBitte sei doch nicht tot!<NOD<CLR...<NOD<CLO
+<WAI0050<IT+0026<WAI0050<MNA<CMU0008<FAI0004<WAI0050<SMC<DNP0221<END
+#0221

@@ -1,0 +1,76 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<PRI<CMU0000<ZAM<ITJ0022:0095<EVE0096
+
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<EQ+0256<MS2<TUR
+<SOU0043<GIT1022Contatore attivato.<NOD<GIT0000<EVE0096
+
+#0096
+<MSGSenti una ventata di nero che
+ti attraversa.<NOD<CLR
+Tutte le tue armi sono scese a 
+Livello 1!<NOD<CLO
+<FRE<MNA<CMU0036<FAI0003<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<KEY<FLJ1531:0111
+<FOM0016<FAO0002<TRA0081:0092:0002:0013
+#0111
+<WAI0010<HMC<WAI0050
+<MYD0000<SMC<END
+
+#0200
+<PRI<MSG<TUR
+Benvenuto all'Inferno!<NOD<END
+
+
+#0400
+<PRI<SOU0022<DNP0400
+<MSG<GIT1006Trovata una 
+=Capsula della Vita=!<NOD<ML+0005
+Energia massima aumentata di 5 punti!<NOD<END
+
+#0420
+<DNP0420
+<ANP0430:0030:0000<FON0430:0016
+<ANP0500:0032:0000<END
+#0430
+
+
+#0500
+<PRI<FL-1531<FL+1532<MS3<FAC0020Oohh...<NOD<CLR<FAC0000
+<CNP0500:0259:0000<GIT1030Hai legato il suo corpo al tuo
+aiutandoti con una corda.<NOD<END
+
+
+#0900
+<DNP0900<SKJ0020:0000<SK+0020
+<PRI<MS3Sapevi che la strega 
+Jenka una volta aveva un fratello?<NOD
+Si chiamava Ballos.<NOD
+Così come la sorella, possedeva 
+poteri ben superiori a quelli 
+dei comuni mortali...<NOD<END
+
+#0901
+<DNP0901<SKJ0021:0000<SK+0021
+<PRI<MS3Lui usava i suoi poteri
+per aiutare e guidare le persone,<NOD
+e le persone lo contraccambiavano 
+con il loro rispetto ed affetto.<NOD<CLRAddirittura più di quanto
+facessero con il loro Re...<NOD<END
+

@@ -1,0 +1,412 @@
+
+#0090
+<MNA<CMU0024<FAI0000<END
+#0091
+<MNA<CMU0024<FAI0001<END
+#0092
+<MNA<CMU0024<FAI0002<END
+#0093
+<MNA<CMU0024<FAI0003<END
+#0094
+<MNA<CMU0024<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0055:0092:0003:0009
+
+#0110
+<KEY<FAO0002<TRA0057:0092:0005:0014
+#0115
+<KEY<SOU0011<ANP0115:0000:0002<FAO0002<TRA0057:0092:0003:0002
+
+#0120
+<PRI<FLJ1105:0122<MSGWhat's the password?<NOD<FLJ1024:0121<END
+#0121
+<MSG
+"Litagano Motscoud".<NOD<CLO
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+#0122
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+
+#0130
+<KEY<SOU0011<ANP0130:0000:0002<FAO0000<TRA0059:0090:0026:0008
+
+#0135
+<PRI
+<FLJ1023:0137
+<ITJ0025:0136
+<MSGIt says "No Entry".<NOD
+And it's locked.<NOD<END
+#0136
+<SOU0022<MSG<GIT1025Used the =Teleporter Room Key=.<NOD<CLO
+<GIT0000<FL+1023<EVE0137
+#0137
+<KEY<SOU0011<ANP0135:0000:0002<FAO0000<TRA0060:0090:0018:0009
+
+#0140
+<KEY<FAO0000<TRA0061:0090:0029:0009
+
+#0150
+<PRI<FLJ1030:0151<MSGIt's still too early to come
+here...<NOD<END
+
+#0151
+<KEY<SOU0011<ANP0150:0000:0002<FAO0002
+<ITJ0023:0160
+<KEY<TRA0063:0092:0007:0052
+
+#0160
+<KEY<TRA0067:0092:0007:0052
+
+#0170
+<KEY<FAO0002<TRA0084:0092:0001:0021
+
+
+#0199
+<MOV0074:0079<END
+
+#0200
+<PRI<FLJ1020:0201
+<EVE0299
+
+#0201
+<PRI<MSGThe surface dwellers are planning
+an attack on us, so we're raising
+red flowers to prepare.<NOD
+If what the Doctor says is
+true, these flowers better
+bloom fast, or else.<NOD<END
+
+#0210
+<PRI<FLJ1020:0211
+<EVE0299
+#0211
+<PRI<MSGWith the red flowers on our
+side, those killer robots'll be
+a piece of cake!<NOD
+Bloom away, my crimson dainties!<NOD<END
+
+#0220
+<PRI<FLJ1020:0221
+<EVE0299
+#0221
+<PRI<MSGLong live the Doctor!<NOD<END
+
+#0230
+<PRI<FLJ1020:0231
+<EVE0299
+#0231
+<PRI<MSGGet to work!<NOD<END
+
+#0240
+<PRI
+<FLJ1037:0242
+<FLJ1020:0241
+<EVE0299
+
+#0241
+<PRI<FL+1037<MSGOho.<NOD<CLRYou're new here, aren't ya.<NOD
+I bet you're still confused,
+being picked up and dropped
+here all of a sudden.<NOD<CLRWell, just remember.<NOD
+Don't try anything funny.<NOD
+If you run away and get
+caught, they'll throw you
+in prison.<NOD
+As long as you just tend to
+the flowers, you'll be safe,
+and you'll get to eat.<NOD<END
+
+#0242
+<PRI<MSGHow's the work goin'?<NOD<CLRWith any luck, we'll be
+back to our long, relaxing
+days in no time.<NOD<CLR...I mean, we will, won't we?<NOD<END
+
+
+
+#0250
+<PRI
+<ITJ0029:0254
+<FLJ1029:0253
+<FLJ1028:0252
+<FLJ1020:0251
+<PRI<MSGMan, these sprinklers just...<NOD<CLRWhoops.
+Not supposed to talk to humans.<NOD<END
+
+#0251
+<PRI<MSGThese sprinklers are handy, but
+they sure break all the time.<NOD<END
+
+#0252
+<PRI<FL+1029<MSGIt busted again!<NOD<CLR.....<NOD<CLRHey, you.
+You're the new guy, right?<NOD
+Go take that busted sprinkler
+in and exchange it for a new
+one.<NOD<END
+
+#0253
+<PRI<MSGHurry it up! The flower buds
+are getting parched.<NOD
+Go take that busted sprinkler
+in and exchange it for a new
+one.<NOD<END
+
+#0254
+<PRI<MSGIt's the red flowers that
+make us powerful warriors!<NOD
+We Mimigas had this ferocity
+in us all along.<NOD
+So the time we fought the robots
+wasn't just an old legend!<NOD<CLRHeh-heh-heh...<NOD<CLRBloom, little flowers...<NOD
+Truth be told, I'm getting
+a bit sick of farming.<NOD<END
+
+#0260
+<PRI
+<FLJ1023:0263
+<FLJ1022:0262
+<FLJ1035:0261
+<FL+1035
+<MSGOh, hey, it's you.<NOD<CLRI caught something weird
+just now.<NOD
+You can have it, if you want.<NOD
+It's in the bucket there.<NOD<END
+#0261
+<PRI<MSGIt's in the bucket there.<NOD<END
+#0262
+<PRI<MSGWhere does that key go, I wonder?<NOD<CLRYou'd think it'd match
+up with something around here...<NOD<CLRMan, I'm hungry...<NOD<END
+#0263
+<PRI<MSGI'm not catching ANYTHING.<NOD<END
+
+#0265
+<PRI
+<FLJ1022:0267
+<FLJ1035:0266
+<MSGIt's a bucket. Fish go here
+once they've been caught.<NOD<END
+
+#0266
+<PRI<FL+1022
+<MSGPeered into the bucket.<NOD
+Looking closely, you can see
+something down at the bottom.<NOD<CLR<GIT1025<IT+0025<CLR
+<CMU0010Got the =Teleporter Room Key=.<WAI0160<NOD<RMU<END
+#0267
+<PRI<MSGNothing in here anymore...<NOD<END
+
+#0299
+<PRI<MSG.....<NOD<END
+<PRI<CMU0000<MSGYou're one of those killer robots!<NOD<FAO0004<MYD0002<CLR
+Oh, you got me...<NOD<TRA0057:0094:0011:0014
+
+
+#0300
+#0301
+
+#0310
+<PRI
+<FLJ1045:0313
+<FLJ1041:0311
+<FLJ1044:0312
+<MSGA man from the surface, the
+Doctor, is using the Mimigas to
+cultivate red flowers.<NOD<CLRThis isn't the first time
+this sort of thing has
+happened...<NOD<END
+#0311
+<PRI<MSGFound this one lying in the
+spring.<NOD
+Says she doesn't even remember
+who she is...<NOD<CLRJust a piece of junk, I guess.<NOD<FL+1044<EVE0312
+#0312
+<PRI<MSGNow that you mention it...<NOD
+There's a certain kind of
+mushroom, I'm told,<NOD
+that brings back memories
+when you eat it...<NOD
+Wonder if it'd work on her?<NOD<END
+#0313
+<PRI<MSGWhat's that?
+Her memories are back?<NOD
+Pfft. Liked it better the
+old way.<NOD<END
+
+
+
+#0320
+<PRI
+<FLJ1046:0325
+<FLJ1045:0324
+<ITJ0024:0321
+<FL+1041<MSG<FAC0025Who...<NODare you...?<NOD<ITJ0034:0322<END
+#0321
+<PRI<MSG<FAC0025Oh...<NOD
+You're so cute...<NOD<CLRDon't go too far.<NOD
+And watch out for the
+bad robots...<NOD<ITJ0034:0322<END
+
+#0322
+<FAC0000<MSG<GIT1034Do you want to use the
+=Ma Pignon=?<YNJ0000<GIT0000<IT-0034<CMU0000<CLR
+Jammed it into Curly's mouth.<NOD<CLR<CLO<WAI0050<EQ-0064<WAI0050
+<MSG<FAC0025.....<NOD<CLR<FAC0019Quote!!<NOD
+I remember now.
+Your name's Quote!<NOD<CLRYou and I...<NOD<CLR
+<FAC0025Right...<NOD<CLRBack then, a huge
+number of robots were
+sent to this island<NOD
+from countries on the
+Earth's surface.<NOD<CLRTheir target was the
+awesome power kept
+within this island...<NOD
+The =Demon Crown=.<NOD
+But you and I, we were
+different.<NOD<CLRThe two of us were sent
+in order to destroy that
+power.<NOD<CLRWhen we got here,
+the island was in
+a shambles.<NOD
+The robots had torn it
+all to pieces...<NOD<CLRAnd countless Mimigas
+had been slaughtered...<NOD
+<FAC0020It was...terrible...<NOD<CLR<FAC0025Finally, one man got
+the =Demon Crown= in
+his possession.<NOD<CLRThe robots' work was
+done, and the island
+fell silent.<NOD<CLRBut that was just the
+beginning of the tragedy.<NOD
+With the crown in hand,
+the man turned the
+Mimigas into killers<NOD
+and began his assault
+on the Earth.<NOD<CLRI tried to stop him.<NOD
+You were there too.<NOD<CLR
+.....<NOD<CLRThat's...as far as I
+can remember.<NOD<CLRI'm pretty sure we
+were able to wound him.<NOD
+But we seemed far out
+of our league...<NOD<CLR
+<FAC0019Do you remember anything?<NOD<CLO
+<FL+1045<RMU<FLJ1020:0323<END
+
+#0323
+<PRI<EQ+0064<END
+
+#0324
+<PRI<MSG<FAC0019I'm fine, thank you.<NOD
+Don't worry about me.<NOD<CLR<FAC0025Oh,<NOD here.<NOD<CLR<FAC0019Take this<GIT1039 with you...<NOD<CLR<FAC0000
+<FL+1046<IT+0039Got the =Iron Bond=!<WAI0020<NOD<GIT0000<END
+
+
+#0325
+<PRI<MSG<FAC0019I'm fine now.<NOD<END
+
+#0350
+<PRI<MSGDo you want to flip the
+switch?<YNJ0000<CLO
+<ANP0350:0010:0000<END
+
+#0360
+<PRI<MSG<FAC0028I'm back!<NOD<CLRNo use in hiding
+anymore, you know?<NOD
+And anyway, the rocket
+couldn't be finished
+without me here!<NOD<CLRBy the way...<NOD<CLRIf you defeat the Doctor,<NOD
+do you think I'll be
+able to become a human
+again...?<NOD<END
+
+#0370
+<PRI<FLJ1034:0380<MSG<FAC0022<FL+1034Did you have a good
+rest?<NOD<CLRThe rocket's all done.<NOD<CLRYou'll be able to take
+down the Doctor, right?<NOD
+I believe in you.<NOD<CLRTake this with you...<NOD<CLO<FAC0000<FLJ0162:0371
+<IT+0018<GIT1018
+<CMU0010<MSG
+Got the Booster v0.8.<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0371
+<IT+0023<GIT1023
+<CMU0010<MSG
+Got the Booster v2.0.<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0375
+<PRI<MSG<FAC0022You won't be needing
+this anymore.<NOD<CLO<FAC0000
+<MSG<GIT1024<IT-0024<EQ-0064<FL-1020
+=Mimiga Mask= taken.<NOD<CLO<GIT0000<EVE0380
+
+#0380
+<PRI<MSG<FAC0022Directly above us is a
+path to the throne room.<NOD
+You should be able to
+get there using the
+rocket.<NOD<CLRThe Mimigas are gone
+from the plantation.<NOD<CLR...In other words,
+he may already be using
+the red flowers.<NOD<CLRGo on.<NOD<CLRRide the rocket up
+to the Doctor's throne
+room. Hurry!<NOD<END
+
+#0400
+<PRI<FLJ1102:0401<MSGIt's spewing out water
+at a frightening rate.<NOD<END
+#0401
+<PRI<MSGHey! We need that here!<NOD<END
+
+#0410
+<PRI<FLJ1102:0411<MSGIt's spewing out water
+at a frightening rate.<NOD<END
+#0411
+<PRI<MSGHey! We need that here!<NOD<END
+
+#0415
+<PRI<MSGIt's stopped.<NOD<FLJ1029:0416<END
+#0416
+<PRI<DNP0415<FL-1028<GIT1028<IT+0028<MSG
+<CMU0010Got the =Broken Sprinkler=.<WAI0160<NOD<RMU<END
+
+#0450
+<PRI<FLJ1040:0451<FL+1040<MSGLong time no arf!<NOD<CLRI was told to bring this
+to you...<NOD<CLR<SOU0022<CMU0016<GIT1006Got a =Life Capsule=!<WAI0160<NOD<RMU<ML+0005
+Max health increased by 5!<NOD<GIT0000<ITJ0015:0451<CLROh, she said to give you
+this, too...<NOD<CLR
+<CMU0010<GIT1015<IT+0015<GIT1015Got a =Life Pot=!<WAI0160<NOD<GIT0000<RMU<EVE0451
+<END
+#0451
+<PRI<MSGSo you're going to fight
+the Doctor? Good luck!
+My tail wags only for you!<NOD
+Oh, yeah, and tell Curly I
+said hi!<NOD<END
+
+#0460
+<PRI<MSG<TURWatch out for Gunfish! (Note:
+Those who use them as platforms
+do so at their own risk.)<NOD<END
+
+#0480
+<KEY<HMC
+<FON0481:0016
+<MNP0481:0034:0118:0000
+<ANP0481:0020:0002<WAI0320
+<ANP0481:0000:0000
+<MOV0073:0110<SMC<MYB0002<FOM0016<END
+#0481
+
+
+#0500
+<PRI<SOU0022<DNP0500<CMU0016
+<MSG<GIT1006Got a =Life Capsule=!<WAI0160<NOD<RMU<ML+0004
+Max health increased by 4!<NOD<END
+
+
+#1200
+<KEY<ANP1200:0020:0000
+<FON1200:0016<FAI0001
+<WAI0100<FAO0001<FMU<WAI0200<TRA0091:0100:0001:0001
+
+
+

@@ -1,0 +1,95 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGQueres guardar?<YNJ0000<SVP<CLRJogo guardado.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGSaúde recarregada.<NOD<END
+
+
+#0110
+<KEY<MSGSentes um vento frio a entrar...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Ergh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGOwww...<NOD<ANP0200:0011:0002<CLR<FAC0003Woh-oh!
+Hey, ainda não estou morta!<NOD
+Desta vez vais comer!!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Huh?<WAI0050<NOD
+Fui vencida por
+aquele monstro...<ANP0200:0000:0000<NOD<CLR.....<NOD
+Tu salvaste-me?<YNJ0202<EVE0201
+#0201
+<FAC0003Eu não preciso da
+tua ajuda!!<NOD<CLREu podia tratar
+dele sozinha!
+De alguma maneira!<NOD
+Grr... Odeio esta estúpida
+ilha e odeio todos os
+seres vivos daqui!<NOD<FAC0000<CLO<EVE0203
+#0202
+<FAC0002Hmph...<NOD<CLRBom, tá bem.<NOD<FAC0000<CLO<EVE0203
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Oh!<NOD<MYD0003<CLROlha! É... Eu acho que
+é o Número 00!<NOD<CLREste ovo pode ser o
+nosso bilhete para fora
+desta ilha!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Condição do ovo: Normal!
+É mesmo isso que queria
+ouvir!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hm?<NOD Uma password?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Parece que é preciso
+uma password para
+chocar este ovo.<NOD<CLR<FAC0002Bom, raios.<NOD<CLRSe o meu irmão
+estivesse aqui, ele
+resolvia logo tudo.<NOD<CLR.....<NOD<CLR<FAC0001Bom, parece que terminei
+por agora.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGTu és<MYD0000 daqui?<NOD<CLRNão parece, pois não?<NOD
+As palavras no
+teu chapéu...<NOD
+Eles não falam
+nenhuma língua dessas
+nesta ilha.<NOD<CLR...Perdeste-te?<NOD<CLRNão faz mal.<NOD
+Eu deixo-te vir comigo.<NOD
+Podemos sair desta esplunca
+juntos.<NOD
+Em troca, tu
+vais-me ajudar.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TUROvo de Dragão do Céu Nº 00.
+Preparações para chocar completas.<NOD<CLRInsira a password:<NOD<END
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400

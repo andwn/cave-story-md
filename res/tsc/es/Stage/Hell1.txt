@@ -1,0 +1,73 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<PRI<CMU0000<ZAM<ITJ0022:0095<EVE0096
+
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<EQ+0256<MS2<TUR
+<SOU0043<GIT1022Cronómetro activado.<NOD<GIT0000<EVE0096
+
+#0096
+<MSGSientes el soplido de un viento
+oscuro.<NOD<CLR
+¡Todas tus armas bajan al Nivel 1!<NOD<CLO
+<FRE<MNA<CMU0036<FAI0003<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<KEY<FLJ1531:0111
+<FOM0016<FAO0002<TRA0081:0092:0002:0013
+#0111
+<WAI0010<HMC<WAI0050
+<MYD0000<SMC<END
+
+#0200
+<PRI<MSG<TUR
+¡Bienvenido al Infierno!<NOD<END
+
+
+#0400
+<PRI<SOU0022<DNP0400
+<MSG<GIT1006¡Conseguiste una
+=Cápsula de Energía=!<NOD<ML+0005
+¡Salud máxima +5!<NOD<END
+
+#0420
+<DNP0420
+<ANP0430:0030:0000<FON0430:0016
+<ANP0500:0032:0000<END
+#0430
+
+
+#0500
+<PRI<FL-1531<FL+1532<MS3<FAC0020Oohh...<NOD<CLR<FAC0000<CNP0500:0259:0000<GIT1030Conectaste su cuerpo al tuyo
+con la cuerda.<NOD<END
+
+
+#0900
+<DNP0900<SKJ0020:0000<SK+0020
+<PRI<MS3¿Sabías que la bruja Jenka
+una vez tuvo un hermano?<NOD
+Su nombre era Ballos.<NOD
+Al igual que su hermana, poseía
+poderes más allá de lo que
+cualquier humano comprendería...<NOD<END
+
+#0901
+<DNP0901<SKJ0021:0000<SK+0021
+<PRI<MS3Usó sus poderes mágicos para
+ayudar y guiar a la gente.<NOD
+La gente le quería y confiaba
+en él.<NOD<CLRIncluso más que a su propio rey...<NOD<END
+

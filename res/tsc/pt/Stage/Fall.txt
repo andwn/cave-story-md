@@ -1,0 +1,89 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG<CMU0010Foste caço pelo Kazuma!<WAI0160<CLR<FAC0010Oof...<NOD<CLRNunca pensei que
+conseguisses, na verdade.<NOD<CLRExplodir o núcleo...<NOD<CLRBom, assim o mundo deve-se
+ver livre de futuras
+encarnações do Doutor.<NOD
+A paz foi preservada!<NOD<CLRAgora, vamos para casa.<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Oof!<NOD<CLREssa... foi por pouco.<NOD<CLR<FAC0019Pensei que desta
+vez ia ser mesmo
+uma sucata...<NOD
+Parece que te estamos
+a dever outra.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nah, não me agradeçam.<NOD
+Estava apenas a fazer o
+que a Misery me pediu.<NOD<CLR<FAC0025Misery? Queres dizer,
+aquela bruxa?<NOD<CLR<FAC0005Certo.<NOD<CLR<FAC0025Pensei que ela nos
+odiava.<NOD
+Ha, eu pensei que
+TU nos odiavas...<NOD<CLR<FAC0005Venceram o Ballos, certo?<NOD<CLRQuando fizeram isso,
+a nossa maldição
+foi levantada.<NOD
+Agora nenhum de nós tem
+que tomar ordens
+de ninguém!<NOD<CLR<FAC0019Pensei que vocês eram
+apenas maus,<NOD
+mas parece que a culpa
+era da Coroa!<NOD<CLR<FAC0005Bom, quem semeia ventos,
+colhe tempestades.<NOD
+Afinal, foi a Misery que
+o fez criar a Coroa
+em primeiro lugar.<NOD<CLR<FAC0025Huh.<NOD
+Não me digas.<NOD<CLR<FAC0005Digo pois.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005Então!<NOD<CLR<FAC0025Então?<NOD<CLR<FAC0005Então o que ides
+fazer agora?<NOD
+Posso-vos levar a
+onde quiserem.<NOD<CLR<FAC0019Hmm, tens razão...<NOD<CLRAcabou a nossa missão,
+e agora quero passar
+o resto dos meus dias<NOD
+algures onde possa
+relaxar e ter uma
+bela vista...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Uh, olha...<NOD<CLR<FAC0025Hm?<NOD<CLR<FAC0005...Posso ir
+convosco para lá?<NOD<CLR<FAC0019Claro!<NOD
+Vamos viver os três juntos!<NOD<CLR<FAC0014A sério?!<NOD<CLR<FAC0019Eu deixo-te escolher
+o lugar.<NOD
+Encontra-nos um sítio bom,
+está bem?<NOD<CLR<FAC0014Entendido!!<NOD<CLROk então,
+<ANP0230:0020:0002A<WAI0010g<WAI0010a<WAI0010r<WAI0010r<WAI0010e<WAI0010m<WAI0010-<WAI0010s<WAI0010e<WAI0010 <WAI0010b<WAI0010e<WAI0010m<WAI0010!!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...Não te estás
+a esquecer de algo?<NOD<TRA0000:0100:0001:0015
+
+#0200
+#0210
+#0220
+#0230
+#0240

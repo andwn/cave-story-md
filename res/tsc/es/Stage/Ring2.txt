@@ -1,0 +1,172 @@
+#0090
+<KEY<MNA<CMU0030<FAI0000<END
+#0091
+<KEY<MYB0002<WAI0002<PRI
+<MNA<CMU0030<FAI0001<END
+#0092
+<KEY<MNA<CMU0030<FAI0002<END
+#0093
+<KEY<FLJ1341:0099<FLJ1270:0098
+<MNA<CMU0030<FAI0003<END
+#0094
+<KEY<MNA<CMU0030<FAI0004<END
+
+#0098
+<KEY
+<CMP0003:0013:0021
+<CMP0003:0009:0021
+<CMP0003:0006:0021
+<CMP0003:0003:0021
+<CMP0003:0000:0000
+<MNA<CMU0030<FAI0003<END
+
+#0099
+<KEY
+<CMP0003:0009:0021
+<CMP0003:0006:0021
+<CMP0003:0003:0021
+<CMU0018<FAI0003<END
+
+
+
+#0100
+<PRI<FAO0003<TRA0064:0093:0003:0001
+#0110
+<PRI<FAO0001<MYD0002<TRA0068:0091:0003:0014
+
+#0200
+<KEY
+<FLJ1272:0204
+<FLJ1270:0202
+<FLJ1271:0201<MSGOh, eres el Sr. Viajero.<NOD<FLJ1020:0205<CLR¿Has venido a rescatarme?<NOD<END
+#0201
+<PRI<MSG¡Puedes hacerlo!<NOD<END
+#0202
+<KEY<MSG¡Lo has conseguido!<NOD<CLRMe siento como una princesa.<NOD<CLR
+¿Sue?<NOD<CLROooh, la conozco.<NOD
+Esa chica se parece a un Mimiga,
+pero en realidad es humana,
+¿verdad?<NOD
+Mis ojos no pueden ser engañados.<NOD
+De todas formas, ella no está aquí.<NOD<CLO
+<FL+1272<END
+#0203
+#0204
+<KEY<MSG¡Eres muy fuerte!<NOD
+Casi como el gran guerrero Arthur.<NOD<FLJ1274:0000<FL+1274<CLR¡Jee-jee!...<NOD<CLO
+<ANP0250:0010:0005
+<ANP0251:0010:0005
+<ANP0252:0010:0005
+<ANP0253:0010:0005
+<ANP0254:0010:0005
+<ANP0255:0010:0005
+<END
+#0205
+<KEY<MSGNo me importa lo que parezcas,
+no puedes engañarme.<NOD<END
+
+#0210
+<PRI<FLJ1270:0212
+<FLJ1271:0211
+<MSGEl Doctor nos tiene miedo.<NOD
+Por eso nos ha enjaulado.<NOD
+Estoy segura de ello.<NOD<END
+#0211
+<PRI<MSGTienes unas prioridades bastante
+interesantes.<NOD<END
+#0212
+<PRI<MSG¡Ha sido impresionante!<NOD<END
+
+#0220
+<PRI<FLJ1270:0222
+<FLJ1271:0221
+<MSGOh hey,<NOD tú eres ese...<NOD<END
+#0221
+<PRI<MSG
+¡Cuidado! ¡Detrás de ti!<NOD<END
+#0222
+<KEY<MSG¿Te acuerdas de mí?<NOD
+¿De Villavergel? El tipo que perdió su llave...<NOD<FLJ1020:0223<CLRBueno, da igual...<NOD<CLREse Doctor no tenía ninguna
+oportunidad, a que no.<NOD<END
+#0223
+<KEY<MSG¡¿Por qué pareces un Mimiga?!<NOD<END
+
+#0250
+#0251
+#0252
+#0253
+#0254
+#0255
+
+#0400
+#0401
+
+#0410
+<KEY<FON0410:0016<ANP0410:0500:0004<WAI0050
+<CMU0000<MS3¡Gyaaahhh!<MYB0410<NOD<CLREl...<WAI0020el poder...<WAI0020<CLR
+¡¡¡No puedo controlarlo!!!<NOD<CLO
+<WAI0050<CNP0420:0267:0004<WAI0100
+<FOM0016
+<ANP0420:0007:0004<BSL0420<DNP0410<FL-1270<CMU0031<END
+
+#0420
+<KEY<FON0420:0016<FL+1270
+<ANP0420:0500:0004<WAI0100
+<MS3¡¡Aaaiiggghh!!<MYB0420<NOD<CLO
+<ANP0420:0510:0004<WAI0450<CMU0015
+<FOM0016<ANP0420:0520:0000<MS3
+¡Derrotaste al Doctor!<WAI0140<NOD<CMU0000<CLO
+<FON0450:0016<WAI0050
+<CMP0003:0009:0021<SOU0012<WAI0020
+<CMP0003:0006:0021<SOU0012<WAI0020
+<CMP0003:0003:0021<SOU0012<WAI0020
+<CMP0003:0000:0000<SOU0012<WAI0020
+<WAI0050
+<FOM0016<CMU0030<DNP0420<END
+#0450
+
+
+#0500
+<KEY<DNP0500<SKJ0001:0501<SK+0001<EVE0502
+#0501
+<KEY<SAT<EVE0502
+#0502
+<CMU0017<MYD0002
+<CMP0003:0013:0021
+<MS3<FAC0021<ANP0400:0010:0000Mua-ja-ja...<NOD<CLR
+Al fin está completo.<NOD<CLO<FAC0000
+<WAI0020<ANP0400:0020:0000<WAI0030
+<MS3<FAC0021Suministrar flores rojas a
+un Mimiga le provoca una
+furia violenta...<NOD<CLRLa razón para esto es
+muy simple.<NOD<CLRLas flores no sólo
+contienen una sustancia
+que saca los poderes<NOD
+latentes del que las
+consume,<NOD<CLRtambién destruye su
+capacidad de razonamiento.<NOD<CLREs esto lo que he
+extraído con éxito y
+he concentrado.<NOD<CLRLo puedes ver en la forma
+de este...<NOD<CLO<FAC0000
+<WAI0020<DNP0401<ANP0400:0040:0000<WAI0020
+<MS3<FAC0021...Cristal Rojo.<WAI0030<NOD<CLRY al contrario que las
+flores,<NOD este Cristal
+afecta también a los
+humanos.<NOD<CLR<ANP0400:0050:0000Jo-jo-jo...<NOD<CLR¡Es maravilloso!<NOD<CLR¿Comprendes ahora su
+esplendor?
+¡¿Lo comprendes?!<NOD<CLR¡Dudo que lo hagas!<NOD<CLRAsí que permíteme
+explicarlo...<NOD<CLR¡¡En una prueba real!!<NOD<CLO
+<CNP0410:0263:0000<WAI0005
+<ANP0410:0002:0000<WAI0050
+<CMP0003:0013:0021<DNP0400
+<FL-1270<FL+1271<WAI0050<BSL0410<CMU0007<END
+
+#0501
+<KEY<DNP0500<CMU0017<MYD0002
+<CMP0003:0013:0021
+<DNP0401<ANP0400:0040:0000
+<CNP0410:0263:0000<WAI0005
+<ANP0410:0002:0000<WAI0050
+<CMP0003:0013:0021<DNP0400
+<FL-1270<FL+1271<WAI0050<BSL0410<CMU0007<END
+

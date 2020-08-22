@@ -1,0 +1,325 @@
+#0000
+<FRE<WAI9999<END
+
+#1000
+<MSG<TURNenhuma arma.<WAI9999<END
+#1001
+<MSG<TUR- Cobra -
+Penetra pelas paredes.
+Feita pelo Chaba no Labirinto.<WAI9999<END
+#1002
+<MSG<TUR- Estrela Polar -
+A arma mais básica.
+Tem a marca de Polaris.
+<WAI9999<END
+#1003
+<MSG<TUR- Bola de Fogo -
+Salta pelo chão.
+Bastante poderosa em chãos inclinados.<WAI9999<END
+#1004
+<MSG<TUR- Metralhadora -
+Uma arma de fogo rápido automática.
+Recarrega-se automaticamente com o tempo.<WAI9999<END
+#1005
+<MSG<TUR- Lançador de Mísseis -
+Grande alcance e bons danos.
+Porém, a sua munição é limitada.<WAI9999<END
+#1007
+<MSG<TUR- Bubbler -
+Da lareira da Sala de Reuniões.
+Cabe-te a ti decidir como o usas.<WAI9999<END
+#1009
+<MSG<TUR- Lâmina -
+Uma arma de um tiro, com altos danos.
+Está habitada pela alma do King.<WAI9999<END
+#1010
+<MSG<TUR- Super Míssil -
+Um tipo de míssil espectacular.
+A sua aceleração é incomparável.<WAI9999<END
+#1012
+<MSG<TUR- Nemesis -
+Relâmpago da Deusa.
+Para jogadores avançados.<WAI9999<END
+#1013
+<MSG<TUR- Spur -
+Mantém o botão para
+disparar um laser.<WAI9999<END
+
+#1100
+<MSG<TURHajime<WAI9999<END
+#1101
+<MSG<TURMick<WAI9999<END
+#1102
+<MSG<TURShinobu<WAI9999<END
+#1103
+<MSG<TURKakeru<WAI9999<END
+#1104
+<MSG<TURNene<WAI9999<END
+
+#1200
+<MSG<TURAnimal de estimação da Jenka e
+líder dos cães. Enquanto procurava o irmão,
+perdeu-se e foi adoptado pela Curly.<WAI9999<END
+#1201
+<MSG<TURAnimal de estimação da Jenka. Adora
+caçar tesouros. Aliás, *arcas* de tesouro, e
+recentemente até dorme nelas.<WAI9999<END
+#1202
+<MSG<TURAnimal de estimação da Jenka. Adora
+locais escuros. Devido à má visão, ele
+navega na escuridão usando os instintos.<WAI9999<END
+#1203
+<MSG<TURAnimal de estimação da Jenka. Adora
+ossos e enterrou-os em vários lugares,
+maioria deles já foram esquecidos.<WAI9999<END
+#1204
+<MSG<TURAnimal de estimação da Jenka. Passa
+maior parte do tempo a dormir, mas diz-se
+que os sonhos dela revelam o futuro.<WAI9999<END
+
+#5000
+<MSG<TURNenhum item.<WAI9999<END
+#5001
+<MSG<TURChave do Arthur<WAI9999<END
+#5002
+<MSG<TURSistema de Mapas<WAI9999<END
+#5003
+<MSG<TURChave do Santa<WAI9999<END
+#5004
+<MSG<TURMedalhão de Prata<WAI9999<END
+#5005
+<MSG<TURPresa duma Besta<WAI9999<END
+#5006
+<MSG<TURCápsula de Vida<WAI9999<END
+#5007
+<MSG<TURCartão de ID<WAI9999<END
+#5008
+<MSG<TURSumo de Alforreca<WAI9999<END
+#5009
+<MSG<TURChave Ferrugenta<WAI9999<END
+#5010
+<MSG<TURChave Goma<WAI9999<END
+#5011
+<MSG<TURBase de Goma<WAI9999<END
+#5012
+<MSG<TURCarvão<WAI9999<END
+#5013
+<MSG<TURExplosivo<WAI9999<END
+#5014
+<FLJ3000:1100
+<FLJ3001:1101
+<FLJ3002:1102
+<FLJ3003:1103
+<FLJ3004:1104
+<MSG<TURCachorro<WAI9999<END
+#5015
+<MSG<TURPote de Vida<WAI9999<END
+#5016
+<MSG<TURCura-Tudo<WAI9999<END
+#5017
+<MSG<TURChave da Clínica<WAI9999<END
+#5018
+<MSG<TURBooster v0.8<WAI9999<END
+#5019
+<MSG<TURBarreira de Armas<WAI9999<END
+#5020
+<MSG<TURTurbocarga<WAI9999<END
+#5021
+<MSG<TURTanque de Ar da Curly<WAI9999<END
+#5022
+<MSG<TURContador Nikumaru<WAI9999<END
+#5023
+<MSG<TURBooster v2.0<WAI9999<END
+#5024
+<MSG<TURMáscara Mimiga<WAI9999<END
+#5025
+<MSG<TURChave do Quarto de Teleportação<WAI9999<END
+#5026
+<MSG<TURCarta da Sue<WAI9999<END
+#5027
+<MSG<TURControlador<WAI9999<END
+#5028
+<MSG<TURAspersor Avariado<WAI9999<END
+#5029
+<MSG<TURAspersor<WAI9999<END
+#5030
+<MSG<TURCorda de Reboque<WAI9999<END
+#5031
+<MSG<TURMedalha de Figura de Barro<WAI9999<END
+#5032
+<MSG<TURHomem Pequeno<WAI9999<END
+#5033
+<MSG<TURDistintivo Cogumelo<WAI9999<END
+#5034
+<MSG<TURMa Pignon<WAI9999<END
+#5035
+<MSG<TURCuecas da Curly<WAI9999<END
+#5036
+<MSG<TURMedalha Extraterrestre<WAI9999<END
+#5037
+<MSG<TURBatom da Chaco<WAI9999<END
+#5038
+<MSG<TUREstrela Decorativa<WAI9999<END
+#5039
+<MSG<TURLaço de Ferro<WAI9999<END
+
+#6000
+<MSG<TURNenhum item.<WAI9999<END
+#6001
+<MSG<TURA chave para a casa do Artur.
+Estava escondida perto
+da sua campa.<WAI9999<END
+#6002
+<PRI<EVE7002<MPJ7002<MSGNão há dados para este andar.<NOD<CLR<END
+#6003
+<MSG<TURA chave para a casa do Santa.<WAI9999<END
+#6004
+<MSG<TURUm medalhão de prata na forma dum peixe.
+Pela sua condição, parece que foi
+estimado durante anos.<WAI9999<END
+#6005
+<MSG<TURUma presa afiada encontrada na
+Quinta Yamashita. Será que o seu
+dono ainda está vivo...?<WAI9999<END
+#6006
+<MSG<TURUma cápsula de vida.<WAI9999<END
+#6007
+<MSG<TURUm cartão de identidade encontrado no
+Ovo nº 6.<WAI9999<END
+#6008
+<MSG<TURUm fluido que consegue apagar lareiras.<WAI9999<END
+#6009
+<MSG<TURUma chave ferrugenta.<WAI9999<END
+#6010
+<MSG<TURA etiqueta diz "goma".<WAI9999<END
+#6011
+<MSG<TURUm bocado de goma.<WAI9999<END
+#6012
+<MSG<TURTirado de uma lareira.<WAI9999<END
+#6013
+<MSG<TURUm explosivo para destruir portas
+e assim.<WAI9999<END
+#6014
+<FLJ3000:1200
+<FLJ3001:1201
+<FLJ3002:1202
+<FLJ3003:1203
+<FLJ3004:1204
+<MSG<TURAnimal de estimação da Jenka.<WAI9999<END
+#6015
+<KEY<MSGIsto restaura-te a vida, mas
+só uma vez. Queres usar?<YNJ0000<LI+1000<SOU0020<IT-0015<MSGVida restaurada.<FRE<WAI9999<END
+#6016
+<MSG<TURAparentemente isto cura tudo
+e todos...<WAI9999<END
+#6017
+<MSG<TURDiz "Clínica do Labirinto".<WAI9999<END
+#6018
+<FLJ0742:7018
+<KEY<MSGCarrega no botão de salto de novo
+no ar para voares.<NOD<CLRQueres equipá-lo?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSGBooster equipado.<NOD<WAI0003<FRE<EVE5018
+#6019
+<MSG<TURQuando tomares danos, a quantidade
+de energia de armas perdida será 
+cortada a meio.<WAI9999<END
+#6020
+<MSG<TURAumenta a velocidade a que a
+metralhadora recarrega.<WAI9999<END
+#6021
+<MSG<TURPodes respirar debaixo de água com
+isto. A Curly costumava usá-lo.<WAI9999<END
+#6022
+<MSG<TURUm cronómetro completamente automático.
+Não encontras nenhuns botões.<WAI9999<END
+#6023
+<FLJ0743:7023
+<KEY<MSGCarrega no botão de salto de novo
+no ar e numa direcção para voares.<NOD<CLRQueres equipá-lo?<YNJ0000<EQ+0032<FL+0743<EQ-0001<FL-0742<MSGBooster v2.0 equipado.<NOD<WAI0003<FRE<EVE5023
+#6024
+<MSG<TURUma máscara de Mimiga que a mãe da Sue
+fez. É um bocado grande...<WAI9999<END
+#6025
+<MSG<TURUma chave pescada por um certo Mimiga.<WAI9999<END
+#6026
+<KEY<MSGQueres ler?<YNJ0000<MSG<TURDaqui é a Sue.<NOD<CLRAcho que nunca te contei
+nada sobre nós.<NOD<CLRNós viemos da superfície para esta ilha
+numa viagem de investigação.<NOD<CLRO Professor Booster estava
+no helicópetro, bem assim como a minha
+mãe, irmão,<NOD<CLRvários assistentes...
+O Doutor também.<NOD<CLREle estava lá para nos ajudar
+medicamente, e assim o fez...<NOD<CLRPelo menos, até ter encontrado
+a Coroa Demónio...<WAI0020<NOD<CLREssa coroa, outrora a propriedade
+do mestre desta ilha,<NOD<CLRconcede um enorme poder mágico a
+quem a usa...<NOD<CLRO Doutor sabia disso mesmo antes
+de entrar na ilha,<NOD<CLRe foi por isso que ele se juntou
+ao nosso grupo em primeiro lugar.<NOD<CLRQuando ele se apoderou da
+coroa, ninguém o pôde enfrentar.<NOD<CLRNão tivemos nenhuma escolha senão
+continuar a investigação da ilha
+sob as suas ordens.<NOD<CLRO Doutor planeia governar
+a superfície da Terra usando
+esta ilha como uma base.<NOD<CLREu acho que ele primeiro planeia
+atacar a superfície usando
+Mimigas como armas.<NOD<CLRSeja como for, eu consegui fugir dalguma
+forma, mas temo que os outros
+investigadores já estejam...<NOD<CLRAgora, ele está a usar os pobres
+Mimigas para cultivar cada vez
+mais flores vermelhas.<NOD<CLRAssim que ele estiver
+pronto para atacar, ele porá os Mimigas
+numa loucura homicida usando as flores.<NOD<CLRUsando os seus terríveis poderes, ele
+conseguirá controlar os Mimigas raivosos e
+fazê-los seguir as suas ordens.<NOD<CLRE isso quer dizer que eu, também, irei...<NOD<CLRSe escapares desta cela,
+procura o esconderijo da plantação.<NOD<CLRSe a minha mãe ainda está a salvo,
+ela estará aí, a tratar de um plano.<NOD<CLRPor favor. Ajuda a minha mãe.<NOD<CLRA password é "Yrots Evac".<NOD<CLR<FL+1024<FRE<MSGA carta termina aqui...<WAI9999<END
+#6027
+<MSG<TURNecessário para fazer um foguete.
+É o orgulho do Itoh, o homem cobarde.<WAI9999<END
+#6028
+<MSG<TURUm aspersor de água estragado.<WAI9999<END
+#6029
+<MSG<TURÉ novinho em folha. ...Talvez.<WAI9999<END
+#6030
+<MSG<TURUma corda de reboque para robots.<WAI9999<END
+#6031
+<MSG<TURPequeno e bastante pesado.
+Não tem uso.<WAI9999<END
+
+#6032
+<MSG<TUREi! Já chegamos?<WAI9999<END
+#6033
+<MSG<TURO distintivo cogumelo que obteste do
+cogumelo. Não tem uso. Na verdade,
+não precisas mesmo disto...<FL+1563<WAI9999<END
+#6034
+<MSG<TURAlegadamente, tem o
+poder de restaurar
+memórias...<WAI9999<END
+#6035
+<MSG<TURRecuperadas detrás da parede. Cuecas
+verde-amarelas com um símbolo giro.
+Não têm uso.<WAI9999<END
+#6036
+<MSG<TURTem gravado uma silhueta dum
+extraterrestre. Não tem uso.<WAI9999<END
+#6037
+<MSG<TURBatom vermelho. Não tem uso.
+<WAI9999<END
+#6038
+<KEY<MSGUm pequeno presente que o Chaba do
+Labirinto te deu.
+Uma estrela decorativa.<NOD<FLJ0722:7038<CLRQueres equipá-la?<YNJ0000<EQ+0128<FL+0722<MSG
+Estrela Decorativa equipada.<NOD<WAI0003<FRE<EVE5038
+#6039
+<MSG<TURO teu laço à Curly Brace, a única
+guerreira a quem confiarias as tuas costas.
+De certeza que vos ides ver de novo...<WAI9999<END
+
+#7002
+<MLP<END
+
+#7018
+<KEY<MSGQueres desiquipá-lo?<YNJ0000<EQ-0001<FL-0742<MSGBooster desiquipado.<NOD<WAI0003<FRE<EVE5018
+#7023
+<KEY<MSGQueres desiquipá-lo?<YNJ0000<EQ-0032<FL-0743<MSGBooster v2.0 desiquipado.<NOD<WAI0003<FRE<EVE5023
+
+#7038
+<KEY<MSGQueres desiquipá-la?<YNJ0000<EQ-0128<FL-0722<MSGEstrela Decorativa desiquipada.<NOD<WAI0003<FRE<EVE5038

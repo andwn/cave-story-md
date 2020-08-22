@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"

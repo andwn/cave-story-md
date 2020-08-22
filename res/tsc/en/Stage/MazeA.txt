@@ -1,0 +1,111 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGLong, long ago, there lived a
+witch on this island.<NOD
+She's the one who constructed
+this labyrinth, in order to
+keep us Gaudis penned up.<NOD<END
+#0210
+<PRI<MSGThere is an exit to this maze.
+But the path to it is blocked
+by a huge boulder.<NOD<CLRAnd moving the boulder would
+be just the beginning of your
+trials...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGAah... I'm SO hungry for
+Mimiga flesh...<NOD<CLR*sniff sniff*<NOD<CLR
+YOU smell a bit like Mimiga.<NOD<END
+#0221
+<PRI<MSGHa-ha-hah...<NOD<CLRYou're funny.<NOD<END
+#0230
+<PRI<MSGHave you ever seen the outside of
+this island?<NOD<CLRThis island is floating high in
+the skies.<NOD
+As to how it manages to float...<NOD
+That secret lies within this
+maze.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGThat teleporter over there
+used to be working until
+a little while ago.<NOD
+Of course, it just led
+elsewhere in the labyrinth...<NOD<END
+#0241
+<MSGThe teleporter seems to be
+working now.<NOD<CLROf course, it just leads to
+somewhere else in the labyrinth,
+doesn't it?<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGA teleporter.<NOD<CLRIt has no power.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGHey there.<NOD<CLRThis is the Labyrinth Shop!<NOD
+But, sad to say, we got
+burgled a while back,<NOD
+and there's nothing to sell
+right now.<NOD
+Sorry 'bout that...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSGHm?<NOD<CLRHey, you've got something
+pretty spiffy there.<NOD<CLRA Polar Star and a Fireball,
+unless I miss my guess.<NOD<CLRCan I take a quick look at them?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Handed over the Polar Star.<NOD
+<GIT0003Handed over the Fireball.<NOD<GIT0000<CLR
+<SOU0044Hoho!<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010=Snake= complete!<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*sigh*<NOD<CLRHere. How about this?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008Got the =Turbocharge=!<WAI0160<NOD<RMU<GIT0000<CLRYou can have it for free.<NOD
+I don't see any money on you,
+anyway.<NOD<END
+#0403
+<KEY<MSG<CLRYou're missing out!<NOD<END
+#0404
+<KEY<FL+0721<MSG*sigh*<NOD<CLRHere. How about this?<NOD<CLR<GIT1038<CLR
+<CMU0010<IT+0038Got the =Whimsical Star=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRJust a decoration, I'm afraid,<NOD
+but you've already got the
+strongest weapon, so what
+else can I do?<NOD<END
+#0410
+<KEY<MSGThe one who sealed us up in here
+is a witch named Jenka.<NOD<CLR...But it's not because she hates
+us or anything.<NOD
+We're here in this labyrinth in
+order to protect something.<NOD<CLR...I don't really remember what
+it is anymore, but that's all
+right!<NOD<END
+

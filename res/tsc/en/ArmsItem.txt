@@ -1,0 +1,341 @@
+#0000
+<FRE<WAI9999<END
+
+#1000
+<MSG<TURNo weapon.<WAI9999<END
+#1001
+<MSG<TUR- Snake -
+Penetrates through walls.
+Made by Chaba in the Labyrinth.<WAI9999<END
+#1002
+<MSG<TUR- Polar Star -
+The most basic gun.
+It bears the mark of Polaris.
+<WAI9999<END
+#1003
+<MSG<TUR- Fireball -
+Bounces along the floor.
+Rather powerful on gentle slopes.<WAI9999<END
+#1004
+<MSG<TUR- Machine Gun -
+An automatic rapid-fire gun.
+Automatically recharges over time.<WAI9999<END
+#1005
+<MSG<TUR- Missile Launcher -
+Wide range and powerful damage.
+However, its ammunition is limited.<WAI9999<END
+#1007
+<MSG<TUR- Bubbler -
+From the Assembly Hall's fireplace.
+How you use it is up to you.<WAI9999<END
+#1009
+<MSG<TUR- Blade -
+A single-shot, high-damage weapon.
+King's soul dwells within.<WAI9999<END
+#1010
+<MSG<TUR- Super Missile -
+An exhilirating sort of missile.
+Its acceleration is unmatched.<WAI9999<END
+#1012
+<MSG<TUR- Nemesis -
+Lightning of the Goddess.
+For advanced players.<WAI9999<END
+#1013
+<MSG<TUR- Spur -
+Hold down the button to
+fire a laser.<WAI9999<END
+
+#1100
+<MSG<TURHajime<WAI9999<END
+#1101
+<MSG<TURMick<WAI9999<END
+#1102
+<MSG<TURShinobu<WAI9999<END
+#1103
+<MSG<TURKakeru<WAI9999<END
+#1104
+<MSG<TURNene<WAI9999<END
+
+#1200
+<MSG<TURJenka's pet and leader of the dogs.
+While searching for his brothers, he
+got lost and was taken in by Curly.<WAI9999<END
+#1201
+<MSG<TURJenka's pet. Loves treasure-hunting.
+Or treasure *chests*, rather, and
+recently has taken up sleeping in them.<WAI9999<END
+#1202
+<MSG<TURJenka's pet. Loves dark places. Due
+to poor eyesight, he roams the darkness
+using his wild instincts alone.<WAI9999<END
+#1203
+<MSG<TURJenka's pet. Adores bones and has
+buried them in countless places,
+most of which are by now forgotten.<WAI9999<END
+#1204
+<MSG<TURJenka's pet. Spends most of her time
+asleep, but her dreams have been
+known to portend the future.<WAI9999<END
+
+#5000
+<MSG<TURNo item.<WAI9999<END
+#5001
+<MSG<TURArthur's Key<WAI9999<END
+#5002
+<MSG<TURMap System<WAI9999<END
+#5003
+<MSG<TURSanta's Key<WAI9999<END
+#5004
+<MSG<TURSilver Locket<WAI9999<END
+#5005
+<MSG<TURBeast Fang<WAI9999<END
+#5006
+<MSG<TURLife Capsule<WAI9999<END
+#5007
+<MSG<TURID Card<WAI9999<END
+#5008
+<MSG<TURJellyfish Juice<WAI9999<END
+#5009
+<MSG<TURRusty Key<WAI9999<END
+#5010
+<MSG<TURGum Key<WAI9999<END
+#5011
+<MSG<TURGum Base<WAI9999<END
+#5012
+<MSG<TURCharcoal<WAI9999<END
+#5013
+<MSG<TURExplosive<WAI9999<END
+#5014
+<FLJ3000:1100
+<FLJ3001:1101
+<FLJ3002:1102
+<FLJ3003:1103
+<FLJ3004:1104
+<MSG<TURPuppy<WAI9999<END
+#5015
+<MSG<TURLife Pot<WAI9999<END
+#5016
+<MSG<TURCure-All<WAI9999<END
+#5017
+<MSG<TURClinic Key<WAI9999<END
+#5018
+<MSG<TURBooster v0.8<WAI9999<END
+#5019
+<MSG<TURArms Barrier<WAI9999<END
+#5020
+<MSG<TURTurbocharge<WAI9999<END
+#5021
+<MSG<TURCurly's Air Tank<WAI9999<END
+#5022
+<MSG<TURNikumaru Counter<WAI9999<END
+#5023
+<MSG<TURBooster v2.0<WAI9999<END
+#5024
+<MSG<TURMimiga Mask<WAI9999<END
+#5025
+<MSG<TURTeleporter Room Key<WAI9999<END
+#5026
+<MSG<TURSue's Letter<WAI9999<END
+#5027
+<MSG<TURController<WAI9999<END
+#5028
+<MSG<TURBroken Sprinkler<WAI9999<END
+#5029
+<MSG<TURSprinkler<WAI9999<END
+#5030
+<MSG<TURTow Rope<WAI9999<END
+#5031
+<MSG<TURClay Figure Medal<WAI9999<END
+#5032
+<MSG<TURLittle Man<WAI9999<END
+#5033
+<MSG<TURMushroom Badge<WAI9999<END
+#5034
+<MSG<TURMa Pignon<WAI9999<END
+#5035
+<MSG<TURCurly's Underwear<WAI9999<END
+#5036
+<MSG<TURAlien Medal<WAI9999<END
+#5037
+<MSG<TURChaco's Lipstick<WAI9999<END
+#5038
+<MSG<TURWhimsical Star<WAI9999<END
+#5039
+<MSG<TURIron Bond<WAI9999<END
+
+#6000
+<MSG<TURNo item.<WAI9999<END
+#6001
+<MSG<TURThe key to Arthur's house.
+It was hidden near Arthur's
+gravestone.<WAI9999<END
+#6002
+<PRI<EVE7002<MPJ7002<MSGNo data for this floor.<NOD<CLR<END
+#6003
+<MSG<TURThe key to Santa's house.<WAI9999<END
+#6004
+<MSG<TURA silver locket in the shape of a fish.
+From the condition it's in, it looks
+like it's been treasured for years.<WAI9999<END
+#6005
+<MSG<TURA sharp fang found at the
+Yamashita Farm. Is its owner still
+alive...?<WAI9999<END
+#6006
+<MSG<TURA life capsule.<WAI9999<END
+#6007
+<MSG<TURAn ID Card found in Egg No. 06.<WAI9999<END
+#6008
+<MSG<TURA fluid that can quench
+fireplaces.<WAI9999<END
+#6009
+<MSG<TURA rusty key.<WAI9999<END
+#6010
+<MSG<TURA tag says "Gum".<WAI9999<END
+#6011
+<MSG<TURA clump of gum.<WAI9999<END
+#6012
+<MSG<TURTaken from a fireplace.<WAI9999<END
+#6013
+<MSG<TURAn explosive for blowing up doors
+and such.<WAI9999<END
+#6014
+<FLJ3000:1200
+<FLJ3001:1201
+<FLJ3002:1202
+<FLJ3003:1203
+<FLJ3004:1204
+<MSG<TURJenka's pet dog.<WAI9999<END
+#6015
+<KEY<MSGThis will restore your life,
+but only once. Will you use it?<YNJ0000<LI+1000<SOU0020<IT-0015<MSG
+Life restored.<FRE<WAI9999<END
+#6016
+<MSG<TURApparently this cures
+anything and everything...<WAI9999<END
+#6017
+<MSG<TURIt says "Labyrinth Clinic".<WAI9999<END
+#6018
+<FLJ0742:7018
+<KEY<MSGPush the jump button again in
+midair to fly even higher.<NOD<CLR
+Do you want to equip it?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSG
+Booster equipped.<NOD<WAI0003<FRE<EVE5018
+#6019
+<MSG<TURWhen you take damage, the amount
+of weapon energy lost will be halved.<WAI9999<END
+#6020
+<MSG<TURIncreases the rate at which the
+machine gun replenishes ammo.<WAI9999<END
+#6021
+<MSG<TURYou can breathe underwater with
+this. Curly used to use it.<WAI9999<END
+#6022
+<MSG<TURA fully automatic stopwatch.
+You can't see any buttons.<WAI9999<END
+#6023
+<FLJ0743:7023
+<KEY<MSGPush the jump button in midair and
+you can move in any direction.<NOD<CLR
+Do you want to equip it?<YNJ0000<EQ+0032<FL+0743<EQ-0001<FL-0742<MSG
+Equipped Booster v2.0.<NOD<WAI0003<FRE<EVE5023
+#6024
+<MSG<TURA Mimiga mask Sue's mother made.
+It's a bit big...<WAI9999<END
+#6025
+<MSG<TURA key fished out by a certain
+Mimiga.<WAI9999<END
+#6026
+<KEY<MSGWill you read it?<YNJ0000<MSG<TUR
+This is Sue.<NOD<CLRI don't believe I ever told
+you much about all of us.<NOD<CLRWe came to this island from
+the surface on a research trip.<NOD<CLRProf. Booster was on our
+helicopter, and so was my
+mother, my brother,<NOD<CLRvarious assistants...
+The Doctor as well.<NOD<CLRHe was there to serve our
+medical needs, and did so...<NOD<CLRAt least, until he found
+the Demon Crown...<WAI0020<NOD<CLRThat crown, once the property
+of the master of this island,<NOD<CLRgrants monstrous magical
+powers upon its wearer...<NOD<CLRThe Doctor knew this even
+before coming to the island,<NOD<CLRwhich is why he wormed his
+way into our group in the
+first place.<NOD<CLROnce he had the Crown in
+his possession, no one could
+stand up to him.<NOD<CLRWe had no choice except to
+continue our research of the
+island under his orders.<NOD<CLRThe Doctor seeks to rule the
+Earth's surface using this
+island as a base.<NOD<CLRI think he plans to first
+attack the surface using
+the Mimigas as weapons.<NOD<CLRAnyway, I was able to get away
+somehow, but I fear the other
+researchers are already...<NOD<CLRNow, he's using the unsuspecting
+Mimigas to cultivate more and
+more red flowers.<NOD<CLROnce he is ready to attack, he will
+drive the Mimigas into a murderous
+frenzy using the flowers.<NOD<CLRUsing his terrible powers,
+he will be able to control the
+raging Mimigas to do his bidding.<NOD<CLR
+And that means I, too, will...<NOD<CLRIf you can escape from this prison
+cell, look for the hideout hidden
+in the plantation.<NOD<CLRIf my mother is yet safe,
+she'll be there, coming up
+with a counterplan.<NOD<CLRPlease. Help my mother.<NOD<CLRThe password is
+"Litagano Motscoud".<NOD<CLR<FL+1024<FRE<MSGThe letter ends here...<WAI9999<END
+#6027
+<MSG<TURNecessary to make a rocket.
+Pride of Itoh, the cowardly man.<WAI9999<END
+#6028
+<MSG<TURA busted water sprinkler.<WAI9999<END
+#6029
+<MSG<TURIt's brand-new. ...Perhaps.<WAI9999<END
+#6030
+<MSG<TURA tow rope for robots.<WAI9999<END
+#6031
+<MSG<TURSmall and profoundly heavy.
+It has no use.<WAI9999<END
+
+#6032
+<MSG<TURHey! We there yet?<WAI9999<END
+#6033
+<MSG<TURThe mushroom badge you got from the
+mushroom. It has no real use. To be
+honest, you don't really need it...<FL+1563<WAI9999<END
+#6034
+<MSG<TURAllegedly, it has the power to
+restore memories...<WAI9999<END
+#6035
+<MSG<TURRetrieved from behind the wall.
+Yellow-green panties with a cute
+little insignia. They have no use.<WAI9999<END
+#6036
+<MSG<TUREngraved with the silhouette of an
+alien. It has no use.<WAI9999<END
+#6037
+<MSG<TURRed lipstick.
+It has no use.<WAI9999<END
+#6038
+<KEY<MSGA little trinket you got from
+Chaba in the labyrinth.
+A whimsical star.<NOD<FLJ0722:7038<CLR
+Will you equip it?<YNJ0000<EQ+0128<FL+0722<MSG
+Equipped the Whimsical Star.<NOD<WAI0003<FRE<EVE5038
+#6039
+<MSG<TURYour tie to Curly Brace, the only
+warrior you would trust your back to.
+Surely you will meet again one day...<WAI9999<END
+
+#7002
+<MLP<END
+
+#7018
+<KEY<MSGDo you want to remove it?<YNJ0000<EQ-0001<FL-0742<MSG
+Deequipped Booster.<NOD<WAI0003<FRE<EVE5018
+#7023
+<KEY<MSGDo you want to remove it?<YNJ0000<EQ-0032<FL-0743<MSG
+Deequipped Booster v2.0.<NOD<WAI0003<FRE<EVE5023
+
+#7038
+<KEY<MSGDo you want to remove it?<YNJ0000<EQ-0128<FL-0722<MSG
+Deequipped the Whimsical Star.<NOD<WAI0003<FRE<EVE5038
+

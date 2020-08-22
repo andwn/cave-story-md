@@ -1,0 +1,50 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0002<DNP0301<SMC<END
+
+#0100
+<KEY<FAO0002<TRA0056:0092:0008:0049
+
+#0200
+<KEY<MSGThe destination is unknown.<NOD
+Do you still wish to teleport?<YNJ0000<CLO<FL+0524
+<CNP0300:0111:0000<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0018:0099:0015:0010
+
+
+#0400
+<PRI<MSGWhat, are you a killer robot?<NOD<CLRYou here to kill us?<NOD<END
+#0401
+<PRI<MSGLemme out!<NOD<END
+#0402
+<PRI<MSGDoctor Dumb can go screw himself!<NOD<END
+
+#0403
+<PRI<MSGThe Mimigas out there in the
+fields are being lied to!<NOD<CLRThe Doctor's gonna make us fight
+the robots!<NOD<END
+#0404
+<PRI<MSGDo you know a "Sakamoto"?<NOD
+She's supposed to be hiding
+somewhere out in the plantation...<NOD<END
+#0405
+<PRI<MSGThere used to be a couple humans
+in here too, but I haven't seen
+them around...<NOD
+Wonder if they got away.<NOD<END
+

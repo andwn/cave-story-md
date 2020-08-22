@@ -1,0 +1,81 @@
+
+#0090
+<MNA<CMU0000<FAI0000<END
+#0091
+<MNA<CMU0000<FAI0001<END
+#0092
+<MNA<CMU0000<FAI0002<END
+#0093
+<MNA<CMU0000<FAI0003<END
+#0094
+<MNA<CMU0000<FAI0004<END
+
+#0095
+<MNA<MYD0002<PRI
+<CMU0039<FAI0002<KEY
+<ANP0100:0000:0000<WAS<END
+
+<CMP0001:0007:0018<SOU0012
+
+#0400
+#0401
+#0402
+
+
+
+
+#0500
+<DNP0500<MYD0002
+<KEY<MSGBem-vindos.<NOD<CLR<FAC0029Eu sou o Ballos.<NOD<CLRHá vários séculos
+atrás, com medo de
+sofrer mais castigo,<NOD<CLReu permiti que a minha
+magia entrasse em fúria...<NOD<CLRA magia ficou tal que nem
+podia ser controlada pelas
+mãos do próprio mestre.<NOD<CLREnquanto olhava, incapaz
+de impedir a
+sua raiva fogosa,<NOD<CLRela tirou-me os meus entes
+queridos, os meus filhos, a
+minha querida mulher...<NOD<CLROs seus choros de agonia
+voaram mais alto que
+as chamas.<NOD<CLRNão pude virar os olhos,
+portanto fiquei a olhar
+para o espetáculo...<NOD<CLRA rir...<NOD<CLRA Jenka trancou-me,
+mas a minha magia ainda
+está fora de controlo.<NOD<CLREsperei muito,
+muito tempo...<NOD<CLREsperei por aquele
+que finalmente dominasse
+a fúria da minha magia...<NOD<CLRAgora, mata-me!<NOD
+Senão eu...<NOD mato-te a TI!!<NOD<CLO
+<CMU0004
+<ANP0402:0100:0900<FON0402:0016
+<BSL0900<ANP0900:0010:0000<END
+
+
+
+
+#0900
+<ANP0900:1000:0005
+<FON0900:0016
+<CNP0400:0339:0002
+<CNP0401:0339:0000
+<CMU0000<WAI0300
+<FOM0016<WAI0050
+<BOA0100<WAI0200
+<ANP0402:0100:0000
+<FON0402:0016
+<BOA0200
+<CMU0007<BSL0000
+<END
+
+
+#1000
+<FLJ1600:1001
+<FL+1600
+<CMU0000<BOA0220<WAI0200
+<CMU0032<BOA0300<WAI0050
+<BOA0311<BSL0000<END
+
+#1001
+<KEY<FOB0000:0016
+<BOA1000<WAI0200
+<STC<TRA0091:0110:0000:0000

@@ -1,0 +1,304 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0095<CMU0002<FAI0004<END
+
+#0095
+<CMU0014<FAI0004<END
+
+
+#0098
+<CMU0014
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+#0099
+<KEY<MNA<FLJ0341:0098<CMU0002
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+
+#0100
+<PRI<FAO0004<TRA0010:0094:0018:0032
+#0101
+<PRI<FAO0004<TRA0012:0094:0037:0011
+#0102
+<FLJ0155:0103<PRI<SOU0011<DNP0102<FAO0004<TRA0011:0094:0016:0053
+#0103
+<PRI<SOU0011<CMU0000<DNP0102<FAO0004<TRA0011:0400:0016:0053
+
+
+#0200
+<FLJ0159:0205
+<FLJ0158:0204
+<FLJ0157:0203
+<FLJ0325:0202
+<FLJ0154:0201
+<KEY<MSGAparecem palavras no ecrã...<NOD<CLR<TUR"...Porém se tiver que ser,
+faço-o mesmo..."<NOD<FLJ0153:0000<CLR<MSGQueres permitir a teleportação
+para o Corredor dos Ovos?<YNJ0000<CLRPermissão conseguida para
+aceder ao Corredor dos Ovos.<NOD<FL+0153<PS+0001:6001<END
+#0201
+<KEY<MSGAparecem palavras no ecrã...<NOD<CLR<TUR"A ligar à Cidade da Relva..."<NOD<END
+#0202
+<KEY<MSG<TURLigado à Cidade da Relva.<NOD<END
+#0203
+<KEY<MSG<TURInsira comando.<NOD<END
+#0204
+<KEY<MSG<TURLigado à Zona da Areia.<NOD<END
+#0205
+<KEY<MSGAparecem palavras no ecrã...<NOD<CLR<TUR"Vai para o Corredor dos Ovos
+                       --Kazuma"<NOD<END
+#0210
+<KEY<MSGFlores...?<NOD<END
+
+#0300
+#0301
+#0303
+
+#0500
+<KEY<MSGUm teleportador.<NOD<SLP<NOD<END
+
+#0600
+<FLJ0325:0601
+<KEY<MSG<FAC0009Bem-vindo de volta.<NOD<CLRA Sue voltou.<NOD
+Ela foi presa na jaula
+lá fora.<NOD
+Quando vierem os matulões
+do Doutor, vamos tentar
+trazer a Toroko de volta.<NOD
+Tu sabes, em troca da Sue.<NOD<CLREu sei que não é muito
+simpático, mas a Toroko é 
+uma de nós.<NOD
+É isso o que acontece
+quando se age sozinho.<NOD<END
+#0601
+<KEY<MSG<FAC0009Espero que a Toroko
+esteja segura...<NOD<END
+
+
+#0620
+<KEY<CMU0000<FL+0156<FL+0444
+<ANP0500:0001:0000
+<WAI0002<CNP0622:0055:0000<WAI0010
+<FAI0004
+<CNP0621:0113:0000
+<ANP0621:0030:0000<WAI0100
+<MSG<FAC0018Oooohh...<NOD<CLR<FAC0010...Você está bem?<NOD<CLO<FAC0000
+<WAI0030<ANP0621:0000:0002
+<MSG<FAC0018...Mmm.<NOD<CLRA minha vida passou-me
+pelos olhos.<NOD<CLR<FAC0010.....<NOD<CLO<FAC0000
+<ANP0500:0000:0000<WAI0030
+<ANP0102:0000:0002<SOU0011
+<CNP0625:0042:0000
+<MSG<FAC0001Kazuma!!<NOD<ANP0622:0000:0002<CLRE o Professor Booster!<NOD<CLR<FAC0018Oh!<NOD<CLO<FAC0000
+<ANP0621:0003:0002<WAI0080
+<ANP0621:0000:0002
+<MSG<FAC0018Então tu estás bem?!<NOD<CLR<FAC0001Bom, mais ou menos.<NOD<CLO<FAC0000
+<CNP0624:0061:0000
+<ANP0625:0003:0000<WAI0016
+<ANP0624:0008:0000<WAI0016
+<ANP0624:0000:0000
+<SOU0011<ANP0102:0000:0000<WAI0048
+<ANP0625:0000:0000
+<MSG<FAC0007.....<NOD<CLR<FAC0018Quem é aquele Mimiga?<NOD<CLO<FAC0000
+<WAI0030
+<ANP0625:0000:0002<WAI0030
+<ANP0624:0000:0002<WAI0050
+<ANP0625:0000:0000<WAI0020
+<MSG<FAC0001Aquele é o King.<NOD<CLRUm amigo meu aqui
+na vila.<NOD<CLRCostumava haver montes de
+Mimigas aqui.<NOD
+Porém quase todos foram
+raptados pelos gajos
+do Doutor.<NOD<CLRAté o King
+perdeu amigos...<NOD<CLO
+<CMU0002
+<ANP0500:0001:0000
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<FL-0157<END
+
+#0621
+<KEY<FLJ0158:0631<MSG<FAC0018Os planos do Doutor estão
+a seguir o
+horário exactamente...<NOD
+Se não fizermos
+algo brevemente...<NOD<END
+#0622
+<KEY<FLJ0158:0632<MSG<FAC0010Obrigado pela tua ajuda.<NOD<CLRO nosso transporte
+não sobreviveu, mas pelo
+menos nós sim.<NOD<END
+#0624
+<KEY<FLJ0158:0634<MSG<FAC0007A Toroko como uma arma
+mortífera...<NOD
+Não! Nunca o permitirei!<NOD<END
+#0625
+<KEY<FLJ0158:0635<MYB0000<WAI0030<MYD0000<ANP0625:0000:0002<MSG<FAC0001Bem-vindo de volta!<NOD<CLRParece que te estou
+a dever outra.<NOD
+Com a ajuda do meu irmão,<NOD
+devemos de ser capazes de
+encontrar a senha para
+aquele ovo.<NOD<CLO<FAC0000
+<ANP0625:0003:0000<WAI0008
+<ANP0625:0000:0000<MSG<FAC0001Booster!<NOD<CLRPodemos levar este
+pequenote connosco
+quando formos?<NOD<CLO<FAC0000
+<ANP0622:0003:0002<WAI0015
+<ANP0622:0005:0002
+<MSG<FAC0018<CMU0000.....<NOD<CLR<FAC0010Professor.<NOD<CLR<FAC0001???<NOD<CLR<FAC0018Sue, minha querida...<NOD
+Temos que suspender
+a nossa fuga.<NOD<CLRO Doutor encontrou as
+flores vermelhas.<NOD<ANP0624:0000:0000<CLR<FAC0007!!!<NOD<CLR<FAC0001O quê?<NOD<CLR<FAC0018Apesar de ele ainda não as
+ter em sua posse, é só uma
+questão de tempo.<NOD
+Elas estão na
+Zona da Areia.<NOD<CLR<FAC0007A Zona da Areia?<NOD<CLRQueres dizer que é aí onde
+encontraremos o Doutor?<NOD<CLR<FAC0018Bom,<NOD mais provavelmente um
+dos seus escravos.<NOD
+Se não destruirmos as
+flores antes que eles
+as obtenham...<NOD<CLRPorém, a Zona da Areia é 
+altamente perigosa.<NOD
+Mesmo que fizéssemos a
+viajem,<NOD
+não há garantia de que
+regressariamos vivos...<NOD<CLR<FAC0007Estás a desistir?<NOD<CLR<FAC0018Na verdade...<NOD<CLRUm de nós é um
+candidato perfeito para
+este trabalho.<NOD<CLO<FAC0000
+<ANP0621:0003:0002<ANP0625:0003:0000<WAI0020
+<ANP0621:0000:0002<WAI0002<ANP0625:0000:0002
+<MSG<FAC0018Tu.<NOD<CLR<CMU0002<FAC0010...E quem É ele?<NOD<CLR<FAC0018Na verdade...<NOD<CLREste é um dos
+robots patrulha que foram
+colocados nesta ilha<NOD
+há 10 anos atrás.<NOD<CLR<FAC0010Um robot?!<NOD<CLR<FAC0018Eu julgava que eles
+tinham sido completamente
+eliminados,<ANP0621:0000:0000<NOD
+mas eu não sei
+bem os detalhes.<NOD
+É bastante possível
+que um deles tenha...<NOD<CLR<FAC0010Professor.<NOD
+Liguei-me à Zona da Areia.<NOD<CLR<FAC0018Estou a ver.<NOD<CLO<FAC0000
+<ANP0622:0003:0000<WAI0015
+<ANP0622:0000:0002
+<ANP0621:0000:0002<WAI0030<MSG<FAC0018Tu és o mais adequado para
+explorar esta ilha.<NOD<CLRPor favor.
+Dá-nos a tua ajuda.<NOD<FL+0158<PS+0003:6003<END
+
+
+
+
+#0631
+<KEY<MSG<FAC0018Podes chegar à Zona
+da Areia através
+do teleportador.<NOD
+Encontra as flores
+vermelhas e queima-as
+a todas.<NOD<END
+#0632
+<KEY<MSG<FAC0010Com que então tu
+és um dos...<NOD<CLRNem sequer tinha reparado.<NOD<CLRCéus, foste certamente bem
+construido.<NOD<END
+#0634
+<KEY<MSG<FAC0007A Zona da Areia...<NOD<END
+#0635
+<KEY<MSG<FAC0001Se te livrares das flores,
+podemos evitar a guerra,
+por agora.<NOD<CLRÉ uma grande
+responsabilidade.<NOD<END
+
+
+#0650
+<KEY<MSG<FAC0018Leva a Sue contigo e
+sai desta ilha...<NOD
+Eu peço-te...<NOD<END
+
+#0651
+<DNP0651<KEY<MYD0000
+<ANP0500:0001:0000<WAI0050
+<MNP0650:0006:0007:0002
+<CNP0650:0113:0002
+<ANP0650:0030:0002<WAI0100
+<ANP0650:0000:0002
+<ANP0500:0000:0000<WAI0050
+<ANP0650:0003:0002<WAI0064
+<ANP0650:0000:0000
+<MSG<FAC0018.....<NOD<CLO<FAC0000
+<ANP0650:0000:0002<WAI0050
+<MSG<FAC0018Estou a ver que és só tu...<NOD<CLR...O Doutor já tem as
+flores vermelhas.<NOD<CLR...Os Mimigas da ilha
+já cairam nas suas mãos.<NOD<CLREntão a tragédia é 
+inevitável...<NOD<CLREu devia de pelo menos
+ter deixado a Sue escapar
+quando tive a hipótese...<NOD<CLO<FAC0000
+<ANP0650:0003:0002<WAI0022
+<ANP0650:0005:0002
+<IT+0023<FL+0744<FL+0162<GIT1023
+<MSGRecebeste o =Booster v2.0=.<WAI0030<NOD<CLO<GIT0000
+<ANP0650:0000:0002
+<MSG<FAC0018Por favor ouve o meu
+último pedido.<NOD<CLRSe vires a Sue de novo,<NOD
+quero que pegues nela,
+e que fujas desta ilha.<NOD<CLRAquela rapariga é a
+filha da Sakamoto,<NOD
+e desde o início que
+ela se recusou a vir.<NOD
+Mas não podiamos deixar
+a criança sozinha,<NOD
+portanto ela não teve
+escolha senão vir connosco.<NOD<CLRPeço-te.<NOD<CLRLeva aquela rapariga
+contigo e foge.<NOD<CLO
+<FL-0160<FL+0161<FL+0741<PS+0004:6004<END
+
+
+#0660
+<KEY<FLJ1020:0661<MSG<FAC0018Leva a Sue contigo e
+foge desta ilha...<NOD
+Eu peço-te...<NOD<END
+#0661
+<KEY<MSG<FAC0018Peço imensa desculpa pelo
+caos que caiu na tua ilha.<NOD<CLRNós os humanos é 
+que somos os culpados.<NOD<END
+
+
+#0700
+<KEY<CMU0000<FAO0004<TRA0024:0700:0002:0000
+
+
+#6001
+<PRI<MSGQueres ir para o Corredor
+dos Ovos?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<FLJ0159:6011<TRA0002:0099:0005:0006
+#6002
+<PRI<MSGQueres ir para a Cidade da Relva?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0006:0098:0004:0018
+#6003
+<PRI<MSGQueres ir para a Zona da Areia?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0010:0099:0036:0033
+
+#6004
+<PRI<MSGQueres ir para o Labirinto?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0043:0099:0010:0034
+
+#6005
+<PRI<MSGQueres ir para a Plantação?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0060:0099:0009:0009
+
+#6011
+<KEY<TRA0049:0099:0007:0006

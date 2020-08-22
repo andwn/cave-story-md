@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "entity.h"
@@ -18,6 +19,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
+#include "tools.h"
 #include "vdp.h"
 #include "window.h"
 #include "xgm.h"
@@ -174,27 +176,74 @@ void tsc_init() {
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
 	vdp_tiles_load_from_rom(TS_Window.tiles, TILE_WINDOWINDEX, TS_Window.numTile);
-	const uint8_t *TSC = cfg_language ? JTSC_Head : TSC_Head;
+	const uint8_t *TSC = TSC_Head;
+	switch(cfg_language) {
+        case LANG_ES: TSC = STSC_Head; break;
+        case LANG_PT: TSC = PTSC_Head; break;
+        case LANG_FR: TSC = FTSC_Head; break;
+        case LANG_IT: TSC = ITSC_Head; break;
+        case LANG_DE: TSC = GTSC_Head; break;
+        case LANG_JA: TSC = JTSC_Head; break;
+	}
 	tsc_load(headEvents, TSC, HEAD_EVENT_COUNT);
 }
 
 void tsc_load_stage(uint8_t id) {
 	if(id == ID_ARMSITEM) { // Stage index 255 is a special case for the item menu
-		const uint8_t *TSC = cfg_language ? JTSC_ArmsItem : TSC_ArmsItem;
+		const uint8_t *TSC = TSC_ArmsItem;
+        switch(cfg_language) {
+            case LANG_ES: TSC = STSC_ArmsItem; break;
+            case LANG_PT: TSC = PTSC_ArmsItem; break;
+            case LANG_FR: TSC = FTSC_ArmsItem; break;
+            case LANG_IT: TSC = ITSC_ArmsItem; break;
+            case LANG_DE: TSC = GTSC_ArmsItem; break;
+            case LANG_JA: TSC = JTSC_ArmsItem; break;
+        }
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else if(id == ID_TELEPORT) {
-		const uint8_t *TSC = cfg_language ? JTSC_StageSelect : TSC_StageSelect;
+		const uint8_t *TSC = TSC_StageSelect;
+        switch(cfg_language) {
+            case LANG_ES: TSC = STSC_StageSelect; break;
+            case LANG_PT: TSC = PTSC_StageSelect; break;
+            case LANG_FR: TSC = FTSC_StageSelect; break;
+            case LANG_IT: TSC = ITSC_StageSelect; break;
+            case LANG_DE: TSC = GTSC_StageSelect; break;
+            case LANG_JA: TSC = JTSC_StageSelect; break;
+        }
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else if(id == ID_CREDITS) {
-		const uint8_t *TSC = cfg_language ? JTSC_Credits : TSC_Credits;
+		const uint8_t *TSC = TSC_Credits;
+        switch(cfg_language) {
+            case LANG_ES: TSC = STSC_Credits; break;
+            case LANG_PT: TSC = PTSC_Credits; break;
+            case LANG_FR: TSC = FTSC_Credits; break;
+            case LANG_IT: TSC = ITSC_Credits; break;
+            case LANG_DE: TSC = GTSC_Credits; break;
+            case LANG_JA: TSC = JTSC_Credits; break;
+        }
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
-		const uint8_t *TSC = cfg_language ? stage_info[id].JTSC : stage_info[id].TSC;
+		const uint8_t *TSC = stage_info[id].TSC;
+        switch(cfg_language) {
+            case LANG_ES: TSC = stage_info[id].STSC; break;
+            case LANG_PT: TSC = stage_info[id].PTSC; break;
+            case LANG_FR: TSC = stage_info[id].FTSC; break;
+            case LANG_IT: TSC = stage_info[id].ITSC; break;
+            case LANG_DE: TSC = stage_info[id].GTSC; break;
+            case LANG_JA: TSC = stage_info[id].JTSC; break;
+        }
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	}
 }
 
 uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
+    // a
+    uint32_t addr = (uint32_t) TSC;
+    uint16_t chunk = addr >> 19;
+    if(chunk >= 7) {
+        ssf_setbank(7, chunk);
+        TSC = (const uint8_t *) (0x380000 | (addr & 0x7FFFF));
+    }
 	// First byte of TSC is the number of events
 	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled
@@ -276,7 +325,7 @@ uint8_t tsc_update() {
 		{
 			if(joy_pressed(btn[cfg_btn_jump]) || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				tscState = TSC_RUNNING;
-				if(cfg_language) {
+				if(cfg_language == LANG_JA) {
 					window_draw_jchar(FALSE, ' '); // Clear blinking cursor
 				} else {
 					window_draw_char(' '); // Clear blinking cursor
@@ -435,7 +484,7 @@ void tsc_update_boss_health() {
 }
 
 static void tsc_render_warp_text() {
-	const uint32_t *ts = cfg_language ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+	const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	// Copy our string to VRAM
 	DMA_queueDma(DMA_VRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
 	// Create sprites to display the string
@@ -1267,22 +1316,31 @@ uint8_t execute_command() {
 		uint8_t doublebyte = FALSE;
 		if(cmd >= 0xE0 && cmd < 0xFF) {
 			doublebyte = TRUE;
-			if(cfg_language) { // Get kanji index from cmd and next byte
+			if(cfg_language == LANG_JA) { // Get kanji index from cmd and next byte
 				kanji = (cmd - 0xE0) * 0x60 + (tsc_read_byte() - 0x20);
 			} else {
 				tsc_read_byte();
 				cmd = '?';
 			}
 		}
+		if(cmd == 0x01) {
+            doublebyte = TRUE;
+            if(cfg_language > LANG_EN && cfg_language < LANG_JA) { // Get ext char index from next byte
+                cmd = tsc_read_byte() + 0x80;
+            } else {
+                tsc_read_byte();
+                cmd = '?';
+            }
+		}
 		if(window_is_open()) {
-			//if(cfg_language && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
+			//if(cfg_language == LANG_JA && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
 			//	tscState = TSC_WAITINPUT;
 			//	linesSinceLastNOD = 0;
 			//	curCommand--;
 			//	return 1;
 			//}
 			if(cmd == '\n' || window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
-				if(cfg_language) {
+				if(cfg_language == LANG_JA) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);
 				} else {
 					window_draw_char(cmd);

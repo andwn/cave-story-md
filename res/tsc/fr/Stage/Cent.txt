@@ -1,0 +1,407 @@
+
+#0090
+<MNA<CMU0024<FAI0000<END
+#0091
+<MNA<CMU0024<FAI0001<END
+#0092
+<MNA<CMU0024<FAI0002<END
+#0093
+<MNA<CMU0024<FAI0003<END
+#0094
+<MNA<CMU0024<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0055:0092:0003:0009
+
+#0110
+<KEY<FAO0002<TRA0057:0092:0005:0014
+#0115
+<KEY<SOU0011<ANP0115:0000:0002<FAO0002<TRA0057:0092:0003:0002
+
+#0120
+<PRI<FLJ1105:0122<MSGMot de passe ?<NOD<FLJ1024:0121<END
+#0121
+<MSG
+"Iratagonom ustukuod".<NOD<CLO
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+#0122
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+
+#0130
+<KEY<SOU0011<ANP0130:0000:0002<FAO0000<TRA0059:0090:0026:0008
+
+#0135
+<PRI
+<FLJ1023:0137
+<ITJ0025:0136
+<MSGC'est marqué "Entrée Interdite".<NOD
+Et c'est fermé à clé.<NOD<END
+#0136
+<SOU0022<MSG<GIT1025Utilisé =Clé du Téléporteur=<NOD<CLO
+<GIT0000<FL+1023<EVE0137
+#0137
+<KEY<SOU0011<ANP0135:0000:0002<FAO0000<TRA0060:0090:0018:0009
+
+#0140
+<KEY<FAO0000<TRA0061:0090:0029:0009
+
+#0150
+<PRI<FLJ1030:0151<MSGComment t'as fait ça ???<NODC'est encore trop tôt
+pour venir là !... :p<NOD<END
+
+#0151
+<KEY<SOU0011<ANP0150:0000:0002<FAO0002
+<ITJ0023:0160
+<KEY<TRA0063:0092:0007:0052
+
+#0160
+<KEY<TRA0067:0092:0007:0052
+
+#0170
+<KEY<FAO0002<TRA0084:0092:0001:0021
+
+
+#0199
+<MOV0074:0079<END
+
+#0200
+<PRI<FLJ1020:0201
+<EVE0299
+
+#0201
+<PRI<MSGLes gens de la surface préparent
+une attaque contre nous, alors
+on fait pousser des fleurs rouges.<NOD
+Si le Docteur dit vrai,
+ces fleurs doivent vite
+fleurir, sinon...<NOD<END
+
+#0210
+<PRI<FLJ1020:0211
+<EVE0299
+#0211
+<PRI<MSGAvec ces fleurs rouges dans notre
+camp, les robots tueurs ne feront
+pas le poids !<NOD
+Fleurissez, beautées écarlates !<NOD<END
+
+#0220
+<PRI<FLJ1020:0221
+<EVE0299
+#0221
+<PRI<MSGLongue vie au Docteur !<NOD<END
+
+#0230
+<PRI<FLJ1020:0231
+<EVE0299
+#0231
+<PRI<MSGRetourne bosser, feignasse !<NOD<END
+
+#0240
+<PRI
+<FLJ1037:0242
+<FLJ1020:0241
+<EVE0299
+
+#0241
+<PRI<FL+1037<MSGOho.<NOD<CLRTu es nouveau, toi.<NOD
+J'imagine que t'es encore confus,
+Avec ce qui t'es arrivé.<NOD<CLRSouviens-toi d'une chose.<NOD
+Pas d'entourloupes.<NOD
+Si tu t'enfuis et que tu te fais
+chopper, ils te jetteront en
+prison.<NOD
+Si tu restes près des
+fleurs, tu seras tranquille,
+et tu auras à manger.<NOD<END
+
+#0242
+<PRI<MSGComment s'passe le boulot ?<NOD<CLRAvec un peu d'chance, on va
+retourner à nos vies
+pépères d'ici peu.<NOD<CLR...J'veux dire, bientôt, hein ?<NOD<END
+
+
+
+#0250
+<PRI
+<ITJ0029:0254
+<FLJ1029:0253
+<FLJ1028:0252
+<FLJ1020:0251
+<PRI<MSGMec, ces arroseurs sont vraiment...<NOD<CLROops.
+J'ai pas le droit de parler aux humains.<NOD<END
+
+#0251
+<PRI<MSGCes arroseurs sont cools, mais
+ils se cassent souvent.<NOD<END
+
+#0252
+<PRI<FL+1029<MSGEncore cassé !<NOD<CLR.....<NOD<CLRHey, toi.
+T'es nouveau, non ?<NOD
+Prends cet arroseur cassé 
+et ramène-moi un neuf.<NOD<END
+
+#0253
+<PRI<MSGMagne-toi ! Les fleurs
+tournent de l'oeil.<NOD
+Emmène l'arroseur cassé 
+et échange-le avec un
+autre tout neuf.<NOD<END
+
+#0254
+<PRI<MSGCes fleurs rouges nous trans-
+forment en puissant guerriers !<NOD
+Nous, Mimigas, avons cette férocité
+en nous depuis toujours.<NOD
+Les temps anciens contre les robots
+n'étaient qu'une vieille légende !<NOD<CLRHeh-heh-heh...<NOD<CLRFleurissez, petites fleurs...<NOD
+La véritée enfin révélée, ça me rend
+malade de faire le fermier.<NOD<END
+
+#0260
+<PRI
+<FLJ1023:0263
+<FLJ1022:0262
+<FLJ1035:0261
+<FL+1035
+<MSGOh, tiens, c'est toi.<NOD<CLRJ'ai atrappé un truc
+bizarre, là.<NOD
+Tiens, je te le donne.<NOD
+Regarde dans le seau.<NOD<END
+#0261
+<PRI<MSGC'est dans le seau, là.<NOD<END
+#0262
+<PRI<MSGOù peut bien aller cette clé ?<NOD<CLRJe serais bien allé 
+fouiller un peu dans les stocks...<NOD<CLRMec, j'ai trop faim...<NOD<END
+#0263
+<PRI<MSGJ'atrappe RIEN DU TOUT ici.<NOD<END
+
+#0265
+<PRI
+<FLJ1022:0267
+<FLJ1035:0266
+<MSGC'est un seau. les poissons péchés
+sont mis ici.<NOD<END
+
+#0266
+<PRI<FL+1022
+<MSGTu regardes dans le seau.<NOD
+Tu vois un truc briller au fond.<NOD<CLR<GIT1025<IT+0025<CLR
+<CMU0010Trouvé =Clé du Téléporteur=<WAI0160<NOD<RMU<END
+#0267
+<PRI<MSGRien d'autre là-dedans...<NOD<END
+
+#0299
+<PRI<MSG.....<NOD<END
+<PRI<CMU0000<MSGTu es un de ces robots tueurs !<NOD<FAO0004<MYD0002<CLR
+Oh, tu m'as eu...<NOD<TRA0057:0094:0011:0014
+
+
+#0300
+#0301
+
+#0310
+<PRI
+<FLJ1045:0313
+<FLJ1041:0311
+<FLJ1044:0312
+<MSGLe Docteur, Un homme de
+la surface, utilise les
+Mimigas pour cultiver les
+fleurs rouges.<NOD<CLRCe n'est pas la première fois
+que ce genre de truc arrive...<NOD<END
+#0311
+<PRI<MSGJ'ai trouvé cette fille par terre.<NOD
+Elle dit qu'ele se rappelle plus
+qui elle est...<NOD<CLRElle a été jetée aux ordures,
+je suppose.<NOD<FL+1044<EVE0312
+#0312
+<PRI<MSGMaintenant que tu le dis...<NOD
+Il y a une sorte de champignon,
+il parait qu'il rend la mémoire<NOD
+quand on le mange...<NOD
+Ça marcherait sur elle, tu crois ?<NOD<END
+#0313
+<PRI<MSGComment ?
+Sa mémoire est revenue ?<NOD
+Pfft. Je préférais avant.<NOD<END
+
+
+
+#0320
+<PRI
+<FLJ1046:0325
+<FLJ1045:0324
+<ITJ0024:0321
+<FL+1041<MSG<FAC0025Qui...<NODes-tu...?<NOD<ITJ0034:0322<END
+#0321
+<PRI<MSG<FAC0025Oh...<NOD
+T'es si mignon...<NOD<CLRVa pas trop loin.<NOD
+Et fais attention
+aux méchants robots...<NOD<ITJ0034:0322<END
+
+#0322
+<FAC0000<MSG<GIT1034Utiliser =Maman Pignon= ?<YNJ0000<GIT0000<IT-0034<CMU0000<CLR
+Tu le fais avaler à Curly.<NOD<CLR<CLO<WAI0050<EQ-0064<WAI0050
+<MSG<FAC0025.....<NOD<CLR<FAC0019Quote !!<NOD
+Je me souviens.
+Tu t'appelles Quote !<NOD<CLRToi et moi...<NOD<CLR
+<FAC0025Ok...<NOD<CLRIl y avait, avant,
+un tas de robots
+envoyés sur cette île<NOD
+et venant de différents
+pays de la surface.<NOD<CLRLeur cible était
+l'immense pouvoir
+gardé sur cette île...<NOD
+La =Couronne du Démon=.<NOD
+Mais toi et moi, on est
+différents.<NOD<CLROn a été envoyés
+avec l'ordre de détruire
+ce pouvoir.<NOD<CLRQuand on est arrivés,
+l'île était dans un
+sale état.<NOD
+Les robots l'avaient
+anéantie...<NOD<CLREt de nombreux Mimigas
+ont été tués...<NOD
+<FAC0020C'était...horrible...<NOD<CLR<FAC0025Finalement, Un homme
+a eu la =Couronne du Démon=
+en sa possession.<NOD<CLRLe travail des robots
+était fini, et l'île
+fut oubliée.<NOD<CLRMais ce n'était que
+le début de la tragédie.<NOD
+Avec la couronne en main,
+l'homme a changé les
+Mimigas en tueurs<NOD
+et a lancé son assaut
+sur la terre.<NOD<CLRJ'ai essayé de l'arrêter.<NOD
+Tu étais là aussi.<NOD<CLR
+.....<NOD<CLRC'est...tout ce dont
+je me souviens.<NOD<CLRJe suis sur qu'on était
+capable de le vaincre.<NOD
+Mais on était loin de
+notre équipe...<NOD<CLR
+<FAC0019Tu t'en souviens ?<NOD<CLO
+<FL+1045<RMU<FLJ1020:0323<END
+
+#0323
+<PRI<EQ+0064<END
+
+#0324
+<PRI<MSG<FAC0019Je vais bien, merci.<NOD
+T'en fais pas pour moi.<NOD<CLR<FAC0025Oh,<NOD tiens.<NOD<CLR<FAC0019Prends ça<GIT1039 avec toi...<NOD<CLR<FAC0000
+<FL+1046<IT+0039Obtenu =Lien d'Acier=<WAI0020<NOD<GIT0000<END
+
+
+#0325
+<PRI<MSG<FAC0019Je vais bien maintenant.<NOD
+Grâce à toi.<NOD<END
+
+#0350
+<PRI<MSGAppuyer sur l'interrupteur ?<YNJ0000<CLO
+<ANP0350:0010:0000<END
+
+#0360
+<PRI<MSG<FAC0028Je suis revenu !<NOD<CLRPlus besoin de
+se cacher, tu sais ?<NOD
+Et la fusée ne pouvait
+être finie sans moi !<NOD<CLRAu fait...<NOD<CLRSi tu tues
+le Docteur,<NOD
+tu crois qu'on pourra
+me rechanger en humain
+comme avant...?<NOD<END
+
+#0370
+<PRI<FLJ1034:0380<MSG<FAC0022<FL+1034Tu t'es bien reposé ?<NOD<CLRLa fusée est finie.<NOD<CLRTu vas pouvoir
+faire la peau au Docteur.<NOD
+J'ai confiance en toi.<NOD<CLRPrends ça avec toi...<NOD<CLO<FAC0000<FLJ0162:0371
+<IT+0018<GIT1018
+<CMU0010<MSG
+Reçu =Booster v0.8=<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0371
+<IT+0023<GIT1023
+<CMU0010<MSG
+Reçu =Booster v2.0=<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0375
+<PRI<MSG<FAC0022Tu n'as plus besoin
+de ça, maintenant.<NOD<CLO<FAC0000
+<MSG<GIT1024<IT-0024<EQ-0064<FL-1020
+=Masque Mimiga= pris.<NOD<CLO<GIT0000<EVE0380
+
+#0380
+<PRI<MSG<FAC0022Directement au dessus
+se trouve un chemin qui
+mène au Docteur.<NOD
+Tu devrais pouvoir
+l'atteindre en utilisant
+la fusée.<NOD<CLRLes Mimigas sont partis
+de la plantation.<NOD<CLR...En d'autres termes,
+Il essaie peut-être de
+se servir des fleurs
+rouges.<NOD<CLRVas-y.<NOD<CLRGrimpe sur la fusée
+et va à la Salle du
+Trône. Vite !<NOD<END
+
+#0400
+<PRI<FLJ1102:0401<MSGÇa crache de l'eau
+à une bonne pression.<NOD<END
+#0401
+<PRI<MSGHey ! On s'en sert, de celui-là !<NOD<END
+
+#0410
+<PRI<FLJ1102:0411<MSGÇa crache de l'eau
+à une bonne pression.<NOD<END
+#0411
+<PRI<MSGHey ! On s'en sert, de celui-là !<NOD<END
+
+#0415
+<PRI<MSGC'est pas en marche.<NOD<FLJ1029:0416<END
+#0416
+<PRI<DNP0415<FL-1028<GIT1028<IT+0028<MSG
+<CMU0010Trouvé =Arroseur cassé =<WAI0160<NOD<RMU<END
+
+#0450
+<PRI<FLJ1040:0451<FL+1040<MSGPas le temps d'aboyer !<NOD<CLROn m'a dit de t'amener
+ceci...<NOD<CLR<SOU0022<CMU0016<GIT1006Obtenu =Capsule de Vie=<WAI0160<NOD<RMU<ML+0005
+Énergie max augmentée de 5 !<NOD<GIT0000<ITJ0015:0451<CLROh, elle m'a dit de te donner
+ça, aussi...<NOD<CLR
+<CMU0010<GIT1015<IT+0015<GIT1015Obtenu =Pot de Vie=<WAI0160<NOD<GIT0000<RMU<EVE0451
+<END
+#0451
+<PRI<MSGAlors tu vas combattre
+le Docteur ? Bonne chance !
+Ma queue frétille pour toi seul !<NOD
+Oh, oui, et dis à Curly que
+je la salue !<NOD<END
+
+#0460
+<PRI<MSG<TURAttention aux Gunfish ! (Note:
+Ceux qui s'en servent de plateformes
+le font à leurs risques et périls.)<NOD<END
+
+#0480
+<KEY<HMC
+<FON0481:0016
+<MNP0481:0034:0118:0000
+<ANP0481:0020:0002<WAI0320
+<ANP0481:0000:0000
+<MOV0073:0110<SMC<MYB0002<FOM0016<END
+#0481
+
+
+#0500
+<PRI<SOU0022<DNP0500<CMU0016
+<MSG<GIT1006Trouvé =Capsule de Vie=<WAI0160<NOD<RMU<ML+0004
+Énergie max augmentée de 4!<NOD<END
+
+
+#1200
+<KEY<ANP1200:0020:0000
+<FON1200:0016<FAI0001
+<WAI0100<FAO0001<FMU<WAI0200<TRA0091:0100:0001:0001
+
+
+

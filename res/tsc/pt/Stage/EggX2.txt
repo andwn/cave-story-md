@@ -1,0 +1,101 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0049:0094:0290:0008
+
+#0110
+<KEY<FLJ0940:0111<MSGSentes um vento frio
+a entrar...<NOD<END
+#0111
+<KEY<FAO0002<TRA0053:0092:0004:0165
+
+#0110
+
+#0400
+
+#0500
+<KEY<MSGAparecem palavras no ecrã.<NOD<CLR<TURCHOCADO COM SUCCESSO<NOD<FLJ0941:0000<CLO
+<FL+0941
+<WAI0020<CMU0000<MSGQuem está aí??<MYD0002<NOD<CLO
+<WAI0050<CNP0400:0055:0000
+<WAI0010<ANP0400:0003:0000
+<WAI0048<ANP0400:0000:0000
+<CMU0014<MSG<FAC0010Ah, és tu.<NOD<CLREstou contente por
+te ver bem.<NOD
+Eu sou o único
+que estou aqui.<NOD<CLRDepois de teres ido para
+a Zona da Areia,<NOD
+nós tentamos arranjar uma
+maneira de fugir.<NOD<CLRFoi nessa
+altura que a
+Misery apareceu.<NOD
+A Sue foi levada com ela,<NOD
+e não sei do professor...<NOD<CLR.....<NOD<CLRSuponho que o Doutor
+conseguiu obter
+as sementes.<NOD<CLROh,<NOD não, não, não te estou
+a culpar...<NOD<ANP0400:0000:0002
+A victória do Doutor
+já estava assegurada,<NOD
+desde o momento
+em que ele pôs as mãos
+na Coroa.<NOD<CLRÉ apenas uma questão de
+tempo até que o exército
+dele fique completo...<NOD<CLRDepois disso, temo que
+nem tu o consigas travar.<NOD<CLO<FAC0000
+<WAI0010<ANP0400:0003:0002
+<WAI0016<ANP0400:0000:0002
+<MSG<FAC0010Não temos escolha
+senão fugir...<NOD<CLRPensei que pudéssemos
+escapar se tivéssemos
+um Dragão do Céu.<NOD
+...Foi por isso
+que vim para aqui.<NOD<CLRE agora, o meu dragão
+chocou.<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000<WAI0100
+<MSG<FAC0010Queres fugir comigo?<YNJ0501<FL+0960<CLR<ANP0400:0000:0002Sim, não há outra hipótese.<NOD
+Fizemos tudo o que pudemos.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+
+
+#0501
+<KEY<WAI0020<ANP0400:0000:0002
+<MSG<FAC0010Eu compreendo...<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000
+<WAI0010<ANP0400:0005:0000
+<MSG<FAC0010Sabes,<NOD existe outra maneira
+de fazer com que os Mimigas
+regressem ao normal.<NOD<CLRPodias destruir o
+núcleo da ilha.<NOD
+Porém, se fizesses isso,
+a ilha provavelmente
+iria cair.<NOD
+Uma escolha perigosa,
+não achas?<NOD<WAI0050<ANP0400:0000:0000<CLRBom, seja como for,
+nem sabemos onde
+está o núcleo...<NOD<CLRSe quiseres tentar, eu
+posso esperar.<NOD<CLRMas lembra-te, se as coisas
+ficarem piores,<NOD
+posso ter que
+fugir sem ti...<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+<END
+
+#0502

@@ -1,0 +1,98 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG
+<CMU0010Caught by Kazuma!<WAI0160<CLR<FAC0010Phew...<NOD<CLRI never thought you'd
+actually pull it off.<NOD<CLRBlowing up the core...<NOD<CLRWell, now the world ought
+to be free from any future
+incarnations of the Doctor.<NOD
+Peace has been preserved!<NOD<CLR
+Now, let's go home.<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Phew!<NOD<CLRThat...was close.<NOD<CLR<FAC0019I thought I was scrap
+metal this time for
+sure...<NOD
+Looks like we owe
+you another one.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nah, don't thank me.<NOD
+I was just doing what
+Misery asked me to do.<NOD<CLR<FAC0025Misery? You mean,
+that witch?<NOD<CLR
+<FAC0005That's right.<NOD<CLR<FAC0025I thought she hated
+our guts.<NOD
+Heck, I thought YOU
+hated our guts...<NOD<CLR<FAC0005You beat Ballos, right?<NOD<CLRWhen you did that,
+it lifted our curse.<NOD
+Now neither of us has
+to take orders from
+anyone!<NOD<CLR<FAC0019I thought you guys were
+just jerks,<NOD
+but I guess it was all
+the Crown's fault!<NOD<CLR<FAC0005Well, you reap what
+you sow.<NOD
+After all, Misery's the
+one who had him make the
+crown in the first place.<NOD<CLR<FAC0025Huh.<NOD
+You don't say.<NOD<CLR<FAC0005I do say.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005So!<NOD<CLR
+<FAC0025So?<NOD<CLR<FAC0005So what are you going
+to do now?<NOD
+I can take you anywhere
+you like.<NOD<CLR<FAC0019Hmm, you're right...<NOD<CLROur mission is over,
+and now I just want to
+live out my days<NOD
+somewhere where I can
+relax and enjoy a
+beautiful view...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Uh, you know...<NOD<CLR
+<FAC0025Hm?<NOD<CLR<FAC0005...Would it be all right
+if I joined you there?<NOD<CLR
+<FAC0019Sure!<NOD
+Let's live the three
+of us together!<NOD<CLR
+<FAC0014Really?!<NOD<CLR<FAC0019I'll let you pick the
+spot.<NOD
+Just find us a good
+place, okay?<NOD<CLR
+<FAC0014You got it!!<NOD<CLRAll right then,
+<ANP0230:0020:0002h<WAI0010a<WAI0010n<WAI0010g<WAI0010 <WAI0010o<WAI0010n<WAI0010 <WAI0010t<WAI0010i<WAI0010g<WAI0010h<WAI0010t<WAI0010!!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...Aren't you forgetting
+something?<NOD<TRA0000:0100:0001:0015
+
+#0200
+#0210
+#0220
+#0230
+#0240
+

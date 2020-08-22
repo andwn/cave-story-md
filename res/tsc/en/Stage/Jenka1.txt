@@ -1,0 +1,188 @@
+
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+#0200
+<KEY
+<ITJ0014:0201
+<FLJ0594:0214
+<FLJ0593:0213
+<FLJ0592:0212
+<FLJ0591:0211
+<FLJ0590:0210
+<KEY<MSG<FAC0013Who are you...?<NOD
+I've never seen you
+around before.<NOD<END
+
+#0201
+<IT-0014
+<FLJ0594:0224
+<FLJ0593:0223
+<FLJ0592:0222
+<FLJ0591:0221
+<FLJ0590:0220
+<KEY<MSG<FAC0013Oh, my!<NOD<CLR<GIT1014My precious puppy!<NOD<CLR
+<GIT0000<FAC0000Gave her the =Puppy=.<NOD<CLR<CNP0300:0130:0000<DNP0401<FL-0274<FAC0013You brought him back,
+I take it?<NOD
+Many thanks.<NOD<CLRWhat's that?<NOD
+=Red flowers=?<NOD<FAC0000<CLR<CMU0000<MSGHuzzah!<NOD<CLO
+<CNP0400:0009:0000<WAI0010<MYD0002<CNP0300:0132:0002<ANP0300:0100:0002<WAI0120<CMU0011
+<CNP0400:0012:0000
+<MSG<FAC0005How's it going, Jenka?<NOD<CLR<FAC0013Ah, Balrog.<NOD<ANP0300:0120:0002
+You're doing well, I see.<NOD
+And how is my halfwit of
+a daughter faring?<NOD<CLR<FAC0014Hee-hee-hee!<NOD
+Halfwit? You mean Misery?<NOD
+She's fine, just fine.<NOD<CLRA new master has appeared.<NOD
+This time, the earth
+will be ours!<NOD<CLR<FAC0013So once again you two
+plot to...<NOD<CLR<FAC0005I'm not here to give
+you any trouble.<NOD
+I just came to collect the
+key to the storehouse.<NOD<CLRThe one where the flower
+seeds are kept!<NOD<CLR<FAC0013.....<NOD<CLRMy...<NOD
+What on earth are you
+talking about?<NOD<CLR
+<ANP0400:0030:0000<FAC0014Hoho!<NOD<CLRPlaying the fool, are
+you?!<NOD<CLR<FAC0005.....<NOD<CLRI see how it is.<NOD
+So you've chosen to
+betray us.<NOD<CLO<CMU0000
+<WAI0050<FAC0005<MSGYou'll regret it.<NOD<CLO
+<FAC0000<ANP0400:0010:0000<WAI0200<CMU0019
+<MSG<FAC0013<CNP0300:0130:0000A new master...<NOD
+That good-for-nothing.<NOD<MYD0200<CLR.....<NOD<CLRThere are actually four
+others.<NOD
+Four more puppies
+of mine...<NOD<CLRAnd my hips are so weak.<NOD<CLRCould this old woman
+trouble you to find her
+other puppies for her?<NOD<FL+0590<END
+
+#0210
+<KEY<MSG<FAC0013Still four left...<NOD
+Could this old woman
+trouble you to find her
+other puppies for her?<NOD<END
+
+#0211
+<KEY<MSG<FAC0013Three more left.<NOD
+Good luck.<NOD<END
+
+#0212
+<KEY<MSG<FAC0013I think my dearies
+have taken a liking
+to you.<NOD<CLRTwo more to go...<NOD<END
+
+#0213
+<KEY<MSG<FAC0013One more to go...<NOD
+I really wish you would
+abandon the red flowers.<NOD<END
+
+
+#0220
+<KEY<MSG<FAC0013My my, how quick.<NOD<CLR<GIT1014That is indeed one of
+my dear puppies.<NOD<CLR
+<GIT0000<CNP0301:0130:0000<DNP0401<FAC0000Gave her the =Puppy=.<NOD<CLR<FL-0274<FAC0013Hmmm...<NOD
+You're a soldier from
+the surface, aren't you.<NOD<CLR.....<NOD<CLRIt wasn't long ago that
+hundreds of robots like
+you came to this island.<NOD
+Countless Mimigas perished
+at their hands.<NOD
+As did the humans who
+tried to protect them.<NOD<CLRCornered, the Mimigas
+finally ingested the
+forbidden red flowers,<NOD
+and in their murderous
+rage began to strike
+back against the robots.<NOD<CLRHad the red flowers not
+existed, the Mimigas might
+have vanished entirely<NOD
+from the island...<NOD<CLRThree more left.<NODGood luck.<NOD<FL+0591<END
+
+#0221
+<KEY<MSG<FAC0013Oooh.<NOD<CLR<GIT1014Yes, yes.<NOD
+That is certainly one of
+my darling puppies.<NOD<CLR
+<GIT0000<CNP0302:0130:0000<DNP0401<FAC0000Gave her the =Puppy=.<NOD<CLR<FL-0274<FAC0013Thank you kindly.
+We're up to three now...<NOD<CLR.....<NOD<CLRHave you ever seen a
+frenzied Mimiga?<NOD<CLRThe cornered Mimigas hoped
+that the red flowers
+would grant them strength.<NOD
+They ate them, and then
+they fought the robots.<NOD<CLR
+However...<NOD<CLRDo you know what
+happened to them
+afterwards?<NOD<CLR.....<NOD<CLRIt is a sad tale...<NOD
+The enraged Mimigas,
+likely unable to control
+their own actions,<NOD
+disappeared without a
+trace.<NOD
+If rumors are to be
+trusted, they descended
+to the surface,<NOD
+where humans live.<NOD<CLRAn army of ferocious
+Mimigas loosed upon
+the earth...<NOD
+If that were true...<NOD<CLRDo you understand now?<NOD
+Do you understand how
+dangerous the red
+flowers are?<NOD<CLR.....<NOD<CLRTwo more to go...<NOD<FL+0592<END
+
+#0222
+<KEY<MSG<FAC0013They seem to just
+adore you.<NOD
+My puppies don't waste
+their affection on
+bad sorts.<NOD<CLR<GIT1014Many thanks...<NOD<CLR
+<GIT0000<FAC0000Gave her the =Puppy=.<NOD<CLR<CNP0303:0130:0000<DNP0401<FL-0274
+<FAC0013.....<NOD<CLRYou're after the
+storehouse key, aren't
+you.<NOD
+Wherein lie the seeds to
+the red flowers...<NOD<CLRI don't care who you
+are, you're not getting
+the key.<NOD
+To open the storehouse
+would invite that same
+tragedy all over again...<NOD<CLROne, two, three...<NOD<CLRThere's only one
+left.<NOD<FL+0593<END
+
+#0300
+<FLJ0590:0310<END
+#0301
+<FLJ0591:0311<END
+#0302
+<FLJ0592:0312<END
+#0303
+<FLJ0593:0313<END
+#0304
+<FLJ0594:0314<END
+
+#0310
+<KEY<MSGArf!<NOD<END
+#0311
+<KEY<MSGArf arf!<NOD<END
+#0312
+<KEY<MSGArf arf arf!<NOD<END
+#0313
+<KEY<MSGBooop.<NOD<END
+#0314
+<KEY<MSGFive!<NOD<END
+
+
+#0400
+#0401
+

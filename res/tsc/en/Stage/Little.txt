@@ -1,0 +1,57 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0053:0092:0002:0173
+
+
+
+#0200
+<PRI
+<FLJ1373:0206
+<FLJ1372:0202
+<MSGAh, it's good to be back.<NOD<CLROho,<NOD if that isn't a fine-
+looking blade you've got
+there.<NOD
+Care to trade it for my fabulous
+gun?<YNJ0201<FL+1372<CLR
+<TAM0009:0012:0000<GIT0009Gave him the =Blade=.<NOD<CLR
+<CMU0010<GIT0012Got the =Nemesis=!<WAI0160<NOD<RMU<END
+#0201
+<PRI<MSGReally? Too bad.<NOD<END
+
+#0202
+<PRI<MSGSo, how do you like my fabulous
+gun? It treating you well?<YNJ0203<CLRAha!<NOD
+Glad to hear it.<NOD<END
+#0203
+<PRI<FL-1372<MSG
+All right, I'll give your sword
+back.<NOD
+But you've got to give me my
+fabulous gun back as well.<NOD<TAM0012:0009:0000<CLR
+<GIT0012Gave him the =Nemesis=.<NOD<CLR
+<CMU0010<GIT0009Got back the =Blade=!<WAI0160<NOD<RMU<END
+
+#0210
+<PRI<FLJ1370:0211<FL+1371
+<MSGNow where did that man run
+off to...<NOD<CLRYou haven't seen my husband,
+have you?<NOD<END
+#0211
+<PRI<MSGThank you for your help.<NOD<END
+#0220
+<PRI<MSGWho're you, mister?<NOD<END
+
+#0500
+<KEY<CNP0250:<FAI0000<END
+

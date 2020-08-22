@@ -1,7 +1,6 @@
 #include "common.h"
-
+#include "bank_data.h"
 #include "resources.h"
-
 #include "tables.h"
 
 const tileset_info_def tileset_info[TILESET_COUNT] = {

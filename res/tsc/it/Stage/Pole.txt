@@ -1,0 +1,105 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGHai aperto lo scrigno.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010Hai trovato la =Stella Polare=!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSG
+Da qualche parte, una 
+trasmissione...<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGVuoto.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*ronf*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGNon è che hai visto la pistola 
+che ho costruito, vero?<NOD
+Qualcuno è entrato e se l'è presa
+mentre dormivo!<NOD
+Diamine, sapevo che avrei dovuto
+mettermela in tasca mentre
+mi stavo appisolando...<NOD<AMJ0002:0302<CLRNon era neanche finita!<NOD
+Con un altro po' di lavoro sarei
+riuscito a farne un'arma
+veramente spaventosa.<NOD<CLR
+Ah, in che mondo viviamo, in 
+che mondo...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+HEY!!<NOD<CLRNon è QUELLA la mia pistola?!<NOD<CLR<GIT0002Che ci fa in mano tua?!
+Non l'ho fatta per te!<NOD<CLRRidammela!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+Ti ha preso la =Stella Polare=...<NOD<CLRBah!<NOD
+Vedo che ti sei dato da fare
+con la mia pistola.<NOD<CLR
+.....<NOD<CLRSai,<NOD
+Ho sempre creduto che ciascuno
+dovrebbe costruirsi le proprie
+armi.<NOD
+Colui che combatte con armi
+altrui e pensa di stare usando la 
+propria forza è un avventato.<NOD
+Colui che dà la colpa ai suoi 
+strumenti per la forza che 
+lui stesso non può ottenere 
+è uno sciocco.<NOD<CLR
+<CMU0008Comunque...<WAI0050<CLRVedere davanti ai miei occhi 
+questa pistola usata in 
+maniera così intensa, mi fa 
+venire le lacrime agli occhi.<NOD
+Il solo pensiero che utilizzarla 
+in questo modo sia stato 
+possibile ancor prima che fosse
+del tutto completata...<NOD<CLR
+Hahhh...<NOD<CLRChiedo venia per il mio brontolio.<NOD<CLR
+Puoi tenertela, la pistola.<NOD<CMU0000<FAO0001
+Dopo che l'avrò finita, ovviamente.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013
+La =Stella Polare= 
+diventa 
+lo =Spur=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGIn questo mondo, esiste 
+un equilibrio tra coloro
+che creano e coloro che utilizzano.<NOD<CLRLo sapevo già, naturalmente, ma
+con il tuo aiuto l'ho potuto
+provare di persona.<NOD
+D'ora in poi, giuro di dedicarmi
+interamente alla creazione.<NOD
+Il duro lavoro diventa pura 
+gioia quando sai che ci sono 
+coloro che apprezzano il tuo
+lavoro fino in fondo.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Fuori."<NOD<END
+
+

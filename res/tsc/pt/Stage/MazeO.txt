@@ -1,0 +1,125 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGO robot misterioso,
+o Monstro X...<NOD
+Podes atacá-lo quando ele
+abrir a escotilha.<NOD<END
+
+
+#0300
+<KEY<MSGEu sou um médico.<NOD
+Deixa-me recarregar a tua saúde.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGNão, não, não custa nada,
+não te preocupes.<NOD<CLREm troca, porém, queria que
+fizesses algo.<NOD<CLRHá uma velha clínica perto daqui.<NOD
+Vai ver se ainda há 
+algum medicamento lá.<NOD<CLR<GIT1017<IT+0017Recebeste a =Chave da Clínica=.<NOD<GIT0000<END
+#0301
+<KEY<MSGA clínica é aqui perto.<NOD
+Procura lá algo que se possa usar.<NOD<END
+#0302
+<KEY<MSG<IT-0016<FL+0702<GIT1016Entregaste o =Cura-Tudo=.<NOD<CLR<GIT0000Oh, encontraste!<NOD
+Muito obrigado.<NOD
+Deixa-me tratar do resto.<NOD<END
+#0303
+<KEY<MSGMuito obrigado.<NOD
+Deixa-me tratar do resto.<NOD<END
+#0304
+<KEY<MSGParece que o medicamento
+está a funcionar.<NOD
+Daqui a nada ela estará
+pronta para a acção.<NOD
+Tudo graças a ti, claro.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGEu sou uma enfermeira.<NOD
+Eu costumava trabalhar na clínica
+velha aqui perto,<NOD
+mas foi assombrada por fantasmas,
+portanto fugi para aqui.<NOD<END
+#0311
+<KEY<MSGÉs amigo dela?<NOD
+Se te preocupas com ela,
+aconcelho-te a fazeres
+o que o médico diz.<NOD<END
+#0312
+<KEY<MSGBom trabalho.<NOD
+Não viste nenhuns fantasmas,
+pois não?<NOD<END
+#0313
+<KEY<MSGOh, vieste ver como
+está aquela rapariga?<NOD<CLREla foi indo para
+a "Câmara do Pedregulho".<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019Oh, hey!<NOD<CLRJá não te vejo
+há um tempo.<NOD
+'Tás com bom aspecto!<NOD<CLRAquela bruxa também te
+atirou para aqui, não foi?<NOD
+Foi como a mim!<NOD<CLR<FAC0020Com que então
+não conseguiste
+derrotá-los...<NOD
+Eu até tinha esperança
+em ti, mas...<NOD<CLRE eu, eu tentei.
+Oh, eu tentei.<NOD
+E olha no que
+resultou.<NOD<CLR.....<NOD<CLRE tudo isto para nada.<NOD
+No final, não consegui
+salvar nenhuma
+das crianças.<NOD
+No estado em que estou
+agora, não saio daqui
+tão cedo...<NOD<END
+#0321
+<KEY<MSG<FAC0020Sobrevivi, sim, mas
+e agora o quê?<NOD<CLRAcho que vou ficar
+aqui e apodrecer...<NOD<END
+#0322
+<KEY<MSG<FAC0020Este é o lendário
+Labirinto.<NOD
+Não sei quem o fez, mas
+aparentemente, é a
+lixeira da ilha.<NOD<CLRSó há uma saída.<NOD
+Tens que passar pela
+pedra enorme na Câmara
+do Pedregulho.<NOD<CLREu iria contigo,<NOD
+mas no estado em que estou,
+só ficaria no caminho...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGAbriste a arca do tesouro.<NOD<GIT1019<IT+0019<EQ+0004<CLR<CMU0010Encontraste a =Barreira de Armas=!<WAI0160<NOD<RMU<END

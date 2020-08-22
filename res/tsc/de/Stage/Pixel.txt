@@ -1,0 +1,112 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURDa steht etwas auf dem Monitor.<NOD<CLR08. August 2004:
+Frau hat Kind geboren.<NOD<END
+
+#0201
+<KEY<MSGDa steht etwas auf dem Monitor.<NOD<CLR<TURMach doch mal Pause?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGDa steht etwas auf dem Monitor.<NOD<CLR<TURÜbrigens, alles was ich gelernt
+habe schrieb ich meistens
+in mein Notizbuch auf...<NOD<END
+
+#0203
+<KEY<MSGDa steht etwas auf dem Monitor.<NOD<CLR<TURMeine Hoffnung ist mit dir.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGNichts interessantes
+zu finden...<NOD<END
+
+#0221
+<KEY<MSGEin ganz verstaubtes
+Notizbuch...<NOD<FLJ1441:0223<FLJ1445:0222<END
+
+#0222
+<KEY<MSGWillst du das Notizbuch öffnen?<YNJ0000<FL+1441<CLR<TURLand-entwickelte Roboter kennen
+ihre Grenzen im Unterwasser-
+Betrieb.<NOD<CLRWenn sie zu lange im Wasser bleiben,<NOD<CLRschalten sie in den automatischen
+Standby-Modus, um einen Kurzschluss
+zu verhindern.<NOD<CLRDie folgende Seiten erklären die
+Pflege-Methode,<NOD<CLRum einen
+ertrunkenen Roboter zu retten.<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Du hast gelernt wie man
+ertrunkene Roboter rettet!<WAI0160<NOD<RMU<CLR<TURWenn der Roboter via der beschrieben
+Methode entleert wurde,<NOD<CLRwird das System den automatischen
+Neustart-Prozess beginnen.<WAI0030<NOD<END
+#0223
+<KEY<MSGSonst steht hier nichts
+nützliches mehr...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+
+#0251
+<KEY<MSGWillst du dich ausruhen?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR...<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+
+#0252
+<KEY<MSGSie zuckt nicht einmal,
+aber sie scheint noch zu leben.<NOD<END
+
+#0253
+<KEY<MSGMöchtest du von Curly das Wasser
+auspumpen?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020Nngh...<NOD<CLR<CMU0014<FAC0025...<NOD<CLR<ANP0260:0001:0002<FAC0019DU LEBST NOCH!<NOD<CLRAach, bin ich froh...!<NOD<CLR<FAC0025Ich dachte schon wir wären
+erledigt!<NOD
+Als es dich erwischt hat,
+wusste ich nicht mehr was
+ich tun sollte...<NOD<CLRAber sieht so aus,<NOD als
+ob meine Sauerstoff-
+Flasche anständig
+funktioniert hat.<NOD<CLR<FAC0020Nh...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGSie schläft tief und fest...<NOD
+<END
+
+#0254
+<KEY<MSGSie braucht wohl noch eine Weile
+um komplett neuzustarten.<NOD<FL+1443<END
+
+#0255
+<KEY<MSGWillst du sie hier lassen?<YNJ0256<END
+
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+
+#0257
+<KEY<MSGDas Bett ist pflotschnass.<NOD<END
+
+#0260

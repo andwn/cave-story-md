@@ -1,0 +1,107 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGHace mucho, mucho tiempo, vivía
+una bruja en esta isla.<NOD
+Ella fue la que construyó este
+laberinto para mantenernos a
+nosotros, los Gaudis, encerrados.<NOD<END
+#0210
+<PRI<MSGHay otra salida de este laberinto.
+Pero el camino está bloqueado por
+una gran roca.<NOD<CLRY mover esa roca sólo sería el
+primero de tus problemas...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGAah... Tengo MUCHAS ganas de
+comer carne de Mimiga...<NOD<CLR*sniff sniff*<NOD<CLR
+Hueles un poco a Mimiga.<NOD<END
+#0221
+<PRI<MSGJa-ja-jah...<NOD<CLREres bastante gracioso.<NOD<END
+#0230
+<PRI<MSG¿Alguna vez has visto el exterior
+de esta isla?<NOD<CLREsta isla flota muy alto en los
+cielos.<NOD
+El cómo consigue flotar...<NOD
+Ese secreto se encuentra dentro de
+este laberinto.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGEse teletransportador de ahí 
+funcionaba hasta hace un rato.<NOD
+Por supuesto, sólo llevaba a
+otra parte del laberinto...<NOD<END
+#0241
+<MSGEl teletransportador parece
+funcionar ahora.<NOD<CLRPor supuesto, sólo lleva a
+otra parte del laberinto, ¿no?<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGUn teletransportador.<NOD<CLRNo tiene energía.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGMuy buenas.<NOD<CLR¡Ésta es la Tienda del Laberinto!<NOD
+Pero, por desgracia, nos
+saquearon hace un rato,<NOD
+y no tenemos nada que vender
+por ahora.<NOD
+Lo sentimos mucho...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSG¿Hm?<NOD<CLREy, según veo llevas unas
+armas muy especiales.<NOD<CLRUna Estrella Polar y una
+Bola de Fuego, si no me equivoco.<NOD<CLR¿Puedo echarles un vistazo?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Entregaste la Estrella Polar.<NOD
+<GIT0003Entregaste la Bola de Fuego.<NOD<GIT0000<CLR
+<SOU0044¡Jojo!<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010¡ =Serpiente= completada !<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*suspiro*<NOD<CLRToma. ¿Qué te parece esto?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008¡Conseguiste la =Turbocarga=!<WAI0160<NOD<RMU<GIT0000<CLRTe lo puedes quedar gratis.<NOD
+De todas formas, no parece que
+lleves dinero encima.<NOD<END
+#0403
+<KEY<MSG<CLR¡Tú te lo pierdes!<NOD<END
+#0404
+<KEY<FL+0721<MSG*suspiro*<NOD<CLRToma. ¿Qué te parece esto?<NOD<CLR<GIT1038<CLR<CMU0010<IT+0038¡Conseguiste la
+=Estrella Caprichosa=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRMe temo que sólo es una
+decoración,<NOD pero ya tienes
+el arma más poderosa, así que
+¿qué más da?<NOD<END
+#0410
+<KEY<MSGLa persona que nos encerró aquí es
+una bruja llamada Jenka.<NOD<CLR...Pero no lo hizo porque nos
+odiara o algo así.<NOD
+Estamos en el laberinto para
+proteger algo.<NOD<CLR...Aunque ya no me acuerdo de
+qué era, pero eso nos da igual.<NOD<END
+

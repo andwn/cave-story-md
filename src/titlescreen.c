@@ -92,7 +92,7 @@ uint8_t titlescreen_main() {
 	}
 	// Release
 	//vdp_puts(VDP_PLAN_A, "Mega Drive Version 0.6.0 2020.07", 4, 26);
-	vdp_tiles_load_from_rom(cfg_language ? TS_J_Title.tiles : TS_Title.tiles, TILE_USERINDEX, TS_Title.numTile);
+	vdp_tiles_load_from_rom(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, TILE_USERINDEX, TS_Title.numTile);
 	vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL0,0,0,0,TILE_USERINDEX),        11,  3, 18, 4, 1);
 	vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL0,0,0,0,TILE_USERINDEX + 18*4), 11, 23, 18, 2, 1);
 	

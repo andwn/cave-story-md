@@ -1,0 +1,38 @@
+
+#0090
+<MNA<CMU0030<FAI0000<END
+#0091
+<MNA<CMU0030<FAI0001<END
+#0092
+<MNA<CMU0030<FAI0002<END
+#0093
+<MNA<CMU0030<FAI0003<END
+#0094
+<MNA<CMU0030<FAI0004<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011<FAO0004<TRA0062:0094:0079:0073
+
+
+#0150
+<KEY<DNP0150<CNP0016:0016:0002<END
+
+
+
+#0200
+<KEY<MSGHai trovato una nota scritta da
+Booster.<NOD
+Vuoi leggerla?<YNJ0000<CLR<TURL'esplorazione dell'interno
+dell'isola sarebbe molto più 
+semplice, credo,<NOD<CLRse avessimo dell'equipaggiamento 
+per facilitare il movimento aereo.<NOD<CLRErgo, ho cominciato
+a lavorare sul "Booster".<NOD<CLRLo sviluppo di questo apparato di volo
+si svolgerà in due fasi,
+versione 0.8 e 2.0.<NOD<CLRLa v0.8 permetterà di stare sospesi 
+in aria per un po'.<NOD<CLRSono sicuro di poter completare la v2.0,
+sempre se riuscirò a vivere abbastanza.<NOD<CLRSembra che sarà un oggetto ancora
+più utile.<NOD<CLO
+<FLJ0161:0000<WAI0150<MS2
+    Se riuscirò a vivere...<WAI0050<NOD<END
+
+

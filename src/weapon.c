@@ -334,7 +334,7 @@ void weapon_fire_missile(Weapon *w) {
 				sound_play(SND_GUN_CLICK, 5);
 				if(!missileEmptyFlag) {
 					missileEmptyFlag = TRUE;
-					entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+					entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
 				}
 				return;
 			}
@@ -399,7 +399,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	} else if(w->maxammo) {
 		if(!missileEmptyFlag) {
 			missileEmptyFlag = TRUE;
-			entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+			entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
 		}
 		sound_play(SND_GUN_CLICK, 5);
 		return;

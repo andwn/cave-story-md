@@ -1,0 +1,97 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGAbriste el cofre.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010¡Conseguiste la =Estrella Polar=!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSGDesde algún lugar,
+una transmisión...<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGVacío.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*ronquido*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSG¿No habrás visto por casualidad la
+pistola que hice?<NOD
+¡Alguien me la robó mientras
+dormía!<NOD
+Maldita sea, debería haberla
+guardado en mi bolsillo antes
+de echarme la siesta...<NOD<AMJ0002:0302<CLR¡Aún no estaba terminada!<NOD
+Un poco más de trabajo y habría
+podido convertirla en un arma
+increíble.<NOD<CLR
+Ah, vaya por Dios...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+¡¡HEY!!<NOD<CLR¡¿No es ÉSA mi pistola?!<NOD<CLR<GIT0002¡¿Qué ESTÁS haciendo con ella?!
+¡No la hice para ti!<NOD<CLR¡Devuélvemela!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+=Estrella Polar= devuelta...<NOD<CLR¡Pah!<NOD
+Veo que le has estado dando
+un buen uso a mi pistola.<NOD<CLR
+.....<NOD<CLR¿Sabes?<NOD
+Siempre he creído que las
+armas que uno usa deben estar
+hechos por uno mismo.<NOD
+Aquél que lucha con el arma de
+otro y considera esa fuerza
+la suya es un necio.<NOD
+Aquél que le echa la culpa a las
+armas por lo que su propio poder
+no puede conseguir es un estúpido.<NOD<CLR
+<CMU0008Sin embargo...<WAI0050<CLRCuando veo ante mí esta arma que
+has usado tan exaustivamente,
+se me saltan las lágrimas.<NOD
+Pensar que has podido darle tal
+uso incluso estando el arma sin
+terminar...<NOD<CLR
+Hahhh...<NOD<CLRTe pido perdón por mi enfado.<NOD<CLRPuedes quedarte el arma.<NOD<CMU0000<FAO0001
+Cuando la haya terminado,
+por supuesto.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013¡La =Estrella Polar= se ha
+convertido en la =Spur=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGEn este mundo, existe un balance
+entre aquellos que son creadores
+y aquellos que son usuarios.<NOD<CLREso ya lo sabía, por supuesto,
+pero necesité tu ayuda para
+comprenderlo.<NOD
+De ahora en adelante, me dedicaré
+exclusivamente a la creación.<NOD
+La labor implicada se convierte en
+placer cuando sabes que hay gente
+que disfruta de tu obra al máximo.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Fuera."<NOD<END
+
+

@@ -1,0 +1,103 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGDu öffnest die Schatzkiste.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010Du hast den =Polar Star= bekommen!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSGIrgendwo schreibt jemand eine
+Nachricht......<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGLeer.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*ZZZZzzzzZZZzzzzz*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGHast du vielleicht die Kanone
+gesehen, die ich erfunden habe?<NOD
+Irgendwer hat sie mir geklaut
+als ich hier ein Nickerchen hielt!<NOD
+Verdammter Mist nochmal! Ich hab
+doch gewusst, ich hätte sie besser
+in meiner Hosentasche aufbewahrt.<NOD<AMJ0002:0302<CLRUnd dabei war sie noch nicht mal
+fertig!<NOD
+Nur noch ein bisschen mehr Arbeit,
+und ich hätte daraus eine
+superstarke Waffe erstellen können.<NOD<CLRAch herrjeh...
+Die Welt kann ganz schön grausam
+sein.<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002HÖÖ!!<NOD<CLRDas ist doch MEINE Kanone!?<NOD<CLR<GIT0002Wieso hast du die denn?!
+Die hab ich doch gar nicht für
+DICH gemacht!
+<NOD<CLRLos, her damit!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMCDer =Polar Star= wurde dir
+weg genommen...
+<NOD<CLRGroßer Gott!<NOD
+Ich glaub, du und das Teil haben
+schon einiges hinter euch, was?<NOD<CLR.....<NOD<CLRAlso weißt du...<NOD
+Ich habe immer geglaubt,<NOD
+dass man Waffen nur für sich
+selbst bauen sollte.<NOD
+Und dass jene, die mit den Waffen
+anderer Kämpfen, nur leichtfertige
+Narren sind.<NOD
+Solche Narren, die nichts mit
+eigener Kraft erreichen können...<NOD
+Und dafür am Ende ihren Werkzeugen
+die Schuld zuschieben.<NOD<CLR<CMU0008Dennoch...<WAI0050<CLRJetzt wo ich sehe, wie viel du
+und diese Waffe schon durchgemacht
+haben, bin ich ganz gerührt...<NOD
+Einfach unglaublich, dass in so
+einer unvollständigen Waffe so
+dermaßen viel Kraft steckte...<NOD<CLRHach...<NOD<CLREntschuldigung,
+ich hatte wirklich kein Recht
+so zu maulen.<NOD<CLRDu darfst meine Waffe behalten.<NOD<CMU0000<FAO0001
+Aber zuerst muss ich sie
+vervollständigen, dann kriegst
+du sie gleich wieder.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013
+Der =Polar Star= wurde umgebaut
+in die =Spur=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGIn dieser Welt gibt es Erbauer
+und Nutzer.<NOD Zwischen den beiden
+muss ein Gleichgewicht bestehen.<NOD<CLRNatürlich wusste ich das schon
+längst... <NODAber dank dir habe ich
+diese Tatsache endlich
+selbst erfahren dürfen.<NOD
+Von heute an werde ich mich einzig
+und allein der Erbauung widmen.<NOD
+Wenn ich weiß, dass meine harte
+Arbeit voll ausgenutzt wird, dann
+kann ich mich auch daran erfreuen.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Raus."<NOD<END
+

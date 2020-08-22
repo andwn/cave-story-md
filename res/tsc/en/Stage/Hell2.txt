@@ -1,0 +1,51 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<MNA<CMU0036<FAI0003<END
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<KEY<MYB0000<WAI0002<PRI<FAI0001<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<PRI<FAO0003<TRA0082:0095:0154:0002
+
+
+#0200
+<PRI<MSG<TUR
+There's no going back...<NOD<END
+
+
+
+#0900
+<DNP0900<SKJ0022:0000<SK+0022
+<PRI<MS3The jealous king had Ballos
+apprehended and thrown into
+prison,<NOD
+where his punishment was
+brutal and cruel.<NOD
+Humans can be terrible
+creatures indeed...<NOD<END
+
+#0901
+<DNP0901<SKJ0023:0000<SK+0023
+<PRI<MS3Under the extreme cruelty of
+the torture, Ballos's magical
+abilities finally ran wild.<NOD
+The king was engulfed in
+the swirl of magic and
+destroyed in an instant.<NOD
+In a single night, the kingdom
+that Ballos so loved was reduced
+to ashen ruins.<NOD<END
+

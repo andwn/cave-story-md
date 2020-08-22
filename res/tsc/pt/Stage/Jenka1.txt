@@ -1,0 +1,177 @@
+
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+#0200
+<KEY
+<ITJ0014:0201
+<FLJ0594:0214
+<FLJ0593:0213
+<FLJ0592:0212
+<FLJ0591:0211
+<FLJ0590:0210
+<KEY<MSG<FAC0013Quem és tu...?<NOD
+Nunca te vi por aqui antes.<NOD<END
+
+#0201
+<IT-0014
+<FLJ0594:0224
+<FLJ0593:0223
+<FLJ0592:0222
+<FLJ0591:0221
+<FLJ0590:0220
+<KEY<MSG<FAC0013Oh, céus!<NOD<CLR<GIT1014O meu precioso cão!<NOD<CLR<GIT0000<FAC0000Deste-lhe o =Cachorro=.<NOD<CLR<CNP0300:0130:0000<DNP0401<FL-0274<FAC0013Trouxeste-o de volta,
+suponho?<NOD
+Muito obrigada.<NOD<CLRDiz lá?<NOD
+=Flores Vermelhas=?<NOD<FAC0000<CLR<CMU0000<MSGHuzzah!<NOD<CLO
+<CNP0400:0009:0000<WAI0010<MYD0002<CNP0300:0132:0002<ANP0300:0100:0002<WAI0120<CMU0011
+<CNP0400:0012:0000
+<MSG<FAC0005Como vai isso, Jenka?<NOD<CLR<FAC0013Ah, Balrog.<NOD<ANP0300:0120:0002
+Vejo que te estás
+a safar bem.<NOD
+E como se está a
+safar a minha
+burra da minha filha?<NOD<CLR<FAC0014Hee-hee-hee!<NOD
+Burra? Queres dizer
+a Misery?<NOD
+Ela está bem.<NOD<CLRTemos um novo mestre.<NOD
+Desta vez, a terra
+será nossa!<NOD<CLR<FAC0013Portanto mais uma vez,
+vocês os dois planeiam...<NOD<CLR<FAC0005Não estou aqui para te
+causar sarilhos.<NOD
+Simplesmente vim aqui para
+buscar a chave do armazém.<NOD<CLRO armazém com as
+sementes das flores!<NOD<CLR<FAC0013.....<NOD<CLRCéus...<NOD
+De que estás tu a falar?<NOD<CLR<ANP0400:0030:0000<FAC0014Hoho!<NOD<CLRA fazeres-te de tola, é?!<NOD<CLR<FAC0005.....<NOD<CLRJá estou a ver como é.<NOD
+Então escolheste trair-nos.<NOD<CLO<CMU0000
+<WAI0050<FAC0005<MSGVais te arrepender.<NOD<CLO
+<FAC0000<ANP0400:0010:0000<WAI0200<CMU0019
+<MSG<FAC0013<CNP0300:0130:0000Um novo mestre...<NOD
+Aquele desgraçado.<NOD<MYD0200<CLR.....<NOD<CLRNa verdade, ainda
+há mais quatro.<NOD
+Mais quatro
+dos meus cães...<NOD<CLRE as minhas ancas
+estão tão fracas.<NOD<CLRSerá que esta idosa
+te poderia chatear...<NOD
+e pedir que fosses
+buscar os outros cães?<NOD<FL+0590<END
+
+#0210
+<KEY<MSG<FAC0013Ainda faltam quatro...<NOD
+Será que esta idosa
+te poderia chatear...<NOD
+e pedir que fosses
+buscar os
+outros cães?<NOD<END
+
+#0211
+<KEY<MSG<FAC0013Faltam mais três.<NOD
+Boa sorte.<NOD<END
+
+#0212
+<KEY<MSG<FAC0013Acho que os meus fofinhos
+gostaram de ti.<NOD<CLRFaltam mais dois...<NOD<END
+
+#0213
+<KEY<MSG<FAC0013Falta mais um...<NOD
+Gostaria mesmo que
+esquecesses as
+flores vermelhas.<NOD<END
+
+
+#0220
+<KEY<MSG<FAC0013Céus, que rápido.<NOD<CLR<GIT1014Esse é de facto um dos meus
+queridos cachorros.<NOD<CLR<GIT0000<CNP0301:0130:0000<DNP0401<FAC0000Deste-lhe o =Cachorro=.<NOD<CLR<FL-0274<FAC0013Hmmm...<NOD
+És um soldado da
+superfície, não és?<NOD<CLR.....<NOD<CLRHá pouco tempo atrás,
+centenas de robots como tu
+vieram para esta ilha.<NOD
+Muitos Mimigas morreram
+à custa deles.<NOD
+Bem assim como os humanos
+que os tentaram proteger.<NOD<CLREncurralados, os Mimigas
+finalmente comeram as
+proibídas flores,<NOD
+e na sua raiva homicida
+começaram a atacar
+os robots.<NOD<CLRSe as flores
+não existissem, os
+Mimigas podiam<NOD
+ter desaparecido
+completamente desta ilha...<NOD<CLRFaltam mais três.<NOD Boa sorte.<NOD<FL+0591<END
+
+#0221
+<KEY<MSG<FAC0013Oooh.<NOD<CLR<GIT1014Sim, sim.<NOD
+É certamente um dos meus
+adorados cachorros.<NOD<CLR<GIT0000<CNP0302:0130:0000<DNP0401<FAC0000Deste-lhe o =Cachorro=.<NOD<CLR<FL-0274<FAC0013Muito obrigada.
+Já estão três...<NOD<CLR.....<NOD<CLRJá viste um Mimiga raivoso?<NOD<CLROs Mimigas encurralados
+esperaram que as flores
+lhes dessem forças.<NOD
+Comeram-nas, e lutaram
+contra os robots. Porém...<NOD<CLRSabes o que lhes
+aconteceu depois disso?<NOD<CLR.....<NOD<CLRÉ uma história triste...<NOD
+Os Mimigas enraivecidos,
+provavelmente incapazes de
+controlar as acções,<NOD
+desapareceram sem
+deixar rasto.<NOD
+Se se pode confiar nos
+rumores, eles desceram
+para a superfície,<NOD
+onde vivem os humanos.<NOD<CLRUm exército de
+Mimigas ferozes
+à solta na terra...<NOD
+Se isso é verdade...<NOD<CLREntendes agora?<NOD
+Entendes o quão perigosas
+são as flores vermelhas?<NOD<CLR.....<NOD<CLRFaltam mais dois...<NOD<FL+0592<END
+
+#0222
+<KEY<MSG<FAC0013Parece que eles te adoram.<NOD
+Os meus cachorros não
+desperdiçariam os gostos
+em gente má.<NOD<CLR<GIT1014Muito obrigada...<NOD<CLR<GIT0000<FAC0000Deste-lhe o =Cachorro=.<NOD<CLR<CNP0303:0130:0000<DNP0401<FL-0274<FAC0013.....<NOD<CLRTu queres a chave do
+armazém, não queres?<NOD
+Lá dentro tem sementes de
+flores vermelhas...<NOD<CLRNão quero saber quem és,
+não te vou dar a chave.<NOD
+Se se abrisse o armazém,
+a mesma trágedia poderia
+repetir-se de novo...<NOD<CLRUm, dois, três...<NOD<CLRSó falta um.<NOD<FL+0593<END
+
+#0300
+<FLJ0590:0310<END
+#0301
+<FLJ0591:0311<END
+#0302
+<FLJ0592:0312<END
+#0303
+<FLJ0593:0313<END
+#0304
+<FLJ0594:0314<END
+
+#0310
+<KEY<MSGAu!<NOD<END
+#0311
+<KEY<MSGAu au!<NOD<END
+#0312
+<KEY<MSGAu au au!<NOD<END
+#0313
+<KEY<MSGBooop.<NOD<END
+#0314
+<KEY<MSGCinco!<NOD<END
+
+
+#0400
+#0401

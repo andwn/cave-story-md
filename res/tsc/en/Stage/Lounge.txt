@@ -1,0 +1,98 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0002<TRA0056:0092:0024:0082
+
+#0200
+<KEY
+<FLJ1020:0201
+<EVE0299
+
+#0201
+<KEY
+<FLJ1121:0203
+<ITJ0028:0202
+<MSGThese are sprinklers.<NOD
+They break all the time, you see.<NOD
+So we've always gotta have lots
+of new ones ready.<NOD<END
+
+#0202
+<KEY<MSG<FL+1121Another one...?<NOD<CLR<GIT1028<IT-0028Handed over the =Broken
+Sprinkler=.<NOD<GIT0000
+<KEY<MSGBe nice to this one.<NOD<DNP0280<GIT1029<IT+0029<CLR
+<CMU0010Got the =Sprinkler=.<WAI0160<NOD<RMU<END
+
+#0203
+<KEY<MSGI hear they're almost done
+growing the last seed!<NOD
+Looks like we had just enough
+sprinklers...<NOD<END
+
+
+#0210
+<KEY
+<FLJ1033:0212
+<FLJ1020:0211
+<EVE0299
+
+#0211
+<MSGIt's true that robots from
+the surface have attacked
+this island in the past.<NOD
+And I know many of us were
+killed...<NOD
+But some among those robots
+understood speech.<NOD
+I believe they, too, had souls...<NOD<END
+
+#0212
+<MSGCurse that Doctor!<NOD<CLRDragging that poor young child
+off with him!<NOD
+Oh, if only I were but a bit
+younger...<NOD
+Such a shame...<NOD<END
+
+#0220
+<KEY<FLJ1020:0221
+<EVE0299
+#0221
+<MSGI don't believe a word that
+Doctor says!<NOD<CLRRobots? Nyah!<NOD
+Like that's supposed to scare me.<NOD<END
+
+#0230
+<KEY<FLJ1020:0231
+<EVE0299
+#0231
+<MSGI'm so exhausted...<NOD<END
+
+#0250
+<KEY<MYB0000<MSGOh, hey.<NOD<CLRHaven't we met before?<NOD
+Yeah, back at the Mimiga
+village.<NOD
+Someone called "Misery" snatched
+me up and brought me here.<NOD
+But man, I hate farming.<NOD<CLRI was just heading out to go
+fishing for a change of pace.<NOD<CLRDo you like to fish?<NOD
+Well, see you around later.<NOD<CLO
+<ANP0250:0010:0002<WAI0030<MYD0002<WAI0080
+<ANP0250:0000:0002<WAI0020
+<ANP0250:0020:0002<ANP0100:0000:0002<SOU0011<WAI0020
+<DNP0250<ANP0100:0000:0000<SOU0011<FL+1120<FL+1021<END
+
+
+#0280
+#0299
+<PRI<MSG.....<NOD<END
+

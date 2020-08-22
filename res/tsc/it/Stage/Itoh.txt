@@ -1,0 +1,86 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<KEY<FLJ1000:0095<MNA<CMU0008<FAI0004<EVE0200
+#0095
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0053:0094:0075:0005
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0118:0083
+
+#0200
+<KEY<FL+1000<FL+1025<FL+1038<MYD0002<WAI0050
+<ANP0400:0010:0000<MSG
+Uwah!<NOD<CLO
+<ANP0400:0020:0000<WAI0050<END
+
+#0400
+<KEY
+<FLJ1003:0404
+<FLJ1102:0403
+<FLJ1002:0402
+<FLJ1001:0401<FL+1001<FL+1038
+<ANP0400:0010:0000
+<MSGEyaaah!!<MYB0002<NOD<CLRNon uccidermi!<NOD
+Sono umano! Sono soltanto
+stato mutato in un Mimiga
+per magia! Sono umano!<NOD<CLRHuh?<NOD<CLR.....<NOD<CLR<ANP0400:0000:0000<FAC0028Cos'è?
+Non sei uno di quei
+robot killer?<NOD
+Beh, mi hai fatto saltare
+in aria, venendo fuori
+così all'improvviso!<NOD<CLRNon è che sei il
+"salvatore" per caso?<NOD<END
+
+
+#0401
+<KEY<FL+1002
+<MSG<FAC0028Io sono Ito, uno
+degli umani approdati su 
+quest'isola per fini di 
+ricerca.<NOD
+Quella strega di Misery mi
+ha trasformato così...<NOD
+Sono riuscito a fuggire,
+ma... guardami.<NOD<CLREd ora sono pure 
+bloccato qui!<NOD<CLRTu ti sei arrampicato da
+fuori, vero?<NOD
+Io sono un ingegnere
+di considerevole talento,<NOD
+ma ho una paralizzante 
+fobia delle altezze...<NOD<CLROh, povero me, me tapino...<NOD<CLRNon sarei mai dovuto
+venire su quest'isola 
+a prescindere.<NOD<END
+
+#0402
+<KEY<MSG<FAC0028No, no, sicuramente
+non ti servirà a niente 
+l'aiuto di un 
+piccolo, patetico 
+uomo sperduto.<NOD<END
+
+
+#0403
+<KEY<MSG<FL+1003<FAC0028Itoh?<NOD Si, sono io.<NOD<CLRQuello cos'è?<NOD
+Sakamoto sta lavorando su
+un razzo?<NOD<CLRQuindi è ancora viva...<NOD
+Una donna forte, quella.<NOD
+Non come me, questo 
+è sicuro...<NOD<CLRBenone allora.<NOD
+Prendi questo.<NOD<FAC0000<GIT1027<IT+0027<CLR
+<CMU0010Hai ricevuto il =Controllore=.<WAI0160<NOD<RMU
+<CLR<FAC0028Credo che sia questo 
+quello di cui ha bisogno.<NOD<GIT0000<EVE0404
+#0404
+<KEY<MSG<FAC0028Porta i miei rispetti alla
+Sig.ra Sakamoto.<NOD<END
+

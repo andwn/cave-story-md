@@ -1,0 +1,139 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGIl robot misterioso,
+il Mostro X...<NOD
+La tua unica chance per
+attaccarlo è quando
+gli si apre il boccaporto.<NOD<END
+
+
+#0300
+<KEY<MSGIo sono un medico.<NOD
+Vieni, lascia che ti ripristini la salute.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGNo, no, no è gratis. 
+Non preoccuparti.<NOD<CLRIn cambio, però, c'è un favore
+che vorrei chiederti.<NOD<CLRDa queste parti c'è una vecchia
+clinica.<NOD
+Vai là e vedi se sono
+rimaste delle medicine.<NOD<CLR
+<GIT1017<IT+0017Ti ha dato la 
+=Chiave della Clinica=.<NOD<GIT0000<END
+#0301
+<KEY<MSGLa clinica non è molto lontana.<NOD
+Cerca qualche medicina che
+sembri utilizzabile.<NOD<END
+#0302
+<KEY<MSG<IT-0016<FL+0702
+<GIT1016Gli hai dato la pillola 
+=Cura-Tutto=.<NOD<CLR<GIT0000Oh, l'hai trovata!<NOD
+Mille grazie.<NOD
+Al resto ci penso io.<NOD<END
+#0303
+<KEY<MSGMille grazie.<NOD
+Al resto ci penso io.<NOD<END
+#0304
+<KEY<MSGSembra che la medicina stia
+funzionando.<NOD
+Sarà sana e pronta per l'azione
+in men che non si dica.<NOD
+Tutto grazie a te, naturalmente.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGSono un'infermiera.<NOD
+Prima lavoravo nella
+clinica vicina,<NOD
+ma è stata infestata dai fantasmi,
+quindi sono scappata qui.<NOD<END
+#0311
+<KEY<MSGSei un suo amico?<NOD
+Se ci tieni a lei, dille di 
+fare quello che le dice il
+dottore.<NOD<END
+#0312
+<KEY<MSGBel lavoro!<NOD
+Non è che hai visto fantasmi,
+vero?<NOD<END
+#0313
+<KEY<MSGOh, sei venuto a far visita
+a quella ragazza?<NOD<CLRE' andata via, diretta verso
+la "Camera del Macigno".<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019Oh, hey!<NOD<CLRE' un po' che non ti
+vedo.<NOD
+Ti trovo in forma!<NOD<CLRQuella strega ha 
+schiaffato qui pure te, eh?<NOD
+Stessa storia!<NOD<CLR<FAC0020Quindi non sei riuscito a
+sconfiggerli, dopotutto...<NOD
+A dire il vero mi 
+aspettavo grandi 
+cose da te...<NOD<CLREd io... ho provato.
+Eccome se ho provato.<NOD
+E guarda come ci siamo
+ridotti.<NOD<CLR.....<NOD<CLRTanto lavoro per nulla.<NOD
+Alla fine non sono riuscita
+a salvare nessuno di 
+quei bambini.<NOD
+E nella condizione in cui 
+mi trovo non credo 
+potrò andarmene
+molto presto...<NOD<END
+#0321
+<KEY<MSG<FAC0020Sono sopravvissuta, certo, 
+ma per cosa?<NOD<CLRNon ho intenzione di 
+starmene qui seduta 
+a marcire...<NOD<END
+#0322
+<KEY<MSG<FAC0020Questo è il leggendario
+Labirinto.<NOD
+Non so chi l'abbia 
+costruito, ma sembra
+che sia la discarica 
+dell'Isola.<NOD<CLRC'è solo un modo per
+uscirne.<NOD
+Si deve oltrepassare
+quel pietrone situato nella
+Stanza del Macigno.<NOD<CLRVerrei con te,<NOD
+ma nello stato il cui
+mi trovo, sarei solo un 
+peso...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGHa aperto lo scrigno.<NOD<GIT1019<IT+0019<EQ+0004<CLR
+<CMU0010Hai trovato il =Proteggi Armi=!<WAI0160<NOD<RMU<END
+

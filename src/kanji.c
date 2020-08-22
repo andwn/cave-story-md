@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "bank_data.h"
 #include "dma.h"
 #include "gamemode.h"
 #include "memory.h"

@@ -1,0 +1,109 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGIl y a longtemps, une sorcière
+vivait sur cette île.<NOD
+C'est elle qui a bâti ce
+labyrinthe, pour garder
+ses Gaudis en sureté.<NOD<END
+#0210
+<PRI<MSGIl y a une sortie dans ce
+labyrinthe.
+Mais le chemin est bloqué 
+par un gros rocher.<NOD<CLREt le bouger est le début
+des épreuves qui attendent
+ensuite...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGAah... J'ai TELLEMENT faim de
+viande Mimiga...<NOD<CLR*sniff sniff*<NOD<CLR
+TOI tu sens un peu le Mimiga.<NOD<END
+#0221
+<PRI<MSGHa-ha-hah...<NOD<CLRT'es marrant.<NOD<END
+#0230
+<PRI<MSGTu as déjà vu l'extérieur de l'île ?<NOD<CLRElle flotte très haut dans
+les cieux.<NOD
+Mais comment elle fait pour flotter...<NOD
+C'est un mystère qui est
+dans ce labyrinthe.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGCe téléporteur-là
+marchait il y a un moment.<NOD
+Bien sûr, il conduit juste
+ailleurs dans le labyrinthe...<NOD<END
+#0241
+<MSGLe Téléporteur remarche
+à présent.<NOD<CLRBien sûr, il conduit juste
+ailleurs dans le labyrinthe
+n'est-ce pas?<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGUn téléporteur.<NOD<CLRIl n'est pas alimenté.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGBonjour.<NOD<CLRBienvenue au magasin du Labyrinthe !<NOD
+Malheureusement on a
+été cambriolés il y a peu,<NOD
+et on a plus rien à vendre
+maintenant.<NOD
+Désolé...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSGHm ?<NOD<CLRHey, Tu possèdes un truc
+intéressant, là.<NOD<CLRUne Étoile Polaire et une Boule de Feu,
+si je ne m'abuse.<NOD<CLRPuis-je y jeter un oeil?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Confié =Étoile Polaire=.<NOD
+<GIT0003Confié =Boule de Feu=.<NOD<GIT0000<CLR
+<SOU0044Hoho !<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010=Snake= terminé !<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*soupir*<NOD<CLRTiens. Que penses-tu de ça ?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008Obtenu =Turbocharge= !<WAI0160<NOD<RMU<GIT0000<CLRPour toi, c'est cadeau.<NOD
+De toutes façons, t'as pas,
+d'argent, alors...<NOD<END
+#0403
+<KEY<MSG<CLRTu en manques !<NOD<END
+#0404
+<KEY<FL+0721<MSG*soupir*<NOD<CLRTiens. Que penses-tu de ça ?<NOD<CLR<GIT1038<CLR
+<CMU0010<IT+0038Obtenu =Étoile Lunatique= !<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRc'est juste une déco, je le crains,<NOD
+Mais t'as déjà des armes
+puissantes, alors que
+puis-je faire de plus ?<NOD<END
+#0410
+<KEY<MSGCelle qui nous as enfermés ici
+est une sorcière nommée Jenka.<NOD<CLR...Mais ce n'est pas par haine
+ou même chose.<NOD
+Nous sommes dans ce labyrinthe
+pour protéger quelque chose.<NOD<CLR...Je ne sais plus trop quoi
+en fait, mais peu importe !<NOD<END
+

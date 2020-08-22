@@ -1,0 +1,96 @@
+c
+#0090
+<MNA<FLJ0341:0095<CMU0009<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0009<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0009<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0009<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0009<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0011:0094:0043:0034
+
+
+#0200
+<FLJ0327:0201
+<KEY<MSG<FAC0007La chiave della casa di
+Arthur...<NOD
+Credevo che ci fosse 
+un duplicato in giro.<NOD
+Al diavolo, Toroko...
+Comportarti come se non lo so
+sapessi...<NOD<CLRBeh, forse Jack sa dove
+trovarla...<NOD<END
+#0201
+<KEY<MSG<FAC0007Toroko...
+Non posso crederci...<NOD
+Il fratello maggiore di 
+Toroko, Arthur, era un 
+favoloso guerriero.<NOD
+Ma è stato ucciso  
+da uno degli sgherri
+del Dottore.<NOD
+Ed...io... 
+...non sono riuscito 
+a proteggerla...<NOD<END
+
+#0210          
+<KEY<MSG<FAC0009Ci sono due chiavi
+per entrare a casa di 
+Arthur.<NOD
+Toroko ne ha una.<NOD
+L'altra è nascosta nel 
+cimitero dei Mimiga.<NOD<END
+
+#0220
+<KEY<MSG<FAC0009Il fratello di Toroko,
+Arthur, ha combattuto 
+contro un terribile   
+mostro sanguinario...<NOD<CLRL'orribile demone che
+si nutre di Mimiga.<NOD<CLRNon è il Dottore,
+è... qualcos'altro.<NOD
+Questo demone ha vissuto 
+qui nell'isola per anni.<NOD<CLR
+Un giorno venne nel
+villaggio, ed Arthur<NOD
+riuscì a scacciarlo
+da solo.<NOD
+La sua prode figura che 
+difendeva il nostro 
+villaggio dal pericolo...<NOD
+<NOD<CLRAlla fine anche lui è
+stato fatto fuori dal
+Dottore, ma rimarrà 
+sempre un vero eroe.<NOD<END
+
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Crackle* *Snap!*<NOD<FLJ0442:0000<CLRVedi qualcosa
+dietro le fiamme.<NOD<END
+#0301
+<KEY<GIT1008<MSGVuoi utilizzare il 
+=Succo di Medusa=?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0442:0302<FL+0442
+<MSGTrovi qualcosa in mezzo la cenere..<NOD<CLR<GIT0007<AM+0007:0100
+<CMU0010Hai trovato lo =Sparabolle=!<WAI0160<NOD<CLO<RMU<DNP0300<END
+#0302
+<KEY<DNP0300<END
+

@@ -1,0 +1,56 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0053:0092:0002:0173
+
+
+
+#0200
+<PRI
+<FLJ1373:0206
+<FLJ1372:0202
+<MSGAh, c'est bon d'être revenu.<NOD<CLROho,<NOD c'est une bien belle
+épée que tu possèdes,
+là.<NOD
+Tu veux me l'échanger contre
+mon super gun ?<YNJ0201<FL+1372<CLR
+<TAM0009:0012:0000<GIT0009Donné =Épée=<NOD<CLR
+<CMU0010<GIT0012Tu obtiens la =Nemesis=<WAI0160<NOD<RMU<END
+#0201
+<PRI<MSGAh bon ? Tant pis.<NOD<END
+
+#0202
+<PRI<MSGAlors, comment tu trouves mon
+super flingue ? Il t'est utile ?<YNJ0203<CLRAha !<NOD
+Content de l'entendre.<NOD<END
+#0203
+<PRI<FL-1372<MSG
+D'accord, je te rends ton épée.<NOD
+Mais rends-moi mon super
+flingue alors.<NOD<TAM0012:0009:0000<CLR
+<GIT0012Donné =Nemesis=<NOD<CLR
+<CMU0010<GIT0009Tu as repris ton =Épée=<WAI0160<NOD<RMU<END
+
+#0210
+<PRI<FLJ1370:0211<FL+1371
+<MSGMaintenant, où est-ce que
+ce mec est parti...<NOD<CLRTu n'aurais pas vu mon mari,
+n'est-ce pas ?<NOD<END
+#0211
+<PRI<MSGMerci pour ton aide.<NOD<END
+#0220
+<PRI<MSGVous êtes qui, m'sieur ?<NOD<END
+
+#0500
+<KEY<CNP0250:<FAI0000<END
+

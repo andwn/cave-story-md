@@ -1,0 +1,84 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<KEY<FLJ1000:0095<MNA<CMU0008<FAI0004<EVE0200
+#0095
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0053:0094:0075:0005
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0118:0083
+
+#0200
+<KEY<FL+1000<FL+1025<FL+1038<MYD0002<WAI0050
+<ANP0400:0010:0000<MSG
+¡Uwah!<NOD<CLO
+<ANP0400:0020:0000<WAI0050<END
+
+#0400
+<KEY
+<FLJ1003:0404
+<FLJ1102:0403
+<FLJ1002:0402
+<FLJ1001:0401<FL+1001<FL+1038
+<ANP0400:0010:0000
+<MSG¡Eyaahh!<MYB0002<NOD<CLR¡No me mates!<NOD
+¡Soy humano! ¡Sólo he sido
+transformado mágicamente en
+Mimiga!<NOD
+¡Soy humano!<NOD<CLR¿Huh?<NOD<CLR.....<NOD<CLR<ANP0400:0000:0000<FAC0028¿Qué ocurre?
+¿No eres uno de esos
+robots asesinos?<NOD
+¡Me habías asustado,
+apareciendo así tan
+de repente!<NOD<CLR¿No serás ese salvador
+del que hablan?<NOD<END
+
+
+#0401
+<KEY<FL+1002
+<MSG<FAC0028Soy Itoh, uno de los
+humanos que vinieron a
+esta isla a investigar.<NOD
+Esa bruja de Misery me
+transformó en esto...<NOD
+Conseguí escapar, pero...
+Mira como estoy.<NOD<CLR¡Y ahora estoy atrapado
+aquí!<NOD<CLRHas venido escalando por
+el exterior, ¿verdad?<NOD
+Soy un ingeniero de
+talento considerable,<NOD
+pero le tengo mucho
+miedo a las alturas...<NOD<CLROh, pobre de mí...<NOD<CLRNunca debería haber
+venido a esta isla.<NOD<END
+
+#0402
+<KEY<MSG<FAC0028No, no, seguro que no
+necesitas a un inútil y
+patético hombrecillo como
+yo.<NOD<END
+
+
+#0403
+<KEY<MSG<FL+1003<FAC0028¿Itoh?<NOD Sí, soy yo.<NOD<CLR¿Qué dices?<NOD
+¿Sakamoto está haciendo
+un cohete?<NOD<CLRAsí que sigue viva...<NOD
+Qué mujer más dura.<NOD
+No puedo decir lo
+mismo de mí...<NOD<CLREstá bien.<NOD
+Toma esto.<NOD<FAC0000<GIT1027<IT+0027<CLR
+<CMU0010Conseguiste el =Controlador=.<WAI0160<NOD<RMU
+<CLR<FAC0028Creo que esto es lo
+que está buscando.<NOD<GIT0000<EVE0404
+#0404
+<KEY<MSG<FAC0028Dale recuerdos a la
+Sra. Sakamoto de mi parte.<NOD<END
+

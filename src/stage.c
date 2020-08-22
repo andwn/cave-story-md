@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -235,7 +236,7 @@ void stage_load_tileset() {
 }
 
 void stage_load_blocks() {
-    DecompressSlzC(stage_info[stageID].PXM, stagePXM);
+    slz_unpack(stage_info[stageID].PXM, stagePXM);
     stageWidth = stagePXM[4] | (stagePXM[5] << 8);
     stageHeight = stagePXM[6] | (stagePXM[7] << 8);
 	// Multiplication table for stage rows

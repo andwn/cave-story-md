@@ -1,0 +1,59 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0013<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0013<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0013<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0013<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0013<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0045:0021
+
+
+#0105
+<PRI<MSGMöchtest du speichern?<YNJ0000<SVP<CLRSpiel gespeichert.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergie aufgefüllt.<NOD<END
+
+#0200
+<KEY<MSGDas hier ist unsere kleine
+Blumen-Farm.<NOD
+Meine Aufgabe ist es,
+auf die Farm aufzupassen.<NOD<CLRFür uns Mimiga sind Blumen nämlich
+eine wertvolle Nahrungsquelle.<NOD<CLRAber bloß nicht die roten Blumen.<NOD<CLRWer die roten Blumen futtert,
+dem kocht plötzlich das Blut,
+und geht dann sofort drauf!!<NOD<CLRZum Glück wachsen hier
+keine von den roten Dingern.<NOD<END
+
+
+#0220
+<KEY<FLJ1020:0221<MSGEin Rasensprenger.<NOD<END
+#0221
+<KEY<MSGEr steckt fest im Boden drin!<NOD<END
+
+#0300
+<PRI
+<FL+0410
+<DNP0300
+<MSGDa glänzt etwas...<NOD<CLR<CMU0010<GIT1005<IT+0005Du hast den =Bestienzahn= bekommen!<WAI0160<NOD<CLO
+<RMU<END
+
+#0400
+<PRI<SOU0022<DNP0400<CMU0016
+<MSG<GIT1006Du hast eine =HP-Kapsel= bekommen!<WAI0160<NOD<RMU<ML+0003
+HP um 3 Punkte erhöht!<NOD<END

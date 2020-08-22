@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -100,7 +101,7 @@ void player_init() {
 	// Booster trail sprite tiles
 	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
-	const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
+	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
 	vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
 	airSprite[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
@@ -353,7 +354,7 @@ void player_update() {
 					sound_play(SND_GUN_CLICK, 5);
 					if(!missileEmptyFlag) {
 						missileEmptyFlag = TRUE;
-						entity_create(player.x, player.y, cfg_language ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+						entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
 					}
 				}
 				shoot_cooldown = pal_mode ? 7 : 8;
@@ -826,7 +827,7 @@ void player_show_map_name(uint8_t ttl) {
 	// Boss bar overwrites the name
 	if(stageID == STAGE_WATERWAY_BOSS) return;
 	// Show kanji name
-	if(cfg_language) {
+	if(cfg_language == LANG_JA) {
         show_map_jname(ttl);
         return;
     }
@@ -889,7 +890,7 @@ static void player_update_air_display() {
 		if((airDisplayTime & 31) == 0) {
 			vdp_tiles_load_from_rom(TILE_BLANK, TILE_AIRINDEX, 1);
 		} else if((airDisplayTime & 31) == 15) {
-			const SpriteDefinition *spr = cfg_language ? &SPR_J_Air : &SPR_Air;
+			const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
 			vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
 		}
 		// Calculate air percent and display the value
@@ -1055,7 +1056,7 @@ uint8_t player_inflict_damage(uint16_t damage) {
 				w->energy -= damage;
 				sheets_refresh_weapon(w);
 				entity_create(player.x, player.y, 
-						cfg_language ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
+						cfg_language == LANG_JA ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
 			} else {
 				w->energy = 0;
 			}

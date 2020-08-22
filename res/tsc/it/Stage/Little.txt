@@ -1,0 +1,59 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0053:0092:0002:0173
+
+
+
+#0200
+<PRI
+<FLJ1373:0206
+<FLJ1372:0202
+<MSGAh, è bello essere tornati.<NOD<CLROho,<NOD ma guarda che bella 
+lama che tieni là.<NOD
+Ti va di far cambio con la mia
+magnifica pistola?<YNJ0201<FL+1372<CLR
+<TAM0009:0012:0000<GIT0009Gli hai dato la =Spada=.<NOD<CLR
+<CMU0010<GIT0012Hai ricevuto in cambio la 
+=Nemesis=!<WAI0160<NOD<RMU<END
+#0201
+<PRI<MSGSul serio? Peccato.<NOD<END
+
+#0202
+<PRI<MSGAllora, che ne dici della mia 
+fantastica pistola? 
+Ti sta soddisfacendo?<YNJ0203<CLRAha!<NOD
+Felice di sentirlo.<NOD<END
+#0203
+<PRI<FL-1372<MSG
+Va bene, ti ridarò indietro la tua
+spada.<NOD
+Ma ovviamente tu mi devi ridare la
+mia favolosa pistola.<NOD<TAM0012:0009:0000<CLR
+<GIT0012Gli hai restituito la =Nemesis=.<NOD<CLR
+<CMU0010<GIT0009Ti sei ripreso la =Spada=!<WAI0160<NOD<RMU<END
+
+#0210
+<PRI<FLJ1370:0211<FL+1371
+<MSGOra, dove diamine sarà andato 
+quell'uomo...
+<NOD<CLRNon è che hai visto mio marito,
+per caso?<NOD<END
+#0211
+<PRI<MSGGrazie per l'aiuto.<NOD<END
+#0220
+<PRI<MSGLei chi è, Signore?<NOD<END
+
+#0500
+<KEY<CNP0250:<FAI0000<END
+

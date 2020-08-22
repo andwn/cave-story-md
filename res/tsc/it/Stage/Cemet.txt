@@ -1,0 +1,40 @@
+
+#0090
+<MNA<CMU0012<FAI0000<END
+#0091
+<MNA<CMU0012<FAI0001<END
+#0092
+<MNA<CMU0012<FAI0002<END
+#0093
+<MNA<CMU0012<FAI0003<END
+#0094
+<MNA<CMU0012<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0056:0033
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002
+<FAO0004<TRA0083:0094:0007:0010
+
+
+#0200
+<PRI
+<FLJ1371:0201
+<MSGSi? Che vuoi?<NOD<END
+#0201
+<PRI<MSGDici che mia moglie mi
+sta cercando?<NOD<CLR
+Sì, lo so,<NOD
+E' un po' che non mi faccio vedere a casa.<NOD
+Vabbè, è tempo che vada.<NOD<GIT1032<DNP0200<IT+0032<CLRTi dispiace accompagnarmi?<NOD<END
+
+#0300
+<CNP0300:0000:0000
+<PRI<MSGLa tomba di Arthur.<NOD
+C'è una scritta sulla
+lapide:<NOD<CLR<MSG<TURQui giace il Prode Arthur,
+vero eroe dei Mimiga.<NOD<FLJ0390:0000<CLR<MSG<FL+0390
+<CMU0010<GIT1001<IT+0001Hai trovato =La Chiave di Arthur=!<WAI0160<NOD<CLO
+<RMU<END
+

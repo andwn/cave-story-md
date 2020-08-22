@@ -1,0 +1,39 @@
+
+#0090
+<MNA<CMU0030<FAI0000<END
+#0091
+<MNA<CMU0030<FAI0001<END
+#0092
+<MNA<CMU0030<FAI0002<END
+#0093
+<MNA<CMU0030<FAI0003<END
+#0094
+<MNA<CMU0030<FAI0004<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011<FAO0004<TRA0062:0094:0079:0073
+
+
+#0150
+<KEY<DNP0150<CNP0016:0016:0002<END
+
+
+
+#0200
+<KEY<MSGYou find a note written by
+Booster.<NOD
+Would you like to read it?<YNJ0000<CLR<TURExploration of the island's
+interior would be more effectively
+accomplished, I suspect,<NOD<CLRhad we equipment to facilitate
+aerial movement.<NOD<CLRThus, I have duly begun
+development upon the "Booster".<NOD<CLRDevelopment of this flying apparatus
+will take place in two stages,
+versions 0.8 and 2.0.<NOD<CLRMy plans call for v0.8 to be
+equippable and to allow for a
+certain amount of hovering.<NOD<CLRI'm sure I can complete v2.0,
+provided I only live long enough.<NOD<CLRIt promises to be an even more
+useful item.<NOD<CLO
+<FLJ0161:0000<WAI0050<MS2
+    Provided I only live...<WAI0050<NOD<END
+
+

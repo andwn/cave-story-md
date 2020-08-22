@@ -1,0 +1,280 @@
+
+#0090
+<MNA<CMU0005<FAI0000<END
+#0091
+<MNA<CMU0005<FAI0001<END
+#0092
+<MNA<CMU0005<FAI0002<END
+#0093
+<MNA<CMU0005<FAI0003<END
+#0094
+<MNA<CMU0005<FAI0004<END
+
+#0098
+<KEY<MNA<CMU0005<FL+0224
+<ANP0100:0001:0000<FAI0004
+<CNP0401:0112:0002<WAI0100
+<ANP0100:0000:0000
+<MYD0002<SMC<DNP0401<END
+
+
+#0099
+<KEY<MNA<CMU0005
+<ANP0099:0010:0000
+<FAI0004<WAI0070
+<ANP0099:0000:0000<WAI0030<END
+
+
+#0100
+<KEY<MSGDo you want to go to Arthur's
+house?<FL-0227<YNJ0000<CLO
+<CNP0400:0111:0002<HMC<WAI0060<ANP0100:0001:0000
+<WAI0100<FAO0004<FLJ0219:0130<TRA0001:0099:0005:0008
+
+#0101
+<PRI<FL-0227<FLJ0212:0102<MSGIt's locked.<NOD<END
+#0102
+<PRI<SOU0011<DNP0101<FAO0004<TRA0007:0094:0015:0008
+#0103
+<PRI<SOU0011<DNP0103<FAO0004<TRA0008:0094:0009:0011
+
+#0104
+<PRI
+<FLJ0214:0106
+<ITJ0009:0105
+<MSGIt's locked.<NOD<END
+#0105
+<SOU0022<MSG<GIT1009Used the =Rusty Key=.<NOD<CLO
+<GIT0000<FL+0214<EVE0106
+#0106
+<PRI<SOU0011<DNP0104<FAO0004<TRA0025:0094:0016:0007
+
+
+#0107
+<PRI<SOU0011<DNP0107<FAO0004<TRA0026:0094:0010:0007
+#0108
+<PRI<SOU0011<DNP0108<FAO0004<TRA0027:0094:0010:0009
+
+
+#0109
+<PRI
+<FLJ0222:0111
+<ITJ0010:0110
+<MSGIt seems to be locked.<NOD
+The word "Gum" is written on
+the door.<NOD<END
+#0110
+<SOU0022<MSG<GIT1010Used the =Gum Key=.<NOD<CLO
+<GIT0000<FL+0222<EVE0111
+#0111
+<PRI<SOU0011<DNP0109<FAO0004<TRA0028:0094:0006:0013
+
+#0112
+<PRI<FAO0004<TRA0018:0094:0006:0010
+
+#0113
+<PRI<SOU0011<DNP0113<FAO0004<TRA0030:0094:0007:0009
+
+
+
+#0121
+<PRI<MSG<TUR
+               Santa's House<NOD<END
+#0123
+<PRI<MSG<TUR
+                Power Room<NOD<END
+
+#0130
+<KEY<FL-0329<FL-0219<MYD0002<TRA0011:0420:0024:0029
+
+
+
+#0200
+<PRI<DNP0200<FL+0210
+<CMU0010<GIT1003<IT+0003<MSG
+Got =Santa's Key=!<WAI0160<NOD<CLO
+<GIT0000<RMU<END
+
+#0201
+<PRI<FLJ0228:0207<FL+0228<MSGOho.<NOD<CLRA soldier from the surface?<NOD
+I thought the war was over
+already.<NOD<CLRWell, whatever.<NOD<CLO<EVE0207
+
+
+#0202
+<ITJ0008:0204<NCJ0094:0203
+<PRI<SOU0022<CNP0202:0021:0000
+<MSGOpened the treasure chest.<NOD<GIT1008<IT+0008<CLR
+<CMU0010Got the =Jellyfish Juice=!<WAI0160<NOD<DNP0202<RMU<END
+#0203
+<SOU0072<CNP0202:0015:0002<END
+#0204
+<CNP0202:0001:0000<END
+
+#0205
+<FLJ0481:0206
+<PRI<MSGThe fans aren't running.<NOD
+Someone's cut the power to
+this area.<NOD
+If you want to get them working
+again, you'll have to find the
+Power Room.<NOD<END
+#0206
+<PRI<MSGLet me give you a tip.<NOD<CLRIf you hold the jump button
+while a fan blows you around,<NOD
+you'll fly even higher.<NOD<END
+
+#0207
+<PRI<MSGIf you're going on ahead,
+watch out for those Power
+Critters.<NOD
+When they land on you, it hurts.<NOD<END
+
+#0210
+<PRI<MSGThe motorbike Kazuma was driving.
+It's not looking so hot anymore.<NOD<END
+
+#0220
+<ITJ0013:0250
+<FLJ0221:0240
+<FLJ0484:0239
+<FLJ0215:0234
+<PRI<MSGIt won't open...<NOD<CLO
+<CNP0230:0106:0000<MYD0002<END
+#0230
+<FLJ0221:0237
+<FLJ0484:0236
+<FLJ0223:0235
+<FLJ0216:0233
+<FLJ0215:0232
+<PRI<MSGYou spy someone through the
+crack...<NOD<CLR
+Hey! Over here!<NOD<CLRYou look like a nice young man.<NOD
+Could you help me out?
+I'd really like to get out
+of here.<YNJ0231<CLRThanks!<NOD<CLRTake this.<NOD<GIT1009<IT+0009<FL+0215<CLR
+<CMU0010Received the =Rusty Key=.<WAI0160<NOD<RMU<CLRI found this on the floor.<NOD
+Go unlock the door with it,
+will you?<NOD<END
+#0231
+<PRI<MSGReally?...<NOD
+Darn it...<NOD<END
+#0232
+<PRI<MSGPlease...<NOD
+Open the door for me...<NOD<END
+#0233
+<PRI<MSGWhat?<NOD It's not the key to
+this room?!<NOD
+Well, that's just great...<NOD<CLR.....<NOD<FL+0223<EVE0235
+
+#0234
+<PRI<FL+0216<MSGThere's no keyhole.<NOD
+The door must be rusted shut.<NOD<END
+#0235
+<PRI<MSGIf there's no keyhole, then
+we'll just have to break the
+door down...<NOD
+Now, how would we do that...<NOD<END
+
+#0236
+<PRI<MSGWhat? Explosives?<NOD<CLRYeah, that could work...<NOD
+So you're collecting the
+materials?<NOD<CLR.....<NOD<CLRWait, did you say gum base?<NOD
+Hold on a sec.<NOD<CLO<WAI0100
+<MSGHere, take this.<NOD<GIT1010<IT+0010<FL+0221<CLR
+<CMU0010Received the =Gum Key=.<WAI0160<NOD<RMU<CLRIt was hanging on the wall.<NOD
+It says "Gum" on it.<NOD
+There's got to be some connection.<NOD
+I'm depending on you, young man!<NOD<END
+#0237
+<PRI<MSGWell? You got the bomb ready yet?<NOD<END
+
+
+#0239
+<PRI<MSGRusted shut, same as always...<NOD<CLO
+<CNP0230:0106:0000<MYD0002<END
+#0240
+<PRI<MSGRusted shut, same as always...<NOD<END
+
+#0250
+<PRI<FL+0521<FL+0522<IT-0013
+<MSG<GIT1013Set the =Explosive=.<NOD<CLO
+<FAO0004<TRA0018:0200:0006:0000
+
+
+#0302
+<PRI<FLJ0218:0001<FL+0218
+<SOU0022<CNP0302:0021:0000
+<MSGOpened the treasure chest.<NOD<EVE0030
+
+#0305
+<PRI<DNP0305<SOU0022<CMU0016
+<MSG<GIT1006Got a =Life Capsule=!<WAI0160<NOD<RMU<ML+0005
+Max health increased by 5!<NOD<END
+
+#0400
+#0401
+
+#0450
+<PRI<MSGA motorbike, maybe?<NOD<END
+#0451
+#0452
+
+#0500
+<PRI
+<FLJ0211:0501
+<FL+0211
+<MSGHello.<NOD
+My name's Santa.<NOD<CLRI was off drawing some water
+when I suddenly got attacked
+by monsters.<NOD
+I got away and ran back home,
+but somewhere along the way I
+dropped my key.<NOD<CLR
+...I'm locked out of my own house.<NOD<END
+#0501
+<PRI<MSGWith my key gone, I'm locked
+out...<NOD
+Now what...<NOD<END
+
+
+#0502
+<ITJ0003:0503<END
+#0503
+<KEY<FL+0212<MM0<MYD0000<WAI0030<PRI
+<MSGOh!<NOD<CLRThat's the key to my house!<NOD<IT-0003<GIT1003<CLR
+Handed over =Santa's Key=.<NOD<GIT0000<CLRThank you!<NOD<CLO
+<KEY<ANP0500:0003:0000<WAI0176<ANP0500:0000:0002
+<SOU0011<CNP0101:0000:0000<WAI0010
+<PRI<MSGCome inside.<NOD
+I've got a nice reward for you.<NOD<CLO<KEY
+<ANP0500:0005:0002<WAI0010<DNP0500
+<SOU0011<CNP0101:0018:0000<DNP0502<SOU0023<END
+
+#0600
+<KEY<FL+0219<CMU0000<FAI0004<MYD0002
+<MSG<FAC0010So then, young man,
+can you lead us back?<NOD<CLO<FAC0000
+<ANP0452:0000:0000<WAI0010
+<MSG<FAC0018Kazuma.<NOD<WAI0010<ANP0451:0000:0002<CLR<FAC0010Yes, sir?<NOD<CLO<FAC0000
+<FAC0000<WAI0010<ANP0452:0000:0002<FON0450:0016<WAI0050
+<MSG<FAC0018Can you operate that?<NOD<CLO<FAC0000
+<ANP0451:0003:0002<WAI0040
+<ANP0452:0003:0002<WAI0040
+<ANP0451:0005:0000<WAI0036
+<ANP0452:0000:0000<WAI0050
+<ANP0451:0000:0002
+<MSG<FAC0010I believe I can.<NOD<CLO<FAC0000
+<ANP0451:0005:0000
+<ANP0452:0005:0000<WAI0020
+<ANP0450:0010:0000<DNP0451<DNP0452<WAI0030
+<ANP0450:0020:0000<WAI0060<FOM0016<MYB0000
+<WAI0200<MSGIt won't STOOOOOOOOP!!<WAI0050<NOD<CMU0005
+<DNP0450<FL-0523<FL+0225<END
+
+
+#1200
+<KEY<ANP1200:0020:0002
+<FON1200:0016<FAI0001
+<WAI0100<FAO0001<TRA0010:1200:0050:0034
+

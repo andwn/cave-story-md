@@ -42,7 +42,7 @@ void game_main(uint8_t load) {
 	vdp_colors(0, PAL_FadeOut, 64);
 	//vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
-	if(!cfg_language) {
+	if(cfg_language != LANG_JA) {
 		vdp_font_load(TS_MsgFont.tiles);
 	}
 	effects_init();
@@ -230,7 +230,7 @@ void draw_itemmenu(uint8_t resetCursor) {
 	LOAD_LETTER('/', 16);
 	LOAD_LETTER('-', 17);
 	// ARMSITEM or ぶきもちもの
-	const uint32_t *ts = cfg_language ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+	const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	vdp_tiles_load_from_rom(ts + (2<<3), TILE_HUDINDEX + 10, 4);
 	vdp_tiles_load_from_rom(ts + (10<<3), TILE_HUDINDEX + 18, 4);
 	// Weapons

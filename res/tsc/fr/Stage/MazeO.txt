@@ -1,0 +1,130 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGCe mystérieux robot,
+Monster X...<NOD
+Ta chance de l'attaquer
+est quand il s'ouvre.<NOD<END
+
+
+#0300
+<KEY<MSGJe suis médecin.<NOD
+Laisse-moi apaiser tes blessures.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGNon, non, non, c'est gratuit.<NOD<CLRCela dit, en retour, j'ai une
+faveur à te demander.<NOD<CLRPrès d'ici se trouve l'ancienne
+clinique..<NOD
+Peux-tu aller voir s'il y a
+des médicaments là-bas.<NOD<CLR
+<GIT1017<IT+0017Reçu =Clé de la Clinique=<NOD<GIT0000<END
+#0301
+<KEY<MSGCe n'est pas loin d'ici.<NOD
+Recherche un médicament
+utilisable.<NOD<END
+#0302
+<KEY<MSG<IT-0016<FL+0702
+<GIT1016Donné =Guéritou=<NOD<CLR<GIT0000Oh, Tu en as trouvé !<NOD
+Merci bien.<NOD
+Je m'occupe du reste.<NOD<END
+#0303
+<KEY<MSGMerci beaucoup.<NOD
+Laisse-moi faire le reste.<NOD<END
+#0304
+<KEY<MSGOn dirait que le médicament
+fait son effet.<NOD
+Elle sera sur pied dans
+peu de temps.<NOD
+Et tout ça grâce à toi, bien sûr.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGJe suis une infirmière.<NOD
+Je travaillais dans la
+clinique plus haut,<NOD
+Mais les monstres s'en sont
+emparés et j'ai atterri ici.<NOD<END
+#0311
+<KEY<MSGTu es son ami ?<NOD
+Si tu veux l'aider, je te
+conseille de faire ce que t'a
+demandé le médecin.<NOD<END
+#0312
+<KEY<MSGBon travail.<NOD
+Tu n'a pas vu de fantômes,
+n'est-ce pas ?<NOD<END
+#0313
+<KEY<MSGOh, Tu venais voir ton
+amie ?<NOD<CLRElle est partie vers la
+"Porte scellée".<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019Oh, hey !<NOD<CLRça faisait un bail.<NOD
+Tu as l'air en
+pleine forme !<NOD<CLRCette sorcière t'a
+jeté ici aussi, hein ?<NOD
+Pareil pour moi !<NOD<CLR<FAC0020Alors t'as pas pu
+les battre non plus...<NOD
+Je plaçais mes espoirs
+sur toi, mais...<NOD<CLREt moi, j'ai éssayé.
+Oh oui, éssayé.<NOD
+Et voila où ça m'a
+conduit.<NOD<CLR.....<NOD<CLREt tout ça pour rien.<NOD
+Finalement, je
+n'ai pu sauver aucun
+des enfants.<NOD
+Et vu mon état,
+Je suis pas prête
+de repartir...<NOD<END
+#0321
+<KEY<MSG<FAC0020Oui, j'ai survécu, mais
+maintenant ?<NOD<CLRJ'imagine que je vais
+rester là et pourrir ici...<NOD<END
+#0322
+<KEY<MSG<FAC0020C'est le légendaire
+Labyrinthe.<NOD
+Je sais pas qui l'a créé,
+Mais c'est apparemment
+la poubelle de l'île.<NOD<CLRIl n'y a qu'une
+seule sortie.<NOD
+Il faut passer par
+la porte scellée.<NOD<CLRJ'irais bien avec toi,<NOD
+mais vu mon état,
+je ne ferais que
+te ralentir...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGOuverture du coffre.<NOD<GIT1019<IT+0019<EQ+0004<CLR
+<CMU0010Obtenu =Protège-bras=<WAI0160<NOD<RMU<END
+

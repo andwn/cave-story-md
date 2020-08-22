@@ -1,0 +1,194 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0002<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<KEY<FLJ0561:0102<SOU0011<ANP0100:0000:0002
+<FAO0002<TRA0010:0092:0003:0012
+#0101
+<KEY<FLJ0561:0102<SOU0011<ANP0101:0000:0002
+<FAO0004<TRA0032:0094:0008:0009
+#0102
+<PRI<MSGNon si apre!<NOD<END
+
+
+
+
+#0200
+<KEY
+<FLJ0564:0204
+<FLJ0562:0206
+<MSGNon ho nulla da dirti.<NOD<END
+#0201
+<KEY<MSGAttento ai Coccodrilli della 
+Sabbia.<NOD Se metti un piede nella 
+sabbia, saltano fuori e ti mordono.<NOD
+E fa MOLTO male!<NOD<END
+#0202
+<FLJ0273:0205
+<KEY<MSGPer muovere le Pietre del Sole, 
+devi spezzare l'incantesimo...<NOD<END
+#0203
+<KEY<MSGZzzmrbl...<NOD<CLRPesce...
+Cosa darei per... del pesce...<NOD<END
+#0204
+<MSGLa vecchia Jenka era a capo
+della Zona di Sabbia.<NOD
+Lei ed i suoi cuccioli.<NOD<CLRLa sua casa è...<NOD<CLRUmmmmm...<NOD<CLR...Da qualche parte nella
+Zona di Sabbia...?<NOD<END
+#0205
+<KEY<MSGLe nostre vere mamme sono
+state uccise dai robot.<NOD<CLRNeanche avevamo ancora
+gli occhi aperti...<NOD
+Ma Curly ci ha cresciuti.<NOD<END
+#0206
+<KEY<MSGStai cercando i fiori rossi?<NOD
+C'è una vecchia signora chiamata
+Jenka che potrebbe saperne 
+qualcosa.<NOD<CLROh, giusto.<NOD<CLRSe vai a trovarla,
+dovresti portare con te il
+cane vicino al letto.<NOD<FL+0564<END
+
+
+
+#0300
+<KEY<DNP0300<MM0<MYD0000<CMU0000
+<FL+0561<MSGAaaaahhhh!<NOD<CLO<KEY
+<ANP0500:0003:0002<WAI0079<ANP0500:0000:0002
+<MSG<FAC0019Ooohhhh!<NOD<CLO
+<CNP0310:0122:0002<DNP0200<WAI0010
+<CNP0311:0122:0002<DNP0201<WAI0010
+<CNP0312:0122:0002<DNP0202<WAI0010
+<CNP0313:0122:0002<DNP0203<MSGAbbiamo un VISITATORE!<NOD<CLRLo so che cosa
+vai cercando!<NOD
+Vedi di svegliarti!<NOD
+I Mimiga non sono i tuoi
+nemici!<NOD
+I Mimiga sono innocui!!<NOD<CLRMi dispiace per te, ma...<NOD<CLO
+<WAI0020<SOU0004<CNP0400:0118:0002<DNP0500
+<WAI0010
+<MSGIo sono dalla loro parte!<NOD<CLRDevo toglierti di mezzo!!<NOD<CLO
+<BSL0400
+<CMU0004
+<ANP0400:0010:0002
+<ANP0310:0010:0002
+<ANP0311:0010:0002
+<ANP0312:0010:0002
+<ANP0313:0010:0002
+<END
+
+
+#0310
+#0311
+#0312
+#0313
+
+
+
+#0400
+<KEY<MYD0400
+<FL-0561<FL-0565
+<ANP0310:0020:0005
+<ANP0311:0020:0005
+<ANP0312:0020:0005
+<ANP0313:0020:0005
+<CNP0400:0117:0005
+<ANP0400:0005:0005<WAI0002
+<ANP0400:0030:0004<SOU0070
+<WAI0100<PRI<CMU0015<MSG
+Vittoria!<WAI0140<CMU0000<NOD<CLO
+<KEY<ANP0400:0006:0005<WAI0002<PRI
+<WAI0050<CMU0002
+<MSG<FAC0020Hai vinto...<NOD
+Non posso più combattere...<NOD<CLRSuppongo che adesso
+ucciderai tutti i Mimiga,<NOD
+come hanno fatto gli
+altri robot?<YNJ0410<CLRCapisco...<NOD<CLRChe peccato...<NOD<PRI<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0410
+<KEY<FL+0562<MSG<FAC0019Oh!<NOD<FAC0000<CLO
+<ANP0400:0010:0000<WAI0050
+<MSG<FAC0019Pure tu sei dalla parte
+dei Mimiga?<NOD<CLRAppunto, non farebbero
+male ad una mosca!<NOD<CLRSono Curly.
+Curly Brace.<NOD
+Quando mi sono svegliata,
+ero con questi bimbi.<NOD<CLR<FAC0025Non ho memorie di  
+ciò che è successo prima...<NOD
+Amnesia, potremmo dire.<NOD<CLR<FAC0020Io ero... probabilmente
+un'Ammazza-Mimiga come
+gli altri robot...<NOD<CLO
+<EVE0415
+
+#0415
+<KEY<MSG<FAC0019Oh, wow.<NOD<CLR
+Quella Stella Polare che ti
+porti appresso è messa 
+male.<NOD
+Vuoi fare cambio con
+la mia mitragliatrice?<YNJ0420<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Le hai dato la =Stella Polare=.<NOD<CLR
+<CMU0010<GIT0004Hai ricevuto la =Mitragliatrice=!<WAI0160<NOD<RMU<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0420
+<KEY<MSG<FAC0019Davvero?<NOD<CLRBeh, se dovessi cambiare
+idea, sai dove trovarmi.<NOD<PRI<CLO<MYD0000
+<FAO0004<TRA0029:0090:0012:0009
+
+
+
+
+#0500
+<KEY
+<FLJ0563:0530
+<FLJ0562:0515
+<MSG<FAC0019Huh?<NOD<CLROh, se non è il Sig.
+Macchina Assassina.<NOD<CLRStai ancora pensando di 
+uccidere i Mimiga?<YNJ0510<CLR<FAC0020Capisco...<NOD<CLRChe peccato...<NOD<END
+
+#0510
+<KEY<FL+0562<MSG<FAC0019Oh!<NOD<CLRnche tu sei dalla parte
+dei Mimiga?<NOD<CLRAppunto, non farebbero
+male ad una mosca!<NOD<CLRSono Curly.
+Curly Brace.<NOD
+Quando mi sono svegliata, ero
+con questi bimbi.<NOD<CLR<FAC0025Non ho memorie di  
+ciò che è successo prima...<NOD
+Amnesia, potremmo dire.<NOD<CLR<FAC0020Io ero... probabilmente
+un'Ammazza-Mimiga come
+gli altri robot...<NOD<CLO
+<EVE0515
+
+#0515
+<KEY<MSG<FAC0019Oh, wow.<NOD<CLRuella Stella Polare che ti
+porti appresso è messa male.<NOD
+Vuoi fare cambio con
+la mia mitragliatrice?<YNJ0520<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Le hai dato la =Stella Polare=.<NOD<CLR
+<CMU0010<GIT0004Hai ricevuto la =Mitragliatrice=!<WAI0160<NOD<RMU<END
+
+#0520
+<KEY<MSG<FAC0019Davvero?<NOD<CLRBeh, se dovessi cambiare
+idea, sai dove trovarmi.<NOD<END
+
+#0530
+<KEY<MSG<FAC0025Sono gli umani 
+i veri cattivi!<NOD
+I Mimiga sono solo stati
+usati da loro.<NOD<END
+

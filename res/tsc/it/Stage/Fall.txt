@@ -1,0 +1,103 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG
+<CMU0010Preso da Kazuma!<WAI0160<CLR<FAC0010Phew...<NOD<CLRNon pensavo che ci 
+saresti davvero riuscito.<NOD<CLRFare esplodere il nucleo...<NOD<CLRBeh, ora il mondo 
+sarà libero dalle 
+future incarnazioni 
+del Dottore.<NOD
+La Pace è stata 
+preservata!<NOD<CLR
+Adesso, andiamo 
+a casa.<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Phew!<NOD<CLRCi è... mancato poco.<NOD<CLR<FAC0019Pensavo che sarei diventata 
+del ferrovecchio scassato 
+questa volta...<NOD
+Sembra che ti dobbiamo
+un altro favore.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nah, non ringraziatemi.<NOD
+Ho solo fatto quello che
+Misery mi ha chiesto.<NOD<CLR<FAC0025Misery? Vuoi dire,
+quella strega?<NOD<CLR
+<FAC0005Esatto.<NOD<CLR<FAC0025Pensavo ci odiasse
+profondamente.<NOD
+Cavoli, pensavo che TU ci 
+odiassi profondamente...<NOD<CLR<FAC0005Avete sconfitto 
+Ballos, giusto?<NOD<CLRIn seguito a ciò, le nostre 
+maledizioni sono svanite.<NOD
+Adesso nessuno di noi dovrà 
+prendere ordini da 
+chicchessia!<NOD<CLR<FAC0019Io pensavo che voi due 
+foste dei veri bulli,<NOD
+ma immagino fosse
+colpa della Corona!<NOD<CLR<FAC0005Beh, ciò che semini, 
+raccogli.<NOD
+Dopotutto, Misery è quella
+che gli ha fatto fare la 
+Corona, tanto per 
+cominciare.<NOD<CLR<FAC0025Huh.<NOD
+Ma non mi dire.<NOD<CLR<FAC0005Te lo dico, invece.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005Allora!<NOD<CLR
+<FAC0025Allora?<NOD<CLR<FAC0005Allora cosa avete 
+intenzione di fare, adesso?<NOD
+Posso portarvi ovunque 
+vogliate.<NOD<CLR<FAC0019Hmm, hai ragione...<NOD<CLRLa nostra missione è finita,
+ed adesso voglio solo
+vivere il resto dei miei 
+giorni in un posto dove<NOD
+posso rilassarmi e godermi
+una bella vista...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Uh, ragazzi...<NOD<CLR
+<FAC0025Hm?<NOD<CLR<FAC0005...ci sarebbero problemi
+se mi unissi a voi?<NOD<CLR
+<FAC0019Come no!<NOD
+Possiamo vivere tutti e
+tre insieme!<NOD<CLR
+<FAC0014Sul serio?!<NOD<CLR<FAC0019Ti lascio scegliere il
+posto.<NOD
+Cerca di trovarcene uno
+buono, okay?<NOD<CLR
+<FAC0014Puoi contarci!<NOD<CLRBenone allora!
+<ANP0230:0020:0002T<WAI0010e<WAI0010n<WAI0010e<WAI0010<WAI0010e<WAI0010t<WAI0010<WAI0010e<WAI0010v<WAI0010i<WAI0010i<WAI0010i<WAI0010!!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...non stai dimenticando
+qualcosa?<NOD<TRA0000:0100:0001:0015
+
+#0200
+#0210
+#0220
+#0230
+#0240
+

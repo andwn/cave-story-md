@@ -1,0 +1,108 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURDes mots sont à l'écran.<NOD<CLR
+04-08-08 Wife bore child.<NOD<END
+
+#0201
+<KEY<MSGDes mots sont à l'écran.<NOD<CLR
+<TURPourquoi ne pas se reposer ?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGDes mots sont à l'écran.<NOD<CLR<TURTu sais, J'écris souvent ce que
+j'ai appris sur mon journal...<NOD<END
+
+#0203
+<KEY<MSGDes mots sont à l'écran.<NOD<CLR
+<TURJe prie pour ta victoire.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGRien d'intéressant...<NOD<END
+#0221
+<KEY<MSGIl y a un journal, couvert
+de poussière...<NOD<FLJ1441:0223<FLJ1445:0222<END
+#0222
+<KEY<MSG
+Le lire?<YNJ0000<FL+1441<CLR<TURLes robots de la surface ont des
+limitations sur leur autonomie
+dans l'eau.<NOD<CLRS'ils sont trop longtemps submergés,<NOD<CLRLeur système s'éteint pour éviter
+d'éventuels court-circuits.<NOD<CLRCe qui suit est une description
+de comment restaurer un robot
+noyé.<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Tu as appris le sauvetage
+des robots noyés !<WAI0160<NOD<RMU<CLR<TURQuand le robot est hors de l'eau
+et qu'il a subi les procédures,<NOD<CLRle système redémarrera
+automatiquement.<WAI0030<NOD<END
+#0223
+<KEY<MSGRien de plus qui ne
+soit utile...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+#0251
+<KEY<MSG
+Te reposer ?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR
+.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+#0252
+<KEY<MSGElle ne bouge pas, mais elle
+semble toujours en vie.<NOD<END
+#0253
+<KEY<MSGVider Curly de son eau ?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Ooohh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019Tu es vivant !<NOD<CLROh, je suis si heureuse...<NOD<CLR<FAC0025Je pensais pas qu'on
+réussirait.<NOD
+Quand t'as perdu
+connaissance,
+Je n'avais pas trouvé 
+d'autre moyen...<NOD<CLRMon respirateur
+a marché comme
+je l'espérais.<NOD<CLR
+<FAC0020Ah...Je...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGElle s'est rendormie.<NOD
+<END
+#0254
+<KEY<MSGAparemment, ça prend du temps
+pour redémarrer.<NOD<FL+1443<END
+#0255
+<KEY<MSG
+La laisser ici ?<YNJ0256<END
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+#0257
+<KEY<MSGLe lit est tout mouillé.<NOD<END
+
+#0260
+

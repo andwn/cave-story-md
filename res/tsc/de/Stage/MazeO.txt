@@ -1,0 +1,156 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGDer mysteriöse Roboter,
+Monster X...<NOD
+Wenn seine Klappe aufgeht,
+hast du die Chance um ihn
+anzugreifen.<NOD<END
+
+
+#0300
+<KEY<MSGIch bin Arzt.<NOD
+Hier, ich kann deine HP auffüllen.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGAber nicht doch, kein Geld bitte.
+Das mache ich umsonst.<NOD<CLRAber dafür habe ich eine Bitte
+an dich.<NOD<CLRHier in der Gegend liegt
+irgendwo ein Krankenhaus.<NOD
+Kannst du dort mal nachschauen,
+ob noch irgenwelche Medikamente
+übrig sind?<NOD<CLR<GIT1017<IT+0017Du kriegst den
+=Krankenhausschlüssel=.<NOD<GIT0000<END
+
+#0301
+<KEY<MSGDas Krankenhaus liegt nicht
+weit weg von hier.<NOD
+Sieh doch mal bitte nach,
+ob noch anständige Medikamente
+übrig sind, ja?<NOD<END
+
+#0302
+<KEY<MSG<IT-0016<FL+0702
+<GIT1016Du gibst ihm den =Allesheiler=.<NOD<CLR<GIT0000Ooh, da ist er ja!<NOD
+Vielen Dank, Junge.<NOD
+Überlass den Rest einfach mir,
+okay?<NOD<END
+
+#0303
+<KEY<MSGVielen Dank, Junge.<NOD
+Überlass den Rest einfach mir,
+okay?<NOD<END
+
+#0304
+<KEY<MSGDas Medikament wirkt schon.<NOD
+Die Kleine ist schon bald
+wieder auf dem Dampfer.<NOD
+Und das hat sie dir zu verdanken.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGIch bin Krankenschwester.<NOD
+Ich habe einmal im Krankenhaus
+in der Nähe gearbeitet,<NOD
+aber nachdem es von Geistern
+heimgesucht wurde, musste
+ich hierher flüchten.<NOD<END
+
+#0311
+<KEY<MSGIst die Kleine eine
+Freundin von dir?<NOD
+Wenn du ihr helfen willst,
+dann frag am besten den Arzt
+was zu tun ist.<NOD<END
+
+#0312
+<KEY<MSGGut gemacht!<NOD
+Hast du die Geister
+gesehen?<NOD<END
+
+#0313
+<KEY<MSGAh, ein Krankenbesuch?<NOD<CLRSie ist schon wieder entlassen.
+Sie sagte, sie wollte los zur
+"Felsenkammer".<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019Hey, Junge!<NOD<CLRWiedersehen macht Freude,
+was?<NOD Und du siehst
+nicht übel aus!<NOD<CLRDie Hexe hat dich
+also auch hier
+runtergeschleudert, hm?<NOD
+Bei mir wars das selbe!<NOD<CLR<FAC0020Die Typen sind einfach
+nicht tot zu kriegen.
+Nicht mal von dir...<NOD
+Und ich hatte so gehofft,
+dass du das hinkriegst...<NOD<CLRIch hab's ja auch
+probiert.<NOD
+Mein Gott, ich hab alles
+gegeben was ich konnte.<NOD
+Und was hat es mir
+gebracht?<NOD
+Kuck mich doch an...<NOD<CLR...<NOD<CLRAlles umsonst.<NOD
+Ich konnte nicht mal die
+Kleinen beschützen.<NOD
+In dem Zustand
+komm ich hier so bald
+wohl nicht wieder raus...<NOD<END
+
+#0321
+<KEY<MSG<FAC0020Ja, schon klar,
+ich lebe noch.
+Aber was bringt mir das
+jetzt noch?<NOD<CLRJetzt kann ich hier nur
+noch rumsitzen und vor
+mich hinrosten...<NOD<END
+
+#0322
+<KEY<MSG<FAC0020Das hier ist das
+Sagenumwobene Labyrinth.<NOD
+Keine Ahnung wer dafür
+verantwortlich war,<NOD
+aber angeblich liegt hier
+der Schrottplatz der
+Insel.<NOD<CLREs gibt nur einen Weg
+hier raus.<NOD Und dafür
+muss man erst den riesen
+Fels in der Felskammer
+aus dem Weg schaffen.<NOD<CLRIch würde ja liebend gern
+mit dir kommen,<NOD aber in
+dem Zuständ wär ich dir
+sicher nur im Weg...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGDu öffnest die Schatzkiste.<NOD<GIT1019<IT+0019<EQ+0004<CLR<CMU0010Du hast den =Waffenschutz=
+bekommen!<WAI0160<NOD<RMU<END

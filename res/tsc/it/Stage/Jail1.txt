@@ -1,0 +1,63 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<FAO0000<TRA0056:0090:0102:0055
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0099:0044
+
+
+#0200
+<KEY
+<FLJ1081:0202
+<FLJ1080:0201
+<MSG*Gnam gnam*...<NOD<CLR!<NOD<CLO
+<MYB0000<ANP0200:0002:0004<WAI0030<MYD0000<FL+1080<FL-1025<FL+1026
+<MSGOh, guarda chi si è svegliato.<NOD<CLRPareva fossi morto.
+Non ti sei mosso nemmeno quando
+Sue si è messa a schiaffeggiarti 
+in quel modo.<NOD<CLRQuesta è la galera.<NOD
+Quelli che tentano di ribellarsi 
+contro il Dottore
+vengono schiaffati qui.<NOD
+Per essere poi cavie per
+i suoi esperimenti...<NOD<CLR...questo è quello che ha 
+detto Sue.<NOD<CLRSei un suo amico?<NOD
+Sei un po' in ritardo.<NOD
+Era qui con noi.<NOD<CLRSi è presa cura di te per
+tutto il tempo.<NOD
+Ma giusto poco fa,
+sono venuti e se la sono
+portata via.<NOD<EVE0209
+
+#0201
+<MSG<FL+1081Oh, sì.<NOD<CLRPrima che se la portassero via,
+ho visto che ti ha infilato 
+qualcosa in tasca.<NOD<CMP0024:0016:0066<EVE0209
+
+#0202
+<KEY<MSGCosa'era? Una lettera d'amore?<NOD<CMP0024:0016:0066<EVE0209
+
+#0209
+<KEY<ANP0200:0000:0002<END
+
+
+#0220
+<KEY<HMC<CNP0221:0150:0002<ANP0221:0010:0002<WAI0050
+<MSG<SOU0070Hey!<NOD<CLR
+<SOU0070Andiamo!<NOD<CLR
+
+Non sarai mica morto, vero??<NOD<CLR.....<NOD<CLO
+<WAI0050<IT+0026<WAI0050<MNA<CMU0008<FAI0004<WAI0050<SMC<DNP0221<END
+#0221
+

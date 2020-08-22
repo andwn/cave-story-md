@@ -1,7 +1,5 @@
 #include "common.h"
-
-#include "resources.h"
-
+#include "bank_data.h"
 #include "tables.h"
 
 const song_info_def song_info[SONG_COUNT] = {
@@ -40,7 +38,7 @@ const song_info_def song_info[SONG_COUNT] = {
 	{ BGM_LastBoss, 	"Last Battle" }, // 0x20
 	{ BGM_WayBackHome, 	"The Way Back Home" },
 	{ BGM_Zombie, 		"Zombie" },
-	{ BGM_BreakDown, 	"Break Down" },
+	{ BGM_Breakdown, 	"Break Down" },
 	{ BGM_RunningHell, 	"Running Hell" },
 	{ BGM_Jenka2, 		"Jenka 2" },
 	{ BGM_Waterway, 	"Living Waterway" },

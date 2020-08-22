@@ -1,0 +1,109 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0049:0094:0290:0008
+
+#0110
+<KEY<FLJ0940:0111<MSGSenti il soffiare di un 
+gelido vento...<NOD<END
+#0111
+<KEY<FAO0002<TRA0053:0092:0004:0165
+
+#0110
+
+#0400
+
+#0500
+<KEY<MSGDelle parole illuminano lo schermo.<NOD<CLR
+<TURSCHIUSURA AVVENUTA CON SUCCESSO<NOD<FLJ0941:0000<CLO
+<FL+0941
+<WAI0020<CMU0000<MSGChi c'è là?<MYD0002<NOD<CLO
+<WAI0050<CNP0400:0055:0000
+<WAI0010<ANP0400:0003:0000
+<WAI0048<ANP0400:0000:0000
+<CMU0014<MSG<FAC0010Oh, sei tu.<NOD<CLRLieto di vedere
+che stai bene.<NOD
+Io sono rimasto 
+l'unico, qui.<NOD<CLRDopo che ti sei 
+avventurato nella Zona 
+di Sabbia,<NOD
+il resto di noi ha cercato
+un mezzo sicuro per
+fuggire.<NOD<CLRFu in quel momento che
+Misery comparve.<NOD
+Ha preso Sue
+con lei,<NOD
+e non ho visto
+il Professore...<NOD<CLR.....<NOD<CLRComunque, è evidente
+che il Dottore è riuscito ad
+ottenere i semi.<NOD<CLROh,<NOD no, no, non
+è colpa tua...<NOD<ANP0400:0000:0002
+La vittoria del Dottore
+era già praticamente 
+assicurata<NOD
+quando mise le mani su 
+quella Corona.<NOD<CLROrmai è solo una questione 
+di tempo prima che la sua 
+armata di Mimiga 
+selvaggi venga 
+completata...<NOD<CLRDopodiché, temo che 
+nemmeno tu potresti 
+fermarlo.<NOD<CLO<FAC0000
+<WAI0010<ANP0400:0003:0002
+<WAI0016<ANP0400:0000:0002
+<MSG<FAC0010Non abbiamo altra scelta
+che fuggire...<NOD<CLRPotremmo farlo
+se usassimo un
+Drago del Cielo.<NOD
+E' per questo che sono qui.<NOD<CLRIl mio drago 
+si è appena schiuso.<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000<WAI0100
+<MSG<FAC0010Vuoi fuggire con me?<YNJ0501<FL+0960<CLR<ANP0400:0000:0002Già, non c'è altro modo.<NOD
+Abbiamo fatto il possibile.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+
+
+#0501
+<KEY<WAI0020<ANP0400:0000:0002
+<MSG<FAC0010Capisco...<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000
+<WAI0010<ANP0400:0005:0000
+<MSG<FAC0010Sai,<NOD a dire il vero c'è 
+un modo per fare tornare
+i Mimiga al loro<NOD
+stato naturale.<NOD<CLRPotresti distruggere il
+nucleo dell'isola.<NOD
+Se così facessi, però,
+l'isola probabilmente
+si sbriciolerebbe.<NOD
+Una scelta pericolosa, no?<NOD<WAI0050<ANP0400:0000:0000<CLRBeh, a prescindere, noi
+non sappiamo nemmeno dove
+si trova, il nucleo...<NOD<CLRSe vuoi fare un
+tentativo, posso sempre
+aspettarti.<NOD<CLRMa ricorda, se le cose
+dovessero mettersi male,<NOD
+potrei essere costretto ad 
+andarmene senza di te...<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+<END
+
+#0502
+

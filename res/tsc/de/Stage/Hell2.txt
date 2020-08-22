@@ -1,0 +1,49 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<MNA<CMU0036<FAI0003<END
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<KEY<MYB0000<WAI0002<PRI<FAI0001<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<PRI<FAO0003<TRA0082:0095:0154:0002
+
+
+#0200
+<PRI<MSG<TUR
+Du kannst nicht mehr umdrehen...<NOD<END
+
+
+
+#0900
+<DNP0900<SKJ0022:0000<SK+0022
+<PRI<MS3Aus Neid ließ der König Ballos
+verhaften und ins Gefängnis
+sperren,<NOD wo er grauenvoll
+gestraft und gefoltert wurde.<NOD
+Die Menschen können wahrlich
+grausam sein...<NOD<END
+
+#0901
+<DNP0901<SKJ0023:0000<SK+0023<PRI<MS3Die grauenvollen Strafen waren
+zuviel für Ballos.<NOD
+Seine Hexenkräfte gerieten
+außer Kontrolle...<NOD<CLREin Wirbelsturm von unbändiger
+Zauberkraft verschlang den König,<NOD
+und vernichtete das Land
+in einem Schlag.<NOD
+Nach nur einer Nacht war das Land,
+das Ballos so liebte, zu Schutt
+und Asche verbrannt.<NOD<END

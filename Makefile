@@ -19,6 +19,8 @@ XGMTOOL  = bin/xgmtool
 MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
+# Cave Story Tools
+TSCOMP   = bin/tscomp
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -33,7 +35,7 @@ LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
 CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -mshort
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk-old.ld -nostdlib
+LDFLAGS  = -T mdssf.ld -nostdlib
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
@@ -41,23 +43,40 @@ PXMS  = $(wildcard res/Stage/*.pxm)
 PXMS += $(wildcard res/Stage/*/*.pxm)
 CPXMS = $(PXMS:.pxm=.cpxm)
 
+# TSC to convert to TSB
+TSCS  = $(wildcard res/tsc/*/*.txt)
+TSCS += $(wildcard res/tsc/*/Stage/*.txt)
+TSBS  = $(TSCS:.txt=.tsb)
+
 # mdtiler scripts to generate tile patterns & mappings
 MDTS  = $(wildcard res/*.mdt)
 MDTS += $(wildcard res/*/*.mdt)
 PATS  = $(MDTS:.mdt=.pat)
 MAPS  = $(MDTS:.mdt=.map)
 
+# VGM files to convert to XGC
+VGMS  = $(wildcard res/bgm/*.vgm)
+XGCS  = $(VGMS:.vgm=.xgc)
+
+# WAV files to convert to raw PCM
+WAVS  = $(wildcard res/sfx/*.wav)
+PCMS  = $(WAVS:.wav=.pcm)
+
 RESS  = res/resources.res
-Z80S  = $(wildcard src/xgm/*.s80)
+#Z80S  = $(wildcard src/xgm/*.s80)
 CS    = $(wildcard src/*.c)
 CS   += $(wildcard src/ai/*.c)
 CS   += $(wildcard src/db/*.c)
 SS    = $(wildcard src/*.s)
 SS   += $(wildcard src/xgm/*.s)
 OBJS  = $(RESS:.res=.o)
-OBJS += $(Z80S:.s80=.o)
+#OBJS += $(Z80S:.s80=.o)
 OBJS += $(CS:.c=.o)
 OBJS += $(SS:.s=.o)
+
+# Z80 source for XGM driver
+ZSRC  = $(wildcard src/xgm/*.s80)
+ZOBJ  = $(ZSRC:.s80=.o80)
 
 ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
@@ -87,7 +106,8 @@ debug: main-build symbol.txt
 
 main-build: prereq head-gen doukutsu.bin
 
-prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(CPXMS)
+prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
+prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: doukutsu.bin
@@ -119,8 +139,8 @@ boot.o:
 %.o80: %.s80
 	$(ASMZ80) $(Z80FLAGS) $< $@ out.lst
 
-%.s: %.o80
-	$(BINTOS) $<
+#%.s: %.o80
+#	$(BINTOS) $<
 
 # Old SGDK tools
 bin:
@@ -138,6 +158,10 @@ $(XGMTOOL): bin
 $(WAVTORAW): bin
 	cc tools/wavtoraw/src/*.c -o $@ -lm
 
+# Cave Story tools
+$(TSCOMP): bin
+	cc tools/tscomp/tscomp.c -o $@
+
 # For asm target
 asm-dir:
 	mkdir -p asmout/src/{ai,db,xgm}
@@ -152,6 +176,37 @@ asmout/%.s: %.c
 %.pat: %.mdt
 	$(MDTILER) -b "$<"
 
+# Convert VGM
+%.xgc: %.vgm
+	$(XGMTOOL) "$<" "$@" -s
+
+# Convert WAV
+%.pcm: %.wav
+	$(WAVTORAW) "$<" "$@" 14000
+
+# Convert TSC
+res/tsc/en/%.tsb: res/tsc/en/%.txt
+	$(TSCOMP) -l=en "$<"
+
+res/tsc/ja/%.tsb: res/tsc/ja/%.txt
+	$(TSCOMP) -l=ja "$<"
+
+res/tsc/es/%.tsb: res/tsc/es/%.txt
+	$(TSCOMP) -l=es "$<"
+
+res/tsc/pt/%.tsb: res/tsc/pt/%.txt
+	$(TSCOMP) -l=pt "$<"
+
+res/tsc/fr/%.tsb: res/tsc/fr/%.txt
+	$(TSCOMP) -l=fr "$<"
+
+res/tsc/it/%.tsb: res/tsc/it/%.txt
+	$(TSCOMP) -l=it "$<"
+
+res/tsc/de/%.tsb: res/tsc/de/%.txt
+	$(TSCOMP) -l=de "$<"
+
+
 .PHONY: head-gen clean
 
 head-gen:
@@ -159,7 +214,8 @@ head-gen:
 	python aigen.py
 
 clean:
-	rm -f $(CPXMS) $(PATS) $(MAPS) $(OBJS)
+	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(ZOBJ) $(OBJS)
+	rm -f $(TSBS)
 	rm -f doukutsu.bin doukutsu.elf symbol.txt boot.o
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s inc/ai_gen.h

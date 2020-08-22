@@ -1,0 +1,127 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGEl robot misterioso,
+Monstruo X...<NOD
+Tu oportunidad para atacar
+es cuando su coraza se abre.<NOD<END
+
+
+#0300
+<KEY<MSGSoy un médico.<NOD
+Por favor, déjame curarte.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGNo, no, no te cobraré, tranquilo.<NOD<CLRSin embargo, a cambio hay algo
+que me gustaría pedirte.<NOD<CLRHay una vieja clínica cerca de
+aquí.<NOD
+Ve a ver si hay alguna
+medicina por allí.<NOD<CLR<GIT1017<IT+0017Conseguiste la
+=Llave de la Clínica=.<NOD<GIT0000<END
+#0301
+<KEY<MSGLa clínica no está lejos.<NOD
+Ve y busca alguna medicina que
+parezca usable.<NOD<END
+#0302
+<KEY<MSG<IT-0016<FL+0702
+<GIT1016Entregaste el =Curatodo=.<NOD<CLR<GIT0000¡Oh, lo has encontrado!<NOD
+Muchas gracias.<NOD
+Ahora déjame ocuparme del resto.<NOD<END
+#0303
+<KEY<MSGMuchas gracias.<NOD
+Ahora déjame ocuparme del resto.<NOD<END
+#0304
+<KEY<MSGParece que la medicina funciona.<NOD
+Estará de vuelta en acción
+dentro de poco.<NOD
+Todo gracias a ti, por supuesto.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGSoy una enfermera.<NOD
+Antes trabajaba en la vieja
+clínica que hay cerca de aquí,<NOD
+pero fue invadida por fantasmas
+y me vine aquí.<NOD<END
+#0311
+<KEY<MSG¿Eres un amigo suyo?<NOD
+Si ella te importa, te
+recomendaría hacer lo que
+el médico te diga.<NOD<END
+#0312
+<KEY<MSGBuen trabajo.<NOD
+¿No viste a ningún fantasma,
+verdad?<NOD<END
+#0313
+<KEY<MSGOh, ¿has venido a ver a
+esa chica?<NOD<CLRSe acaba de ir a la
+"Cámara de la Roca".<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019¡Oh, hey!<NOD<CLRHace mucho que no nos
+vemos.<NOD
+¡Tienes buen aspecto!<NOD<CLREsa bruja te ha tirado
+aquí también, ¿eh?<NOD
+¡Igual que a mí!<NOD<CLR<FAC0020Así al final no pudiste
+vencerles...<NOD
+De verdad que confiaba en
+ti, pero...<NOD<CLRLo intenté.
+Vaya si lo intenté.<NOD
+Y mira cómo he acabado.<NOD<CLR.....<NOD<CLRY todo para nada.<NOD
+Al final, no pude salvar
+a ninguno de esos niños.<NOD
+En este estado no voy
+a poder salir por
+un tiempo...<NOD<END
+#0321
+<KEY<MSG<FAC0020Sobreviví, sí, pero
+¿y ahora qué?<NOD<CLRSupongo que tendré que
+sentarme aquí y pudrirme...<NOD<END
+#0322
+<KEY<MSG<FAC0020Éste es el legendario
+Laberinto.<NOD
+No sé quién lo hizo,
+pero al parecer es el
+vertedero de esta isla.<NOD<CLRSólo hay una forma de
+salir.<NOD
+Tienes que atravesar la
+gran roca que hay en la
+Cámara de la Roca.<NOD<CLRIría contigo,<NOD
+pero en este estado sólo
+sería un estorbo...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGHas abierto el cofre.<NOD<GIT1019<IT+0019<EQ+0004<CLR<CMU0010¡Conseguiste la
+=Barrera de Energía=!<WAI0160<NOD<RMU<END
+

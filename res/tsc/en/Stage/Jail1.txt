@@ -1,0 +1,59 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<FAO0000<TRA0056:0090:0102:0055
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0099:0044
+
+
+#0200
+<KEY
+<FLJ1081:0202
+<FLJ1080:0201
+<MSG*Chomp chomp*...<NOD<CLR!<NOD<CLO
+<MYB0000<ANP0200:0002:0004<WAI0030<MYD0000<FL+1080<FL-1025<FL+1026
+<MSGOh, look who's awake.<NOD<CLRThought you might be dead.
+You didn't flinch no matter
+how many times Sue smacked you.<NOD<CLRThis is the jail.<NOD
+Those who try to defy the Doctor
+get thrown in here.<NOD
+To be subjects for his
+experiments...<NOD<CLR...That's what Sue said.<NOD<CLRYou a friend of hers?<NOD
+You're a bit too late.<NOD
+She used to be in here with us.<NOD<CLRShe was caring for you the
+whole time.<NOD
+But just a little while ago,
+they came and took her away.<NOD<EVE0209
+
+#0201
+<MSG<FL+1081Oh yeah.<NOD<CLRJust before they hauled her off,
+I saw her cram something into
+your pocket.<NOD<CMP0024:0016:0066<EVE0209
+
+#0202
+<KEY<MSGWhat was it, a love letter?<NOD<CMP0024:0016:0066<EVE0209
+
+#0209
+<KEY<ANP0200:0000:0002<END
+
+
+#0220
+<KEY<HMC<CNP0221:0150:0002<ANP0221:0010:0002<WAI0050
+<MSG<SOU0070Hey!<NOD<CLR
+<SOU0070C'mon!<NOD<CLR
+
+You're not dead, are you?<NOD<CLR.....<NOD<CLO
+<WAI0050<IT+0026<WAI0050<MNA<CMU0008<FAI0004<WAI0050<SMC<DNP0221<END
+#0221
+

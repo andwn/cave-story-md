@@ -1,0 +1,416 @@
+#0000
+<FRE<WAI9999<END
+
+#1000
+<MSG<TURDu hast keine Waffe.<WAI9999<END
+
+#1001
+<MSG<TUR- Snake -
+Schlängelt sich durch Wände.
+Im Labyrinth von Chaba gebaut.<WAI9999<END
+
+#1002
+<MSG<TUR- Polar Star -
+Die primäre Kanone.
+Der Nordstern ist darauf abgebildet.<WAI9999<END
+
+#1003
+<MSG<TUR- Feuerball -
+Prallt vom Boden ab.
+Nützlich auf geneigten Hügeln.<WAI9999<END
+
+#1004
+<MSG<TUR- Maschinenkanone -
+Automatisches Schnellfeuer.
+Lädt sich von selbst wieder auf.<WAI9999<END
+
+#1005
+<MSG<TUR- Raketenwerfer -
+Große Reichweite und Schaden.
+Nur die Munition ist begrenzt.<WAI9999<END
+
+#1007
+<MSG<TUR- Blubber -
+Vom Kamin in der Versammlungshalle.
+Eine sonderbare Waffe.<WAI9999<END
+
+#1009
+<MSG<TUR- Klinge -
+Einzelschuss und massiver Schaden.
+In der Klinge ruht Kings Seele.<WAI9999<END
+
+#1010
+<MSG<TUR- Super-Raketen -
+Eine erheiternd-aufregende Rakete.
+Unvergleichliche Beschleunigung.<WAI9999<END
+
+#1012
+<MSG<TUR- Nemesis -
+Blitze der Göttin. Auf Level 1 am mächtigsten.
+Nur für erfahrene Spieler.<WAI9999<END
+
+#1013
+<MSG<TUR- Spur -
+Halte den Knopf um einen
+Laser zu feuern.<WAI9999<END
+
+#1100
+<MSG<TURHajime<WAI9999<END
+
+#1101
+<MSG<TURMick<WAI9999<END
+
+#1102
+<MSG<TURShinobu<WAI9999<END
+
+#1103
+<MSG<TURKakeru<WAI9999<END
+
+#1104
+<MSG<TURNene<WAI9999<END
+
+#1200
+<MSG<TURDer Anführer von Jenkas Hündchen.
+Auf der Suche nach seinen Geschwistern hat
+er sich zu Curly verlaufen.<WAI9999<END
+
+#1201
+<MSG<TURJenkas Hündchen. Liebt Schatzsuchen.
+Oder eher *Schatzkisten*, worin er sich
+gerne für ein Nickerchen verkriecht.<WAI9999<END
+
+#1202
+<MSG<TURJenkas Hündchen. Mag dunkle Orte.
+Wegen seinen schlechten Augen vertraut er
+in der Dunkelheit seinen anderen Sinnen.<WAI9999<END
+
+#1203
+<MSG<TURJenkas Hündchen. Vergräbt gerne
+Knochen. Viele davon sind an unbekannten
+Stellen vergraben, von der Zeit vergessen.<WAI9999<END
+
+#1204
+<MSG<TURJenkas schönstes Hündchen das gerne träumt.
+Viele ihrer Träume sollen angeblich die
+Zukunft voraussagen.<WAI9999<END
+
+#5000
+<MSG<TURDu hast kein Item dabei.<WAI9999<END
+#5001
+<MSG<TURArthurs Schlüssel<WAI9999<END
+#5002
+<MSG<TURKartensystem<WAI9999<END
+#5003
+<MSG<TURSantas Schlüssel<WAI9999<END
+#5004
+<MSG<TURSilbermedaille<WAI9999<END
+#5005
+<MSG<TURBestienzahn<WAI9999<END
+#5006
+<MSG<TURHP-Kapsel<WAI9999<END
+#5007
+<MSG<TURID-Karte<WAI9999<END
+#5008
+<MSG<TURQuallensaft<WAI9999<END
+#5009
+<MSG<TURRostiger Schlüssel<WAI9999<END
+#5010
+<MSG<TURPlastik-Schlüssel<WAI9999<END
+#5011
+<MSG<TURPlastikstoff<WAI9999<END
+#5012
+<MSG<TURKohle<WAI9999<END
+#5013
+<MSG<TURBombe<WAI9999<END
+
+#5014
+<FLJ3000:1100
+<FLJ3001:1101
+<FLJ3002:1102
+<FLJ3003:1103
+<FLJ3004:1104
+<MSG<TURHündchen<WAI9999<END
+#5015
+
+<MSG<TURHP-Krug<WAI9999<END
+
+#5016
+<MSG<TURAllesheiler<WAI9999<END
+
+#5017
+<MSG<TURKrankenhausschlüssel<WAI9999<END
+
+#5018
+<MSG<TURBooster v0.8<WAI9999<END
+
+#5019
+<MSG<TURWaffenschutz<WAI9999<END
+
+#5020
+<MSG<TURTurbocharge<WAI9999<END
+
+#5021
+<MSG<TURCurlys Sauerstoffflasche<WAI9999<END
+
+#5022
+<MSG<TUR290 Stoppuhr<WAI9999<END
+
+#5023
+<MSG<TURBooster v2.0<WAI9999<END
+
+#5024
+<MSG<TURMimiga-Maske<WAI9999<END
+
+#5025
+<MSG<TURTeleporterraum-Schlüssel<WAI9999<END
+
+#5026
+<MSG<TURSues Brief<WAI9999<END
+
+#5027
+<MSG<TURFernsteuerung<WAI9999<END
+
+#5028
+<MSG<TURDefekter Rasensprenger<WAI9999<END
+
+#5029
+<MSG<TURRasensprenger<WAI9999<END
+
+#5030
+<MSG<TURSchleppseil<WAI9999<END
+
+#5031
+<MSG<TURTonfigur-Medaillon<WAI9999<END
+
+#5032
+<MSG<TURKleiner Mann<WAI9999<END
+
+#5033
+<MSG<TURPilz-Orden<WAI9999<END
+
+#5034
+<MSG<TURMa Pignon<WAI9999<END
+
+#5035
+<MSG<TURCurlys Höschen<WAI9999<END
+
+#5036
+<MSG<TURAlien-Emblem<WAI9999<END
+
+#5037
+<MSG<TURChacos Lippenstift<WAI9999<END
+
+#5038
+<MSG<TURGlücksstern<WAI9999<END
+
+#5039
+<MSG<TUREisernes Band<WAI9999<END
+
+#6000
+<MSG<TURKein Item.<WAI9999<END
+
+#6001
+<MSG<TURDer Schlüssel zu Arthurs Haus.
+Er war bei seinem Grabstein versteckt.<WAI9999<END
+
+#6002
+<PRI<EVE7002<MPJ7002<MSGZu diesem Boden fehlen Daten.<NOD<CLR<END
+
+#6003
+<MSG<TURDer Schlüssel zu Santas Haus.<WAI9999<END
+
+#6004
+<MSG<TUREine fischartige Silbermedaille.
+So wie sie aussieht, war sie jemandem wohl 
+jahrelang ein wertvoller Schatz.<WAI9999<END
+
+#6005
+<MSG<TUREin spitzer Zahn von
+der Yamashita Farm. Ob sein
+Besitzer wohl noch lebt...?<WAI9999<END
+
+#6006
+<MSG<TUREine HP-Kapsel.<WAI9999<END
+
+#6007
+<MSG<TUREine ID-Karte aus Ei Nr. 06.<WAI9999<END
+
+#6008
+<MSG<TUREine Flüssigkeit die
+Kaminfeuer löschen kann.<WAI9999<END
+
+#6009
+<MSG<TUREin rostiger Schlüssel.<WAI9999<END
+
+#6010
+<MSG<TUREs steht "Plastik" drauf.<WAI9999<END
+
+#6011
+<MSG<TUREin Klumpen Plastikstoff.<WAI9999<END
+
+#6012
+<MSG<TUREin bisschen Kaminkohle.<WAI9999<END
+
+#6013
+<MSG<TUREine Bombe,
+um Türen aufzusprengen.<WAI9999<END
+
+#6014
+<FLJ3000:1200
+<FLJ3001:1201
+<FLJ3002:1202
+<FLJ3003:1203
+<FLJ3004:1204
+<MSG<TURJenkas Hündchen.<WAI9999<END
+
+#6015
+<KEY<MSGDieser Krug kann einmal deine
+HP auffüllen. Willst du ihn
+anwenden?<YNJ0000<LI+1000<SOU0020<IT-0015<MSG
+HP aufgefüllt.<FRE<WAI9999<END
+
+#6016
+<MSG<TURDiese Pille kann anscheinend
+alles heilen...<WAI9999<END
+
+#6017
+<MSG<TURDa steht "Labyrinth Krankenhaus"
+drauf.<WAI9999<END
+
+#6018
+<FLJ0742:7018
+<KEY<MSGHalte den Sprungknopf,
+um in der Luft zu schweben.<NOD<CLRWillst du ihn anziehen?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSG
+Booster v0.8 angezogen.<NOD<WAI0003<FRE<EVE5018
+
+#6019
+<MSG<TURWenn du getroffen wirst,
+halbiert sich die verlorene Waffenenergie.<WAI9999<END
+
+#6020
+<MSG<TURLässt die Maschinenkanone schneller
+aufladen.<WAI9999<END
+
+#6021
+<MSG<TURDamit kannst du unterwasser atmen.
+Hat einmal Curly gehört.<WAI9999<END
+
+#6022
+<MSG<TUREine vollautomatische Stoppuhr.
+Es sind keine Knöpfe und nichts drauf.<WAI9999<END
+
+#6023
+<FLJ0743:7023
+<KEY<MSGDrücke den Sprungknopf in der Luft,
+um in jede Richtung zu fliegen.<NOD<CLRWillst du ihn anziehen?<YNJ0000<EQ+0032<FL+0743<EQ-0001<FL-0742<MSG
+Booster v2.0 angezogen.<NOD<WAI0003<FRE<EVE5023
+
+#6024
+<MSG<TURDie Mimiga-Maske von
+Sues Mutter. Ein bisschen groß...<WAI9999<END
+
+#6025
+<MSG<TUREin Schlüssel, den ein Mimiga
+geangelt hat.<WAI9999<END
+
+#6026
+<KEY<MSGWillst du ihn lesen?<YNJ0000<MSG<TUR=Von Sue=<NOD<CLRIch glaube, ich hab dir nie wirklich
+unsere Geschichte erzählt...<NOD<CLRWir haben diese Insel hier für
+eine Forschungsreise besucht.<NOD<CLRAlso in einem Helikopter.<NOD<CLRMit dabei waren der Professor Booster,
+meine Mama, Onii-chan, ein paar Helfer,
+und natürlich der Doktor.<NOD<CLRDer Doktor war nämlich unser 
+Notarzt.<NOD<CLRNaja, bis... bis er die
+Teufels-Krone gefunden hat...<NOD<CLRDie Krone hat einmal dem Herren
+dieser Insel gehört,<NOD<CLRund sie verleiht jedem Träger
+unglaubliche magische Kräfte...<NOD<CLRDer Doktor wusste schon von der
+Krone, bevor wir auf die Insel kamen.<NOD<CLRNur darum wollte er überhaupt mit uns
+mitkommen.<NOD<CLRAls er sie endlich hatte, konnte sich
+keiner mehr von uns gegen ihn wehren.<NOD<CLREr hat uns gezwungen, die Insel
+unter seinem Kommando weiter-
+zuerforschen.<NOD<CLRJetzt will der Doktor die Weltherrschaft
+übernehmen, und die Insel soll als sein
+Stützpunkt dienen.<NOD<CLRIch glaube, sein erster Schritt ist,
+die Erde mit den Mimigas als Biowaffen
+zu überfallen.<NOD<CLRIch bin zwar irgendwie entwischt,
+aber ich weiß nicht was mit den anderen
+Wissenschaftlern passiert ist...<NOD<CLRDer Doktor zwingt jetzt die Mimiga,
+die davon ja keine Ahnung haben,
+viele rote Blumen für ihn anzupflanzen.<NOD<CLRSobald er für seinen Angriff soweit ist, 
+wird er die Blumen an die Mimiga verfüttern
+und sie in wilde Bestien verwandeln.<NOD<CLRMit seinen teuflischen Kräften kann er
+die Mimiga nach Belieben kontrollieren
+damit sie ihm jeden Wunsch erfüllen.<NOD<CLRUnd vielleicht...<WAI0050
+mich auch.<NOD<CLRFalls du es hier rausschaffst,
+dann musst du unser Geheimversteck hier
+in der Plantage aufsuchen.<NOD<CLRWenn meine Mama noch lebt, dann wird
+sie bestimmt dort warten und sich einen
+Plan gegen den Doktor ausdenken.<NOD<CLRBitte.<WAI0040
+Du musst meiner Mama helfen.<NOD<CLRDas Passwort lautet:
+"Etchischeg-Nelhöh Enie"<NOD<CLR<FL+1024<FRE<MSGDer Brief endet hier.<NOD<CLR<WAI9999<END
+
+#6027
+<MSG<TURNötig für die Fertigstellung
+der Rakete. Der wahre Stolz von Itou,
+dem Feigling.<WAI9999<END
+
+#6028
+<MSG<TUREin defekter Rasensprenger.<WAI9999<END
+
+#6029
+<MSG<TURBrandneu... anscheinend.<WAI9999<END
+
+#6030
+<MSG<TUREin Schleppseil für Roboter.<WAI9999<END
+
+#6031
+<MSG<TURKlein und stattlich schwer.
+Zu nichts nutze.<WAI9999<END
+
+#6032
+<MSG<TUR"Sind wir endlich daa?"<WAI9999<END
+
+#6033
+<MSG<TUREin Pilz-Orden, den du bekommen hast.
+Er ist zu überhaupt nichts gut.
+Eigentlich brauchst du ihn gar nicht...<FL+1563<WAI9999<END
+
+#6034
+<MSG<TURAngeblich kann dieser Pilz
+Erinnerungen wieder auffrischen...<WAI9999<END
+
+#6035
+<MSG<TURGrüne Höschen mit einem kleinen Emblem,
+die du aus den Zwischenwänden geklaut hast.
+Sind zu nichts gut.<WAI9999<END
+
+#6036
+<MSG<TURDie Silhouette eines Aliens ist darin
+eingraviert.
+Zu nichts gut.<WAI9999<END
+
+#6037
+<MSG<TURRoter Lippenstift.
+Zu nichts gut.<WAI9999<END
+
+#6038
+<KEY<MSGKlunker, den du von Chaba im
+Labyrinth bekommen hast.
+Ein flinker Glücksstern.<NOD<FLJ0722:7038<CLRWillst du ihn anziehen?<YNJ0000<EQ+0128<FL+0722<MSG
+Du ziehst den Glücksstern an.<NOD<WAI0003<FRE<EVE5038
+
+#6039
+<MSG<TURDas Band zu Curly Brace, die einzige
+Kameradin, der du deinen Rücken anvertraust.
+Irgendwann wirst du sie wieder sehen...<WAI9999<END
+
+#7002
+<MLP<END
+
+#7018
+<KEY<MSGWillst du ihn abnehmen?<YNJ0000<EQ-0001<FL-0742<MSGBooster v0.8 abgenommen.<NOD<WAI0003<FRE<EVE5018
+
+#7023
+<KEY<MSGWillst du ihn abnehmen?<YNJ0000<EQ-0032<FL-0743<MSGBooster v2.0 abgenommen.<NOD<WAI0003<FRE<EVE5023
+
+#7038
+<KEY<MSGWillst du ihn abnehmen?<YNJ0000<EQ-0128<FL-0722<MSGGlücksstern abgenommen.<NOD<WAI0003<FRE<EVE5038

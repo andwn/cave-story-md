@@ -1,0 +1,83 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGCi sono petali rossi dappertutto.<NOD<END
+
+#0200
+<KEY<MSGHai trovato una nota.<NOD<CLR<TURCon lo scudo attivato, non posso avere 
+accesso alla stanza No. 00.<NOD<CLR<TURCredo che uno di questi terminali
+sia in grado di abbassare uno
+scudo...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGAperto lo scrigno.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TURUovo di Drago del Cielo No. 1
+Errore: Condizione dell'uovo anormale.
+Si consiglia di verificare.<NOD<END
+#0502
+<PRI<MS3<TURUovo di Drago del Cielo No. 2
+Condizione normale.<NOD<END
+#0503
+<PRI<MS3<TURUovo di Drago del Cielo No. 3
+Condizione normale.<NOD<END
+#0504
+<PRI<MS3<TURUovo di Drago del Cielo No. 4
+Condizione normale.<NOD<END
+#0505
+<PRI<MS3<TURUovo di Drago del Cielo No. 5
+Condizione normale.<NOD<END
+#0506
+<PRI<MS3<TURUovo di Drago del Cielo No. 6
+Errore: Condizione dell'uovo anormale.
+Si consiglia di verificare.<NOD<END
+#0507
+<PRI<MS3<TURUovo di Drago del Cielo No. 7
+Condizione normale.<NOD<END
+#0508
+<PRI<MSG<TURUovo di Drago del Cielo No. 8
+Condizione normale.<NOD<END
+#0509
+<PRI<MSG<TURUovo di Drago del Cielo No. 9
+Condizione normale.<NOD<END
+#0510
+<PRI<MSG<TURUovo di Drago del Cielo No. 10
+Condizione normale.<NOD<END
+#0511
+<PRI<MSG<TURUovo di Drago del Cielo No. 11
+Condizione normale.<NOD<END
+#0512
+<PRI<MSG<TURUovo di Drago del Cielo No. 12
+Condizione normale.<NOD<END
+#0513
+<PRI<MSG<TURUovo di Drago del Cielo No. 13
+Condizione normale.<NOD<END
+#0514
+<PRI<MSG<TURUovo di Drago del Cielo No. 14
+Condizione normale.<NOD<END
+#0515
+<PRI<MSG<TURUovo di Drago del Cielo No. 15
+Condizione normale.<NOD<END
+#0516
+<PRI<MSG<TURUovo di Drago del Cielo No. 16
+Condizione normale.<NOD<END
+

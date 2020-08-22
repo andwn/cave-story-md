@@ -1,0 +1,59 @@
+#0000
+<END
+
+#0001
+<PRI<MSGLeer.<NOD<END
+
+#0016
+<PRI<MSGMöchtest du speichern?<YNJ0000<FL+0431<SVP<CLRSpiel gespeichert.<NOD<END
+
+#0017
+<PRI<FLJ0201:0018
+<LI+1000<SOU0020<AE+<MSGHP aufgefüllt.<NOD<END
+#0018
+<PRI
+<LI+1000<SOU0020<AE+<MSGHP und Raketen aufgefüllt.<NOD<END
+
+#0019
+<KEY<MSG
+Möchtest du dich ausruhen?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050
+<LI+1000<SOU0020<MYD0002<MSGHP aufgefüllt.<NOD<CLO<RMU<FAI0004<END
+
+#0030
+<PRI<FLJ0202:0032<FLJ0201:0031<FL+0201<GIT0005<AM+0005:0010<CMU0010Du hast den =Raketenwerfer=
+bekommen!<WAI0160<NOD<RMU<CLRDer Raketenwerfer ist eine
+mächtige Waffe aber seine Munition ist
+begrenzt.<NOD<CLRDu kannst deinen Vorrat mit
+den von Gegnern hinterlassenen
+Items auffüllen.<NOD<END
+
+#0031
+<PRI<AM+0005:0005<MSG<GIT0006Raketen um <NUM0000 erhöht!<NOD<END
+#0032
+<PRI<AM+0010:0005<MSG<GIT0011Raketen um <NUM0000 erhöht!<NOD<END
+
+#0040
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSGDu bist tot.<NOD<CLRNochmal versuchen?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0041
+<KEY<CMU0000<HMC<WAI0040<PRI<WAI0040<CMU0003
+<MSGDu bist ertrunken.<NOD<CLRNochmal versuchen?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0042
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSG<HMCUnd du warst nie mehr gesehen...<NOD<CLRNochmal versuchen?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0048
+<SMC<LDP<END
+
+#0049
+<CLO<FAO0004<ESC
+
+
+XX: head.tsc   4000 - 4099
+4000:Almond…“ï

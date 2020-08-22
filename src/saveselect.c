@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -55,10 +56,10 @@ static uint8_t refresh_file(uint8_t index) {
 	
 	system_peekdata(index, &file);
 	vdp_text_clear(VDP_PLAN_A, 6, y, 16); // Erase any previous stage name text
-	if(cfg_language) vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
+	if(cfg_language == LANG_JA) vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
 	if(file.used) {
 		// Map name
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			uint16_t x = 6;
 			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
 			uint16_t name_index = 0;
@@ -115,7 +116,7 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+3), x+1, y+3);
 		}
 	} else {
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
 			kanji_draw(VDP_PLAN_A, tile_index,   0x100+584, 6, y, 0, 1); // 新
 			kanji_draw(VDP_PLAN_A, tile_index+4, 0x100+61,  8, y, 0, 1); // し

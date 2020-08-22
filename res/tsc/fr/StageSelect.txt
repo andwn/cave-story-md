@@ -1,0 +1,13 @@
+#1000
+<KEY<MSG<TURPermission de téléportation refusée.<WAI9999<END
+#1001
+<KEY<MSG<TURIncubateurs<WAI9999<END
+#1002
+<KEY<MSG<TURPrairieville<WAI9999<END
+#1003
+<KEY<MSG<TURZone des Sables<WAI9999<END
+#1004
+<KEY<MSG<TURLabyrinthe<WAI9999<END
+#1005
+<KEY<MSG<TURPlantation<WAI9999<END
+

@@ -1,0 +1,29 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0125:0002
+#0101
+<PRI<SOU0011<DNP0101<FAO0004<TRA0002:0094:0125:0012
+
+
+
+#0200
+<KEY<FLJ1290:0201<FL+1290<MSGOho.<NOD<CLR¿Un soldado de la superficie?
+No esperaba verte aquí...<NOD
+¿Dónde están los otros?<NOD<CLR.....<NOD<CLR¿Qué ocurre?
+¿Has perdido la memoria?<NOD
+Je je je...<NOD<END
+#0201
+<KEY<MSGBueno, hasta que tus reservas
+se acaben, diviértete paseándote.<NOD<END
+

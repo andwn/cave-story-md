@@ -1,0 +1,211 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0000<CMU0008
+<ANP0102:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0102:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+#0100
+<PRI<FLJ0523:0105<FAO0004<TRA0006:0094:0217:0016
+#0101
+#0102
+<KEY<FLJ0524:0103
+<MSGEin Teleporter.<NOD
+Scheint so, als ist er gerade
+nicht in Betrieb.<NOD<END
+#0103
+<PRI<MSGZur "Plantage" reisen?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0102:0001:0000
+<WAI0100<FAO0004<TRA0061:0099:0007:0013
+
+#0105
+<PRI<FAO0004<FL+0227<TRA0006:0600:0217:0016
+
+
+#0200
+<KEY<MNA<CMU0000<FAI0004<WAI0100
+<QUA0030<SOU0044<ANP0101:0001:0000
+<WAI0080<ANP0210:0000:0000<WAI0020
+<FL+0520<SOU0011<DNP0101
+<WAI0050<MYD0002<MOV0006:0010
+<CMU0010<MSG<FAC0010WAHNSINN!<WAI0160<NOD<CMU0008<CLRToll gemacht, Junge!<NOD
+Ich hab doch von Anfang
+an gewusst, dass du
+das hinkriegst!<NOD<CLR...<NOD<CLRÄhm, also...<NOD
+Ich heiße Kazuma Sakamoto,<NOD
+aber nenn mich einfach
+Kazuma.<NOD<CLRIch hatte zwar Glück,
+dass ich dem Doktor
+entkommen konnte,<NOD
+nur leider hat mich der
+Teleporter ausgerechnet
+hierher geschickt.<NOD<CLRIch dachte schon ich
+müsste hier verhungern,
+aber...<NOD
+Du hast mir echt das
+Leben gerettet!<NOD<CLRAh, übrigens..<NOD<CLR...sagt dir das
+"Mimiga-Dorf" per Zufall
+irgendwas?<NOD<CLR...Sue?<NOD<CLRDU KENNST SUE!?<NOD<CLRAh so, kapiert.<NOD
+Du bist für sie
+eingesprungen, um nach
+mir zu suchen.<NOD<CLRAlles klar!<NOD
+Dann mal ab ins Dorf.
+Marschier voran,
+Kleiner.<NOD<SOU0043<ANP0102:0001:0000<WAI0030<ANP0210:0000:0002
+<CLR?!<NOD<CLO<FAC0000
+<CNP0303:0113:0000<ANP0303:0030:0000<WAI0100
+<FAC0000<MSG<ANP0102:0000:0000<FAC0018Kazuma-kun?!<NOD<CLR<FAC0010Professor Booster!!<NOD
+Sie leben noch?!<NOD<CLR<FAC0018Nun ja, wie man's nimmt.<NOD<CLO
+<ANP0303:0003:0000<WAI0040
+<ANP0303:0000:0002<WAI0030
+<ANP0303:0000:0000<WAI0030
+<FAC0000<MSG<FAC0018Und was ist mit der
+kleinen Susie?<NOD
+Geht es ihr gut?!<NOD<CLR<FAC0010Ja sicher, sie wartet
+im Mimiga-Dorf.<NOD<CLRDer kleine Herr hier
+wollte mich gerade da hin
+führen.<NOD<CLO
+<WAI0020<ANP0210:0000:0000<WAI0010
+<FAC0000<MSG<FAC0018!!!<NOD<CLO
+<ANP0303:0003:0000<WAI0080<ANP0303:0000:0000
+<FAC0000<MSG<FAC0010Kennt ihr euch etwa?<NOD<CLR<FAC0018...<NOD
+<CLRNein...<NOD
+<ANP0303:0000:0002...nie gesehen.<NOD
+<CLRWie auch immer,
+wir müssen schleunigst
+zu Susie.<NOD
+Der Doktor hat angefangen
+die Mimigas einzufangen.<NOD
+Anscheinend ist er schon
+auf die roten Blumen
+aufmerksam geworden.<NOD<CLR<FAC0010Aber ich frage
+mich...<NOD<CLRHaben die roten Blumen auf
+Sue überhaupt eine
+Wirkung?<NOD
+So wie bei den anderen
+Mimigas?<NOD<CLR<FAC0018Kazuma-kun,
+überleg doch mal genauer.<NOD<CLRDer Doktor fängt die
+Mimigas ein.<NOD
+Kannst du dir vorstellen,
+was das heißt?<NOD<CLR<FAC0010<CMU0000Meinen Sie etwa...
+er will...<WAI0032
+...Krieg?<NOD<CLO<FAC0000<ANP0303:0003:0002<WAI0032<ANP0303:0000:0002<MSG<FAC0018Korrekt.<NOD<CMU0008
+Wir haben gar keine
+Wahl mehr, als ihn
+aufzuhalten.<NOD<CLR<FAC0010Aufhalten,
+aber wie denn?<NOD<CLR<FAC0018Ich habe schon eine
+Idee.<NOD
+Aber zuerst müssen wir
+schnell zu Susie.<NOD
+Danach besprechen wir alles
+Weitere.<NOD<FAC0000<CLO
+<ANP0303:0003:0000<WAI0038
+<MYB0002<WAI0016<MYD0002<ANP0303:0000:0000
+<MSG<FAC0018Und du kommst auch
+mit, Junge.<NOD<CLO
+<ANP0303:0005:0000<WAI0020<DNP0303
+<ANP0210:0003:0000<WAI0078
+<ANP0210:0005:0000<WAI0020<DNP0210
+<FL-0522<FL+0523
+<CNP0016:0016:0002<WAI0020
+<CNP0017:0017:0002<FL+0525<FL+0226
+<END
+
+
+
+#0210
+#0220
+<KEY<FLJ0524:0221<MSG<TURDie Verbindung zu diesem Teleporter
+ist Momentan unterbrochen.<NOD<END
+
+#0221
+<KEY<MSG<TURTeleporter kann nun zur "Plantage"
+verbinden.<NOD<END
+
+#0300
+#0301
+#0302
+#0303
+
+#0500
+<KEY<CMU0021<FAI0004
+<MSG<TURVerbinde zum Netzwerk...<WAI0050
+<TUREingeloggt.<WAI0050
+<TURChatraum geöffnet.<WAI0100<CLR<MSGSue?<NOD
+Hallooo, jemand Zuhause?<NOD
+Ich bin's doch!<NOD
+Dein Bruder Kazuma!<NOD
+Ich hab's geschafft zu entwischen,
+doch dann hab ich mich irgendwie
+verlaufen...<NOD
+Ich bin gerade in 'nem völlig
+leeren Bunker versteckt.<NOD
+Falls du das hier siehst,
+dann schreib doch bitte zurüück~!<NOD<CLR...Hallooo?<NOD
+<FAO0004<SK+0005<TRA0013:0091:0010:0008
+
+
+#0501
+<KEY<HMC<CMU0021<FAI0004
+<MSG<TURSuche nach Nutzer "Sue"...<WAI0150<CLR<TUR1 Nutzer "Sue" gefunden.<WAI0150<CLR
+<MSGSue?<NOD
+Bitte schreib doch zurück.<NOD
+Die Typen sind schon hinter dir
+her!<NOD
+Pennst du, oder was?<NOD
+Lass doch deinen lieben, großen
+Bruder nicht so allein...<NOD<FAO0004<SMC<CLO
+<TRA0090:0095:0014:0009
+
+
+#0502
+<KEY<HMC<CMU0021<FAI0004
+<MSGSuuusieeeee!<NOD
+Jetzt sag doch waaaas!<NOD
+Ich hab solchen Hunger,
+dass ich schon ein paar Kakerlaken
+vertilgen musste~!<NOD
+...haha, ja klar,
+so weit kommt's noch.<NOD<CLR...aber wenn du nicht bald
+antwortest, kommt's ganz sicher
+so weit...<NOD<FAO0004<SMC<TRA0011:0302:0008:0006
+
+
+#0700
+<KEY<FAI0004<MSGSue?<NOD
+Bist du das echt?<NOD<FAO0004<TRA0024:0701:0002:0000
+
+#0701
+<KEY<FAI0004
+<MSGIch kann hier nicht raus.
+Die Tür klemmt.<NOD
+Ich bin noch immer in diesem
+Bunker oder wo auch immer
+eingesperrt.<NOD
+Der Sektor-Code lautet:
+"Buschhausen"...<NOD
+Schau mal nach ob der Scanner was
+ausspuckt.<NOD<CLRAch und,
+Mama ist nicht hier.<NOD<CLRKann sein, dass sie noch immer
+beim Doktor steckt.<NOD<CLRWie sieht's aus?
+Kann einer der Drachen schon
+schlüpfen?<NOD<FAO0004<TRA0024:0702:0002:0000
+
+#0702
+<KEY<FAI0004<MSGAlles klar, mach ich.<NOD
+Ach und, falls du was zu
+Futtern dabei hast,
+kannst du vielleicht bitte-<CLR<MSG<TURNutzer "Sue" hat die
+Verbindung unterbrochen.<NOD
+<CLR...ah.<NOD<FAO0004<TRA0024:0703:0002:0000

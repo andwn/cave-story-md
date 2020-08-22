@@ -1,0 +1,102 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0009<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0009<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0009<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0009<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0009<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0011:0094:0043:0034
+
+
+#0200
+<FLJ0327:0201
+<KEY<MSG<FAC0007Der Schlüssel zu Arthurs
+Haus...<NOD
+Es müsste eigentlich einen
+Zweitschlüssel geben.<NOD
+Und diese miese Toroko tat
+so als wusste sie nichts
+davon...<NOD<CLRNaja... vielleicht weiß
+ja Jack wo der Schlüssel
+steckt...<NOD<END
+
+#0201
+<KEY<MSG<FAC0007Unfassbar...
+Jetzt auch noch Toroko...<NOD
+Ihr großer Bruder war ein
+heldenhafter Krieger.<NOD
+Aber einer der Handlanger
+vom Doktor hat ihn
+ermordet.<NOD
+Und jetzt...
+Die arme Toroko...<NOD
+Ich konnte sie nicht mal
+beschützen...!<NOD<END
+
+#0210
+<KEY<MSG<FAC0009Zu Arthus Haus gibt
+es zwei Schlüssel.<NOD
+Den einen hat Toroko.<NOD
+Der andere ist im Mimiga-
+Friedhof versteckt.<NOD<END
+
+#0220
+<KEY<MSG<FAC0009Torokos Bruder Arthur
+kämpfte gegen ein rotes
+Monster.<NOD<CLR
+Ein fürchterlicher Dämon,
+der auf dieser Insel
+Mimiga verschlingt.<NOD<CLRIch meine nicht den
+Doktor, sondern...
+Etwas anderes. <NODEin Dämon
+der schon seit
+Ewigkeiten hier
+gelebt hat.<NOD<CLR
+Irgendwann kam er in
+unser Dorf,<NOD doch Arthur
+hat ihn eigenhändig
+vertrieben.<NOD
+Er hat sich heldenmutig
+zur Wehr gestellt, und
+unser Dorf verteidigt...<NOD<CLRDen Anblick werde ich mein
+ganzes Leben niemals
+vergessen.<NOD<CLR
+Der Doktor hat Arthur
+vielleicht ermordet, doch
+er war ein wahrer Held.<NOD<END
+
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Knister!*<NOD<FLJ0442:0000<CLRDa liegt irgendetwas
+hinter den Flammen.<NOD<END
+
+#0301
+<KEY<GIT1008<MSGWillst du den
+=Quallensaft= ins Feuer werfen?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0442:0302<FL+0442
+<MSGDa liegt etwas in der Asche...<NOD<CLR<GIT0007<AM+0007:0100
+<CMU0010Du hast den =Blubber= bekommen!<WAI0160<NOD<CLO<RMU<DNP0300<END
+
+#0302
+<KEY<DNP0300<END

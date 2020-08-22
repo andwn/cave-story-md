@@ -1,0 +1,91 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGAbriste a arca do tesouro.<NOD<GIT0002<AM+0002:0000<CLR<CMU0010Encontraste a =Estrela Polar=!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSGDe um local desconhecido,
+uma transmissão...<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGVazia.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*Ressona*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGNão viste a arma que eu fiz,
+pois não?<NOD
+Alguém veio cá e
+roubou-a enquanto dormia!<NOD
+Raios, é por isso que a devia de
+ter no meu bolso enquanto
+dormia...<NOD<AMJ0002:0302<CLRNem sequer estava pronta!<NOD
+Mais um bocado de trabalho e podia
+ter feito uma arma mesmo feroz.<NOD<CLRAh, mas que mundo,
+mas que mundo...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+EI!!<NOD<CLREssa não é a MINHA arma?!<NOD<CLR<GIT0002O que é que TU
+estás a fazer com ela?!
+Não a fiz para ti!<NOD<CLRDevolve-a!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+Tirou-te a =Estrela Polar=...<NOD<CLRPah!<NOD
+Vejo que deste exercícios
+à minha arma.<NOD<CLR.....<NOD<CLRSabes,<NOD
+eu sempre acreditei que as
+armas que uma pessoa usa deviam
+de ser feitas por ela mesma.<NOD
+Aquele que luta com
+a arma de outro e considera
+essa força sua é um imbecil.<NOD
+Aquele que culpa as suas
+ferramentas por algo<NOD
+que o seu próprio poder
+não consegue alcançar
+é um parvo.<NOD<CLR<CMU0008Porém...<WAI0050<CLRQuando vejo esta arma
+que usaste com tanta energia,
+levo-me às lágrimas.<NOD
+Só de pensar num uso tão
+cuidadoso nela, mesmo
+sem estar completa...<NOD<CLRHahhh...<NOD<CLRPeço desculpa por ralhar.<NOD<CLRPodes ficar com esta arma.<NOD<CMU0000<FAO0001
+Depois de eu a terminar, claro.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG<CMU0010<MSG<GIT0013A =Estrela Polar= tornou-se
+no =Spur=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGNeste mundo, há um balanço
+entre aqueles que criam
+e aqueles que usam.<NOD<CLREu sabia disso, é claro,
+mas foi preciso a tua ajuda para
+experimentar isso pessoalmente.<NOD
+Daqui para a frente, vou-me
+dedicar ao lado da criação.<NOD
+O trabalho envolvido transforma-se
+em alegria quando sei que há quem
+desfrutará do meu trabalho.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Fora."<NOD<END

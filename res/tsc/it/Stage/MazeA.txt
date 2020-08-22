@@ -1,0 +1,112 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGTanto, tanto tempo fa 
+su quest'isola viveva una strega.<NOD
+Fu lei a costruire questo
+Labirinto, per tenere
+noi Gaudis imprigionati.<NOD<END
+#0210
+<PRI<MSGC'è un'uscita da questo dedalo.
+Ma la strada che porta ad essa 
+è bloccata da un grosso
+macigno.<NOD<CLRE muovere il macigno 
+sarebbe solo l'inizio di una dura 
+serie di prove...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGAah... Cosa DAREI per un
+pezzettino di carne di Mimiga...<NOD<CLR*sniff sniff*<NOD<CLR
+Sai che ODORI UN PO' di Mimiga?<NOD<END
+#0221
+<PRI<MSGHa-ha-hah...<NOD<CLRMolto divertente.<NOD<END
+#0230
+<PRI<MSGHai mai visto la parte esterna
+dell'isola?<NOD<CLRQuest'isola è sospesa su
+in cielo.<NOD
+Come possa riuscire a 
+galleggiare...<NOD
+Il segreto giace dentro questo
+labirinto.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGQuel teletrasportatore funzionava 
+benino fino a poco tempo fa.<NOD
+Ma ovviamente, ti portava
+solo da qualche parte nel labirinto...<NOD<END
+#0241
+<MSGIl Teletrasportatore sembra
+funzionare, adesso.<NOD<CLRMa ovviamente, ti trasporta
+solo da qualche altra parte nel 
+labirinto, non è così?<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGUn teletrasportatore.<NOD<CLRNon c'è corrente.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGHeilà.<NOD<CLRQuesto è il Negozio del Labirinto!<NOD
+Ma, triste a dirsi, siamo stati
+derubati qualche tempo fa,<NOD
+e ora come ora non abbiamo
+molto da vendere.<NOD
+Spiacente...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSGHm?<NOD<CLRHey, affascinanti quelle cose che
+ti porti appresso.<NOD<CLRUna Stella Polare e una Palla di Fuoco,
+se non vado errato.<NOD<CLRTi dispiace se gli do un'occhiata?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Gli hai dato la Stella Polare.<NOD
+<GIT0003Gli hai dato la Palla di Fuoco.<NOD<GIT0000<CLR
+<SOU0044Hoho!<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010=Serpente= completato!<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*sigh*<NOD<CLREcco. cosa ne dici?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008Ricevi la =Turbocarica=!<WAI0160<NOD<RMU<GIT0000<CLRNiente soldi, offre la casa.<NOD
+Tanto non mi sembri esattamente 
+uno che naviga nell'oro.<NOD<END
+#0403
+<KEY<MSG<CLRCi stai perdendo!<NOD<END
+#0404
+<KEY<FL+0721<MSG*sigh*<NOD<CLREcco. Che ne dici di questa?<NOD<CLR<GIT1038<CLR
+<CMU0010<IT+0038Hai preso la =Stellina Sbarazzina=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRTemo che alla fine sia solo 
+per decorazione,<NOD
+ma tanto hai già tante armi
+potenti, quindi cos'altro
+potrei darti?<NOD<END
+#0410
+<KEY<MSGQuella che ci ha rinchiusi qua è 
+una strega chiamata Jenka.<NOD<CLRMa non l'ha fatto perchè ci odia
+o roba del genere.<NOD
+Siamo qui in questo labirinto
+per proteggere qualcosa.<NOD<CLR...non che mi ricordi esattamente
+cosa, ma alla fine, chissene...!<NOD<END
+

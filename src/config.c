@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -28,9 +29,9 @@
 
 #define MAX_OPTIONS	12
 
-enum { PAGE_CONTROL, PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
+enum { PAGE_CONTROL, PAGE_LANGUAGE, PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
 
-enum { MI_LABEL, MI_INPUT, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
+enum { MI_LABEL, MI_INPUT, MI_RADIO, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
 
 // Forward & array for actions, implementations farther down
 void act_default(uint8_t page);
@@ -69,8 +70,19 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+    },{
+        { 4,  LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
+        { 6,  LANG_ES,  AKI,    MI_RADIO,   "Espanol", &cfg_language },
+        { 8,  LANG_PT,  AKI,    MI_RADIO,   "Portuges", &cfg_language },
+        { 10, LANG_FR,  AKI,    MI_RADIO,   "Francais", &cfg_language },
+        { 12, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
+        { 14, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
+        { 16, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
+
+        { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
+        { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-		{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
+//		{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
 		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
 		{ 11, 12, AKI+180,MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
@@ -122,8 +134,20 @@ static void DrawJStr(uint16_t x, uint16_t y, uint16_t tile_index, uint16_t item_
 
 void draw_menuitem(const MenuItem *item) {
 	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
-	vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
-	if(cfg_language && item->jstr_index) {
+	if(item->type != MI_RADIO) vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
+	if(item->type == MI_RADIO) {
+	    // TODO: Make the language names sprites so they can all display a native version
+	    switch(item->jstr_index) {
+	        case LANG_JA: {
+                uint16_t tile_index = item->jtile_index;
+                kanji_draw(VDP_PLAN_A, tile_index, 0x100 + 794, 4, item->y, 0, TRUE); // 日
+                kanji_draw(VDP_PLAN_A, tile_index + 4, 0x100 + 909, 6, item->y, 0, TRUE); // 本
+                kanji_draw(VDP_PLAN_A, tile_index + 8, 0x100 + 417, 8, item->y, 0, TRUE); // 語
+                break;
+            }
+	        default: vdp_puts(VDP_PLAN_A, item->caption, 4, item->y); break;
+	    }
+	} else if(cfg_language == LANG_JA && item->jstr_index) {
 		DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
 	} else {
 		vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
@@ -131,7 +155,7 @@ void draw_menuitem(const MenuItem *item) {
 	switch(item->type) {
 		case MI_LABEL: break; // Nothing
 		case MI_INPUT:
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = item->jtile_index + 40;
 			uint16_t c1 = btnName[*item->valptr][0];
 			uint16_t c2 = btnName[*item->valptr][1];
@@ -142,6 +166,13 @@ void draw_menuitem(const MenuItem *item) {
 			vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
 		}
 		break;
+	    case MI_RADIO:
+            if(*item->valptr == item->jstr_index) {
+                vdp_puts(VDP_PLAN_A, "(*)", 30, item->y);
+            } else {
+                vdp_puts(VDP_PLAN_A, "( )", 30, item->y);
+            }
+	        break;
 		case MI_LANG:
 		if(*item->valptr) {
 			uint16_t tile_index = item->jtile_index + 40;
@@ -154,7 +185,7 @@ void draw_menuitem(const MenuItem *item) {
 		}
 		break;
 		case MI_TOGGLE:
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = item->jtile_index + 40;
 			kanji_draw(VDP_PLAN_A, tile_index,   jboolstr[*item->valptr][0], 32, item->y, 0, TRUE);
 			kanji_draw(VDP_PLAN_A, tile_index+4, jboolstr[*item->valptr][1], 34, item->y, 0, TRUE);
@@ -164,7 +195,7 @@ void draw_menuitem(const MenuItem *item) {
 		break;
 		case MI_ACTION: break;
 		case MI_MODE:
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = item->jtile_index + 40;
 			kanji_draw(VDP_PLAN_A, tile_index,   jmodestr[*item->valptr][0], 30, item->y, 0, TRUE);
 			kanji_draw(VDP_PLAN_A, tile_index+4, jmodestr[*item->valptr][1], 32, item->y, 0, TRUE);
@@ -181,11 +212,32 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 	
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
+		case MI_RADIO:
+		    //if(!(*item->valptr)) {
+            //    sound_play(SND_MENU_SELECT, 5);
+            //    for(uint16_t i = 0; i < MAX_OPTIONS; i++) {
+            //        if(menu[page][i].type == MI_RADIO) menu[page][i]->valptr = 0;
+            //    }
+            //    *item->valptr = 1;
+		    //}
+            if(*item->valptr != item->jstr_index) {
+                // Find previous selection so we can redraw as deselected
+                for(uint16_t i = 0; i < MAX_OPTIONS; i++) {
+                    if(*item->valptr == menu[page][i].jstr_index) {
+                        sound_play(SND_MENU_SELECT, 5);
+                        *item->valptr = item->jstr_index;
+                        draw_menuitem(&menu[page][i]);
+                        break;
+                    }
+                }
+            }
+		    break;
 		case MI_LANG:
-		case MI_TOGGLE:
-		sound_play(SND_MENU_SELECT, 5);
-		*item->valptr ^= 1;
-		break;
+		case MI_TOGGLE: {
+            sound_play(SND_MENU_SELECT, 5);
+            *item->valptr ^= 1;
+            break;
+        }
 		case MI_INPUT: {
 			sound_play(SND_MENU_SELECT, 5);
 			uint8_t released = FALSE;
@@ -204,7 +256,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 				//	sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
 				//}
 				sprite_index((*sprCursor), TILE_SHEETINDEX+32+16);
-			vdp_sprite_add(sprCursor);
+			    vdp_sprite_add(sprCursor);
 				ready = TRUE;
 				vdp_vsync(); aftervsync();
 			}
@@ -243,26 +295,33 @@ uint8_t set_page(uint8_t page) {
 	
 	switch(page) {
 		case PAGE_CONTROL:
-		if(cfg_language) {
-			DrawJStr(8, 1, WKI, 21);
-		} else {
-			vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
-		}
-		break;
+            if(cfg_language == LANG_JA) {
+                DrawJStr(8, 1, WKI, 21);
+            } else {
+                vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
+            }
+            break;
+        case PAGE_LANGUAGE:
+            if(cfg_language == LANG_JA) {
+                DrawJStr(8, 1, WKI, 22);
+            } else {
+                vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
+            }
+            break;
 		case PAGE_GAMEPLAY:
-		if(cfg_language) {
-			DrawJStr(8, 1, WKI, 22);
-		} else {
-			vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 1);
-		}
-		break;
+            if(cfg_language == LANG_JA) {
+                DrawJStr(8, 1, WKI, 22);
+            } else {
+                vdp_puts(VDP_PLAN_A, "(3) Gameplay Config", 8, 1);
+            }
+            break;
 		case PAGE_SAVEDATA:
-		if(cfg_language) {
-			DrawJStr(8, 1, WKI, 23);
-		} else {
-			vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 1);
-		}
-		break;
+            if(cfg_language == LANG_JA) {
+                DrawJStr(8, 1, WKI, 23);
+            } else {
+                vdp_puts(VDP_PLAN_A, "(4) Save Data", 8, 1);
+            }
+            break;
 	}
 	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
 		if(menu[page][i].caption[0]) {
@@ -351,16 +410,18 @@ void config_main() {
 
 void act_default(uint8_t page) {
 	if(page == 0) {
-		cfg_btn_jump = 5;
-		cfg_btn_shoot = 4;
-		cfg_btn_ffwd = 6;
-		cfg_btn_rswap = 8;
-		cfg_btn_lswap = 9;
-		cfg_btn_map = 10;
-		cfg_btn_pause = 7;
-		cfg_force_btn = 0;
-	} else if(page == 1) {
-		cfg_language = 0;
+        cfg_btn_jump = 5;
+        cfg_btn_shoot = 4;
+        cfg_btn_ffwd = 6;
+        cfg_btn_rswap = 8;
+        cfg_btn_lswap = 9;
+        cfg_btn_map = 10;
+        cfg_btn_pause = 7;
+        cfg_force_btn = 0;
+    } else if(page == 1) {
+	    cfg_language = 0;
+	} else if(page == 2) {
+//		cfg_language = 0;
 		cfg_ffwd = TRUE;
 		cfg_updoor = FALSE;
 		cfg_hellquake = TRUE;

@@ -1,0 +1,82 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<KEY<FLJ1000:0095<MNA<CMU0008<FAI0004<EVE0200
+#0095
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0053:0094:0075:0005
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0118:0083
+
+#0200
+<KEY<FL+1000<FL+1025<FL+1038<MYD0002<WAI0050
+<ANP0400:0010:0000<MSG
+Uwah!<NOD<CLO
+<ANP0400:0020:0000<WAI0050<END
+
+#0400
+<KEY
+<FLJ1003:0404
+<FLJ1102:0403
+<FLJ1002:0402
+<FLJ1001:0401<FL+1001<FL+1038
+<ANP0400:0010:0000
+<MSGEyaahh!<MYB0002<NOD<CLRDon't kill me!<NOD
+I'm a human! I just got
+magically turned into
+a Mimiga! I'm human!<NOD<CLRHuh?<NOD<CLR.....<NOD<CLR<ANP0400:0000:0000<FAC0028What's this?
+You're not one of those
+killer robots?<NOD
+Well, you scared the
+pants off me, jumping
+out like that!<NOD<CLRYou wouldn't be that
+savior, would you?<NOD<END
+
+
+#0401
+<KEY<FL+1002
+<MSG<FAC0028I'm Itoh, one of the
+humans who came to this
+island to do research.<NOD
+That witch Misery turned
+me into this...<NOD
+I managed to get away,
+but...just look at me.<NOD<CLRAnd now I'm stuck here!<NOD<CLRYou climbed up from the
+outside, didn't you.<NOD
+I'm an engineer of
+considerable talent,<NOD
+but I'm deathly afraid
+of heights...<NOD<CLROh, woe, woe is me...<NOD<CLRI never should've come
+to this island in the
+first place.<NOD<END
+
+#0402
+<KEY<MSG<FAC0028No, no, surely you have
+no use for such a pathetic,
+stranded little man.<NOD<END
+
+
+#0403
+<KEY<MSG<FL+1003<FAC0028Itoh?<NOD Yes, that's me.<NOD<CLRWhat's that?<NOD
+Sakamoto's working on
+a rocket?<NOD<CLRSo she's still alive...<NOD
+A fierce one, she is.<NOD
+Nothing like me, that's
+for sure...<NOD<CLRAll right, then.<NOD
+Take this.<NOD<FAC0000<GIT1027<IT+0027<CLR
+<CMU0010Got the =Controller=.<WAI0160<NOD<RMU
+<CLR<FAC0028I think that's what
+she's after.<NOD<GIT0000<EVE0404
+#0404
+<KEY<MSG<FAC0028Give Ms. Sakamoto my
+regards.<NOD<END
+

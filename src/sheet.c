@@ -502,7 +502,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiEnd, 4,3,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case STAGE_ENDING_LAB: 
-		{	SHEET_ADD(SHEET_AHCHOO, cfg_language ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
+		{	SHEET_ADD(SHEET_AHCHOO, cfg_language == LANG_JA ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
 		} break;
 	}
 	// Weapons at the end

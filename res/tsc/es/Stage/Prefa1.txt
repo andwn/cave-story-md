@@ -1,0 +1,38 @@
+
+#0090
+<MNA<CMU0030<FAI0000<END
+#0091
+<MNA<CMU0030<FAI0001<END
+#0092
+<MNA<CMU0030<FAI0002<END
+#0093
+<MNA<CMU0030<FAI0003<END
+#0094
+<MNA<CMU0030<FAI0004<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011<FAO0004<TRA0062:0094:0079:0073
+
+
+#0150
+<KEY<DNP0150<CNP0016:0016:0002<END
+
+
+
+#0200
+<KEY<MSGEncuentras una nota ecrita por
+Booster.<NOD
+¿Quieres leerla?<YNJ0000<CLR<TURLa exploración del interior de la
+isla sería más sencilla de realizar
+si tuviéramos equipamiento para<NOD<CLRfacilitar el movimiento aéreo.
+Por eso he comenzado el desarrollo del
+"Booster".<NOD<CLREl desarrollo de este aparato volador
+tendrá lugar en dos fases,
+las versiones 0.8 y 2.0.<NOD<CLRPlaneo hacer que la v0.8 sea equipable y
+que permita una cierta capacidad de vuelo.<NOD<CLREstoy seguro de que puedo completar
+la v2.0, si vivo el tiempo necesario.<NOD<CLREsta versión será sin duda
+un objeto mucho más útil.<NOD<CLO
+<FLJ0161:0000<WAI0050<MS2
+    Si vivo el tiempo necesario...<WAI0050<NOD<END
+
+

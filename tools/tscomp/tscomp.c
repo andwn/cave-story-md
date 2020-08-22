@@ -8,16 +8,19 @@
  * ./tscomp <tsc file> <output file>
  */
 
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define bool unsigned char
-#define TRUE 1
-#define FALSE 0
-
 #define MAX_EVENTS 106
-#define COMMAND_COUNT 93
+#define COMMAND_COUNT 94
+
+// Chars starting with 0xE0-0xFE are a 2 byte sequence
+#define MULTIBYTE_BEGIN	0xE0
+#define MULTIBYTE_END	0xFE
 
 #define SYM_EVENT		'#'
 #define SYM_COMMENT		'-'
@@ -34,12 +37,42 @@
 
 #define OP_EVENT	0xFFFF
 
+enum {
+    LANG_EN = 0x00,
+    LANG_ES,
+    LANG_PT,
+    LANG_FR,
+    LANG_IT,
+    LANG_DE,
+
+    LANG_JA = 0x20,
+    LANG_ZH,
+    LANG_KO,
+
+    LANG_RU = 0x30,
+    LANG_UK,
+
+    LANG_INVALID=0xFF,
+};
+
+enum {
+    CT_COMMAND,
+    CT_EVENT,
+    CT_ASCII,
+    CT_EXTEND,
+    CT_KANJI,
+    CT_SKIP,
+    CT_SKIP2BYTE,
+    CT_INVALID,
+    CT_INVALID2BYTE,
+};
+
 // TSC Command Definition
 typedef struct {
 	char name[4]; // All commands are 3 uppercase characters
-	unsigned char opcode; // Byte value that represents the instruction
-	unsigned char params; // Number of parameters 0-4
-	unsigned short flags; // Other properties of the instruction
+	uint8_t opcode; // Byte value that represents the instruction
+    uint8_t params; // Number of parameters 0-4
+	uint16_t flags; // Other properties of the instruction
 } CommandDef;
 
 const CommandDef command_table[COMMAND_COUNT] = {
@@ -58,7 +91,7 @@ const CommandDef command_table[COMMAND_COUNT] = {
 	{ "YNJ", 0x8B, 1, CFLAG_JUMP },
 	// Commands that are at the end of an event block
 	{ "END", 0x8C, 0, CFLAG_MSGCLOSE | CFLAG_END },
-	{ "EVE", 0x8D, 1, CFLAG_MSGCLOSE | CFLAG_JUMP | CFLAG_END },
+	{ "EVE", 0x8D, 1, /*CFLAG_MSGCLOSE |*/ CFLAG_JUMP | CFLAG_END },
 	{ "TRA", 0x8E, 4, CFLAG_MSGCLOSE | CFLAG_END },
 	{ "INI", 0x8F, 0, CFLAG_MSGCLOSE | CFLAG_END },
 	{ "LDP", 0x90, 0, CFLAG_MSGCLOSE | CFLAG_END },
@@ -148,185 +181,384 @@ const CommandDef command_table[COMMAND_COUNT] = {
 	{ "STC", 0xD8, 0, 0 }, // Save time counter
 	{ "XX1", 0xD9, 1, 0 }, // Island control
 	{ "SMP", 0xDA, 2, 0 },
-	{ "NOP", 0xDB, 0, 0 },
+	// Extra
+	{ "NOP", 0xDB, 0, 0 }, // Nothing
+    { "BSP", 0xDC, 1, 0 }, // Backspace (in msg window)
 };
 
-const char *ValidChars = 
-	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ,.?=!@$%^&*()[]{}|_-+:;'\"\n";
+uint8_t *tsc = NULL;
+uint16_t tscSize = 0;
+uint16_t pc = 0;
 
-FILE* decrypt_tsc(const char *filename);
+uint16_t *kanji = NULL;
+uint16_t kanjiCount = 0;
 
-void do_script(FILE *fin, FILE *fout);
-void do_event(FILE *fin, FILE *fout);
-unsigned short do_command(FILE *fin, FILE *fout);
-unsigned short read_number(FILE *file);
+bool decomp = false;
+bool trace = false;
+bool unfuck = false;
+uint16_t language = LANG_EN;
 
-bool is_valid_char(char c);
+bool is_ascii(char c) {
+    static const char *ValidChars =
+            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+            " /,.?=!@$%^&*()[]{}|_-+:;'~\"\n";
+    for(int i = 0; i < strlen(ValidChars); i++) {
+        if(c == ValidChars[i]) return true;
+    }
+    return false;
+}
+
+bool is_extended(uint8_t c) {
+    static const uint8_t ExtendedChars[] = {
+            0xA1, 0xBF, /* Upside-down exclamation/question */
+            0xC0, 0xC8, 0xCC, 0xD2, 0xD9, 0xE0, 0xE8, 0xEC, 0xF2, 0xF9,  /* Grave */
+            0xC7, 0xE7, /* Cedilla */
+            0xC1, 0xC9, 0xCD, 0xD3, 0xDA, 0xE1, 0xE9, 0xED, 0xF3, 0xFA,  /* Acute */
+            0xC2, 0xCA, 0xCE, 0xD4, 0xDB, 0xE2, 0xEA, 0xEE, 0xF4, 0xFB,  /* Circumflex */
+            0xC4, 0xCB, 0xCF, 0xD6, 0xDC, 0xE4, 0xEB, 0xEF, 0xF6, 0xFC,  /* Umlaut */
+            0xC3, 0xD5, 0xE3, 0xF5, /* Squiggly vowels */
+            0xD1, 0xF1, /* Squiggly N */
+            0x8C, 0x9C, /* OE */
+            0xC6, 0xE6, /* AE */
+            0xBA, /* Ordinal */
+            0xDF, /* Sharp S */
+    };
+    for(int i = 0; i < 56; i++) {
+        if(c == ExtendedChars[i]) return true;
+    }
+    return false;
+}
+
+void tsc_open(const char *filename) {
+    if(trace) printf("TRACE: Opening '%s'\n", filename);
+
+    FILE *tscFile = fopen(filename, "rb");
+    fseek(tscFile, 0, SEEK_END);
+    tscSize = ftell(tscFile);
+    tsc = malloc(tscSize);
+    fseek(tscFile, 0, SEEK_SET);
+    fread(tsc, 1, tscSize, tscFile);
+    fclose(tscFile);
+
+    if(unfuck) {
+        // Obtain the key from the center of the file
+        uint8_t key = tsc[tscSize / 2];
+        // Apply key to all bytes except where the key itself was
+        for (uint16_t i = 0; i < tscSize; i++) {
+            if (i != tscSize / 2) tsc[i] -= key;
+            if (trace) fputc(tsc[i], stdout);
+        }
+    }
+    pc = 0;
+}
+
+void tsc_close() {
+    if(trace) printf("TRACE: Closing TSC\n");
+
+    if(tsc) {
+        free(tsc);
+        tsc = NULL;
+    }
+}
+
+uint8_t get_char_type() {
+    // Command symbol '<'
+    if(tsc[pc] == SYM_COMMAND) return CT_COMMAND;
+    // Event symbol '#'
+    if(tsc[pc] == SYM_EVENT) return CT_EVENT;
+    // Skip '\r'
+    if(tsc[pc] == '\r') return CT_SKIP;
+    if(language >= LANG_RU && language <= LANG_UK) {
+        // TODO: KOI8-R/U support
+    } else {
+        // First check the valid ASCII chars list
+        if(is_ascii(tsc[pc])) return CT_ASCII;
+        if(language > LANG_EN && language < LANG_JA) {
+            // Check if it's a supported ISO-8859-1 / Windows-1252 char
+            if(is_extended(tsc[pc])) return CT_EXTEND;
+        } else if(language >= LANG_JA && language <= LANG_KO) {
+            // Double byte char?
+            if ((tsc[pc] >= 0x81 && tsc[pc] <= 0x9F) || (tsc[pc] >= 0xE0 && tsc[pc] <= 0xFC)) {
+                return CT_KANJI;
+            }
+        }
+    }
+    return CT_INVALID;
+}
+
+uint16_t read_number(bool silent) {
+    char str[LEN_NUMBER + 1];
+    for(int i = 0; i < 4; i++) {
+        char c = tsc[pc++];
+        if(!isdigit(c)) {
+            if(!silent) {
+                printf("WARN: Parameter should be 4 digits but is only %hu.\n", i);
+            }
+            str[i] = '\0';
+            pc--;
+            break;
+        }
+        str[i] = c;
+    }
+    str[LEN_NUMBER] = '\0';
+
+    return str[0] ? atoi(str) : 0xFFFF;
+}
+
+uint16_t do_command(FILE *fout) {
+    uint8_t opcode = 0xDB; // NOP
+    uint8_t params = 0;
+    uint16_t flags = 0;
+    char str[LEN_COMMAND + 1];
+    // Find command from 3 character string
+    for(int i = 0; i < LEN_COMMAND; i++) str[i] = tsc[pc++];
+    str[LEN_COMMAND] = '\0';
+    for(int i = 0; i < COMMAND_COUNT; i++) {
+        if(strcmp(str, command_table[i].name) == 0) {
+            opcode = command_table[i].opcode;
+            params = command_table[i].params;
+            flags = command_table[i].flags;
+            break;
+        }
+    }
+    if(opcode == 0xDB) {
+        printf("WARN: Bad command '%s', skipping\n", str);
+        while(read_number(1) != 0xFFFF);
+        return flags;
+    }
+    if (trace) printf("TRACE: Command: '<%s", str);
+    //printf("TRACE: Command %s matches %hhu.\n", str, opcode);
+    fwrite(&opcode, 1, 1, fout);
+    // Parse parameters
+    for(int i = 0; i < params; i++) {
+        uint16_t val = read_number(0);
+
+        if(trace) printf("%04hu", val);
+
+        fwrite(&val, 1, 2, fout);
+        // Parameters should be separated by ':', CS doesn't actually check though
+        if(i != params - 1) {
+            if(tsc[pc++] != ':') {
+                if(trace) printf("\n");
+                printf("WARN: No ':' between parameters.\n");
+            } else {
+                if(trace) printf(":");
+            }
+        }
+    }
+
+    if(trace) printf("'\n");
+
+    return flags;
+}
+
+void do_event(FILE *fout) {
+    bool msgWindowOpen = false;
+    uint16_t id = read_number(0);
+    uint16_t commandCount = 0;
+
+    if(trace) printf("TRACE: Event: #%04hu\n", id);
+
+    fwrite(&id, 1, 2, fout);
+    while(pc < tscSize) {
+        uint8_t ct = get_char_type();
+        switch(ct) {
+            case CT_COMMAND: {
+                pc++;
+                commandCount++;
+                uint16_t flags = do_command(fout);
+                if(flags & CFLAG_MSGOPEN) msgWindowOpen = true;
+                else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = false;
+                if(flags & CFLAG_END) return;
+                break;
+            }
+            case CT_EVENT: {
+                if(commandCount != 0) {
+                    printf("WARN: Non-empty event #%04hu has no ending!\n", id);
+                }
+                return;
+            }
+            case CT_ASCII: {
+                fwrite(&tsc[pc], 1, 1, fout);
+                pc++;
+                break;
+            }
+            case CT_EXTEND: {
+                if(tsc[pc] == 0x8C) {
+                    static const char mystr[2] = "OE";
+                    fwrite(&mystr, 1, 2, fout);
+                } else if(tsc[pc] == 0x9C) {
+                    static const char mystr[2] = "oe";
+                    fwrite(&mystr, 1, 2, fout);
+                } else if(tsc[pc] == 0xC6) {
+                    static const char mystr[2] = "AE";
+                    fwrite(&mystr, 1, 2, fout);
+                } else if(tsc[pc] == 0xE6) {
+                    static const char mystr[2] = "ae";
+                    fwrite(&mystr, 1, 2, fout);
+                } else {
+                    static const char mark = 0x01;
+                    static const char extmap[] = {
+                            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,27, 0, 0, 0, 0, 2,
+                            3, 3, 3, 3, 3, 0, 0,15, 4, 4, 4, 4, 5, 5, 5, 5,
+                            0, 6, 7, 7, 7, 7, 7, 0, 0, 8, 8, 8, 8, 0, 0,30,
+                            9, 9,17,28,22, 0, 0,16,10,10,18,23,11,11,19,24,
+                            0,12,13,13,20,29,25, 0, 0,14,14,21,26, 0, 0, 0,
+                    };
+                    char mychr = extmap[tsc[pc] - 160];
+                    fwrite(&mark, 1, 1, fout);
+                    fwrite(&mychr, 1, 1, fout);
+                }
+                pc++;
+                break;
+            }
+            case CT_KANJI: {
+                uint16_t wc = (tsc[pc] << 8) | tsc[pc+1];
+                int k;
+                for(k = 0; k < kanjiCount; k++) {
+                    if(wc == kanji[k]) break;
+                }
+                if(k == kanjiCount) {
+                    printf("WARN: Unknown kanji: 0x%04hx\n", wc);
+                } else {
+                    // Index by appearance in the list, and fit that number into banks
+                    // of 0x60 for each 'page'
+                    uint8_t page = k / 0x60;
+                    uint8_t word = k % 0x60;
+                    uint8_t b = MULTIBYTE_BEGIN + page; // First byte
+                    fwrite(&b, 1, 1, fout);
+                    b = word + 0x20; // Second byte
+                    fwrite(&b, 1, 1, fout);
+                }
+                pc += 2;
+                break;
+            }
+            case CT_SKIP: pc++; break;
+            case CT_SKIP2BYTE: pc += 2; break;
+            case CT_INVALID: {
+                printf("WARN: Invalid character: '%c' (0x%02hx)\n", tsc[pc], tsc[pc]);
+                pc++;
+                break;
+            }
+            case CT_INVALID2BYTE: {
+                uint16_t wc = (tsc[pc] << 8) | tsc[pc+1];
+                printf("WARN: Invalid double byte character: 0x%04hx\n", wc);
+                pc += 2;
+                break;
+            }
+        }
+    }
+}
+
+void do_script(FILE *fout) {
+    uint8_t eventCount = 0;
+    // Place holder to store the real count when finished
+    fwrite(&eventCount, 1, 1, fout);
+    while(pc < tscSize && eventCount < MAX_EVENTS) {
+        uint8_t c = tsc[pc++];
+        if(c == SYM_EVENT) {
+            uint16_t sym = OP_EVENT;
+            fwrite(&sym, 1, 2, fout);
+            do_event(fout);
+            eventCount++;
+        } else if(c != '\n' && c != '\r') {
+            //printf("Debug: Char '%c' while looking for events.\n", c);
+        }
+    }
+    // Event count at beginning of file
+    fseek(fout, 0, SEEK_SET);
+    fwrite(&eventCount, 1, 1, fout);
+}
+
+uint16_t read_langcode(const char *str) {
+    char code[4] = { toupper(str[0]), toupper(str[1]), 0, 0 };
+    if(strcmp("EN", code) == 0)      return LANG_EN;
+    else if(strcmp("JA", code) == 0) return LANG_JA;
+    else if(strcmp("ES", code) == 0) return LANG_ES;
+    else if(strcmp("FR", code) == 0) return LANG_FR;
+    else if(strcmp("DE", code) == 0) return LANG_DE;
+    else if(strcmp("PT", code) == 0) return LANG_PT;
+    else if(strcmp("IT", code) == 0) return LANG_IT;
+    else return LANG_INVALID;
+}
 
 int main(int argc,char *argv[]) {
-	if(argc != 3) {
-		printf("Usage: tscomp <tsc file> <output file>\n");
-		return 0;
-	}
-	FILE *infile, *outfile;
-	if((infile = decrypt_tsc(argv[1])) == NULL) {
-		printf("Failed to open decrypted file.\n");
-		return 1;
-	}
-	if((outfile = fopen(argv[2], "wb")) == NULL) {
-		printf("Failed to open output file.\n");
-		return 1;
-	}
-	do_script(infile, outfile);
-	fclose(infile);
-	fclose(outfile);
-	return 0;
-}
+    if(argc < 2) {
+        printf("Usage: tscomp [-tul] <tsc file> [more tscs ...]\n");
+        printf("  -t:    Show tracing info for debugging\n");
+        printf("  -u:    Unfuck the input (encrypted)\n");
+        printf("  -l=XX: Specify language/encoding (2 letter code)\n");
+        printf("         (Supported: EN JA ES FR DE IT PT)\n");
+        return 0;
+    }
+    int i = 1;
+    for(; i < argc - 1; i++) {
+        if (argv[i][0] == '-') {
+            for (int j = 1; argv[i][j] != '\0'; j++) {
+                switch (argv[i][j]) {
+                    case 't':
+                        trace = true;
+                        break;
+                    case 'u':
+                        unfuck = true;
+                        break;
+                    case 'l': {
+                        uint16_t k = 0;
+                        if (strlen(&argv[i][j]) >= 4) {
+                            j += 2;
+                        } else { // If they put a space instead of =
+                            i++;
+                        }
+                        language = read_langcode(&argv[i][j]);
+                        j++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-FILE* decrypt_tsc(const char *filename) {
-	long fileSize;
-	unsigned char key;
-	FILE *infile, *outfile;
-	if((infile = fopen(filename, "rb")) == NULL) {
-		printf("Failed to open input file.\n");
-		exit(1);
-	}
-	if((outfile = fopen("tscomp.tmp", "wb")) == NULL) {
-		printf("Failed to create temporary file.\n");
-		exit(1);
-	}
-	// Get the size of the file
-	fseek(infile, 0, SEEK_END);
-	fileSize = ftell(infile);
-	// Obtain the key from the center of the file
-	fseek(infile, fileSize / 2, SEEK_SET);
-	fread(&key, 1, 1, infile);
-	// Copy over bytes subtracting the key
-	fseek(infile, 0, SEEK_SET);
-	for(long i = 0; i < fileSize; i++) {
-		unsigned char c;
-		fread(&c, 1, 1, infile);
-		if(i != fileSize / 2) c -= key;
-		fwrite(&c, 1, 1, outfile);
-	}
-	// Close the files
-	fclose(infile);
-	fclose(outfile);
-	// Reopen decrypted file in read mode and return it
-	return fopen("tscomp.tmp", "rb");
-}
+    if(language == LANG_JA) {
+        // Load the kanji list
+        FILE *kfile = fopen("tools/tscomp/kanjimap.txt", "rb");
+        if(!kfile) {
+            printf("ERROR: Failed to open '%s'.\n", "kanjimap.txt");
+            return EXIT_FAILURE;
+        }
+        fseek(kfile, 0, SEEK_END);
+        kanjiCount = ftell(kfile) / 2; // Each iteration is 2 bytes
+        fseek(kfile, 0, SEEK_SET);
+        kanji = malloc(kanjiCount * 2);
+        fread(kanji, 1, kanjiCount * 2, kfile);
+        fclose(kfile);
+        // Endianness is a bitch
+        for(uint16_t i = 0; i < kanjiCount; i++) {
+            uint8_t hi = kanji[i] >> 8;
+            uint8_t lo = kanji[i] & 0xFF;
+            kanji[i] = (lo << 8) | hi;
+        }
 
-void do_script(FILE *fin, FILE * fout) {
-	unsigned char eventCount = 0;
-	// Place holder to store the real count when finished
-	fwrite(&eventCount, 1, 1, fout);
-	while(!feof(fin) && eventCount < MAX_EVENTS) {
-		char c = fgetc(fin);
-		if(c == SYM_EVENT) {
-			unsigned short sym = OP_EVENT;
-			fwrite(&sym, 1, 2, fout);
-			do_event(fin, fout);
-			eventCount++;
-		} else if(c == EOF) {
-			break;
-		} else if(c != '\n' && c != '\r') {
-			//printf("Debug: Char '%c' while looking for events.\n", c);
-		}
-	}
-	// Event count at beginning of file
-	fseek(fout, 0, SEEK_SET);
-	fwrite(&eventCount, 1, 1, fout);
-}
+        if(trace) printf("TRACE: Loaded kanji list.\n");
+    }
 
-void do_event(FILE *fin, FILE *fout) {
-	bool msgWindowOpen;
-	unsigned short id, commandCount;
-	msgWindowOpen = FALSE;
-	id = read_number(fin);
-	commandCount = 0;
-	fwrite(&id, 1, 2, fout);
-	while(!feof(fin)) {
-		char c = fgetc(fin);
-		if(c == SYM_COMMAND) {
-			commandCount++;
-			unsigned short flags = do_command(fin, fout);
-			if(flags & CFLAG_MSGOPEN) msgWindowOpen = TRUE;
-			else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = FALSE;
-			if(flags & CFLAG_END) break;
-		} else if(is_valid_char(c)) {
-			if(msgWindowOpen) {
-				fwrite(&c, 1, 1, fout);
-			} else if(c != '\n') {
-				printf("Warning: Printable text char '%c' is never displayed.\n", c);
-			}
-		} else if(c == SYM_EVENT) {
-			if(commandCount != 0) {
-				printf("Warning: Non-empty event #%04hu has no ending!\n", id);
-			}
-			fseek(fin, -1, SEEK_CUR);
-			break;
-		} else {
-			if(c == '\r') continue;
-			printf("Warning: Invalid char '%c' in event #%04hu.\n", c, id);
-		}
-	}
-}
+    // Go through each of the TSC files given
+    char outstr[512];
+    for(; i < argc; i++) {
+        tsc_open(argv[i]);
 
-unsigned short do_command(FILE *fin, FILE *fout) {
-	unsigned char opcode, params;
-	unsigned short flags;
-	char str[LEN_COMMAND + 1];
-	// Find command from 3 character string
-	fread(&str, 1, LEN_COMMAND, fin);
-	str[LEN_COMMAND] = '\0';
-	for(int i = 0; i < COMMAND_COUNT; i++) {
-		if(strcmp(str, command_table[i].name) == 0) {
-			opcode = command_table[i].opcode;
-			params = command_table[i].params;
-			flags = command_table[i].flags;
-			break;
-		}
-	}
-	//printf("TRACE: Command %s matches %hhu.\n", str, opcode);
-	fwrite(&opcode, 1, 1, fout);
-	// Parse parameters
-	for(int i = 0; i < params; i++) {
-		short val = read_number(fin);
-		fwrite(&val, 1, 2, fout);
-		// Parameters should be separated by ':', CS doesn't actually check though
-		if(i != params - 1) {
-			if(fgetc(fin) != ':') {
-				printf("Warning: No ':' between parameters.\n");
-			}
-		}
-	}
-	return flags;
-}
+        sprintf(outstr, "%s", argv[i]);
+        outstr[strlen(outstr)-3] = 't';
+        outstr[strlen(outstr)-2] = 's';
+        outstr[strlen(outstr)-1] = 'b';
+        FILE *outfile = fopen(outstr, "wb");
+        do_script(outfile);
+        fclose(outfile);
 
-unsigned short read_number(FILE *file) {
-	char str[LEN_NUMBER + 1];
-	fread(&str, 1, LEN_NUMBER, file);
-	str[LEN_NUMBER] = '\0';
-	// Make sure the string is 4 digits
-	for(int i = 0; i < LEN_NUMBER; i++) {
-		if(str[i] < '0' || str[i] > '9') {
-			// Parameters should be 4 digits, but sometimes they are less
-			if(i < 4 && str[i] == ':') {
-				printf("Warning: Parameter is less than 4 digits.\n");
-				str[i] = '\0';
-				fseek(file, -1, SEEK_CUR);
-			} else {
-				printf("Error: Expected number.\n");
-				exit(1);
-			}
-		}
-	}
-	return atoi(str);
-}
+        tsc_close();
+    }
 
-bool is_valid_char(char c) {
-	for(int i = 0; i < strlen(ValidChars); i++) {
-		if(c == ValidChars[i]) return TRUE;
-	}
-	return FALSE;
+    free(kanji);
+
+    return EXIT_SUCCESS;
 }

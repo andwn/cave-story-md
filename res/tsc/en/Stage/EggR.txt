@@ -1,0 +1,83 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGRed petals are scattered about.<NOD<END
+
+#0200
+<KEY<MSGYou find a note.<NOD<CLR<TURWith the shield up, I can't
+get to No. 00's room.<NOD<CLR<TURI think one of these terminals
+ought to be able to lower the
+shield...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGOpened the treasure chest.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TURSky Dragon Egg No. 01
+Error: Egg's condition abnormal.
+Advise investigation.<NOD<END
+#0502
+<PRI<MS3<TURSky Dragon Egg No. 02
+Condition normal.<NOD<END
+#0503
+<PRI<MS3<TURSky Dragon Egg No. 03
+Condition normal.<NOD<END
+#0504
+<PRI<MS3<TURSky Dragon Egg No. 04
+Condition normal.<NOD<END
+#0505
+<PRI<MS3<TURSky Dragon Egg No. 05
+Condition normal.<NOD<END
+#0506
+<PRI<MS3<TURSky Dragon Egg No. 06
+Error: Egg's condition abnormal.
+Advise investigation.<NOD<END
+#0507
+<PRI<MS3<TURSky Dragon Egg No. 07
+Condition normal.<NOD<END
+#0508
+<PRI<MSG<TURSky Dragon Egg No. 08
+Condition normal.<NOD<END
+#0509
+<PRI<MSG<TURSky Dragon Egg No. 09
+Condition normal.<NOD<END
+#0510
+<PRI<MSG<TURSky Dragon Egg No. 10
+Condition normal.<NOD<END
+#0511
+<PRI<MSG<TURSky Dragon Egg No. 11
+Condition normal.<NOD<END
+#0512
+<PRI<MSG<TURSky Dragon Egg No. 12
+Condition normal.<NOD<END
+#0513
+<PRI<MSG<TURSky Dragon Egg No. 13
+Condition normal.<NOD<END
+#0514
+<PRI<MSG<TURSky Dragon Egg No. 14
+Condition normal.<NOD<END
+#0515
+<PRI<MSG<TURSky Dragon Egg No. 15
+Condition normal.<NOD<END
+#0516
+<PRI<MSG<TURSky Dragon Egg No. 16
+Condition normal.<NOD<END
+

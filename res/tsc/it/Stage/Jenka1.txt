@@ -1,0 +1,210 @@
+
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+#0200
+<KEY
+<ITJ0014:0201
+<FLJ0594:0214
+<FLJ0593:0213
+<FLJ0592:0212
+<FLJ0591:0211
+<FLJ0590:0210
+<KEY<MSG<FAC0013E tu chi saresti...?<NOD
+Non ti ho mai visto
+in giro prima.<NOD<END
+
+#0201
+<IT-0014
+<FLJ0594:0224
+<FLJ0593:0223
+<FLJ0592:0222
+<FLJ0591:0221
+<FLJ0590:0220
+<KEY<MSG<FAC0013Oh, cielo!<NOD<CLR<GIT1014Il mio adorato cucciolo!<NOD<CLR
+<GIT0000<FAC0000Le hai dato il =Cucciolo=.<NOD<CLR<CNP0300:0130:0000<DNP0401<FL-0274<FAC0013Sei stato tu a portarmelo,
+mi par di capire?<NOD
+Grazie mille.<NOD<CLRQuello cos'è?<NOD
+=Fiori Rossi=?<NOD<FAC0000<CLR<CMU0000<MSGHuzzah!<NOD<CLO
+<CNP0400:0009:0000<WAI0010<MYD0002<CNP0300:0132:0002<ANP0300:0100:0002<WAI0120<CMU0011
+<CNP0400:0012:0000
+<MSG<FAC0005Come ti va, Jenka?<NOD<CLR<FAC0013Ah, Balrog.<NOD<ANP0300:0120:0002
+Tutto bene.<NOD
+E quella babbea di mia 
+figlia come sta?<NOD<CLR<FAC0014Hee-hee-hee!<NOD
+Babbea? Vuoi dire Misery?<NOD
+Sta bene, sta bene.<NOD<CLRE' comparso un nuovo 
+padrone.<NOD
+Questa volta, la terra
+sarà nostra!<NOD<CLR<FAC0013E quindi per l'ennesima 
+volta voi due
+tramate di...<NOD<CLR<FAC0005Non sono qui per 
+crearti problemi.<NOD
+Sono qui solo per prendere
+la chiave del magazzino.<NOD<CLRQuello dove sono conservati
+i fiori!<NOD<CLR<FAC0013.....<NOD<CLRMio...<NOD
+Ma di che diavolo vai
+cianciando?<NOD<CLR
+<ANP0400:0030:0000<FAC0014Hoho!<NOD<CLRNon vorrai fare la 
+finta tonta?!<NOD<CLR<FAC0005.....<NOD<CLRVabbè, mi sembra 
+d'aver capito.<NOD
+Hai deciso di 
+tradirci.<NOD<CLO<CMU0000
+<WAI0050<FAC0005<MSGTe ne pentirai.<NOD<CLO
+<FAC0000<ANP0400:0010:0000<WAI0200<CMU0019
+<MSG<FAC0013<CNP0300:0130:0000Un nuovo padrone...<NOD
+Quel buono a nulla.<NOD<MYD0200<CLR.....<NOD<CLRCe ne sono altri 
+quattro, a dire il vero.<NOD
+Ho altri quattro 
+cuccioli...<NOD<CLRE i miei fianchi 
+sono così deboli.<NOD<CLRPuò questa misera 
+vecchietta
+chiederti di trovarle 
+gli altri suoi cuccioli 
+scomparsi?<NOD<FL+0590<END
+
+#0210
+<KEY<MSG<FAC0013Ne mancano ancora 
+quattro...<NOD
+Può questa misera 
+vecchietta
+chiederti di trovarle 
+gli altri suoi cuccioli 
+scomparsi?<NOD<END
+
+#0211
+<KEY<MSG<FAC0013Ne mancano ancora tre.<NOD
+Buona fortuna.<NOD<END
+
+#0212
+<KEY<MSG<FAC0013Credo che i miei 
+tesorini ti si siano 
+affezzionati.<NOD<CLRAncora due...<NOD<END
+
+#0213
+<KEY<MSG<FAC0013Ne manca solo uno...<NOD
+Quando vorrei che tu 
+lasciassi perdere i 
+fiori rossi.<NOD<END
+
+
+#0220
+<KEY<MSG<FAC0013Cielo, che velocità.<NOD<CLR<GIT1014E' proprio uno dei
+miei cuccioli.<NOD<CLR
+<GIT0000<CNP0301:0130:0000<DNP0401<FAC0000Le hai dato il =Cucciolo=.<NOD<CLR<FL-0274<FAC0013Hmmm...<NOD
+Tu sei un soldato della
+superficie, vero?<NOD<CLR.....<NOD<CLRSolo poco tempo fa
+centinaia di robot come 
+te approdarono su 
+quest'Isola.<NOD
+Un numero spropositato 
+di Mimiga
+morì per mano loro.<NOD
+Così come gli umani che
+provarono a proteggerli.<NOD<CLRMessi all'angolo, 
+i Mimiga furono 
+costretti ad ingerire
+i fiori rossi proibiti,<NOD
+e nel mezzo della loro
+furia omicidia si 
+rivoltarono
+contro i robot.<NOD<CLRSe i fiori rossi non 
+fossero esistiti, I Mimiga 
+sarebbero 
+completamente scomparsi<NOD
+dall'Isola...<NOD<CLRTe ne mancano tre.<NOD
+Buona fortuna.<NOD<FL+0591<END
+
+#0221
+<KEY<MSG<FAC0013Oooh.<NOD<CLR<GIT1014Sì, Sì.<NOD
+Questo è certamente uno dei
+miei adorati cuccioli.<NOD<CLR
+<GIT0000<CNP0302:0130:0000<DNP0401<FAC0000Le hai restituito il =Cucciolo=.<NOD<CLR<FL-0274<FAC0013Molte grazie.
+E siamo già a tre..<NOD<CLR.....<NOD<CLRTi è mai capitato di vedere
+un Mimiga impazzito?<NOD<CLRI Mimiga, ormai messi 
+alle strette, speravano
+che i fiori rossi 
+potessero
+garantirgli più forza.<NOD
+Se li mangiarono, e
+combatterono i robot.<NOD<CLR
+Però...<NOD<CLRSai cosa gli 
+successe dopo?<NOD<CLR.....
+<NOD<CLRE' una triste storia...<NOD
+I Mimiga impazziti,
+ormai incapaci di 
+controllare le loro 
+stesse azioni,<NOD
+scomparvero senza lasciar
+traccia alcuna.<NOD
+A sentire le leggende 
+urbane, pare 
+siano scesi in
+superficie,<NOD
+Dove vivono gli umani.<NOD<CLRUn esercito di Mimiga 
+inferociti sulla 
+Terra...<NOD
+Se fosse vero...<NOD<CLRCapisci adesso?<NOD
+Capisci quanto siano 
+pericolosi questi
+fiori rossi?<NOD<CLR.....<NOD<CLRNe mancano due...<NOD<FL+0592<END
+
+#0222
+<KEY<MSG<FAC0013Sembra proprio che
+ti adorino.<NOD
+I miei cuccioli non 
+sprecano il loro 
+affetto sulle 
+cattive persone.<NOD<CLR<GIT1014Grazie mille...<NOD<CLR
+<GIT0000<FAC0000Le hai restituito il =Cucciolo=.<NOD<CLR<CNP0303:0130:0000<DNP0401<FL-0274
+<FAC0013.....<NOD<CLROra stai cercando
+la chiave del magazzino, 
+non è così... dove 
+ci sono i semi
+dei fiori rossi...<NOD<CLRNon mi importa chi tu
+sia, non avrai la chiave.<NOD
+Aprire quel magazzino 
+sarebbe come 
+invitare quella
+tragedia ancora 
+una volta...<NOD<CLRUno, due, tre...<NOD<CLRNe è rimasto solo
+uno.<NOD<FL+0593<END
+
+#0300
+<FLJ0590:0310<END
+#0301
+<FLJ0591:0311<END
+#0302
+<FLJ0592:0312<END
+#0303
+<FLJ0593:0313<END
+#0304
+<FLJ0594:0314<END
+
+#0310
+<KEY<MSGBau!<NOD<END
+#0311
+<KEY<MSGBau Bau!<NOD<END
+#0312
+<KEY<MSGBau Bau Bau!<NOD<END
+#0313
+<KEY<MSGBaaau.<NOD<END
+#0314
+<KEY<MSGCinque!<NOD<END
+
+
+#0400
+#0401
+

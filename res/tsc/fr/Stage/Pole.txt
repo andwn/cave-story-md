@@ -1,0 +1,97 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGOuverture du coffre.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010Trouvé =Étoile Polaire= !<WAI0160<NOD<GIT0000<CLO<RMU
+<MSG
+Quelque part, une transmission...<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGVide.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*ronflements*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGTu n'aurais pas vu mon flingue,
+dis-moi ?<NOD
+Quelqu'un est venu et me l'a volé
+pendant que je dormais !<NOD
+Bon sang, j'aurais du le garder
+en poche au lieu de l'avoir
+laissé là...<NOD<AMJ0002:0302<CLRIl était même pas fini !<NOD
+Encore quelques détails et
+j'aurais pu en faire une arme
+vraiment redoutable.<NOD<CLR
+Ah, tu parles d'une vie...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+HEY !!<NOD<CLRMais c'est MON flingue ?!<NOD<CLR<GIT0002Qu'est-ce que TU fiches avec ?!
+Je l'ai pas créé pour toi !!<NOD<CLRRends-moi ça !<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+=Étoile Polaire= reprise...<NOD<CLRTss !<NOD
+Je vois que tu l'as bien
+rôdé, ce flingue.<NOD<CLR
+.....<NOD<CLRTu sais,<NOD
+J'ai longtemps cru qu'une
+arme devrait être fabriquée
+par son possesseur.<NOD
+C'est mal de combattre avec
+l'arme d'un autre en consi-
+dérant sa force comme sienne.<NOD
+Celui qui blâme ses outils
+que son propre pouvoir ne peut
+achever est un fou.<NOD<CLR
+<CMU0008Cependant...<WAI0050<CLRQuand je vois ce flingue entre tes
+mains, usé à ce point,
+ça me fout des larmes.<NOD
+Voir autant d'utilisation sur
+un flingue qui n'est même pas
+terminé...<NOD<CLR
+Hahhh...<NOD<CLRPardonne mes grommelages.<NOD<CLR
+Tu peux garder cete arme.<NOD<CMU0000<FAO0001
+Après sa touche finale, bien sûr.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013
+=Étoile Polaire= mise à jour en =Spur=<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGEn ce monde il existe une
+balance entre les créateurs
+et les utilisateurs.<NOD<CLRJe le sais, bien sûr, mais
+Cela a pris ton aide pour
+expérimenter une première main.<NOD
+Maintenant, je voudrais dédicacer
+ce coté de la création.<NOD
+Le labeur demandé devient joie
+quand je pense à la joie de
+mes utilisateurs.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Out."<NOD<END
+
+

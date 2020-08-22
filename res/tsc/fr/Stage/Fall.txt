@@ -1,0 +1,99 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG
+<CMU0010Ratrappé par Kazuma !<WAI0160<CLR<FAC0010Phew...<NOD<CLRJ'aurais jamais cru
+que tu y arriverais.<NOD<CLRTu as détruit le noyau...<NOD<CLRÀ présent, le monde est
+libre de toutes incarnations
+futures du Docteur.<NOD
+La paix a été restaurée !<NOD<CLR
+Maintenant, rentrons.<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Phew !<NOD<CLRC'était moins une.<NOD<CLR<FAC0019Je croyais finir
+écrasé comme de la
+tôle...<NOD
+On te doit une
+fière chandelle.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nan, me remercie pas.<NOD
+J'ai juste fait ce que
+Misery m'a demandé.<NOD<CLR<FAC0025Misery ? Tu veux dire,
+cette sorcière ?<NOD<CLR
+<FAC0005Eh oui.<NOD<CLR<FAC0025Je croyais qu'elle
+nous détestait.<NOD
+Duh, je croyais que
+VOUS nous haïssiez...<NOD<CLR<FAC0005Tu as vaincu Ballos, non ?<NOD<CLRQuand tu as fait ça,
+ça nous as libérés.<NOD
+Aucun de nous deux
+n'ont des ordres
+à recevoir maintenant !<NOD<CLR<FAC0019Je pensais que vous
+étiez juste des nuls,<NOD
+Mais je suppose que
+c'était a cause de la
+couronne !<NOD<CLR<FAC0005Eh ben, on croit ce
+qu'on voit.<NOD
+Après tout, Misery est
+celle qui lui a donné 
+la couronne au début.<NOD<CLR<FAC0025Huh.<NOD
+Sans blague.<NOD<CLR<FAC0005Eh oui.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005Alors !<NOD<CLR
+<FAC0025Alors ?<NOD<CLR<FAC0005Alors qu'est-ce
+qu'on fait maintenant ?<NOD
+Je peux vous emmener
+où vous voulez.<NOD<CLR<FAC0019Hmm, et bien...<NOD<CLRNotre mission est finie,
+et je veux maintenant
+vivre chaque instant<NOD
+un endroit où je pourrais
+me relaxer devant
+uen belle vue...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Uh, tu sais...<NOD<CLR
+<FAC0025Hm ?<NOD<CLR<FAC0005...Ça vous dérange pas
+si je me joins à vous ?<NOD<CLR
+<FAC0019Bien sur que non !<NOD
+Vivons tous les
+trois ensemble !<NOD<CLR
+<FAC0014Vraiment ?!<NOD<CLR<FAC0019J'te laisse choisir
+le coin.<NOD
+Trouve nous un bon
+coin, okay ?<NOD<CLR
+<FAC0014Compris !!<NOD<CLROkay alors,
+<ANP0230:0020:0002A<WAI0010cc<WAI0010r<WAI0010o<WAI0010ch<WAI0010ez<WAI0010-<WAI0010v<WAI0010o<WAI0010u<WAI0010s!!!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...On a pas oublié
+quelque chose ?<NOD<TRA0000:0100:0001:0015
+
+#0200
+#0210
+#0220
+#0230
+#0240
+

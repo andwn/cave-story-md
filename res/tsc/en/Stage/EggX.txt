@@ -1,0 +1,100 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGDo you want to save?<YNJ0000<SVP<CLRGame saved.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergy restored.<NOD<END
+
+
+#0110
+<KEY<MSGYou feel a cold wind
+blowing in...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Ergh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGOwww...<NOD<ANP0200:0011:0002<CLR<FAC0003Woh-oh!
+Hey, I'm not dead yet!<NOD
+You're gonna eat it
+this time!!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Huh?<WAI0050<NOD
+I got creamed by that
+monster...<ANP0200:0000:0000<NOD<CLR.....<NOD
+Did you save me?<YNJ0202<EVE0201
+#0201
+<FAC0003I don't need your help!!<NOD<CLRI could handle him
+by myself! Somehow!<NOD
+Grr...I hate this stinking
+island, and I hate every
+living thing on it!<NOD<FAC0000<CLO<EVE0203
+#0202
+<FAC0002Hmph...<NOD<CLRWell, whatever.<NOD<FAC0000<CLO<EVE0203
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Oh!<NOD<MYD0003<CLRLook! It's...I think
+it's Number 00!<NOD<CLRThis egg could be our
+ticket off this island!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Egg condition: Normal!
+That's what I like to
+hear!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hm?<NOD A password?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Looks like you need a
+password to hatch this
+egg.<NOD<CLR<FAC0002Well, crud.<NOD<CLRIf only my brother were
+here, he'd set things
+straight.<NOD<CLR.....<NOD<CLR<FAC0001All right, looks like
+I'm done here for now.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGAre you<MYD0000 from around
+here?<NOD<CLRDoesn't look like it,
+does it.<NOD
+The words on your cap
+there...<NOD
+That's not a language
+they have on this
+island.<NOD<CLR
+...Did you get lost?<NOD<CLRThat's okay.<NOD
+I'll let you come
+with me.<NOD
+We can get off this
+dump together.<NOD
+In return, you're
+gonna help me.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TURSky Dragon Egg No. 00
+Hatching preparations complete.<NOD<CLR
+Input Password:<NOD<END
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400
+

@@ -1,0 +1,35 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002
+<FAO0000<TRA0085:0096:0019:0029
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002
+<FAO0002<TRA0087:0095:0004:0011
+
+
+
+#0200
+#0201
+
+
+#0900
+<DNP0900
+<KEY<MYD0002<MSGPlease kill my master.<NOD
+That is the only way Misery
+can be freed...<NOD
+...The only way to avoid a
+repetition of this tragedy.<NOD<CLRMy master's name is Ballos.<NOD<CLRHis magic powers have gone wild,
+and now he cannot even die...<NOD<ANP0201:0010:0000<FL+1620<END
+

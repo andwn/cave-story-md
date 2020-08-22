@@ -1,0 +1,67 @@
+#0000
+<END
+
+#0001
+<PRI<MSGVide.<NOD<END
+
+#0016
+<PRI<MSG
+Veux-tu sauvegarder?<YNJ0000<FL+0431<SVP<CLRJeu sauvegardé.<NOD<END
+
+#0017
+<PRI<FLJ0201:0018
+<LI+1000<SOU0020<AE+<MSG
+Énergie récupérée.<NOD<END
+#0018
+<PRI
+<LI+1000<SOU0020<AE+<MSG
+Énergie et missiles récupérés.<NOD<END
+
+#0019
+<KEY<MSG
+Veux-tu te reposer ?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050
+<LI+1000<SOU0020<MYD0002<MSG
+Énergie récupérée.<NOD<CLO<RMU<FAI0004<END
+
+#0030
+<PRI<FLJ0202:0032<FLJ0201:0031<FL+0201<GIT0005<AM+0005:0010
+<CMU0010Tu as trouvé un =Lance-missile=<WAI0160<NOD<RMU<CLRC'est une arme très
+puissantes mais aux munitions
+limitées.<NOD
+Tu peux reprendre des missiles
+en détruisant des ennemis.<NOD<END
+#0031
+<PRI<AM+0005:0005<MSG
+<GIT0006Nombre max de missiles augmenté de <NUM0000 !<NOD<END
+#0032
+<PRI<AM+0010:0005<MSG
+<GIT0011Nombre max de missiles augmenté de <NUM0000 !<NOD<END
+
+#0040
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSG
+Tu es mort.<NOD<CLRRéessayer?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0041
+<KEY<CMU0000<HMC<WAI0040<PRI<WAI0040<CMU0003
+<MSG
+Tu as coulé.<NOD<CLRRéessayer ?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0042
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSG<HMC
+On ne t'a plus jamais revu...<NOD<CLRRéessayer ?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0048
+<SMC<LDP<END
+
+#0049
+<CLO<FAO0004<ESC
+
+
+XX: head.tsc   4000 - 4099
+4000:Almond…“ï

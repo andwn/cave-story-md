@@ -1,0 +1,193 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FLJ0761:0095<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<ANP0300:0020:0000<FAI0002<END
+
+
+#0100
+<KEY<FLJ0763:0101
+<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000<TRA0043:0090:0016:0013
+#0101
+<PRI<MSGSie geht nicht auf!<NOD<END
+
+#0110
+<FLJ0764:0111<END
+#0111
+<KEY<FAO0004<MYD0002<TRA0045:0092:0002:0005
+
+
+
+#0200
+<PRI<FLJ0201:0201<MSGNicht aufzukriegen.
+Er ist versiegelt...<NOD<END
+
+#0201
+<FLJ0766:0001<FL+0766<FL-0765<FL+0202
+<SOU0022<CNP0200:0021:0000
+<MSGDu öffnest die Schatzkiste.<NOD<CLR<TAM0005:0010:0000<CMU0010<GIT0010Deine Raketen haben ein
+=Power-Up= bekommen!<WAI0160<NOD<RMU<END
+
+#0300
+<KEY
+<FLJ0764:0303
+<FLJ0762:0302
+<FLJ0761:0301
+<FL+0761<MSG<FAC0019Hey, da bist du ja!<NOD
+Ich hab schon auf dich
+gewartet.<NOD<CLRWenn wir den Brocken hier
+weg schieben,<NOD können wir
+endlich den Ausgang
+finden.<NOD<CLRAnscheinend liegt
+dahinter das Nest von
+einer Art Monster...<NOD
+Also sollten wir besser
+vorsichtig sein.<NOD<CLRAber jetzt räumen wir
+erst mal den Brocken
+aus dem Weg.<NOD
+Du fasst da an.<NOD<CLO
+<ANP0300:0020:0000<END
+
+#0301
+<KEY<ANP0300:0000:0000
+<MSG<FAC0019Was ist denn?<NOD
+Hosen voll?<NOD<CLRIch hoffe doch nicht,
+oder?<NOD<CLRNa komm schon,
+pack endlich mit an.<NOD<ANP0300:0020:0000<END
+
+#0302
+<PRI<MSGSie ist bewusstlos.<NOD<END
+
+#0303
+<PRI<MSG<FAC0019Also dann!<NOD<CLRAb mit uns in die
+Höhle der Monster!!<NOD<END
+
+
+#0310
+<KEY<CNP0310:0012:0004:<ANP0310:0080:0005<SMC
+<CMU0015<MSGDu hast Balrog besiegt!<WAI0140<NOD<CLO<FAC0000
+<CMU0008<FAO0004<MYD0002<TRA0044:0600:0009:0014
+<END
+
+#0320
+<KEY
+<FLJ0762:0322
+<FLJ0761:0321<EVE0500
+
+#0321
+<KEY
+<MNP0320:0000:0000:0000
+<MYD0002<MYD0003
+<MSG<FAC0019Fertig?<NOD
+Zuuu gleich!<NOD<CLO<FAC0000
+<ANP0300:0020:0000<WAI0050<MSGMMMMNGH!<NOD<CLO<FAC0000
+<CNP0510:0334:0000
+<CNP0511:0334:0002<WAI0100
+<MSG<FAC0020...<NOD<CLO<FAC0000
+<ANP0300:0000:0000<WAI0050<MYD0002
+<MSG<FAC0025Der rührt sich keinen
+Millimeter.<NOD
+Sind wir beide etwa
+zu schwach dafür...<NOD<FAC0000<CLO
+<WAI0050
+<MSGKa-BLAMMO!<CMU0000<NOD<CLO
+<CNP0310:0009:0002<WAI0100
+<CNP0310:0012:0002
+<ANP0310:0030:0002<CMU0011
+<MYD0000
+<MSG<FAC0019DU!<NOD<CLR<FAC0014Höhöhöö!<NOD<CLRIhr seid ja immer noch
+heil!<NOD<CLRUnd jetzt wollt ihr sogar
+noch hier abhauen?<NOD<CLRIhr seid aber unartige
+kleine Roboter, was?<NOD<CLRKapierts doch endlich.<NOD
+Ihr kommt gegen meinen
+Meister genau so wenig an
+wie ich!<NOD<CLRAber das reicht jetzt!<NOD
+Jetzt seid ihr dran,
+ein für alle mal!<NOD<CLRDann könnt ihr hier als
+Schrotthaufen weiter
+spielen!<NOD<CLR<FAC0019Dich können wir gerade
+super brauchen!<NOD
+Du fasst da in der Mitte
+an, okay?<NOD<FAC0000<CLO<CMU0000
+<WAI0100
+<ANP0310:0060:0002<WAI0048
+<ANP0310:0050:0002<WAI0020
+<ANP0300:0020:0000<WAI0020
+<MYD0002<MYD0003<MSG<FAC0019Fertig?
+Zuuu gleich...!<NOD<ANP0310:0080:0000<MYB0002<ANP0300:0030:0000<SOU0072<CLR<FAC0023HÖRT MIR ENDLICH MAL
+JEMAND ZU HIER?!<NOD
+<ANP0310:0000:0000<CMU0004<CNP0310:0169:0000<BSL0310
+<FL+0762<FL+0763
+<END
+#0322
+<PRI<END
+
+#0330
+
+
+
+#0500
+<KEY
+<FLJ0762:0502
+<FLJ0761:0501
+<MSGEin großer, schwerer Felsen.<NOD
+Dahinter scheint Wind
+zu blasen.<NOD
+Um den zu bewegen braucht
+es mindestens zwei starke
+Leute, wenn nicht mehr.<NOD<END
+
+#0501
+<KEY<WAI0010
+<ANP0300:0000:0000
+<MSG<FAC0020Doch nicht auf meiner
+Seite! Pack da drüben
+an...<NOD<CLO
+<ANP0300:0020:0000<END
+
+#0502
+<PRI<MSGEin großer, schwerer Felsen.<NOD<END
+
+#0510
+#0511
+
+
+#0600
+<KEY<FL-0763<FL+0764<FL-0760
+<SMC<CMU0008<CNP0330:0012:0002<ANP0300:0000:0002
+<MNP0320:0000:0000:0000
+<FAI0004
+<MSG<FAC0005Schon gut,
+hab verloren...<NOD<CLRIch räum ja den Brocken
+schon weg.<NOD
+Aber unter einer
+Bedingung...<NOD<ANP0330:0000:0000<CLRIhr dürft KEINER SEELE
+verraten, dass ich euch
+geholfen hab.<NOD OKAY?<NOD<CLR<FAC0019Aber klar doch!<NOD<FAC0000<CLO
+<ANP0330:0060:0000<WAI0040
+<ANP0330:0050:0002<WAI0020
+<MYD0003<ANP0300:0020:0000
+<MSG<FAC0019Fertig!
+UND SCHIEBT!<NOD<CLO<FAC0000
+<ANP0500:0010:0000<WAI0100
+<ANP0330:0080:0002
+<ANP0300:0000:0002
+<ANP0500:0020:0000<MYD0002<MSG<FAC0023GAAAAAAAAAHHH!!!<WAI0050<CLO<FAC0000
+<ANP0330:0000:0002
+<WAI0100<MSG<FAC0005Nicht vergessen.<ANP0300:0000:0000<NOD
+Was hier passiert ist
+bleibt unter uns, klar?<NOD<CLR<FAC0019Klaro!<NOD<CLO<FAC0000<ANP0330:0010:0000
+<WAI0160<CNP0200:0015:0002<WAI0040
+<MSG<FAC0019Ich glaub, der Bursche
+ist wirklich kein so
+übler Kerl.<NOD<CLO
+<FL+0781<FL+0765<CNP0016:0016:0002<END

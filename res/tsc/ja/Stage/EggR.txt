@@ -1,0 +1,82 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSG赤い花びらが散乱している。<NOD<END
+
+#0200
+<KEY<MSGメモがある。<NOD<CLR<TURシールドがじゃまで
+No.00のある部屋に近づけない<NOD<CLR<TURどこかにシールドを外すための
+端末があるはずなのだが…<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSG宝箱を開けた。<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TUR飛竜の卵 No.01
+エラー：卵の状態が異常です。
+卵を調査してください。<NOD<END
+#0502
+<PRI<MS3<TUR飛竜の卵 No.02
+正常です。<NOD<END
+#0503
+<PRI<MS3<TUR飛竜の卵 No.03
+正常です。<NOD<END
+#0504
+<PRI<MS3<TUR飛竜の卵 No.04
+正常です。<NOD<END
+#0505
+<PRI<MS3<TUR飛竜の卵 No.05
+正常です。<NOD<END
+#0506
+<PRI<MS3<TUR飛竜の卵 No.06
+エラー：卵の状態が異常です。
+卵を調査してください。<NOD<END
+#0507
+<PRI<MS3<TUR飛竜の卵 No.07
+正常です。<NOD<END
+#0508
+<PRI<MSG<TUR飛竜の卵 No.08
+正常です。<NOD<END
+#0509
+<PRI<MSG<TUR飛竜の卵 No.09
+正常です。<NOD<END
+#0510
+<PRI<MSG<TUR飛竜の卵 No.10
+正常です。<NOD<END
+#0511
+<PRI<MSG<TUR飛竜の卵 No.11
+正常です。<NOD<END
+#0512
+<PRI<MSG<TUR飛竜の卵 No.12
+正常です。<NOD<END
+#0513
+<PRI<MSG<TUR飛竜の卵 No.13
+正常です。<NOD<END
+#0514
+<PRI<MSG<TUR飛竜の卵 No.14
+正常です。<NOD<END
+#0515
+<PRI<MSG<TUR飛竜の卵 No.15
+正常です。<NOD<END
+#0516
+<PRI<MSG<TUR飛竜の卵 No.16
+正常です。<NOD<END
+

@@ -74,7 +74,7 @@ void window_draw_face();
 void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	window_clear_text();
-	if(cfg_language) {
+	if(cfg_language == LANG_JA) {
 		const uint32_t *data = &TS_MsgFont.tiles[('_' - 0x20) << 3];
 		vdp_tiles_load_from_rom(data, (0xB000 >> 5) + 3 + (29 << 2), 1);
 	}
@@ -184,10 +184,16 @@ void window_draw_char(uint8_t c) {
 		msgTextX += textColumn - spaceOffset;
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 2;
 		// And draw it
-		
-		vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
-				TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
-		
+		if(c >= 0x80) {
+		    // Extended charset, you'll never guess where I put it
+		    uint16_t index = (VDP_PLAN_W >> 5) + 3;
+		    index += (c - 0x80) << 2;
+            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0, index-4), msgTextX, msgTextY);
+		} else {
+		    // Low ASCII charset
+            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
+                    TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
+        }
 		textColumn++;
 		if(spaceCounter % 5 == 1 || spaceCounter == 2) spaceOffset++;
 	}
@@ -264,8 +270,16 @@ void window_scroll_text() {
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
 		for(uint8_t col = 0; col < 36 - (showingFace > 0) * 8; col++) {
 			windowText[row][col] = windowText[row + 1][col];
-			vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
-					TILE_FONTINDEX + windowText[row][col] - 0x20), msgTextX, msgTextY);
+			uint8_t c = windowText[row][col];
+            if(c >= 0x80) {
+                // Extended charset, you'll never guess where I put it
+                uint16_t index = (VDP_PLAN_W >> 5) + 3;
+                index += (c - 0x80) << 2;
+                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0, index-4), msgTextX, msgTextY);
+            } else {
+                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
+                        TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
+            }
 			msgTextX++;
 		}
 	}
@@ -340,7 +354,7 @@ void window_prompt_open() {
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
 	int16_t cursor_x = (PROMPT_X << 3) - 9;
-	if(!promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
+	if(!promptAnswer) cursor_x += cfg_language == LANG_JA ? 26 : 34; // "いいえ" starts more left than "No"
 	int16_t cursor_y = (PROMPT_Y << 3) + 4;
 	sprite_pos(handSpr, cursor_x, cursor_y);
 	promptSpr[0] = (VDPSprite) {
@@ -356,7 +370,7 @@ void window_prompt_open() {
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+16)
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
-	const SpriteDefinition *spr = cfg_language ? &SPR_J_Prompt : &SPR_Prompt;
+	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Prompt : &SPR_Prompt;
 	TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
 }
 
@@ -377,7 +391,7 @@ uint8_t window_prompt_update() {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
 		int16_t cursor_x = (PROMPT_X << 3) - 9;
-		if(!promptAnswer) cursor_x += cfg_language ? 26 : 34; // "いいえ" starts more left than "No"
+		if(!promptAnswer) cursor_x += cfg_language == LANG_JA ? 26 : 34; // "いいえ" starts more left than "No"
 		int16_t cursor_y = (PROMPT_Y << 3) + 4;
 		sprite_pos(handSpr, cursor_x, cursor_y);
 	}
@@ -466,7 +480,7 @@ void window_update() {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 		uint16_t index;
-		if(cfg_language) {
+		if(cfg_language == LANG_JA) {
 			x += textColumn * 2;
 			y += textRow * 3;
 			index = (0xB000 >> 5) + 3 + (29 << 2);
@@ -477,12 +491,12 @@ void window_update() {
 		}
         if(++blinkTime == 8) {
             vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
-            if(cfg_language) {
+            if(cfg_language == LANG_JA) {
                 vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
             }
         } else if(blinkTime == 16) {
             vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
-            if(cfg_language) {
+            if(cfg_language == LANG_JA) {
                 vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
             }
             blinkTime = 0;

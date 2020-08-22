@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "dma.h"
 #include "entity.h"
 #include "gamemode.h"

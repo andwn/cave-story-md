@@ -1,0 +1,50 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<MNA<CMU0036<FAI0003<END
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<KEY<MYB0000<WAI0002<PRI<FAI0001<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<PRI<FAO0003<TRA0082:0095:0154:0002
+
+
+#0200
+<PRI<MSG<TUR
+No hay vuelta atrás...<NOD<END
+
+
+
+#0900
+<DNP0900<SKJ0022:0000<SK+0022
+<PRI<MS3El rey celoso mandó que
+encerraran a Ballos en prisión,<NOD
+donde su castigo fue brutal
+y cruel.<NOD
+Los humanos pueden llegar a
+ser realmente crueles...<NOD<END
+
+#0901
+<DNP0901<SKJ0023:0000<SK+0023
+<PRI<MS3Bajo la extrema crueldad de la
+tortura, los poderes mágicos
+de Ballos se descontrolaron.<NOD
+El rey fue envuelto en una
+espiral de magia y destruido
+en un instante.<NOD
+En una sola noche, el reino
+que Ballos amaba tanto fue
+reducido a cenizas.<NOD<END
+

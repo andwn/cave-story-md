@@ -1,0 +1,93 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0009<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0009<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0009<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0009<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0009<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0011:0094:0043:0034
+
+
+#0200
+<FLJ0327:0201
+<KEY<MSG<FAC0007The key to Arthur's
+house...<NOD
+I thought there was at
+least one other one made.<NOD
+Blast you, Toroko,
+acting like you didn't
+know...<NOD<CLRWell, maybe Jack knows
+where to find it...<NOD<END
+#0201
+<KEY<MSG<FAC0007Toroko...
+I can't believe it...<NOD
+Toroko's elder brother,
+Arthur, was a fabulous
+warrior.<NOD
+But he was killed by 
+one of the Doctor's
+goons.<NOD
+And now, I...I couldn't
+protect her...<NOD<END
+
+#0210
+<KEY<MSG<FAC0009There are two keys to
+Arthur's house.<NOD
+Toroko has one of them.<NOD
+The other is hidden in
+the Mimiga graveyard.<NOD<END
+
+#0220
+<KEY<MSG<FAC0009Toroko's brother Arthur
+fought against a horrific
+red monster...<NOD<CLRThe terrible demon of this
+island that feasts on
+Mimigas.<NOD<CLRIt's not the Doctor,
+it's...something else.<NOD
+That demon has lived on
+this island for ages.<NOD<CLRIt came here to the
+village,<NOD
+but Arthur single-handedly
+drove it back.<NOD
+His gallant figure alone
+shielding our village
+from harm...<NOD<CLRI'll never forget it,
+as long as I live.<NOD<CLRHe may have finally been
+killed by the Doctor,
+but he was a true hero.<NOD<END
+
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Crackle* *Snap!*<NOD<FLJ0442:0000<CLRYou see something lying
+beyond the flames.<NOD<END
+#0301
+<KEY<GIT1008<MSGDo you want to use the
+=Jellyfish Juice=?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0442:0302<FL+0442
+<MSGYou find something in the
+ashes...<NOD<CLR<GIT0007<AM+0007:0100
+<CMU0010Got the =Bubbler=!<WAI0160<NOD<CLO<RMU<DNP0300<END
+#0302
+<KEY<DNP0300<END
+

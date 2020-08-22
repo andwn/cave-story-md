@@ -1,0 +1,445 @@
+
+#0090
+<MNA<CMU0024<FAI0000<END
+#0091
+<MNA<CMU0024<FAI0001<END
+#0092
+<MNA<CMU0024<FAI0002<END
+#0093
+<MNA<CMU0024<FAI0003<END
+#0094
+<MNA<CMU0024<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0002<TRA0055:0092:0003:0009
+
+#0110
+<KEY<FAO0002<TRA0057:0092:0005:0014
+#0115
+<KEY<SOU0011<ANP0115:0000:0002<FAO0002<TRA0057:0092:0003:0002
+
+#0120
+<PRI<FLJ1105:0122<MSGPasswort bitte?<NOD<FLJ1024:0121<END
+#0121
+<MSG"Etchischeg-Nelhöh Enie".<NOD<CLO
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+#0122
+<KEY<SOU0011<ANP0120:0000:0002<FAO0003<TRA0058:0093:0009:0004
+
+#0130
+<KEY<SOU0011<ANP0130:0000:0002<FAO0000<TRA0059:0090:0026:0008
+
+#0135
+<PRI
+<FLJ1023:0137
+<ITJ0025:0136
+<MSGDa steht drauf:
+"Kein Eintritt".<NOD
+Und sie ist abgeschlossen.<NOD<END
+#0136
+<SOU0022<MSG<GIT1025Du schließt auf mit dem
+=Teleporterraum-Schlüssel=.<NOD<CLO
+<GIT0000<FL+1023<EVE0137
+#0137
+<KEY<SOU0011<ANP0135:0000:0002<FAO0000<TRA0060:0090:0018:0009
+
+#0140
+<KEY<FAO0000<TRA0061:0090:0029:0009
+
+#0150
+<PRI<FLJ1030:0151<MSGDu bist noch viel zu
+früh hier...<NOD<END
+
+#0151
+<KEY<SOU0011<ANP0150:0000:0002<FAO0002
+<ITJ0023:0160
+<KEY<TRA0063:0092:0007:0052
+
+#0160
+<KEY<TRA0067:0092:0007:0052
+
+#0170
+<KEY<FAO0002<TRA0084:0092:0001:0021
+
+
+#0199
+<MOV0074:0079<END
+
+#0200
+<PRI<FLJ1020:0201
+<EVE0299
+
+#0201
+<PRI<MSGDie Erdenleute wollen uns
+angreifen, darum pflanzen wir
+hier ganz viel rote Blumen an.<NOD
+Wenn das stimmt, was der Doktor
+sagt, dann können die Blumen
+nicht früh genug wachsen.<NOD<END
+
+#0210
+<PRI<FLJ1020:0211
+<EVE0299
+#0211
+<PRI<MSGMit Hilfe der roten Blumen
+machen wir alle Killer-Roboter
+schrottreif!<NOD
+Blüht. Blüüüht, ihr lieben,
+roten Zierlichkeiten!<NOD<END
+
+#0220
+<PRI<FLJ1020:0221
+<EVE0299
+#0221
+<PRI<MSGLang lebe der Doktor~!<NOD<END
+
+#0230
+<PRI<FLJ1020:0231
+<EVE0299
+#0231
+<PRI<MSGLos, an die Arbeit!<NOD<END
+
+#0240
+<PRI
+<FLJ1037:0242
+<FLJ1020:0241
+<EVE0299
+
+#0241
+<PRI<FL+1037<MSGOh.<NOD<CLRDu bist ja ein Neuer.<NOD
+Das muss sicher recht verwirrend
+sein, hier auf einmal zu landen,
+oder?<NOD<CLRNa, das wird schon.<NOD
+Komm einfach auf keine dummen
+Ideen.<NOD
+Aber wenn du versuchst abzuhauen,
+dann kommst du ins Kittchen.<NOD
+Kümmer dich einfach nur gut um
+die Blumen,<NOD dann hast du
+ausgesorgt und kriegst auch
+genug zu Essen.<NOD<END
+
+#0242
+<PRI<MSGNa? Fleißig an der Arbeit?<NOD<CLRWenn wir so weiter machen,
+kriegen wir bald unser gemütliches
+Leben wieder zurück.<NOD<CLR...glaub ich jedenfalls.<NOD<END
+
+
+#0250
+<PRI
+<ITJ0029:0254
+<FLJ1029:0253
+<FLJ1028:0252
+<FLJ1020:0251
+<PRI<MSGAlso diese Rasensprenger,
+jetzt mal im Ernst, ich könnte
+die...!<NOD<CLROh, hoppla.<NOD
+Wir sollen doch nicht mit
+Menschen reden.<NOD<END
+
+#0251
+<PRI<MSGSo Rasensprenger sind schon recht
+praktisch, nur gehen sie auch
+andauernd kaputt.<NOD<END
+
+#0252
+<PRI<FL+1029<MSGHaaach, schon wieder kaputt!<NOD<CLR...<NOD<CLRHey, du da, Neuer!<NOD
+Nimm den Rasensprenger da mit
+und bring einen neuen mit.<NOD<END
+
+#0253
+<PRI<MSGNa, mach schon!<NOD
+Oder willst du, dass die
+Knospen verwelken?<NOD
+Nimm den Rasensprenger mit
+und tausch ihn gegen einen
+neuen aus.<NOD<END
+
+#0254
+<PRI<MSGDie roten Blumen verwandeln uns
+in gewaltige Kämpfer!<NOD
+Wer hätte gedacht, dass wir
+Mimiga überhaupt so mächtig
+sein konnten.<NOD
+Unser Krieg gegen die Roboter
+war also doch keine Märchensage.<NOD<CLRHeh-heh-heh...<NOD<CLRBlüht,
+ihr lieben kleinen Blümchen...!<NOD<CLR
+...so langsam quillt mir die
+Gartenarbeit nämlich zu den
+Löffeln raus.<NOD<END
+
+#0260
+<PRI
+<FLJ1023:0263
+<FLJ1022:0262
+<FLJ1035:0261
+<FL+1035
+<MSGHä? Ach, du bist das.<NOD<CLRIch hab vorhin was komisches
+gefangen.<NOD
+Wenn du Lust hast, kannstes
+haben.<NOD
+Es liegt da drüben im
+Kessel.<NOD<END
+
+#0261
+<PRI<MSGGleich da drüben, im Kessel.<NOD<END
+
+#0262
+<PRI<MSGWozu passt der Schlüssel nur?<NOD<CLRWenn du mich fragst,
+hoffentlich zu was gutem...<NOD<CLRMann,
+hab ich'n Kohldampf...<NOD<END
+
+#0263
+<PRI<MSGEs beißt ÜBERHAUPT nichts an.<NOD<END
+
+#0265
+<PRI
+<FLJ1022:0267
+<FLJ1035:0266
+<MSGEin Eimer.
+Hier drin landen
+geangelte Fische.<NOD<END
+
+#0266
+<PRI<FL+1022
+<MSGDu schaust in den Eimer.<NOD
+Nach genauerer Betrachtung
+siehst du am Boden etwas liegen.<NOD<CLR<GIT1025<IT+0025<CLR<CMU0010Du hast den
+=Teleporterraum-Schlüssel=
+bekommen.<WAI0160<NOD<RMU<END
+#0267
+<PRI<MSGNichts mehr drin...<NOD<END
+
+#0299
+<PRI<MSG...<NOD<END
+<PRI<CMU0000<MSGDu bist ja einer dieser
+KILLER-ROBOTER!<NOD<FAO0004<MYD0002<CLRIch ergebe mich,
+du hast mich erwischt...<NOD<TRA0057:0094:0011:0014
+
+
+#0300
+#0301
+
+#0310
+<PRI
+<FLJ1045:0313
+<FLJ1041:0311
+<FLJ1044:0312
+<MSGEin Mann von der Erde, der Doktor,
+nutzt die Mimigas aus, um die
+roten Blumen anzupflanzen.<NOD<CLRVor einer Weile ist anscheinend
+schon einmal etwas ähnliches
+passiert...<NOD<END
+
+#0311
+<PRI<MSGDie Kleine habe ich in
+der Quelle gefunden.<NOD
+Sie weiss nicht mal mehr wer sie
+ist...<NOD<CLRReif für den Schrottplatz,
+schätze ich?<NOD<FL+1044<EVE0312
+
+#0312
+<PRI<MSGAch, da fällt mir ein...<NOD
+Es gab anscheinend eine Art Pilz,
+der nach dem Verzehr Erinnerungen
+wieder auffrischen kann...<NOD
+Ob der bei ihr wohl
+funktioniert?<NOD<END
+
+#0313
+<PRI<MSGBitte?
+Sie hat ihr Gedächtnis wieder..?<NOD
+Pöh, langweilig.<NOD<END
+
+#0320
+<PRI
+<FLJ1046:0325
+<FLJ1045:0324
+<ITJ0024:0321
+<FL+1041<MSG<FAC0025We...<NODwer bist du...?<NOD<ITJ0034:0322<END
+
+#0321
+<PRI<MSG<FAC0025Ah...<NOD
+Du bist aber niedlich...<NOD<CLRGeh nicht zu weit weg,
+ja?<NOD
+Und pass auf die
+bösen Roboter auf...<NOD<ITJ0034:0322<END
+
+#0322
+<FAC0000<MSG<GIT1034Willst du ihr die
+=Ma Pignon= geben?<YNJ0000<GIT0000<IT-0034<CMU0000<CLRDu stopfst sie in Curlys Mund.<NOD<CLR<CLO<WAI0050<EQ-0064<WAI0050
+<MSG<FAC0025...<NOD<CLR<FAC0019QUOTE!!<NOD
+Ich erinnere mich wieder!
+Dein Name ist Quote!<NOD<CLRDu und ich, wir...<NOD<CLR<FAC0025Ja...<NOD<CLRVor einigen Jahren, haben 
+diverse Länder der Erde<NOD
+eine riesige Armee von
+Spionage-Robotern auf
+diese Insel geschickt.<NOD<CLRIhr Ziel war die
+gewaltige Macht, die hier
+auf der Insel ruht:<NOD
+Die =Teufels-Krone=.<NOD<CLRAber wir beide, wir waren
+anders...<NOD
+Man hatte uns
+losgeschickt, um diese
+Macht zu zerstören.<NOD<CLRAls wir ankamen, lag die
+Insel in Trümmern.<NOD
+Die Roboter hatten alles
+in Stücke gefetzt...<NOD<CLRUnd hunderte von Mimigas
+ermordet...<NOD
+Abgeschlachtet wie Tiere.<NOD<CLR<FAC0020Es... es war
+einfach schrecklich...<NOD<CLR<FAC0025Irgendwann gelangte die
+=Teufels-Krone= in die
+Hände von diesem Mann.<NOD<CLRDie Roboter hatten ihre
+Aufgabe erledigt,<NOD und
+damit war es wieder ruhig
+auf der Insel.<NOD<CLRAber das war erst der
+Anfang der traurigen
+Geschichte.<NOD
+Mit der Krone in seinem
+Besitz,<NOD verwandelte der
+Mann die Mimigas in wilde
+Bestien,<NOD und begann
+seinen Angriff auf die
+Erde.<NOD<CLRIch versuchte ihn
+aufzuhalten.<NOD
+Du warst auch dabei.<NOD<CLRUnd dann...<NOD
+...<NOD<CLRAn mehr kann ich mich
+nicht erinnern...<NOD<CLRSoweit ich weiß,<NOD
+haben wir den Mann mit
+der Krone ganz sicher
+verwundet.<NOD
+Doch er war einfach zu
+hart für uns...<NOD<CLR<FAC0019Kannst du dich noch an
+irgendwas erinnern?<NOD<CLO
+<FL+1045<RMU<FLJ1020:0323<END
+
+#0323
+<PRI<EQ+0064<END
+
+#0324
+<PRI<MSG<FAC0019Es geht mir wieder gut,
+vielen Dank.<NOD
+Mach dir keine Sorgen.<NOD<CLR<FAC0025Ah,<NOD übrigens.<NOD<CLR<FAC0019Bitte<GIT1039 nimm das hier mit...<NOD<CLR<FAC0000<FL+1046<IT+0039Du hast das =Eiserne Band=
+bekommen!<WAI0020<NOD<GIT0000<END
+
+
+#0325
+<PRI<MSG<FAC0019Es geht mir wieder gut.<NOD<END
+
+#0350
+<PRI<MSGWillst du den Schalter
+kippen?<YNJ0000<CLO
+<ANP0350:0010:0000<END
+
+#0360
+<PRI<MSG<FAC0028Ich bin wieder daa!<NOD<CLRVerstecken bringt sowieso
+nichts mehr.<NOD
+Und ohne mich läuft ja
+gar nichts, damit eure
+Rakete fertig wird!<NOD<CLROh, übrigens...<NOD<CLRWenn wir den Doktor
+fertig machen,<NOD werden wir
+dann wieder in Menschen
+zurückverwandelt?<NOD<END
+
+#0370
+<PRI<FLJ1034:0380<MSG<FAC0022<FL+1034Na, gut geschlafen Junge?<NOD<CLRDie Rakete ist endlich
+fertig.<NOD<CLRWenn überhaupt jemand den
+Doktor drankriegen kann,
+dann du.<NOD
+Wir glauben an dich.<NOD<CLRNimm das hier bitte
+mit...<NOD<CLO<FAC0000<FLJ0162:0371
+<IT+0018<GIT1018
+<CMU0010<MSGDu hast den Booster v0.8 bekommen.<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0371
+<IT+0023<GIT1023
+<CMU0010<MSGDu hast den Booster v2.0 bekommen<WAI0160<NOD<RMU<CLO
+<GIT0000<EVE0375
+
+#0375
+<PRI<MSG<FAC0022Und die brauchst du nicht
+mehr.<NOD<CLO<FAC0000
+<MSG<GIT1024<IT-0024<EQ-0064<FL-1020
+Sie nimmt dir die
+=Mimiga-Maske= ab.<NOD<CLO<GIT0000<EVE0380
+
+#0380
+<PRI<MSG<FAC0022Direkt über uns liegt
+eine Öffnung, die zum
+Thronsaal führt.<NOD
+Mit der Rakete kannst du
+dort hin fliegen.<NOD<CLRDie Mimiga haben die
+Plantage schon verlassen.<NOD<CLR...soll heißen, er
+könnte die roten Blumen
+bereits anwenden.<NOD<CLRNa los.<NOD<CLRSteig in die Rakete
+und kämpfe dich zum
+Thronsaal durch.<NOD
+Beeil dich!<NOD<END
+
+#0400
+<PRI<FLJ1102:0401<MSGEr verspritzt Wasser mit einer
+wahnsinnigen Kraft.<NOD<END
+
+#0401
+<PRI<MSGHey! Lass den hier!
+Den brauchen wir noch!<NOD<END
+
+#0410
+<PRI<FLJ1102:0411<MSGEr verspritzt Wasser mit einer
+wahnsinnigen Kraft.<NOD<END
+
+#0411
+<PRI<MSGHey! Lass den hier!
+Den brauchen wir noch!<NOD<END
+
+#0415
+<PRI<MSGEr hat angehalten.<NOD<FLJ1029:0416<END
+
+#0416
+<PRI<DNP0415<FL-1028<GIT1028<IT+0028<MSG<CMU0010Du hast den
+=Defekten Rasensprenger= bekommen.<WAI0160<NOD<RMU<END
+
+#0450
+<PRI<FLJ1040:0451<FL+1040<MSGLange nicht gewufft!<NOD<CLRIch soll dir das hier
+mitbringen...<NOD<CLR<SOU0022<CMU0016<GIT1006Du hast eine =HP-Kapsel= bekommen!<WAI0160<NOD<RMU<ML+0005
+HP um 5 Punkte erhöht!<NOD<GIT0000<ITJ0015:0451<CLROh, und das hier auch noch...<NOD<CLR
+<CMU0010<GIT1015<IT+0015<GIT1015Du hast einen =HP-Krug=
+bekommen!<WAI0160<NOD<GIT0000<RMU<EVE0451
+<END
+
+#0451
+<PRI<MSGDu knöpfst dir den Doktor vor?<NOD
+Na dann viel Wuff!
+Ich werd ganz viel Schwanz wedeln
+für deinen Erfolg!<NOD
+Ach und, sag Curly-san einen
+schönen Wuff von mir!<NOD<END
+
+#0460
+<PRI<MSG<TUR(Links)
+Warnung vor dem Kanonenfisch!<NOD<CLR(Betreten als Plattform
+auf eigene Gefahr.)<NOD<END
+
+#0480
+<KEY<HMC
+<FON0481:0016
+<MNP0481:0034:0118:0000
+<ANP0481:0020:0002<WAI0320
+<ANP0481:0000:0000
+<MOV0073:0110<SMC<MYB0002<FOM0016<END
+#0481
+
+
+#0500
+<PRI<SOU0022<DNP0500<CMU0016
+<MSG<GIT1006Du hast eine =HP-Kapsel= bekommen!<WAI0160<NOD<RMU<ML+0004
+HP um 4 Punkte erhöht!<NOD<END
+
+
+#1200
+<KEY<ANP1200:0020:0000
+<FON1200:0016<FAI0001
+<WAI0100<FAO0001<FMU<WAI0200<TRA0091:0100:0001:0001
+
+

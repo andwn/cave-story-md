@@ -1,0 +1,147 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<FLJ0361:0103
+<FLJ0362:0101
+<FLJ0360:0102
+<KEY<SOU0011<ANP0100:0000:0002
+<FAO0004<TRA0011:0094:0042:0052
+#0101
+<PRI<MSGSie geht nicht auf!<NOD<END
+#0102
+<KEY<FAO0004<TRA0011:0094:0042:0052
+#0103
+<PRI<MSGDu kommst hier nicht weg!<NOD<END
+
+#0150
+#0151
+#0152
+#0153
+#0154
+
+#0290
+<FLJ0370:0291<END
+#0291
+<FLJ0360:0000<PRI<MSG<FAC0008Du blöder Kerl!!<NOD<DNP0290<CNP1000:0063:0002<END
+
+#0400
+<KEY<FL-0361<FL-0362
+<SMC<CNP0400:0012:0000<ANP0400:0020:0004<WAI0140
+<PRI<MSG<FAC0005Das kriegsu noch zurück!<NOD<FAC0000<KEY<CLO
+<WAI0100<CMU0015
+<MSGDu hast Balrog vertrieben!<WAI0140<NOD
+<SOU0045<CNP0150:0001:0000<WAI0004
+<SOU0045<CNP0151:0001:0000<WAI0004
+<SOU0045<CNP0152:0001:0000<WAI0004
+<SOU0045<CNP0153:0001:0000<WAI0004
+<SOU0045<CNP0154:0001:0000
+<CMU0008<END
+
+#0500
+
+#1000
+<KEY<FL+0360<FL+0361<FL+0440<FL-0326<MSGHiii~!!<NOD<CLRHilfe! HILFE!!<NOD<CLR.....
+<NODHäh?<NOD<MYB0002<WAI0030<MYD0002<CNP1000:0060:0004<CLR<FAC0006Ach du...
+du gehörst gar nicht zum
+Doktor?<NOD<CLRUi! Entschuldigung,
+da ich hab dich
+verwechselt.<NOD
+Der Doktor ist eben so
+ein gemeiner Schuft.<NOD
+Der kam einfach so in
+unser Dorf geplatzt,<NOD und
+hat einen nach dem anderen
+von uns mitgenommen.<NOD
+Ein paar hat er sogar
+getötet...<NOD
+Meinen Bruder auch...
+Den hat er auch getötet.<NOD<CLRAh!<NOD
+Der Anhänger da!<GIT1004<NOD<CLRHast du den
+aufgelesen?<NOD
+Den hat Sue mir nämlich
+gegeben!<NOD<CLR.....<NOD<CLRAber.. ich glaub,
+ich darf ihn nicht mehr
+haben.<NOD<CLR<GIT0000King kriegt nämlich immer
+einen Knoten in seine
+Löffel,<NOD wenn er sieht,
+dass Sue und ich Freunde
+sind...<NOD
+Du darfst ihn haben.<NOD<CLO
+<FAC0000<CMU0000
+<QUA0030<SOU0026
+<ANP1000:0008:0000
+<ANP0100:0001:0000
+<WAI0010
+<MYD0000
+<CNP1000:0060:0000
+<WAI0100
+<QUA0030<SOU0026
+<ANP1000:0008:0000
+<ANP0100:0001:0000
+<WAI0070
+<QUA0030<SOU0026
+<ANP1000:0008:0000
+<CNP0400:0019:0002
+<CNP0100:0018:0002
+<CMP0004:0008:0080
+<CMP0005:0008:0081
+<CMP0006:0008:0082
+<CMP0004:0009:0096
+<CMP0005:0009:0097
+<CMP0006:0009:0098
+
+
+<MSGKa-BLAMMO!<WAI0050<CNP0400:0012:0002<ANP0400:0030:0002<CLR<KEY<CMU0011<FAC0014Jetzt hab ich dich!<NOD<CLR<FAC0005Von mir kann sich keiner
+verstecken!<NOD
+Ich hab nämlich die Nase
+von 'nem Bluthund, hab
+ich!<NOD<FAC0000<CLRJa, allerdings.<NOD
+<CNP0500:0067:0002<WAI0100<ANP0500:0013:0002<WAI0050<ANP1000:0008:0000<MSG<FAC0015Die Nase von einem Hund,
+die wunderbar passt zu
+deinem Kopf.
+<NOD<CLR<FAC0005Höö, Misery!<NOD<CLRIch hab sie zuerst
+gefunden!<NOD
+<CLR<FAC0008Ge-...
+Gehört ihr Kerle etwa zum
+Doktor?!<NOD<CLR<FAC0015.....<NOD<CLR<FAC0016Du musst wohl Sue sein,
+wie?<NOD Wunderbar, der Doktor
+erwartet dich schon.<NOD
+Dann komm mal brav mit mir
+mit.<NOD<CLR<FAC0006Hä?<NOD<CLRAber ich bin doch gar
+nicht Sue.<NOD<FAC0000<CLO
+<ANP0500:0015:0002<WAI0110
+<PRI<MSG<FAC0008Iieeek!<NOD<FAC0015<CLRBalrog.<NOD
+Du räumst den Rest
+hier auf, ja?<NOD<CLO
+<ANP0500:0020:0002<FAC0000<CLO<KEY<WAI0050<MSG<FAC0008HAALT! ICH BIN NICHT SUE!<NOD<FAC0000<CLO
+<WAI0050
+<FAC0005<MSGOhh Mann, nicht schon
+wieder!<NOD
+Immer muss ich die
+Drecksarbeit machen!<NOD
+Dabei hab ich sie wirklich
+zuerst gefunden!<NOD<CLR.....<NOD<CLR...na, was is' mit dir?<NOD
+Wills mich etwa mit dem
+knirpsigen Blasrohr da
+kaputt machen?
+<YNJ1001<ANP0400:0030:0002<CLR<FAC0014Kannsu haben!<NOD<CLO
+<FL+0361<CMU0004<CNP0400:0068:0002<BSL0400<END
+
+#1001
+<KEY<FL-0362<FL-0361<CMU0008<MSG<FAC0005Oh. Okay.<NOD
+Dann bin ich mal
+wieder weg.<NOD
+Bis später.<NOD<CLO<ANP0400:0010:0002<END

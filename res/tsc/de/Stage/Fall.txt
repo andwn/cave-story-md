@@ -1,0 +1,98 @@
+
+#0090
+<MNA<FAI0000<END
+#0091
+<MNA<FAI0001<END
+#0092
+<MNA<FAI0002<END
+#0093
+<MNA<FAI0003<END
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG<CMU0010Kazuma hat euch gefangen!<WAI0160<CLR<FAC0010Puuh...<NOD<CLRIch hätte nie gedacht,
+dass du das wirklich
+hinkriegst.<NOD<CLRDer Kern ist total
+explodiert...<NOD<CLRJetzt wird es sicher
+keinen Doktor Nummer 2
+oder 3 mehr geben.<NOD
+Es herrscht wieder
+Frieden!<NOD<CLRUnd jetzt,
+ab nach Hause mit uns!<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Huff~!<NOD<CLRDas war echt knapp.<NOD<CLR<FAC0019Und ich dachte schon wir
+wären ein für alle mal
+schrottreif...<NOD<CLRJetzt schulden wir dir
+schon wieder einen.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nöö, nichts zu danken.<NOD
+Ich hab doch nur gemacht,
+was Misery mir gesagt
+hat.<NOD<CLR<FAC0025Misery?
+Du meinst diese Hexe?<NOD<CLR<FAC0005Jah.<NOD<CLR<FAC0025Aber ich dachte sie kann
+uns gar nicht ausstehen?<NOD
+...und du doch auch!<NOD<CLR<FAC0005Ihr Leutchen habt doch
+Ballos vernichtet, oder?<NOD<CLRNur wegen euch sind wir
+von unserem Fluch erlöst
+worden.<NOD
+Jetzt sind Misery und ich
+für immer frei,<NOD und
+müssen nie mehr tun
+was uns andere befehlen!<NOD<CLR<FAC0019Und ich dachte schon
+ihr seid so üble Typen,<NOD
+aber am Ende war wirklich
+nur die Teufels-Krone
+dran Schuld!<NOD<CLR<FAC0005Naja, wir auch 'n
+bisschen.<NOD
+Immerhin war's Miserys
+Idee, dass er die Krone 
+machen sollte.<NOD<CLR<FAC0025Hmm?<NOD
+Ganz im Ernst?<NOD<CLR<FAC0005Ganz im Ernst.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005Tja, ähm...<NOD<CLR<FAC0025Ja?<NOD<CLR<FAC0005Äh, was habt ihr denn
+jetzt vor, und so?<NOD<CLRIch kann euch überall
+hinbringen, wo ihr wollt.<NOD<CLR<FAC0019Ach ja, hmm...<NOD<CLRAlso, unser Auftrag ist
+vorbei.<NOD
+Jetzt möchte ich
+eigentlich nur irgendwo
+wohnen, wo's schön ist<NOD
+und wo's 'ne gute
+Aussicht gibt...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Okay.<NOD
+Aber, öhm...<NOD<CLR<FAC0025Ja, was?<NOD<CLR<FAC0005...darf ich vielleicht auch
+mitkommen?<NOD<CLR<FAC0019Na klar!<NOD
+Dann können wir da
+zusammen wohnen, wir
+alle drei!<NOD<CLR<FAC0014ECHT?!<NOD<CLR<FAC0019Du darfst sogar den Platz
+aussuchen!<NOD
+Aber such dir bitte was
+hübsches aus, ja?<NOD<CLR<FAC0014Mach ich doch!!<NOD<CLREs geht looos!
+ALLES <ANP0230:0020:0002<WAI0010F<WAI0010E<WAI0010S<WAI0010T<WAI0010H<WAI0010A<WAI0010L<WAI0010T<WAI0010E<WAI0010N<WAI0010!<WAI0010!<WAI0010!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...hast du nicht
+irgendwas vergessen?<NOD<TRA0000:0100:0001:0015
+
+#0200
+#0210
+#0220
+#0230
+#0240

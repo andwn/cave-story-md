@@ -1,0 +1,60 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<FAO0000<TRA0056:0090:0102:0055
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0099:0044
+
+
+#0200
+<KEY
+<FLJ1081:0202
+<FLJ1080:0201
+<MSG*ñam ñam*...<NOD<CLR!<NOD<CLO
+<MYB0000<ANP0200:0002:0004<WAI0030<MYD0000<FL+1080<FL-1025<FL+1026
+<MSGOh, mira quién se ha despertado.<NOD<CLRCreía que estabas muerto.
+No te despertabas por mucho
+que Sue te bofeteara.<NOD<CLRÉsta es la cárcel.<NOD
+Aquellos que intentan oponerse
+al Doctor son traídos aquí.<NOD
+Para ser sujetos de sus
+experimentos...<NOD<CLR...O al menos eso es lo que
+dijo Sue.<NOD<CLR¿Eres amigo suyo?<NOD
+Has llegado un poco tarde.<NOD
+Antes estaba con nosotros.<NOD<CLRNo dejaba de cuidarte a
+todo momento.<NOD
+Pero hace poco vinieron
+y se la llevaron.<NOD<EVE0209
+
+#0201
+<MSG<FL+1081Oh, por cierto.<NOD<CLRJusto antes de que se la llevaran,
+vi como te metía algo en el
+bolsillo.<NOD<CMP0024:0016:0066<EVE0209
+
+#0202
+<KEY<MSG¿Qué era, una carta de amor?<NOD<CMP0024:0016:0066<EVE0209
+
+#0209
+<KEY<ANP0200:0000:0002<END
+
+
+#0220
+<KEY<HMC<CNP0221:0150:0002<ANP0221:0010:0002<WAI0050
+<MSG<SOU0070¡Hey!<NOD<CLR
+<SOU0070¡Vamos!<NOD<CLR
+
+¿No estarás muerto, verdad?<NOD<CLR.....<NOD<CLO
+<WAI0050<IT+0026<WAI0050<MNA<CMU0008<FAI0004<WAI0050<SMC<DNP0221<END
+#0221
+

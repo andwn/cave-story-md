@@ -1,0 +1,193 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0002<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<KEY<FLJ0561:0102<SOU0011<ANP0100:0000:0002
+<FAO0002<TRA0010:0092:0003:0012
+#0101
+<KEY<FLJ0561:0102<SOU0011<ANP0101:0000:0002
+<FAO0004<TRA0032:0094:0008:0009
+#0102
+<PRI<MSGÇa ne s'ouvre pas !<NOD<END
+
+
+
+
+#0200
+<KEY
+<FLJ0564:0204
+<FLJ0562:0206
+<MSGJe n'ai rien à te dire.<NOD<END
+#0201
+<KEY<MSGAttention aux Sandcrocs.<NOD
+Si tu marches dans leur sable,
+ils sortiront pour te mordre.<NOD
+Ça fait TRÈS mal quand ils
+le font !<NOD<END
+#0202
+<FLJ0273:0205
+<KEY<MSGPour bouger les pierres solaires,
+il faut lever le sortilège...<NOD<END
+#0203
+<KEY<MSGZzzmrbl...<NOD<CLRPoisson...
+J'ai faim... veux du poisson...<NOD<END
+#0204
+<MSGLa vieille Jenka était en charge
+de la Zone des Sables, avant.<NOD
+Elle et ses toutous.<NOD<CLRSa maison est...<NOD<CLRUmmmmm...<NOD<CLR...Quelque part dans la Zone
+des Sables...?<NOD<END
+#0205
+<KEY<MSGNos vraies mamans ont été
+tuées par des robots.<NOD<CLROn avait même pas encore
+les yeux ouverts...<NOD
+Mais Curly nous as élevés.<NOD<END
+#0206
+<KEY<MSGTu cherches les fleurs rouges ?<NOD
+Il y a une vieille dame nommée
+Jenka qui en connait un rayon.<NOD<CLRAh tiens, au fait,<NOD<CLRSi tu vas la voir,
+profites-en pour lui ramener
+le chien près du lit.<NOD<FL+0564<END
+
+
+
+#0300
+<KEY<DNP0300<MM0<MYD0000<CMU0000
+<FL+0561<MSGAaaaahhhh!<NOD<CLO<KEY
+<ANP0500:0003:0002<WAI0079<ANP0500:0000:0002
+<MSG<FAC0019Ooohhhh !<NOD<CLO
+<CNP0310:0122:0002<DNP0200<WAI0010
+<CNP0311:0122:0002<DNP0201<WAI0010
+<CNP0312:0122:0002<DNP0202<WAI0010
+<CNP0313:0122:0002<DNP0203<MSGOn a un VISITEUR !<NOD<CLRJe sais ce que tu
+recherches !<NOD
+Mais ouvre les yeux !<NOD
+Les Mimigas ne sont pas
+nos enemis !<NOD
+Les Mimigas sont
+inoffensifs !!<NOD<CLRDommage pour toi, mais...<NOD<CLO
+<WAI0020<SOU0004<CNP0400:0118:0002<DNP0500
+<WAI0010
+<MSGJe suis de leur coté !<NOD<CLRTu vas crever !!<NOD<CLO
+<BSL0400
+<CMU0004
+<ANP0400:0010:0002
+<ANP0310:0010:0002
+<ANP0311:0010:0002
+<ANP0312:0010:0002
+<ANP0313:0010:0002
+<END
+
+
+#0310
+#0311
+#0312
+#0313
+
+
+
+#0400
+<KEY<MYD0400
+<FL-0561<FL-0565
+<ANP0310:0020:0005
+<ANP0311:0020:0005
+<ANP0312:0020:0005
+<ANP0313:0020:0005
+<CNP0400:0117:0005
+<ANP0400:0005:0005<WAI0002
+<ANP0400:0030:0004<SOU0070
+<WAI0100<PRI<CMU0015<MSG
+Victoire !<WAI0140<CMU0000<NOD<CLO
+<KEY<ANP0400:0006:0005<WAI0002<PRI
+<WAI0050<CMU0002
+<MSG<FAC0020Tu as gagné...<NOD
+Je peux plus me battre...<NOD<CLRJe suppose que tu vas
+tuer tous les Mimigas,<NOD
+comme les autres robots
+avant toi ?<YNJ0410<CLRJe vois...<NOD<CLRQuel manque de pitié...<NOD<PRI<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0410
+<KEY<FL+0562<MSG<FAC0019Oh !<NOD<FAC0000<CLO
+<ANP0400:0010:0000<WAI0050
+<MSG<FAC0019Tu es avec les Mimigas
+toi aussi ?<NOD<CLRC'est vrai, ils ne
+sont pas méchants !<NOD<CLRMoi c'est Curly.
+Curly Brace.<NOD
+Quand je me suis réveillée,
+j'étais avec ces enfants.<NOD<CLR<FAC0025Je n'ai aucun souvenir
+d'avant ça...<NOD
+Amnesie, on pourrait dire.<NOD<CLR<FAC0020J'étais...probablement une
+tueuse de Mimigas comme
+les autres robots...<NOD<CLO
+<EVE0415
+
+#0415
+<KEY<MSG<FAC0019Oh, wow.<NOD<CLRTon Étoile Polaire est
+dans un piteux état.<NOD
+Tu veux l'échanger
+contre ma mitrailleuse ?<YNJ0420<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Donné =Étoile Polaire=<NOD<CLR
+<CMU0010<GIT0004Obtenu =Mitrailleuse=<WAI0160<NOD<RMU<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0420
+<KEY<MSG<FAC0019Vraiment ?<NOD<CLRAu cas où tu changerais
+d'avis, reviens me voir.<NOD<PRI<CLO<MYD0000
+<FAO0004<TRA0029:0090:0012:0009
+
+
+
+
+#0500
+<KEY
+<FLJ0563:0530
+<FLJ0562:0515
+<MSG<FAC0019Huh ?<NOD<CLRTiens voila notre
+Machine à tuer.<NOD<CLRTu veux toujours tuer
+les Mimigas ?<YNJ0510<CLR<FAC0020Je vois...<NOD<CLRQuel manque de pitié...<NOD<END
+
+#0510
+<KEY<FL+0562<MSG<FAC0019Oh !<NOD<CLRTu es avec les Mimigas
+toi aussi ?<NOD<CLRC'est vrai, ils ne
+sont pas méchants !<NOD<CLRMoi c'est Curly.
+Curly Brace.<NOD
+Quand je me suis réveillée,
+j'étais avec ces enfants.<NOD<CLR<FAC0025Je n'ai aucun souvenir
+d'avant ça...<NOD
+Amnesie, on pourrait dire.<NOD<CLR<FAC0020J'étais...probablement une
+tueuse de Mimigas comme
+les autres robots...<NOD<CLO
+<EVE0515
+
+#0515
+<KEY<MSG<FAC0019Oh, wow.<NOD<CLRTon Étoile Polaire est
+dans un piteux état.<NOD
+Tu veux l'échanger
+contre ma mitrailleuse ?<YNJ0520<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Donné =Étoile Polaire=<NOD<CLR
+<CMU0010<GIT0004Obtenu =Mitrailleuse=<WAI0160<NOD<RMU<END
+
+#0520
+<KEY<MSG<FAC0019Vraiment ?<NOD<CLRAu cas où tu changerais
+d'avis, viens me voir.<NOD<END
+
+#0530
+<KEY<MSG<FAC0025Ce sont les humains,
+les vrais méchants !<NOD
+Les Mimigas ont été 
+leurs instruments.<NOD<END
+

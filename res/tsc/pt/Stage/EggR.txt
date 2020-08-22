@@ -1,0 +1,83 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGEstão espalhadas pétalas vermelhas
+por todo o sítio.<NOD<END
+
+#0200
+<KEY<MSGEncontraste uma nota.<NOD<CLR<TUR"Com o escudo ligado, não
+posso chegar ao quarto do Nº 00.<NOD<CLR<TURAcho que um destes terminais
+deve ser capaz de baixar o
+escudo..."<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGAbriste a arca do tesouro.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TUROvo de Dragão do Céu Nº 01.
+Erro: Condição anormal.
+Investigação recomendada.<NOD<END
+#0502
+<PRI<MS3<TUROvo de Dragão do Céu Nº 02.
+Condição normal.<NOD<END
+#0503
+<PRI<MS3<TUROvo de Dragão do Céu Nº 03.
+Condição normal.<NOD<END
+#0504
+<PRI<MS3<TUROvo de Dragão do Céu Nº 04.
+Condição normal.<NOD<END
+#0505
+<PRI<MS3<TUROvo de Dragão do Céu Nº 05.
+Condição normal.<NOD<END
+#0506
+<PRI<MS3<TUROvo de Dragão do Céu Nº 06.
+Erro: Condição anormal.
+Investigação recomendada.<NOD<END
+#0507
+<PRI<MS3<TUROvo de Dragão do Céu Nº 07.
+Condição normal.<NOD<END
+#0508
+<PRI<MS3<TUROvo de Dragão do Céu Nº 08.
+Condição normal.<NOD<END
+#0509
+<PRI<MS3<TUROvo de Dragão do Céu Nº 09.
+Condição normal.<NOD<END
+#0510
+<PRI<MS3<TUROvo de Dragão do Céu Nº 10.
+Condição normal.<NOD<END
+#0511
+<PRI<MS3<TUROvo de Dragão do Céu Nº 11.
+Condição normal.<NOD<END
+#0512
+<PRI<MS3<TUROvo de Dragão do Céu Nº 12.
+Condição normal.<NOD<END
+#0513
+<PRI<MS3<TUROvo de Dragão do Céu Nº 13.
+Condição normal.<NOD<END
+#0514
+<PRI<MS3<TUROvo de Dragão do Céu Nº 14.
+Condição normal.<NOD<END
+#0515
+<PRI<MS3<TUROvo de Dragão do Céu Nº 15.
+Condição normal.<NOD<END
+#0516
+<PRI<MS3<TUROvo de Dragão do Céu Nº 16.
+Condição normal.<NOD<END

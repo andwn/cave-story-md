@@ -1,0 +1,98 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0002<TRA0056:0092:0024:0082
+
+#0200
+<KEY
+<FLJ1020:0201
+<EVE0299
+
+#0201
+<KEY
+<FLJ1121:0203
+<ITJ0028:0202
+<MSGCe sont des arroseurs.<NOD
+Ils se cassent tout le temps,
+tu vois.<NOD
+Alors on en a toujours un tas
+de nouveaux prêts à l'emploi.<NOD<END
+
+#0202
+<KEY<MSG<FL+1121Encore un ?<NOD<CLR<GIT1028<IT-0028Donné =Arroseur cassé =<NOD<GIT0000
+<KEY<MSGVas-y mollo avec celui-là.<NOD<DNP0280<GIT1029<IT+0029<CLR
+<CMU0010Reçu =Arroseur=<WAI0160<NOD<RMU<END
+
+#0203
+<KEY<MSGIl parait que la dernière
+graine a presque fleuri !<NOD
+On dirait qu'on a eu assez
+d'arroseurs...<NOD<END
+
+
+#0210
+<KEY
+<FLJ1033:0212
+<FLJ1020:0211
+<EVE0299
+
+#0211
+<MSGC'est vrai que les robots de
+la surface ont attaqué 
+cette île dans le passé.<NOD
+Et je sais que nombre d'entre
+nous en sont morts...<NOD
+Mais malgré leurs corps
+de métal. je crois que dans
+le fond<NOD
+ils avaient aussi des âmes...<NOD<END
+
+#0212
+<MSGÉcrase ce Docteur !<NOD<CLRLibère cette pauvre enfant
+de ses griffes !<NOD
+Oh, si seulement j'étais
+un peu plus jeune...<NOD
+J'ai honte...<NOD<END
+
+#0220
+<KEY<FLJ1020:0221
+<EVE0299
+#0221
+<MSGJe ne crois pas un mot de ce
+que dit ce Docteur !<NOD<CLRDes robots ? Nyah !<NOD
+Comme si ça me faisait peur.<NOD<END
+
+#0230
+<KEY<FLJ1020:0231
+<EVE0299
+#0231
+<MSGJe suis si fatigué...<NOD<END
+
+#0250
+<KEY<MYB0000<MSGOh, hey.<NOD<CLROn s'est pas déjà vus ?<NOD
+Oui, au village Mimiga.<NOD
+Quelqu'un nommé "Misery" m'a
+capturé et ammené ici.<NOD
+Mais, je déteste faire le fermier.<NOD<CLRJ'allais me changer les idées
+en allant pêcher un peu.<NOD<CLRTu aimes pêcher, toi ?<NOD
+Bon, à plus tard.<NOD<CLO
+<ANP0250:0010:0002<WAI0030<MYD0002<WAI0080
+<ANP0250:0000:0002<WAI0020
+<ANP0250:0020:0002<ANP0100:0000:0002<SOU0011<WAI0020
+<DNP0250<ANP0100:0000:0000<SOU0011<FL+1120<FL+1021<END
+
+
+#0280
+#0299
+<PRI<MSG.....<NOD<END
+

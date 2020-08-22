@@ -1,0 +1,52 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0002<DNP0301<SMC<END
+
+#0100
+<KEY<FAO0002<TRA0056:0092:0008:0049
+
+#0200
+<KEY<MSGDestinazione sconosciuta.<NOD
+Vuoi comunque teletrasportarti?<YNJ0000<CLO<FL+0524
+<CNP0300:0111:0000<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0018:0099:0015:0010
+
+
+#0400
+<PRI<MSGCosa sei tu, un robot assassino?<NOD<CLRSei qui per ucciderci?<NOD<END
+#0401
+<PRI<MSGFammi uscire!<NOD<END
+#0402
+<PRI<MSGIl Dottor Scemo può andare a quel 
+paese!<NOD<END
+
+#0403
+<PRI<MSGI Mimiga là fuori nei campi
+sono stati raggirati da 
+incredibili menzogne!<NOD<CLRIl Dottore ci farà combattere
+contro i robot!<NOD<END
+#0404
+<PRI<MSGConosci una certa "Sakamoto"?<NOD
+A quanto pare è nascosta qui
+da qualche parte nella piantagione...<NOD<END
+#0405
+<PRI<MSGQui c'erano pure un paio di 
+umani,ma è un po' che non si vedono
+in giro...<NOD
+Magari se ne sono andati.<NOD<END
+

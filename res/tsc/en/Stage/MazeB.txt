@@ -1,0 +1,90 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000<TRA0039:0090:0197:0014
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0002<MYD0002<TRA0044:0092:0002:0013
+
+<KEY<MSGThank you. This is as far as it
+goes for now.
+  2003/09/27 Studio Pixel<NOD<END
+
+#0200
+<KEY<FLJ0744:0201<MS3The power supply seems broken.<NOD<CLRAn engineer of some ability
+might be able to repair it,
+perhaps...<NOD<END
+#0201
+<KEY<MSGDo you want to go to Arthur's
+house?<YNJ0000<CLO
+<CNP0300:0111:0002<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0001:0099:0005:0008
+
+#0300
+#0301
+
+#0500
+<KEY<MYD0002<CMU0000<FAI0002<FLA<SOU0029<WAI0050
+<MSG?<NOD<CLO<ANP0500:0010:0000<WAI0130<SOU0023<WAI0020<CMU0008
+<FL-0523<FL+0740<DNP0500<END
+
+
+#0501
+<KEY<ITJ0030:0503<FLJ0741:0502
+<MSGOohhh...<NOD<CLR<FAC0017Oh!<NOD
+What are you doing here?!<NOD<CLR.....<NOD<CLRReally, so Misery sent
+you here too...<NOD<CLR*chuckle*...<NOD<CLRMaybe there's a silver
+lining after all...<NOD<CLRYou see,<NOD
+this island floats in the
+sky by the power of a
+certain organism,<NOD
+and I've recently
+discovered its location.<NOD<CLRThis labyrinth.<NOD<CLRThe organism lives
+somewhere within this
+very labyrinth.<NOD
+If one could destroy it,
+the island would cease
+to function.<NOD<CLR*chuckle*<NOD<CLRThe doctor must really
+be in a rush,<NOD
+to send you into the
+very heart of this
+island.<NOD<CLRTake this with you.<NOD<CLR<FAC0000<IT+0018<GIT1018
+Got the Booster v0.8.<NOD<CLR<FAC0017This little machine will
+help you fly.<NOD
+If you press the Jump
+Button in midair, you
+can hover.<NOD<CLRUse it on the Item
+Screen to equip it.<NOD<GIT0000<CLRPhew...<NOD<CLRThe minute I was sent
+flying, I thought it
+was all over.<NOD
+And yet it enabled me
+to meet you once again...<NOD
+It looks like my luck
+has run out here.<NOD<CLRI pray for your
+victory...<NOD<FL+0741<FL+0834<ANP0501:0020:0000<END
+
+#0502
+<KEY<MSGI pray for your...<NOD<END
+
+#0503
+<KEY<MSGOoh...<NOD<END
+

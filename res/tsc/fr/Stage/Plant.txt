@@ -1,0 +1,60 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0013<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0013<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0013<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0013<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0013<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0045:0021
+
+
+#0105
+<PRI<MSGOn sauvegarde ?<YNJ0000<SVP<CLRJeu sauvegardé.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGÉnergie récupérée.<NOD<END
+
+#0200
+<KEY<MSGC'est notre ferme.
+On fait pousser des fleurs ici.<NOD
+Mon boulot c'est de les garder.<NOD<CLRNous les Mimigas, dépendons
+de ces fleurs.<NOD<CLRPar contre, les fleurs rouges sont dangereuses.<NOD<CLRSi tu en manges une,
+Il parait que ton sang bout
+et tu peux en mourir !<NOD<CLRHeureusement, il
+n'y en a pas ici.<NOD<END
+
+
+#0220
+<KEY<FLJ1020:0221<MSGUn arroseur.<NOD<END
+#0221
+<KEY<MSGIl est fermement fixé au sol !<NOD<END
+
+#0300
+<PRI
+<FL+0410
+<DNP0300
+<MSGTu vois un truc briller...<NOD<CLR<CMU0010<GIT1005<IT+0005
+Trouvé une =Griffe=<WAI0160<NOD<CLO
+<RMU<END
+
+#0400
+<PRI<SOU0022<DNP0400<CMU0016
+<MSG<GIT1006Trouvé =Capsule de Vie=<WAI0160<NOD<RMU<ML+0003
+Énergie max augmentée de 3 !<NOD<END
+

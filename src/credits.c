@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -116,7 +117,7 @@ void credits_main() {
 			uint16_t label = 0;
 			switch(credits_info[pc].cmd) {
 				case TEXT:
-					if(cfg_language) {
+					if(cfg_language == LANG_JA) {
 						if(credits_info[pc].text.jstring != 0) {
 							const uint8_t *str = JCreditStr;
 							str += (credits_info[pc].text.jstring - 1) << 5;

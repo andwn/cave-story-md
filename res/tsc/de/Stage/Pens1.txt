@@ -1,0 +1,351 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0095<CMU0002<FAI0004<END
+
+#0095
+<CMU0014<FAI0004<END
+
+
+#0098
+<CMU0014
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+#0099
+<KEY<MNA<FLJ0341:0098<CMU0002
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+
+#0100
+<PRI<FAO0004<TRA0010:0094:0018:0032
+#0101
+<PRI<FAO0004<TRA0012:0094:0037:0011
+#0102
+<FLJ0155:0103<PRI<SOU0011<DNP0102<FAO0004<TRA0011:0094:0016:0053
+#0103
+<PRI<SOU0011<CMU0000<DNP0102<FAO0004<TRA0011:0400:0016:0053
+
+
+#0200
+<FLJ0159:0205
+<FLJ0158:0204
+<FLJ0157:0203
+<FLJ0325:0202
+<FLJ0154:0201
+<KEY<MSGDa steht etwas auf dem
+Bildschirm...<NOD<CLR<TUR"...aber wenn du nicht bald
+antwortest, kommt's ganz sicher
+soweit..."<NOD<FLJ0153:0000<CLR<MSGVerbindung zu
+"Eierhalle" zulassen?<YNJ0000<CLRVerbindung zu "Eierhalle"
+wurde zugelassen.<NOD<FL+0153<PS+0001:6001<END
+#0201
+<KEY<MSGDa steht etwas auf dem Bildschirm...<NOD<CLR
+<TURVerbinde zu "Buschhausen"...<NOD<END
+#0202
+<KEY<MSG<TUR
+Mit "Buschhausen" verbunden.<NOD<END
+#0203
+<KEY<MSG<TUR
+Befehl eingeben.<NOD<END
+#0204
+<KEY<MSG<TUR
+Mit "Sand-Zone" verbunden.<NOD<END
+#0205
+<KEY<MSGDa steht etwas
+auf dem Bildschirm...<NOD<CLR<TUR
+Bin in der Eierhalle.
+                        --Kazuma<NOD<END
+#0210
+<KEY<MSGBlumen...?<NOD<END
+
+#0300
+#0301
+#0303
+
+#0500
+<KEY<MSGEin Teleporter.<NOD<SLP<NOD<END
+
+#0600
+<FLJ0325:0601
+<KEY<MSG<FAC0009Willkommen zurück...<NOD<CLRSue ist wieder da.<NOD
+Wir haben sie draußen im
+Käfig eingesperrt.<NOD
+Wenn die Handlanger vom
+Doktor wieder auftauchen,<NOD
+werden wir sie gegen
+Toroko austauschen.<NOD<CLREs tut mir ja leid für
+Sue, aber Toroko gehört
+zur Familie.<NOD
+Das passiert eben, wenn
+man so selbstsüchtig ist.<NOD<END
+#0601
+<KEY<MSG<FAC0009Ich hoffe nur,
+Toroko ist nichts
+passiert...<NOD<END
+
+
+#0620
+<KEY<CMU0000<FL+0156<FL+0444
+<ANP0500:0001:0000
+<WAI0002<CNP0622:0055:0000<WAI0010
+<FAI0004
+<CNP0621:0113:0000
+<ANP0621:0030:0000<WAI0100
+<MSG<FAC0018Uuuugh...<NOD<CLR<FAC0010...alles okay bei Ihnen?<NOD<CLO<FAC0000
+<WAI0030<ANP0621:0000:0002
+<MSG<FAC0018...mmgh.<NOD<CLRIch dachte schon ich
+wär so gut wie tot.<NOD<CLR<FAC0010.....<NOD<CLO<FAC0000
+<ANP0500:0000:0000<WAI0030
+<ANP0102:0000:0002<SOU0011
+<CNP0625:0042:0000
+<MSG<FAC0001Onii-chan!!<NOD<ANP0622:0000:0002<CLRUnd der alte Professor!<NOD<CLR<FAC0018Hallo, Kleine!<NOD<CLO<FAC0000
+<ANP0621:0003:0002<WAI0080
+<ANP0621:0000:0002
+<MSG<FAC0018Ist alles noch heil bei
+dir?!<NOD<CLR<FAC0001Naja, wie man's nimmt.<NOD<CLO<FAC0000
+<CNP0624:0061:0000
+<ANP0625:0003:0000<WAI0016
+<ANP0624:0008:0000<WAI0016
+<ANP0624:0000:0000
+<SOU0011<ANP0102:0000:0000<WAI0048
+<ANP0625:0000:0000
+<MSG<FAC0007...<NOD<CLR<FAC0018Wer ist der Mimiga da?<NOD<CLO<FAC0000
+<WAI0030
+<ANP0625:0000:0002<WAI0030
+<ANP0624:0000:0002<WAI0050
+<ANP0625:0000:0000<WAI0020
+<MSG<FAC0001Das ist King.<NOD<CLRDer Chef hier im Dorf,
+und mein Freund.<NOD<CLRFrüher gabs mal tausende
+von Mimigas hier...<NOD
+Aber fast alle davon haben
+die Handlanger vom Doktor
+geschnappt.<NOD<CLRSogar die engsten Freunde
+von King hat er erwischt...<NOD<CLO
+<CMU0002
+<ANP0500:0001:0000
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<FL-0157<END
+
+#0621
+<KEY<FLJ0158:0631<MSG<FAC0018Die Pläne vom Doktor
+kommen reibungslos
+voran....<NOD
+Wir müssen ihm schleunigst
+das Handwerk legen,
+weil sonst...<NOD<END
+
+#0622
+<KEY<FLJ0158:0632<MSG<FAC0010Vielen Dank, Junge.<NOD<CLRDas Motorrad hat zwar nicht
+überlebt, aber wir dafür.<NOD<END
+
+#0624
+<KEY<FLJ0158:0634<MSG<FAC0007Toroko...
+Als ein Mordwerkzeug...?<NOD
+Das darf nicht passieren,
+niemals!<NOD<END
+
+#0625
+<KEY<FLJ0158:0635<MYB0000<WAI0030<MYD0000<ANP0625:0000:0002<MSG<FAC0001Willkommen daheim!<NOD<CLRJetzt schulde ich dir
+schon zwei große Gefallen,
+was?<NOD Nun da Onii-chan
+wieder da ist,<NOD kann er
+sicher irgendwie das
+Passwort zum Ei knacken.<NOD<CLO<FAC0000
+<ANP0625:0003:0000<WAI0008
+<ANP0625:0000:0000<MSG<FAC0001Du, Booster?<NOD<CLRWenn wir hier abhauen,
+können wir dann den
+Jungen hier auch mitnehmen?<NOD<CLO<FAC0000
+<ANP0622:0003:0002<WAI0015
+<ANP0622:0005:0002
+<MSG<FAC0018<CMU0000...<NOD<CLR<FAC0010Professor?<NOD<CLR<FAC0001?<NOD<CLR<FAC0018Hör mal, kleine Susie...<NOD
+Wir müssen unsere Flucht
+noch ein bisschen
+vertagen.<NOD<CLRDer Doktor hat die roten
+Blumen entdeckt.<NOD<ANP0624:0000:0000<CLR<FAC0007!!<NOD<CLR<FAC0001Was?<NOD<CLR<FAC0018Er hat sie zwar noch nicht
+in der Hand, doch das ist
+nur eine Frage der Zeit.<NOD<CLRDie "Sand-Zone".<NOD<CLRAnbgeblich sind die roten
+Blumen irgendwo in der
+"Sand-Zone" zu finden.<NOD<CLR<FAC0007Die Sand-Zone?<NOD<CLRSie meinen, dort werden
+wir den Doktor finden?<NOD<CLR<FAC0018Nun, vielleicht.<NOD
+Oder zumindest einen
+seiner Handlanger.<NOD
+Wir müssen die Blumen
+schleunigst vernichten<NOD
+bevor sie ihnen in die
+Hände fallen...<NOD<CLREs ist nur so,
+die Sand-Zone ist
+extrem gefährlich.<NOD
+Selbst wenn wir überhaupt
+dorthin kommen,<NOD
+kann keiner garantieren,
+dass wir es auch überleben
+...<NOD<CLR<FAC0007Wollen Sie etwa aufgeben?<NOD<CLR<FAC0018Nicht doch...<NOD<CLRImmerhin haben wir einen
+unter uns, der mehr als
+geeignet ist dafür.<NOD<CLO<FAC0000
+<ANP0621:0003:0002<ANP0625:0003:0000<WAI0020
+<ANP0621:0000:0002<WAI0002<ANP0625:0000:0002
+<MSG<FAC0018Du, mein Junge.<NOD<CLR<CMU0002<FAC0010...wer ist der Junge
+überhaupt?<NOD<CLR<FAC0018Wisst ihr...<NOD<CLRDas hier ist einer von den
+bewaffneten Spionage-
+Robotern,<NOD
+die vor ein paar Jahren
+auf diese Insel geschickt
+wurden.<NOD
+Vor genau 10 Jahren.<NOD<CLR<FAC0010Ein Roboter?!<NOD<CLR<FAC0018Mir wurde gesagt, dass sie
+alle vollständig
+ausgerottet wurden,<ANP0621:0000:0000<NOD
+nur die Details sind mir
+schleierhaft.<NOD
+Es wäre doch möglich,
+dass mindestens einer von
+ihnen...<NOD<CLR<FAC0010Professor,<NOD
+wir sind nun mit der
+Sand-Zone verbunden.<NOD<CLR<FAC0018M-hmm.<NOD<CLO<FAC0000
+<ANP0622:0003:0000<WAI0015
+<ANP0622:0000:0002
+<ANP0621:0000:0002<WAI0030<MSG<FAC0018Mein Junge, du bist der
+geeignetste Spion, um
+diese Insel zu erforschen.<NOD<CLRIch bitte dich.
+Hilf uns.<NOD<FL+0158<PS+0003:6003<END
+
+
+
+
+#0631
+<KEY<MSG<FAC0018Du kannst die Sand-Zone
+mit dem Teleporter
+erreichen.<NOD
+Finde die roten Blumen,
+und verbrenne sie alle
+bis auf die letzte Asche.<NOD<END
+
+#0632
+<KEY<MSG<FAC0010Bist du wirklich einer
+dieser Roboter...<NOD<CLRDu siehst aber gar nicht
+so aus.<NOD<CLRHmmn.<NOD
+Auf jeden Fall bist du
+enorm gut gebaut.<NOD<END
+
+#0634
+<KEY<MSG<FAC0007Die Sand-Zone...<NOD<END
+
+#0635
+<KEY<MSG<FAC0001Wenn du die roten Blumen
+auslöschst,<NOD dann können
+wir den Krieg für 'ne
+Weile verschieben.<NOD<CLRDu trägst also 'ne große
+Verantwortung auf den
+Schultern, alles klar?<NOD<END
+
+
+#0650
+<KEY<MSG<FAC0018Ich flehe dich an...<NOD
+Finde die kleine Susie
+und verlasse diese
+Insel...<NOD<END
+
+#0651
+<DNP0651<KEY<MYD0000
+<ANP0500:0001:0000<WAI0050
+<MNP0650:0006:0007:0002
+<CNP0650:0113:0002
+<ANP0650:0030:0002<WAI0100
+<ANP0650:0000:0002
+<ANP0500:0000:0000<WAI0050
+<ANP0650:0003:0002<WAI0064
+<ANP0650:0000:0000
+<MSG<FAC0018...<NOD<CLO<FAC0000
+<ANP0650:0000:0002<WAI0050
+<MSG<FAC0018Bist du der letzte...?<NOD<CLR...Der Doktor hat die
+roten Blumen bekommen.<NOD<CLR...und alle Mimiga dieser
+Insel liegen nun in
+seiner Hand.<NOD<CLRNun gibt es wohl keine
+Rettung mehr...<NOD<CLRWenn ich doch wenigstens
+der kleinen Susie zur
+Flucht verholfen hätte,<NOD
+als uns noch Zeit blieb...<NOD<CLO<FAC0000
+<ANP0650:0003:0002<WAI0022
+<ANP0650:0005:0002
+<IT+0023<FL+0744<FL+0162<GIT1023
+<MSGDu hast den =Booster v2.0=
+bekommen.<WAI0030<NOD<CLO<GIT0000
+<ANP0650:0000:0002
+<MSG<FAC0018Bitt erfülle meinen
+letzten Wunsch.<NOD<CLRWenn du sie noch einmal
+siehst, nimm sie mit
+und verlasse diese Insel!<NOD<CLRDie Kleine ist die
+Tochter von Sakamoto-san.<NOD
+Sie wollte überhaupt nie
+hierherkommen,<NOD und hat
+sich vom ersten Tag gegen
+die Insel gewehrt.<NOD
+Aber was hätten wir sonst
+tun sollen? Das Kind ganz
+alleine Zuhause lassen?<NOD<CLRBitte, junger Mann...<NOD<CLRFinde das Kind und flieht
+weit, weit weg von hier.<NOD<CLO
+<FL-0160<FL+0161<FL+0741<PS+0004:6004<END
+
+
+#0660
+<KEY<FLJ1020:0661<MSG<FAC0018Bitte, junger Mann...<NOD
+Finde die kleine Susie
+und verlasse diese
+Insel...<NOD<END
+
+#0661
+<KEY<MSG<FAC0018Es tut mir schrecklich
+Leid, was dieser Insel
+alles passiert ist.<NOD<CLRNur wir Menschen sind
+an allem Schuld.<NOD<END
+
+
+#0700
+<KEY<CMU0000<FAO0004<TRA0024:0700:0002:0000
+
+
+#6001
+<PRI<MSGWillst du zur "Eierhalle"
+teleportieren?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<FLJ0159:6011<TRA0002:0099:0005:0006
+
+#6002
+<PRI<MSGWillst du nach "Buschhausen"
+teleportieren?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0006:0098:0004:0018
+
+#6003
+<PRI<MSGWillst du zur "Sand-Zone"
+teleportieren?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0010:0099:0036:0033
+
+#6004
+<PRI<MSGWillst du ins "Labyrinth"
+teleportieren?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0043:0099:0010:0034
+
+#6005
+<PRI<MSGWillst du zur "Plantage"
+teleportieren?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0060:0099:0009:0009
+
+#6011
+<KEY<TRA0049:0099:0007:0006

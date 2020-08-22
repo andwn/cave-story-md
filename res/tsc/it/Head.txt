@@ -1,0 +1,68 @@
+#0000
+<END
+
+#0001
+<PRI<MSGVuoto.<NOD<END
+
+#0016
+<PRI<MSG
+Vuoi salvare?<YNJ0000<FL+0431<SVP<CLRGioco salvato.<NOD<END
+
+#0017
+<PRI<FLJ0201:0018
+<LI+1000<SOU0020<AE+<MSG
+Vita ripristinata.<NOD<END
+#0018
+<PRI
+<LI+1000<SOU0020<AE+<MSG
+Vita e missili ripristinati.<NOD<END
+
+#0019
+<KEY<MSG
+Vuoi riposarti?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050
+<LI+1000<SOU0020<MYD0002<MSG
+Vita ripristinata.<NOD<CLO<RMU<FAI0004<END
+
+#0030
+<PRI<FLJ0202:0032<FLJ0201:0031<FL+0201<GIT0005<AM+0005:0010
+<CMU0010Hai trovato il =Lanciamissili=!<WAI0160<NOD<RMU<CLRIl Lanciamissili è un'arma molto 
+potente, ma ha munizioni limitate.<NOD
+Puoi rifornirti con gli oggetti 
+lasciati dai nemici.<NOD<END
+#0031
+<PRI<AM+0005:0005<MSG
+<GIT0006Numero massimo di missili 
+aumentato di <NUM0000!<NOD<END
+#0032
+<PRI<AM+0010:0005<MSG
+<GIT0011Numero massimo di missili 
+aumentato di <NUM0000!<NOD<END
+
+#0040
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSG
+Sei morto.<NOD<CLRVuoi riprovare?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0041
+<KEY<CMU0000<HMC<WAI0040<PRI<WAI0040<CMU0003
+<MSG
+Sei annegato.<NOD<CLRVuoi riprovare?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0042
+<KEY<CMU0000<WAI0040<PRI<WAI0040<CMU0003
+<MSG<HMC
+E di te non si seppe più nulla...<NOD<CLRVuoi riprovare?<YNJ0049<CLO
+<FAO0001<WAI0050<FLJ0431:0048<INI<END
+
+#0048
+<SMC<LDP<END
+
+#0049
+<CLO<FAO0004<ESC
+
+
+XX: head.tsc   4000 - 4099
+4000:Almond…“ï

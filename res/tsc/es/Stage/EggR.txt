@@ -1,0 +1,82 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGHay pétalos rojos desperdigados.<NOD<END
+
+#0200
+<KEY<MSGEncuentras una nota.<NOD<CLR<TURCon el escudo activado, no puedo
+acceder a la sala del No. 00.<NOD<CLR<TURCreo que uno de estos terminales debería
+ser capaz de desactivar el escudo...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGHas abierto el cofre.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TURHuevo de Dragón Celeste No. 01
+Error: Condiciones del huevo anormales.
+Se recomienda investigación.<NOD<END
+#0502
+<PRI<MS3<TURHuevo de Dragón Celeste No. 02
+Condiciones normales.<NOD<END
+#0503
+<PRI<MS3<TURHuevo de Dragón Celeste No. 03
+Condiciones normales.<NOD<END
+#0504
+<PRI<MS3<TURHuevo de Dragón Celeste No. 04
+Condiciones normales.<NOD<END
+#0505
+<PRI<MS3<TURHuevo de Dragón Celeste No. 05
+Condiciones normales.<NOD<END
+#0506
+<PRI<MS3<TURHuevo de Dragón Celeste No. 06
+Error: Condiciones del huevo anormales.
+Se recomienda investigación.<NOD<END
+#0507
+<PRI<MS3<TURHuevo de Dragón Celeste No. 07
+Condiciones normales.<NOD<END
+#0508
+<PRI<MSG<TURHuevo de Dragón Celeste No. 08
+Condiciones normales.<NOD<END
+#0509
+<PRI<MSG<TURHuevo de Dragón Celeste No. 09
+Condiciones normales.<NOD<END
+#0510
+<PRI<MSG<TURHuevo de Dragón Celeste No. 10
+Condiciones normales.<NOD<END
+#0511
+<PRI<MSG<TURHuevo de Dragón Celeste No. 11
+Condiciones normales.<NOD<END
+#0512
+<PRI<MSG<TURHuevo de Dragón Celeste No. 12
+Condiciones normales.<NOD<END
+#0513
+<PRI<MSG<TURHuevo de Dragón Celeste No. 13
+Condiciones normales.<NOD<END
+#0514
+<PRI<MSG<TURHuevo de Dragón Celeste No. 14
+Condiciones normales.<NOD<END
+#0515
+<PRI<MSG<TURHuevo de Dragón Celeste No. 15
+Condiciones normales.<NOD<END
+#0516
+<PRI<MSG<TURHuevo de Dragón Celeste No. 16
+Condiciones normales.<NOD<END
+

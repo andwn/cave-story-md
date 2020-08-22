@@ -1,0 +1,103 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGHá muito, muito tempo atrás
+vivia uma bruxa nesta ilha.<NOD
+Foi ela que construiu este
+Labirinto, para nos
+manter presos aqui.<NOD<END
+#0210
+<PRI<MSGHá uma maneira de sair daqui.
+Mas o caminho está bloqueado por
+um enorme calhau.<NOD<CLRE mover a rocha
+seria apenas o primeiro
+dos desafios...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGAah... Tenho TANTA fome por
+carne de Mimiga...<NOD<CLR*Cheira cheira*<NOD<CLRTU cheiras um bocado a Mimiga.<NOD<END
+#0221
+<PRI<MSGHa-ha-hah...<NOD<CLRÉs engraçado.<NOD<END
+#0230
+<PRI<MSGJá viste o exterior desta ilha?<NOD<CLREsta ilha flutua bem alto
+nos céus.<NOD
+Agora, como é capaz de flutuar...<NOD
+O segredo está algures neste
+labirinto.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGAquele teleportador ali estava
+a dar até ao bocado.<NOD
+É claro, apenas vai dar
+a outro sítio no labirinto...<NOD<END
+#0241
+<MSGO teleportador já 
+está a funcionar.<NOD<CLRÉ claro, apenas vai
+dar a outro sítio no labirinto,
+não vai?<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGUm teleportador.<NOD<CLRNão tem energia.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGBoas.<NOD<CLREsta é a loja do Labirinto!<NOD
+Mas, temo dizer, fomos
+roubados há pouco,<NOD
+e não há nada para vender
+por agora.<NOD
+Desculpa lá...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSGHm?<NOD<CLRHey, tens algo mesmo bom aí.<NOD<CLRUma Estrela Polar e uma Bola
+de Fogo, se não me engano.<NOD<CLRPosso ver por um instante?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Entregaste a Estrela Polar.<NOD
+<GIT0003Entregaste a Bola de Fogo.<NOD<GIT0000<CLR<SOU0044Hoho!<NOD<CLR<FL+0721<GIT0001<CLR<TAM0002:0001:0000<CMU0010A =Cobra= está completa!<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*Suspiro*<NOD<CLRToma. Que tal isto?<NOD<CLR<GIT1020<CLR<CMU0010<IT+0020<EQ+0008Recebeste a =Turbocarga=!<WAI0160<NOD<RMU<GIT0000<CLRPodes ficar com isto de graça.<NOD
+Também acho que não trazes
+dinheiro contigo.<NOD<END
+#0403
+<KEY<MSG<CLRTu é que sabes!<NOD<END
+#0404
+<KEY<FL+0721<MSG*Suspiro*<NOD<CLRToma. Que tal isto?<NOD<CLR<GIT1038<CLR<CMU0010<IT+0038Recebeste a =Estrela Decorativa=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRTemo que seja apenas
+uma decoração,<NOD
+mas já tens a arma
+mais forte, portanto o
+que é que eu posso fazer?<NOD<END
+#0410
+<KEY<MSGA bruxa que nos fechou aqui
+chama-se Jenka.<NOD<CLR...Mas não é porque nos odeia
+nem nada.<NOD
+Estamos aqui neste Labirinto
+para proteger algo.<NOD<CLR...Já não me lembro
+exactamente o que era,
+mas não faz mal!<NOD<END

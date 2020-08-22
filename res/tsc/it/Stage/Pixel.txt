@@ -1,0 +1,109 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURDelle parole illuminano lo schermo.<NOD<CLR
+04-08-08 Moglie partorì figlio.<NOD<END
+
+#0201
+<KEY<MSGDelle parole illuminano lo schermo.<NOD<CLR
+<TURPerchè non fai un pisolino?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGDelle parole illuminano lo schermo.<NOD<CLR<TURLo sai, ho spesso preso appunti
+su ciò che ho appreso su quel notebook...<NOD<END
+
+#0203
+<KEY<MSGDelle parole illuminano lo schermo.<NOD<CLR
+<TURPrego per la tua vittoria.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGNulla stuzzica il tuo interesse...<NOD<END
+#0221
+<KEY<MSGC'è un blocco note, coperto
+dalla polvere...<NOD<FLJ1441:0223<FLJ1445:0222<END
+#0222
+<KEY<MSG
+Vuoi aprire il blocco note?<YNJ0000<FL+1441<CLR<TURI robot sviluppati in superficie
+presentano considerevoli limitazioni 
+quando operano sott'acqua.<NOD<CLRSe vengono sommersi
+per un periodo troppo lungo,<NOD<CLRil loro sistema viene 
+automaticamente spento per evitare 
+un corto circuito.<NOD<CLREcco la corretta procedura
+per prendersi cura di un robot annegato:<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Hai imparato come 
+sistemare i robot annegati!<WAI0160<NOD<RMU<CLR<TURUna volta che il robot è stato asciugato
+seguendo le procedure sopramenzionate,<NOD<CLRIl sistema provvederà automaticamente
+ad iniziare la procedura di riaccensione.<WAI0030<NOD<END
+#0223
+<KEY<MSGNon c'è scritto nient'altro che
+possa essere utile...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+#0251
+<KEY<MSG
+Vuoi riposarti?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR
+.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+#0252
+<KEY<MSGNon si muove, ma sembra
+che sia ancora viva.<NOD<END
+#0253
+<KEY<MSGVuoi far defluire l'acqua
+da Curly?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Ooohh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019Sei vivo!<NOD<CLROh, sono così contenta...<NOD<CLR<FAC0025Non credevo che ce
+l'avremmo fatta.<NOD
+Quando ti ho visto svenire,
+Non sono riuscita a pensare
+ad altro...<NOD<CLRSembra che la mia riserva
+d'aria abbia funzionato 
+come speravo.<NOD<CLR
+<FAC0020Ah...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGE' caduta in un sonno profondo.<NOD
+<END
+#0254
+<KEY<MSGSembra che le ci voglia un po'
+di tempo per riavviarsi.<NOD<FL+1443<END
+#0255
+<KEY<MSG
+Vuoi lasciarla qui?<YNJ0256<END
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+#0257
+<KEY<MSGIl letto è bagnato fradicio.<NOD<END
+
+#0260
+

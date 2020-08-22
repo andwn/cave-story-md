@@ -1,0 +1,62 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0013<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0013<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0013<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0013<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0013<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0045:0021
+
+
+#0105
+<PRI<MSGVuoi salvare?<YNJ0000<SVP<CLRGioco Salvato.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergia ripristinata.<NOD<END
+
+#0200
+<KEY<MSGQuesta è la nostra fattoria.
+Qui coltiviamo fiori.<NOD
+Io la tengo d'occhio.<NOD<CLRPer noi Mimiga questi fiori sono
+una forma di sostentamento.<NOD<CLRPerò stiamo lontani dai
+fiori rossi.<NOD<CLRSe mangi un fiore rosso,
+si dice ti ribollisca il sangue, e poi caschi a terra morto!<NOD<CLRMeno male che qui non 
+ne coltiviamo.<NOD<END
+
+
+#0220
+<KEY<FLJ1020:0221<MSGUn irrigatore.<NOD<END
+#0221
+<KEY<MSGE' saldamente fissato per terra!<NOD<END
+
+#0300
+<PRI
+<FL+0410
+<DNP0300
+<MSGVedi qualcosa luccicare...<NOD<CLR<CMU0010<GIT1005<IT+0005
+Hai trovato la =Zanna della Bestia=.<WAI0160<NOD<CLO
+<RMU<END
+
+#0400
+<PRI<SOU0022<DNP0400<CMU0016
+<MSG<GIT1006Hai trovato una 
+=Capsula della Vita=!<WAI0160<NOD<RMU<ML+0003
+Il livello massimo di energia 
+viene aumentato di 3!<NOD<END
+

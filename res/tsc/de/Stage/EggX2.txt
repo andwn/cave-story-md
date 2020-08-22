@@ -1,0 +1,110 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0049:0094:0290:0008
+
+#0110
+<KEY<FLJ0940:0111<MSGEin kalter Wind bläst
+hier durch...<NOD<END
+#0111
+<KEY<FAO0002<TRA0053:0092:0004:0165
+
+#0110
+
+#0400
+
+#0500
+<KEY<MSGDa steht etwas auf dem Bildschirm.<NOD<CLR
+<TURSCHLÜPFUNG ERFOLGREICH.<NOD<FLJ0941:0000<CLO
+<FL+0941
+<WAI0020<CMU0000<MSGWer ist da?<MYD0002<NOD<CLO
+<WAI0050<CNP0400:0055:0000
+<WAI0010<ANP0400:0003:0000
+<WAI0048<ANP0400:0000:0000
+<CMU0014<MSG<FAC0010Ach, du bist das.<NOD<CLRBin ich froh dich heil zu
+sehen.<NOD
+Außer mir ist niemand
+hier.<NOD<CLRNachdem du auf zur
+Sand-Zone bist,<NOD haben wir
+versucht eilig einen
+Fluchtweg auszudenken.<NOD<CLRDann tauchte Misery auf.<NOD
+Sie hat Sue mitgenommen,<NOD
+und den Professor
+weggebeamt...<NOD<CLR...<NOD<CLRDer Doktor hat wohl seine
+Blumensamen bekommen,
+nehme ich an?<NOD<CLROh,<NOD nein, nicht doch.<NOD
+Kein Mensch macht dir
+Vorwürfe...<NOD<CLR<ANP0400:0000:0002Weißt du, gleich als der
+Doktor diese Krone in
+seine Krallen bekam,<NOD
+hatte er schon so gut wie
+gewonnen.<NOD<CLRJetzt ist es nur noch
+eine Frage der Zeit,<NOD bis
+seine Mimiga-Armee bereit
+ist...<NOD<CLRUnd danach...<NOD
+Kann ihn niemand mehr
+aufhalten.<NOD
+Nicht einmal du.<NOD<CLO<FAC0000
+<WAI0010<ANP0400:0003:0002
+<WAI0016<ANP0400:0000:0002
+<MSG<FAC0010Wir müssen hier
+verschwinden...<NOD<CLRIch hatte mir überlegt,<NOD
+ein Flugdrache könnte
+mich vielleicht hier
+wegfliegen.<NOD
+...darum bin ich ganz
+allein hier.<NOD<CLREr ist geschlüpft,
+und es geht im gut.<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000<WAI0100
+<MSG<FAC0010Wollen wir hier zusammen
+verschwinden?<YNJ0501<FL+0960<CLR<ANP0400:0000:0002Keine Wahl, hm?<NOD
+Wir haben wirklich
+getan was wir konnten.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+
+
+#0501
+<KEY<WAI0020<ANP0400:0000:0002
+<MSG<FAC0010Ach...<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000
+<WAI0010<ANP0400:0005:0000
+<MSG<FAC0010Weißt du,<NOD
+es bleibt noch eine
+letzte Möglichkeit,<NOD wie
+man wilde Mimigas wieder
+ruhig stellen kann.<NOD<CLRDu musst den Kern der
+Insel zerstören.<NOD
+Nur dann wird die Insel
+wohl in Stücke
+zerbröseln.<NOD
+Klingt verdammt
+gefährlich, was?<NOD<WAI0050<ANP0400:0000:0000<CLRUnd sowieso, ich hab
+keine Ahnung wo dieser
+Kern sein soll...<NOD<CLRWenn du dir das zutraust,
+dann kann ich noch
+warten.<NOD<CLRAber vergiss nicht...<NOD
+Wenns hier zu brenzlig
+wird, muss ich
+vielleicht ohne dich los.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+<END
+
+#0502

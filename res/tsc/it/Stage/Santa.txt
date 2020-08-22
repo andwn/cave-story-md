@@ -1,0 +1,73 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0002<FAI0004<END
+
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0006:0094:0004:0012
+
+
+
+#0120
+<KEY<MSG<TURAttenzione! Trappola mortale alla tua 
+sinistra. Un solo tocco e muori 
+all'istante!<NOD<END
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Crackle* *Snap!*<NOD<FLJ0242:0000
+Il carbone brucia intensamente.<NOD<END
+#0301           
+<KEY<GIT1008<MSGVuoi utilizzare il 
+=Succo di Medusa=?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0242:0302<FL+0242
+<MSGTrovi qualcosa tra la cenere...<NOD<CLR<GIT1012<IT+0012
+<CMU0010Hai trovato il =Carbone=.<WAI0160<NOD<CLO<RMU<DNP0300<END
+
+#0302
+<KEY<DNP0300<END
+
+
+#0500
+<FLJ0226:0506
+<FLJ0242:0505
+<FLJ0484:0504
+<FLJ0241:0503 
+<FLJ0240:0502
+<KEY<FL+0240<MSGGrazie, mi hai davvero tirato 
+fuori dai guai.<NOD
+Tieni, prendi questo regalo.<NOD<GIT0003<AM+0003:0000<CLR
+<CMU0010Ricevi la =Palla di Fuoco=!<WAI0160<NOD<RMU<GIT0000<CLRStai cercando qualcuno?<NOD
+Non ho mai visto nessuno straniero
+da queste parti.<NOD
+se vuoi estendere la ricerca,<NOD
+dovresti passare attraverso il
+camino della casa della 
+vecchia Cacho...<NOD<FL+0241<END
+#0503
+<KEY<MSGPuoi raggiungere la parte centrale 
+di Grasstown passando attraverso il 
+camino di casa di Chaco.<NOD<END
+#0504
+<KEY<MSGTi serve del =Carbone=?<NOD
+Puoi prenderne dal mio camino,
+se vuoi.<NOD<END
+#0505
+<KEY<MSGMa a che ti serve il carbone?<NOD<END
+#0506
+<KEY<MSGHo sentito un rumore come di 
+qualcosa che si schiantasse, 
+qualche attimo fa.<NOD
+Quello, e delle urla di terrore...<NOD<END
+

@@ -1,0 +1,13 @@
+#1000
+<KEY<MSG<TURTeletrasporto non permesso.<WAI9999<END
+#1001
+<KEY<MSG<TURCorridoio Delle Uova<WAI9999<END
+#1002
+<KEY<MSG<TURGrasstown<WAI9999<END
+#1003
+<KEY<MSG<TURZona di Sabbia<WAI9999<END
+#1004
+<KEY<MSG<TURLabirinto<WAI9999<END
+#1005
+<KEY<MSG<TURPiantagione<WAI9999<END
+

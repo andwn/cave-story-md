@@ -1,0 +1,200 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0000<TRA0056:0090:0072:0084
+
+#0110
+<KEY
+<SOU0011
+<ANP0110:0000:0002<WAI0010<HMC
+<ANP0110:0000:0000
+<MOV0015:0012<WAI0050
+<SOU0011
+<ANP0111:0000:0002<MYD0000<SMC<WAI0010
+<ANP0111:0000:0000<END
+#0111
+<KEY
+<SOU0011
+<ANP0111:0000:0002<WAI0010<HMC
+<ANP0111:0000:0000
+<MOV0015:0007<WAI0050
+<SOU0011
+<ANP0110:0000:0002<MYD0000<SMC<WAI0010
+<ANP0110:0000:0000<END
+
+
+#0200
+<KEY
+<FLJ1103:0212
+<ITJ0027:0211
+<FLJ1102:0206
+<ITJ0029:0210
+<ITJ0028:0209
+<FLJ1101:0208
+<FLJ1106:0204
+<FLJ1100:0201
+<ANP0200:0003:0005<WAI0050
+<ANP0200:0000:0005<WAI0020
+<MSG<FL+1100<FL+0961<FAC0022Así que tú eres el
+salvador del que hablaba
+Sue.<NOD<CLR
+Oh, gracias a Dios...<NOD<CLRSoy Momorin Sakamoto.<NOD
+La madre de Sue.<NOD
+Antes trabajaba de
+parte del Doctor.<NOD
+Pero una vez encontró las
+semillas, ya no me
+necesitaba.<NOD
+Así que me tiró al borde
+de la isla.<NOD<CLRSi me permites decirlo,
+la caballerosidad ya no
+existe.<NOD<CLRPero eso no es lo
+que quería contarte.<NOD<CLRAhora mismo estoy
+construyendo un cohete,<NOD
+uno que te llevará al
+trono del Doctor.<NOD
+Sin embargo, aún no
+tengo todas las piezas.<NOD<CLO
+<ITJ0018:0202<ITJ0023:0203<EVE0201
+
+#0201
+<ITJ0018:0202<ITJ0023:0203
+<MSG<FAC0022Lo que necesito por ahora
+es un Booster.<NOD
+Me pregunto quién podría
+tener uno...<NOD<END
+
+#0202
+<MSG<CLR.....<NOD<CLRAjá.<NOD Sólo necesito que
+me prestes esto.<NOD<CLR
+<FAC0000<GIT1018Booster v0.8 prestado.<NOD<GIT0000<CLR<FAC0022Aún necesito más
+piezas para terminar el
+cohete.<NOD<CLO
+<IT-0018<EQ-0001<FL-0742
+<FL+1106
+<EVE0204
+
+#0203
+<MSG<CLR.....<NOD<CLRAjá.<NOD Sólo necesito que
+me prestes esto.<NOD<CLR
+<FAC0000<GIT1023Booster v2.0 prestado.<NOD<GIT0000<CLR<FAC0022Aún necesito más
+piezas para terminar el
+cohete.<NOD<CLO
+<IT-0023<EQ-0032<FL-0743
+<FL+1106
+<EVE0204
+
+#0204
+<KEY<MSG<FAC0022¿Estás ocupado?<YNJ0205<CLR¿En serio?<NOD
+Entonces nada, olvídalo...<NOD<END
+
+#0205
+<KEY<FL+1101<MSGAh, buena respuesta.<NOD
+Sin duda eres nuestro
+salvador.<NOD<CLRToma, ponte esto.<NOD<FAC0000
+<GIT1024<IT+0024<EQ+0064<FL+1020<MSG
+<CMU0010Conseguiste la =Máscara Mimiga=.<WAI0160<NOD<RMU<CLO<GIT0000
+<MSG<FAC0022¿No es encantadora?<NOD
+Quizá es un poco grande,
+aunque...<NOD<CLRA los Mimigas que
+trabajan en los cultivos
+no se les permite
+hablar con los humanos.<NOD
+Pero con esta máscara
+puesta, deberías ser
+capaz de hablar con
+ellos.<NOD<CLR¿Me sigues?<NOD<EVE0207
+
+#0206
+<KEY<MSG<FAC0022<CLRNecesito que busques a
+un hombre llamado Itoh.<NOD<CLREs un temendo cobarde,
+así que dudo que se
+haya ido muy lejos.<NOD<END
+
+#0207
+<MSG<FL+1027<FL+1028<FAC0022Para completar el cohete,
+necesitaré mucha cantidad
+de electricidad.<NOD
+Si pudieras conseguir uno
+de esos aspersores que
+usan por ahí,<NOD
+creo que podría
+aprovecharlo.<NOD<CLRPor favor, tráeme un
+=Aspersor=.<NOD<END
+
+#0208
+<KEY<MSG<FAC0022Para completar el cohete,
+necesitaré mucha cantidad
+de electricidad.<NOD
+Esos aspersores de los
+cultivos podrían ser
+útiles.<NOD<CLRPor favor, tráeme un
+=Aspersor=.<NOD<END
+
+#0209
+<KEY<MSG<FAC0022Bienvenido de nuevo.<NOD<CLR
+<FAC0000<GIT1028Le enseñaste el =Aspersor Roto=.<NOD<CLR<FAC0022Hrmmm...<NOD<CLRLas baterías de este
+aspersor están agotadas.<NOD<GIT0000
+No puedo hacer nada
+con esto.<NOD<END
+
+#0210
+<KEY<FL+1102<FL+1107<MSG<FAC0022Bienvenido de nuevo.<NOD<CLR<FAC0000
+<GIT1029<IT-0029Le enseñaste el =Aspersor=.<NOD<CLR<FAC0022Veamos...<NOD<CLREstas baterías están
+bastante llenas.<NOD
+Creo que podría funcionar.<NOD<GIT0000<SOU0011<CNP0250:0072:0002<CLO<WAI0030
+<MSGAhora quiero que busques
+a un hombre llamado Itoh.<NOD<CLREs un "ingeniero de
+talento considerable",
+como él dice.<NOD<CLRPero es también uno
+de los hombres más
+tímidos que he conocido.<NOD
+Se escapó del Doctor en
+cuanto tuvo la ocasión,
+pero no puede haberse ido
+muy lejos.<NOD<END
+
+#0211
+<MSG<FL+1103<FAC0022Bienvenido de nuevo.<NOD<CLR¿Encontraste a Itoh?<NOD<CLR
+<FAC0000<GIT1027<IT-0027Le diste el =Controlador=.<NOD<CLR<FAC0022Esto es lo que necesito.<NOD
+Éste es el controlador
+del que está tan orgulloso.<NOD<GIT0000<CLRHmmm...<NOD<CLREl análisis sería mucho
+más fácil si él estuviera
+aquí.<NOD<CLRBueno, me las apañaré como
+pueda.<NOD<EVE0212
+
+
+#0212
+<KEY<MSG<FAC0022Muchísimas gracias.<NOD<CLRMe llevará un tiempo
+terminarlo,<NOD así que
+¿por qué no descansas
+un poco en esa cama?<NOD<END
+
+#0250
+
+#0280
+<KEY<MSG¿Quieres descansar?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050<FLJ1103:0281
+<LI+1000<SOU0020<MYD0002<MSGSalud recuperada.<NOD<CLO<CMU0002<FAI0004<END
+
+#0281
+<FL-1103<FL+1105<FL+1030<FL+1031<FL+1032<FL+1033<FL+1004<FL-1038<FL+1039
+<FL-1026<FL+1036
+<MSG.....<NOD<CLO<DNP0200<DNP0350
+<LI+1000<SOU0020<MYD0002<MSGTe despiertas tras una larga
+siesta.<NOD<CLO<CMU0002<FAI0004<END
+
+
+#0350
+<KEY<MSG¿Un cohete...?<NOD<END
+

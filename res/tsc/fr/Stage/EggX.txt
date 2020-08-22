@@ -1,0 +1,96 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGSauvegarder ?<YNJ0000<SVP<CLRJeu Sauvegardé.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGÉnergie restaurée.<NOD<END
+
+
+#0110
+<KEY<MSGTu sens un vent froid
+entrer...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Ergh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGOwww...<NOD<ANP0200:0011:0002<CLR<FAC0003Woh-oh !
+Hey, Je suis pas morte !<NOD
+Tu vas payer, cette
+fois-ci !!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Huh ?<WAI0050<NOD
+J'ai été battue par
+ce monstre...<ANP0200:0000:0000<NOD<CLR.....<NOD
+C'est toi qui m'a sauvée ?<YNJ0202<EVE0201
+#0201
+<FAC0003J'avais pas besoin de toi !!<NOD<CLRJe pouvais m'en charger
+seule ! Vraiment !<NOD
+Grr...Je déteste cette
+île, et tout ce qui
+y vit !<NOD<FAC0000<CLO<EVE0203
+#0202
+<FAC0002Hmph...<NOD<CLRPeu importe.<NOD<FAC0000<CLO<EVE0203
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Oh !<NOD<MYD0003<CLRRegarde ! C'est l'œuf
+Numéro 00 !<NOD<CLRCet œuf pourrait être
+notre ticket de retour!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Conditions: Normales !
+C'est génial !<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hm ?<NOD Un mot de passe ?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Aparemment il faut un
+code pour faire éclore cet
+œuf.<NOD<CLR<FAC0002*soupir*.<NOD<CLRSi seulement mon frère
+était là, il règlerait
+le problème.<NOD<CLR.....<NOD<CLR<FAC0001Bon, je ne peux rien
+faire de plus, ici.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGTu es<MYD0000 du coin ?<NOD<CLROn dirait pas.<NOD
+Les mots de ta
+casquette...<NOD
+Ce n'est pas un
+langage de cette
+île.<NOD<CLR
+...Tu t'es perdu ?<NOD<CLRT'en fais pas.<NOD
+Tu n'as qu'à me suivre.<NOD
+On s'achappera
+d'ici ensemble.<NOD
+En retour, tu
+m'aideras.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TURŒuf de dragon No. 00
+Préparatifs d'éclosion accomplies.<NOD<CLR
+Entrez le mot de passe:<NOD<END
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400
+

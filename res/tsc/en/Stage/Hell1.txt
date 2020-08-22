@@ -1,0 +1,74 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+#0091
+<MNA<CMU0036<FAI0001<END
+#0092
+<MNA<CMU0036<FAI0002<END
+#0093
+<PRI<CMU0000<ZAM<ITJ0022:0095<EVE0096
+
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<EQ+0256<MS2<TUR
+<SOU0043<GIT1022Counter activated.<NOD<GIT0000<EVE0096
+
+#0096
+<MSGYou feel a black wind blow
+through you.<NOD<CLR
+All weapons dropped to Level 1!<NOD<CLO
+<FRE<MNA<CMU0036<FAI0003<END
+
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<KEY<FLJ1531:0111
+<FOM0016<FAO0002<TRA0081:0092:0002:0013
+#0111
+<WAI0010<HMC<WAI0050
+<MYD0000<SMC<END
+
+#0200
+<PRI<MSG<TUR
+Welcome to Hell!<NOD<END
+
+
+#0400
+<PRI<SOU0022<DNP0400
+<MSG<GIT1006Got a =Life Capsule=!<NOD<ML+0005
+Max health increased by 5!<NOD<END
+
+#0420
+<DNP0420
+<ANP0430:0030:0000<FON0430:0016
+<ANP0500:0032:0000<END
+#0430
+
+
+#0500
+<PRI<FL-1531<FL+1532<MS3<FAC0020Oohh...<NOD<CLR<FAC0000
+<CNP0500:0259:0000<GIT1030Connected her body to yours
+with the rope.<NOD<END
+
+
+#0900
+<DNP0900<SKJ0020:0000<SK+0020
+<PRI<MS3Did you know that the witch-woman
+Jenka once had a brother?<NOD
+His name was Ballos.<NOD
+Like his sister, he wielded
+powers far beyond those of
+mortals...<NOD<END
+
+#0901
+<DNP0901<SKJ0021:0000<SK+0021
+<PRI<MS3He used his magical powers to
+help and guide people,<NOD
+and the people loved and trusted
+him in return.<NOD<CLREven more than they did their
+own king...<NOD<END
+

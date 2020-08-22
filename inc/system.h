@@ -29,6 +29,26 @@
 #define FLAG_EVENTONDROWN		4000
 #define FLAG_DISABLESAVE		4095
 
+enum {
+    LANG_EN = 0x00,
+    LANG_ES,
+    LANG_PT,
+    LANG_FR,
+    LANG_IT,
+    LANG_DE,
+
+    LANG_JA = 0x20,
+    LANG_ZH,
+    LANG_KO,
+
+    LANG_RU = 0x30,
+    LANG_UK,
+
+    LANG_AR = 0x40,
+
+    LANG_INVALID=0xFF,
+};
+
 typedef struct {
 	uint8_t used; // Whether save contains any data
 	uint8_t hour, minute, second;

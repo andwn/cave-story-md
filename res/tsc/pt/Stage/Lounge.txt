@@ -1,0 +1,98 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0002<TRA0056:0092:0024:0082
+
+#0200
+<KEY
+<FLJ1020:0201
+<EVE0299
+
+#0201
+<KEY
+<FLJ1121:0203
+<ITJ0028:0202
+<MSGIsto são aspersores.<NOD
+Eles partem a toda a hora, estás
+a ver?<NOD
+Portanto temos sempre que
+ter vários novos
+prontos.<NOD<END
+
+#0202
+<KEY<MSG<FL+1121Outro...?<NOD<CLR<GIT1028<IT-0028Entregaste o =Aspersor Avariado=.<NOD<GIT0000
+<KEY<MSGSê simpático com este.<NOD<DNP0280<GIT1029<IT+0029<CLR<CMU0010Recebeste o =Aspersor=.<WAI0160<NOD<RMU<END
+
+#0203
+<KEY<MSGOuvi dizer que a
+última semente estava a
+acabar de crescer!<NOD
+Parece que tínhamos aspersores
+suficientes...<NOD<END
+
+
+#0210
+<KEY
+<FLJ1033:0212
+<FLJ1020:0211
+<EVE0299
+
+#0211
+<MSGÉ verdade que robots da superfície
+nos atacaram nesta
+ilha há um tempo atrás.<NOD
+E sei que muitos de nós
+foram mortos...<NOD
+Mas alguns entre eles
+sabiam falar.<NOD
+Acredito que eles também
+tinham almas...<NOD<END
+
+#0212
+<MSGMaldito Doutor!<NOD<CLRA levar aquela pobre
+criança com ele!<NOD
+Oh, se eu fosse um pouco
+mais novo...<NOD
+Que pena...<NOD<END
+
+#0220
+<KEY<FLJ1020:0221
+<EVE0299
+#0221
+<MSGNão acredito numa única palavra
+do que o Doutor diz!<NOD<CLRRobots? Nyah!<NOD
+Como se isso me fosse assustar.<NOD<END
+
+#0230
+<KEY<FLJ1020:0231
+<EVE0299
+#0231
+<MSGTão exausto...<NOD<END
+
+#0250
+<KEY<MYB0000<MSGOh, olá.<NOD<CLRJá não nos encontramos antes?<NOD
+Sim, na Vila Mimiga.<NOD
+Alguém chamada "Misery" pegou em
+mim e trouxe-me aqui.<NOD
+Mas meu, eu odeio cultivar.<NOD<CLREu ia agora pescar
+para ser diferente.<NOD<CLRGostas de pescar?<NOD
+Bom, vemo-nos depois.<NOD<CLO
+<ANP0250:0010:0002<WAI0030<MYD0002<WAI0080
+<ANP0250:0000:0002<WAI0020
+<ANP0250:0020:0002<ANP0100:0000:0002<SOU0011<WAI0020
+<DNP0250<ANP0100:0000:0000<SOU0011<FL+1120<FL+1021<END
+
+
+#0280
+#0299
+<PRI<MSG.....<NOD<END

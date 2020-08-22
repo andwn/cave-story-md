@@ -1,0 +1,340 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0095<CMU0002<FAI0004<END
+
+#0095
+<CMU0014<FAI0004<END
+
+
+#0098
+<CMU0014
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+#0099
+<KEY<MNA<FLJ0341:0098<CMU0002
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+
+#0100
+<PRI<FAO0004<TRA0010:0094:0018:0032
+#0101
+<PRI<FAO0004<TRA0012:0094:0037:0011
+#0102
+<FLJ0155:0103<PRI<SOU0011<DNP0102<FAO0004<TRA0011:0094:0016:0053
+#0103
+<PRI<SOU0011<CMU0000<DNP0102<FAO0004<TRA0011:0400:0016:0053
+
+
+#0200
+<FLJ0159:0205
+<FLJ0158:0204
+<FLJ0157:0203
+<FLJ0325:0202
+<FLJ0154:0201
+<KEY<MSGDelle parole illuminano lo 
+schermo...<NOD<CLR<TUR"...se dovrò farlo, comunque,
+lo farò davvero..."<NOD<FLJ0153:0000<CLR<MSGVuoi attivare il teletrasporto 
+verso il Corridoio delle Uova?<YNJ0000<CLRAccesso al Corridoio delle Uova 
+permesso.<NOD<FL+0153<PS+0001:6001<END
+#0201
+<KEY<MSGDelle parole illuminano lo 
+schermo....<NOD<CLR
+<TURConnessione a Grasstown...<NOD<END
+#0202
+<KEY<MSG<TUR
+Connesso a Grasstown.<NOD<END
+#0203
+<KEY<MSG<TUR
+Inserire comando.<NOD<END
+#0204
+<KEY<MSG<TUR
+Connesso alla Zona di Sabbia.<NOD<END
+#0205
+<KEY<MSGDelle parole illuminano 
+lo schermo...<NOD<CLR<TUR
+Dirigiti verso il Corridoio delle Uova.
+                        --Kazuma<NOD<END
+#0210
+<KEY<MSGFiori...?<NOD<END
+
+#0300
+#0301
+#0303
+
+#0500
+<KEY<MSGUn teletrasportatore.<NOD<SLP<NOD<END
+
+#0600
+<FLJ0325:0601
+<KEY<MSG<FAC0009Bentornato.<NOD<CLRSue è tornata.<NOD
+E' stata messa sotto 
+chiave dentro la gabbia 
+là fuori.<NOD
+Quando si presenteranno 
+gli sgherri del Dottore, 
+proveremo a riprenderci 
+Toroko.<NOD
+Capisci, in cambio
+di Sue.<NOD<CLRSo che 
+non è molto carino,
+ma Toroko è una di noi.<NOD
+Questo è quello che ottieni 
+quando fai di testa tua.<NOD<END
+#0601
+<KEY<MSG<FAC0009Spero che Toroko sia 
+salva...<NOD<END
+
+
+#0620
+<KEY<CMU0000<FL+0156<FL+0444
+<ANP0500:0001:0000
+<WAI0002<CNP0622:0055:0000<WAI0010
+<FAI0004
+<CNP0621:0113:0000
+<ANP0621:0030:0000<WAI0100
+<MSG<FAC0018Oooohh...<NOD<CLR<FAC0010...Tutto bene?<NOD<CLO<FAC0000
+<WAI0030<ANP0621:0000:0002
+<MSG<FAC0018...mmm.<NOD<CLRTutta la mia vita mi è 
+passata davanti agli occhi.<NOD<CLR<FAC0010.....<NOD<CLO<FAC0000
+<ANP0500:0000:0000<WAI0030
+<ANP0102:0000:0002<SOU0011
+<CNP0625:0042:0000
+<MSG<FAC0001Kazuma!!<NOD<ANP0622:0000:0002<CLRE il Professor Booster!<NOD<CLR<FAC0018Oh!<NOD<CLO<FAC0000
+<ANP0621:0003:0002<WAI0080
+<ANP0621:0000:0002
+<MSG<FAC0018State bene, allora?!<NOD<CLR<FAC0001Beh, più o meno.<NOD<CLO<FAC0000
+<CNP0624:0061:0000
+<ANP0625:0003:0000<WAI0016
+<ANP0624:0008:0000<WAI0016
+<ANP0624:0000:0000
+<SOU0011<ANP0102:0000:0000<WAI0048
+<ANP0625:0000:0000
+<MSG<FAC0007.....<NOD<CLR<FAC0018Chi è quel Mimiga?<NOD<CLO<FAC0000
+<WAI0030
+<ANP0625:0000:0002<WAI0030
+<ANP0624:0000:0002<WAI0050
+<ANP0625:0000:0000<WAI0020
+<MSG<FAC0001Quello è King.<NOD<CLRUn mio amico di questo
+villaggio.<NOD<CLRIn passato c'erano un 
+sacco di Mimiga qui.<NOD
+Quasi tutti sono stati
+rapiti dagli sgherri del
+Dottore.<NOD<CLRAnche King ha perso degli
+amici...<NOD<CLO
+<CMU0002
+<ANP0500:0001:0000
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<FL-0157<END
+
+#0621
+<KEY<FLJ0158:0631<MSG<FAC0018I piani del Dottore
+procedono esattamente come
+previsto...<NOD
+Se non facciamo presto
+qualcosa...<NOD<END
+#0622
+<KEY<FLJ0158:0632<MSG<FAC0010Grazie per il tuo aiuto.<NOD<CLRIl nostro mezzo di 
+trasporto non è proprio 
+sopravvissuto, ma almeno
+noi... sì.<NOD<END
+#0624
+<KEY<FLJ0158:0634<MSG<FAC0007Toroko come arma assassina?<NOD
+No! Non lo permetterò mai!<NOD<END
+#0625
+<KEY<FLJ0158:0635<MYB0000<WAI0030<MYD0000<ANP0625:0000:0002<MSG
+<FAC0001Bentornato!<NOD<CLRSembra che sia di nuovo
+in debito con te.<NOD
+Con l'aiuto di mio 
+fratello, <NODdovremmo riuscire 
+ad oltrepassare la password 
+di quell'uovo.<NOD<CLO<FAC0000
+<ANP0625:0003:0000<WAI0008
+<ANP0625:0000:0000<MSG<FAC0001Booster!<NOD<CLRPossiamo portare questo
+ragazzo con noi?<NOD<CLO<FAC0000
+<ANP0622:0003:0002<WAI0015
+<ANP0622:0005:0002
+<MSG<FAC0018<CMU0000.....<NOD<CLR
+<FAC0010Professore.<NOD<CLR<FAC0001???<NOD<CLR<FAC0018Sue, mia cara...<NOD
+Dobbiamo rimandare la
+nostra fuga.<NOD<CLRIl Dottore ha localizzato
+i Fiori Rossi.<NOD<ANP0624:0000:0000<CLR
+<FAC0007!!!<NOD<CLR<FAC0001Cosa?<NOD<CLR<FAC0018Per quanto non sia ancora
+riuscito a metterci le
+mani sopra, ormai è 
+questione di tempo.<NOD La 
+locazione è la Zona di 
+Sabbia.<NOD<CLRPare che i fiori rossi si
+possano trovare lì da 
+qualche parte.<NOD<CLR
+<FAC0007La Zona di Sabbia?<NOD<CLRVuoi dire che è là che
+troveremo il Dottore?<NOD<CLR<FAC0018Beh,<NOD più probabilmente
+uno dei suoi tirapiedi.<NOD
+Se non distruggiamo questi
+fiori prima che possano
+impossessarsene...<NOD<CLRE comunque, la Zona di 
+Sabbia è troppo pericolosa.<NOD
+Anche supponendo che 
+tentassimo il viaggio,<NOD
+non vi è alcuna garanzia 
+che ne ritorneremmo vivi...<NOD<CLR
+<FAC0007Vuoi arrenderti così?<NOD<CLR<FAC0018A dire il vero...<NOD<CLRTra di noi c'è qualcuno
+che sembra perfetto per 
+questo lavoro.<NOD<CLO<FAC0000
+<ANP0621:0003:0002<ANP0625:0003:0000<WAI0020
+<ANP0621:0000:0002<WAI0002<ANP0625:0000:0002
+<MSG<FAC0018LUI.<NOD<CLR
+<CMU0002<FAC0010...lui CHI?<NOD<CLR<FAC0018Per dirla tutta...<NOD<CLRQuesto è uno dei robot
+da attacco e ricognizione 
+inviati su quest'isola
+10 anni fa.<NOD<CLR<FAC0010Un robot?!<NOD<CLR<FAC0018Pensavo che fossero
+stati completamente
+smantellati,<ANP0621:0000:0000<NOD
+ma non conosco i
+dettagli.<NOD
+E' decisamente possibile 
+che uno di essi possa...<NOD<CLR<FAC0010Professore.<NOD
+Mi sono connesso alla Zona 
+di Sabbia.<NOD<CLR<FAC0018Capisco.<NOD<CLO<FAC0000
+<ANP0622:0003:0000<WAI0015
+<ANP0622:0000:0002
+<ANP0621:0000:0002<WAI0030<MSG<FAC0018Sei certamente il 
+più adatto ad esplorare
+quest'isola.<NOD<CLRTi prego. Aiutaci..<NOD<FL+0158<PS+0003:6003<END
+
+
+
+
+#0631
+<KEY<MSG<FAC0018Puoi raggiungere la Zona 
+di Sabbia tramite il 
+teletrasportatore.<NOD
+Trova i fiori rossi 
+e bruciali tutti uno per
+uno.<NOD<END
+#0632
+<KEY<MSG<FAC0010Quindi tu sei uno di 
+quelli...<NOD<CLRNon ci avevo fatto caso.<NOD<CLRPerdinci, sei davvero
+ben costruito.<NOD<END
+#0634
+<KEY<MSG<FAC0007La Zona di Sabbia...<NOD<END
+#0635
+<KEY<MSG<FAC0001Se riesci a fare piazza 
+pulita dei fiori, dovremmo 
+riuscire a prevenire
+la guerra... per adesso.<NOD<CLRE' una grande 
+responsabilità.<NOD<END
+
+
+#0650
+<KEY<MSG<FAC0018Porta Sue con te e
+fuggi da quest'isola...<NOD
+Ti prego...<NOD<END
+
+#0651
+<DNP0651<KEY<MYD0000
+<ANP0500:0001:0000<WAI0050
+<MNP0650:0006:0007:0002
+<CNP0650:0113:0002
+<ANP0650:0030:0002<WAI0100
+<ANP0650:0000:0002
+<ANP0500:0000:0000<WAI0050
+<ANP0650:0003:0002<WAI0064
+<ANP0650:0000:0000
+<MSG
+<FAC0018.....<NOD<CLO<FAC0000
+<ANP0650:0000:0002<WAI0050
+<MSG<FAC0018Solo tu, capisco...<NOD<CLR...Il Dottore ha ottenuto
+i fiori rossi.<NOD<CLR...tutti i Mimiga 
+dell'isola sono 
+caduti nelle sue
+mani.<NOD<CLRE quindi, la tragedia 
+è ormai inevitabile...<NOD<CLRAvrei almeno dovuto 
+lasciare andare Sue quando
+ne ebbi l'occasione...<NOD<CLO<FAC0000
+<ANP0650:0003:0002<WAI0022
+<ANP0650:0005:0002
+<IT+0023<FL+0744<FL+0162<GIT1023
+<MSG
+Hai ottenuto il =Booster v2.0=.<WAI0030<NOD<CLO<GIT0000
+<ANP0650:0000:0002
+<MSG<FAC0018Ti prego di soddisfare la 
+mia ultima 
+richiesta.<NOD<CLRSe dovessi rivedere Sue,<NOD
+voglio che la prenda con te
+e che scappiate dall'isola.<NOD<CLRQuella ragazza è la figlia 
+di Sakamoto,<NOD
+e non voleva venire qui
+a prescindere, era 
+contraria.<NOD
+Ma non potevamo lasciare
+sola la bambina,<NOD
+perciò non abbiamo avuto 
+altra scelta che portarla 
+con noi.<NOD<CLR
+Ti prego.<NOD<CLRPrendi con te quella 
+bambina e fuggite.<NOD<CLO
+<FL-0160<FL+0161<FL+0741<PS+0004:6004<END
+
+
+#0660
+<KEY<FLJ1020:0661<MSG<FAC0018Porta Sue con te e  
+fuggite da quest'isola...<NOD
+Ti prego...<NOD<END
+#0661
+<KEY<MSG<FAC0018Sono davvero dispiaciuto
+per il caos che è successo
+nella tua isola.<NOD<CLRSiamo noi umani a doverci
+assumere la colpa.<NOD<END
+
+
+#0700
+<KEY<CMU0000<FAO0004<TRA0024:0700:0002:0000
+
+
+#6001
+<PRI<MSGVuoi andare al 
+Corridoio delle Uova?
+<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<FLJ0159:6011<TRA0002:0099:0005:0006
+#6002
+<PRI<MSGVuoi andare a Grasstown?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0006:0098:0004:0018
+#6003
+<PRI<MSGVuo andare alla 
+Zona di Sabbia? 
+<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0010:0099:0036:0033
+
+#6004
+<PRI<MSGVuoi andare al
+Labirinto?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0043:0099:0010:0034
+
+#6005
+<PRI<MSGVuoi andare alla 
+Piantagione?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0060:0099:0009:0009
+
+#6011
+<KEY<TRA0049:0099:0007:0006
+

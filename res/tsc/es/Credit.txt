@@ -1,0 +1,309 @@
++0192
+!0033
+[  = REPARTO =  ]0000
+-0320
+[- Superficie -]0000-0064
+[Valiente, admira]0000-0016
+[  a su hermano]0000-0016
+[  Sue Sakamoto]0001-0064
+[  Su a veces]0000-0016
+[fiable hermano]0000-0016
+[  Kazuma Sakamoto]0002-0064
+[Madre de Sue]0000-0032
+[  Momorin Sakamoto]0003-0064
+[Figura paternal]0000-0016
+[ de Sue]0000-0016
+[  Booster]0004-0064
+[El cobarde con]0000-0016
+[ forma de Mimiga]0000-0016
+[  Itoh]0005-0064
+-0063
+[- Pueblo Mimiga -]0000-0064
+[Dulce y valiente]0000-0032
+[  Toroko]0013-0064
+[El líder del pueblo]0000-0032
+[  King]0014-0064
+[El segundo al mando]0000-0032
+[  Jack]0015-0064
+[Nunca para de comer]0000-0032
+[  Mahin]0016-0064
+[Le encanta pescar]0000-0032
+[  Kanpachi]0020-0064
+[Dirige la granja]0000-0032
+[  Sandaime]0019-0064
+-0063
+[- Villavergel -]0000-0064
+[Vive solo]0000-0032
+[  Santa]0017-0064
+[La Mimiga con color]0000-0032
+[  Chaco]0018-0064
+[ Robot vigilante]0000-0032
+[  Malco]0025-0064
+-0063
+[- Zona Desértica -]0000-0064
+[Aliada de los Mimigas]0000-0032
+[  Curly]0007-0064
+[Criados por Curly]0000-0032
+[  Los Colonos]0008-0064
+[Guardiana de la]0000-0016
+[Zona Desértica]0000-0016
+[  Jenka]0009-0064
+-0031
+[Cachorros de Jenka]0000-0032
+[  Hajime]0010-0032
+[  Shinobu]0010-0032
+[  Kakeru]0010-0032
+[  Mick]0010-0032
+[  Nene]0010-0064
+-0063
+[- Laberinto -]0000-0064
+[El armero del]0000-0016
+[ Laberinto]0000-0016
+[  Chaba]0027-0064
+[El médico del]0000-0016
+[ Laberinto]0000-0016
+[  Dr. Gero]0028-0064
+[¡Soy una enfermera!]0000-0032
+[  Enfermera Hasumi]0029-0064
+-0063
+[- Plantación -]0000-0064
+[La niña Mimiga]0000-0032
+[  Chie]0023-0064
+[El abuelo Mimiga]0000-0032
+[  Zett]0024-0064
+[Da y recibe aspersores]0000-0032
+[  Megane]0022-0064
+[Creen en el Doctor]0000-0016
+[  La Brigada del Cultivo]0021-0064
+-0063
+
+f2000:0090
+[- Villanos -]0000-0064
+[El traidor sediento]0000-0016
+[ de poder]0000-0016
+[  El Doctor]0006-0064
+[La sirvienta del Doctor]0000-0032
+[  Misery]0011-0064
+[Saco de boxeo de Misery]0000-0032
+[  Balrog]0012-0064
+-0063
+[- Etcétera -]0000-0064
+[El artesano ermitaño]0000-0032
+[  Tetsuzou Kamadani]0035-0064
+[El champiñón]0000-0016
+[ misterioso]0000-0016
+[  Ma Pignon]0045-0064
+[La familia que vive]0000-0016
+[ en el muro exterior]0000-0016
+[  Los Pequeños]0031-0064
+[Los misteriosos]0000-0016
+[ habitantes nativos]0000-0016
+[  Cthulhu]0032-0064
+[El tallista de estatuas]0000-0032
+[  Numahachi]0088-0064
+j0100
+
+l0090
+[- Villanos -]0000-0064
+[Consumido por la Corona]0000-0032
+[  El Doctor]0006-0064
+[Maldecida por la Corona]0000-0032
+[  Misery]0011-0064
+[Finalmente un amigo]0000-0032
+[  Balrog]0012-0064
+-0063
+[- Otros -]0000-0064
+[El artesano ermitaño]0000-0032
+[  Tetsuzou Kamadani]0035-0064
+[El champiñón que]0000-0016
+[ recupera memorias]0000-0016
+[  Ma Pignon]0045-0064
+[La familia que vive]0000-0016
+[ en el muro exterior]0000-0016
+[  Los Pequeños]0031-0064
+[Los misteriosos]0000-0016
+[ habitantes nativos]0000-0016
+[  Cthulhu]0032-0064
+[El tallista de estatuas]0000-0032
+[  Numahachi]0088-0064
+-0063
+[- Tierra Sagrada -]0000-0064
+[El desgraciado hermano]0000-0016
+[ pequeño de Jenka]0000-0016
+[  Ballos]0103-0064
+l0100
+-0100
+~
+-0250
+!0001
++0063
+[ = Monstruos = ]0000-0032
+-0063
+[ Salta y brinca: Críter]0039-0048
+[ Toda cueva necesita un: Murciélago]0040-0048
+[ Poseída por algo: La Puerta]0041-0048
+[ Embiste cuando se enfada: Behemoth]0048-0048
+[ Champiñón blanco: Pignon]0042-0048
+[ Un manjar: Pignon Gigante]0043-0048
+[ Sólo hay uno: Barbillapez]0038-0048
+[ Te rajará: Sepultero]0044-0048
+[ Destello friegasuelos: Basil]0049-0048
+[ Un insecto modelo: Escarabajo]0046-0048
+[ El gran volador: Basu]0047-0048
+[ El machacador: Críter Alfa]0050-0048
+[ Molde de fantasma: Mannan]0051-0048
+[ Rana enana: Puchi]0054-0048
+[ Croador grande: Rana]0055-0048
+[ Flota por ahí: Medusa]0052-0048
+[ Medusa Reina: Kulala]0053-0048
+[ Mimiga Violento: Rabil]0057-0048
+[ Muerte instantánea: Prensa]0056-0048
+[ Mordedor sigiloso: Crocorena]0061-0048
+[ Calavera deambulante: Caraleto]0063-0048
+[ Corredor desértico: Correleto]0065-0048
+[ Adversario blanco: Esqueletón]0062-0048
+[ Cazador alado: Cuervo]0064-0048
+[ Duro de pelar: Armadillo]0060-0048
+[ De uno, muchos: Pulidor]0059-0048
+[ Diminutos pero matones: Mini]0058-0048
+[ De Toroko Descontrolada: Pequeflor]0066-0048
+[ Habitante del Laberinto: Gaudi]0067-0048
+[ Guerrero del Laberinto: Armadura]0068-0048
+[ Bebé del Laberinto: Huevo de Gaudi]0069-0048
+[ Ventilador feroz: Bzz Ígneo]0071-0048
+[ Organismo desconocido: Base Buyobuyo]0073-0048
+[ Y: Buyobuyo]0072-0048
+[ Espíritu Gaudi: Pelusa]0074-0048
+[ Espíritu macizo: Núcleolusa]0075-0048
+[ Un viejo amigo: Pez Puercoespín]0076-0048
+[ Eclosión fallida: Dragón Zombi]0079-0048
+[ Cuenta atrás explosiva: Contrabomba]0078-0048
+[ Aparición felina: Espíritu Nocturno]0081-0048
+[ Salta: Brincador]0082-0048
+[ Guerrero fotosintético: Midorin]0085-0048
+[ Nacido de la tierra: Drol]0084-0048
+[ Plataforma viviente: Pecestola]0086-0048
+[ Madre murciélago: Timbranja]0083-0048
+[ Libélula de la Plantación: Toconcín]0087-0048
+
+f2000:0190j0200l0190
+-0002
+[ Mensajero del Infierno: Bute]0098-0048
+[ Mensajero del Infierno: Mesa]0099-0048
+[ Demonio inocente: Diablo Verde]0100-0048
+[ Rueda por los muros: Rodador]0094-0048
+[ Bloquea pasajes: Delit]0095-0048
+l0200
+-0100
++0064
+[ = Jefes = ]0000-0032
+-0063
+[Mimiga descontrolado]0000-0016
+[ que secuestró a Sue]0000-0016
+[  Igor]0091-0064
+[Misery transformó]0000-0016
+[ a Balrog en]0000-0016
+[  Balrana]0104-0064
+[Monstruo-máquina que]0000-0016
+[ acecha en la arena]0000-0016
+[  Omega]0105-0064
+[Afectada por las flores rojas]0000-0032
+[  Toroko +]0108-0064
+[Fantasma que invadió la]0000-0016
+[ clínica]0000-0016
+[  Espectro Negro]0030-0064
+[Gran jefe del Laberinto]0000-0032
+[  Monstruo X]0070-0064
+[Corazón de la isla]0000-0032
+[  Núcleo]0106-0064
+[Gran pez en la arteria]0000-0016
+[ de la isla]0000-0016
+[  Cabeza Férrea]0077-0064
+[Dragones gemelos que]0000-0016
+[ atacaron por sorpresa]0000-0016
+[  Hermanas]0080-0064
+[Los verdaderos héroes se enfrentan al]0000-0032
+[  Demonio Rojo]0089-0064
+[El cristal rojo se]0000-0016
+[ descontrola]0000-0016
+[  Doctor +]0109-0064
+[El malvado Doctor y el]0000-0016
+[ corazón de la isla]0000-0016
+[  Necronúcleo]0107-0064
+f2000:0290j0300l0290
+-0002
+[El robot encajado]0000-0032
+[  Prensa Pesada]0111-0064
+[Odio y locura en]0000-0016
+[ carne y hueso]0000-0016
+[  Ballos]0110-0128
+l0300
+-0080
++0040
+[ = BGM = ]0000-0032
+-0031
+[Access]0036-0032
+[Gestation]0036-0032
+[Mimiga Village]0036-0032
+[Plant]0036-0032
+[Balrog's Theme]0036-0032
+-0031
+[Gravity]0036-0032
+[Cemetery]0036-0032
+[Safety]0036-0032
+[Mischievous Robot]0036-0032
+[Pulse]0036-0032
+-0031
+[On to Grasstown]0036-0032
+[Eyes of Flame]0036-0032
+[Meltdown 2]0036-0032
+[Tyrant]0036-0032
+[Run!]0036-0032
+-0031
+[Jenka 1]0036-0032
+[Jenka 2]0036-0032
+[Labyrinth Fight]0036-0032
+[Geothermal]0036-0032
+[Oppression]0036-0032
+-0031
+[Living Waterway]0036-0032
+[Quiet]0036-0032
+[Scorching Back]0036-0032
+[Moonsong]0036-0032
+[Hero's End]0036-0032
+-0031
+[Cave Story]0036-0032
+[Last Cave]0036-0032
+[Balcony]0036-0032
+[Charge]0036-0032
+[Zombie]0036-0032
+-0031
+[Last Battle]0036-0032
+[Break Down]0036-0032
+[Running Hell]0036-0032
+[Seal Chamber]0036-0032
+[The Way Back Home]0036-0032
+-0100
++0040
+[= Agradecimientos Especiales =]0000-0032
++0048
+-0032
+[Torai      ]0037-0040
+[Naoku    ]0122-0040
+[Kuroihito]0119-0040
+[BA2       ]0033-0040
+[Okami      ]0120-0040
+[Nao       ]0117-0040
+[Shih Tzu  ]0123-0040
+[Gideon Zhi]0124-0040
+[Y muchos más]0000-0040
+-0063
+[Muchas gracias a todos.]0129-0032
+-0240
++0120
+[Cave Story ~ Fin]0000
+-0280
+/
+
+<<<
+2000ƒJ[ƒŠ[ƒGƒ“ƒfƒBƒ“ƒO

@@ -1,0 +1,102 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0002<TRA0056:0092:0024:0082
+
+#0200
+<KEY
+<FLJ1020:0201
+<EVE0299
+
+#0201
+<KEY
+<FLJ1121:0203
+<ITJ0028:0202
+<MSGDas sind unsere Rasensprenger.<NOD
+Die gehen eben andauernd kaputt,
+darum müssen wir auch andauernd
+neue bereit halten.<NOD<END
+
+#0202
+<KEY<MSG<FL+1121Was denn, schon wieder einer...?<NOD<CLR<GIT1028<IT-0028Du gibst ihm den =Defekten
+Rasensprenger=.<NOD<GIT0000
+<KEY<MSGJetzt seid aber mal bitte
+vorsichtig damit, okay?<NOD<DNP0280<GIT1029<IT+0029<CLR<CMU0010Du hast den =Rasensprenger=
+bekommen.<WAI0160<NOD<RMU<END
+
+#0203
+<KEY<MSGIch hab gehört, dass sie gerade
+die letzten Samen streuen!<NOD
+Scheint so als hatten wir genug
+Rasensprenger...<NOD<END
+
+
+#0210
+<KEY
+<FLJ1033:0212
+<FLJ1020:0211
+<EVE0299
+
+#0211
+<MSGEs stimmt wirklich, dass
+uns früher mal Roboter von
+der Erde attackiert haben.<NOD
+Und auch, wie viele die
+von uns ermordet haben...<NOD
+Doch ein paar wenige von ihnen
+waren sogar vernünftig
+und haben uns verstanden.<NOD
+Ich glaube sogar,
+dass sie eine Seele hatten...<NOD<END
+
+#0212
+<MSGDieser verfluchte Doktor!<NOD<CLREinfach so ein hilfloses Mädchen
+zu verschleppen!<NOD
+Wär ich doch nur ein bisschen
+jünger...<NOD
+Aber ach...<NOD<END
+
+#0220
+<KEY<FLJ1020:0221
+<EVE0299
+#0221
+<MSGDiesem Doktor glaub ich kein
+Sterbenswörtchen!<NOD<CLRRoboter? Ja klar, ihr mich auch!<NOD
+Soll ich jetzt Schiss haben,
+oder was?<NOD<END
+
+#0230
+<KEY<FLJ1020:0231
+<EVE0299
+#0231
+<MSGIch kann nicht mehr...<NOD<END
+
+#0250
+<KEY<MYB0000<MSGOha...<NOD<CLRDich kenn ich doch irgendwoher...<NOD
+Damals im Mimiga-Dorf.<NOD
+Mich hat so eine "Misere"
+geschnappt und hierher gezerrt.<NOD
+Aber Gartenarbeit is' echt
+nicht mein Ding.<NOD<CLRDabei wollt ich doch zur
+Abwechslung mal Angeln gehen...<NOD<CLRMagst du Angeln?<NOD<CLRNa, dann bis später.<NOD
+Vielleicht sieht man sich mal
+wieder.<NOD<CLO
+<ANP0250:0010:0002<WAI0030<MYD0002<WAI0080
+<ANP0250:0000:0002<WAI0020
+<ANP0250:0020:0002<ANP0100:0000:0002<SOU0011<WAI0020
+<DNP0250<ANP0100:0000:0000<SOU0011<FL+1120<FL+1021<END
+
+
+#0280
+#0299
+<PRI<MSG...<NOD<END

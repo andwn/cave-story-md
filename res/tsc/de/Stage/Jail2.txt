@@ -1,0 +1,58 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0002<DNP0301<SMC<END
+
+#0100
+<KEY<FAO0002<TRA0056:0092:0008:0049
+
+#0200
+<KEY<MSGDas Ziel ist nicht bekannt.<NOD
+Trotzdem teleportieren?<YNJ0000<CLO<FL+0524
+<CNP0300:0111:0000<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0018:0099:0015:0010
+
+
+#0400
+<PRI<MSGHe! Was bist du?!
+Ein Killer Roboter?!<NOD<CLRBist du hier um uns abzumurksen?!<NOD<END
+
+#0401
+<PRI<MSGIch will hier raaaus!<NOD<END
+
+#0402
+<PRI<MSGDer Doktor Arschbacke kann
+mich mal am Abend besuchen!<NOD<END
+
+#0403
+<PRI<MSGDie Mimigas da draußen auf der
+Plantage werden belogen
+und betrogen!<NOD<CLRDer Doktor will uns alle gegen
+die Roboter antreten lassen!<NOD<END
+
+#0404
+<PRI<MSGKennst du eine "Sakamoto",
+oder so ähnlich?<NOD
+Die hat anscheinend irgendwo hier
+auf der Plantage ihr Versteck...<NOD<END
+
+#0405
+<PRI<MSGAnscheinend gabs hier früher
+auch mal Menschen, aber ich
+hab noch nie welche gesehen...<NOD
+Vielleicht sind die ja alle
+entwischt.<NOD<END

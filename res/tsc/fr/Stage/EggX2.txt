@@ -1,0 +1,106 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0049:0094:0290:0008
+
+#0110
+<KEY<FLJ0940:0111<MSGTu sens un vent froid
+souffler...<NOD<END
+#0111
+<KEY<FAO0002<TRA0053:0092:0004:0165
+
+#0110
+
+#0400
+
+#0500
+<KEY<MSGDes mots sont à l'écran.<NOD<CLR
+<TURŒUF ÉCLOS AVEC SUCCÈS<NOD<FLJ0941:0000<CLO
+<FL+0941
+<WAI0020<CMU0000<MSGQui est là ?<MYD0002<NOD<CLO
+<WAI0050<CNP0400:0055:0000
+<WAI0010<ANP0400:0003:0000
+<WAI0048<ANP0400:0000:0000
+<CMU0014<MSG<FAC0010Oh, c'est toi.<NOD<CLRContent de voir
+que tu vas bien.<NOD
+Je suis tout seul, ici.<NOD<CLRQuand tu as quitté 
+la Zone des Sables,<NOD
+Nous avions décidé 
+de trouver une autre
+cachette.<NOD<CLRC'est alors que Misery
+s'est montrée.<NOD
+Elle a emmené Sue,<NOD
+et je n'ai pas vu
+le professeur...<NOD<CLR.....<NOD<CLRJ'en déduis que le
+Docteur a mis les
+mains sur les graines.<NOD<CLROh,<NOD non, non, ce n'est
+pas ta faute...<NOD<ANP0400:0000:0002
+La victoire du Docteur
+était assurée dès
+l'instant où il a mis
+les griffes sur
+la Couronne.<NOD<CLRCe n'est plus qu'une
+question de temps avant
+que l'armée de Mimigas 
+soit prête...<NOD<CLRAprès ça, je crains que
+même toi ne puisse
+l'arrêter.<NOD<CLO<FAC0000
+<WAI0010<ANP0400:0003:0002
+<WAI0016<ANP0400:0000:0002
+<MSG<FAC0010On n'a pas le choix,
+il faut fuir...<NOD<CLRJ'ai pensé qu'on
+pourrait le faire si
+on a un Dragon.<NOD
+...C'est pour ça que
+je suis là.<NOD<CLREt maintenant, le dragon
+est né.<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000<WAI0100
+<MSG<FAC0010Tu veux fuir
+avec moi ?<YNJ0501<FL+0960<CLR<ANP0400:0000:0002Oui, on a plus
+d'autres moyens.<NOD
+On a fait ce qu'on a pu.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+
+
+#0501
+<KEY<WAI0020<ANP0400:0000:0002
+<MSG<FAC0010Je comprends...<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000
+<WAI0010<ANP0400:0005:0000
+<MSG<FAC0010Tu sais,<NOD il existe un
+autre moyen de rendre
+les Mimigas normaux
+à nouveau.<NOD<CLRIl faudrait détruire
+le coeur de l'île.<NOD
+Si tu fais ça, cependant,
+l'île s'écroulerait.<NOD
+Un choix dangereux, non ?<NOD<WAI0050<ANP0400:0000:0000<CLRQuoi qu'il en soit, nous
+ne savons même pas
+où est ce coeur...<NOD<CLRSi tu veux tenter
+ta chance, je t'attendrai.<NOD<CLRMais souviens-toi, si
+la situation empire,<NOD
+Il faudra vraiment que je
+parte sans toi...<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+<END
+
+#0502
+

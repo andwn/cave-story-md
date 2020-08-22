@@ -1,0 +1,207 @@
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+#0200
+<KEY
+<ITJ0014:0201
+<FLJ0594:0214
+<FLJ0593:0213
+<FLJ0592:0212
+<FLJ0591:0211
+<FLJ0590:0210
+<KEY<MSG<FAC0013Wer bisch denn du...?<NOD
+Disch heb isch noch nie
+gsehn.<NOD<END
+
+#0201
+<IT-0014
+<FLJ0594:0224
+<FLJ0593:0223
+<FLJ0592:0222
+<FLJ0591:0221
+<FLJ0590:0220
+<KEY<MSG<FAC0013Ja mei!<NOD<CLR<GIT1014Des isch ja mei liebs
+Hündle!<NOD<CLR<GIT0000<FAC0000Du gibst ihr das =Hündchen=.<NOD<CLR<CNP0300:0130:0000<DNP0401<FL-0274<FAC0013Du hebsch ihn mir zrück
+bracht, gell?<NOD
+Ja, viele liebe Dank.<NOD<CLRWos?<NOD
+=Rote Blümle=?<NOD<FAC0000<CLR<CMU0000<MSGKa-BLAMMO!<NOD<CLO
+<CNP0400:0009:0000<WAI0010<MYD0002<CNP0300:0132:0002<ANP0300:0100:0002<WAI0120<CMU0011
+<CNP0400:0012:0000
+<MSG<FAC0005Naa, Oma Jenka?
+Geht's gut?<NOD<CLR<FAC0013Ahh, wer kummt denn da
+reigschneit?
+Der Balrog.<NOD<CLR<ANP0300:0120:0002Und du?
+Auch gsund und munter?<NOD
+Und wie gehts dem
+depperten Mädel, das sich
+mei Tochter schimpft?<NOD<CLR<FAC0014Höhöhö!<NOD Deppert?
+Du meinst doch
+die Misery, oder?<NOD
+Och, der gehts gut.<NOD<CLRWir haben jetzt 'nen
+neuen Meister, weißu.<NOD
+Und dieses mal gehört
+die Erde uns!<NOD<CLR<FAC0013Ja so ebbis.<NOD Ihr wollt
+doch nit edwe schon
+wieder...<NOD<CLR<FAC0005Schon gut, ich will
+dich dir doch gar kein
+Ärger machen...<NOD
+Ich brauch nur den
+Schlüssel zum Lagerhaus
+von dir.<NOD<CLRDa wo du die roten Blumen
+lagerst!<NOD<CLR<FAC0013.....<NOD<CLRJa meiomei...<NOD
+Isch heb kei Ahnig
+was du da redsch.<NOD<CLR<ANP0400:0030:0000<FAC0014Hah!<NOD<CLRWillst du mich jetzt
+für blöd verkaufen?!<NOD<CLR<FAC0005.....<NOD<CLROkay, hab's kapiert.<NOD
+Du willst uns also
+verraten, oder?<NOD<CLO<CMU0000
+<WAI0050<FAC0005<MSGNa, das bereust du noch.<NOD<CLO
+<FAC0000<ANP0400:0010:0000<WAI0200<CMU0019
+<MSG<FAC0013<CNP0300:0130:0000En neue Meischter...<NOD<CLRImmer des selbe mit dene
+depperte Bleedhammel.<NOD<MYD0200<CLR.....<NOD<CLRDu hörsch?<NOD
+Es gibt noch vier annere
+Hündsche...<NOD<CLRUnd mei Hüft isch auch
+nimmer das wos sie mal
+war.<NOD<CLRWärsch ned en lieber Bub
+und bringsch der oiden
+Oma ihre Hündsche zrück?<NOD<CLRDes wär ganz lieb vo dir.<NOD<FL+0590<END
+
+#0210
+<KEY<MSG<FAC0013Es fehlet noch vier...<NOD
+Wärsch ned en lieber Bub
+und bringsch der oiden
+Oma ihre Hündsche zrück?<NOD<END
+
+#0211
+<KEY<MSG<FAC0013Noch droi fehlet.<NOD
+Des schaffscht du.<NOD<END
+
+#0212
+<KEY<MSG<FAC0013Isch glaub mei Hündsche
+fanget a disch z'möge.<NOD<CLRJetzt noch zwoi...<NOD<END
+
+#0213
+<KEY<MSG<FAC0013Nur noch oins...<NOD
+Isch hoff doch nur,
+du schlägsch dir die rote
+Blümle aus dem Kopf.<NOD<END
+
+
+#0220
+<KEY<MSG<FAC0013Jessas, du bisch aber
+en fixer Bub.<NOD<CLR<GIT1014Ganz sicher, des isch
+einer vo meine Hündsche.<NOD<CLR<GIT0000<CNP0301:0130:0000<DNP0401<FAC0000Du gibst ihr das =Hündchen=.<NOD<CLR<FL-0274<FAC0013Hmmm...<NOD
+Du bisch en Soldat von
+der Oberwelt, oder?<NOD<CLR.....<NOD<CLRVor es paar Jahre nemmlig<NOD
+sind ganz viele Roboter
+wie du auf unsere Insel
+komme.<NOD
+Sie hebbe unzähle Mimiga
+gejagt und ermordet.<NOD
+Und auch die Mensche,
+die sie beschütze wollte.<NOD<CLRVerzweifelt und ohne
+Ausweg hebbe die Mimiga
+ihr Tabu broche,<NOD
+die rote Blumen gfresse,
+und sich in Monster
+verwandelt.<NOD
+In ihrer Tobsucht hebbet
+sie alle Roboter zunichte
+gmacht.<NOD<CLROhne die rote Blume,<NOD
+wäret die Mimiga von der
+Insel jetzt elle
+ausgrottet...<NOD<CLRJetzt fehlet noch droi.<NOD
+Viel Glück.<NOD<FL+0591<END
+
+#0221
+<KEY<MSG<FAC0013Oooh.<NOD<CLR<GIT1014Ja pfeilgraad.<NOD
+Des isch unbedingt eins
+vo meine Hündsche.<NOD<CLR
+<GIT0000<CNP0302:0130:0000<DNP0401<FAC0000Du gibst ihr das =Hündchen=.<NOD<CLR<FL-0274<FAC0013Isch heb zu danke.
+Jetzt sinds scho drei...<NOD<CLR.....<NOD<CLRSaaschemal, hebsch du
+scho mal en tollwütige
+Mimiga gsehn?<NOD<CLRDie verzweifelte
+Mimiga hebbet glaubt,<NOD
+dass ihne die rote Blümle
+Kraft schenket.<NOD
+So hebbet viele davon die
+Blume gfresse, und die
+Roboter bekämpft.<NOD<CLR
+Aber...<NOD<CLRWas glaubsch du was mit
+de Mimiga hinterher
+passiert isch?<NOD<CLR.....<NOD<CLRDie Gschicht isch eifach
+nur schrecklich...<NOD
+Die tollwütige Mimiga,
+ohne Kontrolle über sich
+selbscht<NOD
+sind anscheinend elle
+ohne Spur verschwunde.<NOD
+Me munkelt so,
+dass sie elle zur Erde
+runtergstiege sind,<NOD
+da wo die Mensche
+wohne.<NOD<CLRKennsch du dir des
+vorstelle?<NOD
+En ganze Armee vo wilde
+Mimiga, die frei auf der
+Erde ihr Unwese treibe...?<NOD
+Wenn des wahr isch...<NOD<CLRJedefalls,<NOD
+du begreifsch, wie
+gefährlich die rote Blume
+sind, gell?<NOD<CLR.....<NOD<CLRJetzt fehlet noch zwoi...<NOD<FL+0592<END
+
+#0222
+<KEY<MSG<FAC0013Mei,
+die wolle ja gar nimmer
+weg wo dir.<NOD
+Und mei Hündsche hebbet
+auch es guets Näsle für
+anständige Leut, weisch?<NOD<CLR<GIT1014Viele Dank dir...<NOD<CLR<GIT0000<FAC0000Du gibst ihr das =Hündchen=.<NOD<CLR<CNP0303:0130:0000<DNP0401<FL-0274<FAC0013...<NOD<CLRDisch interessiert also
+der Schlödel zu die
+Lagerhaus, gell?<NOD
+Dert wo die Samekörnle für
+die rote Blümle
+uffbewahrt sind...<NOD<CLREs kenn mir vellich egal
+sein wer du bisch,<NOD aber
+den Schlödel bekummsch
+du ned.<NOD
+Immer wenn des Lagerhaus
+aufgeht, passiert nur
+Unglück...<NOD<CLROis, zwoi, droi...<NOD<CLRNur noch oins übrig.<NOD<FL+0593<END
+
+#0300
+<FLJ0590:0310<END
+#0301
+<FLJ0591:0311<END
+#0302
+<FLJ0592:0312<END
+#0303
+<FLJ0593:0313<END
+#0304
+<FLJ0594:0314<END
+
+#0310
+<KEY<MSGRaff!<NOD<END
+#0311
+<KEY<MSGRaff, raff!<NOD<END
+#0312
+<KEY<MSGWraff raff raff!<NOD<END
+#0313
+<KEY<MSGWiermm~.<NOD<END
+#0314
+<KEY<MSGFrümpf!<NOD<END
+
+
+#0400
+#0401

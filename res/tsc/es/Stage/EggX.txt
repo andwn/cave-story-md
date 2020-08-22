@@ -1,0 +1,97 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSG¿Quieres guardar?<YNJ0000<SVP<CLRPartida guardada.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergía restaurada.<NOD<END
+
+
+#0110
+<KEY<MSGSientes el soplido de un viento
+gélido...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Ergh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGOwww...<NOD<ANP0200:0011:0002<CLR<FAC0003¡Woh-oh!
+¡Eh, que aún no estoy
+muerta!<NOD
+¡¡Esta vez te vas a
+enterar!!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001¿Huh?<WAI0050<NOD
+Ese monstruo me dio una
+buena paliza...<ANP0200:0000:0000<NOD<CLR.....<NOD
+¿Me has salvado tú?<YNJ0202<EVE0201
+#0201
+<FAC0003¡¡No necesito tu ayuda!!<NOD<CLR¡Puedo apañármelas yo sola!<NOD
+Grr... ¡Odio esta apestosa
+isla, y odio toda cosa
+viviente en ella!<NOD<FAC0000<CLO<EVE0203
+#0202
+<FAC0002Hmph...<NOD<CLRBueno, da igual.<NOD<FAC0000<CLO<EVE0203
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001¡Oh!<NOD<MYD0003<CLR¡Mira! Es... ¡Creo que
+es el número 00!<NOD<CLR¡Este huevo podría ser
+nuestro billete de salida
+de esta isla!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Condiciones del huevo:
+¡Normal!
+¡Eso es lo que quería oír!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002¿Hm?<NOD ¿Una contraseña?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Parece que necesitas una
+contraseña para eclosionar
+este huevo.<NOD<CLR<FAC0002Bueno, lo tenemos crudo.<NOD<CLRSi al menos mi hermano
+estuviera aquí, todo
+iría mejor.<NOD<CLR.....<NOD<CLR<FAC0001Está bien, parece que
+no tengo nada más que
+hacer aquí.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSG¿Eres<MYD0000 de por aquí?<NOD<CLRLa verdad es que no lo
+parece.<NOD
+Las palabras de tu gorra...<NOD
+No se parece a ningún
+idioma de esta isla.<NOD<CLR
+¿...Te has perdido?<NOD<CLREstá bien.<NOD
+Te dejaré venir conmigo.<NOD
+Podemos largarnos de este
+vertedero juntos.<NOD
+A cambio, me vas a ayudar.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TURHuevo de Dragón Celeste No. 00
+Preparaciones para la eclosión completadas.<NOD<CLR
+Introduzca la contraseña:<NOD<END
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400
+

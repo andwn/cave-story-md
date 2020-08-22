@@ -1,0 +1,109 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURWords light up the screen.<NOD<CLR
+04-08-08 Wife bore child.<NOD<END
+
+#0201
+<KEY<MSGWords light up the screen.<NOD<CLR
+<TURWhy don't you take a rest?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGWords light up the screen.<NOD<CLR<TURYou know, I often recorded what
+I learned in that notebook...<NOD<END
+
+#0203
+<KEY<MSGWords light up the screen.<NOD<CLR
+<TURI pray for your victory.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGYou find nothing of interest...<NOD<END
+#0221
+<KEY<MSGThere's a notebook, covered
+in dust...<NOD<FLJ1441:0223<FLJ1445:0222<END
+#0222
+<KEY<MSG
+Do you want to open the notebook?<YNJ0000<FL+1441<CLR<TURSurface-developed robots have
+limitations on their operation
+underwater.<NOD<CLRIf they are submerged for too long
+a period,<NOD<CLRtheir system automatically shuts
+down to avoid short-circuiting.<NOD<CLRThe following is a description of
+the proper method of caring for a
+flooded robot.<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Learned how to treat flooded
+robots!<WAI0160<NOD<RMU<CLR<TURWhen the robot has been dried via
+the aforementioned procedures,<NOD<CLRthe system will automatically
+begin the rebooting process.<WAI0030<NOD<END
+#0223
+<KEY<MSGNothing else here appears
+especially useful...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+#0251
+<KEY<MSG
+Do you want to rest?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR
+.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+#0252
+<KEY<MSGShe isn't moving, but it looks
+like she's still alive.<NOD<END
+#0253
+<KEY<MSGDo you want to drain the water
+from Curly?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Ooohh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019You're alive!<NOD<CLROh, I'm so glad...<NOD<CLR<FAC0025I didn't think we were
+going to make it.<NOD
+Once you fell unconscious,
+I couldn't think of any
+other way...<NOD<CLRLooks like my air tank
+worked just like I'd
+hoped.<NOD<CLR
+<FAC0020Ah...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGShe fell sound asleep.<NOD
+<END
+#0254
+<KEY<MSGIt appears that it takes some
+time to reboot.<NOD<FL+1443<END
+#0255
+<KEY<MSG
+Do you want to leave her here?<YNJ0256<END
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+#0257
+<KEY<MSGThe bed's sopping wet.<NOD<END
+
+#0260
+

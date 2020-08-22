@@ -1,0 +1,173 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FLJ0761:0095<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<ANP0300:0020:0000<FAI0002<END
+
+
+#0100
+<KEY<FLJ0763:0101
+<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000<TRA0043:0090:0016:0013
+#0101
+<PRI<MSGNão abre!<NOD<END
+
+#0110
+<FLJ0764:0111<END
+#0111
+<KEY<FAO0004<MYD0002<TRA0045:0092:0002:0005
+
+
+
+#0200
+<PRI<FLJ0201:0201<MSGFoi-lhe colocada um feitiço.
+Não abre...<NOD<END
+#0201
+<FLJ0766:0001<FL+0766<FL-0765<FL+0202
+<SOU0022<CNP0200:0021:0000
+<MSGAbriste a arca do tesouro.<NOD<CLR<TAM0005:0010:0000<CMU0010<GIT0010Os teus mísseis foram melhorados!<WAI0160<NOD<RMU<END
+
+#0300
+<KEY
+<FLJ0764:0303
+<FLJ0762:0302
+<FLJ0761:0301
+<FL+0761<MSG<FAC0019Aha!<NOD
+Já estava a pensar
+em quando é que aparecias.<NOD<CLRSe conseguirmos tirar
+este calhau do caminho,
+podemos chegar à saída.<NOD<CLRPorém, há rumores de que
+há um ninho de monstros
+do outro lado...<NOD
+Portanto é bom que 'tejas
+pronto para isso.<NOD<CLRBom, vamos tirar isto
+do caminho.
+Segura nesse lado.<NOD<CLO
+<ANP0300:0020:0000<END
+#0301
+<KEY<ANP0300:0000:0000
+<MSG<FAC0019Que foi?<NOD
+Não estás com medo,
+pois não?<NOD<CLRDuvido.<NOD
+Vai lá, segura nesse lado.<NOD<ANP0300:0020:0000<END
+#0302
+<PRI<MSGEla está inconsciente.<NOD<END
+#0303
+<PRI<MSG<FAC0019Vamos!<NOD<CLRTemos um ninho
+inteiro de monstros
+à nossa espera!!<NOD<END
+
+
+#0310
+<KEY<CNP0310:0012:0004:<ANP0310:0080:0005<SMC
+<CMU0015<MSGDerrotaste o Balrog!<WAI0140<NOD<CLO<FAC0000
+<CMU0008<FAO0004<MYD0002<TRA0044:0600:0009:0014
+<END
+
+#0320
+<KEY
+<FLJ0762:0322
+<FLJ0761:0321<EVE0500
+#0321
+<KEY
+<MNP0320:0000:0000:0000
+<MYD0002<MYD0003
+<MSG<FAC0019Estás pronto? Empurra!<NOD<CLO<FAC0000
+<ANP0300:0020:0000<WAI0050<MSGRRRRGH!<NOD<CLO<FAC0000
+<CNP0510:0334:0000
+<CNP0511:0334:0002<WAI0100
+<MSG<FAC0020.....<NOD<CLO<FAC0000
+<ANP0300:0000:0000<WAI0050<MYD0002
+<MSG<FAC0025Não se mexeu nem um bocado.<NOD
+Acho que nós os dois não
+temos força suficiente...<NOD<FAC0000<CLO
+<WAI0050
+<MSGHuzzah!<CMU0000<NOD<CLO
+<CNP0310:0009:0002<WAI0100
+<CNP0310:0012:0002
+<ANP0310:0030:0002<CMU0011
+<MYD0000
+<MSG<FAC0019Tu!<NOD<CLR<FAC0014Hohoho!<NOD<CLRVejo que estão vivos!<NOD<CLRE não só, vocês
+estão a tentar sair
+deste Labirinto!<NOD<CLRNão deviam de ficar quietos
+como bons robots?<NOD<CLRSabem que não podem
+desafiar o mestre mais do
+que o que eu posso.<NOD<CLROk, então!<NOD
+Eu farei com
+que isso acabe!<NOD<CLREspero que não se importem
+de ser sucatas de ferro!<NOD<CLR<FAC0019Era mesmo
+quem precisavamos!<NOD
+Agarra no meio, sim?<NOD<FAC0000<CLO<CMU0000
+<WAI0100
+<ANP0310:0060:0002<WAI0048
+<ANP0310:0050:0002<WAI0020
+<ANP0300:0020:0000<WAI0020
+<MYD0002<MYD0003<MSG<FAC0019Prontos?
+Um, dois...<NOD<ANP0310:0080:0000<MYB0002<ANP0300:0030:0000<SOU0072<CLR<FAC0023VOCÊS ESTAVAM A OUVIR
+O QUE EU DISSE?!<NOD
+<ANP0310:0000:0000<CMU0004<CNP0310:0169:0000<BSL0310
+<FL+0762<FL+0763
+<END
+#0322
+<PRI<END
+
+#0330
+
+
+
+#0500
+<KEY
+<FLJ0762:0502
+<FLJ0761:0501
+<MSGÉ um calhau enorme e pesado.<NOD
+Sentes um vento a
+soprar detrás dele.<NOD
+Porém, parece que são precisas
+pelo menos duas pessoas para
+o empurrar.<NOD<END
+#0501
+<KEY<WAI0010
+<ANP0300:0000:0000
+<MSG<FAC0020Podias segurar
+mais na outra ponta?<NOD<CLO
+<ANP0300:0020:0000<END
+#0502
+<PRI<MSGÉ um calhau enorme e pesado.<NOD<END
+
+#0510
+#0511
+
+
+#0600
+<KEY<FL-0763<FL+0764<FL-0760
+<SMC<CMU0008<CNP0330:0012:0002<ANP0300:0000:0002
+<MNP0320:0000:0000:0000
+<FAI0004
+<MSG<FAC0005Venceste...<NOD<CLREu tiro-vos a pedra.<NOD
+Mas lembrem-se...<NOD<ANP0330:0000:0000<CLRNão contem a NINGUÉM
+que eu vos ajudei.<NOD<CLR<FAC0019O teu segredo está a salvo
+connosco!<NOD<FAC0000<CLO
+<ANP0330:0060:0000<WAI0040
+<ANP0330:0050:0002<WAI0020
+<MYD0003<ANP0300:0020:0000
+<MSG<FAC0019Prontos? Empurrem!<NOD<CLO<FAC0000
+<ANP0500:0010:0000<WAI0100
+<ANP0330:0080:0002
+<ANP0300:0000:0002
+<ANP0500:0020:0000<MYD0002<MSG<FAC0023Gaaaahhhh!!!<WAI0050<CLO<FAC0000
+<ANP0330:0000:0002
+<WAI0100<MSG<FAC0005Agora, lembrem-se.<ANP0300:0000:0000<NOD
+Não digam a uma única
+alma que eu vos ajudei.<NOD<CLR<FAC0019Não diremos!<NOD<CLO<FAC0000<ANP0330:0010:0000
+<WAI0160<CNP0200:0015:0002<WAI0040
+<MSG<FAC0019Eu acho que ele
+não é assim tão mau.<NOD<CLO
+<FL+0781<FL+0765<CNP0016:0016:0002<END

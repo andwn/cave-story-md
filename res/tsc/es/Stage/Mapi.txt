@@ -1,0 +1,83 @@
+
+#0090
+<MNA<CMU0000<FAI0000<END
+#0091
+<MNA<CMU0000<FAI0001<END
+#0092
+<MNA<CMU0000<FAI0002<END
+#0093
+<MNA<CMU0000<FAI0003<END
+#0094
+<MNA<CMU0000<FAI0004<END
+
+
+
+<FLJ1563:0101
+
+#0100
+<KEY<FLJ1564:0101<SOU0011<ANP0100:0000:0002
+<FAO0004<TRA0016:0094:0032:0002
+#0101
+<PRI<MSGIt won't open!<NOD<END
+
+
+#0400
+<KEY<MYB0002<WAI0020
+<FLJ1563:0420
+<FLJ1562:0411
+<FLJ1561:0403<MSG¿Tienes algún asunto conmigo?<YNJ0401<FLJ1044:0402<CLR¡Ja!<NOD
+Permíteme dudarlo.<NOD<END
+
+#0401
+<KEY<MSGJe-je-je. Adiós, pues.<NOD<END
+
+#0402
+<KEY<FL+1561<MSG¿Hm?<NOD ¿Amnesia?<NOD
+Qué interesante, sí....<NOD<EVE0403
+#0403
+<KEY<MSGBueno, está bien. ¿Quieres que te
+dé la Medalla Champiñón?<YNJ0408<EVE0404<END
+
+#0404
+<KEY<MSGPero en realidad no la quieres,
+¿verdad?<YNJ0405<EVE0408
+#0405
+<KEY<MSG¿De verdad que la deseas tanto?<YNJ0409<EVE0406
+#0406
+<KEY<MSG¿Estás completamente seguro de
+que la quieres?<YNJ0409<EVE0407
+#0407
+<KEY<MSGPero en realidad no la quieres,
+¿verdad?<YNJ0410<EVE0409
+
+#0408
+<KEY<MSG¿De verdad? Vale.<NOD<END
+#0409
+<KEY<MSGDe todas formas, quién la
+necesita...<NOD<END
+
+#0410
+<KEY<MSGDe acuerdo, ¡aquí tienes!<NOD<CLR<GIT1033<IT+0033<FL+1562<CLR
+<CMU0010Conseguiste la =Medalla Champiñón=.<WAI0160<NOD<RMU<END
+
+#0411
+<KEY<MSGBzzzzzt.<NOD<END
+
+#0420
+<KEY<MSG¡Wajajaja!<NOD
+Te has dado cuenta, ¿eh?<NOD<CLR¡No es más que una estúpida
+medalla!<NOD<CLR.....<NOD<CLR¿Qué?<NOD
+¡¿Quieres comerme?!<NOD<CLR¡Te interesará saber que soy un
+valioso, pero que muy valioso
+champiñón como ningún otro!<NOD<CLR¡Grrrrrr!<NOD
+¡No te dejaré que me comas!<NOD<CLR<CMU0004¡¡Muere!!<NOD<CLO<FL+1564
+<CNP0500:0313:0000<WAI0002
+<ANP0500:0100:0000<DNP0400
+<BSL0500<END
+
+
+#0500
+<KEY<CMU0000<ANP0500:0500:0005<WAI0150
+<MSGTú ganas......<NOD<CLR<GIT1034<IT+0034<FL-1564<CLR<DNP0500
+<CMU0010¡Conseguiste el =Ma Pignon=!<WAI0160<NOD<RMU<END
+

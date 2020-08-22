@@ -3,9 +3,10 @@
 #include "vdp.h"
 #include "xgm.h"
 #include "resources.h"
+#include "bank_data.h"
 
-const uint32_t TILE_BLANK[8] = {};
-const uint16_t BLANK_DATA[0x80] = {};
+extern const uint32_t TILE_BLANK[8];
+extern const uint16_t BLANK_DATA[0x80];
 const uint16_t PAL_FadeOut[64] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0xEEE,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -314,7 +315,16 @@ void vdp_sprites_update() {
 
 void vdp_font_load(const uint32_t *tiles) {
 	font_pal = 0;
-	vdp_tiles_load(tiles, TILE_FONTINDEX, 0x60);
+	// ASCII 32-127
+	vdp_tiles_load_from_rom(tiles, TILE_FONTINDEX, 0x60);
+	// Extended charset
+    const uint32_t *ext = tiles + (0x60 << 3);
+	uint16_t index = (VDP_PLAN_W >> 5) + 3;
+	for(uint16_t i = 0; i < 30; i++) {
+	    vdp_tiles_load(ext, index, 1);
+	    index += 4;
+	    ext += 8;
+	}
 }
 
 void vdp_font_pal(uint16_t pal) {

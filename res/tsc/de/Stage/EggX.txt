@@ -1,0 +1,113 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGMöchtest du speichern?<YNJ0000<SVP<CLRSpiel gespeichert.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGHP aufgeladen.<NOD<END
+
+
+#0110
+<KEY<MSGEin kalter Wind bläst
+hier durch...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...uugh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGAuaaa...<NOD<ANP0200:0011:0002<CLR<FAC0003Hey, WOAH!
+Ich bin noch lang nicht
+fertig hier!<NOD
+Jetzt bist du dran,
+und zwar ECHT!!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Hä...?<WAI0050<NOD
+Ach, das Monster hat mich
+glaub voll erwischt...<ANP0200:0000:0000<NOD<CLR.....<NOD
+Hast du mich gerettet?<YNJ0202<EVE0201
+
+#0201
+<FAC0003Pah, auf dich kann ich
+verzichten!<NOD<CLRDen hätte ich doch ganz
+allein schlagen können,
+und zwar dreimal!!<NOD
+Verflucht nochmal!!
+Ich HASSE diese
+Scheiß-Insel!<NOD
+Ich HASSE SIE, und
+ALLES WAS AUF IHR LEBT!!<NOD<FAC0000<CLO<EVE0203
+
+#0202
+<FAC0002Hmmn...<NOD<CLRNaja, mir auch egal.<NOD<FAC0000<CLO<EVE0203
+
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Ah!<NOD<MYD0003<CLR
+Schau doch mal!<NOD
+Ist das etwa...
+Ei Nummer 00?!<NOD<CLRDieses Ei könnte
+unsere Freifahrt hier raus
+sein!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Kondition: Stabil!<NOD
+Na super!
+Endlich mal tolle
+Neuigkeiten!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hm?<NOD Ein Passwort?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Ach, Mist.<NOD
+Damit dieses Ei schlüpfen
+kann, brauchen wir wohl
+erst ein Passwort.<NOD<CLR<FAC0002Hach, na toll.<NOD<CLRWenn jetzt mein großer
+Bruder da wäre, der wüsste
+was zu machen ist...<NOD<CLR.....<NOD<CLR<FAC0001Tja,
+dann sind wir wohl fertig
+hier, für's erste.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGSag mal, du...<MYD0000<NOD
+Bist du ein Mensch von
+dieser Insel?<NOD<CLRWohl eher weniger, oder?<NOD<CLRDie Buchstaben da auf
+deiner Kappe sind in 'ner
+Sprache,<NOD die's hier
+auf der Insel gar
+nicht gibt.<NOD<CLR...
+Hast du dich verlaufen,
+oder so?<NOD<CLRNa, schon gut.<NOD
+Du darfst mit mir
+mitkommen, wenn du willst.<NOD
+Dann hauen wir zusammen ab
+von dieser Müll-Insel.<NOD
+Aber dafür musst du mir
+helfen, okay?<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TURDrachen-Ei Nr. 00
+Bereit zur Inkubation.<NOD<CLRBitte Passwort eingeben:<NOD<END
+
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400

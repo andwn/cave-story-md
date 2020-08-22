@@ -1,0 +1,325 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0095<CMU0002<FAI0004<END
+
+#0095
+<CMU0014<FAI0004<END
+
+
+#0098
+<CMU0014
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+#0099
+<KEY<MNA<FLJ0341:0098<CMU0002
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+
+#0100
+<PRI<FAO0004<TRA0010:0094:0018:0032
+#0101
+<PRI<FAO0004<TRA0012:0094:0037:0011
+#0102
+<FLJ0155:0103<PRI<SOU0011<DNP0102<FAO0004<TRA0011:0094:0016:0053
+#0103
+<PRI<SOU0011<CMU0000<DNP0102<FAO0004<TRA0011:0400:0016:0053
+
+
+#0200
+<FLJ0159:0205
+<FLJ0158:0204
+<FLJ0157:0203
+<FLJ0325:0202
+<FLJ0154:0201
+<KEY<MSGSur l'écran est écrit...<NOD<CLR<TUR"KAZ: Cela dit, si je pouvais,
+je le ferais vraiment..."<NOD<FLJ0153:0000<CLR<MSGPermettre la téléportation
+vers les Incubateurs ?<YNJ0000<CLRPermission accordée.<NOD<FL+0153<PS+0001:6001<END
+#0201
+<KEY<MSGDes mots sont à l'écran...<NOD<CLR
+<TURConnexion à Prairieville...<NOD<END
+#0202
+<KEY<MSG<TUR
+Connecté à Prairieville.<NOD<END
+#0203
+<KEY<MSG<TUR
+Entrez une commande.<NOD<END
+#0204
+<KEY<MSG<TUR
+Connecté à la Zone des Sables.<NOD<END
+#0205
+<KEY<MSGSur l'écran est écrit...<NOD<CLR<TUR
+Retrouve-moi aux Incubateurs
+                        --Kazuma<NOD<END
+#0210
+<KEY<MSGDes fleurs...?<NOD<END
+
+#0300
+#0301
+#0303
+
+#0500
+<KEY<MSGUn téléporteur.<NOD<SLP<NOD<END
+
+#0600
+<FLJ0325:0601
+<KEY<MSG<FAC0009Tiens, te revoila.<NOD<CLRSue est revenue.<NOD
+Elle est enfermée dans
+la prison, dehors.<NOD
+Quand les sbires du
+Docteur viendront, on
+tentera de libérer
+Toroko.<NOD
+Mais en échange de Sue,
+tu comprends.<NOD<CLRC'est pas très sympa,
+je sais, mais Toroko
+est une des nôtres.<NOD
+Voila ce qui arrive
+quand on agit seul.<NOD<END
+#0601
+<KEY<MSG<FAC0009J'espère que Toroko va bien...<NOD<END
+
+
+#0620
+<KEY<CMU0000<FL+0156<FL+0444
+<ANP0500:0001:0000
+<WAI0002<CNP0622:0055:0000<WAI0010
+<FAI0004
+<CNP0621:0113:0000
+<ANP0621:0030:0000<WAI0100
+<MSG<FAC0018Oooohh...<NOD<CLR<FAC0010...Ça va ?<NOD<CLO<FAC0000
+<WAI0030<ANP0621:0000:0002
+<MSG<FAC0018...Mmm.<NOD<CLRMa vie a défilé devant
+mes yeux.<NOD<CLR<FAC0010.....<NOD<CLO<FAC0000
+<ANP0500:0000:0000<WAI0030
+<ANP0102:0000:0002<SOU0011
+<CNP0625:0042:0000
+<MSG<FAC0001Kazuma!!<NOD<ANP0622:0000:0002<CLREt Professeur Booster !<NOD<CLR<FAC0018Oh!<NOD<CLO<FAC0000
+<ANP0621:0003:0002<WAI0080
+<ANP0621:0000:0002
+<MSG<FAC0018Tout le monde va bien ?!<NOD<CLR<FAC0001Mh, je survis.<NOD<CLO<FAC0000
+<CNP0624:0061:0000
+<ANP0625:0003:0000<WAI0016
+<ANP0624:0008:0000<WAI0016
+<ANP0624:0000:0000
+<SOU0011<ANP0102:0000:0000<WAI0048
+<ANP0625:0000:0000
+<MSG<FAC0007.....<NOD<CLR<FAC0018Qui est ce Mimiga ?<NOD<CLO<FAC0000
+<WAI0030
+<ANP0625:0000:0002<WAI0030
+<ANP0624:0000:0002<WAI0050
+<ANP0625:0000:0000<WAI0020
+<MSG<FAC0001C'est King.<NOD<CLRUn ami à moi de
+ce village.<NOD<CLRIl y avait plein de
+Mimigas par ici.<NOD
+Mais beaucoup d'entre eux
+ont été kidnappés
+par les larbins du Doc.<NOD<CLRMême King a perdu
+des amis...<NOD<CLO
+<CMU0002
+<ANP0500:0001:0000
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<FL-0157<END
+
+#0621
+<KEY<FLJ0158:0631<MSG<FAC0018Les plans du Docteur
+se passent comme il
+le veut...<NOD
+Si on n'agit pas
+rapidement...<NOD<END
+#0622
+<KEY<FLJ0158:0632<MSG<FAC0010Merci de ton aide.<NOD<CLRLa bécane n'a pas
+vraiment survécu, mais
+au moins, nous, oui.<NOD<END
+#0624
+<KEY<FLJ0158:0634<MSG<FAC0007Toroko comme arme
+mortelle...<NOD
+Non ! Je ne le permettrai
+jamais !<NOD<END
+#0625
+<KEY<FLJ0158:0635<MYB0000<WAI0030<MYD0000<ANP0625:0000:0002<MSG
+<FAC0001Te voila !<NOD<CLRApparemment je
+te dois encore une
+fière chandelle.<NOD
+Avec l'aide de mon frère,<NOD
+on devrait pouvoir
+trouver le mot de passe
+de cet œuf.<NOD<CLO<FAC0000
+<ANP0625:0003:0000<WAI0008
+<ANP0625:0000:0000<MSG<FAC0001Booster !<NOD<CLRCe petit gars viendra
+avec nous ?<NOD<CLO<FAC0000
+<ANP0622:0003:0002<WAI0015
+<ANP0622:0005:0002
+<MSG<FAC0018<CMU0000.....<NOD<CLR
+<FAC0010Professeur.<NOD<CLR<FAC0001???<NOD<CLR<FAC0018Sue, ma chérie...<NOD
+Il va falloir suspendre
+notre fuite.<NOD<CLRLe Docteur a localisé 
+les fleurs rouges.<NOD<ANP0624:0000:0000<CLR
+<FAC0007!!!<NOD<CLR<FAC0001Quoi ?<NOD<CLR<FAC0018Mais il ne les as
+pas encore. Ce n'est
+qu'une question de temps.<NOD
+Elles se trouvent dans
+la Zone des Sables.<NOD<CLRLes fleurs sont apparemment
+quelque part dans la
+Zone des sables.<NOD<CLR
+<FAC0007La Zone des Sables ?<NOD<CLRTu veux dire qu'on
+y trouvera le Docteur ?<NOD<CLR<FAC0018Ben,<NOD ou au moins un
+de ses serviteurs.<NOD
+Si on ne détruit pas ces
+fleurs avant qu'il ne
+mettent le grappin dessus...<NOD<CLRCependant, la Zone des
+Sables est très
+dangereuse.<NOD
+Même si nous avons
+survécu jusque là,<NOD
+ce n'est pas garanti
+qu'on en sorte vivants...<NOD<CLR
+<FAC0007Alors tu laisses tomber ?<NOD<CLR<FAC0018En fait...<NOD<CLRL'un d'entre nous
+est l'homme de
+la situation.<NOD<CLO<FAC0000
+<ANP0621:0003:0002<ANP0625:0003:0000<WAI0020
+<ANP0621:0000:0002<WAI0002<ANP0625:0000:0002
+<MSG<FAC0018C'est toi.<NOD<CLR
+<CMU0002<FAC0010...mais QUI est-il ?<NOD<CLR<FAC0018En fait...<NOD<CLRIl est un des robots
+armés qui veillait
+sur l'île, il y a
+10 ans de cela.<NOD<CLR<FAC0010Un ROBOT ?!<NOD<CLR<FAC0018Je croyais qu'ils
+avaient tous été
+détruits,<ANP0621:0000:0000<NOD
+Mais je ne connais
+pas les détails.<NOD
+Il est tout a fait possible
+que l'un deux ait survécu...<NOD<CLR<FAC0010Professeur.<NOD
+La Zone des Sables est
+connectée.<NOD<CLR<FAC0018Je vois.<NOD<CLO<FAC0000
+<ANP0622:0003:0000<WAI0015
+<ANP0622:0000:0002
+<ANP0621:0000:0002<WAI0030<MSG<FAC0018Tu es le mieux équipé 
+pour explorer cette île.<NOD<CLRJe t'en prie. 
+Offre-nous ton aide.<NOD<FL+0158<PS+0003:6003<END
+
+
+
+
+#0631
+<KEY<MSG<FAC0018Tu peux atteindre la Zone
+des Sables avec
+ce téléporteur.<NOD
+Trouve les fleurs rouges
+et brûle-les
+jusqu'à la dernière.<NOD<END
+#0632
+<KEY<MSG<FAC0010Alors tu es un de ces...<NOD<CLRJe ne l'avais même pas
+remarqué.<NOD<CLREh bien, en tout cas
+tu as l'air bien conçu.<NOD<END
+#0634
+<KEY<MSG<FAC0007La Zone des Sables...<NOD<END
+#0635
+<KEY<MSG<FAC0001Si tu te débarrasses
+des fleurs, on poura
+empêcher cette guerre.<NOD<CLRC'est une grande
+responsabilité.<NOD<END
+
+
+#0650
+<KEY<MSG<FAC0018Prends Sue avec toi
+et fuis cette île...<NOD
+Je t'en supplie...<NOD<END
+
+#0651
+<DNP0651<KEY<MYD0000
+<ANP0500:0001:0000<WAI0050
+<MNP0650:0006:0007:0002
+<CNP0650:0113:0002
+<ANP0650:0030:0002<WAI0100
+<ANP0650:0000:0002
+<ANP0500:0000:0000<WAI0050
+<ANP0650:0003:0002<WAI0064
+<ANP0650:0000:0000
+<MSG
+<FAC0018.....<NOD<CLO<FAC0000
+<ANP0650:0000:0002<WAI0050
+<MSG<FAC0018Ah, c'est toi...<NOD<CLR...Le Docteur a trouvé les
+fleurs rouges.<NOD<CLR...Les Mimigas de l'île
+sont tous tombés
+entre ses griffes.<NOD<CLRLa tragédie devient
+réalité...<NOD<CLRJ'aurais dû laisser
+partir Sue pendant
+que je le pouvais...<NOD<CLO<FAC0000
+<ANP0650:0003:0002<WAI0022
+<ANP0650:0005:0002
+<IT+0023<FL+0744<FL+0162<GIT1023
+<MSG
+Obtenu le =Booster v2.0=.<WAI0030<NOD<CLO<GIT0000
+<ANP0650:0000:0002
+<MSG<FAC0018Ecoute ma dernière
+requête.<NOD<CLRSi tu retrouves Sue,<NOD
+Prends-là avec toi
+et fuyez cette île.<NOD<CLRCette fille est la fille
+de Sakamoto,<NOD
+Et elle n'a jamais voulu
+venir ici depuis le
+début.<NOD
+On peut pas laisser
+des enfants seuls,<NOD
+Alors on n'a pas eu
+le choix.<NOD<CLR
+Je t'en supplie.<NOD<CLRRetrouve là et
+fuyez ensemble.<NOD<CLO
+<FL-0160<FL+0161<FL+0741<PS+0004:6004<END
+
+
+#0660
+<KEY<FLJ1020:0661<MSG<FAC0018Prends Sue avec toi
+et fuyez cette île...<NOD
+Je t'en conjure...<NOD<END
+#0661
+<KEY<MSG<FAC0018Pardonne-nous du
+chaos qui s'est abattu
+sur ton île.<NOD<CLRNous, humains, en sommes
+les seuls responsables.<NOD<END
+
+
+#0700
+<KEY<CMU0000<FAO0004<TRA0024:0700:0002:0000
+
+
+#6001
+<PRI<MSGAller aux Incubateurs ?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<FLJ0159:6011<TRA0002:0099:0005:0006
+#6002
+<PRI<MSGAller à Prairieville ?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0006:0098:0004:0018
+#6003
+<PRI<MSGAller à la Zone des Sables ?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0010:0099:0036:0033
+
+#6004
+<PRI<MSGAller au Labyrinthe ?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0043:0099:0010:0034
+
+#6005
+<PRI<MSGAller à la Plantation ?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0060:0099:0009:0009
+
+#6011
+<KEY<TRA0049:0099:0007:0006

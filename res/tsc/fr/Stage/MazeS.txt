@@ -1,0 +1,183 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FLJ0761:0095<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<ANP0300:0020:0000<FAI0002<END
+
+
+#0100
+<KEY<FLJ0763:0101
+<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000<TRA0043:0090:0016:0013
+#0101
+<PRI<MSGÇa ne s'ouvre pas !<NOD<END
+
+#0110
+<FLJ0764:0111<END
+#0111
+<KEY<FAO0004<MYD0002<TRA0045:0092:0002:0005
+
+
+
+#0200
+<PRI<FLJ0201:0201<MSGUn charme a été placé.
+Ça ne s'ouvre pas...<NOD<END
+#0201
+<FLJ0766:0001<FL+0766<FL-0765<FL+0202
+<SOU0022<CNP0200:0021:0000
+<MSGOuverture du coffre.<NOD<CLR<TAM0005:0010:0000
+<CMU0010<GIT0010Tes missiles ont été améliorés !<WAI0160<NOD<RMU<END
+
+#0300
+<KEY
+<FLJ0764:0303
+<FLJ0762:0302
+<FLJ0761:0301
+<FL+0761<MSG<FAC0019Aha!<NOD
+Je me demandais
+quand tu arriverais.<NOD<CLRSi on poussait
+ce gros rocher,
+on pourrait sortir.<NOD<CLRCela dit, des rumeurs
+disent qu'un monstre vit
+de l'autre coté...<NOD
+Alors soyons prêts.<NOD<CLRBon, Poussons
+ce truc.<NOD
+Prends le coté gauche.<NOD<CLO
+<ANP0300:0020:0000<END
+#0301
+<KEY<ANP0300:0000:0000
+<MSG<FAC0019Qu'y a-t-il ?<NOD
+Tu n'as pas peur au moins,
+hein ?<NOD<CLRJ'en doute.<NOD
+Allez, atrappe le
+côté gauche de
+ce rocher.<NOD<ANP0300:0020:0000<END
+#0302
+<PRI<MSGElle est froide.<NOD<END
+#0303
+<PRI<MSG<FAC0019Allons-y !<NOD<CLRUn nid entier de
+monstres nous attend !!<NOD<END
+
+
+#0310
+<KEY<CNP0310:0012:0004:<ANP0310:0080:0005<SMC
+<CMU0015<MSG
+Tu as vaincu Balrog !<WAI0140<NOD<CLO<FAC0000
+<CMU0008<FAO0004<MYD0002<TRA0044:0600:0009:0014
+<END
+
+#0320
+<KEY
+<FLJ0762:0322
+<FLJ0761:0321<EVE0500
+#0321
+<KEY
+<MNP0320:0000:0000:0000
+<MYD0002<MYD0003
+<MSG<FAC0019Prêt ? On pousse !<NOD<CLO<FAC0000
+<ANP0300:0020:0000<WAI0050<MSGRRRRGH !<NOD<CLO<FAC0000
+<CNP0510:0334:0000
+<CNP0511:0334:0002<WAI0100
+<MSG<FAC0020.....<NOD<CLO<FAC0000
+<ANP0300:0000:0000<WAI0050<MYD0002
+<MSG<FAC0020Ça n'a pas bougé d'un poil.<NOD
+J'ai l'impression
+qu'à deux, on y
+arrivera pas...<NOD<FAC0000<CLO
+<WAI0050
+<MSGHuzzah !<CMU0000<NOD<CLO
+<CNP0310:0009:0002<WAI0100
+<CNP0310:0012:0002
+<ANP0310:0030:0002<CMU0011
+<MYD0000
+<MSG<FAC0019Toi !<NOD<CLR<FAC0014Hohoho !<NOD<CLRTu es vivant, je vois !<NOD<CLREt en plus, tu essaies
+de t'enfuir du
+Labyrinthe !<NOD<CLRTu peux pas rester
+tranquille comme un
+bon petit robot ?<NOD<CLRTu ne feras pas 
+le poids face
+à mon maître,
+pas plus que moi..<NOD<CLRTrès bien !<NOD
+Je vais en finir
+avec tout ça !<NOD<CLRNe m'en veux pas
+mais je dois te
+mettre en pièces !<NOD<CLR<FAC0019Ah ! Hé, toi,
+la grosse boite, là !<NOD
+Pousse par le
+millieu, tu veux ?<NOD<FAC0000<CLO<CMU0000
+<WAI0100
+<ANP0310:0060:0002<WAI0048
+<ANP0310:0050:0002<WAI0020
+<ANP0300:0020:0000<WAI0020
+<MYD0002<MYD0003<MSG<FAC0019Prêts ?
+Une, deux...<NOD<ANP0310:0080:0000<MYB0002<ANP0300:0030:0000<SOU0072<CLR<FAC0023VOUS VOUS FOUTEZ
+DE MOI OU QUOI ?!<NOD
+<ANP0310:0000:0000<CMU0004<CNP0310:0169:0000<BSL0310
+<FL+0762<FL+0763
+<END
+#0322
+<PRI<END
+
+#0330
+
+
+
+#0500
+<KEY
+<FLJ0762:0502
+<FLJ0761:0501
+<MSGC'est un énome rocher.<NOD
+De derrière, tu sens
+un vent souffler.<NOD
+Il faudrait au moins
+deux personnes pour
+bouger ce truc.<NOD<END
+#0501
+<KEY<WAI0010
+<ANP0300:0000:0000
+<MSG<FAC0020Tu pourrais le tenir
+plus vers l'extremité ?<NOD<CLO
+<ANP0300:0020:0000<END
+#0502
+<PRI<MSGC'est un énome rocher.<NOD<END
+
+#0510
+#0511
+
+
+#0600
+<KEY<FL-0763<FL+0764<FL-0760
+<SMC<CMU0008<CNP0330:0012:0002<ANP0300:0000:0002
+<MNP0320:0000:0000:0000
+<FAI0004
+<MSG<FAC0005T'as gagné...<NOD<CLRJe vais vous aider.<NOD
+Mais rappelez-vous...<NOD<ANP0330:0000:0000<CLRNe dites à PERSONNE
+que je vous ai aidés.<NOD<CLR<FAC0019Ton secret sera
+gardé !<NOD<FAC0000<CLO
+<ANP0330:0060:0000<WAI0040
+<ANP0330:0050:0002<WAI0020
+<MYD0003<ANP0300:0020:0000
+<MSG<FAC0019Prêts ? Poussez !<NOD<CLO<FAC0000
+<ANP0500:0010:0000<WAI0100
+<ANP0330:0080:0002
+<ANP0300:0000:0002
+<ANP0500:0020:0000<MYD0002<MSG
+<FAC0023Gaaaahhhh !!!<WAI0050<CLO<FAC0000
+<ANP0330:0000:0002
+<WAI0100<MSG<FAC0005Maintenant promettez-le.<ANP0300:0000:0000<NOD
+Ne dites à personne
+que je vous ai aidés.<NOD<CLR<FAC0019On promet !<NOD<CLO<FAC0000<ANP0330:0010:0000
+<WAI0160<CNP0200:0015:0002<WAI0040
+<MSG<FAC0019Finalement, ce
+gars n'a pas un si
+mauvais fond.<NOD<CLO
+<FL+0781<FL+0765<CNP0016:0016:0002<END
+

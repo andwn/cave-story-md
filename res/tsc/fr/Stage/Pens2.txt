@@ -1,0 +1,67 @@
+
+#0090
+<MNA<CMU0021<FAI0000<END
+#0091
+<MNA<CMU0021<FAI0001<END
+#0092
+<MNA<CMU0021<FAI0002<END
+#0093
+<MNA<CMU0021<FAI0003<END
+#0094
+<MNA<CMU0021<FAI0004<END
+
+
+
+
+#0700
+<KEY<FL-0440<FL-0443<CMU0021<FAI0004
+<MSG<TURConnexion au réseau...<WAI0050
+<TURConnecté.<WAI0050
+<TURExecution du programme de discussion.<WAI0100<CLR
+<MSG<FAC0001SUE: Kazuma.<NOD
+SUE: Tu es là ?<NOD
+SUE: Ça va ?<NOD<FAO0004<TRA0018:0700:0002:0000
+#0701
+<KEY<FAI0004<MSG<FAC0001SUE: C'est moi.<NOD
+SUE: Sue Sakamoto.<NOD<CLRSUE: Tu as pu t'enfuir
+aussi ?<NOD
+SUE: Où es-tu, là ?<NOD
+SUE: J'ai trouvé des œufs
+de dragon.<NOD
+SUE: Maman est avec toi ?<NOD<FAO0004<TRA0018:0701:0002:0000
+#0702
+<KEY<FAI0004<MSG<FAC0001SUE: L'un d'eux, oui.<NOD
+SUE: Mais il est
+protégé par
+mot de passe.<NOD
+SUE: Tu saurais regler
+ce problème ?<NOD<FAC0000<CLR<TURRecherche informations sur
+utilisateur "Kazuma"...<WAI0150<CLR<TUREffectuée.
+Location: Prairieville Structure D<NOD
+Scan de téléporteurs.<NOD<CLRPreparatifs de connexion
+au téléporteur "Prairieville"...<NOD<CLR
+<MSG<FAC0001SUE: De toutes façons,
+j'arrive, Je viens
+te chercher.<NOD
+SUE: Attends-moi ici.<NOD<FAO0004<TRA0018:0702:0002:0000
+#0703
+<KEY<CNP0700:0042:0000<FAI0004<MSG.....<NOD
+Qu'est-ce qu'il fait ?
+Il en met du temps !<NOD<CLR
+<SOU0011<CNP0710:0061:0000<WAI0020<CMU0000<ANP0700:0000:0002!!<NOD
+<CLO<ANP0710:0008:0000<WAI0016<ANP0710:0000:0000
+<MSG<FAC0007Te voici enfin.<NOD
+Je t'attendais...<NOD<CLR<FAC0002Ah ? Qu'y a-t-il ?<NOD
+Je suis occupée.<NOD<CLR<FAC0007Toroko a été kidnappée
+par les sbires du Docteur.<NOD<CLR<FAC0001Quoi ?!<NOD<CLR<FAC0009Et nous TE tenons
+pour responsable !!<NOD<FAC0000<CLO
+<ANP0710:0008:0000<WAI0100<FAO0004<MSG
+<FAC0003Laissez-moi partir !<NOD<CLR<FAC0007Oh non, pas question !<NOD<TRA0001:0099:0005:0008
+<END
+<END
+#0704
+
+
+#0710
+#0711
+

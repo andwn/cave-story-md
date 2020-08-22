@@ -1,0 +1,100 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURAparecem palavras no ecrã.<NOD<CLR04-08-08 Mulher dá à luz.<NOD<END
+
+#0201
+<KEY<MSGAparecem palavras no ecrã.<NOD<CLR<TURPorque não descansas?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGAparecem palavras no ecrã.<NOD<CLR<TURSabes, eu costumo escrever
+o que aprendo naquele
+bloco de notas ali...<NOD<END
+
+#0203
+<KEY<MSGAparecem palavras no ecrã.<NOD<CLR<TURRezo pela tua victória.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGNão encontras nada
+de interessante...<NOD<END
+#0221
+<KEY<MSGHá um bloco de notas,
+coberto em pó...<NOD<FLJ1441:0223<FLJ1445:0222<END
+#0222
+<KEY<MSGQueres abrir o bloco de notas?<YNJ0000<FL+1441<CLR<TUROs robots que foram desenvolvidos
+na superfície estão limitados
+nas operações aquáticas.<NOD<CLRSe forem submersos
+durante demasiado tempo,<NOD<CLRo sistema desliga-se
+automaticamente para evitar
+curto-circuitos.<NOD<CLRA maneira correcta de tratar
+de um robot inundado é a seguinte:<NOD<CLR<MSG.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Aprendeste a tratar
+de robots inundados!<WAI0160<NOD<RMU<CLR<TURQuando o robot for seco com
+os métodos ditos anteriormente,<NOD<CLRo sistema irá 
+automaticamente reiniciar.<WAI0030<NOD<END
+#0223
+<KEY<MSGNão há aqui mais nada que
+pareça particularmente útil...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+#0251
+<KEY<MSGQueres descansar?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+#0252
+<KEY<MSGEla não se está a mover,
+mas parece que está viva.<NOD<END
+#0253
+<KEY<MSGQueres drenar a água da Curly?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Ooohh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019Estás vivo!<NOD<CLROh, estou tão contente...<NOD<CLR<FAC0025Não pensei que
+fossemos conseguir.<NOD
+Quando ficaste incosciente,
+não me lembrei de mais
+nada...<NOD<CLRParece que o meu tanque
+de ar funcionou tal
+como eu esperava.<NOD<CLR<FAC0020Ah...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGEla caiu num sono profundo.<NOD
+<END
+#0254
+<KEY<MSGParece que demora algum
+tempo para reiniciar.<NOD<FL+1443<END
+#0255
+<KEY<MSGQueres deixá-la aqui?<YNJ0256<END
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+#0257
+<KEY<MSGA cama está toda molhada.<NOD<END
+
+#0260
