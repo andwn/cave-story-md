@@ -1,0 +1,101 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+
+#0091
+<MNA<CMU0008<FAI0001<END
+
+#0092
+<MNA<CMU0008<FAI0002<END
+
+#0093
+<MNA<CMU0008<FAI0003<END
+
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGTem pétalas vermelhas espalhadas
+por aqui.<NOD<END
+
+#0200
+<KEY<MSGVocê encontrou um recado.<NOD<CLR<TURCom o escudo ativado, não consigo
+chegar à sala do ovo número 00.<NOD<CLR<TURAcho que algum destes terminais de
+computador seja capaz de desativar
+o escudo...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGVocê abriu o baú.<NOD<CLR<EVE0030
+
+#0500
+
+#0501
+<PRI<MS3<TUROvo do Dragão do Céu 01
+Erro: Condições do ovo anormais.
+Recomenda-se investigação.<NOD<END
+
+#0502
+<PRI<MS3<TUROvo do Dragão do Céu 02
+Condições normais.<NOD<END
+
+#0503
+<PRI<MS3<TUROvo do Dragão do Céu 03
+Condições normais.<NOD<END
+
+#0504
+<PRI<MS3<TUROvo do Dragão do Céu 04
+Condições normais.<NOD<END
+
+#0505
+<PRI<MS3<TUROvo do Dragão do Céu 05
+Condições normais.<NOD<END
+
+#0506
+<PRI<MS3<TUROvo do Dragão do Céu 06
+Erro: Condições do ovo anormais.
+Recomenda-se investigação.<NOD<END
+
+#0507
+<PRI<MS3<TUROvo do Dragão do Céu 07
+Condições normais.<NOD<END
+
+#0508
+<PRI<MSG<TUROvo do Dragão do Céu 08
+Condições normais.<NOD<END
+
+#0509
+<PRI<MSG<TUROvo do Dragão do Céu 09
+Condições normais.<NOD<END
+
+#0510
+<PRI<MSG<TUROvo do Dragão do Céu 10
+Condições normais.<NOD<END
+
+#0511
+<PRI<MSG<TUROvo do Dragão do Céu 11
+Condições normais.<NOD<END
+
+#0512
+<PRI<MSG<TUROvo do Dragão do Céu 12
+Condições normais.<NOD<END
+
+#0513
+<PRI<MSG<TUROvo do Dragão do Céu 13
+Condições normais.<NOD<END
+
+#0514
+<PRI<MSG<TUROvo do Dragão do Céu 14
+Condições normais.<NOD<END
+
+#0515
+<PRI<MSG<TUROvo do Dragão do Céu 15
+Condições normais.<NOD<END
+
+#0516
+<PRI<MSG<TUROvo do Dragão do Céu 16
+Condições normais.<NOD<END

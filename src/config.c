@@ -73,11 +73,12 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
     },{
         { 4,  LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
         { 6,  LANG_ES,  AKI,    MI_RADIO,   "Espanol", &cfg_language },
-        { 8,  LANG_PT,  AKI,    MI_RADIO,   "Portuges", &cfg_language },
-        { 10, LANG_FR,  AKI,    MI_RADIO,   "Francais", &cfg_language },
-        { 12, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
-        { 14, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
-        { 16, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
+        { 8,  LANG_FR,  AKI,    MI_RADIO,   "Francais", &cfg_language },
+        { 10, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
+        { 12, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
+        { 14, LANG_PT,  AKI,    MI_RADIO,   "Portuges", &cfg_language },
+        { 16, LANG_BR,  AKI,    MI_RADIO,   "BR Portuges", &cfg_language },
+        { 18, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
 
         { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
         { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },

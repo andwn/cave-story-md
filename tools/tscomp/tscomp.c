@@ -44,6 +44,7 @@ enum {
     LANG_FR,
     LANG_IT,
     LANG_DE,
+    LANG_BR,
 
     LANG_JA = 0x20,
     LANG_ZH,
@@ -480,6 +481,7 @@ uint16_t read_langcode(const char *str) {
     else if(strcmp("DE", code) == 0) return LANG_DE;
     else if(strcmp("PT", code) == 0) return LANG_PT;
     else if(strcmp("IT", code) == 0) return LANG_IT;
+    else if(strcmp("BR", code) == 0) return LANG_IT;
     else return LANG_INVALID;
 }
 
@@ -489,7 +491,7 @@ int main(int argc,char *argv[]) {
         printf("  -t:    Show tracing info for debugging\n");
         printf("  -u:    Unfuck the input (encrypted)\n");
         printf("  -l=XX: Specify language/encoding (2 letter code)\n");
-        printf("         (Supported: EN JA ES FR DE IT PT)\n");
+        printf("         (Supported: EN JA ES FR DE IT PT BR)\n");
         return 0;
     }
     int i = 1;

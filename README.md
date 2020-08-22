@@ -46,3 +46,14 @@ I did not know how to sort this list, so I did it alphabetically.
 - DavisOlivier: Helped with a few music tracks.
 - Sik: Mega Drive tech support. Made the font used ingame.
 - Other people I probably forgot
+
+## Translations
+Mostly taken from cavestory.org
+
+- English: [Aeon Genesis Translations](http://agtp.romhack.net/)
+- Spanish: [Vagrant Traducciones](http://vagrant.romhackhispano.org)
+- French: [Max le Fou](http://cavestory.maxlefou.com/)
+- German: [Reality Dreamers](http://www.reality-dreamers.de/)
+- Italian: [Simon M.](mailto:simonogatari@gmail.com)
+- Portugese: [Andre Silva](mailto:andreluis.g.silva@gmail.com)
+- BR Portugese: [Alex "Foffano"](mailto:foffano@gmail.com)

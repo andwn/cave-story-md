@@ -1,0 +1,122 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+
+#0091
+<MNA<CMU0014<FAI0001<END
+
+#0092
+<MNA<CMU0014<FAI0002<END
+
+#0093
+<MNA<CMU0014<FAI0003<END
+
+#0094
+<MNA<CMU0014<FAI0004<END
+
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURTem algo escrito na tela.<NOD<CLR
+08-04-08 Esposa deu à luz.<NOD<END
+
+#0201
+<KEY<MSGTem algo escrito na tela.<NOD<CLR
+<TURPor que não descansa um pouco?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGTem algo escrito na tela.<NOD<CLR<TURSabe, eu sempre escrevia o que
+aprendia em um caderno...<NOD<END
+
+#0203
+<KEY<MSGTem algo escrito na tela.<NOD<CLR
+<TUREu rezo pela sua vitória.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGNada de interessante aqui...<NOD<END
+
+#0221
+<KEY<MSGTem um caderno coberto de
+poeira...<NOD<FLJ1441:0223<FLJ1445:0222<END
+
+#0222
+<KEY<MSGVocê deseja abrir o caderno?<YNJ0000<FL+1441<CLR<TURRobôs desenvolvidos para uso em
+terra enfrentam limitações quando
+operam debaixo d'água.<NOD<CLRQuando submersos por muito tempo,
+eles se desligam automaticamente
+para evitar curto-circuito.<NOD<CLRA seguir, eu descrevo o método
+adequado para se tratar um robô 
+inundado.<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Você aprendeu a tratar robôs
+inundados.<WAI0160<NOD<RMU<CLR<TURQuando o robô for esvaziado pelo
+procedimento acima mencionado,<NOD<CLRo sistema entrará em processo de
+reinicialização automaticamente.<WAI0030<NOD<END
+
+#0223
+<KEY<MSGNão tem mais nada de importante
+para se ler agora...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+
+#0251
+<KEY<MSG
+Você quer descansar?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR
+.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+
+#0252
+<KEY<MSGEla não se move, mas parece que
+ainda está viva.<NOD<END
+
+#0253
+<KEY<MSGVocê quer extrair a água do corpo
+da Curly?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Oooh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019Você está vivo!<NOD<CLROh, que bom...<NOD<CLR<FAC0025Eu achei que a gente não
+fosse se safar daquela.<NOD
+Quando você ficou
+inconsciente, eu não pude
+pensar em outra coisa...<NOD<CLRParece que o meu tanque de
+ar funcionou do jeito como
+eu queria.<NOD<CLR
+<FAC0020Ah...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGEla adormeceu.<NOD
+<END
+
+#0254
+<KEY<MSGParece que leva algum tempo para
+reiniciar.<NOD<FL+1443<END
+
+#0255
+<KEY<MSG
+Você quer deixá-la aqui?<YNJ0256<END
+
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+
+#0257
+<KEY<MSGA cama está ensopada.<NOD<END
+
+#0260

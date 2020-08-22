@@ -1,0 +1,85 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0008
+<ANP0200:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0200:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000<TRA0039:0090:0197:0014
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0002<MYD0002<TRA0044:0092:0002:0013
+
+<KEY<MSGObrigado. Daqui para frente não
+tem mais nada.
+  2003/09/27 Studio Pixel<NOD<END
+
+#0200
+<KEY<FLJ0744:0201<MS3A fonte de energia parece estar
+quebrada.<NOD<CLRProvavelmente, um engenheiro com o
+conhecimento necessário seja capaz
+de consertar...<NOD<END
+#0201
+<KEY<MSGDeseja ir para a casa do Arthur?<YNJ0000<CLO
+<CNP0300:0111:0002<HMC<WAI0060<ANP0200:0001:0000
+<WAI0100<FAO0004<TRA0001:0099:0005:0008
+
+#0300
+#0301
+
+#0500
+<KEY<MYD0002<CMU0000<FAI0002<FLA<SOU0029<WAI0050
+<MSG?<NOD<CLO<ANP0500:0010:0000<WAI0130<SOU0023<WAI0020<CMU0008
+<FL-0523<FL+0740<DNP0500<END
+
+
+#0501
+<KEY<ITJ0030:0503<FLJ0741:0502
+<MSGOooh...<NOD<CLR<FAC0017Oh!<NOD
+O que você está fazendo
+aqui?!<NOD<CLR.....<NOD<CLRAh, então a Misery te
+jogou aqui também...?<NOD<CLRHe he...<NOD<CLRApesar de tudo, talvez
+ainda haja esperança...<NOD<CLRSabe, esta ilha flutua
+pelo céu devido ao poder
+de um organismo.<NOD<CLRRecentemente, eu descobri
+onde ele se encontra...<NOD<CLRNeste labirinto.<NOD<CLRO organismo vive em algum
+lugar deste labirinto.<NOD
+Se ele for destruído, a
+ilha deixará de flutuar.<NOD<CLRHe he...<NOD<CLRO Doutor devia estar muito
+afobado; ele te jogou logo
+no coração da ilha.<NOD<CLRLeve isto com você.<NOD<CLR<FAC0000<IT+0018<GIT1018
+Obteve o Propulsor v0.8.<NOD<CLR<FAC0017Esta máquina irá te ajudar
+a voar.<NOD
+Se você apertar o Botão de
+Pulo no ar, irá flutuar.<NOD<CLRAcesse-o na Tela de Itens
+para equipar.<NOD<GIT0000<CLRUfa...<NOD<CLRNa hora em que fui mandado
+pelos ares, pensei que era
+o meu fim.<NOD
+E, mesmo assim, eu tive a
+chance de encontrá-lo mais
+uma vez...<NOD
+Parece que a minha sorte
+acaba aqui.<NOD<CLREu rezo pela sua
+vitória...<NOD<FL+0741<FL+0834<ANP0501:0020:0000<END
+
+#0502
+<KEY<MSGEu rezo pela sua...<NOD<END
+
+#0503
+<KEY<MSGOh...<NOD<END
+

@@ -1,0 +1,102 @@
+
+#0090
+<MNA<FAI0000<END
+
+#0091
+<MNA<FAI0001<END
+
+#0092
+<MNA<FAI0002<END
+
+#0093
+<MNA<FAI0003<END
+
+#0094
+<MNA<FAI0004<END
+
+#0100
+<KEY<CMU0000<WAI0100<SOU0101<WAI0020<SOU0035<WAI0200
+<FON0210:0016
+<WAI0100<CMU0000
+<ANP0200:0060:0002<FAI0003
+<WAI0300<DNP0220
+<WAI0200<DNP0200
+<ANP0230:0030:0000<WAI0002
+<ANP0230:0010:0000
+<FON0240:0016
+<WAI0160
+<MSG
+<CMU0010Você foi pego pelo Kazuma!<WAI0160<CLR<FAC0010Ufa...<NOD<CLRNunca achei que você fosse
+mesmo conseguir.<NOD<CLRExplodir o núcleo...<NOD<CLRBem, agora o mundo deve
+estar livre de uma futura
+incarnação do Doutor.<NOD
+A paz foi mantida!<NOD<CLR
+Agora, vamos para casa.<NOD<CLO
+<KEY<FAO0004<HMC<TRA0000:0100:0001:0015
+
+#0120
+<KEY<CMU0000
+<FON0240:0016
+<CNP0230:0356:0002
+<DNP0220<WAI0200
+<FAI0001
+<MSG<FAC0005<FL+2000<FL+1460Ufa!<NOD<CLREssa foi por pouco.<NOD<CLR<FAC0019Eu achei mesmo que fosse
+virar sucata dessa vez...<NOD
+Parece que nós ficamos te
+devendo mais essa.<NOD<CLO<FAC0000<WAI0050
+<MSG<FAC0005Nah, não me agradeça.<NOD
+Eu só fiz o que a Misery
+me pediu.<NOD<CLR<FAC0025A Misery? Quer dizer,
+aquela bruxa?<NOD<CLR
+<FAC0005Isso aí.<NOD<CLR<FAC0025Eu pensei que ela odiasse
+a gente.<NOD
+Eita, eu pensei que você 
+odiasse a gente...<NOD<CLR<FAC0005Vocês venceram o Ballos,
+né?<NOD<CLRQuando isso aconteceu, a
+nossa maldição se quebrou.<NOD
+Agora, não precisamos
+seguir ordens de ninguém!<NOD<CLR<FAC0019Eu achava vocês dois uns
+babacas, mas parece que a
+culpa era da Coroa!<NOD<CLR<FAC0005Bem, tudo que se planta,
+colhe.<NOD
+Afinal, foi a Misery que
+fez ele criar a Coroa.<NOD<CLR<FAC0025Hum.<NOD
+Não diga.<NOD<CLR<FAC0005Digo sim.<NOD<CLO<FAC0000
+<WAI0150
+<MSG<FAC0005E aí?<NOD<CLR
+<FAC0025E aí o quê?<NOD<CLR<FAC0005E aí, o que vocês pensam
+em fazer agora?<NOD
+Eu posso levá-los aonde
+quiserem.<NOD<CLR<FAC0019Hum, você tá certo...<NOD<CLRA nossa missão acabou, e
+agora eu quero aproveitar
+a vida<NOD
+num lugar onde eu possa
+descansar e apreciar uma
+linda vista...<NOD<CLO<FAC0000
+<WAI0100<MSG<FAC0005Hum... Bem...<NOD<CLR
+<FAC0025O que foi?<NOD<CLR<FAC0005...Tudo bem se eu for com
+vocês?<NOD<CLR<FAC0019É claro!<NOD
+Vamos morar todos os três
+juntos!<NOD<CLR
+<FAC0014É sério?!<NOD<CLR<FAC0019
+Eu vou deixar você 
+escolher o lugar.<NOD
+Então vê se encontra um
+bem legal, hein!<NOD<CLR
+<FAC0014Xá comigo!<NOD<CLREntão,
+<ANP0230:0020:0002s<WAI0010e<WAI0010g<WAI0010u<WAI0010r<WAI0010a<WAI0010 <WAI0010f<WAI0010i<WAI0010r<WAI0010m<WAI0010e<WAI0010!<NOD<CLO<FAC0000
+<KEY<FAO0004<HMC<ITJ0032:0121<TRA0000:0100:0001:0015
+
+#0121
+<KEY<WAI0100<MSG<GIT1032...Você não tá esquecendo
+nada não?<NOD<TRA0000:0100:0001:0015
+
+#0200
+
+#0210
+
+#0220
+
+#0230
+
+#0240

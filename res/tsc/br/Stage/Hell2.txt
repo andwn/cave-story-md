@@ -1,0 +1,48 @@
+
+#0090
+<MNA<CMU0036<FAI0000<END
+
+#0091
+<MNA<CMU0036<FAI0001<END
+
+#0092
+<MNA<CMU0036<FAI0002<END
+
+#0093
+<MNA<CMU0036<FAI0003<END
+
+#0094
+<MNA<CMU0036<FAI0004<END
+
+#0095
+<KEY<MYB0000<WAI0002<PRI<FAI0001<END
+
+#0100
+<KEY<FAO0002<TRA0080:0090:0018:0097
+
+#0110
+<PRI<FAO0003<TRA0082:0095:0154:0002
+
+#0200
+<PRI<MSG<TUR
+Não há mais como voltar...<NOD<END
+
+#0900
+<DNP0900<SKJ0022:0000<SK+0022
+<PRI<MS3O rei, ciumento, mandou prender
+Ballos e jogá-lo na masmorra.<NOD
+Lá, sua punição foi extremamente
+brutal e cruel.<NOD
+Os humanos, às vezes, podem ser
+criaturas terríveis...<NOD<END
+
+#0901
+<DNP0901<SKJ0023:0000<SK+0023
+<PRI<MS3Devido à enorme crueldade que foi
+a tortura, os poderes mágicos de
+Ballos cresceram desenfreadamente.<NOD
+O rei foi absorvido pela fúria da
+magia e destruído em segundos.<NOD
+Em apenas uma noite, o reino que
+Ballos tanto amava foi reduzido a
+ruínas e cinzas.<NOD<END

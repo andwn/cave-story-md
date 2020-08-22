@@ -36,6 +36,7 @@ enum {
     LANG_FR,
     LANG_IT,
     LANG_DE,
+    LANG_BR,
 
     LANG_JA = 0x20,
     LANG_ZH,

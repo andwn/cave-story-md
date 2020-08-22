@@ -180,6 +180,7 @@ void tsc_init() {
 	switch(cfg_language) {
         case LANG_ES: TSC = STSC_Head; break;
         case LANG_PT: TSC = PTSC_Head; break;
+        case LANG_BR: TSC = BTSC_Head; break;
         case LANG_FR: TSC = FTSC_Head; break;
         case LANG_IT: TSC = ITSC_Head; break;
         case LANG_DE: TSC = GTSC_Head; break;
@@ -194,6 +195,7 @@ void tsc_load_stage(uint8_t id) {
         switch(cfg_language) {
             case LANG_ES: TSC = STSC_ArmsItem; break;
             case LANG_PT: TSC = PTSC_ArmsItem; break;
+            case LANG_BR: TSC = BTSC_ArmsItem; break;
             case LANG_FR: TSC = FTSC_ArmsItem; break;
             case LANG_IT: TSC = ITSC_ArmsItem; break;
             case LANG_DE: TSC = GTSC_ArmsItem; break;
@@ -205,6 +207,7 @@ void tsc_load_stage(uint8_t id) {
         switch(cfg_language) {
             case LANG_ES: TSC = STSC_StageSelect; break;
             case LANG_PT: TSC = PTSC_StageSelect; break;
+            case LANG_BR: TSC = BTSC_StageSelect; break;
             case LANG_FR: TSC = FTSC_StageSelect; break;
             case LANG_IT: TSC = ITSC_StageSelect; break;
             case LANG_DE: TSC = GTSC_StageSelect; break;
@@ -216,6 +219,7 @@ void tsc_load_stage(uint8_t id) {
         switch(cfg_language) {
             case LANG_ES: TSC = STSC_Credits; break;
             case LANG_PT: TSC = PTSC_Credits; break;
+            case LANG_BR: TSC = BTSC_Credits; break;
             case LANG_FR: TSC = FTSC_Credits; break;
             case LANG_IT: TSC = ITSC_Credits; break;
             case LANG_DE: TSC = GTSC_Credits; break;
@@ -227,6 +231,7 @@ void tsc_load_stage(uint8_t id) {
         switch(cfg_language) {
             case LANG_ES: TSC = stage_info[id].STSC; break;
             case LANG_PT: TSC = stage_info[id].PTSC; break;
+            case LANG_BR: TSC = stage_info[id].BTSC; break;
             case LANG_FR: TSC = stage_info[id].FTSC; break;
             case LANG_IT: TSC = stage_info[id].ITSC; break;
             case LANG_DE: TSC = stage_info[id].GTSC; break;

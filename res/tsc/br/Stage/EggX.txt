@@ -1,0 +1,101 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+
+#0091
+<MNA<CMU0014<FAI0001<END
+
+#0092
+<MNA<CMU0014<FAI0002<END
+
+#0093
+<MNA<CMU0014<FAI0003<END
+
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGVocê deseja salvar?<YNJ0000<SVP<CLRJogo salvo.<NOD<END
+
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGSaúde reabastecida.<NOD<END
+
+#0110
+<KEY<MSGVocê sente um vento frio entrando
+na sala...<NOD<END
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Uugh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGAiii...<NOD<ANP0200:0011:0002<CLR<FAC0003Opa!
+Ei, eu ainda não morri!<NOD
+Agora você vai ver só!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Hã?<WAI0050<NOD
+Aquele monstro pegou
+pesado comigo...<ANP0200:0000:0000<NOD<CLR.....<NOD
+Você me salvou?<YNJ0202<EVE0201
+
+#0201
+<FAC0003Eu não precisava da sua
+ajuda!<NOD<CLREu ia dar um jeito de
+acabar com ele sozinha!<NOD
+Grrr... Eu odeio esta ilha
+idiota e tudo que existe
+nela!<NOD<FAC0000<CLO<EVE0203
+
+#0202
+<FAC0002Humpf...<NOD<CLRBem, que seja.<NOD<FAC0000<CLO<EVE0203
+
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Oh!<NOD<MYD0003<CLRVeja! É... Eu acho que é o
+ovo número 00!<NOD<CLREste ovo pode ser a nossa
+passagem de saída da ilha!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Condições do ovo: Normais!
+É assim que eu gosto!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hã?<NOD Uma senha?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Parece que precisa de uma
+senha para chocar o ovo.<NOD<CLR<FAC0002Que droga.<NOD<CLRSe o meu irmão estivesse
+aqui, ele saberia o que
+fazer.<NOD<CLR.....<NOD<CLR<FAC0001Pronto, acho que não tenho
+mais o que fazer por aqui.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGVocê é <MYD0000daqui?<NOD<CLRNão parece, né?<NOD
+As palavras escritas no
+seu boné...<NOD
+Esse não é um idioma que
+existe nesta ilha.<NOD<CLR
+...Você está perdido?<NOD<CLRTudo bem.<NOD
+Você pode vir comigo.<NOD
+Vamos sair deste lugar
+horrível juntos.<NOD
+Em troca, você terá que me
+ajudar.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TUROvo do Dragão do Céu 00
+Preparativos para a chocagem
+completos.<NOD<CLR
+Insira a senha:<NOD<END
+
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+#0400

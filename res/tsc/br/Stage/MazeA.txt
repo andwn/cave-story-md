@@ -1,0 +1,112 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+#0200
+<PRI<MSGHá muito tempo, morava uma bruxa
+aqui na ilha.<NOD
+Ela construiu este labirinto para
+manter nós, os Gaudis, confinados.<NOD<END
+
+#0210
+<PRI<MSGExiste uma saída deste labirinto.
+Mas o caminho está bloqueado por
+uma pedra gigante.<NOD<CLRE tirar a pedra do caminho seria
+apenas o primeiro dos problemas...<NOD<END
+
+#0220
+<PRI<FLJ1020:0221<MSGAh... Que vontade de comer carne
+de Mimiga...<NOD<CLR*func func*<NOD<CLRVocê tem o cheiro parecido com o
+de um Mimiga.<NOD<END
+
+#0221
+<PRI<MSGHa ha ha...<NOD<CLRVocê é engraçado.<NOD<END
+
+#0230
+<PRI<MSGVocê já viu o lado de fora desta
+ilha?<NOD<CLREla fica voando pelo céu a uma boa
+distância do chão.<NOD
+E sabe como ela flutua...?<NOD
+Esse segredo está escondido aqui
+dentro do labirinto.<NOD<END
+
+#0240
+<PRI<FLJ0720:0241
+<MSGAquele teletransporte ali estava
+funcionando até pouco tempo.<NOD
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Ah, claro, ele só levava a outra
+parte do labirinto mesmo...<NOD<END
+
+#0241
+<MSGParece que o teletransporte voltou
+a funcionar.<NOD<CLRÉ claro, ele só leva a outra parte
+dentro do labirinto, né?<NOD<END
+
+#0300
+
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGUm teletransporte.<NOD<CLREstá sem energia.<NOD<END
+
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+#0400
+<KEY<FLJ0721:0410<MSGOlá.<NOD<CLRBem-vindo à Loja do Labirinto!<NOD
+Só que, infelizmente, nós fomos
+roubados há pouco tempo e agora
+não temos nada para vender.<NOD
+Foi mal aí...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+
+#0401
+<KEY<MSGHã?<NOD<CLRMas que coisas chiques você tem.<NOD<CLRÉ uma Estrela Polar e uma Bola de
+Fogo, ou eu estou enganado?<NOD<CLRPosso dar uma olhadinha nelas?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Entregou a Estrela Polar.<NOD
+<GIT0003Entregou a Bola de Fogo.<NOD<GIT0000<CLR
+<SOU0044Ho ho!<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010A =Serpente= foi concluída!<WAI0160<NOD<RMU<END
+
+#0402
+<KEY<FL+0721<MSG*ufa*<NOD<CLRToma. Que tal isto?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008Obteve a =Recarga-Turbo=!<WAI0160<NOD<RMU<GIT0000<CLREstou te dando de graça.<NOD
+Parece que você não tem dinheiro
+nenhum mesmo.<NOD<END
+
+#0403
+<KEY<MSG<CLRQuem sai perdendo é você!<NOD<END
+
+#0404
+<KEY<FL+0721<MSG*ufa*<NOD<CLRToma. Que tal isto?<NOD<CLR<GIT1038<CLR
+<CMU0010<IT+0038Obteve a =Estrelinha=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRÉ só um enfeite, eu sei, mas você 
+já tem a arma mais forte mesmo...<NOD
+O que mais eu poderia fazer?<NOD<END
+
+#0410
+<KEY<MSGQuem nos prendeu aqui foi uma
+bruxa chamada Jenka.<NOD<CLR...Mas não foi porque ela nos
+odeia nem nada do tipo.<NOD
+Nós estamos aqui neste labirinto
+para proteger uma coisa.<NOD<CLR...Eu não me lembro direito o que
+era, mas tá bom, né?<NOD<END
+

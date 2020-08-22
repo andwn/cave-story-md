@@ -1,0 +1,86 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+
+#0091
+<MNA<CMU0008<FAI0001<END
+
+#0092
+<MNA<CMU0008<FAI0002<END
+
+#0093
+<MNA<CMU0008<FAI0003<END
+
+#0094
+<KEY<FLJ1000:0095<MNA<CMU0008<FAI0004<EVE0200
+
+#0095
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0053:0094:0075:0005
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0118:0083
+
+#0200
+<KEY<FL+1000<FL+1025<FL+1038<MYD0002<WAI0050
+<ANP0400:0010:0000<MSG
+Aaah!<NOD<CLO
+<ANP0400:0020:0000<WAI0050<END
+
+#0400
+<KEY
+<FLJ1003:0404
+<FLJ1102:0403
+<FLJ1002:0402
+<FLJ1001:0401<FL+1001<FL+1038
+<ANP0400:0010:0000
+<MSGIaaau!<MYB0002<NOD<CLRNão me mate!<NOD
+Eu sou humano!<NOD
+Me enfeitiçaram e agora pareço um
+Mimiga, mas eu sou humano!<NOD<CLRHã?<NOD<CLR.....<NOD<CLR<ANP0400:0000:0000<FAC0028Como é?
+Você não é um daqueles
+robôs assassinos não?<NOD
+Poxa, você aparecendo
+assim do nada quase me
+mata de susto!<NOD<CLRVocê não seria o tal
+salvador, seria?<NOD<END
+
+#0401
+<KEY<FL+1002
+<MSG<FAC0028Eu sou o Itoh.<NOD
+Eu vim com um grupo de
+humanos para pesquisar
+aqui na ilha.<NOD
+Aquela bruxa Misery fez
+isto comigo...<NOD
+Eu consegui fugir, mas...
+olhe só para mim.<NOD<CLRAgora estou preso aqui!<NOD<CLRVocê subiu pelo lado de
+fora, não foi?<NOD
+Eu sou um engenheiro muito
+talentoso, mas não suporto
+alturas...<NOD<CLROh, ai de mim...<NOD<CLREu sabia que nunca deveria
+ter vindo a esta ilha.<NOD<END
+
+#0402
+<KEY<MSG<FAC0028Não, não adianta.<NOD
+Como você espera que um
+cara perdido e patético
+possa te ajudar?<NOD<END
+
+#0403
+<KEY<MSG<FL+1003<FAC0028Itoh?<NOD Sim, sou eu mesmo.<NOD<CLRÉ o quê?<NOD
+A Sakamoto tá construindo
+um foguete?<NOD<CLREntão ela está viva...<NOD
+É, ela é dura na queda.<NOD
+Bem diferente de mim, é 
+claro...<NOD<CLREntão tá bom.<NOD
+Toma aqui.<NOD<FAC0000<GIT1027<IT+0027<CLR
+<CMU0010Obteve o =Controlador=.<WAI0160<NOD<RMU
+<CLR<FAC0028Deve ser isso que ela
+quer.<NOD<GIT0000<EVE0404
+
+#0404
+<KEY<MSG<FAC0028Mande meus cumprimentos à 
+Sra. Sakamoto.<NOD<END

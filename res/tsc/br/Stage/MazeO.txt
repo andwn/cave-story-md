@@ -1,0 +1,126 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0000<MYD0000
+<FLJ0703:0101
+<TRA0039:0094:0084:0015
+#0101
+<FL+0704<TRA0039:0094:0084:0015
+
+#0105
+<KEY<FAO0004<TRA0039:0094:0091:0012
+
+#0200
+<KEY<MSGO robô misterioso, Monstro X...<NOD
+A sua chance de atacar é quando
+ele abre a escotilha.<NOD<END
+
+
+#0300
+<KEY<MSGEu sou médico.<NOD
+Venha, deixe-me recuperar a sua
+saúde.<NOD<CLO<LI+1000<SOU0020
+<FLJ0704:0304
+<FLJ0702:0303
+<ITJ0016:0302
+<FLJ0700:0301<FL+0700<WAI0050
+<MSGNão, não, você não precisa pagar,
+não se preocupe.<NOD<CLRSó que, em troca, tem algo que eu
+gostaria de pedir.<NOD<CLRTem uma clínica antiga aqui perto.<NOD
+Vá e veja se sobrou algum remédio
+por lá.<NOD<CLR
+<GIT1017<IT+0017Recebeu a =Chave da Clínica=.<NOD<GIT0000<END
+#0301
+<KEY<MSGA clínica não é muito longe.<NOD
+Vá e procure algum remédio que
+possa servir.<NOD<END
+#0302
+<KEY<MSG<IT-0016<FL+0702
+<GIT1016Entregou a =Panaceia=.<NOD<CLR<GIT0000Oh, você encontrou!<NOD
+Muito obrigado.<NOD
+Pode deixar o resto comigo.<NOD<END
+#0303
+<KEY<MSGMuito obrigado.<NOD
+Pode deixar o resto comigo.<NOD<END
+#0304
+<KEY<MSGParece que o remédio já está 
+fazendo efeito.<NOD
+Ela ficará boa logo.<NOD
+Tudo graças a você, é claro.<NOD<END
+
+#0310
+<FLJ0704:0313
+<FLJ0702:0312
+<FLJ0701:0311
+<KEY<MSGEu sou uma enfermeira.<NOD
+Eu trabalhava na velha clínica que
+fica aqui perto,<NOD
+mas lá estava ficando tão cheio de
+fantasmas que fugi para cá.<NOD<END
+#0311
+<KEY<MSGVocês são amigos?<NOD
+Se você se importa com ela, é 
+melhor fazer o que o doutor diz.<NOD<END
+#0312
+<KEY<MSGBom trabalho.<NOD
+Você não viu nenhum fantasma por
+lá, viu?<NOD<END
+#0313
+<KEY<MSGOh, você veio ver como aquela
+garota estava?<NOD<CLREla saiu dizendo que ia para a
+Câmara da Pedra.<NOD<END
+
+#0320
+<FLJ0702:0322
+<FLJ0701:0321<FL+0701
+<KEY<MSG<FAC0019Oh, ei!<NOD<CLRHá quanto tempo não te
+vejo.<NOD
+Você parece bem!<NOD<CLRAquela bruxa te jogou aqui
+embaixo, né?<NOD
+Somos dois!<NOD<CLR<FAC0020Então você não foi capaz
+de derrotá-los...<NOD
+Eu tinha esperança de que
+você vencesse, mas...<NOD<CLRQuanto a mim, eu tentei.
+Ah, e como tentei.<NOD
+E olha só onde eu vim
+parar.<NOD<CLR.....<NOD<CLRTudo aquilo por nada.<NOD
+No final das contas, eu
+não pude salvar nenhuma
+daquelas crianças.<NOD
+Da forma que estou agora,
+parece que ainda vou ficar
+aqui por um bom tempo...<NOD<END
+#0321
+<KEY<MSG<FAC0020Sobreviver, eu sobrevivi,
+mas e agora?<NOD<CLREu vou ficar aqui sentada
+apodrecendo...?<NOD<END
+#0322
+<KEY<MSG<FAC0020O lendário Labirinto...<NOD
+Não sei quem o construiu,
+mas parece que ele é o
+depósito de lixo da ilha.<NOD<CLRSó tem uma saída daqui.<NOD
+Você tem que passar pela
+rocha gigante dentro da
+Câmara da Pedra.<NOD<CLREu iria com você, só que,
+nesse estado em que estou,
+eu só vou atrapalhar...<NOD<FL+0760<FL+0703<END
+
+
+#0400
+<KEY<FLJ0705:0001<FL+0705<SOU0022<CNP0400:0021:0000
+<MSGVocê abriu o baú.<NOD<GIT1019<IT+0019<EQ+0004<CLR
+<CMU0010Obteve o =Protetor de Armas=!<WAI0160<NOD<RMU<END
+

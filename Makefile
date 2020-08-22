@@ -206,6 +206,9 @@ res/tsc/it/%.tsb: res/tsc/it/%.txt
 res/tsc/de/%.tsb: res/tsc/de/%.txt
 	$(TSCOMP) -l=de "$<"
 
+res/tsc/br/%.tsb: res/tsc/br/%.txt
+	$(TSCOMP) -l=br "$<"
+
 
 .PHONY: head-gen clean
 

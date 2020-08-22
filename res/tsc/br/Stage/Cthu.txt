@@ -1,0 +1,32 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+
+#0091
+<MNA<CMU0008<FAI0001<END
+
+#0092
+<MNA<CMU0008<FAI0002<END
+
+#0093
+<MNA<CMU0008<FAI0003<END
+
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0125:0002
+
+#0101
+<PRI<SOU0011<DNP0101<FAO0004<TRA0002:0094:0125:0012
+
+#0200
+<KEY<FLJ1290:0201<FL+1290<MSGOra, ora.<NOD<CLRUm soldado da superfície?
+Eu não esperava vê-lo por aqui...<NOD
+Onde estão os outros?<NOD<CLR.....<NOD<CLRComo é?
+Você perdeu a memória?<NOD
+He he he...<NOD<END
+
+#0201
+<KEY<MSGBem, divirta-se andando por aí 
+enquanto ainda tem combustível.<NOD<END

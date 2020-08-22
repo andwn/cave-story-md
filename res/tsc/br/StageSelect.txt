@@ -1,0 +1,13 @@
+#1000
+<KEY<MSG<TURSem permissão para teletransportar.<WAI9999<END
+#1001
+<KEY<MSG<TURCorredor dos Ovos<WAI9999<END
+#1002
+<KEY<MSG<TURGramápolis<WAI9999<END
+#1003
+<KEY<MSG<TURZona Arenosa<WAI9999<END
+#1004
+<KEY<MSG<TURLabirinto<WAI9999<END
+#1005
+<KEY<MSG<TURPlantação<WAI9999<END
+

@@ -1,0 +1,95 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+
+#0091
+<MNA<CMU0008<FAI0001<END
+
+#0092
+<MNA<CMU0008<FAI0002<END
+
+#0093
+<MNA<CMU0008<FAI0003<END
+
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGVocê abriu o baú.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010Obteve a =Estrela Polar=!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSG
+De algum lugar, uma transmissão...<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGVazio.<NOD<END
+
+#0210
+
+#0300
+<KEY<MSGZzzzz...<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGPor acaso você não teria visto a
+arma que eu fiz, teria?<NOD
+Alguém entrou aqui e a roubou de
+mim enquanto eu dormia!<NOD
+Droga, eu não devia tê-la tirado
+do bolso quando fui cochilar...<NOD<AMJ0002:0302<CLRE ela nem estava pronta ainda!<NOD
+Só mais alguns pequenos ajustes e
+eu teria a transformado numa arma
+de meter medo em qualquer um.<NOD<CLROh, mas que mundo cruel...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+EI!<NOD<CLR
+Essa é a minha arma?!<NOD<CLR<GIT0002O que você tá fazendo com ela?!
+Eu não a fiz para você!<NOD<CLRDevolva!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+A =Estrela Polar= foi tomada...<NOD<CLRPoxa!<NOD
+Dá para ver que você fez de tudo
+com ela.<NOD<CLR
+.....<NOD<CLRSabe...<NOD
+Por muito tempo, eu achei que uma
+pessoa deveria forjar sua própria
+arma.<NOD
+Quem luta com a arma de outro e
+considera a força que tem sendo
+dele próprio é um ignorante.<NOD
+Quem culpa as ferramentas que tem
+pelo poder que não consegue obter
+é um tolo.<NOD<CLR
+<CMU0008Só que...<WAI0050<CLRQuando vejo diante de mim essa
+arma que você usou à exaustão,
+meus olhos se enchem de lágrimas.<NOD
+Só de pensar que todo esse uso
+seria possível, antes mesmo de
+estar terminada...<NOD<CLR
+Ahhh...<NOD<CLRMe desculpe pelo desabafo.<NOD<CLRVocê pode ficar com a arma.<NOD<CMU0000<FAO0001
+Depois que eu terminá-la, claro.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013
+=Estrela Polar= virou =Esporão=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGNeste mundo, existe um equilíbrio
+entre aqueles que são criadores e
+aqueles que são usuários.<NOD<CLREu sabia disso, é claro, só que
+precisei da sua ajuda para poder
+vivenciar pela primeira vez.<NOD
+De agora em diante, eu irei me
+dedicar ao lado da criação.<NOD
+Todo meu esforço se torna alegria
+quando sei que há alguém que irá 
+aproveitar meu trabalho ao máximo.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Saí."<NOD<END

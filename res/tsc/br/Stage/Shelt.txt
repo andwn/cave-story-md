@@ -1,0 +1,191 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+
+#0091
+<MNA<CMU0008<FAI0001<END
+
+#0092
+<MNA<CMU0008<FAI0002<END
+
+#0093
+<MNA<CMU0008<FAI0003<END
+
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0000<CMU0008
+<ANP0102:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0102:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+#0100
+<PRI<FLJ0523:0105<FAO0004<TRA0006:0094:0217:0016
+
+#0101
+
+#0102
+<KEY<FLJ0524:0103
+<MSGUm teletransporte.<NOD
+Parece que não está funcionando no
+momento...<NOD<END
+
+#0103
+<PRI<MSGDeseja ir à Plantação?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0102:0001:0000
+<WAI0100<FAO0004<TRA0061:0099:0007:0013
+
+#0105
+<PRI<FAO0004<FL+0227<TRA0006:0600:0217:0016
+
+#0200
+<KEY<MNA<CMU0000<FAI0004<WAI0100
+<QUA0030<SOU0044<ANP0101:0001:0000
+<WAI0080<ANP0210:0000:0000<WAI0020
+<FL+0520<SOU0011<DNP0101
+<WAI0050<MYD0002<MOV0006:0010
+<CMU0010<MSG<FAC0010Iuhuuu!<WAI0160<NOD<CMU0008<CLRVocê conseguiu, rapaz!<NOD
+Eu sabia que você era
+capaz de me tirar daqui
+no instante que te vi.<NOD<CLR.....<NOD
+<CLREnfim...<NOD
+Eu me chamo Kazuma
+Sakamoto.<NOD
+Pode me chamar de Kazuma,
+se quiser.<NOD<CLREu tive muita sorte de
+escapar do Doutor,<NOD
+mas, infelizmente, o meu
+teletransporte me mandou
+para cá.<NOD
+Eu pensei que fosse morrer
+de fome...<NOD
+Eu te devo a minha vida!<NOD<CLROh, a propósito...<NOD<CLR...Você não conheceria a
+vila Mimiga, conheceria?<NOD<CLR...Sue?<NOD<CLRVocê conhece a Sue?!<NOD<CLRAh, saquei.<NOD
+Você veio me encontrar no
+lugar da Sue.<NOD<CLREntão tá certo!<NOD
+Mostre o caminho até a 
+vila!<NOD<SOU0043<ANP0102:0001:0000<WAI0030<ANP0210:0000:0002<CLR?!<NOD<CLO<FAC0000
+<CNP0303:0113:0000<ANP0303:0030:0000<WAI0100
+<FAC0000<MSG<ANP0102:0000:0000<FAC0018Kazuma?!<NOD<CLR<FAC0010Professor Booster!!<NOD
+Você está bem!<NOD<CLR<FAC0018Sim, mais ou menos.<NOD<CLO
+<ANP0303:0003:0000<WAI0040
+<ANP0303:0000:0002<WAI0030
+<ANP0303:0000:0000<WAI0030
+<FAC0000<MSG<FAC0018E como está a Sue?<NOD
+Ela está bem?<NOD<CLR<FAC0010Ela está na vila Mimiga.<NOD
+Esse rapazinho estava a
+ponto de me levar até lá.<NOD<CLO
+<WAI0020<ANP0210:0000:0000<WAI0010
+<FAC0000<MSG<FAC0018!!!<NOD<CLO
+<ANP0303:0003:0000<WAI0080<ANP0303:0000:0000
+<FAC0000<MSG<FAC0010Oh, vocês se conhecem?<NOD<CLR<FAC0018.....<NOD<CLRNão...<NOD
+<ANP0303:0000:0002...Não, nunca o vi.<NOD<CLREsquece, nós precisamos
+encontrar a Sue.<NOD
+O Doutor começou a reunir
+os Mimigas.<NOD
+Parece que ele já soube
+das flores vermelhas.<NOD<CLR<FAC0010Mas, a Sue...<NOD<CLRAs flores vermelhas também
+irão afetar a Sue?<NOD
+Igual a qualquer outro
+Mimiga<CLR<FAC0018Kazuma.<NOD<CLRO Doctor está reunindo os
+Mimigas.<NOD
+Você sabe o que isso
+significa, não sabe?<NOD<CLR<FAC0010<CMU0000Você... quer dizer a
+guerra?
+Ele...<NOD<CLO<FAC0000
+<ANP0303:0003:0002<WAI0032
+<ANP0303:0000:0002
+<MSG<FAC0018Precisamente.<NOD<CMU0008
+Nós não temos escolha
+agora a não ser impedi-lo.<NOD<CLR<FAC0010Impedi-lo? Mas como?<NOD<CLR<FAC0018Eu tenho uma ideia.<NOD
+Mas, por enquanto, vamos
+logo para onde a Sue está.<NOD
+Lá nós conversaremos.<NOD<FAC0000<CLO
+<ANP0303:0003:0000<WAI0038
+<MYB0002<WAI0016<MYD0002<ANP0303:0000:0000
+<MSG<FAC0018Você também. Venha
+conosco.<NOD<CLO
+<ANP0303:0005:0000<WAI0020<DNP0303
+<ANP0210:0003:0000<WAI0078
+<ANP0210:0005:0000<WAI0020<DNP0210
+<FL-0522<FL+0523
+<CNP0016:0016:0002<WAI0020
+<CNP0017:0017:0002<FL+0525<FL+0226
+<END
+
+#0210
+
+#0220
+<KEY<FLJ0524:0221<MSG<TURO teletransporte está fora de uso.<NOD<END
+
+#0221
+<KEY<MSG<TURTeletransporte para "Plantação" ativado.<NOD<END
+
+#0300
+
+#0301
+
+#0302
+
+#0303
+
+#0500
+<KEY<CMU0021<FAI0004
+<MSG<TURConectando à rede...<WAI0050
+<TURConectado.<WAI0050
+<TURExecutando algoritmo de bate-papo.<WAI0100<CLR<MSGSue?<NOD
+Você está aí?<NOD
+Sou eu.<NOD
+Kazuma!<NOD
+Eu dei um jeito de escapar, mas
+acabei me perdendo...<NOD
+Eu encontrei um abrigo, só que não
+tem nada aqui.<NOD
+Se você puder me ouvir, por favor,
+responda!<NOD<CLR...Por favor?<NOD
+<FAO0004<SK+0005<TRA0013:0091:0010:0008
+
+#0501
+<KEY<HMC<CMU0021<FAI0004
+<MSG<TURProcurando usuário "Sue"...<WAI0150<CLR<TUR1 usuário com o nome "Sue" encontrado.<WAI0150<CLR<MSGSue!<NOD
+Por favor, responda!<NOD
+Eles estão te procurando...<NOD
+Você está dormindo?<NOD
+O seu irmão está tão sozinho...<NOD<FAO0004<SMC<CLO
+<TRA0090:0095:0014:0009
+
+#0502
+<KEY<HMC<CMU0021<FAI0004
+<MSGSuuuuue!<NOD
+Me responda!<NOD
+Estou com tanta fome...<NOD
+Não tem nada para se comer aqui.
+Eu inclusive cheguei ao ponto de
+comer baratas.<NOD
+...Ha ha. É brincadeira.
+Ha ha.<NOD<CLR...Só que, se for preciso, eu sou
+capaz de comer mesmo...<NOD<FAO0004<SMC<TRA0011:0302:0008:0006
+
+#0700
+<KEY<FAI0004<MSGSue?<NOD
+É você mesmo?<NOD<FAO0004<TRA0024:0701:0002:0000
+
+#0701
+<KEY<FAI0004<MSGA porta está emperrada e eu não
+consigo sair.<NOD
+Eu ainda estou neste lugar com
+jeito de abrigo.<NOD
+O código do setor é "Gramápolis".<NOD
+Veja se você consegue fazer um
+rastreamento daqui.<NOD<CLRAh, e a Mamãe não está aqui.<NOD
+Eu acho que ela ainda está com o
+Doutor.<NOD<CLRAlgum Dragão parece pronto para
+chocar?<NOD<FAO0004<TRA0024:0702:0002:0000
+
+#0702
+<KEY<FAI0004<MSGSaquei.<NOD
+Oh, a propósito, eu estou morrendo
+de fome, então se<CLR
+<MSG<TURUsuário "Sue" desconectou.<NOD<CLR.....<NOD<FAO0004<TRA0024:0703:0002:0000

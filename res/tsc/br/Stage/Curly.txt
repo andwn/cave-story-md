@@ -1,0 +1,195 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0002<FAI0000<END
+
+#0091
+<MNA<CMU0002<FAI0001<END
+
+#0092
+<MNA<CMU0002<FAI0002<END
+
+#0093
+<MNA<CMU0002<FAI0003<END
+
+#0094
+<MNA<FLJ0341:0099<CMU0002<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<KEY<FLJ0561:0102<SOU0011<ANP0100:0000:0002
+<FAO0002<TRA0010:0092:0003:0012
+
+#0101
+<KEY<FLJ0561:0102<SOU0011<ANP0101:0000:0002
+<FAO0004<TRA0032:0094:0008:0009
+
+#0102
+<PRI<MSGNão quer abrir!<NOD<END
+
+#0200
+<KEY
+<FLJ0564:0204
+<FLJ0562:0206
+<MSGEu não tenho nada para falar.<NOD<END
+
+#0201
+<KEY<MSGCuidado com os Jacareias.<NOD
+Se você pisar na areia, eles pulam
+para fora e te mordem.<NOD
+E isso dói pra caramba!<NOD<END
+
+#0202
+<FLJ0273:0205
+<KEY<MSGPara mover as Pedras do Sol, você 
+precisa quebrar o feitiço...<NOD<END
+
+#0203
+<KEY<MSGZzzzz... Hummm...<NOD<CLRPeixe...
+Eu quero comer... peixe...<NOD<END
+
+#0204
+<MSGAntigamente, quem tomava conta da
+Zona Arenosa era a senhora Jenka.<NOD
+Ela e os cachorrinhos dela.<NOD<CLRA casa dela fica...<NOD<CLRHummmmm...<NOD<CLREm algum lugar da Zona Arenosa...?<NOD<END
+
+#0205
+<KEY<MSGAs nossas mães de verdade foram
+mortas por robôs.<NOD<CLRNós não tínhamos nem aberto os
+olhos ainda...<NOD
+Mas a Curly nos criou.<NOD<END
+
+#0206
+<KEY<MSGVocê está procurando as flores
+vermelhas?<NOD
+Tem uma senhora chamada Jenka que
+talvez saiba de alguma coisa.<NOD<CLROh, é mesmo.<NOD<CLRSe você for vê-la, leve o cachorro
+que está lá perto da cama de volta
+para ela.<NOD<FL+0564<END
+
+#0300
+<KEY<DNP0300<MM0<MYD0000<CMU0000
+<FL+0561<MSGAaaaahhh!<NOD<CLO<KEY
+<ANP0500:0003:0002<WAI0079<ANP0500:0000:0002
+<MSG<FAC0019Ooohhh!<NOD<CLO
+<CNP0310:0122:0002<DNP0200<WAI0010
+<CNP0311:0122:0002<DNP0201<WAI0010
+<CNP0312:0122:0002<DNP0202<WAI0010
+<CNP0313:0122:0002<DNP0203<MSGNós temos visita!<NOD<CLREu sei o que você está 
+procurando!<NOD
+Mas, se liga!<NOD
+Mimigas não são inimigos!<NOD
+Eles são inofensivos!<NOD<CLRSinto muito, mas...<NOD<CLO
+<WAI0020<SOU0004<CNP0400:0118:0002<DNP0500
+<WAI0010
+<MSGEu estou do lado deles!<NOD<CLRE vou acabar com você!<NOD<CLO
+<BSL0400
+<CMU0004
+<ANP0400:0010:0002
+<ANP0310:0010:0002
+<ANP0311:0010:0002
+<ANP0312:0010:0002
+<ANP0313:0010:0002
+<END
+
+#0310
+
+#0311
+
+#0312
+
+#0313
+
+#0400
+<KEY<MYD0400
+<FL-0561<FL-0565
+<ANP0310:0020:0005
+<ANP0311:0020:0005
+<ANP0312:0020:0005
+<ANP0313:0020:0005
+<CNP0400:0117:0005
+<ANP0400:0005:0005<WAI0002
+<ANP0400:0030:0004<SOU0070
+<WAI0100<PRI<CMU0015<MSG
+Vitória!<WAI0140<CMU0000<NOD<CLO
+<KEY<ANP0400:0006:0005<WAI0002<PRI
+<WAI0050<CMU0002
+<MSG<FAC0020Você venceu...<NOD
+Eu não consigo continuar
+lutando...<NOD<CLRSuponho que agora você vá 
+matar todos os Mimigas,<NOD
+assim como os outros robôs
+fizeram...?<YNJ0410<CLREntendo...<NOD<CLRQue triste...<NOD<PRI<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0410
+<KEY<FL+0562<MSG<FAC0019Oh!<NOD<FAC0000<CLO
+<ANP0400:0010:0000<WAI0050
+<MSG<FAC0019Você também está do lado
+dos Mimigas?<NOD<CLRÉ isso aí, não tem nada de
+mau com eles!<NOD<CLREu sou a Curly.
+Curly Brace.<NOD
+Quando acordei, eu estava
+com essas crianças.<NOD<CLR<FAC0025Eu não me lembro de nada
+antes disso...<NOD
+Parece que é amnésia.<NOD<CLR<FAC0020Eu... provavelmente fui
+uma matadora de Mimigas,
+igual aos outros robôs...<NOD<CLO
+<EVE0415
+
+#0415
+<KEY<MSG<FAC0019Oh, nossa.<NOD<CLREssa sua Estrela Polar
+está péssima.<NOD
+Você quer trocá-la pela
+minha metralhadora?<YNJ0420<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Você entregou a =Estrela Polar=.<NOD<CLR
+<CMU0010<GIT0004Obteve a =Metralhadora=!<WAI0160<NOD<RMU<CLO
+<FAO0004<TRA0029:0090:0012:0009
+
+#0420
+<KEY<MSG<FAC0019No duro?<NOD<CLRBem, se você mudar de
+ideia, eu vou estar aqui.<NOD<PRI<CLO<MYD0000
+<FAO0004<TRA0029:0090:0012:0009
+
+#0500
+<KEY
+<FLJ0563:0530
+<FLJ0562:0515
+<MSG<FAC0019Hã?<NOD<CLROra, mas se não é o Sr.
+Matador.<NOD<CLRVocê ainda planeja matar
+os Mimigas?<YNJ0510<CLR<FAC0020Entendo...<NOD<CLRQue triste...<NOD<END
+
+#0510
+<KEY<FL+0562<MSG<FAC0019Oh!<NOD<CLRVocê também está do lado
+dos Mimigas?<NOD<CLRÉ isso aí, não tem nada de
+mau com eles!<NOD<CLREu sou a Curly.
+Curly Brace.<NOD
+Quando acordei, eu estava
+com essas crianças.<NOD<CLR<FAC0025Eu não me lembro de nada
+antes disso...<NOD
+Parece que é amnésia.<NOD<CLR<FAC0020Eu... provavelmente fui
+uma matadora de Mimigas,
+igual aos outros robôs...<NOD<CLO
+<EVE0515
+
+#0515
+<KEY<MSG<FAC0019Oh, nossa.<NOD<CLREssa sua Estrela Polar
+está péssima.<NOD
+Você quer trocá-la pela
+minha metralhadora?<YNJ0520<FL+0563<FAC0000<CLR
+<TAM0002:0004:0100<GIT0002Você entregou a =Estrela Polar=.<NOD<CLR
+<CMU0010<GIT0004Obteve a =Metralhadora=!<WAI0160<NOD<RMU<END
+
+#0520
+<KEY<MSG<FAC0019No duro?<NOD<CLRBem, se você mudar de
+ideia, eu vou estar aqui.<NOD<END
+
+#0530
+<KEY<MSG<FAC0025Os humanos que são os
+malvados da história!<NOD
+Os Mimigas apenas foram
+usados por eles.<NOD<END

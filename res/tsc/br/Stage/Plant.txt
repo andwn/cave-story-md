@@ -1,0 +1,61 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0013<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0013<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0013<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0013<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0013<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0045:0021
+
+
+#0105
+<PRI<MSGVocê deseja salvar?<YNJ0000<SVP<CLRJogo salvo.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergia reabastecida.<NOD<END
+
+#0200
+<KEY<MSGEsta é a nossa fazenda.
+Nós cultivamos flores aqui.<NOD
+Meu trabalho é cuidar das plantas.<NOD<CLRNós Mimigas precisamos das flores
+para o nosso sustento.<NOD<CLRFlores vermelhas, no entanto, não
+são nada legais.<NOD<CLRDizem que se você comer uma flor
+vermelha, o sangue começa a ferver
+e logo cairá morto!<NOD<CLRQue bom que não temos nenhuma
+dessas crescendo aqui.<NOD<END
+
+
+#0220
+<KEY<FLJ1020:0221<MSGUm irrigador.<NOD<END
+#0221
+<KEY<MSGEstá muito bem preso ao chão!<NOD<END
+
+#0300
+<PRI
+<FL+0410
+<DNP0300
+<MSGVocê vê algo brilhando...<NOD<CLR<CMU0010<GIT1005<IT+0005
+Obteve a =Presa da Fera=.<WAI0160<NOD<CLO
+<RMU<END
+
+#0400
+<PRI<SOU0022<DNP0400<CMU0016
+<MSG<GIT1006Obteve uma =Cápsula de Vida=!<WAI0160<NOD<RMU<ML+0003
+Saúde máxima foi aumentada em 3!<NOD<END
+

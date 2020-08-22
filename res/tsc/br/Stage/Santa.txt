@@ -1,0 +1,68 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0002<FAI0004<END
+
+#0099
+<CMU0028<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0006:0094:0004:0012
+
+
+
+#0120
+<KEY<MSG<TURCuidado! Armadilha à esquerda.
+Um toque e você morre na hora!<NOD<END
+
+
+#0300
+<ITJ0008:0301
+<KEY<MSG*Crac!* *Clec!*<NOD<FLJ0242:0000
+O carvão está ardendo em chamas.<NOD<END
+#0301
+<KEY<GIT1008<MSGDeseja usar o =Suco de Água-Viva=?<YNJ0000<CLO<GIT0000
+<IT-0008<ANP0300:0010:0000<WAI0030<FLJ0242:0302<FL+0242
+<MSGVocê encontrou algo nas cinzas...<NOD<CLR<GIT1012<IT+0012
+<CMU0010Obteve o =Carvão=.<WAI0160<NOD<CLO<RMU<DNP0300<END
+
+#0302
+<KEY<DNP0300<END
+
+
+#0500
+<FLJ0226:0506
+<FLJ0242:0505
+<FLJ0484:0504
+<FLJ0241:0503
+<FLJ0240:0502
+<KEY<FL+0240<MSGObrigado, foi uma ajuda e tanto.<NOD
+Pegue, fique com isto.<NOD<GIT0003<AM+0003:0000<CLR
+<CMU0010Obteve a =Bola de Fogo=!<WAI0160<NOD<RMU<GIT0000<CLRVocê está procurando alguém?<NOD
+Eu não vi ninguém passar por
+aqui.<NOD
+Se você quiser procurar mais
+adiante, terá que passar pela
+lareira da casa da Chaco...<NOD<FL+0241<END
+#0503
+<KEY<MSGVocê pode chegar na parte central
+de Gramápolis passando por dentro
+da lareira na casa da Chaco.<NOD<END
+#0504
+<KEY<MSGVocê precisa de =Carvão=?<NOD
+Pode ficar com o que está dentro
+da lareira, se quiser.<NOD<END
+#0505
+<KEY<MSGPara quê você precisa de carvão?<NOD<END
+#0506
+<KEY<MSGEu ouvi um barulho que parecia uma
+batida agora há pouco.<NOD
+E também gritos de desespero...<NOD<END
+

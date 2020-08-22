@@ -1,0 +1,184 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0000<TRA0056:0090:0072:0084
+
+#0110
+<KEY
+<SOU0011
+<ANP0110:0000:0002<WAI0010<HMC
+<ANP0110:0000:0000
+<MOV0015:0012<WAI0050
+<SOU0011
+<ANP0111:0000:0002<MYD0000<SMC<WAI0010
+<ANP0111:0000:0000<END
+
+#0111
+<KEY
+<SOU0011
+<ANP0111:0000:0002<WAI0010<HMC
+<ANP0111:0000:0000
+<MOV0015:0007<WAI0050
+<SOU0011
+<ANP0110:0000:0002<MYD0000<SMC<WAI0010
+<ANP0110:0000:0000<END
+
+#0200
+<KEY
+<FLJ1103:0212
+<ITJ0027:0211
+<FLJ1102:0206
+<ITJ0029:0210
+<ITJ0028:0209
+<FLJ1101:0208
+<FLJ1106:0204
+<FLJ1100:0201
+<ANP0200:0003:0005<WAI0050
+<ANP0200:0000:0005<WAI0020
+<MSG<FL+1100<FL+0961<FAC0022Então, você é o salvador
+que a Sue estava falando.<NOD<CLROh, graças a Deus...<NOD<CLREu sou a Momorin Sakamoto.<NOD
+A mãe da Sue.<NOD<CLREu fui forçada a trabalhar
+do lado do Doutor.<NOD
+Mas, assim que ele achou
+as sementes, eu não tive
+mais utilidade.<NOD<CLREntão mandou me jogarem
+para fora da ilha.<NOD<CLRNão existe mais
+cavalheirismo neste mundo.<NOD<CLRMas não faz diferença.<NOD<CLREu estou construindo um
+foguete.<NOD
+Ele vai poder te levar ao
+trono do Doutor.<NOD
+Só que eu ainda não tenho
+todas as partes.<NOD<CLO
+<ITJ0018:0202<ITJ0023:0203<EVE0201
+
+#0201
+<ITJ0018:0202<ITJ0023:0203
+<MSG<FAC0022
+O que eu preciso agora é 
+de um Propulsor.<NOD
+Onde é que vou encontrar
+um desses...<NOD<END
+
+#0202
+<MSG<CLR.....<NOD<CLRAh.<NOD Eu preciso pegar isso
+emprestado.<NOD<CLR
+<FAC0000<GIT1018O Propulsor v0.8 foi tomado.<NOD<GIT0000<CLR<FAC0022Eu ainda preciso de mais
+umas coisas para terminar
+o foguete.<NOD<CLO
+<IT-0018<EQ-0001<FL-0742
+<FL+1106
+<EVE0204
+
+#0203
+<MSG<CLR.....<NOD<CLRAh.<NOD Eu preciso pegar isso
+emprestado.<NOD<CLR
+<FAC0000<GIT1023O Propulsor v2.0 foi tomado.<NOD<GIT0000<CLR<FAC0022Eu ainda preciso de mais
+umas coisas para terminar
+o foguete.<NOD<CLO
+<IT-0023<EQ-0032<FL-0743
+<FL+1106
+<EVE0204
+
+#0204
+<KEY<MSG<FAC0022Você está ocupado agora?<YNJ0205<CLRÉ mesmo?<NOD
+Então deixa pra lá...<NOD<END
+
+#0205
+<KEY<FL+1101<MSGAh, ótimo.<NOD
+Você é mesmo o salvador.<NOD<CLRToma, use isso.<NOD<FAC0000
+<GIT1024<IT+0024<EQ+0064<FL+1020<MSG
+<CMU0010Obteve a =Máscara de Mimiga=.<WAI0160<NOD<RMU<CLO<GIT0000
+<MSG<FAC0022Hum, está uma belezinha.<NOD
+Parece que ficou um pouco
+grande, mas...<NOD<CLROs Mimigas trabalhando na
+plantação não podem falar
+com humanos.<NOD
+Mas, com essa máscara,
+talvez você consiga falar
+com eles.<NOD<CLREstá me entendendo?<NOD<EVE0207
+
+#0206
+<KEY<MSG<FAC0022<CLRPreciso que você encontre
+um homem chamado Itoh.<NOD<CLREle é o maior covarde,
+portanto duvido que tenha
+ido longe.<NOD<END
+
+#0207
+<MSG<FL+1027<FL+1028<FAC0022Para terminar o foguete,
+eu vou precisar de muita
+energia elétrica.<NOD
+Se você pudesse pegar um
+daqueles irrigadores que
+eles usam ali fora,<NOD
+creio que eu conseguiria
+me virar.<NOD<CLRPor favor, me traga um
+=Irrigador=.<NOD<END
+
+#0208
+<KEY<MSG<FAC0022Para terminar o foguete,
+eu vou precisar de muita
+energia elétrica.<NOD
+Aqueles irrigadores ali
+fora na plantação devem
+resolver.<NOD<CLRPor favor, me traga um
+=Irrigador=.<NOD<END
+
+#0209
+<KEY<MSG<FAC0022Bem-vindo de volta.<NOD<CLR<FAC0000<GIT1028
+Mostrou o =Irrigador Quebrado=.<NOD<CLR<FAC0022Hummm...<NOD<CLRA bateria deste irrigador
+está vazia.<NOD<GIT0000
+Não tem nada que eu possa
+fazer.<NOD<END
+
+#0210
+<KEY<FL+1102<FL+1107<MSG<FAC0022Bem-vindo de volta.<NOD<CLR<FAC0000
+<GIT1029<IT-0029Mostrou o =Irrigador=.<NOD<CLR<FAC0022Vamos ver...<NOD<CLRA bateria está cheia.<NOD
+Eu acho que este deve dar.<NOD<GIT0000<SOU0011<CNP0250:0072:0002<CLO<WAI0030
+<MSGAgora, temos que encontrar
+um homem chamado Itoh.<NOD<CLREle é um "engenheiro muito
+talentoso", como diz.<NOD<CLREle é também um dos homens
+mais tímidos que conheço.<NOD
+Ele escapou do Doutor sem
+pensar duas vezes, mas não
+deve ter ido muito longe.<NOD<END
+
+#0211
+<MSG<FL+1103<FAC0022Bem-vindo de volta.<NOD<CLRVocê encontrou o Itoh?<NOD<CLR
+<FAC0000<GIT1027<IT-0027Entregou o =Controlador=.<NOD<CLR<FAC0022Ótimo. Era isso mesmo.<NOD
+Esse é o Controlador que
+ele tem tanto orgulho.<NOD<GIT0000<CLRHummm...<NOD<CLRSeria bem mais fácil de
+analisar se ele estivesse
+aqui com a gente.<NOD<CLRBem, eu vou dar um jeito.<NOD<EVE0212
+
+#0212
+<KEY<MSG<FAC0022Muito obrigada.<NOD<CLRVai demorar um pouco para
+eu terminar, então por que
+não descansa ali na cama?<NOD<END
+
+#0250
+
+#0280
+<KEY<MSGVocê quer descansar?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050<FLJ1103:0281
+<LI+1000<SOU0020<MYD0002<MSGSaúde recuperada.<NOD<CLO<CMU0002<FAI0004<END
+
+#0281
+<FL-1103<FL+1105<FL+1030<FL+1031<FL+1032<FL+1033<FL+1004<FL-1038<FL+1039
+<FL-1026<FL+1036
+<MSG.....<NOD<CLO<DNP0200<DNP0350
+<LI+1000<SOU0020<MYD0002<MSGVocê desperta após um longo sono.<NOD<CLO<CMU0002<FAI0004<END
+
+
+#0350
+<KEY<MSGUm foguete...?<NOD<END
+
