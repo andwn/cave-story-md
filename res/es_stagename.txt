@@ -1,0 +1,95 @@
+Null
+Casa de Arthur
+Pasillo Oval
+Huevo No. 00
+Huevo No. 06
+Sala de Observación de Huevos
+Villavergel
+Casa de Santa
+Casa de Chaco
+Laberinto I
+Zona Desértica
+Pueblo Mimiga
+Primera Cueva
+Punto de Inicio
+Cabaña
+Depósito
+Cementerio
+Granja Yamashita
+Refugio
+Salón de la Asamblea
+Punto de Guardado
+Sala Contigua
+Choza de Cthulhu
+Huevo No. 01
+Casa de Arthur
+Sala del Generador
+Punto de Guardado
+Cámara de Ejecuciones
+Chicle
+Residencia de Zona Desértica
+Choza de Villavergel
+Arteria Principal
+Sala Pequeña
+Casa de Jenka
+Casa Abandonada
+Almacén de Zona Desértica
+Casa de Jenka
+Zona Desértica
+Laberinto H
+Laberinto W
+Campamento
+Clínica en Ruinas
+Tienda del Laberinto
+Laberinto B
+Cámara de la Roca
+Laberinto M
+Lugar Oscuro
+Núcleo
+Acueducto
+¿Pasillo Oval?
+¿Choza de Cthulhu?
+¿Sala de Observación?
+Huevo No. 00
+Muro Exterior
+Sala Contigua
+Almacén
+Plantación
+Cárcel No. 1
+Guarida
+Área de Descanso
+Teletransportador
+Cárcel No. 2
+Balcón
+Última Cueva
+Sala del Trono
+La Tabla del Rey
+Edificio Prefabricado
+Última Cueva (Oculta)
+Espacio Negro
+Casa Pequeña
+Balcón
+Caída
+u
+Cabina del Acueducto
+
+
+
+
+
+Edificio Prefabricado
+Tierra Sagrada - B1
+Tierra Sagrada - B2
+Tierra Sagrada - B3
+Almacén
+¿Pasaje?
+¿Pasaje?
+Cámara de las Estatuas
+Cámara Sellada
+Pasillo
+
+Artesano Ermitaño
+
+Cámara Sellada
+
+Sala del Reloj

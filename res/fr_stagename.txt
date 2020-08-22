@@ -1,0 +1,95 @@
+Null
+Maison d'Arthur
+Incubateurs
+Oeuf No. 00
+Oeuf No. 06
+Salle d'observation des oeufs
+Prairieville
+Maison de Santa
+Maison de Chako
+Labyrinthe I
+Zone des Sables
+Village Mimiga
+Première Caverne
+Point de Départ
+Ruines
+Réservoir
+Cimetière
+Ferme de Yamashita
+Abri
+Hall de l'Assemblée
+Point de Sauvegarde
+Salle adjacente
+Tour de Cthulhu
+Oeuf No. 01
+Maison d'Arthur
+Générateur
+Point de Sauvegarde
+Chambre d'Exécution
+Gum
+Résidence des Sables
+Hutte de Prairieville
+Main Artery
+Petite Chambre
+Maison de Jenka
+Maison désertée
+Stockage
+Maison de Jenka
+Zone des Sables
+Labyrinthe H
+Labyrinthe W
+Nouvelle Clinique
+Ruines de la Clinique
+Magasin du Labyrinthe
+Labyrinthe B
+Porte Scellée
+Labyrinthe M
+Endroit sombre
+Noyau
+Chemin aquatique
+Incubateurs?
+Tour de Chtulhu?
+Salle d'Observation d'Oeufs?
+Oeuf No. 00
+Exterieur
+Salle adjacente
+Stockage
+Plantation
+Prison No. 1
+Cachette
+Salle de repos
+Téléporteur
+Prison No. 2
+Balcon
+Caverne Finale
+Salle du Trone
+Table du Roi
+Construction
+Caverne finale (Cachée)
+Espace Noir
+Petite maison
+Balcon
+Chute
+u
+Maison aquatique
+
+
+
+
+
+Maison
+Sol Sacré -1
+Sol Sacré -2
+Sol Sacré -3
+Stockage
+Passage?
+Passage?
+Hall des Statues
+Chambre du Sceau
+Corridor
+
+Ermite Gunsmith
+
+Chambre du Sceau
+
+Salle de l'Horloge
