@@ -91,9 +91,11 @@ void window_open(uint8_t mode) {
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), TEXT_X1, wy1, 36, 1, 0);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), WINDOW_X2, wy1);
 	for(uint8_t y = ty1; y <= ty2; y++) {
+        vdp_map_xy(VDP_PLAN_W, 0, 0, y);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), WINDOW_X1, y);
 		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), WINDOW_X2, y);
+        vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 	}
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), WINDOW_X1, wy2);
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), TEXT_X1, wy2, 36, 1, 0);
@@ -104,6 +106,7 @@ void window_open(uint8_t mode) {
 		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
+    linesSinceLastNOD = 0;
 	windowOpen = TRUE;
 }
 
@@ -121,8 +124,9 @@ void window_clear() {
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+3, w, 1, 0);
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+4, w, 1, 0);
 	window_clear_text();
-	
-	textMode = TM_NORMAL;
+
+    linesSinceLastNOD = 0;
+    if(textMode == TM_MSG) textMode = TM_NORMAL;
 }
 
 void window_clear_text() {
@@ -167,11 +171,11 @@ void window_draw_char(uint8_t c) {
 		textColumn = 0;
 		spaceCounter = spaceOffset = 0;
 		if(textRow > 2) {
-			if(textMode == TM_ALL) textMode = TM_NORMAL;
+			//if(textMode == TM_ALL) textMode = TM_NORMAL;
 			window_scroll_text();
-		} else if(textMode == TM_LINE) {
-			textMode = TM_NORMAL;
-		}
+		} //else if(textMode == TM_LINE) {
+		//	textMode = TM_NORMAL;
+		//}
 	} else {
 		// Check if the line has leading spaces, and skip drawing a space occasionally,
 		// so that the sign text will be centered
@@ -226,13 +230,13 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 		textRow++;
 		textColumn = 0;
 		if(textRow > 1) {
-			if(textMode == TM_ALL) textMode = TM_NORMAL;
+			//if(textMode == TM_ALL) textMode = TM_NORMAL;
 			window_scroll_jtext();
-		} else if(textMode == TM_LINE) {
-			textMode = TM_NORMAL;
-		}
+		} //else if(textMode == TM_LINE) {
+		//	textMode = TM_NORMAL;
+		//}
 		//vdp_set_display(TRUE);
-		linesSinceLastNOD++;
+		//linesSinceLastNOD++;
 		return;
 	}
 	// Don't let the text run off the end of the window
@@ -240,11 +244,11 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 		textRow++;
 		textColumn = 0;
 		if(textRow > 1) {
-			if(textMode == TM_ALL) textMode = TM_NORMAL;
+			//if(textMode == TM_ALL) textMode = TM_NORMAL;
 			window_scroll_jtext();
-		} else if(textMode == TM_LINE) {
-			textMode = TM_NORMAL;
-		}
+		} //else if(textMode == TM_LINE) {
+		//	textMode = TM_NORMAL;
+		//}
 	}
 	if(iskanji) c += 0x100;
 	jwindowText[textRow][textColumn] = c;

@@ -3,12 +3,12 @@
  * The text uses the same plane as well rather than sprites
  */
  
- #define WINDOW_ATTR(x) TILE_ATTR(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
+#define WINDOW_ATTR(x) TILE_ATTR(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
 // Instant text mode
 #define TM_NORMAL	0
-#define TM_LINE		1 // CAT/SAT
-#define TM_ALL		2 // TUR
+#define TM_MSG		1 // TUR
+#define TM_ALL		2 // CAT/SAT
 
 uint8_t linesSinceLastNOD;
 extern const uint8_t ITEM_PAL[40];

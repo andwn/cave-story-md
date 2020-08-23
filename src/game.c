@@ -197,20 +197,26 @@ void draw_itemmenu(uint8_t resetCursor) {
 	uint8_t top = pal_mode ? 1 : 0;
 	// Fill the top part
 	uint16_t y = top;
+    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), 1, y);
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), 2, y, 36, 1, 0);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), 38, y);
+    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 	for(uint16_t i = 19; --i;) { // Body
 		y++;
+        vdp_map_xy(VDP_PLAN_W, 0, 0, y);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), 1, y);
 		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), 2, y, 36, 1, 0);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), 38, y);
+        vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 	}
 	// Bottom
 	y++;
+    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), 1, y);
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), 2, y, 36, 1, 0);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
+    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 
 	// Load the 4 tiles for the selection box. Since the menu can never be brought up
 	// during scripts we overwrite the face image
@@ -346,7 +352,8 @@ uint8_t update_pause() {
 	// Start or B will close the menu and resume the game
 	// Pressing C over a weapon will too, and switch to that weapon
 	if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot]) ||
-		(selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) && !tscState) {
+		(selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) /*&& !tscState*/) {
+        tscState = TSC_IDLE;
 		vdp_set_display(FALSE);
 		// Change weapon
 		if((selectedItem < 0 && joy_pressed(btn[cfg_btn_jump])) &&
@@ -402,56 +409,60 @@ uint8_t update_pause() {
 				tsc_update();
 			}
 		} else if(joy_pressed(btn[cfg_btn_jump])) {
-			if(selectedItem >= 0) { // Item
-				if(playerInventory[selectedItem] > 0) {
-					tsc_call_event(6000 + playerInventory[selectedItem]);
-				}
-			}
-		} else if(joy_pressed(BUTTON_LEFT)) {
-			int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
-			if(newsel == -1) newsel = -2;
-			itemcursor_move(selectedItem, newsel);
-			sound_play(SND_MENU_MOVE, 5);
-			selectedItem = newsel;
-			if(selectedItem >= 0) { // Item
-				tsc_call_event(5000 + playerInventory[selectedItem]);
-			} else { // Weapon
-				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
-			}
-		} else if(joy_pressed(BUTTON_UP)) {
-			int8_t newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
-			if(newsel == -1) newsel = -2;
-			itemcursor_move(selectedItem, newsel);
-			sound_play(SND_MENU_MOVE, 5);
-			selectedItem = newsel;
-			if(selectedItem >= 0) { // Item
-				tsc_call_event(5000 + playerInventory[selectedItem]);
-			} else { // Weapon
-				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
-			}
-		} else if(joy_pressed(BUTTON_RIGHT)) {
-			int8_t newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
-			if(newsel == -1) newsel = -6;
-			itemcursor_move(selectedItem, newsel);
-			sound_play(SND_MENU_MOVE, 5);
-			selectedItem = newsel;
-			if(selectedItem >= 0) { // Item
-				tsc_call_event(5000 + playerInventory[selectedItem]);
-			} else { // Weapon
-				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
-			}
-		} else if(joy_pressed(BUTTON_DOWN)) {
-			int8_t newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
-			if(newsel == -1) newsel = -2;
-			itemcursor_move(selectedItem, newsel);
-			sound_play(SND_MENU_MOVE, 5);
-			selectedItem = newsel;
-			if(selectedItem >= 0) { // Item
-				tsc_call_event(5000 + playerInventory[selectedItem]);
-			} else { // Weapon
-				tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
-			}
-		}
+            if (selectedItem >= 0) { // Item
+                if (playerInventory[selectedItem] > 0) {
+                    tsc_call_event(6000 + playerInventory[selectedItem]);
+                }
+            }
+        }
+        if(!tscState || lastRunEvent != 6015 || lastRunEvent != 6018 || lastRunEvent != 6023
+                     || lastRunEvent != 6026 || lastRunEvent != 6038) {
+            if (joy_pressed(BUTTON_LEFT)) {
+                int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
+                if (newsel == -1) newsel = -2;
+                itemcursor_move(selectedItem, newsel);
+                sound_play(SND_MENU_MOVE, 5);
+                selectedItem = newsel;
+                if (selectedItem >= 0) { // Item
+                    tsc_call_event(5000 + playerInventory[selectedItem]);
+                } else { // Weapon
+                    tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+                }
+            } else if (joy_pressed(BUTTON_UP)) {
+                int8_t newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
+                if (newsel == -1) newsel = -2;
+                itemcursor_move(selectedItem, newsel);
+                sound_play(SND_MENU_MOVE, 5);
+                selectedItem = newsel;
+                if (selectedItem >= 0) { // Item
+                    tsc_call_event(5000 + playerInventory[selectedItem]);
+                } else { // Weapon
+                    tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+                }
+            } else if (joy_pressed(BUTTON_RIGHT)) {
+                int8_t newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
+                if (newsel == -1) newsel = -6;
+                itemcursor_move(selectedItem, newsel);
+                sound_play(SND_MENU_MOVE, 5);
+                selectedItem = newsel;
+                if (selectedItem >= 0) { // Item
+                    tsc_call_event(5000 + playerInventory[selectedItem]);
+                } else { // Weapon
+                    tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+                }
+            } else if (joy_pressed(BUTTON_DOWN)) {
+                int8_t newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
+                if (newsel == -1) newsel = -2;
+                itemcursor_move(selectedItem, newsel);
+                sound_play(SND_MENU_MOVE, 5);
+                selectedItem = newsel;
+                if (selectedItem >= 0) { // Item
+                    tsc_call_event(5000 + playerInventory[selectedItem]);
+                } else { // Weapon
+                    tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
+                }
+            }
+        }
 		for(uint8_t i = MAX_ITEMS; i--; ) if(itemSprite[i].y) vdp_sprite_add(&itemSprite[i]);
 	}
 	return TRUE;

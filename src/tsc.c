@@ -133,6 +133,7 @@ typedef struct {
 // Array of pointers to each event in the current TSC
 Event headEvents[HEAD_EVENT_COUNT];
 Event stageEvents[MAX_EVENTS];
+uint16_t lastRunEvent = 0;
 
 const uint8_t *curCommand = NULL;
 uint8_t cmd, prevCmd;
@@ -157,7 +158,6 @@ uint16_t lastAmmoNum = 0;
 
 uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max);
 
-void tsc_show_boss_health();
 void tsc_show_teleport_menu();
 
 uint8_t execute_command();
@@ -276,6 +276,8 @@ void tsc_call_event(uint16_t number) {
 	if(number < 50) {
 		for(uint8_t i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
+			    lastRunEvent = number;
+			    linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = headEvents[i].data;
 				return;
@@ -284,6 +286,8 @@ void tsc_call_event(uint16_t number) {
 	} else {
 		for(uint8_t i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
+                lastRunEvent = number;
+                linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = stageEvents[i].data;
 				return;
@@ -605,17 +609,17 @@ uint8_t execute_command() {
 		break;
 		case CMD_CAT: // All 3 of these display text instantly
 		{
-			window_set_textmode(TM_LINE);
+			window_set_textmode(TM_ALL);
 		}
 		break;
 		case CMD_SAT:
 		{
-			window_set_textmode(TM_LINE);
+			window_set_textmode(TM_ALL);
 		}
 		break;
 		case CMD_TUR:
 		{
-			window_set_textmode(TM_ALL);
+			window_set_textmode(TM_MSG);
 		}
 		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
@@ -1338,12 +1342,15 @@ uint8_t execute_command() {
             }
 		}
 		if(window_is_open()) {
-			//if(cfg_language == LANG_JA && cmd == '\n' && prevCmd >= 0xE0 && linesSinceLastNOD > 1) {
-			//	tscState = TSC_WAITINPUT;
-			//	linesSinceLastNOD = 0;
-			//	curCommand--;
-			//	return 1;
-			//}
+			if(cfg_language == LANG_JA && cmd == '\n' && (prevCmd >= 0xE0 || prevCmd < 0x60)) {
+                linesSinceLastNOD++;
+			    if(linesSinceLastNOD > 1) {
+                    tscState = TSC_WAITINPUT;
+                    linesSinceLastNOD = 0;
+                    curCommand--;
+                    return 1;
+                }
+			}
 			if(cmd == '\n' || window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language == LANG_JA) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);

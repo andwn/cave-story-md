@@ -27,6 +27,7 @@ enum TSC_STATE {
 uint8_t tscEventCount;
 
 uint8_t tscState;
+uint16_t lastRunEvent;
 
 uint8_t inFade;
 
@@ -50,5 +51,6 @@ void tsc_call_event(uint16_t number);
 
 //void tsc_unpause_debug();
 
+void tsc_show_boss_health();
 void tsc_hide_boss_health();
 void tsc_update_boss_health();
