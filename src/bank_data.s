@@ -822,6 +822,8 @@ BIN STSC_WeedB	"res/tsc/es/Stage/WeedB.tsb"
 BIN STSC_WeedD	"res/tsc/es/Stage/WeedD.tsb"
 BIN STSC_WeedS	"res/tsc/es/Stage/WeedS.tsb"
 
+BIN SStageName  "res/es_stagename.dat"
+
 # Scripts (TSC) - Portuges
 # Global
 BIN PTSC_ArmsItem		"res/tsc/pt/ArmsItem.tsb"
@@ -923,6 +925,8 @@ BIN PTSC_Weed	"res/tsc/pt/Stage/Weed.tsb"
 BIN PTSC_WeedB	"res/tsc/pt/Stage/WeedB.tsb"
 BIN PTSC_WeedD	"res/tsc/pt/Stage/WeedD.tsb"
 BIN PTSC_WeedS	"res/tsc/pt/Stage/WeedS.tsb"
+
+BIN PStageName  "res/pt_stagename.dat"
 
 # Scripts (TSC) - French
 # Global
@@ -1026,6 +1030,8 @@ BIN FTSC_WeedB	"res/tsc/fr/Stage/WeedB.tsb"
 BIN FTSC_WeedD	"res/tsc/fr/Stage/WeedD.tsb"
 BIN FTSC_WeedS	"res/tsc/fr/Stage/WeedS.tsb"
 
+BIN FStageName  "res/fr_stagename.dat"
+
 # Scripts (TSC) - Italian
 # Global
 BIN ITSC_ArmsItem		"res/tsc/it/ArmsItem.tsb"
@@ -1128,6 +1134,7 @@ BIN ITSC_WeedB	"res/tsc/it/Stage/WeedB.tsb"
 BIN ITSC_WeedD	"res/tsc/it/Stage/WeedD.tsb"
 BIN ITSC_WeedS	"res/tsc/it/Stage/WeedS.tsb"
 
+BIN IStageName  "res/it_stagename.dat"
 
 /* 0x480000 */
     .align 0x80000
@@ -1234,6 +1241,8 @@ BIN GTSC_WeedB	"res/tsc/de/Stage/WeedB.tsb"
 BIN GTSC_WeedD	"res/tsc/de/Stage/WeedD.tsb"
 BIN GTSC_WeedS	"res/tsc/de/Stage/WeedS.tsb"
 
+BIN GStageName  "res/de_stagename.dat"
+
 # Scripts (TSC) - Brazillian Portugese
 # Global
 BIN BTSC_ArmsItem		"res/tsc/br/ArmsItem.tsb"
@@ -1335,3 +1344,5 @@ BIN BTSC_Weed	"res/tsc/br/Stage/Weed.tsb"
 BIN BTSC_WeedB	"res/tsc/br/Stage/WeedB.tsb"
 BIN BTSC_WeedD	"res/tsc/br/Stage/WeedD.tsb"
 BIN BTSC_WeedS	"res/tsc/br/Stage/WeedS.tsb"
+
+BIN BStageName  "res/br_stagename.dat"

@@ -832,13 +832,34 @@ void player_show_map_name(uint8_t ttl) {
         return;
     }
 	// English name
+    const uint8_t *str;
+    switch(cfg_language) {
+        case LANG_BR: str = BStageName[stageID]; break;
+        case LANG_DE: str = GStageName[stageID]; break;
+        case LANG_FR: str = FStageName[stageID]; break;
+        case LANG_IT: str = IStageName[stageID]; break;
+        case LANG_PT: str = PStageName[stageID]; break;
+        case LANG_ES: str = SStageName[stageID]; break;
+        default: str = (const uint8_t*) stage_info[stageID].name; break;
+    }
+    if((uint32_t) str >= 0x400000) {
+        str = (const uint8_t*)(0x380000 | ((uint32_t)str & 0x7FFFF));
+    }
 	uint32_t nameTiles[16][8];
 	uint16_t len = 0;
-    for(uint16_t i = 0; i < 16; i++) {
-        uint8_t chr = stage_info[stageID].name[i] - 0x20;
-        if(chr < 0x60) len++;
-        else break;
-        memcpy(nameTiles[i], &TS_SysFont.tiles[chr * 8], 32);
+    uint16_t pos = 0;
+    while(len < 16) {
+        uint8_t chr = str[pos++];
+        if(chr == 0x01) {
+            chr = str[pos++];
+            chr += 0x60;
+            len++;
+        } else {
+            chr -= 0x20;
+            if (chr < 0x60) len++;
+            else break;
+        }
+        memcpy(nameTiles[len-1], &TS_SysFont.tiles[chr * 8], 32);
     }
     if(len) {
         vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);

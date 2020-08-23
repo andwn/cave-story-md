@@ -1231,3 +1231,10 @@ extern const uint8_t LS_18[];
 extern const uint8_t LS_19[];
 extern const uint8_t LS_20[];
 extern const uint8_t LS_21[];
+
+extern const uint8_t BStageName[95][32];
+extern const uint8_t GStageName[95][32];
+extern const uint8_t SStageName[95][32];
+extern const uint8_t FStageName[95][32];
+extern const uint8_t PStageName[95][32];
+extern const uint8_t IStageName[95][32];
