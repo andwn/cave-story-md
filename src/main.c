@@ -22,6 +22,8 @@ extern const int16_t speed_tab_pal[0x400];
 
 void aftervsync() {
 	disable_ints;
+    z80_request();
+
 	DMA_flushQueue();
 	vdp_fade_step();
 	dqueued = FALSE;
@@ -31,8 +33,12 @@ void aftervsync() {
 		ready = FALSE;
 	}
 	if(gamemode == GM_GAME) stage_update(); // Scrolling
-	joy_update();
+	//joy_update();
+    
+    z80_release();
     enable_ints;
+
+    joy_update();
 }
 
 int main() {
