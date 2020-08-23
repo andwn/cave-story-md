@@ -132,7 +132,9 @@ void window_clear_text() {
 }
 
 void window_close() {
-	if(!paused) vdp_set_window(0, 0);
+	if(!paused) {
+	    vdp_set_window(0, 0);
+	}
 	showingItem = 0;
 	windowOpen = FALSE;
 	textMode = TM_NORMAL;

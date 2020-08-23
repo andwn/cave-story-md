@@ -1039,6 +1039,11 @@ void player_unpause() {
 	controlsLocked = FALSE;
 	// Simulates a bug where you can get damaged, and pushed upwards, multiple times in succession (Chaco house skip)
 	if(cfg_iframebug) playerIFrames = 0;
+    // Redraw the boss bar in JA
+    if(cfg_language == LANG_JA && showingBossHealth) {
+        tsc_show_boss_health();
+        tsc_update_boss_health();
+    }
 }
 
 uint8_t player_invincible() {
