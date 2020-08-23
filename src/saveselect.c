@@ -173,7 +173,7 @@ uint8_t saveselect_main() {
 	
 	oldstate = ~0;
 	while(TRUE) {
-		if(joy_pressed(BUTTON_C) || joy_pressed(BUTTON_START)) { // Confirm action
+		if(joy_pressed(btn[cfg_btn_jump]) || joy_pressed(btn[cfg_btn_pause])) { // Confirm action
 			if(cursor < SRAM_FILE_MAX) {
 				switch(cursorMode) {
 					case CM_LOAD: { // Load/New Game on file over cursor
@@ -218,7 +218,7 @@ uint8_t saveselect_main() {
 				cursorMode = CM_DELETE;
 			}
 			draw_cursor_mode(cursorMode);
-		} else if(joy_pressed(BUTTON_B)) { // Cancel copy/delete
+		} else if(joy_pressed(btn[cfg_btn_shoot])) { // Cancel copy/delete
 			if(cursorMode != CM_LOAD) {
 				cursorMode = CM_LOAD;
 				draw_cursor_mode(cursorMode);
@@ -248,7 +248,7 @@ uint8_t saveselect_main() {
 			// Draw quote sprite at cursor position
 			sprite_pos(sprCursor, cursor_pos[cursor].x, cursor_pos[cursor].y);
 		}
-	vdp_sprite_add(&sprCursor);
+	    vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
 		vdp_vsync(); aftervsync();
