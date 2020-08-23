@@ -27,6 +27,7 @@ void ai_prox_press_vert(Entity *e) {
 				effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
 				e->state++;
 				e->frame = 0;
+				e->y_speed = 0;
 				e->nflags |= NPC_SOLID;
 				e->attack = 0;
 			} else if(player.y - pixel_to_sub(player.hit_box.top) > e->y) {
