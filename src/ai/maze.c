@@ -42,9 +42,9 @@ void ai_blockh(Entity *e) {
 			e->x_next = e->x + e->x_speed;
 			// hit edge
 			if((e->x_speed > 0 && stage_get_block_type(
-					sub_to_block(e->x_next + 0x1000), sub_to_block(e->y)) == 0x41) ||
+					sub_to_block(e->x_next + 0x1C00), sub_to_block(e->y)) == 0x41) ||
 				(e->x_speed < 0 && stage_get_block_type(
-					sub_to_block(e->x_next - 0x1000), sub_to_block(e->y)) == 0x41)) {
+					sub_to_block(e->x_next - 0x1C00), sub_to_block(e->y)) == 0x41)) {
 				camera_shake(10);
 				e->x_speed = 0;
 				e->eflags ^= NPC_OPTION2;
@@ -89,9 +89,9 @@ void ai_blockv(Entity *e) {
 			e->y_next = e->y + e->y_speed;
 			// hit edge
 			if((e->y_speed > 0 && stage_get_block_type(
-					sub_to_block(e->x - 0x200), sub_to_block(e->y_next + 0x1000)) == 0x41) ||
+					sub_to_block(e->x - 0x200), sub_to_block(e->y_next + 0x1C00)) == 0x41) ||
 				(e->y_speed < 0 && stage_get_block_type(
-					sub_to_block(e->x - 0x200), sub_to_block(e->y_next - 0x1000)) == 0x41)) {
+					sub_to_block(e->x - 0x200), sub_to_block(e->y_next - 0x1C00)) == 0x41)) {
 				camera_shake(10);
 				e->y_speed = 0;
 				e->eflags ^= NPC_OPTION2;

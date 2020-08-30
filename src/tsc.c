@@ -400,10 +400,10 @@ uint8_t tsc_update() {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16 + bossHealth);
 			}
-		vdp_sprites_add(teleMenuSprite, teleMenuSlotCount);
+		    vdp_sprites_add(teleMenuSprite, teleMenuSlotCount);
 			// --WARP-- text
-		vdp_sprite_add(&teleMenuSprite[6]);
-		vdp_sprite_add(&teleMenuSprite[7]);
+		    vdp_sprite_add(&teleMenuSprite[6]);
+		    vdp_sprite_add(&teleMenuSprite[7]);
 		}
 		break;
 		case TSC_WAITGROUNDED:
@@ -542,9 +542,14 @@ void tsc_show_teleport_menu() {
 		// since bosses don't happen in Arthur's house
 		bossHealth = 0;
 	} else {
+        teleMenuActive = TRUE;
 		tsc_call_event(1000);
 		while(tscState != TSC_IDLE) execute_command();
-		tsc_load_stage(stageID);
+        teleMenuActive = FALSE;
+        tsc_load_stage(stageID);
+        tsc_call_event(0); // So script will end after input
+        tscState = TSC_WAITINPUT;
+
 	}
 }
 
