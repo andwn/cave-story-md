@@ -29,9 +29,8 @@ void intro_main() {
 	vdp_sprites_clear();
 	effects_init();
 	camera_init();
+    camera.target = NULL;
 	tsc_init();
-	camera.x += 6 << CSF; // Cancel the offset, we want to use absolute positions
-	camera.target = NULL;
 	stage_load(STAGE_INTRO);
 	//vdp_colors_next(16, PAL_Intro.data, 16);
 	tsc_call_event(100);
@@ -47,6 +46,7 @@ void intro_main() {
             vdp_text_clear(VDP_PLAN_A, 10, 6, 20);
             vdp_text_clear(VDP_PLAN_A, 10, 8, 20);
 		}
+		camera_update();
 		tsc_update();
 		entities_update(TRUE);
 		effects_update(); // Draw Smoke

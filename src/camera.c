@@ -29,22 +29,19 @@ uint8_t diag_tick;
 
 void camera_init() {
 	camera.target = &player;
-	camera.x = camera.x_mark = pixel_to_sub(SCREEN_HALF_W);
-	camera.y = camera.y_mark = pixel_to_sub(SCREEN_HALF_H + 8);
-	camera.x_shifted = 0;
-	camera.y_shifted = 8;
-	camera.x_offset = 0;
-	cameraShake = 0;
+    camera.x_offset = 0;
+    cameraShake = 0;
+    camera_set_position(0, 0);
 }
 
 void camera_set_position(int32_t x, int32_t y) {
 	// Don't let the camera leave the stage
-	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W))
-		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W);
-	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H+2))
-		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H+2);
-	if(x < pixel_to_sub(SCREEN_HALF_W)) x = pixel_to_sub(SCREEN_HALF_W);
-	if(y < pixel_to_sub(SCREEN_HALF_H+2)) y = pixel_to_sub(SCREEN_HALF_H+2);
+	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 8))
+		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 8);
+	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 8))
+		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 8);
+	if(x < pixel_to_sub(SCREEN_HALF_W + 8)) x = pixel_to_sub(SCREEN_HALF_W + 8);
+	if(y < pixel_to_sub(SCREEN_HALF_H + 8)) y = pixel_to_sub(SCREEN_HALF_H + 8);
 	// Apply
 	camera.x = camera.x_mark = x;
 	camera.y = camera.y_mark = y;
@@ -106,19 +103,20 @@ void camera_update() {
 	if(x_next - camera.x > CAMERA_MAX_SPEED) x_next = camera.x + CAMERA_MAX_SPEED;
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
-	if(stageID == 18) { // Special case for shelter
+	uint16_t bounds = cameraShake ? 2 : 8;
+	if(stageID == 18 && !pal_mode) { // Special case for shelter
 		x_next = pixel_to_sub(SCREEN_HALF_W + 8);
 		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
 	} else {
-		if(x_next < pixel_to_sub(SCREEN_HALF_W + 2)) {
-			x_next = pixel_to_sub(SCREEN_HALF_W + 2);
-		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 2)) {
-			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 2);
+		if(x_next < pixel_to_sub(SCREEN_HALF_W + bounds)) {
+			x_next = pixel_to_sub(SCREEN_HALF_W + bounds);
+		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds)) {
+			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds);
 		}
-		if(y_next < pixel_to_sub(SCREEN_HALF_H + 2)) {
-			y_next = pixel_to_sub(SCREEN_HALF_H + 2);
-		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2)) {
-			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 2);
+		if(y_next < pixel_to_sub(SCREEN_HALF_H + bounds)) {
+			y_next = pixel_to_sub(SCREEN_HALF_H + bounds);
+		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + bounds)) {
+			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + bounds);
 		}
 	}
 	// Camera shaking

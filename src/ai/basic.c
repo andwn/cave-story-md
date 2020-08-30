@@ -845,17 +845,16 @@ void ai_intro_crown(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			//e->x += pixel_to_sub(8);
-			e->y += pixel_to_sub(8);
+			e->x += pixel_to_sub(8);
+			e->y += pixel_to_sub(13);
 			e->state++;
 		} /* fallthrough */
 		case 1:
 		{
-			//if((++e->timer & 7) == 1) {
-			//	effect(o->x + random(-8<<CSF, 8<<CSF),
-			//			o->y + (8<<CSF),
-			//			   EFFECT_GHOST_SPARKLE);
-			//}
+			if((++e->timer & 15) == 1) {
+			    effect_create_misc(EFF_FANU, (e->x>>CSF) - 8 + (random() & 15),
+                          (e->y>>CSF) + 8, TRUE);
+			}
 		}
 		break;
 	}
@@ -866,7 +865,7 @@ void ai_intro_doctor(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->y -= pixel_to_sub(8);
+			e->x += pixel_to_sub(8);
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -884,10 +883,11 @@ void ai_intro_doctor(Entity *e) {
 		} /* fallthrough */
 		case 11:
 		{
-			if(++e->animtime > 6) {
+			if(++e->animtime > 7) {
+			    e->animtime = 0;
 				if(++e->frame > 1) {
 					e->frame = 0;
-					if(++e->timer2 > 7) e->state = 1;
+					if(++e->timer2 > 9) e->state = 1;
 				}
 			}
 		}
@@ -922,10 +922,11 @@ void ai_intro_doctor(Entity *e) {
 		} /* fallthrough */
 		case 41:
 		{
-			if(++e->animtime > 6) {
+			if(++e->animtime > 7) {
+                e->animtime = 0;
 				if(++e->frame > 5) {
 					e->frame = 4;
-					if(++e->timer2 > 7) e->state = 30;
+					if(++e->timer2 > 9) e->state = 30;
 				}
 			}
 		}
