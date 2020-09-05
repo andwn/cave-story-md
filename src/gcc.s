@@ -1,4 +1,4 @@
-* 32-bit multiplication and division routines from libgcc
+# 32-bit multiplication and division routines from libgcc
 
 	.globl	__mulsi3
 __mulsi3:

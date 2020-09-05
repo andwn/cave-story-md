@@ -22,7 +22,7 @@
 #define TILE_KANJISTART (TILE_ICONINDEX + 9*14)
 
 enum CreditCmd { 
-	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, END 
+	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, LOADPXE, END
 };
 
 static int8_t illScrolling = 0;
@@ -168,19 +168,24 @@ void credits_main() {
 				break;
 				case LABEL: /* Ignore */ break;
 				case PALETTE: /* Unused */ break;
+				case LOADPXE:
+                    stageID = 0;
+                    stage_load_entities();
+                    break;
 				// The End
-				case END: while(TRUE) {
-					// It's possible for the credits to end before the script
-					// So keep updating the script & illustration scrolling
-					tsc_update();
-					// Scrolling for illustrations
-					illScroll += illScrolling;
-					if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
-					effects_update();
-					entities_update(TRUE);
-					vdp_vsync(); aftervsync(); 
-				}
-				break;
+				case END:
+				    while(TRUE) {
+                        // It's possible for the credits to end before the script
+                        // So keep updating the script & illustration scrolling
+                        tsc_update();
+                        // Scrolling for illustrations
+                        illScroll += illScrolling;
+                        if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+                        effects_update();
+                        entities_update(TRUE);
+                        vdp_vsync(); aftervsync();
+                    }
+				    break;
 			}
 			pc++;
 		}
@@ -190,7 +195,7 @@ void credits_main() {
 		
 		backScroll++;
 		uint8_t scrolledBack = FALSE;
-		if(!pal_mode) {
+		if(!pal_mode && !cfg_60fps) {
 			// Slow the scrolling down slightly for NTSC
 			skipScroll++;
 			if(skipScroll == 6) {

@@ -186,8 +186,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	}
 	switch(sid) {
 		case 0x0C: // First Cave
+		case 0x0D: // Start Point
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0,0, 0,1, 0,2, 1,0, 2,0, 3,0);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHB, 3,2,2, 0,0, 1,0, 2,0);
+            SHEET_ADD(SHEET_DROP, &SPR_Drop2, 1,1,1, 0,0);
 		} break;
 		case 0x5A: // Gunsmith
 		{	

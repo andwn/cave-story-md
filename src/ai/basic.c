@@ -279,7 +279,7 @@ void onspawn_teleOut(Entity *e) {
 	e->y -= pixel_to_sub(32);
 	SNAP_TO_GROUND(e);
 	// PAL was jumping too high here
-	if(pal_mode) e->y_speed = -0x360;
+	if(pal_mode || cfg_60fps) e->y_speed = -0x360;
 	else e->y_speed = -SPEED_10(0x3E0);
 	// Mimiga mask
 	if(playerEquipment & EQUIP_MIMIMASK) e->frame = 15;
@@ -932,4 +932,10 @@ void ai_intro_doctor(Entity *e) {
 		}
 		break;
 	}
+}
+
+void ai_drip_generator(Entity *e) {
+    if((random() & 127) == 0) {
+        entity_create(e->x, e->y - 0x1800, OBJ_WATER_DROPLET, 0);
+    }
 }

@@ -1,6 +1,6 @@
 #include "ai_common.h"
 
-#define FAN_HSPEED (pal_mode ? 0x5FF : 0x550)
+#define FAN_HSPEED ((pal_mode || cfg_60fps) ? 0x5FF : 0x550)
 
 void onspawn_fan(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->state = e->type - 95;

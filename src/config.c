@@ -83,7 +83,7 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
         { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
         { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{
-//		{ 4,  9,  AKI,    MI_LANG,   "Language", &cfg_language },
+		{ 4,  9,  AKI,    MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
 		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
 		{ 11, 12, AKI+180,MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
@@ -208,19 +208,9 @@ void draw_menuitem(const MenuItem *item) {
 }
 
 void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
-	//uint8_t sprFrame = 0;
-	//uint8_t sprTime = ANIM_SPEED;
-	
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
 		case MI_RADIO:
-		    //if(!(*item->valptr)) {
-            //    sound_play(SND_MENU_SELECT, 5);
-            //    for(uint16_t i = 0; i < MAX_OPTIONS; i++) {
-            //        if(menu[page][i].type == MI_RADIO) menu[page][i]->valptr = 0;
-            //    }
-            //    *item->valptr = 1;
-		    //}
             if(*item->valptr != item->jstr_index) {
                 // Find previous selection so we can redraw as deselected
                 for(uint16_t i = 0; i < MAX_OPTIONS; i++) {
@@ -250,12 +240,6 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 					if(released) break;
 					if(!(joystate & btn[cfg_btn_jump])) break;
 				}
-				// Animate quote sprite
-				//if(--sprTime == 0) {
-				//	sprTime = ANIM_SPEED;
-				//	if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				//	sprite_index((*sprCursor), TILE_SHEETINDEX+32+sprFrame*4);
-				//}
 				sprite_index((*sprCursor), TILE_SHEETINDEX+32+16);
 			    vdp_sprite_add(sprCursor);
 				ready = TRUE;
@@ -290,8 +274,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 
 uint8_t set_page(uint8_t page) {
 	uint8_t numItems = 0;
-	
-	//vdp_set_display(FALSE);
+
 	vdp_map_clear(VDP_PLAN_A);
 	
 	switch(page) {
@@ -331,8 +314,6 @@ uint8_t set_page(uint8_t page) {
 		}
 	}
 
-	//vdp_set_display(TRUE);
-	
 	return numItems;
 }
 
@@ -346,7 +327,6 @@ void config_main() {
 	uint8_t sprFrame = 0;
 	uint8_t sprTime = ANIM_SPEED;
 	uint8_t page = PAGE_CONTROL;
-	//uint8_t waitButton = FALSE;
 	uint8_t cursor = 0;
 	uint8_t numItems = set_page(page);
 	
@@ -358,10 +338,6 @@ void config_main() {
 	set_page(page);
 	oldstate = ~0;
 	while(TRUE) {
-		//if(waitButton) {
-			// Show looking up frame
-		//	sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
-		//} else {
 		if(joy_pressed(BUTTON_UP)) {
 			do {
 				if(cursor == 0) cursor = numItems - 1;
@@ -396,7 +372,6 @@ void config_main() {
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
 			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
-		//}
 		
 		// Draw quote sprite at cursor position
 		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);
@@ -422,14 +397,14 @@ void act_default(uint8_t page) {
     } else if(page == 1) {
 	    cfg_language = 0;
 	} else if(page == 2) {
-//		cfg_language = 0;
+		cfg_60fps = FALSE;
 		cfg_ffwd = TRUE;
 		cfg_updoor = FALSE;
 		cfg_hellquake = TRUE;
 		cfg_iframebug = TRUE;
 		cfg_msg_blip = TRUE;
-		cfg_music_mute = TRUE;
-		cfg_sfx_mute = TRUE;
+		cfg_music_mute = FALSE;
+		cfg_sfx_mute = FALSE;
 	}
 	set_page(page);
 }

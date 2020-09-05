@@ -35,7 +35,8 @@ Can you do anything
 about that?<NOD<FAC0000<CLR<TURRetrieving information for user
 "Kazuma"...<WAI0150<CLR<TURComplete.
 Location: Grasstown Structure D<NOD
-Scanning for operational teleporters.<NOD<CLRPreparing for connection to
+Scanning for operational
+teleporters.<NOD<CLRPreparing for connection to
 teleporter "Grasstown"...<NOD<CLR
 <MSG<FAC0001Well, anyway, I'm coming
 to help you.<NOD

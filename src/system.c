@@ -52,6 +52,7 @@ uint8_t cfg_ffwd = TRUE;
 uint8_t cfg_updoor = FALSE;
 uint8_t cfg_hellquake = TRUE;
 uint8_t cfg_iframebug = TRUE;
+uint8_t cfg_60fps = FALSE;
 
 uint8_t cfg_force_btn = 0;
 uint8_t cfg_msg_blip = TRUE;
@@ -160,7 +161,7 @@ void system_draw_counter() {
 			(TILE_COUNTERINDEX+6) << 5, 16, 2);
 	counter_draw_decisecond();
 	const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
-vdp_sprites_add(spr, 2);
+	vdp_sprites_add(spr, 2);
 }
 
 void system_update() {
@@ -518,10 +519,20 @@ void system_load_config() {
 	cfg_msg_blip  = SRAM_readByte(loc++);
 	cfg_music_mute= SRAM_readByte(loc++);
 	cfg_sfx_mute  = SRAM_readByte(loc++);
+	cfg_60fps     = SRAM_readByte(loc++);
 	// Just in case
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
 	if(cfg_music_mute > 1) cfg_music_mute = 0;
 	if(cfg_sfx_mute > 1) cfg_sfx_mute = 0;
+	if(cfg_60fps > 1) cfg_60fps = 0;
+
+    if(pal_mode || cfg_60fps) {
+        time_tab = time_tab_pal;
+        speed_tab = speed_tab_pal;
+    } else {
+        time_tab = time_tab_ntsc;
+        speed_tab = speed_tab_ntsc;
+    }
 
 	SRAM_disable();
 	z80_release();
@@ -552,6 +563,7 @@ void system_save_config() {
 	SRAM_writeByte(loc++, cfg_msg_blip);
 	SRAM_writeByte(loc++, cfg_music_mute);
 	SRAM_writeByte(loc++, cfg_sfx_mute);
+	SRAM_writeByte(loc++, cfg_60fps);
 
 	SRAM_disable();
 	z80_release();

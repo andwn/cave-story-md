@@ -84,6 +84,7 @@ void vdp_init() {
 	vdp_sprites_update();
 	// (Re)load the font
 	vdp_font_load(TS_SysFont.tiles);
+    vdp_color(0, 0x000);
 	vdp_color(1, 0x000);
 	vdp_color(15, 0xEEE);
 	// Put blank tile in index 0

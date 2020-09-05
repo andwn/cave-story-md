@@ -46,7 +46,6 @@ uint8_t currentsTimer = 0;
 
 void stage_load_tileset();
 void stage_load_blocks();
-void stage_load_entities();
 
 void stage_draw_block(uint16_t x, uint16_t y);
 void stage_draw_screen();

@@ -14,6 +14,7 @@ If you have a 6 button controller:
 - `B` - Shoot
 - `A` - Fast forward through scripted events
 - `Y`, `Z` - Switch weapon
+- `X` - Map system
 - `Start` - Pause / Item Menu
 
 For 3 button, `A` cycles through weapons. The rest is the same.
@@ -22,7 +23,7 @@ For 3 button, `A` cycles through weapons. The rest is the same.
 - Stage Select: up, down, left, right, A + Start. Like Sonic.
 - Infinite health/ammo: up, up, down, down, left, right, left, right, A + Start.
 
-You can still get crushed and fall out of bounds.
+You can still get crushed, drown and fall out of bounds.
 
 Note that you can't load or save the game while cheating (including the counter).
 

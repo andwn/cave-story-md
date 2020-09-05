@@ -15,11 +15,6 @@
 #include "vdp.h"
 #include "xgm.h"
 
-extern const uint16_t time_tab_ntsc[0x400];
-extern const int16_t speed_tab_ntsc[0x400];
-extern const uint16_t time_tab_pal[0x400];
-extern const int16_t speed_tab_pal[0x400];
-
 void aftervsync() {
 	disable_ints;
     z80_request();
@@ -54,17 +49,9 @@ int main() {
 	joy_init();
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
-		//for(uint16_t i = 0; i < 0x100; i++) {
-		//	time_tab[i] = i;
-		//	speed_tab[i] = i;
-		//}
 		time_tab = time_tab_pal;
         speed_tab = speed_tab_pal;
 	} else {
-		//for(uint16_t i = 0; i < 0x100; i++) {
-		//	time_tab[i] = time_tab_ntsc[i];
-		//	speed_tab[i] = speed_tab_ntsc[i];
-		//}
         time_tab = time_tab_ntsc;
         speed_tab = speed_tab_ntsc;
 	}

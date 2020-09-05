@@ -24,17 +24,6 @@
 #define BLOCK_BULLETPASS	0x5
 #define BLOCK_PLAYERSOLID	0x6
 
-// Helper macros
-// This will get the block (in the tileset) that is at a specific location in the stage grid
-//#define stage_get_block(x, y) 
-//	(stageBlocks[((uint16_t) stageTable[(uint16_t)(y)]) + ((uint16_t)(x))])
-// Like above, but will return the attributes (solid, water, damage, etc)
-//#define stage_get_block_type(x, y) 
-//	(tileset_info[stageTileset].PXA[stage_get_block(((uint16_t)(x)), ((uint16_t)(y)))])
-// Shortcut version of above
-//#define blk(xf, xoff, yf, yoff) 
-//	stage_get_block_type(((((int32_t)(xf))>>CSF)+((int32_t)(xoff)))>>4,((((int32_t)(yf))>>CSF)+((int32_t)(yoff)))>>4)
-
 // I should have made this a long time ago
 enum StageIndex {
 	STAGE_0,
@@ -138,9 +127,6 @@ enum StageIndex {
 uint16_t stageID;
 // Size of the stage - how many blocks wide/high
 uint16_t stageWidth, stageHeight;
-//extern uint8_t *PXM;
-//#define stageWidth	(((uint16_t*)PXM)[2])
-//#define stageHeight	(((uint16_t*)PXM)[3])
 // A multiplication lookup table for each row of stageBlocks
 // Removes all mulu.w and __mulsi3 instructions in entity stage collision
 extern uint16_t *stageTable;
@@ -177,6 +163,7 @@ static inline uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {
 // Clears previous stage and switches to one with the given ID
 void stage_load(uint16_t id);
 void stage_load_credits(uint8_t id);
+void stage_load_entities();
 // Called by TSC, replaces one block with another and creates smoke
 void stage_replace_block(int16_t bx, int16_t by, uint8_t index);
 // Updates scrolling for the stage and draws blocks as they get near the screen

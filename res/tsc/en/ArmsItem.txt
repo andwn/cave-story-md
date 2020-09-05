@@ -174,7 +174,7 @@ gravestone.<WAI9999<END
 #6003
 <MSG<TURThe key to Santa's house.<WAI9999<END
 #6004
-<MSG<TURA silver locket in the shape of a fish.
+<MSG<TURA silver locket shaped like a fish.
 From the condition it's in, it looks
 like it's been treasured for years.<WAI9999<END
 #6005

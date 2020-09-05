@@ -20,6 +20,7 @@ enum CreditCmd {
 	JUMP,		// Jump to label (j)
 	LABEL,		// Label that can be jumped to (l)
 	PALETTE,	// Swap one of the palettes (no CS equivalent)
+	LOADPXE,    // Load 0.pxe
 	END,		// Stop scrolling and pause indefinitely (/)
 };
 
@@ -32,6 +33,7 @@ enum CreditCmd {
 #define C_JUMP(l)			{ .cmd = JUMP, .jump = { l } }
 #define C_LABEL(n)			{ .cmd = LABEL, .label = { n } }
 #define C_MOVE(x)			{ .cmd = MOVE, .move = { x } }
+#define C_LOADPXE()			{ .cmd = LOADPXE }
 #define C_END()				{ .cmd = END }
 
 enum Casts {
@@ -367,11 +369,17 @@ const credits_info_def credits_info[] = {
 	//C_TEXT("Gideon Zhi", 226),			C_ICON(GIDEON,	3), C_WAIT(48),
 	C_TEXT("And many others", 227),							C_WAIT(48),
 	// TODO: Probably add some MD specific credits before the end
+	//C_WAIT(96),
+	//C_TEXT("= Mega Drive Version =", 230),                  C_WAIT(32),
+    //C_MOVE(32),
+    //C_WAIT(32),
+    //C_TEXT("")
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 228),C_ICON(THANKS,	3), C_WAIT(32),
 	C_WAIT(232),
 	//C_WAIT(128),
 	C_MOVE(80),
+    C_LOADPXE(),
 	C_TEXT("Cave Story ~ The End", 229),
 	C_WAIT(264),
 	C_END()

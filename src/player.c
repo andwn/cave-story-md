@@ -357,7 +357,7 @@ void player_update() {
 						entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
 					}
 				}
-				shoot_cooldown = pal_mode ? 7 : 8;
+				shoot_cooldown = (pal_mode || cfg_60fps) ? 7 : 8;
 			}
 		} else {
 			shoot_cooldown = 0;
@@ -381,7 +381,7 @@ void player_update() {
 			if(shoot_cooldown > 0) shoot_cooldown--;
 			if(joy_down(btn[cfg_btn_shoot]) && shoot_cooldown == 0) {
 				weapon_fire(*w);
-				shoot_cooldown = pal_mode ? 8 : 9;
+				shoot_cooldown = (pal_mode || cfg_60fps) ? 8 : 9;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -397,7 +397,7 @@ void player_update() {
 			weapon_fire(*w);
 			shoot_cooldown = 4;
 		} else if(joystate & btn[cfg_btn_shoot]) {
-			uint8_t maxenergy = spur_time[pal_mode][w->level];
+			uint8_t maxenergy = spur_time[pal_mode||cfg_60fps][w->level];
 			if(!(w->level == 3 && w->energy == maxenergy)) {
 				w->energy += (playerEquipment & EQUIP_TURBOCHARGE) ? 3 : 2;
 				if(w->energy >= maxenergy) {
@@ -418,7 +418,7 @@ void player_update() {
 		} else {
 			if(mgun_chargetime) {
 				if(w->level > 1) {
-					if(w->energy == spur_time[pal_mode][3]) w->level = 4;
+					if(w->energy == spur_time[pal_mode||cfg_60fps][3]) w->level = 4;
 					weapon_fire(*w);
 				}
 				mgun_chargetime = 0;
@@ -437,7 +437,7 @@ void player_update() {
 	}
 	
 	if(player.grounded) {
-		playerBoosterFuel = pal_mode ? 51 : 61;
+		playerBoosterFuel = (pal_mode || cfg_60fps) ? 51 : 61;
 		player_update_interaction();
 	}
 	player_draw();
@@ -458,7 +458,7 @@ static void player_update_walk() {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
-	if(pal_mode) {
+	if(pal_mode || cfg_60fps) {
 		max_speed = 810;
 		if(player.grounded) {
 			acc = 85;
@@ -514,7 +514,7 @@ static void player_update_jump() {
 	int16_t gravity;
 	int16_t gravityJump;
 	int16_t maxFallSpeed;
-	if(pal_mode) {
+	if(pal_mode || cfg_60fps) {
 		// See issue #270 for the reason these values are off
 		jumpSpeed = 	0x4E0; // 0x500
 		gravity = 		0x50;
@@ -545,7 +545,7 @@ static void player_update_jump() {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
 			// Maybe possibly fix jump height?
-			player.jump_time = pal_mode ? 0 : 3;
+			player.jump_time = (pal_mode || cfg_60fps) ? 0 : 3;
 			player.jump_time += player.underwater ? 2 : 0;
 			
 			sound_play(SND_PLAYER_JUMP, 3);
@@ -567,7 +567,7 @@ static void player_update_float() {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
-	if(pal_mode) {
+	if(pal_mode || cfg_60fps) {
 		acc =		256;
 		fric =		128;
 		max_speed =	1024;

@@ -391,7 +391,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_BalrogFly, 	NOSHEET, 		PAL1, 2, &onspawn_persistent, 	&ai_balrog_flying, 	&ai_null 			}, // Balrog (Rescue)
 	{ &SPR_PuppyGhost, 	NOSHEET, 		PAL1, 1, &onspawn_persistent, 	&ai_puppy_ghost, 	&ai_null 			}, // Puppy (Ghost)
 	{ &SPR_MiseryWind, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_misery_wind, 	&ai_null 			}, // Misery (Wind)
-	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Water Drop Generator
+	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_drip_generator, &ai_null 			}, // Water Drop Generator
 	{ NULL, 			NOSHEET, 		PAL0, 2, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Thank You
 	/* MAJOR BOSSES - Don't exist in npc.tbl, but need AI methods */
 	/* 0x169 (361) */

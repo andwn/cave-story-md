@@ -70,6 +70,7 @@ extern uint8_t cfg_ffwd;
 extern uint8_t cfg_updoor;
 extern uint8_t cfg_hellquake;
 extern uint8_t cfg_iframebug;
+extern uint8_t cfg_60fps;
 
 extern uint8_t cfg_force_btn;
 extern uint8_t cfg_msg_blip;

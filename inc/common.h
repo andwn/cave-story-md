@@ -54,6 +54,11 @@ uint8_t FPS;
 const uint16_t *time_tab;
 const int16_t *speed_tab;
 
+extern const uint16_t time_tab_ntsc[0x400];
+extern const int16_t speed_tab_ntsc[0x400];
+extern const uint16_t time_tab_pal[0x400];
+extern const int16_t speed_tab_pal[0x400];
+
 // Default is a bit slow due to branching, but compensates in case x is too large
 // Negative values are invalid. Always use -SPEED(x) instead of SPEED(-x)
 #define TIME(x) (((x) < 0x400) ? (time_tab[x]) : (time_tab[(x) >> 2] << 2))
