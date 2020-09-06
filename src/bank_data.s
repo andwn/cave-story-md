@@ -719,7 +719,8 @@ BIN LS_21		"res/save/21_sealchamber.sram"
 /* 0x400000 */
     .align 0x80000
 /* Other language TSCs */
-
+.ascii "TEST"
+.align 2
 # Scripts (TSC) - Spanish
 # Global
 BIN STSC_ArmsItem		"res/tsc/es/ArmsItem.tsb"

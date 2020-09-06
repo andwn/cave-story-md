@@ -18,6 +18,7 @@
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
+#include "tools.h"
 #include "vdp.h"
 #include "weapon.h"
 #include "window.h"
@@ -28,6 +29,8 @@
 #define ANIM_FRAMES	4
 
 #define MAX_OPTIONS	12
+
+static uint8_t ssf_is_working;
 
 enum { PAGE_CONTROL, PAGE_LANGUAGE, PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
 
@@ -56,8 +59,8 @@ typedef struct {
 #define WKI (0xB000 >> 5)
 #define BKI (0xD000 >> 5)
 
-const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
-	{
+const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
+	{ // Controller
 		{ 4,  1,  AKI,    MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
 		{ 6,  2,  AKI+60, MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
 		{ 8,  3,  AKI+120,MI_INPUT, "Switch (3btn) / FFwd", &cfg_btn_ffwd },
@@ -70,19 +73,20 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-    },{
-        { 4,  LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
-        { 6,  LANG_ES,  AKI,    MI_RADIO,   "Espanol", &cfg_language },
-        { 8,  LANG_FR,  AKI,    MI_RADIO,   "Francais", &cfg_language },
-        { 10, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
-        { 12, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
-        { 14, LANG_PT,  AKI,    MI_RADIO,   "Portuges", &cfg_language },
-        { 16, LANG_BR,  AKI,    MI_RADIO,   "BR Portuges", &cfg_language },
-        { 18, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
-
+    },{ // Language
+        { 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
+        { 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
+        
+        { 8,  LANG_ES,  AKI,    MI_RADIO,   "Espanol", &cfg_language },
+        { 10, LANG_FR,  AKI,    MI_RADIO,   "Francais", &cfg_language },
+        { 12, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
+        { 14, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
+        { 16, LANG_PT,  AKI,    MI_RADIO,   "Portuges", &cfg_language },
+        { 18, LANG_BR,  AKI,    MI_RADIO,   "BR Portuges", &cfg_language },
+        
         { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
         { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-	},{
+	},{ // Gameplay
 		{ 4,  9,  AKI,    MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
 		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
@@ -94,9 +98,17 @@ const MenuItem menu[NUM_PAGES][MAX_OPTIONS] = {
 
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-	},{
+	},{ // Save data
 		{ 4,  17, AKI,    MI_ACTION, "Erase Counter", (uint8_t*)3 },
 		{ 6,  18, AKI+60, MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
+	},{ // Language (No SSF)
+		{ 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
+		{ 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
+		
+		{ 10, 25, AKI+40, MI_LABEL,  "SSF Mapper Malfunction", (uint8_t*)0 },
+		
+		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
+		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},
 };
 
@@ -207,6 +219,66 @@ void draw_menuitem(const MenuItem *item) {
 	}
 }
 
+void ssf_test() {
+	//ssf_is_working = FALSE; return;
+	ssf_setbank(7, 8);
+	const char *str = (const char*) 0x380000;
+	if(str[0] == 'T' && str[1] == 'E' && str[2] == 'S' && str[3] == 'T') {
+		ssf_is_working = TRUE;
+	} else {
+		ssf_is_working = FALSE;
+	}
+	ssf_setbank(7, 7);
+}
+
+uint8_t set_page(uint8_t page) {
+	uint8_t numItems = 0;
+	
+	vdp_map_clear(VDP_PLAN_A);
+	
+	switch(page) {
+		case PAGE_CONTROL:
+			if(cfg_language == LANG_JA) {
+				DrawJStr(8, 1, WKI, 21);
+			} else {
+				vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
+			}
+			break;
+		case PAGE_LANGUAGE:
+		case NUM_PAGES:
+			ssf_test();
+			if(cfg_language == LANG_JA) {
+				DrawJStr(8, 1, WKI, 22);
+			} else {
+				vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
+			}
+			break;
+		case PAGE_GAMEPLAY:
+			if(cfg_language == LANG_JA) {
+				DrawJStr(8, 1, WKI, 23);
+			} else {
+				vdp_puts(VDP_PLAN_A, "(3) Gameplay Config", 8, 1);
+			}
+			break;
+		case PAGE_SAVEDATA:
+			if(cfg_language == LANG_JA) {
+				DrawJStr(8, 1, WKI, 24);
+			} else {
+				vdp_puts(VDP_PLAN_A, "(4) Save Data", 8, 1);
+			}
+			break;
+	}
+	uint8_t drawpage = (page == PAGE_LANGUAGE && !ssf_is_working) ? NUM_PAGES : page;
+	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
+		if(menu[drawpage][i].caption[0]) {
+			draw_menuitem(&menu[drawpage][i]);
+			numItems++;
+		}
+	}
+	
+	return numItems;
+}
+
 void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
@@ -217,8 +289,9 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
                     if(*item->valptr == menu[page][i].jstr_index) {
                         sound_play(SND_MENU_SELECT, 5);
                         *item->valptr = item->jstr_index;
-                        draw_menuitem(&menu[page][i]);
-                        break;
+                        //draw_menuitem(&menu[page][i]);
+	                    set_page(page);
+                        return;
                     }
                 }
             }
@@ -272,51 +345,6 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 	draw_menuitem(item);
 }
 
-uint8_t set_page(uint8_t page) {
-	uint8_t numItems = 0;
-
-	vdp_map_clear(VDP_PLAN_A);
-	
-	switch(page) {
-		case PAGE_CONTROL:
-            if(cfg_language == LANG_JA) {
-                DrawJStr(8, 1, WKI, 21);
-            } else {
-                vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
-            }
-            break;
-        case PAGE_LANGUAGE:
-            if(cfg_language == LANG_JA) {
-                DrawJStr(8, 1, WKI, 22);
-            } else {
-                vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
-            }
-            break;
-		case PAGE_GAMEPLAY:
-            if(cfg_language == LANG_JA) {
-                DrawJStr(8, 1, WKI, 22);
-            } else {
-                vdp_puts(VDP_PLAN_A, "(3) Gameplay Config", 8, 1);
-            }
-            break;
-		case PAGE_SAVEDATA:
-            if(cfg_language == LANG_JA) {
-                DrawJStr(8, 1, WKI, 23);
-            } else {
-                vdp_puts(VDP_PLAN_A, "(4) Save Data", 8, 1);
-            }
-            break;
-	}
-	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
-		if(menu[page][i].caption[0]) {
-			draw_menuitem(&menu[page][i]);
-			numItems++;
-		}
-	}
-
-	return numItems;
-}
-
 extern uint8_t tpal;
 
 void config_main() {
@@ -338,17 +366,18 @@ void config_main() {
 	set_page(page);
 	oldstate = ~0;
 	while(TRUE) {
+		uint8_t drawpage = (page == PAGE_LANGUAGE && !ssf_is_working) ? NUM_PAGES : page;
 		if(joy_pressed(BUTTON_UP)) {
 			do {
 				if(cursor == 0) cursor = numItems - 1;
 				else cursor--;
-			} while(menu[page][cursor].type == MI_LABEL);
+			} while(menu[drawpage][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			do {
 				if(cursor == numItems - 1) cursor = 0;
 				else cursor++;
-			} while(menu[page][cursor].type == MI_LABEL);
+			} while(menu[drawpage][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_LEFT)) {
 			if(--page >= NUM_PAGES) page = NUM_PAGES - 1;
@@ -361,8 +390,8 @@ void config_main() {
             sound_play(SND_MENU_MOVE, 0);
 			set_page(page);
 		} else if(joy_pressed(btn[cfg_btn_jump])) {
-			if(menu[page][cursor].type == MI_RETURN) break;
-			press_menuitem(&menu[page][cursor], page, &sprCursor);
+			if(menu[drawpage][cursor].type == MI_RETURN) break;
+			press_menuitem(&menu[drawpage][cursor], drawpage, &sprCursor);
 		} else if(joy_pressed(btn[cfg_btn_shoot])) {
 			break;
 		}
@@ -374,7 +403,7 @@ void config_main() {
 		}
 		
 		// Draw quote sprite at cursor position
-		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);
+		sprite_pos(sprCursor, 16, (menu[drawpage][cursor].y << 3) - 4);
 		vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
@@ -385,7 +414,7 @@ void config_main() {
 }
 
 void act_default(uint8_t page) {
-	if(page == 0) {
+	if(page == PAGE_CONTROL) {
         cfg_btn_jump = 5;
         cfg_btn_shoot = 4;
         cfg_btn_ffwd = 6;
@@ -394,9 +423,9 @@ void act_default(uint8_t page) {
         cfg_btn_map = 10;
         cfg_btn_pause = 7;
         cfg_force_btn = 0;
-    } else if(page == 1) {
+    } else if(page == PAGE_LANGUAGE || page == NUM_PAGES) {
 	    cfg_language = 0;
-	} else if(page == 2) {
+	} else if(page == PAGE_GAMEPLAY) {
 		cfg_60fps = FALSE;
 		cfg_ffwd = TRUE;
 		cfg_updoor = FALSE;

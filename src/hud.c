@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "player.h"
 #include "resources.h"
+#include "system.h"
 #include "tables.h"
 #include "vdp.h"
 #include "weapon.h"
