@@ -12,9 +12,6 @@ This port DOES make adjustments to those timings so it feels like the original e
 If you prefer the faster speed of the Nicalis ports, enable the "CS+ Speed (NTSC Only)"
 setting in the config menu.
 
-What the setting is really doing forcing the game to only use PAL lookup tables, but that
-makes for an unwieldy and overly technical setting name.
-
 ### The save disks are missing. What's going on?
 Your cart or emulator does not support the type of SRAM used by the game.
 Check [COMPATIBILITY.md](/andwn/cave-story-md/blob/master/doc/COMPATIBILITY.md)
@@ -41,7 +38,7 @@ Because this is a "port", the moment someone finds out about it and plays it the
 on finding inaccuracies. On multiple occasions people have bombarded this repository
 with nearly 100 issues in a short timeframe with various inaccuracies they found.
 A good number of them are helpful, and things I can actually fix.
-However, there have been occasions where people point out intentional changes,
+However, there have been times where people point out intentional changes,
 listed in [DIFFERENCES.md](/andwn/cave-story-md/blob/master/doc/DIFFERENCES.md),
 or something really nitpicky. One time, someone got so trigger happy with the "New Issue"
 button that they reported multiple issues twice because they forgot they already reported it.

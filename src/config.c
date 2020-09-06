@@ -149,7 +149,6 @@ void draw_menuitem(const MenuItem *item) {
 	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
 	if(item->type != MI_RADIO) vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
 	if(item->type == MI_RADIO) {
-	    // TODO: Make the language names sprites so they can all display a native version
 	    switch(item->jstr_index) {
 	        case LANG_JA: {
                 uint16_t tile_index = item->jtile_index;

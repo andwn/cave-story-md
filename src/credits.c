@@ -14,6 +14,7 @@
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
+#include "tools.h"
 #include "vdp.h"
 
 #include "gamemode.h"
@@ -102,6 +103,7 @@ void credits_main() {
 	vdp_font_load(TS_SysFont.tiles);
 	//VDP_setTextPlan(VDP_PLAN_B);
 	//VDP_setTextPriority(1);
+	ssf_setbank(7, 7); // Illustrations are in bank 7
 	tsc_load_stage(ID_CREDITS); // credits.tsb
 	tsc_call_event(100);
 	

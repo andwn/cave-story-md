@@ -216,6 +216,7 @@ void tsc_load_stage(uint8_t id) {
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else if(id == ID_CREDITS) {
 		const uint8_t *TSC = TSC_Credits;
+		/*
         switch(cfg_language) {
             case LANG_ES: TSC = STSC_Credits; break;
             case LANG_PT: TSC = PTSC_Credits; break;
@@ -225,6 +226,7 @@ void tsc_load_stage(uint8_t id) {
             case LANG_DE: TSC = GTSC_Credits; break;
             case LANG_JA: TSC = JTSC_Credits; break;
         }
+        */
 		tscEventCount = tsc_load(stageEvents, TSC, MAX_EVENTS);
 	} else {
 		const uint8_t *TSC = stage_info[id].TSC;
