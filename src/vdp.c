@@ -341,7 +341,13 @@ void vdp_puts(uint16_t plan, const char *str, uint16_t x, uint16_t y) {
 			addr -= x << 1;
 			*vdp_ctrl_wide = ((0x4000 + ((addr) & 0x3FFF)) << 16) + (((addr) >> 14) | 0x00);
 		}
-		uint16_t attr = TILE_ATTR(font_pal,1,0,0,TILE_FONTINDEX + *str++ - 0x20);
+		uint16_t c = *str++;
+		if(c == 1) { // Accent chars
+			c = (VDP_PLAN_W >> 5) - 1 + ((*str++) << 2);
+		} else {
+			c = TILE_FONTINDEX + c - 0x20;
+		}
+		uint16_t attr = TILE_ATTR(font_pal,1,0,0,c);
 		*vdp_data_port = attr;
 	}
 }

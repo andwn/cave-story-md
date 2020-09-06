@@ -59,8 +59,13 @@ void soundtest_main() {
 	draw_status(status);
 	vdp_puts(VDP_PLAN_A, "Sound Test", 15, 2);
 	vdp_puts(VDP_PLAN_A, "Track: ", 2, 8);
-	vdp_puts(VDP_PLAN_A, "C-Play B-Stop", 2, 13);
-	vdp_puts(VDP_PLAN_A, "A-Pause Start-Quit", 2, 15);
+	{
+		char str[32];
+		sprintf(str, "%s-Play %s-Stop %s-Quit",
+		    btnName[cfg_btn_jump], btnName[cfg_btn_shoot], btnName[cfg_btn_pause]);
+		vdp_puts(VDP_PLAN_A, str, 2, 15);
+	}
+	
 	DRAW_BYTE(track, 10, 8);
 	
 	vdp_colors(0, PAL_Main.data, 16);
