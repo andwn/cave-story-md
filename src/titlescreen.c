@@ -50,8 +50,7 @@ uint8_t titlescreen_main() {
 	vdp_map_clear(VDP_PLAN_B);
 	vdp_sprites_clear();
 	// Check save data, only enable continue if save data exists
-	uint8_t sram_state = system_checkdata();
-	if(sram_state != SRAM_INVALID) {
+	if(system_checkdata() != SRAM_INVALID) {
 		besttime = system_load_counter(); // 290.rec data
 		system_load_config();
 	}

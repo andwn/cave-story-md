@@ -39,14 +39,14 @@ void aftervsync() {
 int main() {
     setRandomSeed(0xC427); // initiate random number generator
     mem_init();
+	xgm_init();
+	if(system_checkdata() != SRAM_INVALID) {
+		system_load_config();
+	}
     vdp_init();
     DMA_init(0, 0);
-    // VInt unconditionally does XGM processing
-    // joy_init depends on the vblank complete flag to wait a few frames
-    // Therefore, the next 3 lines MUST be in this exact order
-    xgm_init();
-    enable_ints;
 	joy_init();
+	enable_ints;
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
 		time_tab = time_tab_pal;

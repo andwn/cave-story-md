@@ -9,6 +9,7 @@ out.lst
 *.tsb
 *.pcm
 *.xgc
+*.patch
 *.o
 inc/ai_gen.h
 res/resources.h

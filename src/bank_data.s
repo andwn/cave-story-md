@@ -539,7 +539,6 @@ CONFIG_STR:
 dc.l 0
 
 /* Pointer Tables */
-.ascii "TSC_TBL\0"
     .globl TSC_GLOB
 TSC_GLOB:
 dc.l TSC_ArmsItem
@@ -645,7 +644,6 @@ dc.l TSC_e_Blcn
 dc.l TSC_Clock
 
 # Scripts (TSC) - English
-.ascii "TSC_DAT\0"
 # Global
 BIN TSC_ArmsItem	"res/tsc/en/ArmsItem.tsb"
 BIN TSC_Head		"res/tsc/en/Head.tsb"

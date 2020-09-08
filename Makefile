@@ -2,6 +2,8 @@ MARSDEV ?= ${HOME}/mars
 MARSBIN  = $(MARSDEV)/m68k-elf/bin
 TOOLSBIN = $(MARSDEV)/bin
 
+TARGET = doukutsu
+
 CC   = $(MARSBIN)/m68k-elf-gcc
 AS   = $(MARSBIN)/m68k-elf-as
 LD   = $(MARSBIN)/m68k-elf-ld
@@ -21,6 +23,7 @@ SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
 # Cave Story Tools
 TSCOMP   = bin/tscomp
+PATCHROM = bin/patchrom
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -48,6 +51,11 @@ TSCS  = $(wildcard res/tsc/en/*.txt)
 TSCS += $(wildcard res/tsc/en/Stage/*.txt)
 TSBS  = $(TSCS:.txt=.tsb)
 
+# TSBs for translations
+TL_TSCS  = $(wildcard res/tsc/*/*.txt)
+TL_TSCS += $(wildcard res/tsc/*/Stage/*.txt)
+TL_TSBS  = $(TL_TSCS:.txt=.tsb)
+
 # mdtiler scripts to generate tile patterns & mappings
 MDTS  = $(wildcard res/*.mdt)
 MDTS += $(wildcard res/*/*.mdt)
@@ -63,14 +71,12 @@ WAVS  = $(wildcard res/sfx/*.wav)
 PCMS  = $(WAVS:.wav=.pcm)
 
 RESS  = res/resources.res
-#Z80S  = $(wildcard src/xgm/*.s80)
 CS    = $(wildcard src/*.c)
 CS   += $(wildcard src/ai/*.c)
 CS   += $(wildcard src/db/*.c)
 SS    = $(wildcard src/*.s)
 SS   += $(wildcard src/xgm/*.s)
 OBJS  = $(RESS:.res=.o)
-#OBJS += $(Z80S:.s80=.o)
 OBJS += $(CS:.c=.o)
 OBJS += $(SS:.s=.o)
 
@@ -82,9 +88,9 @@ ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
-.SECONDARY: doukutsu.elf
+.SECONDARY: $(TARGET)-en.elf
 
-.PHONY: all pal sega release asm debug prereq main-build
+.PHONY: all pal sega release asm debug translate prereq main-build
 
 all: release
 pal: release
@@ -104,19 +110,23 @@ asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
 debug: main-build symbol.txt
 
-main-build: prereq head-gen doukutsu.bin
+translate: $(PATCHROM) $(TL_TSBS)
+translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
+translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin
+
+main-build: prereq head-gen $(TARGET)-en.bin
 
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
 prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
-symbol.txt: doukutsu.bin
-	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n doukutsu.elf > symbol.txt
+symbol.txt: $(TARGET)-en.bin
+	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n $(TARGET)-en.elf > symbol.txt
 
 boot.o:
 	$(AS) $(ASFLAGS) boot.s -o $@
 
-%.bin: %.elf
+$(TARGET)-en.bin: $(TARGET)-en.elf
 	@echo "Stripping ELF header, pad to 512K"
 	@$(OBJC) -O binary $< temp.bin
 	@dd if=temp.bin of=$@ bs=524288 conv=sync
@@ -139,9 +149,6 @@ boot.o:
 %.o80: %.s80
 	$(ASMZ80) $(Z80FLAGS) $< $@ out.lst
 
-#%.s: %.o80
-#	$(BINTOS) $<
-
 # Old SGDK tools
 bin:
 	mkdir -p bin
@@ -161,6 +168,9 @@ $(WAVTORAW): bin
 # Cave Story tools
 $(TSCOMP): bin
 	cc tools/tscomp/tscomp.c -o $@
+
+$(PATCHROM): bin
+	cc tools/patchrom/patchrom.c -o $@
 
 # For asm target
 asm-dir:
@@ -187,27 +197,42 @@ asmout/%.s: %.c
 # Convert TSC
 res/tsc/en/%.tsb: res/tsc/en/%.txt
 	$(TSCOMP) -l=en "$<"
-
 res/tsc/ja/%.tsb: res/tsc/ja/%.txt
 	$(TSCOMP) -l=ja "$<"
-
 res/tsc/es/%.tsb: res/tsc/es/%.txt
 	$(TSCOMP) -l=es "$<"
-
 res/tsc/pt/%.tsb: res/tsc/pt/%.txt
 	$(TSCOMP) -l=pt "$<"
-
 res/tsc/fr/%.tsb: res/tsc/fr/%.txt
 	$(TSCOMP) -l=fr "$<"
-
 res/tsc/it/%.tsb: res/tsc/it/%.txt
 	$(TSCOMP) -l=it "$<"
-
 res/tsc/de/%.tsb: res/tsc/de/%.txt
 	$(TSCOMP) -l=de "$<"
-
 res/tsc/br/%.tsb: res/tsc/br/%.txt
 	$(TSCOMP) -l=br "$<"
+
+# Generate patches
+res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s
+	$(AS) $(ASFLAGS) "$<" -o "temp.o"
+	$(LD) $(LDFLAGS) "temp.o" -o "temp.elf"
+	$(OBJC) -O binary "temp.elf" "$@"
+
+# Apply patches
+$(TARGET)-ja.bin: res/patches/$(TARGET)-ja.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-es.bin: res/patches/$(TARGET)-es.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-fr.bin: res/patches/$(TARGET)-fr.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-de.bin: res/patches/$(TARGET)-de.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-it.bin: res/patches/$(TARGET)-it.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-pt.bin: res/patches/$(TARGET)-pt.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-br.bin: res/patches/$(TARGET)-br.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
 
 .PHONY: head-gen clean
@@ -218,8 +243,9 @@ head-gen:
 
 clean:
 	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(ZOBJ) $(OBJS)
-	rm -f $(TSBS)
-	rm -f doukutsu.bin doukutsu.elf symbol.txt boot.o
+	rm -f $(TSBS) $(TL_TSBS)
+	rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt boot.o temp.elf temp.o
+	rm -f res/patches/*.patch
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s inc/ai_gen.h
 	rm -rf asmout

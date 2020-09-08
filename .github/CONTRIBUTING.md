@@ -8,8 +8,8 @@ Here are some things I've been asked how to contribute and a brief explanation o
 The sound driver used is XGM from SGDK. The only real restrictions for this are:
 
 - The file must be a VGM, created in Deflemask or similar
-- The channel FM6 must always be set to DAC mode (or you'll kill sound effects)
-- The file should be a reasonable size (depends on how many WAV samples are needed)
+- The channel FM6 must always be set to DAC mode (effect 1701)
+- The file should be a reasonable size (keep samples to a minimum)
 
 Also, please provide the source tracker file if possible.
 
@@ -30,7 +30,7 @@ Getting it into the game gets more complicated based on
 - The glyphs that need to be rendered in the game
   - European/Latin languages should be pretty much covered
   - For Chinese and Korean I can redo the same thing I did with Japanese (just with different encodings)
-  - A font for Russian/Ukranian/Bulgarian is in progress
+  - There's like half a font for Russian/Ukrainian/Bulgarian at the moment
   - I have no idea what to do for RTL languages
 - My level of burnout
 
