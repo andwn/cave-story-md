@@ -103,7 +103,7 @@ void credits_main() {
 	vdp_font_load(TS_SysFont.tiles);
 	//VDP_setTextPlan(VDP_PLAN_B);
 	//VDP_setTextPriority(1);
-	ssf_setbank(7, 7); // Illustrations are in bank 7
+	//ssf_setbank(7, 7); // Illustrations are in bank 7
 	tsc_load_stage(ID_CREDITS); // credits.tsb
 	tsc_call_event(100);
 	
@@ -121,7 +121,7 @@ void credits_main() {
 				case TEXT:
 					if(cfg_language == LANG_JA) {
 						if(credits_info[pc].text.jstring != 0) {
-							const uint8_t *str = JCreditStr;
+							const uint8_t *str = (const uint8_t*)CREDITS_STR;
 							str += (credits_info[pc].text.jstring - 1) << 5;
 							draw_jp_text(str, textX, textY & 31);
 						}

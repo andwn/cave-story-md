@@ -33,7 +33,7 @@ endif
 INCS     = -Isrc -Ires -Iinc
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
 CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -mshort
-OPTIONS  = 
+OPTIONS  =
 ASFLAGS  = -m68000 --register-prefix-optional
 LDFLAGS  = -T mdssf.ld -nostdlib
 Z80FLAGS = -isrc/xgm
@@ -44,8 +44,8 @@ PXMS += $(wildcard res/Stage/*/*.pxm)
 CPXMS = $(PXMS:.pxm=.cpxm)
 
 # TSC to convert to TSB
-TSCS  = $(wildcard res/tsc/*/*.txt)
-TSCS += $(wildcard res/tsc/*/Stage/*.txt)
+TSCS  = $(wildcard res/tsc/en/*.txt)
+TSCS += $(wildcard res/tsc/en/Stage/*.txt)
 TSBS  = $(TSCS:.txt=.tsb)
 
 # mdtiler scripts to generate tile patterns & mappings

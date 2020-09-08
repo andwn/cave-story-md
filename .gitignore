@@ -6,6 +6,9 @@ out.lst
 *.cpxm
 *.pat
 *.map
+*.tsb
+*.pcm
+*.xgc
 *.o
 inc/ai_gen.h
 res/resources.h

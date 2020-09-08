@@ -782,9 +782,10 @@ static uint16_t GetKanjiIndex(uint8_t len) {
 }
 
 static uint16_t GetNextChar(uint8_t index) {
-	uint16_t chr = JStageName[stageID * 16 + index];
+	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
+	uint16_t chr = names[stageID * 16 + index];
 	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (JStageName[stageID * 16 + index + 1] - 0x20) + 0x100;
+		return (chr - 0xE0) * 0x60 + (names[stageID * 16 + index + 1] - 0x20) + 0x100;
 	} else {
 		return chr;
 	}
@@ -832,19 +833,13 @@ void player_show_map_name(uint8_t ttl) {
         return;
     }
 	// English name
-    const uint8_t *str;
-    switch(cfg_language) {
-        case LANG_BR: str = BStageName[stageID]; break;
-        case LANG_DE: str = GStageName[stageID]; break;
-        case LANG_FR: str = FStageName[stageID]; break;
-        case LANG_IT: str = IStageName[stageID]; break;
-        case LANG_PT: str = PStageName[stageID]; break;
-        case LANG_ES: str = SStageName[stageID]; break;
-        default: str = (const uint8_t*) stage_info[stageID].name; break;
-    }
-    if((uint32_t) str >= 0x400000) {
-        str = (const uint8_t*)(0x380000 | ((uint32_t)str & 0x7FFFF));
-    }
+    const uint8_t *str = (uint8_t*) stage_info[stageID].name;
+	if(cfg_language > 0) {
+		str = ((const uint8_t*)STAGE_NAMES) + (stageID << 4);
+	}
+    //if((uint32_t) str >= 0x400000) {
+    //    str = (const uint8_t*)(0x380000 | ((uint32_t)str & 0x7FFFF));
+    //}
 	uint32_t nameTiles[16][8];
 	uint16_t len = 0;
     uint16_t pos = 0;

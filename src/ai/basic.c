@@ -851,10 +851,10 @@ void ai_intro_crown(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if((++e->timer & 15) == 1) {
-			    effect_create_misc(EFF_FANU, (e->x>>CSF) - 8 + (random() & 15),
-                          (e->y>>CSF) + 8, TRUE);
-			}
+			//if((++e->timer & 15) == 1) {
+			//    effect_create_misc(EFF_FANU, (e->x>>CSF) - 8 + (random() & 15),
+            //              (e->y>>CSF) + 8, TRUE);
+			//}
 		}
 		break;
 	}

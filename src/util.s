@@ -117,30 +117,3 @@ UFTC_LoopEnd:
 
     movem.l  (sp)+, d2/a2-a4            /* Restore registers */
     rts                                 /* End of subroutine */
-
-
-/* void ssf_reset() */
-    .globl ssf_reset
-ssf_reset:
-        move.b  #0,0xA130F1
-        move.b  #1,0xA130F3
-        move.b  #2,0xA130F5
-        move.b  #3,0xA130F7
-        move.b  #4,0xA130F9
-        move.b  #5,0xA130FB
-        move.b  #6,0xA130FD
-        move.b  #8,0xA130FF
-        rts
-
-
-/* void ssf_setbank(uint16_t bank, uint16_t chunk) */
-    .globl ssf_setbank
-ssf_setbank:
-    move.w  4(sp),d1        /* Bank index */
-    move.w  6(sp),d0        /* Chunk index */
-
-    lea     0xA130F1,a0
-    lsl.w   #1,d1
-
-    move.b  d0,(a0,d1.w)
-    rts

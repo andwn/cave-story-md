@@ -487,7 +487,20 @@ void system_delete(uint8_t index) {
 	enable_ints;
 }
 
+static void get_language() {
+	if     (LANGUAGE[0] == 'E' && LANGUAGE[1] == 'N') cfg_language = LANG_EN;
+	else if(LANGUAGE[0] == 'E' && LANGUAGE[1] == 'S') cfg_language = LANG_ES;
+	else if(LANGUAGE[0] == 'F' && LANGUAGE[1] == 'R') cfg_language = LANG_FR;
+	else if(LANGUAGE[0] == 'D' && LANGUAGE[1] == 'E') cfg_language = LANG_DE;
+	else if(LANGUAGE[0] == 'I' && LANGUAGE[1] == 'T') cfg_language = LANG_IT;
+	else if(LANGUAGE[0] == 'P' && LANGUAGE[1] == 'T') cfg_language = LANG_PT;
+	else if(LANGUAGE[0] == 'B' && LANGUAGE[1] == 'R') cfg_language = LANG_BR;
+	else if(LANGUAGE[0] == 'J' && LANGUAGE[1] == 'A') cfg_language = LANG_JA;
+}
+
 void system_load_config() {
+	get_language();
+	
 	uint16_t loc = SRAM_CONFIG_POS;
 
 	disable_ints;
@@ -510,7 +523,7 @@ void system_load_config() {
 	cfg_btn_lswap = SRAM_readByte(loc++);
 	cfg_btn_map   = SRAM_readByte(loc++);
 	cfg_btn_pause = SRAM_readByte(loc++);
-	cfg_language  = SRAM_readByte(loc++);
+	loc++; //cfg_language  = SRAM_readByte(loc++);
 	cfg_ffwd      = SRAM_readByte(loc++);
 	cfg_updoor    = SRAM_readByte(loc++);
 	cfg_hellquake = SRAM_readByte(loc++);
@@ -524,7 +537,11 @@ void system_load_config() {
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
 	if(cfg_music_mute > 1) cfg_music_mute = 0;
 	if(cfg_sfx_mute > 1) cfg_sfx_mute = 0;
-	if(cfg_60fps > 1) cfg_60fps = 0;
+	if(cfg_60fps > 1) {
+		cfg_60fps = 0;
+		// In 0.6.0 Japanese was 1 but now it's Spanish
+		//if(cfg_language == 1) cfg_language = LANG_JA;
+	}
 
     if(pal_mode || cfg_60fps) {
         time_tab = time_tab_pal;
@@ -572,7 +589,7 @@ void system_save_config() {
 
 // Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
-	ssf_setbank(7, 7); // Level select data is in chunk 7
+	//ssf_setbank(7, 7); // Level select data is in chunk 7
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);
 	uint8_t song = LS_readWord(file, 0x02);

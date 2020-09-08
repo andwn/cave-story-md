@@ -30,11 +30,11 @@
 
 #define MAX_OPTIONS	12
 
-static uint8_t ssf_is_working;
+//static uint8_t ssf_is_working;
 
-enum { PAGE_CONTROL, PAGE_LANGUAGE, PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
+enum { PAGE_CONTROL, /*PAGE_LANGUAGE,*/ PAGE_GAMEPLAY, PAGE_SAVEDATA, NUM_PAGES };
 
-enum { MI_LABEL, MI_INPUT, MI_RADIO, MI_LANG, MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
+enum { MI_LABEL, MI_INPUT, /*MI_RADIO, MI_LANG,*/ MI_TOGGLE, MI_ACTION, MI_RETURN, MI_MODE };
 
 // Forward & array for actions, implementations farther down
 void act_default(uint8_t page);
@@ -73,7 +73,7 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-    },{ // Language
+/*    },{ // Language
         { 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
         { 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
         
@@ -85,7 +85,7 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
         { 18, LANG_BR,  AKI,    MI_RADIO,   "Portug\1\x12s (BR)", &cfg_language },
         
         { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
-        { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+        { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 }, */
 	},{ // Gameplay
 		{ 4,  9,  AKI,    MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
@@ -101,7 +101,7 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 	},{ // Save data
 		{ 4,  17, AKI,    MI_ACTION, "Erase Counter", (uint8_t*)3 },
 		{ 6,  18, AKI+60, MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
-	},{ // Language (No SSF)
+	},/*{ // Language (No SSF)
 		{ 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
 		{ 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
 		
@@ -109,7 +109,7 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 		
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-	},
+	},*/
 };
 
 const char boolstr[2][4] = { "OFF", "ON " };
@@ -125,9 +125,10 @@ const uint16_t jmodestr[3][2] = {
 };
 
 static uint16_t GetNextChar(uint16_t option, uint16_t index) {
-	uint16_t chr = JConfigText[(option - 1) * 24 + index];
+	const uint8_t *str = (const uint8_t*)CONFIG_STR;
+	uint16_t chr = str[(option - 1) * 24 + index];
 	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (JConfigText[(option - 1) * 24 + index + 1] - 0x20) + 0x100;
+		return (chr - 0xE0) * 0x60 + (str[(option - 1) * 24 + index + 1] - 0x20) + 0x100;
 	} else {
 		return chr;
 	}
@@ -147,6 +148,8 @@ static void DrawJStr(uint16_t x, uint16_t y, uint16_t tile_index, uint16_t item_
 
 void draw_menuitem(const MenuItem *item) {
 	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
+	vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
+	/*
 	if(item->type != MI_RADIO) vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
 	if(item->type == MI_RADIO) {
 	    switch(item->jstr_index) {
@@ -159,7 +162,8 @@ void draw_menuitem(const MenuItem *item) {
             }
 	        default: vdp_puts(VDP_PLAN_A, item->caption, 4, item->y); break;
 	    }
-	} else if(cfg_language == LANG_JA && item->jstr_index) {
+	} else */
+	if(cfg_language == LANG_JA && item->jstr_index) {
 		DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
 	} else {
 		vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
@@ -178,6 +182,7 @@ void draw_menuitem(const MenuItem *item) {
 			vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
 		}
 		break;
+		/*
 	    case MI_RADIO:
             if(*item->valptr == item->jstr_index) {
                 vdp_puts(VDP_PLAN_A, "(*)", 30, item->y);
@@ -185,6 +190,8 @@ void draw_menuitem(const MenuItem *item) {
                 vdp_puts(VDP_PLAN_A, "( )", 30, item->y);
             }
 	        break;
+	        */
+		/*
 		case MI_LANG:
 		if(*item->valptr) {
 			uint16_t tile_index = item->jtile_index + 40;
@@ -196,6 +203,7 @@ void draw_menuitem(const MenuItem *item) {
 			vdp_text_clear(VDP_PLAN_A, 30, item->y + 1, 6); // Hide kanji
 		}
 		break;
+		 */
 		case MI_TOGGLE:
 		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = item->jtile_index + 40;
@@ -218,18 +226,6 @@ void draw_menuitem(const MenuItem *item) {
 	}
 }
 
-void ssf_test() {
-	//ssf_is_working = FALSE; return;
-	ssf_setbank(7, 8);
-	const char *str = (const char*) 0x380000;
-	if(str[0] == 'T' && str[1] == 'E' && str[2] == 'S' && str[3] == 'T') {
-		ssf_is_working = TRUE;
-	} else {
-		ssf_is_working = FALSE;
-	}
-	ssf_setbank(7, 7);
-}
-
 uint8_t set_page(uint8_t page) {
 	uint8_t numItems = 0;
 	
@@ -243,34 +239,32 @@ uint8_t set_page(uint8_t page) {
 				vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
 			}
 			break;
-		case PAGE_LANGUAGE:
-		case NUM_PAGES:
-			ssf_test();
-			if(cfg_language == LANG_JA) {
-				DrawJStr(8, 1, WKI, 22);
-			} else {
-				vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
-			}
-			break;
+//		case PAGE_LANGUAGE:
+//		case NUM_PAGES:
+//			if(cfg_language == LANG_JA) {
+//				DrawJStr(8, 1, WKI, 22);
+//			} else {
+//				vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
+//			}
+//			break;
 		case PAGE_GAMEPLAY:
 			if(cfg_language == LANG_JA) {
 				DrawJStr(8, 1, WKI, 23);
 			} else {
-				vdp_puts(VDP_PLAN_A, "(3) Gameplay Config", 8, 1);
+				vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 1);
 			}
 			break;
 		case PAGE_SAVEDATA:
 			if(cfg_language == LANG_JA) {
 				DrawJStr(8, 1, WKI, 24);
 			} else {
-				vdp_puts(VDP_PLAN_A, "(4) Save Data", 8, 1);
+				vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 1);
 			}
 			break;
 	}
-	uint8_t drawpage = (page == PAGE_LANGUAGE && !ssf_is_working) ? NUM_PAGES : page;
 	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {
-		if(menu[drawpage][i].caption[0]) {
-			draw_menuitem(&menu[drawpage][i]);
+		if(menu[page][i].caption[0]) {
+			draw_menuitem(&menu[page][i]);
 			numItems++;
 		}
 	}
@@ -281,6 +275,7 @@ uint8_t set_page(uint8_t page) {
 void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
+		/*
 		case MI_RADIO:
             if(*item->valptr != item->jstr_index) {
                 // Find previous selection so we can redraw as deselected
@@ -295,7 +290,8 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
                 }
             }
 		    break;
-		case MI_LANG:
+		    */
+//		case MI_LANG:
 		case MI_TOGGLE: {
             sound_play(SND_MENU_SELECT, 5);
             *item->valptr ^= 1;
@@ -365,18 +361,17 @@ void config_main() {
 	set_page(page);
 	oldstate = ~0;
 	while(TRUE) {
-		uint8_t drawpage = (page == PAGE_LANGUAGE && !ssf_is_working) ? NUM_PAGES : page;
 		if(joy_pressed(BUTTON_UP)) {
 			do {
 				if(cursor == 0) cursor = numItems - 1;
 				else cursor--;
-			} while(menu[drawpage][cursor].type == MI_LABEL);
+			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_DOWN)) {
 			do {
 				if(cursor == numItems - 1) cursor = 0;
 				else cursor++;
-			} while(menu[drawpage][cursor].type == MI_LABEL);
+			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
 		} else if(joy_pressed(BUTTON_LEFT)) {
 			if(--page >= NUM_PAGES) page = NUM_PAGES - 1;
@@ -389,8 +384,8 @@ void config_main() {
             sound_play(SND_MENU_MOVE, 0);
 			set_page(page);
 		} else if(joy_pressed(btn[cfg_btn_jump])) {
-			if(menu[drawpage][cursor].type == MI_RETURN) break;
-			press_menuitem(&menu[drawpage][cursor], drawpage, &sprCursor);
+			if(menu[page][cursor].type == MI_RETURN) break;
+			press_menuitem(&menu[page][cursor], page, &sprCursor);
 		} else if(joy_pressed(btn[cfg_btn_shoot])) {
 			break;
 		}
@@ -402,7 +397,7 @@ void config_main() {
 		}
 		
 		// Draw quote sprite at cursor position
-		sprite_pos(sprCursor, 16, (menu[drawpage][cursor].y << 3) - 4);
+		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);
 		vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
@@ -422,8 +417,8 @@ void act_default(uint8_t page) {
         cfg_btn_map = 10;
         cfg_btn_pause = 7;
         cfg_force_btn = 0;
-    } else if(page == PAGE_LANGUAGE || page == NUM_PAGES) {
-	    cfg_language = 0;
+    //} else if(page == PAGE_LANGUAGE || page == NUM_PAGES) {
+	//    cfg_language = 0;
 	} else if(page == PAGE_GAMEPLAY) {
 		cfg_60fps = FALSE;
 		cfg_ffwd = TRUE;

@@ -22,10 +22,10 @@ void kanji_draw(uint16_t plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uin
 	const uint8_t *bmp;
 	if(chr > 0xFF) {
 		chr -= 0x100;
-		bmp = BMP_Kanji + chr * 32;
+		bmp = (const uint8_t*)BMP_KANJI + chr * 32;
 	} else {
 		chr -= 0x20;
-		bmp = BMP_Ascii + chr * 32;
+		bmp = (const uint8_t*)BMP_ASCII + chr * 32;
 	}
 	// Convert chunks to 4bpp tiles, using a set foreground and background color
 	volatile uint32_t tiles[TILECHAR_LONGS];
@@ -70,10 +70,10 @@ void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) 
 		if(c[i] == 0) return;
 		if(c[i] > 0xFF) {
 			c[i] -= 0x100;
-			bmp[i] = BMP_Kanji + (c[i] << 5);
+			bmp[i] = (const uint8_t*)BMP_KANJI + (c[i] << 5);
 		} else {
 			c[i] -= 0x20;
-			bmp[i] = BMP_Ascii + (c[i] << 5);
+			bmp[i] = (const uint8_t*)BMP_ASCII + (c[i] << 5);
 		}
 		// Convert chunks to 4bpp tiles, using a set foreground and background color
 		volatile uint32_t tiles[TILECHAR_LONGS];

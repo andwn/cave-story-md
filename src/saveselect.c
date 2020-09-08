@@ -42,9 +42,10 @@ static void draw_cursor_mode(uint8_t mode) {
 }
 
 static uint16_t GetNextChar(uint16_t stage, uint16_t index) {
-	uint16_t chr = JStageName[(stage << 4) + index];
+	const uint8_t *name = ((const uint8_t*)STAGE_NAMES) + (stageID << 4);
+	uint16_t chr = name[(stage << 4) + index];
 	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (JStageName[(stage << 4) + index + 1] - 0x20) + 0x100;
+		return (chr - 0xE0) * 0x60 + (name[(stage << 4) + index + 1] - 0x20) + 0x100;
 	} else {
 		return chr;
 	}

@@ -52,11 +52,11 @@ RomStart:
 	.endr
 
 RomHeader:
-        .ascii	"SEGA SSF        "
+        .ascii	"SEGA MEGA DRIVE "
 		.ascii	"GRIND   2020.SEP"
 		.ascii	"Doukutsu Monogatari MD                          "
 		.ascii	"Cave Story MD                                   "
-		.ascii	"GM ANDYG002-A6"
+		.ascii	"GM ANDYG002-A7"
 		dc.w	0
 		.ascii	"J               "
 		dc.l	0x000000
@@ -82,7 +82,6 @@ NoTMSS:
         move.w  #0x0100,(0xA11100)      /* Halt / Reset Z80 */
         move.w  #0x0100,(0xA11200)
 _hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
-        jsr     ssf_reset               /* Reset mapper */
         lea     0xFF0000,a0             /* First RAM address */
         moveq   #0,d0
         move.w  #0x3FFF,d1              /* (Size of RAM - 1) / Size of long */

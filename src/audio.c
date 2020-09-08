@@ -54,13 +54,14 @@ void song_play(uint8_t id) {
 	} else {
         xgm_music_pause();
         vdp_vsync(); aftervsync();
+		vdp_vsync();
         // Linker puts real addresses, need to adjust to use mapped one
-        uint32_t address = (uint32_t) song_info[id].song;
-        uint16_t chunk = address >> 19;
-        if(chunk >= 7) {
-            ssf_setbank(7, chunk);
-            address = 0x380000 | (address & 0x7FFFF);
-        }
+        //uint32_t address = (uint32_t) song_info[id].song;
+        //uint16_t chunk = address >> 19;
+        //if(chunk >= 7) {
+        //    ssf_setbank(7, chunk);
+        //    address = 0x380000 | (address & 0x7FFFF);
+        //}
 		xgm_music_play(song_info[id].song);
 	}
 	songPlaying = id;
