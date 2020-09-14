@@ -358,7 +358,7 @@ void config_main() {
 		.size = SPRITE_SIZE(2,2)
 	};
 	
-	set_page(page);
+	//set_page(page);
 	oldstate = ~0;
 	while(TRUE) {
 		if(joy_pressed(BUTTON_UP)) {

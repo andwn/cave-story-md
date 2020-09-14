@@ -14,12 +14,9 @@ SRAM is malfunctioning, or not emulated properly.
 Check [COMPATIBILITY.md](COMPATIBILITY.md) for a list of tested carts and emulators.
 
 ### I found something inaccurate
-I'm no longer interested in issues like this.
-If your main concern is accuracy, don't play CSMD. Check out CSE2, or even the original.
-
-In the past I did accept and fix issues that people opened about discrepancies with the
-original Cave Story, but this resulted in a 3 digit issue tab full of minor differences
-and often duplicate posts. It burned me out big time resulting in a pretty long hiatus.
+If you encounter something that is obviously a glitch or bug, then I would like to hear about it.
+However, please do not open issues with minor discrepancies for the sake of "accuracy".
+If accuracy is your main concern, that is what CSE2 is for.
 
 ### I found a bug in an old version
 If you can't reproduce in the latest release, don't report it.

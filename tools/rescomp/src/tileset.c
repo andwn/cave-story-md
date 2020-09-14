@@ -143,7 +143,7 @@ void outTileset(tileset_* tileset, FILE* fs, FILE* fh, char* id, int global)
     // tileset structure
     decl(fs, fh, "TileSet", id, 2, global);
     // set compression info
-    fprintf(fs, "    dc.w    %d\n", tileset->packed);
+    //fprintf(fs, "    dc.w    %d\n", tileset->packed);
     // set number of tile
     fprintf(fs, "    dc.w    %d\n", tileset->num);
     // set tileset pointer

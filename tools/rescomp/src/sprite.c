@@ -127,19 +127,19 @@ static int execute(char *info, FILE *fs, FILE *fh)
     }
 
     // get palette
-    palette = Img_getPalette(fileIn, &psize);
-    if (!palette) return FALSE;
+    //palette = Img_getPalette(fileIn, &psize);
+    //if (!palette) return FALSE;
 
     // optimize palette size
-    if (maxIndex < 16) psize = 16;
-    else if (maxIndex < 32) psize = 32;
-    else if (maxIndex < 48) psize = 48;
-    else psize = 64;
+    //if (maxIndex < 16) psize = 16;
+    //else if (maxIndex < 32) psize = 32;
+    //else if (maxIndex < 48) psize = 48;
+    //else psize = 64;
 
     // EXPORT PALETTE
-    strcpy(temp, id);
-    strcat(temp, "_palette");
-    outPalette(palette, 0, psize, fs, fh, temp, FALSE);
+    //strcpy(temp, id);
+    //strcat(temp, "_palette");
+    //outPalette(palette, 0, psize, fs, fh, temp, FALSE);
 
     // EXPORT SPRITE
     outSpriteDef(sprDef, fs, fh, id, TRUE);
@@ -147,7 +147,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     return TRUE;
 }
 
-
+/*
 void outCollision(collision_* collision, FILE* fs, FILE* fh, char* id, int global)
 {
     // Collision structure
@@ -210,7 +210,7 @@ void outCollision(collision_* collision, FILE* fs, FILE* fh, char* id, int globa
 
     fprintf(fs, "\n");
 }
-
+*/
 //void outFrameSprite(frameSprite_* frameSprite, FILE* fs, FILE* fh, char* baseid, char* id, int global)
 //{
 //    char temp[MAX_PATH_LEN];
@@ -296,23 +296,23 @@ void outAnimFrame(animFrame_* animFrame, FILE* fs, FILE* fh, char* id, int globa
     fprintf(fs, "\n");
 
     // EXPORT COLLISION DATA
-    if (animFrame->collision)
-    {
-        collision_* collision;
-
-        i = 0;
-        collision = animFrame->collision;
-        while(collision)
-        {
-            sprintf(temp, "%s_collision%d", id, i);
-            outCollision(collision, fs, fh, temp, FALSE);
-
+    //if (animFrame->collision)
+    //{
+    //    collision_* collision;
+//
+    //    i = 0;
+    //    collision = animFrame->collision;
+    //    while(collision)
+    //    {
+    //        sprintf(temp, "%s_collision%d", id, i);
+    //        outCollision(collision, fs, fh, temp, FALSE);
+//
             // do next collision (we also need to do inner collision in future)
-            i++;
-            collision = collision->next;
-        }
-
-        fprintf(fs, "\n");
+    //        i++;
+    //        collision = collision->next;
+    //    }
+//
+    //    fprintf(fs, "\n");
 
 //        // collisions data
 //        strcpy(temp, id);
@@ -324,7 +324,7 @@ void outAnimFrame(animFrame_* animFrame, FILE* fs, FILE* fh, char* id, int globa
 //            fprintf(fs, "    dc.l    %s_collision%d\n", id, i);
 //
 //        fprintf(fs, "\n");
-    }
+   // }
 
     // EXPORT TILESET
     sprintf(temp, "%s_tileset", id);
@@ -341,10 +341,10 @@ void outAnimFrame(animFrame_* animFrame, FILE* fs, FILE* fh, char* id, int globa
 //    // set collisions pointer
 //    if (animFrame->numCollision > 0)
 //        fprintf(fs, "    dc.l    %s_collisions\n", id);
-    if (animFrame->collision)
-        fprintf(fs, "    dc.l    %s_collision0\n", id);
-    else
-        fprintf(fs, "    dc.l    0\n");
+    //if (animFrame->collision)
+   //     fprintf(fs, "    dc.l    %s_collision0\n", id);
+    //else
+    //    fprintf(fs, "    dc.l    0\n");
     // set tileset pointer
     fprintf(fs, "    dc.l    %s_tileset\n", id);
     // frame width
@@ -352,7 +352,7 @@ void outAnimFrame(animFrame_* animFrame, FILE* fs, FILE* fh, char* id, int globa
     // frame height
     fprintf(fs, "    dc.w    %d\n", animFrame->h * 8);
     // timer info
-    fprintf(fs, "    dc.w    %d\n", animFrame->timer);
+    //fprintf(fs, "    dc.w    %d\n", animFrame->timer);
     fprintf(fs, "\n");
 }
 
@@ -404,7 +404,7 @@ void outAnimation(animation_* animation, FILE* fs, FILE* fh, char* id, int globa
     // set sequence pointer
     fprintf(fs, "    dc.l    %s_sequence\n", id);
     // loop info
-    fprintf(fs, "    dc.w    %d\n", animation->loop);
+    //fprintf(fs, "    dc.w    %d\n", animation->loop);
     fprintf(fs, "\n");
 }
 
@@ -438,15 +438,15 @@ void outSpriteDef(spriteDefinition_* spriteDef, FILE* fs, FILE* fh, char* id, in
     // SpriteDefinition structure
     decl(fs, fh, "SpriteDefinition", id, 2, global);
     // set palette pointer
-    fprintf(fs, "    dc.l    %s_palette\n", id);
+    //fprintf(fs, "    dc.l    %s_palette\n", id);
     // set number of animation
     fprintf(fs, "    dc.w    %d\n", spriteDef->numAnimation);
     // set animations pointer
     fprintf(fs, "    dc.l    %s_animations\n", id);
     // set maximum number of tile used by a single animation frame (used for VRAM tile space allocation)
-    fprintf(fs, "    dc.w    %d\n", spriteDef->maxNumTile);
+    //fprintf(fs, "    dc.w    %d\n", spriteDef->maxNumTile);
     // set maximum number of VDP sprite used by a single animation frame (used for VDP sprite allocation)
-    fprintf(fs, "    dc.w    %d\n", spriteDef->maxNumSprite);
+    //fprintf(fs, "    dc.w    %d\n", spriteDef->maxNumSprite);
 
     fprintf(fs, "\n");
 }

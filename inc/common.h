@@ -173,14 +173,14 @@ typedef struct {
 } VDPPlan;
 
 typedef struct {
-    uint16_t compression;
+    //uint16_t compression;
     uint16_t numTile;
     uint32_t *tiles;
 } TileSet;
 
 typedef struct {
-    uint16_t index;
-    uint16_t length;
+    //uint16_t index;
+    //uint16_t length;
     uint16_t *data;
 } Palette;
 
@@ -207,11 +207,11 @@ typedef struct {
 typedef struct {
     uint16_t numSprite;
 	VDPSpriteInf **vdpSpritesInf;
-    uint32_t UNUSED_collision;
+    //uint32_t UNUSED_collision;
     TileSet *tileset;
     int16_t w;
     int16_t h;
-    uint16_t timer;
+    //uint16_t timer;
 } AnimationFrame;
 
 typedef struct {
@@ -219,15 +219,15 @@ typedef struct {
     AnimationFrame **frames;
     uint16_t length;
     uint8_t *sequence;
-    int16_t loop;
+    //int16_t loop;
 } Animation;
 
 typedef struct {
-    Palette *palette;
+    //Palette *palette;
     uint16_t numAnimation;
     Animation **animations;
-    uint16_t maxNumTile;
-    uint16_t maxNumSprite;
+    //uint16_t maxNumTile;
+    //uint16_t maxNumSprite;
 } SpriteDefinition;
 
 // VBlank stuff

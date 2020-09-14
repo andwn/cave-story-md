@@ -207,8 +207,8 @@ void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count) {
 }
 
 void vdp_color(uint16_t index, uint16_t color) {
-    index <<= 1;
-    *vdp_ctrl_wide = ((0xC000 + (((uint32_t)index) & 0x3FFF)) << 16) + ((((uint32_t)index) >> 14) | 0x00);
+	uint16_t ind = index << 1;
+    *vdp_ctrl_wide = ((0xC000 + (((uint32_t)ind) & 0x3FFF)) << 16) + ((((uint32_t)ind) >> 14) | 0x00);
     *vdp_data_port = color;
     pal_current[index] = color;
 }
