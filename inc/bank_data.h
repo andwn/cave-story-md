@@ -122,6 +122,7 @@ extern const uint8_t PXM_WeedB[];
 extern const uint8_t PXM_WeedD[];
 extern const uint8_t PXM_WeedS[];
 
+extern const uint8_t PXE_0[];
 extern const uint8_t PXE_Almond[];
 extern const uint8_t PXE_Ballo1[];
 extern const uint8_t PXE_Ballo2[];

@@ -226,6 +226,12 @@ void ai_hoppy(Entity *e) {
 	LIMIT_X(SPEED(0x5ff));
 }
 
+void onspawn_skydragon(Entity *e) {
+	if(stageID == STAGE_FALLING) {
+		e->alwaysActive = TRUE;
+	}
+}
+
 void ai_sky_dragon(Entity *e) {
 	switch(e->state) {
 		case 0:		// standing

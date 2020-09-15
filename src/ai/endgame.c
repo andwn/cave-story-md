@@ -217,7 +217,7 @@ void ai_balrog_medic(Entity *e) {
 	RANDBLINK(e, 1, 200);
 }
 void onspawn_gaudi_patient(Entity *e) {
-	e->y += 8 << CSF;
+	e->y += pixel_to_sub(10);
 }
 
 void ai_gaudi_patient(Entity *e) {
@@ -274,7 +274,7 @@ void ai_turning_human(Entity *e) {
 		{
 			e->frame = (e->eflags & NPC_OPTION2) ? 8 : 0;
 			e->x += (16<<CSF);
-			e->y -= (16<<CSF);
+			e->y -= (8<<CSF);
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -433,12 +433,12 @@ static const struct {
 	uint8_t dir;
 	uint8_t tall;
 } cast_data[] = {
-	{ OBJ_KING,				6, 0, RIGHT, FALSE, },
-	{ OBJ_TOROKO,			2, 0, RIGHT, FALSE, },
-	{ OBJ_KAZUMA,			4, 0, RIGHT, TRUE, },
-	{ OBJ_SUE, 				4, 0, RIGHT, FALSE, },
+	{ OBJ_KING,				1, 0, RIGHT, FALSE, },
+	{ OBJ_TOROKO,			1, 0, RIGHT, FALSE, },
+	{ OBJ_KAZUMA,			1, 0, RIGHT, TRUE, },
+	{ OBJ_SUE, 				1, 0, RIGHT, FALSE, },
 	{ OBJ_MOMORIN, 			2, 0, LEFT, TRUE, },
-	{ OBJ_PROFESSOR_BOOSTER,8, 0, LEFT, FALSE, },
+	{ OBJ_PROFESSOR_BOOSTER,1, 0, LEFT, FALSE, },
 	{ OBJ_JENKA,			0, 0, LEFT, FALSE, },
 	
 	{ OBJ_NURSE_HASUMI,	 	1, 0, RIGHT, FALSE, },
@@ -446,11 +446,13 @@ static const struct {
 	{ OBJ_BALROG_MEDIC,	 	1, 0, RIGHT, TRUE, },
 	{ OBJ_CURLY,			1, 0, RIGHT, FALSE, },
 	{ OBJ_MISERY_STAND,	 	0, 2, LEFT, FALSE, },
-	{ OBJ_MALCO_BROKEN,	 	1, 0, LEFT, TRUE, },
-	{ OBJ_HERMIT_GUNSMITH, 	1, 0, LEFT, TRUE, },
+	{ OBJ_MALCO_BROKEN,	 	7, 6, LEFT, TRUE, },
+	{ OBJ_HERMIT_GUNSMITH, 	2, 1, LEFT, TRUE, },
 };
 
 void onspawn_the_cast(Entity *e) {
+	//vdp_color(0, 0xEEE);
+	e->y -= pixel_to_sub(64);
 	e->alwaysActive = TRUE;
 	e->id /= 100;
 	if(e->id >= 14) e->id = 0;
@@ -458,7 +460,8 @@ void onspawn_the_cast(Entity *e) {
 	// Manual sprite VRAM allocation
 	uint16_t obj = cast_data[e->id].obj;
 	if(obj != OBJ_BALROG_MEDIC) e->sprite_count--;
-	const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[0];
+	e->frame = e->oframe = cast_data[e->id].fallframe;
+	const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[e->frame];
 	e->framesize = f->tileset->numTile;
 	TILOC_ADD(e->tiloc, e->framesize);
 	if(e->tiloc != NOTILOC) {
@@ -470,23 +473,26 @@ void onspawn_the_cast(Entity *e) {
 				.attr = TILE_ATTR(npc_info[obj].palette,
 						0,0,0,e->vramindex + tile_offset)
 			};
+			TILES_QUEUE(f->tileset->tiles, e->vramindex, f->tileset->numTile);
 			tile_offset += f->vdpSpritesInf[i]->numTile;
 		}
-		e->oframe = 255;
 	}
 	
 	//e->sprite = cast_data[e->id].sprite;
-	e->frame = cast_data[e->id].fallframe;
+	//e->frame = cast_data[e->id].fallframe;
 	e->dir = cast_data[e->id].dir;
 	
-	if(cast_data[e->id].tall) e->y -= (4<<CSF);
+	if(cast_data[e->id].tall) {
+		e->y -= (4<<CSF);
+		e->hit_box.bottom += 8;
+	}
 	
 	// create King's sword
-	if(cast_data[e->id].obj == OBJ_KING) {
-		Entity *sword = entity_create(e->x, e->y, OBJ_KINGS_SWORD, 0);
-		sword->linkedEntity = e;
+	//if(cast_data[e->id].obj == OBJ_KING) {
+	//	Entity *sword = entity_create(e->x, e->y, OBJ_KINGS_SWORD, 0);
+	//	sword->linkedEntity = e;
 		//sword->carry.flip = TRUE;
-	}
+	//}
 	
 	// Balrog goes behind Curly
 	//if (e->sprite == SPR_BALROG_CAST) {
@@ -496,10 +502,25 @@ void onspawn_the_cast(Entity *e) {
 
 void ai_the_cast(Entity *e) {
 	if(!e->state) {
+		e->dir = cast_data[e->id].dir;
 		if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 		e->y += e->y_speed;
-		if(blk(e->x, 0, e->y, e->hit_box.bottom)) {
-			e->frame = cast_data[e->id].standframe;
+		if((e->y >> CSF) + e->hit_box.bottom >= 200) {
+			if(e->tiloc != NOTILOC) {
+				uint16_t obj = cast_data[e->id].obj;
+				e->frame = e->oframe = cast_data[e->id].standframe;
+				const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[e->frame];
+				uint16_t tile_offset = 0;
+				for(uint8_t i = 0; i < e->sprite_count; i++) {
+					e->sprite[i] = (VDPSprite) {
+							.size = f->vdpSpritesInf[i]->size,
+							.attr = TILE_ATTR(npc_info[obj].palette,
+							        0, 0, 0, e->vramindex + tile_offset)
+					};
+					TILES_QUEUE(f->tileset->tiles, e->vramindex, f->tileset->numTile);
+					tile_offset += f->vdpSpritesInf[i]->numTile;
+				}
+			}
 			e->state++;
 		}
 	}

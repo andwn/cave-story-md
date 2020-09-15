@@ -235,7 +235,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			SHEET_BASUSHOT, PAL3, 1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	}, // Basu Projectile (2)
 	{ NULL, 			SHEET_BEETLE, 	PAL3, 1, &onspawn_beetleFollow, &ai_beetleFollow, 	&ondeath_default 	}, // Green Beetle (Follow 2)
 	{ &SPR_Spikes, 		NOSHEET, 		PAL1, 1, &onspawn_spike, 		&ai_null, 			&ai_null 			}, // Spikes
-	{ &SPR_SkyDragon, 	NOSHEET, 		PAL3, 4, &ai_null, 				&ai_sky_dragon, 	&ai_null 			}, // Sky Dragon
+	{ &SPR_SkyDragon, 	NOSHEET, 		PAL3, 4, &onspawn_skydragon, 	&ai_sky_dragon, 	&ai_null 			}, // Sky Dragon
 	{ &SPR_NightSpirit,	NOSHEET,		PAL2, 4, &onspawn_persistent, 	&ai_night_spirit, 	&ondeath_default 	}, // Night Spirit
 	{ NULL, 			SHEET_NIGHTSHOT,PAL2, 1, &onspawn_persistent, 	&ai_night_spirit_sh,&ondeath_default 	}, // Night Spirit Projectile
 	{ &SPR_Croc2, 		NOSHEET, 		PAL2, 2, &ai_null, 				&ai_sandcroc, 		&ondeath_default 	}, // White Sandcroc
@@ -358,7 +358,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			SHEET_HPLIT, 	PAL1, 1, &onspawn_hp_lightning, &ai_hp_lightning, 	&ai_null 			}, // Heavy Press Projectile
 	{ &SPR_TurnHuman, 	NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_turning_human, 	&ai_null 			}, // Itoh/Sue (Ending)
 	{ NULL, 			SHEET_AHCHOO, 	PAL3, 1, &onspawn_persistent, 	&ai_ahchoo, 		&ai_null 			}, // "Ah-choo!"
-	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
+	{ &SPR_Transmg, 	NOSHEET, 		PAL1, 2, &ai_null, 				&ai_null, 			&ai_null 			}, // Transmogrifier
 	{ NULL, 			NOSHEET, 		PAL0, 1, &ai_null, 				&ai_null, 			&ai_null 			}, // Building Fan
 	{ NULL, 			SHEET_ROLLING, 	PAL1, 1, &onspawn_persistent, 	&ai_rolling, 		&ondeath_default 	}, // Rolling
 	{ NULL, 			SHEET_BONE, 	PAL3, 1, &onspawn_persistent, 	&ai_ballos_bone, 	&ai_null 			}, // Ballos Bone Shot

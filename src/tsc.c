@@ -617,8 +617,13 @@ uint8_t execute_command() {
 				if(args[0] == 0) {
 					vdp_map_clear(VDP_PLAN_A);
 					entities_clear();
+					sheets_load_stage(0, FALSE, TRUE);
 					vdp_sprites_clear();
-					entity_create(pixel_to_sub(240), pixel_to_sub(120), OBJ_NPC_PLAYER, 0)->state = 100;
+					//stageID = 0;
+					//stage_load_entities();
+					Entity *p = entity_create(pixel_to_sub(240), pixel_to_sub(140), OBJ_NPC_PLAYER, 0);
+					p->state = 100;
+					p->event = 400;
 					tsc_load_stage(ID_CREDITS);
 				} else {
 					stage_load_credits(args[0]);
@@ -1217,7 +1222,7 @@ uint8_t execute_command() {
 			//		TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10);
 			// Foreground trees
 			vdp_tiles_load_from_rom(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
-			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,0,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
+			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
 			//VDP_fillTileMapRectInc(VDP_PLAN_A, 
 			//		TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4);
 			// Draw high prio black tiles over the top to hide island

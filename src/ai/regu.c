@@ -224,12 +224,13 @@ void ai_toroko_tele_in(Entity *e) {
 
 void onspawn_sue(Entity *e) {
 	if(e->eflags & NPC_OPTION2) e->dir = TRUE;
-	SNAP_TO_GROUND(e);
 	// This keeps Sue behind the cage in Mimiga Village
 	if(stageID == STAGE_MIMIGA_VILLAGE) e->alwaysActive = TRUE;
 	if(stageID == STAGE_FALLING) {
 		e->alwaysActive = TRUE;
-		e->state = 50;
+		//e->state = 50;
+	} else {
+		SNAP_TO_GROUND(e);
 	}
 }
 
@@ -390,6 +391,7 @@ void ai_sue(Entity *e) {
 		break;
 		case 50:
 		{
+			moveMeToFront = TRUE;
 			e->dir = !e->linkedEntity->dir;
 			e->frame = 7;
 			e->x_next = e->linkedEntity->x + (e->dir ? (16 << CSF) : -(16 << CSF));

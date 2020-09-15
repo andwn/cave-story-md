@@ -154,6 +154,7 @@ BIN PXM_WeedD	"res/Stage/WeedD.cpxm"
 BIN PXM_WeedS	"res/Stage/WeedS.cpxm"
 
 # Entities (PXE)
+BIN PXE_0       "res/Stage/0.pxe"
 BIN PXE_Almond	"res/Stage/Almond.pxe"
 BIN PXE_Ballo1	"res/Stage/Ballo1.pxe"
 BIN PXE_Ballo2	"res/Stage/Ballo2.pxe"

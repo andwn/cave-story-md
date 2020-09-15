@@ -19,8 +19,8 @@
 
 #include "gamemode.h"
 
-#define TILE_ICONINDEX	(tiloc_index + 228)
-#define TILE_KANJISTART (TILE_ICONINDEX + 9*14)
+#define TILE_ICONINDEX	(TILE_SHEETINDEX + 24*6 + 228)
+#define TILE_KANJISTART (TILE_ICONINDEX + 9*15)
 
 enum CreditCmd { 
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, LOADPXE, END
@@ -56,7 +56,7 @@ static void draw_jp_text(const uint8_t *str, uint16_t x, uint16_t y) {
 void credits_main() {
 	gamemode = GM_CREDITS;
 	
-	VDPSprite icon[16];
+	VDPSprite icon[16] = {0};
 	
 	uint16_t pc = 0;
 	uint16_t textX = 0, textY = 0;

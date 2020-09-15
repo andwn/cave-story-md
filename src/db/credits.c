@@ -198,9 +198,9 @@ const credits_info_def credits_info[] = {
 	C_WAIT(144),
 	//C_SONG_FADE(),
 	//C_WAIT(200),
-	C_WAIT(100),
+	C_WAIT(150),
 	C_SONG_FADE(),
-	C_WAIT(100),
+	C_WAIT(50),
 	C_SONG(1),
 	C_MOVE(48),
 	
@@ -374,12 +374,12 @@ const credits_info_def credits_info[] = {
     //C_MOVE(32),
     //C_WAIT(32),
     //C_TEXT("")
+	C_LOADPXE(),
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 228),C_ICON(THANKS,	3), C_WAIT(32),
 	C_WAIT(232),
 	//C_WAIT(128),
 	C_MOVE(80),
-    C_LOADPXE(),
 	C_TEXT("Cave Story ~ The End", 229),
 	C_WAIT(264),
 	C_END()

@@ -4,7 +4,7 @@
 #include "tables.h"
 
 const stage_info_def stage_info[STAGE_COUNT] = {
-	{ NULL,			NULL,		&PAL_Regu,	0,	0,	"" },
+	{ NULL,			PXE_0,		&PAL_Regu,	0,	0,	"" },
 	{ PXM_Pens1,	PXE_Pens1,	&PAL_LabB,	16,	14,	"Arthur's House" },
 	{ PXM_Eggs,		PXE_Eggs,	&PAL_Regu,	6,	13,	"Egg Corridor" },
 	{ PXM_EggX,		PXE_EggX,	&PAL_Regu,	7,	0,	"Egg No. 00" },
