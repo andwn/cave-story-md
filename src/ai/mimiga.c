@@ -41,9 +41,7 @@ void ai_chaco(Entity* e) {
 				e->oframe = 0;
 				e->state++;
 			} else {
-				if(e->type != OBJ_KAZUMA) {
-					RANDBLINK(e, 3, 200);
-				}
+				RANDBLINK(e, 3, 200);
 			}
 		}
 		break;
