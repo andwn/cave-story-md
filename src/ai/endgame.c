@@ -447,7 +447,7 @@ static const struct {
 	{ OBJ_CURLY,			1, 0, RIGHT, FALSE, },
 	{ OBJ_MISERY_STAND,	 	0, 2, LEFT, FALSE, },
 	{ OBJ_MALCO_BROKEN,	 	7, 6, LEFT, TRUE, },
-	{ OBJ_HERMIT_GUNSMITH, 	2, 1, LEFT, TRUE, },
+	{ OBJ_HERMIT_GUNSMITH, 	2, 1, LEFT, FALSE, },
 };
 
 void onspawn_the_cast(Entity *e) {
@@ -478,10 +478,7 @@ void onspawn_the_cast(Entity *e) {
 		}
 	}
 	
-	//e->sprite = cast_data[e->id].sprite;
-	//e->frame = cast_data[e->id].fallframe;
 	e->dir = cast_data[e->id].dir;
-	
 	if(cast_data[e->id].tall) {
 		e->y -= (4<<CSF);
 		e->hit_box.bottom += 8;
@@ -493,14 +490,12 @@ void onspawn_the_cast(Entity *e) {
 	//	sword->linkedEntity = e;
 		//sword->carry.flip = TRUE;
 	//}
-	
-	// Balrog goes behind Curly
-	//if (e->sprite == SPR_BALROG_CAST) {
-	//	e->PushBehind(lowestEntity);
-	//}
 }
 
 void ai_the_cast(Entity *e) {
+	if(e->id == 9) e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
+	if(e->id == 10) moveMeToFront = TRUE; // Curly over balrog
+	
 	if(!e->state) {
 		e->dir = cast_data[e->id].dir;
 		if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);

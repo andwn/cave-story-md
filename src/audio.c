@@ -20,8 +20,8 @@ void sound_init() {
     disable_ints;
     z80_request();
     for(uint8_t i = 1; i < SOUND_COUNT; i++) {
-        xgm_pcm_set(0x40 + i, sound_info[i].sound,
-                    (uint16_t)(sound_info[i].end-sound_info[i].sound));
+    	uint16_t len = sound_info[i].end-sound_info[i].sound;
+        xgm_pcm_set(0x40 + i, sound_info[i].sound, len > 256 ? len : 256);
     }
     z80_release();
     enable_ints;
