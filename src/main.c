@@ -39,11 +39,11 @@ void aftervsync() {
 int main() {
     setRandomSeed(0xC427); // initiate random number generator
     mem_init();
+    vdp_init();
 	xgm_init();
 	if(system_checkdata() != SRAM_INVALID) {
 		system_load_config();
 	}
-    vdp_init();
     DMA_init(0, 0);
 	joy_init();
 	enable_ints;
