@@ -748,7 +748,7 @@ static LList* VGM_extractSampleFromSeek(VGM* vgm, LList* command, bool convert)
             // delta >= 20 means rate < 2200 Hz --> very unlikely, discard it from mean computation
             if (delta < 20)
             {
-                // compute delta mean for futher correction
+                // compute delta mean for further correction
                 if (deltaMean == 0) deltaMean = delta;
                 else deltaMean = (delta * 0.1) + (deltaMean * 0.9);
             }
