@@ -35,7 +35,7 @@ endif
 
 INCS     = -Isrc -Ires -Iinc
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -mshort
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon -mshort
 OPTIONS  =
 ASFLAGS  = -m68000 --register-prefix-optional
 LDFLAGS  = -T mdssf.ld -nostdlib
