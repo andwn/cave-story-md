@@ -173,9 +173,9 @@ Estava escondida perto do túmulo dele.<WAI9999<END
 #6003
 <MSG<TURA chave da casa do Santa.<WAI9999<END
 #6004
-<MSG<TURUm medalhão de prata na forma de um peixe.
-Pelo estado, parece que esteve com alguém
-por muitos anos.<WAI9999<END
+<MSG<TURUm medalhão de prata na forma de um
+peixe. Pelo estado, parece que
+esteve com alguém por muitos anos.<WAI9999<END
 #6005
 <MSG<TURUma presa afiada encontrada na Fazenda
 Yamashita. Será que o antigo dono ainda
