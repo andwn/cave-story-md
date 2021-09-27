@@ -183,8 +183,8 @@ está vivo...?<WAI9999<END
 #6006
 <MSG<TURUma cápsula de vida.<WAI9999<END
 #6007
-<MSG<TURUm Cartão de ID encontrado no interior do
-ovo de dragão número 06.<WAI9999<END
+<MSG<TURUm Cartão de ID encontrado no
+interior do ovo de dragão número 06.<WAI9999<END
 #6008
 <MSG<TURUm fluido capaz de apagar lareiras.<WAI9999<END
 #6009
