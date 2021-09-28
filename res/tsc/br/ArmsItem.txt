@@ -167,7 +167,8 @@ capazes de prever o futuro.<WAI9999<END
 <MSG<TURSem item.<WAI9999<END
 #6001
 <MSG<TURA chave da casa do Arthur.
-Estava escondida perto do túmulo dele.<WAI9999<END
+Estava escondida perto do túmulo
+dele.<WAI9999<END
 #6002
 <PRI<EVE7002<MPJ7002<MSGSem informações para este andar.<NOD<CLR<END
 #6003
