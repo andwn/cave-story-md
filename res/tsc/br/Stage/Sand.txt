@@ -52,7 +52,7 @@
 
 #0151
 <PRI<MSG<TUR
-    Depósito da Zona Arenosa. Por aqui.<NOD<END
+ Depósito da Zona Arenosa. Por aqui.<NOD<END
 
 
 
