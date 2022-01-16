@@ -1,5 +1,12 @@
 #include "ai_common.h"
 
+void onspawn_dzfire(Entity *e) {
+    e->alwaysActive = TRUE;
+    e->nflags &= ~NPC_INVINCIBLE;
+    e->nflags |= NPC_SHOOTABLE;
+    //e->health = 6;
+}
+
 void onspawn_deaddragon(Entity *e) {
 	e->frame = 5;
 	e->attack = 0;

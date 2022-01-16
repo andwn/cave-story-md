@@ -40,7 +40,11 @@ void ai_critter(Entity *e) {
 	switch(e->state) {
 		case STATE_WAITING:
 		{
-			if(e->type != OBJ_CRITTER_SHOOTING_PURPLE) e->nflags &= ~NPC_SOLID;
+			if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {
+                e->nflags |= NPC_SOLID;
+            } else {
+                e->nflags &= ~NPC_SOLID;
+            }
 			if(e->type == OBJ_POWER_CRITTER) e->attack = 2;
 			e->frame = 0;
 			e->timer = 0;
@@ -88,7 +92,7 @@ void ai_critter(Entity *e) {
 				sound_play(SND_CRITTER_FLY, 2);
 				if(++e->frame > 5) e->frame = 3;
 			}
-			e->y_speed -= SPEED_8(0x50);
+			e->y_speed -= SPEED_8(0x3C);
 			if(e->timer == TIME_8(25)) {
 				if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {
 					sound_play(SND_EM_FIRE, 3);
@@ -117,7 +121,7 @@ void ai_critter(Entity *e) {
 		break;
 	}
 	
-	if(!e->grounded && e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
+	if(!e->grounded && e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x30);
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 }

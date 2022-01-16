@@ -167,7 +167,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_King, 		NOSHEET, 		PAL3, 1, &onspawn_persistent, 	&ai_null, 			&ai_null 			}, // Sword?
 	{ &SPR_Lightning,	NOSHEET,		PAL1, 6, &onspawn_lightning, 	&ai_lightning, 		&ai_null 			}, // Lightning
 	{ NULL, 			SHEET_CRITTER, 	PAL2, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // Purple Critter
-	{ &SPR_LabShot,		NOSHEET, 		PAL2, 1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	}, // Critter Shot
+	{ &SPR_LabShot,		NOSHEET, 		PAL2, 1, &onspawn_dzfire, 	    &ai_genericproj, 	&ondeath_nodrop 	}, // Critter Shot
 	{ &SPR_MazeBlock,	NOSHEET,		PAL2, 1, &onspawn_block, 		&ai_blockh, 		&ai_null 			}, // Moving Block (H)
 	{ &SPR_Quote, 		NOSHEET, 		PAL0, 1, &onspawn_persistent, 	&ai_player, 		&ai_null 			}, // Quote
 	{ &SPR_Robot, 		NOSHEET, 		PAL1, 1, &ai_null, 				&ai_blue_robot, 	&ai_null 			}, // Blue Robot
@@ -224,7 +224,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		PAL0, 0, &ai_null, 				&ai_null, 			&ai_null 			}, // Underwater Current
 	{ &SPR_BabyDragon,	NOSHEET,		PAL3, 2, &ai_null, 				&ai_dragon_zombie, 	&ai_null 			}, // Dragon Zombie
 	{ &SPR_BabyDragon,	NOSHEET,		PAL3, 2, &onspawn_deaddragon, 	&ai_null, 			&ai_null 			}, // Dragon Zombie (Dead)
-	{ NULL, 			SHEET_FIRE, 	PAL1, 1, &onspawn_persistent, 	&ai_genericproj, 	&ai_null 			}, // Dragon Zombie Projectile
+	{ NULL, 			SHEET_FIRE, 	PAL1, 1, &onspawn_dzfire, 	    &ai_genericproj, 	&ondeath_nodrop 	}, // Dragon Zombie Projectile
 	{ NULL, 			SHEET_CRITTER,  PAL3, 1, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	}, // Blue Hopping Critter
 	{ NULL, 			SHEET_SMSTAL, 	PAL2, 1, &ai_null, 				&ai_fallingspike_sm,&ondeath_default 	}, // Falling Spike (Small)
 	{ NULL, 			SHEET_LGSTAL, 	PAL2, 1, &ai_null, 				&ai_fallingspike_lg,&ondeath_default 	}, // Falling Spike (Large)
