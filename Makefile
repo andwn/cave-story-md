@@ -46,6 +46,12 @@ PXMS  = $(wildcard res/Stage/*.pxm)
 PXMS += $(wildcard res/Stage/*/*.pxm)
 CPXMS = $(PXMS:.pxm=.cpxm)
 
+# Tilesets to compress
+TSETS  = $(wildcard res/Stage/*_vert.png)
+TSETS += $(wildcard res/Stage/**/*_vert.png)
+PTSETS = $(TSETS:.png=.pat)
+CTSETS = $(TSETS:.png=.uftc)
+
 # TSC to convert to TSB
 TSCS  = $(wildcard res/tsc/en/*.txt)
 TSCS += $(wildcard res/tsc/en/Stage/*.txt)
@@ -117,7 +123,7 @@ translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin
 main-build: prereq head-gen $(TARGET)-en.bin
 
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
-prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
+prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
 
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: $(TARGET)-en.bin
@@ -186,6 +192,13 @@ asmout/%.s: %.c
 %.pat: %.mdt
 	$(MDTILER) -b "$<"
 
+# Compression of tilesets
+%.uftc: %.pat
+	$(UFTC) -c "$<" "$@"
+
+%.pat: %.png
+	$(MDTILER) -t "$<"
+
 # Convert VGM
 %.xgc: %.vgm
 	$(XGMTOOL) "$<" "$@" -s
@@ -242,7 +255,7 @@ head-gen:
 	python aigen.py
 
 clean:
-	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(ZOBJ) $(OBJS)
+	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
 	rm -f $(TSBS) $(TL_TSBS)
 	rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt boot.o temp.elf temp.o
 	rm -f res/patches/*.patch

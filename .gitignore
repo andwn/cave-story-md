@@ -1,5 +1,5 @@
 doukutsu.bin
-doukutsu.elf
+doukutsu-*.bin
 temp.bin
 symbol.txt
 out.lst
@@ -11,7 +11,10 @@ out.lst
 *.xgc
 *.patch
 *.o
+*.o80
+*.elf
 inc/ai_gen.h
 res/resources.h
 src/boot/rom_head.bin
 src/xgm/z80_xgm.h
+.DS_Store

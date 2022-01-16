@@ -213,17 +213,19 @@ void stage_load_credits(uint8_t id) {
 }
 
 void stage_load_tileset() {
-    uint16_t numtile = tileset_info[stageTileset].tileset->numTile;
-	vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, numtile);
+    //uint16_t numtile = tileset_info[stageTileset].tileset->numTile;
+	//vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, numtile);
+    uint32_t *buf = (uint32_t*) 0xFF0100;
+    uint16_t numtile = tileset_info[stageTileset].size << 2;
+    for(uint16_t i = 0; i < numtile; i += 128) {
+        uint16_t num = min(i - numtile, 128);
+        uftc_unpack(tileset_info[stageTileset].pat, buf, i, num);
+        vdp_tiles_load(buf, TILE_TSINDEX + i, num);
+    }
 	// Inject the breakable block sprite into the tileset
 	stagePXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < numtile >> 2; i++) {
-		if(stagePXA[i] == 0x43) {
-			uint32_t addr1 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH),
-			addr2 = ((i * 2) / TS_WIDTH * TS_WIDTH * 2) + ((i * 2) % TS_WIDTH) + TS_WIDTH;
-			vdp_tiles_load_from_rom(TS_Break.tiles, TILE_TSINDEX + addr1, 2);
-			vdp_tiles_load_from_rom(TS_Break.tiles + 16, TILE_TSINDEX + addr2, 2);
-		}
+		if(stagePXA[i] == 0x43) vdp_tiles_load_from_rom(TS_Break.tiles, TILE_TSINDEX + (i << 2), 4);
 	}
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
@@ -411,31 +413,31 @@ void stage_update() {
 		if(t < currentsCount) {
 			uint16_t from_index = 0;
 			uint8_t *from_ts = NULL;
-			uint16_t to_index = TILE_TSINDEX + ((currents[t].index & 15) << 1) + ((currents[t].index >> 4) << 6);
+			uint16_t to_index = TILE_TSINDEX + ((currents[t].index & 15) << 2);// + ((currents[t].index >> 4) << 6);
 			switch(currents[t].dir) {
 				case 0: // Left
 					from_ts = (uint8_t*) TS_WindH.tiles;
-					from_index += (currentsTimer >> 1) & ~1;
+					from_index = (currentsTimer >> 1) & ~1;
 				break;
 				case 1: // Up
 					from_ts = (uint8_t*) TS_WindV.tiles;
-					from_index += (currentsTimer >> 1) & ~1;
+					from_index = (currentsTimer >> 1) & ~1;
 				break;
 				case 2: // Right
 					from_ts = (uint8_t*) TS_WindH.tiles;
-					from_index += 14 - ((currentsTimer >> 1) & ~1);
+					from_index = 13 - ((currentsTimer >> 1) & ~1);
 				break;
 				case 3: // Down
 					from_ts = (uint8_t*) TS_WindV.tiles;
-					from_index += 14 - ((currentsTimer >> 1) & ~1);
+					from_index = 13 - ((currentsTimer >> 1) & ~1);
 				break;
 				default: return;
 			}
 			// Replace the tile in the tileset
-			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
-			from_index += 16;
-			to_index += 32;
-			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 64, 2);
+			//from_index += 16;
+			//to_index += 32;
+			//DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
 }
@@ -457,6 +459,7 @@ void stage_setup_palettes() {
 }
 
 void stage_draw_screen() {
+    const uint8_t *pxa = tileset_info[stageTileset].PXA;
 	uint16_t maprow[64];
 	uint16_t y = sub_to_tile(camera.y) - 16;
 	for(uint16_t i = 32; i--; ) {
@@ -469,11 +472,11 @@ void stage_draw_screen() {
 				//if(x >= stageWidth << 1) break;
 				//if(x >= 0) {
 					uint16_t b = stage_get_block(x>>1, y>>1);
-					uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
-					uint16_t ta = stage_get_block_type(x>>1, y>>1);
+					uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
+					uint16_t ta = pxa[b];
 					uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
 					maprow[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
-							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 				//}
 				x++;
 			}
@@ -501,14 +504,14 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 	uint16_t t, b, xx, yy; uint8_t p;
 	p = (stage_get_block_type(x, y) & 0x40) > 0;
 	t = block_to_tile(stage_get_block(x, y));
-	b = TILE_TSINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
+	b = TILE_TSINDEX + (t << 2); //(t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
 	
 	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
 	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+1), xx+1, yy);
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+TS_WIDTH), xx, yy+1);
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+TS_WIDTH+1), xx+1, yy+1);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+2), xx, yy+1);
+	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+3), xx+1, yy+1);
 	
 }
 

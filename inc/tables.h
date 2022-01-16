@@ -28,7 +28,9 @@ extern const stage_info_def stage_info[STAGE_COUNT];
 // Information about each tileset, indexed by stageTileset
 #define TILESET_COUNT 29
 typedef struct {
-	const TileSet *tileset; // The graphical tile data to load
+	//const TileSet *tileset; // The graphical tile data to load
+    const uint16_t size; // Number of 16x16 blocks in the tileset
+    const uint16_t *pat; // The graphical tile data to load
 	const Palette *palette; // The palette, which will be loaded to PAL2
 	const uint8_t *PXA; // Tile options, how objects interact with different tiles
 } tileset_info_def;

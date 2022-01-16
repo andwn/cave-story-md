@@ -16,6 +16,37 @@
 
 .section .text
 
+# Compressed tileset patterns
+BIN UFTC_Almond "res/Stage/PrtAlmond.uftc"
+BIN UFTC_Barr   "res/Stage/PrtBarr.uftc"
+BIN UFTC_Cave   "res/Stage/PrtCave.uftc"
+BIN UFTC_Cent   "res/Stage/PrtCent.uftc"
+BIN UFTC_EggIn  "res/Stage/PrtEggIn.uftc"
+BIN UFTC_Eggs   "res/Stage/Eggs/PrtEggs.uftc"
+BIN UFTC_EggX   "res/Stage/PrtEggX.uftc"
+BIN UFTC_Fall   "res/Stage/PrtFall.uftc"
+BIN UFTC_Gard   "res/Stage/PrtGard.uftc"
+BIN UFTC_Hell   "res/Stage/Hell/PrtHell.uftc"
+BIN UFTC_Jail   "res/Stage/PrtJail.uftc"
+BIN UFTC_Labo   "res/Stage/PrtLabo.uftc"
+BIN UFTC_Maze   "res/Stage/Maze/PrtMaze.uftc"
+BIN UFTC_Mimi   "res/Stage/Mimi/PrtMimi.uftc"
+BIN UFTC_Oside  "res/Stage/PrtOside.uftc"
+BIN UFTC_Pens   "res/Stage/PrtPens.uftc"
+BIN UFTC_River  "res/Stage/PrtRiver.uftc"
+BIN UFTC_Sand   "res/Stage/PrtSand.uftc"
+BIN UFTC_Store  "res/Stage/PrtStore.uftc"
+BIN UFTC_Weed   "res/Stage/PrtWeed.uftc"
+BIN UFTC_Blcny  "res/Stage/White/PrtBlcny.uftc"
+
+BIN UFTC_EggX2  "res/Stage/PrtEggX2.uftc"
+BIN UFTC_Eggs2  "res/Stage/Eggs/PrtEggs2.uftc"
+BIN UFTC_MazeM  "res/Stage/Maze/PrtMazeM.uftc"
+BIN UFTC_Kings  "res/Stage/White/PrtKings.uftc"
+BIN UFTC_Statue "res/Stage/Hell/PrtStatue.uftc"
+BIN UFTC_Ring2  "res/Stage/White/PrtRing2.uftc"
+BIN UFTC_Ring3  "res/Stage/White/PrtRing3.uftc"
+
 # Tile Attributes
 BIN PXA_Almond	"res/Stage/Almond.pxa"
 BIN PXA_Barr	"res/Stage/Barr.pxa"

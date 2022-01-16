@@ -156,11 +156,11 @@ void camera_update() {
 						//if(y >= 0) {
 							// Fuck math tbh
 							uint16_t b = stage_get_block(x>>1, y>>1);
-							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+							uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
 							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
 							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
 							mapbuf[y&31] = TILE_ATTR(pal, (ta&0x40) > 0, 
-									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 						//}
 						y++;
 					}
@@ -180,11 +180,11 @@ void camera_update() {
 						//if(x >= stageWidth << 1) break;
 						//if(x >= 0) {
 							uint16_t b = stage_get_block(x>>1, y>>1);
-							uint16_t t = ((b&15) << 1) + ((b>>4) << 6);
+							uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
 							uint16_t ta = pxa[b]; //stage_get_block_type(x>>1, y>>1);
 							uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
 							mapbuf[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
-									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<5));
+									0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 						//}
 						x++;
 					}

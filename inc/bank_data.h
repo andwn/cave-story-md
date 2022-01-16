@@ -1,3 +1,34 @@
+extern const uint16_t UFTC_Almond[];
+extern const uint16_t UFTC_Barr[] ;
+extern const uint16_t UFTC_Cave[] ;
+extern const uint16_t UFTC_Cent[] ;
+extern const uint16_t UFTC_EggIn[];
+extern const uint16_t UFTC_Eggs[] ;
+extern const uint16_t UFTC_EggX[] ;
+extern const uint16_t UFTC_Fall[];
+extern const uint16_t UFTC_Gard[] ;
+extern const uint16_t UFTC_Hell[] ;
+extern const uint16_t UFTC_Jail[] ;
+extern const uint16_t UFTC_Labo[] ;
+extern const uint16_t UFTC_Maze[] ;
+extern const uint16_t UFTC_Mimi[] ;
+extern const uint16_t UFTC_Oside[];
+
+extern const uint16_t UFTC_Pens[] ;
+extern const uint16_t UFTC_River[];
+extern const uint16_t UFTC_Sand[] ;
+extern const uint16_t UFTC_Store[];
+extern const uint16_t UFTC_Weed[] ;
+extern const uint16_t UFTC_Blcny[];
+
+extern const uint16_t UFTC_EggX2[];
+extern const uint16_t UFTC_Eggs2[];
+extern const uint16_t UFTC_MazeM[];
+extern const uint16_t UFTC_Kings[];
+extern const uint16_t UFTC_Statue[];
+extern const uint16_t UFTC_Ring2[];
+extern const uint16_t UFTC_Ring3[];
+
 extern const uint8_t PXA_Almond[];
 extern const uint8_t PXA_Barr[];
 extern const uint8_t PXA_Cave[];
