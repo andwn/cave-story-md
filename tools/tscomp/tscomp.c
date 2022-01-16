@@ -402,9 +402,9 @@ void do_event(FILE *fout) {
                     static const char extmap[] = {
                             0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,27, 0, 0, 0, 0, 2,
-                            3, 3, 3, 3, 3, 0, 0,15, 4, 4, 4, 4, 5, 5, 5, 5,
+                            3, 3, 3, 3, 3, 3, 0,15, 4, 4, 4, 4, 5, 5, 5, 5,
                             0, 6, 7, 7, 7, 7, 7, 0, 0, 8, 8, 8, 8, 0, 0,30,
-                            9, 9,17,28,22, 0, 0,16,10,10,18,23,11,11,19,24,
+                            9, 9,17,28,22,22, 0,16,10,10,18,23,11,11,19,24,
                             0,12,13,13,20,29,25, 0, 0,14,14,21,26, 0, 0, 0,
                     };
                     char mychr = extmap[tsc[pc] - 160];
@@ -481,7 +481,7 @@ uint16_t read_langcode(const char *str) {
     else if(strcmp("DE", code) == 0) return LANG_DE;
     else if(strcmp("PT", code) == 0) return LANG_PT;
     else if(strcmp("IT", code) == 0) return LANG_IT;
-    else if(strcmp("BR", code) == 0) return LANG_IT;
+    else if(strcmp("BR", code) == 0) return LANG_BR;
     else return LANG_INVALID;
 }
 

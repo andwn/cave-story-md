@@ -847,7 +847,7 @@ void player_show_map_name(uint8_t ttl) {
         uint8_t chr = str[pos++];
         if(chr == 0x01) {
             chr = str[pos++];
-            chr += 0x60;
+            chr += 0x5F;
             len++;
         } else {
             chr -= 0x20;
