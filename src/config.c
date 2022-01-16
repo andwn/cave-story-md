@@ -63,29 +63,17 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 	{ // Controller
 		{ 4,  1,  AKI,    MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
 		{ 6,  2,  AKI+60, MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
-		{ 8,  3,  AKI+120,MI_INPUT, "Switch (3btn) / FFwd", &cfg_btn_ffwd },
-		{ 10, 4,  AKI+180,MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
-		{ 12, 5,  AKI+240,MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
-		{ 14, 6,  AKI+300,MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
-		{ 16, 7,  AKI+360,MI_INPUT, "Pause Menu", &cfg_btn_pause },
+		{ 8,  3,  AKI+120,MI_INPUT, "Switch Weapon (3btn)", &cfg_btn_ffwd },
+        { 9,  3,  0,      MI_LABEL, "Fast Fwd Text (6btn)", NULL },
+		{ 11, 4,  AKI+180,MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
+		{ 13, 5,  AKI+240,MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
+		{ 15, 6,  AKI+300,MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
+		{ 17, 7,  AKI+360,MI_INPUT, "Pause Menu", &cfg_btn_pause },
 		
-		{ 19, 8,  AKI+420,MI_MODE,  "Force Button Mode", &cfg_force_btn },
+		{ 20, 8,  AKI+420,MI_MODE,  "Force Button Mode", &cfg_force_btn },
 
 		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
 		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-/*    },{ // Language
-        { 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
-        { 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
-        
-        { 8,  LANG_ES,  AKI,    MI_RADIO,   "Espa\1\x0Col", &cfg_language },
-        { 10, LANG_FR,  AKI,    MI_RADIO,   "Fran\1\x10""ais", &cfg_language },
-        { 12, LANG_IT,  AKI,    MI_RADIO,   "Italiano", &cfg_language },
-        { 14, LANG_DE,  AKI,    MI_RADIO,   "Deutsch", &cfg_language },
-        { 16, LANG_PT,  AKI,    MI_RADIO,   "Portug\1\x12s (PT)", &cfg_language },
-        { 18, LANG_BR,  AKI,    MI_RADIO,   "Portug\1\x12s (BR)", &cfg_language },
-        
-        { 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
-        { 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 }, */
 	},{ // Gameplay
 		{ 4,  9,  AKI,    MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
 		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
@@ -101,15 +89,7 @@ const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 	},{ // Save data
 		{ 4,  17, AKI,    MI_ACTION, "Erase Counter", (uint8_t*)3 },
 		{ 6,  18, AKI+60, MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
-	},/*{ // Language (No SSF)
-		{ 4, LANG_EN,  AKI,    MI_RADIO,   "English", &cfg_language },
-		{ 6, LANG_JA,  AKI,    MI_RADIO,   "Japanese", &cfg_language },
-		
-		{ 10, 25, AKI+40, MI_LABEL,  "SSF Mapper Malfunction", (uint8_t*)0 },
-		
-		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
-	},*/
+	},
 };
 
 const char boolstr[2][4] = { "OFF", "ON " };
@@ -147,25 +127,15 @@ static void DrawJStr(uint16_t x, uint16_t y, uint16_t tile_index, uint16_t item_
 }
 
 void draw_menuitem(const MenuItem *item) {
-	vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
-	vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
-	/*
-	if(item->type != MI_RADIO) vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
-	if(item->type == MI_RADIO) {
-	    switch(item->jstr_index) {
-	        case LANG_JA: {
-                uint16_t tile_index = item->jtile_index;
-                kanji_draw(VDP_PLAN_A, tile_index, 0x100 + 794, 4, item->y, 0, TRUE); // 日
-                kanji_draw(VDP_PLAN_A, tile_index + 4, 0x100 + 909, 6, item->y, 0, TRUE); // 本
-                kanji_draw(VDP_PLAN_A, tile_index + 8, 0x100 + 417, 8, item->y, 0, TRUE); // 語
-                break;
-            }
-	        default: vdp_puts(VDP_PLAN_A, item->caption, 4, item->y); break;
-	    }
-	} else */
-	if(cfg_language == LANG_JA && item->jstr_index) {
-		DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
-	} else {
+	if(cfg_language == LANG_JA) {
+        if(item->jstr_index) {
+            vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
+            vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
+            DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
+        }
+    } else {
+        vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
+        vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
 		vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
 	}
 	switch(item->type) {
@@ -182,28 +152,6 @@ void draw_menuitem(const MenuItem *item) {
 			vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
 		}
 		break;
-		/*
-	    case MI_RADIO:
-            if(*item->valptr == item->jstr_index) {
-                vdp_puts(VDP_PLAN_A, "(*)", 30, item->y);
-            } else {
-                vdp_puts(VDP_PLAN_A, "( )", 30, item->y);
-            }
-	        break;
-	        */
-		/*
-		case MI_LANG:
-		if(*item->valptr) {
-			uint16_t tile_index = item->jtile_index + 40;
-			kanji_draw(VDP_PLAN_A, tile_index,   0x100+794, 30, item->y, 0, TRUE); // 日
-			kanji_draw(VDP_PLAN_A, tile_index+4, 0x100+909, 32, item->y, 0, TRUE); // 本
-			kanji_draw(VDP_PLAN_A, tile_index+8, 0x100+417, 34, item->y, 0, TRUE); // 語
-		} else {
-			vdp_puts(VDP_PLAN_A, "English", 30, item->y);
-			vdp_text_clear(VDP_PLAN_A, 30, item->y + 1, 6); // Hide kanji
-		}
-		break;
-		 */
 		case MI_TOGGLE:
 		if(cfg_language == LANG_JA) {
 			uint16_t tile_index = item->jtile_index + 40;
@@ -237,16 +185,9 @@ uint8_t set_page(uint8_t page) {
 				DrawJStr(8, 1, WKI, 21);
 			} else {
 				vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
+
 			}
 			break;
-//		case PAGE_LANGUAGE:
-//		case NUM_PAGES:
-//			if(cfg_language == LANG_JA) {
-//				DrawJStr(8, 1, WKI, 22);
-//			} else {
-//				vdp_puts(VDP_PLAN_A, "(2) Language Config", 8, 1);
-//			}
-//			break;
 		case PAGE_GAMEPLAY:
 			if(cfg_language == LANG_JA) {
 				DrawJStr(8, 1, WKI, 23);
@@ -275,23 +216,6 @@ uint8_t set_page(uint8_t page) {
 void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
-		/*
-		case MI_RADIO:
-            if(*item->valptr != item->jstr_index) {
-                // Find previous selection so we can redraw as deselected
-                for(uint16_t i = 0; i < MAX_OPTIONS; i++) {
-                    if(*item->valptr == menu[page][i].jstr_index) {
-                        sound_play(SND_MENU_SELECT, 5);
-                        *item->valptr = item->jstr_index;
-                        //draw_menuitem(&menu[page][i]);
-	                    set_page(page);
-                        return;
-                    }
-                }
-            }
-		    break;
-		    */
-//		case MI_LANG:
 		case MI_TOGGLE: {
             sound_play(SND_MENU_SELECT, 5);
             *item->valptr ^= 1;
@@ -417,8 +341,6 @@ void act_default(uint8_t page) {
         cfg_btn_map = 10;
         cfg_btn_pause = 7;
         cfg_force_btn = 0;
-    //} else if(page == PAGE_LANGUAGE || page == NUM_PAGES) {
-	//    cfg_language = 0;
 	} else if(page == PAGE_GAMEPLAY) {
 		cfg_60fps = FALSE;
 		cfg_ffwd = TRUE;

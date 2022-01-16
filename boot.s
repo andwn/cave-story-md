@@ -44,21 +44,22 @@ xgmTempoDef:ds.w 1
 RomStart:
         dc.l    0x000000, _start
         dc.l    BusError, AddressError, IllegalInst, ZeroDivide
-		dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		dc.l	ExtInt, 0, HBlank, 0, VBlank, 0
-	.rept 8
-		dc.l	0, 0, 0, 0
+    .rept 20
+		dc.l	NullInt
+	.endr
+		dc.l	ExtInt, NullInt, HBlank, NullInt, VBlank, NullInt
+	.rept 32
+		dc.l	NullInt
 	.endr
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "
-		.ascii	"GRIND   2020.SEP"
+		.ascii	"GRIND   2022.JAN"
 		.ascii	"Doukutsu Monogatari MD                          "
 		.ascii	"Cave Story MD                                   "
 		.ascii	"GM ANDYG002-A7"
 		dc.w	0
-		.ascii	"J               "
+		.ascii	"J6              "
 		dc.l	0x000000
 		dc.l	0x3FFFFF
 		dc.l	0xFF0000
@@ -155,6 +156,7 @@ RegDump:
 
 HBlank:
 ExtInt:
+NullInt:
         rte
 
 VBlank:

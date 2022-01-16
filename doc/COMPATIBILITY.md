@@ -6,19 +6,20 @@ All Mega Drive and Genesis consoles manufactured by Sega should work 100%.
 Of course this depends on your flash cart, or whatever you burn the ROM to.
 
 ### Flash Carts
-| Name                     | Startup  | Beatable | Saving   | Notes                            |
-| ------------------------ | -------- | -------- | -------- | -------------------------------- |
-| Mega Everdrive X3/5/7/Pro| Yes      | Yes      | Yes      |                                  |
-| Everdrive MD             | Yes      | Yes      | Yes      |                                  |
-| RetroStage 32MB Cart     | Yes      | Yes      | Yes      | Need firmware update             |
+| Name                     | Startup  | Beatable | Saving   | Notes                             |
+| ------------------------ | -------- | -------- | -------- |-----------------------------------|
+| Mega Everdrive X3/5/7/Pro| Yes      | Yes      | Yes      |                                   |
+| Everdrive MD             | Yes      | Yes      | Yes      |                                   |
+| RetroStage 32MB Cart     | Yes      | Yes      | Yes      | Need firmware update              |
+| SecondDimension Cart     | Yes      | Yes      | Yes      |                                   |
 | UMDKv2                   | Yes      | Yes      | ???      | Occasional pixel color corruption |
-| Oerg's Cart              | ???      | ???      | ???      | Untested, probably works         |
+| Oerg's Cart              | ???      | ???      | ???      | Untested, probably works          |
 
 ### Emulator/FPGA in a Box
-| Name                     | Startup  | Beatable | Saving   | Notes                            |
-| ------------------------ | -------- | -------- | -------- | -------------------------------- |
-| Sega Mega Drive Mini     | Yes      | Yes      | Yes      | With Project Lunar               |
-| Atgames Consoles         | ???      | ???      | ???      | Untested, probably sounds bad    |
+| Name                     | Startup | Beatable | Saving | Notes                 |
+| ------------------------ |---------|----------|--------|-----------------------|
+| Sega Mega Drive Mini     | Yes     | Yes      | Yes    | With Project Lunar    |
+| Atgames Consoles         | Yes     | ???      | No     | Some garbled graphics |
 
 ### Emulators
 | Name                     | Startup  | Beatable | Saving   | Notes                            |
