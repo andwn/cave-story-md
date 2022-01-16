@@ -191,7 +191,7 @@ Arenosa.<NOD<CLRAparentemente, as flores
 estão guardadas em algum
 lugar da Zona Arenosa.<NOD<CLR
 <FAC0007Na Zona Arenosa?<NOD<CLRQuer dizer que é lá onde
-vamos encontrar o Doutor?<NOD<CLR<FAC0018Bem,<NOD é provável que seja
+vamos encontrar o Doutor?<NOD<CLR<FAC0018Bem,<NODé provável que seja
 apenas um de seus servos.<NOD
 Se não destruirmos as
 flores antes que eles

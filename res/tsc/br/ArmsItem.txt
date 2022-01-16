@@ -167,15 +167,16 @@ capazes de prever o futuro.<WAI9999<END
 <MSG<TURSem item.<WAI9999<END
 #6001
 <MSG<TURA chave da casa do Arthur.
-Estava escondida perto do túmulo dele.<WAI9999<END
+Estava escondida perto do túmulo
+dele.<WAI9999<END
 #6002
 <PRI<EVE7002<MPJ7002<MSGSem informações para este andar.<NOD<CLR<END
 #6003
 <MSG<TURA chave da casa do Santa.<WAI9999<END
 #6004
-<MSG<TURUm medalhão de prata na forma de um peixe.
-Pelo estado, parece que esteve com alguém
-por muitos anos.<WAI9999<END
+<MSG<TURUm medalhão de prata na forma de um
+peixe. Pelo estado, parece que
+esteve com alguém por muitos anos.<WAI9999<END
 #6005
 <MSG<TURUma presa afiada encontrada na Fazenda
 Yamashita. Será que o antigo dono ainda
@@ -183,8 +184,8 @@ está vivo...?<WAI9999<END
 #6006
 <MSG<TURUma cápsula de vida.<WAI9999<END
 #6007
-<MSG<TURUm Cartão de ID encontrado no interior do
-ovo de dragão número 06.<WAI9999<END
+<MSG<TURUm Cartão de ID encontrado no
+interior do ovo de dragão número 06.<WAI9999<END
 #6008
 <MSG<TURUm fluido capaz de apagar lareiras.<WAI9999<END
 #6009

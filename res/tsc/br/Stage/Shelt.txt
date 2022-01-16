@@ -149,7 +149,8 @@ responda!<NOD<CLR...Por favor?<NOD
 
 #0501
 <KEY<HMC<CMU0021<FAI0004
-<MSG<TURProcurando usuário "Sue"...<WAI0150<CLR<TUR1 usuário com o nome "Sue" encontrado.<WAI0150<CLR<MSGSue!<NOD
+<MSG<TURProcurando usuário "Sue"...<WAI0150<CLR<TUR1 usuário com o nome "Sue"
+encontrado.<WAI0150<CLR<MSGSue!<NOD
 Por favor, responda!<NOD
 Eles estão te procurando...<NOD
 Você está dormindo?<NOD

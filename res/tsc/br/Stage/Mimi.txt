@@ -232,7 +232,7 @@ isso aconteça!<NOD<CLO
 
 #0500
 <KEY<MSG<TUR         Acima: Fazenda Yamashita
-  Esquerda: Açude     Direita: Cemitério
+Esquerda: Açude   Direita: Cemitério
           Abaixo: Casa do Arthur<NOD<END
 
 #0501
