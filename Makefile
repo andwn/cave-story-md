@@ -197,7 +197,7 @@ asmout/%.s: %.c
 	$(UFTC) -c "$<" "$@"
 
 %.pat: %.png
-	$(MDTILER) -t "$<"
+	$(MDTILER) -t "$<" "$@"
 
 # Convert VGM
 %.xgc: %.vgm

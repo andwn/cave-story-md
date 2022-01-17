@@ -218,7 +218,7 @@ void stage_load_tileset() {
     uint32_t *buf = (uint32_t*) 0xFF0100;
     uint16_t numtile = tileset_info[stageTileset].size << 2;
     for(uint16_t i = 0; i < numtile; i += 128) {
-        uint16_t num = min(i - numtile, 128);
+        uint16_t num = min(numtile - i, 128);
         uftc_unpack(tileset_info[stageTileset].pat, buf, i, num);
         vdp_tiles_load(buf, TILE_TSINDEX + i, num);
     }

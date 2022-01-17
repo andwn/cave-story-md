@@ -522,32 +522,32 @@ PALETTE PAL_Ill18	"credits/ill18.png"
 
 # Mimiga Village
 # Crushed to 256x112
-PALETTE PAL_Mimi	"Stage/Mimi/PrtMimi_vert.bmp"
+PALETTE PAL_Mimi	"Stage/Mimi/PrtMimi_vert.png"
 #TILESET TS_Mimi		"Stage/Mimi/PrtMimi_vert.bmp" 0
 
 # Egg Corridor
 # Split into 2 tilesets, crushed to fit 256x112
-PALETTE PAL_Eggs	"Stage/Eggs/PrtEggs_vert.bmp"
+PALETTE PAL_Eggs	"Stage/Eggs/PrtEggs_vert.png"
 #TILESET TS_Eggs		"Stage/Eggs/PrtEggs_vert.bmp" 0
 #TILESET TS_Eggs2	"Stage/Eggs/PrtEggs2_vert.bmp" 0
 
 # Labyrinth
 # Split MazeM out, crushed to fit 256x112
-PALETTE PAL_Maze	"Stage/Maze/PrtMaze_vert.bmp"
+PALETTE PAL_Maze	"Stage/Maze/PrtMaze_vert.png"
 #TILESET TS_Maze		"Stage/Maze/PrtMaze_vert.bmp" 0
 #TILESET TS_MazeM	"Stage/Maze/PrtMazeM_vert.bmp" 0
 
 # Balcony & Ring
-PALETTE PAL_Blcny	"Stage/White/PrtBlcny_vert.bmp"
+PALETTE PAL_Blcny	"Stage/White/PrtBlcny_vert.png"
 #TILESET TS_Blcny	"Stage/White/PrtBlcny_vert.bmp" 0
 #TILESET TS_Kings	"Stage/White/PrtKings_vert.bmp" 0
 #TILESET TS_Ring2	"Stage/White/PrtRing2_vert.bmp" 0
-PALETTE PAL_Ring3	"Stage/White/PrtRing3_vert.bmp"
+PALETTE PAL_Ring3	"Stage/White/PrtRing3_vert.png"
 #TILESET TS_Ring3	"Stage/White/PrtRing3_vert.bmp" 0
 
 # Sacred Ground
 # Crushed to fit 256x112
-PALETTE PAL_Hell	"Stage/Hell/PrtHell_vert.bmp"
+PALETTE PAL_Hell	"Stage/Hell/PrtHell_vert.png"
 #TILESET TS_Hell		"Stage/Hell/PrtHell_vert.bmp" 0
 #TILESET TS_Statue	"Stage/Hell/PrtStatue_vert.bmp" 0
 
@@ -555,25 +555,25 @@ PALETTE PAL_Hell	"Stage/Hell/PrtHell_vert.bmp"
 # Tileset Palettes
 # ----------------------------------------------------------------------------------------------
 
-PALETTE PAL_Almond	"Stage/PrtAlmond_vert.bmp"
-PALETTE PAL_Barr	"Stage/PrtBarr_vert.bmp"
-PALETTE PAL_Cave	"Stage/PrtCave_vert.bmp"
-PALETTE PAL_Cent	"Stage/PrtCent_vert.bmp"
-PALETTE PAL_EggIn	"Stage/PrtEggIn_vert.bmp"
-PALETTE PAL_EggX	"Stage/PrtEggX1_vert.bmp"
+PALETTE PAL_Almond	"Stage/PrtAlmond_vert.png"
+PALETTE PAL_Barr	"Stage/PrtBarr_vert.png"
+PALETTE PAL_Cave	"Stage/PrtCave_vert.png"
+PALETTE PAL_Cent	"Stage/PrtCent_vert.png"
+PALETTE PAL_EggIn	"Stage/PrtEggIn_vert.png"
+PALETTE PAL_EggX	"Stage/PrtEggX1_vert.png"
 PALETTE PAL_Fall	"Stage/PrtFall_vert.png"
-PALETTE PAL_Gard	"Stage/PrtGard_vert.bmp"
-PALETTE PAL_Jail	"Stage/PrtJail_vert.bmp"
-PALETTE PAL_Labo	"Stage/PrtLabo_vert.bmp"
+PALETTE PAL_Gard	"Stage/PrtGard_vert.png"
+PALETTE PAL_Jail	"Stage/PrtJail_vert.png"
+PALETTE PAL_Labo	"Stage/PrtLabo_vert.png"
 PALETTE PAL_Oside	"Stage/PrtOside_vert.png"
-PALETTE PAL_Pens	"Stage/PrtPens_vert.bmp"
-PALETTE PAL_River	"Stage/PrtRiver_vert.bmp"
-PALETTE PAL_Sand	"Stage/PrtSand_vert.bmp"
-PALETTE PAL_Store	"Stage/PrtStore_vert.bmp"
-PALETTE PAL_Weed	"Stage/PrtWeed_vert.bmp"
+PALETTE PAL_Pens	"Stage/PrtPens_vert.png"
+PALETTE PAL_River	"Stage/PrtRiver_vert.png"
+PALETTE PAL_Sand	"Stage/PrtSand_vert.png"
+PALETTE PAL_Store	"Stage/PrtStore_vert.png"
+PALETTE PAL_Weed	"Stage/PrtWeed_vert.png"
 
 # Alternate for waterway (Green background)
-PALETTE PAL_RiverAlt "Stage/PrtRiver_alt_vert.bmp"
+PALETTE PAL_RiverAlt "Stage/PrtRiver_alt_vert.png"
 
 # ----------------------------------------------------------------------------------------------
 # Tilesets
