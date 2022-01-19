@@ -10,10 +10,12 @@
 #define TM_MSG		1 // TUR
 #define TM_ALL		2 // CAT/SAT
 
-uint8_t linesSinceLastNOD;
+//uint8_t linesSinceLastNOD;
 extern const uint8_t ITEM_PAL[40];
 
 uint8_t windowOnTop;
+
+extern uint16_t showingFace;
 
 // Opens the message window
 void window_open(uint8_t mode);

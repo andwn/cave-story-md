@@ -488,14 +488,16 @@ void system_delete(uint8_t index) {
 }
 
 static void get_language() {
-	if     (LANGUAGE[0] == 'E' && LANGUAGE[1] == 'N') cfg_language = LANG_EN;
-	else if(LANGUAGE[0] == 'E' && LANGUAGE[1] == 'S') cfg_language = LANG_ES;
-	else if(LANGUAGE[0] == 'F' && LANGUAGE[1] == 'R') cfg_language = LANG_FR;
-	else if(LANGUAGE[0] == 'D' && LANGUAGE[1] == 'E') cfg_language = LANG_DE;
-	else if(LANGUAGE[0] == 'I' && LANGUAGE[1] == 'T') cfg_language = LANG_IT;
-	else if(LANGUAGE[0] == 'P' && LANGUAGE[1] == 'T') cfg_language = LANG_PT;
-	else if(LANGUAGE[0] == 'B' && LANGUAGE[1] == 'R') cfg_language = LANG_BR;
-	else if(LANGUAGE[0] == 'J' && LANGUAGE[1] == 'A') cfg_language = LANG_JA;
+    if     (LANGUAGE[0] == 'E' && LANGUAGE[1] == 'N') cfg_language = LANG_EN;
+    else if(LANGUAGE[0] == 'E' && LANGUAGE[1] == 'S') cfg_language = LANG_ES;
+    else if(LANGUAGE[0] == 'F' && LANGUAGE[1] == 'R') cfg_language = LANG_FR;
+    else if(LANGUAGE[0] == 'D' && LANGUAGE[1] == 'E') cfg_language = LANG_DE;
+    else if(LANGUAGE[0] == 'I' && LANGUAGE[1] == 'T') cfg_language = LANG_IT;
+    else if(LANGUAGE[0] == 'P' && LANGUAGE[1] == 'T') cfg_language = LANG_PT;
+    else if(LANGUAGE[0] == 'B' && LANGUAGE[1] == 'R') cfg_language = LANG_BR;
+    else if(LANGUAGE[0] == 'J' && LANGUAGE[1] == 'A') cfg_language = LANG_JA;
+    else if(LANGUAGE[0] == 'Z' && LANGUAGE[1] == 'H') cfg_language = LANG_ZH;
+    else if(LANGUAGE[0] == 'K' && LANGUAGE[1] == 'O') cfg_language = LANG_KO;
 }
 
 void system_load_config() {

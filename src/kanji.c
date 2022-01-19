@@ -7,95 +7,153 @@
 #include "resources.h"
 #include "tools.h"
 #include "vdp.h"
+#include "xgm.h"
+#include "window.h"
 
 #include "kanji.h"
 
+// Need 36 x 6 = 216 tiles
+
 // Allocate kanji tiles to:
-// TILE_FONTINDEX (96 tiles)
-// Unused end of window plane mapping (28 tiles - 1 per row)
-// TILE_NAMEINDEX (16 tiles)
-// TILE_NUMBERINDEX (16 tiles)
+// TILE_FONTINDEX (+96 tiles)
+// VDP_PLAN_W edge (+28 tiles) = 124
+// TILE_HUDINDEX (+32 tiles) = 156
+// TILE_NUMBERINDEX (+16 tiles) = 172
+// TILE_NAMEINDEX (+8 (of 16) tiles) = 180
+// TILE_FACEINDEX (+36 tiles) = 216
 
-#define TILECHAR_LONGS	32
+uint16_t cjkVramIndex = 0;
 
-void kanji_draw(uint16_t plan, uint16_t vramIndex, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol, uint8_t shadow) {
-	const uint8_t *bmp;
-	if(chr > 0xFF) {
-		chr -= 0x100;
-		bmp = (const uint8_t*)BMP_KANJI + chr * 32;
-	} else {
-		chr -= 0x20;
-		bmp = (const uint8_t*)BMP_ASCII + chr * 32;
-	}
-	// Convert chunks to 4bpp tiles, using a set foreground and background color
-	volatile uint32_t tiles[TILECHAR_LONGS];
-	for(uint16_t i = 0; i < TILECHAR_LONGS; i++) {
-		uint8_t row = bmp[i];
-		uint8_t column = 8;
-		uint8_t last = 0;
-		tiles[i] = 0;
-		do {
-			column--;
-			// Palette indeces: 15 is white, 2 is texbox blue, 1 is black, 0 is transparency
-			uint8_t pixel = row & (1 << column);
-			uint32_t color = pixel ? 15 : ((last && shadow) ? 1 : backCol);
-			last = pixel;
-			tiles[i] |= color << (column * 4);
-		} while(column > 0);
-	}
-	// Game mode is checked because the credits override the whole window plane, not just the offscreen section
-	if(gamemode == GM_GAME && vramIndex >= (0xB000 >> 5) && vramIndex < (0xC000 >> 5)) {
-		// Between gaps in the window mapping, can't load in sequence
-		vdp_tiles_load(&tiles[0],  vramIndex,   1);
-		vdp_tiles_load(&tiles[8],  vramIndex+4, 1);
-		vdp_tiles_load(&tiles[16], vramIndex+8, 1);
-		vdp_tiles_load(&tiles[24], vramIndex+12,1);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex),   x,  y);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+4), x+1,y);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+8), x,  y+1);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+12),x+1,y+1);
-	} else {
-		vdp_tiles_load(tiles, vramIndex, 4);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex),   x,  y);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+1), x+1,y);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+2), x,  y+1);
-		vdp_map_xy(plan, TILE_ATTR(PAL0,1,0,0,vramIndex+3), x+1,y+1);
-	}
+volatile uint16_t cjkTileBuf[6][16];
+uint16_t cjkShiftChar = 0;
+
+uint16_t cjkMapBuf[3][2][36];
+int16_t cjkMapRow = 0;
+
+static uint16_t CjkNextTile() {
+    uint16_t index;
+
+    if(cjkVramIndex < 96) {
+        index = cjkVramIndex + TILE_FONTINDEX;
+    } else if(cjkVramIndex < 124) {
+        index = ((cjkVramIndex - 96) << 2) + (VDP_PLAN_W >> 5) + 3;
+    } else if(cjkVramIndex < 156) {
+        index = (cjkVramIndex - 124) + TILE_HUDINDEX;
+    } else if(cjkVramIndex < 172) {
+        index = (cjkVramIndex - 156) + TILE_NUMBERINDEX;
+    } else if(cjkVramIndex < 180) {
+        index = (cjkVramIndex - 172) + TILE_NAMEINDEX;
+    } else {
+        index = (cjkVramIndex - 180) + TILE_FACEINDEX;
+    }
+
+    cjkVramIndex++;
+    if(cjkVramIndex >= 216 || (showingFace && cjkVramIndex >= 216-36)) cjkVramIndex = 0;
+
+    return index;
 }
 
-void kanji_loadtilesforsprite(uint16_t vramIndex, uint16_t chr1, uint16_t chr2) {
-	uint16_t c[2] = { chr1, chr2 };
-	const uint8_t *bmp[2];
-	for(uint16_t i = 0; i < 2; i++ ) {
-		if(c[i] == 0) return;
-		if(c[i] > 0xFF) {
-			c[i] -= 0x100;
-			bmp[i] = (const uint8_t*)BMP_KANJI + (c[i] << 5);
-		} else {
-			c[i] -= 0x20;
-			bmp[i] = (const uint8_t*)BMP_ASCII + (c[i] << 5);
-		}
-		// Convert chunks to 4bpp tiles, using a set foreground and background color
-		volatile uint32_t tiles[TILECHAR_LONGS];
-		// Sprite tiles are up->down before left->right so fix the order
-		static const uint8_t order[32] = {
-			0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23,
-			8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31
-		};
-		for(uint16_t k = 0; k < TILECHAR_LONGS; k++) {
-            uint8_t row = bmp[i][order[k]];
-            uint8_t column = 8;
-            uint8_t last = 0;
-			tiles[k] = 0;
-            do {
-				column--;
-                // Palette indices: 15 is white, 2 is textbox blue, 1 is black, 0 is transparency
-                uint8_t pixel = row & (1 << column);
-                uint32_t color = pixel ? 15 : (last ? 1 : 0);
-                last = pixel;
-                tiles[k] |= color << (column << 2);
-            } while(column > 0);
+void cjk_reset(uint16_t vramIndex) {
+    cjkVramIndex = vramIndex;
+    cjkShiftChar = cjkMapRow = 0;
+    uint16_t attr = TILE_ATTR(PAL0,1,0,0,TILE_WINDOWINDEX+4);
+    for(uint16_t i=0;i<3;i++) for(uint16_t j=0;j<2;j++) for(uint16_t k=0;k<36;k++) cjkMapBuf[i][j][k] = attr;
+}
+
+void cjk_newline() {
+    cjkShiftChar = 0;
+    if(++cjkMapRow > 2) cjkMapRow = 0;
+    // Clear new row
+    uint16_t attr = TILE_ATTR(PAL0,1,0,0,TILE_WINDOWINDEX+4);
+    for(uint16_t j=0;j<2;j++) for(uint16_t k=0;k<36;k++) cjkMapBuf[cjkMapRow][j][k] = attr;
+}
+
+void cjk_winscroll(uint16_t win_x, uint16_t win_y) {
+    int16_t row1 = cjkMapRow - 2;
+    int16_t row2 = cjkMapRow - 1;
+    if(row1 < 0) row1 += 3;
+    if(row2 < 0) row2 += 3;
+    disable_ints;
+    z80_request();
+    vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row1][0], win_x, win_y,   38 - win_x);
+    vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row1][1], win_x, win_y+1, 38 - win_x);
+    vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row2][0], win_x, win_y+2, 38 - win_x);
+    vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row2][1], win_x, win_y+3, 38 - win_x);
+    z80_release();
+    enable_ints;
+}
+
+void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol, uint16_t shadow) {
+    // Locate char in BMP
+    const uint16_t *bmp;
+    if(chr > 0xFF) {
+        chr -= 0x100;
+        bmp = ((const uint16_t*)BMP_KANJI) + chr * 16;
+    } else {
+        chr -= 0x20;
+        bmp = ((const uint16_t*)BMP_ASCII) + chr * 16;
+    }
+    // Glyph widths are 12pt, so every other char has to be shifted 4px and overlap the last one
+    // |11|10|00| <- First char drawn non-shifted to first 2 columns
+    // |00|01|11| <- Second char drawn shifted to second and third column
+    uint16_t shift = 0;
+    uint16_t bufIndex = 0;
+    if(cjkShiftChar) {
+        shift = 4;
+        bufIndex = 2;
+        cjkVramIndex -= 2;
+    } else {
+        // Clear tile data
+        uint16_t data = (backCol << 12) | (backCol << 8) | (backCol << 4) | backCol;
+        for(uint16_t i = 0; i < 6; i++) for(uint16_t j = 0; j < 16; j++) cjkTileBuf[i][j] = data;
+    }
+    // Convert 16x16 1bpp bmp to 8x8 4bpp tiles
+    for(uint16_t yy = 0; yy < 16; yy++) {
+        uint16_t row = bmp[yy];
+        uint16_t column = 12;
+        uint16_t last = 0;
+        do {
+            column--;
+            // Palette indices: 15 is white, 2 is texbox blue, 1 is black, 0 is transparency
+            uint16_t pixel = row & (1 << (column + 4));
+            uint16_t color = pixel ? 15 : ((last && shadow) ? 1 : backCol);
+            last = pixel;
+            uint16_t toff = ((11 - column + shift) & 8 ? 2 : 0) + (yy & 8 ? 1 : 0);
+            uint16_t xoff = (11 - column + shift) & 4 ? 1 : 0;
+            cjkTileBuf[bufIndex + toff][((yy & 7) * 2) + xoff] |= color << ((column & 3) * 4);
+        } while(column > 0);
+    }
+    // Skip tile/map upload for sprite (plan = 0)
+    if(plan) {
+        disable_ints;
+        z80_request();
+        // Queue each tile individually
+        for (uint16_t i = 0; i < 4; i++) {
+            uint16_t index = CjkNextTile();
+            DMA_doDma(DMA_VRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);
+            uint16_t attr = TILE_ATTR(PAL0, 1, 0, 0, index);
+            uint16_t xx = x + ((i & 2) >> 1);
+            vdp_map_xy(plan, attr, xx, y + (i & 1));
+            if(plan == VDP_PLAN_W) {
+                cjkMapBuf[cjkMapRow][i & 1][xx - 2 - (showingFace ? 7 : 0)] = attr;
+            }
         }
-		vdp_tiles_load(tiles, vramIndex + (i << 2), 4);
-	}
+        z80_release();
+        enable_ints;
+    }
+    cjkShiftChar = !cjkShiftChar;
+}
+
+void cjk_drawsprite(uint16_t offset, uint16_t chr1, uint16_t chr2) {
+    cjkShiftChar = 0;
+    showingFace = FALSE;
+    uint16_t index = TILE_FACEINDEX + offset;
+    cjk_draw(0, chr1, 0, 0, 0, 1);
+    if(chr2) cjk_draw(0, chr2, 0, 0, 0, 1);
+    // Upload tiles immediately
+    disable_ints;
+    z80_request();
+    vdp_tiles_load((uint32_t*)cjkTileBuf, index, 6);
+    z80_release();
+    enable_ints;
 }

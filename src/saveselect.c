@@ -57,21 +57,25 @@ static uint8_t refresh_file(uint8_t index) {
 	
 	system_peekdata(index, &file);
 	vdp_text_clear(VDP_PLAN_A, 6, y, 16); // Erase any previous stage name text
-	if(cfg_language == LANG_JA) vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
+	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+        vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
+    }
 	if(file.used) {
 		// Map name
-		if(cfg_language == LANG_JA) {
+		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 			uint16_t x = 6;
-			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
+			//uint16_t tile_index = (0xB000 >> 5) + (index << 5);
 			uint16_t name_index = 0;
 			while(name_index < 16) {
 				uint16_t c = GetNextChar(file.stage_id, name_index++);
 				if(c == 0) break; // End of string
 				if(c > 0xFF) name_index++;
-				kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
-				x += 2;
-				tile_index += 4;
+				//kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
+                cjk_draw(VDP_PLAN_A, c, x, y, 0, 1);
+				x += 1 + (name_index & 1);
+				//tile_index += 4;
 			}
+            cjk_newline();
 		} else {
 			vdp_puts(VDP_PLAN_A, stage_info[file.stage_id].name, 6, y);
 		}
@@ -97,7 +101,7 @@ static uint8_t refresh_file(uint8_t index) {
 				memcpy(tileData[1], TILE_BLANK, 32);
 			}
 			memcpy(tileData[2], &TS_Numbers.tiles[mod10[file.health]*8], 32);
-			uint16_t tile = TILE_HUDINDEX + index*8;
+			uint16_t tile = TILE_SHEETINDEX + index*8;
 			DMA_doDma(DMA_VRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {
 				vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+i), 6+i, y+2);
@@ -117,11 +121,12 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+3), x+1, y+3);
 		}
 	} else {
-		if(cfg_language == LANG_JA) {
-			uint16_t tile_index = (0xB000 >> 5) + (index << 5);
-			kanji_draw(VDP_PLAN_A, tile_index,   0x100+584, 6, y, 0, 1); // 新
-			kanji_draw(VDP_PLAN_A, tile_index+4, 0x100+61,  8, y, 0, 1); // し
-			kanji_draw(VDP_PLAN_A, tile_index+8, 0x100+42, 10, y, 0, 1); // い
+		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+			//uint16_t tile_index = (0xB000 >> 5) + (index << 5);
+			cjk_draw(VDP_PLAN_A, 0x100+584, 6, y, 0, 1); // 新
+			cjk_draw(VDP_PLAN_A, 0x100+61,  7, y, 0, 1); // し
+			cjk_draw(VDP_PLAN_A, 0x100+42,  9, y, 0, 1); // い
+            cjk_newline();
 		} else {
 			vdp_puts(VDP_PLAN_A, "New Game", 6, y);
 		}
@@ -154,7 +159,7 @@ uint8_t saveselect_main() {
 	uint8_t fileToCopy = 0;
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
 	uint8_t file_used[SRAM_FILE_MAX];
-	
+
 	vdp_set_display(FALSE);
 	// Keep stuff from the title screen
 	vdp_map_clear(VDP_PLAN_A);
@@ -166,7 +171,11 @@ uint8_t saveselect_main() {
 	};
 	
 	draw_cursor_mode(cursorMode);
-	for(uint16_t i = 0; i < SRAM_FILE_MAX; i++) file_used[i] = refresh_file(i);
+
+    cjk_reset(128);
+	for(uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
+        file_used[i] = refresh_file(i);
+    }
 	vdp_puts(VDP_PLAN_A, "Copy", 6, 25);
 	vdp_puts(VDP_PLAN_A, "Delete", 16, 25);
 	
@@ -193,7 +202,14 @@ uint8_t saveselect_main() {
 						sound_play(SND_MENU_MOVE, 0);
 						if(fileToCopy != cursor) {
 							system_copy(fileToCopy, cursor);
-							file_used[cursor] = refresh_file(cursor);
+                            if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+                                cjk_reset(128);
+                                for (uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
+                                    file_used[i] = refresh_file(i);
+                                }
+                            } else {
+                                file_used[cursor] = refresh_file(cursor);
+                            }
 						}
 						cursorMode = CM_LOAD;
 						break;
@@ -206,7 +222,14 @@ uint8_t saveselect_main() {
 					case CM_CONFIRM: { // Clear file
 						sound_play(SND_PLAYER_DIE, 0);
 						system_delete(cursor);
-						file_used[cursor] = refresh_file(cursor);
+                        if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+                            cjk_reset(128);
+                            for (uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
+                                file_used[i] = refresh_file(i);
+                            }
+                        } else {
+                            file_used[cursor] = refresh_file(cursor);
+                        }
 						cursorMode = CM_LOAD;
 						break;
 					}

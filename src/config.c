@@ -48,53 +48,53 @@ ActionFunc action[5] = {
 
 typedef struct {
 	uint8_t y;
-	uint8_t jstr_index;
-	uint16_t jtile_index;
+//	uint8_t jstr_index;
+//	uint16_t jtile_index;
 	uint8_t type;
 	char caption[36];
 	uint8_t *valptr;
 } MenuItem;
 
-#define AKI (0x6000 >> 5)
-#define WKI (0xB000 >> 5)
-#define BKI (0xD000 >> 5)
+//#define AKI (0x6000 >> 5)
+//#define WKI (0xB000 >> 5)
+//#define BKI (0xD000 >> 5)
 
 const MenuItem menu[NUM_PAGES + 1][MAX_OPTIONS] = {
 	{ // Controller
-		{ 4,  1,  AKI,    MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
-		{ 6,  2,  AKI+60, MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
-		{ 8,  3,  AKI+120,MI_INPUT, "Switch Weapon (3btn)", &cfg_btn_ffwd },
-        { 9,  3,  0,      MI_LABEL, "Fast Fwd Text (6btn)", NULL },
-		{ 11, 4,  AKI+180,MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
-		{ 13, 5,  AKI+240,MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
-		{ 15, 6,  AKI+300,MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
-		{ 17, 7,  AKI+360,MI_INPUT, "Pause Menu", &cfg_btn_pause },
-		
-		{ 20, 8,  AKI+420,MI_MODE,  "Force Button Mode", &cfg_force_btn },
+		{ 4,  /*1,  AKI,    */MI_INPUT, "Jump / Confirm", &cfg_btn_jump },
+		{ 6,  /*2,  AKI+60, */MI_INPUT, "Shoot / Cancel", &cfg_btn_shoot },
+		{ 8,  /*3,  AKI+120,*/MI_INPUT, "Switch Weapon (3btn)", &cfg_btn_ffwd },
+        { 9,  /*3,  0,      */MI_LABEL, "Fast Fwd Text (6btn)", NULL },
+		{ 11, /*4,  AKI+180,*/MI_INPUT, "Switch Right (6btn)", &cfg_btn_rswap },
+		{ 13, /*5,  AKI+240,*/MI_INPUT, "Switch Left (6btn)", &cfg_btn_lswap },
+		{ 15, /*6,  AKI+300,*/MI_INPUT, "Open Map (6btn)", &cfg_btn_map },
+		{ 17, /*7,  AKI+360,*/MI_INPUT, "Pause Menu", &cfg_btn_pause },
 
-		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		{ 20, /*8,  AKI+420,*/MI_MODE,  "Force Button Mode", &cfg_force_btn },
+
+		{ 23, /*19, BKI,    */MI_ACTION, "Apply", (uint8_t*)1 },
+		{ 25, /*20, BKI+40, */MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{ // Gameplay
-		{ 4,  9,  AKI,    MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
-		{ 7,  10, AKI+60, MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
-		{ 9,  11, AKI+120,MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
-		{ 11, 12, AKI+180,MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
-		{ 13, 13, AKI+240,MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
-		{ 15, 14, AKI+300,MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
-		{ 17, 15, AKI+360,MI_TOGGLE, "Mute BGM", &cfg_music_mute },
-		{ 19, 16, AKI+420,MI_TOGGLE, "Mute SFX", &cfg_sfx_mute },
+		{ 4,  /*9,  AKI,    */MI_TOGGLE, "CS+ Speed (NTSC Only)", &cfg_60fps },
+		{ 7,  /*10, AKI+60, */MI_TOGGLE, "Enable Fast Forward", &cfg_ffwd },
+		{ 9,  /*11, AKI+120,*/MI_TOGGLE, "Use Up to Interact", &cfg_updoor },
+		{ 11, /*12, AKI+180,*/MI_TOGGLE, "Screen Shake in Hell", &cfg_hellquake },
+		{ 13, /*13, AKI+240,*/MI_TOGGLE, "Vulnerable After Pause", &cfg_iframebug },
+		{ 15, /*14, AKI+300,*/MI_TOGGLE, "Message Blip Sound", &cfg_msg_blip },
+		{ 17, /*15, AKI+360,*/MI_TOGGLE, "Mute BGM", &cfg_music_mute },
+		{ 19, /*16, AKI+420,*/MI_TOGGLE, "Mute SFX", &cfg_sfx_mute },
 
-		{ 23, 19, BKI,    MI_ACTION, "Apply", (uint8_t*)1 },
-		{ 25, 20, BKI+40, MI_ACTION, "Reset to Default", (uint8_t*)0 },
+		{ 23, /*19, BKI,    */MI_ACTION, "Apply", (uint8_t*)1 },
+		{ 25, /*20, BKI+40, */MI_ACTION, "Reset to Default", (uint8_t*)0 },
 	},{ // Save data
-		{ 4,  17, AKI,    MI_ACTION, "Erase Counter", (uint8_t*)3 },
-		{ 6,  18, AKI+60, MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
+		{ 4,  /*17, AKI,    */MI_ACTION, "Erase Counter", (uint8_t*)3 },
+		{ 6,  /*18, AKI+60, */MI_ACTION, "Erase All Save Data (!)", (uint8_t*)4 },
 	},
 };
 
 const char boolstr[2][4] = { "OFF", "ON " };
 const char modestr[3][6] = { "OFF ", "3BTN", "6BTN" };
-
+/*
 const uint16_t jboolstr[2][2] = { 
 	{ 0x100+80, 0x100+61 },  // なし
 	{ 0x100+40, 0x100+110 }, // ある
@@ -120,56 +120,57 @@ static void DrawJStr(uint16_t x, uint16_t y, uint16_t tile_index, uint16_t item_
 		uint16_t c = GetNextChar(item_index, str_index++);
 		if(c == 0) break; // End of string
 		if(c > 0xFF) str_index++;
-		kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
+		//kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
+        cjk_draw(VDP_PLAN_A, c, x, y, 0, 1);
 		x += 2;
 		tile_index += 4;
 	}
 }
-
+*/
 void draw_menuitem(const MenuItem *item) {
-	if(cfg_language == LANG_JA) {
-        if(item->jstr_index) {
-            vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
-            vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
-            DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
-        }
-    } else {
+	//if(cfg_language == LANG_JA) {
+    //    if(item->jstr_index) {
+    //        vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
+    //        vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
+    //        DrawJStr(4, item->y, item->jtile_index, item->jstr_index);
+    //    }
+    //} else {
         vdp_text_clear(VDP_PLAN_A, 2, item->y, 36);
         vdp_text_clear(VDP_PLAN_A, 2, item->y+1, 36);
 		vdp_puts(VDP_PLAN_A, item->caption, 4, item->y);
-	}
+	//}
 	switch(item->type) {
 		case MI_LABEL: break; // Nothing
 		case MI_INPUT:
-		if(cfg_language == LANG_JA) {
-			uint16_t tile_index = item->jtile_index + 40;
-			uint16_t c1 = btnName[*item->valptr][0];
-			uint16_t c2 = btnName[*item->valptr][1];
-			if(!c2) c2 = ' ';
-			kanji_draw(VDP_PLAN_A, tile_index,   c1, 30, item->y, 0, TRUE);
-			kanji_draw(VDP_PLAN_A, tile_index+4, c2, 32, item->y, 0, TRUE);
-		} else {
+		//if(cfg_language == LANG_JA) {
+		//	uint16_t tile_index = item->jtile_index + 40;
+		//	uint16_t c1 = btnName[*item->valptr][0];
+		//	uint16_t c2 = btnName[*item->valptr][1];
+		//	if(!c2) c2 = ' ';
+		//	kanji_draw(VDP_PLAN_A, tile_index,   c1, 30, item->y, 0, TRUE);
+		//	kanji_draw(VDP_PLAN_A, tile_index+4, c2, 32, item->y, 0, TRUE);
+		//} else {
 			vdp_puts(VDP_PLAN_A, btnName[*item->valptr], 30, item->y);
-		}
+		//}
 		break;
 		case MI_TOGGLE:
-		if(cfg_language == LANG_JA) {
-			uint16_t tile_index = item->jtile_index + 40;
-			kanji_draw(VDP_PLAN_A, tile_index,   jboolstr[*item->valptr][0], 32, item->y, 0, TRUE);
-			kanji_draw(VDP_PLAN_A, tile_index+4, jboolstr[*item->valptr][1], 34, item->y, 0, TRUE);
-		} else {
+		//if(cfg_language == LANG_JA) {
+		//	uint16_t tile_index = item->jtile_index + 40;
+		//	kanji_draw(VDP_PLAN_A, tile_index,   jboolstr[*item->valptr][0], 32, item->y, 0, TRUE);
+		//	kanji_draw(VDP_PLAN_A, tile_index+4, jboolstr[*item->valptr][1], 34, item->y, 0, TRUE);
+		//} else {
 			vdp_puts(VDP_PLAN_A, boolstr[*item->valptr], 30, item->y);
-		}
+		//}
 		break;
 		case MI_ACTION: break;
 		case MI_MODE:
-		if(cfg_language == LANG_JA) {
-			uint16_t tile_index = item->jtile_index + 40;
-			kanji_draw(VDP_PLAN_A, tile_index,   jmodestr[*item->valptr][0], 30, item->y, 0, TRUE);
-			kanji_draw(VDP_PLAN_A, tile_index+4, jmodestr[*item->valptr][1], 32, item->y, 0, TRUE);
-		} else {
+		//if(cfg_language == LANG_JA) {
+		//	uint16_t tile_index = item->jtile_index + 40;
+		//	kanji_draw(VDP_PLAN_A, tile_index,   jmodestr[*item->valptr][0], 30, item->y, 0, TRUE);
+		//	kanji_draw(VDP_PLAN_A, tile_index+4, jmodestr[*item->valptr][1], 32, item->y, 0, TRUE);
+		//} else {
 			vdp_puts(VDP_PLAN_A, modestr[*item->valptr], 30, item->y);
-		}
+		//}
 		break;
 	}
 }
@@ -181,26 +182,26 @@ uint8_t set_page(uint8_t page) {
 	
 	switch(page) {
 		case PAGE_CONTROL:
-			if(cfg_language == LANG_JA) {
-				DrawJStr(8, 1, WKI, 21);
-			} else {
+			//if(cfg_language == LANG_JA) {
+			//	DrawJStr(8, 1, WKI, 21);
+			//} else {
 				vdp_puts(VDP_PLAN_A, "(1) Controller Config", 8, 1);
 
-			}
+			//}
 			break;
 		case PAGE_GAMEPLAY:
-			if(cfg_language == LANG_JA) {
-				DrawJStr(8, 1, WKI, 23);
-			} else {
+			//if(cfg_language == LANG_JA) {
+			//	DrawJStr(8, 1, WKI, 23);
+			//} else {
 				vdp_puts(VDP_PLAN_A, "(2) Gameplay Config", 8, 1);
-			}
+			//}
 			break;
 		case PAGE_SAVEDATA:
-			if(cfg_language == LANG_JA) {
-				DrawJStr(8, 1, WKI, 24);
-			} else {
+			//if(cfg_language == LANG_JA) {
+			//	DrawJStr(8, 1, WKI, 24);
+			//} else {
 				vdp_puts(VDP_PLAN_A, "(3) Save Data", 8, 1);
-			}
+			//}
 			break;
 	}
 	for(uint8_t i = 0; i < MAX_OPTIONS; i++) {

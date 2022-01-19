@@ -12,6 +12,7 @@
 #include "weapon.h"
 
 #include "hud.h"
+#include "xgm.h"
 
 #define TSIZE 8
 #define SPR_TILE(x, y) (((x)*4)+(y))
@@ -73,7 +74,17 @@ void hud_force_redraw() {
     hud_refresh_energy(TRUE);
 	hud_refresh_maxammo();
 	hud_refresh_ammo();
-	//DMA_flushQueue();
+    // Draw blank tiles next to weapon
+    DMA_queueDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
+    DMA_queueDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
+    DMA_queueDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
+    DMA_queueDma(DMA_VRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
+
+    disable_ints;
+    z80_request();
+	DMA_flushQueue();
+    z80_release();
+    enable_ints;
 }
 
 void hud_force_energy() {

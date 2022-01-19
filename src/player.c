@@ -773,14 +773,6 @@ static void player_update_booster() {
 	}
 }
 
-static uint16_t GetKanjiIndex(uint8_t len) {
-	if(len < 4) {
-		return TILE_NAMEINDEX + len * 4;
-	} else {
-		return TILE_FONTINDEX + (len - 4) * 4;
-	}
-}
-
 static uint16_t GetNextChar(uint8_t index) {
 	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
 	uint16_t chr = names[stageID * 16 + index];
@@ -792,34 +784,34 @@ static uint16_t GetNextChar(uint8_t index) {
 }
 
 static void show_map_jname(uint8_t ttl) {
+    static const uint8_t mul6[20] = {
+            0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114
+    };
     uint16_t len = 0;
     uint16_t i = 0;
+    mapNameSpriteNum = 0;
     while(i < 16) {
-        uint16_t chr1 = GetNextChar(i++);
+        uint16_t chr1, chr2;
+        chr1 = GetNextChar(i++);
         if(chr1 == 0) break; // End of string
         if(chr1 > 0xFF) i++;
-        uint16_t chr2 = GetNextChar(i++);
-        if(chr2 > 0xFF) i++;
-        kanji_loadtilesforsprite(GetKanjiIndex(len), chr1, chr2);
+        chr2 = GetNextChar(i++);
+        if (chr2 > 0xFF) i++;
+        cjk_drawsprite(mul6[mapNameSpriteNum], chr1, chr2);
         len += chr2 ? 2 : 1;
+        mapNameSpriteNum++;
     }
     if(!len) return;
-    mapNameSpriteNum = 0;
-    uint16_t x = SCREEN_HALF_W - (len<<3) + 128;
+
+    uint16_t x = SCREEN_HALF_W - mul6[len] + 128;
     uint16_t y = SCREEN_HALF_H - 32 + 128;
     for(i = 0; i < len; i += 2) {
-        uint16_t sind = i>>1;
-        uint16_t tind = i<<2;
-        mapNameSprite[sind] = (VDPSprite) {
-                .x = x, .y = y, .size = SPRITE_SIZE(min(4,(len-i)<<1), 2)
+        uint16_t tind = mul6[i >> 1];
+        mapNameSprite[i >> 1] = (VDPSprite) {
+                .x = x, .y = y, .size = SPRITE_SIZE(min(3,(len-i)<<1), 2),
+                .attr = TILE_ATTR(PAL0,1,0,0,TILE_FACEINDEX+tind)
         };
-        if(tind >= 16) {
-            mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_FONTINDEX+tind-16);
-        } else {
-            mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+tind);
-        }
-        x += 32;
-        mapNameSpriteNum++;
+        x += 24;
     }
     mapNameTTL = ttl;
 }
@@ -828,7 +820,7 @@ void player_show_map_name(uint8_t ttl) {
 	// Boss bar overwrites the name
 	if(stageID == STAGE_WATERWAY_BOSS) return;
 	// Show kanji name
-	if(cfg_language == LANG_JA) {
+	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
         show_map_jname(ttl);
         return;
     }
@@ -1035,7 +1027,7 @@ void player_unpause() {
 	// Simulates a bug where you can get damaged, and pushed upwards, multiple times in succession (Chaco house skip)
 	if(cfg_iframebug) playerIFrames = 0;
     // Redraw the boss bar in JA
-    if(cfg_language == LANG_JA && showingBossHealth) {
+    if(cfg_language >= LANG_JA && cfg_language <= LANG_KO && showingBossHealth) {
         tsc_show_boss_health();
         tsc_update_boss_health();
     }

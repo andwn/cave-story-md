@@ -15,6 +15,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "vdp.h"
+#include "xgm.h"
 
 #include "window.h"
 
@@ -55,12 +56,10 @@ uint16_t showingFace = 0;
 uint8_t textMode = TM_NORMAL;
 
 uint8_t windowText[3][36];
-uint16_t jwindowText[2][18];
 uint8_t textRow, textColumn;
 uint8_t windowTextTick = 0;
 uint8_t spaceCounter = 0, spaceOffset = 0;
 
-uint8_t promptShowing = FALSE;
 uint8_t promptAnswer = TRUE;
 VDPSprite promptSpr[2], handSpr;
 
@@ -73,15 +72,17 @@ void window_draw_face();
 
 void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
-	window_clear_text();
-	if(cfg_language == LANG_JA) {
+	//window_clear_text();
+	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 		const uint32_t *data = &TS_MsgFont.tiles[('_' - 0x20) << 3];
 		vdp_tiles_load_from_rom(data, (0xB000 >> 5) + 3 + (29 << 2), 1);
 	}
 	textRow = textColumn = 0;
 	
 	windowOnTop = mode;
-	if(mode) hud_hide();
+	//if(mode || (cfg_language >= LANG_JA && cfg_language <= LANG_KO))
+    hud_hide();
+
 	uint16_t wy1 = mode ? WINDOW_Y1_TOP : WINDOW_Y1,
 		wy2 = mode ? WINDOW_Y2_TOP : WINDOW_Y2,
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
@@ -93,20 +94,21 @@ void window_open(uint8_t mode) {
 	for(uint8_t y = ty1; y <= ty2; y++) {
         vdp_map_xy(VDP_PLAN_W, 0, 0, y);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), WINDOW_X1, y);
-		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
+		//vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
 		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), WINDOW_X2, y);
         vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 	}
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), WINDOW_X1, wy2);
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), TEXT_X1, wy2, 36, 1, 0);
 	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), WINDOW_X2, wy2);
+
+    window_clear();
 	
 	if(!paused) {
 		if(showingFace > 0) window_draw_face(showingFace);
 		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
-    linesSinceLastNOD = 0;
 	windowOpen = TRUE;
 }
 
@@ -118,26 +120,27 @@ void window_clear() {
 	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y,   w, 1, 0);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+1, w, 1, 0);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+2, w, 1, 0);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+3, w, 1, 0);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y+4, w, 1, 0);
-	window_clear_text();
 
-    linesSinceLastNOD = 0;
+    disable_ints;
+    z80_request();
+	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y, w, 6, 0);
+    z80_release();
+    enable_ints;
+
+	window_clear_text();
     if(textMode == TM_MSG) textMode = TM_NORMAL;
 }
 
 void window_clear_text() {
 	textRow = textColumn = spaceCounter = spaceOffset = 0;
 	memset(windowText, ' ', 36*3);
-	memset(jwindowText, '\0', 36*2);
+    cjk_reset(0);
 }
 
 void window_close() {
 	if(!paused) {
 	    vdp_set_window(0, 0);
+        hud_force_redraw();
 	}
 	showingItem = 0;
 	windowOpen = FALSE;
@@ -151,17 +154,8 @@ void window_set_face(uint16_t face, uint8_t open) {
 	if(face > 0) {
 		window_draw_face();
 	} else {
-		// Hack to clear face only
-		//uint16_t y1 = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
-		//for(uint16_t y = y1; y < y1 + 6; y++) {
-		//	for(uint16_t x = TEXT_X1; x < TEXT_X1 + 6; x++) {
-		//		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
-		//	}
-		//}
 		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, 
 				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6, 0);
-		//VDP_fillTileMapRect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1,
-		//		windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6);
 	}
 }
 
@@ -171,11 +165,8 @@ void window_draw_char(uint8_t c) {
 		textColumn = 0;
 		spaceCounter = spaceOffset = 0;
 		if(textRow > 2) {
-			//if(textMode == TM_ALL) textMode = TM_NORMAL;
 			window_scroll_text();
-		} //else if(textMode == TM_LINE) {
-		//	textMode = TM_NORMAL;
-		//}
+		}
 	} else {
 		// Check if the line has leading spaces, and skip drawing a space occasionally,
 		// so that the sign text will be centered
@@ -205,65 +196,31 @@ void window_draw_char(uint8_t c) {
 	}
 }
 
-static uint16_t getKanjiIndexForPos(uint8_t row, uint8_t col) {
-	if(row) col += 18; // Second row
-	col <<= 2; // 4 tiles per char
-	if(col < 96) {
-		return TILE_FONTINDEX + col;
-	} else if(col < 96+28) {
-		col -= 96;
-		return (0xB000 >> 5) + 3 + 4 * col;
-	} else if(col < 96+28+16) {
-		return TILE_NAMEINDEX + (col - (96+28));
-	} else {
-		return TILE_NUMBERINDEX + (col - (96+28+16));
-	}
-}
-
 void window_draw_jchar(uint8_t iskanji, uint16_t c) {
-	if(vblank) aftervsync();
-	vblank = 0;
-	
-	//vdp_set_display(FALSE);
-	// For the 16x16 text, pretend the text array is [2][18]
 	if(!iskanji && c == '\n') {
+        //vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
+        //vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y+1);
 		textRow++;
 		textColumn = 0;
-		if(textRow > 1) {
-			//if(textMode == TM_ALL) textMode = TM_NORMAL;
-			window_scroll_jtext();
-		} //else if(textMode == TM_LINE) {
-		//	textMode = TM_NORMAL;
-		//}
-		//vdp_set_display(TRUE);
-		//linesSinceLastNOD++;
+        cjk_newline();
+		if(textRow > 2) {
+            uint16_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
+            uint16_t msgTextY = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
+            uint16_t msgTextW = showingFace ? 29 : 36;
+            cjk_winscroll(msgTextX, msgTextY);
+            vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY+4, msgTextW, 2, 0);
+            textRow = 2;
+		}
 		return;
 	}
-	// Don't let the text run off the end of the window
-	if(textColumn > 18 - (showingFace ? 4 : 0)) {
-		textRow++;
-		textColumn = 0;
-		if(textRow > 1) {
-			//if(textMode == TM_ALL) textMode = TM_NORMAL;
-			window_scroll_jtext();
-		} //else if(textMode == TM_LINE) {
-		//	textMode = TM_NORMAL;
-		//}
-	}
 	if(iskanji) c += 0x100;
-	jwindowText[textRow][textColumn] = c;
 	// Figure out where this char is gonna go
 	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	msgTextX += textColumn * 2;
-	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + textRow * 3;
+	msgTextX += textColumn + (textColumn >> 1); // * 1.5
+	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1) + textRow * 2;
 	// And draw it
-	
-	uint16_t vramIndex = getKanjiIndexForPos(textRow, textColumn);
-	kanji_draw(VDP_PLAN_W, vramIndex, c, msgTextX, msgTextY, 2, FALSE);
-	if(textColumn < 18 - (showingFace ? 4 : 0) && (iskanji || c != ' ')) {
-		textColumn++;
-	}
-	//vdp_set_display(TRUE);
+    cjk_draw(VDP_PLAN_W, c, msgTextX, msgTextY, 2, FALSE);
+    textColumn++;
 }
 
 void window_scroll_text() {
@@ -299,35 +256,6 @@ void window_scroll_text() {
 	textRow = 2;
 	textColumn = 0;
 	spaceCounter = spaceOffset = 0;
-}
-
-void window_scroll_jtext() {
-	// Push bottom row to top
-	uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	uint8_t msgTextY = windowOnTop ? TEXT_Y1_TOP:TEXT_Y1;
-	
-	for(uint8_t col = 0; col < 18 - (showingFace ? 4 : 0); col++) {
-		if(vblank) aftervsync(); // So we don't lag the music
-		vblank = 0;
-		
-		jwindowText[0][col] = jwindowText[1][col];
-		uint16_t vramIndex = getKanjiIndexForPos(0, col);
-		if(jwindowText[0][col] == 0) {
-			kanji_draw(VDP_PLAN_W, vramIndex, ' ', msgTextX, msgTextY, 2, FALSE);
-		} else {
-			kanji_draw(VDP_PLAN_W, vramIndex, jwindowText[0][col], msgTextX, msgTextY, 2, FALSE);
-		}
-		msgTextX += 2;
-	}
-	// Clear bottom row
-	msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
-	msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 3;
-	uint8_t msgTextW = showingFace ? 28 : 36;
-	memset(jwindowText[1], '\0', 36);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY, msgTextW, 2, 0);
-	// Reset to beginning of bottom row
-	textRow = 1;
-	textColumn = 0;
 }
 
 uint8_t window_get_textmode() {
@@ -401,22 +329,19 @@ uint8_t window_prompt_update() {
 		int16_t cursor_y = (PROMPT_Y << 3) + 4;
 		sprite_pos(handSpr, cursor_x, cursor_y);
 	}
-vdp_sprite_add(&handSpr);
-vdp_sprites_add(promptSpr, 2);
+    vdp_sprite_add(&handSpr);
+    vdp_sprites_add(promptSpr, 2);
 	return FALSE;
 }
 
 void window_draw_face() {
+    disable_ints;
+    z80_request();
 	vdp_tiles_load_from_rom(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
 	vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 			TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
-	//uint16_t y1 = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
-	//uint16_t tile = TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX);
-	//for(uint16_t y = y1; y < y1 + 6; y++) {
-	//	for(uint16_t x = TEXT_X1; x < TEXT_X1 + 6; x++) {
-	//		vdp_map_xy(VDP_PLAN_W, tile++, x, y);
-	//	}
-	//}
+    z80_release();
+    enable_ints;
 }
 
 void window_show_item(uint16_t item) {
@@ -486,9 +411,9 @@ void window_update() {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 		uint16_t index;
-		if(cfg_language == LANG_JA) {
-			x += textColumn * 2;
-			y += textRow * 3;
+		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+			x += textColumn + ((textColumn + 1) >> 1);
+			y += textRow * 2;
 			index = (0xB000 >> 5) + 3 + (29 << 2);
 		} else {
 			x += textColumn - spaceOffset;
@@ -497,12 +422,12 @@ void window_update() {
 		}
         if(++blinkTime == 8) {
             vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
-            if(cfg_language == LANG_JA) {
+            if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
                 vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
             }
         } else if(blinkTime == 16) {
             vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
-            if(cfg_language == LANG_JA) {
+            if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
                 vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
             }
             blinkTime = 0;

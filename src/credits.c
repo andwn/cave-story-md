@@ -27,29 +27,33 @@ enum CreditCmd {
 };
 
 static int8_t illScrolling = 0;
-static uint16_t kanjiVram;
+//static uint16_t kanjiVram;
 
 static void draw_jp_text(const uint8_t *str, uint16_t x, uint16_t y) {
+    uint16_t iter = 0;
 	for(uint16_t i = 0; i < 32; i++) {
 		if(str[i] >= 0xE0) {
 			uint16_t c = (str[i] - 0xE0) * 0x60 + (str[i+1] - 0x20);
-			kanji_draw(VDP_PLAN_B, kanjiVram, c + 0x100, x, y, 0, TRUE);
+			//kanji_draw(VDP_PLAN_B, kanjiVram, c + 0x100, x, y, 0, TRUE);
+            cjk_draw(VDP_PLAN_B, c + 0x100, x, y, 0, TRUE);
 			i++;
 		} else if(str[i] >= 0x20) {
-			kanji_draw(VDP_PLAN_B, kanjiVram, str[i], x, y, 0, TRUE);
+			//kanji_draw(VDP_PLAN_B, kanjiVram, str[i], x, y, 0, TRUE);
+            cjk_draw(VDP_PLAN_B, str[i], x, y, 0, TRUE);
 		} else {
 			return;
 		}
-		kanjiVram += 4;
+		//kanjiVram += 4;
 		// Window is unused in credits, just overwrite it
-		if(kanjiVram < 0xD000>>5 && kanjiVram > (0xC000>>5) - 4) { // PLAN_A
-			kanjiVram = 0xD000>>5;
-		} else if(kanjiVram < 0xF000>>5 && kanjiVram > (0xE000>>5) - 4) { // PLAN_B
-			kanjiVram = 0xF000>>5;
-		} else if(kanjiVram > (0xF800>>5) - 4) { // HScroll / Sprite list
-			kanjiVram = TILE_KANJISTART;
-		}
-		x += 2;
+		//if(kanjiVram < 0xD000>>5 && kanjiVram > (0xC000>>5) - 4) { // PLAN_A
+		//	kanjiVram = 0xD000>>5;
+		//} else if(kanjiVram < 0xF000>>5 && kanjiVram > (0xE000>>5) - 4) { // PLAN_B
+		//	kanjiVram = 0xF000>>5;
+		//} else if(kanjiVram > (0xF800>>5) - 4) { // HScroll / Sprite list
+		//	kanjiVram = TILE_KANJISTART;
+		//}
+		x += 1 + (iter & 1);
+        iter++;
 	}
 }
 
@@ -66,8 +70,9 @@ void credits_main() {
 	uint16_t illScroll = 0;
 	
 	uint8_t skipScroll = 0;
-	
-	kanjiVram = TILE_KANJISTART;
+
+    cjk_reset(0);
+	//kanjiVram = TILE_KANJISTART;
 	inFade = FALSE;
 	ready = TRUE;
 	vdp_sprites_clear();

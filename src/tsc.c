@@ -136,7 +136,7 @@ Event stageEvents[MAX_EVENTS];
 uint16_t lastRunEvent = 0;
 
 const uint8_t *curCommand = NULL;
-uint8_t cmd, prevCmd;
+uint8_t cmd;//, prevCmd;
 
 uint16_t waitTime;
 
@@ -173,7 +173,7 @@ void tsc_init() {
 	bossBarEntity = FALSE;
 	bossHealth = 0;
 	tscState = TSC_IDLE;
-	cmd = prevCmd = '\n';
+	cmd = '\n';
 	teleMenuSlotCount = 0;
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
@@ -229,7 +229,7 @@ void tsc_call_event(uint16_t number) {
 		for(uint8_t i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
 			    lastRunEvent = number;
-			    linesSinceLastNOD = 0;
+			    //linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = headEvents[i].data;
 				return;
@@ -239,7 +239,7 @@ void tsc_call_event(uint16_t number) {
 		for(uint8_t i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
                 lastRunEvent = number;
-                linesSinceLastNOD = 0;
+                //linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = stageEvents[i].data;
 				return;
@@ -286,7 +286,7 @@ uint8_t tsc_update() {
 		{
 			if(joy_pressed(btn[cfg_btn_jump]) || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				tscState = TSC_RUNNING;
-				if(cfg_language == LANG_JA) {
+				if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 					window_draw_jchar(FALSE, ' '); // Clear blinking cursor
 				} else {
 					window_draw_char(' '); // Clear blinking cursor
@@ -507,7 +507,7 @@ void tsc_show_teleport_menu() {
 
 uint8_t execute_command() {
 	uint16_t args[4];
-	prevCmd = cmd;
+	//prevCmd = cmd;
 	cmd = tsc_read_byte();
 	if(cmd >= 0x80 && cmd < 0xE0) {
 		switch(cmd) {
@@ -693,7 +693,7 @@ uint8_t execute_command() {
 		case CMD_NOD: // Wait for player input
 		{
 			tscState = TSC_WAITINPUT;
-			linesSinceLastNOD = 0;
+			//linesSinceLastNOD = 0;
 			return 1;
 		}
 		break;
@@ -1287,7 +1287,7 @@ uint8_t execute_command() {
 		uint8_t doublebyte = FALSE;
 		if(cmd >= 0xE0 && cmd < 0xFF) {
 			doublebyte = TRUE;
-			if(cfg_language == LANG_JA) { // Get kanji index from cmd and next byte
+			if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) { // Get kanji index from cmd and next byte
 				kanji = (cmd - 0xE0) * 0x60 + (tsc_read_byte() - 0x20);
 			} else {
 				tsc_read_byte();
@@ -1304,17 +1304,8 @@ uint8_t execute_command() {
             }
 		}
 		if(window_is_open()) {
-			if(cfg_language == LANG_JA && cmd == '\n' && (prevCmd >= 0xE0 || prevCmd < 0x60)) {
-                linesSinceLastNOD++;
-			    if(linesSinceLastNOD > 1) {
-                    tscState = TSC_WAITINPUT;
-                    linesSinceLastNOD = 0;
-                    curCommand--;
-                    return 1;
-                }
-			}
 			if(cmd == '\n' || window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
-				if(cfg_language == LANG_JA) {
+				if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);
 				} else {
 					window_draw_char(cmd);
