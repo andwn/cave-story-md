@@ -136,14 +136,14 @@ dc.l TSC_Ballo2
 dc.l TSC_e_Blcn
 dc.l TSC_Clock
 
-# 1bpp Kanji fonts
-BIN BMP_Ascii   "res/ja_ascii.dat"
-BIN BMP_Kanji   "res/ja_kanji.dat"
+# 1bpp CJK fonts
+BIN BMP_Ascii   "res/cjk_ascii.dat"
+BIN BMP_Kanji   "res/cjk_ja_zpix.dat"
 
 # Strings
-BIN STR_StageNames  "res/ja_stagename.dat"
-BIN STR_Credits     "res/ja_credits.dat"
-BIN STR_Config      "res/ja_config.dat"
+BIN STR_StageNames  "res/strings/ja_stagename.dat"
+BIN STR_Credits     "res/strings/ja_credits.dat"
+BIN STR_Config      "res/strings/ja_config.dat"
 
 # Scripts (TSC)
 # Global

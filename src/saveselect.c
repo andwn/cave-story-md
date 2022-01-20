@@ -121,15 +121,18 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+3), x+1, y+3);
 		}
 	} else {
-		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-			//uint16_t tile_index = (0xB000 >> 5) + (index << 5);
+		if(cfg_language == LANG_JA) {
 			cjk_draw(VDP_PLAN_A, 0x100+584, 6, y, 0, 1); // 新
 			cjk_draw(VDP_PLAN_A, 0x100+61,  7, y, 0, 1); // し
 			cjk_draw(VDP_PLAN_A, 0x100+42,  9, y, 0, 1); // い
             cjk_newline();
-		} else {
-			vdp_puts(VDP_PLAN_A, "New Game", 6, y);
-		}
+        } else if(cfg_language == LANG_ZH) {
+            cjk_draw(VDP_PLAN_A, 0x100+1172, 6, y, 0, 1); // 新
+            cjk_draw(VDP_PLAN_A, 0x100+267,  7, y, 0, 1); // 的
+            cjk_newline();
+        } else {
+            vdp_puts(VDP_PLAN_A, "New Game", 6, y);
+        }
 		vdp_text_clear(VDP_PLAN_A, 26, y, 10);
 		vdp_text_clear(VDP_PLAN_A, 6, y+2, 8);
 		vdp_text_clear(VDP_PLAN_A, 24, y+2, 12);

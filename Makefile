@@ -118,7 +118,7 @@ debug: main-build symbol.txt
 
 translate: $(PATCHROM) $(TL_TSBS)
 translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
-translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin
+translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
 
 main-build: prereq head-gen $(TARGET)-en.bin
 
@@ -224,6 +224,8 @@ res/tsc/de/%.tsb: res/tsc/de/%.txt
 	$(TSCOMP) -l=de "$<"
 res/tsc/br/%.tsb: res/tsc/br/%.txt
 	$(TSCOMP) -l=br "$<"
+res/tsc/zh/%.tsb: res/tsc/zh/%.txt
+	$(TSCOMP) -l=zh "$<"
 
 # Generate patches
 res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s
@@ -245,6 +247,8 @@ $(TARGET)-it.bin: res/patches/$(TARGET)-it.patch
 $(TARGET)-pt.bin: res/patches/$(TARGET)-pt.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 $(TARGET)-br.bin: res/patches/$(TARGET)-br.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
 

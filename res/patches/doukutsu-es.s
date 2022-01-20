@@ -138,7 +138,7 @@ dc.l TSC_e_Blcn
 dc.l TSC_Clock
 
 # Strings
-BIN STR_StageNames  "res/es_stagename.dat"
+BIN STR_StageNames  "res/strings/es_stagename.dat"
 
 # Scripts (TSC)
 # Global

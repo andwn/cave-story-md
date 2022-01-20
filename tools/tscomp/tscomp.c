@@ -279,7 +279,7 @@ uint8_t get_char_type() {
             if(is_extended(tsc[pc])) return CT_EXTEND;
         } else if(language >= LANG_JA && language <= LANG_KO) {
             // Double byte char?
-            if ((tsc[pc] >= 0x81 && tsc[pc] <= 0x9F) || (tsc[pc] >= 0xE0 && tsc[pc] <= 0xFC)) {
+            if ((tsc[pc] >= 0x81 /*&& tsc[pc] <= 0x9F) || (tsc[pc] >= 0xE0*/ && tsc[pc] <= 0xFC)) {
                 return CT_KANJI;
             }
         }
@@ -482,6 +482,7 @@ uint16_t read_langcode(const char *str) {
     else if(strcmp("PT", code) == 0) return LANG_PT;
     else if(strcmp("IT", code) == 0) return LANG_IT;
     else if(strcmp("BR", code) == 0) return LANG_BR;
+    else if(strcmp("ZH", code) == 0) return LANG_ZH;
     else return LANG_INVALID;
 }
 
@@ -521,9 +522,14 @@ int main(int argc,char *argv[]) {
         }
     }
 
-    if(language == LANG_JA) {
+    if(language >= LANG_JA && language <= LANG_KO) {
+        static const char kanjifn[3][80] = {
+                "tools/tscomp/kanjimap.txt",
+                "tools/tscomp/kanjimap_zh.txt",
+                "tools/tscomp/kanjimap_ko.txt"
+        };
         // Load the kanji list
-        FILE *kfile = fopen("tools/tscomp/kanjimap.txt", "rb");
+        FILE *kfile = fopen(kanjifn[language - LANG_JA], "rb");
         if(!kfile) {
             printf("ERROR: Failed to open '%s'.\n", "kanjimap.txt");
             return EXIT_FAILURE;

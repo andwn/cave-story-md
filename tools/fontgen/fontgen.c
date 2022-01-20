@@ -18,7 +18,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#define FONT_SIZE 16
+//#define FONT_SIZE 16
 
 #define min(a,b) ((a)>(b)?(b):(a))
 
@@ -41,7 +41,7 @@ uint8_t char_bytes(uint8_t val) {
 }
 
 void load_font(const char *filename) {
-	font = TTF_OpenFont(filename, FONT_SIZE);
+	font = TTF_OpenFont(filename, 12);
 	if(!font) {
 		printf("%s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 	load_font(argv[1]);
 	load_kanji(argv[2]);
 	
-	tileset = SDL_CreateRGBSurface(0, FONT_SIZE, kanjiSize * FONT_SIZE, 32, 0,0,0,0);
+	tileset = SDL_CreateRGBSurface(0, 16, kanjiSize * 16, 32, 0,0,0,0);
 	
 	// This is PAL_Main, for the message box
 	const SDL_Color color[16] = {
@@ -102,8 +102,8 @@ int main(int argc, char *argv[]) {
 	//SDL_SetSurfacePalette(tileset, pal);
 	
 	// Change the Y value for srect if the glyphs are cut off in the output
-	SDL_Rect srect  = { 0, 4, 16, 16 };
-	SDL_Rect drect  = { 0, 0, 16, 16 };
+	SDL_Rect srect  = { 0, 0, 12, 16 };
+	SDL_Rect drect  = { 0, 0, 12, 16 };
 	
 	for(uint16_t i = 0; i < kanjiSize;) {
 		// Put the next UTF-8 char into a string and render it
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
 		}
 		int w;
 		TTF_SizeUTF8(font, str, &w, NULL);
-		drect.x = 8 - w / 2;
+		//drect.x = 0;//8 - w / 2;
 		//SDL_Surface *text = TTF_RenderUTF8_Shaded(font, str, color[15], color[2]);
 		SDL_Surface *text = TTF_RenderUTF8_Solid(font, str, color[15]);
 		SDL_BlitSurface(text, &srect, tileset, &drect);

@@ -44,12 +44,12 @@ void tsc_open(const char *filename) {
 	fseek(tscFile, 0, SEEK_SET);
 	fread(tsc, 1, tscSize, tscFile);
 	// Obtain the key from the center of the file
-	uint8_t key = tsc[tscSize / 2];
+	//uint8_t key = tsc[tscSize / 2];
 	// Apply key to all bytes except where the key itself was
-	for(int i = 0; i < tscSize; i++) {
-		if(i != tscSize / 2) tsc[i] -= key;
+	//for(int i = 0; i < tscSize; i++) {
+	//	if(i != tscSize / 2) tsc[i] -= key;
 		//fputc(tsc[i], debug);
-	}
+	//}
 	fclose(tscFile);
 }
 
@@ -63,11 +63,11 @@ void tsc_close() {
 void tsc_read() {
 	for(int i = 0; i < tscSize; i++) {
 		// Check if this is a double byte char
-		if((tsc[i] >= 0x81 && tsc[i] <= 0x9F) || (tsc[i] >= 0xE0 && tsc[i] <= 0xFC)) {
+		if((tsc[i] >= 0x81 /*&& tsc[i] <= 0x9F) || (tsc[i] >= 0xE0*/ && tsc[i] <= 0xFC)) {
 			// Check if the double byte represents a kanji
-#ifdef KANJI_ONLY
-			if(tsc[i] >= 0x88 && tsc[i] <= 0xEE) {
-#endif
+//#ifdef KANJI_ONLY
+//			if(tsc[i] >= 0x88 && tsc[i] <= 0xEE) {
+//#endif
 				uint16_t wc = (tsc[i] << 8) | tsc[i+1];
 				// Ok, it's a kanji, compare against the list
 				bool alreadyCounted = false;
@@ -90,9 +90,9 @@ void tsc_read() {
 					kanji[count] = wc;
 					count++;
 				}
-#ifdef KANJI_ONLY
-			}
-#endif
+//#ifdef KANJI_ONLY
+//			}
+//#endif
 			i++; // Increment i a second time, since this char was 2 bytes
 		}
 	}
@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
         }
     }
     // Save kanji list
-    FILE *list = fopen("kanjilist.txt", "wb");
+    FILE *list = fopen("kanjimap_zh.txt", "wb");
     for(int i = 0; i < count; i++) {
 		uint8_t b = kanji[i] >> 8; // First byte
 		fwrite(&b, 1, 1, list);

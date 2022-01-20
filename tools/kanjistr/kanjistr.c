@@ -37,7 +37,7 @@ uint8_t get_char_type(uint8_t c) {
 		if(c == ValidChars[i]) return CT_ASCII;
 	}
 	// Double byte char?
-	if((c >= 0x81 && c <= 0x9F) || (c >= 0xE0 && c <= 0xFC)) {
+	if((c >= 0x81 /*&& c <= 0x9F) || (c >= 0xE0 */&& c <= 0xFC)) {
 		return CT_KANJI;
 	}
 	return CT_SKIP;
