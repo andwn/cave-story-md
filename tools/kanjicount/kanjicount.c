@@ -63,7 +63,7 @@ void tsc_close() {
 void tsc_read() {
 	for(int i = 0; i < tscSize; i++) {
 		// Check if this is a double byte char
-		if((tsc[i] >= 0x81 /*&& tsc[i] <= 0x9F) || (tsc[i] >= 0xE0*/ && tsc[i] <= 0xFC)) {
+		if((tsc[i] >= 0x81 /*&& tsc[i] <= 0x9F) || (tsc[i] >= 0xE0*/ && tsc[i] <= 0xFE)) {
 			// Check if the double byte represents a kanji
 //#ifdef KANJI_ONLY
 //			if(tsc[i] >= 0x88 && tsc[i] <= 0xEE) {
@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
         }
     }
     // Save kanji list
-    FILE *list = fopen("kanjimap_zh.txt", "wb");
+    FILE *list = fopen("kanjilist.txt", "wb");
     for(int i = 0; i < count; i++) {
 		uint8_t b = kanji[i] >> 8; // First byte
 		fwrite(&b, 1, 1, list);

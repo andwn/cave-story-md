@@ -1,0 +1,82 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSG붉은 꽃잎이 주변에 흩어져 있다.<NOD<END
+
+#0200
+<KEY<MSG메모가 있다.<NOD<CLR<TUR실드 때문에
+알 No.00이 있는 방에 들어갈 수 없다<NOD<CLR<TUR어딘가에 실드를 없애는
+장치가 있을 텐데...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSG보물상자를 열었다.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TUR비룡의 알 No.01
+에러: 알의 상태에 이상이 발생했습니다.
+조사를 요합니다.<NOD<END
+#0502
+<PRI<MS3<TUR비룡의 알 No.02
+상태: 정상입니다.<NOD<END
+#0503
+<PRI<MS3<TUR비룡의 알 No.03
+상태: 정상입니다.<NOD<END
+#0504
+<PRI<MS3<TUR비룡의 알 No.04
+상태: 정상입니다.<NOD<END
+#0505
+<PRI<MS3<TUR비룡의 알 No.05
+상태: 정상입니다.<NOD<END
+#0506
+<PRI<MS3<TUR비룡의 알 No.06
+에러: 알의 상태에 이상이 발생했습니다.
+조사를 요합니다.<NOD<END
+#0507
+<PRI<MS3<TUR비룡의 알 No.07
+상태: 정상입니다.<NOD<END
+#0508
+<PRI<MSG<TUR비룡의 알 No.08
+상태: 정상입니다.<NOD<END
+#0509
+<PRI<MSG<TUR비룡의 알 No.09
+상태: 정상입니다.<NOD<END
+#0510
+<PRI<MSG<TUR비룡의 알 No.10
+상태: 정상입니다.<NOD<END
+#0511
+<PRI<MSG<TUR비룡의 알 No.11
+상태: 정상입니다.<NOD<END
+#0512
+<PRI<MSG<TUR비룡의 알 No.12
+상태: 정상입니다.<NOD<END
+#0513
+<PRI<MSG<TUR비룡의 알 No.13
+상태: 정상입니다.<NOD<END
+#0514
+<PRI<MSG<TUR비룡의 알 No.14
+상태: 정상입니다.<NOD<END
+#0515
+<PRI<MSG<TUR비룡의 알 No.15
+상태: 정상입니다.<NOD<END
+#0516
+<PRI<MSG<TUR비룡의 알 No.16
+상태: 정상입니다.<NOD<END
+

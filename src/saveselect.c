@@ -130,6 +130,11 @@ static uint8_t refresh_file(uint8_t index) {
             cjk_draw(VDP_PLAN_A, 0x100+1172, 6, y, 0, 1); // 新
             cjk_draw(VDP_PLAN_A, 0x100+267,  7, y, 0, 1); // 的
             cjk_newline();
+        } else if(cfg_language == LANG_KO) {
+            cjk_draw(VDP_PLAN_A, 0x100+384, 6, y, 0, 1); // 새
+            cjk_draw(VDP_PLAN_A, 0x100+250, 7, y, 0, 1); // 로
+            cjk_draw(VDP_PLAN_A, 0x100+516, 9, y, 0, 1); // 운
+            cjk_newline();
         } else {
             vdp_puts(VDP_PLAN_A, "New Game", 6, y);
         }
