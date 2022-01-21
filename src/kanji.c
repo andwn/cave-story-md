@@ -12,16 +12,7 @@
 
 #include "kanji.h"
 
-// Need 36 x 6 = 216 tiles
-
-// Allocate kanji tiles to:
-// TILE_FONTINDEX (+96 tiles)
-// VDP_PLAN_W edge (+28 tiles) = 124
-// TILE_HUDINDEX (+32 tiles) = 156
-// TILE_NUMBERINDEX (+16 tiles) = 172
-// TILE_NAMEINDEX (+8 (of 16) tiles) = 180
-// TILE_FACEINDEX (+36 tiles) = 216
-
+uint16_t cjkVramMode = CJK_TITLE;
 uint16_t cjkVramIndex = 0;
 
 volatile uint16_t cjkTileBuf[6][16];
@@ -30,32 +21,66 @@ uint16_t cjkShiftChar = 0;
 uint16_t cjkMapBuf[3][2][36];
 int16_t cjkMapRow = 0;
 
+// = CJK_TITLE ALLOCATION =
+// Start at VRAM index 2, should be plenty of space
+
+// = CJK_MESSAGE ALLOCATION =
+// Need 36 x 6 = 216 tiles
+// TILE_FONTINDEX (+96 tiles)
+// VDP_PLAN_W edge (+28 tiles) = 124
+// TILE_HUDINDEX (+32 tiles) = 156
+// TILE_NUMBERINDEX (+16 tiles) = 172
+// TILE_NAMEINDEX (+8 (of 16) tiles) = 180
+// TILE_FACEINDEX (+36 tiles) = 216
+
+// = CJK_CREDITS ALLOCATION =
+// 320 tiles of space in this region:
+#define TILE_KANJISTART	(TILE_SHEETINDEX + 144 + 228 + 135)
+// TILE_HUDINDEX (+32 tiles) = 352
+// TILE_FACE_INDEX (+36 tiles) = 388
 static uint16_t CjkNextTile() {
     uint16_t index;
-
-    if(cjkVramIndex < 96) {
-        index = cjkVramIndex + TILE_FONTINDEX;
-    } else if(cjkVramIndex < 124) {
-        index = ((cjkVramIndex - 96) << 2) + (VDP_PLAN_W >> 5) + 3;
-    } else if(cjkVramIndex < 156) {
-        index = (cjkVramIndex - 124) + TILE_HUDINDEX;
-    } else if(cjkVramIndex < 172) {
-        index = (cjkVramIndex - 156) + TILE_NUMBERINDEX;
-    } else if(cjkVramIndex < 180) {
-        index = (cjkVramIndex - 172) + TILE_NAMEINDEX;
-    } else {
-        index = (cjkVramIndex - 180) + TILE_FACEINDEX;
+    switch(cjkVramMode) {
+        case CJK_TITLE:
+            index = cjkVramIndex + 2;
+            cjkVramIndex++;
+            if(cjkVramIndex >= 256) cjkVramIndex = 0;
+            break;
+        case CJK_MESSAGE:
+            if(cjkVramIndex < 96) {
+                index = cjkVramIndex + TILE_FONTINDEX;
+            } else if(cjkVramIndex < 124) {
+                index = ((cjkVramIndex - 96) << 2) + (VDP_PLAN_W >> 5) + 3;
+            } else if(cjkVramIndex < 156) {
+                index = (cjkVramIndex - 124) + TILE_HUDINDEX;
+            } else if(cjkVramIndex < 172) {
+                index = (cjkVramIndex - 156) + TILE_NUMBERINDEX;
+            } else if(cjkVramIndex < 180) {
+                index = (cjkVramIndex - 172) + TILE_NAMEINDEX;
+            } else {
+                index = (cjkVramIndex - 180) + TILE_FACEINDEX;
+            }
+            cjkVramIndex++;
+            if(cjkVramIndex >= 216 || (showingFace && cjkVramIndex >= 216-36)) cjkVramIndex = 0;
+            break;
+        case CJK_CREDITS:
+            if(cjkVramIndex < 320) {
+                index = cjkVramIndex + TILE_KANJISTART;
+            } else if(cjkVramIndex < 352) {
+                index =(cjkVramIndex - 320) + TILE_HUDINDEX;
+            } else {
+                index =(cjkVramIndex - 352) + TILE_FACEINDEX;
+            }
+            cjkVramIndex++;
+            if(cjkVramIndex >= 388) cjkVramIndex = 0;
+            break;
     }
-
-    cjkVramIndex++;
-    if(cjkVramIndex >= 216 || (showingFace && cjkVramIndex >= 216-36)) cjkVramIndex = 0;
-
     return index;
 }
 
-void cjk_reset(uint16_t vramIndex) {
-    cjkVramIndex = vramIndex;
-    cjkShiftChar = cjkMapRow = 0;
+void cjk_reset(uint16_t vramMode) {
+    cjkVramMode = vramMode;
+    cjkVramIndex = cjkShiftChar = cjkMapRow = 0;
     uint16_t attr = TILE_ATTR(PAL0,1,0,0,TILE_WINDOWINDEX+4);
     for(uint16_t i=0;i<3;i++) for(uint16_t j=0;j<2;j++) for(uint16_t k=0;k<36;k++) cjkMapBuf[i][j][k] = attr;
 }
@@ -127,7 +152,7 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
     if(plan) {
         disable_ints;
         z80_request();
-        // Queue each tile individually
+        // Tiles are drawn top to bottom first, so the same code can be used for tilemaps and sprites
         for (uint16_t i = 0; i < 4; i++) {
             uint16_t index = CjkNextTile();
             DMA_doDma(DMA_VRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);

@@ -488,11 +488,11 @@ void stage_draw_screen() {
 
 void stage_draw_screen_credits() {
 	uint16_t maprow[20];
-	for(uint8_t y = 0; y < 30; y++) {
-		for(uint8_t x = 20; x < 40; x++) {
-			uint8_t b = stage_get_block(x/2, y/2);
-			uint16_t t = (b%16) * 2 + (b/16) * 64;
-			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)*32));
+	for(uint16_t y = 0; y < 30; y++) {
+		for(uint16_t x = 20; x < 40; x++) {
+			uint16_t b = stage_get_block(x>>1, y>>1);
+			uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
+			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 		}
 		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
 	}
@@ -503,8 +503,7 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 	if(x >= stageWidth || y >= stageHeight) return;
 	uint16_t t, b, xx, yy; uint8_t p;
 	p = (stage_get_block_type(x, y) & 0x40) > 0;
-	t = block_to_tile(stage_get_block(x, y));
-	b = TILE_TSINDEX + (t << 2); //(t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
+	b = TILE_TSINDEX + (stage_get_block(x, y) << 2);
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
 	

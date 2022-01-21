@@ -10,8 +10,7 @@ Fait par Chaba dans le Labyrinthe.<WAI9999<END
 #1002
 <MSG<TUR- Étoile Polaire -
 Le pistolet de base.
-Apparemment construit par Polaris.
-<WAI9999<END
+Apparemment construit par Polaris.<WAI9999<END
 #1003
 <MSG<TUR- Boule de Feu -
 Rebondit sur le sol.

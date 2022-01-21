@@ -142,7 +142,7 @@ BIN BMP_Kanji   "res/cjk_zh_zpix.dat"
 
 # Strings
 BIN STR_StageNames  "res/strings/zh_stagename.dat"
-BIN STR_Credits     "res/strings/ja_credits.dat"
+BIN STR_Credits     "res/strings/zh_credits.dat"
 BIN STR_Config      "res/strings/ja_config.dat"
 
 # Scripts (TSC)

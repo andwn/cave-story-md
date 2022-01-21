@@ -10,8 +10,7 @@ Made by Chaba in the Labyrinth.<WAI9999<END
 #1002
 <MSG<TUR- Polar Star -
 The most basic gun.
-It bears the mark of Polaris.
-<WAI9999<END
+It bears the mark of Polaris.<WAI9999<END
 #1003
 <MSG<TUR- Fireball -
 Bounces along the floor.

@@ -58,3 +58,5 @@ Mostly taken from cavestory.org
 - Italian: [Simon M.](mailto:simonogatari@gmail.com)
 - Portugese: [Andre Silva](mailto:andreluis.g.silva@gmail.com)
 - BR Portugese: [Alex "Foffano"](mailto:foffano@gmail.com)
+- Chinese (Simplified): Hydrowing
+- Korean: Anonymous

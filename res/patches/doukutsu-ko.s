@@ -141,8 +141,8 @@ BIN BMP_Ascii   "res/cjk_ascii.dat"
 BIN BMP_Kanji   "res/cjk_ko_galmuri.dat"
 
 # Strings
-BIN STR_StageNames  "res/strings/ja_stagename.dat"
-BIN STR_Credits     "res/strings/ja_credits.dat"
+BIN STR_StageNames  "res/strings/ko_stagename.dat"
+BIN STR_Credits     "res/strings/ko_credits.dat"
 BIN STR_Config      "res/strings/ja_config.dat"
 
 # Scripts (TSC)

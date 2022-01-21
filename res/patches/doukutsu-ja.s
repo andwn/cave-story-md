@@ -138,7 +138,7 @@ dc.l TSC_Clock
 
 # 1bpp CJK fonts
 BIN BMP_Ascii   "res/cjk_ascii.dat"
-BIN BMP_Kanji   "res/cjk_ja_zpix.dat"
+BIN BMP_Kanji   "res/cjk_ja_mplus.dat"
 
 # Strings
 BIN STR_StageNames  "res/strings/ja_stagename.dat"

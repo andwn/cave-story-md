@@ -134,7 +134,7 @@ void window_clear() {
 void window_clear_text() {
 	textRow = textColumn = spaceCounter = spaceOffset = 0;
 	memset(windowText, ' ', 36*3);
-    cjk_reset(0);
+    cjk_reset(CJK_MESSAGE);
 }
 
 void window_close() {

@@ -12,7 +12,6 @@ uint8_t curly_mgun = 0;
 uint8_t curly_watershield = 0;
 uint8_t curly_impjump = 0;
 uint8_t curly_reachptimer = 0;
-uint8_t curly_blockedtime = 0;
 uint8_t curly_look = 0;
 uint16_t curly_tryjumptime = 0;
 
@@ -26,8 +25,6 @@ static void CaiJUMP(Entity *e) {
 		sound_play(SND_PLAYER_JUMP, 5);
 	}
 }
-
-const char porn[1] = {""};
 
 // curly that fights beside you
 void ai_curly_ai(Entity *e) {

@@ -180,7 +180,7 @@ uint8_t saveselect_main() {
 	
 	draw_cursor_mode(cursorMode);
 
-    cjk_reset(128);
+    cjk_reset(CJK_TITLE);
 	for(uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
         file_used[i] = refresh_file(i);
     }
@@ -211,7 +211,7 @@ uint8_t saveselect_main() {
 						if(fileToCopy != cursor) {
 							system_copy(fileToCopy, cursor);
                             if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-                                cjk_reset(128);
+                                cjk_reset(CJK_TITLE);
                                 for (uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
                                     file_used[i] = refresh_file(i);
                                 }
@@ -231,7 +231,7 @@ uint8_t saveselect_main() {
 						sound_play(SND_PLAYER_DIE, 0);
 						system_delete(cursor);
                         if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-                            cjk_reset(128);
+                            cjk_reset(CJK_TITLE);
                             for (uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
                                 file_used[i] = refresh_file(i);
                             }

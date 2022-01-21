@@ -10,8 +10,7 @@ Hecha por Chaba en el Laberinto.<WAI9999<END
 #1002
 <MSG<TUR- Estrella Polar -
 El arma más básica.
-Posee la marca de Polaris.
-<WAI9999<END
+Posee la marca de Polaris.<WAI9999<END
 #1003
 <MSG<TUR- Bola de fuego -
 Rebota en el suelo.

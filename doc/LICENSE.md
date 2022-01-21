@@ -2,12 +2,12 @@
 
 ### CS Engine, SGDK modules & XGM Driver - [MIT](LICENSE-MIT)
 
-All of the source code not explicitly mentioned to be another license below are MIT.
+All the source code not explicitly mentioned to be another license below are MIT.
 The DMA queue (`src/dma.c`) and XGM driver (`src/xgm.c`, `src/xgm/*`) are from SGDK, which also uses the MIT license.
 
 ### NXEngine-based AI routines - [GPLv3](LICENSE-GPL3)
 
-Consider all of the AI code under `src/ai/` to be GPLv3.
+Consider all the AI code under `src/ai/` to be GPLv3.
 Even in places where an AI function is entirely different, NXEngine's version was still used as a starting point.
 
 ### Graphics, Story, and Characters - Property of Studio Pixel
@@ -29,4 +29,8 @@ A few were remade or modified by DavisOlivier. No license was mentioned. Ask the
 
 The font used in the Title Screen menus, in-game dialogue, and crash messages was made by Sik. Ask him if you want to use them.
 
-The Japanese font is F16. The inside of the file states "(c) Copyright 2000-2003 /efont/ The Electronic Font Open Laboratory."
+Japanese, Chinese, Korean fonts are:
+
+- [Mplus](https://github.com/hajimehoshi/mplus-bitmap-images): SIL OPEN FONT LICENSE Version 1.1
+- [Zpix](https://github.com/SolidZORO/zpix-pixel-font): "for Personal Product `FREE`"
+- [Galburi](https://github.com/quiple/galmuri): SIL OPEN FONT LICENSE Version 1.1

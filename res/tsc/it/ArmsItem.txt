@@ -10,8 +10,7 @@ Costruito da Chaba nel Labirinto.<WAI9999<END
 #1002
 <MSG<TUR- Stella Polare -
 Arma da fuoco di base.
-Porta il marchio di Polaris.
-<WAI9999<END
+Porta il marchio di Polaris.<WAI9999<END
 #1003
 <MSG<TUR- Palla di Fuoco -
 Rimbalza contro le superfici.
