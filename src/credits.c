@@ -16,6 +16,7 @@
 #include "tsc.h"
 #include "tools.h"
 #include "vdp.h"
+#include "xgm.h"
 
 #include "gamemode.h"
 
@@ -107,6 +108,29 @@ void credits_main() {
     while(TRUE) {
 		joystate = oldstate = 0;
 		tsc_update();
+
+        backScroll++;
+        uint8_t scrolledBack = FALSE;
+        if(!pal_mode && !cfg_60fps) {
+            // Slow the scrolling down slightly for NTSC
+            skipScroll++;
+            if(skipScroll == 6) {
+                backScroll--;
+                waitTime++;
+                skipScroll = 0;
+                scrolledBack = TRUE;
+            }
+        }
+        if((backScroll & 15) == 0 && !scrolledBack) {
+            textY++;
+            disable_ints;
+            z80_request();
+            //vdp_text_clear(VDP_PLAN_B, 0, textY & 31, 40);
+            vdp_text_clear(VDP_PLAN_B, 0, (textY + 1) & 31, 40);
+            z80_release();
+            enable_ints;
+        }
+
 		if(waitTime) waitTime--;
 		while(!waitTime) {
 			uint16_t label = 0;
@@ -187,31 +211,7 @@ void credits_main() {
 		
 		effects_update();
 		entities_update(TRUE);
-		
-		backScroll++;
-		uint8_t scrolledBack = FALSE;
-		if(!pal_mode && !cfg_60fps) {
-			// Slow the scrolling down slightly for NTSC
-			skipScroll++;
-			if(skipScroll == 6) {
-				backScroll--;
-				waitTime++;
-				skipScroll = 0;
-				scrolledBack = TRUE;
-			}
-		}
-		//if(cfg_language) {
-		//	if((backScroll & 31) == 0 && !scrolledBack) {
-		//		textY += 2;
-		//		vdp_text_clear(VDP_PLAN_B, 0, textY & 31, 40);
-		//		vdp_text_clear(VDP_PLAN_B, 0, (textY + 1) & 31, 40);
-		//	}
-		//} else {
-			if((backScroll & 15) == 0 && !scrolledBack) {
-				textY++;
-				vdp_text_clear(VDP_PLAN_B, 0, (textY + 1) & 31, 40);
-			}
-		//}
+
 		// Scrolling for illustrations
 		illScroll += illScrolling;
 		if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;

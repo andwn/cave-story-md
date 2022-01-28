@@ -186,11 +186,10 @@ void entities_update(uint8_t draw) {
 			};
 			uint8_t cont = FALSE;
 			for(uint16_t i = 0; i < MAX_BULLETS; i++) {
-				if(playerBullet[i].ttl &&
-					playerBullet[i].extent.x1 <= ee.x2 &&
-					playerBullet[i].extent.x2 >= ee.x1 &&
-					playerBullet[i].extent.y1 <= ee.y2 &&
-					playerBullet[i].extent.y2 >= ee.y1)
+				if(playerBullet[i].extent.x2 >= ee.x1 &&
+                    playerBullet[i].extent.x1 <= ee.x2 &&
+                    playerBullet[i].extent.y2 >= ee.y1 &&
+					playerBullet[i].extent.y1 <= ee.y2)
 				{	// Collided
 					entity_handle_bullet(e, &playerBullet[i]);
 					if(e->state == STATE_DESTROY) {
@@ -371,7 +370,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 		}
 	} else if(b->type == WEAPON_NEMESIS && b->level < 3) {
         if(flags & NPC_INVINCIBLE) {
-            b->ttl = 0;
+            bullet_deactivate(b);
             sound_play(SND_TINK, 5);
             return;
         }
@@ -390,7 +389,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
             }
         }
 	} else {
-		b->ttl = 0;
+        bullet_deactivate(b);
 		if(flags & NPC_INVINCIBLE) {
 			sound_play(SND_TINK, 5);
 		} else {
@@ -419,7 +418,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 		}
 		e->health -= b->damage;
 		if(b->type == WEAPON_SPUR || b->type == WEAPON_SPUR_TAIL) {
-			if(--b->damage == 0) b->ttl = 0;
+			if(--b->damage == 0) bullet_deactivate(b);
 		}
 	}
 }
@@ -427,7 +426,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 void entities_update_inactive() {
 	Entity *e = inactiveList;
 	while(e) {
-		if(/*e->alwaysActive ||*/ entity_on_screen(e)) {
+		if(entity_on_screen(e)) {
 			Entity *next = e->next;
 			entity_reactivate(e);
 			e = next;

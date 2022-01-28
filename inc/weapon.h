@@ -34,6 +34,8 @@ struct Weapon {
 	uint8_t type;
 	uint8_t level;
 	uint8_t sheet;
+    // 15 + 1 = 16
+    uint8_t _padding;
 };
 
 // An active bullet created by the player (or curly)
@@ -54,10 +56,12 @@ struct Bullet {
 	uint8_t level;
 	uint8_t damage;
 	uint8_t ttl;
+    // 44 + 20 = 64
+    uint8_t _padding[20];
 };
 
-Weapon playerWeapon[MAX_WEAPONS];
-Bullet playerBullet[MAX_BULLETS];
+extern Weapon playerWeapon[MAX_WEAPONS];
+extern Bullet playerBullet[MAX_BULLETS];
 
 #define weapon_fire(w) weapon_fire_array[(w).type](&(w))
 
@@ -74,6 +78,11 @@ void weapon_fire_nemesis(Weapon *w);
 void weapon_fire_spur(Weapon *w);
 
 extern const WeaponFunc weapon_fire_array[WEAPON_COUNT];
+
+static inline void bullet_deactivate(Bullet *b) {
+    b->extent = (extent_box) {};
+    b->ttl = 0;
+}
 
 #define bullet_update(b); bullet_update_array[(b).type](&(b))
 

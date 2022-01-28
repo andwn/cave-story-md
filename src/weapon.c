@@ -90,6 +90,9 @@ static const MissileSettings missile_settings[2][6] = {
 	}
 };
 
+Weapon playerWeapon[MAX_WEAPONS] = {};
+Bullet playerBullet[MAX_BULLETS] = {};
+
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
 

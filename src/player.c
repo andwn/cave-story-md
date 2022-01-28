@@ -34,7 +34,6 @@ const uint8_t spur_time[2][4] = {
 };
 
 VDPSprite weaponSprite;
-uint8_t playerWeaponCount;
 
 uint8_t mapNameSpriteNum;
 VDPSprite mapNameSprite[4];
@@ -46,7 +45,6 @@ uint8_t airDisplayTime;
 
 uint8_t blockl, blocku, blockr, blockd;
 uint8_t ledge_time;
-uint8_t walk_time;
 
 VDPSprite airTankSprite;
 
@@ -88,7 +86,6 @@ void player_init() {
 	mgun_chargetime = 0;
 	playerEquipment = 0; // Nothing equipped
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
-	playerWeaponCount = 0;
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
 	playerMoveMode = 0;
 	currentWeapon = 0;
@@ -604,12 +601,16 @@ void player_update_bullets() {
 	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl) {
 			bullet_update(playerBullet[i]);
-			playerBullet[i].extent = (extent_box) {
-				.x1 = (playerBullet[i].x >> CSF) - (playerBullet[i].hit_box.left),
-				.y1 = (playerBullet[i].y >> CSF) - (playerBullet[i].hit_box.top),
-				.x2 = (playerBullet[i].x >> CSF) + (playerBullet[i].hit_box.right),
-				.y2 = (playerBullet[i].y >> CSF) + (playerBullet[i].hit_box.bottom),
-			};
+            if(playerBullet[i].ttl) {
+                playerBullet[i].extent = (extent_box) {
+                        .x1 = (playerBullet[i].x >> CSF) - (playerBullet[i].hit_box.left),
+                        .y1 = (playerBullet[i].y >> CSF) - (playerBullet[i].hit_box.top),
+                        .x2 = (playerBullet[i].x >> CSF) + (playerBullet[i].hit_box.right),
+                        .y2 = (playerBullet[i].y >> CSF) + (playerBullet[i].hit_box.bottom),
+                };
+            } else {
+                playerBullet[i].extent = (extent_box) {};
+            }
 		}
 	}
 }

@@ -82,6 +82,7 @@ typedef struct {
 	uint16_t palette; // Any of the 4 loaded palettes to use for the sprite
 	uint8_t sprite_count; // Size of sprite[0], must be known beforehand
 	EntityMethod onSpawn, onFrame, onDeath; // AI
+    char comment[12]; // Really padding to make the element length a power of 2
 } npc_info_def;
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
@@ -89,6 +90,7 @@ typedef struct {
 	const SpriteDefinition *sprite; // Sprite to display beneath player
 	uint16_t palette;
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
+    char padding[7];
 } weapon_info_def;
 
 // Instructions on how to display text/icons in the credits

@@ -926,7 +926,7 @@ void ai_fuzz_core(Entity *e) {
 }
 
 void ai_fuzz(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->nflags ^= NPC_SHOOTABLE;
 	
 	if (e->state) {
 		// base destroyed, simple sinusoidal player-seek

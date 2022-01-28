@@ -109,7 +109,7 @@ release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
 release: main-build symbol.txt
 
 asm: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-asm: OPTIONS += -fshort-enums
+asm: OPTIONS += -fshort-enums -fverbose-asm
 asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
