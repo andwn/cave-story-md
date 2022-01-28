@@ -158,7 +158,7 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
             DMA_doDma(DMA_VRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);
             uint16_t attr = TILE_ATTR(PAL0, 1, 0, 0, index);
             uint16_t xx = x + ((i & 2) >> 1);
-            vdp_map_xy(plan, attr, xx, y + (i & 1));
+            vdp_map_xy(plan, attr, xx, (y + (i & 1)) & 31);
             if(plan == VDP_PLAN_W) {
                 cjkMapBuf[cjkMapRow][i & 1][xx - 2 - (showingFace ? 7 : 0)] = attr;
             }

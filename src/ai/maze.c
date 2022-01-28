@@ -880,10 +880,10 @@ static void spawn_minifuzz(Entity *e) {
 
 void ai_fuzz_core(Entity *e) {
 	e->alwaysActive = TRUE;
+    e->nflags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
-		{	// This is needed, apparently
-			e->eflags |= NPC_SHOOTABLE;
+		{
 			// spawn mini-fuzzes, use jump_time as the angle since it is u8
 			spawn_minifuzz(e);
 			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
