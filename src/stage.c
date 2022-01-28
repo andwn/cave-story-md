@@ -413,7 +413,7 @@ void stage_update() {
 		if(t < currentsCount) {
 			uint16_t from_index = 0;
 			uint8_t *from_ts = NULL;
-			uint16_t to_index = TILE_TSINDEX + ((currents[t].index & 15) << 2);// + ((currents[t].index >> 4) << 6);
+			uint16_t to_index = TILE_TSINDEX + (currents[t].index << 2);// + ((currents[t].index >> 4) << 6);
 			switch(currents[t].dir) {
 				case 0: // Left
 					from_ts = (uint8_t*) TS_WindH.tiles;
@@ -434,10 +434,10 @@ void stage_update() {
 				default: return;
 			}
 			// Replace the tile in the tileset
-			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 64, 2);
-			//from_index += 16;
-			//to_index += 32;
-			//DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+			from_index += 16;
+			to_index += 2;
+			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
 }
