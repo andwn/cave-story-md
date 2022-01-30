@@ -76,10 +76,10 @@ static void spawn_fish(uint8_t index) {
 								 OBJ_X_FISHY_MISSILE, 0);
 	fish->cur_angle = angles[index];
     fish->want_angle = angles[index];
-	fish->nflags &= ~NPC_INVINCIBLE;
-	fish->eflags &= ~NPC_INVINCIBLE;
-	fish->nflags &= ~NPC_SHOOTABLE;
-	fish->eflags |= NPC_SHOOTABLE;
+	fish->flags &= ~NPC_INVINCIBLE;
+	//fish->eflags &= ~NPC_INVINCIBLE;
+	//fish->flags &= ~NPC_SHOOTABLE;
+	fish->flags |= NPC_SHOOTABLE;
 	fish->health = 1;
 	//FIRE_ANGLED_SHOT(OBJ_X_FISHY_MISSILE, 
 	//				 bossEntity->x + xoffs[index], bossEntity->y + yoffs[index], 
@@ -98,7 +98,7 @@ void onspawn_monsterx(Entity *e) {
 	e->state = STATE_X_APPEAR;
 	e->x = pixel_to_sub(130 * 16);
 	e->y = pixel_to_sub(208);
-	e->eflags = NPC_IGNORESOLID;
+	e->flags = NPC_IGNORESOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XBODY);
 }
 
@@ -107,9 +107,9 @@ void onspawn_x_target(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->hurtSound = SND_ENEMY_HURT;
 	e->health = 60;
-	e->eflags |= NPC_SHOWDAMAGE;
-	if(e->eflags & NPC_OPTION1) e->frame += 1;
-	if(e->eflags & NPC_OPTION2) e->frame += 2;
+	e->flags |= NPC_SHOWDAMAGE;
+	if(e->flags & NPC_OPTION1) e->frame += 1;
+	if(e->flags & NPC_OPTION2) e->frame += 2;
 	
 	static const int32_t xoffs[] = { -(22 <<CSF),  28 <<CSF, -(15 <<CSF),  17 <<CSF };
 	static const int32_t yoffs[] = { -(16 <<CSF), -(16 <<CSF),  14 <<CSF,  14 <<CSF };
@@ -121,7 +121,7 @@ void onspawn_x_target(Entity *e) {
 // The real game uses 4 different sprites
 void onspawn_x_tread(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->eflags |= NPC_SPECIALSOLID;
+	e->flags |= NPC_SPECIALSOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XTREAD);
 	e->hit_box = (bounding_box) { 32, 8, 32, 16 };
 	e->display_box = (bounding_box) { 32, 16, 32, 16 };
@@ -131,12 +131,12 @@ void onspawn_x_tread(Entity *e) {
 void onspawn_x_door(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 24, 24, 24, 24 };
-	if(e->eflags & NPC_OPTION2) e->frame = 1;
+	if(e->flags & NPC_OPTION2) e->frame = 1;
 }
 
 void onspawn_x_internals(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->eflags |= NPC_SHOWDAMAGE;
+	e->flags |= NPC_SHOWDAMAGE;
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->hit_box = (bounding_box) { 24, 16, 24, 16 };
 	e->display_box = (bounding_box) { 36, 24, 36, 24 };
@@ -296,7 +296,7 @@ void ai_monsterx(Entity *e) {
 		{
 			if (pieces[DOORL]->state == STATE_DOOR_FINISHED) {
 				pieces[DOORL]->state = 0;
-				e->linkedEntity->eflags |= NPC_SHOOTABLE;
+				e->linkedEntity->flags |= NPC_SHOOTABLE;
 			}
 			
 			if (++e->timer > TIME_10(300) || (saved_health - e->health) > 200) {
@@ -328,7 +328,7 @@ void ai_monsterx(Entity *e) {
 				// just turn off everything for both types of attacks;
 				// turning off the attack type that wasn't enabled isn't harmful.
 				set_states(&pieces[TARGET1], 4, 0);
-				e->linkedEntity->eflags &= ~NPC_SHOOTABLE;
+				e->linkedEntity->flags &= ~NPC_SHOOTABLE;
 			}
 			
 			if (++e->timer > TIME_8(50)) {
@@ -426,20 +426,20 @@ void ai_x_tread(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags |= (NPC_SOLID | NPC_INVINCIBLE | NPC_FRONTATKONLY);
+			e->flags |= (NPC_SOLID | NPC_INVINCIBLE | NPC_FRONTATKONLY);
 			e->state = STATE_TREAD_STOPPED;
 		} /* fallthrough */
 		case STATE_TREAD_STOPPED:
 		{
 			e->frame = 0;
 			e->attack = 0;
-			e->eflags &= ~NPC_BOUNCYTOP;
+			e->flags &= ~NPC_BOUNCYTOP;
 		}
 		break;
 		
 		case STATE_TREAD_RUN:
 		{
-			e->eflags |= NPC_BOUNCYTOP;
+			e->flags |= NPC_BOUNCYTOP;
 			e->timer = 0;
 			e->frame = 2;
 			e->animtime = 0;
@@ -452,7 +452,7 @@ void ai_x_tread(Entity *e) {
 			ACCEL_X(0x20);
 			
 			if (++e->timer > 30) {
-				e->eflags &= ~NPC_BOUNCYTOP;
+				e->flags &= ~NPC_BOUNCYTOP;
 				e->frame = 0;
 				e->animtime = 0;
 				e->state++;
@@ -473,7 +473,7 @@ void ai_x_tread(Entity *e) {
 			e->frame = 2;
 			e->animtime = 0;
 			
-			e->eflags |= NPC_BOUNCYTOP;
+			e->flags |= NPC_BOUNCYTOP;
 			e->state++;
 		} /* fallthrough */
 		case STATE_TREAD_BRAKE+1:
@@ -549,7 +549,7 @@ void ai_x_internals(Entity *e) {
 	if (e->health < 1000) {
 		if(1000 - e->health > bossEntity->health) {
 			bossEntity->health = 0;
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
 			ENTITY_ONDEATH(bossEntity);
 		} else {
 			bossEntity->health -= 1000 - e->health;
@@ -601,7 +601,7 @@ void ai_x_door(Entity *e) {
 	
 	// set position relative to main object.
 	// doors open in opposite directions.
-	if (!(e->eflags & NPC_OPTION2)) {
+	if (!(e->flags & NPC_OPTION2)) {
 		e->x = bossEntity->x - e->x_mark - (24<<CSF);
 	} else {
 		e->x = bossEntity->x + e->x_mark + (24<<CSF);
@@ -617,7 +617,7 @@ void ai_x_target(Entity *e) {
 	
 	switch(e->state) {
 		case 0:
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->frame &= 3;
 			e->state = 1;
 		break;
@@ -625,7 +625,7 @@ void ai_x_target(Entity *e) {
 		case STATE_TARGET_FIRE:
 		{
 			e->timer = 40 + (NPC_OPTION1 ? 10 : 0) + (NPC_OPTION2 ? 20 : 0);
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->state++;
 		} /* fallthrough */
 		case STATE_TARGET_FIRE+1:
@@ -653,7 +653,7 @@ void ai_x_target(Entity *e) {
 
 void ondeath_monsterx(Entity *e) {
 	e->state = STATE_X_EXPLODING;
-	e->eflags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
+	e->flags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
 	e->damage_time = 150;
 	tsc_call_event(e->event);
 }
@@ -662,12 +662,12 @@ void ondeath_x_target(Entity *e) {
 	//SmokeClouds(o, 8, 8, 8);
 	sound_play(SND_LITTLE_CRASH, 5);
 	
-	e->eflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 	e->hidden = TRUE;
 }
 
 void ai_x_fishy_missile(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	if(++e->timer > TIME_10(600)) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;

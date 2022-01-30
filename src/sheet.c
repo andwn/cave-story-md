@@ -237,6 +237,9 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0,0, 1,0, 2,0, 3,0, 3,1, 3,2);
 			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
+        case STAGE_GRASSTOWN_HUT:
+        {   SHEET_ADD(SHEET_RAVIL, &SPR_Ravil, 6,3,3, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
+        } break;
 		case 0x07: // Santa's House
 		{	SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0,0);
 		} break;
@@ -392,6 +395,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x3E: // Balcony
 		{	SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
+            SHEET_ADD(SHEET_RAVIL, &SPR_Ravil, 6,3,3, 0,0, 0,1, 0,2, 0,3, 0,4, 0,5);
 		} break;
 		case 0x40: // Throne Room
 		{	SHEET_ADD(SHEET_RING, &SPR_MizaRing, 4,2,2, 0,0, 0,1, 0,2, 0,3);

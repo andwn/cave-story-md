@@ -7,7 +7,7 @@ void ai_prox_press_vert(Entity *e) {
 			if(PLAYER_DIST_X(e, 8<<CSF) && PLAYER_DIST_Y2(e, 8<<CSF, pixel_to_sub(128))) {
 				e->hit_box.left++;
 				e->hit_box.right++;
-				e->nflags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
+				e->flags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
 				e->state++;
 				e->animtime = 0;
 				e->frame = 1;
@@ -28,13 +28,13 @@ void ai_prox_press_vert(Entity *e) {
 				e->state++;
 				e->frame = 0;
 				e->y_speed = 0;
-				e->nflags |= NPC_SOLID;
+				e->flags |= NPC_SOLID;
 				e->attack = 0;
 			} else if(player.y - pixel_to_sub(player.hit_box.top) > e->y) {
-				e->nflags &= ~NPC_SOLID;
+				e->flags &= ~NPC_SOLID;
 				e->attack = 127;
 			} else {
-				e->nflags |= NPC_SOLID;
+				e->flags |= NPC_SOLID;
 				e->attack = 0;
 			}
 		}
@@ -112,7 +112,7 @@ void ai_red_bat_spawner(Entity *e) {
 		case 0:
 		{
 			//if(PLAYER_DIST_Y(e, 64 << CSF)) {
-				if(e->eflags & NPC_OPTION2) e->dir = 1;
+				if(e->flags & NPC_OPTION2) e->dir = 1;
 				e->state = 1;
 				e->timer = TIME_8(160) + TIME_8(random() & 0xFF);
 			//}
@@ -195,7 +195,7 @@ void ai_red_demon(Entity *e) {
 		
 		case 10:	// prepare to jump
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->state = 11;
 			e->frame = 3;
 			e->timer = 0;
@@ -300,7 +300,7 @@ void ai_red_demon(Entity *e) {
 		// defeated/turned to stone (set by script)
 		case 50:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->attack = 0;
 			
 			if (e->grounded) {

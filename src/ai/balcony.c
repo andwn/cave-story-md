@@ -182,10 +182,10 @@ void ai_igor_balcony(Entity *e) {
 			if (e->timer > 30) {
 				if ((e->timer & 7) == 1) {
 					sound_play(SND_BLOCK_DESTROY, 5);
-					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
+					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800),
 												 e->y, OBJ_IGOR_SHOT, 0);
-					shot->x_speed = SPEED(0x500) * (e->dir ? 1 : -1);
-					shot->y_speed = -SPEED_10(0x180) + SPEED_8((random() & 0xFF)) * 3;
+					shot->x_speed = e->dir ? SPEED_12(0x600) : -SPEED_12(0x600);
+					shot->y_speed = -SPEED_12(0x280) + SPEED_12((random() & 0x3FF));
 				}
 			}
 			
@@ -264,14 +264,14 @@ void ai_falling_block(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{	
-			if(e->eflags & NPC_OPTION2) { // large Hell or Balcony block
-				e->eflags |= NPC_INVINCIBLE;
+			if(e->flags & NPC_OPTION2) { // large Hell or Balcony block
+				e->flags |= NPC_INVINCIBLE;
 				e->state = 10;
-			} else if(e->eflags & NPC_OPTION1) { // Misery-spawned block
+			} else if(e->flags & NPC_OPTION1) { // Misery-spawned block
 				e->state = 1;
 				e->timer = 0;
 			} else { // small Hell or Balcony block
-				e->eflags |= NPC_INVINCIBLE;
+				e->flags |= NPC_INVINCIBLE;
 				e->state = 10; 
 				e->hit_box = (bounding_box) { 8,8,8,8 };
 				e->display_box = (bounding_box) { 8,8,8,8 };
@@ -285,7 +285,7 @@ void ai_falling_block(Entity *e) {
 		case 1:	// just spawned by Misery--pause a moment
 		{
 			if (++e->timer > 3) {
-				e->eflags |= NPC_INVINCIBLE;
+				e->flags |= NPC_INVINCIBLE;
 				e->state = 10;
 			}
 		}

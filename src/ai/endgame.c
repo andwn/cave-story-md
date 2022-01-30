@@ -3,7 +3,7 @@
 
 void onspawn_cloud_spawner(Entity *e) {
 	e->alwaysActive = TRUE;
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
 }
 
 // makes the clouds from the falling scene (good ending)
@@ -174,7 +174,7 @@ void ai_balrog_passenger(Entity *e) {
 	switch(e->state) {
 		case 0:		// being rescued from Seal Chamber
 		{
-			if (e->eflags & NPC_OPTION2) {
+			if (e->flags & NPC_OPTION2) {
 				//e->sprite = player->sprite;
 				//e->frame = 4;
 				e->frame = 0;
@@ -190,7 +190,7 @@ void ai_balrog_passenger(Entity *e) {
 		break;
 		case 1:		// flying in clouds
 		{
-			if (e->eflags & NPC_OPTION2) {
+			if (e->flags & NPC_OPTION2) {
 				//e->sprite = SPR_MYCHAR;
 				//e->frame = 12;
 				e->frame = 1;
@@ -272,7 +272,7 @@ void ai_turning_human(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->frame = (e->eflags & NPC_OPTION2) ? 8 : 0;
+			e->frame = (e->flags & NPC_OPTION2) ? 8 : 0;
 			e->x += (16<<CSF);
 			e->y -= (8<<CSF);
 			e->state++;
@@ -287,7 +287,7 @@ void ai_turning_human(Entity *e) {
 			
 			// before machine turns on they both blink,
 			// at slightly different times
-			if(e->eflags & NPC_OPTION2) {
+			if(e->flags & NPC_OPTION2) {
 				if(e->timer == 30) e->frame++;
 				if(e->timer == 40) e->frame--;
 			} else {
@@ -304,9 +304,9 @@ void ai_turning_human(Entity *e) {
 			
 			if (e->timer > TIME_8(50)) {
 				e->state = 20;
-				e->frame = (e->eflags & NPC_OPTION2) ? 12 : 4;
+				e->frame = (e->flags & NPC_OPTION2) ? 12 : 4;
 				// wait for slightly different times before falling
-				e->timer = (e->eflags & NPC_OPTION2) ? 40 : 60;
+				e->timer = (e->flags & NPC_OPTION2) ? 40 : 60;
 			}
 		}
 		break;
@@ -327,7 +327,7 @@ void ai_turning_human(Entity *e) {
 				e->frame++;	// head-back to sneeze
 				
 				// create sneeze. Itoh is taller.
-				int yoffs = (e->eflags & NPC_OPTION2) ? (8<<CSF) : (16<<CSF);
+				int yoffs = (e->flags & NPC_OPTION2) ? (8<<CSF) : (16<<CSF);
 				Entity *ahchoo = entity_create(e->x, e->y - yoffs, OBJ_AHCHOO, 0);
 				ahchoo->linkedEntity = e;
 			}
@@ -346,7 +346,7 @@ void ai_turning_human(Entity *e) {
 		{
 			e->state = 41;
 			e->timer = 0;
-			e->frame = (e->eflags & NPC_OPTION2) ? 8 : 0;
+			e->frame = (e->flags & NPC_OPTION2) ? 8 : 0;
 		} /* fallthrough */
 		case 51:	// ..and blink
 		{

@@ -5,13 +5,13 @@ void onspawn_jelly(Entity *e) {
 	e->timer = random() & 31;
 	e->x_mark = e->x;
 	e->y_mark = e->y;
-	e->nflags &= ~NPC_SHOOTABLE;
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	e->flags &= ~NPC_SHOOTABLE;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
 	MOVE_X(SPEED_8(0xFF));
 }
 
 void ai_jelly(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	e->attack ^= 5;
 	
 	if(++e->animtime >= 12) {
@@ -92,7 +92,7 @@ void ai_kulala(Entity *e) {
 		break;
 		case 10:	// falling
 		{
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE;
 			if(++e->timer > TIME_8(40)) {
 				e->timer = 0;
 				e->state++;
@@ -136,7 +136,7 @@ void ai_kulala(Entity *e) {
 		if(++e->x_mark > TIME(12)) {
 			e->state = 20;
 			e->frame = 4;
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags |= NPC_INVINCIBLE;
 		}
 	} else {
 		e->x_mark = 0;
@@ -183,7 +183,7 @@ void ondeath_kulala(Entity *e) {
 		Entity *chest = entity_create(e->x, e->y, OBJ_CHEST_CLOSED, NPC_INTERACTIVE);
 		chest->event = e->event;
 	//}
-	e->eflags &= ~NPC_EVENTONDEATH;
+	e->flags &= ~NPC_EVENTONDEATH;
 	e->state = STATE_DESTROY;
 }
 
@@ -211,8 +211,8 @@ void ai_mannan(Entity *e) {
 		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		entity_drop_powerup(e);
 		// Face sprite remains after defeated
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->nflags &= ~NPC_SHOOTABLE;
+		//e->eflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 		e->frame = 2;
 		e->attack = 0;
 		e->state = 3;
@@ -371,7 +371,7 @@ void onspawn_press(Entity *e) {
 }
 
 void ai_press(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 			if((blk(e->x, 0, e->y, 14) & 0x41) != 0x41) {
@@ -389,10 +389,10 @@ void ai_press(Entity *e) {
 			if(e->y_speed > SPEED_12(0x5FF)) e->y_speed = SPEED_12(0x5FF);
 			e->y += e->y_speed;
 			if(e->y + (12 << CSF) < player.y) {
-				e->eflags &= ~NPC_SOLID;
+				e->flags &= ~NPC_SOLID;
 				e->attack = 127;
 			} else {
-				e->eflags |= NPC_SOLID;
+				e->flags |= NPC_SOLID;
 				e->attack = 0;
 			}
 			if((blk(e->x, 0, e->y, 13) & 0x41) == 0x41) {
@@ -406,7 +406,7 @@ void ai_press(Entity *e) {
 				e->state = 0;
 				e->frame = 0;
 				e->attack = 0;
-				e->eflags |= NPC_SOLID;
+				e->flags |= NPC_SOLID;
 			}
 		break;
 	}
@@ -414,18 +414,18 @@ void ai_press(Entity *e) {
 
 void onspawn_frog(Entity *e) {
 	// Balfrog sets OPTION1
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		e->alwaysActive = TRUE;
 		e->dir = random() & 1;
-		e->eflags |= NPC_IGNORESOLID;
+		e->flags |= NPC_IGNORESOLID;
 		e->state = 3;
 		e->frame = 2;
 	} else {
 		e->grounded = TRUE;
-		e->eflags &= ~NPC_IGNORESOLID;
+		e->flags &= ~NPC_IGNORESOLID;
 		e->state = 1;
 	}
-	e->nflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 }
 
 void ai_frog(Entity *e) {
@@ -435,7 +435,7 @@ void ai_frog(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 
 	switch(e->state) {
 		case 0:
@@ -456,7 +456,7 @@ void ai_frog(Entity *e) {
 		case 3:		// falling out of ceiling during balfrog fight
 		{
 			if(++e->timer > TIME_8(40)) {
-				e->eflags &= ~NPC_IGNORESOLID;
+				e->flags &= ~NPC_IGNORESOLID;
 				if((e->grounded = collide_stage_floor(e))) {
 					e->state = 1;
 					e->frame = 0;
@@ -627,8 +627,8 @@ void ai_ravil(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{	// Don't push the player into walls
-			e->eflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
-			e->nflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
+			//e->eflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
+			e->flags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
 			e->x_speed = 0;
 			e->state = 1;
 			e->timer = 0;
@@ -712,8 +712,8 @@ void ai_ravil(Entity *e) {
 			sound_play(SND_ENEMY_HURT, 5);
 			e->frame = 4;
 			e->attack = 0;
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+			//e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
 			e->state = 51;
 			e->y_speed = -SPEED(0x200);
 		} /* fallthrough */

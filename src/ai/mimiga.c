@@ -80,7 +80,7 @@ void ai_mahin(Entity *e) {
 
 void ai_sanda(Entity *e) {
 	if (!e->state) {
-		if (e->eflags & NPC_OPTION2) {	
+		if (e->flags & NPC_OPTION2) {
 			// Sandaime gone
 			e->x -= 16 << CSF;
 			e->state = 2;

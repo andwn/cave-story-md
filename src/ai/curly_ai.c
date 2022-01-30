@@ -53,7 +53,7 @@ void ai_curly_ai(Entity *e) {
 		case CAI_INIT:			// set to this by an ANP in Maze M
 		{
 			e->alwaysActive = TRUE;
-			e->eflags |= NPC_IGNORE44;
+			e->flags |= NPC_IGNORE44;
 			e->x = player.x;
 			e->y = player.y;
 		}
@@ -88,7 +88,7 @@ void ai_curly_ai(Entity *e) {
 			if (++e->timer > TIME(1000)) {	// start fighting
 				e->state = CAI_START;
 			} else if (e->timer > TIME(750)) {	// stand up
-				e->eflags &= ~NPC_INTERACTIVE;
+				e->flags &= ~NPC_INTERACTIVE;
 				e->frame = 0;
 			}
 		}

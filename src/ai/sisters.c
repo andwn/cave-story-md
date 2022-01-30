@@ -67,8 +67,8 @@ static void head_set_bbox(Entity *e) {
 		e->hit_box.left = head_bboxes[e->frame].left;
 		e->hit_box.right = head_bboxes[e->frame].right;
 	}
-	e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
-	e->eflags |= head_bboxes[e->frame].flags;
+	e->flags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+	e->flags |= head_bboxes[e->frame].flags;
 }
 
 void onspawn_sisters(Entity *e) {
@@ -83,7 +83,7 @@ void onspawn_sisters(Entity *e) {
 	e->timer2 = TIME_10(random() & 511) + TIME_10(700);
 	e->health = 500;
 	e->event = 1000;
-	e->eflags |= NPC_EVENTONDEATH;
+	e->flags |= NPC_EVENTONDEATH;
 	
 	// Create body before head, so the head will be on top
 	pieces[BODY1] = entity_create(-pixel_to_sub(64), pixel_to_sub(80), OBJ_SISTERS_BODY, 0);
@@ -287,7 +287,7 @@ void ai_sisters(Entity *e) {
 void ai_sisters_body(Entity *e) {
 	// mainangle works in a range of 1024 so the sisters can circle more slowly
 	uint8_t angle = mainangle >> 2;
-	if(e->eflags & NPC_OPTION2) angle ^= 0x80;
+	if(e->flags & NPC_OPTION2) angle ^= 0x80;
 	
 	// main's x_mark and y_mark tell us how far from the center to circle
 	int32_t xoff = (int32_t)cos[angle] * bossEntity->x_mark;
@@ -345,7 +345,7 @@ void ai_sisters_head(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 		}
 		break;
 		

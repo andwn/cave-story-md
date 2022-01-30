@@ -230,7 +230,7 @@ void ai_terminal(Entity *e) {
 			e->frame = 0;
 			if (PLAYER_DIST_X(e, 8<<CSF) && PLAYER_DIST_Y2(e, 16<<CSF, 8<<CSF)) {
 				sound_play(SND_COMPUTER_BEEP, 5);
-				if(e->eflags & NPC_OPTION2) e->frame = 2;
+				if(e->flags & NPC_OPTION2) e->frame = 2;
 				e->state = 10;
 			}
 		}

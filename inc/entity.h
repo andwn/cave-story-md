@@ -23,12 +23,12 @@ struct Entity {
 	uint8_t experience; // How much weapon energy/exp is dropped when killed
 	uint8_t hurtSound; // Sound ID that plays when the entity is hurt
 	uint8_t deathSound; // Sound ID that plays when the entity dies
-	uint16_t nflags; // NPC Flags from the npc.tbl that apply to every instance of this entity
+	uint16_t flags; // NPC Flags from the npc.tbl that apply to every instance of this entity
 	/* PXE Attributes */
 	uint16_t id; // Entity ID
 	uint16_t event; // Event # to run when triggered
 	uint16_t type; // NPC type - index of both npc.tbl and npc_info
-	uint16_t eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
+	//uint16_t eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
 	uint8_t alwaysActive; // Guaranteed to never deactivate when TRUE
 	uint16_t state, timer, timer2; // AI script state and timers

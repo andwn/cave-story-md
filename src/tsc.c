@@ -576,7 +576,7 @@ uint8_t execute_command() {
 		break;
 		case CMD_TUR:
 		{
-			window_set_textmode(TM_MSG);
+			window_set_textmode(TM_ALL);
 		}
 		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No

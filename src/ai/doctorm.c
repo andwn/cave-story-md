@@ -94,9 +94,9 @@ void ai_muscle_doctor(Entity *e) {
 		
 		case STATE_BASE:
 		{
-			e->nflags &= ~NPC_SHOOTABLE;
-			e->eflags |= NPC_SHOOTABLE;
-			e->eflags &= ~NPC_INVINCIBLE;
+			//e->flags &= ~NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
+			e->flags &= ~NPC_INVINCIBLE;
 			
 			e->x_speed = 0;
 			e->frame = 1;
@@ -218,7 +218,7 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_RED_DASH:
 		{
 			e->frame = 3;	// crouch down; look mean
-			e->eflags |= (NPC_SOLID | NPC_INVINCIBLE);
+			e->flags |= (NPC_SOLID | NPC_INVINCIBLE);
 			
 			e->timer = 0;
 			e->state++;
@@ -234,7 +234,7 @@ void ai_muscle_doctor(Entity *e) {
 				MOVE_X(SPEED(0x5ff));
 				
 				e->attack = DAMAGE_RED_DASH;
-				e->eflags |= NPC_FRONTATKONLY;
+				e->flags |= NPC_FRONTATKONLY;
 				e->y_speed = 0;	// he does not fall during dash
 			}
 		}
@@ -256,7 +256,7 @@ void ai_muscle_doctor(Entity *e) {
 				} else {					// stopped because hit a wall
 					e->state = STATE_JUMP;
 				}
-				e->eflags &= ~(NPC_SOLID | NPC_FRONTATKONLY | NPC_INVINCIBLE);
+				e->flags &= ~(NPC_SOLID | NPC_FRONTATKONLY | NPC_INVINCIBLE);
 				e->attack = DAMAGE_NORMAL;
 				e->timer = 0;
 			}
@@ -309,7 +309,7 @@ void ai_muscle_doctor(Entity *e) {
 		
 		case STATE_TELEPORT:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->attack = 0;
 			
 			e->state++;
@@ -365,7 +365,7 @@ void ai_muscle_doctor(Entity *e) {
 			//if (dr_tp_in(o))
 			e->hidden = (++e->timer & 2);
 			if(e->timer > TIME(30)) {
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->attack = DAMAGE_NORMAL;
 				e->hidden = FALSE;
 				e->grounded = FALSE;
@@ -382,7 +382,7 @@ void ai_muscle_doctor(Entity *e) {
 		case STATE_DEFEATED:
 		{
 			entities_clear_by_type(OBJ_DOCTOR_BAT);
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->grounded = FALSE;
 			e->attack = 0;
 			e->frame = 4;
@@ -548,7 +548,7 @@ static void run_red_drip(Entity *e) {
 }
 
 void ai_doctor_bat(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	ANIMATE(e, 2, 0,1,2);
 	
 	if ((blk(e->x, -8, e->y, 0) == 0x41) || (blk(e->x, 8, e->y, 0) == 0x41)) {

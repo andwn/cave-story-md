@@ -78,37 +78,6 @@
 	DMA_queueDma(DMA_VRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);                  \
 }
 
-/*
-static uint16_t TILOC_ADD(uint8_t framesize) {
-    uint16_t myindex = NOTILOC;
-    uint8_t freeCount = 0;
-    for(uint8_t i = 0; i < MAX_TILOCS; i++) {
-        if(tilocs[i]) {
-            freeCount = 0;
-        } else {
-            freeCount++;
-            if(freeCount << 2 >= framesize) {
-                myindex = i;
-                break;
-            }
-        }
-    }
-    if(myindex != NOTILOC) {
-        myindex -= freeCount-1;
-        while(freeCount--) tilocs[myindex+freeCount] = TRUE;
-    }
-    return myindex;
-}
-
-static void TILOC_FREE(uint8_t framesize) {
-    uint8_t freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);
-    while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;
-}
-
-static void TILES_QUEUE(const void *tiles, uint16_t index, uint16_t count) {
-    DMA_queueDma(DMA_VRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);
-}
-*/
 enum { 
 	SHEET_NONE,    SHEET_PSTAR,  SHEET_MGUN,    SHEET_FBALL,  SHEET_HEART,  SHEET_MISSILE, 
 	SHEET_ENERGY,  SHEET_ENERGYL,SHEET_BAT,     SHEET_CRITTER,SHEET_PIGNON, SHEET_FROGFEET, 
@@ -129,7 +98,7 @@ enum {
 	SHEET_BLADES,  SHEET_NEMESV, SHEET_BLOCK,   SHEET_BLOCKM, SHEET_ROCK,	SHEET_CRYSTAL,
 	SHEET_BUTE,    SHEET_BUTEARW,SHEET_ROLLING, SHEET_DELEET, SHEET_BONE,   SHEET_DEVIL,
 	SHEET_BUTEDIE, SHEET_PLATF,  SHEET_ROT,     SHEET_TARGET, SHEET_BLGMISL,SHEET_HPLIT,
-	SHEET_AHCHOO,  
+	SHEET_AHCHOO,  SHEET_RAVIL,
 };
 
 uint8_t sheet_num;

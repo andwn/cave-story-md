@@ -46,7 +46,7 @@ void ai_polish(Entity *e) {
 
 	switch(e->state) {
 		case 0:		// initilization
-			if(e->eflags & NPC_OPTION2) {
+			if(e->flags & NPC_OPTION2) {
 				e->state = POLISH_CW_RIGHT;
 			} else {
 				e->state = POLISH_CCW_LEFT;
@@ -210,8 +210,8 @@ void ai_sandcroc(Entity *e) {
 			e->timer = 0;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
-			e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
-			e->nflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+			//e->eflags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+			e->flags &= ~(NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		} /* fallthrough */
 		case 1:
 		{
@@ -249,8 +249,8 @@ void ai_sandcroc(Entity *e) {
 				e->attack = (e->type == OBJ_SANDCROC_OSIDE) ? 15 : 10;
 				e->frame = 2;
 			} else if(e->timer==16) {
-				e->eflags |= NPC_SHOOTABLE;
-				e->eflags |= NPC_SOLID;
+				e->flags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SOLID;
 				e->attack = 0;
 				e->state = 3;
 				e->timer = 0;
@@ -272,10 +272,10 @@ void ai_sandcroc(Entity *e) {
 		case 4:		// retreat
 		{
 			e->y += 0x280;
-			e->eflags &= ~(NPC_SOLID);
+			e->flags &= ~(NPC_SOLID);
 			
 			if (++e->timer == 30) {
-				e->eflags &= ~(NPC_SHOOTABLE);
+				e->flags &= ~(NPC_SHOOTABLE);
 				e->hidden = TRUE;
 				e->state = 5;
 				e->timer = 0;
@@ -309,7 +309,7 @@ void ai_sunstone(Entity *e) {
 		case 0:
 		{
 			// Don't allow bullets through
-			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state = 1;
 		}
 		break;
@@ -317,7 +317,7 @@ void ai_sunstone(Entity *e) {
 		{
 			// The sunstones push the player to the right here for some reason
 			// Disable solid to work around this
-			e->nflags &= ~(NPC_SOLID|NPC_SPECIALSOLID);
+			e->flags &= ~(NPC_SOLID|NPC_SPECIALSOLID);
 			// Always face left, don't flip the sprite while moving
 			MOVE_X(SPEED(0x80));
 			e->dir = 0;
@@ -617,7 +617,7 @@ void ai_curlys_mimigas(Entity *e) {
 			} else { // OBJ_MIMIGAC2 & OBJ_MIMIGA_ENEMY
 				e->state = 2;			// stand and blink
 				if(e->type == OBJ_MIMIGAC2) {
-					if(e->eflags & NPC_OPTION2) e->state = 110; // sleeping
+					if(e->flags & NPC_OPTION2) e->state = 110; // sleeping
 				}
 			}
 		}
@@ -649,7 +649,7 @@ void ai_curlys_mimigas(Entity *e) {
 		/// ******************** Fighting Mimiga Code ********************
 		case 10:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
 			e->timer = random() & 63;
@@ -708,7 +708,7 @@ void ai_curlys_mimigas(Entity *e) {
 			if (e->timer) {
 				e->timer--;
 			} else {
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->health = 1000;
 				e->state = 11;
 				e->timer = random() & 63;
@@ -723,7 +723,7 @@ void ai_curlys_mimigas(Entity *e) {
 		e->y_speed = -0x200;
 		e->frame = (random() & 1) + 5;
 		e->attack = 0;
-		e->eflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 	}
 	
 	if(!e->grounded) e->y_speed += SPEED(0x20);
@@ -867,7 +867,7 @@ void ai_skeleton(Entity *e) {
 // Nothing but dogs below
 
 void onspawn_puppy(Entity *e) {
-	e->eflags |= NPC_INTERACTIVE; // Yeah..
+	e->flags |= NPC_INTERACTIVE; // Yeah..
 }
 
 void onspawn_puppyCarry(Entity *e) {
@@ -875,8 +875,8 @@ void onspawn_puppyCarry(Entity *e) {
 	e->x_mark = camera.x;
 	e->y_mark = camera.y;
 	// One's all you can manage. One's all you can manage. One's all you can manage.
-	e->eflags &= ~NPC_INTERACTIVE;
-	e->nflags &= ~NPC_INTERACTIVE;
+	//e->eflags &= ~NPC_INTERACTIVE;
+	e->flags &= ~NPC_INTERACTIVE;
 }
 
 void ai_puppyCarry(Entity *e) {
@@ -899,7 +899,7 @@ void ai_puppy_wag(Entity *e) {
 	if (e->type != OBJ_PUPPY_ITEMS) FACE_PLAYER(e);
 	
 	// needed so you can talk to them immediately after giving them to jenka
-	e->eflags |= NPC_INTERACTIVE;
+	e->flags |= NPC_INTERACTIVE;
 	
 	// only wag when player is near
 	if (PLAYER_DIST_X(e, 56 << CSF)) {

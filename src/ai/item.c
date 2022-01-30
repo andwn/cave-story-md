@@ -3,7 +3,7 @@
 #define left_gravity	underwater
 
 void onspawn_energy(Entity *e) {
-	if(!(e->eflags & NPC_OPTION2)) {
+	if(!(e->flags & NPC_OPTION2)) {
 		// Small energy
 		e->display_box = (bounding_box) { 4,4,4,4 };
 	} else {
@@ -106,9 +106,9 @@ void ai_energy(Entity *e) {
 }
 
 void onspawn_powerup(Entity *e) {
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		e->alwaysActive = TRUE;
-		e->frame = (e->eflags & NPC_OPTION2) ? 2 : 0;
+		e->frame = (e->flags & NPC_OPTION2) ? 2 : 0;
 	} else {
 		e->x_mark = sub_to_block(e->x);
 		e->y_mark = sub_to_block(e->y);
@@ -117,7 +117,7 @@ void onspawn_powerup(Entity *e) {
 }
 
 void ai_missile(Entity *e) {
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
 		if(stageID == STAGE_WATERWAY_BOSS) {
 			e->x_speed -= SPEED_8(6);
@@ -145,7 +145,7 @@ void ai_missile(Entity *e) {
 		// If we found either increase ammo
 		if(w) {
 			// OPTION2 is large pickup
-			w->ammo += (e->eflags & NPC_OPTION2) ? 3 : 1;
+			w->ammo += (e->flags & NPC_OPTION2) ? 3 : 1;
 			if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
 		}
 		sound_play(SND_GET_MISSILE, 5);
@@ -154,7 +154,7 @@ void ai_missile(Entity *e) {
 }
 
 void ai_heart(Entity *e) {
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
 		if(stageID == STAGE_WATERWAY_BOSS) {
 			e->x_speed -= SPEED_8(6);
@@ -176,9 +176,9 @@ void ai_heart(Entity *e) {
 	}
 	// Increases health, plays sound and deletes itself
 	if((++e->timer & 1) && entity_overlapping(&player, e)) {
-		if(e->eflags & NPC_OPTION1) {
+		if(e->flags & NPC_OPTION1) {
 			player.health += e->health;
-		} else if(e->eflags & NPC_OPTION2) {
+		} else if(e->flags & NPC_OPTION2) {
 			player.health += 5;
 		} else {
 			player.health += 2;
@@ -191,17 +191,17 @@ void ai_heart(Entity *e) {
 }
 
 void onspawn_hiddenPowerup(Entity *e) {
-	e->eflags |= NPC_SHOOTABLE;
+	e->flags |= NPC_SHOOTABLE;
 }
 
 void ai_hiddenPowerup(Entity *e) {
 	if(e->health < 990) {
 		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(SND_EXPL_SMALL, 5);
-		if(e->eflags & NPC_OPTION2) {
-			entity_create(e->x, e->y, OBJ_MISSILE, e->eflags & ~(NPC_OPTION2|NPC_SHOOTABLE));
+		if(e->flags & NPC_OPTION2) {
+			entity_create(e->x, e->y, OBJ_MISSILE, e->flags & ~(NPC_OPTION2|NPC_SHOOTABLE));
 		} else {
-			entity_create(e->x, e->y, OBJ_HEART, e->eflags & ~(NPC_SHOOTABLE))->health = 2;
+			entity_create(e->x, e->y, OBJ_HEART, e->flags & ~(NPC_SHOOTABLE))->health = 2;
 		}
 		e->state = STATE_DELETE;
 	}

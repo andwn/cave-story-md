@@ -425,7 +425,7 @@ static uint8_t RunDefeated(Entity *e) {
 void ai_undead_core_face(Entity *e) {
 	//e->sprite = SPR_UD_FACES;
 	e->hidden = FALSE;
-	e->eflags = NPC_SHOWDAMAGE;
+	e->flags = NPC_SHOWDAMAGE;
 	
 	switch(e->state) {
 		// to "show" the closed face, we go invisible and the
@@ -437,13 +437,13 @@ void ai_undead_core_face(Entity *e) {
 		break;
 		case FC_Skull:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->frame = 0;
 		}
 		break;
 		case FC_Teeth:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->frame = 1;
 		}
 		break;
@@ -457,7 +457,7 @@ void ai_undead_core_face(Entity *e) {
 		} /* fallthrough */
 		case FC_Mouth+1:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			
 			if (++e->timer > TIME_10(300))
 				e->timer = 0;
@@ -645,7 +645,7 @@ void onspawn_ud_minicore(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
 	e->hit_box = (bounding_box) { 10, 10, 32, 16 };
-	if (e->eflags & NPC_OPTION2) FadeMinicore(e);
+	if (e->flags & NPC_OPTION2) FadeMinicore(e);
 }
 
 void ai_udmini_idle(Entity *e) {
@@ -722,7 +722,7 @@ static void DrawMinicoreBack(Entity *e) {
 }
 
 static void FadeMinicore(Entity *e) {
-	e->nflags &= ~NPC_SPECIALSOLID;
+	e->flags &= ~NPC_SPECIALSOLID;
 	e->frame = 3;
 }
 
@@ -736,7 +736,7 @@ void ai_ud_pellet(Entity *e) {
 		} /* fallthrough */
 		case 1:		// falling
 		{
-			if (e->eflags & NPC_OPTION2) {
+			if (e->flags & NPC_OPTION2) {
 				e->y_speed -= SPEED_8(0x20);
 				LIMIT_Y(SPEED_12(0x5ff));
 				

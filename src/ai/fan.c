@@ -3,7 +3,7 @@
 #define FAN_HSPEED ((pal_mode || cfg_60fps) ? 0x5FF : 0x550)
 
 void onspawn_fan(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->state = e->type - 95;
+	if(e->flags & NPC_OPTION2) e->state = e->type - 95;
 	switch(e->type) {
 	case 96: // Left
 		e->frame = 3;
@@ -26,7 +26,7 @@ void ai_fan(Entity *e) {
 	// Script in Egg Corridor turns on fan by switching direction
 	if(e->dir != e->odir) e->state = 2;
 	// Fans in Last Cave turn on when player touches them (they use NPC_OPTION1)
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		if(PLAYER_DIST_X(e, 8 << CSF) && PLAYER_DIST_Y(e, 18 << CSF)) e->state = 2;
 	}
 	switch(e->state) {

@@ -329,7 +329,7 @@ void ai_boss_misery(Entity *e) {
 		// fight begin and default/base state
 		case STATE_FIGHTING:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			savedhp = e->health;
 			
 			e->timer = 0;
@@ -355,7 +355,7 @@ void ai_boss_misery(Entity *e) {
 		// then either fires shots or casts the falling-block spell
 		case STATE_FLASH_FOR_SPELL:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->x_speed = 0;
 			e->y_speed = 0;
 			
@@ -446,7 +446,7 @@ void ai_boss_misery(Entity *e) {
 		{
 			e->state++;
 			e->timer = 0;
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->frame = 8;
 			sound_play(SND_TELEPORT, 5);
 		} /* fallthrough */
@@ -463,7 +463,7 @@ void ai_boss_misery(Entity *e) {
 				e->y_mark = e->y = tile_to_sub(9 + (random() & 3));
 			} else if (e->timer == TIME_8(50)) {
 				// switch back to showing real misery instead of the phase-in effect
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->frame = 0;
 				e->dir = 0;
 				// spawn rings
@@ -494,7 +494,7 @@ void ai_boss_misery(Entity *e) {
 		// defeated! "gaah" in air
 		case 1000:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			entities_clear_by_type(OBJ_MISERY_RING);
 			//SmokeClouds(o, 3, 2, 2);
 			
@@ -534,7 +534,7 @@ void ai_boss_misery(Entity *e) {
 }
 
 void ondeath_boss_misery(Entity *e) {
-	e->eflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 	e->attack = 0;
 	tsc_call_event(e->event);
 }
@@ -552,7 +552,7 @@ void ai_misery_ring(Entity *e) {
 			e->frame = 3;
 			e->state = 1;
 			e->timer = 0;
-			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE); // Rings block bullets
+			e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE); // Rings block bullets
 		} /* fallthrough */
 		case 1:
 		{
@@ -578,8 +578,8 @@ void ai_misery_ring(Entity *e) {
 		
 		case 10:	// transform to bat
 		{
-			e->eflags &= ~NPC_INVINCIBLE;
-			e->nflags &= ~NPC_INVINCIBLE; // ugh
+			//e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE; // ugh
 			
 			THROW_AT_TARGET(e, player.x, player.y, SPEED(0x280));
 			FACE_PLAYER(e);

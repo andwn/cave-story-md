@@ -62,10 +62,6 @@ void stage_load(uint16_t id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	//if(stageBlocks) {
-	//	free(stageBlocks);
-	//	stageBlocks = NULL;
-	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -80,37 +76,18 @@ void stage_load(uint16_t id) {
 		stage_load_tileset();
 	}
 	// Load sprite sheets
-#if DEBUG
-	if(joy_down(BUTTON_A)) {
-		vdp_color(0, 0xE00);
-		while(!joy_pressed(BUTTON_C)) {
-			vdp_vsync();
-			//xgm_vblank();
-			joy_update();
-		}
-		vdp_color(0, 0);
-	}
-#endif
 	sheets_load_stage(id, FALSE, TRUE);
 	// Load backgrounds
-#if DEBUG
-	if(joy_down(BUTTON_A)) {
-		vdp_color(0, 0x0E0);
-		while(!joy_pressed(BUTTON_C)) {
-			vdp_vsync();
-			//xgm_vblank();
-			joy_update();
-		}
-		vdp_color(0, 0);
-	}
-#endif
 	if(background_info[stage_info[id].background].type == 4 || 
 			stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
-		
+
+        disable_ints;
+        z80_request();
+
 		vdp_set_backcolor(0); // Color index 0 for everything except fog
-		if(stageBackgroundType == 0) { // Tiled image
+		if(stageBackgroundType == 0 || stageBackgroundType == 3) { // Tiled image
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_tiles_load_from_rom(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX, 
 						background_info[stageBackground].tileset->numTile);
@@ -121,11 +98,6 @@ void stage_load(uint16_t id) {
 		} else if(stageBackgroundType == 2) { // Solid Color
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLAN_B);
-		} else if(stageBackgroundType == 3) { // Tiled image, auto scroll
-			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-			vdp_tiles_load_from_rom(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX, 
-						background_info[stageBackground].tileset->numTile);
-			stage_draw_background();
 		} else if(stageBackgroundType == 4) { // Almond Water
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLAN_B);
@@ -144,19 +116,11 @@ void stage_load(uint16_t id) {
 			vdp_set_backcolor(32);
 			stage_draw_moonback();
 		}
+
+        z80_release();
+        enable_ints;
 	}
 	// Load stage PXM into RAM
-#if DEBUG
-	if(joy_down(BUTTON_A)) {
-		vdp_color(0, 0x00E);
-		while(!joy_pressed(BUTTON_C)) {
-			vdp_vsync();
-			//xgm_vblank();
-			joy_update();
-		}
-		vdp_color(0, 0);
-	}
-#endif
 	stage_load_blocks();
 	// Move camera to player's new position
 	camera_set_position(player.x, player.y - (stageBackgroundType == 3 ? 8<<CSF : 0));
@@ -180,8 +144,6 @@ void stage_load(uint16_t id) {
 	DMA_flushQueue();
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
-	//player.oframe = 255;
-	//player.frame = 0; // Reset player graphic
 	vdp_set_display(TRUE);
 }
 
@@ -190,10 +152,6 @@ void stage_load_credits(uint8_t id) {
 	
 	entities_clear();
 	vdp_sprites_clear();
-	//if(stageBlocks) {
-	//	free(stageBlocks);
-	//	stageBlocks = NULL;
-	//}
 	if(stageTable) {
 		free(stageTable);
 		stageTable = NULL;
@@ -203,7 +161,6 @@ void stage_load_credits(uint8_t id) {
 	stageTileset = stage_info[id].tileset;
 	stage_load_tileset();
 	sheets_load_stage(id, FALSE, TRUE);
-	//vdp_colors_next(32, tileset_info[stageTileset].palette->data, 16);
 	stage_load_blocks();
 	stage_draw_screen_credits();
 	stage_load_entities();
@@ -213,8 +170,6 @@ void stage_load_credits(uint8_t id) {
 }
 
 void stage_load_tileset() {
-    //uint16_t numtile = tileset_info[stageTileset].tileset->numTile;
-	//vdp_tiles_load_from_rom(tileset_info[stageTileset].tileset->tiles, TILE_TSINDEX, numtile);
     uint32_t *buf = (uint32_t*) 0xFF0100;
     uint16_t numtile = tileset_info[stageTileset].size << 2;
     for(uint16_t i = 0; i < numtile; i += 128) {
@@ -313,6 +268,7 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 
 // Stage vblank drawing routine
 void stage_update() {
+    z80_request();
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -440,6 +396,7 @@ void stage_update() {
 			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
+    z80_release();
 }
 
 void stage_setup_palettes() {

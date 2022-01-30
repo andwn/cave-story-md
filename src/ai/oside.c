@@ -26,7 +26,7 @@ void ai_night_spirit(Entity *e) {
 				e->hidden = FALSE;
 				
 				e->y_speed = 0;
-				e->nflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 			}
 		}
 		break;

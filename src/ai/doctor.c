@@ -25,7 +25,7 @@ void ai_boss_doctor(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->nflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->y_next += (8 << CSF);
 			e->frame = STAND1;
 			e->state = 1;
@@ -46,7 +46,7 @@ void ai_boss_doctor(Entity *e) {
 		case 10:	// base state/falling (script)
 		{
 			e->y_speed += SPEED(0x80);
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->attack = 3;
 			
 			if (e->grounded) {
@@ -108,7 +108,7 @@ void ai_boss_doctor(Entity *e) {
 			e->timer = 0;
 			e->frame = BLAST1;
 			e->x_mark = e->x_next;
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 		} /* fallthrough */
 		case 31:
 		{
@@ -138,7 +138,7 @@ void ai_boss_doctor(Entity *e) {
 		case 100:
 		{
 			e->state = 101;
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->attack = 0;
 			
 			//dr_tp_out_init(o);
@@ -187,7 +187,7 @@ void ai_boss_doctor(Entity *e) {
 		{
 			//if (dr_tp_in(o))
 			//{
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->attack = 3;
 				
 				if (++e->timer2 >= 4) {	// big explode
@@ -203,7 +203,7 @@ void ai_boss_doctor(Entity *e) {
 		// defeated!
 		case 500:
 		{
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->frame = DEFEAT;
 			
 			// fall to earth
@@ -265,8 +265,8 @@ void ai_doctor_shot(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			if(e->eflags & NPC_OPTION2) e->angle = 0x80;
-			if(e->eflags & NPC_OPTION1) e->dir = 1;
+			if(e->flags & NPC_OPTION2) e->angle = 0x80;
+			if(e->flags & NPC_OPTION1) e->dir = 1;
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 		} /* fallthrough */

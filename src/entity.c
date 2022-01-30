@@ -121,8 +121,8 @@ Entity *entity_destroy(Entity *e) {
 	entity_drop_powerup(e);
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
-	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
-	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
+	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
+	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	return entity_delete(e);
 }
 
@@ -175,9 +175,9 @@ void entities_update(uint8_t draw) {
 			e = entity_destroy(e);
 			continue;
 		}
-		uint16_t flags = e->nflags | e->eflags;
+		//uint16_t flags = e->flags | e->eflags;
 		// Handle Shootable flag - check for collision with player's bullets
-		if(flags & NPC_SHOOTABLE) {
+		if(e->flags & NPC_SHOOTABLE) {
 			extent_box ee = (extent_box) {
 				.x1 = (e->x >> CSF) - (e->hit_box.left),
 				.y1 = (e->y >> CSF) - (e->hit_box.top),
@@ -207,7 +207,7 @@ void entities_update(uint8_t draw) {
 		}
 		// Hard Solids
 		uint16_t collided = FALSE;
-		if(flags & NPC_SPECIALSOLID) {
+		if(e->flags & NPC_SPECIALSOLID) {
 			// Apply x_next/y_next so player is completely outside us
 			bounding_box collision = entity_react_to_collision(&player, e);
 			collided = *((uint32_t*) &collision) > 0;
@@ -220,7 +220,7 @@ void entities_update(uint8_t draw) {
 				}
 			}
 			if(collision.bottom) {
-				if(flags & NPC_BOUNCYTOP) {
+				if(e->flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
 					player.grounded = FALSE;
 				} else {
@@ -229,13 +229,13 @@ void entities_update(uint8_t draw) {
 				}
 			}
 		} // Soft solids
-		else if(flags & NPC_SOLID) {
+		else if(e->flags & NPC_SOLID) {
 			bounding_box collision = entity_react_to_collision(&player, e);
 			collided = *((uint32_t*) &collision) > 0;
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			if(collision.bottom && e->y > player.y) {
 				player.y -= 1<<CSF;
-				if(flags & NPC_BOUNCYTOP) {
+				if(e->flags & NPC_BOUNCYTOP) {
 					player.y_speed = -(1 << CSF);
 					player.grounded = FALSE;
 				} else {
@@ -252,7 +252,7 @@ void entities_update(uint8_t draw) {
 		}
 		// Can damage player if we have an attack stat and no script is running
 		if(e->attack && !playerIFrames && !tscState) {
-			if(!(flags & (NPC_SOLID | NPC_SPECIALSOLID))) {
+			if(!(e->flags & (NPC_SOLID | NPC_SPECIALSOLID))) {
 				// Smaller hitbox if they are pass-through
 				player.hit_box = PLAYER_SOFT_HIT_BOX;
 				collided = entity_overlapping(&player, e);
@@ -261,7 +261,7 @@ void entities_update(uint8_t draw) {
 			if(collided) {
 				// If the enemy has NPC_FRONTATKONLY, and the player is not colliding
 				// with the front of the enemy, the player shouldn't get hurt
-				if(flags & NPC_FRONTATKONLY) {
+				if(e->flags & NPC_FRONTATKONLY) {
 					if(!PLAYER_DIST_Y(e, pixel_to_sub(e->hit_box.top + 3))) {
 						collided = FALSE;
 					} else {
@@ -282,7 +282,7 @@ void entities_update(uint8_t draw) {
 				e->xoff = (e->damage_time & 3) - 1;
 			}
 			if(!e->damage_time) {
-				if(flags & NPC_SHOWDAMAGE) {
+				if(e->flags & NPC_SHOWDAMAGE) {
 					effect_create_damage(e->damage_value, e, 0, 0);
 				}
 				e->damage_value = 0;
@@ -347,12 +347,12 @@ void entities_update(uint8_t draw) {
 }
 
 void entity_handle_bullet(Entity *e, Bullet *b) {
-	uint16_t flags = e->nflags | e->eflags;
+	//uint16_t flags = e->flags | e->eflags;
 	// Destroy the bullet, or if it is a missile make it explode
 	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 		if(!b->state) {
 			bullet_missile_explode(b);
-			if((flags & NPC_INVINCIBLE) || e->type == OBJ_MA_PIGNON) {
+			if((e->flags & NPC_INVINCIBLE) || e->type == OBJ_MA_PIGNON) {
 				sound_play(SND_TINK, 5);
 			} else {
 				if(b->damage < e->health) sound_play(e->hurtSound, 5);
@@ -365,11 +365,11 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			|| (b->type == WEAPON_BLADE && b->level == 3)) {
 		// Don't destroy Spur or Blade L3
 		b->hits++;
-		if(!(flags & NPC_INVINCIBLE) && !(e->damage_time) && b->damage < e->health) {
+		if(!(e->flags & NPC_INVINCIBLE) && !(e->damage_time) && b->damage < e->health) {
 			sound_play(e->hurtSound, 5);
 		}
 	} else if(b->type == WEAPON_NEMESIS && b->level < 3) {
-        if(flags & NPC_INVINCIBLE) {
+        if(e->flags & NPC_INVINCIBLE) {
             bullet_deactivate(b);
             sound_play(SND_TINK, 5);
             return;
@@ -390,7 +390,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
         }
 	} else {
         bullet_deactivate(b);
-		if(flags & NPC_INVINCIBLE) {
+		if(e->flags & NPC_INVINCIBLE) {
 			sound_play(SND_TINK, 5);
 		} else {
 			if(b->damage < e->health) sound_play(e->hurtSound, 5);
@@ -399,9 +399,9 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
             effect_create_misc(EFF_PSTAR_HIT, b->x >> CSF, b->y >> CSF, FALSE);
         }
 	}
-	if(!(flags & NPC_INVINCIBLE)) {
+	if(!(e->flags & NPC_INVINCIBLE)) {
 		if(e->health <= b->damage) {
-			if(flags & NPC_SHOWDAMAGE) {
+			if(e->flags & NPC_SHOWDAMAGE) {
 				effect_create_damage(e->damage_value - b->damage, NULL, e->x >> CSF, e->y >> CSF);
 				e->damage_time = e->damage_value = 0;
 			}
@@ -412,7 +412,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 				if(--b->damage == 0) b->ttl = 0;
 			}
 			return;
-		} else if((flags & NPC_SHOWDAMAGE) || e->shakeWhenHit) {
+		} else if((e->flags & NPC_SHOWDAMAGE) || e->shakeWhenHit) {
 			e->damage_value -= b->damage;
 			e->damage_time = 30;
 		}
@@ -461,7 +461,7 @@ uint8_t collide_stage_leftwall(Entity *e) {
 	uint8_t pxa1 = stage_get_block_type(block_x, block_y1);
 	uint8_t pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->flags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next &= ~0x1FF; // Align to pixel
 		e->x_next += pixel_to_sub(min((pixel_x & ~0xF) + 16 - pixel_x, 3));
@@ -480,7 +480,7 @@ uint8_t collide_stage_rightwall(Entity *e) {
 	uint8_t pxa1 = stage_get_block_type(block_x, block_y1);
 	uint8_t pxa2 = stage_get_block_type(block_x, block_y2);
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->flags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->x_speed = 0;
 		e->x_next &= ~0x1FF;
 		e->x_next -= pixel_to_sub(min(pixel_x - (pixel_x & ~0xF), 3));
@@ -500,7 +500,7 @@ uint8_t collide_stage_floor(Entity *e) {
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	pxa3 = stage_get_block_type(pixel_to_block(pixel_x3), pixel_to_block(pixel_y + 2));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->flags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		if(e == &player && e->y_speed > 0xFF) sound_play(SND_THUD, 2);
 		e->y_speed = 0;
 		e->y_next = pixel_to_sub((pixel_y&~0xF) - e->hit_box.bottom);
@@ -600,7 +600,7 @@ uint8_t collide_stage_floor_grounded(Entity *e) {
 	uint8_t pxa2 = stage_get_block_type(pixel_to_block(sub_to_pixel(e->x_next) + e->hit_box.right),
 			pixel_to_block(sub_to_pixel(e->y_next) + e->hit_box.bottom + 1));
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-		(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+		(!((e->flags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		// After going up a slope and returning to flat land, we are one or
 		// two pixels too low. This causes the player to ignore new upward slopes
 		// which is bad, so this is a dumb hack to push us back up if we are
@@ -628,7 +628,7 @@ uint8_t collide_stage_ceiling(Entity *e) {
 	pxa2 = stage_get_block_type(pixel_to_block(pixel_x2), pixel_to_block(pixel_y));
 	uint8_t result = FALSE;
 	if(pxa1 == 0x41 || pxa2 == 0x41 || pxa1 == 0x43 || pxa2 == 0x43 ||
-			(!((e->eflags|e->nflags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
+			(!((e->flags)&NPC_IGNORE44) && (pxa1 == 0x44 || pxa2 == 0x44))) {
 		e->y_next = pixel_to_sub((pixel_y&~0xF) + e->hit_box.top + 15) + 0x100;
 		result = TRUE;
 	} else {
@@ -816,7 +816,7 @@ void entities_clear_by_event(uint16_t event) {
     Entity *e = entityList;
     while(e) {
 		if(e->event == event) {
-            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            if((e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
 			e = entity_delete(e);
 		} else {
             e = e->next;
@@ -825,7 +825,7 @@ void entities_clear_by_event(uint16_t event) {
     e = inactiveList;
     while(e) {
         if(e->event == event) {
-            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            if((e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
             e = entity_delete_inactive(e);
         } else {
             e = e->next;
@@ -837,7 +837,7 @@ void entities_clear_by_type(uint16_t type) {
     Entity *e = entityList;
     while(e) {
         if(e->type == type) {
-            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            if((e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
             e = entity_delete(e);
         } else {
             e = e->next;
@@ -846,7 +846,7 @@ void entities_clear_by_type(uint16_t type) {
     e = inactiveList;
     while(e) {
         if(e->type == type) {
-            if((e->eflags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
+            if((e->flags&NPC_DISABLEONFLAG)) system_set_flag(e->id, TRUE);
             e = entity_delete_inactive(e);
         } else {
             e = e->next;
@@ -883,13 +883,12 @@ void entity_drop_powerup(Entity *e) {
 void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
-	e->eflags |= flags;
 	e->enableSlopes = TRUE;
 	e->shakeWhenHit = TRUE;
 	e->tiloc = NOTILOC;
 	e->sheet = NOSHEET;
 	if(type < NPC_COUNT) {
-		e->nflags = npc_flags(type);
+		e->flags = npc_flags(type);
 		e->health = npc_hp(type);
 		e->attack = npc_attack(type);
 		e->experience = npc_xp(type);
@@ -902,6 +901,7 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 		e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 		e->display_box = (bounding_box) { 8, 8, 8, 8 };
 	}
+    e->flags |= flags;
 }
 
 Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, uint16_t id, uint16_t event) {
@@ -967,7 +967,7 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 			// number of sprites
 			int32_t x = e->x;
 			int32_t y = e->y;
-			flags |= e->eflags;
+			flags |= e->flags;
 			uint16_t id = e->id;
             e = entity_delete(e);
 			Entity *new = entity_create_ext(x, y, type, flags, id, event);
@@ -979,7 +979,7 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 		if(e->event == event) {
             int32_t x = e->x;
             int32_t y = e->y;
-            flags |= e->eflags;
+            flags |= e->flags;
             uint16_t id = e->id;
             e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
             Entity *new = entity_create_ext(x, y, type, flags, id, event);

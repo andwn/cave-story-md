@@ -378,8 +378,8 @@ static void run_intro(Entity *e) {
 					e->state = BP_FIGHTING_STANCE;
 					e->timer = TIME_8(150);
 					
-					e->nflags |= NPC_SHOOTABLE;
-					e->nflags &= ~NPC_INVINCIBLE;
+					e->flags |= NPC_SHOOTABLE;
+					e->flags &= ~NPC_INVINCIBLE;
 				}
 			}
 		}
@@ -399,7 +399,7 @@ static void run_defeated(Entity *e) {
 			e->timer = 0;
 			e->frame = 12;
 			
-			e->nflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			//effect(e->x, e->y, EFFECT_BOOMFLASH);
 			//SmokeClouds(o, 16, 16, 16);
 			sound_play(SND_BIG_CRASH, 5);
@@ -434,7 +434,7 @@ static void run_defeated(Entity *e) {
 				
 				e->state++;
 				e->frame = 10;
-				e->nflags |= NPC_IGNORESOLID;
+				e->flags |= NPC_IGNORESOLID;
 			}
 		}
 		break;
@@ -547,7 +547,7 @@ void ai_ballos_priest(Entity *e) {
 }
 
 void ondeath_ballosp(Entity *e) {
-	e->nflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 	tsc_call_event(e->event);
 }
 
@@ -757,7 +757,7 @@ void ai_green_devil_spawner(Entity *e) {
 }
 
 void ai_green_devil(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -779,7 +779,7 @@ void onspawn_bute_sword_red(Entity *e) {
 }
 
 void ai_bute_sword_red(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
@@ -787,11 +787,11 @@ void ai_bute_sword_red(Entity *e) {
 		if(++e->timer >= TIME_8(16)) {
 			e->state++;
 			e->frame = 2;
-			e->nflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->attack = 5;
 		}
 	} else {
-		e->nflags ^= NPC_SHOOTABLE;
+		e->flags ^= NPC_SHOOTABLE;
 		FACE_PLAYER(e);
 		// when player is below them, they come towards him,
 		// when player is above, they sweep away.
@@ -814,7 +814,7 @@ void ai_bute_sword_red(Entity *e) {
 
 void onspawn_bute_archer_red(Entity *e) {
 	e->alwaysActive = TRUE;
-	if(e->eflags & NPC_OPTION2) {
+	if(e->flags & NPC_OPTION2) {
 		e->dir = 1;
 		e->x_mark = e->x + pixel_to_sub(128);
 	} else {
@@ -828,7 +828,7 @@ void onspawn_bute_archer_red(Entity *e) {
 }
 
 void ai_bute_archer_red(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	switch(e->state) {

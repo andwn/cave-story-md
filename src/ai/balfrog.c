@@ -60,10 +60,10 @@ void onspawn_balfrog(Entity *e) {
 	e->experience = 1;
 	e->dir = 1;
 	e->enableSlopes = FALSE;
-	e->eflags |= NPC_IGNORE44 | NPC_SHOWDAMAGE;
+	e->flags |= NPC_IGNORE44 | NPC_SHOWDAMAGE;
 	// now disable being able to hit the Balfrog boss object itself.
-	e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
-	e->nflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+	//e->eflags &= ~(NPC_SHOOTABLE | NPC_SOLID);
+	e->flags &= ~(NPC_SHOOTABLE | NPC_SOLID);
 	
 	e->hurtSound = 52;
 	e->deathSound = 72;
@@ -389,7 +389,7 @@ void ai_balfrog(Entity *e) {
 					balrog->y_speed = -SPEED_12(0x5FF);
 					balrog->y_next = balrog->y + balrog->y_speed;
 					balrog->y = balrog->y_next;
-					balrog->eflags |= NPC_IGNORESOLID;
+					balrog->flags |= NPC_IGNORESOLID;
 					if(balrog->y < -0x400) {
 						entity_delete(balrog);
 						bossEntity = NULL;
@@ -560,7 +560,7 @@ void hurt_by_bullet(Entity *e, Bullet *b) {
 		e->health = 0;
 		ENTITY_ONDEATH(e);
 	}
-	if((e->eflags|e->nflags) & NPC_SHOWDAMAGE) {
+	if((/*e->eflags|*/e->flags) & NPC_SHOWDAMAGE) {
 		e->damage_value -= b->damage;
 		e->damage_time = 30;
 	}

@@ -48,8 +48,8 @@ void onspawn_omega(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;
 	e->health = 400;
-	e->eflags |= NPC_SHOWDAMAGE | NPC_SOLID;
-	e->nflags = 0;
+	e->flags |= NPC_SHOWDAMAGE | NPC_SOLID;
+	e->flags = 0;
 	e->frame = 0;
 	e->attack = 5;
 	e->hurtSound = 52;
@@ -84,9 +84,9 @@ void onspawn_omega(Entity *e) {
 void onspawn_omega_leg(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
-	e->eflags = 0;
-	e->nflags = 0;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
+	//e->flags = 0;
+	e->flags = 0;
 	e->hit_box = (bounding_box) { 12, 8, 12, 8 };
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
 }
@@ -94,9 +94,9 @@ void onspawn_omega_leg(Entity *e) {
 void onspawn_omega_strut(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->enableSlopes = FALSE;
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
-	e->eflags = 0;
-	e->nflags = 0;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
+	//e->eflags = 0;
+	e->flags = 0;
 	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
 	e->display_box = (bounding_box) { 12, 8, 12, 8 };
 }
@@ -127,7 +127,7 @@ void ai_omega(Entity *e) {
 			e->frame = 0;
 			e->state = OMG_MOVE;
 			e->y_speed = -SPEED_10(0x200);
-			e->eflags |= NPC_SOLID;
+			e->flags |= NPC_SOLID;
 		} /* fallthrough */
 		case OMG_MOVE:	// rising up/going back into ground
 		{
@@ -144,7 +144,7 @@ void ai_omega(Entity *e) {
 				} else {	// was going back into ground
 					e->timer = 0;
 					e->state = OMG_UNDERGROUND;
-					e->eflags &= ~NPC_SOLID;
+					e->flags &= ~NPC_SOLID;
 				}
 			}
 		}
@@ -167,7 +167,7 @@ void ai_omega(Entity *e) {
 				if (++e->frame >= 2) {
 					e->state = OMG_FIRE;
 					e->firecounter = 0;
-					e->eflags |= NPC_SHOOTABLE;
+					e->flags |= NPC_SHOOTABLE;
 				}
 			}
 		}
@@ -187,13 +187,13 @@ void ai_omega(Entity *e) {
 					shot->y_speed = -SPEED_10(0x330);
 					if(e->form == 2 || (random() & 7)) {
 						shot->frame = 0;
-						shot->nflags = shot->eflags = 0;
-						//shot->nflags |= NPC_SHOOTABLE;
+						shot->flags = /*shot->eflags = */0;
+						//shot->flags |= NPC_SHOOTABLE;
 					} else {
 						shot->frame = 2;
-						//shot->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
-						shot->nflags = shot->eflags = 0;
-						shot->eflags |= NPC_INVINCIBLE;
+						//shot->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+						shot->flags = /*shot->eflags =*/ 0;
+						shot->flags |= NPC_INVINCIBLE;
 					}
 					//shot->timer = (random() & 1) ? (TIME_10(300) + (random() & 0x7F)) : 0;
 					shot->attack = 4;
@@ -215,7 +215,7 @@ void ai_omega(Entity *e) {
 					e->hit_box.top = 24;
 					sound_play(SND_BLOCK_DESTROY, 6);
 					//o->sprite = SPR_OMG_CLOSED;		// select "closed" bounding box
-					e->eflags &= ~NPC_SHOOTABLE;
+					e->flags &= ~NPC_SHOOTABLE;
 					//e->eflags |= NPC_BOUNCYTOP;
 					e->attack = 0;
 					if (e->form == 1) {	// form 1: return to sand
@@ -254,7 +254,7 @@ void ai_omega(Entity *e) {
 				
 				// switch to jumping out of ground when we get low on life
 				if (e->form==1 && e->health <= HP_TRIGGER_POINT) {
-					e->eflags |= NPC_SOLID;
+					e->flags |= NPC_SOLID;
 					
 					e->form = 2;
 					e->timer = 50; // Start firing immediately and for only 30 frames
@@ -377,13 +377,13 @@ void ai_omega(Entity *e) {
 }
 
 void ondeath_omega(Entity *e) {
-	e->eflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
+	e->flags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
 	entities_clear_by_type(OBJ_OMEGA_SHOT);
 	e->state = OMG_EXPLODING;
 }
 
 void ai_omega_shot(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	if(++e->timer & 1) {
 		e->y_speed += SPEED_8(12);
 		uint16_t px = e->x >> CSF, py = e->y >> CSF;

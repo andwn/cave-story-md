@@ -13,7 +13,7 @@ void ai_curly(Entity *e) {
 		case 0:							// state 0: stand and do nothing
 		{
 			e->frame = 0;
-			e->nflags |= NPC_INTERACTIVE;	// needed for after Almond battle
+			e->flags |= NPC_INTERACTIVE;	// needed for after Almond battle
 		}
 		/* fallthrough */
 		case 1:
@@ -117,7 +117,7 @@ void ai_curly(Entity *e) {
 void onspawn_curly_down(Entity *e) {
     //e->state = 32;
     e->y += 10 << CSF;
-    if(e->eflags & NPC_OPTION2) e->dir = 1;
+    if(e->flags & NPC_OPTION2) e->dir = 1;
 }
 
 void ai_curly_down(Entity *e) {
@@ -148,8 +148,8 @@ void ai_curly_carried(Entity *e) {
 		{
 			e->state++;
 			e->frame = 10;
-			e->eflags &= ~NPC_INTERACTIVE;
-			e->nflags &= ~NPC_INTERACTIVE;
+			//e->eflags &= ~NPC_INTERACTIVE;
+			e->flags &= ~NPC_INTERACTIVE;
 		}
 		/* fallthrough */
 		case 1:
@@ -247,8 +247,8 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 void onspawn_curly_hell(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->frame = 2;
-	e->eflags &= ~NPC_INTERACTIVE;
-	e->nflags &= ~NPC_INTERACTIVE;
+	//e->eflags &= ~NPC_INTERACTIVE;
+	e->flags &= ~NPC_INTERACTIVE;
 }
 
 void ai_curly_hell(Entity *e) {
@@ -351,9 +351,9 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = (random() & 31) + 60;
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
-			e->eflags |= NPC_SHOOTABLE;
-			e->eflags &= ~NPC_INVINCIBLE;
-			e->nflags &= ~NPC_INVINCIBLE;
+			e->flags |= NPC_SHOOTABLE;
+			//e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE;
 		}
 		/* fallthrough */
 		case CURLYB_WAIT:
@@ -376,7 +376,7 @@ void ai_curlyBoss(Entity *e) {
 			if (e->timer) {
 				e->timer--;
 			} else {
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->state = CURLYB_CHARGE_GUN;
 				e->timer = 0;
 				sound_play(SND_CHARGE_GUN, 5);
@@ -429,8 +429,8 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = 0;
 			e->state = CURLYB_SHIELD;
 			e->frame = 4;
-			e->eflags &= ~NPC_SHOOTABLE;
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags &= ~NPC_SHOOTABLE;
+			e->flags |= NPC_INVINCIBLE;
 			e->x_speed = 0;
 		}
 	}
@@ -448,16 +448,13 @@ void ai_curlyBoss(Entity *e) {
 }
 
 void ondeath_curlyBoss(Entity *e) {
-	//if(e->state == STATE_DEFEATED) {
-		////SPR_SAFERELEASE(e->sprite);
-		entity_default(e, OBJ_CURLY, 0);
-		//entity_sprite_create(e);
-		e->x -= 8;
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->state = 0;
-		entities_clear_by_type(OBJ_CURLYBOSS_SHOT);
-		tsc_call_event(e->event);
-	//}
+    entity_default(e, OBJ_CURLY, 0);
+    //entity_sprite_create(e);
+    e->x -= 8;
+    e->flags &= ~NPC_SHOOTABLE;
+    e->state = 0;
+    entities_clear_by_type(OBJ_CURLYBOSS_SHOT);
+    tsc_call_event(e->event);
 }
 
 void ai_curlyBossShot(Entity *e) {

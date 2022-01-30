@@ -8,7 +8,7 @@ enum CritterState {
 };
 
 void ai_critter(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 
 	if(e->x_speed < 0) {
 		uint8_t block = blk(e->x, -e->hit_box.left, e->y, 0);
@@ -41,9 +41,9 @@ void ai_critter(Entity *e) {
 		case STATE_WAITING:
 		{
 			if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {
-                e->nflags |= NPC_SOLID;
+                e->flags |= NPC_SOLID;
             } else {
-                e->nflags &= ~NPC_SOLID;
+                e->flags &= ~NPC_SOLID;
             }
 			if(e->type == OBJ_POWER_CRITTER) e->attack = 2;
 			e->frame = 0;
@@ -88,9 +88,12 @@ void ai_critter(Entity *e) {
 		break;
 		case STATE_FLYING:
 		{
-			if((++e->timer & 7) == 0) {
+            e->timer++;
+            if((e->timer & 3) == 0) {
+                if(++e->frame > 5) e->frame = 3;
+            }
+			if((e->timer & 7) == 0) {
 				sound_play(SND_CRITTER_FLY, 2);
-				if(++e->frame > 5) e->frame = 3;
 			}
 			e->y_speed -= SPEED_8(0x3C);
 			if(e->timer == TIME_8(25)) {
@@ -109,6 +112,10 @@ void ai_critter(Entity *e) {
 		{
 			if(e->grounded) {
 				e->state = STATE_WAITING;
+                if(e->type == OBJ_POWER_CRITTER) {
+                    sound_play(SND_THUD, 5);
+                    camera_shake(10);
+                }
 			} else if(e->type == OBJ_POWER_CRITTER) {
 				// Crush player
 				if(player.y > e->y + (16<<CSF)) {

@@ -65,7 +65,7 @@ void player_init() {
 	controlsLocked = FALSE;
 	player.hidden = FALSE;
 	player.dir = 0;
-	player.eflags = NPC_IGNORE44|NPC_SHOWDAMAGE;
+	player.flags = NPC_IGNORE44|NPC_SHOWDAMAGE;
 	playerMaxHealth = 3;
 	player.health = 3;
 	player.x = block_to_sub(10) + pixel_to_sub(8);
@@ -620,7 +620,7 @@ static void player_update_interaction() {
 	if(cfg_updoor ? joy_pressed(BUTTON_UP) : joy_pressed(BUTTON_DOWN)) {
 		Entity *e = entityList;
 		while(e) {
-			if((e->eflags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
+			if((e->flags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
 				// To avoid triggering it twice
 				oldstate |= cfg_updoor ? BUTTON_UP : BUTTON_DOWN;
 				if(e->event > 0) {
@@ -692,7 +692,7 @@ void player_start_booster() {
 static void player_update_booster() {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
 	if(!joy_down(btn[cfg_btn_jump])) {
-	    // Decellerate after boosting down
+	    // Decelerate after boosting down
 	    //if(playerBoostState == BOOST_DOWN) player.y_speed >>= 2;
 	    playerBoostState = BOOST_OFF;
 	}

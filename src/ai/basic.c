@@ -7,20 +7,20 @@ void onspawn_snap(Entity *e) {
 }
 
 void onspawn_op2flip(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
 }
 
 void onspawn_snapflip(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
 	SNAP_TO_GROUND(e);
 }
 
 void onspawn_op2frame(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->frame = 1;
+	if(e->flags & NPC_OPTION2) e->frame = 1;
 }
 
 void onspawn_op2snap(Entity *e) {
-	if(e->eflags & NPC_OPTION2) {
+	if(e->flags & NPC_OPTION2) {
 		SNAP_TO_GROUND(e);
 	}
 }
@@ -31,7 +31,7 @@ void onspawn_pushup(Entity *e) {
 
 void onspawn_blackboard(Entity *e) {
 	e->y -= 16<<CSF;
-	if(e->eflags & NPC_OPTION2) e->frame = 1;
+	if(e->flags & NPC_OPTION2) e->frame = 1;
 }
 
 void onspawn_persistent(Entity *e) {
@@ -40,7 +40,7 @@ void onspawn_persistent(Entity *e) {
 
 // Needed for save point after sisters fight
 void onspawn_interactive(Entity *e) {
-	e->eflags |= NPC_INTERACTIVE;
+	e->flags |= NPC_INTERACTIVE;
 }
 
 // Spikes use a second frame for 90 degree rotation
@@ -97,9 +97,9 @@ void ai_nothing(Entity *e) {
 	}
 	if(!e->state) {
 		e->state = 1;
-		if(e->eflags & NPC_OPTION1) {
+		if(e->flags & NPC_OPTION1) {
 			e->type = OBJ_HVTRIGGER;
-			e->eflags &= ~(NPC_OPTION1 | NPC_OPTION2);
+			e->flags &= ~(NPC_OPTION1 | NPC_OPTION2);
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			e->hit_box.left = 128; e->hit_box.right = 128;
 		}
@@ -108,16 +108,16 @@ void ai_nothing(Entity *e) {
 
 void onspawn_trigger(Entity *e) {
 	e->alwaysActive = TRUE;
-	if(e->eflags & NPC_OPTION2) { // Vertical
+	if(e->flags & NPC_OPTION2) { // Vertical
 		// First test if the trigger is placed outside of the map, if so change the type
 		// to OOB trigger which will activate based on player position instead of collision
 		uint16_t ex = sub_to_block(e->x);
 		if(ex <= 0) { // Left OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
-			e->eflags &= ~NPC_OPTION1;
+			e->flags &= ~NPC_OPTION1;
 		} else if(ex >= stageWidth - 1) { // Right OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
-			e->eflags |= NPC_OPTION1;
+			e->flags |= NPC_OPTION1;
 		} else { // Not OOB
 			e->hit_box.left = 2; e->hit_box.right = 2;
 			// Don't expand immediately
@@ -127,10 +127,10 @@ void onspawn_trigger(Entity *e) {
 		uint16_t ey = sub_to_block(e->y);
 		if(ey <= 0) { // Top OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
-			e->eflags &= ~NPC_OPTION1;
+			e->flags &= ~NPC_OPTION1;
 		} else if(ey >= stageHeight - 1) { // Bottom OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
-			e->eflags |= NPC_OPTION1;
+			e->flags |= NPC_OPTION1;
 		} else {  // Not OOB
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			// Don't expand immediately so Sisters skip works
@@ -148,7 +148,7 @@ void ai_trigger(Entity *e) {
 		e->state++;
 		e->timer = 0;
 	} else if(e->state == 1) { // Expansion
-		if(e->eflags & NPC_OPTION2) {
+		if(e->flags & NPC_OPTION2) {
 			if(blk(e->x, 0, e->y, -e->hit_box.top) != 0x41) e->hit_box.top += 2;
 			if(blk(e->x, 0, e->y, e->hit_box.bottom) != 0x41) e->hit_box.bottom += 2;
 			if(++e->timer >= 126) e->state++;
@@ -168,14 +168,14 @@ void ai_trigger(Entity *e) {
 // OPTION2 off: horizontal, on: vertical
 void ai_trigger_special(Entity *e) {
 	if(tscState) return;
-	if(e->eflags & NPC_OPTION2) { // Vertical
-		if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION2) { // Vertical
+		if(e->flags & NPC_OPTION1) {
 			if(player.x > e->x) tsc_call_event(e->event); // Right
 		} else {
 			if(player.x < e->x) tsc_call_event(e->event); // Left
 		}
 	} else { // Horizontal
-		if(e->eflags & NPC_OPTION1) {
+		if(e->flags & NPC_OPTION1) {
 			if(player.y > e->y) tsc_call_event(e->event); // Bottom
 		} else {
 			if(player.y < e->y) tsc_call_event(e->event); // Top
@@ -184,7 +184,7 @@ void ai_trigger_special(Entity *e) {
 }
 
 void ai_genericproj(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
 	if(++e->timer > TIME_8(250) || blk(e->x, 0, e->y, 0) == 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
@@ -202,8 +202,8 @@ void ondeath_default(Entity *e) {
 void ondeath_nodrop(Entity *e) {
 	sound_play(e->deathSound, 5);
 	effect_create_smoke(e->x >> CSF, e->y >> CSF);
-	if(e->eflags & NPC_EVENTONDEATH) tsc_call_event(e->event);
-	if(e->eflags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
+	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
+	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	e->state = STATE_DELETE;
 }
 
@@ -456,7 +456,7 @@ void ai_refill(Entity *e) {
 }
 
 void ai_sprinkler(Entity *e) {
-	if (e->eflags & NPC_OPTION2) return;
+	if (e->flags & NPC_OPTION2) return;
 	
 	//if (++e->animtime & 1) e->frame ^= 1;
 	// Make sure this is an odd number so half the drops will show at once
@@ -527,7 +527,7 @@ void ai_fireplace(Entity *e) {
 }
 
 void ai_gunsmith(Entity *e) {
-	if (e->eflags & NPC_OPTION2) {
+	if (e->flags & NPC_OPTION2) {
 		// Animate Zzz effect above head
 		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8, FALSE);
 		if(++e->timer > TIME_8(100)) e->timer = 0;
@@ -787,7 +787,7 @@ void onspawn_lightning(Entity *e) {
 void ai_lightning(Entity *e) {
 	e->animtime++;
 	if(e->animtime > TIME_8(5)) {
-		if(e->eflags & NPC_OPTION2) e->attack = 10;
+		if(e->flags & NPC_OPTION2) e->attack = 10;
 		SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF), 32, 16, 2);
 		e->animtime = 0;
 		e->frame++;
@@ -818,7 +818,7 @@ void ai_intro_kings(Entity *e) {
 		case 0:
 		{
 			e->state++;
-			if(!(e->eflags & NPC_OPTION2)) {
+			if(!(e->flags & NPC_OPTION2)) {
 				e->frame = 1;
 				e->timer = TIME_8(25);
 				e->y -= 0x640;

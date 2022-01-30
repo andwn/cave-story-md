@@ -23,7 +23,7 @@ static void run_defeated(Entity *e) {
 		// defeated (set by ondeath script, after a brief pause)
 		case 500:
 		{
-			e->nflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->state = 501;
 			e->timer = 0;
 			e->frame = 0;
@@ -48,7 +48,7 @@ static void run_defeated(Entity *e) {
 			else if(e->timer >= TIME_8(105)) {
 				e->state = 502;		// fall
 				e->attack = 127;
-				e->eflags &= ~NPC_SPECIALSOLID;
+				e->flags &= ~NPC_SPECIALSOLID;
 			}
 		}
 		break;
@@ -93,7 +93,7 @@ static void run_passageway(Entity *e) {
 			e->state = 21;
 			e->x = PWAY_X;
 			e->y = PWAY_BOTTOM;
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_SPECIALSOLID);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_SPECIALSOLID);
 			e->attack = 0;
 		} /* fallthrough */
 		case 21:
@@ -143,7 +143,7 @@ void onspawn_heavypress(Entity *e) {
 	
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	
-	e->nflags = (NPC_SHOWDAMAGE | NPC_EVENTONDEATH | NPC_SPECIALSOLID | NPC_IGNORESOLID);
+	e->flags = (NPC_SHOWDAMAGE | NPC_EVENTONDEATH | NPC_SPECIALSOLID | NPC_IGNORESOLID);
 	
 	e->attack = 10;
 	e->health = 700;
@@ -165,8 +165,8 @@ void ai_heavypress(Entity *e) {
 				shield_left = entity_create(e->x, e->y, OBJ_HEAVY_PRESS_SHIELD, 0);
 				shield_right = entity_create(e->x, e->y, OBJ_HEAVY_PRESS_SHIELD, NPC_OPTION2);
 				
-				e->nflags |= NPC_SHOOTABLE;
-				e->nflags &= ~NPC_INVINCIBLE;
+				e->flags |= NPC_SHOOTABLE;
+				e->flags &= ~NPC_INVINCIBLE;
 				
 				e->state = 101;
 				e->timer = 0;	// pause a moment before Butes come
@@ -219,7 +219,7 @@ void ai_heavypress(Entity *e) {
 
 void ondeath_heavypress(Entity *e) {
 	tsc_call_event(e->event);
-	e->nflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 }
 
 void onspawn_hp_lightning(Entity *e) {
@@ -241,13 +241,13 @@ void ai_hp_lightning(Entity *e) {
 
 void onspawn_hpress_shield(Entity *e) {
 	e->alwaysActive = TRUE;
-	if(e->eflags & NPC_OPTION2) {
+	if(e->flags & NPC_OPTION2) {
 		e->x = bossEntity->x + pixel_to_sub(28);
 	} else {
 		e->x = bossEntity->x - pixel_to_sub(28);
 	}
 	e->y = bossEntity->y + pixel_to_sub(40);
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
-	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->health = 1000;
 }

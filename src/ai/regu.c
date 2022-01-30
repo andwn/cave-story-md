@@ -148,7 +148,7 @@ void ai_toroko(Entity *e) {
 			if (e->grounded) {
 				e->state = 12;
 				e->frame = 6;
-				e->eflags |= NPC_INTERACTIVE;
+				e->flags |= NPC_INTERACTIVE;
 				e->x_speed = 0;
 			}
 		}
@@ -186,7 +186,7 @@ void ai_toroko_tele_in(Entity *e) {
 			e->grounded = FALSE;
 			e->state = 1;
 			e->timer = 0;
-			e->nflags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
+			e->flags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
 		}
 		/* fallthrough */
 		case 1:
@@ -223,7 +223,7 @@ void ai_toroko_tele_in(Entity *e) {
 #define crystal_ymark curly_target_y
 
 void onspawn_sue(Entity *e) {
-	if(e->eflags & NPC_OPTION2) e->dir = TRUE;
+	if(e->flags & NPC_OPTION2) e->dir = TRUE;
 	// This keeps Sue behind the cage in Mimiga Village
 	if(stageID == STAGE_MIMIGA_VILLAGE) e->alwaysActive = TRUE;
 	if(stageID == STAGE_FALLING) {

@@ -54,7 +54,7 @@ void ai_waterlevel(Entity *e) {
 }
 
 void onspawn_shutter(Entity *e) {
-	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->alwaysActive = TRUE;
 	e->y += pixel_to_sub(8);
 	if(e->type == OBJ_SHUTTER_BIG) {
@@ -68,8 +68,8 @@ void ai_shutter(Entity *e) {
 		case 10:
 		{
 			// allow hitting the stuck shutter no. 4
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+			//e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 			// Store direction in timer2 instead of flipping the sprite
 			e->timer2 = e->dir;
 			e->dir = 0;
@@ -110,7 +110,7 @@ void ai_shutter_stuck(Entity *e) {
 		e->state++;
 		e->x -= pixel_to_sub(4);
 		e->y += pixel_to_sub(2);
-		e->eflags |= NPC_SHOOTABLE;
+		e->flags |= NPC_SHOOTABLE;
 	}
 	// when you shoot shutter 4, you're actually shooting us, but we want them
 	// to think they're shooting the regular shutter object, so go invisible

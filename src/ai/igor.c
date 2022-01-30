@@ -161,8 +161,8 @@ void ai_igor(Entity *e) {
 					sound_play(SND_BLOCK_DESTROY, 5);
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 							e->y, OBJ_IGOR_SHOT, 0);
-					shot->x_speed = e->dir ? SPEED_12(0x500) : -SPEED_12(0x500);
-					shot->y_speed = SPEED_10(random() & 0x3FF) - SPEED_10(0x1FF);
+                    shot->x_speed = e->dir ? SPEED_12(0x600) : -SPEED_12(0x600);
+                    shot->y_speed = -SPEED_12(0x280) + SPEED_12((random() & 0x3FF));
 				}
 				// fires 6 shots
 				if(e->timer > TIME_8(135)) e->state = STATE_STAND;
@@ -180,7 +180,7 @@ void ai_igor(Entity *e) {
 
 void ondeath_igor(Entity *e) {
 	e->attack = 0;
-	e->eflags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
+	e->flags &= ~(NPC_SHOOTABLE|NPC_SHOWDAMAGE);
 	e->x_speed = 0;
 	tsc_call_event(e->event); // Boss defeated event
 }

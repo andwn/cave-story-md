@@ -90,8 +90,8 @@ void ondeath_pignon(Entity *e) {
 }
 
 void onspawn_gkeeper(Entity *e) {
-	e->nflags &= ~NPC_INVINCIBLE;
-	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	//e->flags &= ~NPC_INVINCIBLE;
+	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	// I expanded the sprite to 32 width so hflip will be symmetrical
 	e->hit_box = (bounding_box) { 8, 11, 8, 11 };
 	e->display_box = (bounding_box) { 16, 12, 16, 12 };
@@ -113,7 +113,7 @@ void ai_gkeeper(Entity *e) {
 		if(e->damage_time > 0) {
 			e->state = 1;
 			e->frame = 1;
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags |= NPC_INVINCIBLE;
 		}
 		break;
 		case 1: // Walking
@@ -127,7 +127,7 @@ void ai_gkeeper(Entity *e) {
 			e->x_speed = 0;
 			sound_play(SND_FIREBALL, 5);
 			e->frame = 3;
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE;
 		}
 		break;
 		case 2: // Knife raised
@@ -151,7 +151,7 @@ void ai_gkeeper(Entity *e) {
 		if(++e->timer > 60) {
 			e->state = 0;
 			e->frame = 0;
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags |= NPC_INVINCIBLE;
 			e->attack = 0;
 			e->hit_box.left -= 6;
 		}
@@ -238,7 +238,7 @@ void ai_ma_pignon(Entity *e) {
 			e->state = MP_BaseState;
 			e->timer = 0;
 			e->timer2 = 0;
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 		} /* fallthrough */
 		case MP_BaseState:
 		{
@@ -336,7 +336,7 @@ void ai_ma_pignon(Entity *e) {
 				MOVE_X(SPEED_12(0x5ff));
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				
-				e->eflags |= NPC_INVINCIBLE;
+				e->flags |= NPC_INVINCIBLE;
 				e->attack = 10;
 			}
 		}
@@ -369,7 +369,7 @@ void ai_ma_pignon(Entity *e) {
 				e->timer2 = 0;
 				e->state = MP_In_Air;
 				
-				e->eflags &= ~NPC_INVINCIBLE;
+				e->flags &= ~NPC_INVINCIBLE;
 				
 				e->attack = 3;
 			}
@@ -407,7 +407,7 @@ void ai_ma_pignon(Entity *e) {
 				e->grounded = FALSE;
 				sound_play(SND_FUNNY_EXPLODE, 5);
 				
-				e->eflags |= NPC_INVINCIBLE;
+				e->flags |= NPC_INVINCIBLE;
 				
 				e->attack = 10;
 			}
@@ -443,7 +443,7 @@ void ai_ma_pignon(Entity *e) {
 				e->timer2 = 0;
 				e->state = MP_In_Air;	// fall back down to ground
 				
-				e->eflags &= ~NPC_INVINCIBLE;
+				e->flags &= ~NPC_INVINCIBLE;
 			}
 		}
 		break;
@@ -451,7 +451,7 @@ void ai_ma_pignon(Entity *e) {
 		case MP_Defeated:			// defeated -- set by script
 		{
 			entities_clear_by_type(OBJ_MA_PIGNON_CLONE);
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->state++;
 			e->timer = 0;
 			e->frame = HURT;
@@ -530,7 +530,7 @@ void ai_ma_pignon_rock(Entity *e) {
 		{
 			e->timer3 = 0;
 			e->state = 1;
-			e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+			e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 			e->animtime = random() & 31;
 			e->attack = 10;
 		} /* fallthrough */
@@ -574,7 +574,7 @@ void ai_ma_pignon_clone(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->frame = 3;
 			e->y_speed += SPEED(0x80);
 			LIMIT_Y(SPEED(0x5ff));

@@ -2,8 +2,8 @@
 
 void onspawn_dzfire(Entity *e) {
     e->alwaysActive = TRUE;
-    e->nflags &= ~NPC_INVINCIBLE;
-    e->nflags |= NPC_SHOOTABLE;
+    e->flags &= ~NPC_INVINCIBLE;
+    e->flags |= NPC_SHOOTABLE;
     //e->health = 6;
 }
 
@@ -20,7 +20,7 @@ void ai_dragon_zombie(Entity *e) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		entity_drop_powerup(e);
 		
-		e->nflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 		e->attack = 0;
 		
 		e->frame = 5;	// dead
@@ -179,10 +179,10 @@ void ai_fallingspike_lg(Entity *e) {
 			
 			if (e->y + pixel_to_sub(e->hit_box.bottom) < player.y + pixel_to_sub(player.hit_box.top)) {	
 				// could fall on player
-				e->nflags &= ~NPC_SPECIALSOLID;
+				e->flags &= ~NPC_SPECIALSOLID;
 				e->attack = 127;	// ouch!
 			} else {	// player could only touch side from this position
-				e->nflags |= NPC_SPECIALSOLID;
+				e->flags |= NPC_SPECIALSOLID;
 				e->attack = 0;
 			}
 			
@@ -196,7 +196,7 @@ void ai_fallingspike_lg(Entity *e) {
 			e->x_next = e->x;
 			e->y_next = e->y + e->y_speed;
 			if (++e->timer > 8 && collide_stage_floor(e)) {
-				e->nflags |= NPC_SPECIALSOLID;
+				e->flags |= NPC_SPECIALSOLID;
 				e->attack = 0;
 				e->y_speed = 0;
 				
@@ -216,10 +216,10 @@ void ai_fallingspike_lg(Entity *e) {
 		case 3:		// hit ground
 		{
 			if (++e->timer > 4) {	// make it destroyable
-				e->eflags |= NPC_SHOOTABLE;
-				e->nflags |= NPC_SHOOTABLE;
-				e->eflags &= ~NPC_INVINCIBLE;
-				e->nflags &= ~NPC_INVINCIBLE;
+				//e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
+				//e->eflags &= ~NPC_INVINCIBLE;
+				e->flags &= ~NPC_INVINCIBLE;
 				e->state = 4;
 			}
 		}

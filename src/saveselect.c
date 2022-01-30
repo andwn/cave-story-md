@@ -42,10 +42,10 @@ static void draw_cursor_mode(uint8_t mode) {
 }
 
 static uint16_t GetNextChar(uint16_t stage, uint16_t index) {
-	const uint8_t *name = ((const uint8_t*)STAGE_NAMES) + (stageID << 4);
-	uint16_t chr = name[(stage << 4) + index];
+	const uint8_t *name = ((const uint8_t*)STAGE_NAMES) + (stage << 4);
+	uint16_t chr = name[index];
 	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (name[(stage << 4) + index + 1] - 0x20) + 0x100;
+		return (chr - 0xE0) * 0x60 + (name[index + 1] - 0x20) + 0x100;
 	} else {
 		return chr;
 	}
@@ -64,16 +64,13 @@ static uint8_t refresh_file(uint8_t index) {
 		// Map name
 		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 			uint16_t x = 6;
-			//uint16_t tile_index = (0xB000 >> 5) + (index << 5);
 			uint16_t name_index = 0;
-			while(name_index < 16) {
+			for(uint16_t pos = 0; name_index < 16; pos++) {
 				uint16_t c = GetNextChar(file.stage_id, name_index++);
 				if(c == 0) break; // End of string
 				if(c > 0xFF) name_index++;
-				//kanji_draw(VDP_PLAN_A, tile_index, c, x, y, 0, 1);
                 cjk_draw(VDP_PLAN_A, c, x, y, 0, 1);
-				x += 1 + (name_index & 1);
-				//tile_index += 4;
+				x += 1 + (pos & 1);
 			}
             cjk_newline();
 		} else {

@@ -95,9 +95,6 @@ void credits_main() {
 	vdp_vscroll(VDP_PLAN_A, 0);
 	// Text on background plane, priority 1
 	vdp_font_load(TS_SysFont.tiles);
-	//VDP_setTextPlan(VDP_PLAN_B);
-	//VDP_setTextPriority(1);
-	//ssf_setbank(7, 7); // Illustrations are in bank 7
 	tsc_load_stage(ID_CREDITS); // credits.tsb
 	tsc_call_event(100);
 	
@@ -234,6 +231,9 @@ void credits_main() {
 void credits_show_image(uint16_t id) {
 	if(id > 19) return;
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
+    disable_ints;
+    z80_request();
+
 	vdp_set_display(FALSE);
 	vdp_colors(32, illustration_info[id].palette->data, 16);
 	vdp_tiles_load_from_rom(illustration_info[id].pat, 16, illustration_info[id].pat_size);
@@ -243,7 +243,10 @@ void credits_show_image(uint16_t id) {
 		index += 20;
 	}
 	vdp_set_display(TRUE);
-	illScrolling = 8;
+    illScrolling = 8;
+
+    z80_release();
+    enable_ints;
 }
 
 void credits_clear_image() {

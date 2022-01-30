@@ -113,7 +113,7 @@ static const int32_t F1_RIGHT = pixel_to_sub(552);
 
 void onspawn_ballos(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->eflags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
+	e->flags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
 	
 	e->x = block_to_sub(stageWidth >> 1);
 	e->y = -pixel_to_sub(64);
@@ -131,7 +131,7 @@ void onspawn_ballos(Entity *e) {
 	// create body (the big rock)
 	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
 	body->health = 1000;	// not his real HP, we're using damage transfer
-	body->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	body->flags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
 	body->hit_box = (bounding_box) { 48, 20, 48, 36 };
 	body->display_box = (bounding_box) { 60, 60, 60, 60 };
 	
@@ -142,14 +142,14 @@ void onspawn_ballos(Entity *e) {
 		eye[i]->hit_box = (bounding_box) { 12, 8, 12, 8 };
 		eye[i]->display_box = (bounding_box) { 12, 8, 12, 8 };
 	}
-	eye[1]->eflags |= NPC_OPTION2;
+	eye[1]->flags |= NPC_OPTION2;
 	
 	// create a top shield to cover eyes from above
 	shield = entity_create(0, 0, OBJ_BALLOS_SHIELD, 0);
 	//shield->sprite = SPR_BBOX_PUPPET_1;
 	shield->hidden = TRUE;
 	shield->health = 1000;
-	shield->eflags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
+	shield->flags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
 	shield->hit_box = (bounding_box) { 32, 6, 32, 4 };
 }
 
@@ -528,7 +528,7 @@ void ai_ballos_f3(Entity *e) {
 			camera_shake(30);
 			
 			body->frame = 1;		// go all bloody
-			body->eflags &= ~NPC_INVINCIBLE;
+			body->flags &= ~NPC_INVINCIBLE;
 			//shield->eflags &= ~NPC_INVINCIBLE;
 			
 			e->state = CS_SPIN_PLATFORMS;
@@ -615,11 +615,11 @@ void ai_ballos_f3(Entity *e) {
 			SetRotatorStates(1000);			// explode rotators
 			
 			uint16_t mask = ~(NPC_SPECIALSOLID | NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-			e->eflags &= mask;
-			body->eflags &= mask;
+			e->flags &= mask;
+			body->flags &= mask;
 			//shield->eflags &= mask;
-			eye[0]->eflags &= mask;
-			eye[1]->eflags &= mask;
+			eye[0]->flags &= mask;
+			eye[1]->flags &= mask;
 		} /* fallthrough */
 		case 1001:
 		{
@@ -687,8 +687,8 @@ void ai_ballos_eye(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->frame = (e->eflags & NPC_OPTION2) ? 4 : 0;
-			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->frame = (e->flags & NPC_OPTION2) ? 4 : 0;
+			e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state = 1;
 		}
 		break;
@@ -696,7 +696,7 @@ void ai_ballos_eye(Entity *e) {
 		// open eyes
 		case EYE_OPENING:
 		{
-			e->frame = (e->eflags & NPC_OPTION2) ? 4 : 0;
+			e->frame = (e->flags & NPC_OPTION2) ? 4 : 0;
 			e->animtime = 0;
 			e->state++;
 		} /* fallthrough */
@@ -706,7 +706,7 @@ void ai_ballos_eye(Entity *e) {
 				e->animtime = 0;
 				e->frame++;
 				if ((e->frame & 3) == 3) {
-					e->eflags &= ~NPC_INVINCIBLE;
+					e->flags &= ~NPC_INVINCIBLE;
 					e->hidden = TRUE;
 					e->state++;
 				}
@@ -717,9 +717,9 @@ void ai_ballos_eye(Entity *e) {
 		// close eyes
 		case EYE_CLOSING:
 		{
-			e->frame = (e->eflags & NPC_OPTION2) ? 6 : 2;
+			e->frame = (e->flags & NPC_OPTION2) ? 6 : 2;
 			e->hidden = FALSE;
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags |= NPC_INVINCIBLE;
 			
 			e->animtime = 0;
 			e->state++;
@@ -739,7 +739,7 @@ void ai_ballos_eye(Entity *e) {
 		// invisible (the underlying eyes drawn on the body are what are seen)
 		case EYE_INVISIBLE:
 		{
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE;
 			e->hidden = TRUE;
 			e->state++;
 		}
@@ -748,10 +748,10 @@ void ai_ballos_eye(Entity *e) {
 		// explode eyes (final defeat sequence)
 		case EYE_EXPLODING:
 		{
-			e->frame = (e->eflags & NPC_OPTION2) ? 7 : 3;	// empty eyes
+			e->frame = (e->flags & NPC_OPTION2) ? 7 : 3;	// empty eyes
 			e->hidden = FALSE;
 			
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state++;
 			
 			//if (e->dir == LEFT)
@@ -796,8 +796,8 @@ void ai_ballos_rotator(Entity *e) {
 		{
 			e->state = 11;
 			
-			e->nflags |= NPC_SHOOTABLE;
-			e->nflags &= ~NPC_INVINCIBLE;
+			e->flags |= NPC_SHOOTABLE;
+			e->flags &= ~NPC_INVINCIBLE;
 			e->health = 1000;
 		} /* fallthrough */
 		case 11:		// spinning during phase 2, alive
@@ -810,7 +810,7 @@ void ai_ballos_rotator(Entity *e) {
 				//e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health <= (1000 - 100)) {
-					e->nflags &= ~NPC_SHOOTABLE;
+					e->flags &= ~NPC_SHOOTABLE;
 					e->frame = 1;	// close eye
 					
 					//SmokeClouds(o, 32, 16, 16);
@@ -842,10 +842,10 @@ void ai_ballos_rotator(Entity *e) {
 			// this dir was set when they were created and
 			// alternates left/right around the circle
 			if(!e->dir) {
-				e->nflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 				e->frame = 0;
 			} else {
-				e->nflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+				e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 				e->frame = 1;
 			}
 		} /* fallthrough */
@@ -859,15 +859,15 @@ void ai_ballos_rotator(Entity *e) {
 			if(++e->timer2 > 0x200)
 				e->timer2 -= 0x200;
 			
-			e->nflags ^= NPC_SHOOTABLE;
-			if(!(e->nflags & NPC_INVINCIBLE)) {
+			e->flags ^= NPC_SHOOTABLE;
+			if(!(e->flags & NPC_INVINCIBLE)) {
 				//e->frame = (e->damage_time & 2) ? 1 : 0;
 				
 				if (e->health < (1000 - 100)) {
 					e->x_speed = 0;
 					e->y_speed = 0;
 					
-					e->nflags &= ~NPC_SHOOTABLE;
+					e->flags &= ~NPC_SHOOTABLE;
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
 					
@@ -911,7 +911,7 @@ void ai_ballos_rotator(Entity *e) {
 			e->y_speed = 0;
 			
 			e->frame = 1;
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID);
 			e->attack = 0;
 			
 			e->timer2 >>= 2;
@@ -989,7 +989,7 @@ void ai_ballos_platform(Entity *e) {
 			e->state = 1001;
 			e->x_speed = 0;
 			e->y_speed = 0;
-			e->eflags &= ~NPC_SPECIALSOLID;
+			e->flags &= ~NPC_SPECIALSOLID;
 		} /* fallthrough */
 		case 1001:
 		{
@@ -1004,9 +1004,9 @@ void ai_ballos_platform(Entity *e) {
 	
 	// let player jump up through platforms, but be solid when he is standing on them
 	if (player.y_speed < 0 || player.y > e->y - pixel_to_sub(e->hit_box.top)) {
-		e->nflags &= ~NPC_SPECIALSOLID;
+		e->flags &= ~NPC_SPECIALSOLID;
 	} else {
-		e->nflags |= NPC_SPECIALSOLID;
+		e->flags |= NPC_SPECIALSOLID;
 	}
 	
 	// spin

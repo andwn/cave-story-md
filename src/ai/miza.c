@@ -248,7 +248,7 @@ static Entity *fm_spawn_missile(Entity *e, uint8_t angindex) {
 }
 */
 void ai_misery_critter(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -324,7 +324,7 @@ void ai_misery_critter(Entity *e) {
 }
 
 void ai_misery_bat(Entity *e) {
-	e->eflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 		{
@@ -335,7 +335,7 @@ void ai_misery_bat(Entity *e) {
 				
 				e->state = 1;
 				e->attack = 2;
-				e->nflags &= ~NPC_INVINCIBLE;
+				e->flags &= ~NPC_INVINCIBLE;
 				
 				e->y_mark = e->y;
 				e->y_speed = SPEED(0x400);
@@ -456,8 +456,8 @@ void ai_sue_frenzied(Entity *e) {
 			e->animtime = 0;
 			e->attack = 0;
 			
-			e->eflags |= NPC_SHOOTABLE;
-			e->eflags &= ~NPC_IGNORESOLID;
+			e->flags |= NPC_SHOOTABLE;
+			e->flags &= ~NPC_IGNORESOLID;
 		} /* fallthrough */
 		case SUE_BASE+1:
 		{
@@ -521,7 +521,7 @@ void ai_sue_frenzied(Entity *e) {
 			
 			// hit wall?
 			// have to manually check ignore solid flag
-			if (!(e->eflags & NPC_IGNORESOLID) &&
+			if (!(e->flags & NPC_IGNORESOLID) &&
 					((blk(e->x, -12, e->y, 0) == 0x41) || (blk(e->x, 12, e->y, 0) == 0x41)))
 				e->state = SUE_BASE;
 			
@@ -540,7 +540,7 @@ void ai_sue_frenzied(Entity *e) {
 			e->timer = 0;
 			e->frame = STILL1;	// stop somersault; back to normal stand frame
 			e->attack = 0;
-			e->eflags &= ~NPC_IGNORESOLID;
+			e->flags &= ~NPC_IGNORESOLID;
 		} /* fallthrough */
 		case SUE_SOMERSAULT_HIT+1:	// slowing down
 		{
@@ -589,8 +589,8 @@ void ai_sue_frenzied(Entity *e) {
 			e->frame = DASH;
 			
 			FACE_PLAYER(e);
-			e->eflags &= ~NPC_SHOOTABLE;
-			e->nflags &= ~NPC_SHOOTABLE;
+			//e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			
 			int32_t x;
 			if (player.x < e->x) x = player.x - pixel_to_sub(160);
@@ -604,7 +604,7 @@ void ai_sue_frenzied(Entity *e) {
 			e->hidden = (++e->timer & 2) > 0;
 			
 			// hit wall?
-			if (!(e->eflags & NPC_IGNORESOLID) &&
+			if (!(e->flags & NPC_IGNORESOLID) &&
 					((blk(e->x, -12, e->y, 0) == 0x41) || (blk(e->x, 12, e->y, 0) == 0x41))) {
 				e->state = SUE_BASE;
 				e->hidden = FALSE;
@@ -633,13 +633,13 @@ static void set_ignore_solid(Entity *e) {
 	int32_t map_right_half = block_to_sub(stageWidth) >> 1;
 	int32_t map_bottom_half = block_to_sub(stageHeight) >> 1;
 	
-	e->eflags &= ~NPC_IGNORESOLID;
+	e->flags &= ~NPC_IGNORESOLID;
 	
 	if ((e->x < map_right_half && e->x_speed > 0) ||
 		(e->x > map_right_half && e->x_speed < 0)) {
 		if ((e->y < map_bottom_half && e->y_speed > 0) ||
 			(e->y > map_bottom_half && e->y_speed < 0)) {
-			e->eflags |= NPC_IGNORESOLID;
+			e->flags |= NPC_IGNORESOLID;
 		}
 	}
 }
@@ -653,8 +653,8 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 	
 	// trigger die
 	if (e->health < (1000 - health)) {
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->nflags &= ~NPC_SHOOTABLE;
+		//e->eflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 		e->health = 9999;	// don't re-trigger
 		e->state = SIDEKICK_DEFEATED;
 	}
@@ -668,8 +668,8 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 			{	// we were already dead when core was killed--ignore.
 				e->state = SIDEKICK_DEFEATED+1;
 			} else {
-				e->eflags &= ~NPC_SHOOTABLE;
-				e->nflags &= ~NPC_SHOOTABLE;
+				//e->eflags &= ~NPC_SHOOTABLE;
+				e->flags &= ~NPC_SHOOTABLE;
 				e->health = 9999;
 				
 				e->x_speed = 0;
@@ -686,9 +686,9 @@ static void sidekick_run_defeated(Entity *e, uint16_t health) {
 			e->state++;
 			e->frame = 10;
 			e->attack = 0;
-			e->eflags &= ~NPC_SHOOTABLE;
-			e->nflags &= ~NPC_SHOOTABLE;
-			e->eflags |= NPC_IGNORESOLID;
+			//e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
+			e->flags |= NPC_IGNORESOLID;
 			
 			e->y_speed = -SPEED(0x200);
 			e->damage_time += 50;

@@ -64,7 +64,7 @@ static const uint16_t mframeindex[5] = {
 // initilize all the pieces of the Core boss.
 void onspawn_core(Entity *e) {
 	e->state = CORE_SLEEP;
-	e->eflags = NPC_SHOWDAMAGE;
+	e->flags = NPC_SHOWDAMAGE;
 	
 	e->x = pixel_to_sub(1150);
 	e->y = pixel_to_sub(212);
@@ -85,13 +85,13 @@ void onspawn_core(Entity *e) {
 	
 	// set up the front piece
 	pieces[CFRONT]->linkedEntity = e;
-	pieces[CFRONT]->eflags = NPC_SHOOTABLE | NPC_INVINCIBLE;
+	pieces[CFRONT]->flags = NPC_SHOOTABLE | NPC_INVINCIBLE;
 	pieces[CFRONT]->hit_box = (bounding_box) { 3*8+4, 4*8+4, 3*8+4, 4*8+4 };
 	pieces[CFRONT]->display_box = (bounding_box) { 4*8, 6*8, 4*8, 6*8 };
 	
 	// set up our back piece
 	pieces[CBACK]->linkedEntity = e;
-	pieces[CBACK]->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	pieces[CBACK]->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	pieces[CBACK]->hit_box = (bounding_box) { 6*8, 5*8, 2*8, 5*8 };
 	pieces[CBACK]->display_box = (bounding_box) { 6*8, 6*8, 6*8, 6*8 };
 	
@@ -112,7 +112,7 @@ void onspawn_core(Entity *e) {
 	pieces[4]->y = (e->y - 0x4000);
 
 	for(uint8_t i = 0; i < 5; i++) {
-		pieces[i]->eflags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
+		pieces[i]->flags = (NPC_SHOOTABLE | NPC_INVINCIBLE | NPC_IGNORESOLID);
 		pieces[i]->health = 1000;
 		pieces[i]->state = MC_SLEEP;
 		pieces[i]->hurtSound = SND_ENEMY_HURT_BIG;
@@ -258,7 +258,7 @@ void ai_core(Entity *e) {
 			
 			// tell all the MC's to retreat
 			for(uint8_t i = 0; i < 5; i++) {
-				pieces[i]->eflags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
+				pieces[i]->flags &= ~(NPC_SHOOTABLE & NPC_INVINCIBLE);
 				pieces[i]->state = MC_RETREAT;
 			}
 		}
@@ -337,11 +337,11 @@ void ai_core(Entity *e) {
 	// set up our shootable status--you never actually hit the core (CFRONT),
 	// but if it's mouth is open, make us, the invisible controller object, shootable.
 	if (pieces[CFRONT]->mouth_open) {
-		e->eflags |= NPC_SHOOTABLE;
-		pieces[CFRONT]->eflags &= ~(NPC_INVINCIBLE | NPC_SHOOTABLE);
+		e->flags |= NPC_SHOOTABLE;
+		pieces[CFRONT]->flags &= ~(NPC_INVINCIBLE | NPC_SHOOTABLE);
 	} else {
-		e->eflags &= ~NPC_SHOOTABLE;
-		pieces[CFRONT]->eflags |= NPC_INVINCIBLE | NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
+		pieces[CFRONT]->flags |= NPC_INVINCIBLE | NPC_SHOOTABLE;
 	}
 	
 	LIMIT_X(SPEED_8(0x80));
@@ -354,7 +354,7 @@ void ai_core(Entity *e) {
 void ondeath_core(Entity *e) {
 	e->state = 500;
 	e->timer = 0;
-	e->eflags = 0;
+	e->flags = 0;
 	tsc_call_event(e->event);
 }
 
@@ -498,13 +498,13 @@ void ai_minicore(Entity *e) {
 	
 	// invincible when mouth is closed
 	if (e->mouth_open)
-		e->eflags &= ~NPC_INVINCIBLE;
+		e->flags &= ~NPC_INVINCIBLE;
 	else
-		e->eflags |= NPC_INVINCIBLE;
+		e->flags |= NPC_INVINCIBLE;
 }
 
 void ai_minicore_shot(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	if((++e->animtime & 3) == 0 && ++e->frame > 2) e->frame = 0;

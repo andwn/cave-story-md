@@ -19,7 +19,7 @@ void ai_torokoAtk(Entity *e) {
 		if(b) {
 			sound_play(e->hurtSound, 10); // Squeak
 			e->attack = 0; // Don't hurt the player anymore
-			e->eflags |= NPC_INTERACTIVE; // Enable interaction
+			e->flags |= NPC_INTERACTIVE; // Enable interaction
 			e->state = 10; // Change animation to falling on ground
 			e->y_speed = -SPEED_10(0x200);
 			e->x_speed >>= 1;
@@ -74,7 +74,7 @@ void onspawn_torokoBoss(Entity *e) {
 	if(e->linkedEntity) {                                                                      \
 		e->linkedEntity->x = e->x;                                                             \
 		e->linkedEntity->y = e->y - (16 << CSF);                                               \
-		e->linkedEntity->eflags |= NPC_INVINCIBLE;                                             \
+		e->linkedEntity->flags |= NPC_INVINCIBLE;                                             \
 		THROW_AT_TARGET(e->linkedEntity, player.x, player.y, SPEED_12(0x600));                 \
 		sound_play(SND_EM_FIRE, 5);                                                            \
 		e->linkedEntity->linkedEntity = NULL;                                                  \
@@ -91,7 +91,7 @@ void ai_torokoBoss(Entity *e) {
 		{
 			e->grounded = TRUE;
 			e->state = 1;
-			e->eflags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
+			e->flags &= ~(NPC_INTERACTIVE | NPC_SHOOTABLE | NPC_IGNORESOLID);
 		}
 		/* fallthrough */
 		case 1:		// wait a sec before morphing
@@ -109,7 +109,7 @@ void ai_torokoBoss(Entity *e) {
 			if (++e->timer > TIME_8(50)) {
 				e->state = 3;
 				e->timer = 0;
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 			}
 		}
 		break;
@@ -118,7 +118,7 @@ void ai_torokoBoss(Entity *e) {
 			ANIMATE(e, 8, 0,1);
 			if (++e->timer > TIME_8(5)) {
 				e->state = 10;
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 			}
 		}
 		break;
@@ -240,7 +240,7 @@ void ai_torokoBoss(Entity *e) {
 		{
 			e->frame = 3;
 			e->state = 101;
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF) - 16, 32, 32, 4);
 		}
 		/* fallthrough */
@@ -333,9 +333,9 @@ void ai_torokoBoss(Entity *e) {
 }
 
 void ondeath_torokoBoss(Entity *e) {
-	e->eflags &= ~NPC_SHOOTABLE;
-	e->nflags &= ~NPC_SHOOTABLE;
-	e->nflags &= ~NPC_SHOWDAMAGE;
+	//e->eflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOWDAMAGE;
 	tsc_call_event(e->event);
 }
 
@@ -362,9 +362,9 @@ void ai_torokoBlock(Entity *e) {
 		e->state = 20;
 		e->grounded = FALSE;
 		e->x_speed = 0;
-		e->eflags &= ~NPC_INVINCIBLE;
-		e->nflags &= ~NPC_INVINCIBLE;
-		e->eflags |= NPC_SHOOTABLE;
+		//e->eflags &= ~NPC_INVINCIBLE;
+		e->flags &= ~NPC_INVINCIBLE;
+		e->flags |= NPC_SHOOTABLE;
 	} else if(entity_overlapping(e, &player)) {
 		if(!player_invincible()) player_inflict_damage(e->attack);
 		sound_play(SND_BLOCK_DESTROY, 5);

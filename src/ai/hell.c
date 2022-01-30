@@ -27,8 +27,8 @@ void ai_bute_dying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			//e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			e->frame = baseframe;
 			e->animtime = 0;
@@ -99,7 +99,7 @@ void ai_bute_flying(Entity *e) {
 	if(e->state != 11) {
 		e->state = 11;
 		e->hidden = FALSE;
-		e->eflags |= NPC_SHOOTABLE;
+		e->flags |= NPC_SHOOTABLE;
 		e->attack = 5;
 		e->frame = BF_FLYING1;
 	}
@@ -134,9 +134,9 @@ void ai_bute_flying(Entity *e) {
 
 void onspawn_bute_spawner(Entity *e) {
 	if(e->event == 250 || e->event == 254) {
-		e->eflags = NPC_OPTION1;
+		e->flags = NPC_OPTION1;
 	} else {
-		e->eflags = 0;
+		e->flags = 0;
 	}
 }
 
@@ -159,9 +159,9 @@ void ai_bute_spawner(Entity *e) {
 			}
 			e->timer2++;
 			
-			Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, e->eflags);
+			Entity *bute = entity_create(e->x, e->y, OBJ_BUTE_FALLING, e->flags);
 			bute->dir = e->dir & 1;
-			if(e->dir == UP) e->eflags |= NPC_OPTION2;
+			if(e->dir == UP) e->flags |= NPC_OPTION2;
 				
 			if(e->timer2 >= (uint16_t) NUM_BUTES) {
 				e->state = STATE_DELETE;
@@ -180,7 +180,7 @@ void ai_bute_spawner(Entity *e) {
 
 void onspawn_bute_falling(Entity *e) {
 	e->frame = BF_FALLING1;
-	if(e->eflags & NPC_OPTION1) {
+	if(e->flags & NPC_OPTION1) {
 		e->y_speed = -SPEED_12(0x600);
 	} else {
 		e->y_speed = SPEED_12(0x600);
@@ -237,7 +237,7 @@ void ai_bute_sword(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
+			e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->y -= 4 << CSF;
 			e->grounded = FALSE;
 			e->attack = 0;
@@ -256,7 +256,7 @@ void ai_bute_sword(Entity *e) {
 		// wait a moment, then start running at player
 		case 10:
 		{
-			e->eflags |= NPC_INVINCIBLE;
+			e->flags |= NPC_INVINCIBLE;
 			e->attack = 0;
 			e->frame = BF_SWORD1;
 			
@@ -275,7 +275,7 @@ void ai_bute_sword(Entity *e) {
 		// run at player and jump
 		case 20:
 		{
-			e->eflags &= ~NPC_INVINCIBLE;
+			e->flags &= ~NPC_INVINCIBLE;
 			e->state = 21;
 			e->frame = BF_SWORD1;
 			FACE_PLAYER(e);
@@ -350,7 +350,7 @@ void ai_bute_archer(Entity *e) {
 	switch(e->state) {
 		case 0:		// waiting for player (when haven't seen him yet)
 		{
-			if(e->eflags & NPC_OPTION2) e->dir = 1;
+			if(e->flags & NPC_OPTION2) e->dir = 1;
 			e->y += 4<<CSF;
 			e->frame = BF_ARCHER1;
 			e->state++;
@@ -481,7 +481,7 @@ void ai_mesa(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->nflags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
+			e->flags &= ~(NPC_SOLID | NPC_SPECIALSOLID);
 			e->y += (4<<CSF);
 			e->frame = MS_STAND1;
 			e->state++;
@@ -569,7 +569,7 @@ void ai_mesa_block(Entity *e) {
 }
 
 void onspawn_deleet(Entity *e) {
-	if (!(e->eflags & NPC_OPTION2)) {
+	if (!(e->flags & NPC_OPTION2)) {
 		int16_t x = (e->x >> CSF) >> 4;
 		int16_t y = ((e->y >> CSF) - 8) >> 4;
 		
@@ -594,7 +594,7 @@ void ai_deleet(Entity *e) {
 		e->timer = 0;
 		e->frame = 2;
 		e->alwaysActive = TRUE;
-		e->nflags |= NPC_INVINCIBLE;
+		e->flags |= NPC_INVINCIBLE;
 		sound_play(SND_CHEST_OPEN, 5);
 	}
 	
@@ -602,7 +602,7 @@ void ai_deleet(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			if (!(e->eflags & NPC_OPTION2)) e->y += (8<<CSF);
+			if (!(e->flags & NPC_OPTION2)) e->y += (8<<CSF);
 			else e->x += (8<<CSF);
 		} /* fallthrough */
 		case 1:
@@ -637,9 +637,9 @@ void ai_deleet(Entity *e) {
 				camera_shake(10);
 				SMOKE_AREA((e->x>>CSF) - 48, (e->y>>CSF) - 48, 96, 96, 10);
 				
-				e->nflags &= ~NPC_SHOOTABLE;
+				e->flags &= ~NPC_SHOOTABLE;
 				
-				if (!(e->eflags & NPC_OPTION2)) {
+				if (!(e->flags & NPC_OPTION2)) {
 					int16_t x = (e->x >> CSF) >> 4;
 					int16_t y = ((e->y >> CSF) - 8) >> 4;
 					
@@ -732,7 +732,7 @@ void ai_rolling(Entity *e) {
 // But unlike OBJ_NULL, it can be positioned in-between a tile boundary.
 // There's also one on top of the clockroom sign on the Outer Wall.
 void onspawn_statue_base(Entity *e) {
-	if(e->eflags & NPC_OPTION2) {
+	if(e->flags & NPC_OPTION2) {
 		e->y += (16 << CSF);
 	} else {
 		e->x += (8 << CSF);
@@ -763,7 +763,7 @@ void ai_statue(Entity *e) {
 				e->state = 0;
 			} else {
 				e->state = 11;
-				e->eflags |= NPC_SHOOTABLE;
+				e->flags |= NPC_SHOOTABLE;
 			}
 		} /* fallthrough */
 		case 11:
@@ -773,7 +773,7 @@ void ai_statue(Entity *e) {
 				sound_play(SND_BLOCK_DESTROY, 5);
 				entity_drop_powerup(e);
 				system_set_flag(e->id, TRUE);
-				e->eflags &= ~NPC_SHOOTABLE;
+				e->flags &= ~NPC_SHOOTABLE;
 				e->frame += 4;
 				e->state = 0;
 			}

@@ -10,7 +10,7 @@
 
 void onspawn_door(Entity *e) {
 	// When the door's direction is changed to be facing right it becomes transparent
-	if(e->eflags & NPC_OPTION2) e->dir = 1;
+	if(e->flags & NPC_OPTION2) e->dir = 1;
     e->frame = e->dir;
     if(stageID != STAGE_PLANTATION && stageID != STAGE_BALCONY_2) e->hidden = e->dir;
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
@@ -37,7 +37,7 @@ void ai_theDoor(Entity *e) {
 }
 
 void onspawn_doorway(Entity *e) {
-	if(e->eflags & NPC_OPTION2) {
+	if(e->flags & NPC_OPTION2) {
 		// Right door
 		e->frame = 11;
 		e->x -= 8 << CSF;

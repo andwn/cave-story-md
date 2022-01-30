@@ -69,7 +69,7 @@ void ai_balrog(Entity *e) {
 	e->y_next = e->y + e->y_speed;
 	e->x_next = e->x + e->x_speed;
 	
-	if(!(e->eflags & NPC_IGNORESOLID)) {
+	if(!(e->flags & NPC_IGNORESOLID)) {
 		if(!e->grounded) e->grounded = collide_stage_floor(e);
 		else e->grounded = collide_stage_floor_grounded(e);
 	}
@@ -77,7 +77,7 @@ void ai_balrog(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags &= ~NPC_IGNORESOLID;
+			e->flags &= ~NPC_IGNORESOLID;
 			e->x_speed = 0;
 			e->balrog_smoking = FALSE;
 		}
@@ -102,7 +102,7 @@ void ai_balrog(Entity *e) {
 			e->frame = ARMSUP;
 			e->state++;
 			e->y_speed = -SPEED_12(0x800);
-			e->eflags |= NPC_IGNORESOLID;
+			e->flags |= NPC_IGNORESOLID;
 		}
 		/* fallthrough */
 		case 12:
@@ -252,7 +252,7 @@ void ai_balrog(Entity *e) {
 				// Workaround because the <CNP after <FON seems to mess this up
 				camera.target = e;
 				e->y_speed = -SPEED_12(0x800);
-				e->eflags |= NPC_IGNORESOLID;	// so can fly through ceiling
+				e->flags |= NPC_IGNORESOLID;	// so can fly through ceiling
 				fall = FALSE;
 			}
 		}
@@ -307,7 +307,7 @@ void ai_balrog_drop_in(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->eflags &= ~NPC_IGNORESOLID;
+			e->flags &= ~NPC_IGNORESOLID;
 			e->state = 1;
 			e->grounded = FALSE;
 			e->frame = ARMSUP;	// falling;
@@ -391,7 +391,10 @@ void ai_balrog_bust_in(Entity *e) {
 		}
 		break;
 		// standing
-		case 3:
+		case 3: {
+            e->state++;
+            e->flags &= ~NPC_IGNORESOLID;
+        } /* fallthrough */
 		case 4: break;
 	}
 }
@@ -424,7 +427,7 @@ void ai_balrogRunning(Entity *e) {
 		case 0:
 		{
 			FACE_PLAYER(e);
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 			e->frame = STAND;
 			e->timer = 0;
 			e->state = 1;
@@ -505,7 +508,7 @@ void ai_balrogRunning(Entity *e) {
 
 void ondeath_balrogRunning(Entity *e) {
 	e->x_speed = 0;
-	e->eflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 	e->attack = 0;
 	tsc_call_event(e->event);
 }
@@ -630,7 +633,7 @@ void ai_balrogFlying(Entity *e) {
 
 void ondeath_balrogFlying(Entity *e) {
 	e->x_speed = 0;
-	e->eflags &= ~NPC_SHOOTABLE;
+	e->flags &= ~NPC_SHOOTABLE;
 	e->attack = 0;
 	entities_clear_by_type(OBJ_BALROG_SHOT_BOUNCE);
 	entities_clear_by_type(OBJ_IGOR_SHOT);
@@ -640,7 +643,7 @@ void ondeath_balrogFlying(Entity *e) {
 void ai_balrogShot(Entity *e) {
 	ANIMATE(e, 8, 0,1);
 	if(!e->state) {
-		e->eflags |= NPC_SHOOTABLE | NPC_SHOWDAMAGE;
+		e->flags |= NPC_SHOOTABLE | NPC_SHOWDAMAGE;
 		e->health = 1000;
 		e->state++;
 	}

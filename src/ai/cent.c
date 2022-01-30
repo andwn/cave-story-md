@@ -744,7 +744,7 @@ void ai_prox_press_hoz(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if(e->eflags & NPC_OPTION2) e->dir = 1;
+			if(e->flags & NPC_OPTION2) e->dir = 1;
 			if (!e->dir) e->x -= pixel_to_sub(8);
 			e->x_mark = e->x;
 			e->state = 1;
@@ -851,7 +851,7 @@ void ai_rocket(Entity *e) {
 		
 		case 12:
 		{
-			e->eflags &= ~NPC_INTERACTIVE;
+			e->flags &= ~NPC_INTERACTIVE;
 			e->state = 13;
 			e->timer = 0;
 			e->frame = 1;
@@ -888,7 +888,7 @@ void ai_rocket(Entity *e) {
 				// Apply this now, since it won't happen when the state is 0
 				e->x = e->x_next;
 				e->y = e->y_next;
-				e->eflags |= NPC_INTERACTIVE;
+				e->flags |= NPC_INTERACTIVE;
 				e->frame = 0;
 				e->state = 0;
 				e->alwaysActive = FALSE;
@@ -915,7 +915,7 @@ void ai_numahachi(Entity *e) {
 // The graphic is a bit too low
 void onspawn_jailbars(Entity *e) {
 	e->display_box.top += 8;
-	e->eflags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
+	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 }
 
 void onspawn_cent_cage(Entity *e) {

@@ -5,12 +5,11 @@ void onspawn_block(Entity *e) {
 	e->y += pixel_to_sub(8);
 	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
 	e->display_box = (bounding_box) { 16, 16, 16, 16 };
-	e->eflags |= NPC_SPECIALSOLID;
-	e->nflags &= ~NPC_SOLID;
-	e->eflags |= NPC_IGNORE44;
+	e->flags |= NPC_SPECIALSOLID | NPC_IGNORE44;
+	e->flags &= ~NPC_SOLID;
 	e->enableSlopes = FALSE;
 	e->attack = 0;
-	e->state = (e->eflags & NPC_OPTION2) ? 20 : 10;
+	e->state = (e->flags & NPC_OPTION2) ? 20 : 10;
 }
 
 void ai_blockh(Entity *e) {
@@ -35,7 +34,7 @@ void ai_blockh(Entity *e) {
 		break;
 		case 30:
 		{
-			uint16_t dir = e->eflags & NPC_OPTION2;
+			uint16_t dir = e->flags & NPC_OPTION2;
 			e->x_speed += dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 			if(e->x_speed > SPEED_10(0x200)) e->x_speed = SPEED_10(0x200);
 			if(e->x_speed < -SPEED_10(0x200)) e->x_speed = -SPEED_10(0x200);
@@ -47,7 +46,7 @@ void ai_blockh(Entity *e) {
 					sub_to_block(e->x_next - 0x1C00), sub_to_block(e->y)) == 0x41)) {
 				camera_shake(10);
 				e->x_speed = 0;
-				e->eflags ^= NPC_OPTION2;
+				e->flags ^= NPC_OPTION2;
 				e->state = dir ? 10 : 20;
 			} else {
 				e->x = e->x_next;
@@ -82,7 +81,7 @@ void ai_blockv(Entity *e) {
 		break;
 		case 30:
 		{
-			uint16_t dir = e->eflags & NPC_OPTION2;
+			uint16_t dir = e->flags & NPC_OPTION2;
 			e->y_speed += dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 			if(e->y_speed > SPEED_10(0x200)) e->y_speed = SPEED_10(0x200);
 			if(e->y_speed < -SPEED_10(0x200)) e->y_speed = -SPEED_10(0x200);
@@ -94,7 +93,7 @@ void ai_blockv(Entity *e) {
 					sub_to_block(e->x - 0x200), sub_to_block(e->y_next - 0x1C00)) == 0x41)) {
 				camera_shake(10);
 				e->y_speed = 0;
-				e->eflags ^= NPC_OPTION2;
+				e->flags ^= NPC_OPTION2;
 				e->state = dir ? 10 : 20;
 			} else {
 				e->y = e->y_next;
@@ -169,8 +168,8 @@ void ai_gaudiDying(Entity *e) {
 	switch(e->state) {
 		case 0:		// just died (initializing)
 		{
-			e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
-			e->nflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			//e->eflags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
+			e->flags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			
 			e->frame = 4;
@@ -234,9 +233,9 @@ void ai_gaudi(Entity *e) {
 		case 0:
 		{
 			// Gaudi's in shop
-			if (e->eflags & NPC_INTERACTIVE) {
+			if (e->flags & NPC_INTERACTIVE) {
 				e->attack = 0;
-				e->nflags &= ~NPC_SHOOTABLE;
+				e->flags &= ~NPC_SHOOTABLE;
 			}
 			
 			e->x_speed = 0;
@@ -590,10 +589,10 @@ void ai_pooh_black(Entity *e) {
 			FACE_PLAYER(e);
 			
 			e->y_speed = SPEED_12(0xA00);
-			e->eflags |= NPC_IGNORESOLID;
+			e->flags |= NPC_IGNORESOLID;
 			
 			if (e->y >= block_to_sub(8)) {
-				e->eflags &= ~NPC_IGNORESOLID;
+				e->flags &= ~NPC_IGNORESOLID;
 				e->state = 1;
 			}
 		}
@@ -646,7 +645,7 @@ void ai_pooh_black(Entity *e) {
 					e->state = 4;
 					e->timer = 0;
 					
-					e->eflags |= NPC_IGNORESOLID;
+					e->flags |= NPC_IGNORESOLID;
 					e->y_speed = -SPEED_12(0xC00);
 				}
 			}
@@ -704,8 +703,8 @@ void ondeath_pooh_black(Entity *e) {
 	e->type = OBJ_POOH_BLACK_DYING;
 	e->state = 0;
 	e->attack = 0;
-	e->nflags &= ~(NPC_SHOOTABLE|NPC_SOLID);
-	e->eflags &= ~(NPC_SHOOTABLE|NPC_SOLID);
+	e->flags &= ~(NPC_SHOOTABLE|NPC_SOLID);
+	//e->eflags &= ~(NPC_SHOOTABLE|NPC_SOLID);
 	tsc_call_event(e->event);
 }
 
@@ -835,7 +834,7 @@ void ai_firewhirr_shot(Entity *e) {
 
 void ai_gaudi_egg(Entity *e) {
 	if (!e->state) {
-		if (!(e->eflags & NPC_OPTION2)) {	// on floor
+		if (!(e->flags & NPC_OPTION2)) {	// on floor
 			// align properly with ground
 			e->y -= 0x800;
 			e->x -= 0x800;
@@ -851,8 +850,8 @@ void ai_gaudi_egg(Entity *e) {
 		if (e->health < 90) {
 			e->frame = 1;
 			e->attack = 0;
-			e->eflags &= ~NPC_SHOOTABLE;
-			e->nflags &= ~NPC_SHOOTABLE;
+			//e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			entity_drop_powerup(e);
 			sound_play(e->deathSound, 5);
 			SMOKE_AREA((e->x>>CSF) - 8, (e->y>>CSF) - 8, 16, 16, 2);
@@ -871,7 +870,7 @@ static void spawn_minifuzz(Entity *e) {
 	uint8_t angle = 0;
 	for(uint16_t i = 0; i < 5; i++) {
 		Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
-		e->nflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 		f->linkedEntity = e;
 		f->jump_time = angle;
 		angle += 0x100 / 5;
@@ -880,7 +879,7 @@ static void spawn_minifuzz(Entity *e) {
 
 void ai_fuzz_core(Entity *e) {
 	e->alwaysActive = TRUE;
-    e->nflags ^= NPC_SHOOTABLE;
+    e->flags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 		{
@@ -926,7 +925,7 @@ void ai_fuzz_core(Entity *e) {
 }
 
 void ai_fuzz(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	
 	if (e->state) {
 		// base destroyed, simple sinusoidal player-seek
@@ -962,8 +961,8 @@ void ai_buyobuyo_base(Entity *e) {
 	if (e->state < 3 && e->health < (1000 - BUYOBUYO_BASE_HP)) {
 		//SmokeClouds(o, objprop[e->type].death_smoke_amt, 8, 8);
 		e->attack = 0;
-		e->eflags &= ~NPC_SHOOTABLE;
-		e->nflags &= ~NPC_SHOOTABLE;
+		//e->eflags &= ~NPC_SHOOTABLE;
+		e->flags &= ~NPC_SHOOTABLE;
 		entity_drop_powerup(e);
 		sound_play(e->deathSound, 5);
 		e->state = 10;
@@ -977,7 +976,7 @@ void ai_buyobuyo_base(Entity *e) {
 			e->hit_box = (bounding_box) { 12, 12, 12, 12 };
 			e->display_box = (bounding_box) { 16, 16, 16, 16 };
 			// OPTION2 means we are on the ceiling
-			if(e->eflags & NPC_OPTION2) {
+			if(e->flags & NPC_OPTION2) {
 				e->y -= 0x1000;
 			} else {
 				e->y += 0x1000;
@@ -989,8 +988,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 1:
 		{
 			if (PLAYER_DIST_X(e, 0x14000)) {
-				if ((!(e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x14000, 0x2000)) ||
-					((e->eflags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x2000, 0x14000))) {
+				if ((!(e->flags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x14000, 0x2000)) ||
+					((e->flags & NPC_OPTION2) && PLAYER_DIST_Y2(e, 0x2000, 0x14000))) {
 					if (--e->timer == 0) {
 						e->state = 2;
 						e->timer = 0;
@@ -1003,8 +1002,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 2:
 		{
 			if (++e->timer > TIME(10)) {
-				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, e->eflags & NPC_OPTION2);
-				if(e->eflags & NPC_OPTION2) {
+				Entity *buyo = entity_create(e->x, e->y, OBJ_BUYOBUYO, e->flags & NPC_OPTION2);
+				if(e->flags & NPC_OPTION2) {
 					// On ceiling, buyo are fine
 				} else {
 					// On floor, buyo delete immediately, so push them up
@@ -1030,7 +1029,7 @@ void ai_buyobuyo_base(Entity *e) {
 }
 
 void ai_buyobuyo(Entity *e) {
-	e->nflags ^= NPC_SHOOTABLE;
+	e->flags ^= NPC_SHOOTABLE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	ANIMATE(e, 8, 0,1);
@@ -1039,7 +1038,7 @@ void ai_buyobuyo(Entity *e) {
 		case 0:
 		{
 			// shoot up down at player...
-			e->y_speed = (e->eflags & NPC_OPTION2) ? SPEED(0x600) : -SPEED(0x600);
+			e->y_speed = (e->flags & NPC_OPTION2) ? SPEED(0x600) : -SPEED(0x600);
 			e->state = 1;
 			e->timer = 0;
 		}

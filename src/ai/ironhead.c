@@ -67,7 +67,7 @@ void ai_ironhead(Entity *e) {
 			e->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
 			e->x_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
 			
-			e->eflags |= NPC_SHOOTABLE;
+			e->flags |= NPC_SHOOTABLE;
 		} /* fallthrough */
 		case IRONH_SWIM+1:
 		{
@@ -117,7 +117,7 @@ void ai_ironhead(Entity *e) {
 		{
 			sound_play(SND_EXPL_SMALL, 8);
 			e->state = IRONH_DEFEATED+1;
-			e->eflags &= ~NPC_SHOOTABLE;
+			e->flags &= ~NPC_SHOOTABLE;
 			e->frame = 5;
 			e->attack = 0;
 			e->x_mark = e->x;
