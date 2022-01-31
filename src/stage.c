@@ -69,7 +69,9 @@ void stage_load(uint16_t id) {
 	vdp_sprites_clear();
 	water_entity = NULL;
 	bossEntity = NULL;
-	
+
+    disable_ints;
+    z80_request();
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
@@ -82,10 +84,6 @@ void stage_load(uint16_t id) {
 			stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
-
-        disable_ints;
-        z80_request();
-
 		vdp_set_backcolor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0 || stageBackgroundType == 3) { // Tiled image
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
@@ -116,10 +114,10 @@ void stage_load(uint16_t id) {
 			vdp_set_backcolor(32);
 			stage_draw_moonback();
 		}
-
-        z80_release();
-        enable_ints;
 	}
+    z80_release();
+    enable_ints;
+    
 	// Load stage PXM into RAM
 	stage_load_blocks();
 	// Move camera to player's new position
@@ -127,7 +125,13 @@ void stage_load(uint16_t id) {
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
+
+    disable_ints;
+    z80_request();
 	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
+    z80_release();
+    enable_ints;
+
 	stage_load_entities(); // Create entities defined in the stage's PXE
 	// For rooms where the boss is always loaded
 	if(stageBackgroundType == 3) {
@@ -141,7 +145,13 @@ void stage_load(uint16_t id) {
 	if(stageID == STAGE_HELL_B3 || stageID == STAGE_HELL_PASSAGEWAY_2) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
+
+    disable_ints;
+    z80_request();
 	DMA_flushQueue();
+    z80_release();
+    enable_ints;
+
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
 	vdp_set_display(TRUE);
@@ -156,8 +166,11 @@ void stage_load_credits(uint8_t id) {
 		free(stageTable);
 		stageTable = NULL;
 	}
-	
+
+    disable_ints;
+    z80_request();
 	vdp_set_display(FALSE);
+
 	stageTileset = stage_info[id].tileset;
 	stage_load_tileset();
 	sheets_load_stage(id, FALSE, TRUE);
@@ -166,7 +179,10 @@ void stage_load_credits(uint8_t id) {
 	stage_load_entities();
 	DMA_flushQueue();
 	tsc_load_stage(id);
+
 	vdp_set_display(TRUE);
+    z80_release();
+    enable_ints;
 }
 
 void stage_load_tileset() {
@@ -458,12 +474,12 @@ void stage_draw_screen_credits() {
 // Draws just one block
 void stage_draw_block(uint16_t x, uint16_t y) {
 	if(x >= stageWidth || y >= stageHeight) return;
-	uint16_t t, b, xx, yy; uint8_t p;
+	uint16_t b, xx, yy; uint8_t p;
 	p = (stage_get_block_type(x, y) & 0x40) > 0;
 	b = TILE_TSINDEX + (stage_get_block(x, y) << 2);
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
-	
+
 	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
 	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+1), xx+1, yy);
 	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+2), xx, yy+1);

@@ -194,13 +194,6 @@ void tsc_load_stage(uint8_t id) {
 }
 
 uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
-    // a
-    //uint32_t addr = (uint32_t) TSC;
-    //uint16_t chunk = addr >> 19;
-    //if(chunk >= 7) {
-    //    ssf_setbank(7, chunk);
-    //    TSC = (const uint8_t *) (0x380000 | (addr & 0x7FFFF));
-    //}
 	// First byte of TSC is the number of events
 	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled
@@ -507,7 +500,6 @@ void tsc_show_teleport_menu() {
 
 uint8_t execute_command() {
 	uint16_t args[4];
-	//prevCmd = cmd;
 	cmd = tsc_read_byte();
 	if(cmd >= 0x80 && cmd < 0xE0) {
 		switch(cmd) {
@@ -619,8 +611,6 @@ uint8_t execute_command() {
 					entities_clear();
 					sheets_load_stage(0, FALSE, TRUE);
 					vdp_sprites_clear();
-					//stageID = 0;
-					//stage_load_entities();
 					Entity *p = entity_create(pixel_to_sub(240), pixel_to_sub(140), OBJ_NPC_PLAYER, 0);
 					p->state = 100;
 					p->event = 400;
@@ -693,7 +683,6 @@ uint8_t execute_command() {
 		case CMD_NOD: // Wait for player input
 		{
 			tscState = TSC_WAITINPUT;
-			//linesSinceLastNOD = 0;
 			return 1;
 		}
 		break;
@@ -1127,8 +1116,8 @@ uint8_t execute_command() {
 			}
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
-			// code so I can put in this hacky section which fixes specific scripts
-			if(stageID == 14) { // Mimiga Village Shack -- Balrog busts throug door
+			// code, so I can put in this hacky section which fixes specific scripts
+			if(stageID == 14) { // Mimiga Village Shack -- Balrog busts through door
 				if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
 				else args[2] += 19;
 			} else if(stageTileset == 25) { // Throne Room / Ostep
@@ -1200,6 +1189,8 @@ uint8_t execute_command() {
 			ready = TRUE;
 			vdp_vsync(); aftervsync();
 
+            disable_ints;
+            z80_request();
 			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
@@ -1218,13 +1209,9 @@ uint8_t execute_command() {
 			// Background sky/mountains
 			vdp_tiles_load_from_rom(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
 			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10, 1);
-			//VDP_fillTileMapRectInc(VDP_PLAN_B, 
-			//		TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10);
 			// Foreground trees
 			vdp_tiles_load_from_rom(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
 			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
-			//VDP_fillTileMapRectInc(VDP_PLAN_A, 
-			//		TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4);
 			// Draw high prio black tiles over the top to hide island
 			static const uint32_t blackTile[8] = { 
 				0x11111111,0x11111111,0x11111111,0x11111111,
@@ -1232,8 +1219,6 @@ uint8_t execute_command() {
 			};
 			vdp_tiles_load_from_rom(blackTile, 1, 1);
 			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4, 0);
-			//VDP_fillTileMapRect(VDP_PLAN_A, 
-			//		TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4);
 			
 			// Island sprite
 			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
@@ -1247,14 +1232,14 @@ uint8_t execute_command() {
 					.attr = TILE_ATTR(PAL3,0,0,0,TILE_SHEETINDEX+12)
 				}
 			};
-			
-			//vdp_color(1, 0);
+
 			vdp_colors_next(48, PAL_XX.data, 16);
 			vdp_colors(48, PAL_XX.data, 16);
 			vdp_set_display(TRUE);
+            z80_release();
+            enable_ints;
 
 			song_stop();
-			//xgm_vblank();
 			
 			uint16_t t = TIME_10(350);
 			while(--t) {
@@ -1267,7 +1252,7 @@ uint8_t execute_command() {
 				vdp_sprites_add(island, 2);
 				system_update();
 				ready = TRUE;
-				vdp_vsync(); //aftervsync();
+				vdp_vsync();
 				vdp_sprites_update();
 			}
 		}
