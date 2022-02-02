@@ -109,7 +109,7 @@ static uint8_t refresh_file(uint8_t index) {
 			if(!file.weapon[i]) continue;
 			// X tile pos and VRAM index to put the ArmsImage tiles
 			uint16_t x = 24 + i*2;
-			uint16_t tile = TILE_FACEINDEX + index*20 + i*4;
+			uint16_t tile = TILE_FACEINDEX - 40 + index*20 + i*4;
 			vdp_tiles_load_from_rom(SPR_TILES(&SPR_ArmsImage, 0, file.weapon[i]), tile, 4);
 			// 4 mappings for ArmsImage icon
 			vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile),   x,   y+2);

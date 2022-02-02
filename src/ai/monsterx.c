@@ -366,21 +366,19 @@ void ai_monsterx(Entity *e) {
 		case STATE_X_EXPLODING+2:
 		{
 			camera_shake(40);
-			e->timer++;
 			// Delete this stuff once the screen starts to flash as opposed
 			// to the real game, where there is an explosion that takes time to
 			// cover the screen
-			if (e->timer == 1) {
-				entity_create(e->x, e->y - (24 << CSF), OBJ_X_DEFEATED, 0);
-				entities_clear_by_type(OBJ_X_TARGET);
-				entities_clear_by_type(OBJ_X_DOOR);
-				entities_clear_by_type(OBJ_X_TREAD);
-				entities_clear_by_type(OBJ_X_INTERNALS);
-				player.grounded = FALSE; // Stop player from floating where treads were
-				playerPlatform = NULL; // I SAID STOP DAMMIT
-				e->state = STATE_DELETE;
-				return;
-			}
+            entity_create(e->x, e->y - (24 << CSF), OBJ_X_DEFEATED, 0);
+            entities_clear_by_type(OBJ_X_TARGET);
+            entities_clear_by_type(OBJ_X_DOOR);
+            entities_clear_by_type(OBJ_X_TREAD);
+            entities_clear_by_type(OBJ_X_INTERNALS);
+            entities_clear_by_type(OBJ_FORCEFIELD);
+            player.grounded = FALSE; // Stop player from floating where treads were
+            playerPlatform = NULL; // I SAID STOP DAMMIT
+            e->state = STATE_DELETE;
+            return;
 		}
 		break;
 	}
@@ -388,7 +386,7 @@ void ai_monsterx(Entity *e) {
 	// Prevent clipping through walls/floor
 	if(e->state >= STATE_X_FIGHT_BEGIN) {
 		if(player.x < ARENA_LEFT) player.x = ARENA_LEFT;
-		if(player.x > ARENA_RIGHT) player.x = ARENA_RIGHT;
+        if(player.x > ARENA_RIGHT) player.x = ARENA_RIGHT;
 		if(player.y > ARENA_BOTTOM) player.y = ARENA_BOTTOM;
 	}
 	
@@ -654,7 +652,7 @@ void ai_x_target(Entity *e) {
 void ondeath_monsterx(Entity *e) {
 	e->state = STATE_X_EXPLODING;
 	e->flags &= ~(NPC_SHOOTABLE | NPC_SHOWDAMAGE);
-	e->damage_time = 150;
+	e->damage_time = 120;
 	tsc_call_event(e->event);
 }
 

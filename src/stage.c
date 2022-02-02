@@ -117,7 +117,7 @@ void stage_load(uint16_t id) {
 	}
     z80_release();
     enable_ints;
-    
+
 	// Load stage PXM into RAM
 	stage_load_blocks();
 	// Move camera to player's new position
