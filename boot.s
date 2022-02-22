@@ -54,10 +54,10 @@ RomStart:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "
-		.ascii	"GRIND   2022.JAN"
+		.ascii	"GRIND   2022.FEB"
 		.ascii	"Doukutsu Monogatari MD                          "
 		.ascii	"Cave Story MD                                   "
-		.ascii	"GM ANDYG002-A7"
+		.ascii	"GM ANDYG002-A8"
 		dc.w	0
 		.ascii	"J6              "
 		dc.l	0x000000

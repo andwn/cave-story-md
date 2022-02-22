@@ -374,7 +374,6 @@ void ai_monsterx(Entity *e) {
             entities_clear_by_type(OBJ_X_DOOR);
             entities_clear_by_type(OBJ_X_TREAD);
             entities_clear_by_type(OBJ_X_INTERNALS);
-            entities_clear_by_type(OBJ_FORCEFIELD);
             player.grounded = FALSE; // Stop player from floating where treads were
             playerPlatform = NULL; // I SAID STOP DAMMIT
             e->state = STATE_DELETE;

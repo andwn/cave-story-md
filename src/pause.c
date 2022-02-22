@@ -56,6 +56,8 @@ void draw_itemmenu(uint8_t resetCursor) {
     vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
     vdp_map_xy(VDP_PLAN_W, 0, 39, y);
 
+    disable_ints;
+    z80_request();
     // Load the 4 tiles for the selection box. Since the menu can never be brought up
     // during scripts we overwrite the face image
     vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
@@ -164,6 +166,8 @@ void draw_itemmenu(uint8_t resetCursor) {
             itemSprite[i] = (VDPSprite) {};
         }
     }
+    z80_release();
+    enable_ints;
     // Draw item cursor at first index (default selection)
     if(resetCursor) {
         selectedItem = -6 + currentWeapon;
@@ -208,15 +212,26 @@ uint8_t update_pause() {
         hud_show();
         hud_force_redraw();
         vdp_sprites_clear();
+
+        disable_ints;
+        z80_request();
         vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+8,1);
         vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+9,1);
         vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+12,1);
         vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+13,1);
+        z80_release();
+        enable_ints;
         aftervsync();
         // Reload shared sheets we clobbered
+        disable_ints;
+        z80_request();
         sheets_load_stage(stageID, TRUE, FALSE);
+        z80_release();
+        enable_ints;
+
         selectedItem = 0;
         aftervsync();
+
         // Reload TSC Events for the current stage
         tsc_load_stage(stageID);
         // Put the sprites for player/entities/HUD back

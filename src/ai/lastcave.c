@@ -209,7 +209,6 @@ void ai_red_demon(Entity *e) {
 				case 50:
 				{
 					e->frame = 4;
-					//EmFireAngledShot(o, OBJ_RED_DEMON_SHOT, 0, 0x800);
 					Entity *shot = entity_create(e->x, e->y, OBJ_RED_DEMON_SHOT, 0);
 					THROW_AT_TARGET(shot, player.x, player.y, 0x800);
 					sound_play(SND_EM_FIRE, 5);
@@ -257,7 +256,6 @@ void ai_red_demon(Entity *e) {
 				case 50:
 				{
 					e->frame = 6;
-					//EmFireAngledShot(o, OBJ_RED_DEMON_SHOT, 0, 0x800);
 					Entity *shot = entity_create(e->x, e->y, OBJ_RED_DEMON_SHOT, 0);
 					THROW_AT_TARGET(shot, player.x, player.y, 0x800);
 					sound_play(SND_EM_FIRE, 5);
@@ -302,28 +300,21 @@ void ai_red_demon(Entity *e) {
 		{
 			e->flags &= ~NPC_SHOOTABLE;
 			e->attack = 0;
-			
 			if (e->grounded) {
 				e->state = 51;
 				e->frame = 2;
-				
 				camera_shake(10);
-				//SmokeClouds(o, 12, 4, 4);
-				//e->SpawnXP(19);
-				
 				sound_play(SND_BIG_CRASH, 6);
-				
-				// needed to prevent status bars from not disappearing
-				//game.bossbar.object = NULL;
 			}
 		}
 		break;
 		
 		case 51:
 		{
-			e->x_speed *= 7;
-			e->x_speed /= 8;
-			
+            if(e->x_speed) {
+                e->x_speed *= 7;
+                e->x_speed /= 8;
+            }
 			e->frame = 8;
 		}
 		break;

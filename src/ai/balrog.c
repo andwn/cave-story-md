@@ -311,15 +311,13 @@ void ai_balrog_drop_in(Entity *e) {
 			e->state = 1;
 			e->grounded = FALSE;
 			e->frame = ARMSUP;	// falling;
-			//e->x -= pixel_to_sub(16);
 		}
 		/* fallthrough */
 		case 1:
 		{
 			// since balrog often falls through the ceiling we must wait until he is 
 			// free-falling before we start checking to see if he hit the floor
-			uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
-			if(((stage_get_block_type(x, y-1) | stage_get_block_type(x, y+1)) & 0x41) != 0x41) {
+			if(((blk(e->x, 0, e->y, -16) | blk(e->x, 0, e->y, 0) | blk(e->x, 0, e->y, 16)) & 0x41) != 0x41) {
 				e->state = 2;
 			}
 		}
@@ -330,8 +328,6 @@ void ai_balrog_drop_in(Entity *e) {
 				e->frame = DUCK;
 				e->state = 3;
 				e->timer = 0;
-
-				//SmokeSide(o, 4, DOWN);
 				camera_shake(30);
 			}
 		}

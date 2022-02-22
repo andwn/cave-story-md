@@ -70,18 +70,21 @@ void stage_load(uint16_t id) {
 	water_entity = NULL;
 	bossEntity = NULL;
 
-    disable_ints;
-    z80_request();
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
+        disable_ints;
+        z80_request();
 		stage_load_tileset();
+        z80_release();
+        enable_ints;
 	}
 	// Load sprite sheets
+    disable_ints;
+    z80_request();
 	sheets_load_stage(id, FALSE, TRUE);
 	// Load backgrounds
-	if(background_info[stage_info[id].background].type == 4 || 
-			stageBackground != stage_info[id].background) {
+	if(background_info[stage_info[id].background].type == 4 || stageBackground != stage_info[id].background) {
 		stageBackground = stage_info[id].background;
 		stageBackgroundType = background_info[stageBackground].type;
 		vdp_set_backcolor(0); // Color index 0 for everything except fog
@@ -99,14 +102,7 @@ void stage_load(uint16_t id) {
 		} else if(stageBackgroundType == 4) { // Almond Water
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLAN_B);
-			// Your guess is as good as mine as to why these numbers specifically
-			// fix the stupid water background drawing over the wrong rows.
-			// Yeah there's even a fucking PAL specific number nice awesomenfweroqvnerbn
-			if(stageID == STAGE_DARK_PLACE) {
-				backScrollTable[0] = -13;
-			} else {
-				backScrollTable[0] = pal_mode ? -20 : -21;
-			}
+            backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
 			vdp_tiles_load_from_rom(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -134,10 +130,8 @@ void stage_load(uint16_t id) {
 
 	stage_load_entities(); // Create entities defined in the stage's PXE
 	// For rooms where the boss is always loaded
-	if(stageBackgroundType == 3) {
+	if(stageID == STAGE_WATERWAY_BOSS) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_IRONHEAD, 0);
-	} else if(stageBackgroundType == 4) {
-		backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
 	}
 	if(stageID == STAGE_BLACK_SPACE) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_UNDEADCORE, 0);
@@ -284,7 +278,7 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 
 // Stage vblank drawing routine
 void stage_update() {
-    z80_request();
+    //z80_request();
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -385,7 +379,7 @@ void stage_update() {
 		if(t < currentsCount) {
 			uint16_t from_index = 0;
 			uint8_t *from_ts = NULL;
-			uint16_t to_index = TILE_TSINDEX + (currents[t].index << 2);// + ((currents[t].index >> 4) << 6);
+			uint16_t to_index = TILE_TSINDEX + (currents[t].index << 2);
 			switch(currents[t].dir) {
 				case 0: // Left
 					from_ts = (uint8_t*) TS_WindH.tiles;
@@ -412,7 +406,7 @@ void stage_update() {
 			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
-    z80_release();
+    //z80_release();
 }
 
 void stage_setup_palettes() {
@@ -494,13 +488,13 @@ void stage_draw_background() {
 	uint16_t pal = background_info[stageBackground].palette;
 	for(uint16_t y = 0; y < 32; y += h) {
 		for(uint16_t x = 0; x < 64; x += w) {
-			//vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(pal,0,0,0,TILE_BACKINDEX), x, y, w, h, 1);
-			uint16_t tile = TILE_ATTR(pal,0,0,0,TILE_BACKINDEX);
-			for(uint16_t yy = 0; yy < h; yy++) {
-				for(uint16_t xx = 0; xx < w; xx++) {
-					vdp_map_xy(VDP_PLAN_B, tile++, x+xx, y+yy);
-				}
-			}
+			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(pal,0,0,0,TILE_BACKINDEX), x, y, w, h, 1);
+			//uint16_t tile = TILE_ATTR(pal,0,0,0,TILE_BACKINDEX);
+			//for(uint16_t yy = 0; yy < h; yy++) {
+			//	for(uint16_t xx = 0; xx < w; xx++) {
+			//		vdp_map_xy(VDP_PLAN_B, tile++, x+xx, y+yy);
+			//	}
+			//}
 		}
 	}
 }
