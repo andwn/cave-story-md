@@ -391,11 +391,11 @@ void stage_update() {
 				break;
 				case 2: // Right
 					from_ts = (uint8_t*) TS_WindH.tiles;
-					from_index = 13 - ((currentsTimer >> 1) & ~1);
+					from_index = 14 - ((currentsTimer >> 1) & ~1);
 				break;
 				case 3: // Down
 					from_ts = (uint8_t*) TS_WindV.tiles;
-					from_index = 13 - ((currentsTimer >> 1) & ~1);
+					from_index = 14 - ((currentsTimer >> 1) & ~1);
 				break;
 				default: return;
 			}
