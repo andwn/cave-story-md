@@ -111,7 +111,7 @@ void camera_update() {
 		if(x_next < pixel_to_sub(SCREEN_HALF_W + bounds)) {
 			x_next = pixel_to_sub(SCREEN_HALF_W + bounds);
 		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds)) {
-			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds);
+			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W - bounds);
 		}
 		if(y_next < pixel_to_sub(SCREEN_HALF_H + bounds)) {
 			y_next = pixel_to_sub(SCREEN_HALF_H + bounds);
