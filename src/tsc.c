@@ -1079,6 +1079,11 @@ uint8_t execute_command() {
 		{
 			args[0] = tsc_read_word();
 			if(gamemode != GM_CREDITS) {
+                vdp_vsync();
+                player_draw();
+                entities_draw();
+                ready = TRUE;
+                aftervsync();
 				vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 				// Blank the sprite list in VRAM
 				//vdp_sprites_clear();

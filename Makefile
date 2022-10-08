@@ -261,7 +261,7 @@ $(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
 
 head-gen:
 	rm -f inc/ai_gen.h
-	python aigen.py
+	python3 aigen.py
 
 clean:
 	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
