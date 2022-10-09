@@ -70,53 +70,6 @@ static void z80_upload(const uint16_t to, const uint8_t *from, uint16_t size) {
     while(size--) *dst++ = *src++;
 }
 
-static void ym2612_write(const uint16_t port, const uint8_t data) {
-    volatile int8_t *pb = (int8_t*) 0xA04000;
-    // wait while YM2612 busy
-    while(*pb < 0);
-    // write data
-    pb[port & 3] = data;
-}
-
-static void ym2612_reset() {
-    uint16_t bus_taken = z80_bus_taken();
-    if(!bus_taken) z80_request();
-    // enable left and right output for all channel
-    for(uint16_t i = 0; i < 3; i++) {
-        ym2612_write(0, 0xB4 | i);
-        ym2612_write(1, 0xC0);
-        ym2612_write(2, 0xB4 | i);
-        ym2612_write(3, 0xC0);
-    }
-    // disable LFO
-    ym2612_write(0, 0x22);
-    ym2612_write(1, 0x00);
-    // disable timer & set channel 6 to normal mode
-    ym2612_write(0, 0x27);
-    ym2612_write(1, 0x00);
-    // ALL KEY OFF
-    ym2612_write(0, 0x28);
-    for(uint16_t i = 0; i < 3; i++) {
-        ym2612_write(1, 0x00 | i);
-        ym2612_write(1, 0x04 | i);
-    }
-    // disable DAC
-    ym2612_write(0, 0x2B);
-    ym2612_write(1, 0x00);
-    if(!bus_taken) z80_release();
-}
-
-static void psg_init() {
-    volatile uint8_t *pb = (uint8_t*) 0xC00011;
-    for (uint16_t i = 0; i < 4; i++) {
-        // set tone to 0
-        *pb = 0x80 | (i << 5) | 0x00;
-        *pb = 0x00;
-        // set envelope to silent
-        *pb = 0x90 | (i << 5) | 0x0F;
-    }
-}
-
 static uint16_t xgm_get_ready() {
     // bus already taken ? just check status
     if(z80_bus_taken()) {
@@ -140,9 +93,6 @@ void xgm_init() {
     // wait bus released
     while(z80_bus_taken());
     z80_reset_end();
-	// reset sound chips
-	ym2612_reset();
-	psg_init();
 	// misc parameters initialisation
     z80_request();
     uint32_t addr = (uint32_t) smp_null;
@@ -205,7 +155,7 @@ void xgm_music_play(const uint8_t *song) {
     z80_release();
     enable_ints;
 }
-/*
+
 void xgm_music_stop() {
     disable_ints;
     z80_request();
@@ -218,12 +168,12 @@ void xgm_music_stop() {
     z80_drv_params[0x03] = addr >> 24;
     // set play XGM command
     *z80_drv_command |= (1 << 6);
-    // clear pending frame
-    z80_drv_params[0x0F] = 0;
+    // force immediate music process
+    z80_drv_params[0x0F] = 3;
     z80_release();
     enable_ints;
 }
-*/
+
 void xgm_music_pause() {
     disable_ints;
     z80_request();

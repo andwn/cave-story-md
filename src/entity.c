@@ -960,7 +960,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 }
 
 void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t flags) {
-    const static int flags_to_keep = (NPC_INTERACTIVE | NPC_EVENTONDEATH
+    static const uint16_t keep = (NPC_INTERACTIVE | NPC_EVENTONDEATH
                                       | NPC_DISABLEONFLAG | NPC_ENABLEONFLAG | NPC_OPTION2);
 	Entity *e = entityList;
 	while(e) {
@@ -969,7 +969,7 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 			// number of sprites
 			int32_t x = e->x;
 			int32_t y = e->y;
-			/*if(type > 0) */flags |= e->flags & flags_to_keep;
+			/*if(type > 0) */flags |= e->flags & keep;
 			uint16_t id = e->id;
             e = entity_delete(e);
 			Entity *new = entity_create_ext(x, y, type, flags, id, event);
@@ -982,7 +982,7 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 		if(e->event == event) {
             int32_t x = e->x;
             int32_t y = e->y;
-            /*if(type > 0) */flags |= e->flags & flags_to_keep;
+            /*if(type > 0) */flags |= e->flags & keep;
             uint16_t id = e->id;
             e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
             Entity *new = entity_create_ext(x, y, type, flags, id, event);

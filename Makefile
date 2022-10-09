@@ -130,17 +130,14 @@ prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
 symbol.txt: $(TARGET)-en.bin
 	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n $(TARGET)-en.elf > symbol.txt
 
-boot.o:
-	$(AS) $(ASFLAGS) boot.s -o $@
-
 $(TARGET)-en.bin: $(TARGET)-en.elf
 	@echo "Stripping ELF header, pad to 512K"
 	@$(OBJC) -O binary $< temp.bin
 	@dd if=temp.bin of=$@ bs=524288 conv=sync
 	@rm -f temp.bin
 
-%.elf: boot.o $(PATS) $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) boot.o $(OBJS) $(LIBS)
+%.elf: $(PATS) $(OBJS)
+	$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -266,7 +263,7 @@ head-gen:
 clean:
 	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
 	rm -f $(TSBS) $(TL_TSBS)
-	rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt boot.o temp.elf temp.o
+	rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt temp.elf
 	rm -f res/patches/*.patch
 	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
 	rm -f res/resources.h res/resources.s inc/ai_gen.h
