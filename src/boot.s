@@ -2,19 +2,19 @@
 
 /* Outer Wall is the largest stage file at 18008 bytes */
 /* 18008 - 4 (header) - 4 (size) - 76 (error vars) = 17924 */
-    .globl stagePXM
-    .globl stageBlocks
+        .globl stagePXM
+        .globl stageBlocks
 stagePXM:    ds.b 8
 stageBlocks: ds.b 17924
 
 /* Error Handling Stuff */
-	.globl v_err_reg
-	.globl v_err_pc
-	.globl v_err_addr
-	.globl v_err_ext1
-	.globl v_err_ext2
-	.globl v_err_sr
-	.globl v_err_type
+        .globl v_err_reg
+        .globl v_err_pc
+        .globl v_err_addr
+        .globl v_err_ext1
+        .globl v_err_ext2
+        .globl v_err_sr
+        .globl v_err_type
 v_err_reg:	ds.l 16
 v_err_pc:	ds.l 1
 v_err_addr:	ds.l 1
@@ -24,25 +24,25 @@ v_err_sr:	ds.w 1
 v_err_type:	ds.b 1
 
 /* VSync */
-    .globl vblank
+        .globl vblank
 vblank:		ds.b 1
 
 /* Sound Driver Stuff */
-	.globl xgmTempo
-	.globl xgmTempoCnt
-	.globl xgmTempoDef
+        .globl xgmTempo
+        .globl xgmTempoCnt
+        .globl xgmTempoDef
 xgmTempo:   ds.w 1
 xgmTempoCnt:ds.w 1
 xgmTempoDef:ds.w 1
 
 .section .text.keepboot
 
-    .globl 	_hard_reset
+        .globl 	_hard_reset
 
-    .org    0x00000000
+        .org    0x00000000
 
 RomStart:
-        dc.l    0x000000, _start
+        dc.l    __stack_top, _start
         dc.l    BusError, AddressError, IllegalInst, ZeroDivide
     .rept 20
 		dc.l	NullInt
@@ -79,20 +79,13 @@ _start:
         beq.s   NoTMSS
         move.l  (0x100),0xA14000        /* Write 'SEGA' to TMSS register */
 NoTMSS:
-        move.w  (0xC00004),d0           /* Read VDP status */
-        move.w  #0x0100,(0xA11100)      /* Halt / Reset Z80 */
-        move.w  #0x0100,(0xA11200)
+#        move.w  (0xC00004),d0           /* Read VDP status */
+#        move.w  #0x0100,(0xA11100)      /* Halt / Reset Z80 */
+#        move.w  #0x0100,(0xA11200)
 _hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
-        lea     0xFF0000,a0             /* First RAM address */
-        moveq   #0,d0
-        move.w  #0x3FFF,d1              /* (Size of RAM - 1) / Size of long */
-ClearRam:
-        move.l  d0,(a0)+
-        dbra    d1,ClearRam
-        lea     _stext,a0               /* Start of initialized data (BSS) in ROM */
-        lea     0xFF0000,a1             /* First RAM address */
-        move.l  #_sdata,d0              /* (Size of BSS + 1) / 2 */
-        addq.l  #1,d0
+        lea     __text_end,a0           /* Start of .data segment init values in ROM */
+        lea     __data_start,a1         /* Start of .data segment in RAM */
+        move.l  #__data_size,d0         /* Size of .data segment */
         lsr.l   #1,d0
         beq     NoCopy
         subq.w  #1,d0                   /* sub extra iteration */
@@ -100,6 +93,16 @@ CopyVar:
         move.w  (a0)+,(a1)+             /* Copy initialized data to RAM */
         dbra    d0,CopyVar
 NoCopy:
+        /* .bss segment is directly after .data, so a1 is already there */
+        move.l  #__bss_size,d0          /* Size of .bss segment in RAM */
+        lsr.l   #1,d0
+        beq     NoZero
+        moveq   #0,d1
+        subq.w  #1,d0                   /* sub extra iteration */
+ZeroVar:
+        move.w  d1,(a1)+                /* Copy zero data to RAM */
+        dbra    d0,ZeroVar
+NoZero:
         jsr     main                    /* IT BEGINS */
         beq.s   _hard_reset             /* main returned, reset */
 
@@ -163,10 +166,10 @@ VBlank:
 		movem.l d0-d1/a0-a1,-(sp)
 
 		/* Wait for DMA */
-XGM_DMAWait:
-        move.w 0xC00004,d0
-        andi.w #2,d0
-        bgt.s  XGM_DMAWait
+#XGM_DMAWait:
+#        move.w (0xC00004),d0
+#        andi.w #2,d0
+#        bgt.s  XGM_DMAWait
 		
 		/* XGM VBlank Process */
 		lea    0xA11100,%a0             /* a0 = Z80 Halt Port */

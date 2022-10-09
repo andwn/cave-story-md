@@ -1,5 +1,5 @@
-#define STACK_SIZE      0x800
-#define MEMORY_HIGH     (0x01000000 - STACK_SIZE)
+//#define STACK_SIZE      0x800
+//#define MEMORY_HIGH     (0x01000000 - STACK_SIZE)
 
 void mem_init();
 uint16_t mem_get_free();

@@ -165,7 +165,7 @@ Sample* SampleBank_addSample(SampleBank* bank, int dataOffset, int len, int rate
         result = Sample_create(getSizeLList(bank->samples), dataOffset, len, rate);
         insertAfterLList(bank->samples, result);
     }
-    // confirmation of sample
+        // confirmation of sample
     else if (result->rate == 0)
     {
         if (verbose)
@@ -269,10 +269,10 @@ VGMCommand* Sample_getSetRateCommand(SampleBank* bank, Sample* sample, int value
     return VGMCommand_createEx(data, 0, -1);
 }
 
-VGMCommand* Sample_getStartLongCommandEx(SampleBank* bank, Sample* sample, int value)
+VGMCommand* Sample_getStartLongCommandEx(SampleBank* bank, Sample* sample, int len)
 {
     unsigned char* data;
-    int adjLen = min(value, sample->len);
+    int adjLen = min(len, sample->len);
 
     // build command
     data = malloc(11);

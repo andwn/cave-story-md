@@ -29,16 +29,13 @@ PATCHROM = bin/patchrom
 GCC_VER := $(shell $(CC) -dumpversion)
 PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
-ifeq ($(OS),Windows_NT)
-    LTO_SO = liblto_plugin-0.dll
-endif
 
-INCS     = -Isrc -Ires -Iinc
+INCS     = -Isrc -Ires
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon -mshort
+CCFLAGS  = -m68000 -mshort -Wall -Wextra -std=c99 -ffreestanding -fcommon
 OPTIONS  =
-ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T mdssf.ld -nostdlib
+ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
+LDFLAGS  = -T md.ld -nostdlib
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
@@ -96,7 +93,7 @@ ASMO += $(CS:%.c=asmout/%.s)
 
 .SECONDARY: $(TARGET)-en.elf
 
-.PHONY: all pal sega release asm debug translate prereq main-build
+.PHONY: all pal sega release asm debug translate prereq
 
 all: release
 pal: release
@@ -106,7 +103,7 @@ sega: release
 
 release: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
-release: main-build symbol.txt
+release: prereq head-gen $(TARGET)-en.bin symbol.txt
 
 asm: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 asm: OPTIONS += -fshort-enums -fverbose-asm
@@ -114,14 +111,12 @@ asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
 debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
-debug: main-build symbol.txt
+debug: prereq head-gen $(TARGET)-en.bin symbol.txt
 
 translate: $(PATCHROM) $(TL_TSBS)
 translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
 translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
 translate: $(TARGET)-ko.bin
-
-main-build: prereq head-gen $(TARGET)-en.bin
 
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
 prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
@@ -133,7 +128,7 @@ symbol.txt: $(TARGET)-en.bin
 $(TARGET)-en.bin: $(TARGET)-en.elf
 	@echo "Stripping ELF header, pad to 512K"
 	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=524288 conv=sync
+	@dd if=temp.bin of=$@ bs=512K conv=sync
 	@rm -f temp.bin
 
 %.elf: $(PATS) $(OBJS)
@@ -261,10 +256,10 @@ head-gen:
 	python3 aigen.py
 
 clean:
-	rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
-	rm -f $(TSBS) $(TL_TSBS)
-	rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt temp.elf
-	rm -f res/patches/*.patch
-	rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
-	rm -f res/resources.h res/resources.s inc/ai_gen.h
-	rm -rf asmout
+	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
+	@rm -f $(TSBS) $(TL_TSBS)
+	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt temp.elf temp.o
+	@rm -f res/patches/*.patch
+	@rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
+	@rm -f res/resources.h res/resources.s src/ai_gen.h
+	@rm -rf asmout

@@ -5,7 +5,9 @@
 
 #define USED        1
 
-extern uint32_t _bss_end;
+extern uint32_t __stack_top[];
+extern uint32_t __stack_size[];
+extern uint32_t __bss_end[];
 
 static uint16_t* s_free;
 static uint16_t* s_heap;
@@ -38,11 +40,9 @@ static uint16_t* pack(uint16_t nsize) {
 
 void mem_init() {
     // point to end of bss (start of heap)
-    uint32_t h = (uint32_t)&_bss_end;
-    // 2 bytes aligned
-    h &= ~1;
+    uint32_t h = (uint32_t)__bss_end;
     // define available memory (sizeof(uint16_t) is the memory reserved to indicate heap end)
-    uint32_t len = MEMORY_HIGH - (h + sizeof(uint16_t));
+    uint32_t len = (uint32_t)__stack_top - (uint32_t)__stack_size - (h + sizeof(uint16_t));
     // define heap
     s_heap = (uint16_t*) h;
     // and its size
