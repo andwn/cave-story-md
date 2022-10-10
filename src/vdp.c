@@ -261,7 +261,12 @@ void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t 
     if(!async) {
         while(vdp_fade_step_calc()) {
 			vdp_vsync();
+
+            disable_ints;
+            z80_request();
 			vdp_fade_step_dma();
+            z80_release();
+            enable_ints;
 		}
     }
 }
