@@ -33,7 +33,7 @@
 
 typedef struct { uint8_t hour, minute, second, frame; } Time;
 
-static const uint8_t *FileList[] = {
+static const uint8_t * const FileList[] = {
 	LS_00, LS_01, LS_02, LS_03, LS_04, LS_05, LS_06, LS_07,
 	LS_08, LS_09, LS_10, LS_11, LS_12, LS_13, LS_14, LS_15,
 	LS_16, LS_17, LS_18, LS_19, LS_20, LS_21,
@@ -132,32 +132,32 @@ uint8_t system_get_skip_flag(uint16_t flag) {
 }
 
 static void counter_draw_minute() {
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.minute] << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+1) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.minute] << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+2) << 5, 16, 2);
 }
 
 static void counter_draw_second() {
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[(counter.second & 1) << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[(counter.second & 1) << 3],
 			(TILE_COUNTERINDEX) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.second] << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.second] << 3],
 			(TILE_COUNTERINDEX+4) << 5, 16, 2);
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.second] << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.second] << 3],
 			(TILE_COUNTERINDEX+5) << 5, 16, 2);
 }
 
 static void counter_draw_decisecond() {
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Numbers.tiles[counter_decisec << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[counter_decisec << 3],
 			(TILE_COUNTERINDEX+7) << 5, 16, 2);
 }
 
 void system_draw_counter() {
 	counter_draw_minute();
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[2 << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[2 << 3],
 			(TILE_COUNTERINDEX+3) << 5, 16, 2);
 	counter_draw_second();
-	DMA_queueDma(DMA_VRAM, (uint32_t) &TS_Clock.tiles[3 << 3], 
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[3 << 3],
 			(TILE_COUNTERINDEX+6) << 5, 16, 2);
 	counter_draw_decisecond();
 	const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;

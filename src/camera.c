@@ -163,7 +163,7 @@ void camera_update() {
 						//}
 						y++;
 					}
-					DMA_queueDma(DMA_VRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
+					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
 				}
 			}
 		}
@@ -187,7 +187,7 @@ void camera_update() {
 						//}
 						x++;
 					}
-					DMA_queueDma(DMA_VRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
+					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
 				}
 			}
 		}

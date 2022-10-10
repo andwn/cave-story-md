@@ -57,7 +57,7 @@ void stage_load(uint16_t id) {
 	vdp_set_display(FALSE);
 	oldstate = ~0;
 	// Prevents an issue where a column of the previous map would get drawn over the new one
-	DMA_clearQueue();
+	dma_clear();
 	stageID = id;
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
@@ -142,7 +142,7 @@ void stage_load(uint16_t id) {
 
     disable_ints;
     z80_request();
-	DMA_flushQueue();
+	dma_flush();
     z80_release();
     enable_ints;
 
@@ -171,7 +171,7 @@ void stage_load_credits(uint8_t id) {
 	stage_load_blocks();
 	stage_draw_screen_credits();
 	stage_load_entities();
-	DMA_flushQueue();
+	dma_flush();
 	tsc_load_stage(id);
 
 	vdp_set_display(TRUE);
@@ -336,14 +336,14 @@ void stage_update() {
 			if(oldrow > rowc) { // Below Screen
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or above
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
 		}
 		while(row > oldrow) { // Water is lowering (Y increasing)
@@ -355,11 +355,11 @@ void stage_update() {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (random()&15)));
 				}
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or below
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-				DMA_doDma(DMA_VRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
 		}
 		
@@ -400,10 +400,10 @@ void stage_update() {
 				default: return;
 			}
 			// Replace the tile in the tileset
-			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_now(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 			from_index += 16;
 			to_index += 2;
-			DMA_doDma(DMA_VRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_now(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
     //z80_release();
@@ -447,7 +447,7 @@ void stage_draw_screen() {
 				//}
 				x++;
 			}
-			DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + ((y&31)<<7), 64, 2);
+            dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLAN_A + ((y&31)<<7), 64, 2);
 		}
 		y++;
 	}
@@ -461,7 +461,7 @@ void stage_draw_screen_credits() {
 			uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
 			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 		}
-		DMA_doDma(DMA_VRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
+        dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
 	}
 }
 
@@ -524,7 +524,7 @@ void stage_draw_moonback() {
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;
 	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {
-		DMA_doDma(DMA_VRAM, (uint32_t) &topMap[index], VDP_PLAN_B + (y << 7), 40, 2);
+        dma_now(DmaVRAM, (uint32_t) &topMap[index], VDP_PLAN_B + (y << 7), 40, 2);
 		index += 40;
 	}
 	
@@ -534,8 +534,8 @@ void stage_draw_moonback() {
 	// Bottom part
 	index = 0;
 	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 32 : 28); y++) {
-		DMA_doDma(DMA_VRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7),             32, 2);
-		DMA_doDma(DMA_VRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7) + (32 << 1), 32, 2);
+        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7),             32, 2);
+        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7) + (32 << 1), 32, 2);
 		index += 32;
 	}
 	backScrollTimer = 0;

@@ -372,12 +372,12 @@ void do_map() {
     static const uint32_t blank[8] = {
             0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,
     };
-    DMA_doDma(DMA_VRAM, (uint32_t)blank, index << 5, 16, 2);
+    dma_now(DmaVRAM, (uint32_t)blank, index << 5, 16, 2);
     index++;
     static const uint32_t solid[8] = {
             0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,0xBBBBBBBB,
     };
-    DMA_doDma(DMA_VRAM, (uint32_t)solid, index << 5, 16, 2);
+    dma_now(DmaVRAM, (uint32_t)solid, index << 5, 16, 2);
     index++;
 
     z80_release();
@@ -459,6 +459,6 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
     if(blank_c == 8) return 1;
     if(solid_c == 8) return 2;
     // Otherwise upload tile
-    DMA_doDma(DMA_VRAM, (uint32_t)tile, index << 5, 16, 2);
+    dma_now(DmaVRAM, (uint32_t)tile, index << 5, 16, 2);
     return 0;
 }

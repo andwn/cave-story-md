@@ -155,7 +155,7 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
         // Tiles are drawn top to bottom first, so the same code can be used for tilemaps and sprites
         for (uint16_t i = 0; i < 4; i++) {
             uint16_t index = CjkNextTile();
-            DMA_doDma(DMA_VRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);
+            dma_now(DmaVRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);
             uint16_t attr = TILE_ATTR(PAL0, 1, 0, 0, index);
             uint16_t xx = x + ((i & 2) >> 1);
             vdp_map_xy(plan, attr, xx, (y + (i & 1)) & 31);

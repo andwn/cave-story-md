@@ -9,6 +9,7 @@
 #include "system.h"
 #include "tables.h"
 #include "vdp.h"
+#include "xgm.h"
 
 #include "gamemode.h"
 
@@ -43,7 +44,9 @@ void soundtest_main() {
 	
 	uint8_t track = 0;
 	uint8_t status = STOPPED, oldstatus = STOPPED;
-	
+
+	disable_ints;
+    z80_request();
 	vdp_set_display(FALSE);
 	
 	vdp_sprites_clear();
@@ -52,7 +55,7 @@ void soundtest_main() {
 	vdp_tiles_load_from_rom((uint32_t*) PAT_SndTest, 16, 208);
 	uint16_t index = pal_mode ? 0 : 80 << 1;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
-		DMA_doDma(DMA_VRAM, (uint32_t) &MAP_SndTest[index], VDP_PLAN_B + (y << 7), 40, 2);
+		dma_now(DmaVRAM, (uint32_t) &MAP_SndTest[index], VDP_PLAN_B + (y << 7), 40, 2);
 		index += 40 << 1;
 	}
 
@@ -72,6 +75,8 @@ void soundtest_main() {
 	vdp_colors(16, PAL_SndTest.data, 16);
 	
 	vdp_set_display(TRUE);
+    z80_release();
+    enable_ints;
 
 	song_stop();
 	oldstate = ~0;

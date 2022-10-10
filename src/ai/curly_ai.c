@@ -376,7 +376,7 @@ void ai_cai_gun(Entity *e) {
 			e->display_box = curly_mgun ? (bounding_box){ 4, 14, 4, 10 } : (bounding_box){ 4, 18, 4, 6 };
 			e->animtime = TRUE;
 			
-			DMA_doDma(DMA_VRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96>>2)), e->vramindex << 5, 48, 2);
+			dma_queue(DmaVRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96>>2)), e->vramindex << 5, 48, 2);
 			
 		}
 	} else if(e->animtime) {
@@ -385,7 +385,7 @@ void ai_cai_gun(Entity *e) {
 		e->display_box = (bounding_box) { 12, 4, 12, 4 };
 		e->animtime = FALSE;
 		
-		DMA_doDma(DMA_VRAM, (uint32_t) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
+		dma_queue(DmaVRAM, (uint32_t) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
 		
 	}
 	

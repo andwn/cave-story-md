@@ -19,6 +19,7 @@
 #include "vdp.h"
 #include "weapon.h"
 #include "window.h"
+#include "xgm.h"
 
 #include "gamemode.h"
 
@@ -57,4 +58,11 @@ void intro_main() {
 	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 	entities_clear();
 	effects_clear();
+    // Get rid of the sprites
+    vdp_sprites_clear();
+    disable_ints;
+    z80_request();
+    vdp_sprites_update();
+    z80_release();
+    enable_ints;
 }

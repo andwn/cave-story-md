@@ -14,7 +14,7 @@
 \_name\()_end:
 .endm
 
-.section .text
+.section .rodata
 
 # Compressed tileset patterns
 BIN UFTC_Almond "res/Stage/PrtAlmond_vert.uftc"
@@ -340,30 +340,6 @@ PCM SFX_1F  "res/sfx/1F.pcm"
 PCM SFX_20  "res/sfx/20.pcm"
 PCM SFX_21  "res/sfx/21.pcm"
 PCM SFX_22  "res/sfx/22.pcm"
-
-.section .rodata
-/* 0x200000 */
-    .align 0x80000
-
-    .globl smp_null
-    .globl TILE_BLANK
-    .globl BLANK_DATA
-smp_null:
-TILE_BLANK:
-BLANK_DATA:
-.rept 16
-    dc.l    0, 0, 0, 0
-.endr
-
-    .ascii  "SEGA MEGA DRIVE "
-    .ascii  "                "
-    .ascii  "https://www.youtube.com/watch?v=y-kIvItmQMc     "
-    .ascii  "https://www.youtube.com/watch?v=HnyGSl3K-IE     "
-    .ascii  "GM 00001009-00"
-    dc.w    0
-
-/* More sound effects */
-
 PCM SFX_23  "res/sfx/23.pcm"
 /* 24 */
 PCM SFX_25  "res/sfx/25.pcm"
@@ -400,14 +376,12 @@ PCM SFX_46  "res/sfx/46.pcm"
 PCM SFX_47  "res/sfx/47.pcm"
 PCM SFX_48  "res/sfx/48.pcm"
 /* 49 4A 4B 4C 4D 4E 4F */
-
 #PCM SFX_96  "res/sfx/96.pcm"
 #PCM SFX_97  "res/sfx/97.pcm"
 #PCM SFX_98  "res/sfx/98.pcm"
 #PCM SFX_99  "res/sfx/99.pcm"
 #PCM SFX_9A  "res/sfx/9A.pcm"
 #PCM SFX_9B  "res/sfx/9B.pcm"
-
 /* 60 61 62 63 */
 PCM SFX_64  "res/sfx/64.pcm"
 PCM SFX_65  "res/sfx/65.pcm"
@@ -428,6 +402,7 @@ PCM SFX_73  "res/sfx/73.pcm"
 PCM SFX_74  "res/sfx/74.pcm"
 PCM SFX_75  "res/sfx/75.pcm"
 /* 76 77 78 79 7A 7B 7C 7D 7E 7F */
+
 
 BIN BGM_Mischievous, "res/bgm/mischievous.xgc"
 BIN BGM_Safety,      "res/bgm/safety.xgc"

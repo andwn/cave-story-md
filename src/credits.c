@@ -235,18 +235,18 @@ void credits_show_image(uint16_t id) {
     z80_request();
 
 	vdp_set_display(FALSE);
-	vdp_colors(32, illustration_info[id].palette->data, 16);
 	vdp_tiles_load_from_rom(illustration_info[id].pat, 16, illustration_info[id].pat_size);
 	uint16_t index = pal_mode ? 0 : 20;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
-		DMA_doDma(DMA_VRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLAN_A + (y << 7) + (44 << 1), 20, 2);
+		dma_now(DmaVRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLAN_A + (y << 7) + (44 << 1), 20, 2);
 		index += 20;
 	}
 	vdp_set_display(TRUE);
     illScrolling = 8;
 
     z80_release();
-    enable_ints;
+    enable_ints; // Vertical int will fire immediately
+    vdp_colors(32, illustration_info[id].palette->data, 16);
 }
 
 void credits_clear_image() {

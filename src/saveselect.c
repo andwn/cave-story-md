@@ -102,7 +102,7 @@ static uint8_t refresh_file(uint8_t index) {
 			}
 			memcpy(tileData[2], &TS_Numbers.tiles[mod10[file.health]*8], 32);
 			uint16_t tile = TILE_SHEETINDEX + index*8;
-			DMA_doDma(DMA_VRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
+			dma_now(DmaVRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {
 				vdp_map_xy(VDP_PLAN_A, TILE_ATTR(PAL0,0,0,0,tile+i), 6+i, y+2);
 			}

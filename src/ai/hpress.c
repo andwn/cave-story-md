@@ -208,10 +208,10 @@ void ai_heavypress(Entity *e) {
 		if(e->damage_time) {
 			if((e->damage_time & 3) == 3) {
 				// Flash bright
-				DMA_queueDma(DMA_CRAM, (uint32_t) bright_sym, 22<<1, 4, 2);
+				dma_queue(DmaCRAM, (uint32_t) bright_sym, 22<<1, 4, 2);
 			} else if((e->damage_time & 3) == 1) {
 				// Flash normal
-				DMA_queueDma(DMA_CRAM, (uint32_t) &PAL_Sym.data[6], 22<<1, 4, 2);
+				dma_queue(DmaCRAM, (uint32_t) &PAL_Sym.data[6], 22<<1, 4, 2);
 			}
 		}
 	}

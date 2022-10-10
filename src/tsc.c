@@ -440,7 +440,7 @@ void tsc_update_boss_health() {
 static void tsc_render_warp_text() {
 	const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	// Copy our string to VRAM
-	DMA_queueDma(DMA_VRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
+    dma_queue(DmaVRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
 	// Create sprites to display the string
 	teleMenuSprite[6] = (VDPSprite) { 
 		.x = 160 - 32 + 128, .y = 32 + 128,
