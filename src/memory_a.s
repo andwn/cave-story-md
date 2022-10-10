@@ -1,13 +1,15 @@
         .globl memset
 memset:
+#        move.w  14(sp),d0
         move.w  10(sp),d0          /* d0 = len */
-        beq     .L02
+        jeq     .L02
 
         move.l  4(sp),a0           /* a0 = to */
-        move.b  9(sp),d1          /* d1 = value */
+#        move.b  11(sp),d1
+        move.b  9(sp),d1           /* d1 = value */
 
         cmpi.w  #15,d0             /* len < 16 ? */
-        bhi     .L30
+        jhi     .L30
 
         subq.w  #1,d0
 
@@ -30,7 +32,7 @@ memset:
 
         move.w  a0,d2
         btst    #0,d2              /* dst & 1 ? (byte aligned) */
-        beq     .L34
+        jeq     .L34
 
         move.b  d1,(a0)+           /* align to word */
         subq.w  #1,d0
@@ -38,7 +40,7 @@ memset:
 .L34:
         move.w  d0,d2
         lsr.w   #5,d2              /* d2 = len / 32 */
-        beq     .L47
+        jeq     .L47
 
         subq.w #1,d2
 
@@ -57,7 +59,7 @@ memset:
         move.w  d0,d2
         lsr.w   #2,d2
         andi.w  #7,d2              /* d2 = (len >> 2) & 7 */
-        beq     .L49
+        jeq     .L49
 
         subq.w  #1,d2
 
@@ -67,7 +69,7 @@ memset:
 
 .L49:
         andi.w  #3,d0              /* d0 = len & 3 */
-        beq     .L29
+        jeq     .L29
 
         subq.w  #1,d0
 
@@ -82,14 +84,15 @@ memset:
 
         .globl memcpy
 memcpy:
+#        move.w  14(sp),d0
         move.w  12(sp),d0          /* d0 = len */
-        beq     .L82
+        jeq     .L82
 
         move.l  4(sp),a1           /* a1 = dst */
         move.l  8(sp),a0           /* a0 = src */
 
         cmpi.w  #15,d0             /* len < 16 ? */
-        bhi     .L80
+        jhi     .L80
 
         subq.w  #1,d0
 
@@ -107,11 +110,11 @@ memcpy:
         move.w  a1,d2
         eor.w   d1,d2
         btst    #0,d2              /* same byte alignment on src and dst ? */
-        beq     .L84               /* go to word copy */
+        jeq     .L84               /* go to word copy */
 
         move.w  d0,d2
         lsr.w   #3,d2              /* d2 = len >> 3 */
-        beq     .L104
+        jeq     .L104
 
         subq.w  #1,d2
 
@@ -128,7 +131,7 @@ memcpy:
 
 .L104:
         andi.w  #7,d0              /* d0 = len & 7 */
-        beq     .L89
+        jeq     .L89
 
         subq.w  #1,d0
 
@@ -142,7 +145,7 @@ memcpy:
 
 .L84:
         btst    #0,d1              /* src/dst address byte aligned ? */
-        beq     .L91
+        jeq     .L91
 
         move.b  (a0)+,(a1)+        /* align to word */
         subq.w  #1,d0
@@ -150,7 +153,7 @@ memcpy:
 .L91:
         move.w  d0,d2
         lsr.w   #5,d2              /* d2 = len / 32 */
-        beq     .L108
+        jeq     .L108
 
         subq.w  #1,d2
 
@@ -169,7 +172,7 @@ memcpy:
         move.w  d0,d2
         lsr.w   #2,d2
         andi.w  #7,d2              /* d2 = (len >> 2) & 7 */
-        beq     .L110
+        jeq     .L110
 
         subq.w  #1,d2
 
@@ -179,7 +182,7 @@ memcpy:
 
 .L110:
         andi.w  #3,d0              /* d0 = len & 3 */
-        beq     .L79
+        jeq     .L79
 
         subq.w  #1,d0
 

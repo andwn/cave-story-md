@@ -28,8 +28,8 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 
-//#define PROFILE_BG
-#ifdef PROFILE_BG
+//#define PROFILE
+#ifdef PROFILE
 #define PF_BGCOLOR(c) ({ \
 	*((volatile uint32_t*) 0xC00004) = 0xC0000000; \
     *((volatile uint16_t*) 0xC00000) = c; \

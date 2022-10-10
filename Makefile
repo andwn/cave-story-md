@@ -31,9 +31,8 @@ PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
 
 INCS     = -Isrc -Ires
-LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)
-CCFLAGS  = -m68000 -mshort -Wall -Wextra -std=c99 -ffreestanding -fcommon
-OPTIONS  =
+CCFLAGS  = -m68000 -mshort -Wall -Wextra -ffreestanding -fshort-enums -fcommon
+OPTIONS  = -O3 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time
 ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
 LDFLAGS  = -T md.ld -nostdlib
 Z80FLAGS = -isrc/xgm
@@ -91,27 +90,23 @@ ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
-.SECONDARY: $(TARGET)-en.elf
-
-.PHONY: all pal sega release asm debug translate prereq
-
+.PHONY: all sega profile release asm debug translate prereq
 all: release
-pal: release
 
 sega: OPTIONS += -DSEGA_LOGO
 sega: release
 
-release: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
-release: prereq head-gen $(TARGET)-en.bin symbol.txt
+profile: OPTIONS += -DPROFILE
+profile: release
 
-asm: OPTIONS += -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-asm: OPTIONS += -fshort-enums -fverbose-asm
+release: OPTIONS += -flto -fuse-linker-plugin
+release: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
+
+asm: OPTIONS += -fverbose-asm
 asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
-# Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
-debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
-debug: prereq head-gen $(TARGET)-en.bin symbol.txt
+debug: OPTIONS += -DDEBUG -DKDEBUG
+debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 
 translate: $(PATCHROM) $(TL_TSBS)
 translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
@@ -121,18 +116,18 @@ translate: $(TARGET)-ko.bin
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
 prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
 
-# Cross reference symbol.txt with the addresses displayed in the crash handler
-symbol.txt: $(TARGET)-en.bin
-	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n $(TARGET)-en.elf > symbol.txt
+# Cross reference symbol list with the addresses displayed in the crash handler
+%.lst: %.elf
+	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n $< > $@
 
-$(TARGET)-en.bin: $(TARGET)-en.elf
+%.bin: %.elf
 	@echo "Stripping ELF header, pad to 512K"
 	@$(OBJC) -O binary $< temp.bin
 	@dd if=temp.bin of=$@ bs=512K conv=sync
 	@rm -f temp.bin
 
 %.elf: $(PATS) $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
+	$(CC) -o $@ $(LDFLAGS) $(OBJS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -146,7 +141,7 @@ $(TARGET)-en.bin: $(TARGET)-en.elf
 	$(RESCOMP) $< $@
 
 %.o80: %.s80
-	$(ASMZ80) $(Z80FLAGS) $< $@ out.lst
+	$(ASMZ80) $(Z80FLAGS) $< $@ z80_xgm.lst
 
 # Old SGDK tools
 bin:
@@ -258,8 +253,8 @@ head-gen:
 clean:
 	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
 	@rm -f $(TSBS) $(TL_TSBS)
-	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf symbol.txt temp.elf temp.o
+	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf $(TARGET)-en.lst temp.elf temp.o
 	@rm -f res/patches/*.patch
-	@rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h out.lst
+	@rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h z80_xgm.lst
 	@rm -f res/resources.h res/resources.s src/ai_gen.h
 	@rm -rf asmout

@@ -969,11 +969,11 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 			// number of sprites
 			int32_t x = e->x;
 			int32_t y = e->y;
-			/*if(type > 0) */flags |= e->flags & keep;
+			flags |= e->flags & keep;
 			uint16_t id = e->id;
             e = entity_delete(e);
 			Entity *new = entity_create_ext(x, y, type, flags, id, event);
-            e->flags |= /*(e->flags & ~flags_to_keep) |*/ flags;
+            new->flags |= flags;
 			new->dir = direction;
 		} else e = e->next;
 	}
@@ -982,11 +982,11 @@ void entities_replace(uint16_t event, uint16_t type, uint8_t direction, uint16_t
 		if(e->event == event) {
             int32_t x = e->x;
             int32_t y = e->y;
-            /*if(type > 0) */flags |= e->flags & keep;
+            flags |= e->flags & keep;
             uint16_t id = e->id;
             e = entity_delete_inactive(e); // So Balrog doesn't delete every entity in the room
             Entity *new = entity_create_ext(x, y, type, flags, id, event);
-            e->flags |= /*(e->flags & ~flags_to_keep) |*/ flags;
+            new->flags |= flags;
             new->dir = direction;
 		} else e = e->next;
 	}

@@ -59,7 +59,6 @@ void camera_shake(uint16_t time) {
 }
 
 void camera_update() {
-	PF_BGCOLOR(0x08E);
 	int32_t x_next, y_next;
 	if(camera.target) {
 		// If following the player focus on where they are walking/looking
@@ -201,6 +200,4 @@ void camera_update() {
 	// Apply camera position
 	camera.x = x_next;
 	camera.y = y_next;
-
-	PF_BGCOLOR(0x000);
 }
