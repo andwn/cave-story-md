@@ -42,9 +42,9 @@
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \
-	for(uint8_t i = MAX_SHEETS; i--; ) {                                                       \
-		if(sheets[i].id == sid) {                                                              \
-			index = i;                                                                         \
+	for(uint8_t ii = MAX_SHEETS; ii--; ) {                                                     \
+		if(sheets[ii].id == sid) {                                                             \
+			index = ii;                                                                        \
 			break;                                                                             \
 		}                                                                                      \
 	}                                                                                          \

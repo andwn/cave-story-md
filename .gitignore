@@ -1,8 +1,7 @@
 doukutsu.bin
 doukutsu-*.bin
 temp.bin
-symbol.txt
-out.lst
+*.lst
 *.cpxm
 *.pat
 *.map
@@ -13,8 +12,10 @@ out.lst
 *.o
 *.o80
 *.elf
-inc/ai_gen.h
+src/ai_gen.h
 res/resources.h
+res/resources.s
 src/boot/rom_head.bin
 src/xgm/z80_xgm.h
+src/xgm/z80_xgm.s
 .DS_Store

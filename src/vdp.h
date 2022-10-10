@@ -20,6 +20,10 @@
 #define PAL2					2
 #define PAL3					3
 
+#define FADE_NONE               0
+#define FADE_INPROGRESS         1
+#define FADE_LAST               2
+
 #define TILE_SIZE				32
 #define TILE_INDEX_MASK         0x7FF
 
@@ -143,7 +147,8 @@ void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color(uint16_t index, uint16_t color);
 void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color_next(uint16_t index, uint16_t color);
-uint16_t vdp_fade_step();
+uint16_t vdp_fade_step_calc();
+void vdp_fade_step_dma();
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async);
 
 // Scrolling

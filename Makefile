@@ -31,8 +31,9 @@ PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
 
 INCS     = -Isrc -Ires
-CCFLAGS  = -m68000 -mshort -Wall -Wextra -ffreestanding -fshort-enums -fcommon
-OPTIONS  = -O3 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time
+CCFLAGS  = -m68000 -mshort -ffreestanding -fshort-enums -fno-unit-at-a-time -fcommon
+OPTIONS  = -O3 -fomit-frame-pointer -fno-web -fno-gcse
+WARNINGS = -Wall -Wextra -Wshadow -Wundef
 ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
 LDFLAGS  = -T md.ld -nostdlib
 Z80FLAGS = -isrc/xgm
@@ -131,7 +132,7 @@ prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
 
 %.o: %.c
 	@echo "CC $<"
-	@$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(OPTIONS) $(WARNINGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
 	@echo "AS $<"

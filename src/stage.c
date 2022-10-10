@@ -239,7 +239,7 @@ void stage_load_entities() {
 		// When an NPC is assigned the improper number of sprites for their metasprite
 		// loading it will crash BlastEm and possibly hardware too. This steps through
 		// each entity as it is loaded so the problematic NPC can be found
-	#if DEBUG
+	#ifdef DEBUG
 		if(joy_down(BUTTON_A)) {
 			vdp_set_display(TRUE);
 			vdp_color(0, 0x444);

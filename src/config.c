@@ -382,7 +382,7 @@ void act_format(uint8_t page) {
 			vdp_init();
 			system_format_sram();
 			sound_play(0xE5-0x80, 15);
-			uint16_t timer = TIME_8(150);
+			timer = TIME_8(150);
 			while(--timer) {
 				vdp_vsync(); aftervsync();
 			}

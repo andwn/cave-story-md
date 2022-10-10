@@ -19,20 +19,20 @@ void aftervsync() {
 	disable_ints;
     z80_request();
 
+    vdp_fade_step_dma();
 	DMA_flushQueue();
-	vdp_fade_step();
 	dqueued = FALSE;
 	if(ready) {
 		if(inFade) vdp_sprites_clear();
-		vdp_sprites_update();
         if(gamemode == GM_GAME) stage_update(); // Scrolling
+		vdp_sprites_update();
 		ready = FALSE;
 	}
-	//joy_update();
-    
+
     z80_release();
     enable_ints;
 
+    vdp_fade_step_calc();
     joy_update();
 }
 
