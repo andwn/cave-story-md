@@ -504,14 +504,14 @@ int main(int argc,char *argv[]) {
                         unfuck = true;
                         break;
                     case 'l': {
-                        if (strlen(&argv[i][j]) >= 4) {
+                        if (argv[i][j+1] == '=' && strlen(&argv[i][j+2]) >= 2) {
                             j += 2;
                         } else { // If they put a space instead of =
                             i++;
                             j = 0;
                         }
                         language = read_langcode(&argv[i][j]);
-                        j = strlen(&argv[i][j]) - 1;
+                        j = strlen(argv[i]) - 1;
                         break;
                     }
                 }
