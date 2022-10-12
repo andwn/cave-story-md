@@ -4,7 +4,7 @@ This file is where I list off the (intentional) differences in this port and why
 ### Graphics
 
  - The resolution is 320x224 on NTSC, so there will be an extra bit of vertical scrolling.
- - I got a bit creative with the sprinkler effect to avoid lag. There are less particles and they alternate visibility.
+ - I got a bit creative with the sprinkler effect to avoid lag. There are fewer particles and they alternate visibility.
  - CSMD uses a simple palette fade instead of the original effect which is very difficult to emulate on the hardware (if possible at all).
  - The message box disappears on fade out, but text is still visible. The way that works is actually that the color white in the main palette is kept white.
  - The font is 8x8 where the original was more like 6x8. The original game also cheated with the font, it's drawn at double the resolution.

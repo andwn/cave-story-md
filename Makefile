@@ -22,8 +22,9 @@ MDTILER  = $(TOOLSBIN)/mdtiler
 SLZ      = $(TOOLSBIN)/slz
 UFTC     = $(TOOLSBIN)/uftc
 # Cave Story Tools
-TSCOMP   = bin/tscomp
+AIGEN    = python3 tools/aigen.py
 PATCHROM = bin/patchrom
+TSCOMP   = bin/tscomp
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -149,7 +150,7 @@ bin:
 	mkdir -p bin
 
 $(BINTOS): bin
-	cc tools/bintos/src/*.c -o $@
+	cc tools/bintos.c -o $@
 	
 $(RESCOMP): bin
 	cc tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
@@ -158,14 +159,17 @@ $(XGMTOOL): bin
 	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@ -lm
 
 $(WAVTORAW): bin
-	cc tools/wavtoraw/src/*.c -o $@ -lm
+	cc tools/wavtoraw.c -o $@ -lm
 
 # Cave Story tools
 $(TSCOMP): bin
 	cc tools/tscomp/tscomp.c -o $@
 
 $(PATCHROM): bin
-	cc tools/patchrom/patchrom.c -o $@
+	cc tools/patchrom.c -o $@
+
+$(HPPGEN): bin
+	cc tools/hppgen.c -o $@
 
 # For asm target
 asm-dir:
@@ -244,12 +248,10 @@ $(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
 $(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
-
 .PHONY: head-gen clean
-
 head-gen:
-	rm -f inc/ai_gen.h
-	python3 aigen.py
+	rm -f src/ai_gen.h
+	$(AIGEN) src/ai/ src/ai_gen.h
 
 clean:
 	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)

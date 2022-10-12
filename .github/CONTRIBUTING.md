@@ -35,4 +35,4 @@ Getting it into the game gets more complicated based on
 - My level of burnout
 
 In addition to the TSC files, there are the stage names embedded in doukutsu.exe.
-If those are translated give me the patched EXE so I can extract them.
+If those are translated give me the patched EXE, so I can extract them.

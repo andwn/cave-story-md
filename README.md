@@ -28,9 +28,11 @@ You can still get crushed, drown and fall out of bounds.
 Note that you can't load or save the game while cheating (including the counter).
 
 ## Compilation
-1. Setup [marsdev](https://github.com/andwn/marsdev) and `python`
+1. Setup [marsdev](https://github.com/andwn/marsdev) and `python3`
   - Marsdev targets: `m68k-toolchain z80-tools sik-tools`
 2. Clone & `make`
+  - For Sega logo: `make sega`
+  - For translations: `make translate`
 
 ## Other Information
 - [FAQ](doc/FAQ.md)
@@ -45,7 +47,7 @@ I did not know how to sort this list, so I did it alphabetically.
 
 - andwhyisit: A whole lot of testing. Automated builds.
 - DavisOlivier: Helped with a few music tracks.
-- Sik: Mega Drive tech support. Made the font used ingame.
+- Sik: Mega Drive tech support. Made the font used in-game.
 - Other people I probably forgot
 
 ## Translations
@@ -56,7 +58,7 @@ Mostly taken from cavestory.org
 - French: [Max le Fou](http://cavestory.maxlefou.com/)
 - German: [Reality Dreamers](http://www.reality-dreamers.de/)
 - Italian: [Simon M.](mailto:simonogatari@gmail.com)
-- Portugese: [Andre Silva](mailto:andreluis.g.silva@gmail.com)
-- BR Portugese: [Alex "Foffano"](mailto:foffano@gmail.com)
+- Portuguese: [Andre Silva](mailto:andreluis.g.silva@gmail.com)
+- BR Portuguese: [Alex "Foffano"](mailto:foffano@gmail.com)
 - Chinese (Simplified): Hydrowing
 - Korean: Anonymous

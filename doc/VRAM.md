@@ -14,7 +14,7 @@ I leave the first (transparency) alone and overwrite the rest like this:
 
 #### 0x010 (TILE_USERINDEX and TILE_TSINDEX)
 On the title screen I toss the full walking animation of Quote here because I'm lazy.
-In game it's where the current map's tileset goes, they are at most 256x112 pixels (448 tiles).
+In-game it's where the current map's tileset goes, they are at most 256x112 pixels (448 tiles).
 Some of them had to be crushed with a custom utility.
 
 #### 0x1D0 (TILE_FACEINDEX)
@@ -31,10 +31,10 @@ This space is reused by boss battles to display the boss health bar.
 
 #### 0x204 (TILE_SHEETINDEX)
 Space for shared sprite sheets - the first 4 are always power ups:
-3. Heart, 2x2x4 tiles
-4. Missile, 2x2x4 tiles
-5. Small Energy, 1x1x6 tiles
-6. Large Energy, 2x2x6 tiles
+1. Heart, 2x2x4 tiles
+2. Missile, 2x2x4 tiles
+3. Small Energy, 1x1x6 tiles
+4. Large Energy, 2x2x6 tiles
 The remaining depend on the current map and which weapons the player currently owns.
 The maximum number of sheets is 24, but the allocation space is not limited or bounds checked in any way.
 Be careful.
@@ -44,11 +44,11 @@ This either begins at `TILE_SHEETINDEX + 24 * 6`, or after the last sheet. Which
 The reason for the minimum index is to prevent the item menu & map system from overwriting it.
 This space is controlled by an allocation array, each index represents an "in use" or "not in use"
 state for a segment of 4 tiles.
-A game object must "ask" for a location large enough to store it's own sprite and on every
+A game object must "ask" for a location large enough to store its own sprite and on every
 animation frame change will replace the tiles at that spot.
 
 #### Just before TILE_FONTINDEX
-The window uses this area to display the "Yes/No" prompt, cursor, or the item pick up.
+The window uses this area to display the "Yes/No" prompt, cursor, or the item pickup.
 It could potentially collide with the above I'm just hoping that doesn't happen for now.
 
 #### TILE_FONTINDEX

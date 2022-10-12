@@ -30,8 +30,6 @@
 #define LEN_COMMAND		3
 #define LEN_NUMBER		4
 
-#define CFLAG_MSGOPEN	0x01
-#define CFLAG_MSGCLOSE	0x02
 #define CFLAG_JUMP		0x04
 #define CFLAG_END		0x08
 
@@ -78,25 +76,25 @@ typedef struct {
 
 const CommandDef command_table[COMMAND_COUNT] = {
 	// Message Related
-	{ "MSG", 0x80, 0, CFLAG_MSGOPEN },
-	{ "MS2", 0x81, 0, CFLAG_MSGOPEN },
-	{ "MS3", 0x82, 0, CFLAG_MSGOPEN },
-	{ "CLO", 0x83, 0, CFLAG_MSGCLOSE },
-	{ "CLR", 0x84, 0, CFLAG_MSGOPEN },
-	{ "NUM", 0x85, 1, CFLAG_MSGOPEN },
-	{ "GIT", 0x86, 1, CFLAG_MSGOPEN },
-	{ "FAC", 0x87, 1, CFLAG_MSGOPEN },
+	{ "MSG", 0x80, 0, },
+	{ "MS2", 0x81, 0, },
+	{ "MS3", 0x82, 0, },
+	{ "CLO", 0x83, 0, },
+	{ "CLR", 0x84, 0, },
+	{ "NUM", 0x85, 1, },
+	{ "GIT", 0x86, 1, },
+	{ "FAC", 0x87, 1, },
 	{ "CAT", 0x88, 0, 0 },
 	{ "SAT", 0x89, 0, 0 },
 	{ "TUR", 0x8A, 0, 0 },
 	{ "YNJ", 0x8B, 1, CFLAG_JUMP },
 	// Commands that are at the end of an event block
-	{ "END", 0x8C, 0, CFLAG_MSGCLOSE | CFLAG_END },
-	{ "EVE", 0x8D, 1, /*CFLAG_MSGCLOSE |*/ CFLAG_JUMP | CFLAG_END },
-	{ "TRA", 0x8E, 4, CFLAG_MSGCLOSE | CFLAG_END },
-	{ "INI", 0x8F, 0, CFLAG_MSGCLOSE | CFLAG_END },
-	{ "LDP", 0x90, 0, CFLAG_MSGCLOSE | CFLAG_END },
-	{ "ESC", 0x91, 0, CFLAG_MSGCLOSE | CFLAG_END },
+	{ "END", 0x8C, 0, CFLAG_END },
+	{ "EVE", 0x8D, 1, CFLAG_JUMP | CFLAG_END },
+	{ "TRA", 0x8E, 4, CFLAG_END },
+	{ "INI", 0x8F, 0, CFLAG_END },
+	{ "LDP", 0x90, 0, CFLAG_END },
+	{ "ESC", 0x91, 0, CFLAG_END },
 	// Music / Sound (18-25)
 	{ "CMU", 0x92, 1, 0 }, // Change music
 	{ "FMU", 0x93, 0, 0 }, // Fade music
@@ -354,7 +352,6 @@ uint16_t do_command(FILE *fout) {
 }
 
 void do_event(FILE *fout) {
-    bool msgWindowOpen = false;
     uint16_t id = read_number(0);
     uint16_t commandCount = 0;
 
@@ -368,8 +365,6 @@ void do_event(FILE *fout) {
                 pc++;
                 commandCount++;
                 uint16_t flags = do_command(fout);
-                if(flags & CFLAG_MSGOPEN) msgWindowOpen = true;
-                else if(flags & CFLAG_MSGCLOSE) msgWindowOpen = false;
                 if(flags & CFLAG_END) return;
                 break;
             }
@@ -437,6 +432,7 @@ void do_event(FILE *fout) {
             }
             case CT_SKIP: pc++; break;
             case CT_SKIP2BYTE: pc += 2; break;
+            default:
             case CT_INVALID: {
                 printf("WARN: Invalid character: '%c' (0x%02hx)\n", tsc[pc], tsc[pc]);
                 pc++;
@@ -454,7 +450,7 @@ void do_event(FILE *fout) {
 
 void do_script(FILE *fout) {
     uint8_t eventCount = 0;
-    // Place holder to store the real count when finished
+    // Placeholder to store the real count when finished
     fwrite(&eventCount, 1, 1, fout);
     while(pc < tscSize && eventCount < MAX_EVENTS) {
         uint8_t c = tsc[pc++];
@@ -493,13 +489,13 @@ int main(int argc,char *argv[]) {
         printf("  -t:    Show tracing info for debugging\n");
         printf("  -u:    Unfuck the input (encrypted)\n");
         printf("  -l=XX: Specify language/encoding (2 letter code)\n");
-        printf("         (Supported: EN JA ES FR DE IT PT BR)\n");
+        printf("         (Supported: EN JA ZH KO ES FR DE IT PT BR)\n");
         return 0;
     }
-    int i = 1;
+    size_t i = 1;
     for(; i < argc - 1; i++) {
         if (argv[i][0] == '-') {
-            for (int j = 1; argv[i][j] != '\0'; j++) {
+            for (size_t j = 1; argv[i][j] != '\0'; j++) {
                 switch (argv[i][j]) {
                     case 't':
                         trace = true;
@@ -508,14 +504,14 @@ int main(int argc,char *argv[]) {
                         unfuck = true;
                         break;
                     case 'l': {
-                        uint16_t k = 0;
                         if (strlen(&argv[i][j]) >= 4) {
                             j += 2;
                         } else { // If they put a space instead of =
                             i++;
+                            j = 0;
                         }
                         language = read_langcode(&argv[i][j]);
-                        j++;
+                        j = strlen(&argv[i][j]) - 1;
                         break;
                     }
                 }
@@ -542,10 +538,10 @@ int main(int argc,char *argv[]) {
         fread(kanji, 1, kanjiCount * 2, kfile);
         fclose(kfile);
         // Endianness is a bitch
-        for(uint16_t i = 0; i < kanjiCount; i++) {
-            uint8_t hi = kanji[i] >> 8;
-            uint8_t lo = kanji[i] & 0xFF;
-            kanji[i] = (lo << 8) | hi;
+        for(uint16_t k = 0; k < kanjiCount; k++) {
+            uint8_t hi = kanji[k] >> 8;
+            uint8_t lo = kanji[k] & 0xFF;
+            kanji[k] = (lo << 8) | hi;
         }
 
         if(trace) printf("TRACE: Loaded kanji list.\n");

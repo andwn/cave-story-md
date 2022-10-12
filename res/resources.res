@@ -459,6 +459,9 @@ TILESET TS_XXBack		"xxBack.png" 			0
 TILESET TS_XXFore		"xxFore.png" 			0
 SPRITE SPR_XXIsland		"xxIsland.png" 			5 3 0 0 NONE
 
+# Fading
+TILESET TS_Fade         "fade.png"              0
+
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets
 # ----------------------------------------------------------------------------------------------
