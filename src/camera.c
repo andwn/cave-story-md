@@ -72,12 +72,17 @@ void camera_update() {
 				camera.x_offset += PAN_SPEED;
 				if(camera.x_offset > PAN_SIZE) camera.x_offset = PAN_SIZE;
 			}
-			if(!controlsLocked && joy_down(BUTTON_UP) && player.y_speed <= 0) {
+			if(!controlsLocked && joy_down(BUTTON_UP)) {
 				camera.y_offset -= PAN_SPEED;
 				if(camera.y_offset < -PAN_SIZE) camera.y_offset = -PAN_SIZE;
-			} else {
+			} else if(!controlsLocked && joy_down(BUTTON_DOWN)) {
 				camera.y_offset += PAN_SPEED;
-				if(camera.y_offset > 0) camera.y_offset = 0;
+				if(camera.y_offset > PAN_SIZE) camera.y_offset = PAN_SIZE;
+			} else {
+				if(camera.y_offset > 0)
+					camera.y_offset -= PAN_SPEED;
+				else if(camera.y_offset < 0)
+					camera.y_offset += PAN_SPEED;
 			}
 			// Calculate where camera will be next frame
 			x_next = camera.x +
