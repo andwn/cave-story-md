@@ -20,5 +20,5 @@ const weapon_info_def weapon_info[WEAPON_COUNT] = {
 	{ &SPR_Missl2,PAL0, {10,20,10}, "" }, // Super Missiles
 	{ NULL,       PAL0, { 0, 0, 0}, "" },
 	{ &SPR_Nemes, PAL0, {10,20,10}, "" }, // Nemesis
-	{ &SPR_Polar, PAL1, {10,20,30}, "" }, // Spur
+	{ &SPR_Polar, PAL1, {40,40,40}, "" }, // Spur
 };

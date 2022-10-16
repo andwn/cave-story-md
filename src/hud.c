@@ -30,19 +30,24 @@ uint32_t tileData[28][8];
 uint8_t hudMaxHealth, hudHealth;
 uint8_t hudWeapon, hudMaxAmmo, hudAmmo;
 uint8_t hudLevel, hudMaxEnergy, hudEnergy;
+uint8_t hudMaxBlink;
 
 // Used for bar animation
 uint8_t hudEnergyPixel, hudEnergyTimer, hudEnergyDest;
 
 uint8_t showing = FALSE;
 
-static const uint8_t EnergyPixel[4][42] = {
+static const uint8_t EnergyPixel[6][62] = {
         { 0, 4, 8,12,16,20,24,28,32,36,40 },
         { 0, 2, 4, 6, 8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40 },
         { 0, 1, 3, 4, 6, 7, 9,10,11,12,14,15,17,18,19,20,22,23,25,26,
          27,29,30,31,33,34,36,37,38,39,40 },
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,
-         20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40 },
+         20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,40,40,40,40,40 },
+        { 0, 1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 9,10,11,12,13,13,14,15,16,17,17,18,19,
+         20,21,21,22,23,24,25,25,26,27,28,29,29,30,31,32,33,33,34,35,36,37,37,38,39,40,40,40,40,40,40,40 },
+        { 0, 1, 1, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9, 9,10,11,11,12,13,13,14,15,15,16,17,17,18,19,19,
+         20,21,21,22,23,23,24,25,25,26,27,27,28,29,29,30,31,31,32,33,33,34,35,35,36,37,37,38,39,39,40,40 },
 };
 
 void hud_refresh_health();
@@ -57,6 +62,7 @@ void hud_create() {
 	hudMaxHealth = hudHealth = hudWeapon = hudLevel = hudMaxAmmo = hudAmmo = 255;
     hudEnergy = hudMaxEnergy = 10;
 	hudEnergyPixel = hudEnergyTimer = hudEnergyDest = 0;
+    hudMaxBlink = 0;
 	// Create the sprites
 	sprHUD[0] = (VDPSprite) {
 		.x = 16 + 128,
@@ -122,7 +128,7 @@ void hud_update() {
     if(hudLevel != playerWeapon[currentWeapon].level) {
 		hud_refresh_energy(TRUE);
 	}
-    if(hudEnergy != playerWeapon[currentWeapon].energy) {
+    if(hudEnergyTimer || hudEnergy != playerWeapon[currentWeapon].energy) {
 		hud_refresh_energy(FALSE);
 	}
     if(hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
@@ -166,41 +172,56 @@ void hud_refresh_health() {
 
 void hud_refresh_energy(uint8_t hard) {
 	// Energy or level changed
-	if(hudLevel != playerWeapon[currentWeapon].level || hudWeapon != currentWeapon) {
+    if(hudWeapon != currentWeapon) {
+        hudLevel = playerWeapon[currentWeapon].level;
+        hard = TRUE;
+        hudMaxBlink = 0;
+    } else if(hudLevel != playerWeapon[currentWeapon].level) {
 		hudLevel = playerWeapon[currentWeapon].level;
 		hard = TRUE;
 	}
+    // The Spur's values are rather high, so if it's equipped half it in this temp variable,
+    // so that the lookup table can still be used
+    uint8_t tempMaxEnergy;
+    uint8_t tempEnergy;
 	if(playerWeapon[currentWeapon].type == WEAPON_SPUR) {
 		hudMaxEnergy = spur_time[pal_mode||cfg_60fps][playerWeapon[currentWeapon].level];
+        tempMaxEnergy = hudMaxEnergy >> 1;
+        tempEnergy = hudEnergy >> 1;
+        if(hudEnergy != playerWeapon[currentWeapon].energy) hudMaxBlink = 1;
 	} else {
 		hudMaxEnergy = max(weapon_info[playerWeapon[currentWeapon].type].experience[hudLevel-1], 10);
+        tempMaxEnergy = hudMaxEnergy;
+        tempEnergy = hudEnergy;
 	}
 	if(!hard) {
 		if(hudEnergyTimer == 0) {
-            hudEnergyPixel = EnergyPixel[div10[hudMaxEnergy] - 1][hudEnergy];
-            hudEnergyDest = EnergyPixel[div10[hudMaxEnergy] - 1][playerWeapon[currentWeapon].energy];
-			//hudEnergyPixel = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
-			//hudEnergyDest = ((playerWeapon[currentWeapon].energy<<5) + (playerWeapon[currentWeapon].energy<<3)) / hudMaxEnergy;
+            hudEnergyPixel = EnergyPixel[div10[tempMaxEnergy] - 1][tempEnergy];
+            hudEnergyDest = EnergyPixel[div10[tempMaxEnergy] - 1][playerWeapon[currentWeapon].energy];
 			hudEnergyTimer = 3;
 		} else {
 			hudEnergyTimer--;
 		}
 	} else {
 		hudEnergy = playerWeapon[currentWeapon].energy;
-		//hudEnergyPixel = ((hudEnergy<<5) + (hudEnergy<<3)) / hudMaxEnergy;
-        hudEnergyPixel = EnergyPixel[div10[hudMaxEnergy] - 1][hudEnergy];
+        hudEnergyPixel = EnergyPixel[div10[tempMaxEnergy] - 1][tempEnergy];
 		hudEnergyDest = hudEnergyPixel;
-		hudEnergyTimer = 0;
+        hudEnergyTimer = 0;
 	}
 	if(hudEnergyTimer == 0) {
 		// Max energy draws "MAX"
 		if(playerWeapon[currentWeapon].energy == hudMaxEnergy) {
-			for(uint8_t i = 0; i < 5; i++) {
-				memcpy(tileData[XP_BAR+i+3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
-			}
-			hudEnergy = hudMaxEnergy;
-			hudEnergyDest = hudEnergyPixel;
+            hudEnergy = hudMaxEnergy;
+            hudEnergyDest = hudEnergyPixel;
+            if(hudMaxBlink != 0) {
+                hudEnergyTimer = 2;
+            } else {
+                for (uint8_t i = 0; i < 5; i++) {
+                    memcpy(tileData[XP_BAR + i + 3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
+                }
+            }
 		} else {
+            hudMaxBlink = 1;
 			// Even if these values are equal, we need to redraw the bar after it flashes
 			if(hudEnergyPixel > hudEnergyDest) {
 				// Energy decreasing
@@ -223,7 +244,9 @@ void hud_refresh_energy(uint8_t hard) {
 				hudEnergyTimer = 3;
 			}
 		}
-	} else if(hudEnergyTimer == 2) {
+	}
+    if(hudEnergyTimer == 2) {
+        hudMaxBlink = 0;
 		// Flashing while increasing / decreasing
 		for(uint8_t i = 0; i < 5; i++) {
 			memcpy(tileData[XP_BAR+i+3], &TS_HudFlash.tiles[i * TSIZE], TILE_SIZE);

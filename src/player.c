@@ -1106,9 +1106,13 @@ static void player_prev_weapon() {
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
+            if(playerWeapon[i].type == WEAPON_SPUR) {
+                playerWeapon[i].level = 1;
+                playerWeapon[i].energy = 0;
+            }
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}
@@ -1121,9 +1125,13 @@ static void player_next_weapon() {
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
+            if(playerWeapon[i].type == WEAPON_SPUR) {
+                playerWeapon[i].level = 1;
+                playerWeapon[i].energy = 0;
+            }
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}
