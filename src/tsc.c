@@ -260,13 +260,13 @@ uint8_t tsc_update() {
 			} else {
 				waitTime--;
 				// ArmsItem uses <WAI9999 after everything. The original game probably uses this
-				// in some weird way but it'll just freeze here, so don't <WAI in the pause menu
+				// in some weird way, but it'll just freeze here, so don't <WAI in the pause menu
 				if(paused) {
 					waitTime = 0;
 				// Check the wait time again to prevent underflowing
 				} else if(waitTime > 0 && (cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) && gamemode == GM_GAME) {
 					if(cfg_ffwd) {
-						// Fast forward while holding A, update active entities a second time
+						// Fast-forward while holding A, update active entities a second time
 						// to double their movement speed (unless <PRI is set)
 						waitTime--;
 						if(!gameFrozen) entities_update(FALSE);
@@ -1116,7 +1116,7 @@ uint8_t execute_command() {
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
 			if(args[0] >= stageWidth || args[1] >= stageHeight) {
-				// Outside of the map -- don't do this
+				// Outside the map -- don't do this
 				break;
 			}
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
@@ -1128,13 +1128,15 @@ uint8_t execute_command() {
 			} else if(stageTileset == 25) { // Throne Room / Ostep
 				if(args[2] == 18) args[2] = 49;
 				if(args[2] == 21) args[2] = 50;
+            } else if(stageTileset == 26) { // Hell
+                if(args[2] == 28) args[2] = 25;
 			} else if(stageTileset == 27) { // King's Table
 				if(args[2] == 18) args[2] = 40;
 				if(args[2] == 21) args[2] = 41;
 			} else if(stageTileset == 28) { // Black Space
-				if(args[2] == 18) args[2] = 33;
-				if(args[2] == 21) args[2] = 34;
-			}
+                if (args[2] == 18) args[2] = 33;
+                if (args[2] == 21) args[2] = 34;
+            }
 			// Puff of smoke
 			stage_replace_block(args[0], args[1], args[2]);
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
