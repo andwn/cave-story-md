@@ -8,6 +8,7 @@
 #include "error.h"
 #include "hud.h"
 #include "joy.h"
+#include "memory.h"
 #include "pause.h"
 #include "player.h"
 #include "resources.h"
@@ -179,16 +180,19 @@ void game_reset(uint8_t load) {
 	vdp_map_clear(VDP_PLAN_B);
 	camera_init();
 	tsc_init();
+    // Default sprite sheets
+    sheets_load_stage(255, TRUE, TRUE);
+
+    memset(playerWeapon, 0, sizeof(Weapon) * 5);
+
+    gameFrozen = FALSE;
+    if(load >= 4) {
+        system_load_levelselect(load - 4);
+    } else {
+        system_load(sram_file);
+    }
 	hud_create();
-	// Default sprite sheets
-	sheets_load_stage(255, TRUE, TRUE);
-	
-	gameFrozen = FALSE;
-	if(load >= 4) {
-		system_load_levelselect(load - 4);
-	} else {
-		system_load(sram_file);
-	}
+
 	const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 	if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
 	
