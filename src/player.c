@@ -675,10 +675,13 @@ void player_start_booster() {
 			break;
 			case BOOST_HOZ:
 				player.y_speed = 0;
-				if (joy_down(BUTTON_LEFT))
+				if (joy_down(BUTTON_LEFT)) {
 					player.x_speed = -SPEED_12(0x600);
-				else
+                    // Little hack to prevent clipping against left wall
+                    player.x += 0x100;
+				} else {
 					player.x_speed = SPEED_12(0x600);
+                }
 			break;
 		}
 	} else {
@@ -723,9 +726,17 @@ static void player_update_booster() {
 	switch(playerBoostState) {
 		case BOOST_HOZ:
 		{
-			if ((!player.dir && nblockl) || (player.dir && nblockr)) {
-				player.y_speed = -SPEED_8(0xFF);
-			}
+            if(!player.dir) { // Left
+                if(nblockl) {
+                    player.y_speed = -SPEED_8(0xFF);
+                    player.x += 0x100;
+                }
+            } else { // Right
+                if(nblockr) {
+                    player.y_speed = -SPEED_8(0xFF);
+                    player.x -= 0x100;
+                }
+            }
 			// I believe the player should not constantly fly upward after
 			// getting hit but need to verify what the original CS does
 			//if(playerIFrames) {
