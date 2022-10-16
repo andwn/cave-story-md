@@ -25,72 +25,17 @@
 
 #include "pause.h"
 
-// Item menu stuff
-VDPSprite itemSprite[MAX_ITEMS];
-int8_t selectedItem = 0;
-
-void draw_itemmenu(uint8_t resetCursor) {
-    vdp_set_display(FALSE);
-    vdp_sprites_clear();
-    uint8_t top = pal_mode ? 1 : 0;
-    // Fill the top part
-    uint16_t y = top;
-    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
-    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), 1, y);
-    vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), 2, y, 36, 1, 0);
-    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), 38, y);
-    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
-    for(uint16_t i = 19; --i;) { // Body
-        y++;
-        vdp_map_xy(VDP_PLAN_W, 0, 0, y);
-        vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), 1, y);
-        vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), 2, y, 36, 1, 0);
-        vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), 38, y);
-        vdp_map_xy(VDP_PLAN_W, 0, 39, y);
-    }
-    // Bottom
-    y++;
-    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
-    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), 1, y);
-    vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), 2, y, 36, 1, 0);
-    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
-    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
-
-    disable_ints;
-    z80_request();
-    // Load the 4 tiles for the selection box. Since the menu can never be brought up
-    // during scripts we overwrite the face image
-    vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
-    // Redraw message box at the bottom of the screen
-    window_open(FALSE);
-    // Load tiles for the font letters
+// Load tiles for the font letters
 #define LOAD_LETTER(c,in) (vdp_tiles_load_from_rom(TS_MsgFont.tiles+((c-0x20)<<3),      \
 						   TILE_HUDINDEX+in,1))
 #define DRAW_LETTER(in,xx,yy) (vdp_map_xy(VDP_PLAN_W,                                   \
 							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
-    // Load 8x8 numbers
-    vdp_tiles_load_from_rom(TS_MsgFont.tiles+(('0'-0x20)<<3),TILE_HUDINDEX,10);
-    // Lv, slash for weapon display
-    LOAD_LETTER('L', 14);
-    LOAD_LETTER('v', 15);
-    LOAD_LETTER('/', 16);
-    LOAD_LETTER('-', 17);
-    // ARMSITEM or ぶきもちもの
-    const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
-    vdp_tiles_load_from_rom(ts + (2<<3), TILE_HUDINDEX + 10, 4);
-    vdp_tiles_load_from_rom(ts + (10<<3), TILE_HUDINDEX + 18, 4);
-    // Weapons
-    y = top + 3;
-    // --ARMS-- or --ぶき--
-    DRAW_LETTER(17,4,y);
-    DRAW_LETTER(17,5,y);
-    DRAW_LETTER(10,6,y);
-    DRAW_LETTER(11,7,y);
-    DRAW_LETTER(12,8,y);
-    DRAW_LETTER(13,9,y);
-    DRAW_LETTER(17,10,y);
-    DRAW_LETTER(17,11,y);
-    y++;
+
+// Item menu stuff
+VDPSprite itemSprite[MAX_ITEMS];
+int8_t selectedItem = 0;
+
+void draw_weapons(uint8_t y) {
     for(uint16_t i = 0; i < MAX_WEAPONS; i++) {
         Weapon *w = &playerWeapon[i];
         if(!w->type) continue;
@@ -129,6 +74,69 @@ void draw_itemmenu(uint8_t resetCursor) {
             DRAW_LETTER(17,	x+3,y+4);
         }
     }
+}
+
+void draw_itemmenu(uint8_t resetCursor) {
+    vdp_set_display(FALSE);
+    vdp_sprites_clear();
+    uint8_t top = pal_mode ? 1 : 0;
+    // Fill the top part
+    uint16_t y = top;
+    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
+    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), 1, y);
+    vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), 2, y, 36, 1, 0);
+    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), 38, y);
+    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
+    for(uint16_t i = 19; --i;) { // Body
+        y++;
+        vdp_map_xy(VDP_PLAN_W, 0, 0, y);
+        vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), 1, y);
+        vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), 2, y, 36, 1, 0);
+        vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), 38, y);
+        vdp_map_xy(VDP_PLAN_W, 0, 39, y);
+    }
+    // Bottom
+    y++;
+    vdp_map_xy(VDP_PLAN_W, 0, 0, y);
+    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), 1, y);
+    vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), 2, y, 36, 1, 0);
+    vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), 38, y);
+    vdp_map_xy(VDP_PLAN_W, 0, 39, y);
+
+    disable_ints;
+    z80_request();
+    // Load the 4 tiles for the selection box. Since the menu can never be brought up
+    // during scripts we overwrite the face image
+    vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
+    // Redraw message box at the bottom of the screen
+    window_open(FALSE);
+
+    // Load 8x8 numbers
+    vdp_tiles_load_from_rom(TS_MsgFont.tiles+(('0'-0x20)<<3),TILE_HUDINDEX,10);
+    // Lv, slash for weapon display
+    LOAD_LETTER('L', 14);
+    LOAD_LETTER('v', 15);
+    LOAD_LETTER('/', 16);
+    LOAD_LETTER('-', 17);
+    // ARMSITEM or ぶきもちもの
+    const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+    vdp_tiles_load_from_rom(ts + (2<<3), TILE_HUDINDEX + 10, 4);
+    vdp_tiles_load_from_rom(ts + (10<<3), TILE_HUDINDEX + 18, 4);
+    // Weapons
+    y = top + 3;
+    // --ARMS-- or --ぶき--
+    DRAW_LETTER(17,4,y);
+    DRAW_LETTER(17,5,y);
+    DRAW_LETTER(10,6,y);
+    DRAW_LETTER(11,7,y);
+    DRAW_LETTER(12,8,y);
+    DRAW_LETTER(13,9,y);
+    DRAW_LETTER(17,10,y);
+    DRAW_LETTER(17,11,y);
+    y++;
+
+    draw_weapons(y);
+
     // Items
     y = top + 10;
     // --ITEM-- or --もちもの--
@@ -168,7 +176,7 @@ void draw_itemmenu(uint8_t resetCursor) {
     }
     z80_release();
     enable_ints;
-    // Draw item cursor at first index (default selection)
+    // Draw the item cursor at first index (default selection)
     if(resetCursor) {
         selectedItem = -6 + currentWeapon;
     }
@@ -191,8 +199,8 @@ void draw_itemmenu(uint8_t resetCursor) {
 }
 
 uint8_t update_pause() {
-    // Start or B will close the menu and resume the game
-    // Pressing C over a weapon will too, and switch to that weapon
+    // Start or B will close the menu and resume the game.
+    // Pressing C over a weapon will too, and switch to that weapon.
     if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot]) ||
         (selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) /*&& !tscState*/) {
         tscState = TSC_IDLE;
@@ -246,7 +254,7 @@ uint8_t update_pause() {
         vdp_set_display(TRUE);
         return FALSE;
     } else {
-        // Every cursor move and item selection runs a script
+        // Every cursor move and item selection runs a script.
         // Weapons are 1000 + ID
         // Items are 5000 + ID
         // Item descriptions are 6000 + ID
@@ -254,7 +262,7 @@ uint8_t update_pause() {
             if(selectedItem >= 0) { // Item
                 uint8_t overid = playerInventory[selectedItem];
                 tsc_update();
-                // Item was comsumed, have to adjust the icons
+                // Item was consumed, have to adjust the icons
                 if(playerInventory[selectedItem] != overid) {
                     draw_itemmenu(FALSE);
                 }
@@ -270,7 +278,37 @@ uint8_t update_pause() {
         }
         if(!tscState && lastRunEvent != 6015 && lastRunEvent != 6018 && lastRunEvent != 6023
            && lastRunEvent != 6026 && lastRunEvent != 6038) {
-            if (joy_pressed(BUTTON_LEFT)) {
+            if (joy_pressed(BUTTON_A)) { // Debug
+                if(selectedItem < 0) { // Weapon changer
+                    // Cycle the selected weapon out for the next one in the list,
+                    // but skip invalids and duplicates, and wrap the list.
+                    uint8_t wep = selectedItem + 6;
+                    for(uint8_t i = playerWeapon[wep].type + 1; i != playerWeapon[wep].type; i++) {
+                        if(i >= WEAPON_COUNT) i = 0;
+                        if(weapon_info[i].sprite) { // Has a sprite -- valid weapon
+                            // Make sure it is not a duplicate of one the player already has
+                            uint8_t j = 0;
+                            for(; j < MAX_WEAPONS; j++) {
+                                if(j == wep) continue; // Skip weapon index we are changing
+                                if(playerWeapon[j].type == i) break; // It's a dupe
+                            }
+                            // j will complete the loop if weapon is unique
+                            if(j == MAX_WEAPONS) {
+                                playerWeapon[wep].type = i;
+                                disable_ints;
+                                z80_request();
+                                draw_weapons(pal_mode ? 5 : 4);
+                                z80_release();
+                                enable_ints;
+                                sound_play(SND_SWITCH_WEAPON, 5);
+                                break;
+                            }
+                        }
+                    }
+                } else { // Item changer
+
+                }
+            } else if (joy_pressed(BUTTON_LEFT)) {
                 int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
                 if (newsel == -1) newsel = -2;
                 itemcursor_move(selectedItem, newsel);

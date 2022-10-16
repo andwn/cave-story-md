@@ -155,7 +155,7 @@ void player_update() {
 		if(playerBoostState != BOOST_OFF) {
 			player_update_booster();
 		}
-		// Slow down the player when we stop the Booster 2.0
+		// Slow down the player when we stop the Booster 2.0.
 		// Has to run before collision since it recalculates our next position
 		if (playerBoostState != lastBoostState) {
 			if (playerBoostState == BOOST_OFF && (playerEquipment & EQUIP_BOOSTER20)) {
@@ -173,7 +173,7 @@ void player_update() {
 		}
 		lastBoostState = playerBoostState;
 		// The above code to slow down the booster needs to always run. 
-		// As such we check again whether the booster is enabled
+		// As such we check again whether the booster is enabled.
 		uint16_t px = player.x_next >> CSF, py = player.y_next >> CSF;
 		uint16_t bx = px >> 4, by = py >> 4;
 		if(playerBoostState == BOOST_OFF && bx > 0 && bx < stageWidth - 1 && by > 0 && by < stageHeight - 1) {
@@ -193,7 +193,7 @@ void player_update() {
 			}
 			blockd_next = player.grounded;
 			// Here I do something weird to emulate the way the game pushes quote
-			// into small gaps
+			// into small gaps.
 			if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
 				player.x_speed -= 0xE0;
 				player.x_next = player.x + player.x_speed;
@@ -222,8 +222,8 @@ void player_update() {
 				player.hit_box.bottom++;
 				bounding_box box = entity_react_to_collision(&player, playerPlatform);
 				player.hit_box.bottom--;
-				// playerPlatformTime prevents the player from being too "loose" with platforms
-				// They would slip off if the platform moves diagonally
+				// playerPlatformTime prevents the player from being too "loose" with platforms.
+				// They would slip off if the platform moves diagonally.
 				if(box.bottom == 0) {
 					if(++playerPlatformTime > 1) playerPlatform = NULL;
 				} else {
@@ -272,7 +272,7 @@ void player_update() {
 	if(!playerIFrames && player.health > 0) {
 		// Match foreground (0x40) and fore+water (0x60) but not wind (0x80) or slope (0x10)
 		if((tile & 0xDF) == 0x42) {
-			// To reduce the number of objects on screen, the spikes that
+			// To reduce the amount objects on screen, the spikes that
 			// Ballos creates in the last phase merge with the stage once
 			// they rise fully. They should only do 2 damage though, so I
 			// added this check.
@@ -282,8 +282,8 @@ void player_update() {
 	} else {
 		playerIFrames--;
 	}
-	// This "damage_time" block is for energy numbers
-	// When the player gets hurt damage numbers are created instantly
+	// This "damage_time" block is for weapon energy numbers.
+	// When the player gets hurt, create damage numbers instantly.
 	if(player.damage_time > 0) {
 		player.damage_time--;
 		if(player.damage_time == 0) {
@@ -737,14 +737,6 @@ static void player_update_booster() {
                     player.x -= 0x100;
                 }
             }
-			// I believe the player should not constantly fly upward after
-			// getting hit but need to verify what the original CS does
-			//if(playerIFrames) {
-			//	if(player.y_speed > 0) player.y_speed -= SPEED(0x20);
-			//	if(player.y_speed < 0) player.y_speed += SPEED(0x20);
-			//}
-			//if (joy_down(BUTTON_DOWN)) player.y_speed += SPEED(0x20);
-			//if (joy_down(BUTTON_UP)) player.y_speed -= SPEED(0x20);
 		}
 		break;
 		case BOOST_UP:
