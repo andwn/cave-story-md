@@ -109,6 +109,8 @@ void window_open(uint8_t mode) {
 		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
+    if(textMode == TM_MSG) textMode = TM_NORMAL;
+
 	windowOpen = TRUE;
 }
 
@@ -128,7 +130,6 @@ void window_clear() {
     enable_ints;
 
 	window_clear_text();
-    if(textMode == TM_MSG) textMode = TM_NORMAL;
 }
 
 void window_clear_text() {
@@ -144,7 +145,7 @@ void window_close() {
 	}
 	showingItem = 0;
 	windowOpen = FALSE;
-	textMode = TM_NORMAL;
+    //if(textMode == TM_MSG) textMode = TM_NORMAL;
 }
 
 void window_set_face(uint16_t face, uint8_t open) {

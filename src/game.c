@@ -110,13 +110,6 @@ void game_main(uint8_t load) {
 				// HUD on top
                 PF_BGCOLOR(0x008);
 				hud_update();
-				// Boss health, camera
-				if(!gameFrozen) {
-                    PF_BGCOLOR(0x088);
-					if(showingBossHealth) tsc_update_boss_health();
-                    PF_BGCOLOR(0x08E);
-					camera_update();
-				}
 				// Run the next set of commands in a script if it is running
                 PF_BGCOLOR(0x080);
 				uint8_t rtn = tsc_update();
@@ -143,6 +136,13 @@ void game_main(uint8_t load) {
 						break;
 					}
 				}
+                // Boss health, camera
+                if(!gameFrozen) {
+                    PF_BGCOLOR(0x088);
+                    if(showingBossHealth) tsc_update_boss_health();
+                    PF_BGCOLOR(0x08E);
+                    camera_update();
+                }
                 PF_BGCOLOR(0x880);
 				window_update();
 				// Handle controller locking
