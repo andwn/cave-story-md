@@ -268,8 +268,8 @@ uint8_t update_pause() {
                 }
             }
         }
-        if(!tscState || lastRunEvent != 6015 || lastRunEvent != 6018 || lastRunEvent != 6023
-           || lastRunEvent != 6026 || lastRunEvent != 6038) {
+        if(!tscState && lastRunEvent != 6015 && lastRunEvent != 6018 && lastRunEvent != 6023
+           && lastRunEvent != 6026 && lastRunEvent != 6038) {
             if (joy_pressed(BUTTON_LEFT)) {
                 int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
                 if (newsel == -1) newsel = -2;

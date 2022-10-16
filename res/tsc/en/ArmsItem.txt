@@ -222,7 +222,8 @@ Do you want to equip it?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSG
 Booster equipped.<NOD<WAI0003<FRE<EVE5018
 #6019
 <MSG<TURWhen you take damage, the amount
-of weapon energy lost will be halved.<WAI9999<END
+of weapon energy lost will be
+halved.<WAI9999<END
 #6020
 <MSG<TURIncreases the rate at which the
 machine gun replenishes ammo.<WAI9999<END
