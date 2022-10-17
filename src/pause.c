@@ -76,6 +76,30 @@ void draw_weapons(uint8_t y) {
     }
 }
 
+void draw_item(uint8_t sel) {
+    uint16_t item = playerInventory[sel];
+    if(item > 0) {
+        // Wonky workaround to use either PAL_Sym or PAL_Main
+        const SpriteDefinition *sprDef = &SPR_ItemImage;
+        uint16_t pal = PAL1;
+        if(ITEM_PAL[item]) {
+            sprDef = &SPR_ItemImageG;
+            pal = PAL0;
+        }
+        // Clobber the entity/bullet shared sheets
+        vdp_tiles_load_from_rom(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+sel*6, 6);
+        //SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
+        itemSprite[sel] = (VDPSprite){
+                .x = 36 + (sel % 6) * 32 + 128,
+                .y = 88 + (sel / 6) * 16 + 128 + (pal_mode * 8),
+                .size = SPRITE_SIZE(3, 2),
+                .attr = TILE_ATTR(pal,1,0,0,TILE_SHEETINDEX+sel*6)
+        };
+    } else {
+        itemSprite[sel] = (VDPSprite) {};
+    }
+}
+
 void draw_itemmenu(uint8_t resetCursor) {
     vdp_set_display(FALSE);
     vdp_sprites_clear();
@@ -151,28 +175,7 @@ void draw_itemmenu(uint8_t resetCursor) {
     uint8_t held = 0;
     for(uint16_t i = 0; i < MAX_ITEMS; i++) {
         //playerInventory[i] = 35; // :^)
-        uint16_t item = playerInventory[i];
-        if(item > 0) {
-            // Wonky workaround to use either PAL_Sym or PAL_Main
-            const SpriteDefinition *sprDef = &SPR_ItemImage;
-            uint16_t pal = PAL1;
-            if(ITEM_PAL[item]) {
-                sprDef = &SPR_ItemImageG;
-                pal = PAL0;
-            }
-            // Clobber the entity/bullet shared sheets
-            vdp_tiles_load_from_rom(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+held*6, 6);
-            //SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
-            itemSprite[i] = (VDPSprite){
-                    .x = 36 + (i % 6) * 32 + 128,
-                    .y = 88 + (i / 6) * 16 + 128 + (top * 8),
-                    .size = SPRITE_SIZE(3, 2),
-                    .attr = TILE_ATTR(pal,1,0,0,TILE_SHEETINDEX+held*6)
-            };
-            held++;
-        } else {
-            itemSprite[i] = (VDPSprite) {};
-        }
+        draw_item(i);
     }
     z80_release();
     enable_ints;
@@ -301,12 +304,22 @@ uint8_t update_pause() {
                                 z80_release();
                                 enable_ints;
                                 sound_play(SND_SWITCH_WEAPON, 5);
+                                tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                                 break;
                             }
                         }
                     }
                 } else { // Item changer
-
+                    if(++playerInventory[selectedItem] >= 40) {
+                        playerInventory[selectedItem] = 0;
+                    }
+                    disable_ints;
+                    z80_request();
+                    draw_item(selectedItem);
+                    z80_release();
+                    enable_ints;
+                    sound_play(SND_SWITCH_WEAPON, 5);
+                    tsc_call_event(5000 + playerInventory[selectedItem]);
                 }
             } else if (joy_pressed(BUTTON_LEFT)) {
                 int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
@@ -421,8 +434,8 @@ void do_map() {
     z80_release();
     enable_ints;
 
-    for(uint16_t y = 0; y < (stageHeight / 8) + (stageHeight % 8 > 0); y++) {
-        for(uint16_t x = 0; x < (stageWidth / 8) + (stageWidth % 8 > 0); x++) {
+    for(uint16_t y = 0; y < ((stageHeight+2) / 8) + ((stageHeight) % 8 > 0); y++) {
+        for(uint16_t x = 0; x < ((stageWidth+2) / 8) + ((stageWidth) % 8 > 0); x++) {
             disable_ints;
             z80_request();
             uint8_t result = gen_maptile(x*8, y*8, index);
@@ -440,8 +453,8 @@ void do_map() {
     }
 
     VDPSprite whereami = (VDPSprite) {
-            .x = (mapx << 3) + sub_to_block(player.x) - 4 + 128,
-            .y = (mapy << 3) + sub_to_block(player.y) - 4 + 128,
+            .x = (mapx << 3) + sub_to_block(player.x) - 2 + 128,
+            .y = (mapy << 3) + sub_to_block(player.y) - 3 + 128,
             .size = SPRITE_SIZE(1,1),
             .attr = TILE_ATTR(PAL0,1,0,0,1)
     };
@@ -461,23 +474,29 @@ void do_map() {
 }
 
 uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
-    static const uint32_t blank = 0x11111111;
-    static const uint32_t solid = 0xBBBBBBBB;
-    static const uint32_t colors[6] = {9, 11, 10, 1, 0, 2};
+    static const uint32_t blankLine = 0x11111111;
+    static const uint32_t solidLine = 0xBBBBBBBB;
+    static const uint32_t colors[4] = {9, 11, 10, 1};
 
-    uint8_t borderColor = paused ? 5 : (stageBackgroundType == 4) ? 3 : 4;
-    uint32_t borderLine = paused ? 0x22222222 : (stageBackgroundType == 4) ? 0x11111111 : 0x00000000;
     uint32_t tile[8];
     for(uint16_t y = 0; y < 8; y++) {
-        if(by+y >= stageHeight) {
-            tile[y] = borderLine;
+        if(by+y == 0 || by+y+1 == stageHeight) { // Top / Bottom borders
+            tile[y] = blankLine;
+        } else if(by+y+1 > stageHeight) { // Below bottom border
+            tile[y] = paused ? 0x22222222 : 0x00000000;
         } else {
             tile[y] = 0;
+            uint16_t stg_y = by + y - 1;
             for(uint16_t x = 0; x < 8; x++) {
-                if(bx+x >= stageWidth) {
-                    tile[y] |= colors[borderColor] << ((7 - x) << 2);
+                if(bx+x == 0) { // Left border
+                    tile[y] |= 0x10000000LU;
+                } else if(bx+x+1 == stageWidth) { // Right border
+                    tile[y] |= 1LU << ((7 - x) << 2);
+                } else if(bx+x+1 > stageWidth) { // After right border
+                    tile[y] |= (paused ? 2LU : 0LU) << ((7 - x) << 2);
                 } else {
-                    uint8_t block = stage_get_block_type(bx+x, by+y);
+                    uint16_t stg_x = bx + x - 1;
+                    uint8_t block = stage_get_block_type(stg_x, stg_y);
                     switch(block) {
                         case 0x01: tile[y] |= colors[0] << ((7 - x) << 2); break;
                         case 0x41: tile[y] |= colors[1] << ((7 - x) << 2); break;
@@ -491,8 +510,8 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
     // Check if completely blank or solid area, do not duplicate
     uint8_t blank_c = 0, solid_c = 0;
     for(uint8_t y = 0; y < 8; y++) {
-        if(tile[y] == blank) blank_c++;
-        if(tile[y] == solid) solid_c++;
+        if(tile[y] == blankLine) blank_c++;
+        if(tile[y] == solidLine) solid_c++;
     }
     if(blank_c == 8) return 1;
     if(solid_c == 8) return 2;
