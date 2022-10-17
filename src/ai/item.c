@@ -119,7 +119,7 @@ void onspawn_powerup(Entity *e) {
 void ai_missile(Entity *e) {
 	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
-		if(stageID == STAGE_WATERWAY_BOSS) {
+		if(stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL) {
 			e->x_speed -= SPEED_8(6);
 			e->x += e->x_speed;
 		}
@@ -145,7 +145,7 @@ void ai_missile(Entity *e) {
 		// If we found either increase ammo
 		if(w) {
 			// OPTION2 is large pickup
-			w->ammo += (e->flags & NPC_OPTION2) ? 3 : 1;
+			w->ammo += e->experience;
 			if(w->ammo >= w->maxammo) w->ammo = w->maxammo;
 		}
 		sound_play(SND_GET_MISSILE, 5);
@@ -156,7 +156,7 @@ void ai_missile(Entity *e) {
 void ai_heart(Entity *e) {
 	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
-		if(stageID == STAGE_WATERWAY_BOSS) {
+		if(stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL) {
 			e->x_speed -= SPEED_8(6);
 			e->x += e->x_speed;
 		}
@@ -176,13 +176,7 @@ void ai_heart(Entity *e) {
 	}
 	// Increases health, plays sound and deletes itself
 	if((++e->timer & 1) && entity_overlapping(&player, e)) {
-		if(e->flags & NPC_OPTION1) {
-			player.health += e->health;
-		} else if(e->flags & NPC_OPTION2) {
-			player.health += 5;
-		} else {
-			player.health += 2;
-		}
+        player.health += e->experience;
 		// Don't go over max health
 		if(player.health >= playerMaxHealth) player.health = playerMaxHealth;
 		sound_play(SND_HEALTH_REFILL, 5);
@@ -199,9 +193,11 @@ void ai_hiddenPowerup(Entity *e) {
 		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
 		sound_play(SND_EXPL_SMALL, 5);
 		if(e->flags & NPC_OPTION2) {
-			entity_create(e->x, e->y, OBJ_MISSILE, e->flags & ~(NPC_OPTION2|NPC_SHOOTABLE));
+			Entity *missile = entity_create(e->x, e->y, OBJ_MISSILE, e->flags & ~(NPC_OPTION2|NPC_SHOOTABLE));
+            missile->experience = 2;
 		} else {
-			entity_create(e->x, e->y, OBJ_HEART, e->flags & ~(NPC_SHOOTABLE))->health = 2;
+			Entity *heart = entity_create(e->x, e->y, OBJ_HEART, e->flags & ~(NPC_SHOOTABLE));
+            heart->experience = 2;
 		}
 		e->state = STATE_DELETE;
 	}

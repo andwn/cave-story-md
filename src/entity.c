@@ -865,17 +865,19 @@ void entity_drop_powerup(Entity *e) {
 	} else if(chance == 1 && (player_has_weapon(WEAPON_MISSILE) || 
 		player_has_weapon(WEAPON_SUPERMISSILE))) { // Missiles
 		if(e->experience > 6) {
-			entity_create(e->x, e->y, 86, NPC_OPTION1 | NPC_OPTION2);
+            Entity *missile = entity_create(e->x, e->y, 86, NPC_OPTION1 | NPC_OPTION2);
+            missile->experience = 3;
 		} else {
-			entity_create(e->x, e->y, 86, NPC_OPTION1);
+            Entity *missile = entity_create(e->x, e->y, 86, NPC_OPTION1);
+            missile->experience = 1;
 		}
 	} else { // Heart
 		if(e->experience > 6) {
 			Entity *heart = entity_create(e->x, e->y, 87, NPC_OPTION1 | NPC_OPTION2);
-			heart->health = 5;
+			heart->experience = 6;
 		} else {
 			Entity *heart = entity_create(e->x, e->y, 87, NPC_OPTION1);
-			heart->health = 2;
+			heart->experience = 2;
 		}
 	}
 }
