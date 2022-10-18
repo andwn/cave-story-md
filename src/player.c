@@ -30,8 +30,8 @@
 })
 
 const uint8_t spur_time[2][4] = {
-	{ 0, 60, 90, 120 }, // NTSC
-	{ 0, 50, 75, 100 }, // PAL
+	{ 0, 40, 60, 200 }, // NTSC
+	{ 0, 33, 50, 166 }, // PAL
 };
 
 VDPSprite weaponSprite;
@@ -395,7 +395,7 @@ void player_update() {
 			weapon_fire(*w);
 			shoot_cooldown = 4;
 		} else if(joystate & btn[cfg_btn_shoot]) {
-			uint8_t maxenergy = spur_time[pal_mode||cfg_60fps][w->level];
+			uint8_t maxenergy = spur_time[pal_mode][w->level];
 			if(!(w->level == 3 && w->energy == maxenergy)) {
 				w->energy += (playerEquipment & EQUIP_TURBOCHARGE) ? 3 : 2;
 				if(w->energy >= maxenergy) {
@@ -416,7 +416,7 @@ void player_update() {
 		} else {
 			if(mgun_chargetime) {
 				if(w->level > 1) {
-					if(w->energy == spur_time[pal_mode||cfg_60fps][3]) w->level = 4;
+					if(w->energy == spur_time[pal_mode][3]) w->level = 4;
 					weapon_fire(*w);
 				}
 				mgun_chargetime = 0;

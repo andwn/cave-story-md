@@ -186,7 +186,8 @@ void entities_update(uint8_t draw) {
 			};
 			uint8_t cont = FALSE;
 			for(uint16_t i = 0; i < MAX_BULLETS; i++) {
-				if(playerBullet[i].extent.x2 >= ee.x1 &&
+				if(playerBullet[i].ttl &&
+					playerBullet[i].extent.x2 >= ee.x1 &&
                     playerBullet[i].extent.x1 <= ee.x2 &&
                     playerBullet[i].extent.y2 >= ee.y1 &&
 					playerBullet[i].extent.y1 <= ee.y2)
