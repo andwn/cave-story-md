@@ -498,7 +498,7 @@ void weapon_fire_blade(Weapon *w) {
 	}
 	b->x = player.x;
 	b->y = player.y - (3 << CSF);
-	b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index);
+	b->sprite.attr = TILE_ATTR(PAL0,0,0,player.dir,sheets[w->sheet].index);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
 		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 1), b->sprite.attr, 9);
@@ -515,9 +515,9 @@ void weapon_fire_blade(Weapon *w) {
 		}
 		// Spawn slightly behind the player
 		if(b->level == 2) {
-			b->x += b->dir ? -(3 << CSF) : (3 << CSF);
+			b->x += player.dir ? -(3 << CSF) : (3 << CSF);
 		} else {
-			b->x += b->dir ? -(6 << CSF) : (6 << CSF);
+			b->x += player.dir ? -(6 << CSF) : (6 << CSF);
 		}
 		b->x_speed = (b->dir ? SPEED_12(0x800) : -SPEED_12(0x800));
 		b->y_speed = 0;
@@ -1240,46 +1240,64 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
 			slash->dir = LEFT;
-			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 4) {
 			slash = &playerBullet[2];
 			slash->dir = RIGHT;
-			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[3];
-			slash->dir = LEFT;
-			slash->dir |= 2;
+			slash->dir = UP;
 		} else if((b->ttl & 15) == 12) {
 			slash = &playerBullet[4];
-			slash->dir = RIGHT;
-			slash->dir |= 2;
+			slash->dir = DOWN;
 		}
 	} else {
 		if((b->ttl & 15) == 0) {
 			slash = &playerBullet[1];
 			slash->dir = b->dir;
-			slash->dir &= ~2;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[2];
-			slash->dir = b->dir;
-			slash->dir |= 2;
+			slash->dir = b->dir == LEFT ? UP : b->dir == UP ? RIGHT : b->dir == RIGHT ? DOWN : LEFT;
 		}
 	}
 	if(!slash) return;
-	slash->x_speed = (slash->dir & 1) ? SPEED_10(0x3FF) : -SPEED_10(0x3FF);
-	slash->y_speed = (slash->dir & 2) ? -SPEED_10(0x3FF) : SPEED_10(0x3FF);
+
+    slash->x = b->x;
+    slash->y = b->y;
+    switch(slash->dir) {
+        case LEFT:
+            slash->x_speed = -SPEED_10(0x3FF);
+            slash->y_speed = SPEED_10(0x3FF);
+            slash->sprite.attr = TILE_ATTR(PAL0,0,0,0,TILE_SLASHINDEX);
+            break;
+        case UP:
+            slash->x_speed = -SPEED_10(0x3FF);
+            slash->y_speed = -SPEED_10(0x3FF);
+            slash->sprite.attr = TILE_ATTR(PAL0,0,1,0,TILE_SLASHINDEX);
+            break;
+        case RIGHT:
+            slash->y -= 0x2000;
+            slash->x_speed = SPEED_10(0x3FF);
+            slash->y_speed = -SPEED_10(0x3FF);
+            slash->sprite.attr = TILE_ATTR(PAL0,0,1,1,TILE_SLASHINDEX);
+            break;
+        case DOWN:
+            slash->y -= 0x2000;
+            slash->x_speed = SPEED_10(0x3FF);
+            slash->y_speed = SPEED_10(0x3FF);
+            slash->sprite.attr = TILE_ATTR(PAL0,0,0,1,TILE_SLASHINDEX);
+            break;
+    }
+
 	slash->damage = 1;
-	slash->x = b->x;
-	slash->y = b->y + ((slash->dir & 2) ? 0x2000 : -0x2000);
 	if(burst) { // Spread them for AOE
-		slash->x += -0x2000 + (random() % 0x4000);
-		slash->y += -0x2000 + (random() % 0x4000);
-	}
+		slash->x += - 0x2000 + (random() % 0x4000);
+		slash->y += - 0x2000 + (random() % 0x4000);
+	} else {
+        //slash->x = b->x;
+        //slash->y = b->y;// + ((slash->dir & 2) ? 0x2000 : -0x2000);
+    }
 	slash->type = WEAPON_BLADE_SLASH;
 	slash->ttl = 20;
 	slash->hit_box = (bounding_box) { 6, 6, 6, 6 };
-	slash->sprite = (VDPSprite) { 
-		.size = SPRITE_SIZE(2, 2), 
-		.attr = TILE_ATTR(PAL0,0,(slash->dir&2)>0,(slash->dir&1), TILE_SLASHINDEX)
-	};
+	slash->sprite.size = SPRITE_SIZE(2, 2);
 }
