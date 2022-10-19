@@ -30,8 +30,8 @@
 })
 
 const uint8_t spur_time[2][4] = {
-	{ 0, 60, 90, 120 }, // NTSC
-	{ 0, 50, 75, 100 }, // PAL
+	{ 0, 40, 60, 200 }, // NTSC
+	{ 0, 33, 50, 166 }, // PAL
 };
 
 VDPSprite weaponSprite;

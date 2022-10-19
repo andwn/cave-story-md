@@ -1086,7 +1086,7 @@ void bullet_update_spur(Bullet *b) {
 				t->type = WEAPON_SPUR_TAIL;
 				t->level = b->level;
 				t->sheet = b->sheet;
-				t->damage = (t->level << 2) - 1;
+				t->damage = t->level + 1;
 				t->ttl = TIME_8(20);
 				t->dir = b->dir;
 				t->x = pixel_to_sub(spur_xmark);
