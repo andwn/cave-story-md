@@ -1275,13 +1275,11 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
             slash->sprite.attr = TILE_ATTR(PAL0,0,1,0,TILE_SLASHINDEX);
             break;
         case RIGHT:
-            slash->y -= 0x2000;
             slash->x_speed = SPEED_10(0x3FF);
             slash->y_speed = -SPEED_10(0x3FF);
             slash->sprite.attr = TILE_ATTR(PAL0,0,1,1,TILE_SLASHINDEX);
             break;
         case DOWN:
-            slash->y -= 0x2000;
             slash->x_speed = SPEED_10(0x3FF);
             slash->y_speed = SPEED_10(0x3FF);
             slash->sprite.attr = TILE_ATTR(PAL0,0,0,1,TILE_SLASHINDEX);
