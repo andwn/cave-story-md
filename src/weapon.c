@@ -1140,36 +1140,47 @@ void bullet_update_spur(Bullet *b) {
 }
 
 void bullet_update_spur_tail(Bullet *b) {
-	b->ttl--;
-	b->x += b->x_speed;
-	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	if(b->ttl == TIME_8(18)) {
-		if(b->dir == UP || b->dir == DOWN) {
-			b->sprite.size = SPRITE_SIZE(2, 4);
-			b->sprite.attr += 4;
-			if(b->sprite.attr & (1<<12)) {
-				b->sprite.y -= 16;
-				b->hit_box.top += 16;
-			} else {
-				b->hit_box.bottom += 16;
-			}
-		} else {
-			b->sprite.size = SPRITE_SIZE(4, 2);
-			if(b->sprite.attr & (1<<11)) {
-				b->sprite.x -= 16;
-				b->hit_box.right += 16;
-			} else {
-				b->hit_box.left += 16;
-			}
-		}
-	} else if(b->ttl < TIME_8(18)) {
-		if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
-		if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
-	}
-	vdp_sprite_add(&b->sprite);
+    uint8_t block = blk(b->x, 0, b->y, 0);
+    if(block == 0x41) {
+        sound_play(SND_SHOT_HIT, 2);
+        b->ttl = 0;
+    } else if(block == 0x43) {
+        bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+        effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+        sound_play(SND_BLOCK_DESTROY, 5);
+        b->ttl = 0;
+    } else {
+        b->ttl--;
+        b->x += b->x_speed;
+        b->y += b->y_speed;
+        sprite_pos(b->sprite,
+                   sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+                   sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+        if (b->ttl == TIME_8(18)) {
+            if (b->dir == UP || b->dir == DOWN) {
+                b->sprite.size = SPRITE_SIZE(2, 4);
+                b->sprite.attr += 4;
+                if (b->sprite.attr & (1 << 12)) {
+                    b->sprite.y -= 16;
+                    b->hit_box.top += 16;
+                } else {
+                    b->hit_box.bottom += 16;
+                }
+            } else {
+                b->sprite.size = SPRITE_SIZE(4, 2);
+                if (b->sprite.attr & (1 << 11)) {
+                    b->sprite.x -= 16;
+                    b->hit_box.right += 16;
+                } else {
+                    b->hit_box.left += 16;
+                }
+            }
+        } else if (b->ttl < TIME_8(18)) {
+            if (b->sprite.attr & (1 << 12)) b->sprite.y -= 16;
+            if (b->sprite.attr & (1 << 11)) b->sprite.x -= 16;
+        }
+        vdp_sprite_add(&b->sprite);
+    }
 }
 
 Bullet *bullet_colliding(Entity *e) {
