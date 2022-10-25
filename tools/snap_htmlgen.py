@@ -19,10 +19,12 @@ lang_map = {
     'ko': u'한국어',
 }
 
-str_head = u'''<html><head><meta charset="UTF-8">
+str_head = u'''<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
 <title>Cave Story MD Snapshots</title></head><body>
+<link rel="stylesheet" href="https://tenshi.skychase.zone/style.css">
 <style>table, th, td {
-    border: 1px solid black;
+    border: 1px solid;
     border-collapse: collapse;
     padding: 4px;
     font-family: monospace, monospace;
