@@ -11,8 +11,10 @@ if [ $changed = 1 ]; then
         today=$(date +%Y%m%d%H%M)
         mv "$fn" "$1/${fn%.*}-${today}.${fn##*.}"
     done
-    python3 tools/snap_htmlgen.py "$1" > "$1/index.html"
-    echo "Page generated";
+    echo "Build successful"
 else
     echo "Already up to date"
 fi
+
+python3 tools/snap_htmlgen.py "$1" > "$1/index.html"
+echo "Page generated"
