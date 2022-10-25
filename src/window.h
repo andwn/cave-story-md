@@ -13,7 +13,7 @@
 //uint8_t linesSinceLastNOD;
 extern const uint8_t ITEM_PAL[40];
 
-uint8_t windowOnTop;
+extern uint8_t windowOnTop;
 
 extern uint16_t showingFace;
 

@@ -30,6 +30,8 @@ static struct {
 // Then copy to VRAM via DMA transfer
 uint32_t dtiles[4][8];
 
+uint8_t dqueued;
+
 void effects_init() {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;

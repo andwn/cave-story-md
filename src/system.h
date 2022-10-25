@@ -80,6 +80,11 @@ extern uint8_t cfg_sfx_mute;
 
 extern uint8_t sram_file;
 
+// Default settings
+void system_init();
+void system_cfg_reset_controls();
+void system_cfg_reset_gameplay();
+
 // Global flags are persisted to save data
 void system_set_flag(uint16_t flag, uint8_t value);
 uint8_t system_get_flag(uint16_t flag);

@@ -29,6 +29,24 @@
 	TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4); \
 })
 
+uint8_t currentWeapon;
+Entity player;
+VDPSprite playerSprite;
+uint8_t playerIFrames;
+uint8_t playerMoveMode;
+uint8_t lookingDown;
+uint16_t playerMaxHealth;
+uint8_t controlsLocked;
+uint16_t playerEquipment;
+uint8_t playerInventory[MAX_ITEMS];
+uint8_t shoot_cooldown, mgun_chargetime, playerNoBump;
+Entity *playerPlatform;
+uint8_t playerPlatformTime;
+uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
+uint16_t mapNameTTL;
+uint8_t iSuckAtThisGameSHIT;
+uint8_t missileEmptyFlag;
+
 const uint8_t spur_time[2][4] = {
 	{ 0, 40, 60, 200 }, // NTSC
 	{ 0, 33, 50, 166 }, // PAL

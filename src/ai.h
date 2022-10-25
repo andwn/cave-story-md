@@ -110,8 +110,8 @@ static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
 /* Shared Variables */
 
 // These get aliased for other uses when curly isn't around
-uint16_t curly_target_time;
-int32_t curly_target_x, curly_target_y;
+extern uint16_t curly_target_time;
+extern int32_t curly_target_x, curly_target_y;
 
 enum CrystalStates {
 	CRYSTAL_INFRONT,

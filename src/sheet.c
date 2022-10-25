@@ -24,6 +24,12 @@
 	} \
 }
 
+uint8_t sheet_num;
+Sheet sheets[MAX_SHEETS];
+uint8_t frameOffset[MAX_SHEETS][16];
+uint16_t tiloc_index;
+uint8_t tilocs[MAX_TILOCS];
+
 void sheets_load_weapon(Weapon *w) {
 	if(!w) return;
 	w->sheet = sheet_num;

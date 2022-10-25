@@ -1,6 +1,6 @@
 /* Based on Miniplanets DMA routines */
 
-.section .data
+.section .bss
 
     .globl dmabuf
     .globl dmabuf_end

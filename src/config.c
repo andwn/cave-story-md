@@ -334,23 +334,9 @@ void config_main() {
 
 void act_default(uint8_t page) {
 	if(page == PAGE_CONTROL) {
-        cfg_btn_jump = 5;
-        cfg_btn_shoot = 4;
-        cfg_btn_ffwd = 6;
-        cfg_btn_rswap = 8;
-        cfg_btn_lswap = 9;
-        cfg_btn_map = 10;
-        cfg_btn_pause = 7;
-        cfg_force_btn = 0;
+        system_cfg_reset_controls();
 	} else if(page == PAGE_GAMEPLAY) {
-		cfg_60fps = FALSE;
-		cfg_ffwd = TRUE;
-		cfg_updoor = FALSE;
-		cfg_hellquake = TRUE;
-		cfg_iframebug = TRUE;
-		cfg_msg_blip = TRUE;
-		cfg_music_mute = FALSE;
-		cfg_sfx_mute = FALSE;
+        system_cfg_reset_gameplay();
 	}
 	set_page(page);
 }

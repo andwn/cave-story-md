@@ -17,7 +17,10 @@ What did you expect to happen instead?
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Version**
+What version of the game were you playing, and which language?
+
 **Environment**
-What console (and flash cart) or emulator are you using?
-Any addons or weird settings?
-Which language ROM were you playing?
+What are you using to play the game?
+- If it's a console: what model, which flash cart, and are a 32X or Mega CD attached?
+- If it's an emulator: what version of the emulator?

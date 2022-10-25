@@ -24,8 +24,8 @@ extern const char btnName[12][4];
 #define joy_released(b) ((((~joystate)&(b))&&(oldstate&(b))))
 #define joy_down(b) ((joystate&(b)))
 
-uint8_t joytype;
-uint16_t joystate, oldstate;
+extern uint8_t joytype;
+extern uint16_t joystate, oldstate;
 
 void joy_init();
 void joy_update();

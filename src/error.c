@@ -11,9 +11,9 @@ extern uint16_t v_err_ext2;
 extern uint16_t v_err_sr;
 extern uint8_t v_err_type;
 
-static const char *dieMsg = NULL;
-static const char *dieFile = NULL;
-static uint16_t dieLine = 0;
+static const char *dieMsg;
+static const char *dieFile;
+static uint16_t dieLine;
 
 void _error() {
 	char buf[40];

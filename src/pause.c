@@ -33,7 +33,7 @@
 
 // Item menu stuff
 VDPSprite itemSprite[MAX_ITEMS];
-int8_t selectedItem = 0;
+int8_t selectedItem;
 
 void draw_weapons(uint8_t y) {
     for(uint16_t i = 0; i < MAX_WEAPONS; i++) {

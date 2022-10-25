@@ -19,6 +19,11 @@
 // limit the speed that way or we will fall behind
 #define PAN_SPEED	0x200
 #define PAN_SIZE	0x6000
+
+int32_t camera_xmin, camera_ymin;
+uint32_t camera_xsize, camera_ysize;
+Camera camera;
+
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 uint16_t cameraShake;

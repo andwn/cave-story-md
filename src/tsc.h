@@ -24,20 +24,20 @@ enum TSC_STATE {
 };
 
 // Number of events loaded by tsc_load(), for debugging
-uint8_t tscEventCount;
+extern uint8_t tscEventCount;
 
-uint8_t tscState;
-uint16_t lastRunEvent;
+extern uint8_t tscState;
+extern uint16_t lastRunEvent;
 
-uint8_t inFade;
+extern uint8_t inFade;
 
 // As teleporter locations are made available to the player, this list is populated
 // with which event is called when selecting a particular area.
 // This is in the header so that system_save() can write the values to SRAM
-uint16_t teleportEvent[8];
+extern uint16_t teleportEvent[8];
 
 // True while boss health is being displayed in the corner
-uint8_t showingBossHealth;
+extern uint8_t showingBossHealth;
 
 // Initialize default values to avoid strange glitches
 // Also loads persistent head.tsc and arms.tsc events

@@ -16,6 +16,9 @@ const char btnName[12][4] = {
 	"Z", "Y", "X", "Md"
 };
 
+uint8_t joytype;
+uint16_t joystate, oldstate;
+
 void joy_init() {
 	joystate = oldstate = 0;
     /* set the port bits direction */

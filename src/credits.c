@@ -26,7 +26,7 @@ enum CreditCmd {
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, LOADPXE, END
 };
 
-static int8_t illScrolling = 0;
+static int8_t illScrolling;
 
 static void draw_jp_text(const uint8_t *str, uint16_t x, uint16_t y) {
     uint16_t iter = 0;

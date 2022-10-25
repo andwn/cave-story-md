@@ -49,6 +49,12 @@ static uint16_t sprite_ymax;
 // Font vars
 static uint16_t font_pal;
 
+// Screen size
+uint8_t SCREEN_HEIGHT;
+uint8_t SCREEN_HALF_H;
+uint8_t pal_mode;
+uint8_t FPS;
+
 void vdp_init() {
     // Store pal_mode and adjust some stuff based on it
     pal_mode = *vdp_ctrl_port & 1;

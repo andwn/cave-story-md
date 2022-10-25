@@ -101,20 +101,20 @@ enum {
 	SHEET_AHCHOO,  SHEET_RAVIL,
 };
 
-uint8_t sheet_num;
+extern uint8_t sheet_num;
 typedef struct {
 	uint8_t id; // One of the values in the enum above - so an entity can find its sheet
 	uint8_t size; // Total number of tiles used by the complete sheet
 	uint16_t index; // VDP tile index
 	uint8_t w, h; // Size of each frame
 } Sheet;
-Sheet sheets[MAX_SHEETS];
+extern Sheet sheets[MAX_SHEETS];
 
 // Avoids MULU in entity update
-uint8_t frameOffset[MAX_SHEETS][16];
+extern uint8_t frameOffset[MAX_SHEETS][16];
 
-uint16_t tiloc_index;
-uint8_t tilocs[MAX_TILOCS];
+extern uint16_t tiloc_index;
+extern uint8_t tilocs[MAX_TILOCS];
 
 void sheets_load_weapon(Weapon *w);
 void sheets_refresh_weapon(Weapon *w);

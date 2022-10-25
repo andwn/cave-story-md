@@ -15,6 +15,12 @@
 #include "vdp.h"
 #include "xgm.h"
 
+volatile uint8_t ready;
+
+uint8_t gamemode;
+uint8_t paused;
+uint8_t gameFrozen;
+
 void aftervsync() {
 	disable_ints;
     z80_request();
@@ -41,6 +47,8 @@ int main() {
     mem_init();
     vdp_init();
 	xgm_init();
+    system_init();
+    stageBackground = 0xFF;
 	if(system_checkdata() != SRAM_INVALID) {
 		system_load_config();
 	}

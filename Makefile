@@ -1,42 +1,44 @@
-MARSDEV ?= ${HOME}/mars
-MARSBIN  = $(MARSDEV)/m68k-elf/bin
-TOOLSBIN = $(MARSDEV)/bin
+MARSDEV  ?= ${HOME}/mars
+MARSBIN  := $(MARSDEV)/m68k-elf/bin
+TOOLSBIN := $(MARSDEV)/bin
 
-TARGET = doukutsu
+TARGET := doukutsu
 
-CC   = $(MARSBIN)/m68k-elf-gcc
-AS   = $(MARSBIN)/m68k-elf-as
-LD   = $(MARSBIN)/m68k-elf-ld
-NM   = $(MARSBIN)/m68k-elf-nm
-OBJC = $(MARSBIN)/m68k-elf-objcopy
+CC   := $(MARSBIN)/m68k-elf-gcc
+AS   := $(MARSBIN)/m68k-elf-as
+LD   := $(MARSBIN)/m68k-elf-ld
+NM   := $(MARSBIN)/m68k-elf-nm
+OBJC := $(MARSBIN)/m68k-elf-objcopy
 
 # Z80 Assembler to build XGM driver
-ASMZ80   = $(TOOLSBIN)/sjasm
+ASMZ80   := $(TOOLSBIN)/sjasm
 # SGDK Tools
-BINTOS   = bin/bintos
-RESCOMP  = bin/rescomp
-WAVTORAW = bin/wavtoraw
-XGMTOOL  = bin/xgmtool
+BINTOS   := bin/bintos
+RESCOMP  := bin/rescomp
+WAVTORAW := bin/wavtoraw
+XGMTOOL  := bin/xgmtool
 # Sik's Tools
-MDTILER  = $(TOOLSBIN)/mdtiler
-SLZ      = $(TOOLSBIN)/slz
-UFTC     = $(TOOLSBIN)/uftc
+MDTILER  := $(TOOLSBIN)/mdtiler
+SLZ      := $(TOOLSBIN)/slz
+UFTC     := $(TOOLSBIN)/uftc
 # Cave Story Tools
-AIGEN    = python3 tools/aigen.py
-PATCHROM = bin/patchrom
-TSCOMP   = bin/tscomp
+AIGEN    := python3 tools/aigen.py
+PATCHROM := bin/patchrom
+TSCOMP   := bin/tscomp
+
+MEGALOADER := bin/megaloader
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
-PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
-LTO_SO   = liblto_plugin.so
+PLUGIN  := $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
+LTO_SO  := liblto_plugin.so
 
 INCS     = -Isrc -Ires
-CCFLAGS  = -m68000 -mshort -ffreestanding -fshort-enums -fno-unit-at-a-time -fcommon
-OPTIONS  = -O3 -fomit-frame-pointer -fno-web -fno-gcse
-WARNINGS = -Wall -Wextra -Wshadow -Wundef
+CCFLAGS  = -m68000 -mshort -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
+OPTIONS  = -O3 -flto=auto -frename-registers -fconserve-stack
+WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
 ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
-LDFLAGS  = -T md.ld -nostdlib
+LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
@@ -94,20 +96,18 @@ ASMO += $(CS:%.c=asmout/%.s)
 
 .PHONY: all sega profile release asm debug translate prereq
 all: release
-
-sega: OPTIONS += -DSEGA_LOGO
 sega: release
 
-profile: OPTIONS += -DPROFILE
+profile: OPTIONS += -DSEGA_LOGO -DPROFILE
 profile: release
 
-release: OPTIONS += -flto -fuse-linker-plugin
+release: OPTIONS += -DSEGA_LOGO
 release: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 
-asm: OPTIONS += -fverbose-asm
+asm: OPTIONS += -DSEGA_LOGO -fverbose-asm
 asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
-debug: OPTIONS += -DDEBUG -DKDEBUG
+debug: OPTIONS += -DSEGA_LOGO -DDEBUG -DKDEBUG
 debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 
 translate: $(PATCHROM) $(TL_TSBS)
@@ -168,8 +168,8 @@ $(TSCOMP): bin
 $(PATCHROM): bin
 	cc tools/patchrom.c -o $@
 
-$(HPPGEN): bin
-	cc tools/hppgen.c -o $@
+$(MEGALOADER): bin
+	cc tools/megaloader.c -o $@
 
 # For asm target
 asm-dir:
@@ -225,7 +225,7 @@ res/tsc/ko/%.tsb: res/tsc/ko/%.txt
 # Generate patches
 res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s
 	$(AS) $(ASFLAGS) "$<" -o "temp.o"
-	$(LD) $(LDFLAGS) "temp.o" -o "temp.elf"
+	$(LD) -T md.ld -nostdlib "temp.o" -o "temp.elf"
 	$(OBJC) -O binary "temp.elf" "$@"
 
 # Apply patches
@@ -248,10 +248,13 @@ $(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
 $(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
-.PHONY: head-gen clean
+.PHONY: head-gen flash clean
 head-gen:
 	rm -f src/ai_gen.h
 	$(AIGEN) src/ai/ src/ai_gen.h
+
+flash: $(MEGALOADER)
+	sudo $(MEGALOADER) md $(TARGET)-en.bin /dev/ttyUSB0 2> /dev/null
 
 clean:
 	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)

@@ -13,7 +13,7 @@ enum {
 };
 
 // Only send tiles for 1 damage string per frame
-uint8_t dqueued;
+extern uint8_t dqueued;
 
 // Initialize default (0, NULL) values to avoid weird glitches
 void effects_init();

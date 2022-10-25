@@ -12,14 +12,14 @@
 
 #include "kanji.h"
 
-uint16_t cjkVramMode = CJK_TITLE;
-uint16_t cjkVramIndex = 0;
+uint16_t cjkVramMode;
+uint16_t cjkVramIndex;
 
 volatile uint16_t cjkTileBuf[6][16];
-uint16_t cjkShiftChar = 0;
+uint16_t cjkShiftChar;
 
 uint16_t cjkMapBuf[3][2][36];
-int16_t cjkMapRow = 0;
+int16_t cjkMapRow;
 
 // = CJK_TITLE ALLOCATION =
 // Start at VRAM index 2, should be plenty of space

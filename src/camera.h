@@ -1,8 +1,8 @@
 // Pre calculated camera bounds values to speed up entity_on_screen()
-int32_t camera_xmin, camera_ymin;
-uint32_t camera_xsize, camera_ysize;
+extern int32_t camera_xmin, camera_ymin;
+extern uint32_t camera_xsize, camera_ysize;
 
-struct {
+typedef struct {
 	int32_t x, y; // Fixed point units
 	Entity *target; // Player, boss, NPC, or NULL
 	// Offset is the point relative to the target's position
@@ -13,7 +13,8 @@ struct {
 	// Marks a position which, after moving 16 pixels away will remark
 	// to the new position, and reactivate any entities that came on screen
 	int32_t x_mark, y_mark;
-} camera;
+} Camera;
+extern Camera camera;
 
 // Initialize the camera with default values (upper left, no target)
 void camera_init();

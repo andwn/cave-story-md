@@ -1,4 +1,4 @@
-.section .data
+.section .bss.first
 
 /* Outer Wall is the largest stage file at 18008 bytes */
 /* 18008 - 4 (header) - 4 (size) - 76 (error vars) = 17924 */
@@ -76,12 +76,8 @@ _start:
         move    #0x2700,sr              /* Disable interrupts */
 		move.b	(0xA10001),d0           /* Check console version */
         andi.b  #0x0F,d0                /* Version 0 = skip TMSS */
-        beq.s   NoTMSS
+        beq.s   _hard_reset
         move.l  (0x100),0xA14000        /* Write 'SEGA' to TMSS register */
-NoTMSS:
-#        move.w  (0xC00004),d0           /* Read VDP status */
-#        move.w  #0x0100,(0xA11100)      /* Halt / Reset Z80 */
-#        move.w  #0x0100,(0xA11200)
 _hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
         lea     __text_end,a0           /* Start of .data segment init values in ROM */
         lea     __data_start,a1         /* Start of .data segment in RAM */

@@ -22,6 +22,7 @@ SECTIONS {
     __data_start = .;
     *(.data .data.*)
     . = ALIGN(2);
+    __data_end = .;
   } > ram AT > rom
   __data_size = SIZEOF(.data);
 
@@ -35,8 +36,8 @@ SECTIONS {
 
   .bss (NOLOAD) : {
     __bss_start = .;
+    *(.bss.first)
     *(.bss .bss.*)
-    *(.COMMON)
     . = ALIGN(2);
     __bss_end = .;
   } > ram

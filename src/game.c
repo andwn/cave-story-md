@@ -57,7 +57,6 @@ void game_main(uint8_t load) {
 		PF_BGCOLOR(0x000);
 
 		if(paused) {
-            PF_BGCOLOR(0x080);
 			paused = update_pause();
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
@@ -140,7 +139,6 @@ void game_main(uint8_t load) {
                 if(!gameFrozen) {
                     PF_BGCOLOR(0x088);
                     if(showingBossHealth) tsc_update_boss_health();
-                    PF_BGCOLOR(0x08E);
                     camera_update();
                 }
                 PF_BGCOLOR(0x880);

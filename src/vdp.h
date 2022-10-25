@@ -1,8 +1,8 @@
-#define VDP_PLAN_W              ((uint16_t)0xB000)
-#define VDP_PLAN_A              ((uint16_t)0xC000)
-#define VDP_PLAN_B              ((uint16_t)0xE000)
-#define VDP_SPRITE_TABLE        ((uint16_t)0xF800)
-#define VDP_HSCROLL_TABLE       ((uint16_t)0xFC00)
+#define VDP_PLAN_W              0xB000U
+#define VDP_PLAN_A              0xC000U
+#define VDP_PLAN_B              0xE000U
+#define VDP_SPRITE_TABLE        0xF800U
+#define VDP_HSCROLL_TABLE       0xFC00U
 
 #define PLAN_WIDTH              64
 #define PLAN_HEIGHT             32
@@ -27,11 +27,11 @@
 #define TILE_SIZE               32
 #define TILE_INDEX_MASK         0x7FF
 
-#define TILE_SYSTEMINDEX        0x0000
-#define TILE_USERINDEX          0x0010
+#define TILE_SYSTEMINDEX        0x0000U
+#define TILE_USERINDEX          0x0010U
 #define TILE_FONTINDEX          ((VDP_PLAN_W >> 5) - 96)
-#define TILE_EXTRA1INDEX        (((uint16_t)0xD000) >> 5) // 128 tiles after PLAN_A
-#define TILE_EXTRA2INDEX        (((uint16_t)0xF000) >> 5) // 64 tiles after PLAN_B
+#define TILE_EXTRA1INDEX        (0xD000U >> 5) // 128 tiles after PLAN_A
+#define TILE_EXTRA2INDEX        (0xF000U >> 5) // 64 tiles after PLAN_B
 
 // Tileset width/height
 #define TS_WIDTH    32
@@ -70,9 +70,9 @@
 #define TILE_WHIMINDEX      (TILE_QMARKINDEX + TILE_QMARKSIZE)
 #define TILE_WHIMSIZE       2
 // 12 tiles at the end for nemesis vertical frames
-#define TILE_NEMINDEX       (0xFE80 >> 5)
+#define TILE_NEMINDEX       (0xFE80U >> 5)
 // 8 tiles after window plane for blade L3
-#define TILE_SLASHINDEX     ((0xC000 >> 5) - 8)
+#define TILE_SLASHINDEX     ((0xC000U >> 5) - 8)
 // Unused palette color tiles area
 #define TILE_PLAYERINDEX    (TILE_SYSTEMINDEX + 2)
 #define TILE_PLAYERSIZE     4
@@ -107,7 +107,7 @@ extern const uint16_t PAL_FadeOutBlue[64];
 // FullWhite is used for a TSC instruction that flashes the screen white
 extern const uint16_t PAL_FullWhite[64];
 // Remember the pal mode flag, so we don't have to read the control port every time
-uint8_t pal_mode;
+extern uint8_t pal_mode;
 
 // Set defaults, clear everything
 void vdp_init();
@@ -132,13 +132,6 @@ void vdp_set_window(uint8_t x, uint8_t y);
 uint16_t vdp_get_palmode();
 
 uint16_t vdp_get_vblank();
-
-// DMA stuff
-//void vdp_dma_vram(uint32_t from, uint16_t to, uint16_t len);
-
-//void vdp_dma_cram(uint32_t from, uint16_t to, uint16_t len);
-
-//void vdp_dma_vsram(uint32_t from, uint16_t to, uint16_t len);
 
 // Tile patterns
 void vdp_tiles_load(volatile const uint32_t *data, uint16_t index, uint16_t num);

@@ -35,7 +35,7 @@ uint8_t hudMaxBlink;
 // Used for bar animation
 uint8_t hudEnergyPixel, hudEnergyTimer, hudEnergyDest;
 
-uint8_t showing = FALSE;
+uint8_t showing;
 
 static const uint8_t EnergyPixel[6][62] = {
         { 0, 4, 8,12,16,20,24,28,32,36,40 },

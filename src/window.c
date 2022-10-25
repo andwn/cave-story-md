@@ -50,22 +50,24 @@ const uint8_t ITEM_PAL[40] = {
 	1, 0, 0, 1, 0, 1, 1, 1,
 };
 
-uint8_t windowOpen = FALSE;
-uint16_t showingFace = 0;
+uint8_t windowOnTop;
 
-uint8_t textMode = TM_NORMAL;
+uint8_t windowOpen;
+uint16_t showingFace;
+
+uint8_t textMode;
 
 uint8_t windowText[3][36];
 uint8_t textRow, textColumn;
-uint8_t windowTextTick = 0;
-uint8_t spaceCounter = 0, spaceOffset = 0;
+uint8_t windowTextTick;
+uint8_t spaceCounter, spaceOffset;
 
-uint8_t promptAnswer = TRUE;
+uint8_t promptAnswer;
 VDPSprite promptSpr[2], handSpr;
 
-uint16_t showingItem = 0;
+uint16_t showingItem;
 
-uint8_t blinkTime = 0;
+uint8_t blinkTime;
 
 void window_clear_text();
 void window_draw_face();

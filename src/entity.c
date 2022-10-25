@@ -59,9 +59,14 @@ const uint8_t heightmap[4][16] = {
 	{ 0x7,0x7,0x6,0x6,0x5,0x5,0x4,0x4,0x3,0x3,0x2,0x2,0x1,0x1,0x0,0x0 },
 };
 
-uint8_t moveMeToFront = FALSE;
+uint8_t moveMeToFront;
 
-Entity *entityList = NULL, *inactiveList = NULL, *bossEntity = NULL;
+Entity *entityList, *inactiveList, *bossEntity;
+Entity *pieces[10]; // List for bosses to keep track of parts
+Entity *water_entity;
+
+uint16_t entity_active_count;
+
 
 uint8_t entity_on_screen(Entity *e) {
 	uint32_t x = e->x, y = e->y;

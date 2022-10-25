@@ -29,20 +29,26 @@
 #define TILE_WATERINDEX (TILE_TSINDEX + 384)
 
 // Index of background in db/back.c and the effect type
-uint8_t stageBackground = 0xFF;
+uint8_t stageBackground;// = 0xFF;
 
 int16_t backScrollTable[32];
-//uint8_t *stageBlocks = NULL;
-uint16_t *stageTable = NULL;
-const uint8_t *stagePXA = NULL;
+uint16_t *stageTable;
+const uint8_t *stagePXA;
 
 typedef struct {
 	uint8_t index;
 	uint8_t dir;
 } Current;
 Current currents[4];
-uint8_t currentsCount = 0;
-uint8_t currentsTimer = 0;
+uint8_t currentsCount;
+uint8_t currentsTimer;
+
+uint16_t stageID;
+uint16_t stageWidth, stageHeight;
+uint8_t stageTileset;
+int8_t morphingRow, morphingColumn;
+uint16_t backScrollTimer;
+uint8_t stageBackgroundType;
 
 void stage_load_tileset();
 void stage_load_blocks();

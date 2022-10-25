@@ -130,31 +130,38 @@ typedef struct {
 	const uint8_t *data;
 } Event;
 
+uint8_t tscEventCount;
+uint8_t tscState;
+uint16_t lastRunEvent;
+uint8_t inFade;
+uint16_t teleportEvent[8];
+uint8_t showingBossHealth;
+
 // Array of pointers to each event in the current TSC
 Event headEvents[HEAD_EVENT_COUNT];
 Event stageEvents[MAX_EVENTS];
-uint16_t lastRunEvent = 0;
+uint16_t lastRunEvent;
 
-const uint8_t *curCommand = NULL;
-uint8_t cmd;//, prevCmd;
+const uint8_t *curCommand;
+uint8_t cmd;
 
 uint16_t waitTime;
 
-uint16_t promptJump = 0;
+uint16_t promptJump;
 
-uint8_t teleMenuActive = FALSE;
+uint8_t teleMenuActive;
 uint8_t teleMenuSlotCount;
 uint16_t teleMenuEvent[8];
 uint8_t teleMenuSelection;
-uint8_t teleMenuSheet = NOSHEET;
+uint8_t teleMenuSheet;
 VDPSprite teleMenuSprite[8];
 
 
-Entity *bossBarEntity = NULL;
+Entity *bossBarEntity;
 uint16_t bossMaxHealth;
 uint16_t bossHealth;
 
-uint16_t lastAmmoNum = 0;
+uint16_t lastAmmoNum;
 
 uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max);
 

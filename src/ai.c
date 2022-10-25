@@ -37,6 +37,9 @@ static const uint32_t tan_table[33] = {
 	0xFFFFFFFF, 
 };
 
+uint16_t curly_target_time;
+int32_t curly_target_x, curly_target_y;
+
 // My brain hurts... don't read this
 uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty) {
 	uint8_t angle = 0;

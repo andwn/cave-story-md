@@ -39,29 +39,29 @@ static const uint8_t * const FileList[] = {
 	LS_16, LS_17, LS_18, LS_19, LS_20, LS_21,
 };
 
-uint8_t cfg_btn_jump = 5;
-uint8_t cfg_btn_shoot = 4;
-uint8_t cfg_btn_ffwd = 6;
-uint8_t cfg_btn_rswap = 8;
-uint8_t cfg_btn_lswap = 9;
-uint8_t cfg_btn_map = 10;
-uint8_t cfg_btn_pause = 7;
+uint8_t cfg_btn_jump;
+uint8_t cfg_btn_shoot;
+uint8_t cfg_btn_ffwd;
+uint8_t cfg_btn_rswap;
+uint8_t cfg_btn_lswap;
+uint8_t cfg_btn_map;
+uint8_t cfg_btn_pause;
 
-uint8_t cfg_language = 0;
-uint8_t cfg_ffwd = TRUE;
-uint8_t cfg_updoor = FALSE;
-uint8_t cfg_hellquake = TRUE;
-uint8_t cfg_iframebug = TRUE;
-uint8_t cfg_60fps = FALSE;
+uint8_t cfg_language;
+uint8_t cfg_ffwd;
+uint8_t cfg_updoor;
+uint8_t cfg_hellquake;
+uint8_t cfg_iframebug;
+uint8_t cfg_60fps;
 
-uint8_t cfg_force_btn = 0;
-uint8_t cfg_msg_blip = TRUE;
+uint8_t cfg_force_btn;
+uint8_t cfg_msg_blip;
 
-uint8_t cfg_music_mute = FALSE;
-uint8_t cfg_sfx_mute = FALSE;
+uint8_t cfg_music_mute;
+uint8_t cfg_sfx_mute;
 
-uint8_t sram_file = 0;
-uint8_t sram_state = SRAM_UNCHECKED;
+uint8_t sram_file;
+uint8_t sram_state;
 
 // Put the counter tiles in a "blank spot" of Hell's tileset
 #define TILE_COUNTERINDEX TILE_AIRINDEX
@@ -107,11 +107,37 @@ static const uint8_t decisec[2][60] = {
 };
 
 uint32_t flags[FLAGS_LEN];
-uint32_t skip_flags = 0;
+uint32_t skip_flags;
 
 static uint8_t LS_readByte(uint8_t file, uint32_t addr);
 static uint16_t LS_readWord(uint8_t file, uint32_t addr);
 static uint32_t LS_readLong(uint8_t file, uint32_t addr);
+
+void system_init() {
+    system_cfg_reset_controls();
+    system_cfg_reset_gameplay();
+    sram_state = SRAM_UNCHECKED;
+}
+void system_cfg_reset_controls() {
+    cfg_btn_jump = 5;
+    cfg_btn_shoot = 4;
+    cfg_btn_ffwd = 6;
+    cfg_btn_rswap = 8;
+    cfg_btn_lswap = 9;
+    cfg_btn_map = 10;
+    cfg_btn_pause = 7;
+    cfg_force_btn = 0;
+}
+void system_cfg_reset_gameplay() {
+    cfg_60fps = FALSE;
+    cfg_ffwd = TRUE;
+    cfg_updoor = FALSE;
+    cfg_hellquake = TRUE;
+    cfg_iframebug = TRUE;
+    cfg_msg_blip = TRUE;
+    cfg_music_mute = FALSE;
+    cfg_sfx_mute = FALSE;
+}
 
 void system_set_flag(uint16_t flag, uint8_t value) {
 	if(value) flags[flag>>5] |= ((uint32_t)1)<<(flag&31);
