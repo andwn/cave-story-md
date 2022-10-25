@@ -50,8 +50,8 @@ if __name__ == '__main__':
         if date != newdate:
             i += 1
             date = newdate
-            snaps += [[datetime.strptime(newdate, '%Y%m%d%H%M').strftime('%Y-%m-%d %H:%M JST'),
-                       'doukutsu-' + newdate + '.lst']]
+            snaps += [[[datetime.strptime(newdate, '%Y%m%d%H%M').strftime('%Y-%m-%d %H:%M JST'),
+                       'doukutsu-' + newdate + '.lst']]]
         snaps[i] += [[lang_map[file.split('-')[1]], file]]
 
     with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
