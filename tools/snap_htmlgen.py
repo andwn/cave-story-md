@@ -21,8 +21,13 @@ lang_map = {
 
 str_head = u'''<html><head><meta charset="UTF-8">
 <title>Cave Story MD Snapshots</title></head><body>
-<h2>Cave Story MD Automatic Snapshots</h2>
-<h2>洞窟物語MD自動スナップショット</h2>'''
+<style>table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 4px;
+    font-family: monospace, monospace;
+}</style>
+<h2>Cave Story MD Automatic Snapshots<br/>洞窟物語MD自動スナップショット</h2>'''
 
 str_table_start = u'<h3>{date}</h3>\n<table><tr><th>Language</th><th>ROM</th></tr>'
 str_table_row = u'<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
