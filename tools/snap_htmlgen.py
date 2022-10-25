@@ -5,29 +5,29 @@ import os
 import sys
 
 lang_map = {
-    'en': 'English',
-    'es': 'Español',
-    'pt': 'Português',
-    'br': 'Português (Brasil)',
-    'it': 'Italiano',
-    'fr': 'Français',
-    'de': 'Deutsch',
-    'fi': 'Suomi',
-    'ja': '日本語',
-    'zh': '中文',
-    'tw': '中文(台灣)',
-    'ko': '한국어',
+    'en': u'English',
+    'es': u'Español',
+    'pt': u'Português',
+    'br': u'Português (Brasil)',
+    'it': u'Italiano',
+    'fr': u'Français',
+    'de': u'Deutsch',
+    'fi': u'Suomi',
+    'ja': u'日本語',
+    'zh': u'中文',
+    'tw': u'中文(台灣)',
+    'ko': u'한국어',
 }
 
-str_head = '''<html><head><title>Cave Story MD Snapshots</title></head><body>
+str_head = u'''<html><head><title>Cave Story MD Snapshots</title></head><body>
 <h1>Cave Story MD Automatic Snapshots</h1>
 <h2>洞窟物語MD自動スナップショット</h2>'''
 
-str_table_start = '<h3>{date}</h3>\n<table><tr><th>Language</th><th>ROM</th></tr>'
-str_table_row = '<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
-str_table_end = '</table>'
+str_table_start = u'<h3>{date}</h3>\n<table><tr><th>Language</th><th>ROM</th></tr>'
+str_table_row = u'<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
+str_table_end = u'</table>'
 
-str_foot = '''<p>Last updated: {date}</p>
+str_foot = u'''<p>Last updated: {date}</p>
 </body></html>'''
 
 

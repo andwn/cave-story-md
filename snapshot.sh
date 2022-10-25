@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$1" ] ; then
+    echo "No argument supplied"
+    exit 1
+fi
+
 changed=0
 git remote update && git status -uno | grep -q 'Your branch is behind' && changed=1
 if [ $changed = 1 ]; then
