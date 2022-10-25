@@ -58,7 +58,7 @@ if __name__ == '__main__':
         f.write(str_head)
 
         for snap in snaps:
-            f.write(str_table_start.format(date=snap[0], symbol=snap[1]))
+            f.write(str_table_start.format(date=snap[0][0], symbol=snap[0][1]))
             for param in sorted(snap[1:], key=lambda p: p[0]):
                 f.write(str_table_row.format(lang=param[0], file=param[1]))
             f.write(str_table_end)
