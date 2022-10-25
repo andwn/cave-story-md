@@ -19,8 +19,9 @@ lang_map = {
     'ko': u'한국어',
 }
 
-str_head = u'''<html><head><title>Cave Story MD Snapshots</title></head><body>
-<h1>Cave Story MD Automatic Snapshots</h1>
+str_head = u'''<html><head><meta charset="UTF-8">
+<title>Cave Story MD Snapshots</title></head><body>
+<h2>Cave Story MD Automatic Snapshots</h2>
 <h2>洞窟物語MD自動スナップショット</h2>'''
 
 str_table_start = u'<h3>{date}</h3>\n<table><tr><th>Language</th><th>ROM</th></tr>'
@@ -46,12 +47,13 @@ if __name__ == '__main__':
             snaps += [[datetime.strptime(newdate, '%Y%m%d%H%M').strftime('%Y-%m-%d %H:%M JST')]]
         snaps[i] += [[lang_map[file.split('-')[1]], file]]
 
-    print(str_head)
+    with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
+        f.write(str_head)
 
-    for snap in snaps:
-        print(str_table_start.format(date=snap[0]))
-        for param in snap[1:]:
-            print(str_table_row.format(lang=param[0], file=param[1]))
-        print(str_table_end)
+        for snap in snaps:
+            f.write(str_table_start.format(date=snap[0]))
+            for param in snap[1:]:
+                f.write(str_table_row.format(lang=param[0], file=param[1]))
+            f.write(str_table_end)
 
-    print(str_foot.format(date=datetime.now().strftime('%Y-%m-%d %H:%M:%S JST')))
+        f.write(str_foot.format(date=datetime.now().strftime('%Y-%m-%d %H:%M:%S JST')))

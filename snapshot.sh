@@ -21,5 +21,5 @@ else
     echo "Already up to date"
 fi
 
-python3 tools/snap_htmlgen.py "$1" > "$1/index.html"
+python3 tools/snap_htmlgen.py "$1"
 echo "Page generated"
