@@ -16,6 +16,7 @@ if [ $changed = 1 ]; then
         today=$(date +%Y%m%d%H%M)
         mv "$fn" "$1/${fn%.*}-${today}.${fn##*.}"
     done
+    mv doukutsu-en.lst "$1/doukutsu-${today}.lst"
     echo "Build successful"
 else
     echo "Already up to date"

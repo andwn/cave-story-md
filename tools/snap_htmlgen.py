@@ -29,7 +29,8 @@ str_head = u'''<html><head><meta charset="UTF-8">
 }</style>
 <h2>Cave Story MD Automatic Snapshots<br/>洞窟物語MD自動スナップショット</h2>'''
 
-str_table_start = u'<h3>{date}</h3>\n<table><tr><th>Language</th><th>ROM</th></tr>'
+str_table_start = u'''<h4>{date} - <a href="{symbol}">Symbols</a></h4>
+<table><tr><th>Language</th><th>ROM</th></tr>'''
 str_table_row = u'<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
 str_table_end = u'</table>'
 
@@ -49,14 +50,15 @@ if __name__ == '__main__':
         if date != newdate:
             i += 1
             date = newdate
-            snaps += [[datetime.strptime(newdate, '%Y%m%d%H%M').strftime('%Y-%m-%d %H:%M JST')]]
+            snaps += [[datetime.strptime(newdate, '%Y%m%d%H%M').strftime('%Y-%m-%d %H:%M JST'),
+                       'doukutsu-' + newdate + '.lst']]
         snaps[i] += [[lang_map[file.split('-')[1]], file]]
 
     with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
         f.write(str_head)
 
         for snap in snaps:
-            f.write(str_table_start.format(date=snap[0]))
+            f.write(str_table_start.format(date=snap[0], symbol=snap[1]))
             for param in sorted(snap[1:], key=lambda p: p[0]):
                 f.write(str_table_row.format(lang=param[0], file=param[1]))
             f.write(str_table_end)
