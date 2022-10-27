@@ -31,12 +31,15 @@ str_head = u'''<!DOCTYPE html>
 }</style>
 <h2>Cave Story MD Automatic Snapshots<br/>洞窟物語MD自動スナップショット</h2>'''
 
-str_table_start = u'''<h4>{date} - <a href="{symbol}">Symbols</a></h4>
-<table><tr><th>Language</th><th>ROM</th></tr>'''
-str_table_row = u'<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
-str_table_end = u'</table>'
+str_row_start = u'<p><strong>{date}</strong> (<a href="{file}">map</a>) - '
+str_row_lang = u'<a href="{file}">{lang}</a> '
+str_row_end = u'</p>\n'
+#str_table_start = u'''<h4>{date} - <a href="{symbol}">Symbols</a></h4>
+#<table><tr><th>Language</th><th>ROM</th></tr>'''
+#str_table_row = u'<tr><td>{lang}</td><td><a href="{file}">{file}</a></td></tr>'
+#str_table_end = u'</table>'
 
-str_foot = u'''<p>Last updated: {date}</p>
+str_foot = u'''<p>Last updated {date}</p>
 </body></html>'''
 
 
@@ -60,9 +63,9 @@ if __name__ == '__main__':
         f.write(str_head)
 
         for snap in snaps:
-            f.write(str_table_start.format(date=snap[0][0], symbol=snap[0][1]))
+            f.write(str_row_start.format(date=snap[0][0], symbol=snap[0][1]))
             for param in sorted(snap[1:], key=lambda p: p[0]):
-                f.write(str_table_row.format(lang=param[0], file=param[1]))
-            f.write(str_table_end)
+                f.write(str_row_lang.format(lang=param[0], file=param[1]))
+            f.write(str_row_end)
 
         f.write(str_foot.format(date=datetime.now().strftime('%Y-%m-%d %H:%M:%S JST')))
