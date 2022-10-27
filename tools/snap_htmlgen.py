@@ -6,7 +6,7 @@ str_head = '''<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Cave Story MD Snapshots</title>
-  <style>body { font: sans-serif; }
+  <style>body { font: "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
   @media (prefers-color-scheme: dark) {
     body { color: #EEE; background: #111; }
     a:link { color: #7BF; }
