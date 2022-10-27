@@ -134,9 +134,9 @@ uint16_t vdp_get_palmode();
 uint16_t vdp_get_vblank();
 
 // Tile patterns
-void vdp_tiles_load(volatile const uint32_t *data, uint16_t index, uint16_t num);
+void vdp_tiles_load(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num);
 
-void vdp_tiles_load_from_rom(volatile const uint32_t *data, uint16_t index, uint16_t num);
+void vdp_tiles_load_from_rom(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num);
 
 // Tile maps
 void vdp_map_xy(uint16_t plan, uint16_t tile, uint16_t x, uint16_t y);

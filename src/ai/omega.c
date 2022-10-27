@@ -102,7 +102,8 @@ void onspawn_omega_strut(Entity *e) {
 }
 
 void ai_omega(Entity *e) {
-	volatile uint16_t px = e->x >> CSF, py = e->y >> CSF;
+	/*volatile */
+    uint16_t px = e->x >> CSF, py = e->y >> CSF;
 	switch(e->state) {
 		case 0:	break;	// waiting for trigger by script
 		case OMG_WAIT:	// waits for a moment then go to omg.nextstate

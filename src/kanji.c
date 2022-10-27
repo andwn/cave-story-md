@@ -15,7 +15,8 @@
 uint16_t cjkVramMode;
 uint16_t cjkVramIndex;
 
-volatile uint16_t cjkTileBuf[6][16];
+/*volatile*/
+uint16_t cjkTileBuf[6][16];
 uint16_t cjkShiftChar;
 
 uint16_t cjkMapBuf[3][2][36];

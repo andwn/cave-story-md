@@ -165,12 +165,12 @@ void vdp_dma_vsram(uint32_t from, uint16_t to, uint16_t len) {
 */
 // Tile patterns
 
-void vdp_tiles_load(volatile const uint32_t *data, uint16_t index, uint16_t num) {
+void vdp_tiles_load(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num) {
     dma_now(DmaVRAM, (uint32_t) data, index << 5, num << 4, 2);
 }
 
 // Temporary solution until I get the tilesets aligned, split DMA on 128K unalignment
-void vdp_tiles_load_from_rom(volatile const uint32_t *data, uint16_t index, uint16_t num) {
+void vdp_tiles_load_from_rom(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num) {
     uint32_t from = (uint32_t) data;
     uint16_t to = index << 5;
     uint16_t len1 = num << 4;
@@ -207,12 +207,13 @@ void vdp_map_vline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y,
 }
 
 void vdp_map_fill_rect(uint16_t plan, uint16_t index, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t inc) {
-    volatile uint16_t tiles[64]; // Garbled graphics on -Ofast without this volatile here
+    /*volatile*/ uint16_t tiles[64]; // Garbled graphics on -Ofast without this volatile here
     for (uint16_t yy = 0; yy < h; yy++) {
         for (uint16_t xx = 0; xx < w; xx++) {
             tiles[xx] = index;
             index += inc;
         }
+        __asm__("": : :"memory");
         dma_now(DmaVRAM, (uint32_t) tiles, plan + ((x + ((y + yy) << PLAN_WIDTH_SFT)) << 1), w, 2);
     }
 }

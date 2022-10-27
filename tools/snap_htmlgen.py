@@ -14,7 +14,8 @@ str_head = '''<!DOCTYPE html><html lang="en">
   }</style>
 </head><body>
 <h2>Cave Story MD Automatic Snapshots</h2>
-<h2 lang="ja">洞窟物語MD自動スナップショット</h2>'''
+<h2 lang="ja">洞窟物語MD自動スナップショット</h2>
+'''
 
 str_row_start = '<p><strong>{date}</strong> (<a href="{file}">map</a>) -'
 str_row_lang = ' <a href="{file}">{lang}</a> -'
