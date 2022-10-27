@@ -6,16 +6,18 @@ str_head = '''<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Cave Story MD Snapshots</title>
-  <style>@media (prefers-color-scheme: dark) {
-    body { color: #EEE; background: #222; }
-    a:link { color: #6AE; }
-    a:visited { color: #8AE; }
+  <style>body { font: sans-serif; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #EEE; background: #111; }
+    a:link { color: #7BF; }
+    a:visited { color: #9BF; }
   }</style>
 </head><body>
-<h2>Cave Story MD Automatic Snapshots<br/>洞窟物語MD自動スナップショット</h2>'''
+<h2>Cave Story MD Automatic Snapshots</h2>
+<h2 lang="ja">洞窟物語MD自動スナップショット</h2>'''
 
-str_row_start = '<p><strong>{date}</strong> (<a href="{file}">map</a>) - '
-str_row_lang = '<a href="{file}">{lang}</a> '
+str_row_start = '<p><strong>{date}</strong> (<a href="{file}">map</a>) -'
+str_row_lang = ' <a href="{file}">{lang}</a> -'
 str_row_end = '</p>\n'
 
 str_foot = '<p>Last updated {date}</p></body></html>'
