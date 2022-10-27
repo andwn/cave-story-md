@@ -6,7 +6,11 @@ str_head = '''<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Cave Story MD Snapshots</title>
-  <link rel="stylesheet" href="https://tenshi.skychase.zone/style.css">
+  <style>@media (prefers-color-scheme: dark) {
+    body { color: #EEE; background: #222; }
+    a:link { color: #6AE; }
+    a:visited { color: #8AE; }
+  }</style>
 </head><body>
 <h2>Cave Story MD Automatic Snapshots<br/>洞窟物語MD自動スナップショット</h2>'''
 
