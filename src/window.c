@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "dma.h"
 #include "entity.h"
 #include "gamemode.h"
@@ -76,8 +77,7 @@ void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	//window_clear_text();
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-		const uint32_t *data = &TS_MsgFont.tiles[('_' - 0x20) << 3];
-		vdp_tiles_load_from_rom(data, (0xB000 >> 5) + 3 + (29 << 2), 1);
+		vdp_tiles_load_uftc(UFTC_MsgFont, (0xB000 >> 5) + 3 + (29 << 2), '_' - 0x20, 1);
 	}
 	textRow = textColumn = 0;
 	
@@ -340,7 +340,7 @@ uint8_t window_prompt_update() {
 void window_draw_face() {
     disable_ints;
     z80_request();
-	vdp_tiles_load_from_rom(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
+	vdp_tiles_load(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
 	vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 			TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
     z80_release();

@@ -184,7 +184,7 @@ void tsc_init() {
 	teleMenuSlotCount = 0;
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
-	vdp_tiles_load_from_rom(TS_Window.tiles, TILE_WINDOWINDEX, TS_Window.numTile);
+	vdp_tiles_load(TS_Window.tiles, TILE_WINDOWINDEX, TS_Window.numTile);
 	tsc_load(headEvents, (const uint8_t*)TSC_GLOB[HEAD], HEAD_EVENT_COUNT);
 }
 
@@ -378,10 +378,11 @@ void tsc_show_boss_health() {
 	// Fill map name space with boss bar
 	static const char boss[4] = "Boss";
 	for(uint8_t i = 0; i < 4; i++) {
-		vdp_tiles_load_from_rom(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1);
+		//vdp_tiles_load(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1);
+        vdp_tiles_load_uftc(UFTC_SysFont, boss[i]-0x20, TILE_NAMEINDEX+i, 1);
 	}
 	for(uint8_t i = 0; i < 8; i++) {
-		vdp_tiles_load_from_rom(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1);
+		vdp_tiles_load(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1);
 	}
 	// Create sprites to display the string
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
@@ -429,14 +430,14 @@ void tsc_update_boss_health() {
 		// Draw a partial filled tile
 		if(inc) {
 			uint16_t index = min((((uint16_t)(hp << 3)) / inc) << 3, 72);
-			vdp_tiles_load_from_rom(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1);
 		} else {
 			// Don't divide by zero
-			vdp_tiles_load_from_rom(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1);
 		}
 		// Draw empty tile after it
 		if(++i < 8) {
-			vdp_tiles_load_from_rom(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1);
 		}
 	}
 	
@@ -1223,17 +1224,17 @@ uint8_t execute_command() {
 			vdp_map_clear(VDP_PLAN_B);
 			vdp_map_clear(VDP_PLAN_A);
 			// Background sky/mountains
-			vdp_tiles_load_from_rom(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
+			vdp_tiles_load(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
 			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10, 1);
 			// Foreground trees
-			vdp_tiles_load_from_rom(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
+			vdp_tiles_load(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
 			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
 			// Draw high prio black tiles over the top to hide island
 			static const uint32_t blackTile[8] = { 
 				0x11111111,0x11111111,0x11111111,0x11111111,
 				0x11111111,0x11111111,0x11111111,0x11111111
 			};
-			vdp_tiles_load_from_rom(blackTile, 1, 1);
+			vdp_tiles_load(blackTile, 1, 1);
 			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4, 0);
 			
 			// Island sprite

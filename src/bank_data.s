@@ -16,115 +16,78 @@
 
 .section .rodata
 
-# Compressed tileset patterns
+# Compressed Tilesets
+BIN UFTC_SysFont    "res/tiles_c/font_tran.uftc"
+BIN UFTC_MsgFont    "res/tiles_c/font_blue.uftc"
+
+# Stage Tilesets
 BIN UFTC_Almond "res/Stage/PrtAlmond_vert.uftc"
+BIN UFTC_Blcny  "res/Stage/PrtBlcny_vert.uftc"
 BIN UFTC_Barr   "res/Stage/PrtBarr_vert.uftc"
 BIN UFTC_Cave   "res/Stage/PrtCave_vert.uftc"
 BIN UFTC_Cent   "res/Stage/PrtCent_vert.uftc"
 BIN UFTC_EggIn  "res/Stage/PrtEggIn_vert.uftc"
-BIN UFTC_Eggs   "res/Stage/Eggs/PrtEggs_vert.uftc"
+BIN UFTC_Eggs   "res/Stage/PrtEggs_vert.uftc"
+BIN UFTC_Eggs2  "res/Stage/PrtEggs2_vert.uftc"
 BIN UFTC_EggX   "res/Stage/PrtEggX1_vert.uftc"
+BIN UFTC_EggX2  "res/Stage/PrtEggX2_vert.uftc"
 BIN UFTC_Fall   "res/Stage/PrtFall_vert.uftc"
 BIN UFTC_Gard   "res/Stage/PrtGard_vert.uftc"
-BIN UFTC_Hell   "res/Stage/Hell/PrtHell_vert.uftc"
+BIN UFTC_Hell   "res/Stage/PrtHell_vert.uftc"
 BIN UFTC_Jail   "res/Stage/PrtJail_vert.uftc"
+BIN UFTC_Kings  "res/Stage/PrtKings_vert.uftc"
 BIN UFTC_Labo   "res/Stage/PrtLabo_vert.uftc"
-BIN UFTC_Maze   "res/Stage/Maze/PrtMaze_vert.uftc"
-BIN UFTC_Mimi   "res/Stage/Mimi/PrtMimi_vert.uftc"
+BIN UFTC_Maze   "res/Stage/PrtMaze_vert.uftc"
+BIN UFTC_MazeM  "res/Stage/PrtMazeM_vert.uftc"
+BIN UFTC_Mimi   "res/Stage/PrtMimi_vert.uftc"
 BIN UFTC_Oside  "res/Stage/PrtOside_vert.uftc"
 BIN UFTC_Pens   "res/Stage/PrtPens_vert.uftc"
+BIN UFTC_Ring2  "res/Stage/PrtRing2_vert.uftc"
+BIN UFTC_Ring3  "res/Stage/PrtRing3_vert.uftc"
 BIN UFTC_River  "res/Stage/PrtRiver_vert.uftc"
 BIN UFTC_Sand   "res/Stage/PrtSand_vert.uftc"
+BIN UFTC_Statue "res/Stage/PrtStatue_vert.uftc"
 BIN UFTC_Store  "res/Stage/PrtStore_vert.uftc"
 BIN UFTC_Weed   "res/Stage/PrtWeed_vert.uftc"
-BIN UFTC_Blcny  "res/Stage/White/PrtBlcny_vert.uftc"
 
-BIN UFTC_EggX2  "res/Stage/PrtEggX2_vert.uftc"
-BIN UFTC_Eggs2  "res/Stage/Eggs/PrtEggs2_vert.uftc"
-BIN UFTC_MazeM  "res/Stage/Maze/PrtMazeM_vert.uftc"
-BIN UFTC_Kings  "res/Stage/White/PrtKings_vert.uftc"
-BIN UFTC_Statue "res/Stage/Hell/PrtStatue_vert.uftc"
-BIN UFTC_Ring2  "res/Stage/White/PrtRing2_vert.uftc"
-BIN UFTC_Ring3  "res/Stage/White/PrtRing3_vert.uftc"
-
-# Tile Attributes
+# Tile Attributes (PXA)
 BIN PXA_Almond	"res/Stage/Almond.pxa"
+BIN PXA_Blcny	"res/Stage/Blcny.pxa"
 BIN PXA_Barr	"res/Stage/Barr.pxa"
 BIN PXA_Cave	"res/Stage/Cave.pxa"
 BIN PXA_Cent	"res/Stage/Cent.pxa"
 BIN PXA_EggIn	"res/Stage/EggIn.pxa"
+BIN PXA_Eggs	"res/Stage/Eggs.pxa"
+BIN PXA_Eggs2	"res/Stage/Eggs2.pxa"
 BIN PXA_EggX	"res/Stage/EggX.pxa"
 BIN PXA_Fall	"res/Stage/Fall.pxa"
 BIN PXA_Gard	"res/Stage/Gard.pxa"
+BIN PXA_Hell	"res/Stage/Hell.pxa"
 BIN PXA_Jail	"res/Stage/Jail.pxa"
+BIN PXA_Kings	"res/Stage/Kings.pxa"
 BIN PXA_Labo	"res/Stage/Labo.pxa"
+BIN PXA_Maze	"res/Stage/Maze.pxa"
+BIN PXA_MazeM	"res/Stage/MazeM.pxa"
+BIN PXA_Mimi	"res/Stage/Mimi.pxa"
 BIN PXA_Oside	"res/Stage/Oside.pxa"
 BIN PXA_Pens	"res/Stage/Pens.pxa"
+BIN PXA_Ring2	"res/Stage/Ring2.pxa"
+BIN PXA_Ring3	"res/Stage/Ring3.pxa"
 BIN PXA_River	"res/Stage/River.pxa"
 BIN PXA_Sand	"res/Stage/Sand.pxa"
+BIN PXA_Statue	"res/Stage/Statue.pxa"
 BIN PXA_Store	"res/Stage/Store.pxa"
 BIN PXA_Weed	"res/Stage/Weed.pxa"
 
-# Optimized Tileset Stages
-BIN PXA_Mimi		"res/Stage/Mimi/Mimi.pxa"
-BIN PXM_Barr		"res/Stage/Mimi/Barr.cpxm"
-BIN PXM_Cemet		"res/Stage/Mimi/Cemet.cpxm"
-BIN PXM_e_Ceme		"res/Stage/Mimi/e_Ceme.cpxm"
-BIN PXM_MiBox		"res/Stage/Mimi/MiBox.cpxm"
-BIN PXM_Mimi		"res/Stage/Mimi/Mimi.cpxm"
-BIN PXM_Plant		"res/Stage/Mimi/Plant.cpxm"
-BIN PXM_Pool		"res/Stage/Mimi/Pool.cpxm"
-
-BIN PXA_Eggs		"res/Stage/Eggs/Eggs.pxa"
-BIN PXM_Eggs		"res/Stage/Eggs/Eggs.cpxm"
-
-BIN PXA_Eggs2		"res/Stage/Eggs/Eggs2.pxa"
-BIN PXM_Eggs2		"res/Stage/Eggs/Eggs2.cpxm"
-
-BIN PXA_Maze		"res/Stage/Maze/Maze.pxa"
-BIN PXM_e_Maze		"res/Stage/Maze/e_Maze.cpxm"
-BIN PXM_MazeB		"res/Stage/Maze/MazeB.cpxm"
-BIN PXM_MazeD		"res/Stage/Maze/MazeD.cpxm"
-BIN PXM_MazeH		"res/Stage/Maze/MazeH.cpxm"
-BIN PXM_MazeI		"res/Stage/Maze/MazeI.cpxm"
-BIN PXM_MazeO		"res/Stage/Maze/MazeO.cpxm"
-BIN PXM_MazeS		"res/Stage/Maze/MazeS.cpxm"
-BIN PXM_MazeW		"res/Stage/Maze/MazeW.cpxm"
-
-BIN PXA_MazeM		"res/Stage/Maze/MazeM.pxa"
-BIN PXM_MazeM		"res/Stage/Maze/MazeM.cpxm"
-
-BIN PXA_Blcny		"res/Stage/White/Blcny.pxa"
-BIN PXM_e_Blcn		"res/Stage/White/e_Blcn.cpxm"
-BIN PXM_Blcny1		"res/Stage/White/Blcny1.cpxm"
-BIN PXM_Blcny2		"res/Stage/White/Blcny2.cpxm"
-
-BIN PXA_Kings		"res/Stage/White/Kings.pxa"
-BIN PXM_Kings		"res/Stage/White/Kings.cpxm"
-BIN PXM_Ring1		"res/Stage/White/Ring1.cpxm"
-BIN PXM_Ostep		"res/Stage/White/Ostep.cpxm"
-
-BIN PXA_Ring2		"res/Stage/White/Ring2.pxa"
-BIN PXM_Ring2		"res/Stage/White/Ring2.cpxm"
-
-BIN PXA_Ring3		"res/Stage/White/Ring3.pxa"
-BIN PXM_Ring3		"res/Stage/White/Ring3.cpxm"
-
-BIN PXA_Hell		"res/Stage/Hell/Hell.pxa"
-BIN PXM_Hell1		"res/Stage/Hell/Hell1.cpxm"
-BIN PXM_Hell2		"res/Stage/Hell/Hell2.cpxm"
-BIN PXM_Hell3		"res/Stage/Hell/Hell3.cpxm"
-BIN PXM_Hell4		"res/Stage/Hell/Hell4.cpxm"
-BIN PXM_Hell42		"res/Stage/Hell/Hell42.cpxm"
-BIN PXM_Ballo1		"res/Stage/Hell/Ballo1.cpxm"
-BIN PXM_Ballo2		"res/Stage/Hell/Ballo2.cpxm"
-
-BIN PXA_Statue		"res/Stage/Hell/Statue.pxa"
-BIN PXM_Statue		"res/Stage/Hell/Statue.cpxm"
-
 # Stages (PXM)
 BIN PXM_Almond	"res/Stage/Almond.cpxm"
+BIN PXM_Ballo1	"res/Stage/Ballo1.cpxm"
+BIN PXM_Ballo2	"res/Stage/Ballo2.cpxm"
+BIN PXM_Barr	"res/Stage/Barr.cpxm"
+BIN PXM_Blcny1	"res/Stage/Blcny1.cpxm"
+BIN PXM_Blcny2	"res/Stage/Blcny2.cpxm"
 BIN PXM_Cave	"res/Stage/Cave.cpxm"
+BIN PXM_Cemet	"res/Stage/Cemet.cpxm"
 BIN PXM_Cent	"res/Stage/Cent.cpxm"
 BIN PXM_CentW	"res/Stage/CentW.cpxm"
 BIN PXM_Chako	"res/Stage/Chako.cpxm"
@@ -136,9 +99,12 @@ BIN PXM_Curly	"res/Stage/Curly.cpxm"
 BIN PXM_CurlyS	"res/Stage/CurlyS.cpxm"
 BIN PXM_Dark	"res/Stage/Dark.cpxm"
 BIN PXM_Drain	"res/Stage/Drain.cpxm"
+BIN PXM_e_Blcn	"res/Stage/e_Blcn.cpxm"
+BIN PXM_e_Ceme	"res/Stage/e_Ceme.cpxm"
 BIN PXM_e_Jenk	"res/Stage/e_Jenk.cpxm"
 BIN PXM_e_Labo	"res/Stage/e_Labo.cpxm"
 BIN PXM_e_Malc	"res/Stage/e_Malc.cpxm"
+BIN PXM_e_Maze	"res/Stage/e_Maze.cpxm"
 BIN PXM_e_Sky	"res/Stage/e_Sky.cpxm"
 BIN PXM_EgEnd1	"res/Stage/EgEnd1.cpxm"
 BIN PXM_EgEnd2	"res/Stage/EgEnd2.cpxm"
@@ -146,45 +112,70 @@ BIN PXM_Egg1	"res/Stage/Egg1.cpxm"
 BIN PXM_Egg6	"res/Stage/Egg6.cpxm"
 BIN PXM_EggR	"res/Stage/EggR.cpxm"
 BIN PXM_EggR2	"res/Stage/EggR2.cpxm"
+BIN PXM_Eggs	"res/Stage/Eggs.cpxm"
+BIN PXM_Eggs2	"res/Stage/Eggs2.cpxm"
 BIN PXM_EggX	"res/Stage/EggX.cpxm"
 BIN PXM_EggX2	"res/Stage/EggX2.cpxm"
 BIN PXM_Fall	"res/Stage/Fall.cpxm"
 BIN PXM_Frog	"res/Stage/Frog.cpxm"
 BIN PXM_Gard	"res/Stage/Gard.cpxm"
+BIN PXM_Hell1	"res/Stage/Hell1.cpxm"
+BIN PXM_Hell2	"res/Stage/Hell2.cpxm"
+BIN PXM_Hell3	"res/Stage/Hell3.cpxm"
+BIN PXM_Hell4	"res/Stage/Hell4.cpxm"
+BIN PXM_Hell42	"res/Stage/Hell42.cpxm"
 BIN PXM_Itoh	"res/Stage/Itoh.cpxm"
 BIN PXM_Island	"res/Stage/Island.cpxm"
 BIN PXM_Jail1	"res/Stage/Jail1.cpxm"
 BIN PXM_Jail2	"res/Stage/Jail2.cpxm"
 BIN PXM_Jenka1	"res/Stage/Jenka1.cpxm"
 BIN PXM_Jenka2	"res/Stage/Jenka2.cpxm"
+BIN PXM_Kings	"res/Stage/Kings.cpxm"
 BIN PXM_Little	"res/Stage/Little.cpxm"
 BIN PXM_Lounge	"res/Stage/Lounge.cpxm"
 BIN PXM_Malco	"res/Stage/Malco.cpxm"
 BIN PXM_Mapi	"res/Stage/Mapi.cpxm"
 BIN PXM_MazeA	"res/Stage/MazeA.cpxm"
+BIN PXM_MazeB	"res/Stage/MazeB.cpxm"
+BIN PXM_MazeD	"res/Stage/MazeD.cpxm"
+BIN PXM_MazeH	"res/Stage/MazeH.cpxm"
+BIN PXM_MazeI	"res/Stage/MazeI.cpxm"
+BIN PXM_MazeO	"res/Stage/MazeO.cpxm"
+BIN PXM_MazeS	"res/Stage/MazeS.cpxm"
+BIN PXM_MazeW	"res/Stage/MazeW.cpxm"
+BIN PXM_MazeM	"res/Stage/MazeM.cpxm"
+BIN PXM_MiBox	"res/Stage/MiBox.cpxm"
+BIN PXM_Mimi	"res/Stage/Mimi.cpxm"
 BIN PXM_Momo	"res/Stage/Momo.cpxm"
 BIN PXM_Oside	"res/Stage/Oside.cpxm"
+BIN PXM_Ostep	"res/Stage/Ostep.cpxm"
 BIN PXM_Pens1	"res/Stage/Pens1.cpxm"
 BIN PXM_Pens2	"res/Stage/Pens2.cpxm"
 BIN PXM_Pixel	"res/Stage/Pixel.cpxm"
+BIN PXM_Plant	"res/Stage/Plant.cpxm"
 BIN PXM_Pole	"res/Stage/Pole.cpxm"
+BIN PXM_Pool	"res/Stage/Pool.cpxm"
 BIN PXM_Prefa1	"res/Stage/Prefa1.cpxm"
 BIN PXM_Prefa2	"res/Stage/Prefa2.cpxm"
 BIN PXM_Priso1	"res/Stage/Priso1.cpxm"
 BIN PXM_Priso2	"res/Stage/Priso2.cpxm"
+BIN PXM_Ring1	"res/Stage/Ring1.cpxm"
+BIN PXM_Ring2	"res/Stage/Ring2.cpxm"
+BIN PXM_Ring3	"res/Stage/Ring3.cpxm"
 BIN PXM_River	"res/Stage/River.cpxm"
 BIN PXM_Sand	"res/Stage/Sand.cpxm"
 BIN PXM_SandE	"res/Stage/SandE.cpxm"
 BIN PXM_Santa	"res/Stage/Santa.cpxm"
 BIN PXM_Shelt	"res/Stage/Shelt.cpxm"
 BIN PXM_Start	"res/Stage/Start.cpxm"
+BIN PXM_Statue	"res/Stage/Statue.cpxm"
 BIN PXM_Stream	"res/Stage/Stream.cpxm"
 BIN PXM_Weed	"res/Stage/Weed.cpxm"
 BIN PXM_WeedB	"res/Stage/WeedB.cpxm"
 BIN PXM_WeedD	"res/Stage/WeedD.cpxm"
 BIN PXM_WeedS	"res/Stage/WeedS.cpxm"
 
-# Entities (PXE)
+# Stage Entity Lists (PXE)
 BIN PXE_0       "res/Stage/0.pxe"
 BIN PXE_Almond	"res/Stage/Almond.pxe"
 BIN PXE_Ballo1	"res/Stage/Ballo1.pxe"
@@ -282,29 +273,29 @@ BIN PXE_WeedD	"res/Stage/WeedD.pxe"
 BIN PXE_WeedS	"res/Stage/WeedS.pxe"
 
 # NPC Table
-BIN     NPC_TABLE		"res/npc.tbl"
+BIN NPC_TABLE	"res/npc.tbl"
 
 /* Background tilemaps */
 # Moon
-BIN		PAT_MoonTop		"res/back/bkMoonTop.pat"
-BIN		MAP_MoonTop		"res/back/bkMoonTop.map"
-BIN		PAT_MoonBtm		"res/back/bkMoonBottom.pat"
-BIN		MAP_MoonBtm		"res/back/bkMoonBottom.map"
+BIN	PAT_MoonTop		"res/back/bkMoonTop.pat"
+BIN	MAP_MoonTop		"res/back/bkMoonTop.map"
+BIN	PAT_MoonBtm		"res/back/bkMoonBottom.pat"
+BIN	MAP_MoonBtm		"res/back/bkMoonBottom.map"
 # Fog
-BIN		PAT_FogTop		"res/back/bkFogTop.pat"
-BIN		MAP_FogTop		"res/back/bkFogTop.map"
-BIN		PAT_FogBtm		"res/back/bkFogBottom.pat"
-BIN		MAP_FogBtm		"res/back/bkFogBottom.map"
+BIN	PAT_FogTop		"res/back/bkFogTop.pat"
+BIN	MAP_FogTop		"res/back/bkFogTop.map"
+BIN	PAT_FogBtm		"res/back/bkFogBottom.pat"
+BIN	MAP_FogBtm		"res/back/bkFogBottom.map"
 # Sound Test
-BIN		PAT_SndTest	    "res/back/soundtest.pat"
-BIN		MAP_SndTest	    "res/back/soundtest.map"
+BIN	PAT_SndTest	    "res/back/soundtest.pat"
+BIN	MAP_SndTest	    "res/back/soundtest.map"
 
 /* XGM Driver blob */
-BIN z80_xgm, "src/xgm/z80_xgm.o80"
+BIN z80_xgm         "src/xgm/z80_xgm.o80"
     .globl z80_xgm_end
 z80_xgm_end:
 
-BIN stop_xgm, "res/stop_xgm.bin"
+BIN stop_xgm        "res/stop_xgm.bin"
 
 /* Sound Effects */
 PCM SFX_01  "res/sfx/01.pcm"
@@ -403,7 +394,7 @@ PCM SFX_74  "res/sfx/74.pcm"
 PCM SFX_75  "res/sfx/75.pcm"
 /* 76 77 78 79 7A 7B 7C 7D 7E 7F */
 
-
+/* Music */
 BIN BGM_Mischievous, "res/bgm/mischievous.xgc"
 BIN BGM_Safety,      "res/bgm/safety.xgc"
 BIN BGM_GameOver,    "res/bgm/gameover.xgc"
@@ -445,21 +436,8 @@ BIN BGM_Waterway,    "res/bgm/waterway.xgc"
 BIN BGM_SealChamber, "res/bgm/seal_chamber.xgc"
 BIN BGM_Toroko,      "res/bgm/toroko.xgc"
 BIN BGM_White,       "res/bgm/white.xgc"
-
-/* Bonus Tracks */
+/* Bonus Track */
 BIN BGM_TimeTable,   "res/bgm/timetable.xgc"
-
-/* 0x380000 */
-#    .align 0x80000
-
-# Japanese Font - 1bpp bitmap data
-#BIN     BMP_Ascii		"res/ja_ascii.dat"
-#BIN     BMP_Kanji		"res/ja_kanji.dat"
-
-# Japanese stage names and credits text
-#BIN     JStageName		"res/ja_stagename.dat"
-#BIN     JCreditStr		"res/ja_credits.dat"
-#BIN     JConfigText		"res/ja_config.dat"
 
 /* Credits Illustrations */
 BIN		PAT_Ill01	"res/credits/ill01.pat"
@@ -524,6 +502,8 @@ BIN LS_21		"res/save/21_sealchamber.sram"
 
 
 /* Start of localizable data */
+.section .rodata.patch
+
 .ascii "LANGDAT\0"
 
     .globl LANGUAGE

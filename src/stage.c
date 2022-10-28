@@ -96,7 +96,7 @@ void stage_load(uint16_t id) {
 		vdp_set_backcolor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0 || stageBackgroundType == 3) { // Tiled image
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-			vdp_tiles_load_from_rom(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX, 
+			vdp_tiles_load(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX,
 						background_info[stageBackground].tileset->numTile);
 			stage_draw_background();
 		} else if(stageBackgroundType == 1) { // Moon
@@ -109,7 +109,7 @@ void stage_load(uint16_t id) {
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLAN_B);
             backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
-			vdp_tiles_load_from_rom(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
+			vdp_tiles_load(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
 			// Use background color from tileset
@@ -196,7 +196,7 @@ void stage_load_tileset() {
 	// Inject the breakable block sprite into the tileset
 	stagePXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < numtile >> 2; i++) {
-		if(stagePXA[i] == 0x43) vdp_tiles_load_from_rom(TS_Break.tiles, TILE_TSINDEX + (i << 2), 4);
+		if(stagePXA[i] == 0x43) vdp_tiles_load(TS_Break.tiles, TILE_TSINDEX + (i << 2), 4);
 	}
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
@@ -294,11 +294,12 @@ void stage_update() {
 		vdp_vscroll(VDP_PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
-		int16_t off[32];
+		int16_t off[30];
 		off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
-		for(uint8_t i = 1; i < 32; i++) {
+		for(uint8_t i = 1; i < 30; i++) {
 			off[i] = off[0];
 		}
+        __asm__("": : :"memory");
 		vdp_hscroll_tile(VDP_PLAN_A, off);
 		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
@@ -522,9 +523,9 @@ void stage_draw_moonback() {
 		btmMap = (uint16_t*) MAP_FogBtm;
 	}
 	// Load the top section in the designated background area
-	vdp_tiles_load_from_rom(topTiles, TILE_BACKINDEX, 12);
+	vdp_tiles_load(topTiles, TILE_BACKINDEX, 12);
 	// Load the clouds under the map, it just fits
-	vdp_tiles_load_from_rom(btmTiles, TILE_MOONINDEX, 188);
+	vdp_tiles_load(btmTiles, TILE_MOONINDEX, 188);
 	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
 	vdp_vscroll(VDP_PLAN_B, 0);
 	// Top part

@@ -11,6 +11,7 @@
 #include "memory.h"
 #include "pause.h"
 #include "player.h"
+#include "bank_data.h"
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
@@ -38,7 +39,7 @@ void game_main(uint8_t load) {
 	if(cfg_language != LANG_JA) {
         disable_ints;
         z80_request();
-		vdp_font_load(TS_MsgFont.tiles);
+		vdp_font_load(UFTC_MsgFont);
         z80_release();
         enable_ints;
 	}
@@ -77,7 +78,7 @@ void game_main(uint8_t load) {
 						0x11111111,0x11111111,0x11111111,0x11111111,
 						0x11111111,0x11111111,0x11111111,0x11111111
 					};
-					vdp_tiles_load_from_rom(black, TILE_FACEINDEX, 1);
+					vdp_tiles_load(black, TILE_FACEINDEX, 1);
 					vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,TILE_FACEINDEX), 0, 0, 40, 30, 0);
 				} else {
 					vdp_map_clear(VDP_PLAN_W);

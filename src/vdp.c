@@ -95,7 +95,7 @@ void vdp_init() {
     vdp_sprites_clear();
     vdp_sprites_update();
     // (Re)load the font
-    vdp_font_load(TS_SysFont.tiles);
+    vdp_font_load(UFTC_SysFont);
     vdp_colors(0, PAL_FadeOut, 64);
     // Put blank tile in index 0
     vdp_tiles_load(TILE_BLANK, 0, 1);
@@ -134,43 +134,24 @@ void vdp_set_window(uint8_t x, uint8_t y) {
     *vdp_ctrl_port = 0x9200 | y;
 }
 
-// DMA stuff
-/*
-static void dma_do(uint32_t from, uint16_t len, uint32_t cmd) {
-    // Setup DMA length (in word here)
-    *vdp_ctrl_port = 0x9300 + (len & 0xff);
-    *vdp_ctrl_port = 0x9400 + ((len >> 8) & 0xff);
-    // Setup DMA address
-    from >>= 1;
-    *vdp_ctrl_port = 0x9500 + (from & 0xff);
-    from >>= 8;
-    *vdp_ctrl_port = 0x9600 + (from & 0xff);
-    from >>= 8;
-    *vdp_ctrl_port = 0x9700 + (from & 0x7f);
-    // Enable DMA transfer
-    *vdp_ctrl_wide = cmd;
-}
-
-void vdp_dma_vram(uint32_t from, uint16_t to, uint16_t len) {
-    dma_do(from, len, ((0x4000 + (((uint32_t) to) & 0x3FFF)) << 16) + ((((uint32_t) to) >> 14) | 0x80));
-}
-
-void vdp_dma_cram(uint32_t from, uint16_t to, uint16_t len) {
-    dma_do(from, len, ((0xC000 + (((uint32_t) to) & 0x3FFF)) << 16) + ((((uint32_t) to) >> 14) | 0x80));
-}
-
-void vdp_dma_vsram(uint32_t from, uint16_t to, uint16_t len) {
-    dma_do(from, len, ((0x4000 + (((uint32_t) to) & 0x3FFF)) << 16) + ((((uint32_t) to) >> 14) | 0x90));
-}
-*/
 // Tile patterns
 
-void vdp_tiles_load(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num) {
+void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
     dma_now(DmaVRAM, (uint32_t) data, index << 5, num << 4, 2);
 }
 
+void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_index, uint16_t num) {
+    extern void uftc_unpack(const void *in, void *out, uint16_t start, uint16_t num);
+    extern const uint32_t *__compbuf_start;
+
+    uftc_unpack(uftc_data, &__compbuf_start, uftc_index, num);
+    __asm__("": : :"memory");
+    dma_now(DmaVRAM, (uint32_t) &__compbuf_start, index << 5, num << 4, 2);
+}
+
 // Temporary solution until I get the tilesets aligned, split DMA on 128K unalignment
-void vdp_tiles_load_from_rom(/*volatile*/ const uint32_t *data, uint16_t index, uint16_t num) {
+/*
+void vdp_tiles_load_from_rom(const uint32_t *data, uint16_t index, uint16_t num) {
     uint32_t from = (uint32_t) data;
     uint16_t to = index << 5;
     uint16_t len1 = num << 4;
@@ -187,7 +168,7 @@ void vdp_tiles_load_from_rom(/*volatile*/ const uint32_t *data, uint16_t index, 
         dma_now(DmaVRAM, from, to, len1, 2);
     }
 }
-
+*/
 // Tile maps
 
 void vdp_map_xy(uint16_t plan, uint16_t tile, uint16_t x, uint16_t y) {
@@ -317,7 +298,7 @@ void vdp_hscroll(uint16_t plan, int16_t hscroll) {
 
 void vdp_hscroll_tile(uint16_t plan, int16_t *hscroll) {
     //vdp_set_autoinc(32);
-    dma_now(DmaVRAM, (uint32_t) hscroll, VDP_HSCROLL_TABLE + (plan == VDP_PLAN_A ? 0 : 2), 32, 32);
+    dma_now(DmaVRAM, (uint32_t) hscroll, VDP_HSCROLL_TABLE + (plan == VDP_PLAN_A ? 0 : 2), 30, 32);
     //vdp_set_autoinc(2);
 }
 
@@ -362,14 +343,14 @@ void vdp_sprites_update() {
 void vdp_font_load(const uint32_t *tiles) {
     font_pal = 0;
     // ASCII 32-127
-    vdp_tiles_load_from_rom(tiles, TILE_FONTINDEX, 0x60);
+    vdp_tiles_load_uftc(tiles, TILE_FONTINDEX, 0, 0x60);
     // Extended charset
-    const uint32_t *ext = tiles + (0x60 << 3);
+    //const uint32_t *ext = tiles + (0x60 << 3);
     uint16_t index = (VDP_PLAN_W >> 5) + 3;
     for (uint16_t i = 0; i < 30; i++) {
-        vdp_tiles_load(ext, index, 1);
+        vdp_tiles_load_uftc(tiles, index, 0x60 + i, 1);
         index += 4;
-        ext += 8;
+        //ext += 8;
     }
 }
 

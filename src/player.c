@@ -115,10 +115,10 @@ void player_init() {
 	mapNameTTL = 0;
 	missileEmptyFlag = FALSE;
 	// Booster trail sprite tiles
-	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
+	vdp_tiles_load(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
 	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
-	vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
+	vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
 	airSprite[0] = (VDPSprite) {
 		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
 		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
@@ -128,7 +128,7 @@ void player_init() {
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
-	vdp_tiles_load_from_rom(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9);
+	vdp_tiles_load(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9);
 	airTankSprite = (VDPSprite) {
 		.size = SPRITE_SIZE(3,3),
 		.attr = TILE_ATTR(PAL0,0,0,0,TILE_AIRTANKINDEX)
@@ -869,10 +869,11 @@ void player_show_map_name(uint8_t ttl) {
             if (chr < 0x60) len++;
             else break;
         }
-        memcpy(nameTiles[len-1], &TS_SysFont.tiles[chr * 8], 32);
+        //memcpy(nameTiles[len-1], &TS_SysFont.tiles[chr * 8], 32);
+        vdp_tiles_load_uftc(UFTC_SysFont, TILE_NAMEINDEX + len-1, chr, 1);
     }
     if(len) {
-        vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
+        //vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
     } else {
         return;
     }
@@ -919,10 +920,10 @@ static void player_update_air_display() {
 	} else {
 		airDisplayTime++;
 		if((airDisplayTime & 31) == 0) {
-			vdp_tiles_load_from_rom(TILE_BLANK, TILE_AIRINDEX, 1);
+			vdp_tiles_load(TILE_BLANK, TILE_AIRINDEX, 1);
 		} else if((airDisplayTime & 31) == 15) {
 			const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
-			vdp_tiles_load_from_rom(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
+			vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
 		}
 		// Calculate air percent and display the value
 		if(airTick == TIME_8(9)) draw_air_percent();

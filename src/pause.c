@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
+#include "bank_data.h"
 #include "camera.h"
 #include "dma.h"
 #include "effect.h"
@@ -26,8 +27,8 @@
 #include "pause.h"
 
 // Load tiles for the font letters
-#define LOAD_LETTER(c,in) (vdp_tiles_load_from_rom(TS_MsgFont.tiles+((c-0x20)<<3),      \
-						   TILE_HUDINDEX+in,1))
+#define LOAD_LETTER(c,in) (vdp_tiles_load_uftc(UFTC_MsgFont,      \
+						   TILE_HUDINDEX+in,(c)-0x20,1))
 #define DRAW_LETTER(in,xx,yy) (vdp_map_xy(VDP_PLAN_W,                                   \
 							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
 
@@ -42,7 +43,7 @@ void draw_weapons(uint8_t y) {
         // X tile pos and VRAM index to put the ArmsImage tiles
         uint16_t x = 4 + i*6;
         uint16_t index = TILE_FACEINDEX + 16 + i*4;
-        vdp_tiles_load_from_rom(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4);
+        vdp_tiles_load(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4);
         // 4 mappings for ArmsImage icon
         vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index),   x,   y);
         vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index+2), x+1, y);
@@ -87,7 +88,7 @@ void draw_item(uint8_t sel) {
             pal = PAL0;
         }
         // Clobber the entity/bullet shared sheets
-        vdp_tiles_load_from_rom(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+sel*6, 6);
+        vdp_tiles_load(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+sel*6, 6);
         //SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
         itemSprite[sel] = (VDPSprite){
                 .x = 36 + (sel % 6) * 32 + 128,
@@ -131,12 +132,12 @@ void draw_itemmenu(uint8_t resetCursor) {
     z80_request();
     // Load the 4 tiles for the selection box. Since the menu can never be brought up
     // during scripts we overwrite the face image
-    vdp_tiles_load_from_rom(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
+    vdp_tiles_load(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
     // Redraw message box at the bottom of the screen
     window_open(FALSE);
 
     // Load 8x8 numbers
-    vdp_tiles_load_from_rom(TS_MsgFont.tiles+(('0'-0x20)<<3),TILE_HUDINDEX,10);
+    vdp_tiles_load_uftc(UFTC_MsgFont,TILE_HUDINDEX,'0'-0x20,10);
     // Lv, slash for weapon display
     LOAD_LETTER('L', 14);
     LOAD_LETTER('v', 15);
@@ -144,8 +145,8 @@ void draw_itemmenu(uint8_t resetCursor) {
     LOAD_LETTER('-', 17);
     // ARMSITEM or ぶきもちもの
     const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
-    vdp_tiles_load_from_rom(ts + (2<<3), TILE_HUDINDEX + 10, 4);
-    vdp_tiles_load_from_rom(ts + (10<<3), TILE_HUDINDEX + 18, 4);
+    vdp_tiles_load(ts + (2<<3), TILE_HUDINDEX + 10, 4);
+    vdp_tiles_load(ts + (10<<3), TILE_HUDINDEX + 18, 4);
     // Weapons
     y = top + 3;
     // --ARMS-- or --ぶき--
@@ -226,10 +227,10 @@ uint8_t update_pause() {
 
         disable_ints;
         z80_request();
-        vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+8,1);
-        vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+9,1);
-        vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+12,1);
-        vdp_tiles_load_from_rom(TILE_BLANK,TILE_HUDINDEX+13,1);
+        vdp_tiles_load(TILE_BLANK,TILE_HUDINDEX+8,1);
+        vdp_tiles_load(TILE_BLANK,TILE_HUDINDEX+9,1);
+        vdp_tiles_load(TILE_BLANK,TILE_HUDINDEX+12,1);
+        vdp_tiles_load(TILE_BLANK,TILE_HUDINDEX+13,1);
         z80_release();
         enable_ints;
         aftervsync();

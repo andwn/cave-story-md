@@ -94,7 +94,7 @@ void credits_main() {
 	vdp_hscroll(VDP_PLAN_A, 0);
 	vdp_vscroll(VDP_PLAN_A, 0);
 	// Text on background plane, priority 1
-	vdp_font_load(TS_SysFont.tiles);
+	vdp_font_load(UFTC_SysFont);
 	tsc_load_stage(ID_CREDITS); // credits.tsb
 	tsc_call_event(100);
 	
@@ -235,7 +235,7 @@ void credits_show_image(uint16_t id) {
     z80_request();
 
 	vdp_set_display(FALSE);
-	vdp_tiles_load_from_rom(illustration_info[id].pat, 16, illustration_info[id].pat_size);
+	vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
 	uint16_t index = pal_mode ? 0 : 20;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		dma_now(DmaVRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLAN_A + (y << 7) + (44 << 1), 20, 2);

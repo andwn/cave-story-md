@@ -38,7 +38,7 @@
 		/*	error_other("Anim out of range");                        */                          \
 		/*if(fa[(i<<1)+1] >= (sdef)->animations[fa[i<<1]]->numFrame) */                            \
 		/*	error_other("Frame out of range");                       */                          \
-		vdp_tiles_load_from_rom(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize);\
+		vdp_tiles_load(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize);\
 	}                                                                                          \
 }
 #define SHEET_FIND(index, sid) {                                                               \

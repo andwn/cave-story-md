@@ -43,12 +43,11 @@ Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
 PXMS  = $(wildcard res/Stage/*.pxm)
-PXMS += $(wildcard res/Stage/*/*.pxm)
 CPXMS = $(PXMS:.pxm=.cpxm)
 
 # Tilesets to compress
 TSETS  = $(wildcard res/Stage/*_vert.png)
-TSETS += $(wildcard res/Stage/**/*_vert.png)
+TSETS += $(wildcard res/tiles_c/*.png)
 PTSETS = $(TSETS:.png=.pat)
 CTSETS = $(TSETS:.png=.uftc)
 

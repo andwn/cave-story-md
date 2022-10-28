@@ -29,6 +29,7 @@ SECTIONS {
   .rodata : {
     __rodata_start = .;
     *(.rodata .rodata.*)
+    *(.rodata.patch)
     . = ALIGN(2);
     __rodata_end = .;
   } > rom
@@ -43,8 +44,13 @@ SECTIONS {
   } > ram
   __bss_size = SIZEOF(.bss);
 
+  /* Compression buffer for graphics and such */
+  __compbuf_start = __stack_bottom - 0x1000;
+  __compbuf_end = __stack_bottom;
+  __compbuf_size = __compbuf_end - __compbuf_start;
+
   /* Heap is everything remaining between .bss and the stack */
   __heap_start = __bss_end;
-  __heap_end = __stack_bottom;
+  __heap_end = __compbuf_start;
   __heap_size = __heap_end - __heap_start;
 }

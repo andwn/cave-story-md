@@ -1,3 +1,6 @@
+extern const uint32_t UFTC_SysFont[];
+extern const uint32_t UFTC_MsgFont[];
+
 extern const uint16_t UFTC_Almond[];
 extern const uint16_t UFTC_Barr[] ;
 extern const uint16_t UFTC_Cave[] ;
@@ -262,8 +265,6 @@ extern const uint8_t PAT_FogTop[];
 extern const uint8_t MAP_FogTop[];
 extern const uint8_t PAT_FogBtm[];
 extern const uint8_t MAP_FogBtm[];
-extern const uint8_t PAT_QuakerB[];
-extern const uint8_t MAP_QuakerB[];
 extern const uint8_t PAT_SndTest[];
 extern const uint8_t MAP_SndTest[];
 
@@ -309,7 +310,6 @@ extern const uint8_t SFX_03[], SFX_03_end[];
 extern const uint8_t SFX_04[], SFX_04_end[];
 extern const uint8_t SFX_05[], SFX_05_end[];
 extern const uint8_t SFX_06[], SFX_06_end[];
-extern const uint8_t SFX_07[], SFX_07_end[];
 extern const uint8_t SFX_08[], SFX_08_end[];
 extern const uint8_t SFX_0B[], SFX_0B_end[];
 extern const uint8_t SFX_0C[], SFX_0C_end[];
