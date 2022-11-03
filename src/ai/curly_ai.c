@@ -15,10 +15,13 @@ uint8_t curly_reachptimer = 0;
 uint8_t curly_look = 0;
 uint16_t curly_tryjumptime = 0;
 
+uint16_t curly_target_time;
+int32_t curly_target_x, curly_target_y;
+
 static void CaiJUMP(Entity *e) {
 	if (e->grounded) {
 		moveMeToFront = TRUE;
-		e->y_speed = -SPEED(0x300) - random(SPEED(0x300));
+		e->y_speed = -SPEED(0x300) - (rand() & 0x2FF);
 		e->y_next -= SPEED(0x300);
 		e->grounded = FALSE;
 		e->frame = WALK2;
@@ -155,7 +158,7 @@ void ai_curly_ai(Entity *e) {
 			e->y_mark = curly_target_y;
 			
 			curly_target_time--;
-			if (curly_target_time==60 && !(random() & 1)) CaiJUMP(e);
+			if (curly_target_time==60 && !(rand() & 1)) CaiJUMP(e);
 		} else {
 			e->x_mark = player.x;
 			e->y_mark = player.y;
@@ -212,7 +215,7 @@ void ai_curly_ai(Entity *e) {
 		if (e->y_next > e->y_mark && (e->y_next - e->y_mark) > (16<<CSF)) {
 			if (++curly_tryjumptime > 20) {
 				curly_tryjumptime = 0;
-				if (random() & 1) CaiJUMP(e);
+				if (rand() & 1) CaiJUMP(e);
 			}
 		}
 		else curly_tryjumptime = 0;
@@ -413,8 +416,8 @@ void ai_cai_gun(Entity *e) {
 			}
 			if (curly_mgun) {	// she has the Machine Gun
 				if (!e->timer2) {
-					e->timer2 = 2 + (random() & 3);		// no. shots to fire
-					e->timer = 36 + (random() & 15);
+					e->timer2 = 2 + (rand() & 3);		// no. shots to fire
+					e->timer = 36 + (rand() & 15);
 				}
 				if (e->timer) {
 					e->timer--;
@@ -424,13 +427,13 @@ void ai_cai_gun(Entity *e) {
 					// curly->dir is either 0 or 1, where 1 means right but DIR_RIGHT is 2
 					// So we do this weird thing to fix it
 					fire_mgun(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
-					e->timer = 36 + (random() & 15);
+					e->timer = 36 + (rand() & 15);
 					e->timer2--;
 				}
 			} else {	// she has the Polar Star
 				if (!e->timer) {
-					e->timer = 4 + (random() & 15);
-					if ((random() & 7) == 0) e->timer += 20 + (random() & 15);
+					e->timer = 4 + (rand() & 15);
+					if ((rand() & 7) == 0) e->timer += 20 + (rand() & 15);
 					// create the shot
 					fire_pstar(e->x_mark, e->y_mark, curly_look ? curly_look : curly->dir << 1);
 				} else {

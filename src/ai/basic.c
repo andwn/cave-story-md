@@ -365,8 +365,8 @@ void ai_player(Entity *e) {
 		{
 			sound_play(SND_LITTLE_CRASH, 5);
 			for(uint8_t i = 0; i < 4; i++) {
-				effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
-					sub_to_pixel(e->y) - 16 + (random() & 31));
+				effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
+					sub_to_pixel(e->y) - 16 + (rand() & 31));
 			}
 			e->state++;
 		}
@@ -462,8 +462,8 @@ void ai_sprinkler(Entity *e) {
 	// Make sure this is an odd number so half the drops will show at once
 	if (++e->timer == 7) { 
 		Entity *drop = entity_create(e->x, e->y, OBJ_WATER_DROPLET, 0);
-		drop->x_speed = -0x3FF + (random() & 0x7FF);
-		drop->y_speed = -0x6FF + (random() & 0x3FF);
+		drop->x_speed = -0x3FF + (rand() & 0x7FF);
+		drop->y_speed = -0x6FF + (rand() & 0x3FF);
 		e->timer = 0;
 	}
 }
@@ -852,7 +852,7 @@ void ai_intro_crown(Entity *e) {
 		case 1:
 		{
 			//if((++e->timer & 15) == 1) {
-			//    effect_create_misc(EFF_FANU, (e->x>>CSF) - 8 + (random() & 15),
+			//    effect_create_misc(EFF_FANU, (e->x>>CSF) - 8 + (rand() & 15),
             //              (e->y>>CSF) + 8, TRUE);
 			//}
 		}
@@ -935,7 +935,7 @@ void ai_intro_doctor(Entity *e) {
 }
 
 void ai_drip_generator(Entity *e) {
-    if((random() & 127) == 0) {
+    if((rand() & 127) == 0) {
         entity_create(e->x, e->y - 0x1800, OBJ_WATER_DROPLET, 0);
     }
 }

@@ -3,11 +3,11 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "kanji.h"
 #include "npc.h"
 #include "player.h"
@@ -18,7 +18,7 @@
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 #include "weapon.h"
 #include "window.h"
@@ -228,7 +228,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 			vdp_puts(VDP_PLAN_A, "Press..", 30, item->y);
 			while(TRUE) {
 				if(!(joystate & btn[cfg_btn_jump])) released = TRUE;
-				if(joy_pressed(BUTTON_BTN)) {
+				if(joy_pressed(JOY_ANYBTN)) {
 					// Just in case player never releases confirm before hitting something else
 					if(released) break;
 					if(!(joystate & btn[cfg_btn_jump])) break;
@@ -239,15 +239,15 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 				vdp_vsync(); aftervsync();
 			}
 			sound_play(SND_MENU_SELECT, 5);
-			switch(joystate & BUTTON_BTN) {
-				case BUTTON_A: *item->valptr = 6; break;
-				case BUTTON_B: *item->valptr = 4; break;
-				case BUTTON_C: *item->valptr = 5; break;
-				case BUTTON_X: *item->valptr = 10; break;
-				case BUTTON_Y: *item->valptr = 9; break;
-				case BUTTON_Z: *item->valptr = 8; break;
-				case BUTTON_START: *item->valptr = 7; break;
-				case BUTTON_MODE: *item->valptr = 11; break;
+			switch(joystate & JOY_ANYBTN) {
+				case JOY_A: *item->valptr = 6; break;
+				case JOY_B: *item->valptr = 4; break;
+				case JOY_C: *item->valptr = 5; break;
+				case JOY_X: *item->valptr = 10; break;
+				case JOY_Y: *item->valptr = 9; break;
+				case JOY_Z: *item->valptr = 8; break;
+				case JOY_START: *item->valptr = 7; break;
+				case JOY_MODE: *item->valptr = 11; break;
 			}
 		}
 		break;
@@ -284,26 +284,26 @@ void config_main() {
 	};
 	
 	//set_page(page);
-	oldstate = ~0;
+	joystate_old = ~0;
 	while(TRUE) {
-		if(joy_pressed(BUTTON_UP)) {
+		if(joy_pressed(JOY_UP)) {
 			do {
 				if(cursor == 0) cursor = numItems - 1;
 				else cursor--;
 			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
-		} else if(joy_pressed(BUTTON_DOWN)) {
+		} else if(joy_pressed(JOY_DOWN)) {
 			do {
 				if(cursor == numItems - 1) cursor = 0;
 				else cursor++;
 			} while(menu[page][cursor].type == MI_LABEL);
 			sound_play(SND_MENU_MOVE, 0);
-		} else if(joy_pressed(BUTTON_LEFT)) {
+		} else if(joy_pressed(JOY_LEFT)) {
 			if(--page >= NUM_PAGES) page = NUM_PAGES - 1;
 			cursor = 0;
             sound_play(SND_MENU_MOVE, 0);
 			set_page(page);
-		} else if(joy_pressed(BUTTON_RIGHT)) {
+		} else if(joy_pressed(JOY_RIGHT)) {
 			if(++page >= NUM_PAGES) page = 0;
 			cursor = 0;
             sound_play(SND_MENU_MOVE, 0);
@@ -364,7 +364,7 @@ void act_format(uint8_t page) {
 	vdp_puts(VDP_PLAN_A, "Press Start three times", 8, 14);
 	song_stop();
 	while(!joy_pressed(btn[cfg_btn_shoot])) {
-		if(joy_pressed(BUTTON_START) && ++starts >= 3) {
+		if(joy_pressed(JOY_START) && ++starts >= 3) {
 			vdp_init();
 			system_format_sram();
 			sound_play(0xE5-0x80, 15);

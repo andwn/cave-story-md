@@ -3,13 +3,14 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "kanji.h"
-#include "memory.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -190,8 +191,8 @@ uint8_t saveselect_main() {
 	vdp_puts(VDP_PLAN_A, "Delete", 16, 25);
 	
 	vdp_set_display(TRUE);
-	
-	oldstate = ~0;
+
+    joystate_old = ~0;
 	while(TRUE) {
 		if(joy_pressed(btn[cfg_btn_jump]) || joy_pressed(btn[cfg_btn_pause])) { // Confirm action
 			if(cursor < SRAM_FILE_MAX) {
@@ -260,11 +261,11 @@ uint8_t saveselect_main() {
 				return 0xFF;
 			}
 		}
-		if(joy_pressed(BUTTON_UP) || joy_pressed(BUTTON_LEFT)) {
+		if(joy_pressed(JOY_UP) || joy_pressed(JOY_LEFT)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
 			sound_play(SND_MENU_MOVE, 0);
-		} else if(joy_pressed(BUTTON_DOWN) || joy_pressed(BUTTON_RIGHT)) {
+		} else if(joy_pressed(JOY_DOWN) || joy_pressed(JOY_RIGHT)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
 			sound_play(SND_MENU_MOVE, 0);

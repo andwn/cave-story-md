@@ -2,13 +2,14 @@
 
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "error.h"
 #include "hud.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -16,7 +17,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "xgm.h"
@@ -61,7 +62,7 @@ void stage_draw_moonback();
 
 void stage_load(uint16_t id) {
 	vdp_set_display(FALSE);
-	oldstate = ~0;
+    joystate_old = ~0;
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	dma_clear();
 	stageID = id;
@@ -246,7 +247,7 @@ void stage_load_entities() {
 		// loading it will crash BlastEm and possibly hardware too. This steps through
 		// each entity as it is loaded so the problematic NPC can be found
 	#ifdef DEBUG
-		if(joy_down(BUTTON_A)) {
+		if(joy_down(JOY_A)) {
 			vdp_set_display(TRUE);
 			vdp_color(0, 0x444);
 			vdp_color(15, 0xEEE);
@@ -258,7 +259,7 @@ void stage_load_entities() {
 			sprintf(str, "E:%04hu T:%04hu F:%04hX", event, type, flags);
 			vdp_puts(VDP_PLAN_A, str, 2, 7);
 			
-			while(!joy_pressed(BUTTON_C)) {
+			while(!joy_pressed(JOY_C)) {
 				vdp_vsync();
 				//xgm_vblank();
 				joy_update();
@@ -348,7 +349,7 @@ void stage_update() {
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
-							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (random()&15)));
+							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (rand()&15)));
 				}
 				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			}
@@ -360,7 +361,7 @@ void stage_update() {
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
-							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (random()&15)));
+							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (rand()&15)));
 				}
                 dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
 			} else { // On screen or below

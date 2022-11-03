@@ -409,7 +409,7 @@ void ai_bute_archer(Entity *e) {
 			if (++e->timer > TIME_8(30)) {
 				e->state++;
 				e->frame = BF_ARCHER1;
-				e->timer = TIME_8(50) + (random() & 127);
+				e->timer = TIME_8(50) + (rand() & 127);
 			}
 		}
 		break;
@@ -802,6 +802,6 @@ void ai_puppy_ghost(Entity *e) {
 	}
 	
 	//if ((e->timer & 7) == 1) {
-	//	effect(random(e->Left(), e->Right()), e->Bottom(), EFFECT_GHOST_SPARKLE);
+	//	effect(rand(e->Left(), e->Right()), e->Bottom(), EFFECT_GHOST_SPARKLE);
 	//}
 }

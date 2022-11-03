@@ -2,11 +2,11 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -41,8 +41,8 @@ void intro_main() {
     vdp_puts(VDP_PLAN_A, "    Studio Pixel    ", 10, 8);
 	
 	uint16_t timer = 0;
-	oldstate = ~0;
-	while(++timer <= TIME_10(400) && !joy_pressed(BUTTON_C) && !joy_pressed(BUTTON_START)) {
+    joystate_old = ~0;
+	while(++timer <= TIME_10(400) && !joy_pressed(JOY_C) && !joy_pressed(JOY_START)) {
 		if(timer == TIME_8(150)) {
             vdp_text_clear(VDP_PLAN_A, 10, 6, 20);
             vdp_text_clear(VDP_PLAN_A, 10, 8, 20);

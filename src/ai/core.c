@@ -197,8 +197,8 @@ void ai_core(Entity *e) {
 			// spawn ghosties
 			if(e->timer < TIME_8(200)) {
 				if((e->timer & 31) == 0) {
-					entity_create(e->x + pixel_to_sub(-48 + (random() & 63)),
-						     	  e->y + pixel_to_sub(-64 + (random() & 127)),
+					entity_create(e->x + pixel_to_sub(-48 + (rand() & 63)),
+						     	  e->y + pixel_to_sub(-64 + (rand() & 127)),
 							 	  OBJ_CORE_GHOSTIE, 0);
 				}
 			}
@@ -267,8 +267,8 @@ void ai_core(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 15) == 1) {
-				effect_create_smoke((e->x >> CSF) - 32 + (random() & 127), 
-									(e->y >> CSF) - 64 + (random() & 127));
+				effect_create_smoke((e->x >> CSF) - 32 + (rand() & 127),
+									(e->y >> CSF) - 64 + (rand() & 127));
 			}
 			
 			if (e->timer & 2)
@@ -391,13 +391,13 @@ void ai_minicore(Entity *e) {
 			e->y_mark = e->y;
 		}
 		break;
-		case MC_THRUST:			// thrust (move to random new pos)
+		case MC_THRUST:			// thrust (move to rand new pos)
 		{
 			e->state = MC_THRUST+1;
 			e->mouth_open = FALSE;
 			e->timer = 0;
-			uint16_t xx = px - 96 + (random() & 127);
-			uint16_t yy = py - 64 + (random() & 127);
+			uint16_t xx = px - 96 + (rand() & 127);
+			uint16_t yy = py - 64 + (rand() & 127);
 			e->x_mark = pixel_to_sub(xx);
 			e->y_mark = pixel_to_sub(yy);
 		}
@@ -423,8 +423,8 @@ void ai_minicore(Entity *e) {
 			e->state = MC_FIRE+1;
 			e->mouth_open = FALSE;	// close mouth again;
 			e->timer = 0;
-			uint16_t xx = px + 24 + (random() & 15);
-			uint16_t yy = py - 4 + (random() & 7);
+			uint16_t xx = px + 24 + (rand() & 15);
+			uint16_t yy = py - 4 + (rand() & 7);
 			e->x_mark = pixel_to_sub(xx);
 			e->y_mark = pixel_to_sub(yy);
 		}

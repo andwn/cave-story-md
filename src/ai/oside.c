@@ -60,8 +60,8 @@ void ai_night_spirit(Entity *e) {
 			
 			if (!(e->timer & 7)) {
 				Entity *shot = entity_create(e->x, e->y, OBJ_NIGHT_SPIRIT_SHOT, 0);
-				shot->x_speed = SPEED_10(0x180) + SPEED_10(random() & 0x3FF);
-				shot->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
+				shot->x_speed = SPEED_10(0x180) + SPEED_10(rand() & 0x3FF);
+				shot->y_speed = -SPEED_10(0x200) + SPEED_10(rand() & 0x3FF);
 				
 				sound_play(SND_BUBBLE, 3);
 			}
@@ -323,8 +323,8 @@ void ai_little_family(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if(!(random() & 63)) {
-				e->state = (random() & 1) ? 2 : 10;
+			if(!(rand() & 63)) {
+				e->state = (rand() & 1) ? 2 : 10;
 				e->timer = 0;
 				e->frame = 1;
 			}
@@ -343,8 +343,8 @@ void ai_little_family(Entity *e) {
 			e->state = 11;
 			e->frame = 0;
 			e->animtime = 0;
-			e->dir = random() & 1;
-			e->timer = 16 + (random() & 15);
+			e->dir = rand() & 1;
+			e->timer = 16 + (rand() & 15);
 		} /* fallthrough */
 		case 11:
 		{

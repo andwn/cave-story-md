@@ -84,8 +84,8 @@ static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
 	for(uint8_t i = 0; i < (count); i++) {                                                     \
-		effect_create_smoke((x) + (random() % (w)),                                            \
-							(y) + (random() % (h)));                                           \
+		effect_create_smoke((x) + (rand() % (w)),                                            \
+							(y) + (rand() % (h)));                                           \
 	}                                                                                          \
 }
 
@@ -99,7 +99,7 @@ static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
 	if(e->animtime) {                                                                          \
 		e->animtime--;                                                                         \
 		e->frame = blinkframe;                                                                 \
-	} else if(!(random() % (prob))) {                                                          \
+	} else if(!(rand() % (prob))) {                                                          \
 		e->frame = blinkframe;                                                                 \
 		e->animtime = 8;                                                                       \
 	}                                                                                          \
@@ -123,5 +123,3 @@ enum CrystalStates {
 #define crystal_state	curly_target_time
 #define crystal_xmark	curly_target_x
 #define crystal_ymark	curly_target_y
-
-uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty);

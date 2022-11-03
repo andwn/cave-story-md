@@ -745,12 +745,12 @@ void ai_npc_at_computer(Entity *e) {
 		case TYPING:
 		{
 			ANIMATE(e, 4, 0,1);
-			if(!(random() & 63)) {
+			if(!(rand() & 63)) {
 				e->state = PAUSE_SLOUCH;
 				e->frame = 1;
 				e->timer = 0;
 			}
-			else if(!(random() & 127)) {
+			else if(!(rand() & 127)) {
 				e->state = PAUSE_UPRIGHT;
 				e->frame = 2;
 				e->timer = 0;

@@ -3,20 +3,21 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "kanji.h"
-#include "memory.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "npc.h"
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "weapon.h"
@@ -212,11 +213,11 @@ void player_update() {
 			blockd_next = player.grounded;
 			// Here I do something weird to emulate the way the game pushes quote
 			// into small gaps.
-			if(!blockl_next && blockl && joy_down(BUTTON_LEFT)) {
+			if(!blockl_next && blockl && joy_down(JOY_LEFT)) {
 				player.x_speed -= 0xE0;
 				player.x_next = player.x + player.x_speed;
 			}
-			if(!blockr_next && blockr && joy_down(BUTTON_RIGHT)) {
+			if(!blockr_next && blockr && joy_down(JOY_RIGHT)) {
 				player.x_speed += 0xE0;
 				player.x_next = player.x + player.x_speed;
 			}
@@ -511,10 +512,10 @@ static void player_update_walk() {
 		player.underwater = FALSE;
 	}
 	// Stop player from moving faster if they exceed max speed
-	if(joy_down(BUTTON_LEFT)) {
+	if(joy_down(JOY_LEFT)) {
 		if(player.x_speed >= -max_speed) player.x_speed -= acc;
 	}
-	if(joy_down(BUTTON_RIGHT)) {
+	if(joy_down(JOY_RIGHT)) {
 		if(player.x_speed <= max_speed) player.x_speed += acc;
 	}
 	// But only slow them down on the ground
@@ -592,10 +593,10 @@ static void player_update_float() {
 		fric =		106;
 		max_speed =	853;
 	}
-	if (joy_down(BUTTON_LEFT)) {
+	if (joy_down(JOY_LEFT)) {
 		player.x_speed -= acc;
 		if (player.x_speed < -max_speed) player.x_speed = -max_speed;
-	} else if (joy_down(BUTTON_RIGHT)) {
+	} else if (joy_down(JOY_RIGHT)) {
 		player.x_speed += acc;
 		if (player.x_speed > max_speed) player.x_speed = max_speed;
 	} else {
@@ -603,10 +604,10 @@ static void player_update_float() {
 		else if (player.x_speed < 0) player.x_speed += fric;
 		else if (player.x_speed > 0) player.x_speed -= fric;
 	}
-	if (joy_down(BUTTON_UP)) {
+	if (joy_down(JOY_UP)) {
 		player.y_speed -= acc;
 		if (player.y_speed < -max_speed) player.y_speed = -max_speed;
-	} else if (joy_down(BUTTON_DOWN)) {
+	} else if (joy_down(JOY_DOWN)) {
 		player.y_speed += acc;
 		if (player.y_speed > max_speed) player.y_speed = max_speed;
 	} else {
@@ -636,12 +637,12 @@ void player_update_bullets() {
 
 static void player_update_interaction() {
 	// Interaction with entities when pressing down
-	if(cfg_updoor ? joy_pressed(BUTTON_UP) : joy_pressed(BUTTON_DOWN)) {
+	if(cfg_updoor ? joy_pressed(JOY_UP) : joy_pressed(JOY_DOWN)) {
 		Entity *e = entityList;
 		while(e) {
 			if((e->flags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
 				// To avoid triggering it twice
-				oldstate |= cfg_updoor ? BUTTON_UP : BUTTON_DOWN;
+				joystate_old |= cfg_updoor ? JOY_UP : JOY_DOWN;
 				if(e->event > 0) {
 					// Quote should look down while the game logic is frozen
 					// Manually send sprite frame since draw() is not called
@@ -669,15 +670,15 @@ void player_start_booster() {
 	if ((playerEquipment & EQUIP_BOOSTER20)) {
 		playerBoostState = BOOST_UP;
 		// in order of precedence
-		if (joy_down(BUTTON_LEFT)) {
+		if (joy_down(JOY_LEFT)) {
 			player.dir = 0;
 			playerBoostState = BOOST_HOZ;
-		} else if (joy_down(BUTTON_RIGHT)) {
+		} else if (joy_down(JOY_RIGHT)) {
 			player.dir = 1;
 			playerBoostState = BOOST_HOZ;
-		} else if (joy_down(BUTTON_DOWN)) {
+		} else if (joy_down(JOY_DOWN)) {
 			playerBoostState = BOOST_DOWN;
-		} else if (joy_down(BUTTON_UP)) {
+		} else if (joy_down(JOY_UP)) {
 			playerBoostState = BOOST_UP;
 		}
 		
@@ -693,7 +694,7 @@ void player_start_booster() {
 			break;
 			case BOOST_HOZ:
 				player.y_speed = 0;
-				if (joy_down(BUTTON_LEFT)) {
+				if (joy_down(JOY_LEFT)) {
 					player.x_speed = -SPEED_12(0x600);
                     // Little hack to prevent clipping against left wall
                     player.x += 0x100;
@@ -729,8 +730,8 @@ static void player_update_booster() {
 	// ok so then, booster is active right now
 	uint8_t sputtering = FALSE;
 	
-	if (joy_down(BUTTON_LEFT)) player.dir = 0;
-	else if (joy_down(BUTTON_RIGHT)) player.dir = 1;
+	if (joy_down(JOY_LEFT)) player.dir = 0;
+	else if (joy_down(JOY_RIGHT)) player.dir = 1;
 
 	// Don't bump in the opposite direction when hitting the ceiling
 	if(player.y_speed <= 0 && collide_stage_ceiling(&player)) player.y_speed = 0;
@@ -855,7 +856,7 @@ void player_show_map_name(uint8_t ttl) {
     //if((uint32_t) str >= 0x400000) {
     //    str = (const uint8_t*)(0x380000 | ((uint32_t)str & 0x7FFFF));
     //}
-	uint32_t nameTiles[16][8];
+	//uint32_t nameTiles[16][8];
 	uint16_t len = 0;
     uint16_t pos = 0;
     while(len < 16) {
@@ -949,9 +950,9 @@ void player_draw() {
 		player.frame = WALK2;
 	} else {
 		if(player.grounded) {
-			if(joy_down(BUTTON_UP) && !controlsLocked) {
+			if(joy_down(JOY_UP) && !controlsLocked) {
 				lookingDown = FALSE;
-				if(joystate&(BUTTON_LEFT|BUTTON_RIGHT)) {
+				if(joystate&(JOY_LEFT | JOY_RIGHT)) {
 					static const uint8_t f[] = { UPWALK1, LOOKUP, UPWALK2, LOOKUP };
 					if(++player.timer2 > TIME_8(5)) {
 						player.timer2 = 0;
@@ -962,7 +963,7 @@ void player_draw() {
 					player.frame = LOOKUP;
 					player.animtime = 0;
 				}
-			} else if(joystate&(BUTTON_LEFT|BUTTON_RIGHT) && !controlsLocked) {
+			} else if(joystate&(JOY_LEFT | JOY_RIGHT) && !controlsLocked) {
 				lookingDown = FALSE;
 				static const uint8_t f[] = { WALK1, STAND, WALK2, STAND };
 				if(++player.timer2 > TIME_8(5)) {
@@ -970,7 +971,7 @@ void player_draw() {
 					if(++player.animtime > 3) player.animtime = 0;
 				}
 				player.frame = f[player.animtime];
-			} else if(joy_pressed(BUTTON_DOWN) && !controlsLocked) {
+			} else if(joy_pressed(JOY_DOWN) && !controlsLocked) {
 				lookingDown = TRUE;
 				player.frame = LOOKDN;
 				player.animtime = 0;
@@ -981,9 +982,9 @@ void player_draw() {
 		} else {
 			lookingDown = FALSE;
 			player.animtime = 0;
-			if(joy_down(BUTTON_UP) && !controlsLocked) {
+			if(joy_down(JOY_UP) && !controlsLocked) {
 				player.frame = (player.y_speed > 0) ? UPWALK2 : UPWALK1;
-			} else if(joy_down(BUTTON_DOWN) && !controlsLocked) {
+			} else if(joy_down(JOY_DOWN) && !controlsLocked) {
 				player.frame = JUMPDN;
 			} else {
 				player.frame = (player.y_speed > 0) ? WALK2 : WALK1;
@@ -999,9 +1000,9 @@ void player_draw() {
 		if(playerMoveMode) {
 			player.dir = RIGHT;
 		} else if(!controlsLocked) {
-			if(joy_down(BUTTON_RIGHT)) {
+			if(joy_down(JOY_RIGHT)) {
 				player.dir = 1;
-			} else if(joy_down(BUTTON_LEFT)) {
+			} else if(joy_down(JOY_LEFT)) {
 				player.dir = 0;
 			}
 		}
@@ -1071,8 +1072,8 @@ uint8_t player_inflict_damage(uint16_t damage) {
 		// Clear smoke & fill up with smoke around player
 		effects_clear_smoke();
 		for(uint8_t i = MAX_SMOKE; i--; ) {
-			effect_create_smoke(sub_to_pixel(player.x) + (random() % 90 ) - 45, 
-								sub_to_pixel(player.y) + (random() % 90 ) - 45);
+			effect_create_smoke(sub_to_pixel(player.x) + (rand() % 90 ) - 45,
+                                sub_to_pixel(player.y) + (rand() % 90 ) - 45);
 		}
 		sound_play(SND_PLAYER_DIE, 15);
 		tsc_call_event(PLAYER_DEFEATED_EVENT);

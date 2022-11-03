@@ -15,7 +15,7 @@ void onspawn_energy(Entity *e) {
 		e->display_box = (bounding_box) { 8,8,8,8 };
 	}
 	e->left_gravity = (stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL);
-	e->x_speed = 0x1FF - (random() & 0x3FF);
+	e->x_speed = 0x1FF - (rand() & 0x3FF);
 	e->alwaysActive = TRUE;
 }
 

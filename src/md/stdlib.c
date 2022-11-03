@@ -1,7 +1,24 @@
 #include "common.h"
 #include "string.h"
 #include "system.h"
-#include "memory.h"
+#include "stdlib.h"
+
+/* RNG */
+
+uint16_t randbase;
+
+void srand(uint16_t seed) {
+    randbase = seed ^ 0xD94B;
+}
+
+uint16_t rand() {
+    randbase ^= (randbase >> 1) ^ *((volatile uint16_t*) 0xC00008);
+    randbase ^= (randbase << 1);
+
+    return randbase;
+}
+
+/* Heap Stuff */
 
 #define USED        1
 

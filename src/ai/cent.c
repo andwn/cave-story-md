@@ -65,8 +65,8 @@ void ai_midorin(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (!(random() & 31)) {
-				e->state = 2 + (random() & 1);
+			if (!(rand() & 31)) {
+				e->state = 2 + (rand() & 1);
 				e->frame = 1;
 			}
 		}
@@ -89,8 +89,8 @@ void ai_midorin(Entity *e) {
 			e->frame = 0;	// this will be toggled into frame 2 just below
 			e->animtime = 0;
 			
-			e->timer = 40 + (random() & 15);		// how long to run
-			e->dir = random() & 1;
+			e->timer = 40 + (rand() & 15);		// how long to run
+			e->dir = rand() & 1;
 		} /* fallthrough */
 		case 4:
 		{
@@ -128,8 +128,8 @@ void ai_orangebell(Entity *e) {
 			
 			// create baby bats
 			for(uint8_t i=0;i<8;i++) {
-				Entity *bat = entity_create(e->x - 0x1000 + (random() & 0x1FFF),
-										   e->y - 0x1000 + (random() & 0x1FFF),
+				Entity *bat = entity_create(e->x - 0x1000 + (rand() & 0x1FFF),
+										   e->y - 0x1000 + (rand() & 0x1FFF),
 										   OBJ_ORANGEBELL_BABY, 0);
 				bat->linkedEntity = e;
 			}
@@ -158,13 +158,13 @@ void ai_orangebell_baby(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			uint8_t angle = random();
+			uint8_t angle = rand();
 			e->x_speed = cos[angle];//pixel_to_sub();
 			e->y_speed = sin[angle];//pixel_to_sub();
 			
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat
-			e->y_next = -pixel_to_sub(random() & 31);
+			e->y_next = -pixel_to_sub(rand() & 31);
 			
 			e->state = 1;
 		} /* fallthrough */
@@ -223,7 +223,7 @@ void ai_gunfish(Entity *e) {
 			e->y_mark = e->y;
 			
 			e->state = 1;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 		} /* fallthrough */
 		case 1:		// desync
 		{
@@ -304,8 +304,8 @@ void ai_gunfish_shot(Entity *e) {
 		(blk(e->x, 0, e->y, -4) & 0x10)) {
 		//for(uint8_t i=0;i<5;i++) {
 		//	Caret *c = effect(e->CenterX(), e->CenterY(), EFFECT_GUNFISH_BUBBLE);
-		//	c->x_speed = random(-0x400, 0x400);
-		//	c->y_speed = random(-0x400, 0);
+		//	c->x_speed = rand(-0x400, 0x400);
+		//	c->y_speed = rand(-0x400, 0);
 		//}
 		sound_play(SND_BUBBLE, 3);
 		e->state = STATE_DELETE;
@@ -496,8 +496,8 @@ void ai_mimiga_farmer(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			if (!(random() & 63)) {
-				if (e->type != OBJ_MIMIGA_FARMER_STANDING && (random() & 1)) {	// walk
+			if (!(rand() & 63)) {
+				if (e->type != OBJ_MIMIGA_FARMER_STANDING && (rand() & 1)) {	// walk
 					e->state = 10;
 				} else {	// blink
 					e->state = 2;
@@ -521,8 +521,8 @@ void ai_mimiga_farmer(Entity *e) {
 			e->frame = 1;
 			e->animtime = 0;
 			
-			e->timer = 16 + (random() & 15);
-			e->dir = random() & 1;
+			e->timer = 16 + (rand() & 15);
+			e->dir = rand() & 1;
 		} /* fallthrough */
 		case 11:
 		{

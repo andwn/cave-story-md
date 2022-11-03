@@ -287,7 +287,7 @@ void ai_balrog(Entity *e) {
 	e->y = e->y_next;
 
 	if (e->balrog_smoking) {
-		if (++e->balrog_smoketimer > 20 || !(random() & 15)) {
+		if (++e->balrog_smoketimer > 20 || !(rand() & 15)) {
 			//SmokeClouds(e, 1, 4, 4);
 			e->balrog_smoketimer = 0;
 		}
@@ -543,7 +543,7 @@ void ai_balrogFlying(Entity *e) {
 				// Fire shot
 				Entity *shot = entity_create(e->x, e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = e->dir ? 0x400 : -0x400;
-				shot->y_speed = -0x100 + (random() & 0x1FF);
+				shot->y_speed = -0x100 + (rand() & 0x1FF);
 
 				sound_play(SND_EM_FIRE, 5);
 				if(e->timer > 32) {	// 3 shots
@@ -607,8 +607,8 @@ void ai_balrogFlying(Entity *e) {
 				camera_shake(30);
 				for(int i=0;i<4;i++) {
 					Entity *shot = entity_create(e->x, e->y, OBJ_BALROG_SHOT_BOUNCE, 0);
-					shot->x_speed = -0x400 + (random() & 0x7FF);
-					shot->y_speed = -0x400 + (random() & 0x3FF);
+					shot->x_speed = -0x400 + (rand() & 0x7FF);
+					shot->y_speed = -0x400 + (rand() & 0x3FF);
 				}
 				e->state = LANDED;
 				e->timer = 0;
@@ -811,10 +811,10 @@ void ai_balrog_missile(Entity *e) {
 	
 	if (e->state == 0) {
 		// recoil in oppisite direction
-		e->x_speed = SPEED_10(random() & 0x1FF);
+		e->x_speed = SPEED_10(rand() & 0x1FF);
 		if(e->dir) e->x_speed = -e->x_speed;
 		
-		e->y_speed = -SPEED_10(random() & 0x1FF);
+		e->y_speed = -SPEED_10(rand() & 0x1FF);
 		e->state = 1;
 	}
 	

@@ -2,8 +2,8 @@
 
 #include "audio.h"
 #include "bank_data.h"
-#include "dma.h"
-#include "joy.h"
+#include "md/dma.h"
+#include "md/joy.h"
 #include "resources.h"
 #include "string.h"
 #include "system.h"
@@ -79,16 +79,16 @@ void soundtest_main() {
     enable_ints;
 
 	song_stop();
-	oldstate = ~0;
+    joystate_old = ~0;
     while(TRUE) {
 		// Switch between tracks
 		// Skip the gap between the last song and first sfx
-		if(joy_pressed(BUTTON_LEFT)) {
+		if(joy_pressed(JOY_LEFT)) {
 			if(track == 0) track = FIRST_SOUND + SOUND_COUNT - 1;
 			else if(track == FIRST_SOUND) track = SONG_COUNT - 1;
 			else track--;
 			DRAW_BYTE(track, 10, 8);
-		} else if(joy_pressed(BUTTON_RIGHT)) {
+		} else if(joy_pressed(JOY_RIGHT)) {
 			if(track == SONG_COUNT - 1) track = FIRST_SOUND;
 			else if(track == FIRST_SOUND + SOUND_COUNT - 1) track = 0;
 			else track++;

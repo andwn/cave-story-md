@@ -576,8 +576,8 @@ void ai_ballos_f3(Entity *e) {
 						for(uint16_t i = 0; i < 2; i++) {
 							// give some granularity to the coords,
 							// so that they can't overlap too closely.
-							int32_t x = (random() & 3) << (CSF+2);
-							int32_t y = (4 + (random() & 63)) << (CSF+2);
+							int32_t x = (rand() & 3) << (CSF+2);
+							int32_t y = (4 + (rand() & 63)) << (CSF+2);
 							if(!flags) x += block_to_sub(stageWidth - 1);
 							entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
 						}
@@ -598,9 +598,9 @@ void ai_ballos_f3(Entity *e) {
 			
 			// spawn blood
 			//int prob = (e->hp <= 500) ? 4 : 10;
-			//if (!random(0, prob)) {
-			//	CreateEntity(e->x + random(-40<<CSF, 40<<CSF),
-			//				 e->y + random(0, 40<<CSF),
+			//if (!rand(0, prob)) {
+			//	CreateEntity(e->x + rand(-40<<CSF, 40<<CSF),
+			//				 e->y + rand(0, 40<<CSF),
 			//				 OBJ_RED_ENERGY)->angle = DOWN;
 			//}
 		}
@@ -623,8 +623,8 @@ void ai_ballos_f3(Entity *e) {
 		} /* fallthrough */
 		case 1001:
 		{
-			//int x = e->x + random(-60<<CSF, 60<<CSF);
-			//int y = e->y + random(-60<<CSF, 60<<CSF);
+			//int x = e->x + rand(-60<<CSF, 60<<CSF);
+			//int y = e->y + rand(-60<<CSF, 60<<CSF);
 			//SmokePuff(x, y);
 			//effect(x, y, EFFECT_BOOMFLASH);
 			

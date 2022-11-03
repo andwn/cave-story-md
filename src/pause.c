@@ -3,13 +3,14 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "error.h"
 #include "gamemode.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
+#include "math.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
@@ -17,7 +18,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "weapon.h"
@@ -282,7 +283,7 @@ uint8_t update_pause() {
         }
         if(!tscState && lastRunEvent != 6015 && lastRunEvent != 6018 && lastRunEvent != 6023
            && lastRunEvent != 6026 && lastRunEvent != 6038) {
-            if (joy_pressed(BUTTON_A)) { // Debug
+            if (joy_pressed(JOY_A)) { // Debug
                 if(selectedItem < 0) { // Weapon changer
                     // Cycle the selected weapon out for the next one in the list,
                     // but skip invalids and duplicates, and wrap the list.
@@ -322,7 +323,7 @@ uint8_t update_pause() {
                     sound_play(SND_SWITCH_WEAPON, 5);
                     tsc_call_event(5000 + playerInventory[selectedItem]);
                 }
-            } else if (joy_pressed(BUTTON_LEFT)) {
+            } else if (joy_pressed(JOY_LEFT)) {
                 int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
                 if (newsel == -1) newsel = -2;
                 itemcursor_move(selectedItem, newsel);
@@ -333,7 +334,7 @@ uint8_t update_pause() {
                 } else { // Weapon
                     tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                 }
-            } else if (joy_pressed(BUTTON_UP)) {
+            } else if (joy_pressed(JOY_UP)) {
                 int8_t newsel = selectedItem >= 0 ? selectedItem - 6 : selectedItem + 24;
                 if (newsel == -1) newsel = -2;
                 itemcursor_move(selectedItem, newsel);
@@ -344,7 +345,7 @@ uint8_t update_pause() {
                 } else { // Weapon
                     tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                 }
-            } else if (joy_pressed(BUTTON_RIGHT)) {
+            } else if (joy_pressed(JOY_RIGHT)) {
                 int8_t newsel = selectedItem % 6 != 5 ? selectedItem + 1 : selectedItem - 5;
                 if (newsel == -1) newsel = -6;
                 itemcursor_move(selectedItem, newsel);
@@ -355,7 +356,7 @@ uint8_t update_pause() {
                 } else { // Weapon
                     tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                 }
-            } else if (joy_pressed(BUTTON_DOWN)) {
+            } else if (joy_pressed(JOY_DOWN)) {
                 int8_t newsel = selectedItem < MAX_ITEMS - 6 ? selectedItem + 6 : selectedItem - 24;
                 if (newsel == -1) newsel = -2;
                 itemcursor_move(selectedItem, newsel);

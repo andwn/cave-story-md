@@ -1,14 +1,15 @@
 #include "common.h"
 
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
-#include "memory.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 
 #include "effect.h"
@@ -271,7 +272,7 @@ void effect_create_smoke(int16_t x, int16_t y) {
 		if(effSmoke[i].ttl) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
-		switch(random() & 7) {
+		switch(rand() & 7) {
 			case 0: effSmoke[i].x_speed = 0; break;
 			case 1:	effSmoke[i].y_speed = 0; break;
 			case 2: effSmoke[i].x_speed = 1; break;
@@ -343,7 +344,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_FANL:
 			{
-				effMisc[i].x_speed = -(random() & 3) - 1;
+				effMisc[i].x_speed = -(rand() & 3) - 1;
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
@@ -353,7 +354,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_FANU:
 			{
-				effMisc[i].y_speed = -(random() & 3) - 1;
+				effMisc[i].y_speed = -(rand() & 3) - 1;
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
@@ -363,7 +364,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_FANR:
 			{
-				effMisc[i].x_speed = (random() & 3) + 1;
+				effMisc[i].x_speed = (rand() & 3) + 1;
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
@@ -373,7 +374,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_FAND:
 			{
-				effMisc[i].y_speed = (random() & 3) + 1;
+				effMisc[i].y_speed = (rand() & 3) + 1;
 				effMisc[i].ttl = TIME_8(20);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
@@ -383,14 +384,14 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			break;
 			case EFF_SPLASH:
 			{
-				if(random() & 1) {
+				if(rand() & 1) {
 					effMisc[i].y_speed = -2;
 					effMisc[i].ttl = 18;
 				} else {
 					effMisc[i].y_speed = -3;
 					effMisc[i].ttl = 29;
 				}
-				effMisc[i].x_speed = (player.x_speed >> CSF) - 1 + (random() & 3);
+				effMisc[i].x_speed = (player.x_speed >> CSF) - 1 + (rand() & 3);
 				effMisc[i].sprite = (VDPSprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)

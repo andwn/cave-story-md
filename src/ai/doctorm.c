@@ -289,8 +289,8 @@ void ai_muscle_doctor(Entity *e) {
 										   e->y - (4<<CSF), OBJ_DOCTOR_BAT, 0);
 				
 				bat->health <<= 1;
-				bat->x_speed = 0x400 + (random() & 0x3FF);
-				bat->y_speed = -0x200 + (random() & 0x3FF);
+				bat->x_speed = 0x400 + (rand() & 0x3FF);
+				bat->y_speed = -0x200 + (rand() & 0x3FF);
 				bat->dir = e->dir;
 				
 				if (!e->dir) {
@@ -442,10 +442,10 @@ void ai_muscle_doctor(Entity *e) {
 			
 			// spawn some energy
 			if((e->timer & 7) == 0) {
-				int32_t x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
+				int32_t x = e->x_next + pixel_to_sub((-16 + (rand() & 31)));
 				Entity *drip = entity_create(x, e->y, OBJ_RED_ENERGY, 0);
-				drip->x_speed = -0x200 + (random() & 0x3FF);
-				drip->y_speed = -(random() & 0x3FF);
+				drip->x_speed = -0x200 + (rand() & 0x3FF);
+				drip->y_speed = -(rand() & 0x3FF);
 				drip->angle = A_DOWN;
 			}
 			
@@ -524,13 +524,13 @@ static void do_redsplode(Entity *e) {
 	
 	// big shower of red energy
 	for(int i=0;i<20;i++) { // Less to avoid OOM
-		int x = e->x_next + pixel_to_sub((-16 + (random() & 31)));
-		int y = e->y_next + pixel_to_sub((-16 + (random() & 31)));
+		int x = e->x_next + pixel_to_sub((-16 + (rand() & 31)));
+		int y = e->y_next + pixel_to_sub((-16 + (rand() & 31)));
 		
 		Entity *spark = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		
-		spark->x_speed = -0x3FF + (random() & 0x7FF);
-		spark->y_speed = -0x3FF + (random() & 0x7FF);
+		spark->x_speed = -0x3FF + (rand() & 0x7FF);
+		spark->y_speed = -0x3FF + (rand() & 0x7FF);
 		spark->angle = A_DOWN;
 	}
 }
@@ -538,8 +538,8 @@ static void do_redsplode(Entity *e) {
 // the red energy that oozes off of him during most of the battle
 static void run_red_drip(Entity *e) {
 	if ((e->timer & 7) == 2) {
-		int32_t x = e->x_next + ((int32_t)(-16 + (random() & 31)) << CSF);
-        int32_t y = e->y_next + ((int32_t)(-6 + (random() & 15)) << CSF);
+		int32_t x = e->x_next + ((int32_t)(-16 + (rand() & 31)) << CSF);
+        int32_t y = e->y_next + ((int32_t)(-6 + (rand() & 15)) << CSF);
 		
 		Entity *drip = entity_create(x, y, OBJ_RED_ENERGY, 0);
 		drip->x_speed = e->x_speed;

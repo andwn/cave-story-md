@@ -162,7 +162,7 @@ void ai_igor(Entity *e) {
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800), 
 							e->y, OBJ_IGOR_SHOT, 0);
                     shot->x_speed = e->dir ? SPEED_12(0x600) : -SPEED_12(0x600);
-                    shot->y_speed = -SPEED_12(0x280) + SPEED_12((random() & 0x3FF));
+                    shot->y_speed = -SPEED_12(0x280) + SPEED_12((rand() & 0x3FF));
 				}
 				// fires 6 shots
 				if(e->timer > TIME_8(135)) e->state = STATE_STAND;
@@ -261,8 +261,8 @@ void ai_igordead(Entity *e) {
 		case 1:
 		// Puffs of smoke
 		if((++e->timer & 7) == 1) {
-			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
-				sub_to_pixel(e->y) - 32 + (random() & 63));
+			effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
+				sub_to_pixel(e->y) - 32 + (rand() & 63));
 		}
 		// Shake
 		if((e->timer & 3) == 1) {
@@ -278,8 +278,8 @@ void ai_igordead(Entity *e) {
 		case 2:
 		// Puffs of smoke
 		if((++e->timer & 15) == 1) {
-			effect_create_smoke(sub_to_pixel(e->x) - 16 + (random() & 31), 
-				sub_to_pixel(e->y) - 32 + (random() & 63));
+			effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
+				sub_to_pixel(e->y) - 32 + (rand() & 63));
 		}
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)

@@ -3,10 +3,10 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "kanji.h"
 #include "resources.h"
 #include "sheet.h"
@@ -14,7 +14,7 @@
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 #include "xgm.h"
 
@@ -103,7 +103,7 @@ void credits_main() {
 	vdp_set_display(TRUE);
 	
     while(TRUE) {
-		joystate = oldstate = 0;
+        joystate = joystate_old = 0;
 		tsc_update();
 
         backScroll++;

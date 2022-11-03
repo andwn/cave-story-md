@@ -80,7 +80,7 @@ void ai_dragon_zombie(Entity *e) {
 			if (e->timer > TIME(60)) {
 				e->state = 1;
 				e->frame = 0;
-				e->timer = (random() & 127) + TIME(90);	// random time till can fire again
+				e->timer = (rand() & 127) + TIME(90);	// rand time till can fire again
 			}
 		}
 		break;
@@ -234,7 +234,7 @@ void ai_counterbomb(Entity *e) {
 			e->state = 1;
 			e->y_mark = e->y;
 			
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			e->timer2 = 0;
 		} /* fallthrough */
 		case 1:

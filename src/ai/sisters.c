@@ -80,7 +80,7 @@ void onspawn_sisters(Entity *e) {
 	mainangle = 0;
 	e->x_mark = 192; // Start outside of the room, changes to 112 when they appear
 	e->y_mark = 60;
-	e->timer2 = TIME_10(random() & 511) + TIME_10(700);
+	e->timer2 = TIME_10(rand() & 511) + TIME_10(700);
 	e->health = 500;
 	e->event = 1000;
 	e->flags |= NPC_EVENTONDEATH;
@@ -148,7 +148,7 @@ void ai_sisters(Entity *e) {
 			else {
 				e->timer = 0;
 				e->state = STATE_CIRCLE_0;
-				e->timer2 = TIME_8(random() & 0xFF) + TIME_10(420);
+				e->timer2 = TIME_8(rand() & 0xFF) + TIME_10(420);
 			}
 		}
 		break;
@@ -169,7 +169,7 @@ void ai_sisters(Entity *e) {
 					e->timer = 0;
 				} else {
 					e->state = STATE_CIRCLE_1;
-					e->timer2 = TIME_8(random() & 0xFF) + TIME_10(420);
+					e->timer2 = TIME_8(rand() & 0xFF) + TIME_10(420);
 					e->timer = 0;
 				}
 			}
@@ -352,7 +352,7 @@ void ai_sisters_head(Entity *e) {
 		case STATE_HEAD_CLOSED:
 		{
 			e->frame = 0;
-			e->timer = TIME_8(random() & 127) + TIME_8(80);
+			e->timer = TIME_8(rand() & 127) + TIME_8(80);
 			e->state++;
 		} /* fallthrough */
 		case STATE_HEAD_CLOSED+1:

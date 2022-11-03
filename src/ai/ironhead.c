@@ -44,8 +44,8 @@ void ai_ironhead(Entity *e) {
 				e->state = IRONH_SWIM;
 			}
 			if (!(e->timer & 7)) {
-				entity_create(pixel_to_sub((14 + (random() & 3)) << 4),
-						  	pixel_to_sub((1 + (random() & 15)) << 4),
+				entity_create(pixel_to_sub((14 + (rand() & 3)) << 4),
+						  	pixel_to_sub((1 + (rand() & 15)) << 4),
 						  	OBJ_IRONH_FISHY, 0);
 			}
 		}
@@ -58,14 +58,14 @@ void ai_ironhead(Entity *e) {
 				e->y = player.y;
 			} else {	// returning from right side of screen
 				e->x = 0x5a000;
-				e->y = pixel_to_sub((5 + (random() & 7)) << 4);
+				e->y = pixel_to_sub((5 + (rand() & 7)) << 4);
 			}
 			
 			e->x_mark = e->x;
 			e->y_mark = e->y;
 			
-			e->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
-			e->x_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
+			e->y_speed = -SPEED_10(0x200) + SPEED_10(rand() & 0x3FF);
+			e->x_speed = -SPEED_10(0x200) + SPEED_10(rand() & 0x3FF);
 			
 			e->flags |= NPC_SHOOTABLE;
 		} /* fallthrough */
@@ -104,8 +104,8 @@ void ai_ironhead(Entity *e) {
 					case 320:
 					{
 						Entity *shot = entity_create(e->x, e->y, OBJ_IRONH_SHOT, 0);
-						shot->x_speed = -3 + ((random() & 3) << CSF);
-						shot->y_speed = -3 + ((random() & 7) << CSF);
+						shot->x_speed = -3 + ((rand() & 3) << CSF);
+						shot->y_speed = -3 + ((rand() & 7) << CSF);
 						sound_play(SND_EM_FIRE, 5);
 					}
 					break;
@@ -135,11 +135,11 @@ void ai_ironhead(Entity *e) {
 		{
 			e->x_mark -= (1<<CSF);
 			
-			e->x = e->x_mark - 1 + ((random() & 1) << CSF);
-			e->y = e->y_mark - 1 + ((random() & 1) << CSF);
+			e->x = e->x_mark - 1 + ((rand() & 1) << CSF);
+			e->y = e->y_mark - 1 + ((rand() & 1) << CSF);
 			
 			if((++e->timer & 3) == 0) {
-				effect_create_smoke((e->x>>CSF) - 32 + (random() & 63), (e->y>>CSF) - 16 + (random() & 31));
+				effect_create_smoke((e->x>>CSF) - 32 + (rand() & 63), (e->y>>CSF) - 16 + (rand() & 31));
 			}
 		}
 		break;
@@ -157,7 +157,7 @@ void ai_ironh_fishy(Entity *e) {
 		{
 			e->state = 10;
 			e->animtime = 0;
-			e->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
+			e->y_speed = -SPEED_10(0x200) + SPEED_10(rand() & 0x3FF);
 			e->x_speed = SPEED_12(0x800);
 		} /* fallthrough */
 		case 10:			// harmless fishy
@@ -214,12 +214,12 @@ void ai_ironh_shot(Entity *e) {
 void ai_brick_spawner(Entity *e) {
 	if (!e->state) {
 		e->state = 1;
-		e->timer = TIME_8(30) + TIME_8(random() & 127);
+		e->timer = TIME_8(30) + TIME_8(rand() & 127);
 	}
 	
 	if (!e->timer) {	// time to spawn a block
 		e->state = 0;
-		Entity *brick = entity_create(e->x, e->y - pixel_to_sub(16) + pixel_to_sub((random() & 31)), 
+		Entity *brick = entity_create(e->x, e->y - pixel_to_sub(16) + pixel_to_sub((rand() & 31)),
 				OBJ_IRONH_BRICK, 0);
 		brick->dir = e->dir;
 	} else e->timer--;
@@ -227,7 +227,7 @@ void ai_brick_spawner(Entity *e) {
 
 void ai_ironh_brick(Entity *e) {
 	if (!e->state) {
-		uint8_t r = mod10[random() & 15];
+		uint8_t r = mod10[rand() & 15];
 		if (r) {
 			e->frame = e->oframe = 255;
 			e->vramindex = sheets[e->sheet].index + 16 + (r & 3) * 4;
@@ -239,10 +239,10 @@ void ai_ironh_brick(Entity *e) {
 			e->hit_box = e->display_box = (bounding_box) { 16, 16, 16, 16 };
 		}
 		
-		e->x_speed = SPEED_8(0xFF) + SPEED_8(random() & 0xFF);
+		e->x_speed = SPEED_8(0xFF) + SPEED_8(rand() & 0xFF);
 		e->x_speed *= e->dir ? 2 : -2;
 		
-		e->y_speed = -SPEED_10(0x200) + SPEED_10(random() & 0x3FF);
+		e->y_speed = -SPEED_10(0x200) + SPEED_10(rand() & 0x3FF);
 		e->state = 1;
 	}
 	
@@ -290,7 +290,7 @@ void ai_ikachan_spawner(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 3) == 1) {
-				entity_create(e->x, e->y + pixel_to_sub(-1 + (((random() & 15) << 4))), OBJ_IKACHAN, 0);
+				entity_create(e->x, e->y + pixel_to_sub(-1 + (((rand() & 15) << 4))), OBJ_IKACHAN, 0);
 			}
 		}
 		break;
@@ -302,13 +302,13 @@ void ai_ikachan(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->timer = 3 + (random() & 15);
+			e->timer = 3 + (rand() & 15);
 		} /* fallthrough */
 		case 1:		// he pushes ahead
 		{
 			if (--e->timer == 0) {
 				e->state = 2;
-				e->timer = 10 + (random() & 31);
+				e->timer = 10 + (rand() & 31);
 				e->frame = 1;
 				e->x_speed = 0x600;
 			}
@@ -319,9 +319,9 @@ void ai_ikachan(Entity *e) {
 		{
 			if (--e->timer == 0) {
 				e->state = 3;
-				e->timer = 10 + (random() & 31);
+				e->timer = 10 + (rand() & 31);
 				e->frame = 2;
-				e->y_speed = -0x100 + (random() & 0x1FF);
+				e->y_speed = -0x100 + (rand() & 0x1FF);
 			}
 		}
 		break;

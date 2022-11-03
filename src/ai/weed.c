@@ -2,7 +2,7 @@
 #include "gamemode.h"
 
 void onspawn_jelly(Entity *e) {
-	e->timer = random() & 31;
+	e->timer = rand() & 31;
 	e->x_mark = e->x;
 	e->y_mark = e->y;
 	e->flags &= ~NPC_SHOOTABLE;
@@ -416,7 +416,7 @@ void onspawn_frog(Entity *e) {
 	// Balfrog sets OPTION1
 	if(e->flags & NPC_OPTION1) {
 		e->alwaysActive = TRUE;
-		e->dir = random() & 1;
+		e->dir = rand() & 1;
 		e->flags |= NPC_IGNORESOLID;
 		e->state = 3;
 		e->frame = 2;
@@ -484,13 +484,13 @@ void ai_frog(Entity *e) {
 		}
 		break;
 	}
-	// random jumping, and jump when shot
+	// rand jumping, and jump when shot
 	if (e->state < 3 && e->timer > TIME_8(15)) {
 		uint8_t dojump = FALSE;
 		if(e->damage_time) {
 			dojump = TRUE;
 		} else if(PLAYER_DIST_X(e, 0x14000) && PLAYER_DIST_Y(e, 0x8000)) {
-			if((random() & 31) == 0) {
+			if((rand() & 31) == 0) {
 				dojump = TRUE;
 			}
 		}
@@ -555,8 +555,8 @@ void ai_motorbike(Entity *e) {
 		/* fallthrough */
 		case 21:
 		{
-			e->x = e->x_mark + 0x200 - (random() & 0x3FF);
-			e->y = e->y_mark + 0x200 - (random() & 0x3FF);
+			e->x = e->x_mark + 0x200 - (rand() & 0x3FF);
+			e->y = e->y_mark + 0x200 - (rand() & 0x3FF);
 			if(++e->timer > TIME_8(30)) {
 				e->state = 30;
 			}
@@ -575,7 +575,7 @@ void ai_motorbike(Entity *e) {
 		{
 			e->x_speed += SPEED_8(0x20);
 			e->timer++;
-			e->y = e->y_mark + 0x200 - (random() & 0x3FF);
+			e->y = e->y_mark + 0x200 - (rand() & 0x3FF);
 			if (e->timer > TIME_8(10))  e->dir = 1;
 			if (e->timer > TIME_8(200)) e->state = 40;
 		}

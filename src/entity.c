@@ -2,11 +2,12 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "error.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -14,7 +15,7 @@
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "weapon.h"
@@ -663,7 +664,7 @@ uint8_t collide_stage_ceiling(Entity *e) {
 				} else {
 					e->y_speed = min(-e->y_speed >> 1, e->underwater ? SPEED_8(0x80) : SPEED_8(0xFF));
 				}
-			} else if(!shoot_cooldown || !joy_down(BUTTON_DOWN)) {
+			} else if(!shoot_cooldown || !joy_down(JOY_DOWN)) {
 				e->y_speed = 0;
 			}
 		} else if(e->y_speed < -SPEED_10(0x200)) {
@@ -861,7 +862,7 @@ void entities_clear_by_type(uint16_t type) {
 }
 
 void entity_drop_powerup(Entity *e) {
-	uint8_t chance = mod10[random() & 0x3FF] >> 1;
+	uint8_t chance = mod10[rand() & 0x3FF] >> 1;
 	if(chance >= 2) { // Weapon Energy
 		if(e->experience > 0) {
 			Entity *exp = entity_create(e->x, e->y, OBJ_XP,
@@ -1071,7 +1072,7 @@ void generic_npc_states(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 			if(e->type != OBJ_KAZUMA) {
-				RANDBLINK(e, 3, 200);
+                RANDBLINK(e, 3, 200);
 			}
 		}
 		break;

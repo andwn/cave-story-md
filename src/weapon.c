@@ -2,10 +2,10 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -13,13 +13,14 @@
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
+#include "md/stdlib.h"
 #include "vdp.h"
 
 #include "weapon.h"
 
-#define FIREDIR	(playerMoveMode ? RIGHT : joy_down(BUTTON_UP) ? UP :                           \
-				 (!player.grounded && joy_down(BUTTON_DOWN)) ? DOWN : player.dir)
+#define FIREDIR	(playerMoveMode ? RIGHT : joy_down(JOY_UP) ? UP :                           \
+				 (!player.grounded && joy_down(JOY_DOWN)) ? DOWN : player.dir)
 
 const WeaponFunc weapon_fire_array[WEAPON_COUNT] = {
 	&weapon_fire_none,
@@ -290,7 +291,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		}
 		b->x = player.x;
 		b->y = player.y - pixel_to_sub(12);
-		b->x_speed = -0x7F + (random() & 0xFF);
+		b->x_speed = -0x7F + (rand() & 0xFF);
 		b->y_speed = -SPEED_12(0xFFF);
 	} else if(b->dir == DOWN) {
 		b->sprite.attr = TILE_ATTR(PAL0,0,1,0,sheets[w->sheet].index+8);
@@ -305,7 +306,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
-		b->x_speed = -0x7F + (random() & 0xFF);
+		b->x_speed = -0x7F + (rand() & 0xFF);
 		b->y_speed = SPEED_12(0xFFF);
 	} else {
 		//b->level++; // Wonky use of this var, so the trail knows whether to be H/V
@@ -313,7 +314,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
-		b->y_speed = -0x7F + (random() & 0xFF);
+		b->y_speed = -0x7F + (rand() & 0xFF);
 	}
 	set_extent_box(b);
 }
@@ -362,24 +363,24 @@ void weapon_fire_missile(Weapon *w) {
 			b->x = player.x;
 			b->y = player.y - pixel_to_sub(12);
 			if(b->level == 3) {
-				b->x_speed = (random() & 0xFFF) - 0x7FF;
-				b->y_speed = (random() & 0x3FF) - 0x1FF;
+				b->x_speed = (rand() & 0xFFF) - 0x7FF;
+				b->y_speed = (rand() & 0x3FF) - 0x1FF;
 			}
 		} else if(b->dir == DOWN) {
 			b->sprite.attr = TILE_ATTR(PAL0,1,0,player.dir,sheets[w->sheet].index+4);
 			b->x = player.x;
 			b->y = player.y + pixel_to_sub(12);
 			if(b->level == 3) {
-				b->x_speed = (random() & 0xFFF) - 0x7FF;
-				b->y_speed = (random() & 0x3FF) - 0x1FF;
+				b->x_speed = (rand() & 0xFFF) - 0x7FF;
+				b->y_speed = (rand() & 0x3FF) - 0x1FF;
 			}
 		} else {
 			b->sprite.attr = TILE_ATTR(PAL0,0,0,b->dir,sheets[w->sheet].index);
 			b->x = player.x + (b->dir ? pixel_to_sub(12) : -pixel_to_sub(12));
 			b->y = player.y + pixel_to_sub(2);
 			if(b->level == 3) {
-				b->y_speed = (random() & 0xFFF) - 0x7FF;
-				b->x_speed = (random() & 0x3FF) - 0x1FF;
+				b->y_speed = (rand() & 0xFFF) - 0x7FF;
+				b->x_speed = (rand() & 0x3FF) - 0x1FF;
 			}
 		}
 		set_extent_box(b);
@@ -428,13 +429,13 @@ void weapon_fire_bubbler(Weapon *w) {
 			b->damage = 2;
 			b->ttl = TIME_8(60);
 			fwdspeed = SPEED_12(0x600);
-			sidespeed = -0xFF + (random() & 0x1FF);
+			sidespeed = -0xFF + (rand() & 0x1FF);
 			break;
 		case 3:
 			b->damage = 5;
 			b->ttl = TIME_8(100);
-			fwdspeed = 0x1FF + (random() & 0x1FF);
-			sidespeed = (random() & 0x7FF) - 0x3FF;
+			fwdspeed = 0x1FF + (rand() & 0x1FF);
+			sidespeed = (rand() & 0x7FF) - 0x3FF;
 			break;
 	}
 	b->dir = FIREDIR;
@@ -860,8 +861,8 @@ void bullet_update_missile(Bullet *b) {
 	} else {
 		if(b->ttl & 3) {
 			uint16_t range = missile_settings[pal_mode||cfg_60fps][index].eff_range;
-			effect_create_smoke((b->x>>CSF) - range + (random() & (range<<1)), 
-								(b->y>>CSF) - range + (random() & (range<<1)));
+			effect_create_smoke((b->x>>CSF) - range + (rand() & (range << 1)),
+								(b->y>>CSF) - range + (rand() & (range << 1)));
 		}
 	}
 }
@@ -1211,8 +1212,8 @@ void bullet_missile_explode(Bullet *b) {
 	b->hit_box = (bounding_box) { size, size, size, size };
 	// TODO: Explosion graphic instead of smoke
 	for(uint8_t i = 0; i < 2; i++) {
-		effect_create_smoke(sub_to_pixel(b->x) - 15 + (random() & 31), 
-							sub_to_pixel(b->y) - 15 + (random() & 31));
+		effect_create_smoke(sub_to_pixel(b->x) - 15 + (rand() & 31),
+							sub_to_pixel(b->y) - 15 + (rand() & 31));
 	}
 }
 
@@ -1288,8 +1289,8 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 
 	slash->damage = 1;
 	if(burst) { // Spread them for AOE
-		slash->x += - 0x2000 + (random() % 0x4000);
-		slash->y += - 0x2000 + (random() % 0x4000);
+		slash->x += - 0x2000 + (rand() % 0x4000);
+		slash->y += - 0x2000 + (rand() % 0x4000);
 	} else {
         //slash->x = b->x;
         //slash->y = b->y;// + ((slash->dir & 2) ? 0x2000 : -0x2000);

@@ -2,12 +2,12 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "error.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -29,9 +29,8 @@
 #define ANIM_FRAMES	4
 
 static const uint16_t cheat[2][10] = {
-	{ BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT, NULL },
-	{ BUTTON_UP, BUTTON_UP, BUTTON_DOWN, BUTTON_DOWN, 
-	  BUTTON_LEFT, BUTTON_RIGHT, BUTTON_LEFT, BUTTON_RIGHT, NULL },
+	{JOY_UP, JOY_DOWN, JOY_LEFT, JOY_RIGHT, NULL },
+	{JOY_UP, JOY_UP,   JOY_DOWN, JOY_DOWN, JOY_LEFT, JOY_RIGHT, JOY_LEFT, JOY_RIGHT, NULL },
 };
 
 uint8_t tpal;
@@ -106,7 +105,7 @@ uint8_t titlescreen_main() {
 	vdp_set_display(TRUE);
 
 	song_play(tsong);
-	oldstate = ~0;
+    joystate_old = ~0;
 	while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
 		for(uint8_t i = 0; i < 2; i++) {
 			if(!cheatEnable[i]) {
@@ -122,13 +121,13 @@ uint8_t titlescreen_main() {
 				}
 			}
 		}
-		if(joy_pressed(BUTTON_UP)) {
+		if(joy_pressed(JOY_UP)) {
 			if(cursor == 0) cursor = OPTIONS - 1;
 			else cursor--;
 			// Skip over "continue" if no save data
 			if(/*sram_state != SRAM_VALID_SAVE &&*/ cursor == 1) cursor--;
 			sound_play(SND_MENU_MOVE, 0);
-		} else if(joy_pressed(BUTTON_DOWN)) {
+		} else if(joy_pressed(JOY_DOWN)) {
 			if(cursor == OPTIONS - 1) cursor = 0;
 			else cursor++;
 			// Skip over "continue" if no save data
@@ -150,7 +149,7 @@ uint8_t titlescreen_main() {
 		ready = TRUE;
 		vdp_vsync(); aftervsync();
 	}
-	if(cheatEnable[0] && (joystate&BUTTON_A) && joy_pressed(btn[cfg_btn_pause])) {
+	if(cheatEnable[0] && (joystate & JOY_A) && joy_pressed(btn[cfg_btn_pause])) {
 		cursor = 0;
 		
 		vdp_map_clear(VDP_PLAN_A);
@@ -191,10 +190,10 @@ uint8_t titlescreen_main() {
 			else vdp_font_pal(PAL1);
 			vdp_puts(VDP_PLAN_A, levelStr[i], tx, ty+i);
 		}
-		
-		oldstate = ~0;
+
+        joystate_old = ~0;
 		while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
-			if(joy_pressed(BUTTON_UP)) {
+			if(joy_pressed(JOY_UP)) {
 				vdp_font_pal(PAL1);
 				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				if(cursor == 0) cursor = SAVES - 1;
@@ -203,7 +202,7 @@ uint8_t titlescreen_main() {
 				vdp_font_pal(PAL0);
 				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				sound_play(SND_MENU_MOVE, 0);
-			} else if(joy_pressed(BUTTON_DOWN)) {
+			} else if(joy_pressed(JOY_DOWN)) {
 				vdp_font_pal(PAL1);
 				vdp_puts(VDP_PLAN_A, levelStr[cursor], tx, ty + cursor);
 				if(cursor == SAVES - 1) cursor = 0;

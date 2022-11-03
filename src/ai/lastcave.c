@@ -97,8 +97,8 @@ void ai_lava_drip(Entity *e) {
 	if (blockd == 0x41 || (blockd & BLOCK_WATER)) {
 		//for(int i=0;i<3;i++) {
 		//	Caret *c = effect(e->CenterX(), e->Bottom(), EFFECT_LAVA_SPLASH);
-		//	c->x_speed = random(-0x400, 0x400);
-		//	c->y_speed = random(-0x400, 0);
+		//	c->x_speed = rand(-0x400, 0x400);
+		//	c->y_speed = rand(-0x400, 0);
 		//}
 		
 		sound_play(SND_BUBBLE, 2);
@@ -114,14 +114,14 @@ void ai_red_bat_spawner(Entity *e) {
 			//if(PLAYER_DIST_Y(e, 64 << CSF)) {
 				if(e->flags & NPC_OPTION2) e->dir = 1;
 				e->state = 1;
-				e->timer = TIME_8(160) + TIME_8(random() & 0xFF);
+				e->timer = TIME_8(160) + TIME_8(rand() & 0xFF);
 			//}
 		}
 		break;
 		case 1:
 		{
 			if (e->timer == 0) {
-				Entity *bat = entity_create(e->x, e->y - 0x4000 + (random() & 0x7FFF),
+				Entity *bat = entity_create(e->x, e->y - 0x4000 + (rand() & 0x7FFF),
 											OBJ_RED_BAT, 0);
 				bat->dir = e->dir;
 				e->state = 0;
@@ -138,7 +138,7 @@ void ai_red_bat(Entity *e) {
 		{
 			e->state = 1;
 			e->y_mark = e->y;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 		} /* fallthrough */
 		case 1:
 		{

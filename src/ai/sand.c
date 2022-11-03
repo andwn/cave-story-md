@@ -173,15 +173,15 @@ void ai_polish(Entity *e) {
 void ai_baby(Entity *e) {
 	if(!e->state) {
 		e->state = 1;
-		if(random() & 1) {
-			e->x_speed = (random() & 0xFF) + 0x100;
+		if(rand() & 1) {
+			e->x_speed = (rand() & 0xFF) + 0x100;
 		} else {
-			e->x_speed = (random() & 0xFF) - 0x300;
+			e->x_speed = (rand() & 0xFF) - 0x300;
 		}
-		if(random() & 1) {
-			e->y_speed = (random() & 0xFF) + 0x100;
+		if(rand() & 1) {
+			e->y_speed = (rand() & 0xFF) + 0x100;
 		} else {
-			e->y_speed = (random() & 0xFF) - 0x300;
+			e->y_speed = (rand() & 0xFF) - 0x300;
 		}
 	}
 	
@@ -376,7 +376,7 @@ void ai_crow(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			uint8_t angle = random();
+			uint8_t angle = rand();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
@@ -453,9 +453,9 @@ void ai_crow_with_skull(Entity *e) {
 	e->linkedEntity = skull;
 	
 	// switch over to the main crow AI, but only move up & down
-	e->y_speed = -SPEED_10(0x100 + (random() & 0xFF));
+	e->y_speed = -SPEED_10(0x100 + (rand() & 0xFF));
 	e->x_mark = e->x;
-	e->y_mark = e->y - (32<<CSF) + (random() & 0x7FFF);
+	e->y_mark = e->y - (32<<CSF) + (rand() & 0x7FFF);
 	e->state = 101;
 	e->type = OBJ_CROW;
 	
@@ -514,7 +514,7 @@ void ai_skullhead(Entity *e) {
 			case 0:
 			{
 				e->state = 1;
-				e->timer = random() & 3;
+				e->timer = rand() & 3;
 			} /* fallthrough */
 			case 1:
 			{
@@ -652,7 +652,7 @@ void ai_curlys_mimigas(Entity *e) {
 			e->flags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			e->frame = 0;
 		} /* fallthrough */
 		case 11:
@@ -662,7 +662,7 @@ void ai_curlys_mimigas(Entity *e) {
 		case 13:
 		{
 			e->state = 14;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			FACE_PLAYER(e);
 			e->frame = 1;
 		} /* fallthrough */
@@ -699,7 +699,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->x_speed = 0;
 				e->state = 21;
 				if(e->frame < 7) e->frame += 2;
-				e->timer = 280 + (random() & 127);
+				e->timer = 280 + (rand() & 127);
 			}
 		}
 		break;
@@ -711,7 +711,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->flags |= NPC_SHOOTABLE;
 				e->health = 1000;
 				e->state = 11;
-				e->timer = random() & 63;
+				e->timer = rand() & 63;
 				e->frame = 0;
 			}
 		}
@@ -721,7 +721,7 @@ void ai_curlys_mimigas(Entity *e) {
 		// got shot by player
 		e->state = 20;
 		e->y_speed = -0x200;
-		e->frame = (random() & 1) + 5;
+		e->frame = (rand() & 1) + 5;
 		e->attack = 0;
 		e->flags &= ~NPC_SHOOTABLE;
 	}
@@ -824,7 +824,7 @@ void ai_skeleton(Entity *e) {
 			e->state = 21;
 			e->frame = 1;
 			e->timer2 = 0;
-			e->y_speed = -(SPEED_10(0x200) + SPEED_10(random() & 0x3FF));
+			e->y_speed = -(SPEED_10(0x200) + SPEED_10(rand() & 0x3FF));
 			e->grounded = FALSE;
 			
 			// jump towards player, unless we've been hurt; in that case jump away
@@ -942,7 +942,7 @@ void ai_puppy_bark(Entity *e) {
 					} else {
 						e->frame = NOBARK;
 						
-						if (!(random() & 7) || ++e->timer2 > 5) { 
+						if (!(rand() & 7) || ++e->timer2 > 5) {
 							// stop barking for a sec
 							e->state++;
 							e->timer = e->timer2 = 0;
@@ -994,8 +994,8 @@ void ai_puppy_run(Entity *e) {
 					}
 				}
 			}
-			
-			RANDBLINK(e, 2, 200);
+
+            RANDBLINK(e, 2, 200);
 		}
 		break;
 		

@@ -2,7 +2,7 @@
 #include "gamemode.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 #include "xgm.h"
 #include "audio.h"

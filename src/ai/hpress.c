@@ -39,8 +39,8 @@ static void run_defeated(Entity *e) {
 		{
 			if ((++e->timer & 15) == 0) {
 				sound_play(SND_BLOCK_DESTROY, 5);
-				effect_create_smoke((e->x - 0x7FFF + (random() & 0xFFFF)) >> CSF, 
-									(e->y - 0x7FFF + (random() & 0xFFFF)) >> CSF);
+				effect_create_smoke((e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
+									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF);
 			}
 			// eye opens
 			if(e->timer == TIME_8(90)) e->frame = 1;
@@ -99,8 +99,8 @@ static void run_passageway(Entity *e) {
 		case 21:
 		{
 			if ((++e->timer & 15) == 0) {
-				effect_create_smoke((e->x - 0x7FFF + (random() & 0xFFFF)) >> CSF, 
-									(e->y - 0x7FFF + (random() & 0xFFFF)) >> CSF);
+				effect_create_smoke((e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
+									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF);
 			}
 		}
 		break;
@@ -124,7 +124,7 @@ static void run_passageway(Entity *e) {
 				
 				e->frame = 0;
 				//for(int i=0;i<5;i++)
-				//	SmokePuff(random(e->Left(), e->Right()), e->Bottom());
+				//	SmokePuff(rand(e->Left(), e->Right()), e->Bottom());
 				
 				e->state = 20;	// continue smoking
 			}

@@ -213,7 +213,7 @@ void ai_undead_core(Entity *e) {
 			
 			// fire rotators
 			if ((e->timer & 63) == 1) {
-				//uint8_t i = random() & 3;
+				//uint8_t i = rand() & 3;
 				//int32_t x = rotator[i]->x - (16<<CSF);
 				//int32_t y = rotator[i]->y;
 				
@@ -285,14 +285,14 @@ void ai_undead_core(Entity *e) {
 			// upper platforms
 			if (e->jump_time == TIME_8(75)) {
 				entity_create(block_to_sub(stageWidth) + 40,
-							 block_to_sub(1 + (random() & 3)), OBJ_UDMINI_PLATFORM, 0);
+							 block_to_sub(1 + (rand() & 3)), OBJ_UDMINI_PLATFORM, 0);
 			}
 			
 			// lower platforms
 			if (e->jump_time == TIME_8(150)) {
 				e->jump_time = 0;
 				entity_create(block_to_sub(stageWidth) + 40,
-							 block_to_sub(11 + (random() & 3)), OBJ_UDMINI_PLATFORM, 0);
+							 block_to_sub(11 + (rand() & 3)), OBJ_UDMINI_PLATFORM, 0);
 				
 				break;
 			}
@@ -314,11 +314,11 @@ void ai_undead_core(Entity *e) {
 //	
 //	for(int i=0;i<8;i++)
 //	{
-//		int x = face->x + random(-16<<CSF, 32<<CSF);
+//		int x = face->x + rand(-16<<CSF, 32<<CSF);
 //		int y = main->CenterY();
 //		Entity *s = SmokePuff(x, y);
-//		s->x_speed = random(-0x200, 0x200);
-//		s->y_speed = random(-0x100, 0x100);
+//		s->x_speed = rand(-0x200, 0x200);
+//		s->y_speed = rand(-0x100, 0x100);
 //	}
 //}
 
@@ -385,8 +385,8 @@ static uint8_t RunDefeated(Entity *e) {
 			if ((e->timer & 7) == 0)
 				sound_play(SND_MISSILE_HIT, 5);
 			
-			//int x = e->x + random(-72<<CSF, 72<<CSF);
-			//int y = e->y + random(-64<<CSF, 64<<CSF);
+			//int x = e->x + rand(-72<<CSF, 72<<CSF);
+			//int y = e->y + rand(-64<<CSF, 64<<CSF);
 			//SmokePuff(x, y);
 			//effect(x, y, EFFECT_BOOMFLASH);
 			
@@ -662,7 +662,7 @@ void ai_udmini_platform(Entity *e) {
 			
 			e->x_speed = -SPEED_10(0x200);
 			e->y_speed = SPEED_10(0x100);
-			if (random() & 1) e->y_speed = -e->y_speed;
+			if (rand() & 1) e->y_speed = -e->y_speed;
 		} /* fallthrough */
 		case 1:
 		{
@@ -789,7 +789,7 @@ void ai_ud_smoke(Entity *e)
 	{
 		case 0:
 		{
-			e->x_speed = random(-4, 4) << CSF;
+			e->x_speed = rand(-4, 4) << CSF;
 			e->state = 1;
 		}
 		case 1:
@@ -859,8 +859,8 @@ void ai_ud_blast(Entity *e) {
 	e->x += -SPEED_12(0xFFF);
 	//e->frame ^= 1;
 
-	//SmokePuff(e->CenterX() + (random(0, 16) << CSF),
-	//		  e->CenterY() + (random(-16, 16) << CSF));
+	//SmokePuff(e->CenterX() + (rand(0, 16) << CSF),
+	//		  e->CenterY() + (rand(-16, 16) << CSF));
 	
 	if (e->x < -pixel_to_sub(8)) e->state = STATE_DELETE;
 }

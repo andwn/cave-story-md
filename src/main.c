@@ -1,16 +1,16 @@
 #include "common.h"
 
 #include "audio.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "error.h"
 #include "gamemode.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "md/stdlib.h"
 #include "resources.h"
 #include "stage.h"
 #include "system.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "xgm.h"
@@ -43,7 +43,7 @@ void aftervsync() {
 }
 
 int main() {
-    setRandomSeed(0xC427); // initiate random number generator
+    srand(0xC427); // initiate rand number generator
     mem_init();
     vdp_init();
 	xgm_init();

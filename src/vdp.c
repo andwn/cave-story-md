@@ -1,11 +1,10 @@
 #include "common.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "vdp.h"
 #include "xgm.h"
 #include "resources.h"
 #include "bank_data.h"
 
-extern const uint32_t TILE_BLANK[8];
 extern const uint16_t BLANK_DATA[0x80];
 const uint16_t PAL_FadeOut[64] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xEEE,
@@ -25,10 +24,6 @@ const uint16_t PAL_FullWhite[64] = {
         0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE,
         0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE, 0xEEE
 };
-
-const uint32_t DmaVRAM    = 0x40000080;
-const uint32_t DmaCRAM    = 0xC0000080;
-const uint32_t DmaVSRAM   = 0x40000090;
 
 static volatile uint16_t *const vdp_data_port = (uint16_t *) 0xC00000;
 static volatile uint16_t *const vdp_ctrl_port = (uint16_t *) 0xC00004;
@@ -149,26 +144,6 @@ void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_in
     dma_now(DmaVRAM, (uint32_t) &__compbuf_start, index << 5, num << 4, 2);
 }
 
-// Temporary solution until I get the tilesets aligned, split DMA on 128K unalignment
-/*
-void vdp_tiles_load_from_rom(const uint32_t *data, uint16_t index, uint16_t num) {
-    uint32_t from = (uint32_t) data;
-    uint16_t to = index << 5;
-    uint16_t len1 = num << 4;
-    uint32_t end = ((from >> 1) & 0xFFFF) + len1;
-    if(end > 0x10000) {
-        // Unaligned
-        uint16_t len2 = end & 0xFFFF;
-        len1 -= len2;
-        dma_now(DmaVRAM, from, to, len1, 2);
-        from += len1 << 1;
-        to += len1 << 1;
-        dma_now(DmaVRAM, from, to, len2, 2);
-    } else {
-        dma_now(DmaVRAM, from, to, len1, 2);
-    }
-}
-*/
 // Tile maps
 
 void vdp_map_xy(uint16_t plan, uint16_t tile, uint16_t x, uint16_t y) {
@@ -182,13 +157,11 @@ void vdp_map_hline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y,
 }
 
 void vdp_map_vline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y, uint16_t len) {
-    //vdp_set_autoinc(128);
     dma_now(DmaVRAM, (uint32_t) tiles, plan + ((x + (y << PLAN_WIDTH_SFT)) << 1), len, 128);
-    //vdp_set_autoinc(2);
 }
 
 void vdp_map_fill_rect(uint16_t plan, uint16_t index, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t inc) {
-    /*volatile*/ uint16_t tiles[64]; // Garbled graphics on -Ofast without this volatile here
+    uint16_t tiles[64];
     for (uint16_t yy = 0; yy < h; yy++) {
         for (uint16_t xx = 0; xx < w; xx++) {
             tiles[xx] = index;
@@ -297,9 +270,7 @@ void vdp_hscroll(uint16_t plan, int16_t hscroll) {
 }
 
 void vdp_hscroll_tile(uint16_t plan, int16_t *hscroll) {
-    //vdp_set_autoinc(32);
     dma_now(DmaVRAM, (uint32_t) hscroll, VDP_HSCROLL_TABLE + (plan == VDP_PLAN_A ? 0 : 2), 30, 32);
-    //vdp_set_autoinc(2);
 }
 
 void vdp_vscroll(uint16_t plan, int16_t vscroll) {
@@ -345,12 +316,10 @@ void vdp_font_load(const uint32_t *tiles) {
     // ASCII 32-127
     vdp_tiles_load_uftc(tiles, TILE_FONTINDEX, 0, 0x60);
     // Extended charset
-    //const uint32_t *ext = tiles + (0x60 << 3);
     uint16_t index = (VDP_PLAN_W >> 5) + 3;
     for (uint16_t i = 0; i < 30; i++) {
         vdp_tiles_load_uftc(tiles, index, 0x60 + i, 1);
         index += 4;
-        //ext += 8;
     }
 }
 
@@ -367,7 +336,7 @@ void vdp_puts(uint16_t plan, const char *str, uint16_t x, uint16_t y) {
             addr -= x << 1;
             *vdp_ctrl_wide = ((0x4000 + ((addr) & 0x3FFF)) << 16) + (((addr) >> 14) | 0x00);
         }
-        uint16_t c = *str++;
+        uint16_t c = (uint8_t) *str++;
         if (c == 1) { // Accent chars
             c = (VDP_PLAN_W >> 5) - 1 + ((*str++) << 2);
         } else {

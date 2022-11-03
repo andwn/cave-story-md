@@ -2,13 +2,13 @@
 
 #include "audio.h"
 #include "bank_data.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
 #include "hud.h"
-#include "joy.h"
+#include "md/joy.h"
 #include "kanji.h"
-#include "memory.h"
+#include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
@@ -324,7 +324,7 @@ uint8_t window_prompt_update() {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
 		return TRUE;
-	} else if(joy_pressed(BUTTON_LEFT) || joy_pressed(BUTTON_RIGHT)) {
+	} else if(joy_pressed(JOY_LEFT) || joy_pressed(JOY_RIGHT)) {
 		promptAnswer = !promptAnswer;
 		sound_play(SND_MENU_MOVE, 5);
 		int16_t cursor_x = (PROMPT_X << 3) - 9;

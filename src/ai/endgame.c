@@ -10,7 +10,7 @@ void onspawn_cloud_spawner(Entity *e) {
 void ai_cloud_spawner(Entity *e) {
 	if(!e->timer) {
 		e->timer = TIME_8(e->dir ? 100 : 50);
-		e->timer2 = random() & 3;
+		e->timer2 = rand() & 3;
 		//if(e->timer2 == 0) e->timer2++;
 		
 		//Entity *cloud = entity_create(0, 0, OBJ_CLOUD, 
@@ -19,12 +19,12 @@ void ai_cloud_spawner(Entity *e) {
 		
 		// vertical clouds (falling)
 		if(!e->dir)	{
-			cloud->x = e->x + block_to_sub(-7 + (random() & 15));
+			cloud->x = e->x + block_to_sub(-7 + (rand() & 15));
 			cloud->y = e->y;
 			cloud->y_speed = -SPEED_12(0xFFF >> e->timer2);	// each type half as fast as the last
 		} else { // horizontal clouds (flying with Kazuma)
 			cloud->x = e->x;
-			cloud->y = e->y + block_to_sub(-7 + (random() & 15));
+			cloud->y = e->y + block_to_sub(-7 + (rand() & 15));
 			cloud->x_speed = -SPEED_10(0x3FF >> e->timer2);
 		}
 		
@@ -255,7 +255,7 @@ void ai_baby_puppy(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->animtime = random() & 7;	// desync with other puppies
+			e->animtime = rand() & 7;	// desync with other puppies
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -383,8 +383,8 @@ void ai_ahchoo(Entity *e) {
 		case 1:		// shaking "choo!"
 		{
 			if(e->timer < TIME_8(48)) {	// shake
-				e->x = e->x_mark + (-1 + (random() & 3));
-				e->y = e->y_mark + (-1 + (random() & 3));
+				e->x = e->x_mark + (-1 + (rand() & 3));
+				e->y = e->y_mark + (-1 + (rand() & 3));
 			} else {	// return to original pos
 				e->x_mark = e->x;
 				e->y_mark = e->y;

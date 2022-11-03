@@ -1,9 +1,10 @@
 #include "common.h"
 
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
-#include "memory.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
 #include "system.h"

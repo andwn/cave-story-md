@@ -2,18 +2,19 @@
 
 #include "audio.h"
 #include "bank_data.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
 #include "sram.h"
 #include "stage.h"
 #include "string.h"
 #include "tsc.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 #include "weapon.h"
 #include "window.h"
@@ -747,8 +748,8 @@ void system_save_counter(uint32_t ticks) {
 	uint8_t buffer[20];
 	uint32_t *result = (uint32_t*)buffer;
 	uint8_t *tickbuf = (uint8_t*)&ticks;
-	// Generate random key
-	result[4] = random();
+	// Generate rand key
+	result[4] = rand();
 	// Write to buffer BE -> LE 4 times
 	for(uint16_t i = 0; i < 4; i++) {
 		result[i] = (((uint32_t)(tickbuf[0]))<<24) + (((uint32_t)(tickbuf[1]))<<16) 

@@ -3,14 +3,15 @@
 #include "audio.h"
 #include "bank_data.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
 #include "effect.h"
 #include "error.h"
 #include "gamemode.h"
 #include "hud.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "math.h"
+#include "md/stdlib.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -19,7 +20,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "vdp.h"
 #include "window.h"
 #include "xgm.h"
@@ -322,7 +323,7 @@ uint8_t tsc_update() {
 				window_close();
 				controlsLocked = FALSE;
 				hud_show();
-			} else if(joy_pressed(BUTTON_LEFT)) {
+			} else if(joy_pressed(JOY_LEFT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == 0) {
@@ -335,7 +336,7 @@ uint8_t tsc_update() {
 				tsc_call_event(1000 + teleMenuSelection + 1);
 				while(tscState != TSC_IDLE) execute_command();
 				tscState = TSC_TELEMENU; // Don't break away from the menu
-			} else if(joy_pressed(BUTTON_RIGHT)) {
+			} else if(joy_pressed(JOY_RIGHT)) {
 				sprite_index(teleMenuSprite[teleMenuSelection], 
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == teleMenuSlotCount - 1) {

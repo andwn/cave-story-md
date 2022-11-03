@@ -2,13 +2,13 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "dma.h"
+#include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "error.h"
 #include "hud.h"
-#include "joy.h"
-#include "memory.h"
+#include "md/joy.h"
+#include "md/stdlib.h"
 #include "pause.h"
 #include "player.h"
 #include "bank_data.h"
@@ -18,7 +18,7 @@
 #include "string.h"
 #include "system.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/comp.h"
 #include "tsc.h"
 #include "vdp.h"
 #include "weapon.h"
@@ -145,8 +145,8 @@ void game_main(uint8_t load) {
                 PF_BGCOLOR(0x880);
 				window_update();
 				// Handle controller locking
-				uint16_t lockstate = joystate, oldlockstate = oldstate;
-				if(controlsLocked) joystate = oldstate = 0;
+				uint16_t lockstate = joystate, oldlockstate = joystate_old;
+				if(controlsLocked) joystate = joystate_old = 0;
 				// Don't update this stuff if a script is using <PRI
                 PF_BGCOLOR(0x800);
 				effects_update();
@@ -162,7 +162,7 @@ void game_main(uint8_t load) {
 				}
 				// Restore controller locking if it was locked
 				joystate = lockstate;
-				oldstate = oldlockstate;
+				joystate_old = oldlockstate;
 			}
 		}
 		PF_BGCOLOR(0x888);

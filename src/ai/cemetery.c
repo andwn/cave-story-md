@@ -16,8 +16,8 @@ void ai_pignon(Entity *e) {
 		case 0: // Standing
 		{
 			if(e->timer > TIME(100) && (e->timer & 31) == 0) { 
-				// Either blink or walk in a random direction
-				uint8_t rnd = random() & 7;
+				// Either blink or walk in a rand direction
+				uint8_t rnd = rand() & 7;
 				if(rnd == 0) {
 					e->state = 1;
 					e->timer = 0;
@@ -25,7 +25,7 @@ void ai_pignon(Entity *e) {
 				} else if(rnd == 1) {
 					e->state = 2;
 					e->timer = 0;
-					e->dir = random() & 1;
+					e->dir = rand() & 1;
 					e->x_speed = e->dir ? SPEED(0x120) : -SPEED(0x120);
 					e->frame = 1;
 				}
@@ -44,7 +44,7 @@ void ai_pignon(Entity *e) {
 		case 2: // Walking
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			if(e->timer >= TIME(25) && (random() & 31) == 0) {
+			if(e->timer >= TIME(25) && (rand() & 31) == 0) {
 				e->state = 0;
 				e->timer = 0;
 				e->x_speed = 0;
@@ -265,7 +265,7 @@ void ai_ma_pignon(Entity *e) {
 				e->state = MP_In_Air;
 				e->frame = HOP;
 				
-				e->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+				e->x_speed = -SPEED_12(0x400) + SPEED_12(rand() & 0x7FF);
 				e->y_speed = -SPEED_12(0x800);
 				e->grounded = FALSE;
 				
@@ -361,7 +361,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, CHARGE1,CHARGE2);
 			
 			if ((++e->timer & 7) == 0) {
-				int32_t x = block_to_sub(xpos[random() & 15]);
+				int32_t x = block_to_sub(xpos[rand() & 15]);
 				entity_create(x, pixel_to_sub(16), OBJ_MA_PIGNON_ROCK, 0);
 			}
 			
@@ -435,7 +435,7 @@ void ai_ma_pignon(Entity *e) {
 			ANIMATE(e, 4, HOP,WHITE);
 			
 			if ((++e->timer & 7) == 0) {
-				int32_t x = block_to_sub(xpos[random() & 15]);
+				int32_t x = block_to_sub(xpos[rand() & 15]);
 				entity_create(x, pixel_to_sub(16), OBJ_MA_PIGNON_CLONE, 0);
 			}
 			
@@ -531,7 +531,7 @@ void ai_ma_pignon_rock(Entity *e) {
 			e->timer3 = 0;
 			e->state = 1;
 			e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
-			e->animtime = random() & 31;
+			e->animtime = rand() & 31;
 			e->attack = 10;
 		} /* fallthrough */
 		case 1:
@@ -549,10 +549,10 @@ void ai_ma_pignon_rock(Entity *e) {
 				
 				// these smoke clouds appear BEHIND the map tiles
 				//for(int i=0;i<2;i++) {
-				//	Entity *smoke = entity_create(e->CenterX() + random(-12<<CSF, 12<<CSF),
+				//	Entity *smoke = entity_create(e->CenterX() + rand(-12<<CSF, 12<<CSF),
 				//								 e->Bottom()+(16<<CSF), OBJ_SMOKE_CLOUD);
-				//	smoke->x_speed = random(-0x155, 0x155);
-				//	smoke->y_speed = random(-0x600, 0);
+				//	smoke->x_speed = rand(-0x155, 0x155);
+				//	smoke->y_speed = rand(-0x600, 0);
 				//}
 			}
 		}

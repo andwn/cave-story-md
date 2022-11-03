@@ -348,7 +348,7 @@ void ai_curlyBoss(Entity *e) {
 		case CURLYB_FIGHT_START:
 		{
 			e->state = CURLYB_WAIT;
-			e->timer = (random() & 31) + 60;
+			e->timer = (rand() & 31) + 60;
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
 			e->flags |= NPC_SHOOTABLE;
@@ -365,7 +365,7 @@ void ai_curlyBoss(Entity *e) {
 		{
 			e->state = CURLYB_WALKING_PLAYER;
 			e->frame = 1;
-			e->timer = (random() & 31) + 60;
+			e->timer = (rand() & 31) + 60;
 			FACE_PLAYER(e);
 		}
 		/* fallthrough */

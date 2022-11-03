@@ -185,7 +185,7 @@ void ai_igor_balcony(Entity *e) {
 					Entity *shot = entity_create(e->x + (e->dir ? 0x800 : -0x800),
 												 e->y, OBJ_IGOR_SHOT, 0);
 					shot->x_speed = e->dir ? SPEED_12(0x600) : -SPEED_12(0x600);
-					shot->y_speed = -SPEED_12(0x280) + SPEED_12((random() & 0x3FF));
+					shot->y_speed = -SPEED_12(0x280) + SPEED_12((rand() & 0x3FF));
 				}
 			}
 			
@@ -239,19 +239,19 @@ void ai_block_spawner(Entity *e) {
 						-14, -13, -11, -10, -8, -6, -4, -3, -2,  0,  2,  3,  4,  6,  7,  8,  
 						 10,  11,  12,  14, 15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28
 					};
-					x += block_to_sub(pos[random() & 31]);
+					x += block_to_sub(pos[rand() & 31]);
 				} else {
 					static const int8_t pos[32] = {
 						-11, -10,  -9,  -8, -7, -6, -4, -3, -2,  0,  1,  2,  3,  4,  5,  6,  
 						  7,   8,   9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
 					};
-					x += block_to_sub(pos[random() & 31]);
+					x += block_to_sub(pos[rand() & 31]);
 				}
 				
 				entity_create(x, (player.y - block_to_sub(14)), 
-							OBJ_FALLING_BLOCK, (random() & 1) ? NPC_OPTION2 : 0);
+							OBJ_FALLING_BLOCK, (rand() & 1) ? NPC_OPTION2 : 0);
 									  
-				e->timer = TIME_8(15) + (random() & 15);
+				e->timer = TIME_8(15) + (rand() & 15);
 			}
 		}
 		break;
@@ -379,7 +379,7 @@ void ai_red_energy(Entity *e) {
 	switch(e->angle) {
 		case A_UP:
 		{
-			e->frame = random() & 1;
+			e->frame = rand() & 1;
 			e->y_speed -= SPEED_8(0x40);
 			e->y += e->y_speed;
 			if (blk(e->x, 0, e->y, 0) == 0x41) e->state = STATE_DELETE;
@@ -388,7 +388,7 @@ void ai_red_energy(Entity *e) {
 		
 		case A_DOWN:
 		{
-			e->frame = random() & 1;
+			e->frame = rand() & 1;
 			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 			e->y += e->y_speed;
 			if((++e->timer > TIME_8(50)) || (blk(e->x, 0, e->y, 0) == 0x41)) e->state = STATE_DELETE;
@@ -403,8 +403,8 @@ void ai_red_energy(Entity *e) {
 			}
 			if(!e->state) {
 				e->state++;
-				e->x_speed = -0xFF + (random() & 0x1FF);
-				e->y_speed = -0xFF + (random() & 0x1FF);
+				e->x_speed = -0xFF + (rand() & 0x1FF);
+				e->y_speed = -0xFF + (rand() & 0x1FF);
 			}
 			if(e->x < e->linkedEntity->x)		{ if(e->x_speed < SPEED_10(0x3ff)) e->x_speed += SPEED_8(12); }
 			else if(e->x > e->linkedEntity->x)	{ if(e->x_speed > -SPEED_10(0x3ff)) e->x_speed -= SPEED_8(12); }

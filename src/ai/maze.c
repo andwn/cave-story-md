@@ -246,8 +246,8 @@ void ai_gaudi(Entity *e) {
 		{
 			e->frame = 0;
 			RANDBLINK(e, 3, 200);
-			if(!(random() & 127)) {
-				if(random() & 1) {
+			if(!(rand() & 127)) {
+				if(rand() & 1) {
 					TURN_AROUND(e);
 				} else {
 					e->state = 10;
@@ -258,7 +258,7 @@ void ai_gaudi(Entity *e) {
 		case 10:		// walking
 		{
 			e->state = 11;
-			e->timer = TIME_8(random() & 63) + TIME_8(30);		// how long to walk for
+			e->timer = TIME_8(rand() & 63) + TIME_8(30);		// how long to walk for
 			moveMeToFront = TRUE;
 		}
 		/* fallthrough */
@@ -350,7 +350,7 @@ void ai_gaudiFlying(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			uint8_t angle = random();
+			uint8_t angle = rand();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
@@ -361,7 +361,7 @@ void ai_gaudiFlying(Entity *e) {
 		/* fallthrough */
 		case 1:
 		{
-			e->timer = TIME_8(80) + TIME_8(random() & 63);
+			e->timer = TIME_8(80) + TIME_8(rand() & 63);
 			e->state = 2;
 		}
 		/* fallthrough */
@@ -635,10 +635,10 @@ void ai_pooh_black(Entity *e) {
 			    if((e->damage_time & 7) == 1) {
                     Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
                     bubble->alwaysActive = TRUE;
-                    bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
-                    bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
-                    bubble->x_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
-                    bubble->y_speed = -SPEED_12(0x400) + SPEED_12(random() & 0x7FF);
+                    bubble->x = e->x - 0x2000 + (rand() & 0x3FFF);
+                    bubble->y = e->y - 0x2000 + (rand() & 0x3FFF);
+                    bubble->x_speed = -SPEED_12(0x400) + SPEED_12(rand() & 0x7FF);
+                    bubble->y_speed = -SPEED_12(0x400) + SPEED_12(rand() & 0x7FF);
 			    }
 				// fly away after hit enough times
 				if (++e->timer > TIME_8(100)) {
@@ -689,7 +689,7 @@ void ai_poohblk_bubble(Entity *e) {
 		e->state = STATE_DELETE;
 		return;
 	}
-	if (!(random() & 7)) e->frame = 0;
+	if (!(rand() & 7)) e->frame = 0;
 	else e->frame = 1;
 	e->x_speed += (e->x > bubble_xmark) ? -SPEED_8(0x40) : SPEED_8(0x40);
 	e->y_speed += (e->y > bubble_ymark) ? -SPEED_8(0x40) : SPEED_8(0x40);
@@ -756,11 +756,11 @@ void ai_poohblk_dying(Entity *e) {
 	if ((e->timer & 3) == 1) {
 		Entity *bubble = entity_create(e->x, e->y, OBJ_POOH_BLACK_BUBBLE, 0);
 		bubble->alwaysActive = TRUE;
-		bubble->x = e->x - 0x2000 + (random() & 0x3FFF);
-		bubble->y = e->y - 0x2000 + (random() & 0x3FFF);
+		bubble->x = e->x - 0x2000 + (rand() & 0x3FFF);
+		bubble->y = e->y - 0x2000 + (rand() & 0x3FFF);
 		bubble->attack = 0;
 		bubble->state = 1;
-		bubble->x_speed = -0x200 + (random() & 0x3FF);
+		bubble->x_speed = -0x200 + (rand() & 0x3FF);
 		bubble->y_speed = -0x100;
 	}
 
@@ -775,7 +775,7 @@ void ai_firewhirr(Entity *e) {
 		case 0:
 		{
 			e->state = 1;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			e->y_mark = e->y;
 		}
 		/* fallthrough */
@@ -807,7 +807,7 @@ void ai_firewhirr(Entity *e) {
 				shot->alwaysActive = TRUE;
 				shot->x = e->x;
 				shot->y = e->y;
-				e->timer2 = random() & 15;
+				e->timer2 = rand() & 15;
 				// tell Curly to acquire us as a target
 				CURLY_TARGET_HERE(e);
 			}
@@ -886,7 +886,7 @@ void ai_fuzz_core(Entity *e) {
 			// spawn mini-fuzzes, use jump_time as the angle since it is u8
 			spawn_minifuzz(e);
 			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			e->state = 1;
 		}
 		/* fallthrough */
@@ -939,8 +939,8 @@ void ai_fuzz(Entity *e) {
 	} else {
 		if (e->linkedEntity->state == STATE_DESTROY) {
 			e->alwaysActive = TRUE;
-			e->x_speed = -SPEED_10(0x1FF) + SPEED_10((random() & 0x3FF));
-			e->y_speed = -SPEED_10(0x1FF) + SPEED_10((random() & 0x3FF));
+			e->x_speed = -SPEED_10(0x1FF) + SPEED_10((rand() & 0x3FF));
+			e->y_speed = -SPEED_10(0x1FF) + SPEED_10((rand() & 0x3FF));
 			e->state = 1;
 		} else if(!e->linkedEntity->alwaysActive) {
 			e->state = STATE_DELETE;
@@ -1060,8 +1060,8 @@ void ai_buyobuyo(Entity *e) {
 				e->x_mark = e->x;
 				e->y_mark = e->y;
 				
-				e->x_speed = (random() & 1) ? SPEED(0x200) : -SPEED(0x200);
-				e->y_speed = (random() & 1) ? SPEED(0x200) : -SPEED(0x200);
+				e->x_speed = (rand() & 1) ? SPEED(0x200) : -SPEED(0x200);
+				e->y_speed = (rand() & 1) ? SPEED(0x200) : -SPEED(0x200);
 				
 				e->state = 3;
 			}
@@ -1102,5 +1102,5 @@ void onspawn_gero(Entity *e) {
 
 void ai_gero(Entity *e) {
 	e->frame = 0;
-	RANDBLINK(e, 1, 200);
+    RANDBLINK(e, 1, 200);
 }

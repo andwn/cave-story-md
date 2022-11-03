@@ -597,7 +597,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 		{
 			e->timer++;
 			if((e->timer & 15) == 1 && entity_on_screen(e)) {
-				int16_t xi = SPEED_10(random() & 0x3FF);
+				int16_t xi = SPEED_10(rand() & 0x3FF);
 				if (!e->dir) xi = -xi;
 				
 				Entity *bone = entity_create(e->x, e->y, OBJ_BALLOS_BONE, 0);
@@ -653,7 +653,7 @@ void ai_ballos_skull(Entity *e) {
 		{
 			e->state = 100;
 			e->timer = 0;
-			e->frame = random() & 3;
+			e->frame = rand() & 3;
 			e->animtime = 0;
 		} /* fallthrough */
 		case 100:
@@ -674,10 +674,10 @@ void ai_ballos_skull(Entity *e) {
 					//quake(10, SND_BLOCK_DESTROY);
 					
 					//for(int i=0;i<4;i++) {
-					//	Entity *s = SmokePuff(e->x + random(-12<<CSF, 12<<CSF), e->y + 0x2000);
+					//	Entity *s = SmokePuff(e->x + rand(-12<<CSF, 12<<CSF), e->y + 0x2000);
 					//	
-					//	s->x_speed = random(-0x155, 0x155);
-					//	s->y_speed = random(-0x600, 0);
+					//	s->x_speed = rand(-0x155, 0x155);
+					//	s->y_speed = rand(-0x600, 0);
 					//	s->PushBehind(o);
 					//}
 				}
@@ -744,13 +744,13 @@ void ai_green_devil_spawner(Entity *e) {
 	if(e->timer == 0) {
 		Entity *dv = entity_create(e->x, e->y - 0x1000, OBJ_GREEN_DEVIL, 0);
 		dv->dir = e->dir;
-		dv->x_speed = SPEED_10(0x3FF) + (random() & 0x3FF);
-		dv->y_speed = (random() & 0x7FF) - 0x3FF;
+		dv->x_speed = SPEED_10(0x3FF) + (rand() & 0x3FF);
+		dv->y_speed = (rand() & 0x7FF) - 0x3FF;
 		if(!dv->dir) dv->x_speed = -dv->x_speed;
 		dv->y_mark = dv->y;
 		dv->attack = 3;
 		
-		e->timer = TIME_8(50) + (random() & 0x3F);
+		e->timer = TIME_8(50) + (rand() & 0x3F);
 	} else {
 		e->timer--;
 	}
@@ -821,8 +821,8 @@ void onspawn_bute_archer_red(Entity *e) {
 		e->x_mark = e->x - pixel_to_sub(128);
 	}
 	e->y_mark = e->y;
-	e->x_speed = (e->x > e->x_mark) ? -0xFF - (random() & 0x1FF) : 0xFF + (random() & 0x1FF);
-	e->y_speed = (random() & 0x3FF) - 0x1FF;
+	e->x_speed = (e->x > e->x_mark) ? -0xFF - (rand() & 0x1FF) : 0xFF + (rand() & 0x1FF);
+	e->y_speed = (rand() & 0x3FF) - 0x1FF;
 	e->hit_box = (bounding_box) { 6,6,6,6 };
 	e->display_box = (bounding_box) { 12,8,12,8 };
 }
@@ -837,7 +837,7 @@ void ai_bute_archer_red(Entity *e) {
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
 			if((!e->dir && e->x < e->x_mark) || (e->dir && e->x > e->x_mark)) {
 				e->state++;
-				e->timer = TIME_8(random() & 0x7F);
+				e->timer = TIME_8(rand() & 0x7F);
 				e->frame = 2;
 			}
 		}

@@ -6,7 +6,7 @@ void ai_batVertical(Entity *e) {
 		case 0:
 		{
 			e->y_mark = e->y;
-			e->timer = random() & 63;
+			e->timer = rand() & 63;
 			e->state = 1;
 		} /* fallthrough */
 		case 1:
@@ -38,7 +38,7 @@ void onspawn_batHang(Entity *e) {
 
 void ai_batHang(Entity *e) {
 	if(e->state == 0) { // Hanging and waiting
-		if(!(random() & 127)) {
+		if(!(rand() & 127)) {
 			e->state = 1;
 			e->timer = 0;
 			e->frame = 4;
@@ -112,7 +112,7 @@ void ai_batCircle(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			uint8_t angle = random();
+			uint8_t angle = rand();
 			e->x_speed = cos[angle];
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);

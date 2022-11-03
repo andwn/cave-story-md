@@ -1,12 +1,13 @@
 #include "common.h"
 
-#include "dma.h"
+#include "md/dma.h"
 #include "entity.h"
-#include "joy.h"
+#include "md/joy.h"
+#include "math.h"
 #include "player.h"
 #include "stage.h"
 #include "tables.h"
-#include "tools.h"
+#include "md/stdlib.h"
 #include "vdp.h"
 
 #include "camera.h"
@@ -77,10 +78,10 @@ void camera_update() {
 				camera.x_offset += PAN_SPEED;
 				if(camera.x_offset > PAN_SIZE) camera.x_offset = PAN_SIZE;
 			}
-			if(!controlsLocked && joy_down(BUTTON_UP)) {
+			if(!controlsLocked && joy_down(JOY_UP)) {
 				camera.y_offset -= PAN_SPEED;
 				if(camera.y_offset < -PAN_SIZE) camera.y_offset = -PAN_SIZE;
-			} else if(!controlsLocked && joy_down(BUTTON_DOWN)) {
+			} else if(!controlsLocked && joy_down(JOY_DOWN)) {
 				camera.y_offset += PAN_SPEED;
 				if(camera.y_offset > PAN_SIZE) camera.y_offset = PAN_SIZE;
 			} else {
@@ -131,8 +132,8 @@ void camera_update() {
 	// Camera shaking
 	// stay within the same (pre-shake) 8x8 area to avoid pointless map redraw
 	if(cameraShake && (--cameraShake & 1)) {
-		int16_t x_shake = (random() & 0x7FF) - 0x400;
-		int16_t y_shake = (random() & 0x7FF) - 0x400;
+		int16_t x_shake = (rand() & 0x7FF) - 0x400;
+		int16_t y_shake = (rand() & 0x7FF) - 0x400;
 		if((x_next & 0xF000) == ((x_next + x_shake) & 0xF000)) x_next += x_shake;
 		if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
 	}

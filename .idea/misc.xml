@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/src" />
+    </sourceRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/.github" />
+      <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/doc" />
+      <file path="$PROJECT_DIR$/res/Stage" />
+      <file path="$PROJECT_DIR$/res/back" />
+      <file path="$PROJECT_DIR$/res/bgm" />
+      <file path="$PROJECT_DIR$/res/credits" />
+      <file path="$PROJECT_DIR$/res/face" />
+      <file path="$PROJECT_DIR$/res/save" />
+      <file path="$PROJECT_DIR$/res/sfx" />
+      <file path="$PROJECT_DIR$/res/sprite" />
+      <file path="$PROJECT_DIR$/res/tsc" />
+    </excludeRoots>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MakefileSettings">
+    <option name="linkedExternalProjectsSettings">
+      <MakefileProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+          </set>
+        </option>
+        <option name="version" value="2" />
+      </MakefileProjectSettings>
+    </option>
+  </component>
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+</project>

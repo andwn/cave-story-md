@@ -149,11 +149,11 @@ void ai_misery_frenzied(Entity *e) {
 				int x, y;
 				
 				if (e->spawner) {
-					x = e->x - pixel_to_sub(64 + ((random() & 127)));
-					y = e->y - pixel_to_sub(32 + ((random() & 63)));
+					x = e->x - pixel_to_sub(64 + ((rand() & 127)));
+					y = e->y - pixel_to_sub(32 + ((rand() & 63)));
 				} else {
-					x = e->x - pixel_to_sub(32 + ((random() & 63)));
-					y = e->y - pixel_to_sub(64 + ((random() & 127)));
+					x = e->x - pixel_to_sub(32 + ((rand() & 63)));
+					y = e->y - pixel_to_sub(64 + ((rand() & 127)));
 				}
 				
 				if (x < block_to_sub(2)) x = block_to_sub(2);

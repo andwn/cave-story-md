@@ -181,12 +181,12 @@ void ai_omega(Entity *e) {
 					sound_play(SND_EM_FIRE, 5);
 					Entity *shot = entity_create(e->x, e->y, OBJ_OMEGA_SHOT, 0);
 					if(e->form == 2) {
-						shot->x_speed = -SPEED_10(0x180) + SPEED_10((random() & 0xFF) * 3);
+						shot->x_speed = -SPEED_10(0x180) + SPEED_10((rand() & 0xFF) * 3);
 					} else {
-						shot->x_speed = -SPEED_10(0x100) + SPEED_10(random() & 0x1FF);
+						shot->x_speed = -SPEED_10(0x100) + SPEED_10(rand() & 0x1FF);
 					}
 					shot->y_speed = -SPEED_10(0x330);
-					if(e->form == 2 || (random() & 7)) {
+					if(e->form == 2 || (rand() & 7)) {
 						shot->frame = 0;
 						shot->flags = /*shot->eflags = */0;
 						//shot->flags |= NPC_SHOOTABLE;
@@ -196,7 +196,7 @@ void ai_omega(Entity *e) {
 						shot->flags = /*shot->eflags =*/ 0;
 						shot->flags |= NPC_INVINCIBLE;
 					}
-					//shot->timer = (random() & 1) ? (TIME_10(300) + (random() & 0x7F)) : 0;
+					//shot->timer = (rand() & 1) ? (TIME_10(300) + (rand() & 0x7F)) : 0;
 					shot->attack = 4;
 				}
 			} else if (e->firecounter >= e->endfirestate || bullet_missile_is_exploding()) {
@@ -249,7 +249,7 @@ void ai_omega(Entity *e) {
 				e->timer = 0;
 				e->state = OMG_APPEAR;
 				
-				e->x = e->x_mark + pixel_to_sub((-64 + (random() & 127)));
+				e->x = e->x_mark + pixel_to_sub((-64 + (rand() & 127)));
 				e->y = e->y_mark;
 				e->omgmovetime = TIME_8(OMEGA_RISE_HEIGHT);
 				

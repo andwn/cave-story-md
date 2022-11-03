@@ -268,7 +268,7 @@ void ai_balfrog(Entity *e) {
 				}
 			}
 			if((e->timer & 15) == 1) {
-				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (random() & 31);
+				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (rand() & 31);
 				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
@@ -488,8 +488,8 @@ void place_bboxes(Entity *e) {
 // shake loose frogs from the ceiling
 void spawn_frogs(uint16_t objtype, uint8_t count) {
 	for(int i=0;i<count;i++) {
-		entity_create((pixel_to_sub(7 + (random() & 31))) << 3,
-					  block_to_sub(1 + (random() & 3)), objtype, NPC_OPTION1);
+		entity_create((pixel_to_sub(7 + (rand() & 31))) << 3,
+					  block_to_sub(1 + (rand() & 3)), objtype, NPC_OPTION1);
 	}
 }
 

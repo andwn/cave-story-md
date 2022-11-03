@@ -117,19 +117,19 @@ void xgm_pcm_set(uint8_t id, const uint8_t *sample, uint32_t len) {
     // point to sample id table
     volatile uint8_t *pb = z80_smp_table + (id << 2);
     // write sample addr
-    pb[0x00] = ((uint32_t) sample) >> 8;
-    pb[0x01] = ((uint32_t) sample) >> 16;
-    pb[0x02] = len >> 8;
-    pb[0x03] = len >> 16;
+    *pb++ = ((uint32_t) sample) >> 8;
+    *pb++ = ((uint32_t) sample) >> 16;
+    *pb++ = len >> 8;
+    *pb   = len >> 16;
 }
 
 void xgm_pcm_play(uint8_t id, uint8_t priority, uint16_t channel) {
     disable_ints;
     z80_pause();
     // set PCM priority and id
-    uint16_t off = 4 + (channel << 1);
-    z80_drv_params[off++] = priority;
-    z80_drv_params[off] = id;
+    volatile uint8_t *pb = z80_drv_params + (channel << 1) + 4;
+    *pb++ = priority;
+    *pb   = id;
     // set play PCM channel command
     uint8_t cmd = *z80_drv_command | (1 << channel);
     *z80_drv_command = cmd;

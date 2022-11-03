@@ -202,7 +202,7 @@ void ai_misery_stand(Entity *e) {
 			if (e->timer == TIME_8(30) || e->timer == TIME_8(40) || e->timer == TIME_8(50)) {
 				Entity *shot = entity_create(e->x+pixel_to_sub(16), e->y, OBJ_IGOR_SHOT, 0);
 				shot->x_speed = SPEED_12(0x600);
-				shot->y_speed = -SPEED_10(random() & 0x1FF);
+				shot->y_speed = -SPEED_10(rand() & 0x1FF);
 				
 				sound_play(SND_SNAKE_FIRE, 5);
 			}
@@ -387,7 +387,7 @@ void ai_boss_misery(Entity *e) {
 				uint8_t angle = get_angle(e->x, e->y, player.x, player.y);
 				Entity *shot = entity_create(e->x, e->y, OBJ_MISERY_SHOT, 0);
 				angle -= 3;
-				angle += random() & 7;
+				angle += rand() & 7;
 				shot->x_speed = ((int32_t)cos[angle] * (int32_t)SPEED_12(0x800)) >> CSF;
 				shot->y_speed = ((int32_t)sin[angle] * (int32_t)SPEED_12(0x800)) >> CSF;
 				sound_play(SND_FIREBALL, 3);
@@ -459,8 +459,8 @@ void ai_boss_misery(Entity *e) {
 					 0, 1, 2, 2, 3, 4, 5, 5, 6, 7, 8, 8, 9,10,11,11,
 					12,13,13,14,15,15,16,17,17,18,19,19,20,21,21,22
 				};
-				e->x_mark = e->x = block_to_sub(9 + xpos[random() & 31]);
-				e->y_mark = e->y = tile_to_sub(9 + (random() & 3));
+				e->x_mark = e->x = block_to_sub(9 + xpos[rand() & 31]);
+				e->y_mark = e->y = tile_to_sub(9 + (rand() & 3));
 			} else if (e->timer == TIME_8(50)) {
 				// switch back to showing real misery instead of the phase-in effect
 				e->flags |= NPC_SHOOTABLE;
