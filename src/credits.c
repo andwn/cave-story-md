@@ -121,10 +121,10 @@ void credits_main() {
         if((backScroll & 15) == 0 && !scrolledBack) {
             textY++;
             disable_ints;
-            z80_request();
+            z80_pause_fast();
             //vdp_text_clear(VDP_PLAN_B, 0, textY & 31, 40);
             vdp_text_clear(VDP_PLAN_B, 0, (textY + 1) & 31, 40);
-            z80_release();
+            z80_resume();
             enable_ints;
         }
 
@@ -232,7 +232,7 @@ void credits_show_image(uint16_t id) {
 	if(id > 19) return;
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 
 	vdp_set_display(FALSE);
 	vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
@@ -244,7 +244,7 @@ void credits_show_image(uint16_t id) {
 	vdp_set_display(TRUE);
     illScrolling = 8;
 
-    z80_release();
+    z80_resume();
     enable_ints; // Vertical int will fire immediately
     vdp_colors(32, illustration_info[id].palette->data, 16);
 }

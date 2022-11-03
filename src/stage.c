@@ -80,14 +80,14 @@ void stage_load(uint16_t id) {
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
         disable_ints;
-        z80_request();
+        z80_pause_fast();
 		stage_load_tileset();
-        z80_release();
+        z80_resume();
         enable_ints;
 	}
 	// Load sprite sheets
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	sheets_load_stage(id, FALSE, TRUE);
 	// Load backgrounds
 	if(background_info[stage_info[id].background].type == 4 || stageBackground != stage_info[id].background) {
@@ -117,7 +117,7 @@ void stage_load(uint16_t id) {
 			stage_draw_moonback();
 		}
 	}
-    z80_release();
+    z80_resume();
     enable_ints;
 
 	// Load stage PXM into RAM
@@ -129,9 +129,9 @@ void stage_load(uint16_t id) {
 	camera.y_offset = 0;
 
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
-    z80_release();
+    z80_resume();
     enable_ints;
 
 	stage_load_entities(); // Create entities defined in the stage's PXE
@@ -147,9 +147,9 @@ void stage_load(uint16_t id) {
 	}
 
     disable_ints;
-    z80_request();
+    z80_pause();
 	dma_flush();
-    z80_release();
+    z80_resume();
     enable_ints;
 
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
@@ -168,7 +168,7 @@ void stage_load_credits(uint8_t id) {
 	}
 
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	vdp_set_display(FALSE);
 
 	stageTileset = stage_info[id].tileset;
@@ -181,7 +181,7 @@ void stage_load_credits(uint8_t id) {
 	tsc_load_stage(id);
 
 	vdp_set_display(TRUE);
-    z80_release();
+    z80_resume();
     enable_ints;
 }
 
@@ -284,7 +284,7 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 
 // Stage vblank drawing routine
 void stage_update() {
-    //z80_request();
+    //z80_pause_fast();
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
@@ -413,7 +413,7 @@ void stage_update() {
             dma_now(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
-    //z80_release();
+    //z80_resume();
 }
 
 void stage_setup_palettes() {

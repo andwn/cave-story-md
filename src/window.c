@@ -126,9 +126,9 @@ void window_clear() {
 	uint8_t w = showingFace ? 29 : 36;
 
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y, w, 6, 0);
-    z80_release();
+    z80_resume();
     enable_ints;
 
 	window_clear_text();
@@ -339,11 +339,11 @@ uint8_t window_prompt_update() {
 
 void window_draw_face() {
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	vdp_tiles_load(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
 	vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
 			TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
-    z80_release();
+    z80_resume();
     enable_ints;
 }
 

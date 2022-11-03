@@ -295,7 +295,7 @@ void system_save() {
 	uint16_t loc = loc_start;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enable();
 	
 	SRAM_writeLong(loc, STR_CSMD);					loc += 4;
@@ -344,7 +344,7 @@ void system_save() {
 	checksum_write(sram_file, TRUE);
 	
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 
@@ -352,7 +352,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enableRO();
 	
 	// Save exists
@@ -360,7 +360,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	if(magic != STR_CSMD) {
 		file->used = FALSE;
 		SRAM_disable();
-		z80_release();
+        z80_resume();
         enable_ints;
 		return;
 	}
@@ -370,7 +370,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		if(!checksum_verify(index, TRUE)) {
 			file->used = FALSE;
 			SRAM_disable();
-			z80_release();
+            z80_resume();
             enable_ints;
 			return;
 		}
@@ -392,7 +392,7 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	file->weapon[4] = SRAM_readByte(loc);	loc += 8;
 	
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 
@@ -405,7 +405,7 @@ void system_load(uint8_t index) {
 	sram_file = index;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enableRO();
 	
 	// Start of save data in SRAM
@@ -423,7 +423,7 @@ void system_load(uint8_t index) {
 	if(magic != STR_CSMD) {
 		// Empty
 		SRAM_disable();
-		z80_release();
+        z80_resume();
         enable_ints;
 		system_new();
 		return;
@@ -463,7 +463,7 @@ void system_load(uint8_t index) {
 		flags[i] = SRAM_readLong(loc); loc += 4;
 	}
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 	
 	stage_load(rid);
@@ -476,7 +476,7 @@ void system_copy(uint8_t from, uint8_t to) {
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enable();
 
 	// Copy data
@@ -494,7 +494,7 @@ void system_copy(uint8_t from, uint8_t to) {
 	SRAM_writeLong(loc_to + 4, checksum);
 
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 
@@ -502,14 +502,14 @@ void system_delete(uint8_t index) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enable();
 	
 	SRAM_writeLong(loc, 0); // Erase the "CSMD" magic to invalidate file
 	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
 	
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 
@@ -532,14 +532,14 @@ void system_load_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enableRO();
 	
 	uint32_t magic = SRAM_readLong(loc); loc += 4;
 	if(magic != CFG_MAGIC) {
 		// No settings saved, keep defaults
 		SRAM_disable();
-		z80_release();
+        z80_resume();
         enable_ints;
 		return;
 	}
@@ -580,7 +580,7 @@ void system_load_config() {
     }
 
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 
@@ -588,7 +588,7 @@ void system_save_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
 	disable_ints;
-	z80_request();
+    z80_pause_fast();
 	SRAM_enable();
 
 	SRAM_writeLong(loc, CFG_MAGIC); loc += 4;
@@ -611,7 +611,7 @@ void system_save_config() {
 	SRAM_writeByte(loc++, cfg_60fps);
 
 	SRAM_disable();
-	z80_release();
+    z80_resume();
 	enable_ints;
 }
 

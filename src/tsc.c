@@ -1207,7 +1207,7 @@ uint8_t execute_command() {
 			vdp_vsync(); aftervsync();
 
             disable_ints;
-            z80_request();
+            z80_pause_fast();
 			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
@@ -1253,7 +1253,7 @@ uint8_t execute_command() {
 			vdp_colors_next(48, PAL_XX.data, 16);
 			vdp_colors(48, PAL_XX.data, 16);
 			vdp_set_display(TRUE);
-            z80_release();
+            z80_resume();
             enable_ints;
 
 			song_stop();

@@ -46,7 +46,7 @@ void soundtest_main() {
 	uint8_t status = STOPPED, oldstatus = STOPPED;
 
 	disable_ints;
-    z80_request();
+    z80_pause_fast();
 	vdp_set_display(FALSE);
 	
 	vdp_sprites_clear();
@@ -75,7 +75,7 @@ void soundtest_main() {
 	vdp_colors(16, PAL_SndTest.data, 16);
 	
 	vdp_set_display(TRUE);
-    z80_release();
+    z80_resume();
     enable_ints;
 
 	song_stop();

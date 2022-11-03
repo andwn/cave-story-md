@@ -18,12 +18,12 @@ void sound_init() {
     // Here we are pointing the XGM driver to each sound effect in the game
     // and their length (in frames) indexed in sound_info
     disable_ints;
-    z80_request();
+    z80_pause();
     for(uint8_t i = 1; i < SOUND_COUNT; i++) {
     	uint16_t len = sound_info[i].end-sound_info[i].sound;
         xgm_pcm_set(0x40 + i, sound_info[i].sound, len > 256 ? len : 256);
     }
-    z80_release();
+    z80_resume();
     enable_ints;
     soundChannel = 1;
 }

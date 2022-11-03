@@ -58,7 +58,7 @@ static uint8_t refresh_file(uint8_t index) {
 	
 	system_peekdata(index, &file);
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	vdp_text_clear(VDP_PLAN_A, 6, y, 16); // Erase any previous stage name text
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
         vdp_text_clear(VDP_PLAN_A, 6, y+1, 16); // And a second line underneath
@@ -143,7 +143,7 @@ static uint8_t refresh_file(uint8_t index) {
 		vdp_text_clear(VDP_PLAN_A, 24, y+2, 12);
 		vdp_text_clear(VDP_PLAN_A, 24, y+3, 12);
 	}
-    z80_release();
+    z80_resume();
     enable_ints;
 	return file.used;
 }

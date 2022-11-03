@@ -61,8 +61,8 @@ void intro_main() {
     // Get rid of the sprites
     vdp_sprites_clear();
     disable_ints;
-    z80_request();
+    z80_pause_fast();
     vdp_sprites_update();
-    z80_release();
+    z80_resume();
     enable_ints;
 }

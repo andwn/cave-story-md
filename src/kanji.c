@@ -100,12 +100,12 @@ void cjk_winscroll(uint16_t win_x, uint16_t win_y) {
     if(row1 < 0) row1 += 3;
     if(row2 < 0) row2 += 3;
     disable_ints;
-    z80_request();
+    z80_pause_fast();
     vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row1][0], win_x, win_y,   38 - win_x);
     vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row1][1], win_x, win_y+1, 38 - win_x);
     vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row2][0], win_x, win_y+2, 38 - win_x);
     vdp_map_hline(VDP_PLAN_W, cjkMapBuf[row2][1], win_x, win_y+3, 38 - win_x);
-    z80_release();
+    z80_resume();
     enable_ints;
 }
 
@@ -152,7 +152,7 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
     // Skip tile/map upload for sprite (plan = 0)
     if(plan) {
         disable_ints;
-        z80_request();
+        z80_pause_fast();
         // Tiles are drawn top to bottom first, so the same code can be used for tilemaps and sprites
         for (uint16_t i = 0; i < 4; i++) {
             uint16_t index = CjkNextTile();
@@ -164,7 +164,7 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
                 cjkMapBuf[cjkMapRow][i & 1][xx - 2 - (showingFace ? 7 : 0)] = attr;
             }
         }
-        z80_release();
+        z80_resume();
         enable_ints;
     }
     cjkShiftChar = !cjkShiftChar;
@@ -178,8 +178,8 @@ void cjk_drawsprite(uint16_t offset, uint16_t chr1, uint16_t chr2) {
     if(chr2) cjk_draw(0, chr2, 0, 0, 0, 1);
     // Upload tiles immediately
     disable_ints;
-    z80_request();
+    z80_pause_fast();
     vdp_tiles_load((uint32_t*)cjkTileBuf, index, 6);
-    z80_release();
+    z80_resume();
     enable_ints;
 }

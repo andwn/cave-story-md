@@ -23,7 +23,7 @@ uint8_t gameFrozen;
 
 void aftervsync() {
 	disable_ints;
-    z80_request();
+    z80_pause_fast();
 
     vdp_fade_step_dma();
 	dma_flush();
@@ -35,7 +35,7 @@ void aftervsync() {
 		ready = FALSE;
 	}
 
-    z80_release();
+    z80_resume();
     enable_ints;
 
     vdp_fade_step_calc();

@@ -1092,9 +1092,9 @@ uint8_t player_inflict_damage(uint16_t damage) {
 				w->energy += weapon_info[w->type].experience[w->level - 1];
 				w->energy -= damage;
                 disable_ints;
-                z80_request();
+                z80_pause_fast();
 				sheets_refresh_weapon(w);
-                z80_release();
+                z80_resume();
                 enable_ints;
 				entity_create(player.x, player.y, 
 						cfg_language == LANG_JA ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
@@ -1175,9 +1175,9 @@ void player_give_weapon(uint8_t id, uint8_t ammo) {
 					TILE_WEAPONINDEX,6);
 			}
             disable_ints;
-            z80_request();
+            z80_pause_fast();
 			sheets_load_weapon(w);
-            z80_release();
+            z80_resume();
             enable_ints;
 			break;
 		}
@@ -1225,9 +1225,9 @@ void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 			w->ammo = ammo;
 		}
         disable_ints;
-        z80_request();
+        z80_pause_fast();
 		sheets_load_weapon(w);
-        z80_release();
+        z80_resume();
         enable_ints;
 	}
 }
@@ -1240,13 +1240,13 @@ void player_refill_ammo() {
 
 void player_delevel_weapons() {
     disable_ints;
-    z80_request();
+    z80_pause_fast();
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].level = 1;
 		playerWeapon[i].energy = 0;
 		sheets_refresh_weapon(&playerWeapon[i]);
 	}
-    z80_release();
+    z80_resume();
     enable_ints;
 }
 
