@@ -7,7 +7,7 @@
  */
 
 #define ENTITY_ONSPAWN(e) npc_info[e->type].onSpawn(e)
-#define ENTITY_ONFRAME(e) npc_info[e->type].onFrame(e)
+//#define ENTITY_ONFRAME(e) npc_info[e->type].onFrame(e)
 #define ENTITY_ONDEATH(e) npc_info[e->type].onDeath(e)
 
 // Special states

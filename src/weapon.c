@@ -15,7 +15,7 @@
 #include "tables.h"
 #include "md/comp.h"
 #include "md/stdlib.h"
-#include "vdp.h"
+#include "md/vdp.h"
 
 #include "weapon.h"
 
@@ -586,6 +586,8 @@ void weapon_fire_nemesis(Weapon *w) {
 	}
 	b->last_hit[0] = NULL;
     b->last_hit[1] = NULL;
+    b->last_hit[2] = NULL;
+    b->last_hit[3] = NULL;
 	set_extent_box(b);
 }
 
@@ -657,7 +659,10 @@ void weapon_fire_spur(Weapon *w) {
 void bullet_update_none(Bullet *b) { (void)(b); }
 
 void bullet_update_snake(Bullet *b) {
-	b->ttl--;
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	uint16_t index = 0;
 	if(b->level > 1) {
 		// accelerate the shot
@@ -695,7 +700,7 @@ void bullet_update_snake(Bullet *b) {
 	vdp_sprite_add(&b->sprite);
     if(b->level > 1 && (b->ttl & 3) == 0) {
         effect_create_misc(EFF_SNAKETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
-    };
+    }
 }
 
 void bullet_update_polarstar(Bullet *b) {
@@ -706,12 +711,12 @@ void bullet_update_polarstar(Bullet *b) {
 	uint8_t block = stage_get_block_type(pixel_to_block(bx), pixel_to_block(by));
 	// Check if bullet is colliding with a breakable block
 	if(block == 0x43) {
-		b->ttl = 0;
+        bullet_deactivate(b);
 		bullet_destroy_block(pixel_to_block(bx), pixel_to_block(by));
 		effect_create_smoke(bx, by);
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
-		b->ttl = 0;
+        bullet_deactivate(b);
 		sound_play(SND_SHOT_HIT, 3);
         effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
 	} else if(block & BLOCK_SLOPE) {
@@ -719,22 +724,28 @@ void bullet_update_polarstar(Bullet *b) {
         if(block & 4) height = -height;
         int8_t overlap = (by & 15) + height;
         if(overlap > 0) {
-            b->ttl = 0;
+            bullet_deactivate(b);
             sound_play(SND_SHOT_HIT, 3);
             effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
         }
     } else {
+        if(!--b->ttl) {
+            effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+            b->extent.x1 = 0xFFFF;
+            return;
+        }
 		sprite_pos(b->sprite, 
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
 		vdp_sprite_add(&b->sprite);
-		if(!--b->ttl) {
-		    effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
-		}
 	}
 }
 
 void bullet_update_fireball(Bullet *b) {
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	// Check below / above first
 	uint8_t block_below = blk(b->x, 0, b->y, 6);
 	uint8_t block_above = b->y_speed < 0 ? blk(b->x, 0, b->y, -6) : 0;
@@ -774,7 +785,6 @@ void bullet_update_fireball(Bullet *b) {
 	uint16_t index = (b->ttl & 3) << 2;
 	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
 	vdp_sprite_add(&b->sprite);
-	b->ttl--;
 	if(b->level > 1 && (b->ttl & 3) == 0) {
 	    effect_create_misc(EFF_FIRETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
 	};
@@ -785,15 +795,19 @@ void bullet_update_machinegun(Bullet *b) {
 	b->y += b->y_speed;
 	uint8_t block = blk(b->x, 0, b->y, 0);
 	if(block == 0x43) {
-		b->ttl = 0;
+        bullet_deactivate(b);
 		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
-		b->ttl = 0;
+        bullet_deactivate(b);
 		sound_play(SND_SHOT_HIT, 3);
         //effect_create_misc(EFF_MGUN_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
 	} else {
+        if(!--b->ttl) {
+            b->extent.x1 = 0xFFFF;
+            return;
+        }
 		sprite_pos(b->sprite,
 			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
 			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
@@ -814,12 +828,14 @@ void bullet_update_machinegun(Bullet *b) {
 			}
 		}
 		vdp_sprite_add(&b->sprite);
-		b->ttl--;
 	}
 }
 
 void bullet_update_missile(Bullet *b) {
-	b->ttl--;
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 	if(!b->state) {
 		int16_t accel = missile_settings[pal_mode||cfg_60fps][index].accel;
@@ -879,7 +895,7 @@ void bullet_update_bubbler(Bullet *b) {
 		}
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Bullet hit a wall
-			b->ttl = 0;
+            bullet_deactivate(b);
 			effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
 		}
@@ -942,29 +958,33 @@ void bullet_update_bubbler(Bullet *b) {
 	} else { // Level 3 being launched
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Bullet hit a wall
-			b->ttl = 0;
+            bullet_deactivate(b);
 			sound_play(SND_SHOT_HIT, 3);
             effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
-		} else if(block == 0x43) { // Breakable block
-			b->ttl = 0;
+		}
+        if(block == 0x43) { // Breakable block
+            bullet_deactivate(b);
 			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 			sound_play(SND_BLOCK_DESTROY, 5);
 			return;
 		}
 	}
+    if(!--b->ttl) {
+        effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
 		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
 		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
 	vdp_sprite_add(&b->sprite);
-	if(!--b->ttl) effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 }
 
 void bullet_update_blade(Bullet *b) {
-	b->ttl--;
 	if(b->level == 3) {
 		if(b->x_speed | b->y_speed) {
 			uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
@@ -972,17 +992,15 @@ void bullet_update_blade(Bullet *b) {
 				b->ttl = TIME_8(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
-				
 				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
-				
 			} else if(block == 0x43) { // Breakable block
-				b->ttl = 0;
+                bullet_deactivate(b);
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 				effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 				sound_play(SND_BLOCK_DESTROY, 5);
 				return;
 			} else if(block == 0x41) {
-				b->ttl = 0;
+                bullet_deactivate(b);
 				return;
 			} else {
 				create_blade_slash(b, FALSE);
@@ -994,11 +1012,12 @@ void bullet_update_blade(Bullet *b) {
 		// Level 1 and 2 hit walls, spin
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Hit wall/floor
-			b->ttl = 0;
+            bullet_deactivate(b);
 			sound_play(SND_SHOT_HIT, 3);
 			return;
-		} else if(block == 0x43) { // Hit breakable block
-			b->ttl = 0;
+		}
+        if(block == 0x43) { // Hit breakable block
+            bullet_deactivate(b);
 			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 			sound_play(SND_BLOCK_DESTROY, 5);
@@ -1010,6 +1029,10 @@ void bullet_update_blade(Bullet *b) {
 		else if(anim == 2) b->sprite.attr &= ~(1<<12);
 		else if(anim == 0) b->sprite.attr &= ~(1<<11);
 	}
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(b->sprite, 
@@ -1025,7 +1048,10 @@ void bullet_update_blade(Bullet *b) {
 
 // Here be dragons
 void bullet_update_blade_slash(Bullet *b) {
-	b->ttl--;
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
 	// Animate sprite
 	if(b->ttl == 10) b->sprite.attr += 4;
 	
@@ -1044,146 +1070,160 @@ void bullet_update_supermissile(Bullet *b) {
 void bullet_update_nemesis(Bullet *b) {
 	uint8_t block = blk(b->x, 0, b->y, 0);
 	if(block == 0x41) {
-		b->ttl = 0;
-	} else if(block == 0x43) {
-		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
-		sound_play(SND_BLOCK_DESTROY, 5);
-		b->ttl = 0;
-	} else {
-		b->ttl--;
-		b->state ^= 1;
-		b->sprite.attr += b->state ? 6 : -6;
-		b->x += b->x_speed;
-		b->y += b->y_speed;
-		sprite_pos(b->sprite, 
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
-		vdp_sprite_add(&b->sprite);
+        bullet_deactivate(b);
+        return;
 	}
+    if(block == 0x43) {
+        bullet_deactivate(b);
+        bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
+        effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+        sound_play(SND_BLOCK_DESTROY, 5);
+        return;
+    }
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
+    b->state ^= 1;
+    b->sprite.attr += b->state ? 6 : -6;
+    b->x += b->x_speed;
+    b->y += b->y_speed;
+    sprite_pos(b->sprite,
+        sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
+        sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
+    vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_spur(Bullet *b) {
 	uint8_t block = blk(b->x, 0, b->y, 0);
 	if(block == 0x41) {
+        bullet_deactivate(b);
 		sound_play(SND_SHOT_HIT, 2);
-		b->ttl = 0;
+        return;
 	} else if(block == 0x43) {
+        bullet_deactivate(b);
 		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
 		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 		sound_play(SND_BLOCK_DESTROY, 5);
-		b->ttl = 0;
-	} else {
-		if(++b->state >= TIME_8(5)) {
-			// Spawn tail
-			Bullet *t = NULL;
-			for(uint8_t i = 0; i < MAX_BULLETS; i++) {
-				if(playerBullet[i].ttl > 0) continue;
-				t = &playerBullet[i];
-				break;
-			}
-			if(t) {
-				b->state = 0;
-				t->type = WEAPON_SPUR_TAIL;
-				t->level = b->level;
-				t->sheet = b->sheet;
-				t->damage = t->level + 1;
-				t->ttl = TIME_8(20);
-				t->dir = b->dir;
-				t->x = pixel_to_sub(spur_xmark);
-				t->y = pixel_to_sub(spur_ymark);
-				t->x_speed = b->x_speed;
-				t->y_speed = b->y_speed;
-				t->hit_box = b->hit_box;
-				t->sprite = (VDPSprite) {
-					.size = SPRITE_SIZE(2,2),
-					.attr = TILE_ATTR(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
-				};
-				//switch(t->dir) {
-				//	case LEFT:  t->x += (b->state<<11); break;
-				//	case RIGHT: t->x -= (b->state<<11); break;
-				//	case UP:    t->y += (b->state<<11); break;
-				//	case DOWN:  t->y -= (b->state<<11); break;
-				//}
-			}
-		}
-		b->ttl--;
-		b->x += b->x_speed;
-		b->y += b->y_speed;
-		sprite_pos(b->sprite, 
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-		if(b->ttl == TIME_8(28)) {
-			if(b->dir == UP || b->dir == DOWN) {
-				b->sprite.size = SPRITE_SIZE(2, 4);
-				b->sprite.attr += 4;
-				if(b->sprite.attr & (1<<12)) {
-					b->sprite.y -= 16;
-					b->hit_box.top += 16;
-				} else {
-					b->hit_box.bottom += 16;
-				}
-			} else {
-				b->sprite.size = SPRITE_SIZE(4, 2);
-				if(b->sprite.attr & (1<<11)) {
-					b->sprite.x -= 16;
-					b->hit_box.right += 16;
-				} else {
-					b->hit_box.left += 16;
-				}
-			}
-		} else if(b->ttl < TIME_8(28)) {
-			if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
-			if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
-		}
-		vdp_sprite_add(&b->sprite);
+        return;
 	}
+    if(++b->state >= TIME_8(5)) {
+        // Spawn tail
+        Bullet *t = NULL;
+        for(uint8_t i = 0; i < MAX_BULLETS; i++) {
+            if(playerBullet[i].ttl > 0) continue;
+            t = &playerBullet[i];
+            break;
+        }
+        if(t) {
+            b->state = 0;
+            t->type = WEAPON_SPUR_TAIL;
+            t->level = b->level;
+            t->sheet = b->sheet;
+            t->damage = t->level + 1;
+            t->ttl = TIME_8(20);
+            t->dir = b->dir;
+            t->x = pixel_to_sub(spur_xmark);
+            t->y = pixel_to_sub(spur_ymark);
+            t->x_speed = b->x_speed;
+            t->y_speed = b->y_speed;
+            t->hit_box = b->hit_box;
+            t->sprite = (VDPSprite) {
+                .size = SPRITE_SIZE(2,2),
+                .attr = TILE_ATTR(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
+            };
+            //switch(t->dir) {
+            //	case LEFT:  t->x += (b->state<<11); break;
+            //	case RIGHT: t->x -= (b->state<<11); break;
+            //	case UP:    t->y += (b->state<<11); break;
+            //	case DOWN:  t->y -= (b->state<<11); break;
+            //}
+        }
+    }
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
+    b->x += b->x_speed;
+    b->y += b->y_speed;
+    sprite_pos(b->sprite,
+        sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+        sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+    if(b->ttl == TIME_8(28)) {
+        if(b->dir == UP || b->dir == DOWN) {
+            b->sprite.size = SPRITE_SIZE(2, 4);
+            b->sprite.attr += 4;
+            if(b->sprite.attr & (1<<12)) {
+                b->sprite.y -= 16;
+                b->hit_box.top += 16;
+            } else {
+                b->hit_box.bottom += 16;
+            }
+        } else {
+            b->sprite.size = SPRITE_SIZE(4, 2);
+            if(b->sprite.attr & (1<<11)) {
+                b->sprite.x -= 16;
+                b->hit_box.right += 16;
+            } else {
+                b->hit_box.left += 16;
+            }
+        }
+    } else if(b->ttl < TIME_8(28)) {
+        if(b->sprite.attr & (1<<12)) b->sprite.y -= 16;
+        if(b->sprite.attr & (1<<11)) b->sprite.x -= 16;
+    }
+    vdp_sprite_add(&b->sprite);
 }
 
 void bullet_update_spur_tail(Bullet *b) {
     uint8_t block = blk(b->x, 0, b->y, 0);
     if(block == 0x41) {
+        bullet_deactivate(b);
         sound_play(SND_SHOT_HIT, 2);
-        b->ttl = 0;
+        return;
     } else if(block == 0x43) {
+        bullet_deactivate(b);
         bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
         effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
         sound_play(SND_BLOCK_DESTROY, 5);
-        b->ttl = 0;
-    } else {
-        b->ttl--;
-        b->x += b->x_speed;
-        b->y += b->y_speed;
-        sprite_pos(b->sprite,
-                   sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-                   sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-        if (b->ttl == TIME_8(18)) {
-            if (b->dir == UP || b->dir == DOWN) {
-                b->sprite.size = SPRITE_SIZE(2, 4);
-                b->sprite.attr += 4;
-                if (b->sprite.attr & (1 << 12)) {
-                    b->sprite.y -= 16;
-                    b->hit_box.top += 16;
-                } else {
-                    b->hit_box.bottom += 16;
-                }
-            } else {
-                b->sprite.size = SPRITE_SIZE(4, 2);
-                if (b->sprite.attr & (1 << 11)) {
-                    b->sprite.x -= 16;
-                    b->hit_box.right += 16;
-                } else {
-                    b->hit_box.left += 16;
-                }
-            }
-        } else if (b->ttl < TIME_8(18)) {
-            if (b->sprite.attr & (1 << 12)) b->sprite.y -= 16;
-            if (b->sprite.attr & (1 << 11)) b->sprite.x -= 16;
-        }
-        vdp_sprite_add(&b->sprite);
+        return;
     }
+    if(!--b->ttl) {
+        b->extent.x1 = 0xFFFF;
+        return;
+    }
+    b->x += b->x_speed;
+    b->y += b->y_speed;
+    sprite_pos(b->sprite,
+               sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
+               sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+    if (b->ttl == TIME_8(18)) {
+        if (b->dir == UP || b->dir == DOWN) {
+            b->sprite.size = SPRITE_SIZE(2, 4);
+            b->sprite.attr += 4;
+            if (b->sprite.attr & (1 << 12)) {
+                b->sprite.y -= 16;
+                b->hit_box.top += 16;
+            } else {
+                b->hit_box.bottom += 16;
+            }
+        } else {
+            b->sprite.size = SPRITE_SIZE(4, 2);
+            if (b->sprite.attr & (1 << 11)) {
+                b->sprite.x -= 16;
+                b->hit_box.right += 16;
+            } else {
+                b->hit_box.left += 16;
+            }
+        }
+    } else if (b->ttl < TIME_8(18)) {
+        if (b->sprite.attr & (1 << 12)) b->sprite.y -= 16;
+        if (b->sprite.attr & (1 << 11)) b->sprite.x -= 16;
+    }
+    vdp_sprite_add(&b->sprite);
 }
 
+// Only called by ai_torokoAtk lol
 Bullet *bullet_colliding(Entity *e) {
 	extent_box ee = (extent_box) {
 		.x1 = (e->x >> CSF) - (e->hit_box.left),

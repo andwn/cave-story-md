@@ -1,11 +1,11 @@
 #include "common.h"
 
-#include "bank_data.h"
+#include "res/stage.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "error.h"
+#include "md/error.h"
 #include "hud.h"
 #include "md/joy.h"
 #include "math.h"
@@ -14,13 +14,14 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "string.h"
+#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"
 #include "tsc.h"
-#include "vdp.h"
-#include "xgm.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+#include "md/xgm.h"
 
 #include "stage.h"
 
@@ -80,14 +81,14 @@ void stage_load(uint16_t id) {
 	// Load the tileset
 	if(stageTileset != stage_info[id].tileset) {
 		stageTileset = stage_info[id].tileset;
-        disable_ints;
+        disable_ints();
         z80_pause_fast();
 		stage_load_tileset();
         z80_resume();
-        enable_ints;
+        enable_ints();
 	}
 	// Load sprite sheets
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	sheets_load_stage(id, FALSE, TRUE);
 	// Load backgrounds
@@ -105,10 +106,10 @@ void stage_load(uint16_t id) {
 			stage_draw_moonback();
 		} else if(stageBackgroundType == 2) { // Solid Color
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-			vdp_map_clear(VDP_PLAN_B);
+			vdp_map_clear(VDP_PLANE_B);
 		} else if(stageBackgroundType == 4) { // Almond Water
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-			vdp_map_clear(VDP_PLAN_B);
+			vdp_map_clear(VDP_PLANE_B);
             backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
 			vdp_tiles_load(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
@@ -119,7 +120,7 @@ void stage_load(uint16_t id) {
 		}
 	}
     z80_resume();
-    enable_ints;
+    enable_ints();
 
 	// Load stage PXM into RAM
 	stage_load_blocks();
@@ -129,11 +130,11 @@ void stage_load(uint16_t id) {
 	camera.x_offset = 0;
 	camera.y_offset = 0;
 
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
     z80_resume();
-    enable_ints;
+    enable_ints();
 
 	stage_load_entities(); // Create entities defined in the stage's PXE
 	// For rooms where the boss is always loaded
@@ -147,11 +148,11 @@ void stage_load(uint16_t id) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
 
-    disable_ints;
+    disable_ints();
     z80_pause();
 	dma_flush();
     z80_resume();
-    enable_ints;
+    enable_ints();
 
 	if((playerEquipment & EQUIP_CLOCK) || stageID == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
@@ -168,7 +169,7 @@ void stage_load_credits(uint8_t id) {
 		stageTable = NULL;
 	}
 
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	vdp_set_display(FALSE);
 
@@ -183,7 +184,7 @@ void stage_load_credits(uint8_t id) {
 
 	vdp_set_display(TRUE);
     z80_resume();
-    enable_ints;
+    enable_ints();
 }
 
 void stage_load_tileset() {
@@ -253,18 +254,18 @@ void stage_load_entities() {
 			vdp_color(15, 0xEEE);
 			char str[40];
 			sprintf(str, "Debug Entity # %03hu", i);
-			vdp_puts(VDP_PLAN_A, str, 2, 2);
+			vdp_puts(VDP_PLANE_A, str, 2, 2);
 			sprintf(str, "X:%04hu Y:%04hu I:%04hu", x, y, id);
-			vdp_puts(VDP_PLAN_A, str, 2, 5);
+			vdp_puts(VDP_PLANE_A, str, 2, 5);
 			sprintf(str, "E:%04hu T:%04hu F:%04hX", event, type, flags);
-			vdp_puts(VDP_PLAN_A, str, 2, 7);
+			vdp_puts(VDP_PLANE_A, str, 2, 7);
 			
 			while(!joy_pressed(JOY_C)) {
 				vdp_vsync();
 				//xgm_vblank();
 				joy_update();
-				vdp_hscroll(VDP_PLAN_A, 0);
-				vdp_vscroll(VDP_PLAN_A, 0);
+				vdp_hscroll(VDP_PLANE_A, 0);
+				vdp_vscroll(VDP_PLANE_A, 0);
 			}
 			vdp_color(0, 0);
 			vdp_set_display(FALSE);
@@ -289,10 +290,10 @@ void stage_update() {
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
-		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		vdp_hscroll(VDP_PLAN_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLAN_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLANE_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
 		int16_t off[30];
@@ -301,8 +302,8 @@ void stage_update() {
 			off[i] = off[0];
 		}
         __asm__("": : :"memory");
-		vdp_hscroll_tile(VDP_PLAN_A, off);
-		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll_tile(VDP_PLANE_A, off);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
 		
@@ -312,25 +313,25 @@ void stage_update() {
 			for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
 			for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
-			vdp_hscroll_tile(VDP_PLAN_B, backScrollTable);
-			//VDP_setVerticalScroll(VDP_PLAN_B, -8);
+			vdp_hscroll_tile(VDP_PLANE_B, backScrollTable);
+			//VDP_setVerticalScroll(VDP_PLANE_B, -8);
 		} else {
 			uint8_t y = 27;
 			for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
 			for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
 			for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
 			for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
-			vdp_hscroll_tile(VDP_PLAN_B, backScrollTable);
-			//VDP_setVerticalScroll(VDP_PLAN_B, 0);
+			vdp_hscroll_tile(VDP_PLANE_B, backScrollTable);
+			//VDP_setVerticalScroll(VDP_PLANE_B, 0);
 		}
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
-		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		vdp_hscroll(VDP_PLAN_B, backScrollTable[0]);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
 		int16_t rowc = SCREEN_HEIGHT >> 3;
 		int16_t rowgap = 31 - rowc;
@@ -344,14 +345,14 @@ void stage_update() {
 			if(oldrow > rowc) { // Below Screen
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
 			} else { // On screen or above
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (rand()&15)));
 				}
-				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
 			}
 		}
 		while(row > oldrow) { // Water is lowering (Y increasing)
@@ -363,23 +364,23 @@ void stage_update() {
 					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (rand()&15)));
 				}
-                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
 			} else { // On screen or below
 				uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLAN_B + (rowup << 7), 64, 2);
+                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
 			}
 		}
 		
-		vdp_hscroll(VDP_PLAN_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
-		vdp_vscroll(VDP_PLAN_B, -scroll);
-		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
+		vdp_vscroll(VDP_PLANE_B, -scroll);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 		backScrollTable[0] = row;
 	} else {
 		// Only scroll foreground
-		vdp_hscroll(VDP_PLAN_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLAN_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
 	}
 	if(currentsCount) { // Waterway currents
 		currentsTimer = (currentsTimer + 1) & 0x1F;
@@ -455,7 +456,7 @@ void stage_draw_screen() {
 				//}
 				x++;
 			}
-            dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLAN_A + ((y&31)<<7), 64, 2);
+            dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLANE_A + ((y & 31) << 7), 64, 2);
 		}
 		y++;
 	}
@@ -469,7 +470,7 @@ void stage_draw_screen_credits() {
 			uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
 			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 		}
-        dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLAN_A + y*0x80 + 40, 20, 2);
+        dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLANE_A + y * 0x80 + 40, 20, 2);
 	}
 }
 
@@ -482,25 +483,25 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 	xx = block_to_tile(x) % 64;
 	yy = block_to_tile(y) % 32;
 
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+1), xx+1, yy);
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+2), xx, yy+1);
-	vdp_map_xy(VDP_PLAN_A, TILE_ATTR(2, p, 0, 0, b+3), xx+1, yy+1);
+	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
+	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 1), xx + 1, yy);
+	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 2), xx, yy + 1);
+	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 3), xx + 1, yy + 1);
 	
 }
 
-// Fills VDP_PLAN_B with a tiled background
+// Fills VDP_PLANE_B with a tiled background
 void stage_draw_background() {
 	uint16_t w = background_info[stageBackground].width;
 	uint16_t h = background_info[stageBackground].height;
 	uint16_t pal = background_info[stageBackground].palette;
 	for(uint16_t y = 0; y < 32; y += h) {
 		for(uint16_t x = 0; x < 64; x += w) {
-			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(pal,0,0,0,TILE_BACKINDEX), x, y, w, h, 1);
+			vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(pal, 0, 0, 0, TILE_BACKINDEX), x, y, w, h, 1);
 			//uint16_t tile = TILE_ATTR(pal,0,0,0,TILE_BACKINDEX);
 			//for(uint16_t yy = 0; yy < h; yy++) {
 			//	for(uint16_t xx = 0; xx < w; xx++) {
-			//		vdp_map_xy(VDP_PLAN_B, tile++, x+xx, y+yy);
+			//		vdp_map_xy(VDP_PLANE_B, tile++, x+xx, y+yy);
 			//	}
 			//}
 		}
@@ -528,11 +529,11 @@ void stage_draw_moonback() {
 	// Load the clouds under the map, it just fits
 	vdp_tiles_load(btmTiles, TILE_MOONINDEX, 188);
 	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
-	vdp_vscroll(VDP_PLAN_B, 0);
+	vdp_vscroll(VDP_PLANE_B, 0);
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;
 	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {
-        dma_now(DmaVRAM, (uint32_t) &topMap[index], VDP_PLAN_B + (y << 7), 40, 2);
+        dma_now(DmaVRAM, (uint32_t) &topMap[index], VDP_PLANE_B + (y << 7), 40, 2);
 		index += 40;
 	}
 	
@@ -542,8 +543,8 @@ void stage_draw_moonback() {
 	// Bottom part
 	index = 0;
 	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 32 : 28); y++) {
-        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7),             32, 2);
-        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLAN_B + (y << 7) + (32 << 1), 32, 2);
+        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7), 32, 2);
+        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7) + (32 << 1), 32, 2);
 		index += 32;
 	}
 	backScrollTimer = 0;

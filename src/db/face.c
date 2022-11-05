@@ -1,7 +1,7 @@
 #include "common.h"
 
 #include "resources.h"
-#include "vdp.h"
+#include "md/vdp.h"
 
 #include "tables.h"
 

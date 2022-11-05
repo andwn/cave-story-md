@@ -1,6 +1,7 @@
+    .include "macros.i"
+
 /* extern void slz_unpack(const void *in, void *out) */
-        .globl slz_unpack
-slz_unpack:
+FUNC slz_unpack
         move.l  4(sp), a1               /* Get parameters from stack */
         move.l  8(sp), a0
         movem.l d2-d4, -(sp)            /* Save registers */
@@ -11,7 +12,7 @@ slz_unpack:
 
         moveq   #1, d1                  /* Cause code to fetch new token data */
                                         /* as soon as it starts */
-SLZ_MainLoop:
+    SLZ_MainLoop:
         tst.w   d2                      /* Did we read all the data? */
         beq     SLZ_End                 /* If so, we're done with it! */
 
@@ -19,7 +20,7 @@ SLZ_MainLoop:
         bne.s   SLZ_HasTokens
         move.b  (a1)+, d0
         moveq   #8, d1
-SLZ_HasTokens:
+    SLZ_HasTokens:
 
         add.b   d0, d0                  /* Get next token type */
         bcc.s   SLZ_Uncompressed        /* 0 = uncompressed, 1 = compressed */
@@ -43,27 +44,26 @@ SLZ_HasTokens:
         add.w   d4, d4                  /* MUCH faster than a loop, due to lack */
         eor.w   #0x0F<<2, d4            /* of iteration overhead */
         jmp     SLZ_Duff(pc,d4.w)
-SLZ_Duff:
+    SLZ_Duff:
         .rept   0x12
         move.b  (a0,d3.w), (a0)+
         .endr
 
         bra     SLZ_MainLoop            /* Keep processing data */
 
-SLZ_Uncompressed:
+    SLZ_Uncompressed:
         move.b  (a1)+, (a0)+            /* Uncompressed? Read as is */
         subq.w  #1, d2                  /* It's always one byte long */
         bra     SLZ_MainLoop            /* Keep processing data */
 
-SLZ_End:
+    SLZ_End:
         movem.l (sp)+, d2-d4            /* Restore registers */
 
         rts                             /* End of subroutine */
 
 
 /* extern void uftc_unpack(const void *in, void *out, uint16_t start, uint16_t num) */
-        .globl uftc_unpack
-uftc_unpack:
+FUNC uftc_unpack
         move.l  4(sp),a0                /* in */
         move.l  8(sp),a1                /* out */
         /* -mshort */
@@ -83,7 +83,7 @@ uftc_unpack:
         lea     (a4,d0.l), a4
 
         bra.s   UFTC_LoopEnd            /* Start decompressing */
-UFTC_Loop:
+    UFTC_Loop:
         move.w  (a4)+, d2               /* Fetch addresses of dictionary */
         lea     (a0,d2.l), a3             /* entries for the first two 4x4 */
         move.w  (a4)+, d2                 /* blocks of this tile */
@@ -112,7 +112,7 @@ UFTC_Loop:
         move.w  (a3)+, (a1)+
         move.w  (a2)+, (a1)+
 
-UFTC_LoopEnd:
+    UFTC_LoopEnd:
         dbf     d1, UFTC_Loop           /* Go for next tile */
 
         movem.l  (sp)+, d2/a2-a4        /* Restore registers */

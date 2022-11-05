@@ -1,3 +1,8 @@
+#ifndef MD_JOY_H
+#define MD_JOY_H
+
+#include "types.h"
+
 #define JOY_UP       0x0001
 #define JOY_DOWN     0x0002
 #define JOY_LEFT     0x0004
@@ -29,3 +34,5 @@ extern uint16_t joystate, joystate_old;
 
 void joy_init();
 void joy_update();
+
+#endif //MD_JOY_H

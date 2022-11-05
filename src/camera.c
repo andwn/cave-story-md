@@ -8,7 +8,7 @@
 #include "stage.h"
 #include "tables.h"
 #include "md/stdlib.h"
-#include "vdp.h"
+#include "md/vdp.h"
 
 #include "camera.h"
 
@@ -171,7 +171,7 @@ void camera_update() {
 						//}
 						y++;
 					}
-					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((x & 63) << 1), 32, 128);
+					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A + ((x & 63) << 1), 32, 128);
 				}
 			}
 		}
@@ -195,7 +195,7 @@ void camera_update() {
 						//}
 						x++;
 					}
-					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLAN_A + ((y & 31) << 7), 64, 2);
+					dma_queue(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A + ((y & 31) << 7), 64, 2);
 				}
 			}
 		}

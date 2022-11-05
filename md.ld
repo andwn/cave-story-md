@@ -4,15 +4,23 @@ MEMORY {
 }
 
 SECTIONS {
+  /* ROM/RAM boundary addresses for the ROM Header */
+  __rom_start = ORIGIN(rom);
+  __rom_end = ORIGIN(rom) + LENGTH(rom);
+  __ram_start = ORIGIN(ram);
+  __ram_end = ORIGIN(ram) + LENGTH(ram);
+
   /* With experience, one learns the standard, scientific way to compute the */
   /* proper size for a stack: Pick a size at rand and hope. --Jack Ganssle */
-  __stack_top = ORIGIN(ram) + LENGTH(ram);
+  __stack_top = __ram_end;
   __stack_size = 0x800;
   __stack_bottom = __stack_top - __stack_size;
 
   .text ORIGIN(rom) : {
     __text_start = .;
-    KEEP(*(.text.keepboot)) /* Vectors & ROM Header must always be first */
+    KEEP(*(.text.vectors)) /* CPU Vectors */
+    KEEP(*(.text.header))  /* ROM Header */
+    *(.text.boot)
 	*(.text .text.*)
 	. = ALIGN(2);
     __text_end = .;
@@ -37,7 +45,8 @@ SECTIONS {
 
   .bss (NOLOAD) : {
     __bss_start = .;
-    *(.bss.first)
+    *(.bss.stage)   /* Stage (PXM) data decompressed to start of RAM */
+    *(.bss.system)  /* End of stage data bleeds into errors */
     *(.bss .bss.*)
     . = ALIGN(2);
     __bss_end = .;

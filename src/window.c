@@ -1,13 +1,13 @@
 #include "common.h"
 
 #include "audio.h"
-#include "bank_data.h"
+#include "res/system.h"
 #include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "md/joy.h"
-#include "kanji.h"
+#include "cjk.h"
 #include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
@@ -15,8 +15,9 @@
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "vdp.h"
-#include "xgm.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+#include "md/xgm.h"
 
 #include "window.h"
 
@@ -90,19 +91,19 @@ void window_open(uint8_t mode) {
 		ty1 = mode ? TEXT_Y1_TOP : TEXT_Y1,
 		ty2 = mode ? TEXT_Y2_TOP : TEXT_Y2;
 	
-	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(0), WINDOW_X1, wy1);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(1), TEXT_X1, wy1, 36, 1, 0);
-	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(2), WINDOW_X2, wy1);
+	vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(0), WINDOW_X1, wy1);
+	vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(1), TEXT_X1, wy1, 36, 1, 0);
+	vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(2), WINDOW_X2, wy1);
 	for(uint8_t y = ty1; y <= ty2; y++) {
-        vdp_map_xy(VDP_PLAN_W, 0, 0, y);
-		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(3), WINDOW_X1, y);
-		//vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
-		vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(5), WINDOW_X2, y);
-        vdp_map_xy(VDP_PLAN_W, 0, 39, y);
+        vdp_map_xy(VDP_PLANE_W, 0, 0, y);
+		vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(3), WINDOW_X1, y);
+		//vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), TEXT_X1, y, 36, 1, 0);
+		vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(5), WINDOW_X2, y);
+        vdp_map_xy(VDP_PLANE_W, 0, 39, y);
 	}
-	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(6), WINDOW_X1, wy2);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(7), TEXT_X1, wy2, 36, 1, 0);
-	vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(8), WINDOW_X2, wy2);
+	vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(6), WINDOW_X1, wy2);
+	vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(7), TEXT_X1, wy2, 36, 1, 0);
+	vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(8), WINDOW_X2, wy2);
 
     window_clear();
 	
@@ -125,11 +126,11 @@ void window_clear() {
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
 
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), x, y, w, 6, 0);
+	vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), x, y, w, 6, 0);
     z80_resume();
-    enable_ints;
+    enable_ints();
 
 	window_clear_text();
 }
@@ -157,7 +158,7 @@ void window_set_face(uint16_t face, uint8_t open) {
 	if(face > 0) {
 		window_draw_face();
 	} else {
-		vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), TEXT_X1, 
+		vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), TEXT_X1,
 				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6, 0);
 	}
 }
@@ -186,12 +187,12 @@ void window_draw_char(uint8_t c) {
 		// And draw it
 		if(c >= 0x80) {
 		    // Extended charset, you'll never guess where I put it
-		    uint16_t index = (VDP_PLAN_W >> 5) + 3;
+		    uint16_t index = (VDP_PLANE_W >> 5) + 3;
 		    index += (c - 0x80) << 2;
-            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0, index-4), msgTextX, msgTextY);
+            vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index - 4), msgTextX, msgTextY);
 		} else {
 		    // Low ASCII charset
-            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
+            vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0,
                     TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
         }
 		textColumn++;
@@ -201,8 +202,8 @@ void window_draw_char(uint8_t c) {
 
 void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	if(!iskanji && c == '\n') {
-        //vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
-        //vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y+1);
+        //vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y);
+        //vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y+1);
 		textRow++;
 		textColumn = 0;
         cjk_newline();
@@ -211,7 +212,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
             uint16_t msgTextY = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
             uint16_t msgTextW = showingFace ? 29 : 36;
             cjk_winscroll(msgTextX, msgTextY);
-            vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY+4, msgTextW, 2, 0);
+            vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), msgTextX, msgTextY + 4, msgTextW, 2, 0);
             textRow = 2;
 		}
 		return;
@@ -222,7 +223,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 	msgTextX += textColumn + (textColumn >> 1); // * 1.5
 	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1) + textRow * 2;
 	// And draw it
-    cjk_draw(VDP_PLAN_W, c, msgTextX, msgTextY, 2, FALSE);
+    cjk_draw(VDP_PLANE_W, c, msgTextX, msgTextY, 2, FALSE);
     textColumn++;
 }
 
@@ -239,11 +240,11 @@ void window_scroll_text() {
 			uint8_t c = windowText[row][col];
             if(c >= 0x80) {
                 // Extended charset, you'll never guess where I put it
-                uint16_t index = (VDP_PLAN_W >> 5) + 3;
+                uint16_t index = (VDP_PLANE_W >> 5) + 3;
                 index += (c - 0x80) << 2;
-                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0, index-4), msgTextX, msgTextY);
+                vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index - 4), msgTextX, msgTextY);
             } else {
-                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0, 1, 0, 0,
+                vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0,
                         TILE_FONTINDEX + c - 0x20), msgTextX, msgTextY);
             }
 			msgTextX++;
@@ -254,7 +255,7 @@ void window_scroll_text() {
 	uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + 4;
 	uint8_t msgTextW = showingFace ? 29 : 36;
 	memset(windowText[2], ' ', 36);
-	vdp_map_fill_rect(VDP_PLAN_W, WINDOW_ATTR(4), msgTextX, msgTextY, msgTextW, 1, 0);
+	vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), msgTextX, msgTextY, msgTextW, 1, 0);
 	// Reset to beginning of third row
 	textRow = 2;
 	textColumn = 0;
@@ -338,13 +339,13 @@ uint8_t window_prompt_update() {
 }
 
 void window_draw_face() {
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	vdp_tiles_load(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
-	vdp_map_fill_rect(VDP_PLAN_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX), 
-			TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
+	vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX),
+                      TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
     z80_resume();
-    enable_ints;
+    enable_ints();
 }
 
 void window_show_item(uint16_t item) {
@@ -424,14 +425,14 @@ void window_update() {
 			index = TILE_FONTINDEX - 0x20 + '_';
 		}
         if(++blinkTime == 8) {
-            vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y);
+            vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), x, y);
             if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-                vdp_map_xy(VDP_PLAN_W, TILE_ATTR(PAL0,1,0,0,index), x, y + 1);
+                vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), x, y + 1);
             }
         } else if(blinkTime == 16) {
-            vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y);
+            vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y);
             if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-                vdp_map_xy(VDP_PLAN_W, WINDOW_ATTR(4), x, y + 1);
+                vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y + 1);
             }
             blinkTime = 0;
         }

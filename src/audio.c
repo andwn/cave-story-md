@@ -3,8 +3,9 @@
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"
-#include "vdp.h"
-#include "xgm.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+#include "md/xgm.h"
 #include "audio.h"
 
 // ID of the currently playing song, and backup of the previous,
@@ -16,22 +17,22 @@ uint8_t soundChannel;
 void sound_init() {
     songPlaying = songResume = 0;
     // Here we are pointing the XGM driver to each sound effect in the game
-    // and their length (in frames) indexed in sound_info
-    disable_ints;
+    // and their length (in frames) indexed in sfx_info
+    disable_ints();
     z80_pause();
     for(uint8_t i = 1; i < SOUND_COUNT; i++) {
-    	uint16_t len = sound_info[i].end-sound_info[i].sound;
-        xgm_pcm_set(0x40 + i, sound_info[i].sound, len > 256 ? len : 256);
+    	uint16_t len = sfx_info[i].end - sfx_info[i].sound;
+        xgm_pcm_set(0x40 + i, sfx_info[i].sound, len > 256 ? len : 256);
     }
     z80_resume();
-    enable_ints;
+    enable_ints();
     soundChannel = 1;
 }
 
 void sound_play(uint8_t id, uint8_t priority) {
 	if(cfg_sfx_mute && gamemode != GM_SOUNDTEST) return;
 	if(id >= 0x90 && id < 0xA0) id -= 0x40;
-	if(id >= SOUND_COUNT || sound_info[id].end == 0) return;
+	if(id >= SOUND_COUNT || sfx_info[id].end == 0) return;
 	xgm_pcm_play(0x40 + id, priority, soundChannel++);
 	if(soundChannel > 3) soundChannel = 1;
 }
@@ -47,21 +48,21 @@ void song_play(uint8_t id) {
 	}
 	if(id == songPlaying) return;
 	songResume = songPlaying;
-	// Track 0 in song_info is NULL, but others could be potentially
-	if(song_info[id].song == NULL) {
+	// Track 0 in bgm_info is NULL, but others could be potentially
+	if(bgm_info[id].song == NULL) {
 		id = 0;
         xgm_music_pause();
 	} else {
         xgm_music_pause();
         vdp_vsync(); aftervsync();
 		vdp_vsync();
-		xgm_music_play(song_info[id].song);
+		xgm_music_play(bgm_info[id].song);
 	}
 	songPlaying = id;
 }
 
 void song_stop() {
-	song_play(0);
+    song_play(0);
 }
 
 void song_resume() {

@@ -1,7 +1,7 @@
 /* 32-bit multiplication and division routines from libgcc */
+    .include "macros.i"
 
-        .globl	__mulsi3
-__mulsi3:
+FUNC __mulsi3
         move.w	4(sp), d0	    /* x0 -> d0 */
         mulu.w	10(sp), d0	    /* x0*y1 */
         move.w	6(sp), d1	    /* x1 -> d1 */
@@ -14,8 +14,7 @@ __mulsi3:
         add.l	d1, d0
         rts
 
-        .globl	__udivsi3
-__udivsi3:
+FUNC __udivsi3
         move.l	d2, -(sp)
         move.l	12(sp), d1	    /* d1 = divisor */
         move.l	8(sp), d0	    /* d0 = dividend */
@@ -33,9 +32,9 @@ __udivsi3:
         move.w	d2, d0
         bra.s	__udivsi3_4
 
-__udivsi3_1:
+    __udivsi3_1:
         move.l	d1, d2		    /* use d2 as divisor backup */
-__udivsi3_2:
+    __udivsi3_2:
         lsr.l	#1, d1	        /* shift divisor */
         lsr.l	#1, d0	        /* shift dividend */
         cmp.l	#0x10000, d1    /* still divisor >= 2 ^ 16 ? */
@@ -57,15 +56,14 @@ __udivsi3_2:
         bcs.s	__udivsi3_3	    /* if sum is 33 bits, quotient was too large */
         cmp.l	8(sp), d1	    /* compare the sum with the dividend */
         bls.s	__udivsi3_4	    /* if sum > dividend, quotient was too large */
-__udivsi3_3:
+    __udivsi3_3:
         subq.l	#1, d0	        /* adjust quotient */
 
-__udivsi3_4:
+    __udivsi3_4:
         move.l	(sp)+, d2
         rts
 
-        .globl	__divsi3
-__divsi3:
+FUNC __divsi3
         move.l	d2, -(sp)
 
         moveq	#1, d2	        /* sign of result stored in d2 (=1 or =-1) */
@@ -73,13 +71,13 @@ __divsi3:
         bpl.s	__divsi3_1
         neg.l	d1
         neg.b	d2		        /* change sign because divisor <0 */
-__divsi3_1:
+    __divsi3_1:
         move.l	8(sp), d0	    /* d0 = dividend */
         bpl.s	__divsi3_2
         neg.l	d0
         neg.b	d2
 
-__divsi3_2:
+    __divsi3_2:
         move.l	d1, -(sp)
         move.l	d0, -(sp)
         bsr.s	__udivsi3	    /* divide abs(dividend) by abs(divisor) */
@@ -89,12 +87,11 @@ __divsi3_2:
         bpl.s	__divsi3_3
         neg.l	d0
 
-__divsi3_3:
+    __divsi3_3:
         move.l	(sp)+, d2
         rts
 
-        .globl	__umodsi3
-__umodsi3:
+FUNC __umodsi3
         move.l	8(sp), d1	    /* d1 = divisor */
         move.l	4(sp), d0	    /* d0 = dividend */
         move.l	d1, -(sp)
@@ -111,8 +108,7 @@ __umodsi3:
         move.l	d1, d0
         rts
 
-        .globl	__modsi3
-__modsi3:
+FUNC __modsi3
         move.l	8(sp), d1	    /* d1 = divisor */
         move.l	4(sp), d0	    /* d0 = dividend */
         move.l	d1, -(sp)

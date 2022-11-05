@@ -1,7 +1,8 @@
 #include "common.h"
 
 #include "audio.h"
-#include "bank_data.h"
+#include "res/system.h"
+#include "res/local.h"
 #include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
@@ -10,15 +11,16 @@
 #include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
-#include "sram.h"
+#include "md/sram.h"
 #include "stage.h"
-#include "string.h"
+#include "md/string.h"
 #include "tsc.h"
 #include "md/comp.h"
-#include "vdp.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "weapon.h"
 #include "window.h"
-#include "xgm.h"
+#include "md/xgm.h"
 
 #include "system.h"
 
@@ -263,10 +265,10 @@ static uint8_t checksum_verify(uint8_t file_num, uint8_t is_backup) {
 		checksum_loc += 4;
 	}
 
-	uint32_t checksum = SRAM_readLong(checksum_loc);
+	uint32_t checksum = sram_read_long(checksum_loc);
 	uint32_t recheck = 0x10101010;
 	for(uint16_t i = save_loc; i < save_loc + SRAM_BACKUP_OFFSET; i += 4) {
-		recheck += SRAM_readLong(i);
+		recheck += sram_read_long(i);
 	}
 	return checksum == recheck;
 }
@@ -281,9 +283,9 @@ static void checksum_write(uint8_t file_num, uint8_t is_backup) {
 
 	uint32_t checksum = 0x10101010;
 	for(uint16_t i = save_loc; i < save_loc + SRAM_BACKUP_OFFSET; i += 4) {
-		checksum += SRAM_readLong(i);
+		checksum += sram_read_long(i);
 	}
-	SRAM_writeLong(SRAM_CHECKSUM_POS + (file_num * 8), checksum);
+	sram_write_long(SRAM_CHECKSUM_POS + (file_num * 8), checksum);
 }
 
 void system_save() {
@@ -295,42 +297,42 @@ void system_save() {
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enable();
+	sram_enable();
 	
-	SRAM_writeLong(loc, STR_CSMD);					loc += 4;
-	SRAM_writeWord(loc, stageID); 					loc += 2;
-	SRAM_writeWord(loc, song_get_playing()); 		loc += 2;
-	SRAM_writeWord(loc, sub_to_block(player.x)); 	loc += 2;
-	SRAM_writeWord(loc, sub_to_block(player.y)); 	loc += 2;
-	SRAM_writeWord(loc, playerMaxHealth);			loc += 2;
-	SRAM_writeWord(loc, player.health);				loc += 2;
-	SRAM_writeWord(loc, currentWeapon);				loc += 2;
-	SRAM_writeWord(loc, playerEquipment);			loc += 2;
-	SRAM_writeByte(loc, time.hour);					loc++;
-	SRAM_writeByte(loc, time.minute);				loc++;
-	SRAM_writeByte(loc, time.second);				loc++;
-	SRAM_writeByte(loc, time.frame);				loc++;
+	sram_write_long(loc, STR_CSMD);					loc += 4;
+	sram_write_word(loc, stageID); 					loc += 2;
+	sram_write_word(loc, song_get_playing()); 		loc += 2;
+	sram_write_word(loc, sub_to_block(player.x)); 	loc += 2;
+	sram_write_word(loc, sub_to_block(player.y)); 	loc += 2;
+	sram_write_word(loc, playerMaxHealth);			loc += 2;
+	sram_write_word(loc, player.health);				loc += 2;
+	sram_write_word(loc, currentWeapon);				loc += 2;
+	sram_write_word(loc, playerEquipment);			loc += 2;
+	sram_write_byte(loc, time.hour);					loc++;
+	sram_write_byte(loc, time.minute);				loc++;
+	sram_write_byte(loc, time.second);				loc++;
+	sram_write_byte(loc, time.frame);				loc++;
 	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
-		SRAM_writeByte(loc, playerWeapon[i].type);		loc++;
-		SRAM_writeByte(loc, playerWeapon[i].level);		loc++;
-		SRAM_writeWord(loc, playerWeapon[i].energy);	loc += 2;
-		SRAM_writeWord(loc, playerWeapon[i].maxammo);	loc += 2;
-		SRAM_writeWord(loc, playerWeapon[i].ammo);		loc += 2;
+		sram_write_byte(loc, playerWeapon[i].type);		loc++;
+		sram_write_byte(loc, playerWeapon[i].level);		loc++;
+		sram_write_word(loc, playerWeapon[i].energy);	loc += 2;
+		sram_write_word(loc, playerWeapon[i].maxammo);	loc += 2;
+		sram_write_word(loc, playerWeapon[i].ammo);		loc += 2;
 	}
 	// Inventory
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
-		SRAM_writeByte(loc, playerInventory[i]); loc++;
+		sram_write_byte(loc, playerInventory[i]); loc++;
 	}
 	// Teleporter locations
 	for(uint8_t i = 0; i < 8; i++) {
-		SRAM_writeWord(loc, teleportEvent[i]); loc += 2;
+		sram_write_word(loc, teleportEvent[i]); loc += 2;
 	}
 	// Flags
 	for (uint16_t i = 0; i < FLAGS_LEN; i++) {
-		SRAM_writeLong(loc, flags[i]); loc += 4;
+		sram_write_long(loc, flags[i]); loc += 4;
 	}
 	// Checksum
 	checksum_write(sram_file, FALSE);
@@ -338,31 +340,31 @@ void system_save() {
 	// Backup
 	loc = loc_start;
 	while(loc < loc_start + SRAM_FILE_LEN / 2) {
-		uint32_t dat = SRAM_readLong(loc);
-		SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, dat);
+		uint32_t dat = sram_read_long(loc);
+		sram_write_long(loc + SRAM_BACKUP_OFFSET, dat);
 		loc += 4;
 	}
 	checksum_write(sram_file, TRUE);
 	
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 void system_peekdata(uint8_t index, SaveEntry *file) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enableRO();
+	sram_enable_ro();
 	
 	// Save exists
-	uint32_t magic = SRAM_readLong(loc); loc += 4;
+	uint32_t magic = sram_read_long(loc); loc += 4;
 	if(magic != STR_CSMD) {
 		file->used = FALSE;
-		SRAM_disable();
+		sram_disable();
         z80_resume();
-        enable_ints;
+        enable_ints();
 		return;
 	}
 	// Checksum failed?
@@ -370,9 +372,9 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		// Checksum for backup failed too?
 		if(!checksum_verify(index, TRUE)) {
 			file->used = FALSE;
-			SRAM_disable();
+			sram_disable();
             z80_resume();
-            enable_ints;
+            enable_ints();
 			return;
 		}
 		// Load backup
@@ -380,21 +382,21 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	}
 	
 	file->used = TRUE;
-	file->stage_id = SRAM_readWord(loc); 	loc += 8;
-	file->max_health = SRAM_readWord(loc); 	loc += 2;
-	file->health = SRAM_readWord(loc); 		loc += 6;
-	file->hour = SRAM_readByte(loc);		loc++;
-	file->minute = SRAM_readByte(loc);		loc++;
-	file->second = SRAM_readByte(loc);		loc += 2;
-	file->weapon[0] = SRAM_readByte(loc);	loc += 8;
-	file->weapon[1] = SRAM_readByte(loc);	loc += 8;
-	file->weapon[2] = SRAM_readByte(loc);	loc += 8;
-	file->weapon[3] = SRAM_readByte(loc);	loc += 8;
-	file->weapon[4] = SRAM_readByte(loc);	loc += 8;
+	file->stage_id = sram_read_word(loc); 	loc += 8;
+	file->max_health = sram_read_word(loc); 	loc += 2;
+	file->health = sram_read_word(loc); 		loc += 6;
+	file->hour = sram_read_byte(loc);		loc++;
+	file->minute = sram_read_byte(loc);		loc++;
+	file->second = sram_read_byte(loc);		loc += 2;
+	file->weapon[0] = sram_read_byte(loc);	loc += 8;
+	file->weapon[1] = sram_read_byte(loc);	loc += 8;
+	file->weapon[2] = sram_read_byte(loc);	loc += 8;
+	file->weapon[3] = sram_read_byte(loc);	loc += 8;
+	file->weapon[4] = sram_read_byte(loc);	loc += 8;
 	
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 void system_load(uint8_t index) {
@@ -405,9 +407,9 @@ void system_load(uint8_t index) {
 	player_init();
 	sram_file = index;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enableRO();
+	sram_enable_ro();
 	
 	// Start of save data in SRAM
 	uint16_t loc_start = SRAM_FILE_START + SRAM_FILE_LEN * sram_file;
@@ -420,52 +422,52 @@ void system_load(uint8_t index) {
 	uint16_t loc = loc_start;
 	
 	// Test magic
-	uint32_t magic = SRAM_readLong(loc); loc += 4;
+	uint32_t magic = sram_read_long(loc); loc += 4;
 	if(magic != STR_CSMD) {
 		// Empty
-		SRAM_disable();
+		sram_disable();
         z80_resume();
-        enable_ints;
+        enable_ints();
 		system_new();
 		return;
 	}
 	
-	uint16_t rid = SRAM_readWord(loc);			loc += 2;
-	uint8_t song = SRAM_readWord(loc);			loc += 2;
-	player.x = block_to_sub(SRAM_readWord(loc)) + (8<<CSF); loc += 2;
-	player.y = block_to_sub(SRAM_readWord(loc)) + (8<<CSF); loc += 2;
-	playerMaxHealth = SRAM_readWord(loc); 		loc += 2;
-	player.health = SRAM_readWord(loc); 		loc += 2;
-	currentWeapon = SRAM_readWord(loc); 		loc += 2;
-	playerEquipment = SRAM_readWord(loc); 		loc += 2;
-	time.hour = SRAM_readByte(loc); 			loc++;
-	time.minute = SRAM_readByte(loc);			loc++;
-	time.second = SRAM_readByte(loc);			loc++;
-	time.frame = SRAM_readByte(loc);			loc++;
+	uint16_t rid = sram_read_word(loc);			loc += 2;
+	uint8_t song = sram_read_word(loc);			loc += 2;
+	player.x = block_to_sub(sram_read_word(loc)) + (8<<CSF); loc += 2;
+	player.y = block_to_sub(sram_read_word(loc)) + (8<<CSF); loc += 2;
+	playerMaxHealth = sram_read_word(loc); 		loc += 2;
+	player.health = sram_read_word(loc); 		loc += 2;
+	currentWeapon = sram_read_word(loc); 		loc += 2;
+	playerEquipment = sram_read_word(loc); 		loc += 2;
+	time.hour = sram_read_byte(loc); 			loc++;
+	time.minute = sram_read_byte(loc);			loc++;
+	time.second = sram_read_byte(loc);			loc++;
+	time.frame = sram_read_byte(loc);			loc++;
 	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	// Weapons
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
-		playerWeapon[i].type = SRAM_readByte(loc);		loc++;
-		playerWeapon[i].level = SRAM_readByte(loc);		loc++;
-		playerWeapon[i].energy = SRAM_readWord(loc);	loc += 2;
-		playerWeapon[i].maxammo = SRAM_readWord(loc);	loc += 2;
-		playerWeapon[i].ammo = SRAM_readWord(loc);		loc += 2;
+		playerWeapon[i].type = sram_read_byte(loc);		loc++;
+		playerWeapon[i].level = sram_read_byte(loc);		loc++;
+		playerWeapon[i].energy = sram_read_word(loc);	loc += 2;
+		playerWeapon[i].maxammo = sram_read_word(loc);	loc += 2;
+		playerWeapon[i].ammo = sram_read_word(loc);		loc += 2;
 	}
 	// Inventory
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) {
-		playerInventory[i] = SRAM_readByte(loc); loc++;
+		playerInventory[i] = sram_read_byte(loc); loc++;
 	}
 	// Teleporter locations
 	for(uint8_t i = 0; i < 8; i++) {
-		teleportEvent[i] = SRAM_readWord(loc); loc += 2;
+		teleportEvent[i] = sram_read_word(loc); loc += 2;
 	}
 	// Flags
 	for (uint16_t i = 0; i < FLAGS_LEN; i++) {
-		flags[i] = SRAM_readLong(loc); loc += 4;
+		flags[i] = sram_read_long(loc); loc += 4;
 	}
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 	
 	stage_load(rid);
 	song_play(song);
@@ -476,42 +478,42 @@ void system_copy(uint8_t from, uint8_t to) {
 	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enable();
+	sram_enable();
 
 	// Copy data
 	while(loc_from < loc_from_end) {
-		uint32_t data = SRAM_readLong(loc_from);
-		SRAM_writeLong(loc_to, data);
+		uint32_t data = sram_read_long(loc_from);
+		sram_write_long(loc_to, data);
 		loc_from += 4; loc_to += 4;
 	}
 	// Copy checksum
 	loc_from = SRAM_CHECKSUM_POS + from * 8;
 	loc_to = SRAM_CHECKSUM_POS + to * 8;
-	uint32_t checksum = SRAM_readLong(loc_from);
-	SRAM_writeLong(loc_to, checksum);
-	checksum = SRAM_readLong(loc_from + 4);
-	SRAM_writeLong(loc_to + 4, checksum);
+	uint32_t checksum = sram_read_long(loc_from);
+	sram_write_long(loc_to, checksum);
+	checksum = sram_read_long(loc_from + 4);
+	sram_write_long(loc_to + 4, checksum);
 
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 void system_delete(uint8_t index) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enable();
+	sram_enable();
 	
-	SRAM_writeLong(loc, 0); // Erase the "CSMD" magic to invalidate file
-	SRAM_writeLong(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
+	sram_write_long(loc, 0); // Erase the "CSMD" magic to invalidate file
+	sram_write_long(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
 	
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 static void get_language() {
@@ -532,36 +534,36 @@ void system_load_config() {
 	
 	uint16_t loc = SRAM_CONFIG_POS;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enableRO();
+	sram_enable_ro();
 	
-	uint32_t magic = SRAM_readLong(loc); loc += 4;
+	uint32_t magic = sram_read_long(loc); loc += 4;
 	if(magic != CFG_MAGIC) {
 		// No settings saved, keep defaults
-		SRAM_disable();
+		sram_disable();
         z80_resume();
-        enable_ints;
+        enable_ints();
 		return;
 	}
 	
-	cfg_btn_jump  = SRAM_readByte(loc++);
-	cfg_btn_shoot = SRAM_readByte(loc++);
-	cfg_btn_ffwd  = SRAM_readByte(loc++);
-	cfg_btn_rswap = SRAM_readByte(loc++);
-	cfg_btn_lswap = SRAM_readByte(loc++);
-	cfg_btn_map   = SRAM_readByte(loc++);
-	cfg_btn_pause = SRAM_readByte(loc++);
+	cfg_btn_jump  = sram_read_byte(loc++);
+	cfg_btn_shoot = sram_read_byte(loc++);
+	cfg_btn_ffwd  = sram_read_byte(loc++);
+	cfg_btn_rswap = sram_read_byte(loc++);
+	cfg_btn_lswap = sram_read_byte(loc++);
+	cfg_btn_map   = sram_read_byte(loc++);
+	cfg_btn_pause = sram_read_byte(loc++);
 	loc++; //cfg_language  = SRAM_readByte(loc++);
-	cfg_ffwd      = SRAM_readByte(loc++);
-	cfg_updoor    = SRAM_readByte(loc++);
-	cfg_hellquake = SRAM_readByte(loc++);
-	cfg_iframebug = SRAM_readByte(loc++);
-	cfg_force_btn = SRAM_readByte(loc++);
-	cfg_msg_blip  = SRAM_readByte(loc++);
-	cfg_music_mute= SRAM_readByte(loc++);
-	cfg_sfx_mute  = SRAM_readByte(loc++);
-	cfg_60fps     = SRAM_readByte(loc++);
+	cfg_ffwd      = sram_read_byte(loc++);
+	cfg_updoor    = sram_read_byte(loc++);
+	cfg_hellquake = sram_read_byte(loc++);
+	cfg_iframebug = sram_read_byte(loc++);
+	cfg_force_btn = sram_read_byte(loc++);
+	cfg_msg_blip  = sram_read_byte(loc++);
+	cfg_music_mute= sram_read_byte(loc++);
+	cfg_sfx_mute  = sram_read_byte(loc++);
+	cfg_60fps     = sram_read_byte(loc++);
 	// Just in case
 	if(cfg_force_btn > 2) cfg_force_btn = 0;
 	if(cfg_music_mute > 1) cfg_music_mute = 0;
@@ -580,40 +582,40 @@ void system_load_config() {
         speed_tab = speed_tab_ntsc;
     }
 
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 void system_save_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
-	SRAM_enable();
+	sram_enable();
 
-	SRAM_writeLong(loc, CFG_MAGIC); loc += 4;
-	SRAM_writeByte(loc++, cfg_btn_jump);
-	SRAM_writeByte(loc++, cfg_btn_shoot);
-	SRAM_writeByte(loc++, cfg_btn_ffwd);
-	SRAM_writeByte(loc++, cfg_btn_rswap);
-	SRAM_writeByte(loc++, cfg_btn_lswap);
-	SRAM_writeByte(loc++, cfg_btn_map);
-	SRAM_writeByte(loc++, cfg_btn_pause);
-	SRAM_writeByte(loc++, cfg_language);
-	SRAM_writeByte(loc++, cfg_ffwd);
-	SRAM_writeByte(loc++, cfg_updoor);
-	SRAM_writeByte(loc++, cfg_hellquake);
-	SRAM_writeByte(loc++, cfg_iframebug);
-	SRAM_writeByte(loc++, cfg_force_btn);
-	SRAM_writeByte(loc++, cfg_msg_blip);
-	SRAM_writeByte(loc++, cfg_music_mute);
-	SRAM_writeByte(loc++, cfg_sfx_mute);
-	SRAM_writeByte(loc++, cfg_60fps);
+	sram_write_long(loc, CFG_MAGIC); loc += 4;
+	sram_write_byte(loc++, cfg_btn_jump);
+	sram_write_byte(loc++, cfg_btn_shoot);
+	sram_write_byte(loc++, cfg_btn_ffwd);
+	sram_write_byte(loc++, cfg_btn_rswap);
+	sram_write_byte(loc++, cfg_btn_lswap);
+	sram_write_byte(loc++, cfg_btn_map);
+	sram_write_byte(loc++, cfg_btn_pause);
+	sram_write_byte(loc++, cfg_language);
+	sram_write_byte(loc++, cfg_ffwd);
+	sram_write_byte(loc++, cfg_updoor);
+	sram_write_byte(loc++, cfg_hellquake);
+	sram_write_byte(loc++, cfg_iframebug);
+	sram_write_byte(loc++, cfg_force_btn);
+	sram_write_byte(loc++, cfg_msg_blip);
+	sram_write_byte(loc++, cfg_music_mute);
+	sram_write_byte(loc++, cfg_sfx_mute);
+	sram_write_byte(loc++, cfg_60fps);
 
-	SRAM_disable();
+	sram_disable();
     z80_resume();
-	enable_ints;
+	enable_ints();
 }
 
 // Level select is still the old style format... don't care enough to fix it
@@ -661,12 +663,12 @@ void system_load_levelselect(uint8_t file) {
 uint8_t system_checkdata() {
 	sram_state = SRAM_INVALID; // Default invalid
 	// Read a specific spot in SRAM
-	SRAM_enableRO();
-	uint32_t test = SRAM_readLong(SRAM_TEST_POS);
+	sram_enable_ro();
+	uint32_t test = sram_read_long(SRAM_TEST_POS);
 	// Anything there?
 	if(test == STR_TEST) {
 		// Read first file pos for CSMD magic
-		test = SRAM_readLong(SRAM_FILE_START); 
+		test = sram_read_long(SRAM_FILE_START);
 		if(test == STR_CSMD) {
 			// Save data exists, this is the only state that should allow selecting "continue"
 			sram_state = SRAM_VALID_SAVE;
@@ -675,22 +677,22 @@ uint8_t system_checkdata() {
 			sram_state = SRAM_VALID_EMPTY;
 		}
 	}
-	SRAM_disable();
+	sram_disable();
 	if(sram_state == SRAM_INVALID) {
 		// Nothing is there, try to write "TEST" and re-read
-		SRAM_enable();
-		SRAM_writeLong(SRAM_TEST_POS, STR_TEST);
-		SRAM_disable();
-		SRAM_enableRO();
-		test = SRAM_readLong(SRAM_TEST_POS);
-		SRAM_disable();
+		sram_enable();
+		sram_write_long(SRAM_TEST_POS, STR_TEST);
+		sram_disable();
+		sram_enable_ro();
+		test = sram_read_long(SRAM_TEST_POS);
+		sram_disable();
 		if(test == STR_TEST) {
 			// Test passed, game can be saved but not loaded
 			sram_state = SRAM_VALID_EMPTY;
 			// Clear the hell timer just in case (thanks Fusion)
-			SRAM_enable();
-			for(uint16_t i = 0; i < 5; i++) SRAM_writeLong(SRAM_COUNTER_POS + i*4, 0);
-			SRAM_disable();
+			sram_enable();
+			for(uint16_t i = 0; i < 5; i++) sram_write_long(SRAM_COUNTER_POS + i*4, 0);
+			sram_disable();
 		} else {
 			// Test failed, SRAM is unusable
 			sram_state = SRAM_INVALID;
@@ -708,11 +710,11 @@ uint32_t system_load_counter() {
 	uint8_t buffer[20];
 	uint32_t *result = (uint32_t*)buffer;
 	// Read 20 bytes of 290.rec from SRAM
-	SRAM_enableRO();
+	sram_enable_ro();
 	for(uint16_t i = 0; i < 20; i++) {
-		buffer[i] = SRAM_readByte(SRAM_COUNTER_POS + i);
+		buffer[i] = sram_read_byte(SRAM_COUNTER_POS + i);
 	}
-	SRAM_disable();
+	sram_disable();
 	// Apply key
 	for(uint16_t i = 0; i < 4; i++) {
 		uint8_t key = buffer[16 + i];
@@ -765,19 +767,19 @@ void system_save_counter(uint32_t ticks) {
 		buffer[j+3] += (key / 2);
 	}
 	// Write to SRAM
-	SRAM_enable();
+	sram_enable();
 	for(uint16_t i = 0; i < 20; i++) {
-		SRAM_writeByte(SRAM_COUNTER_POS + i, buffer[i]);
+		sram_write_byte(SRAM_COUNTER_POS + i, buffer[i]);
 	}
-	SRAM_disable();
+	sram_disable();
 }
 
 void system_format_sram() {
-	SRAM_enable();
+	sram_enable();
 	for(uint16_t i = 0; i < 0x2000; i += 4) {
-		SRAM_writeLong(i, 0);
+		sram_write_long(i, 0);
 	}
-	SRAM_disable();
+	sram_disable();
 }
 
 static uint8_t LS_readByte(uint8_t file, uint32_t addr) {

@@ -14,4 +14,54 @@ typedef unsigned char	uint8_t;
 typedef unsigned short	uint16_t;
 typedef unsigned long	uint32_t;
 
+typedef struct {
+    int16_t y;
+    union {
+        struct {
+            uint8_t size;
+            uint8_t link;
+        };
+        uint16_t size_link;
+    };
+    uint16_t attr;
+    int16_t x;
+} VDPSprite;
+
+// SGDK / Rescomp Types
+typedef struct {
+    uint16_t numTile;
+    uint32_t *tiles;
+} TileSet;
+
+typedef struct {
+    uint16_t *data;
+} Palette;
+
+typedef struct {
+    int16_t y;          // respect VDP sprite field order
+    uint16_t size;
+    int16_t x;
+    uint16_t numTile;
+} VDPSpriteInf;
+
+typedef struct {
+    uint16_t numSprite;
+    VDPSpriteInf **vdpSpritesInf;
+    TileSet *tileset;
+    int16_t w;
+    int16_t h;
+} AnimationFrame;
+
+typedef struct {
+    uint16_t numFrame;
+    AnimationFrame **frames;
+    uint16_t length;
+    uint8_t *sequence;
+} Animation;
+
+typedef struct {
+    uint16_t numAnimation;
+    Animation **animations;
+} SpriteDefinition;
+
 #endif //MD_TYPES_H

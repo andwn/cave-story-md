@@ -35,9 +35,9 @@ LTO_SO  := liblto_plugin.so
 
 INCS     = -Isrc -Ires
 CCFLAGS  = -m68000 -mshort -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
-OPTIONS  = -O3 -flto=auto -frename-registers -fconserve-stack
+OPTIONS  = -O3 -frename-registers -fconserve-stack
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
-ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
+ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or
 LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
 Z80FLAGS = -isrc/xgm
 
@@ -83,6 +83,7 @@ CS   += $(wildcard src/md/*.c)
 SS    = $(wildcard src/*.s)
 SS   += $(wildcard src/md/*.s)
 SS   += $(wildcard src/xgm/*.s)
+SS   += $(wildcard src/res/*.s)
 OBJS  = $(RESS:.res=.o)
 OBJS += $(CS:.c=.o)
 OBJS += $(SS:.s=.o)
@@ -99,16 +100,16 @@ ASMO += $(CS:%.c=asmout/%.s)
 all: release
 sega: release
 
-profile: OPTIONS += -DSEGA_LOGO -DPROFILE
+profile: OPTIONS += -flto=auto -DPROFILE
 profile: release
 
-release: OPTIONS += -DSEGA_LOGO
+release: OPTIONS += -flto=auto
 release: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 
-asm: OPTIONS += -DSEGA_LOGO -fverbose-asm
+asm: OPTIONS += -fverbose-asm
 asm: prereq head-gen asm-dir $(PATS) $(ASMO)
 
-debug: OPTIONS += -DSEGA_LOGO -DDEBUG -DKDEBUG
+debug: OPTIONS += -flto=auto -DDEBUG -DKDEBUG
 debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 
 translate: $(PATCHROM) $(TL_TSBS)
@@ -174,7 +175,7 @@ $(MEGALOADER): bin
 
 # For asm target
 asm-dir:
-	mkdir -p asmout/src/{ai,db,xgm}
+	mkdir -p asmout/src/{ai,db,xgm,md}
 
 asmout/%.s: %.c
 	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@

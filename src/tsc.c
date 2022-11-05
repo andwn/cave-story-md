@@ -1,12 +1,13 @@
 #include "common.h"
 
 #include "audio.h"
-#include "bank_data.h"
+#include "res/system.h"
+#include "res/local.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "entity.h"
 #include "effect.h"
-#include "error.h"
+#include "md/error.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "md/joy.h"
@@ -17,13 +18,14 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "string.h"
+#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"
-#include "vdp.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "window.h"
-#include "xgm.h"
+#include "md/xgm.h"
 
 #include "ai.h"
 #include "tsc.h"
@@ -231,7 +233,6 @@ void tsc_call_event(uint16_t number) {
 		for(uint8_t i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
 			    lastRunEvent = number;
-			    //linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = headEvents[i].data;
 				return;
@@ -241,7 +242,6 @@ void tsc_call_event(uint16_t number) {
 		for(uint8_t i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
                 lastRunEvent = number;
-                //linesSinceLastNOD = 0;
 				tscState = TSC_RUNNING;
 				curCommand = stageEvents[i].data;
 				return;
@@ -380,7 +380,7 @@ void tsc_show_boss_health() {
 	static const char boss[4] = "Boss";
 	for(uint8_t i = 0; i < 4; i++) {
 		//vdp_tiles_load(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1);
-        vdp_tiles_load_uftc(UFTC_SysFont, boss[i]-0x20, TILE_NAMEINDEX+i, 1);
+        vdp_tiles_load_uftc(UFTC_SysFont, TILE_NAMEINDEX+i, boss[i]-0x20, 1);
 	}
 	for(uint8_t i = 0; i < 8; i++) {
 		vdp_tiles_load(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1);
@@ -618,7 +618,7 @@ uint8_t execute_command() {
 			args[3] = tsc_read_word();
 			if(gamemode == GM_CREDITS) {
 				if(args[0] == 0) {
-					vdp_map_clear(VDP_PLAN_A);
+					vdp_map_clear(VDP_PLANE_A);
 					entities_clear();
 					sheets_load_stage(0, FALSE, TRUE);
 					vdp_sprites_clear();
@@ -1207,7 +1207,7 @@ uint8_t execute_command() {
 			ready = TRUE;
 			vdp_vsync(); aftervsync();
 
-            disable_ints;
+            disable_ints();
             z80_pause_fast();
 			vdp_set_display(FALSE);
 			// Disable camera
@@ -1217,26 +1217,26 @@ uint8_t execute_command() {
 			camera.x_shifted = 0;
 			camera.y_shifted = 0;
 			// Reset plane positions
-			vdp_hscroll(VDP_PLAN_A, 0);
-			vdp_vscroll(VDP_PLAN_A, 0);
-			vdp_hscroll(VDP_PLAN_B, 0);
-			vdp_vscroll(VDP_PLAN_B, 0);
+			vdp_hscroll(VDP_PLANE_A, 0);
+			vdp_vscroll(VDP_PLANE_A, 0);
+			vdp_hscroll(VDP_PLANE_B, 0);
+			vdp_vscroll(VDP_PLANE_B, 0);
 			// Clear planes
-			vdp_map_clear(VDP_PLAN_B);
-			vdp_map_clear(VDP_PLAN_A);
+			vdp_map_clear(VDP_PLANE_B);
+			vdp_map_clear(VDP_PLANE_A);
 			// Background sky/mountains
 			vdp_tiles_load(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
-			vdp_map_fill_rect(VDP_PLAN_B, TILE_ATTR(PAL3,0,0,0,TILE_TSINDEX), 10, 10, 20, 10, 1);
+			vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL3, 0, 0, 0, TILE_TSINDEX), 10, 10, 20, 10, 1);
 			// Foreground trees
 			vdp_tiles_load(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
-			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL3,1,0,0,TILE_BACKINDEX), 10, 16, 20, 4, 1);
+			vdp_map_fill_rect(VDP_PLANE_A, TILE_ATTR(PAL3, 1, 0, 0, TILE_BACKINDEX), 10, 16, 20, 4, 1);
 			// Draw high prio black tiles over the top to hide island
 			static const uint32_t blackTile[8] = { 
 				0x11111111,0x11111111,0x11111111,0x11111111,
 				0x11111111,0x11111111,0x11111111,0x11111111
 			};
 			vdp_tiles_load(blackTile, 1, 1);
-			vdp_map_fill_rect(VDP_PLAN_A, TILE_ATTR(PAL0,1,0,0,1), 10, 6, 20, 4, 0);
+			vdp_map_fill_rect(VDP_PLANE_A, TILE_ATTR(PAL0, 1, 0, 0, 1), 10, 6, 20, 4, 0);
 			
 			// Island sprite
 			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
@@ -1255,7 +1255,7 @@ uint8_t execute_command() {
 			vdp_colors(48, PAL_XX.data, 16);
 			vdp_set_display(TRUE);
             z80_resume();
-            enable_ints;
+            enable_ints();
 
 			song_stop();
 			

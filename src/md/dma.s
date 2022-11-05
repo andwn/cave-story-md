@@ -1,22 +1,31 @@
-/* Based on Miniplanets DMA routines */
+    .include "macros.i"
 
-.section .bss
+/* VDP DMA Registers */
+EQU VDPREG_DMALEN_L, 0x9300  /* DMA length (low) */
+EQU VDPREG_DMALEN_H, 0x9400  /* DMA length (high) */
+EQU VDPREG_DMASRC_L, 0x9500  /* DMA source (low) */
+EQU VDPREG_DMASRC_M, 0x9600  /* DMA source (mid) */
+EQU VDPREG_DMASRC_H, 0x9700  /* DMA source (high) */
 
-    .globl dmabuf
-    .globl dmabuf_end
-dmabuf:     ds.w 8*48
-dmabuf_end: ds.l 1
+/* VDP DMA Commands */
+EQU VRAM_DMA_CMD,    0x40000080
+EQU CRAM_DMA_CMD,    0xC0000080
+EQU VSRAM_DMA_CMD,   0x40000090
 
-.section .text
+    .section .bss
+
+VAR dmabuf,     w, 8*48
+VAR dmabuf_end, l, 1
+
+    .section .text
 
 /* void dma_queue(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc) */
-    .globl dma_queue
-dma_queue:
+FUNC dma_queue
         move.l  (dmabuf_end),a0
 
         move.w  16(sp),d0 /* inc */
 
-        or.w    #0x8F00,d0
+        or.w    #VDPREG_INCR,d0
         move.w  d0,(a0)+
 
         move.l  8(sp), d0 /* from */
@@ -43,11 +52,10 @@ dma_queue:
         rts
 
 /* void dma_pop() */
-    .globl dma_pop
-dma_pop:
+FUNC dma_pop
         sub.l   #16,(dmabuf_end)
         move.l  (dmabuf_end),a0
-        lea     (0xC00004),a1
+        lea     (VdpCtrl),a1
         move.w  #7,d0
 
     dma_pop_loop:
@@ -57,10 +65,9 @@ dma_pop:
         rts
 
 /* void dma_flush() */
-    .globl dma_flush
-dma_flush:
+FUNC dma_flush
         lea     (dmabuf),a0
-        lea     (0xC00004),a1
+        lea     (VdpCtrl),a1
 
         move.l  (dmabuf_end),d0
         sub.l   #dmabuf,d0
@@ -72,10 +79,11 @@ dma_flush:
         move.w  (a0)+,(a1)
         dbf     d0,dma_flush_loop
 
-        move.w  #0x8F02,(a1)  /* autoinc = 2 */
+        move.w  #VDPREG_INCR+2,(a1)  /* autoinc = 2 */
+        move.l  #dmabuf,(dmabuf_end)
+        rts
 
 /* void dma_clear() */
-    .globl dma_clear
-dma_clear:
+FUNC dma_clear
         move.l  #dmabuf,(dmabuf_end)
         rts

@@ -9,14 +9,6 @@
 typedef struct {
 	const uint8_t *PXM; // PXM is the layout, each byte is an index of the current tileset
 	const uint8_t *PXE; // PXE is the entity list
-	//const uint8_t *TSC; // TSC is the script
-	//const uint8_t *JTSC; // Japanese version of the Stage TSC
-    //const uint8_t *STSC; // Spanish version of the Stage TSC
-    //const uint8_t *PTSC; // Portugese version of the Stage TSC
-    //const uint8_t *FTSC; // French version of the Stage TSC
-    //const uint8_t *ITSC; // Italian version of the Stage TSC
-    //const uint8_t *GTSC; // German version of the Stage TSC
-    //const uint8_t *BTSC; // BR Portugese version of the Stage TSC
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const Palette *npcPalette;
 	uint8_t tileset; // Which tileset in tileset_info to use
@@ -28,12 +20,12 @@ extern const stage_info_def stage_info[STAGE_COUNT];
 // Information about each tileset, indexed by stageTileset
 #define TILESET_COUNT 29
 typedef struct {
-	//const TileSet *tileset; // The graphical tile data to load
     const uint16_t size; // Number of 16x16 blocks in the tileset
     const uint16_t *pat; // The graphical tile data to load
 	const Palette *palette; // The palette, which will be loaded to PAL2
 	const uint8_t *PXA; // Tile options, how objects interact with different tiles
 } tileset_info_def;
+extern const tileset_info_def tileset_info[];
 
 // Information about each background, indexed by stageBackground
 // The IDs deviate from the original game. I do not know the "correct" order
@@ -44,27 +36,31 @@ typedef struct {
 	// 4 already loaded. This value specifies which, like PAL0, PAL1, etc
 	uint16_t palette;
 	// The "type" is which behavior/algorithm to use when loading/scrolling the background
-	// 0 - Draw a plain tiled image into VDP_PLAN_B
-	// 1 - Moon/Fog - Draw from a specified pattern into VDP_PLAN_B and scroll the clouds
-	// 2 - Clear VDP_PLAN_B to black, no background
+	// 0 - Draw a plain tiled image into VDP_PLANE_B
+	// 1 - Moon/Fog - Draw from a specified pattern into VDP_PLANE_B and scroll the clouds
+	// 2 - Clear VDP_PLANE_B to black, no background
 	// 3 - Scroll tiled image automatically (Ironhead boss)
 	uint8_t type;
 	uint8_t width, height; // Size of tiled image for type 0
+    uint8_t padding; // Make it even
 } background_info_def;
+extern const background_info_def background_info[];
 
 // Information about each music track for song_play()
 #define SONG_COUNT 43
 typedef struct {
 	const uint8_t *song; // Location of XGM to be loaded
 	char name[24]; // Name of the track (sound test)
-} song_info_def;
+} bgm_info_def;
+extern const bgm_info_def bgm_info[];
 
 // Information about each sound effect for sound_play()
 #define SOUND_COUNT 118
 typedef struct {
     const uint8_t *sound; // Location of PCM data to playback
     const uint8_t *end; // Pointer to the end, to calculate length
-} sound_info_def;
+} sfx_info_def;
+extern const sfx_info_def sfx_info[];
 
 // Information about each character face image
 #define FACE_COUNT 30
@@ -73,17 +69,19 @@ typedef struct {
 	// Like backgrounds, faces share palettes. This is which of the 4 currently loaded to use
 	uint16_t palette;
 } face_info_def;
+extern const face_info_def face_info[];
 
 // Information about each NPC type, indexes are the same as npc.tbl
 typedef struct {
 	// SpriteDef containing tile data, ignored if a sheet is used
 	const SpriteDefinition *sprite;
 	uint8_t sheet; // Sheet ID or NOSHEET
+    uint8_t sprite_count; // Size of sprite[0], must be known beforehand
 	uint16_t palette; // Any of the 4 loaded palettes to use for the sprite
-	uint8_t sprite_count; // Size of sprite[0], must be known beforehand
 	EntityMethod onSpawn, onFrame, onDeath; // AI
     char comment[12]; // Really padding to make the element length a power of 2
 } npc_info_def;
+extern const npc_info_def npc_info[];
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
 typedef struct {
@@ -92,6 +90,7 @@ typedef struct {
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
     char padding[7];
 } weapon_info_def;
+extern const weapon_info_def weapon_info[];
 
 // Instructions on how to display text/icons in the credits
 typedef struct {
@@ -130,6 +129,7 @@ typedef struct {
 		} palette;
 	};
 } credits_info_def;
+extern const credits_info_def credits_info[];
 
 // Credits illustrations
 typedef struct {
@@ -139,21 +139,4 @@ typedef struct {
 	const uint16_t *map;
 	const Palette *palette;
 } illustration_info_def;
-
-extern const tileset_info_def tileset_info[];
-
-extern const background_info_def background_info[];
-
-extern const song_info_def song_info[];
-
-extern const sound_info_def sound_info[];
-
-extern const npc_info_def npc_info[];
-
-extern const weapon_info_def weapon_info[];
-
-extern const face_info_def face_info[];
-
-extern const credits_info_def credits_info[];
-
 extern const illustration_info_def illustration_info[];

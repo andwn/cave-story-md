@@ -1,11 +1,10 @@
-        .globl memset
-memset:
-#        move.w  14(sp),d0
+    .include "macros.i"
+
+FUNC memset
         move.w  10(sp),d0          /* d0 = len */
         jeq     .L02
 
         move.l  4(sp),a0           /* a0 = to */
-#        move.b  11(sp),d1
         move.b  9(sp),d1           /* d1 = value */
 
         cmpi.w  #15,d0             /* len < 16 ? */
@@ -82,9 +81,7 @@ memset:
         rts
 
 
-        .globl memcpy
-memcpy:
-#        move.w  14(sp),d0
+FUNC memcpy
         move.w  12(sp),d0          /* d0 = len */
         jeq     .L82
 

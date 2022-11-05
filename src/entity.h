@@ -1,10 +1,6 @@
 /*
  * Apart from effects and player bullets, all game objects are entities.
  */
- 
-#define MD_STAYACTIVE	0x01
-#define MD_NOSLOPES		0x02
-#define MD_NOSHAKE		0x04
 
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
@@ -17,18 +13,19 @@ struct Entity {
 	// Next and previous linked list nodes. NULL at the end/beginning of the list
 	Entity *next, *prev;
 	Entity *linkedEntity; // Arbitrary entity used by AI
+    // Unique behavior routine depending on the type of object
+    EntityMethod onFrame;
 	/* NPC Attributes */
 	uint16_t health; // If this is an enemy it will die when health reaches 0
 	uint8_t attack; // Damage inflicted on player when colliding
 	uint8_t experience; // How much weapon energy/exp is dropped when killed
 	uint8_t hurtSound; // Sound ID that plays when the entity is hurt
 	uint8_t deathSound; // Sound ID that plays when the entity dies
-	uint16_t flags; // NPC Flags from the npc.tbl that apply to every instance of this entity
+	uint16_t flags; // NPC Flags from the npc.tbl and PXE
 	/* PXE Attributes */
 	uint16_t id; // Entity ID
 	uint16_t event; // Event # to run when triggered
 	uint16_t type; // NPC type - index of both npc.tbl and npc_info
-	//uint16_t eflags; // PXE Flags are per entity, and are added with NPC flags via binary OR
 	/* AI / Behavior */
 	uint8_t alwaysActive; // Guaranteed to never deactivate when TRUE
 	uint16_t state, timer, timer2; // AI script state and timers

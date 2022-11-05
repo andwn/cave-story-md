@@ -9,11 +9,12 @@
 #include "resources.h"
 #include "system.h"
 #include "tables.h"
-#include "vdp.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "weapon.h"
 
 #include "hud.h"
-#include "xgm.h"
+#include "md/xgm.h"
 
 #define TSIZE 8
 #define SPR_TILE(x, y) (((x)*4)+(y))
@@ -78,10 +79,10 @@ void hud_create() {
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
 	// Draw blank tiles next to weapon
-	dma_now(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
-	dma_now(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
-	dma_now(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
-	dma_now(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
+	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
+	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
+	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
+	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
 }
 
 void hud_force_redraw() {
@@ -91,16 +92,16 @@ void hud_force_redraw() {
 	hud_refresh_maxammo();
 	hud_refresh_ammo();
     // Draw blank tiles next to weapon
-    dma_queue(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t)TILE_BLANK, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
+    dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
+    dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
+    dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
+    dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
 
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	dma_flush();
     z80_resume();
-    enable_ints;
+    enable_ints();
 }
 
 void hud_force_energy() {
@@ -163,7 +164,7 @@ void hud_refresh_health() {
 	if(digit) {
 		memcpy(tileData[1], &TS_Numbers.tiles[(digit)*TSIZE], TILE_SIZE);
 	} else {
-		memcpy(tileData[1], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[1], BlankData, TILE_SIZE);
 	}
 	memcpy(tileData[2], &TS_Numbers.tiles[mod10[hudHealth]*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
@@ -283,19 +284,19 @@ void hud_refresh_ammo() {
 	// Top half of ammo display
 	hudAmmo = playerWeapon[currentWeapon].ammo;
 	if(hudMaxAmmo > 0) {
-		memcpy(tileData[AMMO+0], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[AMMO+0], BlankData, TILE_SIZE);
 		uint8_t ammoTemp = hudAmmo;
 		if(ammoTemp >= 100) {
 			ammoTemp -= 100;
 			memcpy(tileData[AMMO+1], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {
-			memcpy(tileData[AMMO+1], TILE_BLANK, TILE_SIZE);
+			memcpy(tileData[AMMO+1], BlankData, TILE_SIZE);
 		}
 		memcpy(tileData[AMMO+2], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
 		memcpy(tileData[AMMO+3], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
-		memcpy(tileData[AMMO+0], TILE_BLANK, TILE_SIZE);
-		memcpy(tileData[AMMO+1], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[AMMO+0], BlankData, TILE_SIZE);
+		memcpy(tileData[AMMO+1], BlankData, TILE_SIZE);
 		memcpy(tileData[AMMO+2], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for ammo
@@ -313,12 +314,12 @@ void hud_refresh_maxammo() {
 			ammoTemp -= 100;
 			memcpy(tileData[AMMO+5], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
 		} else {
-			memcpy(tileData[AMMO+5], TILE_BLANK, TILE_SIZE);
+			memcpy(tileData[AMMO+5], BlankData, TILE_SIZE);
 		}
 		memcpy(tileData[AMMO+6], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
 		memcpy(tileData[AMMO+7], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
-		memcpy(tileData[AMMO+5], TILE_BLANK, TILE_SIZE);
+		memcpy(tileData[AMMO+5], BlankData, TILE_SIZE);
 		memcpy(tileData[AMMO+6], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for max ammo

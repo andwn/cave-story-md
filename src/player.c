@@ -1,14 +1,15 @@
 #include "common.h"
 
 #include "audio.h"
-#include "bank_data.h"
+#include "res/system.h"
+#include "res/local.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
 #include "md/joy.h"
-#include "kanji.h"
+#include "cjk.h"
 #include "math.h"
 #include "md/stdlib.h"
 #include "npc.h"
@@ -19,11 +20,12 @@
 #include "tables.h"
 #include "md/comp.h"
 #include "tsc.h"
-#include "vdp.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "weapon.h"
 
 #include "player.h"
-#include "xgm.h"
+#include "md/xgm.h"
 
 #define PLAYER_SPRITE_TILES_QUEUE() ({ \
 	uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0); \
@@ -107,6 +109,7 @@ void player_init() {
 	playerEquipment = 0; // Nothing equipped
 	for(uint8_t i = 0; i < MAX_ITEMS; i++) playerInventory[i] = 0; // Empty inventory
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) playerWeapon[i].type = 0; // No Weapons
+    for(uint8_t i = 0; i < MAX_BULLETS; i++) playerBullet[i].extent.x1 = 0xFFFF;
 	playerMoveMode = 0;
 	currentWeapon = 0;
 	airPercent = 100;
@@ -901,7 +904,7 @@ static void draw_air_percent() {
 		airTemp -= 100;
 		memcpy(numberTiles[0], &TS_Numbers.tiles[8], 32);
 	} else {
-		memcpy(numberTiles[0], TILE_BLANK, 32);
+		memcpy(numberTiles[0], BlankData, 32);
 	}
 	memcpy(numberTiles[1], &TS_Numbers.tiles[div10[airTemp] * 8], 32);
 	memcpy(numberTiles[2], &TS_Numbers.tiles[mod10[airTemp] * 8], 32);
@@ -921,7 +924,7 @@ static void player_update_air_display() {
 	} else {
 		airDisplayTime++;
 		if((airDisplayTime & 31) == 0) {
-			vdp_tiles_load(TILE_BLANK, TILE_AIRINDEX, 1);
+			vdp_tiles_load(BlankData, TILE_AIRINDEX, 1);
 		} else if((airDisplayTime & 31) == 15) {
 			const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
 			vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
@@ -1092,11 +1095,11 @@ uint8_t player_inflict_damage(uint16_t damage) {
 				w->level -= 1;
 				w->energy += weapon_info[w->type].experience[w->level - 1];
 				w->energy -= damage;
-                disable_ints;
+                disable_ints();
                 z80_pause_fast();
 				sheets_refresh_weapon(w);
                 z80_resume();
-                enable_ints;
+                enable_ints();
 				entity_create(player.x, player.y, 
 						cfg_language == LANG_JA ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
 			} else {
@@ -1175,11 +1178,11 @@ void player_give_weapon(uint8_t id, uint8_t ammo) {
 				TILES_QUEUE(SPR_TILES(weapon_info[WEAPON_POLARSTAR].sprite,0,0),
 					TILE_WEAPONINDEX,6);
 			}
-            disable_ints;
+            disable_ints();
             z80_pause_fast();
 			sheets_load_weapon(w);
             z80_resume();
-            enable_ints;
+            enable_ints();
 			break;
 		}
 	} else {
@@ -1225,11 +1228,11 @@ void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 			w->maxammo = ammo;
 			w->ammo = ammo;
 		}
-        disable_ints;
+        disable_ints();
         z80_pause_fast();
 		sheets_load_weapon(w);
         z80_resume();
-        enable_ints;
+        enable_ints();
 	}
 }
 
@@ -1240,7 +1243,7 @@ void player_refill_ammo() {
 }
 
 void player_delevel_weapons() {
-    disable_ints;
+    disable_ints();
     z80_pause_fast();
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].level = 1;
@@ -1248,7 +1251,7 @@ void player_delevel_weapons() {
 		sheets_refresh_weapon(&playerWeapon[i]);
 	}
     z80_resume();
-    enable_ints;
+    enable_ints();
 }
 
 void player_heal(uint8_t health) {

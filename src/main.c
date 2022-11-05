@@ -3,7 +3,7 @@
 #include "audio.h"
 #include "md/dma.h"
 #include "effect.h"
-#include "error.h"
+#include "md/error.h"
 #include "gamemode.h"
 #include "md/joy.h"
 #include "md/stdlib.h"
@@ -12,8 +12,9 @@
 #include "system.h"
 #include "md/comp.h"
 #include "tsc.h"
-#include "vdp.h"
-#include "xgm.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+#include "md/xgm.h"
 
 volatile uint8_t ready;
 
@@ -22,7 +23,7 @@ uint8_t paused;
 uint8_t gameFrozen;
 
 void aftervsync() {
-	disable_ints;
+	disable_ints();
     z80_pause_fast();
 
     vdp_fade_step_dma();
@@ -36,13 +37,14 @@ void aftervsync() {
 	}
 
     z80_resume();
-    enable_ints;
+    enable_ints();
 
     vdp_fade_step_calc();
     joy_update();
 }
 
-int main() {
+__attribute__((noreturn))
+void main() {
     srand(0xC427); // initiate rand number generator
     mem_init();
     vdp_init();
@@ -54,7 +56,7 @@ int main() {
 	}
     //dma_clear();
 	joy_init();
-	enable_ints;
+	enable_ints();
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
 		time_tab = time_tab_pal;
@@ -92,5 +94,4 @@ int main() {
 			credits_main();
 		}
     }
-	return 0;
 }

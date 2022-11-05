@@ -1,12 +1,5 @@
 #include "md/types.h"
 
-#define SYS_hardReset() __asm__("move   #0x2700,%sr\n\t" \
-                                "move.l (0),%a7\n\t"     \
-                                "jmp    _hard_reset")
-
-#define enable_ints __asm__("move #0x2500,%sr")
-#define disable_ints __asm__("move #0x2700,%sr")
-
 #ifdef PROFILE
 #define PF_BGCOLOR(c) ({ \
 	*((volatile uint32_t*) 0xC00004) = 0xC0000000; \
@@ -119,58 +112,6 @@ typedef void (*WeaponFunc)(Weapon*);
 typedef void (*BulletFunc)(Bullet*);
 typedef void (*ActionFunc)(uint8_t page);
 
-// SGDK / Rescomp Types
-typedef struct {
-    uint16_t numTile;
-    uint32_t *tiles;
-} TileSet;
-
-typedef struct {
-    uint16_t *data;
-} Palette;
-
-typedef struct {
-    int16_t y;
-    union {
-        struct {
-            uint8_t size;
-            uint8_t link;
-        };
-        uint16_t size_link;
-    };
-    uint16_t attr;
-    int16_t x;
-} VDPSprite;
-
-typedef struct {
-    int16_t y;          // respect VDP sprite field order
-    uint16_t size;
-    int16_t x;
-    uint16_t numTile;
-} VDPSpriteInf;
-
-typedef struct {
-    uint16_t numSprite;
-	VDPSpriteInf **vdpSpritesInf;
-    TileSet *tileset;
-    int16_t w;
-    int16_t h;
-} AnimationFrame;
-
-typedef struct {
-    uint16_t numFrame;
-    AnimationFrame **frames;
-    uint16_t length;
-    uint8_t *sequence;
-} Animation;
-
-typedef struct {
-    uint16_t numAnimation;
-    Animation **animations;
-} SpriteDefinition;
-
-// VBlank stuff
-extern volatile uint8_t vblank;
 
 // Prevents incomplete sprite list from being sent to VDP (flickering)
 extern volatile uint8_t ready;

@@ -43,7 +43,7 @@ struct Bullet {
 	VDPSprite sprite;
 	bounding_box hit_box;
 	extent_box extent;
-	Entity *last_hit[1];
+	//Entity *last_hit[1];
 
     uint8_t sheet;
     uint8_t dir;
@@ -56,8 +56,11 @@ struct Bullet {
 	uint8_t level;
 	uint8_t damage;
 	uint8_t ttl;
-    // 44 + 20 = 64
-    uint8_t _padding[20];
+
+    BulletFunc onFrame;
+    Entity *last_hit[4];
+    // 60 + 4 = 64
+    uint8_t _padding[4];
 };
 
 extern Weapon playerWeapon[MAX_WEAPONS];
@@ -80,7 +83,7 @@ void weapon_fire_spur(Weapon *w);
 extern const WeaponFunc weapon_fire_array[WEAPON_COUNT];
 
 static inline void bullet_deactivate(Bullet *b) {
-    b->extent = (extent_box) {};
+    b->extent.x1 = 0xFFFF;
     b->ttl = 0;
 }
 

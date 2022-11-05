@@ -10,7 +10,7 @@
 #include "sheet.h"
 #include "tables.h"
 #include "md/comp.h"
-#include "vdp.h"
+#include "md/vdp.h"
 
 #include "effect.h"
 

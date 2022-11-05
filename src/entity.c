@@ -1,10 +1,10 @@
 #include "common.h"
 #include "audio.h"
-#include "bank_data.h"
+#include "res/stage.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
-#include "error.h"
+#include "md/error.h"
 #include "md/joy.h"
 #include "math.h"
 #include "md/stdlib.h"
@@ -17,7 +17,7 @@
 #include "tables.h"
 #include "md/comp.h"
 #include "tsc.h"
-#include "vdp.h"
+#include "md/vdp.h"
 #include "weapon.h"
 
 #include "entity.h"
@@ -173,7 +173,8 @@ void entities_update(uint8_t draw) {
 		}
 		new_active_count++;
 		// AI onUpdate method - may set STATE_DELETE
-		ENTITY_ONFRAME(e);
+		//ENTITY_ONFRAME(e);
+        e->onFrame(e);
 		if(e->state == STATE_DELETE) {
 			e = entity_delete(e);
 			continue;
@@ -181,9 +182,10 @@ void entities_update(uint8_t draw) {
 			e = entity_destroy(e);
 			continue;
 		}
-		//uint16_t flags = e->flags | e->eflags;
 		// Handle Shootable flag - check for collision with player's bullets
 		if(e->flags & NPC_SHOOTABLE) {
+            // TODO: Only generate this when the entity actually moves,
+            // and use it in more places like player & stage collision
 			extent_box ee = (extent_box) {
 				.x1 = (e->x >> CSF) - (e->hit_box.left),
 				.y1 = (e->y >> CSF) - (e->hit_box.top),
@@ -191,10 +193,14 @@ void entities_update(uint8_t draw) {
 				.y2 = (e->y >> CSF) + (e->hit_box.bottom),
 			};
 			uint8_t cont = FALSE;
+            // This code is run 10 times for every shootable entity. It has to be fast
 			for(uint16_t i = 0; i < MAX_BULLETS; i++) {
-				if(playerBullet[i].ttl &&
-					playerBullet[i].extent.x2 >= ee.x1 &&
+                // The ttl check added a whopping 4 asm instructions lmao
+                // I've opted to instead set a dead bullet's extent.x1 to 0xFFFF
+                // That way the first check will always fail
+				if(/*playerBullet[i].ttl &&*/
                     playerBullet[i].extent.x1 <= ee.x2 &&
+                    playerBullet[i].extent.x2 >= ee.x1 &&
                     playerBullet[i].extent.y2 >= ee.y1 &&
 					playerBullet[i].extent.y1 <= ee.y2)
 				{	// Collided
@@ -354,7 +360,6 @@ void entities_update(uint8_t draw) {
 }
 
 void entity_handle_bullet(Entity *e, Bullet *b) {
-	//uint16_t flags = e->flags | e->eflags;
 	// Destroy the bullet, or if it is a missile make it explode
 	if(b->type == WEAPON_MISSILE || b->type == WEAPON_SUPERMISSILE) {
 		if(!b->state) {
@@ -416,7 +421,9 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			e->health = 0;
 			ENTITY_ONDEATH(e);
 			if(b->type == WEAPON_SPUR || b->type == WEAPON_SPUR_TAIL) {
-				if(--b->damage == 0) b->ttl = 0;
+				if(--b->damage == 0) {
+                    bullet_deactivate(b);
+                }
 			}
 			return;
 		} else if((e->flags & NPC_SHOWDAMAGE) || e->shakeWhenHit) {
@@ -955,6 +962,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 			}
 		}
 	}
+    e->onFrame = npc_info[e->type].onFrame;
 	ENTITY_ONSPAWN(e);
 	if(e->alwaysActive || entity_on_screen(e)) {
 		LIST_PUSH(entityList, e);

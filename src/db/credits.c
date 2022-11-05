@@ -1,8 +1,8 @@
 #include "common.h"
 
-#include "bank_data.h"
+#include "res/stage.h"
 #include "resources.h"
-#include "vdp.h"
+#include "md/vdp.h"
 
 #include "tables.h"
 
