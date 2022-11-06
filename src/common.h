@@ -58,7 +58,7 @@ static inline uint8_t mddir(uint8_t dir) {
 }
 
 // Unit conversions
-// Bit shifting "CSF" is how NXEngine converts units. I kind of like it better than my way
+// Number of fixed point bits
 #define CSF 9
 
 // sub - fixed point unit (1/512x1/512)

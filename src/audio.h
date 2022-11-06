@@ -1,4 +1,4 @@
-// IDs for sounds, identical to NXEngine for AI compatibility
+// IDs for sound effects
 #define SND_MENU_MOVE		1
 #define SND_MSG				2
 #define SND_BONK_HEAD		3

@@ -40,7 +40,7 @@
 // Pops up red numbers when damaged
 #define NPC_SHOWDAMAGE		0x8000
 
-// Enumeration of all object types, copied from NXEngine and used by AI
+// Enumeration of all object types
 #define OBJ_NULL					0
 
 #define OBJ_XP						1
@@ -397,8 +397,6 @@
 
 // Then the bosses (360 + BOSS_???), boss enum is in entity.h
 
-// NXEngine goes wild with the IDs after this point,
-// but here IDs are array indices so I do my own thing
 enum {
 	// Parts of bosses
 	OBJ_CORE_FRONT = 370,

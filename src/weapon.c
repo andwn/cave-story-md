@@ -56,7 +56,6 @@ const BulletFunc bullet_update_array[WEAPON_COUNT] = {
 	&bullet_update_spur
 };
 
-// Based on similar table from NXengine
 typedef struct {
 	int16_t maxspeed;
 	int16_t accel;

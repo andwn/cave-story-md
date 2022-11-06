@@ -33,7 +33,12 @@
 // Index of background in db/back.c and the effect type
 uint8_t stageBackground;// = 0xFF;
 
-int16_t backScrollTable[32];
+int16_t hscrollTable[64];
+int16_t vscrollTable[2];
+
+int16_t hscrollTableAlmond[2];
+int16_t waterBackLastRow;
+
 uint16_t *stageTable;
 const uint8_t *stagePXA;
 
@@ -110,7 +115,7 @@ void stage_load(uint16_t id) {
 		} else if(stageBackgroundType == 4) { // Almond Water
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLANE_B);
-            backScrollTable[0] = (ScreenHeight >> 3) + 1;
+            waterBackLastRow = (ScreenHeight >> 3) + 1;
 			vdp_tiles_load(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -284,103 +289,115 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 	stage_draw_block(bx, by);
 }
 
-// Stage vblank drawing routine
+// Update stage scrolling and background
 void stage_update() {
     //z80_pause_fast();
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
-		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) / 4 + ScreenHalfW);
-		vdp_vscroll(VDP_PLANE_B, sub_to_pixel(camera.y) / 4 - ScreenHalfH);
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        hscrollTable[1] = -sub_to_pixel(camera.x) / 4 + ScreenHalfW;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[1] = sub_to_pixel(camera.y) / 4 - ScreenHalfH;
+        dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 2, 2);
+        dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
-		// PLAN_A Tile scroll
-		int16_t off[30];
-		off[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
-		for(uint8_t i = 1; i < 30; i++) {
-			off[i] = off[0];
-		}
-        __asm__("": : :"memory");
-		vdp_hscroll_tile(VDP_PLANE_A, off);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
-		// Moon background has different spots scrolling horizontally at different speeds
-		backScrollTimer--;
-		
-		if(pal_mode) {
-			uint8_t y = 28;
-			for(;y >= 22; --y) backScrollTable[y] = backScrollTimer << 1;
-			for(;y >= 18; --y) backScrollTable[y] = backScrollTimer;
-			for(;y >= 15; --y) backScrollTable[y] = backScrollTimer >> 1;
-			for(;y >= 11; --y) backScrollTable[y] = backScrollTimer >> 2;
-			vdp_hscroll_tile(VDP_PLANE_B, backScrollTable);
-			//VDP_setVerticalScroll(VDP_PLANE_B, -8);
-		} else {
-			uint8_t y = 27;
-			for(;y >= 21; --y) backScrollTable[y] = backScrollTimer << 1;
-			for(;y >= 17; --y) backScrollTable[y] = backScrollTimer;
-			for(;y >= 14; --y) backScrollTable[y] = backScrollTimer >> 1;
-			for(;y >= 10; --y) backScrollTable[y] = backScrollTimer >> 2;
-			vdp_hscroll_tile(VDP_PLANE_B, backScrollTable);
-			//VDP_setVerticalScroll(VDP_PLANE_B, 0);
-		}
+        backScrollTimer--;
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        uint16_t y = pal_mode ? 29 : 27;
+        uint16_t off = pal_mode ? 1 : 0;
+        while(y >= 21 + off) {
+            hscrollTable[y] = hscrollTable[0];
+            hscrollTable[y+32] = backScrollTimer << 1;
+            y--;
+        }
+        while(y >= 17 + off) {
+            hscrollTable[y] = hscrollTable[0];
+            hscrollTable[y+32] = backScrollTimer;
+            y--;
+        }
+        while(y >= 14 + off) {
+            hscrollTable[y] = hscrollTable[0];
+            hscrollTable[y+32] = backScrollTimer >> 1;
+            y--;
+        }
+        while(y >= 10 + off) {
+            hscrollTable[y] = hscrollTable[0];
+            hscrollTable[y+32] = backScrollTimer >> 2;
+            y--;
+        }
+        while(y >= 1) {
+            hscrollTable[y] = hscrollTable[0];
+            //hscrollTable[y+32] = 0;
+            y--;
+        }
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        //vscrollTable[1] = pal_mode ? -8 : 0;
+        dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, pal_mode ? 30 : 28, 32);
+        dma_queue(DmaVRAM, (uint32_t) &hscrollTable[32], VDP_HSCROLL_TABLE+2, pal_mode ? 30 : 28, 32);
+        dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 1, 2);
 	} else if(stageBackgroundType == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
 		// Ironhead boss background auto scrolls leftward
-		backScrollTable[0] -= 2;
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
-		vdp_hscroll(VDP_PLANE_B, backScrollTable[0]);
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+		hscrollTable[1] -= 2;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[1] = 0;
+        dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 2, 2);
+        dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
 	} else if(stageBackgroundType == 4) {
 		int16_t rowc = ScreenHeight >> 3;
 		int16_t rowgap = 31 - rowc;
 		// Water surface relative to top of screen
 		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - ScreenHalfH);
 		int16_t row = scroll >> 3;
-		int16_t oldrow = backScrollTable[0];
-		while(row < oldrow) { // Water is rising (Y decreasing)
+		int16_t oldrow = waterBackLastRow;
+		if/*while*/(row < oldrow) { // Water is rising (Y decreasing)
 			oldrow--;
 			uint8_t rowup = 31 - ((oldrow + rowgap) & 31);// Row that will be updated
 			if(oldrow > rowc) { // Below Screen
-				uint16_t mapBuffer[64];
-				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
+				//uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) hscrollTable[x] = 0;
+				dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_PLANE_B + (rowup << 7), 64, 2);
 			} else { // On screen or above
-				uint16_t mapBuffer[64];
+				//uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
-					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
+                    hscrollTable[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == rowc ? x&3 : 4 + (rand()&15)));
 				}
-				dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
+                dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_PLANE_B + (rowup << 7), 64, 2);
 			}
 		}
-		while(row > oldrow) { // Water is lowering (Y increasing)
+        if/*while*/(row > oldrow) { // Water is lowering (Y increasing)
 			oldrow++;
 			uint8_t rowup = 31 - (oldrow & 31); // Row that will be updated
 			if(oldrow <= 0) { // Above screen
-				uint16_t mapBuffer[64];
+				//uint16_t mapBuffer[64];
 				for(uint16_t x = 0; x < 64; x++) {
-					mapBuffer[x] = TILE_ATTR(PAL0,1,0,0,
+                    hscrollTable[x] = TILE_ATTR(PAL0,1,0,0,
 							TILE_WATERINDEX + (oldrow == 0 ? x&3 : 4 + (rand()&15)));
 				}
-                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
+                dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_PLANE_B + (rowup << 7), 64, 2);
 			} else { // On screen or below
-				uint16_t mapBuffer[64];
-				for(uint16_t x = 0; x < 64; x++) mapBuffer[x] = 0;
-                dma_now(DmaVRAM, (uint32_t)mapBuffer, VDP_PLANE_B + (rowup << 7), 64, 2);
+				//uint16_t mapBuffer[64];
+				for(uint16_t x = 0; x < 64; x++) hscrollTable[x] = 0;
+                dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_PLANE_B + (rowup << 7), 64, 2);
 			}
 		}
-		
-		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) + ScreenHalfW - backScrollTimer);
-		vdp_vscroll(VDP_PLANE_B, -scroll);
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
-		backScrollTable[0] = row;
+        hscrollTableAlmond[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        hscrollTableAlmond[1] = -sub_to_pixel(camera.x) + ScreenHalfW - backScrollTimer;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[1] = -scroll;
+        dma_queue(DmaVRAM, (uint32_t) hscrollTableAlmond, VDP_HSCROLL_TABLE, 2, 2);
+        dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
+        waterBackLastRow = oldrow;//row;
 	} else {
 		// Only scroll foreground
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 1, 2);
+        dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 1, 2);
 	}
 	if(currentsCount) { // Waterway currents
 		currentsTimer = (currentsTimer + 1) & 0x1F;
@@ -409,10 +426,10 @@ void stage_update() {
 				default: return;
 			}
 			// Replace the tile in the tileset
-            dma_now(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_queue(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 			from_index += 16;
 			to_index += 2;
-            dma_now(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_queue(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
 		}
 	}
     //z80_resume();
@@ -528,7 +545,8 @@ void stage_draw_moonback() {
 	vdp_tiles_load(topTiles, TILE_BACKINDEX, 12);
 	// Load the clouds under the map, it just fits
 	vdp_tiles_load(btmTiles, TILE_MOONINDEX, 188);
-	for(uint8_t y = 0; y < 32; y++) backScrollTable[y] = 0;
+    memset(hscrollTable, 0, 128);
+	//for(uint8_t y = 0; y < 60; y++) hscrollTable[y] = 0;
 	vdp_vscroll(VDP_PLANE_B, 0);
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;

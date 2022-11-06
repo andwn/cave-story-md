@@ -194,7 +194,7 @@ enum Frame {
 	HURT, WALK1, WALK2, WHITE
 };
 
-// NXEngine has a 3rd timer, we don't. Alias the unused jump_time
+
 #define timer3	jump_time
 
 static const uint8_t xpos[16] = {

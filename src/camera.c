@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "gamemode.h"
 #include "md/dma.h"
 #include "entity.h"
 #include "md/joy.h"
@@ -211,4 +212,6 @@ void camera_update() {
 	// Shifted values
 	camera.x_shifted = (x_next >> CSF) - ScreenHalfW;
 	camera.y_shifted = (y_next >> CSF) - ScreenHalfH;
+    // Update scrolling
+    if(gamemode == GM_GAME) stage_update();
 }

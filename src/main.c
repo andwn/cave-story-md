@@ -31,7 +31,7 @@ void aftervsync() {
 	dqueued = FALSE;
 	if(ready) {
 		if(inFade) vdp_sprites_clear();
-        if(gamemode == GM_GAME) stage_update(); // Scrolling
+        //if(gamemode == GM_GAME) stage_update(); // Scrolling
 		vdp_sprites_update();
 		ready = FALSE;
 	}

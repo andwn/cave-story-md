@@ -12,7 +12,7 @@ void ai_stumpy(Entity *e) {
 		blockr = e->x_speed > 0 && collide_stage_rightwall(e),
 		blocku = e->y_speed < 0 && collide_stage_ceiling(e),
 		blockd = e->y_speed > 0 && collide_stage_floor(e);
-	// Some of the NXEngine states weren't necessary because we deactivate offscreen anyway
+
 	switch(e->state) {
 		case 0:
 		{
