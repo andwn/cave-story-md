@@ -29,5 +29,16 @@ EQU VRAM_ADDR_CMD,     0x40000000
 EQU CRAM_ADDR_CMD,     0xC0000000
 EQU VSRAM_ADDR_CMD,    0x40000010
 
+/* Screen boundaries */
+EQU ScreenWidth,    320
+EQU ScreenHalfW,    160
+
+    .section .bss
+
+VAR ScreenHeight,   w, 1
+VAR ScreenHalfH,    w, 1
+VAR pal_mode,       b, 1
+#VAR FPS,            b, 1
+
     .section .text
 

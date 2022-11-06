@@ -35,8 +35,8 @@ void splash_main() {
 	camera.y -= 8 << CSF; // Cancel the offset, we want to use absolute positions
 	camera.target = NULL;
 	// Create Balrog entity
-	Entity *blg = entity_create(pixel_to_sub(SCREEN_HALF_W), -pixel_to_sub(16), OBJ_BALROGSPLASH, 0);
-	blg->linkedEntity = entity_create(pixel_to_sub(SCREEN_HALF_W), pixel_to_sub(SCREEN_HALF_H), OBJ_SEGALOGO, 0);
+	Entity *blg = entity_create(pixel_to_sub(ScreenHalfW), -pixel_to_sub(16), OBJ_BALROGSPLASH, 0);
+	blg->linkedEntity = entity_create(pixel_to_sub(ScreenHalfW), pixel_to_sub(ScreenHalfH), OBJ_SEGALOGO, 0);
 	
 	uint16_t timer = 0;
     joystate_old = ~0;

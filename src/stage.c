@@ -110,7 +110,7 @@ void stage_load(uint16_t id) {
 		} else if(stageBackgroundType == 4) { // Almond Water
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLANE_B);
-            backScrollTable[0] = (SCREEN_HEIGHT >> 3) + 1;
+            backScrollTable[0] = (ScreenHeight >> 3) + 1;
 			vdp_tiles_load(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
 		} else if(stageBackgroundType == 5) { // Fog
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -290,20 +290,20 @@ void stage_update() {
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(stageBackgroundType == 0) {
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
-		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) / 4 + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLANE_B, sub_to_pixel(camera.y) / 4 - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
+		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) / 4 + ScreenHalfW);
+		vdp_vscroll(VDP_PLANE_B, sub_to_pixel(camera.y) / 4 - ScreenHalfH);
 	} else if(stageBackgroundType == 1 || stageBackgroundType == 5) {
 		// PLAN_A Tile scroll
 		int16_t off[30];
-		off[0] = -sub_to_pixel(camera.x) + SCREEN_HALF_W;
+		off[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
 		for(uint8_t i = 1; i < 30; i++) {
 			off[i] = off[0];
 		}
         __asm__("": : :"memory");
 		vdp_hscroll_tile(VDP_PLANE_A, off);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
 		// Moon background has different spots scrolling horizontally at different speeds
 		backScrollTimer--;
 		
@@ -329,14 +329,14 @@ void stage_update() {
 		camera.target = NULL;
 		// Ironhead boss background auto scrolls leftward
 		backScrollTable[0] -= 2;
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
 		vdp_hscroll(VDP_PLANE_B, backScrollTable[0]);
 	} else if(stageBackgroundType == 4) {
-		int16_t rowc = SCREEN_HEIGHT >> 3;
+		int16_t rowc = ScreenHeight >> 3;
 		int16_t rowgap = 31 - rowc;
 		// Water surface relative to top of screen
-		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - SCREEN_HALF_H);
+		int16_t scroll = (water_entity->y >> CSF) - ((camera.y >> CSF) - ScreenHalfH);
 		int16_t row = scroll >> 3;
 		int16_t oldrow = backScrollTable[0];
 		while(row < oldrow) { // Water is rising (Y decreasing)
@@ -372,15 +372,15 @@ void stage_update() {
 			}
 		}
 		
-		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) + SCREEN_HALF_W - backScrollTimer);
+		vdp_hscroll(VDP_PLANE_B, -sub_to_pixel(camera.x) + ScreenHalfW - backScrollTimer);
 		vdp_vscroll(VDP_PLANE_B, -scroll);
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
 		backScrollTable[0] = row;
 	} else {
 		// Only scroll foreground
-		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + SCREEN_HALF_W);
-		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - SCREEN_HALF_H);
+		vdp_hscroll(VDP_PLANE_A, -sub_to_pixel(camera.x) + ScreenHalfW);
+		vdp_vscroll(VDP_PLANE_A, sub_to_pixel(camera.y) - ScreenHalfH);
 	}
 	if(currentsCount) { // Waterway currents
 		currentsTimer = (currentsTimer + 1) & 0x1F;

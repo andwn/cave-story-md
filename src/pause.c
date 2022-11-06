@@ -415,8 +415,8 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 void do_map() {
     vdp_sprites_clear();
 
-    uint16_t mapx = (SCREEN_HALF_W - stageWidth / 2) / 8;
-    uint16_t mapy = (SCREEN_HALF_H - stageHeight / 2) / 8;
+    uint16_t mapx = (ScreenHalfW - stageWidth / 2) / 8;
+    uint16_t mapy = (ScreenHalfH - stageHeight / 2) / 8;
 
     uint16_t index = TILE_SHEETINDEX;
 

@@ -82,8 +82,8 @@ void credits_main() {
 	vdp_colors(48, PAL_Regu.data, 16);
 	// Stick camera to upper right
 	camera.target = NULL;
-	camera.x = pixel_to_sub(SCREEN_HALF_W);
-	camera.y = pixel_to_sub(SCREEN_HALF_H);
+	camera.x = pixel_to_sub(ScreenHalfW);
+	camera.y = pixel_to_sub(ScreenHalfH);
 	camera.x_offset = camera.y_offset = 0;
 	camera.x_shifted = camera.y_shifted = 0;
 	camera_xmin = camera_ymin = 0;
@@ -101,7 +101,7 @@ void credits_main() {
 	tsc_load_stage(ID_CREDITS); // credits.tsb
 	tsc_call_event(100);
 	
-	textY = (SCREEN_HEIGHT >> 3) + (backScroll >> 3) + 1;
+	textY = (ScreenHeight >> 3) + (backScroll >> 3) + 1;
 	
 	vdp_set_display(TRUE);
 	
@@ -151,7 +151,7 @@ void credits_main() {
 						if(icon[i].size) continue;
 						icon[i] = (VDPSprite) {
 							.x = textX * 8 - 22 + 128,
-							.y = SCREEN_HEIGHT - 6 + 128,
+							.y = ScreenHeight - 6 + 128,
 							.size = SPRITE_SIZE(3, 3),
 							.attr = TILE_ATTR(credits_info[pc].icon.pal,
 									1,0,0,TILE_ICONINDEX + i * 9)

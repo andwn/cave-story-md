@@ -66,9 +66,9 @@ void effects_update() {
 		} else {
 			effDamage[i].y -= effDamage[i].ttl & 1;
 		}
-		sprite_pos(effDamage[i].sprite,
-			effDamage[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W,
-			effDamage[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H);
+		sprite_pos(&effDamage[i].sprite,
+                   effDamage[i].x - sub_to_pixel(camera.x) + ScreenHalfW,
+                   effDamage[i].y - sub_to_pixel(camera.y) + ScreenHalfH);
 	vdp_sprite_add(&effDamage[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
@@ -77,11 +77,11 @@ void effects_update() {
 		effSmoke[i].x += effSmoke[i].x_speed;
 		effSmoke[i].y += effSmoke[i].y_speed;
 		// Half assed animation
-		sprite_index(effSmoke[i].sprite,
+		sprite_index(&effSmoke[i].sprite,
 			TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 2) << 2));
-		sprite_pos(effSmoke[i].sprite,
-			effSmoke[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-			effSmoke[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_pos(&effSmoke[i].sprite,
+                   effSmoke[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 8,
+                   effSmoke[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 8);
 	vdp_sprite_add(&effSmoke[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_MISC; i++) {
@@ -95,9 +95,9 @@ void effects_update() {
 						effMisc[i].x--;
 						effMisc[i].y--;
 					}
-					sprite_pos(effMisc[i].sprite,
-						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_pos(&effMisc[i].sprite,
+                               effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                               effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
@@ -109,9 +109,9 @@ void effects_update() {
 						effMisc[i].x++;
 						effMisc[i].y--;
 					}
-					sprite_pos(effMisc[i].sprite,
-						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_pos(&effMisc[i].sprite,
+                               effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                               effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
@@ -122,9 +122,9 @@ void effects_update() {
 					effMisc[i].timer = 0;
 					effMisc[i].sprite.attr++;
 				}
-				sprite_pos(effMisc[i].sprite,
-					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
@@ -138,9 +138,9 @@ void effects_update() {
 					effMisc[i].timer = 0;
 					effMisc[i].sprite.attr++;
 				}
-				sprite_pos(effMisc[i].sprite,
-					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
@@ -149,9 +149,9 @@ void effects_update() {
 				if(effMisc[i].ttl > TIME_8(20) && (effMisc[i].ttl & 1) == 0) {
 					effMisc[i].y -= 2;
 				}
-				sprite_pos(effMisc[i].sprite,
-					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
@@ -159,9 +159,9 @@ void effects_update() {
 			case EFF_FANR:
 			{
 				effMisc[i].x += effMisc[i].x_speed;
-				sprite_pos(effMisc[i].sprite,
-					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
@@ -169,9 +169,9 @@ void effects_update() {
 			case EFF_FAND:
 			{
 				effMisc[i].y += effMisc[i].y_speed;
-				sprite_pos(effMisc[i].sprite,
-					effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-					effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+				sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 				vdp_sprite_add(&effMisc[i].sprite);
 			}
 			break;
@@ -184,9 +184,9 @@ void effects_update() {
 				effMisc[i].x += effMisc[i].x_speed;
 				effMisc[i].y += effMisc[i].y_speed;
 				if(effMisc[i].ttl & 1) {
-					sprite_pos(effMisc[i].sprite,
-						effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-						effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+					sprite_pos(&effMisc[i].sprite,
+                               effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                               effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
 					vdp_sprite_add(&effMisc[i].sprite);
 				}
 			}
@@ -197,18 +197,18 @@ void effects_update() {
                 if(effMisc[i].ttl && (effMisc[i].ttl & 3) == 0) {
                     effMisc[i].sprite.attr += 4;
                 }
-                sprite_pos(effMisc[i].sprite,
-                   effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-                   effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+                sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 8,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 8);
                 vdp_sprite_add(&effMisc[i].sprite);
             }
             break;
 		    case EFF_BUBB_POP:
             {
                 if(effMisc[i].ttl == 4) effMisc[i].sprite.attr++;
-                sprite_pos(effMisc[i].sprite,
-                   effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-                   effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+                sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
                 vdp_sprite_add(&effMisc[i].sprite);
             }
             break;
@@ -216,9 +216,9 @@ void effects_update() {
             case EFF_SNAKETRAIL:
             {
                 if((effMisc[i].ttl & 3) == 0) effMisc[i].sprite.attr++;
-                sprite_pos(effMisc[i].sprite,
-                           effMisc[i].x - sub_to_pixel(camera.x) + SCREEN_HALF_W - 4,
-                           effMisc[i].y - sub_to_pixel(camera.y) + SCREEN_HALF_H - 4);
+                sprite_pos(&effMisc[i].sprite,
+                           effMisc[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 4,
+                           effMisc[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 4);
                 vdp_sprite_add(&effMisc[i].sprite);
             }
             break;

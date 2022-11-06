@@ -66,7 +66,7 @@ uint8_t cfg_sfx_mute;
 uint8_t sram_file;
 uint8_t sram_state;
 
-// Put the counter tiles in a "blank spot" of Hell's tileset
+// Replace "AIR" tiles with counter, there is no water in Hell
 #define TILE_COUNTERINDEX TILE_AIRINDEX
 //416
 //uint8_t counterShow = FALSE;

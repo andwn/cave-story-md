@@ -16,7 +16,7 @@ void ai_prox_press_vert(Entity *e) {
 		break;
 		case 1:
 		{
-			if(e->frame < 2 && ++e->animtime > TIME_8(4)) {
+			if((e->frame < 2) && ++e->animtime > TIME_8(4)) {
 				e->animtime = 0;
 				e->frame++;
 			}
@@ -162,7 +162,7 @@ void ai_red_bat(Entity *e) {
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	
-	if (e->x < 0 || e->x > block_to_sub(stageWidth)) {
+	if ((e->x < 0) || e->x > block_to_sub(stageWidth)) {
 		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
 		e->state = STATE_DELETE;
 	}

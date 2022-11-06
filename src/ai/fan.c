@@ -15,7 +15,7 @@ void onspawn_fan(Entity *e) {
 		e->odir = e->dir = 1;
 		break;
 	case 99: // Down
-		sprite_vflip(e->sprite[0], 1);
+		sprite_vflip(&e->sprite[0], 1);
 		break;
 	}
 }

@@ -355,7 +355,7 @@ void ai_torokoBlock(Entity *e) {
 		// Make sure we show the right graphic/palette
 		SHEET_FIND(e->sheet, SHEET_FLOWER);
 		e->vramindex = sheets[e->sheet].index;
-		sprite_pal(e->sprite[0], PAL3);
+		sprite_pal(&e->sprite[0], PAL3);
 		e->oframe = 255;
 		e->frame = 0;
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);

@@ -95,7 +95,7 @@ void entity_reactivate(Entity *e) {
 			e->vramindex = tiloc_index + (e->tiloc << 2);
 			uint16_t tile_offset = 0;
 			for(uint8_t i = 0; i < e->sprite_count; i++) {
-				sprite_index(e->sprite[i], e->vramindex + tile_offset);
+				sprite_index(&e->sprite[i], e->vramindex + tile_offset);
 				tile_offset += f->vdpSpritesInf[i]->numTile;
 			}
 			e->oframe = 255;
@@ -305,11 +305,11 @@ void entities_update(uint8_t draw) {
 		// Handle sprite movement/changes
 		if(draw && !e->hidden) {
 			if(e->sheet != NOSHEET) {
-				sprite_pos(e->sprite[0],
+				sprite_pos(&e->sprite[0],
 						(e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff,
 						(e->y>>CSF) - camera.y_shifted - e->display_box.top);
-				sprite_index(e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
-				sprite_hflip(e->sprite[0], e->dir);
+				sprite_index(&e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
+				sprite_hflip(&e->sprite[0], e->dir);
 			} else if(e->tiloc != NOTILOC) {
 				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
 				if(e->frame != e->oframe) {
@@ -322,8 +322,8 @@ void entities_update(uint8_t draw) {
 							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = min(f->w, 32);
 					for(uint16_t i = 0; i < e->sprite_count; i++) {
-						sprite_pos(e->sprite[i], bx - x, by);
-						sprite_hflip(e->sprite[i], 1);
+						sprite_pos(&e->sprite[i], bx - x, by);
+						sprite_hflip(&e->sprite[i], 1);
 						if(x >= f->w) {
 							x = min(f->w, 32);
 							by += 32;
@@ -336,8 +336,8 @@ void entities_update(uint8_t draw) {
 							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
 					int16_t x = 0;
 					for(uint16_t i = 0; i < e->sprite_count; i++) {
-						sprite_pos(e->sprite[i], bx + x, by);
-						sprite_hflip(e->sprite[i], 0);
+						sprite_pos(&e->sprite[i], bx + x, by);
+						sprite_hflip(&e->sprite[i], 0);
 						x += 32;
 						if(x >= f->w) {
 							x = 0;

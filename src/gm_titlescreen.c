@@ -90,9 +90,9 @@ uint8_t titlescreen_main() {
 	}
 	// Release
 	//vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);
-	vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, TILE_USERINDEX, TS_Title.numTile);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, TILE_USERINDEX), 11, 3, 18, 4, 1);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, TILE_USERINDEX + 18 * 4), 11, 23, 18, 2, 1);
+	vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, 16, TS_Title.numTile);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
 	
 	// Set palettes last
 	vdp_colors(0, PAL_Main.data, 16);
@@ -138,11 +138,11 @@ uint8_t titlescreen_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		// Draw quote sprite at cursor position
-		sprite_pos(sprCursor, 13*8-4, (12*8+cursor*16)-4);
-	vdp_sprite_add(&sprCursor);
+		sprite_pos(&sprCursor, 13*8-4, (12*8+cursor*16)-4);
+	    vdp_sprite_add(&sprCursor);
 
 		if(besttime > 0 && besttime < 300000) system_draw_counter();
 		
@@ -216,11 +216,11 @@ uint8_t titlescreen_main() {
 			if(--sprTime == 0) {
 				sprTime = ANIM_SPEED;
 				if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+				sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 			}
 			// Draw quote sprite at cursor position
-			sprite_pos(sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);
-		vdp_sprite_add(&sprCursor);
+			sprite_pos(&sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);
+		    vdp_sprite_add(&sprCursor);
 			
 			ready = TRUE;
 			vdp_vsync(); aftervsync();

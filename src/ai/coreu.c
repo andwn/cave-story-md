@@ -333,10 +333,10 @@ static void SpawnPellet(uint8_t dir) {
 static void RunHurtFlash(uint16_t timer) {
 	uint16_t pal = (pieces[CFACE]->damage_time && (timer & 2)) ? PAL3 : PAL2;
 	for(uint8_t i = 0; i < pieces[CFRONT]->sprite_count; i++) {
-		sprite_pal(pieces[CFRONT]->sprite[i], pal);
+		sprite_pal(&pieces[CFRONT]->sprite[i], pal);
 	}
 	for(uint8_t i = 0; i < pieces[CBACK]->sprite_count; i++) {
-		sprite_pal(pieces[CBACK]->sprite[i], pal);
+		sprite_pal(&pieces[CBACK]->sprite[i], pal);
 	}
 }
 
@@ -708,14 +708,14 @@ void ai_udmini_platform(Entity *e) {
 // backs just use 2 for dark/light, so we draw them separately from the engine
 static void DrawMinicoreBack(Entity *e) {
 	e->sprite[1] = (VDPSprite) { // Back
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W + 16 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 16 + 128,
+		.x = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW + 16 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 16 + 128,
 		.size = SPRITE_SIZE(3, 4),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[e->frame >> 1])
 	};
 	e->sprite[2] = (VDPSprite) { // Bottom
-		.x = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 8 + 128,
-		.y = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H + 16 + 128,
+		.x = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 8 + 128,
+		.y = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH + 16 + 128,
 		.size = SPRITE_SIZE(4, 1),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[2 + (e->frame >> 1)])
 	};

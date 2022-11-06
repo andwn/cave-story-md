@@ -395,8 +395,8 @@ void ai_monsterx(Entity *e) {
 	e->x += (tread_center - e->x) >> 4;
 	
 	// Fill in sprites for the body
-	int16_t xx = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W;
-	int16_t yy = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H;
+	int16_t xx = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW;
+	int16_t yy = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH;
 	e->sprite[0] = (VDPSprite) {
 		.x = xx + BODY_UL_X + 128, .y = yy + BODY_UL_Y + 128, 
 		.size = SPRITE_SIZE(4, 4), 
@@ -520,8 +520,8 @@ void ai_x_tread(Entity *e) {
 	e->x += e->x_speed;
 	
 	// Sprite
-	int16_t xx = (e->x >> CSF) - e->display_box.left - (camera.x >> CSF) + SCREEN_HALF_W;
-	int16_t yy = (e->y >> CSF) - e->display_box.top - (camera.y >> CSF) + SCREEN_HALF_H;
+	int16_t xx = (e->x >> CSF) - e->display_box.left - (camera.x >> CSF) + ScreenHalfW;
+	int16_t yy = (e->y >> CSF) - e->display_box.top - (camera.y >> CSF) + ScreenHalfH;
 	uint16_t attr = TILE_ATTR(PAL3, 0, 0 ,0, sheets[e->alt_sheet].index);
 	if(e->y < 0x18000) attr |= 0x1000;
 	attr += e->frame << 5;

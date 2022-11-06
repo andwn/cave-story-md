@@ -350,8 +350,8 @@ void ai_misery_bat(Entity *e) {
 			e->y_speed += (e->y < e->y_mark) ? SPEED(0x40) : -SPEED(0x40);
 			ACCEL_X(SPEED(0x10));
 			
-			if (e->x < 0 || e->x > block_to_sub(stageWidth) ||
-				e->y < 0 || e->y > block_to_sub(stageHeight)) {
+			if ((e->x < 0) || e->x > block_to_sub(stageWidth) ||
+                    (e->y < 0) || e->y > block_to_sub(stageHeight)) {
 				e->state = STATE_DELETE;
 			}
 		}

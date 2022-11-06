@@ -182,7 +182,7 @@ void ai_ironh_fishy(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	if (e->x_speed < 0 && e->x < camera.x - pixel_to_sub(SCREEN_HALF_W)) 
+	if (e->x_speed < 0 && e->x < camera.x - pixel_to_sub(ScreenHalfW))
 			e->state = STATE_DELETE;
 }
 
@@ -267,9 +267,9 @@ void ai_ironh_brick(Entity *e) {
 	
 	// Have to manually add the small one
 	if(e->frame == 255) {
-		sprite_pos(e->sprite[0],
-				(e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - e->display_box.left,
-				(e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - e->display_box.top);
+		sprite_pos(&e->sprite[0],
+                   (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW - e->display_box.left,
+                   (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH - e->display_box.top);
 	vdp_sprite_add(&e->sprite[0]);
 	}
 }

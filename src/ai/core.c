@@ -469,8 +469,8 @@ void ai_minicore(Entity *e) {
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	px = (e->x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W; 
-	py = (e->y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H;
+	px = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW;
+	py = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH;
 	// Have to deal with sprites manually
 	e->sprite[0] = (VDPSprite) { // Face
 		.x = px - 28 + 128, .y = py - 20 + 128,

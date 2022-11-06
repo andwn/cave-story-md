@@ -138,7 +138,7 @@ void ai_curly_down(Entity *e) {
 // curly being carried by Tow Rope
 void ai_curly_carried(Entity *e) {
 	// Keep in front of doors
-	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+	if(abs(e->x_mark - camera.x) > ScreenHalfW || abs(e->y_mark - camera.y) > ScreenHalfH) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;
 		e->y_mark = camera.y;
@@ -254,7 +254,7 @@ void onspawn_curly_hell(Entity *e) {
 void ai_curly_hell(Entity *e) {
 	// Keep in front of doors
 	if((stageID == STAGE_HELL_PASSAGEWAY_2 || stageID == STAGE_HELL_OUTER_PASSAGE) && 
-			(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H)) {
+			(abs(e->x_mark - camera.x) > ScreenHalfW || abs(e->y_mark - camera.y) > ScreenHalfH)) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;
 		e->y_mark = camera.y;

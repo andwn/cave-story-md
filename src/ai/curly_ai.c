@@ -295,8 +295,8 @@ static void fire_mgun(int32_t x, int32_t y, uint8_t dir) {
 	b->level = 3;
 	// Need to set the position immediately or else the sprite will blink in upper left
 	b->sprite = (VDPSprite) { 
-		.x = (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
-		.y = (y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8,
+		.x = (x >> CSF) - (camera.x >> CSF) + ScreenHalfW - 8,
+		.y = (y >> CSF) - (camera.y >> CSF) + ScreenHalfH - 8,
 		.size = SPRITE_SIZE(2, 2),
 	};
 	SHEET_FIND(b->sheet, SHEET_MGUN);
@@ -333,8 +333,8 @@ static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 	b->type = WEAPON_POLARSTAR;
 	b->level = 3;
 	b->sprite = (VDPSprite) { 
-		.x = (x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W - 8,
-		.y = (y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H - 8,
+		.x = (x >> CSF) - (camera.x >> CSF) + ScreenHalfW - 8,
+		.y = (y >> CSF) - (camera.y >> CSF) + ScreenHalfH - 8,
 		.size = SPRITE_SIZE(2, 2),
 	};
 	SHEET_FIND(b->sheet, SHEET_PSTAR);
@@ -374,7 +374,7 @@ void ai_cai_gun(Entity *e) {
 	
 	if (curly_look) {
 		if(!e->animtime) {
-			sprite_vflip(e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
+			sprite_vflip(&e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
 			e->sprite[0].size = SPRITE_SIZE(1, 3);
 			e->display_box = curly_mgun ? (bounding_box){ 4, 14, 4, 10 } : (bounding_box){ 4, 18, 4, 6 };
 			e->animtime = TRUE;
@@ -383,7 +383,7 @@ void ai_cai_gun(Entity *e) {
 			
 		}
 	} else if(e->animtime) {
-		sprite_vflip(e->sprite[0], 0);
+		sprite_vflip(&e->sprite[0], 0);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
 		e->display_box = (bounding_box) { 12, 4, 12, 4 };
 		e->animtime = FALSE;

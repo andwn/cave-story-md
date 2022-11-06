@@ -9,14 +9,10 @@
 #define PF_BGCOLOR(c) ({})
 #endif
 
-// Screen size
-#define SCREEN_WIDTH 320
-#define SCREEN_HALF_W 160
-
 // On PAL the screen height is 16 pixels more, so these can't be constants
-extern uint8_t SCREEN_HEIGHT;
-extern uint8_t SCREEN_HALF_H;
-extern uint8_t FPS;
+//extern uint8_t ScreenHeight;
+//extern uint8_t ScreenHalfH;
+//extern uint8_t FPS;
 
 // The original Cave Story is 50 FPS, and an MD can either run at 50 or 60 FPS
 // depending on region. To try and keep the speed of the game (mostly) the same,
@@ -87,6 +83,57 @@ static inline uint8_t mddir(uint8_t dir) {
 
 // Get tiles from SpriteDefinition
 #define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
+
+// Tileset width/height
+#define TS_WIDTH    32
+#define TS_HEIGHT   16
+// Stage tileset is first in USERINDEX /*TILE_USERINDEX*/
+#define TILE_TSINDEX        16
+#define TILE_TSSIZE         (TS_WIDTH * TS_HEIGHT)
+// Face graphics
+#define TILE_FACEINDEX      (TILE_TSINDEX + TILE_TSSIZE)
+#define TILE_FACESIZE       36
+// 16 tiles for the map name display
+#define TILE_NAMEINDEX      (TILE_FACEINDEX + TILE_FACESIZE)
+#define TILE_NAMESIZE       16
+// Space for shared sprite sheets
+#define TILE_SHEETINDEX     (TILE_NAMEINDEX + TILE_NAMESIZE)
+#define TILE_SHEETSIZE      (TILE_FONTINDEX - TILE_SHEETINDEX)
+// Space for prompt/item display at the end of the sprite tiles
+#define TILE_PROMPTINDEX    (TILE_SHEETINDEX + TILE_SHEETSIZE - 28)
+#define TILE_AIRTANKINDEX   (TILE_PROMPTINDEX - 9)
+// Allocation of EXTRA1 (128 tiles) - background & HUD
+#define TILE_BACKINDEX      (0xD000U >> 5) // 128 tiles after PLANE_A
+#define TILE_BACKSIZE       96
+#define TILE_HUDINDEX       (TILE_BACKINDEX + TILE_BACKSIZE)
+#define TILE_HUDSIZE        32
+// Allocation of EXTRA2 (64 tiles) - Effects, window, misc
+#define TILE_NUMBERINDEX    (0xF000U >> 5) // 64 tiles after PLANE_B
+#define TILE_NUMBERSIZE     16
+#define TILE_SMOKEINDEX     (TILE_NUMBERINDEX + TILE_NUMBERSIZE)
+#define TILE_SMOKESIZE      28
+#define TILE_WINDOWINDEX    (TILE_SMOKEINDEX + TILE_SMOKESIZE)
+#define TILE_WINDOWSIZE     9
+#define TILE_AIRINDEX       (TILE_WINDOWINDEX + TILE_WINDOWSIZE)
+#define TILE_AIRSIZE        8
+#define TILE_QMARKINDEX     (TILE_AIRINDEX + TILE_AIRSIZE)
+#define TILE_QMARKSIZE      1
+#define TILE_WHIMINDEX      (TILE_QMARKINDEX + TILE_QMARKSIZE)
+#define TILE_WHIMSIZE       2
+// 12 tiles at the end for nemesis vertical frames
+#define TILE_NEMINDEX       (0xFE80U >> 5)
+// 8 tiles after window plane for blade L3
+#define TILE_SLASHINDEX     ((0xC000U >> 5) - 8)
+// Unused palette color tiles area
+#define TILE_PLAYERINDEX    2
+#define TILE_PLAYERSIZE     4
+#define TILE_WEAPONINDEX    (TILE_PLAYERINDEX + TILE_PLAYERSIZE)
+#define TILE_WEAPONSIZE     6
+
+#define TILE_CLOUDINDEX     (TILE_TSINDEX + 64)
+#define TILE_CLOUD2INDEX    (TILE_CLOUDINDEX + (16*12))
+#define TILE_CLOUD3INDEX    (TILE_CLOUD2INDEX + (16*3))
+#define TILE_CLOUD4INDEX    (TILE_CLOUD3INDEX + (9*3))
 
 // Bounding box used for collision and relative area to display sprites
 typedef struct {

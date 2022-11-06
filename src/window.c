@@ -3,7 +3,6 @@
 #include "audio.h"
 #include "res/system.h"
 #include "md/dma.h"
-#include "entity.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "md/joy.h"
@@ -17,7 +16,6 @@
 #include "tsc.h"
 #include "md/sys.h"
 #include "md/vdp.h"
-#include "md/xgm.h"
 
 #include "window.h"
 
@@ -41,8 +39,8 @@
 #define PROMPT_X 27
 #define PROMPT_Y 17
 
-#define ITEM_Y_START	(SCREEN_HALF_H + 128)
-#define ITEM_Y_END		(SCREEN_HALF_H + 12 + 128)
+#define ITEM_Y_START	(ScreenHalfH + 128)
+#define ITEM_Y_END		(ScreenHalfH + 12 + 128)
 
 const uint8_t ITEM_PAL[40] = {
 	0, 0, 1, 0, 0, 0, 0, 0,
@@ -294,7 +292,7 @@ void window_prompt_open() {
 	int16_t cursor_x = (PROMPT_X << 3) - 9;
 	if(!promptAnswer) cursor_x += cfg_language == LANG_JA ? 26 : 34; // "いいえ" starts more left than "No"
 	int16_t cursor_y = (PROMPT_Y << 3) + 4;
-	sprite_pos(handSpr, cursor_x, cursor_y);
+	sprite_pos(&handSpr, cursor_x, cursor_y);
 	promptSpr[0] = (VDPSprite) {
 		.x = tile_to_pixel(PROMPT_X) + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
@@ -331,7 +329,7 @@ uint8_t window_prompt_update() {
 		int16_t cursor_x = (PROMPT_X << 3) - 9;
 		if(!promptAnswer) cursor_x += cfg_language == LANG_JA ? 26 : 34; // "いいえ" starts more left than "No"
 		int16_t cursor_y = (PROMPT_Y << 3) + 4;
-		sprite_pos(handSpr, cursor_x, cursor_y);
+		sprite_pos(&handSpr, cursor_x, cursor_y);
 	}
     vdp_sprite_add(&handSpr);
     vdp_sprites_add(promptSpr, 2);
@@ -359,20 +357,20 @@ void window_show_item(uint16_t item) {
 		pal = PAL0;
 	}
 	handSpr = (VDPSprite) {
-		.x = SCREEN_HALF_W - 12 + 128,
+		.x = ScreenHalfW - 12 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(3, 2),
 		.attr = TILE_ATTR(pal,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 24 + 128,
-		.y = SCREEN_HALF_H + 8 + 128,
+		.x = ScreenHalfW - 24 + 128,
+		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
-		.x = SCREEN_HALF_W + 128,
-		.y = SCREEN_HALF_H + 8 + 128,
+		.x = ScreenHalfW + 128,
+		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
@@ -384,20 +382,20 @@ void window_show_weapon(uint16_t item) {
 	showingItem = item;
 	if(item == 0) return;
 	handSpr = (VDPSprite) {
-		.x = SCREEN_HALF_W - 8 + 128,
+		.x = ScreenHalfW - 8 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(2, 2),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
 	promptSpr[0] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 24 + 128,
-		.y = SCREEN_HALF_H + 8 + 128,
+		.x = ScreenHalfW - 24 + 128,
+		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
 	promptSpr[1] = (VDPSprite) {
-		.x = SCREEN_HALF_W + 128,
-		.y = SCREEN_HALF_H + 8 + 128,
+		.x = ScreenHalfW + 128,
+		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};

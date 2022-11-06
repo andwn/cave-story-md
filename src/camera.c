@@ -42,22 +42,22 @@ void camera_init() {
 
 void camera_set_position(int32_t x, int32_t y) {
 	// Don't let the camera leave the stage
-	if(x > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 8))
-		x = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + 8);
-	if(y > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 8))
-		y = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + 8);
-	if(x < pixel_to_sub(SCREEN_HALF_W + 8)) x = pixel_to_sub(SCREEN_HALF_W + 8);
-	if(y < pixel_to_sub(SCREEN_HALF_H + 8)) y = pixel_to_sub(SCREEN_HALF_H + 8);
+	if(x > block_to_sub(stageWidth) - pixel_to_sub(ScreenHalfW + 8))
+		x = block_to_sub(stageWidth) - pixel_to_sub(ScreenHalfW + 8);
+	if(y > block_to_sub(stageHeight) - pixel_to_sub(ScreenHalfH + 8))
+		y = block_to_sub(stageHeight) - pixel_to_sub(ScreenHalfH + 8);
+	if(x < pixel_to_sub(ScreenHalfW + 8)) x = pixel_to_sub(ScreenHalfW + 8);
+	if(y < pixel_to_sub(ScreenHalfH + 8)) y = pixel_to_sub(ScreenHalfH + 8);
 	// Apply
 	camera.x = camera.x_mark = x;
 	camera.y = camera.y_mark = y;
-	camera.x_shifted = (x >> CSF) - SCREEN_HALF_W;
-	camera.y_shifted = (y >> CSF) - SCREEN_HALF_H;
+	camera.x_shifted = (x >> CSF) - ScreenHalfW;
+	camera.y_shifted = (y >> CSF) - ScreenHalfH;
 	// Update quick fetch cutoff values
-	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);
-	camera_ymin = camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
-	camera_ysize = pixel_to_sub(SCREEN_HEIGHT + 64);
+	camera_xmin = camera.x - pixel_to_sub(ScreenHalfW + 32);
+	camera_xsize = pixel_to_sub(ScreenWidth + 64);
+	camera_ymin = camera.y - pixel_to_sub(ScreenHalfH + 32);
+	camera_ysize = pixel_to_sub(ScreenHeight + 64);
 }
 
 void camera_shake(uint16_t time) {
@@ -115,18 +115,18 @@ void camera_update() {
 	// Don't let the camera leave the stage
 	uint16_t bounds = cameraShake ? 2 : 8;
 	if(stageID == 18 && !pal_mode) { // Special case for shelter
-		x_next = pixel_to_sub(SCREEN_HALF_W + 8);
-		y_next = pixel_to_sub(SCREEN_HALF_H + 16);
+		x_next = pixel_to_sub(ScreenHalfW + 8);
+		y_next = pixel_to_sub(ScreenHalfH + 16);
 	} else {
-		if(x_next < pixel_to_sub(SCREEN_HALF_W + bounds)) {
-			x_next = pixel_to_sub(SCREEN_HALF_W + bounds);
-		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds)) {
-			x_next = block_to_sub(stageWidth) - pixel_to_sub(SCREEN_HALF_W + bounds);
+		if(x_next < pixel_to_sub(ScreenHalfW + bounds)) {
+			x_next = pixel_to_sub(ScreenHalfW + bounds);
+		} else if(x_next > block_to_sub(stageWidth) - pixel_to_sub(ScreenHalfW + bounds)) {
+			x_next = block_to_sub(stageWidth) - pixel_to_sub(ScreenHalfW + bounds);
 		}
-		if(y_next < pixel_to_sub(SCREEN_HALF_H + bounds)) {
-			y_next = pixel_to_sub(SCREEN_HALF_H + bounds);
-		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + bounds)) {
-			y_next = block_to_sub(stageHeight) - pixel_to_sub(SCREEN_HALF_H + bounds);
+		if(y_next < pixel_to_sub(ScreenHalfH + bounds)) {
+			y_next = pixel_to_sub(ScreenHalfH + bounds);
+		} else if(y_next > block_to_sub(stageHeight) - pixel_to_sub(ScreenHalfH + bounds)) {
+			y_next = block_to_sub(stageHeight) - pixel_to_sub(ScreenHalfH + bounds);
 		}
 	}
 	// Camera shaking
@@ -138,10 +138,10 @@ void camera_update() {
 		if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
 	}
 	// Update quick fetch cutoff values
-	camera_xmin = camera.x - pixel_to_sub(SCREEN_HALF_W + 32);
-	camera_xsize = pixel_to_sub(SCREEN_WIDTH + 64);
-	camera_ymin = camera.y - pixel_to_sub(SCREEN_HALF_H + 32);
-	camera_ysize = pixel_to_sub(SCREEN_HEIGHT + 64);
+	camera_xmin = camera.x - pixel_to_sub(ScreenHalfW + 32);
+	camera_xsize = pixel_to_sub(ScreenWidth + 64);
+	camera_ymin = camera.y - pixel_to_sub(ScreenHalfH + 32);
+	camera_ysize = pixel_to_sub(ScreenHeight + 64);
 	// Morph the stage if the camera is moving
 	morphingColumn = sub_to_tile(x_next) - sub_to_tile(camera.x);
 	morphingRow = sub_to_tile(y_next) - sub_to_tile(camera.y);
@@ -209,6 +209,6 @@ void camera_update() {
 	camera.x = x_next;
 	camera.y = y_next;
 	// Shifted values
-	camera.x_shifted = (x_next >> CSF) - SCREEN_HALF_W;
-	camera.y_shifted = (y_next >> CSF) - SCREEN_HALF_H;
+	camera.x_shifted = (x_next >> CSF) - ScreenHalfW;
+	camera.y_shifted = (y_next >> CSF) - ScreenHalfH;
 }

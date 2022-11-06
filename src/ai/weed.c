@@ -485,7 +485,7 @@ void ai_frog(Entity *e) {
 		break;
 	}
 	// rand jumping, and jump when shot
-	if (e->state < 3 && e->timer > TIME_8(15)) {
+	if ((e->state < 3) && e->timer > TIME_8(15)) {
 		uint8_t dojump = FALSE;
 		if(e->damage_time) {
 			dojump = TRUE;

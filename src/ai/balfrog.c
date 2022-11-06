@@ -430,14 +430,14 @@ void ai_balfrog(Entity *e) {
 	if(e->jump_time) {
 		VDPSprite feet[2] = {
 			(VDPSprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff1[e->dir] + 128,
-				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff1[e->dir] + 128,
+				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
 				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
 			},
 			(VDPSprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + SCREEN_HALF_W + xoff2[e->dir] + 128,
-				.y = (e->y >> CSF) - (camera.y >> CSF) + SCREEN_HALF_H + 24 + 128,
+				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff2[e->dir] + 128,
+				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
 				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?0:9)),
 			},

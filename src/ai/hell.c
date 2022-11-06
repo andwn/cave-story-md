@@ -449,7 +449,7 @@ void ai_bute_arrow(Entity *e) {
 		case 10:
 		{
 			if(e->y_speed < SPEED_12(0x5E0)) e->y_speed += SPEED_8(0x20);
-			if(e->frame < 4 && ++e->animtime > TIME_8(10)) {
+			if((e->frame < 4) && ++e->animtime > TIME_8(10)) {
 				e->frame++;
 				e->animtime = 0;
 			}
@@ -586,7 +586,7 @@ void onspawn_deleet(Entity *e) {
 
 void ai_deleet(Entity *e) {
 	// Draw above the wall
-	sprite_pri(e->sprite[0], 1); 
+	sprite_pri(&e->sprite[0], 1);
 
 	// trigger counter
 	if (e->health < (1000 - DELEET_HP) && e->state < 2) {

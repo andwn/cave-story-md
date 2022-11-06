@@ -512,7 +512,7 @@ void weapon_fire_blade(Weapon *w) {
 	} else {
 		if(b->level == 3) {
 			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attr, 9);
-			if(b->dir == RIGHT) sprite_hflip(b->sprite, 1);
+			if(b->dir == RIGHT) sprite_hflip(&b->sprite, 1);
 		}
 		// Spawn slightly behind the player
 		if(b->level == 2) {
@@ -693,10 +693,10 @@ void bullet_update_snake(Bullet *b) {
 
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(b->sprite,
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
-	sprite_index(b->sprite, sheets[b->sheet].index + index);
+	sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
+	sprite_index(&b->sprite, sheets[b->sheet].index + index);
 	vdp_sprite_add(&b->sprite);
     if(b->level > 1 && (b->ttl & 3) == 0) {
         effect_create_misc(EFF_SNAKETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
@@ -734,9 +734,9 @@ void bullet_update_polarstar(Bullet *b) {
             b->extent.x1 = 0xFFFF;
             return;
         }
-		sprite_pos(b->sprite, 
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		sprite_pos(&b->sprite,
+                   sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+                   sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 		vdp_sprite_add(&b->sprite);
 	}
 }
@@ -779,11 +779,11 @@ void bullet_update_fireball(Bullet *b) {
 	}
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 	uint16_t index = (b->ttl & 3) << 2;
-	sprite_index(b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
+	sprite_index(&b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
 	vdp_sprite_add(&b->sprite);
 	if(b->level > 1 && (b->ttl & 3) == 0) {
 	    effect_create_misc(EFF_FIRETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
@@ -808,9 +808,9 @@ void bullet_update_machinegun(Bullet *b) {
             b->extent.x1 = 0xFFFF;
             return;
         }
-		sprite_pos(b->sprite,
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		sprite_pos(&b->sprite,
+                   sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+                   sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 		// Expand sprite of level 3 after a couple frames
 		if(b->level == 3) {
 			if(b->ttl == TIME_8(18)) {
@@ -870,9 +870,9 @@ void bullet_update_missile(Bullet *b) {
 			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
 			sound_play(SND_BLOCK_DESTROY, 5);
 		}
-		sprite_pos(b->sprite, 
-			sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-			sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+		sprite_pos(&b->sprite,
+                   sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+                   sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 		vdp_sprite_add(&b->sprite);
 	} else {
 		if(b->ttl & 3) {
@@ -903,7 +903,7 @@ void bullet_update_bubbler(Bullet *b) {
 		uint8_t livetime = b->level == 1 ? TIME_8(40) : TIME_8(60);
 		uint8_t frame = (livetime - b->ttl) >> 2;
 		if(frame > 3) frame = 3;
-		sprite_index(b->sprite, sheets[b->sheet].index + frame);
+		sprite_index(&b->sprite, sheets[b->sheet].index + frame);
 	} else if(b->ttl >= TIME_8(30)) { // Level 3 orbits around player
 		if(!joy_down(btn[cfg_btn_shoot]) || b->ttl == TIME_8(30)) {
 			b->ttl = TIME_8(30);
@@ -913,27 +913,27 @@ void bullet_update_bubbler(Bullet *b) {
 				case LEFT: 
 					b->x_speed = -SPEED_12(0xC00);
 					b->y_speed = 0;
-					sprite_index(b->sprite, sheets[b->sheet].index + 2);
+					sprite_index(&b->sprite, sheets[b->sheet].index + 2);
 					break;
 				case RIGHT: 
 					b->x_speed = SPEED_12(0xC00);
 					b->y_speed = 0;
-					sprite_index(b->sprite, sheets[b->sheet].index + 2);
+					sprite_index(&b->sprite, sheets[b->sheet].index + 2);
 					break;
 				case UP: 
 					b->y_speed = -SPEED_12(0xC00);
 					b->x_speed = 0;
-					sprite_index(b->sprite, sheets[b->sheet].index + 3);
+					sprite_index(&b->sprite, sheets[b->sheet].index + 3);
 					break;
 				case DOWN: 
 					b->y_speed = SPEED_12(0xC00);
 					b->x_speed = 0;
-					sprite_index(b->sprite, sheets[b->sheet].index + 3);
+					sprite_index(&b->sprite, sheets[b->sheet].index + 3);
 					break;
 			}
 		} else {
 			// Just 2 frames for this part, when launched use 3rd or 4th based on dir
-			if(b->ttl == TIME_8(98)) sprite_index(b->sprite, sheets[b->sheet].index + 1);
+			if(b->ttl == TIME_8(98)) sprite_index(&b->sprite, sheets[b->sheet].index + 1);
 			// Follow player
 			if (b->x > player.x) {
 				if(b->x_speed > -SPEED_12(0x5E0)) b->x_speed -= SPEED_8(0x20);
@@ -978,9 +978,9 @@ void bullet_update_bubbler(Bullet *b) {
     }
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 4,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 4);
+	sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 4,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 4);
 	vdp_sprite_add(&b->sprite);
 }
 
@@ -1035,9 +1035,9 @@ void bullet_update_blade(Bullet *b) {
     }
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 	// Level 2 and 3 sprites are a bit larger so adjust the display position
 	if(b->level > 1) {
 		b->sprite.x -= 4;
@@ -1057,9 +1057,9 @@ void bullet_update_blade_slash(Bullet *b) {
 	
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(b->sprite, 
-		sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-		sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+	sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
 	vdp_sprite_add(&b->sprite);
 }
 
@@ -1088,9 +1088,9 @@ void bullet_update_nemesis(Bullet *b) {
     b->sprite.attr += b->state ? 6 : -6;
     b->x += b->x_speed;
     b->y += b->y_speed;
-    sprite_pos(b->sprite,
-        sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - (b->hit_box.left + 1),
-        sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - (b->hit_box.top + 1));
+    sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - (b->hit_box.left + 1),
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - (b->hit_box.top + 1));
     vdp_sprite_add(&b->sprite);
 }
 
@@ -1146,9 +1146,9 @@ void bullet_update_spur(Bullet *b) {
     }
     b->x += b->x_speed;
     b->y += b->y_speed;
-    sprite_pos(b->sprite,
-        sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-        sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+    sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
     if(b->ttl == TIME_8(28)) {
         if(b->dir == UP || b->dir == DOWN) {
             b->sprite.size = SPRITE_SIZE(2, 4);
@@ -1194,9 +1194,9 @@ void bullet_update_spur_tail(Bullet *b) {
     }
     b->x += b->x_speed;
     b->y += b->y_speed;
-    sprite_pos(b->sprite,
-               sub_to_pixel(b->x - camera.x) + SCREEN_HALF_W - 8,
-               sub_to_pixel(b->y - camera.y) + SCREEN_HALF_H - 8);
+    sprite_pos(&b->sprite,
+               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
+               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
     if (b->ttl == TIME_8(18)) {
         if (b->dir == UP || b->dir == DOWN) {
             b->sprite.size = SPRITE_SIZE(2, 4);

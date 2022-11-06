@@ -82,7 +82,7 @@ void ai_night_spirit(Entity *e) {
 			e->y_speed += (e->y > e->y_mark) ? -SPEED(0x40) : SPEED(0x40);
 			LIMIT_Y(SPEED(0x400));
 			
-			if (abs(e->y - e->y_mark) < pixel_to_sub(SCREEN_HALF_H)) {
+			if (abs(e->y - e->y_mark) < pixel_to_sub(ScreenHalfH)) {
 				e->state = NS_GUARD_SET_POINT;
 			}
 		}
@@ -97,7 +97,7 @@ void ai_night_spirit(Entity *e) {
 			LIMIT_Y(SPEED(0x400));
 			
 			// and if player appears again...
-			if (PLAYER_DIST_Y(e, pixel_to_sub(SCREEN_HEIGHT))) {	
+			if (PLAYER_DIST_Y(e, pixel_to_sub(ScreenHeight))) {
 				// ..jump out and fire immediately
 				e->state = NS_PREPARE_FIRE;
 				e->timer = 0;
@@ -118,7 +118,7 @@ void ai_night_spirit(Entity *e) {
 		e->y = e->y_next;
 		
 		// avoid leaving designated area
-		if (abs(e->y - e->y_mark) > pixel_to_sub(SCREEN_HEIGHT)) {
+		if (abs(e->y - e->y_mark) > pixel_to_sub(ScreenHeight)) {
 			if (e->state != NS_FIRING) {
 				e->state = NS_RETURN_TO_SET_POINT;
 			}

@@ -226,7 +226,7 @@ void ai_sandcroc(Entity *e) {
 			}
 			if(PLAYER_DIST_X(e, pixel_to_sub(19))) {
 				// check if bottoms of player and croc are near
-				if(player.y < e->y + 0x200 && sub_to_pixel(player.y) + 
+				if((player.y < e->y + 0x200) && sub_to_pixel(player.y) +
 					player.hit_box.bottom + 12 > sub_to_pixel(e->y) + e->hit_box.bottom) {
 					// attack!!
 					e->x_speed = 0;
@@ -884,7 +884,7 @@ void ai_puppyCarry(Entity *e) {
 	e->x = player.x + ((e->dir ? -4 : 4) << CSF);
 	e->y = player.y - (6 << CSF);
 	// Keep dog in front of doors
-	if(abs(e->x_mark - camera.x) > SCREEN_HALF_W || abs(e->y_mark - camera.y) > SCREEN_HALF_H) {
+	if(abs(e->x_mark - camera.x) > ScreenHalfW || abs(e->y_mark - camera.y) > ScreenHalfH) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;
 		e->y_mark = camera.y;

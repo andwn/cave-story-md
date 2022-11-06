@@ -246,7 +246,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
 					if(released) break;
 					if(!(joystate & btn[cfg_btn_jump])) break;
 				}
-				sprite_index((*sprCursor), TILE_SHEETINDEX+32+16);
+				sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
 			    vdp_sprite_add(sprCursor);
 				ready = TRUE;
 				vdp_vsync(); aftervsync();
@@ -331,11 +331,11 @@ void config_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		
 		// Draw quote sprite at cursor position
-		sprite_pos(sprCursor, 16, (menu[page][cursor].y << 3) - 4);
+		sprite_pos(&sprCursor, 16, (menu[page][cursor].y << 3) - 4);
 		vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;

@@ -56,7 +56,7 @@ void onspawn_spike(Entity *e) {
 	uint16_t x = sub_to_block(e->x), y = sub_to_block(e->y);
 	if(stage_get_block_type(x, y+1) == 0x41) { // Solid on bottom
 	} else if(stage_get_block_type(x, y-1) == 0x41) { // Solid on top
-		sprite_vflip(e->sprite[0], TRUE);
+		sprite_vflip(&e->sprite[0], TRUE);
 	} else if(stage_get_block_type(x-1, y) == 0x41) { // Solid on left
 		e->frame = 1;
 	} else if(stage_get_block_type(x+1, y) == 0x41) { // Solid on right
@@ -405,7 +405,7 @@ void ai_player(Entity *e) {
 		{
 			e->frame = 0;
 			e->hidden = FALSE;
-			sprite_vflip(e->sprite[0], 1);
+			sprite_vflip(&e->sprite[0], 1);
 			e->grounded = FALSE;
 			collide = FALSE;
 			if(e->y_speed > SPEED_10(0x1FF)) e->y_speed = SPEED_10(0x1FF);
@@ -622,7 +622,7 @@ void ai_balrog_splash(Entity *e) {
 		{
 			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
 			e->y += e->y_speed;
-			if(e->y >= pixel_to_sub(SCREEN_HALF_H - 24)) {
+			if(e->y >= pixel_to_sub(ScreenHalfH - 24)) {
 				e->y_speed = 0x320;
 				e->state++;
 				e->linkedEntity->state++;
@@ -633,7 +633,7 @@ void ai_balrog_splash(Entity *e) {
 		case 2: // Crushing logo
 		{
 			e->y += e->y_speed;
-			if(e->y >= pixel_to_sub(SCREEN_HALF_H + 4)) {
+			if(e->y >= pixel_to_sub(ScreenHalfH + 4)) {
 				e->state++;
 				e->frame = DUCK;
 				sound_play(SND_LITTLE_CRASH, 5);

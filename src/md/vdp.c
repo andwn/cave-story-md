@@ -43,17 +43,17 @@ static uint16_t sprite_ymax;
 static uint16_t font_pal;
 
 // Screen size
-uint8_t SCREEN_HEIGHT;
-uint8_t SCREEN_HALF_H;
-uint8_t pal_mode;
+//uint16_t ScreenHeight;
+//uint16_t ScreenHalfH;
+//uint8_t pal_mode;
 uint8_t FPS;
 
 void vdp_init() {
     // Store pal_mode and adjust some stuff based on it
     pal_mode = *vdp_ctrl_port & 1;
-    SCREEN_HEIGHT = pal_mode ? 240 : 224;
-    SCREEN_HALF_H = SCREEN_HEIGHT >> 1;
-    sprite_ymax = SCREEN_HEIGHT + 32;
+    ScreenHeight = pal_mode ? 240 : 224;
+    ScreenHalfH = ScreenHeight >> 1;
+    sprite_ymax = ScreenHeight + 32;
     FPS = pal_mode ? 50 : 60;
     // Set the registers
     *vdp_ctrl_port = 0x8004;

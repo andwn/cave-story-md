@@ -124,11 +124,11 @@ void player_init() {
 	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
 	vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
 	airSprite[0] = (VDPSprite) {
-		.x = SCREEN_HALF_W - 28 + 128, .y = SCREEN_HALF_H - 24 + 128, 
+		.x = ScreenHalfW - 28 + 128, .y = ScreenHalfH - 24 + 128,
 		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
 	};
 	airSprite[1] = (VDPSprite) {
-		.x = SCREEN_HALF_W + 8 + 128, .y = SCREEN_HALF_H - 24 + 128, 
+		.x = ScreenHalfW + 8 + 128, .y = ScreenHalfH - 24 + 128,
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
@@ -830,8 +830,8 @@ static void show_map_jname(uint8_t ttl) {
     }
     if(!len) return;
 
-    uint16_t x = SCREEN_HALF_W - mul6[len] + 128;
-    uint16_t y = SCREEN_HALF_H - 32 + 128;
+    uint16_t x = ScreenHalfW - mul6[len] + 128;
+    uint16_t y = ScreenHalfH - 32 + 128;
     for(i = 0; i < len; i += 2) {
         uint16_t tind = mul6[i >> 1];
         mapNameSprite[i >> 1] = (VDPSprite) {
@@ -883,8 +883,8 @@ void player_show_map_name(uint8_t ttl) {
     }
 	// Transfer tile array to VRAM
     mapNameSpriteNum = 0;
-    uint16_t x = SCREEN_HALF_W - (len<<2) + 128;
-    uint16_t y = SCREEN_HALF_H - 32 + 128;
+    uint16_t x = ScreenHalfW - (len << 2) + 128;
+    uint16_t y = ScreenHalfH - 32 + 128;
     for(uint16_t i = 0; i < len; i += 4) {
         uint8_t sind = i>>2;
         mapNameSprite[sind] = (VDPSprite) {
@@ -938,9 +938,9 @@ static void player_update_air_display() {
 void player_draw() {
 	// Special case when player drowns
 	if(!airPercent) {
-		sprite_pos(playerSprite,
-				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_pos(&playerSprite,
+                   sub_to_pixel(player.x) - sub_to_pixel(camera.x) + ScreenHalfW - 8,
+                   sub_to_pixel(player.y) - sub_to_pixel(camera.y) + ScreenHalfH - 8);
 		vdp_sprite_add(&playerSprite);
 		return;
 	} else if(!player.health) {
@@ -1009,10 +1009,10 @@ void player_draw() {
 				player.dir = 0;
 			}
 		}
-		sprite_hflip(playerSprite, player.dir);
-		sprite_pos(playerSprite,
-				sub_to_pixel(player.x) - sub_to_pixel(camera.x) + SCREEN_HALF_W - 8,
-				sub_to_pixel(player.y) - sub_to_pixel(camera.y) + SCREEN_HALF_H - 8);
+		sprite_hflip(&playerSprite, player.dir);
+		sprite_pos(&playerSprite,
+                   sub_to_pixel(player.x) - sub_to_pixel(camera.x) + ScreenHalfW - 8,
+                   sub_to_pixel(player.y) - sub_to_pixel(camera.y) + ScreenHalfH - 8);
 		vdp_sprite_add(&playerSprite);
 		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
 			uint16_t vert = 0, vdir = 0;
@@ -1025,15 +1025,15 @@ void player_draw() {
 			}
 			if(vert) {
 				weaponSprite = (VDPSprite) {
-					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 4 + 128,
-					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 8 + 128,
+					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 4 + 128,
+					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 8 + 128,
 					.size = SPRITE_SIZE(1, 3),
 					.attr = TILE_ATTR(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
 				};
 			} else {
 				weaponSprite = (VDPSprite) {
-					.x = (player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12 + 128,
-					.y = (player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 0 + 128,
+					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 12 + 128,
+					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 0 + 128,
 					.size = SPRITE_SIZE(3, 1),
 					.attr = TILE_ATTR(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
 				};
@@ -1041,9 +1041,9 @@ void player_draw() {
 			vdp_sprite_add(&weaponSprite);
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
-			sprite_pos(airTankSprite, 
-					(player.x>>CSF) - (camera.x>>CSF) + SCREEN_HALF_W - 12,
-					(player.y>>CSF) - (camera.y>>CSF) + SCREEN_HALF_H - 12);
+			sprite_pos(&airTankSprite,
+                       (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 12,
+                       (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 12);
 			vdp_sprite_add(&airTankSprite);
 		}
 	}

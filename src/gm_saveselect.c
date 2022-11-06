@@ -276,14 +276,14 @@ uint8_t saveselect_main() {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		if(cursorMode == CM_PASTE && (sprTime & 1)) {
 			// Blink quote between source and destination of a copy
-			sprite_pos(sprCursor, cursor_pos[fileToCopy].x, cursor_pos[fileToCopy].y);
+			sprite_pos(&sprCursor, cursor_pos[fileToCopy].x, cursor_pos[fileToCopy].y);
 		} else {
 			// Draw quote sprite at cursor position
-			sprite_pos(sprCursor, cursor_pos[cursor].x, cursor_pos[cursor].y);
+			sprite_pos(&sprCursor, cursor_pos[cursor].x, cursor_pos[cursor].y);
 		}
 	    vdp_sprite_add(&sprCursor);
 		

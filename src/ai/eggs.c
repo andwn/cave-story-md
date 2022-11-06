@@ -156,9 +156,9 @@ void ai_basil(Entity *e) {
 	ANIMATE(e, 8, 0,1,2);
 	if(e->x_speed == 0) { // Hit a wall
 		e->dir ^= 1;
-	} else if(sub_to_pixel(e->x) < sub_to_pixel(camera.x) - SCREEN_HALF_W - 64) {
+	} else if(sub_to_pixel(e->x) < sub_to_pixel(camera.x) - ScreenHalfW - 64) {
 		e->dir = 1;
-	} else if(sub_to_pixel(e->x) > sub_to_pixel(camera.x) + SCREEN_HALF_W + 64) {
+	} else if(sub_to_pixel(e->x) > sub_to_pixel(camera.x) + ScreenHalfW + 64) {
 		e->dir = 0;
 	}
 	MOVE_X(SPEED(0x500));

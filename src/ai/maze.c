@@ -224,7 +224,7 @@ void ai_gaudi(Entity *e) {
 	}
 	
 	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A) sprite_pal(e->sprite[0], PAL3);
+	if(stageID == 0x2A) sprite_pal(&e->sprite[0], PAL3);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -839,7 +839,7 @@ void ai_gaudi_egg(Entity *e) {
 			e->y -= 0x800;
 			e->x -= 0x800;
 		} else {	// on ceiling
-			sprite_vflip(e->sprite[0], 1);
+			sprite_vflip(&e->sprite[0], 1);
 			// for the egg @ entrance point that is on a ceiling slope
 			if (!collide_stage_ceiling(e)) {
 				e->y -= (14 << CSF);

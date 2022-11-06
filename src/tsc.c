@@ -324,7 +324,7 @@ uint8_t tsc_update() {
 				controlsLocked = FALSE;
 				hud_show();
 			} else if(joy_pressed(JOY_LEFT)) {
-				sprite_index(teleMenuSprite[teleMenuSelection], 
+				sprite_index(&teleMenuSprite[teleMenuSelection],
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == 0) {
 					teleMenuSelection = teleMenuSlotCount - 1;
@@ -337,7 +337,7 @@ uint8_t tsc_update() {
 				while(tscState != TSC_IDLE) execute_command();
 				tscState = TSC_TELEMENU; // Don't break away from the menu
 			} else if(joy_pressed(JOY_RIGHT)) {
-				sprite_index(teleMenuSprite[teleMenuSelection], 
+				sprite_index(&teleMenuSprite[teleMenuSelection],
 						sheets[teleMenuSheet].index + teleMenuSelection*16);
 				if(teleMenuSelection == teleMenuSlotCount - 1) {
 					teleMenuSelection = 0;
@@ -351,7 +351,7 @@ uint8_t tsc_update() {
 				tscState = TSC_TELEMENU;
 			} else { // Doing nothing, blink cursor
 				bossHealth ^= 8;
-				sprite_index(teleMenuSprite[teleMenuSelection], 
+				sprite_index(&teleMenuSprite[teleMenuSelection],
 						sheets[teleMenuSheet].index + teleMenuSelection*16 + bossHealth);
 			}
 		    vdp_sprites_add(teleMenuSprite, teleMenuSlotCount);
@@ -389,15 +389,15 @@ void tsc_show_boss_health() {
 	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
 	uint8_t yoff = pal_mode ? 24 : 16;
 	teleMenuSprite[5] = (VDPSprite) { 
-		.x = 160 + 32 + 128, .y = SCREEN_HEIGHT - yoff + 128,
+		.x = 160 + 32 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
 	teleMenuSprite[6] = (VDPSprite) { 
-		.x = 160 + 64 + 128, .y = SCREEN_HEIGHT - yoff + 128,
+		.x = 160 + 64 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
 	teleMenuSprite[7] = (VDPSprite) { 
-		.x = 160 + 96 + 128, .y = SCREEN_HEIGHT - yoff + 128,
+		.x = 160 + 96 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+8)
 	};
 }
@@ -1212,8 +1212,8 @@ uint8_t execute_command() {
 			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
-			camera.x = pixel_to_sub(SCREEN_HALF_W);
-			camera.y = pixel_to_sub(SCREEN_HALF_H);
+			camera.x = pixel_to_sub(ScreenHalfW);
+			camera.y = pixel_to_sub(ScreenHalfH);
 			camera.x_shifted = 0;
 			camera.y_shifted = 0;
 			// Reset plane positions
