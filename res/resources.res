@@ -20,37 +20,37 @@ PALETTE PAL_Mapi		"sprite/mapignon.png"
 PALETTE PAL_Miza		"sprite/misery2.png"
 PALETTE PAL_Intro		"sprite/bubbleintro.png"
 
-PALETTE PAL_Mimi	    "Stage/PrtMimi_vert.png"
-PALETTE PAL_Eggs	    "Stage/PrtEggs_vert.png"
-PALETTE PAL_Maze	    "Stage/PrtMaze_vert.png"
-PALETTE PAL_Blcny	    "Stage/PrtBlcny_vert.png"
-PALETTE PAL_Ring3	    "Stage/PrtRing3_vert.png"
-PALETTE PAL_Hell	    "Stage/PrtHell_vert.png"
-PALETTE PAL_Almond	    "Stage/PrtAlmond_vert.png"
-PALETTE PAL_Barr	    "Stage/PrtBarr_vert.png"
-PALETTE PAL_Cave	    "Stage/PrtCave_vert.png"
-PALETTE PAL_Cent	    "Stage/PrtCent_vert.png"
-PALETTE PAL_EggIn	    "Stage/PrtEggIn_vert.png"
-PALETTE PAL_EggX	    "Stage/PrtEggX1_vert.png"
-PALETTE PAL_Fall	    "Stage/PrtFall_vert.png"
-PALETTE PAL_Gard	    "Stage/PrtGard_vert.png"
-PALETTE PAL_Jail	    "Stage/PrtJail_vert.png"
-PALETTE PAL_Labo	    "Stage/PrtLabo_vert.png"
-PALETTE PAL_Oside	    "Stage/PrtOside_vert.png"
-PALETTE PAL_Pens	    "Stage/PrtPens_vert.png"
-PALETTE PAL_River	    "Stage/PrtRiver_vert.png"
-PALETTE PAL_Sand	    "Stage/PrtSand_vert.png"
-PALETTE PAL_Store	    "Stage/PrtStore_vert.png"
-PALETTE PAL_Weed	    "Stage/PrtWeed_vert.png"
+PALETTE PAL_Mimi	    "tiles_c/PrtMimi_vert.png"
+PALETTE PAL_Eggs	    "tiles_c/PrtEggs_vert.png"
+PALETTE PAL_Maze	    "tiles_c/PrtMaze_vert.png"
+PALETTE PAL_Blcny	    "tiles_c/PrtBlcny_vert.png"
+PALETTE PAL_Ring3	    "tiles_c/PrtRing3_vert.png"
+PALETTE PAL_Hell	    "tiles_c/PrtHell_vert.png"
+PALETTE PAL_Almond	    "tiles_c/PrtAlmond_vert.png"
+PALETTE PAL_Barr	    "tiles_c/PrtBarr_vert.png"
+PALETTE PAL_Cave	    "tiles_c/PrtCave_vert.png"
+PALETTE PAL_Cent	    "tiles_c/PrtCent_vert.png"
+PALETTE PAL_EggIn	    "tiles_c/PrtEggIn_vert.png"
+PALETTE PAL_EggX	    "tiles_c/PrtEggX1_vert.png"
+PALETTE PAL_Fall	    "tiles_c/PrtFall_vert.png"
+PALETTE PAL_Gard	    "tiles_c/PrtGard_vert.png"
+PALETTE PAL_Jail	    "tiles_c/PrtJail_vert.png"
+PALETTE PAL_Labo	    "tiles_c/PrtLabo_vert.png"
+PALETTE PAL_Oside	    "tiles_c/PrtOside_vert.png"
+PALETTE PAL_Pens	    "tiles_c/PrtPens_vert.png"
+PALETTE PAL_River	    "tiles_c/PrtRiver_vert.png"
+PALETTE PAL_Sand	    "tiles_c/PrtSand_vert.png"
+PALETTE PAL_Store	    "tiles_c/PrtStore_vert.png"
+PALETTE PAL_Weed	    "tiles_c/PrtWeed_vert.png"
 # Alternate for waterway (Green background)
-PALETTE PAL_RiverAlt    "Stage/PrtRiver_alt_vert.png"
+PALETTE PAL_RiverAlt    "tiles_c/PrtRiver_alt_vert.png"
 
-PALETTE PAL_MazeM		"back/bkRed.bmp"
-PALETTE PAL_X			"back/bkMaze.png"
-PALETTE PAL_XB			"back/bkMaze.bmp"
-PALETTE PAL_LabB		"back/bkMimiRegu.png"
-PALETTE PAL_SndTest		"back/soundtest.png"
-PALETTE PAL_XX			"xxBack.png"
+PALETTE PAL_MazeM		"tiles_c/bkRed.bmp"
+PALETTE PAL_X			"tiles_c/bkMaze.png"
+PALETTE PAL_XB			"tiles_c/bkMaze.bmp"
+PALETTE PAL_LabB		"tiles_c/bkMimiRegu.png"
+PALETTE PAL_SndTest		"tiles_c/bkSoundTest.png"
+PALETTE PAL_XX			"tiles_c/xxBack.png"
 
 PALETTE PAL_Ill01	"credits/ill01.png"
 PALETTE PAL_Ill02	"credits/ill02.png"
@@ -75,14 +75,65 @@ PALETTE PAL_Ill18	"credits/ill18.png"
 # Sprites
 # ----------------------------------------------------------------------------------------------
 
+SPRITE SPR_Casts		"sprite_c/casts.png"			3 3 0 0 NONE
+
+# Localizable - move these later
+SPRITE SPR_Air			"sprite_loc/air_en.png"			7 1 0 0 NONE
+SPRITE SPR_J_Air		"sprite_loc/air_ja.png"			7 1 0 0 NONE
+SPRITE SPR_Prompt		"sprite_loc/prompt_en.png" 		8 3 0 0 NONE
+SPRITE SPR_J_Prompt		"sprite_loc/prompt_ja.png" 		8 3 0 0 NONE
+SPRITE SPR_LevelUp		"sprite_loc/levelup_en.png"		7 2 0 0 NONE
+SPRITE SPR_J_LevelUp	"sprite_loc/levelup_ja.png"		7 2 0 0 NONE
+SPRITE SPR_LevelDown	"sprite_loc/leveldown_en.png"	7 2 0 0 NONE
+SPRITE SPR_J_LevelDown	"sprite_loc/leveldown_ja.png" 	7 2 0 0 NONE
+SPRITE SPR_Empty		"sprite_loc/empty_en.png"		5 1 0 0 NONE
+SPRITE SPR_J_Empty		"sprite_loc/empty_ja.png"		5 1 0 0 NONE
+SPRITE SPR_AhchooE		"sprite_loc/ahchoo_en.png"		2 2 0 0 NONE
+SPRITE SPR_AhchooJ		"sprite_loc/ahchoo_ja.png"		2 2 0 0 NONE
+
+# Weapons & bullets
+SPRITE SPR_Polar		"sprite_c/w_polar.png"		    6 1 0 0 NONE
+SPRITE SPR_PolarB1		"sprite_c/b_polar1.png"		    2 2 0 0 NONE
+SPRITE SPR_PolarB2		"sprite_c/b_polar2.png"		    2 2 0 0 NONE
+SPRITE SPR_PolarB3		"sprite_c/b_polar3.png"		    2 2 0 0 NONE
+SPRITE SPR_SpurB1		"sprite_c/b_spur1.png"		    2 2 0 0 NONE
+SPRITE SPR_SpurB2		"sprite_c/b_spur2.png"		    2 2 0 0 NONE
+SPRITE SPR_SpurB3		"sprite_c/b_spur3.png"		    2 2 0 0 NONE
+SPRITE SPR_Fireb		"sprite_c/w_fireball.png"		    6 1 0 0 NONE
+SPRITE SPR_Snake		"sprite_c/w_snake.png"		    6 1 0 0 NONE
+SPRITE SPR_FirebB1		"sprite_c/b_fireball1.png"	    2 2 0 0 NONE
+SPRITE SPR_FirebB2		"sprite_c/b_fireball2.png"	    2 2 0 0 NONE
+SPRITE SPR_FirebB3		"sprite_c/b_fireball3.png"	    2 2 0 0 NONE
+SPRITE SPR_Bubbl		"sprite_c/w_bubbler.png"		    6 1 0 0 NONE
+SPRITE SPR_BubB1		"sprite_c/b_bubbler1.png"		    1 1 0 0 NONE
+SPRITE SPR_BubB2		"sprite_c/b_bubbler2.png"		    1 1 0 0 NONE
+SPRITE SPR_BubB3		"sprite_c/b_bubbler3.png"		    1 1 0 0 NONE
+SPRITE SPR_Missl		"sprite_c/w_missile.png"		    6 1 0 0 NONE
+SPRITE SPR_Missl2		"sprite_c/w_smissile.png"		    6 1 0 0 NONE
+SPRITE SPR_MisslB1		"sprite_c/b_missile1.png"		    2 2 0 0 NONE
+SPRITE SPR_MisslB2		"sprite_c/b_missile2.png"		    2 2 0 0 NONE
+SPRITE SPR_MGun 		"sprite_c/w_mgun.png"			    6 1 0 0 NONE
+SPRITE SPR_MGunB1		"sprite_c/b_mgun1.png"			2 2 0 0 NONE
+SPRITE SPR_MGunB2		"sprite_c/b_mgun2.png"			2 2 0 0 NONE
+SPRITE SPR_MGunB3		"sprite_c/b_mgun3.png"			2 2 0 0 NONE
+SPRITE SPR_BladeB1		"sprite_c/b_blade1.png"		    5 2 0 0 NONE
+SPRITE SPR_BladeB2		"sprite_c/b_blade2.png"		    3 3 0 0 NONE
+SPRITE SPR_BladeB3k		"sprite_c/b_blade3king.png"	    3 3 0 0 NONE
+SPRITE SPR_BladeB3s		"sprite_c/b_blade3slash.png" 	    2 2 0 0 NONE
+SPRITE SPR_Nemes		"sprite_c/w_nemesis.png"		    6 1 0 0 NONE
+SPRITE SPR_NemB1h		"sprite_c/b_nem1h.png"			3 2 0 0 NONE
+SPRITE SPR_NemB1v		"sprite_c/b_nem1v.png"			2 3 0 0 NONE
+SPRITE SPR_NemB2h		"sprite_c/b_nem2h.png"			3 2 0 0 NONE
+SPRITE SPR_NemB2v		"sprite_c/b_nem2v.png"			2 3 0 0 NONE
+SPRITE SPR_NemB3h		"sprite_c/b_nem3h.png"			3 2 0 0 NONE
+SPRITE SPR_NemB3v		"sprite_c/b_nem3v.png"			2 3 0 0 NONE
+
 # Use PAL_Sega
 SPRITE SPR_Sega			"sprite/sega.png"			12 4 0 0 NONE
 SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 0 0 NONE
 
 # Use PAL_Main
 SPRITE SPR_Quote		"sprite/quote.png"			2 2 0 0 NONE
-SPRITE SPR_Air			"sprite/air.png"			7 1 0 0 NONE
-SPRITE SPR_J_Air		"sprite/air_ja.png"			7 1 0 0 NONE
 SPRITE SPR_Hud2			"sprite/hud2.png"			8 4 0 0 NONE
 SPRITE SPR_Pointer		"sprite/pointer.png"		2 2 0 0 NONE
 SPRITE SPR_ArmsImage	"sprite/armsimage.png"		2 2 0 0 NONE
@@ -93,18 +144,8 @@ SPRITE SPR_Fish			"sprite/fish.png"			2 2 0 0 NONE
 SPRITE SPR_CritBig		"sprite/critbig.png"		3 3 0 0 NONE
 SPRITE SPR_Jelly		"sprite/jelly.png"			2 2 0 0 NONE
 SPRITE SPR_Kulala		"sprite/kulala.png"			6 3 0 0 NONE
-SPRITE SPR_MisslB1		"sprite/missileb1.png"		2 2 0 0 NONE
-SPRITE SPR_MisslB2		"sprite/missileb2.png"		2 2 0 0 NONE
-SPRITE SPR_BladeB1		"sprite/bladeb1.png"		5 2 0 0 NONE
-SPRITE SPR_BladeB2		"sprite/bladeb2.png"		3 3 0 0 NONE
-SPRITE SPR_BladeB3k		"sprite/bladeb3king.png"	3 3 0 0 NONE
-SPRITE SPR_BladeB3s		"sprite/bladeb3slash.png" 	2 2 0 0 NONE
 SPRITE SPR_Quotele		"sprite/quotele.png"		2 2 0 0 NONE
 SPRITE SPR_Bubble		"sprite/bubble.png"			3 3 0 0 NONE
-SPRITE SPR_MGun 		"sprite/mgun.png"			6 1 0 0 NONE
-SPRITE SPR_MGunB1		"sprite/mgunb1.png"			2 2 0 0 NONE
-SPRITE SPR_MGunB2		"sprite/mgunb2.png"			2 2 0 0 NONE
-SPRITE SPR_MGunB3		"sprite/mgunb3.png"			2 2 0 0 NONE
 SPRITE SPR_Bonk			"sprite/headbump.png"		1 1 0 0 NONE
 SPRITE SPR_RedFl		"sprite/redflowers.png" 	6 2 0 0 NONE
 SPRITE SPR_BasuShot		"sprite/basushot.png"		2 2 0 0 NONE
@@ -117,15 +158,6 @@ SPRITE SPR_Stumpy		"sprite/dragonfly.png"		2 2 0 0 NONE
 SPRITE SPR_Zzz			"sprite/z.png"				1 1 0 0 NONE
 SPRITE SPR_RedFl3		"sprite/redflowers3.png" 	6 4 0 0 NONE
 SPRITE SPR_MimiSleep	"sprite/mimisleep.png"		2 2 0 0 NONE
-SPRITE SPR_BubB1		"sprite/bubb1.png"			1 1 0 0 NONE
-SPRITE SPR_BubB2		"sprite/bubb2.png"			1 1 0 0 NONE
-SPRITE SPR_BubB3		"sprite/bubb3.png"			1 1 0 0 NONE
-SPRITE SPR_NemB1h		"sprite/nemb1h.png"			3 2 0 0 NONE
-SPRITE SPR_NemB1v		"sprite/nemb1v.png"			2 3 0 0 NONE
-SPRITE SPR_NemB2h		"sprite/nemb2h.png"			3 2 0 0 NONE
-SPRITE SPR_NemB2v		"sprite/nemb2v.png"			2 3 0 0 NONE
-SPRITE SPR_NemB3h		"sprite/nemb3h.png"			3 2 0 0 NONE
-SPRITE SPR_NemB3v		"sprite/nemb3v.png"			2 3 0 0 NONE
 SPRITE SPR_QMark		"sprite/qmark.png"			1 1 0 0 NONE
 SPRITE SPR_Ballos		"sprite/ballos.png"			15 15 0 0 NONE
 SPRITE SPR_BallosP		"sprite/ballosp.png"		6 5 0 0 NONE
@@ -135,28 +167,11 @@ SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 0 0 NONE
 SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 0 0 NONE
 SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 0 0 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 0 0 NONE
-SPRITE SPR_SpurB1		"sprite/spurb1.png"			2 2 0 0 NONE
-SPRITE SPR_SpurB2		"sprite/spurb2.png"			2 2 0 0 NONE
-SPRITE SPR_SpurB3		"sprite/spurb3.png"			2 2 0 0 NONE
 
-SPRITE SPR_ItemWin		"itemwindow.png" 		6 3 0 0 NONE
-SPRITE SPR_Prompt		"prompt.png" 			8 3 0 0 NONE
-SPRITE SPR_J_Prompt		"prompt_ja.png" 		8 3 0 0 NONE
+SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 0 0 NONE
+
 
 # Use PAL_sym
-SPRITE SPR_Polar		"sprite/polar.png"			6 1 0 0 NONE
-SPRITE SPR_PolarB1		"sprite/polarb1.png"		2 2 0 0 NONE
-SPRITE SPR_PolarB2		"sprite/polarb2.png"		2 2 0 0 NONE
-SPRITE SPR_PolarB3		"sprite/polarb3.png"		2 2 0 0 NONE
-SPRITE SPR_Fireb		"sprite/fireball.png"		6 1 0 0 NONE
-SPRITE SPR_FirebB1		"sprite/fireballb1.png"		2 2 0 0 NONE
-SPRITE SPR_FirebB2		"sprite/fireballb2.png"		2 2 0 0 NONE
-SPRITE SPR_FirebB3		"sprite/fireballb3.png"		2 2 0 0 NONE
-SPRITE SPR_Missl		"sprite/missiles.png"		6 1 0 0 NONE
-SPRITE SPR_Missl2		"sprite/supermissl.png"		6 1 0 0 NONE
-SPRITE SPR_Snake		"sprite/snake.png"			6 1 0 0 NONE
-SPRITE SPR_Bubbl		"sprite/bubbler.png"		6 1 0 0 NONE
-SPRITE SPR_Nemes		"sprite/nemesis.png"		6 1 0 0 NONE
 SPRITE SPR_Chest		"sprite/chest.png"			2 2 0 0 NONE
 SPRITE SPR_Save			"sprite/save.png"			2 2 0 0 NONE
 SPRITE SPR_Refill		"sprite/refill.png"			2 2 0 0 NONE
@@ -229,10 +244,6 @@ SPRITE SPR_Heli			"sprite/heli.png"			16 8 0 0 NONE
 SPRITE SPR_HeliBlade	"sprite/heliblade.png"		14 2 0 0 NONE
 SPRITE SPR_HeliBlade2	"sprite/heliblade2.png"		9 2 0 0 NONE
 SPRITE SPR_RedCrystal	"sprite/redcrystal.png" 	1 2 0 0 NONE
-SPRITE SPR_LevelUp		"sprite/levelup.png"		7 2 0 0 NONE
-SPRITE SPR_J_LevelUp	"sprite/levelup_ja.png"		7 2 0 0 NONE
-SPRITE SPR_LevelDown	"sprite/leveldown.png"		7 2 0 0 NONE
-SPRITE SPR_J_LevelDown	"sprite/leveldown_ja.png" 	7 2 0 0 NONE
 SPRITE SPR_HeavyPress	"sprite/heavypress.png"		10 15 0 0 NONE
 SPRITE SPR_HPLightning	"sprite/hp_lightning.png" 	2 12 0 0 NONE
 SPRITE SPR_HPCharge		"sprite/hp_charge.png"		2 2 0 0 NONE
@@ -245,8 +256,6 @@ SPRITE SPR_HeavyPressL	"sprite/hp_lit.png"			4 4 0 0 NONE
 SPRITE SPR_BalrogFly	"sprite/balrog_fly.png"		5 3 0 0 NONE
 SPRITE SPR_BalrogMedic	"sprite/balrog_medic.png"	5 3 0 0 NONE
 SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 0 0 NONE
-SPRITE SPR_Empty		"sprite/empty.png"			5 1 0 0 NONE
-SPRITE SPR_J_Empty		"sprite/empty_ja.png"		5 1 0 0 NONE
 SPRITE SPR_DoctorBlood  "sprite/blood.png"          7 4 0 0 NONE
 SPRITE SPR_DocDie       "sprite/docdie.png"         4 6 0 0 NONE
 SPRITE SPR_Drop2        "sprite/drop2.png"          1 1 0 0 NONE
@@ -377,11 +386,8 @@ SPRITE SPR_Ravil		"sprite/ravil.png"			3 3 0 0 NONE
 SPRITE SPR_Littles		"sprite/littles.png"		1 1 0 0 NONE
 SPRITE SPR_Bute			"sprite/bute.png"			3 2 0 0 NONE
 SPRITE SPR_Mesa			"sprite/mesa.png"			4 4 0 0 NONE
-SPRITE SPR_Casts		"credits/casts.png"			3 3 0 0 NONE
 SPRITE SPR_GrnDevil		"sprite/grndevil.png"		2 2 0 0 NONE
 SPRITE SPR_TurnHuman	"sprite/turning_human.png"	2 3 0 0 NONE
-SPRITE SPR_AhchooE		"sprite/ahchoo_en.png"		2 2 0 0 NONE
-SPRITE SPR_AhchooJ		"sprite/ahchoo_ja.png"		2 2 0 0 NONE
 SPRITE SPR_BlgPassngr	"sprite/balrog_passngr.png"	2 2 0 0 NONE
 SPRITE SPR_DoctorIntro	"sprite/doctorintro.png"	2 4 0 0 NONE
 SPRITE SPR_CrownIntro	"sprite/crownintro.png"		2 2 0 0 NONE
@@ -465,94 +471,92 @@ SPRITE SPR_ItemImage	"sprite/itemimage.png"		3 2 0 0 NONE
 SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 	3 2 0 0 NONE
 
 # Use PAL_XX
-SPRITE SPR_XXIsland		"xxIsland.png" 			5 3 0 0 NONE
+SPRITE SPR_XXIsland		"sprite/xxIsland.png" 		5 3 0 0 NONE
 
 # ----------------------------------------------------------------------------------------------
 # Window & Inventory
 # ----------------------------------------------------------------------------------------------
 
-# Title Screen Logo
-TILESET TS_Title		"sprite/title.png" 		0
-TILESET TS_J_Title		"sprite/title_ja.png" 	0
-#TILESET TS_SysFont		"font_tran.png" 		0
+# Localizable - move these later
+TILESET TS_Title		"tiles_loc/title_en.png" 	0
+TILESET TS_J_Title		"tiles_loc/title_ja.png" 	0
+TILESET TS_MenuTextE	"tiles_loc/menutext_en.png"		0
+TILESET TS_MenuTextJ	"tiles_loc/menutext_ja.png"		0
 
 # Window
-TILESET TS_Window		"window.png" 			0
-#TILESET TS_MsgFont		"font_blue.png" 		0
-TILESET TS_ItemSel		"itemsel.png" 			0
-TILESET TS_MenuTextE	"menutext_en.png"		0
-TILESET TS_MenuTextJ	"menutext_ja.png"		0
+TILESET TS_Window		"tiles_c/window.png" 			0
+TILESET TS_ItemSel		"tiles_c/itemsel.png" 			0
 
 # Number Font
-TILESET TS_Numbers		"sprite/numbers.png" 	0
-TILESET TS_Clock		"clock.png"				0
+TILESET TS_Numbers		"tiles/numbers.png" 	0
+TILESET TS_Clock		"tiles/clock.png"		0
 
 # HUD Health/Energy Bar
-TILESET TS_HudBar		"sprite/hudfill.png" 	0
-TILESET TS_HudMax		"sprite/hudmax.png" 	0
-TILESET TS_HudFlash		"sprite/hudflash.png"	0
+TILESET TS_HudBar		"tiles/hudfill.png" 	0
+TILESET TS_HudMax		"tiles/hudmax.png" 	    0
+TILESET TS_HudFlash		"tiles/hudflash.png"	0
 
 # Breakable Block Tile
-TILESET TS_Break		"sprite/breakable.png" 	0
+TILESET TS_Break		"tiles/breakable.png" 	0
 
 # Wind/Current Tiles
-TILESET TS_WindH		"wind_h.png"			0
-TILESET TS_WindV		"wind_v.png"			0
+TILESET TS_WindH		"tiles/wind_h.png"			0
+TILESET TS_WindV		"tiles/wind_v.png"			0
 
 # Island Effect
-TILESET TS_XXBack		"xxBack.png" 			0
-TILESET TS_XXFore		"xxFore.png" 			0
+TILESET TS_XXBack		"tiles_c/xxBack.png" 			0
+TILESET TS_XXFore		"tiles_c/xxFore.png" 			0
 
 # ----------------------------------------------------------------------------------------------
 # Face Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET TS_Face01	"face/face01.png" 0
-TILESET TS_Face02	"face/face02.png" 0
-TILESET TS_Face03	"face/face03.png" 0
-TILESET TS_Face04	"face/face04.png" 0
-TILESET TS_Face05	"face/face05.png" 0
-TILESET TS_Face06	"face/face06.png" 0
-TILESET TS_Face07	"face/face07.png" 0
-TILESET TS_Face08	"face/face08.png" 0
-TILESET TS_Face09	"face/face09.png" 0
-TILESET TS_Face10	"face/face10.png" 0
-TILESET TS_Face11	"face/face11.png" 0
-TILESET TS_Face12	"face/face12.png" 0
-TILESET TS_Face13	"face/face13.png" 0
-TILESET TS_Face14	"face/face14.png" 0
-TILESET TS_Face15	"face/face15.png" 0
-TILESET TS_Face16	"face/face16.png" 0
-TILESET TS_Face17	"face/face17.png" 0
-TILESET TS_Face18	"face/face18.png" 0
-TILESET TS_Face19	"face/face19.png" 0
-TILESET TS_Face20	"face/face20.png" 0
-TILESET TS_Face21	"face/face21.png" 0
-TILESET TS_Face22	"face/face22.png" 0
-TILESET TS_Face23	"face/face23.png" 0
-TILESET TS_Face24	"face/face24.png" 0
-TILESET TS_Face25	"face/face25.png" 0
-TILESET TS_Face26	"face/face26.png" 0
+TILESET TS_Face01	"tiles_c/face01.png" 0
+TILESET TS_Face02	"tiles_c/face02.png" 0
+TILESET TS_Face03	"tiles_c/face03.png" 0
+TILESET TS_Face04	"tiles_c/face04.png" 0
+TILESET TS_Face05	"tiles_c/face05.png" 0
+TILESET TS_Face06	"tiles_c/face06.png" 0
+TILESET TS_Face07	"tiles_c/face07.png" 0
+TILESET TS_Face08	"tiles_c/face08.png" 0
+TILESET TS_Face09	"tiles_c/face09.png" 0
+TILESET TS_Face10	"tiles_c/face10.png" 0
+TILESET TS_Face11	"tiles_c/face11.png" 0
+TILESET TS_Face12	"tiles_c/face12.png" 0
+TILESET TS_Face13	"tiles_c/face13.png" 0
+TILESET TS_Face14	"tiles_c/face14.png" 0
+TILESET TS_Face15	"tiles_c/face15.png" 0
+TILESET TS_Face16	"tiles_c/face16.png" 0
+TILESET TS_Face17	"tiles_c/face17.png" 0
+TILESET TS_Face18	"tiles_c/face18.png" 0
+TILESET TS_Face19	"tiles_c/face19.png" 0
+TILESET TS_Face20	"tiles_c/face20.png" 0
+TILESET TS_Face21	"tiles_c/face21.png" 0
+TILESET TS_Face22	"tiles_c/face22.png" 0
+TILESET TS_Face23	"tiles_c/face23.png" 0
+TILESET TS_Face24	"tiles_c/face24.png" 0
+TILESET TS_Face25	"tiles_c/face25.png" 0
+TILESET TS_Face26	"tiles_c/face26.png" 0
 #/*27*/
-TILESET TS_Face28	"face/face28.png" 0
-TILESET TS_Face29	"face/face29.png" 0
+TILESET TS_Face28	"tiles_c/face28.png" 0
+TILESET TS_Face29	"tiles_c/face29.png" 0
 
 # ----------------------------------------------------------------------------------------------
 # Background Tilesets
 # ----------------------------------------------------------------------------------------------
 
-TILESET BG_Blue		"back/bkMimi.png" 0
-TILESET BG_Eggs		"back/bkEggs.png" 0
-TILESET BG_Gard		"back/bkGard.bmp" 0
-TILESET BG_Gray		"back/bkGrayRegu.png" 0
-TILESET BG_Cent		"back/bkCent.png" 0
-TILESET BG_Maze		"back/bkMaze.png" 0
-TILESET BG_Maze2	"back/bkMaze.bmp" 0
-TILESET BG_Red		"back/bkRed.bmp" 0
-TILESET BG_Water	"back/bkWater.bmp" 0
-TILESET BG_LabB		"back/bkMimiRegu.png" 0
-TILESET BG_Stream	"back/bkStream.png" 0
-TILESET BG_Sand		"back/bkSand.png" 0
-TILESET BG_Hell		"back/bkHell.png" 0
-TILESET BG_Fall		"back/bkFall.png" 0
+TILESET BG_Blue		"tiles_c/bkMimi.png" 0
+TILESET BG_Eggs		"tiles_c/bkEggs.png" 0
+TILESET BG_Gard		"tiles_c/bkGard.bmp" 0
+TILESET BG_Gray		"tiles_c/bkGrayRegu.png" 0
+TILESET BG_Cent		"tiles_c/bkCent.png" 0
+TILESET BG_Maze		"tiles_c/bkMaze.png" 0
+TILESET BG_Maze2	"tiles_c/bkMaze.bmp" 0
+TILESET BG_Red		"tiles_c/bkRed.bmp" 0
+TILESET BG_Water	"tiles_c/bkWater.bmp" 0
+TILESET BG_LabB		"tiles_c/bkMimiRegu.png" 0
+TILESET BG_Stream	"tiles_c/bkStream.png" 0
+TILESET BG_Sand		"tiles_c/bkSand.png" 0
+TILESET BG_Hell		"tiles_c/bkHell.png" 0
+TILESET BG_Fall		"tiles_c/bkFall.png" 0
 

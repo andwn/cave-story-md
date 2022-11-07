@@ -1,5 +1,0 @@
-input res/back/bkFogBottom.png
-output res/back/bkFogBottom.pat
-output2 res/back/bkFogBottom.map
-offset 16656
-map 0 0 32 19

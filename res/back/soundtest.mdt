@@ -1,5 +1,0 @@
-input res/back/soundtest.png
-output res/back/soundtest.pat
-output2 res/back/soundtest.map
-offset 8208
-map 0 0 40 30

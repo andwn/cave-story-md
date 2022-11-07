@@ -1,0 +1,5 @@
+input res/tiles_c/bkMoonTop.png
+output res/tiles_c/bkMoonTop.pat
+output2 res/tiles_c/bkMoonTop.map
+offset 18048
+map 0 0 40 11

@@ -1,5 +1,0 @@
-input res/back/bkMoonTop.png
-output res/back/bkMoonTop.pat
-output2 res/back/bkMoonTop.map
-offset 18048
-map 0 0 40 11

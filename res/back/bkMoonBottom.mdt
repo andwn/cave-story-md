@@ -1,5 +1,0 @@
-input res/back/bkMoonBottom.png
-output res/back/bkMoonBottom.pat
-output2 res/back/bkMoonBottom.map
-offset 16656
-map 0 0 32 19

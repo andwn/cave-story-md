@@ -37,7 +37,7 @@ SECTIONS {
   .rodata : {
     __rodata_start = .;
     *(.rodata .rodata.*)
-    *(.rodata.patch)
+    *(.patch)
     . = ALIGN(2);
     __rodata_end = .;
   } > rom

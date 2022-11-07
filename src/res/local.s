@@ -2,7 +2,7 @@
 
 /* Start of localizable data */
 /* Must be at the end of the ROM */
-    .section .rodata.patch
+    .section .patch
 
 .ascii "LANGDAT\0"
 
