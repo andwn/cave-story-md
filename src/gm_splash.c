@@ -17,6 +17,7 @@
 #include "tables.h"
 #include "tsc.h"
 #include "md/vdp.h"
+#include "res/pal.h"
 #include "weapon.h"
 #include "window.h"
 
@@ -26,8 +27,8 @@ void splash_main() {
 	gamemode = GM_SPLASH;
 	
 	// Init screen stuff
-	vdp_colors(0, PAL_Sega.data, 16);
-	vdp_colors(16, PAL_Sym.data, 16);
+	vdp_colors(0, PAL_Sega, 16);
+	vdp_colors(16, PAL_Sym, 16);
 	// Init some subsystems used
 	sheets_load_splash();
 	effects_init();

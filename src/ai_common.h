@@ -25,5 +25,6 @@
 #include "md/vdp.h"
 #include "weapon.h"
 #include "window.h"
+#include "res/pal.h"
 
 #include "ai.h"

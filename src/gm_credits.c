@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "res/system.h"
 #include "res/local.h"
+#include "res/pal.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
@@ -77,9 +78,9 @@ void credits_main() {
 	// Clear planes, reset palettes
 	vdp_map_clear(VDP_PLANE_A);
 	vdp_map_clear(VDP_PLANE_B);
-	vdp_colors(0, PAL_Main.data, 16);
-	vdp_colors(16, PAL_Sym.data, 16);
-	vdp_colors(48, PAL_Regu.data, 16);
+	vdp_colors(0, PAL_Main, 16);
+	vdp_colors(16, PAL_Sym, 16);
+	vdp_colors(48, PAL_Regu, 16);
 	// Stick camera to upper right
 	camera.target = NULL;
 	camera.x = pixel_to_sub(ScreenHalfW);
@@ -249,7 +250,7 @@ void credits_show_image(uint16_t id) {
 
     z80_resume();
     enable_ints(); // Vertical int will fire immediately
-    vdp_colors(32, illustration_info[id].palette->data, 16);
+    vdp_colors(32, illustration_info[id].palette, 16);
 }
 
 void credits_clear_image() {

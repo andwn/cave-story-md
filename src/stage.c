@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "res/stage.h"
+#include "res/tiles.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
@@ -14,6 +15,7 @@
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
+#include "res/pal.h"
 #include "md/string.h"
 #include "system.h"
 #include "tables.h"
@@ -103,8 +105,8 @@ void stage_load(uint16_t id) {
 		vdp_set_backcolor(0); // Color index 0 for everything except fog
 		if(stageBackgroundType == 0 || stageBackgroundType == 3) { // Tiled image
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-			vdp_tiles_load(background_info[stageBackground].tileset->tiles, TILE_BACKINDEX,
-						background_info[stageBackground].tileset->numTile);
+			vdp_tiles_load_uftc(background_info[stageBackground].tileset, TILE_BACKINDEX, 0,
+                                background_info[stageBackground].width * background_info[stageBackground].height);
 			stage_draw_background();
 		} else if(stageBackgroundType == 1) { // Moon
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
@@ -116,7 +118,7 @@ void stage_load(uint16_t id) {
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLANE_B);
             waterBackLastRow = (ScreenHeight >> 3) + 1;
-			vdp_tiles_load(BG_Water.tiles, TILE_WATERINDEX, BG_Water.numTile);
+			vdp_tiles_load_uftc(UFTC_bkWater, TILE_WATERINDEX, 0, 24);
 		} else if(stageBackgroundType == 5) { // Fog
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
 			// Use background color from tileset
@@ -437,18 +439,18 @@ void stage_update() {
 
 void stage_setup_palettes() {
 	// Stage palette and shared NPC palette
-	vdp_colors_next(0, PAL_Main.data, 16);
+	vdp_colors_next(0, PAL_Main, 16);
 	if(stageID == STAGE_INTRO) {
-		vdp_colors_next(16, PAL_Intro.data, 16);
+		vdp_colors_next(16, PAL_Intro, 16);
 	} else {
-		vdp_colors_next(16, PAL_Sym.data, 16);
+		vdp_colors_next(16, PAL_Sym, 16);
 	}
 	if(stageID == STAGE_WATERWAY) {
-		vdp_colors_next(32, PAL_RiverAlt.data, 16); // For Waterway green background
+		vdp_colors_next(32, PAL_RiverAlt, 16); // For Waterway green background
 	} else {
-		vdp_colors_next(32, tileset_info[stage_info[stageID].tileset].palette->data, 16);
+		vdp_colors_next(32, tileset_info[stage_info[stageID].tileset].palette, 16);
 	}
-	vdp_colors_next(48, stage_info[stageID].npcPalette->data, 16);
+	vdp_colors_next(48, stage_info[stageID].npcPalette, 16);
 }
 
 void stage_draw_screen() {
@@ -526,25 +528,25 @@ void stage_draw_background() {
 }
 
 void stage_draw_moonback() {
-	const uint32_t *topTiles, *btmTiles;
+	const uint16_t *topTiles, *btmTiles;
 	const uint16_t *topMap, *btmMap;
 	if(stageBackgroundType == 1) {
 		// Moon
-		topTiles = (uint32_t*) PAT_MoonTop;
-		btmTiles = (uint32_t*) PAT_MoonBtm;
-		topMap = (uint16_t*) MAP_MoonTop;
-		btmMap = (uint16_t*) MAP_MoonBtm;
+		topTiles = UFTC_bkMoonTop;
+		btmTiles = UFTC_bkMoonBtm;
+		topMap = MAP_bkMoonTop;
+		btmMap = MAP_bkMoonBtm;
 	} else {
 		// Fog
-		topTiles = (uint32_t*) PAT_FogTop;
-		btmTiles = (uint32_t*) PAT_FogBtm;
-		topMap = (uint16_t*) MAP_FogTop;
-		btmMap = (uint16_t*) MAP_FogBtm;
+		topTiles = UFTC_bkFogTop;
+		btmTiles = UFTC_bkFogBtm;
+		topMap = MAP_bkFogTop;
+		btmMap = MAP_bkFogBtm;
 	}
 	// Load the top section in the designated background area
-	vdp_tiles_load(topTiles, TILE_BACKINDEX, 12);
+	vdp_tiles_load_uftc(topTiles, TILE_BACKINDEX, 0, 12);
 	// Load the clouds under the map, it just fits
-	vdp_tiles_load(btmTiles, TILE_MOONINDEX, 188);
+	vdp_tiles_load_uftc(btmTiles, TILE_MOONINDEX, 0, 188);
     memset(hscrollTable, 0, 128);
 	//for(uint8_t y = 0; y < 60; y++) hscrollTable[y] = 0;
 	vdp_vscroll(VDP_PLANE_B, 0);

@@ -1,6 +1,7 @@
-#include "common.h"
+#include "md/types.h"
 
 #include "res/stage.h"
+#include "res/pal.h"
 #include "resources.h"
 #include "md/vdp.h"
 
@@ -387,23 +388,23 @@ const credits_info_def credits_info[] = {
 
 const illustration_info_def illustration_info[20] = {
 	{ NULL,                  0,   NULL,                  NULL       },
-	{ (uint32_t*) PAT_Ill01, 411, (uint16_t*) MAP_Ill01, &PAL_Ill01 },
-	{ (uint32_t*) PAT_Ill02, 411, (uint16_t*) MAP_Ill02, &PAL_Ill02 },
-	{ (uint32_t*) PAT_Ill03, 411, (uint16_t*) MAP_Ill03, &PAL_Ill03 },
-	{ (uint32_t*) PAT_Ill04, 411, (uint16_t*) MAP_Ill04, &PAL_Ill04 },
-	{ (uint32_t*) PAT_Ill05, 411, (uint16_t*) MAP_Ill05, &PAL_Ill05 },
-	{ (uint32_t*) PAT_Ill06, 411, (uint16_t*) MAP_Ill06, &PAL_Ill06 },
-	{ (uint32_t*) PAT_Ill07, 411, (uint16_t*) MAP_Ill07, &PAL_Ill07 },
-	{ (uint32_t*) PAT_Ill08, 411, (uint16_t*) MAP_Ill08, &PAL_Ill08 },
-	{ (uint32_t*) PAT_Ill09, 411, (uint16_t*) MAP_Ill09, &PAL_Ill09 },
-	{ (uint32_t*) PAT_Ill10, 411, (uint16_t*) MAP_Ill10, &PAL_Ill10 },
-	{ (uint32_t*) PAT_Ill11, 411, (uint16_t*) MAP_Ill11, &PAL_Ill11 },
-	{ (uint32_t*) PAT_Ill12, 411, (uint16_t*) MAP_Ill12, &PAL_Ill12 },
+	{ (uint32_t*) PAT_Ill01, 411, (uint16_t*) MAP_Ill01, PAL_Ill01 },
+	{ (uint32_t*) PAT_Ill02, 411, (uint16_t*) MAP_Ill02, PAL_Ill02 },
+	{ (uint32_t*) PAT_Ill03, 411, (uint16_t*) MAP_Ill03, PAL_Ill03 },
+	{ (uint32_t*) PAT_Ill04, 411, (uint16_t*) MAP_Ill04, PAL_Ill04 },
+	{ (uint32_t*) PAT_Ill05, 411, (uint16_t*) MAP_Ill05, PAL_Ill05 },
+	{ (uint32_t*) PAT_Ill06, 411, (uint16_t*) MAP_Ill06, PAL_Ill06 },
+	{ (uint32_t*) PAT_Ill07, 411, (uint16_t*) MAP_Ill07, PAL_Ill07 },
+	{ (uint32_t*) PAT_Ill08, 411, (uint16_t*) MAP_Ill08, PAL_Ill08 },
+	{ (uint32_t*) PAT_Ill09, 411, (uint16_t*) MAP_Ill09, PAL_Ill09 },
+	{ (uint32_t*) PAT_Ill10, 411, (uint16_t*) MAP_Ill10, PAL_Ill10 },
+	{ (uint32_t*) PAT_Ill11, 411, (uint16_t*) MAP_Ill11, PAL_Ill11 },
+	{ (uint32_t*) PAT_Ill12, 411, (uint16_t*) MAP_Ill12, PAL_Ill12 },
 	{ NULL,                  0,   NULL,                  NULL       },
-	{ (uint32_t*) PAT_Ill14, 411, (uint16_t*) MAP_Ill14, &PAL_Ill14 },
-	{ (uint32_t*) PAT_Ill15, 411, (uint16_t*) MAP_Ill15, &PAL_Ill15 },
-	{ (uint32_t*) PAT_Ill16, 411, (uint16_t*) MAP_Ill16, &PAL_Ill16 },
-	{ (uint32_t*) PAT_Ill17, 411, (uint16_t*) MAP_Ill17, &PAL_Ill17 },
-	{ (uint32_t*) PAT_Ill18, 411, (uint16_t*) MAP_Ill18, &PAL_Ill18 },
+	{ (uint32_t*) PAT_Ill14, 411, (uint16_t*) MAP_Ill14, PAL_Ill14 },
+	{ (uint32_t*) PAT_Ill15, 411, (uint16_t*) MAP_Ill15, PAL_Ill15 },
+	{ (uint32_t*) PAT_Ill16, 411, (uint16_t*) MAP_Ill16, PAL_Ill16 },
+	{ (uint32_t*) PAT_Ill17, 411, (uint16_t*) MAP_Ill17, PAL_Ill17 },
+	{ (uint32_t*) PAT_Ill18, 411, (uint16_t*) MAP_Ill18, PAL_Ill18 },
 	{ NULL,                  0,   NULL,                  NULL       },
 };

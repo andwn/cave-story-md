@@ -121,7 +121,7 @@ extern const uint8_t PXM_Egg6[];
 extern const uint8_t PXM_EggR[];
 extern const uint8_t PXM_EggR2[];
 extern const uint8_t PXM_EggX[];
-extern const uint8_t PXM_EggX2[];
+//extern const uint8_t PXM_EggX2[];
 extern const uint8_t PXM_Fall[];
 extern const uint8_t PXM_Frog[];
 extern const uint8_t PXM_Gard[];
@@ -255,17 +255,6 @@ extern const uint8_t PXE_WeedD[];
 extern const uint8_t PXE_WeedS[];
 
 extern const uint8_t NPC_TABLE[];
-
-extern const uint8_t PAT_MoonTop[];
-extern const uint8_t MAP_MoonTop[];
-extern const uint8_t PAT_MoonBtm[];
-extern const uint8_t MAP_MoonBtm[];
-extern const uint8_t PAT_FogTop[];
-extern const uint8_t MAP_FogTop[];
-extern const uint8_t PAT_FogBtm[];
-extern const uint8_t MAP_FogBtm[];
-extern const uint8_t PAT_SndTest[];
-extern const uint8_t MAP_SndTest[];
 
 extern const uint8_t PAT_Ill01[];
 extern const uint8_t MAP_Ill01[];

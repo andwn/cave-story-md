@@ -34,10 +34,6 @@ typedef struct {
 } TileSet;
 
 typedef struct {
-    uint16_t *data;
-} Palette;
-
-typedef struct {
     int16_t y;          // respect VDP sprite field order
     uint16_t size;
     int16_t x;

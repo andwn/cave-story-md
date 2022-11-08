@@ -1,10 +1,10 @@
 #include "common.h"
 
 #include "audio.h"
-#include "res/stage.h"
+#include "res/tiles.h"
+#include "res/pal.h"
 #include "md/dma.h"
 #include "md/joy.h"
-#include "resources.h"
 #include "md/string.h"
 #include "system.h"
 #include "tables.h"
@@ -53,10 +53,10 @@ void soundtest_main() {
 	vdp_sprites_clear();
 	vdp_map_clear(VDP_PLANE_A);
 	// Background picture
-	vdp_tiles_load((uint32_t*) PAT_SndTest, 16, 208);
+	vdp_tiles_load_uftc(UFTC_bkSndTest, 16, 0, 208);
 	uint16_t index = pal_mode ? 0 : 80 << 1;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
-		dma_now(DmaVRAM, (uint32_t) &MAP_SndTest[index], VDP_PLANE_B + (y << 7), 40, 2);
+		dma_now(DmaVRAM, (uint32_t) &MAP_bkSndTest[index], VDP_PLANE_B + (y << 7), 40, 2);
 		index += 40 << 1;
 	}
 
@@ -72,8 +72,8 @@ void soundtest_main() {
 	
 	DRAW_BYTE(track, 10, 8);
 	
-	vdp_colors(0, PAL_Main.data, 16);
-	vdp_colors(16, PAL_SndTest.data, 16);
+	vdp_colors(0, PAL_Main, 16);
+	vdp_colors(16, PAL_SndTest, 16);
 	
 	vdp_set_display(TRUE);
     z80_resume();

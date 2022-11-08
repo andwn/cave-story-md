@@ -262,7 +262,7 @@ clean:
 	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
 	@rm -f $(TSBS) $(TL_TSBS)
 	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf $(TARGET)-en.lst temp.elf temp.o
-	@rm -f res/patches/*.patch
+	@rm -f res/patches/*.patch res/pal/*.pal
 	@rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h z80_xgm.lst
 	@rm -f res/resources.h res/resources.s src/ai_gen.h
 	@rm -rf asmout

@@ -1,4 +1,4 @@
-#include "common.h"
+#include "md/types.h"
 #include "res/sfx.h"
 #include "tables.h"
 

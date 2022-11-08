@@ -14,6 +14,7 @@
 #include "sheet.h"
 #include "stage.h"
 #include "md/string.h"
+#include "res/pal.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
@@ -95,12 +96,12 @@ uint8_t titlescreen_main() {
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
 	
 	// Set palettes last
-	vdp_colors(0, PAL_Main.data, 16);
-	vdp_colors(16, PAL_Main.data, 16);
+	vdp_colors(0, PAL_Main, 16);
+	vdp_colors(16, PAL_Main, 16);
 	vdp_color(PAL0, 0x444); // Gray background
 	vdp_color(PAL0 + 8, 0x8CE); // Yellow text
 	// PAL_Regu, for King and Toroko
-	vdp_colors(48, PAL_Regu.data, 16);
+	vdp_colors(48, PAL_Regu, 16);
 	
 	vdp_set_display(TRUE);
 

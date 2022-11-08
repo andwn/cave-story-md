@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "res/system.h"
 #include "res/local.h"
+#include "res/tiles.h"
 #include "camera.h"
 #include "md/dma.h"
 #include "entity.h"
@@ -13,6 +14,7 @@
 #include "md/joy.h"
 #include "math.h"
 #include "md/stdlib.h"
+#include "res/pal.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
@@ -1225,10 +1227,10 @@ uint8_t execute_command() {
 			vdp_map_clear(VDP_PLANE_B);
 			vdp_map_clear(VDP_PLANE_A);
 			// Background sky/mountains
-			vdp_tiles_load(TS_XXBack.tiles, TILE_TSINDEX, TS_XXBack.numTile);
+			vdp_tiles_load_uftc(UFTC_XXBack, TILE_TSINDEX, 0, 200);
 			vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL3, 0, 0, 0, TILE_TSINDEX), 10, 10, 20, 10, 1);
 			// Foreground trees
-			vdp_tiles_load(TS_XXFore.tiles, TILE_BACKINDEX, TS_XXFore.numTile);
+			vdp_tiles_load_uftc(UFTC_XXFore, TILE_BACKINDEX, 0, 80);
 			vdp_map_fill_rect(VDP_PLANE_A, TILE_ATTR(PAL3, 1, 0, 0, TILE_BACKINDEX), 10, 16, 20, 4, 1);
 			// Draw high prio black tiles over the top to hide island
 			static const uint32_t blackTile[8] = { 
@@ -1251,8 +1253,8 @@ uint8_t execute_command() {
 				}
 			};
 
-			vdp_colors_next(48, PAL_XX.data, 16);
-			vdp_colors(48, PAL_XX.data, 16);
+			vdp_colors_next(48, PAL_XX, 16);
+			vdp_colors(48, PAL_XX, 16);
 			vdp_set_display(TRUE);
             z80_resume();
             enable_ints();

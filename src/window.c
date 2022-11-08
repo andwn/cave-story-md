@@ -339,7 +339,7 @@ uint8_t window_prompt_update() {
 void window_draw_face() {
     disable_ints();
     z80_pause_fast();
-	vdp_tiles_load(face_info[showingFace].tiles->tiles, TILE_FACEINDEX, face_info[showingFace].tiles->numTile);
+	vdp_tiles_load_uftc(face_info[showingFace].tiles, TILE_FACEINDEX, 0, 6*6);
 	vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX),
                       TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
     z80_resume();

@@ -1,3 +1,6 @@
+#ifndef CSMD_COMMON_H
+#define CSMD_COMMON_H
+
 #include "md/types.h"
 
 #ifdef PROFILE
@@ -164,3 +167,5 @@ typedef void (*ActionFunc)(uint8_t page);
 extern volatile uint8_t ready;
 
 void aftervsync();
+
+#endif

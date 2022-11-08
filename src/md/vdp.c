@@ -2,6 +2,7 @@
 #include "sys.h"
 #include "vdp.h"
 #include "comp.h"
+#include "math.h"
 #include "res/system.h"
 
 const uint16_t PAL_FadeOut[64] = {
@@ -135,10 +136,17 @@ void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
 
 void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_index, uint16_t num) {
     extern const uint32_t *__compbuf_start;
+    static const uint16_t maxlen = 0x1000 / TILE_SIZE;
 
-    uftc_unpack(uftc_data, &__compbuf_start, uftc_index, num);
-    __asm__("": : :"memory");
-    dma_now(DmaVRAM, (uint32_t) &__compbuf_start, index << 5, num << 4, 2);
+    while(num) {
+        uint16_t now = min(num, maxlen);
+        uftc_unpack(uftc_data, &__compbuf_start, uftc_index, now);
+        __asm__("": : :"memory");
+        dma_now(DmaVRAM, (uint32_t) &__compbuf_start, index << 5, now << 4, 2);
+        num -= now;
+        index += now;
+        uftc_index += now;
+    }
 }
 
 // Tile maps

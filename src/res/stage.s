@@ -257,21 +257,6 @@ BIN PXE_WeedS	"res/Stage/WeedS.pxe"
 # NPC Table
 BIN NPC_TABLE	"res/npc.tbl"
 
-/* Background tilemaps */
-# Moon
-BIN	PAT_MoonTop		"res/tiles_c/bkMoonTop.pat"
-BIN	MAP_MoonTop		"res/tiles_c/bkMoonTop.map"
-BIN	PAT_MoonBtm		"res/tiles_c/bkMoonBottom.pat"
-BIN	MAP_MoonBtm		"res/tiles_c/bkMoonBottom.map"
-# Fog
-BIN	PAT_FogTop		"res/tiles_c/bkFogTop.pat"
-BIN	MAP_FogTop		"res/tiles_c/bkFogTop.map"
-BIN	PAT_FogBtm		"res/tiles_c/bkFogBottom.pat"
-BIN	MAP_FogBtm		"res/tiles_c/bkFogBottom.map"
-# Sound Test
-BIN	PAT_SndTest	    "res/tiles_c/bkSoundTest.pat"
-BIN	MAP_SndTest	    "res/tiles_c/bkSoundTest.map"
-
 /* Credits Illustrations */
 BIN		PAT_Ill01	"res/credits/ill01.pat"
 BIN		MAP_Ill01	"res/credits/ill01.map"
