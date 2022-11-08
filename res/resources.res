@@ -404,12 +404,6 @@ SPRITE SPR_XXIsland		"sprite/xxIsland.png" 		5 3 0 0 NONE
 # Window & Inventory
 # ----------------------------------------------------------------------------------------------
 
-# Localizable - move these later
-TILESET TS_Title		"tiles_loc/title_en.png" 	0
-TILESET TS_J_Title		"tiles_loc/title_ja.png" 	0
-TILESET TS_MenuTextE	"tiles_loc/menutext_en.png"		0
-TILESET TS_MenuTextJ	"tiles_loc/menutext_ja.png"		0
-
 # Window
 TILESET TS_Window		"tiles_c/window.png" 			0
 TILESET TS_ItemSel		"tiles_c/itemsel.png" 			0

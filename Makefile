@@ -42,19 +42,33 @@ LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
-PXMS  = $(wildcard res/Stage/*.pxm)
-CPXMS = $(PXMS:.pxm=.cpxm)
+PXMS   = $(wildcard res/Stage/*.pxm)
+CPXMS  = $(PXMS:.pxm=.cpxm)
 
-# Tilesets to compress
-TSETS  = $(wildcard res/Stage/*_vert.png)
-TSETS += $(wildcard res/tiles_c/*.png)
-PTSETS = $(TSETS:.png=.pat)
-CTSETS = $(TSETS:.png=.uftc)
+# Tilesets to convert without compression
+TSETS  = $(wildcard res/tiles/*.png)
+TSETO  = $(TSETS:.png=.pat)
+
+# Tilesets to convert and compress
+CTSETS  = $(wildcard res/tiles_c/*.png)
+CTSETS += $(wildcard res/tiles_loc/*.png)
+CTSETP  = $(CTSETS:.png=.pat)
+CTSETO  = $(CTSETS:.png=.uftc)
+
+# Sprites to convert without compression
+SPRS  = $(wildcard res/sprite/*.png)
+SPRS += $(wildcard res/sprite_loc/*.png)
+SPRO  = $(SPRS:.png=.spr)
+
+# Sprites to convert and compress
+CSPRS  = $(wildcard res/sprite_c/*.png)
+CSPRP  = $(CSPRS:.png=.spr)
+CSPRO  = $(CSPRS:.png=.uftc)
 
 # TSC to convert to TSB
-TSCS  = $(wildcard res/tsc/en/*.txt)
-TSCS += $(wildcard res/tsc/en/Stage/*.txt)
-TSBS  = $(TSCS:.txt=.tsb)
+TSCS   = $(wildcard res/tsc/en/*.txt)
+TSCS  += $(wildcard res/tsc/en/Stage/*.txt)
+TSBS   = $(TSCS:.txt=.tsb)
 
 # TSBs for translations
 TL_TSCS  = $(wildcard res/tsc/*/*.txt)
@@ -118,7 +132,8 @@ translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
 translate: $(TARGET)-ko.bin
 
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
-prereq: $(CPXMS) $(XGCS) $(PCMS) $(CTSETS) $(ZOBJ) $(TSBS)
+prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
+prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
 
 # Cross reference symbol list with the addresses displayed in the crash handler
 %.lst: %.elf
@@ -194,6 +209,9 @@ asmout/%.s: %.c
 %.pat: %.png
 	$(MDTILER) -t "$<" "$@"
 
+%.spr: %.png
+	$(MDTILER) -s "$<" "$@"
+
 # Convert VGM
 %.xgc: %.vgm
 	$(XGMTOOL) "$<" "$@" -s
@@ -259,7 +277,8 @@ flash: $(MEGALOADER)
 	sudo $(MEGALOADER) md $(TARGET)-en.bin /dev/ttyUSB0 2> /dev/null
 
 clean:
-	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(PTSETS) $(CTSETS) $(ZOBJ) $(OBJS)
+	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(ZOBJ) $(OBJS)
+	@rm -f $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
 	@rm -f $(TSBS) $(TL_TSBS)
 	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf $(TARGET)-en.lst temp.elf temp.o
 	@rm -f res/patches/*.patch res/pal/*.pal
