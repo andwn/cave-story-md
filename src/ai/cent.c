@@ -933,7 +933,7 @@ void onspawn_cent_cage(Entity *e) {
 		SHEET_FIND(e->sheet, SHEET_CAGE);
 		e->vramindex = sheets[e->sheet].index;
 		e->framesize = 16;
-		e->sprite[0] = (VDPSprite) {
+		e->sprite[0] = (Sprite) {
 			.size = SPRITE_SIZE(4, 4),
 			.attr = TILE_ATTR(PAL2,0,0,0,e->vramindex)
 		};

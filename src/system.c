@@ -6,21 +6,17 @@
 #include "md/dma.h"
 #include "entity.h"
 #include "gamemode.h"
-#include "md/joy.h"
 #include "math.h"
 #include "md/stdlib.h"
 #include "player.h"
-#include "resources.h"
+#include "res/tiles.h"
 #include "md/sram.h"
 #include "stage.h"
-#include "md/string.h"
 #include "tsc.h"
-#include "md/comp.h"
 #include "md/sys.h"
 #include "md/vdp.h"
 #include "weapon.h"
 #include "window.h"
-#include "md/xgm.h"
 
 #include "system.h"
 
@@ -68,11 +64,9 @@ uint8_t sram_state;
 
 // Replace "AIR" tiles with counter, there is no water in Hell
 #define TILE_COUNTERINDEX TILE_AIRINDEX
-//416
-//uint8_t counterShow = FALSE;
-//uint8_t counterTick = FALSE;
+
 Time time, counter;
-static const VDPSprite counterSpriteNTSC[2] = {
+static const Sprite counterSpriteNTSC[2] = {
 	{ 
 		.x = 0x80 + 16, 
 		.y = 0x80 + 8, 
@@ -85,7 +79,7 @@ static const VDPSprite counterSpriteNTSC[2] = {
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_COUNTERINDEX+4),
 	},
 };
-static const VDPSprite counterSpritePAL[2] = {
+static const Sprite counterSpritePAL[2] = {
 	{ 
 		.x = 0x80 + 16, 
 		.y = 0x80 + 16, 
@@ -161,35 +155,35 @@ uint8_t system_get_skip_flag(uint16_t flag) {
 }
 
 static void counter_draw_minute() {
-    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.minute] << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[div10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+1) << 5, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.minute] << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[mod10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+2) << 5, 16, 2);
 }
 
 static void counter_draw_second() {
-    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[(counter.second & 1) << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock[(counter.second & 1) << 3],
 			(TILE_COUNTERINDEX) << 5, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[div10[counter.second] << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[div10[counter.second] << 3],
 			(TILE_COUNTERINDEX+4) << 5, 16, 2);
-    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[mod10[counter.second] << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[mod10[counter.second] << 3],
 			(TILE_COUNTERINDEX+5) << 5, 16, 2);
 }
 
 static void counter_draw_decisecond() {
-    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers.tiles[counter_decisec << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[counter_decisec << 3],
 			(TILE_COUNTERINDEX+7) << 5, 16, 2);
 }
 
 void system_draw_counter() {
 	counter_draw_minute();
-    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[2 << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock[2 << 3],
 			(TILE_COUNTERINDEX+3) << 5, 16, 2);
 	counter_draw_second();
-    dma_queue(DmaVRAM, (uint32_t) &TS_Clock.tiles[3 << 3],
+    dma_queue(DmaVRAM, (uint32_t) &TS_Clock[3 << 3],
 			(TILE_COUNTERINDEX+6) << 5, 16, 2);
 	counter_draw_decisecond();
-	const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
+	const Sprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
 	vdp_sprites_add(spr, 2);
 }
 
@@ -242,8 +236,8 @@ void system_update() {
 		// Don't display the counter when a message window is open on top
 		// because it overlaps the text making it hard to read
 		if(!(window_is_open() && windowOnTop)) {
-			const VDPSprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
-		vdp_sprites_add(spr, 2);
+			const Sprite *spr = pal_mode ? counterSpritePAL : counterSpriteNTSC;
+		    vdp_sprites_add(spr, 2);
 		}
 	}
 }
@@ -252,7 +246,7 @@ void system_new() {
 	time.hour = time.minute = time.second = time.frame = 0;
 	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
-	if(sram_state == SRAM_INVALID) system_set_flag(FLAG_DISABLESAVE, TRUE);
+	system_set_flag(FLAG_DISABLESAVE, sram_state == SRAM_INVALID || iSuckAtThisGameSHIT);
 	stage_load(13);
 	tsc_call_event(GAME_START_EVENT);
 }
@@ -468,6 +462,8 @@ void system_load(uint8_t index) {
 	sram_disable();
     z80_resume();
 	enable_ints();
+
+    system_set_flag(FLAG_DISABLESAVE, iSuckAtThisGameSHIT);
 	
 	stage_load(rid);
 	song_play(song);
@@ -655,6 +651,7 @@ void system_load_levelselect(uint8_t file) {
 	for (uint16_t i = 0; i < FLAGS_LEN; i++) {
 		flags[i] = LS_readLong(file, 0x100 + i * 4);
 	}
+    system_set_flag(FLAG_DISABLESAVE, TRUE);
 	stage_load(rid);
 	song_play(song);
 	sram_file = SRAM_FILE_CHEAT + file;

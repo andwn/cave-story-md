@@ -40,7 +40,7 @@ struct Weapon {
 
 // An active bullet created by the player (or curly)
 struct Bullet {
-	VDPSprite sprite;
+	Sprite sprite;
 	bounding_box hit_box;
 	extent_box extent;
 	//Entity *last_hit[1];

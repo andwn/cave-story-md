@@ -227,7 +227,7 @@ uint8_t set_page(uint8_t page) {
 	return numItems;
 }
 
-void press_menuitem(const MenuItem *item, uint8_t page, VDPSprite *sprCursor) {
+void press_menuitem(const MenuItem *item, uint8_t page, Sprite *sprCursor) {
 	switch(item->type) {
 		case MI_LABEL: return; // Nothing
 		case MI_TOGGLE: {
@@ -291,7 +291,7 @@ void config_main() {
 	uint8_t cursor = 0;
 	uint8_t numItems = set_page(page);
 	
-	VDPSprite sprCursor = { 
+	Sprite sprCursor = {
 		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};

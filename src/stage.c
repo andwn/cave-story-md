@@ -205,7 +205,7 @@ void stage_load_tileset() {
 	// Inject the breakable block sprite into the tileset
 	stagePXA = tileset_info[stageTileset].PXA;
 	for(uint16_t i = 0; i < numtile >> 2; i++) {
-		if(stagePXA[i] == 0x43) vdp_tiles_load(TS_Break.tiles, TILE_TSINDEX + (i << 2), 4);
+		if(stagePXA[i] == 0x43) vdp_tiles_load(TS_Break, TILE_TSINDEX + (i << 2), 4);
 	}
 	// Search for any "wind" tiles and note their index to animate later
 	currentsCount = 0;
@@ -405,33 +405,33 @@ void stage_update() {
 		currentsTimer = (currentsTimer + 1) & 0x1F;
 		uint8_t t = currentsTimer & 3;
 		if(t < currentsCount) {
+            const uint32_t *from_ts = NULL;
 			uint16_t from_index = 0;
-			uint8_t *from_ts = NULL;
 			uint16_t to_index = TILE_TSINDEX + (currents[t].index << 2);
 			switch(currents[t].dir) {
 				case 0: // Left
-					from_ts = (uint8_t*) TS_WindH.tiles;
+					from_ts = TS_WindH;
 					from_index = (currentsTimer >> 1) & ~1;
 				break;
 				case 1: // Up
-					from_ts = (uint8_t*) TS_WindV.tiles;
+					from_ts = TS_WindV;
 					from_index = (currentsTimer >> 1) & ~1;
 				break;
 				case 2: // Right
-					from_ts = (uint8_t*) TS_WindH.tiles;
+					from_ts = TS_WindH;
 					from_index = 14 - ((currentsTimer >> 1) & ~1);
 				break;
 				case 3: // Down
-					from_ts = (uint8_t*) TS_WindV.tiles;
+					from_ts = TS_WindV;
 					from_index = 14 - ((currentsTimer >> 1) & ~1);
 				break;
 				default: return;
 			}
 			// Replace the tile in the tileset
-            dma_queue(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_queue(DmaVRAM, ((uint32_t)(from_ts)) + (from_index << 5), to_index << 5, 32, 2);
 			from_index += 16;
 			to_index += 2;
-            dma_queue(DmaVRAM, (uint32_t) (from_ts + (from_index << 5)), to_index << 5, 32, 2);
+            dma_queue(DmaVRAM, ((uint32_t)(from_ts)) + (from_index << 5), to_index << 5, 32, 2);
 		}
 	}
     //z80_resume();

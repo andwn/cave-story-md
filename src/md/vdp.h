@@ -55,30 +55,30 @@ extern uint16_t ScreenHalfH;
 extern uint8_t pal_mode;
 extern uint8_t FPS;
 
-static inline void sprite_pos(VDPSprite *s, int16_t px, int16_t py) {
+static inline void sprite_pos(Sprite *s, int16_t px, int16_t py) {
     s->x = px + 0x80;
     s->y = py + 0x80;
 }
-static inline void sprite_size(VDPSprite *s, uint8_t w, uint8_t h) {
+static inline void sprite_size(Sprite *s, uint8_t w, uint8_t h) {
     s->size = SPRITE_SIZE(w, h);
 }
-static inline void sprite_pri(VDPSprite *s, uint16_t pri) {
+static inline void sprite_pri(Sprite *s, uint16_t pri) {
     s->attr &= ~(1<<15);
     s->attr |= pri << 15;
 }
-static inline void sprite_pal(VDPSprite *s, uint16_t pal) {
+static inline void sprite_pal(Sprite *s, uint16_t pal) {
     s->attr &= ~(3<<13);
     s->attr |= pal << 13;
 }
-static inline void sprite_vflip(VDPSprite *s, uint16_t flp) {
+static inline void sprite_vflip(Sprite *s, uint16_t flp) {
     s->attr &= ~(1<<12);
     s->attr |= flp << 12;
 }
-static inline void sprite_hflip(VDPSprite *s, uint16_t flp) {
+static inline void sprite_hflip(Sprite *s, uint16_t flp) {
     s->attr &= ~(1<<11);
     s->attr |= flp << 11;
 }
-static inline void sprite_index(VDPSprite *s, uint16_t ind) {
+static inline void sprite_index(Sprite *s, uint16_t ind) {
     s->attr &= ~0x7FF;
     s->attr |= ind;
 }
@@ -148,9 +148,9 @@ void vdp_hscroll_tile(uint16_t plan, int16_t *hscroll);
 void vdp_vscroll(uint16_t plan, int16_t vscroll);
 
 // Sprites
-void vdp_sprite_add(const VDPSprite *spr);
+void vdp_sprite_add(const Sprite *spr);
 
-void vdp_sprites_add(const VDPSprite *spr, uint16_t num);
+void vdp_sprites_add(const Sprite *spr, uint16_t num);
 
 void vdp_sprites_clear();
 

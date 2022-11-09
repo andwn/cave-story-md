@@ -21,12 +21,14 @@ void _error() {
 	char buf[40];
 	// Don't completely clear the screen or rewrite the palettes
     // Only what is needed to display the error
+    vdp_sprites_clear();
     vdp_font_load(UFTC_SysFont);
     vdp_color(1, 0x000);
     vdp_color(15, 0xEEE);
     vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
     vdp_hscroll(VDP_PLANE_A, 0);
     vdp_vscroll(VDP_PLANE_A, 0);
+    vdp_set_window(0, 0);
 
     // When profiling, the background color is changed for each phase of the game loop.
     // For situations where none of the values in the error make any sense whatsoever,

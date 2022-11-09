@@ -28,7 +28,7 @@ extern const uint8_t spur_time[2][4];
 // The player is an entity, as to better interact with entities & physics
 // Not all variables in Entity are used but most are
 extern Entity player;
-extern VDPSprite playerSprite;
+extern Sprite playerSprite;
 
 //uint8_t playerShow;
 extern uint8_t playerIFrames;

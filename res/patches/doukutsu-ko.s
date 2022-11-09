@@ -1,140 +1,135 @@
-.macro BIN _name, _file, _align=2
-    .globl \_name
-    .align \_align
-\_name:
-    .incbin "\_file"
-.endm
-
-.section .text
+    .include "macros.i"
 
 /* Start of localizable data */
-.ascii "LANGDAT\0"
+    .section .text
+    .align 2
+
+        .ascii "LANGDAT\0"
 
     .globl LANGUAGE
 LANGUAGE:
-.ascii "KO\0\0"
+        .ascii "KO\0\0"
 
-    .globl BMP_ASCII
-BMP_ASCII:
-dc.l BMP_Ascii
-    .globl BMP_KANJI
-BMP_KANJI:
-dc.l BMP_Kanji
+PTR BMP_ASCII,      BMP_Ascii
+PTR BMP_KANJI,      BMP_Kanji
+PTR STAGE_NAMES,    STR_StageNames
+PTR CREDITS_STR,    STR_Credits
+PTR CONFIG_STR,     STR_Config
 
-    .globl STAGE_NAMES
-STAGE_NAMES:
-dc.l STR_StageNames
-    .globl CREDITS_STR
-CREDITS_STR:
-dc.l STR_Credits
-    .globl CONFIG_STR
-CONFIG_STR:
-dc.l STR_Config
+PTR TS_TITLE,       UFTC_Title
+PTR TS_MENUTEXT,    UFTC_MenuText
+
+PTR SPR_AIR,        SPR_Air
+PTR SPR_PROMPT,     SPR_Prompt
+PTR SPR_LEVELUP,    SPR_LevelUp
+PTR SPR_LEVELDOWN,  SPR_LevelDown
+PTR SPR_EMPTY,      SPR_Empty
+PTR SPR_AHCHOO,     SPR_Ahchoo
 
 /* Pointer Tables */
     .globl TSC_GLOB
 TSC_GLOB:
-dc.l TSC_ArmsItem
-dc.l TSC_Head
-dc.l TSC_StageSelect
-dc.l TSC_Credits
+        dc.l TSC_ArmsItem
+        dc.l TSC_Head
+        dc.l TSC_StageSelect
+        dc.l TSC_Credits
     .globl TSC_STAGE
 TSC_STAGE:
-dc.l 0
-dc.l TSC_Pens1
-dc.l TSC_Eggs
-dc.l TSC_EggX
-dc.l TSC_Egg6
-dc.l TSC_EggR
-dc.l TSC_Weed
-dc.l TSC_Santa
-dc.l TSC_Chako
-dc.l TSC_MazeI
-dc.l TSC_Sand
-dc.l TSC_Mimi
-dc.l TSC_Cave
-dc.l TSC_Start
-dc.l TSC_Barr
-dc.l TSC_Pool
-dc.l TSC_Cemet
-dc.l TSC_Plant
-dc.l TSC_Shelt
-dc.l TSC_Comu
-dc.l TSC_MiBox
-dc.l TSC_EgEnd1
-dc.l TSC_Cthu
-dc.l TSC_Egg1
-dc.l TSC_Pens2
-dc.l TSC_Malco
-dc.l TSC_WeedS
-dc.l TSC_WeedD
-dc.l TSC_Frog
-dc.l TSC_Curly
-dc.l TSC_WeedB
-dc.l TSC_Stream
-dc.l TSC_CurlyS
-dc.l TSC_Jenka1
-dc.l TSC_Dark
-dc.l TSC_Gard
-dc.l TSC_Jenka2
-dc.l TSC_SandE
-dc.l TSC_MazeH
-dc.l TSC_MazeW
-dc.l TSC_MazeO
-dc.l TSC_MazeD
-dc.l TSC_MazeA
-dc.l TSC_MazeB
-dc.l TSC_MazeS
-dc.l TSC_MazeM
-dc.l TSC_Drain
-dc.l TSC_Almond
-dc.l TSC_River
-dc.l TSC_Eggs2
-dc.l TSC_Cthu2
-dc.l TSC_EggR2
-dc.l TSC_EggX2
-dc.l TSC_Oside
-dc.l TSC_EgEnd2
-dc.l TSC_Itoh
-dc.l TSC_Cent
-dc.l TSC_Jail1
-dc.l TSC_Momo
-dc.l TSC_Lounge
-dc.l TSC_CentW
-dc.l TSC_Jail2
-dc.l TSC_Blcny1
-dc.l TSC_Priso1
-dc.l TSC_Ring1
-dc.l TSC_Ring2
-dc.l TSC_Prefa1
-dc.l TSC_Priso2
-dc.l TSC_Ring3
-dc.l TSC_Little
-dc.l TSC_Blcny2
-dc.l TSC_Fall
-dc.l TSC_Kings
-dc.l TSC_Pixel
-dc.l TSC_e_Maze
-dc.l TSC_e_Jenk
-dc.l TSC_e_Malc
-dc.l TSC_e_Ceme
-dc.l TSC_e_Sky
-dc.l TSC_Prefa2
-dc.l TSC_Hell1
-dc.l TSC_Hell2
-dc.l TSC_Hell3
-dc.l TSC_Mapi
-dc.l TSC_Hell4
-dc.l TSC_Hell42
-dc.l TSC_Statue
-dc.l TSC_Ballo1
-dc.l TSC_Ostep
-dc.l TSC_e_Labo
-dc.l TSC_Pole
-dc.l TSC_Island
-dc.l TSC_Ballo2
-dc.l TSC_e_Blcn
-dc.l TSC_Clock
+        dc.l 0
+        dc.l TSC_Pens1
+        dc.l TSC_Eggs
+        dc.l TSC_EggX
+        dc.l TSC_Egg6
+        dc.l TSC_EggR
+        dc.l TSC_Weed
+        dc.l TSC_Santa
+        dc.l TSC_Chako
+        dc.l TSC_MazeI
+        dc.l TSC_Sand
+        dc.l TSC_Mimi
+        dc.l TSC_Cave
+        dc.l TSC_Start
+        dc.l TSC_Barr
+        dc.l TSC_Pool
+        dc.l TSC_Cemet
+        dc.l TSC_Plant
+        dc.l TSC_Shelt
+        dc.l TSC_Comu
+        dc.l TSC_MiBox
+        dc.l TSC_EgEnd1
+        dc.l TSC_Cthu
+        dc.l TSC_Egg1
+        dc.l TSC_Pens2
+        dc.l TSC_Malco
+        dc.l TSC_WeedS
+        dc.l TSC_WeedD
+        dc.l TSC_Frog
+        dc.l TSC_Curly
+        dc.l TSC_WeedB
+        dc.l TSC_Stream
+        dc.l TSC_CurlyS
+        dc.l TSC_Jenka1
+        dc.l TSC_Dark
+        dc.l TSC_Gard
+        dc.l TSC_Jenka2
+        dc.l TSC_SandE
+        dc.l TSC_MazeH
+        dc.l TSC_MazeW
+        dc.l TSC_MazeO
+        dc.l TSC_MazeD
+        dc.l TSC_MazeA
+        dc.l TSC_MazeB
+        dc.l TSC_MazeS
+        dc.l TSC_MazeM
+        dc.l TSC_Drain
+        dc.l TSC_Almond
+        dc.l TSC_River
+        dc.l TSC_Eggs2
+        dc.l TSC_Cthu2
+        dc.l TSC_EggR2
+        dc.l TSC_EggX2
+        dc.l TSC_Oside
+        dc.l TSC_EgEnd2
+        dc.l TSC_Itoh
+        dc.l TSC_Cent
+        dc.l TSC_Jail1
+        dc.l TSC_Momo
+        dc.l TSC_Lounge
+        dc.l TSC_CentW
+        dc.l TSC_Jail2
+        dc.l TSC_Blcny1
+        dc.l TSC_Priso1
+        dc.l TSC_Ring1
+        dc.l TSC_Ring2
+        dc.l TSC_Prefa1
+        dc.l TSC_Priso2
+        dc.l TSC_Ring3
+        dc.l TSC_Little
+        dc.l TSC_Blcny2
+        dc.l TSC_Fall
+        dc.l TSC_Kings
+        dc.l TSC_Pixel
+        dc.l TSC_e_Maze
+        dc.l TSC_e_Jenk
+        dc.l TSC_e_Malc
+        dc.l TSC_e_Ceme
+        dc.l TSC_e_Sky
+        dc.l TSC_Prefa2
+        dc.l TSC_Hell1
+        dc.l TSC_Hell2
+        dc.l TSC_Hell3
+        dc.l TSC_Mapi
+        dc.l TSC_Hell4
+        dc.l TSC_Hell42
+        dc.l TSC_Statue
+        dc.l TSC_Ballo1
+        dc.l TSC_Ostep
+        dc.l TSC_e_Labo
+        dc.l TSC_Pole
+        dc.l TSC_Island
+        dc.l TSC_Ballo2
+        dc.l TSC_e_Blcn
+        dc.l TSC_Clock
 
 # 1bpp CJK fonts
 BIN BMP_Ascii   "res/cjk_ascii.dat"
@@ -246,3 +241,16 @@ BIN TSC_Weed	"res/tsc/ko/Stage/Weed.tsb"
 BIN TSC_WeedB	"res/tsc/ko/Stage/WeedB.tsb"
 BIN TSC_WeedD	"res/tsc/ko/Stage/WeedD.tsb"
 BIN TSC_WeedS	"res/tsc/ko/Stage/WeedS.tsb"
+
+# Tilesets
+BIN UFTC_Title		"res/tiles_loc/title_en.uftc"
+BIN UFTC_MenuText	"res/tiles_loc/menutext_en.uftc"
+
+# Sprites
+SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1 1
+SPRITE SPR_Prompt		"res/sprite_loc/prompt_en.spr" 		8 3 1
+SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2 2
+SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
+SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2
+SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2 2
+

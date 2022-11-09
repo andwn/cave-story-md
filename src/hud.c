@@ -14,7 +14,7 @@
 #include "weapon.h"
 
 #include "hud.h"
-#include "md/xgm.h"
+#include "res/tiles.h"
 
 #define TSIZE 8
 #define SPR_TILE(x, y) (((x)*4)+(y))
@@ -24,7 +24,7 @@
 #define WPN     16
 #define AMMO    20
 
-VDPSprite sprHUD[2];
+Sprite sprHUD[2];
 uint32_t tileData[28][8];
 
 // Values used to draw parts of the HUD
@@ -66,13 +66,13 @@ void hud_create() {
 	hudEnergyPixel = hudEnergyTimer = hudEnergyDest = 0;
     hudMaxBlink = 0;
 	// Create the sprites
-	sprHUD[0] = (VDPSprite) {
+	sprHUD[0] = (Sprite) {
 		.x = 16 + 128,
 		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX)
 	};
-	sprHUD[1] = (VDPSprite) {
+	sprHUD[1] = (Sprite) {
 		.x = 16 + 32 + 128,
 		.y = (pal_mode ? 24 : 16) + 128,
 		.size = SPRITE_SIZE(4, 4),
@@ -155,18 +155,18 @@ void hud_refresh_health() {
 		int16_t addrHP = min(fillHP*TSIZE, 7*TSIZE);
 		if(addrHP < 0) addrHP = 0;
 		// Fill in the bar
-		memcpy(tileData[i+3], &TS_HudBar.tiles[addrHP], TILE_SIZE);
+		memcpy(tileData[i+3], &TS_HudBar[addrHP], TILE_SIZE);
 		fillHP -= 8;
 	}
 	// Heart icon and two digits displaying current health
 	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
 	uint8_t digit = div10[hudHealth];
 	if(digit) {
-		memcpy(tileData[1], &TS_Numbers.tiles[(digit)*TSIZE], TILE_SIZE);
+		memcpy(tileData[1], &TS_Numbers[(digit)*TSIZE], TILE_SIZE);
 	} else {
 		memcpy(tileData[1], BlankData, TILE_SIZE);
 	}
-	memcpy(tileData[2], &TS_Numbers.tiles[mod10[hudHealth]*TSIZE], TILE_SIZE);
+	memcpy(tileData[2], &TS_Numbers[mod10[hudHealth]*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for health display
 	for(uint8_t i = 0; i < 8; i++)
         dma_queue(DmaVRAM, (uint32_t)tileData[i], (TILE_HUDINDEX+3+i*4)*TILE_SIZE, 16, 2);
@@ -226,7 +226,7 @@ void hud_refresh_energy(uint8_t hard) {
                 hudEnergyTimer = 2;
             } else {
                 for (uint8_t i = 0; i < 5; i++) {
-                    memcpy(tileData[XP_BAR + i + 3], &TS_HudMax.tiles[i * TSIZE], TILE_SIZE);
+                    memcpy(tileData[XP_BAR + i + 3], &TS_HudMax[i * TSIZE], TILE_SIZE);
                 }
             }
 		} else {
@@ -243,7 +243,7 @@ void hud_refresh_energy(uint8_t hard) {
 			for(uint8_t i = 0; i < 5; i++) {
 				int16_t addrXP = min(fillXP*TSIZE, 7*TSIZE);
 				if(addrXP < 0) addrXP = 0;
-				memcpy(tileData[XP_BAR+i+3], &TS_HudBar.tiles[addrXP + 8*TSIZE], TILE_SIZE);
+				memcpy(tileData[XP_BAR+i+3], &TS_HudBar[addrXP + 8*TSIZE], TILE_SIZE);
 				fillXP -= 8;
 			}
 			if(hudEnergyPixel == hudEnergyDest) {
@@ -258,13 +258,13 @@ void hud_refresh_energy(uint8_t hard) {
         hudMaxBlink = 0;
 		// Flashing while increasing / decreasing
 		for(uint8_t i = 0; i < 5; i++) {
-			memcpy(tileData[XP_BAR+i+3], &TS_HudFlash.tiles[i * TSIZE], TILE_SIZE);
+			memcpy(tileData[XP_BAR+i+3], &TS_HudFlash[i * TSIZE], TILE_SIZE);
 		}
 	}
 	// "Lv." and 1 digit for the level
 	memcpy(tileData[XP_BAR+0], &SPR_TILES(&SPR_Hud2, 0, 0)[2*TSIZE], TILE_SIZE);
 	memcpy(tileData[XP_BAR+1], &SPR_TILES(&SPR_Hud2, 0, 0)[6*TSIZE], TILE_SIZE);
-	memcpy(tileData[XP_BAR+2], &TS_Numbers.tiles[hudLevel*TSIZE], TILE_SIZE);
+	memcpy(tileData[XP_BAR+2], &TS_Numbers[hudLevel*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for level/energy display
 	for(uint8_t i = 0; i < 8; i++)
         dma_queue(DmaVRAM, (uint32_t)tileData[XP_BAR+i], (TILE_HUDINDEX+2+i*4)*TILE_SIZE, 16, 2);
@@ -288,12 +288,12 @@ void hud_refresh_ammo() {
 		uint8_t ammoTemp = hudAmmo;
 		if(ammoTemp >= 100) {
 			ammoTemp -= 100;
-			memcpy(tileData[AMMO+1], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
+			memcpy(tileData[AMMO+1], &TS_Numbers[1*TSIZE], TILE_SIZE);
 		} else {
 			memcpy(tileData[AMMO+1], BlankData, TILE_SIZE);
 		}
-		memcpy(tileData[AMMO+2], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
-		memcpy(tileData[AMMO+3], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[AMMO+2], &TS_Numbers[div10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[AMMO+3], &TS_Numbers[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[AMMO+0], BlankData, TILE_SIZE);
 		memcpy(tileData[AMMO+1], BlankData, TILE_SIZE);
@@ -312,12 +312,12 @@ void hud_refresh_maxammo() {
 		uint8_t ammoTemp = hudMaxAmmo;
 		if(ammoTemp >= 100) {
 			ammoTemp -= 100;
-			memcpy(tileData[AMMO+5], &TS_Numbers.tiles[1*TSIZE], TILE_SIZE);
+			memcpy(tileData[AMMO+5], &TS_Numbers[1*TSIZE], TILE_SIZE);
 		} else {
 			memcpy(tileData[AMMO+5], BlankData, TILE_SIZE);
 		}
-		memcpy(tileData[AMMO+6], &TS_Numbers.tiles[div10[ammoTemp]*TSIZE], TILE_SIZE);
-		memcpy(tileData[AMMO+7], &TS_Numbers.tiles[mod10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[AMMO+6], &TS_Numbers[div10[ammoTemp]*TSIZE], TILE_SIZE);
+		memcpy(tileData[AMMO+7], &TS_Numbers[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[AMMO+5], BlankData, TILE_SIZE);
 		memcpy(tileData[AMMO+6], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);

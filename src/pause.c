@@ -6,7 +6,7 @@
 #include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "md/error.h"
+#include "res/local.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "md/joy.h"
@@ -24,7 +24,7 @@
 #include "weapon.h"
 #include "window.h"
 #include "md/sys.h"
-#include "md/xgm.h"
+#include "res/tiles.h"
 
 #include "pause.h"
 
@@ -35,7 +35,7 @@
 							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
 
 // Item menu stuff
-VDPSprite itemSprite[MAX_ITEMS];
+Sprite itemSprite[MAX_ITEMS];
 int8_t selectedItem;
 
 void draw_weapons(uint8_t y) {
@@ -92,14 +92,14 @@ void draw_item(uint8_t sel) {
         // Clobber the entity/bullet shared sheets
         vdp_tiles_load(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+sel*6, 6);
         //SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
-        itemSprite[sel] = (VDPSprite){
+        itemSprite[sel] = (Sprite){
                 .x = 36 + (sel % 6) * 32 + 128,
                 .y = 88 + (sel / 6) * 16 + 128 + (pal_mode * 8),
                 .size = SPRITE_SIZE(3, 2),
                 .attr = TILE_ATTR(pal,1,0,0,TILE_SHEETINDEX+sel*6)
         };
     } else {
-        itemSprite[sel] = (VDPSprite) {};
+        itemSprite[sel] = (Sprite) {};
     }
 }
 
@@ -134,7 +134,7 @@ void draw_itemmenu(uint8_t resetCursor) {
     z80_pause_fast();
     // Load the 4 tiles for the selection box. Since the menu can never be brought up
     // during scripts we overwrite the face image
-    vdp_tiles_load(TS_ItemSel.tiles, TILE_FACEINDEX, TS_ItemSel.numTile);
+    vdp_tiles_load_uftc(UFTC_ItemSel, TILE_FACEINDEX, 0, 4);
     // Redraw message box at the bottom of the screen
     window_open(FALSE);
 
@@ -146,9 +146,9 @@ void draw_itemmenu(uint8_t resetCursor) {
     LOAD_LETTER('/', 16);
     LOAD_LETTER('-', 17);
     // ARMSITEM or ぶきもちもの
-    const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
-    vdp_tiles_load(ts + (2<<3), TILE_HUDINDEX + 10, 4);
-    vdp_tiles_load(ts + (10<<3), TILE_HUDINDEX + 18, 4);
+    //const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 10, 2, 4);
+    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 18, 10, 4);
     // Weapons
     y = top + 3;
     // --ARMS-- or --ぶき--
@@ -175,7 +175,6 @@ void draw_itemmenu(uint8_t resetCursor) {
     DRAW_LETTER(21,9,y);
     DRAW_LETTER(17,10,y);
     DRAW_LETTER(17,11,y);
-    uint8_t held = 0;
     for(uint16_t i = 0; i < MAX_ITEMS; i++) {
         //playerInventory[i] = 35; // :^)
         draw_item(i);
@@ -194,13 +193,9 @@ void draw_itemmenu(uint8_t resetCursor) {
     }
     // Make the window plane fully overlap the game
     vdp_set_window(0, pal_mode ? 30 : 28);
-    // Handle 0 items - if we don't draw any sprites at all, the non-menu sprites
-    // will keep drawing. Draw a blank sprite in the upper left corner to work around this
-    if(!held) {
-        vdp_sprites_clear();
-        //spr_num = 0;
-        //vdp_sprite_add(((VDPSprite) { .x = 128, .y = 128, .size = SPRITE_SIZE(1, 1) }));
-    }
+    // No items? clear sprites so we don't draw garbage
+    if(!playerInventory[0]) vdp_sprites_clear();
+
     vdp_set_display(TRUE);
 }
 
@@ -455,7 +450,7 @@ void do_map() {
         vdp_vsync(); aftervsync();
     }
 
-    VDPSprite whereami = (VDPSprite) {
+    Sprite whereami = (Sprite) {
             .x = (mapx << 3) + sub_to_block(player.x) - 2 + 128,
             .y = (mapy << 3) + sub_to_block(player.y) - 3 + 128,
             .size = SPRITE_SIZE(1,1),

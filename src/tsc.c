@@ -159,7 +159,7 @@ uint8_t teleMenuSlotCount;
 uint16_t teleMenuEvent[8];
 uint8_t teleMenuSelection;
 uint8_t teleMenuSheet;
-VDPSprite teleMenuSprite[8];
+Sprite teleMenuSprite[8];
 
 
 Entity *bossBarEntity;
@@ -189,7 +189,7 @@ void tsc_init() {
 	teleMenuSlotCount = 0;
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
-	vdp_tiles_load(TS_Window.tiles, TILE_WINDOWINDEX, TS_Window.numTile);
+	vdp_tiles_load_uftc(UFTC_Window, TILE_WINDOWINDEX, 0, 9);
 	tsc_load(headEvents, (const uint8_t*)TSC_GLOB[HEAD], HEAD_EVENT_COUNT);
 }
 
@@ -385,20 +385,20 @@ void tsc_show_boss_health() {
         vdp_tiles_load_uftc(UFTC_SysFont, TILE_NAMEINDEX+i, boss[i]-0x20, 1);
 	}
 	for(uint8_t i = 0; i < 8; i++) {
-		vdp_tiles_load(&TS_HudBar.tiles[8*7], TILE_NAMEINDEX+4+i, 1);
+		vdp_tiles_load(&TS_HudBar[8*7], TILE_NAMEINDEX+4+i, 1);
 	}
 	// Create sprites to display the string
-	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
+	memset(teleMenuSprite, 0, sizeof(Sprite) * 8);
 	uint8_t yoff = pal_mode ? 24 : 16;
-	teleMenuSprite[5] = (VDPSprite) { 
+	teleMenuSprite[5] = (Sprite) {
 		.x = 160 + 32 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
-	teleMenuSprite[6] = (VDPSprite) { 
+	teleMenuSprite[6] = (Sprite) {
 		.x = 160 + 64 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
-	teleMenuSprite[7] = (VDPSprite) { 
+	teleMenuSprite[7] = (Sprite) {
 		.x = 160 + 96 + 128, .y = ScreenHeight - yoff + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+8)
 	};
@@ -433,14 +433,14 @@ void tsc_update_boss_health() {
 		// Draw a partial filled tile
 		if(inc) {
 			uint16_t index = min((((uint16_t)(hp << 3)) / inc) << 3, 72);
-			vdp_tiles_load(&TS_HudBar.tiles[index], TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(&TS_HudBar[index], TILE_NAMEINDEX+4+i, 1);
 		} else {
 			// Don't divide by zero
-			vdp_tiles_load(&TS_HudBar.tiles[8*3], TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(&TS_HudBar[8*3], TILE_NAMEINDEX+4+i, 1);
 		}
 		// Draw empty tile after it
 		if(++i < 8) {
-			vdp_tiles_load(TS_HudBar.tiles, TILE_NAMEINDEX+4+i, 1);
+			vdp_tiles_load(TS_HudBar, TILE_NAMEINDEX+4+i, 1);
 		}
 	}
 	
@@ -450,15 +450,16 @@ void tsc_update_boss_health() {
 }
 
 static void tsc_render_warp_text() {
-	const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
+	//const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	// Copy our string to VRAM
-    dma_queue(DmaVRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
+    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_NAMEINDEX, 16, 8);
+    //dma_queue(DmaVRAM, (uint32_t) (ts + (16<<3)), TILE_NAMEINDEX << 5, (8 * TILE_SIZE) >> 1, 2);
 	// Create sprites to display the string
-	teleMenuSprite[6] = (VDPSprite) { 
+	teleMenuSprite[6] = (Sprite) {
 		.x = 160 - 32 + 128, .y = 32 + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX)
 	};
-	teleMenuSprite[7] = (VDPSprite) { 
+	teleMenuSprite[7] = (Sprite) {
 		.x = 160 + 128, .y = 32 + 128,
 		.size = SPRITE_SIZE(4,1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+4)
 	};
@@ -466,7 +467,7 @@ static void tsc_render_warp_text() {
 
 void tsc_show_teleport_menu() {
 	//mapNameTTL = 0; // We will be clobbering the tiles that display the map name
-	memset(teleMenuSprite, 0, sizeof(VDPSprite) * 8);
+	memset(teleMenuSprite, 0, sizeof(Sprite) * 8);
 	tsc_render_warp_text();
 
 	SHEET_FIND(teleMenuSheet, SHEET_TELE);
@@ -479,7 +480,7 @@ void tsc_show_teleport_menu() {
     for(uint8_t i = 0; i < 8; i++) {
         if(teleportEvent[i] == 0) continue;
         teleMenuEvent[iterCount] = teleportEvent[i];
-        teleMenuSprite[iterCount] = (VDPSprite) {
+        teleMenuSprite[iterCount] = (Sprite) {
                 .x = spr_x + 128, .y = 48 + 128,
                 .size = SPRITE_SIZE(4, 2),
                 .attr = TILE_ATTR(PAL0,1,0,0,sheets[teleMenuSheet].index + (i-1)*16)
@@ -1242,12 +1243,12 @@ uint8_t execute_command() {
 			
 			// Island sprite
 			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
-			VDPSprite island[2] = {
-				(VDPSprite) { 
+			Sprite island[2] = {
+				(Sprite) {
 					.x = 160 - 20 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(4, 3),
 					.attr = TILE_ATTR(PAL3,0,0,0,TILE_SHEETINDEX)
 				},
-				(VDPSprite) {
+				(Sprite) {
 					.x = 160 + 12 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(1, 3),
 					.attr = TILE_ATTR(PAL3,0,0,0,TILE_SHEETINDEX+12)
 				}

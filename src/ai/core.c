@@ -472,22 +472,22 @@ void ai_minicore(Entity *e) {
 	px = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW;
 	py = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH;
 	// Have to deal with sprites manually
-	e->sprite[0] = (VDPSprite) { // Face
+	e->sprite[0] = (Sprite) { // Face
 		.x = px - 28 + 128, .y = py - 20 + 128,
 		.size = SPRITE_SIZE(4, 4),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[e->mouth_open])
 	};
-	e->sprite[1] = (VDPSprite) { // Back
+	e->sprite[1] = (Sprite) { // Back
 		.x = px + 4 + 128, .y = py - 20 + 128,
 		.size = SPRITE_SIZE(3, 4),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[2])
 	};
-	e->sprite[2] = (VDPSprite) { // Bottom-Face
+	e->sprite[2] = (Sprite) { // Bottom-Face
 		.x = px- 28 + 128, .y = py + 12 + 128,
 		.size = SPRITE_SIZE(4, 1),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[3])
 	};
-	e->sprite[3] = (VDPSprite) { // Bottom-Back
+	e->sprite[3] = (Sprite) { // Bottom-Back
 		.x = px + 4 + 128, .y = py + 12 + 128,
 		.size = SPRITE_SIZE(2, 1),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[4])

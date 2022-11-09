@@ -1,20 +1,5 @@
     .include "macros.i"
 
-.macro PTR \_name, \_dest, \_align=2
-    .globl  \_name
-    .align  \_align
-\_name:
-    dc.l    \_dest
-.endm
-
-.macro SPRITE \_name, \_file, \_fwidth, \_fheight, \_align=2
-    .globl  \_name
-    .align  \_align
-\_name:
-    dc.b    \_fwidth, \_fheight
-    .incbin \_file
-.endm
-
 /* Start of localizable data */
 /* Must be at the end of the ROM */
     .section .patch
@@ -32,15 +17,15 @@ PTR STAGE_NAMES,    0
 PTR CREDITS_STR,    0
 PTR CONFIG_STR,     0
 
-PTR TS_TITLE,       TS_Title
-PTR TS_MENUTEXT,    TS_MenuText
+PTR TS_TITLE,       UFTC_Title
+PTR TS_MENUTEXT,    UFTC_MenuText
 
 PTR SPR_AIR,        SPR_Air
 PTR SPR_PROMPT,     SPR_Prompt
 PTR SPR_LEVELUP,    SPR_LevelUp
 PTR SPR_LEVELDOWN,  SPR_LevelDown
 PTR SPR_EMPTY,      SPR_Empty
-PTR SPR_ACHOO,      SPR_Achoo
+PTR SPR_AHCHOO,     SPR_Ahchoo
 
 /* Pointer Tables */
     .globl TSC_GLOB
@@ -255,10 +240,10 @@ BIN UFTC_Title		"res/tiles_loc/title_en.uftc"
 BIN UFTC_MenuText	"res/tiles_loc/menutext_en.uftc"
 
 # Sprites
-SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1
-SPRITE SPR_Prompt		"res/sprite_loc/prompt_en.spr" 		8 3
-SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2
-SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2
-SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1
-SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2
+SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1 1
+SPRITE SPR_Prompt		"res/sprite_loc/prompt_en.spr" 		8 3 1
+SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2 2
+SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
+SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2
+SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2 2
 

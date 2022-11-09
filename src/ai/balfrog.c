@@ -428,14 +428,14 @@ void ai_balfrog(Entity *e) {
 	static const int16_t xoff1[2] = { -16, -32 },
 					 xoff2[2] = { 8, -8 };
 	if(e->jump_time) {
-		VDPSprite feet[2] = {
-			(VDPSprite) {
+		Sprite feet[2] = {
+			(Sprite) {
 				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff1[e->dir] + 128,
 				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),
 				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
 			},
-			(VDPSprite) {
+			(Sprite) {
 				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff2[e->dir] + 128,
 				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
 				.size = SPRITE_SIZE(3, 3),

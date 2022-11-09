@@ -22,6 +22,7 @@
 
 #include "entity.h"
 #include "ai.h"
+#include "res/local.h"
 
 /* Linked List Macros */
 
@@ -311,40 +312,81 @@ void entities_update(uint8_t draw) {
 				sprite_index(&e->sprite[0], e->vramindex + frameOffset[e->sheet][e->frame]);
 				sprite_hflip(&e->sprite[0], e->dir);
 			} else if(e->tiloc != NOTILOC) {
-				const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
-				if(e->frame != e->oframe) {
-					e->oframe = e->frame;
-					TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
-				}
-				// We can't just flip the vdpsprites, gotta draw them in backwards order too
-				if(e->dir) {
-					int16_t bx = (e->x>>CSF) - camera.x_shifted + e->display_box.left + e->xoff, 
-							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
-					int16_t x = min(f->w, 32);
-					for(uint16_t i = 0; i < e->sprite_count; i++) {
-						sprite_pos(&e->sprite[i], bx - x, by);
-						sprite_hflip(&e->sprite[i], 1);
-						if(x >= f->w) {
-							x = min(f->w, 32);
-							by += 32;
-						} else {
-							x += min(f->w - x, 32);
-						}
-					}
-				} else {
-					int16_t bx = (e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff, 
-							by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
-					int16_t x = 0;
-					for(uint16_t i = 0; i < e->sprite_count; i++) {
-						sprite_pos(&e->sprite[i], bx + x, by);
-						sprite_hflip(&e->sprite[i], 0);
-						x += 32;
-						if(x >= f->w) {
-							x = 0;
-							by += 32;
-						}
-					}
-				}
+                if(e->type >= OBJ_LEVELUP && e->type <= OBJ_EMPTY) {
+                    const SpriteDef * const def[3] = {
+                            SPR_LEVELUP, SPR_LEVELDOWN, SPR_EMPTY
+                    };
+                    uint16_t ind = e->type - OBJ_LEVELUP;
+                    uint16_t fwidth = def[ind]->width << 3;
+                    if(e->oframe != e->frame) {
+                        e->oframe = e->frame;
+                        TILES_QUEUE(&def[ind]->tiles[e->frame * e->framesize * 8], e->vramindex, e->framesize);
+                    }
+                    // We can't just flip the vdpsprites, gotta draw them in backwards order too
+                    if(e->dir) {
+                        int16_t bx = (e->x>>CSF) - camera.x_shifted + e->display_box.left + e->xoff,
+                                by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
+                        int16_t x = min(fwidth, 32);
+                        for(uint16_t i = 0; i < e->sprite_count; i++) {
+                            sprite_pos(&e->sprite[i], bx - x, by);
+                            sprite_hflip(&e->sprite[i], 1);
+                            if(x >= fwidth) {
+                                x = min(fwidth, 32);
+                                by += 32;
+                            } else {
+                                x += min(fwidth - x, 32);
+                            }
+                        }
+                    } else {
+                        int16_t bx = (e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff,
+                                by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
+                        int16_t x = 0;
+                        for(uint16_t i = 0; i < e->sprite_count; i++) {
+                            sprite_pos(&e->sprite[i], bx + x, by);
+                            sprite_hflip(&e->sprite[i], 0);
+                            x += 32;
+                            if(x >= fwidth) {
+                                x = 0;
+                                by += 32;
+                            }
+                        }
+                    }
+                } else {
+                    const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
+                    if(e->frame != e->oframe) {
+                        e->oframe = e->frame;
+                        TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
+                    }
+                    // We can't just flip the vdpsprites, gotta draw them in backwards order too
+                    if(e->dir) {
+                        int16_t bx = (e->x>>CSF) - camera.x_shifted + e->display_box.left + e->xoff,
+                                by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
+                        int16_t x = min(f->w, 32);
+                        for(uint16_t i = 0; i < e->sprite_count; i++) {
+                            sprite_pos(&e->sprite[i], bx - x, by);
+                            sprite_hflip(&e->sprite[i], 1);
+                            if(x >= f->w) {
+                                x = min(f->w, 32);
+                                by += 32;
+                            } else {
+                                x += min(f->w - x, 32);
+                            }
+                        }
+                    } else {
+                        int16_t bx = (e->x>>CSF) - camera.x_shifted - e->display_box.left + e->xoff,
+                                by = (e->y>>CSF) - camera.y_shifted - e->display_box.top;
+                        int16_t x = 0;
+                        for(uint16_t i = 0; i < e->sprite_count; i++) {
+                            sprite_pos(&e->sprite[i], bx + x, by);
+                            sprite_hflip(&e->sprite[i], 0);
+                            x += 32;
+                            if(x >= f->w) {
+                                x = 0;
+                                by += 32;
+                            }
+                        }
+                    }
+                }
 			}
 			vdp_sprites_add(e->sprite, e->sprite_count);
 		}
@@ -923,9 +965,9 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, uint16_t id, uint16_t event) {
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
-	Entity *e = malloc(sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	Entity *e = malloc(sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	if(!e) error_oom();
-	memset(e, 0, sizeof(Entity) + sizeof(VDPSprite) * sprite_count);
+	memset(e, 0, sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	
 	e->x = x;
 	e->y = y;
@@ -934,33 +976,58 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	e->sprite_count = sprite_count;
 	entity_default(e, type, flags);
 	if(sprite_count) {
-		if(npc_info[type].sheet != NOSHEET) { // Sheet
-			SHEET_FIND(e->sheet, npc_info[type].sheet);
-			e->vramindex = sheets[e->sheet].index;
-			e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
-			e->sprite[0] = (VDPSprite) {
-				.size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
-				.attr = TILE_ATTR(npc_info[type].palette,0,0,0,e->vramindex)
-			};
-			e->oframe = 255;
-		} else if(npc_info[type].sprite) { // Use our own tiles
-			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
-			e->framesize = f->tileset->numTile;
-			TILOC_ADD(e->tiloc, e->framesize);
-			if(e->tiloc != NOTILOC) {
-				e->vramindex = tiloc_index + e->tiloc * 4;
-				uint16_t tile_offset = 0;
-				for(uint8_t i = 0; i < e->sprite_count; i++) {
-					e->sprite[i] = (VDPSprite) {
-						.size = f->vdpSpritesInf[i]->size,
-						.attr = TILE_ATTR(npc_info[type].palette,0,0,0,
-								e->vramindex + tile_offset)
-					};
-					tile_offset += f->vdpSpritesInf[i]->numTile;
-				}
-				e->oframe = 255;
-			}
-		}
+        const SpriteDef *def = NULL;
+        switch(e->type) {
+            case OBJ_LEVELUP:   def = SPR_LEVELUP; break;
+            case OBJ_LEVELDOWN: def = SPR_LEVELDOWN; break;
+            case OBJ_EMPTY:     def = SPR_EMPTY; break;
+            default: break;
+        }
+        if(def) {
+            e->framesize = def->width * def->height;
+            TILOC_ADD(e->tiloc, e->framesize);
+            if(e->tiloc != NOTILOC) {
+                e->vramindex = tiloc_index + (e->tiloc << 2);
+                uint16_t i = 0;
+                uint16_t tile_offset = 0;
+                for(int16_t yy = def->height; yy > 0; yy -= 4) {
+                    for(int16_t xx = def->width; xx > 0; xx -= 4) {
+                        e->sprite[i++] = (Sprite) {
+                            .size = SPRITE_SIZE(min(4, xx),min(4, yy)),
+                            .attr = TILE_ATTR(npc_info[type].palette,0,0,0,e->vramindex + tile_offset)
+                        };
+                        tile_offset += min(4, xx) * min(4, yy);
+                    }
+                }
+                e->oframe = 255;
+            }
+        } else if(npc_info[type].sheet != NOSHEET) { // Sheet
+            SHEET_FIND(e->sheet, npc_info[type].sheet);
+            e->vramindex = sheets[e->sheet].index;
+            e->framesize = sheets[e->sheet].w * sheets[e->sheet].h;
+            e->sprite[0] = (Sprite) {
+                    .size = SPRITE_SIZE(sheets[e->sheet].w, sheets[e->sheet].h),
+                    .attr = TILE_ATTR(npc_info[type].palette,0,0,0,e->vramindex)
+            };
+            e->oframe = 255;
+        } else if(npc_info[type].sprite) { // Use our own tiles
+            const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
+            e->framesize = f->tileset->numTile;
+            TILOC_ADD(e->tiloc, e->framesize);
+            if(e->tiloc != NOTILOC) {
+                e->vramindex = tiloc_index + (e->tiloc << 2);
+                uint16_t tile_offset = 0;
+                for(uint8_t i = 0; i < e->sprite_count; i++) {
+                    e->sprite[i] = (Sprite) {
+                            .size = f->vdpSpritesInf[i]->size,
+                            .attr = TILE_ATTR(npc_info[type].palette,0,0,0,
+                                              e->vramindex + tile_offset)
+                    };
+                    tile_offset += f->vdpSpritesInf[i]->numTile;
+                }
+                e->oframe = 255;
+            }
+        }
 	}
     e->onFrame = npc_info[e->type].onFrame;
 	ENTITY_ONSPAWN(e);

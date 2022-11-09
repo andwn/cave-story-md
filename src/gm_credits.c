@@ -53,7 +53,7 @@ __attribute__((noreturn))
 void credits_main() {
 	gamemode = GM_CREDITS;
 	
-	VDPSprite icon[16] = {0};
+	Sprite icon[16] = {0};
 	
 	uint16_t pc = 0;
 	uint16_t textX = 0, textY = 0;
@@ -150,7 +150,7 @@ void credits_main() {
 				case ICON:
 					for(uint8_t i = 0; i < 16; i++) {
 						if(icon[i].size) continue;
-						icon[i] = (VDPSprite) {
+						icon[i] = (Sprite) {
 							.x = textX * 8 - 22 + 128,
 							.y = ScreenHeight - 6 + 128,
 							.size = SPRITE_SIZE(3, 3),

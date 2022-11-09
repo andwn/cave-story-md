@@ -433,12 +433,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	/* Misc */
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_trigger_special,&ai_null 			,""}, // Out of bounds trigger
 	{ &SPR_HeliBlade2, 	NOSHEET, 		3, PAL1, &onspawn_heliblade2, 	&ai_heli_blade, 	&ai_null 			,""}, // Helicopter blade (smaller)
-	{ &SPR_LevelUp, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Up!
-	{ &SPR_J_LevelUp, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルアップ！
-	{ &SPR_LevelDown, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Down!
-	{ &SPR_J_LevelDown, NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルダウン！
-	{ &SPR_Empty, 		NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Empty!
-	{ &SPR_J_Empty, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // からっぽ！
+	{ NULL/*&SPR_LevelUp*/, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Up!
+	//{ &SPR_J_LevelUp, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルアップ！
+	{ NULL/*&SPR_LevelDown*/, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Down!
+	//{ &SPR_J_LevelDown, NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルダウン！
+	{ NULL/*&SPR_Empty*/, 		NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Empty!
+	//{ &SPR_J_Empty, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // からっぽ！
 	{ NULL, 			NOSHEET, 		12,PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
 	{ NULL, 			NOSHEET, 		3, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
 	{ NULL, 			NOSHEET, 		3, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud

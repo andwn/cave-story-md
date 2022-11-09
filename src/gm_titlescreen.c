@@ -2,7 +2,7 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "md/dma.h"
+#include "res/local.h"
 #include "effect.h"
 #include "entity.h"
 #include "md/error.h"
@@ -74,7 +74,7 @@ uint8_t titlescreen_main() {
 	}
 	// Load quote sprite
 	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
-	VDPSprite sprCursor = { 
+	Sprite sprCursor = {
 		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};
@@ -91,7 +91,8 @@ uint8_t titlescreen_main() {
 	}
 	// Release
 	//vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);
-	vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, 16, TS_Title.numTile);
+	//vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, 16, TS_Title.numTile);
+    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 108);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
 	

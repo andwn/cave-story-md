@@ -34,7 +34,7 @@ PLUGIN  := $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO  := liblto_plugin.so
 
 INCS     = -Isrc -Ires
-CCFLAGS  = -m68000 -mshort -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
+CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
 OPTIONS  = -O3 -frename-registers -fconserve-stack
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
 ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or

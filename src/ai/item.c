@@ -44,8 +44,7 @@ void ai_energy(Entity *e) {
 		}
 		if(w->level < 3 && w->energy >= weapon_info[w->type].experience[w->level-1]) {
 			sound_play(SND_LEVEL_UP, 5);
-			entity_create(player.x, player.y, 
-						cfg_language == LANG_JA ? OBJ_LEVELUP_JA : OBJ_LEVELUP, 0);
+			entity_create(player.x, player.y, OBJ_LEVELUP, 0);
 			w->energy -= weapon_info[w->type].experience[w->level-1];
 			w->level++;
 			sheets_refresh_weapon(w);

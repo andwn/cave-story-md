@@ -65,3 +65,23 @@ BIN	MAP_bkSndTest	    "res/tiles_c/bkSoundTest.map"
 /* Island Effect */
 BIN UFTC_XXBack		"res/tiles_c/xxBack.uftc"
 BIN UFTC_XXFore		"res/tiles_c/xxFore.uftc"
+
+/* Window */
+BIN UFTC_Window		"res/tiles_c/window.uftc"
+BIN UFTC_ItemSel	"res/tiles_c/itemsel.uftc"
+
+/* Number Font */
+BIN TS_Numbers		"res/tiles/numbers.pat"
+BIN TS_Clock		"res/tiles/clock.pat"
+
+/* HUD Health/Energy Bar */
+BIN TS_HudBar		"res/tiles/hudfill.pat"
+BIN TS_HudMax		"res/tiles/hudmax.pat"
+BIN TS_HudFlash		"res/tiles/hudflash.pat"
+
+/* Breakable Block Tile */
+BIN TS_Break		"res/tiles/breakable.pat"
+
+/* Wind/Current Tiles */
+BIN TS_WindH		"res/tiles/wind_h.pat"
+BIN TS_WindV		"res/tiles/wind_v.pat"

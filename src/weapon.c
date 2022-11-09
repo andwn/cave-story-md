@@ -124,7 +124,7 @@ void weapon_fire_snake(Weapon *w) {
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
-	b->sprite = (VDPSprite) {
+	b->sprite = (Sprite) {
 		.size = SPRITE_SIZE(2, 2),
 		.attr = TILE_ATTR(PAL1,0,0,0,sheets[b->sheet].index)
 	};
@@ -180,7 +180,7 @@ void weapon_fire_polarstar(Weapon *w) {
 	else sound_play(SND_POLAR_STAR_L1_2, 5);
 	b->type = WEAPON_POLARSTAR;
 	b->level = w->level;
-	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
+	b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2) };
 	b->damage = w->level + (w->level == 3 ? 1 : 0); // 1, 2, 4
 	b->ttl = TIME_8(pstar_ttl[b->level]);
 	// Polar Star or Spur?
@@ -231,7 +231,7 @@ void weapon_fire_fireball(Weapon *w) {
 	sound_play(SND_FIREBALL, 5);
 	b->type = w->type;
 	b->level = w->level;
-	b->sprite = (VDPSprite) {
+	b->sprite = (Sprite) {
 		.size = SPRITE_SIZE(2, 2),
 		.attr = TILE_ATTR(PAL1,0,0,0,sheets[w->sheet].index)
 	};
@@ -275,7 +275,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	else sound_play(SND_POLAR_STAR_L1_2, 5);
 	b->type = w->type;
 	b->level = w->level;
-	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
+	b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2), };
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(20);
 	b->sheet = w->sheet;
@@ -337,7 +337,7 @@ void weapon_fire_missile(Weapon *w) {
 				sound_play(SND_GUN_CLICK, 5);
 				if(!missileEmptyFlag) {
 					missileEmptyFlag = TRUE;
-					entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+					entity_create(player.x, player.y, OBJ_EMPTY, 0);
 				}
 				return;
 			}
@@ -346,7 +346,7 @@ void weapon_fire_missile(Weapon *w) {
 
 		b->type = w->type;
 		b->level = w->level;
-		b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2), };
+		b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2), };
 		b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 		b->sheet = w->sheet;
 		b->damage = (b->type == WEAPON_SUPERMISSILE) ? 2 : 1;
@@ -402,7 +402,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	} else if(w->maxammo) {
 		if(!missileEmptyFlag) {
 			missileEmptyFlag = TRUE;
-			entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+			entity_create(player.x, player.y, OBJ_EMPTY, 0);
 		}
 		sound_play(SND_GUN_CLICK, 5);
 		return;
@@ -411,7 +411,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	b->level = w->level;
 	b->sheet = w->sheet;
 	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
-	b->sprite = (VDPSprite) { 
+	b->sprite = (Sprite) {
 		.size = SPRITE_SIZE(1, 1),
 		.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index)
 	};
@@ -478,19 +478,19 @@ void weapon_fire_blade(Weapon *w) {
 	sound_play(SND_FIREBALL, 5);
 	switch(b->level) {
 		case 1: // Small 16x16 Blade
-			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
+			b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2) };
 			b->damage = 15;
 			b->ttl = TIME_8(30);
 			b->hit_box = (bounding_box) { 6, 6, 6, 6 };
 			break;
 		case 2: // Large 24x24 Blade, hits 6 times
-			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(3, 3) };
+			b->sprite = (Sprite) { .size = SPRITE_SIZE(3, 3) };
 			b->damage = 18;
 			b->ttl = TIME_8(18);
 			b->hit_box = (bounding_box) { 10, 10, 10, 10 };
 			break;
 		case 3: // King's Ghost, AOE on hit
-			b->sprite = (VDPSprite) { .size = SPRITE_SIZE(3, 3) };
+			b->sprite = (Sprite) { .size = SPRITE_SIZE(3, 3) };
 			b->damage = 1;
 			b->ttl = TIME_8(30);
 			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
@@ -619,7 +619,7 @@ void weapon_fire_spur(Weapon *w) {
 	w->level++;
 	
 	b->type = w->type;
-	b->sprite = (VDPSprite) { .size = SPRITE_SIZE(2, 2) };
+	b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2) };
 	b->sheet = w->sheet;
 	//b->hit_box = (bounding_box) { 4, 4, 4, 4 };
 	b->ttl = TIME_8(30);
@@ -1127,7 +1127,7 @@ void bullet_update_spur(Bullet *b) {
             t->x_speed = b->x_speed;
             t->y_speed = b->y_speed;
             t->hit_box = b->hit_box;
-            t->sprite = (VDPSprite) {
+            t->sprite = (Sprite) {
                 .size = SPRITE_SIZE(2,2),
                 .attr = TILE_ATTR(PAL0,0,0,0,sheets[t->sheet].index+(t->dir < 2 ? 0 : 8)),
             };

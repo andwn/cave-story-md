@@ -7,6 +7,7 @@
 #include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
+#include "res/tiles.h"
 #include "sheet.h"
 #include "tables.h"
 #include "md/comp.h"
@@ -15,7 +16,7 @@
 #include "effect.h"
 
 typedef struct {
-	VDPSprite sprite;
+	Sprite sprite;
 	uint8_t type, ttl, timer, timer2;
 	int16_t x, y;
 	int8_t x_speed, y_speed;
@@ -239,11 +240,11 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 		uint16_t tileIndex;
 		for(; num; digitCount++) {
 			tileIndex = ((negative ? 11 : 0) + mod10[num]) << 3;
-			memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32);
+			memcpy(dtiles[3 - digitCount], &TS_Numbers[tileIndex], 32);
 			num = div10[num];
 		}
 		tileIndex = ((negative ? 11 : 0) + 10) * 8;
-		memcpy(dtiles[3 - digitCount], &TS_Numbers.tiles[tileIndex], 32); // - or +
+		memcpy(dtiles[3 - digitCount], &TS_Numbers[tileIndex], 32); // - or +
 		
 		if(follow) {
 			damageFollow[i].e = follow;
@@ -257,7 +258,7 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 			effDamage[i].y = yoff;
 		}
 		effDamage[i].ttl = 60; // 1 second
-		effDamage[i].sprite = (VDPSprite) {
+		effDamage[i].sprite = (Sprite) {
 			.size = SPRITE_SIZE(digitCount+1, 1),
 			.attr = TILE_ATTR(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i<<2))
 		};
@@ -283,7 +284,7 @@ void effect_create_smoke(int16_t x, int16_t y) {
 			case 7: effSmoke[i].y_speed ^= 1; break;
 		}
 		effSmoke[i].ttl = 24;
-		effSmoke[i].sprite = (VDPSprite) {
+		effSmoke[i].sprite = (Sprite) {
 			.size = SPRITE_SIZE(2, 2),
 			.attr = TILE_ATTR(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
 		};
@@ -305,7 +306,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			case EFF_BONKR:
 			{
 				effMisc[i].ttl = 30;
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -317,7 +318,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 				SHEET_FIND(sheet, SHEET_ZZZ);
 				if(sheet == NOSHEET) break;
 				effMisc[i].ttl = TIME_8(100);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,sheets[sheet].index)
 				};
@@ -327,7 +328,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			case EFF_BOOST2:
 			{
 				effMisc[i].ttl = TIME_8(20);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,12)
 				};
@@ -336,7 +337,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			case EFF_QMARK:
 			{
 				effMisc[i].ttl = TIME_8(30);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,TILE_QMARKINDEX)
 				};
@@ -346,7 +347,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			{
 				effMisc[i].x_speed = -(rand() & 3) - 1;
 				effMisc[i].ttl = TIME_8(20);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -356,7 +357,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			{
 				effMisc[i].y_speed = -(rand() & 3) - 1;
 				effMisc[i].ttl = TIME_8(20);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -366,7 +367,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			{
 				effMisc[i].x_speed = (rand() & 3) + 1;
 				effMisc[i].ttl = TIME_8(20);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -376,7 +377,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			{
 				effMisc[i].y_speed = (rand() & 3) + 1;
 				effMisc[i].ttl = TIME_8(20);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -392,7 +393,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 					effMisc[i].ttl = 29;
 				}
 				effMisc[i].x_speed = (player.x_speed >> CSF) - 1 + (rand() & 3);
-				effMisc[i].sprite = (VDPSprite) {
+				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),
 					.attr = TILE_ATTR(PAL0,1,0,0,1)
 				};
@@ -403,7 +404,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].ttl = 12;
                 uint8_t loc = 0;
                 SHEET_FIND(loc, SHEET_PSTAR);
-                effMisc[i].sprite = (VDPSprite) {
+                effMisc[i].sprite = (Sprite) {
                     .size = SPRITE_SIZE(2, 2),
                     .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+8)
                 };
@@ -414,7 +415,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].ttl = 12;
                 uint8_t loc = 0;
                 SHEET_FIND(loc, SHEET_MGUN);
-                effMisc[i].sprite = (VDPSprite) {
+                effMisc[i].sprite = (Sprite) {
                     .size = SPRITE_SIZE(2, 2),
                     .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+8)
                 };
@@ -425,7 +426,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].ttl = 8;
                 uint8_t loc = 0;
                 SHEET_FIND(loc, SHEET_BUBB);
-                effMisc[i].sprite = (VDPSprite) {
+                effMisc[i].sprite = (Sprite) {
                         .size = SPRITE_SIZE(1, 1),
                         .attr = TILE_ATTR(PAL0,1,0,0,sheets[loc].index+4)
                 };
@@ -436,7 +437,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].ttl = 12;
                 uint8_t loc = 0;
                 SHEET_FIND(loc, SHEET_FBALL);
-                effMisc[i].sprite = (VDPSprite) {
+                effMisc[i].sprite = (Sprite) {
                         .size = SPRITE_SIZE(1, 1),
                         .attr = TILE_ATTR(PAL1,1,0,0,sheets[loc].index+12)
                 };
@@ -447,7 +448,7 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
                 effMisc[i].ttl = 12;
                 uint8_t loc = 0;
                 SHEET_FIND(loc, SHEET_SNAKE);
-                effMisc[i].sprite = (VDPSprite) {
+                effMisc[i].sprite = (Sprite) {
                     .size = SPRITE_SIZE(1, 1),
                     .attr = TILE_ATTR(PAL1,1,0,0,sheets[loc].index+12)
                 };

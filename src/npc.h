@@ -427,11 +427,11 @@ enum {
 	OBJ_TRIGGER_SPECIAL,
 	OBJ_HELICOPTER_BLADE2,
 	OBJ_LEVELUP,
-	OBJ_LEVELUP_JA,
+	//OBJ_LEVELUP_JA,
 	OBJ_LEVELDOWN,
-	OBJ_LEVELDOWN_JA,
+	//OBJ_LEVELDOWN_JA,
 	OBJ_EMPTY,
-	OBJ_EMPTY_JA,
+	//OBJ_EMPTY_JA,
 	OBJ_CLOUD,
 	OBJ_CLOUD2,
 	OBJ_CLOUD3,
@@ -455,10 +455,10 @@ enum {
 // Macros to get the data
 #define npc_flags(t) (NPC_TABLE[(t)*2 + NPC_FLAGIND] + (NPC_TABLE[(t)*2 + NPC_FLAGIND+1] <<8 ))
 #define npc_hp(t)    (NPC_TABLE[(t)*2 + NPC_HPIND]   + (NPC_TABLE[(t)*2 + NPC_HPIND+1] << 8))
-#define npc_pal(t)		(NPC_TABLE[type + NPC_PALIND])
-#define npc_diesfx(t)	(NPC_TABLE[type + NPC_DSFXIND])
-#define npc_hurtsfx(t)	(NPC_TABLE[type + NPC_HSFXIND])
-#define npc_smoke(t)	(NPC_TABLE[type + NPC_SMOKIND])
+#define npc_pal(t)		(NPC_TABLE[t + NPC_PALIND])
+#define npc_diesfx(t)	(NPC_TABLE[t + NPC_DSFXIND])
+#define npc_hurtsfx(t)	(NPC_TABLE[t + NPC_HSFXIND])
+#define npc_smoke(t)	(NPC_TABLE[t + NPC_SMOKIND])
 #define npc_xp(t)     (NPC_TABLE[(t)*4 + NPC_XPIND]  + (NPC_TABLE[(t)*4 + NPC_XPIND+1] << 8))
 #define npc_attack(t) (NPC_TABLE[(t)*4 + NPC_ATKIND] + (NPC_TABLE[(t)*4 + NPC_ATKIND+1] << 8))
 #define npc_hitbox(t) ((bounding_box){                                                         \

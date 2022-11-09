@@ -61,4 +61,19 @@ extern const uint16_t MAP_bkSndTest[];
 extern const uint16_t UFTC_XXBack[];
 extern const uint16_t UFTC_XXFore[];
 
+extern const uint16_t UFTC_Window[];
+extern const uint16_t UFTC_ItemSel[];
+
+extern const uint32_t TS_Numbers[];
+extern const uint32_t TS_Clock[];
+
+extern const uint32_t TS_HudBar[];
+extern const uint32_t TS_HudMax[];
+extern const uint32_t TS_HudFlash[];
+
+extern const uint32_t TS_Break[];
+
+extern const uint32_t TS_WindH[];
+extern const uint32_t TS_WindV[];
+
 #endif //RES_TILES_H

@@ -37,7 +37,7 @@ static uint8_t pal_fadecnt;
 
 // Sprite vars
 static uint16_t sprite_count;
-static VDPSprite sprite_table[80];
+static Sprite sprite_table[80];
 static uint16_t sprite_ymax;
 
 // Font vars
@@ -286,7 +286,7 @@ void vdp_vscroll(uint16_t plan, int16_t vscroll) {
 
 // Sprites
 
-void vdp_sprite_add(const VDPSprite *spr) {
+void vdp_sprite_add(const Sprite *spr) {
     // Exceeded max number of sprites
     if (sprite_count >= 80) return;
     // Prevent drawing off-screen sprites
@@ -297,12 +297,12 @@ void vdp_sprite_add(const VDPSprite *spr) {
     }
 }
 
-void vdp_sprites_add(const VDPSprite *spr, uint16_t num) {
+void vdp_sprites_add(const Sprite *spr, uint16_t num) {
     for (uint16_t i = num; i--;) vdp_sprite_add(&spr[i]);
 }
 
 void vdp_sprites_clear() {
-    static const VDPSprite NULL_SPRITE = {.x = 0x80, .y = 0x80};
+    static const Sprite NULL_SPRITE = {.x = 0x80, .y = 0x80};
     sprite_count = 0;
     vdp_sprites_add(&NULL_SPRITE, 1);
 }

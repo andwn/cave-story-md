@@ -294,7 +294,7 @@ static void fire_mgun(int32_t x, int32_t y, uint8_t dir) {
 	b->type = WEAPON_MACHINEGUN;
 	b->level = 3;
 	// Need to set the position immediately or else the sprite will blink in upper left
-	b->sprite = (VDPSprite) { 
+	b->sprite = (Sprite) {
 		.x = (x >> CSF) - (camera.x >> CSF) + ScreenHalfW - 8,
 		.y = (y >> CSF) - (camera.y >> CSF) + ScreenHalfH - 8,
 		.size = SPRITE_SIZE(2, 2),
@@ -332,7 +332,7 @@ static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 	sound_play(SND_POLAR_STAR_L3, 5);
 	b->type = WEAPON_POLARSTAR;
 	b->level = 3;
-	b->sprite = (VDPSprite) { 
+	b->sprite = (Sprite) {
 		.x = (x >> CSF) - (camera.x >> CSF) + ScreenHalfW - 8,
 		.y = (y >> CSF) - (camera.y >> CSF) + ScreenHalfH - 8,
 		.size = SPRITE_SIZE(2, 2),

@@ -4,20 +4,6 @@
 
 SPRITE SPR_Casts		"sprite_c/casts.png"			3 3 0 0 NONE
 
-# Localizable - move these later
-SPRITE SPR_Air			"sprite_loc/air_en.png"			7 1 0 0 NONE
-SPRITE SPR_J_Air		"sprite_loc/air_ja.png"			7 1 0 0 NONE
-SPRITE SPR_Prompt		"sprite_loc/prompt_en.png" 		8 3 0 0 NONE
-SPRITE SPR_J_Prompt		"sprite_loc/prompt_ja.png" 		8 3 0 0 NONE
-SPRITE SPR_LevelUp		"sprite_loc/levelup_en.png"		7 2 0 0 NONE
-SPRITE SPR_J_LevelUp	"sprite_loc/levelup_ja.png"		7 2 0 0 NONE
-SPRITE SPR_LevelDown	"sprite_loc/leveldown_en.png"	7 2 0 0 NONE
-SPRITE SPR_J_LevelDown	"sprite_loc/leveldown_ja.png" 	7 2 0 0 NONE
-SPRITE SPR_Empty		"sprite_loc/empty_en.png"		5 1 0 0 NONE
-SPRITE SPR_J_Empty		"sprite_loc/empty_ja.png"		5 1 0 0 NONE
-SPRITE SPR_AhchooE		"sprite_loc/ahchoo_en.png"		2 2 0 0 NONE
-SPRITE SPR_AhchooJ		"sprite_loc/ahchoo_ja.png"		2 2 0 0 NONE
-
 # Weapons & bullets
 SPRITE SPR_Polar		"sprite_c/w_polar.png"		    6 1 0 0 NONE
 SPRITE SPR_PolarB1		"sprite_c/b_polar1.png"		    2 2 0 0 NONE
@@ -399,27 +385,3 @@ SPRITE SPR_ItemImageG	"sprite/itemimage_g.png" 	3 2 0 0 NONE
 
 # Use PAL_XX
 SPRITE SPR_XXIsland		"sprite/xxIsland.png" 		5 3 0 0 NONE
-
-# ----------------------------------------------------------------------------------------------
-# Window & Inventory
-# ----------------------------------------------------------------------------------------------
-
-# Window
-TILESET TS_Window		"tiles_c/window.png" 			0
-TILESET TS_ItemSel		"tiles_c/itemsel.png" 			0
-
-# Number Font
-TILESET TS_Numbers		"tiles/numbers.png" 	0
-TILESET TS_Clock		"tiles/clock.png"		0
-
-# HUD Health/Energy Bar
-TILESET TS_HudBar		"tiles/hudfill.png" 	0
-TILESET TS_HudMax		"tiles/hudmax.png" 	    0
-TILESET TS_HudFlash		"tiles/hudflash.png"	0
-
-# Breakable Block Tile
-TILESET TS_Break		"tiles/breakable.png" 	0
-
-# Wind/Current Tiles
-TILESET TS_WindH		"tiles/wind_h.png"			0
-TILESET TS_WindV		"tiles/wind_v.png"			0

@@ -25,7 +25,7 @@
 #include "weapon.h"
 
 #include "player.h"
-#include "md/xgm.h"
+#include "res/tiles.h"
 
 #define PLAYER_SPRITE_TILES_QUEUE() ({ \
 	uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0); \
@@ -34,7 +34,7 @@
 
 uint8_t currentWeapon;
 Entity player;
-VDPSprite playerSprite;
+Sprite playerSprite;
 uint8_t playerIFrames;
 uint8_t playerMoveMode;
 uint8_t lookingDown;
@@ -55,12 +55,12 @@ const uint8_t spur_time[2][4] = {
 	{ 0, 33, 50, 166 }, // PAL
 };
 
-VDPSprite weaponSprite;
+Sprite weaponSprite;
 
 uint8_t mapNameSpriteNum;
-VDPSprite mapNameSprite[4];
+Sprite mapNameSprite[4];
 
-VDPSprite airSprite[2];
+Sprite airSprite[2];
 uint8_t airPercent;
 uint8_t airTick;
 uint8_t airDisplayTime;
@@ -68,7 +68,7 @@ uint8_t airDisplayTime;
 uint8_t blockl, blocku, blockr, blockd;
 uint8_t ledge_time;
 
-VDPSprite airTankSprite;
+Sprite airTankSprite;
 
 static void player_update_booster();
 static void player_update_interaction();
@@ -121,24 +121,25 @@ void player_init() {
 	// Booster trail sprite tiles
 	vdp_tiles_load(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
 	// AIR Sprite
-	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
-	vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
-	airSprite[0] = (VDPSprite) {
+	//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
+	//vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
+    vdp_tiles_load(SPR_AIR->tiles, TILE_AIRINDEX, 4);
+	airSprite[0] = (Sprite) {
 		.x = ScreenHalfW - 28 + 128, .y = ScreenHalfH - 24 + 128,
 		.size = SPRITE_SIZE(4, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX)
 	};
-	airSprite[1] = (VDPSprite) {
+	airSprite[1] = (Sprite) {
 		.x = ScreenHalfW + 8 + 128, .y = ScreenHalfH - 24 + 128,
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
 	vdp_tiles_load(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9);
-	airTankSprite = (VDPSprite) {
+	airTankSprite = (Sprite) {
 		.size = SPRITE_SIZE(3,3),
 		.attr = TILE_ATTR(PAL0,0,0,0,TILE_AIRTANKINDEX)
 	};
 	// Player sprite
-	playerSprite = (VDPSprite) {
+	playerSprite = (Sprite) {
 		.size = SPRITE_SIZE(2,2),
 		.attr = TILE_ATTR(PAL0,0,0,1,TILE_PLAYERINDEX)
 	};
@@ -374,7 +375,7 @@ void player_update() {
 					sound_play(SND_GUN_CLICK, 5);
 					if(!missileEmptyFlag) {
 						missileEmptyFlag = TRUE;
-						entity_create(player.x, player.y, cfg_language == LANG_JA ? OBJ_EMPTY_JA : OBJ_EMPTY, 0);
+						entity_create(player.x, player.y, OBJ_EMPTY, 0);
 					}
 				}
 				shoot_cooldown = (pal_mode || cfg_60fps) ? 7 : 8;
@@ -834,7 +835,7 @@ static void show_map_jname(uint8_t ttl) {
     uint16_t y = ScreenHalfH - 32 + 128;
     for(i = 0; i < len; i += 2) {
         uint16_t tind = mul6[i >> 1];
-        mapNameSprite[i >> 1] = (VDPSprite) {
+        mapNameSprite[i >> 1] = (Sprite) {
                 .x = x, .y = y, .size = SPRITE_SIZE(min(3,(len-i)<<1), 2),
                 .attr = TILE_ATTR(PAL0,1,0,0,TILE_FACEINDEX+tind)
         };
@@ -887,7 +888,7 @@ void player_show_map_name(uint8_t ttl) {
     uint16_t y = ScreenHalfH - 32 + 128;
     for(uint16_t i = 0; i < len; i += 4) {
         uint8_t sind = i>>2;
-        mapNameSprite[sind] = (VDPSprite) {
+        mapNameSprite[sind] = (Sprite) {
             .x = x, .y = y, .size = SPRITE_SIZE(min(4,len-i), 1)
         };
         mapNameSprite[sind].attr = TILE_ATTR(PAL0,1,0,0,TILE_NAMEINDEX+i);
@@ -902,12 +903,12 @@ static void draw_air_percent() {
 	uint32_t numberTiles[3][8];
 	if(airTemp >= 100) {
 		airTemp -= 100;
-		memcpy(numberTiles[0], &TS_Numbers.tiles[8], 32);
+		memcpy(numberTiles[0], &TS_Numbers[8], 32);
 	} else {
 		memcpy(numberTiles[0], BlankData, 32);
 	}
-	memcpy(numberTiles[1], &TS_Numbers.tiles[div10[airTemp] * 8], 32);
-	memcpy(numberTiles[2], &TS_Numbers.tiles[mod10[airTemp] * 8], 32);
+	memcpy(numberTiles[1], &TS_Numbers[div10[airTemp] * 8], 32);
+	memcpy(numberTiles[2], &TS_Numbers[mod10[airTemp] * 8], 32);
 	
 	vdp_tiles_load(numberTiles[0], TILE_AIRINDEX + 4, 3);
 	
@@ -926,8 +927,9 @@ static void player_update_air_display() {
 		if((airDisplayTime & 31) == 0) {
 			vdp_tiles_load(BlankData, TILE_AIRINDEX, 1);
 		} else if((airDisplayTime & 31) == 15) {
-			const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
-			vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
+			//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
+			//vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 1);
+            vdp_tiles_load(SPR_AIR->tiles, TILE_AIRINDEX, 1);
 		}
 		// Calculate air percent and display the value
 		if(airTick == TIME_8(9)) draw_air_percent();
@@ -1024,14 +1026,14 @@ void player_draw() {
 				vdir = 1;
 			}
 			if(vert) {
-				weaponSprite = (VDPSprite) {
+				weaponSprite = (Sprite) {
 					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 4 + 128,
 					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 8 + 128,
 					.size = SPRITE_SIZE(1, 3),
 					.attr = TILE_ATTR(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
 				};
 			} else {
-				weaponSprite = (VDPSprite) {
+				weaponSprite = (Sprite) {
 					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 12 + 128,
 					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 0 + 128,
 					.size = SPRITE_SIZE(3, 1),
@@ -1100,8 +1102,7 @@ uint8_t player_inflict_damage(uint16_t damage) {
 				sheets_refresh_weapon(w);
                 z80_resume();
                 enable_ints();
-				entity_create(player.x, player.y, 
-						cfg_language == LANG_JA ? OBJ_LEVELDOWN_JA : OBJ_LEVELDOWN, 0);
+				entity_create(player.x, player.y, OBJ_LEVELDOWN, 0);
 			} else {
 				w->energy = 0;
 			}

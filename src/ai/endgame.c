@@ -72,7 +72,7 @@ void onspawn_cloud(Entity *e) {
 	int16_t xoff = -e->display_box.left;
 	int16_t yoff = -e->display_box.top;
 	for(uint16_t i = 0; i < e->sprite_count; i++) {
-		e->sprite[i] = (VDPSprite) {
+		e->sprite[i] = (Sprite) {
 			.x = 0x80 + (e->x>>CSF) - camera.x_shifted + xoff,
 			.y = 0x80 + (e->y>>CSF) - camera.y_shifted + yoff,
 			.size = ssize,
@@ -468,7 +468,7 @@ void onspawn_the_cast(Entity *e) {
 		e->vramindex = tiloc_index + e->tiloc * 4;
 		uint16_t tile_offset = 0;
 		for(uint8_t i = 0; i < e->sprite_count; i++) {
-			e->sprite[i] = (VDPSprite) {
+			e->sprite[i] = (Sprite) {
 				.size = f->vdpSpritesInf[i]->size,
 				.attr = TILE_ATTR(npc_info[obj].palette,
 						0,0,0,e->vramindex + tile_offset)
@@ -507,7 +507,7 @@ void ai_the_cast(Entity *e) {
 				const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[e->frame];
 				uint16_t tile_offset = 0;
 				for(uint8_t i = 0; i < e->sprite_count; i++) {
-					e->sprite[i] = (VDPSprite) {
+					e->sprite[i] = (Sprite) {
 							.size = f->vdpSpritesInf[i]->size,
 							.attr = TILE_ATTR(npc_info[obj].palette,
 							        0, 0, 0, e->vramindex + tile_offset)

@@ -22,6 +22,22 @@
 		sheet_num++;                                                                           \
 	}                                                                                          \
 }
+
+#define SHEET_ADD_NEW(sheetid, sdef, frames) {                                            \
+	if(sheet_num < MAX_SHEETS) {                                                               \
+		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
+							  : TILE_SHEETINDEX;                                               \
+        uint16_t fsize = (frames) * sdef->width * sdef->height;                                \
+		sheets[sheet_num] = (Sheet) {                                                          \
+			sheetid, (frames) * fsize, index, sdef->width, sdef->height                        \
+		};                                                                                     \
+		tiloc_index = sheets[sheet_num].index + sheets[sheet_num].size;                        \
+		vdp_tiles_load(sdef->tiles, index, sheets[sheet_num].size);                            \
+		for(uint8_t i = 0; i < 16; i++) frameOffset[sheet_num][i] = fsize*i;                   \
+		sheet_num++;                                                                           \
+	}                                                                                          \
+}
+
 // Replaces the tiles in a previously loaded sprite sheet
 #define SHEET_MOD(sheetid, sdef, frames, width, height, ...) {                                 \
 	uint8_t sindex = NOSHEET;                                                                  \
@@ -30,6 +46,7 @@
 		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sindex].index, 1, __VA_ARGS__);      \
 	}                                                                                          \
 }
+
 // The end params are anim,frame value couples from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
 	static const uint8_t fa[frames<<1] = { __VA_ARGS__ };                                      \
@@ -41,6 +58,7 @@
 		vdp_tiles_load(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize);\
 	}                                                                                          \
 }
+
 #define SHEET_FIND(index, sid) {                                                               \
 	for(uint8_t ii = MAX_SHEETS; ii--; ) {                                                     \
 		if(sheets[ii].id == sid) {                                                             \

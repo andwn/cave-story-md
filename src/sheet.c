@@ -2,7 +2,7 @@
 
 #include "md/dma.h"
 #include "entity.h"
-#include "md/error.h"
+#include "res/local.h"
 #include "math.h"
 #include "md/stdlib.h"
 #include "player.h"
@@ -224,7 +224,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x02: // Egg Corridor
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 3,2,2, 0,0, 1,0, 2,0);
 			SHEET_ADD(SHEET_BEETLE, &SPR_BtlHG, 2,2,2, 0,0, 1,0);
-			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 6,4,3, 0,0, 0,1, 0,3, 1,0, 2,0, 2,1);
+			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 6,4,3, 0,0, 0,1, 0,3, 0,4, 0,5, 0,6);
 			SHEET_ADD(SHEET_BASIL, &SPR_Basil, 3,4,2, 0,0, 0,1, 0,2);
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0,0, 0,1);
 			SHEET_ADD(SHEET_BASUSHOT, &SPR_BasuShot, 2,2,2, 0,0, 1,0);
@@ -515,7 +515,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiEnd, 4,3,2, 0,0, 0,1, 0,2, 0,3);
 		} break;
 		case STAGE_ENDING_LAB: 
-		{	SHEET_ADD(SHEET_AHCHOO, cfg_language == LANG_JA ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
+		{	//SHEET_ADD(SHEET_AHCHOO, cfg_language == LANG_JA ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0,0, 0,1);
+            SHEET_ADD_NEW(SHEET_AHCHOO, SPR_AHCHOO, 2);
 		} break;
 	}
 	// Weapons at the end

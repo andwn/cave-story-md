@@ -2,6 +2,7 @@
 
 #include "audio.h"
 #include "res/system.h"
+#include "res/local.h"
 #include "md/dma.h"
 #include "gamemode.h"
 #include "hud.h"
@@ -63,7 +64,7 @@ uint8_t windowTextTick;
 uint8_t spaceCounter, spaceOffset;
 
 uint8_t promptAnswer;
-VDPSprite promptSpr[2], handSpr;
+Sprite promptSpr[2], handSpr;
 
 uint16_t showingItem;
 
@@ -283,7 +284,7 @@ void window_prompt_open() {
 	promptAnswer = TRUE; // Yes is default
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
-	handSpr = (VDPSprite) {
+	handSpr = (Sprite) {
 		//.x = tile_to_pixel(PROMPT_X) - 4 + 128,
 		//.y = tile_to_pixel(PROMPT_Y + 1) - 4 + 128,
 		.size = SPRITE_SIZE(2, 2),
@@ -293,21 +294,22 @@ void window_prompt_open() {
 	if(!promptAnswer) cursor_x += cfg_language == LANG_JA ? 26 : 34; // "いいえ" starts more left than "No"
 	int16_t cursor_y = (PROMPT_Y << 3) + 4;
 	sprite_pos(&handSpr, cursor_x, cursor_y);
-	promptSpr[0] = (VDPSprite) {
+	promptSpr[0] = (Sprite) {
 		.x = tile_to_pixel(PROMPT_X) + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
 		.size = SPRITE_SIZE(4, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+4)
 	};
-	promptSpr[1] = (VDPSprite) {
+	promptSpr[1] = (Sprite) {
 		.x = tile_to_pixel(PROMPT_X) + 32 + 128,
 		.y = tile_to_pixel(PROMPT_Y) + 128,
 		.size = SPRITE_SIZE(4, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+16)
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
-	const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Prompt : &SPR_Prompt;
-	TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
+	//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Prompt : &SPR_Prompt;
+	//TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
+    vdp_tiles_load(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
 }
 
 void window_prompt_close() {
@@ -356,19 +358,19 @@ void window_show_item(uint16_t item) {
 		sprDef = &SPR_ItemImageG;
 		pal = PAL0;
 	}
-	handSpr = (VDPSprite) {
+	handSpr = (Sprite) {
 		.x = ScreenHalfW - 12 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(3, 2),
 		.attr = TILE_ATTR(pal,1,0,0,TILE_PROMPTINDEX)
 	};
-	promptSpr[0] = (VDPSprite) {
+	promptSpr[0] = (Sprite) {
 		.x = ScreenHalfW - 24 + 128,
 		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
-	promptSpr[1] = (VDPSprite) {
+	promptSpr[1] = (Sprite) {
 		.x = ScreenHalfW + 128,
 		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
@@ -381,19 +383,19 @@ void window_show_item(uint16_t item) {
 void window_show_weapon(uint16_t item) {
 	showingItem = item;
 	if(item == 0) return;
-	handSpr = (VDPSprite) {
+	handSpr = (Sprite) {
 		.x = ScreenHalfW - 8 + 128,
 		.y = ITEM_Y_START,
 		.size = SPRITE_SIZE(2, 2),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX)
 	};
-	promptSpr[0] = (VDPSprite) {
+	promptSpr[0] = (Sprite) {
 		.x = ScreenHalfW - 24 + 128,
 		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+6)
 	};
-	promptSpr[1] = (VDPSprite) {
+	promptSpr[1] = (Sprite) {
 		.x = ScreenHalfW + 128,
 		.y = ScreenHalfH + 8 + 128,
 		.size = SPRITE_SIZE(3, 3),

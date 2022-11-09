@@ -707,13 +707,13 @@ void ai_udmini_platform(Entity *e) {
 // The face of the minicores have 4 different frames for light/dark and faces, but the
 // backs just use 2 for dark/light, so we draw them separately from the engine
 static void DrawMinicoreBack(Entity *e) {
-	e->sprite[1] = (VDPSprite) { // Back
+	e->sprite[1] = (Sprite) { // Back
 		.x = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW + 16 + 128,
 		.y = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 16 + 128,
 		.size = SPRITE_SIZE(3, 4),
 		.attr = TILE_ATTR(PAL2,0,0,0,mframeindex[e->frame >> 1])
 	};
-	e->sprite[2] = (VDPSprite) { // Bottom
+	e->sprite[2] = (Sprite) { // Bottom
 		.x = (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 8 + 128,
 		.y = (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH + 16 + 128,
 		.size = SPRITE_SIZE(4, 1),

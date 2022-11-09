@@ -1,7 +1,7 @@
 #include "common.h"
 
 #include "audio.h"
-#include "res/stage.h"
+#include "res/tiles.h"
 #include "res/local.h"
 #include "camera.h"
 #include "md/dma.h"
@@ -93,17 +93,17 @@ static uint8_t refresh_file(uint8_t index) {
 			for(uint8_t i = 0; i < 5; i++) {
 				int16_t addrHP = min(fillHP*8, 7*8);
 				if(addrHP < 0) addrHP = 0;
-				memcpy(tileData[i+3], &TS_HudBar.tiles[addrHP], 32);
+				memcpy(tileData[i+3], &TS_HudBar[addrHP], 32);
 				fillHP -= 8;
 			}
 			memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*8], 32);
 			uint8_t digit = div10[file.health];
 			if(digit) {
-				memcpy(tileData[1], &TS_Numbers.tiles[(digit)*8], 32);
+				memcpy(tileData[1], &TS_Numbers[(digit)*8], 32);
 			} else {
 				memcpy(tileData[1], BlankData, 32);
 			}
-			memcpy(tileData[2], &TS_Numbers.tiles[mod10[file.health]*8], 32);
+			memcpy(tileData[2], &TS_Numbers[mod10[file.health]*8], 32);
 			uint16_t tile = TILE_SHEETINDEX + index*8;
 			dma_now(DmaVRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {
@@ -178,7 +178,7 @@ uint8_t saveselect_main() {
 	vdp_map_clear(VDP_PLANE_A);
 	vdp_map_clear(VDP_PLANE_B);
 	vdp_sprites_clear();
-	VDPSprite sprCursor = { 
+	Sprite sprCursor = {
 		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)
 	};

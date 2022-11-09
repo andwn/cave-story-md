@@ -33,6 +33,22 @@
 \_name\()_end:
 .endm
 
+.macro PTR _name, _dest, _align=2
+    .globl  \_name
+    .align  \_align
+\_name:
+    dc.l    \_dest
+.endm
+
+.macro SPRITE _name, _file, _fwidth, _fheight, _nframes, _align=2
+    .globl  \_name
+    .align  \_align
+\_name:
+    dc.w    \_fwidth, \_fheight, \_nframes, \_fwidth * \_fheight
+    .incbin "\_file"
+\_name\()_end:
+.endm
+
 /* Interrupts */
 .macro DisableInts
         move #0x2700,sr
