@@ -58,9 +58,15 @@ FUNC dma_pop
         lea     (VdpCtrl),a1
         move.w  #7,d0
 
+        DisableInts
+        FastPauseZ80
+
     dma_pop_loop:
         move.w  (a0)+,(a1)
         dbf     d0,dma_pop_loop
+
+        ResumeZ80
+        EnableInts
 
         rts
 
@@ -75,13 +81,17 @@ FUNC dma_flush
         lsr.w   #1,d0
         subq.w  #1,d0
 
+        DisableInts
+        FastPauseZ80
+
     dma_flush_loop:
         move.w  (a0)+,(a1)
         dbf     d0,dma_flush_loop
 
         move.w  #VDPREG_INCR+2,(a1)  /* autoinc = 2 */
-        move.l  #dmabuf,(dmabuf_end)
-        rts
+
+        ResumeZ80
+        EnableInts
 
 /* void dma_clear() */
 FUNC dma_clear

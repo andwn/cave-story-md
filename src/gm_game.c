@@ -38,11 +38,11 @@ void game_main(uint8_t load) {
 	//vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
 	if(cfg_language != LANG_JA) {
-        disable_ints();
-        z80_pause_fast();
+        //disable_ints();
+        //z80_pause_fast();
 		vdp_font_load(UFTC_MsgFont);
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
 	}
 	effects_init();
 	game_reset(load);
@@ -70,8 +70,8 @@ void game_main(uint8_t load) {
 			} else if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
 					&& !tscState && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
-                disable_ints();
-                z80_pause_fast();
+                //disable_ints();
+                //z80_pause_fast();
 				vdp_set_display(FALSE);
 				if(stageBackgroundType == 4) {
 					// Hide water
@@ -86,8 +86,8 @@ void game_main(uint8_t load) {
 				}
 				vdp_set_window(0, pal_mode ? 30 : 28);
 				vdp_set_display(TRUE);
-                z80_resume();
-                enable_ints();
+                //z80_resume();
+                //enable_ints();
 
 				paused = TRUE; // This will stop the counter in Hell
 				do_map();
@@ -95,11 +95,11 @@ void game_main(uint8_t load) {
 				vdp_set_display(FALSE);
 				hud_force_redraw();
 
-                disable_ints();
-                z80_pause_fast();
+                //disable_ints();
+                //z80_pause_fast();
 				sheets_load_stage(stageID, TRUE, FALSE);
-                z80_resume();
-                enable_ints();
+                //z80_resume();
+                //enable_ints();
 
 				player_draw();
 				entities_draw();
@@ -170,7 +170,7 @@ void game_main(uint8_t load) {
 		system_update();
 		ready = TRUE;
 		PF_BGCOLOR(0x000);
-		vdp_vsync();
+        sys_wait_vblank();
 		PF_BGCOLOR(0x00E);
 		aftervsync();
 	}

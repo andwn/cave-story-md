@@ -46,8 +46,8 @@ void soundtest_main() {
 	uint8_t track = 0;
 	uint8_t status = STOPPED, oldstatus = STOPPED;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	vdp_set_display(FALSE);
 	
 	vdp_sprites_clear();
@@ -76,8 +76,8 @@ void soundtest_main() {
 	vdp_colors(16, PAL_SndTest, 16);
 	
 	vdp_set_display(TRUE);
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 
 	song_stop();
     joystate_old = ~0;
@@ -117,7 +117,7 @@ void soundtest_main() {
 			oldstatus = status;
 		}
 		ready = TRUE;
-		vdp_vsync();
+        sys_wait_vblank();
 		aftervsync();
     }
 }

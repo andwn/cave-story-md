@@ -23,8 +23,8 @@ uint8_t paused;
 uint8_t gameFrozen;
 
 void aftervsync() {
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 
     vdp_fade_step_dma();
 	dma_flush();
@@ -36,8 +36,8 @@ void aftervsync() {
 		ready = FALSE;
 	}
 
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 
     vdp_fade_step_calc();
     joy_update();
@@ -56,7 +56,7 @@ void main() {
 	}
     //dma_clear();
 	joy_init();
-	enable_ints();
+	//enable_ints();
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
 		time_tab = time_tab_pal;

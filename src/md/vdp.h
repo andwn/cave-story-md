@@ -87,7 +87,7 @@ static inline void sprite_index(Sprite *s, uint16_t ind) {
 void vdp_init();
 
 // Wait until next vblank
-void vdp_vsync();
+//void vdp_vsync();
 
 // Register stuff
 void vdp_set_display(uint8_t enabled);

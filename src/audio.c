@@ -54,8 +54,8 @@ void song_play(uint8_t id) {
         xgm_music_pause();
 	} else {
         xgm_music_pause();
-        vdp_vsync(); aftervsync();
-		vdp_vsync();
+        sys_wait_vblank(); aftervsync();
+        sys_wait_vblank();
 		xgm_music_play(bgm_info[id].song);
 	}
 	songPlaying = id;

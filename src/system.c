@@ -291,8 +291,8 @@ void system_save() {
 	// Counters to increment while reading/writing
 	uint16_t loc = loc_start;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable();
 	
 	sram_write_long(loc, STR_CSMD);					loc += 4;
@@ -341,15 +341,15 @@ void system_save() {
 	checksum_write(sram_file, TRUE);
 	
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 void system_peekdata(uint8_t index, SaveEntry *file) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable_ro();
 	
 	// Save exists
@@ -357,8 +357,8 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	if(magic != STR_CSMD) {
 		file->used = FALSE;
 		sram_disable();
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
 		return;
 	}
 	// Checksum failed?
@@ -367,8 +367,8 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 		if(!checksum_verify(index, TRUE)) {
 			file->used = FALSE;
 			sram_disable();
-            z80_resume();
-            enable_ints();
+            //z80_resume();
+            //enable_ints();
 			return;
 		}
 		// Load backup
@@ -389,8 +389,8 @@ void system_peekdata(uint8_t index, SaveEntry *file) {
 	file->weapon[4] = sram_read_byte(loc);	loc += 8;
 	
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 void system_load(uint8_t index) {
@@ -401,8 +401,8 @@ void system_load(uint8_t index) {
 	player_init();
 	sram_file = index;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable_ro();
 	
 	// Start of save data in SRAM
@@ -420,8 +420,8 @@ void system_load(uint8_t index) {
 	if(magic != STR_CSMD) {
 		// Empty
 		sram_disable();
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
 		system_new();
 		return;
 	}
@@ -460,8 +460,8 @@ void system_load(uint8_t index) {
 		flags[i] = sram_read_long(loc); loc += 4;
 	}
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 
     system_set_flag(FLAG_DISABLESAVE, iSuckAtThisGameSHIT);
 	
@@ -474,8 +474,8 @@ void system_copy(uint8_t from, uint8_t to) {
 	uint16_t loc_from_end = loc_from + SRAM_FILE_LEN;
 	uint16_t loc_to       = SRAM_FILE_START + SRAM_FILE_LEN * to;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable();
 
 	// Copy data
@@ -493,23 +493,23 @@ void system_copy(uint8_t from, uint8_t to) {
 	sram_write_long(loc_to + 4, checksum);
 
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 void system_delete(uint8_t index) {
 	uint16_t loc = SRAM_FILE_START + SRAM_FILE_LEN * index;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable();
 	
 	sram_write_long(loc, 0); // Erase the "CSMD" magic to invalidate file
 	sram_write_long(loc + SRAM_BACKUP_OFFSET, 0); // the backup too
 	
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 static void get_language() {
@@ -530,16 +530,16 @@ void system_load_config() {
 	
 	uint16_t loc = SRAM_CONFIG_POS;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable_ro();
 	
 	uint32_t magic = sram_read_long(loc); loc += 4;
 	if(magic != CFG_MAGIC) {
 		// No settings saved, keep defaults
 		sram_disable();
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
 		return;
 	}
 	
@@ -579,15 +579,15 @@ void system_load_config() {
     }
 
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 void system_save_config() {
 	uint16_t loc = SRAM_CONFIG_POS;
 
-	disable_ints();
-    z80_pause_fast();
+	//disable_ints();
+    //z80_pause_fast();
 	sram_enable();
 
 	sram_write_long(loc, CFG_MAGIC); loc += 4;
@@ -610,8 +610,8 @@ void system_save_config() {
 	sram_write_byte(loc++, cfg_60fps);
 
 	sram_disable();
-    z80_resume();
-	enable_ints();
+    //z80_resume();
+	//enable_ints();
 }
 
 // Level select is still the old style format... don't care enough to fix it

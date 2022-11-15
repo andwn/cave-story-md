@@ -99,14 +99,14 @@ void cjk_winscroll(uint16_t win_x, uint16_t win_y) {
     int16_t row2 = cjkMapRow - 1;
     if(row1 < 0) row1 += 3;
     if(row2 < 0) row2 += 3;
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
     vdp_map_hline(VDP_PLANE_W, cjkMapBuf[row1][0], win_x, win_y, 38 - win_x);
     vdp_map_hline(VDP_PLANE_W, cjkMapBuf[row1][1], win_x, win_y + 1, 38 - win_x);
     vdp_map_hline(VDP_PLANE_W, cjkMapBuf[row2][0], win_x, win_y + 2, 38 - win_x);
     vdp_map_hline(VDP_PLANE_W, cjkMapBuf[row2][1], win_x, win_y + 3, 38 - win_x);
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 }
 
 void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t backCol, uint16_t shadow) {
@@ -154,11 +154,11 @@ void cjk_draw(uint16_t plan, uint16_t chr, uint16_t x, uint16_t y, uint16_t back
         // Tiles are drawn top to bottom first, so the same code can be used for tilemaps and sprites
         for (uint16_t i = 0; i < 4; i++) {
             uint16_t index = CjkNextTile();
-            disable_ints();
-            z80_pause_fast();
+            //disable_ints();
+            //z80_pause_fast();
             dma_now(DmaVRAM, (uint32_t) cjkTileBuf[bufIndex + i], index << 5, 16, 2);
-            z80_resume();
-            enable_ints();
+            //z80_resume();
+            //enable_ints();
             uint16_t attr = TILE_ATTR(PAL0, 1, 0, 0, index);
             uint16_t xx = x + ((i & 2) >> 1);
             vdp_map_xy(plan, attr, xx, (y + (i & 1)) & 31);
@@ -177,9 +177,9 @@ void cjk_drawsprite(uint16_t offset, uint16_t chr1, uint16_t chr2) {
     cjk_draw(0, chr1, 0, 0, 0, 1);
     if(chr2) cjk_draw(0, chr2, 0, 0, 0, 1);
     // Upload tiles immediately
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
     vdp_tiles_load((uint32_t*)cjkTileBuf, index, 6);
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 }

@@ -130,8 +130,8 @@ void draw_itemmenu(uint8_t resetCursor) {
     vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(8), 38, y);
     vdp_map_xy(VDP_PLANE_W, 0, 39, y);
 
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
     // Load the 4 tiles for the selection box. Since the menu can never be brought up
     // during scripts we overwrite the face image
     vdp_tiles_load_uftc(UFTC_ItemSel, TILE_FACEINDEX, 0, 4);
@@ -179,8 +179,8 @@ void draw_itemmenu(uint8_t resetCursor) {
         //playerInventory[i] = 35; // :^)
         draw_item(i);
     }
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
     // Draw the item cursor at first index (default selection)
     if(resetCursor) {
         selectedItem = -6 + currentWeapon;
@@ -222,21 +222,21 @@ uint8_t update_pause() {
         hud_force_redraw();
         vdp_sprites_clear();
 
-        disable_ints();
-        z80_pause_fast();
+        //disable_ints();
+        //z80_pause_fast();
         vdp_tiles_load(BlankData,TILE_HUDINDEX+8,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+9,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+12,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+13,1);
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
         aftervsync();
         // Reload shared sheets we clobbered
-        disable_ints();
-        z80_pause_fast();
+        //disable_ints();
+        //z80_pause_fast();
         sheets_load_stage(stageID, TRUE, FALSE);
-        z80_resume();
-        enable_ints();
+        //z80_resume();
+        //enable_ints();
 
         selectedItem = 0;
         aftervsync();
@@ -296,11 +296,11 @@ uint8_t update_pause() {
                             // j will complete the loop if weapon is unique
                             if(j == MAX_WEAPONS) {
                                 playerWeapon[wep].type = i;
-                                disable_ints();
-                                z80_pause_fast();
+                                //disable_ints();
+                                //z80_pause_fast();
                                 draw_weapons(pal_mode ? 5 : 4);
-                                z80_resume();
-                                enable_ints();
+                                //z80_resume();
+                                //enable_ints();
                                 sound_play(SND_SWITCH_WEAPON, 5);
                                 tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                                 break;
@@ -311,11 +311,11 @@ uint8_t update_pause() {
                     if(++playerInventory[selectedItem] >= 40) {
                         playerInventory[selectedItem] = 0;
                     }
-                    disable_ints();
-                    z80_pause_fast();
+                    //disable_ints();
+                    //z80_pause_fast();
                     draw_item(selectedItem);
-                    z80_resume();
-                    enable_ints();
+                    //z80_resume();
+                    //enable_ints();
                     sound_play(SND_SWITCH_WEAPON, 5);
                     tsc_call_event(5000 + playerInventory[selectedItem]);
                 }
@@ -415,8 +415,8 @@ void do_map() {
 
     uint16_t index = TILE_SHEETINDEX;
 
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
     // Upload a completely blank & completely solid tile
     static const uint32_t blank[8] = {
             0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,
@@ -429,13 +429,13 @@ void do_map() {
     dma_now(DmaVRAM, (uint32_t)solid, index << 5, 16, 2);
     index++;
 
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 
     for(uint16_t y = 0; y < ((stageHeight+2) / 8) + ((stageHeight) % 8 > 0); y++) {
         for(uint16_t x = 0; x < ((stageWidth+2) / 8) + ((stageWidth) % 8 > 0); x++) {
-            disable_ints();
-            z80_pause_fast();
+            //disable_ints();
+            //z80_pause_fast();
             uint8_t result = gen_maptile(x*8, y*8, index);
             if(!result) {
                 vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), mapx + x, mapy + y);
@@ -443,11 +443,11 @@ void do_map() {
             } else {
                 vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, TILE_SHEETINDEX + (result - 1)), mapx + x, mapy + y);
             }
-            z80_resume();
-            enable_ints();
+            //z80_resume();
+            //enable_ints();
         }
         ready = TRUE;
-        vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
     }
 
     Sprite whereami = (Sprite) {
@@ -466,7 +466,7 @@ void do_map() {
         if((++blinkTimer & 15) == 0) whereami.attr ^= 1;
         vdp_sprite_add(&whereami);
         ready = TRUE;
-        vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
     }
     if(paused) draw_itemmenu(FALSE);
 }

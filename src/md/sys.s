@@ -59,7 +59,7 @@ RomHeader:
 		.ascii	"https://github.com/andwn/cave-story-md\0\0" /* Free space for note */
 		.ascii	"JUE             "          /* Region */
 
-/* Blank data used for variaous things */
+/* Blank data used for various things */
 
     .section .text.boot
 
@@ -147,6 +147,8 @@ RegDump:
 /* Interrupts */
 
 VerticalInt:
+        tst.w   (xgmTempo)
+        beq.s   NullInt
 		movem.l d0-d1/a0-a1,-(sp)
 		jsr     xgm_vblank_process
 		movem.l (sp)+,d0-d1/a0-a1

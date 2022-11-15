@@ -97,11 +97,11 @@ void hud_force_redraw() {
     dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
     dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
 
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
 	dma_flush();
-    z80_resume();
-    enable_ints();
+    //z80_resume();
+    //enable_ints();
 }
 
 void hud_force_energy() {

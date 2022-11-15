@@ -72,7 +72,7 @@ void credits_main() {
 	entities_clear();
 	effects_init();
 	vdp_set_window(0, 0);
-	vdp_vsync(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
+    sys_wait_vblank(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
 	
 	vdp_set_display(FALSE);
 	// Clear planes, reset palettes
@@ -124,12 +124,12 @@ void credits_main() {
         }
         if((backScroll & 15) == 0 && !scrolledBack) {
             textY++;
-            disable_ints();
-            z80_pause_fast();
+            //disable_ints();
+            //z80_pause_fast();
             //vdp_text_clear(VDP_PLANE_B, 0, textY & 31, 40);
             vdp_text_clear(VDP_PLANE_B, 0, (textY + 1) & 31, 40);
-            z80_resume();
-            enable_ints();
+            //z80_resume();
+            //enable_ints();
         }
 
 		if(waitTime) waitTime--;
@@ -203,7 +203,7 @@ void credits_main() {
                         if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
                         effects_update();
                         entities_update(TRUE);
-                        vdp_vsync(); aftervsync();
+                        sys_wait_vblank(); aftervsync();
                     }
 				    break;
 			}
@@ -228,15 +228,15 @@ void credits_main() {
 		vdp_vscroll(VDP_PLANE_B, backScroll >> 1);
 		vdp_hscroll(VDP_PLANE_A, illScroll);
 		ready = TRUE;
-		vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
     }
 }
 
 void credits_show_image(uint16_t id) {
 	if(id > 19) return;
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
-    disable_ints();
-    z80_pause_fast();
+    //disable_ints();
+    //z80_pause_fast();
 
 	vdp_set_display(FALSE);
 	vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
@@ -248,8 +248,8 @@ void credits_show_image(uint16_t id) {
 	vdp_set_display(TRUE);
     illScrolling = 8;
 
-    z80_resume();
-    enable_ints(); // Vertical int will fire immediately
+    //z80_resume();
+    //enable_ints(); // Vertical int will fire immediately
     vdp_colors(32, illustration_info[id].palette, 16);
 }
 

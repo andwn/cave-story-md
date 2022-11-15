@@ -15,12 +15,14 @@ VAR joytype,        b, 1
     .section .text
 
 FUNC joy_init
+        DisableInts
         FastPauseZ80
         move.b  #0x40,(IoCtrl1)
         move.b  #0x40,(IoCtrl2)
         move.b  #0x40,(IoData1)
         move.b  #0x40,(IoData2)
         ResumeZ80
+        EnableInts
         rts
 
 FUNC joy_update

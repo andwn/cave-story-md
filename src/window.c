@@ -125,11 +125,7 @@ void window_clear() {
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
 
-    disable_ints();
-    z80_pause_fast();
 	vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), x, y, w, 6, 0);
-    z80_resume();
-    enable_ints();
 
 	window_clear_text();
 }
@@ -229,9 +225,6 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 void window_scroll_text() {
 	// Push bottom 2 rows to top
 	for(uint8_t row = 0; row < 2; row++) {
-		if(vblank) aftervsync(); // So we don't lag the music
-		vblank = 0;
-		
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t msgTextY = (windowOnTop ? TEXT_Y1_TOP:TEXT_Y1) + row * 2;
 		for(uint8_t col = 0; col < 36 - (showingFace > 0) * 8; col++) {
@@ -339,13 +332,9 @@ uint8_t window_prompt_update() {
 }
 
 void window_draw_face() {
-    disable_ints();
-    z80_pause_fast();
 	vdp_tiles_load_uftc(face_info[showingFace].tiles, TILE_FACEINDEX, 0, 6*6);
 	vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX),
                       TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
-    z80_resume();
-    enable_ints();
 }
 
 void window_show_item(uint16_t item) {

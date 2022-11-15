@@ -249,7 +249,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, Sprite *sprCursor) {
 				sprite_index(sprCursor, TILE_SHEETINDEX+32+16);
 			    vdp_sprite_add(sprCursor);
 				ready = TRUE;
-				vdp_vsync(); aftervsync();
+                sys_wait_vblank(); aftervsync();
 			}
 			sound_play(SND_MENU_SELECT, 5);
 			switch(joystate & JOY_ANYBTN) {
@@ -339,7 +339,7 @@ void config_main() {
 		vdp_sprite_add(&sprCursor);
 		
 		ready = TRUE;
-		vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
 	}
 	
 	system_load_config();
@@ -383,7 +383,7 @@ void act_format(uint8_t page) {
 			sound_play(0xE5-0x80, 15);
 			timer = TIME_8(150);
 			while(--timer) {
-				vdp_vsync(); aftervsync();
+                sys_wait_vblank(); aftervsync();
 			}
             sys_hard_reset();
 		} else {
@@ -394,7 +394,7 @@ void act_format(uint8_t page) {
 				case 2: if((timer & 3) == 0) sound_play(0xBD-0x80, 5); break;
 			}
 		}
-		vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
 	}
 	vdp_text_clear(VDP_PLANE_A, 13, 12, 13);
 	vdp_text_clear(VDP_PLANE_A, 8, 14, 23);

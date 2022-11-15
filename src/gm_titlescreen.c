@@ -5,7 +5,7 @@
 #include "res/local.h"
 #include "effect.h"
 #include "entity.h"
-#include "md/error.h"
+#include "md/sys.h"
 #include "hud.h"
 #include "md/joy.h"
 #include "npc.h"
@@ -149,7 +149,7 @@ uint8_t titlescreen_main() {
 		if(besttime > 0 && besttime < 300000) system_draw_counter();
 		
 		ready = TRUE;
-		vdp_vsync(); aftervsync();
+        sys_wait_vblank(); aftervsync();
 	}
 	if(cheatEnable[0] && (joystate & JOY_A) && joy_pressed(btn[cfg_btn_pause])) {
 		cursor = 0;
@@ -225,7 +225,7 @@ uint8_t titlescreen_main() {
 		    vdp_sprite_add(&sprCursor);
 			
 			ready = TRUE;
-			vdp_vsync(); aftervsync();
+            sys_wait_vblank(); aftervsync();
 		}
 		vdp_font_pal(PAL0);
 		cursor += 4;

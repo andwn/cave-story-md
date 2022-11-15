@@ -15,6 +15,13 @@ static inline void sys_hard_reset() {
             "jmp    _hard_reset");
 }
 
+static inline void sys_wait_vblank() {
+    __asm__("clr.b (vblank)\n"
+            "1:\n"
+            "    tst.b (vblank)\n"
+            "    beq.s 1b");
+}
+
 static inline void enable_ints() {
     __asm__("move #0x2500,%sr");
 }

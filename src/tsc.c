@@ -1080,7 +1080,7 @@ uint8_t execute_command() {
 			stage_setup_palettes();
 			if(gamemode != GM_CREDITS) {
 				inFade = FALSE; // Unlock sprites from updating
-				vdp_vsync(); // Wait a frame to let the sprites redraw
+                sys_wait_vblank(); // Wait a frame to let the sprites redraw
 				aftervsync();
 				vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
 			} else {
@@ -1093,7 +1093,7 @@ uint8_t execute_command() {
 		{
 			args[0] = tsc_read_word();
 			if(gamemode != GM_CREDITS) {
-                vdp_vsync();
+                sys_wait_vblank();
                 player_draw();
                 entities_draw();
                 ready = TRUE;
@@ -1208,10 +1208,10 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 
 			ready = TRUE;
-			vdp_vsync(); aftervsync();
+            sys_wait_vblank(); aftervsync();
 
-            disable_ints();
-            z80_pause_fast();
+            //disable_ints();
+            //z80_pause_fast();
 			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
@@ -1257,8 +1257,8 @@ uint8_t execute_command() {
 			vdp_colors_next(48, PAL_XX, 16);
 			vdp_colors(48, PAL_XX, 16);
 			vdp_set_display(TRUE);
-            z80_resume();
-            enable_ints();
+            //z80_resume();
+            //enable_ints();
 
 			song_stop();
 			
@@ -1273,7 +1273,7 @@ uint8_t execute_command() {
 				vdp_sprites_add(island, 2);
 				system_update();
 				ready = TRUE;
-				vdp_vsync();
+                sys_wait_vblank();
 				vdp_sprites_update();
 			}
 		}

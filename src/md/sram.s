@@ -6,17 +6,23 @@ EQU SramBase,      0x200001   /* Start address for SRAM (odd bytes) */
 
 /* extern void sram_enable(); */
 FUNC sram_enable
+        DisableInts
+        FastPauseZ80
         move.b  #1,(SramControl)
         rts
 
 /* extern void sram_enable_ro(); */
 FUNC sram_enable_ro
+        DisableInts
+        FastPauseZ80
         move.b  #3,(SramControl)
         rts
 
 /* extern void sram_disable(); */
 FUNC sram_disable
         move.b  #0,(SramControl)
+        ResumeZ80
+        EnableInts
         rts
 
 /* extern uint8 sram_read_byte(uint32 offset); */

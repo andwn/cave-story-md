@@ -2,7 +2,7 @@
 
 #include "audio.h"
 #include "camera.h"
-#include "md/dma.h"
+#include "md/sys.h"
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
@@ -45,7 +45,7 @@ void splash_main() {
 		entities_update(TRUE);
 		effects_update(); // Draw Smoke
 		ready = TRUE;
-		vdp_vsync();
+		sys_wait_vblank();
 		aftervsync();
 	}
 	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
