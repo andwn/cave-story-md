@@ -131,6 +131,9 @@ TSC_STAGE:
         dc.l TSC_e_Blcn
         dc.l TSC_Clock
 
+PTRTAB_END:
+        dc.l 0xFFFFFFFF /* Sentinel value for patchrom to stop relocating */
+
 # 1bpp CJK fonts
 BIN BMP_Ascii   "res/cjk_ascii.dat"
 BIN BMP_Kanji   "res/cjk_zh_zpix.dat"

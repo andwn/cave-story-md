@@ -352,6 +352,7 @@ void ai_torokoBlock(Entity *e) {
 	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_floor(e)) {
 		sound_play(SND_BLOCK_DESTROY, 5);
 		e->type = OBJ_TOROKO_FLOWER;
+        e->onFrame = npc_info[OBJ_TOROKO_FLOWER].onFrame;
 		// Make sure we show the right graphic/palette
 		SHEET_FIND(e->sheet, SHEET_FLOWER);
 		e->vramindex = sheets[e->sheet].index;

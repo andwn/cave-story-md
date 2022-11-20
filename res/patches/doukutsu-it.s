@@ -131,6 +131,9 @@ TSC_STAGE:
         dc.l TSC_e_Blcn
         dc.l TSC_Clock
 
+PTRTAB_END:
+        dc.l 0xFFFFFFFF /* Sentinel value for patchrom to stop relocating */
+
 # Strings
 BIN STR_StageNames  "res/strings/it_stagename.dat"
 

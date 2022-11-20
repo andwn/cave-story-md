@@ -70,10 +70,12 @@ static uint8_t run_bute_defeated(Entity *e, uint16_t hp) {
 	if (e->health <= (1000 - hp)) {
 		if (e->type == OBJ_MESA) {
 			e->type = OBJ_MESA_DYING;
+            e->onFrame = npc_info[OBJ_MESA_DYING].onFrame;
 		} else {
 			e->x -= (4 << CSF);
 			e->y -= (4 << CSF);
 			e->type = OBJ_BUTE_DYING;
+            e->onFrame = npc_info[OBJ_BUTE_DYING].onFrame;
 			
 			sound_play(SND_ENEMY_SQUEAK, 5);
 			MOVE_X(-SPEED_8(0xFF));
@@ -198,6 +200,7 @@ void ai_bute_falling(Entity *e) {
 				blk(e->x, e->dir ? 6 : -6, e->y, e->y_speed > 0 ? 6 : -6) == 0x41) {
 			FACE_PLAYER(e);
 			e->type = OBJ_BUTE_FLYING;
+            e->onFrame = npc_info[OBJ_BUTE_FLYING].onFrame;
 			e->state = 10;	// trigger flight immediately
 			e->frame = 0;
 			e->x_speed = 0;

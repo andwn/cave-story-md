@@ -216,6 +216,7 @@ void ai_gaudiDying(Entity *e) {
 void ai_gaudi(Entity *e) {
 	if (e->health <= (1000 - GAUDI_HP)) {
 		e->type = OBJ_GAUDI_DYING;
+        e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;
 		e->timer = 0;
@@ -340,6 +341,7 @@ void ai_gaudiFlying(Entity *e) {
 			e->x += (2 << 9);
 		
 		e->type = OBJ_GAUDI_DYING;
+        e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;
 		e->timer = 0;

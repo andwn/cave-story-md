@@ -99,6 +99,7 @@ void ai_nothing(Entity *e) {
 		e->state = 1;
 		if(e->flags & NPC_OPTION1) {
 			e->type = OBJ_HVTRIGGER;
+            e->onFrame = npc_info[OBJ_HVTRIGGER].onFrame;
 			e->flags &= ~(NPC_OPTION1 | NPC_OPTION2);
 			e->hit_box.top = 4; e->hit_box.bottom = 0;
 			e->hit_box.left = 128; e->hit_box.right = 128;
@@ -114,9 +115,11 @@ void onspawn_trigger(Entity *e) {
 		uint16_t ex = sub_to_block(e->x);
 		if(ex <= 0) { // Left OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
+            e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags &= ~NPC_OPTION1;
 		} else if(ex >= stageWidth - 1) { // Right OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
+            e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags |= NPC_OPTION1;
 		} else { // Not OOB
 			e->hit_box.left = 2; e->hit_box.right = 2;
@@ -127,9 +130,11 @@ void onspawn_trigger(Entity *e) {
 		uint16_t ey = sub_to_block(e->y);
 		if(ey <= 0) { // Top OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
+            e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags &= ~NPC_OPTION1;
 		} else if(ey >= stageHeight - 1) { // Bottom OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
+            e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags |= NPC_OPTION1;
 		} else {  // Not OOB
 			e->hit_box.top = 4; e->hit_box.bottom = 0;

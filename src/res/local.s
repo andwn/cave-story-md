@@ -132,6 +132,9 @@ TSC_STAGE:
         dc.l TSC_e_Blcn
         dc.l TSC_Clock
 
+PTRTAB_END:
+        dc.l 0xFFFFFFFF /* Sentinel value for patchrom to stop relocating */
+
 # Scripts (TSC) - English
 # Other languages are in the res/patches directory
 # Global

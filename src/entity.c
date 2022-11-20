@@ -941,6 +941,7 @@ void entity_drop_powerup(Entity *e) {
 void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 	// Depending on the NPC type, apply default values
 	e->type = type;
+    e->onFrame = npc_info[e->type].onFrame;
 	e->enableSlopes = TRUE;
 	e->shakeWhenHit = TRUE;
 	e->tiloc = NOTILOC;
@@ -1029,7 +1030,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
             }
         }
 	}
-    e->onFrame = npc_info[e->type].onFrame;
+    //e->onFrame = npc_info[e->type].onFrame;
 	ENTITY_ONSPAWN(e);
 	if(e->alwaysActive || entity_on_screen(e)) {
 		LIST_PUSH(entityList, e);
