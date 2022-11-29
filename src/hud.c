@@ -203,7 +203,10 @@ void hud_refresh_energy(uint8_t hard) {
 	if(!hard) {
 		if(hudEnergyTimer == 0) {
             hudEnergyPixel = EnergyPixel[div10[tempMaxEnergy] - 1][tempEnergy];
-            hudEnergyDest = EnergyPixel[div10[tempMaxEnergy] - 1][playerWeapon[currentWeapon].energy];
+			if(playerWeapon[currentWeapon].type == WEAPON_SPUR)
+            	hudEnergyDest = EnergyPixel[div10[tempMaxEnergy] - 1][tempEnergy];
+			else
+				hudEnergyDest = EnergyPixel[div10[tempMaxEnergy] - 1][playerWeapon[currentWeapon].energy];
 			hudEnergyTimer = 3;
 		} else {
 			hudEnergyTimer--;
