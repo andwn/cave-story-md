@@ -8,6 +8,8 @@ It should work on any console or emulator. The main story is "finished", only li
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
+The latest builds that have not gone through as much testing are available [here](https://tenshi.skychase.zone/cs/).
+
 ## Control Defaults
 If you have a 6 button controller:
 
@@ -32,7 +34,6 @@ Note that you can't load or save the game while cheating (including the counter)
 1. Setup [marsdev](https://github.com/andwn/marsdev) and `python3`
   - Marsdev targets: `m68k-toolchain z80-tools sik-tools`
 2. Clone & `make`
-  - For Sega logo: `make sega`
   - For translations: `make translate`
 
 ## Other Information
