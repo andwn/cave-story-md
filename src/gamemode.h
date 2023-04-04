@@ -17,6 +17,9 @@ extern uint8_t gamemode;
 extern uint8_t paused;
 extern uint8_t gameFrozen;
 
+// Print version string at bottom of the screen
+void print_version(void);
+
 // Sega screen
 void splash_main();
 

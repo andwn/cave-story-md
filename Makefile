@@ -1,13 +1,10 @@
-ifeq ($(MARSDEV),)
-	ifeq ($(shell which m68k-elf-gcc),)
-		MDROOT ?= /opt/toolchains/mars/m68k-elf
-	else
-		MDROOT ?= $(subst /bin/m68k-elf-gcc,,$(shell which m68k-elf-gcc))
-	endif
-else
+ifdef MARSDEV
 	MDROOT ?= $(MARSDEV)/m68k-elf
+else ifeq ($(shell which m68k-elf-gcc),)
+	MDROOT ?= /opt/toolchains/mars/m68k-elf
+else
+	MDROOT ?= $(subst /bin/m68k-elf-gcc,,$(shell which m68k-elf-gcc))
 endif
-
 
 MDBIN  := $(MDROOT)/bin
 MDLIB  := $(MDROOT)/lib

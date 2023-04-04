@@ -1,5 +1,6 @@
 #include "types.h"
 #include "error.h"
+#include "gamemode.h"
 #include "sys.h"
 #include "vdp.h"
 #include "res/system.h"
@@ -16,9 +17,8 @@ static const char *dieMsg;
 static const char *dieFile;
 static uint16_t dieLine;
 
-static const char STR_ERROR[8][16] = {
-        "Fatal Error", "Address Error", "Bad Instruction", "Divide by Zero",
-        "Out of Memory", "Fatal Error", "Fatal Error", "Fatal Error"
+static const char STR_ERROR[5][16] = {
+        "Fatal Error", "Address Error", "Bad Instruction", "Divide by Zero", "Out of Memory"
 };
 static const char hexchars[16] = "0123456789ABCDEF";
 
@@ -46,6 +46,7 @@ void _error() {
 	// Don't completely clear the screen or rewrite the palettes
     // Only what is needed to display the error
     vdp_sprites_clear();
+    vdp_sprites_update();
     vdp_font_load(UFTC_SysFont);
     vdp_color(1, 0x000);
     vdp_color(15, 0xEEE);
@@ -68,7 +69,8 @@ void _error() {
 		default: vdp_color(0, 0x404);
 	}
 #endif
-    vdp_puts(VDP_PLANE_A, STR_ERROR[v_err_type & 7], 2, 2);
+    if(v_err_type > 4) v_err_type = 0;
+    vdp_puts(VDP_PLANE_A, STR_ERROR[v_err_type], 2, 2);
 	
 	if(v_err_type < 4) {
 		// Registers
@@ -134,11 +136,11 @@ void _error() {
 		uint8_t y = 4;
         vdp_puts(VDP_PLANE_A, dieFile, 2, y);
         vdp_puts(VDP_PLANE_A, ":", 32, y);
-        uint8_t x = 35;
-        if(dieLine > 999) vdp_map_xy(VDP_PLANE_A, TILE_FONTINDEX + '0' +  dieLine / 1000, x++, y);
-        if(dieLine > 99) vdp_map_xy(VDP_PLANE_A, TILE_FONTINDEX + '0' +  (dieLine / 100 % 10), x++, y);
-        if(dieLine > 9) vdp_map_xy(VDP_PLANE_A, TILE_FONTINDEX + '0' +  (dieLine / 10 % 10), x++, y);
-        vdp_map_xy(VDP_PLANE_A, TILE_FONTINDEX + '0' +  (dieLine % 10), x, y);
+        uint8_t x = 36;
+        do {
+            vdp_map_xy(VDP_PLANE_A, TILE_FONTINDEX + '0' + (dieLine % 10) - 0x20, x--, y);
+            dieLine /= 10;
+        } while(dieLine);
 		if(dieMsg) {
 			// Custom message
 			x = 2; y = 6;
@@ -156,9 +158,10 @@ void _error() {
 	
 	// Message
 	vdp_puts(VDP_PLANE_A, "This shouldn't happen. Report it!", 2, 23);
-    // Github link from ROM header
+    // GitHub link from ROM header
 	vdp_puts(VDP_PLANE_A, (char*) 0x1D0 /*"twitter.com/donutgrind"*/, 6, 24);
     vdp_puts(VDP_PLANE_A, "andy@skychase.zone", 6, 25);
+    print_version();
 	
 	// R.I.P
 	while(TRUE);

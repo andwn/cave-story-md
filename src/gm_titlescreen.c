@@ -35,6 +35,17 @@ static const uint16_t cheat[2][10] = {
 
 uint8_t tpal;
 
+
+void print_version(void) {
+    // Debug
+    {
+        vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 26);
+        vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 26);
+    }
+    // Release
+    //vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);
+}
+
 uint8_t titlescreen_main() {
 	gamemode = GM_TITLE;
 	
@@ -82,13 +93,8 @@ uint8_t titlescreen_main() {
 	vdp_puts(VDP_PLANE_A, "Start Game", 15, 12);
 	vdp_puts(VDP_PLANE_A, "Sound Test", 15, 16);
 	vdp_puts(VDP_PLANE_A, "Config", 15, 18);
-	// Debug
-	{
-        vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 26);
-		vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 26);
-	}
-	// Release
-	//vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);
+
+    print_version();
 	//vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, 16, TS_Title.numTile);
     vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 108);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
