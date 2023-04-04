@@ -1,26 +1,38 @@
-MARSDEV  ?= ${HOME}/mars
-MARSBIN  := $(MARSDEV)/m68k-elf/bin
-TOOLSBIN := $(MARSDEV)/bin
+ifeq ($(MARSDEV),)
+	ifeq ($(shell which m68k-elf-gcc),)
+		MDROOT ?= /opt/toolchains/mars/m68k-elf
+	else
+		MDROOT ?= $(subst /bin/m68k-elf-gcc,,$(shell which m68k-elf-gcc))
+	endif
+else
+	MDROOT ?= $(MARSDEV)/m68k-elf
+endif
 
-TARGET := doukutsu
 
-CC   := $(MARSBIN)/m68k-elf-gcc
-AS   := $(MARSBIN)/m68k-elf-as
-LD   := $(MARSBIN)/m68k-elf-ld
-NM   := $(MARSBIN)/m68k-elf-nm
-OBJC := $(MARSBIN)/m68k-elf-objcopy
+MDBIN  := $(MDROOT)/bin
+MDLIB  := $(MDROOT)/lib
+MDINC  := $(MDROOT)/include
+
+CC   := $(MDBIN)/m68k-elf-gcc
+AS   := $(MDBIN)/m68k-elf-as
+LD   := $(MDBIN)/m68k-elf-ld
+NM   := $(MDBIN)/m68k-elf-nm
+OBJC := $(MDBIN)/m68k-elf-objcopy
+
+GCCVER := $(shell $(CC) -dumpversion)
+PLUGIN  := $(MDROOT)/libexec/gcc/m68k-elf/$(GCCVER)
 
 # Z80 Assembler to build XGM driver
-ASMZ80   := $(TOOLSBIN)/sjasm
+ASMZ80   := $(MDBIN)/sjasm
 # SGDK Tools
 BINTOS   := bin/bintos
 RESCOMP  := bin/rescomp
 WAVTORAW := bin/wavtoraw
 XGMTOOL  := bin/xgmtool
 # Sik's Tools
-MDTILER  := $(TOOLSBIN)/mdtiler
-SLZ      := $(TOOLSBIN)/slz
-UFTC     := $(TOOLSBIN)/uftc
+MDTILER  := $(MDBIN)/mdtiler
+SLZ      := $(MDBIN)/slz
+UFTC     := $(MDBIN)/uftc
 # Cave Story Tools
 AIGEN    := python3 tools/aigen.py
 PATCHROM := bin/patchrom
@@ -28,14 +40,9 @@ TSCOMP   := bin/tscomp
 
 MEGALOADER := bin/megaloader
 
-# Some files needed are in a versioned directory
-GCC_VER := $(shell $(CC) -dumpversion)
-PLUGIN  := $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
-LTO_SO  := liblto_plugin.so
-
 INCS     = -Isrc -Ires
 CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
-OPTIONS  = -O3 -frename-registers -fconserve-stack
+OPTIONS  = -O3 -g3 -frename-registers -fconserve-stack
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
 ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or
 LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
@@ -110,6 +117,10 @@ ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
+TARGET := doukutsu
+
+.SECONDARY: $(TARGET)-en.elf
+
 .PHONY: all sega profile release asm debug translate prereq
 all: release
 sega: release
@@ -137,7 +148,7 @@ prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
 
 # Cross reference symbol list with the addresses displayed in the crash handler
 %.lst: %.elf
-	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n $< > $@
+	$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n $< > $@
 
 %.bin: %.elf
 	@echo "Stripping ELF header, pad to 512K"

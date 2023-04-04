@@ -17,7 +17,6 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
@@ -83,9 +82,19 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_puts(VDP_PLANE_A, stage_info[file.stage_id].name, 6, y);
 		}
 		// Play time
-		char timeStr[10] = {};
-		sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
-		vdp_puts(VDP_PLANE_A, timeStr, 26, y);
+		char timeStr[4] = "00";
+		//sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
+        timeStr[0] = '0' + div10[file.hour];
+        timeStr[1] = '0' + mod10[file.hour];
+        vdp_puts(VDP_PLANE_A, timeStr, 26, y);
+        vdp_puts(VDP_PLANE_A, ":", 28, y);
+        timeStr[0] = '0' + div10[file.minute];
+        timeStr[1] = '0' + mod10[file.minute];
+        vdp_puts(VDP_PLANE_A, timeStr, 29, y);
+        vdp_puts(VDP_PLANE_A, ":", 31, y);
+        timeStr[0] = '0' + div10[file.second];
+        timeStr[1] = '0' + mod10[file.second];
+        vdp_puts(VDP_PLANE_A, timeStr, 32, y);
 		// Health bar
 		{
 			uint32_t tileData[8][8];

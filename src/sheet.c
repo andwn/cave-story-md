@@ -8,7 +8,6 @@
 #include "player.h"
 #include "resources.h"
 #include "stage.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/vdp.h"

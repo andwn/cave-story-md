@@ -39,7 +39,7 @@ Vectors:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "          /* Console Signature */
-		.ascii	"SKYCHASE 2022.11"          /* Company & Date */
+		.ascii	"SKYCHASE 2023.04"          /* Company & Date */
 		.ascii	"Doukutsu Monogatari MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
@@ -148,10 +148,11 @@ RegDump:
 
 VerticalInt:
         tst.w   (xgmTempo)
-        beq.s   NullInt
+        beq.s   NoXGM
 		movem.l d0-d1/a0-a1,-(sp)
 		jsr     xgm_vblank_process
 		movem.l (sp)+,d0-d1/a0-a1
+NoXGM:
 		/* Set VBlank complete flag */
         move.b	#1,(vblank)
 HorizontalInt:

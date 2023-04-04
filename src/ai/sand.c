@@ -458,6 +458,7 @@ void ai_crow_with_skull(Entity *e) {
 	e->y_mark = e->y - (32<<CSF) + (rand() & 0x7FFF);
 	e->state = 101;
 	e->type = OBJ_CROW;
+    e->onFrame = &ai_crow;
 	
 	// run the ai for the normal crow for this first frame
 	ai_crow(e);
@@ -466,7 +467,7 @@ void ai_crow_with_skull(Entity *e) {
 void ai_skullhead(Entity *e) {
 	if(e->linkedEntity) {
 		e->x = e->linkedEntity->x;
-		e->y = e->linkedEntity->y + 0x2000;
+		e->y = e->linkedEntity->y + 0x2600;
 		// Carried by crow
 		switch(e->state) {
 			case 0:

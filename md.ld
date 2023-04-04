@@ -13,7 +13,7 @@ SECTIONS {
   /* With experience, one learns the standard, scientific way to compute the */
   /* proper size for a stack: Pick a size at rand and hope. --Jack Ganssle */
   __stack_top = __ram_end;
-  __stack_size = 0x800;
+  __stack_size = 0x400;
   __stack_bottom = __stack_top - __stack_size;
 
   .text ORIGIN(rom) : {

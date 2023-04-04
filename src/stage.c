@@ -16,7 +16,6 @@
 #include "resources.h"
 #include "sheet.h"
 #include "res/pal.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"

@@ -13,7 +13,6 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "md/string.h"
 #include "res/pal.h"
 #include "system.h"
 #include "tables.h"
@@ -85,9 +84,8 @@ uint8_t titlescreen_main() {
 	vdp_puts(VDP_PLANE_A, "Config", 15, 18);
 	// Debug
 	{
-		char vstr[40];
-		sprintf(vstr, "Test Build - %s", __DATE__);
-		vdp_puts(VDP_PLANE_A, vstr, 4, 26);
+        vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 26);
+		vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 26);
 	}
 	// Release
 	//vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);

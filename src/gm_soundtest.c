@@ -5,7 +5,6 @@
 #include "res/pal.h"
 #include "md/dma.h"
 #include "md/joy.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/sys.h"
@@ -14,10 +13,11 @@
 
 #include "gamemode.h"
 
+extern void print_hex(char *str, uint32_t val, uint16_t digits, uint16_t x, uint16_t y);
+
 #define DRAW_BYTE(b, x, y) { \
 	char byte[4]; \
-	sprintf(byte, "%02hX", b); \
-	vdp_puts(VDP_PLANE_A, byte, x, y); \
+	print_hex(byte, b, 2, x, y); \
 }
 
 enum { STOPPED, PLAYING, PAUSED };
@@ -54,20 +54,22 @@ void soundtest_main() {
 	vdp_map_clear(VDP_PLANE_A);
 	// Background picture
 	vdp_tiles_load_uftc(UFTC_bkSndTest, 16, 0, 208);
-	uint16_t index = pal_mode ? 0 : 80 << 1;
+	uint16_t index = pal_mode ? 0 : 80;// << 1;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		dma_now(DmaVRAM, (uint32_t) &MAP_bkSndTest[index], VDP_PLANE_B + (y << 7), 40, 2);
-		index += 40 << 1;
+		index += 40;// << 1;
 	}
 
 	draw_status(status);
 	vdp_puts(VDP_PLANE_A, "Sound Test", 15, 2);
 	vdp_puts(VDP_PLANE_A, "Track: ", 2, 8);
 	{
-		char str[32];
-		sprintf(str, "%s-Play %s-Stop %s-Quit",
-		    btnName[cfg_btn_jump], btnName[cfg_btn_shoot], btnName[cfg_btn_pause]);
-		vdp_puts(VDP_PLANE_A, str, 2, 15);
+        vdp_puts(VDP_PLANE_A, btnName[cfg_btn_jump], 2, 15);
+        vdp_puts(VDP_PLANE_A, "-Play",  4, 15);
+        vdp_puts(VDP_PLANE_A, btnName[cfg_btn_shoot], 10,15);
+        vdp_puts(VDP_PLANE_A, "-Stop",  12,15);
+        vdp_puts(VDP_PLANE_A, btnName[cfg_btn_pause], 18,15);
+        vdp_puts(VDP_PLANE_A, "-Quit",  20,15);
 	}
 	
 	DRAW_BYTE(track, 10, 8);

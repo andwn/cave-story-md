@@ -15,7 +15,6 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"

@@ -20,7 +20,6 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "md/string.h"
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"
@@ -209,11 +208,11 @@ uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
 	// First byte of TSC is the number of events
 	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled
-	if(eventCount > max) {
-		char str[40];
-		sprintf(str, "Too many events: %hu\nIn TSC at: %06lX", eventCount, (uint32_t) TSC);
-		error_other(str);
-	}
+	//if(eventCount > max) {
+	//	char str[40];
+	//	sprintf(str, "Too many events: %hu\nIn TSC at: %06lX", eventCount, (uint32_t) TSC);
+	//	error_other(str);
+	//}
 	// Step through ROM data until finding all the events
 	uint8_t loadedEvents = 0;
 	for(uint16_t i = 1; loadedEvents < eventCount; i++) {
@@ -546,11 +545,9 @@ uint8_t execute_command() {
 		case CMD_NUM: // Show number (1) in message box
 		{
 			args[0] = tsc_read_word();
-			char str[6];
-			sprintf(str, "%u", lastAmmoNum);
-			for(uint8_t i = 0; str[i] != 0 && i < 6; i++) {
-				window_draw_char(str[i]);
-			}
+            if(lastAmmoNum >= 100) window_draw_char('1');
+            if(lastAmmoNum >= 10) window_draw_char('0' + div10[lastAmmoNum]);
+            window_draw_char('0' + mod10[lastAmmoNum]);
 		}
 		break;
 		case CMD_GIT: // Display item (1) in message box
