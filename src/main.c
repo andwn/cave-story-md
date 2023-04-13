@@ -23,22 +23,14 @@ uint8_t paused;
 uint8_t gameFrozen;
 
 void aftervsync() {
-	//disable_ints();
-    //z80_pause_fast();
-
     vdp_fade_step_dma();
 	dma_flush();
 	dqueued = FALSE;
 	if(ready) {
 		if(inFade) vdp_sprites_clear();
-        //if(gamemode == GM_GAME) stage_update(); // Scrolling
 		vdp_sprites_update();
 		ready = FALSE;
 	}
-
-    //z80_resume();
-    //enable_ints();
-
     vdp_fade_step_calc();
     joy_update();
 }
@@ -54,9 +46,7 @@ void main() {
 	if(system_checkdata() != SRAM_INVALID) {
 		system_load_config();
 	}
-    //dma_clear();
 	joy_init();
-	//enable_ints();
     // Initialize time and speed tables (framerate adjusted)
     if(pal_mode) {
 		time_tab = time_tab_pal;
@@ -65,8 +55,6 @@ void main() {
         time_tab = time_tab_ntsc;
         speed_tab = speed_tab_ntsc;
 	}
-    // let's the fun go on !
-    
     sound_init();
 	
 	// Error Tests

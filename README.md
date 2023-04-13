@@ -31,8 +31,12 @@ You can still get crushed, drown and fall out of bounds.
 Note that you can't load or save the game while cheating (including the counter).
 
 ## Compilation
-1. Setup [marsdev](https://github.com/andwn/marsdev) and `python3`
-  - Marsdev targets: `m68k-toolchain z80-tools sik-tools`
+1. Dependencies: `build-essential libpng-dev python3` and one of the following toolchains:
+  - [m68k-elf-toolchain](github.com/andwn/m68k-elf-toolchain)
+  - [Marsdev](github.com/andwn/marsdev)
+  - [SGDK](github.com/Stephane-D/SGDK)
+  - [Megadev](github.com/drojaazu/megadev)
+  - [Gendev](github.com/kubilus1/gendev)
 2. Clone & `make`
   - For translations: `make translate`
 

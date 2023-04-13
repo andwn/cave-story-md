@@ -20,16 +20,16 @@ GCCVER := $(shell $(CC) -dumpversion)
 PLUGIN  := $(MDROOT)/libexec/gcc/m68k-elf/$(GCCVER)
 
 # Z80 Assembler to build XGM driver
-ASMZ80   := $(MDBIN)/sjasm
+ASMZ80   := bin/sjasm
 # SGDK Tools
 BINTOS   := bin/bintos
 RESCOMP  := bin/rescomp
 WAVTORAW := bin/wavtoraw
 XGMTOOL  := bin/xgmtool
 # Sik's Tools
-MDTILER  := $(MDBIN)/mdtiler
-SLZ      := $(MDBIN)/slz
-UFTC     := $(MDBIN)/uftc
+MDTILER  := bin/mdtiler
+SLZ      := bin/slz
+UFTC     := bin/uftc
 # Cave Story Tools
 AIGEN    := python3 tools/aigen.py
 PATCHROM := bin/patchrom
@@ -139,6 +139,7 @@ translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
 translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
 translate: $(TARGET)-ko.bin
 
+prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC)
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
 prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
 prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
@@ -170,9 +171,12 @@ prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
 %.o80: %.s80
 	$(ASMZ80) $(Z80FLAGS) $< $@ z80_xgm.lst
 
-# Old SGDK tools
+
 bin:
 	mkdir -p bin
+
+$(ASMZ80): bin
+	c++ -w -DMAX_PATH=MAXPATHLEN tools/sjasm/*.cpp -o $(ASMZ80)
 
 $(BINTOS): bin
 	cc tools/bintos.c -o $@
@@ -186,7 +190,15 @@ $(XGMTOOL): bin
 $(WAVTORAW): bin
 	cc tools/wavtoraw.c -o $@ -lm
 
-# Cave Story tools
+$(MDTILER): bin
+	cc tools/mdtiler/*.c -o $(MDTILER) -lpng
+
+$(SLZ): bin
+	cc tools/slz/*.c -o $(SLZ)
+
+$(UFTC): bin
+	cc tools/uftc/*.c -o $(UFTC)
+
 $(TSCOMP): bin
 	cc tools/tscomp/tscomp.c -o $@
 

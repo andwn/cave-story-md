@@ -1,11 +1,15 @@
 doukutsu.bin
 doukutsu-*.bin
 temp.bin
+bin/
 *.lst
 *.cpxm
+*.pal
 *.pat
 *.map
 *.tsb
+*.spr
+*.uftc
 *.pcm
 *.xgc
 *.patch
