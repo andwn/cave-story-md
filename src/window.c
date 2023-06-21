@@ -107,7 +107,7 @@ void window_open(uint8_t mode) {
     window_clear();
 	
 	if(!paused) {
-		if(showingFace > 0) window_draw_face(showingFace);
+		if(showingFace > 0) window_draw_face();
 		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 

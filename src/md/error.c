@@ -45,6 +45,8 @@ void _error() {
 	char buf[16];
 	// Don't completely clear the screen or rewrite the palettes
     // Only what is needed to display the error
+    disable_ints();
+
     vdp_sprites_clear();
     vdp_sprites_update();
     vdp_font_load(UFTC_SysFont);

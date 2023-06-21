@@ -507,23 +507,28 @@ void stage_draw_background() {
 void stage_draw_moonback() {
 	const uint16_t *topTiles, *btmTiles;
 	const uint16_t *topMap, *btmMap;
+    uint16_t topNum, btmNum;
 	if(stageBackgroundType == 1) {
 		// Moon
 		topTiles = UFTC_bkMoonTop;
 		btmTiles = UFTC_bkMoonBtm;
 		topMap = MAP_bkMoonTop;
 		btmMap = MAP_bkMoonBtm;
+        topNum = 12;
+        btmNum = 188;
 	} else {
 		// Fog
 		topTiles = UFTC_bkFogTop;
 		btmTiles = UFTC_bkFogBtm;
 		topMap = MAP_bkFogTop;
 		btmMap = MAP_bkFogBtm;
+        topNum = 5;
+        btmNum = 174;
 	}
 	// Load the top section in the designated background area
-	vdp_tiles_load_uftc(topTiles, TILE_BACKINDEX, 0, 12);
+	vdp_tiles_load_uftc(topTiles, TILE_BACKINDEX, 0, topNum);
 	// Load the clouds under the map, it just fits
-	vdp_tiles_load_uftc(btmTiles, TILE_MOONINDEX, 0, 188);
+	vdp_tiles_load_uftc(btmTiles, TILE_MOONINDEX, 0, btmNum);
     memset(hscrollTable, 0, 128);
 	//for(uint8_t y = 0; y < 60; y++) hscrollTable[y] = 0;
 	vdp_vscroll(VDP_PLANE_B, 0);
