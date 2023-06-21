@@ -10,7 +10,7 @@ git remote update && git status -uno | grep -q 'Your branch is behind' && change
 if [ $changed = 1 ]; then
     make clean
     git pull
-    make sega
+    make
     make translate
     for fn in doukutsu-*.bin; do
         today=$(date +%Y%m%d%H%M)
