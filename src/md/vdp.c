@@ -131,7 +131,22 @@ void vdp_set_window(uint8_t x, uint8_t y) {
 // Tile patterns
 
 void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
-    dma_now(DmaVRAM, (uint32_t) data, index << 5, num << 4, 2);
+    //dma_now(DmaVRAM, (uint32_t) data, index << 5, num << 4, 2);
+    uint32_t from = (uint32_t) data;
+    uint16_t to = index << 5;
+    uint16_t len1 = num << 4;
+    uint32_t end = ((from >> 1) & 0xFFFF) + len1;
+    if(end > 0x10000) {
+        // Unaligned
+        uint16_t len2 = end & 0xFFFF;
+        len1 -= len2;
+        dma_now(DmaVRAM, from, to, len1, 2);
+        from += len1 << 1;
+        to += len1 << 1;
+        dma_now(DmaVRAM, from, to, len2, 2);
+    } else {
+        dma_now(DmaVRAM, from, to, len1, 2);
+    }
 }
 
 void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_index, uint16_t num) {
