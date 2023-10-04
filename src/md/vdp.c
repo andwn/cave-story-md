@@ -57,7 +57,11 @@ void vdp_init() {
     sprite_ymax = ScreenHeight + 32;
     FPS = pal_mode ? 50 : 60;
     // Set the registers
+#ifdef SLOW_MODE
+    *vdp_ctrl_port = 0x8000;
+#else
     *vdp_ctrl_port = 0x8004;
+#endif
     *vdp_ctrl_port = 0x8174 | (pal_mode ? 8 : 0); // Enable display
     *vdp_ctrl_port = 0x8200 | (VDP_PLANE_A >> 10); // Plane A address
     *vdp_ctrl_port = 0x8300 | (VDP_PLANE_W >> 10); // Window address
@@ -141,6 +145,7 @@ void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
         uint16_t len2 = end & 0xFFFF;
         len1 -= len2;
         dma_now(DmaVRAM, from, to, len1, 2);
+        __asm__("": : :"memory");
         from += len1 << 1;
         to += len1 << 1;
         dma_now(DmaVRAM, from, to, len2, 2);

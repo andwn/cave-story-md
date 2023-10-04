@@ -122,6 +122,9 @@ TARGET := doukutsu
 all: release
 sega: release
 
+mi68: OPTIONS += -DSHOW_MYCOM_LOGO
+mi68: release
+
 profile: OPTIONS += -flto=auto -DPROFILE
 profile: release
 

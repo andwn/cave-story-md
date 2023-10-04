@@ -19,6 +19,8 @@ VAR dmabuf_end, l, 1
 
     .section .text
 
+    .ifndef SLOW_MODE
+
 /* void dma_queue(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc) */
 FUNC dma_queue
         move.l  (dmabuf_end),a0
@@ -97,3 +99,5 @@ FUNC dma_flush
 FUNC dma_clear
         move.l  #dmabuf,(dmabuf_end)
         rts
+
+    .endif

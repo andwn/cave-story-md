@@ -1,25 +1,28 @@
 #include "common.h"
 
+#include "md/joy.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+
 #include "audio.h"
 #include "camera.h"
-#include "res/local.h"
 #include "effect.h"
 #include "entity.h"
-#include "md/sys.h"
 #include "hud.h"
-#include "md/joy.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "res/pal.h"
 #include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "md/vdp.h"
 #include "weapon.h"
 #include "window.h"
+
+#include "res/local.h"
+#include "res/pal.h"
+#include "res/tiles.h"
 
 #include "gamemode.h"
 
@@ -38,12 +41,12 @@ uint8_t tpal;
 
 void print_version(void) {
     // Debug
-    {
-        vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 26);
-        vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 26);
-    }
+    //{
+    //    vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 25);
+    //    vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 25);
+    //}
     // Release
-    //vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.0 2022.02", 4, 26);
+    vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.1 2023.10", 4, 25);
 }
 
 uint8_t titlescreen_main() {
@@ -89,17 +92,27 @@ uint8_t titlescreen_main() {
 		.size = SPRITE_SIZE(2,2)
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
-	// Menu and version text
-	vdp_puts(VDP_PLANE_A, "Start Game", 15, 12);
-	vdp_puts(VDP_PLANE_A, "Sound Test", 15, 16);
-	vdp_puts(VDP_PLANE_A, "Config", 15, 18);
-
+	
     print_version();
-	//vdp_tiles_load(cfg_language == LANG_JA ? TS_J_Title.tiles : TS_Title.tiles, 16, TS_Title.numTile);
+
+	// Title & CS version
     vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 108);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
 	
+#ifdef SHOW_MYCOM_LOGO
+	const uint16_t MENUY = 15;
+	vdp_tiles_load_uftc(UFTC_MyCOM, 16+108, 0, 72);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16+108), 11, 8, 18, 4, 1);
+#else
+	const uint16_t MENUY = 12;
+	//vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
+#endif
+
+	// Menu and version text
+	vdp_puts(VDP_PLANE_A, "Start Game", 15, MENUY);
+	vdp_puts(VDP_PLANE_A, "Sound Test", 15, MENUY+4);
+	vdp_puts(VDP_PLANE_A, "Config", 15, MENUY+6);
+
 	// Set palettes last
 	vdp_colors(0, PAL_Main, 16);
 	vdp_colors(16, PAL_Main, 16);
@@ -147,7 +160,7 @@ uint8_t titlescreen_main() {
 			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
 		}
 		// Draw quote sprite at cursor position
-		sprite_pos(&sprCursor, 13*8-4, (12*8+cursor*16)-4);
+		sprite_pos(&sprCursor, 13*8-4, (MENUY*8+cursor*16)-4);
 	    vdp_sprite_add(&sprCursor);
 
 		if(besttime > 0 && besttime < 300000) system_draw_counter();

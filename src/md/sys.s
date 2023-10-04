@@ -39,7 +39,7 @@ Vectors:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "          /* Console Signature */
-		.ascii	"SKYCHASE 2023.04"          /* Company & Date */
+		.ascii	"SKYCHASE 2023.10"          /* Company & Date */
 		.ascii	"Doukutsu Monogatari MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
