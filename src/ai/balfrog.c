@@ -67,8 +67,8 @@ void onspawn_balfrog(Entity *e) {
 	
 	e->hurtSound = 52;
 	e->deathSound = 72;
-	e->hit_box = (bounding_box) { 32, 24, 32, 32 };
-	e->display_box = (bounding_box) { 40, 32, 40, 32 };
+	e->hit_box = (bounding_box) {{ 32, 24, 32, 32 }};
+	e->display_box = (bounding_box) {{ 40, 32, 40, 32 }};
 	
 	// timer2 recycled for feet's VRAM index
 	uint16_t sheet = NOSHEET;
@@ -78,8 +78,8 @@ void onspawn_balfrog(Entity *e) {
 	// setup the bounding box objects--this boss has an irregular bounding box
 	// and so we simulate that by having three invisible objects which are wired
 	// to transmit hits to the real Balfrog boss object.
-	bbox[0] = (bounding_box) { 0, 0, 0, 0 };
-	bbox[1] = (bounding_box) { 0, 0, 0, 0 };
+	bbox[0] = (bounding_box) {0};
+	bbox[1] = (bounding_box) {0};
 	bbox_attack = 5;
 	bbox_mode = BM_DISABLED;
 	bbox_damage = 0;
@@ -462,16 +462,16 @@ void place_bboxes(Entity *e) {
 	// Set coordinates for the bounding boxes
 	switch(bbox_mode) {
 		case BM_STAND:
-			bbox[0] = (bounding_box) { 16, 0, 32, 32 };	// body
-			bbox[1] = (bounding_box) { 32, 24, 0, 8 };	// head
+			bbox[0] = (bounding_box) {{ 16, 0, 32, 32 }};	// body
+			bbox[1] = (bounding_box) {{ 32, 24, 0, 8 }};	// head
 		break;
 		case BM_JUMPING:
-			bbox[0] = (bounding_box) { 24, 24, 8, 0 };// head
-			bbox[1] = (bounding_box) { 8, 4, 28, 40 };	// body
+			bbox[0] = (bounding_box) {{ 24, 24, 8, 0 }};	// head
+			bbox[1] = (bounding_box) {{ 8, 4, 28, 40 }};	// body
 		break;
 		case BM_MOUTH_OPEN:
-			bbox[0]	= (bounding_box) { 0, 8, 32, 32 };	// backside
-			bbox[1] = (bounding_box) { 32, 8, 0, 32 };	// mouth
+			bbox[0]	= (bounding_box) {{ 0, 8, 32, 32 }};	// backside
+			bbox[1] = (bounding_box) {{ 32, 8, 0, 32 }};	// mouth
 		break;
 	}
 	if(e->dir) { // Swap when facing right

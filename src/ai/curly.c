@@ -226,7 +226,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		b->y = y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 10, 6, 10, 6 };
+		b->hit_box = (bounding_box) {{ 10, 6, 10, 6 }};
 		break;
 		case UP:
 		case DOWN:
@@ -236,7 +236,7 @@ static void curly_fire_nemesis(int32_t x, int32_t y, uint8_t dir) {
 		b->y = y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
 		b->y_speed = ((b->dir&1) ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
-		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
+		b->hit_box = (bounding_box) {{ 6, 10, 6, 10 }};
 		break;
 	}
 	b->last_hit[0] = NULL;

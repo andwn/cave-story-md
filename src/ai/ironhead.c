@@ -14,8 +14,8 @@ void onspawn_ironhead(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->attack = 10;
 	e->health = 400;
-	e->hit_box = (bounding_box) { 20, 8, 20, 8 };
-	e->display_box = (bounding_box) { 28, 12, 28, 12 };
+	e->hit_box = (bounding_box) {{ 20, 8, 20, 8 }};
+	e->display_box = (bounding_box) {{ 28, 12, 28, 12 }};
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->state = IRONH_SPAWN_FISHIES;
 	// Keep track if player gets hurt
@@ -233,10 +233,10 @@ void ai_ironh_brick(Entity *e) {
 			e->vramindex = sheets[e->sheet].index + 16 + (r & 3) * 4;
 			e->sprite[0].size = SPRITE_SIZE(2, 2);
 			e->sprite[0].attr = TILE_ATTR(PAL2,0,0,0,e->vramindex);
-			e->hit_box = e->display_box = (bounding_box) { 8, 8, 8, 8 };
+			e->hit_box = e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
 			e->sheet = NOSHEET;
 		} else {
-			e->hit_box = e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->hit_box = e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 		}
 		
 		e->x_speed = SPEED_8(0xFF) + SPEED_8(rand() & 0xFF);

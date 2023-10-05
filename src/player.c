@@ -100,7 +100,7 @@ void player_init() {
 	player.damage_time = 0;
 	player.damage_value = 0;
 	player.dir = 1;
-	player.hit_box = (bounding_box){ 6, 6, 5, 8 };
+	player.hit_box = (bounding_box) {{ 6, 6, 5, 8 }};
 	player.frame = 255;
 	ledge_time = 0;
 	lookingDown = FALSE;

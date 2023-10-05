@@ -225,7 +225,7 @@ void entities_update(uint8_t draw) {
 		if(e->flags & NPC_SPECIALSOLID) {
 			// Apply x_next/y_next so player is completely outside us
 			bounding_box collision = entity_react_to_collision(&player, e);
-			collided = *((uint32_t*) &collision) > 0;
+			collided = collision.full; //*((uint32_t*) &collision) > 0;
 			player.x = player.x_next;
 			player.y = player.y_next;
 			if(collided && player.health > 0 && (e->type == OBJ_BLOCK_MOVEH || e->type == OBJ_BLOCK_MOVEV)) {
@@ -246,7 +246,7 @@ void entities_update(uint8_t draw) {
 		} // Soft solids
 		else if(e->flags & NPC_SOLID) {
 			bounding_box collision = entity_react_to_collision(&player, e);
-			collided = *((uint32_t*) &collision) > 0;
+			collided = collision.full; //*((uint32_t*) &collision) > 0;
 			// Don't apply x_next/y_next, push outward 1 pixel at a time
 			if(collision.bottom && e->y > player.y) {
 				player.y -= 1<<CSF;
@@ -741,7 +741,7 @@ uint8_t entity_overlapping(Entity *a, Entity *b) {
 }
 
 bounding_box entity_react_to_collision(Entity *a, Entity *b) {
-	bounding_box result = { 0, 0, 0, 0 };
+	bounding_box result = {0};
 	int16_t ax1 = sub_to_pixel(a->x_next) - (a->dir ? a->hit_box.right : a->hit_box.left),
 		ax2 = sub_to_pixel(a->x_next) + (a->dir ? a->hit_box.left : a->hit_box.right),
 		ay1 = sub_to_pixel(a->y_next) - a->hit_box.top,
@@ -958,8 +958,8 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags) {
 		e->display_box = npc_displaybox(type);
 	} else {
 		e->health = 1;
-		e->hit_box = (bounding_box) { 8, 8, 8, 8 };
-		e->display_box = (bounding_box) { 8, 8, 8, 8 };
+		e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+		e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
 	}
     e->flags |= flags;
 }

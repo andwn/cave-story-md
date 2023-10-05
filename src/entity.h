@@ -2,6 +2,11 @@
  * Apart from effects and player bullets, all game objects are entities.
  */
 
+#ifndef ENTITY_H
+#define ENTITY_H
+
+#include "md/types.h"
+
 enum { 
 	BOSS_NONE, BOSS_OMEGA, BOSS_BALFROG, BOSS_MONSTERX, BOSS_CORE,
 	BOSS_IRONHEAD, BOSS_SISTERS, BOSS_UNDEADCORE, BOSS_HEAVYPRESS, BOSS_BALLOS
@@ -153,3 +158,5 @@ void generic_npc_states(Entity *e);
 uint16_t entities_count_active();
 uint16_t entities_count_inactive();
 uint16_t entities_count();
+
+#endif

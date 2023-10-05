@@ -85,16 +85,16 @@ void onspawn_undead_core(Entity *e) {
 	
 	// create front & back
 	pieces[CFRONT] = entity_create(0, 0, OBJ_UDCORE_FRONT, 0);
-	pieces[CFRONT]->display_box = (bounding_box) { 32, 48, 32, 48 };
+	pieces[CFRONT]->display_box = (bounding_box) {{ 32, 48, 32, 48 }};
 	
 	pieces[CBACK] = entity_create(0, 0, OBJ_UDCORE_BACK, 0);
-	pieces[CBACK]->display_box = (bounding_box) { 40, 48, 40, 48 };
+	pieces[CBACK]->display_box = (bounding_box) {{ 40, 48, 40, 48 }};
 	
 	// create face
 	pieces[CFACE] = entity_create(0, 0, OBJ_UDCORE_FACE, 0);
 	pieces[CFACE]->state = FC_Closed;
-	pieces[CFACE]->hit_box = (bounding_box) { 24, 14, 24, 14 };
-	pieces[CFACE]->display_box = (bounding_box) { 28, 16, 28, 16 };
+	pieces[CFACE]->hit_box = (bounding_box) {{ 24, 14, 24, 14 }};
+	pieces[CFACE]->display_box = (bounding_box) {{ 28, 16, 28, 16 }};
 	pieces[CFACE]->health = 1000;
 
 	// create front rotators
@@ -643,8 +643,8 @@ int i;
 // minicores by entrance seen before fight
 void onspawn_ud_minicore(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) { 16, 16, 16, 16 };
-	e->hit_box = (bounding_box) { 10, 10, 32, 16 };
+	e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
+	e->hit_box = (bounding_box) {{ 10, 10, 32, 16 }};
 	if (e->flags & NPC_OPTION2) FadeMinicore(e);
 }
 

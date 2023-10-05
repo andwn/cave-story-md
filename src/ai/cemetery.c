@@ -93,8 +93,8 @@ void onspawn_gkeeper(Entity *e) {
 	//e->flags &= ~NPC_INVINCIBLE;
 	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	// I expanded the sprite to 32 width so hflip will be symmetrical
-	e->hit_box = (bounding_box) { 8, 11, 8, 11 };
-	e->display_box = (bounding_box) { 16, 12, 16, 12 };
+	e->hit_box = (bounding_box) {{ 8, 11, 8, 11 }};
+	e->display_box = (bounding_box) {{ 16, 12, 16, 12 }};
 	e->attack = 0;
 }
 

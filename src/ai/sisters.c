@@ -102,8 +102,8 @@ void onspawn_sisters(Entity *e) {
 void onspawn_sisters_body(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->attack = SISTERS_DAMAGE;
-	e->display_box = (bounding_box) { 16, 20, 16, 20 };
-	e->hit_box = (bounding_box) { 12, 16, 12, 16 };
+	e->display_box = (bounding_box) {{ 16, 20, 16, 20 }};
+	e->hit_box = (bounding_box) {{ 12, 16, 12, 16 }};
 }
 
 void onspawn_sisters_head(Entity *e) {
@@ -113,7 +113,7 @@ void onspawn_sisters_head(Entity *e) {
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->damage_time = 10;
 	//sound_play(e->hurtSound, 5);
-	e->display_box = (bounding_box) { 16, 16, 16, 16 };
+	e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 }
 
 void ondeath_sisters(Entity *e) {

@@ -86,83 +86,57 @@ static inline void sprite_index(Sprite *s, uint16_t ind) {
 // Set defaults, clear everything
 void vdp_init();
 
-// Wait until next vblank
-//void vdp_vsync();
-
 // Register stuff
 void vdp_set_display(uint8_t enabled);
-
 void vdp_set_autoinc(uint8_t val);
-
 void vdp_set_scrollmode(uint8_t hoz, uint8_t vert);
-
 void vdp_set_highlight(uint8_t enabled);
-
 void vdp_set_backcolor(uint8_t index);
-
 void vdp_set_window(uint8_t x, uint8_t y);
 
 // Status
 uint16_t vdp_get_palmode();
-
 uint16_t vdp_get_vblank();
 
 // Tile patterns
 void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num);
-
 void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_index, uint16_t num);
-
 //void vdp_tiles_load_from_rom(const uint32_t *data, uint16_t index, uint16_t num);
 
 // Tile maps
 void vdp_map_xy(uint16_t plan, uint16_t tile, uint16_t x, uint16_t y);
-
 void vdp_map_hline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y, uint16_t len);
-
 void vdp_map_vline(uint16_t plan, const uint16_t *tiles, uint16_t x, uint16_t y, uint16_t len);
-
 void vdp_map_fill_rect(uint16_t plan, uint16_t index, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t inc);
-
 void vdp_map_clear(uint16_t plan);
 
 // Palettes
 void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count);
-
 void vdp_color(uint16_t index, uint16_t color);
-
 void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count);
-
 void vdp_color_next(uint16_t index, uint16_t color);
-
 uint16_t vdp_fade_step_calc();
-
 void vdp_fade_step_dma();
-
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async);
 
 // Scrolling
 void vdp_hscroll(uint16_t plan, int16_t hscroll);
-
 void vdp_hscroll_tile(uint16_t plan, int16_t *hscroll);
-
 void vdp_vscroll(uint16_t plan, int16_t vscroll);
 
 // Sprites
 void vdp_sprite_add(const Sprite *spr);
-
 void vdp_sprites_add(const Sprite *spr, uint16_t num);
-
 void vdp_sprites_clear();
-
 void vdp_sprites_update();
 
 // Text
 void vdp_font_load(const uint32_t *tiles);
-
 void vdp_font_pal(uint16_t pal);
-
 void vdp_puts(uint16_t plan, const char *str, uint16_t x, uint16_t y);
-
 void vdp_text_clear(uint16_t plan, uint16_t x, uint16_t y, uint16_t len);
+
+// mdk compat
+#define md_pal_upload vdp_colors
 
 #endif

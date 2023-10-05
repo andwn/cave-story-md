@@ -461,11 +461,11 @@ enum {
 #define npc_smoke(t)	(NPC_TABLE[t + NPC_SMOKIND])
 #define npc_xp(t)     (NPC_TABLE[(t)*4 + NPC_XPIND]  + (NPC_TABLE[(t)*4 + NPC_XPIND+1] << 8))
 #define npc_attack(t) (NPC_TABLE[(t)*4 + NPC_ATKIND] + (NPC_TABLE[(t)*4 + NPC_ATKIND+1] << 8))
-#define npc_hitbox(t) ((bounding_box){                                                         \
+#define npc_hitbox(t) ((bounding_box){{                                                        \
 	NPC_TABLE[(t)*4 + NPC_HBOXIND],   NPC_TABLE[(t)*4 + NPC_HBOXIND+1],                        \
 	NPC_TABLE[(t)*4 + NPC_HBOXIND+2], NPC_TABLE[(t)*4 + NPC_HBOXIND+3]                         \
-})
-#define npc_displaybox(t) ((bounding_box){                                                     \
+}})
+#define npc_displaybox(t) ((bounding_box){{                                                    \
 	NPC_TABLE[(t)*4 + NPC_DBOXIND],   NPC_TABLE[(t)*4 + NPC_DBOXIND+1],                        \
 	NPC_TABLE[(t)*4 + NPC_DBOXIND+2], NPC_TABLE[(t)*4 + NPC_DBOXIND+3]                         \
-})
+}})

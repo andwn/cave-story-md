@@ -123,7 +123,7 @@ void onspawn_ballos(Entity *e) {
 	
 	e->hidden = TRUE;
 	
-	e->hit_box = (bounding_box) { 32, 48, 32, 48 };
+	e->hit_box = (bounding_box) {{ 32, 48, 32, 48 }};
 	
 	//objprop[main->type].hurt_sound = SND_ENEMY_HURT_COOL;
 	//main->invisible = true;
@@ -132,15 +132,15 @@ void onspawn_ballos(Entity *e) {
 	body = entity_create(0, 0, OBJ_BALLOS_BODY, 0);
 	body->health = 1000;	// not his real HP, we're using damage transfer
 	body->flags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	body->hit_box = (bounding_box) { 48, 20, 48, 36 };
-	body->display_box = (bounding_box) { 60, 60, 60, 60 };
+	body->hit_box = (bounding_box) {{ 48, 20, 48, 36 }};
+	body->display_box = (bounding_box) {{ 60, 60, 60, 60 }};
 	
 	// create eyes (open/close animations)
 	for(uint8_t i=0;i<2;i++) {
 		eye[i] = entity_create(0, 0, OBJ_BALLOS_EYE, 0);
 		eye[i]->health = 1000;
-		eye[i]->hit_box = (bounding_box) { 12, 8, 12, 8 };
-		eye[i]->display_box = (bounding_box) { 12, 8, 12, 8 };
+		eye[i]->hit_box = (bounding_box) {{ 12, 8, 12, 8 }};
+		eye[i]->display_box = (bounding_box) {{ 12, 8, 12, 8 }};
 	}
 	eye[1]->flags |= NPC_OPTION2;
 	
@@ -150,7 +150,7 @@ void onspawn_ballos(Entity *e) {
 	shield->hidden = TRUE;
 	shield->health = 1000;
 	shield->flags = (NPC_SOLID | NPC_SHOOTABLE | NPC_INVINCIBLE);
-	shield->hit_box = (bounding_box) { 32, 6, 32, 4 };
+	shield->hit_box = (bounding_box) {{ 32, 6, 32, 4 }};
 }
 
 void ondeath_ballos(Entity *e) {

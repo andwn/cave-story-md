@@ -8,8 +8,8 @@ enum Frame { STAND1, STAND2, WALK1, WALK2, PUNCH1, PUNCH2, MOUTH1,
 void onspawn_igor(Entity *e) {
 	fireatk = 0;
 	e->attack = 0;
-	e->hit_box = (bounding_box) { 10, 4, 10, 20 };
-	e->display_box = (bounding_box) { 20, 20, 20, 20 };
+	e->hit_box = (bounding_box) {{ 10, 4, 10, 20 }};
+	e->display_box = (bounding_box) {{ 20, 20, 20, 20 }};
 	//e->hit_box.bottom += 4;
 	//e->hit_box.top -= 6;
 	if(e->type == 0x59) e->frame = 7;

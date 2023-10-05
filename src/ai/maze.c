@@ -3,8 +3,8 @@
 void onspawn_block(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(8);
-	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
-	e->display_box = (bounding_box) { 16, 16, 16, 16 };
+	e->hit_box = (bounding_box) {{ 16, 16, 16, 16 }};
+	e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 	e->flags |= NPC_SPECIALSOLID | NPC_IGNORE44;
 	e->flags &= ~NPC_SOLID;
 	e->enableSlopes = FALSE;
@@ -975,8 +975,8 @@ void ai_buyobuyo_base(Entity *e) {
 		case 0:
 		{
 			// pixel does some weird stuff with the hitboxes, normalize them
-			e->hit_box = (bounding_box) { 12, 12, 12, 12 };
-			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->hit_box = (bounding_box) {{ 12, 12, 12, 12 }};
+			e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 			// OPTION2 means we are on the ceiling
 			if(e->flags & NPC_OPTION2) {
 				e->y -= 0x1000;

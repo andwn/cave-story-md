@@ -167,7 +167,7 @@ uint16_t bossHealth;
 
 uint16_t lastAmmoNum;
 
-uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max);
+uint8_t tsc_load(Event *eventList, const uint8_t *TSC);
 
 void tsc_show_teleport_menu();
 
@@ -189,22 +189,22 @@ void tsc_init() {
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
 	vdp_tiles_load_uftc(UFTC_Window, TILE_WINDOWINDEX, 0, 9);
-	tsc_load(headEvents, (const uint8_t*)TSC_GLOB[HEAD], HEAD_EVENT_COUNT);
+	tsc_load(headEvents, (const uint8_t*)TSC_GLOB[HEAD]);
 }
 
 void tsc_load_stage(uint8_t id) {
 	if(id == ID_ARMSITEM) { // Stage index 255 is a special case for the item menu
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[ARMSITEM], MAX_EVENTS);
+		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[ARMSITEM]);
 	} else if(id == ID_TELEPORT) {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[STAGESEL], MAX_EVENTS);
+		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[STAGESEL]);
 	} else if(id == ID_CREDITS) {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[CREDITS], MAX_EVENTS);
+		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[CREDITS]);
 	} else {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_STAGE[id], MAX_EVENTS);
+		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_STAGE[id]);
 	}
 }
 
-uint8_t tsc_load(Event *eventList, const uint8_t *TSC, uint8_t max) {
+uint8_t tsc_load(Event *eventList, const uint8_t *TSC) {
 	// First byte of TSC is the number of events
 	uint8_t eventCount = TSC[0];
 	// Make sure it isn't more than can be handled

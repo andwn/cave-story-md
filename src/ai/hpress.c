@@ -149,8 +149,8 @@ void onspawn_heavypress(Entity *e) {
 	e->health = 700;
 	e->event = 1000;	// defeated script
 	
-	e->hit_box =     (bounding_box) { 36, 56, 36, 56 };
-	e->display_box = (bounding_box) { 40, 60, 40, 60 };
+	e->hit_box =     (bounding_box) {{ 36, 56, 36, 56 }};
+	e->display_box = (bounding_box) {{ 40, 60, 40, 60 }};
 }
 
 void ai_heavypress(Entity *e) {
@@ -247,7 +247,7 @@ void onspawn_hpress_shield(Entity *e) {
 		e->x = bossEntity->x - pixel_to_sub(28);
 	}
 	e->y = bossEntity->y + pixel_to_sub(40);
-	e->hit_box = (bounding_box) { 16, 16, 16, 16 };
+	e->hit_box = (bounding_box) {{ 16, 16, 16, 16 }};
 	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->health = 1000;
 }

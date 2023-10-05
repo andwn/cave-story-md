@@ -48,21 +48,21 @@ void onspawn_cloud(Entity *e) {
 	uint8_t num_tiles = 16;
 	switch(e->type) {
 		case OBJ_CLOUD: 
-		e->display_box = (bounding_box) { 96, 32, 96, 32 };
+		e->display_box = (bounding_box) {{ 96, 32, 96, 32 }};
 		e->vramindex = TILE_CLOUDINDEX;
 		break;
 		case OBJ_CLOUD2: 
-		e->display_box = (bounding_box) { 48, 16, 48, 16 };
+		e->display_box = (bounding_box) {{ 48, 16, 48, 16 }};
 		e->vramindex = TILE_CLOUD2INDEX;
 		break;
 		case OBJ_CLOUD3: 
-		e->display_box = (bounding_box) { 36, 12, 36, 12 };
+		e->display_box = (bounding_box) {{ 36, 12, 36, 12 }};
 		e->vramindex = TILE_CLOUD3INDEX;
 		ssize = SPRITE_SIZE(3,3);
 		num_tiles = 9;
 		break;
 		case OBJ_CLOUD4: 
-		e->display_box = (bounding_box) { 16, 8, 16, 8 };
+		e->display_box = (bounding_box) {{ 16, 8, 16, 8 }};
 		e->vramindex = TILE_CLOUD4INDEX;
 		ssize = SPRITE_SIZE(4,2);
 		num_tiles = 8;

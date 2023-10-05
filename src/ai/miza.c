@@ -35,8 +35,8 @@ void ai_misery_frenzied(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
-			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->hit_box = (bounding_box) {{ 10, 12, 10, 12 }};
+			e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 			e->y -= 8 <<CSF;
 			
 			e->state = 1;
@@ -416,8 +416,8 @@ void ai_sue_frenzied(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			e->hit_box = (bounding_box) { 10, 12, 10, 12 };
-			e->display_box = (bounding_box) { 16, 16, 16, 16 };
+			e->hit_box = (bounding_box) {{ 10, 12, 10, 12 }};
+			e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 			e->y -= 4 <<CSF;
 			
 			e->state = 1;

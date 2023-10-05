@@ -774,8 +774,8 @@ void ai_green_devil(Entity *e) {
 void onspawn_bute_sword_red(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->y_speed = -SPEED_12(0x600);
-	e->hit_box = (bounding_box) { 6,6,6,6 };
-	e->display_box = (bounding_box) { 8,8,8,8 };
+	e->hit_box = (bounding_box) {{ 6,6,6,6 }};
+	e->display_box = (bounding_box) {{ 8,8,8,8 }};
 }
 
 void ai_bute_sword_red(Entity *e) {
@@ -823,8 +823,8 @@ void onspawn_bute_archer_red(Entity *e) {
 	e->y_mark = e->y;
 	e->x_speed = (e->x > e->x_mark) ? -0xFF - (rand() & 0x1FF) : 0xFF + (rand() & 0x1FF);
 	e->y_speed = (rand() & 0x3FF) - 0x1FF;
-	e->hit_box = (bounding_box) { 6,6,6,6 };
-	e->display_box = (bounding_box) { 12,8,12,8 };
+	e->hit_box = (bounding_box) {{ 6,6,6,6 }};
+	e->display_box = (bounding_box) {{ 12,8,12,8 }};
 }
 
 void ai_bute_archer_red(Entity *e) {

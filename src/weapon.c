@@ -130,7 +130,7 @@ void weapon_fire_snake(Weapon *w) {
 	};
 	b->damage = 2 + (b->level << 1); // 4, 6, 8
 	b->ttl = TIME_8(snake_ttl[b->level]);
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -197,21 +197,21 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
+		b->hit_box = (bounding_box) {{ 1 + b->level, 6, 1 + b->level, 6 }};
 	} else if(b->dir == DOWN) {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 1 + b->level, 6, 1 + b->level, 6 };
+		b->hit_box = (bounding_box) {{ 1 + b->level, 6, 1 + b->level, 6 }};
 	} else {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 6, 1 + b->level, 6, 1 + b->level };
+		b->hit_box = (bounding_box) {{ 6, 1 + b->level, 6, 1 + b->level }};
 	}
 	set_extent_box(b);
 }
@@ -238,7 +238,7 @@ void weapon_fire_fireball(Weapon *w) {
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(100);
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -279,7 +279,7 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(20);
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 4, 1 + w->level, 4, 1 + w->level };
+	b->hit_box = (bounding_box) {{ 4, 1 + w->level, 4, 1 + w->level }};
 	// check up/down first
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -347,7 +347,7 @@ void weapon_fire_missile(Weapon *w) {
 		b->type = w->type;
 		b->level = w->level;
 		b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2), };
-		b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+		b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 		b->sheet = w->sheet;
 		b->damage = (b->type == WEAPON_SUPERMISSILE) ? 2 : 1;
 		b->hits = 0;
@@ -410,7 +410,7 @@ void weapon_fire_bubbler(Weapon *w) {
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) { 3, 3, 3, 3 };
+	b->hit_box = (bounding_box) {{ 3, 3, 3, 3 }};
 	b->sprite = (Sprite) {
 		.size = SPRITE_SIZE(1, 1),
 		.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index)
@@ -481,19 +481,19 @@ void weapon_fire_blade(Weapon *w) {
 			b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2) };
 			b->damage = 15;
 			b->ttl = TIME_8(30);
-			b->hit_box = (bounding_box) { 6, 6, 6, 6 };
+			b->hit_box = (bounding_box) {{ 6, 6, 6, 6 }};
 			break;
 		case 2: // Large 24x24 Blade, hits 6 times
 			b->sprite = (Sprite) { .size = SPRITE_SIZE(3, 3) };
 			b->damage = 18;
 			b->ttl = TIME_8(18);
-			b->hit_box = (bounding_box) { 10, 10, 10, 10 };
+			b->hit_box = (bounding_box) {{ 10, 10, 10, 10 }};
 			break;
 		case 3: // King's Ghost, AOE on hit
 			b->sprite = (Sprite) { .size = SPRITE_SIZE(3, 3) };
 			b->damage = 1;
 			b->ttl = TIME_8(30);
-			b->hit_box = (bounding_box) { 8, 8, 8, 8 };
+			b->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
 			break;
 	}
 	b->x = player.x;
@@ -570,7 +570,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->y = player.y + pixel_to_sub(1);
 		b->x_speed = ((b->dir&1) ? speed : -speed);
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 10, 6, 10, 6 };
+		b->hit_box = (bounding_box) {{ 10, 6, 10, 6 }};
 		break;
 		case UP:
 		case DOWN:
@@ -580,7 +580,7 @@ void weapon_fire_nemesis(Weapon *w) {
 		b->y = player.y + ((b->dir&1) ? pixel_to_sub(12) : -pixel_to_sub(12));
 		b->x_speed = 0;
 		b->y_speed = ((b->dir&1) ? speed : -speed);
-		b->hit_box = (bounding_box) { 6, 10, 6, 10 };
+		b->hit_box = (bounding_box) {{ 6, 10, 6, 10 }};
 		break;
 	}
 	b->last_hit[0] = NULL;
@@ -634,21 +634,21 @@ void weapon_fire_spur(Weapon *w) {
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
+		b->hit_box = (bounding_box) {{ 2 + b->level, 6, 2 + b->level, 6 }};
 	} else if(b->dir == DOWN) {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+8);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) { 2 + b->level, 6, 2 + b->level, 6 };
+		b->hit_box = (bounding_box) {{ 2 + b->level, 6, 2 + b->level, 6 }};
 	} else {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(2);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) { 6, 2 + b->level, 6, 2 + b->level };
+		b->hit_box = (bounding_box) {{ 6, 2 + b->level, 6, 2 + b->level }};
 	}
 	spur_xmark = b->x >> CSF;
 	spur_ymark = b->y >> CSF;
@@ -1248,7 +1248,7 @@ void bullet_missile_explode(Bullet *b) {
 	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 	b->ttl = missile_settings[pal_mode||cfg_60fps][index].boom_time;
 	uint8_t size = (b->type == WEAPON_SUPERMISSILE) ? 24 : 32;
-	b->hit_box = (bounding_box) { size, size, size, size };
+	b->hit_box = (bounding_box) {{ size, size, size, size }};
 	// TODO: Explosion graphic instead of smoke
 	for(uint8_t i = 0; i < 2; i++) {
 		effect_create_smoke(sub_to_pixel(b->x) - 15 + (rand() & 31),
@@ -1336,6 +1336,6 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
     }
 	slash->type = WEAPON_BLADE_SLASH;
 	slash->ttl = 20;
-	slash->hit_box = (bounding_box) { 6, 6, 6, 6 };
+	slash->hit_box = (bounding_box) {{ 6, 6, 6, 6 }};
 	slash->sprite.size = SPRITE_SIZE(2, 2);
 }

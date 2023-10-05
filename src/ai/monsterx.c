@@ -123,14 +123,14 @@ void onspawn_x_tread(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->flags |= NPC_SPECIALSOLID;
 	SHEET_FIND(e->alt_sheet, SHEET_XTREAD);
-	e->hit_box = (bounding_box) { 32, 8, 32, 16 };
-	e->display_box = (bounding_box) { 32, 16, 32, 16 };
+	e->hit_box = (bounding_box) {{ 32, 8, 32, 16 }};
+	e->display_box = (bounding_box) {{ 32, 16, 32, 16 }};
 }
 
 // Door on the right uses the second frame
 void onspawn_x_door(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) { 24, 24, 24, 24 };
+	e->display_box = (bounding_box) {{ 24, 24, 24, 24 }};
 	if(e->flags & NPC_OPTION2) e->frame = 1;
 }
 
@@ -138,8 +138,8 @@ void onspawn_x_internals(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->flags |= NPC_SHOWDAMAGE;
 	e->hurtSound = SND_ENEMY_HURT_COOL;
-	e->hit_box = (bounding_box) { 24, 16, 24, 16 };
-	e->display_box = (bounding_box) { 36, 24, 36, 24 };
+	e->hit_box = (bounding_box) {{ 24, 16, 24, 16 }};
+	e->display_box = (bounding_box) {{ 36, 24, 36, 24 }};
 	e->health = 1000;
 }
 

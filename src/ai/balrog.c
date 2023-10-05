@@ -760,8 +760,8 @@ void ai_balrog_boss_msl(Entity *e) {
 					sound_play(SND_EM_FIRE, 5);
 					Entity *shot = entity_create(e->x, e->y, OBJ_BALROG_MISSILE, 0);
 					shot->dir = e->dir;
-					shot->hit_box = (bounding_box) { 6,6,6,6 };
-					shot->display_box = (bounding_box) { 8,8,8,8 };
+					shot->hit_box = (bounding_box) {{ 6,6,6,6 }};
+					shot->display_box = (bounding_box) {{ 8,8,8,8 }};
 					//shot->x_speed = SPEED_8(0xFF);
 					//if(shot->dir) shot->x_speed = -shot->x_speed;
 				}

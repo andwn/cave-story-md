@@ -216,8 +216,8 @@ void onspawn_teleIn(Entity *e) {
 	e->x += pixel_to_sub(16);
 	e->y += pixel_to_sub(8);
 	e->x_mark = e->x;
-	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
-	e->display_box = (bounding_box) { 8, 8, 8, 8 };
+	e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+	e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
 	if(playerEquipment & EQUIP_MIMIMASK) {
 		e->frame = 29;
 	} else {
@@ -561,12 +561,12 @@ void ai_forcefield(Entity *e) {
 
 void onspawn_segalogo(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) { 48, 16, 48, 16 };
+	e->display_box = (bounding_box) {{ 48, 16, 48, 16 }};
 }
 
 void onspawn_balrog_splash(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) { 20, 12, 20, 12 };
+	e->display_box = (bounding_box) {{ 20, 12, 20, 12 }};
 }
 
 void ai_segalogo(Entity *e) {
@@ -780,8 +780,8 @@ void ai_xp_capsule(Entity *e) {
 
 void onspawn_lightning(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->hit_box = (bounding_box) { 6, 22*8, 6, 8 };
-	e->display_box = (bounding_box) { 8, 23*8, 8, 8 };
+	e->hit_box = (bounding_box) {{ 6, 22*8, 6, 8 }};
+	e->display_box = (bounding_box) {{ 8, 23*8, 8, 8 }};
 	if(stageID != STAGE_SEAL_CHAMBER) e->x -= pixel_to_sub(32);
 	if(stageID == STAGE_GRASSTOWN_GUM) e->x -= pixel_to_sub(40); // Balrog is a bit farther away
 	SNAP_TO_GROUND(e);

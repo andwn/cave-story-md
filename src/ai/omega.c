@@ -53,8 +53,8 @@ void onspawn_omega(Entity *e) {
 	e->frame = 0;
 	e->attack = 5;
 	e->hurtSound = 52;
-	e->hit_box = (bounding_box) { 24, 20, 24, 24 };
-	e->display_box = (bounding_box) { 36, 28, 36, 28 };
+	e->hit_box = (bounding_box) {{ 24, 20, 24, 24 }};
+	e->display_box = (bounding_box) {{ 36, 28, 36, 28 }};
 	
 	e->form = 1;
 	e->endfirestate = 200;
@@ -87,8 +87,8 @@ void onspawn_omega_leg(Entity *e) {
 	if(e->flags & NPC_OPTION2) e->dir = 1;
 	//e->flags = 0;
 	e->flags = 0;
-	e->hit_box = (bounding_box) { 12, 8, 12, 8 };
-	e->display_box = (bounding_box) { 16, 16, 16, 16 };
+	e->hit_box = (bounding_box) {{ 12, 8, 12, 8 }};
+	e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 }
 
 void onspawn_omega_strut(Entity *e) {
@@ -97,8 +97,8 @@ void onspawn_omega_strut(Entity *e) {
 	if(e->flags & NPC_OPTION2) e->dir = 1;
 	//e->eflags = 0;
 	e->flags = 0;
-	e->hit_box = (bounding_box) { 8, 8, 8, 8 };
-	e->display_box = (bounding_box) { 12, 8, 12, 8 };
+	e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+	e->display_box = (bounding_box) {{ 12, 8, 12, 8 }};
 }
 
 void ai_omega(Entity *e) {

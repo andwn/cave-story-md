@@ -43,11 +43,11 @@ void ai_heli(Entity *e) {
 }
 
 void onspawn_heliblade1(Entity *e) {
-	e->display_box = (bounding_box) { 56, 8, 56, 8 };
+	e->display_box = (bounding_box) {{ 56, 8, 56, 8 }};
 }
 
 void onspawn_heliblade2(Entity *e) {
-	e->display_box = (bounding_box) { 36, 8, 36, 8 };
+	e->display_box = (bounding_box) {{ 36, 8, 36, 8 }};
 }
 
 void ai_heli_blade(Entity *e) {
@@ -273,8 +273,8 @@ void ai_falling_block(Entity *e) {
 			} else { // small Hell or Balcony block
 				e->flags |= NPC_INVINCIBLE;
 				e->state = 10; 
-				e->hit_box = (bounding_box) { 8,8,8,8 };
-				e->display_box = (bounding_box) { 8,8,8,8 };
+				e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+				e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
 				e->sheet++; // SHEET_BLOCKM always after SHEET_BLOCK
 				e->vramindex = sheets[e->sheet].index;
 				e->sprite[0].size = SPRITE_SIZE(2, 2);

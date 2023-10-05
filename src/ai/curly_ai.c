@@ -75,7 +75,7 @@ void ai_curly_ai(Entity *e) {
 			Entity *gun = entity_create(e->x, e->y, OBJ_CAI_GUN + curly_mgun, 0);
 			gun->alwaysActive = TRUE;
 			gun->linkedEntity = e;
-            gun->display_box = (bounding_box) { 12, 4, 12, 4 };
+            gun->display_box = (bounding_box) {{ 12, 4, 12, 4 }};
 			moveMeToFront = TRUE;
 		}
 		break;
@@ -302,7 +302,7 @@ static void fire_mgun(int32_t x, int32_t y, uint8_t dir) {
 	SHEET_FIND(b->sheet, SHEET_MGUN);
 	b->damage = 6;
 	b->ttl = 90;
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
@@ -340,7 +340,7 @@ static void fire_pstar(int32_t x, int32_t y, uint8_t dir) {
 	SHEET_FIND(b->sheet, SHEET_PSTAR);
 	b->damage = 4;
 	b->ttl = 35;
-	b->hit_box = (bounding_box) { 4, 4, 4, 4 };
+	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 	b->x = x;
 	b->y = y;
 	if(dir == DIR_UP) {
@@ -376,7 +376,7 @@ void ai_cai_gun(Entity *e) {
 		if(!e->animtime) {
 			sprite_vflip(&e->sprite[0], curly_look == DIR_DOWN ? 1 : 0);
 			e->sprite[0].size = SPRITE_SIZE(1, 3);
-			e->display_box = curly_mgun ? (bounding_box){ 4, 14, 4, 10 } : (bounding_box){ 4, 18, 4, 6 };
+			e->display_box = curly_mgun ? (bounding_box){{ 4, 14, 4, 10 }} : (bounding_box){{ 4, 18, 4, 6 }};
 			e->animtime = TRUE;
 			
 			dma_queue(DmaVRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96>>2)), e->vramindex << 5, 48, 2);
@@ -385,7 +385,7 @@ void ai_cai_gun(Entity *e) {
 	} else if(e->animtime) {
 		sprite_vflip(&e->sprite[0], 0);
 		e->sprite[0].size = SPRITE_SIZE(3, 1);
-		e->display_box = (bounding_box) { 12, 4, 12, 4 };
+		e->display_box = (bounding_box) {{ 12, 4, 12, 4 }};
 		e->animtime = FALSE;
 		
 		dma_queue(DmaVRAM, (uint32_t) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);

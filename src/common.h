@@ -139,11 +139,14 @@ static inline uint8_t mddir(uint8_t dir) {
 #define TILE_CLOUD4INDEX    (TILE_CLOUD3INDEX + (9*3))
 
 // Bounding box used for collision and relative area to display sprites
-typedef struct {
-	uint8_t left;
-	uint8_t top;
-	uint8_t right;
-	uint8_t bottom;
+typedef union {
+	struct {
+		uint8_t left;
+		uint8_t top;
+		uint8_t right;
+		uint8_t bottom;
+	};
+	uint32_t full;
 } bounding_box;
 // Used for player bullets to reduce cpu load
 typedef struct {

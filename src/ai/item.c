@@ -5,14 +5,14 @@
 void onspawn_energy(Entity *e) {
 	if(!(e->flags & NPC_OPTION2)) {
 		// Small energy
-		e->display_box = (bounding_box) { 4,4,4,4 };
+		e->display_box = (bounding_box) {{ 4,4,4,4 }};
 	} else {
 		// Big energy
 		SHEET_FIND(e->sheet, SHEET_ENERGYL);
 		e->vramindex = sheets[e->sheet].index;
 		e->framesize = 4;
 		e->sprite[0].size = SPRITE_SIZE(2, 2);
-		e->display_box = (bounding_box) { 8,8,8,8 };
+		e->display_box = (bounding_box) {{ 8,8,8,8 }};
 	}
 	e->left_gravity = (stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL);
 	e->x_speed = 0x1FF - (rand() & 0x3FF);

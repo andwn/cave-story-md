@@ -72,7 +72,7 @@ void onspawn_core(Entity *e) {
 	e->y_speed = 0;
 	e->health = 650;
 	e->hurtSound = SND_ENEMY_HURT_COOL;
-	e->hit_box = (bounding_box) { 3*8, 4*8, 3*8, 4*8 };
+	e->hit_box = (bounding_box) {{ 3*8, 4*8, 3*8, 4*8 }};
 	
 	// spawn all the pieces in the correct z-order
 	pieces[3] = entity_create(0, 0, OBJ_MINICORE, 0);
@@ -86,14 +86,14 @@ void onspawn_core(Entity *e) {
 	// set up the front piece
 	pieces[CFRONT]->linkedEntity = e;
 	pieces[CFRONT]->flags = NPC_SHOOTABLE | NPC_INVINCIBLE;
-	pieces[CFRONT]->hit_box = (bounding_box) { 3*8+4, 4*8+4, 3*8+4, 4*8+4 };
-	pieces[CFRONT]->display_box = (bounding_box) { 4*8, 6*8, 4*8, 6*8 };
+	pieces[CFRONT]->hit_box = (bounding_box) {{ 3*8+4, 4*8+4, 3*8+4, 4*8+4 }};
+	pieces[CFRONT]->display_box = (bounding_box) {{ 4*8, 6*8, 4*8, 6*8 }};
 	
 	// set up our back piece
 	pieces[CBACK]->linkedEntity = e;
 	pieces[CBACK]->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
-	pieces[CBACK]->hit_box = (bounding_box) { 6*8, 5*8, 2*8, 5*8 };
-	pieces[CBACK]->display_box = (bounding_box) { 6*8, 6*8, 6*8, 6*8 };
+	pieces[CBACK]->hit_box = (bounding_box) {{ 6*8, 5*8, 2*8, 5*8 }};
+	pieces[CBACK]->display_box = (bounding_box) {{ 6*8, 6*8, 6*8, 6*8 }};
 	
 	// set the positions of all the minicores
 	pieces[0]->x = (e->x - 0x1000);
@@ -116,7 +116,7 @@ void onspawn_core(Entity *e) {
 		pieces[i]->health = 1000;
 		pieces[i]->state = MC_SLEEP;
 		pieces[i]->hurtSound = SND_ENEMY_HURT_BIG;
-		pieces[i]->hit_box = (bounding_box) { 24, 12, 0, 12 };
+		pieces[i]->hit_box = (bounding_box) {{ 24, 12, 0, 12 }};
 	}
 	
 	// Upload some tile data for the minicore sprites into the background section
