@@ -31,7 +31,7 @@ MDTILER  := bin/mdtiler
 SLZ      := bin/slz
 UFTC     := bin/uftc
 # Cave Story Tools
-AIGEN    := python3 tools/aigen.py
+HPPGEN   := bin/hppgen
 PATCHROM := bin/patchrom
 TSCOMP   := bin/tscomp
 
@@ -39,7 +39,7 @@ MEGALOADER := bin/megaloader
 
 INCS     = -Isrc -Ires
 CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
-OPTIONS  = -O3 -g3 -frename-registers -fconserve-stack
+OPTIONS  = -O2 -frename-registers -fconserve-stack
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
 ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or
 LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
@@ -142,7 +142,7 @@ translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
 translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
 translate: $(TARGET)-ko.bin
 
-prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC)
+prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC) $(HPPGEN)
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
 prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
 prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
@@ -210,6 +210,9 @@ $(PATCHROM): bin
 
 $(MEGALOADER): bin
 	cc tools/megaloader.c -o $@
+
+$(HPPGEN): bin
+	cc tools/hppgen.c -o $@
 
 # For asm target
 asm-dir:
@@ -292,9 +295,12 @@ $(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
 .PHONY: head-gen flash clean
+
+AICS  = $(wildcard src/ai/*.c)
+
 head-gen:
 	rm -f src/ai_gen.h
-	$(AIGEN) src/ai/ src/ai_gen.h
+	$(HPPGEN) src/ai_gen.h $(AICS)
 
 flash: $(MEGALOADER)
 	sudo $(MEGALOADER) md $(TARGET)-en.bin /dev/ttyUSB0 2> /dev/null

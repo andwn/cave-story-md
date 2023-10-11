@@ -45,13 +45,16 @@ When there are few enough bugs that it doesn't bother me anymore.
 No. 
 
 ### Can I make carts?
-Feel free to make carts for yourself or friends, but don't sell them.
+Feel free to make carts for yourself or friends, but *do not sell them*.
+
+### But I saw someone else selling carts
+It's a scam. Demand your money back.
 
 ### Is this moddable?
 ![you're gonna have a bad time.](badtime.png)
 
 ### Can I use your code in my commercial game?
-Yes. Check the license.
+Yes, just give credit. Check the [license](LICENSE.md).
 
 ### I have an idea for a Genesis game can you code it for free?
 No.

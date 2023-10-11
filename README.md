@@ -2,6 +2,8 @@
 ![Comparison Shot](doc/screen01.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
+[日本語はこちら](README-ja.md)
+
 This is a rewrite/port of the popular freeware game Cave Story for Sega Mega Drive/Genesis.
 It should work on any console or emulator. The main story is "finished", only little things and bugfixes remain.
 
@@ -10,7 +12,7 @@ It should work on any console or emulator. The main story is "finished", only li
 
 The latest builds that have not gone through as much testing are available [here](https://tenshi.skychase.zone/cs/).
 
-## Control Defaults
+## Default Controls
 If you have a 6 button controller:
 
 - `C` - Jump, confirm
@@ -41,7 +43,13 @@ Note that you can't load or save the game while cheating (including the counter)
 - [VRAM Layout](doc/VRAM.md)
 
 ## License
-Various, details [here](doc/LICENSE.md)
+- Source Code: MIT
+- Art and Story: Copyright Studio Pixel
+- Music Covers: CC-BY-NC
+
+Further details in [LICENSE.md](doc/LICENSE.md).
+
+tl;dr - Use the code however you like, but the assets and game itself can not be sold or used in commercial works.
 
 ## Thanks
 I did not know how to sort this list, so I did it alphabetically.

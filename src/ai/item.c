@@ -20,12 +20,14 @@ void onspawn_energy(Entity *e) {
 }
 
 static uint8_t collide_player(Entity *e) {
-	uint16_t px = player.x >> CSF;
-	uint16_t py = player.y >> CSF;
-	uint16_t ex = e->x >> CSF;
-	uint16_t ey = e->y >> CSF;
-	uint16_t box = 7 + e->display_box.left;
-	return px > ex - box && px < ex + box && py > ey - box && py < ey + box;
+	//uint16_t px = player.x >> CSF;
+	//uint16_t py = player.y >> CSF;
+	//uint16_t ex = e->x >> CSF;
+	//uint16_t ey = e->y >> CSF;
+	int32_t box = 7 + e->display_box.left;
+	box <<= CSF;
+	//return px > ex - box && px < ex + box && py > ey - box && py < ey + box;
+	return player.x > e->x - box && player.x < e->x + box && player.y > e->y - box && player.y < e->y + box;
 }
 
 void ai_energy(Entity *e) {
@@ -65,7 +67,7 @@ void ai_energy(Entity *e) {
 		e->x += e->x_speed;
 		e->y += e->y_speed;
 		if(e->left_gravity) {
-			e->x_speed -= SPEED_8(6);
+			e->x_speed -= SPEED_8(8);
 			if(blk(e->x, -4, e->y, 0) == 0x41) e->x_speed = SPEED_8(0xFF);
 		} else {
 			if(e->y_speed < SPEED_10(0x3E0)) e->y_speed += SPEED_8(0x40);
