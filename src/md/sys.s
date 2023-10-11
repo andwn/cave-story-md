@@ -39,8 +39,10 @@ Vectors:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "          /* Console Signature */
+	.globl Date
+Date:
 		.ascii	"SKYCHASE 2023.10"          /* Company & Date */
-		.ascii	"Doukutsu Monogatari MD  "  /* Domestic (JP) Title */
+		.ascii	"DOUKUTSU MONOGATARI MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
 		.ascii  "                        "
@@ -55,7 +57,11 @@ RomHeader:
 		dc.w	0xF820                      /* SRAM Type */
 		dc.l	SramBase                    /* SRAM Start Address */
 		dc.l	SramBase+0xFFFE             /* SRAM End Address */
-		.ascii	"            "              /* Modem? */
+	.globl Version
+Version:
+		.ascii	"Ver 0.8.1\0  "              /* Modem? */
+	.globl Homepage
+Homepage:
 		.ascii	"https://github.com/andwn/cave-story-md\0\0" /* Free space for note */
 		.ascii	"JUE             "          /* Region */
 
@@ -76,8 +82,20 @@ _start:
         DisableInts
 		move.b	(ConsoleVer),d0         /* Check console version */
         andi.b  #0x0F,d0                /* Version 0 = skip TMSS */
-        beq.s   _hard_reset
+        beq.s   SkipTMSS
         move.l  (RomHeader),(TMSS)      /* Write 'SEGA' to TMSS register */
+SkipTMSS:
+		/* Shut up PSG */
+		lea		(0xC00011), a0
+		move.b	#0x9F, d0  /* Channel 0 att 15 */
+		move.b	#0x20, d1  /* Channel offset */
+		move.b	d0, (a0)
+		add.b	d1, d0
+		move.b	d0, (a0)
+		add.b	d1, d0
+		move.b	d0, (a0)
+		add.b	d1, d0
+		move.b	d0, (a0)
     .globl 	_hard_reset
 _hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
         lea     __text_end,a0           /* Start of .data segment init values in ROM */

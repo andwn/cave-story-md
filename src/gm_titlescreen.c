@@ -38,15 +38,17 @@ static const uint16_t cheat[2][10] = {
 
 uint8_t tpal;
 
+#define DATE_LEN	7
+#define VER_LEN		10
+#define PAGE_LEN	32
+extern const char Date[];
+extern const char Version[];
+extern const char Homepage[];
 
 void print_version(void) {
-    // Debug
-    //{
-    //    vdp_puts(VDP_PLANE_A, "Test Build - ", 4, 25);
-    //    vdp_puts(VDP_PLANE_A, __DATE__, 4+13, 25);
-    //}
-    // Release
-    vdp_puts(VDP_PLANE_A, "Mega Drive Version 0.8.1 2023.10", 4, 25);
+    vdp_nputs(VDP_PLANE_A, Version,  5, 23, VER_LEN);
+	vdp_nputs(VDP_PLANE_A, Date + 9, 28, 23, DATE_LEN);
+	vdp_nputs(VDP_PLANE_A, Homepage + 8, 5, 25, PAGE_LEN);
 }
 
 uint8_t titlescreen_main() {

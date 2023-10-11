@@ -158,11 +158,6 @@ void _error() {
 		}
 	}
 	
-	// Message
-	vdp_puts(VDP_PLANE_A, "This shouldn't happen. Report it!", 2, 23);
-    // GitHub link from ROM header
-	vdp_puts(VDP_PLANE_A, (char*) 0x1D0 /*"twitter.com/donutgrind"*/, 6, 24);
-    vdp_puts(VDP_PLANE_A, "andy@skychase.zone", 6, 25);
     print_version();
 	
 	// R.I.P

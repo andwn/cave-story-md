@@ -347,23 +347,22 @@ void vdp_font_pal(uint16_t pal) {
     font_pal = pal;
 }
 
-void vdp_puts(uint16_t plan, const char *str, uint16_t x, uint16_t y) {
+void vdp_nputs(uint16_t plan, const char *str, uint16_t x, uint16_t y, uint16_t maxlen) {
     uint32_t addr = plan + ((x + (y << PLAN_WIDTH_SFT)) << 1);
     *vdp_ctrl_wide = ((0x4000 + ((addr) & 0x3FFF)) << 16) + (((addr) >> 14) | 0x00);
-    for (uint16_t i = 0; i < 64 && *str; ++i) {
+    for (uint16_t i = 0; i < maxlen && *str; ++i) {
         // Wrap around the plane, don't fall to next line
         if (i + x == 64) {
             addr -= x << 1;
             *vdp_ctrl_wide = ((0x4000 + ((addr) & 0x3FFF)) << 16) + (((addr) >> 14) | 0x00);
         }
-        uint16_t c = (uint8_t) *str++;
-        if (c == 1) { // Accent chars
-            c = (VDP_PLANE_W >> 5) - 1 + ((*str++) << 2);
-        } else {
-            c = TILE_FONTINDEX + c - 0x20;
-        }
-        uint16_t attr = TILE_ATTR(font_pal, 1, 0, 0, c);
-        *vdp_data_port = attr;
+		uint16_t c = (unsigned) *str++;
+		if (c == 1) { // Accent chars
+			c = (VDP_PLANE_W >> 5) - 1 + ((*str++) << 2);
+		} else {
+			c = TILE_FONTINDEX + c - 0x20;
+		}
+        *vdp_data_port = TILE_ATTR(font_pal, 1, 0, 0, c);
     }
 }
 
