@@ -41,15 +41,15 @@ enum BBox_States {
 #define bbox_attack			curly_target_x
 #define bbox_mode			curly_target_y
 
-bounding_box bbox[2];
+static bounding_box bbox[2];
 
-void place_bboxes(Entity *e);
-void set_jump_sprite(Entity *e, uint8_t enable);
-uint8_t player_bbox_collide(Entity *e, uint8_t index);
-Bullet* bullets_bbox_collide(Entity *e, uint8_t index);
-void deflect_bullet(Bullet *b);
-void hurt_by_bullet(Entity *e, Bullet *b);
-void spawn_frogs(uint16_t objtype, uint8_t count);
+static void place_bboxes(Entity *e);
+static void set_jump_sprite(Entity *e, uint8_t enable);
+static uint8_t player_bbox_collide(Entity *e, uint8_t index);
+static Bullet* bullets_bbox_collide(Entity *e, uint8_t index);
+static void deflect_bullet(Bullet *b);
+static void hurt_by_bullet(Entity *e, Bullet *b);
+static void spawn_frogs(uint16_t objtype, uint8_t count);
 
 void onspawn_balfrog(Entity *e) {
 	e->x = FROG_START_X;
@@ -458,7 +458,7 @@ void ondeath_balfrog(Entity *e) {
 	tsc_call_event(e->event); // Boss defeated event
 }
 
-void place_bboxes(Entity *e) {
+static void place_bboxes(Entity *e) {
 	// Set coordinates for the bounding boxes
 	switch(bbox_mode) {
 		case BM_STAND:
@@ -486,7 +486,7 @@ void place_bboxes(Entity *e) {
 }
 
 // shake loose frogs from the ceiling
-void spawn_frogs(uint16_t objtype, uint8_t count) {
+static void spawn_frogs(uint16_t objtype, uint8_t count) {
 	for(int i=0;i<count;i++) {
 		entity_create((pixel_to_sub(7 + (rand() & 31))) << 3,
 					  block_to_sub(1 + (rand() & 3)), objtype, NPC_OPTION1);
@@ -494,7 +494,7 @@ void spawn_frogs(uint16_t objtype, uint8_t count) {
 }
 
 // switches on and off the jumping frame/sprite
-void set_jump_sprite(Entity *e, uint8_t enable) {
+static void set_jump_sprite(Entity *e, uint8_t enable) {
 	if(enable) {
 		e->jump_time = TRUE;
 		e->display_box.top += 8;
@@ -506,7 +506,7 @@ void set_jump_sprite(Entity *e, uint8_t enable) {
 	}
 }
 
-uint8_t player_bbox_collide(Entity *e, uint8_t index) {
+static uint8_t player_bbox_collide(Entity *e, uint8_t index) {
 	int16_t ax1 = sub_to_pixel(player.x) - (player.dir ? player.hit_box.right : player.hit_box.left),
 		ax2 = sub_to_pixel(player.x) + (player.dir ? player.hit_box.left : player.hit_box.right),
 		ay1 = sub_to_pixel(player.y) - player.hit_box.top,
@@ -518,7 +518,7 @@ uint8_t player_bbox_collide(Entity *e, uint8_t index) {
 	return (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1);
 }
 
-Bullet* bullets_bbox_collide(Entity *e, uint8_t index) {
+static Bullet* bullets_bbox_collide(Entity *e, uint8_t index) {
 	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl == 0) continue;
 		bounding_box bb = playerBullet[i].hit_box;
@@ -535,12 +535,12 @@ Bullet* bullets_bbox_collide(Entity *e, uint8_t index) {
 	return NULL;
 }
 
-void deflect_bullet(Bullet *b) {
+static void deflect_bullet(Bullet *b) {
 	b->ttl = 0;
 	sound_play(SND_TINK, 5);
 }
 
-void hurt_by_bullet(Entity *e, Bullet *b) {
+static void hurt_by_bullet(Entity *e, Bullet *b) {
 	bbox_damage += b->damage;
 	// Copy pasting is bad but i do it anyway
 	// Destroy the bullet, or if it is a missile make it explode

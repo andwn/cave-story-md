@@ -2,13 +2,13 @@
  * hppgen - Generates a header for a collection of C/C++ files
  *   As this program is currently only meant to generate function definitions
  *   for the NPC act/ai code in CSMD, it does not contain a full C parser.
- *   So don't use it in other projects unless you plan on adding that stuff.
+ *   So don't use it in other projects unless you plan on messing with that.
  *
  * Compile:
- * gcc hppgen.c -o hppgen
+ * cc hppgen.c -o hppgen
  *
  * Usage:
- * ./hppgen <out h file> <in c file> [more c files]
+ * ./hppgen <out h file> <in c file> [more c files...]
  ******************************************************************************/
 
 #include <ctype.h>
@@ -72,6 +72,7 @@ enum {
     PS_DECL,
     PS_FUNC_PARAMS,
     PS_IGNORE,
+    PS_ASSIGNMENT,
 };
 
 #define STORAGE_SIZE 0x40000 // 256K
@@ -100,7 +101,7 @@ char* slurp(const char* fn, size_t* size) {
 }
 
 int main(int argc,char *argv[]) {
-    if (argc != 3) {
+    if (argc < 3) {
         puts("Usage: hppgen <out h file> <in c file> [more c files...]");
         return EXIT_FAILURE;
     }
@@ -124,6 +125,8 @@ int main(int argc,char *argv[]) {
         size_t size;
         char *srcfile = slurp(argv[i], &size);
         if(!srcfile) return EXIT_FAILURE;
+
+        fprintf(outfile, "/* ---- %s ---- */\n", argv[i]);
         
         stb_lexer lex;
         stb_c_lexer_init(&lex, srcfile, srcfile + size, lexer_storage, STORAGE_SIZE);
@@ -154,54 +157,69 @@ int main(int argc,char *argv[]) {
                 state = PS_DECL;
                 continue;
             }
+            if(state == PS_IGNORE) continue;
+
+            switch(lex.token) {
+                case '*': // Pointers leave the type name in lex.string
+                strcat(def_line, " *");
+                continue;
+                case '[': // Array brackets
+                strcat(def_line, "[");
+                continue;
+                case ']': // Array brackets
+                strcat(def_line, "]");
+                continue;
+                case ',': // Another parameter, or declaration
+                strcat(def_line, ", ");
+                continue;
+            }
+            if(state == PS_ASSIGNMENT) continue;
 
             switch(state) {
-                case PS_IGNORE: continue;
-
                 case PS_DECL: {
                     switch(lex.token) {
-                        default:
-                        if(def_line[0]) {
+                        case CLEX_id: // Identifier
+                        if(strcmp(lex.string, "static") == 0 || strcmp(lex.string, "extern") == 0) {
+                            def_line[0] = 0;
+                            state = PS_IGNORE;
+                            break;
+                        }
+                        if(def_line[0] && isalnum(def_line[strlen(def_line)-1])) {
                             strcat(def_line, " ");
                         }
                         strcat(def_line, lex.string);
-                        break;
-                        case 's': // Don't forward declare if static
-                        if(strcmp(lex.string, "static")) {
-                            state = PS_IGNORE;
-                        }
                         break;
                         case '(': // Start of function parameters
                         strcat(def_line, "(");
                         state = PS_FUNC_PARAMS;
                         break;
-                        case '=': // Assignment, put in the left side as extern
-                        fprintf(outfile, "extern %s;\n", def_line);
-                        def_line[0] = 0;
-                        state = PS_IGNORE;
+                        case '=': // Assignment, parse left side only
+                        state = PS_ASSIGNMENT;
+                        break;
+                        case CLEX_intlit: // Integer literal
+                        {
+                            char num[16];
+                            snprintf(num, 16, "%ld", lex.int_number);
+                            strcat(def_line, num);
+                        }
                         break;
                     }
                 } break;
 
                 case PS_FUNC_PARAMS: {
                     switch(lex.token) {
-                        default:
+                        case CLEX_id: // Identifier
                         if(isalnum(def_line[strlen(def_line)-1])) {
                             strcat(def_line, " ");
                         }
                         strcat(def_line, lex.string);
                         break;
-                        case '*': // Pointers leave the type name in lex.string
-                        strcat(def_line, " *");
-                        break;
-                        case ',': // Another parameter
-                        strcat(def_line, ", ");
-                        break;
+                        
                         case ')': // All done?
                         strcat(def_line, ")");
                         if(paren_level == 0) {
                             if(def_line[strlen(def_line)-1] == '(') {
-                                strcat(def_line, "void");
+                                strcat(def_line, "void"); // Moffitt might whine if I don't do this
                             }
                             fprintf(outfile, "%s;\n", def_line);
                             def_line[0] = 0;
@@ -213,9 +231,10 @@ int main(int argc,char *argv[]) {
             }
         }
         free(srcfile);
+        fprintf(outfile, "\n");
     }
     
-    fprintf(outfile, "\n#endif // %s\n", guard);
+    fprintf(outfile, "#endif // %s\n", guard);
     fclose(outfile);
     return EXIT_SUCCESS;
 }

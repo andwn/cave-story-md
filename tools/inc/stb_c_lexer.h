@@ -541,8 +541,15 @@ int stb_c_lexer_get_token(stb_lexer *lexer)
          // be at the start. (because this parser doesn't otherwise
          // check for line breaks!)
          if (p != lexer->eof && p[0] == '#') {
-            while (p != lexer->eof && *p != '\r' && *p != '\n')
-               ++p;
+            while (p != lexer->eof && *p != '\r' && *p != '\n') {
+               // NOTE(andwn): Added extra logic to ignore next line after backslash
+               if(*p == '\\') {
+                  while (++p != lexer->eof && (*p == '\r' || *p == '\n'));
+               } else {
+                  ++p;
+               }
+            }
+               
             continue;
          }
       #endif
