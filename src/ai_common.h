@@ -6,7 +6,6 @@
 #include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "md/error.h"
 #include "hud.h"
 #include "md/joy.h"
 #include "math.h"

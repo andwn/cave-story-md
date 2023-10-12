@@ -4,7 +4,6 @@
 #include "camera.h"
 #include "md/dma.h"
 #include "effect.h"
-#include "md/error.h"
 #include "md/joy.h"
 #include "math.h"
 #include "md/stdlib.h"
@@ -968,7 +967,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = malloc(sizeof(Entity) + sizeof(Sprite) * sprite_count);
-	if(!e) error_oom();
+	//if(!e) error_oom();
 	memset(e, 0, sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	
 	e->x = x;

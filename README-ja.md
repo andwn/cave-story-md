@@ -38,7 +38,7 @@
 コードを入力した際は、セーブができません。ご注意ください。
 
 ## ビルド方
-1. 依存なソフトウェア: `build-essential libpng-dev python3` 
+1. 依存なソフトウェア: `build-essential libpng-dev` 
 2. GCCツールチェインも必要、例えば [Marsdev](http://github.com/andwn/marsdev)。
 3. `git clone https://github.com/andwn/cave-story-md`
 4. `cd cave-story-md` と `make`

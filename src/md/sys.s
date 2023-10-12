@@ -1,10 +1,10 @@
-    .include "macros.i"
+	.include "macros.i"
 
 /* TMSS */
 EQU ConsoleVer, 0xA10001   /* Console Version */
 EQU TMSS,       0xA14000   /* TMSS Register */
 
-    .section .bss.system
+	.section .bss.system
 
 /* Error Handling Stuff */
 VAR v_err_reg,  l, 16
@@ -20,12 +20,12 @@ VAR vblank,     b, 1
 
 /* CPU Vectors */
 
-    .section .text.vectors
+	.section .text.vectors
 
 Vectors:
-        dc.l    __stack_top, _start
-        dc.l    BusError, AddressError, IllegalInst, ZeroDivide
-    .rept 22
+		dc.l    __stack_top, _start
+		dc.l    BusError, AddressError, IllegalInst, ZeroDivide
+	.rept 22
 		dc.l	NullInt
 	.endr
 		dc.l	HorizontalInt, NullInt, VerticalInt, NullInt
@@ -35,10 +35,10 @@ Vectors:
 
 /* ROM Header */
 
-    .section .text.header
+	.section .text.header
 
 RomHeader:
-        .ascii	"SEGA MEGA DRIVE "          /* Console Signature */
+		.ascii	"SEGA MEGA DRIVE "          /* Console Signature */
 	.globl Date
 Date:
 		.ascii	"SKYCHASE 2023.10"          /* Company & Date */
@@ -67,23 +67,23 @@ Homepage:
 
 /* Blank data used for various things */
 
-    .section .text.boot
+	.section .text.boot
 
-    .globl BlankData
-    .align 256
+	.globl BlankData
+	.align 256
 BlankData:
-    .rept 16
-        dc.l    0, 0, 0, 0
-    .endr
+	.rept 16
+		dc.l    0, 0, 0, 0
+	.endr
 
 /* System boot */
 
 _start:
-        DisableInts
+		DisableInts
 		move.b	(ConsoleVer),d0         /* Check console version */
-        andi.b  #0x0F,d0                /* Version 0 = skip TMSS */
-        beq.s   SkipTMSS
-        move.l  (RomHeader),(TMSS)      /* Write 'SEGA' to TMSS register */
+		andi.b  #0x0F,d0                /* Version 0 = skip TMSS */
+		beq.s   SkipTMSS
+		move.l  (RomHeader),(TMSS)      /* Write 'SEGA' to TMSS register */
 SkipTMSS:
 		/* Shut up PSG */
 		lea		(0xC00011), a0
@@ -96,83 +96,367 @@ SkipTMSS:
 		move.b	d0, (a0)
 		add.b	d1, d0
 		move.b	d0, (a0)
-    .globl 	_hard_reset
+	.globl 	_hard_reset
 _hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
-        lea     __text_end,a0           /* Start of .data segment init values in ROM */
-        lea     __data_start,a1         /* Start of .data segment in RAM */
-        move.l  #__data_size,d0         /* Size of .data segment */
-        lsr.l   #1,d0
-        beq     NoCopy
-        subq.w  #1,d0                   /* sub extra iteration */
+		lea     __text_end,a0           /* Start of .data segment init values in ROM */
+		lea     __data_start,a1         /* Start of .data segment in RAM */
+		move.l  #__data_size,d0         /* Size of .data segment */
+		lsr.l   #1,d0
+		beq     NoCopy
+		subq.w  #1,d0                   /* sub extra iteration */
 CopyVar:
-        move.w  (a0)+,(a1)+             /* Copy initialized data to RAM */
-        dbra    d0,CopyVar
+		move.w  (a0)+,(a1)+             /* Copy initialized data to RAM */
+		dbra    d0,CopyVar
 NoCopy:
-        /* .bss segment is directly after .data, so a1 is already there */
-        move.l  #__bss_size,d0          /* Size of .bss segment in RAM */
-        lsr.l   #1,d0
-        beq     NoZero
-        moveq   #0,d1
-        subq.w  #1,d0                   /* sub extra iteration */
+		/* .bss segment is directly after .data, so a1 is already there */
+		move.l  #__bss_size,d0          /* Size of .bss segment in RAM */
+		lsr.l   #1,d0
+		beq     NoZero
+		moveq   #0,d1
+		subq.w  #1,d0                   /* sub extra iteration */
 ZeroVar:
-        move.w  d1,(a1)+                /* Copy zero data to RAM */
-        dbra    d0,ZeroVar
+		move.w  d1,(a1)+                /* Copy zero data to RAM */
+		dbra    d0,ZeroVar
 NoZero:
-        jsr     main                    /* IT BEGINS */
-        beq.s   _hard_reset             /* main returned, reset */
+		jsr     main                    /* IT BEGINS */
+		beq.s   _hard_reset             /* main returned, reset */
 
 /* Error handling */
 
 IllegalInst:
-		move.b  #2,(v_err_type)
-        bra.s   IllegalDump
+		move.b  #1,(v_err_type)
+		bra.s   IllegalDump
 ZeroDivide:
-		move.b  #3,(v_err_type)
-        bra.s   ZeroDump
+		move.b  #2,(v_err_type)
+		bra.s   ZeroDump
 BusError:
 AddressError:
-		move.b  #1,(v_err_type)
-        move.w  4(sp),v_err_ext1
-        move.l  6(sp),v_err_addr
-        move.w  10(sp),v_err_ext2
-        move.w  12(sp),v_err_sr
-        move.l  14(sp),v_err_pc
-        bra.s   RegDump
+		move.b  #0,(v_err_type)
+		move.w  4(sp),v_err_ext1
+		move.l  6(sp),v_err_addr
+		move.w  10(sp),v_err_ext2
+		move.w  12(sp),v_err_sr
+		move.l  14(sp),v_err_pc
+		bra.s   RegDump
 IllegalDump:
-        move.w  10(sp),v_err_ext1
+		move.w  10(sp),v_err_ext1
 ZeroDump:
-        move.w  4(sp),v_err_sr
-        move.l  6(sp),v_err_pc
+		move.w  4(sp),v_err_sr
+		move.l  6(sp),v_err_pc
 RegDump:
-        move.l  d0,v_err_reg+0
-        move.l  d1,v_err_reg+4
-        move.l  d2,v_err_reg+8
-        move.l  d3,v_err_reg+12
-        move.l  d4,v_err_reg+16
-        move.l  d5,v_err_reg+20
-        move.l  d6,v_err_reg+24
-        move.l  d7,v_err_reg+28
-        move.l  a0,v_err_reg+32
-        move.l  a1,v_err_reg+36
-        move.l  a2,v_err_reg+40
-        move.l  a3,v_err_reg+44
-        move.l  a4,v_err_reg+48
-        move.l  a5,v_err_reg+52
-        move.l  a6,v_err_reg+56
-        move.l  a7,v_err_reg+60
-        jmp     _error
+		move.l  d7,v_err_reg+0
+		move.l  a7,v_err_reg+4
+		move.l  d6,v_err_reg+8
+		move.l  a6,v_err_reg+12
+		move.l  d5,v_err_reg+16
+		move.l  a5,v_err_reg+20
+		move.l  d4,v_err_reg+24
+		move.l  a4,v_err_reg+28
+		move.l  d3,v_err_reg+32
+		move.l  a3,v_err_reg+36
+		move.l  d2,v_err_reg+40
+		move.l  a2,v_err_reg+44
+		move.l  d1,v_err_reg+48
+		move.l  a1,v_err_reg+52
+		move.l  d0,v_err_reg+56
+		move.l  a0,v_err_reg+60
+#		jmp _error
+
+		lea		(VdpCtrl).l,a5
+		lea		(VdpData).l,a6
+		move.w	#0x8B00,(a5)		/* Plane scroll mode */
+		move.w	#0x8F02,(a5)		/* Auto-increment = 2 */
+		move.l	#0x7F000000,(a5)	/* VRAM 0xFC00 */
+		move.w	#0,(a6)				/* Plane A H scroll = 0 */
+		move.l	#0x40000010,(a5)	/* VSRAM 0x0000 */
+		move.w	#0,(a6)				/* Plane A V scroll = 0 */
+		move.l	#0x7E000000,(a5)	/* VRAM 0xF800 */
+		move.l	#0,(a6)				/* Clear sprite table */
+		move.l	#0,(a6)
+		move.w	#0x9100,(a5)		/* Hide window plane */
+		move.w	#0x9200,(a5)
+
+		lea		(ErrFont).l,a0
+		move.l	#0x40000000,(a5)	/* VRAM 0x0000 */
+		moveq.l	#0,d5
+		moveq.l	#30,d2
+DecLoop:
+		move.l	d5,(a6)
+		moveq.l	#2,d3
+DecLoop2:
+		move.b	(a0)+,d0
+		moveq.l	#1,d4
+DecLoop3:
+		moveq.l	#0,d1
+		btst.b	#6,d0
+		sne.b	d1
+		lsl.l	#8,d1
+		btst.b	#5,d0
+		sne.b	d1
+		lsl.l	#8,d1
+		btst.b	#4,d0
+		sne.b	d1
+		btst.b	#7,d0
+		beq.s	NoPostShift
+		andi.l	#0xFF0FFFFF,d1
+		lsl.l	#4,d1
+NoPostShift:
+		lsl.l	#4,d1
+		move.l	d1,(a6)
+
+		lsl.b	#4,d0
+		dbf		d4,DecLoop3
+		dbf		d3,DecLoop2
+		move.l	d5,(a6)
+		dbf		d2,DecLoop
+
+		move.b	(v_err_type).l,d5
+		lsl.w	#4,d5
+		lea		StrError(pc, d5.w),a0
+
+		move.l	#0x40000003+(0x82<<16),(a5)	/* VRAM 0xA082 */
+		moveq.l	#15,d4
+DrawChar:
+		move.w	#0x8000,d0		/* Clear with priority bit set */
+		move.b	(a0)+,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		dbf		d4,DrawChar
+		bra.s	DrawRegs
+
+StrError:	dc.b	10,13,13,22,14,23,23,255,14,22,22,20,22,255,255,255
+			dc.b	17,18,18,14,16,10,18,255,17,19,23,24,22,25,12,24
+			dc.b	27,14,22,20,255,13,17,26,17,13,14,255,255,255,255,255
+
+DrawRegs:
+		lea		(v_err_reg),a0
+		move.l	#0x40000003+(0x502<<16),d6	/* VRAM 0xA502 */
+		move.w	#7,d5
+DrawRegLoop:
+		move.l	d6,(a5)
+
+		move.b	#14,d0
+		move.w	d0,(a6)
+		move.b	d5,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		move.b	#29,d0
+		move.w	d0,(a6)
+		move.l	(a0)+,d1
+		bsr		PrintHexL
+
+		move.b	#0,d0
+		move.w	d0,(a6)
+		move.b	#11,d0
+		move.w	d0,(a6)
+		move.b	d5,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		move.b	#29,d0
+		move.w	d0,(a6)
+		move.l	(a0)+,d1
+		bsr		PrintHexL
+
+		sub.l	#0x00800000,d6	/* Next row in nametable */
+		dbf		d5,DrawRegLoop
+
+		move.l	(v_err_reg+4),a0
+		move.l	#0x40000003+(0xD32<<16),d6
+		move.w	#23,d5
+DrawStackLoop:
+		move.l	d6,(a5)
+
+		move.b	#24,d0	/* S */
+		move.w	d0,(a6)
+		move.b	#22,d0	/* P */
+		move.w	d0,(a6)
+		move.b	#30,d0	/* + */
+		move.w	d0,(a6)
+		move.b	d5,d3	/* high nybble */
+		add.b	d3,d3
+		add.b	d3,d3
+		move.b	d3,d0
+		lsr.b	#4,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		move.b	d3,d0	/* low nybble */
+		andi.b	#0xF,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.l	(a0)+,d1
+		bsr		PrintHexL
+
+		sub.l	#0x00800000,d6
+		dbf		d5,DrawStackLoop
+
+		move.l	#0x40000003+(0x602<<16),(a5)
+		move.b	#22,d0	/* P */
+		move.w	d0,(a6)
+		move.b	#13,d0	/* C */
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.l	(v_err_pc),d1
+		bsr		PrintHexL
+		
+		move.l	#0x40000003+(0x682<<16),(a5)
+		move.b	#24,d0	/* S */
+		move.w	d0,(a6)
+		move.b	#23,d0	/* R */
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.w	(v_err_sr),d1
+		bsr		PrintHexW
+		
+		cmp.b	#2,(v_err_type)		/* No more params for zero divide */
+		beq.s	Uwa
+		
+		move.l	#0x40000003+(0x702<<16),(a5)
+		move.b	#15,d0	/* E */
+		move.w	d0,(a6)
+		move.b	#2,d0	/* 1 */
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.w	(v_err_ext1),d1
+		bsr		PrintHexW
+		
+		cmp.b	#1,(v_err_type)		/* No more params for illegal instruction */
+		beq.s	Uwa
+		
+		move.l	#0x40000003+(0x782<<16),(a5)
+		move.b	#15,d0	/* E */
+		move.w	d0,(a6)
+		move.b	#3,d0	/* 2 */
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.w	(v_err_ext2),d1
+		bsr		PrintHexW
+		
+		move.l	#0x40000003+(0x802<<16),(a5)
+		move.b	#11,d0	/* A */
+		move.w	d0,(a6)
+		move.b	#14,d0	/* D */
+		move.w	d0,(a6)
+		move.b	#29,d0	/* = */
+		move.w	d0,(a6)
+		move.l	(v_err_addr),d1
+		bsr		PrintHexL
+		
+Uwa:
+		bra.s	Uwa
+
+/* d1 = integer */
+/* breaks d0.b */
+PrintHexL:
+		moveq.l	#7,d2
+PrintHexLoopL:
+		rol.l	#4,d1
+		move.b	d1,d0
+		andi.b	#0xF,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		dbf		d2,PrintHexLoopL
+		rts
+
+PrintHexW:
+		moveq.l	#3,d2
+PrintHexLoopW:
+		rol.w	#4,d1
+		move.b	d1,d0
+		andi.b	#0xF,d0
+		addq.b	#1,d0
+		move.w	d0,(a6)
+		dbf		d2,PrintHexLoopW
+		rts
+
+ErrFont:
+		dc.b	0,0,0								/* ' ' : 255 */
+		dc.b	0b01110101, 0b01010101, 0b01010111	/* 0 : 00 */
+		dc.b	0b00100010, 0b00100010, 0b00100010	/* 1 : 01 */
+		dc.b	0b01110001, 0b01110100, 0b01000111	/* 2 : 02 */
+		dc.b	0b01110001, 0b00110001, 0b00010111	/* 3 : 03 */
+		dc.b	0b01010101, 0b01010111, 0b00010001	/* 4 : 04 */
+		dc.b	0b01110100, 0b01110001, 0b00010111	/* 5 : 05 */
+		dc.b	0b01110100, 0b01110101, 0b01010111	/* 6 : 06 */
+		dc.b	0b01110001, 0b10010010, 0b00100010	/* 7 : 07 */
+		dc.b	0b01110101, 0b01110101, 0b01010111	/* 8 : 08 */
+		dc.b	0b01110101, 0b01010111, 0b00010111	/* 9 : 09 */
+		dc.b	0b01110101, 0b01010111, 0b01010101	/* A : 10 */
+		dc.b	0b11110101, 0b11110101, 0b01011111	/* B : 11 */
+		dc.b	0b01110100, 0b01000100, 0b01000111	/* C : 12 */
+		dc.b	0b11110101, 0b01010101, 0b01011111	/* D : 13 */
+		dc.b	0b01110100, 0b01100100, 0b01000111	/* E : 14 */
+		dc.b	0b01110100, 0b01100100, 0b01000100	/* F : 15 */
+		dc.b	0b01110100, 0b01000101, 0b01010111	/* G : 16 */
+		dc.b	0b10110010, 0b00100010, 0b00101011	/* I : 17 */
+		dc.b	0b01000100, 0b01000100, 0b01000111	/* L : 18 */
+		dc.b	0b11110101, 0b01010101, 0b01010101	/* N : 19 */
+		dc.b	0b10110101, 0b01010101, 0b01011011	/* O : 20 */
+		dc.b	0b11110101, 0b01011111, 0b01000100	/* P : 21 */
+		dc.b	0b11110101, 0b01011111, 0b01010101	/* R : 22 */
+		dc.b	0b10110101, 0b10101001, 0b01011011	/* S : 23 */
+		dc.b	0b01110010, 0b00100010, 0b00100010	/* T : 24 */
+		dc.b	0b01010101, 0b01010101, 0b01011011	/* U : 25 */
+		dc.b	0b01010101, 0b01010101, 0b10110010	/* V : 26 */
+		dc.b	0b01110001, 0b10010010, 0b10100111	/* Z : 27 */
+		dc.b	0b00000111, 0b00000000, 0b01110000	/* = : 28 */
+		dc.b	0b00100010, 0b01110111, 0b00100010	/* + : 29 */
+		.even
 
 /* Interrupts */
 
 VerticalInt:
-        tst.w   (xgmTempo)
-        beq.s   NoXGM
+		tst.w   (xgmTempo)
+		beq.s   NoXGM
 		movem.l d0-d1/a0-a1,-(sp)
-		jsr     xgm_vblank_process
+		bsr.s   xgm_vblank_process
 		movem.l (sp)+,d0-d1/a0-a1
 NoXGM:
 		/* Set VBlank complete flag */
-        move.b	#1,(vblank)
+		st.b	(vblank)
 HorizontalInt:
 NullInt:
-        rte
+		rte
+
+FUNC xgm_vblank_process
+		/* XGM VBlank Process */
+		lea    (Z80BusReq),a0           /* a0 = Z80 Halt Port */
+		lea    (Z80Reset),a1            /* a1 = Z80 Reset Port */
+		clr.w  d1					    /* num = 0 */
+		move.w xgmTempoCnt,d0		    /* cnt = xgmTempoCnt */
+		bgt.s  XGM_CntSkip				/* cnt > 0 */
+    XGM_CntLoop:
+		addq.w #1,d1				    /* num++ */
+		add.w  xgmTempoDef,d0		    /* cnt += xgmTempoDef */
+		ble.s  XGM_CntLoop				/* cnt <= 0 */
+    XGM_CntSkip:
+		sub.w  xgmTempo,d0				/* xgmTempoCnt = cnt - xgmTempo */
+		move.w d0,xgmTempoCnt
+    XGM_WhileTRUE:
+		move.w #0x0100,(a0)			    /* Take Z80 bus and reset */
+		move.w #0x0100,(a1)
+    XGM_WaitZ80Get:
+		move.w (a0),d0				    /* Wait for bus to be taken */
+		btst   #8,d0
+		bne.s  XGM_WaitZ80Get
+		move.b (Z80DrvParams+0xE),d0	/* if (!z80_drv_params[0x0E]) break */
+		beq.s  XGM_VBlankEnd
+		move.w #0,(a0)					/* Release Z80 bus */
+		movm.l d0-d3,-(sp)		        /* Wait about 80 cycles */
+		movm.l (sp)+,d0-d3
+    XGM_WaitZ80Rel:
+		move.w (a0),d0				    /* Wait for bus to be released */
+		btst   #8,d0
+		beq.s  XGM_WaitZ80Rel
+		bra.s  XGM_WhileTRUE
+    XGM_VBlankEnd:
+		move.b (Z80DrvParams+0xF),d0	/* z80_drv_params[0x0F] += num */
+		add.b  d0,d1
+		move.b d1,(Z80DrvParams+0xF)
+		move.w #0,(a0)					/* Release Z80 bus */
+		rts

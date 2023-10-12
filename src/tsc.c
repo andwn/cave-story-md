@@ -8,7 +8,6 @@
 #include "md/dma.h"
 #include "entity.h"
 #include "effect.h"
-#include "md/error.h"
 #include "gamemode.h"
 #include "hud.h"
 #include "md/joy.h"

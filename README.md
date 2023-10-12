@@ -33,7 +33,7 @@ You can still get crushed, drown and fall out of bounds.
 Note that you can't load or save the game while cheating (including the counter).
 
 ## Compilation
-1. Dependencies: `build-essential libpng-dev python3` and a GCC cross compiler for "m68k-elf" such as [Marsdev](http://github.com/andwn/marsdev).
+1. Dependencies: `build-essential libpng-dev` and a GCC cross compiler for "m68k-elf" such as [Marsdev](http://github.com/andwn/marsdev).
 2. Clone & `make`
   - For translations: `make translate`
 

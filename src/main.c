@@ -3,7 +3,6 @@
 #include "audio.h"
 #include "md/dma.h"
 #include "effect.h"
-#include "md/error.h"
 #include "gamemode.h"
 #include "md/joy.h"
 #include "md/stdlib.h"
@@ -61,8 +60,6 @@ void main() {
 	//__asm__("move.w (1),%d0"); // Address Error
 	//__asm__("illegal"); // Illegal Instruction
 	//__asm__("divu #0,%d0"); // Zero Divide
-	//error_oom(); // Out of memory
-	//error_other("Test test!\nTest!"); // Fatal message
 
 	splash_main();
 	intro_main();

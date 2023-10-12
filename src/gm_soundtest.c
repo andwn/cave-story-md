@@ -13,7 +13,15 @@
 
 #include "gamemode.h"
 
-extern void print_hex(char *str, uint32_t val, uint16_t digits, uint16_t x, uint16_t y);
+static const char hexchars[16] = "0123456789ABCDEF";
+static void print_hex(char *str, uint32_t val, uint16_t digits, uint16_t x, uint16_t y) {
+	if(digits > 8) digits = 8;
+    for(uint16_t i = 0; i < digits; i++) {
+        str[digits - i - 1] = hexchars[(val >> (i << 2)) & 0xF];
+    }
+    str[digits] = 0;
+    vdp_puts(VDP_PLANE_A, str, x, y);
+}
 
 #define DRAW_BYTE(b, x, y) { \
 	char byte[4]; \
