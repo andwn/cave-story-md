@@ -1,0 +1,338 @@
+#0000
+<FRE<WAI9999<END
+
+#1000
+<MSG<TUREi asetta.<WAI9999<END
+#1001
+<MSG<TUR- Käärme -
+Tunkeutuu seinien läpi.
+Chaban tekemä, Labyrinthissä.<WAI9999<END
+#1002
+<MSG<TUR- Pohjantähti -
+Perus ase.
+Siinä on Polariksen merkki.
+<WAI9999<END
+#1003
+<MSG<TUR- Tulipallo -
+Pomppii eteenpäin maassa.
+Yllättävän voimakas mäissä.<WAI9999<END
+#1004
+<MSG<TUR- Konekivääri -
+Automatti sarjatuli ase.
+Palautuu automaattisesti itsestään.<WAI9999<END
+#1005
+<MSG<TUR- Ohjuslaukaisin -
+Laaja kantama ja voimakas.
+Mutta, rajallinen määrä ammuksia.<WAI9999<END
+#1007
+<MSG<TUR- Kupliva -
+Löytyi Kokoushuoneen takasta.
+Käyttö on käyttäjästä kiinni.<WAI9999<END
+#1009
+<MSG<TUR- Miekka -
+Voimakas kerta-isku.
+King'in sielu asuu sen sisällä.<WAI9999<END
+#1010
+<MSG<TUR- Super Ohjus -
+Huumaava ohjus.
+Sen kiihtyvyys on ainutlaatuinen.<WAI9999<END
+#1012
+<MSG<TUR- Nemesis -
+Jumalattaren salama.
+Paras ase.<WAI9999<END
+#1013
+<MSG<TUR- Spur -
+Paina tuli-näppäin pohjaan
+niin voit ladata laaserin.<WAI9999<END
+
+#1100
+<MSG<TURHajime<WAI9999<END
+#1101
+<MSG<TURMick<WAI9999<END
+#1102
+<MSG<TURShinobu<WAI9999<END
+#1103
+<MSG<TURKakeru<WAI9999<END
+#1104
+<MSG<TURNene<WAI9999<END
+
+#1200
+<MSG<TURJenkan lemmikki ja koirien johtaja.
+Kun hän etsi veljiään, hän eksyi ja
+Curly otti hänet huostaan.<WAI9999<END
+#1201
+<MSG<TURRakastaa aarteiden etsimistä, tai
+tarkennettuna, aarrearkkuja. Viimeaikoina
+hän on alkanut nukkumaan niiden sisällä...<WAI9999<END
+#1202
+<MSG<TURRakastaa pimeitä paikkoja. Hänen huonon
+näkönsä takia hän kuljeskelee pimeydessä 
+ainoastaan hänen vaistojen avulla.<WAI9999<END
+#1203
+<MSG<TURJenkan lemmikki. Rakastaa luita ja
+hän on kätkenyt niitä kaikkialle,
+joista suurinosa on jo unohdettu.<WAI9999<END
+#1204
+<MSG<TURHän viettää suurimmanosan ajastaan
+unessa, mutta hänen unien tiedetään
+ennustavan tulevaisuutta.<WAI9999<END
+
+#5000
+<MSG<TUREi mitään.<WAI9999<END
+#5001
+<MSG<TURArthurin Avain<WAI9999<END
+#5002
+<MSG<TURKarttalaite<WAI9999<END
+#5003
+<MSG<TURSantan Avain<WAI9999<END
+#5004
+<MSG<TURHopeakoru<WAI9999<END
+#5005
+<MSG<TURPedon Hammas<WAI9999<END
+#5006
+<MSG<TUREnergia Kapseli<WAI9999<END
+#5007
+<MSG<TURTunnuskortti<WAI9999<END
+#5008
+<MSG<TURMeduusan Mehu<WAI9999<END
+#5009
+<MSG<TURRuostunut Avain<WAI9999<END
+#5010
+<MSG<TURKumi Avain<WAI9999<END
+#5011
+<MSG<TURKumi Pohja<WAI9999<END
+#5012
+<MSG<TURHiili<WAI9999<END
+#5013
+<MSG<TURPommi<WAI9999<END
+#5014
+<FLJ3000:1100
+<FLJ3001:1101
+<FLJ3002:1102
+<FLJ3003:1103
+<FLJ3004:1104
+<MSG<TURKoiranpentu<WAI9999<END
+#5015
+<MSG<TUREnergia Purnukka<WAI9999<END
+#5016
+<MSG<TURKaiken-Parantava<WAI9999<END
+#5017
+<MSG<TURKlinikka Avain<WAI9999<END
+#5018
+<MSG<TURBooster v0.8<WAI9999<END
+#5019
+<MSG<TURAse Suoja<WAI9999<END
+#5020
+<MSG<TURTurbolataaja<WAI9999<END
+#5021
+<MSG<TURCurlyn Ilmatankki<WAI9999<END
+#5022
+<MSG<TUR290 Laskuri<WAI9999<END
+#5023
+<MSG<TURBooster v2.0<WAI9999<END
+#5024
+<MSG<TURMimiga Naamari<WAI9999<END
+#5025
+<MSG<TURTeleportaali Huoneen Avain<WAI9999<END
+#5026
+<MSG<TURSuen Kirje<WAI9999<END
+#5027
+<MSG<TUROhjain<WAI9999<END
+#5028
+<MSG<TURRikkinäinen Suihkulähde<WAI9999<END
+#5029
+<MSG<TURSuihkulähde<WAI9999<END
+#5030
+<MSG<TURHinausköysi<WAI9999<END
+#5031
+<MSG<TURSavihahmo Mitalli<WAI9999<END
+#5032
+<MSG<TURPikkuukko<WAI9999<END
+#5033
+<MSG<TURSienimerkki<WAI9999<END
+#5034
+<MSG<TURMa Pignon<WAI9999<END
+#5035
+<MSG<TURCurlyn Pikkarit<WAI9999<END
+#5036
+<MSG<TURAlieni Mitalli<WAI9999<END
+#5037
+<MSG<TURChacon huulipuna<WAI9999<END
+#5038
+<MSG<TURHupaisa Tähti<WAI9999<END
+#5039
+<MSG<TURRautasidos<WAI9999<END
+
+#6000
+<MSG<TUREi mitään.<WAI9999<END
+#6001
+<MSG<TURAvain Arthurin kotiin.
+Se oli piiloitettu lähelle
+Arthurin hautakiveä.<WAI9999<END
+#6002
+<PRI<EVE7002<MPJ7002<MSGSuomikäännös 2022 JP32.<NOD<CLR<END
+#6003
+<MSG<TURAvain Santan kotiin.<WAI9999<END
+#6004
+<MSG<TURKalalta näyttävä hopeinen koru.
+Ulkonäöstä päätellen, siitä on
+pidetty huolta monen vuoden ajan.<WAI9999<END
+#6005
+<MSG<TURTerävä torahammas joka
+löytyi Yamashitan maatilalta.
+Onkohan sen omistaja hengissä...?<WAI9999<END
+#6006
+<MSG<TUREnergia Kapseli.<WAI9999<END
+#6007
+<MSG<TURTunnuskortti mikä oli Muna Nro. 06:ssa.<WAI9999<END
+#6008
+<MSG<TURNeste joka voi tukehduttaa tulen.<WAI9999<END
+#6009
+<MSG<TURRuostunut avain, edelleenkin.<WAI9999<END
+#6010
+<MSG<TURLapussa lukee "Kumi".<WAI9999<END
+#6011
+<MSG<TURRypäle kumia.<WAI9999<END
+#6012
+<MSG<TUROtettu takasta.<WAI9999<END
+#6013
+<MSG<TURRäjähde jolla voi räjäyttää 
+ovia ja muita vastaavia.<WAI9999<END
+#6014
+<FLJ3000:1200
+<FLJ3001:1201
+<FLJ3002:1202
+<FLJ3003:1203
+<FLJ3004:1204
+<MSG<TURJenkan lemmikki koira.<WAI9999<END
+#6015
+<KEY<MSGTämä palauttaa energiasi kokonaan,
+mutta VAIN kerran.
+Haluatko käyttää sen?<YNJ0000<LI+1000<SOU0020<IT-0015<MSG
+Energia palautettu.<FRE<WAI9999<END
+#6016
+<MSG<TURIlmeisesti, tämä parantaa
+kaiken, kaikista, kaikkialla...<WAI9999<END
+#6017
+<MSG<TURSiinä lukee, "Labyrinthin Kliniikka".<WAI9999<END
+#6018
+<FLJ0742:7018
+<KEY<MSGPaina Hyppy-painiketta ilmassa
+niin voit lentää korkeamalle.<NOD<CLR
+Haluatko laittaa sen päälle?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSG
+"Booster" on nyt käytössä.<NOD<WAI0003<FRE<EVE5018
+#6019
+<MSG<TURKun otat vahinkoa, 
+menetät aseenergiaa puolet vähemmän.<WAI9999<END
+#6020
+<MSG<TURNostaa konekiväärin palautumis-
+aikaa huomattavasti.<WAI9999<END
+#6021
+<MSG<TURVoit hengittää veden alla tämän
+avulla. Se oli ennen Curlylla.<WAI9999<END
+#6022
+<MSG<TURTäysin automaattinen sekuntikello.
+Siinä ei ole painikkeita.<WAI9999<END
+#6023
+<FLJ0743:7023
+<KEY<MSGPaina hyppy-painiketta ilmassa
+niin voit lentää mihintahansa
+suuntaan.<NOD<CLR
+Haluatko ottaa sen käyttöön?<YNJ0000<EQ+0032<FL+0743<EQ-0001<FL-0742<MSG
+"Booster v2.0" on nyt käytössä.<NOD<WAI0003<FRE<EVE5023
+#6024
+<MSG<TURMimiga naamari jonka Suen äiti teki.
+Se on hieman iso...<WAI9999<END
+#6025
+<MSG<TURAvain, jonka eräs Mimiga onki ylös.<WAI9999<END
+#6026
+<KEY<MSGLuetko sen?<YNJ0000<MSG<TUR
+Nimeni on Sue.<NOD<CLROlen varma etten kertonut sinulle
+mitään meistä.<NOD<CLRMe tulimme tälle saarelle maanpäältä 
+tutkimusretkelle.<NOD<CLRProfessori Booster oli mukana
+meidän helikopterissa, ja myös äitini,
+veljeni ja muutama apulainen...<NOD<CLRTohtori myös. Hän oli mukana hoitamassa
+meidän terveydenhuollon tarpeita..<NOD<CLRSiihen asti, kunnes hän löysi
+=Demoni Kruunun=...<WAI0020<NOD<CLRSe Kruunu, joka oli tämän saaren
+mestarin omaisuutta.<NOD<CLRSe antaa hirviömäisesti taikavoimaa
+sen käyttäjälle...<NOD<CLRTohtori tiesi tämän jo ennen kuin
+hän edes tuli saarelle,<NOD<CLRminkä takia hän luikerteli ryhmämme
+sisälle alunperin.<NOD<CLRKun hän sai Kruunun käsiinsä,
+kukaan ei pystynyt pysäyttämään häntä.<NOD<CLRMeillä ei ollut muuta vaihtoehtoa
+kuin tutkia saarta hänen alaisenaan.<NOD<CLRTohtori aikoo hallita maailmaa
+käyttämällä tätä saarta hänen 
+tukikohtanaan.<NOD<CLRLuulen että hän aikoo ensin
+hyökätä alapuolelle käyttämällä 
+Mimigoita aseena.<NOD<CLRKuitenkin, pääsin pakoon jotenkin, 
+mutta pelkään että tutkijat ovat jo...<NOD<CLRNyt, hän käyttää pahaa-aavistamattomia
+Mimigoita viljelemään enemmän
+punaisia kukkia.<NOD<CLRKun hän on valmiina hyökkäämään,
+hän muuntaa Mimigat murhanhimoisiksi
+hirviöiksi käyttämällä kukkia.<NOD<CLRKäytämällä hänen pahoja voimiaan, 
+hän pystyy ohjaamaan raivoisat
+Mimigat tekemään tahtonsa.<NOD<CLR
+Ja se tarkoittaa sitä, että, mikäkin...<NOD<CLRJos onnistut pakenemaan tästä 
+vankilasta, etsi piilopaikka
+maatilasta.<NOD<CLRJos äitini on yhä turvassa,
+hän on siellä,
+miettimässä vastasuunitelmaa.<NOD<CLRMinä pyydän, auta äitiäni. Kiitos.<NOD<CLRSalasana on,
+"ritaganoMo tsukuDou".<NOD<CLR<FL+1024<FRE<MSGKirje päättyy tähän...<WAI9999<END
+
+#6027
+<MSG<TURTarvittava osa rakettia varten.
+Itohin, pelkurimiehen, ylpeys.<WAI9999<END
+#6028
+<MSG<TURSe on särki.<WAI9999<END
+#6029
+<MSG<TURSe on upouusi...vai onko?.<WAI9999<END
+#6030
+<MSG<TURHinausköysi roboteille.<WAI9999<END
+#6031
+<MSG<TURPieni ja yllättävän painava.
+Sen hyödyllisyys riippuu käyttäjästä.<WAI9999<END
+
+#6032
+<MSG<TURHei! Olemmeko jo perillä?<WAI9999<END
+#6033
+<MSG<TURSienimerkki jonka sait Sieneltä. 
+Se on sieni. Jos totta puhutaan,
+et tarvitse sitä...<FL+1563<WAI9999<END
+#6034
+<MSG<TURKuulema, sillä on voima
+joka palauttaa muistin...<WAI9999<END
+#6035
+<MSG<TURLöydetty seinän takaa.
+Kelta-vihreät pikkarit joissa on
+söpö merkki. Se on erittäin tärkeä.<WAI9999<END
+#6036
+<MSG<TURSiihen on kaiverettu alienin
+siluetti. Se on hyödytön, vai onko?<WAI9999<END
+#6037
+<MSG<TURPunainen huulipuna.
+Joidenkin mielestä se on turha, 
+mutta kuka minä olen päättämään niin?<WAI9999<END
+#6038
+<KEY<MSGPieni rihkama jonka sait
+Chabalta labyrinthistä.
+Hupaisa tähti.<NOD<FLJ0722:7038<CLR
+Otatko sen käyttöön?<YNJ0000<EQ+0128<FL+0722<MSG
+"Hupaisa Tähti" on nyt käytössä.<NOD<WAI0003<FRE<EVE5038
+#6039
+<MSG<TURSinun yhteys Curly Braceen, ainoa
+soturi keneen luotat selustasi.
+Varmasti tapaatte vielä jokupäivä...<WAI9999<END
+
+#7002
+<MLP<END
+
+#7018
+<KEY<MSGHaluatko ottaa sen pois?<YNJ0000<EQ-0001<FL-0742<MSG
+"Booster" on pois käytöstä.<NOD<WAI0003<FRE<EVE5018
+#7023
+<KEY<MSGHaluatko ottaa sen pois?<YNJ0000<EQ-0032<FL-0743<MSG
+"Booster v2.0" on pois käytöstä.<NOD<WAI0003<FRE<EVE5023
+
+#7038
+<KEY<MSGHaluatko ottaa sen pois?<YNJ0000<EQ-0128<FL-0722<MSG
+"Hupaisa Tähti" on pois käytöstä.<NOD<WAI0003<FRE<EVE5038
+

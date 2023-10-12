@@ -1,0 +1,99 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0002:0094:0291:0008
+
+#0105
+<PRI<MSGHaluatko tallentaa pelisi?<YNJ0000<SVP<CLRPeli tallennettu.<NOD<END
+#0106
+<PRI<LI+1000<SOU0020<AE+<MSGEnergia palautettu.<NOD<END
+
+
+#0110
+<KEY<MSGTunnet kylmän ilman
+puhaltavan sisälle...<NOD<END
+
+
+#0200
+<FLJ0120:0210
+<KEY
+<FL+0120<FL+0105<FL+0154<FL+0155<FL+0329<FL+0106
+<MSG...Argh.<NOD<CLO
+<MYB0002<WAI0050<MYD0002
+<MSGAi...<NOD<ANP0200:0011:0002<CLR<FAC0003Woh-oh!
+Hei, en ole vielä kuollut!<NOD
+Tällä kertaa päihitän
+sinut!!<NOD<FAC0000<CLO
+<WAI0050<ANP0200:0000:0002
+<MSG<FAC0001Öhh?<WAI0050<NOD
+Se hirviö löi
+minut tajuttomaksi...<ANP0200:0000:0000<NOD<CLR.....<NOD
+Pelastitko sinä minut?<YNJ0202<EVE0201
+#0201
+<FAC0003En tarvitse sinun apuasi!!<NOD<CLROlisin kyllä pystynyt
+hoitamaan hänet yksin!
+Jotenkin!<NOD
+Grr...Vihaan tätä helvetin
+saarta, ja sen jokaista
+elävää olentoa!<NOD<FAC0000<CLO<EVE0203
+#0202
+<FAC0002Hmph...<NOD<CLRNo, ihan sama.<NOD<FAC0000<CLO<EVE0203
+#0203
+<WAI0050<MSG<ANP0200:0005:0002<FAC0001Oho!<NOD<MYD0003<CLRKatso! Se...varmaan
+on numero 00!<NOD<CLRTämä muna voisi olla
+meidän lippu pois täältä!<NOD<CLO<FAC0000<MYD0002
+<ANP0200:0003:0002<WAI0030
+<ANP0200:0005:0002<WAI0050
+<MSG<FAC0001Munan olotila: Normaali!
+Noniin!
+Vihdoinkin hyviä uutisia!<NOD<CLO<WAI0050<SOU0043<WAI0020<FAC0000
+<MSG<FAC0002Hm?<NOD Salasana?<NOD<FAC0000<CLO
+<WAI0050
+<ANP0200:0000:0000<WAI0050
+<MSG<FAC0001Näyttää siltä että    
+tarvitsemme salasanan jotta
+voimme kuoria sen munan.<NOD<CLR<FAC0002No, voi hitto.<NOD<CLRJos vain veljeni olisi
+täällä, hän saisi sen
+salasanan selville.<NOD<CLR.....<NOD<CLR<FAC0001Okei, sitten en
+voi tehdä enempää täällä.<NOD<CLO
+<ANP0200:0003:0000<WAI0126
+<ANP0200:0000:0002<WAI0020
+<MSGOletko sinä <MYD0000täältä  
+päin?<NOD<CLREi näytä siltä.<NOD
+Nuo sanat sinun
+lakissasi...<NOD
+Ne eivät ole tämän
+saaren kieltä.<NOD<CLR
+...Oletko sinä eksyksissä?<NOD<CLRSe on okei.<NOD
+Annan sinun tulla
+minun mukanani.<NOD
+Lähdetään yhdessä pois
+tästä läävästä.<NOD
+Vastineeksi, sinä autat
+minua.<NOD<CLO
+<ANP0200:0005:0002<WAI0020
+<SOU0011<ANP0100:0000:0002<WAI0020
+<ANP0100:0000:0000<DNP0200<SOU0023<END
+
+#0300
+<KEY<MSG<TURIlma Lohikäärme Nro. 00
+Kuoriutumisvalmistelut ovat valmiita.<NOD<CLR
+Anna salasana:<NOD<END
+#0300
+<PRI<FAO0004<TRA0001:0094:0005:0007
+
+
+#0400
+

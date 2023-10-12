@@ -1,0 +1,100 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0095
+<CMU0008<FAI0001<END
+
+#0100
+<PRI<FAO0000<TRA0012:0094:0053:0036
+
+
+
+#0200
+<KEY<FLJ1640:0201<FL+1640<SOU0022<CNP0200:0021:0000
+<MSGAvasit aarrearkun.<NOD<GIT0002<AM+0002:0000<CLR
+<CMU0010Sait =Pohjantähden=!<WAI0160<NOD<GIT0000<CLO<RMU
+<MSG
+Jossain, lähetys..<FAO0004<NOD<TRA0018:0501:0002:0000
+
+#0201
+<PRI<MSGTyhjä.<NOD<END
+
+#0210
+
+
+#0300
+<KEY<MSG*kuorsaus*<NOD<END
+
+#0301
+<FLJ1644:0303
+<KEY<MSGEthän sinä ole nähnyt asetta jonka
+tein?<NOD
+Joku tuli ja varasti sen silläväin
+kun minä olin nukkumassa!<NOD
+Perkele, olisi sittenkin pitänyt
+pitää se taskussa kun otin
+tirsat...<NOD<AMJ0002:0302<CLRSe ei ollut edes valmis!<NOD
+Se olisi vain tarvinnut pikkuisen
+enemmän työtä niin olisin voinut
+tehdä siitä todella
+kauhistuttavan aseen.<NOD<CLR
+No, se siitä sitten...<NOD<END
+
+#0302
+<KEY<MSG<CMU0000<MYB0002
+HEI!!<NOD<CLREikös TUO ole aseeni?!<NOD<CLR<GIT0002Miksi se on SINULLA?!
+En tehnyt sitä sinulle!<NOD<CLRAnna se takaisin!<NOD<CLR<CNP0210:0150:0012<WAI0012<GIT0000<HMC
+=Pohjantähti= otettiin pois...<NOD<CLRPah!<NOD
+Olet näemmä laittanut aseeni
+todellisen käyttöön.<NOD<CLR
+.....<NOD<CLRKuitenkin,<NOD
+olen pitkään uskonut että omat
+aseet tulisi olla itsetehtyjä.<NOD
+Ja se että joku taistelee toisen
+tehdyllä aseella,<NOD
+ja väittää sen olevan hänen oma
+voimansa on järjetöntä.<NOD
+Myöskin, se joka syyttää 
+varusteitaan kun omat taidot
+eivät riitä on hölmö.<NOD<CLR
+<CMU0008Mutta...<WAI0050<CLRNyt kun näin tämän aseen jonka
+olet käyttänyt ihan loppuun asti,<NOD
+se liikuuttaa tämän ukon
+kyyneliin.<NOD
+Ja ajatella että semmoinen on
+mahdollista ennen kuin ase on edes
+täysin valmis...<NOD<CLR
+Hahhh...<NOD<CLRAnna anteeksi kun saarnasin.<NOD<CLR
+Saat pitää tämän aseen.<NOD<CMU0000<FAO0001
+Mutta anna minun tehdä se
+loppuun asti ensin.<NOD<CLO
+<WAI0150<FAI0001
+<FLA<WAI0050<TAM0002:0013:0000<FL+1644<FL+0303<MSG
+<CMU0010<MSG<GIT0013
+=Pohjantähti= on nyt =Spur=!<SMC<DNP0210<WAI0160<NOD<CMU0008<END
+
+#0303
+<KEY<MSGTässä maailmassa on
+tasapaino tekijöiden ja käyttäjien
+välillä.<NOD<CLRTiesin sen, tottakai, mutta
+ilman sinua en olisi koennut sitä
+omakohtaisesti.<NOD
+Tästä eteenpäin, minä vannon että
+olen tekijöiden puolella.<NOD
+Työstä tulee iloa kun tiedän että
+on olemassa niitä jotka nauttii
+teoksistani äärimmäisen paljon.<NOD<END
+
+#0310
+<KEY<MSG<TUR
+"Poissa."<NOD<END
+
+

@@ -1,0 +1,314 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<FLJ0341:0095<CMU0002<FAI0004<END
+
+#0095
+<CMU0014<FAI0004<END
+
+
+#0098
+<CMU0014
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+#0099
+<KEY<MNA<FLJ0341:0098<CMU0002
+<ANP0500:0001:0000<FAI0004
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<END
+
+
+#0100
+<PRI<FAO0004<TRA0010:0094:0018:0032
+#0101
+<PRI<FAO0004<TRA0012:0094:0037:0011
+#0102
+<FLJ0155:0103<PRI<SOU0011<DNP0102<FAO0004<TRA0011:0094:0016:0053
+#0103
+<PRI<SOU0011<CMU0000<DNP0102<FAO0004<TRA0011:0400:0016:0053
+
+
+#0200
+<FLJ0159:0205
+<FLJ0158:0204
+<FLJ0157:0203
+<FLJ0325:0202
+<FLJ0154:0201
+<KEY<MSGNäytöllä on keskustelu...<NOD<CLR<TUR"...Mutta, jos on pakko,
+niin sitten minun täytyy..."<NOD<FLJ0153:0000<CLR<MSGHaluatko antaa luvan
+teleportata paikkaan "Munakäytävä"?<YNJ0000<CLRLupa myönetty. Voit nyt
+teleportata paikkaan "Munakäytävä".<NOD<FL+0153<PS+0001:6001<END
+#0201
+<KEY<MSGNäytöllä lukee...<NOD<CLR
+<TURYhdistetään "Ruohikkoalueeseen"...<NOD<END
+#0202
+<KEY<MSG<TUR
+Yhdistetty Ruohikkoalueeseen.<NOD<END
+#0203
+<KEY<MSG<TUR
+Anna komento.<NOD<END
+#0204
+<KEY<MSG<TUR
+Yhdistetty Hiekkavyöhykkeelle.<NOD<END
+#0205
+<KEY<MSGNäytöllä lukee...<NOD<CLR<TUR
+Mene Munakäytävään
+                        --Kazuma<NOD<END
+#0210
+<KEY<MSGKukkia...?<NOD<END
+
+#0300
+#0301
+#0303
+
+#0500
+<KEY<MSGTeleportaali.<NOD<SLP<NOD<END
+
+#0600
+<FLJ0325:0601
+<KEY<MSG<FAC0009Tervetuloa takaisin.<NOD<CLRSue palasi.<NOD
+Hänet on lukittu ulkona
+olevaan häkkiin.<NOD
+Kun Tohtorin kätyrit
+tulevat, yritämme saada
+Torokon takaisin.<NOD
+Vaihdamme Suen Torokoon,
+siis.<NOD<CLRSe on aika julmaa, tiedän,
+mutta Toroko on yksi
+meistä.<NOD
+Niin siinä käy kun
+toimii yksin.<NOD<END
+#0601
+<KEY<MSG<FAC0009Toivon että Toroko on
+kunnossa...<NOD<END
+
+
+#0620
+<KEY<CMU0000<FL+0156<FL+0444
+<ANP0500:0001:0000
+<WAI0002<CNP0622:0055:0000<WAI0010
+<FAI0004
+<CNP0621:0113:0000
+<ANP0621:0030:0000<WAI0100
+<MSG<FAC0018Oooohh...<NOD<CLR<FAC0010...Oletko kunnossa?<NOD<CLO<FAC0000
+<WAI0030<ANP0621:0000:0002
+<MSG<FAC0018...Mmm.<NOD<CLRElämäni vilahti silmieni
+edessä.<NOD<CLR<FAC0010.....<NOD<CLO<FAC0000
+<ANP0500:0000:0000<WAI0030
+<ANP0102:0000:0002<SOU0011
+<CNP0625:0042:0000
+<MSG<FAC0001Kazuma!!<NOD<ANP0622:0000:0002<CLRJa Professori Booster!<NOD<CLR<FAC0018Oho!<NOD<CLO<FAC0000
+<ANP0621:0003:0002<WAI0080
+<ANP0621:0000:0002
+<MSG<FAC0018Olet kunnossa!<NOD<CLR<FAC0001No, enemmän tai vähemmän.<NOD<CLO<FAC0000
+<CNP0624:0061:0000
+<ANP0625:0003:0000<WAI0016
+<ANP0624:0008:0000<WAI0016
+<ANP0624:0000:0000
+<SOU0011<ANP0102:0000:0000<WAI0048
+<ANP0625:0000:0000
+<MSG<FAC0007.....<NOD<CLR<FAC0018Kuka tuo Mimiga on?<NOD<CLO<FAC0000
+<WAI0030
+<ANP0625:0000:0002<WAI0030
+<ANP0624:0000:0002<WAI0050
+<ANP0625:0000:0000<WAI0020
+<MSG<FAC0001Hän on King.<NOD<CLRMinun ystäväni tästä 
+kylästä.<NOD<CLRTäällä oli ennen paljon
+Mimigoita.<NOD
+Mutta Tohtorin kätyrit
+ovat kidnapanneet miltei
+ne kaikki.<NOD<CLRJopa King menetti
+hänen kaverinsa...<NOD<CLO
+<CMU0002
+<ANP0500:0001:0000
+<CNP0301:0112:0002<WAI0100
+<ANP0500:0000:0000
+<MYD0002<SMC<DNP0301<FL-0157<END
+
+#0621
+<KEY<FLJ0158:0631<MSG<FAC0018Tohtorin suunnitelmat
+etenevät täsmälleen
+aikataulussa...<NOD
+Jos me ei tehdä 
+jotain pian...<NOD<END
+#0622
+<KEY<FLJ0158:0632<MSG<FAC0010Kiitos avustasi.<NOD<CLRAjoneuvomme meni palasiksi,
+mutta onneksi me olemme
+silti hengissä.<NOD<END
+#0624
+<KEY<FLJ0158:0634<MSG<FAC0007Toroko tappavana aseena...<NOD
+Ei! En anna sen ikinä 
+tapahtuvan!<NOD<END
+#0625
+<KEY<FLJ0158:0635<MYB0000<WAI0030<MYD0000<ANP0625:0000:0002<MSG
+<FAC0001Tervetuloa takaisin!<NOD<CLROlen jälleen sinulle
+velkaa.<NOD
+Veljeni avulla,<NOD
+me saamme sen salasanan
+siihen munaan.<NOD<CLO<FAC0000
+<ANP0625:0003:0000<WAI0008
+<ANP0625:0000:0000<MSG<FAC0001Booster!<NOD<CLRVoimmeko me ottaa
+tämän pikkuisen tyypin
+mukaamme?<NOD<CLO<FAC0000
+<ANP0622:0003:0002<WAI0015
+<ANP0622:0005:0002
+<MSG<FAC0018<CMU0000.....<NOD<CLR
+<FAC0010Professori.<NOD<CLR<FAC0001???<NOD<CLR<FAC0018Sue, rakas...<NOD
+Me emme voi paeta vielä.<NOD<CLRTohtori on löytänyt
+punaiset kukat.<NOD<ANP0624:0000:0000<CLR
+<FAC0007!!!<NOD<CLR<FAC0001Mitä?<NOD<CLR<FAC0018Hänellä ei ole vielä 
+niitä, mutta se on vain
+ajan kysymys.<NOD
+Paikka on Hiekkavyöhyke.<NOD<CLRKukat ovat näemmä 
+siellä jossakin.<NOD<CLR
+<FAC0007Hiekkavyöhyke?<NOD<CLRTarkoitatko että 
+löydämme Tohtorin sieltä?<NOD<CLR<FAC0018No,<NOD mitä todennäköisemmin,
+yhden hänen kätyreistään.<NOD
+Jos me ei hävitetä 
+niitä kukkia ennenkuin hän
+saa ne käsiinsä...<NOD<CLRToisaalta, Hiekkavyöhyke on
+erittäin vaarallinen paikka.<NOD
+Vaikka me mennäänkin sinne,<NOD
+ei ole varmuutta että me
+palataan takaisin hengissä...<NOD<CLR
+<FAC0007Eli sinä luovutat?<NOD<CLR<FAC0018Itseasiassa...<NOD<CLRYksi meistä on täydellinen
+tähän tehtävään.<NOD<CLO<FAC0000
+<ANP0621:0003:0002<ANP0625:0003:0000<WAI0020
+<ANP0621:0000:0002<WAI0002<ANP0625:0000:0002
+<MSG<FAC0018Sinä.<NOD<CLR
+<CMU0002<FAC0010...Mutta kuka HÄN on?<NOD<CLR<FAC0018Itseasiassa...<NOD<CLRTämä on yksi aseistetusta
+tiedustelu roboteista jotka
+lähetettin tälle saarelle,<NOD
+kymmenen vuotta sitten.<NOD<CLR<FAC0010Robootti?!<NOD<CLR<FAC0018Minun käsitääkseni ne
+kaikki olivat tuhottu,<ANP0621:0000:0000<NOD
+mutta en tiedä 
+yksityskohtia.<NOD
+On erittäin todennäköistä 
+että yksi niistä...<NOD<CLR<FAC0010Professori.<NOD
+Sain yhdeyden
+Hiekkavyöhykkeeseen.<NOD<CLR<FAC0018Okei.<NOD<CLO<FAC0000
+<ANP0622:0003:0000<WAI0015
+<ANP0622:0000:0002
+<ANP0621:0000:0002<WAI0030<MSG<FAC0018Sinä olet parhaiten
+sopiva tutkimaan tätä 
+saarta.<NOD<CLRAuta meitä, kiitos.<NOD<FL+0158<PS+0003:6003<END
+
+
+
+
+#0631
+<KEY<MSG<FAC0018Voit mennä 
+Hiekkavyöhykkeeseen
+teleportaalin avulla.<NOD
+Etsi punaiset kukat ja
+polta ne kaikki.<NOD<END
+#0632
+<KEY<MSG<FAC0010Eli olet yksi niistä...<NOD<CLREn edes huomannut.<NOD<CLROho, sinut on erittäin
+hyvin rakennettu.<NOD<END
+#0634
+<KEY<MSG<FAC0007Hiekkavyöhyke...<NOD<END
+#0635
+<KEY<MSG<FAC0001Jos hävität kaikki
+punaiset kukat, voimme
+estää sodan toistaiseksi.<NOD<CLRSe on suuri vastuu.<NOD<END
+
+
+#0650
+<KEY<MSG<FAC0018Vie Sue mukanasi ja
+pakene täältä saarelta...<NOD
+Ole hyvä, kiitos...<NOD<END
+
+#0651
+<DNP0651<KEY<MYD0000
+<ANP0500:0001:0000<WAI0050
+<MNP0650:0006:0007:0002
+<CNP0650:0113:0002
+<ANP0650:0030:0002<WAI0100
+<ANP0650:0000:0002
+<ANP0500:0000:0000<WAI0050
+<ANP0650:0003:0002<WAI0064
+<ANP0650:0000:0000
+<MSG
+<FAC0018.....<NOD<CLO<FAC0000
+<ANP0650:0000:0002<WAI0050
+<MSG<FAC0018Sinä vain...<NOD<CLR...Tohtori on saanut
+käsiinsä punaiset kukat.<NOD<CLR...Kaikki saaren Mimigat
+ovat nyt hänen käsissään.<NOD<CLREli tragediaa ei voi
+estää...<NOD<CLRMinun olisi pitänyt antaa
+Suen ainakin karata vielä 
+kun oli mahdollisuus...<NOD<CLO<FAC0000
+<ANP0650:0003:0002<WAI0022
+<ANP0650:0005:0002
+<IT+0023<FL+0744<FL+0162<GIT1023
+<MSG
+Sait =Booster v2.0=.<WAI0030<NOD<CLO<GIT0000
+<ANP0650:0000:0002
+<MSG<FAC0018Kuuntele minun viimeinen
+pyyntöni.<NOD<CLRJos näet Suen,<NOD
+ota hänet mukaasi ja
+pakene täältä saarelta.<NOD<CLRSe tyttö on Sakamoton
+tytär, ja hän ei
+halunnut tulla tälle<NOD
+saarelle alunperinkään.<NOD
+Mutta me emme voinneet
+jättää lasta yksin,<NOD
+joten hänellä ei ollut
+muuta vaihtoehtoa kuin 
+tulla mukaamme.<NOD<CLR
+Jos millään voit.<NOD<CLRPakene ja ota hänet
+mukaasi, kiitos.<NOD<CLO
+<FL-0160<FL+0161<FL+0741<PS+0004:6004<END
+
+
+#0660
+<KEY<FLJ1020:0661<MSG<FAC0018Ota Sue mukaasi
+ja pakene tältä saarelta...<NOD
+Minä rukoilen...<NOD<END
+#0661
+<KEY<MSG<FAC0018Olen todellakin pahoillani
+kaaoksesta mikä tapahtui
+teidän saarellenne.<NOD<CLRMe ihmiset olemme
+syylisiä siihen.<NOD<END
+
+
+#0700
+<KEY<CMU0000<FAO0004<TRA0024:0700:0002:0000
+
+
+#6001
+<PRI<MSGHaluatko mennä Munakäytävään?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<FLJ0159:6011<TRA0002:0099:0005:0006
+#6002
+<PRI<MSGHaluatko mennä Ruohikkoalueeseen?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0006:0098:0004:0018
+#6003
+<PRI<MSGHaluatko mennä Hiekkavyöhykkeelle?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0010:0099:0036:0033
+
+#6004
+<PRI<MSGHaluatko mennä Labyrinthiin?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0043:0099:0010:0034
+
+#6005
+<PRI<MSGHaluatko mennä Maatilalle?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0500:0001:0000
+<WAI0100<FAO0004<TRA0060:0099:0009:0009
+
+#6011
+<KEY<TRA0049:0099:0007:0006
+

@@ -1,0 +1,109 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+
+
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0039:0094:0033:0009
+
+
+#0200
+<PRI<MSGKauvan aikaa sitten, tällä 
+saarella asui noita.<NOD
+Hän on se joka rakensi tämän
+Labyrinthin,<NOD
+jotta hän voisi pitää meidät,
+Gaudisit, kahlittuna.<NOD<END
+#0210
+<PRI<MSGOn olemassa ulospääsy tästä 
+sokkelosta.<NOD
+Mutta reitti sinne on tukittu
+isolla lohkareella.<NOD<CLRJa sen liikuttaminen on vain
+alku sinun koettelemuksille...<NOD<END
+#0220
+<PRI<FLJ1020:0221<MSGÄääh... Haluan NIIN paljon Mimigan
+lihaa...<NOD<CLR*nuusk nuusk*<NOD<CLR
+SINÄ haiset hieman Mimigalta.<NOD<END
+#0221
+<PRI<MSGHa-ha-hah...<NOD<CLROlet hauska.<NOD<END
+#0230
+<PRI<MSGOletko koskaan nähnyt tämän saaren
+ulkopuolelle?<NOD<CLRTämä saari leijuu korkealla
+ilmassa.<NOD
+Ja miten se pystyykään 
+leijumaan...<NOD
+Se salaisuus piilee tässä 
+sokkelossa.<NOD<END
+#0240
+<PRI<FLJ0720:0241
+<MSGTuo teleportaali toimi vielä hetki
+sitten. Mutta tottakai,<NOD
+se vei vain jonnekkin muualle
+tätä Labyrinthiä...<NOD<END
+#0241
+<MSGTeleportaali näköjään toimii nyt.<NOD<CLRMutta tottakai,
+se vie vain jonnekkin muualle
+tätä Labyrinthiä...<NOD<END
+
+
+#0300
+#0301
+<KEY<MNA<CMU0008
+<ANP0310:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0310:0000:0000
+<MYD0000<DNP0301<SMC<END
+#0310
+<KEY<FLJ0720:0311
+<KEY<MSGTeleportaali.<NOD<CLRSillä ei ole virtaa.<NOD<END
+#0311
+<CNP0300:0111:0002<HMC<WAI0060<ANP0310:0001:0000
+<WAI0100<FAO0004<TRA0045:0301:0002:0053
+
+
+#0400
+<KEY<FLJ0721:0410<MSGMoro moro.<NOD<CLRTämä on Labyrinthin Kauppa!<NOD
+Mutta, harmillisesti, meidät
+ryöstettiin aikaisemmin,<NOD
+joten meillä ei ole mitään
+myytävää tällähetkellä.<NOD
+Anteeksi siitä...<NOD<CLO<AMJ0002:0401<AMJ0013:0404<EVE0402
+#0401
+<KEY<MSGHm?<NOD<CLRHei, sinulla on jotain
+mielenkiintoista.<NOD<CLR=Pohjantähti= ja =Tulipallo=,
+jos olen oikeassa.<NOD<CLRSaisinko vilkaista niitä?<YNJ0403<CLO
+<AM-0003
+<WAI0020<MSG<GIT0002Annoit =Pohjantähden=.<NOD
+<GIT0003Annoit =Tulipallon=.<NOD<GIT0000<CLR
+<SOU0044Hoho!<NOD<CLR<FL+0721<GIT0001<CLR
+<TAM0002:0001:0000<CMU0010=Käärme= valmistettiin!<WAI0160<NOD<RMU<END
+#0402
+<KEY<FL+0721<MSG*huokaus*<NOD<CLRSiinä, miltä näyttää?<NOD<CLR<GIT1020<CLR
+<CMU0010<IT+0020<EQ+0008Sait =Turbolataajan=!<WAI0160<NOD<RMU<GIT0000<CLRSaat sen ilmaiseksi.<NOD
+Sinulla ei muutenkaan näytä olevan
+rahaa.<NOD<END
+#0403
+<KEY<MSG<CLREt tiedä mistä olet paitsi!<NOD<END
+#0404
+<KEY<FL+0721<MSG*huokaus*<NOD<CLRSiinä, miltä näyttää?<NOD<CLR<GIT1038<CLR
+<CMU0010<IT+0038Sait =Hupaisan Tähden=!<WAI0160<EQ+0128<FL+0722<NOD<RMU<GIT0000<CLRSe on vain koriste,<NOD
+mutta sinulla on jo vahvin ase,
+joten mitä muutakaan voin tehdä?<NOD<END
+#0410
+<KEY<MSGHän joka sinetöi meidät tänne on
+noita nimeltä Jenka.<NOD<CLR...Ei hän vihaa meitä tai mitään
+sellaista.<NOD
+Me olemme täällä Labyrinthissä 
+suojelemassa jotain.<NOD<CLR...En enää edes muista mitä,
+mutta se on okei!<NOD<END
+

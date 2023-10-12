@@ -1,0 +1,80 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<KEY<FLJ1000:0095<MNA<CMU0008<FAI0004<EVE0200
+#0095
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0053:0094:0075:0005
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002<FAO0000<TRA0056:0090:0118:0083
+
+#0200
+<KEY<FL+1000<FL+1025<FL+1038<MYD0002<WAI0050
+<ANP0400:0010:0000<MSG
+Uwah!<NOD<CLO
+<ANP0400:0020:0000<WAI0050<END
+
+#0400
+<KEY
+<FLJ1003:0404
+<FLJ1102:0403
+<FLJ1002:0402
+<FLJ1001:0401<FL+1001<FL+1038
+<ANP0400:0010:0000
+<MSGEyaahh!<MYB0002<NOD<CLRÄlä tapa minua!<NOD
+Olen ihminen! Minut maagisesti
+taiottiin Mimigaksi!
+Olen ihminen!<NOD<CLRMitä?<NOD<CLR.....<NOD<CLR<ANP0400:0000:0000<FAC0028Sinä et ole yksi niistä 
+tappaja roboteista?<NOD
+Sinä säikäytit minut
+täysin, kun ilmestyit
+tyhjästä siihen!<NOD<CLROletko sinä ole se
+pelastaja?<NOD<END
+
+
+#0401
+<KEY<FL+1002
+<MSG<FAC0028Nimeni on Itoh, olen
+yksi niistä ihmisistä jotka
+tuli tutkimaan tätä saarta.<NOD
+Se noita Misery muunti
+minut täksi...<NOD
+Onnistuin pakenemaan,
+mutta... katso minua.<NOD<CLRJa nyt olen jumissa!<NOD<CLRSinä kiipesit tänne
+ulkopuolelta, etkös?<NOD
+Olen diplomi-insinööri,<NOD
+mutta pelkään korkeita
+paikkoja....<NOD<CLROijoivoivoi..<NOD<CLRMinun ei olisi pitänyt
+koskaan tullakkaan tälle
+saarelle.<NOD<END
+
+#0402
+<KEY<MSG<FAC0028Ei ei, ei kai sinulla ole
+käyttöä minunlaiselleni 
+hylätylle pelkurille?<NOD<END
+
+
+#0403
+<KEY<MSG<FL+1003<FAC0028Itoh?<NOD Kyllä, olen hän.<NOD<CLRMitä?<NOD
+Sakamoto työskentelee
+raketin parissa?<NOD<CLREli hän hengissä...<NOD
+Hän on hurja.<NOD
+Ei yhtään kuten minä,
+se on varma...<NOD<CLROkei sitten.<NOD
+Ota tämä.<NOD<FAC0000<GIT1027<IT+0027<CLR
+<CMU0010Sait =Ohjaimen=.<WAI0160<NOD<RMU
+<CLR<FAC0028Hän on varmaan
+sitä vailla.<NOD<GIT0000<EVE0404
+#0404
+<KEY<MSG<FAC0028Anna neiti Sakamotolle
+terveiseni.<NOD<END
+

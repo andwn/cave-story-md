@@ -1,0 +1,83 @@
+
+#0090
+<MNA<CMU0000<FAI0000<END
+#0091
+<MNA<CMU0000<FAI0001<END
+#0092
+<MNA<CMU0000<FAI0002<END
+#0093
+<MNA<CMU0000<FAI0003<END
+#0094
+<MNA<CMU0000<FAI0004<END
+
+
+
+<FLJ1563:0101
+
+#0100
+<KEY<FLJ1564:0101<SOU0011<ANP0100:0000:0002
+<FAO0004<TRA0016:0094:0032:0002
+#0101
+<PRI<MSG...Mitä sinä kuvittelit tapahtuvan?<NOD<END
+
+
+#0400
+<KEY<MYB0002<WAI0020
+<FLJ1563:0420
+<FLJ1562:0411
+<FLJ1561:0403<MSGOnks sulla asiaa mulle?<YNJ0401<FLJ1044:0402<CLRHah!<NOD
+En usko.<NOD<END
+
+#0401
+<KEY<MSGHaha, heippa sitten.<NOD<END
+
+#0402
+<KEY<FL+1561<MSGHm?<NOD Muistinmenetys?<NOD
+Kuinka kauheaa.<NOD<EVE0403
+#0403
+<KEY<MSGNo sitten, haluutko sä et 
+annan sulle Sienimerkin?<YNJ0408<EVE0404<END
+
+#0404
+<KEY<MSGMut jos totta puhutaan,
+sä et oikeasti halua sitä?<YNJ0405<EVE0408
+#0405
+<KEY<MSGSä haluut sitä niin paljon?<YNJ0409<EVE0406
+#0406
+<KEY<MSGNää iha absoluuttisesti
+haluut sen?<YNJ0409<EVE0407
+#0407
+<KEY<MSGMut oikeasti sä et halua sitä,
+niinkös?<YNJ0410<EVE0409
+
+#0408
+<KEY<MSGNiinkö? Ei stte.<NOD<END
+#0409
+<KEY<MSGJoo kuka sitä tarvitsee...<NOD<END
+
+#0410
+<KEY<MSGOkei okei, ota se!<NOD<CLR<GIT1033<IT+0033<FL+1562<CLR
+<CMU0010Sait =Sienimerkin=.<WAI0160<NOD<RMU<END
+
+#0411
+<KEY<MSGBzzzzzt.<NOD<END
+
+#0420
+<KEY<MSGHwahaha!<NOD
+Jäin kii vai?<NOD<CLRSe on vaan turhanpäinen
+hilavitkutin!<NOD<CLR.....<NOD<CLRHä?<NOD
+Sä haluut syödä mut?!<NOD<CLRMä kerron sulle, oon arvokas, 
+arvokkain sieni, 
+tosin kuin noi muut sienet!<NOD<CLRMurrrrrr!<NOD
+En anna sun syödä mua niin
+helposti!<NOD<CLR<CMU0004Kuole!!<NOD<CLO<FL+1564
+<CNP0500:0313:0000<WAI0002
+<ANP0500:0100:0000<DNP0400
+<BSL0500<END
+
+
+#0500
+<KEY<CMU0000<ANP0500:0500:0005<WAI0150
+<MSGVoitit......<NOD<CLR<GIT1034<IT+0034<FL-1564<CLR<DNP0500
+<CMU0010Sait =Ma Pignonin=!<WAI0160<NOD<RMU<END
+

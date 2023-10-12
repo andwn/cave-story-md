@@ -1,0 +1,191 @@
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0099
+<KEY<MNA<CMU0000<CMU0008
+<ANP0102:0001:0000<FAI0004
+<CNP0301:0112:0000<WAI0100
+<ANP0102:0000:0000
+<MYD0000<DNP0301<SMC<END
+
+#0100
+<PRI<FLJ0523:0105<FAO0004<TRA0006:0094:0217:0016
+#0101
+#0102
+<KEY<FLJ0524:0103
+<MSGTeleportaali.<NOD
+Näyttää siltä että se ei ole
+toiminnassa tällähetkellä...<NOD<END
+#0103
+<PRI<MSGHaluatko mennä Maatilalle?<YNJ0000<CLO
+<KEY<CNP0300:0111:0002<HMC<WAI0060<ANP0102:0001:0000
+<WAI0100<FAO0004<TRA0061:0099:0007:0013
+
+#0105
+<PRI<FAO0004<FL+0227<TRA0006:0600:0217:0016
+
+
+#0200
+<KEY<MNA<CMU0000<FAI0004<WAI0100
+<QUA0030<SOU0044<ANP0101:0001:0000
+<WAI0080<ANP0210:0000:0000<WAI0020
+<FL+0520<SOU0011<DNP0101
+<WAI0050<MYD0002<MOV0006:0010
+<CMU0010<MSG<FAC0010Vuhuu!<WAI0160<NOD<CMU0008<CLRSinä teit sen!<NOD
+Tiesin että sinä pystyt
+siihen heti kun näin sinut.<NOD<CLR.....<NOD
+<CLRMutta kuitenkin...<NOD
+Nimeni on Kazuma Sakamoto.
+Olin onnekas kun pystyin
+pakenemaan Tohtorilta.<NOD<CLR
+Mutta harmillisesti,
+minun teleporttini lähetti
+minut tänne.<NOD
+Minä luulin että kuolen
+nälkään..<NOD
+Olen elämäni velkaa
+sinulle!<NOD<CLRAiniin, asiasta toiseen...<NOD<CLR...Satutko sinä tietämään
+paikan nimeltä 
+"Mimiga Kylä"?<NOD<CLR...Sue?<NOD<CLROlet tavannut Suen?!<NOD<CLRAi, okei.<NOD
+Sinä tulit Suen sijaan
+etsimään minua.<NOD<CLROkei sitten!<NOD
+Näytä minulle reitti
+kylään!<NOD<SOU0043<ANP0102:0001:0000<WAI0030<ANP0210:0000:0002<CLR?!<NOD<CLO<FAC0000
+<CNP0303:0113:0000<ANP0303:0030:0000<WAI0100
+<FAC0000<MSG<ANP0102:0000:0000<FAC0018Kazuma?!<NOD<CLR<FAC0010Professori Booster!!<NOD
+Olet hengissä!<NOD<CLR<FAC0018Kyllä, enemmän tai
+vähemmän.<NOD<CLO
+<ANP0303:0003:0000<WAI0040
+<ANP0303:0000:0002<WAI0030
+<ANP0303:0000:0000<WAI0030
+<FAC0000<MSG<FAC0018Entäpä Sue?<NOD
+Onko hän kunnossa?<NOD<CLR<FAC0010Sue on Mimiga Kylässä.<NOD
+Tämä nuori mies oli juuri
+näyttämässä minulle tien
+sinne.<NOD<CLO
+<WAI0020<ANP0210:0000:0000<WAI0010
+<FAC0000<MSG<FAC0018!!!<NOD<CLO
+<ANP0303:0003:0000<WAI0080<ANP0303:0000:0000
+<FAC0000<MSG<FAC0010Tunnettekote kaksi
+toisenne?<NOD<CLR<FAC0018.....<NOD<CLREi...<NOD
+<ANP0303:0000:0002...Ei, me ei olla koskaan
+tavattukkaan.<NOD<CLRMutta kuitenkin, meidän
+tulee pitää kiirettä ja
+etsiä Sue.<NOD
+Tohtori on alkanut
+kokoamaan Mimigoita.<NOD
+Näyttää siltä että hän on
+tietoinen punaisista
+kukista.<NOD<CLR<FAC0010Mutta, Sue...<NOD<CLRVaikuttaakohan punaiset
+kukat Sueen myös?<NOD
+Aivan kuten muihinkin
+Mimigoihin.<CLR<FAC0018Kazuma.<NOD<CLRTohtori on alkanut
+kokoamaan Mimigoita.<NOD
+Sinä tiedät mitä se
+tarkoittaa, tiedäthän?<NOD<CLR<FAC0010<CMU0000Sinä...tarkoitat, sota?
+Hän...<NOD<CLO<FAC0000
+<ANP0303:0003:0002<WAI0032
+<ANP0303:0000:0002
+<MSG<FAC0018Juuri niin.<NOD<CMU0008
+Meillä ei ole mitään muuta
+vaihtoehtoa nyt kuin
+pysäyttää hänet.<NOD<CLR<FAC0010Pysäyttää hänet?
+Mutta miten?<NOD<CLR<FAC0018Minulla on idea.<NOD
+Mutta ekaksi, kiirehditään
+sinne missä Sue on.<NOD
+Puhutaan sitten.<NOD<FAC0000<CLO
+<ANP0303:0003:0000<WAI0038
+<MYB0002<WAI0016<MYD0002<ANP0303:0000:0000
+<MSG<FAC0018Sinä myös, tule mukaan.<NOD<CLO
+<ANP0303:0005:0000<WAI0020<DNP0303
+<ANP0210:0003:0000<WAI0078
+<ANP0210:0005:0000<WAI0020<DNP0210
+<FL-0522<FL+0523
+<CNP0016:0016:0002<WAI0020
+<CNP0017:0017:0002<FL+0525<FL+0226
+<END
+
+
+
+#0210
+#0220
+<KEY<FLJ0524:0221<MSG<TURTämä Teleportaali ei ole tällähetkellä 
+käytössä.<NOD<END
+#0221
+<KEY<MSG<TURTeleporttaus paikkaan "Maatila" on
+mahdollinen.<NOD<END
+
+#0300
+#0301
+#0302
+#0303
+
+
+#0500
+<KEY<CMU0021<FAI0004
+<MSG<TURYhdistetään verkkoon...<WAI0050
+<TURKirjaudutaan sisälle...<WAI0050
+<TURAloitetaan keskustelu...<WAI0100<CLR<MSGSue?<NOD
+Oletko siellä?<NOD
+Kazuma tässä!<NOD
+Pääsin pakoon jotenkuten,
+mutta olen eksynyt...<NOD
+Löysin suojapaikan, mutta täällä 
+ei ole yhtään mitään.<NOD
+Jos näet tämän,
+vastaa heti!<NOD<CLR...Jookos?<NOD
+<FAO0004<SK+0005<TRA0013:0091:0010:0008
+
+
+#0501
+<KEY<HMC<CMU0021<FAI0004
+<MSG<TUREtsitään käyttäjää "Sue"...<WAI0150<CLR<TUR1 käyttäjä "Sue" löytyi.<WAI0150<CLR<MSGSue!<NOD
+Vastaa!<NOD
+He etsivät sinua...<NOD
+Oletko nukkumassa?<NOD
+Veljesi on niin yksinäinen...<NOD<FAO0004<SMC<CLO
+<TRA0090:0095:0014:0009
+
+
+#0502
+<KEY<HMC<CMU0021<FAI0004
+<MSGSuuuuue!<NOD
+Vastaa minulle!<NOD
+Minulla on kauhea nälkä...<NOD
+Täällä ei ole mitään syötävää,
+joten olen joutunut syömään
+torakoita.<NOD
+...Haha. Se oli vitsi.
+Haha.<NOD<CLR...Mutta, jos on pakko,
+niin sitten minun täytyy...<NOD<FAO0004<SMC<TRA0011:0302:0008:0006
+
+
+#0700
+<KEY<FAI0004<MSGSue?<NOD
+Oletko oikeasti siellä?<NOD<FAO0004<TRA0024:0701:0002:0000
+#0701
+<KEY<FAI0004<MSGOvi on jumissa enkä pääse
+ulos täältä.<NOD
+Olen silti tässä suoja-
+öh, varastossa.<NOD
+Sektorin koodi on "Ruohikkoalue"...<NOD
+Katso voitko ajaa skannauksen
+sieltä käsin.<NOD<CLRJa, äiti ei ole täällä.<NOD
+Luulen että hän on silti vielä 
+Tohtorin kanssa.<NOD<CLRNäyttääkö mikään Lohikäärmeistä 
+vielä kuoriutuvalta?<NOD<FAO0004<TRA0024:0702:0002:0000
+
+#0702
+<KEY<FAI0004<MSGJes.<NOD
+Ainiin, mitä todella tarvitsen
+jotain syötävää, jot<CLR
+<MSG<TURKäyttäjä "Sue" on katkaissut yhdeyden.<NOD<CLR.....<NOD<FAO0004<TRA0024:0703:0002:0000
+

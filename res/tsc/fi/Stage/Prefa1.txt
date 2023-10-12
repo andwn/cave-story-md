@@ -1,0 +1,38 @@
+
+#0090
+<MNA<CMU0030<FAI0000<END
+#0091
+<MNA<CMU0030<FAI0001<END
+#0092
+<MNA<CMU0030<FAI0002<END
+#0093
+<MNA<CMU0030<FAI0003<END
+#0094
+<MNA<CMU0030<FAI0004<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011<FAO0004<TRA0062:0094:0079:0073
+
+
+#0150
+<KEY<DNP0150<CNP0016:0016:0002<END
+
+
+
+#0200
+<KEY<MSGLöysit Boosterin kirjoittaman
+muistiinpanon.<NOD
+Haluatko lukea sen?<YNJ0000<CLR<TURSaaren sisäpuolen tutkiminen olisi
+helpompaa jos meillä olisi varusteet
+ilmassa kulkemiseen.<NOD<CLRJoten minä aloin työskentelemään
+"Booster" projektin parissa.<NOD<CLRSen kehittäminen tapahtuu kahdessa
+vaiheessa, versiot "0.8" ja "2.0".<NOD<CLRSuunnitelmieni mukaan versio "0.8"
+mahdollistaa ylöspäin leijumisen
+hetkeksi.<NOD<CLROlen varma että voin saada
+version 2.0 valmistettua, jos vain
+elän tarpeeksi kauan.<NOD<CLRSe voisi olla 0.8 versiotakin
+parempi laite..<NOD<CLO
+<FLJ0161:0000<WAI0050<MS2
+       Jos vain elän...<WAI0050<NOD<END
+
+

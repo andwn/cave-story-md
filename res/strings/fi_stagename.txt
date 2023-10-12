@@ -1,0 +1,95 @@
+Null
+Arthurin Talo
+Munakäytävä 
+Muna Nro. 00
+Muna Nro. 06
+Munien Tarkkailuhuone
+Ruohikkoalue
+Santan Talo
+Chacon Talo
+Labyrinthi I
+Hiekkavyöhyke
+Mimiga Kylä
+Ensinmäinen Luola
+Aloitus Paikka
+Varasto
+Vesisäiliö 
+Hautausmaa
+Yamashitan Maatila
+Varasto
+Kokoushuone
+Tallennus Paikka
+Sivu Huone
+Cthulhun Majatalo
+Muna Nro. 01
+Arthurin Talo
+Sähköhuone
+Tallennus Paikka
+Teloituskammio
+Kumi
+Hiekkavyöhykkeen Asuntola
+Ruohikkoalueen Mökki
+Päävalmito
+Pieni Huone
+Jenkan Talo
+Hylätty Talo
+Hiekkavyöhyke Varasto
+Jenkan Talo
+Hiekkavyöhyke
+Labyrinthi H
+Labyrinthi W
+Leiri
+Klinikan Rauniot
+Labyrinthin Kauppa
+Labyrinthi B
+Lohkare Kammio
+Labyrinthi M
+Pimeä Paikka
+Ydin
+Vesiväylä
+Munakäytävä?
+Cthulhun Majatalo?
+Munien Tarkkailuhuone?
+Muna Nro. 00
+Ulkoseinä 
+Sivu Huone
+Varasto
+Maatila
+Vankila Nro. 1
+Piilopaikka
+Taukotila
+Teleportaali Huone
+Vankila Nro. 2
+Terassi
+Viimeinen Luola
+Valtaistuinsali
+Kuninkaan Pöytä 
+Elementtirakennus
+Viimeinen Luola (Piiloitettu)
+Musta Tila
+Pikkutalo
+Terassi
+Pudotus
+Studio Pixel esittää 
+Vesiväylän Mökki
+
+
+
+
+
+Elementtirakennus
+Pyhäkkö - K1
+Pyhäkkö - K2
+Pyhäkkö - K3
+Varasto
+Läpikulku?
+Läpikulku?
+Patsas Kammio
+Kammio
+Käytävä 
+
+Erakko Aseseppä 
+
+Kammio
+
+Kellohuone

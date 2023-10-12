@@ -1,0 +1,102 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<FLJ0120:0095<ANP0200:0010:0002<EVE0095
+#0095
+<MNA<CMU0014<FAI0004<END
+
+#0100
+<KEY<SOU0011<ANP0100:0000:0002<FAO0004<TRA0049:0094:0290:0008
+
+#0110
+<KEY<FLJ0940:0111<MSGTunnet kylmän ilman
+virtaavan sisälle...<NOD<END
+#0111
+<KEY<FAO0002<TRA0053:0092:0004:0165
+
+#0110
+
+#0400
+
+#0500
+<KEY<MSGRuudulla lukee..<NOD<CLR
+<TURKUORIUTUMINEN ONNISTUI<NOD<FLJ0941:0000<CLO
+<FL+0941
+<WAI0020<CMU0000<MSGKuka siellä?<MYD0002<NOD<CLO
+<WAI0050<CNP0400:0055:0000
+<WAI0010<ANP0400:0003:0000
+<WAI0048<ANP0400:0000:0000
+<CMU0014<MSG<FAC0010Ai, se olet sinä vain.<NOD<CLRHyvä että olet
+kunnossa.<NOD
+Olen ainoa täällä.<NOD<CLRSen jälkeen kun poistuit 
+Hiekkavyöhykkeeltä,<NOD
+me loput aloimme
+valmistatumaan pakoon.
+<NOD<CLRMutta sitten Misery
+ilmestyi.<NOD
+Hän kaappasi Suen,<NOD
+ja en ole nähnyt
+Professoria...<NOD<CLR.....<NOD<CLRVeikkaan että Tohtori
+sai käsiinsä siemenet.<NOD<CLR..<NODEi, ei, en syytä sinua...<NOD<ANP0400:0000:0002
+Tohtorin voitto oli varma
+sillä hetkellä kun hän
+sai käsiinsä sen Kruunun.<NOD<CLROn vain ajan kysymys
+ennen kuin hänen villi
+Mimiga armeija on valmis...<NOD<CLRSen jälkeen, pelkään
+ettet sinäkään pysty
+pysäyttämään häntä.<NOD<CLO<FAC0000
+<WAI0010<ANP0400:0003:0002
+<WAI0016<ANP0400:0000:0002
+<MSG<FAC0010Meillä ei ole muuta
+vaihtoehtoa kuin paeta...<NOD<CLRAjattelin, että voimme
+paeta jos meillä on 
+Ilma Lohikäärme.<NOD
+...Sen takia tulin tänne.<NOD<CLRJa nyt, Lohikäärmeeni
+kuoriutui.<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000<WAI0100
+<MSG<FAC0010Haluatko paeta minun
+kanssani?<YNJ0501<FL+0960<CLR<ANP0400:0000:0002Joo, ei ole muuta
+vaihtoehtoa.<NOD
+Me teimme kaikkemme.<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+
+
+#0501
+<KEY<WAI0020<ANP0400:0000:0002
+<MSG<FAC0010Okei...<NOD<CLO<FAC0000
+<WAI0050<ANP0400:0000:0000
+<WAI0010<ANP0400:0005:0000
+<MSG<FAC0010Toisaalta,<NOD
+on mahdollisesti olemassa
+keino palauttaa Mimigat
+heidän luonnoliseen tilaan.<NOD<CLRSinä voisit rikkoa
+saaren ytimen.<NOD
+Jos teet sen, tosin,
+tämä saari todennäköisesti
+murentuu palasiksi.<NOD
+Vaarallinen vaihtoehto, 
+vai mitä?<NOD<WAI0050<ANP0400:0000:0000<CLRMutta, kuitenkin, me
+ei edes tiedetä 
+missä se ydin on...<NOD<CLRJos haluat kokeilla
+sitä, minä voin odottaa.<NOD<CLRMutta muista, jos
+tilanne pahenee,<NOD
+minä ehkä lähden
+pois ilman sinua...<NOD<CLO
+<WAI0010<ANP0400:0003:0002
+<WAI0031<ANP0400:0005:0002<SOU0011<CNP0110:0018:0002
+<WAI0020<CNP0400:0000:0000<FL+0940
+<END
+<END
+
+#0502
+

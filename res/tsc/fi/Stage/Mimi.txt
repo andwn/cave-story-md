@@ -1,0 +1,280 @@
+
+#0090
+<MNA<FLJ0341:0095<CMU0009<FAI0000<END
+#0091
+<MNA<FLJ0341:0096<CMU0009<FAI0001<END
+#0092
+<MNA<FLJ0341:0097<CMU0009<FAI0002<END
+#0093
+<MNA<FLJ0341:0098<CMU0009<FAI0003<END
+#0094
+<MNA<FLJ0341:0099<CMU0009<FAI0004<END
+
+#0095
+<CMU0028<FAI0000<END
+#0096
+<CMU0028<FAI0001<END
+#0097
+<CMU0028<FAI0002<END
+#0098
+<CMU0028<FAI0003<END
+#0099
+<CMU0028<FAI0004<END
+
+
+#0100
+<PRI<FLJ0324:0102
+<ITJ0001:0101
+<MSGSe on lukossa.<NOD<END
+#0101
+<SOU0022<GIT1001<FL+0324<FL+0441
+<MSGKäytit =Arthurin Avaimen=.<NOD<GIT0000<CLO<EVE0102
+#0102
+<SOU0011<CNP0100:0000:0000<FAO0004<TRA0001:0094:0017:0008
+
+
+#0103
+<PRI<FAO0000<TRA0015:0090:0036:0014
+#0104
+<FLJ0327:0112
+<FLJ0360:0111
+<KEY<MSG<FAC0009Nimeni on Jack,<NOD
+numero kakkonen täälläpäin.<NOD<CLRTämä ovi vie Mimigoiden
+hautausmaalle, jossa
+sankari Arthur lepää.<NOD<CLRMitä minä teen,
+sinä kysyit?<NOD<CLRNo, sienet ovat nousseet
+esille hautausmalla, joten
+minä vartioin tätä ovea,<NOD
+jotta ne eivät tule pois
+sieltä.<NOD<END
+
+#0105
+<KEY<FLJ0360:0106<SOU0011<ANP0105:0000:0002<EVE0106
+#0106
+<KEY<FAO0004<TRA0014:0094:0005:0009
+
+#0107
+<PRI<SOU0011<CNP0107:0000:0000<FAO0004<TRA0019:0094:0007:0010
+
+#0108
+<PRI<FAO0002<TRA0017:0092:0002:0011
+
+#0109
+<PRI<FAO0004<TRA0020:0094:0010:0009
+
+#0110
+<PRI<FAO0000<TRA0012:0090:0055:0009
+
+#0111
+<KEY<FL+0327<FL+0443<MSG<FAC0009Mitä?!<NOD
+Toroko on kidnapattu?<NOD
+Voi ei!<NOD
+Minun on heti
+ilmoitettava Kingille!<NOD<CLO
+<MYD0000
+<ANP0111:0008:0000<WAI0208
+<ANP0111:0000:0002<WAI0010
+<SOU0011<ANP0107:0000:0002<WAI0030
+<DNP0111
+<SOU0011<ANP0107:0000:0000<END
+
+#0112
+<PRI<FAO0002<TRA0016:0092:0002:0012
+
+
+
+#0200
+<PRI<FLJ0322:0201<FL+0322<SOU0022<CNP0200:0021:0000
+<MSGAvasit aarrearkun.<NOD<GIT1002<IT+0002<EQ+0002<CLR
+<CMU0010Sait =Kartta Laitteen=!<WAI0160<NOD<RMU<EVE0201
+#0201
+<PRI<MSGSiihen on jotain kirjoitettu...<NOD<CLR<TURNiin kauvan kun sinulla on
+tukimushalua, löydät reittisi.
+Siihen minä uskon.<NOD<END
+
+#0300
+#0301
+<KEY<FLJ0323:0305<FL+0320<FL+0323
+<MSG.....<NOD<CLO
+<MYB0000<WAI0050<MYD0000<CNP0301:0061:0002<WAI0008<CNP0301:0061:0004
+<MSG<FAC0007Mitä?
+Et ole vihollinen?<NOD
+Olin varma että ne...<NOD<CLRNimeni on King.<NOD
+Olen numero yksi
+tässä kylässä.<NOD
+Mutta se ei tarkoita paljoa
+enää, kun meitä on vain
+kuusi jäljellä.<NOD<CLRTai no, ja Sue myös.<NOD<CLRMutta, hän ei ole yksi
+meistä.<NOD
+Hän on vain ulkopuolinen
+joka ilmestyi tänne ihan
+vasta.<NOD<END
+
+#0302
+<KEY<FL+0320<FL+0321<FON0302:0016<MNA<FAI0004<CMU0000<WAI0100
+<MSG<FAC0007Anna se avain!<NOD<CLR<FAC0008Ei! En anna!<NOD<CLR<FAC0007Yritätkö sinä suojella
+Suea?<NOD
+Hän on ulkopuolinen!
+Hän ei ole yksi meistä!<NOD<CLR<FAC0006Sue on hyvä henkilö.<NOD
+En ikinä pettäisi häntä!<NOD<CLR<FAC0007Toroko...<NOD
+Kun Tohtori tulee,
+sinä tiedät että hän vie
+jonkun pois jälleen...<NOD
+Jos me ei luovuteta Suea,
+se voi olla sinä kenet
+hän ottaa.<NOD<CLR<FAC0006Mutta... Mutta...<NOD<CLR<FAC0007Anna se avain, Toroko!<NOD
+<FAC0000<CLO
+<MOV0013:0022
+<WAI0075<HMC<CNP0309:0150:0002<ANP0309:0010:0002<QUA0030
+<MSG?!<NOD<CLO
+<WAI0010
+<ANP0300:0006:0002
+<ANP0301:0006:0000
+<WAI0100
+<ANP0300:0006:0002
+<WAI0080
+<DNP0300
+<CMU0009
+<FOM0016<SMC<DNP0309<END
+
+
+#0305
+<KEY<MSG<FAC0007Perhanan Toroko...<NOD
+Hän juoksi pakoon kun
+sinä tipuit.<NOD<END
+#0306
+<KEY<MSG<FAC0007Grrrrr!<NOD<CLRToroko!<NOD
+Et pääse pakoon
+niin helposti!<NOD<END
+#0307
+#0308
+<KEY<MYD0002<FAI0002<CMU0000<WAI0020
+<MSG<FAC0007Anna se avain!<NOD<CLR<FAC0008En!<NOD<CLO
+<ANP0307:0006:0002<WAI0060
+<ANP0306:0006:0002<SOU0016<WAI0100<DNP0307<FL-0371<CMU0009<END
+#0309
+
+
+#0311
+<KEY<MSG*nom nom*<NOD<CLR!<NOD<CLO
+<MYB0000<ANP0311:0002:0004<WAI0030<MYD0000
+<FLJ0156:0313
+<FLJ0120:0312
+<FLJ0360:0314
+<MSGOho! Sinä säikäytytit minut...<NOD<CLRSue?<NOD
+Ainiin.<NOD<CLRSe tyttö Arthurin Talossa?<NOD
+Hän asuu Torokon kanssa.<NOD<CLRHän on suloinen tyttö.<NOD
+Hän sanoo etsivänsä "Ilma
+Lohikäärmeitä"...<NOD
+Lohikäärme joka lentää
+ilman halki... Onkohan
+niitä oikeasti olemassa?<NOD<ANP0311:0000:0002<END
+#0312
+<MSGAi, sinä taasen.<NOD<CLRSue vietiin ylös.<NOD
+He sanoo että se oli hänen
+syynsä miksi Toroko kaapattiin.<NOD<ANP0311:0000:0002<END
+#0313
+<KEY<MSGArthurin talossa tulee
+kauhea meteli...<NOD<CLROnkohan niilä bileet
+menossa vai mitä?<NOD<ANP0311:0000:0002<END
+#0314
+<KEY<MSGMitä?<NOD
+Toroko kidnapattiin?<NOD<CLRNo, se ei ole hyvä asia.<NOD
+Nyt ainoa tyttö kylässä on Sue...<NOD<ANP0311:0000:0002<END
+
+#0400
+<KEY<FL-0155<FON0400:0016<FAI0004<MNA<CMU0000<WAI0100<ANP0600:0011:0002
+<MSG<FAC0003Päästä minut pois
+täältä heti!<NOD<ANP0600:0000:0002<CLR<ANP0610:0000:0000<FAC0007Ole hiljaa!<NOD<CLRSINÄ olet syypää
+miksi Toroko kidnapattiin!<NOD<CLRMeidän ainoa toivo
+on luovuttaa sinut
+heille ja toivoa parasta.<NOD<ANP0600:0011:0002<CLR<FAC0003Sinä perhanan kummajainen!<NOD<ANP0600:0000:0002<CLR<FAC0007Jos me ei saada
+Torokoa takaisin hengissä,<NOD
+minä vannon että revin
+kaikki raajasi irti!<NOD<CLO<CMU0009
+<FOM0016<WAI0050<END
+
+
+#0410
+#0411
+#0420
+<KEY<HMC<CMU0000
+<CNP0410:0042:0002
+<CNP0411:0074:0000
+<ANP0610:0000:0000<WAI0100<MSG<FAC0007Eli me olemme.. aseita?<NOD<CMU0009<FAI0004<CLR<FAC0002Kyllä.<NOD<CLRTohtori haluaa teidän
+satuttavan ihmisiä 
+käyttämällä punaisia kukkia.<NOD<CLR<FAC0009M--miksi hän haluaa
+tehdä niin?!<NOD<CLR<FAC0002Se mies on...
+...on kuin demoni.<NOD<CLR<FAC0009Ja hän aikoo käyttää
+niitä kukkia Torokoon?<NOD<CLR<FAC0002Minun tietääkseni,
+hän vielä etsii niitä 
+punaisia kukkia.<NOD<CLRVoimme vain toivoa
+että hän ei löydä niitä.<NOD<CLR<FAC0009Jos...<NOD<CLRJos hän löytää
+niitä kukkia, Toroko...<NOD<CLR<FAC0002Hän menee hulluksi...
+Kuoleman ase...<NOD<CLR<FAC0007En anna sen
+ikinä tapahtuvan!<NOD<CLO
+<FL-0154<FL+0157
+<FAO0004<TRA0001:0620:0005:0008
+
+
+#0500
+<KEY<MSG<TUR        Ylhäällä: Yamashitan Maatila
+Vasemmalla: Vesisäiliö Oikealla: Hautausmaa
+           Alhaalla: Arthurin Talo<NOD
+<END
+
+#0501
+<KEY<MSG<TUR
+              Yamashitan Maatila<NOD<END
+#0502
+<KEY<MSG<TUR
+              Vesisäiliö <NOD<END
+#0503
+<KEY<MSG<TUR
+           Mimigoiden Hautausmaa
+           Vaara! Pääsy kieletty<NOD<END
+#0504
+<KEY<MSG<TUR
+              Arthurin Talo<NOD<END
+#0505
+<KEY<MSG<TUR
+                 Kokoushuone<NOD<END
+
+
+#0600
+<FLJ0224:0602
+<FLJ0325:0601
+<KEY<FL+0325<PS+0002:6002
+<MSG<FAC0001Joo, olen jumissa...<NOD<CLRTohtorin kätyri
+kidnappassi Mimigan,
+hän luuli minua häneksi.<NOD
+Torokoksi siis,<NOD
+ja kun muut Mimigat
+eivät haluneet olla
+missään tekemissä minun<NOD
+kanssani, vain hän auttoi
+minua ja oli ystävällinen.<NOD<CLR.....<NOD<CLRMinä tiedän.<NOD<CLRMikset sinä mene
+minun puolestani?<NOD<CLRVeljeni on paikassa
+nimeltä "Ruohikkoalue".<NOD
+Etsi hänet ja tuo
+hänet tänne.<NOD<END
+
+
+#0601
+<KEY<MSG<FAC0001Etsi veljeni ja tuo
+hänet tänne.<NOD
+Voit mennä Ruhikkoaluelle
+käyttämällä teleportaalia
+Arthurin talossa.<NOD<END
+#0602
+<KEY<MSG<FAC0001Oletko jo löytänyt
+minun veljeni?<NOD<END
+
+#0610
+<FLJ0224:0611
+<KEY<MSG<FAC0007Tämä on kohtalo
+kaikille niille jotka
+häiritsee kyläämme.<NOD<END
+#0611
+<KEY<MSG<FAC0007Odotan edelleenkin...<NOD<END
+

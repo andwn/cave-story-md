@@ -1,0 +1,111 @@
+
+#0090
+<MNA<CMU0014<FAI0000<END
+#0091
+<MNA<CMU0014<FAI0001<END
+#0092
+<MNA<CMU0014<FAI0002<END
+#0093
+<MNA<CMU0014<FAI0003<END
+#0094
+<MNA<CMU0014<FAI0004<END
+#0095
+<FAI0001<END
+
+#0100
+<KEY<ANP0100:0000:0002<SOU0011
+<FAO0004<CSS<TRA0048:0094:0153:0016
+
+#0200
+<KEY
+<FLJ1441:0203
+<FLJ1440:0202
+<FLJ0835:0201
+<MSG<TURRuudulla lukee jotain.<NOD<CLR
+04-08-08 Vaimo synnytti lapsen.<NOD<END
+
+#0201
+<KEY<MSGSanat valaisevat näytön.<NOD<CLR
+<TURMikset pidä taukoa?<NOD<END
+
+#0202
+<KEY<FL+1445<MSGLuet mitä ruudulla näkyy.<NOD<CLR<TURTiedäthän, minä usein kirjoitin
+mitä opin muistikirjaan...<NOD<END
+
+#0203
+<KEY<MSGSanat vilkkuu ruudulla.<NOD<CLR
+<TURMinä rukoilen että voitat.<NOD<END
+
+#0210
+
+#0220
+<KEY<MSGEt löydä mitään mielenkiintoista...<NOD<END
+#0221
+<KEY<MSGSiinä on muistikirja,
+jossa on paksu kerros pölyä...<NOD<FLJ1441:0223<FLJ1445:0222<END
+#0222
+<KEY<MSG
+Haluatko avata muistikirjan?<YNJ0000<FL+1441<CLR<TURMaanpinnalla tehdyissä roboteissa
+on rajoituksia jotka rajoittavat
+heidän toimintaansa vedenalla.<NOD<CLRJos ne ovat vedenalla liian
+pitkään,<NOD<CLRheidän järjestelmät sammuu
+automaattisesti, jotta ne ei mene
+oikosulkuun.<NOD<CLRSeuraavaksi kuvataan miten
+oikeaoppisesti korjataan vedellä 
+täyttynyt robootti.<NOD<CLR<MSG
+.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010.<WAI0010<NOD<CLR<CMU0010Opit miten korjataan
+vesivahingoittunut robotti!<WAI0160<NOD<RMU<CLR<TURKun robotti on tyhjennetty vedestä 
+edellämainitulla tavalla,<NOD<CLRjärjestemä automaattisesi aloittaa
+uudelleenkäynistymis prosessin.<WAI0030<NOD<END
+#0223
+<KEY<MSGMikään muu ei näytä erityisen
+hyödylliseltä...<NOD<END
+
+#0250
+<KEY
+<FLJ1444:0257
+<FLJ1443:0255
+<FLJ1442:0254
+<FLJ1441:0253
+<FLJ1440:0252
+<FLJ0836:0251<EVE0019
+#0251
+<KEY<MSG
+Haluatko levätä?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR
+.....<NOD<CLO
+<WAI0100<LI+1000
+<DNP0210<FL-0836<FL+1440<MYD0002<RMU
+<TRA0073:0095:0012:0009
+#0252
+<KEY<MSGHän ei liiku,
+mutta hän näyttää olevan hengissä.<NOD<END
+#0253
+<KEY<MSGHaluatko tyhjentää veden ulos
+Curlystä?<YNJ0000<CLO
+<FL+1442<FAO0001<CMU0000<WAI0200<FAI0001
+<WAI0150<MSG<FAC0020
+Ooohh...<NOD<CLR<CMU0014<FAC0025.....<NOD<CLR<ANP0260:0001:0002<FAC0019Olet hengissä!<NOD<CLROlen niin iloinen...<NOD<CLR<FAC0025Luulin että me
+kuollaan.<NOD
+Kun sinä menetit
+tajuntasi, en keksinyt
+muuta vaihtoehtoa...<NOD<CLRIlmatankkini näköjään
+toimi kuten minä 
+toivoin.<NOD<CLR
+<FAC0020Ah...<NOD<CLO<FAC0000<ANP0260:0001:0000
+<WAI0050
+<MSGHän nukahti.<NOD
+<END
+#0254
+<KEY<MSGNäyttää siltä että menee
+pitkä aika ennen kuin hän
+uudelleenkäynistyy.<NOD<FL+1443<END
+#0255
+<KEY<MSG
+Haluatko jättää hänet tänne?<YNJ0256<END
+#0256
+<KEY<CNP0260:0259:0000<FL+0836<FL-1440<FL+1444<END
+#0257
+<KEY<MSGSänky on vedestä märkä.<NOD<END
+
+#0260
+

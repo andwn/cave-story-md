@@ -1,0 +1,40 @@
+
+#0090
+<MNA<CMU0012<FAI0000<END
+#0091
+<MNA<CMU0012<FAI0001<END
+#0092
+<MNA<CMU0012<FAI0002<END
+#0093
+<MNA<CMU0012<FAI0003<END
+#0094
+<MNA<CMU0012<FAI0004<END
+
+#0100
+<PRI<FAO0000<TRA0011:0090:0056:0033
+
+#0110
+<KEY<SOU0011<ANP0110:0000:0002
+<FAO0004<TRA0083:0094:0007:0010
+
+
+#0200
+<PRI
+<FLJ1371:0201
+<MSGJoo? Anna mun ryypätä rauhassa!<NOD<END
+#0201
+<PRI<MSGVai että minun vaimoni
+etsii minua?<NOD<CLR
+Nojoo, olet oikeassa,<NOD
+En ole ollut kotona hetkeen.<NOD
+Okei, on aika mennä.<NOD<GIT1032<DNP0200<IT+0032<CLRJa sinähän vie minut sinne,
+tottakai!<NOD<END
+
+#0300
+<CNP0300:0000:0000
+<PRI<MSGArthurin hauta.<NOD
+Hautakiveen on kirjoitettu:<NOD<CLR<MSG<TURTässä lepää jalo Arthur,
+Mimigoiden oikea sankari.<NOD<FLJ0390:0000<CLR<MSG<FL+0390
+<CMU0010<GIT1001<IT+0001Löysit =Arthurin Avaimen=!<WAI0160<NOD<CLO
+<RMU<END
+

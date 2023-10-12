@@ -1,0 +1,196 @@
+
+#0090
+<MNA<CMU0002<FAI0000<END
+#0091
+<MNA<CMU0002<FAI0001<END
+#0092
+<MNA<CMU0002<FAI0002<END
+#0093
+<MNA<CMU0002<FAI0003<END
+#0094
+<MNA<CMU0002<FAI0004<END
+
+#0100
+<KEY<SOU0011<DNP0100<FAO0000<TRA0056:0090:0072:0084
+
+#0110
+<KEY
+<SOU0011
+<ANP0110:0000:0002<WAI0010<HMC
+<ANP0110:0000:0000
+<MOV0015:0012<WAI0050
+<SOU0011
+<ANP0111:0000:0002<MYD0000<SMC<WAI0010
+<ANP0111:0000:0000<END
+#0111
+<KEY
+<SOU0011
+<ANP0111:0000:0002<WAI0010<HMC
+<ANP0111:0000:0000
+<MOV0015:0007<WAI0050
+<SOU0011
+<ANP0110:0000:0002<MYD0000<SMC<WAI0010
+<ANP0110:0000:0000<END
+
+
+#0200
+<KEY
+<FLJ1103:0212
+<ITJ0027:0211
+<FLJ1102:0206
+<ITJ0029:0210
+<ITJ0028:0209
+<FLJ1101:0208
+<FLJ1106:0204
+<FLJ1100:0201
+<ANP0200:0003:0005<WAI0050
+<ANP0200:0000:0005<WAI0020
+<MSG<FL+1100<FL+0961<FAC0022Eli sinä olet se
+pelastaja josta Sue
+puhui.<NOD<CLR
+Luojan kiitos...<NOD<CLROlen Momorin Sakamoto.<NOD
+Suen äiti.<NOD
+Aikaisemmin otin riskin ja
+työskentelin Tohtorin
+rinnalla.<NOD
+Mutta sitten hän löysi
+siemenet, jonka jälkeen
+olin hyödytön hänelle.<NOD
+Ja sitten hän viskasi
+minut alas saarelta.<NOD<CLRReilu meninki,
+sanon minä.<NOD<CLRMutta se siitä.<NOD<CLRJuuri nyt työkentelen
+raketin parissa,<NOD
+jolla sinä pääset
+Tohtorin valtaistuimelle..<NOD
+Minulla ei tosin ole
+kaikkia osia vielä.<NOD<CLO
+<ITJ0018:0202<ITJ0023:0203<EVE0201
+
+#0201
+<ITJ0018:0202<ITJ0023:0203
+<MSG<FAC0022Se mitä tarvisin
+on Booster.<NOD
+Mutta kenelläköhän sellainen
+on...<NOD<END
+
+#0202
+<MSG<CLR.....<NOD<CLRAhaa.<NOD Minä lainaan
+tätä.<NOD<CLR
+<FAC0000<GIT1018=Booster v0.8= otettiin pois.<NOD<GIT0000<CLR<FAC0022Tarvitsen silti lisää 
+osia jotta voin
+rakentaa raketin.<NOD<CLO
+<IT-0018<EQ-0001<FL-0742
+<FL+1106
+<EVE0204
+
+#0203
+<MSG<CLR.....<NOD<CLRAhaa.<NOD Minä lainaan
+tätä.<NOD<CLR
+<FAC0000<GIT1023=Booster v2.0= otettin pois.<NOD<GIT0000<CLR<FAC0022Tarvitsen silti lisää 
+osia jotta voin
+rakentaa raketin.<NOD<CLO
+<IT-0023<EQ-0032<FL-0743
+<FL+1106
+<EVE0204
+
+#0204
+<KEY<MSG<FAC0022Oletko sinä kiireellinen?<YNJ0205<CLROikeasti?<NOD
+No höh...<NOD<END
+
+#0205
+<KEY<FL+1101<MSGHyvä.<NOD
+Olet pelastaja tosiaan.<NOD<CLRLaita tämä päähän.<NOD<FAC0000
+<GIT1024<IT+0024<EQ+0064<FL+1020<MSG
+<CMU0010Sait =Mimiga Naamarin=.<WAI0160<NOD<RMU<CLO<GIT0000
+<MSG<FAC0022Oletpas sinä söpö nyt.<NOD
+Ehkäpä se on hieman
+liian iso, mutta...<NOD<CLRMaatilalla työskentelevät
+Mimigat eivät saa puhua
+ihmisille.<NOD
+Mutta tuon valeasun
+avulla ne luulevat
+sinua Mimigaksi.<NOD<CLRYmmärsitkö?<NOD<EVE0207
+
+#0206
+<KEY<MSG<FAC0022<CLREtsi mies nimeltä 
+Itoh.<NOD<CLRHän on todellinen pelkuri,<NOD
+joten olen varma
+ettei hän ole mennyt
+kauvas.<NOD<END
+
+#0207
+<MSG<FL+1027<FL+1028<FAC0022Jotta saan raketin
+valmiiksi, tarvitsen paljon
+virtaa.<NOD
+Jos saat käsiisi yhden
+nuista suihkulähteistä 
+mitä ne käyttää maatilalla,<NOD
+mietin että se voisi
+toimia.<NOD<CLRTuo minulle =Suihkulähde=,
+kiitos.<NOD<END
+
+#0208
+<KEY<MSG<FAC0022Jotta saan raketin
+valmiiksi, tarvitsen paljon
+virtaa.<NOD
+Nuo maatilan suihkulähteet
+voisi toimia.<NOD<CLRTuo minulle =Suihkulähde=,
+kiitos.<NOD<END
+
+#0209
+<KEY<MSG<FAC0022Tervetuloa takaisin.<NOD<CLR<FAC0000<GIT1028Näytit hänelle
+=Rikkinäisen Suihkulähteen=.<NOD<CLR<FAC0022Hrmmm...<NOD<CLRSen akku on tyhjä.<NOD<GIT0000
+En voi tehdä tällä 
+mitään.<NOD<END
+
+#0210
+<KEY<FL+1102<FL+1107<MSG<FAC0022Tervetuloa takaisin.<NOD<CLR<FAC0000
+<GIT1029<IT-0029Näytit hänelle =Suihkulähteen=.<NOD<CLR<FAC0022Katsotaan...<NOD<CLRTämän akussa on
+paljon virtaa jäljellä.<NOD
+Tämä voisi toimia.<NOD<GIT0000<SOU0011<CNP0250:0072:0002<CLO<WAI0030
+<MSGSeuraavaksi, etsi mies
+nimeltä Itoh.<NOD<CLRHän on "erittäin lahjakas
+diplomi-insinööri",
+hänen sanansa.<NOD<CLRMutta hän on myös
+pelokkain ihminen kenet
+olen koskaan tavannut.<NOD
+Hän juoksi Tohtoria pakoon
+ensinmäisenä, mutta tuskin
+hän pääsi pitkälle.<NOD<END
+
+#0211
+<MSG<FL+1103<FAC0022Tervetuloa takaisin.<NOD<CLRLöysitkö Itohin?<NOD<CLR
+<FAC0000<GIT1027<IT-0027Annoit =Ohjaimen=.<NOD<CLR<FAC0022Noniin.<NOD
+Tämä on se ohjain
+josta hän on erittäin
+ylpeä.<NOD<GIT0000<CLRHmmm...<NOD<CLRTämä olisi paljon
+helpompaa jos hän olisi
+täällä paikanpäällä.<NOD<CLRMutta, kai minä 
+pärjään yksinkin.<NOD<EVE0212
+
+
+#0212
+<KEY<MSG<FAC0022Kiitos todella paljon.<NOD<CLRMenee pitkä tovi
+ennen kuin saan tämän
+valmiiksi,<NOD
+joten lepää rauhassa
+siihen asti.<NOD<END
+
+#0250
+
+#0280
+<KEY<MSGHaluatko levätä?<YNJ0000<FAO0004<CMU0000<WAI0020<CLR.....<NOD<CLO
+<WAI0050<FLJ1103:0281
+<LI+1000<SOU0020<MYD0002<MSGEnergia palautettu.<NOD<CLO<CMU0002<FAI0004<END
+
+#0281
+<FL-1103<FL+1105<FL+1030<FL+1031<FL+1032<FL+1033<FL+1004<FL-1038<FL+1039
+<FL-1026<FL+1036
+<MSG.....<NOD<CLO<DNP0200<DNP0350
+<LI+1000<SOU0020<MYD0002<MSGHeräsit pitkien päikkäreiden
+jälkeen.<NOD<CLO<CMU0002<FAI0004<END
+
+
+#0350
+<KEY<MSGRaketti...?<NOD<END
+

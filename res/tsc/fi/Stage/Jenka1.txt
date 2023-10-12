@@ -1,0 +1,193 @@
+
+#0090
+<MNA<CMU0019<FAI0000<END
+#0091
+<MNA<CMU0019<FAI0001<END
+#0092
+<MNA<CMU0019<FAI0002<END
+#0093
+<MNA<CMU0019<FAI0003<END
+#0094
+<MNA<CMU0019<FAI0004<END
+
+#0100
+<PRI<SOU0011<DNP0100<FAO0004<TRA0010:0094:0035:0026
+
+
+#0200
+<KEY
+<ITJ0014:0201
+<FLJ0594:0214
+<FLJ0593:0213
+<FLJ0592:0212
+<FLJ0591:0211
+<FLJ0590:0210
+<KEY<MSG<FAC0013Kuka sinä olet..?<NOD
+En ole koskaan
+nähnyt sinua ennen.<NOD<END
+
+#0201
+<IT-0014
+<FLJ0594:0224
+<FLJ0593:0223
+<FLJ0592:0222
+<FLJ0591:0221
+<FLJ0590:0220
+<KEY<MSG<FAC0013Oho!<NOD<CLR<GIT1014Minun rakas pentuni!<NOD<CLR
+<GIT0000<FAC0000Annoit hänelle =Pennun=.<NOD<CLR<CNP0300:0130:0000<DNP0401<FL-0274<FAC0013Sinäkö toit hänet
+takaisin?<NOD
+Kiitos paljon.<NOD<CLRMitä sanoit?<NOD
+=Punaiset kukat=?<NOD<FAC0000<CLR<CMU0000<MSGHuzzaa!<NOD<CLO
+<CNP0400:0009:0000<WAI0010<MYD0002<CNP0300:0132:0002<ANP0300:0100:0002<WAI0120<CMU0011
+<CNP0400:0012:0000
+<MSG<FAC0005Miten menee, Jenka?<NOD<CLR<FAC0013Ai, Balrog.<NOD<ANP0300:0120:0002
+Sinulla näköjään menee
+hyvin.<NOD
+Ja mites minun ääliöllä 
+tyttärelläni menee?<NOD<CLR<FAC0014Hee-hee-hee!<NOD
+Ääliöllä? Tarkoitat varmaan
+Miseryä?<NOD
+Ihan hyvin, sanoisin.<NOD<CLRUusi Mestari ilmestyi.<NOD
+Tälläkertaa, maailma on
+meidän!<NOD<CLR<FAC0013Eli te kaksi jälleen
+suunnittelette...<NOD<CLR<FAC0005En tullut tänne
+pahantekoon.<NOD
+Tulin vain hakemaan avaimen
+varastoon.<NOD<CLRSiihen missä kukansiemeniä 
+pidetään!<NOD<CLR<FAC0013.....<NOD<CLRÖh...<NOD
+En tiedä mistä sinä 
+puhut.<NOD<CLR
+<ANP0400:0030:0000<FAC0014Hohoo!<NOD<CLRÄlä teeskentele.
+Tiedät kyllä mistä puhun.<NOD<CLR<FAC0005.....<NOD<CLRNyt ymmärrän.<NOD
+Eli sinä sitten petit
+meidät.<NOD<CLO<CMU0000
+<WAI0050<FAC0005<MSGTulet katumaan sitä.<NOD<CLO
+<FAC0000<ANP0400:0010:0000<WAI0200<CMU0019
+<MSG<FAC0013<CNP0300:0130:0000Uusi Mestari...<NOD
+Se perhanan...<NOD<MYD0200<CLR.....<NOD<CLRItseasiassa on neljä 
+muuta.<NOD
+Minun neljä koirtanpentua
+jäljellä...<NOD<CLRJa minun jalkani ovat
+heikot.<NOD<CLRVoisitko auttaa tätä 
+mummoa löytämään hänen
+loput koiranpentunsa?<NOD<FL+0590<END
+
+#0210
+<KEY<MSG<FAC0013Vielä on nejä jäljellä...<NOD
+Voisitko auttaa minua
+löytämään loput koiran-
+pentuni?<NOD<END
+
+#0211
+<KEY<MSG<FAC0013Kolme jäljellä.<NOD
+Onnea.<NOD<END
+
+#0212
+<KEY<MSG<FAC0013Rakkaani ovat alkaneet
+tykkäämään sinusta.<NOD<CLRKaksi vielä...<NOD<END
+
+#0213
+<KEY<MSG<FAC0013Enää yksi on jäljellä...<NOD
+Toivon että vain hylkäisit
+punaiset kukat.<NOD<END
+
+
+#0220
+<KEY<MSG<FAC0013Oho, oletpas sinä nopea.<NOD<CLR<GIT1014Tämä on tosiaankin yksi
+minun rakkaista
+pennuistani.<NOD<CLR
+<GIT0000<CNP0301:0130:0000<DNP0401<FAC0000Annoit hänelle =Pennun=.<NOD<CLR<FL-0274<FAC0013Hmmm...<NOD
+Sinä olet sotilas
+maanpinnalta, etkös.<NOD<CLR.....<NOD<CLRSiitä ei ole pitkä aika,<NOD
+kun satoja sinunlaisia
+robotteja tuli tälle
+saarelle.<NOD
+Lukuisat Mimigat menettivät
+henkesä heidän takiaan.<NOD
+Ja niin kävi myös ihmisille
+jotka yritti suojella niitä.<NOD<CLRNurkkaan ajetut Mimigat
+lopulta söi kielettyjä 
+punaisia kukkia,<NOD
+ja heidän verenhimoisessa
+vihassaan ne iskivät
+takaisin robotteihin.<NOD<CLRJos punaisia kukkia
+ei olisi ollut olemassa,<NOD
+Mimigat olisivat kuolleet
+sukupuuttoon...<NOD<CLRKolme jäljellä.<NOD Onnea.<NOD<FL+0591<END
+
+#0221
+<KEY<MSG<FAC0013Oooh.<NOD<CLR<GIT1014Kyllä kyllä.<NOD
+Tämä on yksi minun
+rakkaista pennuista.<NOD<CLR
+<GIT0000<CNP0302:0130:0000<DNP0401<FAC0000Annoit hänelle =Pennun=.<NOD<CLR<FL-0274<FAC0013Kiitos todella paljon.
+Eli meillä on nyt kolme...<NOD<CLR.....<NOD<CLROletko koskaan nähnyt
+raivokasta Mimigaa?<NOD<CLRNurkkaan ajetut Mimigat
+toivoivat että kukat
+antaisi heille voimaa.<NOD
+Ne söivät punaiset kukat, 
+ja sitten taistelivat
+robotteja vastaan.<NOD<CLR
+Mutta...<NOD<CLRTiedätkö mitä tapahtui
+nille sen jälkeen?<NOD<CLR.....<NOD<CLRSe on surullinen tarina...<NOD
+Raivokkaat Mimigat,<NOD
+jotka todennäköisesti
+olivat kykenemättömiä 
+ohjaamaan omia toimiaan,<NOD
+katosivat jättämättä 
+jälkeäkään.<NOD
+Jos huhuihin on luottamista,
+ne laskeutui maanpinnalle,
+missä ihmiset asuvat.<NOD<CLRArmeija raivokkaita
+Mimigoida maanpinnalla
+vapaana...<NOD
+Jos se olisi totta...<NOD<CLRYmmärrätkö nyt?<NOD
+Ymmärrätkö kuinka
+vaarallisia punaiset kukat
+ovat?<NOD<CLR.....<NOD<CLRKaksi jäljellä...<NOD<FL+0592<END
+
+#0222
+<KEY<MSG<FAC0013He näyttää rakastavan
+sinua.<NOD
+Minun pentuni eivät
+haaskaa kiintymistä 
+pahoihin tyyppeihin.<NOD<CLR<GIT1014Kiitos paljon...<NOD<CLR
+<GIT0000<FAC0000Annoi hänelle =Pennun=.<NOD<CLR<CNP0303:0130:0000<DNP0401<FL-0274
+<FAC0013.....<NOD<CLRSinä haluat varaston
+avaimen, vai mitä?<NOD
+Siellä on punaisten kukkien
+siemenet...<NOD<CLREi ole väliä kuka
+sinä olet, en anna avainta
+kenellekkään.<NOD
+Jos varasto avataan,
+se olisi vain kutsumus
+tradegialle uudestaan...<NOD<CLRYy, kaa, koo...<NOD<CLRVain yksi jäljellä 
+enää.<NOD<FL+0593<END
+
+#0300
+<FLJ0590:0310<END
+#0301
+<FLJ0591:0311<END
+#0302
+<FLJ0592:0312<END
+#0303
+<FLJ0593:0313<END
+#0304
+<FLJ0594:0314<END
+
+#0310
+<KEY<MSGHau!<NOD<END
+#0311
+<KEY<MSGHau Hau!<NOD<END
+#0312
+<KEY<MSGVuh!<NOD<END
+#0313
+<KEY<MSGNeljäs!<NOD<END
+#0314
+<KEY<MSGHei hakkeri/lurkkaaja!
+Mee töihin siitä!
+T. Any%translator JP32<NOD<END
+
+
+#0400
+#0401
+

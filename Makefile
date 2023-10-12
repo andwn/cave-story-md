@@ -140,7 +140,7 @@ debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 translate: $(PATCHROM) $(TL_TSBS)
 translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
 translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
-translate: $(TARGET)-ko.bin
+translate: $(TARGET)-ko.bin $(TARGET)-fi.bin
 
 prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC) $(HPPGEN)
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
@@ -263,6 +263,8 @@ res/tsc/de/%.tsb: res/tsc/de/%.txt
 	$(TSCOMP) -l=de "$<"
 res/tsc/br/%.tsb: res/tsc/br/%.txt
 	$(TSCOMP) -l=br "$<"
+res/tsc/fi/%.tsb: res/tsc/fi/%.txt
+	$(TSCOMP) -l=fi "$<"
 res/tsc/zh/%.tsb: res/tsc/zh/%.txt
 	$(TSCOMP) -l=zh "$<"
 res/tsc/ko/%.tsb: res/tsc/ko/%.txt
@@ -288,6 +290,8 @@ $(TARGET)-it.bin: res/patches/$(TARGET)-it.patch
 $(TARGET)-pt.bin: res/patches/$(TARGET)-pt.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 $(TARGET)-br.bin: res/patches/$(TARGET)-br.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-fi.bin: res/patches/$(TARGET)-fi.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 $(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"

@@ -1,0 +1,84 @@
+
+#0090
+<MNA<CMU0008<FAI0000<END
+#0091
+<MNA<CMU0008<FAI0001<END
+#0092
+<MNA<CMU0008<FAI0002<END
+#0093
+<MNA<CMU0008<FAI0003<END
+#0094
+<MNA<CMU0008<FAI0004<END
+
+#0100
+<PRI<FAO0004<TRA0002:0094:0220:0007
+
+#0150
+<KEY<MSGPunaisia terälehtiä on
+levinnyt kaikkialle.<NOD<END
+
+#0200
+<KEY<MSGLöysit lapun.<NOD<CLR<TURKun suoja on päällä,
+en pääse muna nro. 00 huoneeseen.<NOD<CLR<TUROlen varma että yksi
+näistä terminaaleista pystyy
+poistamaan suojan...<NOD<END
+
+#0300
+<PRI<FLJ0200:0001<FL+0200
+<SOU0022<CNP0300:0021:0000
+<MSGAvasit aarrearkun.<NOD<CLR<EVE0030
+
+
+#0500
+
+#0501
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 01
+Virhe: Munan kunto on epänormaali
+Suosittelen tarkistamista.<NOD<END
+#0502
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 02
+Kunto normaali.<NOD<END
+#0503
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 03
+Kunto normaali.<NOD<END
+#0504
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 04
+Kunto normaali.<NOD<END
+#0505
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 05
+Kunto normaali.<NOD<END
+#0506
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 06
+Virhe: Munan kunto on epänormaali
+Suosittelen tarkistamista.<NOD<END
+#0507
+<PRI<MS3<TURIlma Lohikäärme Muna Nro. 07
+Kunto normaali.<NOD<END
+#0508
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 08
+Kunto normaali.<NOD<END
+#0509
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 09
+Kunto normaali.<NOD<END
+#0510
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 10
+Kunto normaali.<NOD<END
+#0511
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 11
+Kunto normaali.<NOD<END
+#0512
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 12
+Kunto normaali.<NOD<END
+#0513
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 13
+Kunto normaali.<NOD<END
+#0514
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 14
+Kunto normaali.<NOD<END
+#0515
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 15
+Kunto normaali.<NOD<END
+#0516
+<PRI<MSG<TURIlma Lohikäärme Muna Nro. 16
+Kunto normaali.<NOD<END
+

@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
         printf("Failed to read '%s'.\n", argv[1]);
         return 1;
     }
-    //int addr = 0x9A0A5;
-	int addr = 0x93855; // Chinese version
+    int addr = 0x9A0A5;
+	//int addr = 0x93855; // Chinese version
     for(int i = 0; i < 95; i++) {
         char name[32];
         fseek(fin, addr, SEEK_SET);

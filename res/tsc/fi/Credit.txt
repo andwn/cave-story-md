@@ -1,0 +1,306 @@
++0192
+!0033
+[  = ESITTÄJÄT =  ]0000
+-0320
+[- Maanpinnan Asukkat -]0000-0064
+[Sisukas, kunnioittaa]0000-0016
+[ hänen veljeään]0000-0016
+[  Sue Sakamoto]0001-0064
+[Hänen välillä ]0000-0016
+[luotettava veli]0000-0016
+[  Kazuma Sakamoto]0002-0064
+[Suen äiti]0000-0032
+[  Momorin Sakamoto]0003-0064
+[Suen isoisä ]0000-0016
+[ hahmo]0000-0016
+[  Booster]0004-0064
+[Mimiga-muotoinen]0000-0016
+[ pelkuri]0000-0016
+[  Itoh]0005-0064
+-0063
+[- Mimiga Kylä -]0000-0064
+[Suloinen ja rohkea]0000-0032
+[  Toroko]0013-0064
+[Kylän johtaja]0000-0032
+[  King]0014-0064
+[Numero-kakkonen]0000-0032
+[  Jack]0015-0064
+[Aina syömässä ]0000-0032
+[  Mahin]0016-0064
+[Rakastaa kalastamista]0000-0032
+[  Kanpachi]0020-0064
+[Hoitaa maatilaa]0000-0032
+[  Sandaime]0019-0064
+-0063
+[- Ruohikkoalue -]0000-0064
+[Asuu yksin]0000-0032
+[  Santa]0017-0064
+[Värikäs Mimiga]0000-0032
+[  Chaco]0018-0064
+[Sähköhuoneen valvoja]0000-0032
+[  Malco]0025-0064
+-0063
+[- Hiekkavyöhyke -]0000-0064
+[Mimigoiden puolella]0000-0032
+[  Curly]0007-0064
+[Curlyn kasvattama]0000-0032
+[  Colonit]0008-0064
+[Hiekkavyöhykkeen]0000-0016
+[alkuperäinen haltija]0000-0016
+[  Jenka]0009-0064
+-0031
+[Jenkan pennut]0000-0032
+[  Hajime]0010-0032
+[  Shinobu]0010-0032
+[  Kakeru]0010-0032
+[  Mick]0010-0032
+[  Nene]0010-0064
+-0063
+[- Labyrinthi -]0000-0064
+[Labyrinthin]0000-0016
+[ aseiden myyjä ]0000-0016
+[  Chaba]0027-0064
+[Labyrinthin]0000-0016
+[erikoislääkäri]0000-0016
+[  Tri. Gero]0028-0064
+[Olen sairaanhoitaja!]0000-0032
+[ Sairaanhoitaja Hasumi]0029-0064
+-0063
+[- Maatila -]0000-0064
+[Tyttö Mimiga]0000-0032
+[  Chie]0023-0064
+[Ukki Mimiga]0000-0032
+[  Zett]0024-0064
+[Suihkulähteistä vastaava]0000-0032
+[  Megane]0022-0064
+[Tohtoriin uskovat]0000-0016
+[  Lapioprikaati]0021-0064
+-0063
+
+f2000:0090
+[- Paholaiset -]0000-0064
+[Vallankaappaaja]0000-0016
+[ petturi]0000-0016
+[  Tohtori]0006-0064
+[Tohtorin kätyri]0000-0032
+[  Misery]0011-0064
+[Miseryn nyrkkeilysäkki]0000-0032
+[  Balrog]0012-0064
+-0063
+[- Muut tyypit -]0000-0064
+[Erakko aseseppä ]0000-0032
+[  Tetsuzou Kamadani]0035-0064
+[Mysteerinen]0000-0016
+[ sieni]0000-0016
+[  Ma Pignon]0045-0064
+[Ulkoseinällä asuva]0000-0016
+[ perhe]0000-0016
+[  Pikkuiset]0031-0064
+[Mysteeriset]0000-0016
+[ alkuasukkaat]0000-0016
+[  Cthulhu]0032-0064
+[Patsaanveistäjä ]0000-0032
+[  Numahachi]0088-0064
+j0100
+
+l0090
+[- Paholaiset -]0000-0064
+[Kruunun parantama]0000-0032
+[  Tohtori]0006-0064
+[Kruunun kiroama]0000-0032
+[  Misery]0011-0064
+[Lopulta kaveri]0000-0032
+[  Balrog]0012-0064
+-0063
+[- Muut -]0000-0064
+[Erakko aseseppä ]0000-0032
+[  Tetsuzou Kamadani]0035-0064
+[Muistin-palauttaja]0000-0016
+[ sieni]0000-0016
+[  Ma Pignon]0045-0064
+[Ulkoseinällä asuva]0000-0016
+[ perhe]0000-0016
+[  Pikkuiset]0031-0064
+[Mystiset]0000-0016
+[ alkuasukkaat]0000-0016
+[  Cthulhu]0032-0064
+[Patsaanveistäjä ]0000-0032
+[  Numahachi]0088-0064
+-0063
+[- Pyhäkkö -]0000-0064
+[Jenkan murheellinen]0000-0016
+[ nuorempi veli]0000-0016
+[  Ballos]0103-0064
+l0100
+-0100
+~
+-0250
+!0001
++0063
+[ = Hirviöt = ]0000-0032
+-0063
+[ Hyppii ja pomppii: Critter]0039-0048
+[ Kaikki luolat tarvitsevat: Lepakko]0040-0048
+[ Jonkun riivaama: Ovi]0041-0048
+[ Ryntää kun suuttuu: Behemoth]0048-0048
+[ Valkoinen sieni: Pignon]0042-0048
+[ Syömisen arvoinen: Jätti Pignon]0043-0048
+[ On vain yksi: Kultakala]0038-0048
+[ Leikkaa sinut: Haudanvartija]0044-0048
+[ Lattiaa halaava valo: Basil]0049-0048
+[ Malli ötökkä: Kovakuoriainen]0046-0048
+[ Iso lentäjä: Basu]0047-0048
+[ Murskaaja: Voima Critter]0050-0048
+[ Valko-muotti haamu: Mannan]0051-0048
+[ Pikku sammakko: Puchi]0054-0048
+[ Isompi: Sammakko]0055-0048
+[ Leijuu ilmassa: Hyytelö ]0052-0048
+[ Kuningatar lima: Kulala]0053-0048
+[ Raivokas Mimiga: Rabil]0057-0048
+[ Kuolemanloukku: Puristin]0056-0048
+[ Yht'äkkinen haukku: Hiekkakroko]0061-0048
+[ Vaeltava luu: Luupää ]0063-0048
+[ Hiekka juoksia: Luuaskel]0065-0048
+[ Valkoinen vihollinen: Luuranko]0062-0048
+[ Metsästäjä: Varis]0064-0048
+[ Kova ohjus: Vyötiäinen]0060-0048
+[ Yhdestä, moneksi: Polish]0059-0048
+[ Kaikkialla: Vauva]0058-0048
+[ Raivostuneesta Torokosta: Kukkapentu]0066-0048
+[ Labyrinthin asukas: Gaudi]0067-0048
+[ Labyrinth sotilas: Armor]0068-0048
+[ Labyrinth vauva: Gaudi Muna]0069-0048
+[ Tulikas tuuletin: Tuli Humina]0071-0048
+[ Tuntematon organismi: Buyobuyo Pohja]0073-0048
+[ Ja: Buyobuyo]0072-0048
+[ Gaudi henki: Fuzz]0074-0048
+[ Henki rykelmä: Fuzz Ydin]0075-0048
+[ Vanha ystävä: Piikkisika Kala]0076-0048
+[ Epäonnistunut: Zombi Lohikäärme]0079-0048
+[ Ajoitettu räjähdys: Vastapommi]0078-0048
+[ Ulkoseinän lepatus: Yö Henki]0081-0048
+[ Hyppii: Hyppijä ]0082-0048
+[ Fotosynteettinen sotilas: Midorin]0085-0048
+[ Syntynyt maasta: Droll]0084-0048
+[ Ponnahduslauta: Pyssykala]0086-0048
+[ Äiti lepakko: Oranssikello]0083-0048
+[ Maatilan sudenkorento: Stumpy]0087-0048
+
+f2000:0190j0200l0190
+-0002
+[ Helvetin sanansaattaja: Bute]0098-0048
+[ Helvetin sanansaattaja]0099-0048
+[ Viaton demoni: Green Devil]0100-0048
+[ Rullaa seiniä pitkin: Rullaaja]0094-0048
+[ Tukkii tien: Deleet]0095-0048
+l0200
+-0100
++0064
+[ = Pomot = ]0000-0032
+-0063
+[Raivostunut Mimiga joka]0000-0016
+[ kaappasi Suen]0000-0016
+[  Igor]0091-0064
+[Misery muunti]0000-0016
+[ Balrogin täksi]0000-0016
+[  Balfrog]0104-0064
+[Kone-hirviö joka]0000-0016
+[ väijyy hiekassa]0000-0016
+[  Omega]0105-0064
+[Annosteltu punaisilla kukilla]0000-0032
+[  Toroko +]0108-0064
+[Haamu joka valtasi]0000-0016
+[ klinikan]0000-0016
+[  Puu Musta]0030-0064
+[Labyrinthin iso pomo]0000-0032
+[  Hirviö X]0070-0064
+[Saaren sydän]0000-0032
+[  Ydin]0106-0064
+[Iso kala saaren valtimossa]0000-0016
+[  Rautapää ]0077-0064
+[Yllätyshyökkääjä ]0000-0016
+[ Lohikäärmeet]0000-0016
+[  Siskot]0080-0064
+[Oikeat sankarit tapaa]0000-0032
+[  Punainen Demoni]0089-0064
+[Punainen Kristalli juoksee]0000-0016
+[ villinä ]0000-0016
+[  Lihas Tohtori]0109-0064
+[Vihainen Tohtori]0000-0016
+[ ja saaren sydän]0000-0016
+[  Epäkullut Ydin]0107-0064
+f2000:0290j0300l0290
+-0002
+[Turvonnut mekanismi]0000-0032
+[  Raskas Puristin]0111-0064
+[Vihan ja hulluuden]0000-0016
+[ liha]0000-0016
+[  Ballos]0110-0128
+l0300
+-0080
++0040
+[ = Taustamusiikit = ]0000-0032
+-0031
+[Pääsy]0036-0032
+[Raskaus]0036-0032
+[Mimiga Kylä ]0036-0032
+[Kasvi]0036-0032
+[Balrogin Teema]0036-0032
+-0031
+[Painovoima]0036-0032
+[Hautausmaa]0036-0032
+[Turva]0036-0032
+[Ilkikurinen Robotti]0036-0032
+[Pulssi]0036-0032
+-0031
+[Ruohikkoaluelle]0036-0032
+[Liekin Silmät]0036-0032
+[Sulautuminen 2]0036-0032
+[Tyranni]0036-0032
+[Juokse!]0036-0032
+-0031
+[Jenka 1]0036-0032
+[Jenka 2]0036-0032
+[Labyrinthi Taistelu]0036-0032
+[Maalämpö ]0036-0032
+[Alistuminen]0036-0032
+-0031
+[Elävä Vesitie]0036-0032
+[Hiljainen]0036-0032
+[Palava Selkä ]0036-0032
+[Kuukappale]0036-0032
+[Sankarin loppu]0036-0032
+-0031
+[Luola Tarina]0036-0032
+[Viimeinen Luola]0036-0032
+[Terassi]0036-0032
+[Hyökkää ]0036-0032
+[Zombi]0036-0032
+-0031
+[Viimeinen Taistelu]0036-0032
+[Hajota]0036-0032
+[Helvetinjuoksu]0036-0032
+[Tiivistyskammio]0036-0032
+[Tie Takaisin Kotiin]0036-0032
+-0100
++0040
+[= Erityiskiitokset =]0000-0032
++0048
+-0032
+[Torai      ]0037-0040
+[Naoku    ]0122-0040
+[Kuroihito]0119-0040
+[BA2       ]0033-0040
+[Okami      ]0120-0040
+[Nao       ]0117-0040
+[Shih Tzu  ]0123-0040
+[Gideon Zhi]0124-0040
+[JP32      ]0118-0040
+[Ja kaikki muut]0000-0040
+-0063
+[Kiitos paljon.]0129-0032
+-0240
++0120
+[Luola Tarina ~ Loppu]0000
+-0280
+/
