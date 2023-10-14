@@ -77,7 +77,7 @@ void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	//window_clear_text();
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-		vdp_tiles_load_uftc(UFTC_MsgFont, (0xB000 >> 5) + 3 + (29 << 2), '_' - 0x20, 1);
+		vdp_tiles_load_uftc(*TS_MSGTEXT, (0xB000 >> 5) + 3 + (29 << 2), '_' - 0x20, 1);
 	}
 	textRow = textColumn = 0;
 	
@@ -412,6 +412,7 @@ void window_update() {
 			x += textColumn - spaceOffset;
 			y += textRow * 2;
 			index = TILE_FONTINDEX - 0x20 + '_';
+			if(cfg_language >= LANG_RU) index += 48;
 		}
         if(++blinkTime == 8) {
             vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), x, y);

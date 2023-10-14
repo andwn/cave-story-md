@@ -18,6 +18,7 @@ PTR CONFIG_STR,     STR_Config
 
 PTR TS_TITLE,       UFTC_Title
 PTR TS_MENUTEXT,    UFTC_MenuText
+PTR TS_MSGTEXT,     UFTC_MsgText
 
 PTR SPR_AIR,        SPR_Air
 PTR SPR_PROMPT,     SPR_Prompt
@@ -248,6 +249,7 @@ BIN TSC_WeedS	"res/tsc/ko/Stage/WeedS.tsb"
 # Tilesets
 BIN UFTC_Title		"res/tiles_loc/title_en.uftc"
 BIN UFTC_MenuText	"res/tiles_loc/menutext_en.uftc"
+BIN UFTC_MsgText    "res/tiles_loc/font_blue.uftc"
 
 # Sprites
 SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1 1

@@ -140,7 +140,7 @@ debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
 translate: $(PATCHROM) $(TL_TSBS)
 translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
 translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
-translate: $(TARGET)-ko.bin $(TARGET)-fi.bin
+translate: $(TARGET)-ko.bin $(TARGET)-fi.bin $(TARGET)-ru.bin
 
 prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC) $(HPPGEN)
 prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
@@ -269,6 +269,8 @@ res/tsc/zh/%.tsb: res/tsc/zh/%.txt
 	$(TSCOMP) -l=zh "$<"
 res/tsc/ko/%.tsb: res/tsc/ko/%.txt
 	$(TSCOMP) -l=ko "$<"
+res/tsc/ru/%.tsb: res/tsc/ru/%.txt
+	$(TSCOMP) -l=ru "$<"
 
 # Generate patches
 res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s
@@ -296,6 +298,8 @@ $(TARGET)-fi.bin: res/patches/$(TARGET)-fi.patch
 $(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 $(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
+	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-ru.bin: res/patches/$(TARGET)-ru.patch
 	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
 
 .PHONY: head-gen flash clean

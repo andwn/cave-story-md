@@ -1298,7 +1298,8 @@ uint8_t execute_command() {
 		}
 		if(cmd == 0x01) {
             doublebyte = TRUE;
-            if(cfg_language > LANG_EN && cfg_language < LANG_JA) { // Get ext char index from next byte
+			// Get ext char index from next byte
+            if((cfg_language > LANG_EN && cfg_language < LANG_JA) || (cfg_language >= LANG_RU)) { 
                 cmd = tsc_read_byte() + 0x80;
             } else {
                 tsc_read_byte();

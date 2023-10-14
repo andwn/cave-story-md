@@ -1,0 +1,13 @@
+#1000
+<KEY<MSG<TURÍåò ïðàâ äëÿ òåëåïîðòàöèè.<WAI9999<END
+#1001
+<KEY<MSG<TURÕðàíèëèùå ßèö <WAI9999<END
+#1002
+<KEY<MSG<TURÃðàññòàóí <WAI9999<END
+#1003
+<KEY<MSG<TURÐóèíû <WAI9999<END
+#1004
+<KEY<MSG<TURËàáèðèíò <WAI9999<END
+#1005
+<KEY<MSG<TURÏëàíòàöèÿ <WAI9999<END
+

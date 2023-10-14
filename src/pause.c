@@ -28,7 +28,7 @@
 #include "pause.h"
 
 // Load tiles for the font letters
-#define LOAD_LETTER(c,in) (vdp_tiles_load_uftc(UFTC_MsgFont,      \
+#define LOAD_LETTER(c,in) (vdp_tiles_load_uftc(*TS_MSGTEXT,      \
 						   TILE_HUDINDEX+in,(c)-0x20,1))
 #define DRAW_LETTER(in,xx,yy) (vdp_map_xy(VDP_PLANE_W,                                   \
 							TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+in),xx,yy))
@@ -138,7 +138,7 @@ void draw_itemmenu(uint8_t resetCursor) {
     window_open(FALSE);
 
     // Load 8x8 numbers
-    vdp_tiles_load_uftc(UFTC_MsgFont,TILE_HUDINDEX,'0'-0x20,10);
+    vdp_tiles_load_uftc(*TS_MSGTEXT,TILE_HUDINDEX,'0'-0x20,10);
     // Lv, slash for weapon display
     LOAD_LETTER('L', 26);
     LOAD_LETTER('v', 27);

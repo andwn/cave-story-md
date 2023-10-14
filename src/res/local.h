@@ -18,6 +18,7 @@ extern const uint32_t CONFIG_STR;
 
 extern const uint16_t *TS_TITLE[];
 extern const uint16_t *TS_MENUTEXT[];
+extern const uint16_t *TS_MSGTEXT[];
 
 extern const SpriteDef * const SPR_AIR;
 extern const SpriteDef * const SPR_PROMPT;

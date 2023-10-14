@@ -524,6 +524,7 @@ static void get_language() {
     else if(LANGUAGE[0] == 'J' && LANGUAGE[1] == 'A') cfg_language = LANG_JA;
     else if(LANGUAGE[0] == 'Z' && LANGUAGE[1] == 'H') cfg_language = LANG_ZH;
     else if(LANGUAGE[0] == 'K' && LANGUAGE[1] == 'O') cfg_language = LANG_KO;
+	else if(LANGUAGE[0] == 'R' && LANGUAGE[1] == 'U') cfg_language = LANG_RU;
 }
 
 void system_load_config() {

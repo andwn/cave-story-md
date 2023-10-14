@@ -17,6 +17,7 @@
 #include "system.h"
 #include "tables.h"
 #include "md/comp.h"
+#include "res/local.h"
 #include "tsc.h"
 #include "md/sys.h"
 #include "md/vdp.h"
@@ -35,10 +36,10 @@ void game_main(uint8_t load) {
 	vdp_colors(0, PAL_FadeOut, 64);
 	//vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
-	if(cfg_language != LANG_JA) {
+	if(cfg_language < LANG_JA || cfg_language >= LANG_RU) {
         //disable_ints();
         //z80_pause_fast();
-		vdp_font_load(UFTC_MsgFont);
+		vdp_font_load((const uint32_t*)*TS_MSGTEXT);
         //z80_resume();
         //enable_ints();
 	}

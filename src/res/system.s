@@ -4,7 +4,7 @@
 
 /* Fonts */
 BIN UFTC_SysFont    "res/tiles_c/font_tran.uftc"
-BIN UFTC_MsgFont    "res/tiles_c/font_blue.uftc"
+#BIN UFTC_MsgFont    "res/tiles_c/font_blue.uftc"
 
 /* Level Select data */
 BIN LS_00		"res/save/00_firstcave.sram-trim"

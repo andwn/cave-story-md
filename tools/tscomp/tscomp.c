@@ -270,6 +270,9 @@ uint8_t get_char_type() {
     if(tsc[pc] == '\r') return CT_SKIP;
     if(language >= LANG_RU && language <= LANG_UK) {
         // TODO: KOI8-R/U support
+        if(tsc[pc] >= 0xC0) tsc[pc] -= 0x80;
+        if(tsc[pc] < 0x80) return CT_ASCII;
+        return CT_EXTEND;
     } else {
         // First check the valid ASCII chars list
         if(is_ascii(tsc[pc])) return CT_ASCII;
@@ -278,7 +281,7 @@ uint8_t get_char_type() {
             if(is_extended(tsc[pc])) return CT_EXTEND;
         } else if(language >= LANG_JA && language <= LANG_KO) {
             // Double byte char?
-            if ((tsc[pc] >= 0x81 /*&& tsc[pc] <= 0x9F) || (tsc[pc] >= 0xE0*/ && tsc[pc] <= 0xFE)) {
+            if ((tsc[pc] >= 0x81 && tsc[pc] <= 0xFE)) {
                 return CT_KANJI;
             }
         }
@@ -393,6 +396,17 @@ void do_event(FILE *fout) {
                 } else if(tsc[pc] == 0xE6) {
                     static const char mystr[2] = "ae";
                     fwrite(&mystr, 1, 2, fout);
+                } else if(language >= LANG_RU && language <= LANG_UK) {
+                    static const char mark = 0x01;
+                    static const char extmap[] = {
+                            0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0,10,11, 0, 0, 8, 0, 0, 0, 0, 2, 0, 0, 0, 0, 6,
+                            0, 0, 4, 5, 9, 0, 0, 0, 1,12, 3, 0, 0, 0, 0, 7,
+                    };
+                    char mychr = extmap[tsc[pc] - 0x80];
+                    fwrite(&mark, 1, 1, fout);
+                    fwrite(&mychr, 1, 1, fout);
                 } else {
                     static const char mark = 0x01;
                     static const char extmap[] = {
@@ -482,6 +496,7 @@ uint16_t read_langcode(const char *str) {
     else if(strcmp("FI", code) == 0) return LANG_FI;
     else if(strcmp("ZH", code) == 0) return LANG_ZH;
     else if(strcmp("KO", code) == 0) return LANG_KO;
+    else if(strcmp("RU", code) == 0) return LANG_RU;
     else return LANG_INVALID;
 }
 

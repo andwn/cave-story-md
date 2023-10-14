@@ -65,6 +65,25 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
+            if(in_name[ic] >= 0xC0) in_name[ic] -= 0x80;
+            if(in_name[ic] < 0x80) {
+                fwrite(&in_name[ic], 1, 1, fout);
+                oc++;
+            } else {
+                static const char mark = 0x01;
+                static const char extmap[] = {
+                        0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0,10,11, 0, 0, 8, 0, 0, 0, 0, 2, 0, 0, 0, 0, 6,
+                        0, 0, 4, 5, 9, 0, 0, 0, 1,12, 3, 0, 0, 0, 0, 7,
+                };
+                char mychr = extmap[in_name[ic] - 0x80];
+                printf("%c (%02x) -> %d\n", in_name[ic], in_name[ic], mychr);
+                fwrite(&mark, 1, 1, fout);
+                fwrite(&mychr, 1, 1, fout);
+                oc += 2;
+            }
+            #if 0
             if(is_ascii(in_name[ic])) {
                 fwrite(&in_name[ic], 1, 1, fout);
                 oc++;
@@ -101,6 +120,7 @@ int main(int argc, char *argv[]) {
             } else {
                 printf("WARN: Invalid char '%c' (0x%02x)\n", in_name[ic], in_name[ic]);
             }
+            #endif
         }
     }
     fclose(fin);
