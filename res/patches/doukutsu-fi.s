@@ -240,14 +240,14 @@ BIN TSC_WeedD	"res/tsc/fi/Stage/WeedD.tsb"
 BIN TSC_WeedS	"res/tsc/fi/Stage/WeedS.tsb"
 
 # Tilesets
-BIN UFTC_Title		"res/tiles_loc/title_en.uftc"
-BIN UFTC_MenuText	"res/tiles_loc/menutext_en.uftc"
+BIN UFTC_Title		"res/tiles_loc/title_fi.uftc"
+BIN UFTC_MenuText	"res/tiles_loc/menutext_fi.uftc"
 
 # Sprites
-SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1 1
-SPRITE SPR_Prompt		"res/sprite_loc/prompt_en.spr" 		8 3 1
-SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2 2
-SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
-SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2
+SPRITE SPR_Air			"res/sprite_loc/air_fi.spr"			7 1 1
+SPRITE SPR_Prompt		"res/sprite_loc/prompt_fi.spr" 		8 3 1
+SPRITE SPR_LevelUp		"res/sprite_loc/levelup_fi.spr"		7 2 2
+SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_fi.spr"	7 2 2
+SPRITE SPR_Empty		"res/sprite_loc/empty_fi.spr"		5 1 2
 SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2 2
 

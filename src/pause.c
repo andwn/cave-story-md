@@ -51,8 +51,8 @@ void draw_weapons(uint8_t y) {
         vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index + 1), x, y + 1);
         vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index + 3), x + 1, y + 1);
         // Lv
-        DRAW_LETTER(14,			x,	y+2);
-        DRAW_LETTER(15,			x+1,y+2);
+        DRAW_LETTER(26,			x,	y+2);
+        DRAW_LETTER(27,			x+1,y+2);
         DRAW_LETTER(w->level,	x+3,y+2);
 
         // Ammo & Max Ammo
@@ -65,15 +65,15 @@ void draw_weapons(uint8_t y) {
             DRAW_LETTER(mod10[ammo], 		x+3, y+4);
             DRAW_LETTER(mod10[div10[ammo]], x+2, y+4);
             if(ammo >= 100) DRAW_LETTER(1, 	x+1, y+4);
-            DRAW_LETTER(16,	x,	y+4);
+            DRAW_LETTER(28,	x,	y+4);
         } else {
             //   --
-            DRAW_LETTER(17,	x+2,y+3);
-            DRAW_LETTER(17,	x+3,y+3);
+            DRAW_LETTER(29,	x+2,y+3);
+            DRAW_LETTER(29,	x+3,y+3);
             // / --
-            DRAW_LETTER(16,	x,	y+4);
-            DRAW_LETTER(17,	x+2,y+4);
-            DRAW_LETTER(17,	x+3,y+4);
+            DRAW_LETTER(28,	x,	y+4);
+            DRAW_LETTER(29,	x+2,y+4);
+            DRAW_LETTER(29,	x+3,y+4);
         }
     }
 }
@@ -140,24 +140,24 @@ void draw_itemmenu(uint8_t resetCursor) {
     // Load 8x8 numbers
     vdp_tiles_load_uftc(UFTC_MsgFont,TILE_HUDINDEX,'0'-0x20,10);
     // Lv, slash for weapon display
-    LOAD_LETTER('L', 14);
-    LOAD_LETTER('v', 15);
-    LOAD_LETTER('/', 16);
-    LOAD_LETTER('-', 17);
+    LOAD_LETTER('L', 26);
+    LOAD_LETTER('v', 27);
+    LOAD_LETTER('/', 28);
+    LOAD_LETTER('-', 29);
     // ARMSITEM or ぶきもちもの
     //const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
-    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 10, 2, 4);
-    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 18, 10, 4);
+    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 10, 0, 8);
+    vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_HUDINDEX + 18, 8, 8);
     // Weapons
     y = top + 3;
     // --ARMS-- or --ぶき--
-    DRAW_LETTER(17,4,y);
-    DRAW_LETTER(17,5,y);
-    DRAW_LETTER(10,6,y);
-    DRAW_LETTER(11,7,y);
-    DRAW_LETTER(12,8,y);
-    DRAW_LETTER(13,9,y);
-    DRAW_LETTER(17,10,y);
+    DRAW_LETTER(10,4,y);
+    DRAW_LETTER(11,5,y);
+    DRAW_LETTER(12,6,y);
+    DRAW_LETTER(13,7,y);
+    DRAW_LETTER(14,8,y);
+    DRAW_LETTER(15,9,y);
+    DRAW_LETTER(16,10,y);
     DRAW_LETTER(17,11,y);
     y++;
 
@@ -166,14 +166,14 @@ void draw_itemmenu(uint8_t resetCursor) {
     // Items
     y = top + 10;
     // --ITEM-- or --もちもの--
-    DRAW_LETTER(17,4,y);
-    DRAW_LETTER(17,5,y);
-    DRAW_LETTER(18,6,y);
-    DRAW_LETTER(19,7,y);
-    DRAW_LETTER(20,8,y);
-    DRAW_LETTER(21,9,y);
-    DRAW_LETTER(17,10,y);
-    DRAW_LETTER(17,11,y);
+    DRAW_LETTER(18,4,y);
+    DRAW_LETTER(19,5,y);
+    DRAW_LETTER(20,6,y);
+    DRAW_LETTER(21,7,y);
+    DRAW_LETTER(22,8,y);
+    DRAW_LETTER(23,9,y);
+    DRAW_LETTER(24,10,y);
+    DRAW_LETTER(25,11,y);
     for(uint16_t i = 0; i < MAX_ITEMS; i++) {
         //playerInventory[i] = 35; // :^)
         draw_item(i);

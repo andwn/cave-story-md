@@ -98,13 +98,13 @@ uint8_t titlescreen_main() {
     print_version();
 
 	// Title & CS version
-    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 108);
+    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 72);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
 	
 #ifdef SHOW_MYCOM_LOGO
 	const uint16_t MENUY = 15;
-	vdp_tiles_load_uftc(UFTC_MyCOM, 16+108, 0, 72);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16+108), 11, 8, 18, 4, 1);
+	vdp_tiles_load_uftc(UFTC_MyCOM, 16+72, 0, 72);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16+72), 11, 8, 18, 4, 1);
 #else
 	const uint16_t MENUY = 12;
 	//vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
