@@ -857,10 +857,8 @@ void player_show_map_name(uint8_t ttl) {
 	if(cfg_language > 0) {
 		str = ((const uint8_t*)STAGE_NAMES) + (stageID << 5);
 	}
-    //if((uint32_t) str >= 0x400000) {
-    //    str = (const uint8_t*)(0x380000 | ((uint32_t)str & 0x7FFFF));
-    //}
-	//uint32_t nameTiles[16][8];
+
+	const uint32_t *font = cfg_language >= LANG_RU ? UFTC_SysFontRU : UFTC_SysFont;
 	uint16_t len = 0;
     uint16_t pos = 0;
     while(len < 16) {
@@ -874,14 +872,10 @@ void player_show_map_name(uint8_t ttl) {
             if (chr < 0x60) len++;
             else break;
         }
-        //memcpy(nameTiles[len-1], &TS_SysFont.tiles[chr * 8], 32);
-        vdp_tiles_load_uftc(UFTC_SysFont, TILE_NAMEINDEX + len-1, chr, 1);
+        vdp_tiles_load_uftc(font, TILE_NAMEINDEX + len-1, chr, 1);
     }
-    if(len) {
-        //vdp_tiles_load(nameTiles[0], TILE_NAMEINDEX, 16);
-    } else {
-        return;
-    }
+    if(!len) return;
+
 	// Transfer tile array to VRAM
     mapNameSpriteNum = 0;
     uint16_t x = ScreenHalfW - (len << 2) + 128;

@@ -209,10 +209,9 @@ uint8_t saveselect_main() {
 			if(cursor < SRAM_FILE_MAX) {
 				switch(cursorMode) {
 					case CM_LOAD: { // Load/New Game on file over cursor
-						//song_stop();
 						sound_play(SND_MENU_SELECT, 0);
 						sram_file = cursor;
-						return file_used[cursor];
+						goto SelectDone;
 					}
 					case CM_COPY: { // Source of copy
 						sound_play(SND_MENU_MOVE, 0);
@@ -269,7 +268,8 @@ uint8_t saveselect_main() {
 				cursorMode = CM_LOAD;
 				draw_cursor_mode(cursorMode);
 			} else {
-				return 0xFF;
+				cursor = 0xFF;
+				goto SelectDone;
 			}
 		}
 		if(joy_pressed(JOY_UP) || joy_pressed(JOY_LEFT)) {
@@ -299,5 +299,10 @@ uint8_t saveselect_main() {
 		ready = TRUE;
         sys_wait_vblank(); aftervsync();
 	}
+SelectDone:
+	vdp_map_clear(VDP_PLANE_A);
+	vdp_sprites_clear();
+	ready = TRUE;
+    sys_wait_vblank(); aftervsync();
 	return file_used[cursor];
 }

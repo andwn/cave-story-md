@@ -5,6 +5,7 @@
 
 /* Fonts */
 extern const uint32_t UFTC_SysFont[];
+extern const uint32_t UFTC_SysFontRU[];
 //extern const uint32_t UFTC_MsgFont[];
 
 /* Level select data */

@@ -25,6 +25,9 @@
 
 #include "stage.h"
 
+#define WIDEST_STAGE_SIZE	300	// Eggs.pxm
+#define TALLEST_STAGE_SIZE	180	// Oside.pxm
+
 // Could fit under the Oside map (192 tile gap)
 #define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
 // Another tile gap, fits under both Almond and Cave
@@ -39,7 +42,7 @@ int16_t vscrollTable[2];
 int16_t hscrollTableAlmond[2];
 int16_t waterBackLastRow;
 
-uint16_t *stageTable;
+uint16_t stageTable[TALLEST_STAGE_SIZE];
 const uint8_t *stagePXA;
 
 typedef struct {
@@ -75,10 +78,10 @@ void stage_load(uint16_t id) {
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
-	if(stageTable) {
-		free(stageTable);
-		stageTable = NULL;
-	}
+	//if(stageTable) {
+	//	free(stageTable);
+	//	stageTable = NULL;
+	//}
 	vdp_sprites_clear();
 	water_entity = NULL;
 	bossEntity = NULL;
@@ -153,10 +156,10 @@ void stage_load_credits(uint8_t id) {
 	
 	entities_clear();
 	vdp_sprites_clear();
-	if(stageTable) {
-		free(stageTable);
-		stageTable = NULL;
-	}
+	//if(stageTable) {
+	//	free(stageTable);
+	//	stageTable = NULL;
+	//}
 
 	vdp_set_display(FALSE);
 
@@ -199,8 +202,6 @@ void stage_load_blocks() {
     stageWidth = stagePXM[4] | (stagePXM[5] << 8);
     stageHeight = stagePXM[6] | (stagePXM[7] << 8);
 	// Multiplication table for stage rows
-	stageTable = malloc(stageHeight << 1);
-	//if(!stageTable) error_oom();
 	uint16_t blockTotal = 0;
 	for(uint16_t y = 0; y < stageHeight; y++) {
 		stageTable[y] = blockTotal;
@@ -211,15 +212,17 @@ void stage_load_blocks() {
 void stage_load_entities() {
 	const uint8_t *PXE = stage_info[stageID].PXE;
 	// PXE[4] is the number of entities to load. It's word length but never more than 255
+	uint16_t off = 0;
 	for(uint16_t i = 0; i < PXE[4]; i++) {
 		uint16_t x, y, id, event, type, flags;
 		// Like all of cave story's data files PXEs are little endian
-		x     = PXE[8  + i * 12] + (PXE[9  + i * 12]<<8);
-		y     = PXE[10 + i * 12] + (PXE[11 + i * 12]<<8);
-		id    = PXE[12 + i * 12] + (PXE[13 + i * 12]<<8);
-		event = PXE[14 + i * 12] + (PXE[15 + i * 12]<<8);
-		type  = PXE[16 + i * 12] + (PXE[17 + i * 12]<<8);
-		flags = PXE[18 + i * 12] + (PXE[19 + i * 12]<<8);
+		x     = PXE[8  + off] + (PXE[9  + off]<<8);
+		y     = PXE[10 + off] + (PXE[11 + off]<<8);
+		id    = PXE[12 + off] + (PXE[13 + off]<<8);
+		event = PXE[14 + off] + (PXE[15 + off]<<8);
+		type  = PXE[16 + off] + (PXE[17 + off]<<8);
+		flags = PXE[18 + off] + (PXE[19 + off]<<8);
+		off += 12;
 		// There are some unused entities that have all these values as 0, as well as
 		// entities that should only exist when specific flags are on/off
 		// Loading these would be a waste of memory, just skip them

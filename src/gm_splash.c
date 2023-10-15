@@ -50,4 +50,5 @@ void splash_main() {
 	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 	entities_clear();
 	effects_clear();
+    vdp_sprites_clear();
 }

@@ -60,6 +60,7 @@ uint8_t titlescreen_main() {
 	uint8_t tsong = SONG_TITLE;
 	const SpriteDefinition *tsprite = &SPR_Quote;
 	
+	vdp_colors(0, PAL_FadeOut, 64);
 	vdp_set_display(FALSE);
 	vdp_map_clear(VDP_PLANE_A);
 	vdp_map_clear(VDP_PLANE_B);

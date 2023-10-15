@@ -129,7 +129,7 @@ extern uint16_t stageID;
 extern uint16_t stageWidth, stageHeight;
 // A multiplication lookup table for each row of stageBlocks
 // Removes all mulu.w and __mulsi3 instructions in entity stage collision
-extern uint16_t *stageTable;
+extern uint16_t stageTable[];
 // Copy of level layout data loaded into RAM
 // This takes up extra space, but there are times where scripts make modifications to the
 // level layout (allowing player to reach some areas) so it is necessary to do this

@@ -411,8 +411,11 @@ void window_update() {
 		} else {
 			x += textColumn - spaceOffset;
 			y += textRow * 2;
-			index = TILE_FONTINDEX - 0x20 + '_';
-			if(cfg_language >= LANG_RU) index += 48;
+			if(cfg_language >= LANG_RU) {
+				index = TILE_FONTINDEX + 0x60 + (0xF << 2) + 3;
+			} else {
+				index = TILE_FONTINDEX - 0x20 + '_';
+			}
 		}
         if(++blinkTime == 8) {
             vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), x, y);

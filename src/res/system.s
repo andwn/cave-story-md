@@ -4,6 +4,7 @@
 
 /* Fonts */
 BIN UFTC_SysFont    "res/tiles_c/font_tran.uftc"
+BIN UFTC_SysFontRU  "res/tiles_c/font_tran_ru.uftc"
 #BIN UFTC_MsgFont    "res/tiles_c/font_blue.uftc"
 
 /* Level Select data */

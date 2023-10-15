@@ -34,14 +34,9 @@ void game_main(uint8_t load) {
 	gamemode = GM_GAME;
 	
 	vdp_colors(0, PAL_FadeOut, 64);
-	//vdp_color(15, 0x000);
 	// This is the SGDK font with a blue background for the message window
 	if(cfg_language < LANG_JA || cfg_language >= LANG_RU) {
-        //disable_ints();
-        //z80_pause_fast();
 		vdp_font_load((const uint32_t*)*TS_MSGTEXT);
-        //z80_resume();
-        //enable_ints();
 	}
 	effects_init();
 	game_reset(load);
@@ -69,8 +64,6 @@ void game_main(uint8_t load) {
 			} else if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
 					&& !tscState && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
-                //disable_ints();
-                //z80_pause_fast();
 				vdp_set_display(FALSE);
 				if(stageBackgroundType == 4) {
 					// Hide water
@@ -85,21 +78,13 @@ void game_main(uint8_t load) {
 				}
 				vdp_set_window(0, pal_mode ? 30 : 28);
 				vdp_set_display(TRUE);
-                //z80_resume();
-                //enable_ints();
 
 				paused = TRUE; // This will stop the counter in Hell
 				do_map();
 				paused = FALSE;
 				vdp_set_display(FALSE);
 				hud_force_redraw();
-
-                //disable_ints();
-                //z80_pause_fast();
 				sheets_load_stage(stageID, TRUE, FALSE);
-                //z80_resume();
-                //enable_ints();
-
 				player_draw();
 				entities_draw();
 				hud_show();
@@ -197,8 +182,4 @@ void game_reset(uint8_t load) {
 	
 	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
 	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0,0);
-	// Load up the main palettes
-	//vdp_colors_next(0, PAL_Main.data, 16);
-	//vdp_colors_next(16, PAL_Sym.data, 16);
-	//vdp_colors(0, PAL_FadeOut, 64);
 }

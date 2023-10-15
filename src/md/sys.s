@@ -123,6 +123,8 @@ NoZero:
 
 /* Error handling */
 
+	.section .text.error
+
 IllegalInst:
 		move.b  #1,(v_err_type)
 		bra.s   IllegalDump
@@ -408,7 +410,10 @@ ErrFont:
 		dc.b	0b00100010, 0b01110111, 0b00100010	/* + : 29 */
 		.even
 
+
 /* Interrupts */
+
+	.section .text.interrupts
 
 VerticalInt:
 		tst.w   (xgmTempo)
@@ -422,6 +427,8 @@ NoXGM:
 HorizontalInt:
 NullInt:
 		rte
+
+	.section .text
 
 FUNC xgm_vblank_process
 		/* XGM VBlank Process */

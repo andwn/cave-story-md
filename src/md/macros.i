@@ -10,6 +10,7 @@
 .endm
 
 .macro FUNC _name, _align=2
+    .section .text.\_name
     .globl \_name
     .type  \_name, @function
     .align \_align

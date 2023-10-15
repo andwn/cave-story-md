@@ -52,17 +52,13 @@ void intro_main() {
 		entities_update(TRUE);
 		effects_update(); // Draw Smoke
 		ready = TRUE;
-		sys_wait_vblank();
-		aftervsync();
+		sys_wait_vblank(); aftervsync();
 	}
 	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
 	entities_clear();
 	effects_clear();
-    // Get rid of the sprites
+	// Get rid of the sprites
     vdp_sprites_clear();
-    //disable_ints();
-    //z80_pause_fast();
-    vdp_sprites_update();
-    //z80_resume();
-    //enable_ints();
+	vdp_sprites_update();
+	dma_flush();
 }

@@ -12,6 +12,7 @@ uint16_t mem_get_used();
 void free(void *ptr);
 void* malloc(uint16_t size) __attribute__((malloc));
 
+void memclr(void *to, uint16_t len);
 void memset(void *to, uint8_t value, uint16_t len);
 void memcpy(void *to, const void *from, uint16_t len);
 

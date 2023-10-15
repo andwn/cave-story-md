@@ -262,7 +262,7 @@ uint16_t vdp_fade_step_calc() {
 
 void vdp_fade_step_dma() {
     if (pal_fading != FADE_NONE) {
-        dma_now(DmaCRAM, (uint32_t) pal_current, 0, 64, 2);
+        dma_queue(DmaCRAM, (uint32_t) pal_current, 0, 64, 2);
         if (pal_fading == FADE_LASTFRAME) pal_fading = FADE_NONE;
     }
 }
@@ -277,6 +277,7 @@ void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t 
         while (vdp_fade_step_calc()) {
             sys_wait_vblank();
             vdp_fade_step_dma();
+            dma_flush();
         }
     }
 }
@@ -325,7 +326,7 @@ void vdp_sprites_clear() {
 void vdp_sprites_update() {
     if (!sprite_count) return;
     sprite_table[sprite_count - 1].link = 0; // Mark end of sprite list
-    dma_now(DmaVRAM, (uint32_t) sprite_table, VDP_SPRITE_TABLE, sprite_count << 2, 2);
+    dma_queue(DmaVRAM, (uint32_t) sprite_table, VDP_SPRITE_TABLE, sprite_count << 2, 2);
     sprite_count = 0;
 }
 

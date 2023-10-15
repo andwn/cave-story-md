@@ -968,7 +968,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = malloc(sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	//if(!e) error_oom();
-	memset(e, 0, sizeof(Entity) + sizeof(Sprite) * sprite_count);
+	memclr(e, sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	
 	e->x = x;
 	e->y = y;
