@@ -48,7 +48,7 @@
 [ Миакид ]<NOD<END
 #0213
 <KEY<FLJ1593:0223<MSG<TUR
-[ Фуюхико Дэйт ]<NOD<END
+[ Фуюхико Дате ]<NOD<END
 
 #0220
 <KEY<MSG<TUR

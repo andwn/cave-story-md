@@ -241,7 +241,7 @@ BIN TSC_WeedD	"res/tsc/ru/Stage/WeedD.tsb"
 BIN TSC_WeedS	"res/tsc/ru/Stage/WeedS.tsb"
 
 # Tilesets
-BIN UFTC_Title		"res/tiles_loc/title_en.uftc"
+BIN UFTC_Title		"res/tiles_loc/title_ru.uftc"
 BIN UFTC_MenuText	"res/tiles_loc/menutext_ru.uftc"
 BIN UFTC_MsgText    "res/tiles_loc/font_blue_ru.uftc"
 

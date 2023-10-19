@@ -162,7 +162,6 @@ RegDump:
 		move.l  a1,v_err_reg+52
 		move.l  d0,v_err_reg+56
 		move.l  a0,v_err_reg+60
-#		jmp _error
 
 		lea		(VdpCtrl).l,a5
 		lea		(VdpData).l,a6
@@ -217,9 +216,9 @@ NoPostShift:
 		lea		StrError(pc, d5.w),a0
 
 		move.l	#0x40000003+(0x82<<16),(a5)	/* VRAM 0xA082 */
+		move.w	#0x8000,d0		/* Clear with priority bit set */
 		moveq.l	#15,d4
 DrawChar:
-		move.w	#0x8000,d0		/* Clear with priority bit set */
 		move.b	(a0)+,d0
 		addq.b	#1,d0
 		move.w	d0,(a6)
@@ -235,29 +234,27 @@ DrawRegs:
 		move.l	#0x40000003+(0x502<<16),d6	/* VRAM 0xA502 */
 		move.w	#7,d5
 DrawRegLoop:
-		move.l	d6,(a5)
-
-		move.b	#14,d0
+		move.l	d6,(a5)		/* Set pos in Plane A */
+		move.b	#14,d0		/* D */
 		move.w	d0,(a6)
-		move.b	d5,d0
+		move.b	d5,d0		/* # */
 		addq.b	#1,d0
 		move.w	d0,(a6)
-		move.b	#29,d0
+		move.b	#29,d0		/* = */
 		move.w	d0,(a6)
 		move.l	(a0)+,d1
-		bsr		PrintHexL
-
-		move.b	#0,d0
+		bsr		PrintHex4
+		move.b	#0,d0		/* _ */
 		move.w	d0,(a6)
-		move.b	#11,d0
+		move.b	#11,d0		/* A */
 		move.w	d0,(a6)
-		move.b	d5,d0
+		move.b	d5,d0		/* # */
 		addq.b	#1,d0
 		move.w	d0,(a6)
-		move.b	#29,d0
+		move.b	#29,d0		/* = */
 		move.w	d0,(a6)
 		move.l	(a0)+,d1
-		bsr		PrintHexL
+		bsr		PrintHex4
 
 		sub.l	#0x00800000,d6	/* Next row in nametable */
 		dbf		d5,DrawRegLoop
@@ -274,21 +271,14 @@ DrawStackLoop:
 		move.w	d0,(a6)
 		move.b	#30,d0	/* + */
 		move.w	d0,(a6)
-		move.b	d5,d3	/* high nybble */
-		add.b	d3,d3
-		add.b	d3,d3
-		move.b	d3,d0
-		lsr.b	#4,d0
-		addq.b	#1,d0
-		move.w	d0,(a6)
-		move.b	d3,d0	/* low nybble */
-		andi.b	#0xF,d0
-		addq.b	#1,d0
-		move.w	d0,(a6)
+		move.b	d5,d1	/* # */
+		add.b	d1,d1
+		add.b	d1,d1
+		bsr		PrintHex1
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.l	(a0)+,d1
-		bsr		PrintHexL
+		bsr		PrintHex4
 
 		sub.l	#0x00800000,d6
 		dbf		d5,DrawStackLoop
@@ -301,7 +291,7 @@ DrawStackLoop:
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.l	(v_err_pc),d1
-		bsr		PrintHexL
+		bsr		PrintHex3
 		
 		move.l	#0x40000003+(0x682<<16),(a5)
 		move.b	#24,d0	/* S */
@@ -311,7 +301,7 @@ DrawStackLoop:
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.w	(v_err_sr),d1
-		bsr		PrintHexW
+		bsr		PrintHex2
 		
 		cmp.b	#2,(v_err_type)		/* No more params for zero divide */
 		beq.s	Uwa
@@ -324,7 +314,7 @@ DrawStackLoop:
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.w	(v_err_ext1),d1
-		bsr		PrintHexW
+		bsr		PrintHex2
 		
 		cmp.b	#1,(v_err_type)		/* No more params for illegal instruction */
 		beq.s	Uwa
@@ -337,7 +327,7 @@ DrawStackLoop:
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.w	(v_err_ext2),d1
-		bsr		PrintHexW
+		bsr		PrintHex2
 		
 		move.l	#0x40000003+(0x802<<16),(a5)
 		move.b	#11,d0	/* A */
@@ -347,33 +337,34 @@ DrawStackLoop:
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
 		move.l	(v_err_addr),d1
-		bsr		PrintHexL
+		bsr		PrintHex3
 		
 Uwa:
 		bra.s	Uwa
 
 /* d1 = integer */
 /* breaks d0.b */
-PrintHexL:
+PrintHex4:
 		moveq.l	#7,d2
-PrintHexLoopL:
+		bra.s	PrintHexLoop
+PrintHex3:
+		rol.l	#8,d1
+		moveq.l	#5,d2
+		bra.s	PrintHexLoop
+PrintHex2:
+		swap	d1
+		moveq.l	#3,d2
+		bra.s	PrintHexLoop
+PrintHex1:
+		ror.l	#8,d1
+		moveq.l	#1,d2
+PrintHexLoop:
 		rol.l	#4,d1
 		move.b	d1,d0
 		andi.b	#0xF,d0
 		addq.b	#1,d0
 		move.w	d0,(a6)
-		dbf		d2,PrintHexLoopL
-		rts
-
-PrintHexW:
-		moveq.l	#3,d2
-PrintHexLoopW:
-		rol.w	#4,d1
-		move.b	d1,d0
-		andi.b	#0xF,d0
-		addq.b	#1,d0
-		move.w	d0,(a6)
-		dbf		d2,PrintHexLoopW
+		dbf		d2,PrintHexLoop
 		rts
 
 ErrFont:
