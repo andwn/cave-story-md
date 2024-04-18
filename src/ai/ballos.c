@@ -43,6 +43,11 @@ enum BS_STATES {
 	CS_EXPLODE_BLOODY	= 420,
 	CS_SPIN_PLATFORMS	= 430
 };
+
+// forward
+void ai_ballos_f2(Entity *e);
+void ai_ballos_f3(Entity *e);
+
 /*
 enum { LESS_THAN, GREATER_THAN };
 
@@ -306,6 +311,7 @@ void ai_ballos_f1(Entity *e) {
 		case BS_ENTER_FORM:
 		{
 			e->type = OBJ_BALLOS_FORM2;
+			e->onFrame = &ai_ballos_f2;
 		}
 		break;
 	}
@@ -397,6 +403,7 @@ void ai_ballos_f2(Entity *e) {
 				if (e->x >= pixel_to_sub(312) && e->x <= pixel_to_sub(344)) {
 					e->state = CS_ENTER_FORM;
 					e->type = OBJ_BALLOS_FORM3;
+					e->onFrame = &ai_ballos_f3;
 				}
 			}
 			
