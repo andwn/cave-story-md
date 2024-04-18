@@ -38,7 +38,7 @@ TSCOMP   := bin/tscomp
 MEGALOADER := bin/megaloader
 
 INCS     = -Isrc -Ires
-CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -fshort-enums -ffunction-sections -fdata-sections
+CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -ffunction-sections -fdata-sections
 OPTIONS  = -O2 -frename-registers -fconserve-stack
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
 ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or

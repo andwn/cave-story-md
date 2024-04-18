@@ -1206,9 +1206,9 @@ uint8_t execute_command() {
 			ready = TRUE;
             sys_wait_vblank(); aftervsync();
 
-            //disable_ints();
-            //z80_pause_fast();
-			vdp_set_display(FALSE);
+            disable_ints();
+            z80_pause_fast();
+			//vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
 			camera.x = pixel_to_sub(ScreenHalfW);
@@ -1252,13 +1252,14 @@ uint8_t execute_command() {
 
 			vdp_colors_next(48, PAL_XX, 16);
 			vdp_colors(48, PAL_XX, 16);
-			vdp_set_display(TRUE);
-            //z80_resume();
-            //enable_ints();
+			//vdp_set_display(TRUE);
+            z80_resume();
+            enable_ints();
 
 			song_stop();
 			
 			uint16_t t = TIME_10(350);
+			inFade = FALSE; // Don't let aftervsync() hide the sprites
 			while(--t) {
 				if(t > TIME_8(150) || !args[0]) {
 					if((t % TIME_8(5)) == 0) {
@@ -1270,8 +1271,9 @@ uint8_t execute_command() {
 				system_update();
 				ready = TRUE;
                 sys_wait_vblank();
-				vdp_sprites_update();
+                aftervsync();
 			}
+			inFade = TRUE; // Hide sprites again until Fall map fades in
 		}
 		break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
