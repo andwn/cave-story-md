@@ -36,25 +36,20 @@ FUNC joy_update
         move.b  (a0),d0
 
         move.b  #0x00,(a0)  /* Step 2: **SA.00DU */
-        nop
         and.b   #0x3F,d0
         move.b  (a0),d1
 
         move.b  #0x40,(a0)  /* Step 3: Ignore */
         and.b   #0x30,d1    /* Rearrange bits */
-        lsl.b   #2,d1       /* into SACB.RLDU */
 
         move.b  #0x00,(a0)  /* Step 4: Ignore */
-        or.b    d1,d0
-        not.b   d0
+        lsl.b   #2,d1       /* into SACB.RLDU */
 
         move.b  #0x40,(a0)  /* Step 5: Ignore */
-        nop
-        nop
+        or.b    d1,d0
 
         move.b  #0x00,(a0)  /* Step 6: Last 4 bits are 0 if 6 buttons */
-        nop
-        nop
+        not.b   d0
         move.b  (a0),d1
 
         and.b   #0x0F,d1
@@ -62,7 +57,6 @@ FUNC joy_update
 
         move.b  #0x40,(a0)  /* Step 7: *CBS.MXYZ */
         move.b  #1,(joytype)
-        nop
         move.b  (a0),d1
 
         not.b   d1

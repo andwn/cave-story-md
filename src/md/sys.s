@@ -10,8 +10,7 @@ EQU TMSS,       0xA14000   /* TMSS Register */
 VAR v_err_reg,  l, 16
 VAR v_err_pc,   l, 1
 VAR v_err_addr, l, 1
-VAR v_err_ext1, w, 1
-VAR v_err_ext2, w, 1
+VAR v_err_inst, w, 1
 VAR v_err_sr,   w, 1
 VAR v_err_type, b, 1
 
@@ -41,7 +40,7 @@ RomHeader:
 		.ascii	"SEGA MEGA DRIVE "          /* Console Signature */
 	.globl Date
 Date:
-		.ascii	"SKYCHASE 2023.10"          /* Company & Date */
+		.ascii	"SKYCHASE 2024.04"          /* Company & Date */
 		.ascii	"DOUKUTSU MONOGATARI MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
@@ -134,34 +133,38 @@ ZeroDivide:
 BusError:
 AddressError:
 		move.b  #0,(v_err_type)
-		move.w  4(sp),v_err_ext1
-		move.l  6(sp),v_err_addr
-		move.w  10(sp),v_err_ext2
-		move.w  12(sp),v_err_sr
-		move.l  14(sp),v_err_pc
+		move.l  2(sp),(v_err_addr)
+		move.w  6(sp),(v_err_inst)
+		move.w  8(sp),(v_err_sr)
+		move.l  10(sp),(v_err_pc)
 		bra.s   RegDump
 IllegalDump:
-		move.w  10(sp),v_err_ext1
+		move.b  #1,(v_err_type)
+		bra.s   pc_sr_dump
 ZeroDump:
-		move.w  4(sp),v_err_sr
-		move.l  6(sp),v_err_pc
+		move.b  #2,(v_err_type)
+pc_sr_dump:
+		move.w  (sp),(v_err_sr)
+		move.l  2(sp),(v_err_pc)
 RegDump:
-		move.l  d7,v_err_reg+0
-		move.l  a7,v_err_reg+4
-		move.l  d6,v_err_reg+8
-		move.l  a6,v_err_reg+12
-		move.l  d5,v_err_reg+16
-		move.l  a5,v_err_reg+20
-		move.l  d4,v_err_reg+24
-		move.l  a4,v_err_reg+28
-		move.l  d3,v_err_reg+32
-		move.l  a3,v_err_reg+36
-		move.l  d2,v_err_reg+40
-		move.l  a2,v_err_reg+44
-		move.l  d1,v_err_reg+48
-		move.l  a1,v_err_reg+52
-		move.l  d0,v_err_reg+56
-		move.l  a0,v_err_reg+60
+		move.l  a6,(v_err_reg+12)
+		lea		(v_err_reg),a6
+		move.l  d7,(a6)+
+		move.l  a7,(a6)+
+		move.l  d6,(a6)+
+		adda.w	#4,a6
+		move.l  d5,(a6)+
+		move.l  a5,(a6)+
+		move.l  d4,(a6)+
+		move.l  a4,(a6)+
+		move.l  d3,(a6)+
+		move.l  a3,(a6)+
+		move.l  d2,(a6)+
+		move.l  a2,(a6)+
+		move.l  d1,(a6)+
+		move.l  a1,(a6)+
+		move.l  d0,(a6)+
+		move.l  a0,(a6)+
 
 		lea		(VdpCtrl).l,a5
 		lea		(VdpData).l,a6
@@ -303,30 +306,17 @@ DrawStackLoop:
 		move.w	(v_err_sr),d1
 		bsr		PrintHex2
 		
-		cmp.b	#2,(v_err_type)		/* No more params for zero divide */
-		beq.s	Uwa
-		
-		move.l	#0x40000003+(0x702<<16),(a5)
-		move.b	#15,d0	/* E */
-		move.w	d0,(a6)
-		move.b	#2,d0	/* 1 */
-		move.w	d0,(a6)
-		move.b	#29,d0	/* = */
-		move.w	d0,(a6)
-		move.w	(v_err_ext1),d1
-		bsr		PrintHex2
-		
-		cmp.b	#1,(v_err_type)		/* No more params for illegal instruction */
-		beq.s	Uwa
+		cmp.b	#0,(v_err_type)		/* No more params */
+		bne.s	Uwa
 		
 		move.l	#0x40000003+(0x782<<16),(a5)
-		move.b	#15,d0	/* E */
+		move.b	#21,d0	/* O */
 		move.w	d0,(a6)
-		move.b	#3,d0	/* 2 */
+		move.b	#22,d0	/* P */
 		move.w	d0,(a6)
 		move.b	#29,d0	/* = */
 		move.w	d0,(a6)
-		move.w	(v_err_ext2),d1
+		move.w	(v_err_inst),d1
 		bsr		PrintHex2
 		
 		move.l	#0x40000003+(0x802<<16),(a5)
