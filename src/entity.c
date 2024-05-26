@@ -28,7 +28,7 @@
 #define LIST_PUSH(list, obj) ({                                                                \
 	obj->next = list;                                                                          \
 	obj->prev = NULL;                                                                          \
-	list->prev = obj;                                                                          \
+	if(list) list->prev = obj;                                                                 \
 	list = obj;                                                                                \
 })
 
