@@ -13,12 +13,12 @@ A arma mais básica.
 Ela traz em si a marca de Polaris.<WAI9999<END
 #1003
 <MSG<TUR- Bola de Fogo -
-Percorre o chão aos saltos.
-Muito eficiente em pequenos declives.<WAI9999<END
+Quica pelo chão.
+Eficiente em leves descidas.<WAI9999<END
 #1004
 <MSG<TUR- Metralhadora -
-Uma arma automática de disparo rápido.
-Recarrega automaticamente com o tempo.<WAI9999<END
+Uma arma automática de tiro rápido.
+Recarrega automático com o tempo.<WAI9999<END
 #1005
 <MSG<TUR- Lança-Mísseis -
 Causa enorme dano a longa distância.
@@ -26,7 +26,7 @@ Entretanto, tem munição limitada.<WAI9999<END
 #1007
 <MSG<TUR- Borbulhante -
 Encontrada na lareira do Auditório.
-Você decide a melhor forma de usá-la.<WAI9999<END
+Você decide a melhor forma de usar.<WAI9999<END
 #1009
 <MSG<TUR- Espada -
 Uma arma de arremesso devastadora.
@@ -56,25 +56,25 @@ para disparar um laser.<WAI9999<END
 <MSG<TURNene<WAI9999<END
 
 #1200
-<MSG<TURCachorro da Jenka e líder da matilha.
-Se perdeu enquanto procurava seus irmãos e
-foi acolhido pela Curly.<WAI9999<END
+<MSG<TURCão da Jenka e líder da matilha.
+Se perdeu enquanto procurava seus
+irmãos e foi acolhido pela Curly.<WAI9999<END
 #1201
-<MSG<TURCachorro da Jenka. Adora caçar tesouros,
-ou melhor, baús de tesouro. Ultimamente,
-está com a mania de dormir dentro deles.<WAI9999<END
+<MSG<TURCão da Jenka. Adora caçar tesouros,
+ou melhor, baús de tesouro. Agora,
+tem mania de dormir dentro deles.<WAI9999<END
 #1202
-<MSG<TURCachorro da Jenka. Adora lugares escuros.
-Como não pode enxergar nada, ele vaga pela
-escuridão usando apenas seus instintos.<WAI9999<END
+<MSG<TURCão da Jenka. Adora lugares escuros.
+Tem visão ruim, e vaga na escuridão
+só com seus instintos.<WAI9999<END
 #1203
-<MSG<TURCachorro da Jenka. Adora ossos e costuma
-enterrá-los em vários lugares diferentes.
-Muitos desses já foram até esquecidos.<WAI9999<END
+<MSG<TURCão da Jenka. Adora ossos e costuma
+enterrá-los em vários lugares.
+Muitos já foram até esquecidos.<WAI9999<END
 #1204
-<MSG<TURCadela da Jenka. Passa a maior parte do
-tempo dormindo, mas possui sonhos que são
-capazes de prever o futuro.<WAI9999<END
+<MSG<TURCadela da Jenka. Passa a maior parte
+do tempo dormindo, mas possui sonhos
+que são capazes de prever o futuro.<WAI9999<END
 
 #5000
 <MSG<TURSem item.<WAI9999<END
@@ -177,9 +177,9 @@ dele.<WAI9999<END
 peixe. Pelo estado, parece que
 esteve com alguém por muitos anos.<WAI9999<END
 #6005
-<MSG<TURUma presa afiada encontrada na Fazenda
-Yamashita. Será que o antigo dono ainda
-está vivo...?<WAI9999<END
+<MSG<TURUma presa afiada encontrada na
+Fazenda Yamashita. Será que o antigo
+dono ainda está vivo...?<WAI9999<END
 #6006
 <MSG<TURUma cápsula de vida.<WAI9999<END
 #6007
@@ -196,8 +196,8 @@ interior do ovo de dragão número 06.<WAI9999<END
 #6012
 <MSG<TURRetirado de uma lareira.<WAI9999<END
 #6013
-<MSG<TURUma bomba para explodir portas e coisas do
-tipo.<WAI9999<END
+<MSG<TURUma bomba para explodir portas e
+coisas do tipo.<WAI9999<END
 #6014
 <FLJ3000:1200
 <FLJ3001:1201
@@ -210,8 +210,8 @@ tipo.<WAI9999<END
 apenas uma vez. Você quer usar?<YNJ0000<LI+1000<SOU0020<IT-0015<MSG
 Saúde recuperada.<FRE<WAI9999<END
 #6016
-<MSG<TURPelo que parece, isso pode curar qualquer
-tipo de mal...<WAI9999<END
+<MSG<TURPelo que parece, isso pode curar
+qualquer tipo de mal...<WAI9999<END
 #6017
 <MSG<TUREstá escrito "Clínica do Labirinto".<WAI9999<END
 #6018
@@ -221,15 +221,16 @@ no ar para ir mais alto.<NOD<CLR
 Você quer equipar?<YNJ0000<EQ+0001<FL+0742<EQ-0032<FL-0743<MSG
 O propulsor foi equipado.<NOD<WAI0003<FRE<EVE5018
 #6019
-<MSG<TURQuando você sofre dano, a quantidade de
-energia perdida da arma é reduzida pela
-metade.<WAI9999<END
+<MSG<TURQuando você sofre dano, a quantidade
+de energia perdida da arma é
+reduzida pela metade.<WAI9999<END
 #6020
-<MSG<TURAmplia a velocidade com que a Metralhadora 
-recarrega munição.<WAI9999<END
+<MSG<TURAmplia a velocidade com que a
+Metralhadora recarrega munição.<WAI9999<END
 #6021
-<MSG<TURVocê pode respirar debaixo d'água com esse
-equipamento. Pertencia à Curly.<WAI9999<END
+<MSG<TURVocê pode respirar debaixo d'água
+com esse equipamento. Pertencia à
+Curly.<WAI9999<END
 #6022
 <MSG<TURUm cronômetro automático.
 Você não vê nenhum botão nele.<WAI9999<END
@@ -240,45 +241,60 @@ poderá ir para qualquer direção.<NOD<CLR
 Você quer equipar?<YNJ0000<EQ+0032<FL+0743<EQ-0001<FL-0742<MSG
 O Propulsor v2.0 foi equipado.<NOD<WAI0003<FRE<EVE5023
 #6024
-<MSG<TURUma máscara de Mimiga que a mãe da Sue
-fez. Ela é um pouquinho grande...<WAI9999<END
+<MSG<TURUma máscara de Mimiga que a mãe da
+Sue fez. Ela é um pouquinho
+grande...<WAI9999<END
 #6025
 <MSG<TURUma chave pescada por um Mimiga.<WAI9999<END
 
 #6026
 <KEY<MSGVocê deseja ler?<YNJ0000<MSG<TUR
-Aqui é a Sue.<NOD<CLRAcredito que eu não tenha te falado muito
-sobre nós.<NOD<CLRNós somos da superfície e viajamos para a
-ilha para fazer algumas pesquisas.<NOD<CLRO Professor Booster estava com a gente no
-helicóptero, minha mãe também, meu irmão,
-vários assistentes...<NOD<CLRE o Doutor também.<NOD<CLREle estava lá como o médico da expedição,
-e era o que estava fazendo...<NOD<CLRBem, até encontrar a Coroa Demoníaca...<WAI0020<NOD<CLREssa coroa, que um dia já foi propriedade
-do mestre desta ilha, concede monstruosos
-poderes mágicos a quem usar...<NOD<CLRO Doutor sabia disso antes mesmo de vir à 
-ilha, e foi por isso que ele deu um jeito
-de participar do nosso grupo.<NOD<CLRLogo que conseguiu obter a coroa, ninguém
-mais foi capaz de se opor a ele.<NOD<CLRNão tivemos escolha a não ser continuar a
-pesquisa na ilha sob suas ordens.<NOD<CLRO Doutor pretende dominar a superfície da
-Terra usando a ilha como base.<NOD<CLRAcho que, de início, ele planeja atacar a
-superfície usando os Mimigas como armas.<NOD<CLRDe qualquer maneira, eu consegui escapar,
-mas não sei se os outros ainda estão...<NOD<CLRAgora, ele obriga os Mimigas, que parecem
-não suspeitar de nada, a plantar muitas e
-muitas flores vermelhas.<NOD<CLRAssim que estiver pronto para atacar, ele
-induzirá os Mimigas a um frênesi violento
-usando as flores.<NOD<CLRCom os terríveis poderes que possui, será 
-capaz de mandar os Mimigas fazerem todo o
-trabalho sujo.<NOD<CLRO que pode acontecer comigo também...<NOD<CLRSe você conseguir escapar da prisão, veja
-se encontra um esconderijo em algum lugar
-da plantação.<NOD<CLRSe minha mãe ainda estiver segura, estará 
-lá dentro, bolando um contra-ataque.<NOD<CLRPor favor, ajude a minha mãe.<NOD<CLRA senha é "Litagano Motscoud".<NOD<CLR<FL+1024<FRE<MSGA carta termina aqui...<NOD<END
+Aqui é a Sue.<NOD<CLRAcredito que eu não tenha te falado
+muito sobre nós.<NOD<CLRNós somos da superfície e viajamos
+para a ilha para fazer algumas
+pesquisas.<NOD<CLRO Professor Booster estava com a
+gente no helicóptero, minha mãe
+também, meu irmão,<NOD<CLRvários assistentes...
+E o Doutor também.<NOD<CLREle estava lá como o médico da
+expedição, e era o que estava
+fazendo...<NOD<CLRBem, até encontrar a Coroa
+Demoníaca...<WAI0020<NOD<CLREssa coroa, que um dia foi do mestre
+desta ilha, concede monstruosos
+poderes mágicos a quem usar...<NOD<CLRO Doutor sabia disso antes de vir à
+ilha, e por isso forçou sua entrada
+no grupo.<NOD<CLRLogo que conseguiu obter a coroa,
+ninguém mais foi capaz de se opor
+a ele.<NOD<CLRNão tivemos escolha a não ser
+continuar a pesquisa na ilha sob
+suas ordens.<NOD<CLRO Doutor pretende dominar a
+superfície da Terra usando a ilha
+como base.<NOD<CLRAcho que, de início, ele planeja
+atacar a superfície usando os
+Mimigas como armas.<NOD<CLRDe qualquer maneira, eu consegui
+escapar, mas não sei se os outros
+ainda estão...<NOD<CLRAgora, ele obriga os Mimigas, que
+não suspeitam de nada, a plantar
+muitas flores vermelhas.<NOD<CLRAssim que estiver pronto para
+atacar, ele induzirá os Mimigas a um
+frênesi violento usando as flores.<NOD<CLRCom os terríveis poderes que possui,
+será capaz de mandar os Mimigas
+fazerem todo o trabalho sujo.<NOD<CLRO que pode acontecer comigo
+também...<NOD<CLRSe você conseguir escapar da prisão,
+veja se encontra um esconderijo em
+algum lugar da plantação.<NOD<CLRSe minha mãe ainda estiver segura,
+estará  lá dentro, bolando um
+contra-ataque.<NOD<CLRPor favor, ajude a minha mãe.<NOD<CLRA senha é "Litagano Motscoud".<NOD<CLR<FL+1024<FRE<MSGA carta termina aqui...<NOD<END
 
 #6027
-<MSG<TURNecessário para se construir um foguete.
-Orgulho do Itoh, o homem covarde.<WAI9999<END
+<MSG<TURNecessário para se construir um
+foguete. Orgulho do Itoh, o homem
+covarde.<WAI9999<END
 #6028
-<MSG<TURUm irrigador de água escangalhado.<WAI9999<END
+<MSG<TURUm irrigador de água
+escangalhado.<WAI9999<END
 #6029
-<MSG<TURNovinho em folha. ...Parece, pelo menos.<WAI9999<END
+<MSG<TURNovinho em folha. ...Parece, pelo
+menos.<WAI9999<END
 #6030
 <MSG<TURUma corda de reboque para robôs.<WAI9999<END
 #6031
@@ -287,16 +303,16 @@ Não tem utilidade.<WAI9999<END
 #6032
 <MSG<TUR"Ei! A gente já chegou?"<WAI9999<END
 #6033
-<MSG<TURUma medalha que você ganhou do cogumelo.
-Não possui nenhuma utilidade. Na verdade,
-você nem precisava disso...<FL+1563<WAI9999<END
+<MSG<TURA medalha cogumelo que você ganhou.
+Não possui nenhuma utilidade. Na
+verdade, você nem precisava disso...<FL+1563<WAI9999<END
 #6034
 <MSG<TURSegundo dizem, isso tem o poder de
 recuperar memórias...<WAI9999<END
 #6035
-<MSG<TUREncontrada atrás de uma parede.
-Uma calcinha verde e amarela com um lindo
-emblemazinho. Não tem utilidade.<WAI9999<END
+<MSG<TURUma calcinha verde e amarela com um
+lindo emblemazinho, achada atrás de
+uma parede. Não tem utilidade.<WAI9999<END
 #6036
 <MSG<TURPossui a silhueta de um alienígena
 gravada. Não tem utilidade.<WAI9999<END
@@ -310,9 +326,9 @@ Uma estrela de enfeite.<NOD<FLJ0722:7038<CLR
 Você quer equipar?<YNJ0000<EQ+0128<FL+0722<MSG
 A Estrelinha foi equipada.<NOD<WAI0003<FRE<EVE5038
 #6039
-<MSG<TURA sua ligação com a Curly Brace, a única
-guerreira a quem você confiaria sua vida.
-Certamente, vocês irão se reencontrar...<WAI9999<END
+<MSG<TURSua ligação com Curly Brace, a única
+guerreira em quem você confiaria a
+vida. Vocês irão se reencontrar...<WAI9999<END
 
 #7002
 <MLP<END
