@@ -62,10 +62,10 @@ got lost and was taken in by Curly.<WAI9999<END
 #1201
 <MSG<TURJenka's pet. Loves treasure-hunting.
 Or treasure *chests*, rather, and
-recently has taken up sleeping in them.<WAI9999<END
+lately has taken up napping in them.<WAI9999<END
 #1202
 <MSG<TURJenka's pet. Loves dark places. Due
-to poor eyesight, he roams the darkness
+to poor eyesight, he roams the dark
 using his wild instincts alone.<WAI9999<END
 #1203
 <MSG<TURJenka's pet. Adores bones and has
@@ -322,8 +322,8 @@ Will you equip it?<YNJ0000<EQ+0128<FL+0722<MSG
 Equipped the Whimsical Star.<NOD<WAI0003<FRE<EVE5038
 #6039
 <MSG<TURYour tie to Curly Brace, the only
-warrior you would trust your back to.
-Surely you will meet again one day...<WAI9999<END
+warrior you'd trust your back to.
+Surely you'll meet again one day...<WAI9999<END
 
 #7002
 <MLP<END
