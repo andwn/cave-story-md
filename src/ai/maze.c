@@ -405,6 +405,7 @@ void ai_gaudiFlying(Entity *e) {
 void ai_gaudiArmor(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
 		e->type = OBJ_GAUDI_DYING;
+		e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;
 		e->timer = 0;
