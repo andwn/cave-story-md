@@ -89,8 +89,8 @@ tout de suite !<NOD<CLO
 <MSGOuverture du coffre.<NOD<GIT1002<IT+0002<EQ+0002<CLR
 <CMU0010Trouvé le =GPS=<WAI0160<NOD<RMU<EVE0201
 #0201
-<PRI<MSGIl y est écrit...<NOD<CLR<TURSi tu utilises ton esprit d'exploration,
-tu trouveras la sortie.
+<PRI<MSGIl y est écrit...<NOD<CLR<TURSi tu utilises ton esprit d'explo-
+-ration, tu trouveras la sortie.
 C'est mon souhait le plus cher.<NOD<END
 
 #0300
