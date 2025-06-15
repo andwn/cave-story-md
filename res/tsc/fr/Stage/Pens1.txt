@@ -203,7 +203,7 @@ détruits,<ANP0621:0000:0000<NOD
 Mais je ne connais
 pas les détails.<NOD
 Il est tout a fait possible
-que l'un deux ait survécu...<NOD<CLR<FAC0010Professeur.<NOD
+que l'un d'eux ait survécu...<NOD<CLR<FAC0010Professeur.<NOD
 La Zone des Sables est
 connectée.<NOD<CLR<FAC0018Je vois.<NOD<CLO<FAC0000
 <ANP0622:0003:0000<WAI0015
@@ -278,7 +278,7 @@ On peut pas laisser
 des enfants seuls,<NOD
 Alors on n'a pas eu
 le choix.<NOD<CLR
-Je t'en supplie.<NOD<CLRRetrouve là et
+Je t'en supplie.<NOD<CLRRetrouve la et
 fuyez ensemble.<NOD<CLO
 <FL-0160<FL+0161<FL+0741<PS+0004:6004<END
 

@@ -57,7 +57,7 @@ Prends le coté gauche.<NOD<CLO
 <MSG<FAC0019Qu'y a-t-il ?<NOD
 Tu n'as pas peur au moins,
 hein ?<NOD<CLRJ'en doute.<NOD
-Allez, atrappe le
+Allez, attrappe le
 côté gauche de
 ce rocher.<NOD<ANP0300:0020:0000<END
 #0302
