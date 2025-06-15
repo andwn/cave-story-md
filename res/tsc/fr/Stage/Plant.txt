@@ -34,7 +34,8 @@
 <KEY<MSGC'est notre ferme.
 On fait pousser des fleurs ici.<NOD
 Mon boulot c'est de les garder.<NOD<CLRNous les Mimigas, dépendons
-de ces fleurs.<NOD<CLRPar contre, les fleurs rouges sont dangereuses.<NOD<CLRSi tu en manges une,
+de ces fleurs.<NOD<CLRPar contre, les fleurs rouges
+sont dangereuses.<NOD<CLRSi tu en manges une,
 Il parait que ton sang bout
 et tu peux en mourir !<NOD<CLRHeureusement, il
 n'y en a pas ici.<NOD<END
