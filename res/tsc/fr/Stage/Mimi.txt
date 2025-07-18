@@ -89,8 +89,8 @@ tout de suite !<NOD<CLO
 <MSGOuverture du coffre.<NOD<GIT1002<IT+0002<EQ+0002<CLR
 <CMU0010Trouvé le =GPS=<WAI0160<NOD<RMU<EVE0201
 #0201
-<PRI<MSGIl y est écrit...<NOD<CLR<TURSi tu utilises ton esprit d'exploration,
-tu trouveras la sortie.
+<PRI<MSGIl y est écrit...<NOD<CLR<TURSi tu utilises ton esprit d'explo-
+-ration, tu trouveras la sortie.
 C'est mon souhait le plus cher.<NOD<END
 
 #0300
@@ -210,7 +210,7 @@ des armes ?<NOD<CMU0009<FAI0004<CLR<FAC0002Oui.<NOD<CLRLe Docteur veut qu'on
 mange des fleurs rouges et
 qu'on attaque les humains.<NOD<CLR<FAC0009Qu--Pourquoi il veut
 faire ça ?!<NOD<CLR<FAC0002Ce type est...
-...un démon.<NOD<CLR<FAC0009Et il va utilsier ces
+...un démon.<NOD<CLR<FAC0009Et il va utiliser ces
 fleurs sur Toroko ?<NOD<CLR<FAC0002A ce que je sais,
 Il les cherche toujours.<NOD<CLROn ne peut que prier
 qu'il ne les trouve pas.<NOD<CLR<FAC0009Si...<NOD<CLRS'il trouve
