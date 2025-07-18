@@ -130,7 +130,7 @@
 
 typedef struct {
 	uint16_t number;
-	const uint8_t *data;
+	uint16_t offset;
 } Event;
 
 uint8_t tscEventCount;
@@ -141,9 +141,10 @@ uint16_t teleportEvent[8];
 uint8_t showingBossHealth;
 
 // Array of pointers to each event in the current TSC
-Event headEvents[HEAD_EVENT_COUNT];
-Event stageEvents[MAX_EVENTS];
-uint16_t lastRunEvent;
+const Event *headEvents;
+const uint8_t *headCmdData;
+const Event *stageEvents;
+const uint8_t *stageCmdData;
 
 const uint8_t *curCommand;
 uint8_t cmd;
@@ -166,15 +167,20 @@ uint16_t bossHealth;
 
 uint16_t lastAmmoNum;
 
-uint8_t tsc_load(Event *eventList, const uint8_t *TSC);
+void tsc_show_teleport_menu(void);
 
-void tsc_show_teleport_menu();
-
-uint8_t execute_command();
-uint8_t tsc_read_byte();
-uint16_t tsc_read_word();
+uint8_t execute_command(void);
+uint8_t tsc_read_byte(void);
+uint16_t tsc_read_word(void);
 
 enum { ARMSITEM, HEAD, STAGESEL, CREDITS, };
+
+static uint16_t tsc_load(const Event **eventList, const uint8_t **cmdData, const uint8_t *TSC) {
+	const uint16_t eventCount = TSC[1];
+	*eventList = (const Event *)&TSC[2];
+	*cmdData = &TSC[2 + (eventCount << 2)];
+	return eventCount;
+}
 
 // Load window tiles & the global "head" events
 void tsc_init() {
@@ -188,62 +194,39 @@ void tsc_init() {
 	teleMenuSelection = 0;
 	memset(teleMenuEvent, 0, 16);
 	vdp_tiles_load_uftc(UFTC_Window, TILE_WINDOWINDEX, 0, 9);
-	tsc_load(headEvents, (const uint8_t*)TSC_GLOB[HEAD]);
+	tsc_load(&headEvents, &headCmdData, (const uint8_t *)TSC_GLOB[HEAD]);
 }
 
 void tsc_load_stage(uint8_t id) {
 	if(id == ID_ARMSITEM) { // Stage index 255 is a special case for the item menu
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[ARMSITEM]);
+		tscEventCount = tsc_load(&stageEvents, &stageCmdData, (const uint8_t*)TSC_GLOB[ARMSITEM]);
 	} else if(id == ID_TELEPORT) {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[STAGESEL]);
+		tscEventCount = tsc_load(&stageEvents, &stageCmdData, (const uint8_t*)TSC_GLOB[STAGESEL]);
 	} else if(id == ID_CREDITS) {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_GLOB[CREDITS]);
+		tscEventCount = tsc_load(&stageEvents, &stageCmdData, (const uint8_t*)TSC_GLOB[CREDITS]);
 	} else {
-		tscEventCount = tsc_load(stageEvents, (const uint8_t*)TSC_STAGE[id]);
+		tscEventCount = tsc_load(&stageEvents, &stageCmdData, (const uint8_t*)TSC_STAGE[id]);
 	}
-}
-
-uint8_t tsc_load(Event *eventList, const uint8_t *TSC) {
-	// First byte of TSC is the number of events
-	uint8_t eventCount = TSC[0];
-	// Make sure it isn't more than can be handled
-	//if(eventCount > max) {
-	//	char str[40];
-	//	sprintf(str, "Too many events: %hu\nIn TSC at: %06lX", eventCount, (uint32_t) TSC);
-	//	error_other(str);
-	//}
-	// Step through ROM data until finding all the events
-	uint8_t loadedEvents = 0;
-	for(uint16_t i = 1; loadedEvents < eventCount; i++) {
-		// The event marker is a word 0xFFFF
-		if(TSC[i] == 0xFF && TSC[i+1] == 0xFF) {
-			eventList[loadedEvents].number = TSC[i+2]+(TSC[i+3]<<8);
-			eventList[loadedEvents].data = &TSC[i+4];
-			loadedEvents++;
-			i += 3;
-		}
-	}
-	return loadedEvents;
 }
 
 void tsc_call_event(uint16_t number) {
-    window_set_textmode(TM_NORMAL);
+	window_set_textmode(TM_NORMAL);
 	// Events under 50 will be in Head.tsc
 	if(number < 50) {
-		for(uint8_t i = 0; i < HEAD_EVENT_COUNT; i++) {
+		for(uint16_t i = 0; i < HEAD_EVENT_COUNT; i++) {
 			if(headEvents[i].number == number) {
-			    lastRunEvent = number;
-				tscState = TSC_RUNNING;
-				curCommand = headEvents[i].data;
+				lastRunEvent = number;
+				tscState     = TSC_RUNNING;
+				curCommand   = headCmdData + headEvents[i].offset;
 				return;
 			}
 		}
 	} else {
-		for(uint8_t i = 0; i < tscEventCount; i++) {
+		for(uint16_t i = 0; i < tscEventCount; i++) {
 			if(stageEvents[i].number == number) {
-                lastRunEvent = number;
-				tscState = TSC_RUNNING;
-				curCommand = stageEvents[i].data;
+				lastRunEvent = number;
+				tscState     = TSC_RUNNING;
+				curCommand   = stageCmdData + stageEvents[i].offset;
 				return;
 			}
 		}
@@ -377,6 +360,7 @@ uint8_t tsc_update() {
 void tsc_show_boss_health() {
 	showingBossHealth = TRUE;
 	// Fill map name space with boss bar
+	__attribute__((nonstring))
 	static const char boss[4] = "Boss";
 	for(uint8_t i = 0; i < 4; i++) {
 		//vdp_tiles_load(&TS_SysFont.tiles[8*(boss[i]-0x20)], TILE_NAMEINDEX+i, 1);

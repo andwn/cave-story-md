@@ -214,9 +214,9 @@ static XGMCommand* XGCCommand_createStateCommand(LList** pstates)
     off = 1;
     for (i = 0; i < size; i++)
     {
-        data[off++] = (int) curState->element;
+        data[off++] = (__intptr_t) curState->element;
         curState = curState->next;
-        data[off++] = (int) curState->element;
+        data[off++] = (__intptr_t) curState->element;
         curState = curState->next;
     }
 

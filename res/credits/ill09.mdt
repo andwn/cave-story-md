@@ -1,5 +1,5 @@
 input res/credits/ill09.png
-output res/credits/ill09.pat
-output2 res/credits/ill09.map
+output build/res/credits/ill09.pat
+output2 build/res/credits/ill09.map
 offset 16400
 map 0 0 20 30

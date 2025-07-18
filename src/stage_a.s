@@ -5,4 +5,4 @@
     .globl stagePXM
 stagePXM:    ds.b 8
     .globl stageBlocks
-stageBlocks: ds.b 17926
+stageBlocks: ds.b 15766 /* 15848 - 8 - 74, old size 17926 */

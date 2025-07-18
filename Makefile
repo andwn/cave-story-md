@@ -16,84 +16,98 @@ LD   := $(MDBIN)/m68k-elf-ld
 NM   := $(MDBIN)/m68k-elf-nm
 OBJC := $(MDBIN)/m68k-elf-objcopy
 
+# For building native code (tools)
+HOSTCC  ?= cc
+HOSTCXX ?= c++
+
 GCCVER := $(shell $(CC) -dumpversion)
 PLUGIN  := $(MDROOT)/libexec/gcc/m68k-elf/$(GCCVER)
 
-# Z80 Assembler to build XGM driver
+# Tools
 ASMZ80   := bin/sjasm
-# SGDK Tools
 BINTOS   := bin/bintos
 RESCOMP  := bin/rescomp
 WAVTORAW := bin/wavtoraw
 XGMTOOL  := bin/xgmtool
-# Sik's Tools
 MDTILER  := bin/mdtiler
-SLZ      := bin/slz
 UFTC     := bin/uftc
-# Cave Story Tools
+SALVADOR := bin/salvador
+MDLOADER := bin/mdloader
+
 HPPGEN   := bin/hppgen
 PATCHROM := bin/patchrom
 TSCOMP   := bin/tscomp
 
-MEGALOADER := bin/megaloader
+BUILD_DIR := build
+TARGET    := doukutsu
 
-INCS     = -Isrc -Ires
-CCFLAGS  = -m68000 -mshort -std=c2x -ffreestanding -ffunction-sections -fdata-sections
-OPTIONS  = -Ofast -frename-registers -fconserve-stack
-WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wno-unused-function
-ASFLAGS  = -m68000 -Isrc/md --register-prefix-optional --bitwise-or
-LDFLAGS  = -T md.ld -nostdlib -Wl,--gc-sections
+INCS     = -Isrc -Ires -I$(BUILD_DIR)/src -I$(BUILD_DIR)/res
+CCFLAGS  = -m68000 -mshort -std=c23 -Ofast
+CCFLAGS += -ffreestanding --embed-dir=$(BUILD_DIR)/res
+OPTIONS  = -frename-registers -fshort-enums
+OPTIONS += -ffunction-sections -fdata-sections
+OPTIONS += -fno-tree-loop-ivcanon -fno-ivopts
+OPTIONS += -fno-web -fno-builtin -fno-gcse
+WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wcast-qual
+WARNINGS+= -Wstack-usage=1024 -Wwrite-strings
+WARNINGS+= -Wunsafe-loop-optimizations
+WARNINGS+= -Wno-unused-function -fanalyzer
+ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
+ASFLAGS += -Isrc/md -I$(BUILD_DIR)
+LDFLAGS  = -T md.ld -nostdlib -Xlinker -Map=$(TARGET).map
+LDFLAGS += -Wl,--gc-sections
 Z80FLAGS = -isrc/xgm
 
 # Stage layout files to compress
 PXMS   = $(wildcard res/Stage/*.pxm)
-CPXMS  = $(PXMS:.pxm=.cpxm)
+CPXMS  = $(addprefix $(BUILD_DIR)/,$(PXMS:.pxm=.cpxm))
 
 # Tilesets to convert without compression
 TSETS  = $(wildcard res/tiles/*.png)
-TSETO  = $(TSETS:.png=.pat)
+TSETO  = $(addprefix $(BUILD_DIR)/,$(TSETS:.png=.pat))
 
 # Tilesets to convert and compress
 CTSETS  = $(wildcard res/tiles_c/*.png)
 CTSETS += $(wildcard res/tiles_loc/*.png)
-CTSETP  = $(CTSETS:.png=.pat)
-CTSETO  = $(CTSETS:.png=.uftc)
+CTSETO  = $(addprefix $(BUILD_DIR)/,$(CTSETS:.png=.uftc))
 
 # Sprites to convert without compression
 SPRS  = $(wildcard res/sprite/*.png)
 SPRS += $(wildcard res/sprite_loc/*.png)
-SPRO  = $(SPRS:.png=.spr)
+SPRO  = $(addprefix $(BUILD_DIR)/,$(SPRS:.png=.spr))
 
 # Sprites to convert and compress
 CSPRS  = $(wildcard res/sprite_c/*.png)
-CSPRP  = $(CSPRS:.png=.spr)
-CSPRO  = $(CSPRS:.png=.uftc)
+CSPRO  = $(addprefix $(BUILD_DIR)/,$(CSPRS:.png=.cspr))
 
 # TSC to convert to TSB
 TSCS   = $(wildcard res/tsc/en/*.txt)
 TSCS  += $(wildcard res/tsc/en/Stage/*.txt)
-TSBS   = $(TSCS:.txt=.tsb)
+TSBS   = $(addprefix $(BUILD_DIR)/,$(TSCS:.txt=.tsb))
 
 # TSBs for translations
 TL_TSCS  = $(wildcard res/tsc/*/*.txt)
 TL_TSCS += $(wildcard res/tsc/*/Stage/*.txt)
-TL_TSBS  = $(TL_TSCS:.txt=.tsb)
+TL_TSBS  = $(addprefix $(BUILD_DIR)/,$(TL_TSCS:.txt=.tsb))
 
 # mdtiler scripts to generate tile patterns & mappings
 MDTS  = $(wildcard res/*.mdt)
 MDTS += $(wildcard res/*/*.mdt)
-PATS  = $(MDTS:.mdt=.pat)
-MAPS  = $(MDTS:.mdt=.map)
+PATS  = $(addprefix $(BUILD_DIR)/,$(MDTS:.mdt=.pat))
+MAPS  = $(addprefix $(BUILD_DIR)/,$(MDTS:.mdt=.map))
+
+# Script to generate palettes
+PALS  = res/pal/palettes.mdt
+PALO  = $(addprefix $(BUILD_DIR)/,$(PALS:.mdt=.pal))
 
 # VGM files to convert to XGC
 VGMS  = $(wildcard res/bgm/*.vgm)
-XGCS  = $(VGMS:.vgm=.xgc)
+XGCS  = $(addprefix $(BUILD_DIR)/,$(VGMS:.vgm=.xgc))
 
 # WAV files to convert to raw PCM
 WAVS  = $(wildcard res/sfx/*.wav)
-PCMS  = $(WAVS:.wav=.pcm)
+PCMS  = $(addprefix $(BUILD_DIR)/,$(WAVS:.wav=.pcm))
 
-RESS  = res/resources.res
 CS    = $(wildcard src/*.c)
 CS   += $(wildcard src/ai/*.c)
 CS   += $(wildcard src/db/*.c)
@@ -102,23 +116,23 @@ SS    = $(wildcard src/*.s)
 SS   += $(wildcard src/md/*.s)
 SS   += $(wildcard src/xgm/*.s)
 SS   += $(wildcard src/res/*.s)
-OBJS  = $(RESS:.res=.o)
-OBJS += $(CS:.c=.o)
-OBJS += $(SS:.s=.o)
+OBJS  = $(addprefix $(BUILD_DIR)/,$(CS:.c=.o))
+OBJS += $(addprefix $(BUILD_DIR)/,$(SS:.s=.o))
+
+RESS  = res/resources.res
+RESO  = $(addprefix $(BUILD_DIR)/,$(RESS:.res=.o))
 
 # Z80 source for XGM driver
 ZSRC  = $(wildcard src/xgm/*.s80)
-ZOBJ  = $(ZSRC:.s80=.o80)
+ZOBJ  = $(addprefix $(BUILD_DIR)/,$(ZSRC:.s80=.o80))
 
-ASMO  = $(RESS:.res=.o)
-ASMO += $(Z80S:.s80=.o)
+ASMO  = $(addprefix $(BUILD_DIR)/,$(RESS:.res=.o))
+ASMO += $(addprefix $(BUILD_DIR)/,$(Z80S:.s80=.o))
 ASMO += $(CS:%.c=asmout/%.s)
 
-TARGET := doukutsu
+.SECONDARY:
 
-.SECONDARY: $(TARGET)-en.elf
-
-.PHONY: all sega profile release asm debug translate prereq
+.PHONY: all sega profile release asm debug translate
 all: release
 sega: release
 
@@ -129,196 +143,224 @@ profile: OPTIONS += -flto=auto -DPROFILE
 profile: release
 
 release: OPTIONS += -flto=auto
-release: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
+release: $(TARGET)-en.gen
 
 asm: OPTIONS += -fverbose-asm
-asm: prereq head-gen asm-dir $(PATS) $(ASMO)
+asm: $(ASMO)
 
 debug: OPTIONS += -flto=auto -DDEBUG -DKDEBUG
-debug: prereq head-gen $(TARGET)-en.bin $(TARGET)-en.lst
+debug: $(TARGET)-en.gen
 
-translate: $(PATCHROM) $(TL_TSBS)
-translate: $(TARGET)-es.bin $(TARGET)-fr.bin $(TARGET)-de.bin $(TARGET)-it.bin
-translate: $(TARGET)-pt.bin $(TARGET)-br.bin $(TARGET)-ja.bin $(TARGET)-zh.bin
-translate: $(TARGET)-ko.bin $(TARGET)-fi.bin $(TARGET)-ru.bin
+translate: $(TARGET)-es.gen $(TARGET)-fr.gen $(TARGET)-de.gen $(TARGET)-it.gen
+translate: $(TARGET)-pt.gen $(TARGET)-br.gen $(TARGET)-ja.gen $(TARGET)-zh.gen
+translate: $(TARGET)-ko.gen $(TARGET)-fi.gen $(TARGET)-ru.gen
 
-prereq: $(ASMZ80) $(MDTILER) $(SLZ) $(UFTC) $(HPPGEN)
-prereq: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(TSCOMP)
-prereq: $(CPXMS) $(XGCS) $(PCMS) $(ZOBJ) $(TSBS)
-prereq: $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
+assets.d: $(CPXMS) $(CPXES) $(CPXAS)
+assets.d: $(XGCS) $(PCMS) $(ZOBJ)
+assets.d: $(TSBS) $(PATS)
+assets.d: $(TSETO) $(CTSETO)
+assets.d: $(SPRO) $(CSPRO)
+assets.d: $(PALO) $(CMAPS)
+	touch assets.d
 
-# Cross reference symbol list with the addresses displayed in the crash handler
-%.lst: %.elf
-	$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n $< > $@
 
-%.bin: %.elf
-	@echo "Stripping ELF header, pad to 512K"
-	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=512K conv=sync
-	@rm -f temp.bin
+# Directory rules
 
-%.elf: $(PATS) $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) $(OBJS)
-
-%.o: %.c
-	@echo "CC $<"
-	@$(CC) $(CCFLAGS) $(OPTIONS) $(WARNINGS) $(INCS) -c $< -o $@
-
-%.o: %.s 
-	@echo "AS $<"
-	@$(AS) $(ASFLAGS) $< -o $@
-
-%.s: %.res
-	$(RESCOMP) $< $@
-
-%.o80: %.s80
-	$(ASMZ80) $(Z80FLAGS) $< $@ z80_xgm.lst
-
+asmout:
+	mkdir -p asmout/src/act
+	mkdir -p asmout/src/db
+	mkdir -p asmout/src/xgm
+	mkdir -p asmout/src/md
 
 bin:
 	mkdir -p bin
 
-$(ASMZ80): bin
-	c++ -w -DMAX_PATH=MAXPATHLEN tools/sjasm/*.cpp -o $(ASMZ80)
+.PRECIOUS: $(BUILD_DIR)/ $(BUILD_DIR)%/
 
-$(BINTOS): bin
-	cc tools/bintos.c -o $@
-	
-$(RESCOMP): bin
-	cc tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
+$(BUILD_DIR)/:
+	mkdir -p $@
 
-$(XGMTOOL): bin
-	cc tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@ -lm
+$(BUILD_DIR)%/:
+	mkdir -p $@
 
-$(WAVTORAW): bin
-	cc tools/wavtoraw.c -o $@ -lm
+.SECONDEXPANSION:
 
-$(MDTILER): bin
-	cc tools/mdtiler/*.c -o $(MDTILER) -lpng
 
-$(SLZ): bin
-	cc tools/slz/*.c -o $(SLZ)
+# Rules for compilation / assembling / linking
 
-$(UFTC): bin
-	cc tools/uftc/*.c -o $(UFTC)
+%.gen: $(BUILD_DIR)/%.elf
+	$(OBJC) -O binary $< $(BUILD_DIR)/temp.bin
+	dd if=$(BUILD_DIR)/temp.bin of=$@ bs=512K conv=sync
+	rm -f $(BUILD_DIR)/temp.bin
+	$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n $< > $*.lst
 
-$(TSCOMP): bin
-	cc tools/tscomp/tscomp.c -o $@
+$(BUILD_DIR)/%.elf: $(OBJS) | $$(@D)/
+	$(CC) -o $@ $(LDFLAGS) $(OPTIONS) $(RESO) $^
 
-$(PATCHROM): bin
-	cc tools/patchrom.c -o $@
+$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)/src/ai_gen.h $(RESO) assets.d $$(@D)/
+	$(CC) $(CCFLAGS) $(OPTIONS) $(WARNINGS) $(INCS) -c $< -o $@
 
-$(MEGALOADER): bin
-	cc tools/megaloader.c -o $@
+$(BUILD_DIR)/%.o: %.s | assets.d $$(@D)/
+	$(AS) $(ASFLAGS) $< -o $@
 
-$(HPPGEN): bin
-	cc tools/hppgen.c -o $@
+$(BUILD_DIR)/%.s: %.res | $(RESCOMP) $(SALVADOR) $$(@D)/
+	$(RESCOMP) $< $@
 
-# For asm target
-asm-dir:
-	mkdir -p asmout/src/{ai,db,xgm,md}
+# Special case for rescomp output
+$(BUILD_DIR)/%.o: $(BUILD_DIR)/%.s
+	$(AS) -m68000 $(INCS) -c $< -o $@
 
-asmout/%.s: %.c
+$(BUILD_DIR)/%.o80: %.s80 | $(ASMZ80) $$(@D)/
+	$(ASMZ80) $(Z80FLAGS) $< $@ z80_xgm.lst
+
+
+# Inspectable assembly output for asm target
+
+asmout/%.s: %.c | $(BUILD_DIR)/src/ai_gen.h $(RESO) assets.d asmout
 	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@
 
-# Compression of stage layouts
-%.cpxm: %.pxm
-	$(SLZ) -c "$<" "$@"
 
-%.pat: %.mdt
+# Tool building rules
+
+$(ASMZ80): | bin
+	$(HOSTCXX) -w -DMAX_PATH=MAXPATHLEN tools/sjasm/*.cpp -o $(ASMZ80)
+
+$(BINTOS): | bin
+	$(HOSTCC) tools/bintos.c -o $@
+
+$(RESCOMP): | bin
+	$(HOSTCC) tools/rescomp/src/*.c -Itools/rescomp/inc -o $@
+
+$(XGMTOOL): | bin
+	$(HOSTCC) tools/xgmtool/src/*.c -Itools/xgmtool/inc -o $@ -lm
+
+$(WAVTORAW): | bin
+	$(HOSTCC) tools/wavtoraw.c -o $@ -lm
+
+$(MDTILER): | bin
+	$(HOSTCC) tools/mdtiler/*.c -o $(MDTILER) -lpng
+
+$(SALVADOR): | bin
+	$(HOSTCC) tools/salvador/*.c -o $(SALVADOR)
+
+$(UFTC): | bin
+	$(HOSTCC) tools/uftc/*.c -o $(UFTC)
+
+$(TSCOMP): | bin
+	$(HOSTCC) $(WARNINGS) tools/tscomp/tscomp.c -o $@
+
+$(PATCHROM): | bin
+	$(HOSTCC) $(WARNINGS) tools/patchrom.c -o $@
+
+$(MDLOADER): | bin
+	$(HOSTCC) $(WARNINGS) tools/mdloader.c -o $@
+
+$(HPPGEN): | bin
+	$(HOSTCC) $(WARNINGS) tools/hppgen.c -o $@
+
+
+# Compression of stage layouts
+$(BUILD_DIR)/%.cpxm: %.pxm | $(SALVADOR) $$(@D)/
+	$(SALVADOR) -c "$<" "$@"
+
+$(BUILD_DIR)/%.pat: %.mdt | $(MDTILER) $$(@D)/
 	$(MDTILER) -b "$<"
 
 # Compression of tilesets
-%.uftc: %.pat
+$(BUILD_DIR)/%.uftc: %.pat | $(UFTC) $$(@D)/
 	$(UFTC) -c "$<" "$@"
 
-%.pat: %.png
+%.uftc: %.pat | $(UFTC) $$(@D)/
+	$(UFTC) -c "$<" "$@"
+
+%.cspr: %.spr | $(UFTC) $$(@D)/
+	$(UFTC) -c "$<" "$@"
+
+$(BUILD_DIR)/%.pat: %.png | $(MDTILER) $$(@D)/
 	$(MDTILER) -t "$<" "$@"
 
-%.spr: %.png
+$(BUILD_DIR)/%.spr: %.png | $(MDTILER) $$(@D)/
 	$(MDTILER) -s "$<" "$@"
 
+$(BUILD_DIR)/%.pal: %.mdt | $(MDTILER) $$(@D)/
+	$(MDTILER) -b "$<"
+
 # Convert VGM
-%.xgc: %.vgm
+$(BUILD_DIR)/%.xgc: %.vgm | $(XGMTOOL) $$(@D)/
 	$(XGMTOOL) "$<" "$@" -s
 
 # Convert WAV
-%.pcm: %.wav
+$(BUILD_DIR)/%.pcm: %.wav | $(WAVTORAW) $$(@D)/
 	$(WAVTORAW) "$<" "$@" 14000
 
 # Convert TSC
-res/tsc/en/%.tsb: res/tsc/en/%.txt
-	$(TSCOMP) -l=en "$<"
-res/tsc/ja/%.tsb: res/tsc/ja/%.txt
-	$(TSCOMP) -l=ja "$<"
-res/tsc/es/%.tsb: res/tsc/es/%.txt
-	$(TSCOMP) -l=es "$<"
-res/tsc/pt/%.tsb: res/tsc/pt/%.txt
-	$(TSCOMP) -l=pt "$<"
-res/tsc/fr/%.tsb: res/tsc/fr/%.txt
-	$(TSCOMP) -l=fr "$<"
-res/tsc/it/%.tsb: res/tsc/it/%.txt
-	$(TSCOMP) -l=it "$<"
-res/tsc/de/%.tsb: res/tsc/de/%.txt
-	$(TSCOMP) -l=de "$<"
-res/tsc/br/%.tsb: res/tsc/br/%.txt
-	$(TSCOMP) -l=br "$<"
-res/tsc/fi/%.tsb: res/tsc/fi/%.txt
-	$(TSCOMP) -l=fi "$<"
-res/tsc/zh/%.tsb: res/tsc/zh/%.txt
-	$(TSCOMP) -l=zh "$<"
-res/tsc/ko/%.tsb: res/tsc/ko/%.txt
-	$(TSCOMP) -l=ko "$<"
-res/tsc/ru/%.tsb: res/tsc/ru/%.txt
-	$(TSCOMP) -l=ru "$<"
+$(BUILD_DIR)/res/tsc/en/%.tsb: res/tsc/en/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=en "$<" "$@"
+$(BUILD_DIR)/res/tsc/ja/%.tsb: res/tsc/ja/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=ja "$<" "$@"
+$(BUILD_DIR)/res/tsc/es/%.tsb: res/tsc/es/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=es "$<" "$@"
+$(BUILD_DIR)/res/tsc/pt/%.tsb: res/tsc/pt/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=pt "$<" "$@"
+$(BUILD_DIR)/res/tsc/fr/%.tsb: res/tsc/fr/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=fr "$<" "$@"
+$(BUILD_DIR)/res/tsc/it/%.tsb: res/tsc/it/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=it "$<" "$@"
+$(BUILD_DIR)/res/tsc/de/%.tsb: res/tsc/de/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=de "$<" "$@"
+$(BUILD_DIR)/res/tsc/br/%.tsb: res/tsc/br/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=br "$<" "$@"
+$(BUILD_DIR)/res/tsc/fi/%.tsb: res/tsc/fi/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=fi "$<" "$@"
+$(BUILD_DIR)/res/tsc/zh/%.tsb: res/tsc/zh/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=zh "$<" "$@"
+$(BUILD_DIR)/res/tsc/ko/%.tsb: res/tsc/ko/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=ko "$<" "$@"
+$(BUILD_DIR)/res/tsc/ru/%.tsb: res/tsc/ru/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=ru "$<" "$@"
 
 # Generate patches
-res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s
+$(BUILD_DIR)/res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s | $$(@D)/
 	$(AS) $(ASFLAGS) "$<" -o "temp.o"
 	$(LD) -T md.ld -nostdlib "temp.o" -o "temp.elf"
 	$(OBJC) -O binary "temp.elf" "$@"
 
 # Apply patches
-$(TARGET)-ja.bin: res/patches/$(TARGET)-ja.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-es.bin: res/patches/$(TARGET)-es.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-fr.bin: res/patches/$(TARGET)-fr.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-de.bin: res/patches/$(TARGET)-de.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-it.bin: res/patches/$(TARGET)-it.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-pt.bin: res/patches/$(TARGET)-pt.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-br.bin: res/patches/$(TARGET)-br.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-fi.bin: res/patches/$(TARGET)-fi.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-zh.bin: res/patches/$(TARGET)-zh.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-ko.bin: res/patches/$(TARGET)-ko.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
-$(TARGET)-ru.bin: res/patches/$(TARGET)-ru.patch
-	$(PATCHROM) $(TARGET)-en.bin "$<" "$@"
+$(TARGET)-ja.gen: res/patches/$(TARGET)-ja.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-es.gen: res/patches/$(TARGET)-es.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-fr.gen: res/patches/$(TARGET)-fr.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-de.gen: res/patches/$(TARGET)-de.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-it.gen: res/patches/$(TARGET)-it.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-pt.gen: res/patches/$(TARGET)-pt.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-br.gen: res/patches/$(TARGET)-br.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-fi.gen: res/patches/$(TARGET)-fi.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-zh.gen: res/patches/$(TARGET)-zh.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-ko.gen: res/patches/$(TARGET)-ko.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-ru.gen: res/patches/$(TARGET)-ru.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
 
-.PHONY: head-gen flash clean
+.PHONY: flash clean
 
 AICS  = $(wildcard src/ai/*.c)
 
-head-gen:
-	rm -f src/ai_gen.h
-	$(HPPGEN) src/ai_gen.h $(AICS)
+$(BUILD_DIR)/src/ai_gen.h: $(AICS) | $(HPPGEN) $$(@D)/
+	$(HPPGEN) $@ $^
 
-flash: $(MEGALOADER)
-	sudo $(MEGALOADER) md $(TARGET)-en.bin /dev/ttyUSB0 2> /dev/null
+flash: $(MDLOADER)
+	sudo $(MDLOADER) md $(TARGET)-en.gen /dev/ttyUSB0 2> /dev/null
 
 clean:
-	@rm -f $(CPXMS) $(XGCS) $(PCMS) $(PATS) $(MAPS) $(ZOBJ) $(OBJS)
-	@rm -f $(TSETO) $(CTSETP) $(CTSETO) $(SPRO) $(CSPRP) $(CSPRO)
-	@rm -f $(TSBS) $(TL_TSBS)
-	@rm -f $(TARGET)-*.bin $(TARGET)-en.elf $(TARGET)-en.lst temp.elf temp.o
-	@rm -f res/patches/*.patch res/pal/*.pal
-	@rm -f src/xgm/z80_xgm.s src/xgm/z80_xgm.o80 src/xgm/z80_xgm.h z80_xgm.lst
-	@rm -f res/resources.h res/resources.s src/ai_gen.h
-	@rm -rf asmout
+	-rm -r build/
+	-rm -r bin/
+	-rm -r asmout/
+	-rm assets.d

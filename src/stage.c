@@ -198,7 +198,7 @@ void stage_load_tileset() {
 }
 
 void stage_load_blocks() {
-    slz_unpack(stage_info[stageID].PXM, stagePXM);
+    zx0_unpack(stage_info[stageID].PXM, stagePXM);
     stageWidth = stagePXM[4] | (stagePXM[5] << 8);
     stageHeight = stagePXM[6] | (stagePXM[7] << 8);
 	// Multiplication table for stage rows

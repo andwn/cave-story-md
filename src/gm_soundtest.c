@@ -13,6 +13,7 @@
 
 #include "gamemode.h"
 
+__attribute__((nonstring))
 static const char hexchars[16] = "0123456789ABCDEF";
 static void print_hex(char *str, uint32_t val, uint16_t digits, uint16_t x, uint16_t y) {
 	if(digits > 8) digits = 8;

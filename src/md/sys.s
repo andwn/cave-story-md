@@ -40,12 +40,12 @@ RomHeader:
 		.ascii	"SEGA MEGA DRIVE "          /* Console Signature */
 	.globl Date
 Date:
-		.ascii	"SKYCHASE 2024.04"          /* Company & Date */
+		.ascii	"SKYCHASE 2025.07"          /* Company & Date */
 		.ascii	"DOUKUTSU MONOGATARI MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
 		.ascii  "                        "
-		.ascii	"GM ANDYG002-A8"            /* ROM ID */
+		.ascii	"GM ANDYG002-B0"            /* ROM ID */
 		dc.w	0                           /* Checksum (not used) */
 		.ascii	"J6              "          /* Peripheral support */
 		dc.l	__rom_start                 /* ROM Start Address */
@@ -58,7 +58,7 @@ Date:
 		dc.l	SramBase+0xFFFE             /* SRAM End Address */
 	.globl Version
 Version:
-		.ascii	"Ver 0.8.1\0  "              /* Modem? */
+		.ascii	"Ver 0.8.5\0  "              /* Modem? */
 	.globl Homepage
 Homepage:
 		.ascii	"https://github.com/andwn/cave-story-md\0\0" /* Free space for note */
@@ -96,7 +96,7 @@ SkipTMSS:
 		add.b	d1, d0
 		move.b	d0, (a0)
 	.globl 	_hard_reset
-_hard_reset:                            /* SYS_HardReset() resets sp and jumps here */
+_hard_reset:
 		lea     __text_end,a0           /* Start of .data segment init values in ROM */
 		lea     __data_start,a1         /* Start of .data segment in RAM */
 		move.l  #__data_size,d0         /* Size of .data segment */
@@ -117,8 +117,7 @@ ZeroVar:
 		move.w  d1,(a1)+                /* Copy zero data to RAM */
 		dbra    d0,ZeroVar
 NoZero:
-		jsr     main                    /* IT BEGINS */
-		beq.s   _hard_reset             /* main returned, reset */
+		jmp     main
 
 /* Error handling */
 
@@ -168,15 +167,19 @@ RegDump:
 
 		lea		(VdpCtrl).l,a5
 		lea		(VdpData).l,a6
+		moveq	#0,d7
 		move.w	#0x8B00,(a5)		/* Plane scroll mode */
 		move.w	#0x8F02,(a5)		/* Auto-increment = 2 */
 		move.l	#0x7F000000,(a5)	/* VRAM 0xFC00 */
-		move.w	#0,(a6)				/* Plane A H scroll = 0 */
+		move.w	d7,(a6)				/* Plane A H scroll = 0 */
 		move.l	#0x40000010,(a5)	/* VSRAM 0x0000 */
-		move.w	#0,(a6)				/* Plane A V scroll = 0 */
+		move.w	d7,(a6)				/* Plane A V scroll = 0 */
 		move.l	#0x7E000000,(a5)	/* VRAM 0xF800 */
-		move.l	#0,(a6)				/* Clear sprite table */
-		move.l	#0,(a6)
+		move.l	d7,(a6)				/* Clear sprite table */
+		move.l	#0xC0000000,(a5)	/* CRAM $0000 */
+		move.l	d7,(a6)
+		move.l	#0xC01E0000,(a5)	/* CRAM $001E */
+		move.w	0xEEE,(a6)
 		move.w	#0x9100,(a5)		/* Hide window plane */
 		move.w	#0x9200,(a5)
 

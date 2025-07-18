@@ -317,7 +317,7 @@ void entities_update(uint8_t draw) {
                             SPR_LEVELUP, SPR_LEVELDOWN, SPR_EMPTY
                     };
                     uint16_t ind = e->type - OBJ_LEVELUP;
-                    uint16_t fwidth = def[ind]->width << 3;
+                    int16_t fwidth = def[ind]->width << 3;
                     if(e->oframe != e->frame) {
                         e->oframe = e->frame;
                         TILES_QUEUE(&def[ind]->tiles[e->frame * e->framesize * 8], e->vramindex, e->framesize);

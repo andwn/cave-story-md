@@ -1,7 +1,11 @@
 doukutsu.bin
+doukutsu.map
 doukutsu-*.bin
+*.gen
 temp.bin
 bin/
+build/
+asmout/
 *.lst
 *.cpxm
 *.pal
@@ -23,3 +27,4 @@ src/boot/rom_head.bin
 src/xgm/z80_xgm.h
 src/xgm/z80_xgm.s
 .DS_Store
+*.Identifier

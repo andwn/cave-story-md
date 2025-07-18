@@ -1816,7 +1816,9 @@ unsigned char* VGM_asByteArray2(VGM* vgm, int* outSize, unsigned char **dataBl, 
     int i;
     int gd3Offset;
     unsigned char byte;
-    FILE* f = fopen("tmp.bin", "wb+");
+	char fname[L_tmpnam];
+	tmpnam(fname);
+	FILE* f = fopen(fname, "wb+");
 
     if (f == NULL)
     {

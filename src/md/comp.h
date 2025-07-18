@@ -4,7 +4,8 @@
 #include "types.h"
 
 // comp.s routines
-void slz_unpack(const void *in, void *out);
+void zx0_unpack(const void *in, void *out);
+//void slz_unpack(const void *in, void *out);
 void uftc_unpack(const void *in, void *out, uint16_t start, uint16_t num);
 
 #endif //MD_COMP_H

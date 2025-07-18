@@ -537,7 +537,7 @@ LList* XGC_getStateChange(YM2612* current, YM2612* old)
 {
     int port;
     LList* result = NULL;
-    int addr;
+    __intptr_t addr;
 
     addr = 0x44;
     // ym2612
@@ -552,7 +552,7 @@ LList* XGC_getStateChange(YM2612* current, YM2612* old)
             {
                 // write state for current register
                 result = insertAfterLList(result, (void*) addr);
-                result = insertAfterLList(result, (void*) YM2612_get(current, port, reg));
+                result = insertAfterLList(result, (void*)(__intptr_t) YM2612_get(current, port, reg));
             }
 
             addr++;
@@ -568,7 +568,7 @@ LList* XGC_getStateChange(YM2612* current, YM2612* old)
     {
         // write state for current register
         result = insertAfterLList(result, (void*) 0x44 + 0x1C);
-        result = insertAfterLList(result, (void*) YM2612_get(current, 0, 0x2B));
+        result = insertAfterLList(result, (void*)(__intptr_t) YM2612_get(current, 0, 0x2B));
     }
 
     return getHeadLList(result);
@@ -710,7 +710,9 @@ unsigned char* XGC_asByteArray(XGM* source, int *outSize)
     int s;
     int offset;
     unsigned char byte;
-    FILE* f = fopen("tmp.bin", "wb+");
+	char fname[L_tmpnam];
+	tmpnam(fname);
+	FILE* f = fopen(fname, "wb+");
     LList* l;
 
     if (f == NULL)

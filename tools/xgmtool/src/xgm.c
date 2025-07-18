@@ -842,7 +842,9 @@ unsigned char* XGM_asByteArray(XGM* xgm, int *outSize)
     int i;
     int offset;
     unsigned char byte;
-    FILE* f = fopen("tmp.bin", "wb+");
+	char fname[L_tmpnam];
+	tmpnam(fname);
+	FILE* f = fopen(fname, "wb+");
     LList* l;
 
     if (f == NULL)

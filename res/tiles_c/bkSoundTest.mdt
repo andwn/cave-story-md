@@ -1,5 +1,5 @@
 input res/tiles_c/bkSoundTest.png
-output res/tiles_c/bkSoundTest.pat
-output2 res/tiles_c/bkSoundTest.map
+output build/res/tiles_c/bkSoundTest.pat
+output2 build/res/tiles_c/bkSoundTest.map
 offset 8208
 map 0 0 40 30

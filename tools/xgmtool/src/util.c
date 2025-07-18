@@ -6,126 +6,6 @@
 
 #include "../inc/util.h"
 
-
-//void initList(List* list)
-//{
-//    list->elements = NULL;
-//    list->allocated = 0;
-//    list->size = 0;
-//}
-//
-//List* createList()
-//{
-//    List* result = malloc(sizeof(List));
-//
-//    initList(result);
-//
-//    return result;
-//}
-//
-//void deleteList(List* list)
-//{
-//    if (list != NULL)
-//    {
-//        if (list->elements != NULL)
-//            free(list->elements);
-//
-//        free(list);
-//    }
-//}
-//
-//void clearList(List* list)
-//{
-//    if (list->elements != NULL)
-//    {
-//        free(list->elements);
-//        list->elements = NULL;
-//    }
-//
-//    list->allocated = 0;
-//    list->size = 0;
-//}
-//
-//void addToList(List* list, void* element)
-//{
-//    if (list->size >= list->allocated)
-//    {
-//        if (list->elements == NULL)
-//        {
-//            list->allocated = 256;
-//            list->elements = malloc(sizeof(void*) * list->allocated);
-//        }
-//        else
-//        {
-//            list->allocated *= 2;
-//            list->elements = realloc(list->elements, sizeof(void*) * list->allocated);
-//        }
-//    }
-//
-//    list->elements[list->size++] = element;
-//}
-//
-//void addAllToList(List* list, List* elements)
-//{
-//    int i;
-//
-//    for(i = 0; i < elements->size; i++)
-//        addToList(list, elements->elements[i]);
-//}
-//
-//void* getFromList(List* list, int index)
-//{
-//    if (index < list->size)
-//        return list->elements[index];
-//
-//    return NULL;
-//}
-
-//void addToListEx(List* list, int index, void* element)
-//{
-//    int i;
-//
-//    // add 1 slot
-//    addToList(list, NULL);
-//
-//    for(i = list->size - 2; i >= index; i--)
-//        list->elements[i + 1] = list->elements[i + 0];
-//
-//    setToList(list, index, element);
-//}
-//
-//void addAllToListEx(List* list, int index, List* elements)
-//{
-//    int i;
-//
-//    for(i = 0; i < elements->size; i++)
-//        addToListEx(list, index + i, elements->elements[i]);
-//}
-
-//void setToList(List* list, int index, void* element)
-//{
-//    list->elements[index] = element;
-//}
-//
-//void* removeFromList(List* list, int index)
-//{
-//    if (index < list->size)
-//    {
-//        int i;
-//        void* result = getFromList(list, index);
-//
-//        // remove 1 element
-//        list->size--;
-//        for(i = index; i < list->size; i++)
-//            list->elements[i + 0] = list->elements[i + 1];
-//
-//        return result;
-//    }
-//
-//    return NULL;
-//}
-
-
 LList* createEmptyElement()
 {
     LList* result = malloc(sizeof(LList));
@@ -306,28 +186,6 @@ LList* removeFromLList(LList* linkedElement)
 }
 
 
-//void** listToArray(LList* list)
-//{
-//    void** result;
-//
-//    if (list->size == 0)
-//    {
-//        result = malloc(sizeof(void*));
-//        *result = NULL;
-//    }
-//    else
-//    {
-//        int i;
-//
-//        result = malloc(sizeof(void*) * list->size);
-//
-//        for(i = 0; i < list->size; i++)
-//            result[i] = list->elements[i];
-//    }
-//
-//    return result;
-//}
-
 void** llistToArray(LList* list)
 {
     void** result;
@@ -356,46 +214,6 @@ void** llistToArray(LList* list)
 
     return result;
 }
-
-
-//LList* listToLList(List* list)
-//{
-//    LList* result;
-//    LList* cur;
-//    int i;
-//
-//    if (list->size == 0)
-//        return NULL;
-//
-//    result = createElement();
-//
-//    result->prev = NULL;
-//    result->next = NULL;
-//    result->element = list->elements[0];
-//
-//    cur = result;
-//    for(i = 1; i < list->size; i++)
-//    {
-//        insertAfterLList(cur, list->elements[i]);
-//        cur = cur->next;
-//    }
-//
-//    return result;
-//}
-//
-//List* linkedListToList(LList* list)
-//{
-//    List* result = createList();
-//    LList* cur = list;
-//
-//    while(cur != NULL)
-//    {
-//        addToList(result, cur->element);
-//        cur = cur->next;
-//    }
-//
-//    return result;
-//}
 
 
 bool arrayEquals(unsigned char* array1, unsigned char* array2, int size)
@@ -656,7 +474,9 @@ bool outEx(unsigned char* data, int inOffset, int size, int intSize, bool swap, 
 
 unsigned char* resample(unsigned char* data, int offset, int len, int inputRate, int outputRate, int align, int* outSize)
 {
-    FILE* f = fopen("tmp.bin", "wb+");
+	char fname[L_tmpnam];
+	tmpnam(fname);
+    FILE* f = fopen(fname, "wb+");
 
     if (f == NULL)
     {
@@ -707,16 +527,7 @@ unsigned char* resample(unsigned char* data, int offset, int len, int inputRate,
         }
         else
         {
-//            if (floor(dOff) == dOff)
-                sample = (data[(int) dOff + offset] & 0xFF) - 0x80;
-//            else
-//            {
-//                double sample0 = (data[(int) floor(dOff) + offset] & 0xFF) - 0x80;
-//                double sample1 = (data[(int) ceil(dOff) + offset] & 0xFF) - 0x80;
-//
-//                sample += sample0 * (ceil(dOff) - dOff);
-//                sample += sample1 * (dOff - floor(dOff));
-//            }
+            sample = (data[(int) dOff + offset] & 0xFF) - 0x80;
         }
 
         byte = round(sample);

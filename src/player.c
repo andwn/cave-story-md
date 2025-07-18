@@ -853,7 +853,7 @@ void player_show_map_name(uint8_t ttl) {
         return;
     }
 	// English name
-    const uint8_t *str = (uint8_t*) stage_info[stageID].name;
+    const uint8_t *str = (const uint8_t*) stage_info[stageID].name;
 	if(cfg_language > 0) {
 		str = ((const uint8_t*)STAGE_NAMES) + (stageID << 5);
 	}

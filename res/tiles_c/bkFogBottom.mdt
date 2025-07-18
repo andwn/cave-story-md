@@ -1,5 +1,5 @@
 input res/tiles_c/bkFogBottom.png
-output res/tiles_c/bkFogBottom.pat
-output2 res/tiles_c/bkFogBottom.map
+output build/res/tiles_c/bkFogBottom.pat
+output2 build/res/tiles_c/bkFogBottom.map
 offset 16656
 map 0 0 32 19

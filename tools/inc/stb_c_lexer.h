@@ -112,9 +112,9 @@
 typedef struct
 {
    // lexer variables
-   char *input_stream;
-   char *eof;
-   char *parse_point;
+   const char *input_stream;
+   const char *eof;
+   const char *parse_point;
    char *string_storage;
    int   string_storage_len;
 
@@ -271,9 +271,9 @@ typedef long       stb__clex_int;
 // API function
 void stb_c_lexer_init(stb_lexer *lexer, const char *input_stream, const char *input_stream_end, char *string_store, int store_length)
 {
-   lexer->input_stream = (char *) input_stream;
-   lexer->eof = (char *) input_stream_end;
-   lexer->parse_point = (char *) input_stream;
+   lexer->input_stream = input_stream;
+   lexer->eof = input_stream_end;
+   lexer->parse_point = input_stream;
    lexer->string_storage = string_store;
    lexer->string_storage_len = store_length;
 }
@@ -281,7 +281,7 @@ void stb_c_lexer_init(stb_lexer *lexer, const char *input_stream, const char *in
 // API function
 void stb_c_lexer_get_location(const stb_lexer *lexer, const char *where, stb_lex_location *loc)
 {
-   char *p = lexer->input_stream;
+   const char *p = lexer->input_stream;
    int line_number = 1;
    int char_offset = 0;
    while (*p && p < where) {
@@ -496,7 +496,7 @@ static int stb__clex_parse_string(stb_lexer *lexer, char *p, int type)
 
 int stb_c_lexer_get_token(stb_lexer *lexer)
 {
-   char *p = lexer->parse_point;
+   const char *p = lexer->parse_point;
 
    // skip whitespace and comments
    for (;;) {

@@ -66,7 +66,7 @@ void main() {
 	//__asm__("illegal"); // Illegal Instruction
 	//__asm__("divu #0,%d0"); // Zero Divide
 
-	splash_main();
+	//splash_main();
 	intro_main();
     while(TRUE) {
 		uint8_t select = titlescreen_main();

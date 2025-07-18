@@ -344,7 +344,7 @@ int main(int argc, char *argv[ ])
 
     fclose(infile);
 
-    remove("tmp.bin");
+    //remove("tmp.bin");
 
     return errCode;
 }

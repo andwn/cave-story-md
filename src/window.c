@@ -396,7 +396,7 @@ void window_show_weapon(uint16_t item) {
 
 void window_update() {
 	if(showingItem) {
-		if(handSpr.y < ITEM_Y_END) handSpr.y++;
+		if(handSpr.y < (int16_t)ITEM_Y_END) handSpr.y++;
 	    vdp_sprite_add(&handSpr);
 	    vdp_sprites_add(promptSpr, 2);
 	}
