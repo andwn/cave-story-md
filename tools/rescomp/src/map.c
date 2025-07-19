@@ -54,7 +54,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("               1 / APLIB       = aplib library (good compression ratio but slow)\n");
         printf("               2 / FAST / LZ4W = custom lz4 compression (average compression ratio but fast)\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -66,7 +66,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
 
 
 
-    return FALSE;
+    return false;
 }
 
 
@@ -82,7 +82,7 @@ void outMap(tilemap_* map, FILE* fs, FILE* fh, char* id, int global)
     strcpy(temp, id);
     strcat(temp, "_map");
     // declare
-    decl(fs, fh, NULL, temp, 2, FALSE);
+    decl(fs, fh, NULL, temp, 2, false);
     // output data
     if (size == (map->w * map->h * 2)) outS((unsigned char*) map->data, 0, size, fs, 2);
     else outS((unsigned char*) map->data, 0, size, fs, 1);

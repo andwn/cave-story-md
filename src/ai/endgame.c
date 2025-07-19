@@ -461,21 +461,21 @@ void onspawn_the_cast(Entity *e) {
 	uint16_t obj = cast_data[e->id].obj;
 	if(obj != OBJ_BALROG_MEDIC) e->sprite_count--;
 	e->frame = e->oframe = cast_data[e->id].fallframe;
-	const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[e->frame];
-	e->framesize = f->tileset->numTile;
+	const SpriteDef *f = npc_info[obj].sprite;
+	e->framesize = f->tilesets[0]->numTile;
 	TILOC_ADD(e->tiloc, e->framesize);
 	if(e->tiloc != NOTILOC) {
 		e->vramindex = tiloc_index + e->tiloc * 4;
 		uint16_t tile_offset = 0;
 		for(uint8_t i = 0; i < e->sprite_count; i++) {
 			e->sprite[i] = (Sprite) {
-				.size = f->vdpSpritesInf[i]->size,
+				.size = f->sprites[i]->size,
 				.attr = TILE_ATTR(npc_info[obj].palette,
 						0,0,0,e->vramindex + tile_offset)
 			};
-			TILES_QUEUE(f->tileset->tiles, e->vramindex, f->tileset->numTile);
-			tile_offset += f->vdpSpritesInf[i]->numTile;
+			tile_offset += f->sprites[i]->numTile;
 		}
+		TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, f->tilesets[e->frame]->numTile);
 	}
 	
 	e->dir = cast_data[e->id].dir;
@@ -504,17 +504,17 @@ void ai_the_cast(Entity *e) {
 			if(e->tiloc != NOTILOC) {
 				uint16_t obj = cast_data[e->id].obj;
 				e->frame = e->oframe = cast_data[e->id].standframe;
-				const AnimationFrame *f = npc_info[obj].sprite->animations[0]->frames[e->frame];
+				const SpriteDef *f = npc_info[obj].sprite;
 				uint16_t tile_offset = 0;
 				for(uint8_t i = 0; i < e->sprite_count; i++) {
 					e->sprite[i] = (Sprite) {
-							.size = f->vdpSpritesInf[i]->size,
+							.size = f->sprites[i]->size,
 							.attr = TILE_ATTR(npc_info[obj].palette,
 							        0, 0, 0, e->vramindex + tile_offset)
 					};
-					TILES_QUEUE(f->tileset->tiles, e->vramindex, f->tileset->numTile);
-					tile_offset += f->vdpSpritesInf[i]->numTile;
+					tile_offset += f->sprites[i]->numTile;
 				}
+				TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, f->tilesets[e->frame]->numTile);
 			}
 			e->state++;
 		}

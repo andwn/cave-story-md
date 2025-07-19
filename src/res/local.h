@@ -20,11 +20,11 @@ extern const uint16_t *TS_TITLE[];
 extern const uint16_t *TS_MENUTEXT[];
 extern const uint16_t *TS_MSGTEXT[];
 
-extern const SpriteDef * const SPR_AIR;
-extern const SpriteDef * const SPR_PROMPT;
-extern const SpriteDef * const SPR_LEVELUP;
-extern const SpriteDef * const SPR_LEVELDOWN;
-extern const SpriteDef * const SPR_EMPTY;
-extern const SpriteDef * const SPR_AHCHOO;
+extern const LocSprite * const SPR_AIR;
+extern const LocSprite * const SPR_PROMPT;
+extern const LocSprite * const SPR_LEVELUP;
+extern const LocSprite * const SPR_LEVELDOWN;
+extern const LocSprite * const SPR_EMPTY;
+extern const LocSprite * const SPR_AHCHOO;
 
 #endif //RES_LOCAL_H

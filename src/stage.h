@@ -123,35 +123,59 @@ enum StageIndex {
 	STAGE_CLOCK,				// Room in Outer Wall with the counter
 };
 
-// Index of current stage in db/stage.c
-extern uint16_t stageID;
-// Size of the stage - how many blocks wide/high
-extern uint16_t stageWidth, stageHeight;
-// A multiplication lookup table for each row of stageBlocks
-// Removes all mulu.w and __mulsi3 instructions in entity stage collision
-extern uint16_t stageTable[];
-// Copy of level layout data loaded into RAM
-// This takes up extra space, but there are times where scripts make modifications to the
-// level layout (allowing player to reach some areas) so it is necessary to do this
-extern uint8_t stagePXM[];
-extern uint8_t stageBlocks[];
-extern const uint8_t *stagePXA;
-// Which tileset (db/tileset.c) is used by the current stage
-extern uint8_t stageTileset;
-// Prepares to draw off-screen tiles when stage_update() is later called
-// Camera calls this each time it scrolls past 1 block length (16 pixels)
-extern int8_t morphingRow, morphingColumn;
+#define WIDEST_STAGE_SIZE	300	// Eggs.pxm
+#define TALLEST_STAGE_SIZE	180	// Oside.pxm
 
-extern uint8_t stageBackground;
-extern uint16_t backScrollTimer;
-extern uint8_t stageBackgroundType;
+#define LARGEST_STAGE_BLK	(15848-8) // Oside
+#define PXA_MAX_SIZE		128
+
+// Could fit under the Oside map (192 tile gap)
+#define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
+// Another tile gap, fits under both Almond and Cave
+#define TILE_WATERINDEX (TILE_TSINDEX + 384)
+
+typedef struct {
+	char magic[3];
+	uint8_t boss;
+	uint8_t width_lo, width_hi;
+	uint8_t height_lo, height_hi;
+	uint8_t blocks[LARGEST_STAGE_BLK];
+} PXM_LE;
+
+typedef struct {
+	/* char magic[3]; uint8_t boss; -- stripped */
+	uint16_t width;
+	uint16_t height;
+	uint8_t blocks[LARGEST_STAGE_BLK];
+} PXM_BE;
+
+typedef struct {
+	uint16_t id;
+	PXM_BE pxm; // Map data loaded from PXM file
+	// A multiplication lookup table for each row of stageBlocks
+	// Removes all mulu.w and __mulsi3 instructions in entity stage collision
+	uint16_t yoff_tab[TALLEST_STAGE_SIZE];
+	// Background
+	uint8_t back_id;				// Index of back_info
+	uint8_t back_type;				// Determines scrolling behavior
+	uint16_t back_scroll_timer;
+	// Tileset
+	uint8_t tileset_id;
+	uint8_t _alignment_padding;
+	uint8_t pxa[PXA_MAX_SIZE];
+	// Used to draw off-screen tiles as the camera scrolls
+	int8_t scrolling_row;
+	int8_t scrolling_column;
+} Stage;
+
+extern Stage g_stage;
 
 static inline uint8_t stage_get_block(uint16_t x, uint16_t y) {
-	return stageBlocks[stageTable[y] + x];
+	return g_stage.pxm.blocks[g_stage.yoff_tab[y] + x];
 }
 
 static inline uint8_t stage_get_block_type(uint16_t x, uint16_t y) {
-	return stagePXA[stage_get_block(x, y)];
+	return g_stage.pxa[stage_get_block(x, y)];
 }
 
 static inline uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {

@@ -90,7 +90,7 @@ tout de suite !<NOD<CLO
 <CMU0010Trouvé le =GPS=<WAI0160<NOD<RMU<EVE0201
 #0201
 <PRI<MSGIl y est écrit...<NOD<CLR<TURSi tu utilises ton esprit d'explo-
--ration, tu trouveras la sortie.
+ration, tu trouveras la sortie.
 C'est mon souhait le plus cher.<NOD<END
 
 #0300

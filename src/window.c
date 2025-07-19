@@ -299,7 +299,7 @@ void window_prompt_open() {
 		.size = SPRITE_SIZE(4, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+16)
 	};
-	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0,0), TILE_PROMPTINDEX, 4);
+	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0), TILE_PROMPTINDEX, 4);
 	//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Prompt : &SPR_Prompt;
 	//TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
     vdp_tiles_load(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
@@ -341,7 +341,7 @@ void window_show_item(uint16_t item) {
 	showingItem = item;
 	if(item == 0) return;
 	// Wonky workaround to use either PAL_Sym or PAL_Main
-	const SpriteDefinition *sprDef = &SPR_ItemImage;
+	const SpriteDef *sprDef = &SPR_ItemImage;
 	uint16_t pal = PAL1;
 	if(ITEM_PAL[item]) {
 		sprDef = &SPR_ItemImageG;
@@ -365,8 +365,8 @@ void window_show_item(uint16_t item) {
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
-	TILES_QUEUE(SPR_TILES(sprDef,item,0), TILE_PROMPTINDEX, 6);
-	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
+	TILES_QUEUE(SPR_TILES(sprDef,item), TILE_PROMPTINDEX, 6);
+	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0), TILE_PROMPTINDEX+6, 18);
 }
 
 void window_show_weapon(uint16_t item) {
@@ -390,8 +390,8 @@ void window_show_weapon(uint16_t item) {
 		.size = SPRITE_SIZE(3, 3),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_PROMPTINDEX+15)
 	};
-	TILES_QUEUE(SPR_TILES(&SPR_ArmsImage,0,item), TILE_PROMPTINDEX, 6);
-	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0,0), TILE_PROMPTINDEX+6, 18);
+	TILES_QUEUE(SPR_TILES(&SPR_ArmsImage,item), TILE_PROMPTINDEX, 6);
+	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0), TILE_PROMPTINDEX+6, 18);
 }
 
 void window_update() {

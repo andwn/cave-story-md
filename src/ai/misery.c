@@ -73,7 +73,7 @@ void ai_misery_float(Entity *e) {
 			e->state++;
 			e->frame = 0;
 			e->y_speed = 0;
-			e->timer = (stageID == STAGE_MIMIGA_SHACK) ? TIME_8(10) : 0;
+			e->timer = (g_stage.id == STAGE_MIMIGA_SHACK) ? TIME_8(10) : 0;
 		} /* fallthrough */
 		case 21:
 		{
@@ -133,7 +133,7 @@ void ai_misery_stand(Entity *e) {
 			e->state++;
 			e->frame = 0;
 			e->y_speed = 0;
-			e->timer = (stageID == STAGE_MIMIGA_SHACK) ? TIME_8(10) : 0;
+			e->timer = (g_stage.id == STAGE_MIMIGA_SHACK) ? TIME_8(10) : 0;
 		} /* fallthrough */
 		case 21:
 		{

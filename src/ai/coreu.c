@@ -103,8 +103,8 @@ void onspawn_undead_core(Entity *e) {
 	
 	// Upload some tile data for the minicore sprites into the background section
 	
-	SHEET_LOAD(&SPR_MUCoreBack, 2, 12, mframeindex[0], 1, 0,0, 0,1);
-	SHEET_LOAD(&SPR_MUCoreBottom, 2, 4, mframeindex[2], 1, 0,0, 0,1);
+	SHEET_LOAD(&SPR_MUCoreBack, 2, 12, mframeindex[0], 1, 0, 1);
+	SHEET_LOAD(&SPR_MUCoreBottom, 2, 4, mframeindex[2], 1, 0, 1);
 }
 
 void ai_undead_core(Entity *e) {
@@ -267,7 +267,7 @@ void ai_undead_core(Entity *e) {
 		if (e->x < block_to_sub(19))
 			e->dir = 1;
 		
-		if (e->x > block_to_sub(stageWidth - 1))
+		if (e->x > block_to_sub(g_stage.pxm.width - 1))
 			e->dir = 0;
 		
 		ACCEL_X(4);
@@ -284,14 +284,14 @@ void ai_undead_core(Entity *e) {
 			
 			// upper platforms
 			if (e->jump_time == TIME_8(75)) {
-				entity_create(block_to_sub(stageWidth) + 40,
+				entity_create(block_to_sub(g_stage.pxm.width) + 40,
 							 block_to_sub(1 + (rand() & 3)), OBJ_UDMINI_PLATFORM, 0);
 			}
 			
 			// lower platforms
 			if (e->jump_time == TIME_8(150)) {
 				e->jump_time = 0;
-				entity_create(block_to_sub(stageWidth) + 40,
+				entity_create(block_to_sub(g_stage.pxm.width) + 40,
 							 block_to_sub(11 + (rand() & 3)), OBJ_UDMINI_PLATFORM, 0);
 				
 				break;
@@ -772,7 +772,7 @@ void ai_ud_pellet(Entity *e) {
 				SMOKE_AREA((e->x >> CSF) - 8, (e->y >> CSF) - 8, 16, 16, 1);
 			}
 				
-			if (e->x < block_to_sub(1) || e->x > block_to_sub(stageWidth - 1)) {
+			if (e->x < block_to_sub(1) || e->x > block_to_sub(g_stage.pxm.width - 1)) {
 				e->state = STATE_DELETE;
 			}
 		}

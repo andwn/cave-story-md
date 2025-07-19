@@ -120,7 +120,7 @@ void onspawn_ballos(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->flags = (NPC_SOLID | NPC_SHOWDAMAGE | NPC_EVENTONDEATH);
 	
-	e->x = block_to_sub(stageWidth >> 1);
+	e->x = block_to_sub(g_stage.pxm.width >> 1);
 	e->y = -pixel_to_sub(64);
 	
 	e->attack = 0;
@@ -585,7 +585,7 @@ void ai_ballos_f3(Entity *e) {
 							// so that they can't overlap too closely.
 							int32_t x = (rand() & 3) << (CSF+2);
 							int32_t y = (4 + (rand() & 63)) << (CSF+2);
-							if(!flags) x += block_to_sub(stageWidth - 1);
+							if(!flags) x += block_to_sub(g_stage.pxm.width - 1);
 							entity_create(x, y, OBJ_BUTE_ARCHER_RED, flags);
 						}
 					}
@@ -1002,7 +1002,7 @@ void ai_ballos_platform(Entity *e) {
 		{
 			e->y_speed += SPEED_8(0x40);
 			
-			if (e->x > block_to_sub(stageHeight + 1)) e->state = STATE_DELETE;
+			if (e->x > block_to_sub(g_stage.pxm.height + 1)) e->state = STATE_DELETE;
 		}
 		break;
 	}

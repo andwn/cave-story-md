@@ -167,7 +167,7 @@ void ai_curly_ai(Entity *e) {
 	}
 	
 	// do not fall off the middle railing in Almond
-	if (stageID == 0x2F) {
+	if (g_stage.id == 0x2F) {
 		#define END_OF_RAILING		pixel_to_sub(((72*16)-8))
 		if (e->x_mark > END_OF_RAILING) {
 			e->x_mark = END_OF_RAILING;
@@ -370,7 +370,7 @@ void ai_cai_gun(Entity *e) {
     e->x = curly->x;
     e->y = curly->y + 0x600;
 	
-	const SpriteDefinition *sd = curly_mgun ? &SPR_MGun : &SPR_Polar;
+	const SpriteDef *sd = curly_mgun ? &SPR_MGun : &SPR_Polar;
 	
 	if (curly_look) {
 		if(!e->animtime) {
@@ -379,7 +379,7 @@ void ai_cai_gun(Entity *e) {
 			e->display_box = curly_mgun ? (bounding_box){{ 4, 14, 4, 10 }} : (bounding_box){{ 4, 18, 4, 6 }};
 			e->animtime = TRUE;
 			
-			dma_queue(DmaVRAM, (uint32_t) (SPR_TILES(sd,0,0)+(96>>2)), e->vramindex << 5, 48, 2);
+			dma_queue(DmaVRAM, (uint32_t) (SPR_TILES(sd,0)+(96>>2)), e->vramindex << 5, 48, 2);
 			
 		}
 	} else if(e->animtime) {
@@ -388,7 +388,7 @@ void ai_cai_gun(Entity *e) {
 		e->display_box = (bounding_box) {{ 12, 4, 12, 4 }};
 		e->animtime = FALSE;
 		
-		dma_queue(DmaVRAM, (uint32_t) SPR_TILES(sd,0,0), e->vramindex << 5, 48, 2);
+		dma_queue(DmaVRAM, (uint32_t) SPR_TILES(sd,0), e->vramindex << 5, 48, 2);
 		
 	}
 	

@@ -210,7 +210,7 @@ void ai_block_spawner(Entity *e) {
 		// does nothing in Hell--you enter from the left.
 		case 0:
 		{
-			if(player.x < block_to_sub(stageWidth - 6)) {
+			if(player.x < block_to_sub(g_stage.pxm.width - 6)) {
 				e->state = 1;
 				e->timer = 24;
 			}
@@ -231,8 +231,8 @@ void ai_block_spawner(Entity *e) {
 					if (x < block_to_sub(23)) x = block_to_sub(23);
 				}
 				
-				if (x > block_to_sub(stageWidth - 10))
-					x = block_to_sub(stageWidth - 10);
+				if (x > block_to_sub(g_stage.pxm.width - 10))
+					x = block_to_sub(g_stage.pxm.width - 10);
 				
 				if (playerEquipment & EQUIP_BOOSTER20) {
 					static const int8_t pos[32] = {
@@ -322,7 +322,7 @@ void ai_falling_block(Entity *e) {
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5FF));
 			
-			if (e->y >= block_to_sub(stageHeight + 1)) {
+			if (e->y >= block_to_sub(g_stage.pxm.height + 1)) {
 				e->state = STATE_DELETE;
 			}
 		}

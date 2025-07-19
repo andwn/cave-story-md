@@ -45,8 +45,6 @@ SECTIONS {
 
   .bss (NOLOAD) : {
     __bss_start = .;
-    *(.bss.stage)   /* Stage (PXM) data decompressed to start of RAM */
-    *(.bss.system)  /* End of stage data bleeds into errors */
     *(.bss .bss.*)
     . = ALIGN(2);
     __bss_end = .;

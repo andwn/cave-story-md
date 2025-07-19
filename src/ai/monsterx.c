@@ -734,7 +734,7 @@ void ai_x_defeated(Entity *e) {
 		case 2:
 		{
 			e->y_speed += SPEED(0x40);
-			if (e->y > block_to_sub(stageHeight)) e->state = STATE_DELETE;
+			if (e->y > block_to_sub(g_stage.pxm.height)) e->state = STATE_DELETE;
 		}
 		break;
 	}

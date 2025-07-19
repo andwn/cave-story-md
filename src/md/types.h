@@ -17,7 +17,7 @@ typedef unsigned long	uint32_t;
 typedef struct {
     uint16_t width, height, frames, fsize;
     uint32_t tiles[0];
-} SpriteDef;
+} LocSprite;
 
 typedef struct {
     int16_t y;
@@ -32,37 +32,25 @@ typedef struct {
     int16_t x;
 } Sprite;
 
-// SGDK / Rescomp Types
 typedef struct {
-    uint16_t numTile;
-    uint32_t *tiles;
+	uint16_t numTile;
+	uint32_t *tiles;
 } TileSet;
 
 typedef struct {
-    int16_t y;          // respect VDP sprite field order
-    uint16_t size;
-    int16_t x;
-    uint16_t numTile;
+	int16_t y;
+	uint16_t size;
+	int16_t x;
+	uint16_t numTile;
 } VDPSpriteInf;
 
 typedef struct {
-    uint16_t numSprite;
-    VDPSpriteInf **vdpSpritesInf;
-    TileSet *tileset;
-    int16_t w;
-    int16_t h;
-} AnimationFrame;
-
-typedef struct {
-    uint16_t numFrame;
-    AnimationFrame **frames;
-    uint16_t length;
-    uint8_t *sequence;
-} Animation;
-
-typedef struct {
-    uint16_t numAnimation;
-    Animation **animations;
-} SpriteDefinition;
+	uint16_t 		numFrame;
+	TileSet 		**tilesets;
+	uint16_t 		numSprite;
+	VDPSpriteInf 	**sprites;
+	int16_t			w;
+	int16_t			h;
+} SpriteDef;
 
 #endif //MD_TYPES_H

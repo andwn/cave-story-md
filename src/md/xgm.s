@@ -13,6 +13,7 @@ EQU Z80SMPTable,   0xA01C00  /* XGM Sample List */
 
     .section .bss
 
+    .align 2
 VAR xgmTempo,    w, 1
 VAR xgmTempoCnt, w, 1
 VAR xgmTempoDef, w, 1

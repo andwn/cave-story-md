@@ -36,7 +36,7 @@ int dpcmPack(char* fin, char* fout)
     fclose(f);
 
     // file don't exist --> error
-    if (f == NULL) return FALSE;
+    if (f == NULL) return false;
 
     printf("Align %s to 128 bytes\n", fout);
 
@@ -46,7 +46,7 @@ int dpcmPack(char* fin, char* fout)
     data = sizeAlign(data, size, 128, 136, &size);
 
     // write out file
-    return out(data, 0, size, 1, FALSE, fout);
+    return out(data, 0, size, 1, false, fout);
 }
 
 int wavToRaw(char* fin, char* fout)
@@ -87,9 +87,9 @@ int wavToRawEx(char* fin, char* fout, int outRate)
     fclose(f);
 
     // file don't exist --> error
-    if (f == NULL) return FALSE;
+    if (f == NULL) return false;
 
-    return TRUE;
+    return true;
 }
 
 int xgmtool(char* fin, char* fout, int timing, char* opt)
@@ -130,7 +130,7 @@ int xgmtool(char* fin, char* fout, int timing, char* opt)
     fclose(f);
 
     // file don't exist --> error
-    if (f == NULL) return FALSE;
+    if (f == NULL) return false;
 
-    return TRUE;
+    return true;
 }

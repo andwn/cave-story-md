@@ -253,7 +253,7 @@ void onspawn_curly_hell(Entity *e) {
 
 void ai_curly_hell(Entity *e) {
 	// Keep in front of doors
-	if((stageID == STAGE_HELL_PASSAGEWAY_2 || stageID == STAGE_HELL_OUTER_PASSAGE) && 
+	if((g_stage.id == STAGE_HELL_PASSAGEWAY_2 || g_stage.id == STAGE_HELL_OUTER_PASSAGE) && 
 			(abs(e->x_mark - camera.x) > ScreenHalfW || abs(e->y_mark - camera.y) > ScreenHalfH)) {
 		moveMeToFront = TRUE;
 		e->x_mark = camera.x;

@@ -46,7 +46,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  file\tpath of the .pal or image file to convert to Palette structure (should be a 8bpp .bmp or .png)\n");
         printf("  index\tstart index where to copy the palette in CRAM\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -62,7 +62,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     else
     {
         // retrieve basic infos about the image
-        if (!Img_getInfos(fileIn, &w, &h, &bpp)) return FALSE;
+        if (!Img_getInfos(fileIn, &w, &h, &bpp)) return false;
 
         // retrieve palette data
         palette = Img_getPalette(fileIn, &size);
@@ -87,9 +87,9 @@ static int execute(char *info, FILE *fs, FILE *fh)
     }
 
     // EXPORT PALETTE
-    outPalette(palette, 0, size, fs, fh, id, TRUE);
+    outPalette(palette, 0, size, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
@@ -105,7 +105,7 @@ void outPalette(unsigned short* palette, int startInd, int palSize, FILE* fs, FI
     strcpy(temp, id);
     strcat(temp, "_pal");
     // declare
-    decl(fs, fh, NULL, temp, 2, FALSE);
+    decl(fs, fh, NULL, temp, 2, false);
     // output data
     outS((unsigned char*) palette, 0, size * 2, fs, 2);
     fprintf(fs, "\n");

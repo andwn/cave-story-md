@@ -63,7 +63,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("               2 / FAST / LZ4W = custom lz4 compression (average compression ratio but fast)\n");
         printf("  mapbase   define the base tilemap value, useful to set the priority, default palette and base tile index.\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -72,7 +72,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     packed = getCompression(packedStr);
 
     // retrieve basic infos about the image
-    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return FALSE;
+    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return false;
 
     // get size in tile
     wt = (w + 7) / 8;
@@ -92,7 +92,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
 
     // get image data (always 8bpp)
     data = Img_getData(fileIn, &size, 8, 8);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // find max color index
     maxIndex = getMaxIndex(data, size);
@@ -101,12 +101,12 @@ static int execute(char *info, FILE *fs, FILE *fh)
     {
         printf("Error: Image %s use color index >= 64\n", fileIn);
         printf("IMAGE resource require image with a maximum of 64 colors.\n");
-        return FALSE;
+        return false;
     }
 
     // convert to tiled image
-    result = getTiledImage(data, wt, ht, TRUE, mapBase);
-    if (!result) return FALSE;
+    result = getTiledImage(data, wt, ht, true, mapBase);
+    if (!result) return false;
 
     // pack data
     if (packed != PACK_NONE)
@@ -114,14 +114,14 @@ static int execute(char *info, FILE *fs, FILE *fh)
         int tmpPacked;
 
         tmpPacked = packed;
-        if (!packTileSet(result->tileset, &tmpPacked)) return FALSE;
+        if (!packTileSet(result->tileset, &tmpPacked)) return false;
         tmpPacked = packed;
-        if (!packMap(result->map, &tmpPacked)) return FALSE;
+        if (!packMap(result->map, &tmpPacked)) return false;
     }
 
     // get palette
     palette = Img_getPalette(fileIn, &psize);
-    if (!palette) return FALSE;
+    if (!palette) return false;
 
     // optimize palette size
     if (maxIndex < 16) psize = 16;
@@ -132,22 +132,22 @@ static int execute(char *info, FILE *fs, FILE *fh)
     // EXPORT PALETTE
     strcpy(temp, id);
     strcat(temp, "_palette");
-    outPalette(palette, 0, psize, fs, fh, temp, FALSE);
+    outPalette(palette, 0, psize, fs, fh, temp, false);
 
     // EXPORT TILEMAP
     strcpy(temp, id);
     strcat(temp, "_tilemap");
-    outMap(result->map, fs, fh, temp, FALSE);
+    outMap(result->map, fs, fh, temp, false);
 
     // EXPORT TILESET
     strcpy(temp, id);
     strcat(temp, "_tileset");
-    outTileset(result->tileset, fs, fh, temp, FALSE);
+    outTileset(result->tileset, fs, fh, temp, false);
 
     // EXPORT IMAGE
-    outImage(fs, fh, id, TRUE);
+    outImage(fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 void outImage(FILE* fs, FILE* fh, char* id, int global)

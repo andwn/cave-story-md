@@ -85,7 +85,7 @@ static inline uint8_t mddir(uint8_t dir) {
 #define block_to_tile(x)  ((x)<<1)
 
 // Get tiles from SpriteDefinition
-#define SPR_TILES(spr, a, f) ((spr)->animations[a]->frames[f]->tileset->tiles)
+#define SPR_TILES(spr, f) ((spr)->tilesets[f]->tiles)
 
 // Tileset width/height
 #define TS_WIDTH    32
@@ -170,5 +170,48 @@ typedef void (*ActionFunc)(uint8_t page);
 extern volatile uint8_t ready;
 
 void aftervsync();
+
+#ifdef DEBUG
+
+extern void klog(const char *msg);
+static void k_str(const char *str) { klog(str); }
+
+__attribute((nonstring))
+static const char k_hexchars[16] = "0123456789ABCDEF";
+static void k_hex8(uint16_t n) {
+	char str[4] = "xx";
+	str[1] = k_hexchars[(n & 0xF)];
+	str[0] = k_hexchars[((n >> 4) & 0xF)];
+	klog(str);
+}
+static void k_hex16(uint16_t n) {
+	char str[6] = "xxxx";
+	str[3] = k_hexchars[(n & 0xF)];
+	str[2] = k_hexchars[((n >> 4) & 0xF)];
+	str[1] = k_hexchars[((n >> 8) & 0xF)];
+	str[0] = k_hexchars[((n >> 12) & 0xF)];
+	klog(str);
+}
+static void k_hex32(uint32_t n) {
+	char str[10] = "xxxxxxxx";
+	str[7] = k_hexchars[(n & 0xF)];
+	str[6] = k_hexchars[((n >> 4) & 0xF)];
+	str[5] = k_hexchars[((n >> 8) & 0xF)];
+	str[4] = k_hexchars[((n >> 12) & 0xF)];
+	str[3] = k_hexchars[((n >> 16) & 0xF)];
+	str[2] = k_hexchars[((n >> 20) & 0xF)];
+	str[1] = k_hexchars[((n >> 24) & 0xF)];
+	str[0] = k_hexchars[((n >> 28) & 0xF)];
+	klog(str);
+}
+
+#else
+
+static void k_str(const char *str) { (void) str; }
+static void k_hex8(uint8_t n) { (void) n; }
+static void k_hex16(uint16_t n) { (void) n; }
+static void k_hex32(uint32_t n) { (void) n; }
+
+#endif
 
 #endif

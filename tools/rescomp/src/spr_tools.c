@@ -58,7 +58,7 @@ frameSprite_* getFrameSprite(unsigned char *image8bpp, tileset_* tileset, int wi
                 return NULL;
             }
 
-            index = addTile(tile, tileset, FALSE, TILE_MAX_NUM);
+            index = addTile(tile, tileset, false, TILE_MAX_NUM);
             // error adding new tile --> return NULL
             if (index == -1)
                 return NULL;
@@ -77,7 +77,7 @@ frameSprite_* getFrameSprite(unsigned char *image8bpp, tileset_* tileset, int wi
     return result;
 }
 
-animFrame_* getAnimFrame(unsigned char *image8bpp, int wi, int fx, int fy, int wf, int hf, int time, int collisionType)
+animFrame_* getAnimFrame(unsigned char *image8bpp, int wi, int fx, int fy, int wf, int hf)//, int time, int collisionType)
 {
     int i, j;
     int nbSprW, nbSprH;
@@ -111,47 +111,47 @@ animFrame_* getAnimFrame(unsigned char *image8bpp, int wi, int fx, int fy, int w
     result->tileset = tileset;
 	result->w = wf;
 	result->h = hf;
-    result->timer = time;
+    //result->timer = time;
 
-    if (collisionType == COLLISION_NONE) result->collision = NULL;
-    else
-    {
-        collision_* collision;
-
-        // allocate collision structure
-        collision = malloc(sizeof(collision_));
-
-        switch(collisionType)
-        {
-            case COLLISION_BOX:
-                // use 75% the size of the frame for the collision
-                collision->norm.box.x = (wf * 8) / (4 * 2);
-                collision->norm.box.y = (hf * 8) / (4 * 2);
-                collision->norm.box.w = ((wf * 8) * 3) / 4;
-                collision->norm.box.h = ((hf * 8) * 3) / 4;
-            break;
-
-            case COLLISION_CIRCLE:
-                // use 75% the size of the frame for the collision
-                collision->norm.circle.x = (wf * 8) / 2;
-                collision->norm.circle.y = (hf * 8) / 2;
-                collision->norm.circle.ray = ((wf * 8) * 3) / 8;
-            break;
-        }
-
-        // single collision
-        collision->inner = NULL;
-        collision->next = NULL;
-
-        // use same collision info for H,V and HV flip version as we use centered collision here
-        collision->hvflip.box.x = collision->vflip.box.x = collision->hflip.box.x = collision->norm.box.x;
-        collision->hvflip.box.y = collision->vflip.box.y = collision->hflip.box.y = collision->norm.box.y;
-        collision->hvflip.box.w = collision->vflip.box.w = collision->hflip.box.w = collision->norm.box.w;
-        collision->hvflip.box.h = collision->vflip.box.h = collision->hflip.box.h = collision->norm.box.h;
-
-        // store
-        result->collision = collision;
-    }
+    //if (collisionType == COLLISION_NONE) result->collision = NULL;
+    //else
+    //{
+    //    collision_* collision;
+//
+    //    // allocate collision structure
+    //    collision = malloc(sizeof(collision_));
+//
+    //    switch(collisionType)
+    //    {
+    //        case COLLISION_BOX:
+    //            // use 75% the size of the frame for the collision
+    //            collision->norm.box.x = (wf * 8) / (4 * 2);
+    //            collision->norm.box.y = (hf * 8) / (4 * 2);
+    //            collision->norm.box.w = ((wf * 8) * 3) / 4;
+    //            collision->norm.box.h = ((hf * 8) * 3) / 4;
+    //        break;
+//
+    //        case COLLISION_CIRCLE:
+    //            // use 75% the size of the frame for the collision
+    //            collision->norm.circle.x = (wf * 8) / 2;
+    //            collision->norm.circle.y = (hf * 8) / 2;
+    //            collision->norm.circle.ray = ((wf * 8) * 3) / 8;
+    //        break;
+    //    }
+//
+    //    // single collision
+    //    collision->inner = NULL;
+    //    collision->next = NULL;
+//
+    //    // use same collision info for H,V and HV flip version as we use centered collision here
+    //    collision->hvflip.box.x = collision->vflip.box.x = collision->hflip.box.x = collision->norm.box.x;
+    //    collision->hvflip.box.y = collision->vflip.box.y = collision->hflip.box.y = collision->norm.box.y;
+    //    collision->hvflip.box.w = collision->vflip.box.w = collision->hflip.box.w = collision->norm.box.w;
+    //    collision->hvflip.box.h = collision->vflip.box.h = collision->hflip.box.h = collision->norm.box.h;
+//
+    //    // store
+    //    result->collision = collision;
+    //}
 
     for(j = 0; j < nbSprH; j++)
     {
@@ -173,9 +173,9 @@ animFrame_* getAnimFrame(unsigned char *image8bpp, int wi, int fx, int fy, int w
 
             // store frame sprite
             frameSprites[numSprite * 0] = frameSprite;
-            frameSprites[numSprite * 1] = getFlippedFrameSprite(frameSprite, wf, hf, TRUE, FALSE);
-            frameSprites[numSprite * 2] = getFlippedFrameSprite(frameSprite, wf, hf, FALSE, TRUE);
-            frameSprites[numSprite * 3] = getFlippedFrameSprite(frameSprite, wf, hf, TRUE, TRUE);
+            frameSprites[numSprite * 1] = getFlippedFrameSprite(frameSprite, wf, hf, true, false);
+            frameSprites[numSprite * 2] = getFlippedFrameSprite(frameSprite, wf, hf, false, true);
+            frameSprites[numSprite * 3] = getFlippedFrameSprite(frameSprite, wf, hf, true, true);
             frameSprites++;
         }
     }
@@ -183,12 +183,12 @@ animFrame_* getAnimFrame(unsigned char *image8bpp, int wi, int fx, int fy, int w
     return result;
 }
 
-animation_* getAnimation(unsigned char *image8bpp, int wi, int anim, int wf, int hf, int time, int collision)
+animation_* getAnimation(unsigned char *image8bpp, int wi, int anim, int wf, int hf)//, int time, int collision)
 {
     int i;
     animation_* result;
     animFrame_** frames;
-    unsigned char* sequence;
+    //unsigned char* sequence;
     int numFrame;
 
     // get max number of frame
@@ -201,25 +201,25 @@ animation_* getAnimation(unsigned char *image8bpp, int wi, int anim, int wf, int
     frames = malloc(numFrame * sizeof(animFrame_*));
     result->frames = frames;
     // default sequence
-	result->length = numFrame;
+	//result->length = numFrame;
     // allocate sequence
-    sequence = malloc(numFrame * sizeof(unsigned char));
-    result->sequence = sequence;
+    //sequence = malloc(numFrame * sizeof(unsigned char));
+    //result->sequence = sequence;
     // default: loop to frame 0
-    result->loop = 0;
+    //result->loop = 0;
 
     for(i = 0; i < numFrame; i++)
     {
-        *frames = getAnimFrame(image8bpp, wi, i, anim, wf, hf, time, collision);
+        *frames = getAnimFrame(image8bpp, wi, i, anim, wf, hf);//, time, collision);
         if (*frames == NULL) return NULL;
         frames++;
-        *sequence++ = i;
+        //*sequence++ = i;
     }
 
     return result;
 }
 
-spriteDefinition_* getSpriteDefinition(unsigned char *image8bpp, int w, int h, int wf, int hf, int time, int collision)
+spriteDefinition_* getSpriteDefinition(unsigned char *image8bpp, int w, int h, int wf, int hf)//, int time, int collision)
 {
     int i;
     int numAnim;
@@ -240,7 +240,7 @@ spriteDefinition_* getSpriteDefinition(unsigned char *image8bpp, int w, int h, i
 
     for(i = 0; i < numAnim; i++)
     {
-        *animations = getAnimation(image8bpp, w, i, wf, hf, time, collision);
+        *animations = getAnimation(image8bpp, w, i, wf, hf);//, time, collision);
         if (*animations == NULL) return NULL;
 
         // update maximum number of tile and sprite
@@ -298,7 +298,7 @@ int packSpriteDef(spriteDefinition_ *spriteDef, int method)
     animFrame_ *animFrame;
     animation_ *animation;
 
-    result = TRUE;
+    result = true;
 
     animations = spriteDef->animations;
 
@@ -312,7 +312,7 @@ int packSpriteDef(spriteDefinition_ *spriteDef, int method)
             int m = method;
 
             animFrame = *animFrames++;
-            if (!packTileSet(animFrame->tileset, &m)) result = FALSE;
+            if (!packTileSet(animFrame->tileset, &m)) result = false;
         }
     }
 
@@ -339,7 +339,7 @@ void removeEmptyFrame(spriteDefinition_ *spriteDef)
 
         // adjust number of frame
         animation->numFrame = j + 1;
-        animation->length = j + 1;
+        //animation->length = j + 1;
     }
 }
 
@@ -352,10 +352,10 @@ int isEmptyTileData(unsigned int *tiles, int numTiles)
     tile = tiles;
     while(i--)
     {
-        if (*tile++) return FALSE;
+        if (*tile++) return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 int isEmptyTileSet(tileset_ *tileset)

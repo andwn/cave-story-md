@@ -54,7 +54,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  options\toptionals parameters for xgmtool\n");
         printf("      \t ex: \"-dr -di\" to disable some sample auto process (see xgmtool to get more info)\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -68,7 +68,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     if (!xgmtool(fileIn, temp, timing, opt))
     {
         printf("Error while converting '%s' to BIN format\n", fileIn);
-        return FALSE;
+        return false;
     }
 
     // read data from binary file
@@ -77,18 +77,18 @@ static int execute(char *info, FILE *fs, FILE *fh)
     remove(temp);
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // EXPORT XGM
-    outXGM(data, size, 256, fs, fh, id, TRUE);
+    outXGM(data, size, 256, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 void outXGM(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

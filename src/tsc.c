@@ -293,12 +293,12 @@ uint8_t tsc_update() {
 			if(joy_pressed(btn[cfg_btn_jump])) {
 				// Reload current stage's TSC, and run event for warp
 				teleMenuActive = FALSE;
-				tsc_load_stage(stageID);
+				tsc_load_stage(g_stage.id);
 				tsc_call_event(teleMenuEvent[teleMenuSelection]);
 				tscState = TSC_RUNNING;
 			} else if(joy_pressed(btn[cfg_btn_shoot])) { // Cancel
 				teleMenuActive = FALSE;
-				tsc_load_stage(stageID);
+				tsc_load_stage(g_stage.id);
 				// Manually force event to end
 				tscState = TSC_IDLE;
 				gameFrozen = FALSE;
@@ -486,7 +486,7 @@ void tsc_show_teleport_menu() {
 		tsc_call_event(1000);
 		while(tscState != TSC_IDLE) execute_command();
         teleMenuActive = FALSE;
-        tsc_load_stage(stageID);
+        tsc_load_stage(g_stage.id);
         tsc_call_event(0); // So script will end after input
         tscState = TSC_WAITINPUT;
 
@@ -857,22 +857,22 @@ uint8_t execute_command() {
 			// The real cave story has the stage boss created at stage load in a dormant state.
 			// NXEngine also does this, but I don't, instead waiting until the boss is used
 			// In a <BOA command to create it. A bit hacky but it works.
-			if(stageID == 0x0A && args[0] == 20) {
+			if(g_stage.id == 0x0A && args[0] == 20) {
 				// Omega in Sand Zone
 				bossEntity = entity_create(0, 0, 360 + BOSS_OMEGA, 0);
 				bossEntity->event = 210;
 				bossEntity->state = 20;
-			} else if(stageID == 0x27 && args[0] == 1) {
+			} else if(g_stage.id == 0x27 && args[0] == 1) {
 				// Monster X - #0301 <BOA0001
 				bossEntity = entity_create(0, 0, 360 + BOSS_MONSTERX, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 1;
-			} else if(stageID == 0x2F && args[0] == 200) {
+			} else if(g_stage.id == 0x2F && args[0] == 200) {
 				// Core
 				bossEntity = entity_create(0, 0, 360 + BOSS_CORE, 0);
 				bossEntity->event = 1000;
 				bossEntity->state = 200;
-			} else if(stageID == 0x33 && args[0] == 20) {
+			} else if(g_stage.id == 0x33 && args[0] == 20) {
 				// Dragon Sisters
 				bossEntity = entity_create(0, 0, 360 + BOSS_SISTERS, 0);
 				bossEntity->event = 1000;
@@ -880,7 +880,7 @@ uint8_t execute_command() {
 				bossBarEntity = bossEntity;
 				bossMaxHealth = bossHealth = bossBarEntity->health;
 				tsc_show_boss_health();
-			} else if(stageID == 87 && args[0] == 100) {
+			} else if(g_stage.id == 87 && args[0] == 100) {
 				// Ballos
 				bossEntity = entity_create(0, 0, 360 + BOSS_BALLOS, 0);
 				bossEntity->event = 1000;
@@ -1109,25 +1109,25 @@ uint8_t execute_command() {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
-			if(args[0] >= stageWidth || args[1] >= stageHeight) {
+			if(args[0] >= g_stage.pxm.width || args[1] >= g_stage.pxm.height) {
 				// Outside the map -- don't do this
 				break;
 			}
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
 			// code, so I can put in this hacky section which fixes specific scripts
-			if(stageID == 14) { // Mimiga Village Shack -- Balrog busts through door
+			if(g_stage.id == 14) { // Mimiga Village Shack -- Balrog busts through door
 				if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
 				else args[2] += 19;
-			} else if(stageTileset == 25) { // Throne Room / Ostep
+			} else if(g_stage.tileset_id == 25) { // Throne Room / Ostep
 				if(args[2] == 18) args[2] = 49;
 				if(args[2] == 21) args[2] = 50;
-            } else if(stageTileset == 26) { // Hell
+            } else if(g_stage.tileset_id == 26) { // Hell
                 if(args[2] == 28) args[2] = 25;
-			} else if(stageTileset == 27) { // King's Table
+			} else if(g_stage.tileset_id == 27) { // King's Table
 				if(args[2] == 18) args[2] = 40;
 				if(args[2] == 21) args[2] = 41;
-			} else if(stageTileset == 28) { // Black Space
+			} else if(g_stage.tileset_id == 28) { // Black Space
                 if (args[2] == 18) args[2] = 33;
                 if (args[2] == 21) args[2] = 34;
             }
@@ -1222,7 +1222,7 @@ uint8_t execute_command() {
 			vdp_map_fill_rect(VDP_PLANE_A, TILE_ATTR(PAL0, 1, 0, 0, 1), 10, 6, 20, 4, 0);
 			
 			// Island sprite
-			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0,0);
+			SHEET_LOAD(&SPR_XXIsland, 1, 15, TILE_SHEETINDEX, 1, 0);
 			Sprite island[2] = {
 				(Sprite) {
 					.x = 160 - 20 + 128, .y = 64 - 8 + 128, .size = SPRITE_SIZE(4, 3),

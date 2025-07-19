@@ -121,11 +121,11 @@ void onspawn_core(Entity *e) {
 	
 	// Upload some tile data for the minicore sprites into the background section
 	
-	SHEET_LOAD(&SPR_MiniCore1, 1, 16, mframeindex[0], 1, 0,0);
-	SHEET_LOAD(&SPR_MiniCore2, 1, 16, mframeindex[1], 1, 0,0);
-	SHEET_LOAD(&SPR_MiniCore3, 1, 12, mframeindex[2], 1, 0,0);
-	SHEET_LOAD(&SPR_MiniCore4, 1, 4, mframeindex[3], 1, 0,0);
-	SHEET_LOAD(&SPR_MiniCore5, 1, 2, mframeindex[4], 1, 0,0);
+	SHEET_LOAD(&SPR_MiniCore1, 1, 16, mframeindex[0], 1, 0);
+	SHEET_LOAD(&SPR_MiniCore2, 1, 16, mframeindex[1], 1, 0);
+	SHEET_LOAD(&SPR_MiniCore3, 1, 12, mframeindex[2], 1, 0);
+	SHEET_LOAD(&SPR_MiniCore4, 1, 4, mframeindex[3], 1, 0);
+	SHEET_LOAD(&SPR_MiniCore5, 1, 2, mframeindex[4], 1, 0);
 	
 }
 
@@ -222,7 +222,7 @@ void ai_core(Entity *e) {
 		case CORE_GUST+1:
 		{
 			// Instead of spawning a bunch of laggy 1 pixel objects push the water to the left
-			backScrollTimer++;
+			g_stage.back_scroll_timer++;
 			player.x_speed -= SPEED_8(0x24);
 			
 			OPEN_MOUTH;
@@ -452,7 +452,7 @@ void ai_minicore(Entity *e) {
 		case MC_RETREAT+1:		// retreat back into the abyss
 		{
 			e->x_speed += SPEED(0x20);
-			if (e->x > block_to_sub(stageWidth) + 0x4000) {
+			if (e->x > block_to_sub(g_stage.pxm.width) + 0x4000) {
 				e->state = STATE_DELETE;
 			}
 		}

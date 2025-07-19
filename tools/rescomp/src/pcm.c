@@ -72,7 +72,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("                It supports 4 PCM SFX at a fixed 14 Khz rate while playing XGM music.\n");
         printf("                <b>Input:</b> 8 bits signed PCM at 14000 Hz\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -99,7 +99,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
             if (!dpcmPack(fileIn, temp))
             {
                 printf("Error while compressing '%s' to DPCM format\n", fileIn);
-                return FALSE;
+                return false;
             }
 
             // read data from DPCM file
@@ -110,25 +110,25 @@ static int execute(char *info, FILE *fs, FILE *fh)
     }
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // need to unsign data for VGM driver
     if (driver == DRIVER_VGM)
         unsign8b(data, size);
 
     // EXPORT PCM
-    outPCM(data, size, (driver==DRIVER_2ADPCM)?128:256, fs, fh, id, TRUE);
+    outPCM(data, size, (driver==DRIVER_2ADPCM)?128:256, fs, fh, id, true);
 
     printf("done !");
 
-    return TRUE;
+    return true;
 }
 
 
 void outPCM(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

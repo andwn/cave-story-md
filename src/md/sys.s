@@ -4,8 +4,9 @@
 EQU ConsoleVer, 0xA10001   /* Console Version */
 EQU TMSS,       0xA14000   /* TMSS Register */
 
-	.section .bss.system
+	.section .bss
 
+	.align 2
 /* Error Handling Stuff */
 VAR v_err_reg,  l, 16
 VAR v_err_pc,   l, 1
@@ -393,6 +394,23 @@ ErrFont:
 		dc.b	0b00000111, 0b00000000, 0b01110000	/* = : 28 */
 		dc.b	0b00100010, 0b01110111, 0b00100010	/* + : 29 */
 		.even
+
+
+FUNC klog
+		movea.l	4(sp),a0
+		move.w	#0x9e00,d0
+		move.b	(a0)+,d0
+		beq.s	1f
+		movea.l	#0xC00004,a1
+	0:
+		move.w	d0,(a1)
+		move.b	(a0)+,d0
+		bne.s	0b
+
+		move.w	d0,(a1)
+	1:
+		rts
+
 
 
 /* Interrupts */

@@ -18,6 +18,7 @@
 #include "tsc.h"
 #include "md/vdp.h"
 #include "weapon.h"
+#include "md/sys.h"
 
 #include "entity.h"
 #include "ai.h"
@@ -91,12 +92,12 @@ void entity_reactivate(Entity *e) {
 		// Try to allocate some VRAM
 		TILOC_ADD(e->tiloc, e->framesize);
 		if(e->tiloc != NOTILOC) {
-			const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
+			const SpriteDef *f = npc_info[e->type].sprite;
 			e->vramindex = tiloc_index + (e->tiloc << 2);
 			uint16_t tile_offset = 0;
 			for(uint8_t i = 0; i < e->sprite_count; i++) {
 				sprite_index(&e->sprite[i], e->vramindex + tile_offset);
-				tile_offset += f->vdpSpritesInf[i]->numTile;
+				tile_offset += f->sprites[i]->numTile;
 			}
 			e->oframe = 255;
 		}
@@ -313,7 +314,7 @@ void entities_update(uint8_t draw) {
 				sprite_hflip(&e->sprite[0], e->dir);
 			} else if(e->tiloc != NOTILOC) {
                 if(e->type >= OBJ_LEVELUP && e->type <= OBJ_EMPTY) {
-                    const SpriteDef * const def[3] = {
+                    const LocSprite * const def[3] = {
                             SPR_LEVELUP, SPR_LEVELDOWN, SPR_EMPTY
                     };
                     uint16_t ind = e->type - OBJ_LEVELUP;
@@ -352,10 +353,10 @@ void entities_update(uint8_t draw) {
                         }
                     }
                 } else {
-                    const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[e->frame];
+                    const SpriteDef *f = npc_info[e->type].sprite;
                     if(e->frame != e->oframe) {
                         e->oframe = e->frame;
-                        TILES_QUEUE(f->tileset->tiles, e->vramindex, e->framesize);
+                        TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, e->framesize);
                     }
                     // We can't just flip the vdpsprites, gotta draw them in backwards order too
                     if(e->dir) {
@@ -967,9 +968,21 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = malloc(sizeof(Entity) + sizeof(Sprite) * sprite_count);
-	//if(!e) error_oom();
+	if(!e) {
+		vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+		vdp_hscroll(VDP_PLANE_A, 0);
+		vdp_vscroll(VDP_PLANE_A, 0);
+		vdp_color(0, 0);
+		vdp_color(15, 0xEEE);
+		vdp_puts(VDP_PLANE_A, "OOM", 4, 4);
+		k_str("OOM");
+		for(;;);
+	}
+
+	k_str("new entity");
+	k_hex16(type);
+
 	memclr(e, sizeof(Entity) + sizeof(Sprite) * sprite_count);
-	
 	e->x = x;
 	e->y = y;
 	e->id = id;
@@ -977,8 +990,8 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	e->sprite_count = sprite_count;
 	entity_default(e, type, flags);
 	if(sprite_count) {
-        const SpriteDef *def = NULL;
-        switch(e->type) {
+        const LocSprite *def = NULL;
+        switch(type) {
             case OBJ_LEVELUP:   def = SPR_LEVELUP; break;
             case OBJ_LEVELDOWN: def = SPR_LEVELDOWN; break;
             case OBJ_EMPTY:     def = SPR_EMPTY; break;
@@ -1012,25 +1025,25 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
             };
             e->oframe = 255;
         } else if(npc_info[type].sprite) { // Use our own tiles
-            const AnimationFrame *f = npc_info[e->type].sprite->animations[0]->frames[0];
-            e->framesize = f->tileset->numTile;
+			k_str("new tiloc");
+            const SpriteDef *spr = npc_info[type].sprite;
+            e->framesize = spr->tilesets[0]->numTile;
             TILOC_ADD(e->tiloc, e->framesize);
             if(e->tiloc != NOTILOC) {
                 e->vramindex = tiloc_index + (e->tiloc << 2);
                 uint16_t tile_offset = 0;
-                for(uint8_t i = 0; i < e->sprite_count; i++) {
+                for(uint8_t i = 0; i < sprite_count; i++) {
                     e->sprite[i] = (Sprite) {
-                            .size = f->vdpSpritesInf[i]->size,
+                            .size = spr->sprites[i]->size,
                             .attr = TILE_ATTR(npc_info[type].palette,0,0,0,
                                               e->vramindex + tile_offset)
                     };
-                    tile_offset += f->vdpSpritesInf[i]->numTile;
+                    tile_offset += spr->sprites[i]->numTile;
                 }
                 e->oframe = 255;
             }
         }
 	}
-    //e->onFrame = npc_info[e->type].onFrame;
 	ENTITY_ONSPAWN(e);
 	if(e->alwaysActive || entity_on_screen(e)) {
 		LIST_PUSH(entityList, e);

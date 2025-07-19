@@ -161,7 +161,7 @@ void ai_toroko(Entity *e) {
 		default: // Toroko getting up after you shoot her, don't know the real state
 			FACE_PLAYER(e);
 			e->alwaysActive = TRUE;
-			if(stageID != 0x23) e->frame = 0;
+			if(g_stage.id != 0x23) e->frame = 0;
 	}
 	if(e->state != 500) {
 		e->x = e->x_next;
@@ -171,7 +171,7 @@ void ai_toroko(Entity *e) {
 	}
 
 	// I hate this
-	if(stageID == STAGE_MIMIGA_SHACK && e->frame == 0) e->dir = 0;
+	if(g_stage.id == STAGE_MIMIGA_SHACK && e->frame == 0) e->dir = 0;
 }
 
 
@@ -225,8 +225,8 @@ void ai_toroko_tele_in(Entity *e) {
 void onspawn_sue(Entity *e) {
 	if(e->flags & NPC_OPTION2) e->dir = TRUE;
 	// This keeps Sue behind the cage in Mimiga Village
-	if(stageID == STAGE_MIMIGA_VILLAGE) e->alwaysActive = TRUE;
-	if(stageID == STAGE_FALLING) {
+	if(g_stage.id == STAGE_MIMIGA_VILLAGE) e->alwaysActive = TRUE;
+	if(g_stage.id == STAGE_FALLING) {
 		e->alwaysActive = TRUE;
 		//e->state = 50;
 	} else {
@@ -591,7 +591,7 @@ void ai_king(Entity *e) {
 		sword->y = e->y;
 	}
 	
-	if(stageID == 0x23) e->dir = 1; // Stop turning left asshole
+	if(g_stage.id == 0x23) e->dir = 1; // Stop turning left asshole
 	
 	LIMIT_Y(SPEED(0x5FF));
 }
@@ -616,7 +616,7 @@ void ai_kanpachi_fish(Entity *e) {
 	// open eyes when player comes near
 	if(PLAYER_DIST_X(e, 64<<CSF) && PLAYER_DIST_Y2(e, 64<<CSF, 16<<CSF)) {
 		e->frame = 1;
-		RANDBLINK(e, 0, 200);
+		//RANDBLINK(e, 0, 200);
 	} else {
 		e->frame = 0;
 	}
@@ -729,7 +729,7 @@ void ai_booster_falling(Entity *e) {
 
 // shared between OBJ_KAZUMA_AT_COMPUTER and OBJ_SUE_AT_COMPUTER
 void ai_npc_at_computer(Entity *e) {
-	if(stageID == 1 && e->type == 0x3E) {
+	if(g_stage.id == 1 && e->type == 0x3E) {
 		// Remove duplicate Kazuma from Arthur's house
 		e->state = STATE_DELETE; 
 	}

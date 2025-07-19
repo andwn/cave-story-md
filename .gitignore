@@ -26,5 +26,6 @@ res/resources.s
 src/boot/rom_head.bin
 src/xgm/z80_xgm.h
 src/xgm/z80_xgm.s
+assets.d
 .DS_Store
 *.Identifier

@@ -48,7 +48,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  file\tpath of the .tfd or .tfc music file to convert to binary data array\n");
         printf("  z80driver\twhen set to 1 the music is aligned in memory so you can use the Z80 driver to play it (but it consumes more ROM).\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -68,7 +68,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         {
             printf("Error while doing TFM conversion on '%s'\n", fileIn);
 
-            return FALSE;
+            return false;
         }
 
         converted = 1;
@@ -78,22 +78,22 @@ static int execute(char *info, FILE *fs, FILE *fh)
     data = in(temp, &size);
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // clean
     if (converted) remove(temp);
 
     // EXPORT TFM
-    outTFM(data, size, z80?32768:2, fs, fh, id, TRUE);
+    outTFM(data, size, z80?32768:2, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
 void outTFM(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

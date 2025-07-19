@@ -740,6 +740,6 @@ void ai_ravil(Entity *e) {
 
 // Collapse in Grasstown Hut, explode in Balcony
 void ondeath_ravil(Entity *e) {
-	if(stageID == 30) tsc_call_event(e->event);
+	if(g_stage.id == 30) tsc_call_event(e->event);
 	else e->state = STATE_DESTROY;
 }

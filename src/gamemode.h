@@ -3,7 +3,6 @@
  */
  
 enum GameMode {
-	GM_SPLASH, // Sega logo
 	GM_INTRO, // Studio Pixel presents
 	GM_TITLE, // Title screen
 	GM_SOUNDTEST, // Sound Test
@@ -19,9 +18,6 @@ extern uint8_t gameFrozen;
 
 // Print version string at bottom of the screen
 void print_version(void);
-
-// Sega screen
-void splash_main();
 
 void intro_main();
 

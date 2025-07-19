@@ -2,8 +2,8 @@
 #define _TOOLS_H_
 
 
-#define FALSE           0
-#define TRUE            1
+#define false           0
+#define true            1
 
 #define DRIVER_PCM      0
 #define DRIVER_2ADPCM   1
@@ -15,8 +15,10 @@
 #define PACK_NONE       0
 #define PACK_APLIB      1
 #define PACK_LZ4W       2
+#define PACK_UFTC       3
+#define PACK_ZX0        4
 
-#define PACK_MAX_IND    PACK_LZ4W
+#define PACK_MAX_IND    PACK_ZX0
 
 
 #define MIN(a,b) (((a)<(b))?(a):(b))

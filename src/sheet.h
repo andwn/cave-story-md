@@ -49,13 +49,9 @@
 
 // The end params are anim,frame value couples from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
-	static const uint8_t fa[frames<<1] = { __VA_ARGS__ };                                      \
+	static const uint8_t fa[frames] = { __VA_ARGS__ };                                         \
 	for(uint16_t i = 0; i < frames; i++) {                                                     \
-		/*if(fa[i<<1] >= (sdef)->numAnimation)                       */                            \
-		/*	error_other("Anim out of range");                        */                          \
-		/*if(fa[(i<<1)+1] >= (sdef)->animations[fa[i<<1]]->numFrame) */                            \
-		/*	error_other("Frame out of range");                       */                          \
-		vdp_tiles_load(SPR_TILES(sdef,fa[i<<1],fa[(i<<1)+1]),(index)+i*(fsize),fsize);\
+		vdp_tiles_load(SPR_TILES(sdef,fa[i]),(index)+i*(fsize),fsize);						   \
 	}                                                                                          \
 }
 

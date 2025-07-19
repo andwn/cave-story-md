@@ -41,7 +41,7 @@ void effects_init() {
 	// Load each frame of the small smoke sprite
 	uint32_t stiles[7][32]; // [number of frames][tiles per frame * (tile bytes / sizeof(uint32_t))]
 	for(uint8_t i = 0; i < 7; i++) {
-		memcpy(stiles[i], SPR_TILES(&SPR_Smoke, 0, i), 128);
+		memcpy(stiles[i], SPR_TILES(&SPR_Smoke, i), 128);
 	}
 	// Transfer to VRAM
 	vdp_tiles_load(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE);

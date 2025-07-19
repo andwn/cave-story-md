@@ -13,7 +13,7 @@
 #define STAGE_COUNT 95
 typedef struct {
 	const uint8_t *PXM; // PXM is the layout, each byte is an index of the current tileset
-	const uint8_t *PXE; // PXE is the entity list
+	const uint16_t *PXE; // PXE is the entity list
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const uint16_t *npcPalette;
 	uint8_t tileset; // Which tileset in tileset_info to use
@@ -79,7 +79,7 @@ extern const face_info_def face_info[];
 // Information about each NPC type, indexes are the same as npc.tbl
 typedef struct {
 	// SpriteDef containing tile data, ignored if a sheet is used
-	const SpriteDefinition *sprite;
+	const SpriteDef *sprite;
 	uint8_t sheet; // Sheet ID or NOSHEET
     uint8_t sprite_count; // Size of sprite[0], must be known beforehand
 	uint16_t palette; // Any of the 4 loaded palettes to use for the sprite
@@ -90,7 +90,7 @@ extern const npc_info_def npc_info[];
 
 // Information about each weapon, indexes match <AM+ and ArmsImage
 typedef struct {
-	const SpriteDefinition *sprite; // Sprite to display beneath player
+	const SpriteDef *sprite; // Sprite to display beneath player
 	uint16_t palette;
 	uint8_t experience[3]; // Amount of exp required to level up the weapon
     char padding[7];

@@ -8,6 +8,7 @@ EQU IoData2,    0xA10005   /* 2P data port */
 
     .section .bss
 
+    .align 2
 VAR joystate,       w, 1
 VAR joystate_old,   w, 1
 VAR joytype,        b, 1

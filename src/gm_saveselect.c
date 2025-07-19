@@ -105,7 +105,7 @@ static uint8_t refresh_file(uint8_t index) {
 				memcpy(tileData[i+3], &TS_HudBar[addrHP], 32);
 				fillHP -= 8;
 			}
-			memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*8], 32);
+			memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0)[3*8], 32);
 			uint8_t digit = div10[file.health];
 			if(digit) {
 				memcpy(tileData[1], &TS_Numbers[(digit)*8], 32);
@@ -125,7 +125,7 @@ static uint8_t refresh_file(uint8_t index) {
 			// X tile pos and VRAM index to put the ArmsImage tiles
 			uint16_t x = 24 + i*2;
 			uint16_t tile = TILE_FACEINDEX - 40 + index*20 + i*4;
-			vdp_tiles_load(SPR_TILES(&SPR_ArmsImage, 0, file.weapon[i]), tile, 4);
+			vdp_tiles_load(SPR_TILES(&SPR_ArmsImage, file.weapon[i]), tile, 4);
 			// 4 mappings for ArmsImage icon
 			vdp_map_xy(VDP_PLANE_A, TILE_ATTR(PAL0, 0, 0, 0, tile), x, y + 2);
 			vdp_map_xy(VDP_PLANE_A, TILE_ATTR(PAL0, 0, 0, 0, tile + 2), x + 1, y + 2);

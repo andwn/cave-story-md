@@ -923,7 +923,7 @@ void onspawn_cent_cage(Entity *e) {
 	e->x += pixel_to_sub(8);
 	e->y += pixel_to_sub(16);
 	// When reused in Balcony, things are a bit different
-	if(stageID == 65) {
+	if(g_stage.id == 65) {
 		e->x += pixel_to_sub(8);
 		// Release the allocation
 		TILOC_FREE(e->tiloc, e->framesize);

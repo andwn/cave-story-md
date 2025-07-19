@@ -72,7 +72,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  out_rate  output PCM rate (only used for Z80_DRIVER_PCM driver)\n");
         printf("              By default the default WAV output rate is used.\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -109,7 +109,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     if (!wavToRawEx(fileIn, temp, outRate))
     {
         printf("Error while converting WAV '%s' to PCM format\n", fileIn);
-        return FALSE;
+        return false;
     }
 
     switch(driver)
@@ -133,7 +133,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
             if (!dpcmPack(temp, temp2))
             {
                 printf("Error while compressing '%s' to DPCM format\n", fileIn);
-                return FALSE;
+                return false;
             }
 
             // read data from DPCM file
@@ -145,23 +145,23 @@ static int execute(char *info, FILE *fs, FILE *fh)
     }
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // need to unsign data
     if (unsign)
         unsign8b(data, size);
 
     // EXPORT WAV
-    outWAV(data, size, (driver==DRIVER_2ADPCM)?128:256, fs, fh, id, TRUE);
+    outWAV(data, size, (driver==DRIVER_2ADPCM)?128:256, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
 void outWAV(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

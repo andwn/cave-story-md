@@ -162,13 +162,13 @@ int packTileSet(tileset_* tileset, int *method)
     unsigned int* tiles;
 
     tiles = (unsigned int*) pack((unsigned char*) tileset->tiles, 0, tileset->num * 32, &size, method);
-    if (!tiles) return FALSE;
+    if (!tiles) return false;
 
     tileset->tiles = tiles;
     tileset->packed = *method;
     tileset->packedSize = size;
 
-    return TRUE;
+    return true;
 }
 
 int packMap(tilemap_* map, int *method)
@@ -177,13 +177,13 @@ int packMap(tilemap_* map, int *method)
     unsigned short *data;
 
     data = (unsigned short*) packEx((unsigned char*) map->data, 0, map->w * map->h * 2, 2, &size, method);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     map->data = data;
     map->packed = *method;
     map->packedSize = size;
 
-    return TRUE;
+    return true;
 }
 
 
@@ -287,7 +287,7 @@ int addTile(unsigned int *tile, tileset_ *tileset, int opt, int tileLimit)
     // search if tile already exist
     if (opt)
     {
-         result = getTileIndex(tile, tileset, TRUE);
+         result = getTileIndex(tile, tileset, true);
          // exist --> return it
          if (result != -1) return result;
     }

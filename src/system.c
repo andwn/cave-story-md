@@ -296,7 +296,7 @@ void system_save() {
 	sram_enable();
 	
 	sram_write_long(loc, STR_CSMD);					loc += 4;
-	sram_write_word(loc, stageID); 					loc += 2;
+	sram_write_word(loc, g_stage.id); 					loc += 2;
 	sram_write_word(loc, song_get_playing()); 		loc += 2;
 	sram_write_word(loc, sub_to_block(player.x)); 	loc += 2;
 	sram_write_word(loc, sub_to_block(player.y)); 	loc += 2;

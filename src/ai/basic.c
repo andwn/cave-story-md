@@ -46,7 +46,7 @@ void onspawn_interactive(Entity *e) {
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
 void onspawn_spike(Entity *e) {
-	if(stageID == STAGE_LABYRINTH_M) {
+	if(g_stage.id == STAGE_LABYRINTH_M) {
 		// Disable sprite in Labyrinth M
 		// The map has a brown version overlapping us so it's pointless
 		e->hidden = TRUE;
@@ -91,7 +91,7 @@ void ai_grav(Entity *e) {
 // Outer Wall and Balcony use it as a kill plane when you fall into the void.
 // Hell B3 also apparently had a hidden trigger to warp to the boss too.
 void ai_nothing(Entity *e) {
-	if(stageID == STAGE_HELL_B3 && e->event == 302) {
+	if(g_stage.id == STAGE_HELL_B3 && e->event == 302) {
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -117,7 +117,7 @@ void onspawn_trigger(Entity *e) {
 			e->type = OBJ_TRIGGER_SPECIAL;
             e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags &= ~NPC_OPTION1;
-		} else if(ex >= stageWidth - 1) { // Right OOB
+		} else if(ex >= g_stage.pxm.width - 1) { // Right OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
             e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags |= NPC_OPTION1;
@@ -132,7 +132,7 @@ void onspawn_trigger(Entity *e) {
 			e->type = OBJ_TRIGGER_SPECIAL;
             e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags &= ~NPC_OPTION1;
-		} else if(ey >= stageHeight - 1) { // Bottom OOB
+		} else if(ey >= g_stage.pxm.height - 1) { // Bottom OOB
 			e->type = OBJ_TRIGGER_SPECIAL;
             e->onFrame = npc_info[OBJ_TRIGGER_SPECIAL].onFrame;
 			e->flags |= NPC_OPTION1;
@@ -263,7 +263,7 @@ void ai_teleIn(Entity *e) {
 		case 3: break;
 	}
 	// Force a specific direction
-	switch(stageID) {
+	switch(g_stage.id) {
 		case STAGE_ARTHURS_HOUSE:
 		case STAGE_EGG_CORRIDOR:
 		case STAGE_GRASSTOWN:
@@ -348,7 +348,7 @@ void ai_player(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
-			if(stageID == STAGE_SEAL_CHAMBER_2) e->dir = 1;
+			if(g_stage.id == STAGE_SEAL_CHAMBER_2) e->dir = 1;
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -482,7 +482,8 @@ void ai_water_droplet(Entity *e) {
 	if(e->y_speed < 0x5E0) e->y_speed += 0x20;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
-	e->hidden ^= 1;
+	//e->hidden ^= 1;
+	e->frame = rand() & 3;
 	if (++e->timer > 10) {
 		uint8_t block = stage_get_block_type(sub_to_block(e->x), sub_to_block(e->y));
 		if(block & BLOCK_WATER || (block & BLOCK_SOLID && !(block & BLOCK_SLOPE)))
@@ -718,13 +719,13 @@ void ai_scroll_ctrl(Entity *e) {
 			// of the target. It's too late to change how my engine works to really handle
 			// that, so here are some case-by-case hacks to fix it
 			uint16_t target = e->id;
-			if(stageID == STAGE_SEAL_CHAMBER) {
+			if(g_stage.id == STAGE_SEAL_CHAMBER) {
 				if(bossEntity) {
 					target = 0;
 				} else {
 					target = 900;
 				}
-			} else if(stageID == STAGE_LAST_CAVE_2) {
+			} else if(g_stage.id == STAGE_LAST_CAVE_2) {
 				target = 250;
 			}
 			if (target) {
@@ -755,10 +756,10 @@ void ai_scroll_ctrl(Entity *e) {
 // Makes the screen constantly shake
 void ai_quake(Entity *e) {
 	(void)(e); // So we don't trip unused parameter warning
-	if(!cfg_hellquake && (stageID == STAGE_HELL_B1 || 
-						  stageID == STAGE_HELL_B2 || 
-						  stageID == STAGE_HELL_B3 || 
-						  stageID == STAGE_SEAL_CHAMBER)) {
+	if(!cfg_hellquake && (g_stage.id == STAGE_HELL_B1 || 
+						  g_stage.id == STAGE_HELL_B2 || 
+						  g_stage.id == STAGE_HELL_B3 || 
+						  g_stage.id == STAGE_SEAL_CHAMBER)) {
 		return;
 	}
 	camera_shake(10);
@@ -782,8 +783,8 @@ void onspawn_lightning(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->hit_box = (bounding_box) {{ 6, 22*8, 6, 8 }};
 	e->display_box = (bounding_box) {{ 8, 23*8, 8, 8 }};
-	if(stageID != STAGE_SEAL_CHAMBER) e->x -= pixel_to_sub(32);
-	if(stageID == STAGE_GRASSTOWN_GUM) e->x -= pixel_to_sub(40); // Balrog is a bit farther away
+	if(g_stage.id != STAGE_SEAL_CHAMBER) e->x -= pixel_to_sub(32);
+	if(g_stage.id == STAGE_GRASSTOWN_GUM) e->x -= pixel_to_sub(40); // Balrog is a bit farther away
 	SNAP_TO_GROUND(e);
 }
 

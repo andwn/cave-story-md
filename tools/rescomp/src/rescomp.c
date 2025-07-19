@@ -341,12 +341,12 @@ static int execute(char *info, FILE *fs, FILE *fh)
 
     // pass empty line
     if (sscanf(info, "%s", type) < 1)
-        return TRUE;
+        return true;
     // pass comment
     if (!strncasecmp(type, "//", 2))
-        return TRUE;
+        return true;
     if (!strncasecmp(type, "#", 1))
-        return TRUE;
+        return true;
 
     plugin = plugins;
 
@@ -378,5 +378,5 @@ static int execute(char *info, FILE *fs, FILE *fh)
     printf("  PCM\n");
     printf("  BIN\n");
 
-    return FALSE;
+    return false;
 }

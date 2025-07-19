@@ -259,7 +259,7 @@ void ai_ironh_brick(Entity *e) {
 	
 	
 	if ((e->x_speed < 0 && (e->x < -0x2000)) ||
-		(e->x > pixel_to_sub(stageWidth * 16))) {
+		(e->x > pixel_to_sub(g_stage.pxm.width * 16))) {
 		e->state = STATE_DELETE;
 	}
 	e->x += e->x_speed;

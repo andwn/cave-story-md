@@ -689,7 +689,7 @@ void ai_ballos_skull(Entity *e) {
 		{
 			e->y_speed += SPEED_8(0x40);
 			
-			if (e->y >= block_to_sub(stageHeight)) {
+			if (e->y >= block_to_sub(g_stage.pxm.height)) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -699,7 +699,7 @@ void ai_ballos_skull(Entity *e) {
 
 void ai_ballos_spikes(Entity *e) {
 	uint16_t x = sub_to_block(e->x) & ~1; // Even number
-	if(x >= stageWidth - 2) {
+	if(x >= g_stage.pxm.width - 2) {
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -767,7 +767,7 @@ void ai_green_devil(Entity *e) {
 	if(!e->dir) {
 		if(e->x < 0) e->state = STATE_DELETE;
 	} else {
-		if(e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
+		if(e->x > block_to_sub(g_stage.pxm.width)) e->state = STATE_DELETE;
 	}
 }
 
@@ -882,7 +882,7 @@ void ai_bute_archer_red(Entity *e) {
 		{
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
 			ACCEL_X(-SPEED_8(0x20));
-			if(e->x < 0 || e->x > block_to_sub(stageWidth)) e->state = STATE_DELETE;
+			if(e->x < 0 || e->x > block_to_sub(g_stage.pxm.width)) e->state = STATE_DELETE;
 		}
 		break;
 	}

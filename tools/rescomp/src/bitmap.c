@@ -57,7 +57,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("               1 / APLIB       = aplib library (good compression ratio but slow)\n");
         printf("               2 / FAST / LZ4W = custom lz4 compression (average compression ratio but fast)\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -66,14 +66,14 @@ static int execute(char *info, FILE *fs, FILE *fh)
     packed = getCompression(packedStr);
 
     // retrieve basic infos about the image
-    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return FALSE;
+    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return false;
 
     // adjust bitmap size on pixel pair
     w = ((w + 1) / 2) * 2;
 
     // get image data (always 8bpp)
     data = Img_getData(fileIn, &isize, 2, 1);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // find max color index
     maxIndex = getMaxIndex(data, isize);
@@ -83,24 +83,24 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("Error: Image %s use color index >= 16\n", fileIn);
         printf("BITMAP resource require image with a maximum of 16 colors.\n");
         printf("Use 4bpp image instead if you are unsure.\n");
-        return FALSE;
+        return false;
     }
 
     // convert to 4BPP
     data = to4bppAndFree(data, isize);
     isize /= 2;
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // pack data
     if (packed)
     {
         data = pack(data, 0, isize, &isize, &packed);
-        if (!data) return FALSE;
+        if (!data) return false;
     }
 
     // get palette
     palette = Img_getPalette(fileIn, &psize);
-    if (!palette) return FALSE;
+    if (!palette) return false;
 
     // we keep 16 colors max
     psize = MIN(16, psize);
@@ -108,12 +108,12 @@ static int execute(char *info, FILE *fs, FILE *fh)
     // EXPORT PALETTE
     strcpy(temp, id);
     strcat(temp, "_palette");
-    outPalette(palette, 0, psize, fs, fh, temp, FALSE);
+    outPalette(palette, 0, psize, fs, fh, temp, false);
 
     // EXPORT BITMAP
-    outBitmap(data, packed, w, h, isize, fs, fh, id, TRUE);
+    outBitmap(data, packed, w, h, isize, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
@@ -125,7 +125,7 @@ void outBitmap(unsigned char* bitmap, int packed, int w, int h, int size, FILE* 
     strcpy(temp, id);
     strcat(temp, "_image");
     // declare
-    decl(fs, fh, NULL, temp, 2, FALSE);
+    decl(fs, fh, NULL, temp, 2, false);
     // output data
     outS(bitmap, 0, size, fs, 1);
     fprintf(fs, "\n");

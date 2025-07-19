@@ -37,6 +37,7 @@ MDLOADER := bin/mdloader
 HPPGEN   := bin/hppgen
 PATCHROM := bin/patchrom
 TSCOMP   := bin/tscomp
+LITTLEBIG:= bin/littlebig
 
 BUILD_DIR := build
 TARGET    := doukutsu
@@ -61,6 +62,14 @@ Z80FLAGS = -isrc/xgm
 # Stage layout files to compress
 PXMS   = $(wildcard res/Stage/*.pxm)
 CPXMS  = $(addprefix $(BUILD_DIR)/,$(PXMS:.pxm=.cpxm))
+
+# Entity list files to convert
+PXES   = $(wildcard res/Stage/*.pxe)
+CPXES  = $(addprefix $(BUILD_DIR)/,$(PXES:.pxe=.cpxe))
+
+# Tile attribute files to compress
+PXAS   = $(wildcard res/Stage/*.pxa)
+CPXAS  = $(addprefix $(BUILD_DIR)/,$(PXAS:.pxa=.cpxa))
 
 # Tilesets to convert without compression
 TSETS  = $(wildcard res/tiles/*.png)
@@ -258,10 +267,24 @@ $(MDLOADER): | bin
 $(HPPGEN): | bin
 	$(HOSTCC) $(WARNINGS) tools/hppgen.c -o $@
 
+$(LITTLEBIG): | bin
+	$(HOSTCC) $(WARNINGS) tools/littlebig.c -o $@
+
 
 # Compression of stage layouts
-$(BUILD_DIR)/%.cpxm: %.pxm | $(SALVADOR) $$(@D)/
+$(BUILD_DIR)/%.cpxm: %.pxm | $(LITTLEBIG) $(SALVADOR) $$(@D)/
+	$(LITTLEBIG) "$<" "$(BUILD_DIR)/$*.ckm"
+	$(SALVADOR) -c "$(BUILD_DIR)/$*.ckm" "$@"
+
+# Compression of stage object lists
+$(BUILD_DIR)/%.cpxe: %.pxe | $(LITTLEBIG) $(SALVADOR) $$(@D)/
+	$(LITTLEBIG) "$<" "$(BUILD_DIR)/$*.cke"
+	$(SALVADOR) -c "$(BUILD_DIR)/$*.cke" "$@"
+
+# Compression of tile attribute data
+$(BUILD_DIR)/%.cpxa: %.pxa | $(SALVADOR) $$(@D)/
 	$(SALVADOR) -c "$<" "$@"
+
 
 $(BUILD_DIR)/%.pat: %.mdt | $(MDTILER) $$(@D)/
 	$(MDTILER) -b "$<"
@@ -364,3 +387,4 @@ clean:
 	-rm -r bin/
 	-rm -r asmout/
 	-rm assets.d
+	-rm $(TARGET)-*.gen

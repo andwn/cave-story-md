@@ -44,7 +44,7 @@ void draw_weapons(uint8_t y) {
         // X tile pos and VRAM index to put the ArmsImage tiles
         uint16_t x = 4 + i*6;
         uint16_t index = TILE_FACEINDEX + 16 + i*4;
-        vdp_tiles_load(SPR_TILES(&SPR_ArmsImageM, 0, w->type), index, 4);
+        vdp_tiles_load(SPR_TILES(&SPR_ArmsImageM, w->type), index, 4);
         // 4 mappings for ArmsImage icon
         vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), x, y);
         vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index + 2), x + 1, y);
@@ -82,14 +82,14 @@ void draw_item(uint8_t sel) {
     uint16_t item = playerInventory[sel];
     if(item > 0) {
         // Wonky workaround to use either PAL_Sym or PAL_Main
-        const SpriteDefinition *sprDef = &SPR_ItemImage;
+        const SpriteDef *sprDef = &SPR_ItemImage;
         uint16_t pal = PAL1;
         if(ITEM_PAL[item]) {
             sprDef = &SPR_ItemImageG;
             pal = PAL0;
         }
         // Clobber the entity/bullet shared sheets
-        vdp_tiles_load(SPR_TILES(sprDef, item, 0), TILE_SHEETINDEX+sel*6, 6);
+        vdp_tiles_load(SPR_TILES(sprDef, item), TILE_SHEETINDEX+sel*6, 6);
         //SHEET_LOAD(sprDef, 1, 6, TILE_SHEETINDEX+held*6, TRUE, item,0);
         itemSprite[sel] = (Sprite){
                 .x = 36 + (sel % 6) * 32 + 128,
@@ -212,7 +212,7 @@ uint8_t update_pause() {
             sound_play(SND_SWITCH_WEAPON, 5);
             if(weapon_info[playerWeapon[currentWeapon].type].sprite) {
                 TILES_QUEUE(
-                        SPR_TILES(weapon_info[playerWeapon[currentWeapon].type].sprite,0,0),
+                        SPR_TILES(weapon_info[playerWeapon[currentWeapon].type].sprite,0),
                         TILE_WEAPONINDEX,6);
             }
         }
@@ -233,7 +233,7 @@ uint8_t update_pause() {
         // Reload shared sheets we clobbered
         //disable_ints();
         //z80_pause_fast();
-        sheets_load_stage(stageID, TRUE, FALSE);
+        sheets_load_stage(g_stage.id, TRUE, FALSE);
         //z80_resume();
         //enable_ints();
 
@@ -241,7 +241,7 @@ uint8_t update_pause() {
         aftervsync();
 
         // Reload TSC Events for the current stage
-        tsc_load_stage(stageID);
+        tsc_load_stage(g_stage.id);
         // Put the sprites for player/entities/HUD back
         player_unpause();
         player_draw();
@@ -409,8 +409,8 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 void do_map() {
     vdp_sprites_clear();
 
-    uint16_t mapx = (ScreenHalfW - stageWidth / 2) / 8;
-    uint16_t mapy = (ScreenHalfH - stageHeight / 2) / 8;
+    uint16_t mapx = (ScreenHalfW - g_stage.pxm.width / 2) / 8;
+    uint16_t mapy = (ScreenHalfH - g_stage.pxm.height / 2) / 8;
 
     uint16_t index = TILE_SHEETINDEX;
 
@@ -431,8 +431,8 @@ void do_map() {
     //z80_resume();
     //enable_ints();
 
-    for(uint16_t y = 0; y < ((stageHeight+2) / 8) + ((stageHeight) % 8 > 0); y++) {
-        for(uint16_t x = 0; x < ((stageWidth+2) / 8) + ((stageWidth) % 8 > 0); x++) {
+    for(uint16_t y = 0; y < ((g_stage.pxm.height+2) / 8) + ((g_stage.pxm.height) % 8 > 0); y++) {
+        for(uint16_t x = 0; x < ((g_stage.pxm.width+2) / 8) + ((g_stage.pxm.width) % 8 > 0); x++) {
             //disable_ints();
             //z80_pause_fast();
             uint8_t result = gen_maptile(x*8, y*8, index);
@@ -477,9 +477,9 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
 
     uint32_t tile[8];
     for(uint16_t y = 0; y < 8; y++) {
-        if(by+y == 0 || by+y+1 == stageHeight) { // Top / Bottom borders
+        if(by+y == 0 || by+y+1 == g_stage.pxm.height) { // Top / Bottom borders
             tile[y] = blankLine;
-        } else if(by+y+1 > stageHeight) { // Below bottom border
+        } else if(by+y+1 > g_stage.pxm.height) { // Below bottom border
             tile[y] = paused ? 0x22222222 : 0x00000000;
         } else {
             tile[y] = 0;
@@ -487,9 +487,9 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
             for(uint16_t x = 0; x < 8; x++) {
                 if(bx+x == 0) { // Left border
                     tile[y] |= 0x10000000LU;
-                } else if(bx+x+1 == stageWidth) { // Right border
+                } else if(bx+x+1 == g_stage.pxm.width) { // Right border
                     tile[y] |= 1LU << ((7 - x) << 2);
-                } else if(bx+x+1 > stageWidth) { // After right border
+                } else if(bx+x+1 > g_stage.pxm.width) { // After right border
                     tile[y] |= (paused ? 2LU : 0LU) << ((7 - x) << 2);
                 } else {
                     uint16_t stg_x = bx + x - 1;

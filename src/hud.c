@@ -161,7 +161,7 @@ void hud_refresh_health() {
 		fillHP -= 8;
 	}
 	// Heart icon and two digits displaying current health
-	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0, 0)[3*TSIZE], TILE_SIZE);
+	memcpy(tileData[0], &SPR_TILES(&SPR_Hud2, 0)[3*TSIZE], TILE_SIZE);
 	uint8_t digit = div10[hudHealth];
 	if(digit) {
 		memcpy(tileData[1], &TS_Numbers[(digit)*TSIZE], TILE_SIZE);
@@ -262,8 +262,8 @@ void hud_refresh_energy(uint8_t hard) {
 		}
 	}
 	// "Lv." and 1 digit for the level
-	memcpy(tileData[XP_BAR+0], &SPR_TILES(&SPR_Hud2, 0, 0)[2*TSIZE], TILE_SIZE);
-	memcpy(tileData[XP_BAR+1], &SPR_TILES(&SPR_Hud2, 0, 0)[6*TSIZE], TILE_SIZE);
+	memcpy(tileData[XP_BAR+0], &SPR_TILES(&SPR_Hud2, 0)[2*TSIZE], TILE_SIZE);
+	memcpy(tileData[XP_BAR+1], &SPR_TILES(&SPR_Hud2, 0)[6*TSIZE], TILE_SIZE);
 	memcpy(tileData[XP_BAR+2], &TS_Numbers[hudLevel*TSIZE], TILE_SIZE);
 	// Queue DMA transfer for level/energy display
 	for(uint8_t i = 0; i < 8; i++)
@@ -273,8 +273,8 @@ void hud_refresh_energy(uint8_t hard) {
 void hud_refresh_weapon() {
 	// Weapon switched
 	hudWeapon = playerWeapon[currentWeapon].type;
-	memcpy(tileData[WPN+0], SPR_TILES(&SPR_ArmsImage, 0, hudWeapon), TILE_SIZE*2);
-	memcpy(tileData[WPN+2], &SPR_TILES(&SPR_ArmsImage, 0, hudWeapon)[TSIZE*2], TILE_SIZE*2);
+	memcpy(tileData[WPN+0], SPR_TILES(&SPR_ArmsImage, hudWeapon), TILE_SIZE*2);
+	memcpy(tileData[WPN+2], &SPR_TILES(&SPR_ArmsImage, hudWeapon)[TSIZE*2], TILE_SIZE*2);
 	// Queue DMA transfer for icon
     dma_queue(DmaVRAM, (uint32_t)tileData[WPN+0], (TILE_HUDINDEX)*TILE_SIZE, 32, 2);
     dma_queue(DmaVRAM, (uint32_t)tileData[WPN+2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
@@ -297,7 +297,7 @@ void hud_refresh_ammo() {
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[AMMO+0], BlankData, TILE_SIZE);
 		memcpy(tileData[AMMO+1], BlankData, TILE_SIZE);
-		memcpy(tileData[AMMO+2], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
+		memcpy(tileData[AMMO+2], &SPR_TILES(&SPR_Hud2,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for ammo
 	for(uint8_t i = 0; i < 4; i++)
@@ -307,7 +307,7 @@ void hud_refresh_ammo() {
 void hud_refresh_maxammo() {
 	// Bottom half of ammo display
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
-	memcpy(tileData[AMMO+4], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE);
+	memcpy(tileData[AMMO+4], &SPR_TILES(&SPR_Hud2,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE);
 	if(hudMaxAmmo > 0) {
 		uint8_t ammoTemp = hudMaxAmmo;
 		if(ammoTemp >= 100) {
@@ -320,7 +320,7 @@ void hud_refresh_maxammo() {
 		memcpy(tileData[AMMO+7], &TS_Numbers[mod10[ammoTemp]*TSIZE], TILE_SIZE);
 	} else { // Weapon doesn't use ammo
 		memcpy(tileData[AMMO+5], BlankData, TILE_SIZE);
-		memcpy(tileData[AMMO+6], &SPR_TILES(&SPR_Hud2,0,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
+		memcpy(tileData[AMMO+6], &SPR_TILES(&SPR_Hud2,0)[SPR_TILE(6, 0)*TSIZE], TILE_SIZE*2);
 	}
 	// Queue DMA transfer for max ammo
 	for(uint8_t i = 0; i < 4; i++)

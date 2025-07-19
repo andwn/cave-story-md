@@ -256,7 +256,7 @@ void ai_boss_doctor(Entity *e) {
 
 // wave shot
 void ai_doctor_shot(Entity *e) {
-	if ((e->x < 0) || e->x > ((int32_t)stageWidth) << 13) {
+	if ((e->x < 0) || e->x > ((int32_t)g_stage.pxm.width) << 13) {
 		e->state = STATE_DELETE;
 		return;
 	}

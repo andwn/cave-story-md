@@ -6,7 +6,7 @@
 
 extern Plugin sprite;
 
-void outCollision(collision_* collision, FILE* fs, FILE* fh, char* id, int global);
+//void outCollision(collision_* collision, FILE* fs, FILE* fh, char* id, int global);
 void outFrameSprite(frameSprite_* frameSprite, FILE* fs, FILE* fh, char* id, int global);
 void outAnimFrame(animFrame_* animFrame, FILE* fs, FILE* fh, char* id, int global);
 void outAnimation(animation_* animation, FILE* fs, FILE* fh, char* id, int global);

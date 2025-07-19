@@ -29,7 +29,7 @@
 
 #define PLAYER_SPRITE_TILES_QUEUE() ({ \
 	uint8_t f = player.frame + ((playerEquipment & EQUIP_MIMIMASK) ? 10 : 0); \
-	TILES_QUEUE(SPR_TILES(&SPR_Quote,0,f),TILE_PLAYERINDEX,4); \
+	TILES_QUEUE(SPR_TILES(&SPR_Quote,f),TILE_PLAYERINDEX,4); \
 })
 
 uint8_t currentWeapon;
@@ -119,7 +119,7 @@ void player_init() {
 	mapNameTTL = 0;
 	missileEmptyFlag = FALSE;
 	// Booster trail sprite tiles
-	vdp_tiles_load(SPR_TILES(&SPR_Boost, 0, 0), 12, 4);
+	vdp_tiles_load(SPR_TILES(&SPR_Boost, 0), 12, 4);
 	// AIR Sprite
 	//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Air : &SPR_Air;
 	//vdp_tiles_load(SPR_TILES(spr, 0, 0), TILE_AIRINDEX, 4);
@@ -133,7 +133,7 @@ void player_init() {
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
-	vdp_tiles_load(SPR_TILES(&SPR_Bubble, 0, 0), TILE_AIRTANKINDEX, 9);
+	vdp_tiles_load(SPR_TILES(&SPR_Bubble, 0), TILE_AIRTANKINDEX, 9);
 	airTankSprite = (Sprite) {
 		.size = SPRITE_SIZE(3,3),
 		.attr = TILE_ATTR(PAL0,0,0,0,TILE_AIRTANKINDEX)
@@ -199,7 +199,7 @@ void player_update() {
 		// As such we check again whether the booster is enabled.
 		uint16_t px = player.x_next >> CSF, py = player.y_next >> CSF;
 		uint16_t bx = px >> 4, by = py >> 4;
-		if(playerBoostState == BOOST_OFF && bx > 0 && bx < stageWidth - 1 && by > 0 && by < stageHeight - 1) {
+		if(playerBoostState == BOOST_OFF && bx > 0 && bx < g_stage.pxm.width - 1 && by > 0 && by < g_stage.pxm.height - 1) {
 			uint8_t blockl_next, blocku_next, blockr_next, blockd_next;
 			// Ok so, making the collision with ceiling <= 0 pushes the player out of
 			// the ceiling during the opening scene with Kazuma on the computer.
@@ -299,7 +299,7 @@ void player_update() {
 			// Ballos creates in the last phase merge with the stage once
 			// they rise fully. They should only do 2 damage though, so I
 			// added this check.
-			if(!tscState) player_inflict_damage((stageID == STAGE_SEAL_CHAMBER) ? 2 : 10);
+			if(!tscState) player_inflict_damage((g_stage.id == STAGE_SEAL_CHAMBER) ? 2 : 10);
 		}
 		if(player.health == 0) return;
 	} else {
@@ -500,7 +500,7 @@ static void player_update_walk() {
 	}
 	// 2 kinds of water, actual water blocks & background water in Core
 	if((blk(player.x, 0, player.y, 0) & BLOCK_WATER) ||
-			(stageBackgroundType == 4 && water_entity && player.y > water_entity->y)) {
+			(g_stage.back_type == 4 && water_entity && player.y > water_entity->y)) {
 		if(!player.underwater) {
 			player.underwater = TRUE;
 			sound_play(SND_SPLASH, 5);
@@ -803,9 +803,9 @@ static void player_update_booster() {
 
 static uint16_t GetNextChar(uint8_t index) {
 	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
-	uint16_t chr = names[stageID * 16 + index];
+	uint16_t chr = names[g_stage.id * 16 + index];
 	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (names[stageID * 16 + index + 1] - 0x20) + 0x100;
+		return (chr - 0xE0) * 0x60 + (names[g_stage.id * 16 + index + 1] - 0x20) + 0x100;
 	} else {
 		return chr;
 	}
@@ -846,16 +846,16 @@ static void show_map_jname(uint8_t ttl) {
 
 void player_show_map_name(uint8_t ttl) {
 	// Boss bar overwrites the name
-	if(stageID == STAGE_WATERWAY_BOSS) return;
+	if(g_stage.id == STAGE_WATERWAY_BOSS) return;
 	// Show kanji name
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
         show_map_jname(ttl);
         return;
     }
 	// English name
-    const uint8_t *str = (const uint8_t*) stage_info[stageID].name;
+    const uint8_t *str = (const uint8_t*) stage_info[g_stage.id].name;
 	if(cfg_language > 0) {
-		str = ((const uint8_t*)STAGE_NAMES) + (stageID << 5);
+		str = ((const uint8_t*)STAGE_NAMES) + (g_stage.id << 5);
 	}
 
 	const uint32_t *font = cfg_language >= LANG_RU ? UFTC_SysFontRU : UFTC_SysFont;
@@ -1116,7 +1116,7 @@ static void player_prev_weapon() {
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0),
 					TILE_WEAPONINDEX,6);
 			}
             if(playerWeapon[i].type == WEAPON_SPUR) {
@@ -1135,7 +1135,7 @@ static void player_next_weapon() {
 		if(playerWeapon[i].type > 0) {
 			currentWeapon = i;
 			if(weapon_info[playerWeapon[i].type].sprite) {
-			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0,0),
+			    TILES_QUEUE(SPR_TILES(weapon_info[playerWeapon[i].type].sprite,0),
 					TILE_WEAPONINDEX,6);
 			}
             if(playerWeapon[i].type == WEAPON_SPUR) {
@@ -1170,7 +1170,7 @@ void player_give_weapon(uint8_t id, uint8_t ammo) {
 			// polar star, our first weapon, that is what happens. So make sure the
 			// sprite tiles get loaded when we pick it up.
 			if(w->type == WEAPON_POLARSTAR) {
-				TILES_QUEUE(SPR_TILES(weapon_info[WEAPON_POLARSTAR].sprite,0,0),
+				TILES_QUEUE(SPR_TILES(weapon_info[WEAPON_POLARSTAR].sprite,0),
 					TILE_WEAPONINDEX,6);
 			}
             //disable_ints();
@@ -1212,7 +1212,7 @@ void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 	if(w) {
 		if(id_take == playerWeapon[currentWeapon].type) {
 			if(weapon_info[w->type].sprite) {
-			TILES_QUEUE(SPR_TILES(weapon_info[w->type].sprite,0,0),
+			TILES_QUEUE(SPR_TILES(weapon_info[w->type].sprite,0),
 					TILE_WEAPONINDEX,6);
 			}
 		}

@@ -91,7 +91,8 @@ void credits_main() {
 	// Reset background and scrolling
 	vdp_color(0, 0x200); // Dark blue background
 	vdp_set_backcolor(0);
-	stageBackground = stageBackgroundType = 0;
+	g_stage.back_id = 0;
+	g_stage.back_type = 0;
 	vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 	vdp_hscroll(VDP_PLANE_B, 0);
 	vdp_vscroll(VDP_PLANE_B, 0);
@@ -158,7 +159,7 @@ void credits_main() {
 									1,0,0,TILE_ICONINDEX + i * 9)
 						};
 						TILES_QUEUE(SPR_TILES(&SPR_Casts, 
-								credits_info[pc].icon.id, 0), TILE_ICONINDEX + i * 9, 9);
+								credits_info[pc].icon.id), TILE_ICONINDEX + i * 9, 9);
 						break;
 					}
 					break;
@@ -189,7 +190,7 @@ void credits_main() {
 				case LABEL: /* Ignore */ break;
 				case PALETTE: /* Unused */ break;
 				case LOADPXE:
-                    stageID = 0;
+                    g_stage.id = 0;
                     stage_load_entities();
                     break;
 				// The End

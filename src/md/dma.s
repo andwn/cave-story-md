@@ -14,6 +14,7 @@ EQU VSRAM_DMA_CMD,   0x40000090
 
     .section .bss
 
+    .align 2
 VAR dmabuf,     w, 8*48
 VAR dmabuf_end, l, 1
 

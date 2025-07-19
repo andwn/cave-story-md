@@ -154,7 +154,7 @@ void onspawn_heavypress(Entity *e) {
 }
 
 void ai_heavypress(Entity *e) {
-	if(stageID == STAGE_HELL_PASSAGEWAY_2) run_passageway(e);
+	if(g_stage.id == STAGE_HELL_PASSAGEWAY_2) run_passageway(e);
 	else if(e->state >= 500) run_defeated(e);
 	else {
 		switch(e->state) {

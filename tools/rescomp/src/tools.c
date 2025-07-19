@@ -26,6 +26,9 @@
 static int appack(char* fin, char* fout);
 static int lz4wpack(char* fin, char* fout);
 
+static int uftcpack(char* fin, char* fout);
+static int zx0pack(char* fin, char* fout);
+
 unsigned int swapNibble32(unsigned int value)
 {
     return swapNibble16(value >> 16) | (swapNibble16(value) << 16);
@@ -84,16 +87,16 @@ void strreplace(char* text, char chr, char repl_chr)
 //
 //    if (len > 0)
 //    {
-//        if (path[0] == FILE_SEPARATOR_CHAR) return TRUE;
+//        if (path[0] == FILE_SEPARATOR_CHAR) return true;
 //
 //        if (len > 2)
 //        {
 //            // windows
-//            if ((path[1] == ':') && (path[2] == FILE_SEPARATOR_CHAR))  return TRUE;
+//            if ((path[1] == ':') && (path[2] == FILE_SEPARATOR_CHAR))  return true;
 //        }
 //    }
 //
-//    return FALSE;
+//    return false;
 //}
 
 int isAbsolutePath(char* path)
@@ -103,23 +106,23 @@ int isAbsolutePath(char* path)
     if (len > 0)
     {
         // unix
-        if (path[0] == '/') return TRUE;
+        if (path[0] == '/') return true;
         // windows
-        if (path[0] == '\\') return TRUE;
+        if (path[0] == '\\') return true;
 
         if (len > 2)
         {
             // windows
             if (path[1] == ':')
             {
-                if (path[2] == '\\')  return TRUE;
+                if (path[2] == '\\')  return true;
 
-                if (path[2] == '/')  return TRUE;
+                if (path[2] == '/')  return true;
             }
         }
     }
 
-    return FALSE;
+    return false;
 }
 
 //char* getDirectorySystem(char* path)
@@ -292,7 +295,7 @@ unsigned char *readFile(char *fileName, int *size)
 
 int writeFile(char* filename, unsigned char* data, int size)
 {
-    return out(data, 0, size, 1, FALSE, filename);
+    return out(data, 0, size, 1, false, filename);
 }
 
 void unsign8b(unsigned char* data, int size)
@@ -398,7 +401,7 @@ int out(unsigned char* data, int inOffset, int size, int intSize, int swap, char
         printf("Error: Couldn't create output file %s\n", out);
 
         // error
-        return FALSE;
+        return false;
     }
 
     result = outEx(data, inOffset, size, intSize, swap, fout, 0);
@@ -442,8 +445,8 @@ int outEx(unsigned char* data, int inOffset, int size, int intSize, int swap, FI
         remain -= l;
     }
 
-    if (remain != 0) return FALSE;
-    else return TRUE;
+    if (remain != 0) return false;
+    else return true;
 }
 
 
@@ -545,6 +548,8 @@ int getCompression(char *str)
     if (!strcmp(upstr, "NONE") || !strcmp(upstr, "0")) return PACK_NONE;
     if (!strcmp(upstr, "APLIB") || !strcmp(upstr, "1")) return PACK_APLIB;
     if (!strcmp(upstr, "LZ4W") || !strcmp(upstr, "2") || !strcmp(upstr, "FAST")) return PACK_LZ4W;
+    if (!strcmp(upstr, "UFTC") || !strcmp(upstr, "3")) return PACK_UFTC;
+    if (!strcmp(upstr, "ZX0") || !strcmp(upstr, "4")) return PACK_ZX0;
 
     // not recognized --> use AUTO
     if (strlen(upstr) > 0) return PACK_AUTO;
@@ -571,8 +576,13 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
     results[0] = data;
     sizes[0] = size;
 
+    char tmpfn_in[L_tmpnam];
+    char tmpfn_out[L_tmpnam];
+    tmpnam(tmpfn_in);
+    tmpnam(tmpfn_out);
+
     // create out file from data input
-    if (!out(data, inOffset, size, intSize, (intSize > 1)?TRUE:FALSE, "pack.in"))
+    if (!out(data, inOffset, size, intSize, (intSize > 1)?true:false, tmpfn_in))
     {
         // error
         *outSize = 0;
@@ -580,7 +590,7 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
     }
 
     // get source data arranged if needed
-    src = in("pack.in", outSize);
+    src = in(tmpfn_in, outSize);
     if (src == NULL)
     {
         *outSize = 0;
@@ -601,13 +611,23 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
             switch(i)
             {
                 case PACK_APLIB:
-                    if (appack("pack.in", "pack.out"))
-                        results[PACK_APLIB] = in("pack.out", &sizes[PACK_APLIB]);
+                    if (appack(tmpfn_in, tmpfn_out))
+                        results[PACK_APLIB] = in(tmpfn_out, &sizes[PACK_APLIB]);
                     break;
 
                 case PACK_LZ4W:
-                    if (lz4wpack("pack.in", "pack.out"))
-                        results[PACK_LZ4W] = in("pack.out", &sizes[PACK_LZ4W]);
+                    if (lz4wpack(tmpfn_in, tmpfn_out))
+                        results[PACK_LZ4W] = in(tmpfn_out, &sizes[PACK_LZ4W]);
+                    break;
+
+                case PACK_UFTC:
+                    if (uftcpack(tmpfn_in, tmpfn_out))
+                        results[PACK_UFTC] = in(tmpfn_out, &sizes[PACK_UFTC]);
+                    break;
+
+                case PACK_ZX0:
+                    if (zx0pack(tmpfn_in, tmpfn_out))
+                        results[PACK_ZX0] = in(tmpfn_out, &sizes[PACK_ZX0]);
                     break;
             }
         }
@@ -621,7 +641,7 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
     {
         if (results[i] != NULL)
         {
-            if (sizes[i] < minSize)
+            if (sizes[i] <= minSize)
             {
                 minSize = sizes[i];
                 result = results[i];
@@ -638,6 +658,14 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
 
         case PACK_LZ4W:
             printf("Packed with LZ4W, ");
+            break;
+
+        case PACK_UFTC:
+            printf("Packed with UFTC, ");
+            break;
+
+        case PACK_ZX0:
+            printf("Packed with ZX0, ");
             break;
 
         default:
@@ -657,8 +685,8 @@ unsigned char *packEx(unsigned char* data, int inOffset, int size, int intSize, 
     }
 
     // clean
-    remove("pack.in");
-    remove("pack.out");
+    remove(tmpfn_in);
+    remove(tmpfn_out);
 
     return result;
 }
@@ -691,9 +719,9 @@ int maccer(char* fin, char* fout)
     fclose(f);
 
     // file exist --> ok
-    if (f != NULL) return TRUE;
+    if (f != NULL) return true;
 
-    return FALSE;
+    return false;
 }
 
 int tfmcom(char* fin, char* fout)
@@ -773,9 +801,9 @@ int tfmcom(char* fin, char* fout)
     fclose(f);
 
     // file exist --> ok
-    if (f != NULL) return TRUE;
+    if (f != NULL) return true;
 
-    return FALSE;
+    return false;
 }
 
 
@@ -808,9 +836,9 @@ static int appack(char* fin, char* fout)
     fclose(f);
 
     // file exist --> ok
-    if (f != NULL) return TRUE;
+    if (f != NULL) return true;
 
-    return FALSE;
+    return false;
 }
 
 static int lz4wpack(char* fin, char* fout)
@@ -845,7 +873,71 @@ static int lz4wpack(char* fin, char* fout)
     fclose(f);
 
     // file exist --> ok
-    if (f != NULL) return TRUE;
+    if (f != NULL) return true;
 
-    return FALSE;
+    return false;
+}
+
+static int uftcpack(char* fin, char* fout) {
+    char cmd[MAX_PATH_LEN * 2];
+    FILE *f;
+
+    // better to remove output file for appack
+    remove(fout);
+
+    // command
+//    adjustPathSystem(currentDirSystem, "appack", cmd);
+    adjustPath(currentDir, "uftc", cmd);
+
+    // arguments
+    strcat(cmd, " -c \"");
+    strcat(cmd, fin);
+    strcat(cmd, "\" \"");
+    strcat(cmd, fout);
+    strcat(cmd, "\"");
+
+    printf("Executing %s\n", cmd);
+
+    system(cmd);
+
+    // we test for the out file existence
+    f = fopen(fout, "rb");
+    fclose(f);
+
+    // file exist --> ok
+    if (f != NULL) return true;
+
+    return false;
+}
+
+static int zx0pack(char* fin, char* fout) {
+    char cmd[MAX_PATH_LEN * 2];
+    FILE *f;
+
+    // better to remove output file for appack
+    remove(fout);
+
+    // command
+//    adjustPathSystem(currentDirSystem, "appack", cmd);
+    adjustPath(currentDir, "salvador", cmd);
+
+    // arguments
+    strcat(cmd, " -c \"");
+    strcat(cmd, fin);
+    strcat(cmd, "\" \"");
+    strcat(cmd, fout);
+    strcat(cmd, "\"");
+
+    printf("Executing %s\n", cmd);
+
+    system(cmd);
+
+    // we test for the out file existence
+    f = fopen(fout, "rb");
+    fclose(f);
+
+    // file exist --> ok
+    if (f != NULL) return true;
+
+    return false;
 }

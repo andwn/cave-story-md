@@ -227,7 +227,7 @@ void ai_hoppy(Entity *e) {
 }
 
 void onspawn_skydragon(Entity *e) {
-	if(stageID == STAGE_FALLING) {
+	if(g_stage.id == STAGE_FALLING) {
 		e->alwaysActive = TRUE;
 	}
 }

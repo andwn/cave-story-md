@@ -225,7 +225,7 @@ void ai_gaudi(Entity *e) {
 	}
 	
 	// Use different palette in Labyrinth Shop
-	if(stageID == 0x2A) sprite_pal(&e->sprite[0], PAL3);
+	if(g_stage.id == 0x2A) sprite_pal(&e->sprite[0], PAL3);
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;

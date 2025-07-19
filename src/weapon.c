@@ -501,16 +501,16 @@ void weapon_fire_blade(Weapon *w) {
 	b->sprite.attr = TILE_ATTR(PAL0,0,0,player.dir,sheets[w->sheet].index);
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
-		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 1), b->sprite.attr, 9);
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 1), b->sprite.attr, 9);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0x800);
 	} else if(b->dir == DOWN) {
-		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 2), b->sprite.attr, 9);
+		if(b->level == 3) TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 2), b->sprite.attr, 9);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0x800);
 	} else {
 		if(b->level == 3) {
-			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 0), b->sprite.attr, 9);
+			TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0), b->sprite.attr, 9);
 			if(b->dir == RIGHT) sprite_hflip(&b->sprite, 1);
 		}
 		// Spawn slightly behind the player
@@ -991,7 +991,7 @@ void bullet_update_blade(Bullet *b) {
 				b->ttl = TIME_8(50);
 				b->x_speed = 0;
 				b->y_speed = 0;
-				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 0, 3), sheets[b->sheet].index, 9);
+				TILES_QUEUE(SPR_TILES(&SPR_BladeB3k, 3), sheets[b->sheet].index, 9);
 			} else if(block == 0x43) { // Breakable block
                 bullet_deactivate(b);
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
@@ -1268,8 +1268,8 @@ uint8_t bullet_missile_is_exploding() {
 
 static void bullet_destroy_block(uint16_t x, uint16_t y) {
 	uint8_t ind;
-	if(stageTileset == 21) ind = 22; // Balcony
-	else if(stageTileset == 13) ind = 0; // Labyrinth
+	if(g_stage.tileset_id == 21) ind = 22; // Balcony
+	else if(g_stage.tileset_id == 13) ind = 0; // Labyrinth
 	else ind = stage_get_block(x, y) - 1;
 	stage_replace_block(x, y, ind);
 }

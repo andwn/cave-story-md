@@ -14,7 +14,7 @@ void onspawn_energy(Entity *e) {
 		e->sprite[0].size = SPRITE_SIZE(2, 2);
 		e->display_box = (bounding_box) {{ 8,8,8,8 }};
 	}
-	e->left_gravity = (stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL);
+	e->left_gravity = (g_stage.id == STAGE_WATERWAY_BOSS || g_stage.id == STAGE_OUTER_WALL);
 	e->x_speed = 0x1FF - (rand() & 0x3FF);
 	e->alwaysActive = TRUE;
 }
@@ -120,7 +120,7 @@ void onspawn_powerup(Entity *e) {
 void ai_missile(Entity *e) {
 	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
-		if(stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL) {
+		if(g_stage.id == STAGE_WATERWAY_BOSS || g_stage.id == STAGE_OUTER_WALL) {
 			e->x_speed -= SPEED_8(6);
 			e->x += e->x_speed;
 		}
@@ -157,7 +157,7 @@ void ai_missile(Entity *e) {
 void ai_heart(Entity *e) {
 	if(e->flags & NPC_OPTION1) {
 		if((++e->animtime & 3) == 0) e->frame ^= 1;
-		if(stageID == STAGE_WATERWAY_BOSS || stageID == STAGE_OUTER_WALL) {
+		if(g_stage.id == STAGE_WATERWAY_BOSS || g_stage.id == STAGE_OUTER_WALL) {
 			e->x_speed -= SPEED_8(6);
 			e->x += e->x_speed;
 		}

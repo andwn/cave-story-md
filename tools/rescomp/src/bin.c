@@ -52,7 +52,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  salign\tsize alignment for the generated data array (default is 2)\n");
         printf("  fill\tfill value for the size alignment (default is 0)\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -64,22 +64,22 @@ static int execute(char *info, FILE *fs, FILE *fh)
     data = in(temp, &size);
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // do size alignement
     data = sizeAlign(data, size, salign, fill, &size);
 
     // EXPORT BIN
-    outBIN(data, size, align, fs, fh, id, TRUE);
+    outBIN(data, size, align, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
 void outBIN(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

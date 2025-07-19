@@ -46,7 +46,7 @@ void main() {
     vdp_init();
 	xgm_init();
     system_init();
-    stageBackground = 0xFF;
+    g_stage.back_id = 0xFF;
 	if(system_checkdata() != SRAM_INVALID) {
 		system_load_config();
 	}

@@ -58,7 +58,7 @@ uint8_t titlescreen_main() {
 	uint8_t cursor = 0;
 	uint32_t besttime = 0xFFFFFFFF;
 	uint8_t tsong = SONG_TITLE;
-	const SpriteDefinition *tsprite = &SPR_Quote;
+	const SpriteDef *tsprite = &SPR_Quote;
 	
 	vdp_colors(0, PAL_FadeOut, 64);
 	vdp_set_display(FALSE);
@@ -89,7 +89,7 @@ uint8_t titlescreen_main() {
 		tsong = 36; // Running Hell
 	}
 	// Load quote sprite
-	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 0,1, 0,0, 0,2, 0,0, 0,3);
+	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 1, 0, 2, 0, 3);
 	Sprite sprCursor = {
 		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
 		.size = SPRITE_SIZE(2,2)

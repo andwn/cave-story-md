@@ -35,9 +35,9 @@ void ai_chaco(Entity* e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 			e->frame = 0;
-			if(stageID >= STAGE_ENDING_SKY) {
+			if(g_stage.id >= STAGE_ENDING_SKY) {
 				sprite_pal(&e->sprite[0], PAL3);
-				TILES_QUEUE(SPR_TILES(&SPR_Chaco2, 0, 0), e->vramindex, 4);
+				TILES_QUEUE(SPR_TILES(&SPR_Chaco2, 0), e->vramindex, 4);
 				e->oframe = 0;
 				e->state++;
 			} else {

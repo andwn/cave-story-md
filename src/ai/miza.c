@@ -157,10 +157,10 @@ void ai_misery_frenzied(Entity *e) {
 				}
 				
 				if (x < block_to_sub(2)) x = block_to_sub(2);
-				if (x > block_to_sub(stageWidth - 3)) x = block_to_sub(stageWidth - 3);
+				if (x > block_to_sub(g_stage.pxm.width - 3)) x = block_to_sub(g_stage.pxm.width - 3);
 				
 				if (y < block_to_sub(2)) y = block_to_sub(2);
-				if (y > block_to_sub(stageHeight - 3)) y = block_to_sub(stageHeight - 3);
+				if (y > block_to_sub(g_stage.pxm.height - 3)) y = block_to_sub(g_stage.pxm.height - 3);
 				
 				sound_play(SND_EM_FIRE, 5);
 				entity_create(x, y, 
@@ -220,7 +220,7 @@ void ai_misery_frenzied(Entity *e) {
 	}
 	
 	// Stay within bounds
-	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 3)) e->y_speed = 0;
+	if(e->y_speed > 0 && e->y > block_to_sub(g_stage.pxm.height - 3)) e->y_speed = 0;
 	if(e->y_speed < 0 && e->y < block_to_sub(3)) e->y_speed = 0;
 	
 	e->x += e->x_speed;
@@ -308,7 +308,7 @@ void ai_misery_critter(Entity *e) {
 		
 		case 12:
 		{
-			if (e->y_next > block_to_sub(stageHeight)) {
+			if (e->y_next > block_to_sub(g_stage.pxm.height)) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -350,8 +350,8 @@ void ai_misery_bat(Entity *e) {
 			e->y_speed += (e->y < e->y_mark) ? SPEED(0x40) : -SPEED(0x40);
 			ACCEL_X(SPEED(0x10));
 			
-			if ((e->x < 0) || e->x > block_to_sub(stageWidth) ||
-                    (e->y < 0) || e->y > block_to_sub(stageHeight)) {
+			if ((e->x < 0) || e->x > block_to_sub(g_stage.pxm.width) ||
+                    (e->y < 0) || e->y > block_to_sub(g_stage.pxm.height)) {
 				e->state = STATE_DELETE;
 			}
 		}
@@ -620,7 +620,7 @@ void ai_sue_frenzied(Entity *e) {
 	}
 	
 	// Stay within bounds
-	if(e->y_speed > 0 && e->y > block_to_sub(stageHeight - 2)) e->y_speed = 0;
+	if(e->y_speed > 0 && e->y > block_to_sub(g_stage.pxm.height - 2)) e->y_speed = 0;
 	if(e->y_speed < 0 && e->y < block_to_sub(2)) e->y_speed = 0;
 	
 	e->x += e->x_speed;
@@ -630,8 +630,8 @@ void ai_sue_frenzied(Entity *e) {
 // sets NPC_IGNORESOLID if the object is heading towards the center
 // of the room, clears it otherwise.
 static void set_ignore_solid(Entity *e) {
-	int32_t map_right_half = block_to_sub(stageWidth) >> 1;
-	int32_t map_bottom_half = block_to_sub(stageHeight) >> 1;
+	int32_t map_right_half = block_to_sub(g_stage.pxm.width) >> 1;
+	int32_t map_bottom_half = block_to_sub(g_stage.pxm.height) >> 1;
 	
 	e->flags &= ~NPC_IGNORESOLID;
 	

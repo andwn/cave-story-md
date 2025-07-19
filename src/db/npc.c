@@ -87,7 +87,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Sparkle,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_sparkle, 		&ai_null 			,""}, // Sparkle
 	{ &SPR_Fish,		NOSHEET, 		1, PAL0, &ai_null, 				&ai_chinfish, 		&ondeath_default 	,""}, // Chinfish
 	{ &SPR_Sprinkler,	NOSHEET,		1, PAL1, &ai_null, 				&ai_sprinkler, 		&ai_null 			,""}, // Sprinkler
-	{ NULL,				SHEET_DROP, 	1, PAL1, &onspawn_persistent, 	&ai_water_droplet, 	&ai_null 			,""}, // Water Drop
+	{ NULL,				SHEET_DROP, 	1, PAL0, &onspawn_persistent, 	&ai_water_droplet, 	&ai_null 			,""}, // Water Drop
 	{ &SPR_Jack,		NOSHEET, 		1, PAL3, &onspawn_snap, 		&ai_jack, 			&ai_null 			,""}, // Jack
 	{ &SPR_Kanpachi,	NOSHEET,		1, PAL3, &ai_null, 				&ai_kanpachi_fish,	&ai_null 			,""}, // Kanpachi
 	{ NULL,				SHEET_FLOWER, 	1, PAL3, &onspawn_flower, 		&ai_null, 			&ai_null 			,""}, // Flowers
@@ -427,9 +427,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		0, PAL3, &onspawn_ballos, 		&ai_ballos_f2, 		&ondeath_ballos 	,""}, // Ballos (Form 2)
 	{ NULL, 			NOSHEET, 		0, PAL3, &onspawn_ballos, 		&ai_ballos_f3, 		&ondeath_ballos 	,""}, // Ballos (Form 3)
 	/* Splash screen */
-	{ &SPR_Sega, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo
-	{ &SPR_Sega2, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo being crushed
-	{ &SPR_Balrog, 		NOSHEET, 		2, PAL1, &onspawn_balrog_splash,&ai_balrog_splash, 	&ai_null 			,""}, // Balrog in splash screen
+//	{ &SPR_Sega, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo
+//	{ &SPR_Sega2, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo being crushed
+//	{ &SPR_Balrog, 		NOSHEET, 		2, PAL1, &onspawn_balrog_splash,&ai_balrog_splash, 	&ai_null 			,""}, // Balrog in splash screen
 	/* Misc */
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_trigger_special,&ai_null 			,""}, // Out of bounds trigger
 	{ &SPR_HeliBlade2, 	NOSHEET, 		3, PAL1, &onspawn_heliblade2, 	&ai_heli_blade, 	&ai_null 			,""}, // Helicopter blade (smaller)

@@ -43,7 +43,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("  name\t\tVGM music variable name\n");
         printf("  file\tpath of the .vgm music file to convert to binary data array\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -58,26 +58,26 @@ static int execute(char *info, FILE *fs, FILE *fh)
 //    {
 //        printf("Error while doing VGM conversion on '%s'\n", fileIn);
 //
-//        return FALSE;
+//        return false;
 //    }
 
     // read data from VGM file
     data = in(temp, &size);
 
     // error while reading data
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // EXPORT VGM
-    outVGM(data, size, 2, fs, fh, id, TRUE);
+    outVGM(data, size, 2, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
 void outVGM(unsigned char* data, int size, int align, FILE* fs, FILE* fh, char* id, int global)
 {
     // declare
-    declArray(fs, fh, "u8", id, size, align, TRUE);
+    declArray(fs, fh, "u8", id, size, align, true);
     // output data
     outS(data, 0, size, fs, 1);
     fprintf(fs, "\n");

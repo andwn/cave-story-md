@@ -65,7 +65,7 @@ void game_main(uint8_t load) {
 					&& !tscState && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				vdp_set_display(FALSE);
-				if(stageBackgroundType == 4) {
+				if(g_stage.back_type == 4) {
 					// Hide water
 					static const uint32_t black[8] = {
 						0x11111111,0x11111111,0x11111111,0x11111111,
@@ -84,7 +84,7 @@ void game_main(uint8_t load) {
 				paused = FALSE;
 				vdp_set_display(FALSE);
 				hud_force_redraw();
-				sheets_load_stage(stageID, TRUE, FALSE);
+				sheets_load_stage(g_stage.id, TRUE, FALSE);
 				player_draw();
 				entities_draw();
 				hud_show();
@@ -105,7 +105,7 @@ void game_main(uint8_t load) {
 					} else if(rtn == 2) {
 						vdp_colors(0, PAL_FadeOut, 64);
 						vdp_color(15, 0x000);
-						stageBackground = 255; // Force background redraw
+						g_stage.back_id = 255; // Force background redraw
 						game_reset(TRUE); // Reload save
 						hud_show();
 						playerIFrames = 0;
@@ -177,9 +177,9 @@ void game_reset(uint8_t load) {
     }
 	hud_create();
 
-	const SpriteDefinition *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
-	if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0,0), TILE_WEAPONINDEX,6);
+	const SpriteDef *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
+	if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0), TILE_WEAPONINDEX,6);
 	
-	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0,0);
-	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0,0);
+	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0);
+	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0);
 }

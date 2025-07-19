@@ -58,7 +58,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("               1 / APLIB       = aplib library (good compression ratio but slow)\n");
         printf("               2 / FAST / LZ4W = custom lz4 compression (average compression ratio but fast)\n");
 
-        return FALSE;
+        return false;
     }
 
     // adjust input file path
@@ -67,7 +67,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
     packed = getCompression(packedStr);
 
     // retrieve basic infos about the image
-    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return FALSE;
+    if (!Img_getInfos(fileIn, &w, &h, &bpp)) return false;
 
     // get size in tile
     wt = (w + 7) / 8;
@@ -87,7 +87,7 @@ static int execute(char *info, FILE *fs, FILE *fh)
 
     // get image data (always 8bpp)
     data = Img_getData(fileIn, &size, 8, 8);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // find max color index
     maxIndex = getMaxIndex(data, size);
@@ -97,16 +97,16 @@ static int execute(char *info, FILE *fs, FILE *fh)
         printf("Error: Image %s use color index >= 16\n", fileIn);
         printf("TILESET resource require image with a maximum of 16 colors.\n");
         printf("Use 4bpp image instead if you are unsure.\n");
-        return FALSE;
+        return false;
     }
 
     // convert to 4BPP
     data = to4bppAndFree(data, size);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // convert to tile
     data = bmpToTile(data, 0, wt, ht);
-    if (!data) return FALSE;
+    if (!data) return false;
 
     // create tileset structure
     result = createTileSet((unsigned int*) data, wt * ht);
@@ -114,13 +114,13 @@ static int execute(char *info, FILE *fs, FILE *fh)
     // pack if needed
     if (packed != PACK_NONE)
     {
-        if (!packTileSet(result, &packed)) return FALSE;
+        if (!packTileSet(result, &packed)) return false;
     }
 
     // EXPORT TILESET
-    outTileset(result, fs, fh, id, TRUE);
+    outTileset(result, fs, fh, id, true);
 
-    return TRUE;
+    return true;
 }
 
 
@@ -135,7 +135,7 @@ void outTileset(tileset_* tileset, FILE* fs, FILE* fh, char* id, int global)
     // tileset data
     sprintf(temp, "%s_tiles", id);
     // declare
-    decl(fs, fh, NULL, temp, 2, FALSE);
+    decl(fs, fh, NULL, temp, 2, false);
     // output data
     outS((unsigned char*) tileset->tiles, 0, size, fs, 1);
     fprintf(fs, "\n");
