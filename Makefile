@@ -343,33 +343,33 @@ $(BUILD_DIR)/res/tsc/ru/%.tsb: res/tsc/ru/%.txt | $(TSCOMP) $$(@D)/
 	$(TSCOMP) -l=ru "$<" "$@"
 
 # Generate patches
-$(BUILD_DIR)/res/patches/$(TARGET)-%.patch: res/patches/$(TARGET)-%.s | $$(@D)/
-	$(AS) $(ASFLAGS) "$<" -o "temp.o"
-	$(LD) -T md.ld -nostdlib "temp.o" -o "temp.elf"
-	$(OBJC) -O binary "temp.elf" "$@"
+$(BUILD_DIR)/%.patch: %.s | $(TL_TSBS) $$(@D)/
+	$(AS) $(ASFLAGS) "$<" -o "$*.tmp.o"
+	$(LD) -T md.ld -nostdlib "$*.tmp.o" -o "$*.tmp.elf"
+	$(OBJC) -O binary "$*.tmp.elf" "$@"
 
 # Apply patches
-$(TARGET)-ja.gen: res/patches/$(TARGET)-ja.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-ja.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ja.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-es.gen: res/patches/$(TARGET)-es.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-es.gen: $(BUILD_DIR)/res/patches/$(TARGET)-es.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-fr.gen: res/patches/$(TARGET)-fr.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-fr.gen: $(BUILD_DIR)/res/patches/$(TARGET)-fr.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-de.gen: res/patches/$(TARGET)-de.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-de.gen: $(BUILD_DIR)/res/patches/$(TARGET)-de.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-it.gen: res/patches/$(TARGET)-it.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-it.gen: $(BUILD_DIR)/res/patches/$(TARGET)-it.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-pt.gen: res/patches/$(TARGET)-pt.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-pt.gen: $(BUILD_DIR)/res/patches/$(TARGET)-pt.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-br.gen: res/patches/$(TARGET)-br.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-br.gen: $(BUILD_DIR)/res/patches/$(TARGET)-br.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-fi.gen: res/patches/$(TARGET)-fi.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-fi.gen: $(BUILD_DIR)/res/patches/$(TARGET)-fi.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-zh.gen: res/patches/$(TARGET)-zh.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-zh.gen: $(BUILD_DIR)/res/patches/$(TARGET)-zh.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-ko.gen: res/patches/$(TARGET)-ko.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-ko.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ko.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
-$(TARGET)-ru.gen: res/patches/$(TARGET)-ru.patch | $(PATCHROM) $(TL_TSBS) $(TARGET)-en.gen
+$(TARGET)-ru.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ru.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
 
 .PHONY: flash clean
