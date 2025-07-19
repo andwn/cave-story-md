@@ -73,12 +73,12 @@ void ai_doctor(Entity *e) {
 }
 
 void ai_toroko(Entity *e) {
-	if(e->state != 500) {
+	//if(e->state != 500) {
 		e->x_next = e->x + e->x_speed;
 		e->y_next = e->y + e->y_speed;
 		if(!e->grounded) e->grounded = collide_stage_floor(e);
 		else e->grounded = collide_stage_floor_grounded(e);
-	}
+	//}
 	switch(e->state) {
 		case 0:		// stand and blink
 		{
@@ -153,22 +153,23 @@ void ai_toroko(Entity *e) {
 			}
 		}
 		break;
-		case 500: // In bubble - don't move or collide with anything
-		{
-			e->frame = 1;
-		}
-		break;
+		//case 500: // In bubble - don't move or collide with anything
+		//{
+		//	e->frame = 1;
+		//}
+		//break;
 		default: // Toroko getting up after you shoot her, don't know the real state
 			FACE_PLAYER(e);
 			e->alwaysActive = TRUE;
 			if(g_stage.id != 0x23) e->frame = 0;
+			break;
 	}
-	if(e->state != 500) {
+	//if(e->state != 500) {
 		e->x = e->x_next;
 		e->y = e->y_next;
 		if(!e->grounded) e->y_speed += SPEED(0x40);
 		LIMIT_Y(SPEED(0x5FF));
-	}
+	//}
 
 	// I hate this
 	if(g_stage.id == STAGE_MIMIGA_SHACK && e->frame == 0) e->dir = 0;
@@ -609,17 +610,7 @@ void ai_blue_robot(Entity *e) {
 }
 
 void ai_kanpachi_fish(Entity *e) {
-	if (!e->state) {
-		SNAP_TO_GROUND(e);
-		e->state = 1;
-	}
-	// open eyes when player comes near
-	if(PLAYER_DIST_X(e, 64<<CSF) && PLAYER_DIST_Y2(e, 64<<CSF, 16<<CSF)) {
-		e->frame = 1;
-		//RANDBLINK(e, 0, 200);
-	} else {
-		e->frame = 0;
-	}
+	e->frame = (PLAYER_DIST_X(e, 48<<CSF) && PLAYER_DIST_Y2(e, 48<<CSF, 16<<CSF)) ? 1 : 0;
 }
 
 void ai_booster(Entity *e) {

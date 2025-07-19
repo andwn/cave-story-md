@@ -80,7 +80,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	/* 0x040 (64) */
 	{ NULL,				SHEET_CRITTER, 	1, PAL2, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	,""}, // Critter
 	{ NULL,				SHEET_BAT, 		1, PAL0, &ai_null, 				&ai_batVertical, 	&ondeath_default 	,""}, // Bat
-	{ &SPR_Bubble,		NOSHEET, 		1, PAL0, &onspawn_persistent, 	&ai_misery_bubble, 	&ai_null 			,""}, // Misery's Bubble
+	{ &SPR_Bubble,		NOSHEET, 		1, PAL3, &onspawn_persistent, 	&ai_misery_bubble, 	&ai_null 			,""}, // Misery's Bubble
 	{ &SPR_Misery,		NOSHEET, 		1, PAL0, &onspawn_persistent, 	&ai_misery_float, 	&ai_null 			,""}, // Misery
 	{ &SPR_Balrog,		NOSHEET, 		2, PAL1, &onspawn_persistent, 	&ai_balrogRunning, 	&ondeath_balrogRunning,"" },
 	{ NULL,				SHEET_PIGNON, 	1, PAL1, &ai_null, 				&ai_pignon, 		&ondeath_pignon 	,""}, // Pignon

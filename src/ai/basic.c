@@ -495,18 +495,29 @@ void ai_chinfish(Entity *e) {
 	switch(e->state) {
 		case 0:
 			e->state = 1;
-			e->x_mark = e->x;
 			e->y_mark = e->y;
-			e->y_speed = 0x88;
-			/* fallthrough */
+			e->y_speed = SPEED(0x80);
+			// Fallthrough
 		case 1:
-			e->y_speed += (e->y > e->y_mark) ? -8:8;
-			LIMIT_Y(0x100);
-			e->y += e->y_speed;
-			if (e->damage_time) e->frame = 1;
-			else e->frame = 0;
-		break;
+			if(e->y_mark < e->y) {
+				e->y_speed -= SPEED(8);
+			} else {
+				e->y_speed += SPEED(8);
+			}
+			break;
 	}
+
+	if(e->damage_time) {
+		e->frame = 2;
+	} else {
+		if(++e->animtime > 4) {
+			e->animtime = 0;
+			if(++e->frame > 1) e->frame = 0;
+		}
+	}
+
+	e->x += e->x_speed;
+	e->y += e->y_speed;
 }
 
 

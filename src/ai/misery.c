@@ -216,57 +216,41 @@ void ai_misery_stand(Entity *e) {
 }
 
 void ai_misery_bubble(Entity *e) {
-	// find the Toroko object we are to home in on
-	Entity *target = entity_find_by_type(0x3C);
-	if(!target) {
-		e->state = STATE_DELETE;
-		return;
-	} else if(e->y < 0) {
-		e->state = STATE_DELETE;
-		entity_delete(target);
-		return;
-	}
-	switch(e->state) {
+	switch (e->state) {
 		case 0:
-		{
-			// Wait a bit
-			if(++e->timer > TIME_8(20)) e->state = 1;
-		}
-		break;
-		case 1:
-		{
+			e->linkedEntity = entity_find_by_type(OBJ_TOROKO);
+			//shoot_at_target(e, e->linkedEntity->x_px, e->linkedEntity->y_px, SS_400);
 			// Calculate the speed it will take to reach the target in 1 second
-			e->x_speed = (target->x - e->x) / TIME_8(50);
-			e->y_speed = (target->y - e->y) / TIME_8(50);
-			if(e->x > target->x) e->x_speed = -e->x_speed;
-			if(e->y > target->y) e->y_speed = -e->y_speed;
-			e->state = 2;
-			e->timer = 0;
-		} /* fallthrough */
-		case 2:
-		{
+			e->x_speed = (e->linkedEntity->x - e->x) / TIME_8(50);
+			e->y_speed = (e->linkedEntity->y - e->y) / TIME_8(50);
+			if(e->x > e->linkedEntity->x) e->x_speed = -e->x_speed;
+			if(e->y > e->linkedEntity->y) e->y_speed = -e->y_speed;
+
+			e->state = 1;
+			// Fallthrough
+		case 1:
 			e->x += e->x_speed;
 			e->y += e->y_speed;
-			// Did we reach the target?
-			if(++e->timer == TIME_8(50)) {
-				sound_play(SND_BUBBLE, 5);
-				e->state = 3;
-				e->x = target->x;
-				e->y = target->y;
-				e->x_speed = 0;
-				e->y_speed = 0;
-				target->state = 500;
+			if(++e->animtime & 1) e->frame ^= 1;
+			if(NPC_DIST_X(e, e->linkedEntity, 8<<CSF) && NPC_DIST_Y(e, e->linkedEntity, 8<<CSF)) {
+				e->state = 2;
+				e->frame = 2;
+				e->linkedEntity->state = STATE_DELETE;
+				e->linkedEntity = NULL;
+				sound_play(21, 5);
 			}
-		}
-		break;
-		case 3: // Carry Toroko away
-		{
-			e->y_speed -= SPEED_8(0x1C);
+			break;
+		case 2:
+			if(e->y < -(8 << CSF)) {
+				e->state = STATE_DELETE;
+				break;
+			}
+			e->x += e->x_speed;
 			e->y += e->y_speed;
-			target->x = e->x + 0x200;
-			target->y = e->y - 0x200;
-		}
-		break;
+			if((++e->animtime & 3) == 0) e->frame ^= 1;
+			if(e->x_speed > -SPEED(0x5FF)) e->x_speed -= SPEED(0x20);
+			if(e->y_speed > -SPEED(0x5FF)) e->y_speed -= SPEED(0x20);
+			break;
 	}
 }
 
