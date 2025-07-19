@@ -33,8 +33,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Balrog,		NOSHEET, 		2, PAL1, &onspawn_persistent,	&ai_balrog_bust_in, &ai_null 			,""}, // Balrog
 	{ &SPR_Computer,	NOSHEET,		1, PAL1, &ai_null, 				&ai_computer, 		&ai_null 			,""}, // Computer
 	{ &SPR_Chest2,		NOSHEET, 		1, PAL1, &onspawn_snap, 		&ai_null, 			&ai_null 			,""}, // Open Chest
-	{ &SPR_Tele,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Teleporter
-	{ &SPR_TeleLight,	NOSHEET,		1, PAL1, &onspawn_teleLight, 	&ai_teleLight, 		&ai_null 			,""}, // Tele Light
+	{ &SPR_Tele,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_teleporter, 	&ai_null 			,""}, // Teleporter
+	{ &SPR_TeleLight,	NOSHEET,		1, PAL1, &ai_null, 				&ai_teleLight, 		&ai_null 			,""}, // Tele Light
 	{ NULL,				SHEET_PCRITTER, 1, PAL0, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	,""}, // Power Critter
 	{ &SPR_Platform,	NOSHEET,		1, PAL1, &onspawn_lift, 		&ai_lift, 			&ai_null 			,""}, // Lift Platform
 	{ NULL,				SHEET_BAT, 		1, PAL3, &ai_null, 				&ai_batCircle, 		&ondeath_default 	,""}, // Bat
@@ -127,9 +127,9 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			SHEET_REDSHOT, 	1, PAL1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	,""}, // Balfrog Shot
 	{ &SPR_Malco, 		NOSHEET, 		1, PAL1, &ai_null,				&ai_malcoBroken, 	&ai_null 			,""}, // Malco (broken)
 	{ NULL, 			SHEET_PUCHI, 	1, PAL3, &onspawn_frog, 		&ai_frog, 			&ondeath_default 	,""}, // Puchi
-	{ &SPR_Quotele,		NOSHEET, 		1, PAL0, &onspawn_teleOut, 		&ai_teleOut, 		&ai_null 			,""}, // Tele Out
+	{ &SPR_Quote,		NOSHEET, 		1, PAL0, &ai_null, 				&ai_teleOut, 		&ai_null 			,""}, // Tele Out
 	/* 0x070 (112) */
-	{ &SPR_Quotele,		NOSHEET, 		1, PAL0, &onspawn_teleIn, 		&ai_teleIn, 		&ai_null 			,""}, // Tele In
+	{ &SPR_Quote,		NOSHEET, 		1, PAL0, &ai_null, 				&ai_teleIn, 		&ai_null 			,""}, // Tele In
 	{ &SPR_Booster,		NOSHEET, 		1, PAL3, &ai_null, 				&ai_booster, 		&ai_null 			,""}, // Prof. Booster
 	{ &SPR_Press, 		NOSHEET, 		1, PAL1, &onspawn_press, 		&ai_press, 			&ondeath_default 	,""}, // Press
 	{ NULL,		        SHEET_RAVIL, 	1, PAL3, &onspawn_persistent, 	&ai_ravil, 			&ondeath_ravil 		,""}, // Ravil

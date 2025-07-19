@@ -153,7 +153,10 @@ void onspawn_basil(Entity *e) {
 }
 
 void ai_basil(Entity *e) {
-	ANIMATE(e, 8, 0,1,2);
+	if(++e->animtime > 4) {
+		e->animtime = 0;
+		if(++e->frame > 2) e->frame = 0;
+	}
 	if(e->x_speed == 0) { // Hit a wall
 		e->dir ^= 1;
 	} else if(sub_to_pixel(e->x) < sub_to_pixel(camera.x) - ScreenHalfW - 64) {

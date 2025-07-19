@@ -212,55 +212,86 @@ void ondeath_nodrop(Entity *e) {
 	e->state = STATE_DELETE;
 }
 
-void onspawn_teleIn(Entity *e) {
-	e->x += pixel_to_sub(16);
-	e->y += pixel_to_sub(8);
-	e->x_mark = e->x;
-	e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
-	e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
-	if(playerEquipment & EQUIP_MIMIMASK) {
-		e->frame = 29;
-	} else {
-		e->frame = 14;
-	}
-}
-
 void ai_teleIn(Entity *e) {
+	uint32_t buf[2*8];
+	const uint8_t frame_off = (playerEquipment & EQUIP_MIMIMASK) ? 10 : 0;
 	switch(e->state) {
-		case 0: // Appear
-		{
-			sound_play(SND_TELEPORT, 5);
-			e->state++;
-			e->grounded = TRUE;
-		} /* fallthrough */
+		case 0:
+			e->state = 1;
+			e->frame = 0 + frame_off;
+			e->hidden = TRUE;
+			e->timer = 0;
+			e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+			e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
+			e->x += 16 * 0x200;
+			e->y += 8 * 0x200;
+			sound_play(29, 5);
+			break;
 		case 1:
-		{
-			if(++e->timer > TIME_8(5)) {
+			if(e->timer == 0) {
+				// Overwirte frame with full transparency and unhide
+				disable_ints();
+				z80_pause_fast();
+				dma_now(DmaVRAM, (uint32_t)BlankData, e->vramindex << 5, 16*4, 2);
+				z80_resume();
+				enable_ints();
+				e->hidden = FALSE;
+			}
+			if(++e->timer == TIME(64)) {
+				e->state = 2;
 				e->timer = 0;
-				if(e->frame != 0 && e->frame != 15) {
-					e->frame--;
-				} else {
-					e->state++;
-					e->grounded = FALSE;
-				}
+			} else if(e->timer2 < 16) {
+                if(++e->animtime > TIME(3)) {
+                    e->animtime = 0;
+                    // Pull two tiles from the sprite to overwrite
+                    const uint32_t *src = SPR_Quote.tilesets[e->frame]->tiles + (e->timer2 & 8);
+                    uint16_t dst_index = e->vramindex + (e->timer2 > 7 ? 1 : 0);
+                    // Erase a portion (extends down over time)
+                    uint16_t y = 0;
+                    for(; y <= (e->timer2 & 7); y++) {
+                        buf[y] = src[y];
+                        buf[y+8] = src[y+16];
+                    }
+                    for(; y < 8; y++) {
+                        buf[y] = 0;
+                        buf[y+8] = 0;
+                    }
+                    // Inject into top or bottom half of sprite tiles in vram
+                    uint16_t vaddr = dst_index << 5;
+
+					disable_ints();
+					z80_pause_fast();
+                    dma_now(DmaVRAM, (uint32_t)&buf[0], vaddr, 16, 2);
+                    dma_now(DmaVRAM, (uint32_t)&buf[8], vaddr+64, 16, 2);
+					z80_resume();
+					enable_ints();
+
+                    e->timer2++;
+                }
+            }
+			break;
+
+		case 2:
+			if(++e->timer > TIME(20)) {
+				e->state = 3;
+				e->frame = 1 + frame_off;
+				e->hit_box.bottom = 8;
+				e->grounded = FALSE;
 			}
-			e->x = e->x_mark + ((e->timer & 1) ? 0x200 : -0x200);
-		}
-		break;
-		case 2: // Drop
-		{
-			e->x_next = e->x;
-			e->y_next = e->y + e->y_speed;
-			if((e->grounded = collide_stage_floor(e))) {
-				e->state++;
-				e->y_speed = 0;
-			} else {
-				e->y_speed += SPEED_8(0x40);
+			break;
+
+		case 3:
+			moveMeToFront = TRUE;
+			e->y_speed += SPEED(0x40);
+			e->y += e->y_speed;
+			e->y_next = e->y;
+			if(blk(e->x, 0, e->y, 8) == 0x41) {
+				e->y = e->y_next;
+				e->state = 4;
+				e->timer = 0;
+				e->frame = 0 + frame_off;
 			}
-			e->y = e->y_next;
-		}
-		break;
-		case 3: break;
+			break;
 	}
 	// Force a specific direction
 	switch(g_stage.id) {
@@ -280,64 +311,106 @@ void ai_teleIn(Entity *e) {
 	}
 }
 
-void onspawn_teleOut(Entity *e) {
-	e->y -= pixel_to_sub(32);
-	SNAP_TO_GROUND(e);
-	// PAL was jumping too high here
-	if(pal_mode || cfg_60fps) e->y_speed = -0x360;
-	else e->y_speed = -SPEED_10(0x3E0);
-	// Mimiga mask
-	if(playerEquipment & EQUIP_MIMIMASK) e->frame = 15;
-}
-
 void ai_teleOut(Entity *e) {
-	switch(e->state) {
-		case 0: // Hopping up
-		{
+	uint32_t buf[2*8];
+	const uint8_t frame_off = (playerEquipment & EQUIP_MIMIMASK) ? 10 : 0;
+    switch(e->state) {
+		case 0:
+			e->state = 1;
 			e->dir = player.dir;
-			if(++e->timer >= TIME_8(20)) {
-				e->state++;
+			e->frame = 0 + frame_off;
+			e->x = player.x;
+			e->y = player.y; //-= 16 << CSF;
+			e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
+			e->display_box = (bounding_box) {{ 8, 8, 8, 8 }};
+			break;
+
+		case 1: // Wait a bit
+			if(++e->timer > TIME(20)) {
 				e->timer = 0;
+				e->state = 2;
+				e->frame = 1 + frame_off;
+				e->y_speed = -SPEED(0x300);
+				e->grounded = FALSE;
+			}
+			break;
+
+		case 2: // Jump up to the teleporter
+            e->y_speed += SPEED(0x40);
+            e->y += e->y_speed;
+			if(e->y_speed > 0 && blk(e->x, 0, e->y, 16) == 0x41) {
+				e->y -= 0x200;
+				e->grounded = TRUE;
 				e->y_speed = 0;
-				e->x_mark = e->x;
-				Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
-				if(light) light->state = 1;
-				sound_play(SND_TELEPORT, 5);
-			} else {
-				e->y_speed += SPEED_8(0x43);
-				e->y += e->y_speed;
-			}
-		}
-		break;
-		case 1: // Show teleport animation
-		{
-			if(++e->timer > TIME_8(5)) {
+				e->state = 3;
 				e->timer = 0;
-				e->frame++;
-				if(e->frame == 15 || e->frame == 30) {
-					e->frame = 14;
-					e->state++;
-					e->hidden = TRUE;
-					Entity *light = entity_find_by_type(OBJ_TELEPORTER_LIGHTS);
-					if(light) light->state = 0;
-				}
+				e->frame = 0 + frame_off;
 			}
-			e->x = e->x_mark + ((e->timer & 1) ? 0x200 : -0x200);
-		}
-		break;
-		case 2: break;
+			break;
+
+		case 3: // Wait before teleporter starts
+			if(++e->timer > TIME(40)) {
+				e->state = 4;
+				e->timer = TIME(65);
+                e->timer2 = 0;
+                e->animtime = 0;
+				sound_play(29, 5);
+			}
+			break;
+
+		case 4:
+			if(--e->timer == 0) {
+				e->state = STATE_DELETE;
+            } else if(e->timer2 < 16) {
+                if(++e->animtime > TIME(3)) {
+                    e->animtime = 0;
+                    // Pull two tiles from the sprite to overwrite
+                    const uint32_t *src = SPR_Quote.tilesets[e->frame]->tiles + (e->timer2 & 8);
+                    uint16_t dst_index = e->vramindex + (e->timer2 > 7 ? 1 : 0);
+                    // Erase a portion (extends down over time)
+                    uint16_t y = 0;
+                    for(; y <= (e->timer2 & 7); y++) {
+                        buf[y] = 0;
+                        buf[y+8] = 0;
+                    }
+                    for(; y < 8; y++) {
+                        buf[y] = src[y];
+                        buf[y+8] = src[y+16];
+                    }
+                    // Inject into top or bottom half of sprite tiles in vram
+                    uint16_t vaddr = dst_index << 5;
+
+					disable_ints();
+					z80_pause_fast();
+                    dma_now(DmaVRAM, (uint32_t)&buf[0], vaddr, 16, 2);
+                    dma_now(DmaVRAM, (uint32_t)&buf[8], vaddr+64, 16, 2);
+					z80_resume();
+					enable_ints();
+
+                    e->timer2++;
+                }
+            }
+			break;
 	}
 }
 
-void onspawn_teleLight(Entity *e) {
-	e->hidden = TRUE;
-	e->x += pixel_to_sub(4);
-	e->y += pixel_to_sub(4);
+// 022: Teleporter
+void ai_teleporter(Entity *e) {
+	if(e->state) {
+		e->frame ^= 1;
+		if(!e->timer++) moveMeToFront = TRUE;
+	} else {
+		e->frame = 0;
+		e->timer = 0;
+	}
 }
 
+// 023: Teleporter Lights
 void ai_teleLight(Entity *e) {
-	if(e->state) e->hidden = (++e->timer & 2);
-	else e->hidden = TRUE;
+	moveMeToFront = TRUE;
+    if((++e->animtime & 1) == 0) {
+        if(++e->frame > 7) e->frame = 0;
+    }
 }
 
 void ai_player(Entity *e) {

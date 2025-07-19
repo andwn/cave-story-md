@@ -598,6 +598,8 @@ void ai_king(Entity *e) {
 }
 
 void ai_blue_robot(Entity *e) {
+	if(e->flags & NPC_OPTION2) e->dir = 1;
+	
 	e->x_next = e->x; // x_next must be set or collision will be wrong
 	e->y_next = e->y + e->y_speed;
 	if(!e->grounded) e->grounded = collide_stage_floor(e);

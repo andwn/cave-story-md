@@ -57,7 +57,7 @@ SPRITE SPR_Fish			"sprite/fish.png"			2 2 NONE
 SPRITE SPR_CritBig		"sprite/critbig.png"		3 3 NONE
 SPRITE SPR_Jelly		"sprite/jelly.png"			2 2 NONE
 SPRITE SPR_Kulala		"sprite/kulala.png"			6 3 NONE
-SPRITE SPR_Quotele		"sprite/quotele.png"		2 2 NONE
+#SPRITE SPR_Quotele		"sprite/quotele.png"		2 2 NONE
 SPRITE SPR_Bubble		"sprite/bubble.png"			3 3 NONE
 SPRITE SPR_Bonk			"sprite/headbump.png"		1 1 NONE
 SPRITE SPR_RedFl		"sprite/redflowers.png" 	6 2 NONE
@@ -126,7 +126,7 @@ SPRITE SPR_PressH		"sprite/pressh.png"			3 2 NONE
 SPRITE SPR_Cage			"sprite/cage.png"			4 3 NONE
 SPRITE SPR_EnergyShot	"sprite/energyshot.png"		2 2 NONE
 SPRITE SPR_MisslP		"sprite/missilep.png"		2 2 NONE
-SPRITE SPR_TeleLight	"sprite/telelight.png"		2 1 NONE
+SPRITE SPR_TeleLight	"sprite/telelight.png"		3 1 NONE
 SPRITE SPR_Puppy		"sprite/puppy.png"			2 2 NONE
 SPRITE SPR_Table		"sprite/table.png"			3 2 NONE
 SPRITE SPR_ManShot		"sprite/manshot.png"		2 3 NONE
