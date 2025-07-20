@@ -173,8 +173,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Robot, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_blue_robot, 	&ai_null 			,""}, // Blue Robot
 	{ NULL, 			NOSHEET, 		0, PAL2, &ai_null, 				&ai_shutter_stuck, 	&ondeath_nodrop 	,""}, // Shutter (Stuck)
 	{ NULL, 			SHEET_GAUDI, 	1, PAL2, &ai_null, 				&ai_gaudi, 			&ondeath_default 	,""}, // Gaudi
-	{ NULL, 			SHEET_GAUDI, 	1, PAL2, &ai_null, 				&ai_gaudiDying, 	&ondeath_default 	,""}, // Gaudi (Dying)
-	{ NULL, 			SHEET_GAUDI, 	1, PAL2, &ai_null, 				&ai_gaudiFlying, 	&ondeath_default 	,""}, // Gaudi (Flying)
+	{ NULL, 			SHEET_GAUDID, 	1, PAL2, &ai_null, 				&ai_gaudiDying, 	&ondeath_default 	,""}, // Gaudi (Dying)
+	{ NULL, 			SHEET_GAUDIF, 	1, PAL2, &ai_null, 				&ai_gaudiFlying, 	&ondeath_default 	,""}, // Gaudi (Flying)
 	{ &SPR_LabShot,		NOSHEET, 		1, PAL2, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_default 	,""}, // Gaudi Shot
 	{ &SPR_MazeBlock,	NOSHEET,		1, PAL2, &onspawn_block, 		&ai_blockv, 		&ai_null 			,""}, // Moving Block (V)
 	{ NULL, 			SHEET_XFISHY, 	1, PAL3, &onspawn_persistent, 	&ai_x_fishy_missile,&ondeath_default 	,""}, // Monster X Shot

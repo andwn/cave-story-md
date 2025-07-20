@@ -179,6 +179,8 @@ SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 NONE
 SPRITE SPR_MazeBlock	"sprite/mazeblock.png"		4 4 NONE
 SPRITE SPR_CritterP		"sprite/critterp.png"		2 2 NONE
 SPRITE SPR_Gaudi		"sprite/gaudi.png"			3 3 NONE
+SPRITE SPR_GaudiFly		"sprite/gaudifly.png"			3 3 NONE
+SPRITE SPR_GaudiDie		"sprite/gaudidie.png"			3 3 NONE
 SPRITE SPR_LabShot		"sprite/labshot.png"		2 2 NONE
 SPRITE SPR_GaudiShot	"sprite/gaudishot.png"		2 2 NONE
 SPRITE SPR_GaudiArmor	"sprite/gaudiarmor.png"		3 3 NONE

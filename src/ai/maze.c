@@ -172,7 +172,7 @@ void ai_gaudiDying(Entity *e) {
 			e->flags &= ~(NPC_SHOOTABLE | NPC_IGNORESOLID | NPC_SHOWDAMAGE);
 			e->attack = 0;
 			
-			e->frame = 4;
+			e->frame = 0;
 			
 			e->y_speed = -SPEED(0x200);
 			MOVE_X(-SPEED(0x100));
@@ -186,7 +186,7 @@ void ai_gaudiDying(Entity *e) {
 		case 1:		// flying backwards through air
 		{
 			if (e->y_speed >= 0 && (e->grounded = collide_stage_floor(e))) {
-				e->frame = 5;
+				e->frame = 1;
 				e->state = 2;
 				e->timer = 0;
 			}
@@ -196,7 +196,7 @@ void ai_gaudiDying(Entity *e) {
 		case 2:		// landed, shake
 		{
 			e->x_speed -= e->x_speed >> 4;
-			e->frame = (e->timer & 7) > 3 ? 6 : 5;
+			e->frame = (e->timer & 7) > 3 ? 2 : 1;
 			
 			if (++e->timer > TIME(50)) {
 				// this deletes Entity while generating smoke effects and boom
@@ -216,6 +216,8 @@ void ai_gaudiDying(Entity *e) {
 void ai_gaudi(Entity *e) {
 	if (e->health <= (1000 - GAUDI_HP)) {
 		e->type = OBJ_GAUDI_DYING;
+		SHEET_FIND(e->sheet, SHEET_GAUDID);
+		e->vramindex = sheets[e->sheet].index;
         e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;
@@ -341,6 +343,8 @@ void ai_gaudiFlying(Entity *e) {
 			e->x += (2 << 9);
 		
 		e->type = OBJ_GAUDI_DYING;
+		SHEET_FIND(e->sheet, SHEET_GAUDID);
+		e->vramindex = sheets[e->sheet].index;
         e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;
@@ -369,7 +373,7 @@ void ai_gaudiFlying(Entity *e) {
 		/* fallthrough */
 		case 2:
 		{
-			ANIMATE(e, 4, 7,8);
+			ANIMATE(e, 4, 0,1);
 			
 			if (!e->timer) {
 				e->state = 3;
@@ -379,7 +383,7 @@ void ai_gaudiFlying(Entity *e) {
 		
 		case 3:		// preparing to fire
 		{
-			ANIMATE(e, 4, 9,8);
+			ANIMATE(e, 4, 2,1);
 			
 			e->timer++;
 			if (++e->timer > TIME_8(30)) {
@@ -405,6 +409,8 @@ void ai_gaudiFlying(Entity *e) {
 void ai_gaudiArmor(Entity *e) {
 	if (e->health <= (1000 - GAUDI_ARMORED_HP)) {
 		e->type = OBJ_GAUDI_DYING;
+		SHEET_FIND(e->sheet, SHEET_GAUDID);
+		e->vramindex = sheets[e->sheet].index;
 		e->onFrame = npc_info[OBJ_GAUDI_DYING].onFrame;
 		e->attack = 0;
 		e->state = 0;

@@ -248,7 +248,7 @@ BIN UFTC_MsgText    "res/tiles_loc/font_blue.uftc"
 
 # Sprites
 SPRITE SPR_Air			"res/sprite_loc/air_en.spr"			7 1 1
-SPRITE SPR_Prompt		"res/sprite_loc/prompt_en.spr" 		8 3 1
+SPRITE SPR_Prompt		"res/sprite_loc/prompt_es.spr" 		8 3 1
 SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2 2
 SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
 SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2

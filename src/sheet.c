@@ -289,6 +289,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_LABSHOT, &SPR_LabShot, 3,2,2, 0, 1, 2);
 			SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 4,3,3, 0, 1, 2, 3);
+			SHEET_ADD(SHEET_GAUDIF, &SPR_GaudiFly, 3,3,3, 0, 1, 2);
+			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
 			if(g_stage.id == 0x27) {
 				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0, 2, 1, 3);
 				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0);
@@ -315,6 +317,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x2D: // Labyrinth M
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiArmor, 4,3,3, 0, 1, 2, 3);
+			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
 			SHEET_ADD(SHEET_FUZZ, &SPR_Fuzz, 1,2,2, 0);
 			SHEET_ADD(SHEET_FUZZC, &SPR_FuzzCore, 1,4,4, 0);
 			SHEET_ADD(SHEET_FIREWSHOT, &SPR_FireWShot, 3,2,4, 0, 1, 2);
