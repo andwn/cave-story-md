@@ -1,6 +1,6 @@
 void draw_itemmenu(uint8_t resetCursor);
 
-uint8_t update_pause();
+uint8_t update_pause(void);
 
 void itemcursor_move(int8_t oldindex, int8_t index);
 

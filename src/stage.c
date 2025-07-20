@@ -164,7 +164,7 @@ void stage_load_credits(uint8_t id) {
 	vdp_set_display(TRUE);
 }
 
-void stage_load_tileset() {
+void stage_load_tileset(void) {
     uint32_t *buf = (uint32_t*) g_stage.pxm.blocks; //(uint32_t*) 0xFF0100;
     uint16_t numtile = tileset_info[g_stage.tileset_id].size << 2;
     for(uint16_t i = 0; i < numtile; i += 128) {
@@ -187,7 +187,7 @@ void stage_load_tileset() {
 	}
 }
 
-void stage_load_blocks() {
+void stage_load_blocks(void) {
     zx0_unpack(stage_info[g_stage.id].PXM, &g_stage.pxm);
 	// Multiplication table for stage rows
 	uint16_t blockTotal = 0;
@@ -197,7 +197,7 @@ void stage_load_blocks() {
 	}
 }
 
-void stage_load_entities() {
+void stage_load_entities(void) {
 	const uint16_t *PXE = stage_info[g_stage.id].PXE;
 	uint16_t off = 1;
 	for(uint16_t i = 0; i < PXE[0]; i++) {
@@ -254,7 +254,7 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index) {
 }
 
 // Update stage scrolling and background
-void stage_update() {
+void stage_update(void) {
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(g_stage.back_type == 0) {
@@ -397,7 +397,7 @@ void stage_update() {
 	}
 }
 
-void stage_setup_palettes() {
+void stage_setup_palettes(void) {
 	// Stage palette and shared NPC palette
 	vdp_colors_next(0, PAL_Main, 16);
 	if(g_stage.id == STAGE_INTRO) {
@@ -413,7 +413,7 @@ void stage_setup_palettes() {
 	vdp_colors_next(48, stage_info[g_stage.id].npcPalette, 16);
 }
 
-void stage_draw_screen() {
+void stage_draw_screen(void) {
 	uint16_t maprow[64];
 	uint16_t y = sub_to_tile(camera.y) - 16;
 	for(uint16_t i = 32; i--; ) {
@@ -440,7 +440,7 @@ void stage_draw_screen() {
 	}
 }
 
-void stage_draw_screen_credits() {
+void stage_draw_screen_credits(void) {
 	uint16_t maprow[20];
 	for(uint16_t y = 0; y < 30; y++) {
 		for(uint16_t x = 20; x < 40; x++) {
@@ -469,7 +469,7 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 }
 
 // Fills VDP_PLANE_B with a tiled background
-void stage_draw_background() {
+void stage_draw_background(void) {
 	uint16_t w = background_info[g_stage.back_id].width;
 	uint16_t h = background_info[g_stage.back_id].height;
 	uint16_t pal = background_info[g_stage.back_id].palette;
@@ -486,7 +486,7 @@ void stage_draw_background() {
 	}
 }
 
-void stage_draw_moonback() {
+void stage_draw_moonback(void) {
 	const uint16_t *topTiles, *btmTiles;
 	const uint16_t *topMap, *btmMap;
     uint16_t topNum, btmNum;

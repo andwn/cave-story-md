@@ -169,7 +169,7 @@ typedef void (*ActionFunc)(uint8_t page);
 // Prevents incomplete sprite list from being sent to VDP (flickering)
 extern volatile uint8_t ready;
 
-void aftervsync();
+void aftervsync(void);
 
 #ifdef DEBUG
 

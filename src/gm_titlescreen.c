@@ -51,7 +51,7 @@ void print_version(void) {
 	vdp_nputs(VDP_PLANE_A, Homepage + 8, 5, 25, PAGE_LEN);
 }
 
-uint8_t titlescreen_main() {
+uint8_t titlescreen_main(void) {
 	gamemode = GM_TITLE;
 	
 	uint8_t cheatEntry[2] = { 0, 0 }, cheatEnable[2] = { FALSE, FALSE };

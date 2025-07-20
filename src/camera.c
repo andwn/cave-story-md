@@ -32,7 +32,7 @@ uint16_t cameraShake;
 // Tile attr buffer to draw offscreen during map scroll
 uint16_t mapbuf[64+32];
 
-void camera_init() {
+void camera_init(void) {
 	camera.target = &player;
     camera.x_offset = 0;
     cameraShake = 0;
@@ -70,7 +70,7 @@ void camera_shake(uint16_t time) {
 	cameraShake = time;
 }
 
-void camera_update() {
+void camera_update(void) {
 	int32_t x_next, y_next;
 	if(camera.target) {
 		// If following the player focus on where they are walking/looking

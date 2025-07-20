@@ -133,12 +133,12 @@ Entity *entity_destroy(Entity *e) {
 	return entity_delete(e);
 }
 
-void entities_clear() {
+void entities_clear(void) {
 	LIST_CLEAR(entityList);
 	LIST_CLEAR(inactiveList);
 }
 
-uint16_t entities_count_active() {
+uint16_t entities_count_active(void) {
 	uint16_t count = 0;
 	Entity *e = entityList;
 	while(e) {
@@ -148,7 +148,7 @@ uint16_t entities_count_active() {
 	return count;
 }
 
-uint16_t entities_count_inactive() {
+uint16_t entities_count_inactive(void) {
 	uint16_t count = 0;
 	Entity *e = inactiveList;
 	while(e) {
@@ -158,7 +158,7 @@ uint16_t entities_count_inactive() {
 	return count;
 }
 
-uint16_t entities_count() {
+uint16_t entities_count(void) {
 	return entities_count_active() + entities_count_inactive();
 }
 
@@ -480,7 +480,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 	}
 }
 
-void entities_update_inactive() {
+void entities_update_inactive(void) {
 	Entity *e = inactiveList;
 	while(e) {
 		if(entity_on_screen(e)) {
@@ -1143,7 +1143,7 @@ uint8_t entity_exists(uint16_t type) {
 	return FALSE;
 }
 
-void entities_draw() {
+void entities_draw(void) {
 	const Entity *e = entityList;
 	while(e) {
 		if(!e->hidden) {

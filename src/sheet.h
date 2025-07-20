@@ -133,5 +133,5 @@ extern uint8_t tilocs[MAX_TILOCS];
 void sheets_load_weapon(Weapon *w);
 void sheets_refresh_weapon(Weapon *w);
 void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc);
-void sheets_load_splash();
-void sheets_load_intro();
+void sheets_load_splash(void);
+void sheets_load_intro(void);

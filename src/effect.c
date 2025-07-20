@@ -34,7 +34,7 @@ uint32_t dtiles[4][8];
 
 uint8_t dqueued;
 
-void effects_init() {
+void effects_init(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
@@ -47,17 +47,17 @@ void effects_init() {
 	vdp_tiles_load(stiles[0], TILE_SMOKEINDEX, TILE_SMOKESIZE);
 }
 
-void effects_clear() {
+void effects_clear(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_clear_smoke();
 }
 
-void effects_clear_smoke() {
+void effects_clear_smoke(void) {
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 }
 
-void effects_update() {
+void effects_update(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(!effDamage[i].ttl) continue;
 		effDamage[i].ttl--;

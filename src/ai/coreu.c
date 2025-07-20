@@ -601,7 +601,7 @@ void UDCoreBoss::SetRotatorStates(int newstate)
 /*
 // extra bbox puppets/shoot targets
 // only one, located at the face, is shootable, the other 3 are invulnerable shields.
-void UDCoreBoss::move_bboxes() {
+void UDCoreBoss::move_bboxes(void) {
 	for(int i=0;i<NUM_BBOXES;i++) {
 		bbox[i]->x = main->x + (core_bboxes[i].offset.x << CSF);
 		bbox[i]->y = main->y + (core_bboxes[i].offset.y << CSF);

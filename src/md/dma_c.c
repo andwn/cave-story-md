@@ -34,8 +34,8 @@ void dma_queue(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t 
     __asm__("move #0x2300,%sr");
 }
 
-void dma_pop() { }
-void dma_flush() { }
-void dma_clear() { }
+void dma_pop(void) { }
+void dma_flush(void) { }
+void dma_clear(void) { }
 
 #endif

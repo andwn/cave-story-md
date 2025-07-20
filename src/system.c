@@ -110,12 +110,12 @@ static uint8_t LS_readByte(uint8_t file, uint32_t addr);
 static uint16_t LS_readWord(uint8_t file, uint32_t addr);
 static uint32_t LS_readLong(uint8_t file, uint32_t addr);
 
-void system_init() {
+void system_init(void) {
     system_cfg_reset_controls();
     system_cfg_reset_gameplay();
     sram_state = SRAM_UNCHECKED;
 }
-void system_cfg_reset_controls() {
+void system_cfg_reset_controls(void) {
     cfg_btn_jump = 5;
     cfg_btn_shoot = 4;
     cfg_btn_ffwd = 6;
@@ -125,7 +125,7 @@ void system_cfg_reset_controls() {
     cfg_btn_pause = 7;
     cfg_force_btn = 0;
 }
-void system_cfg_reset_gameplay() {
+void system_cfg_reset_gameplay(void) {
     cfg_60fps = FALSE;
     cfg_ffwd = TRUE;
     cfg_updoor = FALSE;
@@ -154,14 +154,14 @@ uint8_t system_get_skip_flag(uint16_t flag) {
 	return (skip_flags & (((uint32_t)1)<<flag)) > 0;
 }
 
-static void counter_draw_minute() {
+static void counter_draw_minute(void) {
     dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[div10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+1) << 5, 16, 2);
     dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[mod10[counter.minute] << 3],
 			(TILE_COUNTERINDEX+2) << 5, 16, 2);
 }
 
-static void counter_draw_second() {
+static void counter_draw_second(void) {
     dma_queue(DmaVRAM, (uint32_t) &TS_Clock[(counter.second & 1) << 3],
 			(TILE_COUNTERINDEX) << 5, 16, 2);
     dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[div10[counter.second] << 3],
@@ -170,12 +170,12 @@ static void counter_draw_second() {
 			(TILE_COUNTERINDEX+5) << 5, 16, 2);
 }
 
-static void counter_draw_decisecond() {
+static void counter_draw_decisecond(void) {
     dma_queue(DmaVRAM, (uint32_t) &TS_Numbers[counter_decisec << 3],
 			(TILE_COUNTERINDEX+7) << 5, 16, 2);
 }
 
-void system_draw_counter() {
+void system_draw_counter(void) {
 	counter_draw_minute();
     dma_queue(DmaVRAM, (uint32_t) &TS_Clock[2 << 3],
 			(TILE_COUNTERINDEX+3) << 5, 16, 2);
@@ -187,7 +187,7 @@ void system_draw_counter() {
 	vdp_sprites_add(spr, 2);
 }
 
-void system_update() {
+void system_update(void) {
 	if(++time.frame >= FPS) {
 		time.frame = 0;
 		if(++time.second >= 60) {
@@ -242,7 +242,7 @@ void system_update() {
 	}
 }
 
-void system_new() {
+void system_new(void) {
 	time.hour = time.minute = time.second = time.frame = 0;
 	counter.hour = counter.minute = counter.second = counter.frame = 0;
 	for(uint16_t i = 0; i < FLAGS_LEN; i++) flags[i] = 0;
@@ -282,7 +282,7 @@ static void checksum_write(uint8_t file_num, uint8_t is_backup) {
 	sram_write_long(SRAM_CHECKSUM_POS + (file_num * 8), checksum);
 }
 
-void system_save() {
+void system_save(void) {
 	if(sram_file >= SRAM_FILE_MAX) return;
 	if(sram_state == SRAM_INVALID) return;
 	
@@ -512,7 +512,7 @@ void system_delete(uint8_t index) {
 	//enable_ints();
 }
 
-static void get_language() {
+static void get_language(void) {
     if     (LANGUAGE[0] == 'E' && LANGUAGE[1] == 'N') cfg_language = LANG_EN;
     else if(LANGUAGE[0] == 'E' && LANGUAGE[1] == 'S') cfg_language = LANG_ES;
     else if(LANGUAGE[0] == 'F' && LANGUAGE[1] == 'R') cfg_language = LANG_FR;
@@ -527,7 +527,7 @@ static void get_language() {
 	else if(LANGUAGE[0] == 'R' && LANGUAGE[1] == 'U') cfg_language = LANG_RU;
 }
 
-void system_load_config() {
+void system_load_config(void) {
 	get_language();
 	
 	uint16_t loc = SRAM_CONFIG_POS;
@@ -585,7 +585,7 @@ void system_load_config() {
 	//enable_ints();
 }
 
-void system_save_config() {
+void system_save_config(void) {
 	uint16_t loc = SRAM_CONFIG_POS;
 
 	//disable_ints();
@@ -660,7 +660,7 @@ void system_load_levelselect(uint8_t file) {
 	sram_file = SRAM_FILE_CHEAT + file;
 }
 
-uint8_t system_checkdata() {
+uint8_t system_checkdata(void) {
 	sram_state = SRAM_INVALID; // Default invalid
 	// Read a specific spot in SRAM
 	sram_enable_ro();
@@ -701,12 +701,12 @@ uint8_t system_checkdata() {
 	return sram_state;
 }
 
-uint32_t system_counter_ticks() {
+uint32_t system_counter_ticks(void) {
 	// Counter considers a second 50 frames, even for NTSC
 	return SPEED_8(counter.frame) + counter.second*50 + counter.minute*60*50;
 }
 
-uint32_t system_load_counter() {
+uint32_t system_load_counter(void) {
 	uint8_t buffer[20];
 	uint32_t *result = (uint32_t*)buffer;
 	// Read 20 bytes of 290.rec from SRAM
@@ -774,7 +774,7 @@ void system_save_counter(uint32_t ticks) {
 	sram_disable();
 }
 
-void system_format_sram() {
+void system_format_sram(void) {
 	sram_enable();
 	for(uint16_t i = 0; i < 0x2000; i += 4) {
 		sram_write_long(i, 0);

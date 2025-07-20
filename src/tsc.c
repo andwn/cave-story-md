@@ -183,7 +183,7 @@ static uint16_t tsc_load(const Event **eventList, const uint8_t **cmdData, const
 }
 
 // Load window tiles & the global "head" events
-void tsc_init() {
+void tsc_init(void) {
 	inFade = FALSE;
 	showingBossHealth = FALSE;
 	bossBarEntity = FALSE;
@@ -233,7 +233,7 @@ void tsc_call_event(uint16_t number) {
 	}
 }
 
-uint8_t tsc_update() {
+uint8_t tsc_update(void) {
 	switch(tscState) {
 		case TSC_IDLE: break; // Nothing to update
 		case TSC_RUNNING:
@@ -357,7 +357,7 @@ uint8_t tsc_update() {
 	return 0;
 }
 
-void tsc_show_boss_health() {
+void tsc_show_boss_health(void) {
 	showingBossHealth = TRUE;
 	// Fill map name space with boss bar
 	__attribute__((nonstring))
@@ -386,12 +386,12 @@ void tsc_show_boss_health() {
 	};
 }
 
-void tsc_hide_boss_health() {
+void tsc_hide_boss_health(void) {
 	bossBarEntity = NULL;
 	showingBossHealth = FALSE;
 }
 
-void tsc_update_boss_health() {
+void tsc_update_boss_health(void) {
 	if(!bossBarEntity || bossBarEntity->state == STATE_DELETE) {
 		bossBarEntity = NULL;
 		showingBossHealth = FALSE;
@@ -431,7 +431,7 @@ void tsc_update_boss_health() {
     vdp_sprite_add(&teleMenuSprite[7]);
 }
 
-static void tsc_render_warp_text() {
+static void tsc_render_warp_text(void) {
 	//const uint32_t *ts = cfg_language == LANG_JA ? TS_MenuTextJ.tiles : TS_MenuTextE.tiles;
 	// Copy our string to VRAM
     vdp_tiles_load_uftc(*TS_MENUTEXT, TILE_NAMEINDEX, 16, 8);
@@ -447,7 +447,7 @@ static void tsc_render_warp_text() {
 	};
 }
 
-void tsc_show_teleport_menu() {
+void tsc_show_teleport_menu(void) {
 	//mapNameTTL = 0; // We will be clobbering the tiles that display the map name
 	memset(teleMenuSprite, 0, sizeof(Sprite) * 8);
 	tsc_render_warp_text();
@@ -493,7 +493,7 @@ void tsc_show_teleport_menu() {
 	}
 }
 
-uint8_t execute_command() {
+uint8_t execute_command(void) {
 	uint16_t args[4];
 	cmd = tsc_read_byte();
 	if(cmd >= 0x80 && cmd < 0xE0) {
@@ -1312,13 +1312,13 @@ uint8_t execute_command() {
 	return 0;
 }
 
-uint8_t tsc_read_byte() {
+uint8_t tsc_read_byte(void) {
 	uint8_t byte = curCommand[0];
 	curCommand++;
 	return byte;
 }
 
-uint16_t tsc_read_word() {
+uint16_t tsc_read_word(void) {
 	uint16_t word = curCommand[0]+(curCommand[1]<<8);
 	curCommand += 2;
 	return word;

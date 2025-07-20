@@ -187,11 +187,11 @@ static inline uint8_t blk(int32_t xf, int16_t xoff, int32_t yf, int16_t yoff) {
 // Clears previous stage and switches to one with the given ID
 void stage_load(uint16_t id);
 void stage_load_credits(uint8_t id);
-void stage_load_entities();
+void stage_load_entities(void);
 // Called by TSC, replaces one block with another and creates smoke
 void stage_replace_block(int16_t bx, int16_t by, uint8_t index);
 // Updates scrolling for the stage and draws blocks as they get near the screen
 // It is ideal to call this during vblank
-void stage_update();
+void stage_update(void);
 // Put the palettes expected by the current stage into "next" cache
-void stage_setup_palettes();
+void stage_setup_palettes(void);

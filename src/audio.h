@@ -91,15 +91,15 @@
 #define SONG_KING 		0x29
 
 // Initialize sound system
-void sound_init();
+void sound_init(void);
 // Play sound by ID, priority is 0-15, 15 is most important
 void sound_play(uint8_t id, uint8_t priority);
 // Play a song by ID
 void song_play(uint8_t id);
 // Stops music if playing, same as song_play(0)
-void song_stop();
+void song_stop(void);
 // Resume previous song that was playing
 // TSC calls this after fanfare tracks
-void song_resume();
+void song_resume(void);
 // Returns ID of current song
-uint8_t song_get_playing();
+uint8_t song_get_playing(void);

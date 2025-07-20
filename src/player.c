@@ -70,20 +70,20 @@ uint8_t ledge_time;
 
 Sprite airTankSprite;
 
-static void player_update_booster();
-static void player_update_interaction();
-static void player_update_air_display();
+static void player_update_booster(void);
+static void player_update_interaction(void);
+static void player_update_air_display(void);
 
-static void player_update_movement();
-static void player_update_walk();
-static void player_update_jump();
-static void player_update_float();
+static void player_update_movement(void);
+static void player_update_walk(void);
+static void player_update_jump(void);
+static void player_update_float(void);
 
-static void player_prev_weapon();
-static void player_next_weapon();
+static void player_prev_weapon(void);
+static void player_next_weapon(void);
 
 // Default values for player
-void player_init() {
+void player_init(void) {
 	controlsLocked = FALSE;
 	player.hidden = FALSE;
 	player.dir = 0;
@@ -145,7 +145,7 @@ void player_init() {
 	};
 }
 
-void player_update() {
+void player_update(void) {
 	uint8_t tile = stage_get_block_type(sub_to_block(player.x), sub_to_block(player.y));
 	if(!playerMoveMode) { // Normal movement
 		// Wind/Water current
@@ -468,14 +468,14 @@ void player_update() {
 	}
 }
 
-static void player_update_movement() {
+static void player_update_movement(void) {
 	player_update_walk();
 	player_update_jump();
 	player.x_next = player.x + player.x_speed;
 	player.y_next = player.y + player.y_speed;
 }
 
-static void player_update_walk() {
+static void player_update_walk(void) {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
@@ -530,7 +530,7 @@ static void player_update_walk() {
 	}
 }
 
-static void player_update_jump() {
+static void player_update_jump(void) {
 	int16_t jumpSpeed;
 	int16_t gravity;
 	int16_t gravityJump;
@@ -584,7 +584,7 @@ static void player_update_jump() {
 	}
 }
 
-static void player_update_float() {
+static void player_update_float(void) {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
@@ -621,7 +621,7 @@ static void player_update_float() {
 	}
 }
 
-void player_update_bullets() {
+void player_update_bullets(void) {
 	for(uint8_t i = 0; i < MAX_BULLETS; i++) {
 		if(playerBullet[i].ttl) {
 			bullet_update(playerBullet[i]);
@@ -639,7 +639,7 @@ void player_update_bullets() {
 	}
 }
 
-static void player_update_interaction() {
+static void player_update_interaction(void) {
 	// Interaction with entities when pressing down
 	if(cfg_updoor ? joy_pressed(JOY_UP) : joy_pressed(JOY_DOWN)) {
 		Entity *e = entityList;
@@ -664,7 +664,7 @@ static void player_update_interaction() {
 	}
 }
 
-void player_start_booster() {
+void player_start_booster(void) {
 	if(playerBoosterFuel == 0) return;
 	player.jump_time = 0;
 	player.grounded = FALSE;
@@ -716,7 +716,7 @@ void player_start_booster() {
 	sound_play(SND_BOOSTER, 3);
 }
 
-static void player_update_booster() {
+static void player_update_booster(void) {
 	if(!(playerEquipment & (EQUIP_BOOSTER08 | EQUIP_BOOSTER20))) playerBoostState = BOOST_OFF;
 	if(!joy_down(btn[cfg_btn_jump])) {
 	    // Decelerate after boosting down
@@ -892,7 +892,7 @@ void player_show_map_name(uint8_t ttl) {
     mapNameTTL = ttl;
 }
 
-static void draw_air_percent() {
+static void draw_air_percent(void) {
 	uint8_t airTemp = airPercent;
 	uint32_t numberTiles[3][8];
 	if(airTemp >= 100) {
@@ -908,7 +908,7 @@ static void draw_air_percent() {
 	
 }
 
-static void player_update_air_display() {
+static void player_update_air_display(void) {
 	// Blink for a second after getting out of the water
 	if(airPercent == 100) {
 		if(airDisplayTime == TIME_8(50)) {
@@ -931,7 +931,7 @@ static void player_update_air_display() {
 	}
 }
 
-void player_draw() {
+void player_draw(void) {
 	// Special case when player drowns
 	if(!airPercent) {
 		sprite_pos(&playerSprite,
@@ -1045,7 +1045,7 @@ void player_draw() {
 	}
 }
 
-void player_unpause() {
+void player_unpause(void) {
 	// Sometimes player is left stuck after pausing
 	controlsLocked = FALSE;
 	// Simulates a bug where you can get damaged, and pushed upwards, multiple times in succession (Chaco house skip)
@@ -1057,7 +1057,7 @@ void player_unpause() {
     }
 }
 
-uint8_t player_invincible() {
+uint8_t player_invincible(void) {
 	return playerIFrames > 0 || tscState;
 }
 
@@ -1110,7 +1110,7 @@ uint8_t player_inflict_damage(uint16_t damage) {
 	return FALSE;
 }
 
-static void player_prev_weapon() {
+static void player_prev_weapon(void) {
 	for(int16_t i = currentWeapon - 1; i % MAX_WEAPONS != currentWeapon; i--) {
 		if(i < 0) i = MAX_WEAPONS - 1;
 		if(playerWeapon[i].type > 0) {
@@ -1129,7 +1129,7 @@ static void player_prev_weapon() {
 	}
 }
 
-static void player_next_weapon() {
+static void player_next_weapon(void) {
 	for(int16_t i = currentWeapon + 1; i % MAX_WEAPONS != currentWeapon; i++) {
 		if(i >= MAX_WEAPONS) i = 0;
 		if(playerWeapon[i].type > 0) {
@@ -1231,13 +1231,13 @@ void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 	}
 }
 
-void player_refill_ammo() {
+void player_refill_ammo(void) {
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {
 		playerWeapon[i].ammo = playerWeapon[i].maxammo;
 	}
 }
 
-void player_delevel_weapons() {
+void player_delevel_weapons(void) {
     //disable_ints();
     //z80_pause_fast();
 	for(uint8_t i = 0; i < MAX_WEAPONS; i++) {

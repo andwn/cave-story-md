@@ -3,9 +3,9 @@
 
 #include "types.h"
 
-extern void sram_enable();
-extern void sram_enable_ro();
-extern void sram_disable();
+extern void sram_enable(void);
+extern void sram_enable_ro(void);
+extern void sram_disable(void);
 
 extern uint8_t sram_read_byte(uint32_t offset);
 extern uint16_t sram_read_word(uint32_t offset);

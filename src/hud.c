@@ -52,14 +52,14 @@ static const uint8_t EnergyPixel[6][62] = {
          20,21,21,22,23,23,24,25,25,26,27,27,28,29,29,30,31,31,32,33,33,34,35,35,36,37,37,38,39,39,40,40 },
 };
 
-void hud_refresh_health();
+void hud_refresh_health(void);
 void hud_refresh_energy(uint8_t hard);
-void hud_refresh_weapon();
-void hud_refresh_ammo();
-void hud_refresh_maxammo();
+void hud_refresh_weapon(void);
+void hud_refresh_ammo(void);
+void hud_refresh_maxammo(void);
 
 // Expected to happen while the screen is off
-void hud_create() {
+void hud_create(void) {
 	// Invalidate all values, forces a redraw
 	hudMaxHealth = hudHealth = hudWeapon = hudLevel = hudMaxAmmo = hudAmmo = 255;
     hudEnergy = hudMaxEnergy = 10;
@@ -85,7 +85,7 @@ void hud_create() {
 	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
 }
 
-void hud_force_redraw() {
+void hud_force_redraw(void) {
 	hud_refresh_health();
     hud_refresh_weapon();
     hud_refresh_energy(TRUE);
@@ -104,19 +104,19 @@ void hud_force_redraw() {
     //enable_ints();
 }
 
-void hud_force_energy() {
+void hud_force_energy(void) {
 	hudLevel = 9;
 }
 
-void hud_show() {
+void hud_show(void) {
 	showing = TRUE;
 }
 
-void hud_hide() {
+void hud_hide(void) {
 	showing = FALSE;
 }
 
-void hud_update() {
+void hud_update(void) {
 	uint8_t weaponChange = FALSE;
 	//if(paused) return;
 	if(!showing) return;
@@ -145,7 +145,7 @@ void hud_update() {
 	}
 }
 
-void hud_refresh_health() {
+void hud_refresh_health(void) {
 	// Redraw health if it changed
 	hudMaxHealth = max(playerMaxHealth, 1); // Just so it's impossible to divide zero
 	hudHealth = player.health;
@@ -270,7 +270,7 @@ void hud_refresh_energy(uint8_t hard) {
         dma_queue(DmaVRAM, (uint32_t)tileData[XP_BAR+i], (TILE_HUDINDEX+2+i*4)*TILE_SIZE, 16, 2);
 }
 
-void hud_refresh_weapon() {
+void hud_refresh_weapon(void) {
 	// Weapon switched
 	hudWeapon = playerWeapon[currentWeapon].type;
 	memcpy(tileData[WPN+0], SPR_TILES(&SPR_ArmsImage, hudWeapon), TILE_SIZE*2);
@@ -280,7 +280,7 @@ void hud_refresh_weapon() {
     dma_queue(DmaVRAM, (uint32_t)tileData[WPN+2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
 }
 
-void hud_refresh_ammo() {
+void hud_refresh_ammo(void) {
 	// Top half of ammo display
 	hudAmmo = playerWeapon[currentWeapon].ammo;
 	if(hudMaxAmmo > 0) {
@@ -304,7 +304,7 @@ void hud_refresh_ammo() {
         dma_queue(DmaVRAM, (uint32_t)tileData[AMMO+i], (TILE_HUDINDEX+16+i*4)*TILE_SIZE, 16, 2);
 }
 
-void hud_refresh_maxammo() {
+void hud_refresh_maxammo(void) {
 	// Bottom half of ammo display
 	hudMaxAmmo = playerWeapon[currentWeapon].maxammo;
 	memcpy(tileData[AMMO+4], &SPR_TILES(&SPR_Hud2,0)[SPR_TILE(4, 1)*TSIZE], TILE_SIZE);

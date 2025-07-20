@@ -21,7 +21,7 @@ uint8_t gamemode;
 uint8_t paused;
 uint8_t gameFrozen;
 
-void aftervsync() {
+void aftervsync(void) {
 	//PF_BGCOLOR(0xEEE);
     vdp_fade_step_dma();
 	//PF_BGCOLOR(0x0E0);
@@ -40,7 +40,7 @@ void aftervsync() {
 }
 
 __attribute__((noreturn))
-void main() {
+void main(void) {
     srand(0xC427); // initiate rand number generator
     mem_init();
     vdp_init();

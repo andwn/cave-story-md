@@ -173,7 +173,7 @@ const struct {
 
 extern uint8_t tpal;
 
-uint8_t saveselect_main() {
+uint8_t saveselect_main(void) {
 	gamemode = GM_SAVESEL;
 	
 	uint8_t cursor = 0;

@@ -7,7 +7,7 @@ void cjk_reset(uint16_t vramMode);
 
 // Call this at the end of a line or string. It will reset the shift value,
 // preventing the next char from overlapping the previous one
-void cjk_newline();
+void cjk_newline(void);
 
 // Scroll the message window (redraw row 2-3 in row 1-2 rows and clear row 3)
 void cjk_winscroll(uint16_t win_x, uint16_t win_y);

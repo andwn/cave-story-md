@@ -39,7 +39,7 @@ int16_t cjkMapRow;
 #define TILE_KANJISTART	(TILE_SHEETINDEX + 144 + 228 + 135)
 // TILE_HUDINDEX (+32 tiles) = 352
 // TILE_FACE_INDEX (+36 tiles) = 388
-static uint16_t CjkNextTile() {
+static uint16_t CjkNextTile(void) {
     uint16_t index;
     switch(cjkVramMode) {
         case CJK_TITLE:
@@ -87,7 +87,7 @@ void cjk_reset(uint16_t vramMode) {
     for(uint16_t i=0;i<3;i++) for(uint16_t j=0;j<2;j++) for(uint16_t k=0;k<36;k++) cjkMapBuf[i][j][k] = attr;
 }
 
-void cjk_newline() {
+void cjk_newline(void) {
     cjkShiftChar = 0;
     if(++cjkMapRow > 2) cjkMapRow = 0;
     // Clear new row

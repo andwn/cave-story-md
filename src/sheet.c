@@ -533,14 +533,14 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	}
 }
 
-void sheets_load_splash() {
+void sheets_load_splash(void) {
 	sheet_num = 0;
 	memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
 	memset(tilocs, 0, MAX_TILOCS);
 	tiloc_index = 16;
 }
 
-void sheets_load_intro() {
+void sheets_load_intro(void) {
 	sheet_num = 0;
 	memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
 	memset(tilocs, 0, MAX_TILOCS);

@@ -19,24 +19,24 @@ extern uint8_t gameFrozen;
 // Print version string at bottom of the screen
 void print_version(void);
 
-void intro_main();
+void intro_main(void);
 
 // Displays title screen, returns which option was picked
-uint8_t titlescreen_main();
+uint8_t titlescreen_main(void);
 
-uint8_t saveselect_main();
+uint8_t saveselect_main(void);
 
 // Play the actual game. "load" is whether new game or continue was selected
 void game_main(uint8_t load);
 // Show the map - called from <MLP
-void do_map();
+void do_map(void);
 
 // Listen to music, sound effects
-void soundtest_main();
+void soundtest_main(void);
 
 // Change controls and stuff
-void config_main();
+void config_main(void);
 
-void credits_main();
+void credits_main(void);
 void credits_show_image(uint16_t id);
-void credits_clear_image();
+void credits_clear_image(void);

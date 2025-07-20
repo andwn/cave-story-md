@@ -70,8 +70,8 @@ uint16_t showingItem;
 
 uint8_t blinkTime;
 
-void window_clear_text();
-void window_draw_face();
+void window_clear_text(void);
+void window_draw_face(void);
 
 void window_open(uint8_t mode) {
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
@@ -116,11 +116,11 @@ void window_open(uint8_t mode) {
 	windowOpen = TRUE;
 }
 
-uint8_t window_is_open() {
+uint8_t window_is_open(void) {
 	return windowOpen;
 }
 
-void window_clear() {
+void window_clear(void) {
 	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
@@ -130,13 +130,13 @@ void window_clear() {
 	window_clear_text();
 }
 
-void window_clear_text() {
+void window_clear_text(void) {
 	textRow = textColumn = spaceCounter = spaceOffset = 0;
 	memset(windowText, ' ', 36*3);
     cjk_reset(CJK_MESSAGE);
 }
 
-void window_close() {
+void window_close(void) {
 	if(!paused) {
 	    vdp_set_window(0, 0);
         hud_force_redraw();
@@ -222,7 +222,7 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
     textColumn++;
 }
 
-void window_scroll_text() {
+void window_scroll_text(void) {
 	// Push bottom 2 rows to top
 	for(uint8_t row = 0; row < 2; row++) {
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;
@@ -254,7 +254,7 @@ void window_scroll_text() {
 	spaceCounter = spaceOffset = 0;
 }
 
-uint8_t window_get_textmode() {
+uint8_t window_get_textmode(void) {
 	return textMode;
 }
 
@@ -262,7 +262,7 @@ void window_set_textmode(uint8_t mode) {
 	textMode = mode;
 }
 
-uint8_t window_tick() {
+uint8_t window_tick(void) {
 	if(textMode > 0) return TRUE;
 	windowTextTick++;
 	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&btn[cfg_btn_jump]))) {
@@ -273,7 +273,7 @@ uint8_t window_tick() {
 	}
 }
 
-void window_prompt_open() {
+void window_prompt_open(void) {
 	promptAnswer = TRUE; // Yes is default
 	sound_play(SND_MENU_PROMPT, 5);
 	// Load hand sprite and move next to yes
@@ -305,15 +305,15 @@ void window_prompt_open() {
     vdp_tiles_load(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
 }
 
-void window_prompt_close() {
+void window_prompt_close(void) {
 	window_clear();
 }
 
-uint8_t window_prompt_answer() {
+uint8_t window_prompt_answer(void) {
 	return promptAnswer;
 }
 
-uint8_t window_prompt_update() {
+uint8_t window_prompt_update(void) {
 	if(joy_pressed(btn[cfg_btn_jump])) {
 		sound_play(SND_MENU_SELECT, 5);
 		window_prompt_close();
@@ -331,7 +331,7 @@ uint8_t window_prompt_update() {
 	return FALSE;
 }
 
-void window_draw_face() {
+void window_draw_face(void) {
 	vdp_tiles_load_uftc(face_info[showingFace].tiles, TILE_FACEINDEX, 0, 6*6);
 	vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX),
                       TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
@@ -394,7 +394,7 @@ void window_show_weapon(uint16_t item) {
 	TILES_QUEUE(SPR_TILES(&SPR_ItemWin,0), TILE_PROMPTINDEX+6, 18);
 }
 
-void window_update() {
+void window_update(void) {
 	if(showingItem) {
 		if(handSpr.y < (int16_t)ITEM_Y_END) handSpr.y++;
 	    vdp_sprite_add(&handSpr);

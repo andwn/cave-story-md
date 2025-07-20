@@ -50,7 +50,7 @@ static void draw_jp_text(const uint8_t *str, uint16_t x, uint16_t y) {
 }
 
 __attribute__((noreturn))
-void credits_main() {
+void credits_main(void) {
 	gamemode = GM_CREDITS;
 	
 	Sprite icon[16] = {0};
@@ -254,6 +254,6 @@ void credits_show_image(uint16_t id) {
     vdp_colors(32, illustration_info[id].palette, 16);
 }
 
-void credits_clear_image() {
+void credits_clear_image(void) {
 	illScrolling = -8;
 }

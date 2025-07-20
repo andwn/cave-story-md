@@ -198,7 +198,7 @@ void draw_itemmenu(uint8_t resetCursor) {
     vdp_set_display(TRUE);
 }
 
-uint8_t update_pause() {
+uint8_t update_pause(void) {
     // Start or B will close the menu and resume the game.
     // Pressing C over a weapon will too, and switch to that weapon.
     if((joy_pressed(btn[cfg_btn_pause]) || joy_pressed(btn[cfg_btn_shoot]) ||
@@ -406,7 +406,7 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
     vdp_map_xy(VDP_PLANE_W, TILE_FACEINDEX + 3, x + w, y + h);
 }
 
-void do_map() {
+void do_map(void) {
     vdp_sprites_clear();
 
     uint16_t mapx = (ScreenHalfW - g_stage.pxm.width / 2) / 8;

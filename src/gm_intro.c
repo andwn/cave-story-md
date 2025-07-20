@@ -23,7 +23,7 @@
 
 #include "gamemode.h"
 
-void intro_main() {
+void intro_main(void) {
 	gamemode = GM_INTRO;
 	// Init some subsystems used
 	sheets_load_intro();

@@ -11,7 +11,7 @@ void srand(uint16_t seed) {
     randbase = seed ^ 0xD94B;
 }
 
-uint16_t rand() {
+uint16_t rand(void) {
     randbase ^= (randbase >> 1) ^ *((volatile uint16_t*) 0xC00008);
     randbase ^= (randbase << 1);
 
@@ -55,7 +55,7 @@ static uint16_t* pack(uint16_t nsize) {
     return NULL;
 }
 
-void mem_init() {
+void mem_init(void) {
     // define available memory (sizeof(uint16_t) is the memory reserved to indicate heap end)
     uint32_t len = (uint32_t) &__heap_size - sizeof(uint16_t);
     // define heap
@@ -68,7 +68,7 @@ void mem_init() {
     s_heap[len >> 1] = 0;
 }
 
-uint16_t mem_get_free() {
+uint16_t mem_get_free(void) {
     uint16_t bsize;
     uint16_t* b = s_heap;
     uint16_t res = 0;
@@ -81,7 +81,7 @@ uint16_t mem_get_free() {
     return res;
 }
 
-uint16_t mem_get_used() {
+uint16_t mem_get_used(void) {
     uint16_t bsize;
     uint16_t* b = s_heap;
     uint16_t res = 0;

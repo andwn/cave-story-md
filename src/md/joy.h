@@ -32,7 +32,7 @@ extern const char btnName[12][4];
 extern uint8_t joytype;
 extern uint16_t joystate, joystate_old;
 
-void joy_init();
-void joy_update();
+void joy_init(void);
+void joy_update(void);
 
 #endif //MD_JOY_H

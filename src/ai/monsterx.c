@@ -57,7 +57,7 @@ enum Pieces {
 static const uint16_t tread_turnon_times[] = { 4, 8, 10, 12 };
 
 // return true if all the targets behind the doors have been destroyed.
-static uint8_t all_targets_destroyed() {
+static uint8_t all_targets_destroyed(void) {
 	for(uint8_t i=TARGET1;i<TARGET1+4;i++) {
 		if (!pieces[i]->hidden) return FALSE;
 	}

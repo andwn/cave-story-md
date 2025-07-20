@@ -14,7 +14,7 @@ uint8_t songPlaying, songResume;
 // soundChannel cycles between 1-3 to allow 3 sounds to play at once
 uint8_t soundChannel;
 
-void sound_init() {
+void sound_init(void) {
     songPlaying = songResume = 0;
     // Here we are pointing the XGM driver to each sound effect in the game
     // and their length (in frames) indexed in sfx_info
@@ -61,14 +61,14 @@ void song_play(uint8_t id) {
 	songPlaying = id;
 }
 
-void song_stop() {
+void song_stop(void) {
     song_play(0);
 }
 
-void song_resume() {
+void song_resume(void) {
 	song_play(songResume);
 }
 
-uint8_t song_get_playing() {
+uint8_t song_get_playing(void) {
 	return songPlaying;
 }

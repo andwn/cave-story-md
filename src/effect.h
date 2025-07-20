@@ -16,13 +16,13 @@ enum {
 extern uint8_t dqueued;
 
 // Initialize default (0, NULL) values to avoid weird glitches
-void effects_init();
+void effects_init(void);
 // Clear all effects
-void effects_clear();
+void effects_clear(void);
 // Just clear the smoke
-void effects_clear_smoke();
+void effects_clear_smoke(void);
 // Per frame update of effects
-void effects_update();
+void effects_update(void);
 
 // Creates a damage string (maximum of 4)
 // Positive values will be white, negative will be red, zero is ignored

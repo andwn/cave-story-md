@@ -57,28 +57,28 @@ extern uint8_t iSuckAtThisGameSHIT;
 extern uint8_t missileEmptyFlag;
 
 // Initialize everything for the player, sets default values on game start
-void player_init();
+void player_init(void);
 // Reloads the player sprites after calling SPR_reset() in stage_load()
-void player_reset_sprites();
+void player_reset_sprites(void);
 
 // Per frame update for the player and related objects
-void player_update();
-void player_update_bullets();
-void player_start_booster();
+void player_update(void);
+void player_update_bullets(void);
+void player_start_booster(void);
 // Sprite animation
-void player_draw();
+void player_draw(void);
 
 // Returns TRUE if the player is blinking or otherwise should not be damaged (cutscene)
-uint8_t player_invincible();
+uint8_t player_invincible(void);
 // Inflict damage on the player, will start the animation, knockback, red numbers,
 // sound, iframes, and check for death
 uint8_t player_inflict_damage(uint16_t damage);
 
 // Makes the player sprite visible/invisible
-void player_show();
-void player_hide();
-void player_pause();
-void player_unpause();
+void player_show(void);
+void player_hide(void);
+void player_pause(void);
+void player_unpause(void);
 
 // Shows the name of the map for a specified amount of time (frames)
 // This would make more sense in stage, but stage_update() is in vblank
@@ -89,8 +89,8 @@ void player_give_weapon(uint8_t id, uint8_t ammo); // <AM+
 void player_take_weapon(uint8_t id); // <AM-
 uint8_t player_has_weapon(uint8_t id); // <AMJ
 void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo); // <TAM
-void player_refill_ammo(); // <AE+
-void player_delevel_weapons(); // <ZAM
+void player_refill_ammo(void); // <AE+
+void player_delevel_weapons(void); // <ZAM
 
 Weapon *player_find_weapon(uint8_t id);
 

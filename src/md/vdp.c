@@ -49,7 +49,7 @@ static uint16_t font_pal;
 //uint8_t pal_mode;
 uint8_t FPS;
 
-void vdp_init() {
+void vdp_init(void) {
     // Store pal_mode and adjust some stuff based on it
     pal_mode = *vdp_ctrl_port & 1;
     ScreenHeight = pal_mode ? 240 : 224;
@@ -99,7 +99,7 @@ void vdp_init() {
     vdp_tiles_load(BlankData, 0, 1);
 }
 
-//void vdp_vsync() {
+//void vdp_vsync(void) {
 //    vblank = 0;
 //    while (!vblank);
 //    vblank = 0;
@@ -227,7 +227,7 @@ void vdp_color_next(uint16_t index, uint16_t color) {
     pal_next[index] = color;
 }
 
-uint16_t vdp_fade_step_calc() {
+uint16_t vdp_fade_step_calc(void) {
     if (pal_fading != FADE_INPROGRESS) return 0;
     if (++pal_fadecnt >= pal_fadespeed) {
         pal_fadecnt = 0;
@@ -260,7 +260,7 @@ uint16_t vdp_fade_step_calc() {
     return 1;
 }
 
-void vdp_fade_step_dma() {
+void vdp_fade_step_dma(void) {
     if (pal_fading != FADE_NONE) {
         dma_queue(DmaCRAM, (uint32_t) pal_current, 0, 64, 2);
         if (pal_fading == FADE_LASTFRAME) pal_fading = FADE_NONE;
@@ -317,13 +317,13 @@ void vdp_sprites_add(const Sprite *spr, uint16_t num) {
     for (uint16_t i = num; i--;) vdp_sprite_add(&spr[i]);
 }
 
-void vdp_sprites_clear() {
+void vdp_sprites_clear(void) {
     static const Sprite NULL_SPRITE = {.x = 0x80, .y = 0x80};
     sprite_count = 0;
     vdp_sprites_add(&NULL_SPRITE, 1);
 }
 
-void vdp_sprites_update() {
+void vdp_sprites_update(void) {
     if (!sprite_count) return;
     sprite_table[sprite_count - 1].link = 0; // Mark end of sprite list
     dma_queue(DmaVRAM, (uint32_t) sprite_table, VDP_SPRITE_TABLE, sprite_count << 2, 2);

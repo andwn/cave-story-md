@@ -279,7 +279,7 @@ void press_menuitem(const MenuItem *item, uint8_t page, Sprite *sprCursor) {
 
 extern uint8_t tpal;
 
-void config_main() {
+void config_main(void) {
 	gamemode = GM_CONFIG;
 	
 	vdp_map_clear(VDP_PLANE_B);

@@ -41,16 +41,16 @@ extern uint8_t showingBossHealth;
 
 // Initialize default values to avoid strange glitches
 // Also loads persistent head.tsc and arms.tsc events
-void tsc_init();
+void tsc_init(void);
 // Called by stage_load(), fills up the event list with pointers to each event
 void tsc_load_stage(uint8_t id);
 // Per frame update, will advance the script or wait for something based on whats happening
-uint8_t tsc_update();
+uint8_t tsc_update(void);
 // This will begin executing a scripted event if it exists
 void tsc_call_event(uint16_t number);
 
 //void tsc_unpause_debug();
 
-void tsc_show_boss_health();
-void tsc_hide_boss_health();
-void tsc_update_boss_health();
+void tsc_show_boss_health(void);
+void tsc_hide_boss_health(void);
+void tsc_update_boss_health(void);

@@ -82,9 +82,9 @@ extern uint8_t cfg_sfx_mute;
 extern uint8_t sram_file;
 
 // Default settings
-void system_init();
-void system_cfg_reset_controls();
-void system_cfg_reset_gameplay();
+void system_init(void);
+void system_cfg_reset_controls(void);
+void system_cfg_reset_gameplay(void);
 
 // Global flags are persisted to save data
 void system_set_flag(uint16_t flag, uint8_t value);
@@ -95,32 +95,32 @@ void system_set_skip_flag(uint16_t flag, uint8_t value);
 uint8_t system_get_skip_flag(uint16_t flag);
 
 // Increments play time
-void system_update();
+void system_update(void);
 
 // Initializes variables with defaults when starting a new game
-void system_new();
+void system_new(void);
 // Fills a structure with some info about a save file
 void system_peekdata(uint8_t index, SaveEntry *file);
 // Initializes variables from SRAM when loading a game save
 void system_load(uint8_t index);
 // Stores variables and game state into SRAM
-void system_save();
+void system_save(void);
 
 void system_copy(uint8_t from, uint8_t to);
 void system_delete(uint8_t index);
 
-void system_load_config();
-void system_save_config();
+void system_load_config(void);
+void system_save_config(void);
 // Validates whether any save data exists in SRAM
-uint8_t system_checkdata();
+uint8_t system_checkdata(void);
 // Load to a stock save file from the level select list
 void system_load_levelselect(uint8_t file);
 
 // Counter stuff
-void system_start_counter();
-uint32_t system_counter_ticks();
-void system_draw_counter();
-uint32_t system_load_counter();
+void system_start_counter(void);
+uint32_t system_counter_ticks(void);
+void system_draw_counter(void);
+uint32_t system_load_counter(void);
 void system_save_counter(uint32_t ticks);
 
-void system_format_sram();
+void system_format_sram(void);

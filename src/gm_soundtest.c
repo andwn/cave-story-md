@@ -49,7 +49,7 @@ void draw_status(uint8_t status) {
 	}
 }
 
-void soundtest_main() {
+void soundtest_main(void) {
 	gamemode = GM_SOUNDTEST;
 	
 	uint8_t track = 0;

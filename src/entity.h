@@ -89,14 +89,14 @@ extern uint16_t entity_active_count;
 extern uint8_t moveMeToFront;
 
 // Deletes entities based on a criteria, scripts sometimes call the bottom 2
-void entities_clear();
+void entities_clear(void);
 void entities_clear_by_event(uint16_t event);
 void entities_clear_by_type(uint16_t type);
 
 // Per frame update for active entities
 void entities_update(uint8_t draw);
 // Reactivate entities when they come back on screen
-void entities_update_inactive();
+void entities_update_inactive(void);
 
 void entity_handle_bullet(Entity *e, Bullet *b);
 
@@ -151,12 +151,12 @@ void entity_default(Entity *e, uint16_t type, uint16_t flags);
 Bullet *bullet_colliding(Entity *e);
 
 // Drawing
-void entities_draw();
+void entities_draw(void);
 
 void generic_npc_states(Entity *e);
 
-uint16_t entities_count_active();
-uint16_t entities_count_inactive();
-uint16_t entities_count();
+uint16_t entities_count_active(void);
+uint16_t entities_count_inactive(void);
+uint16_t entities_count(void);
 
 #endif

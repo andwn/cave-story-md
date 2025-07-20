@@ -84,7 +84,7 @@ static inline void sprite_index(Sprite *s, uint16_t ind) {
 }
 
 // Set defaults, clear everything
-void vdp_init();
+void vdp_init(void);
 
 // Register stuff
 void vdp_set_display(uint8_t enabled);
@@ -95,8 +95,8 @@ void vdp_set_backcolor(uint8_t index);
 void vdp_set_window(uint8_t x, uint8_t y);
 
 // Status
-uint16_t vdp_get_palmode();
-uint16_t vdp_get_vblank();
+uint16_t vdp_get_palmode(void);
+uint16_t vdp_get_vblank(void);
 
 // Tile patterns
 void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num);
@@ -115,8 +115,8 @@ void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color(uint16_t index, uint16_t color);
 void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color_next(uint16_t index, uint16_t color);
-uint16_t vdp_fade_step_calc();
-void vdp_fade_step_dma();
+uint16_t vdp_fade_step_calc(void);
+void vdp_fade_step_dma(void);
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async);
 
 // Scrolling
@@ -127,8 +127,8 @@ void vdp_vscroll(uint16_t plan, int16_t vscroll);
 // Sprites
 void vdp_sprite_add(const Sprite *spr);
 void vdp_sprites_add(const Sprite *spr, uint16_t num);
-void vdp_sprites_clear();
-void vdp_sprites_update();
+void vdp_sprites_clear(void);
+void vdp_sprites_update(void);
 
 // Text
 void vdp_font_load(const uint32_t *tiles);
