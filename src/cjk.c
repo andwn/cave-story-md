@@ -47,6 +47,7 @@ static uint16_t CjkNextTile() {
             cjkVramIndex++;
             if(cjkVramIndex >= 256) cjkVramIndex = 0;
             break;
+        default:
         case CJK_MESSAGE:
             if(cjkVramIndex < 96) {
                 index = cjkVramIndex + TILE_FONTINDEX;

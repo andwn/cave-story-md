@@ -74,7 +74,10 @@ void game_main(uint8_t load) {
 					vdp_tiles_load(black, TILE_FACEINDEX, 1);
 					vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, 0, 40, 30, 0);
 				} else {
-					vdp_map_clear(VDP_PLANE_W);
+					//vdp_map_clear(VDP_PLANE_W); // Don't clear the whole thing, breaks extended charsets
+					for(uint16_t y = 0; y < 30; y++) {
+						vdp_map_hline(VDP_PLANE_W, (const uint16_t*) BlankData, 0, y, 40);
+					}
 				}
 				vdp_set_window(0, pal_mode ? 30 : 28);
 				vdp_set_display(TRUE);

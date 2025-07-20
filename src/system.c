@@ -618,6 +618,7 @@ void system_save_config() {
 
 // Level select is still the old style format... don't care enough to fix it
 void system_load_levelselect(uint8_t file) {
+	if(file > 21) file = 0;
 	//ssf_setbank(7, 7); // Level select data is in chunk 7
 	player_init();
 	uint16_t rid = LS_readWord(file, 0x00);

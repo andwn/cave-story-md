@@ -169,8 +169,8 @@ Oh, oui.<NOD<CLRLa fille de chez Arthur, hein ?<NOD
 Elle vit avec Toroko.<NOD<CLRUne douce fille, oui.<NOD
 Elle recherche une sorte de
 "Dragon des cieux"...<NOD
-Des dragons qui volent dans le ciel...
-Ces trucs-là existent
+Des dragons qui volent dans le
+ciel... Ces trucs-là existent
 réellement ?<NOD<ANP0311:0000:0002<END
 #0312
 <MSGOh, encore toi.<NOD<CLRSue a été emmenée plus haut.<NOD
@@ -222,27 +222,27 @@ cela arriver !<NOD<CLO
 
 
 #0500
-<KEY<MSG<TUR            Haut: Ferme de Yamashita
-    Gauche: Réservoir   Droite: Cimetière
-           Bas: Maison d'Arthur<NOD
+<KEY<MSG<TUR         Haut: Ferme de Yamashita
+ Gauche: Réservoir   Droite: Cimetière
+        Bas: Maison d'Arthur<NOD
 <END
 
 #0501
 <KEY<MSG<TUR
-              Ferme de Yamashita<NOD<END
+            Ferme de Yamashita<NOD<END
 #0502
 <KEY<MSG<TUR
-                 Réservoir<NOD<END
+               Réservoir<NOD<END
 #0503
 <KEY<MSG<TUR
-              Cimetière Mimiga
-          Danger ! Entrée interdite<NOD<END
+            Cimetière Mimiga
+        Danger ! Entrée interdite<NOD<END
 #0504
 <KEY<MSG<TUR
-              Maison d'Arthur<NOD<END
+            Maison d'Arthur<NOD<END
 #0505
 <KEY<MSG<TUR
-              Hall de l'Assemblée<NOD<END
+            Hall de l'Assemblée<NOD<END
 
 
 #0600
