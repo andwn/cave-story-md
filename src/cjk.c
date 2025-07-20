@@ -51,19 +51,19 @@ static uint16_t CjkNextTile() {
         case CJK_MESSAGE:
             if(cjkVramIndex < 96) {
                 index = cjkVramIndex + TILE_FONTINDEX;
-            } else if(cjkVramIndex < 124) {
+            } else if(cjkVramIndex < 128) {
                 index = ((cjkVramIndex - 96) << 2) + (VDP_PLANE_W >> 5) + 3;
-            } else if(cjkVramIndex < 156) {
-                index = (cjkVramIndex - 124) + TILE_HUDINDEX;
-            } else if(cjkVramIndex < 172) {
-                index = (cjkVramIndex - 156) + TILE_NUMBERINDEX;
-            } else if(cjkVramIndex < 180) {
-                index = (cjkVramIndex - 172) + TILE_NAMEINDEX;
+            } else if(cjkVramIndex < 144) {
+                index = (cjkVramIndex - 128) + TILE_NUMBERINDEX;
+            } else if(cjkVramIndex < 192) {
+                index = (cjkVramIndex - 144) + TILE_HUDINDEX;
+            } else if(cjkVramIndex < 208) {
+                index = (cjkVramIndex - 192) + TILE_NAMEINDEX;
             } else {
-                index = (cjkVramIndex - 180) + TILE_FACEINDEX;
+                index = (cjkVramIndex - 208) + TILE_FACEINDEX;
             }
             cjkVramIndex++;
-            if(cjkVramIndex >= 216 || (showingFace && cjkVramIndex >= 216-36)) cjkVramIndex = 0;
+            if(cjkVramIndex >= 208+36 || (showingFace && cjkVramIndex >= 208)) cjkVramIndex = 0;
             break;
         case CJK_CREDITS:
             if(cjkVramIndex < 320) {
