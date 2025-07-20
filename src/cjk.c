@@ -49,21 +49,23 @@ static uint16_t CjkNextTile(void) {
             break;
         default:
         case CJK_MESSAGE:
-            if(cjkVramIndex < 96) {
+            if(cjkVramIndex < (96)) {
                 index = cjkVramIndex + TILE_FONTINDEX;
-            } else if(cjkVramIndex < 128) {
+            } else if(cjkVramIndex < (96+30)) {
                 index = ((cjkVramIndex - 96) << 2) + (VDP_PLANE_W >> 5) + 3;
-            } else if(cjkVramIndex < 144) {
-                index = (cjkVramIndex - 128) + TILE_NUMBERINDEX;
-            } else if(cjkVramIndex < 192) {
-                index = (cjkVramIndex - 144) + TILE_HUDINDEX;
-            } else if(cjkVramIndex < 208) {
-                index = (cjkVramIndex - 192) + TILE_NAMEINDEX;
+            } else if(cjkVramIndex < (96+30+16)) {
+                index = (cjkVramIndex - (96+30)) + TILE_NUMBERINDEX;
+            } else if(cjkVramIndex < (96+30+16+32)) {
+                index = (cjkVramIndex - (96+30+16)) + TILE_HUDINDEX;
+            } else if(cjkVramIndex < (96+30+16+32+16)) {
+                index = (cjkVramIndex - (96+30+16+32)) + TILE_NAMEINDEX;
             } else {
-                index = (cjkVramIndex - 208) + TILE_FACEINDEX;
+                index = (cjkVramIndex - (96+30+16+32)) + TILE_FACEINDEX;
             }
             cjkVramIndex++;
-            if(cjkVramIndex >= 208+36 || (showingFace && cjkVramIndex >= 208)) cjkVramIndex = 0;
+            if(cjkVramIndex >= (96+30+16+32)+36 || (showingFace && cjkVramIndex >= (96+30+16+32))) {
+                cjkVramIndex = 0;
+            }
             break;
         case CJK_CREDITS:
             if(cjkVramIndex < 320) {

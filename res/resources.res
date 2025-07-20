@@ -136,7 +136,7 @@ SPRITE SPR_ToroBlock	"sprite/toroblock.png"		2 2 NONE
 SPRITE SPR_BigDoorFrame	"sprite/bigdoorframe.png" 	4 4 NONE
 SPRITE SPR_BigDoor		"sprite/bigdoor.png"		2 3 NONE
 SPRITE SPR_PowerScreen	"sprite/powerscreen.png" 	2 2 NONE
-SPRITE SPR_Hey			"sprite/hey.png"			2 2 NONE
+#SPRITE SPR_Hey			"sprite/hey.png"			2 2 NONE
 SPRITE SPR_Sprinkler	"sprite/sprinkler.png"		2 2 NONE
 SPRITE SPR_Sword		"sprite/kingsword.png"		2 2 NONE
 SPRITE SPR_Drop			"sprite/drop.png"			1 1 NONE
@@ -171,7 +171,7 @@ SPRITE SPR_BalrogMedic	"sprite/balrog_medic.png"	5 3 NONE
 SPRITE SPR_BabyPuppy	"sprite/puppy_baby.png"		2 1 NONE
 SPRITE SPR_DoctorBlood  "sprite/blood.png"          7 4 NONE
 SPRITE SPR_DocDie       "sprite/docdie.png"         4 6 NONE
-SPRITE SPR_Drop2        "sprite/drop2.png"          1 1 NONE
+#SPRITE SPR_Drop2        "sprite/drop2.png"          1 1 NONE
 SPRITE SPR_Transmg      "sprite/transmg.png"        4 6 NONE
 
 # Use Same Palette as Stage

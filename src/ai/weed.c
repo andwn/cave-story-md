@@ -513,25 +513,20 @@ void ai_frog(Entity *e) {
 	e->y = e->y_next;
 }
 
-void onspawn_hey(Entity *e) {
-	SNAP_TO_GROUND(e);
-	e->display_box.top = 16;
+void ai_hey(Entity *e) {
+	if(++e->timer > TIME(30)) {
+        e->state = STATE_DELETE;
+    }
+    if(e->timer < TIME(5)) {
+        e->y -= SPEED(0x200);
+    }
 }
 
-void ai_hey(Entity *e) {
-	switch(e->state) {
-		case 0:
-		{
-			e->state = 1;
-			e->timer = 0;
-		}
-		break;
-		case 1:
-		{
-			e->hidden = ++e->timer > TIME_8(50);
-		}
-		break;
-	}
+void ai_hey_spawner(Entity *e) {
+	if(!e->state) {
+        entity_create(e->x, e->y - (8<<CSF), 105, 0);
+        e->state = 1;
+    }
 }
 
 void ai_motorbike(Entity *e) {

@@ -301,8 +301,8 @@ void window_prompt_open(void) {
 	};
 	TILES_QUEUE(SPR_TILES(&SPR_Pointer,0), TILE_PROMPTINDEX, 4);
 	//const SpriteDefinition *spr = cfg_language == LANG_JA ? &SPR_J_Prompt : &SPR_Prompt;
-	//TILES_QUEUE(SPR_TILES(spr,0,0), TILE_PROMPTINDEX+4, 24);
-    vdp_tiles_load(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
+	TILES_QUEUE(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
+    //vdp_tiles_load(SPR_PROMPT->tiles, TILE_PROMPTINDEX+4, 24);
 }
 
 void window_prompt_close(void) {

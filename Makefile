@@ -344,9 +344,9 @@ $(BUILD_DIR)/res/tsc/ru/%.tsb: res/tsc/ru/%.txt | $(TSCOMP) $$(@D)/
 
 # Generate patches
 $(BUILD_DIR)/%.patch: %.s | $(TL_TSBS) $$(@D)/
-	$(AS) $(ASFLAGS) "$<" -o "$*.tmp.o"
-	$(LD) -T md.ld -nostdlib "$*.tmp.o" -o "$*.tmp.elf"
-	$(OBJC) -O binary "$*.tmp.elf" "$@"
+	$(AS) $(ASFLAGS) "$<" -o "$(BUILD_DIR)/$*.tmp.o"
+	$(LD) -T md.ld -nostdlib "$(BUILD_DIR)/$*.tmp.o" -o "$(BUILD_DIR)/$*.tmp.elf"
+	$(OBJC) -O binary "$(BUILD_DIR)/$*.tmp.elf" "$@"
 
 # Apply patches
 $(TARGET)-ja.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ja.patch | $(PATCHROM) $(TARGET)-en.gen

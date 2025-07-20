@@ -1,5 +1,3 @@
-input   res/sprite/sega.png
-dumppal build/res/pal/sega.pal
 input   res/sprite/quote.png
 dumppal build/res/pal/quote.pal
 input   res/sprite/door.png

@@ -2,7 +2,6 @@
 
     .section .rodata
 
-BIN PAL_Sega,		"res/pal/sega.pal"
 BIN PAL_Main,		"res/pal/quote.pal"
 BIN PAL_Sym,		"res/pal/door.pal"
 BIN PAL_Regu,		"res/pal/kazuma.pal"

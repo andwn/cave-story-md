@@ -99,8 +99,8 @@ uint8_t titlescreen_main(void) {
     print_version();
 
 	// Title & CS version
-    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 72);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 4, 1);
+    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 18*5);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 5, 1);
 	
 #ifdef SHOW_MYCOM_LOGO
 	const uint16_t MENUY = 15;

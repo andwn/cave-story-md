@@ -3,7 +3,6 @@
 
 #include "md/types.h"
 
-extern const uint16_t PAL_Sega[16];
 extern const uint16_t PAL_Main[16];
 extern const uint16_t PAL_Sym[16];
 extern const uint16_t PAL_Regu[16];

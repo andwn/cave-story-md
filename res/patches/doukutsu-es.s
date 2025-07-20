@@ -26,6 +26,7 @@ PTR SPR_LEVELUP,    SPR_LevelUp
 PTR SPR_LEVELDOWN,  SPR_LevelDown
 PTR SPR_EMPTY,      SPR_Empty
 PTR SPR_AHCHOO,     SPR_Ahchoo
+PTR SPR_HEY,        SPR_Hey
 
 /* Pointer Tables */
     .globl TSC_GLOB
@@ -252,4 +253,4 @@ SPRITE SPR_LevelUp		"res/sprite_loc/levelup_en.spr"		7 2 2
 SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
 SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2
 SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2 2
-
+SPRITE SPR_Hey		    "res/sprite_loc/hey_en.spr"		    2 2 1

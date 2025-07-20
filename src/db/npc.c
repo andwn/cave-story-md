@@ -121,8 +121,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			SHEET_POWERF, 	1, PAL1, &onspawn_powerf, 		&ai_powerf, 		&ai_null 			,""}, // Power Flow
 	{ &SPR_ManShot,		NOSHEET, 		1, PAL1, &onspawn_persistent, 	&ai_mannanShot, 	&ai_null 			,""}, // Mannan Shot
 	{ NULL, 			SHEET_FROG, 	1, PAL3, &onspawn_frog, 		&ai_frog, 			&ondeath_default 	,""}, // Frog
-	{ &SPR_Hey, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_hey, 			&ai_null 			,""}, // "Hey!"
-	{ &SPR_Hey, 		NOSHEET, 		1, PAL1, &onspawn_hey, 			&ai_hey, 			&ai_null 			,""}, // "Hey!" Emitter
+	{ NULL, 			NOSHEET, 		1, PAL1, &ai_null, 				&ai_hey, 			&ai_null 			,""}, // "Hey!"
+	{ NULL, 			NOSHEET, 		1, PAL1, &ai_null, 				&ai_hey_spawner, 	&ai_null 			,""}, // "Hey!" Emitter
 	{ &SPR_Malco, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_malco, 			&ai_null 			,""}, // Malco
 	{ NULL, 			SHEET_REDSHOT, 	1, PAL1, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	,""}, // Balfrog Shot
 	{ &SPR_Malco, 		NOSHEET, 		1, PAL1, &ai_null,				&ai_malcoBroken, 	&ai_null 			,""}, // Malco (broken)

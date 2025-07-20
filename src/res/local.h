@@ -26,5 +26,6 @@ extern const LocSprite * const SPR_LEVELUP;
 extern const LocSprite * const SPR_LEVELDOWN;
 extern const LocSprite * const SPR_EMPTY;
 extern const LocSprite * const SPR_AHCHOO;
+extern const LocSprite * const SPR_HEY;
 
 #endif //RES_LOCAL_H
