@@ -133,7 +133,7 @@ void player_init(void) {
 		.size = SPRITE_SIZE(3, 1), .attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRINDEX+4)
 	};
 	// Air Tank sprite
-	vdp_tiles_load(SPR_TILES(&SPR_Bubble, 0), TILE_AIRTANKINDEX, 9);
+	vdp_tiles_load(SPR_TILES(&SPR_AirTank, 0), TILE_AIRTANKINDEX, 9);
 	airTankSprite = (Sprite) {
 		.size = SPRITE_SIZE(3,3),
 		.attr = TILE_ATTR(PAL0,0,0,0,TILE_AIRTANKINDEX)

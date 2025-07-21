@@ -53,11 +53,11 @@ SPRITE SPR_ArmsImage	"sprite/armsimage.png"		2 2 NONE
 SPRITE SPR_ArmsImageM	"sprite/armsimage_menu.png"	2 2 NONE
 SPRITE SPR_Misery		"sprite/misery.png"			2 2 NONE
 SPRITE SPR_TeleMenu		"sprite/telemenu.png"		4 2 NONE
+SPRITE SPR_AirTank      "sprite/airtank.png"        3 3 NONE
 SPRITE SPR_Fish			"sprite/fish.png"			2 2 NONE
 SPRITE SPR_CritBig		"sprite/critbig.png"		3 3 NONE
 SPRITE SPR_Jelly		"sprite/jelly.png"			2 2 NONE
 SPRITE SPR_Kulala		"sprite/kulala.png"			6 3 NONE
-#SPRITE SPR_Quotele		"sprite/quotele.png"		2 2 NONE
 SPRITE SPR_Bubble		"sprite/bubble.png"			3 3 NONE
 SPRITE SPR_Bonk			"sprite/headbump.png"		1 1 NONE
 SPRITE SPR_RedFl		"sprite/redflowers.png" 	6 2 NONE
