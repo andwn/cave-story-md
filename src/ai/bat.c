@@ -33,7 +33,7 @@ void ai_batVertical(Entity *e) {
 }
 
 void onspawn_batHang(Entity *e) {
-	e->frame = 3; // Hanging anim;
+	e->frame = 0; // Hanging anim;
 }
 
 void ai_batHang(Entity *e) {
@@ -41,7 +41,7 @@ void ai_batHang(Entity *e) {
 		if(!(rand() & 127)) {
 			e->state = 1;
 			e->timer = 0;
-			e->frame = 4;
+			e->frame = 1;
 		}
 		if(player.x > e->x - 0x1000 && player.x < e->x + 0x1000 && 
 			player.y > e->y - 0x1000 && player.y < e->y + 0x9000) {
@@ -52,13 +52,13 @@ void ai_batHang(Entity *e) {
 		if(++e->timer > 8) {
 			e->state = 0;
 			e->timer = 0;
-			e->frame = 3;
+			e->frame = 0;
 		}
 	} else if(e->state == 2) { // At attention
 		if(e->damage_time > 0 || (player.x > e->x - 0x2800 && player.x < e->x + 0x2800)) {
 			e->state = 3;
 			e->timer = 0;
-			e->frame = 5;
+			e->frame = 2;
 			moveMeToFront = TRUE;
 		}
 	} else if(e->state == 3) { // Falling
@@ -73,14 +73,14 @@ void ai_batHang(Entity *e) {
 			e->state = 4;
 			e->timer = 0;
 			e->y_mark = e->y;
-			e->frame = 0;
+			e->frame = 3;
 			if(collided) e->y_speed = -SPEED_10(0x200);
 		} else {
 			e->y = e->y_next;
 		}
 	} else { // Flying
 		if(++e->timer2 > 4) {
-			if(++e->frame >= 3) e->frame = 0;
+			if(++e->frame > 5) e->frame = 3;
 			e->timer2 = 0;
 		}
 		FACE_PLAYER(e);
@@ -117,6 +117,7 @@ void ai_batCircle(Entity *e) {
 			e->y_speed = sin[angle];
 			e->x_mark = e->x + (e->x_speed << 3);
 			e->y_mark = e->y + (e->x_speed << 3);
+			e->frame = 3;
 			e->state++;
 		}
 		/* fallthrough */
@@ -126,7 +127,7 @@ void ai_batCircle(Entity *e) {
 				FACE_PLAYER(e);
 				LIMIT_X(SPEED_10(0x1E0));
 				LIMIT_Y(SPEED_10(0x1E0));
-				if(++e->frame > 2) e->frame = 0;
+				if(++e->frame > 5) e->frame = 3;
 			}
 			e->x_speed += (e->x > e->x_mark) ? -0x10 : 0x10;
 			e->y_speed += (e->y > e->y_mark) ? -0x10 : 0x10;
@@ -147,7 +148,7 @@ void ai_batCircle(Entity *e) {
 				e->x_speed <<= 1;
 				e->timer = TIME_8(100);		// delay before can dive again
 				e->state = 1;
-				e->frame = 0;
+				e->frame = 3;
 			}
 		break;
 	}

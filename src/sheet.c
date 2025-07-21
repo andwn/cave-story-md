@@ -239,7 +239,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_PCRITTER, &SPR_CritBig, 6,3,3, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0, 1, 2);
 			SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0, 1, 2, 3, 4);
-			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 2, 3, 4, 1, 2, 5);
+			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_TRAP, &SPR_Trap, 1,4,3, 0);
 		} break;
@@ -355,7 +355,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x30: // Waterway
 		{	SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0, 1, 2, 3, 4);
-			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 2, 3, 4, 1, 2, 5);
+			SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 6,2,2, 0, 1, 2, 3, 4, 5);
 		} break;
 		case 0x1F: // Main Artery
