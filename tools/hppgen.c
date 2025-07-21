@@ -47,7 +47,7 @@
 #define STB_C_LEX_INTEGERS_AS_DOUBLES N
 #define STB_C_LEX_MULTILINE_DSTRINGS  N // allow newlines in double-quoted strings
 #define STB_C_LEX_MULTILINE_SSTRINGS  N // allow newlines in single-quoted strings
-#define STB_C_LEX_USE_STDLIB          Y
+#define STB_C_LEX_USE_STDLIB          N
 #define STB_C_LEX_DOLLAR_IDENTIFIER   Y
 #define STB_C_LEX_FLOAT_NO_DECIMAL    Y
 

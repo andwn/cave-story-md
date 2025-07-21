@@ -360,9 +360,9 @@ static double stb__clex_pow(double base, unsigned int exponent)
    return value;
 }
 
-static double stb__clex_parse_float(char *p, char **q)
+static double stb__clex_parse_float(const char *p, const char **q)
 {
-   char *s = p;
+   //char *s = p;
    double value=0;
    int base=10;
    int exponent=0;
@@ -420,20 +420,20 @@ static double stb__clex_parse_float(char *p, char **q)
 
    if (exponent) {
       int sign = p[1] == '-';
-      unsigned int exponent=0;
+      unsigned int exp=0;
       double power=1;
       ++p;
       if (*p == '-' || *p == '+')
          ++p;
       while (*p >= '0' && *p <= '9')
-         exponent = exponent*10 + (*p++ - '0');
+         exp = exp*10 + (*p++ - '0');
 
 #ifdef STB__clex_hex_floats
       if (base == 16)
-         power = stb__clex_pow(2, exponent);
+         power = stb__clex_pow(2, exp);
       else
 #endif
-         power = stb__clex_pow(10, exponent);
+         power = stb__clex_pow(10, exp);
       if (sign)
          value /= power;
       else
@@ -686,7 +686,7 @@ int stb_c_lexer_get_token(stb_lexer *lexer)
          #if defined(STB__clex_hex_ints) || defined(STB__clex_hex_floats)
             if (p+1 != lexer->eof) {
                if (p[1] == 'x' || p[1] == 'X') {
-                  char *q;
+                  const char *q;
 
                   #ifdef STB__clex_hex_floats
                   for (q=p+2;
