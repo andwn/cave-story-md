@@ -96,9 +96,11 @@ void ai_misery_float(Entity *e) {
 		{
 			ANIMATE(e, 2, 4,5);
 			if (++e->timer >= TIME_8(20)) {
-				entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
-				sound_play(SND_LIGHTNING_STRIKE, 5);
-				SCREEN_FLASH(3);
+				if(g_stage.id != STAGE_CORE) { // This state is used when teleporting the Core away?
+					entity_create(e->x, e->y, OBJ_LIGHTNING, 0);
+					sound_play(SND_LIGHTNING_STRIKE, 5);
+					SCREEN_FLASH(3);
+				}
 				e->state = 27;
 				e->timer = 0;
 			}

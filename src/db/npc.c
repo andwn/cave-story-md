@@ -208,8 +208,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_BigShutter,	NOSHEET,		1, PAL2, &onspawn_shutter, 		&ai_shutter, 		&ai_null 			,""}, // Shutter (Large)
 	{ &SPR_Shutter, 	NOSHEET, 		1, PAL2, &onspawn_shutter, 		&ai_shutter, 		&ai_null 			,""}, // Shutter (Small)
 	{ &SPR_CoreLift,	NOSHEET, 		1, PAL2, &ai_null, 				&ai_shutter, 		&ai_null 			,""}, // Lift Block
-	{ &SPR_FuzzCore,	NOSHEET, 		1, PAL2, &ai_null, 				&ai_fuzz_core, 		&ondeath_default 	,""}, // Fuzz Core
-	{ &SPR_Fuzz, 		NOSHEET, 		1, PAL2, &onspawn_persistent, 	&ai_fuzz, 			&ondeath_default 	,""}, // Fuzz
+	{ NULL,				SHEET_FUZZC, 	1, PAL2, &ai_null, 				&ai_fuzz_core, 		&ondeath_default 	,""}, // Fuzz Core
+	{ NULL, 			SHEET_FUZZ, 	1, PAL2, &onspawn_persistent, 	&ai_fuzz, 			&ondeath_default 	,""}, // Fuzz
 	{ NULL, 			NOSHEET,		0, PAL1, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Almond robot
 	{ &SPR_Robot3, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_almond_robot, 	&ai_null 			,""}, // Surface Robot
 	{ NULL, 			NOSHEET, 		0, PAL0, &onspawn_waterlevel, 	&ai_waterlevel, 	&ai_null 			,""}, // Water Level

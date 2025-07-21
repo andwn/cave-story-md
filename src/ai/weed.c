@@ -216,6 +216,9 @@ void ai_mannan(Entity *e) {
 		e->frame = 2;
 		e->attack = 0;
 		e->state = 3;
+	} else {
+		e->frame = 2;
+		RANDBLINK(e, 3, 256);
 	}
 }
 

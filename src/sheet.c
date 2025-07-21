@@ -235,7 +235,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x06: // Grasstown
 		{	SHEET_ADD(SHEET_FAN, &SPR_Fan, 6,2,2, 0, 1, 2, 3, 4, 5);
-			SHEET_ADD(SHEET_MANNAN, &SPR_Mannan, 3,3,4, 0, 1, 2);
+			SHEET_ADD(SHEET_MANNAN, &SPR_Mannan, 4,3,4, 0, 1, 2, 3);
 			SHEET_ADD(SHEET_PCRITTER, &SPR_CritBig, 6,3,3, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_FROG, &SPR_Frog, 3,3,4, 0, 1, 2);
 			SHEET_ADD(SHEET_JELLY, &SPR_Jelly, 5,2,2, 0, 1, 2, 3, 4);
@@ -350,7 +350,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0, 1, 2, 3, 4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,3,1, 0);
-				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0, 1);
+				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 5,2,2, 0, 1, 2, 3, 4);
 			}
 		} break;
 		case 0x30: // Waterway
