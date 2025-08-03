@@ -525,6 +525,8 @@ static void get_language(void) {
     else if(LANGUAGE[0] == 'Z' && LANGUAGE[1] == 'H') cfg_language = LANG_ZH;
     else if(LANGUAGE[0] == 'K' && LANGUAGE[1] == 'O') cfg_language = LANG_KO;
 	else if(LANGUAGE[0] == 'R' && LANGUAGE[1] == 'U') cfg_language = LANG_RU;
+	else if(LANGUAGE[0] == 'U' && LANGUAGE[1] == 'A') cfg_language = LANG_UA;
+	else if(LANGUAGE[0] == 'T' && LANGUAGE[1] == 'W') cfg_language = LANG_TW;
 }
 
 void system_load_config(void) {

@@ -1,0 +1,53 @@
+# Intro Cutscene
+Based on the Work of
+Studio Pixel
+# Title Screen
+Start Game
+Sound Test
+Config
+= Stage Select =
+# Save Select
+New Game
+Load Save Data
+Copy Save Data
+Paste Save Data
+Delete Save Data
+Are you sure?
+Copy
+Delete
+# Sound Test
+Track:
+Play
+Stop
+Quit
+Stopped
+Playing
+Paused
+# Config
+(1) Controller Config
+(2) Gameplay Config
+(3) Save Data
+Jump / Confirm
+Shoot / Cancel
+Switch Weapon (3btn)
+Fast Fwd Text (6btn)
+Switch Right (6btn)
+Switch Left (6btn)
+Open Map (6btn)
+Pause Menu
+Force Button Mode
+Press..
+Apply
+Reset to Default
+CS+ Speed (NTSC Only)
+Enable Fast Forward
+Use Up to Interact
+Screen Shake in Hell
+Vulnerable After Pause
+Message Blip Sound
+Mute BGM
+Mute SFX
+Erase Counter
+Erase All Save Data (!)
+Are you sure?
+Press Start three times

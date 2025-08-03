@@ -1,0 +1,95 @@
+None
+Arthur's House
+Egg Corridor
+Egg No. 00
+Egg No. 06
+Egg Observatory
+Grasstown
+Santa's House
+Chako's House
+Labyrinth I
+Sand Zone
+Mimiga Village
+First Cave
+Start Point
+Shack
+Reservoir
+Graveyard
+Yamashita Farm
+Shelter
+Assembly Hall
+Save Point
+Side Room
+Cthulhu's Abode
+Egg No. 01
+Arthur's House
+Power Room
+Save Point
+ExecutionChamber
+Gum
+Sand Zone Bar
+Grasstown Hut
+Main Artery
+Small Room
+Jenka's House
+Deserted House
+Storehouse
+Jenka's House
+Sand Zone
+Labyrinth H
+Labyrinth W
+Camp
+Clinic Ruins
+Labyrinth Shop
+Labyrinth B
+Boulder Chamber
+Labyrinth M
+Dark Place
+Core
+Waterway
+Egg Corridor?
+Cthulhu's Abode
+Egg Observatory?
+Egg No. 00
+Outer Wall
+Side Room
+Storehouse
+Plantation
+Jail No. 1
+Hideout
+Rest Area
+Teleporter
+Jail No. 2
+Balcony
+Last Cave
+Throne Room
+The King's Table
+Prefab House
+LastCave(Hidden)
+Black Space
+Little House
+Balcony
+Ending
+u
+Waterway Cabin
+_
+_
+_
+_
+_
+Prefab House
+Sacred Ground B1
+Sacred Ground B2
+Sacred Ground B3
+Storage
+Passage?
+Passage?
+Statue Chamber
+Seal Chamber
+Corridor
+_
+Hermit Gunsmith
+_
+Seal Chamber
+_
+Clock

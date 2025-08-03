@@ -8,18 +8,18 @@
 #include "md/dma.h"
 #include "effect.h"
 #include "entity.h"
-#include "md/joy.h"
-#include "cjk.h"
-#include "resources.h"
-#include "sheet.h"
-#include "stage.h"
-#include "system.h"
-#include "tables.h"
-#include "tsc.h"
 #include "md/comp.h"
 #include "md/sys.h"
 #include "md/vdp.h"
 #include "md/xgm.h"
+#include "md/joy.h"
+#include "system.h"
+#include "cjk.h"
+#include "resources.h"
+#include "sheet.h"
+#include "stage.h"
+#include "tables.h"
+#include "tsc.h"
 
 #include "gamemode.h"
 
@@ -30,24 +30,6 @@ enum CreditCmd {
 };
 
 static int8_t illScrolling;
-
-static void draw_jp_text(const uint8_t *str, uint16_t x, uint16_t y) {
-    uint16_t iter = 0;
-	for(uint16_t i = 0; i < 32; i++) {
-		if(str[i] >= 0xE0) {
-			uint16_t c = (str[i] - 0xE0) * 0x60 + (str[i+1] - 0x20);
-            cjk_draw(VDP_PLANE_B, c + 0x100, x, y, 0, TRUE);
-			i++;
-		} else if(str[i] >= 0x20) {
-            cjk_draw(VDP_PLANE_B, str[i], x, y, 0, TRUE);
-		} else {
-			break;
-		}
-		x += 1 + (iter & 1);
-        iter++;
-	}
-    cjk_newline();
-}
 
 __attribute__((noreturn))
 void credits_main(void) {
@@ -138,14 +120,12 @@ void credits_main(void) {
 			uint16_t label = 0;
 			switch(credits_info[pc].cmd) {
 				case TEXT:
-					if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-						if(credits_info[pc].text.jstring != 0) {
-							const uint8_t *str = (const uint8_t*)CREDITS_STR;
-							str += (credits_info[pc].text.jstring - 1) << 5;
-							draw_jp_text(str, textX, textY & 31);
+					if(credits_info[pc].text.jstring != 0) {
+						const uint8_t *str = (const uint8_t*)CREDITS_STR;
+						str += (credits_info[pc].text.jstring - 1) << 5;
+						if(str[0] != '_') { // Ignore lines starting with "_"
+							loc_vdp_nputs(VDP_PLANE_B, str, textX, textY & 31, 32);
 						}
-					} else {
-						vdp_puts(VDP_PLANE_B, credits_info[pc].text.string, textX, textY & 31);
 					}
 					break;
 				case ICON:

@@ -13,8 +13,9 @@ LANGUAGE:
 PTR BMP_ASCII,      0
 PTR BMP_KANJI,      0
 PTR STAGE_NAMES,    STR_StageNames
-PTR CREDITS_STR,    0
-PTR CONFIG_STR,     0
+PTR MUSIC_NAMES,    STR_MusicNames
+PTR CREDITS_STR,    STR_Credits
+PTR MENU_STR,       STR_Menus
 
 PTR TS_TITLE,       UFTC_Title
 PTR TS_MENUTEXT,    UFTC_MenuText
@@ -137,7 +138,10 @@ PTRTAB_END:
         dc.l 0xFFFFFFFF /* Sentinel value for patchrom to stop relocating */
 
 # Strings
-BIN STR_StageNames  "res/strings/es_stagename.dat"
+BIN STR_StageNames      "res/strings/es_stagename.dat"
+BIN STR_MusicNames      "res/strings/en_music.dat"
+BIN STR_Credits         "res/strings/en_credits.dat"
+BIN STR_Menus           "res/strings/en_menus.dat"
 
 # Scripts (TSC)
 # Global

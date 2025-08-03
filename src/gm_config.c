@@ -7,19 +7,20 @@
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
+#include "md/comp.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "md/joy.h"
+#include "system.h"
 #include "cjk.h"
 #include "npc.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "md/comp.h"
-#include "md/sys.h"
-#include "md/vdp.h"
+
 #include "weapon.h"
 #include "window.h"
 
@@ -291,7 +292,7 @@ void config_main(void) {
 	uint8_t numItems = set_page(page);
 	
 	Sprite sprCursor = {
-		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_PROMPTINDEX),
 		.size = SPRITE_SIZE(2,2)
 	};
 	
@@ -330,7 +331,7 @@ void config_main(void) {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_PROMPTINDEX+sprFrame*4);
 		}
 		
 		// Draw quote sprite at cursor position

@@ -20,7 +20,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ NULL,		PAL2, 4, 0, 0, NULL }, // Almond, Dark Place
 	{ UFTC_bkHell, PAL2, 0, 4, 4, NULL }, // Hell B1 / B2 / B3
 	{ UFTC_bkEggs, PAL2, 0, 8, 8, NULL }, // Egg Corridor
-	{ UFTC_bkLabB, PAL3, 0, 8, 8, NULL }, // Arthur's House, Labyrinth B, Itoh, Seal/Statue Chamber
+	{ UFTC_bkLabB, PAL3, 0, 8, 8, NULL }, // Labyrinth B, Itoh, Seal/Statue Chamber
 	{ UFTC_bkFall, PAL2, 0, 8, 8, NULL }, // Fall
 	{ UFTC_bkSand, PAL2, 0, 8, 8, NULL }, // Sand Zone
 };

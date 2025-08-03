@@ -38,6 +38,7 @@ HPPGEN   := bin/hppgen
 PATCHROM := bin/patchrom
 TSCOMP   := bin/tscomp
 LITTLEBIG:= bin/littlebig
+STRCONV  := bin/strconv
 
 BUILD_DIR := build
 TARGET    := doukutsu
@@ -98,6 +99,14 @@ TSBS   = $(addprefix $(BUILD_DIR)/,$(TSCS:.txt=.tsb))
 TL_TSCS  = $(wildcard res/tsc/*/*.txt)
 TL_TSCS += $(wildcard res/tsc/*/Stage/*.txt)
 TL_TSBS  = $(addprefix $(BUILD_DIR)/,$(TL_TSCS:.txt=.tsb))
+
+# String lists to convert
+STRS  = $(wildcard res/strings/en_*.txt)
+STRO  = $(addprefix $(BUILD_DIR)/,$(STRS:.txt=.dat))
+
+# String lists to convert
+TL_STRS = $(wildcard res/strings/*.txt)
+TL_STRO = $(addprefix $(BUILD_DIR)/,$(TL_STRS:.txt=.dat))
 
 # mdtiler scripts to generate tile patterns & mappings
 MDTS  = $(wildcard res/*.mdt)
@@ -166,7 +175,7 @@ translate: $(TARGET)-ko.gen $(TARGET)-fi.gen $(TARGET)-ru.gen
 
 assets.d: $(CPXMS) $(CPXES) $(CPXAS)
 assets.d: $(XGCS) $(PCMS) $(ZOBJ)
-assets.d: $(TSBS) $(PATS)
+assets.d: $(TSBS) $(STRO) $(PATS)
 assets.d: $(TSETO) $(CTSETO)
 assets.d: $(SPRO) $(CSPRO)
 assets.d: $(PALO) $(CMAPS)
@@ -270,6 +279,9 @@ $(HPPGEN): | bin
 $(LITTLEBIG): | bin
 	$(HOSTCC) $(WARNINGS) tools/littlebig.c -o $@
 
+$(STRCONV): | bin
+	$(HOSTCC) $(WARNINGS) tools/strconv.c -o $@
+
 
 # Compression of stage layouts
 $(BUILD_DIR)/%.cpxm: %.pxm | $(LITTLEBIG) $(SALVADOR) $$(@D)/
@@ -341,9 +353,43 @@ $(BUILD_DIR)/res/tsc/ko/%.tsb: res/tsc/ko/%.txt | $(TSCOMP) $$(@D)/
 	$(TSCOMP) -l=ko "$<" "$@"
 $(BUILD_DIR)/res/tsc/ru/%.tsb: res/tsc/ru/%.txt | $(TSCOMP) $$(@D)/
 	$(TSCOMP) -l=ru "$<" "$@"
+$(BUILD_DIR)/res/tsc/ua/%.tsb: res/tsc/ua/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=ua "$<" "$@"
+$(BUILD_DIR)/res/tsc/tw/%.tsb: res/tsc/tw/%.txt | $(TSCOMP) $$(@D)/
+	$(TSCOMP) -l=tw "$<" "$@"
+
+# Convert localizable string lists
+$(BUILD_DIR)/res/strings/en_%.dat: res/strings/en_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=en "$<" "$@"
+$(BUILD_DIR)/res/strings/ja_%.dat: res/strings/ja_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=ja "$<" "$@"
+$(BUILD_DIR)/res/strings/es_%.dat: res/strings/es_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=es "$<" "$@"
+$(BUILD_DIR)/res/strings/pt_%.dat: res/strings/pt_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=pt "$<" "$@"
+$(BUILD_DIR)/res/strings/fr_%.dat: res/strings/fr_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=fr "$<" "$@"
+$(BUILD_DIR)/res/strings/it_%.dat: res/strings/it_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=it "$<" "$@"
+$(BUILD_DIR)/res/strings/de_%.dat: res/strings/de_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=de "$<" "$@"
+$(BUILD_DIR)/res/strings/br_%.dat: res/strings/br_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=br "$<" "$@"
+$(BUILD_DIR)/res/strings/fi_%.dat: res/strings/fi_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=fi "$<" "$@"
+$(BUILD_DIR)/res/strings/zh_%.dat: res/strings/zh_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=zh "$<" "$@"
+$(BUILD_DIR)/res/strings/ko_%.dat: res/strings/ko_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=ko "$<" "$@"
+$(BUILD_DIR)/res/strings/ru_%.dat: res/strings/ru_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=ru "$<" "$@"
+$(BUILD_DIR)/res/strings/ua_%.dat: res/strings/ua_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=ua "$<" "$@"
+$(BUILD_DIR)/res/strings/tw_%.dat: res/strings/tw_%.txt | $(STRCONV) $$(@D)/
+	$(STRCONV) -l=tw "$<" "$@"
 
 # Generate patches
-$(BUILD_DIR)/%.patch: %.s | $(TL_TSBS) $$(@D)/
+$(BUILD_DIR)/%.patch: %.s | assets.d $(TL_TSBS) $(TL_STRO) $$(@D)/
 	$(AS) $(ASFLAGS) "$<" -o "$(BUILD_DIR)/$*.tmp.o"
 	$(LD) -T md.ld -nostdlib "$(BUILD_DIR)/$*.tmp.o" -o "$(BUILD_DIR)/$*.tmp.elf"
 	$(OBJC) -O binary "$(BUILD_DIR)/$*.tmp.elf" "$@"
@@ -370,6 +416,10 @@ $(TARGET)-zh.gen: $(BUILD_DIR)/res/patches/$(TARGET)-zh.patch | $(PATCHROM) $(TA
 $(TARGET)-ko.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ko.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
 $(TARGET)-ru.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ru.patch | $(PATCHROM) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-ua.gen: $(BUILD_DIR)/res/patches/$(TARGET)-ua.patch | $(PATCHROM) $(TARGET)-en.gen
+	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
+$(TARGET)-tw.gen: $(BUILD_DIR)/res/patches/$(TARGET)-tw.patch | $(PATCHROM) $(TARGET)-en.gen
 	$(PATCHROM) $(TARGET)-en.gen "$<" "$@"
 
 .PHONY: flash clean

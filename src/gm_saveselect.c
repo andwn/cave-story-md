@@ -9,6 +9,9 @@
 #include "entity.h"
 #include "hud.h"
 #include "md/joy.h"
+#include "md/sys.h"
+#include "md/vdp.h"
+#include "system.h"
 #include "cjk.h"
 #include "math.h"
 #include "md/stdlib.h"
@@ -17,11 +20,8 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "md/sys.h"
-#include "md/vdp.h"
 #include "weapon.h"
 #include "window.h"
 #include "md/xgm.h"
@@ -35,22 +35,20 @@
 enum { CM_LOAD, CM_COPY, CM_PASTE, CM_DELETE, CM_CONFIRM };
 
 static void draw_cursor_mode(uint8_t mode) {
+	const uint16_t mx = 12;
+	const uint16_t my = 2;
+	vdp_text_clear(VDP_PLANE_A, mx, my, 24); // Erase any previous stage name text
+	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
+        vdp_text_clear(VDP_PLANE_A, mx, my + 1, 24); // And a second line underneath
+		cjk_set_index(CJK_TITLE, 32);
+    }
+	const uint8_t *txt = (const uint8_t*)MENU_STR;
 	switch(mode) {
-		case CM_LOAD:    vdp_puts(VDP_PLANE_A, " Load Save Data ", 12, 2); break;
-		case CM_COPY:    vdp_puts(VDP_PLANE_A, " Copy Save Data ", 12, 2); break;
-		case CM_PASTE:   vdp_puts(VDP_PLANE_A, "Paste Save Data ", 12, 2); break;
-		case CM_DELETE:  vdp_puts(VDP_PLANE_A, "Delete Save Data", 12, 2); break;
-		case CM_CONFIRM: vdp_puts(VDP_PLANE_A, " Are you sure?  ", 12, 2); break;
-	}
-}
-
-static uint16_t GetNextChar(uint16_t stage, uint16_t index) {
-	const uint8_t *name = ((const uint8_t*)STAGE_NAMES) + (stage << 4);
-	uint16_t chr = name[index];
-	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (name[index + 1] - 0x20) + 0x100;
-	} else {
-		return chr;
+		case CM_LOAD:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_LOAD_DATA*32], mx, my, 24); break;
+		case CM_COPY:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY_DATA*32], mx, my, 24); break;
+		case CM_PASTE:   loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_PASTE_DATA*32], mx, my, 24); break;
+		case CM_DELETE:  loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE_DATA*32], mx, my, 24); break;
+		case CM_CONFIRM: loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_CONFIRM_DELETE*32], mx, my, 24); break;
 	}
 }
 
@@ -64,23 +62,12 @@ static uint8_t refresh_file(uint8_t index) {
 	vdp_text_clear(VDP_PLANE_A, 6, y, 16); // Erase any previous stage name text
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
         vdp_text_clear(VDP_PLANE_A, 6, y + 1, 16); // And a second line underneath
+		cjk_set_index(CJK_TITLE, 64 + index * 32);
     }
 	if(file.used) {
 		// Map name
-		if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
-			uint16_t x = 6;
-			uint16_t name_index = 0;
-			for(uint16_t pos = 0; name_index < 16; pos++) {
-				uint16_t c = GetNextChar(file.stage_id, name_index++);
-				if(c == 0) break; // End of string
-				if(c > 0xFF) name_index++;
-                cjk_draw(VDP_PLANE_A, c, x, y, 0, 1);
-				x += 1 + (pos & 1);
-			}
-            cjk_newline();
-		} else {
-			vdp_puts(VDP_PLANE_A, stage_info[file.stage_id].name, 6, y);
-		}
+		const uint8_t *dat = (const uint8_t*) STAGE_NAMES;
+		loc_vdp_nputs(VDP_PLANE_A, &dat[file.stage_id * 32], 6, y, 16);
 		// Play time
 		char timeStr[4] = "00";
 		//sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
@@ -113,7 +100,7 @@ static uint8_t refresh_file(uint8_t index) {
 				memcpy(tileData[1], BlankData, 32);
 			}
 			memcpy(tileData[2], &TS_Numbers[mod10[file.health]*8], 32);
-			uint16_t tile = TILE_SHEETINDEX + index*8;
+			uint16_t tile = TILE_NAMEINDEX + index*8;
 			dma_now(DmaVRAM, (uint32_t)tileData[0], tile*32, 16*8, 2);
 			for(int i = 0; i < 8; i++) {
 				vdp_map_xy(VDP_PLANE_A, TILE_ATTR(PAL0, 0, 0, 0, tile + i), 6 + i, y + 2);
@@ -124,7 +111,7 @@ static uint8_t refresh_file(uint8_t index) {
 			if(!file.weapon[i]) continue;
 			// X tile pos and VRAM index to put the ArmsImage tiles
 			uint16_t x = 24 + i*2;
-			uint16_t tile = TILE_FACEINDEX - 40 + index*20 + i*4;
+			uint16_t tile = TILE_BACKINDEX + index*20 + i*4;
 			vdp_tiles_load(SPR_TILES(&SPR_ArmsImage, file.weapon[i]), tile, 4);
 			// 4 mappings for ArmsImage icon
 			vdp_map_xy(VDP_PLANE_A, TILE_ATTR(PAL0, 0, 0, 0, tile), x, y + 2);
@@ -133,23 +120,26 @@ static uint8_t refresh_file(uint8_t index) {
 			vdp_map_xy(VDP_PLANE_A, TILE_ATTR(PAL0, 0, 0, 0, tile + 3), x + 1, y + 3);
 		}
 	} else {
-		if(cfg_language == LANG_JA) {
-			cjk_draw(VDP_PLANE_A, 0x100 + 584, 6, y, 0, 1); // 新
-			cjk_draw(VDP_PLANE_A, 0x100 + 61, 7, y, 0, 1); // し
-			cjk_draw(VDP_PLANE_A, 0x100 + 42, 9, y, 0, 1); // い
-            cjk_newline();
-        } else if(cfg_language == LANG_ZH) {
-            cjk_draw(VDP_PLANE_A, 0x100 + 1172, 6, y, 0, 1); // 新
-            cjk_draw(VDP_PLANE_A, 0x100 + 267, 7, y, 0, 1); // 的
-            cjk_newline();
-        } else if(cfg_language == LANG_KO) {
-            cjk_draw(VDP_PLANE_A, 0x100 + 384, 6, y, 0, 1); // 새
-            cjk_draw(VDP_PLANE_A, 0x100 + 250, 7, y, 0, 1); // 로
-            cjk_draw(VDP_PLANE_A, 0x100 + 516, 9, y, 0, 1); // 운
-            cjk_newline();
-        } else {
-            vdp_puts(VDP_PLANE_A, "New Game", 6, y);
-        }
+		//if(cfg_language == LANG_JA) {
+		//	cjk_draw(VDP_PLANE_A, 0x100 + 584, 6, y, 0, 1); // 新
+		//	cjk_draw(VDP_PLANE_A, 0x100 + 61, 7, y, 0, 1); // し
+		//	cjk_draw(VDP_PLANE_A, 0x100 + 42, 9, y, 0, 1); // い
+        //    cjk_newline();
+        //} else if(cfg_language == LANG_ZH) {
+        //    cjk_draw(VDP_PLANE_A, 0x100 + 1172, 6, y, 0, 1); // 新
+        //    cjk_draw(VDP_PLANE_A, 0x100 + 267, 7, y, 0, 1); // 的
+        //    cjk_newline();
+        //} else if(cfg_language == LANG_KO) {
+        //    cjk_draw(VDP_PLANE_A, 0x100 + 384, 6, y, 0, 1); // 새
+        //    cjk_draw(VDP_PLANE_A, 0x100 + 250, 7, y, 0, 1); // 로
+        //    cjk_draw(VDP_PLANE_A, 0x100 + 516, 9, y, 0, 1); // 운
+        //    cjk_newline();
+        //} else {
+        //    vdp_puts(VDP_PLANE_A, "New Game", 6, y);
+        //}
+		const uint8_t *txt = (const uint8_t*)MENU_STR;
+		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_NEW_GAME*32], 6, y, 16);
+
 		vdp_text_clear(VDP_PLANE_A, 26, y, 10);
 		vdp_text_clear(VDP_PLANE_A, 6, y + 2, 8);
 		vdp_text_clear(VDP_PLANE_A, 24, y + 2, 12);
@@ -188,18 +178,20 @@ uint8_t saveselect_main(void) {
 	vdp_map_clear(VDP_PLANE_B);
 	vdp_sprites_clear();
 	Sprite sprCursor = {
-		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_PROMPTINDEX),
 		.size = SPRITE_SIZE(2,2)
 	};
+
+	cjk_set_index(CJK_TITLE, 0);
+	const uint8_t *txt = (const uint8_t*)MENU_STR;
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY*32], 6, 25, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE*32], 16, 25, 16);
 	
 	draw_cursor_mode(cursorMode);
 
-    cjk_reset(CJK_TITLE);
 	for(uint16_t i = 0; i < SRAM_FILE_MAX; i++) {
         file_used[i] = refresh_file(i);
     }
-	vdp_puts(VDP_PLANE_A, "Copy", 6, 25);
-	vdp_puts(VDP_PLANE_A, "Delete", 16, 25);
 	
 	vdp_set_display(TRUE);
 
@@ -285,7 +277,7 @@ uint8_t saveselect_main(void) {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_PROMPTINDEX+sprFrame*4);
 		}
 		if(cursorMode == CM_PASTE && (sprTime & 1)) {
 			// Blink quote between source and destination of a copy

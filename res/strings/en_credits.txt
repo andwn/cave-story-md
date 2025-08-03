@@ -1,0 +1,306 @@
+# Lines containing only an underscore "_" will hold an index but not be drawn
+# Their purpose is to allow padding for languages which need multiple
+# lines for some casts
+  = CAST =  
+- Surface Dwellers -
+Plucky, looks up
+ to her brother
+  Sue Sakamoto
+Her occasionally
+ reliable brother
+  Kazuma Sakamoto
+Sue's Mother
+_
+  Momorin Sakamoto
+Sue's Grandfather
+ figure
+  Booster
+The Mimiga-shaped
+ coward
+  Itoh
+- Mimiga Village -
+Sweet and brave
+_
+  Toroko
+The village leader
+_
+  King
+The Number-Two
+_
+  Jack
+Never stops eating
+_
+  Mahin
+Loves to fish
+_
+  Kanpachi
+Mans the farm
+_
+  Sandaime
+- Grasstown -
+Lives alone
+_
+  Santa
+The colorful Mimiga
+_
+  Chaco
+Power Room watcher
+_
+  Malco
+- Sand Zone -
+Ally of the Mimigas
+_
+  Curly
+Raised by Curly
+_
+  Colon
+Original keeper of
+ the Sand Zone
+  Jenka
+Jenka's Puppies
+  Hajime
+  Shinobu
+  Kakeru
+  Mick
+  Nene
+- Labyrinth -
+The labyrinth's
+ weapons dealer
+  Chaba
+The labyrinth's
+ resident physician
+  Dr. Gero
+I am a nurse!
+_
+  Nurse Hasumi
+- Plantation -
+The girl Mimiga
+_
+  Chie
+The grandpa Mimiga
+_
+  Zett
+Sprinkler Manager
+_
+  Megane
+Believes in the
+ Doctor
+  The Shovel Brigade
+- Villains -
+The power-snatching
+ betrayer
+  The Doctor
+The Doctor's servant
+_
+  Misery
+Misery's punching bag
+_
+  Balrog
+- Others -
+The Hermit Gunsmith
+_
+  Tetsuzou Kamadani
+The mysterious
+ mushroom
+  Ma Pignon
+The family living in
+ the outer wall
+  The Littles
+The mysterious
+ native inhabitants
+  Cthulhu
+The statue carver
+_
+  Numahachi
+- Villains -
+Entranced by the crown
+_
+  The Doctor
+Cursed by the crown
+_
+  Misery
+Ultimately a friend
+_
+  Balrog
+- Others -
+The Hermit Gunsmith
+_
+  Tetsuzou Kamadani
+The memory-restoring
+ mushroom
+  Ma Pignon
+The family living in
+ the outer wall
+  The Littles
+The mysterious
+ native inhabitants
+  Cthulhu
+The statue carver
+_
+  Numahachi
+- Bloody Holy Land -
+Jenka's sorrowful
+ younger brother
+  Ballos
+# Second part with stages in background
+ = Monsters = 
+ Leaps and hops: Critter
+ Every cave needs a: Bat
+ Possessed by something: The Door
+ Charges when angered: Behemoth
+ White mushroom: Pignon
+ Worth eating: Giant Pignon
+ There's only one: Chinfish
+ Slices you up: Gravekeeper
+ Floor-hugging flash: Basil
+ A model insect: Beetle
+ The big flyer: Basu
+ The crusher: Power Critter
+ White mold ghost: Mannan
+ Tiny frog: Puchi
+ Big croaker: Frog
+ Floats about: Jelly
+ Queen Jelly: Kulala
+ Violent Mimiga: Rabil
+ Instant deathtrap: Press
+ Sudden chomper: Sandcroc
+ Wandering skull: Skullhead
+ Sand runner: Skullstep
+ White for: Skeleton
+ Sand Zone Hunter: Crow
+ Tough missile: Armadillo
+ From one, many: Polish
+ Scattering everywhere: Baby
+ From Frenzied Toroko: Flower
+ Labyrinth dweller: Gaudi
+ Labyrinth warrior: Armor
+ Labyrinth baby: Gaudi Egg
+ Fiery fan: Fire Whirr
+ Unknown organism: Buyobuyo Base
+ And: Buyobuyo
+ Gaudi spirit: Fuzz
+ Spirit clump: Fuzz Core
+ An old friend: Porcupine Fish
+ Hatching failure: Dragon Zombie
+ Timed explosive: Counter Bomb
+ Outside flutterer: Night Spirit
+ Jumps: Hoppy
+ Photosynthetic warrior: Midorin
+ Born of earth: Droll
+ Stepping stone: Gunfish
+ Mother bat: Orangebell
+ Plantation dragonfly: Stumpy
+ Hell's messenger: Bute
+ Hell's messenger: Mesa
+ Innocent demon: Green Devil
+ Rolls along the walls: Rolling
+ Blocks passages: Deleet
+= Bosses =
+Frenzied Mimiga that
+ kidnapped Sue
+  Igor
+Misery transformed
+ Balrog into
+  Balfrog
+Machine-monster that
+ lurks in the sand
+  Omega
+Dosed with red flowers
+_
+  Toroko +
+Ghost that invaded
+ the clinic
+  Pooh Black
+Big boss of the
+ labyrinth
+  Monster X
+Heart of the island
+_
+  Core
+Big fish in the
+ island's artery
+  Ironhead
+Twin dragon surprise
+ attackers
+  Sisters
+True heroes meet the
+_
+  Red Demon
+The red crystal
+ runs wild
+  Muscle Doctor
+The Doctor and the
+ island's heart
+  Undead Core
+The swollen mech
+_
+  Heavy Press
+Hate and madness
+ given flesh
+  Ballos
+ = BGM = 
+Access
+Gestation
+Mimiga Village
+Plant
+Balrog's Theme
+Gravity
+Cemetery
+Safety
+Mischievous Robot
+Pulse
+On to Grasstown
+Eyes of Flame
+Meltdown 2
+Tyrant
+Run!
+Jenka 1
+Jenka 2
+Labyrinth Fight
+Geothermal
+Oppression
+Living Waterway
+Quiet
+Scorching Back
+Moonsong
+Hero's End
+Cave Story
+Last Cave
+Balcony
+Charge
+Zombie
+Last Battle
+Break Down
+Running Hell
+Seal Chamber
+The Way Back Home
+= Special Thanks =
+Torai
+Naoku
+Kuroihito
+BA2
+Okami
+Nao
+# Added by AGT
+Shih Tzu
+Gideon Zhi
+And many others
+# MD staff
+= Mega Drive Version =
+Developed by
+_
+  GND / andwn
+Free QA and other
+ human sacrifices
+  Andwhy
+  Sik
+  MOF
+  ...and you?
+_
+_
+_
+_
+_
+_
+Thank you very much.
+Cave Story ~ The End

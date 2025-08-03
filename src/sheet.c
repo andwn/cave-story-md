@@ -191,6 +191,10 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		memset(tilocs, 0, MAX_TILOCS);
 	}
 	switch(sid) {
+		case STAGE_GRASSTOWN_SHELTER:
+		{
+			k_str("hey");
+		} break;
 		case 0x0C: // First Cave
 		case 0x0D: // Start Point
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0, 1, 2, 3, 4, 5);

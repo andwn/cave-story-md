@@ -13,8 +13,9 @@ LANGUAGE:
 PTR BMP_ASCII,      BMP_Ascii
 PTR BMP_KANJI,      BMP_Kanji
 PTR STAGE_NAMES,    STR_StageNames
+PTR MUSIC_NAMES,    STR_MusicNames
 PTR CREDITS_STR,    STR_Credits
-PTR CONFIG_STR,     STR_Config
+PTR MENU_STR,       STR_Menus
 
 PTR TS_TITLE,       UFTC_Title
 PTR TS_MENUTEXT,    UFTC_MenuText
@@ -142,8 +143,9 @@ BIN BMP_Kanji   "res/cjk_ja_mplus.dat"
 
 # Strings
 BIN STR_StageNames  "res/strings/ja_stagename.dat"
+BIN STR_MusicNames  "res/strings/ja_music.dat"
 BIN STR_Credits     "res/strings/ja_credits.dat"
-BIN STR_Config      "res/strings/ja_config.dat"
+BIN STR_Menus       "res/strings/ja_menus.dat"
 
 # Scripts (TSC)
 # Global

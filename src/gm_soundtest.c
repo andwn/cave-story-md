@@ -3,13 +3,15 @@
 #include "audio.h"
 #include "res/tiles.h"
 #include "res/pal.h"
+#include "res/local.h"
 #include "md/dma.h"
-#include "md/joy.h"
-#include "system.h"
-#include "tables.h"
 #include "md/sys.h"
 #include "md/vdp.h"
 #include "md/xgm.h"
+#include "md/joy.h"
+#include "system.h"
+#include "tables.h"
+#include "cjk.h"
 
 #include "gamemode.h"
 
@@ -38,7 +40,10 @@ enum { STOPPED, PLAYING, PAUSED };
 void draw_track_info(uint8_t track) {
 	DRAW_BYTE(track, 2, 6);
 	vdp_text_clear(VDP_PLANE_A, 5, 6, 33);
-	vdp_puts(VDP_PLANE_A, bgm_info[track].name, 5, 6);
+	vdp_text_clear(VDP_PLANE_A, 5, 7, 33);
+	const uint8_t *name = (const char *)MUSIC_NAMES;
+	//cjk_reset(CJK_TITLE);
+	loc_vdp_nputs(VDP_PLANE_A, &name[32 * track], 5, 6, 32);
 }
 
 void draw_status(uint8_t status) {
@@ -62,7 +67,7 @@ void soundtest_main(void) {
 	vdp_sprites_clear();
 	vdp_map_clear(VDP_PLANE_A);
 	// Background picture
-	vdp_tiles_load_uftc(UFTC_bkSndTest, 16, 0, 208);
+	vdp_tiles_load_uftc(UFTC_bkSndTest, 512, 0, 208);
 	uint16_t index = pal_mode ? 0 : 80;// << 1;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		dma_now(DmaVRAM, (uint32_t) &MAP_bkSndTest[index], VDP_PLANE_B + (y << 7), 40, 2);

@@ -42,9 +42,10 @@ enum {
     LANG_JA = 0x20,
     LANG_ZH,
     LANG_KO,
+    LANG_TW,
 
     LANG_RU = 0x30,
-    LANG_UK,
+    LANG_UA,
 
     LANG_AR = 0x40,
 

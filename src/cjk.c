@@ -10,6 +10,7 @@
 #include "md/vdp.h"
 #include "md/xgm.h"
 #include "window.h"
+#include "system.h"
 
 #include "cjk.h"
 
@@ -45,7 +46,7 @@ static uint16_t CjkNextTile(void) {
         case CJK_TITLE:
             index = cjkVramIndex + 2;
             cjkVramIndex++;
-            if(cjkVramIndex >= 256) cjkVramIndex = 0;
+            if(cjkVramIndex >= 510) cjkVramIndex = 0;
             break;
         default:
         case CJK_MESSAGE:
@@ -83,10 +84,17 @@ static uint16_t CjkNextTile(void) {
 }
 
 void cjk_reset(uint16_t vramMode) {
+    if(cfg_language < LANG_JA || cfg_language >= LANG_RU) return;
     cjkVramMode = vramMode;
     cjkVramIndex = cjkShiftChar = cjkMapRow = 0;
     uint16_t attr = TILE_ATTR(PAL0,1,0,0,TILE_WINDOWINDEX+4);
     for(uint16_t i=0;i<3;i++) for(uint16_t j=0;j<2;j++) for(uint16_t k=0;k<36;k++) cjkMapBuf[i][j][k] = attr;
+}
+
+void cjk_set_index(uint16_t vramMode, uint16_t index) {
+    cjkVramMode = vramMode;
+    cjkShiftChar = cjkMapRow = 0;
+    cjkVramIndex = index;
 }
 
 void cjk_newline(void) {

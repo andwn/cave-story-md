@@ -16,9 +16,9 @@ typedef struct {
 	const uint16_t *PXE; // PXE is the entity list
 	// Which palette to load for PAL3. Most use PAL_Regu but some differ
 	const uint16_t *npcPalette;
-	uint8_t tileset; // Which tileset in tileset_info to use
-	uint8_t background; // Which background in background_info to use
-	char name[24]; // The name of the map, as displayed to the player
+	uint16_t tileset; // Which tileset in tileset_info to use
+	uint16_t background; // Which background in background_info to use
+	//char name[24]; // The name of the map, as displayed to the player
 } stage_info_def;
 extern const stage_info_def stage_info[STAGE_COUNT];
 
@@ -55,7 +55,7 @@ extern const background_info_def background_info[];
 #define SONG_COUNT 43
 typedef struct {
 	const uint8_t *song; // Location of XGM to be loaded
-	char name[24]; // Name of the track (sound test)
+	//char name[24]; // Name of the track (sound test)
 } bgm_info_def;
 extern const bgm_info_def bgm_info[];
 
@@ -102,7 +102,7 @@ typedef struct {
 	uint16_t cmd; 
 	union {
 		struct { 
-			char string[36];
+			//char string[36];
 			uint16_t jstring;
 		} text;
 		struct  { 

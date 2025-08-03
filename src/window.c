@@ -6,17 +6,17 @@
 #include "md/dma.h"
 #include "gamemode.h"
 #include "hud.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "md/joy.h"
+#include "system.h"
 #include "cjk.h"
 #include "md/stdlib.h"
 #include "player.h"
 #include "resources.h"
 #include "sheet.h"
-#include "system.h"
 #include "tables.h"
 #include "tsc.h"
-#include "md/sys.h"
-#include "md/vdp.h"
 
 #include "window.h"
 
@@ -53,10 +53,9 @@ const uint8_t ITEM_PAL[40] = {
 
 uint8_t windowOnTop;
 
+uint8_t windowFlags;
 uint8_t windowOpen;
 uint16_t showingFace;
-
-uint8_t textMode;
 
 uint8_t windowText[3][36];
 uint8_t textRow, textColumn;
@@ -67,7 +66,6 @@ uint8_t promptAnswer;
 Sprite promptSpr[2], handSpr;
 
 uint16_t showingItem;
-
 uint8_t blinkTime;
 
 void window_clear_text(void);
@@ -111,7 +109,7 @@ void window_open(uint8_t mode) {
 		vdp_set_window(0, mode ? 8 : (pal_mode ? 245 : 244));
 	} else showingFace = 0;
 
-    if(textMode == TM_MSG) textMode = TM_NORMAL;
+    //if(textMode == TM_MSG) textMode = TM_NORMAL;
 
 	windowOpen = TRUE;
 }
@@ -254,16 +252,16 @@ void window_scroll_text(void) {
 	spaceCounter = spaceOffset = 0;
 }
 
-uint8_t window_get_textmode(void) {
-	return textMode;
-}
-
-void window_set_textmode(uint8_t mode) {
-	textMode = mode;
-}
+//uint8_t window_get_textmode(void) {
+//	return textMode;
+//}
+//
+//void window_set_textmode(uint8_t mode) {
+//	textMode = mode;
+//}
 
 uint8_t window_tick(void) {
-	if(textMode > 0) return TRUE;
+	if(windowFlags & WF_TUR) return TRUE;
 	windowTextTick++;
 	if(windowTextTick > 2 || (windowTextTick > 1 && (joystate&btn[cfg_btn_jump]))) {
 		windowTextTick = 0;
@@ -400,7 +398,7 @@ void window_update(void) {
 	    vdp_sprite_add(&handSpr);
 	    vdp_sprites_add(promptSpr, 2);
 	}
-	if(tscState == TSC_WAITINPUT && textMode == TM_NORMAL) {
+	if(tscState == TSC_WAITINPUT && !(windowFlags & WF_TUR)) {
 		uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 		uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 		uint16_t index;

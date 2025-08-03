@@ -210,7 +210,7 @@ void tsc_load_stage(uint8_t id) {
 }
 
 void tsc_call_event(uint16_t number) {
-	window_set_textmode(TM_NORMAL);
+	windowFlags = 0;
 	// Events under 50 will be in Head.tsc
 	if(number < 50) {
 		for(uint16_t i = 0; i < HEAD_EVENT_COUNT; i++) {
@@ -501,6 +501,7 @@ uint8_t execute_command(void) {
 		case CMD_MSG: // Display message box (bottom - visible)
 		{
 			window_open(0);
+			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_MS2: // Display message box (top - invisible)
@@ -508,16 +509,20 @@ uint8_t execute_command(void) {
 			// Hide face or else doctor will talk with Misery's face graphic
 			window_set_face(0, 0);
 			window_open(1);
+			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_MS3: // Display message box (top - visible)
 		{
 			window_open(1);
+			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_CLO: // Close message box
 		{
+			//window_set_textmode(TM_NORMAL);
 			window_close();
+			windowFlags &= ~WF_TUR;
 		}
 		break;
 		case CMD_CLR: // Clear message box
@@ -551,17 +556,20 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_CAT: // All 3 of these display text instantly
 		{
-			window_set_textmode(TM_ALL);
+			//window_set_textmode(TM_ALL);
+			windowFlags |= WF_SAT;
 		}
 		break;
 		case CMD_SAT:
 		{
-			window_set_textmode(TM_ALL);
+			//window_set_textmode(TM_ALL);
+			windowFlags |= WF_SAT;
 		}
 		break;
 		case CMD_TUR:
 		{
-			window_set_textmode(TM_MSG);
+			//window_set_textmode(TM_MSG);
+			windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
@@ -580,7 +588,7 @@ uint8_t execute_command(void) {
 				gameFrozen = FALSE;
 				window_set_face(0, FALSE);
 				window_close();
-                window_set_textmode(TM_NORMAL);
+                windowFlags = 0;
 				controlsLocked = FALSE;
 				hud_show();
 			}
@@ -1300,7 +1308,7 @@ uint8_t execute_command(void) {
 					window_draw_char(cmd);
 				}
 				if(cfg_msg_blip && !(cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) 
-						&& window_get_textmode() == TM_NORMAL && cmd != '\n') {
+						&& !(windowFlags & WF_TUR) && cmd != '\n') {
 					sound_play(SND_MSG, 2);
 				}
 			} else {

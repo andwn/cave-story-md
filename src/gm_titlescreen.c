@@ -19,6 +19,7 @@
 #include "tsc.h"
 #include "weapon.h"
 #include "window.h"
+#include "cjk.h"
 
 #include "res/local.h"
 #include "res/pal.h"
@@ -44,6 +45,14 @@ uint8_t tpal;
 extern const char Date[];
 extern const char Version[];
 extern const char Homepage[];
+
+static uint16_t ls_cursor_x(uint16_t cur) {
+	return cur >= 11 ? 4+18 : 4;
+}
+
+static uint16_t ls_cursor_y(uint16_t cur) {
+	return (pal_mode ? 5 : 4) + (cur % 11) * 2;
+}
 
 void print_version(void) {
     vdp_nputs(VDP_PLANE_A, Version,  5, 23, VER_LEN);
@@ -89,9 +98,9 @@ uint8_t titlescreen_main(void) {
 		tsong = 36; // Running Hell
 	}
 	// Load quote sprite
-	SHEET_LOAD(tsprite, 5, 4, TILE_SHEETINDEX+32, 1, 1, 0, 2, 0, 3);
+	SHEET_LOAD(tsprite, 5, 4, TILE_PROMPTINDEX, 1, 1, 0, 2, 0, 3);
 	Sprite sprCursor = {
-		.attr = TILE_ATTR(tpal,0,0,1,TILE_SHEETINDEX+32),
+		.attr = TILE_ATTR(tpal,0,0,1,TILE_PROMPTINDEX),
 		.size = SPRITE_SIZE(2,2)
 	};
 	uint8_t sprFrame = 0, sprTime = ANIM_SPEED;
@@ -99,8 +108,8 @@ uint8_t titlescreen_main(void) {
     print_version();
 
 	// Title & CS version
-    vdp_tiles_load_uftc(*TS_TITLE, 16, 0, 18*5);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16), 11, 3, 18, 5, 1);
+    vdp_tiles_load_uftc(*TS_TITLE, TILE_BACKINDEX, 0, 18*5);
+	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, TILE_BACKINDEX), 11, 3, 18, 5, 1);
 	
 #ifdef SHOW_MYCOM_LOGO
 	const uint16_t MENUY = 15;
@@ -112,9 +121,12 @@ uint8_t titlescreen_main(void) {
 #endif
 
 	// Menu and version text
-	vdp_puts(VDP_PLANE_A, "Start Game", 15, MENUY);
-	vdp_puts(VDP_PLANE_A, "Sound Test", 15, MENUY+4);
-	vdp_puts(VDP_PLANE_A, "Config", 15, MENUY+6);
+	cjk_reset(CJK_TITLE);
+	const int16_t cur_yoff = (cfg_language >= LANG_JA && cfg_language < LANG_RU) ? 0 : -4;
+	const uint8_t *txt = (const uint8_t *)MENU_STR;
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_START_GAME*32], 15, MENUY, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_SOUND_TEST*32], 15, MENUY+4, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_CONFIG*32], 15, MENUY+6, 16);
 
 	// Set palettes last
 	vdp_colors(0, PAL_Main, 16);
@@ -160,10 +172,10 @@ uint8_t titlescreen_main(void) {
 		if(--sprTime == 0) {
 			sprTime = ANIM_SPEED;
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-			sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+			sprite_index(&sprCursor, TILE_PROMPTINDEX+sprFrame*4);
 		}
 		// Draw quote sprite at cursor position
-		sprite_pos(&sprCursor, 13*8-4, (MENUY*8+cursor*16)-4);
+		sprite_pos(&sprCursor, 13*8-4, (MENUY*8+cursor*16) + cur_yoff);
 	    vdp_sprite_add(&sprCursor);
 
 		if(besttime > 0 && besttime < 300000) system_draw_counter();
@@ -179,70 +191,113 @@ uint8_t titlescreen_main(void) {
 		vdp_color(8, 0x468);
 		vdp_color(12, 0x666);
 		vdp_color(16 + 15, 0xAAA);
-		static const char *levelStr[] = {
-			" First Cave",
-			" Mimiga Village",
-			" Egg Corridor",
-			" Grasstown",
-			" Malco",
-			" Balfrog",
-			" Sand Zone",
-			" Omega",
-			" Storehouse",
-			" Labyrinth",
-			" Monster X",
-			" Labyrinth M",
-			" Core",
-			" Waterway",
-			" Egg Corridor 2",
-			" Outer Wall",
-			" Plantation",
-			" Last Cave",
-			" Last Cave 2",
-			" Balcony",
-			" Sacred Ground",
-			" Seal Chamber",
+		static const uint16_t stageIDs[SAVES] = {
+			STAGE_FIRST_CAVE, //" First Cave",
+			STAGE_MIMIGA_VILLAGE, //" Mimiga Village",
+			STAGE_EGG_CORRIDOR, //" Egg Corridor",
+			STAGE_GRASSTOWN, //" Grasstown",
+			STAGE_POWER_ROOM, //" Malco",
+			STAGE_GRASSTOWN_GUM, //" Balfrog",
+			STAGE_SAND_ZONE_BAR, //" Sand Zone",
+			STAGE_SAND_ZONE, //" Omega",
+			STAGE_SAND_ZONE_STOREHOUSE, //" Storehouse",
+			STAGE_LABYRINTH_I, //" Labyrinth",
+			STAGE_LABYRINTH_W, //" Monster X",
+
+			STAGE_LABYRINTH_M, //" Labyrinth M",
+			STAGE_CORE, //" Core",
+			STAGE_WATERWAY, //" Waterway",
+			STAGE_EGG_CORRIDOR_2, //" Egg Corridor 2",
+			STAGE_OUTER_WALL, //" Outer Wall",
+			STAGE_PLANTATION, //" Plantation",
+			STAGE_LAST_CAVE_1, //" Last Cave",
+			STAGE_LAST_CAVE_2, //" Last Cave 2",
+			STAGE_BALCONY, //" Balcony",
+			STAGE_HELL_B1, //" Sacred Ground",
+			STAGE_SEAL_CHAMBER, //" Seal Chamber",
 		};
-		uint16_t tx = 11, ty = 1;
-		if(pal_mode) ty++;
-		vdp_puts(VDP_PLANE_A, "= Welcome to Warp Zone =", 7, ty);
-		ty += 2;
-		for(uint8_t i = 0; i < SAVES; i++) {
+
+		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_STAGE_SELECT*32], 4, pal_mode ? 2 : 1, 32);
+		const uint8_t *names = (const uint8_t *)STAGE_NAMES;
+		for(uint16_t i = 0; i < SAVES; i++) {
 			if(cursor == i) vdp_font_pal(PAL0);
 			else vdp_font_pal(PAL1);
-			vdp_puts(VDP_PLANE_A, levelStr[i], tx, ty + i);
+			uint16_t tx = ls_cursor_x(i);
+			uint16_t ty = ls_cursor_y(i);
+			loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[i]*32], tx, ty, 16);
 		}
 
         joystate_old = ~0;
 		while(!joy_pressed(btn[cfg_btn_jump]) && !joy_pressed(btn[cfg_btn_pause])) {
 			if(joy_pressed(JOY_UP)) {
+				uint16_t tx = ls_cursor_x(cursor);
+				uint16_t ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL1);
-				vdp_puts(VDP_PLANE_A, levelStr[cursor], tx, ty + cursor);
-				if(cursor == 0) cursor = SAVES - 1;
-				else cursor--;
-				//if(cursor == 8 || cursor == 16) cursor--;
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
+				if(cursor == 0) {
+					cursor = 11-1;
+				} else if(cursor == 11) {
+					cursor = 22-1;
+				} else {
+					cursor--;
+				}
+				ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL0);
-				vdp_puts(VDP_PLANE_A, levelStr[cursor], tx, ty + cursor);
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(JOY_DOWN)) {
+				uint16_t tx = ls_cursor_x(cursor);
+				uint16_t ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL1);
-				vdp_puts(VDP_PLANE_A, levelStr[cursor], tx, ty + cursor);
-				if(cursor == SAVES - 1) cursor = 0;
-				else cursor++;
-				//if(cursor == 8 || cursor == 16) cursor++;
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
+				if(cursor == 11-1) {
+					cursor = 0;
+				} else if(cursor == 22-1) {
+					cursor = 11;
+				} else {
+					cursor++;
+				}
+				ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL0);
-				vdp_puts(VDP_PLANE_A, levelStr[cursor], tx, ty + cursor);
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
+				sound_play(SND_MENU_MOVE, 0);
+			} else if(joy_pressed(JOY_LEFT) || joy_pressed(JOY_RIGHT)) {
+				uint16_t tx = ls_cursor_x(cursor);
+				uint16_t ty = ls_cursor_y(cursor);
+				vdp_font_pal(PAL1);
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
+				if(cursor >= 11) cursor -= 11;
+				else cursor += 11;
+				tx = ls_cursor_x(cursor);
+				vdp_font_pal(PAL0);
+				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+				}
 				sound_play(SND_MENU_MOVE, 0);
 			}
 			// Animate quote sprite
 			if(--sprTime == 0) {
 				sprTime = ANIM_SPEED;
 				if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
-				sprite_index(&sprCursor, TILE_SHEETINDEX+32+sprFrame*4);
+				sprite_index(&sprCursor, TILE_PROMPTINDEX+sprFrame*4);
 			}
 			// Draw quote sprite at cursor position
-			sprite_pos(&sprCursor, (tx-2)*8-4, (ty*8+cursor*8)-5);
-		    vdp_sprite_add(&sprCursor);
+			{
+				uint16_t tx = ls_cursor_x(cursor);
+				uint16_t ty = ls_cursor_y(cursor);
+				sprite_pos(&sprCursor, (tx-2)*8-4, (ty*8) + cur_yoff);
+		    	vdp_sprite_add(&sprCursor);
+			}
 			
 			ready = TRUE;
             sys_wait_vblank(); aftervsync();

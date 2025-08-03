@@ -6,14 +6,17 @@
 #define WINDOW_ATTR(x) TILE_ATTR(PAL0, 1, 0, 0, TILE_WINDOWINDEX+(x))
 
 // Instant text mode
-#define TM_NORMAL	0
-#define TM_MSG		1 // TUR
-#define TM_ALL		2 // CAT/SAT
+//#define TM_NORMAL	0
+//#define TM_MSG		1 // TUR
+//#define TM_ALL		2 // CAT/SAT
 
 extern const uint8_t ITEM_PAL[40];
 
-extern uint8_t windowOnTop;
+#define WF_TUR 1
+#define WF_SAT 2
 
+extern uint8_t windowFlags;
+extern uint8_t windowOnTop;
 extern uint16_t showingFace;
 
 // Opens the message window
@@ -36,8 +39,8 @@ void window_scroll_text(void);
 
 void window_scroll_jtext(void);
 // Changes the text mode (show next line immediately or whole message)
-uint8_t window_get_textmode(void);
-void window_set_textmode(uint8_t mode);
+//uint8_t window_get_textmode(void);
+//void window_set_textmode(uint8_t mode);
 // Counts down until the next letter is to be printed, and will return TRUE
 // when the counter resets
 uint8_t window_tick(void);

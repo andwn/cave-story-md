@@ -8,7 +8,10 @@
 #include "effect.h"
 #include "entity.h"
 #include "hud.h"
+#include "md/sys.h"
+#include "md/vdp.h"
 #include "md/joy.h"
+#include "system.h"
 #include "cjk.h"
 #include "math.h"
 #include "md/stdlib.h"
@@ -16,12 +19,9 @@
 #include "resources.h"
 #include "sheet.h"
 #include "stage.h"
-#include "system.h"
 #include "tables.h"
 #include "md/comp.h"
 #include "tsc.h"
-#include "md/sys.h"
-#include "md/vdp.h"
 #include "weapon.h"
 
 #include "player.h"
@@ -801,29 +801,30 @@ static void player_update_booster(void) {
 	}
 }
 
-static uint16_t GetNextChar(uint8_t index) {
-	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
-	uint16_t chr = names[g_stage.id * 16 + index];
-	if(chr >= 0xE0 && chr < 0xFF) {
-		return (chr - 0xE0) * 0x60 + (names[g_stage.id * 16 + index + 1] - 0x20) + 0x100;
-	} else {
-		return chr;
-	}
-}
+//static uint16_t GetNextChar(uint8_t index) {
+//	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
+//	uint16_t chr = names[g_stage.id * 16 + index];
+//	if(chr >= 0xE0 && chr < 0xFF) {
+//		return (chr - 0xE0) * 0x60 + (names[g_stage.id * 16 + index + 1] - 0x20) + 0x100;
+//	} else {
+//		return chr;
+//	}
+//}
 
 static void show_map_jname(uint8_t ttl) {
     static const uint8_t mul6[20] = {
             0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114
     };
+	const uint8_t *names = (const uint8_t*)STAGE_NAMES;
     uint16_t len = 0;
     uint16_t i = 0;
     mapNameSpriteNum = 0;
     while(i < 16) {
         uint16_t chr1, chr2;
-        chr1 = GetNextChar(i++);
+        chr1 = GetNextChar(&names[g_stage.id*32], i++);
         if(chr1 == 0) break; // End of string
         if(chr1 > 0xFF) i++;
-        chr2 = GetNextChar(i++);
+        chr2 = GetNextChar(&names[g_stage.id*32], i++);
         if (chr2 > 0xFF) i++;
         cjk_drawsprite(mul6[mapNameSpriteNum], chr1, chr2);
         len += chr2 ? 2 : 1;
@@ -853,10 +854,10 @@ void player_show_map_name(uint8_t ttl) {
         return;
     }
 	// English name
-    const uint8_t *str = (const uint8_t*) stage_info[g_stage.id].name;
-	if(cfg_language > 0) {
-		str = ((const uint8_t*)STAGE_NAMES) + (g_stage.id << 5);
-	}
+    //const uint8_t *str = (const uint8_t*) stage_info[g_stage.id].name;
+	//if(cfg_language > 0) {
+	const uint8_t *str = ((const uint8_t*)STAGE_NAMES) + (g_stage.id << 5);
+	//}
 
 	const uint32_t *font = cfg_language >= LANG_RU ? UFTC_SysFontRU : UFTC_SysFont;
 	uint16_t len = 0;
