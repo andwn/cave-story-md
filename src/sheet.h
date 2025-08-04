@@ -89,7 +89,7 @@
 	while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;                                    \
 }
 #define TILES_QUEUE(tiles, index, count) {                                                     \
-	dma_queue(DmaVRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);                  \
+	dma_queue_rom(DmaVRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);                  \
 }
 
 enum { 

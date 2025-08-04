@@ -42,7 +42,7 @@ extern const uint16_t UFTC_bkMaze2[];
 extern const uint16_t UFTC_bkRed[];
 extern const uint16_t UFTC_bkWater[];
 extern const uint16_t UFTC_bkLabB[];
-extern const uint16_t UFTC_bkStream[];
+//extern const uint16_t UFTC_bkStream[];
 extern const uint16_t UFTC_bkSand[];
 extern const uint16_t UFTC_bkHell[];
 extern const uint16_t UFTC_bkFall[];

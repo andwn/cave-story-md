@@ -17,4 +17,7 @@ extern void dma_pop(void);
 extern void dma_flush(void);
 extern void dma_clear(void);
 
+// Will split DMA in two if it crosses 128K boundary
+extern void dma_queue_rom(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc);
+
 #endif //MD_DMA_H

@@ -200,6 +200,7 @@ void vdp_map_fill_rect(uint16_t plan, uint16_t index, uint16_t x, uint16_t y, ui
 void vdp_map_clear(uint16_t plan) {
     uint16_t addr = plan;
     while (addr < plan + 0x1000) {
+        __asm__("": : :"memory");
         dma_now(DmaVRAM, (uint32_t) BlankData, addr, 0x80, 2);
         addr += 0x100;
     }

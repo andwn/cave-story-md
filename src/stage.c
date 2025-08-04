@@ -49,6 +49,7 @@ void stage_draw_screen(void);
 void stage_draw_screen_credits(void);
 void stage_draw_background(void);
 void stage_draw_moonback(void);
+void stage_draw_main_artery(void);
 
 void stage_load(uint16_t id) {
 	k_str("stage_load");
@@ -59,6 +60,8 @@ void stage_load(uint16_t id) {
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	dma_clear();
 	g_stage.id = id;
+	g_stage.scrolling_row = 0;
+	g_stage.scrolling_column = 0;
 	// Clear out or deactivate stuff from the old stage
 	effects_clear();
 	entities_clear();
@@ -114,12 +117,20 @@ void stage_load(uint16_t id) {
 
 	// Load stage PXM into RAM
 	stage_load_blocks();
-	camera_set_position(player.x, player.y - (g_stage.back_type == 3 ? 8<<CSF : 0));
+	camera_set_position(player.x, g_stage.back_type == 3 ? (120<<CSF) : (player.y));
 	camera.target = &player;
 	camera.x_offset = 0;
 	camera.y_offset = 0;
 
-	stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
+	if(g_stage.back_type == 3) {
+		stage_draw_main_artery();
+		for(uint16_t x = 0; x < 32; x++) {
+			g_stage.pxm.blocks[x + 0] = 1;
+			g_stage.pxm.blocks[x + g_stage.yoff_tab[14]] = 1;
+		}
+	} else {
+		stage_draw_screen(); // Draw 64x32 foreground PXM area at camera's position
+	}
 
 	k_str("PXE");
 
@@ -258,15 +269,15 @@ void stage_update(void) {
 	// Background Scrolling
 	// Type 2 is not included here, that's blank backgrounds which are not scrolled
 	if(g_stage.back_type == 0) {
-        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW + (cameraShakeX >> 2);
         hscrollTable[1] = -sub_to_pixel(camera.x) / 4 + ScreenHalfW;
-        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH + (cameraShakeY >> 2);
         vscrollTable[1] = sub_to_pixel(camera.y) / 4 - ScreenHalfH;
         dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 2, 2);
         dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
 	} else if(g_stage.back_type == 1 || g_stage.back_type == 5) {
         g_stage.back_scroll_timer--;
-        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW + (cameraShakeX >> 2);
         uint16_t y = pal_mode ? 29 : 27;
         uint16_t off = pal_mode ? 1 : 0;
         while(y >= 21 + off) {
@@ -294,7 +305,7 @@ void stage_update(void) {
             //hscrollTable[y+32] = 0;
             y--;
         }
-        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH + (cameraShakeY >> 2);
         //vscrollTable[1] = pal_mode ? -8 : 0;
         dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, pal_mode ? 30 : 28, 32);
         dma_queue(DmaVRAM, (uint32_t) &hscrollTable[32], VDP_HSCROLL_TABLE+2, pal_mode ? 30 : 28, 32);
@@ -302,10 +313,14 @@ void stage_update(void) {
 	} else if(g_stage.back_type == 3) {
 		// Lock camera at specific spot
 		camera.target = NULL;
+		// For some reason there is a 1 tile gap and I don't want to fix it,
+		// so wrap the scroll value to make that part of the plane not show up
+		g_stage.back_scroll_timer += 2;
+		if(g_stage.back_scroll_timer > 32) g_stage.back_scroll_timer -= 32;
 		// Ironhead boss background auto scrolls leftward
-        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
-		hscrollTable[1] -= 2;
-        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        hscrollTable[0] = 128 - g_stage.back_scroll_timer;
+		hscrollTable[1] -= 1;
+        vscrollTable[0] = pal_mode ? 0 : 8;
         vscrollTable[1] = 0;
         dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 2, 2);
         dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
@@ -348,17 +363,17 @@ void stage_update(void) {
                 dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_PLANE_B + (rowup << 7), 64, 2);
 			}
 		}
-        hscrollTableAlmond[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
+        hscrollTableAlmond[0] = -sub_to_pixel(camera.x) + ScreenHalfW + (cameraShakeX >> 2);
         hscrollTableAlmond[1] = -sub_to_pixel(camera.x) + ScreenHalfW - g_stage.back_scroll_timer;
-        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH + (cameraShakeY >> 2);
         vscrollTable[1] = -scroll;
         dma_queue(DmaVRAM, (uint32_t) hscrollTableAlmond, VDP_HSCROLL_TABLE, 2, 2);
         dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 2, 2);
         waterBackLastRow = oldrow;//row;
 	} else {
 		// Only scroll foreground
-        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW;
-        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH;
+        hscrollTable[0] = -sub_to_pixel(camera.x) + ScreenHalfW + (cameraShakeX >> 2);
+        vscrollTable[0] = sub_to_pixel(camera.y) - ScreenHalfH + (cameraShakeY >> 2);
         dma_queue(DmaVRAM, (uint32_t) hscrollTable, VDP_HSCROLL_TABLE, 1, 2);
         dma_queue(DmaVSRAM, (uint32_t) vscrollTable, 0, 1, 2);
 	}
@@ -529,4 +544,36 @@ void stage_draw_moonback(void) {
 		index += 32;
 	}
 	g_stage.back_scroll_timer = 0;
+}
+
+
+extern uint16_t mapbuf[64+32]; // sorry (from camera.c)
+void stage_draw_main_artery(void) {
+	vdp_map_clear(VDP_PLANE_A);
+	const uint16_t base_top = TILE_TSINDEX + 160; // Tile on top
+	const uint16_t base_btm = TILE_TSINDEX + 32; // Tile on bottom
+	for(uint16_t x = 0; x < 64; x += 2) {
+		mapbuf[x+0] = TILE_ATTR(PAL2, 1, 0, 0, base_top + 0);
+		mapbuf[x+1] = TILE_ATTR(PAL2, 1, 0, 0, base_top + 1);
+	}
+	__asm__("": : :"memory");
+	dma_now(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A, 64, 2);
+	for(uint16_t x = 0; x < 64; x += 2) {
+		mapbuf[x+0] = TILE_ATTR(PAL2, 1, 0, 0, base_top + 2);
+		mapbuf[x+1] = TILE_ATTR(PAL2, 1, 0, 0, base_top + 3);
+	}
+	__asm__("": : :"memory");
+	dma_now(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A + 64*2*1, 64, 2);
+	for(uint16_t x = 0; x < 64; x += 2) {
+		mapbuf[x+0] = TILE_ATTR(PAL2, 1, 0, 0, base_btm + 0);
+		mapbuf[x+1] = TILE_ATTR(PAL2, 1, 0, 0, base_btm + 1);
+	}
+	__asm__("": : :"memory");
+	dma_now(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A + 64*2*28, 64, 2);
+	for(uint16_t x = 0; x < 64; x += 2) {
+		mapbuf[x+0] = TILE_ATTR(PAL2, 1, 0, 0, base_btm + 2);
+		mapbuf[x+1] = TILE_ATTR(PAL2, 1, 0, 0, base_btm + 3);
+	}
+	__asm__("": : :"memory");
+	dma_now(DmaVRAM, (uint32_t) mapbuf, VDP_PLANE_A + 64*2*29, 64, 2);
 }

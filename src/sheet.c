@@ -296,7 +296,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDIF, &SPR_GaudiFly, 3,3,3, 0, 1, 2);
 			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
 			if(g_stage.id == 0x27) {
-				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0, 2, 1, 3);
+				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0, 1, 2, 3);
 				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0);
 				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
 					 0, 1, 2, 3, 4, 5, 6, 7);
@@ -337,7 +337,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 				SHEET_ADD(SHEET_MGUN, &SPR_MGunB3, 5,2,2, 0, 1, 2, 3, 4);
 			} else {
 				SHEET_ADD(SHEET_CGUN, &SPR_Polar, 1,3,1, 0);
-				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 2,2,2, 0, 1);
+				SHEET_ADD(SHEET_PSTAR, &SPR_PolarB3, 5,2,2, 0, 1, 2, 3, 4);
 			}
 		} break;
 		case 0x2E: // Dark Place
@@ -452,7 +452,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case STAGE_FALLING:
 		case STAGE_ENDING_SKY:
-		{	SHEET_LOAD(&SPR_Cloud1, 6, 32, TILE_CLOUDINDEX, TRUE, 0, 1, 2, 3, 4, 5);
+		{	SHEET_LOAD(&SPR_Cloud1, 12, 16, TILE_CLOUDINDEX, TRUE, 0,1,2,3,4,5,6,7,8,9,10,11);
 			SHEET_LOAD(&SPR_Cloud2, 3, 16, TILE_CLOUD2INDEX, TRUE, 0, 1, 2);
 			SHEET_LOAD(&SPR_Cloud3, 3, 9, TILE_CLOUD3INDEX, TRUE, 0, 1, 2);
 			SHEET_LOAD(&SPR_Cloud4, 1, 8, TILE_CLOUD4INDEX, TRUE, 0);

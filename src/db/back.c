@@ -9,7 +9,7 @@ const background_info_def background_info[BACKGROUND_COUNT] = {
 	{ NULL, 	PAL2, 2, 0, 0, NULL },
 	{ NULL,     PAL0, 0, 8, 8, NULL },
 	{ UFTC_bkBlue, PAL2, 0, 8, 8, NULL }, // Mimiga Village, Grasstown, Waterway, Plantation
-	{ UFTC_bkStream,PAL2,3, 8, 8, NULL }, // Main Artery
+	{ UFTC_bkBlue, PAL2, 3, 8, 8, NULL }, // Main Artery
 	{ NULL, 	PAL2, 5, 0, 0, NULL }, // Balcony
 	{ UFTC_bkGard, PAL2, 0, 6, 8, NULL }, // Sand Zone Storehouse
 	{ UFTC_bkGray, PAL3, 0, 8, 8, NULL }, // Boulder Chamber

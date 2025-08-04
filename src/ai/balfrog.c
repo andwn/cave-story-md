@@ -268,8 +268,8 @@ void ai_balfrog(Entity *e) {
 				}
 			}
 			if((e->timer & 15) == 1) {
-				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) - 16 + (rand() & 31);
-				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1000 : -0x1000),
+				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) + (rand() & 31) - 16;
+				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1800 : -0x1800),
 						e->y + 0x1000, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
 				if(e->timer > TIME_8(160) || bbox_damage > 90) {
@@ -497,11 +497,11 @@ static void spawn_frogs(uint16_t objtype, uint8_t count) {
 static void set_jump_sprite(Entity *e, uint8_t enable) {
 	if(enable) {
 		e->jump_time = TRUE;
-		e->display_box.top += 8;
+		e->display_box.top += 16;
 		bbox_mode = BM_JUMPING;
 	} else {
 		e->jump_time = FALSE;
-		e->display_box.top -= 8;
+		e->display_box.top -= 16;
 		bbox_mode = BM_STAND;
 	}
 }

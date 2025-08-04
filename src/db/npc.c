@@ -397,7 +397,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	/* 0x169 (361) */
 	{ &SPR_Omega, 		NOSHEET, 		6, PAL3, &onspawn_omega, 		&ai_omega, 			&ondeath_omega 		,""}, // Omega
 	{ &SPR_Balfrog1, 	NOSHEET, 		6, PAL3, &onspawn_balfrog, 		&ai_balfrog, 		&ondeath_balfrog 	,""}, // Balfrog
-	{ NULL, 			NOSHEET, 		4, PAL3, &onspawn_monsterx, 	&ai_monsterx, 		&ondeath_monsterx 	,""}, // Monster X
+	{ NULL, 			NOSHEET, 		8, PAL3, &onspawn_monsterx, 	&ai_monsterx, 		&ondeath_monsterx 	,""}, // Monster X
 	{ NULL, 			NOSHEET, 		1, PAL3, &onspawn_core, 		&ai_core, 			&ondeath_core 		,""}, // Core (Controller)
 	{ &SPR_Ironh, 		NOSHEET, 		2, PAL3, &onspawn_ironhead, 	&ai_ironhead, 		&ondeath_ironhead 	,""}, // Ironhead
 	{ NULL, 			NOSHEET, 		3, PAL3, &onspawn_sisters, 		&ai_sisters, 		&ondeath_sisters 	,""}, // Sisters
@@ -414,7 +414,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		2, PAL3, &onspawn_x_tread,	 	&ai_x_tread, 		&ai_null 			,""}, // Monster X Tread
 	{ &SPR_XDoor, 		NOSHEET, 		4, PAL3, &onspawn_x_door, 		&ai_x_door, 		&ai_null 			,""}, // Monster X Door
 	{ NULL, 			SHEET_XTARGET, 	1, PAL3, &onspawn_x_target, 	&ai_x_target, 		&ondeath_x_target 	,""}, // Monster X Target
-	{ &SPR_XInts, 		NOSHEET, 		6, PAL3, &onspawn_x_internals, 	&ai_x_internals, 	&ai_null 			,""}, // Monster X Internals
+	{ &SPR_XInts, 		NOSHEET, 		4, PAL3, &onspawn_x_internals, 	&ai_x_internals, 	&ai_null 			,""}, // Monster X Internals
 	{ &SPR_SisBody, 	NOSHEET, 		2, PAL3, &onspawn_sisters_body, &ai_sisters_body, 	&ai_null 			,""}, // Sisters Body
 	{ NULL, 			SHEET_SISHEAD, 	1, PAL3, &onspawn_sisters_head, &ai_sisters_head, 	&ai_null 			,""}, // Sisters Head
 	{ &SPR_UCoreFront, 	NOSHEET, 		6, PAL2, &onspawn_persistent, 	&ai_undead_core_front,&ai_null 			,""}, // Undead Core (Front)
@@ -426,19 +426,12 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		0, PAL0, &onspawn_persistent, 	&ai_null, 			&ai_null 			,""}, // Ballos Shield
 	{ NULL, 			NOSHEET, 		0, PAL3, &onspawn_ballos, 		&ai_ballos_f2, 		&ondeath_ballos 	,""}, // Ballos (Form 2)
 	{ NULL, 			NOSHEET, 		0, PAL3, &onspawn_ballos, 		&ai_ballos_f3, 		&ondeath_ballos 	,""}, // Ballos (Form 3)
-	/* Splash screen */
-//	{ &SPR_Sega, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo
-//	{ &SPR_Sega2, 		NOSHEET, 		3, PAL0, &onspawn_segalogo, 	&ai_segalogo, 		&ai_null 			,""}, // Sega Logo being crushed
-//	{ &SPR_Balrog, 		NOSHEET, 		2, PAL1, &onspawn_balrog_splash,&ai_balrog_splash, 	&ai_null 			,""}, // Balrog in splash screen
 	/* Misc */
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_trigger_special,&ai_null 			,""}, // Out of bounds trigger
 	{ &SPR_HeliBlade2, 	NOSHEET, 		3, PAL1, &onspawn_heliblade2, 	&ai_heli_blade, 	&ai_null 			,""}, // Helicopter blade (smaller)
-	{ NULL/*&SPR_LevelUp*/, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Up!
-	//{ &SPR_J_LevelUp, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルアップ！
-	{ NULL/*&SPR_LevelDown*/, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Down!
-	//{ &SPR_J_LevelDown, NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // レベルダウン！
-	{ NULL/*&SPR_Empty*/, 		NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Empty!
-	//{ &SPR_J_Empty, 	NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // からっぽ！
+	{ NULL, 			NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Up!
+	{ NULL, 			NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Level Down!
+	{ NULL, 			NOSHEET, 		2, PAL1, &onspawn_lvlupdn, 		&ai_lvlupdn, 		&ai_null 			,""}, // Empty!
 	{ NULL, 			NOSHEET, 		12,PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
 	{ NULL, 			NOSHEET, 		3, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
 	{ NULL, 			NOSHEET, 		3, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud

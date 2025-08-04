@@ -29,6 +29,7 @@ Camera camera;
 // When cameraShake is nonzero the camera will shake, and decrement this value
 // each frame until it becomes zero again
 uint16_t cameraShake;
+int8_t cameraShakeX, cameraShakeY;
 // Tile attr buffer to draw offscreen during map scroll
 uint16_t mapbuf[64+32];
 
@@ -36,6 +37,8 @@ void camera_init(void) {
 	camera.target = &player;
     camera.x_offset = 0;
     cameraShake = 0;
+	cameraShakeX = 0;
+	cameraShakeY = 0;
     camera_set_position(0, 0);
 }
 
@@ -111,6 +114,7 @@ void camera_update(void) {
 					(((floor(camera.target->y) + camera.y_offset) - camera.y) >> 5);
 		}
 	} else { // Camera isn't following anything
+		if(gamemode == GM_GAME) stage_update();
 		return;
 	}
 	// Enforce max camera speed
@@ -119,7 +123,7 @@ void camera_update(void) {
 	if(x_next - camera.x > CAMERA_MAX_SPEED) x_next = camera.x + CAMERA_MAX_SPEED;
 	if(y_next - camera.y > CAMERA_MAX_SPEED) y_next = camera.y + CAMERA_MAX_SPEED;
 	// Don't let the camera leave the stage
-	uint16_t bounds = cameraShake ? 2 : 8;
+	uint16_t bounds = 8;//cameraShake ? 2 : 8;
 	if(g_stage.id == 18 && !pal_mode) { // Special case for shelter
 		x_next = pixel_to_sub(ScreenHalfW + 8);
 		y_next = pixel_to_sub(ScreenHalfH + 16);
@@ -136,12 +140,19 @@ void camera_update(void) {
 		}
 	}
 	// Camera shaking
-	// stay within the same (pre-shake) 8x8 area to avoid pointless map redraw
 	if(cameraShake && (--cameraShake & 1)) {
-		int16_t x_shake = (rand() & 0x7FF) - 0x400;
-		int16_t y_shake = (rand() & 0x7FF) - 0x400;
-		if((x_next & 0xF000) == ((x_next + x_shake) & 0xF000)) x_next += x_shake;
-		if((y_next & 0xF000) == ((y_next + y_shake) & 0xF000)) y_next += y_shake;
+		cameraShakeX += (rand() & 7) - 4;
+		cameraShakeY += (rand() & 7) - 4;
+	}
+	if(cameraShakeX > 0) {
+		cameraShakeX--;
+	} else {
+		cameraShakeX++;
+	}
+	if(cameraShakeY > 0) {
+		cameraShakeY--;
+	} else {
+		cameraShakeY++;
 	}
 	// Update quick fetch cutoff values
 	camera_xmin = camera.x - pixel_to_sub(ScreenHalfW + 32);

@@ -1,5 +1,3 @@
-#ifdef SLOW_MODE
-
 #include "types.h"
 
 #include "vdp.h"
@@ -12,6 +10,8 @@
 static volatile uint16_t *const vdp_data_port = (uint16_t *) 0xC00000;
 static volatile uint16_t *const vdp_ctrl_port = (uint16_t *) 0xC00004;
 static volatile uint32_t *const vdp_ctrl_wide = (uint32_t *) 0xC00004;
+
+#ifdef SLOW_MODE
 
 void dma_queue(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc) {
     __asm__("move #0x2700,%sr");
@@ -39,3 +39,16 @@ void dma_flush(void) { }
 void dma_clear(void) { }
 
 #endif
+
+void dma_queue_rom(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc) {
+    const uint32_t limit_b = 0x20000 - (from & 0x1FFFF);
+    const uint32_t limit_w = limit_b >> 1;
+    uint32_t new_len;
+    if(len > limit_w) {
+        dma_queue(cmd, from + limit_b, to + limit_b, len - limit_w, inc);
+        new_len = limit_w;
+    } else {
+        new_len = len;
+    }
+    dma_queue(cmd, from, to, new_len, inc);
+}

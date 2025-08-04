@@ -20,11 +20,6 @@
 // flash red when struck, else stay in Mouth Open frame
 // TODO: Palette swapping
 #define OPEN_MOUTH ({                                                                          \
-	if(e->damage_time & 2) {                                                                   \
-		                                                                                       \
-	} else {                                                                                   \
-		                                                                                       \
-	}                                                                                          \
 	if(!pieces[CFRONT]->mouth_open) {                                                          \
 		pieces[CFRONT]->frame = 1;                                                             \
 		pieces[CFRONT]->mouth_open = TRUE;                                                     \
@@ -342,6 +337,22 @@ void ai_core(Entity *e) {
 	} else {
 		e->flags &= ~NPC_SHOOTABLE;
 		pieces[CFRONT]->flags |= NPC_INVINCIBLE | NPC_SHOOTABLE;
+	}
+
+	if(e->damage_time & 2) {
+		sprite_pal(&pieces[CFRONT]->sprite[0], PAL1);
+		sprite_pal(&pieces[CFRONT]->sprite[1], PAL1);
+		sprite_pal(&pieces[CFRONT]->sprite[2], PAL1);
+		sprite_pal(&pieces[CFRONT]->sprite[3], PAL1);
+		sprite_pal(&pieces[CFRONT]->sprite[4], PAL1);
+		sprite_pal(&pieces[CFRONT]->sprite[5], PAL1);
+	} else if(e->damage_time > 0) {
+		sprite_pal(&pieces[CFRONT]->sprite[0], PAL2);
+		sprite_pal(&pieces[CFRONT]->sprite[1], PAL2);
+		sprite_pal(&pieces[CFRONT]->sprite[2], PAL2);
+		sprite_pal(&pieces[CFRONT]->sprite[3], PAL2);
+		sprite_pal(&pieces[CFRONT]->sprite[4], PAL2);
+		sprite_pal(&pieces[CFRONT]->sprite[5], PAL2);
 	}
 	
 	LIMIT_X(SPEED_8(0x80));

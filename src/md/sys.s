@@ -171,16 +171,21 @@ RegDump:
 		moveq	#0,d7
 		move.w	#0x8B00,(a5)		/* Plane scroll mode */
 		move.w	#0x8F02,(a5)		/* Auto-increment = 2 */
-		move.l	#0x7F000000,(a5)	/* VRAM 0xFC00 */
-		move.w	d7,(a6)				/* Plane A H scroll = 0 */
+		move.l	#0x7C000003,(a5)	/* VRAM 0xFC00 */
+		move.l	d7,(a6)				/* Planes H scroll = 0 */
 		move.l	#0x40000010,(a5)	/* VSRAM 0x0000 */
-		move.w	d7,(a6)				/* Plane A V scroll = 0 */
-		move.l	#0x7E000000,(a5)	/* VRAM 0xF800 */
+		move.l	d7,(a6)				/* Planes V scroll = 0 */
+		move.l	#0x78000003,(a5)	/* VRAM 0xF800 */
 		move.l	d7,(a6)				/* Clear sprite table */
 		move.l	#0xC0000000,(a5)	/* CRAM $0000 */
 		move.l	d7,(a6)
-		move.l	#0xC01E0000,(a5)	/* CRAM $001E */
-		move.w	0xEEE,(a6)
+		move.l	d7,(a6)
+		move.l	d7,(a6)
+		move.l	d7,(a6)
+		move.l	d7,(a6)
+		move.l	d7,(a6)
+		move.l	d7,(a6)
+		move.l	#0x0EE0EEE,(a6)
 		move.w	#0x9100,(a5)		/* Hide window plane */
 		move.w	#0x9200,(a5)
 

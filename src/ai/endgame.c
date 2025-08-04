@@ -107,7 +107,7 @@ void ai_cloud(Entity *e) {
 				yoff += (e->type == OBJ_CLOUD3) ? 24 : 32;
 			}
 		}
-	vdp_sprites_add(e->sprite, e->sprite_count);
+		vdp_sprites_add(e->sprite, e->sprite_count);
 	}
 }
 

@@ -1,6 +1,10 @@
+#ifndef CAMERA_H
+#define CAMERA_H
 // Pre calculated camera bounds values to speed up entity_on_screen()
 extern int32_t camera_xmin, camera_ymin;
 extern uint32_t camera_xsize, camera_ysize;
+
+extern int8_t cameraShakeX, cameraShakeY;
 
 typedef struct {
 	int32_t x, y; // Fixed point units
@@ -27,3 +31,5 @@ void camera_set_position_force(int32_t x, int32_t y);
 void camera_shake(uint16_t time);
 // Per frame update for camera, moves toward the target entity and scrolls the tilemap
 void camera_update(void);
+
+#endif

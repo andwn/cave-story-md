@@ -228,7 +228,7 @@ SPRITE SPR_Block		"sprite/block.png"			4 4 NONE
 SPRITE SPR_BlockM		"sprite/blockm.png"			2 2 NONE
 SPRITE SPR_Rock			"sprite/rock.png"			2 2 NONE
 SPRITE SPR_Statue		"sprite/statue.png"			4 5 NONE
-SPRITE SPR_Cloud1		"sprite/cloud1.png"			4 8 NONE
+SPRITE SPR_Cloud1		"sprite/cloud1.png"			4 4 NONE
 SPRITE SPR_Cloud2		"sprite/cloud2.png"			4 4 NONE
 SPRITE SPR_Cloud3		"sprite/cloud3.png"			3 3 NONE
 SPRITE SPR_Cloud4		"sprite/cloud4.png"			4 2 NONE
@@ -335,7 +335,7 @@ SPRITE SPR_XFishy		"sprite/xfishy.png"			2 2 NONE
 SPRITE SPR_XTarget		"sprite/xtarget.png"		2 2 NONE
 SPRITE SPR_XTread		"sprite/xtread.png"			8 4 NONE
 SPRITE SPR_XDoor		"sprite/xdoor.png"			6 6 NONE
-SPRITE SPR_XInts		"sprite/xinternals.png" 	9 5 NONE
+SPRITE SPR_XInts		"sprite/xinternals.png" 	8 5 NONE
 SPRITE SPR_XBody		"sprite/xbody.png"			9 4 NONE
 SPRITE SPR_XCat			"sprite/xcat.png"			6 9 NONE
 

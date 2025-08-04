@@ -25,13 +25,13 @@
 #define DOORS_OPEN_DIST			pixel_to_sub(32)		// how far the doors open
 #define DOORS_OPEN_FISHY_DIST	pixel_to_sub(20)		// how far the doors open during fish-missile phase
 
-#define BODY_UL_X	-(64-4)
+#define BODY_UL_X	-(64-4)-8
 #define BODY_UL_Y	-40
-#define BODY_UR_X	 (32+4)
+#define BODY_UR_X	 (32+4)+8
 #define BODY_UR_Y	-40
-#define BODY_LL_X	-(64-4)
+#define BODY_LL_X	-(64-4)-8
 #define BODY_LL_Y	 8
-#define BODY_LR_X	 (32+4)
+#define BODY_LR_X	 (32+4)+8
 #define BODY_LR_Y	 8
 
 #define ARENA_LEFT		0x106800
@@ -139,7 +139,7 @@ void onspawn_x_internals(Entity *e) {
 	e->flags |= NPC_SHOWDAMAGE;
 	e->hurtSound = SND_ENEMY_HURT_COOL;
 	e->hit_box = (bounding_box) {{ 24, 16, 24, 16 }};
-	e->display_box = (bounding_box) {{ 36, 24, 36, 24 }};
+	e->display_box = (bounding_box) {{ 32, 24, 32, 24 }};
 	e->health = 1000;
 }
 
@@ -416,6 +416,27 @@ void ai_monsterx(Entity *e) {
 		.x = xx + BODY_LR_X + 128, .y = yy + BODY_LR_Y + 128,
 		.size = SPRITE_SIZE(4, 4), 
 		.attr = TILE_ATTR(PAL3,0,1,1,sheets[e->alt_sheet].index),
+	};
+
+	e->sprite[4] = (Sprite) {
+		.x = xx + BODY_UL_X + 128 + 32, .y = yy + BODY_UL_Y + 128, 
+		.size = SPRITE_SIZE(4, 4), 
+		.attr = TILE_ATTR(PAL3,0,0,0,sheets[e->alt_sheet].index+16),
+	};
+	e->sprite[5] = (Sprite) {
+		.x = xx + BODY_UR_X + 128 - 32, .y = yy + BODY_UR_Y + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attr = TILE_ATTR(PAL3,0,0,1,sheets[e->alt_sheet].index+16),
+	};
+	e->sprite[6] = (Sprite) {
+		.x = xx + BODY_LL_X + 128 + 32, .y = yy + BODY_LL_Y + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attr = TILE_ATTR(PAL3,0,1,0,sheets[e->alt_sheet].index+16),
+	};
+	e->sprite[7] = (Sprite) {
+		.x = xx + BODY_LR_X + 128 - 32, .y = yy + BODY_LR_Y + 128,
+		.size = SPRITE_SIZE(4, 4), 
+		.attr = TILE_ATTR(PAL3,0,1,1,sheets[e->alt_sheet].index+16),
 	};
 }
 

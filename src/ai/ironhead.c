@@ -45,7 +45,7 @@ void ai_ironhead(Entity *e) {
 			}
 			if (!(e->timer & 7)) {
 				entity_create(pixel_to_sub((14 + (rand() & 3)) << 4),
-						  	pixel_to_sub((1 + (rand() & 15)) << 4),
+						  	pixel_to_sub((1 + (rand() % 14)) << 4),
 						  	OBJ_IRONH_FISHY, 0);
 			}
 		}
@@ -247,16 +247,13 @@ void ai_ironh_brick(Entity *e) {
 	}
 	
 	// bounce off the walls
-	if (e->y_speed < 0 && e->y <= (16<<CSF)) {
-		//effect(e->CenterX(), e->y, EFFECT_BONKPLUS);
+	if (e->y_speed < 0 && e->y <= pixel_to_sub(16+e->hit_box.top)) {
+		effect_create_smoke(e->x >> CSF, (e->y >> CSF) - e->hit_box.top);
+		e->y_speed = -e->y_speed;
+	} else if (e->y_speed > 0 && (e->y >= pixel_to_sub(224-e->hit_box.bottom))) {
+		effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
 		e->y_speed = -e->y_speed;
 	}
-	
-	if (e->y_speed > 0 && (e->y + pixel_to_sub(e->hit_box.bottom) >= pixel_to_sub(239))) {
-		//effect(e->CenterX(), e->Bottom(), EFFECT_BONKPLUS);
-		e->y_speed = -e->y_speed;
-	}
-	
 	
 	if ((e->x_speed < 0 && (e->x < -0x2000)) ||
 		(e->x > pixel_to_sub(g_stage.pxm.width * 16))) {
@@ -270,7 +267,7 @@ void ai_ironh_brick(Entity *e) {
 		sprite_pos(&e->sprite[0],
                    (e->x>>CSF) - (camera.x>>CSF) + ScreenHalfW - e->display_box.left,
                    (e->y>>CSF) - (camera.y>>CSF) + ScreenHalfH - e->display_box.top);
-	vdp_sprite_add(&e->sprite[0]);
+		vdp_sprite_add(&e->sprite[0]);
 	}
 }
 

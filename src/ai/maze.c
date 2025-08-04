@@ -6,6 +6,7 @@ void onspawn_block(Entity *e) {
 	e->hit_box = (bounding_box) {{ 16, 16, 16, 16 }};
 	e->display_box = (bounding_box) {{ 16, 16, 16, 16 }};
 	e->flags |= NPC_SPECIALSOLID | NPC_IGNORE44;
+	e->flags |= NPC_SHOOTABLE | NPC_INVINCIBLE;
 	e->flags &= ~NPC_SOLID;
 	e->enableSlopes = FALSE;
 	e->attack = 0;
