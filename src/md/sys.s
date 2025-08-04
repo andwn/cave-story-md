@@ -41,7 +41,7 @@ RomHeader:
 		.ascii	"SEGA MEGA DRIVE "          /* Console Signature */
 	.globl Date
 Date:
-		.ascii	"SKYCHASE 2025.07"          /* Company & Date */
+		.ascii	"SKYCHASE 2025.08"          /* Company & Date */
 		.ascii	"DOUKUTSU MONOGATARI MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */

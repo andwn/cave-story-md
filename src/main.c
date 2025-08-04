@@ -22,20 +22,15 @@ uint8_t paused;
 uint8_t gameFrozen;
 
 void aftervsync(void) {
-	//PF_BGCOLOR(0xEEE);
     vdp_fade_step_dma();
-	//PF_BGCOLOR(0x0E0);
 	dqueued = FALSE;
 	if(ready) {
 		if(inFade) vdp_sprites_clear();
 		vdp_sprites_update();
 		ready = FALSE;
 	}
-	//PF_BGCOLOR(0xE00);
 	dma_flush();
-	//PF_BGCOLOR(0xEEE);
     vdp_fade_step_calc();
-	//PF_BGCOLOR(0x888);
     joy_update();
 }
 

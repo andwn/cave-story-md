@@ -400,7 +400,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT("Gideon Zhi", 281),			C_ICON(GIDEON,	3), C_WAIT(48),
 	
 	C_TEXT("And many others", 282),							C_WAIT(48),
-
+#ifdef MD_STAFFROLL
 	// MD staff roll
 	C_WAIT(96),
 	C_TEXT("= Mega Drive Version =", 283),                  C_WAIT(32),
@@ -415,7 +415,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  Sik", 290),									C_WAIT(48),
 	C_TEXT("  MOF", 291),									C_WAIT(64),
 	C_TEXT("  ...and you?", 292),							C_WAIT(96),
-
+#endif
 	C_LOADPXE(),
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 299),C_ICON(THANKS,	3), C_WAIT(32),
