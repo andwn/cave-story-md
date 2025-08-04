@@ -936,8 +936,8 @@ void player_draw(void) {
 	// Special case when player drowns
 	if(!airPercent) {
 		sprite_pos(&playerSprite,
-                   sub_to_pixel(player.x) - sub_to_pixel(camera.x) + ScreenHalfW - 8,
-                   sub_to_pixel(player.y) - sub_to_pixel(camera.y) + ScreenHalfH - 8);
+                   sub_to_pixel(player.x) - camera.x_shifted - 8,
+                   sub_to_pixel(player.y) - camera.y_shifted - 8);
 		vdp_sprite_add(&playerSprite);
 		return;
 	} else if(!player.health) {
@@ -1008,8 +1008,8 @@ void player_draw(void) {
 		}
 		sprite_hflip(&playerSprite, player.dir);
 		sprite_pos(&playerSprite,
-                   sub_to_pixel(player.x) - sub_to_pixel(camera.x) + ScreenHalfW - 8,
-                   sub_to_pixel(player.y) - sub_to_pixel(camera.y) + ScreenHalfH - 8);
+                   sub_to_pixel(player.x) - camera.x_shifted - 8,
+                   sub_to_pixel(player.y) - camera.y_shifted - 8);
 		vdp_sprite_add(&playerSprite);
 		if(playerWeapon[currentWeapon].type > 0 && playerWeapon[currentWeapon].type != WEAPON_BLADE) {
 			uint16_t vert = 0, vdir = 0;
@@ -1022,15 +1022,15 @@ void player_draw(void) {
 			}
 			if(vert) {
 				weaponSprite = (Sprite) {
-					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 4 + 128,
-					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 8 + 128,
+					.x = (player.x>>CSF) - camera.x_shifted - 4 + 128,
+					.y = (player.y>>CSF) - camera.y_shifted - 8 + 128,
 					.size = SPRITE_SIZE(1, 3),
 					.attr = TILE_ATTR(PAL1,0,vdir,vdir ? !player.dir : player.dir,TILE_WEAPONINDEX+3),
 				};
 			} else {
 				weaponSprite = (Sprite) {
-					.x = (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 12 + 128,
-					.y = (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 0 + 128,
+					.x = (player.x>>CSF) - camera.x_shifted - 12 + 128,
+					.y = (player.y>>CSF) - camera.y_shifted - 0 + 128,
 					.size = SPRITE_SIZE(3, 1),
 					.attr = TILE_ATTR(PAL1,0,0,player.dir,TILE_WEAPONINDEX),
 				};
@@ -1039,8 +1039,8 @@ void player_draw(void) {
 		}
 		if(player.underwater && (playerEquipment & EQUIP_AIRTANK)) {
 			sprite_pos(&airTankSprite,
-                       (player.x>>CSF) - (camera.x>>CSF) + ScreenHalfW - 12,
-                       (player.y>>CSF) - (camera.y>>CSF) + ScreenHalfH - 12);
+                       (player.x>>CSF) - camera.x_shifted - 12,
+                       (player.y>>CSF) - camera.y_shifted - 12);
 			vdp_sprite_add(&airTankSprite);
 		}
 	}

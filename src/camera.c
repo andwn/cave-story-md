@@ -208,8 +208,8 @@ void camera_update(void) {
 	camera.x = x_next;
 	camera.y = y_next;
 	// Shifted values
-	camera.x_shifted = (x_next >> CSF) - ScreenHalfW;
-	camera.y_shifted = (y_next >> CSF) - ScreenHalfH;
+	camera.x_shifted = (x_next >> CSF) - ScreenHalfW - (cameraShakeX >> 2);
+	camera.y_shifted = (y_next >> CSF) - ScreenHalfH + (cameraShakeY >> 2);
     // Update scrolling
     if(gamemode == GM_GAME) stage_update();
 }
