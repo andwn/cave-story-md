@@ -151,7 +151,7 @@ void ai_balfrog(Entity *e) {
 			sound_play(SND_FUNNY_EXPLODE, 8);
 			e->frame = 4;
 			set_jump_sprite(e, TRUE);
-			e->y_speed = -SPEED(0x400);
+			e->y_speed = -SPEED(0x4FF);
 			e->grounded = FALSE;
 			e->timer = 0;
 			e->state++;
@@ -269,8 +269,8 @@ void ai_balfrog(Entity *e) {
 			}
 			if((e->timer & 15) == 1) {
 				uint8_t angle = (e->dir ? A_RIGHT : A_LEFT) + (rand() & 31) - 16;
-				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x1800 : -0x1800),
-						e->y + 0x1000, angle, 0x200);
+				FIRE_ANGLED_SHOT(OBJ_BALFROG_SHOT, e->x + (e->dir ? 0x2400 : -0x2400),
+						e->y + 0xC00, angle, 0x200);
 				sound_play(SND_EM_FIRE, 5);
 				if(e->timer > TIME_8(160) || bbox_damage > 90) {
 					e->frame = 1;
@@ -430,14 +430,14 @@ void ai_balfrog(Entity *e) {
 	if(e->jump_time) {
 		Sprite feet[2] = {
 			(Sprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff1[e->dir] + 128,
-				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
+				.x = (e->x >> CSF) - camera.x_shifted + xoff1[e->dir] + 128,
+				.y = (e->y >> CSF) - camera.y_shifted + 20 + 128,
 				.size = SPRITE_SIZE(3, 3),
 				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?9:0)),
 			},
 			(Sprite) {
-				.x = (e->x >> CSF) - (camera.x >> CSF) + ScreenHalfW + xoff2[e->dir] + 128,
-				.y = (e->y >> CSF) - (camera.y >> CSF) + ScreenHalfH + 24 + 128,
+				.x = (e->x >> CSF) - camera.x_shifted + xoff2[e->dir] + 128,
+				.y = (e->y >> CSF) - camera.y_shifted + 20 + 128,
 				.size = SPRITE_SIZE(3, 3),
 				.attr = TILE_ATTR(PAL3,0,0,e->dir,e->timer2+(e->dir?0:9)),
 			},
@@ -497,11 +497,11 @@ static void spawn_frogs(uint16_t objtype, uint8_t count) {
 static void set_jump_sprite(Entity *e, uint8_t enable) {
 	if(enable) {
 		e->jump_time = TRUE;
-		e->display_box.top += 16;
+		e->display_box.top += 12;
 		bbox_mode = BM_JUMPING;
 	} else {
 		e->jump_time = FALSE;
-		e->display_box.top -= 16;
+		e->display_box.top -= 12;
 		bbox_mode = BM_STAND;
 	}
 }

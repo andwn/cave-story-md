@@ -227,6 +227,25 @@ void tsc_call_event(uint16_t number) {
 				lastRunEvent = number;
 				tscState     = TSC_RUNNING;
 				curCommand   = stageCmdData + stageEvents[i].offset;
+				// Workaround for some triggers that flag jump out immediately
+				// If we wait until the next frame to process the TSC, the game will
+				// Lag 1 frame each time the event is triggered, creating a "30FPS Zone"
+				// So up front parse a few instructions until the state changes
+				while(tscState == TSC_RUNNING) {
+					switch(*curCommand) {
+						default:
+							execute_command();
+							break;
+						case CMD_TRA:
+						case CMD_FAO:
+						case CMD_MSG:
+						case CMD_MS2:
+						case CMD_MS3:
+						case CMD_KEY:
+						case CMD_PRI:
+							return;
+					}
+				}
 				return;
 			}
 		}
