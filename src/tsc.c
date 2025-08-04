@@ -234,16 +234,17 @@ void tsc_call_event(uint16_t number) {
 				while(tscState == TSC_RUNNING) {
 					switch(*curCommand) {
 						default:
+							return;
+						case CMD_END:
+						case CMD_FLJ:
+						case CMD_ITJ:
+						case CMD_EVE:
+						case CMD_ECJ:
+						case CMD_AMJ:
+						case CMD_NCJ:
+						case CMD_SKJ:
 							execute_command();
 							break;
-						case CMD_TRA:
-						case CMD_FAO:
-						case CMD_MSG:
-						case CMD_MS2:
-						case CMD_MS3:
-						case CMD_KEY:
-						case CMD_PRI:
-							return;
 					}
 				}
 				return;
@@ -1143,21 +1144,37 @@ uint8_t execute_command(void) {
 			// When I crushed some larger tilesets to better fit VRAM I inadvertently broke
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
 			// code, so I can put in this hacky section which fixes specific scripts
-			if(g_stage.id == 14) { // Mimiga Village Shack -- Balrog busts through door
-				if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
-				else args[2] += 19;
-			} else if(g_stage.tileset_id == 25) { // Throne Room / Ostep
-				if(args[2] == 18) args[2] = 49;
-				if(args[2] == 21) args[2] = 50;
-            } else if(g_stage.tileset_id == 26) { // Hell
-                if(args[2] == 28) args[2] = 25;
-			} else if(g_stage.tileset_id == 27) { // King's Table
-				if(args[2] == 18) args[2] = 40;
-				if(args[2] == 21) args[2] = 41;
-			} else if(g_stage.tileset_id == 28) { // Black Space
-                if (args[2] == 18) args[2] = 33;
-                if (args[2] == 21) args[2] = 34;
-            }
+			switch(g_stage.id) {
+				case STAGE_CORE:
+					if(args[2] == 30) args[2] = 72;
+					if(args[2] == 47) args[2] = 44;
+					break;
+				case STAGE_MIMIGA_VILLAGE:
+				case STAGE_MIMIGA_SHACK:
+					if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
+					else args[2] += 19;
+					break;
+				case STAGE_HELL_OUTER_PASSAGE:
+				case STAGE_THRONE_ROOM:
+					if(args[2] == 18) args[2] = 49;
+					if(args[2] == 21) args[2] = 50;
+					break;
+				case STAGE_KINGS_TABLE:
+					if(args[2] == 18) args[2] = 40;
+					if(args[2] == 21) args[2] = 41;
+					break;
+				case STAGE_HELL_B1:
+				case STAGE_HELL_B2:
+				case STAGE_HELL_B3:
+				case STAGE_HELL_PASSAGEWAY:
+				case STAGE_HELL_PASSAGEWAY_2:
+					if(args[2] == 28) args[2] = 25;
+					break;
+				case STAGE_BLACK_SPACE:
+					if (args[2] == 18) args[2] = 33;
+                	if (args[2] == 21) args[2] = 34;
+					break;
+			}
 			// Puff of smoke
 			stage_replace_block(args[0], args[1], args[2]);
 			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
@@ -1292,7 +1309,15 @@ uint8_t execute_command(void) {
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			uint8_t b = stage_get_block(args[0], args[1]);
-			if (b > 0) stage_replace_block(args[0], args[1], b - 1);
+			switch(g_stage.id) {
+				default:
+					if(b == 0) b = 1;
+					break;
+				case STAGE_HELL_B3:
+					b = 1;
+					break;
+			}
+			stage_replace_block(args[0], args[1], b - 1);
 		}
 		break;
 		default: break;

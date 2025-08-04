@@ -7,11 +7,11 @@
 #define CRAM_DMA_CMD    0xC0000080
 #define VSRAM_DMA_CMD   0x40000090
 
+#ifdef SLOW_MODE
+
 static volatile uint16_t *const vdp_data_port = (uint16_t *) 0xC00000;
 static volatile uint16_t *const vdp_ctrl_port = (uint16_t *) 0xC00004;
 static volatile uint32_t *const vdp_ctrl_wide = (uint32_t *) 0xC00004;
-
-#ifdef SLOW_MODE
 
 void dma_queue(uint32_t cmd, uint32_t from, uint16_t to, uint16_t len, uint16_t inc) {
     __asm__("move #0x2700,%sr");

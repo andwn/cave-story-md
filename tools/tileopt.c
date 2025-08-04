@@ -19,8 +19,8 @@
 
 // Tileset and attributes
 int tileCount;
-unsigned char tileAttr[256];
-int tileUsage[256];
+unsigned char tileAttr[128];
+int tileUsage[128];
 SDL_Surface *tileset;
 
 // Tilemaps
@@ -113,14 +113,12 @@ void decrement_map_tiles(int tileIndex) {
 }
 
 void shift_tileset(int fromIndex, int toIndex) {
-	int x1 = (fromIndex % 16) * 16;
-	int y1 = (fromIndex / 16) * 16;
-	int x2 = (toIndex % 16) * 16;
-	int y2 = (toIndex / 16) * 16;
+	int y1 = fromIndex * 16;
+	int y2 = toIndex * 16;
 	Uint8 *pixels = (Uint8*)tileset->pixels;
 	for(int y = 0; y < 16; y++) {
-		memcpy(&pixels[((y2 + y) * tileset->pitch + x2)], 
-			&pixels[((y1 + y) * tileset->pitch + x1)], 16);
+		memcpy(&pixels[(y2 + y) * 16], 
+			&pixels[(y1 + y) * 16], 16);
 	}
 }
 
@@ -139,7 +137,7 @@ void trim_unused() {
 		tileUsage[tileCount] = 0;
 		for(int y = 0; y < 16; y++) {
 			Uint8 *pixels = (Uint8*)tileset->pixels;
-			memset(&pixels[(tileCount/16*16 + y) * tileset->pitch + (tileCount%16)*16], 0, 16);
+			memset(&pixels[(tileCount*16 + y) * 16], 0, 16);
 		}
 		// Go into each map and decrement tile index values larger than this one
 		decrement_map_tiles(tile);

@@ -206,6 +206,24 @@ void stage_load_blocks(void) {
 		g_stage.yoff_tab[y] = blockTotal;
 		blockTotal += g_stage.pxm.width;
 	}
+	// Stupid door
+	if(system_get_flag(360)) {
+		if(g_stage.id == STAGE_MIMIGA_VILLAGE) {
+			stage_replace_block(41, 51, 112);
+			stage_replace_block(42, 51, 113);
+			stage_replace_block(43, 51, 114);
+			stage_replace_block(41, 52, 115);
+			stage_replace_block(42, 52, 116);
+			stage_replace_block(43, 52, 117);
+		} else if(g_stage.id == STAGE_MIMIGA_SHACK) {
+			stage_replace_block(4, 8, 112);
+			stage_replace_block(5, 8, 113);
+			stage_replace_block(6, 8, 114);
+			stage_replace_block(4, 9, 115);
+			stage_replace_block(5, 9, 116);
+			stage_replace_block(6, 9, 117);
+		}
+	}
 }
 
 void stage_load_entities(void) {

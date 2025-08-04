@@ -68,7 +68,6 @@ void ai_shutter(Entity *e) {
 		case 10:
 		{
 			// allow hitting the stuck shutter no. 4
-			//e->eflags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->flags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 			// Store direction in timer2 instead of flipping the sprite
 			e->timer2 = e->dir;
@@ -80,10 +79,10 @@ void ai_shutter(Entity *e) {
 			e->x_next = e->x;
 			e->y_next = e->y;
 			switch(e->timer2) {
-				case 0: e->x_next = e->x - SPEED(0x80); break;
-				case 1: e->x_next = e->x + SPEED(0x80); break;
-				case 2: e->y_next = e->y - SPEED(0x80); break;
-				case 3: e->y_next = e->y + SPEED(0x80); break;
+				case LEFT: e->x_next = e->x - SPEED(0x80); break;
+				case RIGHT: e->x_next = e->x + SPEED(0x80); break;
+				case UP: e->y_next = e->y - SPEED(0x80); break;
+				case DOWN: e->y_next = e->y + SPEED(0x80); break;
 			}
 			if (e->type==OBJ_SHUTTER_BIG) {
 				if (!e->timer) {

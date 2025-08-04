@@ -1268,9 +1268,14 @@ uint8_t bullet_missile_is_exploding(void) {
 
 static void bullet_destroy_block(uint16_t x, uint16_t y) {
 	uint8_t ind;
-	if(g_stage.tileset_id == 21) ind = 22; // Balcony
-	else if(g_stage.tileset_id == 13) ind = 0; // Labyrinth
-	else ind = stage_get_block(x, y) - 1;
+	switch(g_stage.tileset_id) {
+		case 11: ind = 33; break; // Hell
+		case 13: ind = 0; break; // Labyrinth
+		case 18: ind = 34; break; // Sand Zone
+		case 20: ind = 97; break; // Grasstown
+		case 21: ind = 22; break; // Balcony
+		default: ind = 0; break;
+	}
 	stage_replace_block(x, y, ind);
 }
 

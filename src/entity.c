@@ -963,8 +963,8 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 		for(;;);
 	}
 
-	k_str("new entity");
-	k_hex16(type);
+	//k_str("new entity");
+	//k_hex16(type);
 
 	memclr(e, sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	e->x = x;
@@ -984,7 +984,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
             };
             e->oframe = 255;
         } else if(npc_info[type].sprite) { // Use our own tiles
-			k_str("new tiloc");
+			//k_str("new tiloc");
             const SpriteDef *spr = npc_info[type].sprite;
             e->framesize = spr->tilesets[0]->numTile;
             TILOC_ADD(e->tiloc, e->framesize);

@@ -250,6 +250,8 @@ void ai_core(Entity *e) {
 			CLOSE_MOUTH;
 			
 			camera_shake(20);
+
+			e->damage_time = 1; // Un-flash
 			
 			// tell all the MC's to retreat
 			for(uint8_t i = 0; i < 5; i++) {
@@ -346,6 +348,15 @@ void ai_core(Entity *e) {
 		sprite_pal(&pieces[CFRONT]->sprite[3], PAL1);
 		sprite_pal(&pieces[CFRONT]->sprite[4], PAL1);
 		sprite_pal(&pieces[CFRONT]->sprite[5], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[0], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[1], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[2], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[3], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[4], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[5], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[6], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[7], PAL1);
+		sprite_pal(&pieces[CBACK]->sprite[8], PAL1);
 	} else if(e->damage_time > 0) {
 		sprite_pal(&pieces[CFRONT]->sprite[0], PAL2);
 		sprite_pal(&pieces[CFRONT]->sprite[1], PAL2);
@@ -353,6 +364,15 @@ void ai_core(Entity *e) {
 		sprite_pal(&pieces[CFRONT]->sprite[3], PAL2);
 		sprite_pal(&pieces[CFRONT]->sprite[4], PAL2);
 		sprite_pal(&pieces[CFRONT]->sprite[5], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[0], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[1], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[2], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[3], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[4], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[5], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[6], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[7], PAL2);
+		sprite_pal(&pieces[CBACK]->sprite[8], PAL2);
 	}
 	
 	LIMIT_X(SPEED_8(0x80));
