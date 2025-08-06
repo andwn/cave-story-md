@@ -132,7 +132,7 @@ enum StageIndex {
 // Could fit under the Oside map (192 tile gap)
 #define TILE_MOONINDEX (TILE_TSINDEX + 32*8)
 // Another tile gap, fits under both Almond and Cave
-#define TILE_WATERINDEX (TILE_TSINDEX + 384)
+#define TILE_WATERINDEX (TILE_TSINDEX + 73*4 + 3*4*4 + 3*2*4 + 3*2*2)
 
 typedef struct {
 	char magic[3];

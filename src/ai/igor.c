@@ -222,7 +222,7 @@ void ai_igorscene(Entity *e) {
 		{
 			e->x_speed = 0;
 			e->frame = PUNCH1;
-			e->timer = 20;
+			e->timer = TIME(15);
 			e->state++;
 		} /* fallthrough */
 		case 5:
@@ -230,7 +230,7 @@ void ai_igorscene(Entity *e) {
 			e->timer--;
 			if(!e->timer) {
 				e->frame = PUNCH2;
-				e->timer = 20;
+				e->timer = TIME(15);
 				e->state = 6;
 			}
 		}

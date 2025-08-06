@@ -27,7 +27,7 @@ void ai_batVertical(Entity *e) {
 		}
 		break;
 	}
-	ANIMATE(e, 4, 0,1,2);
+	ANIMATE(e, 2, 0,1,2);
 	FACE_PLAYER(e);
 	e->y += e->y_speed;
 }
@@ -137,7 +137,7 @@ void ai_batCircle(Entity *e) {
 					e->x_speed >>= 1;
 					e->y_speed = 0;
 					e->state++;
-					e->frame = 5;
+					e->frame = 2;
 				}
 			} else e->timer--;
 		break;

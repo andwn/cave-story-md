@@ -102,6 +102,13 @@ void ai_shutter(Entity *e) {
 		}
 		break;
 	}
+
+	static const uint8_t f[4] = { 0,1,2,1 };
+	if(++e->animtime > TIME(10)) {
+		e->animtime = 0;
+		if(++e->jump_time > 3) e->jump_time = 0;
+		e->frame = f[e->jump_time];
+	}
 }
 
 void ai_shutter_stuck(Entity *e) {

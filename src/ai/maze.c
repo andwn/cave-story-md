@@ -870,99 +870,110 @@ void ai_gaudi_egg(Entity *e) {
 	}
 }
 
-// I do something a bit weird with the Fuzzes. We want them to always be in sync,
-// rotating the same distance between eachother. Easy, just mark them "alwaysActive" right?
-// Yes, but if the player runs through that bottom section without killing anything the game 
-// will lag. To get around this I signal the mini fuzz to delete themselves after the fuzz core 
-// leaves the screen, then the core will respawn them after coming back on screen.
-
-static void spawn_minifuzz(Entity *e) {
-	uint8_t angle = 0;
-	for(uint16_t i = 0; i < 5; i++) {
-		Entity *f = entity_create(e->x, e->y, OBJ_FUZZ, 0);
-		e->flags &= ~NPC_SHOOTABLE;
-		f->linkedEntity = e;
-		f->jump_time = angle;
-		angle += 0x100 / 5;
-	}
-}
-
 void ai_fuzz_core(Entity *e) {
-	e->alwaysActive = TRUE;
     e->flags ^= NPC_SHOOTABLE;
+
 	switch(e->state) {
 		case 0:
-		{
-			// spawn mini-fuzzes, use jump_time as the angle since it is u8
-			spawn_minifuzz(e);
-			moveMeToFront = TRUE; // Fuzz Core will always run first, and can signal minis
-			e->timer = rand() & 63;
+			e->y_mark = e->y;
+			e->y_speed = SPEED(0x300);
 			e->state = 1;
-		}
-		/* fallthrough */
-		case 1:		// de-syncs the Y positions when multiple cores are present at once
-		{
-			if (e->timer == 0) {
+			// Fallthrough
+		case 1:
+			if((++e->timer & 7) == 0 && CAMERA_DIST_X(e, (160L+32)<<CSF)) {
 				e->state = 2;
-				e->y_speed = SPEED_10(0x300);
-				e->y_mark = e->y;
-			} else e->timer--;
-		}
-		break;
-		case 2:
-		{
-			if(entity_on_screen(e)) {
-				FACE_PLAYER(e);
-				if (e->y > e->y_mark) e->y_speed -= SPEED_8(0x10);
-				if (e->y < e->y_mark) e->y_speed += SPEED_8(0x10);
-				LIMIT_Y(SPEED_10(0x355));
-			} else {
-				e->alwaysActive = FALSE; // Next frame we will deactivate
-				e->state = 3; // This'll run the below case after reactivation
+				e->jump_time = 0;
+				e->alwaysActive = TRUE;
+				// Spawn 5 fuzzes, angle is given as the dir (and needs to be even)
+				for(uint8_t i = 0; i != 255; i += 51) {
+					Entity *fuzz = entity_create_ext(e->x, e->y, OBJ_FUZZ, 0, 0, 0);
+					fuzz->linkedEntity = e;
+					fuzz->jump_time = i & ~1;
+				}
 			}
-		}
-		break;
-		case 3:
-		{	// Respawn minis
-			spawn_minifuzz(e);
-			moveMeToFront = TRUE;
-			e->state = 2;
-		}
-		break;
+			break;
+		case 2:
+			// If the player gets far away, go inactive and signal fuzz to despawn
+			// State is changed to 1, so we'll respawn them upon reactivation
+			if((++e->timer & 7) == 0 && !CAMERA_DIST_X(e, (160L+48)<<CSF)) {
+				e->alwaysActive = FALSE;
+				e->state = 1;
+				e->jump_time = 1;
+			} else {
+				e->dir = e->x < player.x;
+				if (e->y_mark > e->y) {
+					e->y_speed += SPEED(0x10);
+				} else {
+					e->y_speed -= SPEED(0x10);
+				}
+				e->y += e->y_speed;
+				//if((++e->animtime & 3) == 0) e->frame ^= 1;
+			}
+			break;
 	}
-	e->x += e->x_speed;
-	e->y += e->y_speed;
 }
+
+static const int16_t fuzz_xy[128*2] = {
+	0<<9, 32<<9,   0<<9, 31<<9,   1<<9, 31<<9,   2<<9, 31<<9,   3<<9, 31<<9,   4<<9, 31<<9,   5<<9, 30<<9,   6<<9, 30<<9,
+	7<<9, 29<<9,   8<<9, 28<<9,   9<<9, 28<<9,  10<<9, 27<<9,  11<<9, 26<<9,  11<<9, 25<<9,  12<<9, 24<<9,  13<<9, 23<<9,
+   14<<9, 22<<9,  14<<9, 21<<9,  15<<9, 20<<9,  16<<9, 19<<9,  16<<9, 17<<9,  17<<9, 16<<9,  17<<9, 15<<9,  18<<9, 13<<9,
+   18<<9, 12<<9,  18<<9, 10<<9,  19<<9,  9<<9,  19<<9,  7<<9,  19<<9,  6<<9,  19<<9,  4<<9,  19<<9,  3<<9,  19<<9,  1<<9,
+   19<<9,  0<<9,  19<<9, -1<<9,  19<<9, -3<<9,  19<<9, -4<<9,  19<<9, -6<<9,  19<<9, -7<<9,  19<<9, -9<<9,  18<<9,-10<<9,
+   18<<9,-12<<9,  18<<9,-13<<9,  17<<9,-15<<9,  17<<9,-16<<9,  16<<9,-17<<9,  16<<9,-19<<9,  15<<9,-20<<9,  14<<9,-21<<9,
+   14<<9,-22<<9,  13<<9,-23<<9,  12<<9,-24<<9,  11<<9,-25<<9,  11<<9,-26<<9,  10<<9,-27<<9,   9<<9,-28<<9,   8<<9,-28<<9,
+	7<<9,-29<<9,   6<<9,-30<<9,   5<<9,-30<<9,   4<<9,-31<<9,   3<<9,-31<<9,   2<<9,-31<<9,   1<<9,-31<<9,   0<<9,-31<<9,
+	0<<9,-31<<9,   0<<9,-31<<9,  -1<<9,-31<<9,  -2<<9,-31<<9,  -3<<9,-31<<9,  -4<<9,-31<<9,  -5<<9,-30<<9,  -6<<9,-30<<9,
+   -7<<9,-29<<9,  -8<<9,-28<<9,  -9<<9,-28<<9, -10<<9,-27<<9, -11<<9,-26<<9, -11<<9,-25<<9, -12<<9,-24<<9, -13<<9,-23<<9,
+  -14<<9,-22<<9, -14<<9,-21<<9, -15<<9,-20<<9, -16<<9,-19<<9, -16<<9,-17<<9, -17<<9,-16<<9, -17<<9,-15<<9, -18<<9,-13<<9,
+  -18<<9,-12<<9, -18<<9,-10<<9, -19<<9, -9<<9, -19<<9, -7<<9, -19<<9, -6<<9, -19<<9, -4<<9, -19<<9, -3<<9, -19<<9, -1<<9,
+  -19<<9,  0<<9, -19<<9,  1<<9, -19<<9,  3<<9, -19<<9,  4<<9, -19<<9,  6<<9, -19<<9,  7<<9, -19<<9,  9<<9, -18<<9, 10<<9,
+  -18<<9, 12<<9, -18<<9, 13<<9, -17<<9, 15<<9, -17<<9, 16<<9, -16<<9, 17<<9, -16<<9, 19<<9, -15<<9, 20<<9, -14<<9, 21<<9,
+  -14<<9, 22<<9, -13<<9, 23<<9, -12<<9, 24<<9, -11<<9, 25<<9, -11<<9, 26<<9, -10<<9, 27<<9,  -9<<9, 28<<9,  -8<<9, 28<<9,
+   -7<<9, 29<<9,  -6<<9, 30<<9,  -5<<9, 30<<9,  -4<<9, 31<<9,  -3<<9, 31<<9,  -2<<9, 31<<9,  -1<<9, 31<<9,   0<<9, 31<<9,
+};
 
 void ai_fuzz(Entity *e) {
 	e->flags ^= NPC_SHOOTABLE;
 	
-	if (e->state) {
-		// base destroyed, simple sinusoidal player-seek
-		e->x_speed += (e->x > player.x) ? -SPEED_8(0x20) : SPEED_8(0x20);
-		e->y_speed += (e->y > player.y) ? -SPEED_8(0x20) : SPEED_8(0x20);
-		LIMIT_X(SPEED_12(0x800));
-		LIMIT_Y(SPEED_10(0x200));
-		e->x += e->x_speed;
-		e->y += e->y_speed;
-		FACE_PLAYER(e);
-	} else {
-		if (e->linkedEntity->state == STATE_DESTROY) {
-			e->alwaysActive = TRUE;
-			e->x_speed = -SPEED_10(0x1FF) + SPEED_10((rand() & 0x3FF));
-			e->y_speed = -SPEED_10(0x1FF) + SPEED_10((rand() & 0x3FF));
+	switch(e->state) {
+		case 0:
 			e->state = 1;
-		} else if(!e->linkedEntity->alwaysActive) {
-			e->state = STATE_DELETE;
-		} else {
-			e->jump_time++;
-			int16_t xoff = cos2[e->jump_time] << 4; // cosine * 24
-			int16_t yoff = sin[e->jump_time] << 5;
-			e->x = e->linkedEntity->x + xoff;
-			e->y = e->linkedEntity->y + yoff;
-			FACE_PLAYER(e);
-		}
+			// Fallthrough
+		case 1:
+			if(e->linkedEntity->state < STATE_DESTROY) {
+				if(e->linkedEntity->jump_time) {
+					// Parent inactive, despawn
+					e->state = STATE_DELETE;
+					return;
+				}
+				// Assuming timer2 always starts as a multiple of 2 here,
+				// we pull the x and y offset from a precalculated table
+				e->x = e->linkedEntity->x + fuzz_xy[e->jump_time++];
+				e->y = e->linkedEntity->y + fuzz_xy[e->jump_time++];
+			} else {
+				// Parent dead, chase player
+				e->state = 10;
+				e->x_speed = (rand() & 0x1FF) - 0x100;
+				e->y_speed = (rand() & 0x1FF) - 0x100;
+			}
+			break;
+		case 10:
+			if(e->x < player.x) {
+				if(e->x_speed < SPEED(0x200)) e->x_speed += SPEED(0x20);
+			} else {
+				if(e->x_speed > -SPEED(0x200)) e->x_speed -= SPEED(0x20);
+			}
+			if(e->y < player.y) {
+				if(e->y_speed < SPEED(0x200)) e->y_speed += SPEED(0x20);
+			} else {
+				if(e->y_speed > -SPEED(0x200)) e->y_speed -= SPEED(0x20);
+			}
+			e->x += e->x_speed;
+			e->y += e->y_speed;
+			break;
 	}
+	e->dir = e->x < player.x;
+	//if((e->jump_time & 7) == 0) e->frame ^= 1;
 }
 
 #define BUYOBUYO_BASE_HP		60

@@ -191,12 +191,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		memset(tilocs, 0, MAX_TILOCS);
 	}
 	switch(sid) {
-		case STAGE_GRASSTOWN_SHELTER:
-		{
-			k_str("hey");
-		} break;
-		case 0x0C: // First Cave
-		case 0x0D: // Start Point
+		case STAGE_FIRST_CAVE: // First Cave
+		case STAGE_START_POINT: // Start Point
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_CRITTER, &SPR_CritHB, 3,2,2, 0, 1, 2);
             SHEET_ADD(SHEET_DROP, &SPR_Drop, 4,1,1, 0, 1, 2, 3);
@@ -537,6 +533,45 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	if(init_tiloc) {
 		tiloc_index = max(sheets[sheet_num-1].index + sheets[sheet_num-1].size, 
 			TILE_SHEETINDEX + MAX_ITEMS*6);
+	}
+	// Other special cases
+	if(g_stage.id == STAGE_CORE) {
+		// Big Shutter
+		uint16_t index = TILE_TSINDEX + 73*4;
+		SHEET_LOAD(&SPR_BigShutter, 3, 4*4, index, TRUE, 0,1,2);
+		sheets[sheet_num] = (Sheet) {
+			.id = SHEET_BSHUTTER,
+			.index = index,
+			.size = 3*4*4,
+			.w = 4,
+			.h = 4,
+		};
+		for(uint8_t i=0;i<3;i++) frameOffset[sheet_num][i] = 4*4*i;
+		sheet_num++;
+		// Thin Shutter
+		index += 3*4*4;
+		SHEET_LOAD(&SPR_Shutter, 3, 2*4, index, TRUE, 0,1,2);
+		sheets[sheet_num] = (Sheet) {
+			.id = SHEET_SHUTTER,
+			.index = index,
+			.size = 3*2*4,
+			.w = 2,
+			.h = 4,
+		};
+		for(uint8_t i=0;i<3;i++) frameOffset[sheet_num][i] = 2*4*i;
+		sheet_num++;
+		// Lift Block
+		index += 3*2*4;
+		SHEET_LOAD(&SPR_CoreLift, 3, 2*2, index, TRUE, 0,1,2);
+		sheets[sheet_num] = (Sheet) {
+			.id = SHEET_LIFT,
+			.index = index,
+			.size = 3*2*2,
+			.w = 2,
+			.h = 2,
+		};
+		for(uint8_t i=0;i<3;i++) frameOffset[sheet_num][i] = 2*2*i;
+		sheet_num++;
 	}
 }
 

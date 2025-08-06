@@ -52,7 +52,7 @@ OPTIONS += -fno-tree-loop-ivcanon -fno-ivopts
 OPTIONS += -fno-web -fno-builtin -fno-gcse
 WARNINGS = -Wall -Wextra -Wshadow -Wundef -Wcast-qual
 WARNINGS+= -Wstack-usage=1024 -Wwrite-strings
-WARNINGS+= -Wunsafe-loop-optimizations
+WARNINGS+= -Wunsafe-loop-optimizations -Wno-shift-negative-value
 WARNINGS+= -Wno-unused-function -fanalyzer
 ASFLAGS  = -m68000 --register-prefix-optional --bitwise-or
 ASFLAGS += -Isrc/md -I$(BUILD_DIR)

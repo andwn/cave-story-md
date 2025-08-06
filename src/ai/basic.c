@@ -219,6 +219,7 @@ void ai_teleIn(Entity *e) {
 		case 0:
 			e->state = 1;
 			e->frame = 0 + frame_off;
+			e->oframe = e->frame; // Don't draw frame
 			e->hidden = TRUE;
 			e->timer = 0;
 			e->hit_box = (bounding_box) {{ 8, 8, 8, 8 }};
@@ -230,11 +231,7 @@ void ai_teleIn(Entity *e) {
 		case 1:
 			if(e->timer == 0) {
 				// Overwirte frame with full transparency and unhide
-				disable_ints();
-				z80_pause_fast();
 				dma_now(DmaVRAM, (uint32_t)BlankData, e->vramindex << 5, 16*4, 2);
-				z80_resume();
-				enable_ints();
 				e->hidden = FALSE;
 			}
 			if(++e->timer == TIME(64)) {
@@ -259,12 +256,8 @@ void ai_teleIn(Entity *e) {
                     // Inject into top or bottom half of sprite tiles in vram
                     uint16_t vaddr = dst_index << 5;
 
-					disable_ints();
-					z80_pause_fast();
                     dma_now(DmaVRAM, (uint32_t)&buf[0], vaddr, 16, 2);
                     dma_now(DmaVRAM, (uint32_t)&buf[8], vaddr+64, 16, 2);
-					z80_resume();
-					enable_ints();
 
                     e->timer2++;
                 }
@@ -380,12 +373,8 @@ void ai_teleOut(Entity *e) {
                     // Inject into top or bottom half of sprite tiles in vram
                     uint16_t vaddr = dst_index << 5;
 
-					disable_ints();
-					z80_pause_fast();
                     dma_now(DmaVRAM, (uint32_t)&buf[0], vaddr, 16, 2);
                     dma_now(DmaVRAM, (uint32_t)&buf[8], vaddr+64, 16, 2);
-					z80_resume();
-					enable_ints();
 
                     e->timer2++;
                 }
@@ -602,7 +591,7 @@ void ai_fireplace(Entity *e) {
 			e->hidden = 0;
 			/* fallthrough */
 		case 1:
-			ANIMATE(e, 8, 0,1,2);
+			ANIMATE(e, 4, 0,1,2);
 		break;
 		
 		case 10:	// extinguished by Jellyfish Juice
@@ -632,126 +621,21 @@ void ai_lifeup(Entity *e) {
 }
 
 void ai_chest(Entity *e) {
-	ANIMATE(e, 8, 0,1,2);
+	e->timer++;
+	switch(e->timer) {
+		case 80: e->frame = 1; break;
+		case 88: e->frame = 2; break;
+		case 96: e->frame = 0; e->timer = rand() & 0x3F; break;
+	}
 	ai_grav(e);
 }
 
 void ai_sparkle(Entity *e) {
-	ANIMATE(e, 8, 0,1,2);
+	ANIMATE(e, 4, 0,1,2,3);
 }
 
 void ai_forcefield(Entity *e) {
 	ANIMATE(e, 2, 0,1,2,3);
-}
-
-void onspawn_segalogo(Entity *e) {
-	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) {{ 48, 16, 48, 16 }};
-}
-
-void onspawn_balrog_splash(Entity *e) {
-	e->alwaysActive = TRUE;
-	e->display_box = (bounding_box) {{ 20, 12, 20, 12 }};
-}
-
-void ai_segalogo(Entity *e) {
-	switch(e->state) {
-		case 0: // Normal
-		{
-			if(++e->timer > 5) {
-				e->timer = 0;
-				if(++e->frame >= 10) {
-					e->frame = 0;
-				}
-			}
-		}
-		break;
-		case 1: // Being crushed
-		{
-			e->type++;
-			e->oframe = 255;
-			e->frame = 0;
-			e->timer = 0;
-			e->state++;
-		} /* fallthrough */
-		case 2:
-		{
-			if(++e->timer > 2) {
-				e->timer = 0;
-				if(e->frame == 7) {
-					e->hidden = TRUE;
-					e->state++;
-				} else {
-					e->frame++;
-				}
-			}
-		}
-		break;
-		case 3: // Invisible
-		break;
-	}
-}
-
-void ai_balrog_splash(Entity *e) {
-	enum Frame {
-		STAND, GASP, DUCK, ARMSUP, BLINK, PAINED, SMILE, WORRY, 
-		WALK1, WALK2, AWAY1, AWAY2, FLY1, FLY2
-	};
-	
-	switch(e->state) {
-		case 0: // Waiting above screen
-		{
-			if(++e->timer > TIME_8(50)) {
-				e->timer = 0;
-				e->state++;
-				e->frame = ARMSUP;
-			}
-		}
-		break;
-		case 1: // Falling
-		{
-			if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
-			e->y += e->y_speed;
-			if(e->y >= pixel_to_sub(ScreenHalfH - 24)) {
-				e->y_speed = 0x320;
-				e->state++;
-				e->linkedEntity->state++;
-				sound_play(SND_ENEMY_HURT, 5);
-			}
-		}
-		break;
-		case 2: // Crushing logo
-		{
-			e->y += e->y_speed;
-			if(e->y >= pixel_to_sub(ScreenHalfH + 4)) {
-				e->state++;
-				e->frame = DUCK;
-				sound_play(SND_LITTLE_CRASH, 5);
-				SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) + 4, 64, 4, 4);
-				SMOKE_AREA((e->x>>CSF)     , (e->y>>CSF) + 4, 64, 4, 4);
-			}
-		}
-		break;
-		case 3: // Hit ground
-		{
-			if(++e->timer > TIME_8(25)) {
-				e->timer = 0;
-				e->state++;
-				e->frame = STAND;
-			}
-		}
-		break;
-		case 4: // Standing
-		{
-			if(++e->timer > TIME_8(50)) {
-				e->state++;
-				e->frame = SMILE;
-			}
-		}
-		break;
-		case 5: // Smiling
-		break;
-	}
 }
 
 // this object is used in a few places, such as during the Red Demon fight (last cave),

@@ -89,12 +89,14 @@ void ai_critter(Entity *e) {
 		case STATE_FLYING:
 		{
             e->timer++;
-            if((e->timer & 3) == 0) {
-                if(++e->frame > 5) e->frame = 3;
+            if((e->timer & 1) == 0) {
+                if(++e->frame > 5) {
+					e->frame = 3;
+				}
+				if((e->timer & 7) == 0) {
+					sound_play(SND_CRITTER_FLY, 2);
+				}
             }
-			if((e->timer & 7) == 0) {
-				sound_play(SND_CRITTER_FLY, 2);
-			}
 			e->y_speed -= SPEED_8(0x3C);
 			if(e->timer == TIME_8(25)) {
 				if(e->type == OBJ_CRITTER_SHOOTING_PURPLE) {

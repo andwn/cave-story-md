@@ -65,7 +65,7 @@ void ai_beetle(Entity *e) {
 		case 0: // Initial state - begin at the wall we are facing
 		{
 			while(blk(e->x, e->dir ? 9 : -9, e->y, 0) != 0x41) {
-				e->x += e->dir ? 0x1000 : -0x1000;
+				e->x += e->dir ? 0x1200 : -0x1200;
 			}
 			e->alwaysActive = FALSE;
 			e->state++;
@@ -74,14 +74,15 @@ void ai_beetle(Entity *e) {
 		{
 			if(++e->timer > TIME_8(50) && PLAYER_DIST_Y(e, 16 << CSF)) {
 				TURN_AROUND(e);
-				MOVE_X(SPEED_10(0x200));
 				e->state = 2;
 			}
 		}
 		break;
 		case 2: // moving left or right
 		{
-			ANIMATE(e, 4, 1,0);
+			ANIMATE(e, 2, 1,0);
+			e->x_speed += e->dir ? SPEED(0x10) : -SPEED(0x10);
+			LIMIT_X(SPEED(0x400));
 			e->x += e->x_speed;
 			if(blk(e->x, e->dir ? 8 : -8, e->y, 0) == 0x41) {
 				e->state = 1;
@@ -102,13 +103,13 @@ void onspawn_beetleFollow(Entity *e) {
 void ai_beetleFollow(Entity *e) {
 	// Don't deactivate immediately when offscreen, but do if really far away
 	e->alwaysActive = TRUE;
-	ANIMATE(e, 4, 1,0);
+	ANIMATE(e, 2, 1,0);
 	FACE_PLAYER(e);
-	e->x_speed += e->dir ? SPEED_8(12) : -SPEED_8(12);
-	if(abs(e->x_speed) > SPEED_10(0x360)) 
-		e->x_speed = e->dir ? SPEED_10(0x360) : -SPEED_10(0x360);
-	e->y_speed += (e->y > e->y_mark) ? -4 : 4;
-	LIMIT_Y(SPEED_10(0x1FF));
+	e->x_speed += e->dir ? SPEED_8(0x10) : -SPEED_8(0x10);
+	if(abs(e->x_speed) > SPEED_10(0x300)) 
+		e->x_speed = e->dir ? SPEED_10(0x300) : -SPEED_10(0x300);
+	e->y_speed += (e->y > e->y_mark) ? -SPEED(8) : SPEED(8);
+	LIMIT_Y(SPEED_10(0x100));
 	if(e->damage_time) {
 		e->x += e->x_speed >> 1;
 		e->y += e->y_speed >> 1;
@@ -153,7 +154,7 @@ void onspawn_basil(Entity *e) {
 }
 
 void ai_basil(Entity *e) {
-	if(++e->animtime > 4) {
+	if(++e->animtime > 2) {
 		e->animtime = 0;
 		if(++e->frame > 2) e->frame = 0;
 	}

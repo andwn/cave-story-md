@@ -52,6 +52,13 @@ static inline uint8_t PLAYER_DIST_Y2(Entity *e, int32_t dist1, int32_t dist2) {
 	return player.y > e->y - dist1 && player.y < e->y + dist2;
 }
 
+static inline uint8_t CAMERA_DIST_X(Entity *e, int32_t dist) {
+	return camera.x > e->x - dist && camera.x < e->x + dist;
+}
+static inline uint8_t CAMERA_DIST_Y(Entity *e, int32_t dist) {
+	return camera.y > e->y - dist && camera.y < e->y + dist;
+}
+
 static inline uint8_t NPC_DIST_X(Entity *a, Entity *b, int32_t dist) {
 	return b->x > a->x - dist && b->x < a->x + dist;
 }
