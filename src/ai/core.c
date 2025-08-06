@@ -342,37 +342,23 @@ void ai_core(Entity *e) {
 	}
 
 	if(e->damage_time & 2) {
-		sprite_pal(&pieces[CFRONT]->sprite[0], PAL1);
-		sprite_pal(&pieces[CFRONT]->sprite[1], PAL1);
-		sprite_pal(&pieces[CFRONT]->sprite[2], PAL1);
-		sprite_pal(&pieces[CFRONT]->sprite[3], PAL1);
-		sprite_pal(&pieces[CFRONT]->sprite[4], PAL1);
-		sprite_pal(&pieces[CFRONT]->sprite[5], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[0], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[1], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[2], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[3], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[4], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[5], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[6], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[7], PAL1);
-		sprite_pal(&pieces[CBACK]->sprite[8], PAL1);
+		static const uint16_t pal = PAL1;
+		for(uint16_t i = 0; i < 6; i++) {
+			sprite_pal(&pieces[CFRONT]->sprite[i], pal);
+			sprite_pal(&pieces[CBACK]->sprite[i], pal);
+		}
+		sprite_pal(&pieces[CBACK]->sprite[6], pal);
+		sprite_pal(&pieces[CBACK]->sprite[7], pal);
+		sprite_pal(&pieces[CBACK]->sprite[8], pal);
 	} else if(e->damage_time > 0) {
-		sprite_pal(&pieces[CFRONT]->sprite[0], PAL2);
-		sprite_pal(&pieces[CFRONT]->sprite[1], PAL2);
-		sprite_pal(&pieces[CFRONT]->sprite[2], PAL2);
-		sprite_pal(&pieces[CFRONT]->sprite[3], PAL2);
-		sprite_pal(&pieces[CFRONT]->sprite[4], PAL2);
-		sprite_pal(&pieces[CFRONT]->sprite[5], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[0], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[1], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[2], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[3], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[4], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[5], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[6], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[7], PAL2);
-		sprite_pal(&pieces[CBACK]->sprite[8], PAL2);
+		static const uint16_t pal = PAL2;
+		for(uint16_t i = 0; i < 6; i++) {
+			sprite_pal(&pieces[CFRONT]->sprite[i], pal);
+			sprite_pal(&pieces[CBACK]->sprite[i], pal);
+		}
+		sprite_pal(&pieces[CBACK]->sprite[6], pal);
+		sprite_pal(&pieces[CBACK]->sprite[7], pal);
+		sprite_pal(&pieces[CBACK]->sprite[8], pal);
 	}
 	
 	LIMIT_X(SPEED_8(0x80));

@@ -318,8 +318,9 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiArmor, 4,3,3, 0, 1, 2, 3);
 			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
-			SHEET_ADD(SHEET_FUZZ, &SPR_Fuzz, 1,2,2, 0);
-			SHEET_ADD(SHEET_FUZZC, &SPR_FuzzCore, 1,4,4, 0);
+			SHEET_ADD(SHEET_FUZZ, &SPR_Fuzz, 2,2,2, 0,1);
+			SHEET_ADD(SHEET_FUZZC, &SPR_FuzzCore, 2,4,4, 0,1);
+			SHEET_ADD(SHEET_FIREW, &SPR_FireWhir, 2,3,4, 0, 1);
 			SHEET_ADD(SHEET_FIREWSHOT, &SPR_FireWShot, 3,2,4, 0, 1, 2);
 			SHEET_ADD(SHEET_LABSHOT, &SPR_LabShot, 3,2,2, 0, 1, 2);
 			SHEET_ADD(SHEET_GAUDISHOT, &SPR_GaudiShot, 3,2,2, 0, 1, 2);

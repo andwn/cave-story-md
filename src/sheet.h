@@ -9,7 +9,7 @@
 #define NOTILOC 255
  
 // Reduces the copy paste mess of vdp_tiles_load calls
-#define SHEET_ADD(sheetid, sdef, frames, width, height, ...) {                                            \
+#define SHEET_ADD(sheetid, sdef, frames, width, height, ...) {                                 \
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
 							  : TILE_SHEETINDEX;                                               \
@@ -23,7 +23,7 @@
 	}                                                                                          \
 }
 
-#define SHEET_ADD_NEW(sheetid, sdef, frames) {                                            \
+#define SHEET_ADD_NEW(sheetid, sdef, frames) {                                            	   \
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
 							  : TILE_SHEETINDEX;                                               \
@@ -113,6 +113,7 @@ enum {
 	SHEET_BUTE,    SHEET_BUTEARW,SHEET_ROLLING, SHEET_DELEET, SHEET_BONE,   SHEET_DEVIL,
 	SHEET_BUTEDIE, SHEET_PLATF,  SHEET_ROT,     SHEET_TARGET, SHEET_BLGMISL,SHEET_HPLIT,
 	SHEET_AHCHOO,  SHEET_RAVIL,	 SHEET_GAUDIF,  SHEET_BSHUTTER,SHEET_SHUTTER,SHEET_LIFT,
+	SHEET_FIREW,
 };
 
 extern uint8_t sheet_num;

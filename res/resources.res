@@ -186,7 +186,7 @@ SPRITE SPR_GaudiShot	"sprite/gaudishot.png"		2 2 NONE
 SPRITE SPR_GaudiArmor	"sprite/gaudiarmor.png"		3 3 NONE
 SPRITE SPR_FuzzCore		"sprite/fuzzcore.png"		4 4 NONE
 SPRITE SPR_Fuzz			"sprite/fuzz.png"			2 2 NONE
-SPRITE SPR_FireWhir		"sprite/corething.png"		4 4 NONE
+SPRITE SPR_FireWhir		"sprite/corething.png"		3 4 NONE
 SPRITE SPR_FireWShot	"sprite/corethingshot.png" 	2 4 NONE
 SPRITE SPR_Buggy		"sprite/buggy.png"			4 4 NONE
 SPRITE SPR_Buggy2		"sprite/buggy2.png"			8 2 NONE

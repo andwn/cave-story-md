@@ -784,6 +784,7 @@ void ai_firewhirr(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->display_box = (bounding_box) { 12,16,12,16 };
 			e->state = 1;
 			e->timer = rand() & 63;
 			e->y_mark = e->y;
@@ -795,14 +796,20 @@ void ai_firewhirr(Entity *e) {
 				e->state = 10;
 				e->timer = TIME_8(100);
 				e->y_speed = -SPEED_10(0x200);
+			} else {
+				e->timer--;
 			}
-			else e->timer--;
 		}
 		/* fallthrough */
 		case 10:
 		{
 			e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x10) : -SPEED_8(0x10);
 			LIMIT_Y(SPEED_10(0x200));
+
+			if(++e->animtime > 2) {
+				e->animtime = 0;
+				e->frame ^= 1;
+			}
 			
 			// inc time-to-fire while player near
 			if (PLAYER_DIST_Y(e, pixel_to_sub(80))) {
@@ -829,7 +836,11 @@ void ai_firewhirr(Entity *e) {
 }
 
 void ai_firewhirr_shot(Entity *e) {
-	ANIMATE(e, 8, 0,1,2);
+	if(++e->animtime > 2) {
+		e->animtime = 0;
+		if(++e->frame > 2) e->frame = 0;
+	}
+
 	e->x_next = e->x + (!e->dir ? -SPEED_10(0x200) : SPEED_10(0x200));
 	e->y_next = e->y;
 	
@@ -875,7 +886,7 @@ void ai_fuzz_core(Entity *e) {
 
 	switch(e->state) {
 		case 0:
-			e->y_mark = e->y;
+			e->y_mark = e->y - pixel_to_sub(16);
 			e->y_speed = SPEED(0x300);
 			e->state = 1;
 			// Fallthrough
@@ -902,12 +913,12 @@ void ai_fuzz_core(Entity *e) {
 			} else {
 				e->dir = e->x < player.x;
 				if (e->y_mark > e->y) {
-					e->y_speed += SPEED(0x10);
+					if(e->y_speed < SPEED(0x2FF)) e->y_speed += SPEED(0x10);
 				} else {
-					e->y_speed -= SPEED(0x10);
+					if(e->y_speed > -SPEED(0x2FF)) e->y_speed -= SPEED(0x10);
 				}
 				e->y += e->y_speed;
-				//if((++e->animtime & 3) == 0) e->frame ^= 1;
+				if((++e->animtime & 7) == 0) e->frame ^= 1;
 			}
 			break;
 	}
@@ -973,7 +984,7 @@ void ai_fuzz(Entity *e) {
 			break;
 	}
 	e->dir = e->x < player.x;
-	//if((e->jump_time & 7) == 0) e->frame ^= 1;
+	if((e->jump_time & 7) == 0) e->frame ^= 1;
 }
 
 #define BUYOBUYO_BASE_HP		60

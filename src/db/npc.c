@@ -191,7 +191,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Boulder,		NOSHEET, 		4, PAL3, &ai_null, 				&ai_boulder, 		&ai_null 			,""}, // Boulder
 	{ &SPR_Balrog, 		NOSHEET, 		2, PAL1, &onspawn_persistent, 	&ai_balrog_boss_msl,&ondeath_balrogFlying,"" },
 	{ NULL, 			SHEET_BLGMISL,  1, PAL1, &onspawn_persistent, 	&ai_balrog_missile, &ai_null 			,""}, // Balrog Missile
-	{ &SPR_FireWhir,	NOSHEET,		1, PAL2, &ai_null, 				&ai_firewhirr, 		&ondeath_default 	,""}, // Fire Whirr
+	{ NULL,				SHEET_FIREW,	1, PAL2, &ai_null, 				&ai_firewhirr, 		&ondeath_default 	,""}, // Fire Whirr
 	{ NULL,				SHEET_FIREWSHOT,1, PAL2, &onspawn_persistent, 	&ai_firewhirr_shot, &ai_null 			,""},
 	{ NULL, 			SHEET_GAUDI,	1, PAL2, &ai_null, 				&ai_gaudiArmor, 	&ai_null 			,""},
 	{ NULL, 			SHEET_GAUDISHOT,1, PAL2, &onspawn_persistent, 	&ai_gaudiArmorShot, &ondeath_nodrop 	,""}, // Gaudi Shot
