@@ -10,6 +10,7 @@ extern const uint16_t PAL_Gunsmith[16];
 extern const uint16_t PAL_Plant[16];
 extern const uint16_t PAL_Frog[16];
 extern const uint16_t PAL_Chaco[16];
+extern const uint16_t PAL_Buggy[16];
 extern const uint16_t PAL_Jenka[16];
 extern const uint16_t PAL_Dark[16];
 extern const uint16_t PAL_Boulder[16];

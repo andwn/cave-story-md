@@ -71,8 +71,8 @@ typedef struct WStarBullet {
 	Sprite sprite;
 	int32_t x;
 	int32_t y;
-	int16_t x_px;
-	int16_t y_px;
+	uint16_t x_px;
+	uint16_t y_px;
 	int16_t x_speed;
 	int16_t y_speed;
 } WStarBullet;

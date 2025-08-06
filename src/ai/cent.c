@@ -161,7 +161,7 @@ void ai_orangebell_baby(Entity *e) {
 			uint8_t angle = rand();
 			e->x_speed = cos[angle];//pixel_to_sub();
 			e->y_speed = sin[angle];//pixel_to_sub();
-			e->frame = 3;
+			e->frame = 1;
 			e->timer = 0;	// time until can dive-bomb
 			// unique target point on main bat
 			e->y_next = -pixel_to_sub(rand() & 31);
@@ -170,7 +170,7 @@ void ai_orangebell_baby(Entity *e) {
 		} /* fallthrough */
 		case 1:
 		{
-			ANIMATE(e, 4, 3,4,5);
+			ANIMATE(e, 2, 1,2,3);
 			
 			if (e->linkedEntity) {
 				e->x_mark = e->linkedEntity->x;
@@ -197,7 +197,7 @@ void ai_orangebell_baby(Entity *e) {
 		
 		case 2:		// dive-bombing
 		{
-			e->frame = 2;
+			e->frame = 0;
 			e->y_speed += SPEED(0x40);
 			LIMIT_Y(SPEED(0x5ff));
 			// Quick floor check

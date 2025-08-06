@@ -384,7 +384,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_HOPPY, &SPR_Hoppy, 4,2,2, 0, 1, 2, 3);
 		} break;
 		case 0x38: // Plantation
-		{	SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 4,2,2, 2, 3, 4, 5);
+		{	SHEET_ADD(SHEET_BAT, &SPR_BlackBat, 4,2,2, 2,3,4,5);
 			SHEET_ADD(SHEET_MIDO, &SPR_Midorin, 3,2,2, 0, 1, 2);
 			SHEET_ADD(SHEET_GUNFSHOT, &SPR_BubRed, 2,1,1, 0, 1);
 			SHEET_ADD(SHEET_PRESS, &SPR_PressH, 3,3,2, 0, 1, 2);
@@ -517,7 +517,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiEnd, 4,3,2, 0, 1, 2, 3);
 		} break;
 		case STAGE_ENDING_LAB: 
-		{	//SHEET_ADD(SHEET_AHCHOO, cfg_language == LANG_JA ? &SPR_AhchooJ : &SPR_AhchooE, 2,2,2, 0, 1);
+		{
             SHEET_ADD_NEW(SHEET_AHCHOO, SPR_AHCHOO, 2);
 		} break;
 	}

@@ -291,7 +291,7 @@ void ai_malco(Entity *e) {
 			e->animtime = 3; e->frame = 9;
 			/* fallthrough */
 		case 19:
-			if (++e->animtime > 3) {
+			if (++e->animtime > 2) {
 				e->animtime = 0;
 				if (++e->frame > 4) e->frame = 3;
 				if (e->frame==3) sound_play(SND_DOOR, 5);
@@ -599,14 +599,26 @@ void ai_motorbike(Entity *e) {
 	}
 	if(e->state >= 20 && (e->timer & 3) == 0) {
 		sound_play(SND_FIREBALL, 5);
-		// make exhaust puffs, and make them go out horizontal
-		// instead of straight up as this effect usually does
-		//Caret *puff = effect(o->ActionPointX(), o->ActionPointY(), EFFECT_SMOKETRAIL_SLOW);
-		//puff->yinertia = 0;
-		//puff->xinertia = (o->dir == LEFT) ? 0x280 : -0x280;
+		Effect *eff = effect_create_misc(EFF_BOOST2, (e->x>>CSF), (e->y>>CSF) + 16, FALSE);
+		if(e->dir) {
+			eff->x -= 12;
+			eff->x_speed = -1;
+		} else {
+			eff->x += 12;
+			eff->x_speed = 1;
+		}
 	}
 	e->x += e->x_speed;
 	e->y += e->y_speed;
+}
+
+// Busted motorbike just emits smoke
+void ai_motorbike2(Entity *e) {
+	if(++e->timer > TIME(50)) {
+		e->timer = rand() & 0x1F;
+		Effect *smoke = effect_create_smoke((e->x >> CSF) - 0xF + e->timer, e->y >> CSF);
+		smoke->y_speed = -1;
+	}
 }
 
 void ai_ravil(Entity *e) {

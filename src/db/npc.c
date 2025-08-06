@@ -215,7 +215,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		0, PAL0, &onspawn_waterlevel, 	&ai_waterlevel, 	&ai_null 			,""}, // Water Level
 	/* 0x0C0 (192) */
 	{ &SPR_Buggy, 		NOSHEET, 		1, PAL3, &onspawn_pushup, 		&ai_motorbike, 		&ai_null 			,""}, // Scooter
-	{ &SPR_Buggy2, 		NOSHEET, 		2, PAL3, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Scooter (Pieces)
+	{ &SPR_Buggy2, 		NOSHEET, 		2, PAL3, &ai_null, 				&ai_motorbike2, 	&ai_null 			,""}, // Scooter (Pieces)
 	{ &SPR_Robot, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Blue Robot (Pieces)
 	{ &SPR_GrateMouth,	NOSHEET,		1, PAL2, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Grate Mouth
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Motion Wall

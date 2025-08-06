@@ -12,6 +12,8 @@ input   res/sprite/balfrog1.png
 dumppal build/res/pal/balfrog1.pal
 input   res/sprite/chaco.png
 dumppal build/res/pal/chaco.pal
+input   res/sprite/buggy.png
+dumppal build/res/pal/buggy.pal
 input   res/sprite/jenka.png
 dumppal build/res/pal/jenka.pal
 input   res/sprite/dark.png

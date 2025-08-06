@@ -15,13 +15,6 @@
 
 #include "effect.h"
 
-typedef struct {
-	Sprite sprite;
-	uint8_t type, ttl, timer, timer2;
-	int16_t x, y;
-	int8_t x_speed, y_speed;
-} Effect;
-
 static Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
 static struct {
 	Entity *e;
@@ -130,11 +123,10 @@ void effects_update(void) {
 			}
 			break;
 			case EFF_BOOST8:
-			{
-				effMisc[i].y++;
-			} /* fallthrough */
 			case EFF_BOOST2:
 			{
+				effMisc[i].x += effMisc[i].x_speed;
+				effMisc[i].y += effMisc[i].y_speed;
 				if(++effMisc[i].timer >= TIME_8(5)) {
 					effMisc[i].timer = 0;
 					effMisc[i].sprite.attr++;
@@ -268,32 +260,34 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 	}
 }
 
-void effect_create_smoke(int16_t x, int16_t y) {
+Effect* effect_create_smoke(int16_t x, int16_t y) {
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(effSmoke[i].ttl) continue;
 		effSmoke[i].x = x;
 		effSmoke[i].y = y;
 		switch(rand() & 7) {
-			case 0: effSmoke[i].x_speed = 0; break;
-			case 1:	effSmoke[i].y_speed = 0; break;
-			case 2: effSmoke[i].x_speed = 1; break;
-			case 3: effSmoke[i].y_speed = 1; break;
-			case 4: effSmoke[i].x_speed = -1; break;
-			case 5:	effSmoke[i].y_speed = -1; break;
-			case 6: effSmoke[i].x_speed ^= 1; break;
-			case 7: effSmoke[i].y_speed ^= 1; break;
+			case 0: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = 0; break;
+			case 1:	effSmoke[i].x_speed = -1; effSmoke[i].y_speed = 0; break;
+			case 2: effSmoke[i].x_speed = -1; effSmoke[i].y_speed = -1; break;
+			case 3: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = -1; break;
+			case 4: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = -1; break;
+			case 5:	effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 0; break;
+			case 6: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
+			case 7: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
 		}
 		effSmoke[i].ttl = 24;
 		effSmoke[i].sprite = (Sprite) {
 			.size = SPRITE_SIZE(2, 2),
 			.attr = TILE_ATTR(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
 		};
-		break;
+		return &effSmoke[i];
 	}
+	return NULL;
 }
 
-void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
-	for(uint8_t i = 0; i < MAX_MISC; i++) {
+Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
+	uint16_t i;
+	for(i = 0; i < MAX_MISC; i++) {
 		if(effMisc[i].ttl) {
 			if(only_one && effMisc[i].type == type) break;
 			continue;
@@ -301,6 +295,8 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 		effMisc[i].type = type;
 		effMisc[i].x = x;
 		effMisc[i].y = y;
+		effMisc[i].x_speed = 0;
+		effMisc[i].y_speed = 0;
 		switch(type) {
 			case EFF_BONKL: // Dots that appear when player bonks their head on the ceiling
 			case EFF_BONKR:
@@ -325,6 +321,9 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 			}
 			break;
 			case EFF_BOOST8: // Smoke that emits while using the booster
+			{
+				effMisc[i].y_speed = 1;
+			} // Fallthrough
 			case EFF_BOOST2:
 			{
 				effMisc[i].ttl = TIME_8(20);
@@ -456,5 +455,10 @@ void effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
             break;
 		}
 		break;
+	}
+	if(i < MAX_MISC) {
+		return &effMisc[i];
+	} else {
+		return NULL;
 	}
 }

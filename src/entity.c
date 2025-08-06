@@ -1167,7 +1167,7 @@ void generic_npc_states(Entity *e) {
 			e->frame = 0;
 			e->x_speed = 0;
 			e->y_speed = 0;
-			if(e->type != OBJ_KAZUMA) {
+			if(e->type != OBJ_KAZUMA && !tscState) {
                 RANDBLINK(e, 3, 200);
 			}
 		}
