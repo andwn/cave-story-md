@@ -36,10 +36,12 @@ extern uint8_t playerMoveMode;
 extern uint8_t lookingDown;
 // Max health - current health is player.health (Entity)
 extern uint16_t playerMaxHealth;
-// When this is TRUE, quote can not be controlled by player input
-extern uint8_t controlsLocked;
 // What is currently equipped (see the flags at the top of this file)
 extern uint16_t playerEquipment;
+// When this is TRUE, quote can not be controlled by player input
+extern uint8_t controlsLocked;
+// Whimsical Star, amount active
+extern uint8_t playerStarNum;
 // What items the player has and will show up in the inventory screen
 extern uint8_t playerInventory[MAX_ITEMS];
 
@@ -53,7 +55,6 @@ extern uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
 extern uint16_t mapNameTTL;
 
 extern uint8_t iSuckAtThisGameSHIT;
-
 extern uint8_t missileEmptyFlag;
 
 // Initialize everything for the player, sets default values on game start

@@ -119,7 +119,7 @@ void effects_update(void) {
 			break;
 			case EFF_ZZZ:
 			{
-				if(++effMisc[i].timer >= TIME_8(25)) {
+				if(++effMisc[i].timer > TIME_8(25)) {
 					effMisc[i].timer = 0;
 					effMisc[i].sprite.attr++;
 				}

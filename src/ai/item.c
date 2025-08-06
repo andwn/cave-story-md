@@ -50,6 +50,9 @@ void ai_energy(Entity *e) {
 			w->energy -= weapon_info[w->type].experience[w->level-1];
 			w->level++;
 			sheets_refresh_weapon(w);
+			if(w->level == 3) {
+				if((playerEquipment & EQUIP_WHIMSICAL) && playerStarNum < 3) playerStarNum++;
+			}
 		} else {
 			sound_play(SND_GET_XP, 5);
 			player.damage_time = 30;

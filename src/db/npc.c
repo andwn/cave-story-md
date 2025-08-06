@@ -205,7 +205,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			SHEET_CGUN, 	1, PAL1, &onspawn_persistent, 	&ai_cai_gun, 		&ai_null 			,""}, // Curly Polar Star
 	{ NULL, 			SHEET_CGUN, 	1, PAL1, &onspawn_persistent, 	&ai_cai_gun, 		&ai_null 			,""}, // Curly Machine Gun
 	{ &SPR_AirTank, 	NOSHEET, 		1, PAL0, &onspawn_persistent, 	&ai_cai_watershield,&ai_null 			,""}, // Curly Bubble Shield
-	{ NULL,				SHEET_BSHUTTER,	1, PAL2, &onspawn_shutter, 		&ai_shutter, 		&ai_null 			,""}, // Shutter (Large)
+	{ NULL,				SHEET_BSHUTTR,	1, PAL2, &onspawn_shutter, 		&ai_shutter, 		&ai_null 			,""}, // Shutter (Large)
 	{ NULL, 			SHEET_SHUTTER, 	1, PAL2, &onspawn_shutter, 		&ai_shutter, 		&ai_null 			,""}, // Shutter (Small)
 	{ NULL,				SHEET_LIFT, 	1, PAL2, &ai_null, 				&ai_shutter, 		&ai_null 			,""}, // Lift Block
 	{ NULL,				SHEET_FUZZC, 	1, PAL2, &ai_null, 				&ai_fuzz_core, 		&ondeath_default 	,""}, // Fuzz Core

@@ -80,6 +80,7 @@ SPRITE SPR_BallosRot	"sprite/ballos_ball.png"	4 4 NONE
 SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 NONE
 SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 NONE
+SPRITE SPR_WStar        "sprite/wstar.png"          1 1 NONE
 
 SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 NONE
 

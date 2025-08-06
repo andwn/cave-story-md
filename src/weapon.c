@@ -93,6 +93,76 @@ static const MissileSettings missile_settings[2][6] = {
 Weapon playerWeapon[MAX_WEAPONS] = {};
 Bullet playerBullet[MAX_BULLETS] = {};
 
+uint8_t wstarCollideIndex = 0;
+WStarBullet wstarBullet[MAX_WHIMSICAL_STAR] = {};
+
+// Whimsical Star reset at the end of stage load
+void wstar_reset(void) {
+	uint8_t sheet;
+	SHEET_FIND(sheet, SHEET_WSTAR);
+	for(uint16_t i = 0; i < MAX_WHIMSICAL_STAR; i++) {
+		WStarBullet *b = &wstarBullet[i];
+		b->sprite.size = SPRITE_SIZE(1, 1);
+		b->sprite.attr = TILE_ATTR(PAL0,0,0,0, sheets[sheet].index + i);
+		b->x = player.x;
+		b->y = player.y;
+		b->x_px = b->x >> CSF;
+		b->y_px = b->y >> CSF;
+		
+	}
+	wstarBullet[0].x_speed = SPEED(0x400);
+	wstarBullet[0].y_speed = -SPEED(0x200);
+	wstarBullet[1].x_speed = -SPEED(0x200);
+	wstarBullet[1].y_speed = SPEED(0x400);
+	wstarBullet[2].x_speed = SPEED(0x200);
+	wstarBullet[2].y_speed = SPEED(0x200);
+	playerStarNum = 0;
+}
+
+void wstar_update(void) {
+	if(++wstarCollideIndex > 2) wstarCollideIndex = 0;
+
+	for(uint16_t i = 0; i < MAX_WHIMSICAL_STAR; i++) {
+		if(i != 0) {
+			if (wstarBullet[i - 1].x < wstarBullet[i].x) {
+				if(wstarBullet[i].x_speed > -SPEED(0xA00)) wstarBullet[i].x_speed -= SPEED(0x80);
+			} else {
+				if(wstarBullet[i].x_speed < SPEED(0xA00)) wstarBullet[i].x_speed += SPEED(0x80);
+			}
+			if (wstarBullet[i - 1].y < wstarBullet[i].y) {
+				if(wstarBullet[i].y_speed > -SPEED(0xA00)) wstarBullet[i].y_speed -= SPEED(0xAA);
+			} else {
+				if(wstarBullet[i].y_speed < SPEED(0xA00)) wstarBullet[i].y_speed += SPEED(0xAA);
+			}
+		} else {
+			if (player.x < wstarBullet[i].x) {
+				if(wstarBullet[i].x_speed > -SPEED(0xA00)) wstarBullet[i].x_speed -= SPEED(0x80);
+			} else {
+				if(wstarBullet[i].x_speed < SPEED(0xA00)) wstarBullet[i].x_speed += SPEED(0x80);
+			}
+			if (player.y < wstarBullet[i].y) {
+				if(wstarBullet[i].y_speed > -SPEED(0xA00)) wstarBullet[i].y_speed -= SPEED(0xAA);
+			} else {
+				if(wstarBullet[i].y_speed < SPEED(0xA00)) wstarBullet[i].y_speed += SPEED(0xAA);
+			}
+		}
+		
+		WStarBullet *b = &wstarBullet[i];
+		b->x += b->x_speed;
+		b->y += b->y_speed;
+		if(i >= playerStarNum) continue;
+
+		b->x_px = b->x >> CSF;
+		b->y_px = b->y >> CSF;
+		b->sprite.x = 0x80 + b->x_px - camera.x_shifted + cameraShakeX - 4;
+		b->sprite.y = 0x80 + b->y_px - camera.y_shifted + cameraShakeY - 4;
+		vdp_sprite_add(&b->sprite);
+
+		//k_str("wstar_up");
+	}
+}
+
+
 static void bullet_destroy_block(uint16_t x, uint16_t y);
 static void create_blade_slash(Bullet *b, uint8_t burst);
 

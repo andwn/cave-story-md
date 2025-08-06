@@ -156,6 +156,8 @@ void stage_load(uint16_t id) {
 
 	if((playerEquipment & EQUIP_CLOCK) || g_stage.id == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
+	wstar_reset();
+	
 	vdp_set_display(TRUE);
 }
 

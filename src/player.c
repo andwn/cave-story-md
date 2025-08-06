@@ -38,11 +38,12 @@ Sprite playerSprite;
 uint8_t playerIFrames;
 uint8_t playerMoveMode;
 uint8_t lookingDown;
+uint8_t playerStarNum;
 uint16_t playerMaxHealth;
 uint8_t controlsLocked;
+uint8_t shoot_cooldown, mgun_chargetime, playerNoBump;
 uint16_t playerEquipment;
 uint8_t playerInventory[MAX_ITEMS];
-uint8_t shoot_cooldown, mgun_chargetime, playerNoBump;
 Entity *playerPlatform;
 uint8_t playerPlatformTime;
 uint8_t playerBoosterFuel, playerBoostState, lastBoostState;
@@ -425,6 +426,7 @@ void player_update(void) {
 					if(w->level == 3) {
 						w->energy = maxenergy;
 						sound_play(SND_SPUR_MAXED, 5);
+						if((playerEquipment & EQUIP_WHIMSICAL) && playerStarNum < 3) playerStarNum++;
 					} else {
 						w->level++;
 						w->energy = 0;
@@ -455,6 +457,11 @@ void player_update(void) {
 			weapon_fire(*w);
 			shoot_cooldown = 4;
 		}
+	}
+
+	// Whimsical Star
+	if(playerEquipment & EQUIP_WHIMSICAL) {
+		wstar_update();
 	}
 	
 	if(player.grounded) {

@@ -66,6 +66,23 @@ struct Bullet {
 extern Weapon playerWeapon[MAX_WEAPONS];
 extern Bullet playerBullet[MAX_BULLETS];
 
+#define MAX_WHIMSICAL_STAR	3
+typedef struct WStarBullet {
+	Sprite sprite;
+	int32_t x;
+	int32_t y;
+	int16_t x_px;
+	int16_t y_px;
+	int16_t x_speed;
+	int16_t y_speed;
+} WStarBullet;
+
+extern uint8_t wstarCollideIndex;
+extern WStarBullet wstarBullet[MAX_WHIMSICAL_STAR];
+
+void wstar_reset(void);
+void wstar_update(void);
+
 #define weapon_fire(w) weapon_fire_array[(w).type](&(w))
 
 void weapon_fire_none(Weapon *w);
@@ -102,6 +119,7 @@ void bullet_update_supermissile(Bullet *b);
 void bullet_update_nemesis(Bullet *b);
 void bullet_update_spur(Bullet *b);
 void bullet_update_spur_tail(Bullet *b);
+void bullet_update_wstar(Bullet *b);
 
 extern const BulletFunc bullet_update_array[WEAPON_COUNT];
 

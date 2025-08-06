@@ -228,6 +228,33 @@ void entities_update(uint8_t draw) {
                 pb++;
 			}
 			if(cont) continue;
+			// Whimsical Star collision
+			if(!(e->flags & NPC_INVINCIBLE) && wstarCollideIndex < playerStarNum) {
+				WStarBullet *star = &wstarBullet[wstarCollideIndex];
+				if(star->x_px <= ee.x2 && star->x_px >= ee.x1 && star->y_px >= ee.y1 && star->y_px <= ee.y2) {
+					//k_str("wstar_hit");
+					if(e->health < 2) {
+						if(e->flags & NPC_SHOWDAMAGE) {
+							effect_create_damage(e->damage_value - 1, NULL, e->x >> CSF, e->y >> CSF);
+							e->damage_time = e->damage_value = 0;
+						}
+						// Killed enemy
+						e->health = 0;
+						ENTITY_ONDEATH(e);
+						if(e->state == STATE_DESTROY) {
+							e = entity_destroy(e);
+							continue;
+						} else if(e->state == STATE_DELETE) {
+							e = entity_delete(e);
+							continue;
+						}
+					} else if((e->flags & NPC_SHOWDAMAGE) || e->shakeWhenHit) {
+						e->damage_value -= 1;
+						e->damage_time = 30;
+					}
+					e->health -= 1;
+				}
+			}
 		}
 		// Hard Solids
 		uint16_t collided = FALSE;
