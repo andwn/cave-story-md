@@ -69,7 +69,7 @@ BIN UFTC_XXFore		"res/tiles_c/xxFore.uftc"
 /* Window */
 BIN UFTC_Window		"res/tiles_c/window.uftc"
 BIN UFTC_ItemSel	"res/tiles_c/itemsel.uftc"
-BIN UFTC_MyCOM	    "res/tiles_c/mi68.uftc"
+#BIN UFTC_MyCOM	    "res/tiles_c/mi68.uftc"
 
 /* Number Font */
 BIN TS_Numbers		"res/tiles/numbers.pat"

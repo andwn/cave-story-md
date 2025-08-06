@@ -22,6 +22,7 @@
 #include "md/sys.h"
 #include "md/vdp.h"
 #include "md/xgm.h"
+#include "weapon.h"
 
 #include "stage.h"
 
@@ -57,6 +58,9 @@ void stage_load(uint16_t id) {
 
 	vdp_set_display(FALSE);
     joystate_old = ~0;
+
+	memset(playerBullet, 0, sizeof(Bullet) * MAX_BULLETS);
+
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	dma_clear();
 	g_stage.id = id;
@@ -450,21 +454,15 @@ void stage_draw_screen(void) {
 	uint16_t maprow[64];
 	uint16_t y = sub_to_tile(camera.y) - 16;
 	for(uint16_t i = 32; i--; ) {
-		if(vblank) aftervsync(); // So we don't lag the music
-		vblank = 0;
-		
 		if(y < g_stage.pxm.height << 1) {
 			uint16_t x = sub_to_tile(camera.x) - 32;
 			for(uint16_t j = 64; j--; ) {
-				//if(x >= g_stage.pxm.width << 1) break;
-				//if(x >= 0) {
-					uint16_t b = stage_get_block(x>>1, y>>1);
-					uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
-					uint16_t ta = g_stage.pxa[b];
-					uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
-					maprow[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
-							0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
-				//}
+				const uint16_t b   = stage_get_block(x>>1, y>>1);
+				const uint16_t t   = b << 2;
+				const uint16_t ta  = g_stage.pxa[b];
+				const uint16_t pal = (ta == 0x43 || ta & 0x80) ? PAL1 : PAL2;
+				maprow[x&63] = TILE_ATTR(pal, (ta&0x40) > 0, 
+						0, 0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 				x++;
 			}
             dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLANE_A + ((y & 31) << 7), 64, 2);
@@ -477,8 +475,8 @@ void stage_draw_screen_credits(void) {
 	uint16_t maprow[20];
 	for(uint16_t y = 0; y < 30; y++) {
 		for(uint16_t x = 20; x < 40; x++) {
-			uint16_t b = stage_get_block(x>>1, y>>1);
-			uint16_t t = b << 2; //((b&15) << 1) + ((b>>4) << 6);
+			const uint16_t b = stage_get_block(x>>1, y>>1);
+			const uint16_t t = b << 2;
 			maprow[x-20] = TILE_ATTR(PAL2,0,0,0, TILE_TSINDEX + t + (x&1) + ((y&1)<<1));
 		}
         dma_now(DmaVRAM, (uint32_t)maprow, VDP_PLANE_A + y * 0x80 + 40, 20, 2);
@@ -488,11 +486,10 @@ void stage_draw_screen_credits(void) {
 // Draws just one block
 void stage_draw_block(uint16_t x, uint16_t y) {
 	if(x >= g_stage.pxm.width || y >= g_stage.pxm.height) return;
-	uint16_t b, xx, yy; uint8_t p;
-	p = (stage_get_block_type(x, y) & 0x40) > 0;
-	b = TILE_TSINDEX + (stage_get_block(x, y) << 2);
-	xx = block_to_tile(x) % 64;
-	yy = block_to_tile(y) % 32;
+	const uint8_t  p  = (stage_get_block_type(x, y) & 0x40) > 0;
+	const uint16_t b  = TILE_TSINDEX + (stage_get_block(x, y) << 2);
+	const uint16_t xx = block_to_tile(x) % 64;
+	const uint16_t yy = block_to_tile(y) % 32;
 
 	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b), xx, yy);
 	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 1), xx + 1, yy);

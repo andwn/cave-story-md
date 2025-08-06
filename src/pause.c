@@ -105,6 +105,8 @@ void draw_item(uint8_t sel) {
 void draw_itemmenu(uint8_t resetCursor) {
     vdp_set_display(FALSE);
     vdp_sprites_clear();
+    vdp_sprites_update();
+    dma_flush();
     uint8_t top = pal_mode ? 1 : 0;
     // Fill the top part
     uint16_t y = top;
@@ -205,6 +207,10 @@ uint8_t update_pause(void) {
         (selectedItem < 0 && joy_pressed(btn[cfg_btn_jump]))) /*&& !tscState*/) {
         tscState = TSC_IDLE;
         vdp_set_display(FALSE);
+        // Clear sprites first
+        vdp_sprites_clear();
+        vdp_sprites_update();
+        dma_flush();
         // Change weapon
         if((selectedItem < 0 && joy_pressed(btn[cfg_btn_jump])) &&
            playerWeapon[selectedItem + 6].type > 0) { // Weapon
@@ -219,7 +225,6 @@ uint8_t update_pause(void) {
         // Fix HUD since we clobbered it
         hud_show();
         hud_force_redraw();
-        vdp_sprites_clear();
 
         //disable_ints();
         //z80_pause_fast();
@@ -408,14 +413,14 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
 
 void do_map(void) {
     vdp_sprites_clear();
+    vdp_sprites_update();
+    dma_flush();
 
     uint16_t mapx = (ScreenHalfW - g_stage.pxm.width / 2) / 8;
     uint16_t mapy = (ScreenHalfH - g_stage.pxm.height / 2) / 8;
 
     uint16_t index = TILE_SHEETINDEX;
 
-    //disable_ints();
-    //z80_pause_fast();
     // Upload a completely blank & completely solid tile
     static const uint32_t blank[8] = {
             0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,0x11111111,
@@ -428,13 +433,8 @@ void do_map(void) {
     dma_now(DmaVRAM, (uint32_t)solid, index << 5, 16, 2);
     index++;
 
-    //z80_resume();
-    //enable_ints();
-
     for(uint16_t y = 0; y < ((g_stage.pxm.height+2) / 8) + ((g_stage.pxm.height) % 8 > 0); y++) {
         for(uint16_t x = 0; x < ((g_stage.pxm.width+2) / 8) + ((g_stage.pxm.width) % 8 > 0); x++) {
-            //disable_ints();
-            //z80_pause_fast();
             uint8_t result = gen_maptile(x*8, y*8, index);
             if(!result) {
                 vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), mapx + x, mapy + y);
@@ -442,8 +442,6 @@ void do_map(void) {
             } else {
                 vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, TILE_SHEETINDEX + (result - 1)), mapx + x, mapy + y);
             }
-            //z80_resume();
-            //enable_ints();
         }
         ready = TRUE;
         sys_wait_vblank(); aftervsync();

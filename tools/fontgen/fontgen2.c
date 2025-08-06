@@ -98,13 +98,14 @@ int main(int argc, char *argv[]) {
         uint16_t index = utf8_to_index(&kanji[i], &bytes);
         int src_x = (index % font_cols) * 12;
         int src_y = (index / font_cols) * 16;
+		int off_x = 3; // 0; // Target offset adjustment
         printf("U+%04X : %d,%d\n", index, src_x, src_y);
         for(int y = src_y; y < src_y + 16; y++) {
             uint16_t *row = &tileset[dst_y + (y - src_y)];
             for(int x = src_x; x < src_x + 12; x++) {
                 if(font[y * font_w + x]) {
-                    *row |= 1 << (15 - (x - src_x));
-                    printf("%X", 15 - (x - src_x));
+                    *row |= 1 << (15 - (x - src_x) - off_x);
+                    printf("%X", 15 - (x - src_x) - off_x);
                 } else {
                     printf("-");
                 }

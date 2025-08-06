@@ -63,7 +63,7 @@ extern const uint16_t UFTC_XXFore[];
 
 extern const uint16_t UFTC_Window[];
 extern const uint16_t UFTC_ItemSel[];
-extern const uint16_t UFTC_MyCOM[];
+//extern const uint16_t UFTC_MyCOM[];
 
 extern const uint32_t TS_Numbers[];
 extern const uint32_t TS_Clock[];

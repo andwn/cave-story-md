@@ -138,7 +138,7 @@ TSC_STAGE:
 PTRTAB_END:
         dc.l 0xFFFFFFFF /* Sentinel value for patchrom to stop relocating */
 
-
+# Strings
 BIN STR_StageNames      "res/strings/en_stagename.dat"
 BIN STR_MusicNames      "res/strings/en_music.dat"
 BIN STR_Credits         "res/strings/en_credits.dat"
@@ -260,3 +260,8 @@ SPRITE SPR_LevelDown	"res/sprite_loc/leveldown_en.spr"	7 2 2
 SPRITE SPR_Empty		"res/sprite_loc/empty_en.spr"		5 1 2
 SPRITE SPR_Ahchoo		"res/sprite_loc/ahchoo_en.spr"		2 2 2
 SPRITE SPR_Hey		    "res/sprite_loc/hey_en.spr"		    2 2 1
+
+# Padding
+.rept 1024
+    dc.l    0xFFFF,0xFFFF,0xFFFF,0xFFFF
+.endr
