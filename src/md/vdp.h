@@ -115,6 +115,8 @@ void vdp_colors(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color(uint16_t index, uint16_t color);
 void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count);
 void vdp_color_next(uint16_t index, uint16_t color);
+void vdp_colors_apply_next_now(void);
+
 uint16_t vdp_fade_step_calc(void);
 void vdp_fade_step_dma(void);
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async);

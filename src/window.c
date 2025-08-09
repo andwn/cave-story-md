@@ -17,6 +17,7 @@
 #include "sheet.h"
 #include "tables.h"
 #include "tsc.h"
+#include "effect.h"
 
 #include "window.h"
 
@@ -135,7 +136,7 @@ void window_clear_text(void) {
 }
 
 void window_close(void) {
-	if(!paused) {
+	if(!paused && fadeSweepTimer < 0) {
 	    vdp_set_window(0, 0);
         hud_force_redraw();
 	}
@@ -151,6 +152,7 @@ void window_set_face(uint16_t face, uint8_t open) {
 	if(face > 0) {
 		window_draw_face();
 	} else {
+		if(fadeSweepTimer >= 0) return;
 		vdp_map_fill_rect(VDP_PLANE_W, WINDOW_ATTR(4), TEXT_X1,
 				windowOnTop ? TEXT_Y1_TOP : TEXT_Y1, 6, 6, 0);
 	}
@@ -331,6 +333,8 @@ uint8_t window_prompt_update(void) {
 
 void window_draw_face(void) {
 	vdp_tiles_load_uftc(face_info[showingFace].tiles, TILE_FACEINDEX, 0, 6*6);
+	if(fadeSweepTimer >= 0) return;
+
 	vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(face_info[showingFace].palette, 1, 0, 0, TILE_FACEINDEX),
                       TEXT_X1, (windowOnTop ? TEXT_Y1_TOP : TEXT_Y1), 6, 6, 1);
 }

@@ -121,8 +121,8 @@ static inline uint8_t mddir(uint8_t dir) {
 #define TILE_AIRSIZE        8
 #define TILE_QMARKINDEX     (TILE_AIRINDEX + TILE_AIRSIZE)
 #define TILE_QMARKSIZE      1
-#define TILE_WHIMINDEX      (TILE_QMARKINDEX + TILE_QMARKSIZE)
-#define TILE_WHIMSIZE       2
+#define TILE_FADEINDEX      (TILE_QMARKINDEX + TILE_QMARKSIZE)
+#define TILE_FADESIZE       2
 // 12 tiles at the end for nemesis vertical frames
 #define TILE_NEMINDEX       (0xFE80U >> 5)
 // 8 tiles after window plane for blade L3

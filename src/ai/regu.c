@@ -95,7 +95,7 @@ void ai_toroko(Entity *e) {
 		case 3:		// run away!!
 		case 4:
 		{
-			ANIMATE(e, 8, 1,2);
+			ANIMATE(e, 2, 1,7,2,7);
 			if((e->y_speed < 0 && collide_stage_leftwall(e)) ||
 				(e->y_speed > 0 && collide_stage_rightwall(e))) { 
 				TURN_AROUND(e);
@@ -508,7 +508,7 @@ void ai_king(Entity *e) {
 		break;
 		case 10:		// run
 		{
-			ANIMATE(e, 8, 1,0,2,0);
+			ANIMATE(e, 4, 1,0,2,0);
 			MOVE_X(SPEED(0x400));
 		}
 		break;

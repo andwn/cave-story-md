@@ -367,10 +367,9 @@ void weapon_fire_machinegun(Weapon *w) {
 		if(w->level == 3) {
 			if(joy_down(btn[cfg_btn_jump]) || player.y_speed > 0) {
 				player.y_speed -= SPEED_10(0x3FF);
-				if(player.y_speed < -SPEED_12(0x5FF)) player.y_speed = -SPEED_12(0x5FF);
 			} else {
-				player.y_speed -= SPEED_10(0x380);
-				if(player.y_speed < -SPEED_12(0x4FF)) player.y_speed = -SPEED_12(0x4FF);
+				player.y_speed -= SPEED_10(0x350);
+				if(player.y_speed < -SPEED_12(0x47F)) player.y_speed = -SPEED_12(0x47F);
 			}
 		}
 		b->x = player.x;

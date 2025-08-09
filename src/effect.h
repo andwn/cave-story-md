@@ -39,3 +39,16 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 Effect* effect_create_smoke(int16_t x, int16_t y);
 
 Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one);
+
+// Fading
+
+extern int8_t fadeSweepTimer;
+
+// Fade the screen out using diamond sweep pattern (blocking)
+void do_fadeout_sweep(uint8_t dir);
+
+// Begin fading the screen in using diamond sweep patter (non-blocking)
+void start_fadein_sweep(uint8_t dir);
+
+// Frame step for fade in effect
+void update_fadein_sweep(void);

@@ -60,13 +60,17 @@ void stage_load(uint16_t id) {
     joystate_old = ~0;
 
 	memset(playerBullet, 0, sizeof(Bullet) * MAX_BULLETS);
-
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	dma_clear();
 	g_stage.id = id;
 	g_stage.scrolling_row = 0;
 	g_stage.scrolling_column = 0;
+	// Reset player sprite
+	lookingDown = FALSE;
+	player.frame = 0;
+	player_draw();
 	// Clear out or deactivate stuff from the old stage
+	fadeSweepTimer = -1;
 	effects_clear();
 	entities_clear();
 	vdp_sprites_clear();
@@ -157,7 +161,7 @@ void stage_load(uint16_t id) {
 	if((playerEquipment & EQUIP_CLOCK) || g_stage.id == STAGE_HELL_B1) system_draw_counter();
 	tsc_load_stage(id);
 	wstar_reset();
-	
+
 	vdp_set_display(TRUE);
 }
 

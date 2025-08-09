@@ -32,8 +32,10 @@ void ai_fan(Entity *e) {
 	switch(e->state) {
 		case 1: // Left
 		{
-			if((++e->animtime & 3) == 0 && ++e->frame > 5) {
+			if((++e->animtime & 1) == 0 && ++e->frame > 5) {
 				e->frame = 3;
+			}
+			if((e->animtime & 0xF) == 0) {
 				effect_create_misc(EFF_FANL, ex - 8, ey + ((rand() & 15) - 8), FALSE);
 			}
 			if(px > ex - (6<<4) && px < ex && py > ey - 12 && py < ey + 12) {
@@ -44,8 +46,10 @@ void ai_fan(Entity *e) {
 		break;
 		case 2: // Up
 		{
-			if((++e->animtime & 3) == 0 && ++e->frame > 2) {
+			if((++e->animtime & 1) == 0 && ++e->frame > 2) {
 				e->frame = 0;
+			}
+			if((e->animtime & 0xF) == 0) {
 				effect_create_misc(EFF_FANU, ex + ((rand() & 15) - 8), ey - 8, FALSE);
 			}
 			if(py > ey - (6<<4) && py < ey - 8 && px > ex - 16 && px < ex + 16) {
@@ -67,8 +71,10 @@ void ai_fan(Entity *e) {
 		break;
 		case 3: // Right
 		{
-			if((++e->animtime & 3) == 0 && ++e->frame > 5) {
+			if((++e->animtime & 1) == 0 && ++e->frame > 5) {
 				e->frame = 3;
+			}
+			if((e->animtime & 0xF) == 0) {
 				effect_create_misc(EFF_FANR, ex + 8, ey + ((rand() & 15) - 8), FALSE);
 			}
 			if(px > ex && px < ex + (6<<4) && py > ey - 12 && py < ey + 12) {
@@ -79,8 +85,10 @@ void ai_fan(Entity *e) {
 		break;
 		case 4: // Down
 		{
-			if((++e->animtime & 3) == 0 && ++e->frame > 2) {
+			if((++e->animtime & 1) == 0 && ++e->frame > 2) {
 				e->frame = 0;
+			}
+			if((e->animtime & 0xF) == 0) {
 				effect_create_misc(EFF_FAND, ex + ((rand() & 15) - 8), ey + 8, FALSE);
 			}
 			if(py > ey && py < ey + (6<<4) && px > ex - 12 && px < ex + 12) {

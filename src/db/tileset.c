@@ -8,7 +8,7 @@ const tileset_info_def tileset_info[TILESET_COUNT] = {
 	{ 73,  UFTC_Almond, PAL_Almond, PXA_Almond },
 	{ 44,  UFTC_Barr, PAL_Barr, PXA_Barr },
 	{ 80,  UFTC_Cave, PAL_Cave, PXA_Cave },
-	{ 128, UFTC_Cent, PAL_Cent, PXA_Cent },
+	{ 100, UFTC_Cent, PAL_Cent, PXA_Cent },
 	{ 80,  UFTC_EggIn, PAL_EggIn, PXA_EggIn },
 	{ 74,  UFTC_Eggs, PAL_Eggs, PXA_Eggs },
 	{ 128, UFTC_EggX, PAL_EggX, PXA_EggX },

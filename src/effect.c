@@ -12,6 +12,8 @@
 #include "tables.h"
 #include "md/comp.h"
 #include "md/vdp.h"
+#include "md/sys.h"
+#include "hud.h"
 
 #include "effect.h"
 
@@ -23,11 +25,15 @@ static struct {
 
 // Create a memory buffer of 4 tiles containing a string like "+3" or "-127"
 // Then copy to VRAM via DMA transfer
-uint32_t dtiles[4][8];
-
+uint32_t dtiles[MAX_DAMAGE][4][8];
+uint8_t digitCount[MAX_DAMAGE];
 uint8_t dqueued;
 
+int8_t fadeSweepTimer;
+uint8_t fadeSweepDir;
+
 void effects_init(void) {
+	fadeSweepTimer = -1;
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
@@ -54,16 +60,28 @@ void effects_update(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
 		if(!effDamage[i].ttl) continue;
 		effDamage[i].ttl--;
-		if(damageFollow[i].e) {
-			effDamage[i].x = (damageFollow[i].e->x >> CSF) + (damageFollow[i].xoff - 8);
-			effDamage[i].y = (damageFollow[i].e->y >> CSF) + (damageFollow[i].yoff) - (30 - (effDamage[i].ttl >> 1));
+		if(effDamage[i].ttl < 8) {
+			// Erase effect
+			for(uint16_t x = 0; x < 4; x++) {
+				for(uint16_t y = 0; y < 7; y++) {
+					dtiles[i][x][y] = dtiles[i][x][y+1];
+				}
+				dtiles[i][x][7] = 0;
+			}
+			dma_queue(DmaVRAM, (uint32_t) dtiles[i][3-digitCount[i]], TILE_NUMBERINDEX*32 + i*4*32, 4*16, 2);
 		} else {
-			effDamage[i].y -= effDamage[i].ttl & 1;
+			if(damageFollow[i].e) {
+				if(effDamage[i].ttl > 30) damageFollow[i].yoff -= effDamage[i].ttl & 1;
+				effDamage[i].x = (damageFollow[i].e->x >> CSF) + (damageFollow[i].xoff - 8);
+				effDamage[i].y = (damageFollow[i].e->y >> CSF) + (damageFollow[i].yoff - 8);
+			} else {
+				if(effDamage[i].ttl > 30) effDamage[i].y -= effDamage[i].ttl & 1;
+			}
 		}
 		sprite_pos(&effDamage[i].sprite,
-                   effDamage[i].x - sub_to_pixel(camera.x) + ScreenHalfW,
-                   effDamage[i].y - sub_to_pixel(camera.y) + ScreenHalfH);
-	vdp_sprite_add(&effDamage[i].sprite);
+                   effDamage[i].x - camera.x_shifted,
+                   effDamage[i].y - camera.y_shifted);
+		vdp_sprite_add(&effDamage[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
 		if(!effSmoke[i].ttl) continue;
@@ -76,7 +94,7 @@ void effects_update(void) {
 		sprite_pos(&effSmoke[i].sprite,
                    effSmoke[i].x - sub_to_pixel(camera.x) + ScreenHalfW - 8,
                    effSmoke[i].y - sub_to_pixel(camera.y) + ScreenHalfH - 8);
-	vdp_sprite_add(&effSmoke[i].sprite);
+		vdp_sprite_add(&effSmoke[i].sprite);
 	}
 	for(uint8_t i = 0; i < MAX_MISC; i++) {
 		if(!effMisc[i].ttl) continue;
@@ -227,16 +245,16 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 		// Positive are white and show '+' (Weapon energy)
 		uint8_t negative = (num < 0);
 		num = abs(num);
-		uint8_t digitCount = 0; // Number of digit tiles: 1, 2, or 3 after loop
+		digitCount[i] = 0; // Number of digit tiles: 1, 2, or 3 after loop
 		// Create right to left, otherwise digits show up backwards
 		uint16_t tileIndex;
-		for(; num; digitCount++) {
+		for(; num; digitCount[i]++) {
 			tileIndex = ((negative ? 11 : 0) + mod10[num]) << 3;
-			memcpy(dtiles[3 - digitCount], &TS_Numbers[tileIndex], 32);
+			memcpy(dtiles[i][3 - digitCount[i]], &TS_Numbers[tileIndex], 32);
 			num = div10[num];
 		}
 		tileIndex = ((negative ? 11 : 0) + 10) * 8;
-		memcpy(dtiles[3 - digitCount], &TS_Numbers[tileIndex], 32); // - or +
+		memcpy(dtiles[i][3 - digitCount[i]], &TS_Numbers[tileIndex], 32); // - or +
 		
 		if(follow) {
 			damageFollow[i].e = follow;
@@ -251,10 +269,10 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 		}
 		effDamage[i].ttl = 60; // 1 second
 		effDamage[i].sprite = (Sprite) {
-			.size = SPRITE_SIZE(digitCount+1, 1),
+			.size = SPRITE_SIZE(digitCount[i]+1, 1),
 			.attr = TILE_ATTR(PAL0, 1, 0, 0, TILE_NUMBERINDEX + (i<<2))
 		};
-		TILES_QUEUE(dtiles[3-digitCount], TILE_NUMBERINDEX + (i<<2), digitCount+1);
+		TILES_QUEUE(dtiles[i][3-digitCount[i]], TILE_NUMBERINDEX + (i<<2), digitCount[i]+1);
 		dqueued = TRUE;
 		break;
 	}
@@ -460,5 +478,141 @@ Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one)
 		return &effMisc[i];
 	} else {
 		return NULL;
+	}
+}
+
+// Fading
+
+#define bval (1<<15) | TILE_FADEINDEX
+static const uint16_t winmap[40] = { 
+	bval,bval,bval,bval,bval,bval,bval,bval,bval,bval,
+	bval,bval,bval,bval,bval,bval,bval,bval,bval,bval,
+	bval,bval,bval,bval,bval,bval,bval,bval,bval,bval,
+	bval,bval,bval,bval,bval,bval,bval,bval,bval,bval,
+};
+static const uint32_t tblack[8] = {
+	0x11111111,0x11111111,0x11111111,0x11111111,
+	0x11111111,0x11111111,0x11111111,0x11111111,
+};
+
+static void fade_setup(Sprite *spr0, Sprite *spr1, Sprite *spr2, uint8_t dir, uint8_t fadein) {
+	// Fill window plane
+	for(uint16_t y = 0; y < ScreenHeight / 8; y++) {
+		dma_now(DmaVRAM, (uint32_t) winmap, VDP_PLANE_W + y*128, 40, 2);
+	}
+	// Setup tiles for sprites+window wipe
+	SHEET_LOAD(&SPR_Fade, 2, 4*4, TILE_HUDINDEX, TRUE, 0,1);
+	SHEET_LOAD(&SPR_Fade, 1, 4*4, TILE_NUMBERINDEX, TRUE, 2);
+	dma_now(DmaVRAM, (uint32_t) tblack, TILE_FADEINDEX*TILE_SIZE, TILE_SIZE/2, 2);
+	// Setup sprites
+	for(uint16_t i = 0; i < (pal_mode ? 8 : 7); i++) {
+		spr0[i].y = 0x80 + i * 32;
+		spr1[i].y = 0x80 + i * 32;
+		spr2[i].y = 0x80 + i * 32;
+		if(fadein) {
+			if(dir) { // Start from right
+				spr0[i].x = 0x80 + ScreenWidth + 64;
+				spr1[i].x = 0x80 + ScreenWidth + 32;
+				spr2[i].x = 0x80 + ScreenWidth + 0;
+			} else { // Start from left
+				spr0[i].x = 0x80 - 96;
+				spr1[i].x = 0x80 - 64;
+				spr2[i].x = 0x80 - 32;
+			}
+		} else {
+			if(dir) { // Start from right
+				spr0[i].x = 0x80 + ScreenWidth + 0;
+				spr1[i].x = 0x80 + ScreenWidth + 32;
+				spr2[i].x = 0x80 + ScreenWidth + 64;
+			} else { // Start from left
+				spr0[i].x = 0x80 - 32;
+				spr1[i].x = 0x80 - 64;
+				spr2[i].x = 0x80 - 96;
+			}
+		}
+		if(i == 7) {
+			spr0[i].size = SPRITE_SIZE(4,2);
+			spr1[i].size = SPRITE_SIZE(4,2);
+			spr2[i].size = SPRITE_SIZE(4,2);
+		} else {
+			spr0[i].size = SPRITE_SIZE(4,4);
+			spr1[i].size = SPRITE_SIZE(4,4);
+			spr2[i].size = SPRITE_SIZE(4,4);
+		}
+		spr0[i].attr = TILE_ATTR(PAL0,1,0,(fadein?dir:!dir), TILE_HUDINDEX);
+		spr1[i].attr = TILE_ATTR(PAL0,1,0,(fadein?dir:!dir), TILE_HUDINDEX+16);
+		spr2[i].attr = TILE_ATTR(PAL0,1,0,(fadein?dir:!dir), TILE_NUMBERINDEX);
+	}
+}
+
+void do_fadeout_sweep(uint8_t dir) {
+	Sprite *spr0 = (Sprite*) dtiles[0];
+	Sprite *spr1 = (Sprite*) dtiles[1];
+	Sprite *spr2 = (Sprite*) dtiles[2];
+	fade_setup(spr0, spr1, spr2, dir, FALSE);
+	// Fade loop
+	for(uint16_t f = 0; f < ScreenWidth / 16 + 6; f++) {
+		// Update Sprites
+		for(uint16_t i = 0; i < (pal_mode ? 8 : 7); i++) {
+			spr0[i].x += dir ? -16 : 16;
+			spr1[i].x += dir ? -16 : 16;
+			spr2[i].x += dir ? -16 : 16;
+		}
+		vdp_sprites_add(spr0, pal_mode ? 8 : 7);
+		vdp_sprites_add(spr1, pal_mode ? 8 : 7);
+		vdp_sprites_add(spr2, pal_mode ? 8 : 7);
+		player_draw();
+		entities_draw();
+		sys_wait_vblank();
+		// Update window plane
+		if(f > 5) {
+			const uint8_t x = dir ? (20 - (f-5)) | 0x80 : f-5;
+			vdp_set_window(x, 0);
+		}
+		ready = TRUE;
+		aftervsync();
+	}
+	vdp_colors(0, PAL_FadeOut, 64);
+	vdp_set_window(0, 0);
+}
+
+void start_fadein_sweep(uint8_t dir) {
+	// I guess it would be better to use a union or "work" structs, this is pretty dirty cast
+	Sprite *spr0 = (Sprite*) dtiles[0];
+	Sprite *spr1 = (Sprite*) dtiles[1];
+	Sprite *spr2 = (Sprite*) dtiles[2];
+	fade_setup(spr0, spr1, spr2, dir, TRUE);
+	fadeSweepTimer = ScreenWidth / 16 + 6;
+	fadeSweepDir = dir;
+	// Cover screen with window (black), and load target palette immediately
+	vdp_set_window(20, 0);
+	vdp_colors_apply_next_now();
+}
+
+void update_fadein_sweep(void) {
+	fadeSweepTimer--;
+	if(fadeSweepTimer >= 0) {
+		Sprite *spr0 = (Sprite*) dtiles[0];
+		Sprite *spr1 = (Sprite*) dtiles[1];
+		Sprite *spr2 = (Sprite*) dtiles[2];
+		// Update Sprites
+		for(uint16_t i = 0; i < (pal_mode ? 8 : 7); i++) {
+			spr0[i].x += fadeSweepDir ? -16 : 16;
+			spr1[i].x += fadeSweepDir ? -16 : 16;
+			spr2[i].x += fadeSweepDir ? -16 : 16;
+		}
+		vdp_sprites_add(spr0, pal_mode ? 8 : 7);
+		vdp_sprites_add(spr1, pal_mode ? 8 : 7);
+		vdp_sprites_add(spr2, pal_mode ? 8 : 7);
+		// Update window plane
+		if(fadeSweepTimer > 5) {
+			const uint8_t x = fadeSweepDir ? (fadeSweepTimer-5) : (20 - (fadeSweepTimer-5)) | 0x80;
+			vdp_set_window(x, 0);
+		} else {
+			vdp_set_window(0, 0);
+		}
+	} else {
+		// After the fade is done, need to restore HUD tiles we clobbered
+		hud_force_redraw();
 	}
 }

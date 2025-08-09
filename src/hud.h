@@ -1,3 +1,6 @@
+#ifndef HUD_H
+#define HUD_H
+
 // Loads the initial HUD sprite, only stage_load() should call this
 void hud_create(void);
 
@@ -9,3 +12,5 @@ void hud_show(void);
 void hud_hide(void);
 // Updates numbers + other info if they changed
 void hud_update(void);
+
+#endif

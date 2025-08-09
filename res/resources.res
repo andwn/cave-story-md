@@ -82,6 +82,7 @@ SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 NONE
 SPRITE SPR_WStar        "sprite/wstar.png"          1 1 NONE
 
+SPRITE SPR_Fade         "sprite/fade.png"           4 4 NONE
 SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 NONE
 
 

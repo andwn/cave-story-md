@@ -3,6 +3,7 @@
 #include "vdp.h"
 #include "comp.h"
 #include "math.h"
+#include "stdlib.h"
 #include "res/system.h"
 
 const uint16_t PAL_FadeOut[64] = {
@@ -226,6 +227,11 @@ void vdp_colors_next(uint16_t index, const uint16_t *values, uint16_t count) {
 
 void vdp_color_next(uint16_t index, uint16_t color) {
     pal_next[index] = color;
+}
+
+void vdp_colors_apply_next_now(void) {
+    vdp_colors(0, pal_next, 64);
+    memcpy(pal_current, pal_next, sizeof(uint16_t) * 64);
 }
 
 uint16_t vdp_fade_step_calc(void) {

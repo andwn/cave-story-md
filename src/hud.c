@@ -12,6 +12,7 @@
 #include "md/sys.h"
 #include "md/vdp.h"
 #include "weapon.h"
+#include "effect.h"
 
 #include "hud.h"
 #include "res/tiles.h"
@@ -86,6 +87,8 @@ void hud_create(void) {
 }
 
 void hud_force_redraw(void) {
+	if(fadeSweepTimer > 0) return;
+
 	hud_refresh_health();
     hud_refresh_weapon();
     hud_refresh_energy(TRUE);
@@ -96,12 +99,7 @@ void hud_force_redraw(void) {
     dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
     dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+12)*TILE_SIZE, 16, 2);
     dma_queue(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+13)*TILE_SIZE, 16, 2);
-
-    //disable_ints();
-    //z80_pause_fast();
 	dma_flush();
-    //z80_resume();
-    //enable_ints();
 }
 
 void hud_force_energy(void) {
@@ -119,7 +117,8 @@ void hud_hide(void) {
 void hud_update(void) {
 	uint8_t weaponChange = FALSE;
 	//if(paused) return;
-	if(!showing) return;
+	if(!showing || fadeSweepTimer > 0) return;
+	
 	vdp_sprites_add(sprHUD, 2);
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent
 	if(hudMaxHealth != playerMaxHealth || hudHealth != player.health) {
