@@ -124,7 +124,7 @@ static void decode_extended(FILE *f, uint8_t c) {
     }
 }
 
-static void decode_kanji(FILE *f, uint16_t wc) {
+static bool decode_kanji(FILE *f, uint16_t wc) {
     int k;
     for(k = 0; k < kanjiCount; k++) {
         if(wc == kanji[k])
@@ -132,7 +132,8 @@ static void decode_kanji(FILE *f, uint16_t wc) {
     }
     if(k == kanjiCount) {
         printf("WARN: Unknown kanji: 0x%04hx\n", wc);
-        fwrite("xx", 1, 2, f);
+        fwrite("x", 1, 1, f);
+		return false;
     } else {
         // Index by appearance in the list, and fit that number into banks
         // of 0x60 for each 'page'
@@ -142,6 +143,7 @@ static void decode_kanji(FILE *f, uint16_t wc) {
         fwrite(&b, 1, 1, f);
         b = word + 0x20; // Second byte
         fwrite(&b, 1, 1, f);
+		return true;
     }
 }
 

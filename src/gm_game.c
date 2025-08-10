@@ -56,13 +56,13 @@ void game_main(uint8_t load) {
 			paused = update_pause();
 		} else {
 			// Pressing start opens the item menu (unless a script is running)
-			if(joy_pressed(btn[cfg_btn_pause]) && !tscState && !fadeSweepTimer) {
+			if(joy_pressed(btn[cfg_btn_pause]) && !tscState && wipeFadeTimer == -1) {
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
 			} else if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
-					&& !tscState && !fadeSweepTimer && (playerEquipment & EQUIP_MAPSYSTEM)) {
+					&& !tscState && wipeFadeTimer == -1 && (playerEquipment & EQUIP_MAPSYSTEM)) {
 				// Shorthand to open map system
 				vdp_set_display(FALSE);
 				if(g_stage.back_type == 4) {
@@ -97,8 +97,8 @@ void game_main(uint8_t load) {
 			} else {
 				// HUD on top
                 PF_BGCOLOR(0x008);
-				if(fadeSweepTimer >= 0) {
-					update_fadein_sweep();
+				if(wipeFadeTimer >= 0) {
+					update_fadein_wipe();
 				} else {
 					hud_update();
 				}
@@ -171,6 +171,7 @@ void game_reset(uint8_t load) {
 	vdp_map_clear(VDP_PLANE_B);
 	camera_init();
 	tsc_init();
+	effects_init();
     // Default sprite sheets
     sheets_load_stage(255, TRUE, TRUE);
 
@@ -186,7 +187,4 @@ void game_reset(uint8_t load) {
 
 	const SpriteDef *wepSpr = weapon_info[playerWeapon[currentWeapon].type].sprite;
 	if(wepSpr) TILES_QUEUE(SPR_TILES(wepSpr,0), TILE_WEAPONINDEX,6);
-	
-	SHEET_LOAD(&SPR_Bonk, 1, 1, 1, 1, 0);
-	SHEET_LOAD(&SPR_QMark, 1, 1, TILE_QMARKINDEX, 1, 0);
 }

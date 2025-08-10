@@ -643,7 +643,7 @@ void ai_misery_ball(Entity *e) {
 void ai_black_lightning(Entity *e) {
 	ANIMATE(e, 2, 0,1);
 	if (blk(e->x, 0, e->y, 15) == 0x41) {
-		//effect(e->CenterX(), e->Bottom(), EFFECT_BOOMFLASH);
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 		e->state = STATE_DELETE;
 	}

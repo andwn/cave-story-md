@@ -378,7 +378,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_null, 			&ai_null 			,""}, // ???
 	{ NULL, 			NOSHEET, 		1, PAL0, &onspawn_persistent, 	&ai_null, 			&ai_null 			,""}, // Ballos Skull Shot
 	{ NULL, 			SHEET_PLATF, 	1, PAL0, &onspawn_persistent, 	&ai_ballos_platform, &ai_null 			,""}, // Ballos Platform
-	{ &SPR_Hoppy, 		NOSHEET, 		1, PAL1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	,""}, // Hoppy
+	{ NULL, 			SHEET_HOPPY, 	1, PAL1, &ai_null, 				&ai_hoppy, 			&ondeath_default 	,""}, // Hoppy
 	{ &SPR_Spikes, 		NOSHEET, 		1, PAL1, &onspawn_persistent, 	&ai_ballos_spikes, 	&ai_null 			,""}, // Ballos Spikes
 	{ NULL, 			NOSHEET, 		0, PAL2, &onspawn_statue_base, 	&ai_null,	 		&ai_null 			,""}, // Statue (Base)
 	{ NULL, 			SHEET_BUTE, 	1, PAL0, &onspawn_bute_archer_red,&ai_bute_archer_red,&ondeath_default 	,""}, // Red Bute (Archer)

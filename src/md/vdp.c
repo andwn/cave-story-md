@@ -156,14 +156,14 @@ void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
 }
 
 void vdp_tiles_load_uftc(const void *uftc_data, uint16_t index, uint16_t uftc_index, uint16_t num) {
-    extern const uint32_t *__compbuf_start;
-    static const uint16_t maxlen = 0x1000 / TILE_SIZE;
+    uint32_t buf[16*8];
+    static const uint16_t maxlen = 16;
 
     while(num) {
         uint16_t now = min(num, maxlen);
-        uftc_unpack(uftc_data, &__compbuf_start, uftc_index, now);
+        uftc_unpack(uftc_data, buf, uftc_index, now);
         __asm__("": : :"memory");
-        dma_now(DmaVRAM, (uint32_t) &__compbuf_start, index << 5, now << 4, 2);
+        dma_now(DmaVRAM, (uint32_t) buf, index << 5, now << 4, 2);
         num -= now;
         index += now;
         uftc_index += now;

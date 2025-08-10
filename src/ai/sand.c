@@ -570,42 +570,6 @@ void ondeath_crowskull(Entity *e) {
 	ondeath_default(e);
 }
 
-void ai_skelShot(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
-	// bounce off walls
-	if((e->x_speed < 0 && collide_stage_leftwall(e)) || 
-		(e->x_speed > 0 && collide_stage_rightwall(e))) {
-		e->x_speed = -e->x_speed;
-		e->timer += 5;
-	}
-	
-	// bounce off ceiling
-	if(e->y_speed < 0 && collide_stage_ceiling(e)) {
-		e->y_speed = -e->y_speed;
-		e->timer += 5;
-	}
-	
-	// if hit floor bounce along it...
-	if (collide_stage_floor(e)) {
-		e->y_speed = -0x180;
-		e->state = 1;	// begin falling
-		e->timer += 4;
-	}
-	
-	if(e->state == 1) {
-		e->y_speed += 0x10;
-		LIMIT_Y(0x5ff);
-	}
-	
-	if(e->timer >= 10) {
-		e->state = STATE_DELETE;
-	}
-	
-	e->x = e->x_next;
-	e->y = e->y_next;
-}
-
 // curly's mimiga's
 void ai_curlys_mimigas(Entity *e) {
 	e->x_next = e->x + e->x_speed;
@@ -740,14 +704,6 @@ void ai_curlys_mimigas(Entity *e) {
 }
 
 void ai_skeleton_shot(Entity *e) {
-	//Bullet *b = bullet_colliding(e);
-	//if(b) {
-		//b->ttl = 0;
-		//e->state = STATE_DELETE;
-		//return;
-	//	entity_handle_bullet(e, b);
-	//}
-	
 	ANIMATE(e, 8, 0,1,2,3);
 	
 	if ((e->x_speed < 0 && blk(e->x, -6, e->y, 0) == 0x41) || 
@@ -779,7 +735,7 @@ void ai_skeleton_shot(Entity *e) {
 	e->y += e->y_speed;
 	
 	if (e->timer >= 10) {
-		//effect(e->CenterX(), e->CenterY(), EFFECT_FISHY);
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }

@@ -410,7 +410,7 @@ void ai_droll_shot(Entity *e) {
 	
 	if (blk(e->x, 0, e->y, 0) & 0x41) {
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }
@@ -731,7 +731,11 @@ void ai_npc_momorin(Entity *e) {
 		case 0:
 			e->frame = 0;
 			RANDBLINK(e, 1, 200);
-			FACE_PLAYER(e);
+			if(g_stage.id != STAGE_ENDING_LAB) {
+				FACE_PLAYER(e);
+			} else {
+				e->dir = 1;
+			}
 		break;
 		
 		case 3:		// surprised

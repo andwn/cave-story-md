@@ -379,7 +379,7 @@ void player_update(void) {
 						entity_create(player.x, player.y, OBJ_EMPTY, 0);
 					}
 				}
-				shoot_cooldown = (pal_mode || cfg_60fps) ? 7 : 8;
+				shoot_cooldown = (use_pal_speed) ? 7 : 8;
 			}
 		} else {
 			shoot_cooldown = 0;
@@ -403,7 +403,7 @@ void player_update(void) {
 			if(shoot_cooldown > 0) shoot_cooldown--;
 			if(joy_down(btn[cfg_btn_shoot]) && shoot_cooldown == 0) {
 				weapon_fire(*w);
-				shoot_cooldown = (pal_mode || cfg_60fps) ? 8 : 9;
+				shoot_cooldown = (use_pal_speed) ? 8 : 9;
 			}
 		}
 		if(!joy_down(btn[cfg_btn_shoot]) && w->ammo < 100) {
@@ -419,7 +419,7 @@ void player_update(void) {
 			weapon_fire(*w);
 			shoot_cooldown = 4;
 		} else if(joystate & btn[cfg_btn_shoot]) {
-			uint8_t maxenergy = spur_time[pal_mode||cfg_60fps][w->level];
+			uint8_t maxenergy = spur_time[use_pal_speed][w->level];
 			if(!(w->level == 3 && w->energy == maxenergy)) {
 				w->energy += (playerEquipment & EQUIP_TURBOCHARGE) ? 3 : 2;
 				if(w->energy >= maxenergy) {
@@ -441,7 +441,7 @@ void player_update(void) {
 		} else {
 			if(mgun_chargetime) {
 				if(w->level > 1) {
-					if(w->energy == spur_time[pal_mode||cfg_60fps][3]) w->level = 4;
+					if(w->energy == spur_time[use_pal_speed][3]) w->level = 4;
 					weapon_fire(*w);
 				}
 				mgun_chargetime = 0;
@@ -465,11 +465,11 @@ void player_update(void) {
 	}
 	
 	if(player.grounded) {
-		playerBoosterFuel = (pal_mode || cfg_60fps) ? 51 : 61;
+		playerBoosterFuel = (use_pal_speed) ? 51 : 61;
 		player_update_interaction();
 	}
 	player_draw();
-	if(mapNameTTL > 0 && fadeSweepTimer < 12) {
+	if(mapNameTTL > 0 && wipeFadeTimer < 12) {
 		mapNameTTL--;
 		vdp_sprites_add(mapNameSprite, mapNameSpriteNum);
 	}
@@ -486,7 +486,7 @@ static void player_update_walk(void) {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
-	if(pal_mode || cfg_60fps) {
+	if(use_pal_speed) {
 		max_speed = 810;
 		if(player.grounded) {
 			acc = 85;
@@ -542,7 +542,7 @@ static void player_update_jump(void) {
 	int16_t gravity;
 	int16_t gravityJump;
 	int16_t maxFallSpeed;
-	if(pal_mode || cfg_60fps) {
+	if(use_pal_speed) {
 		// See issue #270 for the reason these values are off
 		jumpSpeed = 	0x4E0; // 0x500
 		gravity = 		0x50;
@@ -573,7 +573,7 @@ static void player_update_jump(void) {
 			player.grounded = FALSE;
 			player.y_speed = -jumpSpeed;
 			// Maybe possibly fix jump height?
-			player.jump_time = (pal_mode || cfg_60fps) ? 0 : 3;
+			player.jump_time = (use_pal_speed) ? 0 : 3;
 			player.jump_time += player.underwater ? 2 : 0;
 			
 			sound_play(SND_PLAYER_JUMP, 3);
@@ -595,7 +595,7 @@ static void player_update_float(void) {
 	int16_t acc;
 	int16_t fric;
 	int16_t max_speed;
-	if(pal_mode || cfg_60fps) {
+	if(use_pal_speed) {
 		acc =		256;
 		fric =		128;
 		max_speed =	1024;
@@ -648,10 +648,18 @@ void player_update_bullets(void) {
 
 static void player_update_interaction(void) {
 	// Interaction with entities when pressing down
-	if(cfg_updoor ? joy_pressed(JOY_UP) : joy_pressed(JOY_DOWN)) {
+	if(joy_down(JOY_LEFT|JOY_RIGHT)) return;
+
+	if((cfg_updoor ? joy_pressed(JOY_UP) : joy_pressed(JOY_DOWN))) {
+		const uint16_t px = player.x >> CSF;
+		const uint16_t py = player.y >> CSF;
 		Entity *e = entityList;
 		while(e) {
-			if((e->flags & NPC_INTERACTIVE) && entity_overlapping(&player, e)) {
+			const uint16_t ex1 = (e->x >> CSF) - e->hit_box.left;
+			const uint16_t ey1 = (e->y >> CSF) - e->hit_box.right;
+			const uint16_t ex2 = (e->x >> CSF) + e->hit_box.top;
+			const uint16_t ey2 = (e->y >> CSF) + e->hit_box.bottom;
+			if((e->flags & NPC_INTERACTIVE) && px > ex1 && px < ex2 && py > ey1 && py < ey2) {
 				// To avoid triggering it twice
 				joystate_old |= cfg_updoor ? JOY_UP : JOY_DOWN;
 				if(e->event > 0) {

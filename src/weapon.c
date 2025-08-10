@@ -906,8 +906,8 @@ void bullet_update_missile(Bullet *b) {
     }
 	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
 	if(!b->state) {
-		int16_t accel = missile_settings[pal_mode||cfg_60fps][index].accel;
-		int16_t maxspeed = missile_settings[pal_mode||cfg_60fps][index].maxspeed;
+		int16_t accel = missile_settings[use_pal_speed][index].accel;
+		int16_t maxspeed = missile_settings[use_pal_speed][index].maxspeed;
 		switch(b->dir) {
 			case LEFT: 
 			if(b->x_speed > -(maxspeed + accel)) b->x_speed -= accel; 
@@ -944,7 +944,7 @@ void bullet_update_missile(Bullet *b) {
 		vdp_sprite_add(&b->sprite);
 	} else {
 		if(b->ttl & 3) {
-			uint16_t range = missile_settings[pal_mode||cfg_60fps][index].eff_range;
+			uint16_t range = missile_settings[use_pal_speed][index].eff_range;
 			effect_create_smoke((b->x>>CSF) - range + (rand() & (range << 1)),
 								(b->y>>CSF) - range + (rand() & (range << 1)));
 		}
@@ -1315,7 +1315,7 @@ void bullet_missile_explode(Bullet *b) {
 	b->x_speed = 0;
 	b->y_speed = 0;
 	uint8_t index = b->level - 1 + (b->type == WEAPON_SUPERMISSILE ? 3 : 0);
-	b->ttl = missile_settings[pal_mode||cfg_60fps][index].boom_time;
+	b->ttl = missile_settings[use_pal_speed][index].boom_time;
 	uint8_t size = (b->type == WEAPON_SUPERMISSILE) ? 24 : 32;
 	b->hit_box = (bounding_box) {{ size, size, size, size }};
 	// TODO: Explosion graphic instead of smoke

@@ -340,7 +340,7 @@ static void curlyboss_fire(Entity *e, uint8_t dir) {
 
 void onspawn_curlyBoss(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->x -= 0x200;
+	//e->x -= 0x200;
 }
 
 void ai_curlyBoss(Entity *e) {
@@ -352,7 +352,6 @@ void ai_curlyBoss(Entity *e) {
 			e->frame = 0;
 			e->dir = (e->x <= player.x);
 			e->flags |= NPC_SHOOTABLE;
-			//e->eflags &= ~NPC_INVINCIBLE;
 			e->flags &= ~NPC_INVINCIBLE;
 		}
 		/* fallthrough */
@@ -429,7 +428,7 @@ void ai_curlyBoss(Entity *e) {
 			e->timer = 0;
 			e->state = CURLYB_SHIELD;
 			e->frame = 4;
-			e->flags &= ~NPC_SHOOTABLE;
+			//e->flags &= ~NPC_SHOOTABLE;
 			e->flags |= NPC_INVINCIBLE;
 			e->x_speed = 0;
 		}
@@ -460,10 +459,12 @@ void ondeath_curlyBoss(Entity *e) {
 void ai_curlyBossShot(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
-	if(collide_stage_leftwall(e) || collide_stage_rightwall(e) || collide_stage_ceiling(e)) {
+	if(blk(e->x, 0, e->y, 0) == 0x41) {
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	} else if(!player_invincible() && entity_overlapping(e, &player)) {
 		player_inflict_damage(e->attack);
+		effect_create_misc(EFF_MGUN_HIT, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	} else {
 		e->x = e->x_next;

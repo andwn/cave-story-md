@@ -62,6 +62,8 @@ uint8_t cfg_sfx_mute;
 uint8_t sram_file;
 uint8_t sram_state;
 
+uint8_t use_pal_speed;
+
 // Replace "AIR" tiles with counter, there is no water in Hell
 #define TILE_COUNTERINDEX TILE_AIRINDEX
 
@@ -114,6 +116,8 @@ void system_init(void) {
     system_cfg_reset_controls();
     system_cfg_reset_gameplay();
     sram_state = SRAM_UNCHECKED;
+
+	use_pal_speed = pal_mode || cfg_60fps;
 }
 void system_cfg_reset_controls(void) {
     cfg_btn_jump = 5;
@@ -542,15 +546,17 @@ void system_load_config(void) {
 		//if(cfg_language == 1) cfg_language = LANG_JA;
 	}
 
-    if(pal_mode || cfg_60fps) {
+	sram_disable();
+	
+	use_pal_speed = pal_mode || cfg_60fps;
+
+    if(use_pal_speed) {
         time_tab = time_tab_pal;
         speed_tab = speed_tab_pal;
     } else {
         time_tab = time_tab_ntsc;
         speed_tab = speed_tab_ntsc;
     }
-
-	sram_disable();
 }
 
 void system_save_config(void) {
@@ -578,6 +584,16 @@ void system_save_config(void) {
 	sram_write_byte(loc++, cfg_60fps);
 
 	sram_disable();
+	
+	use_pal_speed = pal_mode || cfg_60fps;
+
+    if(use_pal_speed) {
+        time_tab = time_tab_pal;
+        speed_tab = speed_tab_pal;
+    } else {
+        time_tab = time_tab_ntsc;
+        speed_tab = speed_tab_ntsc;
+    }
 }
 
 // Level select is still the old style format... don't care enough to fix it

@@ -95,7 +95,7 @@ void credits_main(void) {
 
         backScroll++;
         uint8_t scrolledBack = FALSE;
-        if(!pal_mode && !cfg_60fps) {
+        if(!use_pal_speed) {
             // Slow the scrolling down slightly for NTSC
             skipScroll++;
             if(skipScroll == 6) {
@@ -107,12 +107,7 @@ void credits_main(void) {
         }
         if((backScroll & 15) == 0 && !scrolledBack) {
             textY++;
-            //disable_ints();
-            //z80_pause_fast();
-            //vdp_text_clear(VDP_PLANE_B, 0, textY & 31, 40);
             vdp_text_clear(VDP_PLANE_B, 0, (textY + 1) & 31, 40);
-            //z80_resume();
-            //enable_ints();
         }
 
 		if(waitTime) waitTime--;
@@ -216,8 +211,6 @@ void credits_main(void) {
 void credits_show_image(uint16_t id) {
 	if(id > 19) return;
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
-    //disable_ints();
-    //z80_pause_fast();
 
 	vdp_set_display(FALSE);
 	vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
@@ -229,8 +222,6 @@ void credits_show_image(uint16_t id) {
 	vdp_set_display(TRUE);
     illScrolling = 8;
 
-    //z80_resume();
-    //enable_ints(); // Vertical int will fire immediately
     vdp_colors(32, illustration_info[id].palette, 16);
 }
 

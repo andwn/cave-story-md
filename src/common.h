@@ -138,6 +138,9 @@ static inline uint8_t mddir(uint8_t dir) {
 #define TILE_CLOUD3INDEX    (TILE_CLOUD2INDEX + (16*3))
 #define TILE_CLOUD4INDEX    (TILE_CLOUD3INDEX + (9*3))
 
+#define TILE_GIBINDEX		(TILE_FACEINDEX - 4*1)
+#define TILE_DISSIPINDEX	(TILE_GIBINDEX - 4*4)
+
 // Bounding box used for collision and relative area to display sprites
 typedef union {
 	struct {

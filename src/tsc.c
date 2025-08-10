@@ -513,6 +513,16 @@ void tsc_show_teleport_menu(void) {
 	}
 }
 
+static inline uint8_t check_fade(void) {
+	if(wipeFadeTimer >= 0) {
+		curCommand--;
+		tscState = TSC_WAITTIME;
+		waitTime = 2;
+		return TRUE;
+	}
+	return FALSE;
+}
+
 uint8_t execute_command(void) {
 	uint16_t args[4];
 	cmd = tsc_read_byte();
@@ -520,12 +530,15 @@ uint8_t execute_command(void) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
 		{
+			if(check_fade()) return 1;
+
 			window_open(0);
 			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_MS2: // Display message box (top - invisible)
 		{
+			if(check_fade()) return 1;
 			// Hide face or else doctor will talk with Misery's face graphic
 			window_set_face(0, 0);
 			window_open(1);
@@ -534,24 +547,31 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_MS3: // Display message box (top - visible)
 		{
+			if(check_fade()) return 1;
+
 			window_open(1);
 			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
 		}
 		break;
 		case CMD_CLO: // Close message box
 		{
-			//window_set_textmode(TM_NORMAL);
+			if(check_fade()) return 1;
+			
 			window_close();
 			windowFlags &= ~WF_TUR;
 		}
 		break;
 		case CMD_CLR: // Clear message box
 		{
+			if(check_fade()) return 1;
+
 			window_clear();
 		}
 		break;
 		case CMD_NUM: // Show number (1) in message box
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
             if(lastAmmoNum >= 100) window_draw_char('1');
             if(lastAmmoNum >= 10) window_draw_char('0' + div10[lastAmmoNum]);
@@ -560,6 +580,8 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_GIT: // Display item (1) in message box
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
 			if(args[0] >= 1000) {
 				window_show_item(args[0] - 1000);
@@ -570,6 +592,8 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_FAC: // Display face (1) in message box
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
 			window_set_face(args[0], TRUE);
 		}
@@ -594,6 +618,8 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
 			promptJump = args[0];
 			window_prompt_open();
@@ -623,6 +649,8 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_TRA: // Teleport to stage (1), run event (2), coords (3),(4)
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
 			args[2] = tsc_read_word();
@@ -633,7 +661,7 @@ uint8_t execute_command(void) {
 					entities_clear();
 					sheets_load_stage(0, FALSE, TRUE);
 					vdp_sprites_clear();
-					Entity *p = entity_create(pixel_to_sub(240), pixel_to_sub(140), OBJ_NPC_PLAYER, 0);
+					Entity *p = entity_create(pixel_to_sub(244), pixel_to_sub(140), OBJ_NPC_PLAYER, 0);
 					p->state = 100;
 					p->event = 400;
 					tsc_load_stage(ID_CREDITS);
@@ -1086,16 +1114,20 @@ uint8_t execute_command(void) {
 		{
 			args[0] = tsc_read_word();
 			stage_setup_palettes();
-			if(gamemode == GM_INTRO) {
-				vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
-			} else if(gamemode != GM_CREDITS) {
+			if(gamemode != GM_CREDITS) {
 				inFade = FALSE; // Unlock sprites from updating
                 sys_wait_vblank(); // Wait a frame to let the sprites redraw
 				aftervsync();
-				start_fadein_sweep(player.dir);
+				start_fadein_wipe(player.dir);
+			} else if(g_stage.id == STAGE_0) {
+				vdp_color_next(0, 0x200);
+				vdp_colors_apply_next_now();
 			} else {
 				vdp_color_next(0, 0x200);
-				vdp_fade(PAL_FadeOutBlue, NULL, 4, TRUE);
+				vdp_fade(PAL_FadeOutBlue, NULL, 3, TRUE);
+				tscState = TSC_WAITTIME;
+				waitTime = 3*8;
+				return 1;
 			}
 		}
 		break;
@@ -1108,26 +1140,29 @@ uint8_t execute_command(void) {
                 sys_wait_vblank();
                 ready = TRUE;
                 aftervsync();
-				if(gamemode == GM_INTRO) {
-					vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
-				} else {
-					do_fadeout_sweep(player.dir);
-				}
+				do_fadeout_wipe(player.dir);
 				inFade = TRUE;
+			} else if(g_stage.id == STAGE_0) {
+				vdp_colors(0, PAL_FadeOutBlue, 64);
 			} else {
-				vdp_fade(NULL, PAL_FadeOutBlue, 4, TRUE);
-				waitTime = 20;
+				vdp_fade(NULL, PAL_FadeOutBlue, 3, TRUE);
+				tscState = TSC_WAITTIME;
+				waitTime = 3*8;
 				return 1;
 			}
 		}
 		break;
 		case CMD_FLA: // Flash screen white
 		{
+			if(check_fade()) return 1;
+
 			vdp_fade(PAL_FullWhite, NULL, 4, TRUE);
 		}
 		break;
 		case CMD_MLP: // Show the map
 		{
+			if(check_fade()) return 1;
+
 			do_map();
 		}
 		break;
@@ -1155,8 +1190,8 @@ uint8_t execute_command(void) {
 					break;
 				case STAGE_MIMIGA_VILLAGE:
 				case STAGE_MIMIGA_SHACK:
-					if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 32;
-					else args[2] += 19;
+					if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 26;
+					else args[2] += 13;
 					break;
 				case STAGE_HELL_OUTER_PASSAGE:
 				case STAGE_THRONE_ROOM:
@@ -1194,6 +1229,11 @@ uint8_t execute_command(void) {
 			break;
 		case CMD_CRE: // Show credits
 		{
+			dma_clear();
+			vdp_sprites_clear();
+			sys_wait_vblank();
+			aftervsync();
+			vdp_colors(0, PAL_FadeOutBlue, 64);
 			return 5;
 		}
 		break;
@@ -1233,14 +1273,17 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_XX1: // Island effect
 		{
+			if(check_fade()) return 1;
+
 			args[0] = tsc_read_word();
 
+			song_stop();
+
 			ready = TRUE;
+			vdp_colors_next(0, PAL_FadeOut, 64);
             sys_wait_vblank(); aftervsync();
 
-            disable_ints();
-            z80_pause_fast();
-			//vdp_set_display(FALSE);
+			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
 			camera.x = pixel_to_sub(ScreenHalfW);
@@ -1284,12 +1327,8 @@ uint8_t execute_command(void) {
 
 			vdp_colors_next(48, PAL_XX, 16);
 			vdp_colors(48, PAL_XX, 16);
-			//vdp_set_display(TRUE);
-            z80_resume();
-            enable_ints();
+			vdp_set_display(TRUE);
 
-			song_stop();
-			
 			uint16_t t = TIME_10(350);
 			inFade = FALSE; // Don't let aftervsync() hide the sprites
 			while(--t) {
@@ -1306,6 +1345,7 @@ uint8_t execute_command(void) {
                 aftervsync();
 			}
 			inFade = TRUE; // Hide sprites again until Fall map fades in
+			vdp_colors(0, PAL_FadeOut, 64);
 		}
 		break;
 		case CMD_SMP: // Subtract 1 from tile index at position (1), (2)
@@ -1327,6 +1367,8 @@ uint8_t execute_command(void) {
 		default: break;
 		}
 	} else {
+		if(check_fade()) return 1;
+
 		uint16_t kanji = 0;
 		uint8_t doublebyte = FALSE;
 		if(cmd >= 0xE0 && cmd < 0xFF) {

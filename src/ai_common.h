@@ -24,5 +24,6 @@
 #include "weapon.h"
 #include "window.h"
 #include "res/pal.h"
+#include "gamemode.h"
 
 #include "ai.h"

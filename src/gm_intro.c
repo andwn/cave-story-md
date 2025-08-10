@@ -29,32 +29,37 @@ void intro_main(void) {
 	sheets_load_intro();
 	vdp_sprites_clear();
 	effects_init();
-	camera_init();
-    camera.target = NULL;
 	tsc_init();
 	stage_load(STAGE_INTRO);
-	//vdp_colors_next(16, PAL_Intro.data, 16);
+	camera_init();
+	camera.x_shifted = (camera.x >> CSF) - ScreenHalfW;
+	camera.y_shifted = (camera.y >> CSF) - ScreenHalfH;
+    camera.target = NULL;
 	tsc_call_event(100);
-	// Create "Studio Pixel Presents" text
-	//vdp_puts(VDP_PLANE_A, "Studio Pixel Presents", 10, 8);
-    vdp_puts(VDP_PLANE_A, "Based on the Work of", 10, 6);
-    vdp_puts(VDP_PLANE_A, "    Studio Pixel    ", 10, 8);
+	// Moved to Plane B, the window layer is used for the "wipe fade", but can
+	// still keep this message on top changing the priority bit for this special case
+    vdp_puts(VDP_PLANE_B, "Based on the Work of", 10, 5);
+    vdp_puts(VDP_PLANE_B, "    Studio Pixel    ", 10, 7);
 	
 	uint16_t timer = 0;
     joystate_old = ~0;
 	while(++timer <= TIME_10(400) && !joy_pressed(JOY_C) && !joy_pressed(JOY_START)) {
-		if(timer == TIME_8(150)) {
-            vdp_text_clear(VDP_PLANE_A, 10, 6, 20);
-            vdp_text_clear(VDP_PLANE_A, 10, 8, 20);
+		if(wipeFadeTimer >= 0) {
+			update_fadein_wipe();
 		}
-		camera_update();
+		if(timer == TIME_8(150)) {
+            vdp_text_clear(VDP_PLANE_B, 10, 5, 20);
+            vdp_text_clear(VDP_PLANE_B, 10, 7, 20);
+		}
+		stage_update();
 		tsc_update();
 		entities_update(TRUE);
-		effects_update(); // Draw Smoke
+		effects_update();
 		ready = TRUE;
-		sys_wait_vblank(); aftervsync();
+		sys_wait_vblank();
+		aftervsync();
 	}
-	vdp_fade(NULL, PAL_FadeOut, 4, FALSE);
+	do_fadeout_wipe(1);
 	entities_clear();
 	effects_clear();
 	// Get rid of the sprites

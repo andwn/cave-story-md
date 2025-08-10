@@ -592,7 +592,7 @@ void ai_ballos_f3(Entity *e) {
 					break;
 					case 320:
 					{
-						if(pal_mode || cfg_60fps) e->timer = 0;
+						if(use_pal_speed) e->timer = 0;
 					}
 					break;
 					case 390:

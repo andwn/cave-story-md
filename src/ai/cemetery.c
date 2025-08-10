@@ -593,7 +593,7 @@ void ai_ma_pignon_clone(Entity *e) {
 	}
 	// Our engine has no substate, substitute id1
 	if (++e->id > 300) {
-		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }

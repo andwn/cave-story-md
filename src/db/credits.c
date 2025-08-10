@@ -221,15 +221,14 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  Ballos",				141),C_ICON(BALLOS,	3), C_WAIT(64),
 	C_LABEL(100),
 	// Transition to second part which has short silent cutscenes in various stages
+	C_LOADPXE(),
 	C_WAIT(144),
-	//C_SONG_FADE(),
-	//C_WAIT(200),
-	C_WAIT(150),
+	C_WAIT(144),
 	C_SONG_FADE(),
-	C_WAIT(50),
+	C_WAIT(64),
 	C_SONG(1),
 	C_MOVE(48),
-	C_WAIT(50),
+	C_WAIT(64),
 	
 	C_TEXT(" = Monsters = ", 142),										C_WAIT(32),
 	C_WAIT(48),
@@ -400,22 +399,22 @@ const credits_info_def credits_info[] = {
 	C_TEXT("Gideon Zhi", 281),			C_ICON(GIDEON,	3), C_WAIT(48),
 	
 	C_TEXT("And many others", 282),							C_WAIT(48),
-#ifdef MD_STAFFROLL
+//#ifdef MD_STAFFROLL
 	// MD staff roll
 	C_WAIT(96),
 	C_TEXT("= Mega Drive Version =", 283),                  C_WAIT(32),
     C_MOVE(32),
     C_WAIT(32),
     C_TEXT("Developed by", 284),							C_WAIT(16),
-	C_TEXT("-", 285),										C_WAIT(16),
+	C_TEXT("-", 285),										C_WAIT(32),
 	C_TEXT("  GND / andwn", 286),							C_WAIT(64),
 	C_TEXT("Free QA and other", 287),						C_WAIT(16),
-	C_TEXT(" human sacrifices", 288),						C_WAIT(16),
+	C_TEXT(" human sacrifices", 288),						C_WAIT(32),
 	C_TEXT("  Andwhy", 289),								C_WAIT(48),
 	C_TEXT("  Sik", 290),									C_WAIT(48),
 	C_TEXT("  MOF", 291),									C_WAIT(64),
 	C_TEXT("  ...and you?", 292),							C_WAIT(96),
-#endif
+//#endif
 	C_LOADPXE(),
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 299),C_ICON(THANKS,	3), C_WAIT(32),

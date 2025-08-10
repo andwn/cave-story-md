@@ -70,8 +70,9 @@ void stage_load(uint16_t id) {
 	player.frame = 0;
 	player_draw();
 	// Clear out or deactivate stuff from the old stage
-	fadeSweepTimer = -1;
+	wipeFadeTimer = -1;
 	effects_clear();
+	effects_reload_tiles();
 	entities_clear();
 	vdp_sprites_clear();
 	water_entity = NULL;
@@ -176,8 +177,8 @@ void stage_load_credits(uint8_t id) {
 	g_stage.tileset_id = stage_info[id].tileset;
 	stage_load_tileset();
 	sheets_load_stage(id, FALSE, TRUE);
-	stage_load_entities();
 	stage_load_blocks();
+	stage_load_entities();
 	stage_draw_screen_credits();
 	dma_flush();
 	tsc_load_stage(id);
@@ -219,19 +220,19 @@ void stage_load_blocks(void) {
 	// Stupid door
 	if(system_get_flag(360)) {
 		if(g_stage.id == STAGE_MIMIGA_VILLAGE) {
-			stage_replace_block(41, 51, 112);
-			stage_replace_block(42, 51, 113);
-			stage_replace_block(43, 51, 114);
-			stage_replace_block(41, 52, 115);
-			stage_replace_block(42, 52, 116);
-			stage_replace_block(43, 52, 117);
+			stage_replace_block(41, 51, 106);
+			stage_replace_block(42, 51, 107);
+			stage_replace_block(43, 51, 108);
+			stage_replace_block(41, 52, 109);
+			stage_replace_block(42, 52, 110);
+			stage_replace_block(43, 52, 111);
 		} else if(g_stage.id == STAGE_MIMIGA_SHACK) {
-			stage_replace_block(4, 8, 112);
-			stage_replace_block(5, 8, 113);
-			stage_replace_block(6, 8, 114);
-			stage_replace_block(4, 9, 115);
-			stage_replace_block(5, 9, 116);
-			stage_replace_block(6, 9, 117);
+			stage_replace_block(4, 8, 106);
+			stage_replace_block(5, 8, 107);
+			stage_replace_block(6, 8, 108);
+			stage_replace_block(4, 9, 109);
+			stage_replace_block(5, 9, 110);
+			stage_replace_block(6, 9, 111);
 		}
 	}
 }
@@ -512,12 +513,6 @@ void stage_draw_background(void) {
 	for(uint16_t y = 0; y < 32; y += h) {
 		for(uint16_t x = 0; x < 64; x += w) {
 			vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(pal, 0, 0, 0, TILE_BACKINDEX), x, y, w, h, 1);
-			//uint16_t tile = TILE_ATTR(pal,0,0,0,TILE_BACKINDEX);
-			//for(uint16_t yy = 0; yy < h; yy++) {
-			//	for(uint16_t xx = 0; xx < w; xx++) {
-			//		vdp_map_xy(VDP_PLANE_B, tile++, x+xx, y+yy);
-			//	}
-			//}
 		}
 	}
 }

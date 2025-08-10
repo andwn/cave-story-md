@@ -27,7 +27,7 @@
 	if(sheet_num < MAX_SHEETS) {                                                               \
 		uint16_t index = sheet_num ? sheets[sheet_num-1].index + sheets[sheet_num-1].size      \
 							  : TILE_SHEETINDEX;                                               \
-        uint16_t fsize = (frames) * sdef->width * sdef->height;                                \
+        uint16_t fsize = sdef->width * sdef->height;                                           \
 		sheets[sheet_num] = (Sheet) {                                                          \
 			sheetid, (frames) * fsize, index, sdef->width, sdef->height                        \
 		};                                                                                     \

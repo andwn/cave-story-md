@@ -560,7 +560,7 @@ static void hurt_by_bullet(Entity *e, Bullet *b) {
 		e->health = 0;
 		ENTITY_ONDEATH(e);
 	}
-	if((/*e->eflags|*/e->flags) & NPC_SHOWDAMAGE) {
+	if((e->flags) & NPC_SHOWDAMAGE) {
 		e->damage_value -= b->damage;
 		e->damage_time = 30;
 	}

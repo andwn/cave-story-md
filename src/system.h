@@ -82,6 +82,8 @@ extern uint8_t cfg_sfx_mute;
 
 extern uint8_t sram_file;
 
+extern uint8_t use_pal_speed;
+
 // Default settings
 void system_init(void);
 void system_cfg_reset_controls(void);

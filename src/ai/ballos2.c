@@ -401,7 +401,7 @@ static void run_defeated(Entity *e) {
 			
 			e->flags &= ~NPC_SHOOTABLE;
 			//effect(e->x, e->y, EFFECT_BOOMFLASH);
-			//SmokeClouds(o, 16, 16, 16);
+			SMOKE_AREA((e->x >> CSF)-16, (e->y >> CSF)-16, (e->x >> CSF)+16, (e->y >> CSF)+16, 8);
 			sound_play(SND_BIG_CRASH, 5);
 			
 			e->x_mark = e->x;
@@ -604,6 +604,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 				bone->x_speed = xi;
 				bone->y_speed = -SPEED_10(0x3FF);
 				sound_play(SND_BLOCK_DESTROY, 5);
+				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 			}
 			
 			if(blk(e->x, 0, e->y, -2) == 0x41) {
@@ -632,7 +633,7 @@ void ai_ballos_bone(Entity *e) {
 			e->y_speed = -SPEED_10(0x200);
 			e->state = 1;
 		} else {
-			//effect(e->x, e->y, EFFECT_FISHY);
+			effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 			e->state = STATE_DELETE;
 		}
 	}
@@ -662,6 +663,7 @@ void ai_ballos_skull(Entity *e) {
 			LIMIT_Y(SPEED_12(0x700));
 			
 			e->timer++;
+			if ((e->timer & 7) == 0) effect_create_smoke(e->x >> CSF, e->y >> CSF);
 			//if (e->timer & 2) {
 			//	(SmokePuff(e->x, e->y))->PushBehind(o);
 			//}
@@ -672,7 +674,7 @@ void ai_ballos_skull(Entity *e) {
 					e->state = 110;
 					
 					//quake(10, SND_BLOCK_DESTROY);
-					
+					SMOKE_AREA((e->x>>CSF)-12, (e->y>>CSF)+16, (e->x>>CSF)+12, (e->y>>CSF)+16, 4);
 					//for(int i=0;i<4;i++) {
 					//	Entity *s = SmokePuff(e->x + rand(-12<<CSF, 12<<CSF), e->y + 0x2000);
 					//	

@@ -456,6 +456,8 @@ void onspawn_the_cast(Entity *e) {
 	e->alwaysActive = TRUE;
 	e->id /= 100;
 	if(e->id >= 14) e->id = 0;
+
+	if(e->id <= 3) e->x -= block_to_sub(1);
 	
 	// Manual sprite VRAM allocation
 	uint16_t obj = cast_data[e->id].obj;
@@ -481,7 +483,7 @@ void onspawn_the_cast(Entity *e) {
 	e->dir = cast_data[e->id].dir;
 	if(cast_data[e->id].tall) {
 		e->y -= (4<<CSF);
-		e->hit_box.bottom += 8;
+		e->hit_box.bottom += 7;
 	}
 	
 	// create King's sword
@@ -494,7 +496,7 @@ void onspawn_the_cast(Entity *e) {
 
 void ai_the_cast(Entity *e) {
 	if(e->id == 9) e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
-	if(e->id == 10) moveMeToFront = TRUE; // Curly over balrog
+	if(e->id == 7 || e->id == 10) moveMeToFront = TRUE; // Nurse and Curly over Balrog
 	
 	if(!e->state) {
 		e->dir = cast_data[e->id].dir;

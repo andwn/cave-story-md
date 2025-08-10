@@ -257,6 +257,7 @@ void ai_boss_doctor(Entity *e) {
 // wave shot
 void ai_doctor_shot(Entity *e) {
 	if ((e->x < 0) || e->x > ((int32_t)g_stage.pxm.width) << 13) {
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -314,6 +315,7 @@ void ai_doctor_blast(Entity *e) {
 	
 	if (e->timer > TIME(250)) {
 		e->state = STATE_DELETE;
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		effect_create_smoke(e->x >> CSF, e->y >> CSF);
 	}
 }

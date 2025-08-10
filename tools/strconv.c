@@ -42,9 +42,9 @@ int main(int argc, char *argv[]) {
     }
 
     const char zero[40] = {0};
-    char str[40];
+    char str[256];
     int line = 0;
-    while(fgets(str, 40, fin)) {
+    while(fgets(str, 256, fin)) {
         line++;
         if(str[0] == '#' || str[0] == 0) {
             //printf("[%d] Skipping comment\n", line);
@@ -71,8 +71,12 @@ int main(int argc, char *argv[]) {
                 case CT_KANJI:
                     uint16_t wc = ((str[ic] << 8) & 0xFF00) | (str[ic + 1] & 0xFF);
                     //printf("[%d:%d] Kanji: %02X,%02X = %04X\n", line, ic, str[ic], str[ic+1], wc);
-                    decode_kanji(fout, wc);
-                    oc += 2;
+                    if(decode_kanji(fout, wc)) {
+                        oc += 2;
+                    } else {
+                        printf("  At pos %d:%d\n", line, ic);
+                        oc++;
+                    }
                     ic++;
                     break;
                 default:

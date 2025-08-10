@@ -19,6 +19,7 @@
 #include "md/vdp.h"
 #include "weapon.h"
 #include "md/sys.h"
+#include "gamemode.h"
 
 #include "entity.h"
 #include "ai.h"

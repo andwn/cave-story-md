@@ -469,7 +469,9 @@ void ai_bute_arrow(Entity *e) {
 		case 20:	// hit something
 		{
 			e->hidden = (++e->timer & 2);
-			if(e->timer > TIME_8(30)) e->state = STATE_DELETE;
+			if(e->timer > TIME_8(30)) {
+				e->state = STATE_DELETE;
+			}
 		}
 		break;
 	}
@@ -548,6 +550,7 @@ void ai_mesa_block(Entity *e) {
 		{
 			if (!e->linkedEntity || e->linkedEntity->type == OBJ_MESA_DYING) {
 				e->state = STATE_DELETE;
+				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 				effect_create_smoke(e->x>>CSF, e->y>>CSF);
 			}
 		}
@@ -560,6 +563,7 @@ void ai_mesa_block(Entity *e) {
 			
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				sound_play(SND_BLOCK_DESTROY, 5);
+				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 				effect_create_smoke(e->x>>CSF, e->y>>CSF);
 				e->state = STATE_DELETE;
 			}

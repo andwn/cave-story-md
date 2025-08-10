@@ -87,7 +87,7 @@ void hud_create(void) {
 }
 
 void hud_force_redraw(void) {
-	if(fadeSweepTimer > 0) return;
+	if(wipeFadeTimer > 0) return;
 
 	hud_refresh_health();
     hud_refresh_weapon();
@@ -117,8 +117,8 @@ void hud_hide(void) {
 void hud_update(void) {
 	uint8_t weaponChange = FALSE;
 	//if(paused) return;
-	if(!showing || fadeSweepTimer > 0) return;
-	
+	if(!showing || wipeFadeTimer > 0) return;
+
 	vdp_sprites_add(sprHUD, 2);
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent
 	if(hudMaxHealth != playerMaxHealth || hudHealth != player.health) {
@@ -184,7 +184,7 @@ void hud_refresh_energy(uint8_t hard) {
     uint8_t tempMaxEnergy;
     uint8_t tempEnergy;
 	if(playerWeapon[currentWeapon].type == WEAPON_SPUR) {
-		hudMaxEnergy = spur_time[pal_mode||cfg_60fps][playerWeapon[currentWeapon].level];
+		hudMaxEnergy = spur_time[use_pal_speed][playerWeapon[currentWeapon].level];
 		if(playerWeapon[currentWeapon].level == 3){
 			tempMaxEnergy = hudMaxEnergy >> 2;
         	tempEnergy = hudEnergy >> 2;

@@ -81,6 +81,7 @@ SPRITE SPR_BallosSm		"sprite/ballos_smile.png"	4 2 NONE
 SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 NONE
 SPRITE SPR_WStar        "sprite/wstar.png"          1 1 NONE
+SPRITE SPR_Dissipate    "sprite/dissipate.png"      2 2 NONE
 
 SPRITE SPR_Fade         "sprite/fade.png"           4 4 NONE
 SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 NONE
@@ -175,6 +176,7 @@ SPRITE SPR_DoctorBlood  "sprite/blood.png"          7 4 NONE
 SPRITE SPR_DocDie       "sprite/docdie.png"         4 6 NONE
 #SPRITE SPR_Drop2        "sprite/drop2.png"          1 1 NONE
 SPRITE SPR_Transmg      "sprite/transmg.png"        4 6 NONE
+SPRITE SPR_Gib          "sprite/gib.png"            1 1 NONE
 
 # Use Same Palette as Stage
 SPRITE SPR_CritHB		"sprite/critcave.png"		2 2 NONE
@@ -214,7 +216,7 @@ SPRITE SPR_CoreShot4	"sprite/coreshot4.png"		4 4 NONE
 SPRITE SPR_IronhBlk		"sprite/ironhblk.png"		4 4 NONE
 SPRITE SPR_SmStal		"sprite/smstal.png"			2 2 NONE
 SPRITE SPR_LgStal		"sprite/lgstal.png"			2 4 NONE
-SPRITE SPR_NightSpirit	"sprite/nightshade.png" 	6 6 NONE
+SPRITE SPR_NightSpirit	"sprite/nightspirit.png" 	6 6 NONE
 SPRITE SPR_NightShot	"sprite/nightshot.png"		4 2 NONE
 SPRITE SPR_Croc2		"sprite/sandcroc2.png"		6 4 NONE
 SPRITE SPR_UCoreFront	"sprite/ucore.png"			8 12 NONE

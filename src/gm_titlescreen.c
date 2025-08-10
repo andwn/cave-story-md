@@ -73,6 +73,10 @@ uint8_t titlescreen_main(void) {
 	vdp_set_display(FALSE);
 	vdp_map_clear(VDP_PLANE_A);
 	vdp_map_clear(VDP_PLANE_B);
+	vdp_hscroll(VDP_PLANE_A, 0);
+	vdp_hscroll(VDP_PLANE_B, 0);
+	vdp_vscroll(VDP_PLANE_A, 0);
+	vdp_vscroll(VDP_PLANE_B, 0);
 	vdp_sprites_clear();
 	// Check save data, only enable continue if save data exists
 	if(system_checkdata() != SRAM_INVALID) {
@@ -111,14 +115,7 @@ uint8_t titlescreen_main(void) {
     vdp_tiles_load_uftc(*TS_TITLE, TILE_BACKINDEX, 0, 18*5);
 	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, TILE_BACKINDEX), 11, 3, 18, 5, 1);
 	
-#ifdef SHOW_MYCOM_LOGO
-	const uint16_t MENUY = 15;
-	vdp_tiles_load_uftc(UFTC_MyCOM, 16+72, 0, 72);
-	vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16+72), 11, 8, 18, 4, 1);
-#else
 	const uint16_t MENUY = 12;
-	//vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL0, 0, 0, 0, 16 + 18 * 4), 11, 23, 18, 2, 1);
-#endif
 
 	// Menu and version text
 	cjk_reset(CJK_TITLE);

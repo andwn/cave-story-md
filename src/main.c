@@ -47,7 +47,7 @@ void main(void) {
 	}
 	joy_init();
     // Initialize time and speed tables (framerate adjusted)
-    if(pal_mode) {
+    if(use_pal_speed) {
 		time_tab = time_tab_pal;
         speed_tab = speed_tab_pal;
 	} else {
