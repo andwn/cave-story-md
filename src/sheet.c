@@ -224,13 +224,15 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case STAGE_EGG_CORRIDOR: // Egg Corridor
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritHG, 3,2,2, 0, 1, 2);
 			SHEET_ADD(SHEET_BEETLE, &SPR_BtlHG, 2,2,2, 0, 1);
-			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 6,4,3, 0, 1, 3, 4, 5, 6);
+			SHEET_ADD(SHEET_BEHEM, &SPR_Behem, 6,4,3, 0, 1, 2, 3, 4, 5);
 			SHEET_ADD(SHEET_BASIL, &SPR_Basil, 3,4,2, 0, 1, 2);
 			SHEET_ADD(SHEET_IGORSHOT, &SPR_EnergyShot, 2,2,2, 0, 1);
 			SHEET_ADD(SHEET_BASUSHOT, &SPR_BasuShot, 2,2,2, 0, 1);
 			SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0, 1, 2, 3);
 		} break;
 		case 0x05: // Egg Observatory
+		{	SHEET_ADD(SHEET_LIFT, &SPR_Platform, 2,4,2, 0,1);
+		} // Fallthrough
 		case 0x17: // Egg no. 1
 		{	SHEET_ADD(SHEET_TERM, &SPR_Term, 4,2,3, 0, 1, 2, 3);
 		} break;

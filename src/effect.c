@@ -238,7 +238,7 @@ void effects_update(void) {
             break;
 			case EFF_DISSIPATE:
 			{
-				if((effMisc[i].ttl & 3) == 0) effMisc[i].sprite.attr++;
+				if((effMisc[i].ttl & 3) == 3) effMisc[i].sprite.attr += 4;
                 sprite_pos(&effMisc[i].sprite,
                            effMisc[i].x - camera.x_shifted - 8,
                            effMisc[i].y - camera.y_shifted - 8);
@@ -249,7 +249,7 @@ void effects_update(void) {
 			{
 				effMisc[i].x += effMisc[i].x_speed;
 				effMisc[i].y += effMisc[i].y_speed;
-				if((effMisc[i].ttl & 3) == 0) effMisc[i].sprite.attr++;
+				if((effMisc[i].ttl & 3) == 3) effMisc[i].sprite.attr++;
                 sprite_pos(&effMisc[i].sprite,
                            effMisc[i].x - camera.x_shifted - 4,
                            effMisc[i].y - camera.y_shifted - 4);

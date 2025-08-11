@@ -4,7 +4,7 @@ void ai_behemoth(Entity *e) {
 	switch(e->state) {
 		case 0: // Walking
 		{
-			ANIMATE(e, 12, 0,1,0,2);
+			ANIMATE(e, 8, 0,1,0,2);
 			if(e->x_speed == 0) TURN_AROUND(e);
 			MOVE_X(SPEED_8(0xFF));
 			if(e->damage_time) {
@@ -65,7 +65,7 @@ void ai_beetle(Entity *e) {
 		case 0: // Initial state - begin at the wall we are facing
 		{
 			while(blk(e->x, e->dir ? 9 : -9, e->y, 0) != 0x41) {
-				e->x += e->dir ? 0x1200 : -0x1200;
+				e->x += e->dir ? 0x1000 : -0x1000;
 			}
 			e->alwaysActive = FALSE;
 			e->state++;
@@ -126,7 +126,7 @@ void onspawn_basu(Entity *e) {
 }
 
 void ai_basu(Entity *e) {
-	ANIMATE(e, 8, 1,0);
+	ANIMATE(e, 2, 1,0);
 	e->timer++;
 	FACE_PLAYER(e);
 	e->x_speed += e->dir ? 5 : -5;
@@ -184,7 +184,10 @@ void onspawn_lift(Entity *e) {
 
 // Lift in observatory room that moves up and down
 void ai_lift(Entity *e) {
-	if(e->timer > 0) e->timer--;
+	if(e->timer > 0) {
+		e->timer--;
+		if(e->timer & 1) e->frame ^= 1;
+	}
 	if(e->timer == 0) {
 		e->state++;
 		if(e->state == 8) e->state = 0;
@@ -236,6 +239,7 @@ void ai_terminal(Entity *e) {
 				sound_play(SND_COMPUTER_BEEP, 5);
 				if(e->flags & NPC_OPTION2) e->frame = 2;
 				e->state = 10;
+				e->dir = 0;
 			}
 		}
 		break;

@@ -656,8 +656,8 @@ static void player_update_interaction(void) {
 		Entity *e = entityList;
 		while(e) {
 			const uint16_t ex1 = (e->x >> CSF) - e->hit_box.left;
-			const uint16_t ey1 = (e->y >> CSF) - e->hit_box.right;
-			const uint16_t ex2 = (e->x >> CSF) + e->hit_box.top;
+			const uint16_t ey1 = (e->y >> CSF) - e->hit_box.top;
+			const uint16_t ex2 = (e->x >> CSF) + e->hit_box.right;
 			const uint16_t ey2 = (e->y >> CSF) + e->hit_box.bottom;
 			if((e->flags & NPC_INTERACTIVE) && px > ex1 && px < ex2 && py > ey1 && py < ey2) {
 				// To avoid triggering it twice

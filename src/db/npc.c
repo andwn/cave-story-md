@@ -36,7 +36,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Tele,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_teleporter, 	&ai_null 			,""}, // Teleporter
 	{ &SPR_TeleLight,	NOSHEET,		1, PAL1, &ai_null, 				&ai_teleLight, 		&ai_null 			,""}, // Tele Light
 	{ NULL,				SHEET_PCRITTER, 1, PAL0, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	,""}, // Power Critter
-	{ &SPR_Platform,	NOSHEET,		1, PAL1, &onspawn_lift, 		&ai_lift, 			&ai_null 			,""}, // Lift Platform
+	{ NULL,				SHEET_LIFT,		1, PAL1, &onspawn_lift, 		&ai_lift, 			&ai_null 			,""}, // Lift Platform
 	{ NULL,				SHEET_BAT, 		1, PAL3, &ai_null, 				&ai_batCircle, 		&ondeath_default 	,""}, // Bat
 	{ NULL,				SHEET_TRAP, 	1, PAL1, &onspawn_trap, 		&ai_null, 			&ai_null 			,""}, // Death Trap
 	{ NULL,				SHEET_CRITTER, 	1, PAL3, &onspawn_snap, 		&ai_critter, 		&ondeath_default 	,""}, // Critter
