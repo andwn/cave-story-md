@@ -311,6 +311,7 @@ SPRITE SPR_BlgPassngr	"sprite/balrog_passngr.png"	2 2 NONE
 SPRITE SPR_DoctorIntro	"sprite/doctorintro.png"	2 4 NONE
 SPRITE SPR_CrownIntro	"sprite/crownintro.png"		2 2 NONE
 SPRITE SPR_MiseryWind	"sprite/misery_wind.png"	2 3 NONE
+SPRITE SPR_Gunsmith2    "sprite/gunsmith2.png"      2 2 NONE
 
 # Use PAL_Gunsmith
 SPRITE SPR_Gunsmith		"sprite/gunsmith.png"		2 2 NONE

@@ -148,6 +148,16 @@ void do_fuzztable(int x_scale, int y_scale, int size) {
     printf("\n};\n");
 }
 
+void do_rotatortable(int scale) {
+    double rad2deg = 3.14159265 / (256 / 2);
+    printf("static const int32_t rotator_xy[256*2] = {");
+    for(int i = 0; i < 256; i++) {
+        if(i % 4 == 0) printf("\n\t");
+        printf("0x%08X,0x%08X, ", (int)(cos(i * rad2deg) * scale), (int)(sin(i * rad2deg) * scale));
+    }
+    printf("\n};\n");
+}
+
 void do_projectile_test(int num, int range, int speed) {
     static float var_per_best = 100;
     static float var_per_worst = 0;
@@ -298,15 +308,19 @@ int main() {
     //do_modtable(10, DIVTAB_SIZE);
 
     // Sine / Cosine
-    do_sintable(0x07FFF); // 0.5
-    do_sintable(0x0FFFF); // 1.0
-    do_sintable(0x17FFF); // 1.5
-    do_sintable(0x3FFFF); // 4.0
-    do_sintable(0x5FFFF); // 6.0
+    //do_sintable(0x07FFF); // 0.5
+    //do_sintable(0x0FFFF); // 1.0
+    //do_sintable(0x17FFF); // 1.5
+    //do_sintable(0x3FFFF); // 4.0
+    //do_sintable(0x5FFFF); // 6.0
 
-    do_atantable();
+    //do_atantable();
 
     //do_fuzztable(20, 32, 128);
+
+    do_rotatortable(64<<9);
+    do_rotatortable(80<<9);
+    do_rotatortable(0x1C0<<9);
 
     //do_squaretable(384);
 

@@ -136,7 +136,6 @@ void vdp_set_window(uint8_t x, uint8_t y) {
 // Tile patterns
 
 void vdp_tiles_load(const uint32_t *data, uint16_t index, uint16_t num) {
-    //dma_now(DmaVRAM, (uint32_t) data, index << 5, num << 4, 2);
     uint32_t from = (uint32_t) data;
     uint16_t to = index << 5;
     uint16_t len1 = num << 4;

@@ -166,6 +166,8 @@ uint16_t bossMaxHealth;
 uint16_t bossHealth;
 
 uint16_t lastAmmoNum;
+uint8_t pendingFadeOut;
+uint8_t windowFadeinRedrawBodge;
 
 void tsc_show_teleport_menu(void);
 
@@ -174,6 +176,17 @@ uint8_t tsc_read_byte(void);
 uint16_t tsc_read_word(void);
 
 enum { ARMSITEM, HEAD, STAGESEL, CREDITS, };
+
+static void fade_out(void) {
+	player_draw();
+	entities_draw();
+	sys_wait_vblank();
+	ready = TRUE;
+	aftervsync();
+	do_fadeout_wipe(player.dir);
+	inFade = TRUE;
+	pendingFadeOut = FALSE;
+}
 
 static uint16_t tsc_load(const Event **eventList, const uint8_t **cmdData, const uint8_t *TSC) {
 	const uint16_t eventCount = TSC[1];
@@ -185,6 +198,7 @@ static uint16_t tsc_load(const Event **eventList, const uint8_t **cmdData, const
 // Load window tiles & the global "head" events
 void tsc_init(void) {
 	inFade = FALSE;
+	pendingFadeOut = FALSE;
 	showingBossHealth = FALSE;
 	bossBarEntity = FALSE;
 	bossHealth = 0;
@@ -236,6 +250,8 @@ void tsc_call_event(uint16_t number) {
 						default:
 							return;
 						case CMD_END:
+							tscState = TSC_IDLE;
+							return;
 						case CMD_FLJ:
 						case CMD_ITJ:
 						case CMD_EVE:
@@ -267,16 +283,14 @@ uint8_t tsc_update(void) {
 		case TSC_WAITTIME:
 		{
 			// Game will lock up if <WAI0000 is used. Don't do that
-			if(waitTime == 0) {
+			if(waitTime == 0 || paused) {
 				tscState = TSC_RUNNING;
-			} else {
+				break;
+			}
+			if(waitTime != 9999) {
 				waitTime--;
-				// ArmsItem uses <WAI9999 after everything. The original game probably uses this
-				// in some weird way, but it'll just freeze here, so don't <WAI in the pause menu
-				if(paused) {
-					waitTime = 0;
 				// Check the wait time again to prevent underflowing
-				} else if(waitTime > 0 && (cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) && gamemode == GM_GAME) {
+				if(waitTime > 0 && (cfg_ffwd && (joystate & btn[cfg_btn_ffwd])) && gamemode == GM_GAME) {
 					if(cfg_ffwd) {
 						// Fast-forward while holding A, update active entities a second time
 						// to double their movement speed (unless <PRI is set)
@@ -513,7 +527,7 @@ void tsc_show_teleport_menu(void) {
 	}
 }
 
-static inline uint8_t check_fade(void) {
+static inline uint8_t check_fadein(void) {
 	if(wipeFadeTimer >= 0) {
 		curCommand--;
 		tscState = TSC_WAITTIME;
@@ -523,6 +537,10 @@ static inline uint8_t check_fade(void) {
 	return FALSE;
 }
 
+static inline void check_fadeout(void) {
+	if(pendingFadeOut) fade_out();
+}
+
 uint8_t execute_command(void) {
 	uint16_t args[4];
 	cmd = tsc_read_byte();
@@ -530,7 +548,7 @@ uint8_t execute_command(void) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			window_open(0);
 			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
@@ -538,7 +556,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_MS2: // Display message box (top - invisible)
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 			// Hide face or else doctor will talk with Misery's face graphic
 			window_set_face(0, 0);
 			window_open(1);
@@ -547,7 +565,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_MS3: // Display message box (top - visible)
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			window_open(1);
 			if(windowFlags & WF_SAT) windowFlags |= WF_TUR;
@@ -555,7 +573,8 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_CLO: // Close message box
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
+			check_fadeout();
 			
 			window_close();
 			windowFlags &= ~WF_TUR;
@@ -563,14 +582,14 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_CLR: // Clear message box
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			window_clear();
 		}
 		break;
 		case CMD_NUM: // Show number (1) in message box
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
             if(lastAmmoNum >= 100) window_draw_char('1');
@@ -580,7 +599,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_GIT: // Display item (1) in message box
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 			if(args[0] >= 1000) {
@@ -592,7 +611,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_FAC: // Display face (1) in message box
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 			window_set_face(args[0], TRUE);
@@ -618,7 +637,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_YNJ: // Prompt Yes/No and jump to event (1) if No
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 			promptJump = args[0];
@@ -649,7 +668,7 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_TRA: // Teleport to stage (1), run event (2), coords (3),(4)
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 			args[1] = tsc_read_word();
@@ -672,14 +691,18 @@ uint8_t execute_command(void) {
 				return 1;
 			} else {
 				if(args[0] == 0) return 5; // Room ID 0 is credits
+				
+				window_set_face(0, FALSE);
+				window_close();
+				check_fadeout();
+
 				player.x = block_to_sub(args[2]) + pixel_to_sub(8);
 				player.y = block_to_sub(args[3]) + pixel_to_sub(8);
 				player.x_speed = 0;
 				player.y_speed = 0;
 				player.grounded = FALSE;
 				gameFrozen = FALSE;
-				window_set_face(0, FALSE);
-				window_close();
+
 				stage_load(args[0]);
 				tsc_call_event(args[1]);
 				return 1;
@@ -740,7 +763,8 @@ uint8_t execute_command(void) {
 		{
 			args[0] = tsc_read_word();
 			tscState = TSC_WAITTIME;
-			waitTime = TIME(args[0]);
+			// 9999 is a special value to wait indefinitely
+			waitTime = args[0] == 9999 ? 9999 : TIME(args[0]);
 			return 1;
 		}
 		break;
@@ -1118,6 +1142,7 @@ uint8_t execute_command(void) {
 				inFade = FALSE; // Unlock sprites from updating
                 sys_wait_vblank(); // Wait a frame to let the sprites redraw
 				aftervsync();
+				if(window_is_open()) windowFadeinRedrawBodge = TRUE;
 				start_fadein_wipe(player.dir);
 			} else if(g_stage.id == STAGE_0) {
 				vdp_color_next(0, 0x200);
@@ -1135,14 +1160,20 @@ uint8_t execute_command(void) {
 		{
 			args[0] = tsc_read_word();
 			if(gamemode != GM_CREDITS) {
-				player_draw();
-                entities_draw();
-                sys_wait_vblank();
-                ready = TRUE;
-                aftervsync();
-				do_fadeout_wipe(player.dir);
-				inFade = TRUE;
+				if(window_is_open()) {
+					if(*curCommand == CMD_NOD) {
+						// Fade out after collecting polar star
+						pendingFadeOut = TRUE;
+					} else {
+						// Fade out after escaping with Kazuma
+						fade_out();
+						window_redraw();
+					}
+				} else {
+					fade_out();
+				}
 			} else if(g_stage.id == STAGE_0) {
+				k_str("FAO");
 				vdp_colors(0, PAL_FadeOutBlue, 64);
 			} else {
 				vdp_fade(NULL, PAL_FadeOutBlue, 3, TRUE);
@@ -1154,14 +1185,14 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_FLA: // Flash screen white
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			vdp_fade(PAL_FullWhite, NULL, 4, TRUE);
 		}
 		break;
 		case CMD_MLP: // Show the map
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			do_map();
 		}
@@ -1229,11 +1260,10 @@ uint8_t execute_command(void) {
 			break;
 		case CMD_CRE: // Show credits
 		{
-			dma_clear();
-			vdp_sprites_clear();
-			sys_wait_vblank();
-			aftervsync();
-			vdp_colors(0, PAL_FadeOutBlue, 64);
+			//vdp_sprites_clear();
+			//sys_wait_vblank();
+			//aftervsync();
+			//vdp_colors(0, PAL_FadeOutBlue, 64);
 			return 5;
 		}
 		break;
@@ -1273,14 +1303,15 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_XX1: // Island effect
 		{
-			if(check_fade()) return 1;
+			if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 
 			song_stop();
 
-			ready = TRUE;
+			vdp_sprites_clear();
 			vdp_colors_next(0, PAL_FadeOut, 64);
+			ready = TRUE;
             sys_wait_vblank(); aftervsync();
 
 			vdp_set_display(FALSE);
@@ -1367,8 +1398,6 @@ uint8_t execute_command(void) {
 		default: break;
 		}
 	} else {
-		if(check_fade()) return 1;
-
 		uint16_t kanji = 0;
 		uint8_t doublebyte = FALSE;
 		if(cmd >= 0xE0 && cmd < 0xFF) {
@@ -1391,6 +1420,12 @@ uint8_t execute_command(void) {
             }
 		}
 		if(window_is_open()) {
+			if(check_fadein()) return 1;
+			if(windowFadeinRedrawBodge) {
+				window_redraw();
+				windowFadeinRedrawBodge = FALSE;
+			}
+
 			if(cmd == '\n' || window_tick() || (cfg_ffwd && (joystate & btn[cfg_btn_ffwd]))) {
 				if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
 					window_draw_jchar(doublebyte, doublebyte ? kanji : cmd);

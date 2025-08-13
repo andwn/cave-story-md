@@ -392,7 +392,7 @@ static uint8_t RunDefeated(Entity *e) {
 			
 			if (e->timer > TIME_8(100)) {
 				sound_play(SND_EXPLOSION1, 5);
-				SCREEN_FLASH(3);
+				SCREEN_FLASH(4);
 				// Delete this stuff now while the screen is white
 				entities_clear_by_type(OBJ_MISERY_MISSILE);
 				pieces[CFRONT]->state = STATE_DELETE;

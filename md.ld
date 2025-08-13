@@ -10,7 +10,7 @@ SECTIONS {
   __ram_end = ORIGIN(ram) + LENGTH(ram);
 
   __stack_top = __ram_end;
-  __stack_size = 0x400;
+  __stack_size = 0x800;
   __stack_bottom = __stack_top - __stack_size;
 
   .text ORIGIN(rom) : {

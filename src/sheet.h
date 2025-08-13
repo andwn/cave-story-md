@@ -64,6 +64,7 @@
 	}                                                                                          \
 }
 
+#if 0
 // Get the first available space in VRAM and allocate it
 #define TILOC_ADD(myindex, framesize) {                                                        \
 	myindex = NOTILOC;                                                                         \
@@ -88,6 +89,8 @@
 	uint8_t freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);                      \
 	while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;                                    \
 }
+#endif
+
 #define TILES_QUEUE(tiles, index, count) {                                                     \
 	dma_queue_rom(DmaVRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);                  \
 }
@@ -130,6 +133,33 @@ extern uint8_t frameOffset[MAX_SHEETS][16];
 
 extern uint16_t tiloc_index;
 extern uint8_t tilocs[MAX_TILOCS];
+
+// Get the first available space in VRAM and allocate it
+static uint8_t tiloc_add(uint8_t framesize) {
+	framesize = (framesize + 3) >> 2;
+	uint8_t myindex = NOTILOC;
+	uint8_t freeCount = 0;
+	for(uint8_t i = 0; i < MAX_TILOCS; i++) {
+		if(tilocs[i]) {
+			freeCount = 0;
+		} else {
+			freeCount++;
+			if(freeCount >= framesize) {
+				myindex = i;
+				break;
+			}
+		}
+	}
+	if(myindex != NOTILOC) {
+		myindex -= freeCount-1;
+		while(freeCount--) tilocs[myindex+freeCount] = TRUE;
+	}
+	return myindex;
+}
+static void tiloc_free(const uint8_t myindex, const uint8_t framesize) {
+	uint8_t freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);
+	while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;
+}
 
 void sheets_load_weapon(Weapon *w);
 void sheets_refresh_weapon(Weapon *w);

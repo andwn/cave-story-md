@@ -90,7 +90,7 @@ void entity_deactivate(Entity *e) {
 	LIST_MOVE(entityList, inactiveList, e);
 	// If we had tile allocation release it for future generations to use
 	if(e->tiloc != NOTILOC) {
-		TILOC_FREE(e->tiloc, e->framesize);
+		tiloc_free(e->tiloc, e->framesize);
 		e->tiloc = NOTILOC;
 	}
 }
@@ -100,7 +100,7 @@ void entity_reactivate(Entity *e) {
 	LIST_MOVE(inactiveList, entityList, e);
 	if(e->sheet == NOSHEET && npc_info[e->type].sprite) {
 		// Try to allocate some VRAM
-		TILOC_ADD(e->tiloc, e->framesize);
+		e->tiloc = tiloc_add(e->framesize);
 		if(e->tiloc != NOTILOC) {
 			const SpriteDef *f = npc_info[e->type].sprite;
 			e->vramindex = tiloc_index + (e->tiloc << 2);
@@ -119,7 +119,7 @@ Entity *entity_delete(Entity *e) {
 	LIST_REMOVE(entityList, e);
 	// If we had tile allocation release it for future generations to use
 	if(e->tiloc != NOTILOC) {
-		TILOC_FREE(e->tiloc, e->framesize);
+		tiloc_free(e->tiloc, e->framesize);
 		e->tiloc = NOTILOC;
 	}
 	free(e);
@@ -991,8 +991,9 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 		for(;;);
 	}
 
-	//k_str("new entity");
-	//k_hex16(type);
+	k_str("new entity");
+	k_hex16(type);
+	k_hex32((uint32_t) e);
 
 	memclr(e, sizeof(Entity) + sizeof(Sprite) * sprite_count);
 	e->x = x;
@@ -1015,7 +1016,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 			//k_str("new tiloc");
             const SpriteDef *spr = npc_info[type].sprite;
             e->framesize = spr->tilesets[0]->numTile;
-            TILOC_ADD(e->tiloc, e->framesize);
+            e->tiloc = tiloc_add(e->framesize);
             if(e->tiloc != NOTILOC) {
                 e->vramindex = tiloc_index + (e->tiloc << 2);
                 uint16_t tile_offset = 0;
@@ -1033,7 +1034,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 			const LocSprite *def = find_locsprite(type);
 			if(def) {
 				e->framesize = def->width * def->height;
-				TILOC_ADD(e->tiloc, e->framesize);
+				e->tiloc = tiloc_add(e->framesize);
 				if(e->tiloc != NOTILOC) {
 					e->vramindex = tiloc_index + (e->tiloc << 2);
 					uint16_t i = 0;
@@ -1058,7 +1059,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	} else {
 		LIST_PUSH(inactiveList, e);
 		if(e->tiloc != NOTILOC) {
-			TILOC_FREE(e->tiloc, e->framesize);
+			tiloc_free(e->tiloc, e->framesize);
 			e->tiloc = NOTILOC;
 		}
 	}

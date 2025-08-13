@@ -572,8 +572,6 @@ void ondeath_crowskull(Entity *e) {
 
 // curly's mimiga's
 void ai_curlys_mimigas(Entity *e) {
-	e->x_next = e->x + e->x_speed;
-	e->y_next = e->y + e->y_speed;
 	switch(e->state) {
 		case 0:		// init/set initial anim state
 		{
@@ -617,32 +615,34 @@ void ai_curlys_mimigas(Entity *e) {
 			e->flags |= NPC_SHOOTABLE;
 			e->health = 1000;
 			e->state = 11;
-			e->timer = rand() & 63;
+			e->timer = (rand() & 0x3F) + 1;
 			e->frame = 0;
 		} /* fallthrough */
 		case 11:
-			if(e->timer) e->timer--;
-			else e->state = 13;
+			if(--e->timer == 0) e->state = 13;
 		break;
 		case 13:
 		{
 			e->state = 14;
-			e->timer = rand() & 63;
+			e->timer = (rand() & 0x3F) + 1;
 			FACE_PLAYER(e);
 			e->frame = 1;
 		} /* fallthrough */
 		case 14:
 		{
 			ANIMATE(e, 8, 1,0,2,0);
-			if(e->dir) e->x_speed += 0x40;
-			else e->x_speed -= 0x40;
-			
+			if(e->dir) {
+				e->x_speed += SPEED(0x40);
+			} else {
+				e->x_speed -= SPEED(0x40);
+			}
 			if(e->timer) {
 				e->timer--;
 			} else if(e->grounded) {	
 				// enter hop state
 				e->state = 15;
-				e->y_speed = -0x200;
+				e->y_speed = -SPEED(0x200);
+				e->grounded = FALSE;
 				e->attack = 2;
 				e->frame = 2;
 			}
@@ -664,7 +664,7 @@ void ai_curlys_mimigas(Entity *e) {
 				e->x_speed = 0;
 				e->state = 21;
 				if(e->frame < 7) e->frame += 2;
-				e->timer = 280 + (rand() & 127);
+				e->timer = TIME(280) + (rand() & 0x7F);
 			}
 		}
 		break;
@@ -685,20 +685,25 @@ void ai_curlys_mimigas(Entity *e) {
 	if (e->state > 10 && e->state < 20 && e->health != 1000) {
 		// got shot by player
 		e->state = 20;
-		e->y_speed = -0x200;
+		e->y_speed = -SPEED(0x200);
+		e->grounded = FALSE;
 		e->frame = (rand() & 1) + 5;
 		e->attack = 0;
 		e->flags &= ~NPC_SHOOTABLE;
 	}
-	
-	if(!e->grounded) e->y_speed += SPEED(0x20);
-	LIMIT_Y(SPEED(0x5ff));
-	LIMIT_X(SPEED(0x1ff));
-	collide_stage_leftwall(e);
-	collide_stage_rightwall(e);
-	if(e->grounded) e->grounded = collide_stage_floor_grounded(e);
-	else e->grounded = collide_stage_floor(e);
-	
+
+	LIMIT_X(SPEED(0x1FF));
+	LIMIT_Y(SPEED(0x4FF));
+	e->x_next = e->x + e->x_speed;
+	e->y_next = e->y + e->y_speed;
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(e->grounded) {
+		e->grounded = collide_stage_floor_grounded(e);
+	} else {
+		e->y_speed += SPEED(0x20);
+		if(e->y_speed > 0) e->grounded = collide_stage_floor(e);
+	}
 	e->x = e->x_next;
 	e->y = e->y_next;
 }

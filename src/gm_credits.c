@@ -170,18 +170,9 @@ void credits_main(void) {
                     break;
 				// The End
 				case END:
-				    while(TRUE) {
-                        // It's possible for the credits to end before the script
-                        // So keep updating the script & illustration scrolling
-                        tsc_update();
-                        // Scrolling for illustrations
-                        illScroll += illScrolling;
-                        if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
-                        effects_update();
-                        entities_update(TRUE);
-                        sys_wait_vblank(); aftervsync();
-                    }
-				    break;
+					waitTime = 9999;
+					pc--; // Infinite loop, but keep updating the script
+					break;
 			}
 			pc++;
 		}

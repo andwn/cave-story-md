@@ -125,7 +125,7 @@ void ai_ironhead(Entity *e) {
 			e->x_speed = e->y_speed = 0;
 			e->timer = 0;
 			// I believe the screen should flash here since objects get deleted
-			SCREEN_FLASH(3);
+			SCREEN_FLASH(4);
 			entities_clear_by_type(OBJ_IRONH_FISHY);
 			entities_clear_by_type(OBJ_IRONH_BRICK);
 			entities_clear_by_type(OBJ_BRICK_SPAWNER);

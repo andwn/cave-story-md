@@ -39,7 +39,7 @@ enum STATES
 static void spawn_bones(Entity *e, uint8_t up) {
 	int32_t y;
 
-	if (up)
+	if (up == UP)
 		y = (e->y - pixel_to_sub(12));
 	else
 		y = (e->y + pixel_to_sub(12));
@@ -310,7 +310,7 @@ static void run_lightning(Entity *e) {
 			e->timer++;
 			
 			if (e->timer == TIME_8(40)) {
-				SCREEN_FLASH(3);
+				SCREEN_FLASH(4);
 			}
 			
 			if (e->timer > TIME_8(50)) {
@@ -444,8 +444,7 @@ static void run_defeated(Entity *e) {
 			ANIMATE(e, 4, 10, 11);
 			
 			if (e->y < 0) {
-				//flashscreen.Start();
-				SCREEN_FLASH(3);
+				SCREEN_FLASH(4);
 				sound_play(SND_TELEPORT, 5);
 				
 				e->x_speed = 0;
@@ -746,13 +745,13 @@ void ai_green_devil_spawner(Entity *e) {
 	if(e->timer == 0) {
 		Entity *dv = entity_create(e->x, e->y - 0x1000, OBJ_GREEN_DEVIL, 0);
 		dv->dir = e->dir;
-		dv->x_speed = SPEED_10(0x3FF) + (rand() & 0x3FF);
+		dv->x_speed = 0x3FF + (rand() & 0x3FF);
 		dv->y_speed = (rand() & 0x7FF) - 0x3FF;
 		if(!dv->dir) dv->x_speed = -dv->x_speed;
 		dv->y_mark = dv->y;
 		dv->attack = 3;
 		
-		e->timer = TIME_8(50) + (rand() & 0x3F);
+		e->timer = 50 + (rand() & 0x3E);
 	} else {
 		e->timer--;
 	}
@@ -765,7 +764,7 @@ void ai_green_devil(Entity *e) {
 	e->y += e->y_speed;
 	
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
-	e->y_speed += (e->y < e->y_mark) ? SPEED_8(0x80) : -SPEED_8(0x80);
+	e->y_speed += (e->y < e->y_mark) ? 0x80 : -0x80;
 	if(!e->dir) {
 		if(e->x < 0) e->state = STATE_DELETE;
 	} else {
@@ -775,18 +774,17 @@ void ai_green_devil(Entity *e) {
 
 void onspawn_bute_sword_red(Entity *e) {
 	e->alwaysActive = TRUE;
-	e->y_speed = -SPEED_12(0x600);
+	e->y_speed = -0x600;
 	e->hit_box = (bounding_box) {{ 6,6,6,6 }};
 	e->display_box = (bounding_box) {{ 8,8,8,8 }};
 }
 
 void ai_bute_sword_red(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
 	if(!e->state) {
-		if(++e->timer >= TIME_8(16)) {
+		if(++e->timer >= 16) {
 			e->state++;
 			e->frame = 2;
 			e->flags |= NPC_SHOOTABLE;
@@ -795,21 +793,41 @@ void ai_bute_sword_red(Entity *e) {
 	} else {
 		e->flags ^= NPC_SHOOTABLE;
 		FACE_PLAYER(e);
-		// when player is below them, they come towards him,
-		// when player is above, they sweep away.
-		if(player.y > e->y) ACCEL_X(SPEED_8(0x20));
-		else ACCEL_X(-SPEED_8(0x20));
-		e->y_speed += (e->y <= player.y) ? SPEED_8(0x20) : -SPEED_8(0x20);
-		LIMIT_X(SPEED_10(0x3FF));
-		LIMIT_Y(SPEED_10(0x3FF));
-		
-		if ((e->x_speed < 0 && blk(e->x, -7, e->y, 0) == 0x41) || 
-			(e->x_speed > 0 && blk(e->x,  7, e->y, 0) == 0x41)) {
-			e->x_speed = -e->x_speed;
+		if(player.y > e->y) {
+			// Above player, approach
+			if(e->dir) {
+				if(e->x_speed < 0x3E0) {
+					e->x_speed += 0x20;
+				}
+			} else if(e->x_speed > -0x3E0) {
+				e->x_speed -= 0x20;
+			}
+			if(e->y_speed < 0x3E0) e->y_speed += 0x20;
+		} else {
+			// Below player, back away
+			if(!e->dir) {
+				if(e->x_speed < 0x3E0) {
+					e->x_speed += 0x20;
+				}
+			} else if(e->x_speed > -0x3E0) {
+				e->x_speed -= 0x20;
+			}
+			if(e->y_speed > -0x3E0) e->y_speed -= 0x20;
 		}
-		if ((e->y_speed < 0 && blk(e->x, 0, e->y, -7) == 0x41) || 
-			(e->y_speed > 0 && blk(e->x, 0, e->y,  7) == 0x41)) {
-			e->y_speed = -e->y_speed;
+		
+		if(e->x_speed < 0) {
+			if(blk(e->x, -7, e->y, 0) == 0x41) {
+				e->x_speed = 0x300;
+			}
+		} else if(blk(e->x, 7, e->y, 0) == 0x41) {
+			e->x_speed = -0x300;
+		}
+		if(e->y_speed < 0) {
+			if(blk(e->x, 0, e->y, -7) == 0x41) {
+				e->y_speed = 0x300;
+			}
+		} else if(blk(e->x, 0, e->y, 7) == 0x41) {
+			e->y_speed = -0x300;
 		}
 	}
 }
@@ -839,7 +857,7 @@ void ai_bute_archer_red(Entity *e) {
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
 			if((!e->dir && e->x < e->x_mark) || (e->dir && e->x > e->x_mark)) {
 				e->state++;
-				e->timer = TIME_8(rand() & 0x7F);
+				e->timer = rand() & 0x7F;
 				e->frame = 2;
 			}
 		}
@@ -847,7 +865,7 @@ void ai_bute_archer_red(Entity *e) {
 		case 1: // aiming
 		{
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
-			if(++e->timer > TIME_10(300) || (PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y(e, pixel_to_sub(16)))) {
+			if(++e->timer > 300 || (PLAYER_DIST_X(e, pixel_to_sub(112)) && PLAYER_DIST_Y(e, pixel_to_sub(16)))) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 3;
@@ -857,20 +875,20 @@ void ai_bute_archer_red(Entity *e) {
 		case 2: // flashing
 		{
 			if((++e->animtime & 3) == 0 && ++e->frame > 4) e->frame = 3;
-			if(++e->timer > TIME_8(30)) {
+			if(++e->timer > 30) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 5;
 				Entity *arrow = entity_create(e->x, e->y, OBJ_BUTE_ARROW, 0);
 				arrow->dir = e->dir;
-				arrow->x_speed = e->dir ? SPEED_12(0x800) : -SPEED_12(0x800);
+				arrow->x_speed = e->dir ? 0x800 : -0x800;
 			}
 		}
 		break;
 		case 3: // fired
 		{
 			//if((++e->animtime & 3) == 0 && ++e->frame > 6) e->frame = 5;
-			if (++e->timer > TIME_8(40)) {
+			if (++e->timer > 40) {
 				e->state++;
 				e->timer = 0;
 				e->frame = 0;
@@ -883,17 +901,22 @@ void ai_bute_archer_red(Entity *e) {
 		case 4:	// retreat offscreen
 		{
 			if((++e->animtime & 3) == 0) e->frame ^= 1;
-			ACCEL_X(-SPEED_8(0x20));
-			if(e->x < 0 || e->x > block_to_sub(g_stage.pxm.width)) e->state = STATE_DELETE;
+			if(e->dir) {
+				e->x_speed -= 0x20;
+				if(e->x < 0) e->state = STATE_DELETE;
+			} else {
+				e->x_speed += 0x20;
+				if(e->x > block_to_sub(g_stage.pxm.width)) e->state = STATE_DELETE;
+			}
 		}
 		break;
 	}
 	// sinusoidal hover around set point
 	if (e->state < 4) {
-		if(e->x < e->x_mark && e->x_speed <  SPEED_10(0x3E0)) e->x_speed += SPEED_8(0x2A);
-		if(e->x > e->x_mark && e->x_speed > -SPEED_10(0x3E0)) e->x_speed -= SPEED_8(0x2A);
-		if(e->y < e->y_mark && e->y_speed <  SPEED_10(0x3E0)) e->y_speed += SPEED_8(0x2A);
-		if(e->y > e->y_mark && e->y_speed > -SPEED_10(0x3E0)) e->y_speed -= SPEED_8(0x2A);
+		if(e->x < e->x_mark && e->x_speed <  0x3E0) e->x_speed += 0x2A;
+		else if(               e->x_speed > -0x3E0) e->x_speed -= 0x2A;
+		if(e->y < e->y_mark && e->y_speed <  0x3E0) e->y_speed += 0x2A;
+		else if(               e->y_speed > -0x3E0) e->y_speed -= 0x2A;
 	}
 	
 }

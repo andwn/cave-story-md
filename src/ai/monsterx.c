@@ -351,7 +351,7 @@ void ai_monsterx(Entity *e) {
 				SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) - 64, 128, 128, 4);
 			}
 			if (e->timer > TIME_8(100)) {
-				SCREEN_FLASH(3);
+				SCREEN_FLASH(4);
 				sound_play(SND_EXPLOSION1, 5);
 				e->timer = 0;
 				e->state++;

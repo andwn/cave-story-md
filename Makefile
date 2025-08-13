@@ -148,6 +148,7 @@ ASMO  = $(addprefix $(BUILD_DIR)/,$(RESS:.res=.o))
 ASMO += $(addprefix $(BUILD_DIR)/,$(Z80S:.s80=.o))
 ASMO += $(CS:%.c=asmout/%.s)
 
+.SUFFIXES:
 .SECONDARY:
 
 .PHONY: all sega profile release asm debug translate

@@ -21,6 +21,7 @@ extern uint16_t showingFace;
 
 // Opens the message window
 void window_open(uint8_t mode);
+void window_redraw(void);
 // Returns TRUE if the message window is open
 uint8_t window_is_open(void);
 // Clears the text/face to plain blue

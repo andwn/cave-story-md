@@ -124,7 +124,7 @@ void ai_balrog(Entity *e) {
 			e->frame = PAINED;
 			e->x_speed = 0;
 			e->timer = e->timer2 = 0;
-			//SmokeClouds(e, 4, 8, 8);
+			SMOKE_AREA((e->x >> CSF)-8, (e->y >> CSF), 16, 8, 4);
 			sound_play(SND_BIG_CRASH, 5);
 			e->balrog_smoking = 1;
 		}
@@ -288,7 +288,7 @@ void ai_balrog(Entity *e) {
 
 	if (e->balrog_smoking) {
 		if (++e->balrog_smoketimer > 20 || !(rand() & 15)) {
-			//SmokeClouds(e, 1, 4, 4);
+			effect_create_smoke((e->x>>CSF) - 8 + (rand() & 15), (e->y>>CSF) + (rand() & 7));
 			e->balrog_smoketimer = 0;
 		}
 	}
@@ -802,7 +802,6 @@ void ai_balrog_missile(Entity *e) {
 	if ((e->dir && blk(e->x, 6, e->y, 0) == 0x41) ||
 		(!e->dir && blk(e->x, -6, e->y, 0) == 0x41)) {
 		SMOKE_AREA((e->x >> CSF) - 16, (e->y >> CSF) - 16, 32, 32, 3);
-		//effect(e->CenterX(), e->CenterY(), EFFECT_BOOMFLASH);
 		sound_play(SND_MISSILE_HIT, 5);
 		
 		e->state = STATE_DELETE;
@@ -820,10 +819,11 @@ void ai_balrog_missile(Entity *e) {
 	
 	e->x_speed += e->dir ? SPEED_8(0x20) : -SPEED_8(0x20);
 	
-	//if ((++e->timer2 & 3) == 1)
-	//{
-	//	effect(e->CenterX() - e->x_speed, e->CenterY(), EFFECT_SMOKETRAIL_SLOW);
-	//}
+	if ((++e->timer2 & 7) == 1)
+	{
+		Effect *eff = effect_create_misc((e->x >> CSF) - (e->x_speed >> CSF), e->y >> CSF, EFF_BOOST2, FALSE);
+		eff->x_speed = e->dir ? -1 : 1;
+	}
 	
 	// heat-seeking at start, then level out straight
 	if (e->timer2 < TIME_8(50)) {

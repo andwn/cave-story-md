@@ -369,15 +369,16 @@ void weapon_fire_machinegun(Weapon *w) {
 				player.y_speed -= SPEED_10(0x3FF);
 			} else {
 				player.y_speed -= SPEED_10(0x350);
-				if(player.y_speed < -SPEED_12(0x47F)) player.y_speed = -SPEED_12(0x47F);
 			}
+			// Moved down here, want to limit speed in both cases because combining
+			// down booster would get us some BLJ infinite speed shit
+			if(player.y_speed < -SPEED_12(0x47F)) player.y_speed = -SPEED_12(0x47F);
 		}
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = -0x7F + (rand() & 0xFF);
 		b->y_speed = SPEED_12(0xFFF);
 	} else {
-		//b->level++; // Wonky use of this var, so the trail knows whether to be H/V
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,b->dir,sheets[w->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);

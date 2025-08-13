@@ -447,7 +447,7 @@ static const struct {
 	{ OBJ_CURLY,			1, 0, RIGHT, FALSE, },
 	{ OBJ_MISERY_STAND,	 	0, 2, LEFT, FALSE, },
 	{ OBJ_MALCO_BROKEN,	 	7, 6, LEFT, TRUE, },
-	{ OBJ_HERMIT_GUNSMITH, 	2, 1, LEFT, FALSE, },
+	{ OBJ_HERMIT_GUNSMITH, 	0, 0, LEFT, FALSE, },
 };
 
 void onspawn_the_cast(Entity *e) {
@@ -458,14 +458,16 @@ void onspawn_the_cast(Entity *e) {
 	if(e->id >= 14) e->id = 0;
 
 	if(e->id <= 3) e->x -= block_to_sub(1);
+	if(e->id >= 7 && e->id <= 10) e->x -= block_to_sub(1);
 	
 	// Manual sprite VRAM allocation
 	uint16_t obj = cast_data[e->id].obj;
 	if(obj != OBJ_BALROG_MEDIC) e->sprite_count--;
 	e->frame = e->oframe = cast_data[e->id].fallframe;
 	const SpriteDef *f = npc_info[obj].sprite;
+	if(obj == OBJ_HERMIT_GUNSMITH) f = &SPR_Gunsmith2;
 	e->framesize = f->tilesets[0]->numTile;
-	TILOC_ADD(e->tiloc, e->framesize);
+	e->tiloc = tiloc_add(e->framesize);
 	if(e->tiloc != NOTILOC) {
 		e->vramindex = tiloc_index + e->tiloc * 4;
 		uint16_t tile_offset = 0;
@@ -495,7 +497,10 @@ void onspawn_the_cast(Entity *e) {
 }
 
 void ai_the_cast(Entity *e) {
-	if(e->id == 9) e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
+	if(e->id == 9) {
+		e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
+		e->sprite[1].y = e->sprite[0].y;
+	}
 	if(e->id == 7 || e->id == 10) moveMeToFront = TRUE; // Nurse and Curly over Balrog
 	
 	if(!e->state) {
@@ -507,6 +512,7 @@ void ai_the_cast(Entity *e) {
 				uint16_t obj = cast_data[e->id].obj;
 				e->frame = e->oframe = cast_data[e->id].standframe;
 				const SpriteDef *f = npc_info[obj].sprite;
+				if(obj == OBJ_HERMIT_GUNSMITH) f = &SPR_Gunsmith2;
 				uint16_t tile_offset = 0;
 				for(uint8_t i = 0; i < e->sprite_count; i++) {
 					e->sprite[i] = (Sprite) {

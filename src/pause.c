@@ -283,6 +283,7 @@ uint8_t update_pause(void) {
         }
         if(!tscState && lastRunEvent != 6015 && lastRunEvent != 6018 && lastRunEvent != 6023
            && lastRunEvent != 6026 && lastRunEvent != 6038) {
+#ifdef DEBUG
             if (joy_pressed(JOY_A)) { // Debug
                 if(selectedItem < 0) { // Weapon changer
                     // Cycle the selected weapon out for the next one in the list,
@@ -300,11 +301,7 @@ uint8_t update_pause(void) {
                             // j will complete the loop if weapon is unique
                             if(j == MAX_WEAPONS) {
                                 playerWeapon[wep].type = i;
-                                //disable_ints();
-                                //z80_pause_fast();
                                 draw_weapons(pal_mode ? 5 : 4);
-                                //z80_resume();
-                                //enable_ints();
                                 sound_play(SND_SWITCH_WEAPON, 5);
                                 tsc_call_event(1000 + playerWeapon[selectedItem + 6].type);
                                 break;
@@ -315,15 +312,13 @@ uint8_t update_pause(void) {
                     if(++playerInventory[selectedItem] >= 40) {
                         playerInventory[selectedItem] = 0;
                     }
-                    //disable_ints();
-                    //z80_pause_fast();
                     draw_item(selectedItem);
-                    //z80_resume();
-                    //enable_ints();
                     sound_play(SND_SWITCH_WEAPON, 5);
                     tsc_call_event(5000 + playerInventory[selectedItem]);
                 }
-            } else if (joy_pressed(JOY_LEFT)) {
+            } else 
+#endif
+            if (joy_pressed(JOY_LEFT)) {
                 int8_t newsel = selectedItem % 6 != 0 ? selectedItem - 1 : selectedItem + 5;
                 if (newsel == -1) newsel = -2;
                 itemcursor_move(selectedItem, newsel);

@@ -464,7 +464,7 @@ void ai_curlyBossShot(Entity *e) {
 		e->state = STATE_DELETE;
 	} else if(!player_invincible() && entity_overlapping(e, &player)) {
 		player_inflict_damage(e->attack);
-		effect_create_misc(EFF_MGUN_HIT, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	} else {
 		e->x = e->x_next;

@@ -241,7 +241,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Croc2, 		NOSHEET, 		2, PAL2, &ai_null, 				&ai_sandcroc, 		&ondeath_default 	,""}, // White Sandcroc
 	{ &SPR_Cat, 		NOSHEET, 		1, PAL3, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Debug Cat
 	{ &SPR_Itoh, 		NOSHEET, 		1, PAL3, &ai_null, 				&ai_npc_itoh, 		&ai_null 			,""}, // Itoh
-	{ NULL, 			SHEET_CORES4, 	1, PAL1, &onspawn_persistent, 	&ai_core_blast, 	&ai_null 			,""}, // Core Blast
+	{ NULL, 			SHEET_CORES4, 	1, PAL2, &onspawn_persistent, 	&ai_core_blast, 	&ai_null 			,""}, // Core Blast
 	{ NULL, 			NOSHEET, 		0, PAL0, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Smoke/Current Generator
 	{ &SPR_ShovelMimi,	NOSHEET,		1, PAL3, &ai_null, 				&ai_mimiga_farmer, 	&ai_null 			,""}, // Shovel Brigade
 	{ &SPR_ShovelMimi,	NOSHEET,		1, PAL3, &ai_null, 				&ai_mimiga_farmer, 	&ai_null 			,""}, // Shovel Brigade (Walking)

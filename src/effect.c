@@ -354,6 +354,7 @@ Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one)
 				uint8_t sheet = NOSHEET;
 				SHEET_FIND(sheet, SHEET_ZZZ);
 				if(sheet == NOSHEET) break;
+				effMisc[i].timer = 0;
 				effMisc[i].ttl = TIME_8(100);
 				effMisc[i].sprite = (Sprite) {
 					.size = SPRITE_SIZE(1, 1),

@@ -40,7 +40,11 @@ void onspawn_persistent(Entity *e) {
 
 // Needed for save point after sisters fight
 void onspawn_interactive(Entity *e) {
-	e->flags |= NPC_INTERACTIVE;
+	if(e->type == OBJ_SAVE_POINT && system_get_flag(FLAG_DISABLESAVE)) {
+		e->state = STATE_DELETE;
+	} else {
+		e->flags |= NPC_INTERACTIVE;
+	}
 }
 
 // Spikes use a second frame for 90 degree rotation

@@ -192,6 +192,9 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		memset(tilocs, 0, MAX_TILOCS);
 	}
 	switch(sid) {
+		default:
+		case STAGE_ARTHURS_HOUSE_2:
+			break;
 		case STAGE_FIRST_CAVE: // First Cave
 		case STAGE_START_POINT: // Start Point
 		{	SHEET_ADD(SHEET_BAT, &SPR_Bat, 6,2,2, 0, 1, 2, 3, 4, 5);

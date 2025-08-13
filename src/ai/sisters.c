@@ -247,7 +247,7 @@ void ai_sisters(Entity *e) {
 				if (entity_overlapping(pieces[HEAD1], pieces[HEAD2]) ||
 					entity_overlapping(pieces[HEAD1], pieces[BODY2]) ||
 					entity_overlapping(pieces[HEAD2], pieces[BODY1])) {
-					SCREEN_FLASH(3);
+					SCREEN_FLASH(4);
 					sound_play(SND_EXPLOSION1, 5);
 					// Do this before the fade wears off
 					entities_clear_by_type(OBJ_DRAGON_ZOMBIE_SHOT);

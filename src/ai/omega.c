@@ -349,7 +349,7 @@ void ai_omega(Entity *e) {
 		{
 			camera_shake(40);
 			if(++e->timer > TIME_8(20)) {
-				SCREEN_FLASH(3);
+				SCREEN_FLASH(4);
 				bossEntity = NULL;
 				e->state = STATE_DELETE;
 				for(uint8_t i=0;i<NUM_PIECES;i++) pieces[i]->state = STATE_DELETE;

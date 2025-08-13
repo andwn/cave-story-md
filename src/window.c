@@ -111,8 +111,17 @@ void window_open(uint8_t mode) {
 	} else showingFace = 0;
 
     //if(textMode == TM_MSG) textMode = TM_NORMAL;
-
 	windowOpen = TRUE;
+}
+
+void window_redraw(void) {
+	window_open(windowOnTop);
+	if(showingFace) {
+		static const uint16_t attr[6] = {
+			WINDOW_ATTR(4),WINDOW_ATTR(4),WINDOW_ATTR(4),WINDOW_ATTR(4),WINDOW_ATTR(4),WINDOW_ATTR(4),
+		};
+		vdp_map_vline(VDP_PLANE_W, attr, TEXT_X1_FACE-1, TEXT_Y1, 6);
+	}
 }
 
 uint8_t window_is_open(void) {

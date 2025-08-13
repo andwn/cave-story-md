@@ -930,7 +930,7 @@ void onspawn_cent_cage(Entity *e) {
 	if(g_stage.id == 65) {
 		e->x += pixel_to_sub(8);
 		// Release the allocation
-		TILOC_FREE(e->tiloc, e->framesize);
+		tiloc_free(e->tiloc, e->framesize);
 		e->tiloc = NOTILOC;
 		// Set sheet to the smaller cage bars
 		e->sprite_count = 1;
