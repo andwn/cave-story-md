@@ -72,11 +72,11 @@ Balconata
 Caduta
 u
 Cabina sul Corso d'Acqua
-
-
-
-
-
+_
+_
+_
+_
+_
 Casa Prefabbricata
 Terreno Sacro - B1
 Terreno Sacro - B2
@@ -87,9 +87,9 @@ Passaggio?
 Camera delle Statue
 Camera del Sigillo
 Corridoio
-
+_
 Armaiolo Eremita
-
+_
 Camera del Sigillo
-
+_
 Camera dell'Orologio

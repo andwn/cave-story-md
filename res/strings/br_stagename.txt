@@ -72,11 +72,11 @@ Terraço
 Queda
 Studio Pixel apresenta
 Abrigo do Canal
-
-
-
-
-
+_
+_
+_
+_
+_
 Casa Pré-fabricada
 Terra Santa 1
 Terra Santa 2
@@ -87,9 +87,9 @@ Passagem?
 Câmara das Estátuas
 Câmara Selada
 Corredor
-
+_
 Armeiro Eremita
-
+_
 Câmara Selada
-
+_
 Sala do Relógio

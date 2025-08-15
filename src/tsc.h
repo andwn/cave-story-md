@@ -1,3 +1,6 @@
+#ifndef TSC_H
+#define TSC_H
+
 // This is the first event after hitting "New Game"
 #define GAME_START_EVENT 200
 // Events that get called when killed, drowned, out of bounds, etc
@@ -54,3 +57,5 @@ void tsc_call_event(uint16_t number);
 void tsc_show_boss_health(void);
 void tsc_hide_boss_health(void);
 void tsc_update_boss_health(void);
+
+#endif

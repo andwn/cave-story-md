@@ -286,7 +286,11 @@ void do_event(FILE *fout, uint16_t id) {
 			return;
 		}
 		case CT_ASCII: {
-			fwrite(&tsc[pc], 1, 1, fout);
+			uint8_t c = tsc[pc];
+			if(language >= LANG_RU && language <= LANG_UA) {
+				if(c >= 0xC0) c -= 0x80;
+			}
+			fwrite(&c, 1, 1, fout);
 			pc++;
 			break;
 		}

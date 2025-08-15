@@ -1,3 +1,6 @@
+#ifndef SYSTEM_H
+#define SYSTEM_H
+
 #define SRAM_UNCHECKED		0x00
 #define SRAM_VALID_EMPTY	0x01
 #define SRAM_VALID_SAVE		0x02
@@ -127,3 +130,5 @@ uint32_t system_load_counter(void);
 void system_save_counter(uint32_t ticks);
 
 void system_format_sram(void);
+
+#endif

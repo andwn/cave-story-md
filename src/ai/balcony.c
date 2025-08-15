@@ -10,6 +10,11 @@ void ai_heli(Entity *e) {
 	
 	switch(e->state) {
 		case 0:		// stopped
+		{ // Delay blade spawn 1 frame (so they aren't left behind in best end credits)
+			e->state++;
+		}
+		break;
+		case 1:
 		{
 			Entity *b = entity_create(e->x + pixel_to_sub(16), e->y - pixel_to_sub(57), OBJ_HELICOPTER_BLADE, 0);
 			b->linkedEntity = e;
@@ -18,7 +23,7 @@ void ai_heli(Entity *e) {
 			e->state++;
 		}
 		break;
-		
+
 		case 20:	// blades running
 		break;
 		
@@ -63,8 +68,8 @@ void ai_heli_blade(Entity *e) {
 		case 10:
 		{
 			static const uint8_t f[] = { 0, 1, 2, 1 };
-			if(++e->animtime >= 16) e->animtime = 0;
-			e->frame = f[e->animtime >> 2];
+			if(++e->animtime >= 8) e->animtime = 0;
+			e->frame = f[e->animtime >> 1];
 		}
 		break;
 	}

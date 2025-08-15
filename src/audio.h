@@ -1,3 +1,6 @@
+#ifndef CSMD_AUDIO_H
+#define CSMD_AUDIO_H
+
 // IDs for sound effects
 #define SND_MENU_MOVE		1
 #define SND_MSG				2
@@ -103,3 +106,5 @@ void song_stop(void);
 void song_resume(void);
 // Returns ID of current song
 uint8_t song_get_playing(void);
+
+#endif

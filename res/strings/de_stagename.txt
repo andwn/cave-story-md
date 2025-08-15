@@ -72,11 +72,11 @@ Balkon
 Der Fall
 u
 Kanal-Hütte
-
-
-
-
-
+_
+_
+_
+_
+_
 Kontainer
 Heiligtum - B1
 Heiligtum - B2
@@ -87,9 +87,9 @@ Passage?
 Statuenhalle
 Siegelkammer
 Korridor
-
+_
 Einsiedler Waffenschmied
-
+_
 Siegelkammer
-
+_
 Uhrenraum

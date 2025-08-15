@@ -72,11 +72,11 @@ Varanda
 Queda
      Studio Pixel apresenta
 Cabana do Canal de Água
-
-
-
-
-
+_
+_
+_
+_
+_
 Edifício Pré-fabricado
 Chão Sagrado - B1
 Chão Sagrado - B2
@@ -87,9 +87,9 @@ Passagem?
 Câmara das Estátuas
 Câmara do Selo
 Corredor
-
+_
 Armeiro Eremita
-
+_
 Câmara do Selo
-
+_
 Quarto do Relógio

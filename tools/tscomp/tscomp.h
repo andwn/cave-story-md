@@ -87,7 +87,17 @@ static bool is_extended(uint8_t c) {
 }
 
 static void decode_extended(FILE *f, uint8_t c) {
-    if(c == 0x8C) {
+    if(language >= LANG_RU && language <= LANG_UA) {
+        static const char mark = 0x01;
+        static const char extmap[] = {
+            0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 0,  0, 8, 0, 0, 0, 0, 2, 0,
+            0, 0, 0, 6, 0, 0, 4, 5, 9, 0, 0, 0,  1,  12, 3, 0, 0, 0, 0, 7,
+        };
+        char mychr = extmap[c - 0x80];
+        fwrite(&mark, 1, 1, f);
+        fwrite(&mychr, 1, 1, f);
+    } else if(c == 0x8C) {
         static const char mystr[2] = "OE";
         fwrite(&mystr, 1, 2, f);
     } else if(c == 0x9C) {
@@ -99,16 +109,6 @@ static void decode_extended(FILE *f, uint8_t c) {
     } else if(c == 0xE6) {
         static const char mystr[2] = "ae";
         fwrite(&mystr, 1, 2, f);
-    } else if(language >= LANG_RU && language <= LANG_UA) {
-        static const char mark = 0x01;
-        static const char extmap[] = {
-            0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 0,  0, 8, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 6, 0, 0, 4, 5, 9, 0, 0, 0,  1,  12, 3, 0, 0, 0, 0, 7,
-        };
-        char mychr = extmap[c - 0x80];
-        fwrite(&mark, 1, 1, f);
-        fwrite(&mychr, 1, 1, f);
     } else {
         static const char mark = 0x01;
         static const char extmap[] = {

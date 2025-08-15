@@ -21,6 +21,7 @@
 #include "window.h"
 #include "cjk.h"
 
+#include "res/system.h"
 #include "res/local.h"
 #include "res/pal.h"
 #include "res/tiles.h"
@@ -182,8 +183,13 @@ uint8_t titlescreen_main(void) {
 	}
 	if(cheatEnable[0] && (joystate & JOY_A) && joy_pressed(btn[cfg_btn_pause])) {
 		cursor = 0;
+
+		if(cfg_language >= LANG_RU && cfg_language <= LANG_UA) {
+			vdp_font_load(UFTC_SysFontRU);
+		}
 		
 		vdp_map_clear(VDP_PLANE_A);
+		vdp_map_clear(VDP_PLANE_B);
 		vdp_color(0, 0x222); // Darken background colors
 		vdp_color(8, 0x468);
 		vdp_color(12, 0x666);

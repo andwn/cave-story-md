@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CJK_H
+#define CJK_H
 
 enum { CJK_TITLE, CJK_MESSAGE, CJK_CREDITS };
 
@@ -51,3 +52,5 @@ static void loc_vdp_nputs(uint16_t plane, const uint8_t *dat, uint16_t x, uint16
         vdp_nputs(plane, (const char*) dat, x, y, maxlen);
     }
 }
+
+#endif

@@ -72,11 +72,11 @@ Terassi
 Pudotus
 Studio Pixel esittää 
 Vesiväylän Mökki
-
-
-
-
-
+_
+_
+_
+_
+_
 Elementtirakennus
 Pyhäkkö - K1
 Pyhäkkö - K2
@@ -87,9 +87,9 @@ Läpikulku?
 Patsas Kammio
 Kammio
 Käytävä 
-
+_
 Erakko Aseseppä 
-
+_
 Kammio
-
+_
 Kellohuone

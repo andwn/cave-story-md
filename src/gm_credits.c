@@ -128,7 +128,7 @@ void credits_main(void) {
 						if(icon[i].size) continue;
 						icon[i] = (Sprite) {
 							.x = textX * 8 - 22 + 128,
-							.y = ScreenHeight - 6 + 128,
+							.y = ScreenHeight - 3 + 128,
 							.size = SPRITE_SIZE(3, 3),
 							.attr = TILE_ATTR(credits_info[pc].icon.pal,
 									1,0,0,TILE_ICONINDEX + i * 9)
@@ -170,9 +170,23 @@ void credits_main(void) {
                     break;
 				// The End
 				case END:
-					waitTime = 9999;
-					pc--; // Infinite loop, but keep updating the script
-					break;
+				    while(TRUE) {
+                        // It's possible for the credits to end before the script
+                        // So keep updating the script & illustration scrolling
+                        tsc_update();
+
+						effects_update();
+                        entities_update(TRUE);
+
+                        // Scrolling for illustrations
+                        illScroll += illScrolling;
+                        if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
+                        
+						vdp_hscroll(VDP_PLANE_A, illScroll);
+						ready = TRUE;
+                        sys_wait_vblank(); aftervsync();
+                    }
+				    break;
 			}
 			pc++;
 		}

@@ -1,3 +1,6 @@
+#ifndef STAGE_H
+#define STAGE_H
+
 /*
  * "Stage" refers to a level map. SGDK has a "Map" structure that is not used here,
  * so stage was chosen to avoid conflict
@@ -195,3 +198,5 @@ void stage_replace_block(int16_t bx, int16_t by, uint8_t index);
 void stage_update(void);
 // Put the palettes expected by the current stage into "next" cache
 void stage_setup_palettes(void);
+
+#endif

@@ -72,11 +72,11 @@ Balcon
 Chute
 u
 Maison aquatique
-
-
-
-
-
+_
+_
+_
+_
+_
 Maison
 Sol Sacré -1
 Sol Sacré -2
@@ -87,9 +87,9 @@ Passage?
 Hall des Statues
 Chambre du Sceau
 Corridor
-
+_
 Ermite Gunsmith
-
+_
 Chambre du Sceau
-
+_
 Salle de l'Horloge

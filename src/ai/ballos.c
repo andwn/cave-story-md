@@ -565,7 +565,7 @@ void ai_ballos_f3(Entity *e) {
 					break;
 				}
 			}
-			
+
 			// spawn blood
 			//int prob = (e->hp <= 500) ? 4 : 10;
 			//if (!rand(0, prob)) {
@@ -580,7 +580,7 @@ void ai_ballos_f3(Entity *e) {
 		{
 			e->state = 1001;
 			e->timer = 0;
-			
+
 			SetEyeStates(EYE_EXPLODING);	// blow out eyes
 			SetRotatorStates(1000);			// explode rotators
 			
@@ -689,14 +689,15 @@ void ai_ballos_eye(Entity *e) {
 		case EYE_OPENING+2:
 		{
 			// Flash main body when hit
-			Entity *ballos = bossEntity;
+			if(!bossEntity) break;
+			Entity *ballos = bossEntity->linkedEntity;
 			if(e->damage_time & 1) {
 				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
-					sprite_pal(&ballos->sprite[i], PAL1);
+					sprite_pal(&ballos->sprite[i], PAL2);
 				}
 			} else {
 				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
-					sprite_pal(&ballos->sprite[i], PAL2);
+					sprite_pal(&ballos->sprite[i], PAL0);
 				}
 			}
 		}
@@ -709,9 +710,11 @@ void ai_ballos_eye(Entity *e) {
 			e->hidden = FALSE;
 			e->flags |= NPC_INVINCIBLE;
 			// Stop flashing
-			Entity *ballos = bossEntity;
-			for(uint16_t i = 0; i < ballos->sprite_count; i++) {
-				sprite_pal(&ballos->sprite[i], PAL2);
+			if(bossEntity) {
+				Entity *ballos = bossEntity->linkedEntity;
+				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
+					sprite_pal(&ballos->sprite[i], PAL0);
+				}
 			}
 
 			e->animtime = 0;
@@ -737,6 +740,22 @@ void ai_ballos_eye(Entity *e) {
 			e->state++;
 		}
 		break;
+		case EYE_INVISIBLE+1:
+		{
+			// Flash main body when hit
+			if(!bossEntity) break;
+			Entity *ballos = bossEntity->linkedEntity;
+			if(e->damage_time & 1) {
+				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
+					sprite_pal(&ballos->sprite[i], PAL2);
+				}
+			} else {
+				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
+					sprite_pal(&ballos->sprite[i], PAL0);
+				}
+			}
+		}
+		break;
 		
 		// explode eyes (final defeat sequence)
 		case EYE_EXPLODING:
@@ -746,7 +765,15 @@ void ai_ballos_eye(Entity *e) {
 			
 			e->flags &= ~(NPC_SHOOTABLE | NPC_INVINCIBLE);
 			e->state++;
-			
+
+			// Stop flashing
+			if(bossEntity) {
+				Entity *ballos = bossEntity->linkedEntity;
+				for(uint16_t i = 0; i < ballos->sprite_count; i++) {
+					sprite_pal(&ballos->sprite[i], PAL0);
+				}
+			}
+
 			//if (e->dir == LEFT)
 			//	SmokeXY(e->x - (4<<CSF), e->y, 10, 4, 4);
 			//else
@@ -810,8 +837,18 @@ void ai_ballos_rotator(Entity *e) {
 					
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
+
+					// Stop flashing
+					sprite_pal(e->sprite, PAL0);
 					
 					rotators_left--;
+				} else {
+					// Flash when hit
+					if(e->damage_time & 1) {
+						sprite_pal(e->sprite, PAL2);
+					} else {
+						sprite_pal(e->sprite, PAL0);
+					}
 				}
 			}
 			
@@ -866,12 +903,22 @@ void ai_ballos_rotator(Entity *e) {
 					//SmokeClouds(o, 32, 16, 16);
 					sound_play(SND_LITTLE_CRASH, 5);
 					
+					// Stop flashing
+					sprite_pal(e->sprite, PAL0);
+					
 					e->frame = 1;
 					e->state = 40;
 					e->attack = 5;
 					
 					// blow up immediately if Ballos is defeated
 					e->timer2 = 0;
+				} else {
+					// Flash when hit
+					if(e->damage_time & 1) {
+						sprite_pal(e->sprite, PAL2);
+					} else {
+						sprite_pal(e->sprite, PAL0);
+					}
 				}
 			}
 		}

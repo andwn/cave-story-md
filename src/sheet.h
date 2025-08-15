@@ -1,5 +1,27 @@
+#ifndef SHEET_H
+#define SHEET_H
+
 /*
- * Handles pre-loaded shared sprite sheets and individually owned sprite tile allocations
+ * Handles preloaded shared sprite sheets and individually owned sprite tile allocations.
+ * SHEET refers to a preloaded sprite sheet in VRAM.
+ * TILOC is short for "Tile Allocation".
+ *
+ * When an NPC has a "num_sprites" of one or more, the value of "sheet" is first checked.
+ *
+ * If valid (<MAX_SHEETS), the NPC's sprite will be set up to point to the VRAM index stored
+ * in the sheets array, indexed by the "sheet" field.
+ * Composite sprites (>1 VDP sprite) can NOT be sheets, only the first will be drawn.
+ *
+ * If "sheet" is NOSHEET or otherwise too large (>=NUM_SHEETS), a segment of VRAM will
+ * be "dynamically" allocated for use by the current NPC only. Rather than the VRAM index
+ * being changed when the NPC's animation frame is updated, tiles for the new frame will be
+ * queued for DMA next vblank, and uploaded to the same unchanging VRAM index.
+ *
+ * Most NPCs (those not flagged "persistent") will be banished to the "inactive list" when
+ * leaving the screen area. When this happens to an NPC with a Tiloc, it will be
+ * unallocated, and the "tiloc" field will be set to TILOC_INVALID. When this same NPC
+ * is back on-screen (and therefore, pulled back out of the "inactive list") the Tiloc
+ * will be allocated again.
  */
 
 #define MAX_SHEETS	24
@@ -47,7 +69,7 @@
 	}                                                                                          \
 }
 
-// The end params are anim,frame value couples from the sprite definition
+// The end params are frame indices from the sprite definition
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
 	static const uint8_t fa[frames] = { __VA_ARGS__ };                                         \
 	for(uint16_t i = 0; i < frames; i++) {                                                     \
@@ -63,33 +85,6 @@
 		}                                                                                      \
 	}                                                                                          \
 }
-
-#if 0
-// Get the first available space in VRAM and allocate it
-#define TILOC_ADD(myindex, framesize) {                                                        \
-	myindex = NOTILOC;                                                                         \
-	uint8_t freeCount = 0;                                                                     \
-	for(uint8_t i = 0; i < MAX_TILOCS; i++) {                                                  \
-		if(tilocs[i]) {                                                                        \
-			freeCount = 0;                                                                     \
-		} else {                                                                               \
-			freeCount++;                                                                       \
-			if(freeCount << 2 >= (framesize)) {                                                \
-				myindex = i;                                                                   \
-				break;                                                                         \
-			}                                                                                  \
-		}                                                                                      \
-	}                                                                                          \
-	if(myindex != NOTILOC) {                                                                   \
-		myindex -= freeCount-1;                                                                \
-		while(freeCount--) tilocs[myindex+freeCount] = TRUE;                                   \
-	}                                                                                          \
-}
-#define TILOC_FREE(myindex, framesize) {                                                       \
-	uint8_t freeCount = ((framesize) >> 2) + (((framesize) & 3) ? 1 : 0);                      \
-	while(freeCount--) tilocs[(myindex)+freeCount] = FALSE;                                    \
-}
-#endif
 
 #define TILES_QUEUE(tiles, index, count) {                                                     \
 	dma_queue_rom(DmaVRAM, (uint32_t)(tiles), (index) << 5, (count) << 4, 2);                  \
@@ -164,5 +159,6 @@ static void tiloc_free(const uint8_t myindex, const uint8_t framesize) {
 void sheets_load_weapon(Weapon *w);
 void sheets_refresh_weapon(Weapon *w);
 void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc);
-void sheets_load_splash(void);
 void sheets_load_intro(void);
+
+#endif

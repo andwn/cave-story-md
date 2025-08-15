@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 // Equips are bit flags in the original Cave Story, even in the TSC commands
 #define EQUIP_BOOSTER08		0x001
 #define EQUIP_MAPSYSTEM		0x002
@@ -104,3 +107,5 @@ uint8_t player_has_item(uint8_t id); // <ITJ
 
 void player_equip(uint16_t id); // <EQ+
 void player_unequip(uint16_t id); // <EQ-
+
+#endif

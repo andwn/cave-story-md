@@ -1307,10 +1307,13 @@ uint8_t execute_command(void) {
 
 			args[0] = tsc_read_word();
 
+			//if(!inFade) do_fadeout_wipe(1);
+
 			song_stop();
 
-			vdp_sprites_clear();
+			vdp_colors(0, PAL_FadeOut, 64);
 			vdp_colors_next(0, PAL_FadeOut, 64);
+			vdp_sprites_clear();
 			ready = TRUE;
             sys_wait_vblank(); aftervsync();
 

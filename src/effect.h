@@ -1,3 +1,6 @@
+#ifndef EFFECT_H
+#define EFFECT_H
+
 /*
  * Number & Smoke effects, will be more than that eventually
  */
@@ -55,3 +58,5 @@ void start_fadein_wipe(uint8_t dir);
 
 // Frame step for fade in effect
 void update_fadein_wipe(void);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef AI_H
+#define AI_H
+
 /*
  * This module contains behavior or AI for entities specific to NPC type
  * There are 3 "methods" which may be indexed in the npc_info table for an NPC
@@ -137,3 +140,5 @@ enum CrystalStates {
 #define crystal_state	curly_target_time
 #define crystal_xmark	curly_target_x
 #define crystal_ymark	curly_target_y
+
+#endif

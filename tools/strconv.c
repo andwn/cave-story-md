@@ -61,12 +61,16 @@ int main(int argc, char *argv[]) {
             int ct = get_char_type(str[ic]);
             switch(ct) {
                 case CT_ASCII:
-                    fwrite(&str[ic], 1, 1, fout);
+                    uint8_t c = str[ic];
+                    if(language >= LANG_RU && language <= LANG_UA) {
+                        if(c >= 0xC0) c -= 0x80;
+                    }
+                    fwrite(&c, 1, 1, fout);
                     oc++;
                     break;
                 case CT_EXTEND:
                     decode_extended(fout, str[ic]);
-                    oc++;
+                    oc += 2;
                     break;
                 case CT_KANJI:
                     uint16_t wc = ((str[ic] << 8) & 0xFF00) | (str[ic + 1] & 0xFF);

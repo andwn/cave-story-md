@@ -1,3 +1,6 @@
+#ifndef GAMEMODE_H
+#define GAMEMODE_H
+
 /*
  * Entry points for each of the game modes, like title screen, sound test, gameplay, etc
  */
@@ -40,3 +43,5 @@ void config_main(void);
 void credits_main(void);
 void credits_show_image(uint16_t id);
 void credits_clear_image(void);
+
+#endif

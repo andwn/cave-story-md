@@ -459,10 +459,12 @@ void onspawn_the_cast(Entity *e) {
 
 	if(e->id <= 3) e->x -= block_to_sub(1);
 	if(e->id >= 7 && e->id <= 10) e->x -= block_to_sub(1);
+
+	e->dir = cast_data[e->id].dir;
 	
 	// Manual sprite VRAM allocation
 	uint16_t obj = cast_data[e->id].obj;
-	if(obj != OBJ_BALROG_MEDIC) e->sprite_count--;
+	e->sprite_count--;
 	e->frame = e->oframe = cast_data[e->id].fallframe;
 	const SpriteDef *f = npc_info[obj].sprite;
 	if(obj == OBJ_HERMIT_GUNSMITH) f = &SPR_Gunsmith2;
@@ -470,19 +472,19 @@ void onspawn_the_cast(Entity *e) {
 	e->tiloc = tiloc_add(e->framesize);
 	if(e->tiloc != NOTILOC) {
 		e->vramindex = tiloc_index + e->tiloc * 4;
-		uint16_t tile_offset = 0;
-		for(uint8_t i = 0; i < e->sprite_count; i++) {
-			e->sprite[i] = (Sprite) {
-				.size = f->sprites[i]->size,
-				.attr = TILE_ATTR(npc_info[obj].palette,
-						0,0,0,e->vramindex + tile_offset)
+		e->sprite[0] = (Sprite) {
+			.size = f->sprites[0]->size,
+			.attr = TILE_ATTR(npc_info[obj].palette,0,0,e->dir,e->vramindex),
+		};
+		if(e->id == 9) {
+			e->sprite[1] = (Sprite) { // Balrog
+				.size = f->sprites[1]->size,
+				.attr = TILE_ATTR(npc_info[obj].palette, 0, 0, e->dir, e->vramindex + 12)
 			};
-			tile_offset += f->sprites[i]->numTile;
 		}
-		TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, f->tilesets[e->frame]->numTile);
+		TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, e->framesize);
 	}
-	
-	e->dir = cast_data[e->id].dir;
+
 	if(cast_data[e->id].tall) {
 		e->y -= (4<<CSF);
 		e->hit_box.bottom += 7;
@@ -497,12 +499,6 @@ void onspawn_the_cast(Entity *e) {
 }
 
 void ai_the_cast(Entity *e) {
-	if(e->id == 9) {
-		e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
-		e->sprite[1].y = e->sprite[0].y;
-	}
-	if(e->id == 7 || e->id == 10) moveMeToFront = TRUE; // Nurse and Curly over Balrog
-	
 	if(!e->state) {
 		e->dir = cast_data[e->id].dir;
 		if(e->y_speed < SPEED_12(0x5C0)) e->y_speed += SPEED_8(0x40);
@@ -513,18 +509,24 @@ void ai_the_cast(Entity *e) {
 				e->frame = e->oframe = cast_data[e->id].standframe;
 				const SpriteDef *f = npc_info[obj].sprite;
 				if(obj == OBJ_HERMIT_GUNSMITH) f = &SPR_Gunsmith2;
-				uint16_t tile_offset = 0;
-				for(uint8_t i = 0; i < e->sprite_count; i++) {
-					e->sprite[i] = (Sprite) {
-							.size = f->sprites[i]->size,
-							.attr = TILE_ATTR(npc_info[obj].palette,
-							        0, 0, 0, e->vramindex + tile_offset)
+				e->sprite[0].size = f->sprites[0]->size;
+				e->sprite[0].attr = TILE_ATTR(npc_info[obj].palette, 0, 0, e->dir, e->vramindex);
+				if(e->id == 9) {
+					e->sprite[1] = (Sprite) { // Balrog
+						.size = f->sprites[1]->size,
+						.attr = TILE_ATTR(npc_info[obj].palette, 0, 0, e->dir, e->vramindex + 12)
 					};
-					tile_offset += f->sprites[i]->numTile;
 				}
-				TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, f->tilesets[e->frame]->numTile);
+				TILES_QUEUE(f->tilesets[e->frame]->tiles, e->vramindex, e->framesize);
 			}
 			e->state++;
 		}
 	}
+
+	if(e->id == 9) {
+		e->sprite[1].x = e->sprite[0].x - 8; // Balrog is separated for some reason
+		e->sprite[1].y = e->sprite[0].y;
+		vdp_sprite_add(&e->sprite[1]);
+	}
+	if(e->id == 7 || e->id == 10) moveMeToFront = TRUE; // Nurse and Curly over Balrog
 }
