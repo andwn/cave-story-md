@@ -69,8 +69,7 @@ int main(int argc, char *argv[]) {
                     oc++;
                     break;
                 case CT_EXTEND:
-                    decode_extended(fout, str[ic]);
-                    oc += 2;
+                    oc += decode_extended(fout, str[ic]);
                     break;
                 case CT_KANJI:
                     uint16_t wc = ((str[ic] << 8) & 0xFF00) | (str[ic + 1] & 0xFF);

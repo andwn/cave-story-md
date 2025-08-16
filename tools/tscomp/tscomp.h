@@ -86,41 +86,51 @@ static bool is_extended(uint8_t c) {
 	return false;
 }
 
-static void decode_extended(FILE *f, uint8_t c) {
+static uint8_t decode_extended(FILE *f, uint8_t c) {
     if(language >= LANG_RU && language <= LANG_UA) {
         static const char mark = 0x01;
         static const char extmap[] = {
-            0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 0,  0, 8, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 6, 0, 0, 4, 5, 9, 0, 0, 0,  1,  12, 3, 0, 0, 0, 0, 7,
+            0, 8, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0,10,11, 0, 0, 8, 0, 0, 0, 0, 2, 0, 0, 0, 0, 6,
+			0, 0, 4, 5, 9, 0, 0, 0, 1,12, 3, 0, 0, 0, 0, 7,
         };
         char mychr = extmap[c - 0x80];
         fwrite(&mark, 1, 1, f);
         fwrite(&mychr, 1, 1, f);
-    } else if(c == 0x8C) {
-        static const char mystr[2] = "OE";
-        fwrite(&mystr, 1, 2, f);
+		return 2;
+    } else if(c == 0x8C) { // :senile:
+        fwrite("OE", 1, 2, f);
+		return 2;
     } else if(c == 0x9C) {
-        static const char mystr[2] = "oe";
-        fwrite(&mystr, 1, 2, f);
+        fwrite("oe", 1, 2, f);
+		return 2;
     } else if(c == 0xC6) {
-        static const char mystr[2] = "AE";
-        fwrite(&mystr, 1, 2, f);
+        fwrite("AE", 1, 2, f);
+		return 2;
     } else if(c == 0xE6) {
-        static const char mystr[2] = "ae";
-        fwrite(&mystr, 1, 2, f);
+        fwrite("ae", 1, 2, f);
+		return 2;
+    } else if(c == 0xD6) {
+        fwrite("{", 1, 1, f);
+		return 1;
+    } else if(c == 0xE8) {
+        fwrite("|", 1, 1, f);
+		return 1;
     } else {
         static const char mark = 0x01;
         static const char extmap[] = {
-            0, 1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-            0, 0,  0,  0,  0,  0,  27, 0,  0,  0,  0,  2,  3,  3,  3,  3,  3,  3,  0,  15,
-            4, 4,  4,  4,  5,  5,  5,  5,  0,  6,  7,  7,  7,  7,  7,  0,  0,  8,  8,  8,
-            8, 0,  0,  30, 9,  9,  17, 28, 22, 22, 0,  16, 10, 10, 18, 23, 11, 11, 19, 24,
-            0, 12, 13, 13, 20, 29, 25, 0,  0,  14, 14, 21, 26, 0,  0,  0,
+            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,27, 0, 0, 0, 0, 2,
+			3, 3, 3, 3, 3, 3, 0,15, 4, 4, 4, 4, 5, 5, 5, 5,
+			0, 6, 7, 7, 7, 7, 7, 0, 0, 8, 8, 8, 8, 0, 0,30,
+			9, 9,17,28,22,22, 0,16,10,10,18,23,11,11,19,24,
+            0,12,13,13,20,29,25, 0, 0,14,14,21,26, 0, 0, 0,
         };
         char mychr = extmap[c - 160];
         fwrite(&mark, 1, 1, f);
         fwrite(&mychr, 1, 1, f);
+		return 2;
     }
 }
 
