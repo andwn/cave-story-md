@@ -25,6 +25,7 @@
 #include "weapon.h"
 #include "window.h"
 #include "md/xgm.h"
+#include "res/system.h"
 
 #include "gamemode.h"
 
@@ -182,10 +183,14 @@ uint8_t saveselect_main(void) {
 		.size = SPRITE_SIZE(2,2)
 	};
 
+	if(cfg_language >= LANG_RU && cfg_language <= LANG_UA) {
+		vdp_font_load(UFTC_SysFontRU);
+	}
+
 	cjk_set_index(CJK_TITLE, 0);
 	const uint8_t *txt = (const uint8_t*)MENU_STR;
 	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY*32], 6, 25, 16);
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE*32], 16, 25, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE*32], 18, 25, 16);
 	
 	draw_cursor_mode(cursorMode);
 

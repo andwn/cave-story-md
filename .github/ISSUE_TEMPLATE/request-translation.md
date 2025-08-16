@@ -16,4 +16,5 @@ What symbols are needed outside the basic ASCII 32-127 range to support this lan
 If it's something more complex like CJK or RTL, please recommend a font or two.
 
 **Addendum**
-If you want advice on how to translate the game, this repository is not the right place to ask. There should be some people on the cavestory.org forums familiar with the process.
+If you want advice on how to translate the game, this repository is not the right place to ask.
+There should be some people on the cavestory.org forums familiar with the process.

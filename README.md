@@ -1,5 +1,5 @@
 # Cave Story MD
-![Comparison Shot](doc/screen01.png)
+![Comparison Shot](doc/screen02.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 [日本語はこちら](README-ja.md)

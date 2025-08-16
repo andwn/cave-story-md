@@ -4,8 +4,7 @@ This file is where I list off the (intentional) differences in this port and why
 ### Graphics
 
  - The resolution is 320x224 on NTSC, so there will be an extra bit of vertical scrolling.
- - I got a bit creative with the sprinkler effect to avoid lag. There are fewer particles and they alternate visibility.
- - CSMD uses a simple palette fade instead of the original effect which is very difficult to emulate on the hardware (if possible at all).
+ - CSMD implements a simplified version of the wipe fade, and only does it horizontally.
  - The message box disappears on fade out, but text is still visible. The way that works is actually that the color white in the main palette is kept white.
  - The font is 8x8 where the original was more like 6x8. The original game also cheated with the font, it's drawn at double the resolution.
  - The water "foreground" is in back of the foreground map tiles. I believe this is technically possible to fix but would add too much complication to the stage/background logic (swapping the planes they use for 2 maps only).
@@ -39,7 +38,6 @@ This file is where I list off the (intentional) differences in this port and why
 ### Game Content (Rooms/Scripts)
 
  - About half of the tilesets have been crushed to remove unused tiles (saving VRAM space for other things). This means the related PXA and PXM files were also modified to use those tilesets.
- - EggX and EggX2 are the same PXM with the tileset split into 2.
  - TSC are converted to a custom [bytecode](../tools/tscomp/tscomp.c).
  - The English dialog is from the Aeon Genesis translation.
  - Some bits of text (mainly item descriptions and credits text) have been edited to reduce length.
@@ -48,6 +46,6 @@ This file is where I list off the (intentional) differences in this port and why
 
 ## Other stuff that, while left out on purpose, may happen someday
 
- - Many particle effects like gibs, sparkles, drips aren't implemented.
+ - Some particle effects, mainly gibs, aren't implemented.
  - Weapon swap icons next to the HUD aren't there. If there seems to be enough tiles left over after adding the weapon effects (like fireball trails and boom flashes) I may give it a shot.
  - Chako is the correct purple color in her house, but at the end of the game (King's Table, credits) she is gray. I haven't looked too hard into finding a free color slot to put the purple yet.

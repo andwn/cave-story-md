@@ -5,7 +5,11 @@ Here are some things I've been asked how to contribute and a brief explanation o
 
 ### Music
 
-The sound driver used is XGM from SGDK. The only real restrictions for this are:
+The sound driver used is XGM from SGDK, though I am currently considering migrating to another.
+(This means that even if your contribution is accepted, it may eventually be discarded or
+transcribed to another format)
+
+For the time being, the only real restrictions for music in the XGM driver are:
 
 - The file must be a VGM, created in Deflemask or similar
 - The channel FM6 must always be set to DAC mode (effect 1701)
@@ -26,13 +30,21 @@ and give it to me to convert. There might already be one too.
 
 Getting it into the game gets more complicated based on
 - The encoding of the TSC files: I'll have to look it up on Wikipedia and learn how it works
-  - So far tscomp supports: ASCII, Shift-JIS, Windows-1252
+  - So far tscomp supports: ASCII, Shift-JIS, Windows-1252 (Europe), Windows-1251 (RU/UA)
 - The glyphs that need to be rendered in the game
   - European/Latin languages should be pretty much covered
-  - For Chinese and Korean I can redo the same thing I did with Japanese (just with different encodings)
-  - There's like half a font for Russian/Ukrainian/Bulgarian at the moment
-  - I have no idea what to do for RTL languages
+  - CJK is mostly covered and I have a workflow for adding new glyphs
+  - A font for Russian/Ukrainian/Bulgarian is implemented
+  - I have no idea what to do for RTL languages, or ligatures
 - My level of burnout
 
-In addition to the TSC files, there are the stage names embedded in doukutsu.exe.
-If those are translated give me the patched EXE, so I can extract them.
+In addition to the TSC files, there are some graphics that need to be extracted.
+I put those in `res/sprite_loc` and `res/tiles_loc`. The patch files in `res/patch`
+need to be edited to refer to these graphics if a localized one is available.
+
+And then there are localized strings in `res/strings`. Much like the graphics, the address
+tables in `res/patch` refer to these files per language if available:
+- xx_stagename.txt: Displayed on screen after entering a new map (also used by stage select)
+- xx_music.txt: Names for music tracks used by Sound Test
+- xx_menus.txt: Title Screen, Save Select, Sound Test, and Config menus (hookups still WIP)
+- xx_credits.txt: Staff roll shown after clearing the game

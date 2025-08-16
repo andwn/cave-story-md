@@ -1,5 +1,5 @@
 # 洞窟物語MD
-![Comparison Shot](doc/screen01.png)
+![Comparison Shot](doc/screen02.png)
 [Video](http://www.youtube.com/watch?v=aZU133ekDVk)
 
 [English README](README.md)

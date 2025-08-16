@@ -118,6 +118,8 @@ uint8_t titlescreen_main(void) {
 	
 	const uint16_t MENUY = 12;
 
+	vdp_font_load(UFTC_SysFont);
+	
 	// Menu and version text
 	cjk_reset(CJK_TITLE);
 	const int16_t cur_yoff = (cfg_language >= LANG_JA && cfg_language < LANG_RU) ? 0 : -4;

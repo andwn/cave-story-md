@@ -141,7 +141,7 @@ PTRTAB_END:
 BIN STR_StageNames      "res/strings/ru_stagename.dat"
 BIN STR_MusicNames      "res/strings/en_music.dat"
 BIN STR_Credits         "res/strings/en_credits.dat"
-BIN STR_Menus           "res/strings/en_menus.dat"
+BIN STR_Menus           "res/strings/ru_menus.dat"
 
 # Scripts (TSC)
 # Global
