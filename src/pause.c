@@ -226,25 +226,16 @@ uint8_t update_pause(void) {
         hud_show();
         hud_force_redraw();
 
-        //disable_ints();
-        //z80_pause_fast();
         vdp_tiles_load(BlankData,TILE_HUDINDEX+8,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+9,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+12,1);
         vdp_tiles_load(BlankData,TILE_HUDINDEX+13,1);
-        //z80_resume();
-        //enable_ints();
+        
         aftervsync();
         // Reload shared sheets we clobbered
-        //disable_ints();
-        //z80_pause_fast();
         sheets_load_stage(g_stage.id, TRUE, FALSE);
-        //z80_resume();
-        //enable_ints();
 
         selectedItem = 0;
-        aftervsync();
-
         // Reload TSC Events for the current stage
         tsc_load_stage(g_stage.id);
         // Put the sprites for player/entities/HUD back
@@ -252,11 +243,16 @@ uint8_t update_pause(void) {
         player_draw();
         entities_draw();
 
+        sys_wait_vblank();
+        vdp_set_display(TRUE);
+        ready = TRUE;
+        aftervsync();
+
         controlsLocked = FALSE;
         gameFrozen = FALSE;
+        paused = FALSE;
         vdp_set_window(0, 0);
         window_close();
-        vdp_set_display(TRUE);
         return FALSE;
     } else {
         // Every cursor move and item selection runs a script.

@@ -13,4 +13,7 @@ void hud_hide(void);
 // Updates numbers + other info if they changed
 void hud_update(void);
 
+void hud_swap_weapon(uint8_t dir);
+void hud_refresh_swap(uint8_t force);
+
 #endif

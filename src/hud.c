@@ -25,8 +25,12 @@
 #define WPN     16
 #define AMMO    20
 
+#define SWAP_BEGIN	9
+
 Sprite sprHUD[2];
 uint32_t tileData[28][8];
+
+Sprite sprSwap[2];
 
 // Values used to draw parts of the HUD
 // If the originator's value changes that part of the HUD will be updated
@@ -37,6 +41,9 @@ uint8_t hudMaxBlink;
 
 // Used for bar animation
 uint8_t hudEnergyPixel, hudEnergyTimer, hudEnergyDest;
+
+// Used for weapon switch display
+uint8_t swapTimer, swapDir, swapWepNum;
 
 uint8_t showing;
 
@@ -66,6 +73,7 @@ void hud_create(void) {
     hudEnergy = hudMaxEnergy = 10;
 	hudEnergyPixel = hudEnergyTimer = hudEnergyDest = 0;
     hudMaxBlink = 0;
+	swapTimer = swapDir = swapWepNum = 0;
 	// Create the sprites
 	sprHUD[0] = (Sprite) {
 		.x = 16 + 128,
@@ -79,6 +87,20 @@ void hud_create(void) {
 		.size = SPRITE_SIZE(4, 4),
 		.attr = TILE_ATTR(PAL0,1,0,0,TILE_HUDINDEX+16)
 	};
+	// Create the sprites
+	sprSwap[0] = (Sprite) {
+		.x = 16 + 64 + 128,
+		.y = (pal_mode ? 24 : 16) + 128,
+		.size = SPRITE_SIZE(4, 2),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_EXWEPINDEX)
+	};
+	sprSwap[1] = (Sprite) {
+		.x = 16 + 96 + 128,
+		.y = (pal_mode ? 24 : 16) + 128,
+		.size = SPRITE_SIZE(4, 2),
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_EXWEPINDEX+8)
+	};
+	hud_refresh_swap(TRUE);
 	// Draw blank tiles next to weapon
 	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+8)*TILE_SIZE, 16, 2);
 	dma_now(DmaVRAM, (uint32_t)BlankData, (TILE_HUDINDEX+9)*TILE_SIZE, 16, 2);
@@ -91,6 +113,7 @@ void hud_force_redraw(void) {
 
 	hud_refresh_health();
     hud_refresh_weapon();
+	hud_refresh_swap(TRUE);
     hud_refresh_energy(TRUE);
 	hud_refresh_maxammo();
 	hud_refresh_ammo();
@@ -128,6 +151,9 @@ void hud_update(void) {
 		hud_refresh_weapon();
 		weaponChange = TRUE;
 	}
+	if(swapTimer) {
+		hud_refresh_swap(FALSE);
+	}
     if(hudLevel != playerWeapon[currentWeapon].level || weaponChange) {
 		hud_refresh_energy(TRUE);
 	}
@@ -142,6 +168,15 @@ void hud_update(void) {
     if(hudAmmo != playerWeapon[currentWeapon].ammo ) {
 		hud_refresh_ammo();
 	}
+
+	if(swapWepNum > 0) vdp_sprites_add(sprSwap, swapWepNum > 2 ? 2 : 1);
+}
+
+void hud_swap_weapon(uint8_t dir) {
+	swapTimer = SWAP_BEGIN;
+	swapDir = dir;
+	sprSwap[0].x += swapDir ? 18 : -18;
+	sprSwap[1].x += swapDir ? 18 : -18;
 }
 
 void hud_refresh_health(void) {
@@ -277,6 +312,35 @@ void hud_refresh_weapon(void) {
 	// Queue DMA transfer for icon
     dma_queue(DmaVRAM, (uint32_t)tileData[WPN+0], (TILE_HUDINDEX)*TILE_SIZE, 32, 2);
     dma_queue(DmaVRAM, (uint32_t)tileData[WPN+2], (TILE_HUDINDEX+4)*TILE_SIZE, 32, 2);
+}
+
+void hud_refresh_swap(uint8_t force) {
+	if(force) swapTimer = 0;
+	if(force || swapTimer == SWAP_BEGIN) {
+		swapWepNum = 0;
+		uint16_t adr = TILE_EXWEPINDEX*TILE_SIZE;
+		for(uint8_t wep = currentWeapon + 1; ; wep++) {
+			if(wep >= 5) wep = 0; // Wrap
+			if(wep == currentWeapon) break; // Need to defer loop check until after wrap
+
+			uint8_t type = playerWeapon[wep].type;
+			if(type == WEAPON_NONE) continue;
+
+			dma_queue_rom(DmaVRAM, (uint32_t) SPR_ArmsImage.tilesets[type]->tiles, adr, 4*16, 2);
+			swapWepNum++;
+			adr += TILE_SIZE * 4;
+		}
+	}
+	if(swapTimer) { // Animation in progress
+		sprSwap[0].x += swapDir ? -2 : 2;
+		sprSwap[1].x += swapDir ? -2 : 2;
+		swapTimer--;
+	} else { // End of animation, reset positions
+		sprSwap[0].x = 16 + 64 + 128;
+		sprSwap[1].x = 16 + 96 + 128;
+		sprSwap[0].size = SPRITE_SIZE(swapWepNum > 1 ? 4 : 2, 2);
+		sprSwap[1].size = SPRITE_SIZE(swapWepNum > 3 ? 4 : 2, 2);
+	}
 }
 
 void hud_refresh_ammo(void) {

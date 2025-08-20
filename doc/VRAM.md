@@ -13,11 +13,18 @@ I leave the first (transparency) alone and use the rest like this:
 - `0xC` - 4 tiles for the boosters' smoke trail
 
 #### 0x010 (TILE_TSINDEX)
-On the title screen I toss the full walking animation of Quote here because I'm lazy.
-In-game it's where the current map's tileset goes, they are at most 256x112 pixels (448 tiles).
+Where the current map's tileset goes, they are at most 448 tiles.
 Some of them had to be crushed with a custom utility.
 
-#### 0x1D0 (TILE_FACEINDEX)
+#### 0x1D0 (TILE_EXWEPINDEX)
+16 tiles used for displaying weapon icons next to the HUD
+
+#### 0x1E0 (TILE_GIBINDEX)
+4 tiles used for the gib effect
+#### 0x1E4 (TILE_DISSIPINDEX)
+16 tiles used for the dissipation effect on enemy bullets
+
+#### 0x1F4 (TILE_FACEINDEX)
 36 tiles used to display a character's 6x6 face graphic in the message window.
 It is occasionally overwritten in scenarios where a face is guaranteed to never be displayed.
 For example, the item menu clobbers this:
@@ -25,11 +32,11 @@ For example, the item menu clobbers this:
 - 12 tiles for shadowed numbers '0123456789-/' ("Lv." text is borrowed from the HUD)
 - 20 tiles for the weapon icons, a maximum of 5 which are 4 tiles each
 
-#### 0x1F4 (TILE_NAMEINDEX)
-16 tiles to display the current map's name in the center of the screen.
+#### 0x218 (TILE_NAMEINDEX)
+20 tiles to display the current map's name in the center of the screen.
 This space is reused by boss battles to display the boss health bar.
 
-#### 0x204 (TILE_SHEETINDEX)
+#### 0x22C (TILE_SHEETINDEX)
 Space for shared sprite sheets - the first 5 are always:
 1. Heart, 2x2x4 tiles
 2. Missile, 2x2x4 tiles
@@ -78,8 +85,9 @@ Space for 64 tiles between PLAN_A and the sprite list/hscroll table.
 - 28 tiles for smoke animation
 - 9 tiles for the blue window border/skin
 - 8 tiles for either the AIR display or the counter in Hell
-- 1 tile for question mark (TODO)
-- 2 tiles for Whimsical Star (TODO)
+- 1 tile for question mark
+- 1 tile used to blank out the borders of the window plane and during fades
+- 1 more unused tile
 
 #### Address 0xF800 - HSCROLL and sprite list
 

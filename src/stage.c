@@ -154,8 +154,10 @@ void stage_load(uint16_t id) {
 	if(g_stage.id == STAGE_HELL_B3 || g_stage.id == STAGE_HELL_PASSAGEWAY_2) {
 		bossEntity = entity_create(0, 0, 360 + BOSS_HEAVYPRESS, 0);
 	}
-
 	dma_flush();
+
+	//hud_refresh_swap(TRUE);
+	//dma_flush();
 
 	k_str("TSC");
 

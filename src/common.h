@@ -84,7 +84,7 @@ static inline uint8_t mddir(uint8_t dir) {
 
 // Stage tileset is first in USERINDEX /*TILE_USERINDEX*/
 #define TILE_TSINDEX        16
-#define TILE_TSSIZE         (112*4)
+#define TILE_TSSIZE         448
 
 #define TILE_EXWEPINDEX		(TILE_TSINDEX + TILE_TSSIZE)
 #define TILE_GIBINDEX		(TILE_EXWEPINDEX + 4*4)

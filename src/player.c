@@ -1140,6 +1140,7 @@ static void player_prev_weapon(void) {
                 playerWeapon[i].level = 1;
                 playerWeapon[i].energy = 0;
             }
+			hud_swap_weapon(LEFT);
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}
@@ -1159,6 +1160,7 @@ static void player_next_weapon(void) {
                 playerWeapon[i].level = 1;
                 playerWeapon[i].energy = 0;
             }
+			hud_swap_weapon(RIGHT);
 			sound_play(SND_SWITCH_WEAPON, 5);
 			break;
 		}

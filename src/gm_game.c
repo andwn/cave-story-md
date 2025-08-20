@@ -54,47 +54,53 @@ void game_main(uint8_t load) {
 
 		if(paused) {
 			paused = update_pause();
-		} else {
+		}
+		if(!paused) {
 			// Pressing start opens the item menu (unless a script is running)
 			if(joy_pressed(btn[cfg_btn_pause]) && !tscState && wipeFadeTimer == -1) {
 				// This unloads the stage's script and loads the "ArmsItem" script in its place
 				tsc_load_stage(255);
 				draw_itemmenu(TRUE);
 				paused = TRUE;
-			} else if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
-					&& !tscState && wipeFadeTimer == -1 && (playerEquipment & EQUIP_MAPSYSTEM)) {
-				// Shorthand to open map system
-				vdp_set_display(FALSE);
-				if(g_stage.back_type == 4) {
-					// Hide water
-					static const uint32_t black[8] = {
-						0x11111111,0x11111111,0x11111111,0x11111111,
-						0x11111111,0x11111111,0x11111111,0x11111111
-					};
-					vdp_tiles_load(black, TILE_FACEINDEX, 1);
-					vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, 0, 40, 30, 0);
-				} else {
-					//vdp_map_clear(VDP_PLANE_W); // Don't clear the whole thing, breaks extended charsets
-					for(uint16_t y = 0; y < 30; y++) {
-						vdp_map_hline(VDP_PLANE_W, (const uint16_t*) BlankData, 0, y, 40);
-					}
-				}
-				vdp_set_window(0, pal_mode ? 30 : 28);
-				vdp_set_display(TRUE);
-
-				paused = TRUE; // This will stop the counter in Hell
-				do_map();
-				paused = FALSE;
-				vdp_set_display(FALSE);
-				hud_force_redraw();
-				sheets_load_stage(g_stage.id, TRUE, FALSE);
-				player_draw();
-				entities_draw();
-				hud_show();
-				vdp_sprites_update();
-				vdp_set_window(0, 0);
-				vdp_set_display(TRUE);
 			} else {
+				if(joy_pressed(btn[cfg_btn_map]) && joytype == JOY_TYPE_PAD6 
+						&& !tscState && wipeFadeTimer == -1 && (playerEquipment & EQUIP_MAPSYSTEM)) {
+					// Shorthand to open map system
+					vdp_set_display(FALSE);
+					if(g_stage.back_type == 4) {
+						// Hide water
+						static const uint32_t black[8] = {
+							0x11111111,0x11111111,0x11111111,0x11111111,
+							0x11111111,0x11111111,0x11111111,0x11111111
+						};
+						vdp_tiles_load(black, TILE_FACEINDEX, 1);
+						vdp_map_fill_rect(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, TILE_FACEINDEX), 0, 0, 40, 30, 0);
+					} else {
+						//vdp_map_clear(VDP_PLANE_W); // Don't clear the whole thing, breaks extended charsets
+						for(uint16_t y = 0; y < 30; y++) {
+							vdp_map_hline(VDP_PLANE_W, (const uint16_t*) BlankData, 0, y, 40);
+						}
+					}
+					vdp_set_window(0, pal_mode ? 30 : 28);
+					vdp_set_display(TRUE);
+
+					paused = TRUE; // This will stop the counter in Hell
+					do_map();
+					paused = FALSE;
+					vdp_set_display(FALSE);
+					hud_force_redraw();
+					hud_show();
+					sheets_load_stage(g_stage.id, TRUE, FALSE);
+					aftervsync();
+
+					player_draw();
+					entities_draw();
+					sys_wait_vblank();
+					vdp_set_window(0, 0);
+					vdp_set_display(TRUE);
+					ready = TRUE;
+					aftervsync();
+				}
 				// HUD on top
                 PF_BGCOLOR(0x008);
 				if(wipeFadeTimer >= 0) {
