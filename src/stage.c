@@ -548,15 +548,17 @@ void stage_draw_moonback(void) {
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;
 	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {
-        dma_now(DmaVRAM, (uint32_t) &topMap[index], VDP_PLANE_B + (y << 7), 40, 2);
+        dma_queue_rom(DmaVRAM, (uint32_t) &topMap[index], VDP_PLANE_B + (y << 7), 40, 2);
+		dma_flush();
 		index += 40;
 	}
 
 	// Bottom part
 	index = 0;
 	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 32 : 28); y++) {
-        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7), 32, 2);
-        dma_now(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7) + (32 << 1), 32, 2);
+        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7), 32, 2);
+        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7) + (32 << 1), 32, 2);
+		dma_flush();
 		index += 32;
 	}
 	g_stage.back_scroll_timer = 0;

@@ -32,8 +32,8 @@ int16_t cjkMapRow;
 // VDP_PLANE_W edge (+28 tiles) = 124
 // TILE_HUDINDEX (+32 tiles) = 156
 // TILE_NUMBERINDEX (+16 tiles) = 172
-// TILE_NAMEINDEX (+8 (of 16) tiles) = 180
-// TILE_FACEINDEX (+36 tiles) = 216
+// TILE_NAMEINDEX (+8 (of 20) tiles) = 184
+// TILE_FACEINDEX (+36 tiles) = 220
 
 // = CJK_CREDITS ALLOCATION =
 // 320 tiles of space in this region:
@@ -58,13 +58,13 @@ static uint16_t CjkNextTile(void) {
                 index = (cjkVramIndex - (96+30)) + TILE_NUMBERINDEX;
             } else if(cjkVramIndex < (96+30+16+32)) {
                 index = (cjkVramIndex - (96+30+16)) + TILE_HUDINDEX;
-            } else if(cjkVramIndex < (96+30+16+32+16)) {
+            } else if(cjkVramIndex < (96+30+16+32+20)) {
                 index = (cjkVramIndex - (96+30+16+32)) + TILE_NAMEINDEX;
             } else {
-                index = (cjkVramIndex - (96+30+16+32)) + TILE_FACEINDEX;
+                index = (cjkVramIndex - (96+30+16+32+20)) + TILE_FACEINDEX;
             }
             cjkVramIndex++;
-            if(cjkVramIndex >= (96+30+16+32)+36 || (showingFace && cjkVramIndex >= (96+30+16+32))) {
+            if(cjkVramIndex >= (96+30+16+32+20)+36 || (showingFace && cjkVramIndex >= (96+30+16+32+20))) {
                 cjkVramIndex = 0;
             }
             break;

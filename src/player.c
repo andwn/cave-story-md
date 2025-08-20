@@ -59,7 +59,7 @@ const uint8_t spur_time[2][4] = {
 Sprite weaponSprite;
 
 uint8_t mapNameSpriteNum;
-Sprite mapNameSprite[4];
+Sprite mapNameSprite[5];
 
 Sprite airSprite[2];
 uint8_t airPercent;
@@ -835,7 +835,7 @@ static void show_map_jname(uint8_t ttl) {
     uint16_t len = 0;
     uint16_t i = 0;
     mapNameSpriteNum = 0;
-    while(i < 16) {
+    while(i < 20) {
         uint16_t chr1, chr2;
         chr1 = GetNextChar(&names[g_stage.id*32], i++);
         if(chr1 == 0) break; // End of string
@@ -878,7 +878,7 @@ void player_show_map_name(uint8_t ttl) {
 	const uint32_t *font = cfg_language >= LANG_RU ? UFTC_SysFontRU : UFTC_SysFont;
 	uint16_t len = 0;
     uint16_t pos = 0;
-    while(len < 16) {
+    while(len < 20) {
         uint8_t chr = str[pos++];
         if(chr == 0x01) {
             chr = str[pos++];

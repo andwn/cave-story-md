@@ -1215,21 +1215,24 @@ uint8_t execute_command(void) {
 			// CMP for maps using those tilesets. Thankfully TSC instructions are not critical
 			// code, so I can put in this hacky section which fixes specific scripts
 			switch(g_stage.id) {
-				case STAGE_CORE:
+				case STAGE_CORE: // Appear over the large shutter during the boss fight
 					if(args[2] == 30) args[2] = 72;
 					if(args[2] == 47) args[2] = 44;
 					break;
 				case STAGE_MIMIGA_VILLAGE:
-				case STAGE_MIMIGA_SHACK:
+				case STAGE_MIMIGA_SHACK: // Balrog busts through the doorway
 					if(args[2] == 80 || args[2] == 81 || args[2] == 82) args[2] += 26;
 					else args[2] += 13;
 					break;
+				case STAGE_PLANTATION_JAIL_1: // Underwater passage after reading Sue's letter
+					if(args[2] == 66) args[2] = 73;
+					break;
 				case STAGE_HELL_OUTER_PASSAGE:
-				case STAGE_THRONE_ROOM:
+				case STAGE_THRONE_ROOM: // Stairs to get to next area
 					if(args[2] == 18) args[2] = 49;
 					if(args[2] == 21) args[2] = 50;
 					break;
-				case STAGE_KINGS_TABLE:
+				case STAGE_KINGS_TABLE: // Same deal
 					if(args[2] == 18) args[2] = 40;
 					if(args[2] == 21) args[2] = 41;
 					break;

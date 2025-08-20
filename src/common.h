@@ -12,11 +12,6 @@
 #define PF_BGCOLOR(c) ({})
 #endif
 
-// On PAL the screen height is 16 pixels more, so these can't be constants
-//extern uint8_t ScreenHeight;
-//extern uint8_t ScreenHalfH;
-//extern uint8_t FPS;
-
 // The original Cave Story is 50 FPS, and an MD can either run at 50 or 60 FPS
 // depending on region. To try and keep the speed of the game (mostly) the same,
 // a table for time and speed are used. On PAL, the values just match the index,
@@ -87,18 +82,20 @@ static inline uint8_t mddir(uint8_t dir) {
 // Get tiles from SpriteDefinition
 #define SPR_TILES(spr, f) ((spr)->tilesets[f]->tiles)
 
-// Tileset width/height
-#define TS_WIDTH    32
-#define TS_HEIGHT   16
 // Stage tileset is first in USERINDEX /*TILE_USERINDEX*/
 #define TILE_TSINDEX        16
-#define TILE_TSSIZE         (TS_WIDTH * TS_HEIGHT)
+#define TILE_TSSIZE         (112*4)
+
+#define TILE_EXWEPINDEX		(TILE_TSINDEX + TILE_TSSIZE)
+#define TILE_GIBINDEX		(TILE_EXWEPINDEX + 4*4)
+#define TILE_DISSIPINDEX	(TILE_GIBINDEX + 4)
+
 // Face graphics
-#define TILE_FACEINDEX      (TILE_TSINDEX + TILE_TSSIZE)
+#define TILE_FACEINDEX      (TILE_DISSIPINDEX + 4*4)
 #define TILE_FACESIZE       36
 // 16 tiles for the map name display
 #define TILE_NAMEINDEX      (TILE_FACEINDEX + TILE_FACESIZE)
-#define TILE_NAMESIZE       16
+#define TILE_NAMESIZE       20
 // Space for shared sprite sheets
 #define TILE_SHEETINDEX     (TILE_NAMEINDEX + TILE_NAMESIZE)
 #define TILE_SHEETSIZE      (TILE_FONTINDEX - TILE_SHEETINDEX)
@@ -137,9 +134,6 @@ static inline uint8_t mddir(uint8_t dir) {
 #define TILE_CLOUD2INDEX    (TILE_CLOUDINDEX + (16*12))
 #define TILE_CLOUD3INDEX    (TILE_CLOUD2INDEX + (16*3))
 #define TILE_CLOUD4INDEX    (TILE_CLOUD3INDEX + (9*3))
-
-#define TILE_GIBINDEX		(TILE_FACEINDEX - 4*1)
-#define TILE_DISSIPINDEX	(TILE_GIBINDEX - 4*4)
 
 // Bounding box used for collision and relative area to display sprites
 typedef union {

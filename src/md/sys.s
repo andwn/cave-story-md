@@ -59,7 +59,7 @@ Date:
 		dc.l	SramBase+0xFFFE             /* SRAM End Address */
 	.globl Version
 Version:
-		.ascii	"Ver 0.8.5\0  "              /* Modem? */
+		.ascii	"Ver 0.8.6\0  "              /* Modem? */
 	.globl Homepage
 Homepage:
 		.ascii	"https://github.com/andwn/cave-story-md\0\0" /* Free space for note */

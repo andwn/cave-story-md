@@ -4,15 +4,15 @@ My VRAM map has become too elaborate to remember in my head so hopefully this do
 Some things are different from this when drawing Japanese text. Maybe I'll document it
 eventually.
 
-#### 0x000 (TILE_SYSTEMINDEX)
-First 16 tiles set by SGDK as plain palette colors.
-I leave the first (transparency) alone and overwrite the rest like this:
+#### 0x000
+First 16 tiles that were reserved by SGDK when I still used it.
+I leave the first (transparency) alone and use the rest like this:
 - `0x1` - 1 tile for the little head bonk stars
 - `0x2` - 4 tiles for Quote
 - `0x6` - 6 tiles for the current weapon (3 horiz + 3 vert)
 - `0xC` - 4 tiles for the boosters' smoke trail
 
-#### 0x010 (TILE_USERINDEX and TILE_TSINDEX)
+#### 0x010 (TILE_TSINDEX)
 On the title screen I toss the full walking animation of Quote here because I'm lazy.
 In-game it's where the current map's tileset goes, they are at most 256x112 pixels (448 tiles).
 Some of them had to be crushed with a custom utility.
@@ -30,11 +30,12 @@ For example, the item menu clobbers this:
 This space is reused by boss battles to display the boss health bar.
 
 #### 0x204 (TILE_SHEETINDEX)
-Space for shared sprite sheets - the first 4 are always power ups:
+Space for shared sprite sheets - the first 5 are always:
 1. Heart, 2x2x4 tiles
 2. Missile, 2x2x4 tiles
 3. Small Energy, 1x1x6 tiles
 4. Large Energy, 2x2x6 tiles
+5. Whimsical Star, 3x1x1 tiles
 The remaining depend on the current map and which weapons the player currently owns.
 The maximum number of sheets is 24, but the allocation space is not limited or bounds checked in any way.
 Be careful.
