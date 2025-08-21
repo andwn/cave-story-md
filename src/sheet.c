@@ -277,6 +277,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_OMGSHOT, &SPR_OmgShot, 4,2,2, 0, 1, 2, 3);
 			SHEET_ADD(SHEET_SKULLH, &SPR_Skullhead, 2,4,3, 0, 1);
 			SHEET_ADD(SHEET_OMGLEG, &SPR_OmegaLeg, 2,4,4, 0, 1);
+			SHEET_ADD(SHEET_SKULLST, &SPR_SkelFeet, 2,3,2, 0,1);
 		} break;
 		case 0x1D: // Sand Zone Bar
 		{	SHEET_ADD(SHEET_BARMIMI, &SPR_CurlyMimi, 9,2,2, 

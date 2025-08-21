@@ -66,8 +66,8 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ &SPR_Bone,		NOSHEET,		1, PAL1, &onspawn_persistent, 	&ai_skeleton_shot, 	&ondeath_nodrop 	,""}, // Skeleton
 	{ NULL,				SHEET_CROW, 	1, PAL3, &ai_null, 				&ai_crow_with_skull,&ondeath_crowskull 	,""}, // Crow & Skullhead
 	{ &SPR_Robot,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Blue Robot
-	{ NULL,				NOSHEET, 		0, PAL0, &ai_null, 				&ai_null, 			&ai_null 			,""}, // ???UNKNOWN???
-	{ NULL,				SHEET_SKULLH,	1, PAL1, &ai_null, 				&ai_skullhead, 		&ondeath_default 	,""}, // Skullstep
+	{ NULL,				SHEET_SKULLST, 	1, PAL1, &ai_null, 				&ai_skullstep_leg, 	&ai_null 			,""}, // Skullstep leg
+	{ NULL,				SHEET_SKULLH,	1, PAL1, &ai_null, 				&ai_skullstep, 		&ondeath_default 	,""}, // Skullstep
 	{ &SPR_Kazuma,		NOSHEET, 		1, PAL3, &onspawn_snap, 		&ai_kazuma, 		&ai_null 			,""}, // Kazuma
 	{ NULL,				SHEET_BEETLE, 	1, PAL3, &ai_null, 				&ai_beetle, 		&ondeath_default 	,""}, // Beetle
 	{ NULL,				SHEET_CROW, 	1, PAL3, &ai_null, 				&ai_crow, 			&ondeath_crowskull 	,""}, // Crow

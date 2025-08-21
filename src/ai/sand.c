@@ -563,6 +563,117 @@ void ai_skullhead(Entity *e) {
 	}
 }
 
+
+// 053: Skullstep Leg
+void ai_skullstep_leg(Entity *e) {
+	if(e->linkedEntity->state == STATE_DESTROY) {
+        e->state = STATE_DELETE;
+		return;
+	}
+
+	if(e->linkedEntity->animtime) {
+		e->linkedEntity->animtime--;
+	} else {
+		return; // Parent off-screen
+	}
+
+    uint8_t deg = e->jump_time + e->linkedEntity->jump_time;
+	e->x_next = cos[deg] << 3;
+	e->y_next = sin[deg] << 3;
+    e->x_next += e->linkedEntity->x;
+    e->y_next += e->linkedEntity->y;
+
+    e->frame = (deg >= 20 && deg <= 108) ? 0 : 1;
+    e->dir = e->linkedEntity->dir;
+
+	if(e->dir) {
+        collide_stage_rightwall(e);
+    } else {
+        collide_stage_leftwall(e);
+    }
+	if(collide_stage_floor(e)) {
+        e->linkedEntity->y -= SPEED(0x1FF);
+        e->linkedEntity->y_speed -= SPEED(0x100);
+        e->linkedEntity->x_speed += e->dir ? SPEED(0x80) : -SPEED(0x80);
+    }
+    
+	e->x = e->x_next;
+	e->y = e->y_next;
+}
+
+// 054: Skullstep
+void ai_skullstep(Entity *e) {
+	switch (e->state) {
+		case 0:
+			Entity *l = entity_create(e->x, e->y, 53, e->dir ? NPC_OPTION2 : 0);
+			Entity *r = entity_create(e->x, e->y, 53, e->dir ? NPC_OPTION2 : 0);
+			l->linkedEntity = e;
+			r->linkedEntity = e;
+            l->jump_time = 0;
+            r->jump_time = 0x80;
+			l->alwaysActive = TRUE;
+			r->alwaysActive = TRUE;
+			l->enableSlopes = TRUE;
+			r->enableSlopes = TRUE;
+
+			e->state = 1;
+			e->frame = 0;
+			// Fallthrough
+		case 1:
+			e->animtime = 2;
+			e->jump_time += e->dir ? 6 : -6;
+
+			e->x_next = e->x;
+			e->y_next = e->y;
+			if(collide_stage_floor(e)) {
+				e->x_speed = (e->x_speed >> 2) + (e->x_speed >> 1);
+				if(++e->timer > TIME(60)) {
+					e->state = 2;
+					e->timer = 0;
+				}
+			} else {
+				e->timer = 0;
+			}
+			
+			e->y_next = e->y;
+			if(e->dir) {
+				if(collide_stage_rightwall(e)) {
+                    e->dir = LEFT;
+                    e->x_speed = -e->x_speed;
+				}
+			} else {
+				if(collide_stage_leftwall(e)) {
+					e->dir = RIGHT;
+                    e->x_speed = -e->x_speed;
+				}
+			}
+			// Discard
+			//e->x = e->x_next;
+			//e->y = e->y_next;
+			break;
+
+		case 2:
+			++e->damage_time;
+			if(++e->timer > TIME(50)) {
+				e->state = STATE_DESTROY;
+			}
+			break;
+	}
+
+    if(e->x_speed > SPEED(0x2FF)) {
+        e->x_speed = SPEED(0x2FF);
+    } else if(e->x_speed < -SPEED(0x2FF)) {
+        e->x_speed = -SPEED(0x2FF);
+    }
+
+	e->y_speed += SPEED(0x80);
+	if(e->y_speed > SPEED(0x2FF)) e->y_speed = SPEED(0x2FF);
+
+	e->x += e->x_speed;
+	e->y += e->y_speed;
+}
+
+
 extern void ondeath_default(Entity *e);
 
 void ondeath_crowskull(Entity *e) {
