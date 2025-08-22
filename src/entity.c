@@ -980,16 +980,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
 	// Allocate memory and start applying values
 	uint8_t sprite_count = npc_info[type].sprite_count;
 	Entity *e = malloc(sizeof(Entity) + sizeof(Sprite) * sprite_count);
-	if(!e) {
-		vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
-		vdp_hscroll(VDP_PLANE_A, 0);
-		vdp_vscroll(VDP_PLANE_A, 0);
-		vdp_color(0, 0);
-		vdp_color(15, 0xEEE);
-		vdp_puts(VDP_PLANE_A, "OOM", 4, 4);
-		k_str("OOM");
-		for(;;);
-	}
+	ASSERT_COLOR(0x00E, e);
 
 	k_str("new entity");
 	k_hex16(type);

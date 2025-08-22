@@ -31,8 +31,6 @@ uint8_t saveselect_main(void);
 
 // Play the actual game. "load" is whether new game or continue was selected
 void game_main(uint8_t load);
-// Show the map - called from <MLP
-void do_map(void);
 
 // Listen to music, sound effects
 void soundtest_main(void);

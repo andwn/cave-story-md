@@ -420,6 +420,11 @@ void ai_player(Entity *e) {
 		case 0:
 		{
 			if(g_stage.id == STAGE_SEAL_CHAMBER_2) e->dir = 1;
+			if(g_stage.id == STAGE_GUNSMITH) {
+				e->x_next = player.x;
+				e->y_next = player.y;
+				e->dir = player.dir;
+			}
 			e->state++;
 		} /* fallthrough */
 		case 1:
@@ -515,6 +520,8 @@ void ai_player(Entity *e) {
 	if(collide) entity_update_collision(e);
 	e->x = e->x_next;
 	e->y = e->y_next;
+
+	if((playerEquipment & EQUIP_MIMIMASK) && e->frame < 10) e->frame += 10; 
 }
 
 void ai_computer(Entity *e) {

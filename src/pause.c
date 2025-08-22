@@ -402,7 +402,7 @@ void itemcursor_move(int8_t oldindex, int8_t index) {
     vdp_map_xy(VDP_PLANE_W, TILE_FACEINDEX + 3, x + w, y + h);
 }
 
-void do_map(void) {
+void do_map(uint8_t from_menu) {
     vdp_sprites_clear();
     vdp_sprites_update();
     dma_flush();
@@ -426,7 +426,7 @@ void do_map(void) {
 
     for(uint16_t y = 0; y < ((g_stage.pxm.height+2) / 8) + ((g_stage.pxm.height) % 8 > 0); y++) {
         for(uint16_t x = 0; x < ((g_stage.pxm.width+2) / 8) + ((g_stage.pxm.width) % 8 > 0); x++) {
-            uint8_t result = gen_maptile(x*8, y*8, index);
+            uint8_t result = gen_maptile(x*8, y*8, index, from_menu);
             if(!result) {
                 vdp_map_xy(VDP_PLANE_W, TILE_ATTR(PAL0, 1, 0, 0, index), mapx + x, mapy + y);
                 index++;
@@ -456,10 +456,10 @@ void do_map(void) {
         ready = TRUE;
         sys_wait_vblank(); aftervsync();
     }
-    if(paused) draw_itemmenu(FALSE);
+    if(from_menu) draw_itemmenu(FALSE);
 }
 
-uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
+uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index, uint8_t from_menu) {
     static const uint32_t blankLine = 0x11111111;
     static const uint32_t solidLine = 0xBBBBBBBB;
     static const uint32_t colors[4] = {9, 11, 10, 1};
@@ -469,7 +469,7 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
         if(by+y == 0 || by+y+1 == g_stage.pxm.height) { // Top / Bottom borders
             tile[y] = blankLine;
         } else if(by+y+1 > g_stage.pxm.height) { // Below bottom border
-            tile[y] = paused ? 0x22222222 : 0x00000000;
+            tile[y] = from_menu ? 0x22222222 : 0x00000000;
         } else {
             tile[y] = 0;
             uint16_t stg_y = by + y - 1;
@@ -479,7 +479,7 @@ uint8_t gen_maptile(uint16_t bx, uint16_t by, uint16_t index) {
                 } else if(bx+x+1 == g_stage.pxm.width) { // Right border
                     tile[y] |= 1LU << ((7 - x) << 2);
                 } else if(bx+x+1 > g_stage.pxm.width) { // After right border
-                    tile[y] |= (paused ? 2LU : 0LU) << ((7 - x) << 2);
+                    tile[y] |= (from_menu ? 2LU : 0LU) << ((7 - x) << 2);
                 } else {
                     uint16_t stg_x = bx + x - 1;
                     uint8_t block = stage_get_block_type(stg_x, stg_y);

@@ -85,7 +85,7 @@ void game_main(uint8_t load) {
 					vdp_set_display(TRUE);
 
 					paused = TRUE; // This will stop the counter in Hell
-					do_map();
+					do_map(FALSE);
 					paused = FALSE;
 					vdp_set_display(FALSE);
 					hud_force_redraw();

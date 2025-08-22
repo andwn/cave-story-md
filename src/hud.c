@@ -13,6 +13,7 @@
 #include "md/vdp.h"
 #include "weapon.h"
 #include "effect.h"
+#include "tsc.h"
 
 #include "hud.h"
 #include "res/tiles.h"
@@ -140,7 +141,7 @@ void hud_hide(void) {
 void hud_update(void) {
 	uint8_t weaponChange = FALSE;
 	//if(paused) return;
-	if(!showing || wipeFadeTimer > 0) return;
+	if(!showing || inFade || wipeFadeTimer > 0) return;
 
 	vdp_sprites_add(sprHUD, 2);
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent

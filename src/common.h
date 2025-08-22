@@ -12,6 +12,12 @@
 #define PF_BGCOLOR(c) ({})
 #endif
 
+#define ASSERT_COLOR(c, cond) if(!(cond)) {									\
+	*((volatile uint32_t *)0xC00004) = 0xC0000000;							\
+	for(uint16_t i = 0; i < 64; i++) *((volatile uint16_t *)0xC00000) = c;	\
+	for(;;);																\
+}
+
 // The original Cave Story is 50 FPS, and an MD can either run at 50 or 60 FPS
 // depending on region. To try and keep the speed of the game (mostly) the same,
 // a table for time and speed are used. On PAL, the values just match the index,

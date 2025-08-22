@@ -84,15 +84,15 @@ void effects_update(void) {
 		vdp_sprite_add(&effDamage[i].sprite);
 	}
 
-	static volatile const uint8_t * vcounter = (volatile const uint8_t*) 0xC00008;
-	uint8_t start = 0;
-	uint8_t step = 1;
-	if(*vcounter >= 200) {
-		start = system_frame_step() & 1;
-		step = 2;
-	}
+	//static volatile const uint8_t * vcounter = (volatile const uint8_t*) 0xC00008;
+	//uint8_t start = 0;
+	//uint8_t step = 1;
+	//if(*vcounter >= 200) {
+	//	start = system_frame_step() & 1;
+	//	step = 2;
+	//}
 
-	for(uint8_t i = start; i < MAX_MISC; i += step) {
+	for(uint8_t i = 0; i < MAX_MISC; i++) {
 		if(!effMisc[i].ttl) continue;
 		effMisc[i].ttl--;
 		switch(effMisc[i].type) {

@@ -21,6 +21,7 @@
 #include "stage.h"
 #include "system.h"
 #include "tables.h"
+#include "pause.h"
 #include "md/comp.h"
 #include "md/sys.h"
 #include "md/vdp.h"
@@ -1197,7 +1198,7 @@ uint8_t execute_command(void) {
 		{
 			if(check_fadein()) return 1;
 
-			do_map();
+			do_map(TRUE);
 		}
 		break;
 		case CMD_MNA: // Show stage name

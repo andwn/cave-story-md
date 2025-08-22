@@ -526,7 +526,10 @@ void ai_gaudiArmor(Entity *e) {
 	e->x = e->x_next;
 	e->y = e->y_next;
 	
-	if(!e->grounded) e->y_speed += SPEED(0x33);
+	if(!e->grounded) {
+		e->y_speed += SPEED(0x33);
+		if(e->state < 10) e->grounded = collide_stage_floor(e);
+	}
 	LIMIT_Y(SPEED(0x5ff));
 }
 

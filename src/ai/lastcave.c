@@ -208,7 +208,7 @@ void ai_red_demon(Entity *e) {
 				case 50:
 				{
 					e->frame = 4;
-					Entity *shot = entity_create(e->x, e->y, OBJ_RED_DEMON_SHOT, 0);
+					Entity *shot = entity_create(e->x, e->y - 0x1000, OBJ_RED_DEMON_SHOT, 0);
 					THROW_AT_TARGET(shot, player.x, player.y, 0x800);
 					sound_play(SND_EM_FIRE, 5);
 				}

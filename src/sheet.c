@@ -203,6 +203,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x5A: // Gunsmith
 		{	
+			SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0, 1, 2, 3);
 			if(!player_has_weapon(WEAPON_SPUR) && (playerEquipment & EQUIP_BOOSTER20)) {
 				Weapon w = (Weapon) { .type = WEAPON_SPUR, .level = 1 };
 				sheets_load_weapon(&w);
@@ -210,7 +211,6 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			//	Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
 			//	sheets_load_weapon(&w);
 			//}
-			SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0, 1, 2, 3);
 		} break;
 		case 0x10: // Graveyard
 		{	SHEET_ADD(SHEET_PIGNON, &SPR_Pignon, 5,2,2, 0, 1, 2, 3, 4);
@@ -299,13 +299,19 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 			SHEET_ADD(SHEET_GAUDIF, &SPR_GaudiFly, 3,3,3, 0, 1, 2);
 			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
 			if(g_stage.id == 0x27) {
-				SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0, 1, 2, 3);
-				SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0);
-				SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
-					 0, 1, 2, 3, 4, 5, 6, 7);
-				SHEET_ADD(SHEET_XFISHY, &SPR_XFishy, 8,2,2,
-					 0, 1, 2, 3, 4, 5, 6, 7);
-				SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0, 1, 2, 3);
+				if(system_get_flag(680)) {
+					SHEET_ADD(SHEET_ARGAUDI, &SPR_GaudiArmor, 4,3,3, 0, 1, 2, 3);
+					SHEET_ADD(SHEET_GAUDISHOT, &SPR_GaudiShot, 3,2,2, 0, 1, 2);
+				} else {
+					SHEET_ADD(SHEET_XTREAD, &SPR_XTread, 4,8,4, 0, 1, 2, 3);
+					SHEET_ADD(SHEET_XBODY, &SPR_XBody, 1,8,4, 0);
+					SHEET_ADD(SHEET_XTARGET, &SPR_XTarget, 8,2,2, 
+						0, 1, 2, 3, 4, 5, 6, 7);
+					SHEET_ADD(SHEET_XFISHY, &SPR_XFishy, 8,2,2,
+						0, 1, 2, 3, 4, 5, 6, 7);
+					SHEET_ADD(SHEET_FFIELD, &SPR_ForceField, 4,2,2, 0, 1, 2, 3);
+				}
+				
 			}
 		} break;
 		case 0x2A: // Labyrinth Shop
@@ -323,7 +329,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		} break;
 		case 0x2D: // Labyrinth M
 		{	SHEET_ADD(SHEET_CRITTER, &SPR_CritterP, 6,2,2, 0, 1, 2, 3, 4, 5);
-			SHEET_ADD(SHEET_GAUDI, &SPR_GaudiArmor, 4,3,3, 0, 1, 2, 3);
+			SHEET_ADD(SHEET_GAUDI, &SPR_Gaudi, 4,3,3, 0, 1, 2, 3);
+			SHEET_ADD(SHEET_ARGAUDI, &SPR_GaudiArmor, 4,3,3, 0, 1, 2, 3);
 			SHEET_ADD(SHEET_GAUDID, &SPR_GaudiDie, 3,3,3, 0, 1, 2);
 			SHEET_ADD(SHEET_FUZZ, &SPR_Fuzz, 2,2,2, 0,1);
 			SHEET_ADD(SHEET_FUZZC, &SPR_FuzzCore, 2,4,4, 0,1);
@@ -581,6 +588,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		for(uint8_t i=0;i<3;i++) frameOffset[sheet_num][i] = 2*2*i;
 		sheet_num++;
 	}
+
+	ASSERT_COLOR(0x0EE, sheet_num <= MAX_SHEETS);
 }
 
 void sheets_load_intro(void) {
