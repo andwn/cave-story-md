@@ -392,8 +392,8 @@ void ai_omega_shot(Entity *e) {
 		//if(e->y_speed > 0 && py > block_to_pixel(13) + 8) {
 			// Delete brown shots when they hit the ground, red ones bounce
 			if(e->frame > 1) {
-				effect_create_smoke(px, py);
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_SMOKE, px, py, FALSE);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -411,8 +411,8 @@ void ai_omega_shot(Entity *e) {
 		}
 		e->frame ^= 1;
 	} else if(e->timer > TIME_10(0x240)) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 	e->x += e->x_speed;

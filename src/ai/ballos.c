@@ -532,7 +532,7 @@ void ai_ballos_f3(Entity *e) {
 					case 281:
 					case 292:
 					{
-						effect_create_smoke(e->x >> CSF, (e->y >> CSF) - 52);
+						effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) - 52, FALSE);
 						entity_create(e->x, e->y - pixel_to_sub(52), OBJ_BUTE_SWORD_RED, 0);
 						sound_play(SND_EM_FIRE, 5);
 					}
@@ -595,8 +595,8 @@ void ai_ballos_f3(Entity *e) {
 		{
 			int16_t x = (e->x >> CSF) - 0x3F + (rand() & 0x7F);
 			int16_t y = (e->y >> CSF) - 0x3F + (rand() & 0x7F);
-			effect_create_smoke(x, y);
-			effect_create_misc(x, y, EFF_DISSIPATE, FALSE);
+			effect_create(EFF_SMOKE, x, y, FALSE);
+			effect_create(x, y, EFF_DISSIPATE, FALSE);
 			
 			e->timer++;
 			

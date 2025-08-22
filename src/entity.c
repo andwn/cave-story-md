@@ -136,8 +136,8 @@ Entity *entity_delete_inactive(Entity *e) {
 Entity *entity_destroy(Entity *e) {
 	sound_play(e->deathSound, 5);
 	entity_drop_powerup(e);
-	effect_create_smoke(e->x >> CSF, e->y >> CSF);
-	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+	effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	return entity_delete(e);
@@ -463,7 +463,7 @@ void entity_handle_bullet(Entity *e, Bullet *b) {
 			if(b->damage < e->health) sound_play(e->hurtSound, 5);
 		}
         if(b->type == WEAPON_POLARSTAR) {
-            effect_create_misc(EFF_PSTAR_HIT, b->x >> CSF, b->y >> CSF, FALSE);
+            effect_create(EFF_PSTAR_HIT, b->x >> CSF, b->y >> CSF, FALSE);
         }
 	}
 	if(!(e->flags & NPC_INVINCIBLE)) {
@@ -719,8 +719,8 @@ uint8_t collide_stage_ceiling(Entity *e) {
 			e->jump_time = 0;
 			if(!playerNoBump && e->y_speed < -SPEED_10(0x200)) {
 				sound_play(SND_BONK_HEAD, 2);
-				effect_create_misc(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6, FALSE);
-				effect_create_misc(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6, FALSE);
+				effect_create(EFF_BONKL, (e->x >> CSF) - 4, (e->y >> CSF) - 6, FALSE);
+				effect_create(EFF_BONKR, (e->x >> CSF) + 4, (e->y >> CSF) - 6, FALSE);
 				if(shoot_cooldown) {
 					playerNoBump = TRUE;
 				} else {

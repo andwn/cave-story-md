@@ -47,7 +47,7 @@ void ai_curly(Entity *e) {
 		case 5:
 		{
 			e->state = 6;
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		}
 		/* fallthrough */
 		case 6:
@@ -460,11 +460,11 @@ void ai_curlyBossShot(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if(blk(e->x, 0, e->y, 0) == 0x41) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	} else if(!player_invincible() && entity_overlapping(e, &player)) {
 		player_inflict_damage(e->attack);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	} else {
 		e->x = e->x_next;

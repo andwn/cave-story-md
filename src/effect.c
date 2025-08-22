@@ -13,12 +13,13 @@
 #include "md/comp.h"
 #include "md/vdp.h"
 #include "md/sys.h"
+#include "system.h"
 #include "hud.h"
 #include "gamemode.h"
 
 #include "effect.h"
 
-static Effect effDamage[MAX_DAMAGE], effSmoke[MAX_SMOKE], effMisc[MAX_MISC];
+static Effect effDamage[MAX_DAMAGE], effMisc[MAX_MISC];
 static struct {
 	Entity *e;
 	int16_t xoff, yoff;
@@ -36,7 +37,6 @@ uint8_t wipeFadeDir;
 void effects_init(void) {
 	wipeFadeTimer = -1;
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
-	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_reload_tiles();
 }
@@ -44,7 +44,6 @@ void effects_init(void) {
 void effects_clear(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
-	effects_clear_smoke();
 }
 
 void effects_reload_tiles(void) {
@@ -55,9 +54,7 @@ void effects_reload_tiles(void) {
 	SHEET_LOAD(&SPR_Gib, 4, 1, TILE_GIBINDEX, TRUE, 0,1,2,3);
 }
 
-void effects_clear_smoke(void) {
-	for(uint8_t i = 0; i < MAX_SMOKE; i++) effSmoke[i].ttl = 0;
-}
+
 
 void effects_update(void) {
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) {
@@ -86,23 +83,32 @@ void effects_update(void) {
                    effDamage[i].y - camera.y_shifted);
 		vdp_sprite_add(&effDamage[i].sprite);
 	}
-	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
-		if(!effSmoke[i].ttl) continue;
-		effSmoke[i].ttl--;
-		effSmoke[i].x += effSmoke[i].x_speed;
-		effSmoke[i].y += effSmoke[i].y_speed;
-		// Half assed animation
-		sprite_index(&effSmoke[i].sprite,
-			TILE_SMOKEINDEX + 24 - ((effSmoke[i].ttl >> 2) << 2));
-		sprite_pos(&effSmoke[i].sprite,
-                   effSmoke[i].x - camera.x_shifted - 8,
-                   effSmoke[i].y - camera.y_shifted - 8);
-		vdp_sprite_add(&effSmoke[i].sprite);
+
+	static volatile const uint8_t * vcounter = (volatile const uint8_t*) 0xC00008;
+	uint8_t start = 0;
+	uint8_t step = 1;
+	if(*vcounter >= 200) {
+		start = system_frame_step() & 1;
+		step = 2;
 	}
-	for(uint8_t i = 0; i < MAX_MISC; i++) {
+
+	for(uint8_t i = start; i < MAX_MISC; i += step) {
 		if(!effMisc[i].ttl) continue;
 		effMisc[i].ttl--;
 		switch(effMisc[i].type) {
+			case EFF_SMOKE:
+			{
+				effMisc[i].x += effMisc[i].x_speed;
+				effMisc[i].y += effMisc[i].y_speed;
+				// Half assed animation
+				sprite_index(&effMisc[i].sprite,
+					TILE_SMOKEINDEX + 24 - ((effMisc[i].ttl >> 2) << 2));
+				sprite_pos(&effMisc[i].sprite,
+							effMisc[i].x - camera.x_shifted - 8,
+							effMisc[i].y - camera.y_shifted - 8);
+				vdp_sprite_add(&effMisc[i].sprite);
+			}
+			break;
 			case EFF_BONKL:
 			{
 				if(effMisc[i].ttl&1) {
@@ -301,32 +307,7 @@ void effect_create_damage(int16_t num, Entity *follow, int16_t xoff, int16_t yof
 	}
 }
 
-Effect* effect_create_smoke(int16_t x, int16_t y) {
-	for(uint8_t i = 0; i < MAX_SMOKE; i++) {
-		if(effSmoke[i].ttl) continue;
-		effSmoke[i].x = x;
-		effSmoke[i].y = y;
-		switch(rand() & 7) {
-			case 0: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = 0; break;
-			case 1:	effSmoke[i].x_speed = -1; effSmoke[i].y_speed = 0; break;
-			case 2: effSmoke[i].x_speed = -1; effSmoke[i].y_speed = -1; break;
-			case 3: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = -1; break;
-			case 4: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = -1; break;
-			case 5:	effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 0; break;
-			case 6: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
-			case 7: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
-		}
-		effSmoke[i].ttl = 24;
-		effSmoke[i].sprite = (Sprite) {
-			.size = SPRITE_SIZE(2, 2),
-			.attr = TILE_ATTR(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
-		};
-		return &effSmoke[i];
-	}
-	return NULL;
-}
-
-Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
+Effect* effect_create(uint8_t type, int16_t x, int16_t y, uint8_t only_one) {
 	uint16_t i;
 	for(i = 0; i < MAX_MISC; i++) {
 		if(effMisc[i].ttl) {
@@ -339,6 +320,25 @@ Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one)
 		effMisc[i].x_speed = 0;
 		effMisc[i].y_speed = 0;
 		switch(type) {
+			case EFF_SMOKE:
+			{
+				switch(rand() & 7) {
+					case 0: effMisc[i].x_speed = 0;  effMisc[i].y_speed = 0; break;
+					case 1:	effMisc[i].x_speed = -1; effMisc[i].y_speed = 0; break;
+					case 2: effMisc[i].x_speed = -1; effMisc[i].y_speed = -1; break;
+					case 3: effMisc[i].x_speed = 0;  effMisc[i].y_speed = -1; break;
+					case 4: effMisc[i].x_speed = 1;  effMisc[i].y_speed = -1; break;
+					case 5:	effMisc[i].x_speed = 1;  effMisc[i].y_speed = 0; break;
+					case 6: effMisc[i].x_speed = 1;  effMisc[i].y_speed = 1; break;
+					case 7: effMisc[i].x_speed = 1;  effMisc[i].y_speed = 1; break;
+				}
+				effMisc[i].ttl = 24;
+				effMisc[i].sprite = (Sprite) {
+					.size = SPRITE_SIZE(2, 2),
+					.attr = TILE_ATTR(PAL1, 1, 0, 0, TILE_SMOKEINDEX)
+				};
+			}
+			break;
 			case EFF_BONKL: // Dots that appear when player bonks their head on the ceiling
 			case EFF_BONKR:
 			{
@@ -507,14 +507,14 @@ Effect* effect_create_misc(uint8_t type, int16_t x, int16_t y, uint8_t only_one)
 			case EFF_GIB:
             {
 				switch(rand() & 7) {
-					case 0: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = 0; break;
-					case 1:	effSmoke[i].x_speed = -1; effSmoke[i].y_speed = 0; break;
-					case 2: effSmoke[i].x_speed = -1; effSmoke[i].y_speed = -1; break;
-					case 3: effSmoke[i].x_speed = 0;  effSmoke[i].y_speed = -1; break;
-					case 4: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = -1; break;
-					case 5:	effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 0; break;
-					case 6: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
-					case 7: effSmoke[i].x_speed = 1;  effSmoke[i].y_speed = 1; break;
+					case 0: effMisc[i].x_speed = 0;  effMisc[i].y_speed = 0; break;
+					case 1:	effMisc[i].x_speed = -1; effMisc[i].y_speed = 0; break;
+					case 2: effMisc[i].x_speed = -1; effMisc[i].y_speed = -1; break;
+					case 3: effMisc[i].x_speed = 0;  effMisc[i].y_speed = -1; break;
+					case 4: effMisc[i].x_speed = 1;  effMisc[i].y_speed = -1; break;
+					case 5:	effMisc[i].x_speed = 1;  effMisc[i].y_speed = 0; break;
+					case 6: effMisc[i].x_speed = 1;  effMisc[i].y_speed = 1; break;
+					case 7: effMisc[i].x_speed = 1;  effMisc[i].y_speed = 1; break;
 				}
                 effMisc[i].ttl = 15;
                 effMisc[i].sprite = (Sprite) {
@@ -679,6 +679,6 @@ void update_fadein_wipe(void) {
 		}
 	} else {
 		// After the fade is done, need to restore HUD tiles we clobbered
-		hud_force_redraw();
+		if(gamemode == GM_GAME) hud_force_redraw();
 	}
 }

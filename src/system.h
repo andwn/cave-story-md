@@ -100,6 +100,8 @@ uint8_t system_get_flag(uint16_t flag);
 void system_set_skip_flag(uint16_t flag, uint8_t value);
 uint8_t system_get_skip_flag(uint16_t flag);
 
+uint8_t system_frame_step(void);
+
 // Increments play time
 void system_update(void);
 

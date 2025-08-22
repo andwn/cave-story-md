@@ -768,7 +768,7 @@ void bullet_update_snake(Bullet *b) {
 	sprite_index(&b->sprite, sheets[b->sheet].index + index);
 	vdp_sprite_add(&b->sprite);
     if(b->level > 1 && (b->ttl & 3) == 0) {
-        effect_create_misc(EFF_SNAKETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
+        effect_create(EFF_SNAKETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
     }
 }
 
@@ -782,12 +782,12 @@ void bullet_update_polarstar(Bullet *b) {
 	if(block == 0x43) {
         bullet_deactivate(b);
 		bullet_destroy_block(pixel_to_block(bx), pixel_to_block(by));
-		effect_create_smoke(bx, by);
+		effect_create(EFF_SMOKE, bx, by, FALSE);
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
         bullet_deactivate(b);
 		sound_play(SND_SHOT_HIT, 3);
-        effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+        effect_create(EFF_PSTAR_HIT, bx, by, FALSE);
 	} else if(block & BLOCK_SLOPE) {
         int8_t height = heightmap[block & 3][bx & 15];
         if(block & 4) height = -height;
@@ -795,11 +795,11 @@ void bullet_update_polarstar(Bullet *b) {
         if(overlap > 0) {
             bullet_deactivate(b);
             sound_play(SND_SHOT_HIT, 3);
-            effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+            effect_create(EFF_PSTAR_HIT, bx, by, FALSE);
         }
     } else {
         if(!--b->ttl) {
-            effect_create_misc(EFF_PSTAR_HIT, bx, by, FALSE);
+            effect_create(EFF_PSTAR_HIT, bx, by, FALSE);
             b->extent.x1 = 0xFFFF;
             return;
         }
@@ -855,7 +855,7 @@ void bullet_update_fireball(Bullet *b) {
 	sprite_index(&b->sprite, sheets[b->sheet].index + (index < 12 ? index : 0));
 	vdp_sprite_add(&b->sprite);
 	if(b->level > 1 && (b->ttl & 3) == 0) {
-	    effect_create_misc(EFF_FIRETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
+	    effect_create(EFF_FIRETRAIL, b->x >> CSF, b->y >> CSF, FALSE);
 	};
 }
 
@@ -866,12 +866,12 @@ void bullet_update_machinegun(Bullet *b) {
 	if(block == 0x43) {
         bullet_deactivate(b);
 		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 		sound_play(SND_BLOCK_DESTROY, 5);
 	} else if(block == 0x41) { // Bullet hit a wall
         bullet_deactivate(b);
 		sound_play(SND_SHOT_HIT, 3);
-        //effect_create_misc(EFF_MGUN_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
+        //effect_create(EFF_MGUN_HIT, (b->x >> CSF) - 4, (b->y >> CSF) - 4, FALSE);
 	} else {
         if(!--b->ttl) {
             b->extent.x1 = 0xFFFF;
@@ -927,7 +927,7 @@ void bullet_update_missile(Bullet *b) {
 			if(b->ttl & 1) b->x_speed >>= 1;
 			break;
 		}
-		if((b->ttl & 7) == 0) effect_create_misc(EFF_BOOST2, b->x >> CSF, b->y >> CSF, FALSE);
+		if((b->ttl & 7) == 0) effect_create(EFF_BOOST2, b->x >> CSF, b->y >> CSF, FALSE);
 		b->x += b->x_speed;
 		b->y += b->y_speed;
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
@@ -936,7 +936,7 @@ void bullet_update_missile(Bullet *b) {
 		} else if(block == 0x43) {
 			bullet_missile_explode(b);
 			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 			sound_play(SND_BLOCK_DESTROY, 5);
 		}
 		sprite_pos(&b->sprite,
@@ -946,8 +946,8 @@ void bullet_update_missile(Bullet *b) {
 	} else {
 		if(b->ttl & 3) {
 			uint16_t range = missile_settings[use_pal_speed][index].eff_range;
-			effect_create_smoke((b->x>>CSF) - range + (rand() & (range << 1)),
-								(b->y>>CSF) - range + (rand() & (range << 1)));
+			effect_create(EFF_SMOKE, (b->x>>CSF) - range + (rand() & (range << 1)),
+								(b->y>>CSF) - range + (rand() & (range << 1)), FALSE);
 		}
 	}
 }
@@ -965,7 +965,7 @@ void bullet_update_bubbler(Bullet *b) {
 		uint8_t block = stage_get_block_type(sub_to_block(b->x), sub_to_block(b->y));
 		if(block == 0x41) { // Bullet hit a wall
             bullet_deactivate(b);
-			effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
+			effect_create(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
 		}
 		// Half assed animation
@@ -1029,19 +1029,19 @@ void bullet_update_bubbler(Bullet *b) {
 		if(block == 0x41) { // Bullet hit a wall
             bullet_deactivate(b);
 			sound_play(SND_SHOT_HIT, 3);
-            effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
+            effect_create(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
 			return;
 		}
         if(block == 0x43) { // Breakable block
             bullet_deactivate(b);
 			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 			sound_play(SND_BLOCK_DESTROY, 5);
 			return;
 		}
 	}
     if(!--b->ttl) {
-        effect_create_misc(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
+        effect_create(EFF_BUBB_POP, b->x >> CSF, b->y >> CSF, FALSE);
         b->extent.x1 = 0xFFFF;
         return;
     }
@@ -1065,7 +1065,7 @@ void bullet_update_blade(Bullet *b) {
 			} else if(block == 0x43) { // Breakable block
                 bullet_deactivate(b);
 				bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-				effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+				effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 				sound_play(SND_BLOCK_DESTROY, 5);
 				return;
 			} else if(block == 0x41) {
@@ -1088,7 +1088,7 @@ void bullet_update_blade(Bullet *b) {
         if(block == 0x43) { // Hit breakable block
             bullet_deactivate(b);
 			bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-			effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+			effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 			sound_play(SND_BLOCK_DESTROY, 5);
 			return;
 		}
@@ -1145,7 +1145,7 @@ void bullet_update_nemesis(Bullet *b) {
     if(block == 0x43) {
         bullet_deactivate(b);
         bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-        effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+        effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
         sound_play(SND_BLOCK_DESTROY, 5);
         return;
     }
@@ -1172,7 +1172,7 @@ void bullet_update_spur(Bullet *b) {
 	} else if(block == 0x43) {
         bullet_deactivate(b);
 		bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-		effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
 		sound_play(SND_BLOCK_DESTROY, 5);
         return;
 	}
@@ -1253,7 +1253,7 @@ void bullet_update_spur_tail(Bullet *b) {
     } else if(block == 0x43) {
         bullet_deactivate(b);
         bullet_destroy_block(sub_to_block(b->x), sub_to_block(b->y));
-        effect_create_smoke(sub_to_pixel(b->x), sub_to_pixel(b->y));
+        effect_create(EFF_SMOKE, sub_to_pixel(b->x), sub_to_pixel(b->y), FALSE);
         sound_play(SND_BLOCK_DESTROY, 5);
         return;
     }
@@ -1321,8 +1321,8 @@ void bullet_missile_explode(Bullet *b) {
 	b->hit_box = (bounding_box) {{ size, size, size, size }};
 	// TODO: Explosion graphic instead of smoke
 	for(uint8_t i = 0; i < 2; i++) {
-		effect_create_smoke(sub_to_pixel(b->x) - 15 + (rand() & 31),
-							sub_to_pixel(b->y) - 15 + (rand() & 31));
+		effect_create(EFF_SMOKE, sub_to_pixel(b->x) - 15 + (rand() & 31),
+							sub_to_pixel(b->y) - 15 + (rand() & 31), FALSE);
 	}
 }
 

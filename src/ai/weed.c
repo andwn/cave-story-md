@@ -208,7 +208,7 @@ void ai_mannan(Entity *e) {
 		}
 	} else if(e->state < 3) { // Just got killed
 		sound_play(e->deathSound, 5);
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
 		entity_drop_powerup(e);
 		// Face sprite remains after defeated
 		//e->eflags &= ~NPC_SHOOTABLE;
@@ -247,7 +247,7 @@ void ai_malco(Entity *e) {
 			e->state = 11;
 			e->timer = 0;
 			e->timer = 0;
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			/* fallthrough */
 		case 11:	// beeping and eyes flickering
 			if (++e->timer < TIME(100)) {
@@ -276,7 +276,7 @@ void ai_malco(Entity *e) {
 			e->frame = 2;
 			e->timer = 0;
 			sound_play(SND_BLOCK_DESTROY, 5);
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			/* fallthrough */
 		case 17:
 			if (++e->timer > TIME(150)) {
@@ -298,7 +298,7 @@ void ai_malco(Entity *e) {
 			} if (++e->timer > 100) {
 				e->state = 20;
 				sound_play(SND_DOOR, 5);
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			}
 		break;
 		
@@ -326,7 +326,7 @@ void ai_malco(Entity *e) {
 		break;
 		case 110:	// the one that blows up
 		{
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			e->state = STATE_DELETE;
 		}
 		break;
@@ -349,7 +349,7 @@ void ai_malcoBroken(Entity *e) {
 		case 10:	// set when pulled out of ground
 		{
 			sound_play(SND_BLOCK_DESTROY, 5);
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			e->state = 0;
 		}
 		break;
@@ -599,7 +599,7 @@ void ai_motorbike(Entity *e) {
 	}
 	if(e->state >= 20 && (e->timer & 3) == 0) {
 		sound_play(SND_FIREBALL, 5);
-		Effect *eff = effect_create_misc(EFF_BOOST2, (e->x>>CSF), (e->y>>CSF) + 16, FALSE);
+		Effect *eff = effect_create(EFF_BOOST2, (e->x>>CSF), (e->y>>CSF) + 16, FALSE);
 		if(e->dir) {
 			eff->x -= 12;
 			eff->x_speed = -1;
@@ -616,7 +616,7 @@ void ai_motorbike(Entity *e) {
 void ai_motorbike2(Entity *e) {
 	if(++e->timer > TIME(50)) {
 		e->timer = rand() & 0x1F;
-		Effect *smoke = effect_create_smoke((e->x >> CSF) - 0xF + e->timer, e->y >> CSF);
+		Effect *smoke = effect_create(EFF_SMOKE, (e->x >> CSF) - 0xF + e->timer, e->y >> CSF, FALSE);
 		smoke->y_speed = -1;
 	}
 }
@@ -712,7 +712,7 @@ void ai_ravil(Entity *e) {
 		break;
 		case 30:		// jumping out of fireplace (set by script)
 		{
-			effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			e->frame = 0;
 			e->state = 0;
 		}

@@ -24,7 +24,7 @@ void ai_prox_press_vert(Entity *e) {
 			e->y += e->y_speed;
 			if(blk(e->x, 0, e->y, e->hit_box.bottom + 1) == 0x41) {
 				camera_shake(10);
-				effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
+				effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
 				e->state++;
 				e->frame = 0;
 				e->y_speed = 0;

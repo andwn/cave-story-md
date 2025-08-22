@@ -12,8 +12,6 @@
 ## ダウンロード
 安定版リリースは[Releases](https://github.com/andwn/cave-story-md/releases)タブで入手できます。
 
-まだあまりテストされていない最新のビルドは[こちら](https://tenshi.skychase.zone/cs/)で入手できます。
-
 ## プレイ方
 もしも６ボタンコントローラーを持っています：
 

@@ -120,9 +120,9 @@ void ai_igor(Entity *e) {
 			if(e->grounded) {
 				sound_play(SND_ENEMY_JUMP, 5);
 				int16_t xx = e->x >> CSF, yy = (e->y >> CSF) + e->hit_box.bottom;
-				effect_create_smoke(xx - 12, yy);
-				effect_create_smoke(xx, yy);
-				effect_create_smoke(xx + 12, yy);
+				effect_create(EFF_SMOKE, xx - 12, yy, FALSE);
+				effect_create(EFF_SMOKE, xx, yy, FALSE);
+				effect_create(EFF_SMOKE, xx + 12, yy, FALSE);
 				e->state = STATE_LANDED;
 			} else {
 				// Don't stop momentum if we hit the step on the left
@@ -261,8 +261,8 @@ void ai_igordead(Entity *e) {
 		case 1:
 		// Puffs of smoke
 		if((++e->timer & 7) == 1) {
-			effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
-				sub_to_pixel(e->y) - 32 + (rand() & 63));
+			effect_create(EFF_SMOKE, sub_to_pixel(e->x) - 16 + (rand() & 31),
+				sub_to_pixel(e->y) - 32 + (rand() & 63), FALSE);
 		}
 		// Shake
 		if((e->timer & 3) == 1) {
@@ -278,8 +278,8 @@ void ai_igordead(Entity *e) {
 		case 2:
 		// Puffs of smoke
 		if((++e->timer & 15) == 1) {
-			effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
-				sub_to_pixel(e->y) - 32 + (rand() & 63));
+			effect_create(EFF_SMOKE, sub_to_pixel(e->x) - 16 + (rand() & 31),
+				sub_to_pixel(e->y) - 32 + (rand() & 63), FALSE);
 		}
 		// alternate between big and small sprites
 		// (frenzied/not-frenzied forms)
@@ -303,7 +303,7 @@ void ai_igordead(Entity *e) {
 				e->state = 4;
 			}
 		}
-		//effect_create_smoke(e->x >> CSF, (e->y >> CSF) + 20);
+		//effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) + 20, FALSE);
 		break;
 		case 4: break;
 	}

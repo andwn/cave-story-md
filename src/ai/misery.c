@@ -529,7 +529,7 @@ void ondeath_boss_misery(Entity *e) {
 
 void ai_misery_ring(Entity *e) {
 	if (!e->linkedEntity) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -587,7 +587,7 @@ void ai_misery_ring(Entity *e) {
 			e->y += e->y_speed;
 			// Disappear when touching with any solid blocks
 			if (blk(e->x, 0, e->y, 0) == 0x41) {
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 				e->state = STATE_DELETE;
 			}
 		}
@@ -617,7 +617,7 @@ void ai_misery_ball(Entity *e) {
 				e->state = 10;
 				e->timer = 0;
 			} else if(++e->timer > TIME_10(750)) {
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 				e->state = STATE_DELETE;
 			}
 		}
@@ -643,8 +643,8 @@ void ai_misery_ball(Entity *e) {
 void ai_black_lightning(Entity *e) {
 	ANIMATE(e, 2, 0,1);
 	if (blk(e->x, 0, e->y, 15) == 0x41) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 	e->y += SPEED_12(0xFFF);

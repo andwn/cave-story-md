@@ -191,6 +191,10 @@ void system_draw_counter(void) {
 	vdp_sprites_add(spr, 2);
 }
 
+uint8_t system_frame_step(void) {
+	return time.frame;
+}
+
 void system_update(void) {
 	if(++time.frame >= FPS) {
 		time.frame = 0;

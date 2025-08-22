@@ -17,7 +17,7 @@ void ai_dragon_zombie(Entity *e) {
 		sound_play(SND_BIG_CRASH, 5);
 		effect_create_damage(e->damage_value, e, 0, 0);
 		e->damage_time = e->damage_value = 0;
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		entity_drop_powerup(e);
 		
 		e->flags &= ~NPC_SHOOTABLE;
@@ -124,8 +124,8 @@ void ai_fallingspike_sm(Entity *e) {
 				if (!controlsLocked)	// no sound in ending cutscene
 					sound_play(SND_BLOCK_DESTROY, 5);
 				
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
-				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
 				e->state = STATE_DELETE;
 			}
 			e->y = e->y_next;
@@ -203,9 +203,9 @@ void ai_fallingspike_lg(Entity *e) {
 				e->timer = 0;
 				
 				sound_play(SND_BLOCK_DESTROY, 5);
-				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-				effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
+				effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 			}
 			e->y = e->y_next;
 		}
@@ -281,8 +281,8 @@ void ai_counterbomb(Entity *e) {
 					sound_play(SND_EXPLOSION1, 5);
 					camera_shake(20);
 					// Just override any other smoke that might be going on
-					effects_clear_smoke();
-					SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) - 50, 128, 100, MAX_SMOKE);
+					effects_clear();
+					SMOKE_AREA((e->x>>CSF) - 64, (e->y>>CSF) - 50, 128, 100, 8);
 					return;
 				}
 			} else {

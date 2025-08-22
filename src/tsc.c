@@ -544,6 +544,9 @@ static inline void check_fadeout(void) {
 uint8_t execute_command(void) {
 	uint16_t args[4];
 	cmd = tsc_read_byte();
+
+	k_hex8(cmd);
+
 	if(cmd >= 0x80 && cmd < 0xE0) {
 		switch(cmd) {
 		case CMD_MSG: // Display message box (bottom - visible)
@@ -1250,7 +1253,7 @@ uint8_t execute_command(void) {
 			}
 			// Puff of smoke
 			stage_replace_block(args[0], args[1], args[2]);
-			effect_create_smoke(block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8);
+			effect_create(EFF_SMOKE, block_to_pixel(args[0]) + 8, block_to_pixel(args[1]) + 8, FALSE);
 		}
 		break;
 		// Map flags are unused but exist, keeping them here just in case

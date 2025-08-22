@@ -682,8 +682,8 @@ void ondeath_x_target(Entity *e) {
 void ai_x_fishy_missile(Entity *e) {
 	e->flags ^= NPC_SHOOTABLE;
 	if(++e->timer > TIME_10(600)) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 		return;
 	}
@@ -698,7 +698,7 @@ void ai_x_fishy_missile(Entity *e) {
 		e->timer2 = 0;
 		e->want_angle = get_angle(e->x, e->y, player.x, player.y);
         // smoke trails
-        effect_create_misc(EFF_BOOST2, sub_to_pixel(e->x_mark), sub_to_pixel(e->y_mark), FALSE);
+        effect_create(EFF_BOOST2, sub_to_pixel(e->x_mark), sub_to_pixel(e->y_mark), FALSE);
 	}
 	// Turn towards desired angle
 	//if(e->timer & 1) {

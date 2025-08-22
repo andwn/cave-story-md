@@ -194,7 +194,7 @@ void onspawn_hiddenPowerup(Entity *e) {
 
 void ai_hiddenPowerup(Entity *e) {
 	if(e->health < 990) {
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
 		sound_play(SND_EXPL_SMALL, 5);
 		if(e->flags & NPC_OPTION2) {
 			Entity *missile = entity_create(e->x, e->y, OBJ_MISSILE, e->flags & ~(NPC_OPTION2|NPC_SHOOTABLE));

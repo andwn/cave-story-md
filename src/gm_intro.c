@@ -44,6 +44,7 @@ void intro_main(void) {
 	uint16_t timer = 0;
     joystate_old = ~0;
 	while(++timer <= TIME_10(400) && !joy_pressed(JOY_C) && !joy_pressed(JOY_START)) {
+		k_hex8(wipeFadeTimer);
 		if(wipeFadeTimer >= 0) {
 			update_fadein_wipe();
 		}

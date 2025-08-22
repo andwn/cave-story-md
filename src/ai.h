@@ -101,8 +101,8 @@ static inline uint8_t NPC_DIST_Y(Entity *a, Entity *b, int32_t dist) {
 
 #define SMOKE_AREA(x, y, w, h, count) {                                                        \
 	for(uint8_t i = 0; i < (count); i++) {                                                     \
-		effect_create_smoke((x) + (rand() % (w)),                                            \
-							(y) + (rand() % (h)));                                           \
+		effect_create(EFF_SMOKE, (x) + (rand() % (w)),                                         \
+							(y) + (rand() % (h)), FALSE);                                      \
 	}                                                                                          \
 }
 
@@ -116,7 +116,7 @@ static inline uint8_t NPC_DIST_Y(Entity *a, Entity *b, int32_t dist) {
 	if(e->animtime) {                                                                          \
 		e->animtime--;                                                                         \
 		e->frame = blinkframe;                                                                 \
-	} else if(!(rand() % (prob))) {                                                          \
+	} else if(!(rand() % (prob))) {                                                            \
 		e->frame = blinkframe;                                                                 \
 		e->animtime = 8;                                                                       \
 	}                                                                                          \

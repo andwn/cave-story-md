@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
 	{ NULL,				NOSHEET, 		0, PAL0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			,""}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	1, PAL1, &onspawn_energy, 		&ai_energy, 		&ai_null 			,""}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	1, PAL1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	,""}, // OBJ_BEHEMOTH
@@ -438,4 +438,5 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 17] = {
 	{ NULL, 			NOSHEET, 		1, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
     { &SPR_DoctorBlood, NOSHEET, 		2, PAL1, &ai_null, 		        &ai_doctorm_bleed, 	&ai_null 			,""}, // Blood particles
     { &SPR_DocDie, 	    NOSHEET, 		2, PAL1, &onspawn_persistent, 	&ai_doctorm_die, 	&ai_null    		,""}, // Muscle Doctor (Die)
+	{ &SPR_DarkMedic, 	NOSHEET, 		2, PAL0, &onspawn_balrog_medic, &ai_balrog_medic, 	&ai_null 			,""}, // Nurse Balrog with Pooh Black sprite
 };

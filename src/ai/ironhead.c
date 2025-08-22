@@ -139,7 +139,7 @@ void ai_ironhead(Entity *e) {
 			e->y = e->y_mark - 1 + ((rand() & 1) << CSF);
 			
 			if((++e->timer & 3) == 0) {
-				effect_create_smoke((e->x>>CSF) - 32 + (rand() & 63), (e->y>>CSF) - 16 + (rand() & 31));
+				effect_create(EFF_SMOKE, (e->x>>CSF) - 32 + (rand() & 63), (e->y>>CSF) - 16 + (rand() & 31), FALSE);
 			}
 		}
 		break;
@@ -248,10 +248,10 @@ void ai_ironh_brick(Entity *e) {
 	
 	// bounce off the walls
 	if (e->y_speed < 0 && e->y <= pixel_to_sub(16+e->hit_box.top)) {
-		effect_create_smoke(e->x >> CSF, (e->y >> CSF) - e->hit_box.top);
+		effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) - e->hit_box.top, FALSE);
 		e->y_speed = -e->y_speed;
 	} else if (e->y_speed > 0 && (e->y >= pixel_to_sub(224-e->hit_box.bottom))) {
-		effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
+		effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
 		e->y_speed = -e->y_speed;
 	}
 	

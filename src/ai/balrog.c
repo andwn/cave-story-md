@@ -288,7 +288,7 @@ void ai_balrog(Entity *e) {
 
 	if (e->balrog_smoking) {
 		if (++e->balrog_smoketimer > 20 || !(rand() & 15)) {
-			effect_create_smoke((e->x>>CSF) - 8 + (rand() & 15), (e->y>>CSF) + (rand() & 7));
+			effect_create(EFF_SMOKE, (e->x>>CSF) - 8 + (rand() & 15), (e->y>>CSF) + (rand() & 7), FALSE);
 			e->balrog_smoketimer = 0;
 		}
 	}
@@ -821,7 +821,7 @@ void ai_balrog_missile(Entity *e) {
 	
 	if ((++e->timer2 & 7) == 1)
 	{
-		Effect *eff = effect_create_misc((e->x >> CSF) - (e->x_speed >> CSF), e->y >> CSF, EFF_BOOST2, FALSE);
+		Effect *eff = effect_create((e->x >> CSF) - (e->x_speed >> CSF), e->y >> CSF, EFF_BOOST2, FALSE);
 		eff->x_speed = e->dir ? -1 : 1;
 	}
 	

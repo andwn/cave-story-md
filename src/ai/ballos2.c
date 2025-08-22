@@ -603,7 +603,7 @@ void ai_ballos_bone_spawner(Entity *e) {
 				bone->x_speed = xi;
 				bone->y_speed = -SPEED_10(0x3FF);
 				sound_play(SND_BLOCK_DESTROY, 5);
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 			}
 			
 			if(blk(e->x, 0, e->y, -2) == 0x41) {
@@ -632,7 +632,7 @@ void ai_ballos_bone(Entity *e) {
 			e->y_speed = -SPEED_10(0x200);
 			e->state = 1;
 		} else {
-			effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+			effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 			e->state = STATE_DELETE;
 		}
 	}
@@ -662,7 +662,7 @@ void ai_ballos_skull(Entity *e) {
 			LIMIT_Y(SPEED_12(0x700));
 			
 			e->timer++;
-			if ((e->timer & 7) == 0) effect_create_smoke(e->x >> CSF, e->y >> CSF);
+			if ((e->timer & 7) == 0) effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			//if (e->timer & 2) {
 			//	(SmokePuff(e->x, e->y))->PushBehind(o);
 			//}
@@ -735,8 +735,8 @@ void ai_ballos_spikes(Entity *e) {
 		}
 		stage_replace_block(x, sub_to_block(e->y) - 1, blk1);
 		stage_replace_block(x + 1, sub_to_block(e->y) - 1, blk2);
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
-		effect_create_smoke(sub_to_pixel(e->x) + 16, sub_to_pixel(e->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
+		effect_create(EFF_SMOKE, sub_to_pixel(e->x) + 16, sub_to_pixel(e->y), FALSE);
 		e->state = STATE_DELETE;
 	}
 }

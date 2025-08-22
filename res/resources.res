@@ -3,6 +3,7 @@
 # ----------------------------------------------------------------------------------------------
 
 SPRITE SPR_Casts		"sprite_c/casts.png"			3 3 NONE
+SPRITE SPR_CastsSym		"sprite_c/casts_sym.png"		3 3 NONE
 
 # Weapons & bullets
 SPRITE SPR_Polar		"sprite_c/w_polar.png"		    6 1 NONE
@@ -82,6 +83,7 @@ SPRITE SPR_ButeRed		"sprite/butered.png"		3 2 NONE
 SPRITE SPR_ButeRed2		"sprite/butered2.png"		2 2 NONE
 SPRITE SPR_WStar        "sprite/wstar.png"          1 1 NONE
 SPRITE SPR_Dissipate    "sprite/dissipate.png"      2 2 NONE
+SPRITE SPR_DarkMedic    "sprite/darkmedic.png"      5 3 NONE
 
 SPRITE SPR_Fade         "sprite/fade.png"           4 4 NONE
 SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 NONE

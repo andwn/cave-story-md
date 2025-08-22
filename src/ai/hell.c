@@ -550,8 +550,8 @@ void ai_mesa_block(Entity *e) {
 		{
 			if (!e->linkedEntity || e->linkedEntity->type == OBJ_MESA_DYING) {
 				e->state = STATE_DELETE;
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
-				effect_create_smoke(e->x>>CSF, e->y>>CSF);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_SMOKE, e->x>>CSF, e->y>>CSF, FALSE);
 			}
 		}
 		break;
@@ -563,8 +563,8 @@ void ai_mesa_block(Entity *e) {
 			
 			if (blk(e->x, 0, e->y, 8) == 0x41 && e->y_speed >= 0) {
 				sound_play(SND_BLOCK_DESTROY, 5);
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
-				effect_create_smoke(e->x>>CSF, e->y>>CSF);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_SMOKE, e->x>>CSF, e->y>>CSF, FALSE);
 				e->state = STATE_DELETE;
 			}
 		}

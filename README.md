@@ -10,8 +10,6 @@ It should work on any console or emulator. The main story is "finished", only li
 ## Download
 "Stable" releases can be found in the [Releases](https://github.com/andwn/cave-story-md/releases) tab.
 
-The latest builds that have not gone through as much testing are available [here](https://tenshi.skychase.zone/cs/).
-
 ## Default Controls
 If you have a 6 button controller:
 

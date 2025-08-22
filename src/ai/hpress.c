@@ -39,8 +39,8 @@ static void run_defeated(Entity *e) {
 		{
 			if ((++e->timer & 15) == 0) {
 				sound_play(SND_BLOCK_DESTROY, 5);
-				effect_create_smoke((e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
-									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF);
+				effect_create(EFF_SMOKE, (e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
+									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF, FALSE);
 			}
 			// eye opens
 			if(e->timer == TIME_8(90)) e->frame = 1;
@@ -99,8 +99,8 @@ static void run_passageway(Entity *e) {
 		case 21:
 		{
 			if ((++e->timer & 15) == 0) {
-				effect_create_smoke((e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
-									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF);
+				effect_create(EFF_SMOKE, (e->x - 0x7FFF + (rand() & 0xFFFF)) >> CSF,
+									(e->y - 0x7FFF + (rand() & 0xFFFF)) >> CSF, FALSE);
 			}
 		}
 		break;
@@ -234,7 +234,7 @@ void ai_hp_lightning(Entity *e) {
 		sound_play(SND_LIGHTNING_STRIKE, 5);
 		entity_create(e->x + pixel_to_sub(32), e->y + pixel_to_sub(72), OBJ_LIGHTNING, 0);
 		e->state = STATE_DELETE;
-		effect_create_smoke(e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom);
+		effect_create(EFF_SMOKE, e->x >> CSF, (e->y >> CSF) + e->hit_box.bottom, FALSE);
 	}
 }
 

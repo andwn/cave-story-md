@@ -546,7 +546,7 @@ void ai_king(Entity *e) {
 				e->grounded = FALSE;
 				e->x_speed = SPEED(0x280);
 				sound_play(SND_LITTLE_CRASH, 5);
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 			}
 		}
 		break;
@@ -560,7 +560,7 @@ void ai_king(Entity *e) {
 		{
 			e->hidden = (++e->timer & 2);
 			if (e->timer > TIME_8(100)) {
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 				e->state = 42;
 				e->hidden = FALSE;
 				e->frame = 6; // Sword

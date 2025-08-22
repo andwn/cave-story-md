@@ -568,7 +568,7 @@ void ai_gaudiArmorShot(Entity *e) {
 			LIMIT_Y(SPEED(0x5ff));
 			
 			if (e->y_speed >= 0 && collide_stage_floor(e)) {
-				effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+				effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 				e->state = STATE_DELETE;
 				return;
 			}
@@ -847,7 +847,7 @@ void ai_firewhirr_shot(Entity *e) {
 	
 	if ((!e->dir && collide_stage_leftwall(e)) ||
 		(e->dir && collide_stage_rightwall(e))) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 
@@ -1131,6 +1131,9 @@ void ai_buyobuyo(Entity *e) {
 
 void onspawn_gero(Entity *e) {
 	e->x -= 8 << CSF;
+	if(e->type == OBJ_NURSE_HASUMI && g_stage.id == STAGE_ENDING_LABYRINTH) {
+		e->dir = 1; // Face right in end scene
+	}
 }
 
 void ai_gero(Entity *e) {

@@ -387,7 +387,7 @@ void ai_sisters_head(Entity *e) {
 			// This might be wrong but it works better than before at least
 			if (e->timer2 > 2 && e->timer > TIME(50)) {
 				sound_play(SND_ENEMY_HURT, 5);
-				effect_create_smoke(e->x >> CSF, e->y >> CSF);
+				effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 				
 				e->state = STATE_HEAD_BIT_TONGUE;
 				e->timer = 0;

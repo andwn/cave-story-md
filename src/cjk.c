@@ -29,7 +29,7 @@ int16_t cjkMapRow;
 // = CJK_MESSAGE ALLOCATION =
 // Need 36 x 6 = 216 tiles
 // TILE_FONTINDEX (+96 tiles)
-// VDP_PLANE_W edge (+28 tiles) = 124
+// VDP_PLANE_W edge (+28 tiles) = 124 (last 2 are used for blinking cursor)
 // TILE_HUDINDEX (+32 tiles) = 156
 // TILE_NUMBERINDEX (+16 tiles) = 172
 // TILE_NAMEINDEX (+8 (of 20) tiles) = 184
@@ -52,19 +52,19 @@ static uint16_t CjkNextTile(void) {
         case CJK_MESSAGE:
             if(cjkVramIndex < (96)) {
                 index = cjkVramIndex + TILE_FONTINDEX;
-            } else if(cjkVramIndex < (96+30)) {
+            } else if(cjkVramIndex < (96+28)) {
                 index = ((cjkVramIndex - 96) << 2) + (VDP_PLANE_W >> 5) + 3;
-            } else if(cjkVramIndex < (96+30+16)) {
-                index = (cjkVramIndex - (96+30)) + TILE_NUMBERINDEX;
-            } else if(cjkVramIndex < (96+30+16+32)) {
-                index = (cjkVramIndex - (96+30+16)) + TILE_HUDINDEX;
-            } else if(cjkVramIndex < (96+30+16+32+20)) {
-                index = (cjkVramIndex - (96+30+16+32)) + TILE_NAMEINDEX;
+            } else if(cjkVramIndex < (96+28+16)) {
+                index = (cjkVramIndex - (96+28)) + TILE_NUMBERINDEX;
+            } else if(cjkVramIndex < (96+28+16+32)) {
+                index = (cjkVramIndex - (96+28+16)) + TILE_HUDINDEX;
+            } else if(cjkVramIndex < (96+28+16+32+20)) {
+                index = (cjkVramIndex - (96+28+16+32)) + TILE_NAMEINDEX;
             } else {
-                index = (cjkVramIndex - (96+30+16+32+20)) + TILE_FACEINDEX;
+                index = (cjkVramIndex - (96+28+16+32+20)) + TILE_FACEINDEX;
             }
             cjkVramIndex++;
-            if(cjkVramIndex >= (96+30+16+32+20)+36 || (showingFace && cjkVramIndex >= (96+30+16+32+20))) {
+            if(cjkVramIndex >= (96+28+16+32+20)+36 || (showingFace && cjkVramIndex >= (96+28+16+32+20))) {
                 cjkVramIndex = 0;
             }
             break;

@@ -214,7 +214,15 @@ void onspawn_balrog_medic(Entity *e) {
 
 void ai_balrog_medic(Entity *e) {
 	e->frame = 0;
-	RANDBLINK(e, 1, 200);
+	if(e->dir) { // Script turns Balrog right in best ending to change to Pooh Black sprite
+		e->dir = 0;
+		e->type = OBJ_POOH_BLACK_MEDIC;
+		sprite_pal(&e->sprite[0], PAL0);
+		sprite_pal(&e->sprite[1], PAL0);
+		e->oframe = 255;
+	} else {
+		RANDBLINK(e, 1, 200);
+	}
 }
 void onspawn_gaudi_patient(Entity *e) {
 	e->y += pixel_to_sub(10);

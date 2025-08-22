@@ -511,9 +511,9 @@ static void player_update_walk(void) {
 		if(!player.underwater) {
 			player.underwater = TRUE;
 			sound_play(SND_SPLASH, 5);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
-			effect_create_misc(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
+			effect_create(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
+			effect_create(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
+			effect_create(EFF_SPLASH, player.x >> CSF, player.y >> CSF, FALSE);
 		}
 		// Half everything, maybe inaccurate?
 		acc >>= 1;
@@ -676,7 +676,7 @@ static void player_update_interaction(void) {
 			e = e->next;
 		}
 		// Question mark above head
-		effect_create_misc(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 12, TRUE);
+		effect_create(EFF_QMARK, (player.x >> CSF), (player.y >> CSF) - 12, TRUE);
 	}
 }
 
@@ -806,13 +806,13 @@ static void player_update_booster(void) {
 		player.timer2 = 0;
 		sound_play(SND_BOOSTER, 3);
 		switch(playerBoostState) {
-			case BOOST_08: effect_create_misc(EFF_BOOST8, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
+			case BOOST_08: effect_create(EFF_BOOST8, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
 			case BOOST_HOZ: 
-				if(player.dir) effect_create_misc(EFF_BOOST2, (player.x >> CSF) - 0, (player.y >> CSF) + 2, 0);
-				else effect_create_misc(EFF_BOOST2, (player.x >> CSF) + 0, (player.y >> CSF) + 2, 0);
+				if(player.dir) effect_create(EFF_BOOST2, (player.x >> CSF) - 0, (player.y >> CSF) + 2, 0);
+				else effect_create(EFF_BOOST2, (player.x >> CSF) + 0, (player.y >> CSF) + 2, 0);
 			break;
-			case BOOST_UP: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
-			case BOOST_DOWN: effect_create_misc(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) - 4, 0); break;
+			case BOOST_UP: effect_create(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) + 6, 0); break;
+			case BOOST_DOWN: effect_create(EFF_BOOST2, player.x >> CSF, (player.y >> CSF) - 4, 0); break;
 		}
 	}
 }
@@ -1086,10 +1086,10 @@ uint8_t player_inflict_damage(uint16_t damage) {
 		// If health reached 0 we are dead
 		player.health = 0;
 		// Clear smoke & fill up with smoke around player
-		effects_clear_smoke();
-		for(uint8_t i = MAX_SMOKE; i--; ) {
-			effect_create_smoke(sub_to_pixel(player.x) + (rand() % 90 ) - 45,
-                                sub_to_pixel(player.y) + (rand() % 90 ) - 45);
+		effects_clear();
+		for(uint8_t i = 8; i--; ) {
+			effect_create(EFF_SMOKE, sub_to_pixel(player.x) + (rand() % 90 ) - 45,
+                                sub_to_pixel(player.y) + (rand() % 90 ) - 45, FALSE);
 		}
 		sound_play(SND_PLAYER_DIE, 15);
 		tsc_call_event(PLAYER_DEFEATED_EVENT);

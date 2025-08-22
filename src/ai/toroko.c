@@ -359,7 +359,7 @@ void ai_torokoBlock(Entity *e) {
 		sprite_pal(&e->sprite[0], PAL3);
 		e->oframe = 255;
 		e->frame = 0;
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = 20;
 		e->grounded = FALSE;
 		e->x_speed = 0;

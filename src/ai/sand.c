@@ -31,7 +31,7 @@ void ai_polish(Entity *e) {
 		entity_create(e->x - (8<<CSF), e->y, OBJ_POLISHBABY, 0)->dir = 0;
 		entity_create(e->x + (8<<CSF), e->y, OBJ_POLISHBABY, 0)->dir = 1;
 		e->state = STATE_DELETE;
-		effect_create_smoke(sub_to_pixel(e->x), sub_to_pixel(e->y));
+		effect_create(EFF_SMOKE, sub_to_pixel(e->x), sub_to_pixel(e->y), FALSE);
 		sound_play(e->deathSound, 5);
 		return;
 	}
@@ -616,6 +616,7 @@ void ai_skullstep(Entity *e) {
 			l->enableSlopes = TRUE;
 			r->enableSlopes = TRUE;
 
+			FACE_PLAYER(e); // Reduces the likelyhood they will clump together at screen edge
 			e->state = 1;
 			e->frame = 0;
 			// Fallthrough
@@ -851,7 +852,7 @@ void ai_skeleton_shot(Entity *e) {
 	e->y += e->y_speed;
 	
 	if (e->timer >= 10) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }

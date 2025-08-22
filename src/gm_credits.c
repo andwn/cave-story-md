@@ -29,6 +29,10 @@ enum CreditCmd {
 	TEXT, ICON, WAIT, MOVE, SONG, SONG_FADE, FLAG_JUMP, JUMP, LABEL, PALETTE, LOADPXE, END
 };
 
+static const SpriteDef *casts_spr[4] = {
+	&SPR_CastsSym, &SPR_CastsSym, &SPR_Casts, &SPR_Casts,
+};
+
 static int8_t illScrolling;
 
 __attribute__((noreturn))
@@ -133,7 +137,7 @@ void credits_main(void) {
 							.attr = TILE_ATTR(credits_info[pc].icon.pal,
 									1,0,0,TILE_ICONINDEX + i * 9)
 						};
-						TILES_QUEUE(SPR_TILES(&SPR_Casts, 
+						TILES_QUEUE(SPR_TILES(casts_spr[credits_info[pc].icon.pal], 
 								credits_info[pc].icon.id), TILE_ICONINDEX + i * 9, 9);
 						break;
 					}
@@ -218,7 +222,9 @@ void credits_show_image(uint16_t id) {
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
 
 	vdp_set_display(FALSE);
-	vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
+	dma_queue_rom(DmaVRAM, (uint32_t) illustration_info[id].pat, 16*32, illustration_info[id].pat_size*16, 2);
+	dma_flush();
+	//vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
 	uint16_t index = pal_mode ? 0 : 20;
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		dma_now(DmaVRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLANE_A + (y << 7) + (44 << 1), 20, 2);

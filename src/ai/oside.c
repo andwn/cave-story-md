@@ -133,8 +133,8 @@ void ai_night_spirit_sh(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	if (e->x_speed < 0 && collide_stage_leftwall(e)) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		sound_play(SND_SHOT_HIT, 3);
 		e->state = STATE_DELETE;
 	}

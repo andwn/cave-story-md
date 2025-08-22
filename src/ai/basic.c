@@ -196,8 +196,8 @@ void ai_genericproj(Entity *e) {
 	e->flags ^= NPC_SHOOTABLE;
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
 	if(++e->timer > TIME_8(250) || blk(e->x, 0, e->y, 0) == 0x41) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
-		Effect *smk = effect_create_smoke(e->x >> CSF, e->y >> CSF);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		Effect *smk = effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		if(smk) {
 			smk->x_speed = -(e->x_speed >> CSF);
 			smk->y_speed = -(e->y_speed >> CSF);
@@ -215,7 +215,7 @@ void ondeath_default(Entity *e) {
 
 void ondeath_nodrop(Entity *e) {
 	sound_play(e->deathSound, 5);
-	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 	if(e->flags & NPC_EVENTONDEATH) tsc_call_event(e->event);
 	if(e->flags & NPC_DISABLEONFLAG) system_set_flag(e->id, TRUE);
 	e->state = STATE_DELETE;
@@ -441,8 +441,8 @@ void ai_player(Entity *e) {
 		{
 			sound_play(SND_LITTLE_CRASH, 5);
 			for(uint8_t i = 0; i < 4; i++) {
-				effect_create_smoke(sub_to_pixel(e->x) - 16 + (rand() & 31),
-					sub_to_pixel(e->y) - 16 + (rand() & 31));
+				effect_create(EFF_SMOKE, sub_to_pixel(e->x) - 16 + (rand() & 31),
+					sub_to_pixel(e->y) - 16 + (rand() & 31), FALSE);
 			}
 			e->state++;
 		}
@@ -617,7 +617,7 @@ void ai_fireplace(Entity *e) {
 void ai_gunsmith(Entity *e) {
 	if (e->flags & NPC_OPTION2) {
 		// Animate Zzz effect above head
-		if(!e->timer) effect_create_misc(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8, FALSE);
+		if(!e->timer) effect_create(EFF_ZZZ, (e->x >> CSF) + 8, (e->y >> CSF) - 8, FALSE);
 		if(++e->timer > TIME_8(100)) e->timer = 0;
 	} else {
 		e->frame = 1;
@@ -749,8 +749,8 @@ void ai_xp_capsule(Entity *e) {
 		Entity *exp = entity_create(e->x, e->y, OBJ_XP,
 				e->id > 6 ? NPC_OPTION2 : 0);
 		exp->experience = e->id;
-		effect_create_smoke(e->x, e->y);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x, e->y, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		sound_play(SND_FUNNY_EXPLODE, 5);
 		
 		e->state = STATE_DELETE;
@@ -836,7 +836,7 @@ void ai_intro_crown(Entity *e) {
 			e->timer++;
 			if(e->timer > TIME(55) && (e->timer & 7) == 1) {
 				const int8_t offx = -8 + (rand() & 15);
-			    Effect *eff = effect_create_misc(EFF_FANU, (e->x>>CSF) + offx, (e->y>>CSF) + 8, FALSE);
+			    Effect *eff = effect_create(EFF_FANU, (e->x>>CSF) + offx, (e->y>>CSF) + 8, FALSE);
 				if(eff) eff->y_speed = -2;
 			}
 		}

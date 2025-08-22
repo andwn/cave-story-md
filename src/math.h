@@ -29,7 +29,11 @@ extern const int16_t cos[0x100];
 extern const int16_t sin2[0x100];
 extern const int16_t cos2[0x100];
 
+uint8_t atan(int16_t y, int16_t x);
 // Get angle between two points using arctan table
-uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty);
+static inline uint8_t get_angle(int32_t curx, int32_t cury, int32_t tgtx, int32_t tgty) {
+	return atan((tgty - cury) >> 9, (tgtx - curx) >> 9);
+}
+
 
 #endif //MD_MATH_H

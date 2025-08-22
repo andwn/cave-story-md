@@ -85,7 +85,7 @@ void ai_pignon(Entity *e) {
 // Pignon does not drop power ups
 void ondeath_pignon(Entity *e) {
 	sound_play(e->deathSound, 5);
-	effect_create_smoke(e->x >> CSF, e->y >> CSF);
+	effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 	e->state = STATE_DELETE;
 }
 
@@ -593,7 +593,7 @@ void ai_ma_pignon_clone(Entity *e) {
 	}
 	// Our engine has no substate, substitute id1
 	if (++e->id > 300) {
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }

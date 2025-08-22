@@ -264,8 +264,8 @@ void ai_core(Entity *e) {
 		{
 			e->timer++;
 			if ((e->timer & 15) == 1) {
-				effect_create_smoke((e->x >> CSF) - 32 + (rand() & 127),
-									(e->y >> CSF) - 64 + (rand() & 127));
+				effect_create(EFF_SMOKE, (e->x >> CSF) - 32 + (rand() & 127),
+									(e->y >> CSF) - 64 + (rand() & 127), FALSE);
 			}
 			
 			if (e->timer & 2)
@@ -526,8 +526,8 @@ void ai_minicore_shot(Entity *e) {
 	e->y += e->y_speed;
 	if((++e->animtime & 3) == 0 && ++e->frame > 2) e->frame = 0;
 	if (blk(e->x, 0, e->y, 0) == 0x41) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }
@@ -537,8 +537,8 @@ void ai_core_ghostie(Entity *e) {
 	e->x += e->x_speed;
 	if((++e->animtime & 3) == 0 && ++e->frame > 2) e->frame = 0;
 	if(blk(e->x, 0, e->y, 0) == 0x41) {
-		effect_create_smoke(e->x >> CSF, e->y >> CSF);
-		effect_create_misc(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
+		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
 	}
 }
