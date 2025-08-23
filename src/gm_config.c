@@ -295,6 +295,29 @@ void config_main(void) {
 		.attr = TILE_ATTR(tpal,0,0,1,TILE_PROMPTINDEX),
 		.size = SPRITE_SIZE(2,2)
 	};
+
+	// Put some wobbly arrows to indicate there are multiple pages of settings
+	#define ARROW_LEFT_CENTER_X		(128 + 16 + 8)
+	#define ARROW_RIGHT_CENTER_X	(128 + ScreenWidth - 8 - 16 - 8)
+	#define ACOEFF					4	// Fixed point coefficient for wobble offset
+	#define AACCEL					3
+	SHEET_LOAD(&SPR_Arrow, 1, 2, TILE_AIRTANKINDEX, TRUE, 0);
+	Sprite leftArrow = {
+		.attr = TILE_ATTR(PAL0,1,0,1,TILE_AIRTANKINDEX),
+		.size = SPRITE_SIZE(1,2),
+		.x = ARROW_LEFT_CENTER_X,
+		.y = 6 + 128,
+	};
+	Sprite rightArrow = {
+		.attr = TILE_ATTR(PAL0,1,0,0,TILE_AIRTANKINDEX),
+		.size = SPRITE_SIZE(1,2),
+		.x = ARROW_RIGHT_CENTER_X,
+		.y = 6 + 128,
+	};
+	int8_t leftArrow_xoff = 3 << ACOEFF;
+	int8_t rightArrow_xoff = -3 << ACOEFF;
+	int8_t leftArrow_xsp = 0;
+	int8_t rightArrow_xsp = 0;
 	
 	//set_page(page);
 	joystate_old = ~0;
@@ -333,10 +356,20 @@ void config_main(void) {
 			if(++sprFrame >= ANIM_FRAMES) sprFrame = 0;
 			sprite_index(&sprCursor, TILE_PROMPTINDEX+sprFrame*4);
 		}
-		
 		// Draw quote sprite at cursor position
 		sprite_pos(&sprCursor, 16, (menu[page][cursor].y << 3) - 4);
 		vdp_sprite_add(&sprCursor);
+
+		// Animate arrows
+		leftArrow_xsp += (leftArrow_xoff < 0) ? AACCEL : -AACCEL;
+		rightArrow_xsp += (rightArrow_xoff < 0) ? AACCEL : -AACCEL;
+		leftArrow_xoff += leftArrow_xsp;
+		rightArrow_xoff += rightArrow_xsp;
+		leftArrow.x = ARROW_LEFT_CENTER_X + (leftArrow_xoff >> ACOEFF);
+		rightArrow.x = ARROW_RIGHT_CENTER_X + (rightArrow_xoff >> ACOEFF);
+		
+		vdp_sprite_add(&leftArrow);
+		vdp_sprite_add(&rightArrow);
 		
 		ready = TRUE;
         sys_wait_vblank(); aftervsync();

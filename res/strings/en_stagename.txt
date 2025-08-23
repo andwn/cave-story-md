@@ -3,7 +3,7 @@ Arthur's House
 Egg Corridor
 Egg No. 00
 Egg No. 06
-Egg Observatory
+Egg Observation Room
 Grasstown
 Santa's House
 Chaco's House
@@ -25,7 +25,7 @@ Egg No. 01
 Arthur's House
 Power Room
 Save Point
-ExecutionChamber
+Execution Chamber
 Gum
 Sand Zone Bar
 Grasstown Hut
@@ -33,7 +33,7 @@ Main Artery
 Small Room
 Jenka's House
 Deserted House
-Storehouse
+Sand Zone Storehouse
 Jenka's House
 Sand Zone
 Labyrinth H
@@ -49,7 +49,7 @@ Core
 Waterway
 Egg Corridor?
 Cthulhu's Abode
-Egg Observatory?
+Egg Observation Room?
 Egg No. 00
 Outer Wall
 Side Room
@@ -65,7 +65,7 @@ Last Cave
 Throne Room
 The King's Table
 Prefab House
-LastCave(Hidden)
+Last Cave (Hidden)
 Black Space
 Little House
 Balcony

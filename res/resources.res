@@ -42,6 +42,8 @@ SPRITE SPR_NemB2v		"sprite_c/b_nem2v.png"			2 3 NONE
 SPRITE SPR_NemB3h		"sprite_c/b_nem3h.png"			3 2 NONE
 SPRITE SPR_NemB3v		"sprite_c/b_nem3v.png"			2 3 NONE
 
+SPRITE SPR_Arrow        "sprite/arrow.png"              1 2 NONE
+
 # Use PAL_Sega
 #SPRITE SPR_Sega			"sprite/sega.png"			12 4 NONE
 #SPRITE SPR_Sega2		"sprite/sega2.png"			12 4 NONE

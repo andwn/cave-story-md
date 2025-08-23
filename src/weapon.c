@@ -1105,8 +1105,8 @@ void bullet_update_blade(Bullet *b) {
 	b->x += b->x_speed;
 	b->y += b->y_speed;
 	sprite_pos(&b->sprite,
-               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
-               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
+                (b->x >> CSF) - camera.x_shifted - 8,
+                (b->y >> CSF) - camera.y_shifted - 8);
 	// Level 2 and 3 sprites are a bit larger so adjust the display position
 	if(b->level > 1) {
 		b->sprite.x -= 4;
@@ -1126,9 +1126,9 @@ void bullet_update_blade_slash(Bullet *b) {
 	
 	b->x += b->x_speed;
 	b->y += b->y_speed;
-	sprite_pos(&b->sprite,
-               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
-               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
+	sprite_pos(&b->sprite, 
+				(b->x >> CSF) - camera.x_shifted - 8, 
+				(b->y >> CSF) - camera.y_shifted - 8);
 	vdp_sprite_add(&b->sprite);
 }
 
@@ -1263,9 +1263,7 @@ void bullet_update_spur_tail(Bullet *b) {
     }
     b->x += b->x_speed;
     b->y += b->y_speed;
-    sprite_pos(&b->sprite,
-               sub_to_pixel(b->x - camera.x) + ScreenHalfW - 8,
-               sub_to_pixel(b->y - camera.y) + ScreenHalfH - 8);
+    sprite_pos(&b->sprite, (b->x>>CSF) - camera.x_shifted - 8, (b->y>>CSF) - camera.y_shifted - 8);
     if (b->ttl == TIME_8(18)) {
         if (b->dir == UP || b->dir == DOWN) {
             b->sprite.size = SPRITE_SIZE(2, 4);
@@ -1371,7 +1369,10 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 			slash->dir = b->dir;
 		} else if((b->ttl & 15) == 8) {
 			slash = &playerBullet[2];
-			slash->dir = b->dir == LEFT ? UP : b->dir == UP ? RIGHT : b->dir == RIGHT ? DOWN : LEFT;
+			slash->dir = b->dir == LEFT ? UP
+						: b->dir == UP ? RIGHT
+						: b->dir == RIGHT ? DOWN
+						: LEFT;
 		}
 	}
 	if(!slash) return;
@@ -1403,8 +1404,16 @@ static void create_blade_slash(Bullet *b, uint8_t burst) {
 
 	slash->damage = 1;
 	if(burst) { // Spread them for AOE
-		slash->x += - 0x2000 + (rand() % 0x4000);
-		slash->y += - 0x2000 + (rand() % 0x4000);
+		static uint8_t off_cycle = 0;
+		static const int16_t offs[16] = { 
+			2 << 10, 0 << 10, 12<< 10, 6 << 10, 8 << 10, 14<< 10, 4 << 10, 10<< 10, 
+			1 << 10, 7 << 10, 3 << 10, 15<< 10, 9 << 10, 11<< 10, 5 << 10, 13<< 10
+		};
+		int16_t xoff = offs[off_cycle++];
+		int16_t yoff = offs[off_cycle++];
+		if(off_cycle >= 16) off_cycle = 0;
+		slash->x += (slash->x_speed > 0) ? -xoff : xoff;
+		slash->y += (slash->y_speed > 0) ? -yoff : yoff;
 	} else {
         //slash->x = b->x;
         //slash->y = b->y;// + ((slash->dir & 2) ? 0x2000 : -0x2000);
