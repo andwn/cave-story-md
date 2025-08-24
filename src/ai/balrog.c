@@ -199,13 +199,18 @@ void ai_balrog(Entity *e) {
 			e->x_speed = 0;
 			e->timer = 0;
 			e->frame = WORRY;
+			
+			const SpriteDef *def = npc_info[e->type].sprite;
+			e->jump_time = start_clip_out(e->vramindex, 2, def->w / 8, def->h / 8);
+
 			e->state++;
 		}
 		/* fallthrough */
 		case 71:
 		{
 			fall = FALSE;
-			if(++e->timer > 120) {
+			if(!update_clip_out(e->jump_time)) {
+			//if(++e->timer > 120) {
 				e->state = STATE_DELETE;
 				return;
 			}

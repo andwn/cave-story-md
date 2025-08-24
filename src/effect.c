@@ -34,11 +34,38 @@ uint8_t dqueued;
 int8_t wipeFadeTimer;
 uint8_t wipeFadeDir;
 
+typedef struct ClipOut {
+	uint16_t addr;
+	uint8_t line_len;
+	uint8_t spr_height;
+	uint8_t spr_remain;
+	uint8_t y_remain;
+	uint8_t speed;
+	uint8_t timer;
+} ClipOut;
+
+typedef struct ClipIn {
+	const uint32_t *tile_dat;
+	uint16_t to_addr;
+	uint8_t line_len;
+	uint8_t spr_height;
+	uint8_t _padding;
+	uint8_t y_remain;
+	uint8_t speed;
+	uint8_t timer;
+} ClipIn;
+
+static ClipOut s_clipout[2];
+static ClipIn s_clipin;
+
 void effects_init(void) {
 	wipeFadeTimer = -1;
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_reload_tiles();
+	s_clipin.y_remain = 0;
+	s_clipout[0].y_remain = 0;
+	s_clipout[1].y_remain = 0;
 }
 
 void effects_clear(void) {
@@ -53,7 +80,6 @@ void effects_reload_tiles(void) {
 	SHEET_LOAD(&SPR_Dissipate, 4, 2*2, TILE_DISSIPINDEX, TRUE, 0,1,2,3);
 	SHEET_LOAD(&SPR_Gib, 4, 1, TILE_GIBINDEX, TRUE, 0,1,2,3);
 }
-
 
 
 void effects_update(void) {
@@ -681,4 +707,93 @@ void update_fadein_wipe(void) {
 		// After the fade is done, need to restore HUD tiles we clobbered
 		if(gamemode == GM_GAME) hud_force_redraw();
 	}
+}
+
+// Sprite clipping
+
+uint8_t start_clip_out(uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height) {
+	uint8_t ind = s_clipout[0].y_remain ? 1 : 0;
+
+	ClipOut *clip = &s_clipout[ind];
+	clip->addr = vram_index * TILE_SIZE;
+	clip->line_len = width * 4; 			// 4 bytes for 8 pixels
+	clip->spr_height = min(height * 8, 32); // Subsprite (max 32x32) height
+	clip->spr_remain = clip->spr_height;	// Sprite's remaining lines
+	clip->y_remain = height * 8;			// Total remaining lines
+	clip->speed = speed;
+	clip->timer = 1; // Clip first line right away on next update call
+
+	return ind;
+}
+
+uint8_t update_clip_out(uint8_t ind) {
+	ClipOut *clip = &s_clipout[ind];
+
+	if(clip->y_remain) {
+		if(--clip->timer) return TRUE;
+
+		uint8_t num_words = clip->line_len / 4;
+		uint8_t inc = clip->spr_height / 8 * TILE_SIZE;
+		uint16_t addr = clip->addr;
+		while(num_words) { // Iterates sub-sprites horizontally
+			uint8_t part_words = min(num_words, 4);
+			dma_queue(DmaVRAM, (uint32_t) BlankData, addr, part_words, inc);
+			dma_queue(DmaVRAM, (uint32_t) BlankData, addr+2, part_words, inc);
+			addr += clip->spr_height * part_words * 4;
+			num_words -= part_words;
+		}
+		
+		clip->addr += 4;
+		clip->timer = clip->speed;
+
+		if(--clip->spr_remain == 0) {
+			// addr is already at the end of the first column above, so skip that one (-4)
+			clip->addr += (clip->line_len - 4) * clip->spr_height;
+			clip->y_remain -= clip->spr_height;
+			if(clip->y_remain) {
+				clip->spr_height = min(clip->y_remain, 32);
+				clip->spr_remain = clip->spr_height;
+			} else {
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void start_clip_in(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height) {
+	s_clipin.tile_dat = tile_dat;
+	s_clipin.to_addr = vram_index * TILE_SIZE;
+	s_clipin.line_len = width * 4;
+	s_clipin.spr_height = height;
+	s_clipin.y_remain = height * 8;
+	s_clipin.speed = speed;
+	s_clipin.timer = 2;
+	// Erase whatever the sprite tiles are now before beginning the clip in
+	dma_queue_rom(DmaVRAM, (uint32_t) BlankData, s_clipin.to_addr, width * height * 16, 2);
+}
+
+uint8_t update_clip_in(void) {
+	if(s_clipin.y_remain) {
+		if(--s_clipin.timer) return TRUE;
+
+		const uint8_t num_tile = s_clipin.line_len / 4;
+		const uint8_t sub_row = s_clipin.spr_height * 8 - s_clipin.y_remain;
+		const uint8_t col_size = s_clipin.spr_height * TILE_SIZE;
+
+		for(uint8_t x = 0; x < num_tile; x++) {
+			uint32_t row = s_clipin.tile_dat[x * col_size / 4 + sub_row];
+			uint16_t to_addr = s_clipin.to_addr + x * col_size;
+			dma_now(DmaVRAM, (uint32_t) &row, to_addr, 2, 2);
+		}
+
+		s_clipin.to_addr += 4;
+		s_clipin.y_remain--;
+		s_clipin.timer = s_clipin.speed;
+		
+		return TRUE;
+	}
+	return FALSE;
 }

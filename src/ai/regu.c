@@ -187,13 +187,17 @@ void ai_toroko_tele_in(Entity *e) {
 			e->grounded = FALSE;
 			e->state = 1;
 			e->timer = 0;
-			e->flags &= ~NPC_IGNORESOLID;		// this is set in npc.tbl, but uh, why?
+			e->flags &= ~NPC_IGNORESOLID;
+
+			e->oframe = e->frame = 0;
+			const SpriteDef *def = npc_info[e->type].sprite;
+			start_clip_in(def->tilesets[e->frame]->tiles, e->vramindex, 2, def->w / 8, def->h / 8);
 		}
 		/* fallthrough */
 		case 1:
 		{
-			//if (DoTeleportIn(o, 2)) {
-			if(++e->timer > TIME(50)) {
+			if(!update_clip_in()) {
+			//if(++e->timer > TIME(50)) {
 				e->frame = 1;
 				e->state = 2;
 			}
@@ -422,15 +426,18 @@ void ai_sue_teleport_in(Entity *e) {
 			e->timer = 0;
 			e->state = 1;
 			e->frame = 7;	// her "hanging on a hook" frame
+			e->oframe = e->frame;
+			const SpriteDef *def = npc_info[e->type].sprite;
+			start_clip_in(def->tilesets[e->frame]->tiles, e->vramindex, 2, def->w / 8, def->h / 8);
 		}
 		/* fallthrough */
 		case 1:
 		{
-			//if (DoTeleportIn(o, 2)) {
+			if(!update_clip_in()) {
 				e->state = 2;
 				e->timer = 0;
 				e->grounded = FALSE;
-			//}
+			}
 		}
 		break;
 		case 2:
@@ -637,11 +644,14 @@ void ai_booster(Entity *e) {
 		break;
 		case 30:	// teleporting in at Shelter
 		{
-			e->frame = 0;
 			sound_play(SND_TELEPORT, 5);
 			// move into middle of teleporter
 			e->x_next -= 16 << CSF;
 			e->y_next += 8 << CSF;
+
+			e->oframe = e->frame = 0;
+			const SpriteDef *def = npc_info[e->type].sprite;
+			start_clip_in(def->tilesets[0]->tiles, e->vramindex, 2, def->w / 8, def->h / 8);
 			
 			e->state++;
 			e->timer = 0;
@@ -649,10 +659,10 @@ void ai_booster(Entity *e) {
 		/* fallthrough */
 		case 31:	// teleporting-in animation
 		{
-			//if (DoTeleportIn(o, 2)) {
+			if (!update_clip_in()) {
 				e->state++;
 				e->timer = 0;
-			//}
+			}
 		}
 		break;
 		case 32:	// wait before hop out of teleporter

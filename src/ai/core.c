@@ -284,19 +284,16 @@ void ai_core(Entity *e) {
 			e->x_speed = 0;
 			e->y_speed = 0;
 			e->state++;
-			e->timer = 60;
+
+			const SpriteDef *def0 = npc_info[OBJ_CORE_FRONT].sprite;
+			const SpriteDef *def1 = npc_info[OBJ_CORE_BACK].sprite;
+			start_clip_out(pieces[CFRONT]->vramindex, 1, def0->w / 8, def0->h / 8);
+			start_clip_out(pieces[CBACK]->vramindex, 1, def1->w / 8, def1->h / 8);
 		}
 		/* fallthrough */
 		case 601:
 		{
-		    e->timer--;
-		    if(e->timer & 2) {
-                pieces[CFRONT]->hidden = FALSE;
-                pieces[CBACK]->hidden = FALSE;
-		    } else if (e->timer == 0) {
-				pieces[CFRONT]->hidden = TRUE;
-				pieces[CBACK]->hidden = TRUE;
-				
+		    if(!(update_clip_out(0) + update_clip_out(1))) {
 				for(uint8_t i = 0; i < 7; i++) pieces[i]->state = STATE_DELETE;
 				e->state = STATE_DELETE;
 				return;

@@ -55,4 +55,14 @@ void start_fadein_wipe(uint8_t dir);
 // Frame step for fade in effect
 void update_fadein_wipe(void);
 
+// Sprite clipping
+
+uint8_t start_clip_out(uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height);
+
+uint8_t update_clip_out(uint8_t ind);
+
+void start_clip_in(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height);
+
+uint8_t update_clip_in(void);
+
 #endif
