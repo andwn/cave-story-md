@@ -49,7 +49,7 @@ typedef struct ClipIn {
 	uint16_t to_addr;
 	uint8_t line_len;
 	uint8_t spr_height;
-	uint8_t _padding;
+	uint8_t spr_remain;
 	uint8_t y_remain;
 	uint8_t speed;
 	uint8_t timer;
@@ -767,6 +767,68 @@ void start_clip_in(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed,
 	s_clipin.tile_dat = tile_dat;
 	s_clipin.to_addr = vram_index * TILE_SIZE;
 	s_clipin.line_len = width * 4;
+	s_clipin.spr_height = min(height * 8, 32);
+	s_clipin.spr_remain = s_clipin.spr_height;
+	s_clipin.y_remain = height * 8;
+	s_clipin.speed = speed;
+	s_clipin.timer = 2;
+	// Erase whatever the sprite tiles are now before beginning the clip in
+	uint16_t num_words = width * height * 4;
+	uint16_t addr = s_clipin.to_addr;
+	while(num_words) {
+		uint16_t part_words = min(num_words, 128);
+		dma_queue(DmaVRAM, (uint32_t) BlankData, addr, part_words, 2);
+		addr += part_words * 2;
+		num_words -= part_words;
+	}
+}
+
+uint8_t update_clip_in(void) {
+	if(s_clipin.y_remain) {
+		if(--s_clipin.timer) return TRUE;
+
+		uint8_t num_tile = s_clipin.line_len / 4;
+		uint8_t sub_row = s_clipin.spr_height - s_clipin.spr_remain; //s_clipin.y_remain;
+		uint8_t col_size = s_clipin.spr_height * TILE_SIZE / 8;
+		uint16_t spr_addr = s_clipin.to_addr;
+		uint16_t row_off = 0;
+		while(num_tile) {
+			uint8_t part_tile = min(num_tile, 4);
+			for(uint8_t x = 0; x < part_tile; x++) {
+				uint32_t row = s_clipin.tile_dat[row_off + x * col_size / 4 + sub_row];
+				uint16_t to_addr = spr_addr + x * col_size;
+				dma_now(DmaVRAM, (uint32_t) &row, to_addr, 2, 2);
+			}
+			spr_addr += part_tile * col_size;
+			row_off += part_tile * col_size / 4;
+			num_tile -= part_tile;
+		}
+		
+		s_clipin.to_addr += 4;
+		s_clipin.timer = s_clipin.speed;
+
+		if(--s_clipin.spr_remain == 0) {
+			// addr is already at the end of the first column above, so skip that one (-4)
+			s_clipin.to_addr += (s_clipin.line_len - 4) * s_clipin.spr_height;
+			s_clipin.tile_dat += s_clipin.line_len * s_clipin.spr_height / 4; // Move source too
+			s_clipin.y_remain -= s_clipin.spr_height;
+			if(s_clipin.y_remain) {
+				s_clipin.spr_height = min(s_clipin.y_remain, 32);
+				s_clipin.spr_remain = s_clipin.spr_height;
+			} else {
+				return FALSE;
+			}
+		}
+		
+		return TRUE;
+	}
+	return FALSE;
+}
+/* non-metasprite version, can't use because the Doctor is a big guy
+void start_clip_in_old(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height) {
+	s_clipin.tile_dat = tile_dat;
+	s_clipin.to_addr = vram_index * TILE_SIZE;
+	s_clipin.line_len = width * 4;
 	s_clipin.spr_height = height;
 	s_clipin.y_remain = height * 8;
 	s_clipin.speed = speed;
@@ -775,7 +837,7 @@ void start_clip_in(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed,
 	dma_queue_rom(DmaVRAM, (uint32_t) BlankData, s_clipin.to_addr, width * height * 16, 2);
 }
 
-uint8_t update_clip_in(void) {
+uint8_t update_clip_in_old(void) {
 	if(s_clipin.y_remain) {
 		if(--s_clipin.timer) return TRUE;
 
@@ -797,3 +859,4 @@ uint8_t update_clip_in(void) {
 	}
 	return FALSE;
 }
+*/

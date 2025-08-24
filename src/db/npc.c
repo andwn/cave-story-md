@@ -182,7 +182,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
 	/* 0x0A0 (160) */
 	{ &SPR_Dark, 		NOSHEET, 		2, PAL3, &ai_null, 				&ai_pooh_black, 	&ondeath_pooh_black ,""}, // Pooh Black
 	{ NULL, 			SHEET_DARKBUB, 	1, PAL3, &ai_null, 				&ai_poohblk_bubble, &ondeath_nodrop 	,""}, // Pooh Black Bubble
-	{ &SPR_DarkDie, 	NOSHEET,		1, PAL3, &ai_null, 				&ai_poohblk_dying, 	&ai_null 			,""}, // Pooh Black (Dying)
+	{ &SPR_Dark, 		NOSHEET,		2, PAL3, &ai_null, 				&ai_poohblk_dying, 	&ai_null 			,""}, // Pooh Black (Dying)
 	{ &SPR_DrGero, 		NOSHEET, 		1, PAL3, &onspawn_gero, 		&ai_gero, 			&ai_null 			,""}, // Dr. Gero
 	{ &SPR_Nurse, 		NOSHEET, 		1, PAL3, &onspawn_gero, 		&ai_gero, 			&ai_null 			,""}, // Nurse Hasumi
 	{ &SPR_Curly, 		NOSHEET, 		1, PAL3, &onspawn_curly_down, 	&ai_curly_down, 	&ai_null 			,""}, // Curly (Collapsed)
@@ -437,6 +437,6 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
 	{ NULL, 			NOSHEET, 		3, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
 	{ NULL, 			NOSHEET, 		1, PAL2, &onspawn_cloud, 		&ai_cloud, 			&ai_null 			,""}, // Cloud
     { &SPR_DoctorBlood, NOSHEET, 		2, PAL1, &ai_null, 		        &ai_doctorm_bleed, 	&ai_null 			,""}, // Blood particles
-    { &SPR_DocDie, 	    NOSHEET, 		2, PAL1, &onspawn_persistent, 	&ai_doctorm_die, 	&ai_null    		,""}, // Muscle Doctor (Die)
+    { NULL, 	    	NOSHEET, 		0, PAL1, &ai_null, 				&ai_null, 			&ai_null    		,""}, // Muscle Doctor (Die)
 	{ &SPR_DarkMedic, 	NOSHEET, 		2, PAL0, &onspawn_balrog_medic, &ai_balrog_medic, 	&ai_null 			,""}, // Nurse Balrog with Pooh Black sprite
 };

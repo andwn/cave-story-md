@@ -57,12 +57,24 @@ void update_fadein_wipe(void);
 
 // Sprite clipping
 
+// Start a "clip out" effect on a sprite, which erases tiles line-by-line from top to bottom
+// This effect is designed to support meta-sprites allocated to a specific VRAM index
+// Speed is frame delay per line erased (1 = every frame), width and height is a tile measurement
+// The return value is the index (0 or 1). This only really exists because the Core is split in two
 uint8_t start_clip_out(uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height);
 
+// Runs a frame iteration of the clip-out effect, parameter is the index returned by "start"
+// Returns TRUE while the animation is ongoing, FALSE when complete
 uint8_t update_clip_out(uint8_t ind);
 
+// Start a "clip in" effect on a sprite, which draws the sprite in line-by-line from top to bottom
+// This call will erase the full sprite immediately before the draw-in begins so you don't have to
+// This effect is designed to support meta-sprites, and works very similarly to clip-out
+// Speed is frame delay per line drawn (1 = every frame), width and height is a tile measurement
 void start_clip_in(const uint32_t *tile_dat, uint16_t vram_index, uint8_t speed, uint8_t width, uint8_t height);
 
+// Runs a frame iteration of the clip-in effect
+// Returns TRUE while the animation is ongoing, FALSE when complete
 uint8_t update_clip_in(void);
 
 #endif

@@ -730,7 +730,7 @@ void ai_poohblk_dying(Entity *e) {
 		case 0:
 		{
 		    //e->x += 4 << CSF; // Sprite is 8px thinner so push forward a bit
-			e->frame = 0; //FRAME_DYING;
+			e->frame = FRAME_DYING;
 			FACE_PLAYER(e);
 			
 			sound_play(SND_BIG_CRASH, 5);
@@ -744,24 +744,27 @@ void ai_poohblk_dying(Entity *e) {
 		break;
 		
 		case 1:
-		case 2:
 		{
 			camera_shake(2);
-			if (++e->timer > TIME(150)) {
+			if(++e->timer >= TIME(150)) {
+				const SpriteDef *def = npc_info[e->type].sprite;
+				e->jump_time = start_clip_out(e->vramindex, TIME(6), def->w / 8, def->h / 8);
 				e->state = 2;
-				e->timer2++;
-				if ((e->timer2 & 7) == 3) {
-					//e->hidden = FALSE;
-					sound_play(SND_BUBBLE, 5);
-				} else if((e->timer2 & 7) == 0) {
-				    if(e->frame < 11) e->frame++;
-					//e->hidden = TRUE;
-				}
-				if(e->timer2 > TIME(80)) {
-					//entities_clear_by_type(OBJ_POOH_BLACK_BUBBLE);
-					e->state = STATE_DELETE;
-					return;
-				}
+				e->timer = 0;
+			}
+		}
+		break;
+		
+		case 2:
+		{
+			e->state = 2;
+			e->timer++;
+			if ((e->timer & 7) == 3) {
+				sound_play(SND_BUBBLE, 5);
+			}
+			if(!update_clip_out(e->jump_time)) {
+				e->state = STATE_DELETE;
+				return;
 			}
 		}
 		break;

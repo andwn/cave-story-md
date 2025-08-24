@@ -314,13 +314,13 @@ void ai_muscle_doctor(Entity *e) {
 			
 			e->state++;
 			e->timer = 0;
-			//dr_tp_out_init(o);
+			
+			const SpriteDef *def = npc_info[e->type].sprite;
+			e->jump_time = start_clip_out(e->vramindex, 1, def->w / 8, def->h / 8);
 		} /* fallthrough */
 		case STATE_TELEPORT+1:
 		{
-			//if (dr_tp_out(o))
-			e->hidden = (++e->timer & 2);
-			if(e->timer > TIME(30)) {
+			if(!update_clip_out(e->jump_time)) {
 				e->state++;
 				e->timer = 0;
 				e->hidden = TRUE;
@@ -356,18 +356,22 @@ void ai_muscle_doctor(Entity *e) {
 		// reappear
 		case STATE_TELEPORT+3:
 		{
-			//dr_tp_in_init(o);
-			e->y_speed = 0;
+			e->oframe = e->frame;
+			const SpriteDef *def = npc_info[e->type].sprite;
+			start_clip_in(def->tilesets[e->frame]->tiles, e->vramindex, 1, def->w / 8, def->h / 8);
+			e->hidden = FALSE;
+
 			e->state++;
 		} /* fallthrough */
 		case STATE_TELEPORT+4:
 		{
-			//if (dr_tp_in(o))
-			e->hidden = (++e->timer & 2);
-			if(e->timer > TIME(30)) {
+			e->y_speed = 0;
+			e->oframe = e->frame;
+			//e->hidden = (++e->timer & 2);
+			//if(e->timer > TIME(30)) {
+			if(!update_clip_in()) {
 				e->flags |= NPC_SHOOTABLE;
 				e->attack = DAMAGE_NORMAL;
-				e->hidden = FALSE;
 				e->grounded = FALSE;
 				e->x_speed = 0;
 				e->y_speed = -SPEED(0x200);
@@ -417,20 +421,17 @@ void ai_muscle_doctor(Entity *e) {
 		{
 			e->frame = 9;
 			e->x_next = e->x_mark;
-			// Create dying animation object
-            e->hidden = TRUE;
-            Entity *die = entity_create(e->x /*+ (4<<CSF)*/, e->y - (20<<CSF), OBJ_DOCTORM_DIE, 0);
-            die->x_mark = e->x /*+ (4<<CSF)*/;
-            die->y_mark = e->y - (20<<CSF);
-            FACE_PLAYER(die);
+			FACE_PLAYER(e); // Script changes our direction but we don't want that
+			// Dissolve effect
+			const SpriteDef *def = npc_info[e->type].sprite;
+			e->jump_time = start_clip_out(e->vramindex, TIME(9), def->w / 8, def->h / 8);
             // Create blood animation object
 			e->linkedEntity = entity_create(e->x - (20<<CSF), e->y - (4<<CSF), OBJ_DOCTORM_BLEED, 0);
-			//e->ResetClip();
-			//e->clip_enable = TRUE;
 			
 			e->state++;
 			e->timer = 0;
-		} /* fallthrough */
+		} 
+		break; // Removing fallthrough, need to wait for dying frame tiles to upload
 		case STATE_DISSOLVE+1:
 		{
 			e->timer++;
@@ -451,9 +452,10 @@ void ai_muscle_doctor(Entity *e) {
 			
 			// he doesn't take up the entire height of the sprite,
 			// so we stop a little bit early.
-			if (e->timer >= TIME(300)) {
-				//e->hidden = TRUE;
-				e->frame = 0;
+			//if (e->timer >= TIME(300)) {
+			if(!update_clip_out(e->jump_time)) {
+				e->hidden = TRUE;
+				//e->frame = 0;
                 e->linkedEntity->state = STATE_DELETE;
                 e->linkedEntity = NULL;
 				e->state++;

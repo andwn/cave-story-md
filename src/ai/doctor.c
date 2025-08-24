@@ -141,11 +141,13 @@ void ai_boss_doctor(Entity *e) {
 			e->flags &= ~NPC_SHOOTABLE;
 			e->attack = 0;
 			
-			//dr_tp_out_init(o);
+			const SpriteDef *def = npc_info[e->type].sprite;
+			e->jump_time = start_clip_out(e->vramindex, 1, def->w / 8, def->h / 8);
 		} /* fallthrough */
 		case 101:
 		{
-			//if (dr_tp_out(o)) {
+			e->y_speed = 0;
+			if (!update_clip_out(e->jump_time)) {
 				e->state = 102;
 				e->timer = 0;
 				e->hidden = TRUE;
@@ -156,12 +158,13 @@ void ai_boss_doctor(Entity *e) {
 				// drag our floattext along with us (and give away our position).
 				e->x_mark = block_to_sub(5 + (rand() & 31));
 				e->y_mark = block_to_sub(5 + (rand() & 3));
-			//}
+			}
 		}
 		break;
 		
 		case 102:	// invisible: waiting to reappear
 		{
+			e->y_speed = 0;
 			if (++e->timer > TIME(40)) {
 				e->state = 103;
 				e->timer = 16;
@@ -181,12 +184,16 @@ void ai_boss_doctor(Entity *e) {
 		{
 			e->state++;
 			e->hidden = FALSE;
-			//dr_tp_in_init(o);
+
+			e->oframe = e->frame;
+			const SpriteDef *def = npc_info[e->type].sprite;
+			start_clip_in(def->tilesets[e->frame]->tiles, e->vramindex, 1, def->w / 8, def->h / 8);
 		} /* fallthrough */
 		case 104:
 		{
-			//if (dr_tp_in(o))
-			//{
+			e->y_speed = 0;
+			e->oframe = e->frame;
+			if(!update_clip_in()) {
 				e->flags |= NPC_SHOOTABLE;
 				e->attack = 3;
 				
@@ -196,7 +203,7 @@ void ai_boss_doctor(Entity *e) {
 				} else {	// another wave shot
 					e->state = 10;
 				}
-			//}
+			}
 		}
 		break;
 		
