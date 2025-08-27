@@ -206,7 +206,6 @@ void system_update(void) {
 					time.hour = 255;
 					time.minute = 59;
 					time.second = 59;
-					time.frame = FPS - 1;
 				} else {
 					time.minute = 0;
 				}

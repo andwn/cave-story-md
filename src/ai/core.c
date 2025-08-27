@@ -518,7 +518,7 @@ void ai_minicore(Entity *e) {
 }
 
 void ai_minicore_shot(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	if((++e->animtime & 3) == 0 && ++e->frame > 2) e->frame = 0;

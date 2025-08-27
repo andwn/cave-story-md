@@ -49,7 +49,7 @@ void stage_draw_block(uint16_t x, uint16_t y);
 void stage_draw_screen(void);
 void stage_draw_screen_credits(void);
 void stage_draw_background(void);
-void stage_draw_moonback(void);
+void stage_draw_moonback(uint16_t plane);
 void stage_draw_main_artery(void);
 
 void stage_load(uint16_t id) {
@@ -105,7 +105,7 @@ void stage_load(uint16_t id) {
 			stage_draw_background();
 		} else if(g_stage.back_type == 1) { // Moon
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
-			stage_draw_moonback();
+			stage_draw_moonback(VDP_PLANE_B);
 		} else if(g_stage.back_type == 2) { // Solid Color
 			vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 			vdp_map_clear(VDP_PLANE_B);
@@ -118,7 +118,7 @@ void stage_load(uint16_t id) {
 			vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
 			// Use background color from tileset
 			vdp_set_backcolor(32);
-			stage_draw_moonback();
+			stage_draw_moonback(VDP_PLANE_B);
 		}
 	}
 
@@ -173,15 +173,37 @@ void stage_load_credits(uint8_t id) {
 	
 	entities_clear();
 	vdp_sprites_clear();
-
 	vdp_set_display(FALSE);
+	dma_flush();
 
+	g_stage.back_type = 0;
+	vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
 	g_stage.tileset_id = stage_info[id].tileset;
-	stage_load_tileset();
+	if(g_stage.id == STAGE_ENDING_LABYRINTH) {
+		// The UFTC is actually bigger so screw compression
+		dma_queue_rom(DmaVRAM, (uint32_t) PAT_EndMaze, TILE_TSINDEX*TILE_SIZE, 203*16, 2);
+		//vdp_tiles_load_uftc(UFTC_EndMaze, TILE_TSINDEX, 0, 203);
+		uint16_t s_ind = pal_mode ? 0 : 20;
+		uint16_t d_adr = VDP_PLANE_A + 40;
+		for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
+			dma_queue_rom(DmaVRAM, (uint32_t) &MAP_EndMaze[s_ind], d_adr, 20, 2);
+			s_ind += 20;
+			d_adr += 128;
+		}
+		dma_flush();
+	} else if(g_stage.id == STAGE_ENDING_BALCONY) {
+		g_stage.back_type = 5;
+		vdp_set_scrollmode(HSCROLL_TILE, VSCROLL_PLANE);
+		vdp_set_backcolor(32);
+		stage_draw_moonback(VDP_PLANE_A);
+	} else {
+		stage_load_tileset();
+		stage_load_blocks();
+		stage_draw_screen_credits();
+	}
 	sheets_load_stage(id, FALSE, TRUE);
-	stage_load_blocks();
 	stage_load_entities();
-	stage_draw_screen_credits();
+	
 	dma_flush();
 	tsc_load_stage(id);
 
@@ -451,7 +473,9 @@ void stage_setup_palettes(void) {
 	} else {
 		vdp_colors_next(16, PAL_Sym, 16);
 	}
-	if(g_stage.id == STAGE_WATERWAY) {
+	if(g_stage.id == STAGE_ENDING_LABYRINTH) {
+		vdp_colors_next(32, PAL_EndMaze, 16);
+	} else if(g_stage.id == STAGE_WATERWAY) {
 		vdp_colors_next(32, PAL_RiverAlt, 16); // For Waterway green background
 	} else {
 		vdp_colors_next(32, tileset_info[stage_info[g_stage.id].tileset].palette, 16);
@@ -504,7 +528,6 @@ void stage_draw_block(uint16_t x, uint16_t y) {
 	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 1), xx + 1, yy);
 	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 2), xx, yy + 1);
 	vdp_map_xy(VDP_PLANE_A, TILE_ATTR(2, p, 0, 0, b + 3), xx + 1, yy + 1);
-	
 }
 
 // Fills VDP_PLANE_B with a tiled background
@@ -519,7 +542,7 @@ void stage_draw_background(void) {
 	}
 }
 
-void stage_draw_moonback(void) {
+void stage_draw_moonback(uint16_t plane) {
 	const uint16_t *topTiles, *btmTiles;
 	const uint16_t *topMap, *btmMap;
     uint16_t topNum, btmNum;
@@ -546,20 +569,20 @@ void stage_draw_moonback(void) {
 	vdp_tiles_load_uftc(btmTiles, TILE_MOONINDEX, 0, btmNum);
     memset(hscrollTable, 0, 128);
 	//for(uint8_t y = 0; y < 60; y++) hscrollTable[y] = 0;
-	vdp_vscroll(VDP_PLANE_B, 0);
+	vdp_vscroll(plane, 0);
 	// Top part
 	uint16_t index = pal_mode ? 0 : 40;
 	for(uint16_t y = 0; y < (pal_mode ? 11 : 10); y++) {
-        dma_queue_rom(DmaVRAM, (uint32_t) &topMap[index], VDP_PLANE_B + (y << 7), 40, 2);
+        dma_queue_rom(DmaVRAM, (uint32_t) &topMap[index], plane + (y << 7), 40, 2);
 		dma_flush();
 		index += 40;
 	}
 
 	// Bottom part
 	index = 0;
-	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 32 : 28); y++) {
-        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7), 32, 2);
-        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], VDP_PLANE_B + (y << 7) + (32 << 1), 32, 2);
+	for(uint16_t y = (pal_mode ? 11 : 10); y < (pal_mode ? 30 : 28); y++) {
+        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], plane + (y << 7), 32, 2);
+        dma_queue_rom(DmaVRAM, (uint32_t) &btmMap[index], plane + (y << 7) + (32 << 1), 32, 2);
 		dma_flush();
 		index += 32;
 	}

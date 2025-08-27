@@ -80,6 +80,9 @@ dumppal build/res/pal/PrtWeed_vert.pal
 input   res/tiles_c/PrtRiver_alt_vert.png
 dumppal build/res/pal/PrtRiver_alt_vert.pal
 
+input   res/tiles_c/e_maze.png
+dumppal build/res/pal/e_maze.pal
+
 input   res/tiles_c/bkRed.png
 dumppal build/res/pal/bkRed.pal
 input   res/tiles_c/bkMaze.png

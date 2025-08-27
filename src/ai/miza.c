@@ -248,7 +248,7 @@ static Entity *fm_spawn_missile(Entity *e, uint8_t angindex) {
 }
 */
 void ai_misery_critter(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
@@ -324,7 +324,7 @@ void ai_misery_critter(Entity *e) {
 }
 
 void ai_misery_bat(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 		{

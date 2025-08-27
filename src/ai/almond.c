@@ -23,7 +23,7 @@ void ai_waterlevel(Entity *e) {
 			e->state = WL_DOWN;
 			e->timer = 0;
 		}
-		/* fallthrough */
+		// Fallthrough
 		case WL_DOWN:
 		{
 			e->y_speed += (e->y < e->y_mark) ? 4 : -4;

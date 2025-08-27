@@ -680,6 +680,10 @@ uint8_t execute_command(void) {
 			args[3] = tsc_read_word();
 			if(gamemode == GM_CREDITS) {
 				if(args[0] == 0) {
+					// These two to reverse changes made by Balcony scene
+					vdp_set_scrollmode(HSCROLL_PLANE, VSCROLL_PLANE);
+					vdp_set_backcolor(0);
+
 					vdp_map_clear(VDP_PLANE_A);
 					entities_clear();
 					sheets_load_stage(0, FALSE, TRUE);
@@ -1153,6 +1157,11 @@ uint8_t execute_command(void) {
 				vdp_colors_apply_next_now();
 			} else {
 				vdp_color_next(0, 0x200);
+				if(g_stage.id == STAGE_ENDING_BALCONY) {
+					vdp_color_next(1, 0x200);
+					vdp_color_next(2, 0x200);
+				}
+				//vdp_color_next(32, 0x200); // For Balcony
 				vdp_fade(PAL_FadeOutBlue, NULL, 3, TRUE);
 				tscState = TSC_WAITTIME;
 				waitTime = 3*8;
@@ -1310,21 +1319,21 @@ uint8_t execute_command(void) {
 		break;
 		case CMD_XX1: // Island effect
 		{
-			if(check_fadein()) return 1;
+			//if(check_fadein()) return 1;
 
 			args[0] = tsc_read_word();
 
-			//if(!inFade) do_fadeout_wipe(1);
+			vdp_set_display(FALSE);
 
 			song_stop();
-
-			vdp_colors(0, PAL_FadeOut, 64);
-			vdp_colors_next(0, PAL_FadeOut, 64);
-			vdp_sprites_clear();
+			dma_clear();
+			
+			inFade = TRUE;
 			ready = TRUE;
-            sys_wait_vblank(); aftervsync();
+            sys_wait_vblank();
+			vdp_colors(0, PAL_FadeOut, 64);
+			aftervsync();
 
-			vdp_set_display(FALSE);
 			// Disable camera
 			camera.target = NULL;
 			camera.x = pixel_to_sub(ScreenHalfW);
@@ -1366,8 +1375,10 @@ uint8_t execute_command(void) {
 				}
 			};
 
-			vdp_colors_next(48, PAL_XX, 16);
+            sys_wait_vblank();
 			vdp_colors(48, PAL_XX, 16);
+			aftervsync();
+
 			vdp_set_display(TRUE);
 
 			uint16_t t = TIME_10(350);

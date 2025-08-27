@@ -230,7 +230,7 @@ void vdp_color_next(uint16_t index, uint16_t color) {
 
 void vdp_colors_apply_next_now(void) {
     vdp_colors(0, pal_next, 64);
-    memcpy(pal_current, pal_next, sizeof(uint16_t) * 64);
+    //memcpy(pal_current, pal_next, sizeof(uint16_t) * 64);
 }
 
 uint16_t vdp_fade_step_calc(void) {
@@ -373,8 +373,12 @@ void vdp_nputs(uint16_t plan, const char *str, uint16_t x, uint16_t y, uint16_t 
     }
 }
 
-void vdp_text_clear(uint16_t plan, uint16_t x, uint16_t y, uint16_t len) {
+void vdp_text_clear_ex(uint16_t plan, uint16_t x, uint16_t y, uint16_t len, uint16_t val) {
     uint32_t addr = plan + ((x + (y << PLAN_WIDTH_SFT)) << 1);
     *vdp_ctrl_wide = ((0x4000 + ((addr) & 0x3FFF)) << 16) + (((addr) >> 14) | 0x00);
-    while (len--) *vdp_data_port = 0;
+    while (len--) *vdp_data_port = val;
+}
+
+void vdp_text_clear(uint16_t plan, uint16_t x, uint16_t y, uint16_t len) {
+    vdp_text_clear_ex(plan, x, y, len, 0);
 }

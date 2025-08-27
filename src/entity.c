@@ -195,8 +195,8 @@ void entities_update(uint8_t draw) {
 		}
 		// Handle Shootable flag - check for collision with player's bullets
 		if(e->flags & NPC_SHOOTABLE) {
-            // TODO: Only generate this when the entity actually moves,
-            // and use it in more places like player & stage collision
+			// TODO: Only generate this when the entity actually moves,
+			// and use it in more places like player & stage collision
 			extent_box ee = (extent_box) {
 				.x1 = (e->x >> CSF) - (e->hit_box.left),
 				.y1 = (e->y >> CSF) - (e->hit_box.top),
@@ -204,16 +204,16 @@ void entities_update(uint8_t draw) {
 				.y2 = (e->y >> CSF) + (e->hit_box.bottom),
 			};
 			uint8_t cont = FALSE;
-            // This code is run 10 times for every shootable entity. It has to be fast
-            // Using a pointer instead of indexing the array removes a lot of redundant lookups in the asm
-            Bullet *pb = playerBullet;
-			for(uint16_t i = 0; i < MAX_BULLETS; i++) {
-                // The ttl check added a whopping 4 asm instructions lmao
-                // I've opted to instead set a dead bullet's extent.x1 to 0xFFFF
-                // That way the first check will always fail
+			// This code is run 10 times for every shootable entity. It has to be fast
+			// Using a pointer instead of indexing the array removes a lot of redundant lookups in the asm
+			Bullet *pb = playerBullet;
+			for(uint16_t i = (system_frame_step() & 1); i < MAX_BULLETS; i += 2) {
+				// The ttl check added a whopping 4 asm instructions lmao
+				// I've opted to instead set a dead bullet's extent.x1 to 0xFFFF
+				// That way the first check will always fail
 				if(/*playerBullet[i].ttl &&*/
-                    pb->extent.x1 <= ee.x2 && pb->extent.x2 >= ee.x1 &&
-                    pb->extent.y2 >= ee.y1 && pb->extent.y1 <= ee.y2)
+					pb->extent.x1 <= ee.x2 && pb->extent.x2 >= ee.x1 &&
+					pb->extent.y2 >= ee.y1 && pb->extent.y1 <= ee.y2)
 				{	// Collided
 					entity_handle_bullet(e, pb);
 					if(e->state == STATE_DESTROY) {
@@ -226,7 +226,7 @@ void entities_update(uint8_t draw) {
 						break;
 					}
 				}
-                pb++;
+				pb += 2;
 			}
 			if(cont) continue;
 			// Whimsical Star collision
@@ -303,7 +303,7 @@ void entities_update(uint8_t draw) {
 			}
 		}
 		// Can damage player if we have an attack stat and no script is running
-		if(e->attack && !playerIFrames && !tscState) {
+		if((system_frame_step() & 1) && e->attack && !playerIFrames && !tscState) {
 			if(!(e->flags & (NPC_SOLID | NPC_SPECIALSOLID))) {
 				// Smaller hitbox if they are pass-through
 				player.hit_box = PLAYER_SOFT_HIT_BOX;
@@ -1011,7 +1011,7 @@ Entity *entity_create_ext(int32_t x, int32_t y, uint16_t type, uint16_t flags, u
             if(e->tiloc != NOTILOC) {
                 e->vramindex = tiloc_index + (e->tiloc << 2);
                 uint16_t tile_offset = 0;
-                for(uint8_t i = 0; i < sprite_count; i++) {
+                for(uint8_t i = 0; i < min(sprite_count, spr->numSprite); i++) {
                     e->sprite[i] = (Sprite) {
                             .size = spr->sprites[i]->size,
                             .attr = TILE_ATTR(npc_info[type].palette,0,0,0,

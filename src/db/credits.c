@@ -4,6 +4,7 @@
 #include "res/pal.h"
 #include "resources.h"
 #include "md/vdp.h"
+#include "system.h"
 
 #include "tables.h"
 
@@ -22,6 +23,7 @@ enum CreditCmd {
 	LABEL,		// Label that can be jumped to (l)
 	PALETTE,	// Swap one of the palettes (no CS equivalent)
 	LOADPXE,    // Load 0.pxe
+	TEXTMODE,
 	END,		// Stop scrolling and pause indefinitely (/)
 };
 
@@ -35,6 +37,7 @@ enum CreditCmd {
 #define C_LABEL(n)			{ .cmd = LABEL, .label = { n } }
 #define C_MOVE(x)			{ .cmd = MOVE, .move = { x } }
 #define C_LOADPXE()			{ .cmd = LOADPXE }
+#define C_TEXTMODE(x)		{ .cmd = TEXTMODE, .textmode = { x } }
 #define C_END()				{ .cmd = END }
 
 enum Casts {
@@ -178,7 +181,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  The Shovel Brigade",	85),C_ICON(SHOVELBR), 	C_WAIT(64),
 	C_WAIT(64),
 	// Normal Ending villains/others
-	C_FLAG_JUMP(2000, 90),
+	C_FLAG_JUMP(FLAG_CREDITS_BESTEND, 90),
 	C_TEXT("- Villains -",			86),					C_WAIT(64),
 	C_TEXT("The power-snatching",	87), 					C_WAIT(16),
 	C_TEXT(" betrayer",				88), 					C_WAIT(16),
@@ -249,7 +252,7 @@ const credits_info_def credits_info[] = {
 	C_SONG_FADE(),
 	C_WAIT(64),
 	C_SONG(1),
-	C_MOVE(48),
+	C_MOVE(40),
 	C_WAIT(64),
 	
 	C_TEXT(" = Monsters = ", 142),										C_WAIT(32),
@@ -301,7 +304,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT(" Mother bat: Orangebell", 187),			C_ICON(ORANGEBL), C_WAIT(48),
 	C_TEXT(" Plantation dragonfly: Stumpy", 188),	C_ICON(STUMPY),	 C_WAIT(48),
 	// Best end only
-	C_FLAG_JUMP(2000, 190), C_JUMP(200), C_LABEL(190),
+	C_FLAG_JUMP(FLAG_CREDITS_BESTEND, 190), C_JUMP(200), C_LABEL(190),
 	//C_WAIT(2), // Leaving this out, it messes up the alignment
 	C_TEXT(" Hell's messenger: Bute", 189),			C_ICON(BUTE),	 C_WAIT(48),
 	C_TEXT(" Hell's messenger: Mesa", 190),			C_ICON(MESA),	 C_WAIT(48),
@@ -350,7 +353,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT(" island's heart", 229),							C_WAIT(16),
 	C_TEXT("  Undead Core", 230),		C_ICON(UNDCORE),	 C_WAIT(64),
 	// Best end only
-	C_FLAG_JUMP(2000, 290), C_JUMP(300), C_LABEL(290),
+	C_FLAG_JUMP(FLAG_CREDITS_BESTEND, 290), C_JUMP(300), C_LABEL(290),
 	//C_WAIT(2),
 	C_TEXT("The swollen mech", 231), 						C_WAIT(16),
 	C_TEXT("-", 232), 										C_WAIT(16),
@@ -360,8 +363,9 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  Ballos", 236),			C_ICON(BALLOS2),	 C_WAIT(64),
 	C_LABEL(300),
 	
+	C_TEXTMODE(1),
 	C_WAIT(80),
-	C_MOVE(32),
+	C_MOVE(24),
 	C_TEXT(" = BGM = ", 237),								C_WAIT(32),
 	C_WAIT(32),
 	C_TEXT("Access", 238),				C_ICON(MUSIC),	 C_WAIT(32),
@@ -393,6 +397,7 @@ const credits_info_def credits_info[] = {
 	C_TEXT("Scorching Back", 260),		C_ICON(MUSIC),	 C_WAIT(32),
 	C_TEXT("Moonsong", 261),			C_ICON(MUSIC),	 C_WAIT(32),
 	C_TEXT("Hero's End", 262),			C_ICON(MUSIC),	 C_WAIT(32),
+	
 	C_WAIT(32),
 	C_TEXT("Cave Story", 263),			C_ICON(MUSIC),	 C_WAIT(32),
 	C_TEXT("Last Cave", 264),			C_ICON(MUSIC),	 C_WAIT(32),
@@ -407,25 +412,29 @@ const credits_info_def credits_info[] = {
 	C_TEXT("The Way Back Home", 272),	C_ICON(MUSIC),	 C_WAIT(32),
 	
 	C_WAIT(96),
+	C_MOVE(16),
 	C_TEXT("= Special Thanks =", 273),						C_WAIT(32),
-	C_MOVE(32),
 	C_WAIT(32),
+	C_MOVE(32),
 	C_TEXT("Torai", 274),				C_ICON(DEBUGCAT), C_WAIT(48),
 	C_TEXT("Naoku", 275),				C_ICON(SWORD),	 C_WAIT(48),
 	C_TEXT("Kuroihito", 276),			C_ICON(KUROI),	 C_WAIT(48),
 	C_TEXT("BA2", 277),					C_ICON(BA2),		 C_WAIT(48),
 	C_TEXT("Okami", 278),				C_ICON(OKAMI),	 C_WAIT(48),
 	C_TEXT("Nao", 279),					C_ICON(NAO),		 C_WAIT(48),
+	C_FLAG_JUMP(FLAG_CREDITS_NOAGT, 400),
 	// Two for translation
 	C_TEXT("Shih Tzu", 280),			C_ICON(PUPPY),	 C_WAIT(48),
 	C_TEXT("Gideon Zhi", 281),			C_ICON(GIDEON),	 C_WAIT(48),
-	
+	C_LABEL(400),
+
+	C_WAIT(16),
 	C_TEXT("And many others", 282),							C_WAIT(48),
+	C_TEXTMODE(0),
 #ifdef MD_STAFFROLL
 	// MD staff roll
 	C_WAIT(96),
 	C_TEXT("= Mega Drive Version =", 283),                  C_WAIT(32),
-    C_MOVE(32),
     C_WAIT(32),
     C_TEXT("Developed by", 284),							C_WAIT(16),
 	C_TEXT("-", 285),										C_WAIT(32),
@@ -438,13 +447,17 @@ const credits_info_def credits_info[] = {
 	C_TEXT("  ...and you?", 292),							C_WAIT(96),
 #endif
 	C_LOADPXE(),
+
+	C_MOVE(32),
 	C_WAIT(64),
 	C_TEXT("Thank you very much.", 299),C_ICON(THANKS),	 C_WAIT(32),
 	C_WAIT(232),
 	//C_WAIT(128),
 	C_MOVE(80),
 	C_TEXT("Cave Story ~ The End", 300),
-	C_WAIT(264),
+	C_WAIT(164),
+	C_TEXTMODE(2), // Fixes palette
+	C_WAIT(100),
 	C_END()
 };
 

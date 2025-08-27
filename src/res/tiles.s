@@ -62,6 +62,10 @@ BIN	MAP_bkFogBtm		"res/tiles_c/bkFogBottom.map"
 BIN	UFTC_bkSndTest	    "res/tiles_c/bkSoundTest.uftc"
 BIN	MAP_bkSndTest	    "res/tiles_c/bkSoundTest.map"
 
+# Labyrinth scene in credits
+BIN PAT_EndMaze         "res/tiles_c/e_maze.pat"
+BIN MAP_EndMaze         "res/tiles_c/e_maze.map"
+
 /* Island Effect */
 BIN UFTC_XXBack		"res/tiles_c/xxBack.uftc"
 BIN UFTC_XXFore		"res/tiles_c/xxFore.uftc"

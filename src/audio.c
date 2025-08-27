@@ -16,6 +16,9 @@ uint8_t soundChannel;
 
 void sound_init(void) {
     songPlaying = songResume = 0;
+#ifdef NSOUND
+	return;
+#endif
     // Here we are pointing the XGM driver to each sound effect in the game
     // and their length (in frames) indexed in sfx_info
     disable_ints();
@@ -30,6 +33,9 @@ void sound_init(void) {
 }
 
 void sound_play(uint8_t id, uint8_t priority) {
+#ifdef NSOUND
+	return;
+#endif
 	if(cfg_sfx_mute && gamemode != GM_SOUNDTEST) return;
 	if(id >= 0x90 && id < 0xA0) id -= 0x40;
 	if(id >= SOUND_COUNT || sfx_info[id].end == 0) return;
@@ -38,6 +44,9 @@ void sound_play(uint8_t id, uint8_t priority) {
 }
 
 void song_play(uint8_t id) {
+#ifdef NSOUND
+	return;
+#endif
 	// Muted?
 	if(cfg_music_mute && gamemode != GM_SOUNDTEST) {
 		if(songPlaying) {

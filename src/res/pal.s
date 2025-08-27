@@ -45,6 +45,8 @@ BIN PAL_Weed,	    "res/pal/PrtWeed_vert.pal"
 # Alternate for waterway (Green background)
 BIN PAL_RiverAlt,   "res/pal/PrtRiver_alt_vert.pal"
 
+BIN PAL_EndMaze,    "res/pal/e_maze.pal"
+
 BIN PAL_MazeM,		"res/pal/bkRed.pal"
 BIN PAL_X,			"res/pal/bkMaze.pal"
 BIN PAL_XB,			"res/pal/bkMaze2.pal"

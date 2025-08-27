@@ -640,7 +640,7 @@ void player_update_bullets(void) {
                         .y2 = (playerBullet[i].y >> CSF) + (playerBullet[i].hit_box.bottom),
                 };
             } else {
-                playerBullet[i].extent = (extent_box) {};
+                playerBullet[i].extent.x1 = 0xFFFF;
             }
 		}
 	}

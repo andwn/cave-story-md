@@ -9,7 +9,7 @@
 
 #include "tables.h"
 
-const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
+const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 19] = {
 	{ NULL,				NOSHEET, 		0, PAL0, &onspawn_op2snap, 		&ai_nothing, 		&ai_null 			,""}, // OBJ_NULL
 	{ NULL,				SHEET_ENERGY, 	1, PAL1, &onspawn_energy, 		&ai_energy, 		&ai_null 			,""}, // OBJ_XP
 	{ NULL,				SHEET_BEHEM, 	1, PAL1, &ai_null, 				&ai_behemoth, 		&ondeath_default 	,""}, // OBJ_BEHEMOTH
@@ -46,7 +46,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
 	/* 0x020 (32) */
 	{ &SPR_LifeUp,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_lifeup, 		&ai_null 			,""}, // Life Capsule
 	{ NULL,				SHEET_IGORSHOT, 1, PAL1, &ai_null, 				&ai_balrogShot, 	&ondeath_nodrop 	,""}, // Balrog Shot
-	{ &SPR_Bed,			NOSHEET, 		1, PAL1, &onspawn_op2frame, 	&ai_null, 			&ai_null 			,""}, // Bed
+	{ &SPR_Bed,			NOSHEET, 		1, PAL1, &onspawn_bed, 			&ai_null, 			&ai_null 			,""}, // Bed
 	{ NULL,				SHEET_MANNAN, 	1, PAL3, &onspawn_op2flip, 		&ai_mannan, 		&ai_null 			,""}, // Mannan
 	{ &SPR_Balrog,		NOSHEET, 		2, PAL1, &onspawn_persistent, 	&ai_balrogFlying, 	&ondeath_balrogFlying,"" },
 	{ &SPR_Sign,		NOSHEET, 		1, PAL1, &ai_null, 				&ai_null, 			&ai_null 			,""}, // Sign Post
@@ -439,4 +439,5 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 18] = {
     { &SPR_DoctorBlood, NOSHEET, 		2, PAL1, &ai_null, 		        &ai_doctorm_bleed, 	&ai_null 			,""}, // Blood particles
     { NULL, 	    	NOSHEET, 		0, PAL1, &ai_null, 				&ai_null, 			&ai_null    		,""}, // Muscle Doctor (Die)
 	{ &SPR_DarkMedic, 	NOSHEET, 		2, PAL0, &onspawn_balrog_medic, &ai_balrog_medic, 	&ai_null 			,""}, // Nurse Balrog with Pooh Black sprite
+	{ &SPR_EBlcnStatue,	NOSHEET, 2+9+5+2+6,PAL2, &ai_null, 				&ai_e_blcn_stg,		&ai_null 			,""}, // Balcony in credits
 };

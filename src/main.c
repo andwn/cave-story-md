@@ -39,7 +39,9 @@ void main(void) {
     srand(0xC427); // initiate rand number generator
     mem_init();
     vdp_init();
+#ifndef NSOUND
 	xgm_init();
+#endif
     system_init();
     g_stage.back_id = 0xFF;
 	if(system_checkdata() != SRAM_INVALID) {

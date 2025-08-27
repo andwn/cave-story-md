@@ -151,12 +151,12 @@ ASMO += $(CS:%.c=asmout/%.s)
 .SUFFIXES:
 .SECONDARY:
 
-.PHONY: all sega profile release asm debug translate
+.PHONY: all sega profile nosound release asm debug translate
 all: release
 sega: release
 
-mi68: OPTIONS += -DSHOW_MYCOM_LOGO
-mi68: release
+nosound: OPTIONS += -DNSOUND
+nosound: profile
 
 profile: OPTIONS += -flto=auto -DPROFILE
 profile: release

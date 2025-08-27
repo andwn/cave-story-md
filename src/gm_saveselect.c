@@ -45,11 +45,11 @@ static void draw_cursor_mode(uint8_t mode) {
     }
 	const uint8_t *txt = (const uint8_t*)MENU_STR;
 	switch(mode) {
-		case CM_LOAD:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_LOAD_DATA*32], mx, my, 24); break;
-		case CM_COPY:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY_DATA*32], mx, my, 24); break;
-		case CM_PASTE:   loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_PASTE_DATA*32], mx, my, 24); break;
-		case CM_DELETE:  loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE_DATA*32], mx, my, 24); break;
-		case CM_CONFIRM: loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_CONFIRM_DELETE*32], mx, my, 24); break;
+		case CM_LOAD:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_LOAD_DATA*32], mx, my, 24, 0); break;
+		case CM_COPY:    loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY_DATA*32], mx, my, 24, 0); break;
+		case CM_PASTE:   loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_PASTE_DATA*32], mx, my, 24, 0); break;
+		case CM_DELETE:  loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE_DATA*32], mx, my, 24, 0); break;
+		case CM_CONFIRM: loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_CONFIRM_DELETE*32], mx, my, 24, 0); break;
 	}
 }
 
@@ -68,7 +68,7 @@ static uint8_t refresh_file(uint8_t index) {
 	if(file.used) {
 		// Map name
 		const uint8_t *dat = (const uint8_t*) STAGE_NAMES;
-		loc_vdp_nputs(VDP_PLANE_A, &dat[file.stage_id * 32], 6, y, 16);
+		loc_vdp_nputs(VDP_PLANE_A, &dat[file.stage_id * 32], 6, y, 16, 0);
 		// Play time
 		char timeStr[4] = "00";
 		//sprintf(timeStr, "%02hu:%02hu:%02hu", file.hour, file.minute, file.second);
@@ -139,7 +139,7 @@ static uint8_t refresh_file(uint8_t index) {
         //    vdp_puts(VDP_PLANE_A, "New Game", 6, y);
         //}
 		const uint8_t *txt = (const uint8_t*)MENU_STR;
-		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_NEW_GAME*32], 6, y, 16);
+		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_NEW_GAME*32], 6, y, 16, 0);
 
 		vdp_text_clear(VDP_PLANE_A, 26, y, 10);
 		vdp_text_clear(VDP_PLANE_A, 6, y + 2, 8);
@@ -189,8 +189,8 @@ uint8_t saveselect_main(void) {
 
 	cjk_set_index(CJK_TITLE, 0);
 	const uint8_t *txt = (const uint8_t*)MENU_STR;
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY*32], 6, 25, 16);
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE*32], 18, 25, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_COPY*32], 6, 25, 16, 0);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_SAVE_DELETE*32], 18, 25, 16, 0);
 	
 	draw_cursor_mode(cursorMode);
 

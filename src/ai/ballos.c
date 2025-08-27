@@ -384,13 +384,13 @@ void ai_ballos_f2(Entity *e) {
 	eye[1]->x = e->x + pixel_to_sub(24);
 	eye[0]->y = eye[1]->y = e->y - pixel_to_sub(28);
 	// place body
-	body->flags ^= NPC_SHOOTABLE;
+	//body->flags ^= NPC_SHOOTABLE;
 	body->x = e->x;
 	body->y = e->y;
 	//body->x_speed = e->x_speed;
 	//body->y_speed = e->y_speed;
 	// place shield
-	shield->flags ^= NPC_SHOOTABLE;
+	//shield->flags ^= NPC_SHOOTABLE;
 	shield->x = e->x;
 	shield->y = e->y - pixel_to_sub(44);
 	//shield->x_speed = e->x_speed;
@@ -640,11 +640,11 @@ void ai_ballos_f3(Entity *e) {
 	eye[1]->x = e->x + pixel_to_sub(24);
 	eye[0]->y = eye[1]->y = e->y - pixel_to_sub(28);
 	// place body
-	body->flags ^= NPC_SHOOTABLE;
+	//body->flags ^= NPC_SHOOTABLE;
 	body->x = e->x;
 	body->y = e->y;
 	// place shield
-	shield->flags ^= NPC_SHOOTABLE;
+	//shield->flags ^= NPC_SHOOTABLE;
 	shield->x = e->x;
 	shield->y = e->y - pixel_to_sub(44);
 }
@@ -816,13 +816,14 @@ void ai_ballos_rotator(Entity *e) {
 		{
 			e->state = 11;
 			
-			if(e->dir) e->flags |= NPC_SHOOTABLE; // Interlace shootable state
+			//if(e->dir) 
+			e->flags |= NPC_SHOOTABLE; // Interlace shootable state
 			e->flags &= ~NPC_INVINCIBLE;
 			e->health = 1000;
 		} /* fallthrough */
 		case 11:		// spinning during phase 2, alive
 		{
-			e->flags ^= NPC_SHOOTABLE;
+			//e->flags ^= NPC_SHOOTABLE;
 
 			if (e->timer2 <= 1) e->timer2 += 0x200;
 			e->timer2 -= 2;
@@ -876,7 +877,7 @@ void ai_ballos_rotator(Entity *e) {
 			// this dir was set when they were created and
 			// alternates left/right around the circle
 			if(!e->dir) {
-				//e->flags |= NPC_SHOOTABLE; // Interlace shootable state
+				e->flags |= NPC_SHOOTABLE;
 				e->frame = 0;
 			} else {
 				e->flags |= (NPC_SHOOTABLE | NPC_INVINCIBLE);
@@ -893,7 +894,7 @@ void ai_ballos_rotator(Entity *e) {
 			if(++e->timer2 > 0x200)
 				e->timer2 -= 0x200;
 			
-			e->flags ^= NPC_SHOOTABLE;
+			//e->flags ^= NPC_SHOOTABLE;
 			if(!(e->flags & NPC_INVINCIBLE)) {
 				if (e->health < (1000 - 100)) {
 					e->x_speed = 0;

@@ -5,14 +5,14 @@ void onspawn_jelly(Entity *e) {
 	e->timer = rand() & 31;
 	e->x_mark = e->x;
 	e->y_mark = e->y;
-	e->flags &= ~NPC_SHOOTABLE;
+	//e->flags &= ~NPC_SHOOTABLE;
 	if(e->flags & NPC_OPTION2) e->dir = 1;
 	MOVE_X(SPEED_8(0xFF));
 }
 
 void ai_jelly(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
-	e->attack ^= 5;
+	//e->flags ^= NPC_SHOOTABLE;
+	//e->attack ^= 5;
 	
 	if(++e->animtime >= 12) {
 		e->animtime = 0;
@@ -374,7 +374,7 @@ void onspawn_press(Entity *e) {
 }
 
 void ai_press(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	switch(e->state) {
 		case 0:
 			if((blk(e->x, 0, e->y, 14) & 0x41) != 0x41) {
@@ -428,7 +428,7 @@ void onspawn_frog(Entity *e) {
 		e->flags &= ~NPC_IGNORESOLID;
 		e->state = 1;
 	}
-	e->flags &= ~NPC_SHOOTABLE;
+	//e->flags &= ~NPC_SHOOTABLE;
 }
 
 void ai_frog(Entity *e) {
@@ -438,7 +438,7 @@ void ai_frog(Entity *e) {
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 
 	switch(e->state) {
 		case 0:

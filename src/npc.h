@@ -435,6 +435,7 @@ enum {
     OBJ_DOCTORM_BLEED,
     OBJ_DOCTORM_DIE,
 	OBJ_POOH_BLACK_MEDIC,
+	OBJ_END_BALCONY,
 };
 
 // Locations in npc.tbl where data for each property begins

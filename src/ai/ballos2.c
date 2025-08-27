@@ -758,7 +758,7 @@ void ai_green_devil_spawner(Entity *e) {
 }
 
 void ai_green_devil(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	
 	e->x += e->x_speed;
 	e->y += e->y_speed;
@@ -791,7 +791,7 @@ void ai_bute_sword_red(Entity *e) {
 			e->attack = 5;
 		}
 	} else {
-		e->flags ^= NPC_SHOOTABLE;
+		//e->flags ^= NPC_SHOOTABLE;
 		FACE_PLAYER(e);
 		if(player.y > e->y) {
 			// Above player, approach
@@ -848,7 +848,7 @@ void onspawn_bute_archer_red(Entity *e) {
 }
 
 void ai_bute_archer_red(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	e->x += e->x_speed;
 	e->y += e->y_speed;
 	switch(e->state) {

@@ -680,7 +680,7 @@ void ondeath_x_target(Entity *e) {
 }
 
 void ai_x_fishy_missile(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	if(++e->timer > TIME_10(600)) {
 		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);

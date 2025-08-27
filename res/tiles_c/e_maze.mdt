@@ -1,0 +1,5 @@
+input res/tiles_c/e_maze.png
+output build/res/tiles_c/e_maze.pat
+output2 build/res/tiles_c/e_maze.map
+offset 16400
+map 0 0 20 30

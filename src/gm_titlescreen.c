@@ -119,14 +119,14 @@ uint8_t titlescreen_main(void) {
 	const uint16_t MENUY = 12;
 
 	vdp_font_load(UFTC_SysFont);
-	
+
 	// Menu and version text
 	cjk_reset(CJK_TITLE);
 	const int16_t cur_yoff = (cfg_language >= LANG_JA && cfg_language < LANG_RU) ? 0 : -4;
 	const uint8_t *txt = (const uint8_t *)MENU_STR;
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_START_GAME*32], 15, MENUY, 16);
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_SOUND_TEST*32], 15, MENUY+4, 16);
-	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_CONFIG*32], 15, MENUY+6, 16);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_START_GAME*32], 15, MENUY, 16, 0);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_SOUND_TEST*32], 15, MENUY+4, 16, 0);
+	loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_CONFIG*32], 15, MENUY+6, 16, 0);
 
 	// Set palettes last
 	vdp_colors(0, PAL_Main, 16);
@@ -222,14 +222,14 @@ uint8_t titlescreen_main(void) {
 			STAGE_SEAL_CHAMBER, //" Seal Chamber",
 		};
 
-		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_STAGE_SELECT*32], 4, pal_mode ? 2 : 1, 32);
+		loc_vdp_nputs(VDP_PLANE_A, &txt[MENU_TITLE_STAGE_SELECT*32], 4, pal_mode ? 2 : 1, 32, 0);
 		const uint8_t *names = (const uint8_t *)STAGE_NAMES;
 		for(uint16_t i = 0; i < SAVES; i++) {
 			if(cursor == i) vdp_font_pal(PAL0);
 			else vdp_font_pal(PAL1);
 			uint16_t tx = ls_cursor_x(i);
 			uint16_t ty = ls_cursor_y(i);
-			loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[i]*32], tx, ty, 16);
+			loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[i]*32], tx, ty, 16, 0);
 		}
 
         joystate_old = ~0;
@@ -239,7 +239,7 @@ uint8_t titlescreen_main(void) {
 				uint16_t ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL1);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				if(cursor == 0) {
 					cursor = 11-1;
@@ -251,7 +251,7 @@ uint8_t titlescreen_main(void) {
 				ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL0);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(JOY_DOWN)) {
@@ -259,7 +259,7 @@ uint8_t titlescreen_main(void) {
 				uint16_t ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL1);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				if(cursor == 11-1) {
 					cursor = 0;
@@ -271,7 +271,7 @@ uint8_t titlescreen_main(void) {
 				ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL0);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				sound_play(SND_MENU_MOVE, 0);
 			} else if(joy_pressed(JOY_LEFT) || joy_pressed(JOY_RIGHT)) {
@@ -279,14 +279,14 @@ uint8_t titlescreen_main(void) {
 				uint16_t ty = ls_cursor_y(cursor);
 				vdp_font_pal(PAL1);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				if(cursor >= 11) cursor -= 11;
 				else cursor += 11;
 				tx = ls_cursor_x(cursor);
 				vdp_font_pal(PAL0);
 				if(!(cfg_language >= LANG_JA && cfg_language < LANG_RU)) {
-					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16);
+					loc_vdp_nputs(VDP_PLANE_A, &names[stageIDs[cursor]*32], tx, ty, 16, 0);
 				}
 				sound_play(SND_MENU_MOVE, 0);
 			}

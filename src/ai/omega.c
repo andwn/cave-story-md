@@ -384,7 +384,7 @@ void ondeath_omega(Entity *e) {
 }
 
 void ai_omega_shot(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	if(++e->timer & 1) {
 		e->y_speed += SPEED_8(12);
 		uint16_t px = e->x >> CSF, py = e->y >> CSF;

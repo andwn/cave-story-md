@@ -138,6 +138,7 @@ void vdp_font_pal(uint16_t pal);
 #define vdp_puts(plan, str, x, y) vdp_nputs(plan, str, x, y, 64)
 void vdp_nputs(uint16_t plan, const char *str, uint16_t x, uint16_t y, uint16_t maxlen);
 void vdp_text_clear(uint16_t plan, uint16_t x, uint16_t y, uint16_t len);
+void vdp_text_clear_ex(uint16_t plan, uint16_t x, uint16_t y, uint16_t len, uint16_t val);
 
 // mdk compat
 #define md_pal_upload vdp_colors

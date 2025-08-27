@@ -11,6 +11,7 @@
 #include "system.h"
 #include "tables.h"
 #include "md/vdp.h"
+#include "gamemode.h"
 #include "weapon.h"
 
 #include "sheet.h"
@@ -176,7 +177,10 @@ void sheets_refresh_weapon(Weapon *w) {
 
 void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	// Reset values
-	if(init_base) {
+	if(gamemode == GM_CREDITS) {
+		sheet_num = 0;
+		memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
+	} else if(init_base) {
 		sheet_num = 0;
 		memset(sheets, 0, sizeof(Sheet) * MAX_SHEETS);
 		SHEET_ADD(SHEET_HEART,   &SPR_Heart,   4,2,2, 0, 1, 2, 3);
@@ -532,6 +536,15 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case STAGE_ENDING_LAB: 
 		{
             SHEET_ADD_NEW(SHEET_AHCHOO, SPR_AHCHOO, 2);
+		} break;
+		case STAGE_ENDING_BALCONY:
+		{	SHEET_ADD(SHEET_BLOCK, &SPR_Block, 1,4,4, 0);
+			SHEET_ADD(SHEET_EBLCN1, &SPR_EBlcnBottom, 3,4,2, 0,1,2);
+			SHEET_ADD(SHEET_EBLCN2, &SPR_EBlcnDoor, 2,4,4, 0,1);
+			SHEET_ADD(SHEET_EBLCN3, &SPR_EBlcnGrass, 2,2,1, 0,1);
+			SHEET_ADD(SHEET_EBLCN4, &SPR_EBlcnLeftmid, 1,4,3, 0);
+			SHEET_ADD(SHEET_EBLCN5, &SPR_EBlcnLefttop, 1,2,4, 0);
+			SHEET_ADD(SHEET_EBLCN6, &SPR_EBlcnRghttop, 1,1,4, 0);
 		} break;
 	}
 	// Weapons at the end

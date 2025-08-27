@@ -136,17 +136,17 @@ void game_main(uint8_t load) {
 				}
                 // Boss health, camera
                 if(!gameFrozen) {
-                    PF_BGCOLOR(0x088);
+                    PF_BGCOLOR(0x08E);
                     if(showingBossHealth) tsc_update_boss_health();
                     camera_update();
                 }
-                PF_BGCOLOR(0x880);
+                PF_BGCOLOR(0x800);
 				window_update();
 				// Handle controller locking
 				uint16_t lockstate = joystate, oldlockstate = joystate_old;
 				if(controlsLocked) joystate = joystate_old = 0;
 				// Don't update this stuff if a script is using <PRI
-                PF_BGCOLOR(0x800);
+                PF_BGCOLOR(0x880);
 				effects_update();
                 PF_BGCOLOR(0x804);
 				if(!gameFrozen) {

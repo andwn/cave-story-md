@@ -1,5 +1,6 @@
 #include "ai_common.h"
 #include "gamemode.h"
+#include "sheet.h"
 
 void onspawn_cloud_spawner(Entity *e) {
 	e->alwaysActive = TRUE;
@@ -210,6 +211,9 @@ void ai_balrog_passenger(Entity *e) {
 // seen in credits
 void onspawn_balrog_medic(Entity *e) {
 	e->y += 12 << CSF;
+
+	e->y -= 8 << CSF;
+	e->x += 8 << CSF;
 }
 
 void ai_balrog_medic(Entity *e) {
@@ -226,6 +230,9 @@ void ai_balrog_medic(Entity *e) {
 }
 void onspawn_gaudi_patient(Entity *e) {
 	e->y += pixel_to_sub(10);
+
+	e->y -= 8 << CSF;
+	e->x += 8 << CSF;
 }
 
 void ai_gaudi_patient(Entity *e) {
@@ -408,6 +415,14 @@ void ai_misery_wind(Entity *e) {
 	switch(e->state) {
 		case 0:
 		{
+			e->x -= 8 << CSF;
+			e->y -= (pal_mode ? 16 : 24) << CSF;
+			entity_create(0,0,OBJ_END_BALCONY,0);
+			e->state = 1;
+		}
+		// Fallthrough
+		case 1:
+		{
 			ANIMATE(e, 8, 0,1);
 		}
 		break;
@@ -537,4 +552,172 @@ void ai_the_cast(Entity *e) {
 		vdp_sprite_add(&e->sprite[1]);
 	}
 	if(e->id == 7 || e->id == 10) moveMeToFront = TRUE; // Nurse and Curly over Balrog
+}
+
+#define REAL_SPRITE_COUNT 	(2+9+5+2+6)
+
+#define BLOCK_INDEX			(2)
+#define BLOCK_COUNT			(9)
+#define BOTTOM_INDEX		(BLOCK_INDEX + BLOCK_COUNT)
+#define BOTTOM_COUNT		(5)
+#define DOOR_INDEX			(BOTTOM_INDEX + BOTTOM_COUNT)
+#define DOOR_COUNT			(2)
+#define GRASS_INDEX			(DOOR_INDEX + DOOR_COUNT)
+#define GRASS_COUNT			(3)
+#define REST_INDEX			(GRASS_INDEX + GRASS_COUNT)
+#define REST_COUNT			(3)
+
+#define sheet_block			deathSound
+#define sheet_bottom		jump_time
+#define sheet_door			hurtSound
+#define sheet_grass			experience
+#define sheet_leftmid		enableSlopes
+#define sheet_lefttop		attack
+#define sheet_righttop		animtime
+
+#define STG_X				(128 + 160)
+#define STG_Y				(128 + (pal_mode ? 80 : 72))
+
+void ai_e_blcn_stg(Entity *e) {
+	switch(e->state) {
+		case 0:
+		{
+			e->alwaysActive = TRUE;
+			e->flags = 0;
+			e->sprite_count = 2; // Drawing everything except the statue manually
+			e->x = (int32_t)(160 + 104) << CSF;
+			e->y = (int32_t)(pal_mode ? 80 : 72) << CSF;
+			e->display_box = (bounding_box) {{ 0,0,0,0 }}; // 0,0 origin for statue
+			// All sheets used
+			SHEET_FIND(e->sheet_block, SHEET_BLOCK);
+			SHEET_FIND(e->sheet_bottom, SHEET_EBLCN1);
+			SHEET_FIND(e->sheet_door, SHEET_EBLCN2);
+			SHEET_FIND(e->sheet_grass, SHEET_EBLCN3);
+			SHEET_FIND(e->sheet_leftmid, SHEET_EBLCN4);
+			SHEET_FIND(e->sheet_lefttop, SHEET_EBLCN5);
+			SHEET_FIND(e->sheet_righttop, SHEET_EBLCN6);
+			// Block layout
+			e->sprite[BLOCK_INDEX+0] = (Sprite) {
+				.x = STG_X + 56, .y = STG_Y + 48,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+1] = (Sprite) {
+				.x = STG_X + 56+32, .y = STG_Y + 48,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+2] = (Sprite) {
+				.x = STG_X + 56+64, .y = STG_Y + 48,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+3] = (Sprite) {
+				.x = STG_X + 40, .y = STG_Y + 48+32,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+4] = (Sprite) {
+				.x = STG_X + 8, .y = STG_Y + 48+64,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+5] = (Sprite) {
+				.x = STG_X + 8+32, .y = STG_Y + 48+64,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+6] = (Sprite) {
+				.x = STG_X + 8+64, .y = STG_Y + 48+64,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+7] = (Sprite) {
+				.x = STG_X + 8+96, .y = STG_Y + 48+64,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			e->sprite[BLOCK_INDEX+8] = (Sprite) {
+				.x = STG_X + 8+128, .y = STG_Y + 48+64,
+				.size = SPRITE_SIZE(3,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_block].index),
+			};
+			// Bottom layout
+			e->sprite[BOTTOM_INDEX+0] = (Sprite) {
+				.x = STG_X + 0, .y = STG_Y + 144,
+				.size = SPRITE_SIZE(4,2),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index),
+			};
+			e->sprite[BOTTOM_INDEX+1] = (Sprite) {
+				.x = STG_X + 32, .y = STG_Y + 144,
+				.size = SPRITE_SIZE(4,2),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+16),
+			};
+			e->sprite[BOTTOM_INDEX+2] = (Sprite) {
+				.x = STG_X + 64, .y = STG_Y + 144,
+				.size = SPRITE_SIZE(4,2),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+32),
+			};
+			e->sprite[BOTTOM_INDEX+3] = (Sprite) {
+				.x = STG_X + 96, .y = STG_Y + 144,
+				.size = SPRITE_SIZE(4,2),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index),
+			};
+			e->sprite[BOTTOM_INDEX+4] = (Sprite) {
+				.x = STG_X + 128, .y = STG_Y + 144,
+				.size = SPRITE_SIZE(4,2),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+16),
+			};
+			// Door area layout
+			e->sprite[DOOR_INDEX+0] = (Sprite) {
+				.x = STG_X + 40+32, .y = STG_Y + 48+32,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_door].index),
+			};
+			e->sprite[DOOR_INDEX+1] = (Sprite) {
+				.x = STG_X + 40+64, .y = STG_Y + 48+32,
+				.size = SPRITE_SIZE(4,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_door].index+16),
+			};
+			// Patches of grass
+			e->sprite[GRASS_INDEX+0] = (Sprite) {
+				.x = STG_X + 56, .y = STG_Y + 40,
+				.size = SPRITE_SIZE(2,1),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_grass].index),
+			};
+			e->sprite[GRASS_INDEX+1] = (Sprite) {
+				.x = STG_X + 56+32, .y = STG_Y + 40,
+				.size = SPRITE_SIZE(2,1),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_grass].index+2),
+			};
+			e->sprite[GRASS_INDEX+2] = (Sprite) {
+				.x = STG_X + 144, .y = STG_Y + 104,
+				.size = SPRITE_SIZE(2,1),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_grass].index+2),
+			};
+			// Slopes on the left side
+			e->sprite[REST_INDEX+0] = (Sprite) {
+				.x = STG_X + 8, .y = STG_Y + 48+40,
+				.size = SPRITE_SIZE(4,3),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_leftmid].index),
+			};
+			e->sprite[REST_INDEX+1] = (Sprite) {
+				.x = STG_X + 40, .y = STG_Y + 48,
+				.size = SPRITE_SIZE(2,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_lefttop].index),
+			};
+			e->sprite[REST_INDEX+2] = (Sprite) {
+				.x = STG_X + 152, .y = STG_Y + 48,
+				.size = SPRITE_SIZE(1,4),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_righttop].index),
+			};
+			e->state = 1;
+		}
+		// Fallthrough
+		case 1:
+		{
+			vdp_sprites_add(&e->sprite[BLOCK_INDEX], REAL_SPRITE_COUNT - BLOCK_INDEX);
+		}
+		break;
+	}
 }

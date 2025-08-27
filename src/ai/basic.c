@@ -47,6 +47,14 @@ void onspawn_interactive(Entity *e) {
 	}
 }
 
+void onspawn_bed(Entity *e) {
+	if(e->flags & NPC_OPTION2) e->dir = 1;
+	if(g_stage.id == STAGE_ENDING_LABYRINTH) {
+		e->y -= 8 << CSF;
+		e->x += 8 << CSF;
+	}
+}
+
 // Spikes use a second frame for 90 degree rotation
 // In the actual game, option 1 & 2 are used for this, but whatever
 void onspawn_spike(Entity *e) {
@@ -193,7 +201,7 @@ void ai_trigger_special(Entity *e) {
 }
 
 void ai_genericproj(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	if((++e->animtime & 3) == 0) e->frame ^= 1;
 	if(++e->timer > TIME_8(250) || blk(e->x, 0, e->y, 0) == 0x41) {
 		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);

@@ -236,6 +236,14 @@ SPRITE SPR_Cloud3		"sprite/cloud3.png"			3 3 NONE
 SPRITE SPR_Cloud4		"sprite/cloud4.png"			4 2 NONE
 SPRITE SPR_GaudiEnd		"sprite/gaudi_end.png"		3 2 NONE
 
+SPRITE SPR_EBlcnBottom	"sprite/e_blcn_bottom.png"	4 2 NONE
+SPRITE SPR_EBlcnDoor	"sprite/e_blcn_door.png"	4 4 NONE
+SPRITE SPR_EBlcnGrass	"sprite/e_blcn_grass.png"	2 1 NONE
+SPRITE SPR_EBlcnLeftmid	"sprite/e_blcn_leftmid.png"	4 3 NONE
+SPRITE SPR_EBlcnLefttop	"sprite/e_blcn_lefttop.png"	2 4 NONE
+SPRITE SPR_EBlcnRghttop	"sprite/e_blcn_rghttop.png"	1 4 NONE
+SPRITE SPR_EBlcnStatue	"sprite/e_blcn_statue.png"	4 6 NONE
+
 # Use PAL_Regu
 SPRITE SPR_Kazuma		"sprite/kazuma.png"			2 3 NONE
 SPRITE SPR_Cthu			"sprite/cthu.png"			2 3 NONE

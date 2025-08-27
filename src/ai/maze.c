@@ -754,7 +754,7 @@ void ai_poohblk_dying(Entity *e) {
 			}
 		}
 		break;
-		
+
 		case 2:
 		{
 			e->state = 2;
@@ -889,7 +889,7 @@ void ai_gaudi_egg(Entity *e) {
 }
 
 void ai_fuzz_core(Entity *e) {
-    e->flags ^= NPC_SHOOTABLE;
+    //e->flags ^= NPC_SHOOTABLE;
 
 	switch(e->state) {
 		case 0:
@@ -951,7 +951,7 @@ static const int16_t fuzz_xy[128*2] = {
 };
 
 void ai_fuzz(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	
 	switch(e->state) {
 		case 0:
@@ -1068,7 +1068,7 @@ void ai_buyobuyo_base(Entity *e) {
 }
 
 void ai_buyobuyo(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
 	ANIMATE(e, 8, 0,1);
@@ -1136,9 +1136,13 @@ void ai_buyobuyo(Entity *e) {
 }
 
 void onspawn_gero(Entity *e) {
-	e->x -= 8 << CSF;
-	if(e->type == OBJ_NURSE_HASUMI && g_stage.id == STAGE_ENDING_LABYRINTH) {
-		e->dir = 1; // Face right in end scene
+
+	if(g_stage.id == STAGE_ENDING_LABYRINTH) {
+		e->y -= 8 << CSF;
+		e->x += 8 << CSF;
+		if(e->type == OBJ_NURSE_HASUMI) e->dir = 1; // Face right in end scene
+	} else {
+		e->x -= 8 << CSF;
 	}
 }
 

@@ -6,7 +6,7 @@
  */
 
 #define MAX_DAMAGE 4
-#define MAX_MISC 16
+#define MAX_MISC 12
 
 enum { 
 	EFF_SMOKE, EFF_BONKL, EFF_BONKR, EFF_ZZZ, EFF_BOOST8, EFF_BOOST2, EFF_QMARK, 

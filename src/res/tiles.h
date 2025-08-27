@@ -58,6 +58,9 @@ extern const uint16_t MAP_bkFogBtm[];
 extern const uint16_t UFTC_bkSndTest[];
 extern const uint16_t MAP_bkSndTest[];
 
+extern const uint16_t PAT_EndMaze[];
+extern const uint16_t MAP_EndMaze[];
+
 extern const uint16_t UFTC_XXBack[];
 extern const uint16_t UFTC_XXFore[];
 

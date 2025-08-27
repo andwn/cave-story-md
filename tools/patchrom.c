@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 	fclose(source);
 	// Find the address of "LANGDAT\0" in ROM
 	int address = 0;
-	for(int i = 0x300000 /* 3.0MB */; i < 0x400000-8; i++) {
+	for(int i = 0x100000 /* 1.0MB */; i < 0x400000-8; i++) {
 		if(strncmp("LANGDAT", (char*)&rom[i], 8) == 0) {
 			address = i;
 			break;

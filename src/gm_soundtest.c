@@ -43,7 +43,7 @@ void draw_track_info(uint8_t track) {
 	vdp_text_clear(VDP_PLANE_A, 5, 7, 33);
 	const uint8_t *name = (const uint8_t *)MUSIC_NAMES;
 	//cjk_reset(CJK_TITLE);
-	loc_vdp_nputs(VDP_PLANE_A, &name[32 * track], 5, 6, 32);
+	loc_vdp_nputs(VDP_PLANE_A, &name[32 * track], 5, 6, 32, 0);
 }
 
 void draw_status(uint8_t status) {

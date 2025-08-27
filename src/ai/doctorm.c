@@ -550,7 +550,7 @@ static void run_red_drip(Entity *e) {
 }
 
 void ai_doctor_bat(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 	ANIMATE(e, 2, 0,1,2);
 	
 	if ((blk(e->x, -8, e->y, 0) == 0x41) || (blk(e->x, 8, e->y, 0) == 0x41)) {

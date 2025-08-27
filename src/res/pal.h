@@ -45,6 +45,8 @@ extern const uint16_t PAL_Store[16];
 extern const uint16_t PAL_Weed[16];
 
 extern const uint16_t PAL_RiverAlt[16];
+extern const uint16_t PAL_EndMaze[16];
+
 extern const uint16_t PAL_MazeM[16];
 extern const uint16_t PAL_X[16];
 extern const uint16_t PAL_XB[16];

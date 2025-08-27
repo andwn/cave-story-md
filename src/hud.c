@@ -127,7 +127,7 @@ void hud_force_redraw(void) {
 }
 
 void hud_force_energy(void) {
-	hudLevel = 9;
+	if(playerWeapon[currentWeapon].energy != hudEnergy) hudLevel = 9;
 }
 
 void hud_show(void) {
@@ -144,6 +144,10 @@ void hud_update(void) {
 	if(!showing || inFade || wipeFadeTimer > 0) return;
 
 	vdp_sprites_add(sprHUD, 2);
+	if(swapWepNum > 0) {
+		vdp_sprites_add(sprSwap, swapWepNum > 2 ? 2 : 1);
+	}
+
 	// Only refresh one part of the HUD in a single frame, at most 8 tiles will be sent
 	if(hudMaxHealth != playerMaxHealth || hudHealth != player.health) {
 		hud_refresh_health();
@@ -151,26 +155,21 @@ void hud_update(void) {
     if(hudWeapon != playerWeapon[currentWeapon].type) {
 		hud_refresh_weapon();
 		weaponChange = TRUE;
-	}
-	if(swapTimer) {
+	} else if(swapTimer) {
 		hud_refresh_swap(FALSE);
 	}
     if(hudLevel != playerWeapon[currentWeapon].level || weaponChange) {
 		hud_refresh_energy(TRUE);
-	}
-    if(hudEnergyTimer || hudEnergy != playerWeapon[currentWeapon].energy) {
+	} else if(hudEnergyTimer || hudEnergy != playerWeapon[currentWeapon].energy) {
 		hud_refresh_energy(FALSE);
 	}
     if(hudMaxAmmo != playerWeapon[currentWeapon].maxammo) {
 		// Max ammo changed refresh both
 		hud_refresh_maxammo();
 		hud_refresh_ammo();
-	}
-    if(hudAmmo != playerWeapon[currentWeapon].ammo ) {
+	} else if(hudAmmo != playerWeapon[currentWeapon].ammo ) {
 		hud_refresh_ammo();
 	}
-
-	if(swapWepNum > 0) vdp_sprites_add(sprSwap, swapWepNum > 2 ? 2 : 1);
 }
 
 void hud_swap_weapon(uint8_t dir) {

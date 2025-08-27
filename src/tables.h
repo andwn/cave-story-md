@@ -132,6 +132,9 @@ typedef struct {
 			uint16_t id;
 			const uint16_t *data;
 		} palette;
+		struct {
+			uint16_t value;
+		} textmode;
 	};
 } credits_info_def;
 extern const credits_info_def credits_info[];

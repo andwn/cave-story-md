@@ -8,7 +8,7 @@ enum CritterState {
 };
 
 void ai_critter(Entity *e) {
-	e->flags ^= NPC_SHOOTABLE;
+	//e->flags ^= NPC_SHOOTABLE;
 
 	if(e->x_speed < 0) {
 		uint8_t block = blk(e->x, -e->hit_box.left, e->y, 0);
