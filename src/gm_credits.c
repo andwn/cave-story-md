@@ -19,6 +19,7 @@
 #include "sheet.h"
 #include "stage.h"
 #include "tables.h"
+#include "npc.h"
 #include "tsc.h"
 
 #include "gamemode.h"
@@ -50,6 +51,17 @@ extern int16_t hscrollTable[64]; // stage.c
 
 static int8_t illScrolling;
 
+static uint16_t get_cjk_xpos(const uint8_t *str, uint16_t end) {
+	uint16_t pos = 0;
+	uint16_t index = 0;
+	for(pos = 0; index < end; pos++) {
+		uint8_t c = str[index];
+		if(c == 0) break; // End of string
+		index += (c >= 0xE0) ? 2 : 1;
+	}
+	return pos + pos / 2 + (pos & 1);
+}
+
 __attribute__((noreturn))
 void credits_main(void) {
 	gamemode = GM_CREDITS;
@@ -58,6 +70,9 @@ void credits_main(void) {
 	
 	uint16_t pc = 0;
 	uint16_t textX = 0, textY = 0;
+
+	uint16_t cjkSplitX = 0;
+	const uint8_t *cjkSplitLine = NULL;
 	
 	uint16_t waitTime = 0;
 	uint16_t backScroll = 0;
@@ -75,14 +90,15 @@ void credits_main(void) {
 	effects_init();
 	vdp_set_window(0, 0);
     sys_wait_vblank(); aftervsync(); // Make sure nothing in DMA queue and music completely stops
+
+	vdp_colors(0, PAL_Main, 16);
+	vdp_colors(16, PAL_Sym, 16);
+	vdp_colors(48, PAL_Regu, 16);
 	
 	vdp_set_display(FALSE);
 	// Clear planes, reset palettes
 	vdp_map_clear(VDP_PLANE_A);
 	vdp_map_clear(VDP_PLANE_B);
-	vdp_colors(0, PAL_Main, 16);
-	vdp_colors(16, PAL_Sym, 16);
-	vdp_colors(48, PAL_Regu, 16);
 	// Stick camera to upper right
 	camera.target = NULL;
 	camera.x = pixel_to_sub(ScreenHalfW);
@@ -110,18 +126,41 @@ void credits_main(void) {
 	if(cfg_language != LANG_EN) {
 		system_set_flag(FLAG_CREDITS_NOAGT, TRUE);
 	}
+
+	// This clears the window plane
+	start_credits_fadeout_wipe(1);
+	wipeFadeOutTimer = -1;
 	
 	vdp_set_display(TRUE);
+
+	Sprite sprFadeMask[8];
+	for(uint16_t i = 0; i < 8; i++) {
+		sprFadeMask[i] = (Sprite) {
+			.x = 0, // Hides any additional sprites on the line
+			.y = 0x80 + i * 32,
+			.size = SPRITE_SIZE(1,4),
+			.attr = 0,
+		};
+	}
+	Sprite sprFadeMaskPre[8];
+	for(uint16_t i = 0; i < 8; i++) {
+		sprFadeMaskPre[i] = (Sprite) {
+			.x = 1,
+			.y = 0x80 + i * 32,
+			.size = SPRITE_SIZE(1,4),
+			.attr = 0,
+		};
+	}
 	
     while(TRUE) {
         joystate = joystate_old = 0;
 		tsc_update();
 		if(opaqueTextMode) {
-			vdp_color(1, 0x200);
 			vdp_color(2, 0x200);
-			vdp_color_next(1, 0x200);
 			vdp_color_next(2, 0x200);
 		}
+		vdp_color(1, 0x200);
+		vdp_color_next(1, 0x200);
 
         backScroll++;
         uint8_t scrolledBack = FALSE;
@@ -145,8 +184,50 @@ void credits_main(void) {
 				const uint16_t map = TILE_ATTR(0,1,0,0,opaqueTextMode?TILE_FADEINDEX:0);
 				vdp_text_clear_ex(VDP_PLANE_B, 0, (textY + 1) & 31, 40, map);
 			}
-			
         }
+
+		
+		// Icon sprites (need to draw before fade mask)
+		for(uint8_t i = 0; i < 16; i++) {
+			if(!icon[i].size) continue;
+			if((backScroll & 1) == 0 && !scrolledBack) {
+				if(--icon[i].y < -22 + 128) icon[i].size = 0;
+			}
+			vdp_sprite_add(&icon[i]);
+		}
+
+		// Handle fade in/out of the scenes on the right side
+		extern uint8_t maskFadeInWait; // Set by <TRA to nonzero in credits
+		if(wipeFadeTimer >= 0) {
+			maskFadeInWait = FALSE;
+			update_fadein_wipe();
+			if(wipeFadeTimer > 5) {
+				uint8_t num = (wipeFadeTimer - 5) / 2;
+				vdp_sprites_add_force(sprFadeMaskPre, num);
+				vdp_sprites_add_force(sprFadeMask, num);
+			}
+		} else if(maskFadeInWait) {
+			vdp_sprites_add_force(sprFadeMaskPre, 8);
+			vdp_sprites_add_force(sprFadeMask, 8);
+		}
+		if(wipeFadeOutTimer >= 0) {
+			update_credits_fadeout_wipe();
+			if(wipeFadeOutTimer == -1) wipeFadeOutTimer = 0; // Keep covering until <TRA
+			uint8_t first = wipeFadeOutTimer / 2;
+			if(first > 8) first = 8;
+			vdp_sprites_add_force(&sprFadeMaskPre[first], 8 - first);
+			vdp_sprites_add_force(&sprFadeMask[first], 8 - first);
+		}
+
+		if(cjkSplitLine) {
+			uint16_t ind = loc_vdp_nputs(VDP_PLANE_B, cjkSplitLine, textX+cjkSplitX, textY & 31, 8, opaqueTextMode ? 1 : 0);
+			if(cjkSplitLine[ind] != 0) {
+				cjkSplitX += get_cjk_xpos(cjkSplitLine, 8);
+				cjkSplitLine = &cjkSplitLine[ind];
+			} else {
+				cjkSplitLine = NULL;
+			}
+		}
 
 		if(waitTime) waitTime--;
 		while(!waitTime) {
@@ -157,7 +238,17 @@ void credits_main(void) {
 						const uint8_t *str = (const uint8_t*)CREDITS_STR;
 						str += (credits_info[pc].text.jstring - 1) << 5;
 						if(str[0] != '_') { // Ignore lines starting with "_"
-							loc_vdp_nputs(VDP_PLANE_B, str, textX, textY & 31, 32, opaqueTextMode ? 2 : 0);
+							if(cfg_language >= LANG_JA && cfg_language <= LANG_RU) {
+								uint16_t ind = loc_vdp_nputs(VDP_PLANE_B, str, textX, textY & 31, 8, opaqueTextMode ? 1 : 0);
+								if(str[ind] != 0) {
+									cjkSplitX = get_cjk_xpos(str, 8);
+									cjkSplitLine = &str[ind];
+								} else {
+									cjkSplitLine = NULL;
+								}
+							} else {
+								loc_vdp_nputs(VDP_PLANE_B, str, textX, textY & 31, 32, opaqueTextMode ? 1 : 0);
+							}
 						}
 					}
 					break;
@@ -172,7 +263,9 @@ void credits_main(void) {
 									1,0,0,TILE_ICONINDEX + i * 9)
 						};
 						if(textX == 16) icon[i].x += 4;
-						if(cfg_language >= LANG_JA && cfg_language <= LANG_RU) icon[i].y -= 4;
+						if(cfg_language >= LANG_JA && cfg_language <= LANG_RU) {
+							icon[i].y += 4;
+						}
 						TILES_QUEUE(SPR_TILES(casts_spr[credits_info[pc].icon.pal], 
 								credits_info[pc].icon.id), TILE_ICONINDEX + i * 9, 9);
 						break;
@@ -186,6 +279,11 @@ void credits_main(void) {
 					break;
 				case SONG:
 					song_play(credits_info[pc].song.id);
+					if(credits_info[pc].song.id == 1) { // Hack to get missing quote anim in
+						Entity *p = entity_create(pixel_to_sub(244), pixel_to_sub(140), OBJ_NPC_PLAYER, 0);
+						p->state = 90;
+						p->event = 400;
+					}
 					break;
 				case SONG_FADE:
 					song_stop(); // TODO: Figure out how to fade
@@ -259,14 +357,7 @@ void credits_main(void) {
 		// Scrolling for illustrations
 		illScroll += illScrolling;
 		if(illScroll <= 0 || illScroll >= 160) illScrolling = 0;
-		// Icon sprites
-		for(uint8_t i = 0; i < 16; i++) {
-			if(!icon[i].size) continue;
-			if((backScroll & 1) == 0 && !scrolledBack) {
-				if(--icon[i].y < -22 + 128) icon[i].size = 0;
-			}
-			vdp_sprite_add(&icon[i]);
-		}
+		
 		
 		// Hscroll is only really updated in Balcony, otherwise used for illustrations
 		if(g_stage.id == STAGE_ENDING_BALCONY) {
@@ -318,13 +409,15 @@ void credits_show_image(uint16_t id) {
 	if(id > 19) return;
 	if(illustration_info[id].pat == NULL) return; // Can't draw null tileset
 
+	uint8_t set_pal = FALSE;
+	vblank = 0;
+
 	vdp_set_display(FALSE);
 	dma_queue_rom(DmaVRAM, (uint32_t) illustration_info[id].pat, 16*32, illustration_info[id].pat_size*16, 2);
 	dma_flush();
 	//vdp_tiles_load(illustration_info[id].pat, 16, illustration_info[id].pat_size);
 	uint16_t index = pal_mode ? 0 : 20;
-	uint8_t set_pal = FALSE;
-	vblank = 0;
+	
 	for(uint16_t y = 0; y < (pal_mode ? 30 : 28); y++) {
 		dma_queue_rom(DmaVRAM, (uint32_t) &illustration_info[id].map[index], VDP_PLANE_A + (y << 7) + (44 << 1), 20, 2);
 		if(!set_pal && vblank) {
@@ -335,6 +428,7 @@ void credits_show_image(uint16_t id) {
 		index += 20;
 	}
 	if(!set_pal) {
+		if(!vblank) sys_wait_vblank();
 		vdp_colors(32, illustration_info[id].palette, 16);
 	}
 	vdp_set_display(TRUE);

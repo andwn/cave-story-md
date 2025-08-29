@@ -73,6 +73,8 @@ void window_clear_text(void);
 void window_draw_face(void);
 
 void window_open(uint8_t mode) {
+	if(gamemode == GM_CREDITS) return;
+
 	mapNameTTL = 0; // Hide map name to avoid tile conflict
 	//window_clear_text();
 	if(cfg_language >= LANG_JA && cfg_language <= LANG_KO) {
@@ -115,6 +117,8 @@ void window_open(uint8_t mode) {
 }
 
 void window_redraw(void) {
+	if(gamemode == GM_CREDITS) return;
+
 	window_open(windowOnTop);
 	if(showingFace) {
 		static const uint16_t attr[6] = {
@@ -129,6 +133,8 @@ uint8_t window_is_open(void) {
 }
 
 void window_clear(void) {
+	if(gamemode == GM_CREDITS) return;
+	
 	uint8_t x = showingFace ? TEXT_X1_FACE : TEXT_X1;
 	uint8_t y = windowOnTop ? TEXT_Y1_TOP : TEXT_Y1;
 	uint8_t w = showingFace ? 29 : 36;
@@ -145,6 +151,8 @@ void window_clear_text(void) {
 }
 
 void window_close(void) {
+	if(gamemode == GM_CREDITS) return;
+	
 	if(!paused && wipeFadeTimer < 0) {
 	    vdp_set_window(0, 0);
         hud_force_redraw();
@@ -155,6 +163,8 @@ void window_close(void) {
 }
 
 void window_set_face(uint16_t face, uint8_t open) {
+	if(gamemode == GM_CREDITS) return;
+	
 	if(paused) return;
 	if(open && !windowOpen) window_open(windowOnTop);
 	showingFace = face;
@@ -168,6 +178,8 @@ void window_set_face(uint16_t face, uint8_t open) {
 }
 
 void window_draw_char(uint8_t c) {
+	if(gamemode == GM_CREDITS) return;
+	
 	if(c == '\n') {
 		textRow++;
 		textColumn = 0;
@@ -205,6 +217,8 @@ void window_draw_char(uint8_t c) {
 }
 
 void window_draw_jchar(uint8_t iskanji, uint16_t c) {
+	if(gamemode == GM_CREDITS) return;
+	
 	if(!iskanji && c == '\n') {
         //vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y);
         //vdp_map_xy(VDP_PLANE_W, WINDOW_ATTR(4), x, y+1);
@@ -232,6 +246,8 @@ void window_draw_jchar(uint8_t iskanji, uint16_t c) {
 }
 
 void window_scroll_text(void) {
+	if(gamemode == GM_CREDITS) return;
+	
 	// Push bottom 2 rows to top
 	for(uint8_t row = 0; row < 2; row++) {
 		uint8_t msgTextX = showingFace ? TEXT_X1_FACE : TEXT_X1;

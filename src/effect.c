@@ -33,6 +33,7 @@ uint8_t digitCount[MAX_DAMAGE];
 uint8_t dqueued;
 
 int8_t wipeFadeTimer;
+int8_t wipeFadeOutTimer;
 uint8_t wipeFadeDir;
 
 typedef struct ClipOut {
@@ -61,6 +62,7 @@ static ClipIn s_clipin;
 
 void effects_init(void) {
 	wipeFadeTimer = -1;
+	wipeFadeOutTimer = -1;
 	for(uint8_t i = 0; i < MAX_DAMAGE; i++) effDamage[i].ttl = 0;
 	for(uint8_t i = 0; i < MAX_MISC; i++) effMisc[i].ttl = 0;
 	effects_reload_tiles();
@@ -578,7 +580,7 @@ static const uint32_t tblack[8] = {
 static void fade_setup(Sprite *spr0, Sprite *spr1, Sprite *spr2, uint8_t dir, uint8_t fadein) {
 	// Fill window plane
 	for(uint16_t y = 0; y < ScreenHeight / 8; y++) {
-		if(gamemode == GM_INTRO && y < 8) {
+		if(gamemode == GM_CREDITS || (gamemode == GM_INTRO && y < 8)) {
 			// low priority at top of intro, as not to cover "Studio Pixel" message
 			dma_now(DmaVRAM, (uint32_t) winmap_intro, VDP_PLANE_W + y*128, 40, 2);
 		} else {
@@ -586,45 +588,74 @@ static void fade_setup(Sprite *spr0, Sprite *spr1, Sprite *spr2, uint8_t dir, ui
 		}
 	}
 	// Setup tiles for sprites+window wipe
-	SHEET_LOAD(&SPR_Fade, 2, 4*4, TILE_HUDINDEX, TRUE, 0,1);
-	SHEET_LOAD(&SPR_Fade, 1, 4*4, TILE_NUMBERINDEX, TRUE, 2);
+	if(gamemode == GM_CREDITS) {
+		SHEET_LOAD(&SPR_FadeV, 2, 4*4, TILE_HUDINDEX, TRUE, 0,1);
+		SHEET_LOAD(&SPR_FadeV, 1, 4*4, TILE_NUMBERINDEX, TRUE, 2);
+	} else {
+		SHEET_LOAD(&SPR_Fade, 2, 4*4, TILE_HUDINDEX, TRUE, 0,1);
+		SHEET_LOAD(&SPR_Fade, 1, 4*4, TILE_NUMBERINDEX, TRUE, 2);
+	}
+	
 	dma_now(DmaVRAM, (uint32_t) tblack, TILE_FADEINDEX*TILE_SIZE, TILE_SIZE/2, 2);
 	// Setup sprites
-	for(uint16_t i = 0; i < (pal_mode ? 8 : 7); i++) {
-		spr0[i].y = 0x80 + i * 32;
-		spr1[i].y = 0x80 + i * 32;
-		spr2[i].y = 0x80 + i * 32;
-		if(fadein) {
-			if(dir) { // Start from right
-				spr0[i].x = 0x80 + ScreenWidth + 64;
-				spr1[i].x = 0x80 + ScreenWidth + 32;
-				spr2[i].x = 0x80 + ScreenWidth + 0;
-			} else { // Start from left
-				spr0[i].x = 0x80 - 96;
-				spr1[i].x = 0x80 - 64;
-				spr2[i].x = 0x80 - 32;
+	uint16_t sprnum = (gamemode == GM_CREDITS) ? 5 : pal_mode ? 8 : 7;
+	for(uint16_t i = 0; i < sprnum; i++) {
+		if(gamemode == GM_CREDITS) {
+			spr0[i].x = 0x80 + 160 + i * 32;
+			spr1[i].x = 0x80 + 160 + i * 32;
+			spr2[i].x = 0x80 + 160 + i * 32;
+			if(fadein) {
+				if(dir) { // Start from bottom
+					spr0[i].y = 0x80 + ScreenHeight + 64;
+					spr1[i].y = 0x80 + ScreenHeight + 32;
+					spr2[i].y = 0x80 + ScreenHeight + 0;
+				} else { // Start from top
+					spr0[i].y = 0x80 - 96;
+					spr1[i].y = 0x80 - 64;
+					spr2[i].y = 0x80 - 32;
+				}
+			} else {
+				if(dir) { // Start from bottom
+					spr0[i].y = 0x80 + ScreenHeight + 0;
+					spr1[i].y = 0x80 + ScreenHeight + 32;
+					spr2[i].y = 0x80 + ScreenHeight + 64;
+				} else { // Start from top
+					spr0[i].y = 0x80 - 32;
+					spr1[i].y = 0x80 - 64;
+					spr2[i].y = 0x80 - 96;
+				}
 			}
 		} else {
-			if(dir) { // Start from right
-				spr0[i].x = 0x80 + ScreenWidth + 0;
-				spr1[i].x = 0x80 + ScreenWidth + 32;
-				spr2[i].x = 0x80 + ScreenWidth + 64;
-			} else { // Start from left
-				spr0[i].x = 0x80 - 32;
-				spr1[i].x = 0x80 - 64;
-				spr2[i].x = 0x80 - 96;
+			spr0[i].y = 0x80 + i * 32;
+			spr1[i].y = 0x80 + i * 32;
+			spr2[i].y = 0x80 + i * 32;
+			if(fadein) {
+				if(dir) { // Start from right
+					spr0[i].x = 0x80 + ScreenWidth + 64;
+					spr1[i].x = 0x80 + ScreenWidth + 32;
+					spr2[i].x = 0x80 + ScreenWidth + 0;
+				} else { // Start from left
+					spr0[i].x = 0x80 - 96;
+					spr1[i].x = 0x80 - 64;
+					spr2[i].x = 0x80 - 32;
+				}
+			} else {
+				if(dir) { // Start from right
+					spr0[i].x = 0x80 + ScreenWidth + 0;
+					spr1[i].x = 0x80 + ScreenWidth + 32;
+					spr2[i].x = 0x80 + ScreenWidth + 64;
+				} else { // Start from left
+					spr0[i].x = 0x80 - 32;
+					spr1[i].x = 0x80 - 64;
+					spr2[i].x = 0x80 - 96;
+				}
 			}
 		}
-		if(i == 7) {
-			spr0[i].size = SPRITE_SIZE(4,2);
-			spr1[i].size = SPRITE_SIZE(4,2);
-			spr2[i].size = SPRITE_SIZE(4,2);
-		} else {
-			spr0[i].size = SPRITE_SIZE(4,4);
-			spr1[i].size = SPRITE_SIZE(4,4);
-			spr2[i].size = SPRITE_SIZE(4,4);
-		}
-		const uint16_t pri = (gamemode == GM_INTRO && i < 2) ? 0 : 1; // Low pri for intro message
+		spr0[i].size = SPRITE_SIZE(4,4);
+		spr1[i].size = SPRITE_SIZE(4,4);
+		spr2[i].size = SPRITE_SIZE(4,4);
+		// Low pri for intro message
+		const uint16_t pri = (gamemode == GM_INTRO && i < 2) ? 0 : (gamemode == GM_CREDITS) ? 0 : 1;
 		spr0[i].attr = TILE_ATTR(PAL0,pri,0,(fadein?dir:!dir), TILE_HUDINDEX);
 		spr1[i].attr = TILE_ATTR(PAL0,pri,0,(fadein?dir:!dir), TILE_HUDINDEX+16);
 		spr2[i].attr = TILE_ATTR(PAL0,pri,0,(fadein?dir:!dir), TILE_NUMBERINDEX);
@@ -668,7 +699,7 @@ void start_fadein_wipe(uint8_t dir) {
 	Sprite *spr1 = (Sprite*) dtiles[1];
 	Sprite *spr2 = (Sprite*) dtiles[2];
 	fade_setup(spr0, spr1, spr2, dir, TRUE);
-	wipeFadeTimer = ScreenWidth / 16 + 6;
+	wipeFadeTimer = (gamemode == GM_CREDITS) ? (ScreenHeight / 16 + 6) : (ScreenWidth / 16 + 6);
 	wipeFadeDir = dir;
 	// Cover screen with window (black) and write target palette now
 	sys_wait_vblank(); // Delay until vblank so we don't get the CRAM dots
@@ -683,24 +714,72 @@ void update_fadein_wipe(void) {
 		Sprite *spr1 = (Sprite*) dtiles[1];
 		Sprite *spr2 = (Sprite*) dtiles[2];
 		// Update Sprites
-		for(uint16_t i = 0; i < (pal_mode ? 8 : 7); i++) {
-			spr0[i].x += wipeFadeDir ? -16 : 16;
-			spr1[i].x += wipeFadeDir ? -16 : 16;
-			spr2[i].x += wipeFadeDir ? -16 : 16;
+		uint16_t sprnum = (gamemode == GM_CREDITS) ? 5 : pal_mode ? 8 : 7;
+		if(gamemode == GM_CREDITS) {
+			for(uint16_t i = 0; i < sprnum; i++) {
+				spr0[i].y += wipeFadeDir ? -16 : 16;
+				spr1[i].y += wipeFadeDir ? -16 : 16;
+				spr2[i].y += wipeFadeDir ? -16 : 16;
+			}
+		} else {
+			for(uint16_t i = 0; i < sprnum; i++) {
+				spr0[i].x += wipeFadeDir ? -16 : 16;
+				spr1[i].x += wipeFadeDir ? -16 : 16;
+				spr2[i].x += wipeFadeDir ? -16 : 16;
+			}
 		}
-		vdp_sprites_add(spr0, pal_mode ? 8 : 7);
-		vdp_sprites_add(spr1, pal_mode ? 8 : 7);
-		vdp_sprites_add(spr2, pal_mode ? 8 : 7);
+		vdp_sprites_add(spr0, sprnum);
+		vdp_sprites_add(spr1, sprnum);
+		vdp_sprites_add(spr2, sprnum);
 		// Update window plane
 		if(wipeFadeTimer > 5) {
-			const uint8_t x = wipeFadeDir ? (wipeFadeTimer-5) : (20 - (wipeFadeTimer-5)) | 0x80;
-			vdp_set_window(x, 0);
+			if(gamemode == GM_CREDITS) {
+				const uint8_t y = (wipeFadeTimer-5)*2;
+				vdp_set_window(0, y);
+			} else {
+				const uint8_t x = wipeFadeDir ? (wipeFadeTimer-5) : (20 - (wipeFadeTimer-5)) | 0x80;
+				vdp_set_window(x, 0);
+			}
 		} else {
 			vdp_set_window(0, 0);
 		}
 	} else {
 		// After the fade is done, need to restore HUD tiles we clobbered
 		if(gamemode == GM_GAME) hud_force_redraw();
+	}
+}
+
+// Fade in/out, half screen vertical for credits
+
+void start_credits_fadeout_wipe(uint8_t dir) {
+	Sprite *spr0 = (Sprite*) dtiles[0];
+	Sprite *spr1 = (Sprite*) dtiles[1];
+	Sprite *spr2 = (Sprite*) dtiles[2];
+	fade_setup(spr0, spr1, spr2, dir, FALSE);
+	wipeFadeOutTimer = ScreenHeight / 16 + 6;
+	wipeFadeDir = dir;
+}
+
+void update_credits_fadeout_wipe(void) {
+	wipeFadeOutTimer--;
+	if(wipeFadeOutTimer >= 0) {
+		Sprite *spr0 = (Sprite*) dtiles[0];
+		Sprite *spr1 = (Sprite*) dtiles[1];
+		Sprite *spr2 = (Sprite*) dtiles[2];
+		// Update Sprites
+		for(uint16_t i = 0; i < 5; i++) {
+			spr0[i].y -= 16;
+			spr1[i].y -= 16;
+			spr2[i].y -= 16;
+		}
+		vdp_sprites_add(spr0, 5);
+		vdp_sprites_add(spr1, 5);
+		vdp_sprites_add(spr2, 5);
+		// Update window plane
+		if(wipeFadeOutTimer <= ScreenHeight / 16) {
+			const uint8_t y = (wipeFadeOutTimer*2) | 0x80;
+			vdp_set_window(0, y);
+		}
 	}
 }
 

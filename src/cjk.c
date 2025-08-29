@@ -38,7 +38,7 @@ int16_t cjkMapRow;
 // = CJK_CREDITS ALLOCATION =
 // 320 tiles of space in this region:
 #define TILE_KANJISTART	(TILE_SHEETINDEX + 144 + 228 + 135 + 3)
-#define TILE_KANJISIZE  (320-3)
+#define TILE_KANJISIZE  (344-3)
 // TILE_HUDINDEX (+32 tiles) = 352
 // TILE_FACE_INDEX (+36 tiles) = 388
 static uint16_t CjkNextTile(void) {
@@ -73,14 +73,14 @@ static uint16_t CjkNextTile(void) {
             if(cjkVramIndex < TILE_KANJISIZE) {
                 index = cjkVramIndex + TILE_KANJISTART;
             } else if(cjkVramIndex < (TILE_KANJISIZE+32)) {
-                index = (cjkVramIndex - TILE_KANJISIZE) + TILE_HUDINDEX;
+                index = (cjkVramIndex - TILE_KANJISIZE) + TILE_EXWEPINDEX;
             } else if (cjkVramIndex < (TILE_KANJISIZE+32+36)) {
                 index = (cjkVramIndex - (TILE_KANJISIZE+32)) + TILE_FACEINDEX;
             } else {
-                index = (cjkVramIndex - (TILE_KANJISIZE+32+36)) + TILE_NUMBERINDEX;
+                index = (cjkVramIndex - (TILE_KANJISIZE+32+36)) + TILE_SMOKEINDEX;
             }
             cjkVramIndex++;
-            if(cjkVramIndex >= (TILE_KANJISIZE+32+36)+32) cjkVramIndex = 0;
+            if(cjkVramIndex >= (TILE_KANJISIZE+32+36)+24) cjkVramIndex = 0;
             break;
     }
     return index;

@@ -45,6 +45,8 @@ Effect* effect_create(uint8_t type, int16_t x, int16_t y, uint8_t only_one);
 // Fading
 
 extern int8_t wipeFadeTimer;
+extern int8_t wipeFadeOutTimer;
+extern uint8_t wipeFadeDir;
 
 // Fade the screen out using diamond pattern (blocking)
 void do_fadeout_wipe(uint8_t dir);
@@ -54,6 +56,10 @@ void start_fadein_wipe(uint8_t dir);
 
 // Frame step for fade in effect
 void update_fadein_wipe(void);
+
+void start_credits_fadeout_wipe(uint8_t dir);
+
+void update_credits_fadeout_wipe(void);
 
 // Sprite clipping
 

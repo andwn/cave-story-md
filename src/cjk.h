@@ -37,19 +37,21 @@ static uint16_t GetNextChar(const uint8_t *dat, uint16_t index) {
 }
 
 // Wrapper for either vdp_nputs or cjk_draw depending on the ROM's language
-static void loc_vdp_nputs(uint16_t plane, const uint8_t *dat, uint16_t x, uint16_t y, uint16_t maxlen, uint16_t backCol) {
+static uint16_t loc_vdp_nputs(uint16_t plane, const uint8_t *dat, uint16_t x, uint16_t y, uint16_t maxlen, uint16_t backCol) {
     if(cfg_language >= LANG_JA && cfg_language < LANG_RU) {
         uint16_t index = 0;
         for(uint16_t pos = 0; index < maxlen; pos++) {
-            uint16_t c = GetNextChar(dat, index++);
+            uint16_t c = GetNextChar(dat, index);
             if(c == 0) break; // End of string
-            if(c > 0xFF) index++;
+            index += (c > 0xFF) ? 2 : 1;
             cjk_draw(plane, c, x, y, backCol, 1);
             x += 1 + (pos & 1);
         }
         cjk_newline();
+        return index;
     } else {
         vdp_nputs(plane, (const char*) dat, x, y, maxlen);
+        return maxlen;
     }
 }
 

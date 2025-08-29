@@ -170,6 +170,8 @@ uint16_t lastAmmoNum;
 uint8_t pendingFadeOut;
 uint8_t windowFadeinRedrawBodge;
 
+uint8_t maskFadeInWait;
+
 void tsc_show_teleport_menu(void);
 
 uint8_t execute_command(void);
@@ -692,7 +694,10 @@ uint8_t execute_command(void) {
 					p->state = 100;
 					p->event = 400;
 					tsc_load_stage(ID_CREDITS);
+					g_stage.id = 0;
+					wipeFadeOutTimer = -1;
 				} else {
+					maskFadeInWait = TRUE;
 					stage_load_credits(args[0]);
 				}
 				tsc_call_event(args[1]);
@@ -710,6 +715,12 @@ uint8_t execute_command(void) {
 				player.y_speed = 0;
 				player.grounded = FALSE;
 				gameFrozen = FALSE;
+
+				inFade = TRUE;
+				ready = TRUE;
+				sys_wait_vblank();
+				vdp_colors(0, PAL_FadeOut, 64);
+				aftervsync();
 
 				stage_load(args[0]);
 				tsc_call_event(args[1]);
@@ -1153,16 +1164,21 @@ uint8_t execute_command(void) {
 				if(window_is_open()) windowFadeinRedrawBodge = TRUE;
 				start_fadein_wipe(player.dir);
 			} else if(g_stage.id == STAGE_0) {
+				k_str("FAI ST0");
+				sys_wait_vblank(); // Delay until vblank so we don't get the CRAM dots
 				vdp_color_next(0, 0x200);
 				vdp_colors_apply_next_now();
+				vdp_set_window(0, 0);
 			} else {
+				k_str("FAI CRE");
 				vdp_color_next(0, 0x200);
 				if(g_stage.id == STAGE_ENDING_BALCONY) {
 					vdp_color_next(1, 0x200);
 					vdp_color_next(2, 0x200);
 				}
 				//vdp_color_next(32, 0x200); // For Balcony
-				vdp_fade(PAL_FadeOutBlue, NULL, 3, TRUE);
+				//vdp_fade(PAL_FadeOutBlue, NULL, 3, TRUE);
+				start_fadein_wipe(1);
 				tscState = TSC_WAITTIME;
 				waitTime = 3*8;
 				return 1;
@@ -1186,10 +1202,12 @@ uint8_t execute_command(void) {
 					fade_out();
 				}
 			} else if(g_stage.id == STAGE_0) {
-				k_str("FAO");
-				vdp_colors(0, PAL_FadeOutBlue, 64);
+				k_str("FAO ST0");
+				vdp_set_window(0, ScreenHeight / 8);
 			} else {
-				vdp_fade(NULL, PAL_FadeOutBlue, 3, TRUE);
+				k_str("FAO CRE");
+				start_credits_fadeout_wipe(1);
+				//vdp_fade(NULL, PAL_FadeOutBlue, 3, TRUE);
 				tscState = TSC_WAITTIME;
 				waitTime = 3*8;
 				return 1;
@@ -1323,16 +1341,17 @@ uint8_t execute_command(void) {
 
 			args[0] = tsc_read_word();
 
-			vdp_set_display(FALSE);
-
 			song_stop();
 			dma_clear();
-			
+
 			inFade = TRUE;
 			ready = TRUE;
             sys_wait_vblank();
-			vdp_colors(0, PAL_FadeOut, 64);
+			vdp_colors_next(0, PAL_FadeOut, 64);
+			vdp_colors_apply_next_now();
 			aftervsync();
+
+			vdp_set_display(FALSE);
 
 			// Disable camera
 			camera.target = NULL;
@@ -1345,9 +1364,11 @@ uint8_t execute_command(void) {
 			vdp_vscroll(VDP_PLANE_A, 0);
 			vdp_hscroll(VDP_PLANE_B, 0);
 			vdp_vscroll(VDP_PLANE_B, 0);
+
 			// Clear planes
 			vdp_map_clear(VDP_PLANE_B);
 			vdp_map_clear(VDP_PLANE_A);
+
 			// Background sky/mountains
 			vdp_tiles_load_uftc(UFTC_XXBack, TILE_TSINDEX, 0, 200);
 			vdp_map_fill_rect(VDP_PLANE_B, TILE_ATTR(PAL3, 0, 0, 0, TILE_TSINDEX), 10, 10, 20, 10, 1);
@@ -1375,8 +1396,11 @@ uint8_t execute_command(void) {
 				}
 			};
 
+			inFade = TRUE;
+			ready = TRUE;
             sys_wait_vblank();
-			vdp_colors(48, PAL_XX, 16);
+			vdp_colors_next(48, PAL_XX, 16);
+			vdp_colors_apply_next_now();
 			aftervsync();
 
 			vdp_set_display(TRUE);

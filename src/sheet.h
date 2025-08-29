@@ -73,7 +73,7 @@
 #define SHEET_LOAD(sdef, frames, fsize, index, dma, ...) {                                     \
 	static const uint8_t fa[frames] = { __VA_ARGS__ };                                         \
 	for(uint16_t i = 0; i < frames; i++) {                                                     \
-		vdp_tiles_load(SPR_TILES(sdef,fa[i]),(index)+i*(fsize),fsize);						   \
+		vdp_tiles_load(SPR_TILES(sdef,fa[i]),(index)+i*(fsize),fsize);					       \
 	}                                                                                          \
 }
 

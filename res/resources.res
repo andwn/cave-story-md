@@ -82,6 +82,7 @@ SPRITE SPR_Dissipate    "sprite/dissipate.png"      2 2 NONE
 SPRITE SPR_DarkMedic    "sprite/darkmedic.png"      5 3 NONE
 
 SPRITE SPR_Fade         "sprite/fade.png"           4 4 NONE
+SPRITE SPR_FadeV        "sprite/fadev.png"          4 4 NONE
 SPRITE SPR_ItemWin		"sprite_c/itemwindow.png" 		6 3 NONE
 SPRITE SPR_Arrow        "sprite/arrow.png"              1 2 NONE
 

@@ -129,6 +129,7 @@ void vdp_vscroll(uint16_t plan, int16_t vscroll);
 // Sprites
 void vdp_sprite_add(const Sprite *spr);
 void vdp_sprites_add(const Sprite *spr, uint16_t num);
+void vdp_sprites_add_force(const Sprite *spr, uint16_t num);
 void vdp_sprites_clear(void);
 void vdp_sprites_update(void);
 

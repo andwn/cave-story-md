@@ -323,6 +323,15 @@ void vdp_sprites_add(const Sprite *spr, uint16_t num) {
     for (uint16_t i = num; i--;) vdp_sprite_add(&spr[i]);
 }
 
+void vdp_sprites_add_force(const Sprite *spr, uint16_t num) {
+    for (uint16_t i = num; i--;) {
+        if (sprite_count >= 80) return;
+        sprite_table[sprite_count] = spr[i];
+        sprite_table[sprite_count].link = sprite_count + 1;
+        sprite_count++;
+    }
+}
+
 void vdp_sprites_clear(void) {
     static const Sprite NULL_SPRITE = {.x = 0x80, .y = 0x80};
     sprite_count = 0;

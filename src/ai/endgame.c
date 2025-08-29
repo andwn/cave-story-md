@@ -651,12 +651,12 @@ void ai_e_blcn_stg(Entity *e) {
 			e->sprite[BOTTOM_INDEX+1] = (Sprite) {
 				.x = STG_X + 32, .y = STG_Y + 144,
 				.size = SPRITE_SIZE(4,2),
-				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+16),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+8),
 			};
 			e->sprite[BOTTOM_INDEX+2] = (Sprite) {
 				.x = STG_X + 64, .y = STG_Y + 144,
 				.size = SPRITE_SIZE(4,2),
-				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+32),
+				.attr = TILE_ATTR(PAL2,0,0,0,sheets[e->sheet_bottom].index+16),
 			};
 			e->sprite[BOTTOM_INDEX+3] = (Sprite) {
 				.x = STG_X + 96, .y = STG_Y + 144,

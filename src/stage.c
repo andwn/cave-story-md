@@ -59,7 +59,10 @@ void stage_load(uint16_t id) {
 	vdp_set_display(FALSE);
     joystate_old = ~0;
 
-	memset(playerBullet, 0, sizeof(Bullet) * MAX_BULLETS);
+	for(uint16_t i = 0; i < MAX_BULLETS; i++) {
+		playerBullet[i].ttl = 0;
+		playerBullet[i].extent.x1 = 0xFFFF;
+	}
 	// Prevents an issue where a column of the previous map would get drawn over the new one
 	dma_clear();
 	g_stage.id = id;

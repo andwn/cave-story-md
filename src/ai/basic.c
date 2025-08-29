@@ -48,7 +48,7 @@ void onspawn_interactive(Entity *e) {
 }
 
 void onspawn_bed(Entity *e) {
-	if(e->flags & NPC_OPTION2) e->dir = 1;
+	if(e->flags & NPC_OPTION2) e->frame = 1;
 	if(g_stage.id == STAGE_ENDING_LABYRINTH) {
 		e->y -= 8 << CSF;
 		e->x += 8 << CSF;
@@ -505,6 +505,26 @@ void ai_player(Entity *e) {
 			e->frame = 4;
 		}
 		break;
+		// delay spawn in credits
+		case 90:
+		{
+			e->timer = 0;
+			e->state = 91;
+			e->hidden = TRUE;
+		}
+		// Fallthrough
+		case 91:
+		{
+			e->grounded = TRUE;
+			collide = FALSE;
+			if(++e->timer >= TIME(100)) {
+				e->grounded = FALSE;
+				e->timer = 0;
+				e->state = 100;
+				e->hidden = FALSE;
+			}
+		}
+		break;
 		// walking in place during credits
 		case 99:
 		case 100:
@@ -513,7 +533,12 @@ void ai_player(Entity *e) {
 		{
 			collide = FALSE;
 			e->grounded = FALSE;
-			if(++e->timer > TIME_8(25)) e->state = 103;
+			//if(++e->timer > TIME_8(25)) e->state = 103;
+			if(e->y_next >= 192L << CSF) {
+				e->state = 103;
+				e->grounded = TRUE;
+				e->y_speed = 0;
+			}
 		}
 		break;
 		case 103:

@@ -45,7 +45,8 @@ void game_main(uint8_t load) {
 	if(load) {
 		hud_show();
 		stage_setup_palettes();
-		vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
+		//vdp_fade(PAL_FadeOut, NULL, 4, TRUE);
+		start_fadein_wipe(1);
 	}
 	paused = FALSE;
 
