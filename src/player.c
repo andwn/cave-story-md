@@ -1192,11 +1192,10 @@ void player_give_weapon(uint8_t id, uint8_t ammo) {
 				TILES_QUEUE(SPR_TILES(weapon_info[WEAPON_POLARSTAR].sprite,0),
 					TILE_WEAPONINDEX,6);
 			}
-            //disable_ints();
-            //z80_pause_fast();
 			sheets_load_weapon(w);
-            //z80_resume();
-            //enable_ints();
+			if(w->type == WEAPON_SPUR) {
+				SHEET_MOD(SHEET_PSTAR, &SPR_PolarB3, 5,2,2, 0, 1, 2, 3, 4);
+			}
 			break;
 		}
 	} else {
@@ -1242,11 +1241,10 @@ void player_trade_weapon(uint8_t id_take, uint8_t id_give, uint8_t ammo) {
 			w->maxammo = ammo;
 			w->ammo = ammo;
 		}
-        //disable_ints();
-        //z80_pause_fast();
 		sheets_load_weapon(w);
-        //z80_resume();
-        //enable_ints();
+        if(w->type == WEAPON_SPUR) {
+			SHEET_MOD(SHEET_PSTAR, &SPR_PolarB3, 5,2,2, 0, 1, 2, 3, 4);
+		}
 	}
 }
 

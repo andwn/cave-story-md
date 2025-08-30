@@ -208,16 +208,23 @@ void weapon_fire_snake(Weapon *w) {
 		b->y = player.y - pixel_to_sub(10);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(snake_speed[b->level]);
+		b->hit_box.bottom += 4;
 	} else if(b->dir == DOWN) {
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(10);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(snake_speed[b->level]);
+		b->hit_box.bottom -= 4;
 	} else {
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(2);
 		b->x_speed = b->dir ? SPEED_12(snake_speed[b->level]) : -SPEED_12(snake_speed[b->level]);
 		b->y_speed = 0;
+		if(b->dir) {
+			b->hit_box.left += 4;
+		} else {
+			b->hit_box.right += 4;
+		}
 	}
 	if(b->level > 1) {
 		// start moving off at an angle to our direction.
@@ -267,21 +274,25 @@ void weapon_fire_polarstar(Weapon *w) {
 		b->y = player.y - pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = -SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) {{ 1 + b->level, 6, 1 + b->level, 6 }};
+		b->hit_box = (bounding_box) {{ 1 + b->level, 6, 1 + b->level, 6+6 }};
 	} else if(b->dir == DOWN) {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index+4);
 		b->x = player.x;
 		b->y = player.y + pixel_to_sub(8);
 		b->x_speed = 0;
 		b->y_speed = SPEED_12(0xFFF);
-		b->hit_box = (bounding_box) {{ 1 + b->level, 6, 1 + b->level, 6 }};
+		b->hit_box = (bounding_box) {{ 1 + b->level, 6+6, 1 + b->level, 6 }};
 	} else {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,0,sheets[b->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(8) : -pixel_to_sub(8));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = 0;
-		b->hit_box = (bounding_box) {{ 6, 1 + b->level, 6, 1 + b->level }};
+		if(b->dir) {
+			b->hit_box = (bounding_box) {{ 6+6, 1 + b->level, 6, 1 + b->level }};
+		} else {
+			b->hit_box = (bounding_box) {{ 6, 1 + b->level, 6+6, 1 + b->level }};
+		}
 	}
 	set_extent_box(b);
 }
@@ -308,7 +319,8 @@ void weapon_fire_fireball(Weapon *w) {
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(100);
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
+	//b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
+	b->hit_box = (bounding_box) {{ 5, 5, 5, 5 }};
 	
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -349,7 +361,6 @@ void weapon_fire_machinegun(Weapon *w) {
 	b->damage = b->level << 1; // 2, 4, 6
 	b->ttl = TIME_8(20);
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) {{ 4, 1 + w->level, 4, 1 + w->level }};
 	// check up/down first
 	b->dir = FIREDIR;
 	if(b->dir == UP) {
@@ -362,6 +373,7 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y = player.y - pixel_to_sub(12);
 		b->x_speed = -0x7F + (rand() & 0xFF);
 		b->y_speed = -SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) {{ 1 + w->level, 4, 1 + w->level, 4+4 }};
 	} else if(b->dir == DOWN) {
 		b->sprite.attr = TILE_ATTR(PAL0,0,1,0,sheets[w->sheet].index+8);
 		if(w->level == 3) {
@@ -378,12 +390,18 @@ void weapon_fire_machinegun(Weapon *w) {
 		b->y = player.y + pixel_to_sub(12);
 		b->x_speed = -0x7F + (rand() & 0xFF);
 		b->y_speed = SPEED_12(0xFFF);
+		b->hit_box = (bounding_box) {{ 1 + w->level, 4+4, 1 + w->level, 4 }};
 	} else {
 		b->sprite.attr = TILE_ATTR(PAL0,0,0,b->dir,sheets[w->sheet].index);
 		b->x = player.x + (b->dir ? pixel_to_sub(10) : -pixel_to_sub(10));
 		b->y = player.y + pixel_to_sub(3);
 		b->x_speed = (b->dir ? SPEED_12(0xFFF) : -SPEED_12(0xFFF));
 		b->y_speed = -0x7F + (rand() & 0xFF);
+		if(b->dir) {
+			b->hit_box = (bounding_box) {{ 4+4, 1 + w->level, 4, 1 + w->level }};
+		} else {
+			b->hit_box = (bounding_box) {{ 4, 1 + w->level, 4+4, 1 + w->level }};
+		}
 	}
 	set_extent_box(b);
 }
@@ -417,7 +435,8 @@ void weapon_fire_missile(Weapon *w) {
 		b->type = w->type;
 		b->level = w->level;
 		b->sprite = (Sprite) { .size = SPRITE_SIZE(2, 2), };
-		b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
+		//b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
+		b->hit_box = (bounding_box) {{ 5, 5, 5, 5 }};
 		b->sheet = w->sheet;
 		b->damage = (b->type == WEAPON_SUPERMISSILE) ? 2 : 1;
 		b->hits = 0;
@@ -480,7 +499,8 @@ void weapon_fire_bubbler(Weapon *w) {
 	b->type = w->type;
 	b->level = w->level;
 	b->sheet = w->sheet;
-	b->hit_box = (bounding_box) {{ 3, 3, 3, 3 }};
+	//b->hit_box = (bounding_box) {{ 3, 3, 3, 3 }};
+	b->hit_box = (bounding_box) {{ 4, 4, 4, 4 }};
 	b->sprite = (Sprite) {
 		.size = SPRITE_SIZE(1, 1),
 		.attr = TILE_ATTR(PAL0,0,0,0,sheets[w->sheet].index)
@@ -983,21 +1003,25 @@ void bullet_update_bubbler(Bullet *b) {
 					b->x_speed = -SPEED_12(0xC00);
 					b->y_speed = 0;
 					sprite_index(&b->sprite, sheets[b->sheet].index + 2);
+					b->hit_box.right += 4;
 					break;
 				case RIGHT: 
 					b->x_speed = SPEED_12(0xC00);
 					b->y_speed = 0;
 					sprite_index(&b->sprite, sheets[b->sheet].index + 2);
+					b->hit_box.left += 4;
 					break;
 				case UP: 
 					b->y_speed = -SPEED_12(0xC00);
 					b->x_speed = 0;
 					sprite_index(&b->sprite, sheets[b->sheet].index + 3);
+					b->hit_box.bottom += 4;
 					break;
 				case DOWN: 
 					b->y_speed = SPEED_12(0xC00);
 					b->x_speed = 0;
 					sprite_index(&b->sprite, sheets[b->sheet].index + 3);
+					b->hit_box.top += 4;
 					break;
 			}
 		} else {

@@ -211,13 +211,7 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		case 0x5A: // Gunsmith
 		{	
 			SHEET_ADD(SHEET_ZZZ, &SPR_Zzz, 4,1,1, 0, 1, 2, 3);
-			if(!player_has_weapon(WEAPON_SPUR) && (playerEquipment & EQUIP_BOOSTER20)) {
-				Weapon w = (Weapon) { .type = WEAPON_SPUR, .level = 1 };
-				sheets_load_weapon(&w);
-			} //else if(!player_has_weapon(WEAPON_POLARSTAR)) {
-			//	Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
-			//	sheets_load_weapon(&w);
-			//}
+			// Moved spur stuff after
 		} break;
 		case 0x10: // Graveyard
 		{	SHEET_ADD(SHEET_PIGNON, &SPR_Pignon, 5,2,2, 0, 1, 2, 3, 4);
@@ -559,6 +553,16 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 		if(msheet == NOSHEET) {
 			SHEET_ADD(SHEET_MGUN, &SPR_MGunB1, 5,2,2, 0, 1, 2, 3, 4);
 		}
+	}
+	// Special case for Gunsmith
+	if(sid == 0x5A) {
+		if(!player_has_weapon(WEAPON_SPUR) && (playerEquipment & EQUIP_BOOSTER20)) {
+			Weapon w = (Weapon) { .type = WEAPON_SPUR, .level = 1 };
+			sheets_load_weapon(&w);
+		} //else if(!player_has_weapon(WEAPON_POLARSTAR)) {
+		//	Weapon w = (Weapon) { .type = WEAPON_POLARSTAR, .level = 1 };
+		//	sheets_load_weapon(&w);
+		//}
 	}
 	// Consider the item menu clobbers sheets and do not use tile allocs in that area
 	if(init_tiloc) {
