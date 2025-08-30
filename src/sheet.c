@@ -34,6 +34,7 @@ uint8_t tilocs[MAX_TILOCS];
 void sheets_load_weapon(Weapon *w) {
 	if(!w) return;
 	w->sheet = sheet_num;
+	k_hex8(w->type);
 	switch(w->type) {
 		case WEAPON_POLARSTAR:
 		WEP_FIND_SHEET(SHEET_PSTAR);
@@ -75,12 +76,14 @@ void sheets_load_weapon(Weapon *w) {
 		break;
 		case WEAPON_BUBBLER:
 		WEP_FIND_SHEET(SHEET_BUBB);
+		k_hex8(w->type);
 		SHEET_ADD(SHEET_BUBB, w->level == 1 ? &SPR_BubB1 
 							: w->level == 2 ? &SPR_BubB2 
 							: &SPR_BubB3, 6,1,1, 0, 1, 2, 3, 4, 5);
 		break;
 		case WEAPON_BLADE:
 		WEP_FIND_SHEET(SHEET_BLADE);
+		k_hex8(w->type);
 		SHEET_ADD(SHEET_BLADE, w->level == 1 ? &SPR_BladeB1 
 							 : w->level == 2 ? &SPR_BladeB2 
 							 : &SPR_BladeB3k, 1,3,3, 0);
@@ -603,6 +606,8 @@ void sheets_load_stage(uint16_t sid, uint8_t init_base, uint8_t init_tiloc) {
 	}
 
 	ASSERT_COLOR(0x0EE, sheet_num <= MAX_SHEETS);
+	k_str("sheet_num");
+	k_hex8(sheet_num);
 }
 
 void sheets_load_intro(void) {

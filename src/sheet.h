@@ -24,7 +24,7 @@
  * will be allocated again.
  */
 
-#define MAX_SHEETS	24
+#define MAX_SHEETS	26
 #define MAX_TILOCS	96
 
 #define NOSHEET 255
@@ -38,6 +38,8 @@
 		sheets[sheet_num] = (Sheet) {                                                          \
 			sheetid, (frames)*(width)*(height), index, width, height                           \
 		};                                                                                     \
+		k_hex16(index);																		   \
+		k_hex8((frames)*(width)*(height));												       \
 		tiloc_index = sheets[sheet_num].index + sheets[sheet_num].size;                        \
 		SHEET_LOAD(sdef, frames, (width)*(height), sheets[sheet_num].index, 1, __VA_ARGS__);   \
 		for(uint8_t i = 0; i < 16; i++) frameOffset[sheet_num][i] = (width)*(height)*i;        \
@@ -78,7 +80,7 @@
 }
 
 #define SHEET_FIND(index, sid) {                                                               \
-	for(uint8_t ii = MAX_SHEETS; ii--; ) {                                                     \
+	for(uint8_t ii = 0; ii < sheet_num; ii++) {                                                \
 		if(sheets[ii].id == sid) {                                                             \
 			index = ii;                                                                        \
 			break;                                                                             \
