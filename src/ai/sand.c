@@ -865,9 +865,13 @@ void ai_skeleton(Entity *e) {
 	
 	e->x_next = e->x + e->x_speed;
 	e->y_next = e->y + e->y_speed;
+
+	if(e->x_speed > 0) collide_stage_rightwall(e);
+	if(e->x_speed < 0) collide_stage_leftwall(e);
+
 	if(!e->grounded) e->grounded = collide_stage_floor(e);
 	else e->grounded = collide_stage_floor_grounded(e);
-	
+
 	switch(e->state) {
 		case 0:
 		{

@@ -1,5 +1,13 @@
 #include "ai_common.h"
 
+void onspawn_prox_press(Entity *e) {
+	e->flags &= ~(NPC_SPECIALSOLID | NPC_SOLID);
+	e->attack = 0;
+	if(e->type != OBJ_PROXIMITY_PRESS_HOZ) {
+		e->y -= 4 << CSF;
+	}
+}
+
 void ai_prox_press_vert(Entity *e) {
 	switch(e->state) {
 		case 0:

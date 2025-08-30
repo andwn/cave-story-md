@@ -262,7 +262,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 19] = {
 	{ NULL, 			SHEET_MIDO, 	1, PAL0, &ai_null, 				&ai_midorin, 		&ondeath_default 	,""}, // Midorin
 	{ &SPR_Gunfish, 	NOSHEET, 		1, PAL0, &ai_null, 				&ai_gunfish, 		&ondeath_default 	,""}, // Gunfish
 	{ NULL, 			SHEET_GUNFSHOT, 1, PAL0, &onspawn_persistent, 	&ai_gunfish_shot, 	&ondeath_nodrop 	,""}, // Gunfish Projectile
-	{ NULL, 			SHEET_PRESS, 	1, PAL1, &ai_null, 				&ai_prox_press_hoz, &ondeath_default 	,""}, // Lethal Press
+	{ NULL, 			SHEET_PRESS, 	1, PAL1, &onspawn_prox_press,   &ai_prox_press_hoz, &ondeath_default 	,""}, // Lethal Press
 	{ &SPR_JailBars2,	NOSHEET,		2, PAL2, &onspawn_cent_cage, 	&ai_null, 		    &ai_null 			,""}, // Cage Bars
 	/* 0x0F0 (240) */
 	{ &SPR_JailedMimi,	NOSHEET,		1, PAL3, &onspawn_persistent, 	&ai_mimiga_farmer, 	&ai_null 			,""}, // Jailed Mimiga
@@ -271,7 +271,7 @@ const npc_info_def npc_info[NPC_COUNT + 9 + 20 + 19] = {
 	{ NULL, 			NOSHEET, 		0, PAL0, &onspawn_persistent, 	&ai_red_bat_spawner,&ai_null 			,""}, // Red Bat Generator
 	{ NULL, 			SHEET_ACID, 	1, PAL3, &onspawn_persistent, 	&ai_lava_drip, 		&ai_null 			,""}, // Acid Drop
 	{ NULL, 			SHEET_ACID, 	1, PAL3, &ai_null, 				&ai_lava_spawner,	&ai_null 			,""}, // Acid Drop Generator
-	{ NULL, 			SHEET_PRESS, 	1, PAL1, &onspawn_press, 		&ai_prox_press_vert,&ondeath_default 	,""}, // Press (Proximity)
+	{ NULL, 			SHEET_PRESS, 	1, PAL1, &onspawn_prox_press,   &ai_prox_press_vert,&ondeath_default 	,""}, // Press (Proximity)
 	{ &SPR_Misery2, 	NOSHEET, 		1, PAL3, &onspawn_persistent, 	&ai_boss_misery, 	&ondeath_boss_misery,"" }, // Misery (Boss)
 	{ NULL, 			SHEET_IGORSHOT, 1, PAL3, &onspawn_persistent, 	&ai_genericproj, 	&ondeath_nodrop 	,""}, // Misery Energy Shot
 	{ &SPR_Misery2, 	NOSHEET, 		1, PAL3, &onspawn_persistent, 	&ai_null, 			&ai_null 			,""}, // Misery (Vanish)
