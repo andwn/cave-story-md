@@ -408,7 +408,7 @@ void ai_droll_shot(Entity *e) {
 	
 	if ((++e->timer & 7) == 0) sound_play(SND_DROLL_SHOT_FLY, 3);
 	
-	if (blk(e->x, 0, e->y, 0) & 0x41) {
+	if ((blk(e->x, 0, e->y, 0) & 0x43) >= 0x41) {
 		effect_create(EFF_SMOKE, e->x >> CSF, e->y >> CSF, FALSE);
 		effect_create(EFF_DISSIPATE, e->x >> CSF, e->y >> CSF, FALSE);
 		e->state = STATE_DELETE;
