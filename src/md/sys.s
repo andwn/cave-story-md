@@ -41,12 +41,12 @@ RomHeader:
 		.ascii	"SEGA MEGA DRIVE "          /* Console Signature */
 	.globl Date
 Date:
-		.ascii	"SKYCHASE 2025.08"          /* Company & Date */
+		.ascii	"SKYCHASE 2025.09"          /* Company & Date */
 		.ascii	"DOUKUTSU MONOGATARI MD  "  /* Domestic (JP) Title */
 		.ascii  "                        "
 		.ascii	"Cave Story MD           "  /* Overseas (EN) Title */
 		.ascii  "                        "
-		.ascii	"GM ANDYG002-B0"            /* ROM ID */
+		.ascii	"GM ANDYG002-B1"            /* ROM ID */
 		dc.w	0                           /* Checksum (not used) */
 		.ascii	"J6              "          /* Peripheral support */
 		dc.l	__rom_start                 /* ROM Start Address */
@@ -59,7 +59,7 @@ Date:
 		dc.l	SramBase+0xFFFE             /* SRAM End Address */
 	.globl Version
 Version:
-		.ascii	"Ver 0.8.6\0  "              /* Modem? */
+		.ascii	"Ver 0.8.7\0  "              /* Modem? */
 	.globl Homepage
 Homepage:
 		.ascii	"https://github.com/andwn/cave-story-md\0\0" /* Free space for note */
