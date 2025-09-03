@@ -207,7 +207,8 @@ void entities_update(uint8_t draw) {
 			// This code is run 10 times for every shootable entity. It has to be fast
 			// Using a pointer instead of indexing the array removes a lot of redundant lookups in the asm
 			Bullet *pb = playerBullet;
-			for(uint16_t i = (system_frame_step() & 1); i < MAX_BULLETS; i += 2) {
+			if(system_frame_step() & 1) pb++;
+			for(uint16_t i = 0; i < MAX_BULLETS / 2; i++) {
 				// The ttl check added a whopping 4 asm instructions lmao
 				// I've opted to instead set a dead bullet's extent.x1 to 0xFFFF
 				// That way the first check will always fail
